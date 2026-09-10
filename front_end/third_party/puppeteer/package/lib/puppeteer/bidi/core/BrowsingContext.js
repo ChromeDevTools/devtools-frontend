@@ -58,6 +58,8 @@ let BrowsingContext = (() => {
     let _dispose_decorators;
     let _activate_decorators;
     let _captureScreenshot_decorators;
+    let _startScreencast_decorators;
+    let _stopScreencast_decorators;
     let _close_decorators;
     let _traverseHistory_decorators;
     let _navigate_decorators;
@@ -98,6 +100,8 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _dispose_decorators, { kind: "method", name: "dispose", static: false, private: false, access: { has: obj => "dispose" in obj, get: obj => obj.dispose }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _activate_decorators, { kind: "method", name: "activate", static: false, private: false, access: { has: obj => "activate" in obj, get: obj => obj.activate }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _captureScreenshot_decorators, { kind: "method", name: "captureScreenshot", static: false, private: false, access: { has: obj => "captureScreenshot" in obj, get: obj => obj.captureScreenshot }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _startScreencast_decorators, { kind: "method", name: "startScreencast", static: false, private: false, access: { has: obj => "startScreencast" in obj, get: obj => obj.startScreencast }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _stopScreencast_decorators, { kind: "method", name: "stopScreencast", static: false, private: false, access: { has: obj => "stopScreencast" in obj, get: obj => obj.stopScreencast }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _close_decorators, { kind: "method", name: "close", static: false, private: false, access: { has: obj => "close" in obj, get: obj => obj.close }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _traverseHistory_decorators, { kind: "method", name: "traverseHistory", static: false, private: false, access: { has: obj => "traverseHistory" in obj, get: obj => obj.traverseHistory }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _navigate_decorators, { kind: "method", name: "navigate", static: false, private: false, access: { has: obj => "navigate" in obj, get: obj => obj.navigate }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -316,6 +320,19 @@ let BrowsingContext = (() => {
             });
             return data;
         }
+        async startScreencast(options = {}) {
+            const { result } = await this.#session.send('browsingContext.startScreencast', {
+                context: this.id,
+                ...options,
+            });
+            return result;
+        }
+        async stopScreencast(screencast) {
+            const { result } = await this.#session.send('browsingContext.stopScreencast', {
+                screencast,
+            });
+            return result;
+        }
         async close(promptUnload) {
             // The WebDriver BiDi specification only allows closing top-level browsing contexts.
             // Closing a top-level context automatically closes all its children, so there is
@@ -473,6 +490,12 @@ let BrowsingContext = (() => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _captureScreenshot_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _startScreencast_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _stopScreencast_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _close_decorators = [throwIfDisposed(context => {

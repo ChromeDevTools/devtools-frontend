@@ -13,7 +13,7 @@ import type { Extension } from '../api/Extension.js';
 import type { Frame, WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { JSHandle } from '../api/JSHandle.js';
-import type { Credentials, HeapSnapshotOptions, ReloadOptions } from '../api/Page.js';
+import type { Credentials, HeapSnapshotOptions, RecordOptions, ReloadOptions } from '../api/Page.js';
 import { Page, type GeolocationOptions, type MediaFeature, type Metrics, type NewDocumentScriptEvaluation, type ScreenshotOptions, type WaitTimeoutOptions } from '../api/Page.js';
 import type { Cookie, DeleteCookiesRequest, CookieParam, CookiePartitionKey, CookieSameSite } from '../common/Cookie.js';
 import { type Logger } from '../common/Debug.js';
@@ -26,6 +26,7 @@ import { Coverage } from './Coverage.js';
 import type { CdpFrame } from './Frame.js';
 import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
 import type { NetworkConditions } from './NetworkManager.js';
+import { CdpScreenRecording } from './ScreenRecording.js';
 import type { CdpTarget } from './Target.js';
 import { Tracing } from './Tracing.js';
 import { WebMCP } from './WebMCP.js';
@@ -150,6 +151,10 @@ export declare class CdpPage extends Page {
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
     get bluetooth(): BluetoothEmulation;
     extensionRealms(): Realm[];
+    /**
+     * @internal
+     */
+    createScreenRecording(options: Readonly<RecordOptions>): CdpScreenRecording;
 }
 /**
  * @internal

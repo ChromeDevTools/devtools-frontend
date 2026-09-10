@@ -57,6 +57,8 @@ SOURCES = [
   "package/lib/puppeteer/api/Page.js",
   "package/lib/puppeteer/api/Realm.d.ts",
   "package/lib/puppeteer/api/Realm.js",
+  "package/lib/puppeteer/api/ScreenRecording.d.ts",
+  "package/lib/puppeteer/api/ScreenRecording.js",
   "package/lib/puppeteer/api/Target.d.ts",
   "package/lib/puppeteer/api/Target.js",
   "package/lib/puppeteer/api/WebWorker.d.ts",
@@ -103,6 +105,8 @@ SOURCES = [
   "package/lib/puppeteer/bidi/Page.js",
   "package/lib/puppeteer/bidi/Realm.d.ts",
   "package/lib/puppeteer/bidi/Realm.js",
+  "package/lib/puppeteer/bidi/ScreenRecording.d.ts",
+  "package/lib/puppeteer/bidi/ScreenRecording.js",
   "package/lib/puppeteer/bidi/Serializer.d.ts",
   "package/lib/puppeteer/bidi/Serializer.js",
   "package/lib/puppeteer/bidi/Target.d.ts",
@@ -199,6 +203,8 @@ SOURCES = [
   "package/lib/puppeteer/cdp/Page.js",
   "package/lib/puppeteer/cdp/PredefinedNetworkConditions.d.ts",
   "package/lib/puppeteer/cdp/PredefinedNetworkConditions.js",
+  "package/lib/puppeteer/cdp/ScreenRecording.d.ts",
+  "package/lib/puppeteer/cdp/ScreenRecording.js",
   "package/lib/puppeteer/cdp/Target.d.ts",
   "package/lib/puppeteer/cdp/Target.js",
   "package/lib/puppeteer/cdp/TargetManageEvents.d.ts",
@@ -388,6 +394,7 @@ SOURCES = [
   "package/lib/third_party/urlpattern-polyfill/urlpattern-polyfill.d.ts",
   "package/lib/third_party/urlpattern-polyfill/urlpattern-polyfill.js",
   "package/lib/types.d.ts",
+  "puppeteer-tsconfig.json",
 ]
 
 devtools_pre_built("puppeteer") {

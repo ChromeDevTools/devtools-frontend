@@ -83,6 +83,7 @@ import { FrameManagerEvent } from './FrameManagerEvents.js';
 import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
 import { MAIN_WORLD } from './IsolatedWorlds.js';
 import { releaseObject } from './JSHandle.js';
+import { CdpScreenRecording } from './ScreenRecording.js';
 import { Tracing } from './Tracing.js';
 import { convertConsoleMessageLevel, createClientError, createConsoleMessage, pageBindingInitString, } from './utils.js';
 import { WebMCP } from './WebMCP.js';
@@ -1005,6 +1006,12 @@ export class CdpPage extends Page {
     }
     extensionRealms() {
         return this.mainFrame().extensionRealms();
+    }
+    /**
+     * @internal
+     */
+    createScreenRecording(options) {
+        return new CdpScreenRecording(this, options, this.logger);
     }
 }
 const supportedMetrics = new Set([

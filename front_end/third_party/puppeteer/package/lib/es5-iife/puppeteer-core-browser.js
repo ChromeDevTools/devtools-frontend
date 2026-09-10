@@ -3178,7 +3178,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.9.0';
+  const packageVersion = '25.10.0';
   // x-release-please-end
 
   /**
@@ -5948,14 +5948,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __runInitializers$6 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+  var __runInitializers$7 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for (var i = 0; i < initializers.length; i++) {
       value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
     }
     return useValue ? value : void 0;
   };
-  var __esDecorate$6 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+  var __esDecorate$7 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) {
       if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
       return f;
@@ -6092,7 +6092,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * @internal
        */
       constructor(logger) {
-        _classPrivateFieldInitSpec(this, _logger4, __runInitializers$6(this, _instanceExtraInitializers));
+        _classPrivateFieldInitSpec(this, _logger4, __runInitializers$7(this, _instanceExtraInitializers));
         _classPrivateFieldSet(_logger4, this, logger);
       }
       /**
@@ -6182,7 +6182,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     _classThis = _Class2;
     (() => {
       const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
-      __esDecorate$6(_Class2, null, _getProperty_decorators, {
+      __esDecorate$7(_Class2, null, _getProperty_decorators, {
         kind: "method",
         name: "getProperty",
         static: false,
@@ -6193,7 +6193,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$6(_Class2, null, _getProperties_decorators, {
+      __esDecorate$7(_Class2, null, _getProperties_decorators, {
         kind: "method",
         name: "getProperties",
         static: false,
@@ -6204,7 +6204,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$6(null, _classDescriptor = {
+      __esDecorate$7(null, _classDescriptor = {
         value: _classThis
       }, _classDecorators, {
         kind: "class",
@@ -6218,7 +6218,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         writable: true,
         value: _metadata
       });
-      __runInitializers$6(_classThis, _classExtraInitializers);
+      __runInitializers$7(_classThis, _classExtraInitializers);
     })();
     return _classThis;
   })();
@@ -7052,14 +7052,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __runInitializers$5 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+  var __runInitializers$6 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for (var i = 0; i < initializers.length; i++) {
       value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
     }
     return useValue ? value : void 0;
   };
-  var __esDecorate$5 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+  var __esDecorate$6 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) {
       if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
       return f;
@@ -7301,7 +7301,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
          * Cached isolatedHandle to prevent
          * trying to adopt it multiple times
          */
-        _defineProperty(this, "isolatedHandle", __runInitializers$5(this, _instanceExtraInitializers));
+        _defineProperty(this, "isolatedHandle", __runInitializers$6(this, _instanceExtraInitializers));
         /**
          * @internal
          */
@@ -8281,7 +8281,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _isIntersectingViewport_decorators = [throwIfDisposed(), bindIsolatedHandle];
       _scrollIntoView_decorators = [throwIfDisposed(), bindIsolatedHandle];
       _asLocator_decorators = [throwIfDisposed()];
-      __esDecorate$5(_ElementHandle, null, _getProperty_decorators, {
+      __esDecorate$6(_ElementHandle, null, _getProperty_decorators, {
         kind: "method",
         name: "getProperty",
         static: false,
@@ -8292,7 +8292,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _getProperties_decorators, {
+      __esDecorate$6(_ElementHandle, null, _getProperties_decorators, {
         kind: "method",
         name: "getProperties",
         static: false,
@@ -8303,7 +8303,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _jsonValue_decorators, {
+      __esDecorate$6(_ElementHandle, null, _jsonValue_decorators, {
         kind: "method",
         name: "jsonValue",
         static: false,
@@ -8314,7 +8314,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _$_decorators, {
+      __esDecorate$6(_ElementHandle, null, _$_decorators, {
         kind: "method",
         name: "$",
         static: false,
@@ -8325,7 +8325,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _$$_decorators, {
+      __esDecorate$6(_ElementHandle, null, _$$_decorators, {
         kind: "method",
         name: "$$",
         static: false,
@@ -8336,7 +8336,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, _private_$$_descriptor = {
+      __esDecorate$6(_ElementHandle, _private_$$_descriptor = {
         value: __setFunctionName$1(async function (selector) {
           return await _assertClassBrand(_ElementHandle_brand, this, _$$impl).call(this, selector);
         }, "#$$")
@@ -8351,7 +8351,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _waitForSelector_decorators, {
+      __esDecorate$6(_ElementHandle, null, _waitForSelector_decorators, {
         kind: "method",
         name: "waitForSelector",
         static: false,
@@ -8362,7 +8362,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _isVisible_decorators, {
+      __esDecorate$6(_ElementHandle, null, _isVisible_decorators, {
         kind: "method",
         name: "isVisible",
         static: false,
@@ -8373,7 +8373,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _isHidden_decorators, {
+      __esDecorate$6(_ElementHandle, null, _isHidden_decorators, {
         kind: "method",
         name: "isHidden",
         static: false,
@@ -8384,7 +8384,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _toElement_decorators, {
+      __esDecorate$6(_ElementHandle, null, _toElement_decorators, {
         kind: "method",
         name: "toElement",
         static: false,
@@ -8395,7 +8395,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _clickablePoint_decorators, {
+      __esDecorate$6(_ElementHandle, null, _clickablePoint_decorators, {
         kind: "method",
         name: "clickablePoint",
         static: false,
@@ -8406,7 +8406,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _hover_decorators, {
+      __esDecorate$6(_ElementHandle, null, _hover_decorators, {
         kind: "method",
         name: "hover",
         static: false,
@@ -8417,7 +8417,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _click_decorators, {
+      __esDecorate$6(_ElementHandle, null, _click_decorators, {
         kind: "method",
         name: "click",
         static: false,
@@ -8428,7 +8428,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _drag_decorators, {
+      __esDecorate$6(_ElementHandle, null, _drag_decorators, {
         kind: "method",
         name: "drag",
         static: false,
@@ -8439,7 +8439,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _dragEnter_decorators, {
+      __esDecorate$6(_ElementHandle, null, _dragEnter_decorators, {
         kind: "method",
         name: "dragEnter",
         static: false,
@@ -8450,7 +8450,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _dragOver_decorators, {
+      __esDecorate$6(_ElementHandle, null, _dragOver_decorators, {
         kind: "method",
         name: "dragOver",
         static: false,
@@ -8461,7 +8461,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _drop_decorators, {
+      __esDecorate$6(_ElementHandle, null, _drop_decorators, {
         kind: "method",
         name: "drop",
         static: false,
@@ -8472,7 +8472,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _dragAndDrop_decorators, {
+      __esDecorate$6(_ElementHandle, null, _dragAndDrop_decorators, {
         kind: "method",
         name: "dragAndDrop",
         static: false,
@@ -8483,7 +8483,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _select_decorators, {
+      __esDecorate$6(_ElementHandle, null, _select_decorators, {
         kind: "method",
         name: "select",
         static: false,
@@ -8494,7 +8494,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _tap_decorators, {
+      __esDecorate$6(_ElementHandle, null, _tap_decorators, {
         kind: "method",
         name: "tap",
         static: false,
@@ -8505,7 +8505,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _touchStart_decorators, {
+      __esDecorate$6(_ElementHandle, null, _touchStart_decorators, {
         kind: "method",
         name: "touchStart",
         static: false,
@@ -8516,7 +8516,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _touchMove_decorators, {
+      __esDecorate$6(_ElementHandle, null, _touchMove_decorators, {
         kind: "method",
         name: "touchMove",
         static: false,
@@ -8527,7 +8527,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _touchEnd_decorators, {
+      __esDecorate$6(_ElementHandle, null, _touchEnd_decorators, {
         kind: "method",
         name: "touchEnd",
         static: false,
@@ -8538,7 +8538,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _focus_decorators, {
+      __esDecorate$6(_ElementHandle, null, _focus_decorators, {
         kind: "method",
         name: "focus",
         static: false,
@@ -8549,7 +8549,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _type_decorators, {
+      __esDecorate$6(_ElementHandle, null, _type_decorators, {
         kind: "method",
         name: "type",
         static: false,
@@ -8560,7 +8560,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _press_decorators, {
+      __esDecorate$6(_ElementHandle, null, _press_decorators, {
         kind: "method",
         name: "press",
         static: false,
@@ -8571,7 +8571,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _boundingBox_decorators, {
+      __esDecorate$6(_ElementHandle, null, _boundingBox_decorators, {
         kind: "method",
         name: "boundingBox",
         static: false,
@@ -8582,7 +8582,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _boxModel_decorators, {
+      __esDecorate$6(_ElementHandle, null, _boxModel_decorators, {
         kind: "method",
         name: "boxModel",
         static: false,
@@ -8593,7 +8593,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _screenshot_decorators, {
+      __esDecorate$6(_ElementHandle, null, _screenshot_decorators, {
         kind: "method",
         name: "screenshot",
         static: false,
@@ -8604,7 +8604,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _isIntersectingViewport_decorators, {
+      __esDecorate$6(_ElementHandle, null, _isIntersectingViewport_decorators, {
         kind: "method",
         name: "isIntersectingViewport",
         static: false,
@@ -8615,7 +8615,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _scrollIntoView_decorators, {
+      __esDecorate$6(_ElementHandle, null, _scrollIntoView_decorators, {
         kind: "method",
         name: "scrollIntoView",
         static: false,
@@ -8626,7 +8626,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$5(_ElementHandle, null, _asLocator_decorators, {
+      __esDecorate$6(_ElementHandle, null, _asLocator_decorators, {
         kind: "method",
         name: "asLocator",
         static: false,
@@ -8924,14 +8924,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __runInitializers$4 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+  var __runInitializers$5 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for (var i = 0; i < initializers.length; i++) {
       value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
     }
     return useValue ? value : void 0;
   };
-  var __esDecorate$4 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+  var __esDecorate$5 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) {
       if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
       return f;
@@ -9157,7 +9157,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         /**
          * @internal
          */
-        _defineProperty(this, "_id", __runInitializers$4(this, _instanceExtraInitializers));
+        _defineProperty(this, "_id", __runInitializers$5(this, _instanceExtraInitializers));
         /**
          * @internal
          */
@@ -9849,7 +9849,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _tap_decorators = [throwIfDetached];
       _type_decorators = [throwIfDetached];
       _title_decorators = [throwIfDetached];
-      __esDecorate$4(_Frame, null, _frameElement_decorators, {
+      __esDecorate$5(_Frame, null, _frameElement_decorators, {
         kind: "method",
         name: "frameElement",
         static: false,
@@ -9860,7 +9860,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _evaluateHandle_decorators, {
+      __esDecorate$5(_Frame, null, _evaluateHandle_decorators, {
         kind: "method",
         name: "evaluateHandle",
         static: false,
@@ -9871,7 +9871,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _evaluate_decorators, {
+      __esDecorate$5(_Frame, null, _evaluate_decorators, {
         kind: "method",
         name: "evaluate",
         static: false,
@@ -9882,7 +9882,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _locator_decorators, {
+      __esDecorate$5(_Frame, null, _locator_decorators, {
         kind: "method",
         name: "locator",
         static: false,
@@ -9893,7 +9893,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _$_decorators, {
+      __esDecorate$5(_Frame, null, _$_decorators, {
         kind: "method",
         name: "$",
         static: false,
@@ -9904,7 +9904,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _$$_decorators, {
+      __esDecorate$5(_Frame, null, _$$_decorators, {
         kind: "method",
         name: "$$",
         static: false,
@@ -9915,7 +9915,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _$eval_decorators, {
+      __esDecorate$5(_Frame, null, _$eval_decorators, {
         kind: "method",
         name: "$eval",
         static: false,
@@ -9926,7 +9926,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _$$eval_decorators, {
+      __esDecorate$5(_Frame, null, _$$eval_decorators, {
         kind: "method",
         name: "$$eval",
         static: false,
@@ -9937,7 +9937,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _waitForSelector_decorators, {
+      __esDecorate$5(_Frame, null, _waitForSelector_decorators, {
         kind: "method",
         name: "waitForSelector",
         static: false,
@@ -9948,7 +9948,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _waitForFunction_decorators, {
+      __esDecorate$5(_Frame, null, _waitForFunction_decorators, {
         kind: "method",
         name: "waitForFunction",
         static: false,
@@ -9959,7 +9959,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _content_decorators, {
+      __esDecorate$5(_Frame, null, _content_decorators, {
         kind: "method",
         name: "content",
         static: false,
@@ -9970,7 +9970,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _addScriptTag_decorators, {
+      __esDecorate$5(_Frame, null, _addScriptTag_decorators, {
         kind: "method",
         name: "addScriptTag",
         static: false,
@@ -9981,7 +9981,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _addStyleTag_decorators, {
+      __esDecorate$5(_Frame, null, _addStyleTag_decorators, {
         kind: "method",
         name: "addStyleTag",
         static: false,
@@ -9992,7 +9992,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _click_decorators, {
+      __esDecorate$5(_Frame, null, _click_decorators, {
         kind: "method",
         name: "click",
         static: false,
@@ -10003,7 +10003,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _focus_decorators, {
+      __esDecorate$5(_Frame, null, _focus_decorators, {
         kind: "method",
         name: "focus",
         static: false,
@@ -10014,7 +10014,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _hover_decorators, {
+      __esDecorate$5(_Frame, null, _hover_decorators, {
         kind: "method",
         name: "hover",
         static: false,
@@ -10025,7 +10025,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _select_decorators, {
+      __esDecorate$5(_Frame, null, _select_decorators, {
         kind: "method",
         name: "select",
         static: false,
@@ -10036,7 +10036,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _tap_decorators, {
+      __esDecorate$5(_Frame, null, _tap_decorators, {
         kind: "method",
         name: "tap",
         static: false,
@@ -10047,7 +10047,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _type_decorators, {
+      __esDecorate$5(_Frame, null, _type_decorators, {
         kind: "method",
         name: "type",
         static: false,
@@ -10058,7 +10058,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$4(_Frame, null, _title_decorators, {
+      __esDecorate$5(_Frame, null, _title_decorators, {
         kind: "method",
         name: "title",
         static: false,
@@ -10884,14 +10884,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __runInitializers$3 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+  var __runInitializers$4 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for (var i = 0; i < initializers.length; i++) {
       value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
     }
     return useValue ? value : void 0;
   };
-  var __esDecorate$3 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+  var __esDecorate$4 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) {
       if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
       return f;
@@ -11070,7 +11070,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         /**
          * @internal
          */
-        _defineProperty(this, "_isDragging", (__runInitializers$3(this, _instanceExtraInitializers), false));
+        _defineProperty(this, "_isDragging", (__runInitializers$4(this, _instanceExtraInitializers), false));
         /**
          * @internal
          */
@@ -11667,7 +11667,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * ```ts
        * import {KnownDevices} from 'puppeteer';
-       * const iPhone = KnownDevices['iPhone 15 Pro'];
+       * const iPhone = KnownDevices['iPhone 17 Pro'];
        *
        * const browser = await puppeteer.launch();
        * const page = await browser.newPage();
@@ -11743,7 +11743,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         await environment.value.writeFile(path, typedArray);
       }
       /**
-       * Captures a screencast of this {@link Page | page}.
+       * Captures a screencast of this {@link Page | page}. Works in Chrome 153+.
        *
        * @example
        * Recording a {@link Page | page}:
@@ -11773,7 +11773,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * @param options - Configures screencast behavior.
        *
-       * @experimental
+       * @deprecated Use {@link Page.record} instead.
        *
        * @remarks
        *
@@ -11845,21 +11845,93 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         return recorder;
       }
       /**
+       * Records this {@link Page | page} using the Chrome DevTools Protocol
+       * {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-startScreenRecording | Page.startScreenRecording}
+       * API.
+       *
+       * Outputs mp4 video stream.
+       *
+       * @example
+       * Recording a {@link Page | page}:
+       *
+       * ```ts
+       * import puppeteer from 'puppeteer';
+       *
+       * // Launch a browser
+       * const browser = await puppeteer.launch();
+       *
+       * // Create a new page
+       * const page = await browser.newPage();
+       *
+       * // Go to your site.
+       * await page.goto('https://www.example.com');
+       *
+       * // Start recording.
+       * const recorder = await page.record({path: 'recording.mp4'});
+       *
+       * // Do something.
+       *
+       * // Stop recording.
+       * await recorder.stop();
+       *
+       * await browser.close();
+       * ```
+       *
+       * @param options - Configures recording behavior.
+       *
+       * @experimental
+       */
+      async record(options = {}) {
+        if (options.maxWidth !== undefined && options.maxWidth <= 0) {
+          throw new Error('`maxWidth` must be greater than 0.');
+        }
+        if (options.maxHeight !== undefined && options.maxHeight <= 0) {
+          throw new Error('`maxHeight` must be greater than 0.');
+        }
+        if (options.frameRate !== undefined && options.frameRate <= 0) {
+          throw new Error('`frameRate` must be greater than 0.');
+        }
+        if (options.fps !== undefined && options.fps <= 0) {
+          throw new Error('`fps` must be greater than 0.');
+        }
+        if (options.path && environment.value.path) {
+          await environment.value.mkdir(environment.value.path.dirname(options.path), {
+            recursive: options.overwrite ?? true
+          });
+        }
+        const stream = options.path ? environment.value.createWriteStream(options.path, {
+          encoding: 'binary',
+          overwrite: options.overwrite
+        }) : undefined;
+        const recording = this.createScreenRecording(options);
+        try {
+          await recording._start();
+        } catch (error) {
+          void recording.stop();
+          throw error;
+        }
+        if (stream) {
+          recording.pipe(stream);
+        }
+        return recording;
+      }
+      /**
        * @internal
        */
       async _startScreencast() {
         var _this$screencastSessi;
         _classPrivateFieldSet(_screencastSessionCount, this, (_this$screencastSessi = _classPrivateFieldGet(_screencastSessionCount, this), ++_this$screencastSessi));
         if (!_classPrivateFieldGet(_startScreencastPromise, this)) {
-          _classPrivateFieldSet(_startScreencastPromise, this, this.mainFrame().client.send('Page.startScreencast', {
+          const client = this.mainFrame().client;
+          const firstFrame = new Promise(resolve => {
+            return client.once('Page.screencastFrame', () => {
+              return resolve();
+            });
+          });
+          _classPrivateFieldSet(_startScreencastPromise, this, client.send('Page.startScreencast', {
             format: 'png'
           }).then(() => {
-            // Wait for the first frame.
-            return new Promise(resolve => {
-              return this.mainFrame().client.once('Page.screencastFrame', () => {
-                return resolve();
-              });
-            });
+            return firstFrame;
           }));
         }
         await _classPrivateFieldGet(_startScreencastPromise, this);
@@ -12338,7 +12410,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
     }, (() => {
       const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
-      __esDecorate$3(_Page, null, _screenshot_decorators, {
+      __esDecorate$4(_Page, null, _screenshot_decorators, {
         kind: "method",
         name: "screenshot",
         static: false,
@@ -12712,6 +12784,104 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     [disposeSymbol]() {
       this.dispose();
+    }
+  }
+
+  /**
+   * @license
+   * Copyright 2026 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * @public
+   */
+  class ScreenRecording extends ReadableStream {
+    /**
+     * @internal
+     */
+    constructor(page, options = {}, logger) {
+      let controller;
+      super({
+        start(c) {
+          controller = c;
+        }
+      });
+      /**
+       * @internal
+       */
+      _defineProperty(this, "page", void 0);
+      /**
+       * @internal
+       */
+      _defineProperty(this, "options", void 0);
+      /**
+       * @internal
+       */
+      _defineProperty(this, "logger", void 0);
+      /**
+       * @internal
+       */
+      _defineProperty(this, "controller", void 0);
+      /**
+       * @internal
+       */
+      _defineProperty(this, "destinations", new Set());
+      /**
+       * @internal
+       */
+      _defineProperty(this, "stopped", false);
+      this.controller = controller;
+      this.page = page;
+      this.options = options;
+      this.logger = logger;
+    }
+    pipe(destination) {
+      if ('getWriter' in destination && typeof destination.getWriter === 'function') {
+        return this.pipeTo(destination);
+      }
+      const dest = destination;
+      this.destinations.add(dest);
+      dest.once?.('unpipe', () => {
+        this.destinations.delete(dest);
+      });
+      dest.once?.('error', () => {
+        this.destinations.delete(dest);
+      });
+      dest.once?.('close', () => {
+        this.destinations.delete(dest);
+      });
+      dest.once?.('finish', () => {
+        this.destinations.delete(dest);
+      });
+      return dest;
+    }
+    /**
+     * @internal
+     */
+    async closeDestinations() {
+      try {
+        this.controller.close();
+      } catch {
+        // Controller might already be closed.
+      }
+      for (const dest of this.destinations) {
+        dest.end();
+      }
+      const destinationPromises = Array.from(this.destinations).map(dest => {
+        return new Promise(resolve => {
+          if (dest.writableFinished || dest.closed || dest.destroyed) {
+            resolve(undefined);
+          } else {
+            dest.once?.('finish', resolve);
+            dest.once?.('close', resolve);
+            dest.once?.('error', resolve);
+          }
+        });
+      });
+      await Promise.all(destinationPromises);
+    }
+    async [asyncDisposeSymbol]() {
+      await this.stop();
     }
   }
 
@@ -14862,14 +15032,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldGet(_client4, this).off('Page.javascriptDialogClosed', _classPrivateFieldGet(_onDialogClosed, this));
     }
   }
-  var __runInitializers$2 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+  var __runInitializers$3 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for (var i = 0; i < initializers.length; i++) {
       value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
     }
     return useValue ? value : void 0;
   };
-  var __esDecorate$2 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+  var __esDecorate$3 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) {
       if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
       return f;
@@ -14973,7 +15143,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return _client5 = /*#__PURE__*/new WeakMap(), _emulatingMobile = /*#__PURE__*/new WeakMap(), _hasTouch = /*#__PURE__*/new WeakMap(), _states = /*#__PURE__*/new WeakMap(), _viewportState = /*#__PURE__*/new WeakMap(), _idleOverridesState = /*#__PURE__*/new WeakMap(), _timezoneState = /*#__PURE__*/new WeakMap(), _localeState = /*#__PURE__*/new WeakMap(), _visionDeficiencyState = /*#__PURE__*/new WeakMap(), _cpuThrottlingState = /*#__PURE__*/new WeakMap(), _mediaFeaturesState = /*#__PURE__*/new WeakMap(), _mediaTypeState = /*#__PURE__*/new WeakMap(), _geoLocationState = /*#__PURE__*/new WeakMap(), _defaultBackgroundColorState = /*#__PURE__*/new WeakMap(), _javascriptEnabledState = /*#__PURE__*/new WeakMap(), _focusState = /*#__PURE__*/new WeakMap(), _secondaryClients = /*#__PURE__*/new WeakMap(), _logger10 = /*#__PURE__*/new WeakMap(), _EmulationManager_brand = /*#__PURE__*/new WeakSet(), _EmulationManager = class EmulationManager {
       constructor(client, logger) {
         _classPrivateMethodInitSpec(this, _EmulationManager_brand);
-        _classPrivateFieldInitSpec(this, _client5, __runInitializers$2(this, _instanceExtraInitializers));
+        _classPrivateFieldInitSpec(this, _client5, __runInitializers$3(this, _instanceExtraInitializers));
         _classPrivateFieldInitSpec(this, _emulatingMobile, false);
         _classPrivateFieldInitSpec(this, _hasTouch, false);
         _classPrivateFieldInitSpec(this, _states, []);
@@ -15189,7 +15359,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _private_setDefaultBackgroundColor_decorators = [invokeAtMostOnceForArguments];
       _private_setJavaScriptEnabled_decorators = [invokeAtMostOnceForArguments];
       _private_emulateFocus_decorators = [invokeAtMostOnceForArguments];
-      __esDecorate$2(_EmulationManager, _private_applyViewport_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_applyViewport_descriptor = {
         value: __setFunctionName(async function (client, viewportState) {
           if (!viewportState.viewport) {
             await Promise.all([client.send('Emulation.clearDeviceMetricsOverride'), client.send('Emulation.setTouchEmulationEnabled', {
@@ -15241,7 +15411,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_emulateIdleState_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_emulateIdleState_descriptor = {
         value: __setFunctionName(async function (client, idleStateState) {
           if (!idleStateState.active) {
             return;
@@ -15266,7 +15436,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_emulateTimezone_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_emulateTimezone_descriptor = {
         value: __setFunctionName(async function (client, timezoneState) {
           if (!timezoneState.active) {
             return;
@@ -15293,7 +15463,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_emulateLocale_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_emulateLocale_descriptor = {
         value: __setFunctionName(async function (client, localeState) {
           if (!localeState.active) {
             return;
@@ -15313,7 +15483,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_emulateVisionDeficiency_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_emulateVisionDeficiency_descriptor = {
         value: __setFunctionName(async function (client, visionDeficiency) {
           if (!visionDeficiency.active) {
             return;
@@ -15333,7 +15503,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_emulateCpuThrottling_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_emulateCpuThrottling_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -15353,7 +15523,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_emulateMediaFeatures_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_emulateMediaFeatures_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -15373,7 +15543,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_emulateMediaType_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_emulateMediaType_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -15393,7 +15563,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_setGeolocation_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_setGeolocation_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -15415,7 +15585,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_setDefaultBackgroundColor_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_setDefaultBackgroundColor_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -15435,7 +15605,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_setJavaScriptEnabled_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_setJavaScriptEnabled_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -15455,7 +15625,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$2(_EmulationManager, _private_emulateFocus_descriptor = {
+      __esDecorate$3(_EmulationManager, _private_emulateFocus_descriptor = {
         value: __setFunctionName(async function (client, state) {
           if (!state.active) {
             return;
@@ -16102,14 +16272,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2019 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __runInitializers$1 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+  var __runInitializers$2 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for (var i = 0; i < initializers.length; i++) {
       value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
     }
     return useValue ? value : void 0;
   };
-  var __esDecorate$1 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+  var __esDecorate$2 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) {
       if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
       return f;
@@ -16164,7 +16334,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       constructor(world, remoteObject, logger) {
         super(new CdpJSHandle(world, remoteObject, logger), logger);
         _classPrivateMethodInitSpec(this, _CdpElementHandle_brand);
-        _classPrivateFieldInitSpec(this, _backendNodeId, __runInitializers$1(this, _instanceExtraInitializers));
+        _classPrivateFieldInitSpec(this, _backendNodeId, __runInitializers$2(this, _instanceExtraInitializers));
         _classPrivateFieldInitSpec(this, _logger12, void 0);
         _classPrivateFieldSet(_logger12, this, logger);
       }
@@ -16306,7 +16476,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _scrollIntoView_decorators = [throwIfDisposed(), bindIsolatedHandle];
       _uploadFile_decorators = [throwIfDisposed(), bindIsolatedHandle];
       _autofill_decorators = [throwIfDisposed()];
-      __esDecorate$1(_CdpElementHandle, null, _contentFrame_decorators, {
+      __esDecorate$2(_CdpElementHandle, null, _contentFrame_decorators, {
         kind: "method",
         name: "contentFrame",
         static: false,
@@ -16317,7 +16487,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$1(_CdpElementHandle, null, _scrollIntoView_decorators, {
+      __esDecorate$2(_CdpElementHandle, null, _scrollIntoView_decorators, {
         kind: "method",
         name: "scrollIntoView",
         static: false,
@@ -16328,7 +16498,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$1(_CdpElementHandle, null, _uploadFile_decorators, {
+      __esDecorate$2(_CdpElementHandle, null, _uploadFile_decorators, {
         kind: "method",
         name: "uploadFile",
         static: false,
@@ -16339,7 +16509,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$1(_CdpElementHandle, null, _autofill_decorators, {
+      __esDecorate$2(_CdpElementHandle, null, _autofill_decorators, {
         kind: "method",
         name: "autofill",
         static: false,
@@ -17393,14 +17563,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return true;
     }
   }
-  var __runInitializers = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+  var __runInitializers$1 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for (var i = 0; i < initializers.length; i++) {
       value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
     }
     return useValue ? value : void 0;
   };
-  var __esDecorate = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+  var __esDecorate$1 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) {
       if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
       return f;
@@ -17453,7 +17623,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       constructor(frameManager, frameId, parentFrameId, client, logger) {
         super(logger);
         _classPrivateMethodInitSpec(this, _CdpFrame_brand);
-        _classPrivateFieldInitSpec(this, _url3, (__runInitializers(this, _instanceExtraInitializers), ''));
+        _classPrivateFieldInitSpec(this, _url3, (__runInitializers$1(this, _instanceExtraInitializers), ''));
         _classPrivateFieldInitSpec(this, _detached2, false);
         _classPrivateFieldInitSpec(this, _client0, void 0);
         _defineProperty(this, "_frameManager", void 0);
@@ -17734,7 +17904,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
     }, (() => {
       const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
-      __esDecorate(_CdpFrame, null, _goto_decorators, {
+      __esDecorate$1(_CdpFrame, null, _goto_decorators, {
         kind: "method",
         name: "goto",
         static: false,
@@ -17745,7 +17915,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate(_CdpFrame, null, _waitForNavigation_decorators, {
+      __esDecorate$1(_CdpFrame, null, _waitForNavigation_decorators, {
         kind: "method",
         name: "waitForNavigation",
         static: false,
@@ -17756,7 +17926,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate(_CdpFrame, null, _setContent_decorators, {
+      __esDecorate$1(_CdpFrame, null, _setContent_decorators, {
         kind: "method",
         name: "setContent",
         static: false,
@@ -17767,7 +17937,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate(_CdpFrame, null, _addPreloadScript_decorators, {
+      __esDecorate$1(_CdpFrame, null, _addPreloadScript_decorators, {
         kind: "method",
         name: "addPreloadScript",
         static: false,
@@ -17778,7 +17948,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate(_CdpFrame, null, _addExposedFunctionBinding_decorators, {
+      __esDecorate$1(_CdpFrame, null, _addExposedFunctionBinding_decorators, {
         kind: "method",
         name: "addExposedFunctionBinding",
         static: false,
@@ -17789,7 +17959,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate(_CdpFrame, null, _removeExposedFunctionBinding_decorators, {
+      __esDecorate$1(_CdpFrame, null, _removeExposedFunctionBinding_decorators, {
         kind: "method",
         name: "removeExposedFunctionBinding",
         static: false,
@@ -17800,7 +17970,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate(_CdpFrame, null, _waitForDevicePrompt_decorators, {
+      __esDecorate$1(_CdpFrame, null, _waitForDevicePrompt_decorators, {
         kind: "method",
         name: "waitForDevicePrompt",
         static: false,
@@ -21623,6 +21793,166 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }
 
   /**
+   * @license
+   * Copyright 2026 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  var __runInitializers = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+      value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+  };
+  var __esDecorate = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) {
+      if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
+      return f;
+    }
+    var kind = contextIn.kind,
+      key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _,
+      done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+      var context = {};
+      for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+      for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+      context.addInitializer = function (f) {
+        if (done) throw new TypeError("Cannot add initializers after decoration has completed");
+        extraInitializers.push(accept(f || null));
+      };
+      var result = (0, decorators[i])(kind === "accessor" ? {
+        get: descriptor.get,
+        set: descriptor.set
+      } : descriptor[key], context);
+      if (kind === "accessor") {
+        if (result === void 0) continue;
+        if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+        if (_ = accept(result.get)) descriptor.get = _;
+        if (_ = accept(result.set)) descriptor.set = _;
+        if (_ = accept(result.init)) initializers.unshift(_);
+      } else if (_ = accept(result)) {
+        if (kind === "field") initializers.unshift(_);else descriptor[key] = _;
+      }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+  };
+  /**
+   * @internal
+   */
+  let CdpScreenRecording = ((_CdpScreenRecording, _streamHandle) => {
+    let _classSuper = ScreenRecording;
+    let _instanceExtraInitializers = [];
+    let _stop_decorators;
+    return _streamHandle = /*#__PURE__*/new WeakMap(), _CdpScreenRecording = class CdpScreenRecording extends _classSuper {
+      /**
+       * @internal
+       */
+      constructor(page, options = {}, logger) {
+        super(page, options, logger);
+        _classPrivateFieldInitSpec(this, _streamHandle, __runInitializers(this, _instanceExtraInitializers));
+        const {
+          client
+        } = this.page.mainFrame();
+        client?.once?.(exports.CDPSessionEvent.Disconnected, () => {
+          void this.stop().catch(err => {
+            this.logger(DEBUG_PREFIXES.error)?.(err);
+          });
+        });
+      }
+      /**
+       * @internal
+       */
+      async _start() {
+        const {
+          client
+        } = this.page.mainFrame();
+        const frameRate = this.options.frameRate ?? this.options.fps;
+        // @ts-expect-error Page.startScreenRecording is not yet in devtools-protocol
+        const result = await client.send('Page.startScreenRecording', {
+          audio: this.options.audio,
+          maxWidth: this.options.maxWidth,
+          maxHeight: this.options.maxHeight,
+          frameRate
+        });
+        _classPrivateFieldSet(_streamHandle, this, result.stream);
+      }
+      /**
+       * Stops the screen recording.
+       *
+       * @public
+       */
+      async stop() {
+        if (this.stopped) {
+          return;
+        }
+        this.stopped = true;
+        try {
+          const {
+            client
+          } = this.page.mainFrame();
+          await client
+          // @ts-expect-error Page.stopScreenRecording is not yet in devtools-protocol
+          .send('Page.stopScreenRecording').catch(err => {
+            this.logger(DEBUG_PREFIXES.error)?.(err);
+          });
+          if (!_classPrivateFieldGet(_streamHandle, this)) {
+            throw new Error('Screen recording stream handle is missing.');
+          }
+          let eof = false;
+          while (!eof) {
+            const {
+              data,
+              base64Encoded,
+              eof: isEof
+            } = await client.send('IO.read', {
+              handle: _classPrivateFieldGet(_streamHandle, this)
+            });
+            eof = isEof;
+            if (data) {
+              const buffer = stringToTypedArray(data, base64Encoded ?? false);
+              this.controller.enqueue(buffer);
+              for (const dest of this.destinations) {
+                dest.write(buffer);
+              }
+            }
+          }
+          await client.send('IO.close', {
+            handle: _classPrivateFieldGet(_streamHandle, this)
+          }).catch(err => {
+            this.logger(DEBUG_PREFIXES.error)?.(err);
+          });
+        } finally {
+          await this.closeDestinations();
+        }
+      }
+    }, (() => {
+      const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+      _stop_decorators = [guarded()];
+      __esDecorate(_CdpScreenRecording, null, _stop_decorators, {
+        kind: "method",
+        name: "stop",
+        static: false,
+        private: false,
+        access: {
+          has: obj => "stop" in obj,
+          get: obj => obj.stop
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      if (_metadata) Object.defineProperty(_CdpScreenRecording, Symbol.metadata, {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: _metadata
+      });
+    })(), _CdpScreenRecording;
+  })();
+
+  /**
    * The Tracing class exposes the tracing audit interface.
    * @remarks
    * You can use `tracing.start` and `tracing.stop` to create a trace file
@@ -22886,6 +23216,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     extensionRealms() {
       return this.mainFrame().extensionRealms();
+    }
+    /**
+     * @internal
+     */
+    createScreenRecording(options) {
+      return new CdpScreenRecording(this, options, this.logger);
     }
   }
   function _attachExistingTargets() {
@@ -25823,7 +26159,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _ws = /*#__PURE__*/new WeakMap();
   var _logger26 = /*#__PURE__*/new WeakMap();
   class BrowserWebSocketTransport {
-    static create(url, _headers, logger) {
+    static create(url, _headers, logger,
+    // Accepted so this stays call-compatible with NodeWebSocketTransport, which
+    // BrowserConnector picks between at runtime. The keep-alive options are
+    // Node-only: the browser WebSocket API exposes no ping frame.
+    _options) {
       return new Promise((resolve, reject) => {
         const ws = new WebSocket(url);
         ws.addEventListener('open', () => {
@@ -26400,6 +26740,28 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       isLandscape: true
     }
   }, {
+    name: 'iPhone SE (3rd gen)',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/26.5 Mobile/19E241 Safari/602.1',
+    viewport: {
+      width: 375,
+      height: 667,
+      deviceScaleFactor: 2,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone SE (3rd gen) landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/26.5 Mobile/19E241 Safari/602.1',
+    viewport: {
+      width: 667,
+      height: 375,
+      deviceScaleFactor: 2,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
     name: 'iPhone X',
     userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
     viewport: {
@@ -26856,6 +27218,226 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     viewport: {
       width: 814,
       height: 380,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
+    name: 'iPhone 16',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 393,
+      height: 659,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone 16 landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 734,
+      height: 343,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
+    name: 'iPhone 16 Plus',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 430,
+      height: 739,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone 16 Plus landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 814,
+      height: 380,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
+    name: 'iPhone 16 Pro',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 402,
+      height: 681,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone 16 Pro landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 756,
+      height: 352,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
+    name: 'iPhone 16 Pro Max',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 440,
+      height: 763,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone 16 Pro Max landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 838,
+      height: 390,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
+    name: 'iPhone 16e',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 390,
+      height: 651,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone 16e landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 726,
+      height: 340,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
+    name: 'iPhone 17',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 402,
+      height: 681,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone 17 landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 756,
+      height: 352,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
+    name: 'iPhone Air',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 420,
+      height: 719,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone Air landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 794,
+      height: 370,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
+    name: 'iPhone 17 Pro',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 402,
+      height: 681,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone 17 Pro landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 756,
+      height: 352,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
+    name: 'iPhone 17 Pro Max',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 440,
+      height: 763,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone 17 Pro Max landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 838,
+      height: 390,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: true
+    }
+  }, {
+    name: 'iPhone 17e',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 390,
+      height: 651,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false
+    }
+  }, {
+    name: 'iPhone 17e landscape',
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 726,
+      height: 340,
       deviceScaleFactor: 3,
       isMobile: true,
       hasTouch: true,
@@ -27324,7 +27906,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *
    * ```ts
    * import {KnownDevices} from 'puppeteer';
-   * const iPhone = KnownDevices['iPhone 15 Pro'];
+   * const iPhone = KnownDevices['iPhone 17 Pro'];
    *
    * const browser = await puppeteer.launch();
    * const page = await browser.newPage();
@@ -27495,9 +28077,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       browserWSEndpoint,
       browserURL,
       channel,
-      transport,
-      headers = {}
+      transport
     } = options;
+    // `wsOptions.headers` supersedes the deprecated top-level `headers`.
+    const headers = options.wsOptions?.headers ?? options.headers ?? {};
+    const wsOptions = options.wsOptions ?? {};
     assert(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) + Number(!!channel) === 1, 'Exactly one of browserWSEndpoint, browserURL, transport or channel must be passed to puppeteer.connect');
     if (transport) {
       return {
@@ -27506,7 +28090,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       };
     } else if (browserWSEndpoint) {
       const WebSocketClass = await getWebSocketTransportClass();
-      const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers, options.logger);
+      const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers, options.logger, wsOptions);
       return {
         connectionTransport: connectionTransport,
         endpointUrl: browserWSEndpoint
@@ -27514,7 +28098,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     } else if (browserURL) {
       const connectionURL = await getWSEndpoint(browserURL, headers);
       const WebSocketClass = await getWebSocketTransportClass();
-      const connectionTransport = await WebSocketClass.create(connectionURL, headers, options.logger);
+      const connectionTransport = await WebSocketClass.create(connectionURL, headers, options.logger, wsOptions);
       return {
         connectionTransport: connectionTransport,
         endpointUrl: connectionURL
@@ -27553,7 +28137,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         }
         const browserWSEndpoint = `ws://localhost:${port}${rawPath}`;
         const WebSocketClass = await getWebSocketTransportClass();
-        const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers, options.logger);
+        const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers, options.logger, wsOptions);
         return {
           connectionTransport: connectionTransport,
           endpointUrl: browserWSEndpoint
@@ -27721,9 +28305,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '152.0.7977.54',
-    'chrome-headless-shell': '152.0.7977.54',
-    firefox: 'stable_154.0'
+    chrome: '152.0.7977.75',
+    'chrome-headless-shell': '152.0.7977.75',
+    firefox: 'stable_155.0'
   });
 
   /**
@@ -27773,6 +28357,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.CdpMouse = CdpMouse;
   exports.CdpPage = CdpPage;
   exports.CdpPreloadScript = CdpPreloadScript;
+  exports.CdpScreenRecording = CdpScreenRecording;
   exports.CdpTarget = CdpTarget;
   exports.CdpTouchHandle = CdpTouchHandle;
   exports.CdpTouchscreen = CdpTouchscreen;
@@ -27842,6 +28427,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.Realm = Realm;
   exports.SOURCE_URL_REGEX = SOURCE_URL_REGEX;
   exports.STATUS_TEXTS = STATUS_TEXTS;
+  exports.ScreenRecording = ScreenRecording;
   exports.ScriptInjector = ScriptInjector;
   exports.SecurityDetails = SecurityDetails;
   exports.SuppressedError = SuppressedError$1;

@@ -3,7 +3,11 @@ import { DEBUG_PREFIXES } from './Debug.js';
  * @internal
  */
 export class BrowserWebSocketTransport {
-    static create(url, _headers, logger) {
+    static create(url, _headers, logger, 
+    // Accepted so this stays call-compatible with NodeWebSocketTransport, which
+    // BrowserConnector picks between at runtime. The keep-alive options are
+    // Node-only: the browser WebSocket API exposes no ping frame.
+    _options) {
         return new Promise((resolve, reject) => {
             const ws = new WebSocket(url);
             ws.addEventListener('open', () => {

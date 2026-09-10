@@ -15,4 +15,5 @@ export * from './Input.js';
 export * from './JSHandle.js';
 export * from './Page.js';
 export * from './Realm.js';
+export * from './ScreenRecording.js';
 //# sourceMappingURL=bidi.js.map

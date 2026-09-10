@@ -1401,6 +1401,14 @@ export declare interface ConnectOptions {
    * @defaultValue `180_000`
    */
   protocolTimeout?: number;
+  /**
+   * Options for the WebSocket connection to the browser.
+   *
+   * @remarks
+   * Only used in the Node.js environment. The browser build has no ping frame
+   * API, so the keep-alive options are ignored there.
+   */
+  wsOptions?: WsOptions;
   browserWSEndpoint?: string;
   browserURL?: string;
   transport?: ConnectionTransport;
@@ -1408,6 +1416,10 @@ export declare interface ConnectOptions {
    * Headers to use for the web socket connection.
    * @remarks
    * Only works in the Node.js environment.
+   *
+   * @deprecated Use {@link WsOptions.headers} via
+   * {@link ConnectOptions.wsOptions} instead. When both are set,
+   * `wsOptions.headers` wins.
    */
   headers?: Record<string, string>;
   /**
@@ -4954,7 +4966,7 @@ export declare type KeyPressOptions = KeyDownOptions & KeyboardTypeOptions;
  *
  * ```ts
  * import {KnownDevices} from 'puppeteer';
- * const iPhone = KnownDevices['iPhone 15 Pro'];
+ * const iPhone = KnownDevices['iPhone 17 Pro'];
  *
  * const browser = await puppeteer.launch();
  * const page = await browser.newPage();
@@ -5016,6 +5028,8 @@ export declare const KnownDevices: Readonly<
     | 'iPhone 8 Plus landscape'
     | 'iPhone SE'
     | 'iPhone SE landscape'
+    | 'iPhone SE (3rd gen)'
+    | 'iPhone SE (3rd gen) landscape'
     | 'iPhone X'
     | 'iPhone X landscape'
     | 'iPhone XR'
@@ -5058,6 +5072,26 @@ export declare const KnownDevices: Readonly<
     | 'iPhone 15 Pro landscape'
     | 'iPhone 15 Pro Max'
     | 'iPhone 15 Pro Max landscape'
+    | 'iPhone 16'
+    | 'iPhone 16 landscape'
+    | 'iPhone 16 Plus'
+    | 'iPhone 16 Plus landscape'
+    | 'iPhone 16 Pro'
+    | 'iPhone 16 Pro landscape'
+    | 'iPhone 16 Pro Max'
+    | 'iPhone 16 Pro Max landscape'
+    | 'iPhone 16e'
+    | 'iPhone 16e landscape'
+    | 'iPhone 17'
+    | 'iPhone 17 landscape'
+    | 'iPhone Air'
+    | 'iPhone Air landscape'
+    | 'iPhone 17 Pro'
+    | 'iPhone 17 Pro landscape'
+    | 'iPhone 17 Pro Max'
+    | 'iPhone 17 Pro Max landscape'
+    | 'iPhone 17e'
+    | 'iPhone 17e landscape'
     | 'JioPhone 2'
     | 'JioPhone 2 landscape'
     | 'Kindle Fire HDX'
@@ -6984,7 +7018,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    *
    * ```ts
    * import {KnownDevices} from 'puppeteer';
-   * const iPhone = KnownDevices['iPhone 15 Pro'];
+   * const iPhone = KnownDevices['iPhone 17 Pro'];
    *
    * const browser = await puppeteer.launch();
    * const page = await browser.newPage();
@@ -7317,7 +7351,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    */
   abstract setCacheEnabled(enabled?: boolean): Promise<void>;
   /**
-   * Captures a screencast of this {@link Page | page}.
+   * Captures a screencast of this {@link Page | page}. Works in Chrome 153+.
    *
    * @example
    * Recording a {@link Page | page}:
@@ -7347,7 +7381,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    *
    * @param options - Configures screencast behavior.
    *
-   * @experimental
+   * @deprecated Use {@link Page.record} instead.
    *
    * @remarks
    *
@@ -7357,6 +7391,44 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * You must have {@link https://ffmpeg.org/ | ffmpeg} installed on your system.
    */
   screencast(options?: Readonly<ScreencastOptions>): Promise<ScreenRecorder>;
+  /**
+   * Records this {@link Page | page} using the Chrome DevTools Protocol
+   * {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-startScreenRecording | Page.startScreenRecording}
+   * API.
+   *
+   * Outputs mp4 video stream.
+   *
+   * @example
+   * Recording a {@link Page | page}:
+   *
+   * ```ts
+   * import puppeteer from 'puppeteer';
+   *
+   * // Launch a browser
+   * const browser = await puppeteer.launch();
+   *
+   * // Create a new page
+   * const page = await browser.newPage();
+   *
+   * // Go to your site.
+   * await page.goto('https://www.example.com');
+   *
+   * // Start recording.
+   * const recorder = await page.record({path: 'recording.mp4'});
+   *
+   * // Do something.
+   *
+   * // Stop recording.
+   * await recorder.stop();
+   *
+   * await browser.close();
+   * ```
+   *
+   * @param options - Configures recording behavior.
+   *
+   * @experimental
+   */
+  record(options?: Readonly<RecordOptions>): Promise<ScreenRecording>;
   /**
    * Captures a screenshot of this {@link Page | page}.
    *
@@ -8493,11 +8565,13 @@ declare namespace Puppeteer_2 {
     VideoFormat,
     ScreenshotOptions,
     ScreencastOptions,
+    RecordOptions,
     QueryOptions,
     PageEvents,
     NewDocumentScriptEvaluation,
     ReloadOptions,
     HeapSnapshotOptions,
+    WritableDestination,
     WebWorkerEvents,
     VisibilityOption,
     ActionOptions,
@@ -8533,6 +8607,7 @@ declare namespace Puppeteer_2 {
     SupportedWebDriverCapability,
     SupportedWebDriverCapabilities,
     ChromeReleaseChannel,
+    WsOptions,
     ConnectOptions,
     ConsoleMessageLocation,
     ConsoleMessageType,
@@ -8603,6 +8678,7 @@ declare namespace Puppeteer_2 {
     PageEvent,
     Page,
     Realm,
+    ScreenRecording,
     TargetType,
     Target,
     WebWorkerEvent,
@@ -8984,6 +9060,46 @@ export declare abstract class Realm {
 
 /**
  * @public
+ * @experimental
+ */
+export declare interface RecordOptions {
+  /**
+   * File path to save the recording to.
+   */
+  path?: string;
+  /**
+   * Specifies whether to overwrite output file,
+   * or exit immediately if it already exists.
+   *
+   * @defaultValue `true`
+   */
+  overwrite?: boolean;
+  /**
+   * Whether to record audio.
+   *
+   * @defaultValue `false`
+   */
+  audio?: boolean;
+  /**
+   * Maximum frame width in pixels.
+   */
+  maxWidth?: number;
+  /**
+   * Maximum frame height in pixels.
+   */
+  maxHeight?: number;
+  /**
+   * Maximum frame rate in frames per second.
+   */
+  frameRate?: number;
+  /**
+   * Frame rate in frames per second (alias for frameRate).
+   */
+  fps?: number;
+}
+
+/**
+ * @public
  */
 export declare interface ReloadOptions extends WaitForOptions {
   /**
@@ -9163,6 +9279,26 @@ export declare class ScreenRecorder extends PassThrough {
    * @public
    */
   stop(): Promise<void>;
+  [asyncDisposeSymbol](): Promise<void>;
+}
+
+/**
+ * @public
+ */
+export declare abstract class ScreenRecording extends ReadableStream<Uint8Array> {
+  /**
+   * Pipes the recorded stream to a destination stream.
+   *
+   * @public
+   */
+  pipe<T extends WritableStream<Uint8Array>>(destination: T): Promise<void>;
+  pipe<T extends WritableDestination>(destination: T): T;
+  /**
+   * Stops the screen recording.
+   *
+   * @public
+   */
+  abstract stop(): Promise<void>;
   [asyncDisposeSymbol](): Promise<void>;
 }
 
@@ -10184,6 +10320,49 @@ export declare interface WorkAreaInsets {
   left?: number;
   bottom?: number;
   right?: number;
+}
+
+/**
+ * @public
+ */
+export declare interface WritableDestination {
+  write(chunk: Uint8Array): boolean;
+  end(): unknown;
+  writableFinished?: boolean;
+  closed?: boolean;
+  destroyed?: boolean;
+  once?(event: string, cb: (arg?: unknown) => void): unknown;
+}
+
+/**
+ * Options for the WebSocket connection to the browser.
+ *
+ * @remarks
+ * Only used in the Node.js environment.
+ *
+ * @public
+ */
+export declare interface WsOptions {
+  /**
+   * Headers to use for the web socket connection.
+   */
+  headers?: Record<string, string>;
+  /**
+   * Whether to send WebSocket pings and drop the connection when a pong does
+   * not come back within the same interval. Detects a connection that died
+   * without a close frame, which otherwise leaves calls hanging until
+   * `protocolTimeout`.
+   *
+   * @defaultValue `false`
+   */
+  keepAlive?: boolean;
+  /**
+   * Ping period in milliseconds. Only used when {@link WsOptions.keepAlive} is
+   * set.
+   *
+   * @defaultValue `30_000`
+   */
+  keepAliveIntervalMs?: number;
 }
 
 export {};

@@ -10,7 +10,10 @@ import { type Logger } from './Debug.js';
  */
 export declare class BrowserWebSocketTransport implements ConnectionTransport {
     #private;
-    static create(url: string, _headers: Record<string, string> | undefined, logger: Logger): Promise<BrowserWebSocketTransport>;
+    static create(url: string, _headers: Record<string, string> | undefined, logger: Logger, _options?: {
+        keepAlive?: boolean;
+        keepAliveIntervalMs?: number;
+    }): Promise<BrowserWebSocketTransport>;
     onmessage?: (message: string) => void;
     onclose?: () => void;
     constructor(ws: WebSocket, logger: Logger);

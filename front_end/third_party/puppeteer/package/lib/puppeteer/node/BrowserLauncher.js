@@ -3,7 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { existsSync } from 'node:fs';
+import { accessSync, constants, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Browser as InstalledBrowser, CDP_WEBSOCKET_ENDPOINT_REGEX, launch, TimeoutError as BrowsersTimeoutError, WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX, computeExecutablePath, } from '@puppeteer/browsers';
@@ -17,6 +17,21 @@ import { DEFAULT_VIEWPORT } from '../common/util.js';
 import { createIncrementalIdGenerator, } from '../util/incremental-id-generator.js';
 import { NodeWebSocketTransport as WebSocketTransport } from './NodeWebSocketTransport.js';
 import { PipeTransport } from './PipeTransport.js';
+/**
+ * Whether the profile directory exists and the current process can write to it.
+ * A missing directory counts as writable: the browser creates it on launch.
+ *
+ * @internal
+ */
+function isWritableDirectory(directory) {
+    try {
+        accessSync(directory, constants.W_OK);
+        return true;
+    }
+    catch {
+        return !existsSync(directory);
+    }
+}
 /**
  * @internal
  */
@@ -177,6 +192,12 @@ export class BrowserLauncher {
                 // https://source.chromium.org/chromium/chromium/src/+/main:chrome/browser/process_singleton_win.cc;l=46;drc=fc7952f0422b5073515a205a04ec9c3a1ae81658
                 (process.platform === 'win32' &&
                     existsSync(join(launchArgs.userDataDir, 'lockfile')))) {
+                // The browser reports the same ProcessSingleton failure whether another
+                // instance holds the lock or it simply cannot write to the profile
+                // directory, so check for the latter before blaming a running browser.
+                if (!isWritableDirectory(launchArgs.userDataDir)) {
+                    throw new Error(`The browser cannot write to ${launchArgs.userDataDir}. Make the \`userDataDir\` writable or use a different one.`);
+                }
                 throw new Error(`The browser is already running for ${launchArgs.userDataDir}. Use a different \`userDataDir\` or stop the running browser first.`);
             }
             if (logs.includes('Missing X server') && options.headless === false) {
@@ -242,7 +263,7 @@ export class BrowserLauncher {
      */
     async createCdpSocketConnection(browserProcess, opts) {
         const browserWSEndpoint = await browserProcess.waitForLineOutput(CDP_WEBSOCKET_ENDPOINT_REGEX, opts.timeout);
-        const transport = await WebSocketTransport.create(browserWSEndpoint, undefined, opts.logger);
+        const transport = await WebSocketTransport.create(browserWSEndpoint, undefined, opts.logger, opts.wsOptions);
         return new Connection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout, 
         /* rawErrors */ false, opts.idGenerator, opts.logger);
     }
@@ -283,7 +304,7 @@ export class BrowserLauncher {
      */
     async createBiDiBrowser(browserProcess, closeCallback, opts) {
         const browserWSEndpoint = (await browserProcess.waitForLineOutput(WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX, opts.timeout)) + '/session';
-        const transport = await WebSocketTransport.create(browserWSEndpoint, undefined, opts.logger);
+        const transport = await WebSocketTransport.create(browserWSEndpoint, undefined, opts.logger, opts.wsOptions);
         const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
         const bidiConnection = new BiDi.BidiConnection(browserWSEndpoint, transport, opts.idGenerator, opts.slowMo, opts.protocolTimeout, opts.logger);
         return await BiDi.BidiBrowser.create({

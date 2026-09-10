@@ -38,6 +38,7 @@ import type { Issue } from './Issue.js';
 import type { JSHandle } from './JSHandle.js';
 import { Locator, type AwaitedLocator } from './locators/locators.js';
 import type { Realm } from './Realm.js';
+import type { ScreenRecording } from './ScreenRecording.js';
 import type { Target } from './Target.js';
 import type { WebWorker } from './WebWorker.js';
 /**
@@ -368,6 +369,45 @@ export interface ScreencastOptions {
      * @defaultValue `'ffmpeg'`
      */
     ffmpegPath?: string;
+}
+/**
+ * @public
+ * @experimental
+ */
+export interface RecordOptions {
+    /**
+     * File path to save the recording to.
+     */
+    path?: string;
+    /**
+     * Specifies whether to overwrite output file,
+     * or exit immediately if it already exists.
+     *
+     * @defaultValue `true`
+     */
+    overwrite?: boolean;
+    /**
+     * Whether to record audio.
+     *
+     * @defaultValue `false`
+     */
+    audio?: boolean;
+    /**
+     * Maximum frame width in pixels.
+     */
+    maxWidth?: number;
+    /**
+     * Maximum frame height in pixels.
+     */
+    maxHeight?: number;
+    /**
+     * Maximum frame rate in frames per second.
+     */
+    frameRate?: number;
+    /**
+     * Frame rate in frames per second (alias for frameRate).
+     */
+    fps?: number;
 }
 /**
  * @public
@@ -1671,7 +1711,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * import {KnownDevices} from 'puppeteer';
-     * const iPhone = KnownDevices['iPhone 15 Pro'];
+     * const iPhone = KnownDevices['iPhone 17 Pro'];
      *
      * const browser = await puppeteer.launch();
      * const page = await browser.newPage();
@@ -1992,7 +2032,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     _maybeWriteTypedArrayToFile(path: string | undefined, typedArray: Uint8Array): Promise<void>;
     /**
-     * Captures a screencast of this {@link Page | page}.
+     * Captures a screencast of this {@link Page | page}. Works in Chrome 153+.
      *
      * @example
      * Recording a {@link Page | page}:
@@ -2022,7 +2062,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @param options - Configures screencast behavior.
      *
-     * @experimental
+     * @deprecated Use {@link Page.record} instead.
      *
      * @remarks
      *
@@ -2032,6 +2072,48 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * You must have {@link https://ffmpeg.org/ | ffmpeg} installed on your system.
      */
     screencast(options?: Readonly<ScreencastOptions>): Promise<ScreenRecorder>;
+    /**
+     * @internal
+     */
+    protected abstract createScreenRecording(options: Readonly<RecordOptions>): ScreenRecording;
+    /**
+     * Records this {@link Page | page} using the Chrome DevTools Protocol
+     * {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-startScreenRecording | Page.startScreenRecording}
+     * API.
+     *
+     * Outputs mp4 video stream.
+     *
+     * @example
+     * Recording a {@link Page | page}:
+     *
+     * ```ts
+     * import puppeteer from 'puppeteer';
+     *
+     * // Launch a browser
+     * const browser = await puppeteer.launch();
+     *
+     * // Create a new page
+     * const page = await browser.newPage();
+     *
+     * // Go to your site.
+     * await page.goto('https://www.example.com');
+     *
+     * // Start recording.
+     * const recorder = await page.record({path: 'recording.mp4'});
+     *
+     * // Do something.
+     *
+     * // Stop recording.
+     * await recorder.stop();
+     *
+     * await browser.close();
+     * ```
+     *
+     * @param options - Configures recording behavior.
+     *
+     * @experimental
+     */
+    record(options?: Readonly<RecordOptions>): Promise<ScreenRecording>;
     /**
      * @internal
      */

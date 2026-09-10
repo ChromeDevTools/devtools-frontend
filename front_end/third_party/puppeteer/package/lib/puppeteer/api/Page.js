@@ -764,7 +764,7 @@ let Page = (() => {
          *
          * ```ts
          * import {KnownDevices} from 'puppeteer';
-         * const iPhone = KnownDevices['iPhone 15 Pro'];
+         * const iPhone = KnownDevices['iPhone 17 Pro'];
          *
          * const browser = await puppeteer.launch();
          * const page = await browser.newPage();
@@ -841,7 +841,7 @@ let Page = (() => {
             await environment.value.writeFile(path, typedArray);
         }
         /**
-         * Captures a screencast of this {@link Page | page}.
+         * Captures a screencast of this {@link Page | page}. Works in Chrome 153+.
          *
          * @example
          * Recording a {@link Page | page}:
@@ -871,7 +871,7 @@ let Page = (() => {
          *
          * @param options - Configures screencast behavior.
          *
-         * @experimental
+         * @deprecated Use {@link Page.record} instead.
          *
          * @remarks
          *
@@ -938,6 +938,78 @@ let Page = (() => {
             }
             return recorder;
         }
+        /**
+         * Records this {@link Page | page} using the Chrome DevTools Protocol
+         * {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-startScreenRecording | Page.startScreenRecording}
+         * API.
+         *
+         * Outputs mp4 video stream.
+         *
+         * @example
+         * Recording a {@link Page | page}:
+         *
+         * ```ts
+         * import puppeteer from 'puppeteer';
+         *
+         * // Launch a browser
+         * const browser = await puppeteer.launch();
+         *
+         * // Create a new page
+         * const page = await browser.newPage();
+         *
+         * // Go to your site.
+         * await page.goto('https://www.example.com');
+         *
+         * // Start recording.
+         * const recorder = await page.record({path: 'recording.mp4'});
+         *
+         * // Do something.
+         *
+         * // Stop recording.
+         * await recorder.stop();
+         *
+         * await browser.close();
+         * ```
+         *
+         * @param options - Configures recording behavior.
+         *
+         * @experimental
+         */
+        async record(options = {}) {
+            if (options.maxWidth !== undefined && options.maxWidth <= 0) {
+                throw new Error('`maxWidth` must be greater than 0.');
+            }
+            if (options.maxHeight !== undefined && options.maxHeight <= 0) {
+                throw new Error('`maxHeight` must be greater than 0.');
+            }
+            if (options.frameRate !== undefined && options.frameRate <= 0) {
+                throw new Error('`frameRate` must be greater than 0.');
+            }
+            if (options.fps !== undefined && options.fps <= 0) {
+                throw new Error('`fps` must be greater than 0.');
+            }
+            if (options.path && environment.value.path) {
+                await environment.value.mkdir(environment.value.path.dirname(options.path), { recursive: options.overwrite ?? true });
+            }
+            const stream = options.path
+                ? environment.value.createWriteStream(options.path, {
+                    encoding: 'binary',
+                    overwrite: options.overwrite,
+                })
+                : undefined;
+            const recording = this.createScreenRecording(options);
+            try {
+                await recording._start();
+            }
+            catch (error) {
+                void recording.stop();
+                throw error;
+            }
+            if (stream) {
+                recording.pipe(stream);
+            }
+            return recording;
+        }
         #screencastSessionCount = 0;
         #startScreencastPromise;
         /**
@@ -946,15 +1018,16 @@ let Page = (() => {
         async _startScreencast() {
             ++this.#screencastSessionCount;
             if (!this.#startScreencastPromise) {
-                this.#startScreencastPromise = this.mainFrame()
-                    .client.send('Page.startScreencast', { format: 'png' })
-                    .then(() => {
-                    // Wait for the first frame.
-                    return new Promise(resolve => {
-                        return this.mainFrame().client.once('Page.screencastFrame', () => {
-                            return resolve();
-                        });
+                const client = this.mainFrame().client;
+                const firstFrame = new Promise(resolve => {
+                    return client.once('Page.screencastFrame', () => {
+                        return resolve();
                     });
+                });
+                this.#startScreencastPromise = client
+                    .send('Page.startScreencast', { format: 'png' })
+                    .then(() => {
+                    return firstFrame;
                 });
             }
             await this.#startScreencastPromise;

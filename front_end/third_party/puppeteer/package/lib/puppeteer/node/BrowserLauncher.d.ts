@@ -1,6 +1,7 @@
 import { Browser as InstalledBrowser, launch } from '@puppeteer/browsers';
 import type { Browser, BrowserCloseCallback } from '../api/Browser.js';
 import { Connection } from '../cdp/Connection.js';
+import type { WsOptions } from '../common/ConnectOptions.js';
 import { type Logger } from '../common/Debug.js';
 import type { SupportedBrowser } from '../common/SupportedBrowser.js';
 import type { Viewport } from '../common/Viewport.js';
@@ -73,6 +74,7 @@ export declare abstract class BrowserLauncher {
         slowMo: number;
         idGenerator: GetIdFn;
         logger: Logger;
+        wsOptions?: WsOptions;
     }): Promise<Connection>;
     /**
      * @internal
@@ -83,6 +85,7 @@ export declare abstract class BrowserLauncher {
         slowMo: number;
         idGenerator: GetIdFn;
         logger: Logger;
+        wsOptions?: WsOptions;
     }): Promise<Connection>;
     /**
      * @internal
@@ -107,6 +110,7 @@ export declare abstract class BrowserLauncher {
         networkEnabled?: boolean;
         issuesEnabled?: boolean;
         logger: Logger;
+        wsOptions?: WsOptions;
     }): Promise<Browser>;
     /**
      * @internal

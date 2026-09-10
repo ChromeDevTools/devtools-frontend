@@ -42,6 +42,10 @@ export type SetViewportOptions = Omit<Bidi.BrowsingContext.SetViewportParameters
 /**
  * @internal
  */
+export type StartScreencastOptions = Omit<Bidi.BrowsingContext.StartScreencastParameters, 'context'>;
+/**
+ * @internal
+ */
 export type GetCookiesOptions = Omit<Bidi.Storage.GetCookiesParameters, 'partition'>;
 /**
  * @internal
@@ -92,6 +96,8 @@ export declare class BrowsingContext extends EventEmitter<{
     private dispose;
     activate(): Promise<void>;
     captureScreenshot(options?: CaptureScreenshotOptions): Promise<string>;
+    startScreencast(options?: StartScreencastOptions): Promise<Bidi.BrowsingContext.StartScreencastResult>;
+    stopScreencast(screencast: Bidi.BrowsingContext.Screencast): Promise<Bidi.BrowsingContext.StopScreencastResult>;
     close(promptUnload?: boolean): Promise<void>;
     traverseHistory(delta: number): Promise<void>;
     navigate(url: string, wait?: Bidi.BrowsingContext.ReadinessState): Promise<void>;

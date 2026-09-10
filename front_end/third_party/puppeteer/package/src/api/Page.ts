@@ -119,6 +119,7 @@ import {
   type AwaitedLocator,
 } from './locators/locators.js';
 import type {Realm} from './Realm.js';
+import type {ScreenRecording} from './ScreenRecording.js';
 import type {Target} from './Target.js';
 import type {WebWorker} from './WebWorker.js';
 
@@ -461,6 +462,46 @@ export interface ScreencastOptions {
    * @defaultValue `'ffmpeg'`
    */
   ffmpegPath?: string;
+}
+
+/**
+ * @public
+ * @experimental
+ */
+export interface RecordOptions {
+  /**
+   * File path to save the recording to.
+   */
+  path?: string;
+  /**
+   * Specifies whether to overwrite output file,
+   * or exit immediately if it already exists.
+   *
+   * @defaultValue `true`
+   */
+  overwrite?: boolean;
+  /**
+   * Whether to record audio.
+   *
+   * @defaultValue `false`
+   */
+  audio?: boolean;
+  /**
+   * Maximum frame width in pixels.
+   */
+  maxWidth?: number;
+  /**
+   * Maximum frame height in pixels.
+   */
+  maxHeight?: number;
+  /**
+   * Maximum frame rate in frames per second.
+   */
+  frameRate?: number;
+  /**
+   * Frame rate in frames per second (alias for frameRate).
+   */
+  fps?: number;
 }
 
 /**
@@ -2138,7 +2179,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * ```ts
    * import {KnownDevices} from 'puppeteer';
-   * const iPhone = KnownDevices['iPhone 15 Pro'];
+   * const iPhone = KnownDevices['iPhone 17 Pro'];
    *
    * const browser = await puppeteer.launch();
    * const page = await browser.newPage();
@@ -2512,7 +2553,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
   }
 
   /**
-   * Captures a screencast of this {@link Page | page}.
+   * Captures a screencast of this {@link Page | page}. Works in Chrome 153+.
    *
    * @example
    * Recording a {@link Page | page}:
@@ -2542,7 +2583,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * @param options - Configures screencast behavior.
    *
-   * @experimental
+   * @deprecated Use {@link Page.record} instead.
    *
    * @remarks
    *
@@ -2638,6 +2679,96 @@ export abstract class Page extends EventEmitter<PageEvents> {
     return recorder;
   }
 
+  /**
+   * @internal
+   */
+  protected abstract createScreenRecording(
+    options: Readonly<RecordOptions>,
+  ): ScreenRecording;
+
+  /**
+   * Records this {@link Page | page} using the Chrome DevTools Protocol
+   * {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-startScreenRecording | Page.startScreenRecording}
+   * API.
+   *
+   * Outputs mp4 video stream.
+   *
+   * @example
+   * Recording a {@link Page | page}:
+   *
+   * ```ts
+   * import puppeteer from 'puppeteer';
+   *
+   * // Launch a browser
+   * const browser = await puppeteer.launch();
+   *
+   * // Create a new page
+   * const page = await browser.newPage();
+   *
+   * // Go to your site.
+   * await page.goto('https://www.example.com');
+   *
+   * // Start recording.
+   * const recorder = await page.record({path: 'recording.mp4'});
+   *
+   * // Do something.
+   *
+   * // Stop recording.
+   * await recorder.stop();
+   *
+   * await browser.close();
+   * ```
+   *
+   * @param options - Configures recording behavior.
+   *
+   * @experimental
+   */
+  async record(
+    options: Readonly<RecordOptions> = {},
+  ): Promise<ScreenRecording> {
+    if (options.maxWidth !== undefined && options.maxWidth <= 0) {
+      throw new Error('`maxWidth` must be greater than 0.');
+    }
+    if (options.maxHeight !== undefined && options.maxHeight <= 0) {
+      throw new Error('`maxHeight` must be greater than 0.');
+    }
+    if (options.frameRate !== undefined && options.frameRate <= 0) {
+      throw new Error('`frameRate` must be greater than 0.');
+    }
+    if (options.fps !== undefined && options.fps <= 0) {
+      throw new Error('`fps` must be greater than 0.');
+    }
+
+    if (options.path && environment.value.path) {
+      await environment.value.mkdir(
+        environment.value.path.dirname(options.path),
+        {recursive: options.overwrite ?? true},
+      );
+    }
+
+    const stream = options.path
+      ? environment.value.createWriteStream(options.path, {
+          encoding: 'binary',
+          overwrite: options.overwrite,
+        })
+      : undefined;
+
+    const recording = this.createScreenRecording(options);
+
+    try {
+      await recording._start();
+    } catch (error) {
+      void recording.stop();
+      throw error;
+    }
+
+    if (stream) {
+      recording.pipe(stream);
+    }
+
+    return recording;
+  }
+
   #screencastSessionCount = 0;
   #startScreencastPromise: Promise<void> | undefined;
 
@@ -2647,15 +2778,16 @@ export abstract class Page extends EventEmitter<PageEvents> {
   async _startScreencast(): Promise<void> {
     ++this.#screencastSessionCount;
     if (!this.#startScreencastPromise) {
-      this.#startScreencastPromise = this.mainFrame()
-        .client.send('Page.startScreencast', {format: 'png'})
+      const client = this.mainFrame().client;
+      const firstFrame = new Promise<void>(resolve => {
+        return client.once('Page.screencastFrame', () => {
+          return resolve();
+        });
+      });
+      this.#startScreencastPromise = client
+        .send('Page.startScreencast', {format: 'png'})
         .then(() => {
-          // Wait for the first frame.
-          return new Promise(resolve => {
-            return this.mainFrame().client.once('Page.screencastFrame', () => {
-              return resolve();
-            });
-          });
+          return firstFrame;
         });
     }
     await this.#startScreencastPromise;

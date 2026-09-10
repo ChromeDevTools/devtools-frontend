@@ -105,6 +105,7 @@ import { stringToTypedArray } from '../util/encoding.js';
 import { BidiElementHandle } from './ElementHandle.js';
 import { BidiFrame } from './Frame.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
+import { BidiScreenRecording } from './ScreenRecording.js';
 import { rewriteNavigationError } from './util.js';
 /**
  * Implements Page using WebDriver BiDi.
@@ -813,6 +814,12 @@ let BidiPage = (() => {
         }
         extensionRealms() {
             throw new UnsupportedOperation();
+        }
+        /**
+         * @internal
+         */
+        createScreenRecording(options) {
+            return new BidiScreenRecording(this, options, this.logger);
         }
     };
 })();

@@ -3,7 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import {existsSync} from 'node:fs';
+import {accessSync, constants, existsSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 
@@ -27,6 +27,7 @@ import type {Browser, BrowserCloseCallback} from '../api/Browser.js';
 import {CdpBrowser} from '../cdp/Browser.js';
 import {Connection} from '../cdp/Connection.js';
 import {assertSupportedUrlRestrictions} from '../common/BrowserConnector.js';
+import type {WsOptions} from '../common/ConnectOptions.js';
 import {DEBUG_PREFIXES, type Logger} from '../common/Debug.js';
 import {TimeoutError} from '../common/Errors.js';
 import type {SupportedBrowser} from '../common/SupportedBrowser.js';
@@ -50,6 +51,21 @@ export interface ResolvedLaunchArgs {
   userDataDir: string;
   executablePath: string;
   args: string[];
+}
+
+/**
+ * Whether the profile directory exists and the current process can write to it.
+ * A missing directory counts as writable: the browser creates it on launch.
+ *
+ * @internal
+ */
+function isWritableDirectory(directory: string): boolean {
+  try {
+    accessSync(directory, constants.W_OK);
+    return true;
+  } catch {
+    return !existsSync(directory);
+  }
 }
 
 /**
@@ -291,6 +307,14 @@ export abstract class BrowserLauncher {
         (process.platform === 'win32' &&
           existsSync(join(launchArgs.userDataDir, 'lockfile')))
       ) {
+        // The browser reports the same ProcessSingleton failure whether another
+        // instance holds the lock or it simply cannot write to the profile
+        // directory, so check for the latter before blaming a running browser.
+        if (!isWritableDirectory(launchArgs.userDataDir)) {
+          throw new Error(
+            `The browser cannot write to ${launchArgs.userDataDir}. Make the \`userDataDir\` writable or use a different one.`,
+          );
+        }
         throw new Error(
           `The browser is already running for ${launchArgs.userDataDir}. Use a different \`userDataDir\` or stop the running browser first.`,
         );
@@ -407,6 +431,7 @@ export abstract class BrowserLauncher {
       slowMo: number;
       idGenerator: GetIdFn;
       logger: Logger;
+      wsOptions?: WsOptions;
     },
   ): Promise<Connection> {
     const browserWSEndpoint = await browserProcess.waitForLineOutput(
@@ -417,6 +442,7 @@ export abstract class BrowserLauncher {
       browserWSEndpoint,
       undefined,
       opts.logger,
+      opts.wsOptions,
     );
     return new Connection(
       browserWSEndpoint,
@@ -440,6 +466,7 @@ export abstract class BrowserLauncher {
       slowMo: number;
       idGenerator: GetIdFn;
       logger: Logger;
+      wsOptions?: WsOptions;
     },
   ): Promise<Connection> {
     // stdio was assigned during start(), and the 'pipe' option there adds the
@@ -513,6 +540,7 @@ export abstract class BrowserLauncher {
       networkEnabled?: boolean;
       issuesEnabled?: boolean;
       logger: Logger;
+      wsOptions?: WsOptions;
     },
   ): Promise<Browser> {
     const browserWSEndpoint =
@@ -524,6 +552,7 @@ export abstract class BrowserLauncher {
       browserWSEndpoint,
       undefined,
       opts.logger,
+      opts.wsOptions,
     );
     const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
     const bidiConnection = new BiDi.BidiConnection(

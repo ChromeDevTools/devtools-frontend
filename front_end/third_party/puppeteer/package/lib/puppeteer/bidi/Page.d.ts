@@ -12,7 +12,7 @@ import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
 import type { Extension } from '../api/Extension.js';
 import type { WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
-import type { Credentials, GeolocationOptions, HeapSnapshotOptions, MediaFeature, PageEvents, ReloadOptions, WaitTimeoutOptions } from '../api/Page.js';
+import type { Credentials, GeolocationOptions, HeapSnapshotOptions, MediaFeature, PageEvents, RecordOptions, ReloadOptions, WaitTimeoutOptions } from '../api/Page.js';
 import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
 import { Coverage } from '../cdp/Coverage.js';
@@ -35,6 +35,7 @@ import { BidiFrame } from './Frame.js';
 import type { BidiHTTPResponse } from './HTTPResponse.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
 import type { BidiJSHandle } from './JSHandle.js';
+import { BidiScreenRecording } from './ScreenRecording.js';
 import type { BidiWebWorker } from './WebWorker.js';
 /**
  * Implements Page using WebDriver BiDi.
@@ -143,6 +144,10 @@ export declare class BidiPage extends Page {
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
     get bluetooth(): BluetoothEmulation;
     extensionRealms(): Realm[];
+    /**
+     * @internal
+     */
+    createScreenRecording(options: Readonly<RecordOptions>): BidiScreenRecording;
 }
 export declare function bidiToPuppeteerCookie(bidiCookie: Bidi.Network.Cookie, returnCompositePartitionKey?: boolean): Cookie;
 /**

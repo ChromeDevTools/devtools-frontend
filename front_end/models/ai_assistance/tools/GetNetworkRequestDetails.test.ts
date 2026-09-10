@@ -73,8 +73,7 @@ describe('GetNetworkRequestDetailsTool', () => {
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'No request found');
+    assertIsError(response, 'No request found');
   });
 
   it('returns error if request origin does not match established origin', async () => {
@@ -91,8 +90,7 @@ describe('GetNetworkRequestDetailsTool', () => {
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'No request found');
+    assertIsError(response, 'No request found');
   });
 
   it('returns error for opaque origins', async () => {
@@ -102,8 +100,7 @@ describe('GetNetworkRequestDetailsTool', () => {
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'Opaque origin not allowed');
+    assertIsError(response, 'Opaque origin not allowed');
   });
 
   it('redacts cross-origin response body and non-safelisted headers for opaque cross-origin requests', async () => {
@@ -224,7 +221,7 @@ describe('GetNetworkRequestDetailsTool', () => {
     assert.notInclude(result, '{"secret":"har-leak"}');
   });
 
-  it('redacts response body when request documentURL is empty', async () => {
+  it('returns error when request documentURL is empty', async () => {
     const request = createNetworkRequest({
       url: 'https://example.com/api/data',
       documentURL: '',
@@ -237,15 +234,32 @@ describe('GetNetworkRequestDetailsTool', () => {
 
     const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
     const context = {
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+    };
+
+    const response = await tool.handler({id: 'requestId'}, context);
+    assertIsError(response, 'No request found');
+  });
+
+  it('returns error if established origin is undefined', async () => {
+    const request = createNetworkRequest({
+      url: 'https://example.com/api/users',
+      documentURL: 'https://example.com/',
+      statusCode: 200,
+      responseHeaders: [{name: 'Content-Type', value: 'application/json'}],
+      requestHeaders: [{name: 'Accept', value: 'application/json'}],
+      contentData: new TextUtils.ContentData.ContentData('{}', false, 'application/json', 'utf-8'),
+    });
+
+    sinon.stub(networkLog, 'requests').returns([request]);
+
+    const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
+    const context = {
       getEstablishedOrigin: () => undefined,
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
-    assertIsResult(response);
-
-    const result = response.result as string;
-    assert.include(result, SDK.NetworkRequestAccess.REDACTED_RESPONSE_BODY);
-    assert.notInclude(result, '{"data":"ok"}');
+    assertIsError(response, 'Opaque origin not allowed');
   });
 
   it('rejects inspecting imported HAR requests from a live web session origin', async () => {
@@ -263,7 +277,6 @@ describe('GetNetworkRequestDetailsTool', () => {
     };
 
     const response = await tool.handler({id: 'harRequestId'}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'No request found');
+    assertIsError(response, 'No request found');
   });
 });

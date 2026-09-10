@@ -12,6 +12,7 @@ import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  isOriginAllowedByLock,
   type OriginLockCapability,
   type TargetCapability,
   type ToolArgs,
@@ -81,7 +82,7 @@ export class GetElementAccessibilityDetailsTool implements
       context: BaseToolCapability&TargetCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<string>> {
     const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin) {
+    if (!establishedOrigin || establishedOrigin.isOpaque()) {
       return {error: 'Error: Origin lock is not established.'};
     }
 
@@ -101,7 +102,7 @@ export class GetElementAccessibilityDetailsTool implements
 
     const nodeContext = new DOMNodeContext(resolved);
     // Security check: Ensure the element matches the active conversation's origin lock.
-    if (!nodeContext.isOriginAllowed(establishedOrigin)) {
+    if (!isOriginAllowedByLock(establishedOrigin, nodeContext.getOrigin())) {
       return {error: 'Error: Node does not belong to the locked origin.'};
     }
 

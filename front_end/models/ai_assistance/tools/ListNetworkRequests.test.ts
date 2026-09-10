@@ -120,8 +120,7 @@ describe('ListNetworkRequestsTool', () => {
     };
 
     const response = await tool.handler({}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'Opaque origin not allowed');
+    assertIsError(response, 'Opaque origin not allowed');
   });
 
   it('returns error when requests exist but none match established origin', async () => {
@@ -138,8 +137,23 @@ describe('ListNetworkRequestsTool', () => {
     };
 
     const response = await tool.handler({}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error,
-                       'No requests showing with origin https://example.com. Tell the user to start a new chat');
+    assertIsError(response, 'No requests showing with origin https://example.com. Tell the user to start a new chat');
+  });
+
+  it('returns error if established origin is undefined', async () => {
+    const request = createNetworkRequest({
+      requestId: 'requestId',
+      url: 'https://example.com/api',
+      documentURL: 'https://example.com/',
+    });
+    networkLog.requests.returns([request]);
+
+    const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
+    const context = {
+      getEstablishedOrigin: () => undefined,
+    };
+
+    const response = await tool.handler({}, context);
+    assertIsError(response, 'Opaque origin not allowed');
   });
 });

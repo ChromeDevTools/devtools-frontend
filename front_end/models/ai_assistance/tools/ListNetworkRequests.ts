@@ -12,6 +12,7 @@ import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  isOriginAllowedByLock,
   type OriginLockCapability,
   ToolName,
 } from './Tool.js';
@@ -75,23 +76,20 @@ export class ListNetworkRequestsTool implements
     const requests: NetworkRequestSummary[] = [];
     // A conversation is locked to an origin once the first query is made.
     // We only allow inspecting requests matching the conversation's established origin.
-    const origin = context.getEstablishedOrigin();
-
-    // Opaque origins are never allowed to be used as context.
-    if (origin?.isOpaque()) {
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!establishedOrigin || establishedOrigin.isOpaque()) {
       return {
         error: 'Opaque origin not allowed',
       };
     }
 
-    const conversationOrigin = origin ?? null;
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
     let hasCrossOriginRequest = false;
     const requestsToShow: SDK.NetworkRequest.NetworkRequest[] = [];
     for (const request of networkLog.requests()) {
-      // If the conversation is locked to an origin, skip requests from other origins.
-      if (conversationOrigin && !request.initiatorSecurityOrigin().isSameOriginWith(conversationOrigin)) {
+      // If the request's initiator origin does not match the locked origin, skip it.
+      if (!isOriginAllowedByLock(establishedOrigin, request.initiatorSecurityOrigin())) {
         hasCrossOriginRequest = true;
         continue;
       }
@@ -109,7 +107,7 @@ export class ListNetworkRequestsTool implements
     if (requests.length === 0) {
       if (hasCrossOriginRequest) {
         return {
-          error: `No requests showing with origin ${origin?.siteId() ?? ''}. Tell the user to start a new chat`,
+          error: `No requests showing with origin ${establishedOrigin.siteId()}. Tell the user to start a new chat`,
         };
       }
       return {

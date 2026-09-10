@@ -127,7 +127,23 @@ describe('GetStylesTool', () => {
         },
         context);
 
-    assertIsError(response);
-    assert.strictEqual(response.error, 'Error: Node does not belong to the current origin.');
+    assertIsError(response, 'Error: Node does not belong to the current origin.');
+  });
+
+  it('returns error when origin lock is not established', async () => {
+    const tool = new AiAssistance.GetStyles.GetStylesTool();
+    const context = {
+      getTarget: () => target,
+      getEstablishedOrigin: () => undefined,
+    };
+
+    const response = await tool.handler({
+      explanation: 'Get element styles',
+      elements: [42],
+      styleProperties: ['color'],
+    },
+                                        context);
+
+    assertIsError(response, 'Error: Origin lock is not established.');
   });
 });

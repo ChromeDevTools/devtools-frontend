@@ -10,6 +10,7 @@ import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  isOriginAllowedByLock,
   type OriginLockCapability,
   type TargetCapability,
   type ToolArgs,
@@ -85,7 +86,7 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
       context: BaseToolCapability&TargetCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{backendNodeId: number}>> {
     const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin) {
+    if (!establishedOrigin || establishedOrigin.isOpaque()) {
       return {error: 'Error: Origin lock is not established.'};
     }
 
@@ -115,7 +116,7 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
     const nodeContext = new DOMNodeContext(node);
     // Security check: Ensure the resolved node belongs to the same origin
     // that this AI assistance session is locked to, preventing cross-origin access.
-    if (!nodeContext.isOriginAllowed(establishedOrigin)) {
+    if (!isOriginAllowedByLock(establishedOrigin, nodeContext.getOrigin())) {
       return {error: 'Error: Node does not belong to the locked origin.'};
     }
 

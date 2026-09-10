@@ -12,6 +12,7 @@ import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  isOriginAllowedByLock,
   type OriginLockCapability,
   type TargetCapability,
   type ToolArgs,
@@ -92,7 +93,7 @@ export class GetStylesTool implements
     }
 
     const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin) {
+    if (!establishedOrigin || establishedOrigin.isOpaque()) {
       return {error: 'Error: Origin lock is not established.'};
     }
 
@@ -104,7 +105,7 @@ export class GetStylesTool implements
         return {error: 'Error: Could not find the element with uid=' + uid};
       }
       const newContext = new DOMNodeContext(resolved);
-      if (!newContext.isOriginAllowed(establishedOrigin)) {
+      if (!isOriginAllowedByLock(establishedOrigin, newContext.getOrigin())) {
         return {error: 'Error: Node does not belong to the current origin.'};
       }
       const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);

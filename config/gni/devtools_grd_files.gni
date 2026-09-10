@@ -1490,6 +1490,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/application/components/ServiceWorkerRouterView.js",
   "front_end/panels/application/components/StorageMetadataView.js",
   "front_end/panels/application/components/TrustTokensView.js",
+  "front_end/panels/application/components/adScriptsTable.css.js",
   "front_end/panels/application/components/adsView.css.js",
   "front_end/panels/application/components/backForwardCacheView.css.js",
   "front_end/panels/application/components/bounceTrackingMitigationsView.css.js",

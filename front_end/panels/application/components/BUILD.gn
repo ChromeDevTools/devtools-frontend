@@ -10,6 +10,7 @@ import("../../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "adScriptsTable.css",
     "adsView.css",
     "backForwardCacheView.css",
     "bounceTrackingMitigationsView.css",
@@ -54,6 +55,7 @@ devtools_ui_module("components") {
     "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/components/report_view:bundle",
+    "../../../ui/components/tooltips:bundle",
     "../../../ui/i18n:bundle",
     "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",

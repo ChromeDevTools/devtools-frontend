@@ -4,6 +4,7 @@
 
 import '../../../ui/legacy/components/data_grid/data_grid.js';
 import '../../../ui/kit/kit.js';
+import '../../../ui/components/tooltips/tooltips.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -15,6 +16,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
+import adScriptsTableStyles from './adScriptsTable.css.js';
 import adsViewStyles from './adsView.css.js';
 
 const {html} = Lit;
@@ -94,6 +96,30 @@ const UIStrings = {
    */
   adScripts: 'Ad scripts',
   /**
+   * @description Title for the ad provenance column in the ad scripts table.
+   */
+  adProvenance: 'Ad provenance',
+  /**
+   * @description Text to display when a script has no provenance.
+   */
+  noProvenance: '<no provenance>',
+  /**
+   * @description Text to display in the tooltip when a script has no provenance.
+   */
+  noProvenanceTooltip: 'No provenance data is available',
+  /**
+   * @description Title for the filter list rule in the ad provenance tooltip.
+   */
+  filterListRule: 'Filter list rule',
+  /**
+   * @description Title for the root script filter list rule in the ad provenance tooltip.
+   */
+  rootScriptFilterListRule: 'Root script filter list rule',
+  /**
+   * @description Title for the creator ad script ancestry in the ad provenance tooltip.
+   */
+  creatorAdScriptAncestry: 'Creator ad script ancestry',
+  /**
    * @description Title for the settings section.
    */
   settings: 'Settings',
@@ -134,12 +160,16 @@ interface AdFrameNodeData {
 
 interface AdScriptNodeData {
   url: Platform.DevToolsPath.UrlString;
+  parsedProvenance: Protocol.Network.AdProvenance|null;
+  scriptId: Protocol.Runtime.ScriptId;
 }
 
 export interface ViewInput {
   metrics: Protocol.Ads.AdMetrics;
   adFrames: AdFrameNodeData[];
   adScripts: AdScriptNodeData[];
+  target: SDK.Target.Target|null;
+  getLinkElement: (url: string) => HTMLElement;
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
@@ -158,6 +188,11 @@ const formatCpu = (val: number|undefined): string => {
 const formatNetwork = (val: number|undefined): string => {
   return formatMetric(val, (v: number): string => i18n.ByteUtilities.bytesToString(v));
 };
+
+const SCRIPT_LINK_OPTIONS = {
+  jslogContext: 'ad-script',
+};
+const stopPropagation = (e: Event): void => e.stopPropagation();
 
 const DEFAULT_VIEW: View = (input, output, target) => {
   const metrics = input.metrics;
@@ -268,13 +303,55 @@ const DEFAULT_VIEW: View = (input, output, target) => {
       <div class="ad-scripts-container">
         <devtools-data-grid striped resize="last" class="ad-scripts-data-grid" name=${i18nString(UIStrings.adScripts)}>
           <table>
+            ${Lit.Directives.unsafeHTML(`<style>${adScriptsTableStyles}</style>`)}
             <tr>
               <th id="url" weight="1" sortable>${i18nString(UIStrings.url)}</th>
+              <th id="provenance" weight="1" sortable>${i18nString(UIStrings.adProvenance)}</th>
             </tr>
             ${repeat(input.adScripts, script => script.url, script => html`
               <tr>
                 <td title=${script.url}>
-                  ${Components.Linkifier.Linkifier.renderLinkifiedUrl(script.url, {text: script.url})}
+                  ${input.getLinkElement(script.url)}
+                </td>
+                <td>
+                  <devtools-tooltip id=${`ad-tooltip-${script.scriptId}`} variant=rich @copy=${stopPropagation}>
+                    <div class="ad-provenance-tooltip">
+                      ${script.parsedProvenance?.filterlistRule ? html`
+                        <div class="ad-provenance-tooltip-title">${i18nString(UIStrings.filterListRule)}</div>
+                        <div class="ad-provenance-tooltip-content">${script.parsedProvenance.filterlistRule}</div>
+                      ` : Lit.nothing}
+                      ${script.parsedProvenance?.adScriptAncestry ? html`
+                        <div class="ad-provenance-tooltip-title">${i18nString(UIStrings.creatorAdScriptAncestry)}</div>
+                        <div class="ad-provenance-tooltip-content">
+                          ${input.target ? script.parsedProvenance.adScriptAncestry.ancestryChain.map(ancestor => html`
+                            <div>
+                              ${UI.Widget.widget(Components.Linkifier.ScriptLocationLink, {
+                                target: input.target ?? undefined,
+                                scriptId: ancestor.scriptId,
+                                options: SCRIPT_LINK_OPTIONS,
+                              })}
+                            </div>
+                          `) : Lit.nothing}
+                        </div>
+                        ${script.parsedProvenance.adScriptAncestry.rootScriptFilterlistRule ? html`
+                          <div class="ad-provenance-tooltip-title">${i18nString(UIStrings.rootScriptFilterListRule)}</div>
+                          <div class="ad-provenance-tooltip-content">${script.parsedProvenance.adScriptAncestry.rootScriptFilterlistRule}</div>
+                        ` : Lit.nothing}
+                      ` : Lit.nothing}
+                      ${!script.parsedProvenance?.adScriptAncestry && !script.parsedProvenance?.filterlistRule ? i18nString(UIStrings.noProvenanceTooltip) : Lit.nothing}
+                    </div>
+                  </devtools-tooltip>
+                  <div aria-details=${`ad-tooltip-${script.scriptId}`}>
+                    ${script.parsedProvenance?.filterlistRule ? html`<span>${script.parsedProvenance.filterlistRule}</span>` : Lit.nothing}
+                    ${script.parsedProvenance?.filterlistRule && script.parsedProvenance?.adScriptAncestry && input.target ? html`<span>, </span>` : Lit.nothing}
+                    ${script.parsedProvenance?.adScriptAncestry && input.target ?
+                      UI.Widget.widget(Components.Linkifier.ScriptLocationLink, {
+                        target: input.target ?? undefined,
+                        scriptId: script.parsedProvenance.adScriptAncestry.ancestryChain[0].scriptId,
+                        options: SCRIPT_LINK_OPTIONS,
+                      }) : Lit.nothing}
+                    ${!script.parsedProvenance?.adScriptAncestry && !script.parsedProvenance?.filterlistRule ? i18nString(UIStrings.noProvenance) : Lit.nothing}
+                  </div>
                 </td>
               </tr>
             `)}
@@ -319,7 +396,8 @@ export class AdsView extends UI.Widget.Widget {
   readonly #fetchingElementIds = new Set<Protocol.Page.FrameId>();
   readonly #unresolvedScriptIds = new Set<Protocol.Runtime.ScriptId>();
   readonly #adScriptNodeData: AdScriptNodeData[] = [];
-  readonly #seenUrls = new Set<string>();
+  readonly #urlToLinkElement = new Map<string, HTMLElement>();
+  readonly #reconstructedProvenance = new Map<Protocol.Runtime.ScriptId, Protocol.Network.AdProvenance>();
 
   constructor(view: View = DEFAULT_VIEW) {
     super({useShadowDom: true});
@@ -447,9 +525,54 @@ export class AdsView extends UI.Widget.Widget {
     }
   }
 
+  // Lazily reconstructs the full script ancestry chain for a given script.
+  // The backend guarantees that scripts across different batches are ordered
+  // correctly (i.e., an ancestor script will always be sent in the same or an
+  // earlier batch than its descendants). However, scripts arriving within the
+  // same batch may be out of order. This recursive, topological approach ensures
+  // we can resolve those in-batch ordering issues while maintaining O(N)
+  // complexity overall via memoization in #reconstructedProvenance.
+  #reconstructProvenance(scriptId: Protocol.Runtime.ScriptId,
+                         newScriptsMap: Map<Protocol.Runtime.ScriptId, Protocol.Ads.AdScript>):
+      Protocol.Network.AdProvenance|null {
+    if (this.#reconstructedProvenance.has(scriptId)) {
+      return this.#reconstructedProvenance.get(scriptId) ?? null;
+    }
+    const script = newScriptsMap.get(scriptId);
+    if (!script || !script.provenance) {
+      return null;
+    }
+
+    let fullProvenance: Protocol.Network.AdProvenance = script.provenance;
+    if (script.provenance.adScriptAncestry) {
+      const immediateAncestor = script.provenance.adScriptAncestry.ancestryChain[0];
+      const ancestorProvenance =
+          immediateAncestor ? this.#reconstructProvenance(immediateAncestor.scriptId, newScriptsMap) : null;
+      if (ancestorProvenance) {
+        const newChain = [immediateAncestor];
+        if (ancestorProvenance.adScriptAncestry) {
+          newChain.push(...ancestorProvenance.adScriptAncestry.ancestryChain);
+        }
+        const rootScriptFilterlistRule =
+            ancestorProvenance.filterlistRule || ancestorProvenance.adScriptAncestry?.rootScriptFilterlistRule;
+        fullProvenance = {
+          ...script.provenance,
+          adScriptAncestry: {
+            ancestryChain: newChain,
+            ...(rootScriptFilterlistRule ? {rootScriptFilterlistRule} : {}),
+          },
+        };
+      }
+    }
+    this.#reconstructedProvenance.set(scriptId, fullProvenance);
+    return fullProvenance;
+  }
+
   #processAdScripts(newScripts: Protocol.Ads.AdScript[]): void {
+    const newScriptsMap = new Map(newScripts.map(s => [s.scriptId, s]));
     for (const script of newScripts) {
       this.#unresolvedScriptIds.add(script.scriptId);
+      this.#reconstructProvenance(script.scriptId, newScriptsMap);
     }
   }
 
@@ -482,7 +605,8 @@ export class AdsView extends UI.Widget.Widget {
     this.#fetchingElementIds.clear();
     this.#unresolvedScriptIds.clear();
     this.#adScriptNodeData.length = 0;
-    this.#seenUrls.clear();
+    this.#urlToLinkElement.clear();
+    this.#reconstructedProvenance.clear();
     this.requestUpdate();
   }
 
@@ -538,13 +662,16 @@ export class AdsView extends UI.Widget.Widget {
       // De-duplicate scripts by URL. V8 frequently generates multiple
       // ScriptIds for the same URL (e.g., when the same external script
       // is loaded into multiple iframes).
-      if (this.#seenUrls.has(url)) {
+      if (this.#urlToLinkElement.has(url)) {
         continue;
       }
-      this.#seenUrls.add(url);
+      this.#urlToLinkElement.set(url, Components.Linkifier.Linkifier.linkifyURL(url, {text: url}));
 
+      const parsedProvenance = this.#reconstructedProvenance.get(scriptId) ?? null;
       this.#adScriptNodeData.push({
         url,
+        parsedProvenance,
+        scriptId,
       });
     }
 
@@ -552,6 +679,8 @@ export class AdsView extends UI.Widget.Widget {
       metrics: this.#currentMetrics,
       adFrames: adFramesArray,
       adScripts: this.#adScriptNodeData,
+      target: target || null,
+      getLinkElement: (url: string) => this.#urlToLinkElement.get(url) as HTMLElement,
     };
     this.#view(viewInput, undefined, this.contentElement);
   }

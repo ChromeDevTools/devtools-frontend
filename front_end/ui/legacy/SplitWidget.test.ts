@@ -63,4 +63,27 @@ describeWithEnvironment('SplitWidget', () => {
 
     widget.detach();
   });
+
+  it('does not revert main widget when previous widget uses hideOnDetach', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+
+    const splitWidget = new SplitWidget(true, false);
+    splitWidget.markAsRoot();
+    splitWidget.show(container);
+
+    const widget1 = new UI.Widget.Widget();
+    widget1.setHideOnDetach();
+    splitWidget.setMainWidget(widget1);
+    assert.strictEqual(splitWidget.mainWidget(), widget1);
+
+    const widget2 = new UI.Widget.Widget();
+    splitWidget.setMainWidget(widget2);
+    assert.strictEqual(splitWidget.mainWidget(), widget2);
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.strictEqual(splitWidget.mainWidget(), widget2);
+
+    splitWidget.detach();
+  });
 });

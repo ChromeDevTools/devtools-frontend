@@ -148,19 +148,21 @@ export class StorageAgent extends AiAgent<StorageItem> {
           return {error: 'No origin available or not allowed.'};
         }
 
-        const origins = new Set<string>();
+        const origins: SDK.SecurityOrigin.SecurityOrigin[] = [];
         for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames(this.targetManager)) {
           if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
             continue;
           }
-          const origin = frame.securityOrigin;
-          if (!origin || origins.has(origin)) {
+          const origin = frame.securityOrigin();
+          if (origin.isOpaque()) {
             continue;
           }
-          origins.add(origin);
+          if (!origins.some(existing => existing.isSameOriginWith(origin))) {
+            origins.push(origin);
+          }
         }
 
-        return {result: {origins: Array.from(origins)}};
+        return {result: {origins: origins.map(o => o.siteId())}};
       },
     });
 
@@ -682,8 +684,9 @@ export async function getCookiesForDomain(target: SDK.Target.Target,
 export function findFrameForOrigin(
     context: ConversationContext<StorageItem>|undefined, origin: string,
     targetManager: SDK.TargetManager.TargetManager): SDK.ResourceTreeModel.ResourceTreeFrame|null {
+  const parsedOrigin = SDK.SecurityOrigin.SecurityOrigin.create(origin);
   for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
-    if (frame.securityOrigin === origin) {
+    if (frame.securityOrigin().isSameOriginWith(parsedOrigin)) {
       const target = frame.resourceTreeModel().target();
       if (isSamePageOrigin(target.outermostTarget(), context)) {
         return frame;

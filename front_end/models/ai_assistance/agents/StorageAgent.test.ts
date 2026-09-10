@@ -760,7 +760,7 @@ describe('StorageAgent', function() {
 
       const frame = AiAssistance.StorageAgent.findFrameForOrigin(context, PRIMARY_ORIGIN, universe.targetManager);
       assert.exists(frame);
-      assert.strictEqual(frame.securityOrigin, PRIMARY_ORIGIN);
+      assert.strictEqual(frame.securityOrigin().siteId(), PRIMARY_ORIGIN);
     });
 
     it('returns the frame if it has a different origin but belongs to the same page target (iframe)', () => {
@@ -783,7 +783,7 @@ describe('StorageAgent', function() {
 
       const frame = AiAssistance.StorageAgent.findFrameForOrigin(context, DIFFERENT_ORIGIN, universe.targetManager);
       assert.exists(frame);
-      assert.strictEqual(frame.securityOrigin, DIFFERENT_ORIGIN);
+      assert.strictEqual(frame.securityOrigin().siteId(), DIFFERENT_ORIGIN);
       assert.deepEqual(differentFrame, frame);
     });
 

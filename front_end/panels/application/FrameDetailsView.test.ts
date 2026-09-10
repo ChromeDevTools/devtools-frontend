@@ -24,7 +24,7 @@ import * as Application from './application.js';
 const makeFrame = (target: SDK.Target.Target) => {
   const newFrame: SDK.ResourceTreeModel.ResourceTreeFrame = {
     url: 'https://www.example.com/path/page.html',
-    securityOrigin: 'https://www.example.com',
+    securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://www.example.com'),
     displayName: () => 'TestTitle',
     unreachableUrl: () => '',
     adFrameType: () => Protocol.Page.AdFrameType.None,
@@ -35,9 +35,8 @@ const makeFrame = (target: SDK.Target.Target) => {
     isCrossOriginIsolated: () => true,
     getCrossOriginIsolatedContextType: () => Protocol.Page.CrossOriginIsolatedContextType.NotIsolatedFeatureDisabled,
     getSecureContextType: () => Protocol.Page.SecureContextType.SecureLocalhost,
-    getGatedAPIFeatures: () =>
-        [Protocol.Page.GatedAPIFeatures.SharedArrayBuffers,
-         Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed],
+    getGatedAPIFeatures: () => [Protocol.Page.GatedAPIFeatures.SharedArrayBuffers,
+                                Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed],
     getOwnerDOMNodeOrDocument: () => Promise.resolve({
       nodeName: () => 'iframe',
       nodeType: () => Node.ELEMENT_NODE,

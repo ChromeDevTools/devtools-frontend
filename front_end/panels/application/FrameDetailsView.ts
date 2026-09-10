@@ -351,7 +351,7 @@ function renderDocumentSection(input: FrameDetailsViewInput): LitTemplate {
         </div>
       </devtools-report-value>
       ${maybeRenderUnreachableURL(input.frame?.unreachableUrl())}
-      ${maybeRenderOrigin(input.frame?.securityOrigin)}
+      ${maybeRenderOrigin(input.frame?.securityOrigin())}
       ${renderOwnerElement(input.linkTargetDOMNode)}
       ${maybeRenderCreationStacktrace(input.creationStackTrace)}
       ${maybeRenderAdStatus(input.frame?.adFrameType(), input.frame?.adFrameStatus())}
@@ -414,12 +414,13 @@ function renderNetworkLinkForUnreachableURL(unreachableUrlString: Platform.DevTo
   return nothing;
 }
 
-function maybeRenderOrigin(securityOrigin: string|null): LitTemplate {
-  if (securityOrigin && securityOrigin !== '://') {
+function maybeRenderOrigin(securityOrigin: SDK.SecurityOrigin.SecurityOrigin|undefined): LitTemplate {
+  if (securityOrigin && !securityOrigin.isOpaque()) {
+    const originString = securityOrigin.siteId();
     return html`
         <devtools-report-key>${i18nString(UIStrings.origin)}</devtools-report-key>
         <devtools-report-value>
-          <div class="text-ellipsis" title=${securityOrigin}>${securityOrigin}</div>
+          <div class="text-ellipsis" title=${originString}>${originString}</div>
         </devtools-report-value>
       `;
   }

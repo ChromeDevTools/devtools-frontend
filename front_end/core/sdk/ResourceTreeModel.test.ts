@@ -284,4 +284,245 @@ describeWithEnvironment('ResourceTreeModel', () => {
     sinon.assert.calledOnce(frameNavigatedWithinDocumentSpy);
     assert.strictEqual(frameNavigatedWithinDocumentSpy.firstCall.args[0].data, mainFrame);
   });
+
+  describe('securityOrigin', () => {
+    it('returns a SecurityOrigin instance matching the frame origin', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const frame = getMainFrame(target);
+      assert.strictEqual(frame.securityOrigin().siteId(), 'https://example.com');
+      assert.isFalse(frame.securityOrigin().isOpaque());
+    });
+
+    it('returns an opaque SecurityOrigin when frame security origin is empty', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const childFrame = await addChildFrame(target, {securityOrigin: ''});
+      assert.isTrue(childFrame.securityOrigin().isOpaque());
+    });
+
+    it('updates securityOrigin when navigating to a new origin', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const frame = getMainFrame(target);
+      navigate(frame, {url: urlString`https://new-origin.com/`, securityOrigin: 'https://new-origin.com'});
+      assert.strictEqual(frame.securityOrigin().siteId(), 'https://new-origin.com');
+    });
+  });
+
+  describe('frameForOrigin', () => {
+    it('returns the frame matching the security origin under the primary page target', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const mainFrame = getMainFrame(target);
+      const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+
+      const foundFrame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(target, origin);
+      assert.strictEqual(foundFrame, mainFrame);
+    });
+
+    it('returns a child frame matching the requested origin', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const childFrame = await addChildFrame(target, {securityOrigin: 'https://sub.example.com'});
+      const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://sub.example.com');
+
+      const foundFrame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(target, origin);
+      assert.strictEqual(foundFrame, childFrame);
+    });
+
+    it('returns null when searching for an opaque origin that does not match', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      await addChildFrame(target, {securityOrigin: ''});
+      const opaqueOrigin = SDK.SecurityOrigin.SecurityOrigin.create('about:blank');
+
+      const foundFrame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(target, opaqueOrigin);
+      assert.isNull(foundFrame);
+    });
+
+    it('matches an opaque frame when searching with its exact SecurityOrigin', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const childFrame = await addChildFrame(target, {securityOrigin: ''});
+
+      const foundFrame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(target, childFrame.securityOrigin());
+      assert.strictEqual(foundFrame, childFrame);
+    });
+
+    it('returns null when origin is not found in any frame', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://not-in-tree.com');
+
+      const foundFrame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(target, origin);
+      assert.isNull(foundFrame);
+    });
+
+    it('ignores frames belonging to a different outermost target', async () => {
+      const target1 = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target1);
+
+      const otherConnection = new MockCDPConnection();
+      mockResourceTree(otherConnection);
+      const target2 = universe.createTarget({connection: otherConnection});
+      await getInitializedResourceTreeModel(target2);
+      const target2Child = await addChildFrame(target2, {securityOrigin: 'https://other-tab.com'});
+      assert.exists(target2Child);
+
+      const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://other-tab.com');
+      const foundFrame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(target1, origin);
+      assert.isNull(foundFrame);
+    });
+
+    it('skips frames with missing or empty security origins', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      await addChildFrame(target, {securityOrigin: ''});
+      const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+
+      const foundFrame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(target, origin);
+      assert.strictEqual(foundFrame, getMainFrame(target));
+    });
+
+    it('distinguishes different ports on the same host', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const originWithPort = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com:8080');
+
+      const foundFrame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(target, originWithPort);
+      assert.isNull(foundFrame);
+    });
+
+    it('finds a frame hosted on a subframe target belonging to the primary page target', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+
+      const oopifTarget = universe.createTarget({
+        type: SDK.Target.Type.FRAME,
+        parentTarget: target,
+      });
+      const oopifFrame = await addChildFrame(oopifTarget, {securityOrigin: 'https://oopif.example.com'});
+
+      const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://oopif.example.com');
+      const foundFrame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(target, origin);
+      assert.strictEqual(foundFrame, oopifFrame);
+    });
+
+    it('returns null when target has no outermost target', async () => {
+      const tabTarget = universe.createTarget({type: SDK.Target.Type.TAB});
+      const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+
+      const foundFrame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(tabTarget, origin);
+      assert.isNull(foundFrame);
+    });
+  });
+
+  describe('SecurityOriginManager events', () => {
+    it('dispatches SecurityOriginAdded and MainSecurityOriginChanged when main frame navigates to a new origin',
+       async () => {
+         const target = universe.createTarget({connection});
+         await getInitializedResourceTreeModel(target);
+         const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager)!;
+
+         const addedSpy = sinon.spy();
+         const changedSpy = sinon.spy();
+         securityOriginManager.addEventListener(SDK.SecurityOriginManager.Events.SecurityOriginAdded, addedSpy);
+         securityOriginManager.addEventListener(SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, changedSpy);
+
+         const mainFrame = getMainFrame(target);
+         navigate(mainFrame, {url: urlString`https://new-origin.com/`, securityOrigin: 'https://new-origin.com'});
+
+         sinon.assert.calledWith(addedSpy, sinon.match({data: 'https://new-origin.com'}));
+         sinon.assert.calledWith(changedSpy, sinon.match({
+           data: {mainSecurityOrigin: 'https://new-origin.com', unreachableMainSecurityOrigin: null},
+         }));
+         assert.strictEqual(securityOriginManager.mainSecurityOrigin(), 'https://new-origin.com');
+       });
+
+    it('does not dispatch SecurityOriginAdded when a child frame attaches with an existing origin', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager)!;
+
+      const addedSpy = sinon.spy();
+      securityOriginManager.addEventListener(SDK.SecurityOriginManager.Events.SecurityOriginAdded, addedSpy);
+
+      await addChildFrame(target, {securityOrigin: 'https://example.com'});
+
+      sinon.assert.notCalled(addedSpy);
+      assert.deepEqual(securityOriginManager.securityOrigins(), ['https://example.com']);
+    });
+
+    it('dispatches SecurityOriginAdded when a cross-origin child frame attaches', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager)!;
+
+      const addedSpy = sinon.spy();
+      securityOriginManager.addEventListener(SDK.SecurityOriginManager.Events.SecurityOriginAdded, addedSpy);
+
+      await addChildFrame(target, {securityOrigin: 'https://cross-origin.com'});
+
+      assert.isTrue(addedSpy.calledOnceWith(sinon.match({data: 'https://cross-origin.com'})));
+      assert.sameMembers(securityOriginManager.securityOrigins(), ['https://example.com', 'https://cross-origin.com']);
+    });
+
+    it('dispatches SecurityOriginRemoved and SecurityOriginAdded when a child frame navigates', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager)!;
+
+      const childFrame = await addChildFrame(target, {securityOrigin: 'https://cross-origin.com'});
+
+      const addedSpy = sinon.spy();
+      const removedSpy = sinon.spy();
+      securityOriginManager.addEventListener(SDK.SecurityOriginManager.Events.SecurityOriginAdded, addedSpy);
+      securityOriginManager.addEventListener(SDK.SecurityOriginManager.Events.SecurityOriginRemoved, removedSpy);
+
+      navigate(childFrame, {url: urlString`https://second-origin.com/`, securityOrigin: 'https://second-origin.com'});
+
+      assert.isTrue(removedSpy.calledOnceWith(sinon.match({data: 'https://cross-origin.com'})));
+      assert.isTrue(addedSpy.calledOnceWith(sinon.match({data: 'https://second-origin.com'})));
+      assert.sameMembers(securityOriginManager.securityOrigins(), ['https://example.com', 'https://second-origin.com']);
+    });
+
+    it('dispatches SecurityOriginRemoved when a unique-origin child frame is detached', async () => {
+      const target = universe.createTarget({connection});
+      const resourceTreeModel = await getInitializedResourceTreeModel(target);
+      const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager)!;
+
+      const childFrame = await addChildFrame(target, {securityOrigin: 'https://unique-child.com'});
+      assert.include(securityOriginManager.securityOrigins(), 'https://unique-child.com');
+
+      const removedSpy = sinon.spy();
+      securityOriginManager.addEventListener(SDK.SecurityOriginManager.Events.SecurityOriginRemoved, removedSpy);
+
+      resourceTreeModel.frameDetached(childFrame.id, false);
+
+      assert.isTrue(removedSpy.calledOnceWith(sinon.match({data: 'https://unique-child.com'})));
+      assert.deepEqual(securityOriginManager.securityOrigins(), ['https://example.com']);
+    });
+
+    it('updates unreachableMainSecurityOrigin when navigating to an unreachable URL', async () => {
+      const target = universe.createTarget({connection});
+      await getInitializedResourceTreeModel(target);
+      const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager)!;
+
+      const changedSpy = sinon.spy();
+      securityOriginManager.addEventListener(SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, changedSpy);
+
+      const mainFrame = getMainFrame(target);
+      navigate(mainFrame, {
+        url: urlString`https://unreachable.example.com/`,
+        unreachableUrl: urlString`https://unreachable.example.com/`,
+        securityOrigin: '://',
+      });
+
+      sinon.assert.calledWith(changedSpy, sinon.match({
+        data: {mainSecurityOrigin: '', unreachableMainSecurityOrigin: 'https://unreachable.example.com'},
+      }));
+      assert.strictEqual(securityOriginManager.unreachableMainSecurityOrigin(), 'https://unreachable.example.com');
+    });
+  });
 });

@@ -50,7 +50,7 @@ describe('GetStorageBreakdownTool', () => {
       resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel,
       ): sinon.SinonStubbedInstance<SDK.ResourceTreeModel.ResourceTreeFrame> {
     const mockFrame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
-    sinon.stub(mockFrame, 'securityOrigin').get(() => origin);
+    mockFrame.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(origin));
     mockFrame.resourceTreeModel.returns(resourceTreeModel);
     return mockFrame;
   }

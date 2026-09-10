@@ -78,7 +78,7 @@ export class GetStorageBreakdownTool implements
       primaryPageTarget.storageAgent().invoke_getUsageAndQuota({origin: pageOrigin}),
       calculateDOMStoragesUsage(localStorages),
       calculateDOMStoragesUsage(sessionStorages),
-      getCookiesForOrigin(pageOrigin, targetManager, primaryPageTarget),
+      getCookiesForOrigin(pageOrigin, primaryPageTarget),
     ]);
 
     if (response.getError()) {

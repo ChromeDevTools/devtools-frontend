@@ -27,7 +27,7 @@ function createMockFrame(origin: string, outermostTarget: SDK.Target.Target):
   resourceTreeModel.target.returns(target);
 
   const mockFrame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
-  sinon.stub(mockFrame, 'securityOrigin').get(() => origin);
+  mockFrame.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(origin));
   mockFrame.resourceTreeModel.returns(resourceTreeModel);
 
   return mockFrame;

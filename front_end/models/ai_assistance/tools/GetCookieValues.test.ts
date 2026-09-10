@@ -36,7 +36,7 @@ describe('GetCookieValuesTool', () => {
       resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel,
       ): sinon.SinonStubbedInstance<SDK.ResourceTreeModel.ResourceTreeFrame> {
     const mockFrame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
-    sinon.stub(mockFrame, 'securityOrigin').get(() => origin);
+    mockFrame.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(origin));
     mockFrame.resourceTreeModel.returns(resourceTreeModel);
     return mockFrame;
   }
@@ -293,7 +293,7 @@ describe('GetCookieValuesTool', () => {
     foreignRtm.target.returns(foreignTarget);
 
     const foreignFrame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
-    sinon.stub(foreignFrame, 'securityOrigin').get(() => 'https://example.com');
+    foreignFrame.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
     foreignFrame.resourceTreeModel.returns(foreignRtm);
 
     sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'frames').returns([foreignFrame]);

@@ -30,7 +30,7 @@ describe('CookieUtils', () => {
       resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel,
       ): sinon.SinonStubbedInstance<SDK.ResourceTreeModel.ResourceTreeFrame> {
     const mockFrame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
-    sinon.stub(mockFrame, 'securityOrigin').get(() => origin);
+    mockFrame.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(origin));
     mockFrame.resourceTreeModel.returns(resourceTreeModel);
     return mockFrame;
   }
@@ -64,7 +64,6 @@ describe('CookieUtils', () => {
 
       const result = await AiAssistance.CookieUtils.getCookiesForOrigin(
           'https://example.com',
-          universe.targetManager,
           primaryTarget,
       );
 
@@ -81,7 +80,6 @@ describe('CookieUtils', () => {
 
       const result = await AiAssistance.CookieUtils.getCookiesForOrigin(
           'https://other.com',
-          universe.targetManager,
           primaryTarget,
       );
 
@@ -97,7 +95,6 @@ describe('CookieUtils', () => {
 
       const result = await AiAssistance.CookieUtils.getCookiesForOrigin(
           'https://example.com',
-          universe.targetManager,
           primaryTarget,
       );
 
@@ -118,7 +115,6 @@ describe('CookieUtils', () => {
 
       const result = await AiAssistance.CookieUtils.getCookiesForOrigin(
           'https://example.com',
-          universe.targetManager,
           primaryTarget,
       );
 
@@ -139,7 +135,6 @@ describe('CookieUtils', () => {
 
       const result = await AiAssistance.CookieUtils.getCookiesForOrigin(
           'https://example.com',
-          universe.targetManager,
           primaryTarget,
       );
 
@@ -156,7 +151,6 @@ describe('CookieUtils', () => {
 
       const result = await AiAssistance.CookieUtils.getCookiesForOrigin(
           'https://example.com',
-          universe.targetManager,
           primaryTarget,
       );
 
@@ -276,20 +270,6 @@ describe('CookieUtils', () => {
       if ('error' in result) {
         assert.strictEqual(result.error, 'No valid origins found.');
       }
-    });
-  });
-
-  describe('findFrameForOrigin', () => {
-    it('returns null when origin is opaque', () => {
-      const {primaryTarget} = setupPrimaryTarget('https://example.com');
-
-      const result = AiAssistance.CookieUtils.findFrameForOrigin(
-          'data:text/html,test',
-          universe.targetManager,
-          primaryTarget,
-      );
-
-      assert.isNull(result);
     });
   });
 });

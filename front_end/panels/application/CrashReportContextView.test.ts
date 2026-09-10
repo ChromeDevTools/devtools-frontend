@@ -15,7 +15,6 @@ import * as Application from './application.js';
 
 describeWithEnvironment('CrashReportContextView', () => {
   const FRAME_ID = 'frame-1' as Protocol.Page.FrameId;
-  const ORIGIN = 'https://example.com';
   const URL = 'https://example.com/index.html';
 
   let target: SDK.Target.Target;
@@ -37,7 +36,6 @@ describeWithEnvironment('CrashReportContextView', () => {
   it('renders frame sections and entries', async () => {
     sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getFrame').returns({
       url: URL,
-      securityOrigin: ORIGIN,
       isMainFrame: () => true,
       displayName: () => URL,
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
@@ -62,13 +60,11 @@ describeWithEnvironment('CrashReportContextView', () => {
     const stub = sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getFrame');
     stub.withArgs('frame-1' as Protocol.Page.FrameId).returns({
       url: 'https://frame1.com',
-      securityOrigin: 'https://frame1.com',
       isMainFrame: () => true,
       displayName: () => 'https://frame1.com',
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
     stub.withArgs('frame-2' as Protocol.Page.FrameId).returns({
       url: 'https://frame2.com',
-      securityOrigin: 'https://frame2.com',
       isMainFrame: () => false,
       displayName: () => 'https://frame2.com',
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
@@ -113,14 +109,12 @@ describeWithEnvironment('CrashReportContextView', () => {
 
     stub.withArgs('frame-main' as Protocol.Page.FrameId).returns({
       url: SHARED_URL,
-      securityOrigin: SHARED_URL,
       isMainFrame: () => true,
       displayName: () => SHARED_URL,
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
 
     stub.withArgs('frame-sub' as Protocol.Page.FrameId).returns({
       url: SHARED_URL,
-      securityOrigin: SHARED_URL,
       isMainFrame: () => false,
       displayName: () => SHARED_URL,
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
@@ -148,7 +142,6 @@ describeWithEnvironment('CrashReportContextView', () => {
 
     stub.withArgs('frame-1' as Protocol.Page.FrameId).returns({
       url: URL,
-      securityOrigin: URL,
       isMainFrame: () => true,
       displayName: () => TITLE,
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);

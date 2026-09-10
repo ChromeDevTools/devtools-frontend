@@ -110,7 +110,7 @@ export class GetCookieValuesTool implements DataTool<GetCookieValuesArgs, GetCoo
     const cookiesByOrigin: GetCookieValuesResult['cookiesByOrigin'] = {};
 
     await Promise.all(targetOrigins.map(async origin => {
-      const result = await getCookiesForOrigin(origin, targetManager, primaryPageTarget);
+      const result = await getCookiesForOrigin(origin, primaryPageTarget);
       if ('error' in result) {
         cookiesByOrigin[origin] = {error: result.error};
         return;

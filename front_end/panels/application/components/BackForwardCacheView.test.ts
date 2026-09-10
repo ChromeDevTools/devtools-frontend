@@ -234,11 +234,12 @@ describeWithEnvironment('BackForwardCacheView', () => {
     resourceTreeModel.navigationHistory = stub;
 
     resourceTreeModel.navigate = (url: Platform.DevToolsPath.UrlString) => {
-      resourceTreeModel.frameNavigated({url} as unknown as Protocol.Page.Frame, undefined);
+      resourceTreeModel.frameNavigated({url, securityOrigin: url} as unknown as Protocol.Page.Frame, undefined);
       return Promise.resolve({frameId: '' as Protocol.Page.FrameId, getError(): undefined {}});
     };
     resourceTreeModel.navigateToHistoryEntry = (entry: Protocol.Page.NavigationEntry) => {
-      resourceTreeModel.frameNavigated({url: entry.url} as unknown as Protocol.Page.Frame, undefined);
+      resourceTreeModel.frameNavigated({url: entry.url, securityOrigin: entry.url} as unknown as Protocol.Page.Frame,
+                                       undefined);
     };
     const navigateToHistoryEntrySpy = sinon.spy(resourceTreeModel, 'navigateToHistoryEntry');
     resourceTreeModel.storageKeyForFrame = () => Promise.resolve(null);

@@ -633,6 +633,12 @@
       name: "AnimationWorklet",
     },
     {
+      // crbug.com/538260158
+      name: "AnnotationSpaceForMultiCol",
+      status: "experimental",
+      depends_on: ["AnnotationSpaceOnStart"],
+    },
+    {
       // crbug.com/445727139
       name: "AnnotationSpaceOnStart",
       status: "stable",
@@ -812,6 +818,13 @@
     {
       // Killswitch M153.
       name: "AvoidEmbeddedContentViewLocation",
+      status: "stable",
+    },
+    {
+      // Don't use a position inside non-selectable content as a selection
+      // boundary when it has no canonical position, which collapses the whole
+      // selection. See https://crbug.com/553831659.
+      name: "AvoidNonSelectableSelectionBoundary",
       status: "stable",
     },
     {
@@ -1009,6 +1022,13 @@
       status: "experimental",
     },
     {
+      // When enabled, avoids eagerly flushing raster draw ops in FinalizeFrame
+      // for composited 2D canvases, deferring the flush to
+      // PrepareTransferableResource.
+      name: "Canvas2dDeferredFlush",
+      status: "experimental",
+    },
+    {
       name: "Canvas2dLayers",
     },
     {
@@ -1147,6 +1167,12 @@
       status: "stable",
     },
     {
+      // This is a kill switch for a refactor of the way activation
+      // behaviors are triggered. It should not affect behavior.
+      name: "CleanUpActivationBehavior",
+      status: "experimental",
+    },
+    {
       // Set currentTarget to null after dispatch for EventTarget.
       // This was added in M142 and can be removed after M144.
       // https://issues.chromium.org/issues/346766786
@@ -1210,10 +1236,6 @@
     {
       name: "CoepReflection",
       status: "test",
-    },
-    {
-      name: "CollapseZeroWidthSpaceWhenReuseItem",
-      status: "stable",
     },
     {
       // Allows <input type=color> to accept any valid CSS color value
@@ -1483,6 +1505,11 @@
       status: "stable",
     },
     {
+      // https://crbug.com/543376113
+      name: "CSSAlphaColorFunctionRequiresAlpha",
+      status: "stable",
+    },
+    {
       // Allows using counter() and counters() in alt text (after / in content property).
       name: "CSSAltCounter",
       status: "stable",
@@ -1567,10 +1594,6 @@
       status: "stable",
     },
     {
-      name: "CSSColorQuantizedAlphaOnlyLegacy",
-      status: "stable",
-    },
-    {
       name: "CSSColorTypedOM",
       status: "experimental",
     },
@@ -1605,7 +1628,7 @@
       // The symbols() function for defining an anonymous counter style inline.
       // https://drafts.csswg.org/css-counter-styles-3/#symbols-function
       name: "CSSCounterStyleSymbolsFunction",
-      status: "experimental",
+      status: "stable",
     },
     {
       // Unprefixed cross-fade() (in addition to the existing -webkit-cross-fade()).
@@ -1630,6 +1653,12 @@
       // https://crbug.com/949807
       name: "CSSEnumeratedCustomProperties",
       status: "stable",
+    },
+    {
+      // The 'flow-start' and 'flow-end' box alignment keywords.
+      // https://github.com/w3c/csswg-drafts/issues/14052
+      name: "CSSFlowStartAndEnd",
+      status: "experimental",
     },
     {
       // crbug.com/483689942
@@ -1961,6 +1990,10 @@
       implied_by: ["CSSScrollSnapChangeEvent", "CSSScrollSnapChangingEvent"],
     },
     {
+      name: "CSSScrollSnapStopBefore",
+      status: "test",
+    },
+    {
       name: "CSSScrollSnapTypePair",
       status: "test",
     },
@@ -2038,7 +2071,7 @@
     },
     {
       name: "CSSTextDecorationSkipSpaces",
-      status: "experimental",
+      status: "stable",
     },
     {
       // crbug.com/417306102
@@ -2048,11 +2081,6 @@
     {
       // crbug.com/417306102
       name: "CssTextFitReshaping",
-    },
-    {
-      // crbug.com/434361099
-      name: "CssTextIndent",
-      status: "stable",
     },
     {
       // crbug.com/1463890, crbug.com/1463891: CSS `text-spacing` shorthand
@@ -2554,6 +2582,12 @@
       settable_from_internals: true
     },
     {
+      // Update EditContext selectionStart/End before TextUpdateEvent while
+      // handling deletion. See https://crbug.com/529413105
+      name: "EditContextSelectionUpdateBeforeTextUpdateEvent",
+      status: "stable",
+    },
+    {
       name: "EditingUseDomPositionApi",
       status: "test",
     },
@@ -3022,17 +3056,9 @@
       status: "stable",
     },
     {
-      name: "FirstLineOnListItem",
-      status: "stable",
-    },
-    {
       // It turned out that this fix was wrong. The plan is to turn it off, and
       // remove if that goes well. crbug.com/41362700
       name: "FirstLineTextMetrics",
-    },
-    {
-      name: "FirstLineTextTransform",
-      status: "stable",
     },
     // When enabled, HTMLFormControlElement::IsReadOnly() returns false for
     // types that don't support readonly.
@@ -3183,6 +3209,10 @@
       status: {"Android": "", "default": "stable"},
     },
     {
+      name: "FontationsPrinting",
+      status: "experimental",
+    },
+    {
       name: "FontDataServiceForCSSLocalFonts",
       base_feature: "none",
       // No status, as the web platform runtime enabled feature is controlled by
@@ -3253,8 +3283,11 @@
     },
     {
       name: "FractionalScrollOffsets",
-      base_feature: "none",
-      public: true,
+      implied_by: ["FractionalScrollOffsetsForWebAPI"],
+    },
+    {
+      // https://crbug.com/40384509.
+      name: "FractionalScrollOffsetsForWebAPI",
     },
     {
       // Generate layout fragments for out-of-flow positioned elements as
@@ -3490,6 +3523,13 @@
     {
       name: "HTMLAreaHreflangType",
       status: "test",
+    },
+    {
+      // Kill switch for parsing <body>, <frame> and <iframe> margin attributes
+      // as pixel lengths per the HTML rendering rules.
+      // https://crbug.com/554920796
+      name: "HTMLBodyMarginPixelLength",
+      status: "stable",
     },
     // Additional default command/commandfor actions that aren't part of v1 of
     // commands. When this flag is disabled only v1 actions (popover and dialog
@@ -3864,6 +3904,10 @@
     },
     {
       name: "LineBreakAfterSpaceBeforeOpenTag",
+      status: "stable",
+    },
+    {
+      name: "LineBreakBidiControlEnter",
       status: "stable",
     },
     {
@@ -4280,7 +4324,7 @@
       // https://chromestatus.com/feature/5054329641893888
       // streamHTML, appendHTML, etc.
       name: "NewHTMLSettingMethods",
-      status: "stable",
+      status: "experimental",
       depends_on: ["SetHTMLCanRunScripts", "StreamingSanitizer", "TrustedTypesCreateParserOptions"]
     },
     {
@@ -4424,6 +4468,12 @@
     },
     {
       name: "OnDeviceWebSpeechQuality",
+      status: "stable",
+    },
+    {
+      // Skip layout of all out-of-flow positioned elements if side-effects are
+      // disabled. See DisableLayoutSideEffectsScope.
+      name: "OofLayoutRequiresSideEffects",
       status: "stable",
     },
     {
@@ -4802,6 +4852,12 @@
       status: "stable",
     },
     {
+      // Kill switch for skipping MathML <script src> and simulating the HTML
+      // breakout tags in the HTML preload scanner. https://crbug.com/40728681
+      name: "PreloadScannerSkipMathMLScript",
+      status: "stable",
+    },
+    {
       // Used to allow chrome://flags to turn off prerendering. (Without using
       // the user-facing preloading settings page to turn off other
       // preloading.) See https://crbug.com/1494471.
@@ -4969,10 +5025,6 @@
       status: "stable",
     },
     {
-      name: "QuoteFirstLineStyle",
-      status: "stable",
-    },
-    {
       // Sets Range boundaries relative to a sibling node lazily, avoiding the
       // O(n) Node::NodeIndex()/NodeTraversal::ChildAt walks so that selectNode()
       // is O(1) instead of O(n). See crbug.com/515812864.
@@ -5135,6 +5187,12 @@
       name: "RenderPriorityAttribute",
     },
     {
+      // When enabled, avoids calling RemoveChildren() in
+      // ReplaceChildrenWithFragment() if the container is already empty.
+      name: "ReplaceChildrenWithFragmentFastPath",
+      status: "stable",
+    },
+    {
       // Kill switch for painting non-SVG replaced normal-flow stacking
       // contexts inline with their siblings.
       // This was set to experimental due to crbug.com/532229489.
@@ -5238,6 +5296,10 @@
     {
       name: "RTCEncodedFrameTimestamps",
       status: "stable",
+    },
+    {
+      name: "RTCEncodedSource",
+      status: "experimental",
     },
     {
       name: "RTCEncodedVideoFrameAdditionalMetadata",
@@ -5496,10 +5558,6 @@
         "Android": "",
         "default": "test",
       },
-    },
-    {
-      name: "SelectAutofillPopoverPreview",
-      status: "stable",
     },
     {
       // The selectedcontentelement attribute is for connecting select elements
@@ -5776,10 +5834,6 @@
       status: "stable",
     },
     {
-      name: "SkipOofItemForBreakCandidate",
-      status: "stable",
-    },
-    {
       // crbug.com/517761566
       name: "SkipStaleUndoStepsInIdleSpellCheck",
       status: "stable",
@@ -5867,6 +5921,14 @@
     },
     {
       name: "SpeakerSelection",
+      status: "experimental",
+    },
+    {
+      // Enables spec-compliant suffix matching for XML MIME types
+      // (e.g., text/html+xml) by allowing *+xml patterns.
+      // https://mimesniff.spec.whatwg.org/#xml-mime-type
+      // https://crbug.com/362282752
+      name: "SpecCompliantXmlMimeTypes",
       status: "experimental",
     },
     {
@@ -6028,6 +6090,11 @@
       status: "experimental",
     },
     {
+      // Don't accept the empty string as a valid value in some cases.
+      name: "SvgEmptyAttributeStringParsingFix",
+      status: "stable",
+    },
+    {
       name: "SvgEnableTextDecorationCssStyling",
       status: "stable",
     },
@@ -6070,6 +6137,12 @@
     {
       name: "SvgInlineRootPixelSnappingScaleAdjustment",
       status: "test",
+    },
+    {
+      // When enabled, short-circuits shadow instance synchronization when SVG
+      // elements cannot have instances (no rare data).
+      name: "SvgInstanceSyncOptimization",
+      status: "stable",
     },
     {
       name: "SvgLengthResolveUnparsedValue",
@@ -6160,15 +6233,7 @@
       status: "test",
     },
     {
-      name: "TabSizeAncestor",
-      status: "stable",
-    },
-    {
       name: "TabSizeInRubyBase",
-      status: "stable",
-    },
-    {
-      name: "TabSizeWithSpacing",
       status: "stable",
     },
     {
@@ -6304,6 +6369,11 @@
     {
       name: "TextFragmentTapOpensContextMenu",
       status: {"Android": "stable"},
+    },
+    {
+      // crbug.com/556235808
+      name: "TextIteratorExcludeAutofilledSelectFix",
+      status: "stable",
     },
     {
       name: "TextMetricsBaselines",
@@ -6470,7 +6540,7 @@
       // For example, it can enforce that any HTML setter would go through a
       // sanitizer. See https://github.com/w3c/trusted-types/issues/594
       name: "TrustedTypesCreateParserOptions",
-      status: "stable",
+      status: "experimental",
       depends_on: ["SanitizerAPI", "SetHTMLCanRunScripts"],
     },
     {
@@ -6593,6 +6663,10 @@
       // echo is enabled to create the offset_map.
       name: "UseOriginalDomOffsetsForOffsetMap",
       status: "test",
+    },
+    {
+      name: "UsePaintGeometryForIntersection",
+      status: "stable",
     },
     {
       name: "UsePositionForPointInFlexibleBoxWithSingleChildElement",
@@ -6808,10 +6882,6 @@
       origin_trial_feature_name: "WebAudioConfigurableRenderQuantum",
       status: "stable",
     },
-    {
-      name: "WebAudioRustFft",
-      status: "stable",
-    },
     // WebAuth is disabled on Android versions prior to N (7.0) due to lack of
     // supporting APIs, see runtime_features.cc.
     {
@@ -6940,6 +7010,13 @@
       name: "WebGLOnWebGPU",
     },
     {
+      // WebGL tone mapping support
+      // https://issues.chromium.org/issues/555806830
+      // https://chromestatus.com/feature/5424242161221632
+      name: "WebGLToneMapping",
+      status: "experimental",
+    },
+    {
       // WebGPU developer features are deliberately not enabled by experimental
       // web platform features.
       name: "WebGPUDeveloperFeatures",
@@ -6959,6 +7036,14 @@
       status: "experimental",
       implied_by: ["WebGPUExperimentalFeatures"],
       public: true,
+    },
+    {
+      // WebGPU external image copy and import HDR headroom parameter for tone
+      // mapping.
+      // https://crbug.com/557320955
+      // https://chromestatus.com/feature/5147993689948160
+      name: "WebGPUExternalImageHDRHeadroom",
+      status: "experimental",
     },
     {
       // Enables GPUBuffer::mapSync for WebGPU.
@@ -7148,6 +7233,10 @@
       base_feature: "none",
     },
     {
+      name: "WebTransportCreateStreamsBeforeReady",
+      status: "stable",
+    },
+    {
       name: "WebTransportCustomCertificates",
       origin_trial_feature_name: "WebTransportCustomCertificates",
       status: "stable",
@@ -7170,6 +7259,11 @@
     },
     {
       name: "WebTransportReceiveStream",
+      status: "experimental",
+      base_feature: "none",
+    },
+    {
+      name: "WebTransportReliability",
       status: "experimental",
       base_feature: "none",
     },
@@ -7218,6 +7312,13 @@
       // position alignment instead of the CSS text alignment.
       // Spec: https://w3c.github.io/webvtt/#cue-computed-position-alignment
       name: "WebVTTCueLayoutByPositionAlignment",
+      status: "stable",
+    },
+    {
+      // Killswitch for sizing each cue line box using the cue text font
+      // instead of the text track container font, keeping the cue box tight
+      // around the rendered cue text.
+      name: "WebVTTCueTightLineBox",
       status: "stable",
     },
     {
@@ -7351,10 +7452,6 @@
     {
       // Fixes an issue where Ctrl+Right Arrow skips punctuation before a newline.
       name: "WordSkipSpacesPunctuationFix",
-      status: "stable",
-    },
-    {
-      name: "WordSpacingWhiteSpacePre",
       status: "stable",
     },
     {

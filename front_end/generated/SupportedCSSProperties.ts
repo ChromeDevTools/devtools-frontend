@@ -362,6 +362,8 @@ export const generatedProperties: CSSProperty[] = [
    "center",
    "start",
    "end",
+   "flow-start",
+   "flow-end",
    "self-start",
    "self-end",
    "flex-start",
@@ -3601,6 +3603,8 @@ export const generatedProperties: CSSProperty[] = [
    "center",
    "start",
    "end",
+   "flow-start",
+   "flow-end",
    "self-start",
    "self-end",
    "flex-start",
@@ -5120,7 +5124,8 @@ export const generatedProperties: CSSProperty[] = [
  {
   "keywords": [
    "normal",
-   "always"
+   "always",
+   "before"
   ],
   "name": "scroll-snap-stop"
  },
@@ -5501,7 +5506,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "text-decoration-skip-spaces",
   "runtime_flag": "CSSTextDecorationSkipSpaces",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "keywords": [
@@ -6286,6 +6291,8 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
    "center",
    "start",
    "end",
+   "flow-start",
+   "flow-end",
    "self-start",
    "self-end",
    "flex-start",
@@ -7879,6 +7886,8 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
    "center",
    "start",
    "end",
+   "flow-start",
+   "flow-end",
    "self-start",
    "self-end",
    "flex-start",
@@ -8692,7 +8701,8 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
  "scroll-snap-stop": {
   "values": [
    "normal",
-   "always"
+   "always",
+   "before"
   ]
  },
  "scroll-snap-type": {

@@ -2031,7 +2031,8 @@
                         "TypeNotMatching",
                         "UiDismissedNoEmbargo",
                         "CorsError",
-                        "SuppressedBySegmentationPlatform"
+                        "SuppressedBySegmentationPlatform",
+                        "PopupBlockedByConnectionAllowlist"
                     ]
                 },
                 {
@@ -2131,7 +2132,8 @@
                         "TokenVerificationKbInvalidNonce",
                         "TokenVerificationKbInvalidSdHash",
                         "TokenVerificationKbMissingCnf",
-                        "TokenVerificationKbSignatureFailed"
+                        "TokenVerificationKbSignatureFailed",
+                        "CrossOriginIframeNotSupported"
                     ]
                 },
                 {
@@ -11477,6 +11479,17 @@
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "viewportMeta",
+                            "description": "Viewport meta tag behavior. Default: `default`. Note: if `mobile` is `true`,\nthe viewport meta tag is always enabled.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "string",
+                            "enum": [
+                                "enable",
+                                "default"
+                            ]
                         }
                     ]
                 },
@@ -30987,6 +31000,13 @@
                             "description": "Location in the source code where scope ends",
                             "optional": true,
                             "$ref": "Location"
+                        },
+                        {
+                            "name": "empty",
+                            "description": "True if the scope does not declare any variables or have a runtime context.\nOnly present if true.\nEmpty scopes are retained in the scope chain because\nthey can be targeted via `evaluateOnCallFrame` (using `scopeNumber`) or\nmatched against scopes in source maps.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -33078,6 +33098,7 @@
                                 "dataview",
                                 "webassemblymemory",
                                 "wasmvalue",
+                                "deferredmodule",
                                 "trustedtype"
                             ]
                         },
@@ -33197,6 +33218,7 @@
                                 "dataview",
                                 "webassemblymemory",
                                 "wasmvalue",
+                                "deferredmodule",
                                 "trustedtype"
                             ]
                         },
@@ -33293,6 +33315,7 @@
                                 "dataview",
                                 "webassemblymemory",
                                 "wasmvalue",
+                                "deferredmodule",
                                 "trustedtype"
                             ]
                         }

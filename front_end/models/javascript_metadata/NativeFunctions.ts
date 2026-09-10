@@ -6662,7 +6662,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "WebSocket",
-    signatures: [["url","?protocols"]]
+    signatures: [["url","?protocolsOrOptions"]]
   },
   {
     name: "WebSocketError",
@@ -6811,6 +6811,10 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   {
     name: "provokingVertexWEBGL",
     signatures: [["provokeMode"]]
+  },
+  {
+    name: "drawingBufferToneMapping",
+    signatures: [["?toneMapping"]]
   },
   {
     name: "texElementImage2D",
@@ -8732,6 +8736,10 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "CanvasPaintEvent",
+    signatures: [["type","?eventInitDict"]]
+  },
+  {
+    name: "ElementGeometryUpdateEvent",
     signatures: [["type","?eventInitDict"]]
   },
   {

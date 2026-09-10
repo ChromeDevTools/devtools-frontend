@@ -1402,6 +1402,7 @@ export namespace Audits {
     UiDismissedNoEmbargo = 'UiDismissedNoEmbargo',
     CorsError = 'CorsError',
     SuppressedBySegmentationPlatform = 'SuppressedBySegmentationPlatform',
+    PopupBlockedByConnectionAllowlist = 'PopupBlockedByConnectionAllowlist',
   }
 
   export interface FederatedAuthUserInfoRequestIssueDetails {
@@ -1492,6 +1493,7 @@ export namespace Audits {
     TokenVerificationKbInvalidSdHash = 'TokenVerificationKbInvalidSdHash',
     TokenVerificationKbMissingCnf = 'TokenVerificationKbMissingCnf',
     TokenVerificationKbSignatureFailed = 'TokenVerificationKbSignatureFailed',
+    CrossOriginIframeNotSupported = 'CrossOriginIframeNotSupported',
   }
 
   /**
@@ -7437,6 +7439,11 @@ export namespace Emulation {
     Default = 'default',
   }
 
+  export const enum SetDeviceMetricsOverrideRequestViewportMeta {
+    Enable = 'enable',
+    Default = 'default',
+  }
+
   export interface SetDeviceMetricsOverrideRequest {
     /**
      * Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
@@ -7514,6 +7521,11 @@ export namespace Emulation {
      * responsive design mode.
      */
     screenOrientationLockEmulation?: boolean;
+    /**
+     * Viewport meta tag behavior. Default: `default`. Note: if `mobile` is `true`,
+     * the viewport meta tag is always enabled.
+     */
+    viewportMeta?: SetDeviceMetricsOverrideRequestViewportMeta;
   }
 
   export interface SetDevicePostureOverrideRequest {
@@ -20508,6 +20520,14 @@ export namespace Debugger {
      * Location in the source code where scope ends
      */
     endLocation?: Location;
+    /**
+     * True if the scope does not declare any variables or have a runtime context.
+     * Only present if true.
+     * Empty scopes are retained in the scope chain because
+     * they can be targeted via `evaluateOnCallFrame` (using `scopeNumber`) or
+     * matched against scopes in source maps.
+     */
+    empty?: boolean;
   }
 
   /**
@@ -21945,6 +21965,7 @@ export namespace Runtime {
     Dataview = 'dataview',
     Webassemblymemory = 'webassemblymemory',
     Wasmvalue = 'wasmvalue',
+    Deferredmodule = 'deferredmodule',
     Trustedtype = 'trustedtype',
   }
 
@@ -22039,6 +22060,7 @@ export namespace Runtime {
     Dataview = 'dataview',
     Webassemblymemory = 'webassemblymemory',
     Wasmvalue = 'wasmvalue',
+    Deferredmodule = 'deferredmodule',
     Trustedtype = 'trustedtype',
   }
 
@@ -22104,6 +22126,7 @@ export namespace Runtime {
     Dataview = 'dataview',
     Webassemblymemory = 'webassemblymemory',
     Wasmvalue = 'wasmvalue',
+    Deferredmodule = 'deferredmodule',
     Trustedtype = 'trustedtype',
   }
 

@@ -73,7 +73,7 @@ import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {ShortcutTreeElement} from './ShortcutTreeElement.js';
 import {TopLayerContainer} from './TopLayerContainer.js';
 
-const {html, nothing, render, Directives: {classMap}} = Lit;
+const {html, nothing, render, Directives: {classMap, styleMap}} = Lit;
 
 const UIStrings = {
   /**
@@ -129,10 +129,12 @@ interface ViewInput {
   deindentSingleNode: boolean;
   currentHighlightedNode: SDK.DOMModel.DOMNode|null;
   hoveredNode?: SDK.DOMModel.DOMNode|null;
+  hoveredClosingTag?: boolean;
   searchMatchNode?: SDK.DOMModel.DOMNode|null;
   searchMatchQuery?: string|null;
 
   selectedNode: SDK.DOMModel.DOMNode|null;
+  selectedClosingTag?: boolean;
 
   onSelectedNodeChanged:
       (event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>) => void;
@@ -140,10 +142,10 @@ interface ViewInput {
   onElementCollapsed: () => void;
   onElementExpanded: () => void;
 
-  onSelect?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
+  onSelect?: (node: SDK.DOMModel.DOMNode, isClosingTag?: boolean, selectedByUser?: boolean) => void;
   onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
   onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent, widget?: ElementsTreeWidget) => void;
-  onHoverNode?: (node: SDK.DOMModel.DOMNode, showInfo?: boolean) => void;
+  onHoverNode?: (node: SDK.DOMModel.DOMNode|null, showInfo?: boolean, isClosingTag?: boolean) => void;
   onLeave?: () => void;
   onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
   onKeyDown?: (event: KeyboardEvent) => void;
@@ -521,12 +523,13 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     };
 
+    // clang-format off
     return html`
       <li role="treeitem"
           ?selected=${isShortcutSelected}
           ?open=${isShortcutExpanded}
           class="elements-tree-shortcut"
-          style="--indent: ${computeLeftIndent(shortcutDepth, hasShortcutChildren)}px"
+          style=${styleMap({'--indent': `${computeLeftIndent(shortcutDepth, hasShortcutChildren)}px`})}
           @select=${onShortcutSelect}
           @expand=${onShortcutExpand}
           @mousemove=${on(onShortcutMouseMove)}
@@ -535,34 +538,31 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         <div class="selection fill"></div>
         <span class="elements-tree-shortcut-title">\u21AA ${title}</span>
         <devtools-adorner
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL}
-          class="adorner-reveal clickable"
-          role=button
-          tabindex=0
-          jslog=${VisualLogging.adorner('reveal').track({
-      click: true,
-    })}
-          aria-label=${i18nString(UIStrings.reveal)}
-          @click=${on(onReveal)}
-          @keydown=${handleAdornerKeydown(onReveal)}
-          @mousedown=${(e: Event) => e.consume()}
-          ${adornerRef()}>
+            .name=${ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL}
+            class="adorner-reveal clickable"
+            role=button
+            tabindex=0
+            jslog=${VisualLogging.adorner('reveal').track({click: true})}
+            aria-label=${i18nString(UIStrings.reveal)}
+            @click=${on(onReveal)}
+            @keydown=${handleAdornerKeydown(onReveal)}
+            @mousedown=${(e: Event) => e.consume()}
+            ${adornerRef()}>
           <span class="adorner-with-icon">
             <devtools-icon name="select-element"></devtools-icon>
             <span>${ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL}</span>
           </span>
         </devtools-adorner>
-        ${
-        hasShortcutChildren ? html`
+        ${hasShortcutChildren ? html`
           <ul role="group">
             ${UI.TreeOutline.ifExpanded(html`
               ${shortcut.childShortcuts.map(child => renderShortcut(child, shortcutDepth + 1))}
             `)}
           </ul>
-        ` :
-                              nothing}
+        ` : nothing}
       </li>
     `;
+    // clang-format on
   };
 
   const renderTopLayerContainer =
@@ -579,23 +579,25 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           input.onSelectTopLayerContainer?.(doc);
         };
 
+        // clang-format off
         return html`
-      <li role="treeitem"
-          ?open=${isTopLayerExpanded}
-          class="elements-tree-top-layer-container"
-          style="--indent: ${computeLeftIndent(containerDepth, true)}px"
-          @select=${onTopLayerSelect}
-          @expand=${onTopLayerExpand}
-          jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
-        <div class="selection fill"></div>
-        <span class="elements-tree-shortcut-title">#top-layer</span>
-        <ul role="group">
-          ${UI.TreeOutline.ifExpanded(html`
-            ${shortcuts.map(sc => renderShortcut(sc, containerDepth + 1))}
-          `)}
-        </ul>
-      </li>
-    `;
+          <li role="treeitem"
+              ?open=${isTopLayerExpanded}
+              class="elements-tree-top-layer-container"
+              style=${styleMap({'--indent': `${computeLeftIndent(containerDepth, true)}px`})}
+              @select=${onTopLayerSelect}
+              @expand=${onTopLayerExpand}
+              jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
+            <div class="selection fill"></div>
+            <span class="elements-tree-shortcut-title">#top-layer</span>
+            <ul role="group">
+              ${UI.TreeOutline.ifExpanded(html`
+                ${shortcuts.map(sc => renderShortcut(sc, containerDepth + 1))}
+              `)}
+            </ul>
+          </li>
+        `;
+        // clang-format on
       };
 
   const renderAdoptedStyleSheet = (sheet: SDK.DOMModel.AdoptedStyleSheet, depth: number): Lit.LitTemplate => {
@@ -616,7 +618,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           ?selected=${isSelected}
           ?open=${isExpanded}
           class="elements-tree-adopted-style-sheet"
-          style="--indent: ${computeLeftIndent(depth, true)}px"
+          style=${styleMap({'--indent': `${computeLeftIndent(depth, true)}px`})}
           @select=${onSelect}
           @expand=${onExpand}
           jslog=${VisualLogging.treeItem('adopted-style-sheet').parent('elementsTreeOutline')}>
@@ -631,7 +633,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
             ${header ? html`
               <li role="treeitem"
                   class="elements-tree-adopted-style-sheet-contents"
-                  style="--indent: ${computeLeftIndent(depth + 1, false)}px"
+                  style=${styleMap({'--indent': `${computeLeftIndent(depth + 1, false)}px`})}
                   jslog=${VisualLogging.treeItem('adopted-style-sheet-contents').parent('elementsTreeOutline')}>
                 <div class="selection fill"></div>
                 ${UI.Widget.widget(AdoptedStyleSheetContentsWidget, {styleSheetHeader: header})}
@@ -662,7 +664,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       <li role="treeitem"
           ?open=${isExpanded}
           class="elements-tree-adopted-style-sheets"
-          style="--indent: ${computeLeftIndent(depth, true)}px"
+          style=${styleMap({'--indent': `${computeLeftIndent(depth, true)}px`})}
           @select=${onSelect}
           @expand=${onExpand}
           jslog=${VisualLogging.treeItem('adopted-style-sheets').parent('elementsTreeOutline')}>
@@ -680,7 +682,9 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
 
   const renderNode = (node: SDK.DOMModel.DOMNode, depth = 0): Lit.LitTemplate => {
     const isSelected = input.selectedNode === node;
-    const isHovered = (input.currentHighlightedNode === node) || (input.hoveredNode === node);
+    const isOpeningHovered =
+        (input.currentHighlightedNode === node) || (input.hoveredNode === node && !input.hoveredClosingTag);
+    const isClosingHovered = input.hoveredNode === node && Boolean(input.hoveredClosingTag);
     const isExpanded = Boolean(
         (input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode)) ||
         (input.isNodeExpanded ?
@@ -705,8 +709,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
 
     const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
 
-    const onSelect = (): void => {
-      input.onSelect?.(node, /* selectedByUser= */ true);
+    const onSelect = (isClosingTag = false): void => {
+      input.onSelect?.(node, isClosingTag, /* selectedByUser= */ true);
     };
 
     const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
@@ -721,16 +725,22 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     const isDraggable = !input.disableEdits && Boolean(input.isValidDragSource?.(node));
 
     const classes = classMap({
-      hovered: isHovered,
+      hovered: isOpeningHovered,
       'in-clipboard': Boolean(input.isNodeInClipboard?.(node)),
       'elements-drag-over': isDragOver,
       'always-parent': !isCollapsible && !isEditingAsHTML,
     });
 
-    const onMouseMove = (event: MouseEvent): void => {
+    const onOpeningMouseMove = (event: MouseEvent): void => {
       event.stopPropagation();
       const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
-      input.onHoverNode?.(node, showInfo);
+      input.onHoverNode?.(node, showInfo, /* isClosingTag= */ false);
+    };
+
+    const onClosingMouseMove = (event: MouseEvent): void => {
+      event.stopPropagation();
+      const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
+      input.onHoverNode?.(node, showInfo, /* isClosingTag= */ true);
     };
 
     const onContextMenu = (event: MouseEvent): void => {
@@ -775,16 +785,17 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       input.onDragEnd?.(event);
     };
 
-    /* clang-format off */
+    // clang-format off
     return html`
       <li role="treeitem"
-          ?selected=${isSelected}
+          ?selected=${isSelected && !input.selectedClosingTag}
           class=${classes}
+          style=${styleMap({'--indent': `${computeLeftIndent(depth, isExpandable)}px`})}
           ?open=${isExpanded && !isEditingAsHTML}
           draggable=${isDraggable ? 'true' : 'false'}
-          @select=${onSelect}
+          @select=${on(() => onSelect(false))}
           @expand=${onExpand}
-          @mousemove=${on(onMouseMove)}
+          @mousemove=${on(onOpeningMouseMove)}
           @contextmenu=${on(onContextMenu)}
           @dragstart=${on(onDragStart)}
           @dragover=${on(onDragOver)}
@@ -802,9 +813,9 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           isClosingTag: false,
           expanded: isExpanded && !isEditingAsHTML,
           isExpandable: hasChildren,
-          selected: isSelected,
+          selected: isSelected && !input.selectedClosingTag,
           isDOMNodeSelected: isSelected,
-          hovered: isHovered,
+          hovered: isOpeningHovered,
           searchQuery: input.searchMatchNode === node ? (input.searchMatchQuery ?? null) : null,
           inClipboard: input.isNodeInClipboard?.(node) ?? false,
           computeLeftIndent: computeLeftIndent(depth, isExpandable),
@@ -815,7 +826,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           revealInTopLayer: (n: SDK.DOMModel.DOMNode) => input.domTreeWidget?.revealInTopLayer(n),
           setMultilineEditing: (multilineEditing, n) => input.domTreeWidget?.setMultilineEditing(multilineEditing, n ?? node),
           visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
-          selectDOMNode: (n: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => input.onSelect?.(n, selectedByUser),
+          selectDOMNode: (n: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => input.onSelect?.(n, false, selectedByUser),
           selectNodeAfterEdit: (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null, moveDirection?: string) => {
             input.onSelectNodeAfterEdit?.(wasExpanded, error, newNode, moveDirection);
           },
@@ -839,7 +850,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
               ${remainingChildrenCount > 0 ? html`
                 <li role="treeitem"
                     class="elements-tree-expand-all"
-                    style="--indent: ${computeLeftIndent(depth + 1, false)}px"
+                    style=${styleMap({'--indent': `${computeLeftIndent(depth + 1, false)}px`})}
                     jslog=${VisualLogging.treeItem('show-all-nodes').parent('elementsTreeOutline')}>
                   <devtools-button
                       .variant=${Buttons.Button.Variant.OUTLINED}
@@ -855,21 +866,27 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
               ${node instanceof SDK.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing}
               ${needsClosingTag ? html`
                 <li role="treeitem"
-                    class=${classMap({hovered: isHovered, 'elements-drag-over': isClosingTagDragOver})}
+                    ?selected=${isSelected && Boolean(input.selectedClosingTag)}
+                    class=${classMap({hovered: isClosingHovered, 'elements-drag-over': isClosingTagDragOver})}
+                    style=${styleMap({'--indent': `${computeLeftIndent(depth + 1, false)}px`})}
+                    draggable=${isDraggable ? 'true' : 'false'}
                     jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}
-                    @mousemove=${on(onMouseMove)}
+                    @select=${on(() => onSelect(true))}
+                    @mousemove=${on(onClosingMouseMove)}
+                    @dragstart=${on(onDragStart)}
                     @dragover=${on(onClosingTagDragOver)}
                     @dragleave=${on(onDragLeave)}
-                    @drop=${on(onClosingTagDrop)}>
+                    @drop=${on(onClosingTagDrop)}
+                    @dragend=${on(onDragEnd)}>
                   ${UI.Widget.widget(ElementsTreeWidget, {
                     node,
                     isClosingTag: true,
                     expanded: false,
                     isExpandable: false,
-                    selected: false,
-                    isDOMNodeSelected: false,
-                    hovered: isHovered,
-                    computeLeftIndent: computeLeftIndent(depth, false),
+                    selected: isSelected && Boolean(input.selectedClosingTag),
+                    isDOMNodeSelected: isSelected,
+                    hovered: isClosingHovered,
+                    computeLeftIndent: computeLeftIndent(depth + 1, false),
                     disableEdits: input.disableEdits ?? false,
                     showAIButton: false,
                     showContextMenu: (event: Event, widget?: ElementsTreeWidget) => {
@@ -886,10 +903,10 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         ` : nothing}
       </li>
     `;
-    /* clang-format on */
+    // clang-format on
   };
 
-  /* clang-format off */
+  // clang-format off
   render(html`
     <style>${UI.inspectorCommonStyles}</style>
     <style>${elementsTreeOutlineStyles}</style>
@@ -923,7 +940,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
               return html`
                 <li role="treeitem"
                     class="elements-tree-expand-all"
-                    style="--indent: ${computeLeftIndent(0, false)}px"
+                    style=${styleMap({'--indent': `${computeLeftIndent(0, false)}px`})}
                     jslog=${VisualLogging.treeItem('show-all-nodes').parent('elementsTreeOutline')}>
                   <devtools-button
                       .variant=${Buttons.Button.Variant.OUTLINED}
@@ -943,7 +960,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       </devtools-tree>
     </div>
   `, target);
-  /* clang-format on */
+  // clang-format on
 };
 
 function getElementsTreeWidgetAndNode(element: Element): {node?: SDK.DOMModel.DOMNode, widget?: ElementsTreeWidget} {
@@ -1418,7 +1435,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.performUpdate();
   }
 
-  selectDOMNode(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet|null, focus?: boolean): void {
+  selectDOMNode(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet|null, focus?: boolean,
+                isClosingTag = false): void {
     this.#imagePreviewPopover?.hide();
     this.#issuePopoverHelper?.hidePopover();
     if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
@@ -1427,6 +1445,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     this.#selectedAdoptedStyleSheet = null;
     if (this.#view === DECLARATIVE_VIEW) {
+      this.#selectedClosingTag = Boolean(isClosingTag);
       const isSameNode = this.#selectedDOMNode === node;
       this.#selectedDOMNode = node;
       if (node) {
@@ -1629,6 +1648,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   #hoveredDOMNode: SDK.DOMModel.DOMNode|null = null;
+  #hoveredClosingTag = false;
+  #selectedClosingTag = false;
   #searchMatchNode: SDK.DOMModel.DOMNode|null = null;
   #searchMatchQuery: string|null = null;
   #nodeToEdit: ({node: SDK.DOMModel.DOMNode}&InitialEditState)|null = null;
@@ -1647,6 +1668,14 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     return null;
   }
 
+  hoveredClosingTag(): boolean {
+    return this.#hoveredClosingTag;
+  }
+
+  selectedClosingTag(): boolean {
+    return this.#selectedClosingTag;
+  }
+
   searchMatchNode(): SDK.DOMModel.DOMNode|null {
     return this.#searchMatchNode;
   }
@@ -1655,11 +1684,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     return this.#searchMatchQuery;
   }
 
-  setHoveredNode(node: SDK.DOMModel.DOMNode|null, showInfo = true): void {
-    if (this.hoveredDOMNode() === node) {
+  setHoveredNode(node: SDK.DOMModel.DOMNode|null, showInfo = true, isClosingTag = false): void {
+    if (this.hoveredDOMNode() === node && this.#hoveredClosingTag === Boolean(isClosingTag)) {
       return;
     }
     this.#hoveredDOMNode = node;
+    this.#hoveredClosingTag = Boolean(isClosingTag);
     if (node) {
       const treeElement = this.treeElementForNode(node);
       const selectorList = treeElement?.isDisplayContents() ? '*' : undefined;
@@ -1704,9 +1734,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
       currentHighlightedNode: this.#currentHighlightedNode,
       hoveredNode: this.#hoveredDOMNode,
+      hoveredClosingTag: this.#hoveredClosingTag,
       searchMatchNode: this.#searchMatchNode,
       searchMatchQuery: this.#searchMatchQuery,
       selectedNode: this.selectedDOMNode(),
+      selectedClosingTag: this.#selectedClosingTag,
       onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
       onSelectedNodeChanged: event => {
         this.#clearHighlightedNode();
@@ -1718,14 +1750,14 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onElementExpanded: () => {
         this.#clearHighlightedNode();
       },
-      onHoverNode: (node: SDK.DOMModel.DOMNode, showInfo?: boolean) => {
-        this.setHoveredNode(node, showInfo);
+      onHoverNode: (node: SDK.DOMModel.DOMNode|null, showInfo?: boolean, isClosingTag = false) => {
+        this.setHoveredNode(node, showInfo, isClosingTag);
       },
       onLeave: () => {
         this.setHoveredNode(null);
       },
-      onSelect: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => {
-        this.selectDOMNode(node, selectedByUser);
+      onSelect: (node: SDK.DOMModel.DOMNode, isClosingTag = false, selectedByUser?: boolean) => {
+        this.selectDOMNode(node, selectedByUser, isClosingTag);
       },
       onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean) => {
         this.setNodeExpanded(node, expanded);

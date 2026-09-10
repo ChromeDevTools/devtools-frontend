@@ -244,6 +244,18 @@ describe('TreeViewElement', () => {
     assert.strictEqual(secondLevel[1].titleElement.textContent?.trim(), 'Tree Node Text in collapsed subtree 2');
   });
 
+  it('clones style attribute to shadow DOM listItemElement', async () => {
+    const component = await makeTree(html`<devtools-tree .template=${html`
+      <ul role="tree">
+        <li role="treeitem" style="--indent: 24px;">Node with custom style</li>
+      </ul>
+    `}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const rootChildren = treeOutline.rootElement().children();
+    assert.lengthOf(rootChildren, 1);
+    assert.strictEqual(rootChildren[0].listItemElement.style.getPropertyValue('--indent'), '24px');
+  });
+
   it('selects `selected` config elements', async () => {
     const component = await makeTree(html`<devtools-tree .template=${html`
       <ul role="tree">

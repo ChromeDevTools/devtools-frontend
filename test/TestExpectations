@@ -16,6 +16,5 @@
 # crbug.com/1342718 front_end/panels/explain/components/ConsoleInsight.test.ts:ConsoleInsight:shows_opt-in_teaser_when_setting_is_turned_off [ Failure Pass ]
 # crbug.com/1234567 [ mac ] front_end/panels/elements/ElementsPanel.test.ts [ Failure ]
 
-
-
-
+crbug.com/538206828 [ linux ] front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.test.ts:linearmemoryinspector:renders_the_inspector [ Failure Pass ]
+crbug.com/537672763 test/e2e/performance/wasm/performance_profiling.test.ts [ Failure Pass ]

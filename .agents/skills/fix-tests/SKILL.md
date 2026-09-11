@@ -1,6 +1,6 @@
 ---
-name: repro-flaky-tests
-description: Reproduce and investigate flakiness in a test.
+name: fix-tests
+description: Use this skill to reproduce and fix flaky and disabled tests.
 ---
 
 # Workflow

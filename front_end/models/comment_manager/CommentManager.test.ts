@@ -81,7 +81,11 @@ describe('CommentManager', () => {
       vePath: 'Panel: elements > TreeItem: rule',
       textSignature: 'margin: 0;',
     };
-    const changes = [{property: 'margin', oldValue: '0', newValue: '8px'}];
+    const changes: CommentManager.CommentManager.ChangeRecord[] = [{
+      id: 'change-1',
+      description: 'Changed property "margin" from "0" to "8px"',
+      timestamp: 123456789,
+    }];
     const thread = manager.createCommentThread(anchor, 'CSS fix', 'DEVELOPER', changes);
 
     assert.strictEqual(thread.comments[0].author, 'DEVELOPER');
@@ -103,6 +107,24 @@ describe('CommentManager', () => {
     assert.lengthOf(thread.comments, 2);
     assert.strictEqual(thread.comments[1].author, 'AGENT');
     assert.strictEqual(thread.comments[1].text, 'Done');
+  });
+
+  it('creates comment thread without initial text leaving comments array empty', () => {
+    const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+      vePath: 'Panel: elements > TreeOutline > TreeItem',
+      textSignature: 'div.header',
+    };
+    const changes: CommentManager.CommentManager.ChangeRecord[] = [{
+      id: 'change-2',
+      description: 'Changed attribute "class" to "header active"',
+      timestamp: 123456789,
+    }];
+    const thread = manager.createCommentThread(anchor, undefined, undefined, changes);
+
+    assert.isNotNull(thread);
+    assert.isEmpty(thread.comments);
+    assert.deepEqual(thread.changes, changes);
+    assert.strictEqual(thread.status, 'ACTIVE');
   });
 
   it('returns undefined for non-existent comment thread ID', () => {

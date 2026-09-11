@@ -80,7 +80,11 @@ describeWithEnvironment('CommentOverlayManager', () => {
     item.textContent = 'color: #333;';
     container.appendChild(item);
 
-    const changes = [{property: 'color', oldValue: '#333', newValue: '#000'}];
+    const changes: CommentManager.CommentManager.ChangeRecord[] = [{
+      id: 'change-1',
+      description: 'Changed property "color" from "#333" to "#000"',
+      timestamp: 123456789,
+    }];
     const thread = manager.createComment(item, 'Auto-fixed color', 'AGENT', changes);
 
     assert.isNotNull(thread);

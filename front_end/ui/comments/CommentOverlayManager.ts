@@ -223,7 +223,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
       element: Element,
       text: string,
       author: 'DEVELOPER'|'AGENT' = 'DEVELOPER',
-      changes?: Array<Record<string, unknown>>,
+      changes?: CommentManager.CommentManager.ChangeRecord[],
       ): CommentThread|null {
     const anchorEl = resolveCommentAnchorElement(element);
     const anchor = resolveCommentAnchor(element);

@@ -32,6 +32,8 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/main/*",
     "../../foundation/*",
+    "../../models/change_tracker/*",
+    "../../models/elements/*",
     "../../testing/*",
     "../../ui/comments/*",
   ]

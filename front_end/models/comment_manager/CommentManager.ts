@@ -41,13 +41,19 @@ export interface Comment {
   timestamp: number;
 }
 
+export interface ChangeRecord {
+  id: string;
+  description: string;
+  timestamp: number;
+}
+
 export interface CommentThread {
   id: string;
   anchor: CommentAnchorSignature;
   comments: Comment[];
   status: 'ACTIVE'|'RESOLVED';
   transmitted?: boolean;
-  changes?: Array<Record<string, unknown>>;
+  changes?: ChangeRecord[];
   index: number;
 }
 
@@ -83,21 +89,22 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   createCommentThread(
       anchor: CommentAnchorSignature,
-      text: string,
+      text?: string,
       author: 'DEVELOPER'|'AGENT' = 'DEVELOPER',
-      changes?: Array<Record<string, unknown>>,
+      changes?: ChangeRecord[],
       ): CommentThread {
     const index = this.#nextId++;
     const id = `comment-${index}`;
-    const comment: Comment = {
+    const comments: Comment[] = text ? [{
       author,
       text,
       timestamp: Date.now(),
-    };
+    }] :
+                                       [];
     const thread: CommentThread = {
       id,
       anchor,
-      comments: [comment],
+      comments,
       status: 'ACTIVE',
       transmitted: false,
       changes,

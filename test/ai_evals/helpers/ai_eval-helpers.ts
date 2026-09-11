@@ -5,7 +5,12 @@
 import type * as childProcess from 'node:child_process';
 
 import type * as AiAssistance from '../../../front_end/panels/ai_assistance/ai_assistance.js';
-import {openNetworkTab, selectRequestByName} from '../../e2e/helpers/network-helpers.js';
+import {
+  clearTextFilter,
+  openNetworkTab,
+  selectRequestByName,
+  setTextFilter,
+} from '../../e2e/helpers/network-helpers.js';
 import type {DevToolsPage} from '../../e2e/shared/DevToolsPage.js';
 
 export const TASK_TEXTPROTO = 'task.textproto';
@@ -165,6 +170,21 @@ export async function stopEvalApp(app: RunningEvalApp): Promise<void> {
 }
 
 /**
+ * Filters the Network log and selects the specified request.
+ * Filtering is required because the grid is virtualized: off-screen requests
+ * are not in the DOM and cannot be selected by name alone.
+ */
+export async function selectNetworkRequest(
+    devToolsPage: DevToolsPage,
+    requestName: string,
+    ): Promise<void> {
+  await openNetworkTab(devToolsPage);
+  await clearTextFilter(devToolsPage);
+  await setTextFilter(devToolsPage, requestName);
+  await selectRequestByName(devToolsPage, requestName);
+}
+
+/**
  * Finds and selects the specified context in DevTools so that it is set
  * as the active flavor (e.g. in UI.Context.Context) for AI evaluation.
  */
@@ -174,8 +194,7 @@ export async function findAndSetContext(
     ): Promise<void> {
   switch (context.type) {
     case 'NETWORK_REQUEST': {
-      await openNetworkTab(devToolsPage);
-      await selectRequestByName(devToolsPage, context.contextIdentifier);
+      await selectNetworkRequest(devToolsPage, context.contextIdentifier);
       break;
     }
     default: {

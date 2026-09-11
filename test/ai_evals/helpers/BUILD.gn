@@ -5,7 +5,10 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("helpers") {
-  sources = [ "ai_eval-helpers.ts" ]
+  sources = [
+    "ai_eval-helpers.ts",
+    "trajectory-builder.ts",
+  ]
   ts_deps = [
     "../../../front_end/panels/ai_assistance:bundle",
     "../../e2e/helpers",

@@ -76,6 +76,32 @@ describe('CommentManager', () => {
     assert.strictEqual(thread2.index, 2);
   });
 
+  it('creates and retrieves comment threads with TimelineAnchorSignature', () => {
+    const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+      vePath: 'Panel: timeline > FlameChart: main',
+      textSignature: 'Compile Script',
+      timeline: {
+        traceId: 'trace-1',
+        traceEventKey: 'r-42',
+        entryName: 'Compile Script',
+        startTimeMicro: 1000,
+        durationMicro: 500,
+        chartLocation: 'main',
+      },
+    };
+
+    const thread = manager.createCommentThread(anchor, 'Flamechart comment');
+    assert.isNotNull(thread);
+    assert.deepEqual(thread.anchor.timeline, {
+      traceId: 'trace-1',
+      traceEventKey: 'r-42',
+      entryName: 'Compile Script',
+      startTimeMicro: 1000,
+      durationMicro: 500,
+      chartLocation: 'main',
+    });
+    assert.strictEqual(thread.comments[0].text, 'Flamechart comment');
+  });
   it('supports changes metadata in created threads', () => {
     const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
       vePath: 'Panel: elements > TreeItem: rule',
@@ -209,5 +235,22 @@ describe('CommentManager', () => {
     // Resolving thread with agent reply
     manager.resolveCommentThread(thread2.id, 'Agent reply');
     assert.lengthOf(manager.takeComments(), 0);
+  });
+
+  it('supports timeline anchor signatures with traceId', () => {
+    const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+      vePath: 'Panel: timeline > FlameChart: main',
+      textSignature: 'Task',
+      timeline: {
+        traceId: 'trace-12345',
+        traceEventKey: 'r-0',
+        entryName: 'Task',
+        startTimeMicro: 1000000,
+        chartLocation: 'main',
+      },
+    };
+    const thread = manager.createCommentThread(anchor, 'Timeline comment');
+    assert.strictEqual(thread.anchor.timeline?.traceId, 'trace-12345');
+    assert.strictEqual(thread.anchor.timeline?.traceEventKey, 'r-0');
   });
 });

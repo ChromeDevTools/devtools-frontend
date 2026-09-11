@@ -18,6 +18,21 @@ export interface DOMNodeAnchorSignature {
   targetId: string;
 }
 
+export interface TimelineAnchorSignature {
+  /** Identifier of the trace to scope comments to a specific recording */
+  traceId: string;
+  /** Serializable key from Trace.EventsSerializer (e.g. 'r-123', 'p-1-2-3-4', 's-5') */
+  traceEventKey: string;
+  /** Primary event title or category name */
+  entryName: string;
+  /** Event start timestamp in microseconds */
+  startTimeMicro: number;
+  /** Chart location */
+  chartLocation: 'main'|'network';
+  /** Event duration in microseconds (omitted for instant markers) */
+  durationMicro?: number;
+}
+
 export interface CommentAnchorSignature {
   /** Visual logging tree path, e.g. "Panel: elements > Pane: styles > TreeOutline > TreeItem: color" */
   vePath: string;
@@ -33,6 +48,8 @@ export interface CommentAnchorSignature {
   node?: DOMNodeAnchorSignature;
   /** Optional editor anchor coordinates for CodeMirror text editors */
   editor?: EditorAnchorSignature;
+  /** Optional timeline flamechart anchor coordinates for Performance panel trace entries */
+  timeline?: TimelineAnchorSignature;
 }
 
 export interface Comment {

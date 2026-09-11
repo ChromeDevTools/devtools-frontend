@@ -487,7 +487,6 @@ describeWithEnvironment('CommentOverlayManager', () => {
       clock.restore();
     }
   });
-
   describe('CodeMirror editor comments and clipping', () => {
     it('creates comment attached to CodeMirror editor when line is clicked', () => {
       const textEditor = createTextEditor('const a = 1;\nconst b = 2;\nconst c = 3;', 'src/code.ts');
@@ -675,5 +674,154 @@ describeWithEnvironment('CommentOverlayManager', () => {
       assert.strictEqual(hover?.height, 50);  // Clipped to 100 - 50 = 50
       assert.strictEqual(hover?.width, 300);
     });
+  });
+
+  it('creates comment with custom signature using CustomAnchorResolver', () => {
+    const customTarget = document.createElement('div');
+    customTarget.classList.add('custom-resolver-target');
+    container.appendChild(customTarget);
+
+    const customResolver: Comments.CommentAnchorResolver.CustomAnchorResolver = {
+      matches(el: Element): boolean {
+        return el === customTarget;
+      },
+      resolve(_el: Element, options?: {clientX: number, clientY: number}) {
+        return {
+          anchor: {
+            vePath: 'Panel: custom > View: main',
+            textSignature: 'Custom Text',
+            timeline: {
+              traceId: 'trace-test-1',
+              traceEventKey: 'key-123',
+              entryName: 'Custom Entry',
+              startTimeMicro: (options?.clientX ?? 0) * 1000,
+              chartLocation: 'main',
+            },
+          },
+          anchorElement: customTarget,
+          highlightRect: {
+            top: options?.clientY ?? 10,
+            left: options?.clientX ?? 20,
+            width: 80,
+            height: 30,
+            visible: true,
+          },
+        };
+      },
+    };
+
+    Comments.CommentAnchorResolver.registerCustomAnchorResolver(customResolver);
+    try {
+      manager.start(container);
+      manager.setCommentMode(true);
+
+      const thread = manager.createComment(customTarget, 'Investigate custom target', 'DEVELOPER', undefined,
+                                           {clientX: 40, clientY: 60});
+      assert.isNotNull(thread);
+      assert.isNotNull(thread?.anchor.timeline);
+      assert.strictEqual(thread?.anchor.timeline?.traceId, 'trace-test-1');
+      assert.strictEqual(thread?.anchor.timeline?.startTimeMicro, 40000);
+      assert.strictEqual(thread?.comments[0].text, 'Investigate custom target');
+      assert.lengthOf(manager.getPinPositions(), 0);
+      assert.lengthOf(manager.getHighlightRects(), 0);
+    } finally {
+      Comments.CommentAnchorResolver.unregisterCustomAnchorResolver(customResolver);
+    }
+  });
+
+  it('updates cursor and highlight when hovering over custom resolver elements and clears on unanchored coordinates or leave',
+     () => {
+       const customTarget = document.createElement('div');
+       customTarget.classList.add('custom-resolver-target');
+       container.appendChild(customTarget);
+
+       const customResolver: Comments.CommentAnchorResolver.CustomAnchorResolver = {
+         matches(el: Element): boolean {
+           return el === customTarget;
+         },
+         resolve(_el: Element, options?: {clientX: number, clientY: number, forHover?: boolean}) {
+           if (options && options.clientX > 100) {
+             return null;
+           }
+           return {
+             anchor: {
+               vePath: 'Panel: custom > View: main',
+               textSignature: 'Custom Text',
+             },
+             anchorElement: customTarget,
+             highlightRect: {
+               top: 10,
+               left: 20,
+               width: 80,
+               height: 30,
+               visible: true,
+             },
+           };
+         },
+       };
+
+       Comments.CommentAnchorResolver.registerCustomAnchorResolver(customResolver);
+       try {
+         manager.start(container);
+         manager.setCommentMode(true);
+
+         customTarget.dispatchEvent(
+             new MouseEvent('mousemove', {bubbles: true, cancelable: true, clientX: 50, clientY: 50}));
+         assert.strictEqual(customTarget.style.cursor, Comments.CommentOverlayManager.COMMENT_MODE_CURSOR);
+         const hoverData = manager.getHoverHighlight();
+         assert.isNotNull(hoverData);
+         assert.strictEqual(hoverData?.left, 20);
+
+         customTarget.dispatchEvent(
+             new MouseEvent('mousemove', {bubbles: true, cancelable: true, clientX: 150, clientY: 50}));
+         assert.strictEqual(customTarget.style.cursor, '');
+         assert.isNull(manager.getHoverHighlight());
+
+         customTarget.dispatchEvent(
+             new MouseEvent('mousemove', {bubbles: true, cancelable: true, clientX: 50, clientY: 50}));
+         assert.strictEqual(customTarget.style.cursor, Comments.CommentOverlayManager.COMMENT_MODE_CURSOR);
+
+         customTarget.dispatchEvent(new MouseEvent('mouseleave', {bubbles: true, cancelable: true}));
+         assert.strictEqual(customTarget.style.cursor, '');
+         assert.isNull(manager.getHoverHighlight());
+       } finally {
+         Comments.CommentAnchorResolver.unregisterCustomAnchorResolver(customResolver);
+       }
+     });
+
+  it('updates cursor and consumes event when custom resolver omits highlightRect', () => {
+    const customTarget = document.createElement('div');
+    customTarget.classList.add('custom-resolver-target');
+    container.appendChild(customTarget);
+
+    const customResolver: Comments.CommentAnchorResolver.CustomAnchorResolver = {
+      matches(el: Element): boolean {
+        return el === customTarget;
+      },
+      resolve(_el: Element, _options?: {clientX: number, clientY: number, forHover?: boolean}) {
+        return {
+          anchor: {
+            vePath: 'Panel: custom > View: main',
+            textSignature: 'Custom Text Without Highlight Rect',
+          },
+          anchorElement: customTarget,
+        };
+      },
+    };
+
+    Comments.CommentAnchorResolver.registerCustomAnchorResolver(customResolver);
+    try {
+      manager.start(container);
+      manager.setCommentMode(true);
+
+      const event = new MouseEvent('mousemove', {bubbles: true, cancelable: true, clientX: 50, clientY: 50});
+      customTarget.dispatchEvent(event);
+
+      assert.strictEqual(customTarget.style.cursor, Comments.CommentOverlayManager.COMMENT_MODE_CURSOR);
+      assert.isNull(manager.getHoverHighlight());
+      assert.isTrue(event.defaultPrevented);
+    } finally {
+      Comments.CommentAnchorResolver.unregisterCustomAnchorResolver(customResolver);
+    }
   });
 });

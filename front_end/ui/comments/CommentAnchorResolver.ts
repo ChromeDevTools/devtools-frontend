@@ -7,6 +7,7 @@ import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.j
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 export type EditorAnchorSignature = CommentManager.CommentManager.EditorAnchorSignature;
+export type TimelineAnchorSignature = CommentManager.CommentManager.TimelineAnchorSignature;
 export type CommentAnchorSignature = CommentManager.CommentManager.CommentAnchorSignature;
 export type CommentThread = CommentManager.CommentManager.CommentThread;
 
@@ -65,6 +66,101 @@ function isCodeMirrorEditor(element: Element): boolean {
  */
 export function getEditorFilePath(element: Element): string|undefined {
   return element.getAttribute('data-file-path') ?? undefined;
+}
+
+/**
+ * Determines whether an anchor is backed by a tracked DOM element.
+ *
+ * Canvas-rendered anchors (such as Performance panel timeline entries) do not have
+ * individual DOM nodes and manage their own overlays in canvas coordinates.
+ * These anchors return false and bypass DOM-level node caching, rematching,
+ * and IntersectionObserver tracking.
+ *
+ * @param anchor The comment anchor signature to check.
+ * @returns True if the anchor corresponds to a DOM-tracked element; otherwise false.
+ */
+export function isDomTrackedAnchor(anchor: CommentAnchorSignature): boolean {
+  return !anchor.timeline;
+}
+
+/**
+ * Result returned by a {@link CustomAnchorResolver} representing an anchor
+ * within a specialized or canvas-rendered view.
+ */
+export interface CustomAnchorResult {
+  /** The anchor signature representing the commented item. */
+  anchor: CommentAnchorSignature;
+  /** The DOM element acting as the visual host (e.g. the canvas element). */
+  anchorElement?: Element;
+  /** Optional bounding box within the page for the hover or highlight overlay. */
+  highlightRect?: {top: number, left: number, width: number, height: number, visible?: boolean};
+}
+
+/**
+ * Extension point allowing views that render custom content (such as canvas-based
+ * flame charts) to provide custom anchor resolution for comments without direct DOM nodes.
+ */
+export interface CustomAnchorResolver {
+  /**
+   * Determines whether this resolver can handle anchors for the target element.
+   *
+   * @param element The element currently hovered or clicked.
+   * @returns True if this resolver manages anchors within the given element.
+   */
+  matches(element: Element): boolean;
+
+  /**
+   * Resolves an anchor signature and highlight bounds for a point within the element.
+   *
+   * @param element The target element matched by this resolver.
+   * @param options Pointer coordinates and a flag indicating if resolution is for a hover preview.
+   * @returns The resolved anchor result, or null if no anchor is present at the specified location.
+   */
+  resolve(element: Element, options?: {clientX: number, clientY: number, forHover?: boolean}): CustomAnchorResult|null;
+}
+
+const customAnchorResolvers = new Set<CustomAnchorResolver>();
+
+/**
+ * Registers a custom anchor resolver. Usually called when a view becomes visible
+ * (e.g. inside `wasShown()`).
+ *
+ * @param resolver The custom anchor resolver to register.
+ */
+export function registerCustomAnchorResolver(resolver: CustomAnchorResolver): void {
+  customAnchorResolvers.add(resolver);
+}
+
+/**
+ * Unregisters a custom anchor resolver. Usually called when a view hides
+ * (e.g. inside `willHide()`).
+ *
+ * @param resolver The custom anchor resolver to unregister.
+ */
+export function unregisterCustomAnchorResolver(resolver: CustomAnchorResolver): void {
+  customAnchorResolvers.delete(resolver);
+}
+
+/**
+ * Clears all registered custom anchor resolvers. Test-only helper.
+ */
+export function clearCustomAnchorResolversForTest(): void {
+  customAnchorResolvers.clear();
+}
+
+/**
+ * Finds the first registered custom anchor resolver that matches the given element.
+ *
+ * @param element The element to check.
+ * @returns The matching resolver, or null if no resolver matches.
+ */
+export function getCustomAnchorResolverForElement(element: Element): CustomAnchorResolver|null {
+  for (const resolver of customAnchorResolvers) {
+    if (resolver.matches(element)) {
+      return resolver;
+    }
+  }
+  return null;
 }
 
 /**
@@ -183,9 +279,18 @@ function resolveCodeMirrorLineInfo(element: Element): CodeMirrorLineInfo|null {
  * @param element The source DOM element to resolve.
  * @returns The resolved semantic anchor Element, or null if unresolvable/empty/excluded.
  */
-export function resolveCommentAnchorElement(element: Element): Element|null {
+export function resolveCommentAnchorElement(
+    element: Element, options?: {clientX: number, clientY: number, forHover?: boolean}): Element|null {
   if (isTabTitle(element)) {
     return null;
+  }
+  const customResolver = getCustomAnchorResolverForElement(element);
+  if (customResolver) {
+    const result = customResolver.resolve(element, options);
+    if (!result) {
+      return null;
+    }
+    return result.anchorElement ?? element;
   }
   // CodeMirror internal lines, gutters, and content live inside .cm-editor.
   // We only allow commenting on non-empty lines within the editor; the whole editor
@@ -326,8 +431,14 @@ function checkCodeMirrorLineMatch(editor: Element, editorLineNumber: number, tex
  * @returns The resolved CommentAnchorSignature, or null if unresolvable.
  */
 export function resolveCommentAnchor(
-    element: Element, root: Document|Element = element.ownerDocument || document): CommentAnchorSignature|null {
-  const target = resolveCommentAnchorElement(element);
+    element: Element, root: Document|Element = element.ownerDocument || document,
+    options?: {clientX: number, clientY: number, forHover?: boolean}): CommentAnchorSignature|null {
+  const customResolver = getCustomAnchorResolverForElement(element);
+  if (customResolver) {
+    const result = customResolver.resolve(element, options);
+    return result ? result.anchor : null;
+  }
+  const target = resolveCommentAnchorElement(element, options);
   if (!target) {
     return null;
   }

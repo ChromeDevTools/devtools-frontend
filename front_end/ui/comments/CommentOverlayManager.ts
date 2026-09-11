@@ -6,10 +6,14 @@ import * as Common from '../../core/common/common.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 
 import {
+  type CommentAnchorSignature,
   type CommentThread,
   computeVisibleRect,
+  type CustomAnchorResolver,
   deepQuerySelectorAll,
+  getCustomAnchorResolverForElement,
   getEditorFilePath,
+  isDomTrackedAnchor,
   rematchCommentAnchor,
   resolveCommentAnchor,
   resolveCommentAnchorElement,
@@ -212,11 +216,15 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     return this.#highlightRects;
   }
 
-  handleElementClick(element: Element, commentText = 'New comment'): CommentThread|null {
+  handleElementClick(
+      element: Element,
+      commentText = 'New comment',
+      options?: {clientX: number, clientY: number},
+      ): CommentThread|null {
     if (!this.isCommentMode()) {
       return null;
     }
-    return this.createComment(element, commentText, 'DEVELOPER');
+    return this.createComment(element, commentText, 'DEVELOPER', undefined, options);
   }
 
   createComment(
@@ -224,19 +232,35 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
       text: string,
       author: 'DEVELOPER'|'AGENT' = 'DEVELOPER',
       changes?: CommentManager.CommentManager.ChangeRecord[],
+      options?: {clientX: number, clientY: number},
       ): CommentThread|null {
-    const anchorEl = resolveCommentAnchorElement(element);
-    const anchor = resolveCommentAnchor(element);
+    let anchorEl: Element|null = null;
+    let anchor: CommentAnchorSignature|null = null;
+    const customResolver = getCustomAnchorResolverForElement(element);
+    if (customResolver) {
+      const result = customResolver.resolve(element, options);
+      if (result) {
+        anchor = result.anchor;
+        anchorEl = result.anchorElement ?? element;
+      }
+    } else {
+      anchorEl = resolveCommentAnchorElement(element, options);
+      anchor = resolveCommentAnchor(element, undefined, options);
+    }
     if (!anchor || !anchorEl) {
       return null;
     }
 
     const thread = this.#commentManager.createCommentThread(anchor, text, author, changes);
-    this.#liveNodeCache.set(thread, anchorEl);
+    // Non-DOM anchors (e.g. canvas-rendered timeline entries) manage their own overlays
+    // and do not have individual backing DOM nodes to cache or observe.
+    if (isDomTrackedAnchor(anchor)) {
+      this.#liveNodeCache.set(thread, anchorEl);
 
-    const observer = this.#getIntersectionObserver();
-    observer.observe(anchorEl);
-    this.#observedThreads.add(anchorEl);
+      const observer = this.#getIntersectionObserver();
+      observer.observe(anchorEl);
+      this.#observedThreads.add(anchorEl);
+    }
 
     this.#updatePositions();
     return thread;
@@ -287,6 +311,10 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     const newElements = new Set<Element>();
 
     for (const thread of this.#commentManager.getCommentThreads()) {
+      // Non-DOM anchors do not track DOM nodes and should not be rematched here.
+      if (!isDomTrackedAnchor(thread.anchor)) {
+        continue;
+      }
       const oldEl = this.#liveNodeCache.get(thread);
       if (oldEl) {
         oldElements.add(oldEl);
@@ -324,6 +352,10 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     const elementPinCounts = new Map<Element, number>();
 
     for (const thread of this.#commentManager.getCommentThreads()) {
+      // Non-DOM anchors have their positions managed by their respective panels.
+      if (!isDomTrackedAnchor(thread.anchor)) {
+        continue;
+      }
       const el = this.#liveNodeCache.get(thread) || null;
       if (!el || !el.isConnected) {
         continue;
@@ -424,6 +456,9 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     this.#removeResizeObserver();
     this.#removeMutationObserver();
     this.#clearHover();
+    this.#intersectionObserver?.disconnect();
+    this.#intersectionObserver = undefined;
+    this.#observedThreads = new WeakSet();
   }
 
   /**
@@ -448,7 +483,9 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
       if (!(target instanceof Element)) {
         return;
       }
-      const thread = this.handleElementClick(target, defaultText);
+      const mouseEvent = event as MouseEvent;
+      const options = {clientX: mouseEvent.clientX, clientY: mouseEvent.clientY};
+      const thread = this.handleElementClick(target, defaultText, options);
       if (thread) {
         event.consume(true);
       }
@@ -463,7 +500,9 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
       if (!(target instanceof Element)) {
         return;
       }
-      const anchorEl = resolveCommentAnchorElement(target);
+      const mouseEvent = event as MouseEvent;
+      const options = {clientX: mouseEvent.clientX, clientY: mouseEvent.clientY};
+      const anchorEl = resolveCommentAnchorElement(target, options);
       if (anchorEl) {
         event.consume(true);
       }
@@ -481,7 +520,14 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
         return;
       }
       const isLeaveEvent = event.type === 'mouseout' || event.type === 'mouseleave' || event.type === 'pointerout';
-      const anchorEl = resolveCommentAnchorElement(target);
+      const customResolver = getCustomAnchorResolverForElement(target);
+      if (customResolver) {
+        this.#handleCustomHover(target, event, customResolver);
+        return;
+      }
+      const mouseEvent = event as MouseEvent;
+      const options = {clientX: mouseEvent.clientX, clientY: mouseEvent.clientY};
+      const anchorEl = resolveCommentAnchorElement(target, options);
       if (isLeaveEvent) {
         const relatedTarget = (event as MouseEvent | PointerEvent).relatedTarget;
         if (anchorEl && relatedTarget instanceof Node && anchorEl.isSelfOrAncestor(relatedTarget)) {
@@ -549,6 +595,43 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
       this.#hoverListener = undefined;
       this.#clickContainer = undefined;
     }
+  }
+
+  /**
+   * Handles hover events for elements managed by a {@link CustomAnchorResolver}
+   * (e.g. canvas-rendered flame charts where individual items lack backing DOM nodes).
+   * Uses coordinate hit-testing to highlight specific entries rather than the entire element.
+   */
+  #handleCustomHover(target: Element, event: Event, customResolver: CustomAnchorResolver): void {
+    const isLeaveEvent = event.type === 'mouseout' || event.type === 'mouseleave' || event.type === 'pointerout';
+    if (isLeaveEvent) {
+      this.#clearHover();
+      return;
+    }
+
+    const mouseEvent = event as MouseEvent;
+    const result = customResolver.resolve(
+        target,
+        {clientX: mouseEvent.clientX, clientY: mouseEvent.clientY, forHover: true},
+    );
+    if (result) {
+      if (result.highlightRect && result.highlightRect.visible !== false) {
+        this.#setHoverHighlight({
+          top: result.highlightRect.top,
+          left: result.highlightRect.left,
+          width: result.highlightRect.width,
+          height: result.highlightRect.height,
+          visible: result.highlightRect.visible ?? true,
+        });
+      } else {
+        this.#setHoverHighlight(null);
+      }
+      this.#setHoverCursor(result.anchorElement ?? target);
+      event.consume(true);
+      return;
+    }
+
+    this.#clearHover();
   }
 
   /**
@@ -678,12 +761,8 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
   clear(): void {
     this.#commentManager.clear();
     this.stop();
-    this.#intersectionObserver?.disconnect();
-    this.#intersectionObserver = undefined;
-    this.#observedThreads = new WeakSet();
     this.#pinPositions = [];
     this.#highlightRects = [];
-    this.#clearHover();
     this.#updatePositions();
   }
 }

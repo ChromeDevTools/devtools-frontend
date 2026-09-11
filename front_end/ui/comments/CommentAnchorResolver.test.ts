@@ -1712,4 +1712,110 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       assert.strictEqual(rect?.height, 40);
     });
   });
+
+  describe('CustomAnchorResolver integration', () => {
+    let customElement: HTMLDivElement;
+    let customResolver: Comments.CommentAnchorResolver.CustomAnchorResolver;
+
+    beforeEach(() => {
+      customElement = document.createElement('div');
+      customElement.classList.add('custom-canvas-target');
+      container.appendChild(customElement);
+
+      customResolver = {
+        matches(element: Element): boolean {
+          return element.classList.contains('custom-canvas-target') ||
+              Boolean(element.closest('.custom-canvas-target'));
+        },
+        resolve(element: Element, options?: {clientX: number, clientY: number}):
+                Comments.CommentAnchorResolver.CustomAnchorResult |
+            null {
+              if (!this.matches(element)) {
+                return null;
+              }
+              return {
+                anchor: {
+                  vePath: 'Panel: custom > Canvas: main',
+                  textSignature: 'Custom Event',
+                  timeline: {
+                    traceId: 'trace-1',
+                    traceEventKey: 'custom-event-key',
+                    entryName: 'Custom Event',
+                    startTimeMicro: (options?.clientX ?? 10) * 1000,
+                    chartLocation: 'main',
+                  },
+                },
+                anchorElement: customElement,
+                highlightRect: {
+                  top: options?.clientY ?? 50,
+                  left: options?.clientX ?? 50,
+                  width: 100,
+                  height: 20,
+                  visible: true,
+                },
+              };
+            },
+      };
+
+      Comments.CommentAnchorResolver.registerCustomAnchorResolver(customResolver);
+    });
+
+    afterEach(() => {
+      Comments.CommentAnchorResolver.clearCustomAnchorResolversForTest();
+    });
+
+    it('identifies custom resolver for matching element', () => {
+      const resolver = Comments.CommentAnchorResolver.getCustomAnchorResolverForElement(customElement);
+      assert.strictEqual(resolver, customResolver);
+
+      const otherDiv = document.createElement('div');
+      assert.isNull(Comments.CommentAnchorResolver.getCustomAnchorResolverForElement(otherDiv));
+    });
+
+    it('delegates resolveCommentAnchorElement to custom resolver', () => {
+      const anchorEl =
+          Comments.CommentAnchorResolver.resolveCommentAnchorElement(customElement, {clientX: 20, clientY: 40});
+      assert.strictEqual(anchorEl, customElement);
+    });
+
+    it('delegates resolveCommentAnchor to custom resolver with coordinates', () => {
+      const anchor =
+          Comments.CommentAnchorResolver.resolveCommentAnchor(customElement, document, {clientX: 35, clientY: 70});
+      assert.isNotNull(anchor);
+      assert.strictEqual(anchor?.vePath, 'Panel: custom > Canvas: main');
+      assert.strictEqual(anchor?.timeline?.traceId, 'trace-1');
+      assert.strictEqual(anchor?.timeline?.startTimeMicro, 35000);
+    });
+
+    it('restores default behavior when custom resolver is unregistered', () => {
+      Comments.CommentAnchorResolver.unregisterCustomAnchorResolver(customResolver);
+      const resolver = Comments.CommentAnchorResolver.getCustomAnchorResolverForElement(customElement);
+      assert.isNull(resolver);
+    });
+  });
+
+  describe('isDomTrackedAnchor', () => {
+    it('returns true for standard DOM anchors', () => {
+      const domAnchor: Comments.CommentAnchorResolver.CommentAnchorSignature = {
+        vePath: 'Panel: elements > TreeItem',
+        textSignature: 'div.header',
+      };
+      assert.isTrue(Comments.CommentAnchorResolver.isDomTrackedAnchor(domAnchor));
+    });
+
+    it('returns false for canvas timeline anchors', () => {
+      const timelineAnchor: Comments.CommentAnchorResolver.CommentAnchorSignature = {
+        vePath: 'Panel: timeline > FlameChart: main',
+        textSignature: 'Task',
+        timeline: {
+          traceId: 'trace-1',
+          traceEventKey: 'e-1',
+          entryName: 'Task',
+          startTimeMicro: 1000,
+          chartLocation: 'main',
+        },
+      };
+      assert.isFalse(Comments.CommentAnchorResolver.isDomTrackedAnchor(timelineAnchor));
+    });
+  });
 });

@@ -6,7 +6,6 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 
 import {
   type BaseToolCapability,
@@ -82,9 +81,6 @@ export class GetElementAccessibilityDetailsTool implements
       context: BaseToolCapability&TargetCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<string>> {
     const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {error: 'Error: Origin lock is not established.'};
-    }
 
     const target = context.getTarget();
     if (!target) {
@@ -100,13 +96,14 @@ export class GetElementAccessibilityDetailsTool implements
       return {error: 'Error: Could not resolve element by ID.'};
     }
 
-    const nodeContext = new DOMNodeContext(resolved);
     // Security check: Ensure the element matches the active conversation's origin lock.
-    if (!isOriginAllowedByLock(establishedOrigin, nodeContext.getOrigin())) {
-      return {error: 'Error: Node does not belong to the locked origin.'};
+    // Because getTarget() returns the primary page target to support resolving elements
+    // across frames, origin validation must be enforced directly on the resolved node.
+    if (!isOriginAllowedByLock(establishedOrigin, resolved.securityOrigin())) {
+      return {error: 'Error: Node does not belong to the current origin.'};
     }
 
-    const axModel = target.model(SDK.AccessibilityModel.AccessibilityModel);
+    const axModel = resolved.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
     if (!axModel) {
       return {error: 'Error: Accessibility model not found.'};
     }

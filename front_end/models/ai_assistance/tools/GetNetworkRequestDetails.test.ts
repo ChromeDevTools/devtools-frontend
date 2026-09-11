@@ -100,7 +100,7 @@ describe('GetNetworkRequestDetailsTool', () => {
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
-    assertIsError(response, 'Opaque origin not allowed');
+    assertIsError(response, 'No request found');
   });
 
   it('redacts cross-origin response body and non-safelisted headers for opaque cross-origin requests', async () => {
@@ -259,7 +259,7 @@ describe('GetNetworkRequestDetailsTool', () => {
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
-    assertIsError(response, 'Opaque origin not allowed');
+    assertIsError(response, 'No request found');
   });
 
   it('rejects inspecting imported HAR requests from a live web session origin', async () => {

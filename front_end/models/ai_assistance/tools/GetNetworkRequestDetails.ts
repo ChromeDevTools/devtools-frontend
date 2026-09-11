@@ -79,13 +79,6 @@ export class GetNetworkRequestDetailsTool implements
     // We only allow inspecting requests matching the conversation's established origin.
     const establishedOrigin = context.getEstablishedOrigin();
 
-    // Opaque origins are never allowed to be used as context.
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {
-        error: 'Opaque origin not allowed',
-      };
-    }
-
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
     const request = networkLog.requests().find(req => {
@@ -97,7 +90,10 @@ export class GetNetworkRequestDetailsTool implements
       return isOriginAllowedByLock(establishedOrigin, req.initiatorSecurityOrigin());
     });
 
-    if (!request) {
+    // If establishedOrigin is undefined or opaque, isOriginAllowedByLock() fails closed,
+    // so find() will never return a request. We check establishedOrigin here as a defensive
+    // guard and to narrow the type for NetworkRequestFormatter below.
+    if (!establishedOrigin || !request) {
       return {
         error: 'No request found',
       };

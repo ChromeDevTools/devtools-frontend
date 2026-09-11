@@ -26,7 +26,7 @@ import {debugLog} from './debug.js';
 import {ExtensionScope} from './ExtensionScope.js';
 import type {Skill, SkillName} from './skills/Skill.js';
 import {SKILLS} from './skills/SkillRegistry.js';
-import type {AllToolsCapabilities, Tool, ToolArgs} from './tools/Tool.js';
+import {type AllToolsCapabilities, isOriginAllowedByLock, type Tool, type ToolArgs} from './tools/Tool.js';
 import {ToolRegistry} from './tools/ToolRegistry.js';
 
 const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
@@ -101,8 +101,13 @@ export class AiAgent2 extends AiAgent<unknown> {
       this.disableServerSideLogging();
     }
 
-    const target = this.#getPrimaryPageTarget();
-    const domModel = target?.model(SDK.DOMModel.DOMModel);
+    const target = this.targetManager.primaryPageTarget();
+    const establishedOrigin = this.#getConversationOrigin();
+    // Avoid fetching or caching top-level documents across origins or when
+    // the origin lock is blocked/uninitialized.
+    // Note: b/559642568 tracks making the tri-state ('blocked' | 'uninitialized' | 'locked') explicit.
+    const isTargetAllowed = target && isOriginAllowedByLock(establishedOrigin, target.inspectedSecurityOrigin());
+    const domModel = isTargetAllowed ? target.model(SDK.DOMModel.DOMModel) : null;
     // Ensure the DOM document is requested and cached in DOMModel so that
     // subsequent synchronous lookups via domModel.existingDocument() (e.g.,
     // in #getDocumentBodyNode()) resolve the document and body immediately.
@@ -291,7 +296,7 @@ User query: ${enhancedQuery}`;
           createExtensionScope: this.#createExtensionScope.bind(this),
           execJs: this.#execJs,
           getExecutionContextNode: () => this.#getExecutionContextNode(),
-          getTarget: () => this.#getPrimaryPageTarget(),
+          getTarget: () => this.#getTarget(),
           getEstablishedOrigin: () => this.#getConversationOrigin(),
           getLighthouseReport: () => (this.context instanceof AccessibilityContext ? this.context.getItem() : null),
           runLighthouse: async overrides => await (this.#lighthouseRecording?.(overrides) ?? null),
@@ -307,42 +312,37 @@ User query: ${enhancedQuery}`;
   }
 
   /**
-   * Returns the primary page target only if no conversation origin is locked,
-   * or if the primary target matches the locked conversation origin.
-   * If origin access is explicitly blocked (e.g. cross-origin navigation occurred),
-   * or if the conversation is locked to an origin different from the primary page target
-   * (e.g. an iframe origin), returns null to prevent cross-origin target access.
+   * Returns the primary page target unless origin access is explicitly blocked
+   * (e.g. following cross-origin navigation).
+   * Tools use this target to resolve node IDs and fetch frame resources, and
+   * perform their own origin checks on the resolved entities.
    */
-  #getPrimaryPageTarget(): SDK.Target.Target|null {
+  #getTarget(): SDK.Target.Target|null {
     const allowed = this.#allowedOrigin?.();
     if (allowed && 'blocked' in allowed) {
       return null;
     }
-    const target = this.targetManager.primaryPageTarget();
-    if (!target) {
-      return null;
-    }
-    const establishedOrigin = this.#getConversationOrigin();
-    if (!establishedOrigin) {
-      return target;
-    }
-    const targetOrigin = target.inspectedSecurityOrigin();
-    if (targetOrigin.isSameOriginWith(establishedOrigin)) {
-      return target;
-    }
-    return null;
+    return this.targetManager.primaryPageTarget();
   }
 
   /**
    * For non-DOM contexts (e.g., Lighthouse accessibility reports or storage items),
    * there is no user-selected DOM node. We fall back to the document body as the
    * default execution context node so scripts have a valid `$0` target.
-   * If the conversation is locked to an origin different from the primary page target,
-   * returns null to prevent exposing the top-level document body across origins.
+   * Fails closed and returns null if the conversation origin is not established or
+   * does not match the primary page document's security origin.
    */
   #getDocumentBodyNode(): SDK.DOMModel.DOMNode|null {
-    const document = this.#getPrimaryPageTarget()?.model(SDK.DOMModel.DOMModel)?.existingDocument();
-    return document?.body ?? null;
+    const target = this.#getTarget();
+    const document = target?.model(SDK.DOMModel.DOMModel)?.existingDocument();
+    if (!document) {
+      return null;
+    }
+    const establishedOrigin = this.#getConversationOrigin();
+    if (!isOriginAllowedByLock(establishedOrigin, document.securityOrigin())) {
+      return null;
+    }
+    return document.body ?? null;
   }
 
   #getConversationOrigin(): SDK.SecurityOrigin.SecurityOrigin|undefined {

@@ -4,7 +4,6 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 
 import {
   type BaseToolCapability,
@@ -85,11 +84,6 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
       params: ResolveDevtoolsNodePathArgs,
       context: BaseToolCapability&TargetCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{backendNodeId: number}>> {
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {error: 'Error: Origin lock is not established.'};
-    }
-
     const target = context.getTarget();
     const domModel = target?.model(SDK.DOMModel.DOMModel);
     if (!domModel) {
@@ -102,7 +96,8 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
       // and ensures the node is loaded into the frontend DOM model, returning its ID.
       nodeId = await domModel.pushNodeByPathToFrontend(params.path);
     } catch {
-      // pushNodeByPathToFrontend can fail or return undefined
+      // pushNodeByPathToFrontend throws when the path is invalid or the node cannot be found.
+      // Swallow the error here so execution falls through to the structured error response below.
     }
     if (!nodeId) {
       return {error: 'Error: Could not find node by path.'};
@@ -113,11 +108,11 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
       return {error: 'Error: Could not retrieve resolved node.'};
     }
 
-    const nodeContext = new DOMNodeContext(node);
+    const establishedOrigin = context.getEstablishedOrigin();
     // Security check: Ensure the resolved node belongs to the same origin
     // that this AI assistance session is locked to, preventing cross-origin access.
-    if (!isOriginAllowedByLock(establishedOrigin, nodeContext.getOrigin())) {
-      return {error: 'Error: Node does not belong to the locked origin.'};
+    if (!isOriginAllowedByLock(establishedOrigin, node.securityOrigin())) {
+      return {error: 'Error: Node does not belong to the current origin.'};
     }
 
     return {

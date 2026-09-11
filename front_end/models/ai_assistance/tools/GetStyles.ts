@@ -6,7 +6,6 @@ import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {ComputedStyleAiWidget, FunctionHandlerOptions} from '../agents/AiAgent.js';
-import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 
 import {
   type BaseToolCapability,
@@ -78,6 +77,12 @@ export class GetStylesTool implements
     };
   }
 
+  /**
+   * Handles the request to retrieve computed and authored CSS styles for specified elements.
+   *
+   * Resolves element backend node IDs using the primary page target and verifies that each
+   * element's security origin matches the established origin lock before querying CSS models.
+   */
   async handler(
       params: GetStylesArgs,
       context: BaseToolCapability&TargetCapability&OriginLockCapability,
@@ -93,9 +98,6 @@ export class GetStylesTool implements
     }
 
     const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {error: 'Error: Origin lock is not established.'};
-    }
 
     for (const uid of params.elements) {
       result[uid] = {computed: {}, authored: {}};
@@ -104,8 +106,10 @@ export class GetStylesTool implements
       if (!resolved) {
         return {error: 'Error: Could not find the element with uid=' + uid};
       }
-      const newContext = new DOMNodeContext(resolved);
-      if (!isOriginAllowedByLock(establishedOrigin, newContext.getOrigin())) {
+      // Security check: Ensure the resolved element belongs to the locked origin.
+      // Because getTarget() returns the primary page target to support resolving elements
+      // across frames, origin validation must be enforced directly on the resolved node.
+      if (!isOriginAllowedByLock(establishedOrigin, resolved.securityOrigin())) {
         return {error: 'Error: Node does not belong to the current origin.'};
       }
       const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);

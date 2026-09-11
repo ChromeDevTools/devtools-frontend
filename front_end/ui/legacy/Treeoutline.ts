@@ -1025,7 +1025,11 @@ export class TreeElement {
     }
     if (this.expandable && !this.expanded) {
       void this.#setExpandedFromUser(true, false);
-      this.listItemElement.focus();
+      // An inline editor or other interactive child may already hold the focus
+      // inside this row; expanding must not take it away from them.
+      if (!this.listItemElement.hasFocus()) {
+        this.listItemElement.focus();
+      }
     }
   }
 

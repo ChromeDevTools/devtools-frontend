@@ -1879,6 +1879,30 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
       assert.isFalse(widget.isEditing);
     });
 
+    it('does not abort in-place editing on second double-click on expandable node', async () => {
+      testTreeElement.setExpandable(true);
+      testTreeElement.select();
+      assert.isFalse(testTreeElement.expanded);
+
+      const widget = testTreeElement.widget;
+      const attrElement = widget.contentElement.querySelector('.webkit-html-attribute');
+      assert.exists(attrElement);
+
+      // First double-click starts editing
+      const firstDblClick = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
+      attrElement.dispatchEvent(firstDblClick);
+      assert.isTrue(widget.isEditing);
+      assert.isFalse(testTreeElement.expanded);
+
+      // Second double-click on editor must not steal focus and abort editing
+      const secondDblClick = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
+      attrElement.dispatchEvent(secondDblClick);
+      assert.isTrue(widget.isEditing);
+
+      widget.editing?.cancel();
+      assert.isFalse(widget.isEditing);
+    });
+
     it('adds and commits a new attribute without duplicating attribute elements', async () => {
       const widget = testTreeElement.widget;
       widget.isDOMNodeSelected = true;

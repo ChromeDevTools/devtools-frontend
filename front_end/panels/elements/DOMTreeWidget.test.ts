@@ -2302,6 +2302,64 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('does not abort in-place editing on second double click on expandable node in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['class', 'foo'],
+          children: [
+            {nodeId: 2, nodeName: 'SPAN'},
+          ],
+        });
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElement = internalTree.rootElement().children()[0];
+        assert.isFalse(rootTreeElement.expanded);
+
+        const rootWidgetElement = rootTreeElement.listItemElement.querySelector('devtools-widget');
+        const rootWidget = UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(rootWidget);
+
+        domTree.selectDOMNode(rootNode);
+        await waitForTreeUpdates();
+
+        const attrElement = rootWidget.contentElement.querySelector('.webkit-html-attribute');
+        assert.exists(attrElement);
+
+        // First double-click starts editing
+        const firstDblClick = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
+        attrElement.dispatchEvent(firstDblClick);
+        await waitForTreeUpdates();
+
+        assert.isTrue(rootWidget.isEditing);
+        assert.isFalse(rootTreeElement.expanded);
+
+        // Second double-click (e.g. word selection) must not steal focus and abort editing
+        const activeBefore = (rootTreeElement.listItemElement.getRootNode() as ShadowRoot).activeElement as HTMLElement;
+        const secondDblClick = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
+        (activeBefore ?? attrElement).dispatchEvent(secondDblClick);
+
+        assert.isTrue(rootWidget.isEditing);
+
+        rootWidget.editing?.cancel();
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('triggers in-place editing on Enter and edit-as-html on F2 in DEFAULT_VIEW', async () => {
       const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
       sinon.stub(domModel, 'requestDocument').resolves(null);

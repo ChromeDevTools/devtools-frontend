@@ -30,6 +30,7 @@ export const PROJECT_ID = 'ai_evals';
  *
  * 3. Run completion (very end of suite execution):
  *    runs/<runId>/
+ *      ├── eval_run.log              - Master evaluation run log
  *      ├── run_completed.json        - Suite summary metrics and final status
  *      └── run_completed.marker      - 0-byte commit marker (sealed last)
  *
@@ -37,6 +38,7 @@ export const PROJECT_ID = 'ai_evals';
  *   runs/2026-09-09-163101-41bf-5d75f29/
  *   ├── run_started.json
  *   ├── run_started.marker
+ *   ├── eval_run.log
  *   ├── run_completed.json
  *   ├── run_completed.marker
  *   └── tasks/
@@ -245,6 +247,23 @@ export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
 }
 
 /**
+ * Uploads the master evaluation run log to <run_id>/eval_run.log in GCS.
+ * Staged in a temporary directory and cleaned up after upload.
+ * Must be called during Phase 3 before run_completed.marker is uploaded.
+ */
+export function uploadRunLog(runId: string, logContent: string): boolean {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'run-log-'));
+  const localLogPath = path.join(tempDir, 'eval_run.log');
+  try {
+    fs.writeFileSync(localLogPath, logContent, 'utf8');
+    const destination = formatGCSRunDestination(runId, 'eval_run.log');
+    return uploadFileToGCS(localLogPath, destination);
+  } finally {
+    fs.rmSync(tempDir, {recursive: true, force: true});
+  }
+}
+
+/**
  * Uploads <run_id>/run_completed.marker (0-byte file).
  * Must be called immediately after run_completed.json is uploaded.
  */
@@ -254,7 +273,7 @@ export function uploadRunCompletedMarker(runId: string): boolean {
 
 /**
  * Emits run_completed.json and immediately uploads run_completed.marker at the very
- * end of the evaluation suite execution after all tasks have finished.
+ * end of the evaluation suite execution after all tasks finished and logs uploaded.
  */
 export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'run-completed-'));

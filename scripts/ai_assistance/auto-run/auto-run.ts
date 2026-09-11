@@ -19,6 +19,7 @@ import {
   type TaskStatus,
   uploadEvalToGCS,
   uploadRunCompleted,
+  uploadRunLog,
   uploadRunStarted,
   uploadTaskCompleted,
 } from './gcs-upload.ts';
@@ -103,11 +104,23 @@ type UserArgs = ReturnType<typeof userArgsBuilder.parseSync>;
 class Logger {
   #logs: Logs = {};
   #updateElapsedTimeInterval: NodeJS.Timeout|null = null;
+  #logEntries: string[] = [];
 
   constructor() {
     this.#updateElapsedTimeInterval = setInterval(() => {
       this.#updateElapsedTime();
     }, 1000);
+  }
+
+  #recordLog(text: string) {
+    const cleanText = text.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '').trim();
+    if (!cleanText) {
+      return;
+    }
+    const timestamp = new Date().toISOString();
+    for (const line of cleanText.split('\n')) {
+      this.#logEntries.push(`[${timestamp}] ${line}`);
+    }
   }
 
   #updateElapsedTime() {
@@ -146,6 +159,7 @@ class Logger {
    * @param text
    */
   log(id: string, index: number, text: string) {
+    this.#recordLog(text);
     this.#updateElapsedTime();
     this.#logs[id] = {index, text};
     this.#flushLogs();
@@ -153,6 +167,14 @@ class Logger {
 
   error(id: string, index: number, text: string) {
     this.log(id, index, text);
+  }
+
+  append(text: string) {
+    this.#recordLog(text);
+  }
+
+  getLogContent(): string {
+    return this.#logEntries.join('\n') + '\n';
   }
 
   destroy() {
@@ -501,6 +523,8 @@ async function main() {
   }
 
   const logger = new Logger();
+  logger.append(`Evaluation run started for ${runId} at ${runStartTimestamp}`);
+  logger.append(`Target: ${userArgs.testTarget}, Agent: devtools-${userArgs.testTarget}`);
   logger.head('Connecting to the browser...');
   const browser = await puppeteer.connect({
     browserURL: 'http://127.0.0.1:9222',
@@ -571,13 +595,18 @@ async function main() {
     const target = userArgs.testTarget;
     const graderScript = path.resolve(import.meta.dirname, '..', 'suite', `${target}.eval.ts`);
     if (fs.existsSync(graderScript)) {
-      console.info(`\n[Info]: Running grader ${graderScript} at the end`);
+      const graderMsg = `Running grader ${graderScript} at the end`;
+      console.info(`\n[Info]: ${graderMsg}`);
+      logger.append(graderMsg);
       try {
         const cwd = path.resolve(import.meta.dirname, '..');
         const cmd = `node suite/${target}.eval.ts`;
-        console.info(`\n[Info]: Running command: ${cmd} in ${cwd}`);
+        const cmdMsg = `Running command: ${cmd} in ${cwd}`;
+        console.info(`\n[Info]: ${cmdMsg}`);
+        logger.append(cmdMsg);
         const stdout = execSync(cmd, {cwd, encoding: 'utf8'});
         console.info(stdout);
+        logger.append(stdout);
 
         if (userArgs.upload) {
           const evalResultPath = path.resolve(import.meta.dirname, 'data', `eval_result-${runId}.json`);
@@ -612,7 +641,10 @@ async function main() {
         }
       } catch (error) {
         graderFailed = true;
-        console.error(`\n[Error]: Grader failed`, error);
+        const errorMsg = error instanceof Error ? (error.stack ?? error.message) : String(error);
+        const errorMessage = `[Error]: Grader failed: ${errorMsg}`;
+        console.error(`\n${errorMessage}`);
+        logger.append(errorMessage);
         if (userArgs.upload) {
           const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
           for (const taskId of allTaskIds) {
@@ -623,7 +655,9 @@ async function main() {
       }
     } else {
       graderFailed = true;
-      console.error(`\n[Error]: Grader script ${graderScript} not found.`);
+      const notFoundMessage = `[Error]: Grader script ${graderScript} not found.`;
+      console.error(`\n${notFoundMessage}`);
+      logger.append(notFoundMessage);
       if (userArgs.upload) {
         const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
         for (const taskId of allTaskIds) {
@@ -640,6 +674,10 @@ async function main() {
     const passedTasks = totalTasks - failedTasks;
     const runStatus = (graderFailed || failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
 
+    logger.append(`Total tasks: ${totalTasks}, Passed: ${passedTasks}, Failed: ${failedTasks}`);
+    logger.append(`Run completed with status: ${runStatus}`);
+
+    uploadRunLog(runId, logger.getLogContent());
     uploadRunCompleted({
       project: PROJECT_ID,
       runId,

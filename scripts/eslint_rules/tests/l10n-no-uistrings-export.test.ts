@@ -9,18 +9,22 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('l10n-no-uistrings-export', rule, {
   valid: [
     {
+      name: 'allows non-exported UIStrings in regular file',
       code: 'const UIStrings = {} as const;',
       filename: 'front_end/module/test.ts',
     },
     {
+      name: 'allows exporting in ModuleUIStrings.ts',
       code: 'export const UIStrings = {} as const;',
       filename: 'front_end/module/ModuleUIStrings.ts',
     },
     {
+      name: 'allows exporting in ModuleUIStrings.js',
       code: 'export const UIStrings = {} as const;',
       filename: 'front_end/module/ModuleUIStrings.js',
     },
     {
+      name: 'allows exporting in ModuleUIStrings.js with Windows path',
       code: 'export const UIStrings = {} as const;',
       // Emulate Windows path
       filename: 'front_end\\module\\ModuleUIStrings.js',
@@ -28,6 +32,7 @@ new RuleTester().run('l10n-no-uistrings-export', rule, {
   ],
   invalid: [
     {
+      name: 'disallows exported UIStrings in regular file',
       code: 'export const UIStrings = {} as const;',
       filename: 'front_end/module/test.ts',
       errors: [
@@ -38,6 +43,7 @@ new RuleTester().run('l10n-no-uistrings-export', rule, {
       output: ' const UIStrings = {} as const;',
     },
     {
+      name: 'disallows export clause for UIStrings in regular file',
       code: 'const UIStrings = {} as const; export { UIStrings };',
       filename: 'front_end/module/test.ts',
       errors: [

@@ -9,12 +9,15 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('prefer-url-string', rule, {
   valid: [
     {
+      name: 'allows RawPathString type assertion',
       code: 'assert.isOk(foo as Platform.DevTools.RawPathString);',
     },
     {
+      name: 'allows EncodedPathString type assertion',
       code: 'assert.isOk(foo as Platform.DevTools.EncodedPathString);',
     },
     {
+      name: 'allows urlString tagged template',
       code: `import * as Platform from './platform.js';
 
 const {urlString} = Platform.DevToolsPath;
@@ -27,6 +30,7 @@ it('test', () => {
 
   invalid: [
     {
+      name: 'disallows UrlString assertion with literal string',
       code: `import type * as Platform from './platform.js';
 
 it('test', () => {
@@ -46,6 +50,7 @@ it('test', () => {
       ],
     },
     {
+      name: 'disallows UrlString assertion with string concatenation',
       code: `import type * as Platform from './platform.js';
 
 it('test', () => {
@@ -65,6 +70,7 @@ it('test', () => {
       ],
     },
     {
+      name: 'disallows UrlString assertion with variable in function',
       code: `import type * as Platform from './platform.js';
 
 function assertEqualUrlStringString(actual: Platform.DevToolsPath.UrlString|null, expected: string, message?: string) {

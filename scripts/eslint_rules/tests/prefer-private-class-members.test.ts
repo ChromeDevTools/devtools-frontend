@@ -9,6 +9,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('prefer-private-class-members', rule, {
   valid: [
     {
+      name: 'allows private hash method',
       code: `class Foo {
         #method() {}
       }
@@ -16,6 +17,7 @@ new RuleTester().run('prefer-private-class-members', rule, {
       filename: 'test/e2e/folder/file.ts',
     },
     {
+      name: 'allows public method',
       code: `class Foo {
         public method() {}
       }
@@ -23,6 +25,7 @@ new RuleTester().run('prefer-private-class-members', rule, {
       filename: 'test/e2e/folder/file.ts',
     },
     {
+      name: 'allows public field',
       code: `class Foo {
         public field: string;
       }
@@ -30,6 +33,7 @@ new RuleTester().run('prefer-private-class-members', rule, {
       filename: 'test/e2e/folder/file.ts',
     },
     {
+      name: 'allows private constructor',
       code: `class Foo {
         private constructor() {}
       }
@@ -40,6 +44,7 @@ new RuleTester().run('prefer-private-class-members', rule, {
 
   invalid: [
     {
+      name: 'disallows private method modifier',
       code: `class Foo {
         private method() {}
       }
@@ -48,6 +53,7 @@ new RuleTester().run('prefer-private-class-members', rule, {
       errors: [{messageId: 'doNotUsePrivate'}],
     },
     {
+      name: 'disallows private field modifier',
       code: `class Foo {
         private field: string;
       }

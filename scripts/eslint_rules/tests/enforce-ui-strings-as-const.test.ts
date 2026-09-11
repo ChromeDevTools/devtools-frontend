@@ -9,15 +9,21 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('enforce-ui-strings-as-const', rule, {
   valid: [
     {
+      name: 'allows UIStrings defined as const',
       code: 'const UIStrings = {} as const;',
     },
     {
+      name: 'allows UIStringsNotTranslate defined as const',
       code: 'const UIStringsNotTranslate = {} as const;',
     },
-    {code: 'const NotAUIStrings = {}'},
+    {
+      name: 'allows other object without as const',
+      code: 'const NotAUIStrings = {}',
+    },
   ],
   invalid: [
     {
+      name: 'disallows UIStrings without as const',
       code: 'const UIStrings = {};',
       errors: [
         {messageId: 'invalidUIStringsObject'},
@@ -25,6 +31,7 @@ new RuleTester().run('enforce-ui-strings-as-const', rule, {
       output: 'const UIStrings = {} as const;',
     },
     {
+      name: 'disallows UIStringsNotTranslate without as const',
       code: 'const UIStringsNotTranslate = {};',
       errors: [
         {messageId: 'invalidUIStringsObject'},

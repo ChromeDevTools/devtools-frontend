@@ -8,6 +8,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('inject-checkbox-styles', rule, {
   valid: [
     {
+      name: 'allows adopted checkbox styles in connectedCallback',
       code: `import * as Input from '../input/input.js';
       export class Test extends HTMLElement {
         readonly #shadow = this.attachShadow({mode: 'open'});
@@ -23,6 +24,7 @@ new RuleTester().run('inject-checkbox-styles', rule, {
       filename: 'front_end/ui/components/datagrid/datagrid.ts',
     },
     {
+      name: 'allows adopted constructed stylesheet and checkboxStyles',
       code: `import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as Lit from '../../lit/lit.js';
 import * as Input from '../input/input.js';
@@ -52,6 +54,7 @@ export class SettingCheckbox extends HTMLElement {
       filename: 'front_end/ui/components/settings/SettingsCheckbox.ts',
     },
     {
+      name: 'allows inline style tag with checkboxStyles',
       code: `import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as Lit from '../../lit/lit.js';
 import * as Input from '../input/input.js';
@@ -75,6 +78,7 @@ export class SettingCheckbox extends HTMLElement {
       filename: 'front_end/ui/components/settings/SettingsCheckbox.ts',
     },
     {
+      name: 'allows private field shadow root with checkboxStyles',
       code: `import * as Input from '../input/input.js';
       export class Test extends HTMLElement {
         private readonly shadow = this.attachShadow({mode: 'open'});
@@ -91,6 +95,7 @@ export class SettingCheckbox extends HTMLElement {
     },
     // Nothing to do with checkboxes, so this rule should not apply.
     {
+      name: 'ignores non-checkbox input types',
       code: `import * as Input from '../input/input.js';
       import {Foo} from './bar.js';
 
@@ -111,6 +116,7 @@ export class SettingCheckbox extends HTMLElement {
   invalid: [
     // No styles imported or adopted.
     {
+      name: 'disallows checkbox without styles imported or adopted',
       code: `export class Test extends HTMLElement {
         private readonly shadow = this.attachShadow({mode: 'open'});
 
@@ -124,6 +130,7 @@ export class SettingCheckbox extends HTMLElement {
 
     // Ensure we get one error per checkbox found in the Lit call.
     {
+      name: 'reports error for each checkbox in lit template',
       code: `export class Test extends HTMLElement {
         private readonly shadow = this.attachShadow({mode: 'open'});
 
@@ -140,6 +147,7 @@ export class SettingCheckbox extends HTMLElement {
 
     // Importing not the right styles.
     {
+      name: 'disallows checkbox with wrong style import path in adoptedStylesheets',
       code: `import * as NotInputStyles from '../../wrong-import-path/input/input.js';
       export class Test extends HTMLElement {
         private readonly shadow = this.attachShadow({mode: 'open'});
@@ -156,6 +164,7 @@ export class SettingCheckbox extends HTMLElement {
       errors: [{messageId: 'missingCheckboxStylesImport'}],
     },
     {
+      name: 'disallows checkbox with wrong style import path in style tag',
       code: `import * as NotInputStyles from '../../wrong-import-path/input/input.js';
       export class Test extends HTMLElement {
         private readonly shadow = this.attachShadow({mode: 'open'});
@@ -170,6 +179,7 @@ export class SettingCheckbox extends HTMLElement {
 
     // No adopting of the styles.
     {
+      name: 'disallows checkbox when styles imported but not adopted',
       code: `import * as Input from '../input/input.js';
       export class Test extends HTMLElement {
         private readonly shadow = this.attachShadow({mode: 'open'});
@@ -184,6 +194,7 @@ export class SettingCheckbox extends HTMLElement {
 
     // Adopting the wrong styles
     {
+      name: 'disallows checkbox when wrong styles adopted',
       code: `import * as Input from '../input/input.js';
       import {fooStyles} from './who-knows.js';
 
@@ -202,6 +213,7 @@ export class SettingCheckbox extends HTMLElement {
       errors: [{messageId: 'missingCheckboxStylesAdoption'}],
     },
     {
+      name: 'disallows checkbox when wrong styles used in style tag',
       code: `import * as Input from '../input/input.js';
       import {fooStyles} from './who-knows.js';
 

@@ -9,6 +9,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('static-custom-event-names', rule, {
   valid: [
     {
+      name: 'allows static readonly eventName in Event subclass',
       code: `class FooEvent extends Event {
         static readonly eventName = 'fooevent'
         data: string;
@@ -21,6 +22,7 @@ new RuleTester().run('static-custom-event-names', rule, {
       filename: 'ui/some-component.ts',
     },
     {
+      name: 'allows non-Event class without eventName',
       code: `class NotAnEvent {
       }`,
       filename: 'ui/some-component.ts',
@@ -29,6 +31,7 @@ new RuleTester().run('static-custom-event-names', rule, {
       // Not using the built in Event type, but using a type that is defined in
       // the same file that is called Event. We special case this because in
       // the Performance Panel SDK we do define a custom Event class
+      name: 'allows subclass of local Event type',
       code: `class Event {};
 export class ConstructedEvent extends Event {}`,
       filename: 'ui/some-component.ts',
@@ -38,6 +41,7 @@ export class ConstructedEvent extends Event {}`,
   invalid: [
     {
       // Not readonly
+      name: 'disallows instance non-readonly eventName property',
       code: `class FooEvent extends Event {
         eventName = 'fooevent'
         data: string;
@@ -55,6 +59,7 @@ export class ConstructedEvent extends Event {}`,
     },
     {
       // Not static
+      name: 'disallows non-static readonly eventName property',
       code: `class FooEvent extends Event {
         readonly eventName = 'fooevent'
         data: string;
@@ -69,6 +74,7 @@ export class ConstructedEvent extends Event {}`,
     },
     {
       // Controller not using new name
+      name: 'disallows super call with no arguments',
       code: `class FooEvent extends Event {
         static readonly eventName = 'fooevent'
         data: string;
@@ -83,6 +89,7 @@ export class ConstructedEvent extends Event {}`,
     },
     {
       // Missing super() call
+      name: 'disallows missing super call in constructor',
       code: `class FooEvent extends Event {
         static readonly eventName = 'fooevent'
         data: string;
@@ -96,6 +103,7 @@ export class ConstructedEvent extends Event {}`,
     },
     {
       // Missing constructor
+      name: 'disallows Event subclass without constructor',
       code: `class FooEvent extends Event {
         static readonly eventName = 'fooevent'
         data: string;
@@ -105,6 +113,7 @@ export class ConstructedEvent extends Event {}`,
     },
     {
       // Controller not using new name
+      name: 'disallows wrong property access in super call',
       code: `class FooEvent extends Event {
         static readonly eventName = 'fooevent'
         data: string;
@@ -119,6 +128,7 @@ export class ConstructedEvent extends Event {}`,
     },
     {
       // Controller not using new name
+      name: 'disallows other class eventName in super call',
       code: `class FooEvent extends Event {
         static readonly eventName = 'fooevent'
         data: string;
@@ -133,6 +143,7 @@ export class ConstructedEvent extends Event {}`,
     },
     {
       // Controller not using new name and missing the property
+      name: 'disallows missing static readonly eventName property and raw string in super',
       code: `class FooEvent extends Event {
         data: string;
 
@@ -154,6 +165,7 @@ export class ConstructedEvent extends Event {}`,
     },
     {
       // Controller not using new name
+      name: 'disallows raw string in super when static readonly eventName exists',
       code: `class FooEvent extends Event {
         static readonly eventName = 'fooevent';
         data: string;

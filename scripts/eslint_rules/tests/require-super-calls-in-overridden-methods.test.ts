@@ -9,6 +9,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
   valid: [
     {
+      name: 'allows missing super call when methodNames option is empty',
       code: `
       export class Component extends UI.Widget.Widget {
         override wasShown(): void {}
@@ -19,6 +20,7 @@ new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
       ],
     },
     {
+      name: 'allows different super method call when methodNames option is empty',
       code: `
       export class Component extends UI.Widget.Widget {
         override wasShown(): void { super.willHide(); }
@@ -29,6 +31,7 @@ new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
       ],
     },
     {
+      name: 'super.wasShown() called with empty methodNames option',
       code: `
       export class Component extends UI.Widget.Widget {
         override wasShown(): void { super.wasShown(); }
@@ -39,6 +42,7 @@ new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
       ],
     },
     {
+      name: 'super.wasShown() called with wasShown option',
       code: `
       export class Component extends UI.Widget.Widget {
         override wasShown(): void { super.wasShown(); }
@@ -49,6 +53,7 @@ new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
       ],
     },
     {
+      name: 'allows wasShown and willHide with super calls at start and end',
       code: `
       export class Component extends UI.Widget.Widget {
         override wasShown(): void {
@@ -66,6 +71,7 @@ new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
       ],
     },
     {
+      name: 'allows wasShown and willHide with super calls between statements',
       code: `
       export class Component extends UI.Widget.Widget {
         override wasShown(): void {
@@ -85,6 +91,7 @@ new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
       ],
     },
     {
+      name: 'allows non-override methods without super calls',
       code: `
       export class Widget {
         wasShown(): void {
@@ -100,6 +107,7 @@ new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
   ],
   invalid: [
     {
+      name: 'disallows missing super.wasShown call in empty body',
       code: `
       export class Component extends UI.Widget.Widget {
         override wasShown(): void { }
@@ -116,6 +124,7 @@ new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
       `,
     },
     {
+      name: 'disallows calling wrong super method instead of required method',
       code: `
       export class Component extends UI.Widget.Widget {
         override wasShown(): void { super.willHide(); }
@@ -132,6 +141,7 @@ new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
       `,
     },
     {
+      name: 'disallows missing super calls when both methods contain setup/teardown statements',
       code: `
       export class Component extends UI.Widget.Widget {
         override wasShown(): void { this.doSetUp(); }
@@ -153,6 +163,7 @@ new RuleTester().run('require-super-calls-in-overridden-methods', rule, {
       `,
     },
     {
+      name: 'disallows missing super calls when both methods have empty bodies',
       code: `
       export class Component extends UI.Widget.Widget {
         override wasShown(): void { }

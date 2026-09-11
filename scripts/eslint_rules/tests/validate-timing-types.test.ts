@@ -11,6 +11,7 @@ import {RuleTester, typeCheckingOptions} from './utils/RuleTester.ts';
 new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
   valid: [
     {
+      name: 'allows subtracting micro from micro with cast',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -21,6 +22,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       `,
     },
     {
+      name: 'allows subtracting micro from micro with explicit type annotation',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -31,6 +33,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       `,
     },
     {
+      name: 'allows subtracting micro or undefined from micro or undefined',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -41,6 +44,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       `,
     },
     {
+      name: 'allows subtracting union with micro when cast to micro',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -51,6 +55,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       `,
     },
     {
+      name: 'allows chaining subtraction and addition of micro',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -61,6 +66,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       `,
     },
     {
+      name: 'allows adding milli to milli',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -71,6 +77,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       `,
     },
     {
+      name: 'allows reduce accumulator matching timing type',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -82,6 +89,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       `,
     },
     {
+      name: 'allows Math.max with matching timing types and cast',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -92,6 +100,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       `,
     },
     {
+      name: 'allows Math.max with expressions having matching timing types',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -105,6 +114,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
 
   invalid: [
     {
+      name: 'disallows subtracting micro from micro and casting to milli',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -122,6 +132,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       ],
     },
     {
+      name: 'disallows adding micro and micro and casting to milli',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -139,6 +150,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       ],
     },
     {
+      name: 'disallows subtracting micro from micro and annotating as milli',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -156,6 +168,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       ],
     },
     {
+      name: 'disallows assigning micro subtraction to milli variable',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -174,6 +187,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       ],
     },
     {
+      name: 'disallows chaining micro operations and casting to milli',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -193,6 +207,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       ],
     },
     {
+      name: 'disallows adding micro and milli',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -210,6 +225,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       ],
     },
     {
+      name: 'disallows reduce with mismatched accumulator and timing type',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -233,6 +249,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       ],
     },
     {
+      name: 'disallows reduce callback returning mismatched timing type',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -252,6 +269,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       ],
     },
     {
+      name: 'disallows Math.max with micro result cast to milli',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};
@@ -269,6 +287,7 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
       ],
     },
     {
+      name: 'disallows Math.max with mismatched argument timing types',
       code: `
         type Micro = number&{_tag: 'MicroSeconds'};
         type Milli = number&{_tag: 'MilliSeconds'};

@@ -9,6 +9,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('no-dynamic-preamble', rule, {
   valid: [
     {
+      name: 'allows const string literal preamble variable in AiAgent',
       code: `
         const preamble = 'static preamble';
         class MyAgent extends AiAgent {
@@ -17,6 +18,7 @@ new RuleTester().run('no-dynamic-preamble', rule, {
       `,
     },
     {
+      name: 'allows const template literal preamble without substitution in AiAgent',
       code: `
         const preamble = \`static preamble\`;
         class MyAgent extends AiAgent {
@@ -25,6 +27,7 @@ new RuleTester().run('no-dynamic-preamble', rule, {
       `,
     },
     {
+      name: 'allows direct string literal preamble in AiAgent',
       code: `
         class MyAgent extends AiAgent {
           readonly preamble = 'static preamble';
@@ -32,6 +35,7 @@ new RuleTester().run('no-dynamic-preamble', rule, {
       `,
     },
     {
+      name: 'allows direct template literal preamble without substitution in AiAgent',
       code: `
         class MyAgent extends AiAgent {
           readonly preamble = \`static preamble\`;
@@ -39,6 +43,7 @@ new RuleTester().run('no-dynamic-preamble', rule, {
       `,
     },
     {
+      name: 'allows dynamic preamble in non-AiAgent class',
       code: `
         class NotAnAgent {
           readonly preamble = \`dynamic \${foo}\`;
@@ -48,6 +53,7 @@ new RuleTester().run('no-dynamic-preamble', rule, {
   ],
   invalid: [
     {
+      name: 'disallows template literal with substitution directly on AiAgent preamble',
       code: `
         class MyAgent extends AiAgent {
           readonly preamble = \`dynamic \${foo}\`;
@@ -56,6 +62,7 @@ new RuleTester().run('no-dynamic-preamble', rule, {
       errors: [{messageId: 'dynamicPreamble'}],
     },
     {
+      name: 'disallows referencing template literal with substitution in AiAgent preamble',
       code: `
         const preamble = \`dynamic \${foo}\`;
         class MyAgent extends AiAgent {
@@ -65,6 +72,7 @@ new RuleTester().run('no-dynamic-preamble', rule, {
       errors: [{messageId: 'dynamicPreamble'}],
     },
     {
+      name: 'disallows referencing let variable in AiAgent preamble',
       code: `
         let preamble = 'static';
         class MyAgent extends AiAgent {
@@ -74,6 +82,7 @@ new RuleTester().run('no-dynamic-preamble', rule, {
       errors: [{messageId: 'dynamicPreamble'}],
     },
     {
+      name: 'disallows referencing function call in AiAgent preamble',
       code: `
         const preamble = someFunction();
         class MyAgent extends AiAgent {

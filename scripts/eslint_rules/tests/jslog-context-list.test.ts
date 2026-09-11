@@ -8,6 +8,7 @@ process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE = 'true';
 new RuleTester().run('jslog-context-list', rule, {
   invalid: [
     {
+      name: 'disallows unknown context value in setAttribute',
       code: `
         menuItemElement.setAttribute('jslog', \`\${VisualLogging.action('uNkNown').track({click: true})}\`);
       `,
@@ -20,6 +21,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'disallows unknown context value in lit dialog template',
       code: `
         Lit.render(Lit.html\`
           <dialog @click=\${this.#handlePointerEvent} @pointermove=\${this.#handlePointerEvent} @cancel=\${this.#onCancel}
@@ -41,6 +43,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'disallows unknown actionId in registerActionExtension',
       code: `
         UI.ActionRegistration.registerActionExtension({
           category: UI.ActionRegistration.ActionCategory.RECORDER,
@@ -61,6 +64,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'disallows unknown id in registerViewExtension',
       code: `
         UI.ViewManager.registerViewExtension({
           location: UI.ViewManager.ViewLocationValues.PANEL,
@@ -83,6 +87,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'disallows unknown settingName in registerSettingExtension',
       code: `
         Common.Settings.registerSettingExtension({
           storageType: Common.Settings.SettingStorageType.Synced,
@@ -100,6 +105,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'disallows unknown setting name in createSetting',
       code: `
     this.disableCaptureJSProfileSetting =
         Common.Settings.Settings.instance().createSetting('uNkNown6', false);
@@ -113,6 +119,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'disallows unknown jslogContext in contextMenu.appendItem',
       code: `
         contextMenu.defaultSection().appendItem(
             i18nString(UIStrings.refresh), this.refreshCallback.bind(this), {jslogContext: 'uNkNown7'});
@@ -128,24 +135,28 @@ new RuleTester().run('jslog-context-list', rule, {
   ],
   valid: [
     {
+      name: 'allows known action context string in setAttribute',
       code: `
         menuItemElement.setAttribute('jslog', \`\${VisualLogging.action('elements').track({click: true})}\`);
       `,
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'allows empty action context in setAttribute',
       code: `
         menuItemElement.setAttribute('jslog', \`\${VisualLogging.action().track({click: true})}\`);
       `,
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'allows dynamic action context variable in setAttribute',
       code: `
         menuItemElement.setAttribute('jslog', \`\${VisualLogging.action(this.jslogContext).track({click: true})}\`);
       `,
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'allows dynamic dialog context in lit template',
       code: `
         Lit.render(Lit.html\`
           <dialog @click=\${this.#handlePointerEvent} @pointermove=\${this.#handlePointerEvent} @cancel=\${this.#onCancel}
@@ -161,6 +172,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'allows enum actionId in registerActionExtension',
       code: `
 	UI.ActionRegistration.registerActionExtension({
 	  category: UI.ActionRegistration.ActionCategory.RECORDER,
@@ -175,6 +187,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'allows enum id in registerViewExtension',
       code: `
 	UI.ViewManager.registerViewExtension({
 	  location: UI.ViewManager.ViewLocationValues.PANEL,
@@ -191,6 +204,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'allows omitting settingName in registerSettingExtension',
       code: `
 	Common.Settings.registerSettingExtension({
 	  storageType: Common.Settings.SettingStorageType.Synced,
@@ -201,6 +215,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'allows variable setting name in createSetting',
       code: `
     this.disableCaptureJSProfileSetting =
         Common.Settings.Settings.instance().createSetting(name, false);
@@ -208,6 +223,7 @@ new RuleTester().run('jslog-context-list', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
+      name: 'allows shorthand jslogContext property in contextMenu.appendItem',
       code: `
         contextMenu.defaultSection().appendItem(
             i18nString(UIStrings.refresh), this.refreshCallback.bind(this), {jslogContext});

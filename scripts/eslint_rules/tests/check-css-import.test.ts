@@ -9,10 +9,12 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('check-css-import', rule, {
   valid: [
     {
+      name: 'allows importing existing css.js file in same directory',
       code: 'import styles from \'./check_css_import_test_file.css.js\';',
       filename: 'scripts/eslint_rules/tests/file.ts',
     },
     {
+      name: 'allows importing existing css.js file via relative path',
       code: 'import styles from \'../../../scripts/eslint_rules/tests/check_css_import_test_file.css.js\';',
       filename: 'front_end/ui/components/file.ts',
     },
@@ -21,6 +23,7 @@ new RuleTester().run('check-css-import', rule, {
   invalid: [
     {
       // Files that do not exist are caught
+      name: 'disallows importing non-existent css.js file',
       code: 'import styles from \'styles.css.js\';',
       filename: 'front_end/ui/components/component/file.ts',
       errors: [
@@ -31,6 +34,7 @@ new RuleTester().run('check-css-import', rule, {
     },
     {
       // Filename typos are caught
+      name: 'disallows importing css.js file with typo in path',
       code: 'import styles from \'../../../scripts/eslint_rules/test/check_css_import_tests_file.css.js\';',
       filename: 'front_end/ui/components/icon_button/file.ts',
       errors: [

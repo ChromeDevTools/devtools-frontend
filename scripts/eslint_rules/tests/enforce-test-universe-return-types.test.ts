@@ -9,6 +9,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('enforce-test-universe-return-types', rule, {
   valid: [
     {
+      name: 'allows valid return types on TestUniverse methods and getters',
       code: `
         export class TestUniverse {
           constructor() {}
@@ -23,6 +24,7 @@ new RuleTester().run('enforce-test-universe-return-types', rule, {
 
   invalid: [
     {
+      name: 'disallows primitive/void return types and missing return types on TestUniverse',
       code: `
         export class TestUniverse {
           get someString(): string { return 'foo'; }

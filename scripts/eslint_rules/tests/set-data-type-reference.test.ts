@@ -8,6 +8,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('set-data-type-reference', rule, {
   valid: [
     {
+      name: 'allows typed data setter on HTMLElement subclass',
       code: `class Foo extends HTMLElement {
         set data(data: FooData) {}
       }`,
@@ -15,6 +16,7 @@ new RuleTester().run('set-data-type-reference', rule, {
     },
     {
       // Outside of a component anything goes
+      name: 'allows untyped data setter outside HTMLElement class',
       code: `class Foo {
         set data(data) {}
       }`,
@@ -24,6 +26,7 @@ new RuleTester().run('set-data-type-reference', rule, {
 
   invalid: [
     {
+      name: 'disallows untyped parameter on HTMLElement data setter',
       code: `class Foo extends HTMLElement {
         set data(data) {}
       }`,
@@ -35,6 +38,7 @@ new RuleTester().run('set-data-type-reference', rule, {
       ],
     },
     {
+      name: 'disallows data setter with no parameters on HTMLElement',
       code: `class Foo extends HTMLElement {
         set data() {}
       }`,
@@ -46,6 +50,7 @@ new RuleTester().run('set-data-type-reference', rule, {
       ],
     },
     {
+      name: 'disallows inline literal type for HTMLElement data setter',
       code: `class Foo extends HTMLElement {
         set data(data: {some: 'literal'}) {}
       }`,

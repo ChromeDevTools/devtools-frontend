@@ -8,6 +8,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('no-imperative-dom-api', rule, {
   valid: [
     {
+      name: 'allows className on someElement',
       filename: 'front_end/ui/components/component/file.ts',
       code: `class SomeWidget extends UI.Widget.Widget {
           constructor() {
@@ -17,6 +18,7 @@ new RuleTester().run('no-imperative-dom-api', rule, {
       }`,
     },
     {
+      name: 'allows appendChild on element without args',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
         const el = document.createElement('div');
@@ -24,6 +26,7 @@ new RuleTester().run('no-imperative-dom-api', rule, {
       `,
     },
     {
+      name: 'allows setAttribute on element without args',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
         const el = document.createElement('div');
@@ -34,6 +37,7 @@ new RuleTester().run('no-imperative-dom-api', rule, {
 
   invalid: [
     {
+      name: 'flags contentElement appendChild with br and hr',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -62,6 +66,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'flags element className',
       filename: 'front_end/ui/components/component/file.ts',
       code: `class SomeWidget extends UI.Widget.Widget {
           constructor() {
@@ -84,6 +89,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'flags contentElement appendChild with div',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -110,6 +116,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'flags contentElement className, setAttribute and textContent',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -136,6 +143,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'flags createChild with classList and event listener',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -164,6 +172,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'flags contentElement style width and marginLeft',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -189,6 +198,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'flags contentElement appendChild div with className',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -217,6 +227,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'flags contentElement createChild span with textContent',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -243,6 +254,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates ToolbarFilter in devtools-toolbar',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -280,6 +292,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates ToolbarInput in devtools-toolbar',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -311,6 +324,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates Adorner with innerHTML and data',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -349,6 +363,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates ToolbarButton in devtools-toolbar',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -382,6 +397,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates multiple widgets in the same file',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class Widget1 extends UI.Widget.Widget {
@@ -430,6 +446,7 @@ class Widget2 extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}, {messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates toolbar button and separate div processed together',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -469,6 +486,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}, {messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates constructor parameters label and details with createChild',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -507,6 +525,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates complex DOM properties on input, anchor and img elements',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -565,6 +584,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates toolbar and private field banner element',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -600,6 +620,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates toolbar action buttons created via ActionRegistry',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -634,6 +655,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates ToolbarComboBox in devtools-toolbar',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -667,6 +689,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates createLabel with select option and createTextButton',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -708,6 +731,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates createTextChild on createChild div',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -734,6 +758,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates standalone Buttons.Button.Button assignment',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -766,6 +791,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates createIcon and Icon instances',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -799,6 +825,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates CheckboxLabel.create and ToolbarCheckbox variants',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -848,6 +875,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates createIconLabel with checkmark',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -882,6 +910,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates iframe element with sandbox and tabindex',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -911,6 +940,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates createInput with harmony-input',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -938,6 +968,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates SortableDataGrid with column descriptors and sorting listener',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1004,6 +1035,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates createCell in SortableDataGridNode',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<ElementNode> {
@@ -1057,6 +1089,7 @@ class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Element
       errors: [{messageId: 'preferTemplateLiterals'}, {messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates ViewportDataGrid with config and column descriptors',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1125,6 +1158,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates DataGridImpl with columns and refreshCallback',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1186,6 +1220,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates nested SplitWidget and SidebarPanel setup',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1237,6 +1272,7 @@ class SomeWidget extends UI.Widget.Widget {
     },
 
     {
+      name: 'migrates ARIAUtils role and state helper calls',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1286,6 +1322,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates EmptyWidget with header text and link',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1316,6 +1353,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates Toolbar with ToolbarComboBox, ToolbarButton, and ToolbarSeparator',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1377,6 +1415,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates ReportView with appendSection and appendRow',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1411,6 +1450,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates ReportView with sections, fields, and selectable rows',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1459,6 +1499,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates Link.create with class and tabindex',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1489,6 +1530,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates getFormatLocalizedString to i18nTemplate',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1522,6 +1564,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates ColorSwatch with color and readonly',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
@@ -1551,6 +1594,7 @@ class SomeWidget extends UI.Widget.Widget {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates function returning document.createElement',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 function createDiv() {
@@ -1564,6 +1608,7 @@ function createDiv() {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates function returning document.createTextNode with string literal',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 function createTextNode() {
@@ -1577,6 +1622,7 @@ function createTextNode() {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates function returning document.createTextNode with variable',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 function createTextNodeWithVar(myVar) {
@@ -1590,6 +1636,7 @@ function createTextNodeWithVar(myVar) {
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
     {
+      name: 'migrates function returning document.createElement with variable',
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 function createDivWithVar(myVar) {

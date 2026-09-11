@@ -9,6 +9,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('check-test-definitions', rule, {
   valid: [
     {
+      name: 'allows standard describe and it in e2e tests',
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
 
       describe('e2e-test', async () => {
@@ -19,6 +20,7 @@ new RuleTester().run('check-test-definitions', rule, {
       filename: 'test/e2e/folder/file.ts',
     },
     {
+      name: 'allows assigning it.skip function',
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
 
       // Explaining comment
@@ -29,6 +31,7 @@ new RuleTester().run('check-test-definitions', rule, {
       filename: 'test/e2e/folder/file.ts',
     },
     {
+      name: 'allows crbug link at end of it title template',
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
 
       describe('e2e-test', async () => {
@@ -40,6 +43,7 @@ new RuleTester().run('check-test-definitions', rule, {
     },
     {
       // Not complete, don't attempt to validate this yet.
+      name: 'ignores incomplete it() expression',
       code: 'it()',
       filename: 'test/unittest/folder/file.ts',
     },
@@ -47,6 +51,7 @@ new RuleTester().run('check-test-definitions', rule, {
 
   invalid: [
     {
+      name: 'disallows it.skip in e2e tests',
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
 
       describe('e2e-test', async () => {
@@ -59,6 +64,7 @@ new RuleTester().run('check-test-definitions', rule, {
       errors: [{messageId: 'disallowSkip'}],
     },
     {
+      name: 'disallows it.skip with bug id prefix',
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
 
       describe('e2e-test', async () => {
@@ -70,6 +76,7 @@ new RuleTester().run('check-test-definitions', rule, {
       errors: [{messageId: 'disallowSkip'}],
     },
     {
+      name: 'disallows bug id at start of title template',
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
 
       describe('e2e-test', async () => {
@@ -81,6 +88,7 @@ new RuleTester().run('check-test-definitions', rule, {
       errors: [{messageId: 'extraBugId'}],
     },
     {
+      name: 'disallows describe.skip in e2e tests',
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
       describe.skip('e2e-test', async () => {
       });

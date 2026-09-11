@@ -9,6 +9,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('enforce-version-controller-methods', rule, {
   valid: [
     {
+      name: 'allows contiguous update methods matching CURRENT_VERSION',
       code: `
         export class VersionController {
           static readonly CURRENT_VERSION = 2;
@@ -20,6 +21,7 @@ new RuleTester().run('enforce-version-controller-methods', rule, {
     },
     {
       // It should ignore classes without CURRENT_VERSION
+      name: 'allows class without CURRENT_VERSION',
       code: `
         export class VersionController {
           updateVersionFrom0To1() {}
@@ -29,6 +31,7 @@ new RuleTester().run('enforce-version-controller-methods', rule, {
     },
     {
       // It should ignore other classes entirely
+      name: 'allows non-VersionController class',
       code: `
         export class OtherClass {
           static readonly CURRENT_VERSION = 2;
@@ -40,6 +43,7 @@ new RuleTester().run('enforce-version-controller-methods', rule, {
   ],
   invalid: [
     {
+      name: 'disallows fewer update methods than CURRENT_VERSION',
       code: `
         export class VersionController {
           static readonly CURRENT_VERSION = 2;
@@ -58,6 +62,7 @@ new RuleTester().run('enforce-version-controller-methods', rule, {
       ],
     },
     {
+      name: 'disallows non-contiguous update method numbers',
       code: `
         export class VersionController {
           static readonly CURRENT_VERSION = 3;
@@ -78,6 +83,7 @@ new RuleTester().run('enforce-version-controller-methods', rule, {
       ],
     },
     {
+      name: 'disallows more update methods than CURRENT_VERSION',
       code: `
         export class VersionController {
           static readonly CURRENT_VERSION = 2;

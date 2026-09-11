@@ -9,6 +9,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('enforce-custom-event-names', rule, {
   valid: [
     {
+      name: 'allows lowercase event name string literal in super call',
       code: `export class NodeSelectedEvent extends Event {
           constructor(node) {
             super('nodeselected', {});
@@ -18,6 +19,7 @@ new RuleTester().run('enforce-custom-event-names', rule, {
       filename: 'front_end/common/Importing.js',
     },
     {
+      name: 'allows static eventName property reference in super call',
       code: `export class NodeSelectedEvent extends Event {
           static eventName = 'nodeselected';
 
@@ -29,6 +31,7 @@ new RuleTester().run('enforce-custom-event-names', rule, {
       filename: 'front_end/common/Importing.ts',
     },
     {
+      name: 'allows standard lowercase event name',
       code: `export class SelectEvent extends Event {
           constructor(node) {
             super('select', {});
@@ -39,6 +42,7 @@ new RuleTester().run('enforce-custom-event-names', rule, {
     },
     {
       // To make sure we're only linting classes that extend Event
+      name: 'allows arbitrary super arguments when extending non-Event class',
       code: `export class SelectEvent extends SomethingElse {
           constructor() {
             super('noRulesApplyHere');
@@ -50,6 +54,7 @@ new RuleTester().run('enforce-custom-event-names', rule, {
       // Not using the built in Event type, but using a type that is defined in
       // the same file that is called Event. We special case this because in
       // the Performance Panel SDK we do define a custom Event class
+      name: 'allows subclass of locally declared Event class',
       code: `class Event {};
 export class ConstructedEvent extends Event {
   constructor(x:string) {
@@ -62,6 +67,7 @@ export class ConstructedEvent extends Event {
 
   invalid: [
     {
+      name: 'disallows camelCase event name in super call',
       code: `export class NodeSelectedEvent extends Event {
         constructor(node) {
           super('nodeSelected', {});
@@ -71,6 +77,7 @@ export class ConstructedEvent extends Event {
       errors: [{messageId: 'invalidEventName'}],
     },
     {
+      name: 'disallows hyphenated event name in super call',
       code: `export class NodeSelectedEvent extends Event {
         constructor(node) {
           super('node-selected', {});
@@ -80,6 +87,7 @@ export class ConstructedEvent extends Event {
       errors: [{messageId: 'invalidEventName'}],
     },
     {
+      name: 'disallows local variable reference for event name',
       code: `export class NodeSelectedEvent extends Event {
         constructor(node) {
           const name = 'node-selected';
@@ -90,6 +98,7 @@ export class ConstructedEvent extends Event {
       errors: [{messageId: 'invalidEventNameReference'}],
     },
     {
+      name: 'disallows static property with wrong name for event name',
       code: `export class NodeSelectedEvent extends Event {
         static notTheRightName = 'nodeselected';
         constructor(node) {
@@ -100,6 +109,7 @@ export class ConstructedEvent extends Event {
       errors: [{messageId: 'invalidEventNameReference'}],
     },
     {
+      name: 'disallows non-literal static eventName value',
       code: `export class NodeSelectedEvent extends Event {
         static eventName = someVar;
         constructor(node) {
@@ -110,6 +120,7 @@ export class ConstructedEvent extends Event {
       errors: [{messageId: 'invalidEventNameReference'}],
     },
     {
+      name: 'disallows static eventName with invalid formatting',
       code: `export class NodeSelectedEvent extends Event {
         static eventName = 'name-that-does-not-follow-theRules';
         constructor(node) {

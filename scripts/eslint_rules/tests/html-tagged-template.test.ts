@@ -12,6 +12,7 @@ const error = {
 new RuleTester().run('html-tagged-template', rule, {
   valid: [
     {
+      name: 'allows unqualified html import from lit',
       code: `import {html, render} from '../../ui/lit/lit.js';
 
       function render() {
@@ -22,6 +23,7 @@ new RuleTester().run('html-tagged-template', rule, {
       `,
     },
     {
+      name: 'allows destructured html from Lit namespace',
       code: `import * as Lit from '../../../../ui/lit/lit.js';
 
       const {html} = Lit;
@@ -36,6 +38,7 @@ new RuleTester().run('html-tagged-template', rule, {
   ],
   invalid: [
     {
+      name: 'disallows multiple Lit.html usages and adds destructured import',
       code: `import * as Lit from '../../../../ui/lit/lit.js';
 
       function render() {
@@ -67,6 +70,7 @@ const {html} = Lit;
       }`,
     },
     {
+      name: 'disallows Lit.html when html is already destructured',
       code: `import * as Lit from '../../../../ui/lit/lit.js';
 
       const {html} = Lit;

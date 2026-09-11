@@ -9,24 +9,28 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('trace-engine-test-timeouts', rule, {
   valid: [
     {
+      name: 'allows async regular function with TraceLoader.allModels',
       code: `it('does something', async function() {
     const data = await TraceLoader.allModels(this, 'foo.json.gz');
     })`,
       filename: 'test/unittests/folder/trace.test.ts',
     },
     {
+      name: 'allows sync regular function with TraceLoader',
       code: `it('does something', function() {
     const data = TraceLoader.someNonAsyncThing();
     })`,
       filename: 'test/unittests/folder/trace.test.ts',
     },
     {
+      name: 'allows sync arrow function with TraceLoader',
       code: `it('does something', () => {
     const data = TraceLoader.someNonAsyncThing();
     })`,
       filename: 'test/unittests/folder/trace.test.ts',
     },
     {
+      name: 'allows beforeEach with async regular function and TraceLoader',
       code: `beforeEach(async function() {
     const data = await TraceLoader.someAsyncThing(this);
     })`,
@@ -36,6 +40,7 @@ new RuleTester().run('trace-engine-test-timeouts', rule, {
 
   invalid: [
     {
+      name: 'disallows it with async arrow function when using TraceLoader.allModels',
       code: `it('does something', async () => {
   const data = await TraceLoader.allModels(this, 'foo.json.gz');
 })`,
@@ -46,6 +51,7 @@ new RuleTester().run('trace-engine-test-timeouts', rule, {
 })`,
     },
     {
+      name: 'disallows beforeEach with async arrow function when using TraceLoader',
       code: `beforeEach(async () => {
     const data = await TraceLoader.someAsyncThing(this);
     })`,

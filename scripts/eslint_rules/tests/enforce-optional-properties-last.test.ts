@@ -11,6 +11,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('optional-properties-last', rule, {
   valid: [
     {
+      name: 'allows required property before optional property in type alias',
       code: `
         type ValidType = {
           name: string;
@@ -19,6 +20,7 @@ new RuleTester().run('optional-properties-last', rule, {
       `,
     },
     {
+      name: 'allows multiple optional properties at end of type alias',
       code: `
         type AnotherValidType = {
           isActive: boolean;
@@ -30,6 +32,7 @@ new RuleTester().run('optional-properties-last', rule, {
     {
       // As a TSInterfaceDeclaration it's top-level properties are not linted.
       // But that's fine as clang-format doesn't touch it.
+      name: 'allows optional properties in TSInterfaceDeclaration',
       code: `
 export interface LCPBreakdown {
   /**
@@ -58,6 +61,7 @@ export interface LCPBreakdown {
 
   invalid: [
     {
+      name: 'disallows optional property before required property in type alias',
       code: `
         type InvalidType = {
           name?: string;
@@ -78,6 +82,7 @@ export interface LCPBreakdown {
       `,
     },
     {
+      name: 'disallows optional property interleaved before required property',
       code: `
         type AnotherInvalidType = {
           isCool?: boolean;
@@ -102,6 +107,7 @@ export interface LCPBreakdown {
 
     // Type literals inside an interface are linted.
     {
+      name: 'disallows optional property before required property inside nested type literal',
       code: `
         interface AnotherInvalidType {
           isCool?: boolean;

@@ -9,6 +9,7 @@ import {RuleTester} from './utils/RuleTester.ts';
 new RuleTester().run('no-api-test-unit-helpers', rule, {
   valid: [
     {
+      name: 'allows standard describe and it in test.api.ts',
       code: `
         describe('Universe API Test', () => {
           it('does something with API state', async ({inspectedPage, universe}) => {
@@ -22,6 +23,7 @@ new RuleTester().run('no-api-test-unit-helpers', rule, {
 
   invalid: [
     {
+      name: 'disallows importing TestUniverse in test.api.ts',
       code: 'import { TestUniverse } from "../testing/EnvironmentHelpers.js";',
       filename: 'front_end/foundation/Universe.test.api.ts',
       errors: [
@@ -31,6 +33,7 @@ new RuleTester().run('no-api-test-unit-helpers', rule, {
       ],
     },
     {
+      name: 'disallows describeWithEnvironment in test.api.ts',
       code: 'describeWithEnvironment("my test", () => {});',
       filename: 'front_end/foundation/Universe.test.api.ts',
       errors: [
@@ -40,6 +43,7 @@ new RuleTester().run('no-api-test-unit-helpers', rule, {
       ],
     },
     {
+      name: 'disallows new TestUniverse() in test.api.ts',
       code: 'new TestUniverse();',
       filename: 'front_end/foundation/Universe.test.api.ts',
       errors: [

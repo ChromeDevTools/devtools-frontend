@@ -33,6 +33,7 @@ const SDK_PATH = path.join(
 new RuleTester().run('no-imports-in-directory', rule, {
   valid: [
     {
+      name: 'allows import not in banned paths',
       code: 'import * as SDK from \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [
@@ -45,6 +46,7 @@ new RuleTester().run('no-imports-in-directory', rule, {
       ],
     },
     {
+      name: 'allows type import when allowTypeImports is true',
       code: 'import type * as SDK from \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [
@@ -59,6 +61,7 @@ new RuleTester().run('no-imports-in-directory', rule, {
   ],
   invalid: [
     {
+      name: 'disallows value import of banned path',
       code: 'import * as SDK from \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [
@@ -69,6 +72,7 @@ new RuleTester().run('no-imports-in-directory', rule, {
       errors: [{messageId: 'invalidImport'}],
     },
     {
+      name: 'disallows type import when allowTypeImports is false',
       code: 'import type * as SDK from \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [
@@ -79,6 +83,7 @@ new RuleTester().run('no-imports-in-directory', rule, {
       errors: [{messageId: 'invalidImport'}],
     },
     {
+      name: 'disallows side-effect import of banned path',
       code: 'import \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [
@@ -89,6 +94,7 @@ new RuleTester().run('no-imports-in-directory', rule, {
       errors: [{messageId: 'invalidImport'}],
     },
     {
+      name: 'disallows named import of banned path',
       code: 'import {Foo} from \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [

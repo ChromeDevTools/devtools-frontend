@@ -442,6 +442,24 @@ function recordTaskFailure(
   taskStatuses.push({taskId, status: 'FAILED', score: 0.0});
 }
 
+function handleTaskFailure(
+    example: Example,
+    runId: string,
+    phase: 'Preparation'|'Execution',
+    logger: Logger,
+    taskStatuses: TaskStatus[],
+    taskDurations: Map<string, number>,
+    userArgs: UserArgs,
+) {
+  const durationSeconds = example.durationSeconds();
+  taskDurations.set(example.id(), durationSeconds);
+  logger.append(`[Task ${example.id()}] ${phase} failed (${durationSeconds}s)`);
+  if (userArgs.upload) {
+    uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
+    recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
+  }
+}
+
 async function runInParallel(
     examples: Example[],
     logger: Logger,
@@ -454,13 +472,7 @@ async function runInParallel(
   for (const example of examples) {
     await example.prepare();
     if (!example.isReady()) {
-      const durationSeconds = example.durationSeconds();
-      taskDurations.set(example.id(), durationSeconds);
-      logger.append(`[Task ${example.id()}] Preparation failed (${durationSeconds}s)`);
-      if (userArgs.upload) {
-        uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
-        recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
-      }
+      handleTaskFailure(example, runId, 'Preparation', logger, taskStatuses, taskDurations, userArgs);
     }
   }
 
@@ -479,13 +491,7 @@ async function runInParallel(
           example.error(
               `There is an error, skipping it.\n${errorMsg}`,
           );
-          const durationSeconds = example.durationSeconds();
-          taskDurations.set(example.id(), durationSeconds);
-          logger.append(`[Task ${example.id()}] Execution failed (${durationSeconds}s)`);
-          if (userArgs.upload) {
-            uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
-            recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
-          }
+          handleTaskFailure(example, runId, 'Execution', logger, taskStatuses, taskDurations, userArgs);
         }
       }),
   );
@@ -506,13 +512,7 @@ async function runSequentially(
   for (const example of examples) {
     await example.prepare();
     if (!example.isReady()) {
-      const durationSeconds = example.durationSeconds();
-      taskDurations.set(example.id(), durationSeconds);
-      logger.append(`[Task ${example.id()}] Preparation failed (${durationSeconds}s)`);
-      if (userArgs.upload) {
-        uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
-        recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
-      }
+      handleTaskFailure(example, runId, 'Preparation', logger, taskStatuses, taskDurations, userArgs);
       continue;
     }
 
@@ -525,13 +525,7 @@ async function runSequentially(
     } catch (err) {
       const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
       example.error(`There is an error, skipping it.\n${errorMsg}`);
-      const durationSeconds = example.durationSeconds();
-      taskDurations.set(example.id(), durationSeconds);
-      logger.append(`[Task ${example.id()}] Execution failed (${durationSeconds}s)`);
-      if (userArgs.upload) {
-        uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
-        recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
-      }
+      handleTaskFailure(example, runId, 'Execution', logger, taskStatuses, taskDurations, userArgs);
     }
   }
 

@@ -169,7 +169,8 @@ export function uploadEvalToGCS(options: UploadOptions): boolean {
  * Stages string content into a temporary directory file, uploads it to GCS,
  * and guarantees immediate cleanup in a finally block.
  */
-function uploadTemporaryContentToGCS(content: string, destination: string, fileName: string): boolean {
+function uploadTemporaryContentToGCS(content: string, destination: string): boolean {
+  const fileName = path.posix.basename(destination);
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gcs-upload-'));
   const tempFilePath = path.join(tempDir, fileName);
   try {
@@ -189,7 +190,7 @@ export type MarkerType = typeof Markers[keyof typeof Markers];
  */
 export function uploadMarker(runId: string, marker: MarkerType, taskId?: string): boolean {
   const destination = taskId ? formatGCSTaskDestination(runId, taskId, marker) : formatGCSRunDestination(runId, marker);
-  return uploadTemporaryContentToGCS('', destination, marker);
+  return uploadTemporaryContentToGCS('', destination);
 }
 
 /**
@@ -207,7 +208,6 @@ export function uploadRunStarted(payload: RunStartedPayload): boolean {
   const jsonUploaded = uploadTemporaryContentToGCS(
       JSON.stringify(jsonContent, null, 2),
       formatGCSRunDestination(payload.runId, 'run_started.json'),
-      'run_started.json',
   );
   if (jsonUploaded) {
     return uploadMarker(payload.runId, Markers.RUN_STARTED);
@@ -224,7 +224,6 @@ export function uploadAgentLog(runId: string, taskId: string, logContent: string
   return uploadTemporaryContentToGCS(
       logContent,
       formatGCSTaskDestination(runId, taskId, 'agent_logs/agent.log'),
-      'agent.log',
   );
 }
 
@@ -243,7 +242,6 @@ export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
   const jsonUploaded = uploadTemporaryContentToGCS(
       JSON.stringify(jsonContent, null, 2),
       formatGCSTaskDestination(payload.runId, payload.taskId, 'eval_task_completed.json'),
-      'eval_task_completed.json',
   );
   if (jsonUploaded) {
     return uploadMarker(payload.runId, Markers.TASK_COMPLETED, payload.taskId);
@@ -260,7 +258,6 @@ export function uploadRunLog(runId: string, logContent: string): boolean {
   return uploadTemporaryContentToGCS(
       logContent,
       formatGCSRunDestination(runId, 'eval_run.log'),
-      'eval_run.log',
   );
 }
 
@@ -282,7 +279,6 @@ export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
   const jsonUploaded = uploadTemporaryContentToGCS(
       JSON.stringify(jsonContent, null, 2),
       formatGCSRunDestination(payload.runId, 'run_completed.json'),
-      'run_completed.json',
   );
   if (jsonUploaded) {
     return uploadMarker(payload.runId, Markers.RUN_COMPLETED);

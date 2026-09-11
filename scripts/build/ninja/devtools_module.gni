@@ -13,14 +13,72 @@ template("devtools_base_module") {
   }
 }
 
+# Legacy exceptions for devtools_module in core and models.
+# New modules in these directories must use devtools_foundation_module instead.
+_devtools_module_folder_exceptions = [
+  "front_end/core/common",
+  "front_end/core/host",
+  "front_end/core/platform/browser",
+  "front_end/core/platform/node",
+  "front_end/core/sdk",
+  "front_end/models/ai_assistance",
+  "front_end/models/bindings",
+  "front_end/models/breakpoints",
+  "front_end/models/crux-manager",
+  "front_end/models/emulation",
+  "front_end/models/extensions",
+  "front_end/models/geometry",
+  "front_end/models/heap_snapshot",
+  "front_end/models/issues_manager",
+  "front_end/models/lighthouse",
+  "front_end/models/live-metrics",
+  "front_end/models/live-metrics/web-vitals-injected",
+  "front_end/models/persistence",
+  "front_end/models/source_map_scopes",
+  "front_end/models/trace",
+  "front_end/models/trace/extras",
+  "front_end/models/trace/handlers",
+  "front_end/models/trace/helpers",
+  "front_end/models/trace/insights",
+  "front_end/models/trace/lantern/core",
+  "front_end/models/trace/lantern/graph",
+  "front_end/models/trace/lantern/metrics",
+  "front_end/models/trace/lantern/simulation",
+  "front_end/models/trace/lantern/types",
+  "front_end/models/trace/types",
+  "front_end/models/trace_source_maps_resolver",
+  "front_end/models/web_mcp",
+  "front_end/models/workspace_diff",
+]
+
+_devtools_module_folder_exceptions_full = []
+foreach(_dir, _devtools_module_folder_exceptions) {
+  _devtools_module_folder_exceptions_full +=
+      [ devtools_location_prepend + _dir ]
+}
+
 template("devtools_module") {
+  _target_dir = get_label_info(":$target_name", "dir")
+  _disallowed =
+      filter_include([ _target_dir ],
+                     [
+                       devtools_location_prepend + "front_end/core",
+                       devtools_location_prepend + "front_end/core/*",
+                       devtools_location_prepend + "front_end/models",
+                       devtools_location_prepend + "front_end/models/*",
+                     ])
+  assert(
+      filter_exclude(_disallowed, _devtools_module_folder_exceptions_full) ==
+          [],
+      "devtools_module is not allowed in $_target_dir. Use devtools_foundation_module instead.")
+
   devtools_base_module(target_name) {
     forward_variables_from(invoker, "*")
   }
 }
 
 template("devtools_api_test_module") {
-  devtools_module(target_name) {
+  devtools_base_module(target_name) {
     testonly = true
     forward_variables_from(invoker,
                            "*",

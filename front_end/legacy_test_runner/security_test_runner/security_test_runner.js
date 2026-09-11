@@ -12,25 +12,43 @@ import {TestRunner} from '../test_runner/test_runner.js';
 export const SecurityTestRunner = {};
 
 SecurityTestRunner.dumpSecurityPanelSidebarOrigins = function() {
-  for (const key in Security.SecurityPanel.OriginGroup) {
-    const originGroup = Security.SecurityPanel.OriginGroup[key];
-    const element = Security.SecurityPanel.SecurityPanel.instance().sidebar.originGroups.get(originGroup);
-
-    if (element.hidden) {
+  const sidebar = Security.SecurityPanel.SecurityPanel.instance().sidebar;
+  sidebar.performUpdate();
+  const tree = sidebar.contentElement.querySelector('devtools-tree');
+  if (!tree) {
+    return;
+  }
+  // @ts-ignore
+  const root = tree.templateRoot || tree.shadowRoot || tree;
+  const groups = root.querySelectorAll('.security-sidebar-origins');
+  for (const group of groups) {
+    if (group.hasAttribute('hidden') || group.classList.contains('hidden')) {
       continue;
     }
-
-    TestRunner.addResult('Group: ' + element.title);
-    const originTitles = element.childrenListElement.getElementsByTagName('span');
-
-    for (const originTitle of originTitles) {
-      if (originTitle.className !== 'tree-element-title') {
-        TestRunner.dumpDeepInnerHTML(originTitle);
+    const titleElement =
+        group.querySelector('.security-sidebar-origins-title') || group.querySelector('.tree-element-title');
+    const title = titleElement ? titleElement.textContent.trim() : group.textContent.trim();
+    TestRunner.addResult('Group: ' + title);
+    const originContainer = group.querySelector('ul[role="group"]') || group.nextElementSibling;
+    if (!originContainer) {
+      continue;
+    }
+    const originItems = originContainer.querySelectorAll('.security-sidebar-tree-item');
+    for (const originItem of originItems) {
+      const spans = originItem.getElementsByTagName('span');
+      for (const span of spans) {
+        if (!span.classList.contains('tree-element-title')) {
+          TestRunner.dumpDeepInnerHTML(span);
+        }
       }
     }
   }
 };
 
+/**
+ * @param {SDK.NetworkRequest.NetworkRequest} request
+ */
 SecurityTestRunner.dispatchRequestFinished = function(request) {
+  // @ts-ignore
   TestRunner.networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
 };

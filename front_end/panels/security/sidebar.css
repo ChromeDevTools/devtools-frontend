@@ -26,17 +26,16 @@
   color: var(--sys-color-token-subtle);
 }
 
-.tree-outline li.security-sidebar-origins + .children > li {
-  &.selected {
-    .url-scheme-secure {
-      color: var(--sys-color-green);
-    }
+.tree-outline li.selected,
+li.security-sidebar-tree-item[selected] {
+  .url-scheme-secure {
+    color: var(--sys-color-green);
+  }
 
-    .url-scheme-neutral,
-    .url-scheme-insecure,
-    .url-scheme-insecure-broken {
-      color: var(--sys-color-error);
-    }
+  .url-scheme-neutral,
+  .url-scheme-insecure,
+  .url-scheme-insecure-broken {
+    color: var(--sys-color-error);
   }
 }
 

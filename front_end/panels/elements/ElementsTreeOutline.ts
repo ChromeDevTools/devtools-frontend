@@ -2089,7 +2089,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   duplicateNode(node: SDK.DOMModel.DOMNode): void {
-    node.duplicate();
+    void node.duplicate();
   }
 
   nodeBeingDragged(): SDK.DOMModel.DOMNode|null {

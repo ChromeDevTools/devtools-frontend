@@ -1076,17 +1076,19 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
         });
   }
 
-  duplicate(): void {
+  async duplicate(): Promise<{error: string | null, node: DOMNode|null}> {
     if (this.isInShadowTree()) {
-      return;
+      return {error: 'Cannot duplicate node in shadow tree', node: null};
     }
 
     const parentNode = this.parentNode ? this.parentNode : this;
     if (parentNode.nodeName() === '#document') {
-      return;
+      return {error: 'Parent node is document', node: null};
     }
 
-    this.copyTo(parentNode, this.nextSibling);
+    return await new Promise(resolve => {
+      this.copyTo(parentNode, this.nextSibling, (error, node) => resolve({error, node}));
+    });
   }
 
   /**
@@ -2564,7 +2566,8 @@ export class DOMNodeSnapshot extends DOMNode {
       _callback?: ((arg0: string|null, arg1: DOMNode|null) => void)|undefined): void {
   }
 
-  override duplicate(): void {
+  override duplicate(): Promise<{error: string | null, node: DOMNode|null}> {
+    return Promise.resolve({error: null, node: null});
   }
 
   override canInspectNode(): boolean {
@@ -2616,7 +2619,8 @@ export class DOMDocumentSnapshot extends DOMDocument {
       _callback?: ((arg0: string|null, arg1: DOMNode|null) => void)|undefined): void {
   }
 
-  override duplicate(): void {
+  override duplicate(): Promise<{error: string | null, node: DOMNode|null}> {
+    return Promise.resolve({error: null, node: null});
   }
 
   override canInspectNode(): boolean {

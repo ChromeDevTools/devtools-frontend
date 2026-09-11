@@ -679,8 +679,8 @@ describe('DOMModel', () => {
         });
         childNode.parentNode = parentNode;
         const copyToSpy = sinon.spy(childNode, 'copyTo');
-        childNode.duplicate();
-        sinon.assert.calledOnceWithExactly(copyToSpy, parentNode, null);
+        void childNode.duplicate();
+        sinon.assert.calledOnceWithMatch(copyToSpy, parentNode, null, sinon.match.func);
       });
     });
 

@@ -364,28 +364,12 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-ts_library("unittests") {
-  testonly = true
-
-  sources = [
-    "DOMIssuesManager.test.ts",
-    "IssuesManager.test.ts",
-    "SelectivePermissionsInterventionIssue.test.ts",
-  ]
-
-  ts_deps = [
-    ":bundle",
-    "../../core/sdk:bundle",
-    "../../generated",
-    "../../testing",
-  ]
-}
-
 devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [
     "ConnectionAllowlistIssue.test.ts",
+    "DOMIssuesManager.test.ts",
     "DeprecationIssue.test.ts",
     "ElementAccessibilityIssue.test.ts",
     "FederatedAuthRequestIssue.test.ts",
@@ -394,12 +378,14 @@ devtools_foundation_module("foundation_unittests") {
     "Issue.test.ts",
     "IssueAggregator.test.ts",
     "IssueResolver.test.ts",
+    "IssuesManager.test.ts",
     "LazyLoadImageIssue.test.ts",
     "MarkdownIssueDescription.test.ts",
     "PermissionElementIssue.test.ts",
     "PropertyRuleIssue.test.ts",
     "RelatedIssue.test.ts",
     "SRIMessageSignatureIssue.test.ts",
+    "SelectivePermissionsInterventionIssue.test.ts",
     "SharedDictionaryIssue.test.ts",
     "StylesheetLoadingIssue.test.ts",
     "UnencodedDigestIssue.test.ts",

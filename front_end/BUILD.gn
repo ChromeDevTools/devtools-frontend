@@ -126,7 +126,6 @@ group("unittests") {
     "models/emulation:unittests",
     "models/extensions:unittests",
     "models/geometry:unittests",
-    "models/issues_manager:unittests",
     "models/live-metrics:unittests",
     "models/persistence:unittests",
     "models/source_map_scopes:unittests",

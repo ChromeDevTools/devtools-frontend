@@ -6,13 +6,12 @@ import {assert} from 'chai';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 
 import * as IssuesManager from './issues_manager.js';
 
-describeWithEnvironment('SelectivePermissionsInterventionIssue', () => {
+describe('SelectivePermissionsInterventionIssue', () => {
   setupLocaleHooks();
 
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;

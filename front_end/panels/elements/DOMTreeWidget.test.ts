@@ -3270,4 +3270,569 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
   });
+
+  describe('screenshots', () => {
+    function disableEditorCursor(root: Node|null): void {
+      if (!root) {
+        return;
+      }
+      if (root instanceof HTMLElement && root.tagName.toLowerCase() === 'devtools-text-editor') {
+        if (root.shadowRoot) {
+          const style = document.createElement('style');
+          style.textContent = '.cm-cursorLayer { display: none !important; animation: none !important; }';
+          root.shadowRoot.appendChild(style);
+        }
+      }
+      if (root instanceof HTMLElement && root.shadowRoot) {
+        disableEditorCursor(root.shadowRoot);
+      }
+      for (const child of root.childNodes) {
+        disableEditorCursor(child);
+      }
+    }
+
+    describe('expanding', () => {
+      it('renders screenshot of deeply nested expanded tree', async () => {
+        const {domTree, domModel} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'container', 'class', 'main-view'],
+            children: [
+              {
+                nodeId: 2,
+                nodeName: 'UL',
+                attributes: ['class', 'item-list'],
+                children: [
+                  {
+                    nodeId: 3,
+                    nodeName: 'LI',
+                    attributes: ['class', 'item active'],
+                    children: [{
+                      nodeId: 4,
+                      nodeName: 'A',
+                      attributes: ['href', '#section1'],
+                      children: [{nodeId: 5, nodeName: '#text', nodeValue: 'First Link'}],
+                    }],
+                  },
+                  {
+                    nodeId: 6,
+                    nodeName: 'LI',
+                    attributes: ['class', 'item'],
+                    children: [{
+                      nodeId: 7,
+                      nodeName: 'A',
+                      attributes: ['href', '#section2'],
+                      children: [{nodeId: 8, nodeName: '#text', nodeValue: 'Second Link'}],
+                    }],
+                  },
+                ],
+              },
+            ],
+          });
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement = treeOutline.findTreeElement(rootNode);
+          assert.exists(rootTreeElement);
+          await rootTreeElement.expandRecursively();
+          domTree.performUpdate();
+
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_expanded_nested.png');
+        } finally {
+          domTree.detach();
+        }
+      });
+
+      it('renders screenshot of expanded node with "Show all nodes" limit', async () => {
+        const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+        sinon.stub(domModel, 'requestDocument').resolves(null);
+        const {domTree} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+
+        try {
+          const childNodes = Array.from({length: 10}, (_, i) => ({
+                                                        nodeId: i + 2,
+                                                        nodeName: 'SPAN',
+                                                        attributes: ['id', `child-${i + 1}`],
+                                                      }));
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'list-container'],
+            children: childNodes,
+          });
+
+          domTree.setExpandedChildrenLimit(rootNode, 5);
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement = treeOutline.findTreeElement(rootNode);
+          assert.exists(rootTreeElement);
+          rootTreeElement.expand();
+          domTree.performUpdate();
+
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_expand_all.png');
+        } finally {
+          domTree.detach();
+        }
+      });
+    });
+
+    describe('collapsing', () => {
+      it('renders screenshot of collapsed root node with children', async () => {
+        const {domTree, domModel} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'container', 'class', 'main-view'],
+            children: [
+              {nodeId: 2, nodeName: 'H1', children: [{nodeId: 3, nodeName: '#text', nodeValue: 'Title'}]},
+              {nodeId: 4, nodeName: 'SPAN', children: [{nodeId: 5, nodeName: '#text', nodeValue: 'Description'}]},
+            ],
+          });
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement = treeOutline.findTreeElement(rootNode);
+          assert.exists(rootTreeElement);
+          rootTreeElement.collapse();
+          domTree.performUpdate();
+
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_collapsed_root.png');
+        } finally {
+          domTree.detach();
+        }
+      });
+
+      it('renders screenshot of partially collapsed tree', async () => {
+        const {domTree, domModel} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'app-root'],
+            children: [
+              {
+                nodeId: 2,
+                nodeName: 'HEADER',
+                attributes: ['class', 'header-bar'],
+                children: [
+                  {nodeId: 3, nodeName: 'H1', children: [{nodeId: 4, nodeName: '#text', nodeValue: 'Site Header'}]},
+                ],
+              },
+              {
+                nodeId: 5,
+                nodeName: 'MAIN',
+                attributes: ['class', 'content-area'],
+                children: [
+                  {
+                    nodeId: 6,
+                    nodeName: 'P',
+                    children: [{nodeId: 7, nodeName: '#text', nodeValue: 'Main content paragraph'}],
+                  },
+                ],
+              },
+              {
+                nodeId: 8,
+                nodeName: 'FOOTER',
+                attributes: ['class', 'footer-bar'],
+                children: [
+                  {nodeId: 9, nodeName: 'SPAN', children: [{nodeId: 10, nodeName: '#text', nodeValue: 'Footer text'}]},
+                ],
+              },
+            ],
+          });
+          const headerNode = rootNode.children()![0];
+          const mainNode = rootNode.children()![1];
+          const footerNode = rootNode.children()![2];
+
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement = treeOutline.findTreeElement(rootNode);
+          assert.exists(rootTreeElement);
+          rootTreeElement.expand();
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const headerTreeElement = treeOutline.findTreeElement(headerNode);
+          const mainTreeElement = treeOutline.findTreeElement(mainNode);
+          const footerTreeElement = treeOutline.findTreeElement(footerNode);
+          headerTreeElement?.collapse();
+          mainTreeElement?.expand();
+          footerTreeElement?.collapse();
+          domTree.performUpdate();
+
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_partially_collapsed.png');
+        } finally {
+          domTree.detach();
+        }
+      });
+    });
+
+    describe('highlighting', () => {
+      it('renders screenshot of selected element node', async () => {
+        const {domTree, domModel} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'container', 'class', 'main-view'],
+            children: [
+              {nodeId: 2, nodeName: 'H1', children: [{nodeId: 3, nodeName: '#text', nodeValue: 'Title'}]},
+            ],
+          });
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement = treeOutline.findTreeElement(rootNode);
+          assert.exists(rootTreeElement);
+          rootTreeElement.expand();
+          domTree.selectDOMNode(rootNode, true);
+          domTree.performUpdate();
+
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_selected_node.png');
+        } finally {
+          domTree.detach();
+        }
+      });
+
+      it('renders screenshot of search match highlighting', async () => {
+        SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+        const {domTree, domModel} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'container'],
+            children: [
+              {nodeId: 2, nodeName: 'P', attributes: ['class', 'search-target']},
+            ],
+          });
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement = treeOutline.findTreeElement(rootNode);
+          assert.exists(rootTreeElement);
+          rootTreeElement.expand();
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const pNode = rootNode.children()![0];
+          domTree.highlightMatch(pNode, 'search-target');
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_search_match.png');
+        } finally {
+          domTree.detach();
+        }
+      });
+
+      it('renders screenshot of selected closing tag', async () => {
+        const {domTree, domModel} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'container', 'class', 'main-view'],
+            children: [
+              {nodeId: 2, nodeName: 'H1', children: [{nodeId: 3, nodeName: '#text', nodeValue: 'Title'}]},
+              {nodeId: 4, nodeName: 'SPAN', children: [{nodeId: 5, nodeName: '#text', nodeValue: 'Description'}]},
+            ],
+          });
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement = treeOutline.findTreeElement(rootNode);
+          assert.exists(rootTreeElement);
+          rootTreeElement.expand();
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const closingTreeElement = rootTreeElement.childAt(rootTreeElement.childCount() - 1) as
+              Elements.ElementsTreeElement.ElementsTreeElement;
+          assert.exists(closingTreeElement);
+          assert.isTrue(closingTreeElement.isClosingTag());
+          closingTreeElement.select(/* omitFocus= */ true, /* selectedByUser= */ true);
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_selected_closing_tag.png');
+        } finally {
+          domTree.detach();
+        }
+      });
+
+      it('renders screenshot of hovered opening tag', async () => {
+        SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+        const {domTree, domModel} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'container', 'class', 'main-view'],
+            children: [
+              {nodeId: 2, nodeName: 'P', attributes: ['class', 'text']},
+            ],
+          });
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement = treeOutline.findTreeElement(rootNode);
+          assert.exists(rootTreeElement);
+          rootTreeElement.expand();
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          rootTreeElement.listItemElement.dispatchEvent(new MouseEvent('mousemove', {bubbles: true}));
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_hovered_opening_tag.png');
+        } finally {
+          domTree.detach();
+        }
+      });
+
+      it('renders screenshot of hovered closing tag', async () => {
+        SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+        const {domTree, domModel} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'container', 'class', 'main-view'],
+            children: [
+              {nodeId: 2, nodeName: 'P', attributes: ['class', 'text']},
+            ],
+          });
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement = treeOutline.findTreeElement(rootNode);
+          assert.exists(rootTreeElement);
+          rootTreeElement.expand();
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const closingTreeElement = rootTreeElement.childAt(rootTreeElement.childCount() - 1) as
+              Elements.ElementsTreeElement.ElementsTreeElement;
+          assert.exists(closingTreeElement);
+          assert.isTrue(closingTreeElement.isClosingTag());
+
+          closingTreeElement.listItemElement.dispatchEvent(new MouseEvent('mousemove', {bubbles: true}));
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_hovered_closing_tag.png');
+        } finally {
+          domTree.detach();
+        }
+      });
+    });
+
+    describe('editing', () => {
+      it('renders screenshot of in-place attribute editing', async () => {
+        const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+        sinon.stub(domModel, 'requestDocument').resolves(null);
+        const {domTree} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'test-div', 'class', 'main'],
+            children: [],
+          });
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement =
+              treeOutline.findTreeElement(rootNode) as Elements.ElementsTreeElement.ElementsTreeElement;
+          assert.exists(rootTreeElement);
+
+          domTree.selectDOMNode(rootNode);
+          await waitForTreeUpdates();
+
+          rootTreeElement.onenter();
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_editing_attribute.png');
+        } finally {
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          const rootTreeElement =
+              treeOutline?.findTreeElement(domTree.rootDOMNode!) as Elements.ElementsTreeElement.ElementsTreeElement |
+              undefined;
+          rootTreeElement?.widget.editing?.cancel();
+          domTree.detach();
+        }
+      });
+
+      it('renders screenshot of multiline Edit as HTML', async () => {
+        const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+        sinon.stub(domModel, 'requestDocument').resolves(null);
+        const {domTree} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: ['id', 'html-edit-div', 'class', 'container'],
+            children: [
+              {
+                nodeId: 2,
+                nodeName: 'HEADER',
+                children: [
+                  {
+                    nodeId: 3,
+                    nodeName: 'H1',
+                    children: [{nodeId: 4, nodeName: '#text', nodeValue: 'Title'}],
+                  },
+                ],
+              },
+              {
+                nodeId: 5,
+                nodeName: 'P',
+                children: [{nodeId: 6, nodeName: '#text', nodeValue: 'Some content'}],
+              },
+            ],
+          });
+          sinon.stub(rootNode, 'getOuterHTML')
+              .resolves(
+                  '<div id="html-edit-div" class="container">\n  <header>\n    <h1>Title</h1>\n  </header>\n  <p>Some content</p>\n</div>');
+
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          domTree.toggleEditAsHTML(rootNode);
+          await waitForTreeUpdates();
+          disableEditorCursor(domTree.contentElement);
+
+          await assertScreenshot('elements/dom_tree_widget_edit_as_html.png');
+        } finally {
+          domTree.multilineEditing()?.cancel();
+          domTree.detach();
+        }
+      });
+
+      it('renders screenshot of adding new attribute', async () => {
+        const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+        sinon.stub(domModel, 'requestDocument').resolves(null);
+        const {domTree} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            attributes: [],
+            children: [],
+          });
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          domTree.selectNodeAfterEdit(false, null, rootNode, 'forward');
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_editing_new_attribute.png');
+        } finally {
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          const rootTreeElement =
+              treeOutline?.findTreeElement(domTree.rootDOMNode!) as Elements.ElementsTreeElement.ElementsTreeElement |
+              undefined;
+          rootTreeElement?.widget.editing?.cancel();
+          domTree.detach();
+        }
+      });
+
+      it('renders screenshot of in-place text node editing', async () => {
+        const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+        sinon.stub(domModel, 'requestDocument').resolves(null);
+        const {domTree} = setupDOMTreeWidget(target, undefined, {includeCommonStyles: true});
+
+        try {
+          const rootNode = createTestDOMTree(domModel, {
+            nodeId: 1,
+            nodeName: 'DIV',
+            children: [
+              {nodeId: 2, nodeName: '#text', nodeValue: 'Editable text content', nodeType: Node.TEXT_NODE},
+            ],
+          });
+          const textNode = rootNode.children()![0];
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          assert.exists(treeOutline);
+          const rootTreeElement = treeOutline.findTreeElement(rootNode);
+          assert.exists(rootTreeElement);
+          rootTreeElement.expand();
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const textTreeElement =
+              treeOutline.findTreeElement(textNode) as Elements.ElementsTreeElement.ElementsTreeElement;
+          assert.exists(textTreeElement);
+          textTreeElement.select();
+          textTreeElement.onenter();
+          await waitForTreeUpdates();
+
+          await assertScreenshot('elements/dom_tree_widget_editing_text_node.png');
+        } finally {
+          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+          const textNode = domTree.rootDOMNode?.children() ? domTree.rootDOMNode.children()![0] : null;
+          const textTreeElement = textNode ?
+              treeOutline?.findTreeElement(textNode) as Elements.ElementsTreeElement.ElementsTreeElement | undefined :
+              null;
+          textTreeElement?.widget.editing?.cancel();
+          domTree.detach();
+        }
+      });
+    });
+  });
 });

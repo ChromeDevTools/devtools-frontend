@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import type * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as CPUProfile from '../cpu_profile/cpu_profile.js';
 
 function makeCallFrame(functionName: string): Protocol.Runtime.CallFrame {
@@ -167,7 +166,7 @@ describe('ProfileTreeModel', function() {
   });
 });
 
-describeWithEnvironment('CPUProfileDataModel', () => {
+describe('CPUProfileDataModel', () => {
   const buildBasicProfile = () => {
     const scriptId = 'Peperoni' as Protocol.Runtime.ScriptId;
     const url = '';

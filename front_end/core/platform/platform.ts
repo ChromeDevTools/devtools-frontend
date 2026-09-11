@@ -19,6 +19,7 @@ import * as TypeScriptUtilities from './TypescriptUtilities.js';
 import * as UIString from './UIString.js';
 import * as UserVisibleError from './UserVisibleError.js';
 
+export {Size} from './Size.js';
 /* `assertNotNullOrUndefined` also need to be exposed, as TypeScript does
  * not allow `asserts` functions to be used with qualified access (e.g.
  * `Platform.TypeScriptUtilities.assertNotNullOrUndefined` causes a compile

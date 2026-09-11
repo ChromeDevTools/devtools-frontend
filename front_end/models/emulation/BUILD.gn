@@ -22,7 +22,6 @@ devtools_module("emulation") {
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
     "../../generated",
-    "../geometry:bundle",
     "../workspace:bundle",
   ]
 }
@@ -62,6 +61,5 @@ ts_library("unittests") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",
-    "../geometry:bundle",
   ]
 }

@@ -7,9 +7,9 @@
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as Geometry from '../../../models/geometry/geometry.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import * as Geometry from '../../geometry/geometry.js';
 
 import typeToAllowDialogStyles from './typeToAllowDialog.css.js';
 

@@ -9,7 +9,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as Geometry from '../geometry/geometry.js';
 
 import {
   type Cutout,
@@ -99,11 +98,11 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     SDK.TargetManager.SDKModelObserver<SDK.EmulationModel.EmulationModel> {
   #screenRect: Rect;
   #visiblePageRect: Rect;
-  #availableSize: Geometry.Size;
-  #preferredSize: Geometry.Size;
+  #availableSize: Platform.Size;
+  #preferredSize: Platform.Size;
   #initialized: boolean;
   #autoFitScaleOnInitialize: boolean;
-  #appliedDeviceSize: Geometry.Size;
+  #appliedDeviceSize: Platform.Size;
   #appliedDeviceScaleFactor: number;
   #appliedUserAgentType: UA;
   readonly #scaleSetting: Common.Settings.Setting<number>;
@@ -139,11 +138,11 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#multitargetNetworkManager = multitargetNetworkManager;
     this.#screenRect = new Rect(0, 0, 1, 1);
     this.#visiblePageRect = new Rect(0, 0, 1, 1);
-    this.#availableSize = new Geometry.Size(1, 1);
-    this.#preferredSize = new Geometry.Size(1, 1);
+    this.#availableSize = new Platform.Size(1, 1);
+    this.#preferredSize = new Platform.Size(1, 1);
     this.#initialized = false;
     this.#autoFitScaleOnInitialize = false;
-    this.#appliedDeviceSize = new Geometry.Size(1, 1);
+    this.#appliedDeviceSize = new Platform.Size(1, 1);
     this.#appliedDeviceScaleFactor = globalThis.devicePixelRatio;
     this.#appliedUserAgentType = UA.DESKTOP;
 
@@ -316,7 +315,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
   }
 
-  setAvailableSize(availableSize: Geometry.Size, preferredSize: Geometry.Size): void {
+  setAvailableSize(availableSize: Platform.Size, preferredSize: Platform.Size): void {
     this.#availableSize = availableSize;
     this.#preferredSize = preferredSize;
     this.#initialized = true;
@@ -417,7 +416,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.#fitScale;
   }
 
-  appliedDeviceSize(): Geometry.Size {
+  appliedDeviceSize(): Platform.Size {
     return this.#appliedDeviceSize;
   }
 
@@ -659,7 +658,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       } else {
         this.#appliedUserAgentType = this.#device.touch() ? UA.DESKTOP_TOUCH : UA.DESKTOP;
       }
-      this.applyDeviceMetrics(new Geometry.Size(orientation.width, orientation.height), this.#scaleSetting.get(),
+      this.applyDeviceMetrics(new Platform.Size(orientation.width, orientation.height), this.#scaleSetting.get(),
                               this.#device.deviceScaleFactor, mobile, this.getScreenOrientationType(),
                               resetPageScaleFactor);
       this.applyUserAgent(this.#device.userAgent, this.#device.userAgentMetadata);
@@ -682,7 +681,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       const defaultDeviceScaleFactor = mobile ? defaultMobileScaleFactor : 0;
       this.#fitScale = this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get());
       this.#appliedUserAgentType = this.#uaSetting.get();
-      this.applyDeviceMetrics(new Geometry.Size(screenWidth, screenHeight), this.#scaleSetting.get(),
+      this.applyDeviceMetrics(new Platform.Size(screenWidth, screenHeight), this.#scaleSetting.get(),
                               this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile,
                               screenHeight >= screenWidth ? Protocol.Emulation.ScreenOrientationType.PortraitPrimary :
                                                             Protocol.Emulation.ScreenOrientationType.LandscapePrimary,
@@ -737,7 +736,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#multitargetNetworkManager.setUserAgentOverride(userAgent, userAgent ? userAgentMetadata : null);
   }
 
-  private applyDeviceMetrics(screenSize: Geometry.Size, scale: number, deviceScaleFactor: number, mobile: boolean,
+  private applyDeviceMetrics(screenSize: Platform.Size, scale: number, deviceScaleFactor: number, mobile: boolean,
                              screenOrientation: Protocol.Emulation.ScreenOrientationType|null,
                              resetPageScaleFactor: boolean): void {
     screenSize.width = Math.max(1, Math.floor(screenSize.width));

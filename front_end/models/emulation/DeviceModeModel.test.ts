@@ -13,7 +13,6 @@ import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as EmulationModel from '../emulation/emulation.js';
-import * as Geometry from '../geometry/geometry.js';
 
 describe('Insets', () => {
   it('can be instantiated without issues', () => {
@@ -821,7 +820,7 @@ describe('DeviceModeModel', () => {
 
   it('behaves correctly when adjusting inputs in responsive mode', () => {
     try {
-      const viewportSize = new Geometry.Size(320, 480);
+      const viewportSize = new Platform.Size(320, 480);
       deviceModeModel.setAvailableSize(viewportSize, viewportSize);
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
 
@@ -911,7 +910,7 @@ describe('DeviceModeModel', () => {
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, mode, undefined);
 
       // setAvailableSize is called on layout with preferred size 500x500.
-      deviceModeModel.setAvailableSize(new Geometry.Size(500, 500), new Geometry.Size(500, 500));
+      deviceModeModel.setAvailableSize(new Platform.Size(500, 500), new Platform.Size(500, 500));
 
       // Fit scale for 1000x1000 in 500x500 is 0.5.
       assert.strictEqual(deviceModeModel.scaleSetting().get(), 0.5);
@@ -940,7 +939,7 @@ describe('DeviceModeModel', () => {
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, mode, 0.75);
 
       // setAvailableSize is called on layout with preferred size 500x500.
-      deviceModeModel.setAvailableSize(new Geometry.Size(500, 500), new Geometry.Size(500, 500));
+      deviceModeModel.setAvailableSize(new Platform.Size(500, 500), new Platform.Size(500, 500));
 
       // Explicit scale of 0.75 should be preserved, not overwritten with fit scale (0.5).
       assert.strictEqual(deviceModeModel.scaleSetting().get(), 0.75);

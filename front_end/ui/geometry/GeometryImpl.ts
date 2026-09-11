@@ -1,7 +1,11 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+
+export const Size: typeof Platform.Size = Platform.Size;
+export type Size = Platform.Size;
 
 const EPS = 1e-5;
 
@@ -321,46 +325,6 @@ export const boundsForTransformedPoints = function(matrix: DOMMatrix, points: nu
   }
   return aggregateBounds;
 };
-
-export class Size {
-  width: number;
-  height: number;
-  constructor(width: number, height: number) {
-    this.width = width;
-    this.height = height;
-  }
-
-  clipTo(size?: Size|null): Size {
-    if (!size) {
-      return this;
-    }
-    return new Size(Math.min(this.width, size.width), Math.min(this.height, size.height));
-  }
-
-  scale(scale: number): Size {
-    return new Size(this.width * scale, this.height * scale);
-  }
-
-  isEqual(size: Size|null): boolean {
-    return size !== null && this.width === size.width && this.height === size.height;
-  }
-
-  widthToMax(size: number|Size): Size {
-    return new Size(Math.max(this.width, (typeof size === 'number' ? size : size.width)), this.height);
-  }
-
-  addWidth(size: number|Size): Size {
-    return new Size(this.width + (typeof size === 'number' ? size : size.width), this.height);
-  }
-
-  heightToMax(size: number|Size): Size {
-    return new Size(this.width, Math.max(this.height, (typeof size === 'number' ? size : size.height)));
-  }
-
-  addHeight(size: number|Size): Size {
-    return new Size(this.width, this.height + (typeof size === 'number' ? size : size.height));
-  }
-}
 
 export class Constraints {
   minimum: Size;

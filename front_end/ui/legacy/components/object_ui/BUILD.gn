@@ -37,7 +37,6 @@ devtools_ui_module("object_ui") {
     "../../../../generated",
     "../../../../models/bindings:bundle",
     "../../../../models/formatter:bundle",
-    "../../../../models/geometry:bundle",
     "../../../../models/source_map_scopes:bundle",
     "../../../../third_party/acorn:bundle",
     "../../../../ui/components/text_editor:bundle",
@@ -46,6 +45,7 @@ devtools_ui_module("object_ui") {
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/utils:bundle",
     "../../../components/highlighting:bundle",
+    "../../../geometry:bundle",
     "../../../lit:bundle",
     "../../../visual_logging:bundle",
   ]

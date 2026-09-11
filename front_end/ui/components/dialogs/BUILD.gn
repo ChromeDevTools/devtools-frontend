@@ -29,7 +29,7 @@ devtools_ui_module("dialogs") {
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
-    "../../../models/geometry:bundle",
+    "../../geometry:bundle",
     "../../legacy:bundle",
     "../../lit:bundle",
     "../../visual_logging:bundle",

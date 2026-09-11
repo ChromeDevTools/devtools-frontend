@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import * as Geometry from '../../../../models/geometry/geometry.js';
+import * as Geometry from '../../../geometry/geometry.js';
 
 import * as InlineEditor from './inline_editor.js';
 

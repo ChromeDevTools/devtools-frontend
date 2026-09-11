@@ -7,9 +7,12 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as ComputedStyle from './computed_style.js';
 
@@ -20,7 +23,7 @@ function createNode(target: SDK.Target.Target, {nodeId}: {nodeId: Protocol.DOM.N
   const node = SDK.DOMModel.DOMNode.create(domModel, null, false, {
     nodeId,
     backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-    nodeType: Node.ELEMENT_NODE,
+    nodeType: SDK.DOMModel.NodeType.ELEMENT_NODE,
     nodeName: 'div',
     localName: 'div',
     nodeValue: '',
@@ -29,16 +32,21 @@ function createNode(target: SDK.Target.Target, {nodeId}: {nodeId: Protocol.DOM.N
   return node;
 }
 
-describeWithEnvironment('ComputedStyleModel', () => {
+describe('ComputedStyleModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
   let target: SDK.Target.Target;
   let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
   let domNode1: SDK.DOMModel.DOMNode;
   let connection: MockCDPConnection;
+  let universe: TestUniverse;
 
   beforeEach(() => {
-    stubNoopSettings();
+    universe = new TestUniverse();
     connection = new MockCDPConnection();
-    target = createTarget({connection});
+    target = universe.createTarget({connection});
     domNode1 = createNode(target, {nodeId: 1 as Protocol.DOM.NodeId});
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     sinon.stub(ComputedStyle.ComputedStyleModel.ComputedStyleModel.prototype, 'cssModel').returns(cssModel);

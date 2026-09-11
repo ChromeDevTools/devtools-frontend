@@ -7,7 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("javascript_metadata") {
+devtools_foundation_module("javascript_metadata") {
   sources = [
     "JavaScriptMetadata.ts",
     "NativeFunctions.ts",
@@ -35,7 +35,7 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-ts_library("unittests") {
+devtools_foundation_module("foundation_unittests") {
   testonly = true
   sources = [ "JavaScriptMetadata.test.ts" ]
 

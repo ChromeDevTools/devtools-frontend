@@ -65,6 +65,11 @@ describe('gcs-upload', () => {
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/agent_logs/agent.log`,
     );
     assert.strictEqual(
+        formatGCSTaskDestination(runId, taskId, 'grader_output/grader.log'),
+        `gs://${BUCKET}/${
+            PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/grader_output/grader.log`,
+    );
+    assert.strictEqual(
         formatGCSTaskDestination(runId, taskId, 'eval_task_completed.json'),
         `gs://${BUCKET}/${
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/eval_task_completed.json`,

@@ -19,6 +19,7 @@ import {
   type TaskStatus,
   uploadAgentLog,
   uploadEvalToGCS,
+  uploadGraderLog,
   uploadRunCompleted,
   uploadRunLog,
   uploadRunStarted,
@@ -702,6 +703,7 @@ async function main() {
               localJsonPath: evalResultPath,
               destinationFileName: 'eval_result.json',
             });
+            uploadGraderLog(runId, taskId, stdout);
             const durationSeconds = taskDurations.get(taskId) ?? 0.0;
             // TODO: Parse grader output to report individual task pass/fail status and scores instead of defaulting to 1.0.
             uploadTaskCompleted({
@@ -724,6 +726,7 @@ async function main() {
         if (userArgs.upload) {
           const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
           for (const taskId of allTaskIds) {
+            uploadGraderLog(runId, taskId, errorMessage);
             const durationSeconds = taskDurations.get(taskId) ?? 0.0;
             recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
           }
@@ -737,6 +740,7 @@ async function main() {
       if (userArgs.upload) {
         const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
         for (const taskId of allTaskIds) {
+          uploadGraderLog(runId, taskId, notFoundMessage);
           const durationSeconds = taskDurations.get(taskId) ?? 0.0;
           recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
         }

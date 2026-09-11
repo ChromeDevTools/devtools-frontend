@@ -27,6 +27,8 @@ export const PROJECT_ID = 'ai_evals';
  *      ├── agent_logs/
  *      │   └── agent.log             - Diagnostic per-task agent log (archived in CNS)
  *      ├── eval_result.json          - Optional inline grading result (if --grade)
+ *      ├── grader_output/
+ *      │   └── grader.log            - Diagnostic grading execution log (archived in CNS)
  *      ├── eval_task_completed.json  - Task execution metadata and score
  *      └── eval_task_completed.marker- 0-byte commit marker (sealed last)
  *
@@ -49,6 +51,9 @@ export const PROJECT_ID = 'ai_evals';
  *       │       ├── trajectory.json
  *       │       ├── agent_logs/
  *       │       │   └── agent.log
+ *       │       ├── eval_result.json
+ *       │       ├── grader_output/
+ *       │       │   └── grader.log
  *       │       ├── eval_task_completed.json
  *       │       └── eval_task_completed.marker
  *       └── another-task/
@@ -56,6 +61,9 @@ export const PROJECT_ID = 'ai_evals';
  *               ├── trajectory.json
  *               ├── agent_logs/
  *               │   └── agent.log
+ *               ├── eval_result.json
+ *               ├── grader_output/
+ *               │   └── grader.log
  *               ├── eval_task_completed.json
  *               └── eval_task_completed.marker
  */
@@ -224,6 +232,18 @@ export function uploadAgentLog(runId: string, taskId: string, logContent: string
   return uploadTemporaryContentToGCS(
       logContent,
       formatGCSTaskDestination(runId, taskId, 'agent_logs/agent.log'),
+  );
+}
+
+/**
+ * Uploads tasks/<task_id>/output/grader_output/grader.log to GCS.
+ * Staged in a temporary directory and cleaned up after upload.
+ * Must be called during Phase 2 before eval_task_completed.marker is uploaded.
+ */
+export function uploadGraderLog(runId: string, taskId: string, logContent: string): boolean {
+  return uploadTemporaryContentToGCS(
+      logContent,
+      formatGCSTaskDestination(runId, taskId, 'grader_output/grader.log'),
   );
 }
 

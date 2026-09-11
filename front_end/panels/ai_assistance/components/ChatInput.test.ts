@@ -360,6 +360,7 @@ describeWithEnvironment('ChatInput', () => {
 
   describe('view', () => {
     class MockContext extends AiAssistanceModel.AiAgent.ConversationContext<string> {
+      override readonly jslogContext = 'ai-context-file' as const;
       getIcon() {
         return document.createElement('span');
       }

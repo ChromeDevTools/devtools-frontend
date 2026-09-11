@@ -913,6 +913,7 @@ describe('AiConversation', () => {
     });
 
     class OpaqueContext extends AiAssistance.AiAgent.ConversationContext<unknown> {
+      override readonly jslogContext = 'ai-context-dom-node' as const;
       override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
         return SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
       }

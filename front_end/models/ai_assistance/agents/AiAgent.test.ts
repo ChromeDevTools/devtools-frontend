@@ -12,7 +12,8 @@ import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 function mockConversationContext(): AiAssistance.AiAgent.ConversationContext<unknown> {
-  return new (class extends AiAssistance.AiAgent.ConversationContext<unknown>{
+  return new (class extends AiAssistance.AiAgent.ConversationContext<unknown> {
+    override readonly jslogContext = 'ai-context-file' as const;
     override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
       return SDK.SecurityOrigin.SecurityOrigin.create('https://origin.test');
     }
@@ -428,6 +429,7 @@ describe('AiAgent', () => {
   describe('ConversationContext', () => {
     function getTestContext(originString: string): AiAssistance.AiAgent.ConversationContext<undefined> {
       class TestContext extends AiAssistance.AiAgent.ConversationContext<undefined> {
+        override readonly jslogContext = 'ai-context-file' as const;
         override getTitle(): string {
           throw new Error('Method not implemented.');
         }

@@ -12,6 +12,7 @@ import {
 import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
 
 export class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
+  override readonly jslogContext = 'ai-context-accessibility' as const;
   readonly #lh: LHModel.ReporterTypes.ReportJSON;
   #cachedPayload: string|null = null;
 

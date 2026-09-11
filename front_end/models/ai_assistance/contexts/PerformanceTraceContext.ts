@@ -82,6 +82,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     );
   }
 
+  override readonly jslogContext = 'ai-context-performance-trace' as const;
   readonly #focus: AgentFocus;
   readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #freshRecordingTracker: Tracing.FreshRecording.Tracker;

@@ -34,10 +34,11 @@ import {
   registerNoopActions,
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
-import {expectCall} from '../../testing/ExpectStubCall.js';
+import {expectCall, expectCalled} from '../../testing/ExpectStubCall.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../testing/SnapshotTester.js';
+import {getVeHash} from '../../testing/VisualLoggingHelpers.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as TimelineComponents from '../timeline/components/components.js';
@@ -948,6 +949,301 @@ describeWithEnvironment('AI Assistance Panel', () => {
        });
   });
 
+  describe('context changes', () => {
+    let recordFunctionCallStub: sinon.SinonStub;
+    let expectedUserRemoval: number;
+    let expectedUserAdd: number;
+    let expectedUserChange: number;
+    let expectedAgentChange: number;
+    let expectedContextDomNode: number;
+
+    beforeEach(async () => {
+      await enableAllFeatureAndSetting();
+      updateHostConfig({
+        devToolsAiV2Architecture: {
+          enabled: true,
+        },
+      });
+      recordFunctionCallStub = sinon.stub(
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+          'recordFunctionCall',
+      );
+      expectedUserRemoval = await getVeHash('ai-v2-context-user-removal');
+      expectedUserAdd = await getVeHash('ai-v2-context-user-add');
+      expectedUserChange = await getVeHash('ai-v2-context-user-change');
+      expectedAgentChange = await getVeHash('ai-v2-context-agent-change');
+      expectedContextDomNode = await getVeHash('ai-context-dom-node');
+    });
+
+    it('should map conversation contexts to correct type strings', () => {
+      const domNode = sinon.createStubInstance(SDK.DOMModel.DOMNode, {nodeType: Node.ELEMENT_NODE});
+      const domNodeContext = new AiAssistanceModel.DOMNodeContext.DOMNodeContext(domNode);
+      const request = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest);
+      const requestContext = new AiAssistanceModel.RequestContext.RequestContext(
+          request,
+          sinon.createStubInstance(NetworkTimeCalculator.NetworkTransferTimeCalculator),
+      );
+      const file = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
+      const fileContext = new AiAssistanceModel.FileContext.FileContext(file);
+      const trace = sinon.createStubInstance(AiAssistanceModel.AIContext.AgentFocus);
+      const traceContext = new AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext(trace);
+      const accessibilityContext =
+          new AiAssistanceModel.AccessibilityContext.AccessibilityContext(sinon.stub() as never);
+      const storageContext = new AiAssistanceModel.StorageContext.StorageContext(sinon.stub() as never);
+
+      assert.strictEqual(AiAssistancePanel.getContextTypeString(null), 'ai-context-none');
+      assert.strictEqual(AiAssistancePanel.getContextTypeString(undefined), 'ai-context-none');
+      assert.strictEqual(AiAssistancePanel.getContextTypeString(domNodeContext), 'ai-context-dom-node');
+      assert.strictEqual(AiAssistancePanel.getContextTypeString(requestContext), 'ai-context-network-request');
+      assert.strictEqual(AiAssistancePanel.getContextTypeString(fileContext), 'ai-context-file');
+      assert.strictEqual(AiAssistancePanel.getContextTypeString(traceContext), 'ai-context-performance-trace');
+      assert.strictEqual(AiAssistancePanel.getContextTypeString(accessibilityContext), 'ai-context-accessibility');
+      assert.strictEqual(AiAssistancePanel.getContextTypeString(storageContext), 'ai-context-storage');
+      assert.strictEqual(
+          AiAssistancePanel.getContextTypeString({} as unknown as
+                                                 AiAssistanceModel.AiAgent.ConversationContext<unknown>),
+          'ai-context-unknown',
+      );
+    });
+
+    it('should log ai-v2-context-user-removal and ai-v2-context-user-add when context is removed and restored',
+       async () => {
+         const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {nodeType: Node.ELEMENT_NODE});
+         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+         const {panel, view} = await createAiAssistancePanel({
+           aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+         });
+
+         void panel.handleAction('freestyler.elements-floating-button');
+         const nextInput = await view.nextInput;
+         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+         assert.isTrue(nextInput.props.isContextSelected);
+
+         // Initial panel open must not log any context telemetry.
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserRemoval}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserAdd}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserChange}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedAgentChange}));
+
+         // Remove context.
+         assert.isFunction(nextInput.props.onContextRemoved);
+         const [nextInputAfterRemove] = await Promise.all([
+           view.nextInput,
+           expectCalled(recordFunctionCallStub),
+           nextInput.props.onContextRemoved?.(),
+         ]);
+         assert(nextInputAfterRemove.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+         assert.isFalse(nextInputAfterRemove.props.isContextSelected);
+         sinon.assert.calledWith(recordFunctionCallStub, {name: expectedUserRemoval, context: expectedContextDomNode});
+
+         recordFunctionCallStub.resetHistory();
+
+         // Add context back.
+         assert.isFunction(nextInputAfterRemove.props.onContextAdd);
+         const [nextInputAfterAdd] = await Promise.all([
+           view.nextInput,
+           expectCalled(recordFunctionCallStub),
+           nextInputAfterRemove.props.onContextAdd?.(),
+         ]);
+         assert(nextInputAfterAdd.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+         assert.isTrue(nextInputAfterAdd.props.isContextSelected);
+         sinon.assert.calledWith(recordFunctionCallStub, {name: expectedUserAdd, context: expectedContextDomNode});
+       });
+
+    it('should not log context telemetry when selected DOM node changes before conversation starts', async () => {
+      const node1 = sinon.createStubInstance(SDK.DOMModel.DOMNode, {nodeType: Node.ELEMENT_NODE});
+      const node2 = sinon.createStubInstance(SDK.DOMModel.DOMNode, {nodeType: Node.ELEMENT_NODE});
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node1);
+
+      const {panel, view} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+      });
+
+      void panel.handleAction('freestyler.elements-floating-button');
+      await view.nextInput;
+
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node2);
+      await view.nextInput;
+
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserRemoval}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserAdd}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserChange}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedAgentChange}));
+    });
+
+    it('should log ai-v2-context-user-change when selected DOM node changes during an active conversation',
+       async () => {
+         const ownerDoc = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+         sinon.stub(ownerDoc, 'documentURL').get(() => Platform.DevToolsPath.urlString`https://example.com`);
+         const node1 = sinon.createStubInstance(SDK.DOMModel.DOMNode, {nodeType: Node.ELEMENT_NODE});
+         node1.ownerDocument = ownerDoc;
+         const node2 = sinon.createStubInstance(SDK.DOMModel.DOMNode, {nodeType: Node.ELEMENT_NODE});
+         node2.ownerDocument = ownerDoc;
+         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node1);
+
+         const {panel, view} = await createAiAssistancePanel({
+           aidaClient: mockAidaClient([
+             [{explanation: 'test response'}, {explanation: 'test response'}],
+           ]),
+         });
+
+         void panel.handleAction('freestyler.elements-floating-button');
+         const nextInput = await view.nextInput;
+         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+         nextInput.props.onTextSubmit('hello');
+         await view.nextInput;
+         recordFunctionCallStub.resetHistory();
+
+         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node2);
+         await view.nextInput;
+
+         sinon.assert.calledWith(recordFunctionCallStub, {
+           name: expectedUserChange,
+           context: expectedContextDomNode,
+         });
+       });
+
+    it('should not log context telemetry when selected DOM node changes after context removal in active conversation',
+       async () => {
+         const ownerDoc = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+         sinon.stub(ownerDoc, 'documentURL').get(() => Platform.DevToolsPath.urlString`https://example.com`);
+         const node1 = sinon.createStubInstance(SDK.DOMModel.DOMNode, {nodeType: Node.ELEMENT_NODE});
+         node1.ownerDocument = ownerDoc;
+         const node2 = sinon.createStubInstance(SDK.DOMModel.DOMNode, {nodeType: Node.ELEMENT_NODE});
+         node2.ownerDocument = ownerDoc;
+         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node1);
+
+         const {panel, view} = await createAiAssistancePanel({
+           aidaClient: mockAidaClient([
+             [{explanation: 'test response'}, {explanation: 'test response'}],
+           ]),
+         });
+
+         void panel.handleAction('freestyler.elements-floating-button');
+         let nextInput = await view.nextInput;
+         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+         nextInput.props.onTextSubmit('hello');
+         nextInput = await view.nextInput;
+         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+         recordFunctionCallStub.resetHistory();
+
+         // Remove context.
+         nextInput.props.onContextRemoved?.();
+         nextInput = await view.nextInput;
+         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+         recordFunctionCallStub.resetHistory();
+
+         // Once context is removed, the conversation enters contextless mode.
+         // Subsequent flavor selection changes in DevTools are ignored and
+         // do not re-attach context or log telemetry. Explicit user action
+         // via the '+' button is required to add context back.
+         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node2);
+         await view.nextInput;
+
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserRemoval}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserAdd}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserChange}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedAgentChange}));
+       });
+
+    it('should not log context telemetry when starting a new chat', async () => {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {nodeType: Node.ELEMENT_NODE});
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+      const {panel, view} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+      });
+
+      void panel.handleAction('freestyler.elements-floating-button');
+      const chatInput = await view.nextInput;
+      assert(chatInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      view.input.onNewChatClick();
+      await view.nextInput;
+
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserRemoval}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserAdd}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserChange}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedAgentChange}));
+    });
+
+    it('should not log context telemetry when context selection is disabled', async () => {
+      updateHostConfig({
+        devToolsAiV2Architecture: {
+          enabled: false,
+        },
+        devToolsAiAssistanceContextSelectionAgent: {
+          enabled: false,
+        },
+      });
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {nodeType: Node.ELEMENT_NODE});
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+      const {panel, view} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+      });
+
+      void panel.handleAction('freestyler.elements-floating-button');
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      assert.isNull(nextInput.props.onContextRemoved);
+      assert.isNull(nextInput.props.onContextAdd);
+
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserRemoval}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserAdd}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedUserChange}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedAgentChange}));
+    });
+
+    it('should log ai-v2-context-agent-change when agent changes context', async () => {
+      updateHostConfig({
+        devToolsAiV2Architecture: {enabled: false},
+        devToolsAiAssistanceContextSelectionAgent: {enabled: true},
+      });
+
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{
+            name: 'inspectDom',
+            args: {},
+          }],
+        }],
+        [{
+          explanation: 'Inspected element',
+        }],
+      ]);
+
+      const {view} = await createAiAssistancePanel({aidaClient});
+      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      view.input.props.onContextRemoved?.();
+      recordFunctionCallStub.resetHistory();
+
+      view.input.props.onTextSubmit('inspect element');
+
+      const sideEffectDialog = await waitForSideEffectDialog(view);
+      sideEffectDialog.onAnswer(true);
+
+      // Allow microtasks to run so handleInspectElement registers its listeners.
+      await new Promise(resolve => setTimeout(resolve, 10));
+
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
+        nodeType: Node.ELEMENT_NODE,
+      });
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+      await waitForLoadingToFinish(view);
+
+      sinon.assert.calledWith(recordFunctionCallStub, {
+        name: expectedAgentChange,
+        context: expectedContextDomNode,
+      });
+    });
+  });
   describe('opt-in change dialog', () => {
     it('should restore the prompt when onManageSettings is clicked', async () => {
       await enableAllFeatureAndSetting();

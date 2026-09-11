@@ -10,6 +10,7 @@ import {
 import {CookieItem, DOMStorageItem, type StorageItem} from '../StorageItem.js';
 
 export class StorageContext extends ConversationContext<StorageItem> {
+  override readonly jslogContext = 'ai-context-storage' as const;
   #item: StorageItem;
 
   constructor(item: StorageItem) {

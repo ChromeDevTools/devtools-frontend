@@ -997,7 +997,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #updateConversationState(
       conversation?: AiAssistanceModel.AiConversation.AiConversation,
       ): void {
-    if (this.#conversation !== conversation) {
+    const isNewConversation = this.#conversation !== conversation;
+    if (isNewConversation) {
       // Cancel any previous conversation
       this.#cancel();
       this.#messages = [];
@@ -1029,12 +1030,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         const context = this.#getConversationContext(this.#getDefaultConversationType());
         this.#conversation.setContext(context);
       } else {
+        const previousContext = this.#conversation.selectedContext;
+        const previousItem = previousContext?.getItem();
         const context = this.#getConversationContext(this.#conversation.type);
+        const newItem = context?.getItem();
         // Don't reset to the context selection agent if
         // we remove context automatically.
         // Require explicit user action.
         if (context || !AiAssistanceModel.AiUtils.isContextSelectionEnabled()) {
           this.#conversation.setContext(context);
+        }
+
+        // Log when the user selects a different target mid-conversation (ContextA -> ContextB).
+        if (AiAssistanceModel.AiUtils.isContextSelectionEnabled() && !this.#conversation.isReadOnly &&
+            previousItem !== newItem && previousContext && context) {
+          void VisualLogging.logFunctionCall('ai-v2-context-user-change', getContextTypeString(context));
         }
       }
     }
@@ -1412,12 +1422,22 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #handleContextRemoved(): void {
+    const previousContext = this.#conversation?.selectedContext;
     this.#conversation?.setContext(null);
+    // Log when the user removes the active context (ContextA -> null).
+    if (AiAssistanceModel.AiUtils.isContextSelectionEnabled() && previousContext) {
+      void VisualLogging.logFunctionCall('ai-v2-context-user-removal', getContextTypeString(previousContext));
+    }
     this.requestUpdate();
   }
 
   #handleContextAdd(): void {
-    this.#conversation?.setContext(this.#getConversationContext(this.#getDefaultConversationType()));
+    const context = this.#getConversationContext(this.#getDefaultConversationType());
+    this.#conversation?.setContext(context);
+    // Log when the user adds context (null -> ContextB).
+    if (AiAssistanceModel.AiUtils.isContextSelectionEnabled() && context) {
+      void VisualLogging.logFunctionCall('ai-v2-context-user-add', getContextTypeString(context));
+    }
     this.requestUpdate();
   }
 
@@ -1492,7 +1512,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     let conversation = this.#conversation;
-    if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
+    const shouldCreateConversation =
+        !this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty;
+    if (shouldCreateConversation) {
       conversation = new AiAssistanceModel.AiConversation.AiConversation({
         type: targetConversationType,
         data: [],
@@ -1644,16 +1666,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#selectedRequest = data;
     } else if (data instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
-
     } else if (data instanceof AiAssistanceModel.AccessibilityContext.AccessibilityContext) {
       this.#selectedAccessibility = data;
     } else if (data instanceof AiAssistanceModel.StorageContext.StorageContext) {
       this.#selectedStorage = data;
     }
 
-    void VisualLogging.logFunctionCall(`context-change-${this.#conversation?.type}`);
-
-    this.requestUpdate();
+    if (this.#conversation) {
+      void VisualLogging.logFunctionCall(`context-change-${this.#conversation.type}`);
+      // Log when the agent selects context (* -> ContextB).
+      if (AiAssistanceModel.AiUtils.isContextSelectionEnabled() &&
+          data instanceof AiAssistanceModel.AiAgent.ConversationContext) {
+        void VisualLogging.logFunctionCall('ai-v2-context-agent-change', getContextTypeString(data));
+      }
+    }
   };
 
   async #handleInspectElement(): Promise<SDK.DOMModel.DOMNode|null> {
@@ -2019,6 +2045,31 @@ export function getResponseMarkdown(message: ModelChatMessage): string {
     }
   }
   return contentParts.join('\n\n');
+}
+
+/**
+ * Visual logging context identifiers used to track conversation context lifecycle events.
+ *
+ * Context change telemetry tracks four transitions:
+ * - User removal: ContextA -> null ('ai-v2-context-user-removal').
+ * - User addition: null -> ContextB ('ai-v2-context-user-add').
+ * - User selection change: ContextA -> ContextB ('ai-v2-context-user-change').
+ * - Agent auto-selection: * -> ContextB ('ai-v2-context-agent-change').
+ *
+ * Telemetry only logs when context selection is enabled and the conversation is active.
+ */
+export type ConversationContextTypeString =
+    'ai-context-none'|AiAssistanceModel.AiAgent.ConversationContextJslog|'ai-context-unknown';
+
+/**
+ * Resolves the visual logging context identifier for a given conversation context.
+ */
+export function getContextTypeString(context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null|
+                                     undefined): ConversationContextTypeString {
+  if (!context) {
+    return 'ai-context-none';
+  }
+  return context.jslogContext ?? 'ai-context-unknown';
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

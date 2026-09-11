@@ -9,3 +9,14 @@ export function getVeId(loggable: VisualLogging.Loggable.Loggable|string): numbe
   }
   return VisualLogging.LoggingState.getLoggingState(loggable)!.veid;
 }
+
+/**
+ * Returns the 32-bit integer hash generated for a visual logging string identifier.
+ */
+export async function getVeHash(context: string): Promise<number> {
+  const hash = await VisualLogging.LoggingEvents.contextAsNumber(context);
+  if (hash === undefined) {
+    throw new Error(`Failed to hash ${context}`);
+  }
+  return hash;
+}

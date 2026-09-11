@@ -24,6 +24,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 
 export class RequestContext extends ConversationContext<SDK.NetworkRequest.NetworkRequest> {
+  override readonly jslogContext = 'ai-context-network-request' as const;
   #request: SDK.NetworkRequest.NetworkRequest;
   #calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
 

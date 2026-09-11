@@ -9,6 +9,7 @@ import {type ContextDetail, ConversationContext} from '../agents/AiAgent.js';
 import {FileFormatter} from '../data_formatters/FileFormatter.js';
 
 export class FileContext extends ConversationContext<Workspace.UISourceCode.UISourceCode> {
+  override readonly jslogContext = 'ai-context-file' as const;
   #file: Workspace.UISourceCode.UISourceCode;
   #debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
 

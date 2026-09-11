@@ -353,6 +353,81 @@ describe('DebuggerModel', () => {
         assert.notEqual('', scope.typeName());
       }
     });
+
+    it('retains all scopes in CallFrame.scopeChain() including empty ones', () => {
+      const target = universe.createTarget();
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
+      const scriptUrl = urlString`https://script-host/script.js`;
+      const script = new SDK.Script.Script(debuggerModel, SCRIPT_ID_ONE, scriptUrl, 0, 0, 0, 0, 0, '', false, undefined,
+                                           false, 0, null, null, null, null, null, null, null);
+      const payload: Protocol.Debugger.CallFrame = {
+        callFrameId: '0' as Protocol.Debugger.CallFrameId,
+        functionName: 'test',
+        location: {
+          scriptId: SCRIPT_ID_ONE,
+          lineNumber: 0,
+          columnNumber: 0,
+        },
+        url: 'test-url',
+        scopeChain: [
+          {
+            type: Protocol.Debugger.ScopeType.Block,
+            object: {type: 'object'} as Protocol.Runtime.RemoteObject,
+            empty: true,
+          },
+          {
+            type: Protocol.Debugger.ScopeType.Local,
+            object: {type: 'object'} as Protocol.Runtime.RemoteObject,
+          },
+        ],
+        this: {type: 'object'} as Protocol.Runtime.RemoteObject,
+        canBeRestarted: false,
+      };
+      const callFrame = new SDK.DebuggerModel.CallFrame(debuggerModel, script, payload, 0);
+      const scopes = callFrame.scopeChain();
+      assert.lengthOf(scopes, 2);
+      assert.strictEqual(scopes[0].type(), Protocol.Debugger.ScopeType.Block);
+      assert.isTrue(scopes[0].empty());
+      assert.strictEqual(scopes[1].type(), Protocol.Debugger.ScopeType.Local);
+      assert.isFalse(scopes[1].empty());
+    });
+
+    it('attaches extra properties to the local scope even if preceded by an empty scope', () => {
+      const target = universe.createTarget();
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
+      const scriptUrl = urlString`https://script-host/script.js`;
+      const script = new SDK.Script.Script(debuggerModel, SCRIPT_ID_ONE, scriptUrl, 0, 0, 0, 0, 0, '', false, undefined,
+                                           false, 0, null, null, null, null, null, null, null);
+      const payload: Protocol.Debugger.CallFrame = {
+        callFrameId: '0' as Protocol.Debugger.CallFrameId,
+        functionName: 'test',
+        location: {
+          scriptId: SCRIPT_ID_ONE,
+          lineNumber: 0,
+          columnNumber: 0,
+        },
+        url: 'test-url',
+        scopeChain: [
+          {
+            type: Protocol.Debugger.ScopeType.Block,
+            object: {type: 'object'} as Protocol.Runtime.RemoteObject,
+            empty: true,
+          },
+          {
+            type: Protocol.Debugger.ScopeType.Local,
+            object: {type: 'object'} as Protocol.Runtime.RemoteObject,
+          },
+        ],
+        this: {type: 'object'} as Protocol.Runtime.RemoteObject,
+        returnValue: {type: 'number', value: 42} as Protocol.Runtime.RemoteObject,
+        canBeRestarted: false,
+      };
+      const callFrame = new SDK.DebuggerModel.CallFrame(debuggerModel, script, payload, 0);
+      const scopes = callFrame.scopeChain();
+      assert.lengthOf(scopes[0].extraProperties(), 0);
+      assert.lengthOf(scopes[1].extraProperties(), 1);
+      assert.strictEqual(scopes[1].extraProperties()[0].name, 'Return value');
+    });
   });
 
   describe('pause', () => {

@@ -385,11 +385,12 @@ export const resolveScopeChain =
           //    2) We have a chrome feature flag.
 
           if (callFrame.script.isWasm()) {
-            return callFrame.scopeChain();
+            return callFrame.scopeChain().filter(scope => !scope.empty());
           }
           const thisObject = await resolveThisObject(callFrame, debuggerWorkspaceBinding);
-          return callFrame.scopeChain().map(
-              scope => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
+          const scopes = callFrame.scopeChain().filter(scope => !scope.empty() ||
+                                                           scope.type() === Protocol.Debugger.ScopeType.Local);
+          return scopes.map(scope => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
         };
 
 /**
@@ -411,7 +412,7 @@ export const allVariablesInCallFrame = async(
         return cachedMap;
       }
 
-      const scopeChain = callFrame.scopeChain();
+      const scopeChain = callFrame.scopeChain().filter(scope => !scope.empty());
       const nameMappings =
           await Promise.all(scopeChain.map(scope => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
       const reverseMapping = new Map<string, string|null>();
@@ -485,12 +486,13 @@ export const resolveThisObject = async(
     callFrame: SDK.DebuggerModel.CallFrame,
     debuggerWorkspaceBinding:
         Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<SDK.RemoteObject.RemoteObject|null> => {
-  const scopeChain = callFrame.scopeChain();
-  if (scopeChain.length === 0) {
+  const innermostScope =
+      callFrame.scopeChain().find(scope => !scope.empty() || scope.type() === Protocol.Debugger.ScopeType.Local);
+  if (!innermostScope) {
     return callFrame.thisObject();
   }
 
-  const {thisMapping} = await resolveDebuggerScope(scopeChain[0], debuggerWorkspaceBinding);
+  const {thisMapping} = await resolveDebuggerScope(innermostScope, debuggerWorkspaceBinding);
   if (!thisMapping) {
     return callFrame.thisObject();
   }

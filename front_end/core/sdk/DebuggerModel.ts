@@ -1473,8 +1473,12 @@ export class Scope implements ScopeChainEntry {
     return undefined;
   }
 
+  empty(): boolean {
+    return Boolean(this.#payload.empty);
+  }
+
   extraProperties(): RemoteObjectProperty[] {
-    if (this.#ordinal !== 0 || this.#type !== Protocol.Debugger.ScopeType.Local || this.#callFrame.script.isWasm()) {
+    if (this !== this.#callFrame.localScope() || this.#callFrame.script.isWasm()) {
       return [];
     }
 

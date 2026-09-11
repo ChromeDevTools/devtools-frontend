@@ -183,10 +183,6 @@ const UIStringsNotTranslate = {
    */
   inputPlaceholderForNoContextBranded: 'Ask Gemini',
   /**
-   * @description Placeholder text for the chat UI input when AIAgent2 is enabled.
-   */
-  inputPlaceholderForV2: 'Ask a question (AIAgent2 enabled)',
-  /**
    * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForAccessibility: 'Ask a question about the selected Lighthouse report',
@@ -1300,6 +1296,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     return true;
   }
 
+  #getContextlessPlaceholder(): Platform.UIString.LocalizedString {
+    return AiAssistanceModel.AiUtils.isGeminiBranding() ?
+        lockedString(UIStringsNotTranslate.inputPlaceholderForNoContextBranded) :
+        lockedString(UIStringsNotTranslate.inputPlaceholderForNoContext);
+  }
+
   #getChatInputPlaceholder(): Platform.UIString.LocalizedString {
     if (!this.#conversation) {
       return i18nString(UIStrings.followTheSteps);
@@ -1309,8 +1311,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return lockedString(UIStringsNotTranslate.crossOriginError);
     }
 
+    // The unified V2 agent answers questions across every domain, but the
+    // conversation type still tracks whichever context happens to be attached.
+    // Falling through to the switch below would therefore describe that single
+    // context, for example 'Ask a question about the selected element'.
     if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
-      return lockedString(UIStringsNotTranslate.inputPlaceholderForV2);
+      return this.#getContextlessPlaceholder();
     }
 
     switch (this.#conversation.type) {
@@ -1344,11 +1350,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       case AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE:
         return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContext);
       case AiAssistanceModel.AiHistoryStorage.ConversationType.NONE:
-
-        if (AiAssistanceModel.AiUtils.isGeminiBranding()) {
-          return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContextBranded);
-        }
-        return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContext);
+        return this.#getContextlessPlaceholder();
     }
   }
 

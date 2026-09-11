@@ -2744,6 +2744,65 @@ describeWithEnvironment('AI Assistance Panel', () => {
          });
     });
 
+    describe('AI v2 placeholder', () => {
+      beforeEach(async () => {
+        await enableAllFeatureAndSetting();
+      });
+
+      it('shows the generic placeholder when devToolsAiV2Architecture is enabled', async () => {
+        updateHostConfig({
+          devToolsAiV2Architecture: {
+            enabled: true,
+          },
+        });
+        const {panel, view} = await createAiAssistancePanel();
+        void panel.handleAction('freestyler.elements-floating-button');
+
+        const nextInput = await view.nextInput;
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.strictEqual(nextInput.props.inputPlaceholder, 'Ask AI Assistance');
+      });
+
+      it('shows the Gemini placeholder when devToolsAiV2Architecture and Gemini rebranding are enabled', async () => {
+        updateHostConfig({
+          devToolsAiV2Architecture: {
+            enabled: true,
+          },
+          devToolsGeminiRebranding: {
+            enabled: true,
+          },
+        });
+        const {panel, view} = await createAiAssistancePanel();
+        void panel.handleAction('freestyler.elements-floating-button');
+
+        const nextInput = await view.nextInput;
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.strictEqual(nextInput.props.inputPlaceholder, 'Ask Gemini');
+      });
+      it('uses the contextless placeholder even when an element context is attached', async () => {
+        updateHostConfig({
+          devToolsAiV2Architecture: {
+            enabled: true,
+          },
+        });
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
+          nodeType: Node.ELEMENT_NODE,
+        });
+        const ownerDoc = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+        sinon.stub(ownerDoc, 'documentURL').get(() => urlString`https://example.com`);
+        node.ownerDocument = ownerDoc;
+        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+        const {panel, view} = await createAiAssistancePanel();
+        void panel.handleAction('freestyler.elements-floating-button');
+
+        const nextInput = await view.nextInput;
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.isTrue(nextInput.props.isContextSelected);
+        assert.strictEqual(nextInput.props.inputPlaceholder, 'Ask AI Assistance');
+      });
+    });
+
     describe('disclaimer', () => {
       it('shows the normal disclaimer when logging is enabled', async () => {
         await enableAllFeatureAndSetting();

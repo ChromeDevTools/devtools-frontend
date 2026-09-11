@@ -139,7 +139,6 @@ group("unittests") {
     "models/trace/types:unittests",
     "models/trace_source_maps_resolver:unittests",
     "models/web_mcp:unittests",
-    "models/workspace_diff:unittests",
     "panels/accessibility:unittests",
     "panels/ai_assistance:unittests",
     "panels/animation:unittests",
@@ -293,6 +292,7 @@ group("foundation_unittests") {
     "models/project_settings:foundation_unittests",
     "models/stack_trace:unittests",
     "models/workspace:foundation_unittests",
+    "models/workspace_diff:foundation_unittests",
     "testing:foundation_unittests",
   ]
 }

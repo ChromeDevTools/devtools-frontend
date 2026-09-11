@@ -46,7 +46,6 @@ _devtools_module_folder_exceptions = [
   "front_end/models/trace/types",
   "front_end/models/trace_source_maps_resolver",
   "front_end/models/web_mcp",
-  "front_end/models/workspace_diff",
 ]
 
 _devtools_module_folder_exceptions_full = []

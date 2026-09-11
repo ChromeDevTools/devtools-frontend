@@ -19,9 +19,11 @@ generate_css("css_files") {
 
 devtools_ui_module("security") {
   sources = [
+    "OriginTreeElement.ts",
     "SecurityModel.ts",
     "SecurityPanel.ts",
     "SecurityPanelSidebar.ts",
+    "SecurityPanelSidebarTreeElement.ts",
   ]
 
   ts_deps = [

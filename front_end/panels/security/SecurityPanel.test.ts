@@ -9,7 +9,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {doubleRaf, querySelectorErrorOnMissing, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {querySelectorErrorOnMissing, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
@@ -323,24 +323,22 @@ describeWithEnvironment('SecurityOriginView', () => {
 
 describeWithEnvironment('SecurityPanelSidebarTree', () => {
   describe('updateOrigin', () => {
-    it('correctly updates the URL scheme highlighting', async () => {
+    it('correctly updates the URL scheme highlighting', () => {
       const origin = urlString`https://foo.bar`;
       const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
 
       securityPanel.sidebar.addOrigin(origin, Protocol.Security.SecurityState.Unknown);
-      await doubleRaf();
-      assert.notExists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
-          '.highlighted-url > .url-scheme-secure'));
-      assert.exists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
-          '.highlighted-url > .url-scheme-unknown'));
+      assert.notExists(
+          securityPanel.sidebar.sidebarTree.contentElement.querySelector('.highlighted-url > .url-scheme-secure'));
+      assert.exists(
+          securityPanel.sidebar.sidebarTree.contentElement.querySelector('.highlighted-url > .url-scheme-unknown'));
 
       securityPanel.sidebar.updateOrigin(origin, Protocol.Security.SecurityState.Secure);
-      await doubleRaf();
 
-      assert.exists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
-          '.highlighted-url > .url-scheme-secure'));
-      assert.notExists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
-          '.highlighted-url > .url-scheme-unknown'));
+      assert.exists(
+          securityPanel.sidebar.sidebarTree.contentElement.querySelector('.highlighted-url > .url-scheme-secure'));
+      assert.notExists(
+          securityPanel.sidebar.sidebarTree.contentElement.querySelector('.highlighted-url > .url-scheme-unknown'));
     });
   });
 });
@@ -426,15 +424,12 @@ describeWithEnvironment('SecurityPanel', () => {
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(securityModel);
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
-    await doubleRaf();
 
     // Check that reload message is visible initially.
     const reloadMessage =
-        securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
-            '.security-main-view-reload-message');
+        securityPanel.sidebar.sidebarTree.shadowRoot.querySelector('.security-main-view-reload-message');
     assert.instanceOf(reloadMessage, HTMLLIElement);
-    assert.exists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
-        '.security-main-view-reload-message'));
+    assert.isFalse(reloadMessage.classList.contains('hidden'));
 
     // Check that reload message is hidden when there is data to display.
     const networkManager = securityModel.networkManager();
@@ -446,15 +441,11 @@ describeWithEnvironment('SecurityPanel', () => {
       cached: () => false,
     } as SDK.NetworkRequest.NetworkRequest;
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
-    await doubleRaf();
-    assert.notExists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
-        '.security-main-view-reload-message'));
+    assert.isTrue(reloadMessage.classList.contains('hidden'));
 
     // Check that reload message is hidden after clearing data.
     navigate(getMainFrame(target));
-    await doubleRaf();
-    assert.exists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
-        '.security-main-view-reload-message'));
+    assert.isFalse(reloadMessage.classList.contains('hidden'));
   });
 
   it('shows origins with blockable and optionally blockable resources in the sidebar', async () => {

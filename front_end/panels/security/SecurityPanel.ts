@@ -620,18 +620,6 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     return securityPanelInstance;
   }
 
-  static createCertificateViewerButtonForOrigin(text: string, origin: string): Element {
-    const certificateButton = UI.UIUtils.createTextButton(text, async (e: Event) => {
-      e.consume();
-      const names = await SDK.NetworkManager.MultitargetNetworkManager.instance().getCertificate(origin);
-      if (names.length > 0) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(names);
-      }
-    }, {className: 'origin-button', jslogContext: 'security.view-certificate-for-origin', title: text});
-    UI.ARIAUtils.markAsButton(certificateButton);
-    return certificateButton;
-  }
-
   static createCertificateViewerButtonForCert(text: string, names: string[]): Element {
     const certificateButton = UI.UIUtils.createTextButton(text, e => {
       e.consume();
@@ -1319,12 +1307,16 @@ export class SecurityMainView extends UI.Widget.VBox {
 
 const SAN_NUM_SHOWN_WHEN_TRUNCATED = 2;
 
-function renderSan(sanList: string[], isSanListTruncatable: boolean, isSanListTruncated: boolean,
-                   onToggleTruncation: () => void): TemplateResult {
+function isSanListTruncatable(sanList: string[]): boolean {
+  return sanList.length > SAN_NUM_SHOWN_WHEN_TRUNCATED + 1;
+}
+
+function renderSan(sanList: string[], isSanListTruncated: boolean, onToggleTruncation: () => void): TemplateResult {
   if (sanList.length === 0) {
     return html`<div class="san empty-san">${i18nString(UIStrings.na)}</div>`;
   }
 
+  const isTruncatable = isSanListTruncatable(sanList);
   const toggleButtonText =
       isSanListTruncated ? i18nString(UIStrings.showMoreSTotal, {PH1: sanList.length}) : i18nString(UIStrings.showLess);
 
@@ -1335,10 +1327,10 @@ function renderSan(sanList: string[], isSanListTruncatable: boolean, isSanListTr
         return html`
           <span class=${Directives.classMap({
             'san-entry': true,
-            'truncated-entry': isSanListTruncatable && index >= SAN_NUM_SHOWN_WHEN_TRUNCATED,
+            'truncated-entry': isTruncatable && index >= SAN_NUM_SHOWN_WHEN_TRUNCATED,
           })}>${san}</span>`;
       })}
-      ${isSanListTruncatable ? html`
+      ${isTruncatable ? html`
         <devtools-button
           .variant=${Buttons.Button.Variant.OUTLINED}
           .accessibleLabel=${toggleButtonText}
@@ -1351,8 +1343,8 @@ function renderSan(sanList: string[], isSanListTruncatable: boolean, isSanListTr
 }
 
 interface DetailsTableRow {
-  key: string;
-  value: string;
+  key?: string;
+  value: string|TemplateResult;
 }
 
 function renderDetailsTable(rows: DetailsTableRow[]): TemplateResult {
@@ -1361,7 +1353,7 @@ function renderDetailsTable(rows: DetailsTableRow[]): TemplateResult {
     <table class="details-table">
       ${rows.map(row => html`
         <tr class="details-table-row">
-          <td>${row.key}</td>
+          <td>${row.key ?? nothing}</td>
           <td>${row.value}</td>
         </tr>`)}
     </table>`;
@@ -1451,6 +1443,55 @@ function renderTitleSection(origin: Platform.DevToolsPath.UrlString, securitySta
   // clang-format on
 }
 
+interface CertificateSectionInput {
+  securityDetails: Protocol.Network.SecurityDetails;
+  isSanListTruncated: boolean;
+  onToggleSanTruncation: () => void;
+  onViewCertificate: (event: Event) => void;
+}
+
+function buildCertificateDetailsRows(input: CertificateSectionInput): DetailsTableRow[] {
+  const {
+    securityDetails,
+    isSanListTruncated,
+    onToggleSanTruncation,
+    onViewCertificate,
+  } = input;
+  const certificateButtonText = i18nString(UIStrings.openFullCertificateDetails);
+
+  // clang-format off
+  return [
+    {key: i18nString(UIStrings.subject), value: securityDetails.subjectName},
+    {
+      key: i18n.i18n.lockedString('SAN'),
+      value: renderSan(securityDetails.sanList, isSanListTruncated, onToggleSanTruncation),
+    },
+    {key: i18nString(UIStrings.validFrom), value: new Date(1000 * securityDetails.validFrom).toUTCString()},
+    {key: i18nString(UIStrings.validUntil), value: new Date(1000 * securityDetails.validTo).toUTCString()},
+    {key: i18nString(UIStrings.issuer), value: securityDetails.issuer},
+    {
+      value: html`
+        <devtools-button
+            class="origin-button"
+            title=${certificateButtonText}
+            .variant=${Buttons.Button.Variant.OUTLINED}
+            .jslogContext=${'security.view-certificate-for-origin'}
+            @click=${onViewCertificate}>${certificateButtonText}</devtools-button>`,
+    },
+  ];
+  // clang-format on
+}
+
+function renderCertificateSection(input: CertificateSectionInput): TemplateResult {
+  const rows = buildCertificateDetailsRows(input);
+
+  // clang-format off
+  return html`
+    <div class="origin-view-section-title" role="heading" aria-level="2">${i18nString(UIStrings.certificate)}</div>
+    ${renderDetailsTable(rows)}`;
+  // clang-format on
+}
+
 export class SecurityOriginView extends UI.Widget.VBox {
   readonly #origin: Platform.DevToolsPath.UrlString;
   readonly #titleSection: HTMLElement;
@@ -1471,11 +1512,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
       // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
       render(renderConnectionSection(originState.securityDetails), connectionSection);
 
-      // Create the certificate section outside the callback, so that it appears in the right place.
-      const certificateSection = this.element.createChild('div', 'origin-view-section');
-      const certificateDiv = certificateSection.createChild('div', 'origin-view-section-title');
-      certificateDiv.textContent = i18nString(UIStrings.certificate);
-      UI.ARIAUtils.markAsHeading(certificateDiv, 2);
+      this.#createCertificateSection(originState.securityDetails);
 
       const sctListLength = originState.securityDetails.signedCertificateTimestampList.length;
       const ctCompliance = originState.securityDetails.certificateTransparencyCompliance;
@@ -1487,23 +1524,6 @@ export class SecurityOriginView extends UI.Widget.VBox {
         sctDiv.textContent = i18nString(UIStrings.certificateTransparency);
         UI.ARIAUtils.markAsHeading(sctDiv, 2);
       }
-
-      const sanDiv = this.#createSanDiv(originState.securityDetails.sanList);
-      const validFromString = new Date(1000 * originState.securityDetails.validFrom).toUTCString();
-      const validUntilString = new Date(1000 * originState.securityDetails.validTo).toUTCString();
-
-      const table = new SecurityDetailsTable();
-      certificateSection.appendChild(table.element());
-      table.addRow(i18nString(UIStrings.subject), originState.securityDetails.subjectName);
-      table.addRow(i18n.i18n.lockedString('SAN'), sanDiv);
-      table.addRow(i18nString(UIStrings.validFrom), validFromString);
-      table.addRow(i18nString(UIStrings.validUntil), validUntilString);
-      table.addRow(i18nString(UIStrings.issuer), originState.securityDetails.issuer);
-
-      table.addRow(
-          '',
-          SecurityPanel.createCertificateViewerButtonForOrigin(
-              i18nString(UIStrings.openFullCertificateDetails), origin));
 
       if (!sctSection) {
         return;
@@ -1600,24 +1620,33 @@ export class SecurityOriginView extends UI.Widget.VBox {
     }
   }
 
-  #createSanDiv(sanList: string[]): Element {
-    const container = document.createElement('div');
-    const isSanListTruncatable = sanList.length > SAN_NUM_SHOWN_WHEN_TRUNCATED + 1;
-    let isSanListTruncated = isSanListTruncatable;
-
-    const onToggleTruncation = (): void => {
+  #createCertificateSection(securityDetails: Protocol.Network.SecurityDetails): void {
+    const certificateSection = this.element.createChild('div', 'origin-view-section certificate-section');
+    let isSanListTruncated = isSanListTruncatable(securityDetails.sanList);
+    const onToggleSanTruncation = (): void => {
       isSanListTruncated = !isSanListTruncated;
-      updateSan();
+      updateCertificateSection();
     };
-
-    const updateSan = (): void => {
+    const updateCertificateSection = (): void => {
       // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(renderSan(sanList, isSanListTruncatable, isSanListTruncated, onToggleTruncation), container);
+      render(renderCertificateSection({
+               securityDetails,
+               isSanListTruncated,
+               onToggleSanTruncation,
+               onViewCertificate: this.#showCertificateViewer,
+             }),
+             certificateSection);
     };
-
-    updateSan();
-    return container;
+    updateCertificateSection();
   }
+
+  #showCertificateViewer = async(event: Event): Promise<void> => {
+    event.consume();
+    const names = await SDK.NetworkManager.MultitargetNetworkManager.instance().getCertificate(this.#origin);
+    if (names.length > 0) {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(names);
+    }
+  };
 
   setSecurityState(newSecurityState: Protocol.Security.SecurityState): void {
     this.#renderTitleSection(newSecurityState);

@@ -6,11 +6,13 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {doubleRaf, querySelectorErrorOnMissing, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import * as NetworkForward from '../network/forward/forward.js';
@@ -261,6 +263,81 @@ describeWithEnvironment('SecurityOriginView', () => {
         {filterType: NetworkForward.UIFilter.FilterType.Domain, filterValue: 'foo.bar'},
         {filterType: NetworkForward.UIFilter.FilterType.Scheme, filterValue: 'https'},
       ]);
+    });
+  });
+
+  describe('certificate section', () => {
+    it('renders the heading', () => {
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+
+      const certificateSection = querySelectorErrorOnMissing(view.element, '.certificate-section');
+      const heading = querySelectorErrorOnMissing(certificateSection, '.origin-view-section-title');
+      assert.strictEqual(heading.textContent, 'Certificate');
+      assert.strictEqual(heading.getAttribute('role'), 'heading');
+      assert.strictEqual(heading.getAttribute('aria-level'), '2');
+    });
+
+    it('does not render without security details', () => {
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, {
+        securityState: Protocol.Security.SecurityState.Secure,
+        securityDetails: null,
+        loadedFromCache: false,
+      });
+
+      assert.notExists(view.element.querySelector('.certificate-section'));
+    });
+
+    it('renders all certificate details in order', () => {
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState({
+                                                                   subjectName: 'example.com',
+                                                                   sanList: ['san.example.com'],
+                                                                   validFrom: 0,
+                                                                   validTo: 86400,
+                                                                   issuer: 'Test CA',
+                                                                 }));
+      const certificateSection = querySelectorErrorOnMissing(view.element, '.certificate-section');
+
+      assert.deepEqual(getDetailsTableRows(certificateSection), [
+        ['Subject', 'example.com'],
+        ['SAN', 'san.example.com'],
+        ['Valid from', 'Thu, 01 Jan 1970 00:00:00 GMT'],
+        ['Valid until', 'Fri, 02 Jan 1970 00:00:00 GMT'],
+        ['Issuer', 'Test CA'],
+        ['', 'Open full certificate details'],
+      ]);
+    });
+
+    it('opens the certificate viewer', async () => {
+      const getCertificate = sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'getCertificate')
+                                 .resolves(['certificate']);
+      const showCertificateViewer =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showCertificateViewer');
+      const showCertificateViewerCall = expectCall(showCertificateViewer);
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+
+      const certificateSection = querySelectorErrorOnMissing(view.element, '.certificate-section');
+      const certificateButton = querySelectorErrorOnMissing(certificateSection, 'devtools-button.origin-button');
+      certificateButton.click();
+      await showCertificateViewerCall;
+
+      sinon.assert.calledOnceWithExactly(getCertificate, 'https://foo.bar');
+      sinon.assert.calledOnceWithExactly(showCertificateViewer, ['certificate']);
+    });
+
+    it('does not open the certificate viewer when no certificates are returned', async () => {
+      const getCertificate =
+          sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'getCertificate').resolves([]);
+      const showCertificateViewer =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showCertificateViewer');
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+
+      const certificateSection = querySelectorErrorOnMissing(view.element, '.certificate-section');
+      const certificateButton = querySelectorErrorOnMissing(certificateSection, 'devtools-button.origin-button');
+      certificateButton.click();
+      await getCertificate.firstCall.returnValue;
+
+      sinon.assert.calledOnceWithExactly(getCertificate, 'https://foo.bar');
+      sinon.assert.notCalled(showCertificateViewer);
     });
   });
 

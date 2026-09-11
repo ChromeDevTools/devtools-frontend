@@ -584,7 +584,7 @@ async function main() {
   for (const [label, data] of groupedResults) {
     const output = {
       metadata: data.metadata,
-      examples: data.results,
+      trajectories: data.results,
     };
     writeOutput(output, {...userArgs, label}, runId, taskStatuses, taskDurations);
   }
@@ -694,7 +694,7 @@ async function main() {
 }
 
 function writeOutput(
-    output: {metadata: ExampleMetadata[], examples: IndividualPromptRequestResponse[]},
+    output: {metadata: ExampleMetadata[], trajectories: IndividualPromptRequestResponse[]},
     userArgs: UserArgs,
     runId: string,
     taskStatuses: TaskStatus[],
@@ -703,7 +703,7 @@ function writeOutput(
   const OUTPUT_DIR = path.resolve(import.meta.dirname, 'data');
   fs.mkdirSync(OUTPUT_DIR, {recursive: true});
 
-  if (output.metadata.length === 0 && output.examples.length === 0) {
+  if (output.metadata.length === 0 && output.trajectories.length === 0) {
     console.info('\n[Warn]: No results to export.');
     return;
   }
@@ -741,11 +741,12 @@ function writeOutput(
       });
 
       if (!userArgs.grade) {
-        const matchingExamples = output.examples.filter(e => e.session_id === trajectory.metadata.auto_run_example_id);
-        const hasError = matchingExamples.some(e => Boolean(e.error) ||
-                                                   Boolean(e.assertionFailures && e.assertionFailures.length > 0));
+        const matchingTrajectories =
+            output.trajectories.filter(e => e.session_id === trajectory.metadata.auto_run_example_id);
+        const hasError = matchingTrajectories.some(e => Boolean(e.error) ||
+                                                       Boolean(e.assertionFailures && e.assertionFailures.length > 0));
         // TODO: Parse grader output or evaluation assertions to report individual task scores instead of defaulting to 1.0.
-        const score = matchingExamples.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
+        const score = matchingTrajectories.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
         // Status indicates execution outcome (PASSED if prompt turns completed and uploaded without error,
         // FAILED if upload failed, assertion failures occurred, or score is 0.0).
         const status = (!trajectoryUploaded || hasError || score <= 0.0) ? 'FAILED' : 'PASSED';

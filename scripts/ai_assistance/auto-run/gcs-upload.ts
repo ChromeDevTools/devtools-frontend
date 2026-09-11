@@ -21,7 +21,7 @@ export const PROJECT_ID = 'ai_evals';
  *      ├── run_started.json          - Initial run metadata (status=RUNNING)
  *      └── run_started.marker        - 0-byte commit marker
  *
- * 2. Task completion (per example / task):
+ * 2. Task completion (per trajectory / task):
  *    runs/<runId>/tasks/<taskId>/output/
  *      ├── trajectory.json           - Captured prompt turns and tool results
  *      ├── eval_result.json          - Optional inline grading result (if --grade)
@@ -98,7 +98,7 @@ export interface RunCompletedPayload {
   failedTasks: number;
 }
 
-/** Record of a completed task's execution outcome and score. Each task corresponds to an evaluation example. */
+/** Record of a completed task's execution outcome and score. Each task corresponds to an evaluation trajectory. */
 export interface TaskStatus {
   taskId: string;
   status: string;
@@ -160,90 +160,76 @@ export function uploadEvalToGCS(options: UploadOptions): boolean {
 }
 
 /**
- * Uploads a 0-byte marker file to GCS by creating a temporary empty regular file.
+ * Stages string content into a temporary directory file, uploads it to GCS,
+ * and guarantees immediate cleanup in a finally block.
  */
-function uploadMarkerToGCS(destination: string): boolean {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'marker-'));
-  const tempFilePath = path.join(tempDir, 'empty.marker');
+function uploadTemporaryContentToGCS(content: string, destination: string, fileName: string): boolean {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gcs-upload-'));
+  const tempFilePath = path.join(tempDir, fileName);
   try {
-    fs.writeFileSync(tempFilePath, '');
+    fs.writeFileSync(tempFilePath, content, 'utf8');
     return uploadFileToGCS(tempFilePath, destination);
   } finally {
     fs.rmSync(tempDir, {recursive: true, force: true});
   }
 }
 
+export type MarkerType = typeof Markers[keyof typeof Markers];
+
 /**
- * Uploads <run_id>/run_started.marker (0-byte file).
- * Must be called immediately after run_started.json is uploaded.
+ * Uploads a 0-byte marker file to GCS for run-level or task-level commit signals.
+ * taskId is optional because run-level markers (e.g. RUN_STARTED, RUN_COMPLETED)
+ * reside directly under the run root, whereas task-level markers require a taskId.
  */
-export function uploadRunStartedMarker(runId: string): boolean {
-  return uploadMarkerToGCS(formatGCSRunDestination(runId, Markers.RUN_STARTED));
+export function uploadMarker(runId: string, marker: MarkerType, taskId?: string): boolean {
+  const destination = taskId ? formatGCSTaskDestination(runId, taskId, marker) : formatGCSRunDestination(runId, marker);
+  return uploadTemporaryContentToGCS('', destination, marker);
 }
 
 /**
  * Emits run_started.json and immediately uploads run_started.marker.
  */
 export function uploadRunStarted(payload: RunStartedPayload): boolean {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'run-started-'));
-  const runStartedPath = path.join(tempDir, 'run_started.json');
-  try {
-    const jsonContent = {
-      project: payload.project,
-      run_id: payload.runId,
-      model: payload.model,
-      agent: payload.agent,
-      start_time: payload.startTime,
-      status: payload.status,
-    };
-    fs.writeFileSync(runStartedPath, JSON.stringify(jsonContent, null, 2), 'utf8');
-
-    const jsonUploaded = uploadFileToGCS(runStartedPath, formatGCSRunDestination(payload.runId, 'run_started.json'));
-    if (jsonUploaded) {
-      return uploadRunStartedMarker(payload.runId);
-    }
-    return false;
-  } finally {
-    fs.rmSync(tempDir, {recursive: true, force: true});
+  const jsonContent = {
+    project: payload.project,
+    run_id: payload.runId,
+    model: payload.model,
+    agent: payload.agent,
+    start_time: payload.startTime,
+    status: payload.status,
+  };
+  const jsonUploaded = uploadTemporaryContentToGCS(
+      JSON.stringify(jsonContent, null, 2),
+      formatGCSRunDestination(payload.runId, 'run_started.json'),
+      'run_started.json',
+  );
+  if (jsonUploaded) {
+    return uploadMarker(payload.runId, Markers.RUN_STARTED);
   }
-}
-
-/**
- * Uploads tasks/<task_id>/output/eval_task_completed.marker (0-byte file).
- * Must be called immediately after all task artifacts and eval_task_completed.json are uploaded.
- */
-export function uploadTaskCompletedMarker(runId: string, taskId: string): boolean {
-  return uploadMarkerToGCS(formatGCSTaskDestination(runId, taskId, Markers.TASK_COMPLETED));
+  return false;
 }
 
 /**
  * Emits eval_task_completed.json and immediately uploads eval_task_completed.marker.
  */
 export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'task-completed-'));
-  const taskMetadataPath = path.join(tempDir, 'eval_task_completed.json');
-  try {
-    const jsonContent = {
-      task_id: payload.taskId,
-      run_id: payload.runId,
-      status: payload.status,
-      score: payload.score,
-      duration_seconds: payload.durationSeconds,
-      tokens: payload.tokens ?? {},
-    };
-    fs.writeFileSync(taskMetadataPath, JSON.stringify(jsonContent, null, 2), 'utf8');
-
-    const jsonUploaded = uploadFileToGCS(
-        taskMetadataPath,
-        formatGCSTaskDestination(payload.runId, payload.taskId, 'eval_task_completed.json'),
-    );
-    if (jsonUploaded) {
-      return uploadTaskCompletedMarker(payload.runId, payload.taskId);
-    }
-    return false;
-  } finally {
-    fs.rmSync(tempDir, {recursive: true, force: true});
+  const jsonContent = {
+    task_id: payload.taskId,
+    run_id: payload.runId,
+    status: payload.status,
+    score: payload.score,
+    duration_seconds: payload.durationSeconds,
+    tokens: payload.tokens ?? {},
+  };
+  const jsonUploaded = uploadTemporaryContentToGCS(
+      JSON.stringify(jsonContent, null, 2),
+      formatGCSTaskDestination(payload.runId, payload.taskId, 'eval_task_completed.json'),
+      'eval_task_completed.json',
+  );
+  if (jsonUploaded) {
+    return uploadMarker(payload.runId, Markers.TASK_COMPLETED, payload.taskId);
   }
+  return false;
 }
 
 /**
@@ -252,23 +238,11 @@ export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
  * Must be called during Phase 3 before run_completed.marker is uploaded.
  */
 export function uploadRunLog(runId: string, logContent: string): boolean {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'run-log-'));
-  const localLogPath = path.join(tempDir, 'eval_run.log');
-  try {
-    fs.writeFileSync(localLogPath, logContent, 'utf8');
-    const destination = formatGCSRunDestination(runId, 'eval_run.log');
-    return uploadFileToGCS(localLogPath, destination);
-  } finally {
-    fs.rmSync(tempDir, {recursive: true, force: true});
-  }
-}
-
-/**
- * Uploads <run_id>/run_completed.marker (0-byte file).
- * Must be called immediately after run_completed.json is uploaded.
- */
-export function uploadRunCompletedMarker(runId: string): boolean {
-  return uploadMarkerToGCS(formatGCSRunDestination(runId, Markers.RUN_COMPLETED));
+  return uploadTemporaryContentToGCS(
+      logContent,
+      formatGCSRunDestination(runId, 'eval_run.log'),
+      'eval_run.log',
+  );
 }
 
 /**
@@ -276,30 +250,23 @@ export function uploadRunCompletedMarker(runId: string): boolean {
  * end of the evaluation suite execution after all tasks finished and logs uploaded.
  */
 export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'run-completed-'));
-  const runCompletedPath = path.join(tempDir, 'run_completed.json');
-  try {
-    const jsonContent = {
-      project: payload.project,
-      run_id: payload.runId,
-      status: payload.status,
-      start_time: payload.startTime,
-      end_time: payload.endTime,
-      total_tasks: payload.totalTasks,
-      passed_tasks: payload.passedTasks,
-      failed_tasks: payload.failedTasks,
-    };
-    fs.writeFileSync(runCompletedPath, JSON.stringify(jsonContent, null, 2), 'utf8');
-
-    const jsonUploaded = uploadFileToGCS(
-        runCompletedPath,
-        formatGCSRunDestination(payload.runId, 'run_completed.json'),
-    );
-    if (jsonUploaded) {
-      return uploadRunCompletedMarker(payload.runId);
-    }
-    return false;
-  } finally {
-    fs.rmSync(tempDir, {recursive: true, force: true});
+  const jsonContent = {
+    project: payload.project,
+    run_id: payload.runId,
+    status: payload.status,
+    start_time: payload.startTime,
+    end_time: payload.endTime,
+    total_tasks: payload.totalTasks,
+    passed_tasks: payload.passedTasks,
+    failed_tasks: payload.failedTasks,
+  };
+  const jsonUploaded = uploadTemporaryContentToGCS(
+      JSON.stringify(jsonContent, null, 2),
+      formatGCSRunDestination(payload.runId, 'run_completed.json'),
+      'run_completed.json',
+  );
+  if (jsonUploaded) {
+    return uploadMarker(payload.runId, Markers.RUN_COMPLETED);
   }
+  return false;
 }

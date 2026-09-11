@@ -63,7 +63,8 @@ export interface RawOutput {
   metadata: Array<{
     session_id: string,
   }>;
-  examples: RawExample[];
+  examples?: RawExample[];
+  trajectories?: RawExample[];
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -78,11 +79,12 @@ interface RawToEvalOptions {
  */
 export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
   const inputHash = hash(JSON.stringify(opts.inputFromAutoRun));
-  const {metadata, examples} = opts.inputFromAutoRun;
+  const {metadata} = opts.inputFromAutoRun;
+  const rawEntries = opts.inputFromAutoRun.trajectories ?? opts.inputFromAutoRun.examples ?? [];
 
   return metadata
       .map((meta, index) => {
-        const sessionExamples = examples.filter(e => e.session_id === meta.session_id);
+        const sessionExamples = rawEntries.filter(e => e.session_id === meta.session_id);
         if (!sessionExamples.length) {
           return null;
         }

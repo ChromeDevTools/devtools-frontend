@@ -114,7 +114,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prerender'],
-      ['Status', 'Speculative load is running.'],
+      ['Status', 'Speculative load is running'],
       ['Rule set', 'example.com/'],
     ]);
   });
@@ -197,7 +197,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prerender'],
-      ['Status', 'Speculative load is running.'],
+      ['Status', 'Speculative load is running'],
       ['Target hint', '_blank'],
       ['Rule set', 'example.com/'],
     ]);
@@ -251,7 +251,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prerender'],
-      ['Status', 'Speculative load is running.'],
+      ['Status', 'Speculative load is running'],
       ['Target hint', '_self'],
       ['Rule set', 'example.com/'],
     ]);
@@ -304,7 +304,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prerender'],
-      ['Status', 'Speculative load is running.'],
+      ['Status', 'Speculative load is running'],
       ['Rule set', 'example.com/'],
     ]);
   });
@@ -374,10 +374,10 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prerender (automatically fell back to prefetch)'],
-      ['Status', 'Speculative load failed, but fallback to prefetch succeeded.'],
+      ['Status', 'Speculative load failed, but fallback to prefetch succeeded'],
       [
         'Failure reason',
-        'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
+        'The prerendered page used a forbidden JavaScript API that isn’t currently supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
       ],
       ['Rule set', 'example.com/'],
     ]);
@@ -435,8 +435,8 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', ''],
       ['Action', 'Prefetch'],
-      ['Status', 'Speculative load failed.'],
-      ['Failure reason', 'The prefetch failed because of a non-2xx HTTP response status code.'],
+      ['Status', 'Speculative load failed'],
+      ['Failure reason', 'The prefetch failed because of a non-2xx HTTP response status code'],
       ['Rule set', 'example.com/'],
     ]);
   });
@@ -498,8 +498,8 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', ''],
       ['Action', 'Prefetch'],
-      ['Status', 'Speculative load failed.'],
-      ['Failure reason', 'The prefetch failed because of a non-2xx HTTP response status code (404).'],
+      ['Status', 'Speculative load failed'],
+      ['Failure reason', 'The prefetch failed because of a non-2xx HTTP response status code (404)'],
       ['Rule set', 'example.com/'],
     ]);
   });
@@ -563,8 +563,8 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prerender'],
-      ['Status', 'Speculative load failed.'],
-      ['Failure reason', 'The prerendering navigation failed because of a non-2xx HTTP response status code (404).'],
+      ['Status', 'Speculative load failed'],
+      ['Failure reason', 'The prerendering navigation failed because of a non-2xx HTTP response status code (404)'],
       ['Rule set', 'example.com/'],
     ]);
   });
@@ -622,7 +622,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', ''],
       ['Action', 'Prefetch'],
-      ['Status', 'Speculative load finished and the result is ready for the next navigation.'],
+      ['Status', 'Speculative load finished and the result is ready for the next navigation'],
       ['Rule set', 'example.com/speculation-rules.json'],
     ]);
   });
@@ -683,7 +683,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prefetch'],
-      ['Status', 'Speculative load attempt is not yet triggered.'],
+      ['Status', 'Speculative load attempt isn’t yet triggered'],
       ['Rule set', 'example.com/'],
     ]);
     assert.isNull(requestLinkIcon);
@@ -738,7 +738,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prerender until script'],
-      ['Status', 'Speculative load is running.'],
+      ['Status', 'Speculative load is running'],
       ['Rule set', 'example.com/'],
     ]);
   });

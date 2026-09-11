@@ -340,9 +340,8 @@ describeWithEnvironment('PreloadingRuleSetView', () => {
     const description = placeholder.querySelector('.empty-state-description > span')?.textContent;
 
     assert.deepEqual(header, 'No rules detected');
-    assert.deepEqual(
-        description,
-        'On this page you will see the speculation rules used to prefetch and prerender page navigations.');
+    assert.deepEqual(description,
+                     'On this page you will see the speculation rules used to prefetch and prerender page navigations');
 
     const rules = view.contentElement.querySelector('devtools-split-view');
     assert.exists(rules);
@@ -579,7 +578,7 @@ describeWithEnvironment('PreloadingAttemptView', () => {
     const description = placeholder.querySelector('.empty-state-description > span')?.textContent;
 
     assert.deepEqual(header, 'No speculation detected');
-    assert.deepEqual(description, 'On this page you will see details on speculative loads.');
+    assert.deepEqual(description, 'On this page you will see details on speculative loads');
 
     const rules = view.contentElement.querySelector('devtools-split-view');
     assert.exists(rules);
@@ -718,7 +717,7 @@ describeWithEnvironment('PreloadingAttemptView', () => {
             '/prefetch.html',
             'Prefetch',
             'example.com/',
-            'Failure - The prefetch failed because of a non-2xx HTTP response status code (404).',
+            'Failure - The prefetch failed because of a non-2xx HTTP response status code (404)',
           ],
         ],
     );
@@ -776,7 +775,7 @@ describeWithEnvironment('PreloadingAttemptView', () => {
             '/prerendered.html',
             'Prerender',
             '',
-            'Failure - The prerendering navigation failed because of a non-2xx HTTP response status code (404).',
+            'Failure - The prerendering navigation failed because of a non-2xx HTTP response status code (404)',
           ],
         ],
     );
@@ -834,7 +833,7 @@ describeWithEnvironment('PreloadingAttemptView', () => {
             '/prerendered.html',
             'Prerender',
             '',
-            'Failure - The prerendering navigation failed because of a non-2xx HTTP response status code.',
+            'Failure - The prerendering navigation failed because of a non-2xx HTTP response status code',
           ],
         ],
     );
@@ -1075,7 +1074,7 @@ describeWithEnvironment('PreloadingAttemptView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
       ['Action', 'Prerender Inspect'],
-      ['Status', 'Speculative load is running.'],
+      ['Status', 'Speculative load is running'],
     ]);
 
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
@@ -1141,7 +1140,7 @@ describeWithEnvironment('PreloadingAttemptView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
       ['Action', 'Prerender Inspect'],
-      ['Status', 'Speculative load finished and the result is ready for the next navigation.'],
+      ['Status', 'Speculative load finished and the result is ready for the next navigation'],
     ]);
 
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
@@ -1198,7 +1197,7 @@ describeWithEnvironment('PreloadingAttemptView', () => {
             '/prerendered.html',
             'Prerender',
             '',
-            'Failure - The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
+            'Failure - The prerendered page used a forbidden JavaScript API that isn’t currently supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
           ],
         ],
     );
@@ -1215,10 +1214,10 @@ describeWithEnvironment('PreloadingAttemptView', () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
       ['Action', 'Prerender Inspect'],
-      ['Status', 'Speculative load failed.'],
+      ['Status', 'Speculative load failed'],
       [
         'Failure reason',
-        'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
+        'The prerendered page used a forbidden JavaScript API that isn’t currently supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
       ],
     ]);
 
@@ -1909,7 +1908,7 @@ describeWithEnvironment('PreloadingSummaryView', () => {
     const usedPreloadingComponent = view.getUsedPreloadingForTest();
     await usedPreloadingComponent.updateComplete;
 
-    assert.include(usedPreloadingComponent.contentElement.textContent, 'This page was successfully prerendered.');
+    assert.include(usedPreloadingComponent.contentElement.textContent, 'This page was successfully prerendered');
   });
 });
 

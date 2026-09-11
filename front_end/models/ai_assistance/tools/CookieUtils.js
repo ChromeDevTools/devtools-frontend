@@ -39,41 +39,13 @@ export function resolveAllowedTargetOrigins(requestedOrigins, context, targetMan
     return { targetOrigins, primaryPageTarget };
 }
 /**
- * Finds a frame in the primary page target tree that matches the specified origin.
- *
- * Returns `null` if the origin is opaque or if no matching frame exists.
- *
- * @param origin The target origin URL to match.
- * @param targetManager The target manager to query for active frames.
- * @param primaryPageTarget The primary page target containing the frame tree.
- * @returns The matching frame, or `null` if not found.
- */
-export function findFrameForOrigin(origin, targetManager, primaryPageTarget) {
-    const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(origin);
-    if (targetOrigin.isOpaque()) {
-        return null;
-    }
-    for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
-        if (frame.resourceTreeModel().target().outermostTarget() !== primaryPageTarget) {
-            continue;
-        }
-        if (!frame.securityOrigin) {
-            continue;
-        }
-        const frameOrigin = SDK.SecurityOrigin.SecurityOrigin.create(frame.securityOrigin);
-        if (frameOrigin.isSameOriginWith(targetOrigin)) {
-            return frame;
-        }
-    }
-    return null;
-}
-/**
- * Retrieves all cookies accessible to the target origin, strictly excluding HttpOnly cookies.
+ * Retrieves all cookies accessible to the target origin, excluding HttpOnly cookies.
  * Locates the matching frame within the primary page target tree, queries its CookieModel,
  * and filters cookies by security origin.
  */
-export async function getCookiesForOrigin(origin, targetManager, primaryPageTarget) {
-    const frame = findFrameForOrigin(origin, targetManager, primaryPageTarget);
+export async function getCookiesForOrigin(origin, primaryPageTarget) {
+    const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(origin);
+    const frame = SDK.ResourceTreeModel.ResourceTreeModel.frameForOrigin(primaryPageTarget, targetOrigin);
     if (!frame) {
         return { error: `Frame not found or origin disallowed for ${origin}` };
     }

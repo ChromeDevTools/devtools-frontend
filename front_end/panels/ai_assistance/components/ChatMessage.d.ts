@@ -2,7 +2,7 @@ import '../../../ui/components/markdown_view/markdown_view.js';
 import '../../../ui/kit/kit.js';
 import * as Host from '../../../core/host/host.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
+import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 /**

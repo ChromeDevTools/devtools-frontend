@@ -24,8 +24,8 @@ export default `/*
 
 .axis-icon {
   margin-left: 0.4em;
-  width: 16px;
-  height: 12px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-6);
   vertical-align: text-top;
 }
 

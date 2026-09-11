@@ -127,6 +127,8 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     get fromDiskCache(): boolean | undefined;
     setFromDiskCache(): void;
     setFromPrefetchCache(): void;
+    cacheDisabled(): boolean;
+    setCacheDisabled(cacheDisabled: boolean): void;
     fromEarlyHints(): boolean;
     setFromEarlyHints(): void;
     /**

@@ -81,6 +81,10 @@ const UIStrings = {
      */
     earlyHintsHeaders: 'Early hints headers',
     /**
+     * @description Warning in the Early hints headers section when the Disable cache setting prevents Early Hints preloads.
+     */
+    earlyPreloadsIgnoredCacheDisabledWarning: 'Early Hints preloads were ignored because cache is disabled. Enable cache and reload the page to use them.',
+    /**
      * @description Title text for a link to the Sources panel to the file containing the header override definitions
      */
     revealHeaderOverrides: 'Reveal header override definitions',
@@ -167,14 +171,18 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             additionalContent: undefined,
             forceOpen: input.toReveal?.section === "EarlyHints" /* NetworkForward.UIRequestLocation.UIHeaderSection.EARLY_HINTS */,
             loggingContext: 'early-hints-headers',
-            contents: input.showResponseHeadersText ?
+            contents: html `
+              ${input.cacheDisabled && hasEarlyHintsPreload(input.request.earlyHintsHeaders) ?
+                renderEarlyHintsWarning() : Lit.nothing}
+              ${input.showResponseHeadersText ?
                 renderRawHeaders(input.request.responseHeadersText) :
                 html `
-            <devtools-early-hints-header-section .data=${{
+                  <devtools-early-hints-header-section .data=${{
                     request: input.request,
                     toReveal: input.toReveal,
                 }}></devtools-early-hints-header-section>
-              `,
+                `}
+            `,
         })}
         ${renderCategory({
         name: 'response-headers',
@@ -323,6 +331,7 @@ export class RequestHeadersView extends UI.Widget.Widget {
             revealHeadersFile,
             request: this.#request,
             toReveal: this.#toReveal,
+            cacheDisabled: this.#request.cacheDisabled(),
             showResponseHeadersText: this.#showResponseHeadersText,
             showRequestHeadersText: this.#showRequestHeadersText,
         };
@@ -336,6 +345,29 @@ export class RequestHeadersView extends UI.Widget.Widget {
         return fileUrl.substring(0, fileUrl.lastIndexOf('/')) + '/' +
             Persistence.NetworkPersistenceManager.HEADERS_FILENAME;
     }
+}
+function hasEarlyHintsPreload(headers) {
+    const relationParameter = /(?:^|[,;])\s*rel\s*=\s*(?:"([^"]*)"|'([^']*)'|([^,;\s]+))/gi;
+    return headers.some(header => {
+        if (Platform.StringUtilities.toLowerCaseString(header.name) !== 'link') {
+            return false;
+        }
+        for (const match of header.value.matchAll(relationParameter)) {
+            const relations = (match[1] ?? match[2] ?? match[3] ?? '').toLowerCase().trim().split(/[ \t]+/);
+            if (relations.includes('preload') || relations.includes('modulepreload')) {
+                return true;
+            }
+        }
+        return false;
+    });
+}
+function renderEarlyHintsWarning() {
+    return html `
+    <div class="early-hints-warning">
+      <devtools-icon class="medium" name="warning-filled"></devtools-icon>
+      <div>${i18nString(UIStrings.earlyPreloadsIgnoredCacheDisabledWarning)}</div>
+    </div>
+  `;
 }
 function renderHeaderOverridesLink(input) {
     if (!input.revealHeadersFile) {

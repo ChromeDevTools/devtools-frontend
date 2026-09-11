@@ -59,6 +59,9 @@
       "path": "bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../core/platform/bundle-tsconfig.ref.json"
     },
     {
@@ -66,6 +69,9 @@
     },
     {
       "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../network/forward/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"

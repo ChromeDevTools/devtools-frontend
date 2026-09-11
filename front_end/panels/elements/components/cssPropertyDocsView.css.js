@@ -11,12 +11,12 @@ export default `/*
 
 .docs-popup-wrapper {
   max-width: 420px;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   line-height: 1.4;
 }
 
 .docs-popup-section {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .clickable {
@@ -39,7 +39,7 @@ export default `/*
 #baseline {
   display: inline-flex;
   align-items: flex-start;
-  gap: 4px;
+  gap: var(--sys-size-3);
 }
 
 #baseline-icon {

@@ -232,6 +232,7 @@ models/ai_assistance/tools/RecordPerformanceTrace.test.js
 models/ai_assistance/tools/ResolveDevtoolsNodePath.test.js
 models/ai_assistance/tools/RunLighthouse.test.js
 models/ai_assistance/tools/SelectTraceEventByKey.test.js
+models/ai_assistance/tools/Tool.test.js
 models/ai_assistance/tools/ToolRegistry.test.js
 models/autofill_manager/AutofillManager.test.js
 models/badges/AiExplorerBadge.test.js

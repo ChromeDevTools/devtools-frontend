@@ -1116,9 +1116,9 @@ var colorMixSwatch_css_default = `/*
   display: inline-grid;
   inline-size: 15px;
   grid: [stack] 1fr / [stack] 1fr;
-  margin-left: 1px;
-  margin-right: 1px;
-  vertical-align: -1px;
+  margin-left: var(--sys-size-1);
+  margin-right: var(--sys-size-1);
+  vertical-align: calc(-1 * var(--sys-size-1));
   color: var(--color); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
@@ -1126,7 +1126,7 @@ var colorMixSwatch_css_default = `/*
   aspect-ratio: 1 / 1;
   display: inline-block;
   width: 10px;
-  border-radius: 1e5px;
+  border-radius: var(--sys-shape-corner-full);
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background: linear-gradient(var(--color), var(--color)),
     var(--image-file-checker);
@@ -1801,10 +1801,10 @@ var cssAngleSwatch_css_default = `/*
 .swatch {
   position: relative;
   display: inline-block;
-  margin-bottom: -2px;
+  margin-bottom: calc(-1 * var(--sys-size-2));
   width: 1em;
   height: 1em;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
@@ -1816,7 +1816,7 @@ var cssAngleSwatch_css_default = `/*
   margin: auto;
   inset: 0;
   height: 55%;
-  width: 2px;
+  width: var(--sys-size-2);
   background-color: var(--sys-color-tonal-container);
   border-radius: 5px;
 }
@@ -2687,7 +2687,7 @@ var linkSwatch_css_default = `/*
 
 .link-swatch-link:not(.undefined) {
   cursor: pointer;
-  text-underline-offset: 2px;
+  text-underline-offset: var(--sys-size-2);
   color: var(--text-link);
 }
 

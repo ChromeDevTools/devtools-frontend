@@ -5,6 +5,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Logs from '../../logs/logs.js';
 import { formatBytesToKb, seconds } from '../data_formatters/UnitFormatters.js';
+import { isOriginAllowedByLock, } from './Tool.js';
 const UIStringsNotTranslate = {
     listingNetworkRequests: 'Listing network requests',
 };
@@ -41,21 +42,19 @@ export class ListNetworkRequestsTool {
         const requests = [];
         // A conversation is locked to an origin once the first query is made.
         // We only allow inspecting requests matching the conversation's established origin.
-        const origin = context.getEstablishedOrigin();
-        // Opaque origins are never allowed to be used as context.
-        if (origin?.isOpaque()) {
+        const establishedOrigin = context.getEstablishedOrigin();
+        if (!establishedOrigin || establishedOrigin.isOpaque()) {
             return {
                 error: 'Opaque origin not allowed',
             };
         }
-        const conversationOrigin = origin ?? null;
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
         let hasCrossOriginRequest = false;
         const requestsToShow = [];
         for (const request of networkLog.requests()) {
-            // If the conversation is locked to an origin, skip requests from other origins.
-            if (conversationOrigin && !request.initiatorSecurityOrigin().isSameOriginWith(conversationOrigin)) {
+            // If the request's initiator origin does not match the locked origin, skip it.
+            if (!isOriginAllowedByLock(establishedOrigin, request.initiatorSecurityOrigin())) {
                 hasCrossOriginRequest = true;
                 continue;
             }
@@ -71,7 +70,7 @@ export class ListNetworkRequestsTool {
         if (requests.length === 0) {
             if (hasCrossOriginRequest) {
                 return {
-                    error: `No requests showing with origin ${origin?.siteId() ?? ''}. Tell the user to start a new chat`,
+                    error: `No requests showing with origin ${establishedOrigin.siteId()}. Tell the user to start a new chat`,
                 };
             }
             return {

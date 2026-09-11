@@ -38,21 +38,13 @@ export class GetSourceContentTool {
         };
     }
     async handler(args, context) {
-        const origin = context.getEstablishedOrigin();
-        if (!origin || origin.isOpaque()) {
-            return {
-                error: 'Opaque origin not allowed',
-            };
-        }
-        const file = ListSourcesTool.getUISourceCodes().find(f => ListSourcesTool.uiSourceCodeId.get(f) === args.id);
+        const establishedOrigin = context.getEstablishedOrigin();
+        const file = ListSourcesTool.getUISourceCodes()
+            .filter(f => isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(f)))
+            .find(f => ListSourcesTool.uiSourceCodeId.get(f) === args.id);
         if (!file) {
             return {
                 error: 'Unable to find file.',
-            };
-        }
-        if (!isOriginAllowedByLock(context, FileContext.originForUISourceCode(file))) {
-            return {
-                error: 'Cross-origin access blocked.',
             };
         }
         const contentData = await file.requestContentData();

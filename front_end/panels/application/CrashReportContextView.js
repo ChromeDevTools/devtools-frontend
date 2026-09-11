@@ -174,7 +174,6 @@ export class CrashReportContextView extends UI.Widget.VBox {
                 frameId,
                 displayName,
                 isMain: frame?.isMainFrame() ?? false,
-                origin: frame?.securityOrigin || '',
                 entries: frameEntries,
             };
         })

@@ -252,6 +252,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     ondblclick(event: Event): boolean;
     onbind(): void;
     onunbind(): void;
+    ensureSelection(): void;
     static animateOnDOMUpdate(treeElement: ElementsTreeElement): void;
     static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[];
     static canShowInlineText(node: SDK.DOMModel.DOMNode): boolean;

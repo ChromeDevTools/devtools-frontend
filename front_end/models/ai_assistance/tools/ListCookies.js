@@ -41,7 +41,7 @@ export class ListCookiesTool {
         const { targetOrigins, primaryPageTarget } = targetOriginsResult;
         const cookieNamesByOrigin = {};
         await Promise.all(targetOrigins.map(async (origin) => {
-            const result = await getCookiesForOrigin(origin, targetManager, primaryPageTarget);
+            const result = await getCookiesForOrigin(origin, primaryPageTarget);
             if ('error' in result) {
                 cookieNamesByOrigin[origin] = { error: result.error };
                 return;

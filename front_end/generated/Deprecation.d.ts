@@ -64,6 +64,10 @@ export declare const UIStrings: {
      */
     readonly ExampleBrowserProcessDeprecation: "This is an example for showing the code required for a browser process reported deprecation.";
     /**
+     * @description Warning displayed to developers that they are using the Fenced Frame API which has been deprecated and is scheduled to be removed.
+     */
+    readonly FencedFrame: "Fenced Frame API is deprecated and scheduled for removal.";
+    /**
      * @description A deprecation warning shown in the DevTools Issues tab. It's shown when one of the Protected Audience APIs like `navigator.joinAdInterestGroup`, `navigator.getInterestGroupAdAuctionData` or `navigator.runAdAuction` are called.
      */
     readonly Fledge: "The Protected Audience API is deprecated and will be removed in a future release.";

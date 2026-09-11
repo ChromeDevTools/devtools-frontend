@@ -16,7 +16,7 @@ export default `/*
 }
 
 .computed-style-trace {
-  margin-left: 16px;
+  margin-left: var(--sys-size-8);
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
 }
@@ -28,14 +28,14 @@ export default `/*
 
 .goto {
   /* TODO: reuse with ComputedStyleProperty */
-  --size: 16px;
+  --size: var(--sys-size-8);
 
   display: none;
   cursor: pointer;
   position: absolute;
   width: var(--size);
   height: var(--size);
-  margin: -1px 0 0 calc(-1 * var(--size));
+  margin: calc(-1 * var(--sys-size-1)) 0 0 calc(-1 * var(--size));
   mask: var(--image-file-goto-filled) center / contain no-repeat;
   background-color: var(--sys-color-primary-bright);
 }
@@ -52,7 +52,7 @@ export default `/*
 }
 
 .trace-value {
-  margin-left: 16px;
+  margin-left: var(--sys-size-8);
 }
 
 .computed-style-trace.inactive slot[name="trace-value"] {

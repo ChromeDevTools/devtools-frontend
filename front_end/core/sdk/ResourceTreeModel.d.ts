@@ -5,6 +5,7 @@ import { type DeferredDOMNode, DOMModel, type DOMNode } from './DOMModel.js';
 import type { NetworkRequest } from './NetworkRequest.js';
 import { Resource } from './Resource.js';
 import { SDKModel } from './SDKModel.js';
+import { SecurityOrigin } from './SecurityOrigin.js';
 import { type Target } from './Target.js';
 import type { TargetManager } from './TargetManager.js';
 export declare class ResourceTreeModel extends SDKModel<EventTypes> {
@@ -17,6 +18,18 @@ export declare class ResourceTreeModel extends SDKModel<EventTypes> {
     constructor(target: Target);
     static frameForRequest(request: NetworkRequest): ResourceTreeFrame | null;
     static frames(targetManager: TargetManager): ResourceTreeFrame[];
+    /**
+     * Finds the first active frame that matches the specified security origin under
+     * the given primary page target.
+     *
+     * Returns `null` if the target has no outermost target or if no matching frame
+     * exists.
+     *
+     * @param primaryPageTarget The primary page target that contains the candidate frames.
+     * @param origin The security origin to match.
+     * @returns The first matching frame, or `null` if no frame matches.
+     */
+    static frameForOrigin(primaryPageTarget: Target, origin: SecurityOrigin): ResourceTreeFrame | null;
     static resourceForURL(targetManager: TargetManager, url: Platform.DevToolsPath.UrlString): Resource | null;
     static reloadAllPages(targetManager: TargetManager, bypassCache?: boolean, scriptToEvaluateOnLoad?: string): void;
     storageKeyForFrame(frameId: Protocol.Page.FrameId): Promise<string | null>;
@@ -147,7 +160,15 @@ export declare class ResourceTreeFrame {
     get url(): Platform.DevToolsPath.UrlString;
     domainAndRegistry(): string;
     getAdScriptAncestry(frameId: Protocol.Page.FrameId): Promise<Protocol.Network.AdAncestry | null>;
-    get securityOrigin(): string | null;
+    /**
+     * Returns the security origin of this frame.
+     *
+     * If the frame does not have a valid origin (such as `about:blank`), this
+     * method returns a unique opaque origin.
+     *
+     * @returns The security origin of the frame.
+     */
+    securityOrigin(): SecurityOrigin;
     get securityOriginDetails(): Protocol.Page.SecurityOriginDetails | null;
     getStorageKey(forceFetch: boolean): Promise<string | null>;
     unreachableUrl(): Platform.DevToolsPath.UrlString;
@@ -239,10 +260,13 @@ export declare class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
     downloadWillBegin({}: Protocol.Page.DownloadWillBeginEvent): void;
     downloadProgress(): void;
 }
+/**
+ * Aggregated security origin data for frames belonging to a resource tree model.
+ */
 export interface SecurityOriginData {
-    securityOrigins: Set<string>;
-    mainSecurityOrigin: string | null;
-    unreachableMainSecurityOrigin: string | null;
+    securityOrigins: SecurityOrigin[];
+    mainSecurityOrigin: SecurityOrigin | null;
+    unreachableMainSecurityOrigin: SecurityOrigin | null;
 }
 export interface StorageKeyData {
     storageKeys: Set<string>;

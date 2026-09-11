@@ -4,6 +4,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
+import { isOriginAllowedByLock, } from './Tool.js';
 /**
  * A tool that resolves a DevTools node path to a backend node ID.
  *
@@ -48,7 +49,7 @@ export class ResolveDevtoolsNodePathTool {
      */
     async handler(params, context) {
         const establishedOrigin = context.getEstablishedOrigin();
-        if (!establishedOrigin) {
+        if (!establishedOrigin || establishedOrigin.isOpaque()) {
             return { error: 'Error: Origin lock is not established.' };
         }
         const target = context.getTarget();
@@ -75,7 +76,7 @@ export class ResolveDevtoolsNodePathTool {
         const nodeContext = new DOMNodeContext(node);
         // Security check: Ensure the resolved node belongs to the same origin
         // that this AI assistance session is locked to, preventing cross-origin access.
-        if (!nodeContext.isOriginAllowed(establishedOrigin)) {
+        if (!isOriginAllowedByLock(establishedOrigin, nodeContext.getOrigin())) {
             return { error: 'Error: Node does not belong to the locked origin.' };
         }
         return {

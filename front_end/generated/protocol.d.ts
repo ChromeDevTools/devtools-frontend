@@ -11354,7 +11354,8 @@ export declare namespace Network {
         ServerRequested = "ServerRequested",
         InvalidSessionParams = "InvalidSessionParams",
         RefreshFatalError = "RefreshFatalError",
-        DevTools = "DevTools"
+        DevTools = "DevTools",
+        Replaced = "Replaced"
     }
     /**
      * Session event details specific to termination.

@@ -226,6 +226,7 @@ export declare class Scope implements ScopeChainEntry {
     object(): RemoteObject;
     description(): string;
     icon(): undefined;
+    empty(): boolean;
     extraProperties(): RemoteObjectProperty[];
 }
 export declare class DebuggerPausedDetails {

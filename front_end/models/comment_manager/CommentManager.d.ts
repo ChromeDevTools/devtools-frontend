@@ -39,6 +39,7 @@ export interface CommentThread {
     status: 'ACTIVE' | 'RESOLVED';
     transmitted?: boolean;
     changes?: Array<Record<string, unknown>>;
+    index: number;
 }
 export declare const enum Events {
     COMMENT_THREADS_CHANGED = "CommentThreadsChanged",

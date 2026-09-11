@@ -1603,6 +1603,7 @@ var Network;
     TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
     TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
     TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+    TerminationEventDetailsDeletionReason2["Replaced"] = "Replaced";
   })(TerminationEventDetailsDeletionReason = Network2.TerminationEventDetailsDeletionReason || (Network2.TerminationEventDetailsDeletionReason = {}));
   let ChallengeEventDetailsChallengeResult;
   ((ChallengeEventDetailsChallengeResult2) => {
@@ -4200,6 +4201,10 @@ var UIStrings9 = {
    */
   ExampleBrowserProcessDeprecation: "This is an example for showing the code required for a browser process reported deprecation.",
   /**
+   * @description Warning displayed to developers that they are using the Fenced Frame API which has been deprecated and is scheduled to be removed.
+   */
+  FencedFrame: "Fenced Frame API is deprecated and scheduled for removal.",
+  /**
    * @description A deprecation warning shown in the DevTools Issues tab. It's shown when one of the Protected Audience APIs like `navigator.joinAdInterestGroup`, `navigator.getInterestGroupAdAuctionData` or `navigator.runAdAuction` are called.
    */
   Fledge: "The Protected Audience API is deprecated and will be removed in a future release.",
@@ -4471,6 +4476,10 @@ var DEPRECATIONS_METADATA = {
   "DocumentCreateEventTransitionEvent": {
     "chromeStatusFeature": 5095987863486464,
     "milestone": 151
+  },
+  "FencedFrame": {
+    "chromeStatusFeature": 6366274495053824,
+    "milestone": 156
   },
   "IdentityInCanMakePaymentEvent": {
     "chromeStatusFeature": 5190978431352832

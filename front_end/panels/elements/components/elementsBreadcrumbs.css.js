@@ -59,8 +59,8 @@ export default `/*
   text-align: center;
   background-color: var(--sys-color-cdt-base-container);
   color: var(--sys-color-token-subtle);
-  margin: 1px;
-  outline: 1px solid var(--sys-color-neutral-outline);
+  margin: var(--sys-size-1);
+  outline: var(--sys-size-1) solid var(--sys-color-neutral-outline);
 }
 
 .overflow.hidden {
@@ -94,7 +94,7 @@ export default `/*
 }
 
 .crumb:focus {
-  outline: var(--sys-color-primary) auto 1px;
+  outline: var(--sys-color-primary) auto var(--sys-size-1);
 }
 
 /*# sourceURL=${import.meta.resolve('./elementsBreadcrumbs.css')} */`;

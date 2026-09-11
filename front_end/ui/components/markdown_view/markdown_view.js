@@ -624,9 +624,11 @@ var MarkdownView_exports = {};
 __export(MarkdownView_exports, {
   MarkdownInsightRenderer: () => MarkdownInsightRenderer,
   MarkdownLitRenderer: () => MarkdownLitRenderer,
-  MarkdownView: () => MarkdownView
+  MarkdownView: () => MarkdownView,
+  renderTextAsMarkdown: () => renderTextAsMarkdown
 });
 import "../../kit/kit.js";
+import * as Marked from "../../../third_party/marked/marked.js";
 import * as Lit3 from "../../lit/lit.js";
 import * as VisualLogging2 from "../../visual_logging/visual_logging.js";
 
@@ -1117,6 +1119,21 @@ var MarkdownInsightRenderer = class extends MarkdownLitRenderer {
     return super.templateForToken(token);
   }
 };
+function renderTextAsMarkdown(text, markdownRenderer = new MarkdownLitRenderer(), { animate, ref: refFn } = {}) {
+  let tokens = [];
+  try {
+    tokens = Marked.Marked.lexer(text);
+    for (const token of tokens) {
+      markdownRenderer.renderToken(token);
+    }
+  } catch {
+    return html5`${text}`;
+  }
+  return html5`<devtools-markdown-view
+    .data=${{ tokens, renderer: markdownRenderer, animationEnabled: animate }}
+    ${refFn ? Lit3.Directives.ref(refFn) : Lit3.nothing}>
+  </devtools-markdown-view>`;
+}
 export {
   CodeBlock_exports as CodeBlock,
   MarkdownImage_exports as MarkdownImage,

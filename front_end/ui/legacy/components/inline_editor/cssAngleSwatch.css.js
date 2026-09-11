@@ -12,10 +12,10 @@ export default `/*
 .swatch {
   position: relative;
   display: inline-block;
-  margin-bottom: -2px;
+  margin-bottom: calc(-1 * var(--sys-size-2));
   width: 1em;
   height: 1em;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
@@ -27,7 +27,7 @@ export default `/*
   margin: auto;
   inset: 0;
   height: 55%;
-  width: 2px;
+  width: var(--sys-size-2);
   background-color: var(--sys-color-tonal-container);
   border-radius: 5px;
 }

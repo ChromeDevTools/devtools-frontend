@@ -57,14 +57,14 @@ export class ListSourcesTool {
         };
     }
     async handler(_params, context) {
-        const origin = context.getEstablishedOrigin();
-        if (!origin || origin.isOpaque()) {
+        const establishedOrigin = context.getEstablishedOrigin();
+        if (!establishedOrigin || establishedOrigin.isOpaque()) {
             return {
                 error: 'Opaque origin not allowed',
             };
         }
         const files = ListSourcesTool.getUISourceCodes().filter(file => {
-            return isOriginAllowedByLock(context, FileContext.originForUISourceCode(file));
+            return isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(file));
         });
         return {
             result: {

@@ -33,20 +33,20 @@ export default `/*
  */
 
 .resources-toolbar {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   background-color: var(--sys-color-cdt-base-container);
 }
 
 .top-resources-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   background-color: var(--sys-color-cdt-base-container);
 }
 
 .resources.panel .status {
   float: right;
-  height: 16px;
-  margin-top: 1px;
-  margin-left: 4px;
+  height: var(--sys-size-8);
+  margin-top: var(--sys-size-1);
+  margin-left: var(--sys-size-3);
   line-height: 1em;
 }
 
@@ -62,7 +62,7 @@ export default `/*
 
 .storage-view .storage-table-error {
   color: var(--sys-color-error);
-  font-size: 24px;
+  font-size: var(--sys-typescale-headline1-size);
   font-weight: bold;
   padding: 10px;
   display: flex;
@@ -71,13 +71,13 @@ export default `/*
 }
 
 .storage-view.query {
-  padding: 2px 0;
+  padding: var(--sys-size-2) 0;
   overflow: hidden auto;
 }
 
 .storage-view .filter-bar {
   border-top: none;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .database-query-group-messages {
@@ -86,8 +86,8 @@ export default `/*
 
 .database-query-prompt-container {
   position: relative;
-  padding: 1px 22px 1px 24px;
-  min-height: 16px;
+  padding: var(--sys-size-1) var(--sys-size-10) var(--sys-size-1) var(--sys-size-11);
+  min-height: var(--sys-size-8);
 }
 
 .database-query-prompt {
@@ -108,14 +108,14 @@ export default `/*
 }
 
 .database-query-prompt-container .prompt-icon {
-  top: 6px;
+  top: var(--sys-size-4);
 }
 
 .database-user-query {
   position: relative;
-  border-bottom: 1px solid var(--sys-color-divider);
-  padding: 1px 22px 1px 24px;
-  min-height: 16px;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: var(--sys-size-1) var(--sys-size-10) var(--sys-size-1) var(--sys-size-11);
+  min-height: var(--sys-size-8);
   flex-shrink: 0;
 }
 
@@ -130,9 +130,9 @@ export default `/*
 
 .database-query-result {
   position: relative;
-  padding: 1px 22px;
-  min-height: 16px;
-  margin-left: -22px;
+  padding: var(--sys-size-1) var(--sys-size-10);
+  min-height: var(--sys-size-8);
+  margin-left: calc(-1 * var(--sys-size-10));
   padding-right: 0;
 }
 

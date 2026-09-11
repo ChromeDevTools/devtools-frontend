@@ -283,16 +283,20 @@ var ConsoleContextSelector = class {
       return i18nString(UIStrings.extension);
     }
     const sameTargetParentFrame = frame?.sameTargetParentFrame();
-    if (!frame || !sameTargetParentFrame || sameTargetParentFrame.securityOrigin !== executionContext.origin) {
+    const executionContextOrigin = executionContext.origin ? SDK.SecurityOrigin.SecurityOrigin.create(executionContext.origin) : null;
+    if (!frame || !sameTargetParentFrame || !sameTargetParentFrame.securityOrigin().isSameOriginWith(executionContextOrigin)) {
       const url = Common.ParsedURL.ParsedURL.fromString(executionContext.origin);
       if (url) {
         return url.domain();
       }
     }
-    if (frame?.securityOrigin) {
-      const domain = new Common.ParsedURL.ParsedURL(frame.securityOrigin).domain();
-      if (domain) {
-        return domain;
+    if (frame) {
+      const origin = frame.securityOrigin();
+      if (!origin.isOpaque()) {
+        const domain = Common.ParsedURL.ParsedURL.fromString(origin.siteId())?.domain();
+        if (domain) {
+          return domain;
+        }
       }
     }
     return "IFrame";
@@ -1986,6 +1990,7 @@ var Network;
     TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
     TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
     TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+    TerminationEventDetailsDeletionReason2["Replaced"] = "Replaced";
   })(TerminationEventDetailsDeletionReason = Network2.TerminationEventDetailsDeletionReason || (Network2.TerminationEventDetailsDeletionReason = {}));
   let ChallengeEventDetailsChallengeResult;
   ((ChallengeEventDetailsChallengeResult2) => {

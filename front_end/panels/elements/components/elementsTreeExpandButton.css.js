@@ -23,10 +23,10 @@ export default `/*
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  width: 14px;
+  width: var(--sys-size-7);
   height: 10px;
-  margin: 0 2px;
-  border: 1px solid var(--override-adorner-border-color, var(--sys-color-tonal-outline));
+  margin: 0 var(--sys-size-2);
+  border: var(--sys-size-1) solid var(--override-adorner-border-color, var(--sys-color-tonal-outline));
   border-radius: 10px;
   background: var(--override-adorner-background-color, var(--sys-color-cdt-base-container));
   padding: 0;
@@ -53,8 +53,8 @@ export default `/*
 }
 
 .expand-button devtools-icon {
-  width: 14px;
-  height: 14px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
   color: var(--sys-color-primary);
 }
 

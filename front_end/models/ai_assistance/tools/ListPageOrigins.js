@@ -42,24 +42,23 @@ export class ListPageOriginsTool {
         if (!pageOrigin || !pageOrigin.isSameOriginWith(establishedOrigin)) {
             return { error: 'No origin available or not allowed.' };
         }
-        const origins = new Set();
+        const origins = [];
         for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
             if (frame.resourceTreeModel().target().outermostTarget() !== primaryPageTarget) {
                 continue;
             }
-            if (!frame.securityOrigin) {
-                continue;
-            }
-            const frameOrigin = SDK.SecurityOrigin.SecurityOrigin.create(frame.securityOrigin);
+            const frameOrigin = frame.securityOrigin();
             // Filter out frames that are not same-origin to the page's allowed origin.
             // Under site isolation, frames can be hosted on different targets/processes,
             // so we check the security origin of the frame directly instead of the target.
             if (!frameOrigin.isSameOriginWith(establishedOrigin)) {
                 continue;
             }
-            origins.add(frameOrigin.siteId());
+            if (!origins.some(existing => existing.isSameOriginWith(frameOrigin))) {
+                origins.push(frameOrigin);
+            }
         }
-        return { result: { origins: Array.from(origins) } };
+        return { result: { origins: origins.map(o => o.siteId()) } };
     }
 }
 //# sourceMappingURL=ListPageOrigins.js.map

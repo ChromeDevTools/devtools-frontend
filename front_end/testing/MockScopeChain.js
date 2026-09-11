@@ -33,9 +33,18 @@ export function parseScopeChain(scopeDescriptor) {
     if (blockScopeStart >= 0) {
         const blockScopeEnd = scopeDescriptor.indexOf('>');
         if (blockScopeEnd < 0) {
-            throw new Error('Test descriptor must contain matching "." for "<"');
+            throw new Error('Test descriptor must contain matching ">" for "<"');
         }
         scopeChain.unshift(scopePositionFromOffsets(scopeDescriptor, "block" /* Protocol.Debugger.ScopeType.Block */, blockScopeStart, blockScopeEnd + 1));
+    }
+    // Find the closure scope.
+    const closureScopeStart = scopeDescriptor.indexOf('[');
+    if (closureScopeStart >= 0) {
+        const closureScopeEnd = scopeDescriptor.indexOf(']');
+        if (closureScopeEnd < 0) {
+            throw new Error('Test descriptor must contain matching "]" for "["');
+        }
+        scopeChain.push(scopePositionFromOffsets(scopeDescriptor, "closure" /* Protocol.Debugger.ScopeType.Closure */, closureScopeStart, closureScopeEnd + 1));
     }
     return scopeChain;
 }
@@ -177,15 +186,20 @@ export class MockDebuggerBackend {
     // start and end (if '<', '>' are missing then the nested scope is the function scope).
     // Other characters in |scopeDescriptor| are not significant (so that tests can use the other characters in
     // the descriptors to describe other assertions).
-    async createCallFrame(target, script, scopeDescriptor, sourceMap, scopeObjects = []) {
+    async createCallFrame(target, script, scopeDescriptor, sourceMap, scopeObjects = [], emptyScopes = []) {
         const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
         const scriptObject = await this.addScript(target, script, sourceMap);
         const parsedScopes = parseScopeChain(scopeDescriptor);
         const scopeChain = parsedScopes.map(s => this.#createProtocolScope(s.type, { type: "object" /* Protocol.Runtime.RemoteObjectType.Object */ }, scriptObject.scriptId, s.startLine, s.startColumn, s.endLine, s.endColumn));
         const innerScope = scopeChain[0];
-        console.assert(scopeObjects.length < scopeChain.length);
+        console.assert(scopeObjects.length <= scopeChain.length);
         for (let i = 0; i < scopeObjects.length; ++i) {
             scopeChain[i].object = scopeObjects[i];
+        }
+        for (let i = 0; i < emptyScopes.length && i < scopeChain.length; ++i) {
+            if (emptyScopes[i]) {
+                scopeChain[i].empty = true;
+            }
         }
         const payload = {
             callFrameId: '0',

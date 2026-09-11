@@ -196,13 +196,13 @@ var computedStyleProperty_css_default = `/*
 }
 
 .computed-style-property {
-  --goto-size: 16px;
+  --goto-size: var(--sys-size-8);
 
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
-  min-height: 16px;
+  min-height: var(--sys-size-8);
   box-sizing: border-box;
-  padding-top: 2px;
+  padding-top: var(--sys-size-2);
   white-space: var(--override-computed-style-property-white-space, nowrap);
   user-select: text;
 }
@@ -243,7 +243,7 @@ var computedStyleProperty_css_default = `/*
   position: absolute;
   width: var(--goto-size);
   height: var(--goto-size);
-  margin: -1px 0 0 calc(-1 * var(--goto-size));
+  margin: calc(-1 * var(--sys-size-1)) 0 0 calc(-1 * var(--goto-size));
   mask: var(--image-file-goto-filled) center / contain no-repeat;
   background-color: var(--sys-color-primary-bright);
 }
@@ -380,7 +380,7 @@ var computedStyleTrace_css_default = `/*
 }
 
 .computed-style-trace {
-  margin-left: 16px;
+  margin-left: var(--sys-size-8);
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
 }
@@ -392,14 +392,14 @@ var computedStyleTrace_css_default = `/*
 
 .goto {
   /* TODO: reuse with ComputedStyleProperty */
-  --size: 16px;
+  --size: var(--sys-size-8);
 
   display: none;
   cursor: pointer;
   position: absolute;
   width: var(--size);
   height: var(--size);
-  margin: -1px 0 0 calc(-1 * var(--size));
+  margin: calc(-1 * var(--sys-size-1)) 0 0 calc(-1 * var(--size));
   mask: var(--image-file-goto-filled) center / contain no-repeat;
   background-color: var(--sys-color-primary-bright);
 }
@@ -416,7 +416,7 @@ var computedStyleTrace_css_default = `/*
 }
 
 .trace-value {
-  margin-left: 16px;
+  margin-left: var(--sys-size-8);
 }
 
 .computed-style-trace.inactive slot[name="trace-value"] {
@@ -522,7 +522,7 @@ code {
 }
 
 .hint-popup-possible-fix {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .clickable {
@@ -610,12 +610,12 @@ var cssPropertyDocsView_css_default = `/*
 
 .docs-popup-wrapper {
   max-width: 420px;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   line-height: 1.4;
 }
 
 .docs-popup-section {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .clickable {
@@ -638,7 +638,7 @@ var cssPropertyDocsView_css_default = `/*
 #baseline {
   display: inline-flex;
   align-items: flex-start;
-  gap: 4px;
+  gap: var(--sys-size-3);
 }
 
 #baseline-icon {
@@ -1462,7 +1462,7 @@ var cssVariableValueView_css_default = `/*
 
 .registered-property-popup-wrapper {
   max-width: 232px;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   line-height: 1.4;
   word-break: break-all;
 }
@@ -1473,12 +1473,12 @@ var cssVariableValueView_css_default = `/*
 }
 
 .divider {
-  margin: 8px -7px;
-  border: 1px solid var(--sys-color-divider);
+  margin: var(--sys-size-5) -7px;
+  border: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .registered-property-links {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .clickable {
@@ -1680,8 +1680,8 @@ var elementsBreadcrumbs_css_default = `/*
   text-align: center;
   background-color: var(--sys-color-cdt-base-container);
   color: var(--sys-color-token-subtle);
-  margin: 1px;
-  outline: 1px solid var(--sys-color-neutral-outline);
+  margin: var(--sys-size-1);
+  outline: var(--sys-size-1) solid var(--sys-color-neutral-outline);
 }
 
 .overflow.hidden {
@@ -1715,7 +1715,7 @@ var elementsBreadcrumbs_css_default = `/*
 }
 
 .crumb:focus {
-  outline: var(--sys-color-primary) auto 1px;
+  outline: var(--sys-color-primary) auto var(--sys-size-1);
 }
 
 /*# sourceURL=${import.meta.resolve("./elementsBreadcrumbs.css")} */`;
@@ -2075,10 +2075,10 @@ var elementsTreeExpandButton_css_default = `/*
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  width: 14px;
+  width: var(--sys-size-7);
   height: 10px;
-  margin: 0 2px;
-  border: 1px solid var(--override-adorner-border-color, var(--sys-color-tonal-outline));
+  margin: 0 var(--sys-size-2);
+  border: var(--sys-size-1) solid var(--override-adorner-border-color, var(--sys-color-tonal-outline));
   border-radius: 10px;
   background: var(--override-adorner-background-color, var(--sys-color-cdt-base-container));
   padding: 0;
@@ -2105,8 +2105,8 @@ var elementsTreeExpandButton_css_default = `/*
 }
 
 .expand-button devtools-icon {
-  width: 14px;
-  height: 14px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
   color: var(--sys-color-primary);
 }
 
@@ -2183,8 +2183,8 @@ var queryContainer_css_default = `/*
 
 .axis-icon {
   margin-left: 0.4em;
-  width: 16px;
-  height: 12px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-6);
   vertical-align: text-top;
 }
 

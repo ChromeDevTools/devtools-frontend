@@ -13,9 +13,9 @@ export default `/*
   display: inline-grid;
   inline-size: 15px;
   grid: [stack] 1fr / [stack] 1fr;
-  margin-left: 1px;
-  margin-right: 1px;
-  vertical-align: -1px;
+  margin-left: var(--sys-size-1);
+  margin-right: var(--sys-size-1);
+  vertical-align: calc(-1 * var(--sys-size-1));
   color: var(--color); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
@@ -23,7 +23,7 @@ export default `/*
   aspect-ratio: 1 / 1;
   display: inline-block;
   width: 10px;
-  border-radius: 1e5px;
+  border-radius: var(--sys-shape-corner-full);
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background: linear-gradient(var(--color), var(--color)),
     var(--image-file-checker);

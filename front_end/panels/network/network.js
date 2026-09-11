@@ -2611,6 +2611,7 @@ var Network;
     TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
     TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
     TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+    TerminationEventDetailsDeletionReason2["Replaced"] = "Replaced";
   })(TerminationEventDetailsDeletionReason = Network2.TerminationEventDetailsDeletionReason || (Network2.TerminationEventDetailsDeletionReason = {}));
   let ChallengeEventDetailsChallengeResult;
   ((ChallengeEventDetailsChallengeResult2) => {
@@ -7150,6 +7151,10 @@ var UIStrings9 = {
    */
   earlyHintsHeaders: "Early hints headers",
   /**
+   * @description Warning in the Early hints headers section when the Disable cache setting prevents Early Hints preloads.
+   */
+  earlyPreloadsIgnoredCacheDisabledWarning: "Early Hints preloads were ignored because cache is disabled. Enable cache and reload the page to use them.",
+  /**
    * @description Title text for a link to the Sources panel to the file containing the header override definitions
    */
   revealHeaderOverrides: "Reveal header override definitions",
@@ -7220,12 +7225,15 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       additionalContent: void 0,
       forceOpen: input.toReveal?.section === NetworkForward2.UIRequestLocation.UIHeaderSection.EARLY_HINTS,
       loggingContext: "early-hints-headers",
-      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html7`
-            <devtools-early-hints-header-section .data=${{
+      contents: html7`
+              ${input.cacheDisabled && hasEarlyHintsPreload(input.request.earlyHintsHeaders) ? renderEarlyHintsWarning() : Lit3.nothing}
+              ${input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html7`
+                  <devtools-early-hints-header-section .data=${{
         request: input.request,
         toReveal: input.toReveal
       }}></devtools-early-hints-header-section>
-              `
+                `}
+            `
     })}
         ${renderCategory({
       name: "response-headers",
@@ -7398,6 +7406,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
       revealHeadersFile,
       request: this.#request,
       toReveal: this.#toReveal,
+      cacheDisabled: this.#request.cacheDisabled(),
       showResponseHeadersText: this.#showResponseHeadersText,
       showRequestHeadersText: this.#showRequestHeadersText
     };
@@ -7415,6 +7424,29 @@ var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
     return fileUrl.substring(0, fileUrl.lastIndexOf("/")) + "/" + Persistence.NetworkPersistenceManager.HEADERS_FILENAME;
   }
 };
+function hasEarlyHintsPreload(headers) {
+  const relationParameter = /(?:^|[,;])\s*rel\s*=\s*(?:"([^"]*)"|'([^']*)'|([^,;\s]+))/gi;
+  return headers.some((header) => {
+    if (Platform4.StringUtilities.toLowerCaseString(header.name) !== "link") {
+      return false;
+    }
+    for (const match of header.value.matchAll(relationParameter)) {
+      const relations = (match[1] ?? match[2] ?? match[3] ?? "").toLowerCase().trim().split(/[ \t]+/);
+      if (relations.includes("preload") || relations.includes("modulepreload")) {
+        return true;
+      }
+    }
+    return false;
+  });
+}
+function renderEarlyHintsWarning() {
+  return html7`
+    <div class="early-hints-warning">
+      <devtools-icon class="medium" name="warning-filled"></devtools-icon>
+      <div>${i18nString9(UIStrings9.earlyPreloadsIgnoredCacheDisabledWarning)}</div>
+    </div>
+  `;
+}
 function renderHeaderOverridesLink(input) {
   if (!input.revealHeadersFile) {
     return Lit3.nothing;
@@ -14165,7 +14197,8 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       return null;
     }
     const isRequestHeader = headerId.startsWith("request-header-");
-    const sortingFunction = isRequestHeader ? NetworkRequestNode.RequestHeaderStringComparator.bind(null, headerId) : NetworkRequestNode.ResponseHeaderStringComparator.bind(null, headerId);
+    const headerName = headerId.replace(/^(?:request|response)-header-/, "");
+    const sortingFunction = isRequestHeader ? NetworkRequestNode.RequestHeaderStringComparator.bind(null, headerName) : NetworkRequestNode.ResponseHeaderStringComparator.bind(null, headerName);
     const columnConfigBase = Object.assign({}, DEFAULT_COLUMN_CONFIG, {
       id: headerId,
       title: headerTitle,

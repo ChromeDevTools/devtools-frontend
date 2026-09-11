@@ -11,7 +11,7 @@ export default `/*
 
 .registered-property-popup-wrapper {
   max-width: 232px;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   line-height: 1.4;
   word-break: break-all;
 }
@@ -22,12 +22,12 @@ export default `/*
 }
 
 .divider {
-  margin: 8px -7px;
-  border: 1px solid var(--sys-color-divider);
+  margin: var(--sys-size-5) -7px;
+  border: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .registered-property-links {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .clickable {

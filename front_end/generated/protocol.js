@@ -1873,6 +1873,7 @@ export var Network;
         TerminationEventDetailsDeletionReason["InvalidSessionParams"] = "InvalidSessionParams";
         TerminationEventDetailsDeletionReason["RefreshFatalError"] = "RefreshFatalError";
         TerminationEventDetailsDeletionReason["DevTools"] = "DevTools";
+        TerminationEventDetailsDeletionReason["Replaced"] = "Replaced";
     })(TerminationEventDetailsDeletionReason = Network.TerminationEventDetailsDeletionReason || (Network.TerminationEventDetailsDeletionReason = {}));
     let ChallengeEventDetailsChallengeResult;
     (function (ChallengeEventDetailsChallengeResult) {

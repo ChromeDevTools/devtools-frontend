@@ -1211,6 +1211,9 @@
   "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
     "message": "This is an example for showing the code required for a browser process reported deprecation."
   },
+  "generated/Deprecation.ts | FencedFrame": {
+    "message": "Fenced Frame API is deprecated and scheduled for removal."
+  },
   "generated/Deprecation.ts | Fledge": {
     "message": "The Protected Audience API is deprecated and will be removed in a future release."
   },
@@ -11395,6 +11398,9 @@
   },
   "panels/network/RequestHeadersView.ts | earlyHintsHeaders": {
     "message": "Early hints headers"
+  },
+  "panels/network/RequestHeadersView.ts | earlyPreloadsIgnoredCacheDisabledWarning": {
+    "message": "Early Hints preloads were ignored because cache is disabled. Enable cache and reload the page to use them."
   },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(from disk cache)"

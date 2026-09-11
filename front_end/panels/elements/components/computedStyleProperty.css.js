@@ -17,13 +17,13 @@ export default `/*
 }
 
 .computed-style-property {
-  --goto-size: 16px;
+  --goto-size: var(--sys-size-8);
 
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
-  min-height: 16px;
+  min-height: var(--sys-size-8);
   box-sizing: border-box;
-  padding-top: 2px;
+  padding-top: var(--sys-size-2);
   white-space: var(--override-computed-style-property-white-space, nowrap);
   user-select: text;
 }
@@ -64,7 +64,7 @@ export default `/*
   position: absolute;
   width: var(--goto-size);
   height: var(--goto-size);
-  margin: -1px 0 0 calc(-1 * var(--goto-size));
+  margin: calc(-1 * var(--sys-size-1)) 0 0 calc(-1 * var(--goto-size));
   mask: var(--image-file-goto-filled) center / contain no-repeat;
   background-color: var(--sys-color-primary-bright);
 }

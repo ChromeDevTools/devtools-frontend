@@ -11,13 +11,13 @@ export default `/*
 
 .data-grid {
   position: relative;
-  border: 1px solid var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
+  border: var(--sys-size-1) solid var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
   line-height: 120%;
 
   :focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
-    outline-offset: -2px;
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: calc(-1 * var(--sys-size-2));
   }
 }
 
@@ -45,8 +45,8 @@ export default `/*
 }
 
 .data-grid .aria-live-label {
-  width: 1px;
-  height: 1px;
+  width: var(--sys-size-1);
+  height: var(--sys-size-1);
   overflow: hidden;
 }
 
@@ -55,7 +55,7 @@ export default `/*
 }
 
 .data-grid .corner {
-  width: 14px;
+  width: var(--sys-size-7);
   padding-right: 0;
   padding-left: 0;
   border-left: 0 none transparent !important; /* stylelint-disable-line declaration-no-important */
@@ -88,7 +88,7 @@ export default `/*
 
 .data-grid tbody tr {
   display: none;
-  height: 20px;
+  height: var(--sys-size-9);
 
   &:has(td.show-more) {
     height: var(--sys-size-13);
@@ -111,8 +111,8 @@ export default `/*
   overflow: hidden;
   line-height: 18px;
   height: 18px;
-  border-left: 1px solid var(--sys-color-divider);
-  padding: 1px 4px;
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: var(--sys-size-1) var(--sys-size-3);
 }
 
 .data-grid.auto-row-height tbody tr {
@@ -139,7 +139,7 @@ export default `/*
 }
 
 .data-grid th {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   text-align: left;
   font-weight: normal;
   vertical-align: middle;
@@ -160,7 +160,7 @@ export default `/*
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  min-width: 8px;
+  min-width: var(--sys-size-5);
 }
 
 .data-grid td.editing > div {
@@ -182,18 +182,18 @@ export default `/*
 .data-grid th .sort-order-icon-container {
   min-width: 0;
   position: absolute;
-  top: 1px;
+  top: var(--sys-size-1);
   right: 0;
-  bottom: 1px;
+  bottom: var(--sys-size-1);
   display: flex;
   align-items: center;
 }
 
 .data-grid th .sort-order-icon {
-  margin-right: 4px;
-  margin-bottom: -2px;
-  width: 14px;
-  height: 14px;
+  margin-right: var(--sys-size-3);
+  margin-bottom: calc(-1 * var(--sys-size-2));
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
   display: none;
   background-color: var(--icon-default);
 }
@@ -210,7 +210,7 @@ export default `/*
 
 .data-grid th.sort-ascending,
 .data-grid th.sort-descending {
-  padding-right: 14px;
+  padding-right: var(--sys-size-7);
 }
 
 .data-grid th.sortable:hover,
@@ -232,9 +232,9 @@ export default `/*
   user-select: none;
   mask-image: var(--image-file-triangle-right);
   float: left;
-  width: 14px;
-  height: 14px;
-  margin-right: 2px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
+  margin-right: var(--sys-size-2);
   content: "";
   position: relative;
   top: 3px;
@@ -273,8 +273,8 @@ export default `/*
 }
 
 .data-grid.no-selection:focus-visible {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: -2px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: calc(-1 * var(--sys-size-2));
 }
 
 .data-grid:focus tbody tr.selected {

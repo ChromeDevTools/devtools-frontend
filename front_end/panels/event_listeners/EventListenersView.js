@@ -88,6 +88,34 @@ export class EventListenersView extends UI.Widget.VBox {
             this.showFrameworkListeners(this.filter.showFramework, this.filter.showPassive, this.filter.showBlocking);
         }
     }
+    static async #loadListeners(objects) {
+        return Map.groupBy((await Promise.all(objects.map(this.#loadListenersForObject))).flat(), ({ listener }) => listener.type());
+    }
+    static async #loadListenersForObject(object) {
+        const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+        const [eventListeners, frameworkEventListenersObject] = await Promise.all([domDebuggerModel?.eventListeners(object), frameworkEventListeners(object)]);
+        // TODO(kozyatinskiy): figure out how this should work for |window| when there is no DOMDebugger.
+        if (!eventListeners) {
+            return [];
+        }
+        const isInternal = await frameworkEventListenersObject.internalHandlers?.object().callFunctionJSON(isInternalEventListener, eventListeners.map(listener => SDK.RemoteObject.RemoteObject.toCallArgument(listener.handler())));
+        if (isInternal) {
+            for (let i = 0; i < eventListeners.length; ++i) {
+                if (isInternal[i]) {
+                    eventListeners[i].markAsFramework();
+                }
+            }
+        }
+        return [eventListeners, frameworkEventListenersObject.eventListeners].flatMap(listeners => listeners.map(listener => ({ object, listener })));
+        function isInternalEventListener() {
+            const isInternal = [];
+            const internalHandlersSet = new Set(this);
+            for (const handler of arguments) {
+                isInternal.push(internalHandlersSet.has(handler));
+            }
+            return isInternal;
+        }
+    }
     async addObjects(objects) {
         // Remove existing event listeners and reset linkifier first.
         const eventTypes = this.treeOutline.rootElement().children();
@@ -95,74 +123,15 @@ export class EventListenersView extends UI.Widget.VBox {
             eventType.removeChildren();
         }
         this.#linkifier.reset();
-        await Promise.all(objects.map(obj => obj ? this.addObject(obj) : Promise.resolve()));
+        const listeners = await EventListenersView.#loadListeners(objects.filter((o) => !!o));
+        for (const [type, groupedListeners] of listeners) {
+            const treeItem = this.getOrCreateTreeElementForType(type);
+            for (const { object, listener } of groupedListeners) {
+                treeItem.addObjectEventListener(listener, object);
+            }
+        }
         this.addEmptyHolderIfNeeded();
         this.eventListenersArrivedForTest();
-    }
-    addObject(object) {
-        let eventListeners;
-        let frameworkEventListenersObject = null;
-        const promises = [];
-        const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);
-        // TODO(kozyatinskiy): figure out how this should work for |window| when there is no DOMDebugger.
-        if (domDebuggerModel) {
-            promises.push(domDebuggerModel.eventListeners(object).then(storeEventListeners));
-        }
-        promises.push(frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
-        return Promise.all(promises).then(markInternalEventListeners).then(addEventListeners.bind(this));
-        function storeEventListeners(result) {
-            eventListeners = result;
-        }
-        function storeFrameworkEventListenersObject(result) {
-            frameworkEventListenersObject = result;
-        }
-        async function markInternalEventListeners() {
-            if (!frameworkEventListenersObject) {
-                return;
-            }
-            if (!frameworkEventListenersObject.internalHandlers) {
-                return;
-            }
-            return await frameworkEventListenersObject.internalHandlers.object()
-                .callFunctionJSON(isInternalEventListener, eventListeners.map(handlerArgument))
-                .then(setIsInternal);
-            function handlerArgument(listener) {
-                return SDK.RemoteObject.RemoteObject.toCallArgument(listener.handler());
-            }
-            function isInternalEventListener() {
-                const isInternal = [];
-                const internalHandlersSet = new Set(this);
-                for (const handler of arguments) {
-                    isInternal.push(internalHandlersSet.has(handler));
-                }
-                return isInternal;
-            }
-            function setIsInternal(isInternal) {
-                if (!isInternal) {
-                    return;
-                }
-                for (let i = 0; i < eventListeners.length; ++i) {
-                    if (isInternal[i]) {
-                        eventListeners[i].markAsFramework();
-                    }
-                }
-            }
-        }
-        function addEventListeners() {
-            this.addObjectEventListeners(object, eventListeners);
-            if (frameworkEventListenersObject) {
-                this.addObjectEventListeners(object, frameworkEventListenersObject.eventListeners);
-            }
-        }
-    }
-    addObjectEventListeners(object, eventListeners) {
-        if (!eventListeners) {
-            return;
-        }
-        for (const eventListener of eventListeners) {
-            const treeItem = this.getOrCreateTreeElementForType(eventListener.type());
-            treeItem.addObjectEventListener(eventListener, object);
-        }
     }
     showFrameworkListeners(showFramework, showPassive, showBlocking) {
         const eventTypes = this.treeOutline.rootElement().children();

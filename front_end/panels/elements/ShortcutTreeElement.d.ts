@@ -15,6 +15,7 @@ export declare class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
     domModel(): SDK.DOMModel.DOMModel;
     private setLeftIndentOverlay;
     onattach(): void;
+    ensureSelection(): void;
     onselect(selectedByUser?: boolean): boolean;
     private onRevealAdornerClick;
     private performUpdate;

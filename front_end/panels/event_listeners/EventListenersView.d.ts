@@ -17,8 +17,6 @@ export declare class EventListenersView extends UI.Widget.VBox {
     focus(): void;
     performUpdate(): Promise<void>;
     addObjects(objects: Array<SDK.RemoteObject.RemoteObject | null>): Promise<void>;
-    private addObject;
-    private addObjectEventListeners;
     showFrameworkListeners(showFramework: boolean, showPassive: boolean, showBlocking: boolean): void;
     private getOrCreateTreeElementForType;
     addEmptyHolderIfNeeded(): void;

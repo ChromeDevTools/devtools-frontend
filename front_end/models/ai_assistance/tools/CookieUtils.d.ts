@@ -40,19 +40,8 @@ export type GetCookiesForOriginResult = {
     error: string;
 };
 /**
- * Finds a frame in the primary page target tree that matches the specified origin.
- *
- * Returns `null` if the origin is opaque or if no matching frame exists.
- *
- * @param origin The target origin URL to match.
- * @param targetManager The target manager to query for active frames.
- * @param primaryPageTarget The primary page target containing the frame tree.
- * @returns The matching frame, or `null` if not found.
- */
-export declare function findFrameForOrigin(origin: string, targetManager: SDK.TargetManager.TargetManager, primaryPageTarget: SDK.Target.Target): SDK.ResourceTreeModel.ResourceTreeFrame | null;
-/**
- * Retrieves all cookies accessible to the target origin, strictly excluding HttpOnly cookies.
+ * Retrieves all cookies accessible to the target origin, excluding HttpOnly cookies.
  * Locates the matching frame within the primary page target tree, queries its CookieModel,
  * and filters cookies by security origin.
  */
-export declare function getCookiesForOrigin(origin: string, targetManager: SDK.TargetManager.TargetManager, primaryPageTarget: SDK.Target.Target): Promise<GetCookiesForOriginResult>;
+export declare function getCookiesForOrigin(origin: string, primaryPageTarget: SDK.Target.Target): Promise<GetCookiesForOriginResult>;

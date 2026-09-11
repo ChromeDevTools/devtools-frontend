@@ -16,9 +16,9 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as PanelsCommon from '../../../panels/common/common.js';
 import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
-import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
+import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
 import * as UIHelpers from '../../../ui/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -439,7 +439,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
       <div class="user-query-wrapper">
         <section class=${messageClasses} jslog=${VisualLogging.section('question')}>
           ${imageInput}
-          <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
+          <div class="message-content">${MarkdownView.MarkdownView.renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
         </section>
       </div>
     `, target);
@@ -463,7 +463,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         ${Lit.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
         const isLastPart = index === message.parts.length - 1;
         if (part.type === 'answer') {
-            return html `<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
+            return html `<p>${MarkdownView.MarkdownView.renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
         }
         if (part.type === 'widget') {
             return html `${Lit.Directives.until(renderWidgets(part.widgets, { wrapperClass: 'main-widgets-wrapper' }))}`;
@@ -478,31 +478,6 @@ export const DEFAULT_VIEW = (input, output, target) => {
   `, target);
     // clang-format on
 };
-function renderTextAsMarkdown(text, markdownRenderer, { animate, ref: refFn } = {}) {
-    let tokens = [];
-    try {
-        tokens = Marked.Marked.lexer(text);
-        for (const token of tokens) {
-            // Try to render all the tokens to make sure that
-            // they all have a template defined for them. If there
-            // isn't any template defined for a token, we'll fallback
-            // to rendering the text as plain text instead of markdown.
-            markdownRenderer.renderToken(token);
-        }
-    }
-    catch {
-        // The tokens were not parsed correctly or
-        // one of the tokens are not supported, so we
-        // continue to render this as text.
-        return html `${text}`;
-    }
-    // clang-format off
-    return html `<devtools-markdown-view
-    .data=${{ tokens, renderer: markdownRenderer, animationEnabled: animate }}
-    ${refFn ? ref(refFn) : Lit.nothing}>
-  </devtools-markdown-view>`;
-    // clang-format on
-}
 export function titleForStep(step) {
     return step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
 }
@@ -549,7 +524,9 @@ function renderStepCode(step) {
 }
 function renderStepDetails({ step, markdownRenderer, isLast, }) {
     const sideEffects = isLast && step.state.type === 'needs_approval' ? renderSideEffectConfirmationUi(step) : Lit.nothing;
-    const thought = step.thought ? html `<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit.nothing;
+    const thought = step.thought ?
+        html `<p>${MarkdownView.MarkdownView.renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` :
+        Lit.nothing;
     // clang-format off
     const contextDetails = step.contextDetails ?
         html `${Lit.Directives.repeat(step.contextDetails, contextDetail => {

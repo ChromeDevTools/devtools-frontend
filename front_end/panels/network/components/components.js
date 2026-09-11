@@ -141,6 +141,18 @@ div.raw-headers-row {
   color: var(--sys-color-token-subtle);
 }
 
+.early-hints-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--sys-size-4);
+  margin: var(--sys-size-3);
+  padding: var(--sys-size-5);
+  border-radius: var(--sys-shape-corner-medium-small);
+  color: var(--sys-color-on-yellow-container);
+  background-color: var(--sys-color-yellow-container);
+  font: var(--sys-typescale-body4-regular);
+}
+
 .raw-headers {
   font-family: var(--source-code-font-family);
   font-size: var(--source-code-font-size);
@@ -2987,6 +2999,7 @@ var Network;
     TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
     TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
     TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+    TerminationEventDetailsDeletionReason2["Replaced"] = "Replaced";
   })(TerminationEventDetailsDeletionReason = Network2.TerminationEventDetailsDeletionReason || (Network2.TerminationEventDetailsDeletionReason = {}));
   let ChallengeEventDetailsChallengeResult;
   ((ChallengeEventDetailsChallengeResult2) => {

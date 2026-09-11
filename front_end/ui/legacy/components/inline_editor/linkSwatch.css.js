@@ -15,7 +15,7 @@ export default `/*
 
 .link-swatch-link:not(.undefined) {
   cursor: pointer;
-  text-underline-offset: 2px;
+  text-underline-offset: var(--sys-size-2);
   color: var(--text-link);
 }
 

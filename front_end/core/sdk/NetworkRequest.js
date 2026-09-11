@@ -236,6 +236,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     #fromMemoryCache;
     #fromDiskCache;
     #fromPrefetchCache;
+    #cacheDisabled = false;
     #fromEarlyHints;
     #fetchedViaServiceWorker;
     #serviceWorkerRouterInfo;
@@ -580,6 +581,12 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     }
     setFromPrefetchCache() {
         this.#fromPrefetchCache = true;
+    }
+    cacheDisabled() {
+        return this.#cacheDisabled;
+    }
+    setCacheDisabled(cacheDisabled) {
+        this.#cacheDisabled = cacheDisabled;
     }
     fromEarlyHints() {
         return Boolean(this.#fromEarlyHints);

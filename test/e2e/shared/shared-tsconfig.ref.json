@@ -13,11 +13,11 @@
     "skipLibCheck": true
   },
   "files": [
+    "../../../../../../test/e2e/shared/BrowserWrapper.ts",
+    "../../../../../../test/e2e/shared/DevToolsPage.ts",
+    "../../../../../../test/e2e/shared/InspectedPage.ts",
+    "../../../../../../test/e2e/shared/PageWrapper.ts",
     "../../../../../../test/e2e/shared/auth-helper.ts",
-    "../../../../../../test/e2e/shared/browser-helper.ts",
-    "../../../../../../test/e2e/shared/frontend-helper.ts",
-    "../../../../../../test/e2e/shared/page-wrapper.ts",
-    "../../../../../../test/e2e/shared/target-helper.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",

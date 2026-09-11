@@ -4,6 +4,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
+import { isOriginAllowedByLock, } from './Tool.js';
 export class GetStylesTool {
     name = "getStyles" /* ToolName.GET_STYLES */;
     description = `Retrieves computed and authored CSS styles for one or more elements by their backend node IDs (uids).
@@ -55,7 +56,7 @@ export class GetStylesTool {
             return { error: 'Error: Could not find the inspected page.' };
         }
         const establishedOrigin = context.getEstablishedOrigin();
-        if (!establishedOrigin) {
+        if (!establishedOrigin || establishedOrigin.isOpaque()) {
             return { error: 'Error: Origin lock is not established.' };
         }
         for (const uid of params.elements) {
@@ -66,7 +67,7 @@ export class GetStylesTool {
                 return { error: 'Error: Could not find the element with uid=' + uid };
             }
             const newContext = new DOMNodeContext(resolved);
-            if (!newContext.isOriginAllowed(establishedOrigin)) {
+            if (!isOriginAllowedByLock(establishedOrigin, newContext.getOrigin())) {
                 return { error: 'Error: Node does not belong to the current origin.' };
             }
             const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);

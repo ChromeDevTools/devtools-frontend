@@ -5,6 +5,7 @@
 import './CodeBlock.js';
 import './MarkdownImage.js';
 import '../../kit/kit.js';
+import * as Marked from '../../../third_party/marked/marked.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import { getMarkdownLink } from './MarkdownLinksMap.js';
@@ -373,5 +374,30 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
         }
         return super.templateForToken(token);
     }
+}
+export function renderTextAsMarkdown(text, markdownRenderer = new MarkdownLitRenderer(), { animate, ref: refFn } = {}) {
+    let tokens = [];
+    try {
+        tokens = Marked.Marked.lexer(text);
+        for (const token of tokens) {
+            // Try to render all the tokens to make sure that
+            // they all have a template defined for them. If there
+            // isn't any template defined for a token, we'll fallback
+            // to rendering the text as plain text instead of markdown.
+            markdownRenderer.renderToken(token);
+        }
+    }
+    catch {
+        // The tokens were not parsed correctly or
+        // one of the tokens are not supported, so we
+        // continue to render this as text.
+        return html `${text}`;
+    }
+    // clang-format off
+    return html `<devtools-markdown-view
+    .data=${{ tokens, renderer: markdownRenderer, animationEnabled: animate }}
+    ${refFn ? Lit.Directives.ref(refFn) : Lit.nothing}>
+  </devtools-markdown-view>`;
+    // clang-format on
 }
 //# sourceMappingURL=MarkdownView.js.map

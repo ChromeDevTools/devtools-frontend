@@ -19,7 +19,7 @@ code {
 }
 
 .hint-popup-possible-fix {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .clickable {

@@ -1147,8 +1147,11 @@ export class Scope {
     icon() {
         return undefined;
     }
+    empty() {
+        return Boolean(this.#payload.empty);
+    }
     extraProperties() {
-        if (this.#ordinal !== 0 || this.#type !== "local" /* Protocol.Debugger.ScopeType.Local */ || this.#callFrame.script.isWasm()) {
+        if (this !== this.#callFrame.localScope() || this.#callFrame.script.isWasm()) {
             return [];
         }
         const extraProperties = [];

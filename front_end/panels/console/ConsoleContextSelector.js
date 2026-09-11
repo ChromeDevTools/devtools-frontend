@@ -186,17 +186,22 @@ export class ConsoleContextSelector {
             return i18nString(UIStrings.extension);
         }
         const sameTargetParentFrame = frame?.sameTargetParentFrame();
+        const executionContextOrigin = executionContext.origin ? SDK.SecurityOrigin.SecurityOrigin.create(executionContext.origin) : null;
         // TODO(crbug.com/1159332): Understand why condition involves the sameTargetParentFrame.
-        if (!frame || !sameTargetParentFrame || sameTargetParentFrame.securityOrigin !== executionContext.origin) {
+        if (!frame || !sameTargetParentFrame ||
+            !sameTargetParentFrame.securityOrigin().isSameOriginWith(executionContextOrigin)) {
             const url = Common.ParsedURL.ParsedURL.fromString(executionContext.origin);
             if (url) {
                 return url.domain();
             }
         }
-        if (frame?.securityOrigin) {
-            const domain = new Common.ParsedURL.ParsedURL(frame.securityOrigin).domain();
-            if (domain) {
-                return domain;
+        if (frame) {
+            const origin = frame.securityOrigin();
+            if (!origin.isOpaque()) {
+                const domain = Common.ParsedURL.ParsedURL.fromString(origin.siteId())?.domain();
+                if (domain) {
+                    return domain;
+                }
             }
         }
         return 'IFrame';

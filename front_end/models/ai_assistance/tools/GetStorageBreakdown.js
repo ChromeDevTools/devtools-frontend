@@ -40,7 +40,7 @@ export class GetStorageBreakdownTool {
             primaryPageTarget.storageAgent().invoke_getUsageAndQuota({ origin: pageOrigin }),
             calculateDOMStoragesUsage(localStorages),
             calculateDOMStoragesUsage(sessionStorages),
-            getCookiesForOrigin(pageOrigin, targetManager, primaryPageTarget),
+            getCookiesForOrigin(pageOrigin, primaryPageTarget),
         ]);
         if (response.getError()) {
             return { error: response.getError() || 'Unknown CDP error' };

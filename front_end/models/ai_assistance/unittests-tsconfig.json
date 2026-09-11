@@ -100,6 +100,7 @@
     "../../../../../../front_end/models/ai_assistance/tools/ResolveDevtoolsNodePath.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/RunLighthouse.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/SelectTraceEventByKey.test.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/Tool.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ToolRegistry.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

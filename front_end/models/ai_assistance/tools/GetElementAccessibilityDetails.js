@@ -5,6 +5,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
+import { isOriginAllowedByLock, } from './Tool.js';
 /**
  * A tool that retrieves fine-grained accessibility properties (role, name, ARIA properties, focus state)
  * for a resolved element backend node ID. It also returns a DOM snapshot of the element's subtree.
@@ -45,7 +46,7 @@ export class GetElementAccessibilityDetailsTool {
      */
     async handler(params, context) {
         const establishedOrigin = context.getEstablishedOrigin();
-        if (!establishedOrigin) {
+        if (!establishedOrigin || establishedOrigin.isOpaque()) {
             return { error: 'Error: Origin lock is not established.' };
         }
         const target = context.getTarget();
@@ -62,7 +63,7 @@ export class GetElementAccessibilityDetailsTool {
         }
         const nodeContext = new DOMNodeContext(resolved);
         // Security check: Ensure the element matches the active conversation's origin lock.
-        if (!nodeContext.isOriginAllowed(establishedOrigin)) {
+        if (!isOriginAllowedByLock(establishedOrigin, nodeContext.getOrigin())) {
             return { error: 'Error: Node does not belong to the locked origin.' };
         }
         const axModel = target.model(SDK.AccessibilityModel.AccessibilityModel);

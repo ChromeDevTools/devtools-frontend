@@ -1802,6 +1802,7 @@ var Network;
     TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
     TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
     TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+    TerminationEventDetailsDeletionReason2["Replaced"] = "Replaced";
   })(TerminationEventDetailsDeletionReason = Network2.TerminationEventDetailsDeletionReason || (Network2.TerminationEventDetailsDeletionReason = {}));
   let ChallengeEventDetailsChallengeResult;
   ((ChallengeEventDetailsChallengeResult2) => {
@@ -3292,12 +3293,11 @@ var resolveScopeChain = async function(callFrame, debuggerWorkspaceBinding) {
     return scopeChain;
   }
   if (callFrame.script.isWasm()) {
-    return callFrame.scopeChain();
+    return callFrame.scopeChain().filter((scope) => !scope.empty());
   }
   const thisObject = await resolveThisObject(callFrame, debuggerWorkspaceBinding);
-  return callFrame.scopeChain().map(
-    (scope) => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding)
-  );
+  const scopes = callFrame.scopeChain().filter((scope) => !scope.empty() || scope.type() === Debugger.ScopeType.Local);
+  return scopes.map((scope) => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
 };
 var allVariablesInCallFrame = async (callFrame, debuggerWorkspaceBinding) => {
   if (!callFrame.debuggerModel.target().targetManager().settings.resolve(SDK2.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get()) {
@@ -3307,7 +3307,7 @@ var allVariablesInCallFrame = async (callFrame, debuggerWorkspaceBinding) => {
   if (cachedMap) {
     return cachedMap;
   }
-  const scopeChain = callFrame.scopeChain();
+  const scopeChain = callFrame.scopeChain().filter((scope) => !scope.empty());
   const nameMappings = await Promise.all(scopeChain.map((scope) => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
   const reverseMapping = /* @__PURE__ */ new Map();
   const compiledNames = /* @__PURE__ */ new Set();
@@ -3360,11 +3360,11 @@ var allVariablesAtPosition = async (location, debuggerWorkspaceBinding) => {
   return reverseMapping;
 };
 var resolveThisObject = async (callFrame, debuggerWorkspaceBinding) => {
-  const scopeChain = callFrame.scopeChain();
-  if (scopeChain.length === 0) {
+  const innermostScope = callFrame.scopeChain().find((scope) => !scope.empty() || scope.type() === Debugger.ScopeType.Local);
+  if (!innermostScope) {
     return callFrame.thisObject();
   }
-  const { thisMapping } = await resolveDebuggerScope(scopeChain[0], debuggerWorkspaceBinding);
+  const { thisMapping } = await resolveDebuggerScope(innermostScope, debuggerWorkspaceBinding);
   if (!thisMapping) {
     return callFrame.thisObject();
   }

@@ -7,6 +7,7 @@ import * as Lit from '../../ui/lit/lit.js';
 interface ViewInput {
     showRequestHeadersText: boolean;
     showResponseHeadersText: boolean;
+    cacheDisabled: boolean;
     request: SDK.NetworkRequest.NetworkRequest;
     toggleShowRawResponseHeaders: () => void;
     toggleShowRawRequestHeaders: () => void;

@@ -444,9 +444,9 @@ import * as Trace2 from "../../models/trace/trace.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as PanelsCommon3 from "../common/common.js";
 import * as TraceBounds from "../../services/trace_bounds/trace_bounds.js";
-import * as Marked from "../../third_party/marked/marked.js";
 import * as Buttons2 from "../../ui/components/buttons/buttons.js";
 import * as Input2 from "../../ui/components/input/input.js";
+import * as MarkdownView5 from "../../ui/components/markdown_view/markdown_view.js";
 import * as Snackbars from "../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers from "../../ui/helpers/helpers.js";
 import * as UI2 from "../../ui/legacy/legacy.js";
@@ -2084,7 +2084,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       <div class="user-query-wrapper">
         <section class=${messageClasses2} jslog=${VisualLogging2.section("question")}>
           ${imageInput}
-          <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
+          <div class="message-content">${MarkdownView5.MarkdownView.renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
         </section>
       </div>
     `, target);
@@ -2109,7 +2109,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     (part, index) => {
       const isLastPart = index === message.parts.length - 1;
       if (part.type === "answer") {
-        return html5`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
+        return html5`<p>${MarkdownView5.MarkdownView.renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
       }
       if (part.type === "widget") {
         return html5`${Lit5.Directives.until(renderWidgets(part.widgets, { wrapperClass: "main-widgets-wrapper" }))}`;
@@ -2124,21 +2124,6 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </section>
   `, target);
 };
-function renderTextAsMarkdown(text, markdownRenderer, { animate, ref: refFn } = {}) {
-  let tokens = [];
-  try {
-    tokens = Marked.Marked.lexer(text);
-    for (const token of tokens) {
-      markdownRenderer.renderToken(token);
-    }
-  } catch {
-    return html5`${text}`;
-  }
-  return html5`<devtools-markdown-view
-    .data=${{ tokens, renderer: markdownRenderer, animationEnabled: animate }}
-    ${refFn ? ref2(refFn) : Lit5.nothing}>
-  </devtools-markdown-view>`;
-}
 function titleForStep(step) {
   return step.title ?? `${lockedString2(UIStringsNotTranslate.investigating)}\u2026`;
 }
@@ -2177,7 +2162,7 @@ function renderStepDetails({
   isLast
 }) {
   const sideEffects = isLast && step.state.type === "needs_approval" ? renderSideEffectConfirmationUi(step) : Lit5.nothing;
-  const thought = step.thought ? html5`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit5.nothing;
+  const thought = step.thought ? html5`<p>${MarkdownView5.MarkdownView.renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit5.nothing;
   const contextDetails = step.contextDetails ? html5`${Lit5.Directives.repeat(
     step.contextDetails,
     (contextDetail) => {
@@ -5214,6 +5199,7 @@ var Network2;
     TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
     TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
     TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+    TerminationEventDetailsDeletionReason2["Replaced"] = "Replaced";
   })(TerminationEventDetailsDeletionReason = Network3.TerminationEventDetailsDeletionReason || (Network3.TerminationEventDetailsDeletionReason = {}));
   let ChallengeEventDetailsChallengeResult;
   ((ChallengeEventDetailsChallengeResult2) => {

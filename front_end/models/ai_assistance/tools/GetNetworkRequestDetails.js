@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import { NetworkRequestFormatter } from '../data_formatters/NetworkRequestFormatter.js';
+import { isOriginAllowedByLock, } from './Tool.js';
 const UIStringsNotTranslate = {
     gettingNetworkRequestDetails: 'Getting network request details',
 };
@@ -47,14 +48,13 @@ export class GetNetworkRequestDetailsTool {
     async handler(args, context) {
         // A conversation is locked to an origin once the first query is made.
         // We only allow inspecting requests matching the conversation's established origin.
-        const origin = context.getEstablishedOrigin();
+        const establishedOrigin = context.getEstablishedOrigin();
         // Opaque origins are never allowed to be used as context.
-        if (origin?.isOpaque()) {
+        if (!establishedOrigin || establishedOrigin.isOpaque()) {
             return {
                 error: 'Opaque origin not allowed',
             };
         }
-        const conversationOrigin = origin ?? null;
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
         const request = networkLog.requests().find(req => {
@@ -62,7 +62,7 @@ export class GetNetworkRequestDetailsTool {
                 return false;
             }
             // If the conversation is locked to an origin, only allow accessing requests from that origin.
-            return !conversationOrigin || req.initiatorSecurityOrigin().isSameOriginWith(conversationOrigin);
+            return isOriginAllowedByLock(establishedOrigin, req.initiatorSecurityOrigin());
         });
         if (!request) {
             return {
@@ -71,7 +71,7 @@ export class GetNetworkRequestDetailsTool {
         }
         const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
         const formatter = new NetworkRequestFormatter(request, calculator, {
-            accessingSecurityOrigin: conversationOrigin ?? request.initiatorSecurityOrigin(),
+            accessingSecurityOrigin: establishedOrigin,
             networkLog,
         });
         const formattedDetails = await formatter.formatNetworkRequest();

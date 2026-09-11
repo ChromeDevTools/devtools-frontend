@@ -9,6 +9,7 @@ import { Events as NetworkManagerEvents, NetworkManager } from './NetworkManager
 import { Resource } from './Resource.js';
 import { ExecutionContext, RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
+import { SecurityOrigin } from './SecurityOrigin.js';
 import { SecurityOriginManager } from './SecurityOriginManager.js';
 import { StorageKeyManager } from './StorageKeyManager.js';
 import { Type } from './Target.js';
@@ -63,6 +64,32 @@ export class ResourceTreeModel extends SDKModel {
             result.push(...resourceTreeModel.frames());
         }
         return result;
+    }
+    /**
+     * Finds the first active frame that matches the specified security origin under
+     * the given primary page target.
+     *
+     * Returns `null` if the target has no outermost target or if no matching frame
+     * exists.
+     *
+     * @param primaryPageTarget The primary page target that contains the candidate frames.
+     * @param origin The security origin to match.
+     * @returns The first matching frame, or `null` if no frame matches.
+     */
+    static frameForOrigin(primaryPageTarget, origin) {
+        const outermostTarget = primaryPageTarget.outermostTarget();
+        if (!outermostTarget) {
+            return null;
+        }
+        for (const frame of ResourceTreeModel.frames(primaryPageTarget.targetManager())) {
+            if (frame.resourceTreeModel().target().outermostTarget() !== outermostTarget) {
+                continue;
+            }
+            if (frame.securityOrigin().isSameOriginWith(origin)) {
+                return frame;
+            }
+        }
+        return null;
     }
     static resourceForURL(targetManager, url) {
         for (const resourceTreeModel of targetManager.models(ResourceTreeModel)) {
@@ -406,21 +433,23 @@ export class ResourceTreeModel extends SDKModel {
         return ExecutionContext.comparator(a, b);
     }
     getSecurityOriginData() {
-        const securityOrigins = new Set();
+        const securityOrigins = [];
         let mainSecurityOrigin = null;
         let unreachableMainSecurityOrigin = null;
         for (const frame of this.framesInternal.values()) {
-            const origin = frame.securityOrigin;
-            if (!origin) {
+            const origin = frame.securityOrigin();
+            if (frame.isMainFrame()) {
+                mainSecurityOrigin = origin.isOpaque() ? null : origin;
+                if (frame.unreachableUrl()) {
+                    const unreachable = SecurityOrigin.create(frame.unreachableUrl());
+                    unreachableMainSecurityOrigin = unreachable.isOpaque() ? null : unreachable;
+                }
+            }
+            if (origin.isOpaque()) {
                 continue;
             }
-            securityOrigins.add(origin);
-            if (frame.isMainFrame()) {
-                mainSecurityOrigin = origin;
-                if (frame.unreachableUrl()) {
-                    const unreachableParsed = new Common.ParsedURL.ParsedURL(frame.unreachableUrl());
-                    unreachableMainSecurityOrigin = unreachableParsed.securityOrigin();
-                }
+            if (!securityOrigins.some(existing => existing.isSameOriginWith(origin))) {
+                securityOrigins.push(origin);
             }
         }
         return {
@@ -447,8 +476,11 @@ export class ResourceTreeModel extends SDKModel {
     }
     updateSecurityOrigins() {
         const data = this.getSecurityOriginData();
-        this.#securityOriginManager.setMainSecurityOrigin(data.mainSecurityOrigin || '', data.unreachableMainSecurityOrigin || '');
-        this.#securityOriginManager.updateSecurityOrigins(data.securityOrigins);
+        // TODO(crbug.com/559122726): SecurityOriginManager currently expects string identifiers.
+        // Update SecurityOriginManager to store and emit SecurityOrigin objects directly so
+        // that the siteId() conversions below can be removed.
+        this.#securityOriginManager.setMainSecurityOrigin(data.mainSecurityOrigin?.siteId() || '', data.unreachableMainSecurityOrigin?.siteId() || '');
+        this.#securityOriginManager.updateSecurityOrigins(new Set(data.securityOrigins.map(o => o.siteId())));
     }
     async updateStorageKeys() {
         const data = await this.getStorageKeyData();
@@ -458,9 +490,10 @@ export class ResourceTreeModel extends SDKModel {
     async getMainStorageKey() {
         return this.mainFrame ? await this.mainFrame.getStorageKey(/* forceFetch */ false) : null;
     }
+    // TODO(crbug.com/559122726): Remove siteId() usage and evaluate removing this method in favor of direct SecurityOrigin handling.
     getMainSecurityOrigin() {
         const data = this.getSecurityOriginData();
-        return data.mainSecurityOrigin || data.unreachableMainSecurityOrigin;
+        return data.mainSecurityOrigin?.siteId() || data.unreachableMainSecurityOrigin?.siteId() || null;
     }
     onBackForwardCacheNotUsed(event) {
         if (this.mainFrame && this.mainFrame.id === event.frameId && this.mainFrame.loaderId === event.loaderId) {
@@ -542,7 +575,7 @@ export class ResourceTreeFrame {
         this.#name = payload?.name;
         this.#url = payload && payload.url || Platform.DevToolsPath.EmptyUrlString;
         this.#domainAndRegistry = (payload?.domainAndRegistry) || '';
-        this.#securityOrigin = payload?.securityOrigin ?? null;
+        this.#securityOrigin = SecurityOrigin.create(payload?.securityOrigin ?? '');
         this.#securityOriginDetails = payload?.securityOriginDetails;
         this.#unreachableUrl =
             (payload && payload.unreachableUrl) || Platform.DevToolsPath.EmptyUrlString;
@@ -581,7 +614,7 @@ export class ResourceTreeFrame {
         this.#name = framePayload.name;
         this.#url = framePayload.url;
         this.#domainAndRegistry = framePayload.domainAndRegistry;
-        this.#securityOrigin = framePayload.securityOrigin;
+        this.#securityOrigin = SecurityOrigin.create(framePayload.securityOrigin);
         this.#securityOriginDetails = framePayload.securityOriginDetails;
         void this.getStorageKey(/* forceFetch */ true);
         this.#unreachableUrl =
@@ -622,7 +655,15 @@ export class ResourceTreeFrame {
         const res = await this.#model.agent.invoke_getAdScriptAncestry({ frameId });
         return res.adScriptAncestry || null;
     }
-    get securityOrigin() {
+    /**
+     * Returns the security origin of this frame.
+     *
+     * If the frame does not have a valid origin (such as `about:blank`), this
+     * method returns a unique opaque origin.
+     *
+     * @returns The security origin of the frame.
+     */
+    securityOrigin() {
         return this.#securityOrigin;
     }
     get securityOriginDetails() {

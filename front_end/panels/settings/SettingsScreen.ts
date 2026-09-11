@@ -1,8 +1,6 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-
 /* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../ui/kit/kit.js';
@@ -10,14 +8,15 @@ import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
-import {type Card, createIcon, Link} from '../../ui/kit/kit.js';
+import type {Card} from '../../ui/kit/kit.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {PanelUtils} from '../utils/utils.js';
@@ -25,6 +24,8 @@ import {PanelUtils} from '../utils/utils.js';
 import * as PanelComponents from './components/components.js';
 import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
 import settingsScreenStyles from './settingsScreen.css.js';
+
+const {html, render, Directives: {ref}} = Lit;
 
 const UIStrings = {
   /**
@@ -382,130 +383,175 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
   }
 }
 
-export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTab {
-  #experimentsSection: Card|undefined;
-  private readonly experimentToControl = new Map<Root.Runtime.Experiment, HTMLElement>();
-  private readonly containerElement: HTMLElement;
+export interface ExperimentsSettingsTabViewInput {
+  filterText: string;
+  experiments: Root.Runtime.Experiment[];
+  onFilterChanged: (filterText: string) => void;
+  onExperimentToggled: (experiment: Root.Runtime.Experiment, enabled: boolean) => void;
+  onOpenDocumentation: (url: Platform.DevToolsPath.UrlString) => void;
+}
 
-  constructor() {
-    super({jslog: `${VisualLogging.pane('experiments')}`});
+export interface ExperimentsSettingsTabViewOutput {
+  setExperimentElement: (experiment: Root.Runtime.Experiment, element: HTMLElement) => void;
+}
+
+export type ExperimentsSettingsTabView =
+    (input: ExperimentsSettingsTabViewInput, output: ExperimentsSettingsTabViewOutput, target: HTMLElement) => void;
+
+export const EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW: ExperimentsSettingsTabView = (
+    input: ExperimentsSettingsTabViewInput,
+    output: ExperimentsSettingsTabViewOutput,
+    target: HTMLElement,
+    ): void => {
+  // clang-format off
+  render(
+      html`
+        <div class="settings-card-container-wrapper">
+          <div class="settings-card-container">
+            <div class="experiments-filter">
+              <devtools-toolbar>
+                <devtools-toolbar-input
+                  autofocus
+                  type="filter"
+                  placeholder=${i18nString(UIStrings.searchExperiments)}
+                  style="flex-grow:1"
+                  .value=${input.filterText}
+                  @change=${(e: CustomEvent<string>) => input.onFilterChanged(e.detail)}>
+                </devtools-toolbar-input>
+              </devtools-toolbar>
+            </div>
+            <devtools-card heading=${i18nString(UIStrings.experiments)}>
+              ${input.experiments.length ? html`
+                <div class="experiments-warning-subsection">
+                  <devtools-icon name="warning"></devtools-icon>
+                  <span>${i18nString(UIStrings.theseExperimentsCouldBeUnstable)}</span>
+                </div>
+                <div class="settings-experiments-block">
+                  ${input.experiments.map(experiment => html`
+                    <p class="settings-experiment" ${ref(el => {
+                      if (el) {
+                        output.setExperimentElement(experiment, el as HTMLElement);
+                      }
+                    })}>
+                      <devtools-checkbox
+                        class="experiment-label"
+                        name=${experiment.name}
+                        title=${experiment.title}
+                        ?checked=${experiment.isEnabled()}
+                        .jslogContext=${experiment.name}
+                        @click=${(e: Event) => {
+                          const checkbox = e.currentTarget as UI.UIUtils.CheckboxLabel;
+                          input.onExperimentToggled(experiment, checkbox.checked);
+                        }}>
+                        ${experiment.title}
+                      </devtools-checkbox>
+                      ${experiment.docLink ? html`
+                        <devtools-button
+                          class="link-icon"
+                          title=${i18nString(UIStrings.learnMore)}
+                          .iconName=${'help'}
+                          .variant=${Buttons.Button.Variant.ICON}
+                          .size=${Buttons.Button.Size.SMALL}
+                          .jslogContext=${`${experiment.name}-documentation`}
+                          @click=${() => {
+                            if (experiment.docLink) {
+                              input.onOpenDocumentation(experiment.docLink);
+                            }
+                          }}>
+                        </devtools-button>
+                      ` : Lit.nothing}
+                      ${experiment.feedbackLink ? html`
+                        <devtools-link
+                          class="feedback-link"
+                          href=${experiment.feedbackLink}
+                          jslogcontext=${`${experiment.name}-feedback`}>
+                          ${i18nString(UIStrings.sendFeedback)}
+                        </devtools-link>
+                      ` : Lit.nothing}
+                    </p>
+                  `)}
+                </div>
+              ` : html`
+                <span>${i18nString(UIStrings.noResults)}</span>
+              `}
+            </devtools-card>
+          </div>
+        </div>
+      `,
+      target);
+  // clang-format on
+};
+
+export class ExperimentsSettingsTab extends UI.Widget.Widget implements SettingsTab {
+  readonly #experimentToControl = new Map<Root.Runtime.Experiment, HTMLElement>();
+  readonly #view: ExperimentsSettingsTabView;
+  readonly #viewOutput: ExperimentsSettingsTabViewOutput = {
+    setExperimentElement: (experiment, element) => {
+      this.#experimentToControl.set(experiment, element);
+    },
+  };
+  #filterText = '';
+
+  constructor(element?: HTMLElement, view: ExperimentsSettingsTabView = EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW) {
+    super(element, {jslog: `${VisualLogging.pane('experiments')}`});
     this.element.classList.add('settings-tab-container');
     this.element.id = 'experiments-tab-content';
-    this.containerElement =
-        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
-    this.containerElement.classList.add('settings-card-container');
-
-    const filterSection = this.containerElement.createChild('div');
-    filterSection.classList.add('experiments-filter');
-    render(html`
-        <devtools-toolbar>
-          <devtools-toolbar-input autofocus type="filter" placeholder=${
-               i18nString(UIStrings.searchExperiments)} style="flex-grow:1" @change=${
-               this.#onFilterChanged.bind(this)}></devtools-toolbar-input>
-        </devtools-toolbar>
-    `,
-           filterSection);
-    this.renderExperiments('');
+    this.#view = view;
   }
 
-  #onFilterChanged(e: CustomEvent<string>): void {
-    this.renderExperiments(e.detail.toLowerCase());
-  }
-
-  private renderExperiments(filterText: string): void {
-    this.experimentToControl.clear();
-    if (this.#experimentsSection) {
-      this.#experimentsSection.remove();
-    }
+  #filterExperiments(filterText: string): Root.Runtime.Experiment[] {
     const experiments = Root.Runtime.experiments.allConfigurableExperiments().sort((a, b) => {
       return a.title.localeCompare(b.title);
     });
-    const filteredExperiments = experiments.filter(e => e.title.toLowerCase().includes(filterText));
-    if (filteredExperiments.length) {
-      const experimentsBlock = document.createElement('div');
-      experimentsBlock.classList.add('settings-experiments-block');
-      const warningMessage = i18nString(UIStrings.theseExperimentsCouldBeUnstable);
-      const warningSection = this.createExperimentsWarningSubsection(warningMessage);
-      for (const experiment of filteredExperiments) {
-        experimentsBlock.appendChild(this.createExperimentCheckbox(experiment));
-      }
-      this.#experimentsSection =
-          createSettingsCard(i18nString(UIStrings.experiments), warningSection, experimentsBlock);
-      this.containerElement.appendChild(this.#experimentsSection);
-      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.experimentsFound, {n: filteredExperiments.length}));
-    } else {
-      const warning = document.createElement('span');
-      warning.textContent = i18nString(UIStrings.noResults);
-      UI.ARIAUtils.LiveAnnouncer.alert(warning.textContent);
-      this.#experimentsSection = createSettingsCard(i18nString(UIStrings.experiments), warning);
-      this.containerElement.appendChild(this.#experimentsSection);
-    }
+    return experiments.filter(e => e.title.toLowerCase().includes(filterText));
   }
 
-  private createExperimentsWarningSubsection(warningMessage: string): HTMLElement {
-    const subsection = document.createElement('div');
-    subsection.classList.add('experiments-warning-subsection');
-    const warningIcon = createIcon('warning');
-    subsection.appendChild(warningIcon);
-    const warning = subsection.createChild('span');
-    warning.textContent = warningMessage;
-    return subsection;
-  }
-
-  private createExperimentCheckbox(experiment: Root.Runtime.Experiment): HTMLParagraphElement {
-    const checkbox =
-        UI.UIUtils.CheckboxLabel.createWithStringLiteral(experiment.title, experiment.isEnabled(), experiment.name);
-    checkbox.classList.add('experiment-label');
-    checkbox.name = experiment.name;
-    function listener(): void {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(experiment.aboutFlag, checkbox.checked);
-      experiment.setEnabled(checkbox.checked);
-      Host.userMetrics.experimentChanged(experiment.name, experiment.isEnabled());
-      if (experiment.requiresChromeRestart) {
-        UI.InspectorView.InspectorView.instance().displayChromeRestartRequiredWarning(
-            i18nString(UIStrings.settingsChangedRestartChrome));
+  #onFilterChanged(filterText: string): void {
+    this.#filterText = filterText.toLowerCase();
+    if (this.#filterText) {
+      const filteredExperiments = this.#filterExperiments(this.#filterText);
+      if (filteredExperiments.length) {
+        UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.experimentsFound, {n: filteredExperiments.length}));
       } else {
-        UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
-            i18nString(UIStrings.settingsChangedReloadDevTools));
+        UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.noResults));
       }
     }
-    checkbox.addEventListener('click', listener, false);
+    this.requestUpdate();
+  }
 
-    const p = document.createElement('p');
-    this.experimentToControl.set(experiment, p);
-    p.classList.add('settings-experiment');
-    p.appendChild(checkbox);
-
-    const experimentLink = experiment.docLink;
-    if (experimentLink) {
-      const linkButton = new Buttons.Button.Button();
-      linkButton.data = {
-        iconName: 'help',
-        variant: Buttons.Button.Variant.ICON,
-        size: Buttons.Button.Size.SMALL,
-        jslogContext: `${experiment.name}-documentation`,
-        title: i18nString(UIStrings.learnMore),
-      };
-      linkButton.addEventListener('click', () => UIHelpers.openInNewTab(experimentLink));
-      linkButton.classList.add('link-icon');
-
-      p.appendChild(linkButton);
+  #onExperimentToggled(experiment: Root.Runtime.Experiment, enabled: boolean): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(experiment.aboutFlag, enabled);
+    experiment.setEnabled(enabled);
+    Host.userMetrics.experimentChanged(experiment.name, experiment.isEnabled());
+    if (experiment.requiresChromeRestart) {
+      UI.InspectorView.InspectorView.instance().displayChromeRestartRequiredWarning(
+          i18nString(UIStrings.settingsChangedRestartChrome));
+    } else {
+      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
+          i18nString(UIStrings.settingsChangedReloadDevTools));
     }
+    this.requestUpdate();
+  }
 
-    if (experiment.feedbackLink) {
-      const link = Link.create(experiment.feedbackLink, undefined, undefined, `${experiment.name}-feedback`);
-      link.textContent = i18nString(UIStrings.sendFeedback);
-      link.classList.add('feedback-link');
-
-      p.appendChild(link);
-    }
-
-    return p;
+  override performUpdate(): void {
+    const filteredExperiments = this.#filterExperiments(this.#filterText);
+    this.#experimentToControl.clear();
+    this.#view(
+        {
+          filterText: this.#filterText,
+          experiments: filteredExperiments,
+          onFilterChanged: this.#onFilterChanged.bind(this),
+          onExperimentToggled: this.#onExperimentToggled.bind(this),
+          onOpenDocumentation: (url: Platform.DevToolsPath.UrlString) => UIHelpers.openInNewTab(url),
+        },
+        this.#viewOutput,
+        this.contentElement,
+    );
   }
 
   highlightObject(experiment: Object): void {
     if (experiment instanceof Root.Runtime.Experiment) {
-      const element = this.experimentToControl.get(experiment);
+      const element = this.#experimentToControl.get(experiment);
       if (element) {
         PanelUtils.highlightElement(element);
       }
@@ -515,6 +561,7 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTa
   override wasShown(): void {
     UI.Context.Context.instance().setFlavor(ExperimentsSettingsTab, this);
     super.wasShown();
+    this.requestUpdate();
   }
 
   override willHide(): void {

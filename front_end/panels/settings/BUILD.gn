@@ -94,6 +94,7 @@ devtools_ui_module("unittests") {
     "AISettingsTab.test.ts",
     "EditFileSystemView.test.ts",
     "FrameworkIgnoreListSettingsTab.test.ts",
+    "SettingsScreen.test.ts",
     "WorkspaceSettingsTab.test.ts",
   ]
 
@@ -102,11 +103,13 @@ devtools_ui_module("unittests") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../models/ai_assistance:bundle",
     "../../models/persistence:bundle",
     "../../models/workspace:bundle",
     "../../testing",
     "../../ui/components/switch:bundle",
     "../../ui/legacy:bundle",
+    "../utils:bundle",
   ]
 }

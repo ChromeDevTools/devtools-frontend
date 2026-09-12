@@ -2269,7 +2269,7 @@ __export(SplitWidget_exports, {
 });
 import * as Common7 from "../../core/common/common.js";
 import * as Platform6 from "../../core/platform/platform.js";
-import * as Geometry2 from "../../models/geometry/geometry.js";
+import * as Geometry2 from "../geometry/geometry.js";
 import * as VisualLogging4 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/ResizerWidget.ts
@@ -2514,8 +2514,8 @@ __export(Widget_exports, {
 });
 import "../dom_extension/dom_extension.js";
 import * as Platform5 from "../../core/platform/platform.js";
-import * as Geometry from "../../models/geometry/geometry.js";
 import * as Lit from "../lit/lit.js";
+import * as Geometry from "../geometry/geometry.js";
 
 // ../../front_end/ui/legacy/DOMUtilities.ts
 var DOMUtilities_exports = {};
@@ -4597,10 +4597,10 @@ __export(TabbedPane_exports, {
 import * as Common8 from "../../core/common/common.js";
 import * as i18n7 from "../../core/i18n/i18n.js";
 import * as Platform7 from "../../core/platform/platform.js";
-import * as Geometry3 from "../../models/geometry/geometry.js";
 import * as Buttons2 from "../components/buttons/buttons.js";
 import { render } from "../lit/lit.js";
 import * as VisualLogging5 from "../visual_logging/visual_logging.js";
+import * as Geometry3 from "../geometry/geometry.js";
 import { createIcon as createIcon2, Icon } from "../kit/kit.js";
 
 // gen/front_end/ui/legacy/tabbedPane.css.js
@@ -11014,7 +11014,7 @@ __export(SuggestBox_exports, {
 });
 import * as i18n21 from "../../core/i18n/i18n.js";
 import * as Platform11 from "../../core/platform/platform.js";
-import * as Geometry4 from "../../models/geometry/geometry.js";
+import * as Geometry4 from "../geometry/geometry.js";
 import * as VisualLogging13 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/ListControl.ts
@@ -14314,8 +14314,8 @@ import * as Common15 from "../../core/common/common.js";
 import * as Host9 from "../../core/host/host.js";
 import * as i18n25 from "../../core/i18n/i18n.js";
 import * as Platform15 from "../../core/platform/platform.js";
-import * as Geometry5 from "../../models/geometry/geometry.js";
 import * as Buttons6 from "../components/buttons/buttons.js";
+import * as Geometry5 from "../geometry/geometry.js";
 import { Icon as Icon2 } from "../kit/kit.js";
 import * as Lit4 from "../lit/lit.js";
 import * as VisualLogging16 from "../visual_logging/visual_logging.js";
@@ -22168,7 +22168,7 @@ __export(SoftDropDown_exports, {
   SoftDropDown: () => SoftDropDown
 });
 import * as i18n39 from "../../core/i18n/i18n.js";
-import * as Geometry6 from "../../models/geometry/geometry.js";
+import * as Geometry6 from "../geometry/geometry.js";
 import { createIcon as createIcon9 } from "../kit/kit.js";
 import * as VisualLogging25 from "../visual_logging/visual_logging.js";
 
@@ -23775,7 +23775,9 @@ var TreeElement = class {
     }
     if (this.expandable && !this.expanded) {
       void this.#setExpandedFromUser(true, false);
-      this.listItemElement.focus();
+      if (!this.listItemElement.hasFocus()) {
+        this.listItemElement.focus();
+      }
     }
   }
   async #setExpandedFromUser(shouldExpand, recursively) {

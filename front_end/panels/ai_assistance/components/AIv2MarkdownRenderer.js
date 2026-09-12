@@ -78,7 +78,11 @@ export class AIv2MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownInsi
             return html `${fallbackText}`;
         }
         if (href.startsWith('#file-')) {
-            const file = AiAssistanceModel.ListSources.ListSourcesTool.getUISourceCodes().find(file => AiAssistanceModel.ListSources.ListSourcesTool.uiSourceCodeId.get(file) === Number(href.substring(6)));
+            const fileId = Number(href.substring(6));
+            const origin = this.options.getEstablishedOrigin?.();
+            const file = (origin && Number.isInteger(fileId) && fileId > 0) ?
+                AiAssistanceModel.ListSources.ListSourcesTool.getSourceById(fileId, origin) :
+                undefined;
             if (file) {
                 return this.#revealableLink(file, file.name());
             }
@@ -164,7 +168,7 @@ export class AIv2MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownInsi
         }
         if (token.type === 'codespan') {
             // LLM likes outputting the link inside a codespan block.
-            // Remove the codespan and render the link directly
+            // Remove the codespan and render the link directly.
             const matches = token.text.match(/^\[(.*)\]\((.+)\)$/);
             if (matches?.[2]) {
                 const link = this.#renderLink(matches[2], matches[1]);

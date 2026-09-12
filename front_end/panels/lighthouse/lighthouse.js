@@ -5078,8 +5078,8 @@ __export(LighthouseStatusView_exports, {
 });
 import * as Common5 from "../../core/common/common.js";
 import * as i18n8 from "../../core/i18n/i18n.js";
-import * as Geometry from "../../models/geometry/geometry.js";
 import * as Buttons2 from "../../ui/components/buttons/buttons.js";
+import * as Geometry from "../../ui/geometry/geometry.js";
 import * as UI6 from "../../ui/legacy/legacy.js";
 import * as Lit from "../../ui/lit/lit.js";
 
@@ -5680,8 +5680,8 @@ __export(LighthouseTimespanView_exports, {
   TimespanView: () => TimespanView
 });
 import * as i18n10 from "../../core/i18n/i18n.js";
-import * as Geometry2 from "../../models/geometry/geometry.js";
 import * as Buttons3 from "../../ui/components/buttons/buttons.js";
+import * as Geometry2 from "../../ui/geometry/geometry.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
 import { Directives as Directives4, html as html5, render as render5 } from "../../ui/lit/lit.js";
 var UIStrings5 = {

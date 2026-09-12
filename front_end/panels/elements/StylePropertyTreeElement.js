@@ -96,6 +96,10 @@ const UIStrings = {
      */
     gridLanesEditorButton: 'Open `grid-lanes` editor',
     /**
+     * @description Title of the button that opens the CSS position-area editor in the Styles tab of the Elements panel.
+     */
+    positionAreaEditorButton: 'Open `position-area` editor',
+    /**
      * @description A context menu item in the Styles tab of the Elements panel to copy CSS declaration as JavaScript property.
      */
     copyCssDeclarationAsJs: 'Copy declaration as JS',
@@ -1715,6 +1719,72 @@ export class PositionAnchorRenderer extends PositionAnchorRendererBase {
         return [content];
     }
 }
+const PositionAreaRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.PositionAreaMatch);
+// clang-format off
+export class PositionAreaRenderer extends PositionAreaRendererBase {
+    // clang-format on
+    #treeElement;
+    #stylesContainer;
+    constructor(stylesContainer, treeElement) {
+        super();
+        this.#treeElement = treeElement;
+        this.#stylesContainer = stylesContainer;
+    }
+    render(match, context) {
+        const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
+        if (!this.#treeElement?.editable() || !InlineEditor.PositionAreaEditor.parsePositionArea(match.text)) {
+            return children;
+        }
+        const valueElement = document.createElement('span');
+        valueElement.append(...children);
+        const button = createIcon('grid-on', 'position-area-swatch-icon');
+        button.title = i18nString(UIStrings.positionAreaEditorButton);
+        button.role = 'button';
+        button.tabIndex = -1;
+        button.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({ click: true }).context('position-area')}`);
+        const treeElement = this.#treeElement;
+        button.onclick = event => {
+            event.consume(true);
+            const popoverHelper = this.#stylesContainer.swatchPopoverHelper();
+            if (popoverHelper.isShowing()) {
+                popoverHelper.hide(true);
+                return;
+            }
+            const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor();
+            editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueElement.textContent ?? '') ?? undefined;
+            const onPositionAreaChanged = (changeEvent) => {
+                valueElement.textContent = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
+                void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
+            };
+            editor.addEventListener("positionAreaChanged" /* InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED */, onPositionAreaChanged);
+            const scrollerElement = button.enclosingNodeOrSelfWithClass('style-panes-wrapper');
+            const onScroll = () => {
+                popoverHelper.hide(true);
+            };
+            if (scrollerElement) {
+                scrollerElement.addEventListener('scroll', onScroll, false);
+            }
+            const originalPropertyText = treeElement.property.propertyText;
+            this.#stylesContainer.setEditingStyle(true);
+            popoverHelper.show(editor, button, commitEdit => {
+                if (scrollerElement) {
+                    scrollerElement.removeEventListener('scroll', onScroll, false);
+                }
+                editor.removeEventListener("positionAreaChanged" /* InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED */, onPositionAreaChanged);
+                const propertyText = commitEdit ? treeElement.renderedPropertyText() : originalPropertyText || '';
+                void treeElement.applyStyleText(propertyText, true);
+                this.#stylesContainer.setEditingStyle(false);
+            });
+        };
+        button.onmousedown = event => {
+            event.consume();
+        };
+        button.onmouseup = event => {
+            event.consume();
+        };
+        return [button, valueElement];
+    }
+}
 const PositionTryRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.PositionTryMatch);
 // clang-format off
 export class PositionTryRenderer extends PositionTryRendererBase {
@@ -1764,6 +1834,7 @@ export function getPropertyRenderers(propertyName, style, stylesContainer, match
         new AnchorFunctionRenderer(stylesContainer),
         new PositionAnchorRenderer(stylesContainer),
         new FlexGridRenderer(stylesContainer, treeElement),
+        new PositionAreaRenderer(stylesContainer, treeElement),
         new EnvFunctionRenderer(treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
         new PositionTryRenderer(matchedStyles),
         new LengthRenderer(stylesContainer, propertyName, treeElement),

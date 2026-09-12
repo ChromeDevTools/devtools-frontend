@@ -66,9 +66,6 @@
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/geometry/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../mobile_throttling/bundle-tsconfig.ref.json"
     },
     {
@@ -76,6 +73,9 @@
     },
     {
       "path": "../../ui/components/lists/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/geometry/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/kit/bundle-tsconfig.ref.json"

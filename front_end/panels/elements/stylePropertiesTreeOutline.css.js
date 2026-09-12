@@ -335,7 +335,8 @@ devtools-icon.open-in-animations-panel {
   text-decoration: underline dotted var(--sys-color-token-meta);
 }
 
-devtools-icon.bezier-swatch-icon {
+devtools-icon.bezier-swatch-icon,
+devtools-icon.position-area-swatch-icon {
   position: relative;
   transform: scale(0.7);
   margin: -5px calc(-1 * var(--sys-size-2)) -3px calc(-1 * var(--sys-size-3));

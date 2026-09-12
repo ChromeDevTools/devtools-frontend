@@ -5,6 +5,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import { ConversationContext } from '../agents/AiAgent.js';
 import { FileFormatter } from '../data_formatters/FileFormatter.js';
 export class FileContext extends ConversationContext {
+    jslogContext = 'ai-context-file';
     #file;
     #debuggerWorkspaceBinding;
     constructor(file, debuggerWorkspaceBinding) {

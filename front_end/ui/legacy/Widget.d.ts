@@ -2,8 +2,8 @@ import '../dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Root from '../../core/root/root.js';
 import type * as Foundation from '../../foundation/foundation.js';
-import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as Geometry from '../geometry/geometry.js';
 type InjectReturn<T> = T extends {
     INJECT: infer I;
 } ? I : T extends {

@@ -3,6 +3,7 @@ import type * as NetworkTimeCalculator from '../../network_time_calculator/netwo
 import { type ContextDetail, ConversationContext } from '../agents/AiAgent.js';
 export declare class RequestContext extends ConversationContext<SDK.NetworkRequest.NetworkRequest> {
     #private;
+    readonly jslogContext: 'ai-context-network-request';
     constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator);
     /**
      * Returns the security origin of the document that initiated the request.

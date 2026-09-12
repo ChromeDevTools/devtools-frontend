@@ -5,6 +5,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import { ConversationContext, } from '../agents/AiAgent.js';
 import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
 export class AccessibilityContext extends ConversationContext {
+    jslogContext = 'ai-context-accessibility';
     #lh;
     #cachedPayload = null;
     constructor(report) {

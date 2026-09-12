@@ -69,6 +69,12 @@ export default `/*
       min-width: var(--box-size);
       min-height: var(--box-size);
       outline: 1px solid var(--sys-color-neutral-outline);
+
+      &:focus-visible {
+        outline: 1px solid var(--sys-color-state-focus-ring);
+        outline-offset: -1px;
+        z-index: 2;
+      }
     }
 
     &::after {

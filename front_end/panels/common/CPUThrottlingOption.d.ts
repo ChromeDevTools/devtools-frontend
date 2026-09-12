@@ -1,7 +1,6 @@
 import * as SDK from '../../core/sdk/sdk.js';
 export type CalibratedCPUThrottling = SDK.CPUThrottlingManager.CalibratedCPUThrottling;
 export import CalibrationError = SDK.CPUThrottlingManager.CalibrationError;
-export import CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
 export declare enum CPUThrottlingRates {
     NO_THROTTLING = 1,
     MID_TIER_MOBILE = 4,

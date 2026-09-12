@@ -39,11 +39,6 @@ var codeBlock_css_default = `/*
     This can be changed from outside by targeting \\'devtools-code-block\\' element.
   */
   --code-block-max-code-height: none;
-  /**
-    Adjusts the background color of the code block element.
-    This can be changed from outside by targeting \\'devtools-code-block\\' element.
-  */
-  --code-block-background-color: var(--sys-color-surface2);
 }
 
 .codeblock {
@@ -53,7 +48,7 @@ var codeBlock_css_default = `/*
 
 .codeblock .editor-wrapper {
   color: var(--sys-color-on-surface);
-  background: var(--code-block-background-color); /* stylelint-disable-line plugin/use_theme_colors */
+  background: var(--code-block-background-color, var(--sys-color-surface2)); /* stylelint-disable-line plugin/use_theme_colors */
   padding: 10px 5px 0;
   border-bottom-left-radius: var(--sys-shape-corner-extra-small);
   border-bottom-right-radius: var(--sys-shape-corner-extra-small);
@@ -132,7 +127,7 @@ var codeBlock_css_default = `/*
 .notice {
   margin-top: var(--sys-size-2);
   padding: var(--sys-size-4) var(--sys-size-5);
-  background-color: var(--code-block-background-color); /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: var(--code-block-background-color, var(--sys-color-surface2)); /* stylelint-disable-line plugin/use_theme_colors */
   border-radius: var(--sys-shape-corner-extra-small);
 
   .link {
@@ -147,7 +142,7 @@ var codeBlock_css_default = `/*
   justify-content: center;
   align-items: center;
   padding: var(--sys-size-4) 0;
-  background-color: var(--code-block-background-color); /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: var(--code-block-background-color, var(--sys-color-surface2)); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 /*# sourceURL=${import.meta.resolve("./codeBlock.css")} */`;
@@ -638,11 +633,6 @@ var markdownView_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-:host {
-  --code-background-color: var(--sys-color-surface4);
-}
-
 @keyframes typing {
   from { width: 0; }
   to { width: 100%; }
@@ -736,9 +726,9 @@ devtools-code-block.animating {
   font-size: var(--sys-typescale-monospace-size);
   user-select: text;
   cursor: text;
-  /* This is still using design tokens because \\'--code-background-color\\' is defined with them by default */
+  /* This is using design tokens when the --code-bacground-color is not provided from outside, e.g. in comments */
   /* stylelint-disable-next-line plugin/use_theme_colors */
-  background-color: var(--code-background-color);
+  background-color: var(--code-background-color, var(--sys-color-surface4));
   border-radius: var(--sys-size-2);
   padding: var(--sys-size-1) 3px;
 }

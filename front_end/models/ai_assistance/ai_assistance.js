@@ -10,9 +10,9 @@ __export(AccessibilityAgent_exports, {
   AccessibilityAgent: () => AccessibilityAgent
 });
 import * as Host28 from "../../core/host/host.js";
-import * as i18n45 from "../../core/i18n/i18n.js";
+import * as i18n43 from "../../core/i18n/i18n.js";
 import * as Root5 from "../../core/root/root.js";
-import * as SDK24 from "../../core/sdk/sdk.js";
+import * as SDK23 from "../../core/sdk/sdk.js";
 
 // ../../front_end/models/ai_assistance/ChangeManager.ts
 var ChangeManager_exports = {};
@@ -4893,911 +4893,24 @@ var GetElementAccessibilityDetails_exports = {};
 __export(GetElementAccessibilityDetails_exports, {
   GetElementAccessibilityDetailsTool: () => GetElementAccessibilityDetailsTool
 });
-import * as Host6 from "../../core/host/host.js";
-import * as i18n9 from "../../core/i18n/i18n.js";
-import * as SDK10 from "../../core/sdk/sdk.js";
-
-// ../../front_end/models/ai_assistance/contexts/DOMNodeContext.ts
-var DOMNodeContext_exports = {};
-__export(DOMNodeContext_exports, {
-  DOMNodeContext: () => DOMNodeContext
-});
-import * as i18n7 from "../../core/i18n/i18n.js";
-import * as SDK9 from "../../core/sdk/sdk.js";
-
-// ../../front_end/models/ai_assistance/agents/AiAgent.ts
-var AiAgent_exports = {};
-__export(AiAgent_exports, {
-  AiAgent: () => AiAgent,
-  ConversationContext: () => ConversationContext,
-  ErrorType: () => ErrorType,
-  MAX_STEPS: () => MAX_STEPS,
-  MultimodalInputType: () => MultimodalInputType,
-  ResponseType: () => ResponseType,
-  aidaErrorToErrorType: () => aidaErrorToErrorType
-});
 import * as Host5 from "../../core/host/host.js";
-import * as Root3 from "../../core/root/root.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
 import * as SDK8 from "../../core/sdk/sdk.js";
-var MAX_SUGGESTION_LENGTH = 200;
-var ResponseType = /* @__PURE__ */ ((ResponseType2) => {
-  ResponseType2["CONTEXT"] = "context";
-  ResponseType2["TITLE"] = "title";
-  ResponseType2["THOUGHT"] = "thought";
-  ResponseType2["ACTION"] = "action";
-  ResponseType2["SIDE_EFFECT"] = "side-effect";
-  ResponseType2["SUGGESTIONS"] = "suggestions";
-  ResponseType2["ANSWER"] = "answer";
-  ResponseType2["ERROR"] = "error";
-  ResponseType2["QUERYING"] = "querying";
-  ResponseType2["USER_QUERY"] = "user-query";
-  ResponseType2["CONTEXT_CHANGE"] = "context-change";
-  return ResponseType2;
-})(ResponseType || {});
-var ErrorType = /* @__PURE__ */ ((ErrorType2) => {
-  ErrorType2["UNKNOWN"] = "unknown";
-  ErrorType2["ABORT"] = "abort";
-  ErrorType2["MAX_STEPS"] = "max-steps";
-  ErrorType2["BLOCK"] = "block";
-  ErrorType2["CROSS_ORIGIN"] = "cross-origin";
-  ErrorType2["QUOTA"] = "quota";
-  ErrorType2["PAYLOAD_TOO_LARGE"] = "payload-too-large";
-  return ErrorType2;
-})(ErrorType || {});
-var MultimodalInputType = /* @__PURE__ */ ((MultimodalInputType2) => {
-  MultimodalInputType2["SCREENSHOT"] = "screenshot";
-  MultimodalInputType2["UPLOADED_IMAGE"] = "uploaded-image";
-  return MultimodalInputType2;
-})(MultimodalInputType || {});
-var MAX_STEPS = 10;
-var ConversationContext = class {
-  /**
-   * Returns true if the server-side logging is enabled when this context is active.
-   * Currently only used for AI v2.
-   */
-  isLoggingEnabled() {
-    return true;
-  }
-  /**
-   * Checks whether this context can participate in a conversation locked to `establishedOrigin`.
-   *
-   * Evaluation rules:
-   * 1. Returns `false` if this context origin is opaque. Opaque contexts can never
-   *    participate in AI conversations.
-   * 2. Returns `true` if `establishedOrigin` is `undefined` (conversation is not yet locked).
-   * 3. Returns `true` if this context origin is same-origin with `establishedOrigin`.
-   *
-   * @param establishedOrigin The locked origin of the current conversation, or `undefined`
-   * if the conversation has not made its first query.
-   */
-  isOriginAllowed(establishedOrigin) {
-    const origin = this.getOrigin();
-    if (origin.isOpaque()) {
-      return false;
-    }
-    if (!establishedOrigin) {
-      return true;
-    }
-    return origin.isSameOriginWith(establishedOrigin);
-  }
-  /**
-   * This method is called at the start of `AiAgent.run`.
-   * It will be overridden in subclasses to fetch data related to the context item.
-   */
-  async refresh() {
-    return;
-  }
-  async getSuggestions() {
-    return;
-  }
-  /**
-   * Returns a detailed description of the context item for inclusion in the AI model prompt.
-   * Currently only used by AiAgent2.
-   */
-  async getPromptDetails() {
-    return null;
-  }
-  /**
-   * Returns a list of context details to display to the user in the UI.
-   * Currently only used by AiAgent2.
-   */
-  async getUserFacingDetails() {
-    return null;
-  }
-  /**
-   * Returns initial UI widgets to display in the conversation context header
-   * when this context is active (e.g. Core Web Vitals summary for a performance trace).
-   * Used by PerformanceAgent and AiAgent2.
-   */
-  async getWidgets() {
-    return [];
-  }
-};
-var CrossOriginError = class extends Error {
-  constructor() {
-    super("Cross-origin navigation detected");
-    this.name = "CrossOriginError";
-  }
-};
-var AiAgent = class {
-  #sessionId;
-  #aidaClient;
-  /**
-   * Tracks the dynamic runtime state of logging. Even if logging is allowed
-   * by policy, tools or sensitive contexts can deactivate this to avoid logging sensitive data.
-   */
-  #serverSideLoggingActive;
-  confirmSideEffect;
-  #functionDeclarations = /* @__PURE__ */ new Map();
-  #allowedOrigin;
-  #targetManager;
-  /**
-   * Used in the debug mode and evals.
-   */
-  #structuredLog = [];
-  /**
-   * `context` does not change during `AiAgent.run()`, ensuring that calls to JS
-   * have the correct `context`. We don't want element selection by the user to
-   * change the `context` during an `AiAgent.run()`.
-   */
-  context;
-  #history;
-  #facts = /* @__PURE__ */ new Set();
-  constructor(opts) {
-    this.#aidaClient = opts.aidaClient;
-    let serverSideLoggingAllowed = opts.serverSideLoggingAllowed ?? false;
-    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      serverSideLoggingAllowed = false;
-    }
-    this.#serverSideLoggingActive = serverSideLoggingAllowed;
-    this.#sessionId = opts.sessionId ?? crypto.randomUUID();
-    this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
-    this.#history = opts.history ?? [];
-    this.#allowedOrigin = opts.allowedOrigin;
-    this.#targetManager = opts.targetManager ?? SDK8.TargetManager.TargetManager.instance();
-  }
-  async enhanceQuery(query) {
-    return query;
-  }
-  currentFacts() {
-    return this.#facts;
-  }
-  get history() {
-    return [...this.#history];
-  }
-  get targetManager() {
-    return this.#targetManager;
-  }
-  /**
-   * Add a fact which will be sent for any subsequent requests.
-   * Returns the new list of all facts.
-   * Facts are never automatically removed.
-   */
-  addFact(fact) {
-    this.#facts.add(fact);
-    return this.#facts;
-  }
-  removeFact(fact) {
-    return this.#facts.delete(fact);
-  }
-  clearFacts() {
-    this.#facts.clear();
-  }
-  /**
-   * Clears any subclass-specific caches. This is called when a run encounters
-   * an error (e.g., cross-origin navigation, abort, or execution error) to
-   * prevent unvalidated cached data from being replayed in subsequent runs.
-   */
-  clearCache() {
-  }
-  /**
-   * Disables server-side logging for the remainder of this agent instance's lifetime.
-   *
-   * Logging deactivation is irreversible for the session. Conversation history
-   * accumulates across turns; re-enabling logging later would leak sensitive
-   * data from prior turns to AIDA.
-   */
-  disableServerSideLogging() {
-    this.#serverSideLoggingActive = false;
-  }
-  popPendingMultimodalInput() {
-    return void 0;
-  }
-  /**
-   * Preamble features appended to the `client_version` in metadata.
-   * This is required ONLY for the Styling Agent for legacy reasons to serve
-   * different server-side preambles based on the Chrome version.
-   * Other agents should NOT set or override this.
-   * If you are curious about this, look for `do_conversation_handler.cc` in
-   * Google3 or chat to @jacktfranklin.
-   */
-  preambleFeatures() {
-    return [];
-  }
-  buildRequest(part, role) {
-    const parts = Array.isArray(part) ? part : [part];
-    const currentMessage = {
-      parts,
-      role
-    };
-    const history = [...this.#history];
-    const declarations = [];
-    for (const [name, definition] of this.#functionDeclarations.entries()) {
-      declarations.push({
-        name,
-        description: typeof definition.description === "function" ? definition.description() : definition.description,
-        parameters: definition.parameters
-      });
-    }
-    function validTemperature(temperature) {
-      return typeof temperature === "number" && temperature >= 0 ? temperature : void 0;
-    }
-    const enableAidaFunctionCalling = declarations.length;
-    const userTier = Host5.AidaClient.convertToUserTierEnum(this.userTier);
-    const preamble10 = userTier === Host5.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
-    const facts = Array.from(this.#facts);
-    const request = {
-      client: Host5.AidaClient.CLIENT_NAME,
-      current_message: currentMessage,
-      preamble: preamble10,
-      historical_contexts: history.length ? history : void 0,
-      facts: facts.length ? facts : void 0,
-      ...enableAidaFunctionCalling ? { function_declarations: declarations } : {},
-      options: {
-        temperature: validTemperature(this.options.temperature),
-        model_id: this.options.modelId || void 0
-      },
-      metadata: {
-        disable_user_content_logging: !(this.#serverSideLoggingActive ?? false),
-        string_session_id: this.#sessionId,
-        user_tier: userTier,
-        client_version: Root3.Runtime.getChromeVersion() + this.preambleFeatures().map((feature) => `+${feature}`).join("")
-      },
-      functionality_type: enableAidaFunctionCalling ? Host5.AidaClient.FunctionalityType.AGENTIC_CHAT : Host5.AidaClient.FunctionalityType.CHAT,
-      client_feature: this.clientFeature
-    };
-    return request;
-  }
-  get sessionId() {
-    return this.#sessionId;
-  }
-  /**
-   * The AI has instructions to emit structured suggestions in their response. This
-   * function parses for that.
-   *
-   * Note: currently only StylingAgent and PerformanceAgent utilize this, but
-   * eventually all agents should support this.
-   */
-  parseTextResponseForSuggestions(text) {
-    if (!text) {
-      return { answer: "" };
-    }
-    const lines = text.split("\n");
-    const answerLines = [];
-    let suggestions;
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (trimmed.startsWith("SUGGESTIONS:")) {
-        try {
-          suggestions = sanitizeSuggestions(trimmed.substring("SUGGESTIONS:".length).trim());
-        } catch {
-        }
-      } else {
-        answerLines.push(line);
-      }
-    }
-    if (!suggestions && answerLines.at(-1)?.includes("SUGGESTIONS:")) {
-      const [answer, suggestionsText] = answerLines[answerLines.length - 1].split("SUGGESTIONS:", 2);
-      try {
-        suggestions = sanitizeSuggestions(suggestionsText.trim());
-      } catch {
-      }
-      answerLines[answerLines.length - 1] = answer;
-    }
-    const response = {
-      // If we could not parse the parts, consider the response to be an
-      // answer.
-      answer: answerLines.join("\n")
-    };
-    if (suggestions) {
-      response.suggestions = suggestions;
-    }
-    return response;
-  }
-  /**
-   * Parses a streaming text response into a
-   * though/action/title/answer/suggestions component.
-   */
-  parseTextResponse(response) {
-    return this.parseTextResponseForSuggestions(response.trim());
-  }
-  async finalizeAnswer(answer) {
-    return answer;
-  }
-  /**
-   * Declare a function that the AI model can call.
-   * @param name The name of the function
-   * @param declaration the function declaration. Currently functions must:
-   * 1. Return an object of serializable key/value pairs. You cannot return
-   *    anything other than a plain JavaScript object that can be serialized.
-   * 2. Take one parameter which is an object that can have
-   *    multiple keys and values. For example, rather than a function being called
-   *    with two args, `foo` and `bar`, you should instead have the function be
-   *    called with one object with `foo` and `bar` keys.
-   */
-  declareFunction(name, declaration) {
-    if (this.#functionDeclarations.has(name)) {
-      throw new Error(`Duplicate function declaration ${name}`);
-    }
-    this.#functionDeclarations.set(name, declaration);
-  }
-  clearDeclaredFunctions() {
-    this.#functionDeclarations.clear();
-  }
-  /**
-   * Executed immediately after the current context is populated with the selected
-   * context and before the request is built.
-   */
-  async preRun() {
-  }
-  async *run(initialQuery, options, multimodalInput) {
-    await options.selected?.refresh();
-    this.context = options.selected ?? void 0;
-    await this.preRun();
-    const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);
-    if (!enhancedQuery.trim() && !multimodalInput) {
-      return;
-    }
-    Host5.userMetrics.freestylerQueryLength(enhancedQuery.length);
-    let query;
-    query = multimodalInput ? [{ text: enhancedQuery }, multimodalInput.input] : [{ text: enhancedQuery }];
-    let request = this.buildRequest(query, Host5.AidaClient.Role.USER);
-    const clientFeatureName = Host5.AidaClient.getClientFeatureName(this.clientFeature);
-    debugLog(`[AiAgent] Starting conversation with client ${clientFeatureName}, userTier ${this.userTier}`);
-    yield* this.handleContextDetails(options.selected);
-    for (let i = 0; i < MAX_STEPS; i++) {
-      yield {
-        type: "querying" /* QUERYING */
-      };
-      if (i === 0) {
-        debugLog("[AiAgent] Step 1: Sending user prompt to model:", enhancedQuery);
-      } else if (!Array.isArray(query) && "functionResponse" in query) {
-        debugLog(
-          `[AiAgent] Step ${i + 1}: Sending function response for '${query.functionResponse.name}' to model:`,
-          query.functionResponse.response
-        );
-      } else {
-        debugLog(`[AiAgent] Step ${i + 1}: Sending request to model:`, request.current_message);
-      }
-      let rpcId;
-      let textResponse = "";
-      let functionCall = void 0;
-      try {
-        for await (const fetchResult of this.#aidaFetch(request, { signal: options.signal })) {
-          rpcId = fetchResult.rpcId;
-          textResponse = fetchResult.text ?? "";
-          functionCall = fetchResult.functionCall;
-          if (!functionCall && !fetchResult.completed) {
-            const parsed = this.parseTextResponse(textResponse);
-            const partialAnswer = "answer" in parsed ? parsed.answer : "";
-            if (!partialAnswer) {
-              continue;
-            }
-            yield {
-              type: "answer" /* ANSWER */,
-              text: partialAnswer,
-              complete: false
-            };
-          }
-        }
-      } catch (err) {
-        debugLog("Error calling the AIDA API", err);
-        const error = aidaErrorToErrorType(err);
-        yield this.#createErrorResponse(error);
-        break;
-      }
-      this.#history.push(request.current_message);
-      if (textResponse) {
-        const parsedResponse = this.parseTextResponse(textResponse);
-        if (!("answer" in parsedResponse)) {
-          throw new Error("Expected a completed response to have an answer");
-        }
-        if (!functionCall) {
-          debugLog(`[AiAgent] Step ${i + 1}: Model returned text response:`, parsedResponse.answer);
-          this.#history.push({
-            parts: [{
-              text: parsedResponse.answer
-            }],
-            role: Host5.AidaClient.Role.MODEL
-          });
-        }
-        Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceAnswerReceived);
-        yield await this.finalizeAnswer({
-          type: "answer" /* ANSWER */,
-          text: parsedResponse.answer,
-          suggestions: parsedResponse.suggestions,
-          complete: true,
-          rpcId
-        });
-        if (!functionCall) {
-          break;
-        }
-      }
-      if (functionCall) {
-        debugLog(`[AiAgent] Step ${i + 1}: Model requested function call: ${functionCall.name}`, functionCall.args);
-        const allowedOriginResult = this.#allowedOrigin?.();
-        if (allowedOriginResult && "blocked" in allowedOriginResult) {
-          yield this.#createErrorResponse("cross-origin" /* CROSS_ORIGIN */);
-          break;
-        }
-        try {
-          const result = yield* this.#callFunction(
-            functionCall.name,
-            functionCall.args,
-            functionCall.thoughtSignature,
-            {
-              ...options,
-              explanation: textResponse
-            }
-          );
-          if (options.signal?.aborted) {
-            yield this.#createErrorResponse("abort" /* ABORT */);
-            break;
-          }
-          if ("context" in result) {
-            yield {
-              type: "context-change" /* CONTEXT_CHANGE */,
-              description: result.description,
-              context: result.context,
-              widgets: result.widgets
-            };
-            return;
-          }
-          query = {
-            functionResponse: {
-              name: functionCall.name,
-              // Widgets are not sent back to the LLM
-              response: { ...result, widgets: void 0 }
-            }
-          };
-          request = this.buildRequest(query, Host5.AidaClient.Role.ROLE_UNSPECIFIED);
-        } catch (err) {
-          if (err instanceof CrossOriginError) {
-            yield this.#createErrorResponse("cross-origin" /* CROSS_ORIGIN */);
-            break;
-          }
-          debugLog("Error handling function call", err);
-          yield this.#createErrorResponse("unknown" /* UNKNOWN */);
-          break;
-        }
-      } else {
-        yield this.#createErrorResponse(i - 1 === MAX_STEPS ? "max-steps" /* MAX_STEPS */ : "unknown" /* UNKNOWN */);
-        break;
-      }
-    }
-    if (isStructuredLogEnabled()) {
-      window.dispatchEvent(new CustomEvent("aiassistancedone"));
-    }
-    return;
-  }
-  async *#callFunction(name, args, thoughtSignature, options) {
-    const call = this.#functionDeclarations.get(name);
-    if (!call) {
-      throw new Error(`Function ${name} is not found.`);
-    }
-    debugLog(`[AiAgent] Executing tool '${name}' with args:`, args);
-    const parts = [];
-    if (options?.explanation) {
-      parts.push({
-        text: options.explanation
-      });
-    }
-    const functionCall = {
-      name,
-      args
-    };
-    if (thoughtSignature) {
-      functionCall.thoughtSignature = thoughtSignature;
-    }
-    parts.push({ functionCall });
-    this.#history.push({
-      parts,
-      role: Host5.AidaClient.Role.MODEL
-    });
-    let code;
-    if (call.displayInfoFromArgs) {
-      const { title, thought, action: callCode } = call.displayInfoFromArgs(args);
-      code = callCode;
-      if (title) {
-        yield {
-          type: "title" /* TITLE */,
-          title
-        };
-      }
-      if (thought) {
-        yield {
-          type: "thought" /* THOUGHT */,
-          thought
-        };
-      }
-    }
-    const isOriginBlocked = () => {
-      const allowedOriginResult = this.#allowedOrigin?.();
-      return Boolean(allowedOriginResult && "blocked" in allowedOriginResult);
-    };
-    let result = await call.handler(args, options);
-    if (isOriginBlocked()) {
-      throw new CrossOriginError();
-    }
-    if ("requiresApproval" in result) {
-      if (code) {
-        yield {
-          type: "action" /* ACTION */,
-          code,
-          canceled: false
-        };
-      }
-      const sideEffectConfirmationPromiseWithResolvers = this.confirmSideEffect();
-      void sideEffectConfirmationPromiseWithResolvers.promise.then((result2) => {
-        Host5.userMetrics.actionTaken(
-          result2 ? Host5.UserMetrics.Action.AiAssistanceSideEffectConfirmed : Host5.UserMetrics.Action.AiAssistanceSideEffectRejected
-        );
-      });
-      if (options?.signal?.aborted) {
-        sideEffectConfirmationPromiseWithResolvers.resolve(false);
-      }
-      const onAbort = () => {
-        sideEffectConfirmationPromiseWithResolvers.resolve(false);
-      };
-      options?.signal?.addEventListener("abort", onAbort, { once: true });
-      yield {
-        type: "side-effect" /* SIDE_EFFECT */,
-        confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
-        description: result.description
-      };
-      let approvedRun = false;
-      try {
-        approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
-      } finally {
-        options?.signal?.removeEventListener("abort", onAbort);
-      }
-      if (!approvedRun) {
-        yield {
-          type: "action" /* ACTION */,
-          code,
-          output: "Error: User denied code execution with side effects.",
-          canceled: true
-        };
-        debugLog(`[AiAgent] Tool '${name}' denied by user.`);
-        return {
-          result: "Error: User denied code execution with side effects."
-        };
-      }
-      if (isOriginBlocked()) {
-        throw new CrossOriginError();
-      }
-      result = await call.handler(args, {
-        ...options,
-        approved: true
-      });
-      if (isOriginBlocked()) {
-        throw new CrossOriginError();
-      }
-    }
-    if ("result" in result) {
-      yield {
-        type: "action" /* ACTION */,
-        code,
-        output: typeof result.result === "string" ? result.result : JSON.stringify(result.result),
-        widgets: result.widgets,
-        canceled: false,
-        toolName: name
-      };
-    }
-    if ("error" in result) {
-      yield {
-        type: "action" /* ACTION */,
-        code,
-        output: result.error,
-        canceled: false,
-        toolName: name
-      };
-    }
-    debugLog(`[AiAgent] Tool '${name}' result:`, result);
-    if ("context" in result) {
-      return result;
-    }
-    return result;
-  }
-  async *#aidaFetch(request, options) {
-    let aidaResponse = void 0;
-    let rpcId;
-    for await (aidaResponse of this.#aidaClient.doConversation(request, options)) {
-      if (aidaResponse.functionCalls?.length) {
-        if (aidaResponse.functionCalls.length > 1) {
-          debugLog(
-            `[AiAgent] Unexpected: received ${aidaResponse.functionCalls.length} function calls in response:`,
-            aidaResponse.functionCalls
-          );
-        }
-        yield {
-          rpcId,
-          functionCall: aidaResponse.functionCalls[0],
-          completed: true,
-          text: aidaResponse.explanation
-        };
-        break;
-      }
-      rpcId = aidaResponse.metadata.rpcGlobalId ?? rpcId;
-      yield {
-        rpcId,
-        text: aidaResponse.explanation,
-        completed: aidaResponse.completed
-      };
-    }
-    if (isStructuredLogEnabled() && aidaResponse) {
-      this.#structuredLog.push({
-        request: structuredClone(request),
-        aidaResponse
-      });
-      try {
-        localStorage.setItem("aiAssistanceStructuredLog", JSON.stringify(this.#structuredLog));
-      } catch (err) {
-        console.warn('Failed to write to local storage "aiAssistanceStructuredLog":', err);
-      }
-    }
-  }
-  #removeLastRunParts() {
-    this.#history.splice(this.#history.findLastIndex((item) => {
-      return item.role === Host5.AidaClient.Role.USER;
-    }));
-  }
-  #createErrorResponse(error) {
-    this.#removeLastRunParts();
-    this.clearCache();
-    if (error !== "abort" /* ABORT */) {
-      Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceError);
-    }
-    return {
-      type: "error" /* ERROR */,
-      error
-    };
-  }
-};
-function sanitizeSuggestions(suggestions) {
-  const parsed = JSON.parse(suggestions);
-  if (!Array.isArray(parsed)) {
-    return void 0;
-  }
-  const sanitized = [];
-  for (const item of parsed) {
-    if (typeof item !== "string") {
-      continue;
-    }
-    const noExtraWhitespace = item.replace(/\s+/g, " ").trim();
-    if (noExtraWhitespace.length === 0) {
-      continue;
-    }
-    sanitized.push(noExtraWhitespace.substring(0, MAX_SUGGESTION_LENGTH));
-  }
-  if (sanitized.length === 0) {
-    return void 0;
-  }
-  return sanitized;
-}
-function aidaErrorToErrorType(err) {
-  if (err instanceof Host5.AidaClient.AidaAbortError) {
-    return "abort" /* ABORT */;
-  }
-  if (err instanceof Host5.AidaClient.AidaBlockError) {
-    return "block" /* BLOCK */;
-  }
-  if (err instanceof Host5.AidaClient.AidaQuotaError) {
-    return "quota" /* QUOTA */;
-  }
-  if (err instanceof Host5.AidaClient.AidaPayloadTooLargeError) {
-    return "payload-too-large" /* PAYLOAD_TOO_LARGE */;
-  }
-  return "unknown" /* UNKNOWN */;
-}
-
-// ../../front_end/models/ai_assistance/contexts/DOMNodeContext.ts
-var UIStringsNotTranslate2 = {
-  /**
-   * @description Heading text for context details of DevTools AI Agent.
-   */
-  dataUsed: "Data used"
-};
-var lockedString4 = i18n7.i18n.lockedString;
-var DOMNodeContext = class extends ConversationContext {
-  #node;
-  #opaqueOrigin;
-  constructor(node) {
-    super();
-    this.#node = node;
-  }
-  /**
-   * Returns the security origin of the node's owner document.
-   *
-   * If the node is detached from a document, returns a unique opaque origin to
-   * prevent unauthorized cross-origin access in AI conversations.
-   *
-   * @returns The security origin of the owner document, or a unique opaque origin.
-   */
-  getOrigin() {
-    const ownerDocument = this.#node.ownerDocument;
-    if (!ownerDocument) {
-      if (!this.#opaqueOrigin) {
-        this.#opaqueOrigin = SDK9.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
-      }
-      return this.#opaqueOrigin;
-    }
-    return SDK9.SecurityOrigin.SecurityOrigin.create(ownerDocument.documentURL);
-  }
-  getItem() {
-    return this.#node;
-  }
-  getTitle() {
-    throw new Error("Not implemented");
-  }
-  async getSuggestions() {
-    const layoutProps = await this.#node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.#node.id);
-    if (!layoutProps) {
-      return;
-    }
-    if (layoutProps.isFlex) {
-      return [
-        { title: "How can I make flex items wrap?", jslogContext: "flex-wrap" },
-        { title: "How do I distribute flex items evenly?", jslogContext: "flex-distribute" },
-        { title: "What is flexbox?", jslogContext: "flex-what" }
-      ];
-    }
-    if (layoutProps.isSubgrid) {
-      return [
-        { title: "Where is this grid defined?", jslogContext: "subgrid-where" },
-        { title: "How to overwrite parent grid properties?", jslogContext: "subgrid-override" },
-        { title: "How do subgrids work? ", jslogContext: "subgrid-how" }
-      ];
-    }
-    if (layoutProps.isGrid) {
-      return [
-        { title: "How do I align items in a grid?", jslogContext: "grid-align" },
-        { title: "How to add spacing between grid items?", jslogContext: "grid-gap" },
-        { title: "How does grid layout work?", jslogContext: "grid-how" }
-      ];
-    }
-    if (layoutProps.hasScroll) {
-      return [
-        { title: "How do I remove scrollbars for this element?", jslogContext: "scroll-remove" },
-        { title: "How can I style a scrollbar?", jslogContext: "scroll-style" },
-        { title: "Why does this element scroll?", jslogContext: "scroll-why" }
-      ];
-    }
-    if (layoutProps.containerType) {
-      return [
-        { title: "What are container queries?", jslogContext: "container-what" },
-        { title: "How do I use container-type?", jslogContext: "container-how" },
-        { title: "What's the container context for this element?", jslogContext: "container-context" }
-      ];
-    }
-    return;
-  }
-  async getPromptDetails() {
-    return `# Inspected element
-
-${await this.describe()}`;
-  }
-  async getUserFacingDetails() {
-    return [
-      {
-        title: lockedString4(UIStringsNotTranslate2.dataUsed),
-        text: await this.describe()
-      }
-    ];
-  }
-  async describe() {
-    const element = this.#node;
-    let output = `* Element's uid is ${element.backendNodeId()}.
-* Its selector is \`${element.simpleSelector()}\``;
-    const childNodes = await element.getChildNodesPromise();
-    if (childNodes) {
-      const textChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.TEXT_NODE);
-      const elementChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.ELEMENT_NODE);
-      switch (elementChildNodes.length) {
-        case 0:
-          output += "\n* It doesn't have any child element nodes";
-          break;
-        case 1:
-          output += `
-* It only has 1 child element node: \`${elementChildNodes[0].simpleSelector()}\``;
-          break;
-        default:
-          output += `
-* It has ${elementChildNodes.length} child element nodes: ${elementChildNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
-      }
-      switch (textChildNodes.length) {
-        case 0:
-          output += "\n* It doesn't have any child text nodes";
-          break;
-        case 1:
-          output += "\n* It only has 1 child text node";
-          break;
-        default:
-          output += `
-* It has ${textChildNodes.length} child text nodes`;
-      }
-    }
-    if (element.nextSibling) {
-      const elementOrNodeElementNodeText = element.nextSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.nextSibling.backendNodeId()})` : "a non element";
-      output += `
-* It has a next sibling and it is ${elementOrNodeElementNodeText} node`;
-    }
-    if (element.previousSibling) {
-      const elementOrNodeElementNodeText = element.previousSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.previousSibling.backendNodeId()})` : "a non element";
-      output += `
-* It has a previous sibling and it is ${elementOrNodeElementNodeText} node`;
-    }
-    if (element.isInShadowTree()) {
-      output += "\n* It is in a shadow DOM tree.";
-    }
-    const parentNode = element.parentNode;
-    if (parentNode) {
-      const parentChildrenNodes = await parentNode.getChildNodesPromise();
-      output += `
-* Its parent's selector is \`${parentNode.simpleSelector()}\` (uid=${parentNode.backendNodeId()})`;
-      const elementOrNodeElementNodeText = parentNode.nodeType() === Node.ELEMENT_NODE ? "an element" : "a non element";
-      output += `
-* Its parent is ${elementOrNodeElementNodeText} node`;
-      if (parentNode.isShadowRoot()) {
-        output += "\n* Its parent is a shadow root.";
-      }
-      if (parentChildrenNodes) {
-        const childElementNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.ELEMENT_NODE);
-        switch (childElementNodes.length) {
-          case 0:
-            break;
-          case 1:
-            output += "\n* Its parent has only 1 child element node";
-            break;
-          default:
-            output += `
-* Its parent has ${childElementNodes.length} child element nodes: ${childElementNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
-            break;
-        }
-        const siblingTextNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.TEXT_NODE);
-        switch (siblingTextNodes.length) {
-          case 0:
-            break;
-          case 1:
-            output += "\n* Its parent has only 1 child text node";
-            break;
-          default:
-            output += `
-* Its parent has ${siblingTextNodes.length} child text nodes: ${siblingTextNodes.map((node) => `\`${node.simpleSelector()}\``).join(", ")}`;
-            break;
-        }
-      }
-    }
-    return output.trim();
-  }
-};
-
-// ../../front_end/models/ai_assistance/tools/GetElementAccessibilityDetails.ts
 var GetElementAccessibilityDetailsTool = class {
   name = "getElementAccessibilityDetails" /* GET_ELEMENT_ACCESSIBILITY_DETAILS */;
   description = "Retrieves detailed accessibility properties (computed role, accessible name, name source, ARIA attributes, ignored state) and a DOM tree snapshot for an element by backend node ID.";
   parameters = {
-    type: Host6.AidaClient.ParametersTypes.OBJECT,
+    type: Host5.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for getting element accessibility details.",
     nullable: false,
     properties: {
       explanation: {
-        type: Host6.AidaClient.ParametersTypes.STRING,
+        type: Host5.AidaClient.ParametersTypes.STRING,
         description: "Reason for requesting accessibility details.",
         nullable: false
       },
       element: {
-        type: Host6.AidaClient.ParametersTypes.INTEGER,
+        type: Host5.AidaClient.ParametersTypes.INTEGER,
         description: "The backend node ID of the element.",
         nullable: false
       }
@@ -5819,23 +4932,19 @@ var GetElementAccessibilityDetailsTool = class {
    */
   async handler(params, context) {
     const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return { error: "Error: Origin lock is not established." };
-    }
     const target = context.getTarget();
     if (!target) {
       return { error: "Error: Inspected target not found." };
     }
-    const deferredNode = new SDK10.DOMModel.DeferredDOMNode(target, params.element);
+    const deferredNode = new SDK8.DOMModel.DeferredDOMNode(target, params.element);
     const resolved = await deferredNode.resolvePromise();
     if (!resolved) {
       return { error: "Error: Could not resolve element by ID." };
     }
-    const nodeContext = new DOMNodeContext(resolved);
-    if (!isOriginAllowedByLock(establishedOrigin, nodeContext.getOrigin())) {
-      return { error: "Error: Node does not belong to the locked origin." };
+    if (!isOriginAllowedByLock(establishedOrigin, resolved.securityOrigin())) {
+      return { error: "Error: Node does not belong to the current origin." };
     }
-    const axModel = target.model(SDK10.AccessibilityModel.AccessibilityModel);
+    const axModel = resolved.domModel().target().model(SDK8.AccessibilityModel.AccessibilityModel);
     if (!axModel) {
       return { error: "Error: Accessibility model not found." };
     }
@@ -5867,8 +4976,8 @@ var GetElementAccessibilityDetailsTool = class {
         name: "DOM_TREE",
         data: {
           root: snapshot,
-          title: i18n9.i18n.lockedString("Element details"),
-          accessibleRevealLabel: i18n9.i18n.lockedString("Reveal element")
+          title: i18n7.i18n.lockedString("Element details"),
+          accessibleRevealLabel: i18n7.i18n.lockedString("Reveal element")
         }
       }]
     };
@@ -5880,32 +4989,32 @@ var GetFunctionCode_exports = {};
 __export(GetFunctionCode_exports, {
   GetFunctionCodeTool: () => GetFunctionCodeTool
 });
-import * as Host7 from "../../core/host/host.js";
-import * as i18n11 from "../../core/i18n/i18n.js";
-var UIStringsNotTranslate3 = {
+import * as Host6 from "../../core/host/host.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
+var UIStringsNotTranslate2 = {
   lookingUpFunctionCode: "Looking up function code"
 };
-var lockedString5 = i18n11.i18n.lockedString;
+var lockedString4 = i18n9.i18n.lockedString;
 var GetFunctionCodeTool = class {
   name = "getFunctionCode" /* GET_FUNCTION_CODE */;
   description = "Retrieves the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.";
   parameters = {
-    type: Host7.AidaClient.ParametersTypes.OBJECT,
+    type: Host6.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for looking up function code.",
     nullable: false,
     properties: {
       scriptUrl: {
-        type: Host7.AidaClient.ParametersTypes.STRING,
+        type: Host6.AidaClient.ParametersTypes.STRING,
         description: "The url of the function.",
         nullable: false
       },
       line: {
-        type: Host7.AidaClient.ParametersTypes.INTEGER,
+        type: Host6.AidaClient.ParametersTypes.INTEGER,
         description: "The line number where the function is defined.",
         nullable: false
       },
       column: {
-        type: Host7.AidaClient.ParametersTypes.INTEGER,
+        type: Host6.AidaClient.ParametersTypes.INTEGER,
         description: "The column number where the function is defined.",
         nullable: false
       }
@@ -5914,7 +5023,7 @@ var GetFunctionCodeTool = class {
   };
   displayInfoFromArgs(params) {
     return {
-      title: lockedString5(UIStringsNotTranslate3.lookingUpFunctionCode),
+      title: lockedString4(UIStringsNotTranslate2.lookingUpFunctionCode),
       action: `getFunctionCode('${params.scriptUrl}', ${params.line}, ${params.column})`
     };
   }
@@ -5965,9 +5074,9 @@ var GetInsightDetails_exports = {};
 __export(GetInsightDetails_exports, {
   GetInsightDetailsTool: () => GetInsightDetailsTool
 });
-import * as Host8 from "../../core/host/host.js";
-import * as i18n13 from "../../core/i18n/i18n.js";
-import * as SDK12 from "../../core/sdk/sdk.js";
+import * as Host7 from "../../core/host/host.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
+import * as SDK10 from "../../core/sdk/sdk.js";
 import * as TextUtils2 from "../../core/text_utils/text_utils.js";
 import * as Logs2 from "../logs/logs.js";
 import * as Trace6 from "../trace/trace.js";
@@ -6131,7 +5240,7 @@ __export(NetworkRequestFormatter_exports, {
   formatRequestInitiatorChain: () => formatRequestInitiatorChain,
   sanitizeHeaders: () => sanitizeHeaders
 });
-import * as SDK11 from "../../core/sdk/sdk.js";
+import * as SDK9 from "../../core/sdk/sdk.js";
 import * as TextUtils from "../../core/text_utils/text_utils.js";
 import * as Logs from "../logs/logs.js";
 import * as NetworkTimeCalculator from "../network_time_calculator/network_time_calculator.js";
@@ -6167,7 +5276,7 @@ var NetworkRequestFormatter = class _NetworkRequestFormatter {
    * @returns The evaluated `ResponseAccessMode`.
    */
   responseAccessMode() {
-    return SDK11.NetworkRequestAccess.evaluateResponseAccessMode(this.#request, this.#accessingSecurityOrigin);
+    return SDK9.NetworkRequestAccess.evaluateResponseAccessMode(this.#request, this.#accessingSecurityOrigin);
   }
   static allowHeader(headerName) {
     return allowedHeaders.has(headerName.toLowerCase().trim());
@@ -6204,8 +5313,8 @@ ${dataAsText}`;
 <binary data>`;
   }
   static formatInitiatorUrl(initiatorUrl, allowedOrigin) {
-    const initiatorOrigin = SDK11.SecurityOrigin.SecurityOrigin.create(initiatorUrl);
-    const targetOrigin = SDK11.SecurityOrigin.SecurityOrigin.create(allowedOrigin);
+    const initiatorOrigin = SDK9.SecurityOrigin.SecurityOrigin.create(initiatorUrl);
+    const targetOrigin = SDK9.SecurityOrigin.SecurityOrigin.create(allowedOrigin);
     if (initiatorOrigin.isSameOriginWith(targetOrigin)) {
       return initiatorUrl;
     }
@@ -6265,7 +5374,7 @@ ${dataAsText}`;
    */
   formatResponseHeaders() {
     const accessMode = this.responseAccessMode();
-    const headers = SDK11.NetworkRequestAccess.getFilterableResponseHeaders(this.#request, accessMode);
+    const headers = SDK9.NetworkRequestAccess.getFilterableResponseHeaders(this.#request, accessMode);
     return _NetworkRequestFormatter.formatHeaders("Response headers:", headers);
   }
   /**
@@ -6275,8 +5384,8 @@ ${dataAsText}`;
    * security origin is forbidden by the Same-Origin Policy from reading it.
    */
   async formatResponseBody() {
-    if (this.responseAccessMode() === SDK11.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN) {
-      return SDK11.NetworkRequestAccess.REDACTED_RESPONSE_BODY;
+    if (this.responseAccessMode() === SDK9.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN) {
+      return SDK9.NetworkRequestAccess.REDACTED_RESPONSE_BODY;
     }
     return await _NetworkRequestFormatter.formatBody("Response body:", this.#request, MAX_BODY_SIZE);
   }
@@ -8469,9 +7578,9 @@ Polyfills and transforms enable older browsers to use new JavaScript features. H
 };
 
 // ../../front_end/models/ai_assistance/tools/GetInsightDetails.ts
-var lockedString6 = i18n13.i18n.lockedString;
+var lockedString5 = i18n11.i18n.lockedString;
 async function getNetworkRequestImageData(target, lcpRequest, networkLog = Logs2.NetworkLog.NetworkLog.instance()) {
-  const networkManager = target?.model(SDK12.NetworkManager.NetworkManager);
+  const networkManager = target?.model(SDK10.NetworkManager.NetworkManager);
   if (!target || !networkManager) {
     return void 0;
   }
@@ -8489,17 +7598,17 @@ var GetInsightDetailsTool = class {
   name = "getInsightDetails" /* GET_INSIGHT_DETAILS */;
   description = "Retrieves detailed metrics, subpart timing breakdowns, related DOM elements, and diagnostic data for a performance insight (e.g., 'LCPBreakdown', 'LCPDiscovery', 'RenderBlocking', 'CLSCulprits', 'INPBreakdown', 'ThirdParties'). Use this before commenting on any specific performance issue.";
   parameters = {
-    type: Host8.AidaClient.ParametersTypes.OBJECT,
+    type: Host7.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for getting insight details.",
     nullable: false,
     properties: {
       insightSetId: {
-        type: Host8.AidaClient.ParametersTypes.STRING,
+        type: Host7.AidaClient.ParametersTypes.STRING,
         description: 'The id for the specific insight set. Only use the ids given in the "Available insight sets" list.',
         nullable: false
       },
       insightName: {
-        type: Host8.AidaClient.ParametersTypes.STRING,
+        type: Host7.AidaClient.ParametersTypes.STRING,
         description: 'The name of the insight. Only use the insight names given in the "Available insights" list.',
         nullable: false
       }
@@ -8508,7 +7617,7 @@ var GetInsightDetailsTool = class {
   };
   displayInfoFromArgs(params) {
     return {
-      title: lockedString6(`Investigating insight ${params.insightName}`),
+      title: lockedString5(`Investigating insight ${params.insightName}`),
       action: `getInsightDetails('${params.insightSetId}', '${params.insightName}')`
     };
   }
@@ -8526,7 +7635,7 @@ var GetInsightDetailsTool = class {
       if (!nodeId) {
         return null;
       }
-      const domModel = target?.model(SDK12.DOMModel.DOMModel);
+      const domModel = target?.model(SDK10.DOMModel.DOMModel);
       if (!domModel) {
         return null;
       }
@@ -8555,8 +7664,8 @@ var GetInsightDetailsTool = class {
         data: {
           root: snapshot,
           networkRequest,
-          title: lockedString6("LCP element"),
-          accessibleRevealLabel: lockedString6("Reveal LCP element")
+          title: lockedString5("LCP element"),
+          accessibleRevealLabel: lockedString5("Reveal LCP element")
         }
       };
     } catch (err) {
@@ -8623,17 +7732,17 @@ var GetLighthouseAudits_exports = {};
 __export(GetLighthouseAudits_exports, {
   GetLighthouseAuditsTool: () => GetLighthouseAuditsTool
 });
-import * as Host9 from "../../core/host/host.js";
+import * as Host8 from "../../core/host/host.js";
 var GetLighthouseAuditsTool = class {
   name = "getLighthouseAudits" /* GET_LIGHTHOUSE_AUDITS */;
   description = "Retrieves audit results and diagnostic details from the active Lighthouse report for a specific category (e.g., 'accessibility').";
   parameters = {
-    type: Host9.AidaClient.ParametersTypes.OBJECT,
+    type: Host8.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for retrieving Lighthouse category audits.",
     nullable: false,
     properties: {
       categoryId: {
-        type: Host9.AidaClient.ParametersTypes.STRING,
+        type: Host8.AidaClient.ParametersTypes.STRING,
         description: 'The category of audits to retrieve. E.g. "accessibility".',
         nullable: false
       }
@@ -8664,14 +7773,14 @@ var GetNetworkRequestDetails_exports = {};
 __export(GetNetworkRequestDetails_exports, {
   GetNetworkRequestDetailsTool: () => GetNetworkRequestDetailsTool
 });
-import * as Host10 from "../../core/host/host.js";
-import * as i18n15 from "../../core/i18n/i18n.js";
+import * as Host9 from "../../core/host/host.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
 import * as Logs3 from "../logs/logs.js";
 import * as NetworkTimeCalculator2 from "../network_time_calculator/network_time_calculator.js";
-var UIStringsNotTranslate4 = {
+var UIStringsNotTranslate3 = {
   gettingNetworkRequestDetails: "Getting network request details"
 };
-var lockedString7 = i18n15.i18n.lockedString;
+var lockedString6 = i18n13.i18n.lockedString;
 var GetNetworkRequestDetailsTool = class {
   name = "getNetworkRequestDetails" /* GET_NETWORK_REQUEST_DETAILS */;
   description = "Retrieves the full headers, timing, status, and body details of a specific network request by ID.";
@@ -8680,12 +7789,12 @@ var GetNetworkRequestDetailsTool = class {
     this.#networkLog = networkLog;
   }
   parameters = {
-    type: Host10.AidaClient.ParametersTypes.OBJECT,
+    type: Host9.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for retrieving detailed information about a specific network request.",
     nullable: false,
     properties: {
       id: {
-        type: Host10.AidaClient.ParametersTypes.STRING,
+        type: Host9.AidaClient.ParametersTypes.STRING,
         description: "The unique requestId obtained from listNetworkRequests.",
         nullable: false
       }
@@ -8694,7 +7803,7 @@ var GetNetworkRequestDetailsTool = class {
   };
   displayInfoFromArgs(args) {
     return {
-      title: lockedString7(UIStringsNotTranslate4.gettingNetworkRequestDetails),
+      title: lockedString6(UIStringsNotTranslate3.gettingNetworkRequestDetails),
       action: `getNetworkRequestDetails(${args.id})`
     };
   }
@@ -8704,11 +7813,6 @@ var GetNetworkRequestDetailsTool = class {
    */
   async handler(args, context) {
     const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {
-        error: "Opaque origin not allowed"
-      };
-    }
     const networkLog = this.#networkLog ?? Logs3.NetworkLog.NetworkLog.instance();
     const request = networkLog.requests().find((req) => {
       if (req.requestId() !== args.id) {
@@ -8716,7 +7820,7 @@ var GetNetworkRequestDetailsTool = class {
       }
       return isOriginAllowedByLock(establishedOrigin, req.initiatorSecurityOrigin());
     });
-    if (!request) {
+    if (!establishedOrigin || !request) {
       return {
         error: "No request found"
       };
@@ -8744,25 +7848,25 @@ var GetResourceContent_exports = {};
 __export(GetResourceContent_exports, {
   GetResourceContentTool: () => GetResourceContentTool
 });
-import * as Host11 from "../../core/host/host.js";
-import * as i18n17 from "../../core/i18n/i18n.js";
-import * as Root4 from "../../core/root/root.js";
-import * as SDK13 from "../../core/sdk/sdk.js";
+import * as Host10 from "../../core/host/host.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
+import * as Root3 from "../../core/root/root.js";
+import * as SDK11 from "../../core/sdk/sdk.js";
 import * as TextUtils3 from "../../core/text_utils/text_utils.js";
-var UIStringsNotTranslate5 = {
+var UIStringsNotTranslate4 = {
   lookingAtResourceContent: "Looking at resource content"
 };
-var lockedString8 = i18n17.i18n.lockedString;
+var lockedString7 = i18n15.i18n.lockedString;
 var GetResourceContentTool = class {
   name = "getResourceContent" /* GET_RESOURCE_CONTENT */;
   description = "Retrieves the content of the resource with the given url. Only use this for text resource types.";
   parameters = {
-    type: Host11.AidaClient.ParametersTypes.OBJECT,
+    type: Host10.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for looking up resource content.",
     nullable: false,
     properties: {
       url: {
-        type: Host11.AidaClient.ParametersTypes.STRING,
+        type: Host10.AidaClient.ParametersTypes.STRING,
         description: "The url for the resource.",
         nullable: false
       }
@@ -8771,7 +7875,7 @@ var GetResourceContentTool = class {
   };
   displayInfoFromArgs(params) {
     return {
-      title: lockedString8(UIStringsNotTranslate5.lookingAtResourceContent),
+      title: lockedString7(UIStringsNotTranslate4.lookingAtResourceContent),
       action: `getResourceContent('${params.url}')`
     };
   }
@@ -8795,11 +7899,11 @@ var GetResourceContentTool = class {
       content = script.content;
     } else {
       const target = capabilities.getTarget();
-      const isTraceApp = Root4.Runtime.Runtime.isTraceApp();
+      const isTraceApp = Root3.Runtime.Runtime.isTraceApp();
       if (target || isTraceApp) {
         const targetManager = target?.targetManager() ?? // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        SDK13.TargetManager.TargetManager.instance();
-        const resource = SDK13.ResourceTreeModel.ResourceTreeModel.resourceForURL(targetManager, url);
+        SDK11.TargetManager.TargetManager.instance();
+        const resource = SDK11.ResourceTreeModel.ResourceTreeModel.resourceForURL(targetManager, url);
         if (!resource) {
           return { error: "Resource not found" };
         }
@@ -8834,15 +7938,8 @@ __export(GetSourceContent_exports, {
   GetSourceContentTool: () => GetSourceContentTool
 });
 import * as Host13 from "../../core/host/host.js";
-import * as i18n21 from "../../core/i18n/i18n.js";
+import * as i18n19 from "../../core/i18n/i18n.js";
 import * as TextUtils4 from "../../core/text_utils/text_utils.js";
-
-// ../../front_end/models/ai_assistance/contexts/FileContext.ts
-var FileContext_exports = {};
-__export(FileContext_exports, {
-  FileContext: () => FileContext
-});
-import * as SDK14 from "../../core/sdk/sdk.js";
 
 // ../../front_end/models/ai_assistance/data_formatters/FileFormatter.ts
 var FileFormatter_exports = {};
@@ -8922,8 +8019,721 @@ ${truncated}
   }
 };
 
+// ../../front_end/models/ai_assistance/tools/ListSources.ts
+var ListSources_exports = {};
+__export(ListSources_exports, {
+  ListSourcesTool: () => ListSourcesTool
+});
+import * as Host12 from "../../core/host/host.js";
+import * as i18n17 from "../../core/i18n/i18n.js";
+import * as Workspace3 from "../workspace/workspace.js";
+
+// ../../front_end/models/ai_assistance/contexts/FileContext.ts
+var FileContext_exports = {};
+__export(FileContext_exports, {
+  FileContext: () => FileContext
+});
+import * as SDK13 from "../../core/sdk/sdk.js";
+
+// ../../front_end/models/ai_assistance/agents/AiAgent.ts
+var AiAgent_exports = {};
+__export(AiAgent_exports, {
+  AiAgent: () => AiAgent,
+  ConversationContext: () => ConversationContext,
+  ErrorType: () => ErrorType,
+  MAX_STEPS: () => MAX_STEPS,
+  MultimodalInputType: () => MultimodalInputType,
+  ResponseType: () => ResponseType,
+  aidaErrorToErrorType: () => aidaErrorToErrorType
+});
+import * as Host11 from "../../core/host/host.js";
+import * as Root4 from "../../core/root/root.js";
+import * as SDK12 from "../../core/sdk/sdk.js";
+var MAX_SUGGESTION_LENGTH = 200;
+var ResponseType = /* @__PURE__ */ ((ResponseType2) => {
+  ResponseType2["CONTEXT"] = "context";
+  ResponseType2["TITLE"] = "title";
+  ResponseType2["THOUGHT"] = "thought";
+  ResponseType2["ACTION"] = "action";
+  ResponseType2["SIDE_EFFECT"] = "side-effect";
+  ResponseType2["SUGGESTIONS"] = "suggestions";
+  ResponseType2["ANSWER"] = "answer";
+  ResponseType2["ERROR"] = "error";
+  ResponseType2["QUERYING"] = "querying";
+  ResponseType2["USER_QUERY"] = "user-query";
+  ResponseType2["CONTEXT_CHANGE"] = "context-change";
+  return ResponseType2;
+})(ResponseType || {});
+var ErrorType = /* @__PURE__ */ ((ErrorType2) => {
+  ErrorType2["UNKNOWN"] = "unknown";
+  ErrorType2["ABORT"] = "abort";
+  ErrorType2["MAX_STEPS"] = "max-steps";
+  ErrorType2["BLOCK"] = "block";
+  ErrorType2["CROSS_ORIGIN"] = "cross-origin";
+  ErrorType2["QUOTA"] = "quota";
+  ErrorType2["PAYLOAD_TOO_LARGE"] = "payload-too-large";
+  return ErrorType2;
+})(ErrorType || {});
+var MultimodalInputType = /* @__PURE__ */ ((MultimodalInputType2) => {
+  MultimodalInputType2["SCREENSHOT"] = "screenshot";
+  MultimodalInputType2["UPLOADED_IMAGE"] = "uploaded-image";
+  return MultimodalInputType2;
+})(MultimodalInputType || {});
+var MAX_STEPS = 10;
+var ConversationContext = class {
+  /**
+   * Returns true if the server-side logging is enabled when this context is active.
+   * Currently only used for AI v2.
+   */
+  isLoggingEnabled() {
+    return true;
+  }
+  /**
+   * Checks whether this context can participate in a conversation locked to `establishedOrigin`.
+   *
+   * Evaluation rules:
+   * 1. Returns `false` if this context origin is opaque. Opaque contexts can never
+   *    participate in AI conversations.
+   * 2. Returns `true` if `establishedOrigin` is `undefined` (conversation is not yet locked).
+   * 3. Returns `true` if this context origin is same-origin with `establishedOrigin`.
+   *
+   * @param establishedOrigin The locked origin of the current conversation, or `undefined`
+   * if the conversation has not made its first query.
+   */
+  isOriginAllowed(establishedOrigin) {
+    const origin = this.getOrigin();
+    if (origin.isOpaque()) {
+      return false;
+    }
+    if (!establishedOrigin) {
+      return true;
+    }
+    return origin.isSameOriginWith(establishedOrigin);
+  }
+  /**
+   * This method is called at the start of `AiAgent.run`.
+   * It will be overridden in subclasses to fetch data related to the context item.
+   */
+  async refresh() {
+    return;
+  }
+  async getSuggestions() {
+    return;
+  }
+  /**
+   * Returns a detailed description of the context item for inclusion in the AI model prompt.
+   * Currently only used by AiAgent2.
+   */
+  async getPromptDetails() {
+    return null;
+  }
+  /**
+   * Returns a list of context details to display to the user in the UI.
+   * Currently only used by AiAgent2.
+   */
+  async getUserFacingDetails() {
+    return null;
+  }
+  /**
+   * Returns initial UI widgets to display in the conversation context header
+   * when this context is active (e.g. Core Web Vitals summary for a performance trace).
+   * Used by PerformanceAgent and AiAgent2.
+   */
+  async getWidgets() {
+    return [];
+  }
+};
+var CrossOriginError = class extends Error {
+  constructor() {
+    super("Cross-origin navigation detected");
+    this.name = "CrossOriginError";
+  }
+};
+var AiAgent = class {
+  #sessionId;
+  #aidaClient;
+  /**
+   * Tracks the dynamic runtime state of logging. Even if logging is allowed
+   * by policy, tools or sensitive contexts can deactivate this to avoid logging sensitive data.
+   */
+  #serverSideLoggingActive;
+  confirmSideEffect;
+  #functionDeclarations = /* @__PURE__ */ new Map();
+  #allowedOrigin;
+  #targetManager;
+  /**
+   * Used in the debug mode and evals.
+   */
+  #structuredLog = [];
+  /**
+   * `context` does not change during `AiAgent.run()`, ensuring that calls to JS
+   * have the correct `context`. We don't want element selection by the user to
+   * change the `context` during an `AiAgent.run()`.
+   */
+  context;
+  #history;
+  #facts = /* @__PURE__ */ new Set();
+  constructor(opts) {
+    this.#aidaClient = opts.aidaClient;
+    let serverSideLoggingAllowed = opts.serverSideLoggingAllowed ?? false;
+    if (Root4.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+      serverSideLoggingAllowed = false;
+    }
+    this.#serverSideLoggingActive = serverSideLoggingAllowed;
+    this.#sessionId = opts.sessionId ?? crypto.randomUUID();
+    this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
+    this.#history = opts.history ?? [];
+    this.#allowedOrigin = opts.allowedOrigin;
+    this.#targetManager = opts.targetManager ?? SDK12.TargetManager.TargetManager.instance();
+  }
+  async enhanceQuery(query) {
+    return query;
+  }
+  currentFacts() {
+    return this.#facts;
+  }
+  get history() {
+    return [...this.#history];
+  }
+  get targetManager() {
+    return this.#targetManager;
+  }
+  /**
+   * Add a fact which will be sent for any subsequent requests.
+   * Returns the new list of all facts.
+   * Facts are never automatically removed.
+   */
+  addFact(fact) {
+    this.#facts.add(fact);
+    return this.#facts;
+  }
+  removeFact(fact) {
+    return this.#facts.delete(fact);
+  }
+  clearFacts() {
+    this.#facts.clear();
+  }
+  /**
+   * Clears any subclass-specific caches. This is called when a run encounters
+   * an error (e.g., cross-origin navigation, abort, or execution error) to
+   * prevent unvalidated cached data from being replayed in subsequent runs.
+   */
+  clearCache() {
+  }
+  /**
+   * Disables server-side logging for the remainder of this agent instance's lifetime.
+   *
+   * Logging deactivation is irreversible for the session. Conversation history
+   * accumulates across turns; re-enabling logging later would leak sensitive
+   * data from prior turns to AIDA.
+   */
+  disableServerSideLogging() {
+    this.#serverSideLoggingActive = false;
+  }
+  popPendingMultimodalInput() {
+    return void 0;
+  }
+  /**
+   * Preamble features appended to the `client_version` in metadata.
+   * This is required ONLY for the Styling Agent for legacy reasons to serve
+   * different server-side preambles based on the Chrome version.
+   * Other agents should NOT set or override this.
+   * If you are curious about this, look for `do_conversation_handler.cc` in
+   * Google3 or chat to @jacktfranklin.
+   */
+  preambleFeatures() {
+    return [];
+  }
+  buildRequest(part, role) {
+    const parts = Array.isArray(part) ? part : [part];
+    const currentMessage = {
+      parts,
+      role
+    };
+    const history = [...this.#history];
+    const declarations = [];
+    for (const [name, definition] of this.#functionDeclarations.entries()) {
+      declarations.push({
+        name,
+        description: typeof definition.description === "function" ? definition.description() : definition.description,
+        parameters: definition.parameters
+      });
+    }
+    function validTemperature(temperature) {
+      return typeof temperature === "number" && temperature >= 0 ? temperature : void 0;
+    }
+    const enableAidaFunctionCalling = declarations.length;
+    const userTier = Host11.AidaClient.convertToUserTierEnum(this.userTier);
+    const preamble10 = userTier === Host11.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
+    const facts = Array.from(this.#facts);
+    const request = {
+      client: Host11.AidaClient.CLIENT_NAME,
+      current_message: currentMessage,
+      preamble: preamble10,
+      historical_contexts: history.length ? history : void 0,
+      facts: facts.length ? facts : void 0,
+      ...enableAidaFunctionCalling ? { function_declarations: declarations } : {},
+      options: {
+        temperature: validTemperature(this.options.temperature),
+        model_id: this.options.modelId || void 0
+      },
+      metadata: {
+        disable_user_content_logging: !(this.#serverSideLoggingActive ?? false),
+        string_session_id: this.#sessionId,
+        user_tier: userTier,
+        client_version: Root4.Runtime.getChromeVersion() + this.preambleFeatures().map((feature) => `+${feature}`).join("")
+      },
+      functionality_type: enableAidaFunctionCalling ? Host11.AidaClient.FunctionalityType.AGENTIC_CHAT : Host11.AidaClient.FunctionalityType.CHAT,
+      client_feature: this.clientFeature
+    };
+    return request;
+  }
+  get sessionId() {
+    return this.#sessionId;
+  }
+  /**
+   * The AI has instructions to emit structured suggestions in their response. This
+   * function parses for that.
+   *
+   * Note: currently only StylingAgent and PerformanceAgent utilize this, but
+   * eventually all agents should support this.
+   */
+  parseTextResponseForSuggestions(text) {
+    if (!text) {
+      return { answer: "" };
+    }
+    const lines = text.split("\n");
+    const answerLines = [];
+    let suggestions;
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("SUGGESTIONS:")) {
+        try {
+          suggestions = sanitizeSuggestions(trimmed.substring("SUGGESTIONS:".length).trim());
+        } catch {
+        }
+      } else {
+        answerLines.push(line);
+      }
+    }
+    if (!suggestions && answerLines.at(-1)?.includes("SUGGESTIONS:")) {
+      const [answer, suggestionsText] = answerLines[answerLines.length - 1].split("SUGGESTIONS:", 2);
+      try {
+        suggestions = sanitizeSuggestions(suggestionsText.trim());
+      } catch {
+      }
+      answerLines[answerLines.length - 1] = answer;
+    }
+    const response = {
+      // If we could not parse the parts, consider the response to be an
+      // answer.
+      answer: answerLines.join("\n")
+    };
+    if (suggestions) {
+      response.suggestions = suggestions;
+    }
+    return response;
+  }
+  /**
+   * Parses a streaming text response into a
+   * though/action/title/answer/suggestions component.
+   */
+  parseTextResponse(response) {
+    return this.parseTextResponseForSuggestions(response.trim());
+  }
+  async finalizeAnswer(answer) {
+    return answer;
+  }
+  /**
+   * Declare a function that the AI model can call.
+   * @param name The name of the function
+   * @param declaration the function declaration. Currently functions must:
+   * 1. Return an object of serializable key/value pairs. You cannot return
+   *    anything other than a plain JavaScript object that can be serialized.
+   * 2. Take one parameter which is an object that can have
+   *    multiple keys and values. For example, rather than a function being called
+   *    with two args, `foo` and `bar`, you should instead have the function be
+   *    called with one object with `foo` and `bar` keys.
+   */
+  declareFunction(name, declaration) {
+    if (this.#functionDeclarations.has(name)) {
+      throw new Error(`Duplicate function declaration ${name}`);
+    }
+    this.#functionDeclarations.set(name, declaration);
+  }
+  clearDeclaredFunctions() {
+    this.#functionDeclarations.clear();
+  }
+  /**
+   * Executed immediately after the current context is populated with the selected
+   * context and before the request is built.
+   */
+  async preRun() {
+  }
+  async *run(initialQuery, options, multimodalInput) {
+    await options.selected?.refresh();
+    this.context = options.selected ?? void 0;
+    await this.preRun();
+    const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);
+    if (!enhancedQuery.trim() && !multimodalInput) {
+      return;
+    }
+    Host11.userMetrics.freestylerQueryLength(enhancedQuery.length);
+    let query;
+    query = multimodalInput ? [{ text: enhancedQuery }, multimodalInput.input] : [{ text: enhancedQuery }];
+    let request = this.buildRequest(query, Host11.AidaClient.Role.USER);
+    const clientFeatureName = Host11.AidaClient.getClientFeatureName(this.clientFeature);
+    debugLog(`[AiAgent] Starting conversation with client ${clientFeatureName}, userTier ${this.userTier}`);
+    yield* this.handleContextDetails(options.selected);
+    for (let i = 0; i < MAX_STEPS; i++) {
+      yield {
+        type: "querying" /* QUERYING */
+      };
+      if (i === 0) {
+        debugLog("[AiAgent] Step 1: Sending user prompt to model:", enhancedQuery);
+      } else if (!Array.isArray(query) && "functionResponse" in query) {
+        debugLog(
+          `[AiAgent] Step ${i + 1}: Sending function response for '${query.functionResponse.name}' to model:`,
+          query.functionResponse.response
+        );
+      } else {
+        debugLog(`[AiAgent] Step ${i + 1}: Sending request to model:`, request.current_message);
+      }
+      let rpcId;
+      let textResponse = "";
+      let functionCall = void 0;
+      try {
+        for await (const fetchResult of this.#aidaFetch(request, { signal: options.signal })) {
+          rpcId = fetchResult.rpcId;
+          textResponse = fetchResult.text ?? "";
+          functionCall = fetchResult.functionCall;
+          if (!functionCall && !fetchResult.completed) {
+            const parsed = this.parseTextResponse(textResponse);
+            const partialAnswer = "answer" in parsed ? parsed.answer : "";
+            if (!partialAnswer) {
+              continue;
+            }
+            yield {
+              type: "answer" /* ANSWER */,
+              text: partialAnswer,
+              complete: false
+            };
+          }
+        }
+      } catch (err) {
+        debugLog("Error calling the AIDA API", err);
+        const error = aidaErrorToErrorType(err);
+        yield this.#createErrorResponse(error);
+        break;
+      }
+      this.#history.push(request.current_message);
+      if (textResponse) {
+        const parsedResponse = this.parseTextResponse(textResponse);
+        if (!("answer" in parsedResponse)) {
+          throw new Error("Expected a completed response to have an answer");
+        }
+        if (!functionCall) {
+          debugLog(`[AiAgent] Step ${i + 1}: Model returned text response:`, parsedResponse.answer);
+          this.#history.push({
+            parts: [{
+              text: parsedResponse.answer
+            }],
+            role: Host11.AidaClient.Role.MODEL
+          });
+        }
+        Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.AiAssistanceAnswerReceived);
+        yield await this.finalizeAnswer({
+          type: "answer" /* ANSWER */,
+          text: parsedResponse.answer,
+          suggestions: parsedResponse.suggestions,
+          complete: true,
+          rpcId
+        });
+        if (!functionCall) {
+          break;
+        }
+      }
+      if (functionCall) {
+        debugLog(`[AiAgent] Step ${i + 1}: Model requested function call: ${functionCall.name}`, functionCall.args);
+        const allowedOriginResult = this.#allowedOrigin?.();
+        if (allowedOriginResult && "blocked" in allowedOriginResult) {
+          yield this.#createErrorResponse("cross-origin" /* CROSS_ORIGIN */);
+          break;
+        }
+        try {
+          const result = yield* this.#callFunction(
+            functionCall.name,
+            functionCall.args,
+            functionCall.thoughtSignature,
+            {
+              ...options,
+              explanation: textResponse
+            }
+          );
+          if (options.signal?.aborted) {
+            yield this.#createErrorResponse("abort" /* ABORT */);
+            break;
+          }
+          if ("context" in result) {
+            yield {
+              type: "context-change" /* CONTEXT_CHANGE */,
+              description: result.description,
+              context: result.context,
+              widgets: result.widgets
+            };
+            return;
+          }
+          query = {
+            functionResponse: {
+              name: functionCall.name,
+              // Widgets are not sent back to the LLM
+              response: { ...result, widgets: void 0 }
+            }
+          };
+          request = this.buildRequest(query, Host11.AidaClient.Role.ROLE_UNSPECIFIED);
+        } catch (err) {
+          if (err instanceof CrossOriginError) {
+            yield this.#createErrorResponse("cross-origin" /* CROSS_ORIGIN */);
+            break;
+          }
+          debugLog("Error handling function call", err);
+          yield this.#createErrorResponse("unknown" /* UNKNOWN */);
+          break;
+        }
+      } else {
+        yield this.#createErrorResponse(i - 1 === MAX_STEPS ? "max-steps" /* MAX_STEPS */ : "unknown" /* UNKNOWN */);
+        break;
+      }
+    }
+    if (isStructuredLogEnabled()) {
+      window.dispatchEvent(new CustomEvent("aiassistancedone"));
+    }
+    return;
+  }
+  async *#callFunction(name, args, thoughtSignature, options) {
+    const call = this.#functionDeclarations.get(name);
+    if (!call) {
+      throw new Error(`Function ${name} is not found.`);
+    }
+    debugLog(`[AiAgent] Executing tool '${name}' with args:`, args);
+    const parts = [];
+    if (options?.explanation) {
+      parts.push({
+        text: options.explanation
+      });
+    }
+    const functionCall = {
+      name,
+      args
+    };
+    if (thoughtSignature) {
+      functionCall.thoughtSignature = thoughtSignature;
+    }
+    parts.push({ functionCall });
+    this.#history.push({
+      parts,
+      role: Host11.AidaClient.Role.MODEL
+    });
+    let code;
+    if (call.displayInfoFromArgs) {
+      const { title, thought, action: callCode } = call.displayInfoFromArgs(args);
+      code = callCode;
+      if (title) {
+        yield {
+          type: "title" /* TITLE */,
+          title
+        };
+      }
+      if (thought) {
+        yield {
+          type: "thought" /* THOUGHT */,
+          thought
+        };
+      }
+    }
+    const isOriginBlocked = () => {
+      const allowedOriginResult = this.#allowedOrigin?.();
+      return Boolean(allowedOriginResult && "blocked" in allowedOriginResult);
+    };
+    let result = await call.handler(args, options);
+    if (isOriginBlocked()) {
+      throw new CrossOriginError();
+    }
+    if ("requiresApproval" in result) {
+      if (code) {
+        yield {
+          type: "action" /* ACTION */,
+          code,
+          canceled: false
+        };
+      }
+      const sideEffectConfirmationPromiseWithResolvers = this.confirmSideEffect();
+      void sideEffectConfirmationPromiseWithResolvers.promise.then((result2) => {
+        Host11.userMetrics.actionTaken(
+          result2 ? Host11.UserMetrics.Action.AiAssistanceSideEffectConfirmed : Host11.UserMetrics.Action.AiAssistanceSideEffectRejected
+        );
+      });
+      if (options?.signal?.aborted) {
+        sideEffectConfirmationPromiseWithResolvers.resolve(false);
+      }
+      const onAbort = () => {
+        sideEffectConfirmationPromiseWithResolvers.resolve(false);
+      };
+      options?.signal?.addEventListener("abort", onAbort, { once: true });
+      yield {
+        type: "side-effect" /* SIDE_EFFECT */,
+        confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
+        description: result.description
+      };
+      let approvedRun = false;
+      try {
+        approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
+      } finally {
+        options?.signal?.removeEventListener("abort", onAbort);
+      }
+      if (!approvedRun) {
+        yield {
+          type: "action" /* ACTION */,
+          code,
+          output: "Error: User denied code execution with side effects.",
+          canceled: true
+        };
+        debugLog(`[AiAgent] Tool '${name}' denied by user.`);
+        return {
+          result: "Error: User denied code execution with side effects."
+        };
+      }
+      if (isOriginBlocked()) {
+        throw new CrossOriginError();
+      }
+      result = await call.handler(args, {
+        ...options,
+        approved: true
+      });
+      if (isOriginBlocked()) {
+        throw new CrossOriginError();
+      }
+    }
+    if ("result" in result) {
+      yield {
+        type: "action" /* ACTION */,
+        code,
+        output: typeof result.result === "string" ? result.result : JSON.stringify(result.result),
+        widgets: result.widgets,
+        canceled: false,
+        toolName: name
+      };
+    }
+    if ("error" in result) {
+      yield {
+        type: "action" /* ACTION */,
+        code,
+        output: result.error,
+        canceled: false,
+        toolName: name
+      };
+    }
+    debugLog(`[AiAgent] Tool '${name}' result:`, result);
+    if ("context" in result) {
+      return result;
+    }
+    return result;
+  }
+  async *#aidaFetch(request, options) {
+    let aidaResponse = void 0;
+    let rpcId;
+    for await (aidaResponse of this.#aidaClient.doConversation(request, options)) {
+      if (aidaResponse.functionCalls?.length) {
+        if (aidaResponse.functionCalls.length > 1) {
+          debugLog(
+            `[AiAgent] Unexpected: received ${aidaResponse.functionCalls.length} function calls in response:`,
+            aidaResponse.functionCalls
+          );
+        }
+        yield {
+          rpcId,
+          functionCall: aidaResponse.functionCalls[0],
+          completed: true,
+          text: aidaResponse.explanation
+        };
+        break;
+      }
+      rpcId = aidaResponse.metadata.rpcGlobalId ?? rpcId;
+      yield {
+        rpcId,
+        text: aidaResponse.explanation,
+        completed: aidaResponse.completed
+      };
+    }
+    if (isStructuredLogEnabled() && aidaResponse) {
+      this.#structuredLog.push({
+        request: structuredClone(request),
+        aidaResponse
+      });
+      try {
+        localStorage.setItem("aiAssistanceStructuredLog", JSON.stringify(this.#structuredLog));
+      } catch (err) {
+        console.warn('Failed to write to local storage "aiAssistanceStructuredLog":', err);
+      }
+    }
+  }
+  #removeLastRunParts() {
+    this.#history.splice(this.#history.findLastIndex((item) => {
+      return item.role === Host11.AidaClient.Role.USER;
+    }));
+  }
+  #createErrorResponse(error) {
+    this.#removeLastRunParts();
+    this.clearCache();
+    if (error !== "abort" /* ABORT */) {
+      Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.AiAssistanceError);
+    }
+    return {
+      type: "error" /* ERROR */,
+      error
+    };
+  }
+};
+function sanitizeSuggestions(suggestions) {
+  const parsed = JSON.parse(suggestions);
+  if (!Array.isArray(parsed)) {
+    return void 0;
+  }
+  const sanitized = [];
+  for (const item of parsed) {
+    if (typeof item !== "string") {
+      continue;
+    }
+    const noExtraWhitespace = item.replace(/\s+/g, " ").trim();
+    if (noExtraWhitespace.length === 0) {
+      continue;
+    }
+    sanitized.push(noExtraWhitespace.substring(0, MAX_SUGGESTION_LENGTH));
+  }
+  if (sanitized.length === 0) {
+    return void 0;
+  }
+  return sanitized;
+}
+function aidaErrorToErrorType(err) {
+  if (err instanceof Host11.AidaClient.AidaAbortError) {
+    return "abort" /* ABORT */;
+  }
+  if (err instanceof Host11.AidaClient.AidaBlockError) {
+    return "block" /* BLOCK */;
+  }
+  if (err instanceof Host11.AidaClient.AidaQuotaError) {
+    return "quota" /* QUOTA */;
+  }
+  if (err instanceof Host11.AidaClient.AidaPayloadTooLargeError) {
+    return "payload-too-large" /* PAYLOAD_TOO_LARGE */;
+  }
+  return "unknown" /* UNKNOWN */;
+}
+
 // ../../front_end/models/ai_assistance/contexts/FileContext.ts
 var FileContext = class _FileContext extends ConversationContext {
+  jslogContext = "ai-context-file";
   #file;
   #debuggerWorkspaceBinding;
   constructor(file, debuggerWorkspaceBinding) {
@@ -8936,7 +8746,7 @@ var FileContext = class _FileContext extends ConversationContext {
    * Prefers the project security origin, falling back to the origin of the file URL.
    */
   static originForUISourceCode(file) {
-    return file.project()?.securityOrigin?.() ?? SDK14.SecurityOrigin.SecurityOrigin.create(file.url());
+    return file.project()?.securityOrigin?.() ?? SDK13.SecurityOrigin.SecurityOrigin.create(file.url());
   }
   /**
    * Returns the security origin of the project containing the file, falling
@@ -8969,17 +8779,10 @@ ${new FileFormatter(this.#file, this.#debuggerWorkspaceBinding).formatFile()}`;
 };
 
 // ../../front_end/models/ai_assistance/tools/ListSources.ts
-var ListSources_exports = {};
-__export(ListSources_exports, {
-  ListSourcesTool: () => ListSourcesTool
-});
-import * as Host12 from "../../core/host/host.js";
-import * as i18n19 from "../../core/i18n/i18n.js";
-import * as Workspace3 from "../workspace/workspace.js";
-var UIStringsNotTranslate6 = {
+var UIStringsNotTranslate5 = {
   listingSources: "Listing workspace sources"
 };
-var lockedString9 = i18n19.i18n.lockedString;
+var lockedString8 = i18n17.i18n.lockedString;
 var ListSourcesTool = class _ListSourcesTool {
   name = "listSources" /* LIST_SOURCES */;
   description = "Lists deployed and authored source files in the workspace (including source-mapped files) with their display name and unique numeric ID.";
@@ -8989,8 +8792,10 @@ var ListSourcesTool = class _ListSourcesTool {
     _ListSourcesTool.lastSourceId = 0;
     _ListSourcesTool.uiSourceCodeId = /* @__PURE__ */ new WeakMap();
   }
-  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-  static getUISourceCodes(workspace = Workspace3.Workspace.WorkspaceImpl.instance()) {
+  static getUISourceCodes(establishedOrigin, workspace = Workspace3.Workspace.WorkspaceImpl.instance()) {
+    if (establishedOrigin.isOpaque()) {
+      return [];
+    }
     const projects = workspace.projects().filter((project) => project.type() === Workspace3.Workspace.projectTypes.Network);
     const uiSourceCodes = /* @__PURE__ */ new Map();
     for (const project of projects) {
@@ -9007,7 +8812,15 @@ var ListSourcesTool = class _ListSourcesTool {
         }
       }
     }
-    return [...uiSourceCodes.values()];
+    return [...uiSourceCodes.values()].filter(
+      (file) => isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(file))
+    );
+  }
+  static getSourceById(id, establishedOrigin, workspace = Workspace3.Workspace.WorkspaceImpl.instance()) {
+    if (establishedOrigin.isOpaque()) {
+      return void 0;
+    }
+    return _ListSourcesTool.getUISourceCodes(establishedOrigin, workspace).find((file) => _ListSourcesTool.uiSourceCodeId.get(file) === id);
   }
   parameters = {
     type: Host12.AidaClient.ParametersTypes.OBJECT,
@@ -9018,7 +8831,7 @@ var ListSourcesTool = class _ListSourcesTool {
   };
   displayInfoFromArgs() {
     return {
-      title: lockedString9(UIStringsNotTranslate6.listingSources),
+      title: lockedString8(UIStringsNotTranslate5.listingSources),
       action: "listSources()"
     };
   }
@@ -9029,9 +8842,7 @@ var ListSourcesTool = class _ListSourcesTool {
         error: "Opaque origin not allowed"
       };
     }
-    const files = _ListSourcesTool.getUISourceCodes().filter((file) => {
-      return isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(file));
-    });
+    const files = _ListSourcesTool.getUISourceCodes(establishedOrigin);
     return {
       result: {
         files: files.map((file) => ({
@@ -9044,10 +8855,10 @@ var ListSourcesTool = class _ListSourcesTool {
 };
 
 // ../../front_end/models/ai_assistance/tools/GetSourceContent.ts
-var UIStringsNotTranslate7 = {
+var UIStringsNotTranslate6 = {
   readingSource: "Reading source content"
 };
-var lockedString10 = i18n21.i18n.lockedString;
+var lockedString9 = i18n19.i18n.lockedString;
 var GetSourceContentTool = class {
   name = "getSourceContent" /* GET_SOURCE_CONTENT */;
   description = "Retrieves the formatted content and metadata of a source file by its numeric ID obtained from listSources.";
@@ -9065,13 +8876,18 @@ var GetSourceContentTool = class {
   };
   displayInfoFromArgs(args) {
     return {
-      title: lockedString10(UIStringsNotTranslate7.readingSource),
+      title: lockedString9(UIStringsNotTranslate6.readingSource),
       action: `getSourceContent(${args.id})`
     };
   }
   async handler(args, context) {
     const establishedOrigin = context.getEstablishedOrigin();
-    const file = ListSourcesTool.getUISourceCodes().filter((f) => isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(f))).find((f) => ListSourcesTool.uiSourceCodeId.get(f) === args.id);
+    if (!establishedOrigin) {
+      return {
+        error: "Unable to find file."
+      };
+    }
+    const file = ListSourcesTool.getSourceById(args.id, establishedOrigin);
     if (!file) {
       return {
         error: "Unable to find file."
@@ -9098,9 +8914,9 @@ __export(GetStorageBreakdown_exports, {
   GetStorageBreakdownTool: () => GetStorageBreakdownTool
 });
 import * as Host14 from "../../core/host/host.js";
-import * as i18n23 from "../../core/i18n/i18n.js";
-import * as SDK15 from "../../core/sdk/sdk.js";
-var lockedString11 = i18n23.i18n.lockedString;
+import * as i18n21 from "../../core/i18n/i18n.js";
+import * as SDK14 from "../../core/sdk/sdk.js";
+var lockedString10 = i18n21.i18n.lockedString;
 var GetStorageBreakdownTool = class {
   name = "getStorageBreakdown" /* GET_STORAGE_BREAKDOWN */;
   description = "Retrieves total storage usage and quota breakdown across all storage types (IndexedDB, CacheStorage, LocalStorage, SessionStorage, cookies) for the top-level page origin.";
@@ -9113,19 +8929,19 @@ var GetStorageBreakdownTool = class {
   };
   displayInfoFromArgs() {
     return {
-      title: lockedString11("Retrieving storage breakdown"),
+      title: lockedString10("Retrieving storage breakdown"),
       action: "getStorageBreakdown()"
     };
   }
   async handler(_args, context) {
-    const targetManager = SDK15.TargetManager.TargetManager.instance();
+    const targetManager = SDK14.TargetManager.TargetManager.instance();
     const targetResolution = resolveAllowedTargetOrigins(void 0, context, targetManager);
     if ("error" in targetResolution) {
       return { error: targetResolution.error };
     }
     const { targetOrigins, primaryPageTarget } = targetResolution;
     const pageOrigin = targetOrigins[0];
-    const mainStorageKey = primaryPageTarget.model(SDK15.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || void 0;
+    const mainStorageKey = primaryPageTarget.model(SDK14.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || void 0;
     const localStorages = resolveDOMStorages(pageOrigin, "localStorage", targetManager, primaryPageTarget, mainStorageKey);
     const sessionStorages = resolveDOMStorages(pageOrigin, "sessionStorage", targetManager, primaryPageTarget, mainStorageKey);
     const [response, localStorageBytes, sessionStorageBytes, cookieResult] = await Promise.all([
@@ -9185,10 +9001,10 @@ __export(GetStorageValues_exports, {
   MAX_NUM_CHAR_LENGTH: () => MAX_NUM_CHAR_LENGTH2
 });
 import * as Host15 from "../../core/host/host.js";
-import * as i18n25 from "../../core/i18n/i18n.js";
+import * as i18n23 from "../../core/i18n/i18n.js";
 import * as Platform4 from "../../core/platform/platform.js";
-import * as SDK16 from "../../core/sdk/sdk.js";
-var lockedString12 = i18n25.i18n.lockedString;
+import * as SDK15 from "../../core/sdk/sdk.js";
+var lockedString11 = i18n23.i18n.lockedString;
 var MAX_NUM_CHAR_LENGTH2 = 1e4;
 var GetStorageValuesTool = class {
   name = "getStorageValues" /* GET_STORAGE_VALUES */;
@@ -9228,10 +9044,10 @@ var GetStorageValuesTool = class {
     let title;
     switch (args.type) {
       case "localStorage":
-        title = lockedString12("Reading local storage values");
+        title = lockedString11("Reading local storage values");
         break;
       case "sessionStorage":
-        title = lockedString12("Reading session storage values");
+        title = lockedString11("Reading session storage values");
         break;
       default:
         Platform4.TypeScriptUtilities.assertNever(args.type, `Unknown storage type: ${args.type}`);
@@ -9243,7 +9059,7 @@ var GetStorageValuesTool = class {
   }
   async handler(args, context, options) {
     context.disableLogging();
-    const targetManager = SDK16.TargetManager.TargetManager.instance();
+    const targetManager = SDK15.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
     const establishedOrigin = context.getEstablishedOrigin();
     if (!establishedOrigin || establishedOrigin.isOpaque()) {
@@ -9256,7 +9072,7 @@ var GetStorageValuesTool = class {
     if (!pageOrigin.isSameOriginWith(establishedOrigin)) {
       return { error: "No origin available or not allowed." };
     }
-    const candidateOrigins = args.origins && args.origins.length > 0 ? args.origins.map((origin) => SDK16.SecurityOrigin.SecurityOrigin.create(origin)) : [establishedOrigin];
+    const candidateOrigins = args.origins && args.origins.length > 0 ? args.origins.map((origin) => SDK15.SecurityOrigin.SecurityOrigin.create(origin)) : [establishedOrigin];
     const validOrigins = candidateOrigins.filter((origin) => origin.isSameOriginWith(establishedOrigin)).map((origin) => origin.siteId());
     const targetOrigins = Array.from(new Set(validOrigins)).slice(0, MAX_TARGET_ORIGINS);
     if (targetOrigins.length === 0) {
@@ -9280,7 +9096,7 @@ var GetStorageValuesTool = class {
       const targetsDesc = Object.keys(allStoragesMap).join(", ");
       return {
         requiresApproval: true,
-        description: lockedString12(`The AI wants to access the value(s) of ${args.type} keys ${keyString} on ${targetsDesc}.`)
+        description: lockedString11(`The AI wants to access the value(s) of ${args.type} keys ${keyString} on ${targetsDesc}.`)
       };
     }
     const storageValuesByOrigin = {};
@@ -9322,7 +9138,7 @@ __export(GetStyles_exports, {
   GetStylesTool: () => GetStylesTool
 });
 import * as Host16 from "../../core/host/host.js";
-import * as SDK17 from "../../core/sdk/sdk.js";
+import * as SDK16 from "../../core/sdk/sdk.js";
 var GetStylesTool = class {
   name = "getStyles" /* GET_STYLES */;
   description = `Retrieves computed and authored CSS styles for one or more elements by their backend node IDs (uids).
@@ -9366,6 +9182,12 @@ var GetStylesTool = class {
       action: `getStyles(${JSON.stringify(params.elements)}, ${JSON.stringify(params.styleProperties)})`
     };
   }
+  /**
+   * Handles the request to retrieve computed and authored CSS styles for specified elements.
+   *
+   * Resolves element backend node IDs using the primary page target and verifies that each
+   * element's security origin matches the established origin lock before querying CSS models.
+   */
   async handler(params, context, _options) {
     const widgets = [];
     const result = {};
@@ -9374,18 +9196,14 @@ var GetStylesTool = class {
       return { error: "Error: Could not find the inspected page." };
     }
     const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return { error: "Error: Origin lock is not established." };
-    }
     for (const uid of params.elements) {
       result[uid] = { computed: {}, authored: {} };
-      const node = new SDK17.DOMModel.DeferredDOMNode(target, uid);
+      const node = new SDK16.DOMModel.DeferredDOMNode(target, uid);
       const resolved = await node.resolvePromise();
       if (!resolved) {
         return { error: "Error: Could not find the element with uid=" + uid };
       }
-      const newContext = new DOMNodeContext(resolved);
-      if (!isOriginAllowedByLock(establishedOrigin, newContext.getOrigin())) {
+      if (!isOriginAllowedByLock(establishedOrigin, resolved.securityOrigin())) {
         return { error: "Error: Node does not belong to the current origin." };
       }
       const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);
@@ -9414,7 +9232,7 @@ var GetStylesTool = class {
             continue;
           }
           const state = matchedStyles.propertyState(property);
-          if (state === SDK17.CSSMatchedStyles.PropertyState.ACTIVE) {
+          if (state === SDK16.CSSMatchedStyles.PropertyState.ACTIVE) {
             result[uid].authored[property.name] = property.value;
           }
         }
@@ -9433,11 +9251,11 @@ __export(GetTraceEventByKey_exports, {
   GetTraceEventByKeyTool: () => GetTraceEventByKeyTool
 });
 import * as Host17 from "../../core/host/host.js";
-import * as i18n27 from "../../core/i18n/i18n.js";
-var UIStringsNotTranslate8 = {
+import * as i18n25 from "../../core/i18n/i18n.js";
+var UIStringsNotTranslate7 = {
   lookingAtTraceEvent: "Looking at trace event"
 };
-var lockedString13 = i18n27.i18n.lockedString;
+var lockedString12 = i18n25.i18n.lockedString;
 var GetTraceEventByKeyTool = class {
   name = "getTraceEventByKey" /* GET_TRACE_EVENT_BY_KEY */;
   description = "Retrieves details for a specific trace event by its event key.";
@@ -9456,7 +9274,7 @@ var GetTraceEventByKeyTool = class {
   };
   displayInfoFromArgs(params) {
     return {
-      title: lockedString13(UIStringsNotTranslate8.lookingAtTraceEvent),
+      title: lockedString12(UIStringsNotTranslate7.lookingAtTraceEvent),
       action: `getTraceEventByKey('${params.eventKey}')`
     };
   }
@@ -9490,11 +9308,11 @@ __export(GetTraceMainThreadSummary_exports, {
   GetTraceMainThreadSummaryTool: () => GetTraceMainThreadSummaryTool
 });
 import * as Host18 from "../../core/host/host.js";
-import * as i18n29 from "../../core/i18n/i18n.js";
-var UIStringsNotTranslate9 = {
+import * as i18n27 from "../../core/i18n/i18n.js";
+var UIStringsNotTranslate8 = {
   mainThreadActivity: "Main thread activity"
 };
-var lockedString14 = i18n29.i18n.lockedString;
+var lockedString13 = i18n27.i18n.lockedString;
 var GetTraceMainThreadSummaryTool = class {
   name = "getTraceMainThreadSummary" /* GET_TRACE_MAIN_THREAD_SUMMARY */;
   description = "Retrieves a focused, bottom-up summary of main thread activity for a predefined labeled period (e.g. 'nav-to-lcp', 'lcp-ttfb', 'lcp-render-delay', 'trace-bounds', or insight names).";
@@ -9513,7 +9331,7 @@ var GetTraceMainThreadSummaryTool = class {
   };
   displayInfoFromArgs(params) {
     return {
-      title: `${lockedString14(UIStringsNotTranslate9.mainThreadActivity)}: ${params.label}`,
+      title: `${lockedString13(UIStringsNotTranslate8.mainThreadActivity)}: ${params.label}`,
       action: `getTraceMainThreadSummary('${params.label}')`
     };
   }
@@ -9563,11 +9381,11 @@ __export(GetTraceNetworkSummary_exports, {
   GetTraceNetworkSummaryTool: () => GetTraceNetworkSummaryTool
 });
 import * as Host19 from "../../core/host/host.js";
-import * as i18n31 from "../../core/i18n/i18n.js";
-var UIStringsNotTranslate10 = {
+import * as i18n29 from "../../core/i18n/i18n.js";
+var UIStringsNotTranslate9 = {
   networkActivitySummary: "Network activity summary"
 };
-var lockedString15 = i18n31.i18n.lockedString;
+var lockedString14 = i18n29.i18n.lockedString;
 var GetTraceNetworkSummaryTool = class {
   name = "getTraceNetworkSummary" /* GET_TRACE_NETWORK_SUMMARY */;
   description = "Retrieves a summary of network requests recorded in the trace within the given time bounds.";
@@ -9598,7 +9416,7 @@ var GetTraceNetworkSummaryTool = class {
       parts.push(`max: ${params.max}`);
     }
     return {
-      title: lockedString15(UIStringsNotTranslate10.networkActivitySummary),
+      title: lockedString14(UIStringsNotTranslate9.networkActivitySummary),
       action: `getTraceNetworkSummary({${parts.join(", ")}})`
     };
   }
@@ -9638,9 +9456,9 @@ __export(ListCookies_exports, {
   ListCookiesTool: () => ListCookiesTool
 });
 import * as Host20 from "../../core/host/host.js";
-import * as i18n33 from "../../core/i18n/i18n.js";
-import * as SDK18 from "../../core/sdk/sdk.js";
-var lockedString16 = i18n33.i18n.lockedString;
+import * as i18n31 from "../../core/i18n/i18n.js";
+import * as SDK17 from "../../core/sdk/sdk.js";
+var lockedString15 = i18n31.i18n.lockedString;
 var ListCookiesTool = class {
   name = "listCookies" /* LIST_COOKIES */;
   description = "Lists all cookie names for requested origins (or the current page origin if omitted), strictly excluding their values.";
@@ -9661,13 +9479,13 @@ var ListCookiesTool = class {
   };
   displayInfoFromArgs(args) {
     return {
-      title: lockedString16("Reading cookies"),
+      title: lockedString15("Reading cookies"),
       action: `listCookies(${JSON.stringify(args?.origins ?? [])})`
     };
   }
   async handler(args, context) {
     context.disableLogging();
-    const targetManager = SDK18.TargetManager.TargetManager.instance();
+    const targetManager = SDK17.TargetManager.TargetManager.instance();
     const targetOriginsResult = resolveAllowedTargetOrigins(args?.origins, context, targetManager);
     if ("error" in targetOriginsResult) {
       return { error: targetOriginsResult.error };
@@ -9693,12 +9511,12 @@ __export(ListNetworkRequests_exports, {
   ListNetworkRequestsTool: () => ListNetworkRequestsTool
 });
 import * as Host21 from "../../core/host/host.js";
-import * as i18n35 from "../../core/i18n/i18n.js";
+import * as i18n33 from "../../core/i18n/i18n.js";
 import * as Logs5 from "../logs/logs.js";
-var UIStringsNotTranslate11 = {
+var UIStringsNotTranslate10 = {
   listingNetworkRequests: "Listing network requests"
 };
-var lockedString17 = i18n35.i18n.lockedString;
+var lockedString16 = i18n33.i18n.lockedString;
 var ListNetworkRequestsTool = class {
   name = "listNetworkRequests" /* LIST_NETWORK_REQUESTS */;
   description = "Lists recorded network requests for the active origin, including request ID, URL, HTTP status code, duration, and transfer size.";
@@ -9715,7 +9533,7 @@ var ListNetworkRequestsTool = class {
   };
   displayInfoFromArgs() {
     return {
-      title: lockedString17(UIStringsNotTranslate11.listingNetworkRequests),
+      title: lockedString16(UIStringsNotTranslate10.listingNetworkRequests),
       action: "listNetworkRequests()"
     };
   }
@@ -9782,9 +9600,9 @@ __export(ListPageOrigins_exports, {
   ListPageOriginsTool: () => ListPageOriginsTool
 });
 import * as Host22 from "../../core/host/host.js";
-import * as i18n37 from "../../core/i18n/i18n.js";
-import * as SDK19 from "../../core/sdk/sdk.js";
-var lockedString18 = i18n37.i18n.lockedString;
+import * as i18n35 from "../../core/i18n/i18n.js";
+import * as SDK18 from "../../core/sdk/sdk.js";
+var lockedString17 = i18n35.i18n.lockedString;
 var ListPageOriginsTool = class {
   name = "listPageOrigins" /* LIST_PAGE_ORIGINS */;
   description = "Lists all active, non-empty frame origins loaded by the page. Call this first to discover all page origins before calling listCookies or listStorageKeys, unless the user's explicit request focuses only on the primary page.";
@@ -9797,7 +9615,7 @@ var ListPageOriginsTool = class {
   };
   displayInfoFromArgs() {
     return {
-      title: lockedString18("Listing page origins"),
+      title: lockedString17("Listing page origins"),
       action: "listPageOrigins()"
     };
   }
@@ -9811,18 +9629,18 @@ var ListPageOriginsTool = class {
    *    so we check `frame.securityOrigin` directly instead of the frame's target origin.
    */
   async handler(_args, context) {
-    const targetManager = SDK19.TargetManager.TargetManager.instance();
+    const targetManager = SDK18.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
     const establishedOrigin = context.getEstablishedOrigin();
     if (!establishedOrigin || establishedOrigin.isOpaque()) {
       return { error: "No origin available or not allowed." };
     }
-    const pageOrigin = primaryPageTarget ? SDK19.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL()) : null;
+    const pageOrigin = primaryPageTarget ? SDK18.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL()) : null;
     if (!pageOrigin || !pageOrigin.isSameOriginWith(establishedOrigin)) {
       return { error: "No origin available or not allowed." };
     }
     const origins = [];
-    for (const frame of SDK19.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
+    for (const frame of SDK18.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
       if (frame.resourceTreeModel().target().outermostTarget() !== primaryPageTarget) {
         continue;
       }
@@ -9844,10 +9662,10 @@ __export(ListStorageKeys_exports, {
   ListStorageKeysTool: () => ListStorageKeysTool
 });
 import * as Host23 from "../../core/host/host.js";
-import * as i18n39 from "../../core/i18n/i18n.js";
+import * as i18n37 from "../../core/i18n/i18n.js";
 import * as Platform5 from "../../core/platform/platform.js";
-import * as SDK20 from "../../core/sdk/sdk.js";
-var lockedString19 = i18n39.i18n.lockedString;
+import * as SDK19 from "../../core/sdk/sdk.js";
+var lockedString18 = i18n37.i18n.lockedString;
 var ListStorageKeysTool = class {
   name = "listStorageKeys" /* LIST_STORAGE_KEYS */;
   description = "Lists all keys for a given storage type for requested origins. Returns keys grouped by storage partition under their origin.";
@@ -9880,10 +9698,10 @@ var ListStorageKeysTool = class {
     let title;
     switch (args.type) {
       case "localStorage":
-        title = lockedString19("Reading local storage keys");
+        title = lockedString18("Reading local storage keys");
         break;
       case "sessionStorage":
-        title = lockedString19("Reading session storage keys");
+        title = lockedString18("Reading session storage keys");
         break;
       default:
         Platform5.TypeScriptUtilities.assertNever(args.type, `Unknown storage type: ${args.type}`);
@@ -9895,7 +9713,7 @@ var ListStorageKeysTool = class {
   }
   async handler(args, context) {
     context.disableLogging();
-    const targetManager = SDK20.TargetManager.TargetManager.instance();
+    const targetManager = SDK19.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
     const establishedOrigin = context.getEstablishedOrigin();
     if (!establishedOrigin || establishedOrigin.isOpaque()) {
@@ -9908,7 +9726,7 @@ var ListStorageKeysTool = class {
     if (!pageOrigin.isSameOriginWith(establishedOrigin)) {
       return { error: "No origin available or not allowed." };
     }
-    const candidateOrigins = args.origins && args.origins.length > 0 ? args.origins.map((origin) => SDK20.SecurityOrigin.SecurityOrigin.create(origin)) : [establishedOrigin];
+    const candidateOrigins = args.origins && args.origins.length > 0 ? args.origins.map((origin) => SDK19.SecurityOrigin.SecurityOrigin.create(origin)) : [establishedOrigin];
     const validOrigins = candidateOrigins.filter((origin) => origin.isSameOriginWith(establishedOrigin)).map((origin) => origin.siteId());
     const targetOrigins = Array.from(new Set(validOrigins)).slice(0, MAX_TARGET_ORIGINS);
     if (targetOrigins.length === 0) {
@@ -9944,14 +9762,14 @@ __export(RecordPerformanceTrace_exports, {
   RecordPerformanceTraceTool: () => RecordPerformanceTraceTool
 });
 import * as Host24 from "../../core/host/host.js";
-import * as i18n41 from "../../core/i18n/i18n.js";
+import * as i18n39 from "../../core/i18n/i18n.js";
 
 // ../../front_end/models/ai_assistance/contexts/PerformanceTraceContext.ts
 var PerformanceTraceContext_exports = {};
 __export(PerformanceTraceContext_exports, {
   PerformanceTraceContext: () => PerformanceTraceContext
 });
-import * as SDK21 from "../../core/sdk/sdk.js";
+import * as SDK20 from "../../core/sdk/sdk.js";
 import * as Tracing2 from "../../services/tracing/tracing.js";
 import * as Bindings2 from "../bindings/bindings.js";
 import * as SourceMapScopes from "../source_map_scopes/source_map_scopes.js";
@@ -10082,7 +9900,7 @@ function getPerformanceAgentFocusFromModel(model) {
 
 // ../../front_end/models/ai_assistance/contexts/PerformanceTraceContext.ts
 var PerformanceTraceContext = class _PerformanceTraceContext extends ConversationContext {
-  static fromParsedTrace(parsedTrace, targetManager = SDK21.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromParsedTrace(parsedTrace, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10093,7 +9911,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
       debuggerWorkspaceBinding
     );
   }
-  static fromInsight(parsedTrace, insight, targetManager = SDK21.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromInsight(parsedTrace, insight, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10104,7 +9922,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
       debuggerWorkspaceBinding
     );
   }
-  static fromCallTree(callTree, targetManager = SDK21.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromCallTree(callTree, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10115,12 +9933,13 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
       debuggerWorkspaceBinding
     );
   }
+  jslogContext = "ai-context-performance-trace";
   #focus;
   #targetManager;
   #freshRecordingTracker;
   #debuggerWorkspaceBinding;
   #origin;
-  constructor(focus, targetManager = SDK21.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  constructor(focus, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10175,7 +9994,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
    */
   canAccessResource(url) {
     const traceOrigin = this.getOrigin();
-    const targetOrigin = SDK21.SecurityOrigin.SecurityOrigin.create(url);
+    const targetOrigin = SDK20.SecurityOrigin.SecurityOrigin.create(url);
     if (traceOrigin.isFile() || targetOrigin.isFile()) {
       return false;
     }
@@ -10199,11 +10018,11 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
   getOrigin() {
     if (!this.#origin) {
       if (this.isImported()) {
-        this.#origin = SDK21.SecurityOrigin.SecurityOrigin.createForImportedTrace(
+        this.#origin = SDK20.SecurityOrigin.SecurityOrigin.createForImportedTrace(
           this.#focus.parsedTrace.data.Meta.mainFrameURL
         );
       } else {
-        this.#origin = SDK21.SecurityOrigin.SecurityOrigin.create(
+        this.#origin = SDK20.SecurityOrigin.SecurityOrigin.create(
           this.#focus.parsedTrace.data.Meta.mainFrameURL
         );
       }
@@ -10520,10 +10339,10 @@ function getLabelName(label, parsedTrace) {
 }
 
 // ../../front_end/models/ai_assistance/tools/RecordPerformanceTrace.ts
-var UIStringsNotTranslate12 = {
+var UIStringsNotTranslate11 = {
   recordingPerformanceTrace: "Recording a performance trace"
 };
-var lockedString20 = i18n41.i18n.lockedString;
+var lockedString19 = i18n39.i18n.lockedString;
 var RecordPerformanceTraceTool = class {
   name = "recordPerformanceTrace" /* RECORD_PERFORMANCE_TRACE */;
   description = "Reloads the page and records a new performance trace to measure, analyze, and debug page performance.";
@@ -10536,7 +10355,7 @@ var RecordPerformanceTraceTool = class {
   };
   displayInfoFromArgs() {
     return {
-      title: lockedString20(UIStringsNotTranslate12.recordingPerformanceTrace),
+      title: lockedString19(UIStringsNotTranslate11.recordingPerformanceTrace),
       action: "recordPerformanceTrace()"
     };
   }
@@ -10563,7 +10382,7 @@ __export(ResolveDevtoolsNodePath_exports, {
   ResolveDevtoolsNodePathTool: () => ResolveDevtoolsNodePathTool
 });
 import * as Host25 from "../../core/host/host.js";
-import * as SDK22 from "../../core/sdk/sdk.js";
+import * as SDK21 from "../../core/sdk/sdk.js";
 var ResolveDevtoolsNodePathTool = class {
   name = "resolveDevtoolsNodePath" /* RESOLVE_DEVTOOLS_NODE_PATH */;
   description = "Resolves a DevTools node path (e.g. from a Lighthouse audit snippet) to an element backend node ID for further DOM, style, or accessibility inspection.";
@@ -10600,12 +10419,8 @@ var ResolveDevtoolsNodePathTool = class {
    * access to nodes from other origins.
    */
   async handler(params, context) {
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return { error: "Error: Origin lock is not established." };
-    }
     const target = context.getTarget();
-    const domModel = target?.model(SDK22.DOMModel.DOMModel);
+    const domModel = target?.model(SDK21.DOMModel.DOMModel);
     if (!domModel) {
       return { error: "Error: Inspected target not found." };
     }
@@ -10621,9 +10436,9 @@ var ResolveDevtoolsNodePathTool = class {
     if (!node) {
       return { error: "Error: Could not retrieve resolved node." };
     }
-    const nodeContext = new DOMNodeContext(node);
-    if (!isOriginAllowedByLock(establishedOrigin, nodeContext.getOrigin())) {
-      return { error: "Error: Node does not belong to the locked origin." };
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!isOriginAllowedByLock(establishedOrigin, node.securityOrigin())) {
+      return { error: "Error: Node does not belong to the current origin." };
     }
     return {
       result: { backendNodeId: node.backendNodeId() }
@@ -10700,12 +10515,12 @@ __export(SelectTraceEventByKey_exports, {
 });
 import * as Common5 from "../../core/common/common.js";
 import * as Host27 from "../../core/host/host.js";
-import * as i18n43 from "../../core/i18n/i18n.js";
-import * as SDK23 from "../../core/sdk/sdk.js";
-var UIStringsNotTranslate13 = {
+import * as i18n41 from "../../core/i18n/i18n.js";
+import * as SDK22 from "../../core/sdk/sdk.js";
+var UIStringsNotTranslate12 = {
   selectingTraceEvent: "Selecting trace event"
 };
-var lockedString21 = i18n43.i18n.lockedString;
+var lockedString20 = i18n41.i18n.lockedString;
 var SelectTraceEventByKeyTool = class {
   name = "selectTraceEventByKey" /* SELECT_TRACE_EVENT_BY_KEY */;
   description = "Selects and reveals a specific event by its key in the Performance panel Flamechart.";
@@ -10724,7 +10539,7 @@ var SelectTraceEventByKeyTool = class {
   };
   displayInfoFromArgs(params) {
     return {
-      title: lockedString21(UIStringsNotTranslate13.selectingTraceEvent),
+      title: lockedString20(UIStringsNotTranslate12.selectingTraceEvent),
       action: `selectTraceEventByKey('${params.eventKey}')`
     };
   }
@@ -10738,7 +10553,7 @@ var SelectTraceEventByKeyTool = class {
     if (!event) {
       return { error: `Could not find event with key "${params.eventKey}".` };
     }
-    const revealable = new SDK23.TraceObject.RevealableEvent(event);
+    const revealable = new SDK22.TraceObject.RevealableEvent(event);
     try {
       await Common5.Revealer.reveal(revealable);
     } catch {
@@ -10867,7 +10682,7 @@ var AccessibilityAgent = class extends AiAgent {
   }
   async preRun() {
     const target = this.targetManager.primaryPageTarget();
-    const domModel = target?.model(SDK24.DOMModel.DOMModel);
+    const domModel = target?.model(SDK23.DOMModel.DOMModel);
     if (domModel && !domModel.existingDocument()) {
       try {
         await domModel.requestDocument();
@@ -10882,7 +10697,7 @@ var AccessibilityAgent = class extends AiAgent {
    * so that the AI has a valid $0 to start with.
    */
   #getDocumentBodyNode() {
-    const document2 = this.targetManager.primaryPageTarget()?.model(SDK24.DOMModel.DOMModel)?.existingDocument();
+    const document2 = this.targetManager.primaryPageTarget()?.model(SDK23.DOMModel.DOMModel)?.existingDocument();
     return document2?.body ?? document2 ?? null;
   }
   async *handleContextDetails(lhr) {
@@ -10906,7 +10721,7 @@ var AccessibilityAgent = class extends AiAgent {
     if (!target) {
       return null;
     }
-    const domModel = target.model(SDK24.DOMModel.DOMModel);
+    const domModel = target.model(SDK23.DOMModel.DOMModel);
     if (!domModel) {
       return null;
     }
@@ -10943,7 +10758,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n45.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
+          title: i18n43.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
           action: `getLighthouseAudits('${params.categoryId}')`
         };
       },
@@ -11004,7 +10819,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n45.i18n.lockedString("Running accessibility audits"),
+          title: i18n43.i18n.lockedString("Running accessibility audits"),
           thought: params.explanation,
           action: "runAccessibilityAudits()"
         };
@@ -11147,7 +10962,7 @@ var AccessibilityAgent = class extends AiAgent {
         if (!node) {
           return { error: `Could not find the element with path: ${params.path}` };
         }
-        const accessibilityModel = node.domModel().target().model(SDK24.AccessibilityModel.AccessibilityModel);
+        const accessibilityModel = node.domModel().target().model(SDK23.AccessibilityModel.AccessibilityModel);
         if (!accessibilityModel) {
           return { error: "Accessibility model not found." };
         }
@@ -11181,8 +10996,8 @@ var AccessibilityAgent = class extends AiAgent {
           name: "DOM_TREE",
           data: {
             root: snapshot,
-            title: i18n45.i18n.lockedString("Element details"),
-            accessibleRevealLabel: i18n45.i18n.lockedString("Reveal element")
+            title: i18n43.i18n.lockedString("Element details"),
+            accessibleRevealLabel: i18n43.i18n.lockedString("Reveal element")
           }
         });
         return {
@@ -11223,8 +11038,9 @@ var AccessibilityContext_exports = {};
 __export(AccessibilityContext_exports, {
   AccessibilityContext: () => AccessibilityContext
 });
-import * as SDK25 from "../../core/sdk/sdk.js";
+import * as SDK24 from "../../core/sdk/sdk.js";
 var AccessibilityContext = class extends ConversationContext {
+  jslogContext = "ai-context-accessibility";
   #lh;
   #cachedPayload = null;
   constructor(report) {
@@ -11243,7 +11059,7 @@ var AccessibilityContext = class extends ConversationContext {
    * @returns The security origin of the audited page.
    */
   getOrigin() {
-    return SDK25.SecurityOrigin.SecurityOrigin.create(this.#url());
+    return SDK24.SecurityOrigin.SecurityOrigin.create(this.#url());
   }
   getItem() {
     return this.#lh;
@@ -11291,6 +11107,194 @@ ${audits}`;
   }
 };
 
+// ../../front_end/models/ai_assistance/contexts/DOMNodeContext.ts
+var DOMNodeContext_exports = {};
+__export(DOMNodeContext_exports, {
+  DOMNodeContext: () => DOMNodeContext
+});
+import * as i18n45 from "../../core/i18n/i18n.js";
+import * as SDK25 from "../../core/sdk/sdk.js";
+var UIStringsNotTranslate13 = {
+  /**
+   * @description Heading text for context details of DevTools AI Agent.
+   */
+  dataUsed: "Data used"
+};
+var lockedString21 = i18n45.i18n.lockedString;
+var DOMNodeContext = class extends ConversationContext {
+  jslogContext = "ai-context-dom-node";
+  #node;
+  #opaqueOrigin;
+  constructor(node) {
+    super();
+    this.#node = node;
+  }
+  /**
+   * Returns the security origin of the node's owner document.
+   *
+   * If the node is detached from a document, returns a unique opaque origin to
+   * prevent unauthorized cross-origin access in AI conversations.
+   *
+   * @returns The security origin of the owner document, or a unique opaque origin.
+   */
+  getOrigin() {
+    const ownerDocument = this.#node.ownerDocument;
+    if (!ownerDocument) {
+      if (!this.#opaqueOrigin) {
+        this.#opaqueOrigin = SDK25.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
+      }
+      return this.#opaqueOrigin;
+    }
+    return SDK25.SecurityOrigin.SecurityOrigin.create(ownerDocument.documentURL);
+  }
+  getItem() {
+    return this.#node;
+  }
+  getTitle() {
+    throw new Error("Not implemented");
+  }
+  async getSuggestions() {
+    const layoutProps = await this.#node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.#node.id);
+    if (!layoutProps) {
+      return;
+    }
+    if (layoutProps.isFlex) {
+      return [
+        { title: "How can I make flex items wrap?", jslogContext: "flex-wrap" },
+        { title: "How do I distribute flex items evenly?", jslogContext: "flex-distribute" },
+        { title: "What is flexbox?", jslogContext: "flex-what" }
+      ];
+    }
+    if (layoutProps.isSubgrid) {
+      return [
+        { title: "Where is this grid defined?", jslogContext: "subgrid-where" },
+        { title: "How to overwrite parent grid properties?", jslogContext: "subgrid-override" },
+        { title: "How do subgrids work? ", jslogContext: "subgrid-how" }
+      ];
+    }
+    if (layoutProps.isGrid) {
+      return [
+        { title: "How do I align items in a grid?", jslogContext: "grid-align" },
+        { title: "How to add spacing between grid items?", jslogContext: "grid-gap" },
+        { title: "How does grid layout work?", jslogContext: "grid-how" }
+      ];
+    }
+    if (layoutProps.hasScroll) {
+      return [
+        { title: "How do I remove scrollbars for this element?", jslogContext: "scroll-remove" },
+        { title: "How can I style a scrollbar?", jslogContext: "scroll-style" },
+        { title: "Why does this element scroll?", jslogContext: "scroll-why" }
+      ];
+    }
+    if (layoutProps.containerType) {
+      return [
+        { title: "What are container queries?", jslogContext: "container-what" },
+        { title: "How do I use container-type?", jslogContext: "container-how" },
+        { title: "What's the container context for this element?", jslogContext: "container-context" }
+      ];
+    }
+    return;
+  }
+  async getPromptDetails() {
+    return `# Inspected element
+
+${await this.describe()}`;
+  }
+  async getUserFacingDetails() {
+    return [
+      {
+        title: lockedString21(UIStringsNotTranslate13.dataUsed),
+        text: await this.describe()
+      }
+    ];
+  }
+  async describe() {
+    const element = this.#node;
+    let output = `* Element's uid is ${element.backendNodeId()}.
+* Its selector is \`${element.simpleSelector()}\``;
+    const childNodes = await element.getChildNodesPromise();
+    if (childNodes) {
+      const textChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.TEXT_NODE);
+      const elementChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.ELEMENT_NODE);
+      switch (elementChildNodes.length) {
+        case 0:
+          output += "\n* It doesn't have any child element nodes";
+          break;
+        case 1:
+          output += `
+* It only has 1 child element node: \`${elementChildNodes[0].simpleSelector()}\``;
+          break;
+        default:
+          output += `
+* It has ${elementChildNodes.length} child element nodes: ${elementChildNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
+      }
+      switch (textChildNodes.length) {
+        case 0:
+          output += "\n* It doesn't have any child text nodes";
+          break;
+        case 1:
+          output += "\n* It only has 1 child text node";
+          break;
+        default:
+          output += `
+* It has ${textChildNodes.length} child text nodes`;
+      }
+    }
+    if (element.nextSibling) {
+      const elementOrNodeElementNodeText = element.nextSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.nextSibling.backendNodeId()})` : "a non element";
+      output += `
+* It has a next sibling and it is ${elementOrNodeElementNodeText} node`;
+    }
+    if (element.previousSibling) {
+      const elementOrNodeElementNodeText = element.previousSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.previousSibling.backendNodeId()})` : "a non element";
+      output += `
+* It has a previous sibling and it is ${elementOrNodeElementNodeText} node`;
+    }
+    if (element.isInShadowTree()) {
+      output += "\n* It is in a shadow DOM tree.";
+    }
+    const parentNode = element.parentNode;
+    if (parentNode) {
+      const parentChildrenNodes = await parentNode.getChildNodesPromise();
+      output += `
+* Its parent's selector is \`${parentNode.simpleSelector()}\` (uid=${parentNode.backendNodeId()})`;
+      const elementOrNodeElementNodeText = parentNode.nodeType() === Node.ELEMENT_NODE ? "an element" : "a non element";
+      output += `
+* Its parent is ${elementOrNodeElementNodeText} node`;
+      if (parentNode.isShadowRoot()) {
+        output += "\n* Its parent is a shadow root.";
+      }
+      if (parentChildrenNodes) {
+        const childElementNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.ELEMENT_NODE);
+        switch (childElementNodes.length) {
+          case 0:
+            break;
+          case 1:
+            output += "\n* Its parent has only 1 child element node";
+            break;
+          default:
+            output += `
+* Its parent has ${childElementNodes.length} child element nodes: ${childElementNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
+            break;
+        }
+        const siblingTextNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.TEXT_NODE);
+        switch (siblingTextNodes.length) {
+          case 0:
+            break;
+          case 1:
+            output += "\n* Its parent has only 1 child text node";
+            break;
+          default:
+            output += `
+* Its parent has ${siblingTextNodes.length} child text nodes: ${siblingTextNodes.map((node) => `\`${node.simpleSelector()}\``).join(", ")}`;
+            break;
+        }
+      }
+    }
+    return output.trim();
+  }
+};
+
 // ../../front_end/models/ai_assistance/contexts/RequestContext.ts
 var RequestContext_exports = {};
 __export(RequestContext_exports, {
@@ -11306,6 +11310,7 @@ var UIStringsNotTranslate14 = {
 };
 var lockedString22 = i18n47.i18n.lockedString;
 var RequestContext = class extends ConversationContext {
+  jslogContext = "ai-context-network-request";
   #request;
   #calculator;
   constructor(request, calculator) {
@@ -11429,6 +11434,7 @@ var CookieItem = class _CookieItem extends StorageItem {
 
 // ../../front_end/models/ai_assistance/contexts/StorageContext.ts
 var StorageContext = class extends ConversationContext {
+  jslogContext = "ai-context-storage";
   #item;
   constructor(item) {
     super();
@@ -14123,8 +14129,10 @@ var AiAgent2 = class extends AiAgent {
     if (this.context && !this.context.isLoggingEnabled()) {
       this.disableServerSideLogging();
     }
-    const target = this.#getPrimaryPageTarget();
-    const domModel = target?.model(SDK29.DOMModel.DOMModel);
+    const target = this.targetManager.primaryPageTarget();
+    const establishedOrigin = this.#getConversationOrigin();
+    const isTargetAllowed = target && isOriginAllowedByLock(establishedOrigin, target.inspectedSecurityOrigin());
+    const domModel = isTargetAllowed ? target.model(SDK29.DOMModel.DOMModel) : null;
     if (domModel) {
       if (!domModel.existingDocument()) {
         try {
@@ -14290,7 +14298,7 @@ ${skillObj.instructions}
           createExtensionScope: this.#createExtensionScope.bind(this),
           execJs: this.#execJs,
           getExecutionContextNode: () => this.#getExecutionContextNode(),
-          getTarget: () => this.#getPrimaryPageTarget(),
+          getTarget: () => this.#getTarget(),
           getEstablishedOrigin: () => this.#getConversationOrigin(),
           getLighthouseReport: () => this.context instanceof AccessibilityContext ? this.context.getItem() : null,
           runLighthouse: async (overrides) => await (this.#lighthouseRecording?.(overrides) ?? null),
@@ -14305,41 +14313,36 @@ ${skillObj.instructions}
     });
   }
   /**
-   * Returns the primary page target only if no conversation origin is locked,
-   * or if the primary target matches the locked conversation origin.
-   * If origin access is explicitly blocked (e.g. cross-origin navigation occurred),
-   * or if the conversation is locked to an origin different from the primary page target
-   * (e.g. an iframe origin), returns null to prevent cross-origin target access.
+   * Returns the primary page target unless origin access is explicitly blocked
+   * (e.g. following cross-origin navigation).
+   * Tools use this target to resolve node IDs and fetch frame resources, and
+   * perform their own origin checks on the resolved entities.
    */
-  #getPrimaryPageTarget() {
+  #getTarget() {
     const allowed = this.#allowedOrigin?.();
     if (allowed && "blocked" in allowed) {
       return null;
     }
-    const target = this.targetManager.primaryPageTarget();
-    if (!target) {
-      return null;
-    }
-    const establishedOrigin = this.#getConversationOrigin();
-    if (!establishedOrigin) {
-      return target;
-    }
-    const targetOrigin = target.inspectedSecurityOrigin();
-    if (targetOrigin.isSameOriginWith(establishedOrigin)) {
-      return target;
-    }
-    return null;
+    return this.targetManager.primaryPageTarget();
   }
   /**
    * For non-DOM contexts (e.g., Lighthouse accessibility reports or storage items),
    * there is no user-selected DOM node. We fall back to the document body as the
    * default execution context node so scripts have a valid `$0` target.
-   * If the conversation is locked to an origin different from the primary page target,
-   * returns null to prevent exposing the top-level document body across origins.
+   * Fails closed and returns null if the conversation origin is not established or
+   * does not match the primary page document's security origin.
    */
   #getDocumentBodyNode() {
-    const document2 = this.#getPrimaryPageTarget()?.model(SDK29.DOMModel.DOMModel)?.existingDocument();
-    return document2?.body ?? null;
+    const target = this.#getTarget();
+    const document2 = target?.model(SDK29.DOMModel.DOMModel)?.existingDocument();
+    if (!document2) {
+      return null;
+    }
+    const establishedOrigin = this.#getConversationOrigin();
+    if (!isOriginAllowedByLock(establishedOrigin, document2.securityOrigin())) {
+      return null;
+    }
+    return document2.body ?? null;
   }
   #getConversationOrigin() {
     const allowed = this.#allowedOrigin?.();

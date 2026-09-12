@@ -452,9 +452,9 @@ __export(LayoutShiftsTrackAppender_exports, {
 });
 import * as Common from "../../core/common/common.js";
 import * as i18n9 from "../../core/i18n/i18n.js";
-import * as Geometry from "../../models/geometry/geometry.js";
 import * as Trace5 from "../../models/trace/trace.js";
 import * as ComponentHelpers from "../../ui/components/helpers/helpers.js";
+import * as Geometry from "../../ui/geometry/geometry.js";
 import * as PerfUI5 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as ThemeSupport7 from "../../ui/legacy/theme_support/theme_support.js";
 import * as Utils from "./utils/utils.js";
@@ -5952,7 +5952,7 @@ var timelineStatusDialog_css_default = `/*
 .timeline-status-dialog {
   display: flex;
   flex-direction: column;
-  padding: 16px 16px 12px;
+  padding: var(--sys-size-8) var(--sys-size-8) var(--sys-size-6);
   align-self: center;
   background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);
@@ -5960,8 +5960,8 @@ var timelineStatusDialog_css_default = `/*
 }
 
 .status-dialog-line {
-  margin: 2px;
-  height: 14px;
+  margin: var(--sys-size-2);
+  height: var(--sys-size-7);
   min-height: auto;
   display: flex;
   align-items: baseline;
@@ -5970,7 +5970,7 @@ var timelineStatusDialog_css_default = `/*
 
 .status-dialog-line .label {
   display: inline-block;
-  width: 80px;
+  width: var(--sys-size-19);
   text-align: right;
   color: var(--sys-color-on-surface);
   margin-right: 10px;
@@ -5979,7 +5979,7 @@ var timelineStatusDialog_css_default = `/*
 .timeline-status-dialog .progress .indicator-container {
   display: inline-block;
   width: 200px;
-  height: 8px;
+  height: var(--sys-size-5);
   background-color: var(--sys-color-surface5);
 }
 
@@ -5991,22 +5991,22 @@ var timelineStatusDialog_css_default = `/*
 }
 
 .timeline-status-dialog .stop-button {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   height: 100%;
   align-self: flex-end;
 }
 
 .timeline-status-dialog .stop-button button {
-  border-radius: 12px;
+  border-radius: var(--sys-shape-corner-medium-small);
 }
 
 @media (forced-colors: active) {
   .timeline-status-dialog {
-    border: 1px solid canvastext;
+    border: var(--sys-size-1) solid canvastext;
   }
 
   .timeline-status-dialog .progress .indicator-container {
-    border: 1px solid ButtonText;
+    border: var(--sys-size-1) solid ButtonText;
     background-color: ButtonFace;
   }
 
@@ -8118,7 +8118,7 @@ var timelineMiniMap_css_default = `/*
 
 
 .timeline-minimap .overview-strip {
-  margin-top: 2px;
+  margin-top: var(--sys-size-2);
   justify-content: center;
 }
 
@@ -8128,18 +8128,18 @@ var timelineMiniMap_css_default = `/*
   font-weight: bold;
   z-index: 100;
   background-color: var(--sys-color-cdt-base-container);
-  padding: 0 4px;
+  padding: 0 var(--sys-size-3);
   position: absolute;
-  top: -2px;
+  top: calc(var(--sys-size-2) * -1);
   right: 0;
 }
 
 .timeline-minimap #timeline-overview-cpu-activity {
-  flex-basis: 20px;
+  flex-basis: var(--sys-size-9);
 }
 
 .timeline-minimap #timeline-overview-network {
-  flex-basis: 8px;
+  flex-basis: var(--sys-size-5);
 }
 
 .timeline-minimap #timeline-overview-filmstrip {
@@ -8147,7 +8147,7 @@ var timelineMiniMap_css_default = `/*
 }
 
 .timeline-minimap #timeline-overview-memory {
-  flex-basis: 20px;
+  flex-basis: var(--sys-size-9);
 }
 
 .timeline-minimap #timeline-overview-network::before,
@@ -8157,7 +8157,7 @@ var timelineMiniMap_css_default = `/*
   left: 0;
   right: 0;
   bottom: 0;
-  border-bottom: 1px solid var(--divider-line);
+  border-bottom: var(--sys-size-1) solid var(--divider-line);
   z-index: -200;
 }
 
@@ -8171,7 +8171,7 @@ var timelineMiniMap_css_default = `/*
 }
 
 .timeline-minimap #timeline-overview-input {
-  flex-basis: 6px;
+  flex-basis: var(--sys-size-4);
 }
 
 .timeline-minimap #timeline-overview-pane {
@@ -8206,7 +8206,7 @@ var timelineMiniMap_css_default = `/*
   font-size: 9px;
   color: var(--sys-color-token-subtle);
   white-space: nowrap;
-  padding: 0 4px;
+  padding: 0 var(--sys-size-3);
   background-color: var(--sys-color-cdt-base-container);
 }
 
@@ -16109,8 +16109,8 @@ __export(TimelinePaintProfilerView_exports, {
   TimelinePaintProfilerView: () => TimelinePaintProfilerView
 });
 import * as SDK10 from "../../core/sdk/sdk.js";
-import * as Geometry2 from "../../models/geometry/geometry.js";
 import * as Trace27 from "../../models/trace/trace.js";
+import * as Geometry2 from "../../ui/geometry/geometry.js";
 import * as UI13 from "../../ui/legacy/legacy.js";
 import * as Lit from "../../ui/lit/lit.js";
 import * as LayerViewer2 from "../layer_viewer/layer_viewer.js";

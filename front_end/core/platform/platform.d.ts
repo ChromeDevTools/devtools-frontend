@@ -14,5 +14,6 @@ import * as TypedArrayUtilities from './TypedArrayUtilities.js';
 import * as TypeScriptUtilities from './TypescriptUtilities.js';
 import * as UIString from './UIString.js';
 import * as UserVisibleError from './UserVisibleError.js';
+export { Size } from './Size.js';
 export { assertNever, assertNotNullOrUndefined } from './TypescriptUtilities.js';
 export { ArrayUtilities, Brand, Constructor, DateUtilities, DevToolsPath, HostRuntime, KeyboardUtilities, MapUtilities, MimeType, NumberUtilities, StringUtilities, Timing, TypedArrayUtilities, TypeScriptUtilities, UIString, UserVisibleError, };

@@ -12,6 +12,7 @@ import { html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 import { ThrottlingPresets } from './ThrottlingPresets.js';
+export var CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
 const UIStrings = {
     /**
      * @description Text to indicate the network connectivity is offline.
@@ -306,6 +307,12 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     setHardwareConcurrency(concurrency) {
         this.cpuThrottlingManager.setHardwareConcurrency(concurrency);
+    }
+    effectiveCPUPerformanceTier() {
+        return this.cpuThrottlingManager.effectiveCPUPerformanceTier();
+    }
+    setCPUPerformanceTier(tier) {
+        this.cpuThrottlingManager.setCPUPerformanceTier(tier);
     }
     isDirty() {
         const networkConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();

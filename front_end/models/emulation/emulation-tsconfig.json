@@ -78,9 +78,6 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../geometry/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../workspace/bundle-tsconfig.ref.json"
     }
   ]

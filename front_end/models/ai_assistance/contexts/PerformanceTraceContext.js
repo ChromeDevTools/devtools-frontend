@@ -37,6 +37,7 @@ export class PerformanceTraceContext extends ConversationContext {
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
         return new PerformanceTraceContext(AgentFocus.fromCallTree(callTree), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
     }
+    jslogContext = 'ai-context-performance-trace';
     #focus;
     #targetManager;
     #freshRecordingTracker;

@@ -204,6 +204,12 @@ export declare class PositionAnchorRenderer extends PositionAnchorRendererBase {
     constructor(stylesContainer: StylesContainer);
     render(match: SDK.CSSPropertyParserMatchers.PositionAnchorMatch): Node[];
 }
+declare const PositionAreaRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.PositionAreaMatch>;
+export declare class PositionAreaRenderer extends PositionAreaRendererBase {
+    #private;
+    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
+    render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): Node[];
+}
 declare const PositionTryRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.PositionTryMatch>;
 export declare class PositionTryRenderer extends PositionTryRendererBase {
     #private;

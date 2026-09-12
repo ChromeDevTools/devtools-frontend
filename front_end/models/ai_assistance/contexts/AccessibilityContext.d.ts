@@ -3,6 +3,7 @@ import type * as LHModel from '../../lighthouse/lighthouse.js';
 import { type AiWidget, type ContextDetail, ConversationContext } from '../agents/AiAgent.js';
 export declare class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
     #private;
+    readonly jslogContext: 'ai-context-accessibility';
     constructor(report: LHModel.ReporterTypes.ReportJSON);
     /**
      * Returns the security origin of the audited page from the Lighthouse report.

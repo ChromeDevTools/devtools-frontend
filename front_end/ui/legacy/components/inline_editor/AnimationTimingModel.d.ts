@@ -1,4 +1,4 @@
-import * as Geometry from '../../../../models/geometry/geometry.js';
+import * as Geometry from '../../../geometry/geometry.js';
 /**
  * Provides a unified interface for both linear easing and cubic bezier
  * models and handles the parsing for animation-timing texts.

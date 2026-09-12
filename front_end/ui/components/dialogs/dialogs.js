@@ -1203,9 +1203,9 @@ __export(TypeToAllowDialog_exports, {
 });
 import * as Host from "../../../core/host/host.js";
 import * as i18n7 from "../../../core/i18n/i18n.js";
-import * as Geometry from "../../../models/geometry/geometry.js";
 import * as Buttons4 from "../buttons/buttons.js";
 import * as UI3 from "../../legacy/legacy.js";
+import * as Geometry from "../../geometry/geometry.js";
 
 // gen/front_end/ui/components/dialogs/typeToAllowDialog.css.js
 var typeToAllowDialog_css_default = `/*

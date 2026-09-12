@@ -4172,6 +4172,7 @@ __export(StylePropertyTreeElement_exports, {
   LinkableNameRenderer: () => LinkableNameRenderer,
   MathFunctionRenderer: () => MathFunctionRenderer,
   PositionAnchorRenderer: () => PositionAnchorRenderer,
+  PositionAreaRenderer: () => PositionAreaRenderer,
   PositionTryRenderer: () => PositionTryRenderer,
   RelativeColorChannelRenderer: () => RelativeColorChannelRenderer,
   SHORTHANDS_FOR_PERCENTAGES: () => SHORTHANDS_FOR_PERCENTAGES,
@@ -5356,7 +5357,8 @@ devtools-icon.open-in-animations-panel {
   text-decoration: underline dotted var(--sys-color-token-meta);
 }
 
-devtools-icon.bezier-swatch-icon {
+devtools-icon.bezier-swatch-icon,
+devtools-icon.position-area-swatch-icon {
   position: relative;
   transform: scale(0.7);
   margin: -5px calc(-1 * var(--sys-size-2)) -3px calc(-1 * var(--sys-size-3));
@@ -5634,6 +5636,10 @@ var UIStrings5 = {
    * @description Title of the button that opens the CSS Grid Lanes editor in the Styles tab of the Elements panel.
    */
   gridLanesEditorButton: "Open `grid-lanes` editor",
+  /**
+   * @description Title of the button that opens the CSS position-area editor in the Styles tab of the Elements panel.
+   */
+  positionAreaEditorButton: "Open `position-area` editor",
   /**
    * @description A context menu item in the Styles tab of the Elements panel to copy CSS declaration as JavaScript property.
    */
@@ -7279,6 +7285,71 @@ var PositionAnchorRenderer = class extends PositionAnchorRendererBase {
     return [content];
   }
 };
+var PositionAreaRendererBase = rendererBase(SDK5.CSSPropertyParserMatchers.PositionAreaMatch);
+var PositionAreaRenderer = class extends PositionAreaRendererBase {
+  // clang-format on
+  #treeElement;
+  #stylesContainer;
+  constructor(stylesContainer, treeElement) {
+    super();
+    this.#treeElement = treeElement;
+    this.#stylesContainer = stylesContainer;
+  }
+  render(match, context) {
+    const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
+    if (!this.#treeElement?.editable() || !InlineEditor2.PositionAreaEditor.parsePositionArea(match.text)) {
+      return children;
+    }
+    const valueElement = document.createElement("span");
+    valueElement.append(...children);
+    const button = createIcon("grid-on", "position-area-swatch-icon");
+    button.title = i18nString5(UIStrings5.positionAreaEditorButton);
+    button.role = "button";
+    button.tabIndex = -1;
+    button.setAttribute("jslog", `${VisualLogging3.showStyleEditor().track({ click: true }).context("position-area")}`);
+    const treeElement = this.#treeElement;
+    button.onclick = (event) => {
+      event.consume(true);
+      const popoverHelper = this.#stylesContainer.swatchPopoverHelper();
+      if (popoverHelper.isShowing()) {
+        popoverHelper.hide(true);
+        return;
+      }
+      const editor = new InlineEditor2.PositionAreaEditor.PositionAreaEditor();
+      editor.area = InlineEditor2.PositionAreaEditor.parsePositionArea(valueElement.textContent ?? "") ?? void 0;
+      const onPositionAreaChanged = (changeEvent) => {
+        valueElement.textContent = InlineEditor2.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
+        void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
+      };
+      editor.addEventListener(InlineEditor2.PositionAreaEditor.Events.POSITION_AREA_CHANGED, onPositionAreaChanged);
+      const scrollerElement = button.enclosingNodeOrSelfWithClass("style-panes-wrapper");
+      const onScroll = () => {
+        popoverHelper.hide(true);
+      };
+      if (scrollerElement) {
+        scrollerElement.addEventListener("scroll", onScroll, false);
+      }
+      const originalPropertyText = treeElement.property.propertyText;
+      this.#stylesContainer.setEditingStyle(true);
+      popoverHelper.show(editor, button, (commitEdit) => {
+        if (scrollerElement) {
+          scrollerElement.removeEventListener("scroll", onScroll, false);
+        }
+        editor.removeEventListener(InlineEditor2.PositionAreaEditor.Events.POSITION_AREA_CHANGED, onPositionAreaChanged);
+        const propertyText = commitEdit ? treeElement.renderedPropertyText() : originalPropertyText || "";
+        void treeElement.applyStyleText(propertyText, true);
+        this.#stylesContainer.setEditingStyle(false);
+      });
+    };
+    button.onmousedown = (event) => {
+      event.consume();
+    };
+    button.onmouseup = (event) => {
+      event.consume();
+    };
+    return [button, valueElement];
+  }
+};
 var PositionTryRendererBase = rendererBase(SDK5.CSSPropertyParserMatchers.PositionTryMatch);
 var PositionTryRenderer = class extends PositionTryRendererBase {
   #matchedStyles;
@@ -7327,6 +7398,7 @@ function getPropertyRenderers(propertyName, style, stylesContainer, matchedStyle
     new AnchorFunctionRenderer(stylesContainer),
     new PositionAnchorRenderer(stylesContainer),
     new FlexGridRenderer(stylesContainer, treeElement),
+    new PositionAreaRenderer(stylesContainer, treeElement),
     new EnvFunctionRenderer(treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
     new PositionTryRenderer(matchedStyles),
     new LengthRenderer(stylesContainer, propertyName, treeElement),
@@ -22375,7 +22447,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     this.performUpdate();
   }
   duplicateNode(node) {
-    node.duplicate();
+    void node.duplicate();
   }
   nodeBeingDragged() {
     return this.#draggedNode;

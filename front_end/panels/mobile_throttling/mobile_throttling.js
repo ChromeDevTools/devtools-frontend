@@ -23,6 +23,7 @@ import * as PanelsCommon3 from "../common/common.js";
 var ThrottlingManager_exports = {};
 __export(ThrottlingManager_exports, {
   ActionDelegate: () => ActionDelegate,
+  CPUPerformanceTier: () => CPUPerformanceTier,
   DEFAULT_SAVE_DATA_VIEW: () => DEFAULT_SAVE_DATA_VIEW,
   SaveDataOverrideSelect: () => SaveDataOverrideSelect,
   ThrottlingManager: () => ThrottlingManager,
@@ -168,6 +169,7 @@ globalThis.MobileThrottling = globalThis.MobileThrottling || {};
 globalThis.MobileThrottling.networkPresets = ThrottlingPresets.networkPresets;
 
 // ../../front_end/panels/mobile_throttling/ThrottlingManager.ts
+var CPUPerformanceTier = SDK2.CPUThrottlingManager.CPUPerformanceTier;
 var UIStrings2 = {
   /**
    * @description Text to indicate the network connectivity is offline.
@@ -475,6 +477,12 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
   }
   setHardwareConcurrency(concurrency) {
     this.cpuThrottlingManager.setHardwareConcurrency(concurrency);
+  }
+  effectiveCPUPerformanceTier() {
+    return this.cpuThrottlingManager.effectiveCPUPerformanceTier();
+  }
+  setCPUPerformanceTier(tier) {
+    this.cpuThrottlingManager.setCPUPerformanceTier(tier);
   }
   isDirty() {
     const networkConditions = SDK2.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
@@ -1339,7 +1347,8 @@ ${result.description}`;
         if (actualScore < lowScore) {
           this.#result = {
             low: PanelsCommon4.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK,
-            mid: PanelsCommon4.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK
+            mid: PanelsCommon4.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK,
+            actualScore
           };
           return;
         }
@@ -1359,6 +1368,7 @@ ${result.description}`;
       const mid = yield* find(midScore, r - r / 4, r + r / 4);
       this.#result.mid = mid;
     }
+    this.#result.actualScore = actualScore;
     yield { progress: 1 };
   }
   abort() {

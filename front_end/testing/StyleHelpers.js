@@ -132,6 +132,10 @@ export function createStubbedDomNodeWithModels(opts = {
     const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
         domModel,
     });
+    node.securityOrigin.callsFake(() => {
+        const docUrl = node.ownerDocument?.documentURL;
+        return docUrl ? SDK.SecurityOrigin.SecurityOrigin.create(docUrl) : null;
+    });
     node.id = opts.nodeId;
     return { cssModel, domModel, node };
 }

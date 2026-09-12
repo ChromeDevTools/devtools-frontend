@@ -21,6 +21,7 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
     static fromParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace, targetManager?: SDK.TargetManager.TargetManager, freshRecordingTracker?: Tracing.FreshRecording.Tracker, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): PerformanceTraceContext;
     static fromInsight(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel, targetManager?: SDK.TargetManager.TargetManager, freshRecordingTracker?: Tracing.FreshRecording.Tracker, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): PerformanceTraceContext;
     static fromCallTree(callTree: AICallTree, targetManager?: SDK.TargetManager.TargetManager, freshRecordingTracker?: Tracing.FreshRecording.Tracker, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): PerformanceTraceContext;
+    readonly jslogContext: 'ai-context-performance-trace';
     constructor(focus: AgentFocus, targetManager?: SDK.TargetManager.TargetManager, freshRecordingTracker?: Tracing.FreshRecording.Tracker, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
     /**
      * Returns a PerformanceTraceFormatter configured to resolve function

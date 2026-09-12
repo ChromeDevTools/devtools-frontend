@@ -2,6 +2,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelsCommon from '../common/common.js';
+export import CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
 export interface CPUThrottlingSelectorWrapper {
     control: UI.Toolbar.ToolbarComboBox;
     updateRecommendedOption(recommendedOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption | null): void;
@@ -37,6 +38,8 @@ export declare class ThrottlingManager extends Common.ObjectWrapper.ObjectWrappe
         checkbox: UI.UIUtils.CheckboxLabel;
     };
     setHardwareConcurrency(concurrency: number): void;
+    effectiveCPUPerformanceTier(): CPUPerformanceTier | undefined;
+    setCPUPerformanceTier(tier?: CPUPerformanceTier): void;
     private isDirty;
 }
 export interface SaveDataOverrideViewInput {

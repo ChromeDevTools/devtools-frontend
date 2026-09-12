@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Geometry from '../../models/geometry/geometry.js';
+import * as Geometry from '../geometry/geometry.js';
 import { createIcon } from '../kit/kit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';

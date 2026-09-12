@@ -2,6 +2,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import { type ContextDetail, ConversationContext, type ConversationSuggestions } from '../agents/AiAgent.js';
 export declare class DOMNodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
     #private;
+    readonly jslogContext: 'ai-context-dom-node';
     constructor(node: SDK.DOMModel.DOMNode);
     /**
      * Returns the security origin of the node's owner document.

@@ -1790,7 +1790,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         this.performUpdate();
     }
     duplicateNode(node) {
-        node.duplicate();
+        void node.duplicate();
     }
     nodeBeingDragged() {
         return this.#draggedNode;

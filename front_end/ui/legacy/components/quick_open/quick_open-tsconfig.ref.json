@@ -39,9 +39,6 @@
       "path": "../../../../core/text_utils/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../models/geometry/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../../../third_party/diff/bundle-tsconfig.ref.json"
     },
     {
@@ -52,6 +49,9 @@
     },
     {
       "path": "../../../components/highlighting/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../geometry/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../../kit/bundle-tsconfig.ref.json"

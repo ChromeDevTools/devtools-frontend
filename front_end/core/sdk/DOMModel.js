@@ -887,15 +887,17 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
             }
         });
     }
-    duplicate() {
+    async duplicate() {
         if (this.isInShadowTree()) {
-            return;
+            return { error: 'Cannot duplicate node in shadow tree', node: null };
         }
         const parentNode = this.parentNode ? this.parentNode : this;
         if (parentNode.nodeName() === '#document') {
-            return;
+            return { error: 'Parent node is document', node: null };
         }
-        this.copyTo(parentNode, this.nextSibling);
+        return await new Promise(resolve => {
+            this.copyTo(parentNode, this.nextSibling, (error, node) => resolve({ error, node }));
+        });
     }
     /**
      * Runs a script on the node's remote object that toggles a class name on
@@ -2141,6 +2143,7 @@ export class DOMNodeSnapshot extends DOMNode {
     moveTo(_targetNode, _anchorNode, _callback) {
     }
     duplicate() {
+        return Promise.resolve({ error: null, node: null });
     }
     canInspectNode() {
         return false;
@@ -2173,6 +2176,7 @@ export class DOMDocumentSnapshot extends DOMDocument {
     moveTo(_targetNode, _anchorNode, _callback) {
     }
     duplicate() {
+        return Promise.resolve({ error: null, node: null });
     }
     canInspectNode() {
         return false;

@@ -3,6 +3,7 @@ import { ConversationContext, type ConversationSuggestions } from '../agents/AiA
 import { type StorageItem } from '../StorageItem.js';
 export declare class StorageContext extends ConversationContext<StorageItem> {
     #private;
+    readonly jslogContext: 'ai-context-storage';
     constructor(item: StorageItem);
     /**
      * Returns the security origin of the primary inspected page target.

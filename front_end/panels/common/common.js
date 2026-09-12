@@ -11,9 +11,9 @@ import * as Common from "../../core/common/common.js";
 import * as Host from "../../core/host/host.js";
 import * as i18n from "../../core/i18n/i18n.js";
 import * as Badges from "../../models/badges/badges.js";
-import * as Geometry from "../../models/geometry/geometry.js";
 import * as Buttons from "../../ui/components/buttons/buttons.js";
 import * as Snackbars from "../../ui/components/snackbars/snackbars.js";
+import * as Geometry from "../../ui/geometry/geometry.js";
 import * as UIHelpers from "../../ui/helpers/helpers.js";
 import * as uiI18n from "../../ui/i18n/i18n.js";
 import * as UI from "../../ui/legacy/legacy.js";
@@ -344,8 +344,8 @@ import * as Common2 from "../../core/common/common.js";
 import * as Host2 from "../../core/host/host.js";
 import * as i18n3 from "../../core/i18n/i18n.js";
 import * as Root from "../../core/root/root.js";
-import * as Geometry2 from "../../models/geometry/geometry.js";
 import * as Buttons2 from "../../ui/components/buttons/buttons.js";
+import * as Geometry2 from "../../ui/geometry/geometry.js";
 import * as UI2 from "../../ui/legacy/legacy.js";
 import { html as html2, render as render2 } from "../../ui/lit/lit.js";
 import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
@@ -1183,7 +1183,6 @@ var BadgeNotification = class extends UI4.Widget.Widget {
 // ../../front_end/panels/common/CPUThrottlingOption.ts
 var CPUThrottlingOption_exports = {};
 __export(CPUThrottlingOption_exports, {
-  CPUPerformanceTier: () => CPUPerformanceTier,
   CPUThrottlingRates: () => CPUThrottlingRates,
   CalibratedLowTierMobileThrottlingOption: () => CalibratedLowTierMobileThrottlingOption,
   CalibratedMidTierMobileThrottlingOption: () => CalibratedMidTierMobileThrottlingOption,
@@ -1200,7 +1199,6 @@ import * as Common4 from "../../core/common/common.js";
 import * as i18n9 from "../../core/i18n/i18n.js";
 import * as SDK from "../../core/sdk/sdk.js";
 var CalibrationError = SDK.CPUThrottlingManager.CalibrationError;
-var CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
 var UIStrings4 = {
   /**
    * @description Text label for a menu item indicating that no throttling is applied.

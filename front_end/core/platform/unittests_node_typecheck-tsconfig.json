@@ -54,6 +54,7 @@
     "../../../../../../front_end/core/platform/MapUtilities.test.ts",
     "../../../../../../front_end/core/platform/MimeType.test.ts",
     "../../../../../../front_end/core/platform/NumberUtilities.test.ts",
+    "../../../../../../front_end/core/platform/Size.test.ts",
     "../../../../../../front_end/core/platform/StringUtilities.test.ts",
     "../../../../../../front_end/core/platform/TypedArrayUtilities.test.ts",
     "../../../../../../front_end/core/platform/TypescriptUtilities.test.ts"

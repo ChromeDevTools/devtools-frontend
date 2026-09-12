@@ -43,15 +43,15 @@ var CommentManager = class extends Common.ObjectWrapper.ObjectWrapper {
   createCommentThread(anchor, text, author = "DEVELOPER", changes) {
     const index = this.#nextId++;
     const id = `comment-${index}`;
-    const comment = {
+    const comments = text ? [{
       author,
       text,
       timestamp: Date.now()
-    };
+    }] : [];
     const thread = {
       id,
       anchor,
-      comments: [comment],
+      comments,
       status: "ACTIVE",
       transmitted: false,
       changes,

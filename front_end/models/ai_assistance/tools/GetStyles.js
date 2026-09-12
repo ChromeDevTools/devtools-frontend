@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
 import { isOriginAllowedByLock, } from './Tool.js';
 export class GetStylesTool {
     name = "getStyles" /* ToolName.GET_STYLES */;
@@ -48,6 +47,12 @@ export class GetStylesTool {
             action: `getStyles(${JSON.stringify(params.elements)}, ${JSON.stringify(params.styleProperties)})`,
         };
     }
+    /**
+     * Handles the request to retrieve computed and authored CSS styles for specified elements.
+     *
+     * Resolves element backend node IDs using the primary page target and verifies that each
+     * element's security origin matches the established origin lock before querying CSS models.
+     */
     async handler(params, context, _options) {
         const widgets = [];
         const result = {};
@@ -56,9 +61,6 @@ export class GetStylesTool {
             return { error: 'Error: Could not find the inspected page.' };
         }
         const establishedOrigin = context.getEstablishedOrigin();
-        if (!establishedOrigin || establishedOrigin.isOpaque()) {
-            return { error: 'Error: Origin lock is not established.' };
-        }
         for (const uid of params.elements) {
             result[uid] = { computed: {}, authored: {} };
             const node = new SDK.DOMModel.DeferredDOMNode(target, uid);
@@ -66,8 +68,10 @@ export class GetStylesTool {
             if (!resolved) {
                 return { error: 'Error: Could not find the element with uid=' + uid };
             }
-            const newContext = new DOMNodeContext(resolved);
-            if (!isOriginAllowedByLock(establishedOrigin, newContext.getOrigin())) {
+            // Security check: Ensure the resolved element belongs to the locked origin.
+            // Because getTarget() returns the primary page target to support resolving elements
+            // across frames, origin validation must be enforced directly on the resolved node.
+            if (!isOriginAllowedByLock(establishedOrigin, resolved.securityOrigin())) {
                 return { error: 'Error: Node does not belong to the current origin.' };
             }
             const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);

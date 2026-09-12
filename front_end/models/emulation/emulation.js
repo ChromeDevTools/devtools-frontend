@@ -2839,9 +2839,6 @@ var Runtime;
   })(ConsoleAPICalledEventType = Runtime3.ConsoleAPICalledEventType || (Runtime3.ConsoleAPICalledEventType = {}));
 })(Runtime || (Runtime = {}));
 
-// ../../front_end/models/emulation/DeviceModeModel.ts
-import * as Geometry from "../geometry/geometry.js";
-
 // ../../front_end/models/emulation/EmulatedDevices.ts
 var EmulatedDevices_exports = {};
 __export(EmulatedDevices_exports, {
@@ -4908,11 +4905,11 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     this.#multitargetNetworkManager = multitargetNetworkManager;
     this.#screenRect = new Rect(0, 0, 1, 1);
     this.#visiblePageRect = new Rect(0, 0, 1, 1);
-    this.#availableSize = new Geometry.Size(1, 1);
-    this.#preferredSize = new Geometry.Size(1, 1);
+    this.#availableSize = new Platform.Size(1, 1);
+    this.#preferredSize = new Platform.Size(1, 1);
     this.#initialized = false;
     this.#autoFitScaleOnInitialize = false;
-    this.#appliedDeviceSize = new Geometry.Size(1, 1);
+    this.#appliedDeviceSize = new Platform.Size(1, 1);
     this.#appliedDeviceScaleFactor = globalThis.devicePixelRatio;
     this.#appliedUserAgentType = "Desktop" /* DESKTOP */;
     this.#scaleSetting = this.#settings.createSetting("emulation.device-scale", 1);
@@ -5349,7 +5346,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
         this.#appliedUserAgentType = this.#device.touch() ? "Desktop (touch)" /* DESKTOP_TOUCH */ : "Desktop" /* DESKTOP */;
       }
       this.applyDeviceMetrics(
-        new Geometry.Size(orientation.width, orientation.height),
+        new Platform.Size(orientation.width, orientation.height),
         this.#scaleSetting.get(),
         this.#device.deviceScaleFactor,
         mobile,
@@ -5377,7 +5374,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       this.#fitScale = this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get());
       this.#appliedUserAgentType = this.#uaSetting.get();
       this.applyDeviceMetrics(
-        new Geometry.Size(screenWidth, screenHeight),
+        new Platform.Size(screenWidth, screenHeight),
         this.#scaleSetting.get(),
         this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor,
         mobile,

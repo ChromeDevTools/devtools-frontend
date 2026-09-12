@@ -190,6 +190,7 @@ export class CalibrationController {
                     this.#result = {
                         low: PanelsCommon.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK,
                         mid: PanelsCommon.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK,
+                        actualScore,
                     };
                     return;
                 }
@@ -211,6 +212,7 @@ export class CalibrationController {
             const mid = yield* find(midScore, r - r / 4, r + r / 4);
             this.#result.mid = mid;
         }
+        this.#result.actualScore = actualScore;
         yield { progress: 1 };
     }
     abort() {

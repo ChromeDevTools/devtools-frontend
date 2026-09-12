@@ -5,7 +5,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import * as Geometry from '../../../../models/geometry/geometry.js';
+import * as Geometry from '../../../geometry/geometry.js';
 import { Link } from '../../../kit/kit.js';
 import { render } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';

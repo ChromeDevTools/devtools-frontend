@@ -85,9 +85,6 @@
       "path": "../../../../models/formatter/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../models/geometry/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../../../models/source_map_scopes/bundle-tsconfig.ref.json"
     },
     {
@@ -110,6 +107,9 @@
     },
     {
       "path": "../../../components/highlighting/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../geometry/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../../lit/bundle-tsconfig.ref.json"

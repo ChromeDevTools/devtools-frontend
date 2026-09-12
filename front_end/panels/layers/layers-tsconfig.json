@@ -67,10 +67,10 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../models/geometry/bundle-tsconfig.ref.json"
+      "path": "../layer_viewer/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../layer_viewer/bundle-tsconfig.ref.json"
+      "path": "../../ui/geometry/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"

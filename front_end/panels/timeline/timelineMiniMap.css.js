@@ -19,7 +19,7 @@ export default `/*
 
 
 .timeline-minimap .overview-strip {
-  margin-top: 2px;
+  margin-top: var(--sys-size-2);
   justify-content: center;
 }
 
@@ -29,18 +29,18 @@ export default `/*
   font-weight: bold;
   z-index: 100;
   background-color: var(--sys-color-cdt-base-container);
-  padding: 0 4px;
+  padding: 0 var(--sys-size-3);
   position: absolute;
-  top: -2px;
+  top: calc(var(--sys-size-2) * -1);
   right: 0;
 }
 
 .timeline-minimap #timeline-overview-cpu-activity {
-  flex-basis: 20px;
+  flex-basis: var(--sys-size-9);
 }
 
 .timeline-minimap #timeline-overview-network {
-  flex-basis: 8px;
+  flex-basis: var(--sys-size-5);
 }
 
 .timeline-minimap #timeline-overview-filmstrip {
@@ -48,7 +48,7 @@ export default `/*
 }
 
 .timeline-minimap #timeline-overview-memory {
-  flex-basis: 20px;
+  flex-basis: var(--sys-size-9);
 }
 
 .timeline-minimap #timeline-overview-network::before,
@@ -58,7 +58,7 @@ export default `/*
   left: 0;
   right: 0;
   bottom: 0;
-  border-bottom: 1px solid var(--divider-line);
+  border-bottom: var(--sys-size-1) solid var(--divider-line);
   z-index: -200;
 }
 
@@ -72,7 +72,7 @@ export default `/*
 }
 
 .timeline-minimap #timeline-overview-input {
-  flex-basis: 6px;
+  flex-basis: var(--sys-size-4);
 }
 
 .timeline-minimap #timeline-overview-pane {
@@ -107,7 +107,7 @@ export default `/*
   font-size: 9px;
   color: var(--sys-color-token-subtle);
   white-space: nowrap;
-  padding: 0 4px;
+  padding: 0 var(--sys-size-3);
   background-color: var(--sys-color-cdt-base-container);
 }
 

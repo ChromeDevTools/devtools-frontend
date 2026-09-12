@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Geometry from '../../models/geometry/geometry.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as Geometry from '../../ui/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';

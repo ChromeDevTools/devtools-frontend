@@ -12,7 +12,7 @@ export default `/*
 .timeline-status-dialog {
   display: flex;
   flex-direction: column;
-  padding: 16px 16px 12px;
+  padding: var(--sys-size-8) var(--sys-size-8) var(--sys-size-6);
   align-self: center;
   background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);
@@ -20,8 +20,8 @@ export default `/*
 }
 
 .status-dialog-line {
-  margin: 2px;
-  height: 14px;
+  margin: var(--sys-size-2);
+  height: var(--sys-size-7);
   min-height: auto;
   display: flex;
   align-items: baseline;
@@ -30,7 +30,7 @@ export default `/*
 
 .status-dialog-line .label {
   display: inline-block;
-  width: 80px;
+  width: var(--sys-size-19);
   text-align: right;
   color: var(--sys-color-on-surface);
   margin-right: 10px;
@@ -39,7 +39,7 @@ export default `/*
 .timeline-status-dialog .progress .indicator-container {
   display: inline-block;
   width: 200px;
-  height: 8px;
+  height: var(--sys-size-5);
   background-color: var(--sys-color-surface5);
 }
 
@@ -51,22 +51,22 @@ export default `/*
 }
 
 .timeline-status-dialog .stop-button {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   height: 100%;
   align-self: flex-end;
 }
 
 .timeline-status-dialog .stop-button button {
-  border-radius: 12px;
+  border-radius: var(--sys-shape-corner-medium-small);
 }
 
 @media (forced-colors: active) {
   .timeline-status-dialog {
-    border: 1px solid canvastext;
+    border: var(--sys-size-1) solid canvastext;
   }
 
   .timeline-status-dialog .progress .indicator-container {
-    border: 1px solid ButtonText;
+    border: var(--sys-size-1) solid ButtonText;
     background-color: ButtonFace;
   }
 

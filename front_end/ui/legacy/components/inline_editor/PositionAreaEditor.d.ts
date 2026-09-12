@@ -98,6 +98,7 @@ export declare function parsePositionArea(text: string): Area | null;
 export declare function stringifyPositionArea(area: Area): string;
 export interface ViewInput {
     area: Area | undefined;
+    readonly isSelecting?: boolean;
     onSelectStart: (x: number, y: number) => void;
     onSelect: (x: number, y: number) => void;
     onSelectEnd: (x?: number, y?: number) => void;

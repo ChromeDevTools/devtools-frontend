@@ -8,11 +8,6 @@ export default `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-:host {
-  --code-background-color: var(--sys-color-surface4);
-}
-
 @keyframes typing {
   from { width: 0; }
   to { width: 100%; }
@@ -106,9 +101,9 @@ devtools-code-block.animating {
   font-size: var(--sys-typescale-monospace-size);
   user-select: text;
   cursor: text;
-  /* This is still using design tokens because \\'--code-background-color\\' is defined with them by default */
+  /* This is using design tokens when the --code-bacground-color is not provided from outside, e.g. in comments */
   /* stylelint-disable-next-line plugin/use_theme_colors */
-  background-color: var(--code-background-color);
+  background-color: var(--code-background-color, var(--sys-color-surface4));
   border-radius: var(--sys-size-2);
   padding: var(--sys-size-1) 3px;
 }

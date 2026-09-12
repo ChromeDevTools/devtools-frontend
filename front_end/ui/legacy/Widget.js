@@ -29,8 +29,8 @@
  */
 import '../dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as Geometry from '../geometry/geometry.js';
 import { appendStyle, deepActiveElement } from './DOMUtilities.js';
 import { cloneCustomElement, createShadowRootWithCoreStyles } from './UIUtils.js';
 import { UniverseRequestEvent } from './UniverseRequestEvent.js';

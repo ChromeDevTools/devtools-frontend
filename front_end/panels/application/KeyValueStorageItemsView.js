@@ -30,7 +30,7 @@
 import '../../ui/components/buttons/buttons.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
-import * as Geometry from '../../models/geometry/geometry.js';
+import * as Geometry from '../../ui/geometry/geometry.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import dataGridAiButtonStyles from '../../ui/legacy/components/data_grid/dataGridAiButton.css.js';
 import * as UI from '../../ui/legacy/legacy.js';

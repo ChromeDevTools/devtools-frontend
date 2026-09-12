@@ -1,4 +1,5 @@
 import * as Host from '../../../core/host/host.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Workspace from '../../workspace/workspace.js';
 import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, ToolName } from './Tool.js';
 interface SourceSummary {
@@ -17,7 +18,8 @@ export declare class ListSourcesTool implements DataTool<Record<string, never>, 
     static lastSourceId: number;
     static uiSourceCodeId: WeakMap<Workspace.UISourceCode.UISourceCode, number>;
     static reset(): void;
-    static getUISourceCodes(workspace?: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UISourceCode[];
+    static getUISourceCodes(establishedOrigin: SDK.SecurityOrigin.SecurityOrigin, workspace?: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UISourceCode[];
+    static getSourceById(id: number, establishedOrigin: SDK.SecurityOrigin.SecurityOrigin, workspace?: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UISourceCode | undefined;
     readonly parameters: Host.AidaClient.FunctionObjectParam<never>;
     displayInfoFromArgs(): {
         title: string;

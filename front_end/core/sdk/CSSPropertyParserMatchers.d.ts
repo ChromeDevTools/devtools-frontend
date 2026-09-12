@@ -436,4 +436,14 @@ export declare class EnvFunctionMatcher extends EnvFunctionMatcherBase {
     constructor(matchedStyles: CSSMatchedStyles);
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): EnvFunctionMatch | null;
 }
+export declare class PositionAreaMatch implements Match {
+    readonly text: string;
+    readonly node: CodeMirror.SyntaxNode;
+    constructor(text: string, node: CodeMirror.SyntaxNode);
+}
+declare const PositionAreaMatcherBase: MatcherClass<PositionAreaMatch>;
+export declare class PositionAreaMatcher extends PositionAreaMatcherBase {
+    accepts(propertyName: string): boolean;
+    matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): PositionAreaMatch | null;
+}
 export {};

@@ -4,6 +4,7 @@ import type * as Workspace from '../../workspace/workspace.js';
 import { type ContextDetail, ConversationContext } from '../agents/AiAgent.js';
 export declare class FileContext extends ConversationContext<Workspace.UISourceCode.UISourceCode> {
     #private;
+    readonly jslogContext: 'ai-context-file';
     constructor(file: Workspace.UISourceCode.UISourceCode, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
     /**
      * Resolves the security origin of a given UISourceCode.

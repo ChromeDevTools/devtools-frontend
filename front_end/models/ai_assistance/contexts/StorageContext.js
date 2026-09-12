@@ -5,6 +5,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import { ConversationContext, } from '../agents/AiAgent.js';
 import { CookieItem, DOMStorageItem } from '../StorageItem.js';
 export class StorageContext extends ConversationContext {
+    jslogContext = 'ai-context-storage';
     #item;
     constructor(item) {
         super();

@@ -13,6 +13,7 @@ const UIStringsNotTranslate = {
 };
 const lockedString = i18n.i18n.lockedString;
 export class RequestContext extends ConversationContext {
+    jslogContext = 'ai-context-network-request';
     #request;
     #calculator;
     constructor(request, calculator) {

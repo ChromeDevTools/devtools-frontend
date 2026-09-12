@@ -1,6 +1,6 @@
 import * as Common from '../../core/common/common.js';
-import * as Geometry from '../../models/geometry/geometry.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
+import * as Geometry from '../geometry/geometry.js';
 import { Icon } from '../kit/kit.js';
 import { ContextMenu } from './ContextMenu.js';
 import type { Toolbar } from './Toolbar.js';

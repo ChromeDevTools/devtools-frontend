@@ -56,9 +56,6 @@
       "path": "../../models/emulation/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/geometry/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../models/lighthouse/bundle-tsconfig.ref.json"
     },
     {
@@ -72,6 +69,9 @@
     },
     {
       "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/geometry/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/kit/bundle-tsconfig.ref.json"

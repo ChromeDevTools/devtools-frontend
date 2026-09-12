@@ -152,7 +152,9 @@ export interface ConversationSuggestion {
 }
 /** At least one. */
 export type ConversationSuggestions = [ConversationSuggestion, ...ConversationSuggestion[]];
+export type ConversationContextJslog = 'ai-context-dom-node' | 'ai-context-network-request' | 'ai-context-file' | 'ai-context-performance-trace' | 'ai-context-accessibility' | 'ai-context-storage';
 export declare abstract class ConversationContext<T> {
+    abstract readonly jslogContext: ConversationContextJslog;
     abstract getItem(): T;
     abstract getTitle(): string;
     /**

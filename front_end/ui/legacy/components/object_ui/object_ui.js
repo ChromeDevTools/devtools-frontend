@@ -5931,7 +5931,7 @@ __export(ObjectPopoverHelper_exports, {
 import * as i18n7 from "../../../../core/i18n/i18n.js";
 import * as Platform3 from "../../../../core/platform/platform.js";
 import * as SDK4 from "../../../../core/sdk/sdk.js";
-import * as Geometry from "../../../../models/geometry/geometry.js";
+import * as Geometry from "../../../geometry/geometry.js";
 import { Link } from "../../../kit/kit.js";
 import { render as render4 } from "../../../lit/lit.js";
 import * as UI4 from "../../legacy.js";

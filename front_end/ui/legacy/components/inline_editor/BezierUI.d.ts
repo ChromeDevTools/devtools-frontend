@@ -1,4 +1,4 @@
-import * as Geometry from '../../../../models/geometry/geometry.js';
+import * as Geometry from '../../../geometry/geometry.js';
 interface Params {
     width: number;
     height: number;

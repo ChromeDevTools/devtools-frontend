@@ -30,7 +30,7 @@ import * as i18n5 from "../../core/i18n/i18n.js";
 import * as Root from "../../core/root/root.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as EmulationModel2 from "../../models/emulation/emulation.js";
-import * as Geometry from "../../models/geometry/geometry.js";
+import * as Geometry from "../../ui/geometry/geometry.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
 import { Directives as Directives3, html as html3, nothing as nothing2, render as render3 } from "../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";

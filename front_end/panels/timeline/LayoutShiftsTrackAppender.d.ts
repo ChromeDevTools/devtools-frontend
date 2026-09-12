@@ -1,5 +1,5 @@
-import * as Geometry from '../../models/geometry/geometry.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as Geometry from '../../ui/geometry/geometry.js';
 import { type CompatibilityTracksAppender, type DrawOverride, type PopoverInfo, type TrackAppender, type TrackAppenderName } from './CompatibilityTracksAppender.js';
 /**
  * Bit of a hack: LayoutShifts are instant events, so have no duration. But

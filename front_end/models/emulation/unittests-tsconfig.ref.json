@@ -35,9 +35,6 @@
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"
-    },
-    {
-      "path": "../geometry/bundle-tsconfig.ref.json"
     }
   ]
 }

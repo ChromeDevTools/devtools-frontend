@@ -101,9 +101,6 @@
       "path": "../../models/extensions/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/geometry/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../models/har/bundle-tsconfig.ref.json"
     },
     {
@@ -132,6 +129,9 @@
     },
     {
       "path": "../../ui/components/tooltips/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/geometry/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/helpers/bundle-tsconfig.ref.json"

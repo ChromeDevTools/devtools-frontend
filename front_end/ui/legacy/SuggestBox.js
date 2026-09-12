@@ -4,7 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Geometry from '../../models/geometry/geometry.js';
+import * as Geometry from '../geometry/geometry.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { GlassPane } from './GlassPane.js';

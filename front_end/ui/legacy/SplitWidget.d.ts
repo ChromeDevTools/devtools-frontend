@@ -1,5 +1,5 @@
 import * as Common from '../../core/common/common.js';
-import * as Geometry from '../../models/geometry/geometry.js';
+import * as Geometry from '../geometry/geometry.js';
 import { ToolbarButton } from './Toolbar.js';
 import { type AnyWidget, Widget, WidgetElement } from './Widget.js';
 declare const SplitWidgetBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof Widget>;

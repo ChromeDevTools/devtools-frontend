@@ -317,9 +317,9 @@ var AIv2MarkdownRenderer = class extends MarkdownView3.MarkdownView.MarkdownInsi
       return html3`${fallbackText}`;
     }
     if (href.startsWith("#file-")) {
-      const file = AiAssistanceModel2.ListSources.ListSourcesTool.getUISourceCodes().find(
-        (file2) => AiAssistanceModel2.ListSources.ListSourcesTool.uiSourceCodeId.get(file2) === Number(href.substring(6))
-      );
+      const fileId = Number(href.substring(6));
+      const origin = this.options.getEstablishedOrigin?.();
+      const file = origin && Number.isInteger(fileId) && fileId > 0 ? AiAssistanceModel2.ListSources.ListSourcesTool.getSourceById(fileId, origin) : void 0;
       if (file) {
         return this.#revealableLink(file, file.name());
       }
@@ -9540,10 +9540,6 @@ var UIStringsNotTranslate5 = {
    */
   inputPlaceholderForNoContextBranded: "Ask Gemini",
   /**
-   * @description Placeholder text for the chat UI input when AIAgent2 is enabled.
-   */
-  inputPlaceholderForV2: "Ask a question (AIAgent2 enabled)",
-  /**
    * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForAccessibility: "Ask a question about the selected Lighthouse report",
@@ -9629,6 +9625,9 @@ async function getEmptyStateSuggestions(conversation) {
 }
 function createV2MarkdownRenderer(conversation) {
   const options = {};
+  if (conversation) {
+    options.getEstablishedOrigin = () => conversation.origin;
+  }
   const primaryTarget = SDK6.TargetManager.TargetManager.instance().primaryPageTarget();
   const domModel = primaryTarget?.model(SDK6.DOMModel.DOMModel);
   const resourceTreeModel = primaryTarget?.model(SDK6.ResourceTreeModel.ResourceTreeModel);
@@ -10157,7 +10156,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.#updateConversationState(conversation);
   }
   #updateConversationState(conversation) {
-    if (this.#conversation !== conversation) {
+    const isNewConversation = this.#conversation !== conversation;
+    if (isNewConversation) {
       this.#cancel();
       this.#messages = [];
       this.#isLoading = false;
@@ -10185,9 +10185,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
         const context = this.#getConversationContext(this.#getDefaultConversationType());
         this.#conversation.setContext(context);
       } else {
+        const previousContext = this.#conversation.selectedContext;
+        const previousItem = previousContext?.getItem();
         const context = this.#getConversationContext(this.#conversation.type);
+        const newItem = context?.getItem();
         if (context || !AiAssistanceModel7.AiUtils.isContextSelectionEnabled()) {
           this.#conversation.setContext(context);
+        }
+        if (AiAssistanceModel7.AiUtils.isContextSelectionEnabled() && !this.#conversation.isReadOnly && previousItem !== newItem && previousContext && context) {
+          void VisualLogging7.logFunctionCall("ai-v2-context-user-change", getContextTypeString(context));
         }
       }
     }
@@ -10456,6 +10462,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
     return true;
   }
+  #getContextlessPlaceholder() {
+    return AiAssistanceModel7.AiUtils.isGeminiBranding() ? lockedString6(UIStringsNotTranslate5.inputPlaceholderForNoContextBranded) : lockedString6(UIStringsNotTranslate5.inputPlaceholderForNoContext);
+  }
   #getChatInputPlaceholder() {
     if (!this.#conversation) {
       return i18nString6(UIStrings6.followTheSteps);
@@ -10464,7 +10473,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       return lockedString6(UIStringsNotTranslate5.crossOriginError);
     }
     if (Root4.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
-      return lockedString6(UIStringsNotTranslate5.inputPlaceholderForV2);
+      return this.#getContextlessPlaceholder();
     }
     switch (this.#conversation.type) {
       case AiAssistanceModel7.AiHistoryStorage.ConversationType.STYLING:
@@ -10485,10 +10494,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       case AiAssistanceModel7.AiHistoryStorage.ConversationType.STORAGE:
         return lockedString6(UIStringsNotTranslate5.inputPlaceholderForNoContext);
       case AiAssistanceModel7.AiHistoryStorage.ConversationType.NONE:
-        if (AiAssistanceModel7.AiUtils.isGeminiBranding()) {
-          return lockedString6(UIStringsNotTranslate5.inputPlaceholderForNoContextBranded);
-        }
-        return lockedString6(UIStringsNotTranslate5.inputPlaceholderForNoContext);
+        return this.#getContextlessPlaceholder();
     }
   }
   #getDisclaimerText() {
@@ -10543,11 +10549,19 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
   }
   #handleContextRemoved() {
+    const previousContext = this.#conversation?.selectedContext;
     this.#conversation?.setContext(null);
+    if (AiAssistanceModel7.AiUtils.isContextSelectionEnabled() && previousContext) {
+      void VisualLogging7.logFunctionCall("ai-v2-context-user-removal", getContextTypeString(previousContext));
+    }
     this.requestUpdate();
   }
   #handleContextAdd() {
-    this.#conversation?.setContext(this.#getConversationContext(this.#getDefaultConversationType()));
+    const context = this.#getConversationContext(this.#getDefaultConversationType());
+    this.#conversation?.setContext(context);
+    if (AiAssistanceModel7.AiUtils.isContextSelectionEnabled() && context) {
+      void VisualLogging7.logFunctionCall("ai-v2-context-user-add", getContextTypeString(context));
+    }
     this.requestUpdate();
   }
   #canExecuteQuery() {
@@ -10614,7 +10628,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       return;
     }
     let conversation = this.#conversation;
-    if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
+    const shouldCreateConversation = !this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty;
+    if (shouldCreateConversation) {
       conversation = new AiAssistanceModel7.AiConversation.AiConversation({
         type: targetConversationType,
         data: [],
@@ -10748,8 +10763,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     } else if (data instanceof AiAssistanceModel7.StorageContext.StorageContext) {
       this.#selectedStorage = data;
     }
-    void VisualLogging7.logFunctionCall(`context-change-${this.#conversation?.type}`);
-    this.requestUpdate();
+    if (this.#conversation) {
+      void VisualLogging7.logFunctionCall(`context-change-${this.#conversation.type}`);
+      if (AiAssistanceModel7.AiUtils.isContextSelectionEnabled() && data instanceof AiAssistanceModel7.AiAgent.ConversationContext) {
+        void VisualLogging7.logFunctionCall("ai-v2-context-agent-change", getContextTypeString(data));
+      }
+    }
   };
   async #handleInspectElement() {
     if (!this.#toggleSearchElementAction) {
@@ -11061,6 +11080,12 @@ ${step.output}
   }
   return contentParts.join("\n\n");
 }
+function getContextTypeString(context) {
+  if (!context) {
+    return "ai-context-none";
+  }
+  return context.jslogContext ?? "ai-context-unknown";
+}
 var ActionDelegate = class {
   handleAction(_context, actionId, opts) {
     switch (actionId) {
@@ -11185,6 +11210,7 @@ export {
   ViewState,
   WalkthroughUtils_exports as WalkthroughUtils,
   WalkthroughView_exports as WalkthroughView,
+  getContextTypeString,
   getResponseMarkdown
 };
 //# sourceMappingURL=ai_assistance.js.map

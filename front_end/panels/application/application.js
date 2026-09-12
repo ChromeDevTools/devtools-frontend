@@ -12899,8 +12899,8 @@ import * as Common12 from "../../core/common/common.js";
 import * as i18n41 from "../../core/i18n/i18n.js";
 import * as SDK19 from "../../core/sdk/sdk.js";
 import * as AiAssistanceModel from "../../models/ai_assistance/ai_assistance.js";
-import * as Geometry from "../../models/geometry/geometry.js";
 import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
+import * as Geometry from "../../ui/geometry/geometry.js";
 import * as CookieTable from "../../ui/legacy/components/cookie_table/cookie_table.js";
 import * as UI21 from "../../ui/legacy/legacy.js";
 import { html as html13, render as render13 } from "../../ui/lit/lit.js";
@@ -14616,7 +14616,7 @@ __export(KeyValueStorageItemsView_exports, {
 import "../../ui/components/buttons/buttons.js";
 import * as i18n45 from "../../core/i18n/i18n.js";
 import * as AIAssistance from "../../models/ai_assistance/ai_assistance.js";
-import * as Geometry2 from "../../models/geometry/geometry.js";
+import * as Geometry2 from "../../ui/geometry/geometry.js";
 
 // gen/front_end/ui/legacy/components/data_grid/dataGridAiButton.css.js
 var dataGridAiButton_css_default = `/*

@@ -2,9 +2,9 @@ import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Geometry from '../../models/geometry/geometry.js';
 import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Buttons from '../components/buttons/buttons.js';
+import * as Geometry from '../geometry/geometry.js';
 import { type IconData } from '../kit/kit.js';
 import * as Lit from '../lit/lit.js';
 declare global {

@@ -12,6 +12,7 @@ const UIStringsNotTranslate = {
 };
 const lockedString = i18n.i18n.lockedString;
 export class DOMNodeContext extends ConversationContext {
+    jslogContext = 'ai-context-dom-node';
     #node;
     #opaqueOrigin;
     constructor(node) {

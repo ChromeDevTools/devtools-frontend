@@ -1486,4 +1486,34 @@ export class EnvFunctionMatcher extends EnvFunctionMatcherBase {
         return new EnvFunctionMatch(matching.ast.text(node), node, varName, value ?? fallbackValue ?? null, Boolean(value));
     }
 }
+export class PositionAreaMatch {
+    text;
+    node;
+    constructor(text, node) {
+        this.text = text;
+        this.node = node;
+    }
+}
+const PositionAreaMatcherBase = matcherBase(PositionAreaMatch);
+// clang-format off
+export class PositionAreaMatcher extends PositionAreaMatcherBase {
+    // clang-format on
+    accepts(propertyName) {
+        return propertyName === 'position-area' || propertyName === 'inset-area';
+    }
+    matches(node, matching) {
+        if (node.name !== 'Declaration') {
+            return null;
+        }
+        const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
+        if (valueNodes.length === 0) {
+            return null;
+        }
+        const valueText = matching.getComputedTextRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
+        if (CSSMetadata.isCSSWideKeyword(valueText)) {
+            return null;
+        }
+        return new PositionAreaMatch(valueText, node);
+    }
+}
 //# sourceMappingURL=CSSPropertyParserMatchers.js.map

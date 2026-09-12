@@ -1339,6 +1339,40 @@ function isUserVisibleError(error) {
   }
   return false;
 }
+
+// ../../front_end/core/platform/Size.ts
+var Size = class _Size {
+  width;
+  height;
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+  }
+  clipTo(size) {
+    if (!size) {
+      return this;
+    }
+    return new _Size(Math.min(this.width, size.width), Math.min(this.height, size.height));
+  }
+  scale(scale) {
+    return new _Size(this.width * scale, this.height * scale);
+  }
+  isEqual(size) {
+    return size !== null && this.width === size.width && this.height === size.height;
+  }
+  widthToMax(size) {
+    return new _Size(Math.max(this.width, typeof size === "number" ? size : size.width), this.height);
+  }
+  addWidth(size) {
+    return new _Size(this.width + (typeof size === "number" ? size : size.width), this.height);
+  }
+  heightToMax(size) {
+    return new _Size(this.width, Math.max(this.height, typeof size === "number" ? size : size.height));
+  }
+  addHeight(size) {
+    return new _Size(this.width, this.height + (typeof size === "number" ? size : size.height));
+  }
+};
 export {
   ArrayUtilities_exports as ArrayUtilities,
   Brand_exports as Brand,
@@ -1350,6 +1384,7 @@ export {
   MapUtilities_exports as MapUtilities,
   MimeType_exports as MimeType,
   NumberUtilities_exports as NumberUtilities,
+  Size,
   StringUtilities_exports as StringUtilities,
   Timing_exports as Timing,
   TypescriptUtilities_exports as TypeScriptUtilities,

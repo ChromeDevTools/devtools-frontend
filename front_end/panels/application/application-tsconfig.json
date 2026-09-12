@@ -119,9 +119,6 @@
       "path": "../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/geometry/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../models/issues_manager/bundle-tsconfig.ref.json"
     },
     {
@@ -180,6 +177,9 @@
     },
     {
       "path": "../../ui/components/tree_outline/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/geometry/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/helpers/bundle-tsconfig.ref.json"

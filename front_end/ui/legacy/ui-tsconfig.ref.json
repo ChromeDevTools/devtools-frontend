@@ -100,9 +100,6 @@
       "path": "../../foundation/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/geometry/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../models/stack_trace/bundle-tsconfig.ref.json"
     },
     {
@@ -113,6 +110,9 @@
     },
     {
       "path": "../dom_extension/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../geometry/bundle-tsconfig.ref.json"
     },
     {
       "path": "../helpers/bundle-tsconfig.ref.json"

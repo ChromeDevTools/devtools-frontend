@@ -89,7 +89,14 @@ export interface StyleMutationCapability {
  */
 export interface TargetCapability {
     /**
-     * Returns the current SDK Target for the inspected page.
+     * Returns the primary SDK Target for the inspected page.
+     *
+     * WARNING: This method does not perform a security origin check. When a conversation
+     * is locked to an iframe or subframe origin, this still returns the primary page target
+     * so tools can resolve DOM nodes and frame hierarchies across frames.
+     *
+     * Tools that consume this target must independently validate the security origin of
+     * any resolved entities (e.g. via `node.securityOrigin()`) against `getEstablishedOrigin()`.
      */
     getTarget(): SDK.Target.Target | null;
 }

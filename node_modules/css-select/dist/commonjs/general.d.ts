@@ -1,0 +1,3 @@
+import type { CompiledQuery, CompileToken, InternalOptions, InternalSelector } from "./types.js";
+export declare function compileGeneralSelector<Node, ElementNode extends Node>(next: CompiledQuery<ElementNode>, selector: InternalSelector, options: InternalOptions<Node, ElementNode>, context: Node[] | undefined, compileToken: CompileToken<Node, ElementNode>, hasExpensiveSubselector: boolean): CompiledQuery<ElementNode>;
+//# sourceMappingURL=general.d.ts.map

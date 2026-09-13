@@ -381,8 +381,8 @@
 
   // this really needs to be replaced with character classes.
   // XML allows all manner of ridiculous numbers and digits.
-  var CDATA = '[CDATA['
-  var DOCTYPE = 'DOCTYPE'
+  var CDATAre = /^\[CDATA\[$/i
+  var DOCTYPEre = /^DOCTYPE$/i
   var XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace'
   var XMLNS_NAMESPACE = 'http://www.w3.org/2000/xmlns/'
   var rootNS = { xml: XML_NAMESPACE, xmlns: XMLNS_NAMESPACE }
@@ -464,15 +464,15 @@
     SCRIPT_ENDING: S++, // <script> ... <
   }
 
-  sax.XML_ENTITIES = {
+  sax.XML_ENTITIES = Object.assign(Object.create(null), {
     amp: '&',
     gt: '>',
     lt: '<',
     quot: '"',
     apos: "'",
-  }
+  })
 
-  sax.ENTITIES = {
+  sax.ENTITIES = Object.assign(Object.create(null), {
     amp: '&',
     gt: '>',
     lt: '<',
@@ -726,7 +726,7 @@
     clubs: 9827,
     hearts: 9829,
     diams: 9830,
-  }
+  })
 
   Object.keys(sax.ENTITIES).forEach(function (key) {
     var e = sax.ENTITIES[key]
@@ -1137,13 +1137,31 @@
       isNaN(num) ||
       numStr.toLowerCase() !== entity ||
       num < 0 ||
-      num > 0x10ffff
+      num > 0x10ffff ||
+      !isXmlChar(num)
     ) {
       strictFail(parser, 'Invalid character entity')
       return '&' + parser.entity + ';'
     }
 
     return String.fromCodePoint(num)
+  }
+
+  // Returns true if `num` is a code point that matches the XML `Char`
+  // production, false otherwise. Character references that resolve to a
+  // character outside this range (e.g. surrogates or restricted control
+  // characters) are not well-formed.
+  // https://www.w3.org/TR/REC-xml/#NT-Char
+  // https://www.w3.org/TR/REC-xml/#wf-Legalchar
+  function isXmlChar(num) {
+    return (
+      num === 0x9 ||
+      num === 0xa ||
+      num === 0xd ||
+      (num >= 0x20 && num <= 0xd7ff) ||
+      (num >= 0xe000 && num <= 0xfffd) ||
+      (num >= 0x10000 && num <= 0x10ffff)
+    )
   }
 
   function beginWhiteSpace(parser, c) {
@@ -1317,12 +1335,12 @@
             parser.state = S.DOCTYPE_DTD
             parser.doctype += '<!' + parser.sgmlDecl + c
             parser.sgmlDecl = ''
-          } else if ((parser.sgmlDecl + c).toUpperCase() === CDATA) {
+          } else if (CDATAre.test(parser.sgmlDecl + c)) {
             emitNode(parser, 'onopencdata')
             parser.state = S.CDATA
             parser.sgmlDecl = ''
             parser.cdata = ''
-          } else if ((parser.sgmlDecl + c).toUpperCase() === DOCTYPE) {
+          } else if (DOCTYPEre.test(parser.sgmlDecl + c)) {
             parser.state = S.DOCTYPE
             if (parser.doctype || parser.sawRoot) {
               strictFail(

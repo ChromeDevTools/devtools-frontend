@@ -100,5 +100,55 @@ test('getSideChannelList', function (t) {
 		st.end();
 	});
 
+	t.test('delete: first node in a multi-node list', function (st) {
+		var channel = getSideChannelList();
+
+		channel.set('a', 1);
+		channel.set('b', 2);
+
+		st.equal(channel['delete']('b'), true, 'deleting first data node yields true');
+
+		st.equal(channel.has('a'), true, 'second node is still present after deleting first');
+		st.equal(channel.get('a'), 1, 'second node value is intact after deleting first');
+		st.equal(channel.has('b'), false, 'deleted node is gone');
+
+		st.end();
+	});
+
+	t.test('delete: last remaining node empties the list', function (st) {
+		var channel = getSideChannelList();
+
+		channel.set('a', 1);
+		channel.set('b', 2);
+
+		st.equal(channel['delete']('b'), true, 'delete first node');
+		st.equal(channel['delete']('a'), true, 'delete second (last) node');
+
+		st.equal(channel.has('a'), false, 'a is gone');
+		st.equal(channel.has('b'), false, 'b is gone');
+		st.equal(channel.get('a'), undefined, 'get a yields undefined');
+
+		channel.set('c', 3);
+		st.equal(channel.get('c'), 3, 'can set new values after emptying');
+
+		st.end();
+	});
+
+	t.test('delete: middle node in a multi-node list', function (st) {
+		var channel = getSideChannelList();
+
+		channel.set('a', 1);
+		channel.set('b', 2);
+		channel.set('c', 3);
+
+		st.equal(channel['delete']('b'), true, 'deleting middle node yields true');
+
+		st.equal(channel.get('a'), 1, 'first node still intact');
+		st.equal(channel.has('b'), false, 'middle node is gone');
+		st.equal(channel.get('c'), 3, 'last node still intact');
+
+		st.end();
+	});
+
 	t.end();
 });

@@ -2,7 +2,7 @@
   "name": "sax",
   "description": "An evented streaming XML parser in JavaScript",
   "author": "Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "main": "lib/sax.js",
   "license": "BlueOak-1.0.0",
   "scripts": {

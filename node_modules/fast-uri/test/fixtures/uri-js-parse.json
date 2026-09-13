@@ -53,6 +53,7 @@
       "host": "[2001:dbz::1]",
       "port": 80,
       "path": "",
+      "error": "URI host is malformed.",
       "reference": "relative"
     }
   ],
@@ -242,6 +243,7 @@
     {
       "host": "[2606:2800:220:1:248:1893:25c8:1946:43209]",
       "path": "",
+      "error": "URI host is malformed.",
       "reference": "relative"
     }
   ],

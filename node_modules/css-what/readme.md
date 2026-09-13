@@ -1,6 +1,6 @@
 # css-what
 
-[![Build Status](https://img.shields.io/github/workflow/status/fb55/css-what/Node.js%20CI/master)](https://github.com/fb55/css-what/actions/workflows/nodejs-test.yml)
+[![Node.js CI](https://github.com/fb55/css-what/actions/workflows/nodejs-test.yml/badge.svg)](https://github.com/fb55/css-what/actions/workflows/nodejs-test.yml)
 [![Coverage](https://img.shields.io/coveralls/github/fb55/css-what/master)](https://coveralls.io/github/fb55/css-what?branch=master)
 
 A CSS selector parser.

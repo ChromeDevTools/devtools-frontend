@@ -8,7 +8,7 @@ ts_type_check("foundation_node_typecheck") {
   sources = [ "Foundation.ts" ]
   es_target = "es2023"
   es_libs = []
-  runs_in = "node_esm"
+  runs_in = "node"
 }
 
 ts_library("foundation_module") {

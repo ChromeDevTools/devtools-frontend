@@ -188,8 +188,8 @@ template("ts_library") {
   }
 
   _test_only = defined(invoker.testonly) && invoker.testonly
-  _runs_in_node = defined(invoker.runs_in) && (invoker.runs_in == "node_cjs" ||
-                                               invoker.runs_in == "node_esm")
+  _runs_in_node = defined(invoker.runs_in) &&
+                  (invoker.runs_in == "node_cjs" || invoker.runs_in == "node")
 
   if (_test_only || _runs_in_node) {
     _compiler_options.typeRoots = [

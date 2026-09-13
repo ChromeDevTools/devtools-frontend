@@ -56,7 +56,7 @@ ts_library("my_feature") {
   Set to `true` for unit tests and test helpers (`testonly = true`). Compiling with `testonly = true` automatically includes type definitions for Mocha, Chai, Sinon, and Node.
 
 - **`runs_in`** (`string`, optional):
-  Specifies the execution environment for scripts/tools running in Node.js. Allowed values are `"node_cjs"` (CommonJS) and `"node_esm"` (ES Modules).
+  Specifies the execution environment for scripts/tools running in Node.js. Allowed values are `"node_cjs"` (CommonJS) and `"node"` (ES Modules).
 
 - **`additional_type_definitions`** (`list(string)`, optional):
   List of additional `.d.ts` definition files required for type-checking this target (e.g. `test/e2e/types.d.ts`).

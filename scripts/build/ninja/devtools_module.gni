@@ -126,7 +126,7 @@ template("devtools_foundation_module") {
 
     es_target = "es2023"
     es_libs = []
-    runs_in = "node_esm"
+    runs_in = "node"
   }
 
   ts_library(target_name) {

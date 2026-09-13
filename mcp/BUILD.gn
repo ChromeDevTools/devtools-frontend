@@ -9,7 +9,7 @@ devtools_module("mcp") {
 
   es_target = "es2023"
   es_libs = []
-  runs_in = "node_esm"
+  runs_in = "node"
 
   ts_deps = [
     "../front_end/core/common:bundle",

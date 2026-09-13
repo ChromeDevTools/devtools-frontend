@@ -8490,7 +8490,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "executeTool",
-    signatures: [["tool","inputArguments","?options"]]
+    signatures: [["tool","?inputObject","?options"]]
   },
   {
     name: "TaskController",
@@ -8721,10 +8721,6 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   {
     name: "setReportEventDataForAutomaticBeacons",
     signatures: [["event"]]
-  },
-  {
-    name: "FencedFrameConfig",
-    signatures: [["url"]]
   },
   {
     name: "setSharedStorageContext",

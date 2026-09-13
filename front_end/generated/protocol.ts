@@ -1684,6 +1684,23 @@ export namespace Audits {
     disableReason?: string;
   }
 
+  export const enum WebInstallIssueReason {
+    ManifestParsingOrNetworkError = 'ManifestParsingOrNetworkError',
+    StartUrlInvalid = 'StartUrlInvalid',
+    ManifestMissingNameOrShortName = 'ManifestMissingNameOrShortName',
+    ManifestMissingId = 'ManifestMissingId',
+    NoManifest = 'NoManifest',
+  }
+
+  /**
+   * This issue reports a failure involving a web app manifest used by a Web
+   * Install operation.
+   */
+  export interface WebInstallIssueDetails {
+    manifestUrl?: string;
+    reason: WebInstallIssueReason;
+  }
+
   /**
    * The issue warns about blocked calls to privacy sensitive APIs via the
    * Selective Permissions Intervention.
@@ -1757,6 +1774,7 @@ export namespace Audits {
     SelectivePermissionsInterventionIssue = 'SelectivePermissionsInterventionIssue',
     EmailVerificationRequestIssue = 'EmailVerificationRequestIssue',
     LazyLoadImageIssue = 'LazyLoadImageIssue',
+    WebInstallIssue = 'WebInstallIssue',
   }
 
   /**
@@ -1798,6 +1816,7 @@ export namespace Audits {
     selectivePermissionsInterventionIssueDetails?: SelectivePermissionsInterventionIssueDetails;
     emailVerificationRequestIssueDetails?: EmailVerificationRequestIssueDetails;
     lazyLoadImageIssueDetails?: LazyLoadImageIssueDetails;
+    webInstallIssueDetails?: WebInstallIssueDetails;
   }
 
   /**
@@ -5944,6 +5963,20 @@ export namespace DOM {
      * List of popovers that were closed in order to respect popover stacking order.
      */
     nodeIds: NodeId[];
+  }
+
+  export interface GetImplicitAnchorCandidatesRequest {
+    /**
+     * Id of the popover HTMLElement.
+     */
+    nodeId: NodeId;
+  }
+
+  export interface GetImplicitAnchorCandidatesResponse extends ProtocolResponseWithError {
+    /**
+     * Candidate elements that can invoke this popover.
+     */
+    backendNodeIds: BackendNodeId[];
   }
 
   export interface ForceShowInterestRequest {
@@ -17763,9 +17796,7 @@ export namespace ServiceWorker {
 
   /**
    * Mostly corresponds to `RouterCondition` in ServiceWorker spec
-   * (https://www.w3.org/TR/service-workers/#dictdef-routercondition) while this
-   * currently lacks support for the nested conditions ("or" and "not").
-   * TODO(crbug.com/540469610): Support recursive conditions.
+   * (https://www.w3.org/TR/service-workers/#dictdef-routercondition)
    */
   export interface ServiceWorkerRouterCondition {
     /**
@@ -17776,6 +17807,8 @@ export namespace ServiceWorker {
     requestMode?: string;
     requestDestination?: string;
     runningStatus?: ServiceWorkerVersionRunningStatus;
+    or?: ServiceWorkerRouterCondition[];
+    not?: ServiceWorkerRouterCondition;
   }
 
   export const enum ServiceWorkerRouterSourceType {

@@ -818,7 +818,7 @@
     {
       // Killswitch M153.
       name: "AvoidEmbeddedContentViewLocation",
-      status: "stable",
+      status: "experimental",
     },
     {
       // Don't use a position inside non-selectable content as a selection
@@ -1093,6 +1093,11 @@
     {
       name: "CapabilityDelegationDisplayCaptureRequest",
       status: "experimental",
+    },
+    {
+      // Enables icon-only mode for capability elements.
+      // https://issues.chromium.org/issues/514564817
+      name: "CapabilityElementIconOnlyMode",
     },
     {
       name: "CaptureController",
@@ -1547,6 +1552,19 @@
       name: "CSSBackgroundClipBorderArea",
       status: "stable",
     },
+    {
+      // Makes the computed value of the background-* longhands keep the number
+      // of comma-separated values the author specified, instead of repeating or
+      // truncating it to the background-image layer count. Repeating and
+      // truncating are used-value behaviour: "The computed values of the
+      // coordinating list properties are not affected by such truncation or
+      // repetition."
+      // https://drafts.csswg.org/css-values-4/ Appendix A
+      // https://drafts.csswg.org/css-backgrounds/#layering
+      // https://github.com/w3c/csswg-drafts/issues/7164
+      name: "CSSBackgroundLayerCountIndependence",
+      status: "test",
+    },
     // https://chromestatus.com/feature/5459864205393920
     {
       // https://chromestatus.com/feature/5125388091260928
@@ -1995,7 +2013,7 @@
     },
     {
       name: "CSSScrollSnapTypePair",
-      status: "test",
+      status: "experimental",
     },
     {
       // scroll-target-group property
@@ -2652,11 +2670,6 @@
       status: "stable",
     },
     {
-      // crbug.com/420857717
-      name: "EmojiMonochromeRendering",
-      status: "stable"
-    },
-    {
       // Controls whether XSLT processing is selectively re-enabled for
       // Common Alerting Protocol (CAP) alert XML documents when native XSLT
       // is otherwise disabled.
@@ -2867,12 +2880,7 @@
       base_feature_status: "enabled",
       copied_from_base_feature_if: "enabled_or_overridden",
       status: "stable",
-    },
-    {
-      name: "FencedFramesDefaultMode",
-      base_feature_status: "disabled",
-      copied_from_base_feature_if: "enabled_or_overridden",
-      public: true,
+
     },
     {
       // Allows fenced frames to access unpartioned data via Shared Storage in
@@ -3281,6 +3289,7 @@
     {
       name: "FractionalScrollOffsets",
       implied_by: ["FractionalScrollOffsetsForWebAPI"],
+      status: "experimental",
     },
     {
       // https://crbug.com/40384509.
@@ -3853,10 +3862,6 @@
       status: "stable",
     },
     {
-      name: "LayoutTableCellAlignmentSafe",
-      status: "stable",
-    },
-    {
       // When enabled, brings chromium into compliance with the resolution of:
       //   https://github.com/whatwg/html/issues/10671
       // This flag can be used to easily revert to the old behavior if the new
@@ -4128,8 +4133,7 @@
     },
     {
       name: "MediaPlaybackWhileNotVisiblePermissionPolicy",
-      status: "test",
-      origin_trial_feature_name: "MediaPlaybackWhileNotVisiblePermissionPolicy",
+      status: "stable",
     },
     {
       name: "MediaQueryNavigationControls",
@@ -4214,6 +4218,15 @@
       name: "ModifyParagraphCrossEditingoundary",
       status: "stable",
     },
+    // Stops caching failed module fetches (network error, non-ok status, or
+    // MIME type mismatch), so a later import re-fetches instead of reusing the
+    // failure.
+    // https://html.spec.whatwg.org/C/#fetch-a-single-module-script
+    // https://crbug.com/534781954
+    {
+      name: "ModuleMapDoNotCacheFailedFetch",
+      status: "experimental",
+    },
     // ModulePreloadReferrer enables modulepreload to send proper referrer
     // headers as specified in the HTML spec.
     // https://crbug.com/441933555
@@ -4257,12 +4270,6 @@
     },
     {
       name: "NavigationEventTiming",
-    },
-    {
-      name: "NavigationId",
-      status: "experimental",
-      origin_trial_feature_name: "SoftNavigationHeuristics",
-      implied_by: ["SoftNavigationHeuristics"],
     },
     {
       // NavigationState class and the :navigation-source CSS pseudo-class.
@@ -5486,6 +5493,11 @@
       name: "ScrollTopLeftInterop",
       status: "stable",
     },
+    // Limits the number of scroll-to-text-fragment directives parsed per URL.
+    {
+      name: "ScrollToTextFragmentDirectiveLimit",
+      status: "stable",
+    },
     // Only consider unique case-insensitive scroll-to-text fragments.
     {
       name: "ScrollToTextFragmentUniqueFragments",
@@ -5711,6 +5723,10 @@
       status: "experimental",
     },
     {
+      // V8 Code Cache for resource requests passing through Service Worker.
+      name: "ServiceWorkerCodeCache",
+    },
+    {
       // Support for Service Worker APIs in Dedicated Workers.
       // See https://chromestatus.com/feature/6497653025931264
       // See https://issues.chromium.org/issues/40364838
@@ -5878,23 +5894,6 @@
       // RunSnapshotPostLayoutStateSteps flag.
       name: "SnapshotScrollTimelinesPostLayout",
       depends_on: ["RunSnapshotPostLayoutStateSteps"],
-    },
-    {
-      // Used to enable the code for detecting soft navigations through task
-      // attribution. Set to stable as this generates an enabled-by-default
-      // base::Feature for a field-trial remote shutoff. Needs to be a runtime
-      // feature so that the Soft Navigation Heuristics Origin Trial can depend
-      // on it.
-      name: "SoftNavigationDetection",
-      status: "stable",
-    },
-    {
-      name: "SoftNavigationDetectionIncludeReplaceState",
-      status: "stable",
-    },
-    {
-      name: "SoftNavigationHeuristics",
-      status: "stable",
     },
     {
       name: "SortedLayoutShiftSourcesByImpactArea",
@@ -6490,6 +6489,10 @@
       base_feature: "none",
     },
     {
+      name: "TrackAnimatedSources",
+      status: "test",
+    },
+    {
       name: "TransferableRTCDataChannel",
       status: "stable",
     },
@@ -6569,7 +6572,10 @@
       // privileged UI to depend on this feature. The flag is here as a kill
       // switch. Importantly, open web content still requires
       // UnboundedElementOnTheOpenWeb to be enabled.
+      // There is an override in SetCustomizedRuntimeFeaturesFromCombinedArgs to ensure this
+      // is only enabled for Android U+, which is the minimum version the platform supports.
       name: "UnboundedElement",
+      public: true,
       status: "stable",
       implied_by: ["UnboundedElementOnTheOpenWeb"],
     },
@@ -6577,6 +6583,7 @@
       // The Unbounded Element API. See crbug.com/508672616.
       // Enable Unbounded Element on the open web without privileged context.
       name: "UnboundedElementOnTheOpenWeb",
+      public: true,
     },
     {
       name: "UnclosedFormControlIsInvalid",
@@ -6978,7 +6985,7 @@
       //
       // https://chromestatus.com/feature/5198951632470016
       name: "WebCryptoPQC",
-      origin_trial_feature_name: "WebCryptoAdditionalAlgorithms202606",
+      status: "stable",
     },
     {
       name: "WebGLDeveloperExtensions",
@@ -7086,10 +7093,8 @@
     },
     {
       name: "WebIdentityDigitalCredentialsCreation",
-      origin_trial_feature_name: "WebIdentityDigitalCredentialsCreation",
-      origin_trial_allows_third_party: true,
       public: true,
-      status: "experimental",
+      status: "stable",
       base_feature: "none",
     },
     // Kill switch for making BigInt handling in WebIDL use ToBigInt.
@@ -7237,6 +7242,11 @@
       name: "WebTransportCustomCertificates",
       origin_trial_feature_name: "WebTransportCustomCertificates",
       status: "stable",
+      base_feature: "none",
+    },
+    {
+      name: "WebTransportDatagramsReadableType",
+      status: "experimental",
       base_feature: "none",
     },
     {

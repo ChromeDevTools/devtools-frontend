@@ -21,7 +21,7 @@ import {
   makeMockRendererHandlerData,
   makeMockSamplesHandlerData,
   makeProfileCall,
-} from '../../testing/TraceHelpers.js';
+} from '../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as TraceSourceMapsResolver from './trace_source_maps_resolver.js';

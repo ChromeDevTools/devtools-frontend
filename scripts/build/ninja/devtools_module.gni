@@ -34,7 +34,6 @@ _devtools_module_folder_exceptions = [
   "front_end/models/trace/helpers",
   "front_end/models/trace/insights",
   "front_end/models/trace/types",
-  "front_end/models/trace_source_maps_resolver",
 ]
 
 _devtools_module_folder_exceptions_full = []

@@ -19,14 +19,16 @@ class NodeWorkerScope implements Api.HostRuntime.WorkerScope {
 }
 
 class NodeWorker implements Api.HostRuntime.Worker {
+  readonly #worker: WorkerThreads.Worker;
   readonly #workerPromise: Promise<WorkerThreads.Worker>;
   #disposed = false;
   #rejectWorkerPromise?: (error: Error) => void;
 
   constructor(url: string) {
-    this.#workerPromise = new Promise((resolve, reject) => {
+    const worker = new WorkerThreads.Worker(new URL(url));
+    this.#worker = worker;
+    this.#workerPromise = new Promise<WorkerThreads.Worker>((resolve, reject) => {
       this.#rejectWorkerPromise = reject;
-      const worker = new WorkerThreads.Worker(new URL(url));
       worker.once('message', (message: unknown) => {
         if (message === 'workerReady') {
           resolve(worker);
@@ -34,6 +36,8 @@ class NodeWorker implements Api.HostRuntime.Worker {
       });
       worker.on('error', reject);
     });
+    // Prevent unhandled promise rejections if the worker is terminated early.
+    this.#workerPromise.catch(() => {});
   }
 
   postMessage(message: unknown, transfer?: Api.HostRuntime.WorkerTransferable[]): void {
@@ -46,7 +50,7 @@ class NodeWorker implements Api.HostRuntime.Worker {
 
   dispose(): void {
     this.#disposed = true;
-    void this.#workerPromise.then(worker => worker.terminate());
+    void this.#worker.terminate();
   }
 
   terminate(immediately?: boolean): void {

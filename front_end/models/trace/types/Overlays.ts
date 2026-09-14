@@ -84,7 +84,7 @@ export interface CandyStripedTimeRange {
  */
 export interface TimespanBreakdownEntryBreakdown {
   bounds: TraceWindowMicro;
-  label: string|HTMLElement;
+  label: string|object;
   showDuration: boolean;
 }
 
@@ -126,7 +126,7 @@ export interface BottomInfoBar {
   // In DevTools, this infobar is a UI.Infobar.Infobar but we can't refer to
   // the type here.
   infobar: {
-    element: HTMLElement,
+    element: object,
     dispose: () => void,
   };
 }

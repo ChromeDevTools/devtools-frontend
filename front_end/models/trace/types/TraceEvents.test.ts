@@ -4,12 +4,11 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
+import {allThreadEntriesInTrace} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('TraceEvent types', function() {
+describe('TraceEvent types', function() {
   const {Phase, isNestableAsyncPhase, isPhaseAsync, isFlowPhase} = Trace.Types.Events;
   it('is able to determine if a phase is a nestable async phase', function() {
     assert.isTrue(isNestableAsyncPhase(Phase.ASYNC_NESTABLE_START));

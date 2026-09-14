@@ -873,6 +873,9 @@ export class Overlays extends EventTarget {
     // (it has height as now it's visible on the screen)
     // We do this by removing the default banner height (to reset our
     // calculation back to "0") and adding the actual height.
+    if (!(overlay.infobar.element instanceof HTMLElement)) {
+      return;
+    }
     const actualBannerHeight = overlay.infobar.element.clientHeight;
     const adjustedVisiblePixels = visiblePixelsOfBanner - defaultBannerHeight + actualBannerHeight;
     // Use Math.min here to ensure the infobar never grows beyond the size it
@@ -1720,6 +1723,9 @@ export class Overlays extends EventTarget {
       case 'TIMINGS_MARKER':
         break;
       case 'BOTTOM_INFO_BAR': {
+        if (!(overlay.infobar.element instanceof HTMLElement)) {
+          return;
+        }
         if (element.contains(overlay.infobar.element)) {
           return;
         }

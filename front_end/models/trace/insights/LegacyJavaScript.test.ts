@@ -4,11 +4,12 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import type * as Trace from '../trace.js';
 
-describeWithEnvironment('LegacyJavaScript', function() {
+describe('LegacyJavaScript', function() {
+  setupLocaleHooks();
   it('has no results when savings are too small', async function() {
     const {data, insights} = await processTrace(this, 'dupe-js.json.gz');
     assert.strictEqual(insights.size, 1);

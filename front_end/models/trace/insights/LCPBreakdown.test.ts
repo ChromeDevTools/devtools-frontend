@@ -4,19 +4,20 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   createContextForNavigation,
   getFirstOrError,
   getInsightOrError,
   processTrace,
 } from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Trace from '../trace.js';
 import * as Types from '../types/types.js';
 
-describeWithEnvironment('LCPBreakdown', function() {
+describe('LCPBreakdown', function() {
+  setupLocaleHooks();
   it('calculates text lcp breakdown', async function() {
     const {data, insights} = await processTrace(this, 'lcp-web-font.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());

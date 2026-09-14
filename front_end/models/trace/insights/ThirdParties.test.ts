@@ -4,10 +4,11 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 
-describeWithEnvironment('ThirdParties', function() {
+describe('ThirdParties', function() {
+  setupLocaleHooks();
   it('categorizes third party web requests (simple)', async function() {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
     assert.strictEqual(insights.size, 1);

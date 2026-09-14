@@ -4,13 +4,13 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   createContextForNavigation,
   getFirstOrError,
   getInsightOrError,
   processTrace,
 } from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 import * as Types from '../types/types.js';
@@ -87,7 +87,8 @@ async function generateInsightWithOverrides(testContext: Mocha.Context, override
   return Trace.Insights.Models.LCPDiscovery.generateInsight(data, context);
 }
 
-describeWithEnvironment('LCPDiscovery', function() {
+describe('LCPDiscovery', function() {
+  setupLocaleHooks();
   it('calculates image lcp attributes', async function() {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());

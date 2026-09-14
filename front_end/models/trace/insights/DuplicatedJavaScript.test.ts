@@ -4,12 +4,13 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('DuplicatedJavaScript', function() {
+describe('DuplicatedJavaScript', function() {
+  setupLocaleHooks();
   it('works (external source maps)', async function() {
     const {data, insights} = await processTrace(this, 'dupe-js.json.gz');
     assert.strictEqual(insights.size, 1);
@@ -108,7 +109,8 @@ describeWithEnvironment('DuplicatedJavaScript', function() {
       if (Trace.Types.Events.isRundownScript(event)) {
         const {sourceMapUrl, url} = event.args.data;
         if (sourceMapUrl?.startsWith('data:') && url) {
-          const sourceMap = await (await fetch(sourceMapUrl)).json();
+          const sourceMap =
+              (await (await fetch(sourceMapUrl)).json()) as Trace.Types.File.MetadataSourceMap['sourceMap'];
           fileContents.metadata.sourceMaps?.push({url, sourceMap});
           event.args.data.sourceMapUrl = undefined;
           event.args.data.sourceMapUrlElided = true;

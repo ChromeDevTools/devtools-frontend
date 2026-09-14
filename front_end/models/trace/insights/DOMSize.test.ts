@@ -4,10 +4,12 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment, expectConsoleLogs} from '../../../testing/EnvironmentHelpers.js';
+import {expectConsoleLogs} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 
-describeWithEnvironment('DOMSize', function() {
+describe('DOMSize', function() {
+  setupLocaleHooks();
   // Processing traces in this file can take a while due to a performance bottleneck
   // b/38254550
   this.timeout(30_000);

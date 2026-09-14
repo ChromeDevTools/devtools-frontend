@@ -4,16 +4,17 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   createContextForNavigation,
   getFirstOrError,
   getInsightOrError,
   processTrace,
 } from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('Viewport', function() {
+describe('Viewport', function() {
+  setupLocaleHooks();
   it('detects mobile optimized viewport', async function() {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const insight =

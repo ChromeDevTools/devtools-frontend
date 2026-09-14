@@ -4,11 +4,12 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import type * as Types from '../types/types.js';
 
-describeWithEnvironment('FontDisplay', function() {
+describe('FontDisplay', function() {
+  setupLocaleHooks();
   it('finds no requests for remote fonts', async function() {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
     assert.strictEqual(insights.size, 1);

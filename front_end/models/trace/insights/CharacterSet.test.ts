@@ -4,8 +4,8 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {createContextForNavigation, getFirstOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as Trace from '../trace.js';
 
 function setDocumentResponseHeaders(
@@ -47,7 +47,8 @@ function addMetaCharsetCheckEvent(
   eventsByNavigation.set(context.navigation, events);
 }
 
-describeWithEnvironment('CharacterSet', function() {
+describe('CharacterSet', function() {
+  setupLocaleHooks();
   async function createInsight(testContext: Mocha.Context) {
     const {data} = await processTrace(testContext, 'lcp-images.json.gz');
     const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());

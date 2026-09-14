@@ -4,13 +4,14 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as Trace from '../trace.js';
 
 const {determineHttp1Requests: determineNonHttp2Resources} = Trace.Insights.ModernHTTP;
 
-describeWithEnvironment('Cache', function() {
+describe('Cache', function() {
+  setupLocaleHooks();
   describe('determineNonHttp2Resources', () => {
     function createNRequests(cb: (i: number) => Trace.Types.Events.SyntheticNetworkRequest, num: number) {
       const reqs: Trace.Types.Events.SyntheticNetworkRequest[] = [];

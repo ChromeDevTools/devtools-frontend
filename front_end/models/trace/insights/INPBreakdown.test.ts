@@ -4,11 +4,12 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {createContextForNavigation, getFirst, processTrace} from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('INPBreakdown', function() {
+describe('INPBreakdown', function() {
+  setupLocaleHooks();
   const test = (traceFile: string, longest?: number, highPercentile?: number) => {
     if (highPercentile === undefined) {
       highPercentile = longest;

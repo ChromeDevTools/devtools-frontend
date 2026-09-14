@@ -4,10 +4,11 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 
-describeWithEnvironment('SelectorStatsInsights', function() {
+describe('SelectorStatsInsights', function() {
+  setupLocaleHooks();
   it('generates slow selectors', async function() {
     const {data, insights} = await processTrace(this, 'selector-stats.json.gz');
     assert.strictEqual(insights.size, 1);

@@ -104,15 +104,12 @@ describe('AI Assistance', function() {
   async function typeQuery(devtoolsPage: DevToolsPage, query: string): Promise<void> {
     await devtoolsPage.waitFor('textarea.chat-input');
     await devtoolsPage.scrollElementIntoView('textarea.chat-input');
-    await devtoolsPage.click('aria/Ask a question about the selected element');
+    await devtoolsPage.click('textarea.chat-input');
     await devtoolsPage.typeText(query);
   }
 
   interface Log {
-    request: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      current_message: Host.AidaClient.Content,
-    };
+    request: Host.AidaClient.DoConversationRequest;
   }
 
   async function submitAndWaitTillDone(
@@ -159,6 +156,7 @@ describe('AI Assistance', function() {
     query: string,
     messages: AidaPart[],
     resource?: string,
+    host?: string,
     node?: string,
     iframeId?: string,
     shadowRoot?: string,
@@ -169,6 +167,7 @@ describe('AI Assistance', function() {
       messages,
       query,
       resource = '../resources/recorder/recorder.html',
+      host,
       node = 'div',
       iframeId,
       shadowRoot,
@@ -190,7 +189,11 @@ describe('AI Assistance', function() {
             isOffTheRecord: false,
           },
           messages);
-      await inspectedPage.goToResource(resource);
+      if (host) {
+        await inspectedPage.goToResourceWithCustomHost(host, resource);
+      } else {
+        await inspectedPage.goToResource(resource);
+      }
       await askAiOnSelectedElement(devToolsPage);
       await turnOnAiAssistance(devToolsPage);
       await enableDebugModeForFreestyler(devToolsPage);
@@ -206,6 +209,7 @@ describe('AI Assistance', function() {
     } finally {
       if (preloadScriptId) {
         await devToolsPage.removeScriptToEvaluateOnNewDocument(preloadScriptId);
+        preloadScriptId = '';
       }
     }
   }
@@ -572,16 +576,13 @@ describe('AI Assistance', function() {
     await resetMockMessages(devToolsPage, messages);
     await inspectNode(devToolsPage, 'div');
     await typeQuery(devToolsPage, 'Change the background color for this element to green');
-    const done = devToolsPage.evaluate(() => {
-      return new Promise(resolve => {
-        window.addEventListener('aiassistancedone', resolve, {
-          once: true,
-        });
-      });
-    });
     await devToolsPage.pressKey('Enter');
+    // Verify that the prior conversation is aborted and its confirmation unmounts before continuing.
+    await devToolsPage.waitForElementWithTextContent('You stopped this response');
+    // Wait for the new conversation's side-effect confirmation to mount and approve it.
+    await devToolsPage.waitForAria('Continue');
     await devToolsPage.click('aria/Continue');
-    await done;
+    await devToolsPage.waitForElementWithTextContent('changed styles');
 
     await inspectedPage.waitForFunction(() => {
       return inspectedPage.evaluate(() => {
@@ -756,4 +757,167 @@ describe('AI Assistance', function() {
       });
     });
   }
+
+  const CROSS_ORIGIN_PLACEHOLDER = 'To talk about data from another origin, start a new chat';
+
+  async function assertBlockedByCrossOrigin(devToolsPage: DevToolsPage): Promise<void> {
+    const textarea = await devToolsPage.waitFor('textarea.chat-input:disabled');
+    await devToolsPage.waitForFunction(async () => {
+      return await textarea.evaluate(
+          (el, expected) => el.getAttribute('placeholder') === expected,
+          CROSS_ORIGIN_PLACEHOLDER,
+      );
+    });
+    await devToolsPage.waitForElementWithTextContent('Start new chat');
+  }
+
+  async function resetOriginLockViaNewChat(devToolsPage: DevToolsPage): Promise<void> {
+    await devToolsPage.click('.start-new-chat-button');
+    await devToolsPage.waitFor('textarea.chat-input:not(:disabled)');
+    await devToolsPage.waitForNone('.start-new-chat-button');
+  }
+
+  async function selectConsoleExecutionContext(devToolsPage: DevToolsPage, contextLabel: string): Promise<void> {
+    await devToolsPage.click('#tab-console');
+    const [menuItem] = await devToolsPage.waitForFunction(async () => {
+      await devToolsPage.click('[aria-label^="JavaScript context:"]');
+      const menuItems = await devToolsPage.waitForManyWithTries('[role=menuitem]', 1, 3);
+      if (!menuItems) {
+        return null;
+      }
+      for (const item of menuItems) {
+        if (await devToolsPage.$textContent(contextLabel, item)) {
+          return [item];
+        }
+      }
+      return null;
+    });
+    await menuItem.click();
+    await devToolsPage.pressKey('Enter');
+    await devToolsPage.waitFor(`[aria-label="JavaScript context: ${contextLabel}"]`);
+  }
+
+  it('locks conversation to origin and blocks input on cross-origin navigation until new chat',
+     async ({devToolsPage, inspectedPage}) => {
+       // Clearly distinguish the two distinct origins used in this test.
+       // Both hosts resolve to 127.0.0.1 in the test runner, but produce different SDK.SecurityOrigin instances.
+       const ORIGIN_A_HOST = 'a.devtools.test';
+       const ORIGIN_B_HOST = 'b.devtools.test';
+       const ORIGIN_A_USER_QUERY = 'Explain this element on origin A';
+       const ORIGIN_A_AI_RESPONSE = 'Answer for Origin A element';
+       const ORIGIN_B_USER_QUERY = 'Explain this element on origin B';
+       const ORIGIN_B_AI_RESPONSE = 'Answer for Origin B element';
+
+       // 1. Establish an initial conversation locked to ORIGIN_A.
+       await runAiAssistance(devToolsPage, inspectedPage, {
+         host: ORIGIN_A_HOST,
+         resource: 'elements/simple-styled-page.html',
+         node: 'h1',
+         query: ORIGIN_A_USER_QUERY,
+         messages: [{textChunk: {text: ORIGIN_A_AI_RESPONSE}}],
+       });
+
+       // 2. Navigate inspected page to ORIGIN_B and inspect an element under the new origin.
+       await inspectedPage.goToResourceWithCustomHost(ORIGIN_B_HOST, 'recorder/recorder.html');
+       await inspectNode(devToolsPage, 'div');
+
+       // 3. Verify that cross-origin navigation blocks the active conversation.
+       await assertBlockedByCrossOrigin(devToolsPage);
+
+       // 4. Click "Start new chat" to clear the origin lock.
+       await resetOriginLockViaNewChat(devToolsPage);
+
+       // 5. Submit query on ORIGIN_B and assert that the response renders in the UI.
+       await resetMockMessages(devToolsPage, [{textChunk: {text: ORIGIN_B_AI_RESPONSE}}]);
+       await typeQuery(devToolsPage, ORIGIN_B_USER_QUERY);
+       const result = await submitAndWaitTillDone(devToolsPage);
+       await devToolsPage.waitForElementWithTextContent(ORIGIN_B_AI_RESPONSE);
+
+       // 6. Verify that starting a new chat clears prior history in the outgoing request.
+       const lastRequest = result.at(-1)?.request;
+       assert.isUndefined(lastRequest?.historical_contexts);
+     });
+
+  it('allows continuing conversation when navigating across pages on the same origin',
+     async ({devToolsPage, inspectedPage}) => {
+       const ORIGIN_HOST = 'a.devtools.test';
+       const PAGE_1_USER_QUERY = 'Explain this element on origin A page 1';
+       const PAGE_1_AI_RESPONSE = 'Answer for page 1 element';
+       const PAGE_2_USER_QUERY = 'Explain this element on origin A page 2';
+       const PAGE_2_AI_RESPONSE = 'Answer for page 2 element';
+
+       // 1. Establish an initial conversation locked to ORIGIN_HOST.
+       await runAiAssistance(devToolsPage, inspectedPage, {
+         host: ORIGIN_HOST,
+         resource: 'elements/simple-styled-page.html',
+         node: 'h1',
+         query: PAGE_1_USER_QUERY,
+         messages: [{textChunk: {text: PAGE_1_AI_RESPONSE}}],
+       });
+
+       // 2. Navigate to another document under the same origin and select a new element.
+       await inspectedPage.goToResourceWithCustomHost(ORIGIN_HOST, 'recorder/recorder.html');
+       await inspectNode(devToolsPage, 'div');
+
+       // 3. Verify that context affirmatively updates to the new element and the conversation remains unblocked.
+       await devToolsPage.waitForElementWithTextContent('div', await devToolsPage.waitFor('.select-element'));
+       await devToolsPage.waitFor('textarea.chat-input:not(:disabled)');
+       await devToolsPage.waitForNone('.start-new-chat-button');
+
+       // 4. Submit a follow-up query to verify the existing conversation thread continues without reset.
+       await resetMockMessages(devToolsPage, [{textChunk: {text: PAGE_2_AI_RESPONSE}}]);
+       await typeQuery(devToolsPage, PAGE_2_USER_QUERY);
+       const result = await submitAndWaitTillDone(devToolsPage);
+       await devToolsPage.waitForElementWithTextContent(PAGE_2_AI_RESPONSE);
+
+       // 5. Verify that the follow-up query preserves prior history in the outgoing request.
+       assert.isAtLeast(result.length, 2);
+       const lastRequest = result.at(-1)?.request;
+       assert.isNotEmpty(lastRequest?.historical_contexts);
+     });
+
+  it('locks conversation to origin and blocks input when selecting an element in a cross-origin iframe',
+     async ({devToolsPage, inspectedPage}) => {
+       const TOP_ORIGIN_HOST = 'a.devtools.test';
+       // page-with-oopif.html specifically embeds an iframe hosted on devtools.oopif.test.
+       const OOPIF_HOST = 'devtools.oopif.test';
+       const TOP_USER_QUERY = 'Explain top-level body element';
+       const TOP_AI_RESPONSE = 'Answer for top-level element';
+       const OOPIF_USER_QUERY = 'Explain this element in cross-origin iframe';
+       const OOPIF_AI_RESPONSE = 'Answer for OOPIF element';
+
+       // 1. Establish an initial conversation locked to the top-level origin.
+       await runAiAssistance(devToolsPage, inspectedPage, {
+         host: TOP_ORIGIN_HOST,
+         resource: 'host/page-with-oopif.html',
+         node: 'body',
+         query: TOP_USER_QUERY,
+         messages: [{textChunk: {text: TOP_AI_RESPONSE}}],
+       });
+
+       // 2. Wait for the out-of-process iframe to load before querying its execution context.
+       await inspectedPage.page.waitForFrame(frame => frame.url().includes(OOPIF_HOST));
+
+       // 3. Switch the Console prompt execution context to the OOPIF frame so inspectNode evaluates in the iframe realm.
+       await selectConsoleExecutionContext(devToolsPage, 'iframe.html');
+
+       // 4. Inspect an element inside the cross-origin frame to trigger origin validation.
+       await inspectNode(devToolsPage, 'h1');
+
+       // 5. Verify that selecting a cross-origin element blocks the conversation and prompts for a new chat.
+       await assertBlockedByCrossOrigin(devToolsPage);
+
+       // 6. Click "Start new chat" to clear the prior origin lock.
+       await resetOriginLockViaNewChat(devToolsPage);
+
+       // 7. Submit a query targeting the OOPIF element and assert that the response renders in the UI.
+       await resetMockMessages(devToolsPage, [{textChunk: {text: OOPIF_AI_RESPONSE}}]);
+       await typeQuery(devToolsPage, OOPIF_USER_QUERY);
+       const result = await submitAndWaitTillDone(devToolsPage);
+       await devToolsPage.waitForElementWithTextContent(OOPIF_AI_RESPONSE);
+
+       // 8. Verify that starting a new chat clears prior history in the outgoing request.
+       const lastRequest = result.at(-1)?.request;
+       assert.isUndefined(lastRequest?.historical_contexts);
+     });
 });

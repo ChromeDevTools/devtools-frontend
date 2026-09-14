@@ -128,7 +128,6 @@ export function eventMixin<
   Events,
   Base extends Platform.Constructor.Constructor<EventMixinBase>,
 >(base: Base): EventMixin<Events, Base> {
-  console.assert((base as unknown) !== HTMLElement);
   return class EventHandling extends base implements EventTarget<Events> {
     // Note that the weird name is due to TSC disallowing private/protected fields in
     // anonmous exported classes. We use a `__` prefix to prevent clashes with `base`.

@@ -32,14 +32,24 @@ export function decode(input: string): Uint8Array<ArrayBuffer> {
   return bytes;
 }
 
+export type BlobPart = ArrayBufferLike|Uint8Array|Blob|string;
+
 /**
  * Note: if input can be very large (larger than the max string size), callers should
  * expect this to throw an error.
  */
 export async function encode(input: BlobPart): Promise<string> {
+  const maybeFileReader = (globalThis as Record<string, unknown>)['FileReader'] as (new () => {
+                            onerror: (() => void) | null,
+                            onload: (() => void) | null,
+                            result: string | ArrayBuffer | null,
+                            readAsDataURL(blob: Blob): void,
+                          }) |
+      undefined;
+
   // Node.js environment (for foundation unit tests)
-  if (typeof FileReader === 'undefined') {
-    const blob = new Blob([input]);
+  if (!maybeFileReader) {
+    const blob = new Blob([input as unknown as (ArrayBuffer | Blob | string)]);
     const arrayBuffer = await blob.arrayBuffer();
     // Use globalThis.Buffer to avoid TypeScript errors if Node types are not included.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,7 +58,7 @@ export async function encode(input: BlobPart): Promise<string> {
 
   // Browser environment
   return await new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    const reader = new maybeFileReader();
     reader.onerror = () => reject(new Error('failed to convert to base64: internal error'));
     reader.onload = () => {
       // The input was too large to encode as a string. The caller should anticipate
@@ -71,6 +81,6 @@ export async function encode(input: BlobPart): Promise<string> {
       resolve(base64);
     };
 
-    reader.readAsDataURL(new Blob([input]));
+    reader.readAsDataURL(new Blob([input as unknown as (ArrayBuffer | Blob | string)]));
   });
 }

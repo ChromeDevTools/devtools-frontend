@@ -10,7 +10,7 @@ ts_library("ColorUtils") {
   sources = [ "ColorUtils.ts" ]
 }
 
-devtools_module("common") {
+devtools_foundation_module("common") {
   sources = [
     "Base64.ts",
     "CharacterIdMap.ts",

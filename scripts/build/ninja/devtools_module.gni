@@ -16,7 +16,6 @@ template("devtools_base_module") {
 # Legacy exceptions for devtools_module in core and models.
 # New modules in these directories must use devtools_foundation_module instead.
 _devtools_module_folder_exceptions = [
-  "front_end/core/common",
   "front_end/core/host",
   "front_end/core/platform/browser",
   "front_end/core/platform/node",

@@ -19,7 +19,7 @@ export async function arrayBufferToString(ab: ArrayBufferLike): Promise<string> 
   if (isGzip(ab)) {
     return await decompress(ab);
   }
-  const str = new TextDecoder('utf-8').decode(ab);
+  const str = new TextDecoder('utf-8').decode(new Uint8Array(ab));
   return str;
 }
 

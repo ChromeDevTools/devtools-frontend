@@ -242,7 +242,7 @@ describe('WebMCPView (View)', () => {
     const toolListWidget = target.querySelector('.tool-list devtools-widget');
     const emptyStateHeader = toolListWidget?.shadowRoot?.querySelector('.empty-state-header');
     assert.isNotNull(emptyStateHeader);
-    assert.strictEqual(emptyStateHeader?.textContent, 'Available WebMCP Tools');
+    assert.strictEqual(emptyStateHeader?.textContent, 'Available WebMCP tools');
 
     const callListElements = target.querySelectorAll('.call-item');
     assert.lengthOf(callListElements, 0);
@@ -250,7 +250,7 @@ describe('WebMCPView (View)', () => {
     const callListWidget = target.querySelector('.call-log devtools-widget');
     const callListEmptyHeader = callListWidget?.shadowRoot?.querySelector('.empty-state-header');
     assert.isNotNull(callListEmptyHeader);
-    assert.strictEqual(callListEmptyHeader?.textContent, 'Tool Activity');
+    assert.strictEqual(callListEmptyHeader?.textContent, 'Tool activity');
 
     await assertScreenshot('application/webmcp-empty.png');
   });

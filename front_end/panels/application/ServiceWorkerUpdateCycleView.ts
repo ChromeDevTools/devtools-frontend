@@ -13,25 +13,25 @@ import serviceWorkerUpdateCycleViewStyles from './serviceWorkerUpdateCycleView.c
 
 const UIStrings = {
   /**
-   * @description Text in Indexed DBViews of the Application panel
+   * @description Table column header for the version column in the Service Worker update cycle table of the Application panel.
    */
   version: 'Version',
   /**
-   * @description Table heading for Service Workers update information. Update is a noun.
+   * @description Table column header for the update activity column in the Service Worker update cycle table of the Application panel. Update is a noun.
    */
-  updateActivity: 'Update Activity',
+  updateActivity: 'Update activity',
   /**
-   * @description Title for the timeline tab.
+   * @description Table column header for the timeline column in the Service Worker update cycle table of the Application panel.
    */
   timeline: 'Timeline',
   /**
-   * @description Text in Service Workers Update Life Cycle
-   * @example {2} PH1
+   * @description Details row text displaying the start time of a phase in the Service Worker update cycle table of the Application panel.
+   * @example {2026-09-14T15:30:00.000Z} PH1
    */
   startTimeS: 'Start time: {PH1}',
   /**
-   * @description Text for end time of an event
-   * @example {2} PH1
+   * @description Details row text displaying the end time of a phase in the Service Worker update cycle table of the Application panel.
+   * @example {2026-09-14T15:30:00.000Z} PH1
    */
   endTimeS: 'End time: {PH1}',
 } as const;

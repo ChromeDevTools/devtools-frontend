@@ -42,168 +42,168 @@ import webMCPViewStyles from './webMCPView.css.js';
 
 const UIStrings = {
   /**
-   * @description Text for the header of the tool registry section
+   * @description Section header for the available tools list in the WebMCP view of the Application panel.
    */
-  toolRegistry: 'Available Tools',
+  toolRegistry: 'Available tools',
   /**
-   * @description Title of text to display when no tools are registered
+   * @description Header text displayed when no tools are registered in the WebMCP view of the Application panel.
    */
-  noToolsPlaceholderTitle: 'Available `WebMCP` Tools',
+  noToolsPlaceholderTitle: 'Available `WebMCP` tools',
   /**
-   * @description Text to display when no tools are registered
+   * @description Informational text displayed when no tools are registered in the WebMCP view of the Application panel.
    */
   noToolsPlaceholder:
       'Registered `WebMCP` tools for this page will appear here. No tools have been registered or detected yet.',
   /**
-   * @description Title of text to display when no calls have been made
+   * @description Header text displayed when no tool calls have been made in the WebMCP view of the Application panel.
    */
-  noCallsPlaceholderTitle: 'Tool Activity',
+  noCallsPlaceholderTitle: 'Tool activity',
   /**
-   * @description Text to display when no calls have been made
+   * @description Informational text displayed when no tool calls have been made in the WebMCP view of the Application panel.
    */
   noCallsPlaceholder: 'Start interacting with your `WebMCP` agent to see real-time tool calls and executions here',
   /**
-   * @description Text for the header of the tool details section
+   * @description Tab title and section header for the tool details in the WebMCP view of the Application panel.
    */
   toolDetails: 'Details',
   /**
-   * @description Text for the link to reveal the tool's DOM node in the Elements panel
+   * @description Tooltip and aria label for the button to reveal the tool's DOM node in the Elements panel.
    */
   viewInElementsPanel: 'View in Elements panel',
   /**
-   * @description Text for the frame of a tool
+   * @description Label for the frame where a tool is registered in the WebMCP view of the Application panel.
    */
   frame: 'Frame',
   /**
-   * @description Text for the name of a tool call
+   * @description Table column header and details label for the tool name in the WebMCP view of the Application panel.
    */
   name: 'Name',
   /**
-   * @description Text for the status of a tool call
+   * @description Table column header for the tool call status in the WebMCP view of the Application panel.
    */
   status: 'Status',
   /**
-   * @description Text for the input of a tool call
+   * @description Table column header and tab title for the tool call input in the WebMCP view of the Application panel.
    */
   input: 'Input',
   /**
-   * @description Text for the output of a tool call
+   * @description Table column header and tab title for the tool call output in the WebMCP view of the Application panel.
    */
   output: 'Output',
   /**
-   * @description Text for the status of a tool call that is in progress
+   * @description Status text for a tool call that is in progress in the WebMCP view of the Application panel.
    */
-  inProgress: 'In Progress',
+  inProgress: 'In progress',
   /**
-   * @description Tooltip for the clear log button
+   * @description Tooltip text for the clear log button in the toolbar of the WebMCP view in the Application panel.
    */
   clearLog: 'Clear log',
   /**
-   * @description Text to close something
+   * @description Tooltip text for the close button in the sidebar of the WebMCP view in the Application panel.
    */
   close: 'Close',
   /**
-   * @description Placeholder for the filter input
+   * @description Placeholder text for the filter input in the toolbar of the WebMCP view in the Application panel.
    */
   filter: 'Filter',
   /**
-   * @description Tooltip for the tool types dropdown
+   * @description Tooltip text and button label for the tool types filter dropdown in the WebMCP view of the Application panel.
    */
   toolTypes: 'Tool types',
   /**
-   * @description Tooltip for the status types dropdown
+   * @description Tooltip text and button label for the status types filter dropdown in the WebMCP view of the Application panel.
    */
   statusTypes: 'Status types',
   /**
-   * @description Tooltip for the clear filters button
+   * @description Tooltip text for the clear filters button in the toolbar of the WebMCP view in the Application panel.
    */
   clearFilters: 'Clear filters',
   /**
-   * @description Filter option for imperative tools
+   * @description Filter option label for imperative tools in the WebMCP view of the Application panel.
    */
   imperative: 'Imperative',
   /**
-   * @description Filter option for declarative tools
+   * @description Filter option label for declarative tools in the WebMCP view of the Application panel.
    */
   declarative: 'Declarative',
   /**
-   * @description Text for the status of a tool call that has failed
+   * @description Status text and filter option for a tool call that ended in an error in the WebMCP view of the Application panel.
    */
   error: 'Error',
   /**
-   * @description Text for the status of a tool call that was canceled
+   * @description Status text and filter option for a tool call that was canceled in the WebMCP view of the Application panel.
    */
   canceled: 'Canceled',
   /**
-   * @description Text for the status of a tool call that succeeded
+   * @description Status text and filter option for a tool call that completed successfully in the WebMCP view of the Application panel.
    */
   completed: 'Completed',
   /**
-   * @description Text for the status of a tool call that has failed
+   * @description Filter option for a tool call that is in progress in the WebMCP view of the Application panel.
    */
-  pending: 'In Progress',
+  pending: 'In progress',
   /**
-   * @description Text for the total number of tool calls
+   * @description Summary text displaying the total number of tool calls in the WebMCP view of the Application panel.
    * @example {2} PH1
    */
-  totalCalls: '{PH1} Total calls',
+  totalCalls: '{PH1} total calls',
   /**
-   * @description Text for the number of failed tool calls
+   * @description Summary text displaying the number of failed tool calls in the WebMCP view of the Application panel.
    * @example {1} PH1
    */
-  failed: '{PH1} Failed',
+  failed: '{PH1} failed',
   /**
-   * @description Text for the number of canceled tool calls
+   * @description Summary text displaying the number of canceled tool calls in the WebMCP view of the Application panel.
    * @example {1} PH1
    */
-  canceledCount: '{PH1} Canceled',
+  canceledCount: '{PH1} canceled',
   /**
-   * @description Text for the number of in progress tool calls
+   * @description Summary text displaying the number of in-progress tool calls in the WebMCP view of the Application panel.
    * @example {1} PH1
    */
-  inProgressCount: '{PH1} In Progress',
+  inProgressCount: '{PH1} in progress',
   /**
-   * @description Context menu action to copy the name of a tool
+   * @description Context menu action to copy the name of a tool in the WebMCP view of the Application panel.
    */
   copyName: 'Copy name',
   /**
-   * @description Context menu action to copy the description of a tool
+   * @description Context menu action to copy the description of a tool in the WebMCP view of the Application panel.
    */
   copyDescription: 'Copy description',
   /**
-   * @description Context menu action to cancel an in-progress tool call
+   * @description Context menu action to cancel an in-progress tool call in the WebMCP view of the Application panel.
    */
   cancelCall: 'Cancel',
   /**
-   * @description Text for the header of the tool run section
+   * @description Section header and button label to run a tool in the WebMCP view of the Application panel.
    */
-  runTool: 'Run Tool',
+  runTool: 'Run tool',
   /**
-   * @description Context menu action to reveal the tool in the tool list
+   * @description Context menu action to reveal a tool in the tool list in the WebMCP view of the Application panel.
    */
   revealTool: 'Reveal tool',
   /**
-   * @description Context menu action to edit and run the tool
+   * @description Context menu action, button title, and aria label to edit and run a tool in the WebMCP view of the Application panel.
    */
   editAndRun: 'Edit and run',
   /**
-   * @description Tooltip for the paste button
+   * @description Tooltip text and button label for the paste button in the WebMCP view of the Application panel.
    */
   paste: 'Paste',
   /**
-   * @description Notice to display when a tool has been unregistered
+   * @description Notice displayed when a tool has been unregistered in the WebMCP view of the Application panel.
    */
   toolUnregisteredNotice: 'This tool has been unregistered',
   /**
-   * @description Label for a list of tool flags or attributes
+   * @description Label for tool flags in the tool details section of the WebMCP view in the Application panel.
    */
   flags: 'Flags',
   /**
-   * @description Text for the label of the tool description
+   * @description Label for the tool description in the tool details section of the WebMCP view in the Application panel.
    */
   description: 'Description',
   /**
-   * @description Text for the label of the tool origin
+   * @description Label for the tool origin in the tool details section of the WebMCP view in the Application panel.
    */
   origin: 'Origin',
 } as const;

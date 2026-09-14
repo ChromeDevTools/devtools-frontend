@@ -23,118 +23,116 @@ import backgroundServiceViewStyles from './backgroundServiceView.css.js';
 
 const UIStrings = {
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Name of the background fetch service in the background service view of the Application panel.
    */
   backgroundFetch: 'Background fetch',
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Name of the background sync service in the background service view of the Application panel.
    */
   backgroundSync: 'Background sync',
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Name of the push messaging service in the background service view of the Application panel.
    */
   pushMessaging: 'Push messaging',
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Name of the notifications service in the background service view of the Application panel.
    */
   notifications: 'Notifications',
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Name of the payment handler service in the background service view of the Application panel.
    */
   paymentHandler: 'Payment handler',
   /**
-   * @description Text in the Periodic Background Service View of the Application panel
+   * @description Name of the periodic background sync service in the background service view of the Application panel.
    */
   periodicBackgroundSync: 'Periodic background sync',
   /**
-   * @description Text to clear content
+   * @description Tooltip text for the clear button in the toolbar of the background service view in the Application panel.
    */
   clear: 'Clear',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon download button in the Background Service View of the Application panel
+   * @description Tooltip text for the save button in the toolbar of the background service view in the Application panel.
    */
   saveEvents: 'Save events',
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Label text for the checkbox to show events from other domains in the background service view of the Application panel.
    */
   showEventsFromOtherDomains: 'Show events from other domains',
   /**
-   * @description Text of a checkbox to show events for other storage keys
+   * @description Label text for the checkbox to show events from other storage partitions in the background service view of the Application panel.
    */
   showEventsForOtherStorageKeys: 'Show events from other storage partitions',
   /**
-   * @description Title of an action under the Background Services category that can be invoked through the Command Menu
+   * @description Tooltip and action title to stop recording events in the background service view of the Application panel.
    */
   stopRecordingEvents: 'Stop recording events',
   /**
-   * @description Title of an action under the Background Services category that can be invoked through the Command Menu
+   * @description Tooltip, button label, and action title to start recording events in the background service view of the Application panel.
    */
   startRecordingEvents: 'Start recording events',
   /**
-   * @description Text for timestamps of items
+   * @description Table column header for event timestamps in the background service view of the Application panel.
    */
   timestamp: 'Timestamp',
   /**
-   * @description Text that refers to some events
+   * @description Table column header for event names in the background service view of the Application panel.
    */
   event: 'Event',
   /**
-   * @description Text for the origin of something
+   * @description Table column header for event origins in the background service view of the Application panel.
    */
   origin: 'Origin',
   /**
-   * @description Text for the storage key of something
+   * @description Table column header for storage keys in the background service view of the Application panel.
    */
-  storageKey: 'Storage Key',
+  storageKey: 'Storage key',
   /**
-   * @description Text in Background Service View of the Application panel. The Scope is a URL associated with the Service Worker, which limits which pages/sites the Service Worker operates on.
+   * @description Table column header for Service Worker scopes in the background service view of the Application panel.
    */
-  swScope: 'Service Worker Scope',
+  swScope: 'Service Worker scope',
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Table column header for instance IDs in the background service view of the Application panel.
    */
   instanceId: 'Instance ID',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Accessible name for the background services datagrid in the Application panel.
    */
   backgroundServices: 'Background services',
   /**
-   * @description Text in Background Service View of the Application panel.
-   *             An event here refers to a background service event that is an entry in a table.
+   * @description Header text in the preview sidebar of the background service view when no event is selected.
    */
   noEventSelected: 'No event selected',
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Text in the preview sidebar of the background service view instructing the user to select an event to view its metadata.
    */
   selectAnEventToViewMetadata: 'Select an event to view its metadata',
   /**
-   * @description Text in Background Service View of the Application panel
-   * @example {Background Fetch} PH1
+   * @description Header text in the background service view when recording service activity.
+   * @example {background fetch} PH1
    */
   recordingSActivity: 'Recording {PH1} activity…',
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Header text in the background service view when no recording has been started yet.
    */
   noRecording: 'No recording yet',
   /**
-   * @description Inform users that DevTools are recording/waiting for events in the Periodic Background Sync tool of the Application panel
-   * @example {Background Fetch} PH1
+   * @description Informational text in the background service view explaining that DevTools records service activity for up to 3 days.
+   * @example {background fetch} PH1
    */
   // eslint-disable-next-line @devtools/l10n-uistrings-sentence-punctuation -- Concatenated with recordingSActivity in UI to form a multi-sentence message.
   devtoolsWillRecordAllSActivity: 'DevTools will record all {PH1} activity for up to 3 days, even when closed.',
   /**
-   * @description Text in Background Service View of the Application panel to instruct the user on how to start a recording for
-   * background services.
+   * @description Informational text in the background service view explaining how to start recording background service events.
    * @example {Start recording events} PH1
    * @example {Ctrl + E} PH2
    */
   startRecordingToDebug: 'Start to debug background services by using the "{PH1}" button or by pressing {PH2}',
   /**
-   * @description Text to show an item is empty
+   * @description Text indicating that a metadata value is empty in the background service view of the Application panel.
    */
   empty: 'empty',
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Text shown in the preview sidebar when the selected event has no metadata in the background service view of the Application panel.
    */
   noMetadataForThisEvent: 'No metadata for this event',
 } as const;

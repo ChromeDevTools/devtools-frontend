@@ -65,13 +65,13 @@ const UIStrings = {
   /**
    * @description Message shown in Settings when the user inputs a modifier-only shortcut such as Ctrl+Shift.
    */
-  shortcutsCannotContainOnly: 'Shortcuts can’t contain only modifier keys.',
+  shortcutsCannotContainOnly: 'Shortcuts can’t contain only modifier keys',
   /**
    * @description Message shown in shortcuts settings when the user inputs a shortcut that is already in use.
    * @example {Performance} PH1
    * @example {Start/stop recording} PH2
    */
-  thisShortcutIsInUseByS: 'This shortcut is in use by {PH1}: {PH2}.',
+  thisShortcutIsInUseByS: 'This shortcut is in use by {PH1}: {PH2}',
   /**
    * @description Message shown in Settings when restoring default shortcuts.
    */

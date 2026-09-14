@@ -60,7 +60,7 @@ export const UIStrings = {
   /**
    * @description Text to indicate the status of a heap snapshot in the Performance panel.
    */
-  finishedProcessing: 'Finished processing.',
+  finishedProcessing: 'Finished processing',
   /**
    * @description Text to indicate the status of a heap snapshot in the Performance panel.
    */

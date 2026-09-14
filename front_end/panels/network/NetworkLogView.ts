@@ -147,7 +147,7 @@ const UIStrings = {
    * @example {Ctrl + R} PH2
    */
   performARequestOrHitSToRecordThe:
-      'Perform a request or reload the page by using the "{PH1}" button or by pressing {PH2}.',
+      'Perform a request or reload the page by using the "{PH1}" button or by pressing {PH2}',
   /**
    * @description Shown in the Network Log View of the Network panel when the user has not yet
    * recorded any network activity. This is an instruction to the user to start recording in order to
@@ -156,7 +156,7 @@ const UIStrings = {
    * @example {Ctrl + E} PH2
    */
   recordToDisplayNetworkActivity:
-      'Record network log to display network activity by using the "{PH1}" button or by pressing {PH2}.',
+      'Record network log to display network activity by using the "{PH1}" button or by pressing {PH2}',
   /**
    * @description Label of a button in the Network Log View of the Network panel.
    */
@@ -487,12 +487,12 @@ const UIStrings = {
    * context the original request was sent from.
    * @example {top} PH1
    */
-  originallyCalledFromContext: '// Originally called from {PH1} context.',
+  originallyCalledFromContext: '// Originally called from {PH1} context',
   /**
    * @description Comment added before a generated fetch command, advising the user to select
    * the execution context in the Console toolbar to resend from the same context.
    */
-  selectExecutionContextInConsole: '// To resend from the same execution context, select it in the Console’s toolbar.',
+  selectExecutionContextInConsole: '// To resend from the same execution context, select it in the Console’s toolbar',
   /**
    * @description Comment added after a generated fetch command, inviting the user to edit before resending.
    */

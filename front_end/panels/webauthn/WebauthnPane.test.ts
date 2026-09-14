@@ -362,6 +362,6 @@ describeWithEnvironment('WebAuthn pane', () => {
     assert.deepEqual(emptyWidget.shadowRoot?.querySelector('.empty-state-header')?.textContent,
                      'No authenticator set up');
     assert.deepEqual(emptyWidget.shadowRoot!.querySelector('.empty-state-description > span')?.textContent,
-                     'Use WebAuthn for phishing-resistant authentication.');
+                     'Use WebAuthn for phishing-resistant authentication');
   });
 });

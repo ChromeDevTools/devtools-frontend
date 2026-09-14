@@ -42,7 +42,7 @@ const UIStrings = {
    * @description Explanation for why the additional information section is being shown
    */
   thisAdditionalDebugging:
-      'This additional (debugging) information is shown because the \'Protocol Monitor\' experiment is enabled.',
+      'This additional (debugging) information is shown because the \'Protocol Monitor\' experiment is enabled',
   /**
    * @description Label for subtitle of frame details view
    */
@@ -154,7 +154,7 @@ const UIStrings = {
    *(https://web.dev/why-coop-coep/)
    *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary)
    */
-  availabilityOfCertainApisDepends: 'Availability of certain APIs depends on the document being cross-origin isolated.',
+  availabilityOfCertainApisDepends: 'Availability of certain APIs depends on the document being cross-origin isolated',
   /**
    * @description Description of the SharedArrayBuffer status
    */
@@ -230,12 +230,12 @@ const UIStrings = {
   /**
    * @description Text descripting why a frame has been indentified as an advertisement.
    */
-  parentIsAdExplanation: 'This frame is considered an ad frame because its parent frame is an ad frame.',
+  parentIsAdExplanation: 'This frame is considered an ad frame because its parent frame is an ad frame',
   /**
    * @description Text descripting why a frame has been indentified as an advertisement.
    */
   matchedBlockingRuleExplanation:
-      'This frame is considered an ad frame because its current (or previous) main document is an ad resource.',
+      'This frame is considered an ad frame because its current (or previous) main document is an ad resource',
   /**
    * @description Text descripting why a frame has been indentified as an advertisement.
    */
@@ -258,7 +258,7 @@ const UIStrings = {
    *(https://developer.chrome.com/docs/web-platform/origin-trials/)
    *(please don't translate 'origin trials').
    */
-  originTrialsExplanation: 'Origin trials give you access to a new or experimental feature.',
+  originTrialsExplanation: 'Origin trials give you access to a new or experimental feature',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

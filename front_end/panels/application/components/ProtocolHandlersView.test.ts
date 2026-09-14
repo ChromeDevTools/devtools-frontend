@@ -70,7 +70,7 @@ describeWithEnvironment('ProtocolHandlersView', () => {
 
     const protocolsNotDetectedMessage = getCleanTextContentFromElements(noStatusElement, 'span');
     const expectedStatusMessage =
-        'Define protocol handlers in the manifest to register your app as a handler for custom protocols when your app is installed.';
+        'Define protocol handlers in the manifest to register your app as a handler for custom protocols when your app is installed';
     assert.deepEqual(protocolsNotDetectedMessage[0], expectedStatusMessage);
   });
 });

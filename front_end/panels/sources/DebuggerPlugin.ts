@@ -102,7 +102,7 @@ const UIStrings = {
    * @description Title of the filtered list widget provider of Quick Open.
    * @example {Ctrl+P Ctrl+O} PH1
    */
-  associatedFilesAreAvailable: 'Associated files are available via file tree or {PH1}.',
+  associatedFilesAreAvailable: 'Associated files are available via file tree or {PH1}',
   /**
    * @description Text in Debugger plugin of the Sources panel.
    */
@@ -111,7 +111,7 @@ const UIStrings = {
   /**
    * @description Text in Debugger plugin of the Sources panel.
    */
-  theDebuggerWillSkipStepping: 'The debugger will skip stepping through this script, and will not stop on exceptions.',
+  theDebuggerWillSkipStepping: 'The debugger will skip stepping through this script, and will not stop on exceptions',
   /**
    * @description Text in Debugger plugin of the Sources panel.
    */
@@ -123,11 +123,11 @@ const UIStrings = {
   /**
    * @description Text in Debugger plugin of the Sources panel.
    */
-  debuggingPowerReduced: 'DevTools can’t show authored sources, but you can debug the deployed code.',
+  debuggingPowerReduced: 'DevTools can’t show authored sources, but you can debug the deployed code',
   /**
    * @description Text in Debugger plugin of the Sources panel.
    */
-  reloadForSourceMap: 'To enable again, make sure the file isn’t on the ignore list and reload.',
+  reloadForSourceMap: 'To enable again, make sure the file isn’t on the ignore list and reload',
   /**
    * @description Text in Debugger plugin of the Sources panel.
    * @example {https://example.com/lib.js.map} PH1

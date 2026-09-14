@@ -64,7 +64,7 @@ const UIStrings = {
    * @example {rows: 27} PH2
    */
   sSUseTheUpAndDownArrowKeysTo:
-      '{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; use browse mode to read cell by cell.',
+      '{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; use browse mode to read cell by cell',
   /**
    * @description Context menu item label to sort the rows of a datagrid by a column.
    */

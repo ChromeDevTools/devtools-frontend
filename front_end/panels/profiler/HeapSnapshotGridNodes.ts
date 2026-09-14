@@ -86,45 +86,45 @@ const UIStrings = {
   /**
    * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#compiled-code.
    */
-  compiledCodeSummary: 'Internal data which V8 uses to run functions defined by JavaScript or WebAssembly.',
+  compiledCodeSummary: 'Internal data which V8 uses to run functions defined by JavaScript or WebAssembly',
   /**
    * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#concatenated-string.
    */
-  concatenatedStringSummary: 'A string which represents the contents of two other strings joined together.',
+  concatenatedStringSummary: 'A string which represents the contents of two other strings joined together',
   /**
    * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#system-context.
    */
   contextSummary:
-      'An internal object containing variables from a JavaScript scope which may be needed by a function created within that scope.',
+      'An internal object containing variables from a JavaScript scope which may be needed by a function created within that scope',
   /**
    * @description A short description of the data type internal type DescriptorArray, which is described more fully at https://v8.dev/blog/fast-properties.
    */
-  descriptorArraySummary: 'A list of the property names used by a JavaScript Object.',
+  descriptorArraySummary: 'A list of the property names used by a JavaScript Object',
   /**
    * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#array.
    */
-  internalArraySummary: 'An internal array-like data structure (not a JavaScript Array).',
+  internalArraySummary: 'An internal array-like data structure (not a JavaScript Array)',
   /**
    * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#internal-node.
    */
-  internalNodeSummary: 'An object allocated by a component other than V8, such as C++ objects defined by Blink.',
+  internalNodeSummary: 'An object allocated by a component other than V8, such as C++ objects defined by Blink',
   /**
    * @description A short description of the data type "system / Map" described at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#object-shape.
    */
-  mapSummary: 'An internal object representing the shape of a JavaScript Object (not a JavaScript Map).',
+  mapSummary: 'An internal object representing the shape of a JavaScript Object (not a JavaScript Map)',
   /**
    * @description A short summary of the "(object elements)[]" described at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#array.
    */
   objectElementsSummary:
-      'An internal object which stores the indexed properties in a JavaScript Object, such as the contents of an Array.',
+      'An internal object which stores the indexed properties in a JavaScript Object, such as the contents of an Array',
   /**
    * @description A short summary of the "(object properties)[]" described at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#array.
    */
-  objectPropertiesSummary: 'An internal object which stores the named properties in a JavaScript Object.',
+  objectPropertiesSummary: 'An internal object which stores the named properties in a JavaScript Object',
   /**
    * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#sliced-string.
    */
-  slicedStringSummary: 'A string which represents some of the characters from another string.',
+  slicedStringSummary: 'A string which represents some of the characters from another string',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotGridNodes.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

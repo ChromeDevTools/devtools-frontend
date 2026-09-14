@@ -104,7 +104,7 @@ const UIStrings = {
    * @description Hint element title in the DOM tree of the Elements panel.
    * @example {0} PH1
    */
-  useSInTheConsoleToReferToThis: 'Use {PH1} in the console to refer to this element.',
+  useSInTheConsoleToReferToThis: 'Use {PH1} in the console to refer to this element',
   /**
    * @description Text to cut an element, cut should be used as a verb.
    */

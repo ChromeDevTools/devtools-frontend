@@ -351,7 +351,7 @@ Available insights:
     example question: Help me optimize my CLS score
     example question: How can I prevent layout shifts on this page?
   - insight name: NetworkDependencyTree
-    description: [Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.
+    description: [Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load
     relevant trace bounds: {min: 157423489126µs, max: 157426527569µs}
     example question: How do I optimize my network dependency tree?
   - insight name: ImageDelivery
@@ -498,7 +498,7 @@ Available insights:
     example question: Which LCP subpart was most problematic?
     example question: What can I do to reduce the LCP time for this page load?
   - insight name: LCPDiscovery
-    description: [Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading.
+    description: [Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading
     relevant trace bounds: {min: 59728656735µs, max: 59729209036µs}
     example question: Suggest fixes to reduce my LCP
     example question: What can I do to reduce my LCP discovery time?
@@ -516,7 +516,7 @@ Available insights:
     example question: How do I decrease the initial loading time of my page?
     example question: Did anything slow down the request for this document?
   - insight name: Viewport
-    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile.
+    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile
     relevant trace bounds: {min: 59728649746µs, max: 59734400108µs}
     estimated metric savings: INP 0 ms
     example question: How do I make sure my page is optimized for mobile viewing?
@@ -582,7 +582,7 @@ Available insights:
     example question: Which LCP subpart was most problematic?
     example question: What can I do to reduce the LCP time for this page load?
   - insight name: LCPDiscovery
-    description: [Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading.
+    description: [Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading
     relevant trace bounds: {min: 59728656735µs, max: 59729209036µs}
     example question: Suggest fixes to reduce my LCP
     example question: What can I do to reduce my LCP discovery time?
@@ -600,7 +600,7 @@ Available insights:
     example question: How do I decrease the initial loading time of my page?
     example question: Did anything slow down the request for this document?
   - insight name: Viewport
-    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile.
+    description: Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile
     relevant trace bounds: {min: 59728649746µs, max: 59734400108µs}
     estimated metric savings: INP 0 ms
     example question: How do I make sure my page is optimized for mobile viewing?
@@ -635,7 +635,7 @@ Metrics (lab / observed):
 Metrics (field / real users): n/a – no data for this page in CrUX
 Available insights:
   - insight name: INPBreakdown
-    description: Start investigating [how to improve INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) by looking at the longest subpart.
+    description: Start investigating [how to improve INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) by looking at the longest subpart
     relevant trace bounds: {min: 337944870984µs, max: 337945010222µs}
     example question: Suggest fixes for my longest interaction
     example question: Why is a large INP score problematic?

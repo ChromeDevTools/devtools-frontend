@@ -65,7 +65,7 @@ const UIStrings = {
    * @description Tooltip text for a setting that controls the network cache. Disabling the network cache can simulate the network connections of users that are visiting a page for the first time.
    */
   networkCacheExplanation:
-      'Disabling the network cache will simulate a network experience similar to a first time visitor.',
+      'Disabling the network cache will simulate a network experience similar to a first time visitor',
   /**
    * @description Title of a setting under the Network category.
    */

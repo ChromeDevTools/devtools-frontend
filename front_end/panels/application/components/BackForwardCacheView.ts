@@ -49,12 +49,12 @@ const UIStrings = {
    * the back/forward cache was not used and a normal navigation occurred instead.
    */
   normalNavigation:
-      'Not served from back/forward cache: to trigger back/forward cache, use Chrome’s back/forward buttons, or use the test button below to automatically navigate away and back.',
+      'Not served from back/forward cache: to trigger back/forward cache, use Chrome’s back/forward buttons, or use the test button below to automatically navigate away and back',
   /**
    * @description Status text for the status of the back/forward cache status indicating that
    * the back/forward cache was used to restore the page instead of reloading it.
    */
-  restoredFromBFCache: 'Successfully served from back/forward cache.',
+  restoredFromBFCache: 'Successfully served from back/forward cache',
   /**
    * @description Label for a list of reasons which prevent the page from being eligible for
    * back/forward cache. These reasons are actionable i.e. they can be cleaned up to make the
@@ -64,13 +64,13 @@ const UIStrings = {
   /**
    * @description Label for the completion of the back/forward cache test
    */
-  testCompleted: 'Back/forward cache test completed.',
+  testCompleted: 'Back/forward cache test completed',
   /**
    * @description Explanation for actionable items which prevent the page from being eligible
    * for back/forward cache.
    */
   pageSupportNeededExplanation:
-      'These reasons are actionable i.e. they can be cleaned up to make the page eligible for back/forward cache.',
+      'These reasons are actionable i.e. they can be cleaned up to make the page eligible for back/forward cache',
   /**
    * @description Label for a list of reasons which prevent the page from being eligible for
    * back/forward cache. These reasons are circumstantial / not actionable i.e. they cannot be
@@ -82,7 +82,7 @@ const UIStrings = {
    * for back/forward cache.
    */
   circumstantialExplanation:
-      'These reasons are not actionable i.e. caching was prevented by something outside of the direct control of the page.',
+      'These reasons are not actionable i.e. caching was prevented by something outside of the direct control of the page',
   /**
    * @description Label for a list of reasons which prevent the page from being eligible for
    * back/forward cache. These reasons are pending support by chrome i.e. in a future version
@@ -110,7 +110,7 @@ const UIStrings = {
    * for back/forward cache.
    */
   supportPendingExplanation:
-      'Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for back/forward cache in a future version of Chrome.',
+      'Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for back/forward cache in a future version of Chrome',
   /**
    * @description Text that precedes displaying a link to the extension which blocked the page from being eligible for back/forward cache.
    */
@@ -123,7 +123,7 @@ const UIStrings = {
   /**
    * @description Top level summary of the total number of issues found in a single frame.
    */
-  issuesInSingleFrame: '{n, plural, =1 {# issue found in 1 frame.} other {# issues found in 1 frame.}}',
+  issuesInSingleFrame: '{n, plural, =1 {# issue found in 1 frame} other {# issues found in 1 frame}}',
   /**
    * @description Top level summary of the total number of issues found and the number of frames they were found in.
    * 'm' is never less than 2.

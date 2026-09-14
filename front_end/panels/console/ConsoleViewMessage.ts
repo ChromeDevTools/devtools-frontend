@@ -106,7 +106,7 @@ const UIStrings = {
   /**
    * @description Note title in Console view message of the Console panel.
    */
-  thisValueWillNotBeCollectedUntil: 'This value won’t be collected until console is cleared.',
+  thisValueWillNotBeCollectedUntil: 'This value won’t be collected until console is cleared',
   /**
    * @description Note title in Console view message of the Console panel.
    */
@@ -114,7 +114,7 @@ const UIStrings = {
   /**
    * @description Note title in Console view message of the Console panel.
    */
-  functionWasResolvedFromBound: 'Function was resolved from bound function.',
+  functionWasResolvedFromBound: 'Function was resolved from bound function',
   /**
    * @description Shown in the Console panel when an exception is thrown when trying to access a
    * property on an object. Should be translated.

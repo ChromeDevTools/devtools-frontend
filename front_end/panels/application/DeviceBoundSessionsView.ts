@@ -133,7 +133,7 @@ const UIStrings = {
   /**
    *@description Placeholder text when no row is selected in a table of events.
    */
-  selectEventToViewDetails: 'Select an event row to view more details.',
+  selectEventToViewDetails: 'Select an event row to view more details',
   /**
    *@description Column heading for the type of event that has occurred.
    */
@@ -157,7 +157,7 @@ const UIStrings = {
   /**
    *@description Default message when no events have appeared yet.
    */
-  noEvents: 'No events have been logged yet.',
+  noEvents: 'No events have been logged yet',
   /**
    *@description Text to keep the log of events after refreshing.
    */

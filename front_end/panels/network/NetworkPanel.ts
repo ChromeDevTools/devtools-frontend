@@ -161,7 +161,7 @@ const UIStrings = {
    * @description Text in Network Panel to tell the user to reload the page to capture screenshots.
    * @example {Ctrl + R} PH1
    */
-  hitSToReloadAndCaptureFilmstrip: 'Press {PH1} to reload and capture filmstrip.',
+  hitSToReloadAndCaptureFilmstrip: 'Press {PH1} to reload and capture filmstrip',
   /**
    * @description A context menu item that is shown for resources in other panels
    * to open them in the Network panel.

@@ -45,7 +45,7 @@ const UIStrings = {
   /**
    * @description Explanation text for the 'Layer borders' setting in the Rendering panel.
    */
-  showsLayerBordersOrangeoliveAnd: 'Shows layer borders (orange/olive) and tiles (cyan).',
+  showsLayerBordersOrangeoliveAnd: 'Shows layer borders (orange/olive) and tiles (cyan)',
   /**
    * @description The name of a checkbox setting in the Rendering panel. This setting shows the
    * rendering statistics for frames e.g. frames per second. Frame is a noun.
@@ -55,7 +55,7 @@ const UIStrings = {
    * @description Explanation text for the 'Frame rendering stats' setting in the Rendering panel.
    * Plots is a verb. GPU = Graphics Processing Unit.
    */
-  plotsFrameThroughputDropped: 'Plots frame throughput, dropped frames distribution, and GPU memory.',
+  plotsFrameThroughputDropped: 'Plots frame throughput, dropped frames distribution, and GPU memory',
   /**
    * @description The name of a checkbox setting in the Rendering panel. This setting highlights
    * elements that can slow down scrolling on the page.
@@ -65,7 +65,7 @@ const UIStrings = {
    * @description Explanation text for the 'Scrolling performance issues' setting in the Rendering panel.
    */
   highlightsElementsTealThatCan:
-      'Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.',
+      'Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations',
   /**
    * @description The name of a checkbox setting in the Rendering panel. This setting highlights the
    * rendering elements for ads that are found on the page.
@@ -74,7 +74,7 @@ const UIStrings = {
   /**
    * @description Explanation text for the 'Highlight ads' setting in the Rendering panel.
    */
-  highlightsElementsRedDetectedToBe: 'Highlights elements (red) detected to be ads.',
+  highlightsElementsRedDetectedToBe: 'Highlights elements (red) detected to be ads',
   /**
    * @description The name of a checkbox setting in the Rendering panel. This setting prevents the
    * webpage from loading 'local' fonts. Local fonts are fonts that are installed on the user's
@@ -102,7 +102,7 @@ const UIStrings = {
   /**
    * @description Explanation text for the 'Emulate automatic dark mode' setting in the Rendering panel.
    */
-  emulatesAutoDarkMode: 'Enables automatic dark mode and sets `prefers-color-scheme` to `dark`.',
+  emulatesAutoDarkMode: 'Enables automatic dark mode and sets `prefers-color-scheme` to `dark`',
   /**
    * @description Explanation text for the 'Emulate CSS media type' setting in the Rendering panel.
    * This setting overrides the CSS media type on the page (https://developer.mozilla.org/en-US/docs/Web/CSS/@media#media_types).
@@ -148,7 +148,7 @@ const UIStrings = {
   /**
    * @description Explanation text for the image format disabling settings in the Rendering panel.
    */
-  requiresAPageReloadToApplyAnd: 'Requires a page reload to apply and disables caching for image requests.',
+  requiresAPageReloadToApplyAnd: 'Requires a page reload to apply and disables caching for image requests',
   /**
    * @description The name of a checkbox setting in the Rendering panel. This setting disables the
    * page from loading images with the JPEG XL format.

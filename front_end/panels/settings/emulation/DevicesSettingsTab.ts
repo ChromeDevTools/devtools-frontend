@@ -61,20 +61,20 @@ const UIStrings = {
    * @description Error message in the Devices settings tab that declares the maximum length of the device name input.
    * @example {50} PH1
    */
-  deviceNameMustBeLessThanS: 'Device name must be less than {PH1} characters.',
+  deviceNameMustBeLessThanS: 'Device name must be less than {PH1} characters',
   /**
    * @description Error message in the Devices settings tab that declares that the device name input must not be empty.
    */
-  deviceNameCannotBeEmpty: 'Device name can’t be empty.',
+  deviceNameCannotBeEmpty: 'Device name can’t be empty',
   /**
    * @description Success message for screen readers when device is added.
    * @example {TestDevice} PH1
    */
-  deviceAddedOrUpdated: 'Device {PH1} successfully added/updated.',
+  deviceAddedOrUpdated: 'Device {PH1} successfully added/updated',
   /**
    * @description Error message in the Devices settings tab shown when the user agent string is empty.
    */
-  userAgentStringCannotBeEmpty: 'User agent string can’t be empty.',
+  userAgentStringCannotBeEmpty: 'User agent string can’t be empty',
   /**
    * @description Label for portrait safe-area values on a custom device.
    */
@@ -105,17 +105,17 @@ const UIStrings = {
    * @example {Top inset} PH2
    * @example {9999} PH3
    */
-  safeAreaValueMustBeInRange: '{PH1}: {PH2} must be an integer from 0 to {PH3}.',
+  safeAreaValueMustBeInRange: '{PH1}: {PH2} must be an integer from 0 to {PH3}',
   /**
    * @description Error message shown when custom device safe-area left and right insets are too large.
    * @example {Portrait safe area} PH1
    */
-  safeAreaHorizontalInsetsExceedWidth: '{PH1}: Left and right insets must not exceed the device width.',
+  safeAreaHorizontalInsetsExceedWidth: '{PH1}: Left and right insets must not exceed the device width',
   /**
    * @description Error message shown when custom device safe-area top and bottom insets are too large.
    * @example {Landscape safe area} PH1
    */
-  safeAreaVerticalInsetsExceedHeight: '{PH1}: Top and bottom insets must not exceed the device height.',
+  safeAreaVerticalInsetsExceedHeight: '{PH1}: Top and bottom insets must not exceed the device height',
   /**
    * @description Label for display cutout values on a custom device.
    */
@@ -184,30 +184,30 @@ const UIStrings = {
    * @description Error message shown when a custom display cutout field is required.
    * @example {Cutout width} PH1
    */
-  cutoutFieldRequired: '{PH1} is required when display cutout is enabled.',
+  cutoutFieldRequired: '{PH1} is required when display cutout is enabled',
   /**
    * @description Error message shown when a custom display cutout field is outside its supported integer range.
    * @example {Cutout x} PH1
    * @example {9999} PH2
    */
-  cutoutValueMustBeInRange: '{PH1} must be an integer from 0 to {PH2}.',
+  cutoutValueMustBeInRange: '{PH1} must be an integer from 0 to {PH2}',
   /**
    * @description Error message shown when a custom display cutout field must be positive.
    * @example {Cutout width} PH1
    */
-  cutoutValueMustBePositiveInteger: '{PH1} must be a positive integer.',
+  cutoutValueMustBePositiveInteger: '{PH1} must be a positive integer',
   /**
    * @description Error message shown when a custom display cutout's x coordinate plus its width exceeds the device width.
    */
-  cutoutXAndWidthExceedDeviceWidth: 'Cutout x plus width must not exceed the device width.',
+  cutoutXAndWidthExceedDeviceWidth: 'Cutout x plus width must not exceed the device width',
   /**
    * @description Error message shown when a custom display cutout's y coordinate plus its height exceeds the device height.
    */
-  cutoutYAndHeightExceedDeviceHeight: 'Cutout y plus height must not exceed the device height.',
+  cutoutYAndHeightExceedDeviceHeight: 'Cutout y plus height must not exceed the device height',
   /**
    * @description Error message shown when a circular display cutout is outside its cutout bounds.
    */
-  circleMustFitCutoutBounds: 'Circle must fit within the cutout bounds.',
+  circleMustFitCutoutBounds: 'Circle must fit within the cutout bounds',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/DevicesSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

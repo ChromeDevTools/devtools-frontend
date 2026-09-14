@@ -26,46 +26,46 @@ const UIStrings = {
    * @description Error message shown on the Devices settings tab when the user enters an empty
    * width for a custom device.
    */
-  widthCannotBeEmpty: 'Width can’t be empty.',
+  widthCannotBeEmpty: 'Width can’t be empty',
   /**
    * @description Error message shown on the Devices settings tab when the user enters an invalid
    * width for a custom device.
    */
-  widthMustBeANumber: 'Width must be a number.',
+  widthMustBeANumber: 'Width must be a number',
   /**
    * @description Error message shown on the Devices settings tab when the user has entered a width
    * for a custom device that is too large.
    * @example {9999} PH1
    */
-  widthMustBeLessThanOrEqualToS: 'Width must be less than or equal to {PH1}.',
+  widthMustBeLessThanOrEqualToS: 'Width must be less than or equal to {PH1}',
   /**
    * @description Error message shown on the Devices settings tab when the user has entered a width
    * for a custom device that is too small.
    * @example {50} PH1
    */
-  widthMustBeGreaterThanOrEqualToS: 'Width must be greater than or equal to {PH1}.',
+  widthMustBeGreaterThanOrEqualToS: 'Width must be greater than or equal to {PH1}',
   /**
    * @description Error message shown on the Devices settings tab when the user enters an empty
    * height for a custom device.
    */
-  heightCannotBeEmpty: 'Height can’t be empty.',
+  heightCannotBeEmpty: 'Height can’t be empty',
   /**
    * @description Error message shown on the Devices settings tab when the user enters an invalid
    * height for a custom device.
    */
-  heightMustBeANumber: 'Height must be a number.',
+  heightMustBeANumber: 'Height must be a number',
   /**
    * @description Error message shown on the Devices settings tab when the user has entered a height
    * for a custom device that is too large.
    * @example {9999} PH1
    */
-  heightMustBeLessThanOrEqualToS: 'Height must be less than or equal to {PH1}.',
+  heightMustBeLessThanOrEqualToS: 'Height must be less than or equal to {PH1}',
   /**
    * @description Error message shown on the Devices settings tab when the user has entered a height
    * for a custom device that is too small.
    * @example {50} PH1
    */
-  heightMustBeGreaterThanOrEqualTo: 'Height must be greater than or equal to {PH1}.',
+  heightMustBeGreaterThanOrEqualTo: 'Height must be greater than or equal to {PH1}',
   /**
    * @description Error message shown on the Devices settings tab when the user enters an invalid
    * device pixel ratio for a custom device.
@@ -76,13 +76,13 @@ const UIStrings = {
    * pixel ratio for a custom device that is too large.
    * @example {10} PH1
    */
-  devicePixelRatioMustBeLessThanOr: 'Device pixel ratio must be less than or equal to {PH1}.',
+  devicePixelRatioMustBeLessThanOr: 'Device pixel ratio must be less than or equal to {PH1}',
   /**
    * @description Error message shown on the Devices settings tab when the user enters a device
    * pixel ratio for a custom device that is too small.
    * @example {0} PH1
    */
-  devicePixelRatioMustBeGreater: 'Device pixel ratio must be greater than or equal to {PH1}.',
+  devicePixelRatioMustBeGreater: 'Device pixel ratio must be greater than or equal to {PH1}',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('models/emulation/DeviceModeModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

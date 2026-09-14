@@ -28,7 +28,7 @@ const UIStrings = {
   /**
    * @description Text to show in Console panel when a third-party cookie is blocked in Chrome.
    */
-  consoleTpcdErrorMessage: 'Third-party cookie blocked in Chrome due to Chrome flags or browser settings.',
+  consoleTpcdErrorMessage: 'Third-party cookie blocked in Chrome due to Chrome flags or browser settings',
 
 } as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieIssue.ts', UIStrings);

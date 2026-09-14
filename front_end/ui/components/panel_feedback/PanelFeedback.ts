@@ -16,11 +16,11 @@ const UIStrings = {
   /**
    * @description Introduction sentence to convey the feature is being actively worked on and we are looking for feedback.
    */
-  previewText: 'Our team is actively working on this feature and we would love to know what you think.',
+  previewText: 'Our team is actively working on this feature and we would love to know what you think',
   /**
    * @description Link text the user can click to provide feedback to the team.
    */
-  previewTextFeedbackLink: 'Send us your feedback.',
+  previewTextFeedbackLink: 'Send us your feedback',
   /**
    * @description Title of the UI section that shows the user that this feature is in preview. Used as the main heading. Not a verb.
    */

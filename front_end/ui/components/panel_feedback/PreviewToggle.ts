@@ -25,7 +25,7 @@ const UIStrings = {
   /**
    * @description Link text the user can click to provide feedback to the team.
    */
-  previewTextFeedbackLink: 'Send us your feedback.',
+  previewTextFeedbackLink: 'Send us your feedback',
   /**
    * @description Link text the user can click to provide feedback to the team.
    */

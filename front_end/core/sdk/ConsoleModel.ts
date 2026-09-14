@@ -56,16 +56,16 @@ const UIStrings = {
    * @description Text shown in the console when a performance profile (with the given name) was started.
    * @example {title} PH1
    */
-  profileSStarted: 'Profile \'\'{PH1}\'\' started.',
+  profileSStarted: 'Profile \'\'{PH1}\'\' started',
   /**
    * @description Text shown in the console when a performance profile (with the given name) was stopped.
    * @example {name} PH1
    */
-  profileSFinished: 'Profile \'\'{PH1}\'\' finished.',
+  profileSFinished: 'Profile \'\'{PH1}\'\' finished',
   /**
    * @description Error message shown in the console after the user tries to save a JavaScript value to a temporary variable.
    */
-  failedToSaveToTempVariable: 'Failed to save to temp variable.',
+  failedToSaveToTempVariable: 'Failed to save to temp variable',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ConsoleModel.ts', UIStrings);

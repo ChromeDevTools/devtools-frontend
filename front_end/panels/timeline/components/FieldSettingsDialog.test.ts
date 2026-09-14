@@ -217,7 +217,7 @@ describeWithEnvironment('FieldSettingsDialog', () => {
     await RenderCoordinator.done({waitForWork: true});
 
     assert.strictEqual(view.shadowRoot!.querySelector('.warning')!.textContent,
-                       'The Chrome UX Report doesn’t have enough real-world speed data for this page.');
+                       'The Chrome UX Report doesn’t have enough real-world speed data for this page');
 
     assert.isTrue(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
     assert.isFalse(cruxManager.getConfigSetting().get().enabled);
@@ -247,7 +247,7 @@ describeWithEnvironment('FieldSettingsDialog', () => {
     await RenderCoordinator.done({waitForWork: true});
 
     assert.strictEqual(view.shadowRoot!.querySelector('.warning')!.textContent,
-                       '"//example.com" isn’t a valid origin or URL.');
+                       '"//example.com" isn’t a valid origin or URL');
 
     assert.isTrue(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
     assert.isFalse(cruxManager.getConfigSetting().get().enabled);

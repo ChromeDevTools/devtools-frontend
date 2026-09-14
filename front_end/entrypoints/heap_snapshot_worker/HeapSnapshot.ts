@@ -1135,7 +1135,7 @@ export abstract class HeapSnapshot {
       this.#allocationProfile = new AllocationProfile(this.profile, liveObjects);
     }
 
-    this.#progress.updateStatus('Finished processing.');
+    this.#progress.updateStatus('Finished processing');
   }
 
   nodeIndexForId(nodeId: number): number|undefined {

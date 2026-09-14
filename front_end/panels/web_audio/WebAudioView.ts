@@ -27,7 +27,7 @@ const UIStrings = {
   /**
    * @description Instructions displayed in the WebAudio tool when no audio context is active.
    */
-  openAPageThatUsesWebAudioApiTo: 'Open a page that uses Web Audio API to start monitoring.',
+  openAPageThatUsesWebAudioApiTo: 'Open a page that uses Web Audio API to start monitoring',
   /**
    * @description Text shown in the audio context selector when no recordings exist.
    */

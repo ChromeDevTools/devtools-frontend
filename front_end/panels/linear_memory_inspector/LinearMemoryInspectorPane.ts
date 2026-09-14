@@ -23,7 +23,7 @@ const UIStrings = {
    * @description Label in the Memory inspector panel that serves as a placeholder if no inspections are open (i.e., nothing to see here).
    *             Inspection here refers to viewing, navigating, and understanding the memory through this panel.
    */
-  memoryInspectorExplanation: 'On this page you can inspect binary data.',
+  memoryInspectorExplanation: 'On this page you can inspect binary data',
   /**
    * @description Label in the Memory inspector panel for a link.
    */

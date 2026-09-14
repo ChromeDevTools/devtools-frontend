@@ -74,7 +74,7 @@ const UIStrings = {
    * @description Tooltip for the dock side menu options explaining how to restore the last dock position.
    * @example {Ctrl+Shift+D} PH1
    */
-  placementOfDevtoolsRelativeToThe: 'Placement of DevTools relative to the page. ({PH1} to restore last position)',
+  placementOfDevtoolsRelativeToThe: 'Placement of DevTools relative to the page ({PH1} to restore last position)',
   /**
    * @description Tooltip and label for the button to undock DevTools into a separate window.
    */

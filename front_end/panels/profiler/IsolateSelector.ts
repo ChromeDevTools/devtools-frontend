@@ -21,11 +21,11 @@ const UIStrings = {
    * @description Tooltip for the overall page JavaScript heap size change trend over the specified time window.
    * @example {3} PH1
    */
-  totalPageJsHeapSizeChangeTrend: 'Total page JS heap size change trend over the last {PH1} minutes.',
+  totalPageJsHeapSizeChangeTrend: 'Total page JS heap size change trend over the last {PH1} minutes',
   /**
    * @description Tooltip for total page JavaScript heap size across all VM instances.
    */
-  totalPageJsHeapSizeAcrossAllVm: 'Total page JS heap size across all VM instances.',
+  totalPageJsHeapSizeAcrossAllVm: 'Total page JS heap size across all VM instances',
   /**
    * @description Heap size change trend measured in kB/s.
    * @example {2 kB} PH1
@@ -44,12 +44,12 @@ const UIStrings = {
   /**
    * @description Tooltip for individual VM instance heap size in use by live JavaScript objects.
    */
-  heapSizeInUseByLiveJsObjects: 'Heap size in use by live JS objects.',
+  heapSizeInUseByLiveJsObjects: 'Heap size in use by live JS objects',
   /**
    * @description Tooltip for the heap size growth rate trend over the specified time window.
    * @example {3} PH1
    */
-  heapSizeChangeTrendOverTheLastS: 'Heap size change trend over the last {PH1} minutes.',
+  heapSizeChangeTrendOverTheLastS: 'Heap size change trend over the last {PH1} minutes',
   /**
    * @description Text to show an item is empty.
    */

@@ -34,7 +34,7 @@ describe('Panel Feedback', () => {
     // Note that whilst they aren't HTMLAnchorElements, it is good enough for
     // this test as all we need is a type that has an `href` attribute.
     const allLinks = Array.from(component.shadowRoot.querySelectorAll('devtools-link'));
-    const feedbackLink = allLinks.find(link => link.innerText === 'Send us your feedback.');
+    const feedbackLink = allLinks.find(link => link.innerText === 'Send us your feedback');
     assert.strictEqual(feedbackLink?.href, 'https://feedbackurl.com');
   });
 

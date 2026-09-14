@@ -1747,7 +1747,7 @@ describeWithEnvironment('NetworkLogView placeholder', () => {
     const networkLogView = createNetworkLogView();
     testPlaceholderText(
         networkLogView, 'No network activity recorded',
-        'Record network log to display network activity by using the \"Start recording\" button or by pressing Ctrl.');
+        'Record network log to display network activity by using the \"Start recording\" button or by pressing Ctrl');
     testPlaceholderButton(networkLogView, 'Start recording', START_RECORDING_ID);
   });
 
@@ -1755,9 +1755,8 @@ describeWithEnvironment('NetworkLogView placeholder', () => {
     const networkLogView = createNetworkLogView();
     networkLogView.setRecording(true);
 
-    testPlaceholderText(
-        networkLogView, 'Currently recording network activity',
-        'Perform a request or reload the page by using the \"Reload page\" button or by pressing Ctrl.');
+    testPlaceholderText(networkLogView, 'Currently recording network activity',
+                        'Perform a request or reload the page by using the \"Reload page\" button or by pressing Ctrl');
     testPlaceholderButton(networkLogView, 'Reload page', RELOAD_ID);
   });
 });

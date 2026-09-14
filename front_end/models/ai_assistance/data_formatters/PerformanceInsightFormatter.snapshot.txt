@@ -942,23 +942,23 @@ The following images could be optimized:
 ### https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg (eventKey: s-1212, ts: 59728701403)
 - Potential savings: 1.1 MB
 - Optimizations:
-Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image’s download size. (Est 1.1 MB)
+Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image’s download size (Est 1.1 MB)
 
 ### https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/dobetterweb/lighthouse-rotating.gif (eventKey: s-1216, ts: 59728702014)
 - Potential savings: 682 kB
 - Optimizations:
-Using video formats instead of GIFs can improve the download size of animated content. (Est 682 kB)
+Using video formats instead of GIFs can improve the download size of animated content (Est 682 kB)
 
 ### https://onlinepngtools.com/images/examples-onlinepngtools/elephant-hd-quality.png (eventKey: s-1228, ts: 59728702737)
 - Potential savings: 176 kB
 - Optimizations:
-Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image’s download size. (Est 134.1 kB)
+Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image’s download size (Est 134.1 kB)
 This image file is larger than it needs to be (640x436) for its displayed dimensions (200x136). Use responsive images to reduce the image download size. (Est 162.9 kB)
 
 ### https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg?fm=webp (eventKey: s-1224, ts: 59728702313)
 - Potential savings: 49.8 kB
 - Optimizations:
-Increasing the image compression factor could improve this image’s download size. (Est 49.8 kB)
+Increasing the image compression factor could improve this image’s download size (Est 49.8 kB)
 
 ### https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/byte-efficiency/lighthouse-2048x1356.webp (eventKey: s-1226, ts: 59728702539)
 - Potential savings: 41.4 kB
@@ -1258,7 +1258,7 @@ The webpage is not optimized for mobile viewing.
 
 The viewport meta tag is missing.
 
-Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile.
+Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile
 
 ## Estimated savings: none
 

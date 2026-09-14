@@ -72,7 +72,7 @@ describeWithEnvironment('MediaMainView', () => {
 
   it('shows a placeholder if no player is available', () => {
     const mainView = new Media.MainView.MainView();
-    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details.');
+    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details');
     mainView.detach();
   });
 
@@ -85,7 +85,7 @@ describeWithEnvironment('MediaMainView', () => {
     renderElementIntoDOM(mainView);
 
     model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
-    assertEmptyState(mainView, 'No media player selected', 'Select a media player to inspect its details.');
+    assertEmptyState(mainView, 'No media player selected', 'Select a media player to inspect its details');
     mainView.detach();
   });
 
@@ -100,7 +100,7 @@ describeWithEnvironment('MediaMainView', () => {
     model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
     mainView.markPlayerForDeletion(PLAYER_ID);
 
-    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details.');
+    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details');
     mainView.detach();
   });
 
@@ -117,7 +117,7 @@ describeWithEnvironment('MediaMainView', () => {
     assert.isNull(mainView.contentElement.querySelector('.empty-widget-container'));
     mainView.markPlayerForDeletion(PLAYER_ID);
 
-    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details.');
+    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details');
     mainView.detach();
   });
 

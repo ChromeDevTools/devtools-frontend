@@ -53,11 +53,11 @@ const UIStrings = {
   /**
    * @description Status message in network conditions view of the Network panel after updating user agent client hints.
    */
-  clientHintsStatusText: 'User agent updated.',
+  clientHintsStatusText: 'User agent updated',
   /**
    * @description Accessible announcement when network conditions view is shown.
    */
-  networkConditionsPanelShown: 'Network conditions shown.',
+  networkConditionsPanelShown: 'Network conditions shown',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkConfigView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

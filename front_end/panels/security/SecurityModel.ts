@@ -11,19 +11,19 @@ const UIStrings = {
   /**
    * @description Summary text displayed in the overview of the Security panel when the page's security state is unknown.
    */
-  theSecurityOfThisPageIsUnknown: 'The security of this page is unknown.',
+  theSecurityOfThisPageIsUnknown: 'The security of this page is unknown',
   /**
    * @description Summary text displayed in the overview of the Security panel when the page isn't secure.
    */
-  thisPageIsNotSecure: 'This page isn’t secure.',
+  thisPageIsNotSecure: 'This page isn’t secure',
   /**
    * @description Summary text displayed in the overview of the Security panel when the page is secure with valid HTTPS.
    */
-  thisPageIsSecureValidHttps: 'This page is secure (valid HTTPS).',
+  thisPageIsSecureValidHttps: 'This page is secure (valid HTTPS)',
   /**
    * @description Summary text displayed in the overview of the Security panel when the page isn't secure due to broken HTTPS.
    */
-  thisPageIsNotSecureBrokenHttps: 'This page isn’t secure (broken HTTPS).',
+  thisPageIsNotSecureBrokenHttps: 'This page isn’t secure (broken HTTPS)',
   /**
    * @description Description of an SSL cipher that contains a separate (bulk) cipher and MAC.
    * @example {AES_256_CBC} PH1

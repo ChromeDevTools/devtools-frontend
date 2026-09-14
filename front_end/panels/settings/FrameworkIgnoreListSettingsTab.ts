@@ -26,7 +26,7 @@ const UIStrings = {
    * @description Checkbox label in Framework Ignore List settings tab of the Settings.
    */
   ignoreListingDescription:
-      'When enabled, the debugger will skip over ignore-listed scripts and will ignore exceptions that only affect them and the Performance panel will collapse matching flamechart items.',
+      'When enabled, the debugger will skip over ignore-listed scripts and will ignore exceptions that only affect them and the Performance panel will collapse matching flamechart items',
   /**
    * @description Text in Framework Ignore List settings tab of the Settings.
    */

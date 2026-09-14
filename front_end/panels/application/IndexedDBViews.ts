@@ -46,7 +46,7 @@ const UIStrings = {
   /**
    * @description Explanation text in Application panel IndexedDB delete confirmation dialog
    */
-  databaseWillBeRemoved: 'The selected database and contained data will be removed.',
+  databaseWillBeRemoved: 'The selected database and contained data will be removed',
   /**
    * @description Title of the confirmation dialog in the IndexedDB tab of the Application panel
    *              that the user is about to clear an object store and this cannot be undone.
@@ -57,7 +57,7 @@ const UIStrings = {
    * @description Description in the confirmation dialog in the IndexedDB tab of the Application
    *              panel that the user is about to clear an object store and this cannot be undone.
    */
-  objectStoreWillBeCleared: 'The data contained in the selected object store will be removed.',
+  objectStoreWillBeCleared: 'The data contained in the selected object store will be removed',
   /**
    * @description Text in Indexed DBViews of the Application panel
    */

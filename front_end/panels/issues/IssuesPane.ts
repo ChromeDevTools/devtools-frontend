@@ -87,7 +87,7 @@ const UIStrings = {
   /**
    * @description Explanation text in the Issues panel shown when no issues are detected.
    */
-  issuesPanelDescription: 'On this page you can find warnings from the browser.',
+  issuesPanelDescription: 'On this page you can find warnings from the browser',
   /**
    * @description Category title in the Issues panel for a group of quirks mode issues.
    */

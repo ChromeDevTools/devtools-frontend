@@ -86,7 +86,7 @@ const UIStrings = {
   /**
    * @description Text for the tooltip of the issue counter toolbar item.
    */
-  issueToolbarTooltipGeneral: 'Some problems no longer generate console messages, but are surfaced in the Issues tab.',
+  issueToolbarTooltipGeneral: 'Some problems no longer generate console messages, but are surfaced in the Issues tab',
   /**
    * @description Text for the tooltip of the issue counter toolbar item. The placeholder indicates how many issues
    * there are in the Issues tab broken down by kind.
@@ -231,7 +231,7 @@ const UIStrings = {
    * @description Tooltip text of the info icon shown next to the filter drop down
    *              in the Console panels main toolbar when the sidebar is active.
    */
-  overriddenByFilterSidebar: 'Log levels are controlled by the Console sidebar.',
+  overriddenByFilterSidebar: 'Log levels are controlled by the Console sidebar',
   /**
    * @description Label for the custom log levels option in the filter dropdown in the Console view.
    */

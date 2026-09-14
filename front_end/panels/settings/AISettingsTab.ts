@@ -168,12 +168,12 @@ const UIStrings = {
    * @description Second item in the description of the code suggestions feature.
    */
   describeCodeInComment:
-      'In Console or Sources, describe the code you need in a comment, then press Ctrl+I to generate it.',
+      'In Console or Sources, describe the code you need in a comment, then press Ctrl+I to generate it',
   /**
    * @description Second item in the description of the code suggestions feature for macOS.
    */
   describeCodeInCommentForMacOs:
-      'In Console or Sources, describe the code you need in a comment, then press Cmd+I to generate it.',
+      'In Console or Sources, describe the code you need in a comment, then press Cmd+I to generate it',
   /**
    * @description Explainer for which data is being sent for the code suggestions feature.
    */
@@ -211,34 +211,34 @@ const UIStrings = {
   /**
    * @description Message shown to the user if the age check isn't successful.
    */
-  ageRestricted: 'This feature is only available to users 18 years or older.',
+  ageRestricted: 'This feature is only available to users 18 years or older',
   /**
    * @description The error message when the user isn't logged in to Chrome.
    */
-  notLoggedIn: 'This feature is only available when you sign in to Chrome with your Google account.',
+  notLoggedIn: 'This feature is only available when you sign in to Chrome with your Google account',
   /**
    * @description Message shown when the user is offline.
    */
-  offline: 'This feature is only available with an active internet connection.',
+  offline: 'This feature is only available with an active internet connection',
   /**
    * @description Text informing the user that AI assistance isn't available in Incognito mode or Guest mode.
    */
-  notAvailableInIncognitoMode: 'AI assistance isn’t available in Incognito mode or Guest mode.',
+  notAvailableInIncognitoMode: 'AI assistance isn’t available in Incognito mode or Guest mode',
   /**
    * @description Message shown to the user if the DevTools locale is not
    * supported.
    */
-  wrongLocale: 'To use this feature, set your language preference to English in DevTools settings.',
+  wrongLocale: 'To use this feature, set your language preference to English in DevTools settings',
   /**
    * @description Message shown to the user if the user's region is not
    * supported.
    */
-  geoRestricted: 'This feature is unavailable in your region.',
+  geoRestricted: 'This feature is unavailable in your region',
   /**
    * @description Message shown to the user if the enterprise policy does
    * not allow this feature.
    */
-  policyRestricted: 'This setting is managed by your administrator.',
+  policyRestricted: 'This setting is managed by your administrator',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/AISettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

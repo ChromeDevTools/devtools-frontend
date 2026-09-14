@@ -76,7 +76,7 @@ const UIStrings = {
   /**
    * @description Text that shows before the virtual environment is enabled explaining the panel.
    */
-  useWebauthnForPhishingresistant: 'Use WebAuthn for phishing-resistant authentication.',
+  useWebauthnForPhishingresistant: 'Use WebAuthn for phishing-resistant authentication',
   /**
    * @description Title for section of interface that allows user to add a new virtual authenticator.
    */

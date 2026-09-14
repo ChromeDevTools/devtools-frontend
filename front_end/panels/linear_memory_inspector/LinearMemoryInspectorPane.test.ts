@@ -49,8 +49,7 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
     const instance = LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane.instance();
     const placeholder = instance.createPlaceholder();
     assert.deepEqual(placeholder.querySelector('.empty-state-header')?.textContent, 'No open inspections');
-    assert.deepEqual(
-        placeholder.querySelector('.empty-state-description > span')?.textContent,
-        'On this page you can inspect binary data.');
+    assert.deepEqual(placeholder.querySelector('.empty-state-description > span')?.textContent,
+                     'On this page you can inspect binary data');
   });
 });

@@ -51,7 +51,7 @@ const UIStrings = {
   /**
    * @description Message shown in the experiments tab to warn users about any possible unstable features.
    */
-  theseExperimentsCouldBeUnstable: 'Warning: These experiments could be unstable or unreliable.',
+  theseExperimentsCouldBeUnstable: 'Warning: These experiments could be unstable or unreliable',
   /**
    * @description Message to display if a setting change requires a reload of DevTools.
    */

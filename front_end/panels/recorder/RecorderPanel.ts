@@ -131,7 +131,7 @@ const UIStrings = {
   /**
    * @description Text to explain the usage of the Recorder panel.
    */
-  recordingDescription: 'Use recordings to create automated end-to-end tests or performance traces.',
+  recordingDescription: 'Use recordings to create automated end-to-end tests or performance traces',
   /**
    * @description Link text to forward to a documentation page on the Recorder panel.
    */

@@ -23,7 +23,7 @@ const UIStrings = {
   /**
    * @description Description shown when no DOM breakpoints are set.
    */
-  domBreakpointsDescription: 'DOM breakpoints pause on the code that changes a DOM node or its children.',
+  domBreakpointsDescription: 'DOM breakpoints pause on the code that changes a DOM node or its children',
   /**
    * @description Accessibility label for the DOM breakpoints list in the Sources panel.
    */

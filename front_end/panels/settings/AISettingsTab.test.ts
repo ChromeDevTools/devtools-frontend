@@ -198,7 +198,7 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('disables switches if blocked by age', async () => {
-    const underAgeExplainer = 'This feature is only available to users 18 years or older.';
+    const underAgeExplainer = 'This feature is only available to users 18 years or older';
     updateHostConfig({
       aidaAvailability: {
         blockedByAge: true,
@@ -217,7 +217,7 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('updates when the user logs in', async () => {
-    const notLoggedInExplainer = 'This feature is only available when you sign in to Chrome with your Google account.';
+    const notLoggedInExplainer = 'This feature is only available when you sign in to Chrome with your Google account';
     aidaAccessStub.returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL));
 
     const {view} = await setupWidget();
@@ -232,7 +232,7 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('disables switches if off the record (incognito)', async () => {
-    const incognitoExplainer = 'AI assistance isn’t available in Incognito mode or Guest mode.';
+    const incognitoExplainer = 'AI assistance isn’t available in Incognito mode or Guest mode';
     updateHostConfig({
       isOffTheRecord: true,
     });
@@ -243,7 +243,7 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('disables switches if offline', async () => {
-    const offlineExplainer = 'This feature is only available with an active internet connection.';
+    const offlineExplainer = 'This feature is only available with an active internet connection';
     aidaAccessStub.returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.NO_INTERNET));
 
     const {view} = await setupWidget();
@@ -252,7 +252,7 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('disables switches if sync is paused', async () => {
-    const notLoggedInExplainer = 'This feature is only available when you sign in to Chrome with your Google account.';
+    const notLoggedInExplainer = 'This feature is only available when you sign in to Chrome with your Google account';
     aidaAccessStub.returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED));
 
     const {view} = await setupWidget();
@@ -270,7 +270,7 @@ describeWithEnvironment('AISettingsTab', () => {
     const {view} = await setupWidget();
 
     assert.deepEqual(view.input.disabledReasons, [
-      'To use this feature, set your language preference to English in DevTools settings.' as
+      'To use this feature, set your language preference to English in DevTools settings' as
           Platform.UIString.LocalizedString,
     ]);
     isAvailableStub.restore();

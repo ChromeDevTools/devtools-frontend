@@ -26,7 +26,7 @@ const UIStrings = {
   /**
    * @description Description text shown in the Changes panel explaining how to track code changes.
    */
-  changesViewDescription: 'Track code changes made within DevTools.',
+  changesViewDescription: 'Track code changes made within DevTools',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

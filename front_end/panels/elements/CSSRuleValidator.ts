@@ -40,28 +40,28 @@ const UIStrings = {
    * @example {display: flex} DISPLAY_FLEX_RULE
    */
   ruleViolatedBySameElementRuleChangeFlexOrGrid:
-      'Try adding {DISPLAY_GRID_RULE} or {DISPLAY_FLEX_RULE} to make this element into a container.',
+      'Try adding {DISPLAY_GRID_RULE} or {DISPLAY_FLEX_RULE} to make this element into a container',
   /**
    * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to the current property value.
    * @example {display: block} EXISTING_PROPERTY_DECLARATION
    * @example {display: flex} TARGET_PROPERTY_DECLARATION
    */
   ruleViolatedBySameElementRuleChangeSuggestion:
-      'Try setting the {EXISTING_PROPERTY_DECLARATION} property to {TARGET_PROPERTY_DECLARATION}.',
+      'Try setting the {EXISTING_PROPERTY_DECLARATION} property to {TARGET_PROPERTY_DECLARATION}',
   /**
    * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to properties of the parent element.
    * @example {display: block} REASON_PROPERTY_DECLARATION_CODE
    * @example {flex} AFFECTED_PROPERTY_DECLARATION_CODE
    */
   ruleViolatedByParentElementRuleReason:
-      'The {REASON_PROPERTY_DECLARATION_CODE} property on the parent element prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect.',
+      'The {REASON_PROPERTY_DECLARATION_CODE} property on the parent element prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect',
   /**
    * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to the properties of the parent element.
    * @example {display: block} EXISTING_PARENT_ELEMENT_RULE
    * @example {display: flex} TARGET_PARENT_ELEMENT_RULE
    */
   ruleViolatedByParentElementRuleFix:
-      'Try setting the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}.',
+      'Try setting the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}',
 
   /**
    * @description The warning text shown in the Elements panel when font-variation-settings don't match allowed values.
@@ -72,35 +72,35 @@ const UIStrings = {
    * @example {Arial} PH5
    */
   fontVariationSettingsWarning:
-      'Value for setting "{PH1}" {PH2} is outside the supported range [{PH3}, {PH4}] for font-family "{PH5}".',
+      'Value for setting "{PH1}" {PH2} is outside the supported range [{PH3}, {PH4}] for font-family "{PH5}"',
   /**
    * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect on flex or grid child items.
    * @example {flex} CONTAINER_DISPLAY_NAME
    * @example {align-contents} PROPERTY_NAME
    */
   flexGridContainerPropertyRuleReason:
-      'This element is a {CONTAINER_DISPLAY_NAME} item, i.e. a child of a {CONTAINER_DISPLAY_NAME} container, but {PROPERTY_NAME} only applies to containers.',
+      'This element is a {CONTAINER_DISPLAY_NAME} item, i.e. a child of a {CONTAINER_DISPLAY_NAME} container, but {PROPERTY_NAME} only applies to containers',
   /**
    * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect on flex or grid child items.
    * @example {align-contents} PROPERTY_NAME
    * @example {align-self} ALTERNATIVE_PROPERTY_NAME
    */
   flexGridContainerPropertyRuleFix:
-      'Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead.',
+      'Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead',
   /**
    * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a non-anchor-positioned element.
    * @example {relative} POSITION
    */
   invalidAnchorPositioning:
-      'An anchor was defined but the element was not anchor-positioned but positioned "{POSITION}".',
+      'An anchor was defined but the element was not anchor-positioned but positioned "{POSITION}"',
   /**
    * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a non-anchor-positioned element.
    */
-  invalidAnchorPositioningFix: 'Set position to either "fixed" or "absolute".',
+  invalidAnchorPositioningFix: 'Set position to either "fixed" or "absolute"',
   /**
    * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a hidden element.
    */
-  unusedAnchorPositioning: 'An anchor was defined but the element is hidden.',
+  unusedAnchorPositioning: 'An anchor was defined but the element is hidden',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/CSSRuleValidator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

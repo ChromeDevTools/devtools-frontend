@@ -59,7 +59,7 @@ const UIStrings = {
    * @description Reason in the Accessibility tab in the Elements panel.
    * @example {aria-hidden} PH1
    */
-  elementIsPlaceholder: 'Element is {PH1}.',
+  elementIsPlaceholder: 'Element is {PH1}',
   /**
    * @description Reason in the Accessibility tab in the Elements panel.
    * @example {aria-hidden} PH1
@@ -108,7 +108,7 @@ const UIStrings = {
    * (which are not translated). https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles
    * @example {role=link} PH1
    */
-  elementHasPlaceholder: 'Element has {PH1}.',
+  elementHasPlaceholder: 'Element has {PH1}',
   /**
    * @description Reason in the Accessibility tab in the Elements panel.
    */

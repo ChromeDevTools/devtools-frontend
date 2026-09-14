@@ -25,7 +25,7 @@ const UIStrings = {
   /**
    * @description Text of a DOM element in Workspace settings tab of the Workspace settings in Settings.
    */
-  mappingsAreInferredAutomatically: 'Mappings are inferred automatically.',
+  mappingsAreInferredAutomatically: 'Mappings are inferred automatically',
   /**
    * @description Text of the add button in Workspace settings tab of the Workspace settings in Settings.
    */

@@ -74,7 +74,7 @@ const UIStrings = {
   /**
    * @description Error message when trying to load a profile while a recording is currently active.
    */
-  cantLoadProfileWhileAnother: 'Can’t load profile while another profile is being recorded.',
+  cantLoadProfileWhileAnother: 'Can’t load profile while another profile is being recorded',
   /**
    * @description Error header when loading a profile file fails.
    */
@@ -83,7 +83,7 @@ const UIStrings = {
    * @description Detailed error reason string shown when profile loading fails.
    * @example {cannot open file} PH1
    */
-  failReason: 'Reason: {PH1}.',
+  failReason: 'Reason: {PH1}',
   /**
    * @description Header for a profile run iteration in the Profiles sidebar.
    * @example {2} PH1

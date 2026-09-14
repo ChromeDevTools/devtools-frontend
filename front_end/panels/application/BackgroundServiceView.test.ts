@@ -113,7 +113,7 @@ describeWithEnvironment('BackgroundServiceView', () => {
     await view.updateComplete;
     assertEmptyState(
         'No recording yet',
-        'Start to debug background services by using the "Start recording events" button or by pressing Ctrl.Learn more');
+        'Start to debug background services by using the "Start recording events" button or by pressing CtrlLearn more');
   });
 
   it('Triggers record on button click', async () => {

@@ -43,7 +43,7 @@ const UIStringsNotTranslate = {
   /**
    * @description Text for teaser to turn on code suggestions.
    */
-  toTurnOnCodeSuggestions: 'to turn on code suggestions.',
+  toTurnOnCodeSuggestions: 'to turn on code suggestions',
   /**
    * @description Text for snackbar notification on dismissing the teaser.
    */
@@ -74,12 +74,12 @@ const UIStringsNotTranslate = {
    * @description Code generation disclaimer item text for the fre dialog.
    */
   freDisclaimerDescribeCodeInComment:
-      'In Console or Sources, describe the code you need in a comment, then press ctrl+i to generate it.',
+      'In Console or Sources, describe the code you need in a comment, then press ctrl+i to generate it',
   /**
    * @description Code generation disclaimer item text for the fre dialog.
    */
   freDisclaimerDescribeCodeInCommentForMacOs:
-      'In Console or Sources, describe the code you need in a comment, then press cmd+i to generate it.',
+      'In Console or Sources, describe the code you need in a comment, then press cmd+i to generate it',
   /**
    * @description Privacy disclaimer item text for the fre dialog.
    */
@@ -101,7 +101,7 @@ const UIStringsNotTranslate = {
   /**
    *@description Text for ARIA label for the teaser.
    */
-  toDisableCodeSuggestions: 'to disable code suggestions.',
+  toDisableCodeSuggestions: 'to disable code suggestions',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;

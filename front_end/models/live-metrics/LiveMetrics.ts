@@ -29,7 +29,7 @@ const UIStrings = {
   /**
    * @description Warning text indicating that the Largest Contentful Paint (LCP) performance metric was affected by the page loading in the background.
    */
-  lcpVisibilityWarning: 'LCP may be inflated because the page started loading in the background.',
+  lcpVisibilityWarning: 'LCP may be inflated because the page started loading in the background',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/live-metrics/LiveMetrics.ts', UIStrings);

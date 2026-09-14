@@ -31,7 +31,7 @@ describeWithEnvironment('IssuesPane', () => {
     assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-header')?.textContent,
                      'Only third-party cookie issues detected');
     assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-description > span')?.textContent,
-                     'On this page you can find warnings from the browser.');
+                     'On this page you can find warnings from the browser');
   });
 
   it('shows placeholder', () => {
@@ -42,6 +42,6 @@ describeWithEnvironment('IssuesPane', () => {
     assert.exists(emptyWidgetShadowRoot);
     assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-header')?.textContent, 'No issues detected');
     assert.deepEqual(emptyWidgetShadowRoot.querySelector('.empty-state-description > span')?.textContent,
-                     'On this page you can find warnings from the browser.');
+                     'On this page you can find warnings from the browser');
   });
 });

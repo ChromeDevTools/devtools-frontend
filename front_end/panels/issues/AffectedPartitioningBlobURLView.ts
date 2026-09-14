@@ -15,13 +15,13 @@ const UIStrings = {
    * @example {blob:https://web-platform.test:8444/example} url
    */
   blockedCrossPartitionFetching:
-      'Access to the Blob URL {url} was blocked because it was performed from a cross-partition context.',
+      'Access to the Blob URL {url} was blocked because it was performed from a cross-partition context',
   /**
    * @description Description in the Issues panel for a partitioning blob URL issue when noopener is enforced for navigation.
    * @example {blob:https://web-platform.test:8444/example} url
    */
   enforceNoopenerForNavigation:
-      'Blob URL {url} top-level navigation had \'noopener\' set because the Blob URL origin was cross-site with the top-level site of the context that initiated the navigation.',
+      'Blob URL {url} top-level navigation had \'noopener\' set because the Blob URL origin was cross-site with the top-level site of the context that initiated the navigation',
   /**
    * @description Label in the Issues panel for the number of blob URL issues.
    * @example {1} count
@@ -30,7 +30,7 @@ const UIStrings = {
   /**
    * @description Message in the Issues panel shown when no blob URL is available for a partitioning blob URL issue.
    */
-  noBlobURLAvailable: 'No Blob URL available for this issue.',
+  noBlobURLAvailable: 'No Blob URL available for this issue',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedPartitioningBlobURLView.ts', UIStrings);

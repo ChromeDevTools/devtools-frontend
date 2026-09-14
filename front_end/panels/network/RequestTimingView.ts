@@ -153,7 +153,7 @@ const UIStrings = {
    * @example {https://web.dev/custom-metrics/#server-timing-api} PH1
    */
   duringDevelopmentYouCanUseSToAdd:
-      'During development, you can use {PH1} to add insights into the server-side timing of this request.',
+      'During development, you can use {PH1} to add insights into the server-side timing of this request',
   /**
    * @description Header for last column of network timing tab.
    */

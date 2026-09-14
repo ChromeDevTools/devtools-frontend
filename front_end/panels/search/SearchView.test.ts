@@ -183,11 +183,11 @@ describeWithEnvironment('SearchView', () => {
 
     searchResultCallback({matchesCount: () => 10} as Search.SearchScope.SearchResult);
     await searchView.view.nextInput;
-    assert.strictEqual(searchView.currentSearchResultMessage, 'Found 10 matching lines in 1 file.');
+    assert.strictEqual(searchView.currentSearchResultMessage, 'Found 10 matching lines in 1 file');
 
     searchResultCallback({matchesCount: () => 42} as Search.SearchScope.SearchResult);
     await searchView.view.nextInput;
-    assert.strictEqual(searchView.currentSearchResultMessage, 'Found 52 matching lines in 2 files.');
+    assert.strictEqual(searchView.currentSearchResultMessage, 'Found 52 matching lines in 2 files');
   });
 
   it('forwards each SearchResult to the results pane', async () => {

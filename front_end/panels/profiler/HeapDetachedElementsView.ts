@@ -30,7 +30,7 @@ const UIStrings = {
   /**
    * @description Description for the detached elements profiling option in the Memory panel.
    */
-  detachedElementsDescription: 'Detached elements show objects retained by a JS reference.',
+  detachedElementsDescription: 'Detached elements show objects retained by a JS reference',
   /**
    * @description Name of a profile.
    * @example {2} PH1

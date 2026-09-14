@@ -11,7 +11,7 @@ web_vitals_injected_sources = [
   "web-vitals-injected.ts",
 ]
 
-devtools_module("web-vitals-injected") {
+devtools_base_module("web-vitals-injected") {
   sources = web_vitals_injected_sources
 
   ts_deps = [
@@ -22,7 +22,7 @@ devtools_module("web-vitals-injected") {
 
   visibility = [
     ":*",
-    "../:live-metrics",
+    "../:*",
   ]
 }
 
@@ -54,6 +54,6 @@ bundle("bundled_library") {
 
   visibility = [
     ":*",
-    "../:live-metrics",
+    "../:*",
   ]
 }

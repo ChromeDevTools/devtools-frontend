@@ -26,6 +26,7 @@ export interface HostRuntime {
   getDevicePixelRatio(): number;
   saveScreenshot(options: ScreenshotOptions): Promise<void>;
   revokeLastScreenshotUrl(): void;
+  loadTextFile(url: URL): Promise<string>;
 }
 
 /**

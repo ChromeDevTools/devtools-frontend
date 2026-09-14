@@ -150,4 +150,8 @@ export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
   },
   saveScreenshot,
   revokeLastScreenshotUrl,
+  async loadTextFile(url: URL): Promise<string> {
+    const response = await fetch(url);
+    return await response.text();
+  },
 };

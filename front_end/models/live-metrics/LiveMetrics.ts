@@ -42,8 +42,7 @@ class InjectedScript {
   static async get(): Promise<string> {
     if (!this.#injectedScript) {
       const url = new URL('./web-vitals-injected/web-vitals-injected.generated.js', import.meta.url);
-      const result = await fetch(url);
-      this.#injectedScript = await result.text();
+      this.#injectedScript = await Platform.HostRuntime.HOST_RUNTIME.loadTextFile(url);
     }
     return this.#injectedScript;
   }

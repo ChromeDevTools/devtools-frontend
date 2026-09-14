@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Fs from 'node:fs';
+import * as Url from 'node:url';
 import * as WorkerThreads from 'node:worker_threads';
 
 import type * as Api from '../api/api.js';
@@ -101,4 +103,7 @@ export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
   },
   async saveScreenshot(_options: Api.HostRuntime.ScreenshotOptions): Promise<void>{},
   revokeLastScreenshotUrl(): void{},
+  async loadTextFile(url: URL): Promise<string> {
+    return await Fs.promises.readFile(Url.fileURLToPath(url), 'utf-8');
+  },
 };

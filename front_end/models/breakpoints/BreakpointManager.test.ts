@@ -12,12 +12,15 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
+import {expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import type {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {createFileSystemFileForPersistenceTests} from '../../testing/PersistenceHelpers.js';
 import {getInitializedResourceTreeModel, mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {setupPageResourceLoaderForSourceMap} from '../../testing/SourceMapHelpers.js';
 import {
@@ -25,12 +28,16 @@ import {
 } from '../../testing/UISourceCodeHelpers.js';
 import type * as Bindings from '../bindings/bindings.js';
 import * as Breakpoints from '../breakpoints/breakpoints.js';
+import * as Formatter from '../formatter/formatter.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithEnvironment('BreakpointManager', () => {
+describe('BreakpointManager', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
   const URL_HTML = urlString`http://site/index.html`;
   const INLINE_SCRIPT_START = 41;
   const BREAKPOINT_SCRIPT_LINE = 1;
@@ -124,7 +131,7 @@ describeWithEnvironment('BreakpointManager', () => {
   });
 
   afterEach(() => {
-    Root.Runtime.experiments.disableForTest(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+    Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
     Root.DevToolsContext.setGlobalInstance(null);
   });
 

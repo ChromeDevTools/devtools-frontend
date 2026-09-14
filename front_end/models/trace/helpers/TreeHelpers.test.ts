@@ -9,7 +9,7 @@ import {
   makeCompleteEvent,
   makeProfileCall,
   prettyPrint,
-} from '../../../testing/TraceHelpers.js';
+} from '../../../testing/TraceHelpersCore.js';
 import * as Trace from '../trace.js';
 
 describe('TreeHelpers', () => {

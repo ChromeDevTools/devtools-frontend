@@ -6,12 +6,11 @@ import {assert} from 'chai';
 
 import type * as Protocol from '../../../generated/protocol.js';
 import * as CPUProfile from '../../../models/cpu_profile/cpu_profile.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {allThreadEntriesInTrace, makeCompleteEvent, makeInstantEvent} from '../../../testing/TraceHelpers.js';
+import {allThreadEntriesInTrace, makeCompleteEvent, makeInstantEvent} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('SamplesIntegrator', function() {
+describe('SamplesIntegrator', function() {
   const scriptId = 'Peperoni' as Protocol.Runtime.ScriptId;
   const url = '';
   const lineNumber = -1;

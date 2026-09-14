@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   allThreadEntriesInTrace,
   getMainThread,
@@ -13,11 +12,11 @@ import {
   makeAsyncStartEvent,
   makeCompleteEvent,
   makeInstantEvent,
-} from '../../../testing/TraceHelpers.js';
+} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('Trace helpers', function() {
+describe('Trace helpers', function() {
   describe('extractOriginFromTrace', () => {
     it('extracts the origin of a parsed trace correctly', () => {
       const origin = Trace.Helpers.Trace.extractOriginFromTrace('https://web.dev/some/path');

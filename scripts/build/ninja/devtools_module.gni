@@ -28,7 +28,6 @@ _devtools_module_folder_exceptions = [
   "front_end/models/trace",
   "front_end/models/trace/extras",
   "front_end/models/trace/handlers",
-  "front_end/models/trace/helpers",
   "front_end/models/trace/insights",
 ]
 

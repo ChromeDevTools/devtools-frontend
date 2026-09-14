@@ -232,12 +232,6 @@ export class ModelUpdateEvent extends Event {
   }
 }
 
-declare global {
-  interface HTMLElementEventMap {
-    [ModelUpdateEvent.eventName]: ModelUpdateEvent;
-  }
-}
-
 export function isModelUpdateDataComplete(eventData: ModelUpdateEventData): eventData is ModelUpdateEventComplete {
   return eventData.type === ModelUpdateType.COMPLETE;
 }

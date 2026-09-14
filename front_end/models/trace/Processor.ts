@@ -19,7 +19,10 @@ const enum Status {
 
 export class TraceParseProgressEvent extends Event {
   static readonly eventName = 'traceparseprogress';
-  constructor(public data: Model.TraceParseEventProgressData, init: EventInit = {bubbles: true}) {
+  constructor(
+      public data: Model.TraceParseEventProgressData,
+      init: ConstructorParameters<typeof Event>[1] = {bubbles: true},
+  ) {
     super(TraceParseProgressEvent.eventName, init);
   }
 }
@@ -42,12 +45,6 @@ function calculateProgress(value: number, phase: ProgressPhase): number {
     return (value * (ProgressPhase.FINALIZE - ProgressPhase.HANDLE_EVENT)) + ProgressPhase.HANDLE_EVENT;
   }
   return value * phase;
-}
-
-declare global {
-  interface HTMLElementEventMap {
-    [TraceParseProgressEvent.eventName]: TraceParseProgressEvent;
-  }
 }
 
 export class TraceProcessor extends EventTarget {

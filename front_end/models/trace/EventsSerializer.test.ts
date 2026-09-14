@@ -4,8 +4,8 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {getMainThread} from '../../testing/TraceHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {getMainThread} from '../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Trace from './trace.js';
@@ -20,7 +20,8 @@ function findFirstEntry(
   return entry;
 }
 
-describeWithEnvironment('EventsSerializer', () => {
+describe('EventsSerializer', () => {
+  setupLocaleHooks();
   it('correctly implements a bidirectional key <-> event mapping', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
     const eventsSerializer = new Trace.EventsSerializer.EventsSerializer();

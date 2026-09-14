@@ -5,17 +5,18 @@
 import {assert} from 'chai';
 
 import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {allThreadEntriesInTrace, getMainThread} from '../../testing/TraceHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {allThreadEntriesInTrace, getMainThread} from '../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Trace from './trace.js';
 
-describeWithEnvironment('Name', () => {
+describe('Name', () => {
+  setupLocaleHooks();
   describe('with web-dev-with-commit trace', () => {
     let parsedTrace: Trace.TraceModel.ParsedTrace;
 
-    before(async function() {
+    beforeEach(async function() {
       parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     });
 

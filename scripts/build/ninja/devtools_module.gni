@@ -25,7 +25,6 @@ _devtools_module_folder_exceptions = [
   "front_end/models/issues_manager",
   "front_end/models/live-metrics",
   "front_end/models/live-metrics/web-vitals-injected",
-  "front_end/models/trace",
 ]
 
 _devtools_module_folder_exceptions_full = []

@@ -4,12 +4,13 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError} from '../../testing/InsightHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Trace from '../trace/trace.js';
 
-describeWithEnvironment('TraceModel', function() {
+describe('TraceModel', function() {
+  setupLocaleHooks();
   it('dispatches an end event when the trace is done', async function() {
     const model = Trace.TraceModel.Model.createWithAllHandlers();
     const events: string[] = [];

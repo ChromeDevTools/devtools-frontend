@@ -17,6 +17,7 @@ import {
   generateRunId,
   PROJECT_ID,
   type TaskStatus,
+  uploadAgentLog,
   uploadEvalToGCS,
   uploadRunCompleted,
   uploadRunLog,
@@ -101,10 +102,17 @@ const userArgsBuilder =
         });
 type UserArgs = ReturnType<typeof userArgsBuilder.parseSync>;
 
+const ANSI_YELLOW = '\x1b[33m';
+const ANSI_RED = '\x1b[31m';
+const ANSI_RESET = '\x1b[0m';
+
 class Logger {
-  #logs: Logs = {};
+  #terminalLogs: Logs = {};
   #updateElapsedTimeInterval: NodeJS.Timeout|null = null;
-  #logEntries: string[] = [];
+  // Suite-level run log entries uploaded per run to GCS as eval_run.log.
+  #runLogEntries: string[] = [];
+  // Granular per-task agent execution traces keyed by taskId, uploaded per trajectory to GCS as agent_logs/agent.log.
+  #taskLogEntries = new Map<string, string[]>();
 
   constructor() {
     this.#updateElapsedTimeInterval = setInterval(() => {
@@ -112,19 +120,39 @@ class Logger {
     }, 1000);
   }
 
-  #recordLog(text: string) {
-    const cleanText = text.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '').trim();
+  #stripAnsi(text: string): string {
+    return text.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '').trim();
+  }
+
+  #recordRunLog(text: string) {
+    const cleanText = this.#stripAnsi(text);
     if (!cleanText) {
       return;
     }
     const timestamp = new Date().toISOString();
     for (const line of cleanText.split('\n')) {
-      this.#logEntries.push(`[${timestamp}] ${line}`);
+      this.#runLogEntries.push(`[${timestamp}] ${line}`);
+    }
+  }
+
+  #recordTaskLog(taskId: string, text: string, isError = false) {
+    const cleanText = this.#stripAnsi(text);
+    if (!cleanText) {
+      return;
+    }
+    let entries = this.#taskLogEntries.get(taskId);
+    if (!entries) {
+      entries = [];
+      this.#taskLogEntries.set(taskId, entries);
+    }
+    const prefix = isError ? '[ERROR] ' : '';
+    for (const line of cleanText.split('\n')) {
+      entries.push(`${prefix}${line}`);
     }
   }
 
   #updateElapsedTime() {
-    this.#logs['elapsedTime'] = {
+    this.#terminalLogs['elapsedTime'] = {
       index: 999,
       text: `\nElapsed time: ${formatElapsedTime()}`,
     };
@@ -133,7 +161,7 @@ class Logger {
 
   #flushLogs() {
     process.stdout.write('\x1Bc');
-    const values = Object.values(this.#logs);
+    const values = Object.values(this.#terminalLogs);
     const sortedValues = values.sort((val1, val2) => val1.index - val2.index);
     for (const {text} of sortedValues) {
       process.stdout.write(`${text}\n`);
@@ -159,9 +187,11 @@ class Logger {
    * @param text
    */
   log(id: string, index: number, text: string) {
-    this.#recordLog(text);
+    if (id === 'head') {
+      this.#recordRunLog(text);
+    }
     this.#updateElapsedTime();
-    this.#logs[id] = {index, text};
+    this.#terminalLogs[id] = {index, text};
     this.#flushLogs();
   }
 
@@ -169,12 +199,60 @@ class Logger {
     this.log(id, index, text);
   }
 
+  taskLog(taskId: string, index: number, total: number, text: string) {
+    this.#recordTaskLog(taskId, text);
+    const indexPrefix = total > 0 ? `[${index + 1}/${total}] ` : '';
+    this.log(taskId, index, `${ANSI_YELLOW}${indexPrefix}${taskId}:${ANSI_RESET} ${text}`);
+  }
+
+  taskError(taskId: string, index: number, total: number, text: string) {
+    this.#recordTaskLog(taskId, text, /* isError= */ true);
+    const indexPrefix = total > 0 ? `[${index + 1}/${total}] ` : '';
+    this.error(taskId, index, `${ANSI_YELLOW}${indexPrefix}${taskId}:${ANSI_RESET} ${ANSI_RED}${text}${ANSI_RESET}`);
+  }
+
   append(text: string) {
-    this.#recordLog(text);
+    this.#recordRunLog(text);
+  }
+
+  /**
+   * Execution log for a single run, uploaded once per run to GCS as `eval_run.log`.
+   * Example:
+   * [2026-09-11T11:45:00.000Z] Evaluation run started for 2026-09-11-114500-c0c1-8f25f69 at 1726055100000
+   * [2026-09-11T11:45:00.000Z] Target: elements, Agent: devtools-elements
+   * [2026-09-11T11:45:10.000Z] [Task life-with-charlie] Finished execution (10.25s)
+   * [2026-09-11T11:45:15.000Z] Total tasks: 1, Passed: 1, Failed: 0
+   * [2026-09-11T11:45:15.000Z] Run completed with status: COMPLETED
+   */
+  getRunLogContent(): string {
+    return this.#runLogEntries.join('\n') + '\n';
   }
 
   getLogContent(): string {
-    return this.#logEntries.join('\n') + '\n';
+    return this.getRunLogContent();
+  }
+
+  /**
+   * Returns the formatted log content for a specific task, uploaded per trajectory to GCS
+   * as `agent_logs/agent.log`. Captures the task lifecycle including harness setup, executor
+   * query execution, completion duration, and error traces.
+   *
+   * Example output:
+   * [2026-09-11T11:45:00.000Z] Creating a page
+   * [2026-09-11T11:45:01.000Z] Navigated to http://127.0.0.1:8000/life-with-charlie.html
+   * [2026-09-11T11:45:02.000Z] [Info]: Got devtools page
+   * [2026-09-11T11:45:03.000Z] [ElementsExecutor] Preparing example: life-with-charlie for target: elements
+   * [2026-09-11T11:45:04.000Z] [ElementsExecutor] Executing query: "inspect the image" for example: life-with-charlie
+   * [2026-09-11T11:45:05.000Z] [Info]: Running the user prompt "inspect the image" (This step might take a long time)
+   * [2026-09-11T11:45:10.000Z] [ElementsExecutor] Finished executing all queries for example: life-with-charlie
+   * [2026-09-11T11:45:10.000Z] Finished (10.25s)
+   */
+  getTaskLogContent(taskId: string): string {
+    const entries = this.#taskLogEntries.get(taskId);
+    if (!entries || entries.length === 0) {
+      return '(No log entries recorded)\n';
+    }
+    return entries.join('\n') + '\n';
   }
 
   destroy() {
@@ -337,20 +415,12 @@ export class Example {
 
   log(text: string) {
     const indexOfExample = this.#exampleUrls.indexOf(this.#url);
-    this.#logger.log(
-        this.id(),
-        indexOfExample,
-        `\x1b[33m[${indexOfExample + 1}/${this.#exampleUrls.length}] ${this.id()}:\x1b[0m ${text}`,
-    );
+    this.#logger.taskLog(this.id(), indexOfExample, this.#exampleUrls.length, text);
   }
 
   error(text: string) {
     const indexOfExample = this.#exampleUrls.indexOf(this.#url);
-    this.#logger.error(
-        this.id(),
-        indexOfExample,
-        `\x1b[33m[${indexOfExample + 1}/${this.#exampleUrls.length}] ${this.id()}: [0m  [31m${text} [0m`,
-    );
+    this.#logger.taskError(this.id(), indexOfExample, this.#exampleUrls.length, text);
   }
 }
 
@@ -386,7 +456,9 @@ async function runInParallel(
     if (!example.isReady()) {
       const durationSeconds = example.durationSeconds();
       taskDurations.set(example.id(), durationSeconds);
+      logger.append(`[Task ${example.id()}] Preparation failed (${durationSeconds}s)`);
       if (userArgs.upload) {
+        uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
         recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
       }
     }
@@ -398,7 +470,9 @@ async function runInParallel(
       examples.filter(example => example.isReady()).map(async example => {
         try {
           const executedExample = await example.execute();
-          taskDurations.set(example.id(), example.durationSeconds());
+          const durationSeconds = example.durationSeconds();
+          taskDurations.set(example.id(), durationSeconds);
+          logger.append(`[Task ${example.id()}] Finished execution (${durationSeconds}s)`);
           results.push(executedExample);
         } catch (err) {
           const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
@@ -407,7 +481,9 @@ async function runInParallel(
           );
           const durationSeconds = example.durationSeconds();
           taskDurations.set(example.id(), durationSeconds);
+          logger.append(`[Task ${example.id()}] Execution failed (${durationSeconds}s)`);
           if (userArgs.upload) {
+            uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
             recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
           }
         }
@@ -432,7 +508,9 @@ async function runSequentially(
     if (!example.isReady()) {
       const durationSeconds = example.durationSeconds();
       taskDurations.set(example.id(), durationSeconds);
+      logger.append(`[Task ${example.id()}] Preparation failed (${durationSeconds}s)`);
       if (userArgs.upload) {
+        uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
         recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
       }
       continue;
@@ -440,14 +518,18 @@ async function runSequentially(
 
     try {
       const executedExample = await example.execute();
-      taskDurations.set(example.id(), example.durationSeconds());
+      const durationSeconds = example.durationSeconds();
+      taskDurations.set(example.id(), durationSeconds);
+      logger.append(`[Task ${example.id()}] Finished execution (${durationSeconds}s)`);
       results.push(executedExample);
     } catch (err) {
       const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
       example.error(`There is an error, skipping it.\n${errorMsg}`);
       const durationSeconds = example.durationSeconds();
       taskDurations.set(example.id(), durationSeconds);
+      logger.append(`[Task ${example.id()}] Execution failed (${durationSeconds}s)`);
       if (userArgs.upload) {
+        uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
         recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
       }
     }
@@ -586,7 +668,7 @@ async function main() {
       metadata: data.metadata,
       trajectories: data.results,
     };
-    writeOutput(output, {...userArgs, label}, runId, taskStatuses, taskDurations);
+    writeOutput(output, {...userArgs, label}, runId, taskStatuses, taskDurations, logger);
   }
 
   let graderFailed = false;
@@ -699,6 +781,7 @@ function writeOutput(
     runId: string,
     taskStatuses: TaskStatus[],
     taskDurations: Map<string, number>,
+    logger: Logger,
 ) {
   const OUTPUT_DIR = path.resolve(import.meta.dirname, 'data');
   fs.mkdirSync(OUTPUT_DIR, {recursive: true});
@@ -740,6 +823,9 @@ function writeOutput(
         destinationFileName: 'trajectory.json',
       });
 
+      const agentLog = logger.getTaskLogContent(trajectory.metadata.auto_run_example_id);
+      const agentLogUploaded = uploadAgentLog(runId, trajectory.metadata.auto_run_example_id, agentLog);
+
       if (!userArgs.grade) {
         const matchingTrajectories =
             output.trajectories.filter(e => e.session_id === trajectory.metadata.auto_run_example_id);
@@ -749,21 +835,21 @@ function writeOutput(
         const score = matchingTrajectories.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
         // Status indicates execution outcome (PASSED if prompt turns completed and uploaded without error,
         // FAILED if upload failed, assertion failures occurred, or score is 0.0).
-        const status = (!trajectoryUploaded || hasError || score <= 0.0) ? 'FAILED' : 'PASSED';
+        const status = (!trajectoryUploaded || !agentLogUploaded || hasError || score <= 0.0) ? 'FAILED' : 'PASSED';
         const durationSeconds = taskDurations.get(trajectory.metadata.auto_run_example_id) ?? 0.0;
 
         uploadTaskCompleted({
           taskId: trajectory.metadata.auto_run_example_id,
           runId,
           status,
-          score: trajectoryUploaded ? score : 0.0,
+          score: (trajectoryUploaded && agentLogUploaded) ? score : 0.0,
           durationSeconds,
           tokens: {},
         });
         taskStatuses.push({
           taskId: trajectory.metadata.auto_run_example_id,
           status,
-          score: trajectoryUploaded ? score : 0.0,
+          score: (trajectoryUploaded && agentLogUploaded) ? score : 0.0,
         });
       }
     }

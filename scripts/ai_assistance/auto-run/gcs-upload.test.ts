@@ -60,6 +60,11 @@ describe('gcs-upload', () => {
     const runId = '2026-08-25-134619-c0c1-8f25f69';
     const taskId = 'example-target-html';
     assert.strictEqual(
+        formatGCSTaskDestination(runId, taskId, 'agent_logs/agent.log'),
+        `gs://${BUCKET}/${
+            PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/agent_logs/agent.log`,
+    );
+    assert.strictEqual(
         formatGCSTaskDestination(runId, taskId, 'eval_task_completed.json'),
         `gs://${BUCKET}/${
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/eval_task_completed.json`,

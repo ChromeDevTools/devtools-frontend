@@ -24,6 +24,8 @@ export const PROJECT_ID = 'ai_evals';
  * 2. Task completion (per trajectory / task):
  *    runs/<runId>/tasks/<taskId>/output/
  *      ├── trajectory.json           - Captured prompt turns and tool results
+ *      ├── agent_logs/
+ *      │   └── agent.log             - Diagnostic per-task agent log (archived in CNS)
  *      ├── eval_result.json          - Optional inline grading result (if --grade)
  *      ├── eval_task_completed.json  - Task execution metadata and score
  *      └── eval_task_completed.marker- 0-byte commit marker (sealed last)
@@ -45,11 +47,15 @@ export const PROJECT_ID = 'ai_evals';
  *       ├── life-with-charlie/
  *       │   └── output/
  *       │       ├── trajectory.json
+ *       │       ├── agent_logs/
+ *       │       │   └── agent.log
  *       │       ├── eval_task_completed.json
  *       │       └── eval_task_completed.marker
  *       └── another-task/
  *           └── output/
  *               ├── trajectory.json
+ *               ├── agent_logs/
+ *               │   └── agent.log
  *               ├── eval_task_completed.json
  *               └── eval_task_completed.marker
  */
@@ -207,6 +213,19 @@ export function uploadRunStarted(payload: RunStartedPayload): boolean {
     return uploadMarker(payload.runId, Markers.RUN_STARTED);
   }
   return false;
+}
+
+/**
+ * Uploads tasks/<task_id>/output/agent_logs/agent.log to GCS.
+ * Staged in a temporary directory and cleaned up after upload.
+ * Must be called during Phase 2 before eval_task_completed.marker is uploaded.
+ */
+export function uploadAgentLog(runId: string, taskId: string, logContent: string): boolean {
+  return uploadTemporaryContentToGCS(
+      logContent,
+      formatGCSTaskDestination(runId, taskId, 'agent_logs/agent.log'),
+      'agent.log',
+  );
 }
 
 /**

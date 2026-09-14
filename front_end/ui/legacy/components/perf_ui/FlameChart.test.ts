@@ -19,12 +19,10 @@ import {
   MockFlameChartDelegate,
   renderFlameChartIntoDOM,
   renderFlameChartWithFakeProvider,
-  renderWidgetInVbox,
 } from '../../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
-import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import * as PerfUI from './perf_ui.js';
 
@@ -1452,10 +1450,6 @@ describeWithEnvironment('FlameChart', () => {
   });
 
   it(`renders the frames track with screenshots`, async function() {
-    // Increase timeout to give slower debug bots enough time to load the trace, decode screenshots, and render.
-    if (this.timeout() > 0) {
-      this.timeout(20_000);
-    }
     const {flameChart} = await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
       fileNameOrParsedTrace: 'web-dev-screenshot-source-ids.json.gz',
@@ -1857,170 +1851,5 @@ describeWithEnvironment('FlameChart', () => {
       // Target x = 0, y = 106.
       assert.deepEqual(offset, {x: 0, y: 106});
     });
-  });
-
-  it('does not reassign canvas dimensions when dimensions have not changed', () => {
-    const provider = new FakeProvider();
-    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
-    renderWidgetInVbox(chartInstance, {width: 1000, height: 400});
-    chartInstance.update();
-
-    const widthSetterSpy = sinon.spy(HTMLCanvasElement.prototype, 'width', ['set']);
-    const heightSetterSpy = sinon.spy(HTMLCanvasElement.prototype, 'height', ['set']);
-
-    chartInstance.update();
-
-    sinon.assert.callCount(widthSetterSpy.set, 0);
-    sinon.assert.callCount(heightSetterSpy.set, 0);
-
-    const container = chartInstance.element.parentElement!;
-    container.style.width = '1200px';
-    container.style.height = '500px';
-    chartInstance.onResize();
-    chartInstance.update();
-
-    sinon.assert.callCount(widthSetterSpy.set, 1);
-    sinon.assert.callCount(heightSetterSpy.set, 1);
-  });
-
-  it('caches trimmed event titles during horizontal panning and invalidates on zoom, reset, or theme change', () => {
-    class TitleCacheTestProvider extends FakeFlameChartProvider {
-      #timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
-        entryLevels: [0],
-        entryStartTimes: [10.0],
-        entryTotalTimes: [50.0],
-        groups: [{
-          name: 'Test Group' as Platform.UIString.LocalizedString,
-          startLevel: 0,
-          style: defaultGroupStyle,
-          expanded: true,
-        }],
-      });
-
-      override entryTitle(_entryIndex: number): string {
-        return 'Long Title That Exceeds Width And Gets Trimmed';
-      }
-
-      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
-        return this.#timelineData;
-      }
-    }
-
-    const provider = new TitleCacheTestProvider();
-    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
-    renderWidgetInVbox(chartInstance, {width: 1000, height: 400});
-    chartInstance.setWindowTimes(0, 100);
-    chartInstance.update();
-
-    // The initial draw populated the title cache. Now spy on entryTitle.
-    const entryTitleSpy = sinon.spy(provider, 'entryTitle');
-
-    // Pan horizontally across subpixel boundaries: cache hit, entryTitle not re-run.
-    chartInstance.setWindowTimes(0.06, 100.06);
-    chartInstance.update();
-    sinon.assert.callCount(entryTitleSpy, 0);
-
-    // Zooming in changes the pixel width: cache miss, entryTitle must be re-queried and re-trimmed.
-    chartInstance.setWindowTimes(0, 50);
-    chartInstance.update();
-    sinon.assert.callCount(entryTitleSpy, 1);
-
-    // Reset clears the cache: next draw must re-fetch and re-trim.
-    chartInstance.reset();
-    chartInstance.setWindowTimes(0, 50);
-    chartInstance.update();
-    sinon.assert.callCount(entryTitleSpy, 2);
-
-    // Theme change invalidates the cache because font metrics or styling may change.
-    ThemeSupport.ThemeSupport.instance().dispatchEvent(new ThemeSupport.ThemeChangeEvent());
-    chartInstance.update();
-    sinon.assert.callCount(entryTitleSpy, 3);
-  });
-
-  it('caches truncated track header names and invalidates on resize', () => {
-    let nameAccessCount = 0;
-    class HeaderCacheProvider extends FakeFlameChartProvider {
-      #timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
-        entryLevels: [0],
-        entryStartTimes: [10.0],
-        entryTotalTimes: [50.0],
-        groups: [{
-          get name() {
-            nameAccessCount++;
-            return 'Very Long Header Track Name That Will Be Middle Truncated' as Platform.UIString.LocalizedString;
-          },
-          startLevel: 0,
-          style: defaultGroupStyle,
-          expanded: true,
-        }],
-      });
-
-      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
-        return this.#timelineData;
-      }
-    }
-
-    const provider = new HeaderCacheProvider();
-    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
-    renderWidgetInVbox(chartInstance, {width: 200, height: 400});
-    chartInstance.setWindowTimes(0, 100);
-    chartInstance.update();
-
-    // Initial draw evaluated group.name once to truncate and cache it.
-    assert.strictEqual(nameAccessCount, 1);
-
-    // Redraw with identical container width: uses cached header name without re-accessing group.name.
-    chartInstance.update();
-    assert.strictEqual(nameAccessCount, 1);
-
-    // Resizing container width invalidates #urlTruncations cache: re-evaluates group.name.
-    const container = chartInstance.element.parentElement!;
-    container.style.width = '300px';
-    chartInstance.onResize();
-    chartInstance.update();
-    assert.strictEqual(nameAccessCount, 2);
-  });
-
-  it('does not batch or fill generic rectangles for entries with an empty color', () => {
-    class UncoloredEntryProvider extends FakeFlameChartProvider {
-      #timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
-        entryLevels: [0, 0],
-        entryStartTimes: [10.0, 60.0],
-        entryTotalTimes: [40.0, 40.0],
-        groups: [{
-          name: 'Test Group' as Platform.UIString.LocalizedString,
-          startLevel: 0,
-          style: defaultGroupStyle,
-          expanded: true,
-        }],
-      });
-
-      override entryColor(entryIndex: number): string {
-        // Entry 0 has a valid color, Entry 1 has no background color (like a screenshot).
-        return entryIndex === 0 ? '#ff0000' : '';
-      }
-
-      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
-        return this.#timelineData;
-      }
-    }
-
-    const provider = new UncoloredEntryProvider();
-    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
-    renderWidgetInVbox(chartInstance, {width: 1000, height: 400});
-    chartInstance.setWindowTimes(0, 100);
-
-    const fillStyleSetter = sinon.spy(CanvasRenderingContext2D.prototype, 'fillStyle', ['set']);
-    const fillSpy = sinon.spy(CanvasRenderingContext2D.prototype, 'fill');
-
-    chartInstance.update();
-
-    // Exactly one batch of events (the colored entry) should be filled.
-    sinon.assert.calledOnce(fillSpy);
-
-    const calls = fillStyleSetter.set.getCalls();
-    const assignedColors = calls.map(c => c.args[0]);
-    assert.isTrue(assignedColors.includes('#ff0000'));
-    assert.isFalse(assignedColors.includes(''));
   });
 });

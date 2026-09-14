@@ -16,16 +16,14 @@ import type {ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, 
 import {
   generateRunId,
   PROJECT_ID,
+  TaskOutputFile,
   type TaskStatus,
-  uploadAgentLog,
-  uploadAgentStderrLog,
-  uploadChatLog,
   uploadEvalToGCS,
-  uploadGraderLog,
   uploadRunCompleted,
   uploadRunLog,
   uploadRunStarted,
   uploadTaskCompleted,
+  uploadTaskContent,
 } from './gcs-upload.ts';
 import {createTargetExecutor} from './targets/factory.ts';
 import type {TargetExecutor, TargetPreparationResult} from './targets/interface.ts';
@@ -489,9 +487,10 @@ function handleTaskFailure(
   taskDurations.set(example.id(), durationSeconds);
   logger.append(`[Task ${example.id()}] ${phase} failed (${durationSeconds}s)`);
   if (userArgs.upload) {
-    uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
-    uploadAgentStderrLog(runId, example.id(), logger.getTaskStderrContent(example.id()));
-    recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
+    const taskId = example.id();
+    uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_LOG, logger.getTaskLogContent(taskId));
+    uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
+    recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
   }
 }
 
@@ -735,9 +734,9 @@ async function main() {
               runId,
               taskId,
               localJsonPath: evalResultPath,
-              destinationFileName: 'eval_result.json',
+              destinationFileName: TaskOutputFile.EVAL_RESULT,
             });
-            uploadGraderLog(runId, taskId, stdout);
+            uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, stdout);
             const durationSeconds = taskDurations.get(taskId) ?? 0.0;
             // TODO: Parse grader output to report individual task pass/fail status and scores instead of defaulting to 1.0.
             uploadTaskCompleted({
@@ -760,7 +759,7 @@ async function main() {
         if (userArgs.upload) {
           const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
           for (const taskId of allTaskIds) {
-            uploadGraderLog(runId, taskId, errorMessage);
+            uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, errorMessage);
             const durationSeconds = taskDurations.get(taskId) ?? 0.0;
             recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
           }
@@ -774,7 +773,7 @@ async function main() {
       if (userArgs.upload) {
         const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
         for (const taskId of allTaskIds) {
-          uploadGraderLog(runId, taskId, notFoundMessage);
+          uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, notFoundMessage);
           const durationSeconds = taskDurations.get(taskId) ?? 0.0;
           recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
         }
@@ -848,49 +847,45 @@ function writeOutput(
     }
 
     if (userArgs.upload) {
+      const taskId = trajectory.metadata.auto_run_example_id;
       const trajectoryUploaded = uploadEvalToGCS({
         runId,
-        taskId: trajectory.metadata.auto_run_example_id,
+        taskId,
         localJsonPath: evalOutputPath,
-        destinationFileName: 'trajectory.json',
+        destinationFileName: TaskOutputFile.TRAJECTORY,
       });
 
-      const agentLog = logger.getTaskLogContent(trajectory.metadata.auto_run_example_id);
-      const agentLogUploaded = uploadAgentLog(runId, trajectory.metadata.auto_run_example_id, agentLog);
-
-      const chatLog = formatChatLog(trajectory);
-      const chatLogUploaded = uploadChatLog(runId, trajectory.metadata.auto_run_example_id, chatLog);
-
-      const agentStderr = logger.getTaskStderrContent(trajectory.metadata.auto_run_example_id);
-      const agentStderrUploaded = uploadAgentStderrLog(runId, trajectory.metadata.auto_run_example_id, agentStderr);
+      const agentLogUploaded =
+          uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_LOG, logger.getTaskLogContent(taskId));
+      const chatLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.CHAT_LOG, formatChatLog(trajectory));
+      const agentStderrUploaded =
+          uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
 
       if (!userArgs.grade) {
-        const matchingTrajectories =
-            output.trajectories.filter(e => e.session_id === trajectory.metadata.auto_run_example_id);
+        const matchingTrajectories = output.trajectories.filter(e => e.session_id === taskId);
         const hasError = matchingTrajectories.some(e => Boolean(e.error) ||
                                                        Boolean(e.assertionFailures && e.assertionFailures.length > 0));
         // TODO: Parse grader output or evaluation assertions to report individual task scores instead of defaulting to 1.0.
-        const score = matchingTrajectories.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
+        const baseScore = matchingTrajectories.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
+        const allUploadsSucceeded = trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded;
+        const score = allUploadsSucceeded ? baseScore : 0.0;
         // Status indicates execution outcome (PASSED if prompt turns completed and uploaded without error,
         // FAILED if upload failed, assertion failures occurred, or score is 0.0).
-        const status = (!trajectoryUploaded || !agentLogUploaded || !chatLogUploaded || !agentStderrUploaded ||
-                        hasError || score <= 0.0) ?
-            'FAILED' :
-            'PASSED';
-        const durationSeconds = taskDurations.get(trajectory.metadata.auto_run_example_id) ?? 0.0;
+        const status = (!allUploadsSucceeded || hasError || score <= 0.0) ? 'FAILED' : 'PASSED';
+        const durationSeconds = taskDurations.get(taskId) ?? 0.0;
 
         uploadTaskCompleted({
-          taskId: trajectory.metadata.auto_run_example_id,
+          taskId,
           runId,
           status,
-          score: (trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded) ? score : 0.0,
+          score,
           durationSeconds,
           tokens: {},
         });
         taskStatuses.push({
-          taskId: trajectory.metadata.auto_run_example_id,
+          taskId,
           status,
-          score: (trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded) ? score : 0.0,
+          score,
         });
       }
     }

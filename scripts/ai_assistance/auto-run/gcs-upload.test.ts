@@ -12,6 +12,7 @@ import {
   getContentType,
   Markers,
   PROJECT_ID,
+  TaskOutputFile,
 } from './gcs-upload.ts';
 
 describe('gcs-upload', () => {
@@ -24,7 +25,7 @@ describe('gcs-upload', () => {
     const destination = formatGCSTaskDestination(
         '2026-08-25-134619-c0c1-8f25f69',
         'example-target-html',
-        'trajectory.json',
+        TaskOutputFile.TRAJECTORY,
     );
     assert.strictEqual(
         destination,
@@ -61,22 +62,22 @@ describe('gcs-upload', () => {
     const runId = '2026-08-25-134619-c0c1-8f25f69';
     const taskId = 'example-target-html';
     assert.strictEqual(
-        formatGCSTaskDestination(runId, taskId, 'agent_logs/agent.log'),
+        formatGCSTaskDestination(runId, taskId, TaskOutputFile.AGENT_LOG),
         `gs://${BUCKET}/${
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/agent_logs/agent.log`,
     );
     assert.strictEqual(
-        formatGCSTaskDestination(runId, taskId, 'agent_logs/chat_log.txt'),
+        formatGCSTaskDestination(runId, taskId, TaskOutputFile.CHAT_LOG),
         `gs://${BUCKET}/${
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/agent_logs/chat_log.txt`,
     );
     assert.strictEqual(
-        formatGCSTaskDestination(runId, taskId, 'agent_logs/agent_stderr.log'),
+        formatGCSTaskDestination(runId, taskId, TaskOutputFile.AGENT_STDERR),
         `gs://${BUCKET}/${
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/agent_logs/agent_stderr.log`,
     );
     assert.strictEqual(
-        formatGCSTaskDestination(runId, taskId, 'grader_output/grader.log'),
+        formatGCSTaskDestination(runId, taskId, TaskOutputFile.GRADER_LOG),
         `gs://${BUCKET}/${
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/grader_output/grader.log`,
     );
@@ -94,11 +95,11 @@ describe('gcs-upload', () => {
 
   it('resolves correct content types with charset=utf-8', () => {
     assert.strictEqual(getContentType('eval_run.log'), 'text/plain; charset=utf-8');
-    assert.strictEqual(getContentType('agent_logs/agent.log'), 'text/plain; charset=utf-8');
-    assert.strictEqual(getContentType('agent_logs/chat_log.txt'), 'text/plain; charset=utf-8');
-    assert.strictEqual(getContentType('agent_logs/agent_stderr.log'), 'text/plain; charset=utf-8');
-    assert.strictEqual(getContentType('grader_output/grader.log'), 'text/plain; charset=utf-8');
-    assert.strictEqual(getContentType('trajectory.json'), 'application/json; charset=utf-8');
+    assert.strictEqual(getContentType(TaskOutputFile.AGENT_LOG), 'text/plain; charset=utf-8');
+    assert.strictEqual(getContentType(TaskOutputFile.CHAT_LOG), 'text/plain; charset=utf-8');
+    assert.strictEqual(getContentType(TaskOutputFile.AGENT_STDERR), 'text/plain; charset=utf-8');
+    assert.strictEqual(getContentType(TaskOutputFile.GRADER_LOG), 'text/plain; charset=utf-8');
+    assert.strictEqual(getContentType(TaskOutputFile.TRAJECTORY), 'application/json; charset=utf-8');
     assert.strictEqual(getContentType('eval_report.html'), 'text/html; charset=utf-8');
     assert.strictEqual(getContentType('run_started.marker'), 'text/plain');
   });

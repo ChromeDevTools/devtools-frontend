@@ -80,11 +80,21 @@ export const Markers = {
 } as const;
 export type Markers = (typeof Markers)[keyof typeof Markers];
 
+export const TaskOutputFile = {
+  TRAJECTORY: 'trajectory.json',
+  EVAL_RESULT: 'eval_result.json',
+  AGENT_LOG: 'agent_logs/agent.log',
+  CHAT_LOG: 'agent_logs/chat_log.txt',
+  AGENT_STDERR: 'agent_logs/agent_stderr.log',
+  GRADER_LOG: 'grader_output/grader.log',
+} as const;
+export type TaskOutputFile = (typeof TaskOutputFile)[keyof typeof TaskOutputFile];
+
 export interface UploadOptions {
   runId: string;
   taskId: string;
   localJsonPath: string;
-  destinationFileName: string;
+  destinationFileName: TaskOutputFile|string;
 }
 
 export interface RunStartedPayload {
@@ -247,50 +257,25 @@ export function uploadRunStarted(payload: RunStartedPayload): boolean {
 }
 
 /**
- * Uploads tasks/<task_id>/output/agent_logs/agent.log to GCS.
+ * Uploads text/log content directly to a task-level GCS destination
+ * (e.g. tasks/<taskId>/output/<destinationPath>).
+ * Used for task artifacts such as:
+ *   - agent_logs/agent.log
+ *   - agent_logs/chat_log.txt
+ *   - agent_logs/agent_stderr.log
+ *   - grader_output/grader.log
  * Staged in a temporary directory and cleaned up after upload.
  * Must be called during Phase 2 before eval_task_completed.marker is uploaded.
  */
-export function uploadAgentLog(runId: string, taskId: string, logContent: string): boolean {
+export function uploadTaskContent(
+    runId: string,
+    taskId: string,
+    destinationPath: TaskOutputFile,
+    content: string,
+    ): boolean {
   return uploadTemporaryContentToGCS(
-      logContent,
-      formatGCSTaskDestination(runId, taskId, 'agent_logs/agent.log'),
-  );
-}
-
-/**
- * Uploads tasks/<task_id>/output/agent_logs/chat_log.txt to GCS.
- * Staged in a temporary directory and cleaned up after upload.
- * Must be called during Phase 2 before eval_task_completed.marker is uploaded.
- */
-export function uploadChatLog(runId: string, taskId: string, logContent: string): boolean {
-  return uploadTemporaryContentToGCS(
-      logContent,
-      formatGCSTaskDestination(runId, taskId, 'agent_logs/chat_log.txt'),
-  );
-}
-
-/**
- * Uploads tasks/<task_id>/output/agent_logs/agent_stderr.log to GCS.
- * Staged in a temporary directory and cleaned up after upload.
- * Must be called during Phase 2 before eval_task_completed.marker is uploaded.
- */
-export function uploadAgentStderrLog(runId: string, taskId: string, logContent: string): boolean {
-  return uploadTemporaryContentToGCS(
-      logContent,
-      formatGCSTaskDestination(runId, taskId, 'agent_logs/agent_stderr.log'),
-  );
-}
-
-/**
- * Uploads tasks/<task_id>/output/grader_output/grader.log to GCS.
- * Staged in a temporary directory and cleaned up after upload.
- * Must be called during Phase 2 before eval_task_completed.marker is uploaded.
- */
-export function uploadGraderLog(runId: string, taskId: string, logContent: string): boolean {
-  return uploadTemporaryContentToGCS(
-      logContent,
-      formatGCSTaskDestination(runId, taskId, 'grader_output/grader.log'),
+      content,
+      formatGCSTaskDestination(runId, taskId, destinationPath),
   );
 }
 

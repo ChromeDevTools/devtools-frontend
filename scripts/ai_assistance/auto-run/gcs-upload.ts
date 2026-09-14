@@ -145,13 +145,30 @@ export function formatGCSTaskDestination(runId: string, taskId: string, destinat
 }
 
 /**
+ * Resolves the appropriate Content-Type header with UTF-8 charset based on the file extension.
+ */
+export function getContentType(filePath: string): string {
+  if (filePath.endsWith('.json')) {
+    return 'application/json; charset=utf-8';
+  }
+  if (filePath.endsWith('.html')) {
+    return 'text/html; charset=utf-8';
+  }
+  if (filePath.endsWith('.marker')) {
+    return 'text/plain';
+  }
+  return 'text/plain; charset=utf-8';
+}
+
+/**
  * Uploads a local file to GCS using system gcloud CLI.
  */
-export function uploadFileToGCS(localFilePath: string, destination: string): boolean {
+export function uploadFileToGCS(localFilePath: string, destination: string, contentType?: string): boolean {
   console.log(`[GCS] Preparing upload of ${localFilePath} to ${destination}`);
 
   try {
-    const command = `gcloud storage cp "${localFilePath}" "${destination}"`;
+    const type = contentType ?? getContentType(destination);
+    const command = `gcloud storage cp --content-type="${type}" "${localFilePath}" "${destination}"`;
     execSync(command, {
       stdio: 'inherit',
     });
@@ -177,13 +194,13 @@ export function uploadEvalToGCS(options: UploadOptions): boolean {
  * Stages string content into a temporary directory file, uploads it to GCS,
  * and guarantees immediate cleanup in a finally block.
  */
-function uploadTemporaryContentToGCS(content: string, destination: string): boolean {
+function uploadTemporaryContentToGCS(content: string, destination: string, contentType?: string): boolean {
   const fileName = path.posix.basename(destination);
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gcs-upload-'));
   const tempFilePath = path.join(tempDir, fileName);
   try {
     fs.writeFileSync(tempFilePath, content, 'utf8');
-    return uploadFileToGCS(tempFilePath, destination);
+    return uploadFileToGCS(tempFilePath, destination, contentType);
   } finally {
     fs.rmSync(tempDir, {recursive: true, force: true});
   }

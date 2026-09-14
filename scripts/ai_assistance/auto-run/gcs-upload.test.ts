@@ -9,6 +9,7 @@ import {
   formatGCSRunDestination,
   formatGCSTaskDestination,
   generateRunId,
+  getContentType,
   Markers,
   PROJECT_ID,
 } from './gcs-upload.ts';
@@ -79,5 +80,14 @@ describe('gcs-upload', () => {
         `gs://${BUCKET}/${
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/eval_task_completed.marker`,
     );
+  });
+
+  it('resolves correct content types with charset=utf-8', () => {
+    assert.strictEqual(getContentType('eval_run.log'), 'text/plain; charset=utf-8');
+    assert.strictEqual(getContentType('agent_logs/agent.log'), 'text/plain; charset=utf-8');
+    assert.strictEqual(getContentType('grader_output/grader.log'), 'text/plain; charset=utf-8');
+    assert.strictEqual(getContentType('trajectory.json'), 'application/json; charset=utf-8');
+    assert.strictEqual(getContentType('eval_report.html'), 'text/html; charset=utf-8');
+    assert.strictEqual(getContentType('run_started.marker'), 'text/plain');
   });
 });

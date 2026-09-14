@@ -7,7 +7,10 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as WebMCP from './web_mcp.js';
 
@@ -20,12 +23,18 @@ function createTool(name: string, frameId: Protocol.Page.FrameId): Protocol.WebM
   };
 }
 
-describeWithEnvironment('WebMCPModel', () => {
+describe('WebMCPModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
   let target: SDK.Target.Target;
   let webMCPModel: WebMCP.WebMCPModel.WebMCPModel;
 
   beforeEach(() => {
-    target = createTarget();
+    universe = new TestUniverse();
+    target = universe.createTarget();
     const model = target.model(WebMCP.WebMCPModel.WebMCPModel);
     assert.isNotNull(model);
     webMCPModel = model;

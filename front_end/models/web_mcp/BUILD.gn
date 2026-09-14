@@ -8,7 +8,7 @@ import("../../../scripts/build/ninja/vars.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("web_mcp") {
+devtools_foundation_module("web_mcp") {
   sources = [ "WebMCPModel.ts" ]
 
   inputs = [ devtools_location_prepend +
@@ -36,7 +36,7 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-ts_library("unittests") {
+devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [ "WebMCPModel.test.ts" ]

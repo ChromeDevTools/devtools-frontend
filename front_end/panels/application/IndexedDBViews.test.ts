@@ -482,4 +482,45 @@ describeWithEnvironment('IDBDataView', () => {
 
     assert.isNull(component.element.querySelector('.stale-data-warning'));
   });
+
+  it('re-renders row values after the data is refreshed', async () => {
+    const model = sinon.createStubInstance(Application.IndexedDBModel.IndexedDBModel);
+    // Each load returns freshly allocated entries, like a real CDP roundtrip does.
+    let currentValue = 'value_before_refresh';
+    model.loadObjectStoreData.callsFake((_dbId, _storeName, _keyRange, _skipCount, _pageSize, callback) => {
+      callback([{
+                 key: SDK.RemoteObject.RemoteObject.fromLocalObject('testKey'),
+                 primaryKey: SDK.RemoteObject.RemoteObject.fromLocalObject('testKey'),
+                 value: SDK.RemoteObject.RemoteObject.fromLocalObject(currentValue),
+               }],
+               false);
+    });
+    model.getMetadata.resolves({entriesCount: 1, keyGeneratorValue: 0});
+
+    const databaseId = new Application.IndexedDBModel.DatabaseId({storageKey: 'https://example.com'}, 'My Database');
+    const objectStore = new Application.IndexedDBModel.ObjectStore('My Object Store', 'key', false);
+    const refreshCallback = sinon.spy();
+
+    const component = new Application.IndexedDBViews.IDBDataView(model, databaseId, objectStore, null, refreshCallback);
+    renderElementIntoDOM(component);
+
+    await performActionAndWaitForSettle(component, () => {
+      component.update(objectStore);
+    });
+
+    const dataGrid = component.element.querySelector('devtools-data-grid');
+    assert.isNotNull(dataGrid);
+    assert.isNotNull(dataGrid.shadowRoot);
+
+    assert.include(getValuesOfAllBodyRows(dataGrid.shadowRoot).flat().join(' '), 'value_before_refresh');
+
+    currentValue = 'value_after_refresh';
+    await performActionAndWaitForSettle(component, () => {
+      component.refreshData();
+    });
+
+    const valuesAfterRefresh = getValuesOfAllBodyRows(dataGrid.shadowRoot).flat().join(' ');
+    assert.include(valuesAfterRefresh, 'value_after_refresh');
+    assert.notInclude(valuesAfterRefresh, 'value_before_refresh');
+  });
 });

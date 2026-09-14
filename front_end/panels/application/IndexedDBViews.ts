@@ -298,7 +298,7 @@ const renderDataGrid = (input: IndexedDBDataViewInput): LitTemplate => {
         ${input.isIndex ? html`<th id="primary-key" weight="2">${renderKeyColumnHeader(i18nString(UIStrings.primaryKey), input.objectStore.keyPath)}</th>` : nothing}
         <th id="value" weight="8">${i18nString(UIStrings.valueString)}</th>
       </tr>
-      ${repeat(input.entries, (_entry, index) => index, (entry, index) => {
+      ${repeat(input.entries, entry => entry, (entry, index) => {
         return html`
           <tr ?selected=${index + input.skipCount === input.selectedRowNumber}
               class="data-grid-data-row"

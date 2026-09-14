@@ -1969,7 +1969,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   async removeNode(node: SDK.DOMModel.DOMNode): Promise<void> {
     if (this.isToggledToHidden(node)) {
       // Unhide the node before removing. This avoids inconsistent state if the node is restored via undo.
-      this.toggleHideElement(node);
+      await node.toggleHideElement();
     }
     if (node.pseudoType()) {
       return;

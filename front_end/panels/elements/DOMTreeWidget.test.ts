@@ -3271,6 +3271,57 @@ describeWithEnvironment('DOMTreeWidget', () => {
     });
   });
 
+  describe('removing nodes', () => {
+    it('removes a hidden node only after unhiding it has completed', async () => {
+      const testDomModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      const rootNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'DIV',
+        localName: 'div',
+        nodeValue: '',
+        childNodeCount: 1,
+        children: [{
+          nodeId: 2 as Protocol.DOM.NodeId,
+          parentId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'P',
+          localName: 'p',
+          nodeValue: '',
+          childNodeCount: 0,
+        }],
+      }) as SDK.DOMModel.DOMNode;
+      const node = rootNode.children()![0];
+
+      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget();
+      try {
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+
+        sinon.stub(node, 'isToggledToHidden').returns(true);
+        let finishUnhiding!: () => void;
+        sinon.stub(node, 'toggleHideElement').returns(new Promise<void>(resolve => {
+          finishUnhiding = resolve;
+        }));
+        const removeNodeStub = sinon.stub(node, 'removeNode').resolves();
+
+        const removal = domTree.removeNode(node);
+        // The node must stay in the tree until it is visible again, so that an undo restores it in a
+        // consistent state.
+        sinon.assert.notCalled(removeNodeStub);
+
+        finishUnhiding();
+        await removal;
+
+        sinon.assert.calledOnce(removeNodeStub);
+      } finally {
+        domTree.detach();
+      }
+    });
+  });
+
   describe('screenshots', () => {
     function disableEditorCursor(root: Node|null): void {
       if (!root) {

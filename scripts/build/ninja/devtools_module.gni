@@ -28,7 +28,6 @@ _devtools_module_folder_exceptions = [
   "front_end/models/live-metrics",
   "front_end/models/live-metrics/web-vitals-injected",
   "front_end/models/persistence",
-  "front_end/models/source_map_scopes",
   "front_end/models/trace",
   "front_end/models/trace/extras",
   "front_end/models/trace/handlers",

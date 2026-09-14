@@ -920,7 +920,15 @@ export class AnimationGroup {
   }
 
   seekTo(currentTime: number): void {
-    void this.#animationModel.agent.invoke_seekAnimations({animations: this.animationIds(), currentTime});
+    const animations = [];
+    const currentTimes = [];
+    for (const animation of this.#animations) {
+      // Seek from the end of the animation if it is reversed.
+      animations.push(animation.id());
+      currentTimes.push(animation.playbackRate() >= 0 ? currentTime :
+                                                        animation.endTime() - animation.startTime() - currentTime);
+    }
+    void this.#animationModel.agent.invoke_seekAnimations({animations, currentTimes});
   }
 
   paused(): boolean {

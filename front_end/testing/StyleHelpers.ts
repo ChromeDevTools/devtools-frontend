@@ -193,9 +193,9 @@ export function getMatchedStyles(
 export function createStubbedDomNodeWithModels(opts: {nodeId: number} = {
   nodeId: 1,
 }): {
-  node: SDK.DOMModel.DOMNode,
-  domModel: SDK.DOMModel.DOMModel,
-  cssModel: SDK.CSSModel.CSSModel,
+  node: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>,
+  domModel: sinon.SinonStubbedInstance<SDK.DOMModel.DOMModel>,
+  cssModel: sinon.SinonStubbedInstance<SDK.CSSModel.CSSModel>,
 } {
   const target = sinon.createStubInstance(SDK.Target.Target);
   const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel, {

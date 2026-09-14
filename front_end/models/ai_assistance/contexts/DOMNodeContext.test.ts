@@ -126,19 +126,24 @@ describe('DOMNodeContext', function() {
   });
 
   describe('getOrigin', () => {
-    it('returns the owner document URL origin when attached to a document', () => {
-      const mockDocument = {
-        documentURL: 'https://example.com/page.html',
-      } as unknown as SDK.DOMModel.DOMDocument;
-      element.ownerDocument = mockDocument;
+    it('returns the security origin reported by the node', () => {
+      const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      element.securityOrigin.returns(origin);
 
       const nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
-      assert.isTrue(
-          nodeContext.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
+      assert.strictEqual(nodeContext.getOrigin(), origin);
     });
 
-    it('returns a stable opaque origin when detached from a document', () => {
-      element.ownerDocument = null;
+    it('returns the opaque origin reported by the node rather than minting a new one', () => {
+      const origin = SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
+      element.securityOrigin.returns(origin);
+
+      const nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
+      assert.strictEqual(nodeContext.getOrigin(), origin);
+    });
+
+    it('returns a stable opaque origin when the node has no security origin', () => {
+      element.securityOrigin.returns(null);
 
       const nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
       const origin1 = nodeContext.getOrigin();

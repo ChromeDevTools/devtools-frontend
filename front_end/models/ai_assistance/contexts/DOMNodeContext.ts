@@ -38,15 +38,15 @@ export class DOMNodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
    * @returns The security origin of the owner document, or a unique opaque origin.
    */
   override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
-    const ownerDocument = this.#node.ownerDocument;
-    if (!ownerDocument) {
-      // Detached nodes have no security document; isolate them with a unique opaque origin.
+    const origin = this.#node.securityOrigin();
+    if (!origin) {
+      // A node that is not attached to a document has no origin; isolate it with a unique opaque origin.
       if (!this.#opaqueOrigin) {
         this.#opaqueOrigin = SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
       }
       return this.#opaqueOrigin;
     }
-    return SDK.SecurityOrigin.SecurityOrigin.create(ownerDocument.documentURL);
+    return origin;
   }
 
   getItem(): SDK.DOMModel.DOMNode {

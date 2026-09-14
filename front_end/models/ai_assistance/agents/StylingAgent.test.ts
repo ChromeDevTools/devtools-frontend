@@ -75,9 +75,6 @@ describe('StylingAgent', function() {
     element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     element.domModel.returns(domModel);
     element.backendNodeId.returns(99 as unknown as ReturnType<SDK.DOMModel.DOMNode['backendNodeId']>);
-    element.ownerDocument = {
-      documentURL: 'https://example.com',
-    } as unknown as SDK.DOMModel.DOMDocument;
     element.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
   });
 
@@ -750,13 +747,7 @@ describe('StylingAgent', function() {
     it('returns error on origin mismatch', async () => {
       const {node: resolvedNode} = createStubbedDomNodeWithModels({nodeId: 42});
 
-      element.ownerDocument = {
-        documentURL: 'https://example.com',
-      } as unknown as SDK.DOMModel.DOMDocument;
-
-      resolvedNode.ownerDocument = {
-        documentURL: 'https://another.com',
-      } as unknown as SDK.DOMModel.DOMDocument;
+      resolvedNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://another.com'));
 
       sinon.stub(SDK.DOMModel.DeferredDOMNode.prototype, 'resolvePromise').resolves(resolvedNode);
 

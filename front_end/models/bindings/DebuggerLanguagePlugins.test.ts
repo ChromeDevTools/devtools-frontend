@@ -9,9 +9,11 @@ import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {protocolCallFrame, stringifyFrame} from '../../testing/StackTraceHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
@@ -54,7 +56,11 @@ describe('ExtensionRemoteObject', () => {
 });
 
 describe('DebuggerLanguagePluginManager', () => {
-  describeWithEnvironment('getFunctionInfo', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  describe('getFunctionInfo', () => {
     let target: SDK.Target.Target;
     let pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager;
     let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
@@ -155,7 +161,7 @@ describe('DebuggerLanguagePluginManager', () => {
     });
   });
 
-  describeWithEnvironment('translateRawFramesStep', () => {
+  describe('translateRawFramesStep', () => {
     function setup() {
       const backend = new MockDebuggerBackend();
       const target = backend.createTarget();

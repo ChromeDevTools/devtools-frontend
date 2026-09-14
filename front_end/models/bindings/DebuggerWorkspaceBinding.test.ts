@@ -13,6 +13,7 @@ import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import * as Formatter from '../formatter/formatter.js';
 
 import * as Bindings from './bindings.js';
 
@@ -21,6 +22,10 @@ const {urlString} = Platform.DevToolsPath;
 describe('DebuggerWorkspaceBinding', () => {
   setupLocaleHooks();
   setupRuntimeHooks();
+
+  afterEach(() => {
+    Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
+  });
 
   it('can wait for a uiSourceCode if it is not yet available', async () => {
     const backend = new MockDebuggerBackend();

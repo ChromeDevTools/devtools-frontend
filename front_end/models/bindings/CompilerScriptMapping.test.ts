@@ -14,6 +14,7 @@ import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {encodeSourceMap, waitForAllSourceMapsProcessed} from '../../testing/SourceMapEncoder.js';
 import {protocolCallFrame, stringifyFrame} from '../../testing/StackTraceHelpers.js';
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
+import * as Formatter from '../formatter/formatter.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
@@ -35,6 +36,7 @@ describe('CompilerScriptMapping', () => {
 
   afterEach(async () => {
     await waitForAllSourceMapsProcessed();
+    Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
   });
 
   const waitForUISourceCodeAdded =

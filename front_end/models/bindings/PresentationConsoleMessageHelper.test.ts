@@ -9,9 +9,11 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockExecutionContext} from '../../testing/MockExecutionContext.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -99,7 +101,10 @@ async function addStyleSheet(universe: TestUniverse,
   return uiSourceCode;
 }
 
-describeWithEnvironment('PresentationConsoleMessageHelper', () => {
+describe('PresentationConsoleMessageHelper', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
   const url = urlString`http://example.test/test.css`;
   let universe: TestUniverse;
   let helper: Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageHelper;

@@ -38,23 +38,16 @@ export class TempFile {
         this.#lastBlob.slice((startOffset as number), (endOffset as number)) :
         this.#lastBlob;
 
-    const reader = new FileReader();
     try {
-      await new Promise((resolve, reject) => {
-        reader.onloadend = resolve;
-        reader.onerror = reject;
-        reader.readAsText(blob);
-      });
+      return await blob.text();
     } catch (error) {
-      this.#console.error('Failed to read from temp file: ' + error.message);
+      this.#console.error('Failed to read from temp file: ' + (error as Error).message);
+      return null;
     }
-
-    return reader.result as string | null;
   }
 
-  async copyToOutputStream(
-      outputStream: Common.StringOutputStream.OutputStream,
-      progress?: ((arg0: ChunkedReader) => void)): Promise<DOMError|null> {
+  async copyToOutputStream(outputStream: Common.StringOutputStream.OutputStream,
+                           progress?: ((arg0: ChunkedReader) => void)): Promise<DOMException|Error|null> {
     if (!this.#lastBlob) {
       void outputStream.close();
       return null;

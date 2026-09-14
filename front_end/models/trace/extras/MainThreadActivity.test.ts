@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {
   makeCompleteEvent,
-} from '../../../testing/TraceHelpers.js';
+} from '../../../testing/TraceHelpersCore.js';
 import * as Trace from '../trace.js';
 
 const DEVTOOLS_CATEGORY = 'disabled-by-default-devtools.timeline';

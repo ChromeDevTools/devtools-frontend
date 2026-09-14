@@ -4,11 +4,10 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {makeCompleteEvent} from '../../../testing/TraceHelpers.js';
+import {makeCompleteEvent} from '../../../testing/TraceHelpersCore.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('TraceFilter', () => {
+describe('TraceFilter', () => {
   const userTimingEvent = makeCompleteEvent('some-measure', 0, 10, 'blink.user_timing');
   const consoleTimingEvent = makeCompleteEvent('some-console-time', 0, 10, 'blink.console');
   const layoutShiftEvent = makeCompleteEvent(Trace.Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT, 0, 10);

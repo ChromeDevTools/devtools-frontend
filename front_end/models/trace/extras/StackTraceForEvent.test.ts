@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import type * as Protocol from '../../../generated/protocol.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   allThreadEntriesInTrace,
   getBaseTraceHandlerData,
@@ -13,7 +12,7 @@ import {
   makeInstantEvent,
   makeMockRendererHandlerData,
   makeProfileCall,
-} from '../../../testing/TraceHelpers.js';
+} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -34,7 +33,7 @@ function shapeStackTraceAsArray(stackTrace: Protocol.Runtime.StackTrace):
 function parsedTraceFromEvents(events: Trace.Types.Events.Event[]): Trace.TraceModel.ParsedTrace {
   return getBaseTraceHandlerData({Renderer: makeMockRendererHandlerData(events)});
 }
-describeWithEnvironment('StackTraceForTraceEvent', function() {
+describe('StackTraceForTraceEvent', function() {
   let parsedTrace: Trace.TraceModel.ParsedTrace;
   let data: Trace.Handlers.Types.HandlerData;
   beforeEach(async function() {

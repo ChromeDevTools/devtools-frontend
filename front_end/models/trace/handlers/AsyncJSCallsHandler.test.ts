@@ -15,9 +15,11 @@ const pid = 1;
 const tid = 1;
 async function buildAsyncJSCallsHandlerData(events: Trace.Types.Events.Event[]):
     Promise<ReturnType<typeof Trace.Handlers.ModelHandlers.AsyncJSCalls.data>> {
+  Trace.Handlers.ModelHandlers.Meta.reset();
   Trace.Handlers.ModelHandlers.Renderer.reset();
   Trace.Handlers.ModelHandlers.Flows.reset();
-  Trace.Handlers.ModelHandlers.Flows.reset();
+  Trace.Handlers.ModelHandlers.Samples.reset();
+  Trace.Handlers.ModelHandlers.AsyncJSCalls.reset();
   for (const event of events) {
     Trace.Handlers.ModelHandlers.Renderer.handleEvent(event);
     Trace.Handlers.ModelHandlers.Flows.handleEvent(event);

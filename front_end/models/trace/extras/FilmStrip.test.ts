@@ -4,11 +4,10 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('FilmStrip', function() {
+describe('FilmStrip', function() {
   /**
    * See `models/trace/types/TraceEvents.ts` for the type of `LegacyScreenshot`
    * and the comment explaining the differences in the "old" and "new" format.

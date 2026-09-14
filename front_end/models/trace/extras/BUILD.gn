@@ -7,7 +7,7 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
-devtools_module("extras") {
+devtools_foundation_module("extras") {
   sources = [
     "FilmStrip.ts",
     "Initiators.ts",
@@ -40,7 +40,7 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-ts_library("unittests") {
+devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [
@@ -61,7 +61,6 @@ ts_library("unittests") {
     "../../../core/sdk:bundle",
     "../../../generated",
     "../../../models/trace:bundle",
-    "../../../panels/timeline:bundle",
     "../../../testing",
     "../handlers:bundle",
     "../types:bundle",

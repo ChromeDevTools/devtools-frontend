@@ -8481,7 +8481,7 @@ export const NativeFunctions = [
     },
     {
         name: "executeTool",
-        signatures: [["tool", "inputArguments", "?options"]]
+        signatures: [["tool", "?inputObject", "?options"]]
     },
     {
         name: "TaskController",
@@ -8712,10 +8712,6 @@ export const NativeFunctions = [
     {
         name: "setReportEventDataForAutomaticBeacons",
         signatures: [["event"]]
-    },
-    {
-        name: "FencedFrameConfig",
-        signatures: [["url"]]
     },
     {
         name: "setSharedStorageContext",

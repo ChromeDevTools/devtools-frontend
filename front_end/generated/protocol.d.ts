@@ -1567,6 +1567,21 @@ export declare namespace Audits {
          */
         disableReason?: string;
     }
+    const enum WebInstallIssueReason {
+        ManifestParsingOrNetworkError = "ManifestParsingOrNetworkError",
+        StartUrlInvalid = "StartUrlInvalid",
+        ManifestMissingNameOrShortName = "ManifestMissingNameOrShortName",
+        ManifestMissingId = "ManifestMissingId",
+        NoManifest = "NoManifest"
+    }
+    /**
+     * This issue reports a failure involving a web app manifest used by a Web
+     * Install operation.
+     */
+    interface WebInstallIssueDetails {
+        manifestUrl?: string;
+        reason: WebInstallIssueReason;
+    }
     /**
      * The issue warns about blocked calls to privacy sensitive APIs via the
      * Selective Permissions Intervention.
@@ -1637,7 +1652,8 @@ export declare namespace Audits {
         PerformanceIssue = "PerformanceIssue",
         SelectivePermissionsInterventionIssue = "SelectivePermissionsInterventionIssue",
         EmailVerificationRequestIssue = "EmailVerificationRequestIssue",
-        LazyLoadImageIssue = "LazyLoadImageIssue"
+        LazyLoadImageIssue = "LazyLoadImageIssue",
+        WebInstallIssue = "WebInstallIssue"
     }
     /**
      * This struct holds a list of optional fields with additional information
@@ -1678,6 +1694,7 @@ export declare namespace Audits {
         selectivePermissionsInterventionIssueDetails?: SelectivePermissionsInterventionIssueDetails;
         emailVerificationRequestIssueDetails?: EmailVerificationRequestIssueDetails;
         lazyLoadImageIssueDetails?: LazyLoadImageIssueDetails;
+        webInstallIssueDetails?: WebInstallIssueDetails;
     }
     /**
      * A unique id for a DevTools inspector issue. Allows other entities (e.g.
@@ -5487,6 +5504,18 @@ export declare namespace DOM {
          * List of popovers that were closed in order to respect popover stacking order.
          */
         nodeIds: NodeId[];
+    }
+    interface GetImplicitAnchorCandidatesRequest {
+        /**
+         * Id of the popover HTMLElement.
+         */
+        nodeId: NodeId;
+    }
+    interface GetImplicitAnchorCandidatesResponse extends ProtocolResponseWithError {
+        /**
+         * Candidate elements that can invoke this popover.
+         */
+        backendNodeIds: BackendNodeId[];
     }
     interface ForceShowInterestRequest {
         /**
@@ -16489,9 +16518,7 @@ export declare namespace ServiceWorker {
     }
     /**
      * Mostly corresponds to `RouterCondition` in ServiceWorker spec
-     * (https://www.w3.org/TR/service-workers/#dictdef-routercondition) while this
-     * currently lacks support for the nested conditions ("or" and "not").
-     * TODO(crbug.com/540469610): Support recursive conditions.
+     * (https://www.w3.org/TR/service-workers/#dictdef-routercondition)
      */
     interface ServiceWorkerRouterCondition {
         /**
@@ -16502,6 +16529,8 @@ export declare namespace ServiceWorker {
         requestMode?: string;
         requestDestination?: string;
         runningStatus?: ServiceWorkerVersionRunningStatus;
+        or?: ServiceWorkerRouterCondition[];
+        not?: ServiceWorkerRouterCondition;
     }
     const enum ServiceWorkerRouterSourceType {
         Cache = "cache",

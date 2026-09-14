@@ -8488,7 +8488,7 @@ var NativeFunctions = [
   },
   {
     name: "executeTool",
-    signatures: [["tool", "inputArguments", "?options"]]
+    signatures: [["tool", "?inputObject", "?options"]]
   },
   {
     name: "TaskController",
@@ -8719,10 +8719,6 @@ var NativeFunctions = [
   {
     name: "setReportEventDataForAutomaticBeacons",
     signatures: [["event"]]
-  },
-  {
-    name: "FencedFrameConfig",
-    signatures: [["url"]]
   },
   {
     name: "setSharedStorageContext",

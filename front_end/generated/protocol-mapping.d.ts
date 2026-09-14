@@ -2298,6 +2298,13 @@ export namespace ProtocolMapping {
       returnType: Protocol.DOM.ForceShowPopoverResponse;
     };
     /**
+     * Returns candidate nodes that are configured as triggers for the given popover.
+     */
+    'DOM.getImplicitAnchorCandidates': {
+      paramsType: [Protocol.DOM.GetImplicitAnchorCandidatesRequest];
+      returnType: Protocol.DOM.GetImplicitAnchorCandidatesResponse;
+    };
+    /**
      * When enabling, this API forces an element to gain interest in its target,
      * keeping interest active until disabled.
      */

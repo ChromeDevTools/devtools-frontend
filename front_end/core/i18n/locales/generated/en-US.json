@@ -3725,6 +3725,9 @@
   "panels/application/components/AdsView.ts | adIframesTitle": {
     "message": "Ad iframes (total {PH1})"
   },
+  "panels/application/components/AdsView.ts | adProvenance": {
+    "message": "Ad provenance"
+  },
   "panels/application/components/AdsView.ts | adScripts": {
     "message": "Ad scripts"
   },
@@ -3737,8 +3740,14 @@
   "panels/application/components/AdsView.ts | cpu": {
     "message": "CPU"
   },
+  "panels/application/components/AdsView.ts | creatorAdScriptAncestry": {
+    "message": "Creator ad script ancestry"
+  },
   "panels/application/components/AdsView.ts | elementId": {
     "message": "Element ID"
+  },
+  "panels/application/components/AdsView.ts | filterListRule": {
+    "message": "Filter list rule"
   },
   "panels/application/components/AdsView.ts | highlightAds": {
     "message": "Highlight ads"
@@ -3758,8 +3767,17 @@
   "panels/application/components/AdsView.ts | network": {
     "message": "Network"
   },
+  "panels/application/components/AdsView.ts | noProvenance": {
+    "message": "<no provenance>"
+  },
+  "panels/application/components/AdsView.ts | noProvenanceTooltip": {
+    "message": "No provenance data is available"
+  },
   "panels/application/components/AdsView.ts | notAvailable": {
     "message": "N/A"
+  },
+  "panels/application/components/AdsView.ts | rootScriptFilterListRule": {
+    "message": "Root script filter list rule"
   },
   "panels/application/components/AdsView.ts | settings": {
     "message": "Settings"

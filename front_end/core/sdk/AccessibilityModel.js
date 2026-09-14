@@ -293,7 +293,7 @@ export class AccessibilityModel extends SDKModel {
     async requestAXChildren(nodeId, frameId) {
         const parent = this.#axIdToAXNode.get(nodeId);
         if (!parent) {
-            throw new Error('Cannot request children before parent');
+            return [];
         }
         if (!parent.hasUnloadedChildren()) {
             return parent.children();
@@ -311,7 +311,7 @@ export class AccessibilityModel extends SDKModel {
                 this.#pendingChildRequests.delete(nodeId);
             }
         }
-        return parent.children();
+        return this.#axIdToAXNode.get(nodeId)?.children() ?? [];
     }
     async requestAndLoadSubTreeToNode(node) {
         // Node may have already been loaded, so don't bother requesting it again.

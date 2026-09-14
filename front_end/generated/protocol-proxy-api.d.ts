@@ -1396,6 +1396,11 @@ declare namespace ProtocolProxyApi {
     invoke_forceShowPopover(params: Protocol.DOM.ForceShowPopoverRequest): Promise<Protocol.DOM.ForceShowPopoverResponse>;
 
     /**
+     * Returns candidate nodes that are configured as triggers for the given popover.
+     */
+    invoke_getImplicitAnchorCandidates(params: Protocol.DOM.GetImplicitAnchorCandidatesRequest): Promise<Protocol.DOM.GetImplicitAnchorCandidatesResponse>;
+
+    /**
      * When enabling, this API forces an element to gain interest in its target,
      * keeping interest active until disabled.
      */

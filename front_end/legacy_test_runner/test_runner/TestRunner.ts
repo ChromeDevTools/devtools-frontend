@@ -868,6 +868,9 @@ export function dumpDeepInnerHTML(node: any): void {
    * @param node
    */
   function innerHTML(prefix, node) {
+    if (node.nodeType === Node.COMMENT_NODE) {
+      return;
+    }
     const openTag = [];
     if (node.nodeType === Node.TEXT_NODE) {
       if (!node.parentElement || node.parentElement.nodeName !== 'STYLE') {

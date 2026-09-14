@@ -34,11 +34,6 @@ _devtools_module_folder_exceptions = [
   "front_end/models/trace/handlers",
   "front_end/models/trace/helpers",
   "front_end/models/trace/insights",
-  "front_end/models/trace/lantern/core",
-  "front_end/models/trace/lantern/graph",
-  "front_end/models/trace/lantern/metrics",
-  "front_end/models/trace/lantern/simulation",
-  "front_end/models/trace/lantern/types",
   "front_end/models/trace/types",
   "front_end/models/trace_source_maps_resolver",
 ]

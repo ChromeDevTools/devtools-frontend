@@ -7,7 +7,7 @@ import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../../scripts/build/typescript/typescript.gni")
 import("../../../visibility.gni")
 
-devtools_module("core") {
+devtools_foundation_module("core") {
   sources = [
     "LanternError.ts",
     "NetworkAnalyzer.ts",
@@ -27,7 +27,7 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-ts_library("unittests") {
+devtools_foundation_module("unittests") {
   testonly = true
 
   sources = [ "NetworkAnalyzer.test.ts" ]

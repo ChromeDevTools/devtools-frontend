@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-// eslint-disable-next-line @devtools/es-modules-import
 import * as SDK from './sdk.js';
 
 describe('TargetManager API Test', () => {

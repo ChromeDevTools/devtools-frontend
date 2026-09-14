@@ -10,6 +10,7 @@
 import type {TSESLint, TSESTree} from '@typescript-eslint/utils';
 import path from 'node:path';
 
+import {hasJsonImportAttribute} from './helpers/helpers.ts';
 import {createRule} from './utils/ruleCreator.ts';
 import {isStarAsImportSpecifier} from './utils/treeHelpers.ts';
 // Define types based on TSESTree
@@ -178,7 +179,9 @@ function checkStarImport(
 
   // Unit tests must import from the entry points even for same-namespace
   // imports, as we otherwise break the module system (in Release builds).
-  if (isSameFolder && (importingFileName.endsWith('.test.ts') || importingFileName.endsWith('.docs.ts')) &&
+  if (isSameFolder &&
+      (importingFileName.endsWith('.test.ts') || importingFileName.endsWith('.test.api.ts') ||
+       importingFileName.endsWith('.docs.ts')) &&
       !isModuleEntrypoint(exportingFileName)) {
     const importingDirectoryName = path.basename(
         path.dirname(importingFileName),
@@ -205,7 +208,7 @@ function checkStarImport(
     // the module itself, so we need to allow this as well.
     const importingFileIsEntrypointOrTest = importingFileName.endsWith('-entrypoint.ts') ||
         importingFileName.endsWith('-meta.ts') || importingFileName.endsWith('.test.ts') ||
-        importingFileName.endsWith('.docs.ts');
+        importingFileName.endsWith('.test.api.ts') || importingFileName.endsWith('.docs.ts');
 
     if (!importingFileIsEntrypointOrTest) {
       context.report({
@@ -311,6 +314,10 @@ export default createRule<[], MessageIds>({
         const importPath = path.normalize(value);
         const importPathForErrorMessage = value.replace(/\\/g, '/');
 
+        if (hasJsonImportAttribute(node) || importPath.endsWith('.css.js')) {
+          return;
+        }
+
         checkImportExtension(value, importPathForErrorMessage, context, node);
 
         // Accidental relative URL:
@@ -395,7 +402,8 @@ export default createRule<[], MessageIds>({
           }
           // Check if exportingFileName is actually under FRONT_END_DIRECTORY before comparing top level folders
           if (!path.relative(FRONT_END_DIRECTORY, exportingFileName).startsWith('..')) {
-            if ((importingFileName.endsWith('.test.ts') || importingFileName.endsWith('.docs.ts')) &&
+            if ((importingFileName.endsWith('.test.ts') || importingFileName.endsWith('.test.api.ts') ||
+                 importingFileName.endsWith('.docs.ts')) &&
                 importPath.includes([path.sep, 'testing', path.sep].join(''))) {
               /** Within test files we allow the direct import of test helpers.*/
               return;
@@ -431,10 +439,6 @@ export default createRule<[], MessageIds>({
             return;
           }
 
-          if (importPath.endsWith('.css.js')) {
-            // We allow files to import CSS files within the same module.
-            return;
-          }
           context.report({
             node,
             messageId: 'incorrectSameNamespaceImportNamed',  // Use messageId
@@ -443,7 +447,8 @@ export default createRule<[], MessageIds>({
             },
           });
         } else if (path.dirname(importingFileName) === path.dirname(exportingFileName)) {
-          if (!(importingFileName.endsWith('.test.ts') || importingFileName.endsWith('.docs.ts')) ||
+          if (!(importingFileName.endsWith('.test.ts') || importingFileName.endsWith('.test.api.ts') ||
+                importingFileName.endsWith('.docs.ts')) ||
               !importingFileName.startsWith(FRONT_END_DIRECTORY)) {
             return;
           }

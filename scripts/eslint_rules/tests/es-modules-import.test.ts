@@ -225,6 +225,16 @@ new RuleTester().run('es-modules-import', rule, {
       code: 'import {ListModel} from \'../../legacy.js\';',
       filename: 'front_end/ui/legacy/components/quick_open/FilteredListWidget.test.ts',
     },
+    {
+      name: 'allows json import with type assertion',
+      code: 'import LocaleData from \'../core/i18n/locales/en-US.json\' with {type: \'json\'};',
+      filename: 'front_end/testing/LocaleHelpers.ts',
+    },
+    {
+      name: 'allows cross-namespace import of css.js style',
+      code: 'import checkboxStyles from \'../../../input/checkbox.css.js\';',
+      filename: 'front_end/ui/panels/foo/FooPanel.ts',
+    },
   ],
 
   invalid: [
@@ -402,16 +412,6 @@ new RuleTester().run('es-modules-import', rule, {
       errors: [
         {
           messageId: 'crossNamespaceImportThirdParty',
-        },
-      ],
-    },
-    {
-      name: 'flags cross-namespace import of css.js style',
-      code: 'import checkboxStyles from \'../../../input/checkbox.css.js\';',
-      filename: 'front_end/ui/panels/foo/FooPanel.ts',
-      errors: [
-        {
-          messageId: 'crossNamespaceImport',
         },
       ],
     },

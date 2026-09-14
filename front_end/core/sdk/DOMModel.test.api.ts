@@ -6,7 +6,6 @@ import {assert} from 'chai';
 
 import type * as Common from '../common/common.js';
 
-// eslint-disable-next-line @devtools/es-modules-import
 import * as SDK from './sdk.js';
 
 function findNode(node: SDK.DOMModel.DOMNode, predicate: (node: SDK.DOMModel.DOMNode) => boolean): SDK.DOMModel.DOMNode|

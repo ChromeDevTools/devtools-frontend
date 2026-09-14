@@ -11,7 +11,6 @@ import {assertScreenshot, dispatchClickEvent, raf, renderElementIntoDOM} from '.
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 
 import * as Resources from './application.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import serviceWorkerUpdateCycleViewStyles from './serviceWorkerUpdateCycleView.css.js';
 
 import View = Resources.ServiceWorkerUpdateCycleView;

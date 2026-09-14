@@ -4,7 +4,6 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 
 import type * as SDK from '../../core/sdk/sdk.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 

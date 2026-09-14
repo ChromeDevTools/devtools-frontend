@@ -53,7 +53,6 @@ import * as Highlighting from '../../ui/components/highlighting/highlighting.js'
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import {createIcon} from '../../ui/kit/kit.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';

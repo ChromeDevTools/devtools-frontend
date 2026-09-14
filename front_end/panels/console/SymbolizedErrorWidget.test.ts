@@ -20,9 +20,7 @@ import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Console from './console.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import consoleViewStyles from './consoleView.css.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import symbolizedErrorWidgetStyles from './symbolizedErrorWidget.css.js';
 
 const {urlString} = Platform.DevToolsPath;

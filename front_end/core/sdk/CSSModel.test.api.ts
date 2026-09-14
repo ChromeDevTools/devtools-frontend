@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-// eslint-disable-next-line @devtools/es-modules-import
 import * as SDK from './sdk.js';
 
 interface GlobalWithCSS {

@@ -34,7 +34,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Console from './console.js';
 // The css files aren't exported by the bundle, so we need to import it directly.
-// eslint-disable-next-line @devtools/es-modules-import
 import consoleViewStyles from './consoleView.css.js';
 
 describeWithEnvironment('ConsoleViewMessage', () => {

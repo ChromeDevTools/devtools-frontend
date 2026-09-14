@@ -10,10 +10,12 @@ export type AssertCallExpression<M extends string = string> = TSESTree.CallExpre
   },
 };
 
-export function isAssertCall(node: TSESTree.Node): node is AssertCallExpression {
-  return node.type === 'CallExpression' && node.callee.type === 'MemberExpression' &&
-      node.callee.object.type === 'Identifier' && node.callee.object.name === 'assert' &&
-      node.callee.property.type === 'Identifier';
+export function isAssertCall(
+    node: TSESTree.Node,
+    ): node is AssertCallExpression {
+  return (node.type === 'CallExpression' && node.callee.type === 'MemberExpression' &&
+          node.callee.object.type === 'Identifier' && node.callee.object.name === 'assert' &&
+          node.callee.property.type === 'Identifier');
 }
 
 export function isAssertMethodCall<M extends string>(
@@ -27,4 +29,18 @@ export function isAssertMethodCall<M extends string>(
     return node.callee.property.name === methodNames;
   }
   return methodNames.has(node.callee.property.name as M);
+}
+
+export function hasJsonImportAttribute(
+    node: TSESTree.ImportDeclaration,
+    ): boolean {
+  return ('attributes' in node && Array.isArray(node.attributes) && node.attributes.some(attr => {
+    const attribute = attr as unknown as {
+      key: {type: string, name?: string, value?: string},
+      value: {value: string},
+    };
+    const isTypeKey =
+        attribute.key.type === 'Identifier' ? attribute.key.name === 'type' : attribute.key.value === 'type';
+    return isTypeKey && attribute.value.value === 'json';
+  }));
 }

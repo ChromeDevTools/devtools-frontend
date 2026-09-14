@@ -142,6 +142,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #selectedGroupName: string|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
+  #overlaysUpdateScheduled = false;
   #debouncedUpdateSearchResults: () => void = Common.Debouncer.debounce(() => this.updateSearchResults(false, false),
                                                                         100);
 
@@ -255,7 +256,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.LATEST_DRAW_DIMENSIONS, dimensions => {
       this.#overlays.updateChartDimensions('main', dimensions.data.chart);
       this.#overlays.updateVisibleWindow(dimensions.data.traceWindow);
-      void this.#overlays.update();
+      this.#scheduleOverlaysUpdate();
     });
 
     this.networkDataProvider = new TimelineFlameChartNetworkDataProvider();
@@ -271,7 +272,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.LATEST_DRAW_DIMENSIONS, dimensions => {
       this.#overlays.updateChartDimensions('network', dimensions.data.chart);
       this.#overlays.updateVisibleWindow(dimensions.data.traceWindow);
-      void this.#overlays.update();
+      this.#scheduleOverlaysUpdate();
 
       // If the height of the network chart has changed, we need to tell the
       // main flame chart because its tooltips are positioned based in part on
@@ -1571,6 +1572,26 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     if (this.detailsView) {
       await this.detailsView.setSelection(selection);
     }
+  }
+
+  /**
+   * Schedules an update pass for the overlays via a microtask.
+   *
+   * Both the main flame chart and network flame chart emit LATEST_DRAW_DIMENSIONS
+   * when they redraw (e.g. during zoom or pan). Scheduling via a microtask
+   * ensures that if both charts redraw in the same animation frame or event loop
+   * turn, their dimensions are recorded first and the overlay positioning pass
+   * runs only once before the browser paints.
+   */
+  #scheduleOverlaysUpdate(): void {
+    if (this.#overlaysUpdateScheduled) {
+      return;
+    }
+    this.#overlaysUpdateScheduled = true;
+    queueMicrotask(() => {
+      this.#overlaysUpdateScheduled = false;
+      void this.#overlays.update();
+    });
   }
 
   /**

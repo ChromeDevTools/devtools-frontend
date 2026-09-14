@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../core/i18n/i18n.js';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore TSC is not able to find type definitions but this error does not always happen
-// eslint-disable-next-line  @devtools/es-modules-import
+// eslint-disable-next-line @devtools/es-modules-import
 import EnUsLocaleData from '../core/i18n/locales/en-US.json' with {type : 'json'};
 
 export async function initializeGlobalLocaleVars(): Promise<void> {

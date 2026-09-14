@@ -26,7 +26,8 @@ export const PROJECT_ID = 'ai_evals';
  *      ├── trajectory.json           - Captured prompt turns and tool results
  *      ├── agent_logs/
  *      │   ├── agent.log             - Diagnostic per-task agent log (archived in CNS)
- *      │   └── chat_log.txt          - Clean human-readable conversation transcript (archived in CNS)
+ *      │   ├── chat_log.txt          - Clean human-readable conversation transcript (archived in CNS)
+ *      │   └── agent_stderr.log      - Diagnostic per-task agent error/stderr log (archived in CNS)
  *      ├── eval_result.json          - Optional inline grading result (if --grade)
  *      ├── grader_output/
  *      │   └── grader.log            - Diagnostic grading execution log (archived in CNS)
@@ -52,7 +53,8 @@ export const PROJECT_ID = 'ai_evals';
  *       │       ├── trajectory.json
  *       │       ├── agent_logs/
  *       │       │   ├── agent.log
- *       │       │   └── chat_log.txt
+ *       │       │   ├── chat_log.txt
+ *       │       │   └── agent_stderr.log
  *       │       ├── eval_result.json
  *       │       ├── grader_output/
  *       │       │   └── grader.log
@@ -63,7 +65,8 @@ export const PROJECT_ID = 'ai_evals';
  *               ├── trajectory.json
  *               ├── agent_logs/
  *               │   ├── agent.log
- *               │   └── chat_log.txt
+ *               │   ├── chat_log.txt
+ *               │   └── agent_stderr.log
  *               ├── eval_result.json
  *               ├── grader_output/
  *               │   └── grader.log
@@ -264,6 +267,18 @@ export function uploadChatLog(runId: string, taskId: string, logContent: string)
   return uploadTemporaryContentToGCS(
       logContent,
       formatGCSTaskDestination(runId, taskId, 'agent_logs/chat_log.txt'),
+  );
+}
+
+/**
+ * Uploads tasks/<task_id>/output/agent_logs/agent_stderr.log to GCS.
+ * Staged in a temporary directory and cleaned up after upload.
+ * Must be called during Phase 2 before eval_task_completed.marker is uploaded.
+ */
+export function uploadAgentStderrLog(runId: string, taskId: string, logContent: string): boolean {
+  return uploadTemporaryContentToGCS(
+      logContent,
+      formatGCSTaskDestination(runId, taskId, 'agent_logs/agent_stderr.log'),
   );
 }
 

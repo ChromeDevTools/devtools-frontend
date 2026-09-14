@@ -18,6 +18,7 @@ import {
   PROJECT_ID,
   type TaskStatus,
   uploadAgentLog,
+  uploadAgentStderrLog,
   uploadChatLog,
   uploadEvalToGCS,
   uploadGraderLog,
@@ -115,6 +116,8 @@ class Logger {
   #runLogEntries: string[] = [];
   // Granular per-task agent execution traces keyed by taskId, uploaded per trajectory to GCS as agent_logs/agent.log.
   #taskLogEntries = new Map<string, string[]>();
+  // Granular per-task agent stderr traces keyed by taskId, uploaded per trajectory to GCS as agent_logs/agent_stderr.log.
+  #taskStderrEntries = new Map<string, string[]>();
 
   constructor() {
     this.#updateElapsedTimeInterval = setInterval(() => {
@@ -150,6 +153,21 @@ class Logger {
     const prefix = isError ? '[ERROR] ' : '';
     for (const line of cleanText.split('\n')) {
       entries.push(`${prefix}${line}`);
+    }
+  }
+
+  #recordTaskStderr(taskId: string, text: string) {
+    const cleanText = this.#stripAnsi(text);
+    if (!cleanText) {
+      return;
+    }
+    let entries = this.#taskStderrEntries.get(taskId);
+    if (!entries) {
+      entries = [];
+      this.#taskStderrEntries.set(taskId, entries);
+    }
+    for (const line of cleanText.split('\n')) {
+      entries.push(line);
     }
   }
 
@@ -209,6 +227,7 @@ class Logger {
 
   taskError(taskId: string, index: number, total: number, text: string) {
     this.#recordTaskLog(taskId, text, /* isError= */ true);
+    this.#recordTaskStderr(taskId, text);
     const indexPrefix = total > 0 ? `[${index + 1}/${total}] ` : '';
     this.error(taskId, index, `${ANSI_YELLOW}${indexPrefix}${taskId}:${ANSI_RESET} ${ANSI_RED}${text}${ANSI_RESET}`);
   }
@@ -253,6 +272,19 @@ class Logger {
     const entries = this.#taskLogEntries.get(taskId);
     if (!entries || entries.length === 0) {
       return '(No log entries recorded)\n';
+    }
+    return entries.join('\n') + '\n';
+  }
+
+  /**
+   * Returns the formatted stderr content for a specific task, uploaded per trajectory to GCS
+   * as `agent_logs/agent_stderr.log`. Captures errors, assertion failures, and stack traces.
+   * Returns an empty string if no errors occurred.
+   */
+  getTaskStderrContent(taskId: string): string {
+    const entries = this.#taskStderrEntries.get(taskId);
+    if (!entries || entries.length === 0) {
+      return '';
     }
     return entries.join('\n') + '\n';
   }
@@ -458,6 +490,7 @@ function handleTaskFailure(
   logger.append(`[Task ${example.id()}] ${phase} failed (${durationSeconds}s)`);
   if (userArgs.upload) {
     uploadAgentLog(runId, example.id(), logger.getTaskLogContent(example.id()));
+    uploadAgentStderrLog(runId, example.id(), logger.getTaskStderrContent(example.id()));
     recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
   }
 }
@@ -828,6 +861,9 @@ function writeOutput(
       const chatLog = formatChatLog(trajectory);
       const chatLogUploaded = uploadChatLog(runId, trajectory.metadata.auto_run_example_id, chatLog);
 
+      const agentStderr = logger.getTaskStderrContent(trajectory.metadata.auto_run_example_id);
+      const agentStderrUploaded = uploadAgentStderrLog(runId, trajectory.metadata.auto_run_example_id, agentStderr);
+
       if (!userArgs.grade) {
         const matchingTrajectories =
             output.trajectories.filter(e => e.session_id === trajectory.metadata.auto_run_example_id);
@@ -837,7 +873,8 @@ function writeOutput(
         const score = matchingTrajectories.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
         // Status indicates execution outcome (PASSED if prompt turns completed and uploaded without error,
         // FAILED if upload failed, assertion failures occurred, or score is 0.0).
-        const status = (!trajectoryUploaded || !agentLogUploaded || !chatLogUploaded || hasError || score <= 0.0) ?
+        const status = (!trajectoryUploaded || !agentLogUploaded || !chatLogUploaded || !agentStderrUploaded ||
+                        hasError || score <= 0.0) ?
             'FAILED' :
             'PASSED';
         const durationSeconds = taskDurations.get(trajectory.metadata.auto_run_example_id) ?? 0.0;
@@ -846,14 +883,14 @@ function writeOutput(
           taskId: trajectory.metadata.auto_run_example_id,
           runId,
           status,
-          score: (trajectoryUploaded && agentLogUploaded && chatLogUploaded) ? score : 0.0,
+          score: (trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded) ? score : 0.0,
           durationSeconds,
           tokens: {},
         });
         taskStatuses.push({
           taskId: trajectory.metadata.auto_run_example_id,
           status,
-          score: (trajectoryUploaded && agentLogUploaded && chatLogUploaded) ? score : 0.0,
+          score: (trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded) ? score : 0.0,
         });
       }
     }

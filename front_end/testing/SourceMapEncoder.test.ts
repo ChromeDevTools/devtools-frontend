@@ -105,6 +105,56 @@ describe('SourceMapEncoder', () => {
             ['0:0 => a.js:0:0@a', '1:0 => a.js:1:0@b', '2:0 => a.js:2:0@c', '3:0 => a.js:3:0@a']));
   });
 
+  it('translates numbers to unsigned Base64 VLQ correctly', () => {
+    assert.strictEqual(SourceMapEncoder.encodeUnsignedVlq(0), 'A');
+    assert.strictEqual(SourceMapEncoder.encodeUnsignedVlq(1), 'B');
+    assert.strictEqual(SourceMapEncoder.encodeUnsignedVlq(31), 'f');
+    assert.strictEqual(SourceMapEncoder.encodeUnsignedVlq(32), 'gB');
+    assert.strictEqual(SourceMapEncoder.encodeUnsignedVlq(64), 'gC');
+  });
+
+  it('omits the rangeMappings field when no mapping is marked as a range', () => {
+    assert.notProperty(SourceMapEncoder.encodeSourceMap(['0:0 => a.js:0:0']), 'rangeMappings');
+  });
+
+  it('can encode a range mapping', () => {
+    assert.deepEqual({
+      sources: ['a.js'],
+      names: [],
+      mappings: 'AAAA',
+      rangeMappings: 'A',
+      version: 3,
+    },
+                     SourceMapEncoder.encodeSourceMap(['0:0 => a.js:0:0 (range)']));
+  });
+
+  it('encodes the index of the range mapping within its line', () => {
+    assert.strictEqual(
+        'B',
+        SourceMapEncoder.encodeSourceMap(['0:0 => a.js:0:0', '0:5 => a.js:0:5 (range)']).rangeMappings,
+    );
+  });
+
+  it('encodes multiple range mappings on a line as relative offsets', () => {
+    assert.strictEqual(
+        'AC',
+        SourceMapEncoder.encodeSourceMap(['0:0 => a.js:0:0 (range)', '0:5 => a.js:0:5', '0:9 => a.js:0:9 (range)'])
+            .rangeMappings,
+    );
+  });
+
+  it('encodes empty lines for lines without range mappings', () => {
+    assert.strictEqual(
+        ';A',
+        SourceMapEncoder.encodeSourceMap(['0:0 => a.js:0:0', '1:0 => a.js:1:0 (range)']).rangeMappings,
+    );
+    assert.strictEqual(
+        ';;A',
+        SourceMapEncoder.encodeSourceMap(['0:0 => a.js:0:0', '1:0 => a.js:1:0', '2:0 => a.js:2:0 (range)'])
+            .rangeMappings,
+    );
+  });
+
   it('can encode small realistic samples correctly', () => {
     assert.deepEqual(
         {

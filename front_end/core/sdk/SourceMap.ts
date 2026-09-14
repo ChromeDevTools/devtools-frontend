@@ -11,6 +11,7 @@ import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
 import {scopeTreeForScript} from './ScopeTreeCache.js';
 import type {Script} from './Script.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
+import {decodeRangeMappings} from './SourceMapRangeMappings.js';
 import {SourceMapScopesInfo, type TranslatedFrame} from './SourceMapScopesInfo.js';
 
 /**
@@ -33,6 +34,7 @@ export interface SourceMapV3Object {
   names?: string[];
   ignoreList?: number[];
   scopes?: string;
+  rangeMappings?: string;
   debugId?: string;
   x_google_linecount?: number;
   x_google_ignoreList?: number[];
@@ -92,10 +94,17 @@ export class SourceMapEntry {
   readonly sourceLineNumber: number;
   readonly sourceColumnNumber: number;
   readonly name?: string;
+  /**
+   * Whether this entry covers everything up to the following entry, mapping the generated
+   * code character by character (including newlines) onto the original code.
+   *
+   * @see https://github.com/tc39/source-map/blob/main/proposals/range-mappings.md
+   */
+  readonly isRangeMapping: boolean;
 
-  constructor(
-      lineNumber: number, columnNumber: number, sourceIndex?: number, sourceURL?: Platform.DevToolsPath.UrlString,
-      sourceLineNumber?: number, sourceColumnNumber?: number, name?: string) {
+  constructor(lineNumber: number, columnNumber: number, sourceIndex?: number,
+              sourceURL?: Platform.DevToolsPath.UrlString, sourceLineNumber?: number, sourceColumnNumber?: number,
+              name?: string, isRangeMapping = false) {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
     this.sourceIndex = sourceIndex;
@@ -103,6 +112,7 @@ export class SourceMapEntry {
     this.sourceLineNumber = (sourceLineNumber as number);
     this.sourceColumnNumber = (sourceColumnNumber as number);
     this.name = name;
+    this.isRangeMapping = isRangeMapping;
   }
 
   static compare(entry1: SourceMapEntry, entry2: SourceMapEntry): number {
@@ -526,6 +536,22 @@ export class SourceMap {
     const tokenIter = new TokenIterator(map.mappings);
     let sourceURL: Platform.DevToolsPath.UrlString|undefined = this.#sourceInfos[sourceIndex]?.sourceURL;
 
+    // For every line of this section, the index of its first entry in `mappings` and the
+    // number of entries on that line. The `rangeMappings` field addresses entries by their
+    // index within a line, so this is what resolves those indices below.
+    const lineStarts: number[] = [];
+    const lineCounts: number[] = [];
+    const mappings = this.mappings();
+    const pushEntry = (entry: SourceMapEntry): void => {
+      const line = entry.lineNumber - baseLineNumber;
+      if (lineCounts[line] === undefined) {
+        lineStarts[line] = mappings.length;
+        lineCounts[line] = 0;
+      }
+      lineCounts[line]++;
+      mappings.push(entry);
+    };
+
     while (true) {
       if (tokenIter.peek() === ',') {
         tokenIter.next();
@@ -542,7 +568,7 @@ export class SourceMap {
 
       columnNumber += tokenIter.nextVLQ();
       if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
-        this.mappings().push(new SourceMapEntry(lineNumber, columnNumber));
+        pushEntry(new SourceMapEntry(lineNumber, columnNumber));
         continue;
       }
 
@@ -555,15 +581,17 @@ export class SourceMap {
       sourceColumnNumber += tokenIter.nextVLQ();
 
       if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
-        this.mappings().push(
+        pushEntry(
             new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber));
         continue;
       }
 
       nameIndex += tokenIter.nextVLQ();
-      this.mappings().push(new SourceMapEntry(
-          lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
+      pushEntry(new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber,
+                                   sourceColumnNumber, names[nameIndex]));
     }
+
+    this.#markRangeMappings(map, lineStarts, lineCounts);
 
     if (!this.#scopesInfo) {
       this.#scopesInfo = new SourceMapScopesInfo(this, {scopes: [], ranges: []});
@@ -580,6 +608,44 @@ export class SourceMap {
     } else {
       // Keep the OriginalScope[] tree array consistent with sources.
       this.#scopesInfo.addOriginalScopes(new Array(map.sources.length).fill(null));
+    }
+  }
+
+  /**
+   * Marks the entries of the section that was just parsed which the `rangeMappings` field of
+   * that section points at.
+   *
+   * A malformed field never invalidates the SourceMap: a field that can't be decoded is
+   * ignored altogether, and indices that don't point at a mapping with an original position
+   * are skipped.
+   *
+   * @param lineStarts index in `mappings` of the first entry of each line of the section.
+   * @param lineCounts number of entries on each line of the section.
+   */
+  #markRangeMappings(map: SourceMapV3Object, lineStarts: number[], lineCounts: number[]): void {
+    if (typeof map.rangeMappings !== 'string') {
+      return;
+    }
+    let rangeMappings: number[][];
+    try {
+      rangeMappings = decodeRangeMappings(map.rangeMappings);
+    } catch {
+      return;
+    }
+
+    const mappings = this.mappings();
+    for (let line = 0; line < rangeMappings.length; ++line) {
+      for (const index of rangeMappings[line]) {
+        if (index >= (lineCounts[line] ?? 0)) {
+          // The indices are sorted, so the rest of the line is out of bounds as well.
+          break;
+        }
+        const mappingIndex = lineStarts[line] + index;
+        if (mappings[mappingIndex].sourceURL === undefined) {
+          continue;
+        }
+        mappings[mappingIndex] = asRangeMapping(mappings[mappingIndex]);
+      }
     }
   }
 
@@ -791,9 +857,17 @@ export class SourceMap {
   }
 }
 
+/** @returns a copy of the {@link entry} that is marked as a range mapping. */
+function asRangeMapping(entry: SourceMapEntry): SourceMapEntry {
+  return new SourceMapEntry(entry.lineNumber, entry.columnNumber, entry.sourceIndex, entry.sourceURL,
+                            entry.sourceLineNumber, entry.sourceColumnNumber, entry.name, true);
+}
+
 const VLQ_BASE_SHIFT = 5;
 const VLQ_BASE_MASK = (1 << 5) - 1;
 const VLQ_CONTINUATION_MASK = 1 << 5;
+/** The largest shift an unsigned VLQ digit may contribute at while still fitting into 32 bits. */
+const VLQ_UNSIGNED_MAX_SHIFT = 30;
 
 export class TokenIterator {
   readonly #string: string;
@@ -823,26 +897,50 @@ export class TokenIterator {
 
   nextVLQ(): number {
     // Read unsigned value.
+    let result = this.#decodeVLQ(false);
+
+    // Fix the sign.
+    const negative = result & 1;
+    result >>= 1;
+    return negative ? -result : result;
+  }
+
+  /**
+   * Decodes an unsigned Base64 VLQ number, as used by the `rangeMappings` field of the
+   * "range mappings" proposal. In contrast to {@link nextVLQ} the least significant bit
+   * carries a value rather than a sign, so the full 32 bit range is available. Numbers
+   * that don't fit into 32 bits are rejected.
+   *
+   * @see https://github.com/tc39/source-map/blob/main/proposals/range-mappings.md
+   */
+  nextUnsignedVLQ(): number {
+    return this.#decodeVLQ(true);
+  }
+
+  #decodeVLQ(unsigned: boolean): number {
     let result = 0;
     let shift = 0;
     let digit: number = VLQ_CONTINUATION_MASK;
     while (digit & VLQ_CONTINUATION_MASK) {
       if (!this.hasNext()) {
-        throw new Error('Unexpected end of input while decodling VLQ number!');
+        throw new Error('Unexpected end of input while decoding VLQ number!');
+      }
+      if (unsigned && shift > VLQ_UNSIGNED_MAX_SHIFT) {
+        throw new Error('Unsigned VLQ number does not fit into 32 bits!');
       }
       const charCode = this.nextCharCode();
       digit = Common.Base64.BASE64_CODES[charCode];
       if (charCode !== 65 /* 'A' */ && digit === 0) {
         throw new Error(`Unexpected char '${String.fromCharCode(charCode)}' encountered while decoding`);
       }
-      result += (digit & VLQ_BASE_MASK) << shift;
+      // Unsigned numbers may use the full 32 bits, where `<<` would sign extend.
+      result += unsigned ? (digit & VLQ_BASE_MASK) * 2 ** shift : (digit & VLQ_BASE_MASK) << shift;
       shift += VLQ_BASE_SHIFT;
     }
-
-    // Fix the sign.
-    const negative = result & 1;
-    result >>= 1;
-    return negative ? -result : result;
+    if (unsigned && result > 0xFFFFFFFF) {
+      throw new Error('Unsigned VLQ number does not fit into 32 bits!');
+    }
+    return result;
   }
 
   /**

@@ -6,26 +6,23 @@ import * as SDK from '../core/sdk/sdk.js';
 
 const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-export function encodeVlq(n: number): string {
-  // Set the sign bit as the least significant bit.
-  n = n >= 0 ? 2 * n : 1 - 2 * n;
+export function encodeUnsignedVlq(n: number): string {
   // Encode into a base64 run.
   let result = '';
-  while (true) {
+  do {
     // Extract the lowest 5 bits and remove them from the number.
     const digit = n & 0x1f;
-    n >>= 5;
-    // Is there anything more left to encode?
-    if (n === 0) {
-      // We are done encoding, finish the run.
-      result += base64Digits[digit];
-      break;
-    } else {
-      // There is still more encode, so add the digit and the continuation bit.
-      result += base64Digits[0x20 + digit];
-    }
-  }
+    n >>>= 5;
+    // If there's nothing left to, we are done encoding and we get base64Digits[digit].
+    // Otherwise add the digit and the continuation bit base64Digits[0x20 + digit]
+    result += base64Digits[n === 0 ? digit : 0x20 + digit];
+  } while (n > 0);
   return result;
+}
+
+export function encodeVlq(n: number): string {
+  // Set the sign bit as the least significant bit, then encode the result as unsigned.
+  return encodeUnsignedVlq(n >= 0 ? 2 * n : 1 - 2 * n);
 }
 
 export function encodeVlqList(list: number[]): string {
@@ -35,12 +32,19 @@ export function encodeVlqList(list: number[]): string {
 /**
  * Encode array mappings of the form "compiledLine:compiledColumn => srcFile:srcLine:srcColumn@name"
  * as a source map.
+ *
+ * A mapping may be suffixed with " (range)" to mark it as a range mapping, in which case a
+ * `rangeMappings` field is emitted alongside `mappings`.
  **/
 export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.SourceMap.SourceMapV3Object {
   let mappings = '';
   const sources: string[] = [];
   const names: string[] = [];
   let sourcesContent: Array<null|string>|undefined;
+  // Index of the current mapping within its generated line, and per line the indices of
+  // the mappings that were marked as range mappings.
+  let indexInLine = 0;
+  const rangeMappingsByLine = new Map<number, number[]>();
 
   const state = {
     line: -1,
@@ -52,7 +56,7 @@ export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.Sou
   };
 
   for (const mapping of textMap) {
-    let match = mapping.match(/^(\d+):(\d+)(?:\s*=>\s*([^:]+):(\d+):(\d+)(?:@(\S+))?)?$/);
+    let match = mapping.match(/^(\d+):(\d+)(?:\s*=>\s*([^:]+):(\d+):(\d+)(?:@(\S+))?)?(\s+\(range\))?$/);
     if (!match) {
       match = mapping.match(/^([^:]+):\s*(.+)$/);
       if (!match) {
@@ -91,8 +95,19 @@ export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.Sou
       mappings += ';'.repeat(state.line - lastState.line);
       // Reset the compiled code column counter.
       lastState.column = 0;
+      indexInLine = 0;
     } else {
       mappings += ',';
+      indexInLine++;
+    }
+
+    if (match[7] !== undefined) {
+      if (!hasSource) {
+        throw new Error(`Mapping "${mapping}" cannot be a range mapping without an original position`);
+      }
+      const indices = rangeMappingsByLine.get(state.line) ?? [];
+      indices.push(indexInLine);
+      rangeMappingsByLine.set(state.line, indices);
     }
 
     // Encode the mapping and add it to the list of mappings.
@@ -108,6 +123,17 @@ export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.Sou
   }
 
   const sourceMapV3: SDK.SourceMap.SourceMapV3 = {version: 3, mappings, sources, names};
+  if (rangeMappingsByLine.size > 0) {
+    const lastLine = Math.max(...rangeMappingsByLine.keys());
+    const encodedLines = [];
+    for (let line = 0; line <= lastLine; ++line) {
+      const indices = rangeMappingsByLine.get(line) ?? [];
+      // The first index on a line is absolute, all following ones are relative to it.
+      encodedLines.push(
+          indices.map((index, i) => encodeUnsignedVlq(i === 0 ? index : index - indices[i - 1])).join(''));
+    }
+    sourceMapV3.rangeMappings = encodedLines.join(';');
+  }
   if (sourceRoot !== undefined) {
     sourceMapV3.sourceRoot = sourceRoot;
   }

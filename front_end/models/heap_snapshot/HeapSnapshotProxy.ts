@@ -154,7 +154,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     }
   }
 
-  setupForSecondaryInit(port: MessagePort): Promise<void> {
+  setupForSecondaryInit(port: PlatformApi.HostRuntime.WorkerMessagePort): Promise<void> {
     const callId = this.nextCallId++;
     const done = new Promise<void>((resolve, reject) => {
       this.callbacks.set(callId, error => {

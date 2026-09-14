@@ -339,6 +339,11 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     names: new Map<number, string>(),
     lastWidth: 0,
   };
+  /**
+   * Caches middle-truncated entry titles keyed by entry index.
+   * Stores the `width` (maximum available text width in pixels) and `text` (trimmed string or null).
+   */
+  #entryTitleCache = new Map<number, {width: number, text: string|null}>();
   readonly #boundOnThemeChanged = this.#onThemeChanged.bind(this);
 
   constructor(
@@ -442,6 +447,10 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
   }
 
   #onThemeChanged(): void {
+    // Clear title and header caches because theme changes can alter font families and metrics,
+    // invalidating previously measured middle-truncated text.
+    this.#entryTitleCache.clear();
+    this.#urlTruncations.names.clear();
     this.scheduleUpdate();
   }
 
@@ -598,6 +607,11 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     return color;
   }
 
+  /**
+   * Returns the fill color for an entry. If empty string '' is returned, the entry
+   * has no background fill and is skipped during generic batch drawing (e.g. for
+   * screenshots or other custom-decorated events).
+   */
   getColorForEntry(entryIndex: number): string {
     if (!this.entryColorsCache) {
       return '';
@@ -661,6 +675,9 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     const ratio = window.devicePixelRatio;
     const width = Math.round(this.offsetWidth * ratio);
     const height = Math.round(this.offsetHeight * ratio);
+    if (this.canvas.width === width && this.canvas.height === height) {
+      return;
+    }
     this.canvas.width = width;
     this.canvas.height = height;
     this.canvas.style.width = `${width / ratio}px`;
@@ -2252,13 +2269,14 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     const canvasHeight = this.offsetHeight;
     const context = this.context;
 
+    // Clear the backing canvas using raw device pixels before applying devicePixelRatio
+    // scaling. This prevents fractional scaling rounding artifacts (e.g. 1.25x or 1.5x)
+    // from leaving uncleared 1px slivers along the right/bottom canvas edges.
+    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     context.save();
     const ratio = window.devicePixelRatio;
     const top = this.chartViewport.scrollOffset();
     context.scale(ratio, ratio);
-    // Clear the canvas area by drawing a white square first
-    context.fillStyle = 'rgba(0, 0, 0, 0)';
-    context.fillRect(0, 0, canvasWidth, canvasHeight);
     context.translate(0, -top);
     context.font = this.#font;
 
@@ -2275,7 +2293,7 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
       this.drawMarkers(context, timelineData, markerIndices);
     }
 
-    this.drawEventTitles(context, timelineData, titleIndices, canvasWidth);
+    this.drawEventTitles(context, timelineData, titleIndices);
 
     // If there is a `forceDecoration` function, it will be called in `drawEventTitles`, which will overwrite the
     // default decorations, so we need to call this function after the `drawEventTitles`.
@@ -2544,8 +2562,7 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     const barXStart = this.timeToPositionClipped(entryStartTime);
     const barXEnd = this.timeToPositionClipped(entryStartTime + duration);
     // Ensure that the width of the bar is at least one pixel.
-    const barWidth = Math.max(barXEnd - barXStart, 1);
-    return barWidth;
+    return Math.max(barXEnd - barXStart, 1);
   }
 
   /**
@@ -2663,6 +2680,12 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
 
         if (this.entryColorsCache) {
           const color = this.getColorForEntry(entryIndex);
+          // Entries without a color (e.g. screenshots) are custom-painted in
+          // drawEventTitles/decorateEntry rather than filled with a generic background
+          // rectangle in drawBatches.
+          if (!color) {
+            continue;
+          }
           const outline = this.#shouldOutlineEvent(entryIndex);
           const key = getOrMakeKey(color, outline);
           let batch = drawBatches.get(key);
@@ -2971,50 +2994,48 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
    * Draws the titles of trace events in the timeline. Also calls `decorateEntry` on the data
    * provider, which can do any custom drawing on the corresponding entry's area (e.g. draw screenshots
    * in the Performance Panel timeline).
-   *
-   * Takes in the width of the entire canvas so that we know if an event does
-   * not fit into the viewport entirely, the max width we can draw is that
-   * width, not the width of the event itself.
    */
-  private drawEventTitles(
-      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, titleIndices: number[],
-      canvasWidth: number): void {
+  private drawEventTitles(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData,
+                          titleIndices: number[]): void {
     const timeToPixel = this.chartViewport.timeToPixel();
     const textPadding = this.textPadding;
     context.save();
     context.beginPath();
-    const {entryStartTimes, entryLevels} = timelineData;
+    context.font = this.#font;
+    const {entryStartTimes, entryLevels, entryTotalTimes} = timelineData;
     for (let i = 0; i < titleIndices.length; ++i) {
       const entryIndex = titleIndices[i];
       const entryStartTime = entryStartTimes[entryIndex];
+      const duration = entryTotalTimes[entryIndex];
       const barX = this.timeToPositionClipped(entryStartTime);
-      // Ensure that the title does not go off screen, if the width of the
-      // event is wider than the width of the canvas, use the canvas width as
-      // our maximum width.
-      const barWidth = Math.min(this.#eventBarWidth(timelineData, entryIndex), canvasWidth);
+      const unclippedStartX = this.chartViewport.timeToPosition(entryStartTime);
+      const unclippedEndX = this.chartViewport.timeToPosition(entryStartTime + duration);
+      const barWidth = Math.min(this.#eventBarWidth(timelineData, entryIndex), this.offsetWidth);
+      // For unclipped events, compute text width directly from duration and timeToPixel.
+      // Because chartViewport.timeToPosition uses Math.floor, coordinate subtraction fluctuates
+      // by +/-1px across subpixel pan offsets. Calculating width directly from duration keeps
+      // maxBarWidth stable during horizontal panning, ensuring hits in #entryTitleCache and
+      // avoiding expensive trimTextMiddle / measureText recomputations.
+      const isUnclipped = unclippedStartX >= 0 && unclippedEndX <= this.offsetWidth;
+      const textBarWidth = isUnclipped ? Math.max(1, Math.round(duration * timeToPixel)) : barWidth;
       const barLevel = entryLevels[entryIndex];
       const barY = this.levelToOffset(barLevel);
-      let text = this.dataProvider.entryTitle(entryIndex);
       const barHeight = this.#eventBarHeight(timelineData, entryIndex);
-      if (text?.length) {
-        context.font = this.#font;
-        const hasArrowDecoration =
-            this.entryHasDecoration(entryIndex, FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW);
-        // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration and the bar is wide enough for the larger
-        // version of the decoration that is a square button, also subtract the width of the decoration.
-        // Because the decoration is square, it's width is equal to this.barHeight
-        const maxBarWidth = (hasArrowDecoration && barWidth > barHeight * 2) ? barWidth - textPadding - this.barHeight :
-                                                                               barWidth - 2 * textPadding;
-        text = UI.UIUtils.trimTextMiddle(
-            context,
-            text,
-            maxBarWidth,
-        );
-      }
-      const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
-      if (this.dataProvider.decorateEntry(
-              entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixel,
-              color => this.#transformColor(entryIndex, color))) {
+      const hasArrowDecoration = this.entryHasDecoration(entryIndex, FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW);
+      // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration and the bar is wide enough for the larger
+      // version of the decoration that is a square button, also subtract the width of the decoration.
+      // Because the decoration is square, it's width is equal to this.barHeight
+      const maxBarWidth = (hasArrowDecoration && textBarWidth > barHeight * 2) ?
+          textBarWidth - textPadding - this.barHeight :
+          textBarWidth - 2 * textPadding;
+      // Re-assert this.#font on every iteration. dataProvider.decorateEntry() on a previous iteration
+      // may have modified context.font on the shared 2D context. Even on cache hits, context.font must
+      // be restored before context.fillText() so titles are rendered in the correct font.
+      context.font = this.#font;
+
+      const text = this.#getEntryTitle(entryIndex, maxBarWidth, context);
+      if (this.dataProvider.decorateEntry(entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedStartX,
+                                          timeToPixel, color => this.#transformColor(entryIndex, color))) {
         continue;
       }
       if (!text?.length) {
@@ -3025,6 +3046,35 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     }
 
     context.restore();
+  }
+
+  /**
+   * Returns the middle-trimmed title for an entry at the specified width, utilizing the
+   * entry title cache to avoid repeated text measurements and trimming during animation frames.
+   */
+  #getEntryTitle(entryIndex: number, maxBarWidth: number, context: CanvasRenderingContext2D): string|null {
+    const cached = this.#entryTitleCache.get(entryIndex);
+    if (cached && cached.width === maxBarWidth) {
+      return cached.text;
+    }
+    let text: string|null = null;
+    const rawText = this.dataProvider.entryTitle(entryIndex);
+    if (rawText?.length && maxBarWidth > 0) {
+      text = UI.UIUtils.trimTextMiddle(
+          context,
+          rawText,
+          maxBarWidth,
+      );
+    }
+    // Mutate existing cache record in place if present to avoid object allocation churn
+    // on every animation frame during continuous zooming.
+    if (cached) {
+      cached.width = maxBarWidth;
+      cached.text = text;
+    } else {
+      this.#entryTitleCache.set(entryIndex, {width: maxBarWidth, text});
+    }
+    return text;
   }
 
   /**
@@ -3428,6 +3478,7 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
 
   private processTimelineData(timelineData: FlameChartTimelineData|null): void {
     this.#urlTruncations.names.clear();
+    this.#entryTitleCache.clear();
     if (!timelineData) {
       this.timelineLevels = null;
       this.visibleLevelOffsets = null;
@@ -4107,6 +4158,7 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     }
     this.#urlTruncations.names.clear();
     this.#urlTruncations.lastWidth = 0;
+    this.#entryTitleCache.clear();
 
     this.chartViewport.reset();
     this.rawTimelineData = null;
@@ -4334,6 +4386,10 @@ export interface FlameChartDataProvider {
 
   entryFont(entryIndex: number): string|null;
 
+  /**
+   * Return empty string '' if the entry has no generic background fill and
+   * should be skipped during batch drawing (e.g. for custom-decorated entries).
+   */
   entryColor(entryIndex: number): string;
 
   decorateEntry(

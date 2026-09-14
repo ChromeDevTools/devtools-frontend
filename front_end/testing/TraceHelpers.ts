@@ -95,9 +95,9 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
     parsedTrace = options.fileNameOrParsedTrace;
   }
 
-  if (options.preloadScreenshots) {
-    const screenshots =
-        parsedTrace?.data.Screenshots.screenshots ?? parsedTrace?.data.Screenshots.legacySyntheticScreenshots ?? [];
+  if (options.preloadScreenshots && parsedTrace) {
+    const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
+    const screenshots = filmStrip.frames.map(f => f.screenshotEvent);
     await Timeline.Utils.ImageCache.preload(screenshots);
   }
   const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);

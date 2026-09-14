@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import yaml from 'js-yaml';
+import {load as yamlLoad} from 'js-yaml';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
@@ -25,7 +25,7 @@ export function parseSkill(content) {
 
   if (match) {
     try {
-      frontmatter = yaml.load(match[1]) || {};
+      frontmatter = yamlLoad(match[1]) || {};
       instructions = match[2];
     } catch (e) {
       throw new Error(`Failed to parse YAML frontmatter: ${e.message}`);

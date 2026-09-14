@@ -63,7 +63,7 @@
     "eslint-plugin-mocha": "10.5.0",
     "globals": "17.7.0",
     "js-rouge": "3.2.0",
-    "js-yaml": "4.3.2",
+    "js-yaml": "5.4.1",
     "karma": "6.4.4",
     "karma-chrome-launcher": "3.2.0",
     "karma-coverage": "2.2.1",

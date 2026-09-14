@@ -1,11 +1,11 @@
-### [DevTools for agents](devtools-for-agents)
+### [DevTools for agents](mcp)
 
-DevTools for agents 1.7 improves memory profiling with the `get_heapsnapshot_object_details` tool and native V8 context filtering.
+Configure `--no-javascript-evaluation` or disable execution tools to inspect pages safely without running scripts. Agents can also inspect heap snapshots directly with `query_heapsnapshot` and analyze memory retained by execution contexts.
 
-### [Soft navigation metrics in Live Metrics](performance)
+### [CPU performance tier overrides and modernized device presets](performance)
 
-The Live Metrics view in the Performance panel now captures and reports metrics like LCP and INP for client-side soft navigations in single-page applications by default.
+Configure and dispatch calibrated CPU performance tier overrides over CDP in the Performance panel to test device performance reproducibly. Emulated device presets are now grouped by form factor and updated with modern hardware.
 
-### [Nested CSS parent selector interactions](nested-selectors)
+### [Edit and resend as fetch in Console](edit-and-resend-as-fetch-in-co)
 
-Hovering over parent selectors highlights matching elements on the page, nested rules respond to Styles tab filtering, and `@nested-declarations` include specificity tooltips.
+Copy any network request as an editable `fetch()` expression directly into the Console to modify parameters before resending.

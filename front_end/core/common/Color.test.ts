@@ -556,6 +556,16 @@ describe('Color', () => {
         fgColor: '#b114ff',
         requiredContrast: 66,
       },
+      {
+        bgColor: '#444444',
+        fgColor: '#999999',
+        requiredContrast: 61,
+      },
+      {
+        fgColor: 'grey',
+        bgColor: 'grey',
+        requiredContrast: 68,
+      },
     ];
     for (const test of tests) {
       const fg = parseAndAssertNotNull(test.fgColor);
@@ -572,11 +582,6 @@ describe('Color', () => {
         bgColor: 'salmon',
         fgColor: 'white',
         requiredContrast: 66,
-      },
-      {
-        fgColor: 'grey',
-        bgColor: 'grey',
-        requiredContrast: 68,
       },
     ];
     for (const test of tests) {

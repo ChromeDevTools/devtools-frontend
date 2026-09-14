@@ -613,12 +613,15 @@ export function findFgColorForContrastAPCA(fgColor: Legacy, bgColor: Legacy, req
   const fgIsLighter = fgLuminance >= bgLuminance;
   const desiredLuminance = desiredLuminanceAPCA(bgLuminance, requiredContrast, fgIsLighter);
 
+  const meetsRequiredContrast = (candidate: Legacy): boolean =>
+      Math.round(Math.abs(contrastRatioAPCA(candidate.rgba(), bgColor.rgba()))) >= requiredContrast;
+
   const saturationComponentIndex = 1;
   const valueComponentIndex = 2;
 
   if (approachColorValue(candidateHSVA, valueComponentIndex, desiredLuminance, candidateLuminance)) {
     const candidate = Legacy.fromHSVA(candidateHSVA);
-    if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
+    if (meetsRequiredContrast(candidate)) {
       return candidate;
     }
   }
@@ -626,7 +629,7 @@ export function findFgColorForContrastAPCA(fgColor: Legacy, bgColor: Legacy, req
   candidateHSVA[valueComponentIndex] = 1;
   if (approachColorValue(candidateHSVA, saturationComponentIndex, desiredLuminance, candidateLuminance)) {
     const candidate = Legacy.fromHSVA(candidateHSVA);
-    if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
+    if (meetsRequiredContrast(candidate)) {
       return candidate;
     }
   }

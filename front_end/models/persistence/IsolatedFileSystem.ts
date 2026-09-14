@@ -84,7 +84,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  static errorMessage(error: DOMError): string {
+  static errorMessage(error: DOMException|Error): string {
     return i18nString(UIStrings.fileSystemErrorS, {PH1: error.message});
   }
 
@@ -105,7 +105,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       entry.getMetadata(resolve, errorHandler);
     }
 
-    function errorHandler(error: DOMError): void {
+    function errorHandler(error: DOMException|Error): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when getting file metadata \'' + path);
       resolve(null);
@@ -256,10 +256,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       resolve(true);
     }
 
-    /**
-     * TODO(jsbell): Update externs replacing DOMError with DOMException. https://crbug.com/496901
-     */
-    function errorHandler(this: IsolatedFileSystem, error: DOMError): void {
+    function errorHandler(this: IsolatedFileSystem, error: DOMException|Error): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when deleting file \'' + (this.path() + '/' + path) + '\'');
       resolve(false);
@@ -281,10 +278,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       resolve(true);
     }
 
-    /**
-     * TODO(jsbell): Update externs replacing DOMError with DOMException. https://crbug.com/496901
-     */
-    function errorHandler(this: IsolatedFileSystem, error: DOMError): void {
+    function errorHandler(this: IsolatedFileSystem, error: DOMException|Error): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when deleting directory \'' + (this.path() + '/' + path) + '\'');
       resolve(false);
@@ -297,7 +291,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
         entry.file(resolve, errorHandler.bind(this));
       }, errorHandler.bind(this));
 
-      function errorHandler(this: IsolatedFileSystem, error: DOMError): void {
+      function errorHandler(this: IsolatedFileSystem, error: DOMException|Error): void {
         if (error.name === 'NotFoundError') {
           resolve(null);
           return;
@@ -336,9 +330,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   override async setFileContent(path: Platform.DevToolsPath.EncodedPathString, content: string, isBase64: boolean):
       Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSavedInWorkspace);
-    let resolve: (result: ProgressEvent<EventTarget>|undefined) => void;
-    const innerSetFileContent = (): Promise<ProgressEvent<EventTarget>|undefined> => {
-      const promise = new Promise<ProgressEvent<EventTarget>|undefined>(x => {
+    let resolve: () => void;
+    const innerSetFileContent = (): Promise<void> => {
+      const promise = new Promise<void>(x => {
         resolve = x;
       });
       this.domFileSystem.root.getFile(
@@ -354,7 +348,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     async function fileWriterCreated(this: IsolatedFileSystem, fileWriter: FileWriter): Promise<void> {
-      fileWriter.onerror = errorHandler.bind(this);
+      fileWriter.onerror = () => errorHandler.call(this, fileWriter.error);
       fileWriter.onwriteend = fileWritten;
       let blob: Blob;
       if (isBase64) {
@@ -365,16 +359,15 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       fileWriter.write(blob);
 
       function fileWritten(): void {
-        fileWriter.onwriteend = resolve;
+        fileWriter.onwriteend = () => resolve();
         fileWriter.truncate(blob.size);
       }
     }
 
-    function errorHandler(this: IsolatedFileSystem, error: DOMError|ProgressEvent<EventTarget>): void {
-      // @ts-expect-error TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
+    function errorHandler(this: IsolatedFileSystem, error: DOMException|Error): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when setting content for file \'' + (this.path() + '/' + path) + '\'');
-      resolve(undefined);
+      resolve();
     }
   }
 
@@ -412,7 +405,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       callback(false);
     }
 
-    function newFileEntryLoadErrorHandler(this: IsolatedFileSystem, error: DOMError): void {
+    function newFileEntryLoadErrorHandler(this: IsolatedFileSystem, error: DOMException|Error): void {
       if (error.name !== 'NotFoundError') {
         callback(false);
         return;
@@ -424,7 +417,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       callback(true, entry.name);
     }
 
-    function errorHandler(this: IsolatedFileSystem, error: DOMError): void {
+    function errorHandler(this: IsolatedFileSystem, error: DOMException|Error): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when renaming file \'' + (this.path() + '/' + path) + '\' to \'' + newName + '\'');
       callback(false);
@@ -450,7 +443,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
     dirReader.readEntries(innerCallback, errorHandler);
 
-    function errorHandler(error: DOMError): void {
+    function errorHandler(error: DOMException|Error): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when reading directory \'' + dirEntry.fullPath + '\'');
       callback([]);
@@ -464,7 +457,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       this.readDirectory(dirEntry, callback);
     }
 
-    function errorHandler(error: DOMError): void {
+    function errorHandler(error: DOMException|Error): void {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when requesting entry \'' + path + '\'');
       callback([]);

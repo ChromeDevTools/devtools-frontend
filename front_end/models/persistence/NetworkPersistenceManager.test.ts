@@ -8,16 +8,16 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {
-  createTarget,
-  deinitializeGlobalVars,
-  describeWithEnvironment,
-  initializeGlobalVars,
-} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../testing/OverridesHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {createTarget} from '../../testing/TargetHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import * as Formatter from '../formatter/formatter.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -45,7 +45,27 @@ const setUpEnvironmentWithUISourceCode =
       return {workspace, project, uiSourceCode, networkPersistenceManager};
     };
 
-describeWithEnvironment('NetworkPersistenceManager', () => {
+function setupEnvironmentHooks() {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  afterEach(() => {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      target.dispose('afterEach');
+    }
+    SDK.TargetManager.TargetManager.removeInstance();
+    Workspace.Workspace.WorkspaceImpl.removeInstance();
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.removeInstance();
+    Root.DevToolsContext.setGlobalInstance(null);
+    Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
+  });
+}
+
+describe('NetworkPersistenceManager', () => {
+  setupEnvironmentHooks();
+
   beforeEach(async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
     const target = createTarget();
@@ -147,7 +167,8 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
   });
 });
 
-describeWithEnvironment('NetworkPersistenceManager', () => {
+describe('NetworkPersistenceManager', () => {
+  setupEnvironmentHooks();
   it('does not create interception patterns for forbidden URLs', async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
     const target = createTarget();
@@ -232,7 +253,8 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
   });
 });
 
-describeWithEnvironment('NetworkPersistenceManager', () => {
+describe('NetworkPersistenceManager', () => {
+  setupEnvironmentHooks();
   let networkPersistenceManager: Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
 
   beforeEach(async () => {
@@ -828,7 +850,8 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
   });
 });
 
-describeWithEnvironment('NetworkPersistenceManager', () => {
+describe('NetworkPersistenceManager', () => {
+  setupEnvironmentHooks();
   beforeEach(() => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
   });
@@ -853,12 +876,7 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
 });
 
 describe('NetworkPersistenceManager', () => {
-  before(async () => {
-    await initializeGlobalVars();
-  });
-  after(async () => {
-    await deinitializeGlobalVars();
-  });
+  setupEnvironmentHooks();
 
   it('escapes patterns to be used in RegExes', () => {
     assert.strictEqual(Persistence.NetworkPersistenceManager.escapeRegex('www.example.com/'), 'www\\.example\\.com/');

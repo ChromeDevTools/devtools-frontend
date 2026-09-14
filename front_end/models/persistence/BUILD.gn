@@ -8,7 +8,7 @@ import("../../../scripts/build/ninja/generate_css.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("persistence") {
+devtools_foundation_module("persistence") {
   sources = [
     "Automapping.ts",
     "AutomaticFileSystemManager.ts",
@@ -19,6 +19,11 @@ devtools_module("persistence") {
     "NetworkPersistenceManager.ts",
     "PersistenceImpl.ts",
     "PlatformFileSystem.ts",
+  ]
+
+  additional_type_definitions = [
+    "../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../node_modules/@types/filewriter/index.d.ts",
   ]
 
   ts_deps = [
@@ -67,7 +72,7 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-ts_library("unittests") {
+devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [

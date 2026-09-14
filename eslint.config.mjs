@@ -265,7 +265,8 @@ export default defineConfig([
         'error',
         {
           selector: 'ExportDefaultDeclaration',
-          message: 'Default exports are not allowed. Use named exports instead.',
+          message:
+            'Default exports are not allowed. Use named exports instead.',
         },
       ],
       /**
@@ -948,6 +949,8 @@ export default defineConfig([
       'eslint.config.mjs',
       '**/*/rollup.config.mjs',
       '**/*.rollup.js',
+      '**/*/karma.conf.ts',
+      '**/*/karma.conf.in.js',
     ],
     rules: {
       // The config operate on the default export

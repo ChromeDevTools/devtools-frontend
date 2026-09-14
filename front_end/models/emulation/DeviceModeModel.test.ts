@@ -11,6 +11,8 @@ import * as Protocol from '../../generated/protocol.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as EmulationModel from '../emulation/emulation.js';
 
@@ -85,6 +87,8 @@ describe('Rect', () => {
 
 describe('DeviceModeModel', () => {
   setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
 
   let target: SDK.Target.Target;
   let universe: TestUniverse;
@@ -961,51 +965,45 @@ describe('DeviceModeModel', () => {
          device.title = 'Pixel 10';
          sinon.stub(deviceModeModel, 'device').returns(device);
 
-         const clickStub = sinon.stub(HTMLAnchorElement.prototype, 'click');
-         const revokeObjectURLSpy = sinon.spy(URL, 'revokeObjectURL');
+         const saveScreenshotStub = sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'saveScreenshot').resolves();
+         const revokeLastScreenshotUrlSpy = sinon.spy(Platform.HostRuntime.HOST_RUNTIME, 'revokeLastScreenshotUrl');
 
-         const canvas = new OffscreenCanvas(1, 1);
-         canvas.getContext('2d');
-         await deviceModeModel.saveScreenshot(canvas);
+         await deviceModeModel.saveScreenshot('fake-base64');
 
-         sinon.assert.calledOnce(clickStub);
-         assert.strictEqual(clickStub.firstCall.thisValue.download, 'example.test/path/to/page.html(Pixel 10).png');
-         // The current blob URL is retained so the download can complete without timing issues.
-         sinon.assert.notCalled(revokeObjectURLSpy);
+         sinon.assert.calledOnce(saveScreenshotStub);
+         assert.strictEqual(saveScreenshotStub.firstCall.args[0].fileName, 'example.test/path/to/page.html(Pixel 10)');
+         assert.strictEqual(saveScreenshotStub.firstCall.args[0].base64Png, 'fake-base64');
+         sinon.assert.notCalled(revokeLastScreenshotUrlSpy);
 
-         // A second screenshot revokes the first blob URL.
-         await deviceModeModel.saveScreenshot(canvas);
-         sinon.assert.calledOnce(revokeObjectURLSpy);
+         // A second screenshot
+         await deviceModeModel.saveScreenshot('fake-base64-2');
+         sinon.assert.calledTwice(saveScreenshotStub);
 
          // Disposing the model revokes the remaining blob URL.
          deviceModeModel.dispose();
-         sinon.assert.calledTwice(revokeObjectURLSpy);
+         sinon.assert.calledOnce(revokeLastScreenshotUrlSpy);
        });
 
     it('revokes blob URL when turning off device mode', async () => {
-      sinon.stub(HTMLAnchorElement.prototype, 'click');
-      const revokeObjectURLSpy = sinon.spy(URL, 'revokeObjectURL');
+      sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'saveScreenshot').resolves();
+      const revokeLastScreenshotUrlSpy = sinon.spy(Platform.HostRuntime.HOST_RUNTIME, 'revokeLastScreenshotUrl');
 
-      const canvas = new OffscreenCanvas(1, 1);
-      canvas.getContext('2d');
-      await deviceModeModel.saveScreenshot(canvas);
-      sinon.assert.notCalled(revokeObjectURLSpy);
+      await deviceModeModel.saveScreenshot('fake-base64');
+      sinon.assert.notCalled(revokeLastScreenshotUrlSpy);
 
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
-      sinon.assert.calledOnce(revokeObjectURLSpy);
+      sinon.assert.calledOnce(revokeLastScreenshotUrlSpy);
     });
 
     it('revokes blob URL when the main frame navigates', async () => {
-      sinon.stub(HTMLAnchorElement.prototype, 'click');
-      const revokeObjectURLSpy = sinon.spy(URL, 'revokeObjectURL');
+      sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'saveScreenshot').resolves();
+      const revokeLastScreenshotUrlSpy = sinon.spy(Platform.HostRuntime.HOST_RUNTIME, 'revokeLastScreenshotUrl');
 
-      const canvas = new OffscreenCanvas(1, 1);
-      canvas.getContext('2d');
-      await deviceModeModel.saveScreenshot(canvas);
-      sinon.assert.notCalled(revokeObjectURLSpy);
+      await deviceModeModel.saveScreenshot('fake-base64');
+      sinon.assert.notCalled(revokeLastScreenshotUrlSpy);
 
       navigate(getMainFrame(target));
-      sinon.assert.calledOnce(revokeObjectURLSpy);
+      sinon.assert.calledOnce(revokeLastScreenshotUrlSpy);
     });
   });
 });

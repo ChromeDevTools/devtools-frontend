@@ -125,7 +125,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #settings: Common.Settings.Settings;
   readonly #multitargetNetworkManager: SDK.NetworkManager.MultitargetNetworkManager;
-  #lastScreenshotBlobUrl: string|null = null;
 
   constructor(
       targetManager: SDK.TargetManager.TargetManager,
@@ -143,7 +142,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#initialized = false;
     this.#autoFitScaleOnInitialize = false;
     this.#appliedDeviceSize = new Platform.Size(1, 1);
-    this.#appliedDeviceScaleFactor = globalThis.devicePixelRatio;
+    this.#appliedDeviceScaleFactor = Platform.HostRuntime.HOST_RUNTIME.getDevicePixelRatio();
     this.#appliedUserAgentType = UA.DESKTOP;
 
     this.#scaleSetting = this.#settings.createSetting('emulation.device-scale', 1);
@@ -751,7 +750,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         screenOrientation === Protocol.Emulation.ScreenOrientationType.LandscapePrimary ? 90 : 0;
 
     this.#appliedDeviceSize = screenSize;
-    this.#appliedDeviceScaleFactor = deviceScaleFactor || window.devicePixelRatio;
+    this.#appliedDeviceScaleFactor = deviceScaleFactor || Platform.HostRuntime.HOST_RUNTIME.getDevicePixelRatio();
     this.#screenRect = new Rect(Math.max(0, (this.#availableSize.width - screenSize.width * scale) / 2), 0,
                                 screenSize.width * scale, screenSize.height * scale);
     this.#visiblePageRect = new Rect(
@@ -865,85 +864,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
   }
 
-  async captureScreenshot(): Promise<void> {
-    const screenshot = await this.#captureScreenshot(false);
-    if (screenshot === null) {
-      return;
-    }
-
-    const pageImage = new Image();
-    pageImage.src = 'data:image/png;base64,' + screenshot;
-    pageImage.onload = async () => {
-      const scale = pageImage.naturalWidth / this.screenRect().width;
-      const screenRect = this.screenRect().scale(scale);
-      const visiblePageRect = this.visiblePageRect().scale(scale);
-      const contentLeft = visiblePageRect.left;
-      const contentTop = visiblePageRect.top;
-
-      const canvas = new OffscreenCanvas(Math.floor(screenRect.width),
-                                         // Cap the height to not hit the GPU limit.
-                                         // https://crbug.com/1260828
-                                         Math.min((1 << 14), Math.floor(screenRect.height)));
-      const ctx = canvas.getContext('2d', {willReadFrequently: true});
-      if (!ctx) {
-        throw new Error('Could not get 2d context from canvas.');
-      }
-      ctx.imageSmoothingEnabled = false;
-
-      ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
-      void this.saveScreenshot(canvas);
-    };
-  }
-
-  async captureFullSizeScreenshot(): Promise<void> {
-    const screenshot = await this.#captureScreenshot(true);
-    if (screenshot === null) {
-      return;
-    }
-    return this.saveScreenshotBase64(screenshot);
-  }
-
-  async captureAreaScreenshot(clip?: Protocol.Page.Viewport): Promise<void> {
-    const screenshot = await this.#captureScreenshot(false, clip);
-    if (screenshot === null) {
-      return;
-    }
-    return this.saveScreenshotBase64(screenshot);
-  }
-
-  private saveScreenshotBase64(screenshot: string): void {
-    const pageImage = new Image();
-    pageImage.src = 'data:image/png;base64,' + screenshot;
-    pageImage.onload = () => {
-      const canvas = new OffscreenCanvas(pageImage.naturalWidth,
-                                         // Cap the height to not hit the GPU limit.
-                                         // https://crbug.com/1260828
-                                         Math.min((1 << 14), Math.floor(pageImage.naturalHeight)));
-      const ctx = canvas.getContext('2d', {willReadFrequently: true});
-      if (!ctx) {
-        throw new Error('Could not get 2d context for base64 screenshot.');
-      }
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(pageImage, 0, 0);
-      void this.saveScreenshot(canvas);
-    };
-  }
-
-  private paintImage(ctx: OffscreenCanvasRenderingContext2D|CanvasRenderingContext2D, src: string,
-                     rect: Rect): Promise<void> {
-    return new Promise(resolve => {
-      const image = new Image();
-      image.crossOrigin = 'Anonymous';
-      image.srcset = src;
-      image.onerror = () => resolve();
-      image.onload = () => {
-        ctx.drawImage(image, rect.left, rect.top, rect.width, rect.height);
-        resolve();
-      };
-    });
-  }
-
-  async saveScreenshot(canvas: OffscreenCanvas): Promise<void> {
+  private getScreenshotFileName(): string {
     const url = this.inspectedURL();
     let fileName = '';
     if (url) {
@@ -955,22 +876,52 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (device && this.type() === Type.Device) {
       fileName += `(${device.title})`;
     }
-    this.#revokeLastScreenshotBlobUrl();
-    /* eslint-disable-next-line @devtools/no-imperative-dom-api */
-    const link = document.createElement('a');
-    link.download = fileName + '.png';
-    const blob = await canvas.convertToBlob({type: 'image/png'});
-    const blobUrl = URL.createObjectURL(blob);
-    this.#lastScreenshotBlobUrl = blobUrl;
-    link.href = blobUrl;
-    link.click();
+    return fileName;
+  }
+
+  async captureScreenshot(): Promise<void> {
+    const screenshot = await this.#captureScreenshot(false);
+    if (screenshot === null) {
+      return;
+    }
+
+    await Platform.HostRuntime.HOST_RUNTIME.saveScreenshot({
+      base64Png: screenshot,
+      fileName: this.getScreenshotFileName(),
+      clip: {
+        screenRectWidth: this.screenRect().width,
+        screenRectHeight: this.screenRect().height,
+        visiblePageRectLeft: this.visiblePageRect().left,
+        visiblePageRectTop: this.visiblePageRect().top,
+      },
+    });
+  }
+
+  async captureFullSizeScreenshot(): Promise<void> {
+    const screenshot = await this.#captureScreenshot(true);
+    if (screenshot === null) {
+      return;
+    }
+    await this.saveScreenshot(screenshot);
+  }
+
+  async captureAreaScreenshot(clip?: Protocol.Page.Viewport): Promise<void> {
+    const screenshot = await this.#captureScreenshot(false, clip);
+    if (screenshot === null) {
+      return;
+    }
+    await this.saveScreenshot(screenshot);
+  }
+
+  async saveScreenshot(screenshot: string): Promise<void> {
+    await Platform.HostRuntime.HOST_RUNTIME.saveScreenshot({
+      base64Png: screenshot,
+      fileName: this.getScreenshotFileName(),
+    });
   }
 
   #revokeLastScreenshotBlobUrl(): void {
-    if (this.#lastScreenshotBlobUrl) {
-      URL.revokeObjectURL(this.#lastScreenshotBlobUrl);
-      this.#lastScreenshotBlobUrl = null;
-    }
+    Platform.HostRuntime.HOST_RUNTIME.revokeLastScreenshotUrl();
   }
 
   private applyTouch(touchEnabled: boolean, mobile: boolean): void {

@@ -3,12 +3,22 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {createSettingsForTest} from '../../testing/SettingsHelpers.js';
+import * as Platform from '../../core/platform/platform.js';
+import {createSettingsForTest, setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as EmulationModel from '../emulation/emulation.js';
 
-describeWithEnvironment('emulatedDevices', () => {
+describe('emulatedDevices', () => {
+  setupSettingsHooks();
+
+  beforeEach(() => {
+    sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'getUserAgent').returns('Mozilla/5.0 HeadlessChrome/120.0.0.0');
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
   it('before parsing, all Chrome UAs all have %s placeholder for major version patching', () => {
     const devices = EmulationModel.EmulatedDevices.EmulatedDevicesList.rawEmulatedDevicesForTest();
     const chromeRawDevices = devices.filter(d => d['user-agent'].includes(' Chrome/'));

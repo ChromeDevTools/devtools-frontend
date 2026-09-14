@@ -92,4 +92,9 @@ export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
       undefined {
         return undefined;
       },
+  getDevicePixelRatio(): number {
+    return 1;
+  },
+  async saveScreenshot(_options: Api.HostRuntime.ScreenshotOptions): Promise<void>{},
+  revokeLastScreenshotUrl(): void{},
 };

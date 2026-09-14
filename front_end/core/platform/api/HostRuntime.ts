@@ -2,6 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+export interface ScreenshotOptions {
+  base64Png: string;
+  fileName: string;
+  clip?: {
+    screenRectWidth: number,
+    screenRectHeight: number,
+    visiblePageRectLeft: number,
+    visiblePageRectTop: number,
+  };
+}
+
 /**
  * Provides abstractions for host features that require different implementations depending
  * on whether DevTools runs in the browser or Node.js
@@ -12,6 +23,9 @@ export interface HostRuntime {
   getOnLine(): boolean;
   getUserAgent(): string;
   getLocalStorage(): Storage|undefined;
+  getDevicePixelRatio(): number;
+  saveScreenshot(options: ScreenshotOptions): Promise<void>;
+  revokeLastScreenshotUrl(): void;
 }
 
 /**

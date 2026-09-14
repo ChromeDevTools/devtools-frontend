@@ -2460,7 +2460,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
 
     if (attributeName !== null && (attributeName.trim() || newText.trim()) && oldText !== newText) {
-      this.node.setAttribute(attributeName, newText, moveToNextAttributeIfNeeded.bind(this));
+      this.node.setAttribute(attributeName, newText, (error: string|null) => {
+        moveToNextAttributeIfNeeded.call(this, error);
+      });
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
       return;
     }
@@ -2712,11 +2714,11 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       }
     }
 
-    function commitChange(initialValue: string, value: string): void {
+    const commitChange = (initialValue: string, value: string): void => {
       if (initialValue !== value) {
         node.setOuterHTML(value, selectNode);
       }
-    }
+    };
 
     function disposeCallback(): void {
       if (callback) {

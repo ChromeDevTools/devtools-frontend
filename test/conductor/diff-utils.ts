@@ -4,10 +4,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-// @ts-expect-error
-import * as diffImport from 'diff';
-
-const diff: any = diffImport;
+import * as diff from 'diff';
 
 type DiffCallback = (line: string) => string;
 

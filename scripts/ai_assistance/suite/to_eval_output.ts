@@ -218,6 +218,46 @@ function attachToolResultToLastTurn(turns: Turn[], toolName: string, response: u
   }
 }
 
+/**
+ * Formats a trajectory into a clean, human-readable plaintext chat log.
+ * Shows user queries, agent explanations, and any tool calls/results.
+ */
+export function formatChatLog(trajectory: Trajectory): string {
+  const parts: string[] = [];
+  for (const turn of trajectory.data) {
+    if (turn.role === 'user') {
+      parts.push('User:');
+      if (turn.content?.length) {
+        parts.push(turn.content.join('\n'));
+      }
+    } else {
+      parts.push('Agent:');
+      if (turn.thoughts?.length) {
+        for (const thought of turn.thoughts) {
+          if (thought.description) {
+            parts.push(`[Thought: ${thought.description}]`);
+          }
+        }
+      }
+      if (turn.content?.length) {
+        parts.push(turn.content.join('\n'));
+      }
+      if (turn.tool_calls?.length) {
+        for (const tc of turn.tool_calls) {
+          const argsStr = tc.args ? JSON.stringify(tc.args) : '';
+          parts.push(`[Tool Call: ${tc.name}(${argsStr})]`);
+          if (tc.result !== undefined) {
+            const resultStr = typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result);
+            parts.push(`[Tool Result: ${resultStr}]`);
+          }
+        }
+      }
+    }
+    parts.push('');
+  }
+  return parts.join('\n').trimEnd() + '\n';
+}
+
 if (import.meta.main) {
   const userArgs =
       yargs(hideBin(process.argv))

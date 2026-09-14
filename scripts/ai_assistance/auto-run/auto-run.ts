@@ -10,7 +10,7 @@ import puppeteer from 'puppeteer-core';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
-import {convertRawOutputToEval, type RawOutput, slug} from '../suite/to_eval_output.ts';
+import {convertRawOutputToEval, formatChatLog, type RawOutput, slug} from '../suite/to_eval_output.ts';
 import type {ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId} from '../types.js';
 
 import {
@@ -18,6 +18,7 @@ import {
   PROJECT_ID,
   type TaskStatus,
   uploadAgentLog,
+  uploadChatLog,
   uploadEvalToGCS,
   uploadGraderLog,
   uploadRunCompleted,
@@ -824,6 +825,9 @@ function writeOutput(
       const agentLog = logger.getTaskLogContent(trajectory.metadata.auto_run_example_id);
       const agentLogUploaded = uploadAgentLog(runId, trajectory.metadata.auto_run_example_id, agentLog);
 
+      const chatLog = formatChatLog(trajectory);
+      const chatLogUploaded = uploadChatLog(runId, trajectory.metadata.auto_run_example_id, chatLog);
+
       if (!userArgs.grade) {
         const matchingTrajectories =
             output.trajectories.filter(e => e.session_id === trajectory.metadata.auto_run_example_id);
@@ -833,21 +837,23 @@ function writeOutput(
         const score = matchingTrajectories.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
         // Status indicates execution outcome (PASSED if prompt turns completed and uploaded without error,
         // FAILED if upload failed, assertion failures occurred, or score is 0.0).
-        const status = (!trajectoryUploaded || !agentLogUploaded || hasError || score <= 0.0) ? 'FAILED' : 'PASSED';
+        const status = (!trajectoryUploaded || !agentLogUploaded || !chatLogUploaded || hasError || score <= 0.0) ?
+            'FAILED' :
+            'PASSED';
         const durationSeconds = taskDurations.get(trajectory.metadata.auto_run_example_id) ?? 0.0;
 
         uploadTaskCompleted({
           taskId: trajectory.metadata.auto_run_example_id,
           runId,
           status,
-          score: (trajectoryUploaded && agentLogUploaded) ? score : 0.0,
+          score: (trajectoryUploaded && agentLogUploaded && chatLogUploaded) ? score : 0.0,
           durationSeconds,
           tokens: {},
         });
         taskStatuses.push({
           taskId: trajectory.metadata.auto_run_example_id,
           status,
-          score: (trajectoryUploaded && agentLogUploaded) ? score : 0.0,
+          score: (trajectoryUploaded && agentLogUploaded && chatLogUploaded) ? score : 0.0,
         });
       }
     }

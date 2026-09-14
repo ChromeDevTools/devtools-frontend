@@ -66,6 +66,11 @@ describe('gcs-upload', () => {
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/agent_logs/agent.log`,
     );
     assert.strictEqual(
+        formatGCSTaskDestination(runId, taskId, 'agent_logs/chat_log.txt'),
+        `gs://${BUCKET}/${
+            PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/agent_logs/chat_log.txt`,
+    );
+    assert.strictEqual(
         formatGCSTaskDestination(runId, taskId, 'grader_output/grader.log'),
         `gs://${BUCKET}/${
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/grader_output/grader.log`,
@@ -85,6 +90,7 @@ describe('gcs-upload', () => {
   it('resolves correct content types with charset=utf-8', () => {
     assert.strictEqual(getContentType('eval_run.log'), 'text/plain; charset=utf-8');
     assert.strictEqual(getContentType('agent_logs/agent.log'), 'text/plain; charset=utf-8');
+    assert.strictEqual(getContentType('agent_logs/chat_log.txt'), 'text/plain; charset=utf-8');
     assert.strictEqual(getContentType('grader_output/grader.log'), 'text/plain; charset=utf-8');
     assert.strictEqual(getContentType('trajectory.json'), 'application/json; charset=utf-8');
     assert.strictEqual(getContentType('eval_report.html'), 'text/html; charset=utf-8');

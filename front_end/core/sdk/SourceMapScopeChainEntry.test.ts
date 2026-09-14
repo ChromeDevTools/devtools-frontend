@@ -128,4 +128,61 @@ describeWithEnvironment('SourceMapScopeRemoteObject', () => {
       assert.strictEqual(properties[0].value?.value, values[i]);
     }
   });
+
+  it('evaluates binding expressions in the V8 scope matching the range', async () => {
+    const originalScope: ScopesCodec.OriginalScope = {
+      start: {line: 0, column: 0},
+      end: {line: 20, column: 0},
+      isStackFrame: false,
+      kind: 'function',
+      variables: ['variable1'],
+      children: [],
+    };
+    const range: ScopesCodec.GeneratedRange = {
+      start: {line: 0, column: 0},
+      end: {line: 0, column: 200},
+      isStackFrame: false,
+      isHidden: false,
+      values: ['a'],
+      children: [],
+    };
+    callFrame.location.returns(
+        new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 50));
+    callFrame.evaluate.resolves({object: new SDK.RemoteObject.LocalJSONObject(42)});
+
+    const entry = new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, range, false,
+                                                                            undefined, /* scopeNumber */ 2);
+    await entry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ true);
+
+    sinon.assert.calledOnceWithMatch(callFrame.evaluate, {expression: 'a', scopeNumber: 2, generatePreview: true});
+  });
+
+  it('lets the backend pick the inner-most scope when no scope number was resolved', async () => {
+    const originalScope: ScopesCodec.OriginalScope = {
+      start: {line: 0, column: 0},
+      end: {line: 20, column: 0},
+      isStackFrame: false,
+      kind: 'function',
+      variables: ['variable1'],
+      children: [],
+    };
+    const range: ScopesCodec.GeneratedRange = {
+      start: {line: 0, column: 0},
+      end: {line: 0, column: 200},
+      isStackFrame: false,
+      isHidden: false,
+      values: ['a'],
+      children: [],
+    };
+    callFrame.location.returns(
+        new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 50));
+    callFrame.evaluate.resolves({object: new SDK.RemoteObject.LocalJSONObject(42)});
+
+    const entry =
+        new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, range, false, undefined);
+    await entry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
+
+    sinon.assert.calledOnceWithMatch(callFrame.evaluate,
+                                     {expression: 'a', scopeNumber: undefined, generatePreview: false});
+  });
 });

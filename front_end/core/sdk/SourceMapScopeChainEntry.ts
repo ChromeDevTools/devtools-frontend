@@ -41,19 +41,22 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
   readonly #range?: ScopesCodec.GeneratedRange;
   readonly #isInnerMostFunction: boolean;
   readonly #returnValue?: RemoteObject;
+  readonly #scopeNumber?: number;
 
   /**
    * @param isInnerMostFunction If `scope` is the innermost 'function' scope. Only used for labeling as we name the
    * scope of the paused function 'Local', while other outer 'function' scopes are named 'Closure'.
+   * @param scopeNumber The V8 scope in which `scope`s binding expressions must be evaluated. Defaults to the
+   * inner-most scope.
    */
-  constructor(
-      callFrame: CallFrame, scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange|undefined,
-      isInnerMostFunction: boolean, returnValue: RemoteObject|undefined) {
+  constructor(callFrame: CallFrame, scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange|undefined,
+              isInnerMostFunction: boolean, returnValue: RemoteObject|undefined, scopeNumber?: number) {
     this.#callFrame = callFrame;
     this.#scope = scope;
     this.#range = range;
     this.#isInnerMostFunction = isInnerMostFunction;
     this.#returnValue = returnValue;
+    this.#scopeNumber = scopeNumber;
   }
 
   extraProperties(): RemoteObjectProperty[] {
@@ -102,7 +105,7 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
   }
 
   object(): RemoteObject {
-    return new SourceMapScopeRemoteObject(this.#callFrame, this.#scope, this.#range);
+    return new SourceMapScopeRemoteObject(this.#callFrame, this.#scope, this.#range, this.#scopeNumber);
   }
 
   description(): string {
@@ -118,18 +121,22 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
   readonly #callFrame: CallFrame;
   readonly #scope: ScopesCodec.OriginalScope;
   readonly #range?: ScopesCodec.GeneratedRange;
+  readonly #scopeNumber?: number;
 
-  constructor(callFrame: CallFrame, scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange|undefined) {
+  constructor(callFrame: CallFrame, scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange|undefined,
+              scopeNumber: number|undefined) {
     super(
         callFrame.debuggerModel.runtimeModel(), /* objectId */ undefined, 'object', /* sub type */ undefined,
         /* value */ null);
     this.#callFrame = callFrame;
     this.#scope = scope;
     this.#range = range;
+    this.#scopeNumber = scopeNumber;
   }
 
-  override async doGetProperties(_ownProperties: boolean, accessorPropertiesOnly: boolean, generatePreview: boolean):
-      Promise<GetPropertiesResult> {
+  override async doGetProperties(_ownProperties: boolean, accessorPropertiesOnly: boolean,
+                                 _nonIndexedPropertiesOnly: boolean,
+                                 generatePreview: boolean): Promise<GetPropertiesResult> {
     if (accessorPropertiesOnly) {
       return {properties: [], internalProperties: []};
     }
@@ -142,9 +149,7 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
         continue;
       }
 
-      // TODO(crbug.com/40277685): Once we can evaluate expressions in scopes other than the innermost one,
-      //         we need to find the find the CDP scope that matches `this.#range` and evaluate in that.
-      const result = await this.#callFrame.evaluate({expression, generatePreview});
+      const result = await this.#callFrame.evaluate({expression, generatePreview, scopeNumber: this.#scopeNumber});
       if ('error' in result || result.exceptionDetails) {
         // TODO(crbug.com/40277685): Make these errors user-visible to aid tooling developers.
         //         E.g. show the error on hover or expose it in the developer resources panel.

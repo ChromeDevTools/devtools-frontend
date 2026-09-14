@@ -1331,6 +1331,7 @@ export class CallFrame {
       generatePreview: options.generatePreview,
       throwOnSideEffect: options.throwOnSideEffect,
       timeout: options.timeout,
+      scopeNumber: options.scopeNumber,
     });
     const error = response.getError();
     if (error) {
@@ -1405,6 +1406,11 @@ export class Scope implements ScopeChainEntry {
 
   callFrame(): CallFrame {
     return this.#callFrame;
+  }
+
+  /** The index of this scope in {@link CallFrame.scopeChain}, usable as an `evaluateOnCallFrame` `scopeNumber`. */
+  ordinal(): number {
+    return this.#ordinal;
   }
 
   type(): string {

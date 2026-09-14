@@ -8,9 +8,12 @@ import sinon from 'sinon';
 import * as Formatter from '../../entrypoints/formatter_worker/formatter_worker.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as FormatterModels from '../../models/formatter/formatter.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {stringifyFrame} from '../../testing/StackTraceHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
@@ -22,8 +25,37 @@ const {urlString} = Platform.DevToolsPath;
 const {SourceMapScopesInfo} = SDK.SourceMapScopesInfo;
 const {ScopeInfoBuilder} = ScopesCodec;
 
+const SCRIPT_ID = '0' as Protocol.Runtime.ScriptId;
+
+function scopePayload(type: Protocol.Debugger.ScopeType, start?: {line: number, column: number},
+                      end?: {line: number, column: number}): Protocol.Debugger.Scope {
+  return {
+    type,
+    object: {type: Protocol.Runtime.RemoteObjectType.Object} as Protocol.Runtime.RemoteObject,
+    startLocation: start ? {scriptId: SCRIPT_ID, lineNumber: start.line, columnNumber: start.column} : undefined,
+    endLocation: end ? {scriptId: SCRIPT_ID, lineNumber: end.line, columnNumber: end.column} : undefined,
+  };
+}
+
+/** Makes `callFrame.scopeChain()` return real `Scope` instances built from `payloads`. */
+function stubScopeChain(callFrame: sinon.SinonStubbedInstance<SDK.DebuggerModel.CallFrame>,
+                        payloads: Protocol.Debugger.Scope[]): void {
+  callFrame.getPayload.returns({scopeChain: payloads} as Protocol.Debugger.CallFrame);
+  callFrame.scopeChain.returns(payloads.map((_, ordinal) => new SDK.DebuggerModel.Scope(callFrame, ordinal)));
+}
+
 describe('SourceMapScopesInfo', () => {
-  describeWithEnvironment('translateCallSite', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
+
+  describe('translateCallSite', () => {
     it('throws for an outlined frame', () => {
       const builder = new ScopeInfoBuilder().startRange(0, 0, {isStackFrame: true, isHidden: true}).endRange(0, 10);
       const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
@@ -276,14 +308,210 @@ describe('SourceMapScopesInfo', () => {
     });
   });
 
-  describeWithEnvironment('resolveMappedScopeChain', () => {
+  describe('findMatchingScopeNumber', () => {
+    function callFrameWithScopes(payloads: Protocol.Debugger.Scope[]) {
+      const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+      callFrame.debuggerModel = universe.createTarget().model(SDK.DebuggerModel.DebuggerModel)!;
+      callFrame.location.returns(new SDK.DebuggerModel.Location(callFrame.debuggerModel, SCRIPT_ID, 0, 0));
+      stubScopeChain(callFrame, payloads);
+      return callFrame;
+    }
+
+    function range(start: {line: number, column: number}, end: {line: number, column: number},
+                   isStackFrame = false): ScopesCodec.GeneratedRange {
+      return {start, end, isStackFrame, isHidden: false, values: [], children: []};
+    }
+
+    it('prefers a V8 scope whose range matches exactly', () => {
+      //           0         10        20        30        40        50        60        70        80        90
+      // V8 #1:              |-------------------------------- Closure (#1) ---------------------------------|
+      // V8 #0:                        |----------------------- Local (#0) ------------------------|
+      // Range:              |-------------------------- matches V8 #1 exactly ------------------------------|
+      //                                                             x (paused)
+      const callFrame = callFrameWithScopes([
+        scopePayload(Protocol.Debugger.ScopeType.Local, {line: 0, column: 20}, {line: 0, column: 80}),
+        scopePayload(Protocol.Debugger.ScopeType.Closure, {line: 0, column: 10}, {line: 0, column: 90}),
+      ]);
+
+      const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 10}, {line: 0, column: 90}));
+
+      assert.strictEqual(scopeNumber, 1);
+    });
+
+    it('returns the outer-most V8 scope contained in the range', () => {
+      //           0         10        20        30        40        50        60        70        80        90
+      // V8 #3:    |-------------------------------- Script (#3) ----------------------------------------> 200
+      // V8 #2:                        |---------------------- Closure (#2) -----------------------|
+      // V8 #1:                                  |------------- Block (#1) --------------|
+      // V8 #0:                                            |--- Local (#0) ----|
+      // Range:              |---------------------------------- picks #2 -----------------------------------|
+      //                                                             x (paused)
+      //
+      // A generated range for the outer function spans the whole function text, so it contains every
+      // scope nested inside it. We want the outer function's own scope, not an inner one.
+      const callFrame = callFrameWithScopes([
+        scopePayload(Protocol.Debugger.ScopeType.Local, {line: 0, column: 40}, {line: 0, column: 60}),
+        scopePayload(Protocol.Debugger.ScopeType.Block, {line: 0, column: 30}, {line: 0, column: 70}),
+        scopePayload(Protocol.Debugger.ScopeType.Closure, {line: 0, column: 20}, {line: 0, column: 80}),
+        scopePayload(Protocol.Debugger.ScopeType.Script, {line: 0, column: 0}, {line: 0, column: 200}),
+      ]);
+
+      const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 10}, {line: 0, column: 90}));
+
+      assert.strictEqual(scopeNumber, 2);
+    });
+
+    it('returns the inner-most V8 scope containing the range when no scope is contained in it', () => {
+      //           0         10        20        30        40   45   50   55   60        70        80        90
+      // V8 #1:                        |---------------------- Closure (#1) -----------------------|
+      // V8 #0:                                            |--- Local (#0) ----|
+      // Range:                                                 |-- #0 ---|
+      //                                                             x (paused)
+      const callFrame = callFrameWithScopes([
+        scopePayload(Protocol.Debugger.ScopeType.Local, {line: 0, column: 40}, {line: 0, column: 60}),
+        scopePayload(Protocol.Debugger.ScopeType.Closure, {line: 0, column: 20}, {line: 0, column: 80}),
+      ]);
+
+      const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 45}, {line: 0, column: 55}));
+
+      assert.strictEqual(scopeNumber, 0);
+    });
+
+    it('returns the inner-most V8 scope containing the range when sharing an end boundary', () => {
+      //           0         10        20        30        40        50        60        70        80        90
+      // V8 #0:                        |----------------------- Local (#0) ------------------------|
+      // Range:                                  |------------------- picks #0 --------------------|
+      //                                                             x (paused)
+      const callFrame = callFrameWithScopes([
+        scopePayload(Protocol.Debugger.ScopeType.Local, {line: 0, column: 20}, {line: 0, column: 80}),
+      ]);
+
+      const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 30}, {line: 0, column: 80}));
+
+      assert.strictEqual(scopeNumber, 0);
+    });
+
+    it('returns the inner-most V8 scope containing the range when sharing a start boundary', () => {
+      //           0         10        20        30        40        50        60        70        80        90
+      // V8 #0:                        |----------------------- Local (#0) ------------------------|
+      // Range:                        |------------------- picks #0 --------------------|
+      //                                                             x (paused)
+      const callFrame = callFrameWithScopes([
+        scopePayload(Protocol.Debugger.ScopeType.Local, {line: 0, column: 20}, {line: 0, column: 80}),
+      ]);
+
+      const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 20}, {line: 0, column: 70}));
+
+      assert.strictEqual(scopeNumber, 0);
+    });
+
+    it('ignores scopes from a different script', () => {
+      //           0         10        20        30        40        50        60        70        80        90
+      // V8 #0:              |----------------------- Closure (#0, script: 'other') -----------------------|
+      // Range:              |---------------------------------- no match -----------------------------------|
+      //                                                             x (paused on script: '0')
+      const OTHER_SCRIPT = 'other-script-id' as Protocol.Runtime.ScriptId;
+      const otherScriptScope: Protocol.Debugger.Scope = {
+        type: Protocol.Debugger.ScopeType.Closure,
+        object: {type: Protocol.Runtime.RemoteObjectType.Object} as Protocol.Runtime.RemoteObject,
+        startLocation: {scriptId: OTHER_SCRIPT, lineNumber: 0, columnNumber: 10},
+        endLocation: {scriptId: OTHER_SCRIPT, lineNumber: 0, columnNumber: 90},
+      };
+      const callFrame = callFrameWithScopes([otherScriptScope]);
+
+      const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 10}, {line: 0, column: 90}));
+
+      assert.isUndefined(scopeNumber);
+    });
+
+    it('prefers function scopes for stack frame ranges', () => {
+      //           0         10        20        30        40        50        60        70        80        90
+      // V8 #2:    |-------------------------------- Script (#2) ----------------------------------------> 200
+      // V8 #1:                                  |------------- Block (#1) --------------|
+      // V8 #0:                                            |- Local (#0, fn) --|
+      // Range:                        |-----------------------------------------------------------|
+      //                                                             x (paused)
+      // Range (stack frame): picks #0 (function scope)
+      // Range (plain):       picks #1 (outer-most contained scope: Block)
+      //
+      // The block scope is the outer-most scope contained in the range, but since the range is a stack
+      // frame it must map onto a function scope.
+      const callFrame = callFrameWithScopes([
+        scopePayload(Protocol.Debugger.ScopeType.Local, {line: 0, column: 40}, {line: 0, column: 60}),
+        scopePayload(Protocol.Debugger.ScopeType.Block, {line: 0, column: 30}, {line: 0, column: 70}),
+        scopePayload(Protocol.Debugger.ScopeType.Script, {line: 0, column: 0}, {line: 0, column: 200}),
+      ]);
+
+      const asStackFrame = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 20}, {line: 0, column: 80}, /* isStackFrame */ true));
+      const asPlainRange = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 20}, {line: 0, column: 80}));
+
+      assert.strictEqual(asStackFrame, 0);
+      assert.strictEqual(asPlainRange, 1);
+    });
+
+    it('ignores scopes without a location range', () => {
+      //           0         10        20        30        40        50        60        70        80        90
+      // V8 #2:    (no location - Global)
+      // V8 #1:                        |---------------------- Closure (#1) -----------------------|
+      // V8 #0:    (no location - Local)
+      // Range:              |---------------------------------- picks #1 -----------------------------------|
+      //                                                             x (paused)
+      const callFrame = callFrameWithScopes([
+        scopePayload(Protocol.Debugger.ScopeType.Local),
+        scopePayload(Protocol.Debugger.ScopeType.Closure, {line: 0, column: 20}, {line: 0, column: 80}),
+        scopePayload(Protocol.Debugger.ScopeType.Global),
+      ]);
+
+      const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 10}, {line: 0, column: 90}));
+
+      assert.strictEqual(scopeNumber, 1);
+    });
+
+    it('returns undefined when no V8 scope overlaps the range', () => {
+      //           0    5    10        20
+      // V8 #0:    |---------| Local (#0) [0..10)
+      // Range:         |--------------| [5..20) (overlap, but neither contains the other)
+      //           x (paused)
+      const callFrame = callFrameWithScopes(
+          [scopePayload(Protocol.Debugger.ScopeType.Local, {line: 0, column: 0}, {line: 0, column: 10})]);
+
+      const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 5}, {line: 0, column: 20}));
+
+      assert.isUndefined(scopeNumber);
+    });
+
+    it('returns undefined for an empty scope chain', () => {
+      //           0         10
+      // V8:       (empty scope chain)
+      // Range:    |---------| [0..10) -> undefined
+      const callFrame = callFrameWithScopes([]);
+
+      const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
+          callFrame, range({line: 0, column: 0}, {line: 0, column: 10}));
+
+      assert.isUndefined(scopeNumber);
+    });
+  });
+
+  describe('resolveMappedScopeChain', () => {
     function setUpCallFrameAndSourceMap(options: {
       generatedPausedPosition: {line: number, column: number},
       mappedPausedPosition?: {sourceIndex: number, line: number, column: number},
       returnValue?: SDK.RemoteObject.RemoteObject,
+      scopeChain?: Protocol.Debugger.Scope[],
     }) {
       const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
-      const target = createTarget();
+      const target = universe.createTarget();
       callFrame.debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
 
       const {generatedPausedPosition, mappedPausedPosition, returnValue} = options;
@@ -292,6 +520,7 @@ describe('SourceMapScopesInfo', () => {
           callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, generatedPausedPosition.line,
           generatedPausedPosition.column));
       callFrame.returnValue.returns(returnValue ?? null);
+      stubScopeChain(callFrame, options.scopeChain ?? []);
 
       const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
       if (mappedPausedPosition) {
@@ -326,6 +555,53 @@ describe('SourceMapScopesInfo', () => {
       const scopeChain = info.resolveMappedScopeChain(callFrame);
 
       assert.isNull(scopeChain);
+    });
+
+    it('evaluates each scope\'s bindings in the matching V8 scope', async () => {
+      //           0         10        20        30        40        50        60        70        80        90       100
+      // V8 #2:    (Global)
+      // V8 #1:                        |---------------------- Closure (#1) -----------------------|
+      // V8 #0:                                            |--- Local (#0) ----|
+      // SM outer:                     |----------------------- eval in #1 ------------------------|
+      // SM inner:                                         |--- eval in #0 ----|
+      // SM global:|---------------------------------------------------------------------------------------------------|
+      //                                                             x (paused: col 50)
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(5, 0, {kind: 'function', name: 'outer', variables: ['outerVar'], key: 'outer'})
+          .startScope(10, 0, {kind: 'function', name: 'inner', variables: ['innerVar'], key: 'inner'})
+          .endScope(15, 0)
+          .endScope(20, 0)
+          .endScope(30, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 20, {scopeKey: 'outer', isStackFrame: true, values: ['o']})
+          .startRange(0, 40, {scopeKey: 'inner', isStackFrame: true, values: ['i']})
+          .endRange(0, 60)
+          .endRange(0, 80)
+          .endRange(0, 100);
+
+      const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
+        generatedPausedPosition: {line: 0, column: 50},
+        mappedPausedPosition: {sourceIndex: 0, line: 12, column: 0},
+        scopeChain: [
+          scopePayload(Protocol.Debugger.ScopeType.Local, {line: 0, column: 40}, {line: 0, column: 60}),
+          scopePayload(Protocol.Debugger.ScopeType.Closure, {line: 0, column: 20}, {line: 0, column: 80}),
+          scopePayload(Protocol.Debugger.ScopeType.Global),
+        ],
+      });
+      callFrame.evaluate.resolves({object: new SDK.RemoteObject.LocalJSONObject(42)});
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
+
+      const scopeChain = info.resolveMappedScopeChain(callFrame);
+
+      assert.isNotNull(scopeChain);
+      assert.lengthOf(scopeChain, 3);
+      await scopeChain[0].object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
+      await scopeChain[1].object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
+
+      sinon.assert.calledWithMatch(callFrame.evaluate, {expression: 'i', scopeNumber: 0});
+      sinon.assert.calledWithMatch(callFrame.evaluate, {expression: 'o', scopeNumber: 1});
     });
 
     it('returns the original global scope when paused in the global scope', () => {
@@ -695,7 +971,7 @@ describe('SourceMapScopesInfo', () => {
     });
   });
 
-  describeWithEnvironment('createFromAst', () => {
+  describe('createFromAst', () => {
     it('creates scope info from a JavaScript AST with named mappings', () => {
       const generatedCode = `function f(n) { console.log(n); } function b() { f(42); }`;
 

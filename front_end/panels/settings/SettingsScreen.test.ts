@@ -240,7 +240,7 @@ describeWithEnvironment('ExperimentsSettingsTab default view', () => {
 
     // Warning section exists
     assert.isNotNull(target.querySelector('.experiments-warning-subsection'));
-    assert.include(target.textContent, 'Warning: These experiments could be unstable or unreliable.');
+    assert.include(target.textContent, 'Warning: These experiments could be unstable or unreliable');
 
     // Filter input triggers onFilterChanged
     const filterInput = target.querySelector('devtools-toolbar-input');

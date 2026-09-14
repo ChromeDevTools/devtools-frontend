@@ -6,7 +6,7 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
-devtools_module("crux-manager") {
+devtools_foundation_module("crux-manager") {
   sources = [ "CrUXManager.ts" ]
 
   ts_deps = [

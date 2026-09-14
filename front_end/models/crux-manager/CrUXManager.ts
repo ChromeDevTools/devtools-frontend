@@ -366,18 +366,21 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     if (response.status === 404) {
       // This is how CrUX tells us that there is not data available for the provided url/origin
       // Since it's a valid response, just return null instead of throwing an error.
-      if (responseData?.error?.status === 'NOT_FOUND') {
-        return null;
+      if (typeof responseData === 'object' && responseData && 'error' in responseData) {
+        const error = (responseData as {error?: {status?: string}}).error;
+        if (error?.status === 'NOT_FOUND') {
+          return null;
+        }
       }
 
       throw new Error(`Failed to fetch data from CrUX server (Status code: ${response.status})`);
     }
 
-    if (!('record' in responseData)) {
+    if (typeof responseData !== 'object' || !responseData || !('record' in responseData)) {
       throw new Error(`Failed to find data in CrUX response: ${JSON.stringify(responseData)}`);
     }
 
-    return responseData;
+    return responseData as CrUXResponse;
   }
 
   #getAutoDeviceScope(): DeviceScope {

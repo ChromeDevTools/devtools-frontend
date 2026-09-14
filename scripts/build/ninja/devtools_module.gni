@@ -24,7 +24,6 @@ _devtools_module_folder_exceptions = [
   "front_end/models/ai_assistance",
   "front_end/models/bindings",
   "front_end/models/breakpoints",
-  "front_end/models/crux-manager",
   "front_end/models/extensions",
   "front_end/models/issues_manager",
   "front_end/models/live-metrics",

@@ -14,6 +14,7 @@ import * as AutofillManager from '../models/autofill_manager/autofill_manager.js
 import * as Badges from '../models/badges/badges.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
+import * as ChangeTracker from '../models/change_tracker/change_tracker.js';
 import * as CommentManager from '../models/comment_manager/comment_manager.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
 import * as Emulation from '../models/emulation/emulation.js';
@@ -111,6 +112,10 @@ export class TestUniverse implements Foundation.Universe.Universe {
     [
       CommentManager.CD4ABridge.CD4ABridge,
       () => new CommentManager.CD4ABridge.CD4ABridge(this.commentManager, this.targetManager, this.networkLog),
+    ],
+    [
+      ChangeTracker.ChangeTracker.ChangeTracker,
+      () => new ChangeTracker.ChangeTracker.ChangeTracker(this.commentManager),
     ],
     [
       CommentManager.CommentManager.CommentManager,
@@ -391,6 +396,10 @@ export class TestUniverse implements Foundation.Universe.Universe {
 
   get cd4aBridge(): CommentManager.CD4ABridge.CD4ABridge {
     return this.get(CommentManager.CD4ABridge.CD4ABridge);
+  }
+
+  get changeTracker(): ChangeTracker.ChangeTracker.ChangeTracker {
+    return this.get(ChangeTracker.ChangeTracker.ChangeTracker);
   }
 
   get commentManager(): CommentManager.CommentManager.CommentManager {

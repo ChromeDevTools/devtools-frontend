@@ -263,6 +263,7 @@ group("foundation_unittests") {
     "models/badges:foundation_unittests",
     "models/bindings:foundation_unittests",
     "models/breakpoints:foundation_unittests",
+    "models/change_tracker:foundation_unittests",
     "models/comment_manager:foundation_unittests",
     "models/computed_style:foundation_unittests",
     "models/cpu_profile:foundation_unittests",

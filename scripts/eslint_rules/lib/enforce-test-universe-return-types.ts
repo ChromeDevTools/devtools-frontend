@@ -9,14 +9,15 @@ import {createRule} from './utils/ruleCreator.ts';
 /**
  * Only classes/types are allowed that don't access any global state (modulo experiments/host config :cry:).
  *
- * In particular, any listed types must take it's dependencies via constructor. No `.instance()` call must
- * happen when any of these types is used.
+ * In particular, any listed type must take its dependencies via constructor. No `.instance()` call must
+ * happen when any such type is used.
  */
 const ALLOWED_RETURN_TYPES = new Set([
   'AiAssistance.AiHistoryStorage.AiHistoryStorage',
   'AiAssistance.BuiltInAi.BuiltInAi',
   'AutofillManager.AutofillManager.AutofillManager',
   'Badges.UserBadges',
+  'ChangeTracker.ChangeTracker.ChangeTracker',
   'Common.Console.Console',
   'Common.Settings.Settings',
   'CommentManager.CD4ABridge.CD4ABridge',

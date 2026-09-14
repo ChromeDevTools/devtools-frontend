@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as EmulationComponents from '../settings/emulation/components/components.js';
@@ -74,9 +75,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
     this.contentElement.classList.add('network-config');
 
     this.createCacheSection();
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
+    this.contentElement.createChild('div', 'panel-section-separator');
     this.createNetworkThrottlingSection();
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
+    this.contentElement.createChild('div', 'panel-section-separator');
     this.createUserAgentSection();
   }
 
@@ -105,18 +106,27 @@ export class NetworkConfigView extends UI.Widget.VBox {
     UI.ARIAUtils.setLabel(userAgentSelectElement, title);
 
     const customOverride = {title: i18nString(UIStrings.custom), value: 'custom'};
-    userAgentSelectElement.appendChild(UI.UIUtils.createOption(customOverride.title, customOverride.value, 'custom'));
-
-    for (const userAgentDescriptor of userAgentGroups) {
-      const groupElement = userAgentSelectElement.createChild('optgroup');
-      groupElement.label = userAgentDescriptor.title;
-      for (const userAgentVersion of userAgentDescriptor.values) {
-        const userAgentValue =
-            SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(userAgentVersion.value);
-        groupElement.appendChild(UI.UIUtils.createOption(
-            userAgentVersion.title, userAgentValue, Platform.StringUtilities.toKebabCase(userAgentVersion.title)));
-      }
-    }
+    const {patchUserAgentWithChromeVersion} = SDK.NetworkManager.MultitargetNetworkManager;
+    const {toKebabCase} = Platform.StringUtilities;
+    // clang-format off
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+    render(html`
+      <option value=${customOverride.value} jslog=${VisualLogging.item('custom').track({click: true})}>
+        ${customOverride.title}
+      </option>
+      ${userAgentGroups.map(group => html`
+        <optgroup label=${group.title}>
+          ${group.values.map(val => html`
+            <option
+                value=${patchUserAgentWithChromeVersion(val.value)}
+                jslog=${VisualLogging.item(toKebabCase(val.title)).track({click: true})}>
+              ${val.title}
+            </option>
+          `)}
+        </optgroup>
+      `)}
+    `, userAgentSelectElement);
+    // clang-format on
 
     userAgentSelectElement.selectedIndex = 0;
 

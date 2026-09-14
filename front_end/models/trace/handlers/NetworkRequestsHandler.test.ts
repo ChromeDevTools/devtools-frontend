@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getAllNetworkRequestsByHost} from '../../../testing/TraceHelpers.js';
+import {getAllNetworkRequestsByHost} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -559,6 +559,8 @@ describe('NetworkRequestsHandler', function() {
 });
 
 async function runHandlers(events: readonly Trace.Types.Events.Event[]): Promise<void> {
+  Trace.Handlers.ModelHandlers.Meta.reset();
+  Trace.Handlers.ModelHandlers.NetworkRequests.reset();
   for (const event of events) {
     Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
     Trace.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);

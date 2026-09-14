@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {defaultTraceEvent} from '../../../testing/TraceHelpers.js';
+import {defaultTraceEvent} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 

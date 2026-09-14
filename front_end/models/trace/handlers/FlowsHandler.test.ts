@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {
   makeCompleteEvent,
   makeFlowPhaseEvent,
-} from '../../../testing/TraceHelpers.js';
+} from '../../../testing/TraceHelpersCore.js';
 import * as Trace from '../trace.js';
 
 async function getFlowsHandlerData(events: Trace.Types.Events.Event[]):

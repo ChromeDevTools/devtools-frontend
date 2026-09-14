@@ -10,7 +10,7 @@ import {
   createTraceExtensionDataFromPerformanceAPITestInput,
   makeTimingEventWithConsoleExtensionData,
   type PerformanceAPIExtensionTestData,
-} from '../../../testing/TraceHelpers.js';
+} from '../../../testing/TraceHelpersCore.js';
 import * as Trace from '../trace.js';
 
 async function createTraceExtensionDataFromConsoleAPITestInput(extensionData: ConsoleAPIExtensionTestData[]):

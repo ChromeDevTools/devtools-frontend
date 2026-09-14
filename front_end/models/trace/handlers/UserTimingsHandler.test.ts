@@ -4,14 +4,13 @@
 
 import {assert} from 'chai';
 
-import {deinitializeGlobalVars, initializeGlobalVars} from '../../../testing/EnvironmentHelpers.js';
 import {
   type ConsoleAPIExtensionTestData,
   makeCompleteEvent,
   makeTimingEventWithConsoleExtensionData,
   makeTimingEventWithPerformanceExtensionData,
   type PerformanceAPIExtensionTestData,
-} from '../../../testing/TraceHelpers.js';
+} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -43,13 +42,6 @@ async function createUserTimingsDataFromEvents(events: readonly Trace.Types.Even
 }
 
 describe('UserTimingsHandler', function() {
-  before(async () => {
-    await initializeGlobalVars();
-  });
-
-  after(async () => {
-    await deinitializeGlobalVars();
-  });
   let timingsData: Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData;
   describe('performance timings', function() {
     async function getTimingsDataFromEvents(events: readonly Trace.Types.Events.Event[]):

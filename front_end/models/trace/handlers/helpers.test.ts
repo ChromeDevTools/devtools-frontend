@@ -4,12 +4,11 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
+import {allThreadEntriesInTrace} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('getNonResolvedURL', () => {
+describe('getNonResolvedURL', () => {
   it('returns the URL in event.args.data if it has one', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const commitLoadEvent = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isCommitLoad);
@@ -75,7 +74,7 @@ describeWithEnvironment('getNonResolvedURL', () => {
         url, 'https://web-dev.imgix.net/image/admin/WkMOiDtaDgiAA2YkRZ5H.jpg?fit=crop&h=64&w=64&dpr=1&q=75');
   });
 });
-describeWithEnvironment('makeUpEntity', () => {
+describe('makeUpEntity', () => {
   it('correctly makes up entities', async function() {
     const expectedEntities = new Map<string, string>([
       ['http://localhost:8080/', 'localhost'],

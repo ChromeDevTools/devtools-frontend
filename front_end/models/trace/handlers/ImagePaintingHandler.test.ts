@@ -10,6 +10,7 @@ import * as Trace from '../trace.js';
 
 describe('ImagePaintingHandler', () => {
   beforeEach(() => {
+    Trace.Handlers.ModelHandlers.Meta.reset();
     Trace.Handlers.ModelHandlers.ImagePainting.reset();
   });
 

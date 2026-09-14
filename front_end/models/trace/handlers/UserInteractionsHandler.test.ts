@@ -11,6 +11,7 @@ async function processTrace(context: Mocha.Suite|Mocha.Context|null,
                             path: string): Promise<Trace.Handlers.ModelHandlers.UserInteractions.UserInteractionsData> {
   const traceEvents = await TraceLoader.rawEvents(context, path);
   Trace.Handlers.ModelHandlers.Meta.reset();
+  Trace.Handlers.ModelHandlers.UserInteractions.reset();
   for (const event of traceEvents) {
     Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
     Trace.Handlers.ModelHandlers.UserInteractions.handleEvent(event);

@@ -4,11 +4,10 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('Handler Threads helper', function() {
+describe('Handler Threads helper', function() {
   it('returns all the threads for a trace that used tracing', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const data = parsedTrace.data;

@@ -4,11 +4,10 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('WarningsHandler', function() {
+describe('WarningsHandler', function() {
   beforeEach(() => {
     Trace.Handlers.ModelHandlers.Warnings.reset();
   });

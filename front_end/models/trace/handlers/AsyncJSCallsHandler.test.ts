@@ -8,7 +8,7 @@ import {
   makeCompleteEvent,
   makeFlowEvents,
   makeProfileCall,
-} from '../../../testing/TraceHelpers.js';
+} from '../../../testing/TraceHelpersCore.js';
 import * as Trace from '../trace.js';
 const cat = 'mewtwo';
 const pid = 1;

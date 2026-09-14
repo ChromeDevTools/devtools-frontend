@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {
   getAllNodes,
   getEventsIn,
@@ -14,7 +14,7 @@ import {
   makeEndEvent,
   makeInstantEvent,
   prettyPrint,
-} from '../../../testing/TraceHelpers.js';
+} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -29,7 +29,8 @@ async function handleEventsFromTraceFile(
   return parsedTrace.data;
 }
 
-describeWithEnvironment('RendererHandler', function() {
+describe('RendererHandler', function() {
+  setupLocaleHooks();
   describe('process and thread structure with multiple navigations and iframes', () => {
     let parsedData: Trace.Handlers.Types.HandlerData;
     before(async function() {

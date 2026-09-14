@@ -40,22 +40,22 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 152,
-  header: 'What’s new in DevTools 152',
+  version: 154,
+  header: 'New in DevTools (October 2026)',
   markdownLinks: [
     {
-      key: 'devtools-for-agents',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-152/#devtools-for-agents',
+      key: 'mcp',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-october-2026/#mcp',
     },
     {
       key: 'performance',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-152/#performance',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-october-2026/#performance',
     },
     {
-      key: 'nested-selectors',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-152/#nested-selectors',
+      key: 'edit-and-resend-as-fetch-in-co',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-october-2026/#edit-and-resend-as-fetch-in-co',
     },
   ],
   videoLinks: [],
-  link: 'https://developer.chrome.com/blog/new-in-devtools-152/',
+  link: 'https://developer.chrome.com/blog/new-in-devtools-october-2026/',
 };

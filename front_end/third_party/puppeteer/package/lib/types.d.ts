@@ -4389,6 +4389,12 @@ export declare interface JSCoverageEntry extends CoverageEntry {
 export declare interface JSCoverageOptions {
   /**
    * Whether to reset coverage on every navigation.
+   *
+   * Setting this to `false` does not guarantee that coverage survives a
+   * navigation. Chrome may discard the previous page's JavaScript execution
+   * environment, including its coverage data, when navigating.
+   * To preserve coverage, call {@link Coverage.stopJSCoverage} before navigating
+   * away, then start a new collection for the next page and merge the reports.
    */
   resetOnNavigation?: boolean;
   /**

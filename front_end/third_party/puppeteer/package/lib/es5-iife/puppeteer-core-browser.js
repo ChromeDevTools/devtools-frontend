@@ -3178,7 +3178,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.10.0';
+  const packageVersion = '25.11.0';
   // x-release-please-end
 
   /**
@@ -21871,7 +21871,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           client
         } = this.page.mainFrame();
         const frameRate = this.options.frameRate ?? this.options.fps;
-        // @ts-expect-error Page.startScreenRecording is not yet in devtools-protocol
         const result = await client.send('Page.startScreenRecording', {
           audio: this.options.audio,
           maxWidth: this.options.maxWidth,
@@ -21894,9 +21893,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           const {
             client
           } = this.page.mainFrame();
-          await client
-          // @ts-expect-error Page.stopScreenRecording is not yet in devtools-protocol
-          .send('Page.stopScreenRecording').catch(err => {
+          await client.send('Page.stopScreenRecording').catch(err => {
             this.logger(DEBUG_PREFIXES.error)?.(err);
           });
           if (!_classPrivateFieldGet(_streamHandle, this)) {
@@ -28305,9 +28302,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '152.0.7977.75',
-    'chrome-headless-shell': '152.0.7977.75',
-    firefox: 'stable_155.0'
+    chrome: '153.0.8010.36',
+    'chrome-headless-shell': '153.0.8010.36',
+    firefox: 'stable_155.0.1'
   });
 
   /**

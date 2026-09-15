@@ -75,7 +75,6 @@ let CdpScreenRecording = (() => {
         async _start() {
             const { client } = this.page.mainFrame();
             const frameRate = this.options.frameRate ?? this.options.fps;
-            // @ts-expect-error Page.startScreenRecording is not yet in devtools-protocol
             const result = (await client.send('Page.startScreenRecording', {
                 audio: this.options.audio,
                 maxWidth: this.options.maxWidth,
@@ -96,10 +95,7 @@ let CdpScreenRecording = (() => {
             this.stopped = true;
             try {
                 const { client } = this.page.mainFrame();
-                await client
-                    // @ts-expect-error Page.stopScreenRecording is not yet in devtools-protocol
-                    .send('Page.stopScreenRecording')
-                    .catch(err => {
+                await client.send('Page.stopScreenRecording').catch(err => {
                     this.logger(DEBUG_PREFIXES.error)?.(err);
                 });
                 if (!this.#streamHandle) {

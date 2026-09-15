@@ -715,6 +715,69 @@ describeWithEnvironment('ElementsTreeElement', () => {
        assert.strictEqual(finalSpacesCount, initialSpacesCount);
      });
 
+  it('starts editing boolean attributes without values via triggerEditAttribute', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+
+    const nodePayload = {
+      nodeId: 1 as Protocol.DOM.NodeId,
+      backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'BUTTON',
+      localName: 'button',
+      nodeValue: '',
+      attributes: ['disabled', ''],
+      childNodeCount: 0,
+    };
+    const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
+
+    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
+    treeElement.treeOutline = treeOutline;
+    treeElement.onbind();
+
+    treeElement.requestUpdate();
+    await treeElement.updateComplete;
+
+    const attributeElement = treeElement.widget.contentElement.querySelector('.webkit-html-attribute');
+    assert.exists(attributeElement);
+    assert.isNull(attributeElement.querySelector('.webkit-html-attribute-value'));
+
+    const editStarted = treeElement.triggerEditAttribute('disabled');
+    assert.isTrue(editStarted);
+  });
+
+  it('starts editing boolean attribute on startEditing when it is the first attribute', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+
+    const nodePayload = {
+      nodeId: 1 as Protocol.DOM.NodeId,
+      backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'BUTTON',
+      localName: 'button',
+      nodeValue: '',
+      attributes: ['disabled', ''],
+      childNodeCount: 0,
+    };
+    const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
+
+    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
+    treeElement.treeOutline = treeOutline;
+    treeElement.onbind();
+
+    treeElement.requestUpdate();
+    await treeElement.updateComplete;
+
+    treeElement.widget.isDOMNodeSelected = true;
+    const editStarted = treeElement.widget.startEditing();
+    assert.isTrue(editStarted);
+  });
+
   it('truncates long data URL attribute values in the UI but shows them in full when editing', () => {
     const target = createTarget();
     const domModel = target.model(SDK.DOMModel.DOMModel);

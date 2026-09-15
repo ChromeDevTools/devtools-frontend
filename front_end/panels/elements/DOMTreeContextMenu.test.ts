@@ -23,11 +23,11 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
     domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
   });
 
-  function createTestNode(): SDK.DOMModel.DOMNode {
+  function createTestNode(nodeType: number = Node.ELEMENT_NODE): SDK.DOMModel.DOMNode {
     const node = new SDK.DOMModel.DOMNode(domModel);
-    sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
-    sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
-    sinon.stub(node, 'nodeName').returns('DIV');
+    sinon.stub(node, 'nodeType').returns(nodeType);
+    sinon.stub(node, 'nodeNameInCorrectCase').returns(nodeType === Node.TEXT_NODE ? '#text' : 'div');
+    sinon.stub(node, 'nodeName').returns(nodeType === Node.TEXT_NODE ? '#text' : 'DIV');
     sinon.stub(node, 'id').value(1 as unknown as Protocol.DOM.NodeId);
     return node;
   }
@@ -95,6 +95,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
           assert.include(labels, 'Delete element');
           assert.include(labels, 'Scroll into view');
           assert.include(labels, 'Focus');
+          assert.include(labels, 'Add attribute');
         } finally {
           domTree.detach();
         }
@@ -185,22 +186,14 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
         }
       });
 
-      it('redirects addAttribute to start tag widget when invoked on closing tag', async () => {
+      it('triggers addNewAttribute on DOMTreeWidget when Add attribute is clicked', async () => {
         const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, getView());
         try {
           const node = createTestNode();
-          const startTagWidget = {
-            isClosingTag: false,
-            addNewAttribute: sinon.spy(),
-          } as unknown as Elements.ElementsTreeElement.ElementsTreeWidget;
-          const closingTagWidget = {
-            isClosingTag: true,
-            findStartTagWidget: () => startTagWidget,
-            addNewAttribute: sinon.spy(),
-          } as unknown as Elements.ElementsTreeElement.ElementsTreeWidget;
+          const addNewAttributeSpy = sinon.spy(domTree, 'addNewAttribute');
 
           const event = createContextMenuEvent();
-          const contextMenu = await domTree.showContextMenu(node, event, closingTagWidget);
+          const contextMenu = await domTree.showContextMenu(node, event);
           assert.exists(contextMenu);
 
           const descriptor = contextMenu.buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor;
@@ -210,8 +203,65 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
           assert.exists(addItem.id);
           contextMenu.invokeHandler(addItem.id);
 
-          sinon.assert.calledOnce(startTagWidget.addNewAttribute as sinon.SinonSpy);
-          sinon.assert.notCalled(closingTagWidget.addNewAttribute as sinon.SinonSpy);
+          sinon.assert.calledOnceWithExactly(addNewAttributeSpy, node);
+        } finally {
+          domTree.detach();
+        }
+      });
+
+      it('triggers startEditing on DOMTreeWidget when Edit attribute is clicked', async () => {
+        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, getView());
+        try {
+          const node = createTestNode();
+          const startEditingSpy = sinon.spy(domTree, 'startEditing');
+
+          const attrSpan = document.createElement('span');
+          attrSpan.className = 'webkit-html-attribute';
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'webkit-html-attribute-name';
+          nameSpan.textContent = 'class';
+          attrSpan.appendChild(nameSpan);
+
+          const event = new MouseEvent('contextmenu');
+          Object.defineProperty(event, 'target', {value: nameSpan});
+
+          const contextMenu = await domTree.showContextMenu(node, event);
+          assert.exists(contextMenu);
+
+          const descriptor = contextMenu.buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor;
+          const editItem =
+              findItem(descriptor.subItems as UI.SoftContextMenu.SoftContextMenuDescriptor[], 'Edit attribute');
+          assert.exists(editItem);
+          assert.exists(editItem.id);
+          contextMenu.invokeHandler(editItem.id);
+
+          sinon.assert.calledOnceWithExactly(startEditingSpy, node, 'class');
+        } finally {
+          domTree.detach();
+        }
+      });
+
+      it('triggers startEditingTextNode on DOMTreeWidget when Edit text is clicked', async () => {
+        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, getView());
+        try {
+          const node = createTestNode(Node.TEXT_NODE);
+          const startEditingTextNodeSpy = sinon.spy(domTree, 'startEditingTextNode');
+
+          const textSpan = document.createElement('span');
+          textSpan.className = 'webkit-html-text-node';
+          const event = new MouseEvent('contextmenu');
+          Object.defineProperty(event, 'target', {value: textSpan});
+
+          const contextMenu = await domTree.showContextMenu(node, event);
+          assert.exists(contextMenu);
+
+          const descriptor = contextMenu.buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor;
+          const editItem = findItem(descriptor.subItems as UI.SoftContextMenu.SoftContextMenuDescriptor[], 'Edit text');
+          assert.exists(editItem);
+          assert.exists(editItem.id);
+          contextMenu.invokeHandler(editItem.id);
+
+          sinon.assert.calledOnceWithExactly(startEditingTextNodeSpy, node);
         } finally {
           domTree.detach();
         }

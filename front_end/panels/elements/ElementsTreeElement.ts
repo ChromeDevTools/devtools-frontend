@@ -1151,10 +1151,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   computeLeftIndent?: number|(() => number);
   setChildrenListElementVisible?: (visible: boolean) => void;
 
-  findStartTagWidget?: () => ElementsTreeWidget | null;
   selectDOMNode?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
   revealInTopLayer?: (node: SDK.DOMModel.DOMNode) => void;
-  showContextMenu?: (event: Event, widget?: ElementsTreeWidget) => void;
+  showContextMenu?: (event: Event) => void;
   populateTreeElement?: () => Promise<void>;
   toggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
   isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
@@ -1474,7 +1473,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
           },
       topLayerIndex: this.node.topLayerIndex(),
       onViewSourceAdornerClick: this.disableEdits ? () => {} : this.revealHTMLInSources.bind(this),
-      onGutterClick: this.showContextMenu ? (event: Event) => this.showContextMenu?.(event, this) : () => {},
+      onGutterClick: this.showContextMenu ? (event: Event) => this.showContextMenu?.(event) : () => {},
       onContainerAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onContainerAdornerClick(event),
       onFlexAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onFlexAdornerClick(event),
       onGridAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onGridAdornerClick(event),
@@ -2035,8 +2034,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     if (isOpeningTag(this.tagTypeContext) && this.tagTypeContext.canAddAttributes) {
       const attribute = listItem.getElementsByClassName('webkit-html-attribute')[0];
       if (attribute) {
-        return this.startEditingAttribute(
-            attribute, attribute.getElementsByClassName('webkit-html-attribute-value')[0]);
+        const valueElement = attribute.getElementsByClassName('webkit-html-attribute-value')[0];
+        return this.startEditingAttribute(attribute, valueElement ?? attribute);
       }
 
       return this.addNewAttribute();
@@ -2094,6 +2093,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             return this.startEditingAttribute((elem.parentElement as HTMLElement), (elem as Element));
           }
         }
+        return this.startEditingAttribute((attributeElements[i].parentElement as HTMLElement), attributeElements[i]);
       }
     }
 
@@ -2117,7 +2117,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
     // Make sure elementForSelection is not a child of attributeValueElement.
     elementForSelection =
-        attributeValueElement?.isAncestor(elementForSelection) ? attributeValueElement : elementForSelection;
+        (attributeValueElement && elementForSelection && attributeValueElement.isAncestor(elementForSelection)) ?
+        attributeValueElement :
+        (elementForSelection ?? attribute);
 
     function removeZeroWidthSpaceRecursive(node: Node): void {
       if (node.nodeType === Node.TEXT_NODE) {
@@ -3133,9 +3135,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         outline.suppressRevealAndSelect = true;
         outline.selectDOMNode(node, selectedByUser);
         outline.suppressRevealAndSelect = false;
-      };
-      this.widget.findStartTagWidget = () => {
-        return (outline.findTreeElement(this.nodeInternal) as ElementsTreeElement | null)?.widget ?? null;
       };
       this.widget.revealInTopLayer = node => outline.revealInTopLayer(node);
       this.widget.showContextMenu = event => void outline.showContextMenu(this, event);

@@ -144,7 +144,7 @@ interface ViewInput {
 
   onSelect?: (node: SDK.DOMModel.DOMNode, isClosingTag?: boolean, selectedByUser?: boolean) => void;
   onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
-  onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent, widget?: ElementsTreeWidget) => void;
+  onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
   onHoverNode?: (node: SDK.DOMModel.DOMNode|null, showInfo?: boolean, isClosingTag?: boolean) => void;
   onLeave?: () => void;
   onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
@@ -221,7 +221,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     elementsTreeOutline.elementInternal.addEventListener('contextmenu', (event: MouseEvent) => {
       const treeElement = elementsTreeOutline.treeElementFromEventInternal(event);
       if (treeElement instanceof ElementsTreeElement) {
-        input.onContextMenu?.(treeElement.node(), event, treeElement.widget);
+        input.onContextMenu?.(treeElement.node(), event);
       }
     }, false);
     elementsTreeOutline.elementInternal.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -243,7 +243,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
   output.elementsTreeOutline.showContextMenu = (treeElement, event) => {
     if (event instanceof MouseEvent) {
-      input.onContextMenu?.(treeElement.node(), event, treeElement.widget);
+      input.onContextMenu?.(treeElement.node(), event);
     }
   };
   let needsUpdate = false;
@@ -835,9 +835,9 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
             return Promise.resolve();
           },
           isToggledToHidden: (n: SDK.DOMModel.DOMNode) => input.isToggledToHidden?.(n) ?? false,
-          showContextMenu: (event: Event, widget?: ElementsTreeWidget) => {
+          showContextMenu: (event: Event) => {
             if (event instanceof MouseEvent) {
-              input.onContextMenu?.(node, event, widget);
+              input.onContextMenu?.(node, event);
             }
           },
           updateRecord: input.updateRecordForNode?.(node) ?? null,
@@ -889,9 +889,9 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                     computeLeftIndent: computeLeftIndent(depth + 1, false),
                     disableEdits: input.disableEdits ?? false,
                     showAIButton: false,
-                    showContextMenu: (event: Event, widget?: ElementsTreeWidget) => {
+                    showContextMenu: (event: Event) => {
                       if (event instanceof MouseEvent) {
-                        input.onContextMenu?.(node, event, widget);
+                        input.onContextMenu?.(node, event);
                       }
                     },
                     updateRecord: input.updateRecordForNode?.(node) ?? null,
@@ -1619,12 +1619,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     treeElement?.collapseChildren();
   }
 
-  showContextMenu(node: SDK.DOMModel.DOMNode, event: MouseEvent,
-                  widget?: ElementsTreeWidget): Promise<UI.ContextMenu.ContextMenu|undefined> {
+  showContextMenu(node: SDK.DOMModel.DOMNode, event: MouseEvent): Promise<UI.ContextMenu.ContextMenu|undefined> {
     if (!this.#enableContextMenu) {
       return Promise.resolve(undefined);
     }
-    return showContextMenu(this, node, event, widget);
+    return showContextMenu(this, node, event);
   }
 
   /**
@@ -1762,8 +1761,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean) => {
         this.setNodeExpanded(node, expanded);
       },
-      onContextMenu: (node: SDK.DOMModel.DOMNode, event: MouseEvent, widget?: ElementsTreeWidget) => {
-        void this.showContextMenu(node, event, widget);
+      onContextMenu: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => {
+        void this.showContextMenu(node, event);
       },
       onToggleHideElement: (node: SDK.DOMModel.DOMNode) => {
         this.toggleHideElement(node);
@@ -2352,7 +2351,26 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.performUpdate();
   }
 
-  startEditing(node: SDK.DOMModel.DOMNode): void {
+  addNewAttribute(node: SDK.DOMModel.DOMNode): void {
+    if (UI.UIUtils.isEditing()) {
+      return;
+    }
+    if (node.nodeType() !== Node.ELEMENT_NODE || node.isShadowRoot() || node.ancestorUserAgentShadowRoot()) {
+      return;
+    }
+    this.#nodeToEdit = {node, isNewAttribute: true};
+    this.performUpdate();
+  }
+
+  startEditingTextNode(node: SDK.DOMModel.DOMNode): void {
+    if (UI.UIUtils.isEditing()) {
+      return;
+    }
+    this.#nodeToEdit = {node, isTextNode: true};
+    this.performUpdate();
+  }
+
+  startEditing(node: SDK.DOMModel.DOMNode, attributeName?: string): void {
     if (UI.UIUtils.isEditing()) {
       return;
     }
@@ -2361,16 +2379,19 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       if (node.isShadowRoot() || node.ancestorUserAgentShadowRoot()) {
         return;
       }
-      const attributes = node.attributes();
-      if (attributes.length > 0) {
-        this.#nodeToEdit = {node, attributeName: attributes[0].name};
+      if (attributeName) {
+        this.#nodeToEdit = {node, attributeName};
       } else {
-        this.#nodeToEdit = {node, isNewAttribute: true};
+        const attributes = node.attributes();
+        if (attributes.length > 0) {
+          this.#nodeToEdit = {node, attributeName: attributes[0].name};
+        } else {
+          this.#nodeToEdit = {node, isNewAttribute: true};
+        }
       }
       this.performUpdate();
     } else if (nodeType === Node.TEXT_NODE) {
-      this.#nodeToEdit = {node, isTextNode: true};
-      this.performUpdate();
+      this.startEditingTextNode(node);
     } else if (nodeType === Node.PROCESSING_INSTRUCTION_NODE) {
       this.#nodeToEdit = {node, isProcessingInstruction: true};
       this.performUpdate();

@@ -10,7 +10,7 @@ import * as Emulation from '../emulation/emulation.js';
 
 import {canGetJSPath} from './DOMPath.js';
 import {ElementsPanel} from './ElementsPanel.js';
-import {ElementsTreeElement, type ElementsTreeWidget} from './ElementsTreeElement.js';
+import {ElementsTreeElement} from './ElementsTreeElement.js';
 import type {DOMTreeWidget} from './ElementsTreeOutline.js';
 
 const UIStrings = {
@@ -198,10 +198,9 @@ export async function populateNodeContextMenu(
     contextMenu: UI.ContextMenu.ContextMenu,
     domTreeWidget: DOMTreeWidget,
     domNode: SDK.DOMModel.DOMNode,
-    targetWidget?: ElementsTreeWidget,
     ): Promise<void> {
   const isEditable = !domNode.isShadowRoot() && !domNode.ancestorUserAgentShadowRoot();
-  if (isEditable && !targetWidget?.isEditing) {
+  if (isEditable) {
     contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml),
                                          () => domTreeWidget.toggleEditAsHTML(domNode),
                                          {jslogContext: 'elements.edit-as-html'});
@@ -448,7 +447,6 @@ export async function showContextMenu(
     domTreeWidget: DOMTreeWidget,
     domNode: SDK.DOMModel.DOMNode,
     event: Event,
-    targetWidget?: ElementsTreeWidget,
     ): Promise<UI.ContextMenu.ContextMenu|undefined> {
   if (UI.UIUtils.isEditing()) {
     return;
@@ -482,29 +480,25 @@ export async function showContextMenu(
                                        () => void domNode.saveNodeToTempVariable(),
                                        {jslogContext: 'store-as-global-variable'});
   if (textNode) {
-    if (!targetWidget?.isEditing) {
-      contextMenu.editSection().appendItem(i18nString(UIStrings.editText),
-                                           () => targetWidget?.startEditingTextNode(textNode as Element),
-                                           {jslogContext: 'edit-text'});
-    }
-    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
+    contextMenu.editSection().appendItem(
+        i18nString(UIStrings.editText), () => domTreeWidget.startEditingTextNode(domNode), {jslogContext: 'edit-text'});
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
   } else if (isTag) {
-    const startTagWidget =
-        targetWidget?.isClosingTag ? (targetWidget.findStartTagWidget?.() ?? targetWidget) : targetWidget;
-    if (startTagWidget) {
-      contextMenu.editSection().appendItem(i18nString(UIStrings.addAttribute), () => startTagWidget.addNewAttribute(),
-                                           {jslogContext: 'add-attribute'});
-    }
+    contextMenu.editSection().appendItem(i18nString(UIStrings.addAttribute),
+                                         () => domTreeWidget.addNewAttribute(domNode), {jslogContext: 'add-attribute'});
 
     const target = (event.composedPath()[0] || event.target) as Element;
     const attribute = target.enclosingNodeOrSelfWithClass?.('webkit-html-attribute');
     const newAttribute = target.enclosingNodeOrSelfWithClass?.('add-attribute');
     if (attribute && !newAttribute) {
-      contextMenu.editSection().appendItem(i18nString(UIStrings.editAttribute),
-                                           () => startTagWidget?.startEditingAttribute(attribute, target),
-                                           {jslogContext: 'edit-attribute'});
+      const attributeName = attribute.querySelector('.webkit-html-attribute-name')?.textContent?.trim();
+      if (attributeName) {
+        contextMenu.editSection().appendItem(i18nString(UIStrings.editAttribute),
+                                             () => domTreeWidget.startEditing(domNode, attributeName),
+                                             {jslogContext: 'edit-attribute'});
+      }
     }
-    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, startTagWidget);
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
     ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, domNode);
     contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(),
                                          {jslogContext: 'scroll-into-view'});
@@ -512,7 +506,7 @@ export async function showContextMenu(
       await domNode.focus();
     }, {jslogContext: 'focus'});
   } else if (commentNode) {
-    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
   } else if (isPseudoElement) {
     if (domNode.childNodeCount() !== 0 || domNode.hasPseudoElements()) {
       contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively),
@@ -522,8 +516,7 @@ export async function showContextMenu(
     contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(),
                                          {jslogContext: 'scroll-into-view'});
   } else if (domNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-    contextMenu.editSection().appendItem(i18nString(UIStrings.editData),
-                                         () => targetWidget?.startEditingProcessingInstructionValue(),
+    contextMenu.editSection().appendItem(i18nString(UIStrings.editData), () => domTreeWidget.startEditing(domNode),
                                          {jslogContext: 'elements.edit-data'});
     contextMenu.editSection().appendItem(i18nString(UIStrings.duplicateElement),
                                          () => domTreeWidget.duplicateNode(domNode), {

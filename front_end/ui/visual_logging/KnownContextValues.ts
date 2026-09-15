@@ -3040,6 +3040,7 @@ export const knownContextValues: Set<string> = new Set([
   'opacity',
   'open',
   'open-ai-settings',
+  'open-backend-link',
   'open-elements-panel',
   'open-folder',
   'open-in-animations-panel',

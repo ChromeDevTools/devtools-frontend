@@ -20,7 +20,7 @@ import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
 import {cleanTestDOM} from '../../testing/DOMHooks.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
@@ -74,6 +74,8 @@ const defaultRequest = {
   earlyHintsHeaders: [
     {name: 'link', value: '<src="/script.js" as="script">'},
   ],
+  serverTimings: null,
+  responseHeaderValue: () => null,
 } as unknown as SDK.NetworkRequest.NetworkRequest;
 
 async function renderHeadersComponent(request: SDK.NetworkRequest.NetworkRequest) {
@@ -117,10 +119,18 @@ const getRowHighlightStatus = (container: HTMLDetailsElement) => {
 describeWithEnvironment('RequestHeadersView', () => {
   setupUserMetricHooks();
   let component: Network.RequestHeadersView.RequestHeadersView|null|undefined = null;
+  let backendLinking: sinon.SinonStubbedInstance<Network.NetworkPanel.BackendLinking>;
 
   beforeEach(() => {
     setUpEnvironment();
     resetRecordedMetrics();
+    updateHostConfig({
+      devToolsNetworkBackendLinking: {enabled: true},
+    });
+    backendLinking = sinon.createStubInstance(Network.NetworkPanel.BackendLinking);
+    const networkPanel = sinon.createStubInstance(Network.NetworkPanel.NetworkPanel);
+    sinon.define(networkPanel, 'backendLinking', backendLinking);
+    sinon.stub(Network.NetworkPanel.NetworkPanel, 'instance').returns(networkPanel);
   });
 
   afterEach(async () => {
@@ -235,6 +245,7 @@ describeWithEnvironment('RequestHeadersView', () => {
         request,
         toggleShowRawResponseHeaders: () => {},
         toggleShowRawRequestHeaders: () => {},
+        backendLink: null,
       },
                                               {}, container);
 
@@ -242,7 +253,6 @@ describeWithEnvironment('RequestHeadersView', () => {
                          `cacheDisabled=${cacheDisabled}, rel=${relation}`);
     }
   });
-
   it('emits UMA event when a header value is being copied', async () => {
     component = await renderHeadersComponent(defaultRequest);
 
@@ -272,6 +282,7 @@ describeWithEnvironment('RequestHeadersView', () => {
       toggleShowRawRequestHeaders: function(): void {
         throw new Error('Function not implemented.');
       },
+      backendLink: null,
     },
                                             {}, container);
     await UI.Widget.Widget.allUpdatesComplete;
@@ -295,6 +306,7 @@ describeWithEnvironment('RequestHeadersView', () => {
       toggleShowRawRequestHeaders: function(): void {
         throw new Error('Function not implemented.');
       },
+      backendLink: null,
     },
                                             {}, container);
     await UI.Widget.Widget.allUpdatesComplete;
@@ -328,6 +340,7 @@ describeWithEnvironment('RequestHeadersView', () => {
       toggleShowRawRequestHeaders: function(): void {
         throw new Error('Function not implemented.');
       },
+      backendLink: null,
     },
                                             {}, container);
     await UI.Widget.Widget.allUpdatesComplete;
@@ -447,6 +460,29 @@ describeWithEnvironment('RequestHeadersView', () => {
 
     assert.instanceOf(linkElements[1], HTMLElement);
     assert.strictEqual(linkElements[1].textContent?.trim(), Persistence.NetworkPersistenceManager.HEADERS_FILENAME);
+  });
+
+  it('renders a link to \'.headers\' with overrides enabled and matches screenshot', async () => {
+    const {project} = createFileSystemUISourceCode({
+      url: urlString`file:///path/to/overrides/www.example.com/.headers`,
+      mimeType: 'text/plain',
+      fileSystemPath: 'file:///path/to/overrides',
+    });
+
+    await Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().setProject(project);
+    Common.Settings.Settings.instance()
+        .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+        .set(true);
+
+    component = await renderHeadersComponent(defaultRequest);
+
+    const responseHeadersCategory = component.contentElement.querySelector('[aria-label="Response headers"]');
+    assert.instanceOf(responseHeadersCategory, HTMLElement);
+
+    const linkElements = responseHeadersCategory.querySelectorAll('devtools-link');
+    assert.lengthOf(linkElements, 2);
+
+    await assertScreenshot('network/request-headers-view-header-overrides.png');
   });
 
   it('does not render a link to \'.headers\' if a matching \'.headers\' does not exist', async () => {
@@ -594,5 +630,82 @@ describeWithEnvironment('RequestHeadersView', () => {
 
     dispatchKeyDownEvent(summary, {key: 'ArrowUp'});
     assert.isTrue(details.hasAttribute('open'));
+  });
+
+  it('presenter applies backendLink to view input', () => {
+    const view = sinon.stub();
+    const component = new Network.RequestHeadersView.RequestHeadersView(undefined, view);
+    const expectedLink = {
+      label: 'APM Trace',
+      url: new URL('https://apm.example.com/trace/123'),
+    };
+    backendLinking.getLink.returns(expectedLink);
+
+    component.request = defaultRequest;
+    component.performUpdate();
+
+    sinon.assert.calledOnce(view);
+    assert.deepEqual(view.lastCall.args[0].backendLink, expectedLink);
+
+    view.resetHistory();
+    backendLinking.getLink.returns(null);
+    component.performUpdate();
+
+    sinon.assert.calledOnce(view);
+    assert.isNull(view.lastCall.args[0].backendLink);
+  });
+
+  it('renders backend link button and matches screenshot', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    Network.RequestHeadersView.DEFAULT_VIEW({
+      showRequestHeadersText: false,
+      showResponseHeadersText: false,
+      cacheDisabled: false,
+      request: defaultRequest,
+      toggleShowRawResponseHeaders: () => {},
+      toggleShowRawRequestHeaders: () => {},
+      backendLink: {
+        label: 'APM Trace',
+        url: new URL('http://localhost:8080/apm/trace/123'),
+      },
+    },
+                                            {}, container);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await RenderCoordinator.done();
+
+    const button = container.querySelector<HTMLElement>('.backend-link-button');
+    assert.exists(button);
+    assert.strictEqual(button.innerText.trim(), 'Open with APM Trace');
+    await assertScreenshot('network/request-headers-view-backend-link.png');
+  });
+
+  it('renders backend link button and header overrides and matches screenshot', async () => {
+    Common.Settings.Settings.instance()
+        .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+        .set(true);
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    Network.RequestHeadersView.DEFAULT_VIEW({
+      showRequestHeadersText: false,
+      showResponseHeadersText: false,
+      cacheDisabled: false,
+      request: defaultRequest,
+      toggleShowRawResponseHeaders: () => {},
+      toggleShowRawRequestHeaders: () => {},
+      revealHeadersFile: () => {},
+      backendLink: {
+        label: 'APM Trace',
+        url: new URL('http://localhost:8080/apm/trace/123'),
+      },
+    },
+                                            {}, container);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await RenderCoordinator.done();
+
+    const button = container.querySelector<HTMLElement>('.backend-link-button');
+    assert.exists(button);
+    assert.strictEqual(button.innerText.trim(), 'Open with APM Trace');
+    await assertScreenshot('network/request-headers-view-backend-link-and-overrides.png');
   });
 });

@@ -12,6 +12,7 @@ import * as Tracing from '../../services/tracing/tracing.js';
 import {
   createTarget,
   describeWithEnvironment,
+  updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
@@ -20,7 +21,7 @@ import * as RenderCoordinator from '../../ui/components/render_coordinator/rende
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type * as Network from './network.js';
+import * as Network from './network.js';
 
 describeWithEnvironment('NetworkPanel', () => {
   let target: SDK.Target.Target;
@@ -101,5 +102,286 @@ describeWithEnvironment('NetworkPanel', () => {
     button.click();
     await RenderCoordinator.done({waitForWork: true});
     sinon.assert.called(networkLogResetSpy);
+  });
+});
+
+describeWithEnvironment('BackendLinking', () => {
+  let setting: Common.Settings.Setting<Network.NetworkPanel.BackendLinkingRule[]>;
+  let backendLinking: Network.NetworkPanel.BackendLinking;
+
+  beforeEach(() => {
+    updateHostConfig({
+      devToolsNetworkBackendLinking: {enabled: true},
+    });
+    setting = Common.Settings.Settings.instance().createSetting<Network.NetworkPanel.BackendLinkingRule[]>(
+        'test-backend-linking-rules', []);
+    backendLinking = new Network.NetworkPanel.BackendLinking(setting);
+  });
+
+  describe('rule parsing', () => {
+    it('parses valid rules and extracts placeholders', () => {
+      setting.set([
+        {
+          urlPattern: 'https://example.com/api/*',
+          targetUrlTemplate: 'https://trace.example.com/trace/${traceId}/${spanId}',
+          label: 'Trace Link',
+        },
+      ]);
+      assert.lengthOf(backendLinking.rules, 1);
+      const rule = backendLinking.rules[0];
+      assert.strictEqual(rule.label, 'Trace Link');
+      assert.strictEqual(rule.template, 'https://trace.example.com/trace/${traceId}/${spanId}');
+      assert.deepEqual(rule.placeholders, ['${traceId}', '${spanId}']);
+      assert.isTrue(rule.urlPattern.test('https://example.com/api/test'));
+      assert.isFalse(rule.urlPattern.test('https://example.com/other'));
+    });
+
+    it('ignores rules with invalid URL patterns', () => {
+      setting.set([
+        {
+          urlPattern: ':::invalid-pattern[',
+          targetUrlTemplate: 'https://trace.example.com/trace/${traceId}',
+          label: 'Invalid Pattern Rule',
+        },
+        {
+          urlPattern: 'https://example.com/api/*',
+          targetUrlTemplate: 'https://trace.example.com/trace/${traceId}',
+          label: 'Valid Rule',
+        },
+      ]);
+      assert.lengthOf(backendLinking.rules, 1);
+      assert.strictEqual(backendLinking.rules[0].label, 'Valid Rule');
+    });
+
+    it('ignores rules without any recognized placeholders in targetUrlTemplate', () => {
+      setting.set([
+        {
+          urlPattern: 'https://example.com/api/*',
+          targetUrlTemplate: 'https://trace.example.com/no-placeholders',
+          label: 'Static Link',
+        },
+      ]);
+      assert.lengthOf(backendLinking.rules, 0);
+    });
+
+    it('updates rules dynamically when setting changes', () => {
+      setting.set([
+        {
+          urlPattern: 'https://example.com/v1/*',
+          targetUrlTemplate: 'https://dashboard.example.com/v1?id=${requestId}',
+          label: 'V1 Dashboard',
+        },
+      ]);
+      assert.lengthOf(backendLinking.rules, 1);
+      assert.strictEqual(backendLinking.rules[0].label, 'V1 Dashboard');
+
+      setting.set([
+        {
+          urlPattern: 'https://example.com/v2/*',
+          targetUrlTemplate: 'https://dashboard.example.com/v2?id=${requestId}',
+          label: 'V2 Dashboard',
+        },
+      ]);
+      assert.lengthOf(backendLinking.rules, 1);
+      assert.strictEqual(backendLinking.rules[0].label, 'V2 Dashboard');
+      assert.isTrue(backendLinking.rules[0].urlPattern.test('https://example.com/v2/foo'));
+      assert.isFalse(backendLinking.rules[0].urlPattern.test('https://example.com/v1/foo'));
+    });
+  });
+
+  describe('link construction', () => {
+    it('respects rule precedence when multiple rules match', () => {
+      setting.set([
+        {
+          urlPattern: 'https://example.com/api/*',
+          targetUrlTemplate: 'https://first.example.com/${requestId}',
+          label: 'First Rule',
+        },
+        {
+          urlPattern: 'https://example.com/api/*',
+          targetUrlTemplate: 'https://second.example.com/${requestId}',
+          label: 'Second Rule',
+        },
+      ]);
+      const request = createNetworkRequest(
+          {url: 'https://example.com/api/test', responseHeaders: [{name: 'X-Request-ID', value: 'abc'}]});
+      const link = backendLinking.getLink(request);
+      assert.exists(link);
+      assert.strictEqual(link.label, 'First Rule');
+      assert.strictEqual(link.url.toString(), 'https://first.example.com/abc');
+    });
+
+    it('matches requests by URL pattern and returns null for non-matching URLs', () => {
+      setting.set([
+        {
+          urlPattern: 'https://example.com/api/v1/*',
+          targetUrlTemplate: 'https://trace.example.com/${requestId}',
+          label: 'API V1',
+        },
+      ]);
+      const matchingRequest = createNetworkRequest(
+          {url: 'https://example.com/api/v1/users', responseHeaders: [{name: 'X-Request-ID', value: '1'}]});
+      const nonMatchingRequest = createNetworkRequest(
+          {url: 'https://example.com/api/v2/users', responseHeaders: [{name: 'X-Request-ID', value: '1'}]});
+
+      assert.exists(backendLinking.getLink(matchingRequest));
+      assert.isNull(backendLinking.getLink(nonMatchingRequest));
+    });
+
+    describe('placeholder matching', () => {
+      it('skips rule when required placeholders are missing from the request', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://trace.example.com/${traceId}/${spanId}',
+            label: 'Trace and Span',
+          },
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://trace.example.com/fallback/${traceId}',
+            label: 'Trace Fallback',
+          },
+        ]);
+        const request = createNetworkRequest(
+            {url: 'https://example.com/api', responseHeaders: [{name: 'trace-id', value: 'trace-abc'}]});
+        const link = backendLinking.getLink(request);
+        assert.exists(link);
+        assert.strictEqual(link.label, 'Trace Fallback');
+        assert.strictEqual(link.url.toString(), 'https://trace.example.com/fallback/trace-abc');
+      });
+
+      it('extracts devtoolsDebugId from Server-Timing header', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://debug.example.com/session/${devtoolsDebugId}',
+            label: 'Debug Session',
+          },
+        ]);
+        const request = createNetworkRequest({
+          url: 'https://example.com/test',
+          responseHeaders: [{name: 'Server-Timing', value: 'devtools-debug-id;desc="session-42"'}],
+        });
+        const link = backendLinking.getLink(request);
+        assert.exists(link);
+        assert.strictEqual(link.url.toString(), 'https://debug.example.com/session/session-42');
+      });
+
+      it('extracts traceId and spanId from Server-Timing traceparent', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://trace.example.com/${traceId}/${spanId}',
+            label: 'APM Trace',
+          },
+        ]);
+        const request = createNetworkRequest({
+          url: 'https://example.com/test',
+          responseHeaders: [{name: 'Server-Timing', value: 'traceparent;desc="00-abcabcabc-defdefdef-01"'}],
+        });
+        const link = backendLinking.getLink(request);
+        assert.exists(link);
+        assert.strictEqual(link.url.toString(), 'https://trace.example.com/abcabcabc/defdefdef');
+      });
+
+      it('extracts traceId and spanId from traceparent response header', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://trace.example.com/${traceId}/${spanId}',
+            label: 'APM Trace',
+          },
+        ]);
+        const request = createNetworkRequest({
+          url: 'https://example.com/test',
+          responseHeaders: [{name: 'traceparent', value: '00-abcabcabc-defdefdef-01'}],
+        });
+        const link = backendLinking.getLink(request);
+        assert.exists(link);
+        assert.strictEqual(link.url.toString(), 'https://trace.example.com/abcabcabc/defdefdef');
+      });
+
+      it('extracts traceId from trace-id response header as fallback', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://trace.example.com/${traceId}',
+            label: 'Trace Link',
+          },
+        ]);
+        const request = createNetworkRequest({
+          url: 'https://example.com/test',
+          responseHeaders: [{name: 'trace-id', value: 'trace-xyz'}],
+        });
+        const link = backendLinking.getLink(request);
+        assert.exists(link);
+        assert.strictEqual(link.url.toString(), 'https://trace.example.com/trace-xyz');
+      });
+
+      it('extracts requestId from X-Request-ID or Request-ID response headers', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://dash.example.com/?req=${requestId}',
+            label: 'Dashboard',
+          },
+        ]);
+        const request1 = createNetworkRequest(
+            {url: 'https://example.com/test', responseHeaders: [{name: 'X-Request-ID', value: 'x-req-123'}]});
+        const link1 = backendLinking.getLink(request1);
+        assert.exists(link1);
+        assert.strictEqual(link1.url.toString(), 'https://dash.example.com/?req=x-req-123');
+
+        const request2 = createNetworkRequest(
+            {url: 'https://example.com/test', responseHeaders: [{name: 'Request-ID', value: 'req-456'}]});
+        const link2 = backendLinking.getLink(request2);
+        assert.exists(link2);
+        assert.strictEqual(link2.url.toString(), 'https://dash.example.com/?req=req-456');
+      });
+
+      it('extracts correlationId from X-Correlation-ID or Correlation-ID response headers', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://dash.example.com/?cor=${correlationId}',
+            label: 'Dashboard',
+          },
+        ]);
+        const request1 = createNetworkRequest(
+            {url: 'https://example.com/test', responseHeaders: [{name: 'X-Correlation-ID', value: 'x-cor-123'}]});
+        const link1 = backendLinking.getLink(request1);
+        assert.exists(link1);
+        assert.strictEqual(link1.url.toString(), 'https://dash.example.com/?cor=x-cor-123');
+
+        const request2 = createNetworkRequest(
+            {url: 'https://example.com/test', responseHeaders: [{name: 'Correlation-ID', value: 'cor-456'}]});
+        const link2 = backendLinking.getLink(request2);
+        assert.exists(link2);
+        assert.strictEqual(link2.url.toString(), 'https://dash.example.com/?cor=cor-456');
+      });
+    });
+
+    it('substitutes multiple placeholders in targetUrlTemplate', () => {
+      setting.set([
+        {
+          urlPattern: 'https://example.com/*',
+          targetUrlTemplate:
+              'https://observability.example.com/trace/${traceId}?span=${spanId}&req=${requestId}&cor=${correlationId}',
+          label: 'Full Observability',
+        },
+      ]);
+      const request = createNetworkRequest({
+        url: 'https://example.com/api',
+        responseHeaders: [
+          {name: 'traceparent', value: '00-abcabcabc-defdefdef-01'},
+          {name: 'X-Request-ID', value: 'req-999'},
+          {name: 'X-Correlation-ID', value: 'cor-888'},
+        ],
+      });
+      const link = backendLinking.getLink(request);
+      assert.exists(link);
+      assert.strictEqual(link.url.toString(),
+                         'https://observability.example.com/trace/abcabcabc?span=defdefdef&req=req-999&cor=cor-888');
+    });
   });
 });

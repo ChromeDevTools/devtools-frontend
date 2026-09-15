@@ -7,10 +7,12 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -18,6 +20,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../sources/sources.js';
 
 import * as NetworkComponents from './components/components.js';
+import {NetworkPanel} from './NetworkPanel.js';
 import {ShowMoreDetailsWidget} from './ShowMoreDetailsWidget.js';
 
 const {render, html} = Lit;
@@ -97,6 +100,11 @@ const UIStrings = {
    * @description HTTP response code
    */
   statusCode: 'Status code',
+  /**
+   * @description Text in Request Headers View of the Network panel for opening a backend link with a named service
+   * @example {Dashboard} PH1
+   */
+  openWith: 'Open with {PH1}',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -110,6 +118,7 @@ interface ViewInput {
   toggleShowRawRequestHeaders: () => void;
   revealHeadersFile?: () => void;
   toReveal?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, header?: string};
+  backendLink: {label: string, url: URL}|null;
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
@@ -194,16 +203,16 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               ${input.cacheDisabled && hasEarlyHintsPreload(input.request.earlyHintsHeaders) ?
                 renderEarlyHintsWarning() : Lit.nothing}
               ${input.showResponseHeadersText ?
-                renderRawHeaders(input.request.responseHeadersText) :
-                html`
-                  <devtools-early-hints-header-section .data=${
-                    {
-                      request: input.request,
-                      toReveal: input.toReveal,
-                    } as NetworkComponents.ResponseHeaderSection
-                    .ResponseHeaderSectionData}></devtools-early-hints-header-section>
+              renderRawHeaders(input.request.responseHeadersText) :
+              html`
+            <devtools-early-hints-header-section .data=${
+              {
+                request: input.request,
+                toReveal: input.toReveal,
+              } as NetworkComponents.ResponseHeaderSection
+              .ResponseHeaderSectionData}></devtools-early-hints-header-section>
                 `}
-            `,
+              `,
           })}
         ${renderCategory({
           name: 'response-headers',
@@ -211,7 +220,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           title: i18nString(UIStrings.responseHeaders),
           headerCount: input.request.sortedResponseHeaders.length,
           checked: input.request.responseHeadersText ? input.showResponseHeadersText : undefined,
-          additionalContent: renderHeaderOverridesLink(input),
+          additionalContent: html`<div>${renderHeaderOverridesLink(input)}${renderBackendLinkButton(input)}</div>`,
           forceOpen: input.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE,
           loggingContext: 'response-headers',
           contents: input.showResponseHeadersText ?
@@ -293,12 +302,12 @@ export class RequestHeadersView extends UI.Widget.Widget {
     this.#request?.addEventListener(SDK.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);
     this.#request?.addEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.#refreshHeadersView, this);
     this.#request?.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView, this);
-    this.#request?.addEventListener(
-        SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
-    this.#workspace.addEventListener(
-        Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
-    this.#workspace.addEventListener(
-        Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
+    this.#request?.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED,
+                                    this.#resetAndRefreshHeadersView, this);
+    this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved,
+                                     this);
+    this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved,
+                                     this);
     Common.Settings.Settings.instance()
         .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
         .addChangeListener(this.requestUpdate, this);
@@ -317,17 +326,17 @@ export class RequestHeadersView extends UI.Widget.Widget {
   }
 
   #removeEventListeners(): void {
-    this.#request?.removeEventListener(
-        SDK.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);
+    this.#request?.removeEventListener(SDK.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView,
+                                       this);
     this.#request?.removeEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.#refreshHeadersView, this);
-    this.#request?.removeEventListener(
-        SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView, this);
-    this.#request?.removeEventListener(
-        SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
-    this.#workspace.removeEventListener(
-        Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
-    this.#workspace.removeEventListener(
-        Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
+    this.#request?.removeEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView,
+                                       this);
+    this.#request?.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED,
+                                       this.#resetAndRefreshHeadersView, this);
+    this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved,
+                                        this);
+    this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeRemoved,
+                                        this.#uiSourceCodeAddedOrRemoved, this);
     Common.Settings.Settings.instance()
         .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
         .removeChangeListener(this.requestUpdate, this);
@@ -381,6 +390,9 @@ export class RequestHeadersView extends UI.Widget.Widget {
       cacheDisabled: this.#request.cacheDisabled(),
       showResponseHeadersText: this.#showResponseHeadersText,
       showRequestHeadersText: this.#showRequestHeadersText,
+      backendLink: Root.Runtime.hostConfig.devToolsNetworkBackendLinking?.enabled ?
+          NetworkPanel.instance().backendLinking.getLink(this.#request) :
+          null,
     };
 
     this.#view(input, {}, this.contentElement);
@@ -422,6 +434,28 @@ function renderEarlyHintsWarning(): Lit.LitTemplate {
   `;
 }
 
+function renderBackendLinkButton({backendLink}: ViewInput): Lit.LitTemplate {
+  if (!backendLink) {
+    return Lit.nothing;
+  }
+  // clang-format off
+  return html`
+    <devtools-button
+      class="backend-link-button"
+      .variant=${Buttons.Button.Variant.PRIMARY}
+      .size=${Buttons.Button.Size.SMALL}
+      jslog=${VisualLogging.action('open-backend-link').track({click: true})}
+      title=${backendLink.url}
+      @click=${(event: Event) => {
+        event.consume(true);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+          Platform.DevToolsPath.urlString`${backendLink.url}`);
+      }}>
+        ${i18nString(UIStrings.openWith, {PH1: backendLink.label})}
+    </devtools-button>
+  `;
+  // clang-format on
+}
 function renderHeaderOverridesLink(input: ViewInput): Lit.LitTemplate {
   if (!input.revealHeadersFile) {
     return Lit.nothing;
@@ -445,7 +479,7 @@ function renderHeaderOverridesLink(input: ViewInput): Lit.LitTemplate {
     return html`
       <devtools-link
           href="https://goo.gle/devtools-override"
-          class="link devtools-link"
+          class="link devtools-link hide-when-closed"
           jslogcontext="devtools-override"
       >
         <devtools-icon name="help" class="inline-icon">
@@ -453,7 +487,7 @@ function renderHeaderOverridesLink(input: ViewInput): Lit.LitTemplate {
       </devtools-link>
       <devtools-link
           @click=${revealHeadersFile}
-          class="link devtools-link"
+          class="link devtools-link hide-when-closed"
           title=${UIStrings.revealHeaderOverrides}
           jslogcontext="reveal-header-overrides"
       >
@@ -468,9 +502,8 @@ function renderRawHeaders(text: string): Lit.TemplateResult {
       ${widget(ShowMoreDetailsWidget, {text})}></devtools-widget></div>`;
 }
 
-function renderGeneralRow(
-    input: ViewInput, name: Common.UIString.LocalizedString, value: string, id: string,
-    classNames?: string[]): Lit.LitTemplate {
+function renderGeneralRow(input: ViewInput, name: Common.UIString.LocalizedString, value: string, id: string,
+                          classNames?: string[]): Lit.LitTemplate {
   const isHighlighted = input.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL &&
       name.toLowerCase() === input.toReveal?.header?.toLowerCase();
   return html`
@@ -523,7 +556,7 @@ export function renderCategory(data: {
                   ${i18nString(UIStrings.raw)}
               </devtools-checkbox>` : Lit.nothing}
             </div>
-            <div class="hide-when-closed">${data.additionalContent}</div>
+            ${data.additionalContent}
           </div>
         </summary>
         ${data.contents}

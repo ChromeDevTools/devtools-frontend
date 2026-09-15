@@ -8,12 +8,14 @@ import("../../visibility.gni")
 
 devtools_ui_module("forward") {
   sources = [
+    "BackendLinking.ts",
     "NetworkRequestId.ts",
     "UIFilter.ts",
     "UIRequestLocation.ts",
   ]
 
   ts_deps = [
+    "../../../core/common:bundle",
     "../../../core/sdk:bundle",
     "../../../core/text_utils:bundle",
   ]

@@ -590,6 +590,7 @@ export const knownContextValues: Set<string> = new Set([
   'back-forward-cache',
   'back-forward-cache.run-test',
   'backdrop-filter',
+  'backend-linking',
   'backface-visibility',
   'background /* color: red */',
   'background',

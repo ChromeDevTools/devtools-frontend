@@ -1,0 +1,78 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  .settings-card-container {
+    align-items: stretch;
+    padding: 0 var(--sys-size-8);
+  }
+
+  devtools-card {
+    max-width: 100%;
+  }
+
+  .description-text {
+    color: var(--sys-color-on-surface-subtle);
+    font-size: var(--sys-typescale-body-medium-size);
+    line-height: var(--sys-typescale-body-medium-line-height);
+    margin: 0 0 var(--sys-size-5);
+  }
+
+  .intro-section {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: var(--sys-size-2) var(--sys-size-6);
+    align-items: baseline;
+    font-size: var(--sys-typescale-body-small-size);
+    line-height: var(--sys-typescale-body-medium-line-height);
+    margin: 0;
+
+    dd {
+      margin: 0;
+    }
+
+    .column-header {
+      font-size: var(--sys-typescale-label-small-size);
+      font-weight: var(--ref-typeface-weight-medium);
+      border-bottom: 1px solid var(--sys-color-neutral-outline);
+      padding-bottom: var(--sys-size-2);
+      margin-bottom: var(--sys-size-3);
+    }
+
+    .placeholder,
+    .source-header {
+      font-family: var(--monospace-font-family);
+    }
+
+    .placeholder {
+      color: var(--sys-color-primary);
+    }
+
+    .placeholder-description {
+      grid-column: 1 / -1;
+      color: var(--sys-color-on-surface-subtle);
+      margin-bottom: var(--sys-size-6);
+    }
+  }
+
+  .warning-icon {
+    margin-right: var(--sys-size-3);
+    vertical-align: text-bottom;
+  }
+
+  td.editing .warning-icon {
+    display: none;
+  }
+
+  .warning-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-3);
+    color: var(--sys-color-on-surface-subtle);
+    font-size: var(--sys-typescale-body-small-size);
+    line-height: var(--sys-typescale-body-medium-line-height);
+  }
+}

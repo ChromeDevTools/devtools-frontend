@@ -11,6 +11,7 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "aiSettingsTab.css",
+    "backendLinkingSettingsTab.css",
     "editFileSystemView.css",
     "frameworkIgnoreListSettingsTab.css",
     "keybindsSettingsTab.css",
@@ -22,6 +23,7 @@ generate_css("css_files") {
 devtools_ui_module("settings") {
   sources = [
     "AISettingsTab.ts",
+    "BackendLinkingSettingsTab.ts",
     "EditFileSystemView.ts",
     "FrameworkIgnoreListSettingsTab.ts",
     "KeybindsSettingsTab.ts",
@@ -35,6 +37,7 @@ devtools_ui_module("settings") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
+    "../../core/sdk:bundle",
     "../../models/ai_assistance:bundle",
     "../../models/persistence:bundle",
     "../../models/workspace:bundle",
@@ -51,6 +54,7 @@ devtools_ui_module("settings") {
     "../../ui/lit:bundle",
     "../../ui/settings:bundle",
     "../../ui/visual_logging:bundle",
+    "../network/forward:bundle",
     "../utils:bundle",
     "./components:bundle",
   ]
@@ -92,6 +96,7 @@ devtools_ui_module("unittests") {
 
   sources = [
     "AISettingsTab.test.ts",
+    "BackendLinkingSettingsTab.test.ts",
     "EditFileSystemView.test.ts",
     "FrameworkIgnoreListSettingsTab.test.ts",
     "SettingsScreen.test.ts",
@@ -108,8 +113,11 @@ devtools_ui_module("unittests") {
     "../../models/persistence:bundle",
     "../../models/workspace:bundle",
     "../../testing",
+    "../../ui/components/render_coordinator:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/settings:bundle",
+    "../network/forward:bundle",
     "../utils:bundle",
   ]
 }

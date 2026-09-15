@@ -216,6 +216,7 @@ devtools_ui_module("unittests") {
     "../../core/text_utils:bundle",
     "../../generated",
     "../../models/ai_code_completion:bundle",
+    "../../models/badges:bundle",
     "../../models/bindings:bundle",
     "../../models/computed_style:bundle",
     "../../models/issues_manager:bundle",

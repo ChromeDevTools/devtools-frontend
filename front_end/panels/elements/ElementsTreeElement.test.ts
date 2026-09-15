@@ -11,6 +11,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -1852,6 +1853,36 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
       assert.isTrue(widget.isEditing);
       widget.editing?.cancel();
       assert.isFalse(widget.isEditing);
+    });
+
+    it('cancels tag name editing when the new tag name is empty', () => {
+      const widget = testTreeElement.widget;
+      const setNodeNameStub = sinon.stub(labelNode, 'setNodeName');
+      const editingCancelledSpy = sinon.spy(widget, 'editingCancelled');
+
+      assert.isTrue(widget.startEditingTagName());
+      const tagNameElement = widget.contentElement.querySelector('.webkit-html-tag-name');
+      assert.exists(tagNameElement);
+      tagNameElement.textContent = '   ';
+      widget.editing?.commit();
+
+      sinon.assert.notCalled(setNodeNameStub);
+      sinon.assert.calledOnce(editingCancelledSpy);
+    });
+
+    it('records a renamed tag without a selectNodeAfterEdit hook', () => {
+      const widget = testTreeElement.widget;
+      widget.selectNodeAfterEdit = undefined;
+      const recordActionStub = sinon.stub(Badges.UserBadges.instance(), 'recordAction');
+      sinon.stub(labelNode, 'setNodeName').callsFake((_name, callback) => callback?.(null, labelNode));
+
+      assert.isTrue(widget.startEditingTagName());
+      const tagNameElement = widget.contentElement.querySelector('.webkit-html-tag-name');
+      assert.exists(tagNameElement);
+      tagNameElement.textContent = 'section';
+      widget.editing?.commit();
+
+      sinon.assert.calledOnceWithExactly(recordActionStub, Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
     });
 
     it('supports double click on tag name or attribute to initiate editing', async () => {

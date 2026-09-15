@@ -2509,7 +2509,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
 
     newText = newText.trim();
-    if (newText === oldText) {
+    if (!newText || newText === oldText) {
       cancel();
       return;
     }
@@ -2521,12 +2521,11 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         cancel();
         return;
       }
-      if (!this.selectNodeAfterEdit) {
-        return;
-      }
 
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-      this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
+      if (this.selectNodeAfterEdit) {
+        this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
+      }
     });
   }
 

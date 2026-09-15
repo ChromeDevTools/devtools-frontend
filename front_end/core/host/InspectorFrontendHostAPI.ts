@@ -6,6 +6,11 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as Common from '../common/common.js';
 import type * as Root from '../root/root.js';
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  var InspectorFrontendHost: InspectorFrontendHostAPI;
+}
+
 /**
  * This values should match the one getting called from Chromium
  */
@@ -227,6 +232,14 @@ export interface FunctionCallEvent {
  * Please note that the "dispatch" side can't be type-checked as the dispatch is
  * done dynamically.
  **/
+export interface DevicesDiscoveryConfig {
+  discoverUsbDevices: boolean;
+  portForwardingEnabled: boolean;
+  portForwardingConfig: Record<string, string>;
+  networkDiscoveryEnabled: boolean;
+  networkDiscoveryConfig: string[];
+}
+
 export interface EventTypes {
   [Events.AppendedToURL]: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString;
   [Events.CanceledSaveURL]: Platform.DevToolsPath.UrlString;
@@ -234,7 +247,7 @@ export interface EventTypes {
   [Events.ContextMenuCleared]: void;
   [Events.ContextMenuItemSelected]: number;
   [Events.DeviceCountUpdated]: number;
-  [Events.DevicesDiscoveryConfigChanged]: Adb.Config;
+  [Events.DevicesDiscoveryConfigChanged]: DevicesDiscoveryConfig;
   [Events.DevicesPortForwardingStatusChanged]: void;
   [Events.DevicesUpdated]: void;
   [Events.DispatchMessage]: string;
@@ -399,7 +412,7 @@ export interface InspectorFrontendHostAPI {
 
   sendMessageToBackend(message: string): void;
 
-  setDevicesDiscoveryConfig(config: Adb.Config): void;
+  setDevicesDiscoveryConfig(config: DevicesDiscoveryConfig): void;
 
   setDevicesUpdatesEnabled(enabled: boolean): void;
 
@@ -423,7 +436,7 @@ export interface InspectorFrontendHostAPI {
 
   resetZoom(): void;
 
-  showContextMenuAtPoint(x: number, y: number, items: ContextMenuDescriptor[], document: Document): void;
+  showContextMenuAtPoint(x: number, y: number, items: ContextMenuDescriptor[], document: object): void;
 
   reattach(callback: () => void): void;
 

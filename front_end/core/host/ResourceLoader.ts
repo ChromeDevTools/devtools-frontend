@@ -7,7 +7,6 @@
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
-import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import type {LoadNetworkResourceResult} from './InspectorFrontendHostAPI.js';
 
 const UIStrings = {
@@ -248,7 +247,7 @@ export const loadAsStream = function(
       rawHeaders.push(key + ': ' + headers[key]);
     }
   }
-  InspectorFrontendHostInstance.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
+  globalThis.InspectorFrontendHost.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
 
   function finishedCallback(response: LoadNetworkResourceResult): void {
     if (callback) {

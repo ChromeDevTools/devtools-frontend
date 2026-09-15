@@ -14,6 +14,7 @@ import {
   type ChangeEvent,
   type ClickEvent,
   type ContextMenuDescriptor,
+  type DevicesDiscoveryConfig,
   type DispatchHttpRequestRequest,
   type DispatchHttpRequestResult,
   type DoAidaConversationResult,
@@ -460,7 +461,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   setOpenNewWindowForPopups(_value: boolean): void {
   }
 
-  setDevicesDiscoveryConfig(_config: Adb.Config): void {
+  setDevicesDiscoveryConfig(_config: DevicesDiscoveryConfig): void {
   }
 
   setDevicesUpdatesEnabled(_enabled: boolean): void {
@@ -472,7 +473,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   openNodeFrontend(): void {
   }
 
-  showContextMenuAtPoint(_x: number, _y: number, _items: ContextMenuDescriptor[], _document: Document): void {
+  showContextMenuAtPoint(_x: number, _y: number, _items: ContextMenuDescriptor[], _document: object): void {
     throw new Error('Soft context menu should be used');
   }
 

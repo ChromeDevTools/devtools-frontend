@@ -58,13 +58,15 @@ describe('AiAgent2', () => {
     sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
   });
 
+  const defaultOriginLock = (): AiAssistance.Tool.OriginLockState => ({status: 'UNINITIALIZED'});
+
   it('retrieves userTier from hostConfig', () => {
     updateHostConfig({
       devToolsAiV2Architecture: {
         userTier: 'TESTERS',
       },
     });
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient: mockAidaClient()});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient: mockAidaClient(), originLock: defaultOriginLock});
     assert.strictEqual(agent.userTier, 'TESTERS');
   });
   it('registers all expected skills', () => {
@@ -87,7 +89,7 @@ describe('AiAgent2', () => {
       }],
     ]);
     const changeManager = new AiAssistance.ChangeManager.ChangeManager();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, changeManager});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, changeManager, originLock: defaultOriginLock});
 
     const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
     assert.exists(executeJsTool);
@@ -117,7 +119,7 @@ describe('AiAgent2', () => {
     const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     const agent = new AiAssistance.AiAgent2.AiAgent2({
       aidaClient,
-      allowedOrigin: () => ({origin}),
+      originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin}),
     });
 
     const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
@@ -128,12 +130,12 @@ describe('AiAgent2', () => {
 
     sinon.assert.calledOnce(handlerStub);
     const [, context] = handlerStub.getCall(0).args;
-    assert.strictEqual(context.getEstablishedOrigin(), origin);
+    assert.deepEqual(context.getOriginLock?.(), {status: 'ESTABLISHED_ORIGIN', origin});
   });
 
   it('can learn a skill', async () => {
     const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     // We expect the generated skill file to be available because we built it.
     // If it fails, we might need to mock the import or ensure the build target runs.
@@ -144,7 +146,7 @@ describe('AiAgent2', () => {
 
   it('prevents duplicate loading', async () => {
     const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     await agent.learnSkill(['styling']);
     const result = await agent.learnSkill(['styling']);
@@ -156,7 +158,7 @@ describe('AiAgent2', () => {
 
   it('handles invalid skill names gracefully', async () => {
     const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
     mockSkills(agent, {
       styling: SKILLS.styling,
     });
@@ -170,7 +172,7 @@ describe('AiAgent2', () => {
     const aidaClient = mockAidaClient([[{
       explanation: 'This is the answer.',
     }]]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     const responses = await Array.fromAsync(agent.run('question', {selected: null}));
 
@@ -188,7 +190,7 @@ describe('AiAgent2', () => {
       explanation:
           'Root Cause: CSS error\n\nSuggestion: Fix layout\nSUGGESTIONS: ["Can you fix this?", "Explain why this happens"]',
     }]]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     const responses = await Array.fromAsync(agent.run('question', {selected: null}));
 
@@ -208,7 +210,7 @@ describe('AiAgent2', () => {
         explanation: 'I have learned the styling skill.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     const responses = await Array.fromAsync(agent.run('question', {selected: null}));
 
@@ -236,7 +238,7 @@ describe('AiAgent2', () => {
 
   it('injects skills manifest containing only unloaded skills', async () => {
     const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
     mockSkills(agent, {
       styling: SKILLS.styling,
       network: SKILLS.network,
@@ -280,7 +282,7 @@ describe('AiAgent2', () => {
         explanation: 'I have learned the styling skill and getStyles is now available.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     await Array.fromAsync(agent.run('question', {selected: null}));
 
@@ -303,7 +305,7 @@ describe('AiAgent2', () => {
         explanation: 'Styling analyzed.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     const getStylesTool = AiAssistance.ToolRegistry.ToolRegistry.get('getStyles');
     assert.exists(getStylesTool);
@@ -324,7 +326,7 @@ describe('AiAgent2', () => {
 
   it('prevents duplicate tool declarations if multiple learned skills share the same tool', async () => {
     const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     // Override getSkills to include the dummy skill for testing
     const dummySkill = {
@@ -348,7 +350,7 @@ describe('AiAgent2', () => {
     const aidaClient = mockAidaClient([[{
       explanation: 'Answer',
     }]]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
     const element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     const nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
     sinon.stub(nodeContext, 'getPromptDetails').resolves('# Inspected element\n\nelement-description');
@@ -361,7 +363,7 @@ describe('AiAgent2', () => {
 
   it('yields the selected element description in handleContextDetails', async () => {
     const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
     const element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     const nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
     sinon.stub(nodeContext, 'getUserFacingDetails').resolves([{
@@ -382,7 +384,7 @@ describe('AiAgent2', () => {
 
   it('yields context widgets in handleContextDetails if available', async () => {
     const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
     const element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     const nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
     sinon.stub(nodeContext, 'getUserFacingDetails').resolves([{
@@ -411,7 +413,7 @@ describe('AiAgent2', () => {
 
   it('handles invalid skill names with overridden skills gracefully', async () => {
     const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
     const dummySkill = {
       name: 'dummy' as SkillName,
       description: 'A dummy skill for testing',
@@ -432,7 +434,7 @@ describe('AiAgent2', () => {
 
   it('injects overridden skills manifest into the query', async () => {
     const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
     const dummySkill = {
       name: 'dummy' as SkillName,
       description: 'A dummy skill for testing',
@@ -469,7 +471,7 @@ describe('AiAgent2', () => {
         explanation: 'Style changed successfully.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
     assert.exists(executeJsTool);
@@ -531,7 +533,7 @@ describe('AiAgent2', () => {
         explanation: 'Everything is loaded.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     await Array.fromAsync(agent.run('question', {selected: null}));
 
@@ -586,7 +588,7 @@ describe('AiAgent2', () => {
     const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     const agent = new AiAssistance.AiAgent2.AiAgent2({
       aidaClient,
-      allowedOrigin: () => ({origin}),
+      originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin}),
     });
 
     const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
@@ -614,7 +616,7 @@ describe('AiAgent2', () => {
     const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     const agent = new AiAssistance.AiAgent2.AiAgent2({
       aidaClient,
-      allowedOrigin: () => ({origin}),
+      originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin}),
     });
 
     await Array.fromAsync(agent.run('question', {selected: null}));
@@ -648,7 +650,7 @@ describe('AiAgent2', () => {
     const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     const agent = new AiAssistance.AiAgent2.AiAgent2({
       aidaClient,
-      allowedOrigin: () => ({origin}),
+      originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin}),
     });
 
     const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
@@ -690,7 +692,7 @@ describe('AiAgent2', () => {
     const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     const agent = new AiAssistance.AiAgent2.AiAgent2({
       aidaClient,
-      allowedOrigin: () => ({origin}),
+      originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin}),
     });
 
     const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
@@ -715,7 +717,7 @@ describe('AiAgent2', () => {
         explanation: 'Storage skill learned.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     await Array.fromAsync(agent.run('question', {selected: null}));
 
@@ -745,7 +747,7 @@ describe('AiAgent2', () => {
         explanation: 'Keys listed.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     const listStorageKeysTool = AiAssistance.ToolRegistry.ToolRegistry.get('listStorageKeys');
     assert.exists(listStorageKeysTool);
@@ -784,6 +786,7 @@ describe('AiAgent2', () => {
     const agent = new AiAssistance.AiAgent2.AiAgent2({
       aidaClient,
       confirmSideEffectForTest: sinon.stub().returns(sideEffectPromise),
+      originLock: defaultOriginLock,
     });
 
     const getCookieValuesTool = AiAssistance.ToolRegistry.ToolRegistry.get('getCookieValues');
@@ -831,7 +834,7 @@ describe('AiAgent2', () => {
         explanation: 'Audits retrieved.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
     const accessibilityContext = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
 
     const getLighthouseAuditsTool = AiAssistance.ToolRegistry.ToolRegistry.get('getLighthouseAudits');
@@ -865,7 +868,8 @@ describe('AiAgent2', () => {
         explanation: 'Audits run.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, lighthouseRecording: runLighthouseStub});
+    const agent = new AiAssistance.AiAgent2.AiAgent2(
+        {aidaClient, lighthouseRecording: runLighthouseStub, originLock: defaultOriginLock});
 
     const runLighthouseTool = AiAssistance.ToolRegistry.ToolRegistry.get('runLighthouse');
     assert.exists(runLighthouseTool);
@@ -894,7 +898,7 @@ describe('AiAgent2', () => {
         explanation: 'Done.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     const getLighthouseAuditsTool = AiAssistance.ToolRegistry.ToolRegistry.get('getLighthouseAudits');
     assert.exists(getLighthouseAuditsTool);
@@ -922,7 +926,7 @@ describe('AiAgent2', () => {
         explanation: 'Call tree retrieved.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     const getDetailedCallTreeTool = AiAssistance.ToolRegistry.ToolRegistry.get('getDetailedCallTree');
     assert.exists(getDetailedCallTreeTool);
@@ -949,7 +953,7 @@ describe('AiAgent2', () => {
         explanation: 'Done.',
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
     const getDetailedCallTreeTool = AiAssistance.ToolRegistry.ToolRegistry.get('getDetailedCallTree');
     assert.exists(getDetailedCallTreeTool);
@@ -980,7 +984,7 @@ describe('AiAgent2', () => {
       ]);
       const agent = new AiAssistance.AiAgent2.AiAgent2({
         aidaClient,
-        allowedOrigin: () => ({origin: undefined}),
+        originLock: () => ({status: 'UNINITIALIZED'}),
       });
 
       const getStylesTool = AiAssistance.ToolRegistry.ToolRegistry.get('getStyles');
@@ -1013,7 +1017,7 @@ describe('AiAgent2', () => {
       const matchingOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
       const agent = new AiAssistance.AiAgent2.AiAgent2({
         aidaClient,
-        allowedOrigin: () => ({origin: matchingOrigin}),
+        originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin: matchingOrigin}),
       });
 
       const getStylesTool = AiAssistance.ToolRegistry.ToolRegistry.get('getStyles');
@@ -1046,7 +1050,7 @@ describe('AiAgent2', () => {
          const mismatchedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://iframe.example');
          const agent = new AiAssistance.AiAgent2.AiAgent2({
            aidaClient,
-           allowedOrigin: () => ({origin: mismatchedOrigin}),
+           originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin: mismatchedOrigin}),
          });
 
          const getStylesTool = AiAssistance.ToolRegistry.ToolRegistry.get('getStyles');
@@ -1071,7 +1075,7 @@ describe('AiAgent2', () => {
       const aidaClient = mockAidaClient([[{explanation: 'Done.'}]]);
       const agent = new AiAssistance.AiAgent2.AiAgent2({
         aidaClient,
-        allowedOrigin: () => ({blocked: true}),
+        originLock: () => ({status: 'BLOCKED_BY_NAVIGATION'}),
       });
 
       await Array.fromAsync(agent.run('question', {selected: null}));
@@ -1105,7 +1109,7 @@ describe('AiAgent2', () => {
       const mismatchedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://iframe.example');
       const agent = new AiAssistance.AiAgent2.AiAgent2({
         aidaClient,
-        allowedOrigin: () => ({origin: mismatchedOrigin}),
+        originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin: mismatchedOrigin}),
       });
 
       const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
@@ -1145,7 +1149,7 @@ describe('AiAgent2', () => {
       const matchingOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
       const agent = new AiAssistance.AiAgent2.AiAgent2({
         aidaClient,
-        allowedOrigin: () => ({origin: matchingOrigin}),
+        originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin: matchingOrigin}),
       });
 
       const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
@@ -1171,7 +1175,7 @@ describe('AiAgent2', () => {
       const mismatchedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://iframe.example');
       const agent = new AiAssistance.AiAgent2.AiAgent2({
         aidaClient,
-        allowedOrigin: () => ({origin: mismatchedOrigin}),
+        originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin: mismatchedOrigin}),
       });
 
       await Array.fromAsync(agent.run('question', {selected: null}));
@@ -1192,7 +1196,7 @@ describe('AiAgent2', () => {
       const matchingOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
       const agent = new AiAssistance.AiAgent2.AiAgent2({
         aidaClient,
-        allowedOrigin: () => ({origin: matchingOrigin}),
+        originLock: () => ({status: 'ESTABLISHED_ORIGIN' as const, origin: matchingOrigin}),
       });
 
       await Array.fromAsync(agent.run('question', {selected: null}));

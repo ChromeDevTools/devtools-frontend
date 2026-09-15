@@ -971,4 +971,80 @@ describe('AiConversation', () => {
     const secondRequest = aidaClient.doConversation.getCall(1).firstArg;
     assert.isEmpty(secondRequest.historical_contexts ?? []);
   });
+
+  describe('getOriginLock', () => {
+    it('returns uninitialized when no target or inspected URL exists', () => {
+      sinon.stub(universe.targetManager, 'primaryPageTarget').returns(null);
+      const conversation = new AiAssistance.AiConversation.AiConversation({
+        type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      });
+
+      const lockState = conversation.getOriginLock();
+      assert.deepEqual(lockState, {status: 'UNINITIALIZED'});
+    });
+
+    it('returns locked with the primary page origin when available', () => {
+      const target = sinon.createStubInstance(SDK.Target.Target);
+      target.inspectedURL.returns(Platform.DevToolsPath.urlString`https://example.com/`);
+      sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
+
+      const conversation = new AiAssistance.AiConversation.AiConversation({
+        type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      });
+
+      const lockState = conversation.getOriginLock();
+      assert.strictEqual(lockState.status, 'ESTABLISHED_ORIGIN');
+      if (lockState.status === 'ESTABLISHED_ORIGIN') {
+        assert.isTrue(
+            lockState.origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
+      }
+    });
+
+    it('returns blocked when navigation occurred during a run', async () => {
+      const origin = Platform.DevToolsPath.urlString`https://example.com`;
+      const target = universe.createTarget({url: Platform.DevToolsPath.urlString`${origin}/`});
+      target.setInspectedURL(Platform.DevToolsPath.urlString`${origin}/`);
+      sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
+
+      const aidaClient = mockAidaClient([
+        [{
+          functionCalls: [{
+            name: 'listNetworkRequests',
+            args: {},
+          }],
+          explanation: '',
+        }],
+        [{explanation: 'Done.'}],
+      ]);
+
+      const conversation = new AiAssistance.AiConversation.AiConversation({
+        type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+        data: [],
+        id: 'test-id',
+        isReadOnly: false,
+        aidaClient,
+      });
+
+      const generator = conversation.run('test');
+      await generator.next();
+
+      // Simulate cross-origin navigation during the run.
+      target.setInspectedURL(Platform.DevToolsPath.urlString`https://other.com/`);
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(resourceTreeModel);
+      const mockFrame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
+      mockFrame.resourceTreeModel.returns(resourceTreeModel);
+      mockFrame.unreachableUrl.returns(Platform.DevToolsPath.EmptyUrlString);
+      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+        frame: mockFrame,
+        type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION,
+      });
+
+      const capturedLockState = conversation.getOriginLock();
+      assert.deepEqual(capturedLockState, {status: 'BLOCKED_BY_NAVIGATION'});
+
+      // Consume remaining generator items to complete cleanup.
+      await Array.fromAsync(generator);
+    });
+  });
 });

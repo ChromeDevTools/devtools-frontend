@@ -8,11 +8,11 @@ import type * as Protocol from '../../../generated/protocol.js';
 import type {ComputedStyleAiWidget, FunctionHandlerOptions} from '../agents/AiAgent.js';
 
 import {
-  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
+  type OriginLockCapability,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -25,7 +25,7 @@ export interface GetStylesArgs extends ToolArgs {
 }
 
 export class GetStylesTool implements
-    DataTool<GetStylesArgs, unknown, BaseToolCapability&TargetCapability&ActiveOriginLockCapability> {
+    DataTool<GetStylesArgs, unknown, BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_STYLES;
   readonly description: string =
       `Retrieves computed and authored CSS styles for one or more elements by their backend node IDs (uids).
@@ -85,7 +85,7 @@ export class GetStylesTool implements
    */
   async handler(
       params: GetStylesArgs,
-      context: BaseToolCapability&TargetCapability&ActiveOriginLockCapability,
+      context: BaseToolCapability&TargetCapability&OriginLockCapability,
       _options?: FunctionHandlerOptions,
       ): Promise<DataHandlerResult<unknown>> {
     const widgets: ComputedStyleAiWidget[] = [];

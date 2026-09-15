@@ -16,10 +16,12 @@ Instead of passing a monolithic "grab-bag" context object to all tool handlers, 
 - `BaseToolCapability`: Base interface providing access to the top-level conversation context step.
 - `PageExecutionCapability`: For tools executing JavaScript code on the inspected page.
 - `StyleMutationCapability`: For tools managing and applying style mutations via a `ChangeManager`.
-- `OriginLockCapability`: Enforces origin boundaries for tools that access inspected page state or resources. Tools verify targets against the established origin before reading data to prevent unauthorized cross-origin access.
-  - For DOM nodes and source files: wrap the target in a context helper (such as `DOMNodeContext` or `FileContext`) and call `isOriginAllowed(establishedOrigin)`.
+- `OriginLockCapability`: Enforces origin boundaries for tools that access inspected page state or resources via `getOriginLock(): OriginLockState` (`ESTABLISHED_ORIGIN`, `BLOCKED_BY_NAVIGATION`, or `UNINITIALIZED`).
+  - Tools check for `BLOCKED_BY_NAVIGATION` (cross-origin navigation during the run) and `UNINITIALIZED` (no lock established yet) states and return appropriate errors.
+  - For DOM nodes, source files, and execution contexts: validate target origins using `isOriginAllowedByLock(originLock, targetOrigin)`.
   - For cookies and DOM storage: validate target origins using `resolveAllowedTargetOrigins()`.
-  - For network requests: compare `request.initiatorSecurityOrigin()` to the established origin.
+  - For network requests: compare request initiators using `isOriginAllowedByLock(originLock, request.initiatorSecurityOrigin())`.
+  - Transition from legacy V1: Tools no longer inspect context wrappers (such as `DOMNodeContext.isOriginAllowed()`). Tools validate `SecurityOrigin` instances directly against `OriginLockState`. Legacy V1 agents provide an adapter callback in their tool invocation contexts to satisfy `OriginLockCapability`.
 
 ### Unified Context
 

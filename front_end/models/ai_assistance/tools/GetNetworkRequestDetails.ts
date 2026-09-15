@@ -9,11 +9,11 @@ import * as NetworkTimeCalculator from '../../network_time_calculator/network_ti
 import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
 
 import {
-  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
+  type OriginLockCapability,
   resolveOriginFromLock,
   type ToolArgs,
   ToolName,
@@ -33,7 +33,7 @@ export interface GetNetworkRequestDetailsArgs extends ToolArgs {
  * The details include request/response headers, status code, timings, and the response body.
  */
 export class GetNetworkRequestDetailsTool implements
-    DataTool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability&ActiveOriginLockCapability> {
+    DataTool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_NETWORK_REQUEST_DETAILS;
   readonly description: string =
       'Retrieves the full headers, timing, status, and body details of a specific network request by ID.';
@@ -74,7 +74,7 @@ export class GetNetworkRequestDetailsTool implements
    */
   async handler(
       args: GetNetworkRequestDetailsArgs,
-      context: BaseToolCapability&ActiveOriginLockCapability,
+      context: BaseToolCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<unknown>> {
     const originLock = context.getOriginLock();
     const originResult = resolveOriginFromLock(originLock);

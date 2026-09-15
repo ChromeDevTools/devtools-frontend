@@ -8,7 +8,8 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type {FunctionHandlerOptions} from '../agents/AiAgent.js';
 
-import {MAX_TARGET_ORIGINS, resolveDOMStorages} from './DOMStorageUtils.js';
+import {resolveAllowedTargetOrigins} from './CookieUtils.js';
+import {resolveDOMStorages} from './DOMStorageUtils.js';
 import {
   type BaseToolCapability,
   type DataHandlerResult,
@@ -112,31 +113,11 @@ export class GetStorageValuesTool implements DataTool<GetStorageValuesArgs, GetS
 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const targetManager = SDK.TargetManager.TargetManager.instance();
-    const primaryPageTarget = targetManager.primaryPageTarget();
-
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {error: 'No origin available or not allowed.'};
+    const targetOriginsResult = resolveAllowedTargetOrigins(args.origins, context, targetManager);
+    if ('error' in targetOriginsResult) {
+      return {error: targetOriginsResult.error};
     }
-
-    if (!primaryPageTarget) {
-      return {error: 'No origin available or not allowed.'};
-    }
-
-    const pageOrigin = primaryPageTarget.inspectedSecurityOrigin();
-    if (!pageOrigin.isSameOriginWith(establishedOrigin)) {
-      return {error: 'No origin available or not allowed.'};
-    }
-
-    const candidateOrigins: SDK.SecurityOrigin.SecurityOrigin[] = (args.origins && args.origins.length > 0) ?
-        args.origins.map(origin => SDK.SecurityOrigin.SecurityOrigin.create(origin)) :
-        [establishedOrigin];
-    const validOrigins =
-        candidateOrigins.filter(origin => origin.isSameOriginWith(establishedOrigin)).map(origin => origin.siteId());
-    const targetOrigins = Array.from(new Set(validOrigins)).slice(0, MAX_TARGET_ORIGINS);
-    if (targetOrigins.length === 0) {
-      return {error: 'No valid origins found.'};
-    }
+    const {targetOrigins, primaryPageTarget} = targetOriginsResult;
 
     const storageKey = (targetOrigins.length === 1 && args.storageKey) ? args.storageKey : undefined;
 

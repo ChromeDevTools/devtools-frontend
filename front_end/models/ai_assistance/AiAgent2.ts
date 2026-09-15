@@ -306,10 +306,6 @@ User query: ${enhancedQuery}`;
           getExecutionContextNode: () => this.#getExecutionContextNode(),
           getTarget: () => this.#getTarget(),
           getOriginLock: () => this.#originLock(),
-          getEstablishedOrigin: () => {
-            const lock = this.#originLock();
-            return lock.status === 'ESTABLISHED_ORIGIN' ? lock.origin : undefined;
-          },
           getLighthouseReport: () => (this.context instanceof AccessibilityContext ? this.context.getItem() : null),
           runLighthouse: async overrides => await (this.#lighthouseRecording?.(overrides) ?? null),
           getPerformanceTraceContext: () => (this.context instanceof PerformanceTraceContext ? this.context : null),

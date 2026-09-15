@@ -8,11 +8,11 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 
 import {
-  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
+  type OriginLockCapability,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -33,8 +33,8 @@ export interface GetElementAccessibilityDetailsArgs extends ToolArgs {
  * A tool that retrieves fine-grained accessibility properties (role, name, ARIA properties, focus state)
  * for a resolved element backend node ID. It also returns a DOM snapshot of the element's subtree.
  */
-export class GetElementAccessibilityDetailsTool implements DataTool<
-    GetElementAccessibilityDetailsArgs, string, BaseToolCapability&TargetCapability&ActiveOriginLockCapability> {
+export class GetElementAccessibilityDetailsTool implements
+    DataTool<GetElementAccessibilityDetailsArgs, string, BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS;
   readonly description: string =
       'Retrieves detailed accessibility properties (computed role, accessible name, name source, ARIA attributes, ignored state) and a DOM tree snapshot for an element by backend node ID.';
@@ -78,7 +78,7 @@ export class GetElementAccessibilityDetailsTool implements DataTool<
    */
   async handler(
       params: GetElementAccessibilityDetailsArgs,
-      context: BaseToolCapability&TargetCapability&ActiveOriginLockCapability,
+      context: BaseToolCapability&TargetCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<string>> {
     const target = context.getTarget();
     if (!target) {

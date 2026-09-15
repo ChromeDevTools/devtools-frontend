@@ -9,10 +9,10 @@ import {FileFormatter} from '../data_formatters/FileFormatter.js';
 
 import {ListSourcesTool} from './ListSources.js';
 import {
-  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  type OriginLockCapability,
   resolveOriginFromLock,
   type ToolArgs,
   ToolName,
@@ -33,7 +33,7 @@ export interface GetSourceContentArgs extends ToolArgs {
  * Filters access by origin lock to prevent cross-origin leakage.
  */
 export class GetSourceContentTool implements
-    DataTool<GetSourceContentArgs, {content: string}, BaseToolCapability&ActiveOriginLockCapability> {
+    DataTool<GetSourceContentArgs, {content: string}, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_SOURCE_CONTENT;
   readonly description: string =
       'Retrieves the formatted content and metadata of a source file by its numeric ID obtained from listSources.';
@@ -63,7 +63,7 @@ export class GetSourceContentTool implements
 
   async handler(
       args: GetSourceContentArgs,
-      context: BaseToolCapability&ActiveOriginLockCapability,
+      context: BaseToolCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{content: string}>> {
     const originResult = resolveOriginFromLock(context.getOriginLock());
     if ('error' in originResult) {

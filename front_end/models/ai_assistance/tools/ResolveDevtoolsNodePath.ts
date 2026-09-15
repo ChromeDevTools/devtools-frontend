@@ -6,11 +6,11 @@ import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 
 import {
-  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
+  type OriginLockCapability,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -36,9 +36,8 @@ export interface ResolveDevtoolsNodePathArgs extends ToolArgs {
  * Lighthouse reports or other sources using node paths. It ensures the resolved node
  * belongs to the locked origin.
  */
-export class ResolveDevtoolsNodePathTool implements
-    DataTool<ResolveDevtoolsNodePathArgs, {backendNodeId: number},
-             BaseToolCapability&TargetCapability&ActiveOriginLockCapability> {
+export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNodePathArgs, {backendNodeId: number},
+                                                             BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.RESOLVE_DEVTOOLS_NODE_PATH;
   readonly description: string =
       'Resolves a DevTools node path (e.g. from a Lighthouse audit snippet) to an element backend node ID for further DOM, style, or accessibility inspection.';
@@ -83,7 +82,7 @@ export class ResolveDevtoolsNodePathTool implements
    */
   async handler(
       params: ResolveDevtoolsNodePathArgs,
-      context: BaseToolCapability&TargetCapability&ActiveOriginLockCapability,
+      context: BaseToolCapability&TargetCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{backendNodeId: number}>> {
     const target = context.getTarget();
     const domModel = target?.model(SDK.DOMModel.DOMModel);

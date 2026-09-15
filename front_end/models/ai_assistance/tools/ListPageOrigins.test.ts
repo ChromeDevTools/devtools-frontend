@@ -63,7 +63,10 @@ describe('ListPageOriginsTool', () => {
 
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('http://example.com')),
+      getOriginLock: sinon.stub().returns({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('http://example.com'),
+      }),
     };
 
     const response = await tool.handler({}, context);
@@ -93,7 +96,10 @@ describe('ListPageOriginsTool', () => {
 
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('http://example.com')),
+      getOriginLock: sinon.stub().returns({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('http://example.com'),
+      }),
     };
 
     const response = await tool.handler({}, context);
@@ -125,7 +131,10 @@ describe('ListPageOriginsTool', () => {
 
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('http://example.com')),
+      getOriginLock: sinon.stub().returns({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('http://example.com'),
+      }),
     };
 
     const response = await tool.handler({}, context);
@@ -155,7 +164,10 @@ describe('ListPageOriginsTool', () => {
 
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('http://example.com')),
+      getOriginLock: sinon.stub().returns({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('http://example.com'),
+      }),
     };
 
     const response = await tool.handler({}, context);
@@ -181,7 +193,10 @@ describe('ListPageOriginsTool', () => {
 
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('http://example.com')),
+      getOriginLock: sinon.stub().returns({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('http://example.com'),
+      }),
     };
 
     const response = await tool.handler({}, context);
@@ -200,7 +215,10 @@ describe('ListPageOriginsTool', () => {
 
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('http://example.com')),
+      getOriginLock: sinon.stub().returns({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('http://example.com'),
+      }),
     };
 
     const response = await tool.handler({}, context);
@@ -217,11 +235,48 @@ describe('ListPageOriginsTool', () => {
 
     const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
     const context = {
-      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque()),
+      getOriginLock: sinon.stub().returns({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque(),
+      }),
     };
 
     const response = await tool.handler({}, context);
     assertIsError(response);
     assert.strictEqual(response.error, 'No origin available or not allowed.');
+  });
+
+  it('returns error when origin lock is uninitialized', async () => {
+    const targetManager = universe.targetManager;
+    const primaryTarget = sinon.createStubInstance(SDK.Target.Target);
+    primaryTarget.inspectedURL.returns(urlString`http://example.com/index.html`);
+
+    sinon.stub(targetManager, 'primaryPageTarget').returns(primaryTarget);
+
+    const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
+    const context = {
+      getOriginLock: sinon.stub().returns({status: 'UNINITIALIZED'}),
+    };
+
+    const response = await tool.handler({}, context);
+    assertIsError(response);
+    assert.strictEqual(response.error, 'No origin established for this conversation.');
+  });
+
+  it('returns error when origin lock is blocked', async () => {
+    const targetManager = universe.targetManager;
+    const primaryTarget = sinon.createStubInstance(SDK.Target.Target);
+    primaryTarget.inspectedURL.returns(urlString`http://example.com/index.html`);
+
+    sinon.stub(targetManager, 'primaryPageTarget').returns(primaryTarget);
+
+    const tool = new AiAssistance.ListPageOrigins.ListPageOriginsTool();
+    const context = {
+      getOriginLock: sinon.stub().returns({status: 'BLOCKED_BY_NAVIGATION'}),
+    };
+
+    const response = await tool.handler({}, context);
+    assertIsError(response);
+    assert.strictEqual(response.error, 'Cross-origin access blocked due to navigation.');
   });
 });

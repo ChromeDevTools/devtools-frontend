@@ -9,11 +9,11 @@ import * as Workspace from '../../workspace/workspace.js';
 import {FileContext} from '../contexts/FileContext.js';
 
 import {
-  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
+  type OriginLockCapability,
   type OriginLockState,
   resolveOriginFromLock,
   ToolName,
@@ -35,7 +35,7 @@ interface SourceSummary {
  * Each file is returned with its displayName and a unique session-based numeric ID.
  */
 export class ListSourcesTool implements
-    DataTool<Record<string, never>, {files: SourceSummary[]}, BaseToolCapability&ActiveOriginLockCapability> {
+    DataTool<Record<string, never>, {files: SourceSummary[]}, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.LIST_SOURCES;
   readonly description: string =
       'Lists deployed and authored source files in the workspace (including source-mapped files) with their display name and unique numeric ID.';
@@ -112,7 +112,7 @@ export class ListSourcesTool implements
 
   async handler(
       _params: Record<string, never>,
-      context: BaseToolCapability&ActiveOriginLockCapability,
+      context: BaseToolCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{files: SourceSummary[]}>> {
     const originResult = resolveOriginFromLock(context.getOriginLock());
     if ('error' in originResult) {

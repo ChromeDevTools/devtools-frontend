@@ -10,7 +10,9 @@ import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  isOriginAllowedByLock,
   type OriginLockCapability,
+  resolveOriginFromLock,
   ToolName,
 } from './Tool.js';
 
@@ -57,14 +59,15 @@ export class ListPageOriginsTool implements
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
 
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {error: 'No origin available or not allowed.'};
+    const originLock = context.getOriginLock();
+    const originResult = resolveOriginFromLock(originLock);
+    if ('error' in originResult) {
+      return originResult;
     }
 
     const pageOrigin =
         primaryPageTarget ? SDK.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL()) : null;
-    if (!pageOrigin || !pageOrigin.isSameOriginWith(establishedOrigin)) {
+    if (!pageOrigin || !isOriginAllowedByLock(originLock, pageOrigin)) {
       return {error: 'No origin available or not allowed.'};
     }
 
@@ -77,7 +80,7 @@ export class ListPageOriginsTool implements
       // Filter out frames that are not same-origin to the page's allowed origin.
       // Under site isolation, frames can be hosted on different targets/processes,
       // so we check the security origin of the frame directly instead of the target.
-      if (!frameOrigin.isSameOriginWith(establishedOrigin)) {
+      if (!isOriginAllowedByLock(originLock, frameOrigin)) {
         continue;
       }
       if (!origins.some(existing => existing.isSameOriginWith(frameOrigin))) {

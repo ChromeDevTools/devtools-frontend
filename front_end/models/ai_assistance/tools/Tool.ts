@@ -143,22 +143,7 @@ export interface OriginLockCapability {
   /**
    * Returns the current origin-locking state for the active conversation.
    */
-  getOriginLock?(): OriginLockState;
-
-  /**
-   * Returns the security origin locked for the current conversation.
-   *
-   * @deprecated Temporary helper during tool migration to getOriginLock().
-   */
-  getEstablishedOrigin(): SDK.SecurityOrigin.SecurityOrigin|undefined;
-}
-
-/**
- * Capability for tools that require the new OriginLockState during migration.
- */
-export interface ActiveOriginLockCapability {
   getOriginLock(): OriginLockState;
-  getEstablishedOrigin?(): SDK.SecurityOrigin.SecurityOrigin|undefined;
 }
 
 /**
@@ -167,22 +152,19 @@ export interface ActiveOriginLockCapability {
  * target origin does not match the established origin.
  */
 export function isOriginAllowedByLock(
-    originLockOrEstablished: OriginLockState|SDK.SecurityOrigin.SecurityOrigin|undefined,
+    originLock: OriginLockState,
     targetOrigin: SDK.SecurityOrigin.SecurityOrigin|null|undefined,
     ): boolean {
-  if (!originLockOrEstablished) {
+  if (originLock.status !== 'ESTABLISHED_ORIGIN') {
     return false;
   }
-  const origin = 'status' in originLockOrEstablished ?
-      (originLockOrEstablished.status === 'ESTABLISHED_ORIGIN' ? originLockOrEstablished.origin : undefined) :
-      originLockOrEstablished;
-  if (!origin || origin.isOpaque()) {
+  if (originLock.origin.isOpaque()) {
     return false;
   }
   if (!targetOrigin || targetOrigin.isOpaque()) {
     return false;
   }
-  return targetOrigin.isSameOriginWith(origin);
+  return targetOrigin.isSameOriginWith(originLock.origin);
 }
 
 /**

@@ -9,11 +9,11 @@ import * as Logs from '../../logs/logs.js';
 import {formatBytesToKb, seconds} from '../data_formatters/UnitFormatters.js';
 
 import {
-  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
+  type OriginLockCapability,
   resolveOriginFromLock,
   ToolName,
 } from './Tool.js';
@@ -37,7 +37,7 @@ interface NetworkRequestSummary {
  * Filters the list by the conversation's established origin to prevent cross-origin data exposure.
  */
 export class ListNetworkRequestsTool implements
-    DataTool<Record<string, never>, unknown, BaseToolCapability&ActiveOriginLockCapability> {
+    DataTool<Record<string, never>, unknown, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.LIST_NETWORK_REQUESTS;
   readonly description: string =
       'Lists recorded network requests for the active origin, including request ID, URL, HTTP status code, duration, and transfer size.';
@@ -72,7 +72,7 @@ export class ListNetworkRequestsTool implements
    */
   async handler(
       _params: Record<string, never>,
-      context: BaseToolCapability&ActiveOriginLockCapability,
+      context: BaseToolCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<unknown>> {
     const requests: NetworkRequestSummary[] = [];
     // A conversation is locked to an origin once the first query is made.

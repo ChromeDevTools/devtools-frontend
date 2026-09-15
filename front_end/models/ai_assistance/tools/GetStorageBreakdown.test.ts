@@ -37,11 +37,22 @@ describe('GetStorageBreakdownTool', () => {
     sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
   });
 
-  function createMockContext(options?: {origin?: SDK.SecurityOrigin.SecurityOrigin}) {
-    const origin = options && 'origin' in options ? options.origin :
-                                                    SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+  function createMockContext(options?: {
+    origin?: SDK.SecurityOrigin.SecurityOrigin,
+    originLock?: AiAssistance.Tool.OriginLockState,
+  }) {
+    if (options && 'originLock' in options && options.originLock) {
+      return {
+        getOriginLock: sinon.stub().returns(options.originLock),
+      };
+    }
+    const origin = options?.origin ?? SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+    const originLock: AiAssistance.Tool.OriginLockState = {
+      status: 'ESTABLISHED_ORIGIN',
+      origin,
+    };
     return {
-      getEstablishedOrigin: sinon.stub().returns(origin),
+      getOriginLock: sinon.stub().returns(originLock),
     };
   }
 
@@ -230,6 +241,28 @@ describe('GetStorageBreakdownTool', () => {
 
     assertIsError(response);
     assert.strictEqual(response.error, 'No origin available or not allowed.');
+  });
+
+  it('returns error when origin lock is uninitialized', async () => {
+    setupPrimaryTarget({origin: 'https://example.com'});
+
+    const context = createMockContext({originLock: {status: 'UNINITIALIZED'}});
+    const tool = new AiAssistance.GetStorageBreakdown.GetStorageBreakdownTool();
+    const response = await tool.handler({}, context);
+
+    assertIsError(response);
+    assert.strictEqual(response.error, 'No origin established for this conversation.');
+  });
+
+  it('returns error when origin lock is blocked', async () => {
+    setupPrimaryTarget({origin: 'https://example.com'});
+
+    const context = createMockContext({originLock: {status: 'BLOCKED_BY_NAVIGATION'}});
+    const tool = new AiAssistance.GetStorageBreakdown.GetStorageBreakdownTool();
+    const response = await tool.handler({}, context);
+
+    assertIsError(response);
+    assert.strictEqual(response.error, 'Cross-origin access blocked due to navigation.');
   });
 
   it('returns error when CDP getUsageAndQuota fails', async () => {

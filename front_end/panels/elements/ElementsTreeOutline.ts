@@ -145,6 +145,7 @@ interface ViewInput {
   onSelect?: (node: SDK.DOMModel.DOMNode, isClosingTag?: boolean, selectedByUser?: boolean) => void;
   onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
   onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
+  onClearMaxRows?: () => void;
   onHoverNode?: (node: SDK.DOMModel.DOMNode|null, showInfo?: boolean, isClosingTag?: boolean) => void;
   onLeave?: () => void;
   onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
@@ -213,6 +214,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, input.onElementExpanded, this);
     elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, this);
     elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
+      input.onClearMaxRows?.();
       if (elementsTreeOutline.maxRowsShown) {
         // Set max to undefined to show all rows
         elementsTreeOutline.maxRowsShown = undefined;
@@ -680,24 +682,121 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     // clang-format on
   };
 
+  const isNodeExpanded = (node: SDK.DOMModel.DOMNode, isEditingAsHTML: boolean): boolean => {
+    const isNotCollapsible = node.nodeType() === Node.ELEMENT_NODE &&
+        node.parentNode?.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode;
+    const isCollapsible = !isEditingAsHTML && !isNotCollapsible;
+    return !isCollapsible ||
+        Boolean((input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode)) ||
+                (input.isNodeExpanded ? input.isNodeExpanded(node) :
+                                        (input.expandRoot &&
+                                         (node === input.rootDOMNode ||
+                                          (input.omitRootDOMNode && node.parentNode === input.rootDOMNode)))));
+  };
+
+  const countTopLayerRows = (doc: SDK.DOMModel.DOMDocument): number => {
+    const shortcuts = input.getTopLayerShortcuts?.(doc) ?? [];
+    if (shortcuts.length === 0) {
+      return 0;
+    }
+    const countShortcutRows = (shortcut: SDK.DOMModel.DOMNodeShortcut): number => {
+      let shortcutRows = 1;
+      if (shortcut.childShortcuts.length > 0 && input.isTopLayerShortcutExpanded?.(shortcut)) {
+        for (const child of shortcut.childShortcuts) {
+          shortcutRows += countShortcutRows(child);
+        }
+      }
+      return shortcutRows;
+    };
+    let rows = 1;
+    if (input.isTopLayerExpanded?.(doc)) {
+      for (const shortcut of shortcuts) {
+        rows += countShortcutRows(shortcut);
+      }
+    }
+    return rows;
+  };
+
+  const countAdoptedStyleSheetsRows = (node: SDK.DOMModel.DOMNode): number => {
+    const sheets = node.adoptedStyleSheetsForNode;
+    if (!sheets || sheets.length === 0) {
+      return 0;
+    }
+    let rows = 1;  // The "#adopted-style-sheets" container
+    if (input.isAdoptedStyleSheetsExpanded?.(node)) {
+      for (const sheet of sheets) {
+        rows += 1;  // The sheet row
+        if (input.isAdoptedStyleSheetExpanded?.(sheet) && sheet.cssModel.styleSheetHeaderForId(sheet.id)) {
+          rows += 1;  // The AdoptedStyleSheetContentsWidget row
+        }
+      }
+    }
+    return rows;
+  };
+
+  const countVisibleRowsForNode = (node: SDK.DOMModel.DOMNode): number => {
+    let rows = 1;
+    const isEditingAsHTML = input.multilineEditingNode === node ||
+        (input.nodeToEdit?.node === node && Boolean(input.nodeToEdit.isEditAsHTML));
+    const hasChildren =
+        !isEditingAsHTML && nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
+    if (hasChildren && isNodeExpanded(node, isEditingAsHTML)) {
+      rows += countAdoptedStyleSheetsRows(node);
+      const allVisibleChildren = getVisibleChildren(node, input.showComments ?? true);
+      const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
+      const children = allVisibleChildren.slice(0, limit);
+      for (const child of children) {
+        rows += countVisibleRowsForNode(child);
+      }
+      if (allVisibleChildren.length > children.length) {
+        rows += 1;
+      }
+      if (node instanceof SDK.DOMModel.DOMDocument) {
+        rows += countTopLayerRows(node);
+      }
+      const tagName = node.nodeName().toLowerCase();
+      const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) &&
+          !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
+      if (needsClosingTag) {
+        rows += 1;
+      }
+    }
+    return rows;
+  };
+
+  const countAllVisibleRows = (): number => {
+    let totalRows = 0;
+    if (input.omitRootDOMNode && input.rootDOMNode) {
+      totalRows += countAdoptedStyleSheetsRows(input.rootDOMNode);
+    }
+    for (const node of rootNodes) {
+      totalRows += countVisibleRowsForNode(node);
+    }
+    if (input.omitRootDOMNode && input.rootDOMNode) {
+      const remaining = allRootNodes.length - rootNodes.length;
+      if (remaining > 0) {
+        totalRows += 1;
+      }
+      if (input.rootDOMNode instanceof SDK.DOMModel.DOMDocument) {
+        totalRows += countTopLayerRows(input.rootDOMNode);
+      }
+    }
+    return totalRows;
+  };
+
   const renderNode = (node: SDK.DOMModel.DOMNode, depth = 0): Lit.LitTemplate => {
     const isSelected = input.selectedNode === node;
     const isOpeningHovered =
         (input.currentHighlightedNode === node) || (input.hoveredNode === node && !input.hoveredClosingTag);
     const isClosingHovered = input.hoveredNode === node && Boolean(input.hoveredClosingTag);
-    const isExpanded = Boolean(
-        (input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode)) ||
-        (input.isNodeExpanded ?
-             input.isNodeExpanded(node) :
-             (input.expandRoot &&
-              (node === input.rootDOMNode || (input.omitRootDOMNode && node.parentNode === input.rootDOMNode)))));
     const isEditingAsHTML = input.multilineEditingNode === node ||
         (input.nodeToEdit?.node === node && Boolean(input.nodeToEdit.isEditAsHTML));
     const hasChildren =
         !isEditingAsHTML && nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
-    const isCollapsible = !isEditingAsHTML &&
-        !(node.nodeType() === Node.ELEMENT_NODE && node.parentNode?.nodeType() === Node.DOCUMENT_NODE &&
-          !node.parentNode.parentNode);
+    const isNotCollapsible = node.nodeType() === Node.ELEMENT_NODE &&
+        node.parentNode?.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode;
+    const isCollapsible = !isEditingAsHTML && !isNotCollapsible;
+    const isExpanded = isNodeExpanded(node, isEditingAsHTML);
     const isExpandable = hasChildren && isCollapsible;
     const allVisibleChildren = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
     const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
@@ -906,14 +1005,30 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     // clang-format on
   };
 
+  const isSingleNode =
+      Boolean(input.deindentSingleNode && rootNodes.length === 1 &&
+              !nodeHasVisibleChildren(rootNodes[0], input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode));
+  const disclosureClasses = classMap({
+    'elements-disclosure': true,
+    'single-node': isSingleNode,
+    'elements-tree-truncated': Boolean(input.maxRowsShown),
+  });
+  const disclosureStyles = styleMap({
+    '--max-rows': input.maxRowsShown ? String(input.maxRowsShown) : null,
+  });
+
+  const totalVisibleRows = input.maxRowsShown ? countAllVisibleRows() : 0;
+  const truncatedLines = input.maxRowsShown ? Math.max(0, totalVisibleRows - input.maxRowsShown) : 0;
+
   // clang-format off
   render(html`
     <style>${UI.inspectorCommonStyles}</style>
     <style>${elementsTreeOutlineStyles}</style>
     <style>${CodeHighlighter.codeHighlighterStyles}</style>
-    <div class="elements-disclosure ${input.deindentSingleNode && rootNodes.length === 1 && !nodeHasVisibleChildren(rootNodes[0], input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode) ? 'single-node' : ''}">
+    <div class=${disclosureClasses} style=${disclosureStyles}>
       <devtools-tree
-        class="elements-tree-outline source-code ${input.wrap ? '' : 'elements-tree-nowrap'} ${input.hideGutter ? 'elements-hide-gutter' : ''}"
+        class="elements-tree-outline source-code ${input.wrap ? '' : 'elements-tree-nowrap'} ${input.hideGutter ? 'elements-hide-gutter' : ''} ${isSingleNode ? 'single-node' : ''}"
+        disclosure-class="elements-disclosure ${isSingleNode ? 'single-node' : ''} ${input.maxRowsShown ? 'elements-tree-truncated' : ''}"
         aria-label=${i18nString(UIStrings.pageDom)}
         jslog=${VisualLogging.tree('elements')}
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
@@ -959,6 +1074,15 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         `}>
       </devtools-tree>
     </div>
+    ${truncatedLines > 0 ? html`
+      <button
+        type="button"
+        class="elements-tree-show-all"
+        jslog=${VisualLogging.action('show-all-nodes').track({click: true})}
+        @click=${input.onClearMaxRows}>
+        ${i18nString(UIStrings.showAllLines, {PH1: truncatedLines})}
+      </button>
+    ` : nothing}
   `, target);
   // clang-format on
 };
@@ -971,10 +1095,14 @@ function getElementsTreeWidgetAndNode(element: Element): {node?: SDK.DOMModel.DO
       if (treeElement instanceof ElementsTreeElement) {
         return {node: treeElement.node(), widget: treeElement.widget};
       }
-    }
-    const widget = UI.Widget.Widget.get(current);
-    if (widget instanceof ElementsTreeWidget) {
-      return {node: widget.node, widget};
+      const devtoolsWidget =
+          current.querySelector(':scope > devtools-widget, :scope > .tree-element-title > devtools-widget');
+      if (devtoolsWidget) {
+        const widget = UI.Widget.Widget.get(devtoolsWidget);
+        if (widget instanceof ElementsTreeWidget) {
+          return {node: widget.node, widget};
+        }
+      }
     }
     current = current.parentElementOrShadowHost();
   }
@@ -1727,6 +1855,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       visible: this.#visible,
       wrap: this.#wrap,
       maxRowsShown: this.#maxRows,
+      onClearMaxRows: () => {
+        this.maxRows = undefined;
+      },
       showSelectionOnKeyboardFocus: this.showSelectionOnKeyboardFocus,
       preventTabOrder: this.preventTabOrder,
       deindentSingleNode: this.deindentSingleNode,

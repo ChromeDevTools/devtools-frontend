@@ -3269,6 +3269,140 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
+
+    it('handles maxRows truncation and clears on show all click', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'SPAN', children: [{nodeId: 3, nodeName: '#text', nodeValue: '1'}]},
+            {nodeId: 4, nodeName: 'SPAN', children: [{nodeId: 5, nodeName: '#text', nodeValue: '2'}]},
+            {nodeId: 6, nodeName: 'SPAN', children: [{nodeId: 7, nodeName: '#text', nodeValue: '3'}]},
+          ],
+        });
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.maxRows = 2;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const disclosure = domTree.contentElement.querySelector('.elements-disclosure') as HTMLElement;
+        assert.exists(disclosure);
+        assert.isTrue(disclosure.classList.contains('elements-tree-truncated'));
+        assert.strictEqual(disclosure.style.getPropertyValue('--max-rows'), '2');
+
+        const showAllButton = domTree.contentElement.querySelector('.elements-tree-show-all') as HTMLElement;
+        assert.exists(showAllButton);
+        assert.include(showAllButton.textContent, 'Show all (3 lines)');
+
+        showAllButton.click();
+        assert.isUndefined(domTree.maxRows);
+
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+        assert.isNull(domTree.contentElement.querySelector('.elements-tree-show-all'));
+        assert.isFalse(disclosure.classList.contains('elements-tree-truncated'));
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('calculates truncated lines accurately with adopted style sheets and top-layer shortcuts', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const sheetId = 'sheet-1' as Protocol.DOM.StyleSheetId;
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: '#document',
+          nodeType: Node.DOCUMENT_NODE,
+          adoptedStyleSheets: [sheetId],
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'HTML',
+              children: [],
+            },
+          ],
+        });
+        const adoptedSheet = rootNode.adoptedStyleSheetsForNode[0];
+        assert.exists(adoptedSheet);
+        sinon.stub(adoptedSheet.cssModel, 'getStyleSheetText').resolves('');
+        adoptedSheet.cssModel.styleSheetAdded({
+          styleSheetId: sheetId,
+          frameId: '' as Protocol.Page.FrameId,
+          sourceURL: '',
+          title: '',
+          origin: 'regular' as Protocol.CSS.StyleSheetOrigin,
+          disabled: false,
+          isInline: false,
+          isMutable: true,
+          isConstructed: true,
+          startLine: 0,
+          startColumn: 0,
+          endLine: 0,
+          endColumn: 0,
+          length: 0,
+          loadingFailed: false,
+        });
+
+        const shortcutChild = new SDK.DOMModel.DOMNodeShortcut(domModel.target(), 99 as Protocol.DOM.BackendNodeId,
+                                                               Node.ELEMENT_NODE, 'SPAN');
+        const shortcutParent = new SDK.DOMModel.DOMNodeShortcut(domModel.target(), 98 as Protocol.DOM.BackendNodeId,
+                                                                Node.ELEMENT_NODE, 'DIALOG');
+        shortcutParent.childShortcuts.push(shortcutChild);
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.maxRows = 1;
+
+        domModel.dispatchEventToListeners(SDK.DOMModel.Events.TopLayerElementsChanged, {
+          document: rootNode as SDK.DOMModel.DOMDocument,
+          documentShortcuts: [shortcutParent],
+        });
+
+        // Initially:
+        // 1. #document (1 row)
+        // 2. #adopted-style-sheets collapsed (1 row)
+        // 3. <html></html> (1 row)
+        // 4. #top-layer collapsed (1 row)
+        // Total = 4 rows. With maxRows = 1, truncated = 3 lines.
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        let showAllButton = domTree.contentElement.querySelector('.elements-tree-show-all') as HTMLElement;
+        assert.exists(showAllButton);
+        assert.include(showAllButton.textContent, 'Show all (3 lines)');
+
+        // Expand #adopted-style-sheets (+1 row for sheet) and the sheet itself (+1 row for content) -> Total = 6 rows (5 truncated)
+        domTree.setAdoptedStyleSheetsExpanded(rootNode, true);
+        domTree.setAdoptedStyleSheetExpanded(adoptedSheet, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        showAllButton = domTree.contentElement.querySelector('.elements-tree-show-all') as HTMLElement;
+        assert.include(showAllButton.textContent, 'Show all (5 lines)');
+
+        // Expand #top-layer (+1 row for <dialog>) and the <dialog> shortcut (+1 row for <span>) -> Total = 8 rows (7 truncated)
+        domTree.setTopLayerExpanded(rootNode as SDK.DOMModel.DOMDocument, true);
+        domTree.setTopLayerShortcutExpanded(shortcutParent, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        showAllButton = domTree.contentElement.querySelector('.elements-tree-show-all') as HTMLElement;
+        assert.include(showAllButton.textContent, 'Show all (7 lines)');
+      } finally {
+        domTree.detach();
+      }
+    });
   });
 
   describe('removing nodes', () => {

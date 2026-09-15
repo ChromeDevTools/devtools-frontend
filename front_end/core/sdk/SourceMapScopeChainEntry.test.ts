@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 
@@ -133,7 +133,7 @@ describeWithEnvironment('SourceMapScopeRemoteObject', () => {
     const originalScope: ScopesCodec.OriginalScope = {
       start: {line: 0, column: 0},
       end: {line: 20, column: 0},
-      isStackFrame: false,
+      isStackFrame: true,
       kind: 'function',
       variables: ['variable1'],
       children: [],
@@ -161,7 +161,7 @@ describeWithEnvironment('SourceMapScopeRemoteObject', () => {
     const originalScope: ScopesCodec.OriginalScope = {
       start: {line: 0, column: 0},
       end: {line: 20, column: 0},
-      isStackFrame: false,
+      isStackFrame: true,
       kind: 'function',
       variables: ['variable1'],
       children: [],
@@ -184,5 +184,53 @@ describeWithEnvironment('SourceMapScopeRemoteObject', () => {
 
     sinon.assert.calledOnceWithMatch(callFrame.evaluate,
                                      {expression: 'a', scopeNumber: undefined, generatePreview: false});
+  });
+});
+
+describeWithEnvironment('SourceMapScopeChainEntry', () => {
+  let callFrame: sinon.SinonStubbedInstance<SDK.DebuggerModel.CallFrame>;
+
+  beforeEach(() => {
+    callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+    callFrame.debuggerModel = createTarget().model(SDK.DebuggerModel.DebuggerModel)!;
+  });
+
+  function entry(scope: Partial<ScopesCodec.OriginalScope>, isInnerMostFunction = false) {
+    const originalScope: ScopesCodec.OriginalScope = {
+      start: {line: 0, column: 0},
+      end: {line: 20, column: 0},
+      isStackFrame: false,
+      variables: [],
+      children: [],
+      ...scope,
+    };
+    return new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, undefined,
+                                                                     isInnerMostFunction, undefined);
+  }
+
+  it('labels stack frames as Local or Closure independent of the kind label', () => {
+    // The spec encourages capitalized kinds, and `kind` is optional, so neither may gate this.
+    for (const kind of ['Function', 'function', undefined]) {
+      assert.strictEqual(entry({kind, isStackFrame: true}, /* isInnerMostFunction */ true).type(),
+                         Protocol.Debugger.ScopeType.Local, `kind: ${kind}`);
+      assert.strictEqual(entry({kind, isStackFrame: true}).type(), Protocol.Debugger.ScopeType.Closure,
+                         `kind: ${kind}`);
+    }
+  });
+
+  it('matches the global and block kind labels case-insensitively', () => {
+    assert.strictEqual(entry({kind: 'Global'}).type(), Protocol.Debugger.ScopeType.Global);
+    assert.strictEqual(entry({kind: 'global'}).type(), Protocol.Debugger.ScopeType.Global);
+    assert.strictEqual(entry({kind: 'Block'}).type(), Protocol.Debugger.ScopeType.Block);
+    assert.strictEqual(entry({kind: 'block'}).type(), Protocol.Debugger.ScopeType.Block);
+  });
+
+  it('does not treat a non-stack-frame scope as a function', () => {
+    // `kind` has no semantic significance, so a 'Function' label without `isStackFrame` is not a
+    // function scope.
+    const type = entry({kind: 'Function', isStackFrame: false}, /* isInnerMostFunction */ true).type();
+
+    assert.notStrictEqual(type, Protocol.Debugger.ScopeType.Local);
+    assert.notStrictEqual(type, Protocol.Debugger.ScopeType.Closure);
   });
 });

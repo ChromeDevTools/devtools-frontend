@@ -73,11 +73,13 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
   }
 
   type(): string {
-    switch (this.#scope.kind) {
+    if (this.#scope.isStackFrame) {
+      return this.#isInnerMostFunction ? Protocol.Debugger.ScopeType.Local : Protocol.Debugger.ScopeType.Closure;
+    }
+    // `kind` is a free-form label. The spec encourages 'Global'/'Block' but doesn't mandate the casing.
+    switch (this.#scope.kind?.toLowerCase()) {
       case 'global':
         return Protocol.Debugger.ScopeType.Global;
-      case 'function':
-        return this.#isInnerMostFunction ? Protocol.Debugger.ScopeType.Local : Protocol.Debugger.ScopeType.Closure;
       case 'block':
         return Protocol.Debugger.ScopeType.Block;
     }
@@ -85,11 +87,12 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
   }
 
   typeName(): string {
-    switch (this.#scope.kind) {
+    if (this.#scope.isStackFrame) {
+      return this.#isInnerMostFunction ? i18nString(UIStrings.local) : i18nString(UIStrings.closure);
+    }
+    switch (this.#scope.kind?.toLowerCase()) {
       case 'global':
         return i18nString(UIStrings.global);
-      case 'function':
-        return this.#isInnerMostFunction ? i18nString(UIStrings.local) : i18nString(UIStrings.closure);
       case 'block':
         return i18nString(UIStrings.block);
     }

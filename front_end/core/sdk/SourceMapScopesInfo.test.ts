@@ -259,7 +259,7 @@ describe('SourceMapScopesInfo', () => {
     it('returns false for scope info without variables or bindings', () => {
       const builder = new ScopeInfoBuilder();
       builder.startScope(0, 0, {kind: 'global', key: 'global'})
-          .startScope(10, 0, {kind: 'function', name: 'foo', key: 'foo'})
+          .startScope(10, 0, {kind: 'function', isStackFrame: true, name: 'foo', key: 'foo'})
           .endScope(20, 0)
           .endScope(30, 0);
 
@@ -276,7 +276,9 @@ describe('SourceMapScopesInfo', () => {
     it('returns false for scope info with variables but no bindings', () => {
       const builder = new ScopeInfoBuilder();
       builder.startScope(0, 0, {kind: 'global', key: 'global'})
-          .startScope(10, 0, {kind: 'function', name: 'foo', variables: ['variable1', 'variable2'], key: 'foo'})
+          .startScope(
+              10, 0,
+              {kind: 'function', isStackFrame: true, name: 'foo', variables: ['variable1', 'variable2'], key: 'foo'})
           .endScope(20, 0)
           .endScope(30, 0);
 
@@ -293,7 +295,9 @@ describe('SourceMapScopesInfo', () => {
     it('returns true for scope info with variables and bindings', () => {
       const builder = new ScopeInfoBuilder();
       builder.startScope(0, 0, {kind: 'global', key: 'global'})
-          .startScope(10, 0, {kind: 'function', name: 'foo', variables: ['variable1', 'variable2'], key: 'foo'})
+          .startScope(
+              10, 0,
+              {kind: 'function', isStackFrame: true, name: 'foo', variables: ['variable1', 'variable2'], key: 'foo'})
           .endScope(20, 0)
           .endScope(30, 0);
 
@@ -569,8 +573,10 @@ describe('SourceMapScopesInfo', () => {
       //                                                             x (paused: col 50)
       const builder = new ScopeInfoBuilder();
       builder.startScope(0, 0, {kind: 'global', key: 'global'})
-          .startScope(5, 0, {kind: 'function', name: 'outer', variables: ['outerVar'], key: 'outer'})
-          .startScope(10, 0, {kind: 'function', name: 'inner', variables: ['innerVar'], key: 'inner'})
+          .startScope(5, 0,
+                      {kind: 'function', isStackFrame: true, name: 'outer', variables: ['outerVar'], key: 'outer'})
+          .startScope(10, 0,
+                      {kind: 'function', isStackFrame: true, name: 'inner', variables: ['innerVar'], key: 'inner'})
           .endScope(15, 0)
           .endScope(20, 0)
           .endScope(30, 0);
@@ -626,8 +632,8 @@ describe('SourceMapScopesInfo', () => {
     it('returns the inner-most function scope as type "Local" and surrounding function scopes as type "Closure"',
        () => {
          const builder = new ScopeInfoBuilder();
-         builder.startScope(0, 0, {kind: 'function', name: 'outer', key: 'outer'})
-             .startScope(5, 0, {kind: 'function', name: 'inner', key: 'inner'})
+         builder.startScope(0, 0, {kind: 'function', isStackFrame: true, name: 'outer', key: 'outer'})
+             .startScope(5, 0, {kind: 'function', isStackFrame: true, name: 'inner', key: 'inner'})
              .endScope(15, 0)
              .endScope(20, 0);
 
@@ -654,8 +660,72 @@ describe('SourceMapScopesInfo', () => {
 
     it('drops inner block scopes if a return value is present to account for V8 oddity', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'function', name: 'someFn', key: 'func'})
+      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, name: 'someFn', key: 'func'})
           .startScope(5, 0, {kind: 'block', key: 'block'})
+          .endScope(15, 0)
+          .endScope(20, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'func'})
+          .startRange(0, 25, {scopeKey: 'block'})
+          .endRange(0, 75)
+          .endRange(0, 100);
+
+      const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
+        generatedPausedPosition: {line: 0, column: 50},
+        mappedPausedPosition: {sourceIndex: 0, line: 10, column: 0},
+        returnValue: new SDK.RemoteObject.LocalJSONObject(42),
+      });
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
+
+      const scopeChain = info.resolveMappedScopeChain(callFrame);
+
+      assert.isNotNull(scopeChain);
+      assert.lengthOf(scopeChain, 1);
+      assert.strictEqual(scopeChain[0].type(), Protocol.Debugger.ScopeType.Local);
+    });
+
+    it('identifies function scopes via isStackFrame regardless of the kind label', () => {
+      // `kind` is a free-form UI label with no semantic significance, and the spec encourages
+      // capitalized values. Only `isStackFrame` decides whether a scope is a function scope.
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'Global', key: 'global'})
+          .startScope(5, 0, {kind: 'Function', isStackFrame: true, name: 'outer', key: 'outer'})
+          .startScope(10, 0, {isStackFrame: true, name: 'inner', key: 'inner'})  // No `kind` at all.
+          .endScope(15, 0)
+          .endScope(18, 0)
+          .endScope(20, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 20, {scopeKey: 'outer'})
+          .startRange(0, 40, {scopeKey: 'inner'})
+          .endRange(0, 60)
+          .endRange(0, 80)
+          .endRange(0, 100);
+
+      const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
+        generatedPausedPosition: {line: 0, column: 50},
+        mappedPausedPosition: {sourceIndex: 0, line: 12, column: 0},
+      });
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
+
+      const scopeChain = info.resolveMappedScopeChain(callFrame);
+
+      assert.isNotNull(scopeChain);
+      assert.lengthOf(scopeChain, 3);
+      assert.strictEqual(scopeChain[0].type(), Protocol.Debugger.ScopeType.Local);
+      assert.strictEqual(scopeChain[0].name(), 'inner');
+      assert.strictEqual(scopeChain[1].type(), Protocol.Debugger.ScopeType.Closure);
+      assert.strictEqual(scopeChain[1].name(), 'outer');
+      assert.strictEqual(scopeChain[2].type(), Protocol.Debugger.ScopeType.Global);
+    });
+
+    it('keeps the local scope on a return statement when the kind label is capitalized', () => {
+      // Regression test: the trimming in resolveMappedScopeChain drops everything before the 'Local'
+      // scope. When function scopes were identified by `kind === 'function'`, a capitalized 'Function'
+      // produced no 'Local' scope and the loop shifted the entire chain off, leaving an empty view.
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'Function', isStackFrame: true, name: 'someFn', key: 'func'})
+          .startScope(5, 0, {kind: 'Block', key: 'block'})
           .endScope(15, 0)
           .endScope(20, 0);
 
@@ -702,7 +772,13 @@ describe('SourceMapScopesInfo', () => {
 
       const builder = new ScopeInfoBuilder();
       builder.startScope(0, 0, {kind: 'global', key: 'global'})
-          .startScope(10, 0, {kind: 'function', name: 'someFn', variables: ['fooVariable', 'barVariable'], key: 'func'})
+          .startScope(10, 0, {
+            kind: 'function',
+            isStackFrame: true,
+            name: 'someFn',
+            variables: ['fooVariable', 'barVariable'],
+            key: 'func',
+          })
           .endScope(20, 0)
           .endScope(30, 0);
 
@@ -766,7 +842,7 @@ describe('SourceMapScopesInfo', () => {
 
       const builder = new ScopeInfoBuilder();
       builder.startScope(0, 0, {kind: 'global', variables: ['fooConstant', 'barVariable'], key: 'global'})
-          .startScope(10, 0, {kind: 'function', name: 'someFn', key: 'func'})
+          .startScope(10, 0, {kind: 'function', isStackFrame: true, name: 'someFn', key: 'func'})
           .endScope(20, 0)
           .endScope(30, 0);
 
@@ -830,9 +906,9 @@ describe('SourceMapScopesInfo', () => {
 
       const builder = new ScopeInfoBuilder();
       builder.startScope(0, 0, {kind: 'global', variables: ['inner', 'outer'], key: 'global'})
-          .startScope(0, 14, {kind: 'function', name: 'inner', variables: ['x'], key: 'inner'})
+          .startScope(0, 14, {kind: 'function', isStackFrame: true, name: 'inner', variables: ['x'], key: 'inner'})
           .endScope(3, 1)
-          .startScope(5, 14, {kind: 'function', name: 'outer', variables: ['y'], key: 'outer'})
+          .startScope(5, 14, {kind: 'function', isStackFrame: true, name: 'outer', variables: ['y'], key: 'outer'})
           .startScope(6, 9, {kind: 'block', key: 'block'})
           .endScope(8, 3)
           .endScope(9, 1)

@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 'use strict';
 
-import cliui from 'https://unpkg.com/cliui@7.0.1/index.mjs'; // eslint-disable-line
-import Parser from 'https://unpkg.com/yargs-parser@19.0.0/browser.js'; // eslint-disable-line
+import cliui from 'https://unpkg.com/cliui@8.0.1/index.mjs'; // eslint-disable-line
+import Parser from 'https://unpkg.com/yargs-parser@21.1.1/browser.js'; // eslint-disable-line
 import {getProcessArgvBin} from '../../build/lib/utils/process-argv.js';
 import {YError} from '../../build/lib/yerror.js';
 
@@ -37,6 +37,7 @@ export default {
     dirname: str => str,
     extname: str => str,
     relative: str => str,
+    join: (str, _str2) => str,
   },
   process: {
     argv: () => [],
@@ -53,6 +54,9 @@ export default {
   },
   readFileSync: () => {
     return '';
+  },
+  readdirSync: () => {
+    return [];
   },
   require: () => {
     throw new YError(REQUIRE_ERROR);

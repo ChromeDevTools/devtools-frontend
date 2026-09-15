@@ -6,7 +6,7 @@ import * as fs from 'node:fs';
 import {join} from 'node:path';
 
 export const storeGeneratedResults = (file: string, content: string): void => {
-  const directory = join(__dirname, '..', '..', '..', '..', '..', '..', 'perf-data');
+  const directory = join(import.meta.dirname, '..', '..', '..', '..', '..', '..', 'perf-data');
   fs.mkdirSync(directory, {recursive: true});
 
   const filePath = join(directory, file);

@@ -2,7 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {createRequire} from 'node:module';
+
 import {loadTests} from './cxx-debugging-extension-helpers.js';
+
+const require = createRequire(import.meta.url);
 
 function importTest(name: string, path: string) {
   describe(name, function() {

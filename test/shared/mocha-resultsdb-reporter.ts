@@ -56,9 +56,10 @@ class ResultsDbReporter extends Mocha.reporters.Base {
   private failedTestIds = new Set<string>();
   htmlResult: fs.WriteStream|undefined;
 
-  localResultsPath() {
-    return !ResultsDb.available() && this.suitePrefix ? path.join(__dirname, '..', this.suitePrefix, 'results.html') :
-                                                        undefined;
+  localResultsPath(): string|undefined {
+    return !ResultsDb.available() && this.suitePrefix ?
+        path.join(import.meta.dirname, '..', this.suitePrefix, 'results.html') :
+        undefined;
   }
 
   constructor(runner: Mocha.Runner, options?: Mocha.MochaOptions) {
@@ -195,7 +196,7 @@ class ResultsDbReporter extends Mocha.reporters.Base {
     return result;
   }
 
-  override epilogue() {
+  override epilogue(): void {
     super.epilogue();
 
     const summary = formatFailedTestsSummary(this.failedTestIds);
@@ -222,4 +223,5 @@ class ResultsDbReporter extends Mocha.reporters.Base {
   }
 }
 
-exports = module.exports = ResultsDbReporter;
+// eslint-disable-next-line no-restricted-syntax
+export default ResultsDbReporter;

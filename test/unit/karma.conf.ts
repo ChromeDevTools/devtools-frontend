@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import * as fs from 'node:fs';
+import {createRequire} from 'node:module';
 import * as path from 'node:path';
 import type {Page, ScreenshotOptions, Target} from 'puppeteer-core';
 import puppeteer from 'puppeteer-core';
@@ -18,6 +19,8 @@ import {loadTests, TestConfig} from '../../test/conductor/test_config.js';
 import {getSkippedTests, isExpectedResult} from '../../test/conductor/test_expectations.js';
 import {ScreenshotError, ScreenshotErrorReporter} from '../conductor/screenshot-error.js';
 import {assertElementScreenshotUnchanged} from '../shared/screenshots.js';
+
+const require = createRequire(import.meta.url);
 
 const COVERAGE_OUTPUT_DIRECTORY = 'karma-coverage';
 
@@ -500,7 +503,7 @@ function testsEntrypointMiddleware(config: any) {
 
 testsEntrypointMiddleware.$inject = ['config'];
 
-module.exports = function(config: any) {
+export default function(config: any): void {
   const targetDir = path.relative(SOURCE_ROOT, GEN_DIR);
   const devToolsRoot = path.relative(CHECKOUT_ROOT, SOURCE_ROOT);
   const options = {
@@ -512,34 +515,143 @@ module.exports = function(config: any) {
     customDebugFile: path.join(GEN_DIR, 'test/unit/debug.html'),
 
     files: [
-      {pattern: path.join(SOURCE_ROOT, 'node_modules/mocha/mocha.js'), served: true, included: true},
-      {pattern: path.join(GEN_DIR, 'test/unit/mocha-adapter-browser.js'), type: 'module', included: true},
+      {
+        pattern: path.join(SOURCE_ROOT, 'node_modules/mocha/mocha.js'),
+        served: true,
+        included: true,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'test/unit/mocha-adapter-browser.js'),
+        type: 'module',
+        included: true,
+      },
       // Global hooks in test_setup must go first
       {pattern: setupScriptPath, served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'test/unit/browser-globals.js'), type: 'module', served: true, included: false},
-      {pattern: path.join(SOURCE_ROOT, 'node_modules/chai/**/*'), served: true, included: false},
-      {pattern: path.join(SOURCE_ROOT, 'node_modules/sinon/**/*'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'test/unit/mocha-interface.js'), served: true, included: false},
-      ...tests.map(pattern => ({pattern, type: 'module', served: true, included: false})),
-      ...tests.map(pattern => ({pattern: `${pattern}.map`, served: true, included: false, watched: true})),
-      {pattern: path.join(GEN_DIR, 'front_end/Images/*.{svg,png}'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'front_end/core/i18n/locales/*.json'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'front_end/design_system_tokens.css'), served: true, included: true},
-      {pattern: path.join(GEN_DIR, 'front_end/application_tokens.css'), served: true, included: true},
-      {pattern: path.join(GEN_DIR, 'front_end/**/*.css'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'front_end/**/*.js'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'front_end/**/*.js.map'), served: true, included: false, watched: true},
-      {pattern: path.join(GEN_DIR, 'front_end/**/*.json'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'front_end/**/*.md'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'front_end/**/*.mjs'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'front_end/**/*.mjs.map'), served: true, included: false},
-      {pattern: path.join(SOURCE_ROOT, 'front_end/**/*.ts'), served: true, included: false, watched: false},
-      {pattern: path.join(GEN_DIR, 'front_end/**/fixtures/*.png'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'inspector_overlay/**/*.js'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'inspector_overlay/**/*.js.map'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'front_end/**/fixtures/**/*'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'front_end/**/*.snapshot.txt'), served: true, included: false},
-      {pattern: path.join(GEN_DIR, 'front_end/ui/components/docs/**/*'), served: true, included: false},
+      {
+        pattern: path.join(GEN_DIR, 'test/unit/browser-globals.js'),
+        type: 'module',
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(SOURCE_ROOT, 'node_modules/chai/**/*'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(SOURCE_ROOT, 'node_modules/sinon/**/*'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'test/unit/mocha-interface.js'),
+        served: true,
+        included: false,
+      },
+      ...tests.map(pattern => ({
+                     pattern,
+                     type: 'module',
+                     served: true,
+                     included: false,
+                   })),
+      ...tests.map(pattern => ({
+                     pattern: `${pattern}.map`,
+                     served: true,
+                     included: false,
+                     watched: true,
+                   })),
+      {
+        pattern: path.join(GEN_DIR, 'front_end/Images/*.{svg,png}'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/core/i18n/locales/*.json'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/design_system_tokens.css'),
+        served: true,
+        included: true,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/application_tokens.css'),
+        served: true,
+        included: true,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/**/*.css'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/**/*.js'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/**/*.js.map'),
+        served: true,
+        included: false,
+        watched: true,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/**/*.json'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/**/*.md'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/**/*.mjs'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/**/*.mjs.map'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(SOURCE_ROOT, 'front_end/**/*.ts'),
+        served: true,
+        included: false,
+        watched: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/**/fixtures/*.png'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'inspector_overlay/**/*.js'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'inspector_overlay/**/*.js.map'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/**/fixtures/**/*'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/**/*.snapshot.txt'),
+        served: true,
+        included: false,
+      },
+      {
+        pattern: path.join(GEN_DIR, 'front_end/ui/components/docs/**/*'),
+        served: true,
+        included: false,
+      },
     ],
 
     reporters: [...reporters()],
@@ -605,11 +717,7 @@ module.exports = function(config: any) {
     coverageReporter: {
       dir: path.join(TestConfig.artifactsDir, COVERAGE_OUTPUT_DIRECTORY),
       subdir: '.',
-      reporters: [
-        {type: 'json-summary'},
-        {type: 'json'},
-        {type: 'html'},
-      ],
+      reporters: [{type: 'json-summary'}, {type: 'json'}, {type: 'html'}],
     },
 
     singleRun: !TestConfig.debug,
@@ -620,11 +728,10 @@ module.exports = function(config: any) {
     mochaReporter: {
       showDiff: true,
     },
-
   };
 
   config.set(options);
-};
+}
 
 function snapshotTesterFactory() {
   return (req: any, res: any, next: any) => {

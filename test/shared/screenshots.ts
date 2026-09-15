@@ -43,7 +43,7 @@ if (!fs.existsSync(IMAGE_DIFF_BINARY)) {
  * previous runs interfere.
  */
 const generatedScreenshotFolderParts = ['..', '.generated', platform];
-const generatedScreenshotFolder = path.join(__dirname, ...generatedScreenshotFolderParts);
+const generatedScreenshotFolder = path.join(import.meta.dirname, ...generatedScreenshotFolderParts);
 if (fs.existsSync(generatedScreenshotFolder)) {
   fs.rmSync(generatedScreenshotFolder, {recursive: true});
 }

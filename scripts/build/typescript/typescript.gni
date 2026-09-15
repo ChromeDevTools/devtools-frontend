@@ -506,7 +506,7 @@ set_defaults("ts_library") {
 
 template("node_ts_library") {
   ts_library(target_name) {
-    runs_in = "node_cjs"
+    runs_in = "node"
     testonly = true
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly

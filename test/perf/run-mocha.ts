@@ -13,12 +13,12 @@ TestConfig.isPerfTest = true;
 
 void run({
   spec: [
-    path.join(__dirname, 'setup', 'test_setup.js'),
-    ...loadTests(__dirname),
+    path.join(import.meta.dirname, 'setup', 'test_setup.js'),
+    ...loadTests(import.meta.dirname),
   ],
   require: [
-    path.join(path.dirname(__dirname), 'perf', 'setup', 'test_setup.js'),
-    path.join(path.dirname(__dirname), 'e2e', 'conductor', 'mocha_hooks.js'),
+    path.join(path.dirname(import.meta.dirname), 'perf', 'setup', 'test_setup.js'),
+    path.join(path.dirname(import.meta.dirname), 'e2e', 'conductor', 'mocha_hooks.js'),
     path.join(SOURCE_ROOT, 'node_modules', 'source-map-support', 'register.js'),
   ],
   timeout: 30_000,

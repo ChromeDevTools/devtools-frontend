@@ -4,20 +4,26 @@ Serialize JavaScript
 Serialize JavaScript to a _superset_ of JSON that includes regular expressions, dates and functions.
 
 [![npm Version][npm-badge]][npm]
-[![Dependency Status][david-badge]][david]
 ![Test](https://github.com/yahoo/serialize-javascript/workflows/Test/badge.svg)
 
 ## Overview
 
 The code in this package began its life as an internal module to [express-state][]. To expand its usefulness, it now lives as `serialize-javascript` — an independent package on npm.
 
-You're probably wondering: **What about `JSON.stringify()`!?** We've found that sometimes we need to serialize JavaScript **functions**, **regexps**, **dates**, **sets** or **maps**. A great example is a web app that uses client-side URL routing where the route definitions are regexps that need to be shared from the server to the client. But this module is also great for communicating between node processes.
+You're probably wondering: **What about `JSON.stringify()`!?** We've found that sometimes we need to serialize JavaScript **functions**, **regexps**, **dates**, **sets** or **maps**. A great example is a web app that uses client-side URL routing where the route definitions are regexps that need to be shared from the server to the client.
 
 The string returned from this package's single export function is literal JavaScript which can be saved to a `.js` file, or be embedded into an HTML document by making the content of a `<script>` element.
 
 > **HTML characters and JavaScript line terminators are escaped automatically.**
 
 Please note that serialization for ES6 Sets & Maps requires support for `Array.from` (not available in IE or Node < 0.12), or an `Array.from` polyfill.
+
+> [!WARNING]
+> It may be tempting to use this package as a way to pass arbitrary functions into [worker threads][], since you cannot pass them directly via `postMessage()`. However, passing functions between worker threads is not possible in the general case. This package lets you serialize *some* functions, but it has limitations.
+>
+> For instance, if a function references something from outside the function body, it will not run properly if serialized and deserialized. This could include [closed-over variables][] or imports from other packages. For a serialized function to run properly, it must be entirely self-contained.
+>
+> In general, it is not possible to send arbitrary JavaScript to a worker thread, and pretend it's running the same way it would run on the main thread. This package doesn't let you do that.
 
 ## Installation
 
@@ -136,8 +142,8 @@ See the [LICENSE file][LICENSE] for license text and copyright information.
 
 [npm]: https://www.npmjs.org/package/serialize-javascript
 [npm-badge]: https://img.shields.io/npm/v/serialize-javascript.svg?style=flat-square
-[david]: https://david-dm.org/yahoo/serialize-javascript
-[david-badge]: https://img.shields.io/david/yahoo/serialize-javascript.svg?style=flat-square
 [express-state]: https://github.com/yahoo/express-state
 [JSON.stringify]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
 [LICENSE]: https://github.com/yahoo/serialize-javascript/blob/main/LICENSE
+[worker threads]: https://nodejs.org/api/worker_threads.html
+[closed-over variables]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures

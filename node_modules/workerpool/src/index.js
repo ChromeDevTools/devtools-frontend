@@ -1,4 +1,5 @@
 const {platform, isMainThread, cpus} = require('./environment');
+const {TerminateError} = require('./WorkerHandler');
 
 /** @typedef {import("./Pool")} Pool */
 /** @typedef {import("./types.js").WorkerPoolOptions} WorkerPoolOptions */
@@ -58,3 +59,4 @@ exports.Transfer = require('./transfer');
 exports.platform = platform;
 exports.isMainThread = isMainThread;
 exports.cpus = cpus;
+exports.TerminateError = TerminateError;

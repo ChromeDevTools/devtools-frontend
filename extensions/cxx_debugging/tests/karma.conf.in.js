@@ -2,18 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const path = require('node:path');
-const process = require('node:process');
+import {createRequire} from 'node:module';
+import path from 'node:path';
+import process from 'node:process';
+
+const require = createRequire(import.meta.url);
+
+function requireInternal(module) {
+  const node_root_path = '@REPO_SOURCE_DIR@/node_modules';
+  return require(require.resolve(module, {paths: [node_root_path]}));
+}
+
 const glob = requireInternal('glob');
 const karmaChromeLauncher = requireInternal('karma-chrome-launcher');
 
 function isDebug() {
   return process.argv.indexOf('--debug') > -1;
-}
-
-function requireInternal(module) {
-  const node_root_path = '@REPO_SOURCE_DIR@/node_modules';
-  return require(require.resolve(module, {paths: [node_root_path]}));
 }
 
 function getTestInputs() {
@@ -55,7 +59,7 @@ ChromeWS.prototype = {
 };
 ChromeWS.$inject = ['baseBrowserDecorator', 'args', 'config'];
 
-module.exports = function(config) {
+export default function(config) {
   const basePath = path.resolve('@REPO_SOURCE_DIR@');
   const buildArtifacts = ['$<JOIN:@EXTENSION_TEST_BUILD_ARTIFACTS@,', '>'].map(p => path.resolve(p));
   const importMapFile = {pattern: '@CMAKE_CURRENT_SOURCE_DIR@/karma_preload.html', type: 'dom', watched: true};
@@ -130,4 +134,4 @@ module.exports = function(config) {
   };
 
   config.set(options);
-};
+}

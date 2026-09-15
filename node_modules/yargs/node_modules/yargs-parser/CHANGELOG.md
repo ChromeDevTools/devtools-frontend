@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [22.0.0](https://github.com/yargs/yargs-parser/compare/yargs-parser-v21.1.1...yargs-parser-v22.0.0) (2025-05-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* yargs is now ESM first ([#503](https://github.com/yargs/yargs-parser/issues/503))
+
+### Features
+
+* yargs is now ESM first ([#503](https://github.com/yargs/yargs-parser/issues/503)) ([6d69295](https://github.com/yargs/yargs-parser/commit/6d692953ade099375c6c5e131367968b07ae8470))
+
 ## [21.1.1](https://github.com/yargs/yargs-parser/compare/yargs-parser-v21.1.0...yargs-parser-v21.1.1) (2022-08-04)
 
 

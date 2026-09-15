@@ -265,7 +265,7 @@ Promise.all = function (promises){
 
 /**
  * Create a promise resolver
- * @returns {{promise: Promise, resolve: Function, reject: Function}} resolver
+ * @returns {import('./types.js').Resolver} resolver
  */
 Promise.defer = function () {
   var resolver = {};

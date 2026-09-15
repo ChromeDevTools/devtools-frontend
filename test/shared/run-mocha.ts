@@ -25,7 +25,7 @@ function optionsWithDefalts(options: Options): Options {
     // See https://github.com/mochajs/mocha/blob/master/docs/index.md#--allow-uncaught.
     allowUncaught: true,
     retries: TestConfig.retries,
-    reporter: path.join(__dirname, 'mocha-resultsdb-reporter.js'),
+    reporter: path.join(import.meta.dirname, 'mocha-resultsdb-reporter.js'),
     slow: 1000,
     failZero: false,
     bail: TestConfig.bail,

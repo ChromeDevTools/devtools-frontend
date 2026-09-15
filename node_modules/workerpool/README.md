@@ -2,7 +2,9 @@
 
 [![NPM Version](https://img.shields.io/npm/v/workerpool)](https://www.npmjs.com/package/workerpool)
 [![NPM Downloads](https://img.shields.io/npm/dm/workerpool)](https://npm-compare.com/workerpool/#timeRange=FIVE_YEARS)
+[![Maintenance](https://img.shields.io/maintenance/yes/2026.svg)](https://github.com/josdejong/jsoneditor/pulse)
 [![NPM License](https://img.shields.io/npm/l/workerpool)](https://github.com/josdejong/workerpool/blob/master/LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjosdejong%2Fworkerpool.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjosdejong%2Fworkerpool?ref=badge_shield)
 
 **workerpool** offers an easy way to create a pool of workers for both dynamically offloading computations as well as managing a pool of dedicated workers. **workerpool** basically implements a [thread pool pattern](http://en.wikipedia.org/wiki/Thread_pool_pattern). There is a pool of workers to execute tasks. New tasks are put in a queue. A worker executes one task at a time, and once finished, picks a new task from the queue. Workers can be accessed via a natural, promise based proxy, as if they are available straight in the main application.
 
@@ -587,7 +589,7 @@ To see the coverage results, open the generated report in your browser:
 
 ## License
 
-Copyright (C) 2014-2025 Jos de Jong <wjosdejong@gmail.com>
+Copyright (C) 2014-2026 Jos de Jong <wjosdejong@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

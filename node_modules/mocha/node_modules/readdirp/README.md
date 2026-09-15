@@ -2,6 +2,8 @@
 
 Recursive version of fs.readdir. Exposes a **stream API** (with small RAM & CPU footprint) and a **promise API**.
 
+Faster than built-in `fs.readdir recursive: true`, and uses less RAM.
+
 ```sh
 npm install readdirp
 jsr add jsr:@paulmillr/readdirp

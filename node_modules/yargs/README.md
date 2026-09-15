@@ -13,7 +13,6 @@
 [![js-standard-style][standard-image]][standard-url]
 [![Coverage][coverage-image]][coverage-url]
 [![Conventional Commits][conventional-commits-image]][conventional-commits-url]
-[![Slack][slack-image]][slack-url]
 
 ## Description
 Yargs helps you build interactive command line tools, by parsing arguments and generating an elegant user interface.
@@ -38,7 +37,7 @@ Rules & Behavior
                              return a Promise                          [boolean]
 ```
 
-* bash-completion shortcuts for commands and options.
+* generate completion scripts for Bash and Zsh for your command
 * and [tons more](/docs/api.md).
 
 ## Installation
@@ -59,9 +58,9 @@ npm i yargs@next
 
 ```javascript
 #!/usr/bin/env node
-const yargs = require('yargs/yargs')
-const { hideBin } = require('yargs/helpers')
-const argv = yargs(hideBin(process.argv)).argv
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+const argv = yargs(hideBin(process.argv)).parse()
 
 if (argv.ships > 3 && argv.distance < 53.5) {
   console.log('Plunder more riffiwobbles!')
@@ -78,14 +77,14 @@ $ ./plunder.js --ships 12 --distance 98.7
 Retreat from the xupptumblers!
 ```
 
-> Note: `hideBin` is a shorthand for [`process.argv.slice(2)`](https://nodejs.org/en/knowledge/command-line/how-to-parse-command-line-arguments/). It has the benefit that it takes into account variations in some environments, e.g., [Electron](https://github.com/electron/electron/issues/4690).
+> Note: `hideBin` is a shorthand for `process.argv.slice(2)`. It has the benefit that it takes into account variations in some environments, e.g., [Electron](https://github.com/electron/electron/issues/4690).
 
 ### Complex Example
 
 ```javascript
 #!/usr/bin/env node
-const yargs = require('yargs/yargs')
-const { hideBin } = require('yargs/helpers')
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
 yargs(hideBin(process.argv))
   .command('serve [port]', 'start the server', (yargs) => {
@@ -125,8 +124,8 @@ See usage examples in [docs](/docs/typescript.md).
 As of `v16`, `yargs` supports [Deno](https://github.com/denoland/deno):
 
 ```typescript
-import yargs from 'https://deno.land/x/yargs/deno.ts'
-import { Arguments } from 'https://deno.land/x/yargs/deno-types.ts'
+import yargs from 'https://deno.land/x/yargs@v17.7.2-deno/deno.ts'
+import { Arguments } from 'https://deno.land/x/yargs@v17.7.2-deno/deno-types.ts'
 
 yargs(Deno.args)
   .command('download <files...>', 'download a list of files', (yargs: any) => {
@@ -141,29 +140,11 @@ yargs(Deno.args)
   .parse()
 ```
 
-### ESM
-
-As of `v16`,`yargs` supports ESM imports:
-
-```js
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
-
-yargs(hideBin(process.argv))
-  .command('curl <url>', 'fetch the contents of the URL', () => {}, (argv) => {
-    console.info(argv)
-  })
-  .demandCommand(1)
-  .parse()
-```
+> Note: If you use version tags in url then you also have to add `-deno` flag on the end, like `@17.7.2-deno`
 
 ### Usage in Browser
 
 See examples of using yargs in the browser in [docs](/docs/browser.md).
-
-## Community
-
-Having problems? want to contribute? join our [community slack](http://devtoolscommunity.herokuapp.com).
 
 ## Documentation
 
@@ -182,7 +163,6 @@ Having problems? want to contribute? join our [community slack](http://devtoolsc
   * [Composing Your App Using Commands](/docs/advanced.md#commands)
   * [Building Configurable CLI Apps](/docs/advanced.md#configuration)
   * [Customizing Yargs' Parser](/docs/advanced.md#customizing)
-  * [Bundling yargs](/docs/bundling.md)
 * [Contributing](/contributing.md)
 
 ## Supported Node.js Versions
@@ -197,8 +177,6 @@ post on why we think this is important](https://medium.com/the-node-js-collectio
 [standard-url]: http://standardjs.com/
 [conventional-commits-image]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg
 [conventional-commits-url]: https://conventionalcommits.org/
-[slack-image]: http://devtoolscommunity.herokuapp.com/badge.svg
-[slack-url]: http://devtoolscommunity.herokuapp.com
 [type-definitions]: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/yargs
 [coverage-image]: https://img.shields.io/nycrc/yargs/yargs
 [coverage-url]: https://github.com/yargs/yargs/blob/main/.nycrc

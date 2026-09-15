@@ -9,8 +9,14 @@ easily create complex multi-column command-line-interfaces.
 
 ## Example
 
+```bash
+npm i cliui@latest chalk@latest
+```
+
 ```js
 const ui = require('cliui')()
+const {Chalk} = require('chalk');
+const chalk = new Chalk();
 
 ui.div('Usage: $0 [command] [options]')
 
@@ -46,7 +52,9 @@ As of `v7` `cliui` supports [Deno](https://github.com/denoland/deno) and
 [ESM](https://nodejs.org/api/esm.html#esm_ecmascript_modules):
 
 ```typescript
-import cliui from "https://deno.land/x/cliui/deno.ts";
+import cliui from "cliui";
+import chalk from "chalk";
+// Deno: import cliui from "https://deno.land/x/cliui/deno.ts";
 
 const ui = cliui({})
 
@@ -57,11 +65,23 @@ ui.div({
   padding: [2, 0, 1, 0]
 })
 
-ui.div({
-  text: "-f, --file",
-  width: 20,
-  padding: [0, 4, 0, 4]
-})
+ui.div(
+  {
+    text: "-f, --file",
+    width: 20,
+    padding: [0, 4, 0, 4]
+  },
+  {
+    text: "the file to load." +
+      chalk.green("(if this description is long it wraps).")
+    ,
+    width: 20
+  },
+  {
+    text: chalk.red("[required]"),
+    align: 'right'
+  }
+)
 
 console.log(ui.toString())
 ```

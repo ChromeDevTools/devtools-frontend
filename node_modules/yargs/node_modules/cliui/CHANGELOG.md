@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.0.1](https://github.com/yargs/cliui/compare/v9.0.0...v9.0.1) (2025-03-17)
+
+
+### Bug Fixes
+
+* make require("cliui") work as expected for CJS ([04ccc25](https://github.com/yargs/cliui/commit/04ccc250e30a059292c03fa1ef0a8661f8d93dfe))
+
+## [9.0.0](https://github.com/yargs/cliui/compare/v8.0.1...v9.0.0) (2025-03-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* cliui is now ESM only ([#165](https://github.com/yargs/cliui/issues/165))
+
+### Features
+
+* cliui is now ESM only ([#165](https://github.com/yargs/cliui/issues/165)) ([5a521de](https://github.com/yargs/cliui/commit/5a521de7ea88f262236394c8d96775bcf50ff0a4))
+
 ## [8.0.1](https://github.com/yargs/cliui/compare/v8.0.0...v8.0.1) (2022-10-01)
 
 

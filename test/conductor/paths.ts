@@ -8,10 +8,10 @@ import * as path from 'node:path';
 // @ts-expect-error created at test/BUILD.gn
 import build from '../build.js';
 
-export const SOURCE_ROOT: string = path.join(__dirname, '..', build.SOURCE_ROOT);
-export const CHECKOUT_ROOT: string = path.join(__dirname, '..', build.CHECKOUT_ROOT);
-export const BUILD_ROOT: string = path.join(__dirname, '..', build.BUILD_ROOT);
-export const GEN_DIR: string = path.normalize(path.join(__dirname, '..', '..'));
+export const SOURCE_ROOT: string = path.join(import.meta.dirname, '..', build.SOURCE_ROOT);
+export const CHECKOUT_ROOT: string = path.join(import.meta.dirname, '..', build.CHECKOUT_ROOT);
+export const BUILD_ROOT: string = path.join(import.meta.dirname, '..', build.BUILD_ROOT);
+export const GEN_DIR: string = path.normalize(path.join(import.meta.dirname, '..', '..'));
 export const BUILD_WITH_CHROMIUM: boolean = build.BUILD_WITH_CHROMIUM;
 export const TEST_ID_REGEX: RegExp = /^(.*\.[tj]s):(.*)$/;
 

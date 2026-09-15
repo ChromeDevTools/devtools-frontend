@@ -10,10 +10,10 @@ import {run} from '../shared/run-mocha.js';
 
 void run({
   require: [
-    path.join(path.dirname(__dirname), 'e2e', 'conductor', 'mocha_hooks.js'),
+    path.join(path.dirname(import.meta.dirname), 'e2e', 'conductor', 'mocha_hooks.js'),
     'source-map-support/register.js',
   ],
-  spec: loadTests(__dirname, path.join('e2e', 'tests.txt')),
+  spec: loadTests(import.meta.dirname, path.join('e2e', 'tests.txt')),
   timeout: 10_000,
   suiteName: 'e2e',
   ui: devtoolsTestInterface as unknown as 'bdd',

@@ -52,9 +52,9 @@ export async function openTestSuiteResourceInSourcesPanel(testInput: string, ins
 }
 
 export function loadTests() {
-  const tests = JSON.parse(fs.readFileSync(path.join(__dirname, 'tests.json')).toString());
+  const tests = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, 'tests.json')).toString());
   return tests as TestSpec[];
 }
 
 export const CXX_DEBUGGING_EXTENSION_PATH =
-    path.join(__dirname, '..', '..', '..', 'DevTools_CXX_Debugging.stage2', 'src');
+    path.join(import.meta.dirname, '..', '..', '..', 'DevTools_CXX_Debugging.stage2', 'src');

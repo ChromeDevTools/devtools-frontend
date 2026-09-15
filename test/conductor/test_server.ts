@@ -5,8 +5,8 @@
 import {type ChildProcess, spawn} from 'node:child_process';
 import * as path from 'node:path';
 
-const HOSTED_MODE_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
-const cwd = path.join(__dirname, '..', '..');
+const HOSTED_MODE_SERVER_PATH = path.join(import.meta.dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
+const cwd = path.join(import.meta.dirname, '..', '..');
 let runningServer: ChildProcess|undefined;
 
 /**

@@ -46,10 +46,10 @@ if (!TestConfig.chromeBinary || isCftPath()) {
 
 void run({
   require: [
-    path.join(__dirname, 'mocha_hooks.js'),
+    path.join(import.meta.dirname, 'mocha_hooks.js'),
     path.join(SOURCE_ROOT, 'node_modules', 'source-map-support', 'register.js'),
   ],
-  spec: loadTests(__dirname),
+  spec: loadTests(import.meta.dirname),
   timeout: TestConfig.debug ? 0 : 180_000,
   suiteName: 'ai_evals',
   ui: devtoolsAiEvalTestInterface as unknown as 'bdd',

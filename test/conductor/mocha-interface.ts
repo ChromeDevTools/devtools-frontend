@@ -23,8 +23,14 @@ export interface MochaInterfaceOptions<TState = unknown, TSuiteSettings = unknow
 
 export interface CustomItFunction<TState> {
   (title: string, fn?: TestCallback<TState>|Mocha.AsyncFunc): Mocha.Test;
-  skip: (title: string, _fn?: TestCallback<TState>|Mocha.AsyncFunc) => Mocha.Test;
-  only: (title: string, fn?: TestCallback<TState>|Mocha.AsyncFunc) => Mocha.Test;
+  skip: (
+      title: string,
+      _fn?: TestCallback<TState>|Mocha.AsyncFunc,
+      ) => Mocha.Test;
+  only: (
+      title: string,
+      fn?: TestCallback<TState>|Mocha.AsyncFunc,
+      ) => Mocha.Test;
 }
 
 export interface CustomDescribeFunction {
@@ -44,8 +50,12 @@ export interface CustomMochaGlobals<TState, TSuiteSettings> {
   run?: () => void;
 }
 
-export function createMochaInterface<TState = unknown, TSuiteSettings = unknown>(
-    options: MochaInterfaceOptions<TState, TSuiteSettings>): {
+export function createMochaInterface<
+  TState = unknown,
+  TSuiteSettings = unknown,
+>(
+  options: MochaInterfaceOptions<TState, TSuiteSettings>,
+): {
   (rootSuite: Mocha.Suite): void,
   description: string,
 } {
@@ -59,20 +69,40 @@ export function createMochaInterface<TState = unknown, TSuiteSettings = unknown>
         (context: Mocha.MochaGlobals, file: string, mocha: Mocha) => {
           mochaGlobals = context as unknown as CustomMochaGlobals<TState, TSuiteSettings>;
           mochaRoot = mocha;
-          // Different module outputs between tsc and esbuild.
-          const defaultFactory = ('default' in commonInterface ? commonInterface.default : commonInterface);
-          defaultImplementation = defaultFactory([rootSuite], context, mocha) as CommonFunctions;
+          const defaultFactory = (
+          'createCommon' in commonInterface
+            ? commonInterface.createCommon
+            : 'default' in commonInterface
+              ? commonInterface.default
+              : commonInterface
+        ) as (
+          suites: Mocha.Suite[],
+          context: Mocha.MochaGlobals,
+          mocha: Mocha,
+        ) => CommonFunctions;
+          defaultImplementation = defaultFactory([rootSuite], context, mocha);
 
           if (mocha.options.delay) {
             context.run = defaultImplementation.runWithSuite(rootSuite);
           }
-          mochaGlobals.describe = customDescribe(defaultImplementation.suite, file);
+          mochaGlobals.describe = customDescribe(
+              defaultImplementation.suite,
+              file,
+          );
         },
     );
 
-    function customDescribe(suiteImplementation: SuiteFunctions, file: string): CustomDescribeFunction {
-      function withAugmentedTitle(suiteFn: (opts: CreateOptions) => Mocha.Suite) {
-        return function(title: string, describeBodyFn: SuiteFunction): Mocha.Suite {
+    function customDescribe(
+        suiteImplementation: SuiteFunctions,
+        file: string,
+        ): CustomDescribeFunction {
+      function withAugmentedTitle(
+          suiteFn: (opts: CreateOptions) => Mocha.Suite,
+      ) {
+        return function(
+                   title: string,
+                   describeBodyFn: SuiteFunction,
+                   ): Mocha.Suite {
           const suite = suiteFn({
             title,
             file,
@@ -83,14 +113,25 @@ export function createMochaInterface<TState = unknown, TSuiteSettings = unknown>
                 setup: mochaGlobals.setup,
                 it: mochaGlobals.it,
               };
-              mochaGlobals.describe = customDescribe(defaultImplementation.suite, file);
+              mochaGlobals.describe = customDescribe(
+                  defaultImplementation.suite,
+                  file,
+              );
               if (options.stateProvider?.registerSuiteSettings) {
                 mochaGlobals.setup = function(suiteSettings: TSuiteSettings) {
-                  options.stateProvider!.registerSuiteSettings!(thisSuite, suiteSettings);
+                  options.stateProvider!.registerSuiteSettings!(
+                      thisSuite,
+                      suiteSettings,
+                  );
                 };
               }
-              mochaGlobals.it = customIt(defaultImplementation.test, thisSuite, thisSuite.file || '', mochaRoot,
-                                         options.stateProvider);
+              mochaGlobals.it = customIt(
+                  defaultImplementation.test,
+                  thisSuite,
+                  thisSuite.file || '',
+                  mochaRoot,
+                  options.stateProvider,
+              );
               if (describeBodyFn) {
                 describeBodyFn.call(thisSuite);
               }
@@ -114,10 +155,15 @@ export function createMochaInterface<TState = unknown, TSuiteSettings = unknown>
         };
       }
 
-      const describe =
-          withAugmentedTitle(suiteImplementation.create.bind(suiteImplementation)) as CustomDescribeFunction;
-      describe.only = withAugmentedTitle(suiteImplementation.only.bind(suiteImplementation));
-      describe.skip = withAugmentedTitle(suiteImplementation.skip.bind(suiteImplementation));
+      const describe = withAugmentedTitle(
+                           suiteImplementation.create.bind(suiteImplementation),
+                           ) as CustomDescribeFunction;
+      describe.only = withAugmentedTitle(
+          suiteImplementation.only.bind(suiteImplementation),
+      );
+      describe.skip = withAugmentedTitle(
+          suiteImplementation.skip.bind(suiteImplementation),
+      );
       return describe;
     }
   };
@@ -133,12 +179,19 @@ function customIt<TState>(
     mocha: Mocha,
     stateProvider?: TestStateProvider<TState, never>,
     ): CustomItFunction<TState> {
-  function createTest(title: string, itBodyFn?: TestCallback<TState>|Mocha.AsyncFunc): Mocha.Test {
+  function createTest(
+      title: string,
+      itBodyFn?: TestCallback<TState>|Mocha.AsyncFunc,
+      ): Mocha.Test {
     const test = new Mocha.Test(
         title,
-        suite.isPending() || !itBodyFn ?
-            undefined :
-            InstrumentedTestFunction.instrument<TState>(itBodyFn, 'test', suite, stateProvider),
+        suite.isPending() || !itBodyFn ? undefined :
+                                         InstrumentedTestFunction.instrument<TState>(
+                                             itBodyFn,
+                                             'test',
+                                             suite,
+                                             stateProvider,
+                                             ),
     );
     test.file = file;
 
@@ -147,7 +200,7 @@ function customIt<TState>(
     const proxyTest = new Proxy(test, {
       get(target, property, receiver) {
         if (property === 'duration' && target.realDuration) {
-          return Reflect.get(target, 'realDuration', receiver) ?? Reflect.get(target, property, receiver);
+          return (Reflect.get(target, 'realDuration', receiver) ?? Reflect.get(target, property, receiver));
         }
         return Reflect.get(target, property, receiver);
       },
@@ -159,18 +212,26 @@ function customIt<TState>(
 
   // Regular mocha it returns the test instance.
   const localIt: CustomItFunction<TState> = Object.assign(
-      function(title: string, fn?: TestCallback<TState>|Mocha.AsyncFunc):
+      function(
+          title: string,
+          fn?: TestCallback<TState>|Mocha.AsyncFunc,
+          ):
           Mocha.Test {
             return createTest(title, fn);
           },
       {
-        skip: function(title: string, _fn?: TestCallback<TState>|Mocha.AsyncFunc): Mocha.Test {
+        skip: function(
+                  title: string,
+                  _fn?: TestCallback<TState>|Mocha.AsyncFunc,
+                  ): Mocha.Test {
           return createTest(title);
         },
-        only: function(title: string, fn?: TestCallback<TState>|Mocha.AsyncFunc): Mocha.Test {
+        only: function(
+                  title: string,
+                  fn?: TestCallback<TState>|Mocha.AsyncFunc,
+                  ): Mocha.Test {
           return testImplementation.only(mocha, createTest(title, fn));
         },
-
       },
   );
 

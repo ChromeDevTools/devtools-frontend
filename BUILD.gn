@@ -261,5 +261,4 @@ group("harness_tests") {
   deps = [ "./test/harness" ]
 }
 
-# TODO(@nvitkov): When http://b/469573569 is fixed
-write_file("$target_gen_dir/package.json", "{}")
+write_file("$target_gen_dir/package.json", "{\"type\": \"module\"}")

@@ -400,7 +400,7 @@ class Init(RunnerCommand):
             4
         }
         with open(repo_path(test_suite_dir, '.mocharc.js'), 'w') as mocharc:
-            mocharc.write('module.exports = {};'.format(
+            mocharc.write('export default {};'.format(
                 json.dumps(mocha_spec, indent=2)))
 
         with open(repo_path(test_suite_dir, 'tests.json'), 'w') as tests_file:
@@ -421,7 +421,13 @@ class Init(RunnerCommand):
             repo_path(options.build_root,
                       get_artifact_dir('devtools-frontend'), 'gen',
                       'cxx_debugging'))
-
+        create_symlink(repo_path('//node_modules'),
+                       repo_path(options.build_root, 'node_modules'))
+        create_symlink(
+            repo_path(options.build_root,
+                      get_artifact_dir('devtools-frontend'), 'gen', 'test'),
+            repo_path(options.build_root,
+                      'extensions/cxx_debugging/e2e/node_modules/test'))
 
 class Inspect(Init):
     Command = 'inspect'

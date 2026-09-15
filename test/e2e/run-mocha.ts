@@ -12,10 +12,10 @@ import devtoolsTestInterface from './conductor/mocha-interface.js';
 
 void run({
   require: [
-    path.join(path.dirname(__dirname), 'e2e', 'conductor', 'mocha_hooks.js'),
+    path.join(path.dirname(import.meta.dirname), 'e2e', 'conductor', 'mocha_hooks.js'),
     path.join(SOURCE_ROOT, 'node_modules', 'source-map-support', 'register.js'),
   ],
-  spec: loadTests(__dirname),
+  spec: loadTests(import.meta.dirname),
   timeout: 10_000,
   suiteName: 'e2e',
   ui: devtoolsTestInterface as unknown as 'bdd',

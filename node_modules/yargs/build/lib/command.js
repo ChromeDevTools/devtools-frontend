@@ -4,7 +4,6 @@ import { applyMiddleware, commandMiddlewareFactory, } from './middleware.js';
 import { parseCommand } from './parse-command.js';
 import { isYargsInstance, } from './yargs-factory.js';
 import { maybeAsyncResult } from './utils/maybe-async-result.js';
-import whichModule from './utils/which-module.js';
 const DEFAULT_MARKER = /(^\*)|(^\$0)/;
 export class CommandInstance {
     constructor(usage, validation, globalMiddleware, shim) {
@@ -19,23 +18,60 @@ export class CommandInstance {
     }
     addDirectory(dir, req, callerFile, opts) {
         opts = opts || {};
-        if (typeof opts.recurse !== 'boolean')
-            opts.recurse = false;
+        this.requireCache.add(callerFile);
+        const fullDirPath = this.shim.path.resolve(this.shim.path.dirname(callerFile), dir);
+        const files = this.shim.readdirSync(fullDirPath, {
+            recursive: opts.recurse ? true : false,
+        });
         if (!Array.isArray(opts.extensions))
             opts.extensions = ['js'];
-        const parentVisit = typeof opts.visit === 'function' ? opts.visit : (o) => o;
-        opts.visit = (obj, joined, filename) => {
-            const visited = parentVisit(obj, joined, filename);
-            if (visited) {
-                if (this.requireCache.has(joined))
-                    return visited;
-                else
-                    this.requireCache.add(joined);
-                this.addHandler(visited);
+        const visit = typeof opts.visit === 'function' ? opts.visit : (o) => o;
+        for (const fileb of files) {
+            const file = fileb.toString();
+            if (opts.exclude) {
+                let exclude = false;
+                if (typeof opts.exclude === 'function') {
+                    exclude = opts.exclude(file);
+                }
+                else {
+                    exclude = opts.exclude.test(file);
+                }
+                if (exclude)
+                    continue;
             }
-            return visited;
-        };
-        this.shim.requireDirectory({ require: req, filename: callerFile }, dir, opts);
+            if (opts.include) {
+                let include = false;
+                if (typeof opts.include === 'function') {
+                    include = opts.include(file);
+                }
+                else {
+                    include = opts.include.test(file);
+                }
+                if (!include)
+                    continue;
+            }
+            let supportedExtension = false;
+            for (const ext of opts.extensions) {
+                if (file.endsWith(ext))
+                    supportedExtension = true;
+            }
+            if (supportedExtension) {
+                const joined = this.shim.path.join(fullDirPath, file);
+                const module = req(joined);
+                const extendableModule = Object.create(null, Object.getOwnPropertyDescriptors({ ...module }));
+                const visited = visit(extendableModule, joined, file);
+                if (visited) {
+                    if (this.requireCache.has(joined))
+                        continue;
+                    else
+                        this.requireCache.add(joined);
+                    if (!extendableModule.command) {
+                        extendableModule.command = this.shim.path.basename(joined, this.shim.path.extname(joined));
+                    }
+                    this.addHandler(extendableModule);
+                }
+            }
+        }
     }
     addHandler(cmd, description, builder, handler, commandMiddleware, deprecated) {
         let aliases = [];
@@ -54,7 +90,10 @@ export class CommandInstance {
         else if (isCommandHandlerDefinition(cmd)) {
             let command = Array.isArray(cmd.command) || typeof cmd.command === 'string'
                 ? cmd.command
-                : this.moduleName(cmd);
+                : null;
+            if (command === null) {
+                throw new Error(`No command name given for module: ${this.shim.inspect(cmd)}`);
+            }
             if (cmd.aliases)
                 command = [].concat(command).concat(cmd.aliases);
             this.addHandler(command, this.extractDesc(cmd), cmd.builder, cmd.handler, cmd.middlewares, cmd.deprecated);
@@ -385,15 +424,6 @@ export class CommandInstance {
             });
         }
         return undefined;
-    }
-    moduleName(obj) {
-        const mod = whichModule(obj);
-        if (!mod)
-            throw new Error(`No command name given for module: ${this.shim.inspect(obj)}`);
-        return this.commandFromFilename(mod.filename);
-    }
-    commandFromFilename(filename) {
-        return this.shim.path.basename(filename, this.shim.path.extname(filename));
     }
     extractDesc({ describe, description, desc }) {
         for (const test of [describe, description, desc]) {

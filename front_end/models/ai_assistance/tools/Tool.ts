@@ -154,6 +154,14 @@ export interface OriginLockCapability {
 }
 
 /**
+ * Capability for tools that require the new OriginLockState during migration.
+ */
+export interface ActiveOriginLockCapability {
+  getOriginLock(): OriginLockState;
+  getEstablishedOrigin?(): SDK.SecurityOrigin.SecurityOrigin|undefined;
+}
+
+/**
  * Checks whether a target origin matches the established conversation origin lock.
  * Returns `false` if the lock is not established, either origin is opaque, or the
  * target origin does not match the established origin.

@@ -60,7 +60,10 @@ describe('ExecuteJavaScriptTool', () => {
       execJs: mockExecJs,
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
       createExtensionScope: sinon.stub().returns(mockScope),
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler({
@@ -82,7 +85,10 @@ describe('ExecuteJavaScriptTool', () => {
       execJs: sinon.stub(),
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
       createExtensionScope: sinon.stub(),
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler({
@@ -106,7 +112,10 @@ describe('ExecuteJavaScriptTool', () => {
         install: sinon.stub().resolves(),
         uninstall: sinon.stub().resolves(),
       }),
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler({
@@ -136,7 +145,10 @@ describe('ExecuteJavaScriptTool', () => {
         install: sinon.stub().resolves(),
         uninstall: sinon.stub().resolves(),
       }),
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler({
@@ -169,7 +181,10 @@ describe('ExecuteJavaScriptTool', () => {
          execJs: mockExecJs,
          changeManager: new AiAssistance.ChangeManager.ChangeManager(),
          createExtensionScope: sinon.stub().returns(mockScope),
-         getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+         getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+           status: 'ESTABLISHED_ORIGIN',
+           origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+         }),
        };
 
        const response = await tool.handler({
@@ -195,7 +210,10 @@ describe('ExecuteJavaScriptTool', () => {
       execJs: mockExecJs,
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
       createExtensionScope: sinon.stub().returns(mockScope),
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler({
@@ -232,7 +250,10 @@ describe('ExecuteJavaScriptTool', () => {
         execJs: mockExecJs,
         changeManager: new AiAssistance.ChangeManager.ChangeManager(),
         createExtensionScope: sinon.stub().returns(mockScope),
-        getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+        getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+          status: 'ESTABLISHED_ORIGIN',
+          origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+        }),
       };
 
       const response = await tool.handler({
@@ -259,7 +280,10 @@ describe('ExecuteJavaScriptTool', () => {
         execJs: mockExecJs,
         changeManager: new AiAssistance.ChangeManager.ChangeManager(),
         createExtensionScope: sinon.stub().returns(mockScope),
-        getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+        getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+          status: 'ESTABLISHED_ORIGIN',
+          origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+        }),
       };
 
       const response = await tool.handler({
@@ -290,7 +314,10 @@ describe('ExecuteJavaScriptTool', () => {
         execJs: mockExecJs,
         changeManager: new AiAssistance.ChangeManager.ChangeManager(),
         createExtensionScope: sinon.stub().returns(mockScope),
-        getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+        getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+          status: 'ESTABLISHED_ORIGIN',
+          origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+        }),
       };
 
       const responsePromise = tool.handler({
@@ -371,7 +398,10 @@ describe('ExecuteJavaScriptTool', () => {
       execJs: sinon.stub().resolves('undefined'),
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
       createExtensionScope: sinon.stub().returns(mockScope),
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler(
@@ -403,7 +433,10 @@ describe('ExecuteJavaScriptTool', () => {
       execJs: sinon.stub().resolves('undefined'),
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
       createExtensionScope: sinon.stub().returns(mockScope),
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler(
@@ -420,7 +453,7 @@ describe('ExecuteJavaScriptTool', () => {
   });
 
   describe('origin locking', () => {
-    function createContext(establishedOrigin?: SDK.SecurityOrigin.SecurityOrigin) {
+    function createContext(originLock: AiAssistance.Tool.OriginLockState) {
       const mockExecJs = sinon.stub().resolves('{"success": true}');
       const mockScope = {
         install: sinon.stub().resolves(),
@@ -432,7 +465,7 @@ describe('ExecuteJavaScriptTool', () => {
           execJs: mockExecJs,
           changeManager: new AiAssistance.ChangeManager.ChangeManager(),
           createExtensionScope: sinon.stub().returns(mockScope),
-          getEstablishedOrigin: () => establishedOrigin,
+          getOriginLock: () => originLock,
         },
         mockExecJs,
       };
@@ -447,7 +480,8 @@ describe('ExecuteJavaScriptTool', () => {
     it('successfully executes JS code when node matches established origin', async () => {
       const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
       element.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
-      const {context, mockExecJs} = createContext(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
+      const {context, mockExecJs} = createContext(
+          {status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')});
 
       const response = await tool.handler(defaultArgs, context);
 
@@ -459,7 +493,8 @@ describe('ExecuteJavaScriptTool', () => {
     it('returns error when node origin does not match established origin', async () => {
       const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
       element.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.example'));
-      const {context, mockExecJs} = createContext(SDK.SecurityOrigin.SecurityOrigin.create('https://victim.example'));
+      const {context, mockExecJs} = createContext(
+          {status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin.create('https://victim.example')});
 
       const response = await tool.handler(defaultArgs, context);
 
@@ -470,7 +505,8 @@ describe('ExecuteJavaScriptTool', () => {
     it('returns error when node origin is opaque', async () => {
       const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
       element.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque());
-      const {context, mockExecJs} = createContext(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
+      const {context, mockExecJs} = createContext(
+          {status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')});
 
       const response = await tool.handler(defaultArgs, context);
 
@@ -481,7 +517,8 @@ describe('ExecuteJavaScriptTool', () => {
     it('returns error when node has no security origin', async () => {
       const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
       element.securityOrigin.returns(null);
-      const {context, mockExecJs} = createContext(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
+      const {context, mockExecJs} = createContext(
+          {status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')});
 
       const response = await tool.handler(defaultArgs, context);
 
@@ -491,7 +528,17 @@ describe('ExecuteJavaScriptTool', () => {
 
     it('returns error when origin lock is not established', async () => {
       const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
-      const {context, mockExecJs} = createContext(undefined);
+      const {context, mockExecJs} = createContext({status: 'UNINITIALIZED'});
+
+      const response = await tool.handler(defaultArgs, context);
+
+      assertIsError(response, 'Error: Cannot execute JavaScript on cross-origin target.');
+      sinon.assert.notCalled(mockExecJs);
+    });
+
+    it('returns error when cross-origin navigation occurred', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const {context, mockExecJs} = createContext({status: 'BLOCKED_BY_NAVIGATION'});
 
       const response = await tool.handler(defaultArgs, context);
 
@@ -501,7 +548,8 @@ describe('ExecuteJavaScriptTool', () => {
 
     it('returns error when established origin is opaque', async () => {
       const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
-      const {context, mockExecJs} = createContext(SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque());
+      const {context, mockExecJs} =
+          createContext({status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque()});
 
       const response = await tool.handler(defaultArgs, context);
 

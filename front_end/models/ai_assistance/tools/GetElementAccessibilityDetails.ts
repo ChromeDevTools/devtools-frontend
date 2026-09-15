@@ -8,11 +8,11 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 
 import {
+  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
-  type OriginLockCapability,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -33,8 +33,8 @@ export interface GetElementAccessibilityDetailsArgs extends ToolArgs {
  * A tool that retrieves fine-grained accessibility properties (role, name, ARIA properties, focus state)
  * for a resolved element backend node ID. It also returns a DOM snapshot of the element's subtree.
  */
-export class GetElementAccessibilityDetailsTool implements
-    DataTool<GetElementAccessibilityDetailsArgs, string, BaseToolCapability&TargetCapability&OriginLockCapability> {
+export class GetElementAccessibilityDetailsTool implements DataTool<
+    GetElementAccessibilityDetailsArgs, string, BaseToolCapability&TargetCapability&ActiveOriginLockCapability> {
   readonly name: ToolName = ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS;
   readonly description: string =
       'Retrieves detailed accessibility properties (computed role, accessible name, name source, ARIA attributes, ignored state) and a DOM tree snapshot for an element by backend node ID.';
@@ -78,10 +78,8 @@ export class GetElementAccessibilityDetailsTool implements
    */
   async handler(
       params: GetElementAccessibilityDetailsArgs,
-      context: BaseToolCapability&TargetCapability&OriginLockCapability,
+      context: BaseToolCapability&TargetCapability&ActiveOriginLockCapability,
       ): Promise<DataHandlerResult<string>> {
-    const establishedOrigin = context.getEstablishedOrigin();
-
     const target = context.getTarget();
     if (!target) {
       return {error: 'Error: Inspected target not found.'};
@@ -99,7 +97,7 @@ export class GetElementAccessibilityDetailsTool implements
     // Security check: Ensure the element matches the active conversation's origin lock.
     // Because getTarget() returns the primary page target to support resolving elements
     // across frames, origin validation must be enforced directly on the resolved node.
-    if (!isOriginAllowedByLock(establishedOrigin, resolved.securityOrigin())) {
+    if (!isOriginAllowedByLock(context.getOriginLock(), resolved.securityOrigin())) {
       return {error: 'Error: Node does not belong to the current origin.'};
     }
 

@@ -6,11 +6,11 @@ import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 
 import {
+  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
-  type OriginLockCapability,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -36,8 +36,9 @@ export interface ResolveDevtoolsNodePathArgs extends ToolArgs {
  * Lighthouse reports or other sources using node paths. It ensures the resolved node
  * belongs to the locked origin.
  */
-export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNodePathArgs, {backendNodeId: number},
-                                                             BaseToolCapability&TargetCapability&OriginLockCapability> {
+export class ResolveDevtoolsNodePathTool implements
+    DataTool<ResolveDevtoolsNodePathArgs, {backendNodeId: number},
+             BaseToolCapability&TargetCapability&ActiveOriginLockCapability> {
   readonly name: ToolName = ToolName.RESOLVE_DEVTOOLS_NODE_PATH;
   readonly description: string =
       'Resolves a DevTools node path (e.g. from a Lighthouse audit snippet) to an element backend node ID for further DOM, style, or accessibility inspection.';
@@ -82,7 +83,7 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
    */
   async handler(
       params: ResolveDevtoolsNodePathArgs,
-      context: BaseToolCapability&TargetCapability&OriginLockCapability,
+      context: BaseToolCapability&TargetCapability&ActiveOriginLockCapability,
       ): Promise<DataHandlerResult<{backendNodeId: number}>> {
     const target = context.getTarget();
     const domModel = target?.model(SDK.DOMModel.DOMModel);
@@ -108,10 +109,9 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
       return {error: 'Error: Could not retrieve resolved node.'};
     }
 
-    const establishedOrigin = context.getEstablishedOrigin();
     // Security check: Ensure the resolved node belongs to the same origin
     // that this AI assistance session is locked to, preventing cross-origin access.
-    if (!isOriginAllowedByLock(establishedOrigin, node.securityOrigin())) {
+    if (!isOriginAllowedByLock(context.getOriginLock(), node.securityOrigin())) {
       return {error: 'Error: Node does not belong to the current origin.'};
     }
 

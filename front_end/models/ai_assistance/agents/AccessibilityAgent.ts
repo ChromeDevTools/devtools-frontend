@@ -11,7 +11,10 @@ import {ChangeManager} from '../ChangeManager.js';
 import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
 import {debugLog} from '../debug.js';
 import {ExtensionScope} from '../ExtensionScope.js';
-import {ToolName} from '../tools/Tool.js';
+import {
+  type OriginLockState,
+  ToolName,
+} from '../tools/Tool.js';
 import {ToolRegistry} from '../tools/ToolRegistry.js';
 
 import {
@@ -253,7 +256,11 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
               createExtensionScope: this.#createExtensionScope.bind(this),
               execJs: this.#execJs,
               getExecutionContextNode: () => this.#getDocumentBodyNode(),
-              getEstablishedOrigin: () => this.context?.getOrigin(),
+              getOriginLock: (): OriginLockState => {
+                // V1 AccessibilityAgent adapts the selected node's security origin to OriginLockState.
+                const origin = this.context?.getOrigin();
+                return origin ? {status: 'ESTABLISHED_ORIGIN', origin} : {status: 'UNINITIALIZED'};
+              },
             },
             options,
         );

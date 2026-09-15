@@ -24,7 +24,7 @@ describe('GetElementAccessibilityDetailsTool', () => {
    * @param overrides Configuration options to customize the mock context behavior.
    * @param overrides.nodeUrl The URL of the target document node. Defaults to 'https://example.com/page.html'.
    * @param overrides.nodeSecurityOrigin Explicit SecurityOrigin to return from the node, or null for detached nodes.
-   * @param overrides.establishedOrigin The origin locked in the conversation context. Defaults to 'https://example.com'.
+   * @param overrides.originLock The origin lock state in the conversation context. Defaults to ESTABLISHED_ORIGIN for 'https://example.com'.
    * @param overrides.hasTarget If false, simulates a missing target (e.g. target closed).
    * @param overrides.hasAxModel If false, simulates missing AccessibilityModel on target.
    * @param overrides.hasAxNode If false, simulates the AccessibilityModel failing to find the AXNode for the node.
@@ -33,7 +33,7 @@ describe('GetElementAccessibilityDetailsTool', () => {
   function createMockContext(overrides?: {
     nodeUrl?: string,
     nodeSecurityOrigin?: SDK.SecurityOrigin.SecurityOrigin|null,
-    establishedOrigin?: SDK.SecurityOrigin.SecurityOrigin,
+    originLock?: AiAssistance.Tool.OriginLockState,
     hasTarget?: boolean,
     hasAxModel?: boolean,
     hasAxNode?: boolean,
@@ -41,9 +41,8 @@ describe('GetElementAccessibilityDetailsTool', () => {
     ignoredReasons?: Protocol.Accessibility.AXProperty[],
   }) {
     const nodeUrl = overrides?.nodeUrl ?? 'https://example.com/page.html';
-    const establishedOrigin = overrides && 'establishedOrigin' in overrides ?
-        overrides.establishedOrigin :
-        SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+    const originLock: AiAssistance.Tool.OriginLockState = overrides?.originLock ??
+        {status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')};
     const hasTarget = overrides?.hasTarget ?? true;
     const hasAxModel = overrides?.hasAxModel ?? true;
     const hasAxNode = overrides?.hasAxNode ?? true;
@@ -101,7 +100,7 @@ describe('GetElementAccessibilityDetailsTool', () => {
     return {
       context: {
         getTarget: () => mockTarget as unknown as SDK.Target.Target,
-        getEstablishedOrigin: () => establishedOrigin,
+        getOriginLock: () => originLock,
       },
       mockNode,
       mockSnapshot,
@@ -164,7 +163,16 @@ describe('GetElementAccessibilityDetailsTool', () => {
   });
 
   it('returns error when origin lock is not established', async () => {
-    const {context} = createMockContext({establishedOrigin: undefined});
+    const {context} = createMockContext({originLock: {status: 'UNINITIALIZED'}});
+
+    const tool = new AiAssistance.GetElementAccessibilityDetails.GetElementAccessibilityDetailsTool();
+    const response = await tool.handler({element: 123, explanation: 'Inspect details'}, context);
+
+    assertIsError(response, 'Error: Node does not belong to the current origin.');
+  });
+
+  it('returns error when cross-origin navigation occurred during run', async () => {
+    const {context} = createMockContext({originLock: {status: 'BLOCKED_BY_NAVIGATION'}});
 
     const tool = new AiAssistance.GetElementAccessibilityDetails.GetElementAccessibilityDetailsTool();
     const response = await tool.handler({element: 123, explanation: 'Inspect details'}, context);
@@ -212,7 +220,7 @@ describe('GetElementAccessibilityDetailsTool', () => {
     const iframeOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://iframe.example.com');
     const {context} = createMockContext({
       nodeUrl: 'https://iframe.example.com/frame.html',
-      establishedOrigin: iframeOrigin,
+      originLock: {status: 'ESTABLISHED_ORIGIN', origin: iframeOrigin},
     });
 
     const tool = new AiAssistance.GetElementAccessibilityDetails.GetElementAccessibilityDetailsTool();

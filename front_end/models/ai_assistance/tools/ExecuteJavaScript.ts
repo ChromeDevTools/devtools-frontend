@@ -10,11 +10,11 @@ import type {FunctionHandlerOptions} from '../agents/AiAgent.js';
 import {JavascriptExecutor} from '../agents/ExecuteJavascript.js';
 
 import {
+  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
-  type OriginLockCapability,
   type PageExecutionCapability,
   type StyleMutationCapability,
   type ToolArgs,
@@ -33,7 +33,7 @@ export interface ExecuteJavaScriptArgs extends ToolArgs {
 
 export class ExecuteJavaScriptTool implements
     DataTool<ExecuteJavaScriptArgs, unknown,
-             BaseToolCapability&PageExecutionCapability&StyleMutationCapability&OriginLockCapability> {
+             BaseToolCapability&PageExecutionCapability&StyleMutationCapability&ActiveOriginLockCapability> {
   readonly name: ToolName = ToolName.EXECUTE_JAVASCRIPT;
 
   readonly description: string =
@@ -123,7 +123,7 @@ const data = {
 
   async handler(
       params: ExecuteJavaScriptArgs,
-      context: BaseToolCapability&PageExecutionCapability&StyleMutationCapability&OriginLockCapability,
+      context: BaseToolCapability&PageExecutionCapability&StyleMutationCapability&ActiveOriginLockCapability,
       options?: FunctionHandlerOptions,
       ): Promise<DataHandlerResult<unknown>> {
     const executionNode = context.getExecutionContextNode();
@@ -131,7 +131,7 @@ const data = {
       return {error: 'Error: Could not find the context node for execution.'};
     }
 
-    if (!isOriginAllowedByLock(context.getEstablishedOrigin(), executionNode.securityOrigin())) {
+    if (!isOriginAllowedByLock(context.getOriginLock(), executionNode.securityOrigin())) {
       return {error: 'Error: Cannot execute JavaScript on cross-origin target.'};
     }
 

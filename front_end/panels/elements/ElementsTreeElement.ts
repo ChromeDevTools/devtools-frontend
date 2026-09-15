@@ -1129,7 +1129,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   #domIssuesManager?: IssuesManager.DOMIssuesManager.DOMIssuesManager;
 
   #node!: SDK.DOMModel.DOMNode;
-  isClosingTag = false;
+  #eventsBound = false;
+  #isClosingTag = false;
   #expanded = false;
   #isExpandable = false;
   #selected = false;
@@ -1139,6 +1140,28 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   isDOMNodeSelected = false;
   initialEdit?: InitialEditState|null;
   onInitialEditCompleted?: () => void;
+  attributeToHighlight?: string|null;
+  onAttributeHighlighted?: () => void;
+  #adornersDirty = false;
+  get adornersDirty(): boolean {
+    return this.#adornersDirty;
+  }
+  set adornersDirty(dirty: boolean) {
+    this.#adornersDirty = dirty;
+  }
+  #adornersUpdateVersion = 0;
+  get adornersUpdateVersion(): number {
+    return this.#adornersUpdateVersion;
+  }
+  set adornersUpdateVersion(version: number) {
+    if (this.#adornersUpdateVersion === version) {
+      return;
+    }
+    this.#adornersUpdateVersion = version;
+    if (version > 0) {
+      void this.updateAdorners();
+    }
+  }
 
   expand?: () => void;
   collapse?: () => void;
@@ -1186,9 +1209,33 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   #flexAdornerActive = false;
   #gridAdornerActive = false;
   #popoverAdornerActive = false;
+  get popoverAdornerActive(): boolean {
+    return this.#popoverAdornerActive;
+  }
+  set popoverAdornerActive(active: boolean) {
+    if (this.#popoverAdornerActive === active) {
+      return;
+    }
+    this.#popoverAdornerActive = active;
+    this.requestUpdate();
+  }
+
   #activePopoverInvokerId: Protocol.DOM.BackendNodeId|null = null;
   #implicitAnchorCandidatesPromise: Promise<SDK.DOMModel.DeferredDOMNode[]>|null = null;
   #interestAdornerActive = false;
+  get interestAdornerActive(): boolean {
+    return this.#interestAdornerActive;
+  }
+  set interestAdornerActive(active: boolean) {
+    if (this.#interestAdornerActive === active) {
+      return;
+    }
+    this.#interestAdornerActive = active;
+    this.requestUpdate();
+  }
+
+  onPopoverAdornerToggled?: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
+  onInterestAdornerToggled?: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
 
   #scrollSnapAdornerActive = false;
   #startingStyleAdornerActive = false;
@@ -1220,10 +1267,41 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   }
 
   set node(node: SDK.DOMModel.DOMNode) {
+    if (this.#node === node) {
+      return;
+    }
+    this.#unbindEvents();
+    if (this.#isBound && this.editing) {
+      this.editing.cancel();
+    }
     this.#node = node;
-    if (!this.isClosingTag) {
+    this.#bindEvents();
+    if (this.#isBound) {
+      this.requestUpdate();
+    }
+    if (!this.#isClosingTag) {
       void this.#updateAdorners();
       this.updateDecorations();
+    }
+  }
+
+  get isClosingTag(): boolean {
+    return this.#isClosingTag;
+  }
+
+  set isClosingTag(isClosingTag: boolean) {
+    if (this.#isClosingTag === isClosingTag) {
+      return;
+    }
+    this.#unbindEvents();
+    this.#isClosingTag = isClosingTag;
+    this.#bindEvents();
+    if (this.#isBound) {
+      if (!this.#isClosingTag) {
+        void this.#updateAdorners();
+        this.updateDecorations();
+      }
+      this.requestUpdate();
     }
   }
 
@@ -1284,8 +1362,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       const universe = UI.Widget.lookupUniverseForElement(this.contentElement);
       if (universe) {
         this.#domIssuesManager = universe.get(IssuesManager.DOMIssuesManager.DOMIssuesManager);
-        if (this.node?.id) {
-          this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+        if (this.#eventsBound && this.#node?.id) {
+          this.#domIssuesManager.subscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
         }
       }
     }
@@ -1383,13 +1461,20 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   }
 
   #clearDOMNextUpdate = false;
+  #isBound = false;
 
   override wasShown(): void {
     super.wasShown();
+    this.onbind();
     if (!this.isClosingTag) {
       void this.#updateAdorners();
       this.updateDecorations();
     }
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.onunbind();
   }
 
   override performUpdate(): void {
@@ -1534,6 +1619,12 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       } else if (edit.attributeName) {
         this.triggerEditAttribute(edit.attributeName);
       }
+    }
+    if (this.attributeToHighlight) {
+      const attribute = this.attributeToHighlight;
+      this.attributeToHighlight = null;
+      this.onAttributeHighlighted?.();
+      this.highlightAttribute(attribute);
     }
   }
 
@@ -1719,24 +1810,34 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   }
 
   onbind(): void {
+    if (this.#isBound) {
+      return;
+    }
+    this.#isBound = true;
     this.requestUpdate();
-    if (!this.isClosingTag) {
-      this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
-      this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated,
-                                 this);
-      this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated,
-                                 this);
-      this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
-                                 this.#onPersistentContainerQueryOverlayStateChanged, this);
-      this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
-                                 this.#onPersistentFlexContainerOverlayStateChanged, this);
-      this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
-                                 this.#onPersistentGridOverlayStateChanged, this);
-      this.node.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
-                                 this.#onPersistentScrollSnapOverlayStateChanged, this);
-      if (this.#domIssuesManager && this.node.id) {
-        this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
-      }
+    this.#bindEvents();
+  }
+
+  #bindEvents(): void {
+    if (!this.#isBound || this.#isClosingTag || !this.#node || this.#eventsBound) {
+      return;
+    }
+    this.#eventsBound = true;
+    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
+    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated,
+                                this);
+    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated,
+                                this);
+    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
+                                this.#onPersistentContainerQueryOverlayStateChanged, this);
+    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
+                                this.#onPersistentFlexContainerOverlayStateChanged, this);
+    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
+                                this.#onPersistentGridOverlayStateChanged, this);
+    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
+                                this.#onPersistentScrollSnapOverlayStateChanged, this);
+    if (this.#domIssuesManager && this.#node.id) {
+      this.#domIssuesManager.subscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
     }
   }
 
@@ -1811,29 +1912,41 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   }
 
   onunbind(): void {
+    if (!this.#isBound) {
+      return;
+    }
+    this.#isBound = false;
     if (this.editing) {
       this.editing.cancel();
     }
     this.clearView();
+    this.#unbindEvents();
+  }
+
+  #unbindEvents(): void {
     this.#implicitAnchorCandidatesPromise = null;
     this.#activePopoverInvokerId = null;
-    this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged,
-                                  this);
-    this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated,
-                                  this);
-    this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated,
-                                  this);
-    this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
-                                  this.#onPersistentContainerQueryOverlayStateChanged, this);
-    this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
-                                  this.#onPersistentFlexContainerOverlayStateChanged, this);
-    this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
-                                  this.#onPersistentGridOverlayStateChanged, this);
-    this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
-                                  this.#onPersistentScrollSnapOverlayStateChanged, this);
-    if (this.#domIssuesManager && this.node.id) {
-      this.#domIssuesManager.unsubscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+    if (!this.#eventsBound || !this.#node) {
+      return;
     }
+    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged,
+                                   this);
+    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated,
+                                   this);
+    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated,
+                                   this);
+    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
+                                   this.#onPersistentContainerQueryOverlayStateChanged, this);
+    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
+                                   this.#onPersistentFlexContainerOverlayStateChanged, this);
+    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
+                                   this.#onPersistentGridOverlayStateChanged, this);
+    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
+                                   this.#onPersistentScrollSnapOverlayStateChanged, this);
+    if (this.#domIssuesManager && this.#node.id) {
+      this.#domIssuesManager.unsubscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
+    }
+    this.#eventsBound = false;
   }
 
   #onDOMIssueUpdated = (): void => {
@@ -2833,6 +2946,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       if (this.#popoverAdornerActive) {
         Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
       }
+      this.onPopoverAdornerToggled?.(node, this.#popoverAdornerActive);
       this.requestUpdate();
       return;
     }
@@ -2895,6 +3009,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
               this.#activePopoverInvokerId = candidateBackendId;
               Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
             }
+            this.onPopoverAdornerToggled?.(node, this.#popoverAdornerActive);
             this.requestUpdate();
           },
           {
@@ -2926,6 +3041,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     if (this.#interestAdornerActive) {
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
     }
+    this.onInterestAdornerToggled?.(node, this.#interestAdornerActive);
     this.requestUpdate();
   }
 

@@ -160,6 +160,15 @@ interface ViewInput {
                            moveDirection?: string) => void;
   nodeToEdit?: ({node: SDK.DOMModel.DOMNode}&InitialEditState)|null;
   onInitialEditCompleted?: () => void;
+  attributeToHighlight?: {node: SDK.DOMModel.DOMNode, attribute: string}|null;
+  onAttributeHighlighted?: () => void;
+  nodesWithDirtyAdorners?: Set<SDK.DOMModel.DOMNode>;
+  nodeAdornerVersions?: WeakMap<SDK.DOMModel.DOMNode, number>;
+  onDirtyAdornersUpdated?: () => void;
+  forceOpenPopovers?: WeakSet<SDK.DOMModel.DOMNode>;
+  onPopoverAdornerToggled?: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
+  forceOpenInterests?: WeakSet<SDK.DOMModel.DOMNode>;
+  onInterestAdornerToggled?: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
   multilineEditingNode?: SDK.DOMModel.DOMNode|null;
   dragOverNode?: {node: SDK.DOMModel.DOMNode, isClosingTag: boolean}|null;
   isValidDragSource?: (node: SDK.DOMModel.DOMNode) => boolean;
@@ -364,6 +373,21 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         treeElement.widget.triggerEditAttribute(edit.attributeName);
       }
     }
+  }
+
+  if (input.attributeToHighlight) {
+    const treeElement = output.elementsTreeOutline.findTreeElement(input.attributeToHighlight.node);
+    if (treeElement) {
+      treeElement.reveal();
+      treeElement.highlightAttribute(input.attributeToHighlight.attribute);
+      input.onAttributeHighlighted?.();
+    }
+  }
+  if (input.nodesWithDirtyAdorners && input.nodesWithDirtyAdorners.size > 0) {
+    for (const node of input.nodesWithDirtyAdorners) {
+      void output.elementsTreeOutline.findTreeElement(node)?.updateAdorners();
+    }
+    input.onDirtyAdornersUpdated?.();
   }
 };
 
@@ -922,6 +946,15 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           showAIButton: input.showAIButton ?? true,
           initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
           onInitialEditCompleted: input.onInitialEditCompleted,
+          attributeToHighlight:
+              input.attributeToHighlight?.node === node ? input.attributeToHighlight.attribute : null,
+          onAttributeHighlighted: input.onAttributeHighlighted,
+          adornersDirty: input.nodesWithDirtyAdorners?.has(node) ?? false,
+          adornersUpdateVersion: input.nodeAdornerVersions?.get(node) ?? 0,
+          popoverAdornerActive: Boolean(input.forceOpenPopovers?.has(node)),
+          onPopoverAdornerToggled: input.onPopoverAdornerToggled,
+          interestAdornerActive: Boolean(input.forceOpenInterests?.has(node)),
+          onInterestAdornerToggled: input.onInterestAdornerToggled,
           revealInTopLayer: (n: SDK.DOMModel.DOMNode) => input.domTreeWidget?.revealInTopLayer(n),
           setMultilineEditing: (multilineEditing, n) => input.domTreeWidget?.setMultilineEditing(multilineEditing, n ?? node),
           visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
@@ -1085,6 +1118,10 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     ` : nothing}
   `, target);
   // clang-format on
+
+  if (input.nodesWithDirtyAdorners && input.nodesWithDirtyAdorners.size > 0) {
+    input.onDirtyAdornersUpdated?.();
+  }
 };
 
 function getElementsTreeWidgetAndNode(element: Element): {node?: SDK.DOMModel.DOMNode, widget?: ElementsTreeWidget} {
@@ -1615,7 +1652,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void {
-    this.#viewOutput?.elementsTreeOutline?.highlightNodeAttribute(node, attribute);
+    this.selectDOMNode(node);
+    this.#attributeToHighlight = {node, attribute};
+    this.performUpdate();
   }
 
   get wrap(): boolean {
@@ -1780,6 +1819,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   #searchMatchNode: SDK.DOMModel.DOMNode|null = null;
   #searchMatchQuery: string|null = null;
   #nodeToEdit: ({node: SDK.DOMModel.DOMNode}&InitialEditState)|null = null;
+  #attributeToHighlight: {node: SDK.DOMModel.DOMNode, attribute: string}|null = null;
+  #nodesWithDirtyAdorners = new Set<SDK.DOMModel.DOMNode>();
+  #nodeAdornerVersions = new WeakMap<SDK.DOMModel.DOMNode, number>();
+  #forceOpenPopovers = new WeakSet<SDK.DOMModel.DOMNode>();
+  #forceOpenInterests = new WeakSet<SDK.DOMModel.DOMNode>();
   #draggedNode: SDK.DOMModel.DOMNode|null = null;
   #draggedNodeWasExpanded = false;
   #dragOverNode: {node: SDK.DOMModel.DOMNode, isClosingTag: boolean}|null = null;
@@ -1927,6 +1971,33 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onInitialEditCompleted: () => {
         this.#nodeToEdit = null;
       },
+      attributeToHighlight: this.#attributeToHighlight,
+      onAttributeHighlighted: () => {
+        this.#attributeToHighlight = null;
+      },
+      nodesWithDirtyAdorners: this.#nodesWithDirtyAdorners,
+      nodeAdornerVersions: this.#nodeAdornerVersions,
+      onDirtyAdornersUpdated: () => {
+        this.#nodesWithDirtyAdorners.clear();
+      },
+      forceOpenPopovers: this.#forceOpenPopovers,
+      onPopoverAdornerToggled: (node: SDK.DOMModel.DOMNode, active: boolean) => {
+        if (active) {
+          this.#forceOpenPopovers.add(node);
+        } else {
+          this.#forceOpenPopovers.delete(node);
+        }
+        this.performUpdate();
+      },
+      forceOpenInterests: this.#forceOpenInterests,
+      onInterestAdornerToggled: (node: SDK.DOMModel.DOMNode, active: boolean) => {
+        if (active) {
+          this.#forceOpenInterests.add(node);
+        } else {
+          this.#forceOpenInterests.delete(node);
+        }
+        this.performUpdate();
+      },
       multilineEditingNode: this.#multilineEditingNode,
       dragOverNode: this.#dragOverNode,
       isValidDragSource: (node: SDK.DOMModel.DOMNode) => this.isValidDragSource(node),
@@ -2070,8 +2141,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
    * FIXME: adorners should be part of the view input.
    */
   updateNodeAdorners(node: SDK.DOMModel.DOMNode): void {
-    const element = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
-    void element?.updateAdorners();
+    this.#nodesWithDirtyAdorners.add(node);
+    const version = (this.#nodeAdornerVersions.get(node) ?? 0) + 1;
+    this.#nodeAdornerVersions.set(node, version);
+    this.performUpdate();
   }
 
   highlightMatch(node: SDK.DOMModel.DOMNode, query?: string): void {

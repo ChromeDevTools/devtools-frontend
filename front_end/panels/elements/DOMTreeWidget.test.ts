@@ -3403,6 +3403,87 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
+
+    it('updates adorners via updateNodeAdorners', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [{nodeId: 2, nodeName: '#text', nodeValue: 'text'}],
+        });
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const devtoolsTree = domTree.contentElement.querySelector('devtools-tree');
+        assert.exists(devtoolsTree?.shadowRoot);
+        const widgetEl = devtoolsTree.shadowRoot.querySelector('devtools-widget');
+        assert.exists(widgetEl);
+        const widget = UI.Widget.Widget.get(widgetEl) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(widget);
+        const updateAdornersSpy = sinon.spy(widget, 'updateAdorners');
+
+        domTree.updateNodeAdorners(rootNode);
+        await waitForTreeUpdates();
+        sinon.assert.calledOnce(updateAdornersSpy);
+
+        // Subsequent update should flush dirty adorners state.
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+        assert.isFalse(widget.adornersDirty);
+
+        // Swapping node on bound widget should not call clearView.
+        const clearViewSpy = sinon.spy(widget, 'clearView');
+        const otherNode = createTestDOMTree(domModel, {
+          nodeId: 3,
+          nodeName: 'SPAN',
+          children: [],
+        });
+        widget.node = otherNode;
+        sinon.assert.notCalled(clearViewSpy);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('selects node and highlights attribute in highlightNodeAttribute', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['class', 'test-class'],
+          children: [{nodeId: 2, nodeName: '#text', nodeValue: 'text'}],
+        });
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const devtoolsTree = domTree.contentElement.querySelector('devtools-tree');
+        assert.exists(devtoolsTree?.shadowRoot);
+        const widgetEl = devtoolsTree.shadowRoot.querySelector('devtools-widget');
+        assert.exists(widgetEl);
+        const widget = UI.Widget.Widget.get(widgetEl) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(widget);
+        const highlightSpy = sinon.spy(widget, 'highlightAttribute');
+
+        domTree.highlightNodeAttribute(rootNode, 'class');
+        assert.strictEqual(domTree.selectedDOMNode(), rootNode);
+        await waitForTreeUpdates();
+        sinon.assert.calledOnceWithExactly(highlightSpy, 'class');
+      } finally {
+        domTree.detach();
+      }
+    });
   });
 
   describe('removing nodes', () => {

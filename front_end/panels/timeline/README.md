@@ -108,6 +108,7 @@ As of July 2024, they are used to power:
 2. Annotations; the user has the ability to create labels and attach them to entries. These are drawn with overlays.
 3. Selected entry; the box drawn around the entry a user selects is drawn as an overlay.
 4. Vertical ruler: when holding shift and moving their mouse, the vertical cursor drawn is drawn as an overlay.
+5. Comment pins: comment threads anchored to flame chart entries.
 
 Overlays are drawn in **DOM**, not Canvas, and are drawn on a layer that sits above the entire timeline. This is important because it means they are drawn over both the canvases we have in the panel (network + main/rest).
 
@@ -123,7 +124,7 @@ To remove one or some overlays, check out the `remove()` or `removeOverlaysOfTyp
 
 ### Creating a new overlay
 
-To create a new overlay, add it in the `OverlaysImpl.ts` file, first define its type. This is done as an interface, and must contain a `type` field.
+To create a new overlay, define its interface in `front_end/models/trace/types/Overlays.ts`, ensuring it contains a `type` field.
 
 All other fields are completely custom and depend on the specifics of the overlay.
 
@@ -137,7 +138,7 @@ export interface EntrySelected {
 }
 ```
 
-Once you have done this, add the interface to the union type `TimelineOverlay`. This will likely trigger some TypeScript errors because there are some places in the code where we check we have exhaustively dealt with every possible overlay type.
+Once you have done this, add the interface to the union type `Overlay` in `front_end/models/trace/types/Overlays.ts`. This will likely trigger some TypeScript errors because there are some places in the code where we check we have exhaustively dealt with every possible overlay type.
 Also if you want to make this overlay a singleton, add the interface to the union type `SingletonOverlay`.
 
 When you create an overlay by default it will be created as a `div` with a class, and no contents. Sometimes this is all you need (for example, the `ENTRY_SELECTED` outline has no other HTML), but if you need more you can tell the Overlays class what DOM to create for your overlay. To do this, modify the `#createElementForNewOverlay` method. You will see examples there of how we use custom elements to build out overlays.

@@ -4387,6 +4387,7 @@ export const knownContextValues: Set<string> = new Set([
   'timeline.network-request-details',
   'timeline.next-recording',
   'timeline.overlays.candy-striped-time-range',
+  'timeline.overlays.comment-pin',
   'timeline.overlays.cursor-timestamp-marker',
   'timeline.overlays.entries-link',
   'timeline.overlays.entry-label',

@@ -155,7 +155,8 @@ export function traceWindowFromOverlay(overlay: Types.Overlays.Overlay): Types.T
   switch (overlay.type) {
     case 'ENTRY_LABEL':
     case 'ENTRY_OUTLINE':
-    case 'ENTRY_SELECTED': {
+    case 'ENTRY_SELECTED':
+    case 'COMMENT_PIN': {
       return traceWindowFromEvent(overlay.entry);
     }
 

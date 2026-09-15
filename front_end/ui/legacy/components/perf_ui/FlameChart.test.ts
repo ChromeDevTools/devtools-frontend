@@ -1852,4 +1852,58 @@ describeWithEnvironment('FlameChart', () => {
       assert.deepEqual(offset, {x: 0, y: 106});
     });
   });
+  describe('getEntryDimensions', () => {
+    it('returns dimensions for a valid entry index and null for invalid index', () => {
+      class TestFlameChartProvider extends FakeFlameChartProvider {
+        override timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
+          return PerfUI.FlameChart.FlameChartTimelineData.create({
+            entryLevels: [0, 1],
+            entryTotalTimes: [100, 50],
+            entryStartTimes: [0, 10],
+            groups: [],
+          });
+        }
+        override maxStackDepth(): number {
+          return 2;
+        }
+      }
+      const provider = new TestFlameChartProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      renderChart(chartInstance);
+
+      const validDimensions = chartInstance.getEntryDimensions(0);
+      assert.isNotNull(validDimensions);
+      assert.isTrue(validDimensions?.visible);
+      assert.isTrue(validDimensions !== null && validDimensions.width >= 2);
+      assert.isTrue(validDimensions !== null && validDimensions.height > 0);
+
+      const invalidDimensions = chartInstance.getEntryDimensions(-1);
+      assert.isNull(invalidDimensions);
+
+      const outOfBoundsDimensions = chartInstance.getEntryDimensions(99999);
+      assert.isNull(outOfBoundsDimensions);
+    });
+
+    it('returns null when entry is outside the visible viewport window', () => {
+      class TestFlameChartProvider extends FakeFlameChartProvider {
+        override timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
+          return PerfUI.FlameChart.FlameChartTimelineData.create({
+            entryLevels: [0],
+            entryTotalTimes: [100],
+            entryStartTimes: [0],
+            groups: [],
+          });
+        }
+      }
+      const provider = new TestFlameChartProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      renderChart(chartInstance);
+
+      chartInstance.setWindowTimes(500, 600);
+      const dimensions = chartInstance.getEntryDimensions(0);
+      assert.isNull(dimensions);
+    });
+  });
 });

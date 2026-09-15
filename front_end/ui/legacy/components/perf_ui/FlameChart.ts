@@ -3914,21 +3914,17 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
   }
 
   /**
-   * Update position of an Element. By default, the element is treated as a full entry and it's dimensions are set to the full entry width/length/height.
-   * If isDecoration parameter is set to true, the element will be positioned on the right side of the entry and have a square shape where width == height of the entry.
+   * Retrieves the bounding box coordinates and dimensions of an entry relative to the flame chart viewport canvas.
+   * Coordinates account for horizontal time-to-pixel mapping and vertical scroll offset.
+   * Returns null if entryIndex is invalid or if the entry lies entirely outside the visible viewport bounds.
    */
-  private updateElementPosition(element: HTMLElement|null, entryIndex: number, isDecoration?: boolean): void {
-    if (!element) {
-      return;
-    }
-    const elementMinWidthPx = 2;
-    element.classList.add('hidden');
-    if (entryIndex === -1) {
-      return;
+  getEntryDimensions(entryIndex: number): EntryDimensions|null {
+    if (entryIndex < 0) {
+      return null;
     }
     const timelineData = this.timelineData();
-    if (!timelineData) {
-      return;
+    if (!timelineData || entryIndex >= timelineData.entryStartTimes.length) {
+      return null;
     }
 
     const startTime = timelineData.entryStartTimes[entryIndex];
@@ -3955,30 +3951,61 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
       barWidth = duration * this.chartViewport.timeToPixel();
     }
     if (barX + barWidth <= 0 || barX >= this.offsetWidth) {
-      return;
+      return null;
     }
+    const elementMinWidthPx = 2;
     const barCenter = barX + barWidth / 2;
     barWidth = Math.max(barWidth, elementMinWidthPx);
     barX = barCenter - barWidth / 2;
     const entryLevel = timelineData.entryLevels[entryIndex];
     const barY = this.levelToOffset(entryLevel) - this.chartViewport.scrollOffset();
     const barHeight = this.levelHeight(entryLevel);
+    if (this.offsetHeight && (barY + barHeight <= 0 || barY >= this.offsetHeight)) {
+      return null;
+    }
+
+    return {
+      x: barX,
+      y: barY,
+      width: barWidth,
+      height: barHeight - 1,
+      visible,
+    };
+  }
+
+  /**
+   * Update position of an Element. By default, the element is treated as a full entry and it's dimensions are set to the full entry width/length/height.
+   * If isDecoration parameter is set to true, the element will be positioned on the right side of the entry and have a square shape where width == height of the entry.
+   */
+  private updateElementPosition(element: HTMLElement|null, entryIndex: number, isDecoration?: boolean): void {
+    if (!element) {
+      return;
+    }
+    element.classList.add('hidden');
+    if (entryIndex === -1) {
+      return;
+    }
+    const dimensions = this.getEntryDimensions(entryIndex);
+    if (!dimensions) {
+      return;
+    }
+
     const style = element.style;
+    style.top = dimensions.y + 'px';
+    const entryHeight = dimensions.height + 1;
 
     // TODO(paulirish): make these changes within a RenderCoordinator.write callback.
     // Currently these (plus the scrollOffset() right above) trigger layout thrashing.
     if (isDecoration) {
-      style.top = barY + 'px';
-      style.width = barHeight + 'px';
-      style.height = barHeight + 'px';
-      style.left = barX + barWidth - barHeight + 'px';
+      style.width = entryHeight + 'px';
+      style.height = entryHeight + 'px';
+      style.left = dimensions.x + dimensions.width - entryHeight + 'px';
     } else {
-      style.top = barY + 'px';
-      style.width = barWidth + 'px';
-      style.height = barHeight - 1 + 'px';
-      style.left = barX + 'px';
+      style.width = dimensions.width + 'px';
+      style.height = dimensions.height + 'px';
+      style.left = dimensions.x + 'px';
     }
-    element.classList.toggle('hidden', !visible);
+    element.classList.toggle('hidden', !dimensions.visible);
     this.viewportElement.appendChild(element);
   }
 
@@ -4433,6 +4460,19 @@ export const enum Events {
   LATEST_DRAW_DIMENSIONS = 'LatestDrawDimensions',
 
   MOUSE_MOVE = 'MouseMove',
+}
+
+export interface EntryDimensions {
+  /** X coordinate in pixels relative to the flame chart viewport canvas. */
+  x: number;
+  /** Y coordinate in pixels relative to the flame chart viewport canvas, adjusted for vertical scroll. */
+  y: number;
+  /** Rendered width in pixels (minimum 2px). */
+  width: number;
+  /** Rendered height in pixels excluding the 1px inter-level border gap. */
+  height: number;
+  /** Indicates whether the entry is currently visible within the timeline data. */
+  visible: boolean;
 }
 
 export interface EventTypes {

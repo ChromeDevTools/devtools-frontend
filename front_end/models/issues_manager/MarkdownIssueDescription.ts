@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
 import * as Marked from '../../third_party/marked/marked.js';
 
 /**
@@ -57,8 +58,7 @@ export interface IssueDescription {
 
 export async function getFileContent(url: URL): Promise<string> {
   try {
-    const response = await fetch(url.toString());
-    return await response.text();
+    return await Platform.HostRuntime.HOST_RUNTIME.loadTextFile(url);
   } catch {
     throw new Error(
         `Markdown file ${url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`);

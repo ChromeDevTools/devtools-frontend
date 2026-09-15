@@ -22,7 +22,6 @@ _devtools_module_folder_exceptions = [
   "front_end/core/sdk",
   "front_end/models/ai_assistance",
   "front_end/models/extensions",
-  "front_end/models/issues_manager",
 ]
 
 _devtools_module_folder_exceptions_full = []

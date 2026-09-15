@@ -162,6 +162,7 @@ describe('AI Assistance', function() {
     shadowRoot?: string,
     waitForSideEffect?: boolean,
     throwOnSideEffect?: boolean,
+    v2Architecture?: boolean,
   }) {
     const {
       messages,
@@ -173,22 +174,27 @@ describe('AI Assistance', function() {
       shadowRoot,
       waitForSideEffect,
       throwOnSideEffect,
+      v2Architecture,
     } = options;
 
     try {
-      await setupMocks(
-          devToolsPage, {
-            aidaAvailability: {
-              enabled: true,
-              disallowLogging: true,
-              enterprisePolicyValue: 0,
-            },
-            devToolsFreestyler: {
-              enabled: true,
-            },
-            isOffTheRecord: false,
-          },
-          messages);
+      const hostConfig: Root.Runtime.HostConfig = {
+        aidaAvailability: {
+          enabled: true,
+          disallowLogging: true,
+          enterprisePolicyValue: 0,
+        },
+        // devToolsFreestyler must remain enabled because ai_assistance-meta.ts gates panel registration on it.
+        devToolsFreestyler: {
+          enabled: true,
+        },
+        isOffTheRecord: false,
+        ...(v2Architecture ? {devToolsAiV2Architecture: {enabled: true}} : {}),
+      };
+      await setupMocks(devToolsPage, hostConfig, messages);
+      await devToolsPage.evaluate(() => {
+        localStorage.removeItem('aiAssistanceStructuredLog');
+      });
       if (host) {
         await inspectedPage.goToResourceWithCustomHost(host, resource);
       } else {
@@ -920,4 +926,94 @@ describe('AI Assistance', function() {
        const lastRequest = result.at(-1)?.request;
        assert.isUndefined(lastRequest?.historical_contexts);
      });
+
+  function assertIsTextPromptPart(part?: Host.AidaClient.Part): asserts part is {text: string} {
+    assert.isDefined(part, 'Expected part to be defined.');
+    assert.isTrue('text' in part, 'Expected part to contain text.');
+  }
+
+  function assertIsFunctionResponsePart(part?: Host.AidaClient.Part):
+      asserts part is Host.AidaClient.FunctionResponsePart {
+    assert.isDefined(part, 'Expected part to be defined.');
+    assert.isTrue('functionResponse' in part, 'Expected part to contain a functionResponse.');
+  }
+
+  describe('with V2 architecture', () => {
+    it('answers a query about an element with AiAgent2', async ({devToolsPage, inspectedPage}) => {
+      const AI_RESPONSE = 'Answer from V2 agent';
+      const aidaRoundTrips = await runAiAssistance(devToolsPage, inspectedPage, {
+        resource: '../resources/ai_assistance/index.html',
+        node: 'div.test-node',
+        query: 'Explain this element',
+        v2Architecture: true,
+        messages: [{textChunk: {text: AI_RESPONSE}}],
+      });
+
+      // 1. Verify UI response rendering and active input state.
+      await devToolsPage.waitForElementWithTextContent(AI_RESPONSE);
+      await devToolsPage.waitFor('textarea.chat-input:not(:disabled)');
+
+      // 2. Verify exactly one round-trip to AIDA was made with the V2 client feature.
+      assert.lengthOf(aidaRoundTrips, 1, 'Expected a single round-trip to AIDA for a direct query.');
+      const [{request}] = aidaRoundTrips;
+
+      // In E2E tests, Host is imported as a type-only module, so runtime enum values cannot be referenced directly.
+      // The numeric value 29 corresponds to Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT.
+      // Asserting client_feature confirms that DevTools routed the query to AiAgent2 rather than a legacy V1 agent.
+      const CHROME_DEVTOOLS_V2_AGENT: Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT = 29;
+      assert.strictEqual(
+          request.client_feature,
+          CHROME_DEVTOOLS_V2_AGENT,
+          'Expected request to use the V2 agent client feature.',
+      );
+
+      // 3. Verify user prompt and selected element context were sent to AIDA.
+      const [promptPart] = request.current_message.parts;
+      assertIsTextPromptPart(promptPart);
+      assert.include(promptPart.text, 'Explain this element');
+      assert.include(promptPart.text, '.test-node', 'Expected prompt to attach selected element context.');
+    });
+
+    it('learns a skill and registers its tools with AiAgent2', async ({devToolsPage, inspectedPage}) => {
+      const AI_RESPONSE = 'I have learned how to inspect and style elements.';
+      const aidaRoundTrips = await runAiAssistance(devToolsPage, inspectedPage, {
+        resource: '../resources/ai_assistance/index.html',
+        node: 'div.test-node',
+        query: 'Help me style this element',
+        v2Architecture: true,
+        messages: [
+          // Round-trip 1 response: Server requests executing the learnSkills function for 'styling'.
+          {
+            functionCallChunk: {
+              functionCall: {
+                name: 'learnSkills',
+                args: {skills: ['styling']},
+              },
+            },
+          },
+          // Round-trip 2 response: Server acknowledges skill learning and sends the final answer.
+          {textChunk: {text: AI_RESPONSE}},
+        ],
+      });
+
+      // 1. Verify UI renders the final response.
+      await devToolsPage.waitForElementWithTextContent(AI_RESPONSE);
+
+      // 2. Verify two round-trips occurred: tool invocation, followed by tool output response.
+      assert.lengthOf(aidaRoundTrips, 2, 'Expected two round-trips to AIDA: tool invocation and tool response.');
+
+      // Round-trip 1: Only learnSkills is declared initially.
+      const initialTools = aidaRoundTrips[0].request.function_declarations?.map(decl => decl.name) ?? [];
+      assert.deepEqual(initialTools, ['learnSkills']);
+
+      // Round-trip 2: Contains functionResponse for learnSkills and registers styling tools (executeJavaScript, getStyles).
+      const secondRequest = aidaRoundTrips[1].request;
+      const secondCallTools = secondRequest.function_declarations?.map(decl => decl.name) ?? [];
+      assert.includeMembers(secondCallTools, ['learnSkills', 'executeJavaScript', 'getStyles']);
+
+      const [responsePart] = secondRequest.current_message.parts;
+      assertIsFunctionResponsePart(responsePart);
+      assert.strictEqual(responsePart.functionResponse.name, 'learnSkills');
+    });
+  });
 });

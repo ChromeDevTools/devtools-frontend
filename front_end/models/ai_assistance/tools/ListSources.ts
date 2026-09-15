@@ -9,11 +9,13 @@ import * as Workspace from '../../workspace/workspace.js';
 import {FileContext} from '../contexts/FileContext.js';
 
 import {
+  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
-  type OriginLockCapability,
+  type OriginLockState,
+  resolveOriginFromLock,
   ToolName,
 } from './Tool.js';
 
@@ -33,7 +35,7 @@ interface SourceSummary {
  * Each file is returned with its displayName and a unique session-based numeric ID.
  */
 export class ListSourcesTool implements
-    DataTool<Record<string, never>, {files: SourceSummary[]}, BaseToolCapability&OriginLockCapability> {
+    DataTool<Record<string, never>, {files: SourceSummary[]}, BaseToolCapability&ActiveOriginLockCapability> {
   readonly name: ToolName = ToolName.LIST_SOURCES;
   readonly description: string =
       'Lists deployed and authored source files in the workspace (including source-mapped files) with their display name and unique numeric ID.';
@@ -75,8 +77,9 @@ export class ListSourcesTool implements
       }
     }
 
+    const originLock: OriginLockState = {status: 'ESTABLISHED_ORIGIN', origin: establishedOrigin};
     return [...uiSourceCodes.values()].filter(
-        file => isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(file)));
+        file => isOriginAllowedByLock(originLock, FileContext.originForUISourceCode(file)));
   }
 
   static getSourceById(
@@ -85,9 +88,6 @@ export class ListSourcesTool implements
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       workspace: Workspace.Workspace.WorkspaceImpl = Workspace.Workspace.WorkspaceImpl.instance(),
       ): Workspace.UISourceCode.UISourceCode|undefined {
-    if (establishedOrigin.isOpaque()) {
-      return undefined;
-    }
     return ListSourcesTool.getUISourceCodes(establishedOrigin, workspace)
         .find(file => ListSourcesTool.uiSourceCodeId.get(file) === id);
   }
@@ -112,16 +112,14 @@ export class ListSourcesTool implements
 
   async handler(
       _params: Record<string, never>,
-      context: BaseToolCapability&OriginLockCapability,
+      context: BaseToolCapability&ActiveOriginLockCapability,
       ): Promise<DataHandlerResult<{files: SourceSummary[]}>> {
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {
-        error: 'Opaque origin not allowed',
-      };
+    const originResult = resolveOriginFromLock(context.getOriginLock());
+    if ('error' in originResult) {
+      return originResult;
     }
 
-    const files = ListSourcesTool.getUISourceCodes(establishedOrigin);
+    const files = ListSourcesTool.getUISourceCodes(originResult.origin);
 
     return {
       result: {

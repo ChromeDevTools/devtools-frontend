@@ -9,11 +9,12 @@ import * as NetworkTimeCalculator from '../../network_time_calculator/network_ti
 import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
 
 import {
+  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
-  type OriginLockCapability,
+  resolveOriginFromLock,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -32,7 +33,7 @@ export interface GetNetworkRequestDetailsArgs extends ToolArgs {
  * The details include request/response headers, status code, timings, and the response body.
  */
 export class GetNetworkRequestDetailsTool implements
-    DataTool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability&OriginLockCapability> {
+    DataTool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability&ActiveOriginLockCapability> {
   readonly name: ToolName = ToolName.GET_NETWORK_REQUEST_DETAILS;
   readonly description: string =
       'Retrieves the full headers, timing, status, and body details of a specific network request by ID.';
@@ -73,11 +74,14 @@ export class GetNetworkRequestDetailsTool implements
    */
   async handler(
       args: GetNetworkRequestDetailsArgs,
-      context: BaseToolCapability&OriginLockCapability,
+      context: BaseToolCapability&ActiveOriginLockCapability,
       ): Promise<DataHandlerResult<unknown>> {
-    // A conversation is locked to an origin once the first query is made.
-    // We only allow inspecting requests matching the conversation's established origin.
-    const establishedOrigin = context.getEstablishedOrigin();
+    const originLock = context.getOriginLock();
+    const originResult = resolveOriginFromLock(originLock);
+    if ('error' in originResult) {
+      return originResult;
+    }
+    const establishedOrigin = originResult.origin;
 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
@@ -87,13 +91,10 @@ export class GetNetworkRequestDetailsTool implements
       }
 
       // If the conversation is locked to an origin, only allow accessing requests from that origin.
-      return isOriginAllowedByLock(establishedOrigin, req.initiatorSecurityOrigin());
+      return isOriginAllowedByLock(originLock, req.initiatorSecurityOrigin());
     });
 
-    // If establishedOrigin is undefined or opaque, isOriginAllowedByLock() fails closed,
-    // so find() will never return a request. We check establishedOrigin here as a defensive
-    // guard and to narrow the type for NetworkRequestFormatter below.
-    if (!establishedOrigin || !request) {
+    if (!request) {
       return {
         error: 'No request found',
       };

@@ -9,11 +9,12 @@ import * as Logs from '../../logs/logs.js';
 import {formatBytesToKb, seconds} from '../data_formatters/UnitFormatters.js';
 
 import {
+  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
   isOriginAllowedByLock,
-  type OriginLockCapability,
+  resolveOriginFromLock,
   ToolName,
 } from './Tool.js';
 
@@ -36,7 +37,7 @@ interface NetworkRequestSummary {
  * Filters the list by the conversation's established origin to prevent cross-origin data exposure.
  */
 export class ListNetworkRequestsTool implements
-    DataTool<Record<string, never>, unknown, BaseToolCapability&OriginLockCapability> {
+    DataTool<Record<string, never>, unknown, BaseToolCapability&ActiveOriginLockCapability> {
   readonly name: ToolName = ToolName.LIST_NETWORK_REQUESTS;
   readonly description: string =
       'Lists recorded network requests for the active origin, including request ID, URL, HTTP status code, duration, and transfer size.';
@@ -71,17 +72,17 @@ export class ListNetworkRequestsTool implements
    */
   async handler(
       _params: Record<string, never>,
-      context: BaseToolCapability&OriginLockCapability,
+      context: BaseToolCapability&ActiveOriginLockCapability,
       ): Promise<DataHandlerResult<unknown>> {
     const requests: NetworkRequestSummary[] = [];
     // A conversation is locked to an origin once the first query is made.
     // We only allow inspecting requests matching the conversation's established origin.
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {
-        error: 'Opaque origin not allowed',
-      };
+    const originLock = context.getOriginLock();
+    const originResult = resolveOriginFromLock(originLock);
+    if ('error' in originResult) {
+      return originResult;
     }
+    const establishedOrigin = originResult.origin;
 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
@@ -89,7 +90,7 @@ export class ListNetworkRequestsTool implements
     const requestsToShow: SDK.NetworkRequest.NetworkRequest[] = [];
     for (const request of networkLog.requests()) {
       // If the request's initiator origin does not match the locked origin, skip it.
-      if (!isOriginAllowedByLock(establishedOrigin, request.initiatorSecurityOrigin())) {
+      if (!isOriginAllowedByLock(originLock, request.initiatorSecurityOrigin())) {
         hasCrossOriginRequest = true;
         continue;
       }

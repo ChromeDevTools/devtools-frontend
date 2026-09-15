@@ -63,7 +63,10 @@ describe('GetSourceContentTool', () => {
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler({id: sourceId}, context);
@@ -73,7 +76,10 @@ describe('GetSourceContentTool', () => {
 
   it('returns error when file is not found', async () => {
     const context = {
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler({id: 999}, context);
@@ -99,7 +105,10 @@ describe('GetSourceContentTool', () => {
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler({id: sourceId}, context);
@@ -128,7 +137,10 @@ describe('GetSourceContentTool', () => {
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
     };
 
     const response = await tool.handler({id: sourceId}, context);
@@ -137,19 +149,28 @@ describe('GetSourceContentTool', () => {
 
   it('returns error for opaque origins', async () => {
     const context = {
-      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('about:blank'),
+      getOriginLock: (): AiAssistance.Tool.OriginLockState =>
+          ({status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin.create('about:blank')}),
     };
 
     const response = await tool.handler({id: 1}, context);
-    assertIsError(response, 'Unable to find file.');
+    assertIsError(response, 'No origin available or not allowed.');
   });
 
   it('returns error when origin lock is not established', async () => {
     const context = {
-      getEstablishedOrigin: () => undefined,
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({status: 'UNINITIALIZED'}),
     };
 
     const response = await tool.handler({id: 1}, context);
-    assertIsError(response, 'Unable to find file.');
+    assertIsError(response, 'No origin established for this conversation.');
+  });
+
+  it('returns error when cross-origin navigation occurred during run', async () => {
+    const context = {
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({status: 'BLOCKED_BY_NAVIGATION'}),
+    };
+    const response = await tool.handler({id: 1}, context);
+    assertIsError(response, 'Cross-origin access blocked due to navigation.');
   });
 });

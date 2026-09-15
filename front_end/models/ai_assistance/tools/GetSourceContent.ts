@@ -9,10 +9,11 @@ import {FileFormatter} from '../data_formatters/FileFormatter.js';
 
 import {ListSourcesTool} from './ListSources.js';
 import {
+  type ActiveOriginLockCapability,
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
-  type OriginLockCapability,
+  resolveOriginFromLock,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -32,7 +33,7 @@ export interface GetSourceContentArgs extends ToolArgs {
  * Filters access by origin lock to prevent cross-origin leakage.
  */
 export class GetSourceContentTool implements
-    DataTool<GetSourceContentArgs, {content: string}, BaseToolCapability&OriginLockCapability> {
+    DataTool<GetSourceContentArgs, {content: string}, BaseToolCapability&ActiveOriginLockCapability> {
   readonly name: ToolName = ToolName.GET_SOURCE_CONTENT;
   readonly description: string =
       'Retrieves the formatted content and metadata of a source file by its numeric ID obtained from listSources.';
@@ -62,16 +63,14 @@ export class GetSourceContentTool implements
 
   async handler(
       args: GetSourceContentArgs,
-      context: BaseToolCapability&OriginLockCapability,
+      context: BaseToolCapability&ActiveOriginLockCapability,
       ): Promise<DataHandlerResult<{content: string}>> {
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin) {
-      return {
-        error: 'Unable to find file.',
-      };
+    const originResult = resolveOriginFromLock(context.getOriginLock());
+    if ('error' in originResult) {
+      return originResult;
     }
 
-    const file = ListSourcesTool.getSourceById(args.id, establishedOrigin);
+    const file = ListSourcesTool.getSourceById(args.id, originResult.origin);
 
     if (!file) {
       return {

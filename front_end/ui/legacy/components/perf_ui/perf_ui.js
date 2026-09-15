@@ -4493,7 +4493,7 @@ var UIStrings2 = {
    * @description Accessible label for a screenshot frame in the film strip view of the Network panel.
    * @example {3ms} PH1
    */
-  screenshotForSSelectToView: "Screenshot for {PH1} - select to view preceding requests.",
+  screenshotForSSelectToView: "Screenshot for {PH1} - select to view preceding requests",
   /**
    * @description Alt text for a screenshot thumbnail image in the film strip view.
    */

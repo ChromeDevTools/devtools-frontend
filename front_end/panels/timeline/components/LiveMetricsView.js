@@ -165,7 +165,7 @@ const UIStrings = {
     /**
      * @description Text block explaining how to simulate different mobile and desktop devices in the Performance panel.
      */
-    useDeviceToolbar: 'Use the [device toolbar](https://developer.chrome.com/docs/devtools/device-mode) and configure throttling to simulate real user environments and identify more performance issues.',
+    useDeviceToolbar: 'Use the [device toolbar](https://developer.chrome.com/docs/devtools/device-mode) and configure throttling to simulate real user environments and identify more performance issues',
     /**
      * @description Checkbox label that controls if the network cache is disabled in the Performance panel.
      */
@@ -209,7 +209,7 @@ const UIStrings = {
      * @description Text banner explaining how to compare local metrics to real user data in the Performance panel.
      * @example {Chrome UX Report} PH1
      */
-    seeHowYourLocalMetricsCompare: 'See how your local metrics compare to real user data in the {PH1}.',
+    seeHowYourLocalMetricsCompare: 'See how your local metrics compare to real user data in the {PH1}',
     /**
      * @description Link text for documentation about local and field metrics in the Performance panel.
      */
@@ -221,7 +221,7 @@ const UIStrings = {
     /**
      * @description Tooltip text explaining why an interaction was excluded from the INP calculation in the Performance panel.
      */
-    interactionExcluded: 'INP is calculated using the 98th percentile of interaction delays, so some interaction delays may be larger than the INP value.',
+    interactionExcluded: 'INP is calculated using the 98th percentile of interaction delays, so some interaction delays may be larger than the INP value',
     /**
      * @description Tooltip for the button to clear the currently selected log in the live metrics view of the Performance panel.
      */
@@ -257,15 +257,15 @@ const UIStrings = {
     /**
      * @description Tooltip text for an interaction status chip indicating that it represents the 98th percentile INP interaction in the Performance panel.
      */
-    inpInteraction: 'The INP interaction is at the 98th percentile of interaction delays.',
+    inpInteraction: 'The INP interaction is at the 98th percentile of interaction delays',
     /**
      * @description Tooltip text for the button to reveal the INP interaction in the live metrics view of the Performance panel.
      */
-    showInpInteraction: 'Go to the INP interaction.',
+    showInpInteraction: 'Go to the INP interaction',
     /**
      * @description Tooltip text for the button to reveal the worst layout shift cluster in the live metrics view of the Performance panel.
      */
-    showClsCluster: 'Go to worst layout shift cluster.',
+    showClsCluster: 'Go to worst layout shift cluster',
     /**
      * @description Table column header for subpart stage names in the live metrics view of the Performance panel.
      */
@@ -285,7 +285,7 @@ const UIStrings = {
     /**
      * @description Description text for recording a performance timeline of a connected Node process in the Performance panel.
      */
-    nodeClickToRecord: 'Record a performance timeline of the connected Node process.',
+    nodeClickToRecord: 'Record a performance timeline of the connected Node process',
     /**
      * @description Label for the network throttling dropdown in the live metrics view of the Performance panel.
      */

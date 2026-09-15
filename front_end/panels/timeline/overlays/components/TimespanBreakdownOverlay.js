@@ -8,7 +8,9 @@ import timespanBreakdownOverlayStyles from './timespanBreakdownOverlay.css.js';
 const renderSection = (section, position) => {
     const style = Directives.styleMap({ left: position ? `${position.left}px` : undefined, width: position ? `${position.width}px` : undefined });
     const durationText = section.showDuration ? i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range) : '';
-    const labelText = section.label instanceof HTMLElement ? (section.label.textContent || '') : section.label;
+    const labelText = section.label instanceof HTMLElement ? (section.label.textContent || '') :
+        typeof section.label === 'string' ? section.label :
+            '';
     const tooltip = durationText ? `${durationText} ${labelText}` : labelText;
     // clang-format off
     return html `

@@ -46,7 +46,7 @@ const UIStrings = {
     /**
      * @description Text in Service Workers View of the Application panel
      */
-    testPushMessageFromDevtools: 'Test push message from DevTools.',
+    testPushMessageFromDevtools: 'Test push message from DevTools',
     /**
      * @description Button label for service worker network requests
      */

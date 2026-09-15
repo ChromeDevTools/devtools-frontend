@@ -7,6 +7,6 @@ export declare class TempFile {
     read(): Promise<string | null>;
     size(): number;
     readRange(startOffset?: number, endOffset?: number): Promise<string | null>;
-    copyToOutputStream(outputStream: Common.StringOutputStream.OutputStream, progress?: ((arg0: ChunkedReader) => void)): Promise<DOMError | null>;
+    copyToOutputStream(outputStream: Common.StringOutputStream.OutputStream, progress?: ((arg0: ChunkedReader) => void)): Promise<DOMException | Error | null>;
     remove(): void;
 }

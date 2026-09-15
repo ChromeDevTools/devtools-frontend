@@ -90,13 +90,13 @@ const UIStrings = {
      * @example {Ctrl} PH1
      * @example {Alt} PH2
      */
-    incrementdecrementWithMousewheelOne: 'Increment/decrement with mousewheel or up/down keys. {PH1}: R ±1, Shift: G ±1, {PH2}: B ±1',
+    incrementdecrementWithMousewheelOne: 'Increment/decrement with mousewheel or up/down keys. {PH1}: R ±1, Shift: G ±1, {PH2}: B ±1.',
     /**
      * @description Tooltip for color values in the Styles tab of the Elements panel.
      * @example {Ctrl} PH1
      * @example {Alt} PH2
      */
-    incrementdecrementWithMousewheelHundred: 'Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, {PH2}: ±0.1',
+    incrementdecrementWithMousewheelHundred: 'Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, {PH2}: ±0.1.',
     /**
      * @description Tooltip text that appears when hovering over the rendering button in the Styles tab of the Elements panel.
      */
@@ -117,7 +117,7 @@ const UIStrings = {
      * @description Text to announce that the AI suggestion was accepted.
      * @example {color: blue;} PH1
      */
-    aiSuggestionAccepted: '{PH1} Suggestion accepted.',
+    aiSuggestionAccepted: '{PH1} Suggestion accepted',
     /**
      * @description Title of the general at-rule section.
      */

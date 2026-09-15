@@ -141,6 +141,11 @@ export interface EvaluationOptions {
     replMode?: boolean;
     allowUnsafeEvalBlockedByCSP?: boolean;
     contextId?: number;
+    /**
+     * Index into `CallFrame.scopeChain()` denoting the scope in which the expression is evaluated.
+     * Defaults to 0, i.e. the inner-most scope. Only honored by `CallFrame.evaluate`.
+     */
+    scopeNumber?: number;
 }
 export interface CallFunctionOptions {
     functionDeclaration: string;

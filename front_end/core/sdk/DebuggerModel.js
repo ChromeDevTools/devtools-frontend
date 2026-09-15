@@ -1047,6 +1047,7 @@ export class CallFrame {
             generatePreview: options.generatePreview,
             throwOnSideEffect: options.throwOnSideEffect,
             timeout: options.timeout,
+            scopeNumber: options.scopeNumber,
         });
         const error = response.getError();
         if (error) {
@@ -1090,6 +1091,10 @@ export class Scope {
     }
     callFrame() {
         return this.#callFrame;
+    }
+    /** The index of this scope in {@link CallFrame.scopeChain}, usable as an `evaluateOnCallFrame` `scopeNumber`. */
+    ordinal() {
+        return this.#ordinal;
     }
     type() {
         return this.#type;

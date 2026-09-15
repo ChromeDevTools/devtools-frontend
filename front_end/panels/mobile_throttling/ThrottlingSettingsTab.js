@@ -149,7 +149,7 @@ const UIStrings = {
     /**
      * @description Text to explain what CPU throttling presets are.
      */
-    cpuCalibrationDescription: 'These presets throttle your CPU to approximate the performance of typical low or mid-tier mobile devices.',
+    cpuCalibrationDescription: 'These presets throttle your CPU to approximate the performance of typical low or mid-tier mobile devices',
     /**
      * @description Text to explain how the CPU calibration process will work.
      */
@@ -161,11 +161,11 @@ const UIStrings = {
     /**
      * @description Text to explain an issue that may impact the CPU calibration process.
      */
-    calibrationWarningRunningOnBattery: 'Device is running on battery. Plug in charger for best results',
+    calibrationWarningRunningOnBattery: 'Device is running on battery. Plug in charger for best results.',
     /**
      * @description Text to explain an issue that may impact the CPU calibration process.
      */
-    calibrationWarningLowBattery: 'Device battery is low (<20%). Results may be impacted by CPU throttling',
+    calibrationWarningLowBattery: 'Device battery is low (<20%). Results may be impacted by CPU throttling.',
     /**
      * @description Text label for a menu item indicating that a specific slowdown multiplier is applied.
      * @example {2} PH1

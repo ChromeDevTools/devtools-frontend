@@ -24,7 +24,7 @@ const UIStrings = {
     /**
      * @description Hover text for an info icon in the Private State Token panel
      */
-    allStoredTrustTokensAvailableIn: 'All stored private state tokens available in this browser instance.',
+    allStoredTrustTokensAvailableIn: 'All stored private state tokens available in this browser instance',
     /**
      * @description Text shown instead of a table when the table would be empty. https://developers.google.com/privacy-sandbox/protections/private-state-tokens
      */
@@ -32,14 +32,14 @@ const UIStrings = {
     /**
      * @description Text shown if there are no private state tokens. https://developers.google.com/privacy-sandbox/protections/private-state-tokens
      */
-    trustTokensDescription: 'On this page you can view all available private state tokens in the current browsing context.',
+    trustTokensDescription: 'On this page you can view all available private state tokens in the current browsing context',
     /**
      * @description Each row in the Private State Token table has a delete button. This is the text shown
      * when hovering over this button. The placeholder is a normal URL, indicating the site which
      * provided the Private State Tokens that will be deleted when the button is clicked.
      * @example {https://google.com} PH1
      */
-    deleteTrustTokens: 'Delete all stored private state tokens issued by {PH1}.',
+    deleteTrustTokens: 'Delete all stored private state tokens issued by {PH1}',
     /**
      * @description Heading label for a view. Previously known as 'Trust Tokens'.
      */

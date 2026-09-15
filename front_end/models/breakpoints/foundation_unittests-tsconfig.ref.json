@@ -51,6 +51,9 @@
       "path": "../bindings/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../formatter/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../persistence/bundle-tsconfig.ref.json"
     },
     {

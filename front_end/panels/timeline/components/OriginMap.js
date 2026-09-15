@@ -24,16 +24,16 @@ const UIStrings = {
      * @description Warning message explaining that an entered origin is not a valid origin or URL in the Performance panel.
      * @example {http//malformed.com} PH1
      */
-    invalidOrigin: '"{PH1}" isn’t a valid origin or URL.',
+    invalidOrigin: '"{PH1}" isn’t a valid origin or URL',
     /**
      * @description Warning message explaining that a development origin is already mapped to a production origin in the Performance panel.
      * @example {https://example.com} PH1
      */
-    alreadyMapped: '"{PH1}" is already mapped to a production origin.',
+    alreadyMapped: '"{PH1}" is already mapped to a production origin',
     /**
      * @description Warning message explaining that a page does not have enough real user data in the Performance panel.
      */
-    pageHasNoData: 'The Chrome UX Report doesn’t have enough real user data for this page.',
+    pageHasNoData: 'The Chrome UX Report doesn’t have enough real user data for this page',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/OriginMap.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

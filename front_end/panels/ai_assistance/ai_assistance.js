@@ -1753,7 +1753,7 @@ var UIStringsNotTranslate = {
   /**
    * @description The error message when the LLM selects context from a different origin.
    */
-  crossOriginError: "I have selected the new context but you will have to start a new chat.",
+  crossOriginError: "I have selected the new context but you will have to start a new chat",
   /**
    * @description The error message when the request payload is too large.
    */
@@ -6957,7 +6957,7 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Text displayed when the chat input is disabled due to reading past conversation.
    */
-  pastConversation: "You\u2019re viewing a past conversation.",
+  pastConversation: "You\u2019re viewing a past conversation",
   /**
    * @description Message displayed in toast in case of any failures while taking a screenshot of the page.
    */
@@ -9481,7 +9481,7 @@ var UIStrings6 = {
   /**
    * @description Disclaimer text right after the chat input.
    */
-  inputDisclaimerForEmptyState: "This is an experimental AI feature and won\u2019t always get it right.",
+  inputDisclaimerForEmptyState: "This is an experimental AI feature and won\u2019t always get it right",
   /**
    * @description The message shown in a toast when the response is copied to the clipboard.
    */

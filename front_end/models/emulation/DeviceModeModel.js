@@ -13,46 +13,46 @@ const UIStrings = {
      * @description Error message shown on the Devices settings tab when the user enters an empty
      * width for a custom device.
      */
-    widthCannotBeEmpty: 'Width can’t be empty.',
+    widthCannotBeEmpty: 'Width can’t be empty',
     /**
      * @description Error message shown on the Devices settings tab when the user enters an invalid
      * width for a custom device.
      */
-    widthMustBeANumber: 'Width must be a number.',
+    widthMustBeANumber: 'Width must be a number',
     /**
      * @description Error message shown on the Devices settings tab when the user has entered a width
      * for a custom device that is too large.
      * @example {9999} PH1
      */
-    widthMustBeLessThanOrEqualToS: 'Width must be less than or equal to {PH1}.',
+    widthMustBeLessThanOrEqualToS: 'Width must be less than or equal to {PH1}',
     /**
      * @description Error message shown on the Devices settings tab when the user has entered a width
      * for a custom device that is too small.
      * @example {50} PH1
      */
-    widthMustBeGreaterThanOrEqualToS: 'Width must be greater than or equal to {PH1}.',
+    widthMustBeGreaterThanOrEqualToS: 'Width must be greater than or equal to {PH1}',
     /**
      * @description Error message shown on the Devices settings tab when the user enters an empty
      * height for a custom device.
      */
-    heightCannotBeEmpty: 'Height can’t be empty.',
+    heightCannotBeEmpty: 'Height can’t be empty',
     /**
      * @description Error message shown on the Devices settings tab when the user enters an invalid
      * height for a custom device.
      */
-    heightMustBeANumber: 'Height must be a number.',
+    heightMustBeANumber: 'Height must be a number',
     /**
      * @description Error message shown on the Devices settings tab when the user has entered a height
      * for a custom device that is too large.
      * @example {9999} PH1
      */
-    heightMustBeLessThanOrEqualToS: 'Height must be less than or equal to {PH1}.',
+    heightMustBeLessThanOrEqualToS: 'Height must be less than or equal to {PH1}',
     /**
      * @description Error message shown on the Devices settings tab when the user has entered a height
      * for a custom device that is too small.
      * @example {50} PH1
      */
-    heightMustBeGreaterThanOrEqualTo: 'Height must be greater than or equal to {PH1}.',
+    heightMustBeGreaterThanOrEqualTo: 'Height must be greater than or equal to {PH1}',
     /**
      * @description Error message shown on the Devices settings tab when the user enters an invalid
      * device pixel ratio for a custom device.
@@ -63,13 +63,13 @@ const UIStrings = {
      * pixel ratio for a custom device that is too large.
      * @example {10} PH1
      */
-    devicePixelRatioMustBeLessThanOr: 'Device pixel ratio must be less than or equal to {PH1}.',
+    devicePixelRatioMustBeLessThanOr: 'Device pixel ratio must be less than or equal to {PH1}',
     /**
      * @description Error message shown on the Devices settings tab when the user enters a device
      * pixel ratio for a custom device that is too small.
      * @example {0} PH1
      */
-    devicePixelRatioMustBeGreater: 'Device pixel ratio must be greater than or equal to {PH1}.',
+    devicePixelRatioMustBeGreater: 'Device pixel ratio must be greater than or equal to {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('models/emulation/DeviceModeModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -108,7 +108,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     #targetManager;
     #settings;
     #multitargetNetworkManager;
-    #lastScreenshotBlobUrl = null;
     constructor(targetManager, settings, multitargetNetworkManager) {
         super();
         this.#targetManager = targetManager;
@@ -121,7 +120,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         this.#initialized = false;
         this.#autoFitScaleOnInitialize = false;
         this.#appliedDeviceSize = new Platform.Size(1, 1);
-        this.#appliedDeviceScaleFactor = globalThis.devicePixelRatio;
+        this.#appliedDeviceScaleFactor = Platform.HostRuntime.HOST_RUNTIME.getDevicePixelRatio();
         this.#appliedUserAgentType = "Desktop" /* UA.DESKTOP */;
         this.#scaleSetting = this.#settings.createSetting('emulation.device-scale', 1);
         // We've used to allow zero before.
@@ -636,7 +635,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         const positionY = 0;
         const screenOrientationAngle = screenOrientation === "landscapePrimary" /* Protocol.Emulation.ScreenOrientationType.LandscapePrimary */ ? 90 : 0;
         this.#appliedDeviceSize = screenSize;
-        this.#appliedDeviceScaleFactor = deviceScaleFactor || window.devicePixelRatio;
+        this.#appliedDeviceScaleFactor = deviceScaleFactor || Platform.HostRuntime.HOST_RUNTIME.getDevicePixelRatio();
         this.#screenRect = new Rect(Math.max(0, (this.#availableSize.width - screenSize.width * scale) / 2), 0, screenSize.width * scale, screenSize.height * scale);
         this.#visiblePageRect = new Rect(positionX * scale, positionY * scale, Math.min(pageWidth * scale, this.#availableSize.width - this.#screenRect.left - positionX * scale), Math.min(pageHeight * scale, this.#availableSize.height - this.#screenRect.top - positionY * scale));
         this.#scale = scale;
@@ -740,76 +739,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             this.calculateAndEmulate(false);
         }
     }
-    async captureScreenshot() {
-        const screenshot = await this.#captureScreenshot(false);
-        if (screenshot === null) {
-            return;
-        }
-        const pageImage = new Image();
-        pageImage.src = 'data:image/png;base64,' + screenshot;
-        pageImage.onload = async () => {
-            const scale = pageImage.naturalWidth / this.screenRect().width;
-            const screenRect = this.screenRect().scale(scale);
-            const visiblePageRect = this.visiblePageRect().scale(scale);
-            const contentLeft = visiblePageRect.left;
-            const contentTop = visiblePageRect.top;
-            const canvas = new OffscreenCanvas(Math.floor(screenRect.width), 
-            // Cap the height to not hit the GPU limit.
-            // https://crbug.com/1260828
-            Math.min((1 << 14), Math.floor(screenRect.height)));
-            const ctx = canvas.getContext('2d', { willReadFrequently: true });
-            if (!ctx) {
-                throw new Error('Could not get 2d context from canvas.');
-            }
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
-            void this.saveScreenshot(canvas);
-        };
-    }
-    async captureFullSizeScreenshot() {
-        const screenshot = await this.#captureScreenshot(true);
-        if (screenshot === null) {
-            return;
-        }
-        return this.saveScreenshotBase64(screenshot);
-    }
-    async captureAreaScreenshot(clip) {
-        const screenshot = await this.#captureScreenshot(false, clip);
-        if (screenshot === null) {
-            return;
-        }
-        return this.saveScreenshotBase64(screenshot);
-    }
-    saveScreenshotBase64(screenshot) {
-        const pageImage = new Image();
-        pageImage.src = 'data:image/png;base64,' + screenshot;
-        pageImage.onload = () => {
-            const canvas = new OffscreenCanvas(pageImage.naturalWidth, 
-            // Cap the height to not hit the GPU limit.
-            // https://crbug.com/1260828
-            Math.min((1 << 14), Math.floor(pageImage.naturalHeight)));
-            const ctx = canvas.getContext('2d', { willReadFrequently: true });
-            if (!ctx) {
-                throw new Error('Could not get 2d context for base64 screenshot.');
-            }
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(pageImage, 0, 0);
-            void this.saveScreenshot(canvas);
-        };
-    }
-    paintImage(ctx, src, rect) {
-        return new Promise(resolve => {
-            const image = new Image();
-            image.crossOrigin = 'Anonymous';
-            image.srcset = src;
-            image.onerror = () => resolve();
-            image.onload = () => {
-                ctx.drawImage(image, rect.left, rect.top, rect.width, rect.height);
-                resolve();
-            };
-        });
-    }
-    async saveScreenshot(canvas) {
+    getScreenshotFileName() {
         const url = this.inspectedURL();
         let fileName = '';
         if (url) {
@@ -820,21 +750,46 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         if (device && this.type() === Type.Device) {
             fileName += `(${device.title})`;
         }
-        this.#revokeLastScreenshotBlobUrl();
-        /* eslint-disable-next-line @devtools/no-imperative-dom-api */
-        const link = document.createElement('a');
-        link.download = fileName + '.png';
-        const blob = await canvas.convertToBlob({ type: 'image/png' });
-        const blobUrl = URL.createObjectURL(blob);
-        this.#lastScreenshotBlobUrl = blobUrl;
-        link.href = blobUrl;
-        link.click();
+        return fileName;
+    }
+    async captureScreenshot() {
+        const screenshot = await this.#captureScreenshot(false);
+        if (screenshot === null) {
+            return;
+        }
+        await Platform.HostRuntime.HOST_RUNTIME.saveScreenshot({
+            base64Png: screenshot,
+            fileName: this.getScreenshotFileName(),
+            clip: {
+                screenRectWidth: this.screenRect().width,
+                screenRectHeight: this.screenRect().height,
+                visiblePageRectLeft: this.visiblePageRect().left,
+                visiblePageRectTop: this.visiblePageRect().top,
+            },
+        });
+    }
+    async captureFullSizeScreenshot() {
+        const screenshot = await this.#captureScreenshot(true);
+        if (screenshot === null) {
+            return;
+        }
+        await this.saveScreenshot(screenshot);
+    }
+    async captureAreaScreenshot(clip) {
+        const screenshot = await this.#captureScreenshot(false, clip);
+        if (screenshot === null) {
+            return;
+        }
+        await this.saveScreenshot(screenshot);
+    }
+    async saveScreenshot(screenshot) {
+        await Platform.HostRuntime.HOST_RUNTIME.saveScreenshot({
+            base64Png: screenshot,
+            fileName: this.getScreenshotFileName(),
+        });
     }
     #revokeLastScreenshotBlobUrl() {
-        if (this.#lastScreenshotBlobUrl) {
-            URL.revokeObjectURL(this.#lastScreenshotBlobUrl);
-            this.#lastScreenshotBlobUrl = null;
-        }
+        Platform.HostRuntime.HOST_RUNTIME.revokeLastScreenshotUrl();
     }
     applyTouch(touchEnabled, mobile) {
         this.#touchEnabled = touchEnabled;

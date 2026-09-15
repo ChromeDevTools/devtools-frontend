@@ -3455,7 +3455,7 @@ var UIStrings6 = {
   /**
    * @description Text to show in Console panel when a third-party cookie is blocked in Chrome.
    */
-  consoleTpcdErrorMessage: "Third-party cookie blocked in Chrome due to Chrome flags or browser settings."
+  consoleTpcdErrorMessage: "Third-party cookie blocked in Chrome due to Chrome flags or browser settings"
 };
 var str_6 = i18n11.i18n.registerUIStrings("models/issues_manager/CookieIssue.ts", UIStrings6);
 var i18nLazyString4 = i18n11.i18n.getLazilyComputedLocalizedString.bind(void 0, str_6);
@@ -4618,12 +4618,12 @@ var UIStrings10 = {
   /**
    * @description This links to the Chrome feature status page when one exists.
    */
-  feature: "Check the feature status page for more details.",
+  feature: "Check the feature status page for more details",
   /**
    * @description This links to the Chromium Dash schedule when a milestone is set.
    * @example {100} milestone
    */
-  milestone: "This change will go into effect with milestone {milestone}.",
+  milestone: "This change will go into effect with milestone {milestone}",
   /**
    * @description Title of issue raised when a deprecated feature is used.
    */

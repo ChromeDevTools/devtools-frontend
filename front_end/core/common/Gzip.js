@@ -17,7 +17,7 @@ export async function arrayBufferToString(ab) {
     if (isGzip(ab)) {
         return await decompress(ab);
     }
-    const str = new TextDecoder('utf-8').decode(ab);
+    const str = new TextDecoder('utf-8').decode(new Uint8Array(ab));
     return str;
 }
 export async function fileToString(file) {

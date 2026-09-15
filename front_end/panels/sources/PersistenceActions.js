@@ -40,12 +40,12 @@ const UIStrings = {
      * @description A message in a confirmation dialog to explain why the action failed in the Persistence actions.
      * @example {index.ts} PH1
      */
-    overrideSourceMappedFileExplanation: '‘{PH1}’ is a source mapped file and cannot be overridden.',
+    overrideSourceMappedFileExplanation: '‘{PH1}’ is a source mapped file and cannot be overridden',
     /**
      * @description An error message shown in the DevTools Console after the user clicked "Save as" in
      * the context menu of a page resource.
      */
-    saveFailed: 'Failed to save file to disk.',
+    saveFailed: 'Failed to save file to disk',
     /**
      * @description An error message shown in the DevTools Console after the user clicked "Save as" in
      * the context menu of a WebAssembly file.

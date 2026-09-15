@@ -20,7 +20,7 @@ const UIStrings = {
     /**
      * @description Call to action for the user to interact with the web page.
      */
-    interactWithPage: 'Interact with the page.',
+    interactWithPage: 'Interact with the page',
     /**
      * @description Label for a button that ends a Lighthouse timespan. "timespan" is a Lighthouse mode that analyzes user interactions over a period of time.
      */

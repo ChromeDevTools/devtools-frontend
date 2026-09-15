@@ -8,350 +8,350 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 const UIStrings = {
     /**
-     * @description  Description text for Prefetch status PrefetchFailedIneligibleRedirect.
+     * @description Description text for prefetch status PrefetchFailedIneligibleRedirect.
      */
-    PrefetchFailedIneligibleRedirect: 'The prefetch was redirected, but the redirect URL is not eligible for prefetch.',
+    PrefetchFailedIneligibleRedirect: 'The prefetch was redirected, but the redirect URL isn’t eligible for prefetch',
     /**
-     * @description  Description text for Prefetch status PrefetchFailedInvalidRedirect.
+     * @description Description text for prefetch status PrefetchFailedInvalidRedirect.
      */
-    PrefetchFailedInvalidRedirect: 'The prefetch was redirected, but there was a problem with the redirect.',
+    PrefetchFailedInvalidRedirect: 'The prefetch was redirected, but there was a problem with the redirect',
     /**
-     * @description  Description text for Prefetch status PrefetchFailedMIMENotSupported.
+     * @description Description text for prefetch status PrefetchFailedMIMENotSupported.
      */
-    PrefetchFailedMIMENotSupported: 'The prefetch failed because the response’s Content-Type header was not supported.',
+    PrefetchFailedMIMENotSupported: 'The prefetch failed because the response’s Content-Type header was not supported',
     /**
-     * @description  Description text for Prefetch status PrefetchFailedNetError.
+     * @description Description text for prefetch status PrefetchFailedNetError.
      */
-    PrefetchFailedNetError: 'The prefetch failed because of a network error.',
+    PrefetchFailedNetError: 'The prefetch failed because of a network error',
     /**
-     * @description  Description text for Prefetch status PrefetchFailedNon2XX.
+     * @description Description text for prefetch status PrefetchFailedNon2XX.
      */
-    PrefetchFailedNon2XX: 'The prefetch failed because of a non-2xx HTTP response status code.',
+    PrefetchFailedNon2XX: 'The prefetch failed because of a non-2xx HTTP response status code',
     /**
-     * @description  Description text for Prefetch status PrefetchFailedNon2XX when the HTTP status code is known.
+     * @description Description text for prefetch status PrefetchFailedNon2XX when the HTTP status code is known.
      * @example {404} PH1
      */
-    PrefetchFailedNon2XXWithStatusCode: 'The prefetch failed because of a non-2xx HTTP response status code ({PH1}).',
+    PrefetchFailedNon2XXWithStatusCode: 'The prefetch failed because of a non-2xx HTTP response status code ({PH1})',
     /**
-     * @description  Description text for Prefetch status PrefetchIneligibleRetryAfter.
+     * @description Description text for prefetch status PrefetchIneligibleRetryAfter.
      */
-    PrefetchIneligibleRetryAfter: 'A previous prefetch to the origin got a HTTP 503 response with an Retry-After header that has not elapsed yet.',
+    PrefetchIneligibleRetryAfter: 'A previous prefetch to the origin got an HTTP 503 response with a Retry-After header that hasn’t elapsed yet',
     /**
-     * @description  Description text for Prefetch status PrefetchIsPrivacyDecoy.
+     * @description Description text for prefetch status PrefetchIsPrivacyDecoy.
      */
-    PrefetchIsPrivacyDecoy: 'The URL was not eligible to be prefetched because there was a registered service worker or cross-site cookies for that origin, but the prefetch was put on the network anyways and not used, to disguise that the user had some kind of previous relationship with the origin.',
+    PrefetchIsPrivacyDecoy: 'The URL was not eligible to be prefetched because there was a registered service worker or cross-site cookies for that origin, but the prefetch was put on the network anyways and not used, to disguise that the user had some kind of previous relationship with the origin',
     /**
-     * @description  Description text for Prefetch status PrefetchIsStale.
+     * @description Description text for prefetch status PrefetchIsStale.
      */
-    PrefetchIsStale: 'Too much time elapsed between the prefetch and usage, so the prefetch was discarded.',
+    PrefetchIsStale: 'Too much time elapsed between the prefetch and usage, so the prefetch was discarded',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligibleBrowserContextOffTheRecord.
+     * @description Description text for prefetch status PrefetchNotEligibleBrowserContextOffTheRecord.
      */
-    PrefetchNotEligibleBrowserContextOffTheRecord: 'The prefetch was not performed because the browser is in Incognito or Guest mode.',
+    PrefetchNotEligibleBrowserContextOffTheRecord: 'The prefetch was not performed because the browser is in Incognito or Guest mode',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligibleDataSaverEnabled.
+     * @description Description text for prefetch status PrefetchNotEligibleDataSaverEnabled.
      */
-    PrefetchNotEligibleDataSaverEnabled: 'The prefetch was not performed because the operating system is in Data Saver mode.',
+    PrefetchNotEligibleDataSaverEnabled: 'The prefetch was not performed because the operating system is in Data Saver mode',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligibleExistingProxy.
+     * @description Description text for prefetch status PrefetchNotEligibleExistingProxy.
      */
-    PrefetchNotEligibleExistingProxy: 'The URL is not eligible to be prefetched, because in the default network context it is configured to use a proxy server.',
+    PrefetchNotEligibleExistingProxy: 'The URL isn’t eligible to be prefetched, because in the default network context it is configured to use a proxy server',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligibleHostIsNonUnique.
+     * @description Description text for prefetch status PrefetchNotEligibleHostIsNonUnique.
      */
-    PrefetchNotEligibleHostIsNonUnique: 'The URL was not eligible to be prefetched because its host was not unique (e.g., a non publicly routable IP address or a hostname which is not registry-controlled), but the prefetch was required to be proxied.',
+    PrefetchNotEligibleHostIsNonUnique: 'The URL was not eligible to be prefetched because its host was not unique (e.g., a non publicly routable IP address or a hostname which isn’t registry-controlled), but the prefetch was required to be proxied',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligibleNonDefaultStoragePartition.
+     * @description Description text for prefetch status PrefetchNotEligibleNonDefaultStoragePartition.
      */
-    PrefetchNotEligibleNonDefaultStoragePartition: 'The URL was not eligible to be prefetched because it uses a non-default storage partition.',
+    PrefetchNotEligibleNonDefaultStoragePartition: 'The URL was not eligible to be prefetched because it uses a non-default storage partition',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy.
+     * @description Description text for prefetch status PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy.
      */
-    PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy: 'The URL was not eligible to be prefetched because the default network context cannot be configured to use the prefetch proxy for a same-site cross-origin prefetch request.',
+    PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy: 'The URL was not eligible to be prefetched because the default network context can’t be configured to use the prefetch proxy for a same-site cross-origin prefetch request',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligibleSchemeIsNotHttps.
+     * @description Description text for prefetch status PrefetchNotEligibleSchemeIsNotHttps.
      */
-    PrefetchNotEligibleSchemeIsNotHttps: 'The URL was not eligible to be prefetched because its scheme was not https:.',
+    PrefetchNotEligibleSchemeIsNotHttps: 'The URL was not eligible to be prefetched because its scheme was not https:',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligibleUserHasCookies.
+     * @description Description text for prefetch status PrefetchNotEligibleUserHasCookies.
      */
-    PrefetchNotEligibleUserHasCookies: 'The URL was not eligible to be prefetched because it was cross-site, but the user had cookies for that origin.',
+    PrefetchNotEligibleUserHasCookies: 'The URL was not eligible to be prefetched because it was cross-site, but the user had cookies for that origin',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligibleUserHasServiceWorker.
+     * @description Description text for prefetch status PrefetchNotEligibleUserHasServiceWorker.
      */
-    PrefetchNotEligibleUserHasServiceWorker: 'The URL was not eligible to be prefetched because there was a registered service worker for that origin, which is currently not supported.',
+    PrefetchNotEligibleUserHasServiceWorker: 'The URL was not eligible to be prefetched because there was a registered service worker for that origin, which isn’t currently supported',
     /**
-     * @description  Description text for Prefetch status PrefetchNotUsedCookiesChanged.
+     * @description Description text for prefetch status PrefetchNotUsedCookiesChanged.
      */
-    PrefetchNotUsedCookiesChanged: 'The prefetch was not used because it was a cross-site prefetch, and cookies were added for that URL while the prefetch was ongoing, so the prefetched response is now out-of-date.',
+    PrefetchNotUsedCookiesChanged: 'The prefetch was not used because it was a cross-site prefetch, and cookies were added for that URL while the prefetch was ongoing, so the prefetched response is now out-of-date',
     /**
-     * @description  Description text for Prefetch status PrefetchProxyNotAvailable.
+     * @description Description text for prefetch status PrefetchProxyNotAvailable.
      */
-    PrefetchProxyNotAvailable: 'A network error was encountered when trying to set up a connection to the prefetching proxy.',
+    PrefetchProxyNotAvailable: 'A network error was encountered when trying to set up a connection to the prefetching proxy',
     /**
-     * @description  Description text for Prefetch status PrefetchNotUsedProbeFailed.
+     * @description Description text for prefetch status PrefetchNotUsedProbeFailed.
      */
-    PrefetchNotUsedProbeFailed: 'The prefetch was blocked by your Internet Service Provider or network administrator.',
+    PrefetchNotUsedProbeFailed: 'The prefetch was blocked by your Internet Service Provider or network administrator',
     /**
-     * @description  Description text for Prefetch status PrefetchEvictedForNewerPrefetch.
+     * @description Description text for prefetch status PrefetchEvictedForNewerPrefetch.
      */
-    PrefetchEvictedForNewerPrefetch: 'The prefetch was discarded because the initiating page has too many prefetches ongoing, and this was one of the oldest.',
+    PrefetchEvictedForNewerPrefetch: 'The prefetch was discarded because the initiating page has too many prefetches ongoing, and this was one of the oldest',
     /**
-     * @description Description text for Prefetch status PrefetchEvictedAfterCandidateRemoved.
+     * @description Description text for prefetch status PrefetchEvictedAfterCandidateRemoved.
      */
-    PrefetchEvictedAfterCandidateRemoved: 'The prefetch was discarded because no speculation rule in the initating page triggers a prefetch for this URL anymore.',
+    PrefetchEvictedAfterCandidateRemoved: 'The prefetch was discarded because no speculation rule in the initiating page triggers a prefetch for this URL anymore',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligibleBatterySaverEnabled.
+     * @description Description text for prefetch status PrefetchNotEligibleBatterySaverEnabled.
      */
-    PrefetchNotEligibleBatterySaverEnabled: 'The prefetch was not performed because the Battery Saver setting was enabled.',
+    PrefetchNotEligibleBatterySaverEnabled: 'The prefetch was not performed because the Battery Saver setting was enabled',
     /**
-     * @description  Description text for Prefetch status PrefetchNotEligiblePreloadingDisabled.
+     * @description Description text for prefetch status PrefetchNotEligiblePreloadingDisabled.
      */
-    PrefetchNotEligiblePreloadingDisabled: 'The prefetch was not performed because speculative loading was disabled.',
+    PrefetchNotEligiblePreloadingDisabled: 'The prefetch was not performed because speculative loading was disabled',
     /**
-     * @description  Description text for Prefetch status PrefetchEvictedAfterBrowsingDataRemoved.
+     * @description Description text for prefetch status PrefetchEvictedAfterBrowsingDataRemoved.
      */
-    PrefetchEvictedAfterBrowsingDataRemoved: 'The prefetch was discarded because browsing data was removed.',
+    PrefetchEvictedAfterBrowsingDataRemoved: 'The prefetch was discarded because browsing data was removed',
     /**
-     *  Description text for PrerenderFinalStatus::kLowEndDevice.
+     * @description Description text for prerender status LowEndDevice.
      */
-    prerenderFinalStatusLowEndDevice: 'The prerender was not performed because this device does not have enough total system memory to support prerendering.',
+    prerenderFinalStatusLowEndDevice: 'The prerender was not performed because this device doesn’t have enough total system memory to support prerendering',
     /**
-     *  Description text for PrerenderFinalStatus::kInvalidSchemeRedirect.
+     * @description Description text for prerender status InvalidSchemeRedirect.
      */
-    prerenderFinalStatusInvalidSchemeRedirect: 'The prerendering navigation failed because it redirected to a URL whose scheme was not http: or https:.',
+    prerenderFinalStatusInvalidSchemeRedirect: 'The prerendering navigation failed because it redirected to a URL whose scheme was not http: or https:',
     /**
-     *  Description text for PrerenderFinalStatus::kInvalidSchemeNavigation.
+     * @description Description text for prerender status InvalidSchemeNavigation.
      */
-    prerenderFinalStatusInvalidSchemeNavigation: 'The URL was not eligible to be prerendered because its scheme was not http: or https:.',
+    prerenderFinalStatusInvalidSchemeNavigation: 'The URL was not eligible to be prerendered because its scheme was not http: or https:',
     /**
-     *  Description text for PrerenderFinalStatus::kNavigationRequestBlockedByCsp.
+     * @description Description text for prerender status NavigationRequestBlockedByCsp.
      */
-    prerenderFinalStatusNavigationRequestBlockedByCsp: 'The prerendering navigation was blocked by a Content Security Policy.',
+    prerenderFinalStatusNavigationRequestBlockedByCsp: 'The prerendering navigation was blocked by a Content Security Policy',
     /**
-     * @description Description text for PrerenderFinalStatus::kMojoBinderPolicy.
+     * @description Description text for prerender status MojoBinderPolicy.
      * @example {device.mojom.GamepadMonitor} PH1
      */
-    prerenderFinalStatusMojoBinderPolicy: 'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: {PH1})',
+    prerenderFinalStatusMojoBinderPolicy: 'The prerendered page used a forbidden JavaScript API that isn’t currently supported. (Internal Mojo interface: {PH1})',
     /**
-     *  Description text for PrerenderFinalStatus::kRendererProcessCrashed.
+     * @description Description text for prerender status RendererProcessCrashed.
      */
-    prerenderFinalStatusRendererProcessCrashed: 'The prerendered page crashed.',
+    prerenderFinalStatusRendererProcessCrashed: 'The prerendered page crashed',
     /**
-     *  Description text for PrerenderFinalStatus::kRendererProcessKilled.
+     * @description Description text for prerender status RendererProcessKilled.
      */
-    prerenderFinalStatusRendererProcessKilled: 'The prerendered page was killed.',
+    prerenderFinalStatusRendererProcessKilled: 'The prerendered page was killed',
     /**
-     *  Description text for PrerenderFinalStatus::kDownload.
+     * @description Description text for prerender status Download.
      */
-    prerenderFinalStatusDownload: 'The prerendered page attempted to initiate a download, which is currently not supported.',
+    prerenderFinalStatusDownload: 'The prerendered page attempted to initiate a download, which isn’t currently supported',
     /**
-     *  Description text for PrerenderFinalStatus::kNavigationBadHttpStatus.
+     * @description Description text for prerender status NavigationBadHttpStatus.
      */
-    prerenderFinalStatusNavigationBadHttpStatus: 'The prerendering navigation failed because of a non-2xx HTTP response status code.',
+    prerenderFinalStatusNavigationBadHttpStatus: 'The prerendering navigation failed because of a non-2xx HTTP response status code',
     /**
-     * @description Description text for PrerenderFinalStatus::kNavigationBadHttpStatus when the HTTP status code is known.
+     * @description Description text for prerender status NavigationBadHttpStatus when the HTTP status code is known.
      * @example {404} PH1
      */
-    prerenderFinalStatusNavigationBadHttpStatusWithStatusCode: 'The prerendering navigation failed because of a non-2xx HTTP response status code ({PH1}).',
+    prerenderFinalStatusNavigationBadHttpStatusWithStatusCode: 'The prerendering navigation failed because of a non-2xx HTTP response status code ({PH1})',
     /**
-     *  Description text for PrerenderFinalStatus::kClientCertRequested.
+     * @description Description text for prerender status ClientCertRequested.
      */
-    prerenderFinalStatusClientCertRequested: 'The prerendering navigation required a HTTP client certificate.',
+    prerenderFinalStatusClientCertRequested: 'The prerendering navigation required an HTTP client certificate',
     /**
-     *  Description text for PrerenderFinalStatus::kNavigationRequestNetworkError.
+     * @description Description text for prerender status NavigationRequestNetworkError.
      */
-    prerenderFinalStatusNavigationRequestNetworkError: 'The prerendering navigation encountered a network error.',
+    prerenderFinalStatusNavigationRequestNetworkError: 'The prerendering navigation encountered a network error',
     /**
-     *  Description text for PrerenderFinalStatus::kSslCertificateError.
+     * @description Description text for prerender status SslCertificateError.
      */
-    prerenderFinalStatusSslCertificateError: 'The prerendering navigation failed because of an invalid SSL certificate.',
+    prerenderFinalStatusSslCertificateError: 'The prerendering navigation failed because of an invalid SSL certificate',
     /**
-     *  Description text for PrerenderFinalStatus::kLoginAuthRequested.
+     * @description Description text for prerender status LoginAuthRequested.
      */
-    prerenderFinalStatusLoginAuthRequested: 'The prerendering navigation required HTTP authentication, which is currently not supported.',
+    prerenderFinalStatusLoginAuthRequested: 'The prerendering navigation required HTTP authentication, which isn’t currently supported',
     /**
-     *  Description text for PrerenderFinalStatus::kUaChangeRequiresReload.
+     * @description Description text for prerender status UaChangeRequiresReload.
      */
-    prerenderFinalStatusUaChangeRequiresReload: 'Changing User Agent occurred in prerendering navigation.',
+    prerenderFinalStatusUaChangeRequiresReload: 'Changing user agent occurred in prerendering navigation',
     /**
-     *  Description text for PrerenderFinalStatus::kBlockedByClient.
+     * @description Description text for prerender status BlockedByClient.
      */
-    prerenderFinalStatusBlockedByClient: 'Some resource load was blocked.',
+    prerenderFinalStatusBlockedByClient: 'Some resource load was blocked',
     /**
-     *  Description text for PrerenderFinalStatus::kAudioOutputDeviceRequested.
+     * @description Description text for prerender status AudioOutputDeviceRequested.
      */
-    prerenderFinalStatusAudioOutputDeviceRequested: 'The prerendered page requested audio output, which is currently not supported.',
+    prerenderFinalStatusAudioOutputDeviceRequested: 'The prerendered page requested audio output, which isn’t currently supported',
     /**
-     *  Description text for PrerenderFinalStatus::kMixedContent.
+     * @description Description text for prerender status MixedContent.
      */
-    prerenderFinalStatusMixedContent: 'The prerendered page contained mixed content.',
+    prerenderFinalStatusMixedContent: 'The prerendered page contained mixed content',
     /**
-     *  Description text for PrerenderFinalStatus::kTriggerBackgrounded.
+     * @description Description text for prerender status TriggerBackgrounded.
      */
-    prerenderFinalStatusTriggerBackgrounded: 'The initiating page was backgrounded, so the prerendered page was discarded.',
+    prerenderFinalStatusTriggerBackgrounded: 'The initiating page was backgrounded, so the prerendered page was discarded',
     /**
-     *  Description text for PrerenderFinalStatus::kMemoryLimitExceeded.
+     * @description Description text for prerender status MemoryLimitExceeded.
      */
-    prerenderFinalStatusMemoryLimitExceeded: 'The prerender was not performed because the browser exceeded the prerendering memory limit.',
+    prerenderFinalStatusMemoryLimitExceeded: 'The prerender was not performed because the browser exceeded the prerendering memory limit',
     /**
-     *  Description text for PrerenderFinalStatus::kDataSaverEnabled.
+     * @description Description text for prerender status DataSaverEnabled.
      */
-    prerenderFinalStatusDataSaverEnabled: 'The prerender was not performed because the user requested that the browser use less data.',
+    prerenderFinalStatusDataSaverEnabled: 'The prerender was not performed because the user requested that the browser use less data',
     /**
-     *  Description text for PrerenderFinalStatus::TriggerUrlHasEffectiveUrl.
+     * @description Description text for prerender status TriggerUrlHasEffectiveUrl.
      */
-    prerenderFinalStatusHasEffectiveUrl: 'The initiating page cannot perform prerendering, because it has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
+    prerenderFinalStatusHasEffectiveUrl: 'The initiating page can’t perform prerendering, because it has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
     /**
-     *  Description text for PrerenderFinalStatus::kTimeoutBackgrounded.
+     * @description Description text for prerender status TimeoutBackgrounded.
      */
-    prerenderFinalStatusTimeoutBackgrounded: 'The initiating page was backgrounded for a long time, so the prerendered page was discarded.',
+    prerenderFinalStatusTimeoutBackgrounded: 'The initiating page was backgrounded for a long time, so the prerendered page was discarded',
     /**
-     *  Description text for PrerenderFinalStatus::kCrossSiteRedirectInInitialNavigation.
+     * @description Description text for prerender status CrossSiteRedirectInInitialNavigation.
      */
-    prerenderFinalStatusCrossSiteRedirectInInitialNavigation: 'The prerendering navigation failed because the prerendered URL redirected to a cross-site URL.',
+    prerenderFinalStatusCrossSiteRedirectInInitialNavigation: 'The prerendering navigation failed because the prerendered URL redirected to a cross-site URL',
     /**
-     *  Description text for PrerenderFinalStatus::kCrossSiteNavigationInInitialNavigation.
+     * @description Description text for prerender status CrossSiteNavigationInInitialNavigation.
      */
-    prerenderFinalStatusCrossSiteNavigationInInitialNavigation: 'The prerendering navigation failed because it targeted a cross-site URL.',
+    prerenderFinalStatusCrossSiteNavigationInInitialNavigation: 'The prerendering navigation failed because it targeted a cross-site URL',
     /**
-     *  Description text for PrerenderFinalStatus::kSameSiteCrossOriginRedirectNotOptInInInitialNavigation.
+     * @description Description text for prerender status SameSiteCrossOriginRedirectNotOptInInInitialNavigation.
      */
-    prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation: 'The prerendering navigation failed because the prerendered URL redirected to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header.',
+    prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation: 'The prerendering navigation failed because the prerendered URL redirected to a cross-origin same-site URL, but the destination response didn’t include the appropriate Supports-Loading-Mode header',
     /**
-     *  Description text for PrerenderFinalStatus::kSameSiteCrossOriginNavigationNotOptInInInitialNavigation.
+     * @description Description text for prerender status SameSiteCrossOriginNavigationNotOptInInInitialNavigation.
      */
-    prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation: 'The prerendering navigation failed because it was to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header.',
+    prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation: 'The prerendering navigation failed because it was to a cross-origin same-site URL, but the destination response didn’t include the appropriate Supports-Loading-Mode header',
     /**
-     *  Description text for PrerenderFinalStatus::kActivationNavigationParameterMismatch.
+     * @description Description text for prerender status ActivationNavigationParameterMismatch.
      */
-    prerenderFinalStatusActivationNavigationParameterMismatch: 'The prerender was not used because during activation time, different navigation parameters (e.g., HTTP headers) were calculated than during the original prerendering navigation request.',
+    prerenderFinalStatusActivationNavigationParameterMismatch: 'The prerender was not used because during activation time, different navigation parameters (e.g., HTTP headers) were calculated than during the original prerendering navigation request',
     /**
-     *  Description text for PrerenderFinalStatus::kPrimaryMainFrameRendererProcessCrashed.
+     * @description Description text for prerender status PrimaryMainFrameRendererProcessCrashed.
      */
-    prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed: 'The initiating page crashed.',
+    prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed: 'The initiating page crashed',
     /**
-     *  Description text for PrerenderFinalStatus::kPrimaryMainFrameRendererProcessKilled.
+     * @description Description text for prerender status PrimaryMainFrameRendererProcessKilled.
      */
-    prerenderFinalStatusPrimaryMainFrameRendererProcessKilled: 'The initiating page was killed.',
+    prerenderFinalStatusPrimaryMainFrameRendererProcessKilled: 'The initiating page was killed',
     /**
-     *  Description text for PrerenderFinalStatus::kActivationFramePolicyNotCompatible.
+     * @description Description text for prerender status ActivationFramePolicyNotCompatible.
      */
-    prerenderFinalStatusActivationFramePolicyNotCompatible: 'The prerender was not used because the sandboxing flags or permissions policy of the initiating page was not compatible with those of the prerendering page.',
+    prerenderFinalStatusActivationFramePolicyNotCompatible: 'The prerender was not used because the sandboxing flags or permissions policy of the initiating page was not compatible with those of the prerendering page',
     /**
-     *  Description text for PrerenderFinalStatus::kPreloadingDisabled.
+     * @description Description text for prerender status PreloadingDisabled.
      */
-    prerenderFinalStatusPreloadingDisabled: 'The prerender was not performed because the user disabled preloading in their browser settings.',
+    prerenderFinalStatusPreloadingDisabled: 'The prerender was not performed because the user disabled preloading in their browser settings',
     /**
-     *  Description text for PrerenderFinalStatus::kBatterySaverEnabled.
+     * @description Description text for prerender status BatterySaverEnabled.
      */
-    prerenderFinalStatusBatterySaverEnabled: 'The prerender was not performed because the user requested that the browser use less battery.',
+    prerenderFinalStatusBatterySaverEnabled: 'The prerender was not performed because the user requested that the browser use less battery',
     /**
-     *  Description text for PrerenderFinalStatus::kActivatedDuringMainFrameNavigation.
+     * @description Description text for prerender status ActivatedDuringMainFrameNavigation.
      */
-    prerenderFinalStatusActivatedDuringMainFrameNavigation: 'Prerendered page activated during initiating page’s main frame navigation.',
+    prerenderFinalStatusActivatedDuringMainFrameNavigation: 'Prerendered page activated during initiating page’s main frame navigation',
     /**
-     *  Description text for PrerenderFinalStatus::kCrossSiteRedirectInMainFrameNavigation.
+     * @description Description text for prerender status CrossSiteRedirectInMainFrameNavigation.
      */
-    prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation: 'The prerendered page navigated to a URL which redirected to a cross-site URL.',
+    prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation: 'The prerendered page navigated to a URL which redirected to a cross-site URL',
     /**
-     *  Description text for PrerenderFinalStatus::kCrossSiteNavigationInMainFrameNavigation.
+     * @description Description text for prerender status CrossSiteNavigationInMainFrameNavigation.
      */
-    prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation: 'The prerendered page navigated to a cross-site URL.',
+    prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation: 'The prerendered page navigated to a cross-site URL',
     /**
-     *  Description text for PrerenderFinalStatus::kSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation.
+     * @description Description text for prerender status SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation.
      */
-    prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation: 'The prerendered page navigated to a URL which redirected to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header.',
+    prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation: 'The prerendered page navigated to a URL which redirected to a cross-origin same-site URL, but the destination response didn’t include the appropriate Supports-Loading-Mode header',
     /**
-     *  Description text for PrerenderFinalStatus::kSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation.
+     * @description Description text for prerender status SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation.
      */
-    prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation: 'The prerendered page navigated to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header.',
+    prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation: 'The prerendered page navigated to a cross-origin same-site URL, but the destination response didn’t include the appropriate Supports-Loading-Mode header',
     /**
-     *  Description text for PrerenderFinalStatus::kMemoryPressureOnTrigger.
+     * @description Description text for prerender status MemoryPressureOnTrigger.
      */
-    prerenderFinalStatusMemoryPressureOnTrigger: 'The prerender was not performed because the browser was under critical memory pressure.',
+    prerenderFinalStatusMemoryPressureOnTrigger: 'The prerender was not performed because the browser was under critical memory pressure',
     /**
-     *  Description text for PrerenderFinalStatus::kMemoryPressureAfterTriggered.
+     * @description Description text for prerender status MemoryPressureAfterTriggered.
      */
-    prerenderFinalStatusMemoryPressureAfterTriggered: 'The prerendered page was unloaded because the browser came under critical memory pressure.',
+    prerenderFinalStatusMemoryPressureAfterTriggered: 'The prerendered page was unloaded because the browser came under critical memory pressure',
     /**
-     *  Description text for PrerenderFinalStatus::kPrerenderingDisabledByDevTools.
+     * @description Description text for prerender status PrerenderingDisabledByDevTools.
      */
-    prerenderFinalStatusPrerenderingDisabledByDevTools: 'The prerender was not performed because DevTools has been used to disable prerendering.',
+    prerenderFinalStatusPrerenderingDisabledByDevTools: 'The prerender was not performed because DevTools has been used to disable prerendering',
     /**
-     * Description text for PrerenderFinalStatus::kSpeculationRuleRemoved.
+     * @description Description text for prerender status SpeculationRuleRemoved.
      */
-    prerenderFinalStatusSpeculationRuleRemoved: 'The prerendered page was unloaded because the initiating page removed the corresponding prerender rule from `<script type="speculationrules">`.',
+    prerenderFinalStatusSpeculationRuleRemoved: 'The prerendered page was unloaded because the initiating page removed the corresponding prerender rule from `<script type="speculationrules">`',
     /**
-     * Description text for PrerenderFinalStatus::kActivatedWithAuxiliaryBrowsingContexts.
+     * @description Description text for prerender status ActivatedWithAuxiliaryBrowsingContexts.
      */
-    prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts: 'The prerender was not used because during activation time, there were other windows with an active opener reference to the initiating page, which is currently not supported.',
+    prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts: 'The prerender was not used because during activation time, there were other windows with an active opener reference to the initiating page, which isn’t currently supported',
     /**
-     * Description text for PrerenderFinalStatus::kMaxNumOfRunningEagerPrerendersExceeded.
+     * @description Description text for prerender status MaxNumOfRunningEagerPrerendersExceeded.
      */
     prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded: 'The prerender whose eagerness is "`eager`" was not performed because the initiating page already has too many prerenders ongoing. Remove other speculation rules with "`eager`" to enable further prerendering.',
     /**
-     * Description text for PrerenderFinalStatus::kMaxNumOfRunningEmbedderPrerendersExceeded.
+     * @description Description text for prerender status MaxNumOfRunningEmbedderPrerendersExceeded.
      */
-    prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded: 'The browser-triggered prerender was not performed because the initiating page already has too many prerenders ongoing.',
+    prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded: 'The browser-triggered prerender was not performed because the initiating page already has too many prerenders ongoing',
     /**
-     * Description text for PrerenderFinalStatus::kMaxNumOfRunningNonEagerPrerendersExceeded.
+     * @description Description text for prerender status MaxNumOfRunningNonEagerPrerendersExceeded.
      */
     prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded: 'The old non-eager prerender (with a "`moderate`" or "`conservative`" eagerness and triggered by hovering or clicking links) was automatically canceled due to starting a new non-eager prerender. It can be retriggered by interacting with the link again.',
     /**
-     * Description text for PrenderFinalStatus::kPrerenderingUrlHasEffectiveUrl.
+     * @description Description text for prerender status PrerenderingUrlHasEffectiveUrl.
      */
     prerenderFinalStatusPrerenderingUrlHasEffectiveUrl: 'The prerendering navigation failed because it has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
     /**
-     * Description text for PrenderFinalStatus::kRedirectedPrerenderingUrlHasEffectiveUrl.
+     * @description Description text for prerender status RedirectedPrerenderingUrlHasEffectiveUrl.
      */
     prerenderFinalStatusRedirectedPrerenderingUrlHasEffectiveUrl: 'The prerendering navigation failed because it redirected to an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
     /**
-     * Description text for PrenderFinalStatus::kActivationUrlHasEffectiveUrl.
+     * @description Description text for prerender status ActivationUrlHasEffectiveUrl.
      */
     prerenderFinalStatusActivationUrlHasEffectiveUrl: 'The prerender was not used because during activation time, navigation has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
     /**
-     * Description text for PrenderFinalStatus::kJavaScriptInterfaceAdded.
+     * @description Description text for prerender status JavaScriptInterfaceAdded.
      */
-    prerenderFinalStatusJavaScriptInterfaceAdded: 'The prerendered page was unloaded because a new JavaScript interface has been injected by WebView.addJavascriptInterface().',
+    prerenderFinalStatusJavaScriptInterfaceAdded: 'The prerendered page was unloaded because a new JavaScript interface has been injected by WebView.addJavascriptInterface()',
     /**
-     * Description text for PrenderFinalStatus::kJavaScriptInterfaceRemoved.
+     * @description Description text for prerender status JavaScriptInterfaceRemoved.
      */
-    prerenderFinalStatusJavaScriptInterfaceRemoved: 'The prerendered page was unloaded because a JavaScript interface has been removed by WebView.removeJavascriptInterface().',
+    prerenderFinalStatusJavaScriptInterfaceRemoved: 'The prerendered page was unloaded because a JavaScript interface has been removed by WebView.removeJavascriptInterface()',
     /**
-     * Description text for PrenderFinalStatus::kAllPrerenderingCanceled.
+     * @description Description text for prerender status AllPrerenderingCanceled.
      */
-    prerenderFinalStatusAllPrerenderingCanceled: 'All prerendered pages were unloaded by the browser for some reason (For example, WebViewCompat.addWebMessageListener() was called during prerendering.)',
+    prerenderFinalStatusAllPrerenderingCanceled: 'All prerendered pages were unloaded by the browser for some reason. (For example, WebViewCompat.addWebMessageListener() was called during prerendering.)',
     /**
-     * Description text for PrenderFinalStatus::kWindowClosed.
+     * @description Description text for prerender status WindowClosed.
      */
-    prerenderFinalStatusWindowClosed: 'The prerendered page was unloaded because it called window.close().',
+    prerenderFinalStatusWindowClosed: 'The prerendered page was unloaded because it called window.close()',
     /**
-     * Description text for PrenderFinalStatus::kBrowsingDataRemoved.
+     * @description Description text for prerender status BrowsingDataRemoved.
      */
-    prerenderFinalStatusBrowsingDataRemoved: 'The prerendered page was unloaded because browsing data was removed.',
+    prerenderFinalStatusBrowsingDataRemoved: 'The prerendered page was unloaded because browsing data was removed',
     /**
-     * @description Text in grid and details: Preloading attempt is not yet triggered.
+     * @description Status text in the speculative loads table and details report indicating that the speculative load attempt has not yet been triggered.
      */
     statusNotTriggered: 'Not triggered',
     /**
-     * @description Text in grid and details: Preloading attempt is eligible but pending.
+     * @description Status text in the speculative loads table and details report indicating that the speculative load attempt is eligible but pending.
      */
     statusPending: 'Pending',
     /**
-     * @description Text in grid and details: Preloading is running.
+     * @description Status text in the speculative loads table and details report indicating that the speculative load is running.
      */
     statusRunning: 'Running',
     /**
-     * @description Text in grid and details: Preloading finished and the result is ready for the next navigation.
+     * @description Status text in the speculative loads table and details report indicating that the speculative load finished and the result is ready for navigation.
      */
     statusReady: 'Ready',
     /**
-     * @description Text in grid and details: Ready, then used.
+     * @description Status text in the speculative loads table and details report indicating that the speculative load was successful and used.
      */
     statusSuccess: 'Success',
     /**
-     * @description Text in grid and details: Preloading failed.
+     * @description Status text in the speculative loads table and details report indicating that the speculative load failed.
      */
     statusFailure: 'Failure',
 };

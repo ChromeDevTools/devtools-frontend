@@ -71,7 +71,7 @@ export interface CandyStripedTimeRange {
  */
 export interface TimespanBreakdownEntryBreakdown {
     bounds: TraceWindowMicro;
-    label: string | HTMLElement;
+    label: string | object;
     showDuration: boolean;
 }
 /**
@@ -106,7 +106,7 @@ export interface TimingsMarkerFieldResult {
 export interface BottomInfoBar {
     type: 'BOTTOM_INFO_BAR';
     infobar: {
-        element: HTMLElement;
+        element: object;
         dispose: () => void;
     };
 }

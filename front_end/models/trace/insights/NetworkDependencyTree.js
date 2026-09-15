@@ -16,11 +16,11 @@ export const UIStrings = {
     /**
      * @description Description of an insight that recommends avoiding chaining critical requests.
      */
-    description: '[Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.',
+    description: '[Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load',
     /**
      * @description Description of the warning that recommends avoiding chaining critical requests.
      */
-    warningDescription: 'Avoid chaining critical requests by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.',
+    warningDescription: 'Avoid chaining critical requests by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load',
     /**
      * @description Text status indicating that there aren’t long chaining critical network requests.
      */
@@ -77,7 +77,7 @@ export const UIStrings = {
     /**
      * @description Description of the table that recommends preconnecting to the origins to save time. "preconnect" should not be translated.
      */
-    estSavingTableDescription: 'Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.',
+    estSavingTableDescription: 'Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4',
     /**
      * @description Label for a column in a data table; entries will be the origin of a web resource.
      */

@@ -12,7 +12,6 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';

@@ -200,9 +200,6 @@ export class IsolatedFileSystem extends PlatformFileSystem {
         function fileEntryRemoved() {
             resolve(true);
         }
-        /**
-         * TODO(jsbell): Update externs replacing DOMError with DOMException. https://crbug.com/496901
-         */
         function errorHandler(error) {
             const errorMessage = _a.errorMessage(error);
             console.error(errorMessage + ' when deleting file \'' + (this.path() + '/' + path) + '\'');
@@ -219,9 +216,6 @@ export class IsolatedFileSystem extends PlatformFileSystem {
         function dirEntryRemoved() {
             resolve(true);
         }
-        /**
-         * TODO(jsbell): Update externs replacing DOMError with DOMException. https://crbug.com/496901
-         */
         function errorHandler(error) {
             const errorMessage = _a.errorMessage(error);
             console.error(errorMessage + ' when deleting directory \'' + (this.path() + '/' + path) + '\'');
@@ -278,7 +272,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
             entry.createWriter(fileWriterCreated.bind(this), errorHandler.bind(this));
         }
         async function fileWriterCreated(fileWriter) {
-            fileWriter.onerror = errorHandler.bind(this);
+            fileWriter.onerror = () => errorHandler.call(this, fileWriter.error);
             fileWriter.onwriteend = fileWritten;
             let blob;
             if (isBase64) {
@@ -289,15 +283,14 @@ export class IsolatedFileSystem extends PlatformFileSystem {
             }
             fileWriter.write(blob);
             function fileWritten() {
-                fileWriter.onwriteend = resolve;
+                fileWriter.onwriteend = () => resolve();
                 fileWriter.truncate(blob.size);
             }
         }
         function errorHandler(error) {
-            // @ts-expect-error TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
             const errorMessage = _a.errorMessage(error);
             console.error(errorMessage + ' when setting content for file \'' + (this.path() + '/' + path) + '\'');
-            resolve(undefined);
+            resolve();
         }
     }
     renameFile(path, newName, callback) {

@@ -91,3 +91,19 @@ export interface TranslatedFrame {
     url?: Platform.DevToolsPath.UrlString;
 }
 export declare function contains(range: Pick<ScopesCodec.GeneratedRange, 'start' | 'end'>, line: number, column: number): boolean;
+export declare function comparePositions(a: ScopesCodec.Position, b: ScopesCodec.Position): number;
+/**
+ * Finds the V8 scope that corresponds to the source map's generated `range`.
+ *
+ * We need this to evaluate a scope's binding expressions in the right V8 scope. `evaluateOnCallFrame`
+ * defaults to the inner-most scope, where declarations shadow the outer variables we actually want to read.
+ *
+ * V8's scope ranges and the source map's generated ranges don't have to agree (in particular with
+ * inlining), so besides an exact match we accept the outer-most V8 scope contained in `range` (a generated
+ * range for a function spans the whole function text, while V8's scope only covers params + body), or
+ * failing that the inner-most V8 scope containing `range`.
+ *
+ * @returns The scope number, or `undefined` if nothing matched. Callers should then omit `scopeNumber`
+ *          and let CDP default to the inner-most scope.
+ */
+export declare function findMatchingScopeNumber(callFrame: CallFrame, range: ScopesCodec.GeneratedRange): number | undefined;

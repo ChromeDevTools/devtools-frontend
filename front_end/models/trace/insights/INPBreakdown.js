@@ -9,7 +9,7 @@ export const UIStrings = {
     /**
      * @description Text to tell the user about the longest user interaction.
      */
-    description: 'Start investigating [how to improve INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) by looking at the longest subpart.',
+    description: 'Start investigating [how to improve INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) by looking at the longest subpart',
     /**
      * @description Title for the performance insight "INP breakdown", which shows a breakdown of INP by subparts / sections.
      */

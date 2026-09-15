@@ -32,7 +32,7 @@ const UIStrings = {
      * @description Error message for files which cannot be parsed.
      * @example {.headers} PH1
      */
-    errorWhenParsing: 'Error when parsing \'\'{PH1}\'\'.',
+    errorWhenParsing: 'Error when parsing \'\'{PH1}\'\'',
     /**
      * @description Explainer for files which cannot be parsed.
      * @example {.headers} PH1

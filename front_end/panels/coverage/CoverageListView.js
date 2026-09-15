@@ -52,14 +52,14 @@ const UIStrings = {
      * developers which functions (logical groups of lines of code) were actually run/executed. If a
      * function does get run, then it is marked in the UI to indicate that it was covered.
      */
-    jsCoverageWithPerFunction: 'JS coverage with per function granularity: once a function was executed, the whole function is marked as covered.',
+    jsCoverageWithPerFunction: 'JS coverage with per function granularity: once a function was executed, the whole function is marked as covered',
     /**
      * @description Cell title in coverage list view of the Coverage tab. The coverage tool tells
      * developers which blocks (logical groups of lines of code, smaller than a function) were actually
      * run/executed. If a block does get run, then it is marked in the UI to indicate that it was
      * covered.
      */
-    jsCoverageWithPerBlock: 'JS coverage with per block granularity: once a block of JavaScript was executed, that block is marked as covered.',
+    jsCoverageWithPerBlock: 'JS coverage with per block granularity: once a block of JavaScript was executed, that block is marked as covered',
     /**
      * @description Accessible text for the value in bytes in memory allocation or coverage view.
      */
@@ -74,25 +74,25 @@ const UIStrings = {
      * @example {1000} PH1
      * @example {12.34%} PH2
      */
-    sBytesSBelongToFunctionsThatHave: '{PH1} bytes ({PH2}) belong to functions that have not (yet) been executed.',
+    sBytesSBelongToFunctionsThatHave: '{PH1} bytes ({PH2}) belong to functions that have not (yet) been executed',
     /**
      * @description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
      * @example {1000} PH1
      * @example {12.34%} PH2
      */
-    sBytesSBelongToBlocksOf: '{PH1} bytes ({PH2}) belong to blocks of JavaScript that have not (yet) been executed.',
+    sBytesSBelongToBlocksOf: '{PH1} bytes ({PH2}) belong to blocks of JavaScript that have not (yet) been executed',
     /**
      * @description Message in Coverage View of the Coverage tab.
      * @example {1000} PH1
      * @example {12.34%} PH2
      */
-    sBytesSBelongToFunctionsThatHaveExecuted: '{PH1} bytes ({PH2}) belong to functions that have executed at least once.',
+    sBytesSBelongToFunctionsThatHaveExecuted: '{PH1} bytes ({PH2}) belong to functions that have executed at least once',
     /**
      * @description Message in Coverage View of the Coverage tab.
      * @example {1000} PH1
      * @example {12.34%} PH2
      */
-    sBytesSBelongToBlocksOfJavascript: '{PH1} bytes ({PH2}) belong to blocks of JavaScript that have executed at least once.',
+    sBytesSBelongToBlocksOfJavascript: '{PH1} bytes ({PH2}) belong to blocks of JavaScript that have executed at least once',
     /**
      * @description Accessible text for the visualization column of coverage tool. Contains percentage of unused bytes to used bytes.
      * @example {12.3} PH1

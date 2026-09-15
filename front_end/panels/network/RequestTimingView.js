@@ -147,7 +147,7 @@ const UIStrings = {
      * @description Text to inform about the ServerTiming API, which can be used to report timing information to DevTools about the substeps that the server performed to answer the requests. Timing information is, e.g., the duration of the substep.
      * @example {https://web.dev/custom-metrics/#server-timing-api} PH1
      */
-    duringDevelopmentYouCanUseSToAdd: 'During development, you can use {PH1} to add insights into the server-side timing of this request.',
+    duringDevelopmentYouCanUseSToAdd: 'During development, you can use {PH1} to add insights into the server-side timing of this request',
     /**
      * @description Header for last column of network timing tab.
      */

@@ -34,8 +34,9 @@ export function decode(input) {
  * expect this to throw an error.
  */
 export async function encode(input) {
+    const maybeFileReader = globalThis['FileReader'];
     // Node.js environment (for foundation unit tests)
-    if (typeof FileReader === 'undefined') {
+    if (!maybeFileReader) {
         const blob = new Blob([input]);
         const arrayBuffer = await blob.arrayBuffer();
         // Use globalThis.Buffer to avoid TypeScript errors if Node types are not included.
@@ -44,7 +45,7 @@ export async function encode(input) {
     }
     // Browser environment
     return await new Promise((resolve, reject) => {
-        const reader = new FileReader();
+        const reader = new maybeFileReader();
         reader.onerror = () => reject(new Error('failed to convert to base64: internal error'));
         reader.onload = () => {
             // The input was too large to encode as a string. The caller should anticipate

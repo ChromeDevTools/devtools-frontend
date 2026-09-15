@@ -26,7 +26,7 @@ const UIStrings = {
     /**
      * @description Text to explain the workspace feature in the Sources panel. Learn more at https://goo.gle/devtools-workspace.
      */
-    explainWorkspace: 'Set up workspaces to sync edits directly to the sources you develop.',
+    explainWorkspace: 'Set up workspaces to sync edits directly to the sources you develop',
     /**
      * @description Text to show if no local overrides are set up. Learn more at https://goo.gle/devtools-overrides.
      */
@@ -34,7 +34,7 @@ const UIStrings = {
     /**
      * @description Text to explain the local overrides feature. Learn more at https://goo.gle/devtools-overrides.
      */
-    explainLocalOverrides: 'Override network requests and web content locally to mock remote resources.',
+    explainLocalOverrides: 'Override network requests and web content locally to mock remote resources',
     /**
      * @description Tooltip text that appears when hovering over the clear button in the Sources navigator of the Sources panel.
      */
@@ -50,7 +50,7 @@ const UIStrings = {
     /**
      * @description Text to explain the content scripts sidebar in the Sources panel.
      */
-    explainContentScripts: 'View content scripts served by extensions.',
+    explainContentScripts: 'View content scripts served by extensions',
     /**
      * @description Text to show if no snippets were created and saved in the Sources panel. Learn more at https://goo.gle/devtools-snippets.
      */
@@ -58,7 +58,7 @@ const UIStrings = {
     /**
      * @description Text to explain the snippets feature in the Sources panel. Learn more at https://goo.gle/devtools-snippets.
      */
-    explainSnippets: 'Save the JavaScript code you run often in a snippet to run it again anytime.',
+    explainSnippets: 'Save the JavaScript code you run often in a snippet to run it again anytime',
     /**
      * @description Text in Sources navigator of the Sources panel.
      */
@@ -88,7 +88,7 @@ const UIStrings = {
      *              the "Save as…" context menu in the Sources panel and the operation
      *              fails.
      */
-    saveAsFailed: 'Failed to save file to disk.',
+    saveAsFailed: 'Failed to save file to disk',
     /**
      * @description Message shown in the Workspace tab of the Sources panel to nudge
      *              developers into utilizing the Automatic Workspace Folders feature

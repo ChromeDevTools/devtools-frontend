@@ -34,12 +34,12 @@ const UIStrings = {
     /**
      * @description Tooltip text for a link to a specific request's headers in the Network panel.
      */
-    clickToShowHeader: 'Click to reveal the request whose "`Permissions-Policy`" HTTP header disables this feature.',
+    clickToShowHeader: 'Click to reveal the request whose "`Permissions-Policy`" HTTP header disables this feature',
     /**
      * @description Tooltip text for a link to a specific iframe in the Elements panel (Iframes can be nested, the link goes
      *  to the outer-most iframe which blocks a certain feature).
      */
-    clickToShowIframe: 'Click to reveal the top-most iframe which does not allow this feature in the elements panel.',
+    clickToShowIframe: 'Click to reveal the top-most iframe which does not allow this feature in the elements panel',
     /**
      * @description Text describing that a specific feature is blocked by not being included in the iframe's "allow" attribute.
      */

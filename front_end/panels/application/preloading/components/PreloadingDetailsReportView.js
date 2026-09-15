@@ -19,95 +19,93 @@ import { prefetchFailureReason, prerenderFailureReason, ruleSetLocationShort } f
 const { html } = Lit;
 const UIStrings = {
     /**
-     * @description Text in PreloadingDetailsReportView of the Application panel if no element is selected. An element here is an item in a
-     * table of target URLs and additional prefetching states. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+     * @description Empty state header in the preloading details report of the Application panel when no element is selected.
      */
     noElementSelected: 'No element selected',
     /**
-     * @description Text in PreloadingDetailsReportView of the Application panel to prompt user to select an element in a table. An element here is an item in a
-     * table of target URLs and additional prefetching states. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+     * @description Empty state description in the preloading details report of the Application panel prompting the user to select an element.
      */
     selectAnElementForMoreDetails: 'Select an element for more details',
     /**
-     * @description Text in details
+     * @description Section header in the preloading details report for detailed information.
      */
     detailsDetailedInformation: 'Detailed information',
     /**
-     * @description Text in details
+     * @description Field label in the preloading details report for the speculation action.
      */
     detailsAction: 'Action',
     /**
-     * @description Text in details
+     * @description Field label in the preloading details report for the preloading status.
      */
     detailsStatus: 'Status',
     /**
-     * @description Text in details
+     * @description Field label in the preloading details report for the target hint.
      */
     detailsTargetHint: 'Target hint',
     /**
-     * @description Text in details
+     * @description Field label in the preloading details report for form submission.
      */
     detailsFormSubmission: 'Form submission',
     /**
-     * @description Text in details
+     * @description Field label in the preloading details report for the failure reason.
      */
     detailsFailureReason: 'Failure reason',
     /**
-     * @description Header of rule set
+     * @description Field label in the preloading details report for the rule set.
      */
     detailsRuleSet: 'Rule set',
     /**
-     * @description Text indicating that the preloading field is true.
+     * @description Field value in the preloading details report indicating true or enabled.
      */
     yes: 'Yes',
     /**
-     * @description Text indicating that the preloading field is false.
+     * @description Field value in the preloading details report indicating false or disabled.
      */
     no: 'No',
     /**
-     * @description Description: status
+     * @description Status note in the preloading details report indicating prerender automatically fell back to prefetch.
      */
     automaticallyFellBackToPrefetch: '(automatically fell back to prefetch)',
     /**
-     * @description Description: status
+     * @description Detailed status in the preloading details report indicating the speculative load attempt isn't yet triggered.
      */
-    detailedStatusNotTriggered: 'Speculative load attempt is not yet triggered.',
+    detailedStatusNotTriggered: 'Speculative load attempt isn’t yet triggered',
     /**
-     * @description Description: status
+     * @description Detailed status in the preloading details report indicating the speculative load attempt is eligible but pending.
      */
-    detailedStatusPending: 'Speculative load attempt is eligible but pending.',
+    detailedStatusPending: 'Speculative load attempt is eligible but pending',
     /**
-     * @description Description: status
+     * @description Detailed status in the preloading details report indicating the speculative load is running.
      */
-    detailedStatusRunning: 'Speculative load is running.',
+    detailedStatusRunning: 'Speculative load is running',
     /**
-     * @description Description: status
+     * @description Detailed status in the preloading details report indicating the speculative load finished and the result is ready for the next navigation.
      */
-    detailedStatusReady: 'Speculative load finished and the result is ready for the next navigation.',
+    detailedStatusReady: 'Speculative load finished and the result is ready for the next navigation',
     /**
-     * @description Description: status
+     * @description Detailed status in the preloading details report indicating the speculative load finished and was used for a navigation.
      */
-    detailedStatusSuccess: 'Speculative load finished and used for a navigation.',
+    detailedStatusSuccess: 'Speculative load finished and used for a navigation',
     /**
-     * @description Description: status
+     * @description Detailed status in the preloading details report indicating the speculative load failed.
      */
-    detailedStatusFailure: 'Speculative load failed.',
+    detailedStatusFailure: 'Speculative load failed',
     /**
-     * @description Description: status
+     * @description Detailed status in the preloading details report indicating the speculative load failed, but fallback to prefetch succeeded.
      */
-    detailedStatusFallbackToPrefetch: 'Speculative load failed, but fallback to prefetch succeeded.',
+    detailedStatusFallbackToPrefetch: 'Speculative load failed, but fallback to prefetch succeeded',
     /**
-     * @description button: Contents of button to inspect prerendered page
+     * @description Button text to inspect the prerendered page.
      */
     buttonInspect: 'Inspect',
     /**
-     * @description button: Title of button to inspect prerendered page
+     * @description Tooltip text for the button to inspect the prerendered page.
      */
-    buttonClickToInspect: 'Click to inspect prerendered page',
+    buttonClickToInspect: 'Inspect prerendered page',
     /**
-     * @description button: Title of button to reveal rule set
+     * @description Tooltip text for the button to reveal the rule set in the speculation rules view.
      */
-    buttonClickToRevealRuleSet: 'Click to reveal rule set',
+    buttonClickToRevealRuleSet: 'Reveal rule set',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingDetailsReportView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

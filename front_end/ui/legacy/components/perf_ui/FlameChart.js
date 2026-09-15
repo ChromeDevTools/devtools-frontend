@@ -2549,9 +2549,9 @@ export class FlameChart extends FlameChartBase {
             if (text?.length) {
                 context.font = this.#font;
                 const hasArrowDecoration = this.entryHasDecoration(entryIndex, "HIDDEN_DESCENDANTS_ARROW" /* FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW */);
-                // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration and the bar is wide enough for the larger
-                // version of the decoration that is a square button, also subtract the width of the decoration.
-                // Because the decoration is square, it's width is equal to this.barHeight
+                // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration and
+                // the bar is wide enough for the larger version of the decoration that is a square button, also subtract
+                // the width of the decoration. Because the decoration is square, its width is equal to this.barHeight.
                 const maxBarWidth = (hasArrowDecoration && barWidth > barHeight * 2) ? barWidth - textPadding - this.barHeight :
                     barWidth - 2 * textPadding;
                 text = UI.UIUtils.trimTextMiddle(context, text, maxBarWidth);

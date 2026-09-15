@@ -16,7 +16,7 @@ const UIStrings = {
     /**
      * @description Text in Request Cookies View of the Network panel
      */
-    thisRequestHasNoCookies: 'This request has no cookies.',
+    thisRequestHasNoCookies: 'This request has no cookies',
     /**
      * @description Title for a table which shows all of the cookies associated with a selected network
      * request, in the Network panel. Noun phrase.
@@ -33,7 +33,7 @@ const UIStrings = {
     /**
      * @description Text in Request Headers View of the Network Panel
      */
-    noRequestCookiesWereSent: 'No request cookies were sent.',
+    noRequestCookiesWereSent: 'No request cookies were sent',
     /**
      * @description Text in Request Cookies View of the Network panel
      */

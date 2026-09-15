@@ -32,7 +32,7 @@ const UIStrings = {
     /**
      * @description Text shown once the deletion command has been sent to the browser process.
      */
-    checkingPotentialTrackers: 'Checking for potential bounce tracking sites.',
+    checkingPotentialTrackers: 'Checking for potential bounce tracking sites',
     /**
      * @description Link text about explanation of Bounce Tracking Mitigations.
      */
@@ -46,7 +46,7 @@ const UIStrings = {
     /**
      * @description Text shown when bounce tracking mitigations are disabled.
      */
-    featureDisabled: 'Bounce tracking mitigations are disabled.',
+    featureDisabled: 'Bounce tracking mitigations are disabled',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BounceTrackingMitigationsView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

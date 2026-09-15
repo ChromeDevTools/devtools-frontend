@@ -23,7 +23,7 @@ const UIStrings = {
      *             An endpoint is a URL where the report is sent to.
      *             (https://developer.chrome.com/docs/capabilities/web-apis/reporting-api)
      */
-    reportingApiDescription: 'On this page you will be able to inspect `Reporting API` reports and endpoints.',
+    reportingApiDescription: 'On this page you will be able to inspect `Reporting API` reports and endpoints',
     /**
      * @description Placeholder text that shows if no report was selected for viewing
      *report body (https://developers.google.com/web/updates/2018/09/reportingapi#sending).

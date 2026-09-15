@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as EmulationComponents from '../settings/emulation/components/components.js';
@@ -48,11 +49,11 @@ const UIStrings = {
     /**
      * @description Status message in network conditions view of the Network panel after updating user agent client hints.
      */
-    clientHintsStatusText: 'User agent updated.',
+    clientHintsStatusText: 'User agent updated',
     /**
      * @description Accessible announcement when network conditions view is shown.
      */
-    networkConditionsPanelShown: 'Network conditions shown.',
+    networkConditionsPanelShown: 'Network conditions shown',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkConfigView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -66,9 +67,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
         this.registerRequiredCSS(networkConfigViewStyles);
         this.contentElement.classList.add('network-config');
         this.createCacheSection();
-        this.contentElement.createChild('div').classList.add('panel-section-separator');
+        this.contentElement.createChild('div', 'panel-section-separator');
         this.createNetworkThrottlingSection();
-        this.contentElement.createChild('div').classList.add('panel-section-separator');
+        this.contentElement.createChild('div', 'panel-section-separator');
         this.createUserAgentSection();
     }
     static instance(opts = { forceNew: null }) {
@@ -85,15 +86,27 @@ export class NetworkConfigView extends UI.Widget.VBox {
         userAgentSelectElement.setAttribute('jslog', `${VisualLogging.dropDown().track({ change: true }).context(userAgentSetting.name)}`);
         UI.ARIAUtils.setLabel(userAgentSelectElement, title);
         const customOverride = { title: i18nString(UIStrings.custom), value: 'custom' };
-        userAgentSelectElement.appendChild(UI.UIUtils.createOption(customOverride.title, customOverride.value, 'custom'));
-        for (const userAgentDescriptor of userAgentGroups) {
-            const groupElement = userAgentSelectElement.createChild('optgroup');
-            groupElement.label = userAgentDescriptor.title;
-            for (const userAgentVersion of userAgentDescriptor.values) {
-                const userAgentValue = SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(userAgentVersion.value);
-                groupElement.appendChild(UI.UIUtils.createOption(userAgentVersion.title, userAgentValue, Platform.StringUtilities.toKebabCase(userAgentVersion.title)));
-            }
-        }
+        const { patchUserAgentWithChromeVersion } = SDK.NetworkManager.MultitargetNetworkManager;
+        const { toKebabCase } = Platform.StringUtilities;
+        // clang-format off
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(html `
+      <option value=${customOverride.value} jslog=${VisualLogging.item('custom').track({ click: true })}>
+        ${customOverride.title}
+      </option>
+      ${userAgentGroups.map(group => html `
+        <optgroup label=${group.title}>
+          ${group.values.map(val => html `
+            <option
+                value=${patchUserAgentWithChromeVersion(val.value)}
+                jslog=${VisualLogging.item(toKebabCase(val.title)).track({ click: true })}>
+              ${val.title}
+            </option>
+          `)}
+        </optgroup>
+      `)}
+    `, userAgentSelectElement);
+        // clang-format on
         userAgentSelectElement.selectedIndex = 0;
         const otherUserAgentElement = UI.UIUtils.createInput('', 'text');
         otherUserAgentElement.setAttribute('jslog', `${VisualLogging.textField().track({ change: true }).context(userAgentSetting.name)}`);

@@ -19,7 +19,7 @@ const UIStrings = {
     /**
      * @description Description text in Application Panel describing the cache storage tab
      */
-    cacheStorageDescription: 'On this page you can view and delete cache data.',
+    cacheStorageDescription: 'On this page you can view and delete cache data',
     /**
      * @description A context menu item in the Application Panel Sidebar of the Application panel
      */

@@ -106,7 +106,7 @@ const UIStrings = {
     /**
      * @description Tooltip description of a radio option for a Lighthouse mode that audits a page navigation.
      */
-    navigationTooltip: 'Navigation mode analyzes a page load, exactly like the original Lighthouse reports.',
+    navigationTooltip: 'Navigation mode analyzes a page load, exactly like the original Lighthouse reports',
     /**
      * @description Label of a radio option for a Lighthouse mode that audits user interactions over a period of time.
      */
@@ -114,7 +114,7 @@ const UIStrings = {
     /**
      * @description Tooltip description of a radio option for a Lighthouse mode that audits user interactions over a period of time.
      */
-    timespanTooltip: 'Timespan mode analyzes an arbitrary period of time, typically containing user interactions.',
+    timespanTooltip: 'Timespan mode analyzes an arbitrary period of time, typically containing user interactions',
     /**
      * @description Label of a radio option for a Lighthouse mode that audits the current page state.
      */
@@ -122,7 +122,7 @@ const UIStrings = {
     /**
      * @description Tooltip description of a radio option for a Lighthouse mode that audits the current page state.
      */
-    snapshotTooltip: 'Snapshot mode analyzes the page in a particular state, typically after user interactions.',
+    snapshotTooltip: 'Snapshot mode analyzes the page in a particular state, typically after user interactions',
     /**
      * @description Text for the mobile platform, as opposed to desktop.
      */
@@ -155,7 +155,7 @@ const UIStrings = {
      * @description Tooltip text of checkbox to reset storage features prior to running audits in
      * Lighthouse. Resetting the storage clears/empties it to a neutral state.
      */
-    resetStorageLocalstorage: 'Reset storage (`cache`, `service workers`, etc) before auditing. (Good for performance & `PWA` testing)',
+    resetStorageLocalstorage: 'Reset storage (`cache`, `service workers`, etc) before auditing (Good for performance & `PWA` testing)',
     /**
      * @description Text of checkbox to enable JavaScript sampling while running audits in Lighthouse.
      */

@@ -21,19 +21,23 @@ var NodeWorkerScope = class {
   }
 };
 var NodeWorker = class {
+  #worker;
   #workerPromise;
   #disposed = false;
   #rejectWorkerPromise;
   constructor(url) {
+    const worker = new WorkerThreads.Worker(new URL(url));
+    this.#worker = worker;
     this.#workerPromise = new Promise((resolve, reject) => {
       this.#rejectWorkerPromise = reject;
-      const worker = new WorkerThreads.Worker(new URL(url));
       worker.once("message", (message) => {
         if (message === "workerReady") {
           resolve(worker);
         }
       });
       worker.on("error", reject);
+    });
+    this.#workerPromise.catch(() => {
     });
   }
   postMessage(message, transfer) {
@@ -45,7 +49,7 @@ var NodeWorker = class {
   }
   dispose() {
     this.#disposed = true;
-    void this.#workerPromise.then((worker) => worker.terminate());
+    void this.#worker.terminate();
   }
   terminate(immediately) {
     if (immediately) {
@@ -85,6 +89,13 @@ var HOST_RUNTIME = {
   },
   getLocalStorage() {
     return void 0;
+  },
+  getDevicePixelRatio() {
+    return 1;
+  },
+  async saveScreenshot(_options) {
+  },
+  revokeLastScreenshotUrl() {
   }
 };
 export {

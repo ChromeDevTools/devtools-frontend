@@ -10,7 +10,7 @@ const UIStrings = {
     /**
      * @description Warning message indicating that the user will see real user data for a URL which is different from the URL they are currently looking at.
      */
-    fieldOverrideWarning: 'Field metrics are for a different URL than the current page.',
+    fieldOverrideWarning: 'Field metrics are for a different URL than the current page',
 };
 const str_ = i18n.i18n.registerUIStrings('models/crux-manager/CrUXManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -242,12 +242,15 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper {
         if (response.status === 404) {
             // This is how CrUX tells us that there is not data available for the provided url/origin
             // Since it's a valid response, just return null instead of throwing an error.
-            if (responseData?.error?.status === 'NOT_FOUND') {
-                return null;
+            if (typeof responseData === 'object' && responseData && 'error' in responseData) {
+                const error = responseData.error;
+                if (error?.status === 'NOT_FOUND') {
+                    return null;
+                }
             }
             throw new Error(`Failed to fetch data from CrUX server (Status code: ${response.status})`);
         }
-        if (!('record' in responseData)) {
+        if (typeof responseData !== 'object' || !responseData || !('record' in responseData)) {
             throw new Error(`Failed to find data in CrUX response: ${JSON.stringify(responseData)}`);
         }
         return responseData;

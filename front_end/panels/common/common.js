@@ -141,7 +141,7 @@ var UIStrings = {
   /**
    * @description Body for the first section of the Google Developer Program sign up dialog.
    */
-  designedForSuccessBody: "Grow your skills, build with AI, and earn badges you can showcase in your developer profile.",
+  designedForSuccessBody: "Grow your skills, build with AI, and earn badges you can showcase in your developer profile",
   /**
    * @description Title for the second section of the Google Developer Program sign up dialog.
    */
@@ -149,7 +149,7 @@ var UIStrings = {
   /**
    * @description Body for the second section of the Google Developer Program sign up dialog.
    */
-  keepUpdatedBody: "The latest DevTools features, event invites, and tailored insights land directly in your inbox.",
+  keepUpdatedBody: "The latest DevTools features, event invites, and tailored insights land directly in your inbox",
   /**
    * @description Title for the third section of the Google Developer Program sign up dialog.
    */
@@ -674,7 +674,7 @@ var UIStringsNotTranslate = {
   /**
    * @description Text for recitation notice
    */
-  generatedCodeMayBeSubjectToALicense: "Generated code may be subject to a license.",
+  generatedCodeMayBeSubjectToALicense: "Generated code may be subject to a license",
   /**
    * @description Text for citations
    */

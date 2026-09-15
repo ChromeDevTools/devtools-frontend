@@ -13,73 +13,73 @@ const UIStrings = {
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    goodBetterCompare: 'Your local {PH1} value of {PH2} is good, but is significantly better than your users’ experience.',
+    goodBetterCompare: 'Your local {PH1} value of {PH2} is good, but is significantly better than your users’ experience',
     /**
      * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    goodWorseCompare: 'Your local {PH1} value of {PH2} is good, but is significantly worse than your users’ experience.',
+    goodWorseCompare: 'Your local {PH1} value of {PH2} is good, but is significantly worse than your users’ experience',
     /**
      * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    goodSimilarCompare: 'Your local {PH1} value of {PH2} is good, and is similar to your users’ experience.',
+    goodSimilarCompare: 'Your local {PH1} value of {PH2} is good, and is similar to your users’ experience',
     /**
      * @description Text block that summarize a local metric value. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    goodSummarized: 'Your local {PH1} value of {PH2} is good.',
+    goodSummarized: 'Your local {PH1} value of {PH2} is good',
     /**
      * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    needsImprovementBetterCompare: 'Your local {PH1} value of {PH2} needs improvement, but is significantly better than your users’ experience.',
+    needsImprovementBetterCompare: 'Your local {PH1} value of {PH2} needs improvement, but is significantly better than your users’ experience',
     /**
      * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    needsImprovementWorseCompare: 'Your local {PH1} value of {PH2} needs improvement, but is significantly worse than your users’ experience.',
+    needsImprovementWorseCompare: 'Your local {PH1} value of {PH2} needs improvement, but is significantly worse than your users’ experience',
     /**
      * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    needsImprovementSimilarCompare: 'Your local {PH1} value of {PH2} needs improvement, and is similar to your users’ experience.',
+    needsImprovementSimilarCompare: 'Your local {PH1} value of {PH2} needs improvement, and is similar to your users’ experience',
     /**
      * @description Text block that summarize a local metric value. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    needsImprovementSummarized: 'Your local {PH1} value of {PH2} needs improvement.',
+    needsImprovementSummarized: 'Your local {PH1} value of {PH2} needs improvement',
     /**
      * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    poorBetterCompare: 'Your local {PH1} value of {PH2} is poor, but is significantly better than your users’ experience.',
+    poorBetterCompare: 'Your local {PH1} value of {PH2} is poor, but is significantly better than your users’ experience',
     /**
      * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    poorWorseCompare: 'Your local {PH1} value of {PH2} is poor, but is significantly worse than your users’ experience.',
+    poorWorseCompare: 'Your local {PH1} value of {PH2} is poor, but is significantly worse than your users’ experience',
     /**
      * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    poorSimilarCompare: 'Your local {PH1} value of {PH2} is poor, and is similar to your users’ experience.',
+    poorSimilarCompare: 'Your local {PH1} value of {PH2} is poor, and is similar to your users’ experience',
     /**
      * @description Text block that summarize a local metric value. "local" refers to a developers local testing environment.
      * @example {LCP} PH1
      * @example {500 ms} PH2
      */
-    poorSummarized: 'Your local {PH1} value of {PH2} is poor.',
+    poorSummarized: 'Your local {PH1} value of {PH2} is poor',
     /**
      * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
      * @example {LCP} PH1

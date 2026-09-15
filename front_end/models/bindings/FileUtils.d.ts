@@ -6,7 +6,7 @@ export interface ChunkedReader {
     loadedSize(): number;
     fileName(): string;
     cancel(): void;
-    error(): DOMError | null;
+    error(): DOMException | Error | null;
 }
 export declare class ChunkedFileReader implements ChunkedReader {
     #private;
@@ -17,11 +17,9 @@ export declare class ChunkedFileReader implements ChunkedReader {
     fileSize(): number;
     fileName(): string;
     error(): DOMException | null;
-    private onChunkLoaded;
     private decodeChunkBuffer;
     private finishRead;
     private loadChunk;
-    private onError;
 }
 export declare class FileOutputStream implements Common.StringOutputStream.OutputStream {
     #private;

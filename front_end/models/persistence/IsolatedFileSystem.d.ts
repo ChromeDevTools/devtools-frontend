@@ -12,7 +12,7 @@ export declare class IsolatedFileSystem extends PlatformFileSystem {
     private readonly fileLocks;
     constructor(manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString, embedderPath: Platform.DevToolsPath.RawPathString, domFileSystem: FileSystem, type: PlatformFileSystemType, automatic: boolean, settings: Common.Settings.Settings);
     static create(manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString, embedderPath: Platform.DevToolsPath.RawPathString, type: PlatformFileSystemType, name: string, rootURL: string, automatic: boolean, settings: Common.Settings.Settings): Promise<IsolatedFileSystem | null>;
-    static errorMessage(error: DOMError): string;
+    static errorMessage(error: DOMException | Error): string;
     private serializedFileOperation;
     getMetadata(path: Platform.DevToolsPath.EncodedPathString): Promise<Metadata | null>;
     initialFilePaths(): Platform.DevToolsPath.EncodedPathString[];

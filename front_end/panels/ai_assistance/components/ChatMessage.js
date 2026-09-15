@@ -105,7 +105,7 @@ const UIStringsNotTranslate = {
     /**
      * @description The error message when the LLM selects context from a different origin.
      */
-    crossOriginError: 'I have selected the new context but you will have to start a new chat.',
+    crossOriginError: 'I have selected the new context but you will have to start a new chat',
     /**
      * @description The error message when the request payload is too large.
      */

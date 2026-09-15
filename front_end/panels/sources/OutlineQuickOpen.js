@@ -13,7 +13,7 @@ const UIStrings = {
     /**
      * @description Text in Go to line Quick Open of the Sources panel.
      */
-    noFileSelected: 'No file selected.',
+    noFileSelected: 'No file selected',
     /**
      * @description Text in Outline Quick Open of the Sources panel.
      */

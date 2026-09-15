@@ -219,6 +219,8 @@ export declare class Scope implements ScopeChainEntry {
     #private;
     constructor(callFrame: CallFrame, ordinal: number);
     callFrame(): CallFrame;
+    /** The index of this scope in {@link CallFrame.scopeChain}, usable as an `evaluateOnCallFrame` `scopeNumber`. */
+    ordinal(): number;
     type(): string;
     typeName(): string;
     name(): string | undefined;

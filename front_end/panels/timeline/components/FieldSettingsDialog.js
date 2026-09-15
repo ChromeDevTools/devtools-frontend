@@ -47,7 +47,7 @@ const UIStrings = {
     /**
      * @description Warning message explaining that the Chrome UX Report could not find enough real-world speed data for the page in the Performance panel.
      */
-    doesNotHaveSufficientData: 'The Chrome UX Report doesn’t have enough real-world speed data for this page.',
+    doesNotHaveSufficientData: 'The Chrome UX Report doesn’t have enough real-world speed data for this page',
     /**
      * @description Title for a dialog that contains settings related to fetching field metrics in the Performance panel.
      */
@@ -56,7 +56,7 @@ const UIStrings = {
      * @description Explanation of where field metrics come from and how they can be used in the Performance panel.
      * @example {Chrome UX Report} PH1
      */
-    fetchAggregated: 'Fetch aggregated field metrics from the {PH1} to help you contextualize local measurements with what real users experience on the site.',
+    fetchAggregated: 'Fetch aggregated field metrics from the {PH1} to help you contextualize local measurements with what real users experience on the site',
     /**
      * @description Heading for a section that explains what user data needs to be collected to fetch field metrics in the Performance panel.
      */
@@ -72,7 +72,7 @@ const UIStrings = {
     /**
      * @description Explanation of how associating a development origin with a production origin works for fetching real user data in the Performance panel.
      */
-    mapDevelopmentOrigins: 'Set a development origin to automatically get relevant field metrics for its production origin.',
+    mapDevelopmentOrigins: 'Set a development origin to automatically get relevant field metrics for its production origin',
     /**
      * @description Button label to add a new editable row to the origin mapping table in the Performance panel.
      */
@@ -81,7 +81,7 @@ const UIStrings = {
      * @description Warning message explaining that an entered origin is not a valid origin or URL in the Performance panel.
      * @example {http//malformed.com} PH1
      */
-    invalidOrigin: '"{PH1}" isn’t a valid origin or URL.',
+    invalidOrigin: '"{PH1}" isn’t a valid origin or URL',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/FieldSettingsDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

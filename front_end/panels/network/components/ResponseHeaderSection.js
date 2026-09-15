@@ -25,15 +25,15 @@ const UIStrings = {
     /**
      * @description Explanation text for which cross-origin policy to set.
      */
-    chooseThisOptionIfTheResourceAnd: 'Choose this option if the resource and the document are served from the same site.',
+    chooseThisOptionIfTheResourceAnd: 'Choose this option if the resource and the document are served from the same site',
     /**
      * @description Explanation text for which cross-origin policy to set.
      */
-    onlyChooseThisOptionIfAn: 'Only choose this option if an arbitrary website including this resource does not impose a security risk.',
+    onlyChooseThisOptionIfAn: 'Only choose this option if an arbitrary website including this resource does not impose a security risk',
     /**
      * @description Message in the Headers View of the Network panel when a cross-origin opener policy blocked loading a sandbox iframe.
      */
-    thisDocumentWasBlockedFrom: 'The document was blocked from loading in a popup opened by a sandboxed iframe because this document specified a cross-origin opener policy.',
+    thisDocumentWasBlockedFrom: 'The document was blocked from loading in a popup opened by a sandboxed iframe because this document specified a cross-origin opener policy',
     /**
      * @description Message in the Headers View of the Network panel when a cross-origin embedder policy header needs to be set.
      */

@@ -49,7 +49,7 @@ const UIStrings = {
     /**
      * @description Error message for tooltip showing that a file in the Sources panel could not be loaded.
      */
-    unableToLoadThisContent: 'Unable to load this content.',
+    unableToLoadThisContent: 'Unable to load this content',
     /**
      * @description Tooltip shown for the warning icon on an editor tab in the Sources panel
      *              when the developer saved changes via Ctrl+S/Cmd+S, while there was an

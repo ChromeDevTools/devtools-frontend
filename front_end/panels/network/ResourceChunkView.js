@@ -42,7 +42,7 @@ const UIStrings = {
     /**
      * @description Text in Messages View of the Network panel
      */
-    selectMessageToBrowseItsContent: 'Select message to browse its content.',
+    selectMessageToBrowseItsContent: 'Select message to browse its content',
     /**
      * @description Text in Messages View of the Network panel
      */

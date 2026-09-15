@@ -106,7 +106,7 @@ const UIStrings = {
     /**
      * @description Text in the Application panel describing the local storage tab.
      */
-    localStorageDescription: 'On this page you can view, add, edit, and delete local storage key-value pairs.',
+    localStorageDescription: 'On this page you can view, add, edit, and delete local storage key-value pairs',
     /**
      * @description Text in Application Panel Sidebar of the Application panel
      */
@@ -118,7 +118,7 @@ const UIStrings = {
     /**
      * @description Text in the Application panel describing the session storage tab.
      */
-    sessionStorageDescription: 'On this page you can view, add, edit, and delete session storage key-value pairs.',
+    sessionStorageDescription: 'On this page you can view, add, edit, and delete session storage key-value pairs',
     /**
      * @description Text in Application Panel Sidebar of the Application panel
      */
@@ -130,7 +130,7 @@ const UIStrings = {
     /**
      * @description Text in the Application panel describing the extension storage tab.
      */
-    extensionStorageDescription: 'On this page you can view, add, edit, and delete extension storage key-value pairs.',
+    extensionStorageDescription: 'On this page you can view, add, edit, and delete extension storage key-value pairs',
     /**
      * @description Text for extension session storage in Application panel
      */
@@ -158,7 +158,7 @@ const UIStrings = {
     /**
      * @description Text for web cookies
      */
-    cookiesDescription: 'On this page you can view, add, edit, and delete cookies.',
+    cookiesDescription: 'On this page you can view, add, edit, and delete cookies',
     /**
      * @description Text in Application Panel Sidebar of the Application panel
      */
@@ -182,7 +182,7 @@ const UIStrings = {
     /**
      * @description Text in the Application panel describing the extension storage tab.
      */
-    indexeddbDescription: 'On this page you can view and delete indexedDB key-value pairs and databases.',
+    indexeddbDescription: 'On this page you can view and delete indexedDB key-value pairs and databases',
     /**
      * @description A context menu item in the Application Panel Sidebar of the Application panel
      */
@@ -222,7 +222,7 @@ const UIStrings = {
     /**
      * @description Text in Frames View of the Application panel
      */
-    openedWindowsDescription: 'On this page you can view windows opened via window\.open\(\).',
+    openedWindowsDescription: 'On this page you can view windows opened via window\.open\(\)',
     /**
      * @description Label for plural of worker type: web workers
      */
@@ -234,7 +234,7 @@ const UIStrings = {
     /**
      * @description Description of content of unavailable document in Application panel
      */
-    theContentOfThisDocumentHasBeen: 'The content of this document has been generated dynamically via \'document.write()\'.',
+    theContentOfThisDocumentHasBeen: 'The content of this document has been generated dynamically via \'document.write()\'',
     /**
      * @description Text in Frames View of the Application panel
      */
@@ -246,7 +246,7 @@ const UIStrings = {
     /**
      * @description Description text for describing the dedicated worker tab.
      */
-    workerDescription: 'On this page you can view dedicated workers that are created by the parent frame.',
+    workerDescription: 'On this page you can view dedicated workers that are created by the parent frame',
     /**
      * @description Aria text for screen reader to announce they can scroll to top of manifest if invoked
      */
@@ -268,7 +268,7 @@ const UIStrings = {
     /**
      * @description Description text in the Application Panel describing a frame's resources
      */
-    resourceDescription: 'On this page you can view the frame’s resources.',
+    resourceDescription: 'On this page you can view the frame’s resources',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

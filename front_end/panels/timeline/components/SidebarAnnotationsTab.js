@@ -30,7 +30,7 @@ const UIStrings = {
     /**
      * @description Instructions for how to add an item label in the Performance panel.
      */
-    entryLabelTutorialDescription: 'Double-click or press Enter on an item and type to add an item label.',
+    entryLabelTutorialDescription: 'Double-click or press Enter on an item and type to add an item label',
     /**
      * @description Header title for the item connection tutorial in the Performance panel sidebar.
      */
@@ -38,7 +38,7 @@ const UIStrings = {
     /**
      * @description Instructions for how to connect two items in the flame chart of the Performance panel.
      */
-    entryLinkTutorialDescription: 'Double-click on an item, click on the adjacent rightward arrow, then select the destination item.',
+    entryLinkTutorialDescription: 'Double-click on an item, click on the adjacent rightward arrow, then select the destination item',
     /**
      * @description Header title for the time range tutorial in the Performance panel sidebar.
      */
@@ -46,7 +46,7 @@ const UIStrings = {
     /**
      * @description Instructions for how to add a time range annotation in the flame chart of the Performance panel.
      */
-    timeRangeTutorialDescription: 'Shift-drag in the flame chart, then type to add a time range annotation.',
+    timeRangeTutorialDescription: 'Shift-drag in the flame chart, then type to add a time range annotation',
     /**
      * @description Header title for the annotation deletion tutorial in the Performance panel sidebar.
      */
@@ -54,7 +54,7 @@ const UIStrings = {
     /**
      * @description Instructions for how to delete an annotation in the Performance panel sidebar.
      */
-    deleteAnnotationTutorialDescription: 'Hover over the list in the sidebar Annotations tab to delete an annotation.',
+    deleteAnnotationTutorialDescription: 'Hover over the list in the sidebar Annotations tab to delete an annotation',
     /**
      * @description Accessible label for the delete annotation button in the Performance panel sidebar.
      * @example {A paint event annotated with the text hello world} PH1

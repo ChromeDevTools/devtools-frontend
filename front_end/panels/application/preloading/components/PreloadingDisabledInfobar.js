@@ -14,69 +14,69 @@ import preloadingDisabledInfobarStyles from './preloadingDisabledInfobar.css.js'
 const { urlString } = Platform.DevToolsPath;
 const UIStrings = {
     /**
-     * @description Infobar text for disabled case
+     * @description Infobar text indicating speculative loading is disabled.
      */
     infobarPreloadingIsDisabled: 'Speculative loading is disabled',
     /**
-     * @description Infobar text for force-enabled case
+     * @description Infobar text indicating speculative loading is force-enabled.
      */
     infobarPreloadingIsForceEnabled: 'Speculative loading is force-enabled',
     /**
-     * @description Title for dialog
+     * @description Title of dialog explaining reasons stopping speculative loading.
      */
-    titleReasonsPreventingPreloading: 'Reasons preventing speculative loading',
+    titleReasonsPreventingPreloading: 'Reasons stopping speculative loading',
     /**
-     * @description Header in dialog
+     * @description Dialog header when speculative loading is disabled by user settings or extensions.
      */
     headerDisabledByPreference: 'User settings or extensions',
     /**
-     * @description Description in dialog
-     * @example {Preload pages settings (linked to chrome://settings/performance)} PH1
-     * @example {Extensions settings (linked to chrome://extensions)} PH2
+     * @description Dialog description when speculative loading is disabled by user settings or extensions.
+     * @example {Preload pages settings} PH1
+     * @example {Extensions settings} PH2
      */
     descriptionDisabledByPreference: 'Speculative loading is disabled because of user settings or an extension. Go to {PH1} to update your preference. Go to {PH2} to disable any extension that blocks speculative loading.',
     /**
-     * @description Text of link
+     * @description Link text to preload pages settings in Chrome settings.
      */
     preloadingPagesSettings: 'Preload pages settings',
     /**
-     * @description Text of link
+     * @description Link text to extensions settings in Chrome settings.
      */
     extensionsSettings: 'Extensions settings',
     /**
-     * @description Header in dialog
+     * @description Dialog header when speculative loading is disabled by Data Saver.
      */
     headerDisabledByDataSaver: 'Data Saver',
     /**
-     * @description Description in dialog
+     * @description Dialog description when speculative loading is disabled by Data Saver.
      */
-    descriptionDisabledByDataSaver: 'Speculative loading is disabled because of the operating system’s Data Saver mode.',
+    descriptionDisabledByDataSaver: 'Speculative loading is disabled because of the operating system’s Data Saver mode',
     /**
-     * @description Header in dialog
+     * @description Dialog header when speculative loading is disabled by Battery Saver.
      */
     headerDisabledByBatterySaver: 'Battery Saver',
     /**
-     * @description Description in dialog
+     * @description Dialog description when speculative loading is disabled by Battery Saver.
      */
-    descriptionDisabledByBatterySaver: 'Speculative loading is disabled because of the operating system’s Battery Saver mode.',
+    descriptionDisabledByBatterySaver: 'Speculative loading is disabled because of the operating system’s Battery Saver mode',
     /**
-     * @description Header in dialog
+     * @description Dialog header when prefetch was disabled but is force-enabled.
      */
     headerDisabledByHoldbackPrefetchSpeculationRules: 'Prefetch was disabled, but is force-enabled now',
     /**
-     * @description Description in infobar
+     * @description Dialog description when prefetch is force-enabled due to DevTools being open.
      */
-    descriptionDisabledByHoldbackPrefetchSpeculationRules: 'Prefetch is forced-enabled because DevTools is open. When DevTools is closed, prefetch will be disabled because this browser session is part of a holdback group used for performance comparisons.',
+    descriptionDisabledByHoldbackPrefetchSpeculationRules: 'Prefetch is force-enabled because DevTools is open. When DevTools is closed, prefetch will be disabled because this browser session is part of a holdback group used for performance comparisons.',
     /**
-     * @description Header in dialog
+     * @description Dialog header when prerendering was disabled but is force-enabled.
      */
     headerDisabledByHoldbackPrerenderSpeculationRules: 'Prerendering was disabled, but is force-enabled now',
     /**
-     * @description Description in infobar
+     * @description Dialog description when prerendering is force-enabled due to DevTools being open.
      */
-    descriptionDisabledByHoldbackPrerenderSpeculationRules: 'Prerendering is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons.',
+    descriptionDisabledByHoldbackPrerenderSpeculationRules: 'Prerendering is force-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons.',
     /**
-     * @description Footer link for more details
+     * @description Footer link to learn more about speculative loading.
      */
     footerLearnMore: 'Learn more',
 };

@@ -1,3 +1,13 @@
+export interface ScreenshotOptions {
+    base64Png: string;
+    fileName: string;
+    clip?: {
+        screenRectWidth: number;
+        screenRectHeight: number;
+        visiblePageRectLeft: number;
+        visiblePageRectTop: number;
+    };
+}
 /**
  * Provides abstractions for host features that require different implementations depending
  * on whether DevTools runs in the browser or Node.js
@@ -8,6 +18,9 @@ export interface HostRuntime {
     getOnLine(): boolean;
     getUserAgent(): string;
     getLocalStorage(): Storage | undefined;
+    getDevicePixelRatio(): number;
+    saveScreenshot(options: ScreenshotOptions): Promise<void>;
+    revokeLastScreenshotUrl(): void;
 }
 /**
  * Abstracts away the differences between browser web workers and Node.js worker threads.

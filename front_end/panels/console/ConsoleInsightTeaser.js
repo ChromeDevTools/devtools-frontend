@@ -90,7 +90,7 @@ const UIStringsNotTranslate = {
     /**
      * @description Call to action for downloading an AI model
      */
-    toUseDownload: 'To use Chrome’s Built-in AI here and elsewhere, download the AI model (~4 GB).',
+    toUseDownload: 'To use Chrome’s Built-in AI here and elsewhere, download the AI model (~4 GB)',
     /**
      * @description Button text to trigger model download
      */

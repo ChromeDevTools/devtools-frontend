@@ -26,7 +26,7 @@ const UIStrings = {
     /**
      * @description Description text on manifests in App Manifest View of the Application panel which describes the app manifest view tab
      */
-    manifestDescription: 'A manifest defines how your app appears on phone’s home screens and what the app looks like on launch.',
+    manifestDescription: 'A manifest defines how your app appears on phone’s home screens and what the app looks like on launch',
     /**
      * @description Text in App Manifest View of the Application panel
      */
@@ -78,7 +78,7 @@ const UIStrings = {
     /**
      * @description Popup-text explaining what the App Id is used for.
      */
-    appIdExplainer: 'This is used by the browser to know whether the manifest should be updating an existing application, or whether it refers to a new web app that can be installed.',
+    appIdExplainer: 'This is used by the browser to know whether the manifest should be updating an existing application, or whether it refers to a new web app that can be installed',
     /**
      * @description Text which is a hyperlink to more documentation
      */
@@ -132,7 +132,7 @@ const UIStrings = {
     /**
      * @description Text in App Manifest View of the Application panel
      */
-    descriptionMayBeTruncated: 'Description may be truncated.',
+    descriptionMayBeTruncated: 'Description may be truncated',
     /**
      * @description Warning text about too many shortcuts
      */
@@ -197,7 +197,7 @@ const UIStrings = {
      * @description Manifest installability error in the Application panel
      * @example {100} PH1
      */
-    manifestDoesNotContainASuitable: 'Manifest does not contain a suitable icon—PNG, SVG, or WebP format of at least {PH1}px is required, the \'`sizes`\' attribute must be set, and the \'`purpose`\' attribute, if set, must include \'`any`\'.',
+    manifestDoesNotContainASuitable: 'Manifest does not contain a suitable icon—PNG, SVG, or WebP format of at least {PH1}px is required, the \'`sizes`\' attribute must be set, and the \'`purpose`\' attribute, if set, must include \'`any`\'',
     /**
      * @description Manifest installability error in the Application panel
      */
@@ -206,7 +206,7 @@ const UIStrings = {
      * @description Manifest installability error in the Application panel
      * @example {100} PH1
      */
-    noSuppliedIconIsAtLeastSpxSquare: 'No supplied icon is at least {PH1} pixels square in `PNG`, `SVG`, or `WebP` format, with the purpose attribute unset or set to \'`any`\'.',
+    noSuppliedIconIsAtLeastSpxSquare: 'No supplied icon is at least {PH1} pixels square in `PNG`, `SVG`, or `WebP` format, with the purpose attribute unset or set to \'`any`\'',
     /**
      * @description Manifest installability error in the Application panel
      */
@@ -254,7 +254,7 @@ const UIStrings = {
     /**
      * @description Manifest installability error in the Application panel
      */
-    preferrelatedapplicationsIsOnly: '\'`prefer_related_applications`\' is only supported on `Chrome` Beta and Stable channels on `Android`.',
+    preferrelatedapplicationsIsOnly: '\'`prefer_related_applications`\' is only supported on `Chrome` Beta and Stable channels on `Android`',
     /**
      * @description Manifest installability error in the Application panel
      */
@@ -378,7 +378,7 @@ const UIStrings = {
      * @description Manifest installability error in the Application panel
      * @example {https://example.com/image.png} url
      */
-    screenshotPixelSize: 'Screenshot {url} should specify a pixel size `[width]x[height]` instead of `any` as first size.',
+    screenshotPixelSize: 'Screenshot {url} should specify a pixel size `[width]x[height]` instead of `any` as first size',
     /**
      * @description Warning text about screenshots for Richer PWA Install UI on desktop
      */
@@ -405,12 +405,12 @@ const UIStrings = {
      * @example {https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override} PH2
      * @example {https://developer.mozilla.org/en-US/docs/Web/Manifest} PH3
      */
-    wcoFound: 'Chrome has successfully found the {PH1} value for the {PH2} field in the {PH3}.',
+    wcoFound: 'Chrome has successfully found the {PH1} value for the {PH2} field in the {PH3}',
     /**
      * @description Message for Windows Control Overlay value not found with link to documentation
      * @example {https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override} PH1
      */
-    wcoNotFound: 'Define {PH1} in the manifest to use the Window Controls Overlay API and customize your app’s title bar.',
+    wcoNotFound: 'Define {PH1} in the manifest to use the Window Controls Overlay API and customize your app’s title bar',
     /**
      * @description Link text for more information on customizing Window Controls Overlay title bar in the Application panel
      */

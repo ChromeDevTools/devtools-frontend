@@ -17,15 +17,15 @@ export const UIStrings = {
     /**
      * @description Message displayed in a chip explaining that an image file size is large for the # of pixels it has and recommends possible adjustments to improve the image size.
      */
-    useCompression: 'Increasing the image compression factor could improve this image’s download size.',
+    useCompression: 'Increasing the image compression factor could improve this image’s download size',
     /**
      * @description Message displayed in a chip explaining that an image file size is large for the # of pixels it has and recommends possible adjustments to improve the image size.
      */
-    useModernFormat: 'Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image’s download size.',
+    useModernFormat: 'Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image’s download size',
     /**
      * @description Message displayed in a chip advising the user to use video formats instead of GIFs because videos generally have smaller file sizes.
      */
-    useVideoFormat: 'Using video formats instead of GIFs can improve the download size of animated content.',
+    useVideoFormat: 'Using video formats instead of GIFs can improve the download size of animated content',
     /**
      * @description Message displayed in a chip explaining that an image was displayed on the page with dimensions much smaller than the image file dimensions.
      * @example {1000x500} PH1

@@ -51,11 +51,11 @@ const UIStrings = {
     /**
      * @description Tooltip text explaining the privacy implications of including resource content when saving a trace in the Performance panel.
      */
-    resourceContentPrivacyInfo: 'Includes the full content of all loaded HTML, CSS, and scripts (except extensions).',
+    resourceContentPrivacyInfo: 'Includes the full content of all loaded HTML, CSS, and scripts (except extensions)',
     /**
      * @description Tooltip text explaining the privacy implications of including script source maps when saving a trace in the Performance panel.
      */
-    sourceMapsContentPrivacyInfo: 'Includes available source maps, which may expose authored code.',
+    sourceMapsContentPrivacyInfo: 'Includes available source maps, which may expose authored code',
     /**
      * @description Accessible label prefix for the information button in the Performance panel.
      */

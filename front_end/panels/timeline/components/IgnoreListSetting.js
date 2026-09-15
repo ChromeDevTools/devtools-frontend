@@ -25,7 +25,7 @@ const UIStrings = {
     /**
      * @description Description text in the ignore list settings dialog of the Performance panel.
      */
-    ignoreListDescription: 'Add regular expression rules to remove matching scripts from the flame chart.',
+    ignoreListDescription: 'Add regular expression rules to remove matching scripts from the flame chart',
     /**
      * @description Label for a pattern rule in the ignore list settings dialog of the Performance panel.
      * @example {ad.*?} regex

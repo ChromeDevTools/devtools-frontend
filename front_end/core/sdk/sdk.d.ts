@@ -84,6 +84,7 @@ import * as SourceMap from './SourceMap.js';
 import * as SourceMapCache from './SourceMapCache.js';
 import * as SourceMapFunctionRanges from './SourceMapFunctionRanges.js';
 import * as SourceMapManager from './SourceMapManager.js';
+import * as SourceMapRangeMappings from './SourceMapRangeMappings.js';
 import * as SourceMapScopeChainEntry from './SourceMapScopeChainEntry.js';
 import * as SourceMapScopesInfo from './SourceMapScopesInfo.js';
 import * as StorageBucketsModel from './StorageBucketsModel.js';
@@ -93,4 +94,4 @@ import * as TargetManager from './TargetManager.js';
 import * as TraceObject from './TraceObject.js';
 import * as WebAuthnModel from './WebAuthnModel.js';
 export { AccessibilityModel, AnimationModel, AutofillModel, CategorizedBreakpoint, ChildTargetManager, CompilerSourceMappingContentProvider, Connections, ConsoleModel, Cookie, CookieModel, CookieParser, CPUProfilerModel, CPUThrottlingManager, CrashReportContextModel, CSSContainerQuery, CSSFontFace, CSSLayer, CSSLocation, CSSMatchedStyles, CSSMedia, CSSMetadata, CSSModel, CSSNavigation, CSSProperty, CSSPropertyParser, CSSPropertyParserMatchers, CSSQuery, CSSRule, CSSScope, CSSStartingStyle, CSSStyleDeclaration, CSSStyleSheetHeader, CSSSupports, DebuggerModel, DOMDebuggerModel, DOMModel, DOMStorageModel, EmulationModel, EnhancedTracesParser, EventBreakpointsModel, FrameAssociated, FrameManager, HeapProfilerModel, IOModel, IsolateManager, IssuesModel, LayerTreeBase, LogModel, NetworkManager, NetworkRequest, NetworkRequestAccess, OverlayColorGenerator, OverlayModel, OverlayPersistentHighlighter, PageLoad, PageResourceLoader, PaintProfiler, PerformanceMetricsModel, PreloadingModel, RehydratingConnection, // TODO(crbug.com/444191656): Exported for tests.
-RehydratingObject, RemoteObject, Resource, ResourceTreeModel, RuntimeModel, ScopeTreeCache, ScreenCaptureModel, Script, SDKModel, SDKSettings, SecurityOrigin, SecurityOriginManager, ServerSentEventProtocol, ServerTiming, ServiceWorkerCacheModel, ServiceWorkerManager, SourceMap, SourceMapCache, SourceMapFunctionRanges, SourceMapManager, SourceMapScopeChainEntry, SourceMapScopesInfo, StorageBucketsModel, StorageKeyManager, Target, TargetManager, TraceObject, WebAuthnModel, };
+RehydratingObject, RemoteObject, Resource, ResourceTreeModel, RuntimeModel, ScopeTreeCache, ScreenCaptureModel, Script, SDKModel, SDKSettings, SecurityOrigin, SecurityOriginManager, ServerSentEventProtocol, ServerTiming, ServiceWorkerCacheModel, ServiceWorkerManager, SourceMap, SourceMapCache, SourceMapFunctionRanges, SourceMapManager, SourceMapRangeMappings, SourceMapScopeChainEntry, SourceMapScopesInfo, StorageBucketsModel, StorageKeyManager, Target, TargetManager, TraceObject, WebAuthnModel, };

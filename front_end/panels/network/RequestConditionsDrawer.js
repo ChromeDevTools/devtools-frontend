@@ -49,15 +49,15 @@ const UIStrings = {
     /**
      * @description Tooltip text for pattern input in request conditions tool of the Network panel.
      */
-    textEditPattern: 'Text pattern to block or throttle matching requests; use URL Pattern syntax.',
+    textEditPattern: 'Text pattern to block or throttle matching requests; use URL Pattern syntax',
     /**
      * @description Error text for empty list widget input in Request Conditions tool
      */
-    patternInputCannotBeEmpty: 'Pattern input cannot be empty.',
+    patternInputCannotBeEmpty: 'Pattern input cannot be empty',
     /**
      * @description Error text for duplicate list widget input in Request Conditions tool
      */
-    patternAlreadyExists: 'Pattern already exists.',
+    patternAlreadyExists: 'Pattern already exists',
     /**
      * @description Tooltip message when a pattern failed to parse as a URLPattern
      */

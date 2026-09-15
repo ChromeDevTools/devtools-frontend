@@ -66,7 +66,7 @@ const UIStringsNotTranslate = {
     /**
      * @description Text displayed when the chat input is disabled due to reading past conversation.
      */
-    pastConversation: 'You’re viewing a past conversation.',
+    pastConversation: 'You’re viewing a past conversation',
     /**
      * @description Message displayed in toast in case of any failures while taking a screenshot of the page.
      */

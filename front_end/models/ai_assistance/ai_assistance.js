@@ -11147,14 +11147,14 @@ var DOMNodeContext = class extends ConversationContext {
    * @returns The security origin of the owner document, or a unique opaque origin.
    */
   getOrigin() {
-    const ownerDocument = this.#node.ownerDocument;
-    if (!ownerDocument) {
+    const origin = this.#node.securityOrigin();
+    if (!origin) {
       if (!this.#opaqueOrigin) {
         this.#opaqueOrigin = SDK25.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
       }
       return this.#opaqueOrigin;
     }
-    return SDK25.SecurityOrigin.SecurityOrigin.create(ownerDocument.documentURL);
+    return origin;
   }
   getItem() {
     return this.#node;

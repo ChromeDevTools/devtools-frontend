@@ -68,7 +68,6 @@ export class ObjectWrapper {
     }
 }
 export function eventMixin(base) {
-    console.assert(base !== HTMLElement);
     return class EventHandling extends base {
         // Note that the weird name is due to TSC disallowing private/protected fields in
         // anonmous exported classes. We use a `__` prefix to prevent clashes with `base`.

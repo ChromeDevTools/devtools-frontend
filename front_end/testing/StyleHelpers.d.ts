@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Protocol from '../generated/protocol.js';
 import type { MockCDPConnection } from './MockCDPConnection.js';
@@ -53,8 +54,8 @@ export declare function getMatchedStyles(payload: Partial<SDK.CSSMatchedStyles.C
 export declare function createStubbedDomNodeWithModels(opts?: {
     nodeId: number;
 }): {
-    node: SDK.DOMModel.DOMNode;
-    domModel: SDK.DOMModel.DOMModel;
-    cssModel: SDK.CSSModel.CSSModel;
+    node: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
+    domModel: sinon.SinonStubbedInstance<SDK.DOMModel.DOMModel>;
+    cssModel: sinon.SinonStubbedInstance<SDK.CSSModel.CSSModel>;
 };
 export {};

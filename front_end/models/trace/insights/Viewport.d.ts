@@ -10,7 +10,7 @@ export declare const UIStrings: {
     /**
      * @description Text to tell the user how a viewport meta element can improve performance. \xa0 is a non-breaking space
      */
-    readonly description: 'Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile.';
+    readonly description: 'Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn’t optimized for mobile';
     /**
      * @description Text for a label describing the portion of an interaction event that was delayed due to a bad mobile viewport.
      */

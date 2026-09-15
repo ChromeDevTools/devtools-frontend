@@ -161,11 +161,11 @@ const UIStrings = {
     /**
      * @description Field error message in the Devices settings tab that shows that the entered value has characters that can't be represented in the corresponding user agent client hints.
      */
-    notRepresentable: 'Not representable as structured headers string.',
+    notRepresentable: 'Not representable as structured headers string',
     /**
      * @description Hover text for info icon which explains user agent client hints.
      */
-    userAgentClientHintsInfo: 'User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting.',
+    userAgentClientHintsInfo: 'User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting',
     /**
      * @description Success message when brand row is successfully added in client hints form.
      * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.

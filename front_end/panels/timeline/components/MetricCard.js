@@ -64,7 +64,7 @@ const UIStrings = {
     /**
      * @description Prompt instructing the user to interact with the page to measure INP in the live metrics view of the Performance panel.
      */
-    interactToMeasure: 'Interact with the page to measure INP.',
+    interactToMeasure: 'Interact with the page to measure INP',
     /**
      * @description Tooltip label to expand more details in the metric card of the Performance panel.
      */
@@ -100,11 +100,11 @@ const UIStrings = {
     /**
      * @description Recommendation explaining how dynamic content affects LCP in the Performance panel.
      */
-    recDynamicContentLCP: 'The LCP element can vary between page loads if content is dynamic.',
+    recDynamicContentLCP: 'The LCP element can vary between page loads if content is dynamic',
     /**
      * @description Recommendation explaining how dynamic content affects layout shifts in the Performance panel.
      */
-    recDynamicContentCLS: 'Dynamic content can influence what layout shifts happen.',
+    recDynamicContentCLS: 'Dynamic content can influence what layout shifts happen',
     /**
      * @description Table column header for subpart stage names in the live metrics view of the Performance panel.
      */

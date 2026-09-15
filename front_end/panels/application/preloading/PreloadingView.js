@@ -12,7 +12,6 @@ import { assertNotNullOrUndefined } from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { Directives, html, render } from '../../../ui/lit/lit.js';
@@ -25,76 +24,75 @@ const { createRef, ref } = Directives;
 const { widget } = UI.Widget;
 const UIStrings = {
     /**
-     * @description DropDown title for filtering preloading attempts by rule set
+     * @description Tooltip for the filter by rule set dropdown in the speculative loads view.
      */
     filterFilterByRuleSet: 'Filter by rule set',
     /**
-     * @description DropDown text for filtering preloading attempts by rule set: No filter
+     * @description Dropdown text for filtering preloading attempts by rule set when no filter is applied.
      */
     filterAllPreloads: 'All speculative loads',
     /**
-     * @description Dropdown subtitle for filtering preloading attempts by rule set
-     *             when there are no rule sets in the page.
+     * @description Dropdown subtitle for filtering preloading attempts by rule set when there are no rule sets on the page.
      */
     noRuleSets: 'no rule sets',
     /**
-     * @description Text in grid: Rule set is valid
+     * @description Status text in the rule sets table indicating the rule set is valid.
      */
     validityValid: 'Valid',
     /**
-     * @description Text in grid: Rule set must be a valid JSON object
+     * @description Status text in the rule sets table indicating the rule set is invalid.
      */
     validityInvalid: 'Invalid',
     /**
-     * @description Text in grid: Rule set contains invalid rules and they are ignored
+     * @description Status text in the rule sets table indicating some rules in the rule set are invalid and ignored.
      */
     validitySomeRulesInvalid: 'Some rules invalid',
     /**
-     * @description Text in grid and details: Preloading attempt is not yet triggered.
+     * @description Status text in the speculative loads table and details report indicating the preloading attempt is not yet triggered.
      */
     statusNotTriggered: 'Not triggered',
     /**
-     * @description Text in grid and details: Preloading attempt is eligible but pending.
+     * @description Status text in the speculative loads table and details report indicating the preloading attempt is eligible but pending.
      */
     statusPending: 'Pending',
     /**
-     * @description Text in grid and details: Preloading is running.
+     * @description Status text in the speculative loads table and details report indicating preloading is running.
      */
     statusRunning: 'Running',
     /**
-     * @description Text in grid and details: Preloading finished and the result is ready for the next navigation.
+     * @description Status text in the speculative loads table and details report indicating preloading finished and is ready for the next navigation.
      */
     statusReady: 'Ready',
     /**
-     * @description Text in grid and details: Ready, then used.
+     * @description Status text in the speculative loads table and details report indicating preloading was ready, then used.
      */
     statusSuccess: 'Success',
     /**
-     * @description Text in grid and details: Preloading failed.
+     * @description Status text in the speculative loads table and details report indicating preloading failed.
      */
     statusFailure: 'Failure',
     /**
-     * @description Text to pretty print a file
+     * @description Tooltip text for the button to pretty print the rule set source.
      */
     prettyPrint: 'Pretty print',
     /**
-     * @description Placeholder text if there are no rules to show. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+     * @description Empty state header in the speculation rules view when no rules are detected.
      */
     noRulesDetected: 'No rules detected',
     /**
-     * @description Placeholder text if there are no rules to show. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+     * @description Empty state description in the speculation rules view when no rules are detected.
      */
-    rulesDescription: 'On this page you will see the speculation rules used to prefetch and prerender page navigations.',
+    rulesDescription: 'On this page you will see the speculation rules used to prefetch and prerender page navigations',
     /**
-     * @description Placeholder text if there are no speculation attempts for prefetching or prerendering urls. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+     * @description Empty state header in the speculative loads view when no speculation is detected.
      */
     noPrefetchAttempts: 'No speculation detected',
     /**
-     * @description Placeholder text if there are no speculation attempts for prefetching or prerendering urls. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+     * @description Empty state description in the speculative loads view when no speculation is detected.
      */
-    prefetchDescription: 'On this page you will see details on speculative loads.',
+    prefetchDescription: 'On this page you will see details on speculative loads',
     /**
-     * @description Text for a learn more link
+     * @description Link text to learn more about speculation rules.
      */
     learnMore: 'Learn more',
 };

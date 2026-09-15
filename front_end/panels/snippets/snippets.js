@@ -3053,7 +3053,7 @@ var UIStrings2 = {
   /**
    * @description Text in Snippets Quick Open of the Sources panel when opening snippets.
    */
-  noSnippetsFound: "No snippets found.",
+  noSnippetsFound: "No snippets found",
   /**
    * @description Text for command prefix of running a code snippet.
    */

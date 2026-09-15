@@ -17,27 +17,27 @@ import ruleSetGridStyles from './ruleSetGrid.css.js';
 const { styleMap } = Directives;
 const UIStrings = {
     /**
-     * @description Column header: Short URL of rule set.
+     * @description Column header for the URL of a rule set.
      */
     ruleSet: 'Rule set',
     /**
-     * @description Column header: Show how many preloads are associated if valid, error counts if invalid.
+     * @description Column header showing the number of associated preloads if valid, or error counts if invalid.
      */
     status: 'Status',
     /**
-     * @description button: Title of button to reveal the corresponding request of rule set in Elements panel
+     * @description Tooltip text for the button to reveal the rule set in the Elements panel.
      */
-    clickToOpenInElementsPanel: 'Click to open in Elements panel',
+    clickToOpenInElementsPanel: 'Open in Elements panel',
     /**
-     * @description button: Title of button to reveal the corresponding request of rule set in Network panel
+     * @description Tooltip text for the button to reveal the rule set in the Network panel.
      */
-    clickToOpenInNetworkPanel: 'Click to open in Network panel',
+    clickToOpenInNetworkPanel: 'Open in Network panel',
     /**
-     * @description Value of status, specifying rule set contains how many errors.
+     * @description Status text indicating the number of errors contained in the rule set.
      */
     errors: '{errorCount, plural, =1 {# error} other {# errors}}',
     /**
-     * @description button: Title of button to reveal preloading attempts with filter by selected rule set
+     * @description Tooltip text for the button to reveal speculative loads associated with the selected rule set.
      */
     buttonRevealPreloadsAssociatedWithRuleSet: 'Reveal speculative loads associated with this rule set',
 };

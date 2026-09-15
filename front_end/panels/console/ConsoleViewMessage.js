@@ -49,7 +49,6 @@ import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_
 import { createIcon, Icon } from '../../ui/kit/kit.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -100,7 +99,7 @@ const UIStrings = {
     /**
      * @description Note title in Console view message of the Console panel.
      */
-    thisValueWillNotBeCollectedUntil: 'This value won’t be collected until console is cleared.',
+    thisValueWillNotBeCollectedUntil: 'This value won’t be collected until console is cleared',
     /**
      * @description Note title in Console view message of the Console panel.
      */
@@ -108,7 +107,7 @@ const UIStrings = {
     /**
      * @description Note title in Console view message of the Console panel.
      */
-    functionWasResolvedFromBound: 'Function was resolved from bound function.',
+    functionWasResolvedFromBound: 'Function was resolved from bound function',
     /**
      * @description Shown in the Console panel when an exception is thrown when trying to access a
      * property on an object. Should be translated.

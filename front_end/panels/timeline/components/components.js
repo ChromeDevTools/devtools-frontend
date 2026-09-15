@@ -4041,11 +4041,11 @@ var UIStrings5 = {
   /**
    * @description Tooltip text explaining the privacy implications of including resource content when saving a trace in the Performance panel.
    */
-  resourceContentPrivacyInfo: "Includes the full content of all loaded HTML, CSS, and scripts (except extensions).",
+  resourceContentPrivacyInfo: "Includes the full content of all loaded HTML, CSS, and scripts (except extensions)",
   /**
    * @description Tooltip text explaining the privacy implications of including script source maps when saving a trace in the Performance panel.
    */
-  sourceMapsContentPrivacyInfo: "Includes available source maps, which may expose authored code.",
+  sourceMapsContentPrivacyInfo: "Includes available source maps, which may expose authored code",
   /**
    * @description Accessible label prefix for the information button in the Performance panel.
    */
@@ -4515,16 +4515,16 @@ var UIStrings6 = {
    * @description Warning message explaining that an entered origin is not a valid origin or URL in the Performance panel.
    * @example {http//malformed.com} PH1
    */
-  invalidOrigin: '"{PH1}" isn\u2019t a valid origin or URL.',
+  invalidOrigin: '"{PH1}" isn\u2019t a valid origin or URL',
   /**
    * @description Warning message explaining that a development origin is already mapped to a production origin in the Performance panel.
    * @example {https://example.com} PH1
    */
-  alreadyMapped: '"{PH1}" is already mapped to a production origin.',
+  alreadyMapped: '"{PH1}" is already mapped to a production origin',
   /**
    * @description Warning message explaining that a page does not have enough real user data in the Performance panel.
    */
-  pageHasNoData: "The Chrome UX Report doesn\u2019t have enough real user data for this page."
+  pageHasNoData: "The Chrome UX Report doesn\u2019t have enough real user data for this page"
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/timeline/components/OriginMap.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
@@ -4763,7 +4763,7 @@ var UIStrings7 = {
   /**
    * @description Warning message explaining that the Chrome UX Report could not find enough real-world speed data for the page in the Performance panel.
    */
-  doesNotHaveSufficientData: "The Chrome UX Report doesn\u2019t have enough real-world speed data for this page.",
+  doesNotHaveSufficientData: "The Chrome UX Report doesn\u2019t have enough real-world speed data for this page",
   /**
    * @description Title for a dialog that contains settings related to fetching field metrics in the Performance panel.
    */
@@ -4772,7 +4772,7 @@ var UIStrings7 = {
    * @description Explanation of where field metrics come from and how they can be used in the Performance panel.
    * @example {Chrome UX Report} PH1
    */
-  fetchAggregated: "Fetch aggregated field metrics from the {PH1} to help you contextualize local measurements with what real users experience on the site.",
+  fetchAggregated: "Fetch aggregated field metrics from the {PH1} to help you contextualize local measurements with what real users experience on the site",
   /**
    * @description Heading for a section that explains what user data needs to be collected to fetch field metrics in the Performance panel.
    */
@@ -4788,7 +4788,7 @@ var UIStrings7 = {
   /**
    * @description Explanation of how associating a development origin with a production origin works for fetching real user data in the Performance panel.
    */
-  mapDevelopmentOrigins: "Set a development origin to automatically get relevant field metrics for its production origin.",
+  mapDevelopmentOrigins: "Set a development origin to automatically get relevant field metrics for its production origin",
   /**
    * @description Button label to add a new editable row to the origin mapping table in the Performance panel.
    */
@@ -4797,7 +4797,7 @@ var UIStrings7 = {
    * @description Warning message explaining that an entered origin is not a valid origin or URL in the Performance panel.
    * @example {http//malformed.com} PH1
    */
-  invalidOrigin: '"{PH1}" isn\u2019t a valid origin or URL.'
+  invalidOrigin: '"{PH1}" isn\u2019t a valid origin or URL'
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/timeline/components/FieldSettingsDialog.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
@@ -5165,7 +5165,7 @@ var UIStrings8 = {
   /**
    * @description Description text in the ignore list settings dialog of the Performance panel.
    */
-  ignoreListDescription: "Add regular expression rules to remove matching scripts from the flame chart.",
+  ignoreListDescription: "Add regular expression rules to remove matching scripts from the flame chart",
   /**
    * @description Label for a pattern rule in the ignore list settings dialog of the Performance panel.
    * @example {ad.*?} regex
@@ -6242,73 +6242,73 @@ var UIStrings11 = {
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  goodBetterCompare: "Your local {PH1} value of {PH2} is good, but is significantly better than your users\u2019 experience.",
+  goodBetterCompare: "Your local {PH1} value of {PH2} is good, but is significantly better than your users\u2019 experience",
   /**
    * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  goodWorseCompare: "Your local {PH1} value of {PH2} is good, but is significantly worse than your users\u2019 experience.",
+  goodWorseCompare: "Your local {PH1} value of {PH2} is good, but is significantly worse than your users\u2019 experience",
   /**
    * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  goodSimilarCompare: "Your local {PH1} value of {PH2} is good, and is similar to your users\u2019 experience.",
+  goodSimilarCompare: "Your local {PH1} value of {PH2} is good, and is similar to your users\u2019 experience",
   /**
    * @description Text block that summarize a local metric value. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  goodSummarized: "Your local {PH1} value of {PH2} is good.",
+  goodSummarized: "Your local {PH1} value of {PH2} is good",
   /**
    * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  needsImprovementBetterCompare: "Your local {PH1} value of {PH2} needs improvement, but is significantly better than your users\u2019 experience.",
+  needsImprovementBetterCompare: "Your local {PH1} value of {PH2} needs improvement, but is significantly better than your users\u2019 experience",
   /**
    * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  needsImprovementWorseCompare: "Your local {PH1} value of {PH2} needs improvement, but is significantly worse than your users\u2019 experience.",
+  needsImprovementWorseCompare: "Your local {PH1} value of {PH2} needs improvement, but is significantly worse than your users\u2019 experience",
   /**
    * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  needsImprovementSimilarCompare: "Your local {PH1} value of {PH2} needs improvement, and is similar to your users\u2019 experience.",
+  needsImprovementSimilarCompare: "Your local {PH1} value of {PH2} needs improvement, and is similar to your users\u2019 experience",
   /**
    * @description Text block that summarize a local metric value. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  needsImprovementSummarized: "Your local {PH1} value of {PH2} needs improvement.",
+  needsImprovementSummarized: "Your local {PH1} value of {PH2} needs improvement",
   /**
    * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  poorBetterCompare: "Your local {PH1} value of {PH2} is poor, but is significantly better than your users\u2019 experience.",
+  poorBetterCompare: "Your local {PH1} value of {PH2} is poor, but is significantly better than your users\u2019 experience",
   /**
    * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  poorWorseCompare: "Your local {PH1} value of {PH2} is poor, but is significantly worse than your users\u2019 experience.",
+  poorWorseCompare: "Your local {PH1} value of {PH2} is poor, but is significantly worse than your users\u2019 experience",
   /**
    * @description Text block that compares a local metric value to real user experiences. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  poorSimilarCompare: "Your local {PH1} value of {PH2} is poor, and is similar to your users\u2019 experience.",
+  poorSimilarCompare: "Your local {PH1} value of {PH2} is poor, and is similar to your users\u2019 experience",
   /**
    * @description Text block that summarize a local metric value. "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    */
-  poorSummarized: "Your local {PH1} value of {PH2} is poor.",
+  poorSummarized: "Your local {PH1} value of {PH2} is poor",
   /**
    * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
@@ -6525,7 +6525,7 @@ var UIStrings12 = {
   /**
    * @description Prompt instructing the user to interact with the page to measure INP in the live metrics view of the Performance panel.
    */
-  interactToMeasure: "Interact with the page to measure INP.",
+  interactToMeasure: "Interact with the page to measure INP",
   /**
    * @description Tooltip label to expand more details in the metric card of the Performance panel.
    */
@@ -6561,11 +6561,11 @@ var UIStrings12 = {
   /**
    * @description Recommendation explaining how dynamic content affects LCP in the Performance panel.
    */
-  recDynamicContentLCP: "The LCP element can vary between page loads if content is dynamic.",
+  recDynamicContentLCP: "The LCP element can vary between page loads if content is dynamic",
   /**
    * @description Recommendation explaining how dynamic content affects layout shifts in the Performance panel.
    */
-  recDynamicContentCLS: "Dynamic content can influence what layout shifts happen.",
+  recDynamicContentCLS: "Dynamic content can influence what layout shifts happen",
   /**
    * @description Table column header for subpart stage names in the live metrics view of the Performance panel.
    */
@@ -7610,7 +7610,7 @@ var UIStrings13 = {
   /**
    * @description Text block explaining how to simulate different mobile and desktop devices in the Performance panel.
    */
-  useDeviceToolbar: "Use the [device toolbar](https://developer.chrome.com/docs/devtools/device-mode) and configure throttling to simulate real user environments and identify more performance issues.",
+  useDeviceToolbar: "Use the [device toolbar](https://developer.chrome.com/docs/devtools/device-mode) and configure throttling to simulate real user environments and identify more performance issues",
   /**
    * @description Checkbox label that controls if the network cache is disabled in the Performance panel.
    */
@@ -7654,7 +7654,7 @@ var UIStrings13 = {
    * @description Text banner explaining how to compare local metrics to real user data in the Performance panel.
    * @example {Chrome UX Report} PH1
    */
-  seeHowYourLocalMetricsCompare: "See how your local metrics compare to real user data in the {PH1}.",
+  seeHowYourLocalMetricsCompare: "See how your local metrics compare to real user data in the {PH1}",
   /**
    * @description Link text for documentation about local and field metrics in the Performance panel.
    */
@@ -7666,7 +7666,7 @@ var UIStrings13 = {
   /**
    * @description Tooltip text explaining why an interaction was excluded from the INP calculation in the Performance panel.
    */
-  interactionExcluded: "INP is calculated using the 98th percentile of interaction delays, so some interaction delays may be larger than the INP value.",
+  interactionExcluded: "INP is calculated using the 98th percentile of interaction delays, so some interaction delays may be larger than the INP value",
   /**
    * @description Tooltip for the button to clear the currently selected log in the live metrics view of the Performance panel.
    */
@@ -7702,15 +7702,15 @@ var UIStrings13 = {
   /**
    * @description Tooltip text for an interaction status chip indicating that it represents the 98th percentile INP interaction in the Performance panel.
    */
-  inpInteraction: "The INP interaction is at the 98th percentile of interaction delays.",
+  inpInteraction: "The INP interaction is at the 98th percentile of interaction delays",
   /**
    * @description Tooltip text for the button to reveal the INP interaction in the live metrics view of the Performance panel.
    */
-  showInpInteraction: "Go to the INP interaction.",
+  showInpInteraction: "Go to the INP interaction",
   /**
    * @description Tooltip text for the button to reveal the worst layout shift cluster in the live metrics view of the Performance panel.
    */
-  showClsCluster: "Go to worst layout shift cluster.",
+  showClsCluster: "Go to worst layout shift cluster",
   /**
    * @description Table column header for subpart stage names in the live metrics view of the Performance panel.
    */
@@ -7730,7 +7730,7 @@ var UIStrings13 = {
   /**
    * @description Description text for recording a performance timeline of a connected Node process in the Performance panel.
    */
-  nodeClickToRecord: "Record a performance timeline of the connected Node process.",
+  nodeClickToRecord: "Record a performance timeline of the connected Node process",
   /**
    * @description Label for the network throttling dropdown in the live metrics view of the Performance panel.
    */
@@ -9963,7 +9963,7 @@ var UIStrings17 = {
   /**
    * @description Instructions for how to add an item label in the Performance panel.
    */
-  entryLabelTutorialDescription: "Double-click or press Enter on an item and type to add an item label.",
+  entryLabelTutorialDescription: "Double-click or press Enter on an item and type to add an item label",
   /**
    * @description Header title for the item connection tutorial in the Performance panel sidebar.
    */
@@ -9971,7 +9971,7 @@ var UIStrings17 = {
   /**
    * @description Instructions for how to connect two items in the flame chart of the Performance panel.
    */
-  entryLinkTutorialDescription: "Double-click on an item, click on the adjacent rightward arrow, then select the destination item.",
+  entryLinkTutorialDescription: "Double-click on an item, click on the adjacent rightward arrow, then select the destination item",
   /**
    * @description Header title for the time range tutorial in the Performance panel sidebar.
    */
@@ -9979,7 +9979,7 @@ var UIStrings17 = {
   /**
    * @description Instructions for how to add a time range annotation in the flame chart of the Performance panel.
    */
-  timeRangeTutorialDescription: "Shift-drag in the flame chart, then type to add a time range annotation.",
+  timeRangeTutorialDescription: "Shift-drag in the flame chart, then type to add a time range annotation",
   /**
    * @description Header title for the annotation deletion tutorial in the Performance panel sidebar.
    */
@@ -9987,7 +9987,7 @@ var UIStrings17 = {
   /**
    * @description Instructions for how to delete an annotation in the Performance panel sidebar.
    */
-  deleteAnnotationTutorialDescription: "Hover over the list in the sidebar Annotations tab to delete an annotation.",
+  deleteAnnotationTutorialDescription: "Hover over the list in the sidebar Annotations tab to delete an annotation",
   /**
    * @description Accessible label for the delete annotation button in the Performance panel sidebar.
    * @example {A paint event annotated with the text hello world} PH1

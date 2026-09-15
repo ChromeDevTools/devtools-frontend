@@ -18,7 +18,7 @@ const UIStrings = {
      * @description Text in a dialog stating the reason why the remote debugging connection was closed.
      * @example {target_closed} PH1
      */
-    connectionClosedReason: 'Reason: {PH1}.',
+    connectionClosedReason: 'Reason: {PH1}',
     /**
      * @description Instructions in a dialog on how to reconnect remote debugging by reopening DevTools.
      * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
@@ -26,7 +26,7 @@ const UIStrings = {
      * "Reconnect when ready" refers to the state of the mobile device: the developer first has to put the mobile
      * device back in a state where it can be inspected before DevTools can reconnect to it.
      */
-    reconnectWhenReadyByReopening: 'Reconnect when ready by reopening DevTools.',
+    reconnectWhenReadyByReopening: 'Reconnect when ready by reopening DevTools',
     /**
      * @description Button text to reconnect DevTools when remote debugging is terminated.
      * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device

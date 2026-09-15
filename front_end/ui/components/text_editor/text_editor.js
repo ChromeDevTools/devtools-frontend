@@ -505,7 +505,7 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Text for teaser to turn on code suggestions.
    */
-  toTurnOnCodeSuggestions: "to turn on code suggestions.",
+  toTurnOnCodeSuggestions: "to turn on code suggestions",
   /**
    * @description Text for snackbar notification on dismissing the teaser.
    */
@@ -534,11 +534,11 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Code generation disclaimer item text for the fre dialog.
    */
-  freDisclaimerDescribeCodeInComment: "In Console or Sources, describe the code you need in a comment, then press ctrl+i to generate it.",
+  freDisclaimerDescribeCodeInComment: "In Console or Sources, describe the code you need in a comment, then press ctrl+i to generate it",
   /**
    * @description Code generation disclaimer item text for the fre dialog.
    */
-  freDisclaimerDescribeCodeInCommentForMacOs: "In Console or Sources, describe the code you need in a comment, then press cmd+i to generate it.",
+  freDisclaimerDescribeCodeInCommentForMacOs: "In Console or Sources, describe the code you need in a comment, then press cmd+i to generate it",
   /**
    * @description Privacy disclaimer item text for the fre dialog.
    */
@@ -558,7 +558,7 @@ var UIStringsNotTranslate2 = {
   /**
    *@description Text for ARIA label for the teaser.
    */
-  toDisableCodeSuggestions: "to disable code suggestions."
+  toDisableCodeSuggestions: "to disable code suggestions"
 };
 var lockedString2 = i18n3.i18n.lockedString;
 var CODE_SNIPPET_WARNING_URL = "https://support.google.com/legal/answer/13505487";
@@ -1010,15 +1010,15 @@ var UIStringsNotTranslate3 = {
   /**
    * @description Text for teaser to learn how data is being used.
    */
-  toLearnHowYourDataIsBeingUsed: "to learn how your data is being used.",
+  toLearnHowYourDataIsBeingUsed: "to learn how your data is being used",
   /**
    * @description Aria label for teaser to generate code.
    */
-  pressCtrlPeriodToLearnHowYourDataIsBeingUsed: "Press ctrl . (period) to learn how your data is being used.",
+  pressCtrlPeriodToLearnHowYourDataIsBeingUsed: "Press ctrl . (period) to learn how your data is being used",
   /**
    * @description Aria label for teaser to generate code in Mac.
    */
-  pressCmdPeriodToLearnHowYourDataIsBeingUsed: "Press cmd . (period) to learn how your data is being used.",
+  pressCmdPeriodToLearnHowYourDataIsBeingUsed: "Press cmd . (period) to learn how your data is being used",
   /**
    * @description Text for teaser when generating suggestion.
    */

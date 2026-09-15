@@ -15,12 +15,12 @@ export const UIStrings = {
     /**
      * @description Description of an insight that provides details about the LCP metric, and the network requests necessary to load it.
      */
-    description: '[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading.',
+    description: '[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading',
     /**
      * @description Text to tell the user how long after the earliest discovery time their LCP element loaded.
      * @example {401ms} PH1
      */
-    lcpLoadDelay: 'LCP image loaded {PH1} after earliest start point.',
+    lcpLoadDelay: 'LCP image loaded {PH1} after earliest start point',
     /**
      * @description Text to tell the user that a fetchpriority property value of "high" is applied to the LCP request.
      */

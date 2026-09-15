@@ -6,8 +6,10 @@ export declare class SourceMapScopeChainEntry implements ScopeChainEntry {
     /**
      * @param isInnerMostFunction If `scope` is the innermost 'function' scope. Only used for labeling as we name the
      * scope of the paused function 'Local', while other outer 'function' scopes are named 'Closure'.
+     * @param scopeNumber The V8 scope in which `scope`s binding expressions must be evaluated. Defaults to the
+     * inner-most scope.
      */
-    constructor(callFrame: CallFrame, scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange | undefined, isInnerMostFunction: boolean, returnValue: RemoteObject | undefined);
+    constructor(callFrame: CallFrame, scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange | undefined, isInnerMostFunction: boolean, returnValue: RemoteObject | undefined, scopeNumber?: number);
     extraProperties(): RemoteObjectProperty[];
     callFrame(): CallFrame;
     type(): string;

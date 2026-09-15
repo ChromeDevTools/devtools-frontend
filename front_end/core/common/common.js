@@ -37,13 +37,14 @@ function decode(input) {
   return bytes;
 }
 async function encode(input) {
-  if (typeof FileReader === "undefined") {
+  const maybeFileReader = globalThis["FileReader"];
+  if (!maybeFileReader) {
     const blob = new Blob([input]);
     const arrayBuffer = await blob.arrayBuffer();
     return globalThis.Buffer.from(arrayBuffer).toString("base64");
   }
   return await new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    const reader = new maybeFileReader();
     reader.onerror = () => reject(new Error("failed to convert to base64: internal error"));
     reader.onload = () => {
       if (reader.result === "") {
@@ -2910,7 +2911,6 @@ var ObjectWrapper = class {
   }
 };
 function eventMixin(base) {
-  console.assert(base !== HTMLElement);
   return class EventHandling extends base {
     // Note that the weird name is due to TSC disallowing private/protected fields in
     // anonmous exported classes. We use a `__` prefix to prevent clashes with `base`.
@@ -3239,7 +3239,7 @@ async function arrayBufferToString(ab) {
   if (isGzip(ab)) {
     return await decompress(ab);
   }
-  const str = new TextDecoder("utf-8").decode(ab);
+  const str = new TextDecoder("utf-8").decode(new Uint8Array(ab));
   return str;
 }
 async function fileToString(file) {

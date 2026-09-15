@@ -13,13 +13,15 @@ class NodeWorkerScope {
     }
 }
 class NodeWorker {
+    #worker;
     #workerPromise;
     #disposed = false;
     #rejectWorkerPromise;
     constructor(url) {
+        const worker = new WorkerThreads.Worker(new URL(url));
+        this.#worker = worker;
         this.#workerPromise = new Promise((resolve, reject) => {
             this.#rejectWorkerPromise = reject;
-            const worker = new WorkerThreads.Worker(new URL(url));
             worker.once('message', (message) => {
                 if (message === 'workerReady') {
                     resolve(worker);
@@ -27,6 +29,8 @@ class NodeWorker {
             });
             worker.on('error', reject);
         });
+        // Prevent unhandled promise rejections if the worker is terminated early.
+        this.#workerPromise.catch(() => { });
     }
     postMessage(message, transfer) {
         void this.#workerPromise.then(worker => {
@@ -37,7 +41,7 @@ class NodeWorker {
     }
     dispose() {
         this.#disposed = true;
-        void this.#workerPromise.then(worker => worker.terminate());
+        void this.#worker.terminate();
     }
     terminate(immediately) {
         if (immediately) {
@@ -78,5 +82,10 @@ export const HOST_RUNTIME = {
     getLocalStorage() {
         return undefined;
     },
+    getDevicePixelRatio() {
+        return 1;
+    },
+    async saveScreenshot(_options) { },
+    revokeLastScreenshotUrl() { },
 };
 //# sourceMappingURL=HostRuntime.js.map

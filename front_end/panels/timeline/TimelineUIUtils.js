@@ -49,7 +49,6 @@ import * as Tracing from '../../services/tracing/tracing.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';

@@ -85,7 +85,7 @@ var UIStrings = {
   /**
    * @description Title for a link to show a request that is unavailable because the request couldn't be resolved.
    */
-  requestUnavailableInTheNetwork: "Request unavailable in the Network panel. Try reloading the inspected page",
+  requestUnavailableInTheNetwork: "Request unavailable in the Network panel. Try reloading the inspected page.",
   /**
    * @description Label for the shortened URL displayed in a link to show a request in the Network panel.
    */

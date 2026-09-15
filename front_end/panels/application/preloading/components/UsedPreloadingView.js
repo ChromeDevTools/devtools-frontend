@@ -18,107 +18,107 @@ import { prefetchFailureReason, prerenderFailureReason } from './PreloadingStrin
 import usedPreloadingStyles from './usedPreloadingView.css.js';
 const UIStrings = {
     /**
-     * @description Header for preloading status.
+     * @description Section header for the speculative loading status of the current page.
      */
     speculativeLoadingStatusForThisPage: 'Speculative loading status for this page',
     /**
-     * @description Label for failure reason of preloading
+     * @description Label for the failure reason of a speculative load attempt.
      */
     detailsFailureReason: 'Failure reason',
     /**
-     * @description Message that tells this page was prerendered.
+     * @description Message indicating that prerendering this page failed, but the response body was used as a prefetch.
      */
     downgradedPrefetchUsed: 'The initiating page attempted to prerender this page’s URL. The prerender failed, but the resulting response body was still used as a prefetch.',
     /**
-     * @description Message that tells this page was prefetched.
+     * @description Message indicating that this page was successfully prefetched.
      */
-    prefetchUsed: 'This page was successfully prefetched.',
+    prefetchUsed: 'This page was successfully prefetched',
     /**
-     * @description Message that tells this page was prerendered.
+     * @description Message indicating that this page was successfully prerendered.
      */
-    prerenderUsed: 'This page was successfully prerendered.',
+    prerenderUsed: 'This page was successfully prerendered',
     /**
-     * @description Message that tells this page was prefetched.
+     * @description Message indicating that prefetching this page failed and a full navigation was performed instead.
      */
-    prefetchFailed: 'The initiating page attempted to prefetch this page’s URL, but the prefetch failed, so a full navigation was performed instead.',
+    prefetchFailed: 'The initiating page attempted to prefetch this page’s URL, but the prefetch failed, so a full navigation was performed instead',
     /**
-     * @description Message that tells this page was prerendered.
+     * @description Message indicating that prerendering this page failed and a full navigation was performed instead.
      */
-    prerenderFailed: 'The initiating page attempted to prerender this page’s URL, but the prerender failed, so a full navigation was performed instead.',
+    prerenderFailed: 'The initiating page attempted to prerender this page’s URL, but the prerender failed, so a full navigation was performed instead',
     /**
-     * @description Message that tells this page was not preloaded.
+     * @description Message indicating that the initiating page did not attempt to speculatively load this page.
      */
-    noPreloads: 'The initiating page did not attempt to speculatively load this page’s URL.',
+    noPreloads: 'The initiating page didn’t attempt to speculatively load this page’s URL',
     /**
-     * @description Header for current URL.
+     * @description Section header for the current URL.
      */
     currentURL: 'Current URL',
     /**
-     * @description Header for mismatched preloads.
+     * @description Section header for URLs being speculatively loaded by the initiating page.
      */
     preloadedURLs: 'URLs being speculatively loaded by the initiating page',
     /**
-     * @description Header for summary.
+     * @description Section header for speculations initiated by the current page.
      */
     speculationsInitiatedByThisPage: 'Speculations initiated by this page',
     /**
-     * @description Link text to reveal rules.
+     * @description Link text to view all speculation rules.
      */
     viewAllRules: 'View all speculation rules',
     /**
-     * @description Link text to reveal preloads.
+     * @description Link text to view all speculations.
      */
     viewAllSpeculations: 'View all speculations',
     /**
-     * @description Link to learn more about Preloading
+     * @description Link text to learn more about speculative loading on developer.chrome.com.
      */
-    learnMore: 'Learn more: Speculative loading on developer.chrome.com',
+    learnMore: 'Learn more: speculative loading on developer.chrome.com',
     /**
-     * @description Header for the table of mismatched network request header.
+     * @description Section header for the table of mismatched HTTP request headers.
      */
     mismatchedHeadersDetail: 'Mismatched HTTP request headers',
     /**
-     * @description Label for badge, indicating speculative load successfully used for this page.
+     * @description Badge label indicating that a speculative load was successfully used for this page.
      */
     badgeSuccess: 'Success',
     /**
-     * @description Label for badge, indicating speculative load failed for this page.
+     * @description Badge label indicating that speculative loading failed for this page.
      */
     badgeFailure: 'Failure',
     /**
-     * @description Label for badge, indicating no speculative loads used for this page.
+     * @description Badge label indicating that no speculative loads were used for this page.
      */
     badgeNoSpeculativeLoads: 'No speculative loads',
     /**
-     * @description Label for badge, indicating how many not triggered speculations there are.
+     * @description Badge label showing the count of speculative loads that were not triggered.
      */
     badgeNotTriggeredWithCount: '{n, plural, =1 {# not triggered} other {# not triggered}}',
     /**
-     * @description Label for badge, indicating how many in progress speculations there are.
+     * @description Badge label showing the count of speculative loads that are in progress.
      */
     badgeInProgressWithCount: '{n, plural, =1 {# in progress} other {# in progress}}',
     /**
-     * @description Label for badge, indicating how many succeeded speculations there are.
+     * @description Badge label showing the count of speculative loads that succeeded.
      */
     badgeSuccessWithCount: '{n, plural, =1 {# success} other {# success}}',
     /**
-     * @description Label for badge, indicating how many failed speculations there are.
+     * @description Badge label showing the count of speculative loads that failed.
      */
     badgeFailureWithCount: '{n, plural, =1 {# failure} other {# failures}}',
     /**
-     * @description The name of the HTTP request header.
+     * @description Column header for the HTTP request header name.
      */
     headerName: 'Header name',
     /**
-     * @description The value of the HTTP request header in initial navigation.
+     * @description Column header for the HTTP request header value in the initial navigation.
      */
     initialNavigationValue: 'Value in initial navigation',
     /**
-     * @description The value of the HTTP request header in activation navigation.
+     * @description Column header for the HTTP request header value in the activation navigation.
      */
     activationNavigationValue: 'Value in activation navigation',
     /**
-     * @description The string to indicate the value of the header is missing.
+     * @description Text indicating that the HTTP request header value is missing.
      */
     missing: '(missing)',
 };

@@ -14,7 +14,7 @@ const UIStringsNotTranslate = {
     /**
      * @description Text for recitation notice
      */
-    generatedCodeMayBeSubjectToALicense: 'Generated code may be subject to a license.',
+    generatedCodeMayBeSubjectToALicense: 'Generated code may be subject to a license',
     /**
      * @description Text for citations
      */

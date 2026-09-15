@@ -28,7 +28,7 @@ const UIStrings = {
     /**
      * @description Message to explain lack of raw headers for a particular network request
      */
-    provisionalHeadersAreShown: 'Provisional headers are shown.',
+    provisionalHeadersAreShown: 'Provisional headers are shown',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestHeaderSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -85,12 +85,11 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     private applyUserAgent;
     private applyDeviceMetrics;
     exitHingeMode(): void;
+    private getScreenshotFileName;
     captureScreenshot(): Promise<void>;
     captureFullSizeScreenshot(): Promise<void>;
     captureAreaScreenshot(clip?: Protocol.Page.Viewport): Promise<void>;
-    private saveScreenshotBase64;
-    private paintImage;
-    saveScreenshot(canvas: OffscreenCanvas): Promise<void>;
+    saveScreenshot(screenshot: string): Promise<void>;
     private applyTouch;
     private showDeviceOverlaysIfApplicable;
     private currentDisplayCutout;

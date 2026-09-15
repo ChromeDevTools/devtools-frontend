@@ -57,6 +57,57 @@ class WebWorker {
         });
     }
 }
+let lastScreenshotBlobUrl = null;
+function revokeLastScreenshotUrl() {
+    if (lastScreenshotBlobUrl) {
+        URL.revokeObjectURL(lastScreenshotBlobUrl);
+        lastScreenshotBlobUrl = null;
+    }
+}
+async function saveScreenshot(options) {
+    const pageImage = new Image();
+    await new Promise((resolve, reject) => {
+        pageImage.onload = () => resolve();
+        pageImage.onerror = () => reject(new Error('Failed to load image for screenshot'));
+        pageImage.src = 'data:image/png;base64,' + options.base64Png;
+    });
+    let canvas;
+    if (options.clip) {
+        const scale = pageImage.naturalWidth / options.clip.screenRectWidth;
+        const screenRectWidth = options.clip.screenRectWidth * scale;
+        const screenRectHeight = options.clip.screenRectHeight * scale;
+        const contentLeft = options.clip.visiblePageRectLeft * scale;
+        const contentTop = options.clip.visiblePageRectTop * scale;
+        canvas = new OffscreenCanvas(Math.floor(screenRectWidth), 
+        // Cap the height to not hit the GPU limit.
+        // https://crbug.com/1260828
+        Math.min(1 << 14, Math.floor(screenRectHeight)));
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) {
+            throw new Error('Could not get 2d context from canvas.');
+        }
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
+    }
+    else {
+        canvas = new OffscreenCanvas(pageImage.naturalWidth, Math.min(1 << 14, Math.floor(pageImage.naturalHeight)));
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) {
+            throw new Error('Could not get 2d context for base64 screenshot.');
+        }
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(pageImage, 0, 0);
+    }
+    revokeLastScreenshotUrl();
+    /* eslint-disable-next-line @devtools/no-imperative-dom-api */
+    const link = document.createElement('a');
+    link.download = options.fileName + '.png';
+    const blob = await canvas.convertToBlob({ type: 'image/png' });
+    const blobUrl = URL.createObjectURL(blob);
+    lastScreenshotBlobUrl = blobUrl;
+    link.href = blobUrl;
+    link.click();
+}
 export const HOST_RUNTIME = {
     createWorker(url) {
         return new WebWorker(url);
@@ -71,5 +122,10 @@ export const HOST_RUNTIME = {
     getLocalStorage() {
         return 'localStorage' in globalThis ? globalThis.localStorage : undefined;
     },
+    getDevicePixelRatio() {
+        return window.devicePixelRatio;
+    },
+    saveScreenshot,
+    revokeLastScreenshotUrl,
 };
 //# sourceMappingURL=HostRuntime.js.map

@@ -48,7 +48,7 @@ const UIStrings = {
     /**
      * @description Text for announcing a DOM Storage key/value item has been deleted
      */
-    domStorageItemDeleted: 'The storage item was deleted.',
+    domStorageItemDeleted: 'The storage item was deleted',
     /**
      * @description Text of a context menu item to start a chat with AI
      */

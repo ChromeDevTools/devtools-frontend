@@ -49,6 +49,7 @@
     "../../../../../../front_end/panels/settings/AISettingsTab.test.ts",
     "../../../../../../front_end/panels/settings/EditFileSystemView.test.ts",
     "../../../../../../front_end/panels/settings/FrameworkIgnoreListSettingsTab.test.ts",
+    "../../../../../../front_end/panels/settings/SettingsScreen.test.ts",
     "../../../../../../front_end/panels/settings/WorkspaceSettingsTab.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -69,6 +70,9 @@
       "path": "../../core/platform/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/ai_assistance/bundle-tsconfig.ref.json"
     },
     {
@@ -85,6 +89,9 @@
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../utils/bundle-tsconfig.ref.json"
     }
   ]
 }

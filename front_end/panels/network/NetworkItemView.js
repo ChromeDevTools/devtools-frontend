@@ -93,7 +93,7 @@ const UIStrings = {
     /**
      * @description Tooltip text for warning icon on cookies tab in network item view of the Network panel when third-party cookies are blocked.
      */
-    thirdPartyPhaseout: 'Cookies blocked due to third-party cookie phaseout.',
+    thirdPartyPhaseout: 'Cookies blocked due to third-party cookie phaseout',
     /**
      * @description Title of a tab in network item view of the Network panel for viewing Private State Tokens operation details.
      */

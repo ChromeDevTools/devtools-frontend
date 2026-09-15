@@ -86,7 +86,7 @@ const UIStrings = {
     /**
      * @description Disclaimer text right after the chat input.
      */
-    inputDisclaimerForEmptyState: 'This is an experimental AI feature and won’t always get it right.',
+    inputDisclaimerForEmptyState: 'This is an experimental AI feature and won’t always get it right',
     /**
      * @description The message shown in a toast when the response is copied to the clipboard.
      */

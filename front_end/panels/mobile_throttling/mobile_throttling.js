@@ -822,7 +822,7 @@ var UIStrings4 = {
   /**
    * @description Icon title for warning indicator in the Network panel title.
    */
-  requestsMayBeBlocked: "Requests may be blocked. See the Request conditions panel"
+  requestsMayBeBlocked: "Requests may be blocked. See the Request conditions panel."
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/mobile_throttling/NetworkPanelIndicator.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
@@ -1204,7 +1204,7 @@ var UIStrings6 = {
   /**
    * @description Text to display to user while a calibration process is running.
    */
-  runningCalibration: "Running CPU calibration, don\u2019t leave this tab or close DevTools."
+  runningCalibration: "Running CPU calibration, don\u2019t leave this tab or close DevTools"
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/mobile_throttling/CalibrationController.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
@@ -1730,7 +1730,7 @@ var UIStrings7 = {
   /**
    * @description Text to explain what CPU throttling presets are.
    */
-  cpuCalibrationDescription: "These presets throttle your CPU to approximate the performance of typical low or mid-tier mobile devices.",
+  cpuCalibrationDescription: "These presets throttle your CPU to approximate the performance of typical low or mid-tier mobile devices",
   /**
    * @description Text to explain how the CPU calibration process will work.
    */
@@ -1742,11 +1742,11 @@ var UIStrings7 = {
   /**
    * @description Text to explain an issue that may impact the CPU calibration process.
    */
-  calibrationWarningRunningOnBattery: "Device is running on battery. Plug in charger for best results",
+  calibrationWarningRunningOnBattery: "Device is running on battery. Plug in charger for best results.",
   /**
    * @description Text to explain an issue that may impact the CPU calibration process.
    */
-  calibrationWarningLowBattery: "Device battery is low (<20%). Results may be impacted by CPU throttling",
+  calibrationWarningLowBattery: "Device battery is low (<20%). Results may be impacted by CPU throttling.",
   /**
    * @description Text label for a menu item indicating that a specific slowdown multiplier is applied.
    * @example {2} PH1

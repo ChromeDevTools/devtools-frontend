@@ -21,7 +21,7 @@ const UIStrings = {
     /**
      * @description Tooltip in coverage list view of the Coverage tab for selecting JavaScript coverage mode.
      */
-    chooseCoverageGranularityPer: 'Choose coverage granularity: per function has low overhead, per block has significant overhead.',
+    chooseCoverageGranularityPer: 'Choose coverage granularity: per function has low overhead, per block has significant overhead',
     /**
      * @description Text in coverage list view of the Coverage tab.
      */
@@ -74,25 +74,25 @@ const UIStrings = {
      * @description Message in Coverage View of the Coverage tab.
      * @example {Reload page} PH1
      */
-    clickTheReloadButtonSToReloadAnd: 'Click the "{PH1}" button to reload and start capturing coverage.',
+    clickTheReloadButtonSToReloadAnd: 'Click the "{PH1}" button to reload and start capturing coverage',
     /**
      * @description Message in Coverage View of the Coverage tab.
      * @example {Start recording} PH1
      */
-    clickTheRecordButtonSToStart: 'Click the "{PH1}" button to start capturing coverage.',
+    clickTheRecordButtonSToStart: 'Click the "{PH1}" button to start capturing coverage',
     /**
      * @description Message in the Coverage View explaining that DevTools could not capture coverage.
      */
-    bfcacheNoCapture: 'Could not capture coverage info because the page was served from the back/forward cache.',
+    bfcacheNoCapture: 'Could not capture coverage info because the page was served from the back/forward cache',
     /**
      * @description Message in the Coverage View explaining that DevTools could not capture coverage.
      */
-    activationNoCapture: 'Could not capture coverage info because the page was prerendered in the background.',
+    activationNoCapture: 'Could not capture coverage info because the page was prerendered in the background',
     /**
      * @description Message in the Coverage View prompting the user to reload the page.
      * @example {reload button icon} PH1
      */
-    reloadPrompt: 'Click the reload button {PH1} to reload and get coverage.',
+    reloadPrompt: 'Click the reload button {PH1} to reload and get coverage',
     /**
      * @description Footer message in Coverage View of the Coverage tab.
      * @example {300k used, 600k unused} PH1
@@ -106,7 +106,7 @@ const UIStrings = {
      * @example {71%} PH3
      * @example {29%} PH4
      */
-    sOfSSUsedSoFarSUnused: '{PH1} of {PH2} ({PH3}%) used so far, {PH4} unused.',
+    sOfSSUsedSoFarSUnused: '{PH1} of {PH2} ({PH3}%) used so far, {PH4} unused',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/coverage/CoverageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

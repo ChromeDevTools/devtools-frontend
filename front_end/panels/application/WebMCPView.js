@@ -43,7 +43,7 @@ const UIStrings = {
     /**
      * @description Text to display when no calls have been made
      */
-    noCallsPlaceholder: 'Start interacting with your `WebMCP` agent to see real-time tool calls and executions here.',
+    noCallsPlaceholder: 'Start interacting with your `WebMCP` agent to see real-time tool calls and executions here',
     /**
      * @description Text for the header of the tool details section
      */

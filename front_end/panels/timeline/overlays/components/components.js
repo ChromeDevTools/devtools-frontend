@@ -649,7 +649,7 @@ var UIStringsNotTranslate = {
   /**
    * @description The `Generate AI label button` tooltip disclaimer for when the feature is not available because the user is offline.
    */
-  autoAnnotationNotAvailableOfflineDisclaimer: "Auto annotations are not available because you are offline.",
+  autoAnnotationNotAvailableOfflineDisclaimer: "Auto annotations are not available because you are offline",
   /**
    * @description Header text for the AI-powered annotations suggestions disclaimer dialog.
    */
@@ -1696,7 +1696,7 @@ var renderSection = (section, position) => {
     { left: position ? `${position.left}px` : void 0, width: position ? `${position.width}px` : void 0 }
   );
   const durationText = section.showDuration ? i18n7.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range) : "";
-  const labelText = section.label instanceof HTMLElement ? section.label.textContent || "" : section.label;
+  const labelText = section.label instanceof HTMLElement ? section.label.textContent || "" : typeof section.label === "string" ? section.label : "";
   const tooltip = durationText ? `${durationText} ${labelText}` : labelText;
   return html4`
       <div class="timespan-breakdown-overlay-section" style=${style} title=${tooltip}>

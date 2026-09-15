@@ -23,11 +23,11 @@ const UIStrings = {
     /**
      * @description Swatch icon element title in CSSPlugin of the Sources panel
      */
-    openColorPicker: 'Open color picker.',
+    openColorPicker: 'Open color picker',
     /**
      * @description Text to open the cubic bezier editor
      */
-    openCubicBezierEditor: 'Open cubic bezier editor.',
+    openCubicBezierEditor: 'Open cubic bezier editor',
     /**
      * @description Text for a context menu item for attaching a sourcemap to the currently open css file
      */

@@ -57,23 +57,23 @@ const UIStrings = {
     /**
      * @description Error header shown when an audit encounters an error.
      */
-    ahSorryWeRanIntoAnError: 'We ran into an error.',
+    ahSorryWeRanIntoAnError: 'We ran into an error',
     /**
      * @description Suggestion for recovering from an audit error.
      */
-    tryToNavigateToTheUrlInAFresh: 'Try to navigate to the URL in a fresh `Chrome` profile without any other tabs or extensions open and try again.',
+    tryToNavigateToTheUrlInAFresh: 'Try to navigate to the URL in a fresh `Chrome` profile without any other tabs or extensions open and try again',
     /**
      * @description Instruction to report a bug if the issue is reproducible.
      */
-    ifThisIssueIsReproduciblePlease: 'If this issue is reproducible, report it at the `Lighthouse` `GitHub` repo.',
+    ifThisIssueIsReproduciblePlease: 'If this issue is reproducible, report it at the `Lighthouse` `GitHub` repo',
     /**
      * @description Text in Lighthouse splash screen when loading the page for auditing.
      */
-    lighthouseIsLoadingThePage: '`Lighthouse` is loading the page.',
+    lighthouseIsLoadingThePage: '`Lighthouse` is loading the page',
     /**
      * @description Text in Lighthouse splash screen when Lighthouse is gathering information for display.
      */
-    lighthouseIsGatheringInformation: '`Lighthouse` is gathering information about the page to compute your score.',
+    lighthouseIsGatheringInformation: '`Lighthouse` is gathering information about the page to compute your score',
     /**
      * @description Text in Lighthouse splash screen when Lighthouse is generating a report.
      */
@@ -81,19 +81,19 @@ const UIStrings = {
     /**
      * @description Text in Lighthouse splash screen when loading the page for auditing.
      */
-    lighthouseIsLoadingYourPageWith: '`Lighthouse` is loading your page with throttling to measure performance on a mobile device on 3G.',
+    lighthouseIsLoadingYourPageWith: '`Lighthouse` is loading your page with throttling to measure performance on a mobile device on 3G',
     /**
      * @description Text in Lighthouse splash screen when loading the page for auditing.
      */
-    lighthouseIsLoadingYourPageWithThrottling: '`Lighthouse` is loading your page with throttling to measure performance on a slow desktop on 3G.',
+    lighthouseIsLoadingYourPageWithThrottling: '`Lighthouse` is loading your page with throttling to measure performance on a slow desktop on 3G',
     /**
      * @description Text in Lighthouse splash screen when loading the page for auditing.
      */
-    lighthouseIsLoadingYourPageWithMobile: '`Lighthouse` is loading your page with mobile emulation.',
+    lighthouseIsLoadingYourPageWithMobile: '`Lighthouse` is loading your page with mobile emulation',
     /**
      * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
-    mbTakesAMinimumOfSecondsTo: '1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: `WebPageTest` and `DevTools` 3G definition].',
+    mbTakesAMinimumOfSecondsTo: '1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: `WebPageTest` and `DevTools` 3G definition]',
     /**
      * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */

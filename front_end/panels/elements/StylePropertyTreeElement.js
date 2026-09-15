@@ -37,7 +37,7 @@ const UIStrings = {
     /**
      * @description Text in the color swatch popover icon of the Elements panel.
      */
-    shiftClickToChangeColorFormat: 'Shift + Click to change color format.',
+    shiftClickToChangeColorFormat: 'Shift + Click to change color format',
     /**
      * @description Swatch icon element title in the color swatch popover icon of the Elements panel.
      * @example {Shift + Click to change color format.} PH1
@@ -78,7 +78,7 @@ const UIStrings = {
     /**
      * @description Tooltip text for a style property overridden by an animation.
      */
-    overriddenByAnimation: 'Overridden by animation styles.',
+    overriddenByAnimation: 'Overridden by animation styles',
     /**
      * @description Link text in the tooltip to open the Animations panel.
      */

@@ -4729,7 +4729,7 @@ var UIStrings2 = {
   /**
    * @description Note title in Console view message of the Console panel.
    */
-  thisValueWillNotBeCollectedUntil: "This value won\u2019t be collected until console is cleared.",
+  thisValueWillNotBeCollectedUntil: "This value won\u2019t be collected until console is cleared",
   /**
    * @description Note title in Console view message of the Console panel.
    */
@@ -4737,7 +4737,7 @@ var UIStrings2 = {
   /**
    * @description Note title in Console view message of the Console panel.
    */
-  functionWasResolvedFromBound: "Function was resolved from bound function.",
+  functionWasResolvedFromBound: "Function was resolved from bound function",
   /**
    * @description Shown in the Console panel when an exception is thrown when trying to access a
    * property on an object. Should be translated.
@@ -7074,7 +7074,7 @@ var UIStringsNotTranslate = {
   /**
    * @description Call to action for downloading an AI model
    */
-  toUseDownload: "To use Chrome\u2019s Built-in AI here and elsewhere, download the AI model (~4 GB).",
+  toUseDownload: "To use Chrome\u2019s Built-in AI here and elsewhere, download the AI model (~4 GB)",
   /**
    * @description Button text to trigger model download
    */
@@ -9294,7 +9294,7 @@ var UIStrings5 = {
   /**
    * @description Text for the tooltip of the issue counter toolbar item.
    */
-  issueToolbarTooltipGeneral: "Some problems no longer generate console messages, but are surfaced in the Issues tab.",
+  issueToolbarTooltipGeneral: "Some problems no longer generate console messages, but are surfaced in the Issues tab",
   /**
    * @description Text for the tooltip of the issue counter toolbar item. The placeholder indicates how many issues
    * there are in the Issues tab broken down by kind.
@@ -9438,7 +9438,7 @@ var UIStrings5 = {
    * @description Tooltip text of the info icon shown next to the filter drop down
    *              in the Console panels main toolbar when the sidebar is active.
    */
-  overriddenByFilterSidebar: "Log levels are controlled by the Console sidebar.",
+  overriddenByFilterSidebar: "Log levels are controlled by the Console sidebar",
   /**
    * @description Label for the custom log levels option in the filter dropdown in the Console view.
    */

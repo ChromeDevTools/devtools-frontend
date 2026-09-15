@@ -500,7 +500,7 @@ var IsolatedFileSystem = class _IsolatedFileSystem extends PlatformFileSystem {
       entry.createWriter(fileWriterCreated.bind(this), errorHandler.bind(this));
     }
     async function fileWriterCreated(fileWriter) {
-      fileWriter.onerror = errorHandler.bind(this);
+      fileWriter.onerror = () => errorHandler.call(this, fileWriter.error);
       fileWriter.onwriteend = fileWritten;
       let blob;
       if (isBase64) {
@@ -510,14 +510,14 @@ var IsolatedFileSystem = class _IsolatedFileSystem extends PlatformFileSystem {
       }
       fileWriter.write(blob);
       function fileWritten() {
-        fileWriter.onwriteend = resolve;
+        fileWriter.onwriteend = () => resolve();
         fileWriter.truncate(blob.size);
       }
     }
     function errorHandler(error) {
       const errorMessage = _IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + " when setting content for file '" + (this.path() + "/" + path) + "'");
-      resolve(void 0);
+      resolve();
     }
   }
   renameFile(path, newName, callback) {

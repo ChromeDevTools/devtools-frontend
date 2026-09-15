@@ -88,7 +88,7 @@ const UIStrings = {
     /**
      * @description The error message when the user is not logged in to Chrome.
      */
-    notLoggedIn: 'This feature is only available when you sign in to Chrome with your Google account.',
+    notLoggedIn: 'This feature is only available when you sign in to Chrome with your Google account',
     /**
      * @description Title of a button which opens the Chrome sign-in page.
      */
@@ -101,7 +101,7 @@ const UIStrings = {
     /**
      * @description Message shown when the user is offline.
      */
-    offline: 'Check your internet connection and try again.',
+    offline: 'Check your internet connection and try again',
     /**
      * @description The message shown if the user is not logged in.
      */
@@ -115,12 +115,12 @@ const UIStrings = {
      * @description Shown to the user when the network request data is not
      * available and a page reload might populate it.
      */
-    reloadRecommendation: 'Reload the page to capture related network request data for this message to get a better insight.',
+    reloadRecommendation: 'Reload the page to capture related network request data for this message to get a better insight',
     /**
      * @description Shown to the user when they need to enable the console insights feature in settings in order to use it.
      * @example {Console insights in Settings} PH1
      */
-    turnOnInSettings: 'Turn on {PH1} to use AI assistance for understanding and addressing console warnings and errors.',
+    turnOnInSettings: 'Turn on {PH1} to use AI assistance for understanding and addressing console warnings and errors',
     /**
      * @description Text for a link to Chrome DevTools Settings.
      */

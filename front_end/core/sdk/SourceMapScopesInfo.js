@@ -157,12 +157,6 @@ export class SourceMapScopesInfo {
         function compareScopes(a, b) {
             return comparePositions(a.start, b.start);
         }
-        function comparePositions(a, b) {
-            if (a.line !== b.line) {
-                return a.line - b.line;
-            }
-            return a.column - b.column;
-        }
         function positionFromOffset(offset) {
             const location = text.positionFromOffset(offset);
             return { line: location.lineNumber, column: location.columnNumber };
@@ -316,7 +310,8 @@ export class SourceMapScopesInfo {
             const isFunctionScope = originalScope.kind === 'function';
             const isInnerMostFunction = isFunctionScope && !seenFunctionScope;
             const returnValue = isInnerMostFunction ? callFrame.returnValue() : null;
-            result.push(new SourceMapScopeChainEntry(callFrame, originalScope, range, isInnerMostFunction, returnValue ?? undefined));
+            const scopeNumber = range ? findMatchingScopeNumber(callFrame, range) : undefined;
+            result.push(new SourceMapScopeChainEntry(callFrame, originalScope, range, isInnerMostFunction, returnValue ?? undefined, scopeNumber));
             seenFunctionScope ||= isFunctionScope;
         }
         // If we are paused on a return statement, we need to drop inner block scopes. This is because V8 only emits a
@@ -480,5 +475,82 @@ export function contains(range, line, column) {
         return false;
     }
     return true;
+}
+export function comparePositions(a, b) {
+    if (a.line !== b.line) {
+        return a.line - b.line;
+    }
+    return a.column - b.column;
+}
+function positionRange(callFrame, scope) {
+    const range = scope.range();
+    if (range === null || range.start.scriptId !== callFrame.location().scriptId ||
+        range.end.scriptId !== callFrame.location().scriptId) {
+        return null;
+    }
+    return {
+        start: { line: range.start.lineNumber, column: range.start.columnNumber },
+        end: { line: range.end.lineNumber, column: range.end.columnNumber },
+    };
+}
+/**
+ * Finds the V8 scope that corresponds to the source map's generated `range`.
+ *
+ * We need this to evaluate a scope's binding expressions in the right V8 scope. `evaluateOnCallFrame`
+ * defaults to the inner-most scope, where declarations shadow the outer variables we actually want to read.
+ *
+ * V8's scope ranges and the source map's generated ranges don't have to agree (in particular with
+ * inlining), so besides an exact match we accept the outer-most V8 scope contained in `range` (a generated
+ * range for a function spans the whole function text, while V8's scope only covers params + body), or
+ * failing that the inner-most V8 scope containing `range`.
+ *
+ * @returns The scope number, or `undefined` if nothing matched. Callers should then omit `scopeNumber`
+ *          and let CDP default to the inner-most scope.
+ */
+export function findMatchingScopeNumber(callFrame, range) {
+    const scopeChain = callFrame.scopeChain();
+    const exactMatch = scopeChain.find(scope => {
+        const scopeRange = positionRange(callFrame, scope);
+        return scopeRange !== null && comparePositions(scopeRange.start, range.start) === 0 &&
+            comparePositions(scopeRange.end, range.end) === 0;
+    });
+    if (exactMatch !== undefined) {
+        return exactMatch.ordinal();
+    }
+    // A stack frame must correspond to a V8 function scope. Inlined ranges make it easy to accidentally
+    // land on an unrelated block/catch/with scope, so search the function scopes first.
+    if (range.isStackFrame) {
+        const functionScopes = scopeChain.filter(scope => scope.type() === "local" /* Protocol.Debugger.ScopeType.Local */ ||
+            scope.type() === "closure" /* Protocol.Debugger.ScopeType.Closure */);
+        const functionScope = findBestScope(callFrame, functionScopes, range);
+        if (functionScope !== undefined) {
+            return functionScope.ordinal();
+        }
+    }
+    return findBestScope(callFrame, scopeChain, range)?.ordinal();
+}
+/**
+ * @param scopes Ordered inner-most to outer-most.
+ * @returns The outer-most scope contained in `range`, or if there is none, the inner-most scope
+ *          containing `range`.
+ */
+function findBestScope(callFrame, scopes, range) {
+    let outerMostContainedScope;
+    let innerMostContainingScope;
+    for (const scope of scopes) {
+        const scopeRange = positionRange(callFrame, scope);
+        if (scopeRange === null) {
+            continue;
+        }
+        const rangeContainsScope = comparePositions(range.start, scopeRange.start) <= 0 && comparePositions(scopeRange.end, range.end) <= 0;
+        const scopeContainsRange = comparePositions(scopeRange.start, range.start) <= 0 && comparePositions(range.end, scopeRange.end) <= 0;
+        if (rangeContainsScope) {
+            outerMostContainedScope = scope;
+        }
+        else if (scopeContainsRange) {
+            innerMostContainingScope ??= scope;
+        }
+    }
+    return outerMostContainedScope ?? innerMostContainingScope;
 }
 //# sourceMappingURL=SourceMapScopesInfo.js.map

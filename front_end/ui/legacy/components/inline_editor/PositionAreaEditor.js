@@ -10,7 +10,7 @@ const UIStrings = {
     /**
      * @description Accessible description for the position-area grid editor explaining keyboard navigation and range selection.
      */
-    positionAreaGridDescription: 'Use arrow keys to navigate, Space or Enter to select, and Shift + arrow keys to select a range.',
+    positionAreaGridDescription: 'Use arrow keys to navigate, Space or Enter to select, and Shift + arrow keys to select a range',
     /**
      * @description Accessible label for the position-area grid editor.
      */

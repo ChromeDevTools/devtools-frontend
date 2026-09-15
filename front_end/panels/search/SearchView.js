@@ -57,22 +57,22 @@ const UIStrings = {
     /**
      * @description Text in the search view of the Search panel when indexing is interrupted.
      */
-    indexingInterrupted: 'Indexing interrupted.',
+    indexingInterrupted: 'Indexing interrupted',
     /**
      * @description Message element text content for search results in the search view of the Search panel.
      */
-    foundMatchingLineInFile: 'Found 1 matching line in 1 file.',
+    foundMatchingLineInFile: 'Found 1 matching line in 1 file',
     /**
      * @description Message element text content for search results in the search view of the Search panel.
      * @example {2} PH1
      */
-    foundDMatchingLinesInFile: 'Found {PH1} matching lines in 1 file.',
+    foundDMatchingLinesInFile: 'Found {PH1} matching lines in 1 file',
     /**
      * @description Message element text content for search results in the search view of the Search panel.
      * @example {2} PH1
      * @example {2} PH2
      */
-    foundDMatchingLinesInDFiles: 'Found {PH1} matching lines in {PH2} files.',
+    foundDMatchingLinesInDFiles: 'Found {PH1} matching lines in {PH2} files',
     /**
      * @description Message element text content for search results in the search view of the Search panel.
      */
@@ -84,11 +84,11 @@ const UIStrings = {
     /**
      * @description Text in the search view of the Search panel when search finishes.
      */
-    searchFinished: 'Search finished.',
+    searchFinished: 'Search finished',
     /**
      * @description Text in the search view of the Search panel when search is interrupted.
      */
-    searchInterrupted: 'Search interrupted.',
+    searchInterrupted: 'Search interrupted',
     /**
      * @description Text in the search view of the Search panel if the user hasn’t started a search.
      * @example {Enter} PH1

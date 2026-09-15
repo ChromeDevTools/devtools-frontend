@@ -9,12 +9,12 @@ const UIStrings = {
     /**
      * @description This links to the Chrome feature status page when one exists.
      */
-    feature: 'Check the feature status page for more details.',
+    feature: 'Check the feature status page for more details',
     /**
      * @description This links to the Chromium Dash schedule when a milestone is set.
      * @example {100} milestone
      */
-    milestone: 'This change will go into effect with milestone {milestone}.',
+    milestone: 'This change will go into effect with milestone {milestone}',
     /**
      * @description Title of issue raised when a deprecated feature is used.
      */

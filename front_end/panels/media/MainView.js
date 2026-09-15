@@ -18,7 +18,7 @@ const UIStrings = {
      * @description Text to instruct the user on how to view media player details.
      * A media player can be an audio and video source of a page.
      */
-    selectToViewDetails: 'Select a media player to inspect its details.',
+    selectToViewDetails: 'Select a media player to inspect its details',
     /**
      * @description Text to show if no player can be shown.
      * A media player can be an audio and video source of a page.
@@ -28,7 +28,7 @@ const UIStrings = {
      * @description Text to explain this panel.
      * A media player can be an audio and video source of a page.
      */
-    mediaPlayerDescription: 'On this page you can view and export media player details.',
+    mediaPlayerDescription: 'On this page you can view and export media player details',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/media/MainView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

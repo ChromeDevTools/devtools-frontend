@@ -4499,7 +4499,7 @@ var UIStrings6 = {
   /**
    * @description Description of an insight that identifies multiple copies of the same JavaScript sources, and recommends removing the duplication.
    */
-  description: "Remove large, [duplicate JavaScript modules](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) from bundles to reduce unnecessary bytes consumed by network activity.",
+  description: "Remove large, [duplicate JavaScript modules](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) from bundles to reduce unnecessary bytes consumed by network activity",
   /**
    * @description Label for a column in a data table; entries will be the locations of JavaScript or CSS code, e.g. the name of a JavaScript package or module.
    */
@@ -4869,15 +4869,15 @@ var UIStrings9 = {
   /**
    * @description Message displayed in a chip explaining that an image file size is large for the # of pixels it has and recommends possible adjustments to improve the image size.
    */
-  useCompression: "Increasing the image compression factor could improve this image\u2019s download size.",
+  useCompression: "Increasing the image compression factor could improve this image\u2019s download size",
   /**
    * @description Message displayed in a chip explaining that an image file size is large for the # of pixels it has and recommends possible adjustments to improve the image size.
    */
-  useModernFormat: "Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image\u2019s download size.",
+  useModernFormat: "Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image\u2019s download size",
   /**
    * @description Message displayed in a chip advising the user to use video formats instead of GIFs because videos generally have smaller file sizes.
    */
-  useVideoFormat: "Using video formats instead of GIFs can improve the download size of animated content.",
+  useVideoFormat: "Using video formats instead of GIFs can improve the download size of animated content",
   /**
    * @description Message displayed in a chip explaining that an image was displayed on the page with dimensions much smaller than the image file dimensions.
    * @example {1000x500} PH1
@@ -5091,7 +5091,7 @@ var UIStrings10 = {
   /**
    * @description Text to tell the user about the longest user interaction.
    */
-  description: "Start investigating [how to improve INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) by looking at the longest subpart.",
+  description: "Start investigating [how to improve INP](https://developer.chrome.com/docs/performance/insights/inp-breakdown) by looking at the longest subpart",
   /**
    * @description Title for the performance insight "INP breakdown", which shows a breakdown of INP by subparts / sections.
    */
@@ -5411,12 +5411,12 @@ var UIStrings12 = {
   /**
    * @description Description of an insight that provides details about the LCP metric, and the network requests necessary to load it.
    */
-  description: "[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading.",
+  description: "[Optimize LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery) by making the LCP image discoverable from the HTML immediately, and avoiding lazy-loading",
   /**
    * @description Text to tell the user how long after the earliest discovery time their LCP element loaded.
    * @example {401ms} PH1
    */
-  lcpLoadDelay: "LCP image loaded {PH1} after earliest start point.",
+  lcpLoadDelay: "LCP image loaded {PH1} after earliest start point",
   /**
    * @description Text to tell the user that a fetchpriority property value of "high" is applied to the LCP request.
    */
@@ -5875,11 +5875,11 @@ var UIStrings15 = {
   /**
    * @description Description of an insight that recommends avoiding chaining critical requests.
    */
-  description: "[Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.",
+  description: "[Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load",
   /**
    * @description Description of the warning that recommends avoiding chaining critical requests.
    */
-  warningDescription: "Avoid chaining critical requests by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.",
+  warningDescription: "Avoid chaining critical requests by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load",
   /**
    * @description Text status indicating that there aren’t long chaining critical network requests.
    */
@@ -5936,7 +5936,7 @@ var UIStrings15 = {
   /**
    * @description Description of the table that recommends preconnecting to the origins to save time. "preconnect" should not be translated.
    */
-  estSavingTableDescription: "Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.",
+  estSavingTableDescription: "Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4",
   /**
    * @description Label for a column in a data table; entries will be the origin of a web resource.
    */
@@ -6803,7 +6803,7 @@ var UIStrings19 = {
   /**
    * @description Text to tell the user how a viewport meta element can improve performance. \xa0 is a non-breaking space
    */
-  description: "Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn\u2019t optimized for mobile.",
+  description: "Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/docs/performance/insights/viewport) if the viewport isn\u2019t optimized for mobile",
   /**
    * @description Text for a label describing the portion of an interaction event that was delayed due to a bad mobile viewport.
    */

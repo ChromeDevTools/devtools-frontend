@@ -616,6 +616,9 @@ var Overlays = class extends EventTarget {
       return;
     }
     this.#setOverlayElementVisibility(element, true);
+    if (!(overlay.infobar.element instanceof HTMLElement)) {
+      return;
+    }
     const actualBannerHeight = overlay.infobar.element.clientHeight;
     const adjustedVisiblePixels = visiblePixelsOfBanner - defaultBannerHeight + actualBannerHeight;
     element.style.height = `${Math.min(adjustedVisiblePixels, actualBannerHeight)}px`;
@@ -1235,6 +1238,9 @@ var Overlays = class extends EventTarget {
         break;
       case "BOTTOM_INFO_BAR":
         {
+          if (!(overlay.infobar.element instanceof HTMLElement)) {
+            return;
+          }
           if (element.contains(overlay.infobar.element)) {
             return;
           }

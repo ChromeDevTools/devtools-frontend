@@ -70,7 +70,7 @@ const UIStringsNotTranslate = {
     /**
      * @description The `Generate AI label button` tooltip disclaimer for when the feature is not available because the user is offline.
      */
-    autoAnnotationNotAvailableOfflineDisclaimer: 'Auto annotations are not available because you are offline.',
+    autoAnnotationNotAvailableOfflineDisclaimer: 'Auto annotations are not available because you are offline',
     /**
      * @description Header text for the AI-powered annotations suggestions disclaimer dialog.
      */

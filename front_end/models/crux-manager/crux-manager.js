@@ -8,7 +8,7 @@ var UIStrings = {
   /**
    * @description Warning message indicating that the user will see real user data for a URL which is different from the URL they are currently looking at.
    */
-  fieldOverrideWarning: "Field metrics are for a different URL than the current page."
+  fieldOverrideWarning: "Field metrics are for a different URL than the current page"
 };
 var str_ = i18n.i18n.registerUIStrings("models/crux-manager/CrUXManager.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -224,12 +224,15 @@ var CrUXManager = class _CrUXManager extends Common.ObjectWrapper.ObjectWrapper 
     }
     const responseData = await response.json();
     if (response.status === 404) {
-      if (responseData?.error?.status === "NOT_FOUND") {
-        return null;
+      if (typeof responseData === "object" && responseData && "error" in responseData) {
+        const error = responseData.error;
+        if (error?.status === "NOT_FOUND") {
+          return null;
+        }
       }
       throw new Error(`Failed to fetch data from CrUX server (Status code: ${response.status})`);
     }
-    if (!("record" in responseData)) {
+    if (typeof responseData !== "object" || !responseData || !("record" in responseData)) {
       throw new Error(`Failed to find data in CrUX response: ${JSON.stringify(responseData)}`);
     }
     return responseData;

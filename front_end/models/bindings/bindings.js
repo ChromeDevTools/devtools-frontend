@@ -6634,19 +6634,17 @@ var ChunkedFileReader = class {
   #streamReader;
   #chunkSize;
   #chunkTransferredCallback;
-  #decoder;
+  #decoder = new TextDecoder();
   #isCanceled;
   #error;
   #transferFinished;
   #output;
-  #reader;
   constructor(file, chunkSize, chunkTransferredCallback) {
     this.#file = file;
     this.#fileSize = file.size;
     this.#loadedSize = 0;
     this.#chunkSize = chunkSize ? chunkSize : Number.MAX_VALUE;
     this.#chunkTransferredCallback = chunkTransferredCallback;
-    this.#decoder = new TextDecoder();
     this.#isCanceled = false;
     this.#error = null;
     this.#streamReader = null;
@@ -6659,10 +6657,6 @@ var ChunkedFileReader = class {
       const fileStream = this.#file.stream();
       const stream = Common11.Gzip.decompressStream(fileStream);
       this.#streamReader = stream.getReader();
-    } else {
-      this.#reader = new FileReader();
-      this.#reader.onload = this.onChunkLoaded.bind(this);
-      this.#reader.onerror = this.onError.bind(this);
     }
     this.#output = output;
     void this.loadChunk();
@@ -6688,22 +6682,6 @@ var ChunkedFileReader = class {
   error() {
     return this.#error;
   }
-  onChunkLoaded(event) {
-    if (this.#isCanceled) {
-      return;
-    }
-    const eventTarget = event.target;
-    if (eventTarget.readyState !== FileReader.DONE) {
-      return;
-    }
-    if (!this.#reader) {
-      return;
-    }
-    const buffer = this.#reader.result;
-    this.#loadedSize += buffer.byteLength;
-    const endOfFile = this.#loadedSize === this.#fileSize;
-    void this.decodeChunkBuffer(buffer, endOfFile);
-  }
   async decodeChunkBuffer(buffer, endOfFile) {
     if (!this.#output) {
       return;
@@ -6727,7 +6705,6 @@ var ChunkedFileReader = class {
       return;
     }
     this.#file = null;
-    this.#reader = null;
     await this.#output.close();
     this.#transferFinished(!this.#error);
   }
@@ -6742,18 +6719,23 @@ var ChunkedFileReader = class {
         return await this.finishRead();
       }
       void this.decodeChunkBuffer(value.buffer, false);
+      return;
     }
-    if (this.#reader) {
-      const chunkStart = this.#loadedSize;
-      const chunkEnd = Math.min(this.#fileSize, chunkStart + this.#chunkSize);
-      const nextPart = this.#file.slice(chunkStart, chunkEnd);
-      this.#reader.readAsArrayBuffer(nextPart);
+    const chunkStart = this.#loadedSize;
+    const chunkEnd = Math.min(this.#fileSize, chunkStart + this.#chunkSize);
+    const nextPart = this.#file.slice(chunkStart, chunkEnd);
+    try {
+      const buffer = await nextPart.arrayBuffer();
+      if (this.#isCanceled) {
+        return;
+      }
+      this.#loadedSize += buffer.byteLength;
+      const endOfFile = this.#loadedSize === this.#fileSize;
+      void this.decodeChunkBuffer(buffer, endOfFile);
+    } catch (error) {
+      this.#error = error;
+      this.#transferFinished(false);
     }
-  }
-  onError(event) {
-    const eventTarget = event.target;
-    this.#error = eventTarget.error;
-    this.#transferFinished(false);
   }
 };
 var FileOutputStream = class {
@@ -7710,17 +7692,12 @@ var TempFile = class {
       return "";
     }
     const blob = typeof startOffset === "number" || typeof endOffset === "number" ? this.#lastBlob.slice(startOffset, endOffset) : this.#lastBlob;
-    const reader = new FileReader();
     try {
-      await new Promise((resolve, reject) => {
-        reader.onloadend = resolve;
-        reader.onerror = reject;
-        reader.readAsText(blob);
-      });
+      return await blob.text();
     } catch (error) {
       this.#console.error("Failed to read from temp file: " + error.message);
+      return null;
     }
-    return reader.result;
   }
   async copyToOutputStream(outputStream, progress) {
     if (!this.#lastBlob) {

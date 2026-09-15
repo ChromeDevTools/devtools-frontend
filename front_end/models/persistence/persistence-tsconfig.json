@@ -35,7 +35,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2023",
+    "target": "es2023",
     "typeRoots": [
 
     ],
@@ -56,6 +56,8 @@
     "../../../../../../front_end/models/persistence/PlatformFileSystem.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",
     "../../../../../../node_modules/@types/filewriter/index.d.ts"
   ],

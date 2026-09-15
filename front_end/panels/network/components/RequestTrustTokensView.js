@@ -59,11 +59,11 @@ const UIStrings = {
     /**
      * @description Detailed text for a success status in the Network panel
      */
-    theOperationsResultWasServedFrom: 'The operation’s result was served from cache.',
+    theOperationsResultWasServedFrom: 'The operation’s result was served from cache',
     /**
      * @description Detailed text for a success status in the Network panel
      */
-    theOperationWasFulfilledLocally: 'The operation was fulfilled locally, no request was sent.',
+    theOperationWasFulfilledLocally: 'The operation was fulfilled locally, no request was sent',
     /**
      * @description Text for an error status in the Network panel
      */
@@ -71,23 +71,23 @@ const UIStrings = {
     /**
      * @description Text for an error status in the Network panel
      */
-    aClientprovidedArgumentWas: 'A client-provided argument was malformed or otherwise invalid.',
+    aClientprovidedArgumentWas: 'A client-provided argument was malformed or otherwise invalid',
     /**
      * @description Text for an error status in the Network panel
      */
-    eitherNoInputsForThisOperation: 'Either no inputs for this operation are available or the output exceeds the operations quota.',
+    eitherNoInputsForThisOperation: 'Either no inputs for this operation are available or the output exceeds the operations quota',
     /**
      * @description Text for an error status in the Network panel
      */
-    theServersResponseWasMalformedOr: 'The server’s response was malformed or otherwise invalid.',
+    theServersResponseWasMalformedOr: 'The server’s response was malformed or otherwise invalid',
     /**
      * @description Text for an error status in the Network panel
      */
-    theOperationFailedForAnUnknown: 'The operation failed for an unknown reason.',
+    theOperationFailedForAnUnknown: 'The operation failed for an unknown reason',
     /**
      * @description Text for an error status in the Network panel
      */
-    perSiteLimit: 'Per-site issuer limit reached.',
+    perSiteLimit: 'Per-site issuer limit reached',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestTrustTokensView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

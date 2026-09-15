@@ -9,11 +9,11 @@ const UIStrings = {
     /**
      * @description Message shown when the inspected page crashes and DevTools is disconnected.
      */
-    devtoolsWasDisconnectedFromThe: 'DevTools was disconnected from the page.',
+    devtoolsWasDisconnectedFromThe: 'DevTools was disconnected from the page',
     /**
      * @description Message explaining that DevTools will reconnect once the page is reloaded.
      */
-    oncePageIsReloadedDevtoolsWill: 'Once page is reloaded, DevTools will automatically reconnect.',
+    oncePageIsReloadedDevtoolsWill: 'Once page is reloaded, DevTools will automatically reconnect',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/TargetCrashedScreen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -14,7 +14,7 @@ export const UIStrings = {
     /**
      * @description Description of an insight that identifies multiple copies of the same JavaScript sources, and recommends removing the duplication.
      */
-    description: 'Remove large, [duplicate JavaScript modules](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) from bundles to reduce unnecessary bytes consumed by network activity.',
+    description: 'Remove large, [duplicate JavaScript modules](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) from bundles to reduce unnecessary bytes consumed by network activity',
     /**
      * @description Label for a column in a data table; entries will be the locations of JavaScript or CSS code, e.g. the name of a JavaScript package or module.
      */

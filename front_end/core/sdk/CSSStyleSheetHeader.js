@@ -11,11 +11,11 @@ const UIStrings = {
     /**
      * @description Error message for when a CSS file can't be loaded.
      */
-    couldNotFindTheOriginalStyle: 'Could not find the original style sheet.',
+    couldNotFindTheOriginalStyle: 'Could not find the original style sheet',
     /**
      * @description Error message to display when a source CSS file could not be retrieved.
      */
-    couldNotRetrieveSourceStyles: 'Could not retrieve source styles.',
+    couldNotRetrieveSourceStyles: 'Could not retrieve source styles',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CSSStyleSheetHeader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

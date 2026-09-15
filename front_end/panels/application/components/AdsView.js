@@ -124,11 +124,11 @@ const UIStrings = {
     /**
      * @description Explanation text for the 'Highlight ads' setting.
      */
-    highlightsElementsRedDetectedToBe: 'Highlights elements (red) detected to be ads.',
+    highlightsElementsRedDetectedToBe: 'Highlights elements (red) detected to be ads',
     /**
      * @description Text explaining that ad detection is not perfect.
      */
-    adDetectionMistakes: 'Chrome’s ad detection can make mistakes.',
+    adDetectionMistakes: 'Chrome’s ad detection can make mistakes',
     /**
      * @description Link text for learning more about ad detection in Chrome.
      */

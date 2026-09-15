@@ -21590,11 +21590,11 @@ var UIStrings2 = {
   /**
    * @description Error message for when a CSS file can't be loaded.
    */
-  couldNotFindTheOriginalStyle: "Could not find the original style sheet.",
+  couldNotFindTheOriginalStyle: "Could not find the original style sheet",
   /**
    * @description Error message to display when a source CSS file could not be retrieved.
    */
-  couldNotRetrieveSourceStyles: "Could not retrieve source styles."
+  couldNotRetrieveSourceStyles: "Could not retrieve source styles"
 };
 var str_2 = i18n3.i18n.registerUIStrings("core/sdk/CSSStyleSheetHeader.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -22994,11 +22994,38 @@ function comparePositions(a, b) {
   return a.line - b.line || a.column - b.column;
 }
 
+// ../../front_end/core/sdk/SourceMapRangeMappings.ts
+var SourceMapRangeMappings_exports = {};
+__export(SourceMapRangeMappings_exports, {
+  decodeRangeMappings: () => decodeRangeMappings
+});
+function decodeRangeMappings(encodedRangeMappings) {
+  const rangeMappings = [];
+  const tokenIter = new TokenIterator(encodedRangeMappings);
+  let indices = [];
+  let currentIndex = 0;
+  while (tokenIter.hasNext()) {
+    if (tokenIter.peek() === ";") {
+      tokenIter.next();
+      rangeMappings.push(indices);
+      indices = [];
+      currentIndex = 0;
+      continue;
+    }
+    currentIndex += tokenIter.nextUnsignedVLQ();
+    indices.push(currentIndex);
+  }
+  rangeMappings.push(indices);
+  return rangeMappings;
+}
+
 // ../../front_end/core/sdk/SourceMapScopesInfo.ts
 var SourceMapScopesInfo_exports = {};
 __export(SourceMapScopesInfo_exports, {
   SourceMapScopesInfo: () => SourceMapScopesInfo,
-  contains: () => contains
+  comparePositions: () => comparePositions2,
+  contains: () => contains,
+  findMatchingScopeNumber: () => findMatchingScopeNumber
 });
 import * as Formatter2 from "../../models/formatter/formatter.js";
 
@@ -23038,16 +23065,20 @@ var SourceMapScopeChainEntry = class {
   #range;
   #isInnerMostFunction;
   #returnValue;
+  #scopeNumber;
   /**
    * @param isInnerMostFunction If `scope` is the innermost 'function' scope. Only used for labeling as we name the
    * scope of the paused function 'Local', while other outer 'function' scopes are named 'Closure'.
+   * @param scopeNumber The V8 scope in which `scope`s binding expressions must be evaluated. Defaults to the
+   * inner-most scope.
    */
-  constructor(callFrame, scope, range, isInnerMostFunction, returnValue) {
+  constructor(callFrame, scope, range, isInnerMostFunction, returnValue, scopeNumber) {
     this.#callFrame = callFrame;
     this.#scope = scope;
     this.#range = range;
     this.#isInnerMostFunction = isInnerMostFunction;
     this.#returnValue = returnValue;
+    this.#scopeNumber = scopeNumber;
   }
   extraProperties() {
     if (this.#returnValue) {
@@ -23097,7 +23128,7 @@ var SourceMapScopeChainEntry = class {
     return null;
   }
   object() {
-    return new SourceMapScopeRemoteObject(this.#callFrame, this.#scope, this.#range);
+    return new SourceMapScopeRemoteObject(this.#callFrame, this.#scope, this.#range, this.#scopeNumber);
   }
   description() {
     return "";
@@ -23110,7 +23141,8 @@ var SourceMapScopeRemoteObject = class _SourceMapScopeRemoteObject extends Remot
   #callFrame;
   #scope;
   #range;
-  constructor(callFrame, scope, range) {
+  #scopeNumber;
+  constructor(callFrame, scope, range, scopeNumber) {
     super(
       callFrame.debuggerModel.runtimeModel(),
       /* objectId */
@@ -23124,8 +23156,9 @@ var SourceMapScopeRemoteObject = class _SourceMapScopeRemoteObject extends Remot
     this.#callFrame = callFrame;
     this.#scope = scope;
     this.#range = range;
+    this.#scopeNumber = scopeNumber;
   }
-  async doGetProperties(_ownProperties, accessorPropertiesOnly, generatePreview) {
+  async doGetProperties(_ownProperties, accessorPropertiesOnly, _nonIndexedPropertiesOnly, generatePreview) {
     if (accessorPropertiesOnly) {
       return { properties: [], internalProperties: [] };
     }
@@ -23136,7 +23169,7 @@ var SourceMapScopeRemoteObject = class _SourceMapScopeRemoteObject extends Remot
         properties.push(_SourceMapScopeRemoteObject.#unavailableProperty(variable));
         continue;
       }
-      const result = await this.#callFrame.evaluate({ expression, generatePreview });
+      const result = await this.#callFrame.evaluate({ expression, generatePreview, scopeNumber: this.#scopeNumber });
       if ("error" in result || result.exceptionDetails) {
         properties.push(_SourceMapScopeRemoteObject.#unavailableProperty(variable));
       } else {
@@ -23322,12 +23355,6 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     function compareScopes(a, b) {
       return comparePositions2(a.start, b.start);
     }
-    function comparePositions2(a, b) {
-      if (a.line !== b.line) {
-        return a.line - b.line;
-      }
-      return a.column - b.column;
-    }
     function positionFromOffset(offset) {
       const location = text.positionFromOffset(offset);
       return { line: location.lineNumber, column: location.columnNumber };
@@ -23471,9 +23498,15 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
       const isFunctionScope = originalScope.kind === "function";
       const isInnerMostFunction = isFunctionScope && !seenFunctionScope;
       const returnValue = isInnerMostFunction ? callFrame.returnValue() : null;
-      result.push(
-        new SourceMapScopeChainEntry(callFrame, originalScope, range, isInnerMostFunction, returnValue ?? void 0)
-      );
+      const scopeNumber = range ? findMatchingScopeNumber(callFrame, range) : void 0;
+      result.push(new SourceMapScopeChainEntry(
+        callFrame,
+        originalScope,
+        range,
+        isInnerMostFunction,
+        returnValue ?? void 0,
+        scopeNumber
+      ));
       seenFunctionScope ||= isFunctionScope;
     }
     if (callFrame.returnValue() !== null) {
@@ -23620,6 +23653,58 @@ function contains(range, line, column) {
   }
   return true;
 }
+function comparePositions2(a, b) {
+  if (a.line !== b.line) {
+    return a.line - b.line;
+  }
+  return a.column - b.column;
+}
+function positionRange(callFrame, scope) {
+  const range = scope.range();
+  if (range === null || range.start.scriptId !== callFrame.location().scriptId || range.end.scriptId !== callFrame.location().scriptId) {
+    return null;
+  }
+  return {
+    start: { line: range.start.lineNumber, column: range.start.columnNumber },
+    end: { line: range.end.lineNumber, column: range.end.columnNumber }
+  };
+}
+function findMatchingScopeNumber(callFrame, range) {
+  const scopeChain = callFrame.scopeChain();
+  const exactMatch = scopeChain.find((scope) => {
+    const scopeRange = positionRange(callFrame, scope);
+    return scopeRange !== null && comparePositions2(scopeRange.start, range.start) === 0 && comparePositions2(scopeRange.end, range.end) === 0;
+  });
+  if (exactMatch !== void 0) {
+    return exactMatch.ordinal();
+  }
+  if (range.isStackFrame) {
+    const functionScopes = scopeChain.filter((scope) => scope.type() === Debugger.ScopeType.Local || scope.type() === Debugger.ScopeType.Closure);
+    const functionScope = findBestScope(callFrame, functionScopes, range);
+    if (functionScope !== void 0) {
+      return functionScope.ordinal();
+    }
+  }
+  return findBestScope(callFrame, scopeChain, range)?.ordinal();
+}
+function findBestScope(callFrame, scopes, range) {
+  let outerMostContainedScope;
+  let innerMostContainingScope;
+  for (const scope of scopes) {
+    const scopeRange = positionRange(callFrame, scope);
+    if (scopeRange === null) {
+      continue;
+    }
+    const rangeContainsScope = comparePositions2(range.start, scopeRange.start) <= 0 && comparePositions2(scopeRange.end, range.end) <= 0;
+    const scopeContainsRange = comparePositions2(scopeRange.start, range.start) <= 0 && comparePositions2(range.end, scopeRange.end) <= 0;
+    if (rangeContainsScope) {
+      outerMostContainedScope = scope;
+    } else if (scopeContainsRange) {
+      innerMostContainingScope ??= scope;
+    }
+  }
+  return outerMostContainedScope ?? innerMostContainingScope;
+}
 
 // ../../front_end/core/sdk/SourceMap.ts
 function parseSourceMap(content) {
@@ -23639,7 +23724,14 @@ var SourceMapEntry = class {
   sourceLineNumber;
   sourceColumnNumber;
   name;
-  constructor(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, name) {
+  /**
+   * Whether this entry covers everything up to the following entry, mapping the generated
+   * code character by character (including newlines) onto the original code.
+   *
+   * @see https://github.com/tc39/source-map/blob/main/proposals/range-mappings.md
+   */
+  isRangeMapping;
+  constructor(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, name, isRangeMapping = false) {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
     this.sourceIndex = sourceIndex;
@@ -23647,6 +23739,7 @@ var SourceMapEntry = class {
     this.sourceLineNumber = sourceLineNumber;
     this.sourceColumnNumber = sourceColumnNumber;
     this.name = name;
+    this.isRangeMapping = isRangeMapping;
   }
   static compare(entry1, entry2) {
     if (entry1.lineNumber !== entry2.lineNumber) {
@@ -23985,6 +24078,18 @@ var SourceMap = class _SourceMap {
     const names = map.names ?? [];
     const tokenIter = new TokenIterator(map.mappings);
     let sourceURL = this.#sourceInfos[sourceIndex]?.sourceURL;
+    const lineStarts = [];
+    const lineCounts = [];
+    const mappings = this.mappings();
+    const pushEntry = (entry) => {
+      const line = entry.lineNumber - baseLineNumber;
+      if (lineCounts[line] === void 0) {
+        lineStarts[line] = mappings.length;
+        lineCounts[line] = 0;
+      }
+      lineCounts[line]++;
+      mappings.push(entry);
+    };
     while (true) {
       if (tokenIter.peek() === ",") {
         tokenIter.next();
@@ -24000,7 +24105,7 @@ var SourceMap = class _SourceMap {
       }
       columnNumber += tokenIter.nextVLQ();
       if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
-        this.mappings().push(new SourceMapEntry(lineNumber, columnNumber));
+        pushEntry(new SourceMapEntry(lineNumber, columnNumber));
         continue;
       }
       const sourceIndexDelta = tokenIter.nextVLQ();
@@ -24011,13 +24116,13 @@ var SourceMap = class _SourceMap {
       sourceLineNumber += tokenIter.nextVLQ();
       sourceColumnNumber += tokenIter.nextVLQ();
       if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
-        this.mappings().push(
+        pushEntry(
           new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber)
         );
         continue;
       }
       nameIndex += tokenIter.nextVLQ();
-      this.mappings().push(new SourceMapEntry(
+      pushEntry(new SourceMapEntry(
         lineNumber,
         columnNumber,
         sourceIndex,
@@ -24027,6 +24132,7 @@ var SourceMap = class _SourceMap {
         names[nameIndex]
       ));
     }
+    this.#markRangeMappings(map, lineStarts, lineCounts);
     if (!this.#scopesInfo) {
       this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
     }
@@ -24042,6 +24148,41 @@ var SourceMap = class _SourceMap {
       this.#scopesInfo.addOriginalScopes(originalScopes);
     } else {
       this.#scopesInfo.addOriginalScopes(new Array(map.sources.length).fill(null));
+    }
+  }
+  /**
+   * Marks the entries of the section that was just parsed which the `rangeMappings` field of
+   * that section points at.
+   *
+   * A malformed field never invalidates the SourceMap: a field that can't be decoded is
+   * ignored altogether, and indices that don't point at a mapping with an original position
+   * are skipped.
+   *
+   * @param lineStarts index in `mappings` of the first entry of each line of the section.
+   * @param lineCounts number of entries on each line of the section.
+   */
+  #markRangeMappings(map, lineStarts, lineCounts) {
+    if (typeof map.rangeMappings !== "string") {
+      return;
+    }
+    let rangeMappings;
+    try {
+      rangeMappings = decodeRangeMappings(map.rangeMappings);
+    } catch {
+      return;
+    }
+    const mappings = this.mappings();
+    for (let line = 0; line < rangeMappings.length; ++line) {
+      for (const index of rangeMappings[line]) {
+        if (index >= (lineCounts[line] ?? 0)) {
+          break;
+        }
+        const mappingIndex = lineStarts[line] + index;
+        if (mappings[mappingIndex].sourceURL === void 0) {
+          continue;
+        }
+        mappings[mappingIndex] = asRangeMapping(mappings[mappingIndex]);
+      }
     }
   }
   parseBloombergScopes(map) {
@@ -24206,9 +24347,22 @@ var SourceMap = class _SourceMap {
     return this.#scopesInfo?.translateCallSite(generatedLine, generatedColumn) ?? [];
   }
 };
+function asRangeMapping(entry) {
+  return new SourceMapEntry(
+    entry.lineNumber,
+    entry.columnNumber,
+    entry.sourceIndex,
+    entry.sourceURL,
+    entry.sourceLineNumber,
+    entry.sourceColumnNumber,
+    entry.name,
+    true
+  );
+}
 var VLQ_BASE_SHIFT = 5;
 var VLQ_BASE_MASK = (1 << 5) - 1;
 var VLQ_CONTINUATION_MASK = 1 << 5;
+var VLQ_UNSIGNED_MAX_SHIFT = 30;
 var TokenIterator = class {
   #string;
   #position;
@@ -24230,24 +24384,45 @@ var TokenIterator = class {
     return this.#position < this.#string.length;
   }
   nextVLQ() {
+    let result = this.#decodeVLQ(false);
+    const negative = result & 1;
+    result >>= 1;
+    return negative ? -result : result;
+  }
+  /**
+   * Decodes an unsigned Base64 VLQ number, as used by the `rangeMappings` field of the
+   * "range mappings" proposal. In contrast to {@link nextVLQ} the least significant bit
+   * carries a value rather than a sign, so the full 32 bit range is available. Numbers
+   * that don't fit into 32 bits are rejected.
+   *
+   * @see https://github.com/tc39/source-map/blob/main/proposals/range-mappings.md
+   */
+  nextUnsignedVLQ() {
+    return this.#decodeVLQ(true);
+  }
+  #decodeVLQ(unsigned) {
     let result = 0;
     let shift = 0;
     let digit = VLQ_CONTINUATION_MASK;
     while (digit & VLQ_CONTINUATION_MASK) {
       if (!this.hasNext()) {
-        throw new Error("Unexpected end of input while decodling VLQ number!");
+        throw new Error("Unexpected end of input while decoding VLQ number!");
+      }
+      if (unsigned && shift > VLQ_UNSIGNED_MAX_SHIFT) {
+        throw new Error("Unsigned VLQ number does not fit into 32 bits!");
       }
       const charCode = this.nextCharCode();
       digit = Common12.Base64.BASE64_CODES[charCode];
       if (charCode !== 65 && digit === 0) {
         throw new Error(`Unexpected char '${String.fromCharCode(charCode)}' encountered while decoding`);
       }
-      result += (digit & VLQ_BASE_MASK) << shift;
+      result += unsigned ? (digit & VLQ_BASE_MASK) * 2 ** shift : (digit & VLQ_BASE_MASK) << shift;
       shift += VLQ_BASE_SHIFT;
     }
-    const negative = result & 1;
-    result >>= 1;
-    return negative ? -result : result;
+    if (unsigned && result > 4294967295) {
+      throw new Error("Unsigned VLQ number does not fit into 32 bits!");
+    }
+    return result;
   }
   /**
    * @returns the next VLQ number without iterating further. Or returns null if
@@ -27598,16 +27773,16 @@ var UIStrings6 = {
    * @description Text shown in the console when a performance profile (with the given name) was started.
    * @example {title} PH1
    */
-  profileSStarted: "Profile ''{PH1}'' started.",
+  profileSStarted: "Profile ''{PH1}'' started",
   /**
    * @description Text shown in the console when a performance profile (with the given name) was stopped.
    * @example {name} PH1
    */
-  profileSFinished: "Profile ''{PH1}'' finished.",
+  profileSFinished: "Profile ''{PH1}'' finished",
   /**
    * @description Error message shown in the console after the user tries to save a JavaScript value to a temporary variable.
    */
-  failedToSaveToTempVariable: "Failed to save to temp variable."
+  failedToSaveToTempVariable: "Failed to save to temp variable"
 };
 var str_6 = i18n11.i18n.registerUIStrings("core/sdk/ConsoleModel.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
@@ -31687,11 +31862,11 @@ var UIStrings7 = {
   /**
    * @description Error message for when a script can't be loaded because it was removed or deleted.
    */
-  scriptRemovedOrDeleted: "Script removed or deleted.",
+  scriptRemovedOrDeleted: "Script removed or deleted",
   /**
    * @description Error message when failing to load a script source text.
    */
-  unableToFetchScriptSource: "Unable to fetch script source."
+  unableToFetchScriptSource: "Unable to fetch script source"
 };
 var str_7 = i18n15.i18n.registerUIStrings("core/sdk/Script.ts", UIStrings7);
 var i18nString7 = i18n15.i18n.getLocalizedString.bind(void 0, str_7);
@@ -33165,7 +33340,8 @@ var CallFrame = class _CallFrame {
       returnByValue: options.returnByValue,
       generatePreview: options.generatePreview,
       throwOnSideEffect: options.throwOnSideEffect,
-      timeout: options.timeout
+      timeout: options.timeout,
+      scopeNumber: options.scopeNumber
     });
     const error = response.getError();
     if (error) {
@@ -33207,6 +33383,10 @@ var Scope = class {
   }
   callFrame() {
     return this.#callFrame;
+  }
+  /** The index of this scope in {@link CallFrame.scopeChain}, usable as an `evaluateOnCallFrame` `scopeNumber`. */
+  ordinal() {
+    return this.#ordinal;
   }
   type() {
     return this.#type;
@@ -37012,32 +37192,32 @@ var UIStrings10 = {
    * @description Warning message when deprecated Server-Timing header syntax is found.
    * @example {sql-lookup} PH1
    */
-  deprecatedSyntaxFoundPleaseUse: 'Deprecated syntax found for metric "{PH1}". Use: <name>;dur=<duration>;desc=<description>',
+  deprecatedSyntaxFoundPleaseUse: 'Deprecated syntax found for metric "{PH1}". Use: <name>;dur=<duration>;desc=<description>.',
   /**
    * @description Warning message when a duplicate parameter is found in Server-Timing header.
    * @example {https} PH1
    */
-  duplicateParameterSIgnored: 'Duplicate parameter "{PH1}" ignored.',
+  duplicateParameterSIgnored: 'Duplicate parameter "{PH1}" ignored',
   /**
    * @description Warning message when no value is found for a parameter in Server-Timing header.
    * @example {https} PH1
    */
-  noValueFoundForParameterS: 'No value found for parameter "{PH1}".',
+  noValueFoundForParameterS: 'No value found for parameter "{PH1}"',
   /**
    * @description Warning message when an unrecognized parameter is found in Server-Timing header.
    * @example {https} PH1
    */
-  unrecognizedParameterS: 'Unrecognized parameter "{PH1}".',
+  unrecognizedParameterS: 'Unrecognized parameter "{PH1}"',
   /**
    * @description Warning message when extraneous trailing characters are found in Server-Timing header.
    */
-  extraneousTrailingCharacters: "Extraneous trailing characters.",
+  extraneousTrailingCharacters: "Extraneous trailing characters",
   /**
    * @description Warning message when a parameter value cannot be parsed in Server-Timing header.
    * @example {https} PH1
    * @example {2.0} PH2
    */
-  unableToParseSValueS: 'Unable to parse "{PH1}" value "{PH2}".'
+  unableToParseSValueS: 'Unable to parse "{PH1}" value "{PH2}"'
 };
 var str_10 = i18n23.i18n.registerUIStrings("core/sdk/ServerTiming.ts", UIStrings10);
 var i18nString10 = i18n23.i18n.getLocalizedString.bind(void 0, str_10);
@@ -37216,15 +37396,15 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  secureOnly: 'This cookie was blocked because it had the "`Secure`" attribute and the connection was not secure.',
+  secureOnly: 'This cookie was blocked because it had the "`Secure`" attribute and the connection was not secure',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  notOnPath: "This cookie was blocked because its path was not an exact match for or a superdirectory of the request URL\u2019s path.",
+  notOnPath: "This cookie was blocked because its path was not an exact match for or a superdirectory of the request URL\u2019s path",
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  domainMismatch: "This cookie was blocked because neither did the request URL\u2019s domain exactly match the cookie\u2019s domain, nor was the request URL\u2019s domain a subdomain of the cookie\u2019s Domain attribute value.",
+  domainMismatch: "This cookie was blocked because neither did the request URL\u2019s domain exactly match the cookie\u2019s domain, nor was the request URL\u2019s domain a subdomain of the cookie\u2019s Domain attribute value",
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
@@ -37232,7 +37412,7 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  sameSiteLax: 'This cookie was blocked because it had the "`SameSite=Lax`" attribute and the request was made from a different site and was not initiated by a top-level navigation.',
+  sameSiteLax: 'This cookie was blocked because it had the "`SameSite=Lax`" attribute and the request was made from a different site and was not initiated by a top-level navigation',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
@@ -37244,7 +37424,7 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  userPreferences: "This cookie was blocked due to user preferences.",
+  userPreferences: "This cookie was blocked due to user preferences",
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
@@ -37252,7 +37432,7 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  unknownError: "An unknown error was encountered when trying to send this cookie.",
+  unknownError: "An unknown error was encountered when trying to send this cookie",
   /**
    * @description Tooltip to explain why a cookie was blocked due to exceeding the maximum size.
    */
@@ -37260,7 +37440,7 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  thisSetcookieWasBlockedDueToUser: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked due to user preferences.',
+  thisSetcookieWasBlockedDueToUser: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked due to user preferences',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
    */
@@ -37268,28 +37448,28 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  thisSetcookieHadInvalidSyntax: 'This "`Set-Cookie`" header had invalid syntax.',
+  thisSetcookieHadInvalidSyntax: 'This "`Set-Cookie`" header had invalid syntax',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  thisSetcookieHadADisallowedCharacter: 'This "`Set-Cookie`" header contained a disallowed character (a forbidden ASCII control character, or the tab character if it appears in the middle of the cookie name, value, an attribute name, or an attribute value).',
+  thisSetcookieHadADisallowedCharacter: 'This "`Set-Cookie`" header contained a disallowed character (a forbidden ASCII control character, or the tab character if it appears in the middle of the cookie name, value, an attribute name, or an attribute value)',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  theSchemeOfThisConnectionIsNot: "The scheme of this connection is not allowed to store cookies.",
+  theSchemeOfThisConnectionIsNot: "The scheme of this connection is not allowed to store cookies",
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  anUnknownErrorWasEncounteredWhenTrying: "An unknown error was encountered when trying to store this cookie.",
+  anUnknownErrorWasEncounteredWhenTrying: "An unknown error was encountered when trying to store this cookie",
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonSecureOnly: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`Secure`" attribute but was not received over a secure connection.',
+  blockedReasonSecureOnly: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`Secure`" attribute but was not received over a secure connection',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    * @example {SameSite=Strict} PH1
    */
-  blockedReasonSameSiteStrictLax: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "{PH1}" attribute but came from a cross-site response which was not the response to a top-level navigation.',
+  blockedReasonSameSiteStrictLax: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "{PH1}" attribute but came from a cross-site response which was not the response to a top-level navigation',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
@@ -37297,19 +37477,19 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonSameSiteNoneInsecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`SameSite=None`" attribute but did not have the "`Secure`" attribute, which is required in order to use "`SameSite=None`".',
+  blockedReasonSameSiteNoneInsecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`SameSite=None`" attribute but did not have the "`Secure`" attribute, which is required in order to use "`SameSite=None`"',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonOverwriteSecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it was not sent over a secure connection and would have overwritten a cookie with the "`Secure`" attribute.',
+  blockedReasonOverwriteSecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it was not sent over a secure connection and would have overwritten a cookie with the "`Secure`" attribute',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonInvalidDomain: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because its "`Domain`" attribute was invalid with regards to the current host URL.',
+  blockedReasonInvalidDomain: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because its "`Domain`" attribute was invalid with regards to the current host URL',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonInvalidPrefix: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it used the "`__Secure-`" or "`__Host-`" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in `https://tools.ietf.org/html/draft-west-cookie-prefixes-05`.',
+  blockedReasonInvalidPrefix: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it used the "`__Secure-`" or "`__Host-`" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in `https://tools.ietf.org/html/draft-west-cookie-prefixes-05`',
   /**
    * @description Tooltip to explain why a cookie was blocked when the size of the #name plus the size of the value exceeds the max size.
    */
@@ -37322,7 +37502,7 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
    */
-  exemptionReasonUserSetting: "This cookie is allowed by user preference.",
+  exemptionReasonUserSetting: "This cookie is allowed by user preference",
   /**
    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
    */
@@ -37338,7 +37518,7 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
    */
-  exemptionReasonScheme: "This cookie is allowed by the top-level URL scheme."
+  exemptionReasonScheme: "This cookie is allowed by the top-level URL scheme"
 };
 var str_11 = i18n25.i18n.registerUIStrings("core/sdk/NetworkRequest.ts", UIStrings11);
 var i18nString11 = i18n25.i18n.getLocalizedString.bind(void 0, str_11);
@@ -45642,6 +45822,7 @@ export {
   SourceMapCache_exports as SourceMapCache,
   SourceMapFunctionRanges_exports as SourceMapFunctionRanges,
   SourceMapManager_exports as SourceMapManager,
+  SourceMapRangeMappings_exports as SourceMapRangeMappings,
   SourceMapScopeChainEntry_exports as SourceMapScopeChainEntry,
   SourceMapScopesInfo_exports as SourceMapScopesInfo,
   StorageBucketsModel_exports as StorageBucketsModel,

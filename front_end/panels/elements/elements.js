@@ -4351,25 +4351,25 @@ var UIStrings4 = {
    * @example {display: grid} DISPLAY_GRID_RULE
    * @example {display: flex} DISPLAY_FLEX_RULE
    */
-  ruleViolatedBySameElementRuleChangeFlexOrGrid: "Try adding {DISPLAY_GRID_RULE} or {DISPLAY_FLEX_RULE} to make this element into a container.",
+  ruleViolatedBySameElementRuleChangeFlexOrGrid: "Try adding {DISPLAY_GRID_RULE} or {DISPLAY_FLEX_RULE} to make this element into a container",
   /**
    * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to the current property value.
    * @example {display: block} EXISTING_PROPERTY_DECLARATION
    * @example {display: flex} TARGET_PROPERTY_DECLARATION
    */
-  ruleViolatedBySameElementRuleChangeSuggestion: "Try setting the {EXISTING_PROPERTY_DECLARATION} property to {TARGET_PROPERTY_DECLARATION}.",
+  ruleViolatedBySameElementRuleChangeSuggestion: "Try setting the {EXISTING_PROPERTY_DECLARATION} property to {TARGET_PROPERTY_DECLARATION}",
   /**
    * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to properties of the parent element.
    * @example {display: block} REASON_PROPERTY_DECLARATION_CODE
    * @example {flex} AFFECTED_PROPERTY_DECLARATION_CODE
    */
-  ruleViolatedByParentElementRuleReason: "The {REASON_PROPERTY_DECLARATION_CODE} property on the parent element prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect.",
+  ruleViolatedByParentElementRuleReason: "The {REASON_PROPERTY_DECLARATION_CODE} property on the parent element prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect",
   /**
    * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to the properties of the parent element.
    * @example {display: block} EXISTING_PARENT_ELEMENT_RULE
    * @example {display: flex} TARGET_PARENT_ELEMENT_RULE
    */
-  ruleViolatedByParentElementRuleFix: "Try setting the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}.",
+  ruleViolatedByParentElementRuleFix: "Try setting the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}",
   /**
    * @description The warning text shown in the Elements panel when font-variation-settings don't match allowed values.
    * @example {wdth} PH1
@@ -4378,32 +4378,32 @@ var UIStrings4 = {
    * @example {20} PH4
    * @example {Arial} PH5
    */
-  fontVariationSettingsWarning: 'Value for setting "{PH1}" {PH2} is outside the supported range [{PH3}, {PH4}] for font-family "{PH5}".',
+  fontVariationSettingsWarning: 'Value for setting "{PH1}" {PH2} is outside the supported range [{PH3}, {PH4}] for font-family "{PH5}"',
   /**
    * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect on flex or grid child items.
    * @example {flex} CONTAINER_DISPLAY_NAME
    * @example {align-contents} PROPERTY_NAME
    */
-  flexGridContainerPropertyRuleReason: "This element is a {CONTAINER_DISPLAY_NAME} item, i.e. a child of a {CONTAINER_DISPLAY_NAME} container, but {PROPERTY_NAME} only applies to containers.",
+  flexGridContainerPropertyRuleReason: "This element is a {CONTAINER_DISPLAY_NAME} item, i.e. a child of a {CONTAINER_DISPLAY_NAME} container, but {PROPERTY_NAME} only applies to containers",
   /**
    * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect on flex or grid child items.
    * @example {align-contents} PROPERTY_NAME
    * @example {align-self} ALTERNATIVE_PROPERTY_NAME
    */
-  flexGridContainerPropertyRuleFix: "Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead.",
+  flexGridContainerPropertyRuleFix: "Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead",
   /**
    * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a non-anchor-positioned element.
    * @example {relative} POSITION
    */
-  invalidAnchorPositioning: 'An anchor was defined but the element was not anchor-positioned but positioned "{POSITION}".',
+  invalidAnchorPositioning: 'An anchor was defined but the element was not anchor-positioned but positioned "{POSITION}"',
   /**
    * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a non-anchor-positioned element.
    */
-  invalidAnchorPositioningFix: 'Set position to either "fixed" or "absolute".',
+  invalidAnchorPositioningFix: 'Set position to either "fixed" or "absolute"',
   /**
    * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a hidden element.
    */
-  unusedAnchorPositioning: "An anchor was defined but the element is hidden."
+  unusedAnchorPositioning: "An anchor was defined but the element is hidden"
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/elements/CSSRuleValidator.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
@@ -5587,7 +5587,7 @@ var UIStrings5 = {
   /**
    * @description Text in the color swatch popover icon of the Elements panel.
    */
-  shiftClickToChangeColorFormat: "Shift + Click to change color format.",
+  shiftClickToChangeColorFormat: "Shift + Click to change color format",
   /**
    * @description Swatch icon element title in the color swatch popover icon of the Elements panel.
    * @example {Shift + Click to change color format.} PH1
@@ -5628,7 +5628,7 @@ var UIStrings5 = {
   /**
    * @description Tooltip text for a style property overridden by an animation.
    */
-  overriddenByAnimation: "Overridden by animation styles.",
+  overriddenByAnimation: "Overridden by animation styles",
   /**
    * @description Link text in the tooltip to open the Animations panel.
    */
@@ -11796,13 +11796,13 @@ var UIStrings8 = {
    * @example {Ctrl} PH1
    * @example {Alt} PH2
    */
-  incrementdecrementWithMousewheelOne: "Increment/decrement with mousewheel or up/down keys. {PH1}: R \xB11, Shift: G \xB11, {PH2}: B \xB11",
+  incrementdecrementWithMousewheelOne: "Increment/decrement with mousewheel or up/down keys. {PH1}: R \xB11, Shift: G \xB11, {PH2}: B \xB11.",
   /**
    * @description Tooltip for color values in the Styles tab of the Elements panel.
    * @example {Ctrl} PH1
    * @example {Alt} PH2
    */
-  incrementdecrementWithMousewheelHundred: "Increment/decrement with mousewheel or up/down keys. {PH1}: \xB1100, Shift: \xB110, {PH2}: \xB10.1",
+  incrementdecrementWithMousewheelHundred: "Increment/decrement with mousewheel or up/down keys. {PH1}: \xB1100, Shift: \xB110, {PH2}: \xB10.1.",
   /**
    * @description Tooltip text that appears when hovering over the rendering button in the Styles tab of the Elements panel.
    */
@@ -11823,7 +11823,7 @@ var UIStrings8 = {
    * @description Text to announce that the AI suggestion was accepted.
    * @example {color: blue;} PH1
    */
-  aiSuggestionAccepted: "{PH1} Suggestion accepted.",
+  aiSuggestionAccepted: "{PH1} Suggestion accepted",
   /**
    * @description Title of the general at-rule section.
    */
@@ -16629,7 +16629,7 @@ var UIStrings14 = {
    * @description Hint element title in the DOM tree of the Elements panel.
    * @example {0} PH1
    */
-  useSInTheConsoleToReferToThis: "Use {PH1} in the console to refer to this element.",
+  useSInTheConsoleToReferToThis: "Use {PH1} in the console to refer to this element",
   /**
    * @description Text to cut an element, cut should be used as a verb.
    */
@@ -24203,7 +24203,7 @@ var UIStrings18 = {
   /**
    * @description Screen reader announcement when opening color picker tool.
    */
-  colorPickerOpened: "Color picker opened."
+  colorPickerOpened: "Color picker opened"
 };
 var str_18 = i18n36.i18n.registerUIStrings("panels/elements/LayoutPane.ts", UIStrings18);
 var i18nString17 = i18n36.i18n.getLocalizedString.bind(void 0, str_18);
@@ -25462,19 +25462,19 @@ var UIStrings20 = {
   /**
    * @description Warning/error text displayed when a node cannot be found in the current page.
    */
-  nodeCannotBeFoundInTheCurrent: "Node cannot be found in the current page.",
+  nodeCannotBeFoundInTheCurrent: "Node cannot be found in the current page",
   /**
    * @description Console warning when a user tries to reveal a non-node type Remote Object. A remote
    * object is a JavaScript object that is not stored in DevTools, that DevTools has a connection to.
    * It should correspond to a local node.
    */
-  theRemoteObjectCouldNotBe: "The remote object could not be resolved to a valid node.",
+  theRemoteObjectCouldNotBe: "The remote object could not be resolved to a valid node",
   /**
    * @description Console warning when the user tries to reveal a deferred DOM Node that resolves as
    * null. A deferred DOM node is a node we know about but have not yet fetched from the backend (we
    * defer the work until later).
    */
-  theDeferredDomNodeCouldNotBe: "The deferred `DOM` Node could not be resolved to a valid node.",
+  theDeferredDomNodeCouldNotBe: "The deferred `DOM` Node could not be resolved to a valid node",
   /**
    * @description Text in Elements Panel of the Elements panel. Shows the current CSS Pseudo-classes
    * applicable to the selected HTML element.

@@ -23,7 +23,7 @@ const UIStrings = {
      * @description Status message for when protocol handlers are not detected in the manifest
      * @example {protocolhandler/manifest.json} PH1
      */
-    protocolNotDetected: 'Define protocol handlers in the {PH1} to register your app as a handler for custom protocols when your app is installed.',
+    protocolNotDetected: 'Define protocol handlers in the {PH1} to register your app as a handler for custom protocols when your app is installed',
     /**
      * @description Text wrapping a link pointing to more information on handling protocol handlers
      * @example {https://example.com/} PH1

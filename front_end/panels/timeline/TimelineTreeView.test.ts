@@ -201,6 +201,51 @@ describe('TimelineTreeView', function() {
       const childNode = firstNode.children().values().next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(childNode.event?.name, 'second console time');
     });
+
+    it('preserves expanded node state when wasShown is called', async function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+
+      renderWidgetInVbox(callTreeView, {flexAuto: true});
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+
+      await RenderCoordinator.done();
+
+      const rootNode = callTreeView.dataGrid.rootNode();
+      assert.isAbove(rootNode.children.length, 0);
+      const firstChild = rootNode.children[0];
+      firstChild.expand();
+      assert.isTrue(firstChild.expanded);
+
+      callTreeView.wasShown();
+      assert.strictEqual(callTreeView.dataGrid.rootNode().children[0], firstChild);
+      assert.isTrue(firstChild.expanded);
+    });
+
+    it('renders the tree on wasShown when data was configured while detached', async function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+
+      // Set data while detached from the DOM.
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+
+      // Data grid should not have children yet because the widget was detached.
+      assert.lengthOf(callTreeView.dataGrid.rootNode().children, 0);
+
+      // Attaching and showing the widget triggers a refresh for dirty state.
+      renderWidgetInVbox(callTreeView, {flexAuto: true});
+      await RenderCoordinator.done();
+
+      assert.isAbove(callTreeView.dataGrid.rootNode().children.length, 0);
+    });
   });
 
   describe('event grouping', function() {

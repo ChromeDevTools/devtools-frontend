@@ -9044,6 +9044,55 @@
                             "type": "boolean"
                         }
                     ]
+                },
+                {
+                    "name": "setTextMarker",
+                    "description": "Sets a spelling or grammar error marker on the given range of text.\nSee https://github.com/Igalia/explainers/blob/main/force-spelling-grammar-markers/README.md\nNote: exactly one between nodeId, backendNodeId and objectId should be passed\nto identify the node.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "Identifier of the node.",
+                            "optional": true,
+                            "$ref": "NodeId"
+                        },
+                        {
+                            "name": "backendNodeId",
+                            "description": "Identifier of the backend node.",
+                            "optional": true,
+                            "$ref": "BackendNodeId"
+                        },
+                        {
+                            "name": "objectId",
+                            "description": "JavaScript object id of the node wrapper.",
+                            "optional": true,
+                            "$ref": "Runtime.RemoteObjectId"
+                        },
+                        {
+                            "name": "type",
+                            "description": "The type of marker to set on the given range of text.",
+                            "type": "string",
+                            "enum": [
+                                "spelling",
+                                "grammar"
+                            ]
+                        },
+                        {
+                            "name": "start",
+                            "description": "Start offset into the element's rendered text in UTF-16 code units.\nFor a text control, an offset into the control's value.\nOffsets count text in DOM order and do not enter shadow trees.\nTo mark text inside a shadow tree, pass the element inside the shadow tree.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "end",
+                            "description": "End offset (exclusive) in the same units and space as start.",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "clearTextMarkers",
+                    "description": "Clears the spelling and grammar error text markers overlapping the ranges\nset by setTextMarker in this session. These markers are also removed when\nthe DOM domain is disabled or the session ends.",
+                    "experimental": true
                 }
             ],
             "events": [

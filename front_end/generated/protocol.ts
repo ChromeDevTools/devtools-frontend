@@ -5990,6 +5990,41 @@ export namespace DOM {
     enable: boolean;
   }
 
+  export const enum SetTextMarkerRequestType {
+    Spelling = 'spelling',
+    Grammar = 'grammar',
+  }
+
+  export interface SetTextMarkerRequest {
+    /**
+     * Identifier of the node.
+     */
+    nodeId?: NodeId;
+    /**
+     * Identifier of the backend node.
+     */
+    backendNodeId?: BackendNodeId;
+    /**
+     * JavaScript object id of the node wrapper.
+     */
+    objectId?: Runtime.RemoteObjectId;
+    /**
+     * The type of marker to set on the given range of text.
+     */
+    type: SetTextMarkerRequestType;
+    /**
+     * Start offset into the element's rendered text in UTF-16 code units.
+     * For a text control, an offset into the control's value.
+     * Offsets count text in DOM order and do not enter shadow trees.
+     * To mark text inside a shadow tree, pass the element inside the shadow tree.
+     */
+    start: integer;
+    /**
+     * End offset (exclusive) in the same units and space as start.
+     */
+    end: integer;
+  }
+
   /**
    * Fired when `Element`'s attribute is modified.
    */

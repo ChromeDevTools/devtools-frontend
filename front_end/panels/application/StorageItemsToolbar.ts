@@ -16,19 +16,19 @@ import * as ApplicationComponents from './components/components.js';
 
 const UIStrings = {
   /**
-   * @description Text to refresh the page
+   * @description Tooltip text for the refresh button in the storage items toolbar of the Application panel.
    */
   refresh: 'Refresh',
   /**
-   * @description Text to clear everything
+   * @description Tooltip text for the clear all button in the storage items toolbar of the Application panel.
    */
-  clearAll: 'Clear All',
+  clearAll: 'Clear all',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
+   * @description Tooltip text for the delete selected button in the storage items toolbar of the Application panel.
    */
-  deleteSelected: 'Delete Selected',
+  deleteSelected: 'Delete selected',
   /**
-   * @description Text that informs screen reader users that the storage table has been refreshed
+   * @description Screen reader announcement when the storage table is refreshed.
    */
   refreshedStatus: 'Table refreshed',
 } as const;

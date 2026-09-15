@@ -263,7 +263,7 @@ export async function selectStorageItemAtIndex(devToolsPage: DevToolsPage, index
 }
 
 export async function deleteSelectedStorageItem(devToolsPage: DevToolsPage): Promise<void> {
-  await devToolsPage.click('[title="Delete Selected"]');
+  await devToolsPage.click('[title="Delete selected"]');
   await expectVeEvents(
       devToolsPage,
       [veClick('Panel: resources > Pane: session-storage-data > Toolbar > Action: storage-items-view.delete-selected')],

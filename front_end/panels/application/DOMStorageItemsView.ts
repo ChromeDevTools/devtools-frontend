@@ -42,24 +42,23 @@ import {KeyValueStorageItemsView} from './KeyValueStorageItemsView.js';
 
 const UIStrings = {
   /**
-   * @description Name for the "DOM Storage Items" table that shows the content of the DOM Storage.
+   * @description Accessible name for the DOM storage items datagrid in the Application panel.
    */
-  domStorageItems: 'DOM Storage Items',
+  domStorageItems: 'DOM storage items',
   /**
-   * @description Text for announcing that the "DOM Storage Items" table was cleared, that is, all
-   * entries were deleted.
+   * @description Screen reader announcement when the DOM storage items table is cleared.
    */
-  domStorageItemsCleared: 'DOM Storage Items cleared',
+  domStorageItemsCleared: 'DOM storage items cleared',
   /**
-   * @description Text for announcing a DOM Storage key/value item has been deleted
+   * @description Screen reader announcement when a DOM storage key-value item is deleted.
    */
   domStorageItemDeleted: 'The storage item was deleted',
   /**
-   * @description Text of a context menu item to start a chat with AI
+   * @description Context menu item in the Application panel to start a chat with AI assistance.
    */
   startAChat: 'Start a chat',
   /**
-   * @description Text of a context menu item to explain a storage item of a storage bucket with AI
+   * @description Context menu item in the Application panel to explain a DOM storage item with AI assistance.
    */
   explainItem: 'Explain this item',
 } as const;

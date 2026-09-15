@@ -19,22 +19,15 @@ import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js'
 
 const UIStrings = {
   /**
-   * @description Label for an item in the Application Panel Sidebar of the Application panel
-   * Storage Buckets allow developers to separate site data into buckets so that they can be
-   * deleted independently.
+   * @description Label for the storage buckets tree element in the Application panel sidebar.
    */
   storageBuckets: 'Storage buckets',
   /**
-   * @description Text for an item in the Application Panel
-   * if no storage buckets are available to show. Storage Buckets allow developers to separate
-   * site data into buckets so that they can be
-   * deleted independently. https://developer.chrome.com/docs/web-platform/storage-buckets.
+   * @description Empty state title in the Application panel when no storage buckets are detected.
    */
   noStorageBuckets: 'No storage buckets detected',
   /**
-   * @description Description text in the Application Panel describing the storage buckets tab.
-   * Storage Buckets allow developers to separate site data into buckets so that they can be
-   * deleted independently. https://developer.chrome.com/docs/web-platform/storage-buckets.
+   * @description Empty state description in the Application panel describing the storage buckets view.
    */
   storageBucketsDescription:
       'On this page you can view and delete storage buckets, and their associated `Storage APIs`',

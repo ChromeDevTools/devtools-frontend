@@ -236,7 +236,7 @@ describeWithEnvironment('StorageView', () => {
     it('returns correct titles for storage types', () => {
       assert.strictEqual(
           Resources.StorageView.StorageView.getStorageTypeName(Protocol.Storage.StorageType.File_systems),
-          'File System');
+          'File system');
       assert.strictEqual(Resources.StorageView.StorageView.getStorageTypeName(Protocol.Storage.StorageType.Indexeddb),
                          'IndexedDB');
       assert.strictEqual(
@@ -262,7 +262,7 @@ describeWithEnvironment('StorageView', () => {
                          'Cache storage');
       assert.strictEqual(Resources.StorageView.StorageView.getStorageTypeNameForWidget('service_workers'),
                          'Service workers');
-      assert.strictEqual(Resources.StorageView.StorageView.getStorageTypeNameForWidget('file_systems'), 'File System');
+      assert.strictEqual(Resources.StorageView.StorageView.getStorageTypeNameForWidget('file_systems'), 'File system');
       assert.strictEqual(Resources.StorageView.StorageView.getStorageTypeNameForWidget('unknown'), 'Other');
     });
   });

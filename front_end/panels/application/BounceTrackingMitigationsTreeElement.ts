@@ -13,7 +13,7 @@ import type {ResourcesPanel} from './ResourcesPanel.js';
 
 const UIStrings = {
   /**
-   * @description Hover text for the Bounce Tracking Mitigations element in the Application Panel sidebar.
+   * @description Label for the bounce tracking mitigations tree element in the Application panel sidebar.
    */
   bounceTrackingMitigations: 'Bounce tracking mitigations',
 } as const;

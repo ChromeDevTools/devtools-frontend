@@ -47,43 +47,43 @@ import {StorageItemsToolbar} from './StorageItemsToolbar.js';
 
 const UIStrings = {
   /**
-   * @description Label for checkbox to show URL-decoded cookie values
+   * @description Checkbox label to show URL-decoded cookie values in the cookie preview of the Application panel.
    */
   showUrlDecoded: 'Show URL-decoded',
   /**
-   * @description Text of a context menu item to start a chat with AI
+   * @description Context menu item in the Application panel to start a chat with AI assistance.
    */
   startAChat: 'Start a chat',
   /**
-   * @description Text of a context menu item to explain a web cookie with AI
+   * @description Context menu item in the Application panel to explain a cookie with AI assistance.
    */
   explainCookie: 'Explain this cookie',
   /**
-   * @description Text in Cookie Items View of the Application panel to indicate that no cookie has been selected for preview
+   * @description Empty state header in the cookie preview of the Application panel when no cookie is selected.
    */
   noCookieSelected: 'No cookie selected',
   /**
-   * @description Text in Cookie Items View of the Application panel
+   * @description Empty state text in the cookie preview of the Application panel when no cookie is selected.
    */
   selectACookieToPreviewItsValue: 'Select a cookie to preview its value',
   /**
-   * @description Text for filter in Cookies View of the Application panel
+   * @description Checkbox label in the cookies view of the Application panel to filter cookies with issues.
    */
   onlyShowCookiesWithAnIssue: 'Only show cookies with an issue',
   /**
-   * @description Title for filter in the Cookies View of the Application panel
+   * @description Tooltip text for the filter checkbox in the cookies view of the Application panel to filter cookies with issues.
    */
   onlyShowCookiesWhichHaveAn: 'Only show cookies that have an associated issue',
   /**
-   * @description Label to only delete the cookies that are visible after filtering
+   * @description Tooltip text for the clear button in the cookies view of the Application panel to delete visible filtered cookies.
    */
   clearFilteredCookies: 'Clear filtered cookies',
   /**
-   * @description Label to delete all cookies
+   * @description Tooltip text for the clear button in the cookies view of the Application panel to delete all cookies.
    */
   clearAllCookies: 'Clear all cookies',
   /**
-   * @description Alert message for screen reader to announce # of cookies in the table
+   * @description Screen reader announcement for the number of cookies shown in the table of the Application panel.
    * @example {5} PH1
    */
   numberOfCookiesShownInTableS: 'Number of cookies shown in table: {PH1}',

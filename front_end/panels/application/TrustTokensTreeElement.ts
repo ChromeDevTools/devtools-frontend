@@ -13,8 +13,7 @@ import type {ResourcesPanel} from './ResourcesPanel.js';
 
 const UIStrings = {
   /**
-   * @description Hover text for an info icon in the Private State Token panel.
-   * Previously known as 'Trust Tokens'.
+   * @description Label for the private state tokens tree element in the Application panel sidebar.
    */
   trustTokens: 'Private state tokens',
 } as const;

@@ -21,61 +21,61 @@ import serviceWorkerCacheViewsStyles from './serviceWorkerCacheViews.css.js';
 
 const UIStrings = {
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Title of the cache storage view in the Application panel.
    */
   cache: 'Cache',
   /**
-   * @description Text to refresh the page
+   * @description Tooltip text for the refresh button in the cache storage view of the Application panel.
    */
   refresh: 'Refresh',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
+   * @description Tooltip text for the delete selected button in the cache storage view of the Application panel.
    */
-  deleteSelected: 'Delete Selected',
+  deleteSelected: 'Delete selected',
   /**
-   * @description Text in Service Worker Cache Views of the Application panel
+   * @description Placeholder text for the filter input in the cache storage view of the Application panel.
    */
   filterByPath: 'Filter by path',
   /**
-   * @description Text in Service Worker Cache Views of the Application panel that shows if no cache entry is selected for preview
+   * @description Empty state header in the cache storage view of the Application panel when no cache entry is selected.
    */
   noCacheEntrySelected: 'No cache entry selected',
   /**
-   * @description Text in Service Worker Cache Views of the Application panel
+   * @description Empty state text in the cache storage view of the Application panel when no cache entry is selected.
    */
   selectACacheEntryAboveToPreview: 'Select a cache entry above to preview',
   /**
-   * @description Text for the name of something
+   * @description Column header in the cache storage datagrid for the entry name.
    */
   name: 'Name',
   /**
-   * @description Text in Service Worker Cache Views of the Application panel
+   * @description Column header in the cache storage datagrid for the time the entry was cached.
    */
-  timeCached: 'Time Cached',
+  timeCached: 'Time cached',
   /**
-   * @description Tooltip text that appears when hovering over the vary header column in the Service Worker Cache Views of the Application panel
+   * @description Tooltip text for the Vary header column in the cache storage datagrid of the Application panel.
    */
   varyHeaderWarning: '⚠️ Set ignoreVary to true when matching this entry',
   /**
-   * @description Text used to show that data was retrieved from ServiceWorker Cache
+   * @description Accessible name for the cache storage datagrid in the Application panel.
    */
-  serviceWorkerCache: '`Service Worker` Cache',
+  serviceWorkerCache: '`Service Worker` cache',
   /**
-   * @description Span text content in Service Worker Cache Views of the Application panel
+   * @description Status text in the cache storage view of the Application panel showing the number of matching entries.
    * @example {2} PH1
    */
   matchingEntriesS: 'Matching entries: {PH1}',
   /**
-   * @description Span text content in Indexed DBViews of the Application panel
+   * @description Status text in the cache storage view of the Application panel showing the total number of entries.
    * @example {2} PH1
    */
   totalEntriesS: 'Total entries: {PH1}',
   /**
-   * @description Text for network request headers
+   * @description Tab title for request headers in the cache storage entry preview of the Application panel.
    */
   headers: 'Headers',
   /**
-   * @description Text for previewing items
+   * @description Tab title for response preview in the cache storage entry preview of the Application panel.
    */
   preview: 'Preview',
 } as const;

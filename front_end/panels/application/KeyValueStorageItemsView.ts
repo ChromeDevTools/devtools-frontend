@@ -54,24 +54,24 @@ type VBox = UI.Widget.VBox;
 
 const UIStrings = {
   /**
-   * @description Text that shows in the Application Panel if no value is selected for preview
+   * @description Empty state header in the storage items view of the Application panel when no value is selected.
    */
   noPreviewSelected: 'No value selected',
   /**
-   * @description Preview text when viewing storage in Application panel
+   * @description Empty state text in the storage items view of the Application panel when no value is selected.
    */
   selectAValueToPreview: 'Select a value to preview',
   /**
-   * @description Text for announcing number of entries after filtering
+   * @description Screen reader announcement for the number of entries shown in the storage table of the Application panel.
    * @example {5} PH1
    */
   numberEntries: 'Number of entries shown in table: {PH1}',
   /**
-   * @description Text in DOMStorage Items View of the Application panel
+   * @description Column header for key in the storage items datagrid of the Application panel.
    */
   key: 'Key',
   /**
-   * @description Text for the value of something
+   * @description Column header for value in the storage items datagrid of the Application panel.
    */
   value: 'Value',
 } as const;

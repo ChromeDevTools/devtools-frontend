@@ -16,23 +16,23 @@ import {ServiceWorkerCacheView} from './ServiceWorkerCacheViews.js';
 
 const UIStrings = {
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Label for the cache storage tree element in the Application panel sidebar.
    */
   cacheStorage: 'Cache storage',
   /**
-   * @description Text in Application Panel if no cache storage was detected.
+   * @description Empty state title in the Application panel when no cache storage is detected.
    */
   noCacheStorage: 'No cache storage detected',
   /**
-   * @description Description text in Application Panel describing the cache storage tab
+   * @description Empty state description in the Application panel describing the cache storage view.
    */
   cacheStorageDescription: 'On this page you can view and delete cache data',
   /**
-   * @description A context menu item in the Application Panel Sidebar of the Application panel
+   * @description Context menu item in the Application panel sidebar to refresh caches.
    */
-  refreshCaches: 'Refresh Caches',
+  refreshCaches: 'Refresh caches',
   /**
-   * @description Text to delete something
+   * @description Context menu item in the Application panel sidebar to delete a cache.
    */
   delete: 'Delete',
 } as const;

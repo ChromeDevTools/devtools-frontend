@@ -22,131 +22,130 @@ import storageViewStyles from './storageView.css.js';
 
 const UIStrings = {
   /**
-   * @description Text in the Storage View that expresses the amount of used and available storage quota
+   * @description Text in the storage view that expresses the amount of used and available storage quota.
    * @example {1.5 MB} PH1
    * @example {123.1 MB} PH2
    */
   storageQuotaUsed: '{PH1} used out of {PH2} storage quota',
   /**
-   * @description Tooltip in the Storage View that expresses the precise amount of used and available storage quota
+   * @description Tooltip in the storage view that expresses the precise amount of used and available storage quota.
    * @example {200} PH1
    * @example {400} PH2
    */
   storageQuotaUsedWithBytes: '{PH1} bytes used out of {PH2} bytes storage quota',
   /**
-   * @description Fragment indicating that a certain data size has been custom configured
+   * @description Fragment indicating that a certain data size has been custom configured.
    * @example {1.5 MB} PH1
    */
   storageWithCustomMarker: '{PH1} (custom)',
   /**
-   * @description Text in Application Panel Sidebar and title text of the Storage View of the Application panel
+   * @description Title text of the storage view in the Application panel.
    */
   storageTitle: 'Storage',
   /**
-   * @description Title text in Storage View of the Application panel
+   * @description Section title in the storage view of the Application panel.
    */
   usage: 'Usage',
   /**
-   * @description Unit for data size in DevTools
+   * @description Unit for data size in DevTools.
    */
   mb: 'MB',
   /**
-   * @description Link to learn more about Progressive Web Apps
+   * @description Link text to learn more about Progressive Web Apps in the storage view of the Application panel.
    */
   learnMore: 'Learn more',
   /**
-   * @description Button text for the button in the Storage View of the Application panel for clearing site-specific storage
+   * @description Section title in the storage view of the Application panel for clearing site-specific storage.
    */
   clearSiteData: 'Clear site data',
   /**
-   * @description Button text in the Storage View of the Application panel for clearing selected site-specific storage
+   * @description Button text in the storage view of the Application panel for clearing selected site-specific storage.
    */
   clearSelected: 'Clear selected',
   /**
-   * @description Announce message when the "clear site data" task is complete
+   * @description Screen reader announcement when the clear site data task is complete.
    */
   SiteDataCleared: 'Site data cleared',
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for unregistering service workers.
    */
   unregisterServiceWorker: 'Unregister service workers',
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for clearing local and session storage.
    */
   localAndSessionStorage: 'Local and session storage',
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for clearing IndexedDB storage.
    */
   indexDB: 'IndexedDB',
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for clearing cookies.
    */
   cookies: 'Cookies',
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for clearing cache storage.
    */
   cacheStorage: 'Cache storage',
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for including third-party cookies.
    */
   thirdPartyCookies: 'Third-party cookies',
   /**
-   * @description Text for error message in Application Quota Override
-   * @example {Image} PH1
+   * @description Text for error message in the storage view of the Application panel when an origin fails to load.
+   * @example {https://example.com} PH1
    */
   sFailedToLoad: '{PH1} (failed to load)',
   /**
-   * @description Text for error message in Application Quota Override
+   * @description Error message in the storage view of the Application panel when a quota override fails.
    */
   internalError: 'Internal error',
   /**
-   * @description Text for error message in Application Quota Override
+   * @description Error message in the storage view of the Application panel when custom quota is not a number.
    */
-  pleaseEnterANumber: 'Please enter a number',
+  pleaseEnterANumber: 'Enter a number',
   /**
-   * @description Text for error message in Application Quota Override
+   * @description Error message in the storage view of the Application panel when custom quota is negative.
    */
   numberMustBeNonNegative: 'Number must be non-negative',
   /**
-   * @description Text for error message in Application Quota Override
+   * @description Error message in the storage view of the Application panel when custom quota is too large.
    * @example {9000000000000} PH1
    */
   numberMustBeSmaller: 'Number must be smaller than {PH1}',
   /**
-   * @description Button text for the "Clear site data" button in the Storage View of the Application panel while the clearing action is pending
+   * @description Button text for the clear button in the storage view of the Application panel while clearing is in progress.
    */
   clearing: 'Clearing…',
   /**
-   * @description Quota row title in Clear Storage View of the Application panel
+   * @description Tooltip text in the storage view of the Application panel indicating storage quota is limited in Incognito mode.
    */
   storageQuotaIsLimitedIn: 'Storage quota is limited in Incognito mode',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category name for file system storage in the storage view of the Application panel.
    */
-  fileSystem: 'File System',
+  fileSystem: 'File system',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category name for other storage types in the storage view of the Application panel.
    */
   other: 'Other',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Chart title for the storage usage pie chart in the storage view of the Application panel.
    */
   storageUsage: 'Storage usage',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category name for service worker storage in the storage view of the Application panel.
    */
   serviceWorkers: 'Service workers',
   /**
-   * @description Checkbox label in Application Panel Sidebar of the Application panel.
-   * Storage quota refers to the amount of disk available for the website or app.
+   * @description Checkbox label in the storage view of the Application panel to simulate custom storage quota.
    */
   simulateCustomStorage: 'Simulate custom storage quota',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category name for local storage in the storage view of the Application panel.
    */
   localStorage: 'Local storage',
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category name for session storage in the storage view of the Application panel.
    */
   sessionStorage: 'Session storage',
 } as const;

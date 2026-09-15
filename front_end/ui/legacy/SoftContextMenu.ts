@@ -173,6 +173,7 @@ export class SoftContextMenu {
     if (this.subMenu) {
       this.subMenu.discard();
     }
+    this.highlightMenuItem(null, false);
     if (this.focusRestorer) {
       this.focusRestorer.restore();
     }
@@ -268,6 +269,7 @@ export class SoftContextMenu {
     menuItemElement.addEventListener('mouseleave', (this.menuItemMouseLeave.bind(this) as EventListener), false);
 
     detailsForElement.actionId = item.id;
+    detailsForElement.onHover = item.onHover;
 
     let accessibleName: Platform.UIString.LocalizedString|string = item.label || '';
 
@@ -463,6 +465,7 @@ export class SoftContextMenu {
         window.clearTimeout(detailsForElement.subMenuTimer);
         delete detailsForElement.subMenuTimer;
       }
+      detailsForElement?.onHover?.(false);
     }
 
     this.highlightedMenuItemElement = menuItemElement;
@@ -479,6 +482,7 @@ export class SoftContextMenu {
         detailsForElement.subMenuTimer =
             window.setTimeout(this.showSubMenu.bind(this, this.highlightedMenuItemElement), 150);
       }
+      detailsForElement?.onHover?.(true);
     }
 
     if (this.contextMenuElement) {
@@ -628,6 +632,7 @@ export interface SoftContextMenuDescriptor {
   jslogContext?: string;
   /** A no-op. For native context menus, feature name will request showing a new badge. */
   featureName?: string;
+  onHover?: (hovered: boolean) => void;
 }
 interface ElementMenuDetails {
   customElement?: HTMLElement;
@@ -635,4 +640,5 @@ interface ElementMenuDetails {
   subMenuTimer?: number;
   subItems?: SoftContextMenuDescriptor[];
   actionId?: number;
+  onHover?: (hovered: boolean) => void;
 }

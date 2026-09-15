@@ -1427,6 +1427,19 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
     return this.domModel().nodeForId(response.nodeId);
   }
 
+  async getImplicitAnchorCandidates(): Promise<DeferredDOMNode[]> {
+    const response = await this.#agent.invoke_getImplicitAnchorCandidates({
+      nodeId: this.id,
+    });
+
+    if (response.getError() || !response.backendNodeIds) {
+      return [];
+    }
+
+    const target = this.domModel().target();
+    return response.backendNodeIds.map(backendNodeId => new DeferredDOMNode(target, backendNodeId));
+  }
+
   async takeSnapshot(ownerDocumentSnapshot?: DOMDocument): Promise<DOMNode> {
     const snapshot = (this instanceof DOMDocument) ? new DOMDocumentSnapshot(this.domModel(), {
       nodeId: this.id,

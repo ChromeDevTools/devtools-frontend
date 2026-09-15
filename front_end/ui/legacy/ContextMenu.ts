@@ -43,6 +43,7 @@ export class Item {
   private shortcut?: string;
   #tooltip: Common.UIString.LocalizedString|undefined;
   protected jslogContext: string|undefined;
+  #hoverHandler?: (hovered: boolean) => void;
 
   constructor(
       contextMenu: ContextMenu|null, type: 'checkbox'|'item'|'separator'|'subMenu', label?: string,
@@ -138,6 +139,9 @@ export class Item {
             result.isDevToolsPerformanceMenuItem = true;
           }
         }
+        if (this.#hoverHandler) {
+          result.onHover = this.#hoverHandler;
+        }
         return result;
       }
       case 'separator': {
@@ -159,10 +163,17 @@ export class Item {
         if (this.customElement) {
           result.element = this.customElement;
         }
+        if (this.#hoverHandler) {
+          result.onHover = this.#hoverHandler;
+        }
         return result;
       }
     }
     throw new Error('Invalid item type:' + this.typeInternal);
+  }
+
+  setHoverHandler(handler?: (hovered: boolean) => void): void {
+    this.#hoverHandler = handler;
   }
 
   /**
@@ -226,6 +237,7 @@ export class Section {
     tooltip?: Platform.UIString.LocalizedString,
     jslogContext?: string,
     featureName?: string,
+    onHover?: (hovered: boolean) => void,
   }): Item {
     let item;
     if (labelOrItem instanceof Item) {
@@ -236,6 +248,9 @@ export class Section {
           options?.accelerator, options?.tooltip, options?.jslogContext, options?.featureName);
       if (options?.additionalElement) {
         item.customElement = options?.additionalElement;
+      }
+      if (options?.onHover) {
+        item.setHoverHandler(options.onHover);
       }
     }
     this.items.push(item);
@@ -331,6 +346,7 @@ export class Section {
     tooltip?: Platform.UIString.LocalizedString,
     jslogContext?: string,
     featureName?: string,
+    onHover?: (hovered: boolean) => void,
   }): Item {
     const item = new Item(
         this.contextMenu, 'checkbox', label, options?.experimental, options?.disabled, options?.checked, undefined,
@@ -341,6 +357,9 @@ export class Section {
     }
     if (options?.additionalElement) {
       item.customElement = options.additionalElement;
+    }
+    if (options?.onHover) {
+      item.setHoverHandler(options.onHover);
     }
     return item;
   }

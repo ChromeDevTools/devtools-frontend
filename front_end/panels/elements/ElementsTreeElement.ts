@@ -370,6 +370,22 @@ export function handleAdornerKeydown(cb: (event: Event) => void): (event: Keyboa
   };
 }
 
+function formatCandidateLabel(node: SDK.DOMModel.DOMNode): string {
+  let label = node.localName() || node.nodeName().toLowerCase();
+  const id = node.getAttribute('id');
+  if (id) {
+    label += '#' + id;
+  }
+  const classes = node.getAttribute('class');
+  if (classes) {
+    const classList = classes.trim().split(/\s+/g).filter(Boolean);
+    if (classList.length) {
+      label += '.' + classList.join('.');
+    }
+  }
+  return label;
+}
+
 function renderTitle(
     node: SDK.DOMModel.DOMNode,
     isClosingTag: boolean,
@@ -1171,6 +1187,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   #flexAdornerActive = false;
   #gridAdornerActive = false;
   #popoverAdornerActive = false;
+  #activePopoverInvokerId: Protocol.DOM.BackendNodeId|null = null;
+  #implicitAnchorCandidatesPromise: Promise<SDK.DOMModel.DeferredDOMNode[]>|null = null;
   #interestAdornerActive = false;
 
   #scrollSnapAdornerActive = false;
@@ -1798,6 +1816,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       this.editing.cancel();
     }
     this.clearView();
+    this.#implicitAnchorCandidatesPromise = null;
+    this.#activePopoverInvokerId = null;
     this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged,
                                   this);
     this.node.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated,
@@ -2783,6 +2803,11 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     } else {
       this.#layout = null;
     }
+    if (this.node.attributes().some(attr => attr.name === 'popover')) {
+      this.#implicitAnchorCandidatesPromise = this.node.getImplicitAnchorCandidates();
+    } else {
+      this.#implicitAnchorCandidatesPromise = null;
+    }
     this.requestUpdate();
   }
 
@@ -2793,12 +2818,98 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     if (!nodeId) {
       return;
     }
-    await node.domModel().agent.invoke_forceShowPopover({nodeId, enable: !this.#popoverAdornerActive});
-    this.#popoverAdornerActive = !this.#popoverAdornerActive;
-    if (this.#popoverAdornerActive) {
-      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+    const candidates = await this.#implicitAnchorCandidatesPromise;
+    if (!candidates) {
+      return;
     }
-    this.requestUpdate();
+    if (candidates.length <= 1) {
+      const enable = !this.#popoverAdornerActive;
+      const invokerNodeId = enable && candidates.length === 1 ? candidates[0].backendNodeId() : undefined;
+      await node.domModel().agent.invoke_forceShowPopover({nodeId, enable, invokerNodeId});
+      this.#popoverAdornerActive = enable;
+      this.#activePopoverInvokerId = enable ? (invokerNodeId ?? null) : null;
+      if (this.#popoverAdornerActive) {
+        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+      }
+      this.requestUpdate();
+      return;
+    }
+
+    let activeInvokerId = this.#activePopoverInvokerId;
+    if (this.#popoverAdornerActive && activeInvokerId === null && candidates.length > 0) {
+      activeInvokerId = candidates[0].backendNodeId();
+    }
+
+    let x: number|undefined;
+    let y: number|undefined;
+    if (event.target instanceof HTMLElement) {
+      const rect = event.target.getBoundingClientRect();
+      if (event instanceof MouseEvent && (event.clientX || event.clientY)) {
+        x = event.clientX;
+        y = event.clientY;
+      } else {
+        x = rect.left;
+        y = rect.bottom;
+      }
+    }
+
+    const contextMenu = new UI.ContextMenu.ContextMenu(event, {
+      useSoftMenu: true,
+      x,
+      y,
+      onSoftMenuClosed: () => {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+      },
+    });
+
+    const resolvedNodes = await Promise.all(candidates.map(candidate => candidate.resolvePromise()));
+
+    for (let i = 0; i < candidates.length; ++i) {
+      const candidate = candidates[i];
+      const resolvedNode = resolvedNodes[i];
+      const candidateBackendId = candidate.backendNodeId();
+      const isActive = this.#popoverAdornerActive && candidateBackendId === activeInvokerId;
+      const label = resolvedNode ? formatCandidateLabel(resolvedNode) : '';
+      if (!label) {
+        continue;
+      }
+      contextMenu.defaultSection().appendCheckboxItem(
+          label,
+          async () => {
+            if (isActive) {
+              await node.domModel().agent.invoke_forceShowPopover({nodeId, enable: false});
+              this.#popoverAdornerActive = false;
+              this.#activePopoverInvokerId = null;
+            } else {
+              if (this.#popoverAdornerActive) {
+                await node.domModel().agent.invoke_forceShowPopover({nodeId, enable: false});
+              }
+              await node.domModel().agent.invoke_forceShowPopover({
+                nodeId,
+                enable: true,
+                invokerNodeId: candidateBackendId,
+              });
+              this.#popoverAdornerActive = true;
+              this.#activePopoverInvokerId = candidateBackendId;
+              Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+            }
+            this.requestUpdate();
+          },
+          {
+            checked: isActive,
+            onHover: (hovered: boolean) => {
+              if (hovered) {
+                candidate.highlight();
+              } else {
+                SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+              }
+            },
+            jslogContext: 'implicit-anchor-candidate',
+          },
+      );
+    }
+
+    await contextMenu.show();
   }
 
   async #onInterestAdornerClick(event: Event): Promise<void> {

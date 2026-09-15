@@ -2107,6 +2107,7 @@ export const knownContextValues: Set<string> = new Set([
   'image-view.open-in-new-tab',
   'image-view.save-image',
   'impact',
+  'implicit-anchor-candidate',
   'import-har',
   'import-recording',
   'important',

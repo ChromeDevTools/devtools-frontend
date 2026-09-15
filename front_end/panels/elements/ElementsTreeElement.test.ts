@@ -18,9 +18,12 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, raf, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, registerActions} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -1964,6 +1967,261 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
       const getText = (el: Element): string => el.textContent?.replace(/\u200B/g, '') ?? '';
       assert.strictEqual(getText(attrs[0]), 'for="input-id"');
       assert.strictEqual(getText(attrs[1]), 'data-new="value123"');
+    });
+  });
+
+  describe('Popover adorner', () => {
+    let popoverNode: SDK.DOMModel.DOMNode;
+    let candidate1: SDK.DOMModel.DOMNode;
+    let candidate2: SDK.DOMModel.DOMNode;
+    let deferredCandidate1: SDK.DOMModel.DeferredDOMNode;
+    let deferredCandidate2: SDK.DOMModel.DeferredDOMNode;
+    let connection: MockCDPConnection;
+    let target: SDK.Target.Target;
+    let domModel: SDK.DOMModel.DOMModel;
+
+    beforeEach(() => {
+      sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(universe.workspace);
+      sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
+      sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(universe.ignoreListManager);
+
+      connection = new MockCDPConnection();
+      target = universe.createTarget({connection});
+      domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+
+      const popoverNodePayload = {
+        nodeId: 2 as Protocol.DOM.NodeId,
+        parentId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'DIV',
+        localName: 'div',
+        nodeValue: '',
+        attributes: ['popover', 'auto', 'id', 'my-popover'],
+        childNodeCount: 0,
+      };
+      const candidate1Payload = {
+        nodeId: 3 as Protocol.DOM.NodeId,
+        parentId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 10 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'BUTTON',
+        localName: 'button',
+        nodeValue: '',
+        attributes: ['id', 'btn1', 'class', 'primary btn-lg'],
+        childNodeCount: 0,
+      };
+      const candidate2Payload = {
+        nodeId: 4 as Protocol.DOM.NodeId,
+        parentId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 20 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'BUTTON',
+        localName: 'button',
+        nodeValue: '',
+        attributes: ['id', 'btn2', 'class', 'secondary'],
+        childNodeCount: 0,
+      };
+
+      const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'BODY',
+        localName: 'body',
+        nodeValue: 'Body',
+        childNodeCount: 3,
+        children: [popoverNodePayload, candidate1Payload, candidate2Payload],
+      });
+      assert.isNotNull(rootNode);
+      popoverNode = rootNode.children()![0];
+      candidate1 = rootNode.children()![1];
+      candidate2 = rootNode.children()![2];
+      assert.isNotNull(popoverNode);
+      assert.isNotNull(candidate1);
+      assert.isNotNull(candidate2);
+      deferredCandidate1 = new SDK.DOMModel.DeferredDOMNode(target, candidate1.backendNodeId());
+      deferredCandidate2 = new SDK.DOMModel.DeferredDOMNode(target, candidate2.backendNodeId());
+      deferredCandidate1.resolvePromise = () => Promise.resolve(candidate1);
+      deferredCandidate2.resolvePromise = () => Promise.resolve(candidate2);
+    });
+
+    function createWidget(
+        node: SDK.DOMModel.DOMNode,
+        view: ViewFunctionStub<typeof Elements.ElementsTreeElement.ElementsTreeWidget>,
+        ): Elements.ElementsTreeElement.ElementsTreeWidget {
+      const widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined], view);
+      widget.node = node;
+      return widget;
+    }
+
+    it('eagerly fetches implicit anchor candidates when adorner is updated', async () => {
+      const candidatesStub =
+          sinon.stub(popoverNode, 'getImplicitAnchorCandidates').resolves([deferredCandidate1, deferredCandidate2]);
+      const view = createViewFunctionStub(Elements.ElementsTreeElement.ElementsTreeWidget);
+
+      createWidget(popoverNode, view);
+      await view.nextInput;
+
+      sinon.assert.called(candidatesStub);
+
+      const nonPopoverNode = candidate1;
+      const nonPopoverStub = sinon.stub(nonPopoverNode, 'getImplicitAnchorCandidates');
+      const nonPopoverView = createViewFunctionStub(Elements.ElementsTreeElement.ElementsTreeWidget);
+      createWidget(nonPopoverNode, nonPopoverView);
+      await nonPopoverView.nextInput;
+
+      sinon.assert.notCalled(nonPopoverStub);
+    });
+
+    it('toggles forceShowPopover directly when candidate count <= 1', async () => {
+      sinon.stub(popoverNode, 'getImplicitAnchorCandidates').resolves([deferredCandidate1]);
+
+      const forceShowStub = sinon.stub<[Protocol.DOM.ForceShowPopoverRequest]>();
+      connection.setSuccessHandler('DOM.forceShowPopover', forceShowStub);
+
+      const view = createViewFunctionStub(Elements.ElementsTreeElement.ElementsTreeWidget);
+      createWidget(popoverNode, view);
+      await view.nextInput;
+
+      assert.isTrue(view.input.showPopoverAdorner);
+      assert.isFalse(view.input.popoverAdornerActive);
+
+      // Click to force-show
+      let nextInput = view.nextInput;
+      const firstForceShowCall =
+          expectCall<[Protocol.DOM.ForceShowPopoverRequest]>(forceShowStub, {fakeFn: () => ({})});
+      view.input.onPopoverAdornerClick(new Event('click'));
+      const [firstParams] = await firstForceShowCall;
+      let input = await nextInput;
+
+      assert.deepEqual(firstParams, {
+        nodeId: popoverNode.id,
+        enable: true,
+        invokerNodeId: 10 as Protocol.DOM.BackendNodeId,
+      });
+      assert.isTrue(input.popoverAdornerActive);
+
+      // Click again to unforce
+      nextInput = view.nextInput;
+      const secondForceShowCall =
+          expectCall<[Protocol.DOM.ForceShowPopoverRequest]>(forceShowStub, {callCount: 2, fakeFn: () => ({})});
+      input.onPopoverAdornerClick(new Event('click'));
+      const [secondParams] = await secondForceShowCall;
+      input = await nextInput;
+
+      assert.deepEqual(secondParams, {
+        nodeId: popoverNode.id,
+        enable: false,
+        invokerNodeId: undefined,
+      });
+      assert.isFalse(input.popoverAdornerActive);
+    });
+
+    it('shows context menu with candidates when candidate count > 1', async () => {
+      sinon.stub(popoverNode, 'getImplicitAnchorCandidates').resolves([deferredCandidate1, deferredCandidate2]);
+
+      const forceShowStub = sinon.stub<[Protocol.DOM.ForceShowPopoverRequest]>();
+      connection.setSuccessHandler('DOM.forceShowPopover', forceShowStub);
+
+      const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show');
+
+      const view = createViewFunctionStub(Elements.ElementsTreeElement.ElementsTreeWidget);
+      createWidget(popoverNode, view);
+      await view.nextInput;
+
+      assert.isTrue(view.input.showPopoverAdorner);
+      assert.isFalse(view.input.popoverAdornerActive);
+
+      // Click adorner with 2 candidates
+      const showMenuCall1 = expectCall(contextMenuShow, {fakeFn: () => Promise.resolve()});
+      view.input.onPopoverAdornerClick(new Event('click'));
+      await showMenuCall1;
+      const menu1 = contextMenuShow.lastCall.thisValue as UI.ContextMenu.ContextMenu;
+
+      // Should not invoke forceShowPopover directly
+      assert.lengthOf(forceShowStub.args, 0);
+
+      const items = menu1.defaultSection().items;
+      assert.lengthOf(items, 2);
+
+      const desc1 = items[0].buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor;
+      const desc2 = items[1].buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor;
+      assert.strictEqual(desc1.label, 'button#btn1.primary.btn-lg');
+      assert.isFalse(desc1.checked);
+      assert.strictEqual(desc2.label, 'button#btn2.secondary');
+      assert.isFalse(desc2.checked);
+
+      // Test hover highlight
+      const highlightSpy1 = sinon.spy(deferredCandidate1, 'highlight');
+      const hideHighlightSpy = sinon.spy(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+
+      desc1.onHover?.(true);
+      sinon.assert.calledOnce(highlightSpy1);
+
+      desc1.onHover?.(false);
+      sinon.assert.calledOnce(hideHighlightSpy);
+
+      // Select candidate 1
+      let nextInput = view.nextInput;
+      const forceShowCall1 = expectCall<[Protocol.DOM.ForceShowPopoverRequest]>(forceShowStub, {fakeFn: () => ({})});
+      menu1.invokeHandler(items[0].id());
+      const [forceParams1] = await forceShowCall1;
+      let input = await nextInput;
+
+      assert.deepEqual(forceParams1, {
+        nodeId: popoverNode.id,
+        enable: true,
+        invokerNodeId: 10 as Protocol.DOM.BackendNodeId,
+      });
+      assert.isTrue(input.popoverAdornerActive);
+
+      // Click adorner again: active candidate should be checked
+      const showMenuCall2 = expectCall(contextMenuShow, {callCount: 2, fakeFn: () => Promise.resolve()});
+      input.onPopoverAdornerClick(new Event('click'));
+      await showMenuCall2;
+      const menu2 = contextMenuShow.lastCall.thisValue as UI.ContextMenu.ContextMenu;
+
+      const itemsAfter = menu2.defaultSection().items;
+      assert.isTrue((itemsAfter[0].buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor).checked);
+      assert.isFalse((itemsAfter[1].buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor).checked);
+
+      // Directly selecting a different candidate unforces the old one and forces the new one
+      nextInput = view.nextInput;
+      const forceShowCall3 =
+          expectCall<[Protocol.DOM.ForceShowPopoverRequest]>(forceShowStub, {callCount: 3, fakeFn: () => ({})});
+      menu2.invokeHandler(itemsAfter[1].id());
+      await forceShowCall3;
+      input = await nextInput;
+
+      assert.deepEqual(forceShowStub.getCall(1).args[0], {nodeId: popoverNode.id, enable: false});
+      assert.deepEqual(forceShowStub.getCall(2).args[0], {
+        nodeId: popoverNode.id,
+        enable: true,
+        invokerNodeId: 20 as Protocol.DOM.BackendNodeId,
+      });
+      assert.isTrue(input.popoverAdornerActive);
+
+      // Click adorner again: candidate 2 should now be checked
+      const showMenuCall3 = expectCall(contextMenuShow, {callCount: 3, fakeFn: () => Promise.resolve()});
+      input.onPopoverAdornerClick(new Event('click'));
+      await showMenuCall3;
+      const menu3 = contextMenuShow.lastCall.thisValue as UI.ContextMenu.ContextMenu;
+
+      const itemsAfter2 = menu3.defaultSection().items;
+      assert.isFalse((itemsAfter2[0].buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor).checked);
+      assert.isTrue((itemsAfter2[1].buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor).checked);
+
+      // Clicking active candidate 2 un-forces popover
+      nextInput = view.nextInput;
+      const forceShowCall4 =
+          expectCall<[Protocol.DOM.ForceShowPopoverRequest]>(forceShowStub, {callCount: 4, fakeFn: () => ({})});
+      menu3.invokeHandler(itemsAfter2[1].id());
+      const [forceParams4] = await forceShowCall4;
+      input = await nextInput;
+
+      assert.deepEqual(forceParams4, {nodeId: popoverNode.id, enable: false});
+      assert.isFalse(input.popoverAdornerActive);
     });
   });
 });

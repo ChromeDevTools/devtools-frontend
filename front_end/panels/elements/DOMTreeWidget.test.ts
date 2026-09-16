@@ -11,9 +11,10 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import type * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {assertScreenshot, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
@@ -44,7 +45,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         highlightedTreeElement: null,
         isUpdatingHighlights: false,
       });
-      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, view);
+      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], view);
       domTree.performUpdate();
       domTree.modelAdded(target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel);
       return {view};
@@ -84,7 +85,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         highlightedTreeElement: null,
         isUpdatingHighlights: false,
       });
-      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, view);
+      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], view);
       domTree.performUpdate();
 
       assert.isTrue(domTree.showComments);
@@ -105,7 +106,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         highlightedTreeElement: null,
         isUpdatingHighlights: false,
       });
-      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, view);
+      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], view);
       domTree.performUpdate();
 
       domTree.detach();
@@ -166,8 +167,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
     it('shows preview when hovering over a link in DECLARATIVE_VIEW', async () => {
       const clock = sinon.useFakeTimers();
       try {
-        const domTree =
-            new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [],
+                                                                       Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
         domTree.markAsRoot();
         renderElementIntoDOM(domTree);
         domTree.performUpdate();
@@ -404,7 +405,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       options?: {includeCommonStyles?: boolean},
       ): {domTree: Elements.ElementsTreeOutline.DOMTreeWidget, domModel: SDK.DOMModel.DOMModel} {
     const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
-    const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, view);
+    const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], view);
     domTree.markAsRoot();
     renderElementIntoDOM(domTree, options);
     domTree.performUpdate();
@@ -4099,6 +4100,283 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.detach();
         }
       });
+    });
+  });
+
+  describe('DOM change tracking', () => {
+    let tracker: ChangeTracker.ChangeTracker.ChangeTracker;
+    let domTree: Elements.ElementsTreeOutline.DOMTreeWidget;
+    let rootNode: SDK.DOMModel.DOMNode;
+    let childNode1: SDK.DOMModel.DOMNode;
+    let childNode2: SDK.DOMModel.DOMNode;
+
+    beforeEach(() => {
+      updateHostConfig({
+        devToolsComments: {
+          enabled: true,
+        },
+      });
+      tracker = universe.changeTracker;
+      const testDomModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      rootNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'DIV',
+        localName: 'div',
+        nodeValue: '',
+        childNodeCount: 2,
+        children: [
+          {
+            nodeId: 2 as Protocol.DOM.NodeId,
+            parentId: 1 as Protocol.DOM.NodeId,
+            backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'P',
+            localName: 'p',
+            nodeValue: '',
+            childNodeCount: 0,
+          },
+          {
+            nodeId: 3 as Protocol.DOM.NodeId,
+            parentId: 1 as Protocol.DOM.NodeId,
+            backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'SPAN',
+            localName: 'span',
+            nodeValue: '',
+            childNodeCount: 0,
+          },
+        ],
+      }) as SDK.DOMModel.DOMNode;
+      childNode1 = rootNode.children()![0];
+      childNode2 = rootNode.children()![1];
+
+      domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [tracker]);
+      domTree.omitRootDOMNode = true;
+      domTree.rootDOMNode = rootNode;
+      domTree.performUpdate();
+    });
+
+    afterEach(() => {
+      domTree.detach();
+    });
+
+    /**
+     * `ChangeTracker` records the location of a change on the comment thread it
+     * creates, not on the `ChangeRecord` itself, so the affected node has to be
+     * read back from the `CommentManager`.
+     */
+    function lastChangeBackendNodeId(): number|undefined {
+      return universe.commentManager.getCommentThreads().at(-1)?.anchor.node?.backendNodeId;
+    }
+
+    it('records a change when removeNode is called', async () => {
+      sinon.stub(childNode1, 'removeNode').callsFake(async callback => {
+        callback?.(null);
+      });
+      await domTree.removeNode(childNode1);
+
+      const record = tracker.getLastChange();
+      assert.exists(record);
+      assert.strictEqual(record?.description, 'Removed node <p>');
+      assert.strictEqual(lastChangeBackendNodeId(), 2);
+    });
+
+    it('does not record a change when removeNode fails with an error', async () => {
+      sinon.stub(childNode1, 'removeNode').callsFake(async callback => {
+        callback?.('Could not remove node');
+      });
+      await domTree.removeNode(childNode1);
+
+      const record = tracker.getLastChange();
+      assert.isUndefined(record);
+    });
+
+    it('unhides hidden node before removal without emitting a visibility change', async () => {
+      sinon.stub(childNode1, 'isToggledToHidden').returns(true);
+      const toggleHideStub = sinon.stub(childNode1, 'toggleHideElement').resolves();
+      sinon.stub(childNode1, 'removeNode').callsFake(async callback => {
+        callback?.(null);
+      });
+      await domTree.removeNode(childNode1);
+
+      sinon.assert.calledOnce(toggleHideStub);
+      const changes = tracker.getChanges();
+      assert.lengthOf(changes, 1);
+      assert.strictEqual(changes[0].description, 'Removed node <p>');
+    });
+
+    it('records a change when duplicateNode is called', async () => {
+      const duplicatedNode = SDK.DOMModel.DOMNode.create(childNode1.domModel(), null, false, {
+        nodeId: 4 as Protocol.DOM.NodeId,
+        parentId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 4 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'P',
+        localName: 'p',
+        nodeValue: '',
+        childNodeCount: 0,
+      });
+      sinon.stub(childNode1, 'duplicate').resolves({error: null, node: duplicatedNode});
+      domTree.duplicateNode(childNode1);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      const record = tracker.getLastChange();
+      assert.exists(record);
+      assert.strictEqual(record?.description, 'Duplicated node <p>');
+      assert.strictEqual(lastChangeBackendNodeId(), 4);
+    });
+
+    it('does not record a change when duplicateNode fails with an error', async () => {
+      sinon.stub(childNode1, 'duplicate').resolves({error: 'Error duplicating node', node: null});
+      domTree.duplicateNode(childNode1);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      const record = tracker.getLastChange();
+      assert.isUndefined(record);
+    });
+
+    it('records a change when pasteNode is called with copied node', () => {
+      const clonedNode = SDK.DOMModel.DOMNode.create(childNode1.domModel(), null, false, {
+        nodeId: 4 as Protocol.DOM.NodeId,
+        parentId: 3 as Protocol.DOM.NodeId,
+        backendNodeId: 4 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'P',
+        localName: 'p',
+        nodeValue: '',
+        childNodeCount: 0,
+      });
+      sinon.stub(childNode1, 'copyTo').callsFake((_targetNode, _anchorNode, callback) => {
+        callback?.(null, clonedNode);
+      });
+      domTree.setClipboardData({node: childNode1, isCut: false});
+
+      domTree.pasteNode(childNode2);
+
+      const record = tracker.getLastChange();
+      assert.exists(record);
+      assert.strictEqual(record?.description, 'Pasted node <p>');
+      assert.strictEqual(lastChangeBackendNodeId(), 4);
+    });
+
+    it('does not record a change when pasteNode copyTo fails with an error', () => {
+      sinon.stub(childNode1, 'copyTo').callsFake((_targetNode, _anchorNode, callback) => {
+        callback?.('Error copying node', null);
+      });
+      domTree.setClipboardData({node: childNode1, isCut: false});
+
+      domTree.pasteNode(childNode2);
+
+      const record = tracker.getLastChange();
+      assert.isUndefined(record);
+    });
+
+    it('records a change when pasteNode is called with cut node', () => {
+      sinon.stub(childNode1, 'moveTo').callsFake((_targetNode, _anchorNode, callback) => {
+        callback?.(null, childNode1);
+      });
+      domTree.setClipboardData({node: childNode1, isCut: true});
+
+      domTree.pasteNode(childNode2);
+
+      const record = tracker.getLastChange();
+      assert.exists(record);
+      assert.strictEqual(record?.description, 'Pasted (moved) node <p>');
+      assert.strictEqual(lastChangeBackendNodeId(), 2);
+    });
+
+    it('does not record a change when pasteNode with cut node fails with an error', () => {
+      sinon.stub(childNode1, 'moveTo').callsFake((_targetNode, _anchorNode, callback) => {
+        callback?.('Error moving node', null);
+      });
+      domTree.setClipboardData({node: childNode1, isCut: true});
+
+      domTree.pasteNode(childNode2);
+
+      const record = tracker.getLastChange();
+      assert.isUndefined(record);
+    });
+
+    it('records a change when reordering nodes with Ctrl+Up and Ctrl+Down', () => {
+      sinon.stub(childNode2, 'moveTo').callsFake((_targetNode, _anchorNode, callback) => {
+        callback?.(null, childNode2);
+      });
+      domTree.selectDOMNode(childNode2);
+
+      const isMac = Host.Platform.isMac();
+      const upEvent = new KeyboardEvent('keydown', {key: 'ArrowUp', ctrlKey: !isMac, metaKey: isMac, bubbles: true});
+      domTree.onKeyDown(upEvent);
+
+      let record = tracker.getLastChange();
+      assert.exists(record);
+      assert.strictEqual(record?.description, 'Moved node <span> up');
+      assert.strictEqual(lastChangeBackendNodeId(), 3);
+
+      sinon.stub(childNode1, 'moveTo').callsFake((_targetNode, _anchorNode, callback) => {
+        callback?.(null, childNode1);
+      });
+      domTree.selectDOMNode(childNode1);
+
+      const downEvent =
+          new KeyboardEvent('keydown', {key: 'ArrowDown', ctrlKey: !isMac, metaKey: isMac, bubbles: true});
+      domTree.onKeyDown(downEvent);
+
+      record = tracker.getLastChange();
+      assert.exists(record);
+      assert.strictEqual(record?.description, 'Moved node <p> down');
+      assert.strictEqual(lastChangeBackendNodeId(), 2);
+    });
+
+    it('does not record a change when reordering nodes fails with an error', () => {
+      sinon.stub(childNode2, 'moveTo').callsFake((_targetNode, _anchorNode, callback) => {
+        callback?.('Error moving node', null);
+      });
+      domTree.selectDOMNode(childNode2);
+
+      const isMac = Host.Platform.isMac();
+      const upEvent = new KeyboardEvent('keydown', {key: 'ArrowUp', ctrlKey: !isMac, metaKey: isMac, bubbles: true});
+      domTree.onKeyDown(upEvent);
+
+      const record = tracker.getLastChange();
+      assert.isUndefined(record);
+    });
+
+    it('records a change when drag and drop moves a node', () => {
+      sinon.stub(childNode1, 'moveTo').callsFake((_targetNode, _anchorNode, callback) => {
+        callback?.(null, childNode1);
+      });
+
+      domTree.moveNode(childNode1, childNode2, /* isClosingTag= */ false);
+
+      const record = tracker.getLastChange();
+      assert.exists(record);
+      assert.strictEqual(record?.description, 'Moved node <p> via drag and drop');
+      assert.strictEqual(lastChangeBackendNodeId(), 2);
+    });
+
+    it('does not record a change when drag and drop move fails with an error', () => {
+      sinon.stub(childNode1, 'moveTo').callsFake((_targetNode, _anchorNode, callback) => {
+        callback?.('Error moving node', null);
+      });
+
+      domTree.moveNode(childNode1, childNode2, /* isClosingTag= */ false);
+
+      const record = tracker.getLastChange();
+      assert.isUndefined(record);
+    });
+
+    it('records a change when toggleHideElement is called', () => {
+      sinon.stub(childNode1, 'toggleHideElement');
+      sinon.stub(childNode1, 'isToggledToHidden').returns(false);
+
+      domTree.toggleHideElement(childNode1);
+
+      const record = tracker.getLastChange();
+      assert.exists(record);
+      assert.strictEqual(record?.description, 'Hid element <p>');
+      assert.strictEqual(lastChangeBackendNodeId(), 2);
     });
   });
 });

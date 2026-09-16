@@ -140,6 +140,26 @@ function describeHTMLEdit(oldValue?: string, newValue?: string): string {
   return 'Edited HTML';
 }
 
+function describeVisibilityToggle(tagName: string, hidden: boolean): string {
+  return hidden ? `Hid element <${trimValue(tagName)}>` : `Unhid element <${trimValue(tagName)}>`;
+}
+
+function describeNodeDuplication(tagName: string): string {
+  return `Duplicated node <${trimValue(tagName)}>`;
+}
+
+function describeNodeMove(tagName: string, directionUp: boolean): string {
+  return `Moved node <${trimValue(tagName)}> ${directionUp ? 'up' : 'down'}`;
+}
+
+function describeNodeDrop(tagName: string): string {
+  return `Moved node <${trimValue(tagName)}> via drag and drop`;
+}
+
+function describeNodePaste(tagName: string, isCut: boolean): string {
+  return isCut ? `Pasted (moved) node <${trimValue(tagName)}>` : `Pasted node <${trimValue(tagName)}>`;
+}
+
 export function trackAttributeEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
                                    edit: AttributeEdit): void {
   if (!tracker?.isTracking) {
@@ -177,4 +197,42 @@ export function trackHTMLEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, sele
     return;
   }
   tracker.trackChange(describeHTMLEdit(oldValue, newValue), buildAnchor(node, selector));
+}
+
+export function trackVisibilityToggle(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
+                                      hidden: boolean): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeVisibilityToggle(node.nodeName().toLowerCase(), hidden), buildAnchor(node, selector));
+}
+
+export function trackNodeDuplication(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeNodeDuplication(node.nodeName().toLowerCase()), buildAnchor(node, selector));
+}
+
+export function trackNodeMove(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
+                              directionUp: boolean): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeNodeMove(node.nodeName().toLowerCase(), directionUp), buildAnchor(node, selector));
+}
+
+export function trackNodeDrop(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeNodeDrop(node.nodeName().toLowerCase()), buildAnchor(node, selector));
+}
+
+export function trackNodePaste(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
+                               isCut: boolean): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeNodePaste(node.nodeName().toLowerCase(), isCut), buildAnchor(node, selector));
 }

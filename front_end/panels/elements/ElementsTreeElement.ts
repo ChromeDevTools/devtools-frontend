@@ -2881,7 +2881,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   async remove(): Promise<void> {
     if (this.isToggledToHidden?.(this.node)) {
       // Unhide the node before removing. This avoids inconsistent state if the node is restored via undo.
-      await this.toggleHideElement?.(this.node);
+      await this.node.toggleHideElement();
     }
     if (this.node.pseudoType()) {
       return;

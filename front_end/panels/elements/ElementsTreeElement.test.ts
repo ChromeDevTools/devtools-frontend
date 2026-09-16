@@ -2641,4 +2641,43 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.isUndefined(record);
     assert.isEmpty(universe.commentManager.getCommentThreads());
   });
+
+  it('unhides hidden node before removal without recording an additional change', async () => {
+    const parentNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 10 as Protocol.DOM.NodeId,
+      backendNodeId: 10 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'BODY',
+      localName: 'body',
+      nodeValue: '',
+      childNodeCount: 1,
+      children: [{
+        nodeId: 11 as Protocol.DOM.NodeId,
+        parentId: 10 as Protocol.DOM.NodeId,
+        backendNodeId: 11 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'SPAN',
+        localName: 'span',
+        nodeValue: '',
+        childNodeCount: 0,
+      }],
+    });
+    const childNode = parentNode!.children()![0];
+    sinon.stub(childNode, 'isToggledToHidden').returns(true);
+    const toggleHideStub = sinon.stub(childNode, 'toggleHideElement').resolves();
+    sinon.stub(childNode, 'removeNode').callsFake(async callback => {
+      callback?.(null);
+    });
+
+    const childTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(childNode, false);
+    childTreeElement.widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    childTreeElement.widget.isToggledToHidden = node => node.isToggledToHidden();
+    childTreeElement.widget.node = childNode;
+    await childTreeElement.widget.remove();
+
+    sinon.assert.calledOnce(toggleHideStub);
+    const changes = tracker.getChanges();
+    assert.lengthOf(changes, 1);
+    assert.strictEqual(changes[0].description, 'Removed node <span>');
+  });
 });

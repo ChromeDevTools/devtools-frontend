@@ -118,6 +118,42 @@ describe('DOMChanges', () => {
     assert.strictEqual(lastAnchor()?.textSignature, 'span.child');
   });
 
+  it('records hiding and unhiding an element', () => {
+    Elements.DOMChanges.trackVisibilityToggle(tracker, createNode(), 'div.main', /* hidden= */ true);
+    assert.strictEqual(lastDescription(), 'Hid element <div>');
+
+    Elements.DOMChanges.trackVisibilityToggle(tracker, createNode(), 'div.main', /* hidden= */ false);
+    assert.strictEqual(lastDescription(), 'Unhid element <div>');
+  });
+
+  it('records a duplicated node', () => {
+    Elements.DOMChanges.trackNodeDuplication(tracker, createNode(1, 'SPAN'), 'span.child');
+
+    assert.strictEqual(lastDescription(), 'Duplicated node <span>');
+  });
+
+  it('records a node moved up or down', () => {
+    Elements.DOMChanges.trackNodeMove(tracker, createNode(), 'div.main', /* directionUp= */ true);
+    assert.strictEqual(lastDescription(), 'Moved node <div> up');
+
+    Elements.DOMChanges.trackNodeMove(tracker, createNode(), 'div.main', /* directionUp= */ false);
+    assert.strictEqual(lastDescription(), 'Moved node <div> down');
+  });
+
+  it('records a node moved via drag and drop', () => {
+    Elements.DOMChanges.trackNodeDrop(tracker, createNode(), 'div.main');
+
+    assert.strictEqual(lastDescription(), 'Moved node <div> via drag and drop');
+  });
+
+  it('records a pasted node', () => {
+    Elements.DOMChanges.trackNodePaste(tracker, createNode(), 'div.main', /* isCut= */ false);
+    assert.strictEqual(lastDescription(), 'Pasted node <div>');
+
+    Elements.DOMChanges.trackNodePaste(tracker, createNode(), 'div.main', /* isCut= */ true);
+    assert.strictEqual(lastDescription(), 'Pasted (moved) node <div>');
+  });
+
   it('falls back to a generic text signature without a selector', () => {
     Elements.DOMChanges.trackNodeRemoval(tracker, createNode(), undefined);
 

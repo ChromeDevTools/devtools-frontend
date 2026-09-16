@@ -37,8 +37,10 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Badges from '../../models/badges/badges.js';
+import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import * as Elements from '../../models/elements/elements.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
@@ -60,6 +62,7 @@ import {showContextMenu} from './DOMTreeContextMenu.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {
   adornerRef,
+  buildChangeSelector,
   ElementsTreeElement,
   ElementsTreeWidget,
   ForbiddenClosingTagElements,
@@ -1154,6 +1157,8 @@ function getElementsTreeWidgetAndNode(element: Element): {node?: SDK.DOMModel.DO
  * to DOMTreeWidget.ts.
  */
 export class DOMTreeWidget extends UI.Widget.Widget {
+  static override readonly INJECT: readonly[typeof ChangeTracker.ChangeTracker.ChangeTracker] =
+      [ChangeTracker.ChangeTracker.ChangeTracker] as const;
   omitRootDOMNode = false;
   selectEnabled = false;
   hideGutter = false;
@@ -1179,6 +1184,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   #visibleWidth?: number;
   #wrap = false;
   #maxRows?: number;
+  readonly #changeTracker?: ChangeTracker.ChangeTracker.ChangeTracker;
 
   // If maxRows is undefined, all rows are shown. If it is set to a number, only that many rows are shown.
   set maxRows(maxRows: number|undefined) {
@@ -1332,6 +1338,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   constructor(
       element?: HTMLElement,
+      [changeTracker]:
+          UI.Widget.WidgetDependencies<typeof DOMTreeWidget>|[ChangeTracker.ChangeTracker.ChangeTracker?] = [],
       view: View = DEFAULT_VIEW,
   ) {
     super(element, {
@@ -1339,6 +1347,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       delegatesFocus: false,
     });
     this.#view = view;
+    this.#changeTracker = changeTracker ??
+        (Root.DevToolsContext.globalInstance().has(ChangeTracker.ChangeTracker.ChangeTracker) ?
+             Root.DevToolsContext.globalInstance().get(ChangeTracker.ChangeTracker.ChangeTracker) :
+             undefined);
     this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
     if (Common.Settings.Settings.instance().moduleSetting('highlight-node-on-hover-in-overlay').get()) {
       SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -2166,6 +2178,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   toggleHideElement(node: SDK.DOMModel.DOMNode): void {
+    Elements.DOMChanges.trackVisibilityToggle(this.#changeTracker, node, buildChangeSelector(this.#changeTracker, node),
+                                              !this.isToggledToHidden(node));
     void node.toggleHideElement();
   }
 
@@ -2180,7 +2194,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     if (!node.parentNode || node.parentNode.nodeType() === Node.DOCUMENT_NODE) {
       return;
     }
-    void node.removeNode();
+    // The selector has to be resolved before the node is detached from the tree.
+    const selector = buildChangeSelector(this.#changeTracker, node);
+    await node.removeNode((err: string|null) => {
+      if (!err) {
+        Elements.DOMChanges.trackNodeRemoval(this.#changeTracker, node, selector);
+      }
+    });
   }
 
   isToggledToHidden(node: SDK.DOMModel.DOMNode): boolean {
@@ -2292,7 +2312,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   duplicateNode(node: SDK.DOMModel.DOMNode): void {
-    void node.duplicate();
+    void node.duplicate().then(({error, node: newNode}) => {
+      if (!error) {
+        const duplicatedNode = newNode ?? node;
+        Elements.DOMChanges.trackNodeDuplication(this.#changeTracker, duplicatedNode,
+                                                 buildChangeSelector(this.#changeTracker, duplicatedNode));
+      }
+    });
   }
 
   nodeBeingDragged(): SDK.DOMModel.DOMNode|null {
@@ -2431,6 +2457,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     const wasExpanded = this.#draggedNodeWasExpanded;
     draggedNode.moveTo(parentNode, anchorNode, (error, newNode) => {
+      if (!error) {
+        const movedNode = newNode ?? draggedNode;
+        Elements.DOMChanges.trackNodeDrop(this.#changeTracker, movedNode,
+                                          buildChangeSelector(this.#changeTracker, movedNode));
+      }
       this.selectNodeAfterEdit(wasExpanded, error, newNode);
     });
   }
@@ -2615,6 +2646,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       const wasExpanded = this.isNodeExpanded(node);
       if (event.key === 'ArrowUp' && node.previousSibling) {
         node.moveTo(node.parentNode, node.previousSibling, (error, newNode) => {
+          if (!error) {
+            const movedNode = newNode ?? node;
+            Elements.DOMChanges.trackNodeMove(this.#changeTracker, movedNode,
+                                              buildChangeSelector(this.#changeTracker, movedNode),
+                                              /* directionUp= */ true);
+          }
           this.selectNodeAfterEdit(wasExpanded, error, newNode);
         });
         event.consume(true);
@@ -2622,6 +2659,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       }
       if (event.key === 'ArrowDown' && node.nextSibling) {
         node.moveTo(node.parentNode, node.nextSibling.nextSibling, (error, newNode) => {
+          if (!error) {
+            const movedNode = newNode ?? node;
+            Elements.DOMChanges.trackNodeMove(this.#changeTracker, movedNode,
+                                              buildChangeSelector(this.#changeTracker, movedNode),
+                                              /* directionUp= */ false);
+          }
           this.selectNodeAfterEdit(wasExpanded, error, newNode);
         });
         event.consume(true);
@@ -2783,11 +2826,23 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     const clipboardNode = this.#clipboardData.node;
     if (this.#clipboardData.isCut) {
       clipboardNode.moveTo(targetNode, null, (error, newNode) => {
+        if (!error) {
+          const movedNode = newNode ?? clipboardNode;
+          Elements.DOMChanges.trackNodePaste(this.#changeTracker, movedNode,
+                                             buildChangeSelector(this.#changeTracker, movedNode),
+                                             /* isCut= */ true);
+        }
         this.selectNodeAfterEdit(wasExpanded, error, newNode);
       });
       this.setClipboardData(null);
     } else {
       clipboardNode.copyTo(targetNode, null, (error, newNode) => {
+        if (!error) {
+          const addedNode = newNode ?? clipboardNode;
+          Elements.DOMChanges.trackNodePaste(this.#changeTracker, addedNode,
+                                             buildChangeSelector(this.#changeTracker, addedNode),
+                                             /* isCut= */ false);
+        }
         this.selectNodeAfterEdit(wasExpanded, error, newNode);
       });
     }

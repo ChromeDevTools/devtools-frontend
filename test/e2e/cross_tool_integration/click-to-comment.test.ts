@@ -71,15 +71,23 @@ describe('Click-to-Comment mode across DevTools panels', function() {
        const pinHtml = await pin.evaluate(el => el.innerHTML.trim());
        assert.isNotEmpty(pinHtml);
 
-       // 5. Toggle comment mode OFF.
+       // 5. Write a comment on the draft.
+       const commentInput = await devToolsPage.waitFor('.comment-thread-widget textarea');
+       await commentInput.type('Test comment');
+
+       // 6. Submit the draft comment.
+       await devToolsPage.click('[aria-label="Add comment"]');
+       await devToolsPage.waitFor('.comment-pin[data-comment-id]');
+
+       // 7. Toggle comment mode OFF.
        await toggleCommentMode(devToolsPage);
        assert.isFalse(await isCommentModeActive(devToolsPage));
 
-       // 6. Verify existing pin and highlight persist.
+       // 8. Verify existing pin and highlight persist.
        assert.lengthOf(await getCommentPins(devToolsPage), 1);
        assert.lengthOf(await getCommentHighlights(devToolsPage), 1);
 
-       // 7. Verify subsequent clicks do not create new comments when mode is deactivated.
+       // 9. Verify subsequent clicks do not create new comments when mode is deactivated.
        await devToolsPage.click('[role="treeitem"]');
        assert.lengthOf(await getCommentPins(devToolsPage), 1);
      });

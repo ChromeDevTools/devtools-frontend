@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -30,7 +31,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     const view = createViewFunctionStub(Comments.CommentsOverlayWidget.CommentsOverlayWidget);
     const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
         undefined,
-        commentManager,
+        [commentManager],
         view,
     );
     widget.setOverlayManagerForTest(overlayManager);
@@ -61,10 +62,37 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     widget.detach();
   });
 
+  it('passes pending pin and highlight to view input when comment is in draft state', () => {
+    const view = createViewFunctionStub(Comments.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
+        undefined,
+        [commentManager],
+        view,
+    );
+    widget.setOverlayManagerForTest(overlayManager);
+
+    sinon.stub(overlayManager, 'getPendingDraft').returns({
+      element: document.createElement('div'),
+      anchor: {vePath: 'TreeItem: test', textSignature: 'test'},
+      pin: {top: 10, left: 20, visible: true, index: 1},
+      highlight: {top: 10, left: 20, width: 100, height: 20, visible: true},
+      pinOffset: null,
+    });
+    commentManager.setCommentMode(true);
+
+    widget.performUpdate();
+
+    assert.isTrue(view.input.commentMode);
+    assert.deepEqual(view.input.pins, []);
+    assert.lengthOf(view.input.highlights, 1);
+    assert.isNotNull(view.input.pendingPin);
+    assert.isNotNull(view.input.activePin);
+  });
+
   it('renders live DOM elements for pins, anchor highlights, and hover highlights with DEFAULT_VIEW', async () => {
     const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
         undefined,
-        commentManager,
+        [commentManager],
     );
     widget.setOverlayManagerForTest(overlayManager);
     widget.markAsRoot();
@@ -103,10 +131,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
   });
 
   it('renders sequential numbers for multiple comment pins in order of creation', async () => {
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
-        undefined,
-        commentManager,
-    );
+    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
     widget.setOverlayManagerForTest(overlayManager);
     widget.markAsRoot();
     renderElementIntoDOM(widget, {allowMultipleChildren: true});
@@ -153,7 +178,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     const view = createViewFunctionStub(Comments.CommentsOverlayWidget.CommentsOverlayWidget);
     const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
         undefined,
-        commentManager,
+        [commentManager],
         view,
     );
     widget.setOverlayManagerForTest(overlayManager);
@@ -175,5 +200,49 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     const handled = delegate.handleAction(context, 'comments.toggle-comment-mode');
     assert.isTrue(handled);
     assert.isTrue(commentManager.isCommentMode());
+  });
+
+  it('resets draft text when clicking a different element while a draft is open', async () => {
+    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const createTestElement = (context: string, top: number) => {
+      const el = document.createElement('div');
+      el.setAttribute('jslog', `TreeItem; context: ${context}`);
+      el.textContent = context;
+      el.getBoundingClientRect = () => new DOMRect(100, top, 150, 40);
+      renderElementIntoDOM(el, {allowMultipleChildren: true});
+      return el;
+    };
+
+    const el1 = createTestElement('draft-1', 100);
+    const el2 = createTestElement('draft-2', 200);
+
+    commentManager.setCommentMode(true);
+    overlayManager.handleElementClick(el1);
+
+    widget.requestUpdate();
+    await widget.updateComplete;
+
+    let textarea = widget.contentElement.querySelector('textarea') as HTMLTextAreaElement;
+    assert.isNotNull(textarea);
+    textarea.value = 'Unsaved draft text';
+    textarea.dispatchEvent(new Event('input', {bubbles: true}));
+    await widget.updateComplete;
+    assert.strictEqual(textarea.value, 'Unsaved draft text');
+
+    overlayManager.handleElementClick(el2);
+    widget.requestUpdate();
+    await widget.updateComplete;
+
+    textarea = widget.contentElement.querySelector('textarea') as HTMLTextAreaElement;
+    assert.isNotNull(textarea);
+    assert.strictEqual(textarea.value, '');
+
+    el1.remove();
+    el2.remove();
+    widget.detach();
   });
 });

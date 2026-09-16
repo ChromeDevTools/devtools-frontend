@@ -66,4 +66,10 @@
     background-color: color-mix(in srgb, var(--sys-color-primary), transparent 85%);
     box-sizing: border-box;
   }
+
+  .comment-popup-widget {
+    position: absolute;
+    z-index: 2501;
+    pointer-events: auto;
+  }
 }

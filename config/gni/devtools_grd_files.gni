@@ -1201,6 +1201,7 @@ grd_files_unbundled_sources = [
   "front_end/models/cpu_profile/CPUProfileDataModel.js",
   "front_end/models/cpu_profile/ProfileTreeModel.js",
   "front_end/models/crux-manager/CrUXManager.js",
+  "front_end/models/elements/DOMChanges.js",
   "front_end/models/elements/ElementUpdateRecord.js",
   "front_end/models/emulation/DeviceModeModel.js",
   "front_end/models/emulation/EmulatedDevices.js",

@@ -48,7 +48,8 @@ import * as Protocol from '../../generated/protocol.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import type * as Elements from '../../models/elements/elements.js';
+import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
+import * as Elements from '../../models/elements/elements.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -65,12 +66,40 @@ import * as PanelsCommon from '../common/common.js';
 import * as Media from '../media/media.js';
 
 import * as ElementsComponents from './components/components.js';
+import {cssPath} from './DOMPath.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
 import {type ElementsTreeOutline, MappedCharToEntity} from './ElementsTreeOutline.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {getRegisteredDecorators, type MarkerDecorator, type MarkerDecoratorRegistration} from './MarkerDecorator.js';
+
+/**
+ * Returns the CSS selector of `node` that is used as the text signature of the anchor a change is
+ * recorded on, or `undefined` if `tracker` is absent or not recording changes.
+ *
+ * Resolving the selector walks the ancestor chain and scans sibling lists, so it is skipped
+ * entirely while change tracking is disabled.
+ */
+export function buildChangeSelector(tracker: ChangeTracker.ChangeTracker.ChangeTracker|undefined,
+                                    node: SDK.DOMModel.DOMNode): string|undefined {
+  if (!tracker?.isTracking) {
+    return undefined;
+  }
+  if (node.nodeType() === Node.ELEMENT_NODE) {
+    const selector = cssPath(node, true);
+    if (selector) {
+      return selector;
+    }
+  } else if (node.parentNode && node.parentNode.nodeType() === Node.ELEMENT_NODE) {
+    const selector = cssPath(node.parentNode, true);
+    if (selector) {
+      return selector;
+    }
+  }
+
+  return undefined;
+}
 
 const {html, nothing, render, Directives: {classMap, ref, repeat, until}} = Lit;
 const {animateOn} = UI.UIUtils;
@@ -1124,9 +1153,14 @@ export interface InitialEditState {
 }
 
 export class ElementsTreeWidget extends UI.Widget.Widget {
-  static override readonly INJECT: readonly[typeof IssuesManager.DOMIssuesManager.DOMIssuesManager] =
-      [IssuesManager.DOMIssuesManager.DOMIssuesManager] as const;
+  static override readonly INJECT: readonly[typeof IssuesManager.DOMIssuesManager.DOMIssuesManager,
+                                            typeof ChangeTracker.ChangeTracker.ChangeTracker] =
+      [
+        IssuesManager.DOMIssuesManager.DOMIssuesManager,
+        ChangeTracker.ChangeTracker.ChangeTracker,
+      ] as const;
   #domIssuesManager?: IssuesManager.DOMIssuesManager.DOMIssuesManager;
+  #changeTracker?: ChangeTracker.ChangeTracker.ChangeTracker;
 
   #node!: SDK.DOMModel.DOMNode;
   #eventsBound = false;
@@ -1370,13 +1404,25 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     return this.#domIssuesManager?.issuesForNode(this.node) ?? [];
   }
 
+  get changeTracker(): ChangeTracker.ChangeTracker.ChangeTracker|undefined {
+    // The widget is currently created for non-widget ElementsTreeElement so
+    // the changeTracker can be empty, relying on the manual resolution.
+    // Note that this only works once the widget is attached to the DOM.
+    this.#changeTracker ??=
+        UI.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker.ChangeTracker.ChangeTracker);
+    return this.#changeTracker;
+  }
+
   constructor(
       element?: HTMLElement,
-      [domIssuesManager]: UI.Widget.WidgetDependencies<typeof ElementsTreeWidget>|[undefined] = [undefined],
+      [domIssuesManager, changeTracker]:
+          UI.Widget.WidgetDependencies<typeof ElementsTreeWidget>|[IssuesManager.DOMIssuesManager.DOMIssuesManager?,
+                                                                   ChangeTracker.ChangeTracker.ChangeTracker?] = [],
       view: View = DEFAULT_VIEW,
   ) {
     super(element);
     this.#domIssuesManager = domIssuesManager;
+    this.#changeTracker = changeTracker;
     this.#view = view;
 
     this.#expandedChildrenLimit = InitialChildrenLimit;
@@ -2595,10 +2641,16 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
 
     if (attributeName !== null && (attributeName.trim() || newText.trim()) && oldText !== newText) {
+      const edit = {attributeName, oldText, newText};
       this.node.setAttribute(attributeName, newText, (error: string|null) => {
+        if (!error) {
+          const changeTracker = this.changeTracker;
+          Elements.DOMChanges.trackAttributeEdit(changeTracker, this.node,
+                                                 buildChangeSelector(changeTracker, this.node), edit);
+          Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
+        }
         moveToNextAttributeIfNeeded.call(this, error);
       });
-      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
       return;
     }
 

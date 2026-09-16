@@ -13,11 +13,17 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import type * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, raf, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment, registerActions} from '../../testing/EnvironmentHelpers.js';
+import {
+  createTarget,
+  describeWithEnvironment,
+  registerActions,
+  updateHostConfig,
+} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
@@ -2286,5 +2292,152 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
       assert.deepEqual(forceParams4, {nodeId: popoverNode.id, enable: false});
       assert.isFalse(input.popoverAdornerActive);
     });
+  });
+});
+
+describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
+  let target: SDK.Target.Target;
+  let testDomModel: SDK.DOMModel.DOMModel;
+  let universe: TestUniverse;
+  let tracker: ChangeTracker.ChangeTracker.ChangeTracker;
+  let node: SDK.DOMModel.DOMNode;
+  let treeElement: Elements.ElementsTreeElement.ElementsTreeElement;
+  let outline: Elements.ElementsTreeOutline.ElementsTreeOutline;
+
+  /**
+   * `ChangeTracker` records the location of a change on the comment thread it
+   * creates, not on the `ChangeRecord` itself, so the affected node has to be
+   * read back from the `CommentManager`.
+   */
+  function lastChangeBackendNodeId(): number|undefined {
+    return universe.commentManager.getCommentThreads().at(-1)?.anchor.node?.backendNodeId;
+  }
+
+  /** Types `newText` into the attribute that is currently edited in place and commits it. */
+  function commitEditedAttribute(newText: string): void {
+    const editedAttribute = treeElement.widget.contentElement.querySelector('.webkit-html-attribute.editing');
+    assert.exists(editedAttribute);
+    editedAttribute.textContent = newText;
+    treeElement.widget.editing?.commit();
+  }
+
+  beforeEach(() => {
+    updateHostConfig({
+      devToolsComments: {
+        enabled: true,
+      },
+    });
+    universe = new TestUniverse();
+    tracker = universe.changeTracker;
+    setTestUniverseForWidgets(universe);
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(universe.debuggerWorkspaceBinding);
+    sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);
+    target = universe.createTarget();
+    testDomModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+
+    const rootNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 1 as Protocol.DOM.NodeId,
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'DIV',
+      localName: 'div',
+      nodeValue: '',
+      attributes: ['id', 'main-div', 'class', 'container'],
+      childNodeCount: 1,
+      children: [{
+        nodeId: 2 as Protocol.DOM.NodeId,
+        parentId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.TEXT_NODE,
+        nodeName: '#text',
+        localName: '',
+        nodeValue: 'Initial Text',
+        childNodeCount: 0,
+      }],
+    });
+    assert.isNotNull(rootNode);
+    node = rootNode;
+
+    outline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node, false);
+    treeElement.widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    treeElement.widget.node = node;
+    treeElement.widget.selectTreeElement = (omitFocus, selectedByUser) => treeElement.select(omitFocus, selectedByUser);
+    outline.appendChild(treeElement);
+    treeElement.widget.performUpdate();
+  });
+
+  it('records a change when adding a new attribute', () => {
+    sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.(null));
+
+    assert.isTrue(treeElement.widget.addNewAttribute());
+    commitEditedAttribute('data-test="value"');
+
+    const record = tracker.getLastChange();
+    assert.exists(record);
+    assert.strictEqual(record?.description, 'Added attribute data-test="value"');
+    assert.isString(record?.id);
+    assert.isNumber(record?.timestamp);
+    assert.strictEqual(lastChangeBackendNodeId(), 1);
+  });
+
+  it('records a change when modifying an existing attribute', () => {
+    sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.(null));
+
+    assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
+    commitEditedAttribute('class="container active"');
+
+    const record = tracker.getLastChange();
+    assert.exists(record);
+    assert.strictEqual(record?.description, 'Changed attribute "class" from "container" to "container active"');
+    assert.strictEqual(lastChangeBackendNodeId(), 1);
+  });
+
+  it('records a change when renaming an existing attribute', () => {
+    sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.(null));
+
+    assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
+    commitEditedAttribute('foo="container"');
+
+    const record = tracker.getLastChange();
+    assert.exists(record);
+    assert.strictEqual(record?.description, 'Renamed attribute "class" to "foo"');
+    assert.strictEqual(lastChangeBackendNodeId(), 1);
+  });
+
+  it('records a change when renaming and modifying an existing attribute', () => {
+    sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.(null));
+
+    assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
+    commitEditedAttribute('foo="bar"');
+
+    const record = tracker.getLastChange();
+    assert.exists(record);
+    assert.strictEqual(record?.description, 'Renamed attribute "class"="container" to "foo"="bar"');
+    assert.strictEqual(lastChangeBackendNodeId(), 1);
+  });
+
+  it('records a change when deleting an attribute', () => {
+    sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.(null));
+
+    assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
+    commitEditedAttribute('');
+
+    const record = tracker.getLastChange();
+    assert.exists(record);
+    assert.strictEqual(record?.description, 'Removed attribute "class"');
+    assert.strictEqual(lastChangeBackendNodeId(), 1);
+  });
+
+  it('does not record a change when setAttribute fails with an error', () => {
+    sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.('Invalid attribute name syntax'));
+
+    assert.isTrue(treeElement.widget.addNewAttribute());
+    commitEditedAttribute('invalid<attr>=1');
+
+    const record = tracker.getLastChange();
+    assert.isUndefined(record);
+    assert.isEmpty(universe.commentManager.getCommentThreads());
   });
 });

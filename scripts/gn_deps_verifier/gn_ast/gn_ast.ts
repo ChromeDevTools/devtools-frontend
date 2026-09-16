@@ -67,7 +67,7 @@ export class GnBuildFile {
   }
 
   static async from(filePath: string, rootDir: string): Promise<GnBuildFile> {
-    const absPath = path.resolve(filePath);
+    const absPath = path.resolve(rootDir, filePath);
     const cached = GnBuildFile.#cache.get(absPath);
     if (cached) {
       return await cached;
@@ -88,7 +88,7 @@ export class GnBuildFile {
    * @param rootDir Workspace root directory.
    */
   private constructor(filePath: string, ast: GnAstNode, rootDir: string) {
-    this.filePath = path.resolve(filePath);
+    this.filePath = path.resolve(rootDir, filePath);
     this.ast = ast;
     this.rootDir = path.resolve(rootDir);
   }
@@ -154,8 +154,9 @@ export class GnBuildFile {
     );
 
     const unusedDepsSet = new Set(options.unusedDeps.map(resolveDep));
+    const targetProperty = 'ts_deps';
 
-    const depsAssigns = findAssignments(block.child || [], 'deps');
+    const depsAssigns = findAssignments(block.child || [], targetProperty);
     const additiveAssigns = depsAssigns.filter(
         a => a.value === '=' || a.value === '+=',
     );
@@ -188,7 +189,7 @@ export class GnBuildFile {
     if (options.missingDeps.length > 0) {
       const topLevelDepsAssigns = findAssignments(
           block.child || [],
-          'deps',
+          targetProperty,
           /* recursive= */ false,
       );
       const topLevelAdditiveAssigns = topLevelDepsAssigns.filter(
@@ -200,7 +201,7 @@ export class GnBuildFile {
       if (!listNode) {
         const op = topLevelDepsAssigns.length > 0 ? '+=' : '=';
         targetAssign = createAstNode.assignment(
-            'deps',
+            targetProperty,
             createAstNode.list(),
             op,
         );

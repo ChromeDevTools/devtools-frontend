@@ -20,7 +20,7 @@ export async function checkDepsGn(
 
   await Promise.all(
       files.map(async file => {
-        const absPath = path.resolve(file);
+        const absPath = path.resolve(rootDir, file);
         let isDirectory = false;
         try {
           const info = await fs.promises.stat(absPath);

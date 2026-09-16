@@ -64,18 +64,18 @@ describe('gn_ast_visitor', () => {
       assert.strictEqual(sourcesAssigns[0].type, 'BINARY');
       assert.strictEqual(sourcesAssigns[0].value, '=');
 
-      const depsAssigns = findAssignments(block.child, 'deps');
+      const depsAssigns = findAssignments(block.child, 'ts_deps');
       assert.strictEqual(depsAssigns.length, 1);
       assert.strictEqual(depsAssigns[0].type, 'BINARY');
       assert.strictEqual(depsAssigns[0].value, '=');
 
       const stmtsWithMinus: GnAstNode[] = [
-        createAstNode.assignment('deps', createAstNode.list(), '='),
-        createAstNode.assignment('deps', createAstNode.list(), '+='),
-        createAstNode.assignment('deps', createAstNode.list(), '-='),
+        createAstNode.assignment('ts_deps', createAstNode.list(), '='),
+        createAstNode.assignment('ts_deps', createAstNode.list(), '+='),
+        createAstNode.assignment('ts_deps', createAstNode.list(), '-='),
         createAstNode.assignment('sources', createAstNode.list(), '='),
       ];
-      const foundDepsAssigns = findAssignments(stmtsWithMinus, 'deps');
+      const foundDepsAssigns = findAssignments(stmtsWithMinus, 'ts_deps');
       assert.strictEqual(foundDepsAssigns.length, 3);
       assert.deepEqual(
           foundDepsAssigns.map(s => s.value),
@@ -85,12 +85,12 @@ describe('gn_ast_visitor', () => {
 
     it('respects recursive = false and only visits top-level statements', () => {
       const topLevelAssign = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.list(),
           '=',
       );
       const nestedAssign = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.list(),
           '+=',
       );
@@ -104,10 +104,10 @@ describe('gn_ast_visitor', () => {
 
       const stmts: GnAstNode[] = [topLevelAssign, conditionBlock];
 
-      const allAssigns = findAssignments(stmts, 'deps', true);
+      const allAssigns = findAssignments(stmts, 'ts_deps', true);
       assert.strictEqual(allAssigns.length, 2);
 
-      const topLevelOnly = findAssignments(stmts, 'deps', false);
+      const topLevelOnly = findAssignments(stmts, 'ts_deps', false);
       assert.strictEqual(topLevelOnly.length, 1);
       assert.strictEqual(topLevelOnly[0], topLevelAssign);
     });
@@ -196,7 +196,7 @@ describe('gn_ast_visitor', () => {
       assert.isDefined(animationNode.child);
       const block = animationNode.child[1];
       assert.isDefined(block.child);
-      const depsAssign = findAssignments(block.child, 'deps')[0];
+      const depsAssign = findAssignments(block.child, 'ts_deps')[0];
       assert.isDefined(depsAssign);
       assert.isDefined(depsAssign.child);
       const rhs = depsAssign.child[1];
@@ -338,7 +338,7 @@ describe('gn_ast_visitor', () => {
         'AnimationTimeline.ts',
         'AnimationUI.ts',
       ]);
-      assert.includeMembers(targetInfo.deps, [
+      assert.includeMembers(targetInfo.ts_deps, [
         '../../core/common:bundle',
         '../../core/sdk:bundle',
       ]);
@@ -379,10 +379,10 @@ describe('gn_ast_visitor', () => {
         'main.ts',
       ]);
       assert.notInclude(targetInfo.sources, 'excluded.ts');
-      assert.deepEqual(targetInfo.deps, [':dep1', ':dep2']);
+      assert.deepEqual(targetInfo.ts_deps, [':dep1', ':dep2']);
     });
 
-    it('extracts ts_deps into deps', () => {
+    it('extracts ts_deps into ts_deps', () => {
       const platformNode = findTargetNode(gnBuild.ast, 'platform');
       assert.isDefined(platformNode);
 
@@ -399,7 +399,7 @@ describe('gn_ast_visitor', () => {
       );
       assert.strictEqual(targetInfo.templateName, 'devtools_foundation_module');
       assert.deepEqual(targetInfo.sources, ['HostRuntime.ts']);
-      assert.includeMembers(targetInfo.deps, ['./api:bundle']);
+      assert.includeMembers(targetInfo.ts_deps, ['./api:bundle']);
     });
 
     it('handles negative assignment on variables defined in outer/parent scope without local = declaration', () => {
@@ -479,16 +479,16 @@ describe('gn_ast_visitor', () => {
     });
 
     it('handles += assignment operator and appends values to variables map', () => {
-      const variables = new Map<string, string[]>([['deps', [':dep1']]]);
+      const variables = new Map<string, string[]>([['ts_deps', [':dep1']]]);
       const node = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.list([createAstNode.stringLiteral(':dep2')]),
           '+=',
       );
 
       const handled = applyAssignment(variables, node);
       assert.isTrue(handled);
-      assert.deepEqual(variables.get('deps'), [':dep1', ':dep2']);
+      assert.deepEqual(variables.get('ts_deps'), [':dep1', ':dep2']);
 
       // Appending when variable was not previously set
       const newVarNode = createAstNode.assignment(

@@ -271,7 +271,8 @@ describe('typescript_analyzer', () => {
         templateName: 'devtools_ui_module',
         buildFile: path.join(ROOT_DIR, 'front_end/panels/animation/BUILD.gn'),
         sources: ['AnimationTimeline.ts'],
-        deps: [
+        deps: [],
+        ts_deps: [
           '../../core/common:bundle',
           ':css_files',
           '../../core/unused:bundle',
@@ -301,7 +302,8 @@ describe('typescript_analyzer', () => {
         templateName: 'devtools_ui_module',
         buildFile: path.join(ROOT_DIR, 'front_end/panels/animation/BUILD.gn'),
         sources: ['AnimationTimeline.ts'],
-        deps: ['../../core/common:bundle'],
+        deps: [],
+        ts_deps: ['../../core/common:bundle'],
         testonly: false,
       };
 
@@ -322,7 +324,8 @@ describe('typescript_analyzer', () => {
         templateName: 'devtools_ui_module',
         buildFile: path.join(ROOT_DIR, 'front_end/panels/animation/BUILD.gn'),
         sources: ['AnimationTimeline.ts'],
-        deps: ['../../core/common:bundle'],
+        deps: [],
+        ts_deps: ['../../core/common:bundle'],
         testonly: false,
       };
 
@@ -741,9 +744,15 @@ describe('typescript_analyzer', () => {
       const cached = analyzer.buildFiles.get(FIXTURES_BUILD_GN);
       assert.isDefined(cached);
 
-      // Calling processBuildFile again returns the cached promise
-      await analyzer.processBuildFile(FIXTURES_BUILD_GN);
+      // Calling processBuildFile again with relative path returns the cached promise
+      const relBuildGn = path.relative(ROOT_DIR, FIXTURES_BUILD_GN);
+      await analyzer.processBuildFile(relBuildGn);
       assert.strictEqual(analyzer.buildFiles.get(FIXTURES_BUILD_GN), cached);
+
+      TypeScriptAnalyzer.clearCacheForTesting();
+      const fixturesAnalyzer = TypeScriptAnalyzer.create(FIXTURES_DIR);
+      await fixturesAnalyzer.processBuildFile('BUILD.gn');
+      assert.isTrue(fixturesAnalyzer.buildFiles.has(FIXTURES_BUILD_GN));
     });
 
     it('clears all extractor caches on clearCacheForTesting', () => {

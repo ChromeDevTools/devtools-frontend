@@ -70,7 +70,7 @@ export class GnAstExtractor {
   }
 
   async getTargetsForFile(filePath: string): Promise<string[]> {
-    const absPath = path.resolve(filePath);
+    const absPath = path.resolve(this.rootDir, filePath);
     if (this.#fileToTarget.has(absPath)) {
       return Array.from(this.#fileToTarget.get(absPath) ?? new Set());
     }
@@ -160,7 +160,7 @@ export class GnAstExtractor {
   }
 
   async #findNearestBuildGn(filePath: string): Promise<string|null> {
-    const absPath = path.resolve(filePath);
+    const absPath = path.resolve(this.rootDir, filePath);
     let currentDir = path.dirname(absPath);
 
     const selfCached = this.#buildGnCache.get(absPath);
@@ -222,7 +222,7 @@ export class GnAstExtractor {
     const buildFilesToParse = new Set<string>();
 
     const fileResolutionTasks = files.map(async file => {
-      const absPath = path.resolve(file);
+      const absPath = path.resolve(this.rootDir, file);
       try {
         const stats = await fs.promises.stat(absPath);
         if (stats.isDirectory()) {
@@ -246,9 +246,10 @@ export class GnAstExtractor {
     }
 
     await Promise.all(
-        Array.from(buildFilesToParse).map(async buildFile => {
-          await this.#parseAndCacheBuildFile(buildFile);
-        }),
+        Array.from(buildFilesToParse,
+                   async buildFile => {
+                     await this.#parseAndCacheBuildFile(buildFile);
+                   }),
     );
   }
 }

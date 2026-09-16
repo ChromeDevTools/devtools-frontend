@@ -21,7 +21,7 @@ devtools_ui_module("animation") {
     "AnimationUI.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -41,19 +41,19 @@ devtools_ui_module("animation") {
 devtools_ui_module("helpers") {
   sources = _helper_sources + [ "Extra.ts" ]
 
-  deps = [ ":bundle" ]
+  ts_deps = [ ":bundle" ]
 }
 
 devtools_ui_module("filtered") {
   sources = _helper_sources - [ "Excluded.ts" ]
 
-  deps = [ ":bundle" ]
+  ts_deps = [ ":bundle" ]
 }
 
 devtools_entrypoint("bundle") {
   entrypoint = "animation.ts"
 
-  deps = [
+  ts_deps = [
     ":animation",
     ":css_files",
   ]
@@ -69,7 +69,7 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("meta") {
   entrypoint = "animation-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
@@ -85,7 +85,7 @@ devtools_ui_module("unittests") {
 
   sources = [ "AnimationTimeline.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/sdk:bundle",
     "../../generated",
@@ -111,30 +111,30 @@ custom_target("complex_assignments") {
   sources -= [ "excluded.ts" ]
   inputs = [ "input1.json" ]
   entrypoint = "main.ts"
-  deps = [ ":dep1" ]
-  deps += [ ":dep2" ]
+  ts_deps = [ ":dep1" ]
+  ts_deps += [ ":dep2" ]
 }
 
 devtools_ui_module("subtraction_target") {
   sources = [ "sub.ts" ]
-  deps = [
+  ts_deps = [
     ":keep_dep",
     ":sub_dep",
   ]
-  deps -= [ ":sub_dep" ]
+  ts_deps -= [ ":sub_dep" ]
 }
 
 devtools_ui_module("only_subtraction") {
   sources = [ "only_sub.ts" ]
-  deps -= [ ":excluded_dep" ]
+  ts_deps -= [ ":excluded_dep" ]
 }
 
 devtools_ui_module("conditional_deps") {
   sources = [ "cond.ts" ]
-  deps = [ ":base_dep" ]
+  ts_deps = [ ":base_dep" ]
 
   if (is_chromeos) {
-    deps += [ ":cros_dep" ]
+    ts_deps += [ ":cros_dep" ]
   }
 }
 
@@ -142,7 +142,7 @@ devtools_ui_module("only_conditional_deps") {
   sources = [ "only_cond.ts" ]
 
   if (is_chromeos) {
-    deps = [ ":cros_dep" ]
+    ts_deps = [ ":cros_dep" ]
   }
 }
 
@@ -150,13 +150,13 @@ _shared_deps = [ ":shared_dep" ]
 
 devtools_ui_module("variable_deps") {
   sources = [ "var.ts" ]
-  deps = _shared_deps
+  ts_deps = _shared_deps
 }
 
 devtools_ui_module("variable_plus_assign_deps") {
   sources = [ "var_plus.ts" ]
-  deps = _shared_deps
-  deps += [ ":explicit_dep" ]
+  ts_deps = _shared_deps
+  ts_deps += [ ":explicit_dep" ]
 }
 
 devtools_ui_module("root_rel_target") {

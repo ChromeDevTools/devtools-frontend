@@ -30,6 +30,8 @@ export interface AstTargetInfo {
   buildFile: string;
   sources: string[];
   deps: string[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ts_deps: string[];
   testonly: boolean;
 }
 

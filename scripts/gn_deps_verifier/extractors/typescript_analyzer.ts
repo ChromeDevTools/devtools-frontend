@@ -154,35 +154,30 @@ export class TypeScriptAnalyzer {
       rootDir: string,
       ): {missingDeps: string[], unusedDeps: string[]} {
     const currentDir = path.dirname(targetInfo.buildFile);
-    const existingMap = new Map<string, string>();
 
-    for (const rawDep of targetInfo.deps) {
+    // Resolve all existing declared ts_deps
+    const resolvedExistingTsDeps = new Map<string, string>();
+    for (const rawDep of targetInfo.ts_deps) {
       const resolved = GnLabel.resolveDeclaredDep(rawDep, currentDir, rootDir);
-      existingMap.set(resolved, rawDep);
+      resolvedExistingTsDeps.set(resolved, rawDep);
     }
 
+    const resolvedReqSet = new Set(
+        Array.from(requiredDeps, d => GnLabel.resolveDeclaredDep(d, currentDir, rootDir)),
+    );
+
+    const unusedDeps: string[] = [];
     const missingDeps: string[] = [];
-    for (const reqDep of requiredDeps) {
-      const resolvedReq = GnLabel.resolveDeclaredDep(
-          reqDep,
-          currentDir,
-          rootDir,
-      );
-      if (!existingMap.has(resolvedReq)) {
-        missingDeps.push(
-            GnLabel.formatRelativeDep(resolvedReq, currentDir, rootDir),
-        );
+
+    // 1. Any required ts dependency that is NOT already in ts_deps should be added
+    for (const resolvedReq of resolvedReqSet) {
+      if (!resolvedExistingTsDeps.has(resolvedReq)) {
+        missingDeps.push(GnLabel.formatRelativeDep(resolvedReq, currentDir, rootDir));
       }
     }
 
-    const unusedDeps: string[] = [];
-    const resolvedReqSet = new Set(
-        Array.from(requiredDeps)
-            .map(
-                d => GnLabel.resolveDeclaredDep(d, currentDir, rootDir),
-                ),
-    );
-    for (const [resolvedExisting, rawDep] of existingMap.entries()) {
+    // 2. Any ts dependency that is in ts_deps but not required should be removed
+    for (const [resolvedExisting, rawDep] of resolvedExistingTsDeps.entries()) {
       if (!resolvedReqSet.has(resolvedExisting)) {
         unusedDeps.push(rawDep);
       }
@@ -270,7 +265,7 @@ export class TypeScriptAnalyzer {
     const importsMap = await this.#importExtractor.extractTsImports(allTargetFiles);
     const importToSources = TypeScriptAnalyzer.mapImportsToSources(importsMap);
 
-    const resolutionTasks = Array.from(importToSources.entries()).map(([imp, sources]) => {
+    const resolutionTasks = Array.from(importToSources.entries(), ([imp, sources]) => {
       return this.resolveImportDependencies(imp, sources, targetLabel, targetInfo);
     });
 
@@ -291,7 +286,7 @@ export class TypeScriptAnalyzer {
   }
 
   async processBuildFile(buildFile: string): Promise<void> {
-    const absPath = path.resolve(buildFile);
+    const absPath = path.resolve(this.rootDir, buildFile);
 
     const cachedPromise = this.#buildFiles.get(absPath);
     if (cachedPromise !== undefined) {
@@ -317,7 +312,7 @@ export class TypeScriptAnalyzer {
       return;
     }
 
-    const targetTasks = Array.from(gnBuild.targets.entries()).map(([targetLabel, targetInfo]) => {
+    const targetTasks = Array.from(gnBuild.targets.entries(), ([targetLabel, targetInfo]) => {
       return this.analyzeTarget(targetLabel, targetInfo);
     });
 

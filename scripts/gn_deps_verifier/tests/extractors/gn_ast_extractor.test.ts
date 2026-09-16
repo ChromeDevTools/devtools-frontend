@@ -59,7 +59,7 @@ describe('GnAstExtractor', () => {
     });
 
     it('handles relative and unnormalized file paths correctly', async () => {
-      const relPath = path.relative(process.cwd(), path.join(FIXTURES_DIR, 'AnimationTimeline.ts'));
+      const relPath = path.relative(ROOT_DIR, path.join(FIXTURES_DIR, 'AnimationTimeline.ts'));
       const unnormalizedPath = path.join(FIXTURES_DIR, '../fixtures/AnimationTimeline.ts');
 
       const targetFromRel = await extractor.getTargetsForFile(relPath);
@@ -67,6 +67,11 @@ describe('GnAstExtractor', () => {
 
       assert.deepEqual(targetFromRel, ['//scripts/gn_deps_verifier/tests/fixtures:animation']);
       assert.deepEqual(targetFromUnnorm, ['//scripts/gn_deps_verifier/tests/fixtures:animation']);
+
+      GnAstExtractor.clearCacheForTesting();
+      const fixturesExtractor = GnAstExtractor.create(FIXTURES_DIR);
+      const targetFromFixturesRel = await fixturesExtractor.getTargetsForFile('AnimationTimeline.ts');
+      assert.deepEqual(targetFromFixturesRel, ['//:animation']);
     });
 
     it('handles GN root-relative // sources correctly', async () => {

@@ -42,7 +42,7 @@ describe('GnBuildFile', () => {
         'AnimationTimeline.ts',
         'AnimationUI.ts',
       ]);
-      assert.includeMembers(animationTarget.deps, [
+      assert.includeMembers(animationTarget.ts_deps, [
         '../../core/common:bundle',
         '../../core/sdk:bundle',
       ]);
@@ -51,13 +51,13 @@ describe('GnBuildFile', () => {
       assert.isDefined(bundleTarget);
       assert.strictEqual(bundleTarget.templateName, 'devtools_entrypoint');
       assert.deepEqual(bundleTarget.sources, ['animation.ts']);
-      assert.deepEqual(bundleTarget.deps, [':animation', ':css_files']);
+      assert.deepEqual(bundleTarget.ts_deps, [':animation', ':css_files']);
 
       const metaTarget = Array.from(gnBuild.targets.values()).find(t => t.label.endsWith(':meta'));
       assert.isDefined(metaTarget);
       assert.strictEqual(metaTarget.templateName, 'devtools_entrypoint');
       assert.deepEqual(metaTarget.sources, ['animation-meta.ts']);
-      assert.includeMembers(metaTarget.deps, [
+      assert.includeMembers(metaTarget.ts_deps, [
         ':bundle',
         '../../core/common:bundle',
       ]);
@@ -114,7 +114,7 @@ describe('GnBuildFile', () => {
     it('does not leak target-local variables to top-level variables', async () => {
       const gnBuild = await GnBuildFile.from(fixturePath, rootDir);
 
-      // Verify that targets following targets with 'sources' or 'deps' assignments
+      // Verify that targets following targets with 'sources' or 'ts_deps' assignments
       // did not have their variables overridden by previous targets.
       const helpersTarget = Array.from(gnBuild.targets.values())
                                 .find(
@@ -152,7 +152,7 @@ describe('GnBuildFile', () => {
           'devtools_foundation_module',
       );
       assert.deepEqual(platformTarget.sources, ['HostRuntime.ts']);
-      assert.includeMembers(platformTarget.deps, ['./api:bundle']);
+      assert.includeMembers(platformTarget.ts_deps, ['./api:bundle']);
     });
   });
 
@@ -178,7 +178,7 @@ describe('GnBuildFile', () => {
       assert.isDefined(bundleTargetNode.child);
       const block = bundleTargetNode.child[1];
       assert.isDefined(block.child);
-      const depsAssign = findAssignments(block.child, 'deps')[0];
+      const depsAssign = findAssignments(block.child, 'ts_deps')[0];
       assert.isDefined(depsAssign);
       assert.isDefined(depsAssign.child);
       const listNode = findFirstListNode(depsAssign.child[1]);
@@ -202,9 +202,9 @@ describe('GnBuildFile', () => {
                                 );
 
       assert.isDefined(updatedBundle);
-      assert.include(updatedBundle.deps, ':new_helper');
-      assert.include(updatedBundle.deps, ':animation');
-      assert.notInclude(updatedBundle.deps, ':css_files');
+      assert.include(updatedBundle.ts_deps, ':new_helper');
+      assert.include(updatedBundle.ts_deps, ':animation');
+      assert.notInclude(updatedBundle.ts_deps, ':css_files');
     });
   });
 
@@ -228,7 +228,7 @@ describe('GnBuildFile', () => {
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
       assert.isDefined(bundleNode);
       const block = bundleNode?.child?.[1];
-      const depsAssign = findAssignments(block?.child || [], 'deps')[0];
+      const depsAssign = findAssignments(block?.child || [], 'ts_deps')[0];
       const rhs = depsAssign?.child?.[1];
 
       assert.isDefined(rhs);
@@ -245,7 +245,7 @@ describe('GnBuildFile', () => {
       const cssTarget = findTargetNode(gnBuild.ast, 'css_files');
       assert.isDefined(cssTarget);
       const block = cssTarget?.child?.[1];
-      assert.isEmpty(findAssignments(block?.child || [], 'deps'));
+      assert.isEmpty(findAssignments(block?.child || [], 'ts_deps'));
 
       const updated = gnBuild.updateTargetDeps('css_files', {
         unusedDeps: [],
@@ -254,7 +254,7 @@ describe('GnBuildFile', () => {
 
       assert.isTrue(updated);
 
-      const depsAssign = findAssignments(block?.child || [], 'deps')[0];
+      const depsAssign = findAssignments(block?.child || [], 'ts_deps')[0];
       assert.isDefined(depsAssign);
       assert.strictEqual(depsAssign.type, 'BINARY');
       assert.strictEqual(depsAssign.value, '=');
@@ -287,7 +287,7 @@ describe('GnBuildFile', () => {
 
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
       const block = bundleNode?.child?.[1];
-      const depsAssign = findAssignments(block?.child || [], 'deps')[0];
+      const depsAssign = findAssignments(block?.child || [], 'ts_deps')[0];
       const deps = extractStringValues(depsAssign?.child?.[1] as GnAstNode);
       assert.notInclude(deps, ':css_files');
       assert.include(deps, ':animation');
@@ -305,7 +305,7 @@ describe('GnBuildFile', () => {
 
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
       const block = bundleNode?.child?.[1];
-      const depsAssign = findAssignments(block?.child || [], 'deps')[0];
+      const depsAssign = findAssignments(block?.child || [], 'ts_deps')[0];
       const deps = extractStringValues(depsAssign?.child?.[1] as GnAstNode);
       assert.notInclude(deps, ':css_files');
       assert.include(deps, ':animation');
@@ -321,7 +321,7 @@ describe('GnBuildFile', () => {
 
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
       const block = bundleNode?.child?.[1];
-      const depsAssign = findAssignments(block?.child || [], 'deps')[0];
+      const depsAssign = findAssignments(block?.child || [], 'ts_deps')[0];
       const deps = extractStringValues(depsAssign?.child?.[1] as GnAstNode);
 
       const occurrences = deps.filter(d => d === ':new_unique');
@@ -350,7 +350,7 @@ describe('GnBuildFile', () => {
 
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
       const block = bundleNode?.child?.[1];
-      const depsAssign = findAssignments(block?.child || [], 'deps')[0];
+      const depsAssign = findAssignments(block?.child || [], 'ts_deps')[0];
       const deps = extractStringValues(depsAssign?.child?.[1] as GnAstNode);
 
       // ':animation' was already present as ':animation', so absoluteAnimLabel should not be added
@@ -377,7 +377,7 @@ describe('GnBuildFile', () => {
 
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
       const block = bundleNode?.child?.[1];
-      const depsAssign = findAssignments(block?.child || [], 'deps')[0];
+      const depsAssign = findAssignments(block?.child || [], 'ts_deps')[0];
       const deps = extractStringValues(depsAssign?.child?.[1] as GnAstNode);
 
       assert.include(deps, ':new_local_dep');
@@ -396,7 +396,7 @@ describe('GnBuildFile', () => {
 
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
       const block = bundleNode?.child?.[1];
-      const depsAssign = findAssignments(block?.child || [], 'deps')[0];
+      const depsAssign = findAssignments(block?.child || [], 'ts_deps')[0];
       const listNode = findFirstListNode(depsAssign?.child?.[1]);
       assert.isDefined(listNode);
 
@@ -417,7 +417,7 @@ describe('GnBuildFile', () => {
 
       const targetNode = findTargetNode(gnBuild.ast, 'subtraction_target');
       const block = targetNode?.child?.[1];
-      const assigns = findAssignments(block?.child || [], 'deps');
+      const assigns = findAssignments(block?.child || [], 'ts_deps');
       assert.strictEqual(assigns.length, 2);
 
       const plusAssign = assigns.find(a => a.value === '=');
@@ -444,7 +444,7 @@ describe('GnBuildFile', () => {
 
       const targetNode = findTargetNode(gnBuild.ast, 'only_subtraction');
       const block = targetNode?.child?.[1];
-      const assigns = findAssignments(block?.child || [], 'deps');
+      const assigns = findAssignments(block?.child || [], 'ts_deps');
       assert.strictEqual(assigns.length, 2);
 
       const newAssign = assigns.find(a => a.value === '+=');
@@ -501,7 +501,7 @@ describe('GnBuildFile', () => {
 
       const targetNode = findTargetNode(gnBuild.ast, 'variable_deps');
       const block = targetNode?.child?.[1];
-      const assigns = findAssignments(block?.child || [], 'deps');
+      const assigns = findAssignments(block?.child || [], 'ts_deps');
       assert.strictEqual(assigns.length, 2);
 
       const firstAssign = assigns[0];
@@ -525,7 +525,7 @@ describe('GnBuildFile', () => {
 
       const targetNode = findTargetNode(gnBuild.ast, 'variable_plus_assign_deps');
       const block = targetNode?.child?.[1];
-      const assigns = findAssignments(block?.child || [], 'deps');
+      const assigns = findAssignments(block?.child || [], 'ts_deps');
       assert.strictEqual(assigns.length, 2);
 
       const plusAssign = assigns[1];
@@ -548,7 +548,7 @@ describe('GnBuildFile', () => {
 
       const targetNode = findTargetNode(gnBuild.ast, 'complex_assignments');
       const block = targetNode?.child?.[1];
-      const assigns = findAssignments(block?.child || [], 'deps');
+      const assigns = findAssignments(block?.child || [], 'ts_deps');
       assert.strictEqual(assigns.length, 2);
 
       // The '=' assignment should have received ':new_complex_dep'
@@ -582,7 +582,7 @@ describe('GnBuildFile', () => {
       const block = targetNode?.child?.[1];
 
       // Top-level deps assignment should have received ':new_cond_dep'
-      const topLevelAssigns = findAssignments(block?.child || [], 'deps', false);
+      const topLevelAssigns = findAssignments(block?.child || [], 'ts_deps', false);
       assert.strictEqual(topLevelAssigns.length, 1);
       assert.strictEqual(topLevelAssigns[0].value, '=');
       assert.deepEqual(
@@ -591,7 +591,7 @@ describe('GnBuildFile', () => {
       );
 
       // The conditional assignment inside `if (is_chromeos)` should remain unchanged
-      const allAssigns = findAssignments(block?.child || [], 'deps');
+      const allAssigns = findAssignments(block?.child || [], 'ts_deps');
       const condAssign = allAssigns.find(a => a.value === '+=');
       assert.isDefined(condAssign);
       assert.deepEqual(
@@ -614,7 +614,7 @@ describe('GnBuildFile', () => {
       const block = targetNode?.child?.[1];
 
       // A new top-level '=' assignment should be added in block.child
-      const topLevelAssigns = findAssignments(block?.child || [], 'deps', false);
+      const topLevelAssigns = findAssignments(block?.child || [], 'ts_deps', false);
       assert.strictEqual(topLevelAssigns.length, 1);
       assert.strictEqual(topLevelAssigns[0].value, '=');
       assert.deepEqual(
@@ -623,7 +623,7 @@ describe('GnBuildFile', () => {
       );
 
       // The conditional assignment inside `if (is_chromeos)` should remain unchanged
-      const allAssigns = findAssignments(block?.child || [], 'deps');
+      const allAssigns = findAssignments(block?.child || [], 'ts_deps');
       assert.strictEqual(allAssigns.length, 2);
       const condAssign = allAssigns.find(a => a !== topLevelAssigns[0]);
       assert.isDefined(condAssign);
@@ -638,12 +638,12 @@ describe('GnBuildFile', () => {
   describe('compareAssignmentPriority', () => {
     it('ranks = with list higher than += with list', () => {
       const equalsWithList = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.list([createAstNode.stringLiteral(':dep')]),
           '=',
       );
       const plusWithList = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.list([createAstNode.stringLiteral(':dep')]),
           '+=',
       );
@@ -654,12 +654,12 @@ describe('GnBuildFile', () => {
 
     it('ranks += with list higher than = without list', () => {
       const plusWithList = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.list([createAstNode.stringLiteral(':dep')]),
           '+=',
       );
       const equalsWithoutList = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.identifier('_my_deps'),
           '=',
       );
@@ -670,12 +670,12 @@ describe('GnBuildFile', () => {
 
     it('ranks = without list higher than += without list', () => {
       const equalsWithoutList = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.identifier('_my_deps'),
           '=',
       );
       const plusWithoutList = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.identifier('_my_deps'),
           '+=',
       );
@@ -686,22 +686,22 @@ describe('GnBuildFile', () => {
 
     it('sorts mixed assignments in descending priority order', () => {
       const plusWithoutList = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.identifier('_extra'),
           '+=',
       );
       const equalsWithoutList = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.identifier('_base'),
           '=',
       );
       const plusWithList = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.list([createAstNode.stringLiteral(':b')]),
           '+=',
       );
       const equalsWithList = createAstNode.assignment(
-          'deps',
+          'ts_deps',
           createAstNode.list([createAstNode.stringLiteral(':a')]),
           '=',
       );

@@ -55,8 +55,8 @@ export async function updateBuildGnFiles(
 
       if (filteredMissingDeps.length > 0 || filteredUnusedDeps.length > 0) {
         logger(`Mismatch in ${targetLabel}:`);
-        filteredMissingDeps.forEach(d => logger(`  Missing: ${d}`));
-        filteredUnusedDeps.forEach(d => logger(`  Unused: ${d}`));
+        filteredMissingDeps.forEach(d => logger(`  Missing (ts_deps): ${d}`));
+        filteredUnusedDeps.forEach(d => logger(`  Unused (ts_deps): ${d}`));
 
         // Update AST
         const realTargetName = GnLabel.parse(targetLabel)?.name;
@@ -79,17 +79,18 @@ export async function updateBuildGnFiles(
   }
 
   await Promise.all(
-      Array.from(modifiedBuildFiles).map(async build => {
-        try {
-          const success = await build.writeGnFile();
-          if (success) {
-            logger(`Auto-fixed ${build.filePath}`);
-          } else {
-            logger(`Failed to auto-fix ${build.filePath}: gn format failed`);
-          }
-        } catch (e) {
-          logger(`Failed to auto-fix ${build.filePath}: ${e}`);
-        }
-      }),
+      Array.from(modifiedBuildFiles,
+                 async build => {
+                   try {
+                     const success = await build.writeGnFile();
+                     if (success) {
+                       logger(`Auto-fixed ${build.filePath}`);
+                     } else {
+                       logger(`Failed to auto-fix ${build.filePath}: gn format failed`);
+                     }
+                   } catch (e) {
+                     logger(`Failed to auto-fix ${build.filePath}: ${e}`);
+                   }
+                 }),
   );
 }

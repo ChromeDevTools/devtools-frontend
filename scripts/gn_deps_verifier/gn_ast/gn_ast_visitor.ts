@@ -250,9 +250,12 @@ export function extractTargetFromFunctionNode(
   ];
   const deps = [
     ...(scopedVariables.get('deps') || []),
-    ...(scopedVariables.get('ts_deps') || []),
     // TODO: Investigate if we need to add public_deps
     // ...(scopedVariables.get('public_deps') || []),
+  ];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const ts_deps = [
+    ...(scopedVariables.get('ts_deps') || []),
   ];
 
   const testonlyVals = scopedVariables.get('testonly');
@@ -264,6 +267,7 @@ export function extractTargetFromFunctionNode(
     buildFile: buildFilePath,
     sources: Array.from(new Set(sources)),
     deps: Array.from(new Set(deps)),
+    ts_deps: Array.from(new Set(ts_deps)),
     testonly: Boolean(testonly),
   };
 

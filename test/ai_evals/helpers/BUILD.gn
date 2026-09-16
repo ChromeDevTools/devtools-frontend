@@ -8,6 +8,7 @@ ts_e2e_library("helpers") {
   sources = [
     "ai_eval-helpers.ts",
     "eval-logger.ts",
+    "eval-task-recorder.ts",
     "gcs-upload.ts",
     "trajectory-builder.ts",
   ]

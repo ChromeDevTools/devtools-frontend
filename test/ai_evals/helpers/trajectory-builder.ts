@@ -5,7 +5,15 @@
 import {assert} from 'chai';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
+import * as os from 'node:os';
 import * as path from 'node:path';
+
+/**
+ * Creates a temporary directory for staging evaluation trajectories during a run.
+ */
+export function createTempEvalDir(): string {
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'ai-evals-'));
+}
 
 /**
  * Generates the default session ID matching autorun's 15-character MD5 hash format.
@@ -284,4 +292,79 @@ export class TrajectoryBuilder {
     fs.writeFileSync(filePath, JSON.stringify(trajectory, null, 2), 'utf-8');
     return trajectory;
   }
+
+  /**
+   * Builds and exports the trajectory to the specified evaluation output directory.
+   */
+  exportToFile(label: string, outputDir: string): {trajectory: Trajectory, outputPath: string} {
+    const trajectory = this.build();
+    const outputPath = exportEvalTrajectory(trajectory, label, outputDir);
+    return {trajectory, outputPath};
+  }
+}
+
+/**
+ * Formats a trajectory into a clean, human-readable plaintext chat log.
+ * Shows user queries, agent explanations, and any tool calls/results.
+ */
+export function formatChatLog(trajectory: Trajectory): string {
+  const parts: string[] = [];
+  for (const turn of trajectory.data) {
+    if (turn.role === 'user') {
+      parts.push('User:');
+      if (turn.content?.length) {
+        parts.push(turn.content.join('\n'));
+      }
+    } else {
+      parts.push('Agent:');
+      if (turn.thoughts?.length) {
+        for (const thought of turn.thoughts) {
+          if (thought.description) {
+            parts.push(`[Thought: ${thought.description}]`);
+          }
+        }
+      }
+      if (turn.content?.length) {
+        parts.push(turn.content.join('\n'));
+      }
+      if (turn.tool_calls?.length) {
+        for (const tc of turn.tool_calls) {
+          const argsStr = tc.args ? JSON.stringify(tc.args) : '';
+          parts.push(`[Tool Call: ${tc.name}(${argsStr})]`);
+          if (tc.result !== undefined) {
+            const resultStr = typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result);
+            parts.push(`[Tool Result: ${resultStr}]`);
+          }
+        }
+      }
+    }
+    parts.push('');
+  }
+  return parts.join('\n').trimEnd() + '\n';
+}
+
+export function slug(str: string): string {
+  str = str.replace(/^\s+|\s+$/g, '');  // Trim leading/trailing whitespace
+  str = str.toLowerCase();
+  str = str.replace(/[^a-z0-9 -]/g, '')  // Remove invalid chars
+            .replace(/\s+/g, '-')        // Collapse whitespace and replace with -
+            .replace(/-+/g, '-');        // Collapse dashes
+
+  return str;
+}
+
+/**
+ * Writes the eval trajectory to the specified output directory.
+ * Returns the path of the written `.eval.json` file.
+ */
+export function exportEvalTrajectory(
+    trajectory: Trajectory,
+    label: string,
+    outputDir: string,
+    ): string {
+  const fileName = `${slug(label)}-${trajectory.metadata.session_id}`;
+  fs.mkdirSync(outputDir, {recursive: true});
+  const evalOutputPath = path.resolve(outputDir, `${fileName}.eval.json`);
+  fs.writeFileSync(evalOutputPath, JSON.stringify(trajectory, null, 2), 'utf-8');
+  return evalOutputPath;
 }

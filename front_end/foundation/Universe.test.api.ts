@@ -9,6 +9,10 @@ import * as SDK from '../core/sdk/sdk.js';
 
 describe('Universe API Test', () => {
   describe('ConsoleModel', () => {
+    setup({
+      targetUrl: 'data:text/html,<!DOCTYPE%20html><h1>DevTools%20API%20Test%20Page</h1>',
+    });
+
     it('receives console messages emitted from inspected page in universe ConsoleModel',
        async ({inspectedPage, universe}) => {
          assert.isNotNull(universe);
@@ -16,15 +20,17 @@ describe('Universe API Test', () => {
          const primaryTarget = universe.targetManager.primaryPageTarget();
          assert.isNotNull(primaryTarget, 'Primary page target should exist in target manager');
 
-         await inspectedPage.goToHtml('<h1>DevTools API Test Page</h1>');
-
          const consoleModel = primaryTarget?.model(SDK.ConsoleModel.ConsoleModel);
-         const messagePromise = consoleModel?.once(SDK.ConsoleModel.Events.MessageAdded);
+         assert.isNotNull(consoleModel, 'ConsoleModel should exist on primary page target');
+
+         const messageAddedPromise = consoleModel?.once(SDK.ConsoleModel.Events.MessageAdded);
 
          // eslint-disable-next-line no-console
          await inspectedPage.evaluate(() => console.log('Hello from Universe API Test!'));
 
-         const consoleMessage = await messagePromise;
+         const existingMessage =
+             consoleModel?.messages().find(msg => msg.messageText === 'Hello from Universe API Test!');
+         const consoleMessage = existingMessage ?? await messageAddedPromise;
          assert.isDefined(consoleMessage);
          assert.strictEqual(
              consoleMessage?.messageText,

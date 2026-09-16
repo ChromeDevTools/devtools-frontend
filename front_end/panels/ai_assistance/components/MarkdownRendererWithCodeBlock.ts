@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Logs from '../../../models/logs/logs.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
@@ -12,7 +13,18 @@ import * as Lit from '../../../ui/lit/lit.js';
 
 const {html} = Lit;
 
+export interface MarkdownRendererWithCodeBlockOptions {
+  /**
+   * Retrieves the established origin locked for the active conversation.
+   * Required to authorize #file-<id> links and prevent cross-origin file leakage.
+   * When omitted or unauthorized, file links safely render as plain inert text.
+   */
+  getEstablishedOrigin?: () => SDK.SecurityOrigin.SecurityOrigin | undefined;
+}
+
 /**
+ * Markdown renderer for AI assistance conversations.
+ *
  * The model returns multiline code blocks in an erroneous way with the language being in new line.
  * This renderer takes that into account and correctly updates the parsed multiline token with the language
  * correctly identified and stripped from the content.
@@ -23,8 +35,13 @@ const {html} = Lit;
  * color: red;
  * }
  * ```
- **/
+ *
+ * Also handles linkifying DevTools internal resource links (#req- and origin-locked #file-).
+ */
 export class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
+  constructor(private readonly options: MarkdownRendererWithCodeBlockOptions = {}) {
+    super();
+  }
   #revealableLink(revealable: unknown, label: string): Lit.LitTemplate {
     return html`<devtools-link @click=${(e: Event) => {
       e.preventDefault();
@@ -48,13 +65,16 @@ export class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.Mar
       return html`${fallbackText}`;
     }
     if (href.startsWith('#file-')) {
-      const file = AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.getUISourceCodes().find(
-          file => AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.get(file) ===
-              Number(href.substring(6)));
+      const fileId = Number(href.substring(6));
+      const file = AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.getSourceById(
+          fileId,
+          this.options.getEstablishedOrigin?.(),
+      );
 
       if (file) {
         return this.#revealableLink(file, file.name());
       }
+      // Fall back to plain text to prevent rendering unauthorized or unverified links.
       return html`${fallbackText}`;
     }
     return null;
@@ -78,7 +98,7 @@ export class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.Mar
 
     if (token.type === 'codespan') {
       // LLM likes outputting the link inside a codespan block.
-      // Remove the codespan and render the link directly
+      // Remove the codespan and render the link directly.
       const matches = token.text.match(/^\[(.*)\]\((.+)\)$/);
       if (matches?.[2]) {
         const link = this.#renderLink(

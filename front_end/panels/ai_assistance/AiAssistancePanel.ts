@@ -337,7 +337,9 @@ function getMarkdownRenderer(conversation?: AiAssistanceModel.AiConversation.AiC
     return new AccessibilityAgentMarkdownRenderer(mainDocumentURL);
   }
 
-  return new MarkdownRendererWithCodeBlock();
+  return new MarkdownRendererWithCodeBlock({
+    getEstablishedOrigin: () => conversation?.origin,
+  });
 }
 
 interface ToolbarViewInput {

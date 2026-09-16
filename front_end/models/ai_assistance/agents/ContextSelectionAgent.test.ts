@@ -1096,4 +1096,64 @@ describe('ContextSelectionAgent', function() {
       assert.strictEqual(contextChange.description, 'User selected page storage');
     });
   });
+
+  describe('getSourceById', () => {
+    let file: Workspace.UISourceCode.UISourceCode;
+    const sameOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+
+    beforeEach(() => {
+      const workspace = universe.workspace;
+      const project = {
+        id: () => 'test-project',
+        type: () => Workspace.Workspace.projectTypes.Network,
+        uiSourceCodes: () => [file],
+        fullDisplayName: () => 'script.js',
+      } as unknown as Workspace.Workspace.Project;
+      file = new Workspace.UISourceCode.UISourceCode(project, urlString`https://example.com/script.js`,
+                                                     Common.ResourceType.resourceTypes.Script);
+      sinon.stub(workspace, 'projects').returns([project]);
+      ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.set(file, 42);
+    });
+
+    it('returns source matching ID and established origin', () => {
+      const found = ContextSelectionAgent.ContextSelectionAgent.getSourceById(42, sameOrigin, universe.workspace);
+      assert.strictEqual(found, file);
+    });
+
+    it('returns source matching ID using default workspace parameter', () => {
+      const found = ContextSelectionAgent.ContextSelectionAgent.getSourceById(42, sameOrigin);
+      assert.strictEqual(found, file);
+    });
+
+    it('returns undefined when origin is undefined', () => {
+      const found = ContextSelectionAgent.ContextSelectionAgent.getSourceById(42, undefined, universe.workspace);
+      assert.isUndefined(found);
+    });
+
+    it('returns undefined when origin does not match', () => {
+      const crossOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const found = ContextSelectionAgent.ContextSelectionAgent.getSourceById(42, crossOrigin, universe.workspace);
+      assert.isUndefined(found);
+    });
+
+    it('returns undefined when origin is opaque', () => {
+      const opaqueOrigin = SDK.SecurityOrigin.SecurityOrigin.create('about:blank');
+      const found = ContextSelectionAgent.ContextSelectionAgent.getSourceById(42, opaqueOrigin, universe.workspace);
+      assert.isUndefined(found);
+    });
+
+    it('returns undefined when source ID is not found', () => {
+      const found = ContextSelectionAgent.ContextSelectionAgent.getSourceById(999, sameOrigin, universe.workspace);
+      assert.isUndefined(found);
+    });
+
+    it('returns undefined when source ID is non-positive or not an integer', () => {
+      assert.isUndefined(ContextSelectionAgent.ContextSelectionAgent.getSourceById(0, sameOrigin, universe.workspace));
+      assert.isUndefined(ContextSelectionAgent.ContextSelectionAgent.getSourceById(-1, sameOrigin, universe.workspace));
+      assert.isUndefined(
+          ContextSelectionAgent.ContextSelectionAgent.getSourceById(1.5, sameOrigin, universe.workspace));
+      assert.isUndefined(
+          ContextSelectionAgent.ContextSelectionAgent.getSourceById(NaN, sameOrigin, universe.workspace));
+    });
+  });
 });

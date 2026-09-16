@@ -20,6 +20,7 @@ import {StorageContext} from '../contexts/StorageContext.js';
 import {formatBytesToKb, seconds} from '../data_formatters/UnitFormatters.js';
 import {debugLog} from '../debug.js';
 import {StorageItem} from '../StorageItem.js';
+import {isOriginAllowedByLock} from '../tools/Tool.js';
 
 import {
   type AgentOptions,
@@ -586,5 +587,30 @@ export class ContextSelectionAgent extends AiAgent<never> {
     }
 
     return [...uiSourceCodes.values()];
+  }
+
+  /**
+   * Resolves a workspace source file by its ID, ensuring that the file's security
+   * origin is authorized by the conversation's established origin lock.
+   *
+   * Fails closed by returning `undefined` if the established origin is missing or opaque,
+   * if the file ID is invalid, or if the file origin does not match the lock.
+   */
+  static getSourceById(
+      id: number,
+      establishedOrigin?: SDK.SecurityOrigin.SecurityOrigin,
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      workspace: Workspace.Workspace.WorkspaceImpl = Workspace.Workspace.WorkspaceImpl.instance(),
+      ): Workspace.UISourceCode.UISourceCode|undefined {
+    if (!establishedOrigin || !Number.isInteger(id) || id <= 0) {
+      return undefined;
+    }
+    return ContextSelectionAgent.getUISourceCodes(workspace).find(file => {
+      if (ContextSelectionAgent.uiSourceCodeId.get(file) !== id) {
+        return false;
+      }
+      return isOriginAllowedByLock({status: 'ESTABLISHED_ORIGIN', origin: establishedOrigin},
+                                   FileContext.originForUISourceCode(file));
+    });
   }
 }

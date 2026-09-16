@@ -62,7 +62,7 @@ describe('gn_ast_updater', () => {
     assert.isTrue(computeDepsSpy.notCalled);
   });
 
-  it('ignores group and devtools_pre_built template targets', async () => {
+  it('ignores group, devtools_pre_built, and bundle template targets', async () => {
     const gnBuildMock = {
       targets: new Map<string, AstTargetInfo>([
         [
@@ -77,6 +77,13 @@ describe('gn_ast_updater', () => {
           {
             templateName: 'devtools_pre_built',
             label: '//test:prebuilt',
+          } as AstTargetInfo,
+        ],
+        [
+          '//test:bundle_target',
+          {
+            templateName: 'bundle',
+            label: '//test:bundle_target',
           } as AstTargetInfo,
         ],
       ]),
@@ -94,6 +101,7 @@ describe('gn_ast_updater', () => {
     const requiredDeps = new Map([
       ['//test:group_target', new Set(['dep1'])],
       ['//test:prebuilt', new Set(['dep1'])],
+      ['//test:bundle_target', new Set(['dep1'])],
     ]);
 
     await updateBuildGnFiles(requiredDeps, '/root');

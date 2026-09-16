@@ -547,6 +547,21 @@ describe('typescript_analyzer', () => {
       assert.isNull(res);
     });
 
+    it('returns null for bundle targets', async () => {
+      const targetInfo: AstTargetInfo = {
+        testonly: false,
+        label: '//front_end/panels/animation:bundle',
+        templateName: 'bundle',
+        buildFile: '/path/BUILD.gn',
+        sources: ['file.ts'],
+        deps: [],
+        ts_deps: [],
+      };
+
+      const res = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
+      assert.isNull(res);
+    });
+
     it('returns null for third_party targets', async () => {
       const targetInfo: AstTargetInfo = {
         testonly: false,

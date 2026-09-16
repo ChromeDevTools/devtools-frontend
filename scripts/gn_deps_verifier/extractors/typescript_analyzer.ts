@@ -253,7 +253,8 @@ export class TypeScriptAnalyzer {
       targetLabel: string,
       targetInfo: AstTargetInfo,
       ): Promise<Set<string>|null> {
-    if (targetLabel.includes('/legacy_test_runner/') || targetLabel.includes('/third_party/')) {
+    if (targetLabel.includes('/legacy_test_runner/') || targetLabel.includes('/third_party/') ||
+        targetInfo.templateName === 'bundle') {
       return null;
     }
 

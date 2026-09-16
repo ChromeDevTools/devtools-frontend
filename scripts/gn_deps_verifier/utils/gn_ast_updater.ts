@@ -29,7 +29,8 @@ export async function updateBuildGnFiles(
         continue;
       }
 
-      if (targetInfo.templateName === 'group' || targetInfo.templateName === 'devtools_pre_built') {
+      if (targetInfo.templateName === 'group' || targetInfo.templateName === 'devtools_pre_built' ||
+          targetInfo.templateName === 'bundle') {
         continue;
       }
 

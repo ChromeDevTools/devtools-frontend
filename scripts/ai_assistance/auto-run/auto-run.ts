@@ -11,6 +11,7 @@ import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
 import {convertRawOutputToEval, formatChatLog, type RawOutput, slug} from '../suite/to_eval_output.ts';
+import type {Trajectory} from '../suite/types.js';
 import type {ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId} from '../types.js';
 
 import {
@@ -696,7 +697,14 @@ async function main() {
       metadata: data.metadata,
       trajectories: data.results,
     };
-    writeOutput(output, {...userArgs, label}, runId, taskStatuses, taskDurations, logger);
+    writeOutput({
+      output,
+      userArgs: {...userArgs, label},
+      runId,
+      taskStatuses,
+      taskDurations,
+      logger,
+    });
   }
 
   let graderFailed = false;
@@ -806,16 +814,53 @@ async function main() {
   logger.destroy();
 }
 
-function writeOutput(
-    output: {metadata: ExampleMetadata[], trajectories: IndividualPromptRequestResponse[]},
-    userArgs: UserArgs,
-    runId: string,
-    taskStatuses: TaskStatus[],
-    taskDurations: Map<string, number>,
-    logger: Logger,
-) {
-  const OUTPUT_DIR = path.resolve(import.meta.dirname, 'data');
-  fs.mkdirSync(OUTPUT_DIR, {recursive: true});
+/**
+ * Identifies a single auto-run example, i.e. one "task".
+ *
+ * The very same value is stored as `session_id` on the raw
+ * {@link IndividualPromptRequestResponse} results and as `auto_run_example_id`
+ * on the converted {@link Trajectory} metadata, and it is the key that every
+ * per-task GCS artifact and every {@link TaskStatus} is recorded under.
+ *
+ * Not to be confused with `Trajectory['metadata']['session_id']`, which is a
+ * synthetic `<input-hash>-<index>` identifier minted by
+ * `convertRawOutputToEval` and only used to name the exported `.eval.json`
+ * file.
+ */
+type TaskId = string;
+
+/** Run-wide state shared by every per-task step. */
+interface EvalRunContext {
+  output: {metadata: ExampleMetadata[], trajectories: IndividualPromptRequestResponse[]};
+  userArgs: UserArgs;
+  runId: string;
+  outputDir: string;
+  gradeTargetDir?: string;
+  taskStatuses: TaskStatus[];
+  taskDurations: Map<TaskId, number>;
+  logger: Logger;
+}
+
+/** The parts of {@link EvalRunContext} supplied by the caller; the rest is derived. */
+type WriteOutputOptions = Omit<EvalRunContext, 'outputDir'|'gradeTargetDir'>;
+
+/**
+ * Persists the results of one `--label` group.
+ *
+ * This is the last step of a run: it is called once per label group after every
+ * task has finished and the browser has been disconnected, and just before the
+ * optional `--grade` pass, which picks the exported trajectories back up from
+ * disk.
+ *
+ * Per trajectory it always writes the eval output locally, and additionally
+ * uploads the per-task artifacts and records the task completion when
+ * `--upload` is set.
+ */
+function writeOutput(options: WriteOutputOptions) {
+  const {output, userArgs} = options;
+
+  const outputDir = path.resolve(import.meta.dirname, 'data');
+  fs.mkdirSync(outputDir, {recursive: true});
 
   if (output.metadata.length === 0 && output.trajectories.length === 0) {
     console.info('\n[Warn]: No results to export.');
@@ -827,69 +872,102 @@ function writeOutput(
     label: userArgs.label,
   });
 
-  const targetDir = path.resolve(import.meta.dirname, '..', 'suite', 'outputs', 'outputs', userArgs.testTarget,
-                                 new Date().toISOString().slice(0, 10));
+  // When grading, the eval outputs are additionally collected in a dated,
+  // per-test-target folder that the grader reads from.
+  let gradeTargetDir: string|undefined;
   if (userArgs.grade) {
-    fs.mkdirSync(targetDir, {recursive: true});
+    const runDate = new Date().toISOString().slice(0, 10);
+    gradeTargetDir =
+        path.resolve(import.meta.dirname, '..', 'suite', 'outputs', 'outputs', userArgs.testTarget, runDate);
+    fs.mkdirSync(gradeTargetDir, {recursive: true});
   }
+
+  const ctx: EvalRunContext = {...options, outputDir, gradeTargetDir};
 
   for (const trajectory of trajectories) {
-    const evalOutputPath =
-        path.resolve(OUTPUT_DIR, `${slug(userArgs.label)}-${trajectory.metadata.session_id}.eval.json`);
-    fs.writeFileSync(evalOutputPath, JSON.stringify(trajectory, null, 2));
-    console.info(`\n[Info]: Exported eval output to ${evalOutputPath}`);
+    const evalOutputPath = exportEvalTrajectory(ctx, trajectory);
 
-    if (userArgs.grade) {
-      const copiedFileName = `${slug(userArgs.label)}-${trajectory.metadata.session_id}.json`;
-      const copiedFilePath = path.resolve(targetDir, copiedFileName);
-      fs.copyFileSync(evalOutputPath, copiedFilePath);
-      console.info(`\n[Info]: Copied eval output to ${copiedFilePath}`);
+    if (!userArgs.upload) {
+      continue;
     }
 
-    if (userArgs.upload) {
-      const taskId = trajectory.metadata.auto_run_example_id;
-      const trajectoryUploaded = uploadEvalToGCS({
-        runId,
-        taskId,
-        localJsonPath: evalOutputPath,
-        destinationFileName: TaskOutputFile.TRAJECTORY,
-      });
-
-      const agentLogUploaded =
-          uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_LOG, logger.getTaskLogContent(taskId));
-      const chatLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.CHAT_LOG, formatChatLog(trajectory));
-      const agentStderrUploaded =
-          uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
-
-      if (!userArgs.grade) {
-        const matchingTrajectories = output.trajectories.filter(e => e.session_id === taskId);
-        const hasError = matchingTrajectories.some(e => Boolean(e.error) ||
-                                                       Boolean(e.assertionFailures && e.assertionFailures.length > 0));
-        // TODO: Parse grader output or evaluation assertions to report individual task scores instead of defaulting to 1.0.
-        const baseScore = matchingTrajectories.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
-        const allUploadsSucceeded = trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded;
-        const score = allUploadsSucceeded ? baseScore : 0.0;
-        // Status indicates execution outcome (PASSED if prompt turns completed and uploaded without error,
-        // FAILED if upload failed, assertion failures occurred, or score is 0.0).
-        const status = (!allUploadsSucceeded || hasError || score <= 0.0) ? 'FAILED' : 'PASSED';
-        const durationSeconds = taskDurations.get(taskId) ?? 0.0;
-
-        uploadTaskCompleted({
-          taskId,
-          runId,
-          status,
-          score,
-          durationSeconds,
-          tokens: {},
-        });
-        taskStatuses.push({
-          taskId,
-          status,
-          score,
-        });
-      }
+    const allUploadsSucceeded = uploadTaskArtifacts(ctx, trajectory, evalOutputPath);
+    if (!userArgs.grade) {
+      recordTaskCompletion(ctx, trajectory.metadata.auto_run_example_id, allUploadsSucceeded);
     }
   }
+}
+
+/**
+ * Writes the eval trajectory to the local output directory and, when grading is
+ * enabled, copies it into the dated grading folder. Returns the path of the
+ * canonical local copy.
+ */
+function exportEvalTrajectory(ctx: EvalRunContext, trajectory: Trajectory): string {
+  const fileName = `${slug(ctx.userArgs.label)}-${trajectory.metadata.session_id}`;
+  const evalOutputPath = path.resolve(ctx.outputDir, `${fileName}.eval.json`);
+  fs.writeFileSync(evalOutputPath, JSON.stringify(trajectory, null, 2));
+  console.info(`\n[Info]: Exported eval output to ${evalOutputPath}`);
+
+  if (ctx.gradeTargetDir) {
+    const copiedFilePath = path.resolve(ctx.gradeTargetDir, `${fileName}.json`);
+    fs.copyFileSync(evalOutputPath, copiedFilePath);
+    console.info(`\n[Info]: Copied eval output to ${copiedFilePath}`);
+  }
+
+  return evalOutputPath;
+}
+
+/**
+ * Uploads every per-task artifact to GCS. Returns true only if all of them
+ * were uploaded successfully.
+ */
+function uploadTaskArtifacts(ctx: EvalRunContext, trajectory: Trajectory, evalOutputPath: string): boolean {
+  const {runId, logger} = ctx;
+  const taskId: TaskId = trajectory.metadata.auto_run_example_id;
+
+  const trajectoryUploaded = uploadEvalToGCS({
+    runId,
+    taskId,
+    localJsonPath: evalOutputPath,
+    destinationFileName: TaskOutputFile.TRAJECTORY,
+  });
+  const agentLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_LOG, logger.getTaskLogContent(taskId));
+  const chatLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.CHAT_LOG, formatChatLog(trajectory));
+  const agentStderrUploaded =
+      uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
+
+  return trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded;
+}
+
+/**
+ * Derives the task score and status and reports the completion both to GCS and
+ * to the in-memory run summary.
+ */
+function recordTaskCompletion(ctx: EvalRunContext, taskId: TaskId, allUploadsSucceeded: boolean): void {
+  const {runId, taskDurations, taskStatuses} = ctx;
+  // Raw results carry the auto-run example id in their `session_id` field.
+  const matchingTrajectories = ctx.output.trajectories.filter(e => e.session_id === taskId);
+  const hasError = matchingTrajectories.some(e => Boolean(e.error) ||
+                                                 Boolean(e.assertionFailures && e.assertionFailures.length > 0));
+
+  // TODO: Parse grader output or evaluation assertions to report individual task scores instead of defaulting to 1.0.
+  const baseScore = matchingTrajectories.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
+  const score = allUploadsSucceeded ? baseScore : 0.0;
+  // Status indicates execution outcome (PASSED if prompt turns completed and uploaded without error,
+  // FAILED if upload failed, assertion failures occurred, or score is 0.0).
+  const status = (!allUploadsSucceeded || hasError || score <= 0.0) ? 'FAILED' : 'PASSED';
+  const durationSeconds = taskDurations.get(taskId) ?? 0.0;
+
+  uploadTaskCompleted({
+    taskId,
+    runId,
+    status,
+    score,
+    durationSeconds,
+    tokens: {},
+  });
+  taskStatuses.push({taskId, status, score});
 }
 
 // If run directly, invoke the CLI

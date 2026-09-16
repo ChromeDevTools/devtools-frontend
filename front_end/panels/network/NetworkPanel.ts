@@ -266,7 +266,8 @@ export class BackendLinking {
       }
       let backendLink = rule.template;
       for (const placeholder of rule.placeholders) {
-        backendLink = backendLink.replaceAll(placeholder, placeholderValues[placeholder] as string);
+        backendLink =
+            backendLink.replaceAll(placeholder, () => encodeURIComponent(placeholderValues[placeholder] as string));
       }
       try {
         return {label: rule.label, url: new URL(backendLink)};

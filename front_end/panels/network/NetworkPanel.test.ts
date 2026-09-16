@@ -362,6 +362,98 @@ describeWithEnvironment('BackendLinking', () => {
       });
     });
 
+    describe('placeholder sanitization and URL encoding', () => {
+      it('URL-encodes header values to prevent path traversal', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://trace.example.com/api/trace/${traceId}',
+            label: 'Trace Link',
+          },
+        ]);
+        const request = createNetworkRequest({
+          url: 'https://example.com/test',
+          responseHeaders: [{name: 'trace-id', value: '../delete'}],
+        });
+        const link = backendLinking.getLink(request);
+        assert.exists(link);
+        assert.strictEqual(link.url.pathname, '/api/trace/..%2Fdelete');
+      });
+
+      it('URL-encodes header values to prevent query parameter injection', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://dash.example.com/?req=${requestId}',
+            label: 'Dashboard',
+          },
+        ]);
+        const request = createNetworkRequest({
+          url: 'https://example.com/test',
+          responseHeaders: [{name: 'X-Request-ID', value: '123&action=delete'}],
+        });
+        const link = backendLinking.getLink(request);
+        assert.exists(link);
+        assert.strictEqual(link.url.search, '?req=123%26action%3Ddelete');
+        assert.strictEqual(link.url.searchParams.get('req'), '123&action=delete');
+        assert.isFalse(link.url.searchParams.has('action'));
+      });
+
+      it('URL-encodes delimiter characters to prevent fragment or query breakout', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://dash.example.com/trace/${traceId}?view=full',
+            label: 'Trace Link',
+          },
+        ]);
+        const request = createNetworkRequest({
+          url: 'https://example.com/test',
+          responseHeaders: [{name: 'trace-id', value: 'id#secret?injected=true'}],
+        });
+        const link = backendLinking.getLink(request);
+        assert.exists(link);
+        assert.strictEqual(link.url.pathname, '/trace/id%23secret%3Finjected%3Dtrue');
+        assert.strictEqual(link.url.search, '?view=full');
+        assert.strictEqual(link.url.hash, '');
+      });
+
+      it('URL-encodes multiple occurrences of the same placeholder', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://trace.example.com/api/${traceId}?id=${traceId}',
+            label: 'Trace Link',
+          },
+        ]);
+        const request = createNetworkRequest({
+          url: 'https://example.com/test',
+          responseHeaders: [{name: 'trace-id', value: 'a/b'}],
+        });
+        const link = backendLinking.getLink(request);
+        assert.exists(link);
+        assert.strictEqual(link.url.pathname, '/api/a%2Fb');
+        assert.strictEqual(link.url.search, '?id=a%2Fb');
+      });
+
+      it('handles dollar signs in placeholder values correctly without replacement pattern expansion', () => {
+        setting.set([
+          {
+            urlPattern: 'https://example.com/*',
+            targetUrlTemplate: 'https://dash.example.com/?req=${requestId}',
+            label: 'Dashboard',
+          },
+        ]);
+        const request = createNetworkRequest({
+          url: 'https://example.com/test',
+          responseHeaders: [{name: 'X-Request-ID', value: '$1$$$\''}],
+        });
+        const link = backendLinking.getLink(request);
+        assert.exists(link);
+        assert.strictEqual(link.url.searchParams.get('req'), '$1$$$\'');
+      });
+    });
+
     it('substitutes multiple placeholders in targetUrlTemplate', () => {
       setting.set([
         {

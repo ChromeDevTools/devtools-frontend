@@ -5,8 +5,8 @@
 import {ESLint} from 'eslint';
 import {join} from 'node:path';
 
-export async function runESLint(scriptFiles, {fix, lintOnly, forceFix, debug}) {
-  if (scriptFiles.length === 0) {
+export async function runESLint(files, {fix, lintOnly, forceFix, debug}) {
+  if (files.length === 0) {
     return {status: true, output: ''};
   }
 
@@ -23,30 +23,8 @@ export async function runESLint(scriptFiles, {fix, lintOnly, forceFix, debug}) {
     fix: linterFixer,
     cache: cacheLinters,
     allowInlineConfig: !forceFix,
+    warnIgnored: false,
   });
-
-  // We filter out certain files in the `eslint.config.mjs` `Ignore list` entry.
-  // However, ESLint produces warnings
-  // when you include a particular file that is ignored. This means that if you edit a file
-  // that is directly ignored. ESLint would report a failure.
-  // This was originally reported in https://github.com/eslint/eslint/issues/9977
-  // The suggested workaround is to use the CLIEngine to preemptively filter out these
-  // problematic paths.
-  const files = (
-    await Promise.all(
-      scriptFiles.map(async file => {
-        return (await cli.isPathIgnored(file)) ? null : file;
-      }),
-    )
-  ).filter(file => file !== null);
-
-  if (files.length === 0) {
-    // When an empty array is pass lint CWD
-    // This can happen only if we pass things that will
-    // be ignored by the above filter
-    // https://github.com/eslint/eslint/pull/17644
-    return {status: true, output: messages.join('\n')};
-  }
 
   const results = await cli.lintFiles(files);
 

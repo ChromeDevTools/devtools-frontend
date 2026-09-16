@@ -7,6 +7,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 ts_e2e_library("helpers") {
   sources = [
     "ai_eval-helpers.ts",
+    "gcs-upload.ts",
     "trajectory-builder.ts",
   ]
   ts_deps = [

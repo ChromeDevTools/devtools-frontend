@@ -87,7 +87,7 @@ interface SerializableSettings {
 
 export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel>
     implements Common.Revealer.Revealer<SDK.RemoteObject.LinearMemoryInspectable>,
-               UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement> {
+               UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectTreeNode> {
   #paneInstance = LinearMemoryInspectorPane.instance();
   #bufferIdToRemoteObject = new Map<string, SDK.RemoteObject.RemoteObject>();
   #bufferIdToHighlightInfo = new Map<string, LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo>();
@@ -315,12 +315,11 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector', omitFocus);
   }
 
-  appendApplicableItems(
-      _event: Event, contextMenu: UI.ContextMenu.ContextMenu,
-      target: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement): void {
-    if (target.property.object?.isLinearMemoryInspectable()) {
-      const expression = target.property.path;
-      const object = target.property.object;
+  appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu,
+                        target: ObjectUI.ObjectPropertiesSection.ObjectTreeNode): void {
+    if (target.object?.isLinearMemoryInspectable()) {
+      const expression = target.path;
+      const object = target.object;
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.openInMemoryInspectorPanel),
           this.reveal.bind(this, new SDK.RemoteObject.LinearMemoryInspectable(object, expression)),

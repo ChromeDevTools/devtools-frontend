@@ -2149,7 +2149,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   getContextMenu(event: Event): UI.ContextMenu.ContextMenu {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.appendApplicableItems(this);
+    contextMenu.appendApplicableItems(this.property);
     if (this.property.property.symbol) {
       contextMenu.appendApplicableItems(this.property.property.symbol);
     }
@@ -2213,10 +2213,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     } else {
       this.setExpandable(false);
     }
-  }
-
-  path(): string {
-    return this.property.path;
   }
 }
 

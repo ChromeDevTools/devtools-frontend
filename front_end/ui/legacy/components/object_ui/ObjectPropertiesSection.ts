@@ -1984,7 +1984,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (arrayRanges && arrayRanges.length > 0) {
       empty = false;
     }
-    const sortPropertiesAlphabetically = properties?.[0]?.parent?.sortPropertiesAlphabetically ?? true;
+    const sortPropertiesAlphabetically = properties?.[0]?.sortPropertiesAlphabetically ?? true;
     properties?.sort((a, b) => compareProperties(a, b, sortPropertiesAlphabetically));
 
     const entriesProperty = internalProperties?.find(({property}) => property.name === '[[Entries]]');

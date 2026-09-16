@@ -72,33 +72,40 @@ describeWithEnvironment('EventListenersView', () => {
     );
   }
 
-  it('shows one-liner if in sources', () => {
+  it('shows one-liner if in sources', async () => {
     const eventListenersView = new EventListeners.EventListenersView.EventListenersView();
     const container = document.createElement('div');
     renderElementIntoDOM(container, {includeCommonStyles: true});
     container.classList.add('sources', 'panel');
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
+    await eventListenersView.performUpdate();
 
-    const emptyWidgetElement = eventListenersView.emptyHolder.lastElementChild;
+    const placeholder = eventListenersView.contentElement.querySelector<HTMLElement>('.placeholder');
+    assert.exists(placeholder);
+    const emptyWidgetElement = placeholder.lastElementChild;
     assert.exists(emptyWidgetElement);
     // Check that the EmptyWidget's host element is properly hidden in the sources panel
     assert.deepEqual(window.getComputedStyle(emptyWidgetElement).display, 'none');
-    assertElementDisplayStyle(eventListenersView, '.placeholder .gray-info-message', 'inline');
+    assertElementDisplayStyle(eventListenersView, '.placeholder .gray-info-message', 'block');
 
     assert.deepEqual(
-        eventListenersView.contentElement.querySelector('.placeholder .gray-info-message')?.textContent,
+        eventListenersView.contentElement.querySelector<HTMLElement>('.placeholder .gray-info-message')?.textContent,
         'No event listeners');
   });
 
-  it('shows empty widget if in elements panel', () => {
+  it('shows empty widget if in elements panel', async () => {
     const eventListenersView = new EventListeners.EventListenersView.EventListenersView();
     const container = document.createElement('div');
     renderElementIntoDOM(container, {includeCommonStyles: true});
     container.classList.add('elements', 'panel');
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
-    const emptyWidgetElement = eventListenersView.emptyHolder.lastElementChild;
+    await eventListenersView.performUpdate();
+
+    const placeholder = eventListenersView.contentElement.querySelector<HTMLElement>('.placeholder');
+    assert.exists(placeholder);
+    const emptyWidgetElement = placeholder.lastElementChild;
     assert.exists(emptyWidgetElement);
     // Check that the EmptyWidget's host element is visible in the elements panel
     assert.deepEqual(window.getComputedStyle(emptyWidgetElement).display, 'flex');
@@ -120,24 +127,27 @@ describeWithEnvironment('EventListenersView', () => {
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
 
-    // Initial state before addObjects: emptyHolder has .hidden class
-    assert.isTrue(eventListenersView.emptyHolder.classList.contains('hidden'));
+    // Initial state before objects are set: placeholder is shown
+    await eventListenersView.performUpdate();
+    assert.exists(eventListenersView.contentElement.querySelector('.placeholder'));
 
-    // Calling addObjects with an empty list should unhide emptyHolder and hide treeOutline
-    await eventListenersView.addObjects([]);
-    assert.isFalse(eventListenersView.emptyHolder.classList.contains('hidden'));
-    assertElementDisplayStyle(eventListenersView, '.event-listener-tree', 'none');
+    // Setting objects to an empty list should still show placeholder and not tree
+    eventListenersView.objects = [];
+    await eventListenersView.performUpdate();
+    assert.exists(eventListenersView.contentElement.querySelector('.placeholder'));
+    assert.isNull(eventListenersView.contentElement.querySelector('.event-listener-tree'));
 
-    // Calling addObjects with an object that has no listeners should also show empty notice
+    // Calling with an object that has no listeners should also show empty notice
     const target = createTarget();
     const domDebuggerModel = target.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
     assert.exists(domDebuggerModel);
     const {eventTarget} = createMockEventTarget(target);
     sinon.stub(domDebuggerModel, 'eventListeners').withArgs(eventTarget).resolves([]);
 
-    await eventListenersView.addObjects([eventTarget]);
-    assert.isFalse(eventListenersView.emptyHolder.classList.contains('hidden'));
-    assertElementDisplayStyle(eventListenersView, '.event-listener-tree', 'none');
+    eventListenersView.objects = [eventTarget];
+    await eventListenersView.performUpdate();
+    assert.exists(eventListenersView.contentElement.querySelector('.placeholder'));
+    assert.isNull(eventListenersView.contentElement.querySelector('.event-listener-tree'));
 
     eventListenersView.detach();
     container.remove();
@@ -164,18 +174,21 @@ describeWithEnvironment('EventListenersView', () => {
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
 
-    // Populate with a listener. Empty holder should be hidden and tree outline visible.
-    await eventListenersView.addObjects([eventTarget]);
-    assert.isTrue(eventListenersView.emptyHolder.classList.contains('hidden'));
+    // Populate with a listener. Placeholder should not exist and tree should exist.
+    eventListenersView.objects = [eventTarget];
+    await eventListenersView.performUpdate();
+    assert.isNull(eventListenersView.contentElement.querySelector('.placeholder'));
+    assert.exists(eventListenersView.contentElement.querySelector('.event-listener-tree'));
 
     // Now update with an object that has no listeners.
     // All listeners are removed/hidden, so the empty notice should be shown.
     const {eventTarget: emptyTarget} = createMockEventTarget(target, '2');
     eventListenersStub.withArgs(emptyTarget).resolves([]);
-    await eventListenersView.addObjects([emptyTarget]);
+    eventListenersView.objects = [emptyTarget];
+    await eventListenersView.performUpdate();
 
-    assert.isFalse(eventListenersView.emptyHolder.classList.contains('hidden'));
-    assertElementDisplayStyle(eventListenersView, '.event-listener-tree', 'none');
+    assert.exists(eventListenersView.contentElement.querySelector('.placeholder'));
+    assert.isNull(eventListenersView.contentElement.querySelector('.event-listener-tree'));
 
     eventListenersView.detach();
     container.remove();
@@ -207,31 +220,37 @@ describeWithEnvironment('EventListenersView', () => {
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
 
-    await eventListenersView.addObjects([eventTarget]);
+    eventListenersView.objects = [eventTarget];
+    await eventListenersView.performUpdate();
 
-    const rootElement = eventListenersView.treeOutline.rootElement();
-    const children = rootElement.children();
-    assert.lengthOf(children, 2);
+    const tree = eventListenersView.contentElement.querySelector('devtools-tree');
+    assert.exists(tree);
+    const rootChildren = tree.getInternalTreeOutlineForTest().rootElement().children();
+    assert.lengthOf(rootChildren, 2);
 
-    const clickTreeElement = children.find(c => c.title === 'click');
+    const clickTreeElement = rootChildren.find(c => c.titleElement.textContent?.trim() === 'click');
     assert.exists(clickTreeElement);
-    assert.lengthOf(clickTreeElement.children(), 1);
+    const clickChildren = clickTreeElement.children();
+    assert.lengthOf(clickChildren, 1);
 
-    const mouseoverTreeElement = children.find(c => c.title === 'mouseover');
+    const mouseoverTreeElement = rootChildren.find(c => c.titleElement.textContent?.trim() === 'mouseover');
     assert.exists(mouseoverTreeElement);
-    assert.lengthOf(mouseoverTreeElement.children(), 1);
+    const mouseoverChildren = mouseoverTreeElement.children();
+    assert.lengthOf(mouseoverChildren, 1);
 
     // Remove the click event listener.
-    const clickBar = clickTreeElement.children()[0];
+    const clickBar = clickChildren[0];
     assert.exists(clickBar);
-    if (!(clickBar instanceof EventListeners.EventListenersView.ObjectEventListenerBar)) {
-      assert.fail('Expected ObjectEventListenerBar');
-    }
-    clickBar.ondelete();
+    const deleteButton =
+        clickBar.listItemElement.querySelector<HTMLElement>('devtools-button[title="Delete event listener"]');
+    assert.exists(deleteButton);
+    deleteButton.click();
+    await eventListenersView.performUpdate();
 
-    // Verify click listener tree element is now hidden and has no children.
-    assert.isTrue(clickTreeElement.hidden);
-    assert.lengthOf(clickTreeElement.children(), 0);
+    // Verify click listener type is now removed.
+    const updatedRootChildren = tree.getInternalTreeOutlineForTest().rootElement().children();
+    assert.lengthOf(updatedRootChildren, 1);
+    assert.strictEqual(updatedRootChildren[0].titleElement.textContent?.trim(), 'mouseover');
 
     // Verify eventTarget.callFunction was called to remove the click listener (second call after frameworkEventListeners).
     sinon.assert.callCount(callFunctionStub, 2);
@@ -258,13 +277,23 @@ describeWithEnvironment('EventListenersView', () => {
 
     eventListenersStub.withArgs(siblingTarget).resolves([siblingClickListener, siblingMouseoverListener]);
 
-    await eventListenersView.addObjects([siblingTarget]);
+    eventListenersView.objects = [siblingTarget];
+    await eventListenersView.performUpdate();
 
-    // Click tree element should now be visible again with sibling's click listener.
-    assert.isFalse(clickTreeElement.hidden);
-    assert.lengthOf(clickTreeElement.children(), 1);
-    assert.isFalse(mouseoverTreeElement.hidden);
-    assert.lengthOf(mouseoverTreeElement.children(), 1);
+    // Click and mouseover tree elements should now be visible with sibling's listeners.
+    const siblingRootChildren = tree.getInternalTreeOutlineForTest().rootElement().children();
+    assert.lengthOf(siblingRootChildren, 2);
+
+    const siblingClickTreeElement = siblingRootChildren.find(c => c.titleElement.textContent?.trim() === 'click');
+    assert.exists(siblingClickTreeElement);
+    assert.isFalse(siblingClickTreeElement.hidden);
+    assert.lengthOf(siblingClickTreeElement.children(), 1);
+
+    const siblingMouseoverTreeElement =
+        siblingRootChildren.find(c => c.titleElement.textContent?.trim() === 'mouseover');
+    assert.exists(siblingMouseoverTreeElement);
+    assert.isFalse(siblingMouseoverTreeElement.hidden);
+    assert.lengthOf(siblingMouseoverTreeElement.children(), 1);
   });
 
   it('renders the event listeners view screenshot', async () => {
@@ -294,15 +323,15 @@ describeWithEnvironment('EventListenersView', () => {
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
 
-    await eventListenersView.addObjects([eventTarget]);
+    eventListenersView.objects = [eventTarget];
+    await eventListenersView.performUpdate();
 
-    for (const child of eventListenersView.treeOutline.rootElement().children()) {
+    const tree = eventListenersView.contentElement.querySelector('devtools-tree');
+    assert.exists(tree);
+    for (const child of tree.getInternalTreeOutlineForTest().rootElement().children()) {
       child.expand();
       for (const bar of child.children()) {
-        if (bar instanceof EventListeners.EventListenersView.ObjectEventListenerBar) {
-          await bar.onpopulate();
-          bar.expand();
-        }
+        bar.expand();
       }
     }
 
@@ -327,7 +356,8 @@ describeWithEnvironment('EventListenersView', () => {
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
 
-    await eventListenersView.addObjects([]);
+    eventListenersView.objects = [];
+    await eventListenersView.performUpdate();
 
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
@@ -350,7 +380,8 @@ describeWithEnvironment('EventListenersView', () => {
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
 
-    await eventListenersView.addObjects([]);
+    eventListenersView.objects = [];
+    await eventListenersView.performUpdate();
 
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();

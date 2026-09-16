@@ -20,8 +20,6 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
     this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.global-listeners')}`);
 
     this.eventListenersView = new EventListeners.EventListenersView.EventListenersView();
-    this.eventListenersView.changeCallback = this.requestUpdate.bind(this);
-    this.eventListenersView.enableDefaultTreeFocus = true;
     this.eventListenersView.show(this.element);
     this.setDefaultFocusedChild(this.eventListenersView);
     this.requestUpdate();
@@ -57,7 +55,8 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
         windowObjects.push(result.object);
       }
     }
-    await this.eventListenersView.addObjects(windowObjects);
+    this.eventListenersView.objects = windowObjects;
+    await this.eventListenersView.updateComplete;
   }
 
   override wasShown(): void {

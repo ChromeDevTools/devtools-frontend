@@ -119,9 +119,9 @@ function dumpObjectPropertyTreeElement(treeElement) {
   TestRunner.addResult(expandedSubstring + ' ' + treeElement.listItemElement.deepTextContent());
 
   for (const child of treeElement.children()) {
-    const property = /** @type {!ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement} */ (child).property;
+    const property = child.property;
     const key = property.name;
-    const value = /** @type {!SDK.RemoteObject.RemoteObjectImpl} */ (property.value).description;
+    const value = property.object.description;
     TestRunner.addResult('    ' + key + ': ' + value);
   }
 }
@@ -132,38 +132,50 @@ function dumpObjectPropertyTreeElement(treeElement) {
  * @param {boolean=} force
  */
 ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, callback, force) {
-  function listenersArrived() {
-    const listenerTypes = eventListenersView.treeOutline.rootElement().children();
-    for (let i = 0; i < listenerTypes.length; ++i) {
-      listenerTypes[i].expand();
-      const listenerItems = listenerTypes[i].children();
-      for (let j = 0; j < listenerItems.length; ++j) {
-        listenerItems[j].expand();
-      }
-    }
-    TestRunner.deprecatedRunAfterPendingDispatches(objectsExpanded);
+  function getTreeOutline(view) {
+    return view.contentElement.querySelector('devtools-tree')?.getInternalTreeOutlineForTest();
   }
 
-  function objectsExpanded() {
-    const listenerTypes = eventListenersView.treeOutline.rootElement().children();
-    for (let i = 0; i < listenerTypes.length; ++i) {
-      if (!listenerTypes[i].children().length) {
-        continue;
+  function listenersArrived() {
+    const view = eventListenersView || this;
+    TestRunner.deprecatedRunAfterPendingDispatches(() => {
+      const treeOutline = getTreeOutline(view);
+      if (!treeOutline) {
+        callback();
+        return;
       }
-      const eventType = listenerTypes[i].title;
-      TestRunner.addResult('');
-      TestRunner.addResult('======== ' + eventType + ' ========');
-      const listenerItems = listenerTypes[i].children();
-      for (let j = 0; j < listenerItems.length; ++j) {
-        TestRunner.addResult('== ' + listenerItems[j].eventListener().origin());
-        dumpObjectPropertyTreeElement(listenerItems[j]);
+      for (const typeElement of treeOutline.rootElement().children()) {
+        typeElement.expand();
+        for (const item of typeElement.children()) {
+          item.expand();
+        }
+      }
+      TestRunner.deprecatedRunAfterPendingDispatches(() => objectsExpanded(view));
+    });
+  }
+
+  function objectsExpanded(view) {
+    const treeOutline = getTreeOutline(view);
+    if (treeOutline) {
+      for (const typeElement of treeOutline.rootElement().children()) {
+        if (!typeElement.children().length) {
+          continue;
+        }
+        const eventType = typeElement.titleElement.textContent.trim();
+        TestRunner.addResult('');
+        TestRunner.addResult('======== ' + eventType + ' ========');
+        for (const item of typeElement.children()) {
+          const origin = item.configElement.dataset.origin;
+          TestRunner.addResult('== ' + origin);
+          dumpObjectPropertyTreeElement(item);
+        }
       }
     }
     callback();
   }
 
   if (force) {
-    listenersArrived();
+    listenersArrived.call(eventListenersView);
   } else {
     TestRunner.addSniffer(
         EventListeners.EventListenersView.EventListenersView.prototype, 'eventListenersArrivedForTest',
@@ -596,6 +608,17 @@ ElementsTestRunner.toggleMatchedStyleProperty = function(propertyName, checked) 
 ElementsTestRunner.eventListenersWidget = function() {
   UI.ViewManager.ViewManager.instance().showView('elements.event-listeners');
   return Elements.EventListenersWidget.EventListenersWidget.instance();
+};
+
+ElementsTestRunner.removeAllEventListeners = function() {
+  const widget = ElementsTestRunner.eventListenersWidget();
+  const treeOutline = widget.contentElement.querySelector('devtools-tree')?.getInternalTreeOutlineForTest();
+  const buttons = treeOutline?.contentElement.querySelectorAll('devtools-button[title="Delete event listener"]') ?? [];
+  for (const button of buttons) {
+    if (!button.hidden) {
+      button.click();
+    }
+  }
 };
 
 ElementsTestRunner.showEventListenersWidget = function() {

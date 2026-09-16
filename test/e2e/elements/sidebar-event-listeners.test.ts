@@ -121,10 +121,10 @@ describe('Event listeners in the elements sidebar', () => {
       const propertiesOutput = await getEventListenerProperties(devToolsPage, clickEventPropertiesSelector);
       const flatProperties = propertiesOutput.flat();
       const expected = [
-        ['useCapture', 'false'],
-        ['passive', 'false'],
-        ['once', 'false'],
         ['handler', '() => {}'],
+        ['once', 'false'],
+        ['passive', 'false'],
+        ['useCapture', 'false'],
       ].flat();
 
       return flatProperties.length === expected.length && !flatProperties.some((v, index) => v !== expected[index]);
@@ -156,10 +156,10 @@ describe('Event listeners in the elements sidebar', () => {
       const propertiesOutput = await getEventListenerProperties(devToolsPage, customEventProperties);
       const flatProperties = propertiesOutput.flat();
       const expected = [
-        ['useCapture', 'true'],
-        ['passive', 'false'],
-        ['once', 'true'],
         ['handler', '() => console.log(\'test\')'],
+        ['once', 'true'],
+        ['passive', 'false'],
+        ['useCapture', 'true'],
       ].flat();
 
       return flatProperties.length === expected.length && !flatProperties.some((v, index) => v !== expected[index]);

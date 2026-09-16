@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {globby} from 'globby';
-import {extname, resolve, relative} from 'node:path';
+import {extname, resolve} from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 
@@ -70,22 +70,7 @@ const LIT_ANALYZER_EXCLUDED_FOLDERS = [
   'front_end/testing',
   'front_end/third_party',
 ];
-
 const DEVTOOLS_ROOT_DIR = resolve(import.meta.dirname, '..', '..');
-function shouldIgnoreFile(path) {
-  const resolvedPath = resolve(path);
-  const relativePath = relative(DEVTOOLS_ROOT_DIR, resolvedPath);
-
-  if (
-    relativePath.includes('third_party') ||
-    relativePath.includes('node_modules')
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
 function getFilesToLint() {
   if (flags.lintOnly) {
     return ['.'];
@@ -98,21 +83,39 @@ function getFilesToLint() {
   return [flags.files];
 }
 
+/**
+ * Expands mixed file and folder targets.
+ * @param {string[]} targets Array of file paths or directory paths.
+ * @param {string} rootDir Base directory.
+ */
+export async function expandMixedTargetsOptimized(targets, rootDir) {
+  return await globby(targets, {
+    cwd: rootDir,
+    expandDirectories: {
+      extensions: ['css', 'mjs', 'js', 'ts'],
+    },
+    gitignore: false,
+    ignore: [
+      '**/node_modules/**',
+      '**/.git/**',
+      '**/out/**',
+      '**/third_party/**',
+      'build/**',
+      'buildtools/**',
+    ],
+  });
+}
+
 async function run() {
   const files = getFilesToLint();
   const scripts = [];
   const styles = [];
-  const matchedPaths = await globby(files, {
-    expandDirectories: {extensions: ['css', 'mjs', 'js', 'ts']},
-    gitignore: true,
-    ignore: ['**/node_modules/**'],
-  });
+  const matchedPaths = await expandMixedTargetsOptimized(
+    files,
+    DEVTOOLS_ROOT_DIR,
+  );
 
   for (const path of matchedPaths) {
-    if (shouldIgnoreFile(path)) {
-      continue;
-    }
-
     if (extname(path) === '.css') {
       styles.push(path);
     } else {

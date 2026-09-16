@@ -171,3 +171,107 @@ export function uploadMarker(runId: string, marker: MarkerType, taskId?: string)
   const destination = taskId ? formatGCSTaskDestination(runId, taskId, marker) : formatGCSRunDestination(runId, marker);
   return uploadTemporaryContentToGCS('', destination);
 }
+
+/**
+ * Emits run_started.json and immediately uploads run_started.marker.
+ */
+export function uploadRunStarted(payload: RunStartedPayload): boolean {
+  const jsonContent = {
+    project: payload.project,
+    run_id: payload.runId,
+    model: payload.model,
+    agent: payload.agent,
+    start_time: payload.startTime,
+    status: payload.status,
+  };
+  const jsonUploaded = uploadTemporaryContentToGCS(
+      JSON.stringify(jsonContent, null, 2),
+      formatGCSRunDestination(payload.runId, 'run_started.json'),
+  );
+  if (jsonUploaded) {
+    return uploadMarker(payload.runId, Markers.RUN_STARTED);
+  }
+  return false;
+}
+
+/**
+ * Uploads text/log content directly to a task-level GCS destination
+ * (e.g. tasks/<taskId>/output/<destinationPath>).
+ * Used for task artifacts such as:
+ *   - agent_logs/agent.log
+ *   - agent_logs/chat_log.txt
+ *   - agent_logs/agent_stderr.log
+ *   - grader_output/grader.log
+ * Staged in a temporary directory and cleaned up after upload.
+ * Must be called during Phase 2 before eval_task_completed.marker is uploaded.
+ */
+export function uploadTaskContent(
+    runId: string,
+    taskId: string,
+    destinationPath: TaskOutputFile,
+    content: string,
+    ): boolean {
+  return uploadTemporaryContentToGCS(
+      content,
+      formatGCSTaskDestination(runId, taskId, destinationPath),
+  );
+}
+
+/**
+ * Emits eval_task_completed.json and immediately uploads eval_task_completed.marker.
+ */
+export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
+  const jsonContent = {
+    task_id: payload.taskId,
+    run_id: payload.runId,
+    status: payload.status,
+    score: payload.score,
+    duration_seconds: payload.durationSeconds,
+    tokens: payload.tokens ?? {},
+  };
+  const jsonUploaded = uploadTemporaryContentToGCS(
+      JSON.stringify(jsonContent, null, 2),
+      formatGCSTaskDestination(payload.runId, payload.taskId, 'eval_task_completed.json'),
+  );
+  if (jsonUploaded) {
+    return uploadMarker(payload.runId, Markers.TASK_COMPLETED, payload.taskId);
+  }
+  return false;
+}
+
+/**
+ * Uploads the master evaluation run log to <run_id>/eval_run.log in GCS.
+ * Staged in a temporary directory and cleaned up after upload.
+ * Must be called during Phase 3 before run_completed.marker is uploaded.
+ */
+export function uploadRunLog(runId: string, logContent: string): boolean {
+  return uploadTemporaryContentToGCS(
+      logContent,
+      formatGCSRunDestination(runId, 'eval_run.log'),
+  );
+}
+
+/**
+ * Emits run_completed.json and immediately uploads run_completed.marker at the very
+ * end of the evaluation suite execution after all tasks finished and logs uploaded.
+ */
+export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
+  const jsonContent = {
+    project: payload.project,
+    run_id: payload.runId,
+    status: payload.status,
+    start_time: payload.startTime,
+    end_time: payload.endTime,
+    total_tasks: payload.totalTasks,
+    passed_tasks: payload.passedTasks,
+    failed_tasks: payload.failedTasks,
+  };
+  const jsonUploaded = uploadTemporaryContentToGCS(
+      JSON.stringify(jsonContent, null, 2),
+      formatGCSRunDestination(payload.runId, 'run_completed.json'),
+  );
+  if (jsonUploaded) {
+    return uploadMarker(payload.runId, Markers.RUN_COMPLETED);
+  }
+  return false;
+}

@@ -92,4 +92,69 @@ describe('DOMChanges', () => {
 
     assert.strictEqual(lastDescription(), 'Renamed attribute "cls"="bar" to "class"="foo"');
   });
+
+  it('records a tag name edit', () => {
+    Elements.DOMChanges.trackTagNameEdit(tracker, createNode(), 'div.main', 'div', 'span');
+
+    assert.strictEqual(lastDescription(), 'Renamed tag from <div> to <span>');
+  });
+
+  it('records a text node edit', () => {
+    Elements.DOMChanges.trackTextNodeEdit(tracker, createNode(), 'div.main', 'Hello', 'Hello World');
+
+    assert.strictEqual(lastDescription(), 'Changed text from "Hello" to "Hello World"');
+  });
+
+  it('records an HTML edit', () => {
+    Elements.DOMChanges.trackHTMLEdit(tracker, createNode(), 'div.main', '<div></div>', '<span></span>');
+
+    assert.strictEqual(lastDescription(), 'Changed HTML from "<div></div>" to "<span></span>"');
+  });
+
+  it('derives the tag name of a removed node from the node itself', () => {
+    Elements.DOMChanges.trackNodeRemoval(tracker, createNode(1, 'SPAN'), 'span.child');
+
+    assert.strictEqual(lastDescription(), 'Removed node <span>');
+    assert.strictEqual(lastAnchor()?.textSignature, 'span.child');
+  });
+
+  it('falls back to a generic text signature without a selector', () => {
+    Elements.DOMChanges.trackNodeRemoval(tracker, createNode(), undefined);
+
+    assert.strictEqual(lastAnchor()?.textSignature, 'element');
+  });
+
+  it('trims page controlled data that is too long', () => {
+    const {MAX_VALUE_LENGTH} = Elements.DOMChanges;
+    const longValue = 'a'.repeat(MAX_VALUE_LENGTH * 2);
+
+    Elements.DOMChanges.trackHTMLEdit(tracker, createNode(), 'div.main', '<div></div>', `<div>${longValue}</div>`);
+
+    const description = lastDescription() ?? '';
+    assert.include(description, 'Changed HTML from "<div></div>" to "<div>aaa');
+    assert.include(description, '…');
+    assert.notInclude(description, longValue);
+    assert.isBelow(description.length, `Changed HTML from "<div></div>" to "<div>${longValue}</div>"`.length);
+  });
+
+  it('does not trim page controlled data that fits', () => {
+    Elements.DOMChanges.trackTextNodeEdit(tracker, createNode(), 'div.main', 'Hello', 'Hello World');
+
+    assert.strictEqual(lastDescription(), 'Changed text from "Hello" to "Hello World"');
+  });
+
+  it('does nothing without a tracker', () => {
+    Elements.DOMChanges.trackNodeRemoval(undefined, createNode(), 'div.main');
+
+    assert.isEmpty(commentManager.getCommentThreads());
+  });
+
+  it('does nothing while change tracking is disabled', () => {
+    updateHostConfig({devToolsComments: {enabled: false}});
+
+    Elements.DOMChanges.trackNodeRemoval(tracker, createNode(), 'div.main');
+
+    assert.isUndefined(tracker.getLastChange());
+    assert.isEmpty(commentManager.getCommentThreads());
+  });
 });

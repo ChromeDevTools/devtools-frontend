@@ -32,6 +32,7 @@ import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
+import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html} from '../../ui/lit/lit.js';
@@ -2321,6 +2322,43 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     treeElement.widget.editing?.commit();
   }
 
+  /** Starts in-place editing of the tag name, types `newTagName` and commits it. */
+  function editTagName(newTagName: string): void {
+    assert.isTrue(treeElement.widget.startEditingTagName());
+    const tagNameElement = treeElement.widget.contentElement.querySelector('.webkit-html-tag-name');
+    assert.exists(tagNameElement);
+    tagNameElement.textContent = newTagName;
+    treeElement.widget.editing?.commit();
+  }
+
+  /** Starts in-place editing of the inline text node, types `newText` and commits it. */
+  function editInlineTextNode(newText: string): void {
+    const textNodeElement = treeElement.widget.contentElement.querySelector('.webkit-html-text-node');
+    assert.exists(textNodeElement);
+    assert.isTrue(treeElement.widget.startEditingTextNode(textNodeElement));
+    textNodeElement.textContent = newText;
+    treeElement.widget.editing?.commit();
+  }
+
+  /** Starts editing the node as HTML and waits for the multiline editor to be rendered. */
+  async function startEditingAsHTML(): Promise<TextEditor.TextEditor.TextEditor> {
+    treeElement.toggleEditAsHTML();
+    // `toggleEditAsHTML` reads the outer HTML asynchronously before it creates the editor.
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const editor =
+        treeElement.widget.contentElement.querySelector<TextEditor.TextEditor.TextEditor>('devtools-text-editor');
+    assert.exists(editor);
+    return editor;
+  }
+
+  /** Replaces the content of the multiline HTML editor with `newHTML` and commits it. */
+  function commitEditedHTML(editor: TextEditor.TextEditor.TextEditor, newHTML: string): void {
+    editor.dispatch({changes: {from: 0, to: editor.state.doc.length, insert: newHTML}});
+    treeElement.widget.editing?.commit();
+  }
+
   beforeEach(() => {
     updateHostConfig({
       devToolsComments: {
@@ -2435,6 +2473,169 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
 
     assert.isTrue(treeElement.widget.addNewAttribute());
     commitEditedAttribute('invalid<attr>=1');
+
+    const record = tracker.getLastChange();
+    assert.isUndefined(record);
+    assert.isEmpty(universe.commentManager.getCommentThreads());
+  });
+
+  it('records a change when renaming a tag name', () => {
+    let callbackCaptured: ((error: string|null, newNode: SDK.DOMModel.DOMNode|null) => void)|undefined;
+    sinon.stub(node, 'setNodeName').callsFake((_name, callback) => {
+      callbackCaptured = callback;
+    });
+    treeElement.widget.selectNodeAfterEdit = sinon.stub().returns(null);
+
+    editTagName('section');
+
+    assert.exists(callbackCaptured);
+    callbackCaptured(null, node);
+
+    const record = tracker.getLastChange();
+    assert.exists(record);
+    assert.strictEqual(record?.description, 'Renamed tag from <div> to <section>');
+    assert.strictEqual(lastChangeBackendNodeId(), 1);
+  });
+
+  it('does not record a change when renaming a tag name fails', () => {
+    let callbackCaptured: ((error: string|null, newNode: SDK.DOMModel.DOMNode|null) => void)|undefined;
+    sinon.stub(node, 'setNodeName').callsFake((_name, callback) => {
+      callbackCaptured = callback;
+    });
+
+    editTagName('invalid<tag>');
+
+    assert.exists(callbackCaptured);
+    callbackCaptured('Invalid tag name syntax', null);
+
+    const record = tracker.getLastChange();
+    assert.isUndefined(record);
+    assert.isEmpty(universe.commentManager.getCommentThreads());
+  });
+
+  it('records a change when editing an inline text node', () => {
+    const textNode = node.children()![0];
+    sinon.stub(textNode, 'setNodeValue').callsFake((_value, callback) => callback?.(null));
+
+    editInlineTextNode('Updated Text');
+
+    const record = tracker.getLastChange();
+    assert.exists(record);
+    assert.strictEqual(record?.description, 'Changed text from "Initial Text" to "Updated Text"');
+    assert.strictEqual(lastChangeBackendNodeId(), 2);
+  });
+
+  it('does not record a change when editing inline text node fails with an error', () => {
+    const textNode = node.children()![0];
+    const setNodeValue = sinon.stub(textNode, 'setNodeValue').callsFake((_value, callback) => {
+      callback?.('Failed to set text');
+    });
+
+    editInlineTextNode('Updated Text');
+
+    sinon.assert.calledOnceWithMatch(setNodeValue, 'Updated Text');
+    const record = tracker.getLastChange();
+    assert.isUndefined(record);
+    assert.isEmpty(universe.commentManager.getCommentThreads());
+  });
+
+  it('records a change when editing as HTML', async () => {
+    sinon.stub(node, 'getOuterHTML').resolves('<div id="main-div" class="container"></div>');
+    sinon.stub(node, 'setOuterHTML').callsFake((_value, callback) => callback?.(null));
+
+    const editor = await startEditingAsHTML();
+    commitEditedHTML(editor, '<div id="main-div" class="container"><p>New Child</p></div>');
+
+    const record = tracker.getLastChange();
+    assert.exists(record);
+    assert.strictEqual(
+        record?.description,
+        'Changed HTML from "<div id="main-div" class="container"></div>" to ' +
+            '"<div id="main-div" class="container"><p>New Child</p></div>"',
+    );
+    assert.strictEqual(lastChangeBackendNodeId(), 1);
+  });
+
+  it('does not record a change when editing as HTML fails with an error', async () => {
+    sinon.stub(node, 'getOuterHTML').resolves('<div id="main-div" class="container"></div>');
+    const setOuterHTML = sinon.stub(node, 'setOuterHTML').callsFake((_value, callback) => {
+      callback?.('Malformed HTML');
+    });
+
+    const editor = await startEditingAsHTML();
+    commitEditedHTML(editor, '<div id="main-div" class="container"><p>New Child</p></div>');
+
+    sinon.assert.calledOnceWithMatch(setOuterHTML, '<div id="main-div" class="container"><p>New Child</p></div>');
+    const record = tracker.getLastChange();
+    assert.isUndefined(record);
+    assert.isEmpty(universe.commentManager.getCommentThreads());
+  });
+
+  it('records a change when removing a node', async () => {
+    const parentNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 10 as Protocol.DOM.NodeId,
+      backendNodeId: 10 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'BODY',
+      localName: 'body',
+      nodeValue: '',
+      childNodeCount: 1,
+      children: [{
+        nodeId: 11 as Protocol.DOM.NodeId,
+        parentId: 10 as Protocol.DOM.NodeId,
+        backendNodeId: 11 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'SPAN',
+        localName: 'span',
+        nodeValue: '',
+        childNodeCount: 0,
+      }],
+    });
+    const childNode = parentNode!.children()![0];
+    sinon.stub(childNode, 'removeNode').callsFake(async callback => {
+      callback?.(null);
+    });
+
+    const childTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(childNode, false);
+    childTreeElement.widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    childTreeElement.widget.node = childNode;
+    await childTreeElement.widget.remove();
+
+    const record = tracker.getLastChange();
+    assert.exists(record);
+    assert.strictEqual(record?.description, 'Removed node <span>');
+    assert.strictEqual(lastChangeBackendNodeId(), 11);
+  });
+
+  it('does not record a change when removing a node fails with an error', async () => {
+    const parentNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 10 as Protocol.DOM.NodeId,
+      backendNodeId: 10 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'BODY',
+      localName: 'body',
+      nodeValue: '',
+      childNodeCount: 1,
+      children: [{
+        nodeId: 11 as Protocol.DOM.NodeId,
+        parentId: 10 as Protocol.DOM.NodeId,
+        backendNodeId: 11 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'SPAN',
+        localName: 'span',
+        nodeValue: '',
+        childNodeCount: 0,
+      }],
+    });
+    const childNode = parentNode!.children()![0];
+    sinon.stub(childNode, 'removeNode').callsFake(async callback => {
+      callback?.('Cannot remove node');
+    });
+
+    const childTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(childNode, false);
+    childTreeElement.widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    childTreeElement.widget.node = childNode;
+    await childTreeElement.widget.remove();
 
     const record = tracker.getLastChange();
     assert.isUndefined(record);

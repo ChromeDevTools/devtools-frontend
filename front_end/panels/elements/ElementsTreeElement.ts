@@ -2712,6 +2712,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       }
 
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
+      Elements.DOMChanges.trackTagNameEdit(this.#changeTracker, newNode,
+                                           buildChangeSelector(this.#changeTracker, newNode), oldText ?? tagName ?? '',
+                                           newText);
       if (this.selectNodeAfterEdit) {
         this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
       }
@@ -2720,8 +2723,13 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
   private textNodeEditingCommitted(textNode: SDK.DOMModel.DOMNode, _element: Element, newText: string): void {
     this.editing = null;
+    const oldValue = textNode.nodeValue() ?? '';
 
-    function callback(this: ElementsTreeWidget): void {
+    function callback(this: ElementsTreeWidget, error?: string|null): void {
+      if (!error && oldValue !== newText) {
+        Elements.DOMChanges.trackTextNodeEdit(this.#changeTracker, textNode,
+                                              buildChangeSelector(this.#changeTracker, textNode), oldValue, newText);
+      }
       this.#clearDOMNextUpdate = true;
       this.updateTitle();
     }
@@ -2882,7 +2890,13 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     if (!this.node.parentNode || this.node.parentNode.nodeType() === Node.DOCUMENT_NODE) {
       return;
     }
-    void this.node.removeNode();
+    // The selector has to be resolved before the node is detached from the tree.
+    const selector = buildChangeSelector(this.#changeTracker, this.node);
+    await this.node.removeNode((err: string|null) => {
+      if (!err) {
+        Elements.DOMChanges.trackNodeRemoval(this.#changeTracker, this.node, selector);
+      }
+    });
   }
 
   toggleEditAsHTML(callback?: ((arg0: boolean) => void), startEditing?: boolean): void {
@@ -2903,7 +2917,14 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
     const commitChange = (initialValue: string, value: string): void => {
       if (initialValue !== value) {
-        node.setOuterHTML(value, selectNode);
+        // The selector has to be resolved before the node is detached from the tree.
+        const selector = buildChangeSelector(this.#changeTracker, node);
+        node.setOuterHTML(value, (error: string|null) => {
+          if (!error) {
+            Elements.DOMChanges.trackHTMLEdit(this.#changeTracker, node, selector, initialValue, value);
+          }
+          selectNode(error);
+        });
       }
     };
 

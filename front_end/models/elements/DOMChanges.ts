@@ -115,10 +115,66 @@ function describeAttributeEdit({attributeName, oldText, newText}: AttributeEdit)
   );
 }
 
+/**
+ * These strings are for the consumption by AI agents, they don't need to be translated.
+ */
+function describeTagNameEdit(oldTagName: string, newTagName: string): string {
+  return `Renamed tag from <${trimValue(oldTagName)}> to <${trimValue(newTagName)}>`;
+}
+
+function describeTextNodeEdit(oldText: string, newText: string): string {
+  return `Changed text from "${trimValue(oldText)}" to "${trimValue(newText)}"`;
+}
+
+function describeNodeRemoval(tagName: string): string {
+  return `Removed node <${trimValue(tagName)}>`;
+}
+
+function describeHTMLEdit(oldValue?: string, newValue?: string): string {
+  if (oldValue !== undefined && newValue !== undefined) {
+    return `Changed HTML from "${trimValue(oldValue)}" to "${trimValue(newValue)}"`;
+  }
+  if (newValue !== undefined) {
+    return `Changed HTML to "${trimValue(newValue)}"`;
+  }
+  return 'Edited HTML';
+}
+
 export function trackAttributeEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
                                    edit: AttributeEdit): void {
   if (!tracker?.isTracking) {
     return;
   }
   tracker.trackChange(describeAttributeEdit(edit), buildAnchor(node, selector));
+}
+
+export function trackTagNameEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
+                                 oldTagName: string, newTagName: string): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeTagNameEdit(oldTagName, newTagName), buildAnchor(node, selector));
+}
+
+export function trackTextNodeEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
+                                  oldText: string, newText: string): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeTextNodeEdit(oldText, newText), buildAnchor(node, selector));
+}
+
+export function trackNodeRemoval(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeNodeRemoval(node.nodeName().toLowerCase()), buildAnchor(node, selector));
+}
+
+export function trackHTMLEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
+                              oldValue: string, newValue: string): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeHTMLEdit(oldValue, newValue), buildAnchor(node, selector));
 }

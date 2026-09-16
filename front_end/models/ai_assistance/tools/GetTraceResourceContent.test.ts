@@ -22,11 +22,11 @@ import {TestUniverse} from '../../../testing/TestUniverse.js';
 import type * as Trace from '../../trace/trace.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-const GetResourceContentTool = AiAssistance.GetResourceContent.GetResourceContentTool;
+const GetTraceResourceContentTool = AiAssistance.GetTraceResourceContent.GetTraceResourceContentTool;
 
 const {urlString} = Platform.DevToolsPath;
 
-describe('GetResourceContentTool', () => {
+describe('GetTraceResourceContentTool', () => {
   setupLocaleHooks();
   setupSettingsHooks();
   setupRuntimeHooks();
@@ -50,16 +50,16 @@ describe('GetResourceContentTool', () => {
   }
 
   it('returns display info', () => {
-    const tool = new GetResourceContentTool();
+    const tool = new GetTraceResourceContentTool();
     const displayInfo = tool.displayInfoFromArgs({url: 'https://example.com/script.js'});
     assert.strictEqual(displayInfo.title, 'Looking at resource content');
-    assert.strictEqual(displayInfo.action, 'getResourceContent(\'https://example.com/script.js\')');
+    assert.strictEqual(displayInfo.action, 'getTraceResourceContent(\'https://example.com/script.js\')');
   });
 
   it('returns error when PerformanceTraceContext is not available', async () => {
     const context = createCapabilities(null);
 
-    const tool = new GetResourceContentTool();
+    const tool = new GetTraceResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, context);
 
     assertIsError(result);
@@ -79,11 +79,32 @@ describe('GetResourceContentTool', () => {
 
     const capabilities = createCapabilities(traceContext);
 
-    const tool = new GetResourceContentTool();
+    const tool = new GetTraceResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, capabilities);
 
     assertIsError(result);
     assert.strictEqual(result.error, 'Cannot use this tool on an imported file.');
+  });
+
+  it('returns error when url is missing', async () => {
+    const parsedTrace = makeFakeParsedTrace();
+    const tracker = new Tracing.FreshRecording.Tracker();
+    tracker.registerFreshRecording(parsedTrace);
+
+    const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+        parsedTrace,
+        universe.targetManager,
+        tracker,
+        universe.debuggerWorkspaceBinding,
+    );
+
+    const capabilities = createCapabilities(traceContext);
+
+    const tool = new GetTraceResourceContentTool();
+    const result = await tool.handler({url: ''}, capabilities);
+
+    assertIsError(result);
+    assert.strictEqual(result.error, 'Missing arg: url');
   });
 
   it('returns error when resource URL is cross-origin or file://', async () => {
@@ -100,7 +121,7 @@ describe('GetResourceContentTool', () => {
 
     const capabilities = createCapabilities(traceContext);
 
-    const tool = new GetResourceContentTool();
+    const tool = new GetTraceResourceContentTool();
     const result = await tool.handler({url: 'https://cross-origin.com/script.js'}, capabilities);
 
     assertIsError(result);
@@ -131,7 +152,7 @@ describe('GetResourceContentTool', () => {
 
     const capabilities = createCapabilities(traceContext);
 
-    const tool = new GetResourceContentTool();
+    const tool = new GetTraceResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, capabilities);
 
     assertIsResult(result);
@@ -166,7 +187,7 @@ describe('GetResourceContentTool', () => {
 
     const capabilities = createCapabilities(traceContext);
 
-    const tool = new GetResourceContentTool();
+    const tool = new GetTraceResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, capabilities);
 
     assertIsResult(result);
@@ -200,7 +221,7 @@ describe('GetResourceContentTool', () => {
 
     const capabilities = createCapabilities(traceContext);
 
-    const tool = new GetResourceContentTool();
+    const tool = new GetTraceResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, capabilities);
 
     assertIsError(result);
@@ -227,7 +248,7 @@ describe('GetResourceContentTool', () => {
 
     const capabilities = createCapabilities(traceContext);
 
-    const tool = new GetResourceContentTool();
+    const tool = new GetTraceResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/image.png'}, capabilities);
 
     assertIsError(result);
@@ -250,7 +271,7 @@ describe('GetResourceContentTool', () => {
 
     const capabilities = createCapabilities(traceContext);
 
-    const tool = new GetResourceContentTool();
+    const tool = new GetTraceResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/missing.js'}, capabilities);
 
     assertIsError(result);
@@ -271,7 +292,7 @@ describe('GetResourceContentTool', () => {
 
     const capabilities = createCapabilities(traceContext, null);
 
-    const tool = new GetResourceContentTool();
+    const tool = new GetTraceResourceContentTool();
     const result = await tool.handler({url: 'https://example.com/script.js'}, capabilities);
 
     assertIsError(result);

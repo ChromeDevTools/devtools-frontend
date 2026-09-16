@@ -25,42 +25,57 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
-export interface GetResourceContentArgs extends ToolArgs {
+/**
+ * Arguments for {@link GetTraceResourceContentTool}.
+ */
+export interface GetTraceResourceContentArgs extends ToolArgs {
+  /** The URL of the resource captured in the performance trace to retrieve. */
   url: string;
 }
 
-export class GetResourceContentTool implements DataTool<
-    GetResourceContentArgs, {content: string}, BaseToolCapability&TargetCapability&PerformanceTraceCapability> {
-  readonly name: ToolName = ToolName.GET_RESOURCE_CONTENT;
+/**
+ * Retrieves text content for a resource or script captured in the performance trace.
+ *
+ * Precedence:
+ * 1. Checks trace metadata (`parsedTrace.data.Scripts`) for scripts captured during recording.
+ * 2. Falls back to querying the live page target's `ResourceTreeModel`.
+ *
+ * Preconditions:
+ * - Requires an active, freshly recorded trace session (fails on imported traces).
+ * - Fails if resource is binary/non-text, cross-origin, or a `file://` URL.
+ */
+export class GetTraceResourceContentTool implements DataTool<
+    GetTraceResourceContentArgs, {content: string}, BaseToolCapability&TargetCapability&PerformanceTraceCapability> {
+  readonly name: ToolName = ToolName.GET_TRACE_RESOURCE_CONTENT;
   readonly description: string =
-      'Retrieves the content of the resource with the given url. Only use this for text resource types.';
+      'Retrieves the text content of a script or resource captured within the recorded performance trace by URL. Only use this for text resource types. Do not call this tool on imported traces or for general workspace files (use listSources and getSourceContent instead).';
 
-  readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetResourceContentArgs> = {
+  readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetTraceResourceContentArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,
-    description: 'Arguments for looking up resource content.',
+    description: 'Arguments for looking up resource content from the performance trace.',
     nullable: false,
     properties: {
       url: {
         type: Host.AidaClient.ParametersTypes.STRING,
-        description: 'The url for the resource.',
+        description: 'The URL of the resource captured in the performance trace to retrieve.',
         nullable: false,
       },
     },
     required: ['url'],
   };
 
-  displayInfoFromArgs(params: GetResourceContentArgs): {
+  displayInfoFromArgs(params: GetTraceResourceContentArgs): {
     title: string,
     action: string,
   } {
     return {
       title: lockedString(UIStringsNotTranslate.lookingAtResourceContent),
-      action: `getResourceContent('${params.url}')`,
+      action: `getTraceResourceContent('${params.url}')`,
     };
   }
 
   async handler(
-      params: GetResourceContentArgs,
+      params: GetTraceResourceContentArgs,
       capabilities: BaseToolCapability&TargetCapability&PerformanceTraceCapability,
       ): Promise<DataHandlerResult<{content: string}>> {
     const performanceTraceContext = capabilities.getPerformanceTraceContext();
@@ -70,6 +85,10 @@ export class GetResourceContentTool implements DataTool<
 
     if (performanceTraceContext.isImported()) {
       return {error: 'Cannot use this tool on an imported file.'};
+    }
+
+    if (!params.url) {
+      return {error: 'Missing arg: url'};
     }
 
     if (!performanceTraceContext.canAccessResource(params.url)) {
@@ -82,6 +101,7 @@ export class GetResourceContentTool implements DataTool<
     let content: string;
 
     const url = params.url as Platform.DevToolsPath.UrlString;
+    // Check trace metadata for scripts captured during recording before falling back to live page resources.
     const script = parsedTrace.data.Scripts?.scripts.find(script => script.url === params.url);
     if (script?.content !== undefined) {
       content = script.content;

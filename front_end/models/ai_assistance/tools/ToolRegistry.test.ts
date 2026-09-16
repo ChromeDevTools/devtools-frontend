@@ -29,18 +29,18 @@ describe('ToolRegistry', () => {
     assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_DETAILED_CALL_TREE);
   });
 
-  it('can retrieve getFunctionCode tool by name', () => {
-    const tool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.GET_FUNCTION_CODE);
+  it('can retrieve getTraceFunctionCode tool by name', () => {
+    const tool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.GET_TRACE_FUNCTION_CODE);
     assert.exists(tool);
-    assert.instanceOf(tool, AiAssistance.GetFunctionCode.GetFunctionCodeTool);
-    assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_FUNCTION_CODE);
+    assert.instanceOf(tool, AiAssistance.GetTraceFunctionCode.GetTraceFunctionCodeTool);
+    assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_TRACE_FUNCTION_CODE);
   });
 
-  it('can retrieve getResourceContent tool by name', () => {
-    const tool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.GET_RESOURCE_CONTENT);
+  it('can retrieve getTraceResourceContent tool by name', () => {
+    const tool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.GET_TRACE_RESOURCE_CONTENT);
     assert.exists(tool);
-    assert.instanceOf(tool, AiAssistance.GetResourceContent.GetResourceContentTool);
-    assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_RESOURCE_CONTENT);
+    assert.instanceOf(tool, AiAssistance.GetTraceResourceContent.GetTraceResourceContentTool);
+    assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_TRACE_RESOURCE_CONTENT);
   });
 
   it('returns undefined for non-existent tools', () => {

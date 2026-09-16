@@ -20,11 +20,11 @@ import {TestUniverse} from '../../../testing/TestUniverse.js';
 import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-const GetFunctionCodeTool = AiAssistance.GetFunctionCode.GetFunctionCodeTool;
+const GetTraceFunctionCodeTool = AiAssistance.GetTraceFunctionCode.GetTraceFunctionCodeTool;
 
 const {urlString} = Platform.DevToolsPath;
 
-describe('GetFunctionCodeTool', () => {
+describe('GetTraceFunctionCodeTool', () => {
   setupLocaleHooks();
   setupSettingsHooks();
   setupRuntimeHooks();
@@ -36,10 +36,10 @@ describe('GetFunctionCodeTool', () => {
   });
 
   it('returns display info', () => {
-    const tool = new GetFunctionCodeTool();
+    const tool = new GetTraceFunctionCodeTool();
     const displayInfo = tool.displayInfoFromArgs({scriptUrl: 'https://example.com/app.js', line: 10, column: 5});
     assert.strictEqual(displayInfo.title, 'Looking up function code');
-    assert.strictEqual(displayInfo.action, 'getFunctionCode(\'https://example.com/app.js\', 10, 5)');
+    assert.strictEqual(displayInfo.action, 'getTraceFunctionCode(\'https://example.com/app.js\', 10, 5)');
   });
 
   it('returns error when PerformanceTraceContext is not available', async () => {
@@ -47,7 +47,7 @@ describe('GetFunctionCodeTool', () => {
       getPerformanceTraceContext: () => null,
     };
 
-    const tool = new GetFunctionCodeTool();
+    const tool = new GetTraceFunctionCodeTool();
     const result = await tool.handler({scriptUrl: 'https://example.com/app.js', line: 10, column: 5}, context);
 
     assertIsError(result);
@@ -56,7 +56,6 @@ describe('GetFunctionCodeTool', () => {
 
   it('returns error when trace is imported', async () => {
     const parsedTrace = makeFakeParsedTrace();
-    // Do not mark parsedTrace as fresh
     const tracker = new Tracing.FreshRecording.Tracker();
 
     const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
@@ -70,7 +69,7 @@ describe('GetFunctionCodeTool', () => {
       getPerformanceTraceContext: () => traceContext,
     };
 
-    const tool = new GetFunctionCodeTool();
+    const tool = new GetTraceFunctionCodeTool();
     const result = await tool.handler({scriptUrl: 'https://example.com/app.js', line: 10, column: 5}, capabilities);
 
     assertIsError(result);
@@ -93,7 +92,7 @@ describe('GetFunctionCodeTool', () => {
       getPerformanceTraceContext: () => traceContext,
     };
 
-    const tool = new GetFunctionCodeTool();
+    const tool = new GetTraceFunctionCodeTool();
     const result =
         await tool.handler({scriptUrl: 'https://cross-origin.com/app.js', line: 10, column: 5}, capabilities);
 
@@ -117,7 +116,7 @@ describe('GetFunctionCodeTool', () => {
       getPerformanceTraceContext: () => traceContext,
     };
 
-    const tool = new GetFunctionCodeTool();
+    const tool = new GetTraceFunctionCodeTool();
     const result = await tool.handler({scriptUrl: 'file:///tmp/app.js', line: 10, column: 5}, capabilities);
 
     assertIsError(result);
@@ -140,7 +139,7 @@ describe('GetFunctionCodeTool', () => {
       getPerformanceTraceContext: () => traceContext,
     };
 
-    const tool = new GetFunctionCodeTool();
+    const tool = new GetTraceFunctionCodeTool();
     const result = await tool.handler({scriptUrl: '', line: 10, column: 5}, capabilities);
 
     assertIsError(result);
@@ -163,7 +162,7 @@ describe('GetFunctionCodeTool', () => {
       getPerformanceTraceContext: () => traceContext,
     };
 
-    const tool = new GetFunctionCodeTool();
+    const tool = new GetTraceFunctionCodeTool();
     const result = await tool.handler(
         {scriptUrl: 'https://example.com/app.js', line: undefined as unknown as number, column: 5}, capabilities);
 
@@ -187,7 +186,7 @@ describe('GetFunctionCodeTool', () => {
       getPerformanceTraceContext: () => traceContext,
     };
 
-    const tool = new GetFunctionCodeTool();
+    const tool = new GetTraceFunctionCodeTool();
     const result = await tool.handler(
         {scriptUrl: 'https://example.com/app.js', line: 10, column: undefined as unknown as number}, capabilities);
 
@@ -215,7 +214,7 @@ describe('GetFunctionCodeTool', () => {
       getPerformanceTraceContext: () => traceContext,
     };
 
-    const tool = new GetFunctionCodeTool();
+    const tool = new GetTraceFunctionCodeTool();
     const result = await tool.handler({scriptUrl: 'https://example.com/app.js', line: 10, column: 5}, capabilities);
 
     assertIsError(result);
@@ -251,7 +250,7 @@ describe('GetFunctionCodeTool', () => {
       getPerformanceTraceContext: () => traceContext,
     };
 
-    const tool = new GetFunctionCodeTool();
+    const tool = new GetTraceFunctionCodeTool();
     const result = await tool.handler({scriptUrl: 'https://example.com/app.js', line: 10, column: 5}, capabilities);
 
     assertIsResult(result);

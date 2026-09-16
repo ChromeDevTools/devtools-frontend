@@ -38,6 +38,7 @@ import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
 import {SRIMessageSignatureIssue} from './SRIMessageSignatureIssue.js';
 import {StylesheetLoadingIssue} from './StylesheetLoadingIssue.js';
 import {UnencodedDigestIssue} from './UnencodedDigestIssue.js';
+import {WebInstallIssue} from './WebInstallIssue.js';
 
 export {Events} from './IssuesManagerEvents.js';
 
@@ -148,6 +149,10 @@ const issueCodeHandlers =
           [
             Protocol.Audits.InspectorIssueCode.ConnectionAllowlistIssue,
             ConnectionAllowlistIssue.fromInspectorIssue,
+          ],
+          [
+            Protocol.Audits.InspectorIssueCode.WebInstallIssue,
+            WebInstallIssue.fromInspectorIssue,
           ],
           [
             Protocol.Audits.InspectorIssueCode.PermissionElementIssue,

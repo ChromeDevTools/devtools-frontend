@@ -36,6 +36,7 @@ import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 import * as SRIMessageSignatureIssue from './SRIMessageSignatureIssue.js';
 import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 import * as UnencodedDigestIssue from './UnencodedDigestIssue.js';
+import * as WebInstallIssue from './WebInstallIssue.js';
 
 export {
   ClientHintIssue,
@@ -72,4 +73,5 @@ export {
   SRIMessageSignatureIssue,
   StylesheetLoadingIssue,
   UnencodedDigestIssue,
+  WebInstallIssue,
 };

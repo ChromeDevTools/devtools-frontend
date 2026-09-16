@@ -46,6 +46,7 @@ devtools_foundation_module("issues_manager") {
     "SourceFrameIssuesManager.ts",
     "StylesheetLoadingIssue.ts",
     "UnencodedDigestIssue.ts",
+    "WebInstallIssue.ts",
   ]
 
   ts_deps = [
@@ -316,6 +317,11 @@ devtools_issue_description_files = [
   "unencodedDigestIncorrectDigestType.md",
   "unencodedDigestMalformedDictionary.md",
   "unencodedDigestUnknownAlgorithm.md",
+  "webInstallManifestMissingId.md",
+  "webInstallManifestMissingNameOrShortName.md",
+  "webInstallManifestParsingOrNetworkError.md",
+  "webInstallNoManifest.md",
+  "webInstallStartUrlInvalid.md",
 ]
 
 generated_file("description_list") {
@@ -389,6 +395,7 @@ devtools_foundation_module("foundation_unittests") {
     "SharedDictionaryIssue.test.ts",
     "StylesheetLoadingIssue.test.ts",
     "UnencodedDigestIssue.test.ts",
+    "WebInstallIssue.test.ts",
   ]
 
   ts_deps = [

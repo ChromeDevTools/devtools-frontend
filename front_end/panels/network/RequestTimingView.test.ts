@@ -13,7 +13,6 @@ import * as NetworkTimeCalculator from '../../models/network_time_calculator/net
 import {
   assertScreenshot,
   getCleanTextContentFromElements,
-  raf,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -304,9 +303,6 @@ describe('ResourceTimingView', () => {
     sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'originalRequestForURL').returns(origRequest);
     sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'originalResponseForURL').returns(response);
 
-    const populateSpy =
-        sinon.spy(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement, 'populateChildrenIfNeeded');
-
     const component = Network.RequestTimingView.RequestTimingView.create(
         request, new NetworkTimeCalculator.NetworkTimeCalculator(true));
     const div = document.createElement('div');
@@ -314,24 +310,19 @@ describe('ResourceTimingView', () => {
     component.markAsRoot();
     component.show(div);
 
-    await component.updateComplete;
-    await Promise.all(populateSpy.returnValues);
-    await raf();
     await UI.Widget.Widget.allUpdatesComplete;
 
     const detailsTreeElement = component.contentElement.querySelector('.network-fetch-timing-bar-details > *');
     assert.exists(detailsTreeElement);
-    assert.exists(detailsTreeElement.shadowRoot);
 
-    const rootElements = detailsTreeElement.shadowRoot.querySelectorAll('li.object-properties-section-root-element');
-    assert.lengthOf(rootElements, 2);
+    const objectTreeElements = detailsTreeElement.querySelectorAll<HTMLElement>(
+        'li.object-properties-section-root-element > ul[role="group"]');
+    assert.lengthOf(objectTreeElements, 2);
 
-    for (const rootElementNode of rootElements) {
-      const rootElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(rootElementNode);
-      assert.exists(rootElement);
-      const firstProperty = rootElement.childAt(0);
-      assert.instanceOf(firstProperty, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
-      assert.isFalse(firstProperty.editable);
+    for (const element of objectTreeElements) {
+      const widget = UI.Widget.Widget.get(element);
+      assert.instanceOf(widget, ObjectUI.ObjectPropertiesSection.ObjectTreeWidget);
+      assert.isTrue(widget.objectTree?.readOnly);
     }
   });
 

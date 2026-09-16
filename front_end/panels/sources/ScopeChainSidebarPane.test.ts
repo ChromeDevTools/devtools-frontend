@@ -12,12 +12,12 @@ import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
@@ -65,15 +65,9 @@ describe('ScopeChainSidebarPane', () => {
 
     const flavor = StackTrace.StackTrace.DebuggableFrameFlavor.for(debuggableFrame);
 
-    const populateSpy =
-        sinon.spy(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement, 'populateChildrenIfNeeded');
-
+    const sidebarUpdated = expectCall(sinon.stub(pane, 'sidebarPaneUpdatedForTest'));
     pane.flavorChanged(flavor);
-    await pane.updateComplete;
-
-    // Object properties are rendered asynchronously.
-    await populateSpy.returnValues[0];
-    await raf();  // Wait for Lit and MutationObserver to tick
+    await sidebarUpdated;
     await UI.Widget.Widget.allUpdatesComplete;
     const tree = pane.contentElement.querySelector('devtools-tree');
     tree?.getInternalTreeOutlineForTest().focus();

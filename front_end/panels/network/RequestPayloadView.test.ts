@@ -7,7 +7,7 @@ import sinon from 'sinon';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
-import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -261,33 +261,17 @@ describeWithEnvironment('RequestPayloadView', () => {
     });
     sinon.stub(request, 'requestFormData').resolves('{"foo": "bar"}');
 
-    const populateSpy =
-        sinon.spy(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement, 'populateChildrenIfNeeded');
-
-    const view = new Network.RequestPayloadView.RequestPayloadView();
+    const viewFunction = createViewFunctionStub(Network.RequestPayloadView.RequestPayloadView);
+    const view = new Network.RequestPayloadView.RequestPayloadView(undefined, viewFunction);
     view.request = request;
     renderElementIntoDOM(view, {includeCommonStyles: true});
     view.wasShown();
 
-    await view.updateComplete;
+    while (!viewFunction.input?.objectTree) {
+      await viewFunction.nextInput;
+    }
 
-    // Object properties are rendered asynchronously.
-    await populateSpy.returnValues[0];
-    await raf();
-    await UI.Widget.Widget.allUpdatesComplete;
-
-    const treeOutline = view.element.querySelector<HTMLElement>('.request-payload-tree');
-    assert.exists(treeOutline);
-    const shadowRoot = treeOutline.shadowRoot;
-    assert.exists(shadowRoot);
-
-    const firstChildNode = shadowRoot.querySelector('li.object-properties-section');
-    assert.exists(firstChildNode);
-    const rootElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(firstChildNode);
-    assert.exists(rootElement);
-    const firstProperty = rootElement.childAt(0);
-    assert.instanceOf(firstProperty, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
-    assert.isFalse(firstProperty.editable);
+    assert.isTrue(viewFunction.input.objectTree.readOnly);
   });
 
   it('calls onPayloadContextMenu and onPayloadToggle from DEFAULT_VIEW', async () => {

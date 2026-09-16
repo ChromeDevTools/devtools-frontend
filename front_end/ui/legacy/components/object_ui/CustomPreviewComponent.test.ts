@@ -34,13 +34,11 @@ describe('CustomPreviewComponent', () => {
     component.expanded = true;
     await UI.Widget.Widget.allUpdatesComplete;
 
-    const tree = component.element.shadowRoot?.querySelector('devtools-tree');
-    assert.exists(tree);
-    const outline = tree.getInternalTreeOutlineForTest();
-    const propertyTreeElement = outline.firstChild();
-    assert.exists(propertyTreeElement);
-    assert.instanceOf(propertyTreeElement, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
-    assert.isFalse(propertyTreeElement.editable);
+    const defaultBody = component.element.shadowRoot?.querySelector('.custom-expandable-section-default-body');
+    assert.exists(defaultBody);
+    const widget = UI.Widget.Widget.get(defaultBody);
+    assert.instanceOf(widget, ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget);
+    assert.isTrue(widget.objectTree?.readOnly);
   });
 
   it('rejects object reference tags that do not have exactly two elements', () => {

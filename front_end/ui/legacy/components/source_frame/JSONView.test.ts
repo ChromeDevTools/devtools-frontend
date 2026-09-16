@@ -23,19 +23,13 @@ describeWithEnvironment('JSONView', () => {
     const parsedJSON = new SourceFrame.JSONView.ParsedJSON({foo: 'bar'}, '', '');
     const jsonView = new SourceFrame.JSONView.JSONView(parsedJSON);
     renderElementIntoDOM(jsonView);
-    await raf();
+    await UI.Widget.Widget.allUpdatesComplete;
 
-    const treeView = jsonView.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
-    assert.exists(treeView);
-    const treeOutline = treeView.getInternalTreeOutlineForTest();
-    assert.exists(treeOutline);
-
-    const rootElement = treeOutline.rootElement().childAt(0);
-    assert.exists(rootElement);
-    await raf();
-    const child = rootElement.childAt(0);
-    assert.instanceOf(child, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
-    assert.isFalse(child.editable);
+    const widgetElement = jsonView.contentElement.querySelector('devtools-widget');
+    assert.exists(widgetElement);
+    const widget = UI.Widget.Widget.get(widgetElement);
+    assert.instanceOf(widget, ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget);
+    assert.isTrue(widget.objectTree?.readOnly);
     jsonView.detach();
   });
 

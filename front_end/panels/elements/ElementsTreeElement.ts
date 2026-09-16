@@ -2714,9 +2714,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       }
 
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-      Elements.DOMChanges.trackTagNameEdit(this.#changeTracker, newNode,
-                                           buildChangeSelector(this.#changeTracker, newNode), oldText ?? tagName ?? '',
-                                           newText);
+      const changeTracker = this.changeTracker;
+      Elements.DOMChanges.trackTagNameEdit(changeTracker, newNode, buildChangeSelector(changeTracker, newNode),
+                                           oldText ?? tagName ?? '', newText);
       if (this.selectNodeAfterEdit) {
         this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
       }
@@ -2729,8 +2729,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
     function callback(this: ElementsTreeWidget, error?: string|null): void {
       if (!error && oldValue !== newText) {
-        Elements.DOMChanges.trackTextNodeEdit(this.#changeTracker, textNode,
-                                              buildChangeSelector(this.#changeTracker, textNode), oldValue, newText);
+        const changeTracker = this.changeTracker;
+        Elements.DOMChanges.trackTextNodeEdit(changeTracker, textNode, buildChangeSelector(changeTracker, textNode),
+                                              oldValue, newText);
       }
       this.#clearDOMNextUpdate = true;
       this.updateTitle();
@@ -2893,10 +2894,11 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       return;
     }
     // The selector has to be resolved before the node is detached from the tree.
-    const selector = buildChangeSelector(this.#changeTracker, this.node);
+    const changeTracker = this.changeTracker;
+    const selector = buildChangeSelector(changeTracker, this.node);
     await this.node.removeNode((err: string|null) => {
       if (!err) {
-        Elements.DOMChanges.trackNodeRemoval(this.#changeTracker, this.node, selector);
+        Elements.DOMChanges.trackNodeRemoval(changeTracker, this.node, selector);
       }
     });
   }
@@ -2920,10 +2922,11 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     const commitChange = (initialValue: string, value: string): void => {
       if (initialValue !== value) {
         // The selector has to be resolved before the node is detached from the tree.
-        const selector = buildChangeSelector(this.#changeTracker, node);
+        const changeTracker = this.changeTracker;
+        const selector = buildChangeSelector(changeTracker, node);
         node.setOuterHTML(value, (error: string|null) => {
           if (!error) {
-            Elements.DOMChanges.trackHTMLEdit(this.#changeTracker, node, selector, initialValue, value);
+            Elements.DOMChanges.trackHTMLEdit(changeTracker, node, selector, initialValue, value);
           }
           selectNode(error);
         });

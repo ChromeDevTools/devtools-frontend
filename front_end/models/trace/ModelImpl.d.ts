@@ -96,9 +96,4 @@ export declare class ModelUpdateEvent extends Event {
     static readonly eventName = "modelupdate";
     constructor(data: ModelUpdateEventData);
 }
-declare global {
-    interface HTMLElementEventMap {
-        [ModelUpdateEvent.eventName]: ModelUpdateEvent;
-    }
-}
 export declare function isModelUpdateDataComplete(eventData: ModelUpdateEventData): eventData is ModelUpdateEventComplete;

@@ -13,7 +13,6 @@
     "skipLibCheck": true
   },
   "files": [
-    "../../../../../test/shared/debug-check.ts",
     "../../../../../test/shared/helper.ts",
     "../../../../../test/shared/mocha-resultsdb-reporter.ts",
     "../../../../../test/shared/run-mocha.ts",

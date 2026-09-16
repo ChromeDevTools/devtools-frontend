@@ -59,7 +59,7 @@ details .hide-when-closed {
 }
 
 details[open] .hide-when-closed {
-  display: block;
+  display: revert;
 }
 
 details summary input {
@@ -182,6 +182,7 @@ div.raw-headers-row {
 
 .header-grid-container div:last-child {
   text-align: right;
+  white-space: nowrap;
 }
 
 .header .devtools-link {
@@ -219,6 +220,11 @@ summary label {
 
 summary devtools-checkbox {
   margin-top: var(--sys-size-1);
+}
+
+.backend-link-button {
+  margin-left: var(--sys-size-4);
+  vertical-align: middle;
 }
 
 /*# sourceURL=${import.meta.resolve("./RequestHeadersView.css")} */`;
@@ -2252,6 +2258,11 @@ var DOM;
     GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
     GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
   })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+  let SetTextMarkerRequestType;
+  ((SetTextMarkerRequestType2) => {
+    SetTextMarkerRequestType2["Spelling"] = "spelling";
+    SetTextMarkerRequestType2["Grammar"] = "grammar";
+  })(SetTextMarkerRequestType = DOM2.SetTextMarkerRequestType || (DOM2.SetTextMarkerRequestType = {}));
 })(DOM || (DOM = {}));
 var DOMDebugger;
 ((DOMDebugger2) => {

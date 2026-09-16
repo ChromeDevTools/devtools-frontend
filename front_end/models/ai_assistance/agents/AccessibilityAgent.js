@@ -214,7 +214,11 @@ export class AccessibilityAgent extends AiAgent {
                     createExtensionScope: this.#createExtensionScope.bind(this),
                     execJs: this.#execJs,
                     getExecutionContextNode: () => this.#getDocumentBodyNode(),
-                    getEstablishedOrigin: () => this.context?.getOrigin(),
+                    getOriginLock: () => {
+                        // V1 AccessibilityAgent adapts the selected node's security origin to OriginLockState.
+                        const origin = this.context?.getOrigin();
+                        return origin ? { status: 'ESTABLISHED_ORIGIN', origin } : { status: 'UNINITIALIZED' };
+                    },
                 }, options);
             },
         });

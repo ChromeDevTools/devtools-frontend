@@ -40,7 +40,7 @@ details .hide-when-closed {
 }
 
 details[open] .hide-when-closed {
-  display: block;
+  display: revert;
 }
 
 details summary input {
@@ -163,6 +163,7 @@ div.raw-headers-row {
 
 .header-grid-container div:last-child {
   text-align: right;
+  white-space: nowrap;
 }
 
 .header .devtools-link {
@@ -200,6 +201,11 @@ summary label {
 
 summary devtools-checkbox {
   margin-top: var(--sys-size-1);
+}
+
+.backend-link-button {
+  margin-left: var(--sys-size-4);
+  vertical-align: middle;
 }
 
 /*# sourceURL=${import.meta.resolve('./RequestHeadersView.css')} */`;

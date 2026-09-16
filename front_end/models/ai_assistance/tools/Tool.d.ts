@@ -96,31 +96,52 @@ export interface TargetCapability {
      * so tools can resolve DOM nodes and frame hierarchies across frames.
      *
      * Tools that consume this target must independently validate the security origin of
-     * any resolved entities (e.g. via `node.securityOrigin()`) against `getEstablishedOrigin()`.
+     * any resolved entities (e.g. via `node.securityOrigin()`) against `getOriginLock()`.
      */
     getTarget(): SDK.Target.Target | null;
 }
+/**
+ * Origin-locking state for AI Assistance:
+ * - `ESTABLISHED_ORIGIN`: The conversation is bound to a specific origin. Operations are
+ *   limited to this origin.
+ * - `BLOCKED_BY_NAVIGATION`: An unapproved cross-origin navigation occurred during the
+ *   active run. Origin-restricted operations are blocked and must return an error.
+ * - `UNINITIALIZED`: No origin lock has been established yet. Operations requiring a locked
+ *   origin must return an error.
+ */
+export type OriginLockState = {
+    status: 'ESTABLISHED_ORIGIN';
+    origin: SDK.SecurityOrigin.SecurityOrigin;
+} | {
+    status: 'BLOCKED_BY_NAVIGATION';
+} | {
+    status: 'UNINITIALIZED';
+};
 /**
  * Capability for tools that enforce conversation origin boundaries.
  */
 export interface OriginLockCapability {
     /**
-     * Returns the security origin locked for the current conversation.
-     *
-     * TODO: When V1 agents (StylingAgent, AccessibilityAgent) are removed,
-     * simplify getEstablishedOrigin() to return SDK.SecurityOrigin.SecurityOrigin
-     * non-optionally.
-     *
-     * @returns The established {@link SDK.SecurityOrigin.SecurityOrigin}, or `undefined`
-     * if the conversation is not yet locked to an origin (e.g. before the first query).
+     * Returns the current origin-locking state for the active conversation.
      */
-    getEstablishedOrigin(): SDK.SecurityOrigin.SecurityOrigin | undefined;
+    getOriginLock(): OriginLockState;
 }
 /**
  * Checks whether a target origin matches the established conversation origin lock.
- * Fails closed (returns false) if established origin is missing/opaque or target is cross-origin.
+ * Returns `false` if the lock is not established, either origin is opaque, or the
+ * target origin does not match the established origin.
  */
-export declare function isOriginAllowedByLock(establishedOrigin: SDK.SecurityOrigin.SecurityOrigin | undefined, targetOrigin: SDK.SecurityOrigin.SecurityOrigin | null | undefined): boolean;
+export declare function isOriginAllowedByLock(originLock: OriginLockState, targetOrigin: SDK.SecurityOrigin.SecurityOrigin | null | undefined): boolean;
+/**
+ * Resolves the conversation's established origin from the origin lock state.
+ * Returns an error object if origin access is blocked by navigation, the lock
+ * is uninitialized, or the established origin is opaque.
+ */
+export declare function resolveOriginFromLock(originLock: OriginLockState): {
+    origin: SDK.SecurityOrigin.SecurityOrigin;
+} | {
+    error: string;
+};
 /**
  * Capability for tools that need to inspect an active Lighthouse report from context.
  */

@@ -397,6 +397,7 @@
   "front_end/models/badges/badges.js",
   "front_end/models/breakpoints/breakpoints.js",
   "front_end/models/comment_manager/comment_manager.js",
+  "front_end/models/change_tracker/change_tracker.js",
   "front_end/third_party/marked/marked.js",
   "front_end/models/issues_manager/descriptions/bounceTrackingMitigations.md",
   "front_end/models/issues_manager/descriptions/clientHintMetaTagAllowListInvalidOrigin.md",

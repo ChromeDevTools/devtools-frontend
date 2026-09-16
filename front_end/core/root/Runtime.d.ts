@@ -261,6 +261,9 @@ interface DevToolsAriaLiveRecording {
 interface DevToolsMobileSafeAreaEmulation {
     enabled: boolean;
 }
+interface DevToolsNetworkBackendLinking {
+    enabled: boolean;
+}
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -318,6 +321,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsAriaLiveRecording: DevToolsAriaLiveRecording;
     devToolsInstrumentationBreakpoints: DevToolsInstrumentationBreakpoints;
     devToolsMobileSafeAreaEmulation: DevToolsMobileSafeAreaEmulation;
+    devToolsNetworkBackendLinking: DevToolsNetworkBackendLinking;
     extensionsOnChromeUrls: ExtensionsOnChromeUrls;
     devToolsComments: HostConfigDevToolsComments;
 }>;

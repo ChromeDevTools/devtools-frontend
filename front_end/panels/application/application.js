@@ -877,6 +877,11 @@ var DOM;
     GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
     GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
   })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+  let SetTextMarkerRequestType;
+  ((SetTextMarkerRequestType2) => {
+    SetTextMarkerRequestType2["Spelling"] = "spelling";
+    SetTextMarkerRequestType2["Grammar"] = "grammar";
+  })(SetTextMarkerRequestType = DOM2.SetTextMarkerRequestType || (DOM2.SetTextMarkerRequestType = {}));
 })(DOM || (DOM = {}));
 var DOMDebugger;
 ((DOMDebugger2) => {
@@ -8134,7 +8139,7 @@ var renderDataGrid = (input) => {
         ${input.isIndex ? html6`<th id="primary-key" weight="2">${renderKeyColumnHeader(i18nString8(UIStrings8.primaryKey), input.objectStore.keyPath)}</th>` : nothing4}
         <th id="value" weight="8">${i18nString8(UIStrings8.valueString)}</th>
       </tr>
-      ${repeat(input.entries, (_entry, index) => index, (entry, index) => {
+      ${repeat(input.entries, (entry) => entry, (entry, index) => {
     return html6`
           <tr ?selected=${index + input.skipCount === input.selectedRowNumber}
               class="data-grid-data-row"

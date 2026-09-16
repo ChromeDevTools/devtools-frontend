@@ -35,7 +35,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2023",
+    "target": "es2023",
     "typeRoots": [
 
     ],
@@ -53,10 +53,7 @@
     "../../../../../../front_end/core/host/GcaTypes.ts",
     "../../../../../../front_end/core/host/GdpClient.ts",
     "../../../../../../front_end/core/host/InspectorFrontendHost.ts",
-    "../../../../../../front_end/core/host/InspectorFrontendHostAPI.ts",
-    "../../../../../../front_end/core/host/InspectorFrontendHostStub.ts",
     "../../../../../../front_end/core/host/Platform.ts",
-    "../../../../../../front_end/core/host/ResourceLoader.ts",
     "../../../../../../front_end/core/host/UserMetrics.ts",
     "../../../../../../front_end/core/host/UserMetricsEnums.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
@@ -65,6 +62,12 @@
     "../../../../../../node_modules/@types/filewriter/index.d.ts"
   ],
   "references": [
+    {
+      "path": "host_base-tsconfig.ref.json"
+    },
+    {
+      "path": "host_stub-tsconfig.ref.json"
+    },
     {
       "path": "../common/bundle-tsconfig.ref.json"
     },

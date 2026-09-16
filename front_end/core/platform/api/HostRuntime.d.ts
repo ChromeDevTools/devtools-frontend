@@ -21,6 +21,7 @@ export interface HostRuntime {
     getDevicePixelRatio(): number;
     saveScreenshot(options: ScreenshotOptions): Promise<void>;
     revokeLastScreenshotUrl(): void;
+    loadTextFile(url: URL): Promise<string>;
 }
 /**
  * Abstracts away the differences between browser web workers and Node.js worker threads.

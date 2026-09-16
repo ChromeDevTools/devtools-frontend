@@ -856,6 +856,11 @@ var DOM;
     GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
     GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
   })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+  let SetTextMarkerRequestType;
+  ((SetTextMarkerRequestType2) => {
+    SetTextMarkerRequestType2["Spelling"] = "spelling";
+    SetTextMarkerRequestType2["Grammar"] = "grammar";
+  })(SetTextMarkerRequestType = DOM2.SetTextMarkerRequestType || (DOM2.SetTextMarkerRequestType = {}));
 })(DOM || (DOM = {}));
 var DOMDebugger;
 ((DOMDebugger2) => {
@@ -3022,6 +3027,7 @@ __export(MarkdownIssueDescription_exports, {
   resolveLazyDescription: () => resolveLazyDescription,
   substitutePlaceholders: () => substitutePlaceholders
 });
+import * as Platform from "../../core/platform/platform.js";
 import * as Marked from "../../third_party/marked/marked.js";
 function resolveLazyDescription(lazyDescription) {
   function linksMap(currentLink) {
@@ -3040,8 +3046,7 @@ function resolveLazyDescription(lazyDescription) {
 }
 async function getFileContent(url) {
   try {
-    const response = await fetch(url.toString());
-    return await response.text();
+    return await Platform.HostRuntime.HOST_RUNTIME.loadTextFile(url);
   } catch {
     throw new Error(
       `Markdown file ${url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`
@@ -4704,7 +4709,7 @@ __export(DOMIssuesManager_exports, {
   Events: () => Events2
 });
 import * as Common2 from "../../core/common/common.js";
-import * as Platform from "../../core/platform/platform.js";
+import * as Platform2 from "../../core/platform/platform.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 
 // ../../front_end/models/issues_manager/IssuesManagerEvents.ts
@@ -4726,8 +4731,8 @@ var DOMIssuesManager = class extends Common2.ObjectWrapper.ObjectWrapper {
   #issuesManager;
   #targetManager;
   #currentIssues = /* @__PURE__ */ new Set();
-  #nodeToIssues = new Platform.MapUtilities.Multimap();
-  #nodeIdSubscribers = new Platform.MapUtilities.Multimap();
+  #nodeToIssues = new Platform2.MapUtilities.Multimap();
+  #nodeIdSubscribers = new Platform2.MapUtilities.Multimap();
   constructor(issuesManager, targetManager) {
     super();
     this.#issuesManager = issuesManager;

@@ -80,6 +80,9 @@
       "path": "../models/breakpoints/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../models/change_tracker/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../models/comment_manager/bundle-tsconfig.ref.json"
     },
     {

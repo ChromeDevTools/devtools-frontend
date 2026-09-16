@@ -911,6 +911,11 @@ var DOM;
     GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
     GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
   })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+  let SetTextMarkerRequestType;
+  ((SetTextMarkerRequestType2) => {
+    SetTextMarkerRequestType2["Spelling"] = "spelling";
+    SetTextMarkerRequestType2["Grammar"] = "grammar";
+  })(SetTextMarkerRequestType = DOM2.SetTextMarkerRequestType || (DOM2.SetTextMarkerRequestType = {}));
 })(DOM || (DOM = {}));
 var DOMDebugger;
 ((DOMDebugger2) => {
@@ -23100,22 +23105,24 @@ var SourceMapScopeChainEntry = class {
     return this.#callFrame;
   }
   type() {
-    switch (this.#scope.kind) {
+    if (this.#scope.isStackFrame) {
+      return this.#isInnerMostFunction ? Debugger.ScopeType.Local : Debugger.ScopeType.Closure;
+    }
+    switch (this.#scope.kind?.toLowerCase()) {
       case "global":
         return Debugger.ScopeType.Global;
-      case "function":
-        return this.#isInnerMostFunction ? Debugger.ScopeType.Local : Debugger.ScopeType.Closure;
       case "block":
         return Debugger.ScopeType.Block;
     }
     return this.#scope.kind ?? "";
   }
   typeName() {
-    switch (this.#scope.kind) {
+    if (this.#scope.isStackFrame) {
+      return this.#isInnerMostFunction ? i18nString4(UIStrings4.local) : i18nString4(UIStrings4.closure);
+    }
+    switch (this.#scope.kind?.toLowerCase()) {
       case "global":
         return i18nString4(UIStrings4.global);
-      case "function":
-        return this.#isInnerMostFunction ? i18nString4(UIStrings4.local) : i18nString4(UIStrings4.closure);
       case "block":
         return i18nString4(UIStrings4.block);
     }
@@ -23495,7 +23502,7 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     const result = [];
     for (let originalScope = rangeChain.at(-1)?.originalScope; originalScope; originalScope = originalScope.parent) {
       const range = rangeChain.findLast((r) => r.originalScope === originalScope);
-      const isFunctionScope = originalScope.kind === "function";
+      const isFunctionScope = originalScope.isStackFrame;
       const isInnerMostFunction = isFunctionScope && !seenFunctionScope;
       const returnValue = isInnerMostFunction ? callFrame.returnValue() : null;
       const scopeNumber = range ? findMatchingScopeNumber(callFrame, range) : void 0;
@@ -29566,6 +29573,16 @@ var DOMNode = class _DOMNode extends Common20.ObjectWrapper.ObjectWrapper {
       return null;
     }
     return this.domModel().nodeForId(response.nodeId);
+  }
+  async getImplicitAnchorCandidates() {
+    const response = await this.#agent.invoke_getImplicitAnchorCandidates({
+      nodeId: this.id
+    });
+    if (response.getError() || !response.backendNodeIds) {
+      return [];
+    }
+    const target = this.domModel().target();
+    return response.backendNodeIds.map((backendNodeId) => new DeferredDOMNode(target, backendNodeId));
   }
   async takeSnapshot(ownerDocumentSnapshot) {
     const snapshot = this instanceof DOMDocument ? new DOMDocumentSnapshot(this.domModel(), {

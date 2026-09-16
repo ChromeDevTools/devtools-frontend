@@ -1,7 +1,7 @@
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import type * as Root from '../root/root.js';
-import { type AidaClientResult, type AidaCodeCompleteResult, type CanShowSurveyResult, type ChangeEvent, type ClickEvent, type ContextMenuDescriptor, type DispatchHttpRequestRequest, type DispatchHttpRequestResult, type DoAidaConversationResult, type DragEvent, type EnumeratedHistogram, type EventTypes, type ExtensionDescriptor, type FunctionCallEvent, type HoverEvent, type ImpressionEvent, type InspectorFrontendHostAPI, type KeyDownEvent, type LoadNetworkResourceResult, type ResizeEvent, type SettingAccessEvent, type ShowSurveyResult, type SyncInformation } from './InspectorFrontendHostAPI.js';
+import { type AidaClientResult, type AidaCodeCompleteResult, type CanShowSurveyResult, type ChangeEvent, type ClickEvent, type ContextMenuDescriptor, type DevicesDiscoveryConfig, type DispatchHttpRequestRequest, type DispatchHttpRequestResult, type DoAidaConversationResult, type DragEvent, type EnumeratedHistogram, type EventTypes, type ExtensionDescriptor, type FunctionCallEvent, type HoverEvent, type ImpressionEvent, type InspectorFrontendHostAPI, type KeyDownEvent, type LoadNetworkResourceResult, type ResizeEvent, type SettingAccessEvent, type ShowSurveyResult, type SyncInformation } from './InspectorFrontendHostAPI.js';
 /**
  * The `InspectorFrontendHostStub` is a stub interface used the frontend is loaded like a webpage. Examples:
  *   - devtools://devtools/bundled/devtools_app.html
@@ -105,11 +105,11 @@ export declare class InspectorFrontendHostStub implements InspectorFrontendHostA
     readyForTest(): void;
     connectionReady(): void;
     setOpenNewWindowForPopups(_value: boolean): void;
-    setDevicesDiscoveryConfig(_config: Adb.Config): void;
+    setDevicesDiscoveryConfig(_config: DevicesDiscoveryConfig): void;
     setDevicesUpdatesEnabled(_enabled: boolean): void;
     openRemotePage(_browserId: string, _url: string): void;
     openNodeFrontend(): void;
-    showContextMenuAtPoint(_x: number, _y: number, _items: ContextMenuDescriptor[], _document: Document): void;
+    showContextMenuAtPoint(_x: number, _y: number, _items: ContextMenuDescriptor[], _document: object): void;
     /**
      * Think of **Hosted mode** as "non-embedded" mode; you can see a devtools frontend URL as the tab's URL. It's an atypical way that DevTools is run.
      * Whereas in **Non-hosted** (aka "embedded"), DevTools is embedded and fully dockable. It's the common way DevTools is run.

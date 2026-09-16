@@ -1,6 +1,8 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Fs from 'node:fs';
+import * as Url from 'node:url';
 import * as WorkerThreads from 'node:worker_threads';
 class NodeWorkerScope {
     postMessage(message, transfer) {
@@ -87,5 +89,8 @@ export const HOST_RUNTIME = {
     },
     async saveScreenshot(_options) { },
     revokeLastScreenshotUrl() { },
+    async loadTextFile(url) {
+        return await Fs.promises.readFile(Url.fileURLToPath(url), 'utf-8');
+    },
 };
 //# sourceMappingURL=HostRuntime.js.map

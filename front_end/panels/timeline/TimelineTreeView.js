@@ -191,6 +191,9 @@ export class TimelineTreeView extends TimelineTreeViewBase {
     #compactMode = false;
     #maxLinkLength = undefined;
     #maxRows = undefined;
+    // Tracks whether a tree refresh was deferred while detached from the DOM,
+    // so it can be performed when the widget becomes visible again.
+    #dirty = false;
     /**
      * Determines if the first child in the data grid will be selected
      * by default when refreshTree() gets called.
@@ -343,7 +346,11 @@ export class TimelineTreeView extends TimelineTreeViewBase {
     }
     wasShown() {
         super.wasShown();
-        this.refreshTree();
+        // Only refresh if data or configuration changed while detached,
+        // avoiding rebuilding the DataGrid which resets expanded nodes and selection.
+        if (this.#dirty) {
+            this.refreshTree();
+        }
         this.dataGrid.addEventListener("SelectedNode" /* DataGrid.DataGrid.Events.SELECTED_NODE */, this.#onDataGridSelectionChange, this);
         this.dataGrid.addEventListener("DeselectedNode" /* DataGrid.DataGrid.Events.DESELECTED_NODE */, this.#onDataGridDeselection, this);
     }
@@ -443,8 +450,11 @@ export class TimelineTreeView extends TimelineTreeViewBase {
             // dropdown changes value. Thus, we bail out whenever the view is
             // not visible, which we know if the related element is detached
             // from the document.
+            // Mark dirty so that the refresh is deferred until shown.
+            this.#dirty = true;
             return;
         }
+        this.#dirty = false;
         this.linkifier.reset();
         this.dataGrid.rootNode().removeChildren();
         if (!this.#parsedTrace) {

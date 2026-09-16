@@ -3547,21 +3547,17 @@ var FlameChart = class extends FlameChartBase {
     return this.markerPositions.get(entryIndex) ?? null;
   }
   /**
-   * Update position of an Element. By default, the element is treated as a full entry and it's dimensions are set to the full entry width/length/height.
-   * If isDecoration parameter is set to true, the element will be positioned on the right side of the entry and have a square shape where width == height of the entry.
+   * Retrieves the bounding box coordinates and dimensions of an entry relative to the flame chart viewport canvas.
+   * Coordinates account for horizontal time-to-pixel mapping and vertical scroll offset.
+   * Returns null if entryIndex is invalid or if the entry lies entirely outside the visible viewport bounds.
    */
-  updateElementPosition(element, entryIndex, isDecoration) {
-    if (!element) {
-      return;
-    }
-    const elementMinWidthPx = 2;
-    element.classList.add("hidden");
-    if (entryIndex === -1) {
-      return;
+  getEntryDimensions(entryIndex) {
+    if (entryIndex < 0) {
+      return null;
     }
     const timelineData = this.timelineData();
-    if (!timelineData) {
-      return;
+    if (!timelineData || entryIndex >= timelineData.entryStartTimes.length) {
+      return null;
     }
     const startTime = timelineData.entryStartTimes[entryIndex];
     const duration = timelineData.entryTotalTimes[entryIndex];
@@ -3585,27 +3581,55 @@ var FlameChart = class extends FlameChartBase {
       barWidth = duration * this.chartViewport.timeToPixel();
     }
     if (barX + barWidth <= 0 || barX >= this.offsetWidth) {
-      return;
+      return null;
     }
+    const elementMinWidthPx = 2;
     const barCenter = barX + barWidth / 2;
     barWidth = Math.max(barWidth, elementMinWidthPx);
     barX = barCenter - barWidth / 2;
     const entryLevel = timelineData.entryLevels[entryIndex];
     const barY = this.levelToOffset(entryLevel) - this.chartViewport.scrollOffset();
     const barHeight = this.levelHeight(entryLevel);
-    const style = element.style;
-    if (isDecoration) {
-      style.top = barY + "px";
-      style.width = barHeight + "px";
-      style.height = barHeight + "px";
-      style.left = barX + barWidth - barHeight + "px";
-    } else {
-      style.top = barY + "px";
-      style.width = barWidth + "px";
-      style.height = barHeight - 1 + "px";
-      style.left = barX + "px";
+    if (this.offsetHeight && (barY + barHeight <= 0 || barY >= this.offsetHeight)) {
+      return null;
     }
-    element.classList.toggle("hidden", !visible);
+    return {
+      x: barX,
+      y: barY,
+      width: barWidth,
+      height: barHeight - 1,
+      visible
+    };
+  }
+  /**
+   * Update position of an Element. By default, the element is treated as a full entry and it's dimensions are set to the full entry width/length/height.
+   * If isDecoration parameter is set to true, the element will be positioned on the right side of the entry and have a square shape where width == height of the entry.
+   */
+  updateElementPosition(element, entryIndex, isDecoration) {
+    if (!element) {
+      return;
+    }
+    element.classList.add("hidden");
+    if (entryIndex === -1) {
+      return;
+    }
+    const dimensions = this.getEntryDimensions(entryIndex);
+    if (!dimensions) {
+      return;
+    }
+    const style = element.style;
+    style.top = dimensions.y + "px";
+    const entryHeight = dimensions.height + 1;
+    if (isDecoration) {
+      style.width = entryHeight + "px";
+      style.height = entryHeight + "px";
+      style.left = dimensions.x + dimensions.width - entryHeight + "px";
+    } else {
+      style.width = dimensions.width + "px";
+      style.height = dimensions.height + "px";
+      style.left = dimensions.x + "px";
+    }
+    element.classList.toggle("hidden", !dimensions.visible);
     this.viewportElement.appendChild(element);
   }
   // Updates the highlight of an Arrow button that is shown on an entry if it has hidden child entries
@@ -5791,6 +5815,11 @@ var DOM;
     GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
     GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
   })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+  let SetTextMarkerRequestType;
+  ((SetTextMarkerRequestType2) => {
+    SetTextMarkerRequestType2["Spelling"] = "spelling";
+    SetTextMarkerRequestType2["Grammar"] = "grammar";
+  })(SetTextMarkerRequestType = DOM2.SetTextMarkerRequestType || (DOM2.SetTextMarkerRequestType = {}));
 })(DOM || (DOM = {}));
 var DOMDebugger;
 ((DOMDebugger2) => {

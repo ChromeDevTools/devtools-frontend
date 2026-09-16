@@ -16,6 +16,10 @@ interface ViewInput {
         section: NetworkForward.UIRequestLocation.UIHeaderSection;
         header?: string;
     };
+    backendLink: {
+        label: string;
+        url: URL;
+    } | null;
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare function renderGeneralRows(input: ViewInput): Lit.LitTemplate;

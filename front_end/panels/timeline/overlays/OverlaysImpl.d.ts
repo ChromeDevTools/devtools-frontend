@@ -102,6 +102,14 @@ export declare class EventReferenceClick extends Event {
     constructor(event: Trace.Types.Events.Event);
 }
 /**
+ * Dispatched when a comment pin overlay on a flame chart entry is clicked.
+ */
+export declare class CommentPinClick extends Event {
+    overlay: Trace.Types.Overlays.CommentPin;
+    static readonly eventName = "commentpinclick";
+    constructor(overlay: Trace.Types.Overlays.CommentPin);
+}
+/**
  * This class manages all the overlays that get drawn onto the performance
  * timeline. Overlays are DOM and are drawn above the network and main flame
  * chart.
@@ -164,12 +172,12 @@ export declare class Overlays extends EventTarget {
     remove(overlay: Trace.Types.Overlays.Overlay): void;
     /**
      * Update the dimensions of a chart.
-     * IMPORTANT: this does not trigger a re-draw. You must call the render() method manually.
+     * IMPORTANT: this does not trigger a re-draw. You must call the update() method manually.
      */
     updateChartDimensions(chart: EntryChartLocation, dimensions: FlameChartDimensions): void;
     /**
      * Update the visible window of the UI.
-     * IMPORTANT: this does not trigger a re-draw. You must call the render() method manually.
+     * IMPORTANT: this does not trigger a re-draw. You must call the update() method manually.
      */
     updateVisibleWindow(visibleWindow: Trace.Types.Timing.TraceWindowMicro): void;
     /**

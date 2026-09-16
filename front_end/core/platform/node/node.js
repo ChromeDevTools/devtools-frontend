@@ -9,6 +9,8 @@ var HostRuntime_exports = {};
 __export(HostRuntime_exports, {
   HOST_RUNTIME: () => HOST_RUNTIME
 });
+import * as Fs from "node:fs";
+import * as Url from "node:url";
 import * as WorkerThreads from "node:worker_threads";
 var NodeWorkerScope = class {
   postMessage(message, transfer) {
@@ -96,6 +98,9 @@ var HOST_RUNTIME = {
   async saveScreenshot(_options) {
   },
   revokeLastScreenshotUrl() {
+  },
+  async loadTextFile(url) {
+    return await Fs.promises.readFile(Url.fileURLToPath(url), "utf-8");
   }
 };
 export {

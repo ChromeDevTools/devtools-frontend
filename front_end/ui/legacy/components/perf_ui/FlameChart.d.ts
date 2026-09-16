@@ -414,6 +414,12 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
     private entryHasDecoration;
     getCustomDrawnPositionForEntryIndex(entryIndex: number): PositionOverride | null;
     /**
+     * Retrieves the bounding box coordinates and dimensions of an entry relative to the flame chart viewport canvas.
+     * Coordinates account for horizontal time-to-pixel mapping and vertical scroll offset.
+     * Returns null if entryIndex is invalid or if the entry lies entirely outside the visible viewport bounds.
+     */
+    getEntryDimensions(entryIndex: number): EntryDimensions | null;
+    /**
      * Update position of an Element. By default, the element is treated as a full entry and it's dimensions are set to the full entry width/length/height.
      * If isDecoration parameter is set to true, the element will be positioned on the right side of the entry and have a square shape where width == height of the entry.
      */
@@ -643,6 +649,18 @@ export declare const enum Events {
     ENTRY_HOVERED = "EntryHovered",
     LATEST_DRAW_DIMENSIONS = "LatestDrawDimensions",
     MOUSE_MOVE = "MouseMove"
+}
+export interface EntryDimensions {
+    /** X coordinate in pixels relative to the flame chart viewport canvas. */
+    x: number;
+    /** Y coordinate in pixels relative to the flame chart viewport canvas, adjusted for vertical scroll. */
+    y: number;
+    /** Rendered width in pixels (minimum 2px). */
+    width: number;
+    /** Rendered height in pixels excluding the 1px inter-level border gap. */
+    height: number;
+    /** Indicates whether the entry is currently visible within the timeline data. */
+    visible: boolean;
 }
 export interface EventTypes {
     [Events.ENTRY_LABEL_ANNOTATION_ADDED]: {

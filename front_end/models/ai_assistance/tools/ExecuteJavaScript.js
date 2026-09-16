@@ -87,7 +87,7 @@ const data = {
         if (!executionNode) {
             return { error: 'Error: Could not find the context node for execution.' };
         }
-        if (!isOriginAllowedByLock(context.getEstablishedOrigin(), executionNode.securityOrigin())) {
+        if (!isOriginAllowedByLock(context.getOriginLock(), executionNode.securityOrigin())) {
             return { error: 'Error: Cannot execute JavaScript on cross-origin target.' };
         }
         if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {

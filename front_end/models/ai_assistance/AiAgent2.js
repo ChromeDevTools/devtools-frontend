@@ -13,7 +13,7 @@ import { PerformanceTraceContext } from './contexts/PerformanceTraceContext.js';
 import { debugLog } from './debug.js';
 import { ExtensionScope } from './ExtensionScope.js';
 import { SKILLS } from './skills/SkillRegistry.js';
-import { isOriginAllowedByLock } from './tools/Tool.js';
+import { isOriginAllowedByLock, } from './tools/Tool.js';
 import { ToolRegistry } from './tools/ToolRegistry.js';
 const SKILL_DISPLAY_NAMES = {
     styling: 'CSS and styling',
@@ -63,7 +63,7 @@ export class AiAgent2 extends AiAgent {
     }
     #changes;
     #execJs;
-    #allowedOrigin;
+    #originLock;
     #lighthouseRecording;
     #performanceRecordAndReload;
     get options() {
@@ -76,11 +76,10 @@ export class AiAgent2 extends AiAgent {
             this.disableServerSideLogging();
         }
         const target = this.targetManager.primaryPageTarget();
-        const establishedOrigin = this.#getConversationOrigin();
+        const originLock = this.#originLock();
         // Avoid fetching or caching top-level documents across origins or when
         // the origin lock is blocked/uninitialized.
-        // Note: b/559642568 tracks making the tri-state ('blocked' | 'uninitialized' | 'locked') explicit.
-        const isTargetAllowed = target && isOriginAllowedByLock(establishedOrigin, target.inspectedSecurityOrigin());
+        const isTargetAllowed = target && isOriginAllowedByLock(originLock, target.inspectedSecurityOrigin());
         const domModel = isTargetAllowed ? target.model(SDK.DOMModel.DOMModel) : null;
         // Ensure the DOM document is requested and cached in DOMModel so that
         // subsequent synchronous lookups via domModel.existingDocument() (e.g.,
@@ -112,7 +111,7 @@ export class AiAgent2 extends AiAgent {
         this.#lighthouseRecording = opts.lighthouseRecording;
         this.#performanceRecordAndReload = opts.performanceRecordAndReload;
         this.#execJs = opts.execJs ?? executeJsCode;
-        this.#allowedOrigin = opts.allowedOrigin;
+        this.#originLock = opts.originLock;
         this.#declaredTools.add('learnSkills');
         this.declareFunction('learnSkills', {
             description: () => {
@@ -255,7 +254,7 @@ User query: ${enhancedQuery}`;
                     execJs: this.#execJs,
                     getExecutionContextNode: () => this.#getExecutionContextNode(),
                     getTarget: () => this.#getTarget(),
-                    getEstablishedOrigin: () => this.#getConversationOrigin(),
+                    getOriginLock: () => this.#originLock(),
                     getLighthouseReport: () => (this.context instanceof AccessibilityContext ? this.context.getItem() : null),
                     runLighthouse: async (overrides) => await (this.#lighthouseRecording?.(overrides) ?? null),
                     getPerformanceTraceContext: () => (this.context instanceof PerformanceTraceContext ? this.context : null),
@@ -275,8 +274,7 @@ User query: ${enhancedQuery}`;
      * perform their own origin checks on the resolved entities.
      */
     #getTarget() {
-        const allowed = this.#allowedOrigin?.();
-        if (allowed && 'blocked' in allowed) {
+        if (this.#originLock().status === 'BLOCKED_BY_NAVIGATION') {
             return null;
         }
         return this.targetManager.primaryPageTarget();
@@ -285,7 +283,7 @@ User query: ${enhancedQuery}`;
      * For non-DOM contexts (e.g., Lighthouse accessibility reports or storage items),
      * there is no user-selected DOM node. We fall back to the document body as the
      * default execution context node so scripts have a valid `$0` target.
-     * Fails closed and returns null if the conversation origin is not established or
+     * Returns null if the conversation origin is not established or
      * does not match the primary page document's security origin.
      */
     #getDocumentBodyNode() {
@@ -294,15 +292,11 @@ User query: ${enhancedQuery}`;
         if (!document) {
             return null;
         }
-        const establishedOrigin = this.#getConversationOrigin();
-        if (!isOriginAllowedByLock(establishedOrigin, document.securityOrigin())) {
+        const originLock = this.#originLock();
+        if (!isOriginAllowedByLock(originLock, document.securityOrigin())) {
             return null;
         }
         return document.body ?? null;
-    }
-    #getConversationOrigin() {
-        const allowed = this.#allowedOrigin?.();
-        return allowed && 'origin' in allowed ? allowed.origin : undefined;
     }
     get activeSkills() {
         return this.#activeSkills;

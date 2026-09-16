@@ -307,7 +307,7 @@ export class AiConversation {
         // sensitive data (e.g. cookies or storage items) from leaking into subsequent agent queries.
         const isTransitioningFromStorage = previousType === "storage" /* ConversationType.STORAGE */ && type !== "storage" /* ConversationType.STORAGE */;
         const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
-        const options = {
+        const baseOptions = {
             aidaClient: this.#aidaClient,
             serverSideLoggingAllowed: isAiAssistanceServerSideLoggingAllowed(),
             sessionId: this.id,
@@ -316,12 +316,17 @@ export class AiConversation {
             onInspectElement: this.#onInspectElement,
             networkTimeCalculator: this.#networkTimeCalculator,
             lighthouseRecording: this.#lighthouseRecording,
-            allowedOrigin: this.allowedOrigin,
             history,
             targetManager: this.#targetManager,
         };
-        this.#agent = Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2(options) :
-            this.#createV1Agent(type, options);
+        this.#agent = Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2({
+            ...baseOptions,
+            originLock: this.getOriginLock,
+        }) :
+            this.#createV1Agent(type, {
+                ...baseOptions,
+                allowedOrigin: this.allowedOrigin,
+            });
     }
     #createV1Agent(type, options) {
         switch (type) {
@@ -438,18 +443,38 @@ export class AiConversation {
         return this.#type;
     }
     /**
-     * Returns the permitted origin for agent tool execution, or blocks execution
-     * if an unapproved cross-origin navigation occurred during the current run.
+     * Returns the conversation's origin-locking state:
+     * - `BLOCKED_BY_NAVIGATION`: An unapproved cross-origin navigation occurred during the active run.
+     * - `ESTABLISHED_ORIGIN`: The conversation is locked to the established origin.
+     * - `UNINITIALIZED`: No origin lock has been established yet.
      */
-    allowedOrigin = () => {
+    getOriginLock = () => {
         if (this.#navigationOccurredDuringRun) {
-            return { blocked: true };
+            return { status: 'BLOCKED_BY_NAVIGATION' };
         }
         if (this.#origin) {
-            return { origin: this.#origin };
+            return { status: 'ESTABLISHED_ORIGIN', origin: this.#origin };
         }
-        this.#origin = getPrimaryPageSecurityOrigin(this.#targetManager);
-        return { origin: this.#origin };
+        const pageOrigin = getPrimaryPageSecurityOrigin(this.#targetManager);
+        if (pageOrigin) {
+            this.#origin = pageOrigin;
+            return { status: 'ESTABLISHED_ORIGIN', origin: this.#origin };
+        }
+        return { status: 'UNINITIALIZED' };
+    };
+    /**
+     * Returns the permitted origin for legacy V1 agent tool execution.
+     * Maps the OriginLockState to the AllowedOriginResult format expected by V1 agents.
+     */
+    allowedOrigin = () => {
+        const lock = this.getOriginLock();
+        if (lock.status === 'BLOCKED_BY_NAVIGATION') {
+            return { blocked: true };
+        }
+        if (lock.status === 'ESTABLISHED_ORIGIN') {
+            return { origin: lock.origin };
+        }
+        return { origin: undefined };
     };
 }
 /**

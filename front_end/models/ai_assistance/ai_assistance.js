@@ -1380,6 +1380,11 @@ var DOM;
     GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
     GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
   })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+  let SetTextMarkerRequestType;
+  ((SetTextMarkerRequestType2) => {
+    SetTextMarkerRequestType2["Spelling"] = "spelling";
+    SetTextMarkerRequestType2["Grammar"] = "grammar";
+  })(SetTextMarkerRequestType = DOM2.SetTextMarkerRequestType || (DOM2.SetTextMarkerRequestType = {}));
 })(DOM || (DOM = {}));
 var DOMDebugger;
 ((DOMDebugger2) => {
@@ -4092,16 +4097,32 @@ __export(Tool_exports, {
   MAX_FUNCTION_RESULT_BYTE_LENGTH: () => MAX_FUNCTION_RESULT_BYTE_LENGTH,
   ToolAnnotation: () => ToolAnnotation,
   ToolName: () => ToolName,
-  isOriginAllowedByLock: () => isOriginAllowedByLock
+  isOriginAllowedByLock: () => isOriginAllowedByLock,
+  resolveOriginFromLock: () => resolveOriginFromLock
 });
-function isOriginAllowedByLock(establishedOrigin, targetOrigin) {
-  if (!establishedOrigin || establishedOrigin.isOpaque()) {
+function isOriginAllowedByLock(originLock, targetOrigin) {
+  if (originLock.status !== "ESTABLISHED_ORIGIN") {
+    return false;
+  }
+  if (originLock.origin.isOpaque()) {
     return false;
   }
   if (!targetOrigin || targetOrigin.isOpaque()) {
     return false;
   }
-  return targetOrigin.isSameOriginWith(establishedOrigin);
+  return targetOrigin.isSameOriginWith(originLock.origin);
+}
+function resolveOriginFromLock(originLock) {
+  if (originLock.status === "BLOCKED_BY_NAVIGATION") {
+    return { error: "Cross-origin access blocked due to navigation." };
+  }
+  if (originLock.status === "UNINITIALIZED") {
+    return { error: "No origin established for this conversation." };
+  }
+  if (originLock.origin.isOpaque()) {
+    return { error: "No origin available or not allowed." };
+  }
+  return { origin: originLock.origin };
 }
 var MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
 var ToolName = /* @__PURE__ */ ((ToolName2) => {
@@ -4233,7 +4254,7 @@ const data = {
     if (!executionNode) {
       return { error: "Error: Could not find the context node for execution." };
     }
-    if (!isOriginAllowedByLock(context.getEstablishedOrigin(), executionNode.securityOrigin())) {
+    if (!isOriginAllowedByLock(context.getOriginLock(), executionNode.securityOrigin())) {
       return { error: "Error: Cannot execute JavaScript on cross-origin target." };
     }
     if (Root2.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
@@ -4336,20 +4357,22 @@ async function calculateDOMStoragesUsage(storages) {
 
 // ../../front_end/models/ai_assistance/tools/CookieUtils.ts
 function resolveAllowedTargetOrigins(requestedOrigins, context, targetManager) {
-  const establishedOrigin = context.getEstablishedOrigin();
-  if (!establishedOrigin || establishedOrigin.isOpaque()) {
-    return { error: "No origin available or not allowed." };
+  const originLock = context.getOriginLock();
+  const originResult = resolveOriginFromLock(originLock);
+  if ("error" in originResult) {
+    return originResult;
   }
+  const establishedOrigin = originResult.origin;
   const primaryPageTarget = targetManager.primaryPageTarget();
   if (!primaryPageTarget) {
     return { error: "Primary page target not found." };
   }
   const pageOrigin = primaryPageTarget.inspectedSecurityOrigin();
-  if (!pageOrigin.isSameOriginWith(establishedOrigin)) {
+  if (!isOriginAllowedByLock(originLock, pageOrigin)) {
     return { error: "Page origin does not match allowed origin." };
   }
   const candidateOrigins = Array.isArray(requestedOrigins) && requestedOrigins.length > 0 ? requestedOrigins.map((origin) => SDK6.SecurityOrigin.SecurityOrigin.create(origin)) : [establishedOrigin];
-  const validOrigins = candidateOrigins.filter((origin) => origin.isSameOriginWith(establishedOrigin)).map((origin) => origin.siteId());
+  const validOrigins = candidateOrigins.filter((origin) => isOriginAllowedByLock(originLock, origin)).map((origin) => origin.siteId());
   const targetOrigins = Array.from(new Set(validOrigins)).slice(0, MAX_TARGET_ORIGINS);
   if (targetOrigins.length === 0) {
     return { error: "No valid origins found." };
@@ -4940,7 +4963,6 @@ var GetElementAccessibilityDetailsTool = class {
    * requests the AX subtree via AccessibilityModel, and maps the relevant attributes.
    */
   async handler(params, context) {
-    const establishedOrigin = context.getEstablishedOrigin();
     const target = context.getTarget();
     if (!target) {
       return { error: "Error: Inspected target not found." };
@@ -4950,7 +4972,7 @@ var GetElementAccessibilityDetailsTool = class {
     if (!resolved) {
       return { error: "Error: Could not resolve element by ID." };
     }
-    if (!isOriginAllowedByLock(establishedOrigin, resolved.securityOrigin())) {
+    if (!isOriginAllowedByLock(context.getOriginLock(), resolved.securityOrigin())) {
       return { error: "Error: Node does not belong to the current origin." };
     }
     const axModel = resolved.domModel().target().model(SDK8.AccessibilityModel.AccessibilityModel);
@@ -7821,15 +7843,20 @@ var GetNetworkRequestDetailsTool = class {
    * Filters by the conversation's established origin to prevent cross-origin data exposure.
    */
   async handler(args, context) {
-    const establishedOrigin = context.getEstablishedOrigin();
+    const originLock = context.getOriginLock();
+    const originResult = resolveOriginFromLock(originLock);
+    if ("error" in originResult) {
+      return originResult;
+    }
+    const establishedOrigin = originResult.origin;
     const networkLog = this.#networkLog ?? Logs3.NetworkLog.NetworkLog.instance();
     const request = networkLog.requests().find((req) => {
       if (req.requestId() !== args.id) {
         return false;
       }
-      return isOriginAllowedByLock(establishedOrigin, req.initiatorSecurityOrigin());
+      return isOriginAllowedByLock(originLock, req.initiatorSecurityOrigin());
     });
-    if (!establishedOrigin || !request) {
+    if (!request) {
       return {
         error: "No request found"
       };
@@ -8821,14 +8848,12 @@ var ListSourcesTool = class _ListSourcesTool {
         }
       }
     }
+    const originLock = { status: "ESTABLISHED_ORIGIN", origin: establishedOrigin };
     return [...uiSourceCodes.values()].filter(
-      (file) => isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(file))
+      (file) => isOriginAllowedByLock(originLock, FileContext.originForUISourceCode(file))
     );
   }
   static getSourceById(id, establishedOrigin, workspace = Workspace3.Workspace.WorkspaceImpl.instance()) {
-    if (establishedOrigin.isOpaque()) {
-      return void 0;
-    }
     return _ListSourcesTool.getUISourceCodes(establishedOrigin, workspace).find((file) => _ListSourcesTool.uiSourceCodeId.get(file) === id);
   }
   parameters = {
@@ -8845,13 +8870,11 @@ var ListSourcesTool = class _ListSourcesTool {
     };
   }
   async handler(_params, context) {
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {
-        error: "Opaque origin not allowed"
-      };
+    const originResult = resolveOriginFromLock(context.getOriginLock());
+    if ("error" in originResult) {
+      return originResult;
     }
-    const files = _ListSourcesTool.getUISourceCodes(establishedOrigin);
+    const files = _ListSourcesTool.getUISourceCodes(originResult.origin);
     return {
       result: {
         files: files.map((file) => ({
@@ -8890,13 +8913,11 @@ var GetSourceContentTool = class {
     };
   }
   async handler(args, context) {
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin) {
-      return {
-        error: "Unable to find file."
-      };
+    const originResult = resolveOriginFromLock(context.getOriginLock());
+    if ("error" in originResult) {
+      return originResult;
     }
-    const file = ListSourcesTool.getSourceById(args.id, establishedOrigin);
+    const file = ListSourcesTool.getSourceById(args.id, originResult.origin);
     if (!file) {
       return {
         error: "Unable to find file."
@@ -9069,24 +9090,11 @@ var GetStorageValuesTool = class {
   async handler(args, context, options) {
     context.disableLogging();
     const targetManager = SDK15.TargetManager.TargetManager.instance();
-    const primaryPageTarget = targetManager.primaryPageTarget();
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return { error: "No origin available or not allowed." };
+    const targetOriginsResult = resolveAllowedTargetOrigins(args.origins, context, targetManager);
+    if ("error" in targetOriginsResult) {
+      return { error: targetOriginsResult.error };
     }
-    if (!primaryPageTarget) {
-      return { error: "No origin available or not allowed." };
-    }
-    const pageOrigin = primaryPageTarget.inspectedSecurityOrigin();
-    if (!pageOrigin.isSameOriginWith(establishedOrigin)) {
-      return { error: "No origin available or not allowed." };
-    }
-    const candidateOrigins = args.origins && args.origins.length > 0 ? args.origins.map((origin) => SDK15.SecurityOrigin.SecurityOrigin.create(origin)) : [establishedOrigin];
-    const validOrigins = candidateOrigins.filter((origin) => origin.isSameOriginWith(establishedOrigin)).map((origin) => origin.siteId());
-    const targetOrigins = Array.from(new Set(validOrigins)).slice(0, MAX_TARGET_ORIGINS);
-    if (targetOrigins.length === 0) {
-      return { error: "No valid origins found." };
-    }
+    const { targetOrigins, primaryPageTarget } = targetOriginsResult;
     const storageKey = targetOrigins.length === 1 && args.storageKey ? args.storageKey : void 0;
     const allStoragesMap = {};
     let totalStoragesCount = 0;
@@ -9204,7 +9212,6 @@ var GetStylesTool = class {
     if (!target) {
       return { error: "Error: Could not find the inspected page." };
     }
-    const establishedOrigin = context.getEstablishedOrigin();
     for (const uid of params.elements) {
       result[uid] = { computed: {}, authored: {} };
       const node = new SDK16.DOMModel.DeferredDOMNode(target, uid);
@@ -9212,7 +9219,7 @@ var GetStylesTool = class {
       if (!resolved) {
         return { error: "Error: Could not find the element with uid=" + uid };
       }
-      if (!isOriginAllowedByLock(establishedOrigin, resolved.securityOrigin())) {
+      if (!isOriginAllowedByLock(context.getOriginLock(), resolved.securityOrigin())) {
         return { error: "Error: Node does not belong to the current origin." };
       }
       const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);
@@ -9552,17 +9559,17 @@ var ListNetworkRequestsTool = class {
    */
   async handler(_params, context) {
     const requests = [];
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return {
-        error: "Opaque origin not allowed"
-      };
+    const originLock = context.getOriginLock();
+    const originResult = resolveOriginFromLock(originLock);
+    if ("error" in originResult) {
+      return originResult;
     }
+    const establishedOrigin = originResult.origin;
     const networkLog = this.#networkLog ?? Logs5.NetworkLog.NetworkLog.instance();
     let hasCrossOriginRequest = false;
     const requestsToShow = [];
     for (const request of networkLog.requests()) {
-      if (!isOriginAllowedByLock(establishedOrigin, request.initiatorSecurityOrigin())) {
+      if (!isOriginAllowedByLock(originLock, request.initiatorSecurityOrigin())) {
         hasCrossOriginRequest = true;
         continue;
       }
@@ -9640,12 +9647,13 @@ var ListPageOriginsTool = class {
   async handler(_args, context) {
     const targetManager = SDK18.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return { error: "No origin available or not allowed." };
+    const originLock = context.getOriginLock();
+    const originResult = resolveOriginFromLock(originLock);
+    if ("error" in originResult) {
+      return originResult;
     }
     const pageOrigin = primaryPageTarget ? SDK18.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL()) : null;
-    if (!pageOrigin || !pageOrigin.isSameOriginWith(establishedOrigin)) {
+    if (!pageOrigin || !isOriginAllowedByLock(originLock, pageOrigin)) {
       return { error: "No origin available or not allowed." };
     }
     const origins = [];
@@ -9654,7 +9662,7 @@ var ListPageOriginsTool = class {
         continue;
       }
       const frameOrigin = frame.securityOrigin();
-      if (!frameOrigin.isSameOriginWith(establishedOrigin)) {
+      if (!isOriginAllowedByLock(originLock, frameOrigin)) {
         continue;
       }
       if (!origins.some((existing) => existing.isSameOriginWith(frameOrigin))) {
@@ -9723,24 +9731,11 @@ var ListStorageKeysTool = class {
   async handler(args, context) {
     context.disableLogging();
     const targetManager = SDK19.TargetManager.TargetManager.instance();
-    const primaryPageTarget = targetManager.primaryPageTarget();
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!establishedOrigin || establishedOrigin.isOpaque()) {
-      return { error: "No origin available or not allowed." };
+    const targetOriginsResult = resolveAllowedTargetOrigins(args.origins, context, targetManager);
+    if ("error" in targetOriginsResult) {
+      return { error: targetOriginsResult.error };
     }
-    if (!primaryPageTarget) {
-      return { error: "No origin available or not allowed." };
-    }
-    const pageOrigin = primaryPageTarget.inspectedSecurityOrigin();
-    if (!pageOrigin.isSameOriginWith(establishedOrigin)) {
-      return { error: "No origin available or not allowed." };
-    }
-    const candidateOrigins = args.origins && args.origins.length > 0 ? args.origins.map((origin) => SDK19.SecurityOrigin.SecurityOrigin.create(origin)) : [establishedOrigin];
-    const validOrigins = candidateOrigins.filter((origin) => origin.isSameOriginWith(establishedOrigin)).map((origin) => origin.siteId());
-    const targetOrigins = Array.from(new Set(validOrigins)).slice(0, MAX_TARGET_ORIGINS);
-    if (targetOrigins.length === 0) {
-      return { error: "No valid origins found." };
-    }
+    const { targetOrigins, primaryPageTarget } = targetOriginsResult;
     const storageKey = targetOrigins.length === 1 && args.storageKey ? args.storageKey : void 0;
     const storageKeysByOrigin = {};
     await Promise.all(targetOrigins.map(async (origin) => {
@@ -10445,8 +10440,7 @@ var ResolveDevtoolsNodePathTool = class {
     if (!node) {
       return { error: "Error: Could not retrieve resolved node." };
     }
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (!isOriginAllowedByLock(establishedOrigin, node.securityOrigin())) {
+    if (!isOriginAllowedByLock(context.getOriginLock(), node.securityOrigin())) {
       return { error: "Error: Node does not belong to the current origin." };
     }
     return {
@@ -10805,7 +10799,10 @@ var AccessibilityAgent = class extends AiAgent {
             createExtensionScope: this.#createExtensionScope.bind(this),
             execJs: this.#execJs,
             getExecutionContextNode: () => this.#getDocumentBodyNode(),
-            getEstablishedOrigin: () => this.context?.getOrigin()
+            getOriginLock: () => {
+              const origin = this.context?.getOrigin();
+              return origin ? { status: "ESTABLISHED_ORIGIN", origin } : { status: "UNINITIALIZED" };
+            }
           },
           options
         );
@@ -13920,8 +13917,9 @@ var StylingAgent = class extends AiAgent {
         }
         return await getStylesTool.handler(args, {
           getTarget: () => this.targetManager.primaryPageTarget() ?? context.getItem().domModel().target(),
-          getEstablishedOrigin: () => {
-            return context.getOrigin();
+          getOriginLock: () => {
+            const origin = context.getOrigin();
+            return origin ? { status: "ESTABLISHED_ORIGIN", origin } : { status: "UNINITIALIZED" };
           }
         });
       }
@@ -13941,7 +13939,10 @@ var StylingAgent = class extends AiAgent {
           createExtensionScope: this.#createExtensionScope.bind(this),
           execJs: this.#execJs,
           getExecutionContextNode: () => this.context?.getItem() ?? null,
-          getEstablishedOrigin: () => this.context?.getOrigin()
+          getOriginLock: () => {
+            const origin = this.context?.getOrigin();
+            return origin ? { status: "ESTABLISHED_ORIGIN", origin } : { status: "UNINITIALIZED" };
+          }
         },
         options
       )
@@ -14128,7 +14129,7 @@ var AiAgent2 = class extends AiAgent {
   }
   #changes;
   #execJs;
-  #allowedOrigin;
+  #originLock;
   #lighthouseRecording;
   #performanceRecordAndReload;
   get options() {
@@ -14139,8 +14140,8 @@ var AiAgent2 = class extends AiAgent {
       this.disableServerSideLogging();
     }
     const target = this.targetManager.primaryPageTarget();
-    const establishedOrigin = this.#getConversationOrigin();
-    const isTargetAllowed = target && isOriginAllowedByLock(establishedOrigin, target.inspectedSecurityOrigin());
+    const originLock = this.#originLock();
+    const isTargetAllowed = target && isOriginAllowedByLock(originLock, target.inspectedSecurityOrigin());
     const domModel = isTargetAllowed ? target.model(SDK29.DOMModel.DOMModel) : null;
     if (domModel) {
       if (!domModel.existingDocument()) {
@@ -14167,7 +14168,7 @@ var AiAgent2 = class extends AiAgent {
     this.#lighthouseRecording = opts.lighthouseRecording;
     this.#performanceRecordAndReload = opts.performanceRecordAndReload;
     this.#execJs = opts.execJs ?? executeJsCode;
-    this.#allowedOrigin = opts.allowedOrigin;
+    this.#originLock = opts.originLock;
     this.#declaredTools.add("learnSkills");
     this.declareFunction("learnSkills", {
       description: () => {
@@ -14308,7 +14309,7 @@ ${skillObj.instructions}
           execJs: this.#execJs,
           getExecutionContextNode: () => this.#getExecutionContextNode(),
           getTarget: () => this.#getTarget(),
-          getEstablishedOrigin: () => this.#getConversationOrigin(),
+          getOriginLock: () => this.#originLock(),
           getLighthouseReport: () => this.context instanceof AccessibilityContext ? this.context.getItem() : null,
           runLighthouse: async (overrides) => await (this.#lighthouseRecording?.(overrides) ?? null),
           getPerformanceTraceContext: () => this.context instanceof PerformanceTraceContext ? this.context : null,
@@ -14328,8 +14329,7 @@ ${skillObj.instructions}
    * perform their own origin checks on the resolved entities.
    */
   #getTarget() {
-    const allowed = this.#allowedOrigin?.();
-    if (allowed && "blocked" in allowed) {
+    if (this.#originLock().status === "BLOCKED_BY_NAVIGATION") {
       return null;
     }
     return this.targetManager.primaryPageTarget();
@@ -14338,7 +14338,7 @@ ${skillObj.instructions}
    * For non-DOM contexts (e.g., Lighthouse accessibility reports or storage items),
    * there is no user-selected DOM node. We fall back to the document body as the
    * default execution context node so scripts have a valid `$0` target.
-   * Fails closed and returns null if the conversation origin is not established or
+   * Returns null if the conversation origin is not established or
    * does not match the primary page document's security origin.
    */
   #getDocumentBodyNode() {
@@ -14347,15 +14347,11 @@ ${skillObj.instructions}
     if (!document2) {
       return null;
     }
-    const establishedOrigin = this.#getConversationOrigin();
-    if (!isOriginAllowedByLock(establishedOrigin, document2.securityOrigin())) {
+    const originLock = this.#originLock();
+    if (!isOriginAllowedByLock(originLock, document2.securityOrigin())) {
       return null;
     }
     return document2.body ?? null;
-  }
-  #getConversationOrigin() {
-    const allowed = this.#allowedOrigin?.();
-    return allowed && "origin" in allowed ? allowed.origin : void 0;
   }
   get activeSkills() {
     return this.#activeSkills;
@@ -15054,7 +15050,7 @@ ${item.text.trim()}`);
     }
     const isTransitioningFromStorage = previousType === "storage" /* STORAGE */ && type !== "storage" /* STORAGE */;
     const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
-    const options = {
+    const baseOptions = {
       aidaClient: this.#aidaClient,
       serverSideLoggingAllowed: isAiAssistanceServerSideLoggingAllowed(),
       sessionId: this.id,
@@ -15063,11 +15059,16 @@ ${item.text.trim()}`);
       onInspectElement: this.#onInspectElement,
       networkTimeCalculator: this.#networkTimeCalculator,
       lighthouseRecording: this.#lighthouseRecording,
-      allowedOrigin: this.allowedOrigin,
       history,
       targetManager: this.#targetManager
     };
-    this.#agent = Root15.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2(options) : this.#createV1Agent(type, options);
+    this.#agent = Root15.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2({
+      ...baseOptions,
+      originLock: this.getOriginLock
+    }) : this.#createV1Agent(type, {
+      ...baseOptions,
+      allowedOrigin: this.allowedOrigin
+    });
   }
   #createV1Agent(type, options) {
     switch (type) {
@@ -15192,18 +15193,38 @@ Original user query: ${initialQuery}`;
     return this.#type;
   }
   /**
-   * Returns the permitted origin for agent tool execution, or blocks execution
-   * if an unapproved cross-origin navigation occurred during the current run.
+   * Returns the conversation's origin-locking state:
+   * - `BLOCKED_BY_NAVIGATION`: An unapproved cross-origin navigation occurred during the active run.
+   * - `ESTABLISHED_ORIGIN`: The conversation is locked to the established origin.
+   * - `UNINITIALIZED`: No origin lock has been established yet.
    */
-  allowedOrigin = () => {
+  getOriginLock = () => {
     if (this.#navigationOccurredDuringRun) {
-      return { blocked: true };
+      return { status: "BLOCKED_BY_NAVIGATION" };
     }
     if (this.#origin) {
-      return { origin: this.#origin };
+      return { status: "ESTABLISHED_ORIGIN", origin: this.#origin };
     }
-    this.#origin = getPrimaryPageSecurityOrigin(this.#targetManager);
-    return { origin: this.#origin };
+    const pageOrigin = getPrimaryPageSecurityOrigin(this.#targetManager);
+    if (pageOrigin) {
+      this.#origin = pageOrigin;
+      return { status: "ESTABLISHED_ORIGIN", origin: this.#origin };
+    }
+    return { status: "UNINITIALIZED" };
+  };
+  /**
+   * Returns the permitted origin for legacy V1 agent tool execution.
+   * Maps the OriginLockState to the AllowedOriginResult format expected by V1 agents.
+   */
+  allowedOrigin = () => {
+    const lock = this.getOriginLock();
+    if (lock.status === "BLOCKED_BY_NAVIGATION") {
+      return { blocked: true };
+    }
+    if (lock.status === "ESTABLISHED_ORIGIN") {
+      return { origin: lock.origin };
+    }
+    return { origin: void 0 };
   };
 };
 function isAiAssistanceServerSideLoggingAllowed() {

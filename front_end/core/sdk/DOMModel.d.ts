@@ -215,6 +215,7 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     focus(): Promise<void>;
     simpleSelector(): string;
     getAnchorBySpecifier(specifier?: string): Promise<DOMNode | null>;
+    getImplicitAnchorCandidates(): Promise<DeferredDOMNode[]>;
     takeSnapshot(ownerDocumentSnapshot?: DOMDocument): Promise<DOMNode>;
     classNames(): string[];
 }

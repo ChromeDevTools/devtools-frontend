@@ -11444,6 +11444,9 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "General"
   },
+  "panels/network/RequestHeadersView.ts | openWith": {
+    "message": "Open with {PH1}"
+  },
   "panels/network/RequestHeadersView.ts | raw": {
     "message": "Raw"
   },
@@ -13784,6 +13787,63 @@
   "panels/settings/AISettingsTab.ts | wrongLocale": {
     "message": "To use this feature, set your language preference to English in DevTools settings"
   },
+  "panels/settings/BackendLinkingSettingsTab.ts | correlationIdDescription": {
+    "message": "Value of the X-Correlation-ID or Correlation-ID response header"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | description": {
+    "message": "Configure links to external backend debugging, APM, or tracing tools for matching network requests. Use placeholders to insert correlation IDs extracted from request and response headers."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | devtoolsDebugIdDescription": {
+    "message": "Value of the desc parameter in the devtools-debug-id Server-Timing entry"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | headerColumn": {
+    "message": "Referenced header / property"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | invalidRulesWarning": {
+    "message": "Invalid rules will not be applied or saved."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | invalidUrlPattern": {
+    "message": "URL pattern must be a valid URL pattern"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | labelCannotBeEmpty": {
+    "message": "Label can’t be empty"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | labelColumn": {
+    "message": "Label"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | placeholderColumn": {
+    "message": "Placeholder"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | placeholderDocHeading": {
+    "message": "Available placeholders"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | requestIdDescription": {
+    "message": "Value of the X-Request-ID response header"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | rulesSectionHeading": {
+    "message": "Backend linking rules"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | spanIdDescription": {
+    "message": "8-byte hex parent span ID from the Server-Timing traceparent entry"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | targetUrlTemplateCannotBeEmpty": {
+    "message": "Target URL template can’t be empty"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | targetUrlTemplateColumn": {
+    "message": "Target URL template"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | templateRequiresPlaceholder": {
+    "message": "Target URL template must contain at least one placeholder"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | traceIdDescription": {
+    "message": "16-byte hex trace ID from the trace-id response header or Server-Timing traceparent entry"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | urlPatternCannotBeEmpty": {
+    "message": "URL pattern can’t be empty"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
+    "message": "URL pattern"
+  },
   "panels/settings/components/SyncSection.ts | dataDisclaimer": {
     "message": "({PH1} is sent to Google)"
   },
@@ -14204,6 +14264,9 @@
   "panels/settings/settings-meta.ts | aiInnovations": {
     "message": "AI innovations"
   },
+  "panels/settings/settings-meta.ts | backendLinking": {
+    "message": "Backend linking"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Documentation"
   },
@@ -14224,6 +14287,9 @@
   },
   "panels/settings/settings-meta.ts | showAiInnovations": {
     "message": "Show AI innovations"
+  },
+  "panels/settings/settings-meta.ts | showBackendLinking": {
+    "message": "Show Backend linking"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Show Experiments"
@@ -16255,6 +16321,9 @@
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Time range"
+  },
+  "panels/timeline/overlays/OverlaysImpl.ts | commentPin": {
+    "message": "Comment"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
     "message": "{PH1} - Field ({PH2})"

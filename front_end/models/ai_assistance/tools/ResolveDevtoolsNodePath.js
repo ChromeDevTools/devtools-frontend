@@ -69,10 +69,9 @@ export class ResolveDevtoolsNodePathTool {
         if (!node) {
             return { error: 'Error: Could not retrieve resolved node.' };
         }
-        const establishedOrigin = context.getEstablishedOrigin();
         // Security check: Ensure the resolved node belongs to the same origin
         // that this AI assistance session is locked to, preventing cross-origin access.
-        if (!isOriginAllowedByLock(establishedOrigin, node.securityOrigin())) {
+        if (!isOriginAllowedByLock(context.getOriginLock(), node.securityOrigin())) {
             return { error: 'Error: Node does not belong to the current origin.' };
         }
         return {

@@ -121,7 +121,8 @@ export function traceWindowFromOverlay(overlay) {
     switch (overlay.type) {
         case 'ENTRY_LABEL':
         case 'ENTRY_OUTLINE':
-        case 'ENTRY_SELECTED': {
+        case 'ENTRY_SELECTED':
+        case 'COMMENT_PIN': {
             return traceWindowFromEvent(overlay.entry);
         }
         case 'TIMESPAN_BREAKDOWN': {

@@ -5,7 +5,8 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { MAX_TARGET_ORIGINS, resolveDOMStorages } from './DOMStorageUtils.js';
+import { resolveAllowedTargetOrigins } from './CookieUtils.js';
+import { resolveDOMStorages } from './DOMStorageUtils.js';
 const lockedString = i18n.i18n.lockedString;
 // Maximum character length allowed per storage value to prevent large values (e.g. huge JSON blobs)
 // from exceeding the LLM context window.
@@ -65,26 +66,11 @@ export class GetStorageValuesTool {
         context.disableLogging();
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         const targetManager = SDK.TargetManager.TargetManager.instance();
-        const primaryPageTarget = targetManager.primaryPageTarget();
-        const establishedOrigin = context.getEstablishedOrigin();
-        if (!establishedOrigin || establishedOrigin.isOpaque()) {
-            return { error: 'No origin available or not allowed.' };
+        const targetOriginsResult = resolveAllowedTargetOrigins(args.origins, context, targetManager);
+        if ('error' in targetOriginsResult) {
+            return { error: targetOriginsResult.error };
         }
-        if (!primaryPageTarget) {
-            return { error: 'No origin available or not allowed.' };
-        }
-        const pageOrigin = primaryPageTarget.inspectedSecurityOrigin();
-        if (!pageOrigin.isSameOriginWith(establishedOrigin)) {
-            return { error: 'No origin available or not allowed.' };
-        }
-        const candidateOrigins = (args.origins && args.origins.length > 0) ?
-            args.origins.map(origin => SDK.SecurityOrigin.SecurityOrigin.create(origin)) :
-            [establishedOrigin];
-        const validOrigins = candidateOrigins.filter(origin => origin.isSameOriginWith(establishedOrigin)).map(origin => origin.siteId());
-        const targetOrigins = Array.from(new Set(validOrigins)).slice(0, MAX_TARGET_ORIGINS);
-        if (targetOrigins.length === 0) {
-            return { error: 'No valid origins found.' };
-        }
+        const { targetOrigins, primaryPageTarget } = targetOriginsResult;
         const storageKey = (targetOrigins.length === 1 && args.storageKey) ? args.storageKey : undefined;
         const allStoragesMap = {};
         let totalStoragesCount = 0;

@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import { FileFormatter } from '../data_formatters/FileFormatter.js';
 import { ListSourcesTool } from './ListSources.js';
+import { resolveOriginFromLock, } from './Tool.js';
 const UIStringsNotTranslate = {
     readingSource: 'Reading source content',
 };
@@ -36,13 +37,11 @@ export class GetSourceContentTool {
         };
     }
     async handler(args, context) {
-        const establishedOrigin = context.getEstablishedOrigin();
-        if (!establishedOrigin) {
-            return {
-                error: 'Unable to find file.',
-            };
+        const originResult = resolveOriginFromLock(context.getOriginLock());
+        if ('error' in originResult) {
+            return originResult;
         }
-        const file = ListSourcesTool.getSourceById(args.id, establishedOrigin);
+        const file = ListSourcesTool.getSourceById(args.id, originResult.origin);
         if (!file) {
             return {
                 error: 'Unable to find file.',

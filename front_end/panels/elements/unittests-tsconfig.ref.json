@@ -81,6 +81,9 @@
       "path": "../../models/ai_code_completion/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/badges/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/bindings/bundle-tsconfig.ref.json"
     },
     {

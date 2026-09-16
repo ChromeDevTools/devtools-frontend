@@ -60,7 +60,6 @@ export class GetStylesTool {
         if (!target) {
             return { error: 'Error: Could not find the inspected page.' };
         }
-        const establishedOrigin = context.getEstablishedOrigin();
         for (const uid of params.elements) {
             result[uid] = { computed: {}, authored: {} };
             const node = new SDK.DOMModel.DeferredDOMNode(target, uid);
@@ -71,7 +70,7 @@ export class GetStylesTool {
             // Security check: Ensure the resolved element belongs to the locked origin.
             // Because getTarget() returns the primary page target to support resolving elements
             // across frames, origin validation must be enforced directly on the resolved node.
-            if (!isOriginAllowedByLock(establishedOrigin, resolved.securityOrigin())) {
+            if (!isOriginAllowedByLock(context.getOriginLock(), resolved.securityOrigin())) {
                 return { error: 'Error: Node does not belong to the current origin.' };
             }
             const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);

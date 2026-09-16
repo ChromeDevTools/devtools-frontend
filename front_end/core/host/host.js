@@ -1128,7 +1128,7 @@ var loadAsStream = function(url, headers, stream, callback, allowRemoteFilePaths
       rawHeaders.push(key + ": " + headers[key]);
     }
   }
-  InspectorFrontendHostInstance.loadNetworkResource(url, rawHeaders.join("\r\n"), streamId, finishedCallback);
+  globalThis.InspectorFrontendHost.loadNetworkResource(url, rawHeaders.join("\r\n"), streamId, finishedCallback);
   function finishedCallback(response) {
     if (callback) {
       const { success, description } = createErrorMessageFromResponse(response);

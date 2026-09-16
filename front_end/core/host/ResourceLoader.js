@@ -4,7 +4,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import { InspectorFrontendHostInstance } from './InspectorFrontendHost.js';
 const UIStrings = {
     /**
      * @description Name of an error category used in error messages.
@@ -203,7 +202,7 @@ export const loadAsStream = function (url, headers, stream, callback, allowRemot
             rawHeaders.push(key + ': ' + headers[key]);
         }
     }
-    InspectorFrontendHostInstance.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
+    globalThis.InspectorFrontendHost.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);
     function finishedCallback(response) {
         if (callback) {
             const { success, description } = createErrorMessageFromResponse(response);

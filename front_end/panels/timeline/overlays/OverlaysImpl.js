@@ -32,6 +32,10 @@ const UIStrings = {
      * @description Text for the page scope option that selects the entire origin instead of its specific URL in the Performance panel.
      */
     originOption: 'Origin',
+    /**
+     * @description Accessible label for the comment pin overlay button on a flame chart entry.
+     */
+    commentPin: 'Comment',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/OverlaysImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -98,6 +102,10 @@ export function entriesForOverlay(overlay) {
         }
         case 'BOTTOM_INFO_BAR':
             break;
+        case 'COMMENT_PIN': {
+            entries.push(overlay.entry);
+            break;
+        }
         default:
             Platform.assertNever(overlay, `Unknown overlay type ${JSON.stringify(overlay)}`);
     }
@@ -161,6 +169,17 @@ export class EventReferenceClick extends Event {
     constructor(event) {
         super(EventReferenceClick.eventName, { bubbles: true, composed: true });
         this.event = event;
+    }
+}
+/**
+ * Dispatched when a comment pin overlay on a flame chart entry is clicked.
+ */
+export class CommentPinClick extends Event {
+    overlay;
+    static eventName = 'commentpinclick';
+    constructor(overlay) {
+        super(CommentPinClick.eventName, { composed: true, bubbles: true });
+        this.overlay = overlay;
     }
 }
 /**
@@ -418,14 +437,14 @@ export class Overlays extends EventTarget {
     }
     /**
      * Update the dimensions of a chart.
-     * IMPORTANT: this does not trigger a re-draw. You must call the render() method manually.
+     * IMPORTANT: this does not trigger a re-draw. You must call the update() method manually.
      */
     updateChartDimensions(chart, dimensions) {
         this.#dimensions.charts[chart] = dimensions;
     }
     /**
      * Update the visible window of the UI.
-     * IMPORTANT: this does not trigger a re-draw. You must call the render() method manually.
+     * IMPORTANT: this does not trigger a re-draw. You must call the update() method manually.
      */
     updateVisibleWindow(visibleWindow) {
         this.#dimensions.trace.visibleWindow = visibleWindow;
@@ -636,6 +655,14 @@ export class Overlays extends EventTarget {
             }
             case 'BOTTOM_INFO_BAR': {
                 this.#positionInfoBarBanner(overlay, element);
+                break;
+            }
+            case 'COMMENT_PIN': {
+                const isVisible = this.entryIsVisibleOnChart(overlay.entry);
+                this.#setOverlayElementVisibility(element, isVisible);
+                if (isVisible) {
+                    this.#positionEntryBorderOutlineType(overlay.entry, element);
+                }
                 break;
             }
             default: {
@@ -1306,6 +1333,32 @@ export class Overlays extends EventTarget {
                 overlayElement.style.setProperty('--marker-color', color);
                 return overlayElement;
             }
+            case 'COMMENT_PIN': {
+                const pin = document.createElement('div');
+                pin.classList.add('comment-pin');
+                pin.setAttribute('role', 'button');
+                pin.setAttribute('tabindex', '0');
+                UI.ARIAUtils.setLabel(pin, i18nString(UIStrings.commentPin));
+                if (overlay.commentThreadId) {
+                    pin.setAttribute('data-comment-id', overlay.commentThreadId);
+                }
+                const cursor = document.createElement('div');
+                cursor.classList.add('comment-cursor');
+                pin.appendChild(cursor);
+                const handleActivation = (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.dispatchEvent(new CommentPinClick(overlay));
+                };
+                pin.addEventListener('click', handleActivation);
+                pin.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        handleActivation(event);
+                    }
+                });
+                overlayElement.appendChild(pin);
+                return overlayElement;
+            }
             default: {
                 return overlayElement;
             }
@@ -1427,20 +1480,21 @@ export class Overlays extends EventTarget {
                 break;
             case 'TIMINGS_MARKER':
                 break;
-            case 'BOTTOM_INFO_BAR':
-                {
-                    if (!(overlay.infobar.element instanceof HTMLElement)) {
-                        return;
-                    }
-                    if (element.contains(overlay.infobar.element)) {
-                        return;
-                    }
-                    // This overlay is a singleton; this means it could be updated with a
-                    // different info bar. So we need to clear out the existing contents
-                    // before appending the infobar, just in case.
-                    element.innerHTML = '';
-                    element.appendChild(overlay.infobar.element);
+            case 'BOTTOM_INFO_BAR': {
+                if (!(overlay.infobar.element instanceof HTMLElement)) {
+                    return;
                 }
+                if (element.contains(overlay.infobar.element)) {
+                    return;
+                }
+                // This overlay is a singleton; this means it could be updated with a
+                // different info bar. So we need to clear out the existing contents
+                // before appending the infobar, just in case.
+                element.innerHTML = '';
+                element.appendChild(overlay.infobar.element);
+                break;
+            }
+            case 'COMMENT_PIN':
                 break;
             default:
                 Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
@@ -1483,6 +1537,8 @@ export class Overlays extends EventTarget {
             case 'TIMINGS_MARKER':
                 break;
             case 'BOTTOM_INFO_BAR':
+                break;
+            case 'COMMENT_PIN':
                 break;
             default:
                 Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
@@ -1777,6 +1833,9 @@ export function jsLogContext(overlay) {
         }
         case 'BOTTOM_INFO_BAR':
             return 'timeline.overlays.info-bar';
+        case 'COMMENT_PIN': {
+            return 'timeline.overlays.comment-pin';
+        }
         default:
             Platform.assertNever(overlay, 'Unknown overlay type');
     }

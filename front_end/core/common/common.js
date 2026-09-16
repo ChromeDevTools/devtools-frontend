@@ -1075,18 +1075,19 @@ function findFgColorForContrastAPCA(fgColor, bgColor, requiredContrast) {
   const fgLuminance = candidateLuminance(candidateHSVA);
   const fgIsLighter = fgLuminance >= bgLuminance;
   const desiredLuminance2 = desiredLuminanceAPCA(bgLuminance, requiredContrast, fgIsLighter);
+  const meetsRequiredContrast = (candidate) => Math.round(Math.abs(contrastRatioAPCA(candidate.rgba(), bgColor.rgba()))) >= requiredContrast;
   const saturationComponentIndex = 1;
   const valueComponentIndex = 2;
   if (approachColorValue(candidateHSVA, valueComponentIndex, desiredLuminance2, candidateLuminance)) {
     const candidate = Legacy.fromHSVA(candidateHSVA);
-    if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
+    if (meetsRequiredContrast(candidate)) {
       return candidate;
     }
   }
   candidateHSVA[valueComponentIndex] = 1;
   if (approachColorValue(candidateHSVA, saturationComponentIndex, desiredLuminance2, candidateLuminance)) {
     const candidate = Legacy.fromHSVA(candidateHSVA);
-    if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
+    if (meetsRequiredContrast(candidate)) {
       return candidate;
     }
   }

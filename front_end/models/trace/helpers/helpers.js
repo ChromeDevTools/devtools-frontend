@@ -275,7 +275,8 @@ function traceWindowFromOverlay(overlay) {
   switch (overlay.type) {
     case "ENTRY_LABEL":
     case "ENTRY_OUTLINE":
-    case "ENTRY_SELECTED": {
+    case "ENTRY_SELECTED":
+    case "COMMENT_PIN": {
       return traceWindowFromEvent(overlay.entry);
     }
     case "TIMESPAN_BREAKDOWN": {
@@ -1983,6 +1984,11 @@ var DOM;
     GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
     GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
   })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+  let SetTextMarkerRequestType;
+  ((SetTextMarkerRequestType2) => {
+    SetTextMarkerRequestType2["Spelling"] = "spelling";
+    SetTextMarkerRequestType2["Grammar"] = "grammar";
+  })(SetTextMarkerRequestType = DOM2.SetTextMarkerRequestType || (DOM2.SetTextMarkerRequestType = {}));
 })(DOM || (DOM = {}));
 var DOMDebugger;
 ((DOMDebugger2) => {

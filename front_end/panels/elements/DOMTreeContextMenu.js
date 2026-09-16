@@ -189,9 +189,9 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMTreeContextMenu.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export async function populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget) {
+export async function populateNodeContextMenu(contextMenu, domTreeWidget, domNode) {
     const isEditable = !domNode.isShadowRoot() && !domNode.ancestorUserAgentShadowRoot();
-    if (isEditable && !targetWidget?.isEditing) {
+    if (isEditable) {
         contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), () => domTreeWidget.toggleEditAsHTML(domNode), { jslogContext: 'elements.edit-as-html' });
     }
     const isShadowRoot = domNode.isShadowRoot();
@@ -391,7 +391,7 @@ export async function populateNodeContextMenu(contextMenu, domTreeWidget, domNod
         }, { jslogContext: 'show-frame-details' });
     }
 }
-export async function showContextMenu(domTreeWidget, domNode, event, targetWidget) {
+export async function showContextMenu(domTreeWidget, domNode, event) {
     if (UI.UIUtils.isEditing()) {
         return;
     }
@@ -417,23 +417,21 @@ export async function showContextMenu(domTreeWidget, domNode, event, targetWidge
     const commentNode = node.enclosingNodeOrSelfWithClass?.('webkit-html-comment');
     contextMenu.saveSection().appendItem(i18nString(UIStrings.storeAsGlobalVariable), () => void domNode.saveNodeToTempVariable(), { jslogContext: 'store-as-global-variable' });
     if (textNode) {
-        if (!targetWidget?.isEditing) {
-            contextMenu.editSection().appendItem(i18nString(UIStrings.editText), () => targetWidget?.startEditingTextNode(textNode), { jslogContext: 'edit-text' });
-        }
-        await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
+        contextMenu.editSection().appendItem(i18nString(UIStrings.editText), () => domTreeWidget.startEditingTextNode(domNode), { jslogContext: 'edit-text' });
+        await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
     }
     else if (isTag) {
-        const startTagWidget = targetWidget?.isClosingTag ? (targetWidget.findStartTagWidget?.() ?? targetWidget) : targetWidget;
-        if (startTagWidget) {
-            contextMenu.editSection().appendItem(i18nString(UIStrings.addAttribute), () => startTagWidget.addNewAttribute(), { jslogContext: 'add-attribute' });
-        }
+        contextMenu.editSection().appendItem(i18nString(UIStrings.addAttribute), () => domTreeWidget.addNewAttribute(domNode), { jslogContext: 'add-attribute' });
         const target = (event.composedPath()[0] || event.target);
         const attribute = target.enclosingNodeOrSelfWithClass?.('webkit-html-attribute');
         const newAttribute = target.enclosingNodeOrSelfWithClass?.('add-attribute');
         if (attribute && !newAttribute) {
-            contextMenu.editSection().appendItem(i18nString(UIStrings.editAttribute), () => startTagWidget?.startEditingAttribute(attribute, target), { jslogContext: 'edit-attribute' });
+            const attributeName = attribute.querySelector('.webkit-html-attribute-name')?.textContent?.trim();
+            if (attributeName) {
+                contextMenu.editSection().appendItem(i18nString(UIStrings.editAttribute), () => domTreeWidget.startEditing(domNode, attributeName), { jslogContext: 'edit-attribute' });
+            }
         }
-        await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, startTagWidget);
+        await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
         ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, domNode);
         contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(), { jslogContext: 'scroll-into-view' });
         contextMenu.viewSection().appendItem(i18nString(UIStrings.focus), async () => {
@@ -441,7 +439,7 @@ export async function showContextMenu(domTreeWidget, domNode, event, targetWidge
         }, { jslogContext: 'focus' });
     }
     else if (commentNode) {
-        await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
+        await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
     }
     else if (isPseudoElement) {
         if (domNode.childNodeCount() !== 0 || domNode.hasPseudoElements()) {
@@ -450,7 +448,7 @@ export async function showContextMenu(domTreeWidget, domNode, event, targetWidge
         contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(), { jslogContext: 'scroll-into-view' });
     }
     else if (domNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-        contextMenu.editSection().appendItem(i18nString(UIStrings.editData), () => targetWidget?.startEditingProcessingInstructionValue(), { jslogContext: 'elements.edit-data' });
+        contextMenu.editSection().appendItem(i18nString(UIStrings.editData), () => domTreeWidget.startEditing(domNode), { jslogContext: 'elements.edit-data' });
         contextMenu.editSection().appendItem(i18nString(UIStrings.duplicateElement), () => domTreeWidget.duplicateNode(domNode), {
             disabled: domNode.isInShadowTree(),
             jslogContext: 'elements.duplicate-element',

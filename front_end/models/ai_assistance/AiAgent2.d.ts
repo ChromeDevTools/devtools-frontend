@@ -4,7 +4,12 @@ import type * as Trace from '../trace/trace.js';
 import { AiAgent, type ContextResponse, type ConversationContext, type MultimodalInputType, type RequestOptions } from './agents/AiAgent.js';
 import { type ExecuteJsAgentOptions } from './agents/ExecuteJavascript.js';
 import type { Skill, SkillName } from './skills/Skill.js';
+import { type OriginLockState } from './tools/Tool.js';
 export interface AiAgent2Options extends ExecuteJsAgentOptions {
+    /**
+     * Supplies the origin lock state for the conversation.
+     */
+    originLock: () => OriginLockState;
     lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON | null>;
     performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
 }

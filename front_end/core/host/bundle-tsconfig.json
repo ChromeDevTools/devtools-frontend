@@ -55,6 +55,12 @@
   "references": [
     {
       "path": "host-tsconfig.ref.json"
+    },
+    {
+      "path": "host_base-tsconfig.ref.json"
+    },
+    {
+      "path": "host_stub-tsconfig.ref.json"
     }
   ]
 }

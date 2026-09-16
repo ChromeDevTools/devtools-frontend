@@ -5,12 +5,7 @@ import * as Types from './types/types.js';
 export declare class TraceParseProgressEvent extends Event {
     data: Model.TraceParseEventProgressData;
     static readonly eventName = "traceparseprogress";
-    constructor(data: Model.TraceParseEventProgressData, init?: EventInit);
-}
-declare global {
-    interface HTMLElementEventMap {
-        [TraceParseProgressEvent.eventName]: TraceParseProgressEvent;
-    }
+    constructor(data: Model.TraceParseEventProgressData, init?: ConstructorParameters<typeof Event>[1]);
 }
 export declare class TraceProcessor extends EventTarget {
     #private;

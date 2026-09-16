@@ -127,5 +127,9 @@ export const HOST_RUNTIME = {
     },
     saveScreenshot,
     revokeLastScreenshotUrl,
+    async loadTextFile(url) {
+        const response = await fetch(url);
+        return await response.text();
+    },
 };
 //# sourceMappingURL=HostRuntime.js.map

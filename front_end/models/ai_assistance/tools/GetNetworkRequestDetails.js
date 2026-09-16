@@ -6,7 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import { NetworkRequestFormatter } from '../data_formatters/NetworkRequestFormatter.js';
-import { isOriginAllowedByLock, } from './Tool.js';
+import { isOriginAllowedByLock, resolveOriginFromLock, } from './Tool.js';
 const UIStringsNotTranslate = {
     gettingNetworkRequestDetails: 'Getting network request details',
 };
@@ -46,9 +46,12 @@ export class GetNetworkRequestDetailsTool {
      * Filters by the conversation's established origin to prevent cross-origin data exposure.
      */
     async handler(args, context) {
-        // A conversation is locked to an origin once the first query is made.
-        // We only allow inspecting requests matching the conversation's established origin.
-        const establishedOrigin = context.getEstablishedOrigin();
+        const originLock = context.getOriginLock();
+        const originResult = resolveOriginFromLock(originLock);
+        if ('error' in originResult) {
+            return originResult;
+        }
+        const establishedOrigin = originResult.origin;
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
         const request = networkLog.requests().find(req => {
@@ -56,12 +59,9 @@ export class GetNetworkRequestDetailsTool {
                 return false;
             }
             // If the conversation is locked to an origin, only allow accessing requests from that origin.
-            return isOriginAllowedByLock(establishedOrigin, req.initiatorSecurityOrigin());
+            return isOriginAllowedByLock(originLock, req.initiatorSecurityOrigin());
         });
-        // If establishedOrigin is undefined or opaque, isOriginAllowedByLock() fails closed,
-        // so find() will never return a request. We check establishedOrigin here as a defensive
-        // guard and to narrow the type for NetworkRequestFormatter below.
-        if (!establishedOrigin || !request) {
+        if (!request) {
             return {
                 error: 'No request found',
             };

@@ -60,22 +60,25 @@ export class SourceMapScopeChainEntry {
         return this.#callFrame;
     }
     type() {
-        switch (this.#scope.kind) {
+        if (this.#scope.isStackFrame) {
+            return this.#isInnerMostFunction ? "local" /* Protocol.Debugger.ScopeType.Local */ : "closure" /* Protocol.Debugger.ScopeType.Closure */;
+        }
+        // `kind` is a free-form label. The spec encourages 'Global'/'Block' but doesn't mandate the casing.
+        switch (this.#scope.kind?.toLowerCase()) {
             case 'global':
                 return "global" /* Protocol.Debugger.ScopeType.Global */;
-            case 'function':
-                return this.#isInnerMostFunction ? "local" /* Protocol.Debugger.ScopeType.Local */ : "closure" /* Protocol.Debugger.ScopeType.Closure */;
             case 'block':
                 return "block" /* Protocol.Debugger.ScopeType.Block */;
         }
         return this.#scope.kind ?? '';
     }
     typeName() {
-        switch (this.#scope.kind) {
+        if (this.#scope.isStackFrame) {
+            return this.#isInnerMostFunction ? i18nString(UIStrings.local) : i18nString(UIStrings.closure);
+        }
+        switch (this.#scope.kind?.toLowerCase()) {
             case 'global':
                 return i18nString(UIStrings.global);
-            case 'function':
-                return this.#isInnerMostFunction ? i18nString(UIStrings.local) : i18nString(UIStrings.closure);
             case 'block':
                 return i18nString(UIStrings.block);
         }

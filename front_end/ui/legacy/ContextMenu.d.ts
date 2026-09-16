@@ -61,6 +61,7 @@ export declare class Item {
      * @throws If the item type is invalid.
      */
     buildDescriptor(): SoftContextMenuDescriptor | Host.InspectorFrontendHostAPI.ContextMenuDescriptor;
+    setHoverHandler(handler?: (hovered: boolean) => void): void;
     /**
      * Sets a keyboard accelerator for this item.
      * @param key The key code for the accelerator.
@@ -106,6 +107,7 @@ export declare class Section {
         tooltip?: Platform.UIString.LocalizedString;
         jslogContext?: string;
         featureName?: string;
+        onHover?: (hovered: boolean) => void;
     }): Item;
     /**
      * Appends an item that contains a custom HTML element (for non-native menus only).
@@ -150,6 +152,7 @@ export declare class Section {
         tooltip?: Platform.UIString.LocalizedString;
         jslogContext?: string;
         featureName?: string;
+        onHover?: (hovered: boolean) => void;
     }): Item;
 }
 /**

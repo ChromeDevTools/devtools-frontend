@@ -983,6 +983,11 @@ export var DOM;
         GetElementByRelationRequestRelation["InterestTarget"] = "InterestTarget";
         GetElementByRelationRequestRelation["CommandFor"] = "CommandFor";
     })(GetElementByRelationRequestRelation = DOM.GetElementByRelationRequestRelation || (DOM.GetElementByRelationRequestRelation = {}));
+    let SetTextMarkerRequestType;
+    (function (SetTextMarkerRequestType) {
+        SetTextMarkerRequestType["Spelling"] = "spelling";
+        SetTextMarkerRequestType["Grammar"] = "grammar";
+    })(SetTextMarkerRequestType = DOM.SetTextMarkerRequestType || (DOM.SetTextMarkerRequestType = {}));
 })(DOM || (DOM = {}));
 /**
  * DOM debugging allows setting breakpoints on particular DOM operations and events. JavaScript

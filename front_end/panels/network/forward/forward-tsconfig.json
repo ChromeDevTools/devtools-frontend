@@ -45,6 +45,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../../front_end/panels/network/forward/BackendLinking.ts",
     "../../../../../../../front_end/panels/network/forward/NetworkRequestId.ts",
     "../../../../../../../front_end/panels/network/forward/UIFilter.ts",
     "../../../../../../../front_end/panels/network/forward/UIRequestLocation.ts",
@@ -54,6 +55,9 @@
     "../../../../../../../node_modules/@types/filewriter/index.d.ts"
   ],
   "references": [
+    {
+      "path": "../../../core/common/bundle-tsconfig.ref.json"
+    },
     {
       "path": "../../../core/sdk/bundle-tsconfig.ref.json"
     },

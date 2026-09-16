@@ -5,7 +5,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Logs from '../../logs/logs.js';
 import { formatBytesToKb, seconds } from '../data_formatters/UnitFormatters.js';
-import { isOriginAllowedByLock, } from './Tool.js';
+import { isOriginAllowedByLock, resolveOriginFromLock, } from './Tool.js';
 const UIStringsNotTranslate = {
     listingNetworkRequests: 'Listing network requests',
 };
@@ -42,19 +42,19 @@ export class ListNetworkRequestsTool {
         const requests = [];
         // A conversation is locked to an origin once the first query is made.
         // We only allow inspecting requests matching the conversation's established origin.
-        const establishedOrigin = context.getEstablishedOrigin();
-        if (!establishedOrigin || establishedOrigin.isOpaque()) {
-            return {
-                error: 'Opaque origin not allowed',
-            };
+        const originLock = context.getOriginLock();
+        const originResult = resolveOriginFromLock(originLock);
+        if ('error' in originResult) {
+            return originResult;
         }
+        const establishedOrigin = originResult.origin;
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
         let hasCrossOriginRequest = false;
         const requestsToShow = [];
         for (const request of networkLog.requests()) {
             // If the request's initiator origin does not match the locked origin, skip it.
-            if (!isOriginAllowedByLock(establishedOrigin, request.initiatorSecurityOrigin())) {
+            if (!isOriginAllowedByLock(originLock, request.initiatorSecurityOrigin())) {
                 hasCrossOriginRequest = true;
                 continue;
             }

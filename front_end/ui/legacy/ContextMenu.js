@@ -37,6 +37,7 @@ export class Item {
     shortcut;
     #tooltip;
     jslogContext;
+    #hoverHandler;
     constructor(contextMenu, type, label, isPreviewFeature, disabled, checked, accelerator, tooltip, jslogContext, featureName) {
         this.typeInternal = type;
         this.label = label;
@@ -121,6 +122,9 @@ export class Item {
                         result.isDevToolsPerformanceMenuItem = true;
                     }
                 }
+                if (this.#hoverHandler) {
+                    result.onHover = this.#hoverHandler;
+                }
                 return result;
             }
             case 'separator': {
@@ -142,10 +146,16 @@ export class Item {
                 if (this.customElement) {
                     result.element = this.customElement;
                 }
+                if (this.#hoverHandler) {
+                    result.onHover = this.#hoverHandler;
+                }
                 return result;
             }
         }
         throw new Error('Invalid item type:' + this.typeInternal);
+    }
+    setHoverHandler(handler) {
+        this.#hoverHandler = handler;
     }
     /**
      * Sets a keyboard accelerator for this item.
@@ -203,6 +213,9 @@ export class Section {
             item = new Item(this.contextMenu, 'item', labelOrItem, options?.isPreviewFeature, options?.disabled, undefined, options?.accelerator, options?.tooltip, options?.jslogContext, options?.featureName);
             if (options?.additionalElement) {
                 item.customElement = options?.additionalElement;
+            }
+            if (options?.onHover) {
+                item.setHoverHandler(options.onHover);
             }
         }
         this.items.push(item);
@@ -290,6 +303,9 @@ export class Section {
         }
         if (options?.additionalElement) {
             item.customElement = options.additionalElement;
+        }
+        if (options?.onHover) {
+            item.setHoverHandler(options.onHover);
         }
         return item;
     }

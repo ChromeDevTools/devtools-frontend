@@ -12,6 +12,22 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Search from '../search/search.js';
 import { NetworkItemView } from './NetworkItemView.js';
 import { NetworkLogView } from './NetworkLogView.js';
+type BackendLinkingRule = NetworkForward.BackendLinking.BackendLinkingRule;
+type BackendLinkingPlaceholder = NetworkForward.BackendLinking.BackendLinkingPlaceholder;
+export declare class BackendLinking {
+    #private;
+    readonly rules: Array<{
+        urlPattern: URLPattern;
+        label: string;
+        template: string;
+        placeholders: BackendLinkingPlaceholder[];
+    }>;
+    constructor(setting: Common.Settings.Setting<BackendLinkingRule[]>);
+    getLink(request: SDK.NetworkRequest.NetworkRequest): {
+        label: string;
+        url: URL;
+    } | null;
+}
 export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu
     .Provider<SDK.NetworkRequest.NetworkRequest | SDK.Resource.Resource | Workspace.UISourceCode.UISourceCode>, UI.View.ViewLocationResolver {
     private readonly networkLogShowOverviewSetting;
@@ -43,6 +59,8 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
     recordLogSetting: Common.Settings.Setting<boolean>;
     private readonly throttlingSelect;
     private readonly displayScreenshotDelay;
+    readonly backendLinkingRulesSetting: Common.Settings.Setting<BackendLinkingRule[]>;
+    readonly backendLinking: BackendLinking;
     constructor(displayScreenshotDelay: number);
     static instance(opts?: {
         forceNew: boolean;
@@ -125,3 +143,4 @@ export declare class SearchNetworkView extends Search.SearchView.SearchView {
     static openSearch(query: string, searchImmediately?: boolean): Promise<Search.SearchView.SearchView>;
     createScope(): Search.SearchScope.SearchScope;
 }
+export {};

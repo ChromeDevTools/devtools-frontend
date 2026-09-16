@@ -148,6 +148,7 @@ export class SoftContextMenu {
         if (this.subMenu) {
             this.subMenu.discard();
         }
+        this.highlightMenuItem(null, false);
         if (this.focusRestorer) {
             this.focusRestorer.restore();
         }
@@ -233,6 +234,7 @@ export class SoftContextMenu {
         menuItemElement.addEventListener('mouseover', this.menuItemMouseOver.bind(this), false);
         menuItemElement.addEventListener('mouseleave', this.menuItemMouseLeave.bind(this), false);
         detailsForElement.actionId = item.id;
+        detailsForElement.onHover = item.onHover;
         let accessibleName = item.label || '';
         if (item.type === 'checkbox') {
             const checkedState = item.checked ? i18nString(UIStrings.checked) : i18nString(UIStrings.unchecked);
@@ -405,6 +407,7 @@ export class SoftContextMenu {
                 window.clearTimeout(detailsForElement.subMenuTimer);
                 delete detailsForElement.subMenuTimer;
             }
+            detailsForElement?.onHover?.(false);
         }
         this.highlightedMenuItemElement = menuItemElement;
         if (this.highlightedMenuItemElement) {
@@ -421,6 +424,7 @@ export class SoftContextMenu {
                 detailsForElement.subMenuTimer =
                     window.setTimeout(this.showSubMenu.bind(this, this.highlightedMenuItemElement), 150);
             }
+            detailsForElement?.onHover?.(true);
         }
         if (this.contextMenuElement) {
             ARIAUtils.setActiveDescendant(this.contextMenuElement, menuItemElement);

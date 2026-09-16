@@ -109,13 +109,18 @@ export interface InitialEditState {
 export declare class ElementsTreeWidget extends UI.Widget.Widget {
     #private;
     static readonly INJECT: readonly [typeof IssuesManager.DOMIssuesManager.DOMIssuesManager];
-    isClosingTag: boolean;
     isXMLMimeType: boolean;
     disableEdits: boolean;
     showAIButton: boolean;
     isDOMNodeSelected: boolean;
     initialEdit?: InitialEditState | null;
     onInitialEditCompleted?: () => void;
+    attributeToHighlight?: string | null;
+    onAttributeHighlighted?: () => void;
+    get adornersDirty(): boolean;
+    set adornersDirty(dirty: boolean);
+    get adornersUpdateVersion(): number;
+    set adornersUpdateVersion(version: number);
     expand?: () => void;
     collapse?: () => void;
     selectTreeElement?: (omitFocus?: boolean, selectedByUser?: boolean) => boolean | void;
@@ -126,10 +131,9 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     updateShadowRootDepth?: (depth: number) => void;
     computeLeftIndent?: number | (() => number);
     setChildrenListElementVisible?: (visible: boolean) => void;
-    findStartTagWidget?: () => ElementsTreeWidget | null;
     selectDOMNode?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
     revealInTopLayer?: (node: SDK.DOMModel.DOMNode) => void;
-    showContextMenu?: (event: Event, widget?: ElementsTreeWidget) => void;
+    showContextMenu?: (event: Event) => void;
     populateTreeElement?: () => Promise<void>;
     toggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
     isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
@@ -141,10 +145,18 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     inClipboard: boolean;
     editing: EditorHandles | null;
     expandAllButtonElement: UI.TreeOutline.TreeElement | null;
+    get popoverAdornerActive(): boolean;
+    set popoverAdornerActive(active: boolean);
+    get interestAdornerActive(): boolean;
+    set interestAdornerActive(active: boolean);
+    onPopoverAdornerToggled?: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
+    onInterestAdornerToggled?: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
     get updateRecord(): Elements.ElementUpdateRecord.ElementUpdateRecord | null;
     set updateRecord(updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord | null);
     get node(): SDK.DOMModel.DOMNode;
     set node(node: SDK.DOMModel.DOMNode);
+    get isClosingTag(): boolean;
+    set isClosingTag(isClosingTag: boolean);
     get expanded(): boolean;
     set expanded(expanded: boolean);
     get isExpandable(): boolean;
@@ -161,6 +173,7 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     static populateForcedPseudoStateItems(contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void;
     animateOnDOMUpdate(): void;
     wasShown(): void;
+    willHide(): void;
     performUpdate(): void;
     highlightAttribute(attributeName: string): void;
     isDisplayContents(): boolean;

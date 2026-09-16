@@ -4,6 +4,27 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
+// ../../front_end/panels/network/forward/BackendLinking.ts
+var BackendLinking_exports = {};
+__export(BackendLinking_exports, {
+  BACKEND_LINKING_PLACEHOLDERS: () => BACKEND_LINKING_PLACEHOLDERS,
+  backendLinkingRulesSettingDescriptor: () => backendLinkingRulesSettingDescriptor
+});
+import * as Common from "../../../core/common/common.js";
+var BACKEND_LINKING_PLACEHOLDERS = [
+  "${devtoolsDebugId}",
+  "${requestId}",
+  "${correlationId}",
+  "${traceId}",
+  "${spanId}"
+];
+var backendLinkingRulesSettingDescriptor = {
+  name: "network.backend-linking-rules",
+  type: Common.Settings.SettingType.ARRAY,
+  defaultValue: [],
+  storageType: Common.Settings.SettingStorageType.SYNCED
+};
+
 // ../../front_end/panels/network/forward/NetworkRequestId.ts
 var NetworkRequestId_exports = {};
 __export(NetworkRequestId_exports, {
@@ -155,6 +176,7 @@ var UIRequestLocation = class _UIRequestLocation {
   }
 };
 export {
+  BackendLinking_exports as BackendLinking,
   NetworkRequestId_exports as NetworkRequestId,
   UIFilter_exports as UIFilter,
   UIRequestLocation_exports as UIRequestLocation

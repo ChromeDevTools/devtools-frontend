@@ -975,11 +975,9 @@
           intersectingLoAFs.add(loaf);
         }
       }
-      pendingLoAFs = pendingLoAFs.filter((loaf) => {
-        return (
-          // Compare times first because it's faster.
-          loaf.startTime > latestProcessingEnd || intersectingLoAFs.has(loaf)
-        );
+      const minLoAFIndexToKeep = pendingLoAFs.length - MAX_PENDING_FRAMES;
+      pendingLoAFs = pendingLoAFs.filter((loaf, i) => {
+        return intersectingLoAFs.has(loaf) || i >= minLoAFIndexToKeep && loaf.startTime > latestProcessingEnd;
       });
       cleanupPending = false;
     };

@@ -7,6 +7,7 @@ import type * as NetworkTimeCalculator from '../network_time_calculator/network_
 import { type AllowedOriginResult, type ContextDetail, type ConversationContext, type MultimodalInput, type ResponseData } from './agents/AiAgent.js';
 import { AiHistoryStorage, ConversationType, type SerializedConversation } from './AiHistoryStorage.js';
 import type { ChangeManager } from './ChangeManager.js';
+import { type OriginLockState } from './tools/Tool.js';
 export declare const NOT_FOUND_IMAGE_DATA = "";
 export declare const CONTEXT_TITLE = "Analyzing data";
 /**
@@ -61,8 +62,15 @@ export declare class AiConversation {
     get origin(): SDK.SecurityOrigin.SecurityOrigin | undefined;
     get type(): ConversationType;
     /**
-     * Returns the permitted origin for agent tool execution, or blocks execution
-     * if an unapproved cross-origin navigation occurred during the current run.
+     * Returns the conversation's origin-locking state:
+     * - `BLOCKED_BY_NAVIGATION`: An unapproved cross-origin navigation occurred during the active run.
+     * - `ESTABLISHED_ORIGIN`: The conversation is locked to the established origin.
+     * - `UNINITIALIZED`: No origin lock has been established yet.
+     */
+    getOriginLock: () => OriginLockState;
+    /**
+     * Returns the permitted origin for legacy V1 agent tool execution.
+     * Maps the OriginLockState to the AllowedOriginResult format expected by V1 agents.
      */
     allowedOrigin: () => AllowedOriginResult;
 }

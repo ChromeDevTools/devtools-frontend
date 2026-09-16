@@ -9589,6 +9589,7 @@ var SoftContextMenu = class _SoftContextMenu {
     if (this.subMenu) {
       this.subMenu.discard();
     }
+    this.highlightMenuItem(null, false);
     if (this.focusRestorer) {
       this.focusRestorer.restore();
     }
@@ -9674,6 +9675,7 @@ var SoftContextMenu = class _SoftContextMenu {
     menuItemElement.addEventListener("mouseover", this.menuItemMouseOver.bind(this), false);
     menuItemElement.addEventListener("mouseleave", this.menuItemMouseLeave.bind(this), false);
     detailsForElement.actionId = item8.id;
+    detailsForElement.onHover = item8.onHover;
     let accessibleName = item8.label || "";
     if (item8.type === "checkbox") {
       const checkedState = item8.checked ? i18nString10(UIStrings10.checked) : i18nString10(UIStrings10.unchecked);
@@ -9840,6 +9842,7 @@ var SoftContextMenu = class _SoftContextMenu {
         window.clearTimeout(detailsForElement.subMenuTimer);
         delete detailsForElement.subMenuTimer;
       }
+      detailsForElement?.onHover?.(false);
     }
     this.highlightedMenuItemElement = menuItemElement;
     if (this.highlightedMenuItemElement) {
@@ -9854,6 +9857,7 @@ var SoftContextMenu = class _SoftContextMenu {
       if (scheduleSubMenu && detailsForElement?.subItems && !detailsForElement.subMenuTimer) {
         detailsForElement.subMenuTimer = window.setTimeout(this.showSubMenu.bind(this, this.highlightedMenuItemElement), 150);
       }
+      detailsForElement?.onHover?.(true);
     }
     if (this.contextMenuElement) {
       setActiveDescendant(this.contextMenuElement, menuItemElement);
@@ -9984,6 +9988,7 @@ var Item = class {
   shortcut;
   #tooltip;
   jslogContext;
+  #hoverHandler;
   constructor(contextMenu, type, label, isPreviewFeature, disabled, checked, accelerator, tooltip, jslogContext, featureName) {
     this.typeInternal = type;
     this.label = label;
@@ -10068,6 +10073,9 @@ var Item = class {
             result.isDevToolsPerformanceMenuItem = true;
           }
         }
+        if (this.#hoverHandler) {
+          result.onHover = this.#hoverHandler;
+        }
         return result;
       }
       case "separator": {
@@ -10089,10 +10097,16 @@ var Item = class {
         if (this.customElement) {
           result.element = this.customElement;
         }
+        if (this.#hoverHandler) {
+          result.onHover = this.#hoverHandler;
+        }
         return result;
       }
     }
     throw new Error("Invalid item type:" + this.typeInternal);
+  }
+  setHoverHandler(handler) {
+    this.#hoverHandler = handler;
   }
   /**
    * Sets a keyboard accelerator for this item.
@@ -10157,6 +10171,9 @@ var Section = class {
       );
       if (options?.additionalElement) {
         item8.customElement = options?.additionalElement;
+      }
+      if (options?.onHover) {
+        item8.setHoverHandler(options.onHover);
       }
     }
     this.items.push(item8);
@@ -10269,6 +10286,9 @@ var Section = class {
     }
     if (options?.additionalElement) {
       item8.customElement = options.additionalElement;
+    }
+    if (options?.onHover) {
+      item8.setHoverHandler(options.onHover);
     }
     return item8;
   }

@@ -859,6 +859,11 @@ var DOM;
     GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
     GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
   })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+  let SetTextMarkerRequestType;
+  ((SetTextMarkerRequestType2) => {
+    SetTextMarkerRequestType2["Spelling"] = "spelling";
+    SetTextMarkerRequestType2["Grammar"] = "grammar";
+  })(SetTextMarkerRequestType = DOM2.SetTextMarkerRequestType || (DOM2.SetTextMarkerRequestType = {}));
 })(DOM || (DOM = {}));
 var DOMDebugger;
 ((DOMDebugger2) => {
@@ -16792,6 +16797,21 @@ function handleAdornerKeydown(cb) {
     }
   };
 }
+function formatCandidateLabel(node) {
+  let label = node.localName() || node.nodeName().toLowerCase();
+  const id = node.getAttribute("id");
+  if (id) {
+    label += "#" + id;
+  }
+  const classes = node.getAttribute("class");
+  if (classes) {
+    const classList = classes.trim().split(/\s+/g).filter(Boolean);
+    if (classList.length) {
+      label += "." + classList.join(".");
+    }
+  }
+  return label;
+}
 function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, onUpdateSearchHighlight, onExpand2, issues) {
   switch (node.nodeType()) {
     case Node.ATTRIBUTE_NODE:
@@ -17441,7 +17461,8 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   static INJECT = [IssuesManager2.DOMIssuesManager.DOMIssuesManager];
   #domIssuesManager;
   #node;
-  isClosingTag = false;
+  #eventsBound = false;
+  #isClosingTag = false;
   #expanded = false;
   #isExpandable = false;
   #selected = false;
@@ -17451,6 +17472,28 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   isDOMNodeSelected = false;
   initialEdit;
   onInitialEditCompleted;
+  attributeToHighlight;
+  onAttributeHighlighted;
+  #adornersDirty = false;
+  get adornersDirty() {
+    return this.#adornersDirty;
+  }
+  set adornersDirty(dirty) {
+    this.#adornersDirty = dirty;
+  }
+  #adornersUpdateVersion = 0;
+  get adornersUpdateVersion() {
+    return this.#adornersUpdateVersion;
+  }
+  set adornersUpdateVersion(version) {
+    if (this.#adornersUpdateVersion === version) {
+      return;
+    }
+    this.#adornersUpdateVersion = version;
+    if (version > 0) {
+      void this.updateAdorners();
+    }
+  }
   expand;
   collapse;
   selectTreeElement;
@@ -17461,7 +17504,6 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   updateShadowRootDepth;
   computeLeftIndent;
   setChildrenListElementVisible;
-  findStartTagWidget;
   selectDOMNode;
   revealInTopLayer;
   showContextMenu;
@@ -17493,7 +17535,31 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   #flexAdornerActive = false;
   #gridAdornerActive = false;
   #popoverAdornerActive = false;
+  get popoverAdornerActive() {
+    return this.#popoverAdornerActive;
+  }
+  set popoverAdornerActive(active) {
+    if (this.#popoverAdornerActive === active) {
+      return;
+    }
+    this.#popoverAdornerActive = active;
+    this.requestUpdate();
+  }
+  #activePopoverInvokerId = null;
+  #implicitAnchorCandidatesPromise = null;
   #interestAdornerActive = false;
+  get interestAdornerActive() {
+    return this.#interestAdornerActive;
+  }
+  set interestAdornerActive(active) {
+    if (this.#interestAdornerActive === active) {
+      return;
+    }
+    this.#interestAdornerActive = active;
+    this.requestUpdate();
+  }
+  onPopoverAdornerToggled;
+  onInterestAdornerToggled;
   #scrollSnapAdornerActive = false;
   #startingStyleAdornerActive = false;
   #layout = null;
@@ -17517,10 +17583,39 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     return this.#node;
   }
   set node(node) {
+    if (this.#node === node) {
+      return;
+    }
+    this.#unbindEvents();
+    if (this.#isBound && this.editing) {
+      this.editing.cancel();
+    }
     this.#node = node;
-    if (!this.isClosingTag) {
+    this.#bindEvents();
+    if (this.#isBound) {
+      this.requestUpdate();
+    }
+    if (!this.#isClosingTag) {
       void this.#updateAdorners();
       this.updateDecorations();
+    }
+  }
+  get isClosingTag() {
+    return this.#isClosingTag;
+  }
+  set isClosingTag(isClosingTag) {
+    if (this.#isClosingTag === isClosingTag) {
+      return;
+    }
+    this.#unbindEvents();
+    this.#isClosingTag = isClosingTag;
+    this.#bindEvents();
+    if (this.#isBound) {
+      if (!this.#isClosingTag) {
+        void this.#updateAdorners();
+        this.updateDecorations();
+      }
+      this.requestUpdate();
     }
   }
   get expanded() {
@@ -17569,8 +17664,8 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       const universe = UI15.Widget.lookupUniverseForElement(this.contentElement);
       if (universe) {
         this.#domIssuesManager = universe.get(IssuesManager2.DOMIssuesManager.DOMIssuesManager);
-        if (this.node?.id) {
-          this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+        if (this.#eventsBound && this.#node?.id) {
+          this.#domIssuesManager.subscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
         }
       }
     }
@@ -17648,12 +17743,18 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     UI15.UIUtils.runCSSAnimationOnce(tagName || this.contentElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
   }
   #clearDOMNextUpdate = false;
+  #isBound = false;
   wasShown() {
     super.wasShown();
+    this.onbind();
     if (!this.isClosingTag) {
       void this.#updateAdorners();
       this.updateDecorations();
     }
+  }
+  willHide() {
+    super.willHide();
+    this.onunbind();
   }
   performUpdate() {
     if (this.editing && !this.#editorState) {
@@ -17729,7 +17830,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
         topLayerIndex: this.node.topLayerIndex(),
         onViewSourceAdornerClick: this.disableEdits ? () => {
         } : this.revealHTMLInSources.bind(this),
-        onGutterClick: this.showContextMenu ? (event) => this.showContextMenu?.(event, this) : () => {
+        onGutterClick: this.showContextMenu ? (event) => this.showContextMenu?.(event) : () => {
         },
         onContainerAdornerClick: this.disableEdits ? () => {
         } : (event) => this.#onContainerAdornerClick(event),
@@ -17757,9 +17858,9 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
         onAiButtonClick: (ev) => {
           ev.stopPropagation();
           this.selectTreeElement?.(true, false);
-          const action2 = UI15.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button");
-          if (action2) {
-            void action2.execute();
+          const action3 = UI15.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button");
+          if (action3) {
+            void action3.execute();
           }
         },
         editorState: this.#editorState,
@@ -17796,6 +17897,12 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       } else if (edit.attributeName) {
         this.triggerEditAttribute(edit.attributeName);
       }
+    }
+    if (this.attributeToHighlight) {
+      const attribute = this.attributeToHighlight;
+      this.attributeToHighlight = null;
+      this.onAttributeHighlighted?.();
+      this.highlightAttribute(attribute);
     }
   }
   async #onCustomElementAdornerClick(event) {
@@ -17960,42 +18067,51 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     this.requestUpdate();
   }
   onbind() {
+    if (this.#isBound) {
+      return;
+    }
+    this.#isBound = true;
     this.requestUpdate();
-    if (!this.isClosingTag) {
-      this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
-      this.node.addEventListener(
-        SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED,
-        this.#onScrollableFlagUpdated,
-        this
-      );
-      this.node.addEventListener(
-        SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED,
-        this.#onAdRelatedStateUpdated,
-        this
-      );
-      this.node.addEventListener(
-        SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
-        this.#onPersistentContainerQueryOverlayStateChanged,
-        this
-      );
-      this.node.addEventListener(
-        SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
-        this.#onPersistentFlexContainerOverlayStateChanged,
-        this
-      );
-      this.node.addEventListener(
-        SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
-        this.#onPersistentGridOverlayStateChanged,
-        this
-      );
-      this.node.addEventListener(
-        SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
-        this.#onPersistentScrollSnapOverlayStateChanged,
-        this
-      );
-      if (this.#domIssuesManager && this.node.id) {
-        this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
-      }
+    this.#bindEvents();
+  }
+  #bindEvents() {
+    if (!this.#isBound || this.#isClosingTag || !this.#node || this.#eventsBound) {
+      return;
+    }
+    this.#eventsBound = true;
+    this.#node.addEventListener(SDK13.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
+    this.#node.addEventListener(
+      SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED,
+      this.#onScrollableFlagUpdated,
+      this
+    );
+    this.#node.addEventListener(
+      SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED,
+      this.#onAdRelatedStateUpdated,
+      this
+    );
+    this.#node.addEventListener(
+      SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
+      this.#onPersistentContainerQueryOverlayStateChanged,
+      this
+    );
+    this.#node.addEventListener(
+      SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
+      this.#onPersistentFlexContainerOverlayStateChanged,
+      this
+    );
+    this.#node.addEventListener(
+      SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
+      this.#onPersistentGridOverlayStateChanged,
+      this
+    );
+    this.#node.addEventListener(
+      SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
+      this.#onPersistentScrollSnapOverlayStateChanged,
+      this
+    );
+    if (this.#domIssuesManager && this.#node.id) {
+      this.#domIssuesManager.subscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
     }
   }
   clearView() {
@@ -18083,48 +18199,61 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     );
   }
   onunbind() {
+    if (!this.#isBound) {
+      return;
+    }
+    this.#isBound = false;
     if (this.editing) {
       this.editing.cancel();
     }
     this.clearView();
-    this.node.removeEventListener(
+    this.#unbindEvents();
+  }
+  #unbindEvents() {
+    this.#implicitAnchorCandidatesPromise = null;
+    this.#activePopoverInvokerId = null;
+    if (!this.#eventsBound || !this.#node) {
+      return;
+    }
+    this.#node.removeEventListener(
       SDK13.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED,
       this.onTopLayerIndexChanged,
       this
     );
-    this.node.removeEventListener(
+    this.#node.removeEventListener(
       SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED,
       this.#onScrollableFlagUpdated,
       this
     );
-    this.node.removeEventListener(
+    this.#node.removeEventListener(
       SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED,
       this.#onAdRelatedStateUpdated,
       this
     );
-    this.node.removeEventListener(
+    this.#node.removeEventListener(
       SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
       this.#onPersistentContainerQueryOverlayStateChanged,
       this
     );
-    this.node.removeEventListener(
+    this.#node.removeEventListener(
       SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
       this.#onPersistentFlexContainerOverlayStateChanged,
       this
     );
-    this.node.removeEventListener(
+    this.#node.removeEventListener(
       SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
       this.#onPersistentGridOverlayStateChanged,
       this
     );
-    this.node.removeEventListener(
+    this.#node.removeEventListener(
       SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
       this.#onPersistentScrollSnapOverlayStateChanged,
       this
     );
-    if (this.#domIssuesManager && this.node.id) {
-      this.#domIssuesManager.unsubscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
+    if (this.#domIssuesManager && this.#node.id) {
+      this.#domIssuesManager.unsubscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
     }
+    this.#eventsBound = false;
   }
   #onDOMIssueUpdated = () => {
     this.performUpdate();
@@ -18286,10 +18415,8 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     if (isOpeningTag(this.tagTypeContext) && this.tagTypeContext.canAddAttributes) {
       const attribute = listItem.getElementsByClassName("webkit-html-attribute")[0];
       if (attribute) {
-        return this.startEditingAttribute(
-          attribute,
-          attribute.getElementsByClassName("webkit-html-attribute-value")[0]
-        );
+        const valueElement = attribute.getElementsByClassName("webkit-html-attribute-value")[0];
+        return this.startEditingAttribute(attribute, valueElement ?? attribute);
       }
       return this.addNewAttribute();
     }
@@ -18335,6 +18462,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
             return this.startEditingAttribute(elem.parentElement, elem);
           }
         }
+        return this.startEditingAttribute(attributeElements[i].parentElement, attributeElements[i]);
       }
     }
     return;
@@ -18350,7 +18478,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     }
     const attributeName = attributeNameElement.textContent;
     const attributeValueElement = attribute.getElementsByClassName("webkit-html-attribute-value")[0];
-    elementForSelection = attributeValueElement?.isAncestor(elementForSelection) ? attributeValueElement : elementForSelection;
+    elementForSelection = attributeValueElement && elementForSelection && attributeValueElement.isAncestor(elementForSelection) ? attributeValueElement : elementForSelection ?? attribute;
     function removeZeroWidthSpaceRecursive(node) {
       if (node.nodeType === Node.TEXT_NODE) {
         node.nodeValue = node.nodeValue ? node.nodeValue.replace(/\u200B/g, "") : "";
@@ -18646,7 +18774,9 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       }
     }
     if (attributeName !== null && (attributeName.trim() || newText.trim()) && oldText !== newText) {
-      this.node.setAttribute(attributeName, newText, moveToNextAttributeIfNeeded.bind(this));
+      this.node.setAttribute(attributeName, newText, (error) => {
+        moveToNextAttributeIfNeeded.call(this, error);
+      });
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
       return;
     }
@@ -18681,7 +18811,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       }
     }
     newText = newText.trim();
-    if (newText === oldText) {
+    if (!newText || newText === oldText) {
       cancel();
       return;
     }
@@ -18691,11 +18821,10 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
         cancel();
         return;
       }
-      if (!this.selectNodeAfterEdit) {
-        return;
-      }
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-      this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
+      if (this.selectNodeAfterEdit) {
+        this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
+      }
     });
   }
   textNodeEditingCommitted(textNode, _element, newText) {
@@ -18832,11 +18961,11 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
         callback(!error);
       }
     }
-    function commitChange(initialValue, value5) {
+    const commitChange = (initialValue, value5) => {
       if (initialValue !== value5) {
         node.setOuterHTML(value5, selectNode);
       }
-    }
+    };
     function disposeCallback() {
       if (callback) {
         callback(false);
@@ -18869,8 +18998,8 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   editAsHTML() {
     const promise = Common9.Revealer.reveal(this.node);
     void promise.then(() => {
-      const action2 = UI15.ActionRegistry.ActionRegistry.instance().getAction("elements.edit-as-html");
-      return action2.execute();
+      const action3 = UI15.ActionRegistry.ActionRegistry.instance().getAction("elements.edit-as-html");
+      return action3.execute();
     });
   }
   updateAdorners() {
@@ -18887,6 +19016,11 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     } else {
       this.#layout = null;
     }
+    if (this.node.attributes().some((attr) => attr.name === "popover")) {
+      this.#implicitAnchorCandidatesPromise = this.node.getImplicitAnchorCandidates();
+    } else {
+      this.#implicitAnchorCandidatesPromise = null;
+    }
     this.requestUpdate();
   }
   async #onPopoverAdornerClick(event) {
@@ -18896,12 +19030,94 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     if (!nodeId) {
       return;
     }
-    await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: !this.#popoverAdornerActive });
-    this.#popoverAdornerActive = !this.#popoverAdornerActive;
-    if (this.#popoverAdornerActive) {
-      Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+    const candidates = await this.#implicitAnchorCandidatesPromise;
+    if (!candidates) {
+      return;
     }
-    this.requestUpdate();
+    if (candidates.length <= 1) {
+      const enable = !this.#popoverAdornerActive;
+      const invokerNodeId = enable && candidates.length === 1 ? candidates[0].backendNodeId() : void 0;
+      await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable, invokerNodeId });
+      this.#popoverAdornerActive = enable;
+      this.#activePopoverInvokerId = enable ? invokerNodeId ?? null : null;
+      if (this.#popoverAdornerActive) {
+        Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+      }
+      this.onPopoverAdornerToggled?.(node, this.#popoverAdornerActive);
+      this.requestUpdate();
+      return;
+    }
+    let activeInvokerId = this.#activePopoverInvokerId;
+    if (this.#popoverAdornerActive && activeInvokerId === null && candidates.length > 0) {
+      activeInvokerId = candidates[0].backendNodeId();
+    }
+    let x;
+    let y;
+    if (event.target instanceof HTMLElement) {
+      const rect = event.target.getBoundingClientRect();
+      if (event instanceof MouseEvent && (event.clientX || event.clientY)) {
+        x = event.clientX;
+        y = event.clientY;
+      } else {
+        x = rect.left;
+        y = rect.bottom;
+      }
+    }
+    const contextMenu = new UI15.ContextMenu.ContextMenu(event, {
+      useSoftMenu: true,
+      x,
+      y,
+      onSoftMenuClosed: () => {
+        SDK13.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK13.TargetManager.TargetManager.instance());
+      }
+    });
+    const resolvedNodes = await Promise.all(candidates.map((candidate) => candidate.resolvePromise()));
+    for (let i = 0; i < candidates.length; ++i) {
+      const candidate = candidates[i];
+      const resolvedNode = resolvedNodes[i];
+      const candidateBackendId = candidate.backendNodeId();
+      const isActive = this.#popoverAdornerActive && candidateBackendId === activeInvokerId;
+      const label = resolvedNode ? formatCandidateLabel(resolvedNode) : "";
+      if (!label) {
+        continue;
+      }
+      contextMenu.defaultSection().appendCheckboxItem(
+        label,
+        async () => {
+          if (isActive) {
+            await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: false });
+            this.#popoverAdornerActive = false;
+            this.#activePopoverInvokerId = null;
+          } else {
+            if (this.#popoverAdornerActive) {
+              await node.domModel().agent.invoke_forceShowPopover({ nodeId, enable: false });
+            }
+            await node.domModel().agent.invoke_forceShowPopover({
+              nodeId,
+              enable: true,
+              invokerNodeId: candidateBackendId
+            });
+            this.#popoverAdornerActive = true;
+            this.#activePopoverInvokerId = candidateBackendId;
+            Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
+          }
+          this.onPopoverAdornerToggled?.(node, this.#popoverAdornerActive);
+          this.requestUpdate();
+        },
+        {
+          checked: isActive,
+          onHover: (hovered) => {
+            if (hovered) {
+              candidate.highlight();
+            } else {
+              SDK13.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK13.TargetManager.TargetManager.instance());
+            }
+          },
+          jslogContext: "implicit-anchor-candidate"
+        }
+      );
+    }
+    await contextMenu.show();
   }
   async #onInterestAdornerClick(event) {
     event.stopPropagation();
@@ -18915,6 +19131,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     if (this.#interestAdornerActive) {
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.MODERN_DOM_BADGE_CLICKED);
     }
+    this.onInterestAdornerToggled?.(node, this.#interestAdornerActive);
     this.requestUpdate();
   }
   #onStartingStyleAdornerClick(event) {
@@ -19111,9 +19328,6 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
         outline.suppressRevealAndSelect = true;
         outline.selectDOMNode(node, selectedByUser);
         outline.suppressRevealAndSelect = false;
-      };
-      this.widget.findStartTagWidget = () => {
-        return outline.findTreeElement(this.nodeInternal)?.widget ?? null;
       };
       this.widget.revealInTopLayer = (node) => outline.revealInTopLayer(node);
       this.widget.showContextMenu = (event) => void outline.showContextMenu(this, event);
@@ -19509,9 +19723,9 @@ var UIStrings15 = {
 };
 var str_15 = i18n30.i18n.registerUIStrings("panels/elements/DOMTreeContextMenu.ts", UIStrings15);
 var i18nString14 = i18n30.i18n.getLocalizedString.bind(void 0, str_15);
-async function populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget) {
+async function populateNodeContextMenu(contextMenu, domTreeWidget, domNode) {
   const isEditable = !domNode.isShadowRoot() && !domNode.ancestorUserAgentShadowRoot();
-  if (isEditable && !targetWidget?.isEditing) {
+  if (isEditable) {
     contextMenu.editSection().appendItem(
       i18nString14(UIStrings15.editAsHtml),
       () => domTreeWidget.toggleEditAsHTML(domNode),
@@ -19524,15 +19738,15 @@ async function populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targ
   let menuItem;
   const openAiAssistanceId = "freestyler.element-panel-context";
   if (UI16.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-    let appendSubmenuPromptAction = function(submenu2, action3, label, prompt, jslogContext) {
+    let appendSubmenuPromptAction = function(submenu2, action4, label, prompt, jslogContext) {
       submenu2.defaultSection().appendItem(label, () => {
-        void action3.execute({ prompt });
+        void action4.execute({ prompt });
         UI16.UIUtils.PromotionManager.instance().recordFeatureInteraction(openAiAssistanceId);
-      }, { disabled: !action3.enabled(), jslogContext });
+      }, { disabled: !action4.enabled(), jslogContext });
     };
     UI16.Context.Context.instance().setFlavor(SDK14.DOMModel.DOMNode, domNode);
-    const action2 = UI16.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-    const submenu = contextMenu.footerSection().appendSubMenuItem(action2.title(), false, openAiAssistanceId);
+    const action3 = UI16.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+    const submenu = contextMenu.footerSection().appendSubMenuItem(action3.title(), false, openAiAssistanceId);
     submenu.defaultSection().appendAction(openAiAssistanceId, i18nString14(UIStrings15.startAChat));
     const submenuConfigs = [
       {
@@ -19658,7 +19872,7 @@ async function populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targ
       for (const item2 of config.items) {
         appendSubmenuPromptAction(
           submenu,
-          action2,
+          action3,
           item2.label,
           item2.prompt,
           openAiAssistanceId + item2.jslogContextSuffix
@@ -19787,7 +20001,7 @@ async function populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targ
     }, { jslogContext: "show-frame-details" });
   }
 }
-async function showContextMenu(domTreeWidget, domNode, event, targetWidget) {
+async function showContextMenu(domTreeWidget, domNode, event) {
   if (UI16.UIUtils.isEditing()) {
     return;
   }
@@ -19814,34 +20028,32 @@ async function showContextMenu(domTreeWidget, domNode, event, targetWidget) {
     { jslogContext: "store-as-global-variable" }
   );
   if (textNode) {
-    if (!targetWidget?.isEditing) {
-      contextMenu.editSection().appendItem(
-        i18nString14(UIStrings15.editText),
-        () => targetWidget?.startEditingTextNode(textNode),
-        { jslogContext: "edit-text" }
-      );
-    }
-    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
+    contextMenu.editSection().appendItem(
+      i18nString14(UIStrings15.editText),
+      () => domTreeWidget.startEditingTextNode(domNode),
+      { jslogContext: "edit-text" }
+    );
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
   } else if (isTag) {
-    const startTagWidget = targetWidget?.isClosingTag ? targetWidget.findStartTagWidget?.() ?? targetWidget : targetWidget;
-    if (startTagWidget) {
-      contextMenu.editSection().appendItem(
-        i18nString14(UIStrings15.addAttribute),
-        () => startTagWidget.addNewAttribute(),
-        { jslogContext: "add-attribute" }
-      );
-    }
+    contextMenu.editSection().appendItem(
+      i18nString14(UIStrings15.addAttribute),
+      () => domTreeWidget.addNewAttribute(domNode),
+      { jslogContext: "add-attribute" }
+    );
     const target = event.composedPath()[0] || event.target;
     const attribute = target.enclosingNodeOrSelfWithClass?.("webkit-html-attribute");
     const newAttribute = target.enclosingNodeOrSelfWithClass?.("add-attribute");
     if (attribute && !newAttribute) {
-      contextMenu.editSection().appendItem(
-        i18nString14(UIStrings15.editAttribute),
-        () => startTagWidget?.startEditingAttribute(attribute, target),
-        { jslogContext: "edit-attribute" }
-      );
+      const attributeName = attribute.querySelector(".webkit-html-attribute-name")?.textContent?.trim();
+      if (attributeName) {
+        contextMenu.editSection().appendItem(
+          i18nString14(UIStrings15.editAttribute),
+          () => domTreeWidget.startEditing(domNode, attributeName),
+          { jslogContext: "edit-attribute" }
+        );
+      }
     }
-    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, startTagWidget);
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
     ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, domNode);
     contextMenu.viewSection().appendItem(
       i18nString14(UIStrings15.scrollIntoView),
@@ -19852,7 +20064,7 @@ async function showContextMenu(domTreeWidget, domNode, event, targetWidget) {
       await domNode.focus();
     }, { jslogContext: "focus" });
   } else if (commentNode) {
-    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
   } else if (isPseudoElement) {
     if (domNode.childNodeCount() !== 0 || domNode.hasPseudoElements()) {
       contextMenu.viewSection().appendItem(
@@ -19869,7 +20081,7 @@ async function showContextMenu(domTreeWidget, domNode, event, targetWidget) {
   } else if (domNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
     contextMenu.editSection().appendItem(
       i18nString14(UIStrings15.editData),
-      () => targetWidget?.startEditingProcessingInstructionValue(),
+      () => domTreeWidget.startEditing(domNode),
       { jslogContext: "elements.edit-data" }
     );
     contextMenu.editSection().appendItem(
@@ -20746,6 +20958,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     elementsTreeOutline.addEventListener(UI19.TreeOutline.Events.ElementExpanded, input.onElementExpanded, void 0);
     elementsTreeOutline.addEventListener(UI19.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, void 0);
     elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
+      input.onClearMaxRows?.();
       if (elementsTreeOutline.maxRowsShown) {
         elementsTreeOutline.maxRowsShown = void 0;
       }
@@ -20753,7 +20966,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     elementsTreeOutline.elementInternal.addEventListener("contextmenu", (event) => {
       const treeElement = elementsTreeOutline.treeElementFromEventInternal(event);
       if (treeElement instanceof ElementsTreeElement) {
-        input.onContextMenu?.(treeElement.node(), event, treeElement.widget);
+        input.onContextMenu?.(treeElement.node(), event);
       }
     }, false);
     elementsTreeOutline.elementInternal.addEventListener("keydown", (event) => {
@@ -20774,7 +20987,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
   output.elementsTreeOutline.showContextMenu = (treeElement, event) => {
     if (event instanceof MouseEvent) {
-      input.onContextMenu?.(treeElement.node(), event, treeElement.widget);
+      input.onContextMenu?.(treeElement.node(), event);
     }
   };
   let needsUpdate = false;
@@ -20880,6 +21093,20 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         treeElement.widget.triggerEditAttribute(edit.attributeName);
       }
     }
+  }
+  if (input.attributeToHighlight) {
+    const treeElement = output.elementsTreeOutline.findTreeElement(input.attributeToHighlight.node);
+    if (treeElement) {
+      treeElement.reveal();
+      treeElement.highlightAttribute(input.attributeToHighlight.attribute);
+      input.onAttributeHighlighted?.();
+    }
+  }
+  if (input.nodesWithDirtyAdorners && input.nodesWithDirtyAdorners.size > 0) {
+    for (const node of input.nodesWithDirtyAdorners) {
+      void output.elementsTreeOutline.findTreeElement(node)?.updateAdorners();
+    }
+    input.onDirtyAdornersUpdated?.();
   }
 };
 function isMaxDepthReached(node, rootDOMNode, maxTreeDepth, omitRootDOMNode) {
@@ -21156,16 +21383,103 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       </li>
     `;
   };
+  const isNodeExpanded = (node, isEditingAsHTML) => {
+    const isNotCollapsible = node.nodeType() === Node.ELEMENT_NODE && node.parentNode?.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode;
+    const isCollapsible = !isEditingAsHTML && !isNotCollapsible;
+    return !isCollapsible || Boolean(input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode) || (input.isNodeExpanded ? input.isNodeExpanded(node) : input.expandRoot && (node === input.rootDOMNode || input.omitRootDOMNode && node.parentNode === input.rootDOMNode)));
+  };
+  const countTopLayerRows = (doc) => {
+    const shortcuts = input.getTopLayerShortcuts?.(doc) ?? [];
+    if (shortcuts.length === 0) {
+      return 0;
+    }
+    const countShortcutRows = (shortcut) => {
+      let shortcutRows = 1;
+      if (shortcut.childShortcuts.length > 0 && input.isTopLayerShortcutExpanded?.(shortcut)) {
+        for (const child of shortcut.childShortcuts) {
+          shortcutRows += countShortcutRows(child);
+        }
+      }
+      return shortcutRows;
+    };
+    let rows = 1;
+    if (input.isTopLayerExpanded?.(doc)) {
+      for (const shortcut of shortcuts) {
+        rows += countShortcutRows(shortcut);
+      }
+    }
+    return rows;
+  };
+  const countAdoptedStyleSheetsRows = (node) => {
+    const sheets = node.adoptedStyleSheetsForNode;
+    if (!sheets || sheets.length === 0) {
+      return 0;
+    }
+    let rows = 1;
+    if (input.isAdoptedStyleSheetsExpanded?.(node)) {
+      for (const sheet of sheets) {
+        rows += 1;
+        if (input.isAdoptedStyleSheetExpanded?.(sheet) && sheet.cssModel.styleSheetHeaderForId(sheet.id)) {
+          rows += 1;
+        }
+      }
+    }
+    return rows;
+  };
+  const countVisibleRowsForNode = (node) => {
+    let rows = 1;
+    const isEditingAsHTML = input.multilineEditingNode === node || input.nodeToEdit?.node === node && Boolean(input.nodeToEdit.isEditAsHTML);
+    const hasChildren = !isEditingAsHTML && nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
+    if (hasChildren && isNodeExpanded(node, isEditingAsHTML)) {
+      rows += countAdoptedStyleSheetsRows(node);
+      const allVisibleChildren = getVisibleChildren(node, input.showComments ?? true);
+      const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
+      const children = allVisibleChildren.slice(0, limit);
+      for (const child of children) {
+        rows += countVisibleRowsForNode(child);
+      }
+      if (allVisibleChildren.length > children.length) {
+        rows += 1;
+      }
+      if (node instanceof SDK16.DOMModel.DOMDocument) {
+        rows += countTopLayerRows(node);
+      }
+      const tagName = node.nodeName().toLowerCase();
+      const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) && !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
+      if (needsClosingTag) {
+        rows += 1;
+      }
+    }
+    return rows;
+  };
+  const countAllVisibleRows = () => {
+    let totalRows = 0;
+    if (input.omitRootDOMNode && input.rootDOMNode) {
+      totalRows += countAdoptedStyleSheetsRows(input.rootDOMNode);
+    }
+    for (const node of rootNodes) {
+      totalRows += countVisibleRowsForNode(node);
+    }
+    if (input.omitRootDOMNode && input.rootDOMNode) {
+      const remaining = allRootNodes.length - rootNodes.length;
+      if (remaining > 0) {
+        totalRows += 1;
+      }
+      if (input.rootDOMNode instanceof SDK16.DOMModel.DOMDocument) {
+        totalRows += countTopLayerRows(input.rootDOMNode);
+      }
+    }
+    return totalRows;
+  };
   const renderNode = (node, depth = 0) => {
     const isSelected = input.selectedNode === node;
     const isOpeningHovered = input.currentHighlightedNode === node || input.hoveredNode === node && !input.hoveredClosingTag;
     const isClosingHovered = input.hoveredNode === node && Boolean(input.hoveredClosingTag);
-    const isExpanded = Boolean(
-      input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode) || (input.isNodeExpanded ? input.isNodeExpanded(node) : input.expandRoot && (node === input.rootDOMNode || input.omitRootDOMNode && node.parentNode === input.rootDOMNode))
-    );
     const isEditingAsHTML = input.multilineEditingNode === node || input.nodeToEdit?.node === node && Boolean(input.nodeToEdit.isEditAsHTML);
     const hasChildren = !isEditingAsHTML && nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
-    const isCollapsible = !isEditingAsHTML && !(node.nodeType() === Node.ELEMENT_NODE && node.parentNode?.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode);
+    const isNotCollapsible = node.nodeType() === Node.ELEMENT_NODE && node.parentNode?.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode;
+    const isCollapsible = !isEditingAsHTML && !isNotCollapsible;
+    const isExpanded = isNodeExpanded(node, isEditingAsHTML);
     const isExpandable = hasChildren && isCollapsible;
     const allVisibleChildren = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
     const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
@@ -21308,6 +21622,14 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       showAIButton: input.showAIButton ?? true,
       initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
       onInitialEditCompleted: input.onInitialEditCompleted,
+      attributeToHighlight: input.attributeToHighlight?.node === node ? input.attributeToHighlight.attribute : null,
+      onAttributeHighlighted: input.onAttributeHighlighted,
+      adornersDirty: input.nodesWithDirtyAdorners?.has(node) ?? false,
+      adornersUpdateVersion: input.nodeAdornerVersions?.get(node) ?? 0,
+      popoverAdornerActive: Boolean(input.forceOpenPopovers?.has(node)),
+      onPopoverAdornerToggled: input.onPopoverAdornerToggled,
+      interestAdornerActive: Boolean(input.forceOpenInterests?.has(node)),
+      onInterestAdornerToggled: input.onInterestAdornerToggled,
       revealInTopLayer: (n) => input.domTreeWidget?.revealInTopLayer(n),
       setMultilineEditing: (multilineEditing, n) => input.domTreeWidget?.setMultilineEditing(multilineEditing, n ?? node),
       visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
@@ -21320,9 +21642,9 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
         return Promise.resolve();
       },
       isToggledToHidden: (n) => input.isToggledToHidden?.(n) ?? false,
-      showContextMenu: (event, widget4) => {
+      showContextMenu: (event) => {
         if (event instanceof MouseEvent) {
-          input.onContextMenu?.(node, event, widget4);
+          input.onContextMenu?.(node, event);
         }
       },
       updateRecord: input.updateRecordForNode?.(node) ?? null
@@ -21374,9 +21696,9 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       computeLeftIndent: computeLeftIndent(depth + 1, false),
       disableEdits: input.disableEdits ?? false,
       showAIButton: false,
-      showContextMenu: (event, widget4) => {
+      showContextMenu: (event) => {
         if (event instanceof MouseEvent) {
-          input.onContextMenu?.(node, event, widget4);
+          input.onContextMenu?.(node, event);
         }
       },
       updateRecord: input.updateRecordForNode?.(node) ?? null
@@ -21389,13 +21711,25 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       </li>
     `;
   };
+  const isSingleNode = Boolean(input.deindentSingleNode && rootNodes.length === 1 && !nodeHasVisibleChildren(rootNodes[0], input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode));
+  const disclosureClasses = classMap4({
+    "elements-disclosure": true,
+    "single-node": isSingleNode,
+    "elements-tree-truncated": Boolean(input.maxRowsShown)
+  });
+  const disclosureStyles = styleMap({
+    "--max-rows": input.maxRowsShown ? String(input.maxRowsShown) : null
+  });
+  const totalVisibleRows = input.maxRowsShown ? countAllVisibleRows() : 0;
+  const truncatedLines = input.maxRowsShown ? Math.max(0, totalVisibleRows - input.maxRowsShown) : 0;
   render13(html15`
     <style>${UI19.inspectorCommonStyles}</style>
     <style>${elementsTreeOutline_css_default}</style>
     <style>${CodeHighlighter5.codeHighlighterStyles}</style>
-    <div class="elements-disclosure ${input.deindentSingleNode && rootNodes.length === 1 && !nodeHasVisibleChildren(rootNodes[0], input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode) ? "single-node" : ""}">
+    <div class=${disclosureClasses} style=${disclosureStyles}>
       <devtools-tree
-        class="elements-tree-outline source-code ${input.wrap ? "" : "elements-tree-nowrap"} ${input.hideGutter ? "elements-hide-gutter" : ""}"
+        class="elements-tree-outline source-code ${input.wrap ? "" : "elements-tree-nowrap"} ${input.hideGutter ? "elements-hide-gutter" : ""} ${isSingleNode ? "single-node" : ""}"
+        disclosure-class="elements-disclosure ${isSingleNode ? "single-node" : ""} ${input.maxRowsShown ? "elements-tree-truncated" : ""}"
         aria-label=${i18nString16(UIStrings17.pageDom)}
         jslog=${VisualLogging10.tree("elements")}
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
@@ -21440,7 +21774,19 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
         `}>
       </devtools-tree>
     </div>
+    ${truncatedLines > 0 ? html15`
+      <button
+        type="button"
+        class="elements-tree-show-all"
+        jslog=${VisualLogging10.action("show-all-nodes").track({ click: true })}
+        @click=${input.onClearMaxRows}>
+        ${i18nString16(UIStrings17.showAllLines, { PH1: truncatedLines })}
+      </button>
+    ` : nothing6}
   `, target);
+  if (input.nodesWithDirtyAdorners && input.nodesWithDirtyAdorners.size > 0) {
+    input.onDirtyAdornersUpdated?.();
+  }
 };
 function getElementsTreeWidgetAndNode(element) {
   let current = element;
@@ -21450,10 +21796,13 @@ function getElementsTreeWidgetAndNode(element) {
       if (treeElement instanceof ElementsTreeElement) {
         return { node: treeElement.node(), widget: treeElement.widget };
       }
-    }
-    const widget4 = UI19.Widget.Widget.get(current);
-    if (widget4 instanceof ElementsTreeWidget) {
-      return { node: widget4.node, widget: widget4 };
+      const devtoolsWidget = current.querySelector(":scope > devtools-widget, :scope > .tree-element-title > devtools-widget");
+      if (devtoolsWidget) {
+        const widget4 = UI19.Widget.Widget.get(devtoolsWidget);
+        if (widget4 instanceof ElementsTreeWidget) {
+          return { node: widget4.node, widget: widget4 };
+        }
+      }
     }
     current = current.parentElementOrShadowHost();
   }
@@ -21911,7 +22260,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
   }
   highlightNodeAttribute(node, attribute) {
-    this.#viewOutput?.elementsTreeOutline?.highlightNodeAttribute(node, attribute);
+    this.selectDOMNode(node);
+    this.#attributeToHighlight = { node, attribute };
+    this.performUpdate();
   }
   get wrap() {
     return this.#wrap;
@@ -22031,11 +22382,11 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
     treeElement?.collapseChildren();
   }
-  showContextMenu(node, event, widget4) {
+  showContextMenu(node, event) {
     if (!this.#enableContextMenu) {
       return Promise.resolve(void 0);
     }
-    return showContextMenu(this, node, event, widget4);
+    return showContextMenu(this, node, event);
   }
   /**
    * FIXME: this is called to re-render everything from scratch, for
@@ -22060,6 +22411,11 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   #searchMatchNode = null;
   #searchMatchQuery = null;
   #nodeToEdit = null;
+  #attributeToHighlight = null;
+  #nodesWithDirtyAdorners = /* @__PURE__ */ new Set();
+  #nodeAdornerVersions = /* @__PURE__ */ new WeakMap();
+  #forceOpenPopovers = /* @__PURE__ */ new WeakSet();
+  #forceOpenInterests = /* @__PURE__ */ new WeakSet();
   #draggedNode = null;
   #draggedNodeWasExpanded = false;
   #dragOverNode = null;
@@ -22129,6 +22485,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
         visible: this.#visible,
         wrap: this.#wrap,
         maxRowsShown: this.#maxRows,
+        onClearMaxRows: () => {
+          this.maxRows = void 0;
+        },
         showSelectionOnKeyboardFocus: this.showSelectionOnKeyboardFocus,
         preventTabOrder: this.preventTabOrder,
         deindentSingleNode: this.deindentSingleNode,
@@ -22162,8 +22521,8 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
         onExpand: (node, expanded) => {
           this.setNodeExpanded(node, expanded);
         },
-        onContextMenu: (node, event, widget4) => {
-          void this.showContextMenu(node, event, widget4);
+        onContextMenu: (node, event) => {
+          void this.showContextMenu(node, event);
         },
         onToggleHideElement: (node) => {
           this.toggleHideElement(node);
@@ -22195,6 +22554,33 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
         nodeToEdit: this.#nodeToEdit,
         onInitialEditCompleted: () => {
           this.#nodeToEdit = null;
+        },
+        attributeToHighlight: this.#attributeToHighlight,
+        onAttributeHighlighted: () => {
+          this.#attributeToHighlight = null;
+        },
+        nodesWithDirtyAdorners: this.#nodesWithDirtyAdorners,
+        nodeAdornerVersions: this.#nodeAdornerVersions,
+        onDirtyAdornersUpdated: () => {
+          this.#nodesWithDirtyAdorners.clear();
+        },
+        forceOpenPopovers: this.#forceOpenPopovers,
+        onPopoverAdornerToggled: (node, active) => {
+          if (active) {
+            this.#forceOpenPopovers.add(node);
+          } else {
+            this.#forceOpenPopovers.delete(node);
+          }
+          this.performUpdate();
+        },
+        forceOpenInterests: this.#forceOpenInterests,
+        onInterestAdornerToggled: (node, active) => {
+          if (active) {
+            this.#forceOpenInterests.add(node);
+          } else {
+            this.#forceOpenInterests.delete(node);
+          }
+          this.performUpdate();
         },
         multilineEditingNode: this.#multilineEditingNode,
         dragOverNode: this.#dragOverNode,
@@ -22328,8 +22714,10 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
    * FIXME: adorners should be part of the view input.
    */
   updateNodeAdorners(node) {
-    const element = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
-    void element?.updateAdorners();
+    this.#nodesWithDirtyAdorners.add(node);
+    const version = (this.#nodeAdornerVersions.get(node) ?? 0) + 1;
+    this.#nodeAdornerVersions.set(node, version);
+    this.performUpdate();
   }
   highlightMatch(node, query) {
     this.#searchMatchNode = node;
@@ -22356,7 +22744,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   }
   async removeNode(node) {
     if (this.isToggledToHidden(node)) {
-      this.toggleHideElement(node);
+      await node.toggleHideElement();
     }
     if (node.pseudoType()) {
       return;
@@ -22580,11 +22968,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       return;
     }
     const wasExpanded = this.#draggedNodeWasExpanded;
-    draggedNode.moveTo(
-      parentNode,
-      anchorNode,
-      (error, newNode) => this.selectNodeAfterEdit(wasExpanded, error, newNode)
-    );
+    draggedNode.moveTo(parentNode, anchorNode, (error, newNode) => {
+      this.selectNodeAfterEdit(wasExpanded, error, newNode);
+    });
   }
   selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection) {
     if (error || !newNode) {
@@ -22695,7 +23081,24 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     this.selectDOMNode(null);
     this.performUpdate();
   }
-  startEditing(node) {
+  addNewAttribute(node) {
+    if (UI19.UIUtils.isEditing()) {
+      return;
+    }
+    if (node.nodeType() !== Node.ELEMENT_NODE || node.isShadowRoot() || node.ancestorUserAgentShadowRoot()) {
+      return;
+    }
+    this.#nodeToEdit = { node, isNewAttribute: true };
+    this.performUpdate();
+  }
+  startEditingTextNode(node) {
+    if (UI19.UIUtils.isEditing()) {
+      return;
+    }
+    this.#nodeToEdit = { node, isTextNode: true };
+    this.performUpdate();
+  }
+  startEditing(node, attributeName) {
     if (UI19.UIUtils.isEditing()) {
       return;
     }
@@ -22704,16 +23107,19 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       if (node.isShadowRoot() || node.ancestorUserAgentShadowRoot()) {
         return;
       }
-      const attributes = node.attributes();
-      if (attributes.length > 0) {
-        this.#nodeToEdit = { node, attributeName: attributes[0].name };
+      if (attributeName) {
+        this.#nodeToEdit = { node, attributeName };
       } else {
-        this.#nodeToEdit = { node, isNewAttribute: true };
+        const attributes = node.attributes();
+        if (attributes.length > 0) {
+          this.#nodeToEdit = { node, attributeName: attributes[0].name };
+        } else {
+          this.#nodeToEdit = { node, isNewAttribute: true };
+        }
       }
       this.performUpdate();
     } else if (nodeType === Node.TEXT_NODE) {
-      this.#nodeToEdit = { node, isTextNode: true };
-      this.performUpdate();
+      this.startEditingTextNode(node);
     } else if (nodeType === Node.PROCESSING_INSTRUCTION_NODE) {
       this.#nodeToEdit = { node, isProcessingInstruction: true };
       this.performUpdate();
@@ -22871,11 +23277,16 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       return;
     }
     const wasExpanded = this.isNodeExpanded(this.#clipboardData.node);
+    const clipboardNode = this.#clipboardData.node;
     if (this.#clipboardData.isCut) {
-      this.#clipboardData.node.moveTo(targetNode, null, this.selectNodeAfterEdit.bind(this, wasExpanded));
+      clipboardNode.moveTo(targetNode, null, (error, newNode) => {
+        this.selectNodeAfterEdit(wasExpanded, error, newNode);
+      });
       this.setClipboardData(null);
     } else {
-      this.#clipboardData.node.copyTo(targetNode, null, this.selectNodeAfterEdit.bind(this, wasExpanded));
+      clipboardNode.copyTo(targetNode, null, (error, newNode) => {
+        this.selectNodeAfterEdit(wasExpanded, error, newNode);
+      });
     }
   }
   onCopyOrCut(isCut, event) {

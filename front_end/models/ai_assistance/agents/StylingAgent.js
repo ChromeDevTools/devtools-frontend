@@ -121,8 +121,10 @@ export class StylingAgent extends AiAgent {
                 }
                 return await getStylesTool.handler(args, {
                     getTarget: () => this.targetManager.primaryPageTarget() ?? context.getItem().domModel().target(),
-                    getEstablishedOrigin: () => {
-                        return context.getOrigin();
+                    getOriginLock: () => {
+                        // V1 StylingAgent adapts the selected DOM node's security origin to OriginLockState.
+                        const origin = context.getOrigin();
+                        return origin ? { status: 'ESTABLISHED_ORIGIN', origin } : { status: 'UNINITIALIZED' };
                     },
                 });
             },
@@ -140,7 +142,11 @@ export class StylingAgent extends AiAgent {
                 createExtensionScope: this.#createExtensionScope.bind(this),
                 execJs: this.#execJs,
                 getExecutionContextNode: () => this.context?.getItem() ?? null,
-                getEstablishedOrigin: () => this.context?.getOrigin(),
+                getOriginLock: () => {
+                    // V1 StylingAgent adapts the selected DOM node's security origin to OriginLockState.
+                    const origin = this.context?.getOrigin();
+                    return origin ? { status: 'ESTABLISHED_ORIGIN', origin } : { status: 'UNINITIALIZED' };
+                },
             }, options),
         });
     }

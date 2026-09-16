@@ -58,6 +58,7 @@ export interface SoftContextMenuDescriptor {
     jslogContext?: string;
     /** A no-op. For native context menus, feature name will request showing a new badge. */
     featureName?: string;
+    onHover?: (hovered: boolean) => void;
 }
 interface ElementMenuDetails {
     customElement?: HTMLElement;
@@ -65,5 +66,6 @@ interface ElementMenuDetails {
     subMenuTimer?: number;
     subItems?: SoftContextMenuDescriptor[];
     actionId?: number;
+    onHover?: (hovered: boolean) => void;
 }
 export {};

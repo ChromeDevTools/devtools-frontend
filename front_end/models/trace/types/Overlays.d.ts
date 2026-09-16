@@ -111,6 +111,16 @@ export interface BottomInfoBar {
     };
 }
 /**
+ * Represents an active comment pin anchored to a flame chart entry.
+ * Links to a CommentThread by ID in CommentManager, rendering a pin icon and
+ * outline highlight over the trace event.
+ */
+export interface CommentPin {
+    type: 'COMMENT_PIN';
+    entry: OverlayEntry;
+    commentThreadId: string;
+}
+/**
  * All supported overlay types.
  */
-export type Overlay = EntrySelected | EntryOutline | TimeRangeLabel | EntryLabel | EntriesLink | TimespanBreakdown | TimestampMarker | CandyStripedTimeRange | TimingsMarker | BottomInfoBar;
+export type Overlay = EntrySelected | EntryOutline | TimeRangeLabel | EntryLabel | EntriesLink | TimespanBreakdown | TimestampMarker | CandyStripedTimeRange | TimingsMarker | BottomInfoBar | CommentPin;

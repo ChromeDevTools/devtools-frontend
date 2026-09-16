@@ -8,6 +8,7 @@ var __export = (target, all) => {
 var OverlaysImpl_exports = {};
 __export(OverlaysImpl_exports, {
   AnnotationOverlayActionEvent: () => AnnotationOverlayActionEvent,
+  CommentPinClick: () => CommentPinClick,
   ConsentDialogVisibilityChange: () => ConsentDialogVisibilityChange,
   EntryLabelMouseClick: () => EntryLabelMouseClick,
   EventReferenceClick: () => EventReferenceClick,
@@ -50,7 +51,11 @@ var UIStrings = {
   /**
    * @description Text for the page scope option that selects the entire origin instead of its specific URL in the Performance panel.
    */
-  originOption: "Origin"
+  originOption: "Origin",
+  /**
+   * @description Accessible label for the comment pin overlay button on a flame chart entry.
+   */
+  commentPin: "Comment"
 };
 var str_ = i18n.i18n.registerUIStrings("panels/timeline/overlays/OverlaysImpl.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -104,6 +109,10 @@ function entriesForOverlay(overlay) {
     }
     case "BOTTOM_INFO_BAR":
       break;
+    case "COMMENT_PIN": {
+      entries.push(overlay.entry);
+      break;
+    }
     default:
       Platform.assertNever(overlay, `Unknown overlay type ${JSON.stringify(overlay)}`);
   }
@@ -168,6 +177,14 @@ var EventReferenceClick = class _EventReferenceClick extends Event {
   }
   event;
   static eventName = "eventreferenceclick";
+};
+var CommentPinClick = class _CommentPinClick extends Event {
+  constructor(overlay) {
+    super(_CommentPinClick.eventName, { composed: true, bubbles: true });
+    this.overlay = overlay;
+  }
+  overlay;
+  static eventName = "commentpinclick";
 };
 var Overlays = class extends EventTarget {
   /**
@@ -403,14 +420,14 @@ var Overlays = class extends EventTarget {
   }
   /**
    * Update the dimensions of a chart.
-   * IMPORTANT: this does not trigger a re-draw. You must call the render() method manually.
+   * IMPORTANT: this does not trigger a re-draw. You must call the update() method manually.
    */
   updateChartDimensions(chart, dimensions) {
     this.#dimensions.charts[chart] = dimensions;
   }
   /**
    * Update the visible window of the UI.
-   * IMPORTANT: this does not trigger a re-draw. You must call the render() method manually.
+   * IMPORTANT: this does not trigger a re-draw. You must call the update() method manually.
    */
   updateVisibleWindow(visibleWindow) {
     this.#dimensions.trace.visibleWindow = visibleWindow;
@@ -594,6 +611,14 @@ var Overlays = class extends EventTarget {
       }
       case "BOTTOM_INFO_BAR": {
         this.#positionInfoBarBanner(overlay, element);
+        break;
+      }
+      case "COMMENT_PIN": {
+        const isVisible = this.entryIsVisibleOnChart(overlay.entry);
+        this.#setOverlayElementVisibility(element, isVisible);
+        if (isVisible) {
+          this.#positionEntryBorderOutlineType(overlay.entry, element);
+        }
         break;
       }
       default: {
@@ -1124,6 +1149,32 @@ var Overlays = class extends EventTarget {
         overlayElement.style.setProperty("--marker-color", color);
         return overlayElement;
       }
+      case "COMMENT_PIN": {
+        const pin = document.createElement("div");
+        pin.classList.add("comment-pin");
+        pin.setAttribute("role", "button");
+        pin.setAttribute("tabindex", "0");
+        UI.ARIAUtils.setLabel(pin, i18nString(UIStrings.commentPin));
+        if (overlay.commentThreadId) {
+          pin.setAttribute("data-comment-id", overlay.commentThreadId);
+        }
+        const cursor = document.createElement("div");
+        cursor.classList.add("comment-cursor");
+        pin.appendChild(cursor);
+        const handleActivation = (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          this.dispatchEvent(new CommentPinClick(overlay));
+        };
+        pin.addEventListener("click", handleActivation);
+        pin.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            handleActivation(event);
+          }
+        });
+        overlayElement.appendChild(pin);
+        return overlayElement;
+      }
       default: {
         return overlayElement;
       }
@@ -1236,17 +1287,18 @@ var Overlays = class extends EventTarget {
         break;
       case "TIMINGS_MARKER":
         break;
-      case "BOTTOM_INFO_BAR":
-        {
-          if (!(overlay.infobar.element instanceof HTMLElement)) {
-            return;
-          }
-          if (element.contains(overlay.infobar.element)) {
-            return;
-          }
-          element.innerHTML = "";
-          element.appendChild(overlay.infobar.element);
+      case "BOTTOM_INFO_BAR": {
+        if (!(overlay.infobar.element instanceof HTMLElement)) {
+          return;
         }
+        if (element.contains(overlay.infobar.element)) {
+          return;
+        }
+        element.innerHTML = "";
+        element.appendChild(overlay.infobar.element);
+        break;
+      }
+      case "COMMENT_PIN":
         break;
       default:
         Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
@@ -1289,6 +1341,8 @@ var Overlays = class extends EventTarget {
       case "TIMINGS_MARKER":
         break;
       case "BOTTOM_INFO_BAR":
+        break;
+      case "COMMENT_PIN":
         break;
       default:
         Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
@@ -1549,6 +1603,9 @@ function jsLogContext(overlay) {
     }
     case "BOTTOM_INFO_BAR":
       return "timeline.overlays.info-bar";
+    case "COMMENT_PIN": {
+      return "timeline.overlays.comment-pin";
+    }
     default:
       Platform.assertNever(overlay, "Unknown overlay type");
   }

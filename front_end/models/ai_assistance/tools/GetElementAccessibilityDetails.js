@@ -44,7 +44,6 @@ export class GetElementAccessibilityDetailsTool {
      * requests the AX subtree via AccessibilityModel, and maps the relevant attributes.
      */
     async handler(params, context) {
-        const establishedOrigin = context.getEstablishedOrigin();
         const target = context.getTarget();
         if (!target) {
             return { error: 'Error: Inspected target not found.' };
@@ -60,7 +59,7 @@ export class GetElementAccessibilityDetailsTool {
         // Security check: Ensure the element matches the active conversation's origin lock.
         // Because getTarget() returns the primary page target to support resolving elements
         // across frames, origin validation must be enforced directly on the resolved node.
-        if (!isOriginAllowedByLock(establishedOrigin, resolved.securityOrigin())) {
+        if (!isOriginAllowedByLock(context.getOriginLock(), resolved.securityOrigin())) {
             return { error: 'Error: Node does not belong to the current origin.' };
         }
         const axModel = resolved.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);

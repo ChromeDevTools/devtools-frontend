@@ -5,6 +5,7 @@
   },
   "files": [
     "aiSettingsTab.css.js",
+    "backendLinkingSettingsTab.css.js",
     "editFileSystemView.css.js",
     "frameworkIgnoreListSettingsTab.css.js",
     "keybindsSettingsTab.css.js",

@@ -47,6 +47,7 @@
   },
   "files": [
     "../../../../../../front_end/panels/settings/AISettingsTab.test.ts",
+    "../../../../../../front_end/panels/settings/BackendLinkingSettingsTab.test.ts",
     "../../../../../../front_end/panels/settings/EditFileSystemView.test.ts",
     "../../../../../../front_end/panels/settings/FrameworkIgnoreListSettingsTab.test.ts",
     "../../../../../../front_end/panels/settings/SettingsScreen.test.ts",
@@ -85,10 +86,19 @@
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/components/render_coordinator/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/components/switch/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/settings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../network/forward/bundle-tsconfig.ref.json"
     },
     {
       "path": "../utils/bundle-tsconfig.ref.json"

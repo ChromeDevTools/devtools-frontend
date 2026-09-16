@@ -5,7 +5,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Workspace from '../../workspace/workspace.js';
 import { FileContext } from '../contexts/FileContext.js';
-import { isOriginAllowedByLock, } from './Tool.js';
+import { isOriginAllowedByLock, resolveOriginFromLock, } from './Tool.js';
 const UIStringsNotTranslate = {
     listingSources: 'Listing workspace sources',
 };
@@ -45,14 +45,12 @@ export class ListSourcesTool {
                 }
             }
         }
-        return [...uiSourceCodes.values()].filter(file => isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(file)));
+        const originLock = { status: 'ESTABLISHED_ORIGIN', origin: establishedOrigin };
+        return [...uiSourceCodes.values()].filter(file => isOriginAllowedByLock(originLock, FileContext.originForUISourceCode(file)));
     }
     static getSourceById(id, establishedOrigin, 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     workspace = Workspace.Workspace.WorkspaceImpl.instance()) {
-        if (establishedOrigin.isOpaque()) {
-            return undefined;
-        }
         return ListSourcesTool.getUISourceCodes(establishedOrigin, workspace)
             .find(file => ListSourcesTool.uiSourceCodeId.get(file) === id);
     }
@@ -70,13 +68,11 @@ export class ListSourcesTool {
         };
     }
     async handler(_params, context) {
-        const establishedOrigin = context.getEstablishedOrigin();
-        if (!establishedOrigin || establishedOrigin.isOpaque()) {
-            return {
-                error: 'Opaque origin not allowed',
-            };
+        const originResult = resolveOriginFromLock(context.getOriginLock());
+        if ('error' in originResult) {
+            return originResult;
         }
-        const files = ListSourcesTool.getUISourceCodes(establishedOrigin);
+        const files = ListSourcesTool.getUISourceCodes(originResult.origin);
         return {
             result: {
                 files: files.map(file => ({

@@ -1185,6 +1185,16 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         }
         return this.domModel().nodeForId(response.nodeId);
     }
+    async getImplicitAnchorCandidates() {
+        const response = await this.#agent.invoke_getImplicitAnchorCandidates({
+            nodeId: this.id,
+        });
+        if (response.getError() || !response.backendNodeIds) {
+            return [];
+        }
+        const target = this.domModel().target();
+        return response.backendNodeIds.map(backendNodeId => new DeferredDOMNode(target, backendNodeId));
+    }
     async takeSnapshot(ownerDocumentSnapshot) {
         const snapshot = (this instanceof DOMDocument) ? new DOMDocumentSnapshot(this.domModel(), {
             nodeId: this.id,

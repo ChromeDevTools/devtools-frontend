@@ -36,6 +36,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
@@ -184,6 +185,82 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkPanelInstance;
+const BACKEND_LINKING_PLACEHOLDERS = NetworkForward.BackendLinking.BACKEND_LINKING_PLACEHOLDERS;
+const backendLinkingRulesSettingDescriptor = NetworkForward.BackendLinking.backendLinkingRulesSettingDescriptor;
+export class BackendLinking {
+    #setting;
+    rules = [];
+    constructor(setting) {
+        this.#setting = setting;
+        this.#setting.addChangeListener(this.#rulesChanged.bind(this));
+        this.#rulesChanged();
+    }
+    #rulesChanged() {
+        const rules = this.#setting.get();
+        this.rules.splice(0);
+        for (const rule of rules) {
+            try {
+                const placeholders = BACKEND_LINKING_PLACEHOLDERS.filter(p => rule.targetUrlTemplate.includes(p));
+                if (placeholders.length > 0) {
+                    this.rules.push({
+                        urlPattern: new URLPattern(rule.urlPattern),
+                        label: rule.label,
+                        template: rule.targetUrlTemplate,
+                        placeholders,
+                    });
+                }
+            }
+            catch {
+            }
+        }
+    }
+    getLink(request) {
+        if (!Root.Runtime.hostConfig.devToolsNetworkBackendLinking?.enabled) {
+            return null;
+        }
+        const devtoolsDebugIdTiming = request.serverTimings?.find(timing => timing.metric.toLowerCase() === 'devtools-debug-id' && timing.description);
+        const traceParentTiming = request.serverTimings?.find(timing => timing.metric.toLowerCase() === 'traceparent' && timing.description);
+        const traceParentTimingData = traceParentTiming?.description?.split('-');
+        const traceParentHeader = request.responseHeaderValue('traceparent');
+        const traceParentHeaderData = traceParentHeader?.split('-');
+        const placeholderValues = {};
+        if (traceParentTimingData && traceParentTimingData.length >= 4) {
+            placeholderValues['${traceId}'] = traceParentTimingData[1];
+            placeholderValues['${spanId}'] = traceParentTimingData[2];
+        }
+        else if (traceParentHeaderData && traceParentHeaderData.length >= 4) {
+            placeholderValues['${traceId}'] = traceParentHeaderData[1];
+            placeholderValues['${spanId}'] = traceParentHeaderData[2];
+        }
+        else {
+            placeholderValues['${traceId}'] = request.responseHeaderValue('trace-id');
+        }
+        placeholderValues['${devtoolsDebugId}'] = devtoolsDebugIdTiming?.description ?? undefined;
+        placeholderValues['${requestId}'] =
+            request.responseHeaderValue('X-Request-ID') || request.responseHeaderValue('Request-ID');
+        placeholderValues['${correlationId}'] =
+            request.responseHeaderValue('X-Correlation-ID') || request.responseHeaderValue('Correlation-ID');
+        for (const rule of this.rules) {
+            if (!rule.urlPattern.test(request.url())) {
+                continue;
+            }
+            if (rule.placeholders.some(placeholder => !placeholderValues[placeholder])) {
+                continue;
+            }
+            let backendLink = rule.template;
+            for (const placeholder of rule.placeholders) {
+                backendLink = backendLink.replaceAll(placeholder, placeholderValues[placeholder]);
+            }
+            try {
+                return { label: rule.label, url: new URL(backendLink) };
+            }
+            catch {
+                continue;
+            }
+        }
+        return null;
+    }
+}
 export class NetworkPanel extends UI.Panel.Panel {
     networkLogShowOverviewSetting;
     networkLogLargeRowsSetting;
@@ -214,6 +291,8 @@ export class NetworkPanel extends UI.Panel.Panel {
     recordLogSetting;
     throttlingSelect;
     displayScreenshotDelay;
+    backendLinkingRulesSetting = Common.Settings.Settings.instance().resolve(backendLinkingRulesSettingDescriptor);
+    backendLinking = new BackendLinking(this.backendLinkingRulesSetting);
     constructor(displayScreenshotDelay) {
         super('network');
         this.registerRequiredCSS(networkPanelStyles);
@@ -292,8 +371,7 @@ export class NetworkPanel extends UI.Panel.Panel {
         this.networkLogView =
             new NetworkLogView(this.filterBar, this.progressBarContainer, this.networkLogLargeRowsSetting);
         this.splitWidget.setSidebarWidget(this.networkLogView);
-        this.fileSelectorElement =
-            UI.UIUtils.createFileSelectorElement(this.networkLogView.onLoadFromFile.bind(this.networkLogView));
+        this.fileSelectorElement = UI.UIUtils.createFileSelectorElement(this.networkLogView.onLoadFromFile.bind(this.networkLogView));
         panel.element.appendChild(this.fileSelectorElement);
         this.detailsWidget = new UI.Widget.VBox();
         this.detailsWidget.element.classList.add('network-details-view');

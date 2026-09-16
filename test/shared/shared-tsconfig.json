@@ -19,8 +19,8 @@
       "ESNext.Collection",
       "ESNext.Array"
     ],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -48,7 +48,6 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../test/shared/debug-check.ts",
     "../../../../../test/shared/helper.ts",
     "../../../../../test/shared/mocha-resultsdb-reporter.ts",
     "../../../../../test/shared/run-mocha.ts",

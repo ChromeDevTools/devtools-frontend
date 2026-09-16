@@ -135,7 +135,11 @@ var HOST_RUNTIME = {
     return window.devicePixelRatio;
   },
   saveScreenshot,
-  revokeLastScreenshotUrl
+  revokeLastScreenshotUrl,
+  async loadTextFile(url) {
+    const response = await fetch(url);
+    return await response.text();
+  }
 };
 export {
   HostRuntime_exports as HostRuntime

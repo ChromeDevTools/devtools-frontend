@@ -43,6 +43,53 @@ export default `/*
 }
 
 
+.overlay-type-COMMENT_PIN {
+  z-index: 5;
+  pointer-events: none;
+  border: var(--sys-size-2) dashed var(--sys-color-primary);
+  background-color: color-mix(in srgb, var(--sys-color-primary), transparent 90%);
+  box-sizing: border-box;
+
+  .comment-pin {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    pointer-events: auto;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.1s ease;
+    transform-origin: center center;
+    outline: none;
+
+    &:hover,
+    &:focus-visible {
+      transform: translate(50%, -50%) scale(1.15);
+    }
+
+    &:focus-visible .comment-cursor {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: 2px;
+    }
+  }
+
+  .comment-cursor {
+    display: flex;
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
+    box-sizing: border-box;
+    padding: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    box-shadow: var(--sys-elevation-level2);
+    border-radius: 100px 100px 100px var(--sys-shape-corner-extra-small, 4px);
+    background: var(--sys-color-primary);
+    color: var(--sys-color-on-primary);
+  }
+}
+
 .overlay-type-ENTRY_SELECTED,
 .overlay-type-ENTRY_OUTLINE {
   pointer-events: none;

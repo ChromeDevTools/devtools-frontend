@@ -1906,4 +1906,44 @@ describeWithEnvironment('FlameChart', () => {
       assert.isNull(dimensions);
     });
   });
+
+  it('does not transform empty entry colors when dimmed', () => {
+    class UncoloredEntryProvider extends FakeFlameChartProvider {
+      #timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
+        entryLevels: [0, 0],
+        entryStartTimes: [10.0, 60.0],
+        entryTotalTimes: [40.0, 40.0],
+        groups: [{
+          name: 'Test Group' as Platform.UIString.LocalizedString,
+          startLevel: 0,
+          style: defaultGroupStyle,
+          expanded: true,
+        }],
+      });
+
+      override entryColor(entryIndex: number): string {
+        return entryIndex === 0 ? '#ff0000' : '';
+      }
+
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+        return this.#timelineData;
+      }
+    }
+
+    const provider = new UncoloredEntryProvider();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
+    renderChart(chartInstance);
+    chartInstance.setWindowTimes(0, 100);
+
+    // Verify normal state.
+    assert.strictEqual(chartInstance.getColorForEntry(0), '#ff0000');
+    assert.strictEqual(chartInstance.getColorForEntry(1), '');
+
+    // Dim all entries (e.g. search filter active).
+    chartInstance.enableDimming([0, 1], true, false);
+
+    // Colored entry is converted to grayscale/dimmed, but uncolored entry remains empty string.
+    assert.notStrictEqual(chartInstance.getColorForEntry(0), '#ff0000');
+    assert.strictEqual(chartInstance.getColorForEntry(1), '');
+  });
 });

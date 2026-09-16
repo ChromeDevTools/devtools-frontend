@@ -583,6 +583,10 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
   }
 
   #transformColor(entryIndex: number, color: string): string {
+    if (!color) {
+      return '';
+    }
+
     if (this.#shouldDimEvent(entryIndex)) {
       let dimmed = this.colorDimmingCache.get(color);
       if (dimmed) {

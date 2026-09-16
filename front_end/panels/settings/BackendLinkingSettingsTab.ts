@@ -250,12 +250,17 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
 export class BackendLinkingSettingsTab extends UI.Widget.VBox {
   readonly #view: View;
-  readonly #rulesSetting: Common.Settings.Setting<NetworkForward.BackendLinking.BackendLinkingRule[]> =
-      Common.Settings.Settings.instance().resolve(NetworkForward.BackendLinking.backendLinkingRulesSettingDescriptor);
+  readonly #rulesSetting: Common.Settings.Setting<NetworkForward.BackendLinking.BackendLinkingRule[]>;
 
   constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target);
     this.#view = view;
+    const res = Common.Settings.Settings.instance().maybeResolve(
+        NetworkForward.BackendLinking.backendLinkingRulesSettingDescriptor);
+    if (!('setting' in res)) {
+      throw new Error('Backend linking setting is not available');
+    }
+    this.#rulesSetting = res.setting;
   }
 
   override wasShown(): void {

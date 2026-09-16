@@ -391,7 +391,7 @@ export class RequestHeadersView extends UI.Widget.Widget {
       showResponseHeadersText: this.#showResponseHeadersText,
       showRequestHeadersText: this.#showRequestHeadersText,
       backendLink: Root.Runtime.hostConfig.devToolsNetworkBackendLinking?.enabled ?
-          NetworkPanel.instance().backendLinking.getLink(this.#request) :
+          NetworkPanel.instance().backendLinking?.getLink(this.#request) ?? null :
           null,
     };
 

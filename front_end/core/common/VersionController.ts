@@ -17,7 +17,7 @@ export class VersionController {
   static readonly SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
   static readonly LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
 
-  static readonly CURRENT_VERSION = 46;
+  static readonly CURRENT_VERSION = 47;
 
   readonly #settings: Settings;
   readonly #globalVersionSetting: Setting<number>;
@@ -895,6 +895,10 @@ export class VersionController {
         // If the setting is not registered yet (e.g. in tests), skip.
       }
     }
+  }
+
+  updateVersionFrom46To47(): void {
+    this.#settings.syncedStorage.remove('network.backend-linking-rules');
   }
 
   /*

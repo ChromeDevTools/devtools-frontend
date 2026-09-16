@@ -7,7 +7,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as NetworkForward from '../network/forward/forward.js';
 
@@ -16,9 +16,19 @@ import * as Settings from './settings.js';
 const {BackendLinkingSettingsTab, DEFAULT_VIEW} = Settings.BackendLinkingSettingsTab;
 
 describeWithEnvironment('BackendLinkingSettingsTab presenter', () => {
+  beforeEach(() => {
+    updateHostConfig({
+      devToolsNetworkBackendLinking: {enabled: true},
+    });
+  });
+
   it('validates rules and handles modifiers', async () => {
-    const setting =
-        Common.Settings.Settings.instance().resolve(NetworkForward.BackendLinking.backendLinkingRulesSettingDescriptor);
+    const res = Common.Settings.Settings.instance().maybeResolve(
+        NetworkForward.BackendLinking.backendLinkingRulesSettingDescriptor);
+    if (!('setting' in res)) {
+      assert.fail('Expected setting to be available');
+    }
+    const setting = res.setting;
     setting.set([]);
 
     const view = createViewFunctionStub(BackendLinkingSettingsTab);

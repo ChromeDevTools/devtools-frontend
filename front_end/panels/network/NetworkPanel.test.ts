@@ -21,7 +21,7 @@ import * as RenderCoordinator from '../../ui/components/render_coordinator/rende
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type * as NetworkForward from './forward/forward.js';
+import * as NetworkForward from './forward/forward.js';
 import * as Network from './network.js';
 
 describeWithEnvironment('NetworkPanel', () => {
@@ -114,8 +114,13 @@ describeWithEnvironment('BackendLinking', () => {
     updateHostConfig({
       devToolsNetworkBackendLinking: {enabled: true},
     });
-    setting = Common.Settings.Settings.instance().createSetting<NetworkForward.BackendLinking.BackendLinkingRule[]>(
-        'test-backend-linking-rules', []);
+    const res = Common.Settings.Settings.instance().maybeResolve(
+        NetworkForward.BackendLinking.backendLinkingRulesSettingDescriptor);
+    if (!('setting' in res)) {
+      assert.fail('Expected setting to be available');
+    }
+    setting = res.setting;
+    setting.set([]);
     backendLinking = new Network.NetworkPanel.BackendLinking(setting);
   });
 

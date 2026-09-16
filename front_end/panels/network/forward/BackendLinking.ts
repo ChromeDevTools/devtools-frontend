@@ -41,9 +41,12 @@ export const BACKEND_LINKING_PLACEHOLDERS = [
 
 export type BackendLinkingPlaceholder = typeof BACKEND_LINKING_PLACEHOLDERS[number];
 
-export const backendLinkingRulesSettingDescriptor: Common.Settings.SettingDescriptor<BackendLinkingRule[]> = {
+export const backendLinkingRulesSettingDescriptor:
+    Common.Settings.ConditionalSettingDescriptor<BackendLinkingRule[], void> = {
   name: 'network.backend-linking-rules',
   type: Common.Settings.SettingType.ARRAY,
   defaultValue: [],
-  storageType: Common.Settings.SettingStorageType.SYNCED,
+  isAvailable: config => config.devToolsNetworkBackendLinking?.enabled ?
+      {status: Common.Settings.SettingAvailability.AVAILABLE} :
+      {status: Common.Settings.SettingAvailability.UNAVAILABLE, reason: undefined},
 };

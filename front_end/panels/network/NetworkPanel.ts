@@ -312,13 +312,15 @@ export class NetworkPanel extends UI.Panel.Panel implements
   recordLogSetting: Common.Settings.Setting<boolean>;
   private readonly throttlingSelect: UI.Toolbar.ToolbarItem;
   private readonly displayScreenshotDelay: number;
-  readonly backendLinkingRulesSetting: Common.Settings.Setting<BackendLinkingRule[]> =
-      Common.Settings.Settings.instance().resolve(backendLinkingRulesSettingDescriptor);
-  readonly backendLinking: BackendLinking = new BackendLinking(this.backendLinkingRulesSetting);
+  readonly backendLinking: BackendLinking|null;
 
   constructor(displayScreenshotDelay: number) {
     super('network');
     this.registerRequiredCSS(networkPanelStyles);
+
+    const backendLinkingSetting =
+        Common.Settings.Settings.instance().maybeResolve(backendLinkingRulesSettingDescriptor);
+    this.backendLinking = 'setting' in backendLinkingSetting ? new BackendLinking(backendLinkingSetting.setting) : null;
 
     this.displayScreenshotDelay = displayScreenshotDelay;
     this.networkLogShowOverviewSetting =

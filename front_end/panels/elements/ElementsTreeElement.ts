@@ -799,14 +799,6 @@ function renderTag(node: SDK.DOMModel.DOMNode, tagName: string, isClosingTag: bo
     hasUpdates = hasUpdates || (!expanded && updateRecord.hasChangedChildren());
   }
 
-  // We are taking full text content of the tag, including attributes and children, to set the aria label.
-  // FIXME: we should compute the aria label ourselves if it is event needed.
-  const setAriaLabel = ref(el => {
-    if (el?.textContent) {
-      UI.ARIAUtils.setLabel(el, el.textContent);
-    }
-  });
-
   const tagNameClass = isClosingTag ? 'webkit-html-close-tag-name' : 'webkit-html-tag-name';
   const hasTagIssues = !isClosingTag && Boolean(issues?.some(issue => {
     const details = getElementIssueDetails(issue);
@@ -819,8 +811,13 @@ function renderTag(node: SDK.DOMModel.DOMNode, tagName: string, isClosingTag: bo
   const tagString = (isClosingTag ? '/' : '') + tagName;
   const jslog = !isClosingTag ? VisualLogging.value('tag-name').track({change: true, dblclick: true}) : '';
 
+  const ariaLabel = isClosingTag ?
+      `</${tagName}>` :
+      `<${tagName}${
+          attributes.map(attr => (attr.value ? ` ${attr.name}="${attr.value}"` : ` ${attr.name}`)).join('')}>`;
+
   return html`<span
-      class=${classMap(tagClasses)} ${setAriaLabel}
+      class=${classMap(tagClasses)} aria-label=${ariaLabel}
       >&lt;<span class=${classMap(tagNameClasses)} jslog=${jslog || nothing} ${
       animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${
       attributes.map(attr => html` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
@@ -1131,7 +1128,10 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         if (event.key === 'Escape') {
           event.consume(true);
         }
-      }} class="source-code elements-tree-editor" style="width: ${input.editorWidth ?? 0}px;">
+      }}
+      @mousedown=${(event: Event) => event.stopPropagation()}
+      @click=${(event: Event) => event.stopPropagation()}
+      class="source-code elements-tree-editor" style="width: ${input.editorWidth ?? 0}px;">
         <devtools-text-editor .state=${input.editorState} ${ref(el => {
           output.editorRef = el as TextEditor.TextEditor.TextEditor;
         })}></devtools-text-editor>
@@ -1507,6 +1507,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   }
 
   #clearDOMNextUpdate = false;
+
   #isBound = false;
 
   override wasShown(): void {
@@ -2494,7 +2495,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             }
             // The relatedTarget is null when no element gains focus, e.g. switching windows.
             const relatedTarget = (event.relatedTarget as Node | null);
-            if (relatedTarget && !relatedTarget.isSelfOrDescendant(this.#editorRef)) {
+            if (relatedTarget && !relatedTarget.isSelfOrDescendant(this.#editorRef) &&
+                !relatedTarget.isSelfOrDescendant(this.contentElement)) {
               this.editing?.commit();
             }
           },

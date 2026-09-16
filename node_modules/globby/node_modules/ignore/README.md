@@ -384,6 +384,58 @@ ignore({
 
 # Upgrade Guide
 
+## Known differences from `git`
+
+`ignore` aims to behave exactly like `git check-ignore`, and its test suite
+verifies every fixture against the real `git` binary. A few divergences are
+deliberate or inherited from how JavaScript differs from C. They are listed
+here so you do not have to discover them in production.
+
+### Characters, not bytes
+
+`git` matches patterns against the **UTF-8 bytes** of a path; JavaScript
+strings are sequences of UTF-16 code units, and `ignore` matches those.
+The two agree on ASCII and disagree on the width of everything else:
+
+```js
+// git needs two '?' to match 'é' (two bytes); ignore needs one:
+ignore().add('x?y').ignores('xéy')    // true;  git: false
+
+// a range cannot span multi-byte characters in git at all:
+ignore().add('m[À-È]n').ignores('mÁn') // true;  git: false
+```
+
+With `ignorecase` enabled, `git` folds case for ASCII only, while
+JavaScript's `i` flag folds Unicode — so `É.txt` ignores `é.txt` here and
+not in `git`. For ASCII paths and patterns there is no difference.
+
+### `ignorecase` defaults to `true`
+
+`git` on a case-sensitive filesystem (production Linux) is case-sensitive.
+`ignore` is case-insensitive unless you pass `ignorecase: false`. If your
+code runs against a real repository, pass the value of the repository's
+`core.ignorecase` explicitly.
+
+### `***` and friends follow the documentation, not the binary
+
+gitignore(5) says a run of more than two asterisks is "considered regular
+asterisks". The `git` binary, however, strips the literal prefix of a
+pattern before matching, which makes patterns like `***/foo`, `a/***` and
+`a**/b` behave as `**` globstars there. `ignore` follows the documented
+behavior. If you need the globstar, write `**`.
+
+### `checkIgnore()` and a directory passed with a trailing slash
+
+`git check-ignore` treats its arguments as plain strings: handed `a/`, it
+computes an empty basename, with surprising results — `a/**` matches `a/`
+itself, and a negated basename pattern like `!a` fails to match it. During
+an actual traversal git behaves differently: `a/**` does **not** exclude
+the directory `a` (that is what allows it to descend and exclude the
+contents), and `!a` negates it normally. `ignore` models the traversal
+semantics: `'a/'` means *the directory a*, with its basename `a/`. Where
+the two disagree, `ignore` sides with what `git status` actually does
+rather than with the string-level quirks of `check-ignore`.
+
 ## Upgrade 4.x -> 5.x
 
 Since `5.0.0`, if an invalid `Pathname` passed into `ig.ignores()`, an error will be thrown, unless `options.allowRelative = true` is passed to the `Ignore` factory.

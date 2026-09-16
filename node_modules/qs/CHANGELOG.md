@@ -1,3 +1,18 @@
+## **6.16.0**
+ - [New] `stringify`: add a `depth` option to bound recursion depth (default `Infinity`)
+ - [Fix] stringify: serialize Date values when a filter is provided
+ - [Fix] `parse`: enforce `arrayLimit` on comma groups under `[]=` when `throwOnLimitExceeded` is set
+ - [Fix] `parse`: flatten a collection appended to an overflowed array (#571)
+ - [Fix] `utils`: `isBuffer`: do not invoke a non-callable `constructor.isBuffer`
+ - [Fix] `stringify`: do not let `allowEmptyArrays` skip cycle detection (or drop own keys) on an empty array with own properties
+ - [Fix] `stringify`: encode dots in a top-level key with a primitive value when encodeDotInKeys is set (#562)
+ - [Docs] threat model: clarify `stringify` deep-nesting DoS is caller-bounded
+ - [Docs] clarify `arrayLimit` is a representation threshold, not an element-count cap
+ - [Tests] `parse`: remove a test that pinned `[]=` comma groups escaping `arrayLimit`
+ - [Tests] `stringify`: pin current `encodeDotInKeys` separator-dot behavior
+ - [Dev Deps] update `@ljharb/eslint-config`, `eslint`
+ - [Dev Deps] update `eslint`, `evalmd`
+
 ## **6.15.3**
 - [Fix] `parse`: enforce `throwOnLimitExceeded` for cumulative array growth via `combine`/`merge`
 - [Fix] `utils`: respect encoding of surrogate pairs across chunks (#559)

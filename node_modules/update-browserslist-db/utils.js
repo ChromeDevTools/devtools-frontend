@@ -1,6 +1,6 @@
 const { EOL } = require('os')
 
-const getFirstRegexpMatchOrDefault = (text, regexp, defaultValue) => {
+function getFirstRegexpMatchOrDefault(text, regexp, defaultValue) {
   regexp.lastIndex = 0 // https://stackoverflow.com/a/11477448/4536543
   let match = regexp.exec(text)
   if (match !== null) {

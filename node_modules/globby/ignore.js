@@ -15,6 +15,8 @@ import {
 	findGitRoot,
 	findGitRootSync,
 	getParentGitignorePaths,
+	buildPrunePatternsAndGuards,
+	negationsCouldRescue,
 } from './utilities.js';
 
 const defaultIgnoredDirectories = [
@@ -117,14 +119,43 @@ const globIgnoreFiles = (globFunction, patterns, normalizedOptions) => globFunct
 	...ignoreFilesGlobOptions, // Must be last to ensure absolute/dot flags stick
 });
 
-const getParentIgnorePaths = (gitRoot, normalizedOptions) => gitRoot
-	? getParentGitignorePaths(gitRoot, normalizedOptions.cwd)
-	: [];
+// Normalize a raw ignore-file line the way git does: strip a byte order mark and trailing whitespace. "Trailing spaces are ignored unless they are quoted with backslash" - a backslash-escaped trailing space is kept, still escaped, so the line can be re-fed to the `ignore` package without being stripped again.
+const normalizeIgnoreFileLine = line => {
+	line = line.replace(/^\uFEFF/u, '');
 
-const combineIgnoreFilePaths = (gitRoot, normalizedOptions, childPaths) => dedupePaths([
-	...getParentIgnorePaths(gitRoot, normalizedOptions),
-	...childPaths,
-]);
+	let whitespaceStart = line.length;
+	while (whitespaceStart > 0 && /\s/u.test(line[whitespaceStart - 1])) {
+		whitespaceStart--;
+	}
+
+	if (whitespaceStart === line.length) {
+		return line;
+	}
+
+	let backslashCount = 0;
+	for (let index = whitespaceStart - 1; index >= 0 && line[index] === '\\'; index--) {
+		backslashCount++;
+	}
+
+	return backslashCount % 2 === 1
+		? line.slice(0, whitespaceStart) + ' '
+		: line.slice(0, whitespaceStart);
+};
+
+const readIgnoreFileLines = content => content
+	.split(/\r?\n/)
+	.map(line => normalizeIgnoreFileLine(line))
+	.filter(line => line && !line.startsWith('#'));
+
+/**
+Get the lines of every ignore file, as git reads them, each paired with the directory of the file that declared them.
+
+Anchoring is only meaningful relative to that directory, and the rebased patterns have already lost it, so keep the originals for anything that has to reason about which paths a rule covers.
+*/
+const getIgnoreRules = files => files.flatMap(file => {
+	const directory = path.dirname(file.filePath);
+	return readIgnoreFileLines(file.content).map(pattern => ({pattern, directory}));
+});
 
 const buildIgnoreResult = (files, normalizedOptions, gitRoot) => {
 	const baseDir = gitRoot || normalizedOptions.cwd;
@@ -133,6 +164,7 @@ const buildIgnoreResult = (files, normalizedOptions, gitRoot) => {
 
 	return {
 		patterns,
+		rules: getIgnoreRules(files),
 		matcher,
 		predicate: fileOrDirectory => matcher(fileOrDirectory).ignored,
 		usingGitRoot: Boolean(gitRoot && gitRoot !== normalizedOptions.cwd),
@@ -177,11 +209,7 @@ const applyBaseToPattern = (pattern, base) => {
 
 const parseIgnoreFile = (file, cwd) => {
 	const base = slash(path.relative(cwd, path.dirname(file.filePath)));
-
-	return file.content
-		.split(/\r?\n/)
-		.filter(line => line && !line.startsWith('#'))
-		.map(pattern => applyBaseToPattern(pattern, base));
+	return readIgnoreFileLines(file.content).map(pattern => applyBaseToPattern(pattern, base));
 };
 
 const toRelativePath = (fileOrDirectory, cwd) => {
@@ -515,6 +543,7 @@ const createExcludesFileValue = (value, declaringFilePath) => ({
 
 /**
 Parse git config content and return the excludesFile value and any include paths to recurse into.
+
 The caller is responsible for reading files and recursing (sync or async).
 */
 const parseGitConfigForExcludesFile = (content, normalizedPath, gitDirectory) => {
@@ -789,30 +818,149 @@ export const buildGlobalPredicate = (globalIgnoreFile, cwd, rootDirectory = cwd)
 	return fileOrDirectory => matcher(fileOrDirectory).ignored;
 };
 
+/**
+Ignore files at or above the cwd can be located without traversing anything.
+
+Reading them before searching for the nested ones lets the search itself skip whole ignored directories. Otherwise the recursive search for ignore files walks even the directories that the same `.gitignore` excludes, so a large ignored directory (a mounted share, a build output) is enumerated on every call.
+*/
+const getKnownIgnoreFilePaths = (patterns, normalizedOptions, gitRoot) => {
+	const searchPatterns = [patterns].flat();
+	const isGitignoreSearch = searchPatterns.includes(GITIGNORE_FILES_PATTERN);
+	if (!isGitignoreSearch) {
+		return [];
+	}
+
+	return gitRoot
+		? getParentGitignorePaths(gitRoot, normalizedOptions.cwd)
+		: [path.join(normalizedOptions.cwd, '.gitignore')];
+};
+
+const getKnownIgnoreFileSearchOptions = (patterns, normalizedOptions) => ({
+	...normalizedOptions,
+	ignore: [
+		...normalizedOptions.ignore,
+		// Keep negative search patterns active when the known candidates are matched independently.
+		...[patterns].flat()
+			.filter(pattern => isNegativePattern(pattern))
+			.map(pattern => pattern.slice(1)),
+	],
+});
+
+const getKnownIgnoreFilePattern = (filePath, cwd) => {
+	// Relative candidates keep cwd-relative exclusions such as `.gitignore` meaningful; parent candidates must remain absolute because they are outside cwd.
+	const pattern = isPathInside(filePath, cwd) ? path.relative(cwd, filePath) : filePath;
+	return fastGlob.convertPathToPattern(pattern);
+};
+
+const getMatchingKnownIgnoreFilePaths = (knownPaths, matchingPaths) => {
+	// Fast-glob normalizes its results, so compare resolved paths before returning the original paths for reading.
+	const matchingPathSet = new Set(matchingPaths.map(filePath => path.resolve(filePath)));
+
+	return knownPaths.filter(filePath => matchingPathSet.has(path.resolve(filePath)));
+};
+
+const globKnownIgnoreFilePaths = (globFunction, knownPaths, patterns, normalizedOptions) => {
+	if (knownPaths.length === 0) {
+		return [];
+	}
+
+	return globIgnoreFiles(
+		globFunction,
+		knownPaths.map(filePath => getKnownIgnoreFilePattern(filePath, normalizedOptions.cwd)),
+		getKnownIgnoreFileSearchOptions(patterns, normalizedOptions),
+	);
+};
+
+const filterKnownIgnoreFilePathsAsync = async (knownPaths, patterns, normalizedOptions) => {
+	const matchingPaths = await globKnownIgnoreFilePaths(fastGlob, knownPaths, patterns, normalizedOptions);
+	return getMatchingKnownIgnoreFilePaths(knownPaths, matchingPaths);
+};
+
+const filterKnownIgnoreFilePathsSync = (knownPaths, patterns, normalizedOptions) => {
+	const matchingPaths = globKnownIgnoreFilePaths(fastGlob.sync, knownPaths, patterns, normalizedOptions);
+	return getMatchingKnownIgnoreFilePaths(knownPaths, matchingPaths);
+};
+
+const getIgnoreFileSearchPrune = (searchPatterns, files, normalizedOptions, gitRoot) => {
+	if (files.length === 0) {
+		return {patterns: [], guardNames: []};
+	}
+
+	const {cwd} = normalizedOptions;
+	const baseDir = gitRoot || cwd;
+	const ignorePatterns = getPatternsFromIgnoreFiles(files, baseDir);
+	const matcher = createIgnoreMatcher(ignorePatterns, cwd, baseDir);
+
+	// Custom ignore files can live anywhere, including beside the cwd, so only a pure `.gitignore` search may treat the rules at or above the cwd as complete.
+	const searchPatternsArray = [searchPatterns].flat();
+	const gitignoreOnlySearch = searchPatternsArray.every(pattern => pattern === GITIGNORE_FILES_PATTERN);
+	const searchesForGitignoreFiles = searchPatternsArray.includes(GITIGNORE_FILES_PATTERN);
+
+	return buildPrunePatternsAndGuards(getIgnoreRules(files), matcher, cwd, {gitignoreOnlySearch, searchesForGitignoreFiles});
+};
+
+const withPrunedSearch = (normalizedOptions, prunePatterns) => prunePatterns.length === 0
+	? normalizedOptions
+	: {...normalizedOptions, ignore: [...normalizedOptions.ignore, ...prunePatterns]};
+
+// The known ignore files have already been read; only the newly discovered ones are left.
+const getUnreadPaths = (childPaths, knownPaths) => {
+	const alreadyRead = new Set(knownPaths.map(filePath => path.resolve(filePath)));
+	return dedupePaths(childPaths).filter(filePath => !alreadyRead.has(path.resolve(filePath)));
+};
+
 const collectIgnoreFileArtifactsAsync = async (patterns, options, includeParentIgnoreFiles) => {
 	const normalizedOptions = normalizeOptions(options);
-	const childPaths = await globIgnoreFiles(fastGlob, patterns, normalizedOptions);
+	const readFileMethod = getReadFileMethod(normalizedOptions.fs);
 	const gitRoot = includeParentIgnoreFiles
 		? await findGitRoot(normalizedOptions.cwd, normalizedOptions.fs)
 		: undefined;
-	const allPaths = combineIgnoreFilePaths(gitRoot, normalizedOptions, childPaths);
-	const readFileMethod = getReadFileMethod(normalizedOptions.fs);
-	const files = await readIgnoreFilesSafely(allPaths, readFileMethod, normalizedOptions.suppressErrors);
 
-	return {files, normalizedOptions, gitRoot};
+	const knownPaths = await filterKnownIgnoreFilePathsAsync(
+		getKnownIgnoreFilePaths(patterns, normalizedOptions, gitRoot),
+		patterns,
+		normalizedOptions,
+	);
+	const knownFiles = await readIgnoreFilesSafely(knownPaths, readFileMethod, normalizedOptions.suppressErrors);
+	const {patterns: prunePatterns, guardNames} = getIgnoreFileSearchPrune(patterns, knownFiles, normalizedOptions, gitRoot);
+
+	const childPaths = await globIgnoreFiles(fastGlob, patterns, withPrunedSearch(normalizedOptions, prunePatterns));
+	let childFiles = await readIgnoreFilesSafely(getUnreadPaths(childPaths, knownPaths), readFileMethod, normalizedOptions.suppressErrors);
+
+	// A negation found by the pruned search can re-include a directory the prune patterns skipped, hiding the ignore files inside it. Repeat the search without pruning when that happens; a single unpruned pass finds everything, so once is enough.
+	if (negationsCouldRescue(getIgnoreRules(childFiles), guardNames)) {
+		const allPaths = await globIgnoreFiles(fastGlob, patterns, normalizedOptions);
+		childFiles = await readIgnoreFilesSafely(getUnreadPaths(allPaths, knownPaths), readFileMethod, normalizedOptions.suppressErrors);
+	}
+
+	return {files: [...knownFiles, ...childFiles], normalizedOptions, gitRoot};
 };
 
 const collectIgnoreFileArtifactsSync = (patterns, options, includeParentIgnoreFiles) => {
 	const normalizedOptions = normalizeOptions(options);
-	const childPaths = globIgnoreFiles(fastGlob.sync, patterns, normalizedOptions);
+	const readFileSyncMethod = getReadFileSyncMethod(normalizedOptions.fs);
 	const gitRoot = includeParentIgnoreFiles
 		? findGitRootSync(normalizedOptions.cwd, normalizedOptions.fs)
 		: undefined;
-	const allPaths = combineIgnoreFilePaths(gitRoot, normalizedOptions, childPaths);
-	const readFileSyncMethod = getReadFileSyncMethod(normalizedOptions.fs);
-	const files = readIgnoreFilesSafelySync(allPaths, readFileSyncMethod, normalizedOptions.suppressErrors);
 
-	return {files, normalizedOptions, gitRoot};
+	const knownPaths = filterKnownIgnoreFilePathsSync(
+		getKnownIgnoreFilePaths(patterns, normalizedOptions, gitRoot),
+		patterns,
+		normalizedOptions,
+	);
+	const knownFiles = readIgnoreFilesSafelySync(knownPaths, readFileSyncMethod, normalizedOptions.suppressErrors);
+	const {patterns: prunePatterns, guardNames} = getIgnoreFileSearchPrune(patterns, knownFiles, normalizedOptions, gitRoot);
+
+	const childPaths = globIgnoreFiles(fastGlob.sync, patterns, withPrunedSearch(normalizedOptions, prunePatterns));
+	let childFiles = readIgnoreFilesSafelySync(getUnreadPaths(childPaths, knownPaths), readFileSyncMethod, normalizedOptions.suppressErrors);
+
+	// See `collectIgnoreFileArtifactsAsync`: a rescuing negation means the pruned search may have missed files.
+	if (negationsCouldRescue(getIgnoreRules(childFiles), guardNames)) {
+		const allPaths = globIgnoreFiles(fastGlob.sync, patterns, normalizedOptions);
+		childFiles = readIgnoreFilesSafelySync(getUnreadPaths(allPaths, knownPaths), readFileSyncMethod, normalizedOptions.suppressErrors);
+	}
+
+	return {files: [...knownFiles, ...childFiles], normalizedOptions, gitRoot};
 };
 
 export const isIgnoredByIgnoreFiles = async (patterns, options) => {
@@ -834,7 +982,7 @@ This avoids reading the same files twice (once for patterns, once for filtering)
 @param {string[]} patterns - Patterns to find ignore files
 @param {Object} options - Options object
 @param {boolean} [includeParentIgnoreFiles=false] - Whether to search for parent .gitignore files
-@returns {Promise<{patterns: string[], matcher: Function, predicate: Function, usingGitRoot: boolean}>}
+@returns {Promise<{patterns: string[], rules: Array<{pattern: string, directory: string}>, matcher: Function, predicate: Function, usingGitRoot: boolean}>}
 */
 export const getIgnorePatternsAndPredicate = async (patterns, options, includeParentIgnoreFiles = false) => {
 	const {files, normalizedOptions, gitRoot} = await collectIgnoreFileArtifactsAsync(
@@ -852,7 +1000,7 @@ Read ignore files and return both patterns and predicate (sync version).
 @param {string[]} patterns - Patterns to find ignore files
 @param {Object} options - Options object
 @param {boolean} [includeParentIgnoreFiles=false] - Whether to search for parent .gitignore files
-@returns {{patterns: string[], matcher: Function, predicate: Function, usingGitRoot: boolean}}
+@returns {{patterns: string[], rules: Array<{pattern: string, directory: string}>, matcher: Function, predicate: Function, usingGitRoot: boolean}}
 */
 export const getIgnorePatternsAndPredicateSync = (patterns, options, includeParentIgnoreFiles = false) => {
 	const {files, normalizedOptions, gitRoot} = collectIgnoreFileArtifactsSync(

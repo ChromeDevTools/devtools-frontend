@@ -43,6 +43,7 @@ import type {FrameAssociated} from './FrameAssociated.js';
 import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 import type {ExecutionContext} from './RuntimeModel.js';
+import {SecurityOrigin} from './SecurityOrigin.js';
 import type {DebugId, SourceMap} from './SourceMap.js';
 import type {Target} from './Target.js';
 
@@ -88,6 +89,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   readonly #language: string|null;
   #contentPromise: Promise<TextUtils.ContentData.ContentDataOrError>|null;
   readonly #embedderName: Platform.DevToolsPath.UrlString|null;
+  readonly #securityOrigin: SecurityOrigin;
   readonly isModule: boolean|null;
   readonly buildId: string|null;
   constructor(debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId,
@@ -119,10 +121,29 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     this.#language = scriptLanguage;
     this.#contentPromise = null;
     this.#embedderName = embedderName;
+    this.#securityOrigin = SecurityOrigin.create(this.#embedderName ?? '');
   }
 
   embedderName(): Platform.DevToolsPath.UrlString|null {
     return this.#embedderName;
+  }
+
+  /**
+   * Returns the security origin of the script derived exclusively from its
+   * embedder/network URL (`#embedderName`), or a unique opaque origin if the
+   * script has no valid network provenance (e.g. `eval()` or buffer-based Wasm).
+   *
+   * Security note: Do NOT fall back to `this.sourceURL` or
+   * `this.target().inspectedSecurityOrigin()`:
+   * - `sourceURL` is overwritten by `//# sourceURL=` comments, allowing a script
+   *   to spoof an arbitrary origin.
+   * - Third-party scripts (`<script src="https://attacker.example/...">`) run in
+   *   the same target/frame as the main page; falling back to the target's
+   *   origin would allow them to launder their origin by dynamically evaluating
+   *   code via `eval()` or `WebAssembly.instantiate(buffer)`.
+   */
+  securityOrigin(): SecurityOrigin {
+    return this.#securityOrigin;
   }
 
   target(): Target {

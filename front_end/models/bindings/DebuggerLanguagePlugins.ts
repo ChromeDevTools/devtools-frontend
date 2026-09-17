@@ -593,11 +593,11 @@ export class DebuggerLanguagePluginManager implements
     return {rawModuleId, plugin: null};
   }
 
-  uiSourceCodeForURL(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString):
-      Workspace.UISourceCode.UISourceCode|null {
+  uiSourceCodeForURL(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString,
+                     script?: SDK.Script.Script): Workspace.UISourceCode.UISourceCode|null {
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
-      return modelData.getProject().uiSourceCodeForURL(url);
+      return modelData.uiSourceCodeForURL(url, script);
     }
     return null;
   }
@@ -625,7 +625,7 @@ export class DebuggerLanguagePluginManager implements
       const sourceLocations = await plugin.rawLocationToSourceLocation(pluginLocation);
       for (const sourceLocation of sourceLocations) {
         const uiSourceCode = this.uiSourceCodeForURL(
-            script.debuggerModel, sourceLocation.sourceFileURL as Platform.DevToolsPath.UrlString);
+            script.debuggerModel, sourceLocation.sourceFileURL as Platform.DevToolsPath.UrlString, script);
         if (!uiSourceCode) {
           continue;
         }
@@ -1097,23 +1097,41 @@ export class DebuggerLanguagePluginManager implements
 }
 
 class ModelData {
-  project: ContentProviderBasedProject;
+  readonly #debuggerModel: SDK.DebuggerModel.DebuggerModel;
+  readonly #workspace: Workspace.Workspace.WorkspaceImpl;
+  readonly #projects = new Map<string, ContentProviderBasedProject>();
   readonly uiSourceCodeToScripts: Map<Workspace.UISourceCode.UISourceCode, SDK.Script.Script[]>;
   constructor(debuggerModel: SDK.DebuggerModel.DebuggerModel, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this.project =
-        new ContentProviderBasedProject(workspace, 'language_plugins::' + debuggerModel.target().id(),
-                                        Workspace.Workspace.projectTypes.Network, '', false /* isServiceProject */);
-    NetworkProject.setTargetForProject(this.project, debuggerModel.target());
-
+    this.#debuggerModel = debuggerModel;
+    this.#workspace = workspace;
     this.uiSourceCodeToScripts = new Map();
   }
 
+  #projectIdForScript(script: SDK.Script.Script): string {
+    const securityOrigin = script.securityOrigin();
+    const originPart = securityOrigin.isOpaque() ? '' : `:${securityOrigin.siteId()}`;
+    return `language_plugins::${this.#debuggerModel.target().id()}${originPart}`;
+  }
+
+  #projectForScript(script: SDK.Script.Script): ContentProviderBasedProject {
+    const projectId = this.#projectIdForScript(script);
+    let project = this.#projects.get(projectId);
+    if (!project) {
+      project = new ContentProviderBasedProject(this.#workspace, projectId, Workspace.Workspace.projectTypes.Network,
+                                                '', false /* isServiceProject */, script.securityOrigin());
+      NetworkProject.setTargetForProject(project, this.#debuggerModel.target());
+      this.#projects.set(projectId, project);
+    }
+    return project;
+  }
+
   addSourceFiles(script: SDK.Script.Script, urls: Platform.DevToolsPath.UrlString[]): void {
+    const project = this.#projectForScript(script);
     const initiator = script.createPageResourceLoadInitiator();
     for (const url of urls) {
-      let uiSourceCode = this.project.uiSourceCodeForURL(url);
+      let uiSourceCode = project.uiSourceCodeForURL(url);
       if (!uiSourceCode) {
-        uiSourceCode = this.project.createUISourceCode(url, Common.ResourceType.resourceTypes.SourceMapScript);
+        uiSourceCode = project.createUISourceCode(url, Common.ResourceType.resourceTypes.SourceMapScript);
         NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
 
         // Bind the uiSourceCode to the script first before we add the
@@ -1129,7 +1147,7 @@ class ModelData {
             url, Common.ResourceType.resourceTypes.SourceMapScript, initiator,
             script.target().targetManager().getPageResourceLoader());
         const mimeType = Common.ResourceType.ResourceType.mimeFromURL(url) || 'text/javascript';
-        this.project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
+        project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
       } else {
         // The same uiSourceCode can be provided by different scripts,
         // but we don't expect that to happen frequently.
@@ -1146,7 +1164,7 @@ class ModelData {
       scripts = scripts.filter(s => s !== script);
       if (scripts.length === 0) {
         this.uiSourceCodeToScripts.delete(uiSourceCode);
-        this.project.removeUISourceCode(uiSourceCode.url());
+        uiSourceCode.project().removeUISourceCode(uiSourceCode.url());
       } else {
         this.uiSourceCodeToScripts.set(uiSourceCode, scripts);
       }
@@ -1154,11 +1172,24 @@ class ModelData {
   }
 
   dispose(): void {
-    this.project.dispose();
+    for (const project of this.#projects.values()) {
+      project.dispose();
+    }
+    this.#projects.clear();
   }
 
-  getProject(): ContentProviderBasedProject {
-    return this.project;
+  uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString,
+                     script?: SDK.Script.Script): Workspace.UISourceCode.UISourceCode|null {
+    if (script) {
+      return this.#projects.get(this.#projectIdForScript(script))?.uiSourceCodeForURL(url) ?? null;
+    }
+    for (const project of this.#projects.values()) {
+      const uiSourceCode = project.uiSourceCodeForURL(url);
+      if (uiSourceCode) {
+        return uiSourceCode;
+      }
+    }
+    return null;
   }
 }
 

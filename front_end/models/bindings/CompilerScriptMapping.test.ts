@@ -92,6 +92,59 @@ describe('CompilerScriptMapping', () => {
     assert.isTrue(project.id().includes('http://attacker.com'));
   });
 
+  it('assigns an opaque security origin to the compiled source project for data URL scripts', async () => {
+    const target = backend.createTarget();
+
+    const sourceRoot = 'http://example.com';
+    const sources = ['foo.ts'];
+    const scriptInfo = {
+      url: 'data:text/javascript,console.log(1)',
+      embedderName: 'data:text/javascript,console.log(1)',
+      content: 'console.log(1);\n',
+    };
+    const sourceMapInfo = {
+      url: 'http://attacker.com/bundle.js.map',
+      content: {version: 3, mappings: '', sourceRoot, sources},
+    };
+
+    const [uiSourceCode] = await Promise.all([
+      waitForUISourceCodeAdded(`${sourceRoot}/foo.ts`, target),
+      backend.addScript(target, scriptInfo, sourceMapInfo),
+    ]);
+
+    const project = uiSourceCode.project();
+    assert.strictEqual(project.id(), `jsSourceMaps::${target.id()}`);
+    assert.isNotNull(project.securityOrigin());
+    assert.isTrue(project.securityOrigin()?.isOpaque());
+  });
+
+  it('ignores spoofed sourceURL when embedderName is empty or eval', async () => {
+    const target = backend.createTarget();
+
+    const sourceRoot = 'http://example.com';
+    const sources = ['foo.ts'];
+    const scriptInfo = {
+      url: 'http://example.com/spoofed.js',
+      hasSourceURL: true,
+      embedderName: '',
+      content: 'console.log(1);\n//# sourceURL=http://example.com/spoofed.js\n',
+    };
+    const sourceMapInfo = {
+      url: 'http://attacker.com/bundle.js.map',
+      content: {version: 3, mappings: '', sourceRoot, sources},
+    };
+
+    const [uiSourceCode] = await Promise.all([
+      waitForUISourceCodeAdded(`${sourceRoot}/foo.ts`, target),
+      backend.addScript(target, scriptInfo, sourceMapInfo),
+    ]);
+
+    const project = uiSourceCode.project();
+    assert.strictEqual(project.id(), `jsSourceMaps::${target.id()}`);
+    assert.isNotNull(project.securityOrigin());
+    assert.isTrue(project.securityOrigin()?.isOpaque());
+  });
+
   it('removes webpack hashes from display names', async () => {
     const target = backend.createTarget();
 

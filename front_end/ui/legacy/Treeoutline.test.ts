@@ -769,6 +769,69 @@ describe('TreeViewElement', () => {
     assert.isTrue(treeOutline.rootElement().childAt(0)!.isExpandable());
   });
 
+  it('expands a node with open attribute when children are added dynamically', async () => {
+    const makeTemplate = (hasChildren: boolean): Lit.TemplateResult => html`
+      <ul role="tree">
+        <li role="treeitem" open>parent node
+          ${
+        hasChildren ? html`
+            <ul role="group">
+              <li role="treeitem">child node</li>
+            </ul>
+          ` :
+                      Lit.nothing}
+        </li>
+      </ul>
+    `;
+    const component = await makeTree(html`<devtools-tree .template=${makeTemplate(false)}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const parent = treeOutline.rootElement().childAt(0)!;
+    assert.isFalse(parent.isExpandable());
+    assert.isFalse(parent.expanded);
+
+    // Dynamically add children while open attribute remains set
+    component.template = makeTemplate(true);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isTrue(parent.isExpandable());
+    assert.isTrue(parent.expanded);
+
+    // Dynamically remove children and re-add them
+    component.template = makeTemplate(false);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isFalse(parent.isExpandable());
+    assert.isFalse(parent.expanded);
+
+    component.template = makeTemplate(true);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isTrue(parent.isExpandable());
+    assert.isTrue(parent.expanded);
+  });
+
+  it('preserves imperative expansion state when open attribute is not set', async () => {
+    const makeTemplate = (label: string): Lit.TemplateResult => html`
+      <ul role="tree">
+        <li role="treeitem">${label}
+          <ul role="group">
+            <li role="treeitem">child node</li>
+          </ul>
+        </li>
+      </ul>
+    `;
+    const component = await makeTree(html`<devtools-tree .template=${makeTemplate('initial')}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const parent = treeOutline.rootElement().childAt(0)!;
+    assert.isTrue(parent.isExpandable());
+    assert.isFalse(parent.expanded);
+
+    parent.expand();
+    assert.isTrue(parent.expanded);
+
+    // Updating the template without setting `open` attribute should not collapse the imperatively expanded node.
+    component.template = makeTemplate('updated');
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isTrue(parent.expanded);
+  });
+
   it('correctly handles TreeElementWrapper nodes', async () => {
     const treeElement = new UI.TreeOutline.TreeElement('wrapper node');
 

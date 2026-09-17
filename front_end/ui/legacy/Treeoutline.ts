@@ -1631,6 +1631,10 @@ class TreeViewTreeElement extends TreeElement {
   }
 
   updateExpansionFromAttribute(): void {
+    if (!this.isExpandable()) {
+      this.#previousOpenAttributeValue = undefined;
+      return;
+    }
     const openAttr = this.configElement.getAttribute('open');
     if (openAttr === this.#previousOpenAttributeValue) {
       return;

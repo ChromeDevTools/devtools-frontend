@@ -3454,6 +3454,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
           ],
         });
         domTree.rootDOMNode = rootNode;
+        domTree.selectEnabled = true;
         domTree.setNodeExpanded(rootNode, true);
         const sectionNode = rootNode.children()![0];
         domTree.setNodeExpanded(sectionNode, true);

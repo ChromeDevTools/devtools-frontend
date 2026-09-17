@@ -20,7 +20,7 @@ const {Directives: {ref}, html, render} = Lit;
 
 export class AdoptedStyleSheetSetTreeElement extends UI.TreeOutline.TreeElement {
   constructor(readonly adoptedStyleSheets: SDK.DOMModel.AdoptedStyleSheet[]) {
-    super('');
+    super('', undefined, 'adopted-style-sheets');
     const documentElement = this.listItemElement.createChild('span');
     UI.UIUtils.createTextChild(documentElement, '#adopted-style-sheets');
     for (const adoptedStyleSheet of adoptedStyleSheets) {
@@ -33,7 +33,7 @@ export class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeElement {
   private eventListener: Common.EventTarget.EventDescriptor|null = null;
 
   constructor(readonly adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet) {
-    super('');
+    super('', undefined, 'adopted-style-sheet');
     const header = adoptedStyleSheet.cssModel.styleSheetHeaderForId(adoptedStyleSheet.id);
     if (header) {
       AdoptedStyleSheetTreeElement.createContents(header, this);
@@ -79,7 +79,7 @@ export class AdoptedStyleSheetContentsTreeElement extends UI.TreeOutline.TreeEle
   private readonly widgetWrapper: HTMLElement;
 
   constructor(styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader) {
-    super('');
+    super('', undefined, 'adopted-style-sheet-contents');
     this.widgetWrapper = document.createElement('div');
     this.widgetWrapper.style.display = 'contents';
     this.title = this.widgetWrapper;

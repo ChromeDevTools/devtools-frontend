@@ -523,6 +523,13 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
   }
 
   const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
+  const treeItemJslog = (context?: string, drag?: boolean): ReturnType<typeof VisualLogging.treeItem> =>
+      VisualLogging.treeItem(context).parent('elementsTreeOutline').track({
+        keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
+        resize: true,
+        ...(drag ? {drag: true} : {}),
+        click: true,
+      });
 
   const renderShortcut = (shortcut: SDK.DOMModel.DOMNodeShortcut, shortcutDepth: number): Lit.LitTemplate => {
     const hasShortcutChildren = shortcut.childShortcuts.length > 0;
@@ -558,11 +565,11 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           ?open=${isShortcutExpanded}
           class="elements-tree-shortcut"
           style=${styleMap({'--indent': `${computeLeftIndent(shortcutDepth, hasShortcutChildren)}px`})}
-          @select=${onShortcutSelect}
-          @expand=${onShortcutExpand}
+          @select=${on(onShortcutSelect)}
+          @expand=${on(onShortcutExpand)}
           @mousemove=${on(onShortcutMouseMove)}
           @mouseleave=${on(onShortcutMouseLeave)}
-          jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
+          jslog=${treeItemJslog()}>
         <span class="elements-tree-shortcut-title">\u21AA ${title}</span>
         <devtools-adorner
             .name=${ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL}
@@ -582,9 +589,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         </devtools-adorner>
         ${hasShortcutChildren ? html`
           <ul role="group">
-            ${UI.TreeOutline.ifExpanded(html`
-              ${shortcut.childShortcuts.map(child => renderShortcut(child, shortcutDepth + 1))}
-            `)}
+            ${shortcut.childShortcuts.map(child => renderShortcut(child, shortcutDepth + 1))}
           </ul>
         ` : nothing}
       </li>
@@ -612,14 +617,12 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
               ?open=${isTopLayerExpanded}
               class="elements-tree-top-layer-container"
               style=${styleMap({'--indent': `${computeLeftIndent(containerDepth, true)}px`})}
-              @select=${onTopLayerSelect}
-              @expand=${onTopLayerExpand}
-              jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
+              @select=${on(onTopLayerSelect)}
+              @expand=${on(onTopLayerExpand)}
+              jslog=${treeItemJslog()}>
             <span class="elements-tree-shortcut-title">#top-layer</span>
             <ul role="group">
-              ${UI.TreeOutline.ifExpanded(html`
-                ${shortcuts.map(sc => renderShortcut(sc, containerDepth + 1))}
-              `)}
+              ${shortcuts.map(sc => renderShortcut(sc, containerDepth + 1))}
             </ul>
           </li>
         `;
@@ -645,9 +648,9 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           ?open=${isExpanded}
           class="elements-tree-adopted-style-sheet"
           style=${styleMap({'--indent': `${computeLeftIndent(depth, true)}px`})}
-          @select=${onSelect}
-          @expand=${onExpand}
-          jslog=${VisualLogging.treeItem('adopted-style-sheet').parent('elementsTreeOutline')}>
+          @select=${on(onSelect)}
+          @expand=${on(onExpand)}
+          jslog=${treeItemJslog('adopted-style-sheet')}>
         <span class="elements-tree-shortcut-title">#adopted-style-sheet${linkText ? html` (${UIComponentUtils.Linkifier.Linkifier.linkifyURL(linkText, {
           text: linkText,
           preventClick: true,
@@ -659,7 +662,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
               <li role="treeitem"
                   class="elements-tree-adopted-style-sheet-contents"
                   style=${styleMap({'--indent': `${computeLeftIndent(depth + 1, false)}px`})}
-                  jslog=${VisualLogging.treeItem('adopted-style-sheet-contents').parent('elementsTreeOutline')}>
+                  jslog=${treeItemJslog('adopted-style-sheet-contents')}>
                 ${UI.Widget.widget(AdoptedStyleSheetContentsWidget, {styleSheetHeader: header})}
               </li>
             ` : nothing}
@@ -689,9 +692,9 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           ?open=${isExpanded}
           class="elements-tree-adopted-style-sheets"
           style=${styleMap({'--indent': `${computeLeftIndent(depth, true)}px`})}
-          @select=${onSelect}
-          @expand=${onExpand}
-          jslog=${VisualLogging.treeItem('adopted-style-sheets').parent('elementsTreeOutline')}>
+          @select=${on(onSelect)}
+          @expand=${on(onExpand)}
+          jslog=${treeItemJslog('adopted-style-sheets')}>
         <span class="elements-tree-shortcut-title">#adopted-style-sheets</span>
         <ul role="group">
           ${UI.TreeOutline.ifExpanded(html`
@@ -806,7 +809,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
   };
 
   const renderNode = (node: SDK.DOMModel.DOMNode, depth = 0): Lit.LitTemplate => {
-    const isSelected = input.selectedNode === node;
+    const isDOMNodeSelected = input.selectedNode === node;
+    const isSelected = Boolean(input.selectEnabled) && isDOMNodeSelected;
     const isOpeningHovered =
         (input.currentHighlightedNode === node) || (input.hoveredNode === node && !input.hoveredClosingTag);
     const isClosingHovered = input.hoveredNode === node && Boolean(input.hoveredClosingTag);
@@ -918,7 +922,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           ?selected=${isSelected && !input.selectedClosingTag}
           class=${classes}
           style=${styleMap({'--indent': `${computeLeftIndent(depth, isExpandable)}px`})}
-          ?open=${isExpanded && !isEditingAsHTML}
+          ?open=${hasChildren && isExpanded && !isEditingAsHTML}
           draggable=${isDraggable ? 'true' : 'false'}
           @select=${on((event: UI.TreeOutline.TreeViewElement.SelectEvent) => onSelect(false, Boolean(event.detail?.selectedByUser)))}
           @expand=${on(onExpand)}
@@ -929,12 +933,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           @dragleave=${on(onDragLeave)}
           @drop=${on(onDrop)}
           @dragend=${on(onDragEnd)}
-          jslog=${VisualLogging.treeItem().parent('elementsTreeOutline').track({
-            keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
-            resize: true,
-            drag: true,
-            click: true,
-          })}>
+          jslog=${treeItemJslog(undefined, true)}>
         ${UI.Widget.widget(ElementsTreeWidget, {
           node,
           isClosingTag: false,
@@ -942,7 +941,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           expanded: isExpanded && !isEditingAsHTML,
           isExpandable: hasChildren,
           selected: isSelected && !input.selectedClosingTag,
-          isDOMNodeSelected: isSelected,
+          isDOMNodeSelected,
           hovered: isOpeningHovered,
           searchQuery: input.searchMatchNode === node ? (input.searchMatchQuery ?? null) : null,
           inClipboard: input.isNodeInClipboard?.(node) ?? false,
@@ -988,7 +987,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                 <li role="treeitem"
                     class="elements-tree-expand-all"
                     style=${styleMap({'--indent': `${computeLeftIndent(depth + 1, false)}px`})}
-                    jslog=${VisualLogging.treeItem('show-all-nodes').parent('elementsTreeOutline')}>
+                    jslog=${treeItemJslog('show-all-nodes')}>
                   <devtools-button
                       .variant=${Buttons.Button.Variant.OUTLINED}
                       title=${i18nString(UIStrings.showAllNodesDMore, {PH1: remainingChildrenCount})}
@@ -1012,7 +1011,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                     })}
                     style=${styleMap({'--indent': `${computeLeftIndent(depth + 1, false)}px`})}
                     draggable=${isDraggable ? 'true' : 'false'}
-                    jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}
+                    jslog=${treeItemJslog(undefined, true)}
                     @select=${on((event: UI.TreeOutline.TreeViewElement.SelectEvent) => onSelect(true, Boolean(event.detail?.selectedByUser)))}
                     @contextmenu=${on(onContextMenu)}
                     @mousemove=${on(onClosingMouseMove)}
@@ -1028,7 +1027,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                     expanded: false,
                     isExpandable: false,
                     selected: isSelected && Boolean(input.selectedClosingTag),
-                    isDOMNodeSelected: isSelected,
+                    isDOMNodeSelected,
                     hovered: isClosingHovered,
                     computeLeftIndent: computeLeftIndent(depth + 1, false),
                     disableEdits: input.disableEdits ?? false,
@@ -1100,7 +1099,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                 <li role="treeitem"
                     class="elements-tree-expand-all"
                     style=${styleMap({'--indent': `${computeLeftIndent(0, false)}px`})}
-                    jslog=${VisualLogging.treeItem('show-all-nodes').parent('elementsTreeOutline')}>
+                    jslog=${treeItemJslog('show-all-nodes')}>
                   <devtools-button
                     .variant=${Buttons.Button.Variant.OUTLINED}
                     title=${i18nString(UIStrings.showAllNodesDMore, {PH1: remaining})}
@@ -1823,16 +1822,19 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   async expandRecursively(node: SDK.DOMModel.DOMNode, maxDepth: number = Number.MAX_VALUE): Promise<void> {
     if (this.#view === DECLARATIVE_VIEW) {
-      await node.getSubtree(100, true);
       const expand = async(n: SDK.DOMModel.DOMNode, depth: number): Promise<void> => {
         if (depth > maxDepth) {
           return;
         }
-        this.#expandedNodes.add(n);
-        if (!n.children() && (n.childNodeCount() || n.isIframe() || n.nodeType() === Node.DOCUMENT_NODE)) {
-          await new Promise<void>(resolve => {
-            void n.getChildNodes(() => resolve());
-          });
+        if (n.childDocumentPromiseForTesting) {
+          await n.childDocumentPromiseForTesting;
+        }
+        if (!n.children() && !n.contentDocument() &&
+            (n === node || n.childNodeCount() || n.isIframe() || n.nodeType() === Node.DOCUMENT_NODE)) {
+          await n.getSubtree(100, true);
+        }
+        if (nodeHasVisibleChildren(n, this.rootDOMNode, this.maxTreeDepth, this.omitRootDOMNode)) {
+          this.#expandedNodes.add(n);
         }
         const visibleChildren = getVisibleChildren(n, this.#showComments);
         if (visibleChildren.length) {

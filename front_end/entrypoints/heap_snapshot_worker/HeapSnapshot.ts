@@ -9,6 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js';
 
 import {AllocationProfile} from './AllocationProfile.js';
+import * as ContextAnalyzer from './ContextAnalyzer.js';
 import type {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
 
 export interface HeapSnapshotItem {
@@ -737,6 +738,9 @@ export interface Profile {
   samples: number[];
   strings: string[];
   locations: number[];
+  scopes?: number[];
+  scope_context_vars?: number[];
+  scope_uses?: number[];
   trace_function_infos: Uint32Array;
   trace_tree: Object;
   /* eslint-enable @typescript-eslint/naming-convention */
@@ -1167,6 +1171,14 @@ export abstract class HeapSnapshot {
       edgeCount: node.edgesCount(),
       retainerCount: node.retainersCount(),
     };
+  }
+
+  /**
+   * Computes for every context field whether it is still live, i.e. whether it
+   * can be reached by some closure, and reports the dead fields.
+   */
+  analyzeContexts(): HeapSnapshotModel.HeapSnapshotModel.ContextAnalysisResult {
+    return ContextAnalyzer.analyzeContexts(this);
   }
 
   private startInitStep1InSecondThread(secondWorker: Platform.HostRuntime.WorkerMessagePort):
@@ -3836,6 +3848,9 @@ interface HeapSnapshotMetaInfo {
   trace_node_fields: string[];
   sample_fields: string[];
   type_strings: Record<string, string>;
+  scope_fields?: string[];
+  scope_context_var_fields?: string[];
+  scope_use_fields?: string[];
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

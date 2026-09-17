@@ -29,6 +29,9 @@ describe('HeapSnapshot', () => {
         location_fields?: string[],
         trace_function_info_fields?: string[],
         trace_node_fields?: string[],
+        scope_fields?: string[],
+        scope_context_var_fields?: string[],
+        scope_use_fields?: string[],
       },
       node_count: number,
       edge_count: number,
@@ -435,6 +438,12 @@ describe('HeapSnapshot', () => {
       this.strings.push(string);
       return this.strings.length - 1;
     }
+  }
+
+  function addIntEdge(node: HeapNode, name: string, value: number) {
+    const intNode = new HeapNode('int', 0, 'number');
+    node.linkNode(intNode, 'internal', name);
+    intNode.linkNode(new HeapNode(String(value), 0, 'string'), 'internal', 'value');
   }
 
   // Test Cases
@@ -1402,13 +1411,6 @@ describe('HeapSnapshot', () => {
       assert.lengthOf(duplicates[1].nodes, 2);
     });
 
-    function addIntEdge(node: HeapNode, name: string, value: number) {
-      const intNode = new HeapNode('int', 0, 'number');
-      const valueNode = new HeapNode(String(value), 0, 'string');
-      node.linkNode(intNode, 'internal', name);
-      intNode.linkNode(valueNode, 'internal', 'value');
-    }
-
     function markTruncated(node: HeapNode) {
       const truncNode = new HeapNode('bool', 0, 'number');
       const valueNode = new HeapNode('true', 0, 'number');
@@ -1982,6 +1984,397 @@ describe('HeapSnapshot', () => {
     });
 
     assert.throws(() => snapshot.getObjectInfo(5), 'Invalid nodeIndex 5');
+  });
+
+  describe('analyzeContexts', () => {
+    interface EmbeddedScopeMock {
+      scopeId: number;
+      depth?: number;
+      contextVars?: string[];
+      uses?: Array<{declaringScopeId: number, slotIndex: number}>;
+    }
+
+    interface ScriptMock {
+      /** Name identifying the script within the snapshot, also used as its script name. */
+      name: string;
+      /** Embedded scope metadata of this script. The script has none when undefined. */
+      scopes?: EmbeddedScopeMock[];
+    }
+
+    /**
+     * Edges whose absence changes how the analysis treats an object are required, so that every
+     * fixture spells out whether such an edge exists.
+     */
+    interface ScopeInfoMock {
+      /** Name identifying this object within the snapshot. */
+      name: string;
+      /** `scope_id` edge, which ties the ScopeInfo to its embedded scope. */
+      scopeId: number;
+      /** Name of the ScopeInfo linked through `outer_scope_info`. */
+      outerScopeInfo: string|undefined;
+      /** Defaults to `name`. */
+      functionName?: string;
+      startPosition?: number;
+      endPosition?: number;
+    }
+
+    interface SharedFunctionInfoMock {
+      /** Name identifying this object within the snapshot. */
+      name: string;
+      /** Name of the ScopeInfo linked through `name_or_scope_info`. */
+      scopeInfo: string;
+      /**
+       * Name of the script linked through `script`. This is the only edge tying any of the objects
+       * below to a script.
+       */
+      script: string;
+      /** `scope_id` edge, which is how closures of this function are attributed to a scope. */
+      scopeId: number;
+    }
+
+    interface ContextMock {
+      /** Name identifying this object within the snapshot. */
+      name: string;
+      /** Name of the ScopeInfo linked through `scope_info`. */
+      scopeInfo: string;
+      /** Name of the Context linked through `previous`. */
+      previous?: string;
+      /** Context-typed fields of the Context object. */
+      fields: Array<{name: string, value: string, type?: string}>;
+    }
+
+    interface ClosureMock {
+      /** Name identifying this object within the snapshot. */
+      name: string;
+      /** Name of the SharedFunctionInfo linked through `shared`. */
+      sfi: string;
+      /** Name of the Context linked through `context`. */
+      context: string;
+    }
+
+    interface SnapshotMock {
+      scripts: ScriptMock[];
+      scopeInfos: ScopeInfoMock[];
+      sfis: SharedFunctionInfoMock[];
+      contexts: ContextMock[];
+      closures: ClosureMock[];
+    }
+
+    /**
+     * Builds a snapshot out of explicitly declared objects. Names must be unique across the whole
+     * snapshot and are how objects reference each other. Embedded scope metadata is only emitted
+     * when at least one script declares scopes, so a snapshot taken by a V8 version without scope
+     * metadata can be simulated by omitting `scopes` everywhere.
+     *
+     * Returns the snapshot along with a lookup from object name to node id.
+     */
+    async function createContextSnapshot(snapshotMock: SnapshotMock) {
+      const builder = new HeapSnapshotBuilder();
+      const nodesByName = new Map<string, HeapNode>();
+      let nextNodeId = 300;
+
+      function addNode(name: string, objectName: string, type: string, selfSize = 0): HeapNode {
+        assert.isFalse(nodesByName.has(name), `Object names must be unique, but '${name}' is used twice`);
+        const heapNode = new HeapNode(objectName, selfSize, type, nextNodeId++);
+        builder.rootNode.linkNode(heapNode, 'element');
+        nodesByName.set(name, heapNode);
+        return heapNode;
+      }
+
+      function node(name: string): HeapNode {
+        const heapNode = nodesByName.get(name);
+        assert.isDefined(heapNode, `Snapshot has no object named '${name}'`);
+        return heapNode!;
+      }
+
+      // Create every object first, so that references between them can be resolved by name below.
+      for (const scriptMock of snapshotMock.scripts) {
+        addNode(scriptMock.name, `system / Script / ${scriptMock.name}`, 'code');
+      }
+      for (const scopeInfoMock of snapshotMock.scopeInfos) {
+        addNode(scopeInfoMock.name, 'system / ScopeInfo', 'code');
+      }
+      for (const sfiMock of snapshotMock.sfis) {
+        addNode(sfiMock.name, `system / SharedFunctionInfo / ${sfiMock.name}`, 'code');
+      }
+      for (const contextMock of snapshotMock.contexts) {
+        addNode(contextMock.name, `system / Context / ${contextMock.name}`, 'object', contextMock.fields.length);
+      }
+      for (const closureMock of snapshotMock.closures) {
+        addNode(closureMock.name, closureMock.name, 'closure');
+      }
+
+      snapshotMock.scripts.forEach((scriptMock, scriptIndex) => {
+        addIntEdge(node(scriptMock.name), 'id', scriptIndex + 1);
+      });
+
+      for (const scopeInfoMock of snapshotMock.scopeInfos) {
+        const scopeInfo = node(scopeInfoMock.name);
+        addIntEdge(scopeInfo, 'scope_id', scopeInfoMock.scopeId);
+        addIntEdge(scopeInfo, 'start_position', scopeInfoMock.startPosition ?? 14);
+        addIntEdge(scopeInfo, 'end_position', scopeInfoMock.endPosition ?? 67);
+        const functionName = scopeInfoMock.functionName ?? scopeInfoMock.name;
+        scopeInfo.linkNode(new HeapNode(functionName, 0, 'string'), 'internal', 'function_name');
+        if (scopeInfoMock.outerScopeInfo !== undefined) {
+          scopeInfo.linkNode(node(scopeInfoMock.outerScopeInfo), 'internal', 'outer_scope_info');
+        }
+      }
+
+      for (const sfiMock of snapshotMock.sfis) {
+        const sfi = node(sfiMock.name);
+        sfi.linkNode(node(sfiMock.scopeInfo), 'internal', 'name_or_scope_info');
+        sfi.linkNode(node(sfiMock.script), 'internal', 'script');
+        addIntEdge(sfi, 'scope_id', sfiMock.scopeId);
+      }
+
+      for (const contextMock of snapshotMock.contexts) {
+        const context = node(contextMock.name);
+        context.linkNode(node(contextMock.scopeInfo), 'internal', 'scope_info');
+        if (contextMock.previous !== undefined) {
+          context.linkNode(node(contextMock.previous), 'internal', 'previous');
+        }
+        for (const field of contextMock.fields) {
+          context.linkNode(new HeapNode(field.value, 0, field.type ?? 'number'), 'context', field.name);
+        }
+      }
+
+      for (const closureMock of snapshotMock.closures) {
+        const closure = node(closureMock.name);
+        closure.linkNode(node(closureMock.sfi), 'internal', 'shared');
+        closure.linkNode(node(closureMock.context), 'internal', 'context');
+      }
+
+      const rawSnapshot = builder.generateSnapshot();
+
+      const scopesArray: number[] = [];
+      const varsArray: number[] = [];
+      const usesArray: number[] = [];
+      let hasScopeMetadata = false;
+
+      for (const scriptMock of snapshotMock.scripts) {
+        if (!scriptMock.scopes) {
+          continue;
+        }
+        hasScopeMetadata = true;
+        const scriptNodeIndex = builder.nodes.indexOf(node(scriptMock.name)) * builder.nodeFieldsCount;
+        for (const scope of scriptMock.scopes) {
+          const vars = scope.contextVars ?? [];
+          const uses = scope.uses ?? [];
+          scopesArray.push(
+              scriptNodeIndex,
+              scope.scopeId,
+              scope.depth ?? 0,
+              vars.length,
+              uses.length,
+          );
+          for (const varName of vars) {
+            varsArray.push(builder.lookupOrAddString(varName));
+          }
+          for (const use of uses) {
+            usesArray.push(use.declaringScopeId, use.slotIndex);
+          }
+        }
+      }
+
+      if (hasScopeMetadata) {
+        rawSnapshot.snapshot.meta.scope_fields = [
+          'script_node_index',
+          'scope_id',
+          'depth',
+          'scope_context_vars_count',
+          'scope_uses_count',
+        ];
+        rawSnapshot.snapshot.meta.scope_context_var_fields = ['name'];
+        rawSnapshot.snapshot.meta.scope_use_fields = ['declaring_scope_id', 'slot_index'];
+
+        rawSnapshot.strings = builder.strings.slice();
+        const profile = rawSnapshot as unknown as HeapSnapshotWorker.HeapSnapshot.Profile;
+        profile.scopes = scopesArray;
+        profile.scope_context_vars = varsArray;
+        profile.scope_uses = usesArray;
+      }
+
+      const parsedSnapshot = postprocessHeapSnapshotMock(rawSnapshot);
+      const snapshot = await HeapSnapshotWorker.HeapSnapshot.createJSHeapSnapshotForTesting(parsedSnapshot);
+      return {snapshot, nodeId: (name: string): number => node(name).id!};
+    }
+
+    function expectedScriptWithoutScopes(
+        snapshot: HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot, scriptNodeId: number, scriptName: string,
+        contextCount: number): HeapSnapshotModel.HeapSnapshotModel.ScriptWithoutScopes {
+      return {
+        scriptNodeIndex: snapshot.nodeIndexForId(scriptNodeId)!,
+        scriptNodeId,
+        scriptName,
+        contextCount,
+      };
+    }
+
+    function deadFieldNamesOfSingleContext(scope: HeapSnapshotModel.HeapSnapshotModel.ScopeAnalysis): string[] {
+      assert.lengthOf(scope.contexts, 1);
+      return scope.contexts[0].deadFields.map(field => field.name);
+    }
+
+    /** Target of the internal edge named `edgeName` of the node with `nodeId`, for fixture self-checks. */
+    function internalEdgeTarget(snapshot: HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot, nodeId: number,
+                                edgeName: string): HeapSnapshotWorker.HeapSnapshot.HeapSnapshotNode|undefined {
+      const nodeIndex = snapshot.nodeIndexForId(nodeId);
+      assert.isDefined(nodeIndex, `Snapshot has no node with id ${nodeId}`);
+      return snapshot.createNode(nodeIndex!).findInternalEdgeTarget(edgeName);
+    }
+
+    /**
+     * A heap for one script whose function captures two variables in its context. Two sibling
+     * functions each read one of them, but only the function reading `liveVar` has been
+     * instantiated, so `deadVar` is the only dead field.
+     *
+     * Tests derive their fixture from this heap by overriding or dropping the parts they are about,
+     * so that each test only spells out what makes it different.
+     */
+    function baseSnapshotMock(): SnapshotMock {
+      return {
+        scripts: [{
+          name: 'test.js',
+          scopes: [
+            {scopeId: 100, contextVars: ['liveVar', 'deadVar']},
+            {scopeId: 101, depth: 1, uses: [{declaringScopeId: 100, slotIndex: 0}]},
+            {scopeId: 102, depth: 1, uses: [{declaringScopeId: 100, slotIndex: 1}]},
+          ],
+        }],
+        scopeInfos: [
+          {name: 'fn', scopeId: 100, outerScopeInfo: undefined},
+          {name: 'liveReader', scopeId: 101, outerScopeInfo: 'fn'},
+          {name: 'deadReader', scopeId: 102, outerScopeInfo: 'fn'},
+        ],
+        sfis: [
+          {name: 'fnSfi', scopeInfo: 'fn', script: 'test.js', scopeId: 100},
+          {name: 'liveReaderSfi', scopeInfo: 'liveReader', script: 'test.js', scopeId: 101},
+          {name: 'deadReaderSfi', scopeInfo: 'deadReader', script: 'test.js', scopeId: 102},
+        ],
+        contexts: [{
+          name: 'fnCall',
+          scopeInfo: 'fn',
+          fields: [
+            {name: 'liveVar', value: '1'},
+            {name: 'deadVar', value: '2'},
+          ],
+        }],
+        closures: [{name: 'liveReaderClosure', sfi: 'liveReaderSfi', context: 'fnCall'}],
+      };
+    }
+
+    /** Looks up a declared object of the base snapshot, so that a test can override it. */
+    function byName<T extends {name: string}>(mocks: T[], name: string): T {
+      const mock = mocks.find(candidate => candidate.name === name);
+      assert.isDefined(mock, `Base snapshot has no object named '${name}'`);
+      return mock!;
+    }
+
+    /** Adds a second script with a single context, used to tell scripts apart in the analysis. */
+    function addSecondScript(snapshotMock: SnapshotMock, scriptName: string) {
+      snapshotMock.scripts.push({name: scriptName});
+      snapshotMock.scopeInfos.push({name: 'otherFn', scopeId: 200, outerScopeInfo: undefined});
+      snapshotMock.sfis.push({name: 'otherFnSfi', scopeInfo: 'otherFn', script: scriptName, scopeId: 200});
+      snapshotMock.contexts.push({name: 'otherCall', scopeInfo: 'otherFn', fields: []});
+      snapshotMock.closures.push({name: 'otherClosure', sfi: 'otherFnSfi', context: 'otherCall'});
+    }
+
+    it('reports a field as dead when only an uninstantiated function reads it', async () => {
+      const {snapshot} = await createContextSnapshot(baseSnapshotMock());
+      const analysis = snapshot.analyzeContexts();
+
+      assert.lengthOf(analysis.scopes, 1);
+      assert.deepEqual(deadFieldNamesOfSingleContext(analysis.scopes[0]), ['deadVar']);
+    });
+
+    it('resolves the script of a block ScopeInfo through outer_scope_info', async () => {
+      const snapshotMock = baseSnapshotMock();
+      snapshotMock.scripts[0].scopes!.push({scopeId: 103, depth: 1, contextVars: ['blockDead']});
+      // Blocks have no SharedFunctionInfo, so the script of the block ScopeInfo can only be
+      // resolved by walking `outer_scope_info`.
+      snapshotMock.scopeInfos.push({name: 'block', scopeId: 103, outerScopeInfo: 'fn'});
+      snapshotMock.contexts.push(
+          {name: 'blockEntry', scopeInfo: 'block', previous: 'fnCall', fields: [{name: 'blockDead', value: '3'}]});
+      const {snapshot, nodeId} = await createContextSnapshot(snapshotMock);
+      assert.isDefined(internalEdgeTarget(snapshot, nodeId('block'), 'outer_scope_info'),
+                       'Fixture is expected to have a ScopeInfo with outer_scope_info');
+
+      const analysis = snapshot.analyzeContexts();
+
+      assert.lengthOf(analysis.scopes, 2);
+      const blockScope = analysis.scopes.find(scope => scope.scopeInfoNodeId === nodeId('block'));
+      assert.isDefined(blockScope, 'Block scope is expected to be analyzed');
+      assert.strictEqual(blockScope!.scriptName, 'test.js');
+      assert.strictEqual(blockScope!.scriptNodeId, nodeId('test.js'));
+      assert.deepEqual(deadFieldNamesOfSingleContext(blockScope!), ['blockDead']);
+      assert.isEmpty(analysis.scriptsWithoutScopes);
+    });
+
+    it('ignores context fields missing from variable definitions', async () => {
+      const snapshotMock = baseSnapshotMock();
+      byName(snapshotMock.contexts, 'fnCall').fields.push({name: 'missingVar', value: '3'});
+      const {snapshot} = await createContextSnapshot(snapshotMock);
+      const analysis = snapshot.analyzeContexts();
+
+      assert.isEmpty(analysis.scriptsWithoutScopes);
+      assert.lengthOf(analysis.scopes, 1);
+      assert.deepEqual(deadFieldNamesOfSingleContext(analysis.scopes[0]), ['deadVar']);
+    });
+
+    it('does not report scripts whose scope metadata lacks the matching scope', async () => {
+      const snapshotMock = baseSnapshotMock();
+      snapshotMock.scopeInfos.push({name: 'unmatchedFn', scopeId: 999, outerScopeInfo: undefined});
+      snapshotMock.sfis.push({name: 'unmatchedFnSfi', scopeInfo: 'unmatchedFn', script: 'test.js', scopeId: 999});
+      snapshotMock.contexts.push(
+          {name: 'unmatchedCall', scopeInfo: 'unmatchedFn', fields: [{name: 'unmatchedVar', value: '3'}]});
+      snapshotMock.closures.push({name: 'unmatchedClosure', sfi: 'unmatchedFnSfi', context: 'unmatchedCall'});
+      const {snapshot} = await createContextSnapshot(snapshotMock);
+      const analysis = snapshot.analyzeContexts();
+
+      assert.lengthOf(analysis.scopes, 1);
+      assert.deepEqual(deadFieldNamesOfSingleContext(analysis.scopes[0]), ['deadVar']);
+      assert.isEmpty(analysis.scriptsWithoutScopes);
+    });
+
+    it('reports every script when the snapshot has no scope metadata', async () => {
+      const snapshotMock = baseSnapshotMock();
+      delete snapshotMock.scripts[0].scopes;
+      addSecondScript(snapshotMock, 'other.js');
+      const {snapshot, nodeId} = await createContextSnapshot(snapshotMock);
+      const analysis = snapshot.analyzeContexts();
+
+      assert.isEmpty(analysis.scopes);
+      assert.deepEqual(analysis.scriptsWithoutScopes, [
+        expectedScriptWithoutScopes(snapshot, nodeId('test.js'), 'test.js', 1),
+        expectedScriptWithoutScopes(snapshot, nodeId('other.js'), 'other.js', 1),
+      ]);
+    });
+
+    it('reports only the scripts that lack embedded scopes', async () => {
+      const snapshotMock = baseSnapshotMock();
+      addSecondScript(snapshotMock, 'without-scopes.js');
+      const {snapshot, nodeId} = await createContextSnapshot(snapshotMock);
+      const analysis = snapshot.analyzeContexts();
+
+      assert.lengthOf(analysis.scopes, 1);
+      assert.strictEqual(analysis.scopes[0].scriptName, 'test.js');
+      assert.deepEqual(deadFieldNamesOfSingleContext(analysis.scopes[0]), ['deadVar']);
+      assert.deepEqual(analysis.scriptsWithoutScopes,
+                       [expectedScriptWithoutScopes(snapshot, nodeId('without-scopes.js'), 'without-scopes.js', 1)]);
+    });
+
+    it('counts every context of a script without scope metadata', async () => {
+      const snapshotMock = baseSnapshotMock();
+      delete snapshotMock.scripts[0].scopes;
+      snapshotMock.contexts.push({name: 'secondCall', scopeInfo: 'fn', fields: []});
+      snapshotMock.closures.push({name: 'secondCallClosure', sfi: 'fnSfi', context: 'secondCall'});
+      const {snapshot, nodeId} = await createContextSnapshot(snapshotMock);
+      const analysis = snapshot.analyzeContexts();
+
+      // Both `fnCall` and `secondCall` are counted.
+      assert.deepEqual(analysis.scriptsWithoutScopes,
+                       [expectedScriptWithoutScopes(snapshot, nodeId('test.js'), 'test.js', 2)]);
+    });
   });
 
   describe('queryObjects', () => {

@@ -1064,6 +1064,7 @@ grd_files_unbundled_sources = [
   "front_end/entrypoints/formatter_worker/ScopeParser.js",
   "front_end/entrypoints/formatter_worker/Substitute.js",
   "front_end/entrypoints/heap_snapshot_worker/AllocationProfile.js",
+  "front_end/entrypoints/heap_snapshot_worker/ContextAnalyzer.js",
   "front_end/entrypoints/heap_snapshot_worker/HeapSnapshot.js",
   "front_end/entrypoints/heap_snapshot_worker/HeapSnapshotLoader.js",
   "front_end/entrypoints/heap_snapshot_worker/HeapSnapshotWorkerDispatcher.js",

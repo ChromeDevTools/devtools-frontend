@@ -251,6 +251,21 @@ export class HeapSnapshotLoader {
       this.#snapshot.locations = [];
     }
 
+    if (this.#snapshot.snapshot.meta.scope_fields) {
+      const scopes = await this.#parseArray('"scopes"', 'Loading scopes…');
+      this.#snapshot.scopes = scopes.asArrayOrFail();
+    }
+
+    if (this.#snapshot.snapshot.meta.scope_context_var_fields) {
+      const scopeContextVars = await this.#parseArray('"scope_context_vars"', 'Loading scope context vars…');
+      this.#snapshot.scope_context_vars = scopeContextVars.asArrayOrFail();
+    }
+
+    if (this.#snapshot.snapshot.meta.scope_use_fields) {
+      const scopeUses = await this.#parseArray('"scope_uses"', 'Loading scope uses…');
+      this.#snapshot.scope_uses = scopeUses.asArrayOrFail();
+    }
+
     this.#progress.updateStatus('Loading strings…');
     const stringsTokenIndex = await this.#findToken('"strings"');
     const bracketIndex = await this.#findToken('[', stringsTokenIndex);

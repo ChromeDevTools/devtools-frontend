@@ -11,6 +11,7 @@ import("../visibility.gni")
 devtools_foundation_module("heap_snapshot_worker") {
   sources = [
     "AllocationProfile.ts",
+    "ContextAnalyzer.ts",
     "HeapSnapshot.ts",
     "HeapSnapshotLoader.ts",
     "HeapSnapshotWorkerDispatcher.ts",

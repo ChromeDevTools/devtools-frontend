@@ -200,6 +200,43 @@ describeWithEnvironment('ContextMenu', () => {
 });
 
 describeWithEnvironment('MenuButton', function() {
+  it('passes the accessible label and tooltip to the button', () => {
+    const container = document.createElement('div');
+
+    // clang-format off
+    render(html`
+      <devtools-menu-button
+        .accessibleLabel=${'Open menu'}
+        icon-name="dots-vertical"
+        .populateMenuCall=${() => {}}
+      ></devtools-menu-button>
+    `, container);
+    // clang-format on
+
+    renderElementIntoDOM(container);
+    const menuButton = container.querySelector('devtools-menu-button');
+    assert.exists(menuButton);
+    assert.isFalse(menuButton.hasAttribute('title'));
+    assert.isFalse(menuButton.hasAttribute('aria-label'));
+    const devtoolsButton = menuButton.shadowRoot?.querySelector('devtools-button');
+    assert.exists(devtoolsButton);
+    assert.isFalse(devtoolsButton.hasAttribute('title'));
+    assert.strictEqual(devtoolsButton.accessibleLabel, 'Open menu');
+    assert.strictEqual(devtoolsButton.buttonTitle, 'Open menu');
+  });
+
+  it('uses the host title as a fallback accessible label', () => {
+    const menuButton = document.createElement('devtools-menu-button');
+    menuButton.setAttribute('icon-name', 'dots-vertical');
+    menuButton.title = 'More tabs';
+    renderElementIntoDOM(menuButton);
+
+    const devtoolsButton = menuButton.shadowRoot?.querySelector('devtools-button');
+    assert.exists(devtoolsButton);
+    assert.strictEqual(devtoolsButton.accessibleLabel, 'More tabs');
+    assert.strictEqual(devtoolsButton.buttonTitle, 'More tabs');
+  });
+
   it('renders a button and opens a menu on click', async () => {
     const container = document.createElement('div');
     let resolveMenuPopulated = () => {};

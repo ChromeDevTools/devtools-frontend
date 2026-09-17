@@ -48,6 +48,7 @@ interface ButtonState {
   variant: Variant;
   size?: Size;
   reducedFocusRing?: boolean;
+  buttonTitle?: string;
   disabled: boolean;
   toggled?: boolean;
   toggleOnClick?: boolean;
@@ -80,7 +81,14 @@ interface CommonButtonData {
   spinner?: boolean;
   type?: ButtonType;
   value?: string;
+  /**
+   * Sets title on the host and, unless buttonTitle is provided, the internal <button> element.
+   */
   title?: string;
+  /**
+   * Sets title on the internal <button> element, taking precedence over title.
+   */
+  buttonTitle?: string;
   jslogContext?: string;
   longClickable?: boolean;
   inverseColorTheme?: boolean;
@@ -166,6 +174,7 @@ export class Button extends HTMLElement {
     if (data.title) {
       this.title = data.title;
     }
+    this.#props.buttonTitle = data.buttonTitle;
 
     if (data.accessibleLabel) {
       this.accessibleLabel = data.accessibleLabel;
@@ -242,6 +251,15 @@ export class Button extends HTMLElement {
 
   override set title(title: string) {
     super.title = title;
+    this.#render();
+  }
+
+  get buttonTitle(): string|undefined {
+    return this.#props.buttonTitle;
+  }
+
+  set buttonTitle(buttonTitle: string|undefined) {
+    this.#props.buttonTitle = buttonTitle;
     this.#render();
   }
 
@@ -396,7 +414,7 @@ export class Button extends HTMLElement {
     Lit.render(
       html`
         <style>${buttonStyles}</style>
-        <button title=${ifDefined(this.title || undefined)}
+        <button title=${ifDefined(this.buttonTitle || this.title || undefined)}
                 ?disabled=${this.#props.disabled}
                 class=${classMap(classes)}
                 aria-pressed=${ifDefined(this.#props.toggled)}

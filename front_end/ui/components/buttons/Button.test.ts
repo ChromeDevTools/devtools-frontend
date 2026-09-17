@@ -142,6 +142,30 @@ describe('Button', () => {
     assert.strictEqual(innerButton.title, 'Custom2');
   });
 
+  it('sets a title only on the internal button', () => {
+    const button = renderButton({
+      variant: Buttons.Button.Variant.PRIMARY,
+      buttonTitle: 'Internal title',
+    });
+    const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
+    assert.isFalse(button.hasAttribute('title'));
+    assert.strictEqual(innerButton.title, 'Internal title');
+
+    button.disabled = true;
+    assert.strictEqual(innerButton.title, 'Internal title');
+  });
+
+  it('prefers buttonTitle for the internal button when both titles are set', () => {
+    const button = renderButton({
+      variant: Buttons.Button.Variant.PRIMARY,
+      title: 'Host title',
+      buttonTitle: 'Internal title',
+    });
+    const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
+    assert.strictEqual(button.title, 'Host title');
+    assert.strictEqual(innerButton.title, 'Internal title');
+  });
+
   it('sets aria-expanded on the internal button', () => {
     const button = renderButton({
       variant: Buttons.Button.Variant.PRIMARY,

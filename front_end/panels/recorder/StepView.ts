@@ -277,8 +277,7 @@ function renderStepActions(input: ViewInput): Lit.TemplateResult|null {
   return html`
     <devtools-menu-button
       class="step-actions"
-      title=${i18nString(UIStrings.openStepActions)}
-      aria-label=${i18nString(UIStrings.openStepActions)}
+      .accessibleLabel=${i18nString(UIStrings.openStepActions)}
       .populateMenuCall=${input.populateStepContextMenu}
       @keydown=${(event: Event) => {
         event.stopPropagation();

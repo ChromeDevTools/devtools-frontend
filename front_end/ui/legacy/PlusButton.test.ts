@@ -478,7 +478,7 @@ describeWithEnvironment('PlusButton', () => {
       assert.strictEqual(button.parentElement, tabbedPane.element);
     });
 
-    it('falls back to the default tooltip when no title is provided', () => {
+    it('falls back to the default label when no title is provided', () => {
       const tabbedPane = new UI.TabbedPane.TabbedPane();
       tabbedPane.markAsRoot();
       renderElementIntoDOM(tabbedPane);
@@ -495,7 +495,7 @@ describeWithEnvironment('PlusButton', () => {
 
       // Tests run only against the en-US locale, so the literal English
       // string is the source of truth here.
-      assert.strictEqual(button.title, 'More tools');
+      assert.strictEqual(button.accessibleLabel, 'More tools');
     });
 
     it('attaches itself synchronously inside installPlusButton (no microtask deferral)', () => {

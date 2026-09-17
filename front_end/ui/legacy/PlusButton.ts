@@ -233,19 +233,18 @@ interface PlusButtonViewInput {
  */
 export const PLUS_BUTTON_VIEW =
     (input: PlusButtonViewInput, output: {button?: MenuButton}, target: HTMLElement): void => {
-      render(
-          html`
+      render(html`
         <devtools-menu-button
             ${Directives.ref(el => {
-            output.button = el as MenuButton | undefined;
-          })}
+               output.button = el as MenuButton | undefined;
+             })}
             slot="trailing-button"
             .iconName=${'plus'}
-            .title=${input.title}
+            .accessibleLabel=${input.title}
             .jslogContext=${input.jslogContext}
             .populateMenuCall=${input.populateMenuCall}>
         </devtools-menu-button>`,
-          target);
+             target);
     };
 
 /**

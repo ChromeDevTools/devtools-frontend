@@ -16,6 +16,7 @@ import * as Extensions from '../../models/extensions/extensions.js';
 import type * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import {
@@ -2657,5 +2658,83 @@ describe('Extension Panels', () => {
       assertIsStatus(result2);
       assert.strictEqual(result2.code, 'E_BADARGTYPE');
     });
+  });
+});
+
+describe('Keyboard event forwarding', () => {
+  const H_KEY_CODE = 72;
+  const CTRL_MODIFIER = 2;
+  const CTRL_H = H_KEY_CODE | (CTRL_MODIFIER << 8);
+
+  const context = setupDevtoolsExtensionHooks({}, [H_KEY_CODE, CTRL_H]);
+
+  beforeEach(() => {
+    getBackend(context).createTarget().setInspectedURL(urlString`http://example.com`);
+    // The injected API, and with it the keydown listener under test, is only installed once the
+    // target has been navigated to a non-privileged URL.
+    assert.exists(context.chrome.devtools);
+  });
+
+  // `EditContext` is not part of the TypeScript DOM typings yet.
+  const EditContext = Reflect.get(globalThis, 'EditContext') as new () => unknown;
+
+  function attachEditContext(element: HTMLElement): void {
+    (element as unknown as {editContext: unknown}).editContext = new EditContext();
+  }
+
+  function focusNewElement(tagName: string, setUp: (element: HTMLElement) => void = () => {}): void {
+    const element = document.createElement(tagName);
+    renderElementIntoDOM(element);
+    setUp(element);
+    element.focus();
+    assert.strictEqual(document.activeElement, element, `<${tagName}> did not take focus`);
+  }
+
+  function forwardsH(ctrlKey = false): boolean {
+    const event =
+        new KeyboardEvent('keydown', {key: 'h', keyCode: H_KEY_CODE, ctrlKey, bubbles: true, cancelable: true});
+    document.activeElement?.dispatchEvent(event);
+    return event.defaultPrevented;
+  }
+
+  it('does not forward plain hotkeys out of an element with an attached EditContext', () => {
+    // Regression test for crbug.com/559426943.
+    focusNewElement('div', element => {
+      element.tabIndex = 0;
+      attachEditContext(element);
+    });
+
+    assert.isFalse(forwardsH(), 'keystroke was swallowed instead of reaching the editor');
+  });
+
+  it('does not forward plain hotkeys out of an input', () => {
+    focusNewElement('input');
+
+    assert.isFalse(forwardsH());
+  });
+
+  it('does not forward plain hotkeys out of a contentEditable element', () => {
+    focusNewElement('div', element => {
+      element.contentEditable = 'true';
+    });
+
+    assert.isFalse(forwardsH());
+  });
+
+  it('forwards plain hotkeys out of a non-editable element', () => {
+    focusNewElement('div', element => {
+      element.tabIndex = 0;
+    });
+
+    assert.isTrue(forwardsH(), 'hotkey did not reach DevTools');
+  });
+
+  it('forwards hotkeys with modifiers even out of an element with an attached EditContext', () => {
+    focusNewElement('div', element => {
+      element.tabIndex = 0;
+      attachEditContext(element);
+    });
+
+    assert.isTrue(forwardsH(/* ctrlKey= */ true), 'Ctrl+H did not reach DevTools');
   });
 });

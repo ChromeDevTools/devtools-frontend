@@ -30,8 +30,8 @@ export function getExtensionOrigin(): string {
   return window.location.origin;
 }
 
-export function setupDevtoolsExtensionHooks(
-    extension: Partial<Host.InspectorFrontendHostAPI.ExtensionDescriptor> = {}): ExtensionContext {
+export function setupDevtoolsExtensionHooks(extension: Partial<Host.InspectorFrontendHostAPI.ExtensionDescriptor> = {},
+                                            keysToForward: number[] = []): ExtensionContext {
   const extensionDescriptor = {
     startPage: `${getExtensionOrigin()}/blank.html`,
     name: 'TestExtension',
@@ -53,7 +53,7 @@ export function setupDevtoolsExtensionHooks(
           if (origin === getExtensionOrigin()) {
             const chrome: Partial<Chrome.DevTools.Chrome> = {};
             (window as {chrome?: Partial<Chrome.DevTools.Chrome>}).chrome = chrome;
-            self.injectedExtensionAPI(extensionDescriptor, 'main', 'dark', [], () => {}, 1, window);
+            self.injectedExtensionAPI(extensionDescriptor, 'main', 'dark', keysToForward, () => {}, 1, window);
             context.chrome = chrome;
           }
         });

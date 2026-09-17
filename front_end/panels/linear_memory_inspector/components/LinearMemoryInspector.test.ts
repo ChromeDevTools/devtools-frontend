@@ -6,6 +6,7 @@ import {assert} from 'chai';
 
 import {
   assertScreenshot,
+  doubleRaf,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
@@ -76,6 +77,13 @@ describe('LinearMemoryInspector', () => {
         {},
         target,
     );
+    const viewer = target.querySelector('devtools-linear-memory-inspector-viewer');
+    assert.exists(viewer);
+    let prevHeight = -1;
+    while (viewer.clientHeight !== prevHeight) {
+      prevHeight = viewer.clientHeight;
+      await doubleRaf();
+    }
     await assertScreenshot('linear_memory_inspector/lmi.png');
   });
 });

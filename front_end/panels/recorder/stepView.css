@@ -215,6 +215,7 @@ devtools-recorder-step-editor.is-selected {
 .step-actions {
   border: none;
   border-radius: 0;
+  flex-shrink: 0;
   height: var(--sys-size-11);
 
   --override-select-menu-show-button-border-radius: 0;

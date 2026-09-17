@@ -11,6 +11,7 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "accessibilityAnnouncementRecordingListView.css",
+    "accessibilityAnnouncementRecordingView.css",
     "accessibilityNode.css",
     "accessibilityProperties.css",
     "accessibilitySidebarView.css",
@@ -38,6 +39,7 @@ devtools_ui_module("accessibility") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../ui/components/buttons:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/i18n:bundle",
     "../../ui/legacy:bundle",

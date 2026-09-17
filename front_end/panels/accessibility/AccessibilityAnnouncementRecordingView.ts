@@ -6,24 +6,191 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {AccessibilityAnnouncementRecordingListView} from './AccessibilityAnnouncementRecordingListView.js';
+import accessibilityAnnouncementRecordingViewStyles from './accessibilityAnnouncementRecordingView.css.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
+
+const {html, render} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
    * @description Title for the ARIA-Live and JS announcements recording tool
    */
   ariaLiveRecording: 'Announcements recording',
+  /**
+   * @description Tooltip for the start recording button in the announcements tool.
+   */
+  startRecording: 'Start recording',
+  /**
+   * @description Tooltip for the stop recording button in the announcements tool.
+   */
+  stopRecording: 'Stop recording',
+  /**
+   * @description Tooltip for the clear announcements button in the announcements tool.
+   */
+  clearAnnouncements: 'Clear announcements',
+  /**
+   * @description Label/title for the dropdown filter to select which announcement types to record.
+   */
+  filterByType: 'Filter by type',
+  /**
+   * @description Option label to record and display both ARIA-live and JavaScript announcements.
+   */
+  recordBoth: 'Record both',
+  /**
+   * @description Option label to record and display only ARIA-live announcements.
+   */
+  ariaLiveOnly: 'ARIA-live only',
+  /**
+   * @description Option label to record and display only JavaScript-triggered announcements.
+   */
+  announcementsOnly: 'Announcements only',
+  /**
+   * @description Placeholder text for the filter input in the announcements tool.
+   */
+  filter: 'Filter',
+  /**
+   * @description Screen reader announcement when no events match the filter in the announcements tool.
+   */
+  noEventsMatch: 'No events match',
+  /**
+   * @description Screen reader announcement when exactly one event matches the filter in the announcements tool.
+   */
+  oneEventMatches: '1 event matches',
+  /**
+   * @description Screen reader announcement when multiple events match the filter in the announcements tool.
+   * @example {15} PH1
+   */
+  nEventsMatch: '{PH1} events match',
+  /**
+   * @description Warning banner title shown when recording could not be enabled in some frames.
+   */
+  recordingBlockedWarning: 'Recording was blocked for some frames:',
+  /**
+   * @description Warning item describing a specific frame and the reason recording was blocked.
+   * @example {iframe#main} PH1
+   * @example {Script evaluation failed} PH2
+   */
+  frameBlockedReason: '{PH1}: {PH2}',
+  /**
+   * @description Fallback reason shown when an unknown error occurs while blocking recording.
+   */
+  unknownError: 'Unknown error',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityAnnouncementRecordingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const BINDING_NAME = '__announcementsRecorderBinding';
 
-export const enum AnnouncementApi {
+export enum AnnouncementApi {
   ARIA_LIVE = 'aria-live',
   JS_TRIGGERED = 'js-triggered',
 }
+
+export const enum RecordTypeFilter {
+  BOTH = 'both',
+  ARIA_LIVE = 'aria-live',
+  JS_TRIGGERED = 'js-triggered',
+}
+
+export interface BlockedTargetInfo {
+  targetName: string;
+  reason: string;
+}
+
+export interface ViewInput {
+  isRecording: boolean;
+  onToggleRecording: () => void;
+  onClear: () => void;
+  recordTypeFilter: RecordTypeFilter;
+  onRecordTypeFilterChange: (type: RecordTypeFilter) => void;
+  textFilter: string;
+  onTextFilterChange: (text: string) => void;
+  blockedTargets: BlockedTargetInfo[];
+  announcements: readonly A11yAnnouncement[];
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <style>${accessibilityAnnouncementRecordingViewStyles}</style>
+    <div class="accessibility-announcement-recording-view">
+      <div class="announcements-toolbar-container">
+        <devtools-toolbar class="announcements-toolbar" jslog=${VisualLogging.toolbar()}>
+          <devtools-button
+            title=${input.isRecording ? i18nString(UIStrings.stopRecording) : i18nString(UIStrings.startRecording)}
+            aria-label=${input.isRecording ? i18nString(UIStrings.stopRecording) : i18nString(UIStrings.startRecording)}
+            .iconName=${'record-start'}
+            .toggledIconName=${'record-stop'}
+            .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+            .toggled=${input.isRecording}
+            @click=${input.onToggleRecording}
+            .variant=${Buttons.Button.Variant.TOOLBAR}
+            .jslogContext=${'accessibility.toggle-recording'}>
+          </devtools-button>
+          <devtools-button
+            title=${i18nString(UIStrings.clearAnnouncements)}
+            aria-label=${i18nString(UIStrings.clearAnnouncements)}
+            .iconName=${'clear'}
+            @click=${input.onClear}
+            .variant=${Buttons.Button.Variant.TOOLBAR}
+            .jslogContext=${'accessibility.clear-announcements'}>
+          </devtools-button>
+          <div class="toolbar-divider" role="separator"></div>
+          <select
+            title=${i18nString(UIStrings.filterByType)}
+            aria-label=${i18nString(UIStrings.filterByType)}
+            @change=${(event: Event) => input.onRecordTypeFilterChange((event.target as HTMLSelectElement).value as RecordTypeFilter)}
+            .value=${input.recordTypeFilter}
+            jslog=${VisualLogging.dropDown('accessibility-announcements.filter-by-type').track({change: true})}>
+            <option value=${RecordTypeFilter.BOTH} .selected=${input.recordTypeFilter === RecordTypeFilter.BOTH}>
+              ${i18nString(UIStrings.recordBoth)}
+            </option>
+            <option value=${RecordTypeFilter.ARIA_LIVE} .selected=${input.recordTypeFilter === RecordTypeFilter.ARIA_LIVE}>
+              ${i18nString(UIStrings.ariaLiveOnly)}
+            </option>
+            <option value=${RecordTypeFilter.JS_TRIGGERED} .selected=${input.recordTypeFilter === RecordTypeFilter.JS_TRIGGERED}>
+              ${i18nString(UIStrings.announcementsOnly)}
+            </option>
+          </select>
+          <div class="toolbar-divider" role="separator"></div>
+          <devtools-toolbar-input
+            type="filter"
+            placeholder=${i18nString(UIStrings.filter)}
+            .value=${input.textFilter}
+            @change=${(event: CustomEvent<string>) => input.onTextFilterChange(event.detail)}
+            style="flex-grow: 1">
+          </devtools-toolbar-input>
+        </devtools-toolbar>
+      </div>
+      ${input.blockedTargets.length > 0 ? html`
+        <div class="announcements-blocked-banner" role="alert">
+          <div class="blocked-banner-header">
+            <devtools-icon name="warning-filled"></devtools-icon>
+            <span>${i18nString(UIStrings.recordingBlockedWarning)}</span>
+          </div>
+          <ul class="blocked-targets-list">
+            ${input.blockedTargets.map(targetInfo => html`
+              <li>${i18nString(UIStrings.frameBlockedReason, {PH1: targetInfo.targetName, PH2: targetInfo.reason || i18nString(UIStrings.unknownError)})}</li>
+            `)}
+          </ul>
+        </div>
+      ` : Lit.nothing}
+      <div class="announcements-main-pane">
+        ${widget(AccessibilityAnnouncementRecordingListView, {items: input.announcements})}
+      </div>
+    </div>`,
+    target);
+  // clang-format on
+};
 
 declare global {
   interface Window {
@@ -564,17 +731,23 @@ export function validateAndSanitizeAnnouncement(payload: unknown): A11yAnnouncem
 
 export class AccessibilityAnnouncementRecordingView extends AccessibilitySubPane implements SDK.TargetManager.Observer {
   #announcements: A11yAnnouncement[] = [];
+  #filteredAnnouncements: readonly A11yAnnouncement[]|null = null;
   #isRecording = false;
   #blockedTargets = new Map<SDK.Target.Target, string>();
   #scriptIdentifiers = new Map<SDK.Target.Target, Protocol.Page.ScriptIdentifier>();
   #targets = new Set<SDK.Target.Target>();
   #enabledTargets = new Set<SDK.Target.Target>();
+  #recordTypeFilter: RecordTypeFilter = RecordTypeFilter.BOTH;
+  #textFilter = '';
+  #regexFilter: RegExp|null = null;
+  readonly #view: View;
 
-  constructor() {
+  constructor(view: View = DEFAULT_VIEW) {
     super({
       title: i18nString(UIStrings.ariaLiveRecording),
       viewId: 'aria-live-recording',
     });
+    this.#view = view;
     SDK.TargetManager.TargetManager.instance().observeTargets(this, {scoped: true});
   }
 
@@ -595,8 +768,11 @@ export class AccessibilityAnnouncementRecordingView extends AccessibilitySubPane
 
   async targetRemoved(target: SDK.Target.Target): Promise<void> {
     this.#targets.delete(target);
-    this.#blockedTargets.delete(target);
+    const wasBlocked = this.#blockedTargets.delete(target);
     await this.#disableTarget(target);
+    if (wasBlocked) {
+      this.requestUpdate();
+    }
   }
 
   async #enableTarget(target: SDK.Target.Target): Promise<void> {
@@ -708,6 +884,11 @@ export class AccessibilityAnnouncementRecordingView extends AccessibilitySubPane
       return;
     }
     this.#announcements.push(announcement);
+    if (this.#filteredAnnouncements !== null) {
+      if (this.#matchesFilter(announcement)) {
+        this.#filteredAnnouncements = [...this.#filteredAnnouncements, announcement];
+      }
+    }
     this.requestUpdate();
   }
 
@@ -736,7 +917,104 @@ export class AccessibilityAnnouncementRecordingView extends AccessibilitySubPane
 
   clearAnnouncements(): void {
     this.#announcements = [];
+    this.#filteredAnnouncements = [];
     this.requestUpdate();
+  }
+
+  #matchesFilter(announcement: A11yAnnouncement): boolean {
+    if (this.#recordTypeFilter === RecordTypeFilter.ARIA_LIVE && announcement.api !== AnnouncementApi.ARIA_LIVE) {
+      return false;
+    }
+    if (this.#recordTypeFilter === RecordTypeFilter.JS_TRIGGERED && announcement.api !== AnnouncementApi.JS_TRIGGERED) {
+      return false;
+    }
+    if (this.#regexFilter && !this.#regexFilter.test(announcement.message)) {
+      return false;
+    }
+    return true;
+  }
+
+  get filteredAnnouncements(): readonly A11yAnnouncement[] {
+    if (this.#filteredAnnouncements !== null) {
+      return this.#filteredAnnouncements;
+    }
+    this.#filteredAnnouncements = this.#announcements.filter(announcement => this.#matchesFilter(announcement));
+    return this.#filteredAnnouncements;
+  }
+
+  #announceFilterMatches(): void {
+    const count = this.filteredAnnouncements.length;
+    let message: string;
+    if (count === 0) {
+      message = i18nString(UIStrings.noEventsMatch);
+    } else if (count === 1) {
+      message = i18nString(UIStrings.oneEventMatches);
+    } else {
+      message = i18nString(UIStrings.nEventsMatch, {PH1: count});
+    }
+    UI.ARIAUtils.LiveAnnouncer.alert(message);
+  }
+
+  setRecordTypeFilter(type: RecordTypeFilter): void {
+    if (this.#recordTypeFilter === type) {
+      return;
+    }
+    this.#recordTypeFilter = type;
+    this.#filteredAnnouncements = null;
+    this.#announceFilterMatches();
+    this.requestUpdate();
+  }
+
+  setTextFilter(text: string): void {
+    if (this.#textFilter === text) {
+      return;
+    }
+    this.#textFilter = text;
+    if (!text) {
+      this.#regexFilter = null;
+    } else {
+      try {
+        this.#regexFilter = new RegExp(text, 'i');
+      } catch {
+        this.#regexFilter = new RegExp('(?!)', 'i');
+      }
+    }
+    this.#filteredAnnouncements = null;
+    this.#announceFilterMatches();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const blockedTargets: BlockedTargetInfo[] = [];
+    for (const [target, reason] of this.#blockedTargets) {
+      const targetName = target.name() || target.inspectedURL() || target.id();
+      blockedTargets.push({targetName, reason});
+    }
+
+    const input: ViewInput = {
+      isRecording: this.#isRecording,
+      onToggleRecording: () => {
+        if (this.#isRecording) {
+          void this.stopRecording();
+        } else {
+          void this.startRecording();
+        }
+      },
+      onClear: () => {
+        this.clearAnnouncements();
+      },
+      recordTypeFilter: this.#recordTypeFilter,
+      onRecordTypeFilterChange: (type: RecordTypeFilter) => {
+        this.setRecordTypeFilter(type);
+      },
+      textFilter: this.#textFilter,
+      onTextFilterChange: (text: string) => {
+        this.setTextFilter(text);
+      },
+      blockedTargets,
+      announcements: this.filteredAnnouncements,
+    };
+    this.#view(input, undefined, this.contentElement);
   }
 
   announcementsForTest(): A11yAnnouncement[] {

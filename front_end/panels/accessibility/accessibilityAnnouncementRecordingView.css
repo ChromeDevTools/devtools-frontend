@@ -1,0 +1,85 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope {
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .accessibility-announcement-recording-view {
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .announcements-toolbar-container {
+    display: flex;
+    flex: none;
+    background-color: var(--sys-color-cdt-base-container);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  }
+
+  .announcements-toolbar {
+    flex: auto;
+  }
+
+  .announcements-toolbar select {
+    background-color: transparent;
+    border: none;
+    color: var(--sys-color-on-surface);
+    font-size: var(--sys-typescale-body4-size);
+    padding: var(--sys-size-2) var(--sys-size-4);
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .toolbar-divider {
+    background-color: var(--sys-color-divider);
+    width: var(--sys-size-1);
+    margin: 5px var(--sys-size-3);
+    height: var(--sys-size-8);
+  }
+
+  .announcements-blocked-banner {
+    display: flex;
+    flex-direction: column;
+    flex: none;
+    gap: var(--sys-size-3);
+    padding: var(--sys-size-5) var(--sys-size-8);
+    background-color: var(--sys-color-surface-yellow);
+    color: var(--sys-color-on-surface-yellow);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    font-size: var(--sys-typescale-body4-size);
+    line-height: var(--sys-typescale-body4-line-height);
+  }
+
+  .blocked-banner-header {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-4);
+    font-weight: var(--ref-typeface-weight-medium);
+  }
+
+  .blocked-targets-list {
+    margin: 0;
+    padding-left: var(--sys-size-8);
+  }
+
+  .announcements-main-pane {
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+}

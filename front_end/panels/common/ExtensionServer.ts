@@ -584,7 +584,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.subscribers.has(type);
   }
 
-  private postNotification(type: string, args: unknown[], filter?: (extension: RegisteredExtension) => boolean): void {
+  private postNotification(type: string, args: unknown[], filter?: (extension: RegisteredExtension) => boolean,
+                           argsForExtension?: (extension: RegisteredExtension) => unknown[]): void {
     if (!this.extensionsEnabled) {
       return;
     }
@@ -592,18 +593,22 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!subscribers) {
       return;
     }
-    const message = {command: 'notify-' + type, arguments: args};
     for (const subscriber of subscribers) {
       if (!this.extensionEnabled(subscriber)) {
         continue;
       }
-      if (filter) {
+      let extension: RegisteredExtension|undefined;
+      if (filter || argsForExtension) {
         const origin = extensionOrigins.get(subscriber);
-        const extension = origin && this.registeredExtensions.get(origin);
-        if (!extension || !filter(extension)) {
+        extension = origin && this.registeredExtensions.get(origin);
+        if (!extension || (filter && !filter(extension))) {
           continue;
         }
       }
+      const message = {
+        command: 'notify-' + type,
+        arguments: extension && argsForExtension ? argsForExtension(extension) : args,
+      };
       subscriber.postMessage(message);
     }
   }
@@ -1104,10 +1109,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.evaluate(expression, true, true, evaluateOptions, this.getExtensionOrigin(port), callback.bind(this));
   }
 
-  private harEntryReferencesBlockedURL(entry: HAR.Log.EntryDTO, extension: RegisteredExtension): boolean {
+  private sanitizeHarEntry(entry: HAR.Log.EntryDTO, extension: RegisteredExtension): HAR.Log.EntryDTO {
     const baseURL = entry.request.url;
 
-    // Helper to cleanly resolve and check permission
     const isBlocked = (url: string|undefined): boolean => {
       if (!url) {
         return false;
@@ -1116,44 +1120,49 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         const absoluteURL = new URL(url, baseURL).toString() as Platform.DevToolsPath.UrlString;
         return !extension.isAllowedOnTarget(absoluteURL);
       } catch {
-        return true;  // Fallback safely: treat unparsable URLs as blocked
+        return true;
       }
     };
 
-    if (isBlocked(entry.response.redirectURL)) {
-      return true;
-    }
+    let initiator = entry._initiator;
     if (entry._initiator) {
       if (isBlocked(entry._initiator.url)) {
-        return true;
-      }
-      let stack = entry._initiator.stack;
-      while (stack) {
-        if (stack.callFrames.some(f => isBlocked(f.url))) {
-          return true;
+        initiator = null;
+      } else {
+        let stack = entry._initiator.stack;
+        while (stack) {
+          if (stack.callFrames.some(f => isBlocked(f.url))) {
+            initiator = null;
+            break;
+          }
+          stack = stack.parent;
         }
-        stack = stack.parent;
       }
     }
-    for (const header of entry.response.headers) {
+
+    const headerReferencesBlockedURL = (header: {name: string, value: string}): boolean => {
       const name = header.name.toLowerCase();
       if (name === 'location' || name === 'content-location') {
-        if (isBlocked(header.value)) {
-          return true;
-        }
-      } else if (name === 'refresh') {
-        const match = header.value.match(/;\s*url\s*=\s*(.+)$/i);
-        if (isBlocked(match?.[1]?.trim())) {
-          return true;
-        }
-      } else if (name === 'link') {
-        const urls = [...header.value.matchAll(/<([^>]+)>/g)].map(m => m[1]);
-        if (urls.some(url => isBlocked(url))) {
-          return true;
-        }
+        return isBlocked(header.value);
       }
+      if (name === 'refresh') {
+        const match = header.value.match(/;\s*url\s*=\s*(.+)$/i);
+        return isBlocked(match?.[1]?.trim());
+      }
+      if (name === 'link') {
+        const urls = [...header.value.matchAll(/<([^>]+)>/g)].map(m => m[1]);
+        return urls.some(url => isBlocked(url));
+      }
+      return false;
+    };
+
+    const headers = entry.response.headers.filter(header => !headerReferencesBlockedURL(header));
+    const redirectURL = isBlocked(entry.response.redirectURL) ? '' : entry.response.redirectURL;
+    if (initiator === entry._initiator && headers.length === entry.response.headers.length &&
+        redirectURL === entry.response.redirectURL) {
+      return entry;
     }
-    return false;
+    return {...entry, _initiator: initiator, response: {...entry.response, headers, redirectURL}};
   }
 
   private async onGetHAR(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort):
@@ -1173,7 +1182,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       // @ts-expect-error
       harLog.entries[i]._requestId = this.requestId(requests[i]);
     }
-    harLog.entries = harLog.entries.filter(entry => !this.harEntryReferencesBlockedURL(entry, extension));
+    harLog.entries = harLog.entries.map(entry => this.sanitizeHarEntry(entry, extension));
     return harLog;
   }
 
@@ -1513,8 +1522,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.postNotification(
         Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished, [this.requestId(request), entry],
         extension => extension.isAllowedOnTarget(entry.request.url as Platform.DevToolsPath.UrlString) &&
-            (!targetUrl || extension.isAllowedOnTarget(targetUrl)) &&
-            !this.harEntryReferencesBlockedURL(entry, extension));
+            (!targetUrl || extension.isAllowedOnTarget(targetUrl)),
+        extension => [this.requestId(request), this.sanitizeHarEntry(entry, extension)]);
   }
 
   private notifyElementsSelectionChanged(): void {

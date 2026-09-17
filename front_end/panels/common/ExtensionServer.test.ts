@@ -1166,7 +1166,7 @@ describe('Runtime hosts policy', () => {
     assert.notExists(requests.find(e => e.request.url === blockedUrl));
   });
 
-  it('omits getHAR entries whose redirectURL references a blocked host', async () => {
+  it('redacts blocked redirect URLs without omitting getHAR entries', async () => {
     Logs.NetworkLog.NetworkLog.instance();
     const frameId = 'frame-id' as Protocol.Page.FrameId;
     const target = createTarget({id: 'target' as Protocol.Target.TargetID});
@@ -1176,18 +1176,22 @@ describe('Runtime hosts policy', () => {
     assert.exists(networkManager);
 
     const blockedRedirectUrl = urlString`${`${blockedUrl}/secret?token=abc`}`;
-    // Entry with a redirect to a blocked URL — should be omitted.
+    const allowedRedirectUrl = urlString`${`${allowedUrl}?redirect-target`}`;
     createRequest(networkManager, frameId, 'redirect-to-blocked' as Protocol.Network.RequestId, allowedUrl,
                   [{name: 'Location', value: `${blockedRedirectUrl}`}]);
-    // Entry with no blocked references — should be kept.
-    createRequest(networkManager, frameId, 'clean-entry' as Protocol.Network.RequestId, allowedUrl);
+    createRequest(networkManager, frameId, 'clean-entry' as Protocol.Network.RequestId, allowedUrl,
+                  [{name: 'Location', value: `${allowedRedirectUrl}`}]);
 
     const result = await context.chrome.devtools!.network.getHAR() as HAR.Log.LogDTO;
-    assert.lengthOf(result.entries, 1);
-    assert.notExists(result.entries.find(e => e.response.headers.some(h => h.name === 'Location')));
+    // Expect both requests to be present, with the first sanitized and the second intact.
+    assert.lengthOf(result.entries, 2);
+    assert.strictEqual(result.entries[0].response.redirectURL, '');
+    assert.notExists(result.entries[0].response.headers.find(h => h.name === 'Location'));
+    assert.strictEqual(result.entries[1].response.redirectURL, allowedRedirectUrl);
+    assert.strictEqual(result.entries[1].response.headers.find(h => h.name === 'Location')?.value, allowedRedirectUrl);
   });
 
-  it('omits getHAR entries whose initiator references a blocked host', async () => {
+  it('redacts blocked initiators without omitting getHAR entries', async () => {
     Logs.NetworkLog.NetworkLog.instance();
     const frameId = 'frame-id' as Protocol.Page.FrameId;
     const target = createTarget({id: 'target' as Protocol.Target.TargetID});
@@ -1197,7 +1201,6 @@ describe('Runtime hosts policy', () => {
     assert.exists(networkManager);
 
     const blockedScriptUrl = urlString`${`${blockedUrl}/app.js`}`;
-    // Entry whose initiator URL is blocked — should be omitted.
     createRequest(networkManager, frameId, 'blocked-initiator' as Protocol.Network.RequestId, allowedUrl, [], {
       type: Protocol.Network.InitiatorType.Script,
       url: blockedScriptUrl,
@@ -1211,15 +1214,30 @@ describe('Runtime hosts policy', () => {
         }],
       },
     });
-    // Entry with no blocked references — should be kept.
-    createRequest(networkManager, frameId, 'clean-entry' as Protocol.Network.RequestId, allowedUrl);
+    const allowedInitiator: Protocol.Network.Initiator = {
+      type: Protocol.Network.InitiatorType.Script,
+      url: allowedUrl,
+      stack: {
+        callFrames: [{
+          functionName: 'allowedFn',
+          scriptId: '2' as Protocol.Runtime.ScriptId,
+          url: allowedUrl,
+          lineNumber: 2,
+          columnNumber: 0,
+        }],
+      },
+    };
+    createRequest(networkManager, frameId, 'clean-entry' as Protocol.Network.RequestId, allowedUrl, [],
+                  allowedInitiator);
 
     const result = await context.chrome.devtools!.network.getHAR() as HAR.Log.LogDTO;
-    assert.lengthOf(result.entries, 1);
+    // Expect both requests to be present, with the first sanitized and the second intact.
+    assert.lengthOf(result.entries, 2);
     assert.isNull(result.entries[0]._initiator);
+    assert.deepEqual(result.entries[1]._initiator, allowedInitiator);
   });
 
-  it('omits getHAR entries with Location, Content-Location, Refresh, or Link headers referencing blocked hosts',
+  it('redacts Content-Location, Refresh, or Link headers referencing blocked hosts',
      async () => {
        Logs.NetworkLog.NetworkLog.instance();
        const frameId = 'frame-id' as Protocol.Page.FrameId;
@@ -1230,24 +1248,27 @@ describe('Runtime hosts policy', () => {
        assert.exists(networkManager);
 
        const blockedRedirectUrl = urlString`${`${blockedUrl}/target-page`}`;
-       // Each of these should cause the entry to be omitted.
        createRequest(networkManager, frameId, 'content-loc' as Protocol.Network.RequestId, allowedUrl,
                      [{name: 'Content-Location', value: `${blockedRedirectUrl}`}]);
        createRequest(networkManager, frameId, 'refresh' as Protocol.Network.RequestId, allowedUrl,
                      [{name: 'Refresh', value: `5; url=${blockedRedirectUrl}`}]);
        createRequest(networkManager, frameId, 'link' as Protocol.Network.RequestId, allowedUrl,
                      [{name: 'Link', value: `<${blockedRedirectUrl}>; rel=preload`}]);
-       // This entry references only allowed URLs — should be kept.
-       createRequest(networkManager, frameId, 'clean' as Protocol.Network.RequestId, allowedUrl,
-                     [{name: 'Link', value: `<${allowedUrl}>; rel=stylesheet`}]);
+       const allowedHeaders = [
+         {name: 'Content-Location', value: `${allowedUrl}?content-location`},
+         {name: 'Refresh', value: `5; url=${allowedUrl}?refresh`},
+         {name: 'Link', value: `<${allowedUrl}?link>; rel=stylesheet`},
+       ];
+       createRequest(networkManager, frameId, 'clean' as Protocol.Network.RequestId, allowedUrl, allowedHeaders);
 
        const result = await context.chrome.devtools!.network.getHAR() as HAR.Log.LogDTO;
-       assert.lengthOf(result.entries, 1);
-       assert.strictEqual(result.entries[0].response.headers.find(h => h.name === 'Link')?.value,
-                          `<${allowedUrl}>; rel=stylesheet`);
+       // Expect all 4 requests to be present, with the first three sanitized and the last intact.
+       assert.lengthOf(result.entries, 4);
+       assert.isFalse(result.entries.some(entry => entry.response.headers.some(h => h.value.includes(blockedUrl))));
+       assert.deepEqual(result.entries[3].response.headers, allowedHeaders);
      });
 
-  it('omits onRequestFinished entries that reference blocked hosts in redirectURL or initiator', async () => {
+  it('redacts blocked redirect URLs and initiators from onRequestFinished entries', async () => {
     const frameId = 'frame-id' as Protocol.Page.FrameId;
     const target = createTarget({id: 'target' as Protocol.Target.TargetID});
     target.setInspectedURL(allowedUrl);
@@ -1263,10 +1284,8 @@ describe('Runtime hosts policy', () => {
 
     const blockedRedirectUrl = urlString`${`${blockedUrl}/redirect-target?code=xyz`}`;
     const blockedScriptUrl = urlString`${`${blockedUrl}/subframe.js`}`;
-    // Entry redirecting to blocked URL — should be omitted.
     createRequest(networkManager, frameId, 'redirect-blocked' as Protocol.Network.RequestId, allowedUrl,
                   [{name: 'Location', value: `${blockedRedirectUrl}`}]);
-    // Entry with blocked initiator — should be omitted.
     createRequest(networkManager, frameId, 'initiator-blocked' as Protocol.Network.RequestId, allowedUrl, [], {
       type: Protocol.Network.InitiatorType.Script,
       url: blockedScriptUrl,
@@ -1280,16 +1299,69 @@ describe('Runtime hosts policy', () => {
         }],
       },
     });
-    // Clean entry — should be delivered.
-    createRequest(networkManager, frameId, 'clean-entry' as Protocol.Network.RequestId, allowedUrl);
+    const allowedRedirectUrl = urlString`${`${allowedUrl}?redirect-target`}`;
+    const allowedInitiator: Protocol.Network.Initiator = {
+      type: Protocol.Network.InitiatorType.Script,
+      url: allowedUrl,
+      stack: {
+        callFrames: [{
+          functionName: 'allowedFn',
+          scriptId: '2' as Protocol.Runtime.ScriptId,
+          url: allowedUrl,
+          lineNumber: 20,
+          columnNumber: 2,
+        }],
+      },
+    };
+    createRequest(networkManager, frameId, 'clean-entry' as Protocol.Network.RequestId, allowedUrl,
+                  [{name: 'Location', value: `${allowedRedirectUrl}`}], allowedInitiator);
 
     await waitForFunction(() => requests.length >= 1);
     // Give a tick for any additional events to arrive.
     await new Promise(resolve => setTimeout(resolve, 0));
 
-    assert.lengthOf(requests, 1);
+    // Expect all 3 requests to be present, with the first two sanitized and the last intact.
+    assert.lengthOf(requests, 3);
     assert.strictEqual(requests[0].request.url, allowedUrl);
     assert.strictEqual(requests[0].response.redirectURL, '');
+    assert.notExists(requests[0].response.headers.find(h => h.name === 'Location'));
+    assert.isNull(requests[1]._initiator);
+    assert.strictEqual(requests[2].response.redirectURL, allowedRedirectUrl);
+    assert.strictEqual(requests[2].response.headers.find(h => h.name === 'Location')?.value, allowedRedirectUrl);
+    assert.deepEqual(requests[2]._initiator, allowedInitiator);
+  });
+
+  it('delivers onRequestFinished when another extension appears in the initiator stack', async () => {
+    const frameId = 'frame-id' as Protocol.Page.FrameId;
+    const target = createTarget({id: 'target' as Protocol.Target.TargetID});
+    target.setInspectedURL(allowedUrl);
+
+    const requests: HAR.Log.EntryDTO[] = [];
+    context.chrome.devtools?.network.onRequestFinished.addListener(r =>
+                                                                       requests.push(r as unknown as HAR.Log.EntryDTO));
+    await waitForFunction(() => PanelCommon.ExtensionServer.ExtensionServer.instance().hasSubscribers(
+                              Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished));
+
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+    const requestlyScriptUrl = urlString`chrome-extension://requestly-extension/interceptor.js`;
+    createRequest(networkManager, frameId, 'requestly-initiator' as Protocol.Network.RequestId, allowedUrl, [], {
+      type: Protocol.Network.InitiatorType.Script,
+      url: allowedUrl,
+      stack: {
+        callFrames: [{
+          functionName: 'patchedFetch',
+          scriptId: '1' as Protocol.Runtime.ScriptId,
+          url: requestlyScriptUrl,
+          lineNumber: 10,
+          columnNumber: 1,
+        }],
+      },
+    });
+
+    await waitForFunction(() => requests.length === 1);
+    assert.strictEqual(requests[0].request.url, allowedUrl);
+    assert.isNull(requests[0]._initiator);
   });
 
   it('does not include requests from blocked targets in onRequestFinished event listener even if request URL is allowed',

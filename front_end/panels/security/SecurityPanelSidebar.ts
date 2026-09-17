@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -208,7 +207,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 };
 
 export class SecurityPanelSidebar extends UI.Widget.VBox {
-  readonly #securitySidebarLastItemSetting: Common.Settings.Setting<string>;
   #mainOrigin: string|null = null;
   #origins = new Map<Platform.DevToolsPath.UrlString, Protocol.Security.SecurityState>();
   #originsHidden = false;
@@ -222,9 +220,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     super(element);
     this.#view = view;
     this.registerRequiredCSS(lockIconStyles, sidebarStyles);
-
-    this.#securitySidebarLastItemSetting =
-        Common.Settings.Settings.instance().createSetting('security-last-selected-element-path', '');
   }
 
   set onShowOrigin(callback: (origin: Platform.DevToolsPath.UrlString|null) => void) {
@@ -233,12 +228,11 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
-    this.showLastSelectedElement();
+    this.requestUpdate();
   }
 
-  showLastSelectedElement(): void {
+  showOverview(): void {
     this.#selectedElementId = 'overview';
-    this.#securitySidebarLastItemSetting.set('overview');
     this.requestUpdate();
     this.#onShowOrigin?.(null);
   }
@@ -295,7 +289,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
       const element = {
         select: () => {
           this.#selectedElementId = origin;
-          this.#securitySidebarLastItemSetting.set(origin);
           this.requestUpdate();
           this.#onShowOrigin?.(origin);
         },
@@ -312,7 +305,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
 
   set selectedOrigin(origin: Platform.DevToolsPath.UrlString|null) {
     this.#selectedElementId = origin ?? 'overview';
-    this.#securitySidebarLastItemSetting.set(this.#selectedElementId);
     this.requestUpdate();
     this.#onShowOrigin?.(origin);
   }
@@ -333,7 +325,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     const output: ViewOutput = {
       onElementSelected: (id: string) => {
         this.#selectedElementId = id;
-        this.#securitySidebarLastItemSetting.set(id);
         this.requestUpdate();
       },
       onShowOrigin: (origin: Platform.DevToolsPath.UrlString|null) => {

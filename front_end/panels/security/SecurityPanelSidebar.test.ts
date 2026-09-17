@@ -208,6 +208,25 @@ describeWithEnvironment('SecurityPanelSidebar', () => {
     assert.strictEqual(callback.firstCall.args[0], origin);
   });
 
+  it('resets selection to overview and triggers onShowOrigin(null) when showOverview is called', async () => {
+    const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
+    renderElementIntoDOM(sidebar);
+
+    const origin = urlString`https://example.com`;
+    sidebar.addOrigin(origin, Protocol.Security.SecurityState.Secure);
+    sidebar.selectedOrigin = origin;
+    assert.strictEqual(sidebar.selectedOrigin, origin);
+
+    const callback = sinon.spy();
+    sidebar.onShowOrigin = callback;
+
+    sidebar.showOverview();
+    assert.strictEqual(sidebar.selectedOrigin, 'overview');
+
+    sinon.assert.calledOnce(callback);
+    assert.isNull(callback.firstCall.args[0]);
+  });
+
   it('supports elementsByOrigin for web test compatibility', async () => {
     const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
     renderElementIntoDOM(sidebar);

@@ -608,7 +608,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.onPrimaryPageChanged, this);
 
-    this.sidebar.showLastSelectedElement();
+    this.sidebar.showOverview();
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): SecurityPanel {
@@ -657,7 +657,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
   override wasShown(): void {
     super.wasShown();
     if (!this.visibleView) {
-      this.sidebar.showLastSelectedElement();
+      this.sidebar.showOverview();
     }
   }
 
@@ -808,7 +808,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     const {frame} = event.data;
     const request = this.lastResponseReceivedForLoaderId.get(frame.loaderId);
 
-    this.sidebar.showLastSelectedElement();
+    this.sidebar.showOverview();
     this.sidebar.clearOrigins();
     this.origins.clear();
     this.lastResponseReceivedForLoaderId.clear();
@@ -831,8 +831,8 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
   private onInterstitialShown(): void {
     // The panel might have been displaying the origin view on the
     // previously loaded page. When showing an interstitial, switch
-    // back to the sidebar's last shown view.
-    this.sidebar.showLastSelectedElement();
+    // back to the overview view.
+    this.sidebar.showOverview();
     this.sidebar.toggleOriginsList(true /* hidden */);
   }
 

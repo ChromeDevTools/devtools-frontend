@@ -499,6 +499,36 @@ describeWithEnvironment('SecurityPanel', () => {
     sinon.assert.calledOnce(sidebarTreeClearSpy);
   });
 
+  it('preserves the selected origin when the panel is hidden and shown again', async () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    const securityModel = target.model(Security.SecurityModel.SecurityModel);
+    assert.exists(securityModel);
+    const networkManager = securityModel.networkManager();
+    const request = createNetworkRequest({
+      url: 'https://foo.test',
+      documentURL: 'https://foo.test',
+      frameId: '0',
+      loaderId: '0',
+    });
+    request.setSecurityState(Protocol.Security.SecurityState.Secure);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+
+    // Select the origin
+    securityPanel.showOrigin(urlString`https://foo.test`);
+
+    // The active view should be the origin view, not the main view.
+    assert.instanceOf(securityPanel.visibleView, Security.SecurityPanel.SecurityOriginView);
+
+    // Hide and show the panel
+    securityPanel.willHide();
+    securityPanel.sidebar.willHide();
+    securityPanel.wasShown();
+    securityPanel.sidebar.wasShown();
+
+    // The active view should still be the origin view.
+    assert.instanceOf(securityPanel.visibleView, Security.SecurityPanel.SecurityOriginView);
+  });
+
   it('shows \'reload page\' message when no data is available', async () => {
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(securityModel);

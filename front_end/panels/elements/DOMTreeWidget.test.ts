@@ -667,6 +667,87 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('renders exactly one selection fill element on tree element level for DOM nodes, shortcuts, and adopted style sheets',
+       async () => {
+         const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+         const sheetId = 'sheet-selection-test' as Protocol.DOM.StyleSheetId;
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: '#document',
+             adoptedStyleSheets: [sheetId],
+             children: [
+               {
+                 nodeId: 2,
+                 nodeName: 'HTML',
+                 children: [
+                   {
+                     nodeId: 3,
+                     nodeName: 'BODY',
+                     children: [{nodeId: 4, nodeName: 'DIALOG'}],
+                   },
+                 ],
+               },
+             ],
+           });
+           const adoptedSheet = rootNode.adoptedStyleSheetsForNode[0];
+           sinon.stub(adoptedSheet.cssModel, 'getStyleSheetText').resolves('.a {}');
+           adoptedSheet.cssModel.styleSheetAdded({
+             styleSheetId: sheetId,
+             frameId: '' as Protocol.Page.FrameId,
+             sourceURL: '',
+             title: '',
+             origin: 'regular' as Protocol.CSS.StyleSheetOrigin,
+             disabled: false,
+             isInline: false,
+             isMutable: true,
+             isConstructed: true,
+             startLine: 0,
+             startColumn: 0,
+             endLine: 0,
+             endColumn: 5,
+             length: 5,
+             loadingFailed: false,
+           });
+
+           const dialogNode = rootNode.children()![0].children()![0].children()![0];
+           const shortcut = new SDK.DOMModel.DOMNodeShortcut(domModel.target(), dialogNode.backendNodeId(),
+                                                             Node.ELEMENT_NODE, 'DIALOG');
+           domModel.dispatchEventToListeners(SDK.DOMModel.Events.TopLayerElementsChanged, {
+             document: rootNode as SDK.DOMModel.DOMDocument,
+             documentShortcuts: [shortcut],
+           });
+
+           domTree.rootDOMNode = rootNode;
+           domTree.setNodeExpanded(rootNode, true);
+           domTree.setNodeExpanded(rootNode.children()![0], true);
+           domTree.setNodeExpanded(rootNode.children()![0].children()![0], true);
+           domTree.setAdoptedStyleSheetsExpanded(rootNode, true);
+           domTree.setAdoptedStyleSheetExpanded(adoptedSheet, true);
+           domTree.setTopLayerExpanded(rootNode as SDK.DOMModel.DOMDocument, true);
+           domTree.performUpdate();
+           await waitForTreeUpdates();
+
+           const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+           assert.exists(tree);
+
+           const listItems = tree.shadowRoot?.querySelectorAll('li');
+           assert.exists(listItems);
+           assert.isAbove(listItems.length, 5);
+
+           for (const li of listItems) {
+             const selections = li.querySelectorAll('.selection');
+             assert.lengthOf(selections, 1, `Expected exactly 1 .selection element in row: ${li.textContent}`);
+             assert.exists(li.querySelector(':scope > .selection.fill'),
+                           `Expected selection fill at tree element level in row: ${li.textContent}`);
+             assert.isNull(li.querySelector('.tree-element-title .selection'),
+                           `Expected no selection fill inside title/widget in row: ${li.textContent}`);
+           }
+         } finally {
+           domTree.detach();
+         }
+       });
+
     it('handles selection and expansion', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
       try {

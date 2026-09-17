@@ -354,6 +354,7 @@ export interface ViewInput {
   descendantDecorations: Decoration[];
   decorationsTooltip: string;
   indent: number;
+  renderSelection?: boolean;
 
   editorState: CodeMirror.EditorState|null;
   editorWidth: number|null;
@@ -906,7 +907,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     input.onExpand,
     input.issues,
   )}</span>` : nothing}
-      <div class="selection fill ${input.editorState ? 'hidden' : ''}" style=${`margin-left: ${-input.indent}px`}></div>
+      ${input.renderSelection !== false ? html`<div class="selection fill ${input.editorState ? 'hidden' : ''}" style=${`margin-left: ${-input.indent}px`}></div>` : nothing}
       <div class=${classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
@@ -1171,6 +1172,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   isXMLMimeType = false;
   disableEdits = false;
   showAIButton = false;
+  renderSelection = true;
   isDOMNodeSelected = false;
   initialEdit?: InitialEditState|null;
   onInitialEditCompleted?: () => void;
@@ -1584,6 +1586,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       descendantDecorations: this.#expanded ? [] : this.#descendantDecorations,
       decorationsTooltip: this.#decorationsTooltip,
       indent: this.#getLeftIndent(),
+      renderSelection: this.renderSelection,
       showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
       scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
       showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,

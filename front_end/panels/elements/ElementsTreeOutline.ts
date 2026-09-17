@@ -563,7 +563,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           @mousemove=${on(onShortcutMouseMove)}
           @mouseleave=${on(onShortcutMouseLeave)}
           jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
-        <div class="selection fill"></div>
         <span class="elements-tree-shortcut-title">\u21AA ${title}</span>
         <devtools-adorner
             .name=${ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL}
@@ -616,7 +615,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
               @select=${onTopLayerSelect}
               @expand=${onTopLayerExpand}
               jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
-            <div class="selection fill"></div>
             <span class="elements-tree-shortcut-title">#top-layer</span>
             <ul role="group">
               ${UI.TreeOutline.ifExpanded(html`
@@ -650,7 +648,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           @select=${onSelect}
           @expand=${onExpand}
           jslog=${VisualLogging.treeItem('adopted-style-sheet').parent('elementsTreeOutline')}>
-        <div class="selection fill"></div>
         <span class="elements-tree-shortcut-title">#adopted-style-sheet${linkText ? html` (${UIComponentUtils.Linkifier.Linkifier.linkifyURL(linkText, {
           text: linkText,
           preventClick: true,
@@ -663,7 +660,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                   class="elements-tree-adopted-style-sheet-contents"
                   style=${styleMap({'--indent': `${computeLeftIndent(depth + 1, false)}px`})}
                   jslog=${VisualLogging.treeItem('adopted-style-sheet-contents').parent('elementsTreeOutline')}>
-                <div class="selection fill"></div>
                 ${UI.Widget.widget(AdoptedStyleSheetContentsWidget, {styleSheetHeader: header})}
               </li>
             ` : nothing}
@@ -696,7 +692,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           @select=${onSelect}
           @expand=${onExpand}
           jslog=${VisualLogging.treeItem('adopted-style-sheets').parent('elementsTreeOutline')}>
-        <div class="selection fill"></div>
         <span class="elements-tree-shortcut-title">#adopted-style-sheets</span>
         <ul role="group">
           ${UI.TreeOutline.ifExpanded(html`
@@ -943,6 +938,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         ${UI.Widget.widget(ElementsTreeWidget, {
           node,
           isClosingTag: false,
+          renderSelection: false,
           expanded: isExpanded && !isEditingAsHTML,
           isExpandable: hasChildren,
           selected: isSelected && !input.selectedClosingTag,
@@ -1028,6 +1024,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                   ${UI.Widget.widget(ElementsTreeWidget, {
                     node,
                     isClosingTag: true,
+                    renderSelection: false,
                     expanded: false,
                     isExpandable: false,
                     selected: isSelected && Boolean(input.selectedClosingTag),

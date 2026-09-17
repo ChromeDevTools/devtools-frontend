@@ -13,7 +13,7 @@ import {ExtensionEndpoint} from './ExtensionEndpoint.js';
 class LanguageExtensionEndpointImpl extends ExtensionEndpoint {
   private plugin: LanguageExtensionEndpoint;
   #pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager;
-  constructor(plugin: LanguageExtensionEndpoint, port: MessagePort,
+  constructor(plugin: LanguageExtensionEndpoint, port: Platform.HostRuntime.WorkerMessagePort,
               pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager) {
     super(port);
     this.plugin = plugin;
@@ -46,7 +46,8 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
     // eslint-disable-next-line @typescript-eslint/naming-convention
     symbol_types: string[],
   },
-              port: MessagePort, pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager) {
+              port: Platform.HostRuntime.WorkerMessagePort,
+              pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager) {
     this.name = name;
     this.extensionOrigin = extensionOrigin;
     this.supportedScriptTypes = supportedScriptTypes;

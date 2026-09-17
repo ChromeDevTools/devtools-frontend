@@ -2,29 +2,31 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
+
 interface Response {
   requestId: number;
   result: unknown;
   error: Error|null;
 }
 
-interface Event {
+interface EventMessage {
   event: string;
 }
 
-type Message = MessageEvent<Response|Event>;
-
 export class ExtensionEndpoint {
-  private readonly port: MessagePort;
+  private readonly port: Platform.HostRuntime.WorkerMessagePort;
   private nextRequestId = 0;
   private pendingRequests: Map<number, {
     resolve: (arg: unknown) => void,
     reject: (error: Error) => void,
   }>;
 
-  constructor(port: MessagePort) {
+  constructor(port: Platform.HostRuntime.WorkerMessagePort) {
     this.port = port;
-    this.port.onmessage = this.onResponse.bind(this);
+    this.port.addEventListener('message', (event: unknown) => this.onResponse(event as MessageEvent));
+    (this.port as {start?: () => void}).start?.();
+    (this.port as {unref?: () => void}).unref?.();
     this.pendingRequests = new Map();
   }
 
@@ -44,7 +46,8 @@ export class ExtensionEndpoint {
     this.port.close();
   }
 
-  private onResponse({data}: Message): void {
+  private onResponse(event: MessageEvent): void {
+    const data = event.data as Response | EventMessage;
     if ('event' in data) {
       this.handleEvent(data);
       return;
@@ -63,7 +66,7 @@ export class ExtensionEndpoint {
     }
   }
 
-  protected handleEvent(_event: Event): void {
+  protected handleEvent(_event: EventMessage): void {
     throw new Error('handleEvent is not implemented');
   }
 }

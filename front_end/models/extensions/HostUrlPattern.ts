@@ -77,8 +77,9 @@ function parseHostAndPort(pattern: string, scheme: string): {host: string, port:
     asUrl.hostname = asUrl.hostname.substr(0, asUrl.hostname.length - 1);
   }
 
-  // The URL constructor is happy to accept '*', but it gets replaced with %2A
-  if (asUrl.hostname !== '%2A' && asUrl.hostname.includes('%2A')) {
+  // The URL constructor in Chrome replaces '*' with '%2A', whereas Node preserves '*'.
+  const isWildcardHost = asUrl.hostname === '%2A' || asUrl.hostname === '*';
+  if (!isWildcardHost && (asUrl.hostname.includes('%2A') || asUrl.hostname.includes('*'))) {
     return undefined;
   }
 
@@ -93,7 +94,7 @@ function parseHostAndPort(pattern: string, scheme: string): {host: string, port:
     return undefined;
   }
 
-  const host = asUrl.hostname !== '%2A' ? (pattern.startsWith('*.') ? `*.${asUrl.hostname}` : asUrl.hostname) : '*';
+  const host = !isWildcardHost ? (pattern.startsWith('*.') ? `*.${asUrl.hostname}` : asUrl.hostname) : '*';
   return {
     host,
     port,

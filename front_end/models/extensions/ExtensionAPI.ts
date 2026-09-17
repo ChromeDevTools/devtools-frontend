@@ -404,6 +404,8 @@ declare global {
     chrome: PublicAPI.Chrome.DevTools.Chrome;
     webInspector?: APIImpl.InspectorExtensionAPI;
   }
+  var injectedExtensionAPI: Window['injectedExtensionAPI'];
+  var buildExtensionAPIInjectedScript: Window['buildExtensionAPIInjectedScript'];
 }
 
 export interface ExtensionDescriptor {
@@ -511,7 +513,7 @@ namespace APIImpl {
   }
 }
 
-self.injectedExtensionAPI = function(
+globalThis.injectedExtensionAPI = function(
     extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
     testHook: (extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown,
     injectedScriptId: number, targetWindowForTest?: Window): void {
@@ -1763,22 +1765,22 @@ self.injectedExtensionAPI = function(
   testHook(extensionServer, coreAPI);
 };
 
-self.buildExtensionAPIInjectedScript = function(
+globalThis.buildExtensionAPIInjectedScript = function(
     extensionInfo: {
       startPage: string,
       name: string,
       exposeExperimentalAPIs: boolean,
     },
     inspectedTabId: string, themeName: string, keysToForward: number[],
-    testHook:
-        ((extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown)|
-    undefined): string {
+    testHook: ((extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) =>
+                   unknown)|undefined): string {
   const argumentsJSON =
       [extensionInfo, inspectedTabId || null, themeName, keysToForward].map(_ => JSON.stringify(_)).join(',');
   if (!testHook) {
     testHook = (): void => {};
   }
   return '(function(injectedScriptId){ ' +
-      '(' + self.injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook + ', injectedScriptId);' +
+      '(' + globalThis.injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook +
+      ', injectedScriptId);' +
       '})';
 };

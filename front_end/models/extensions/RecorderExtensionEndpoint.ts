@@ -15,7 +15,8 @@ export class RecorderExtensionEndpoint extends ExtensionEndpoint {
   readonly #extensionOrigin: Platform.DevToolsPath.UrlString;
   readonly #recorderPluginManager: RecorderPluginManager;
 
-  constructor(name: string, port: MessagePort, capabilities: PrivateAPI.RecordingExtensionPluginCapability[],
+  constructor(name: string, port: Platform.HostRuntime.WorkerMessagePort,
+              capabilities: PrivateAPI.RecordingExtensionPluginCapability[],
               extensionOrigin: Platform.DevToolsPath.UrlString, recorderPluginManager: RecorderPluginManager,
               mediaType?: string) {
     super(port);

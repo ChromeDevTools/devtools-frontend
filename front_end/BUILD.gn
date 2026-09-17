@@ -270,6 +270,7 @@ group("foundation_unittests") {
     "models/crux-manager:foundation_unittests",
     "models/elements:foundation_unittests",
     "models/emulation:foundation_unittests",
+    "models/extensions:unittests",
     "models/formatter:unittests",
     "models/har:unittests",
     "models/heap_snapshot:unittests",

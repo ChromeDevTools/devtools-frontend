@@ -12,8 +12,6 @@ export const BUCKET = 'gleam-eval-cd4h-nonprod';
 export const PROJECT_ID = 'ai_evals';
 
 /**
- * TODO: This list is not complete. There will be more files.
- *
  * GCS layout and upload lifecycle for evaluation artifacts and markers:
  *
  * 1. Run start (start of suite execution):
@@ -36,6 +34,12 @@ export const PROJECT_ID = 'ai_evals';
  *      │   └── grader.log            - Diagnostic grading execution log (archived in CNS)
  *      ├── eval_task_completed.json  - Task execution metadata and score
  *      └── eval_task_completed.marker- 0-byte commit marker (sealed last)
+ *
+ *    Note on omitted protocol artifacts:
+ *    - verification/diff.patch: Omitted because auto-run evaluates in-browser
+ *      assistance and does not modify files on disk.
+ *    - post_eval_task_dir/: Omitted because tasks do not modify an on-disk
+ *      workspace (unlike coding agent benchmarks such as CD4A).
  *
  * 3. Run completion (very end of suite execution):
  *    runs/<runId>/

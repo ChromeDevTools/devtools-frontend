@@ -21,6 +21,13 @@ export const Markers = {
 export type Markers = (typeof Markers)[keyof typeof Markers];
 export type MarkerType = Markers;
 
+/**
+ * Note on omitted protocol artifacts:
+ * - verification/diff.patch: Omitted because evals evaluate in-browser
+ *   assistance and do not modify files on disk.
+ * - post_eval_task_dir/: Omitted because tasks do not modify an on-disk
+ *   workspace (unlike coding agent benchmarks such as CD4A).
+ */
 export const TaskOutputFile = {
   TRAJECTORY: 'trajectory.json',
   EVAL_RESULT: 'eval_result.json',

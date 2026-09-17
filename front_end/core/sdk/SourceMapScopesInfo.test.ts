@@ -1078,6 +1078,31 @@ describe('SourceMapScopesInfo', () => {
          assert.strictEqual(extMap.provenance(), SDK.SourceMap.SourceMapProvenance.EXTENSION);
          assert.isNotNull(extMap.resolveScopeChain(callFrame));
        });
+
+    it('returns null from SourceMap.resolveScopeChain when scopes do not contain variables or bindings', () => {
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(5, 0, {kind: 'function', isStackFrame: true, name: 'fnNoVars', key: 'fn'})
+          .endScope(15, 0)
+          .endScope(20, 0);
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 20, {scopeKey: 'fn', isStackFrame: true})
+          .endRange(0, 80)
+          .endRange(0, 100);
+
+      const {callFrame} = setUpCallFrameAndSourceMap({
+        generatedPausedPosition: {line: 0, column: 50},
+        mappedPausedPosition: {sourceIndex: 0, line: 10, column: 0},
+      });
+      const sourceMap = new SDK.SourceMap.SourceMap(
+          urlString`http://example.com/bundle.js`, urlString`http://example.com/bundle.js.map`,
+          ScopesCodec.encode(builder.build(), {version: 3, sources: ['foo.ts'], mappings: ''}) as
+              SDK.SourceMap.SourceMapV3,
+          universe.console);
+
+      assert.isTrue(sourceMap.hasScopeInfo());
+      assert.isNull(sourceMap.resolveScopeChain(callFrame));
+    });
   });
 
   describe('findOriginalFunctionName', () => {

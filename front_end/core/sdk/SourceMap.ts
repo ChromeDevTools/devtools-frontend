@@ -836,7 +836,7 @@ export class SourceMap {
 
   resolveScopeChain(frame: CallFrame): ScopeChainEntry[]|null {
     this.#ensureSourceMapProcessed();
-    if (this.#provenance === SourceMapProvenance.USER || this.#scopesInfo === null) {
+    if (this.#provenance === SourceMapProvenance.USER || !this.#scopesInfo?.hasVariablesAndBindings()) {
       return null;
     }
 

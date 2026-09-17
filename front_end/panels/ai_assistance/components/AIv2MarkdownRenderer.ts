@@ -21,13 +21,10 @@ export interface AIv2MarkdownRendererOptions {
   mainFrameId?: string;
   mainDocumentURL?: Platform.DevToolsPath.UrlString;
   /**
-   * Retrieves the established origin locked for the active conversation.
+   * Retrieves the origin lock for the active conversation.
    * Required to authorize #file-<id> links and prevent cross-origin file leakage.
-   *
-   * TODO(crbug.com/559522248): Defer renderer instantiation until a conversation
-   * starts so this origin can be passed as a mandatory, non-getter property.
    */
-  getEstablishedOrigin?: () => SDK.SecurityOrigin.SecurityOrigin | undefined;
+  getOriginLock: () => AiAssistanceModel.Tool.OriginLockState;
   lookupTraceEvent?: (key: string) => Trace.Types.Events.Event | null;
 }
 
@@ -45,7 +42,7 @@ type ParsedLink = {
  * the only markdown renderer used by AI assistance.
  */
 export class AIv2MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
-  constructor(private readonly options: AIv2MarkdownRendererOptions = {}) {
+  constructor(private readonly options: AIv2MarkdownRendererOptions) {
     super();
   }
 
@@ -119,10 +116,7 @@ export class AIv2MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownInsi
     }
     if (href.startsWith('#file-')) {
       const fileId = Number(href.substring(6));
-      const origin = this.options.getEstablishedOrigin?.();
-      const file = (origin && Number.isInteger(fileId) && fileId > 0) ?
-          AiAssistanceModel.ListSources.ListSourcesTool.getSourceById(fileId, origin) :
-          undefined;
+      const file = AiAssistanceModel.ListSources.ListSourcesTool.getSourceById(fileId, this.options.getOriginLock());
 
       if (file) {
         return this.#revealableLink(file, file.name());

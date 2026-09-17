@@ -65,12 +65,13 @@ export class GetSourceContentTool implements
       args: GetSourceContentArgs,
       context: BaseToolCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{content: string}>> {
-    const originResult = resolveOriginFromLock(context.getOriginLock());
+    const originLock = context.getOriginLock();
+    const originResult = resolveOriginFromLock(originLock);
     if ('error' in originResult) {
       return originResult;
     }
 
-    const file = ListSourcesTool.getSourceById(args.id, originResult.origin);
+    const file = ListSourcesTool.getSourceById(args.id, originLock);
 
     if (!file) {
       return {

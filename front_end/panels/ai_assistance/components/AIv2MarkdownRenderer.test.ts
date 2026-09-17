@@ -26,7 +26,9 @@ const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('AIv2MarkdownRenderer', () => {
   it('should transform code token for multiline code blocks with `css` language written in the first line', () => {
-    const renderer = new AiAssistance.AIv2MarkdownRenderer();
+    const renderer = new AiAssistance.AIv2MarkdownRenderer({
+      getOriginLock: () => ({status: 'UNINITIALIZED'}),
+    });
     const templateForTokenStub =
         sinon.stub(MarkdownView.MarkdownView.MarkdownInsightRenderer.prototype, 'templateForToken');
     const codeBlock = `\`\`\`
@@ -48,12 +50,15 @@ color: red;
   });
 
   describe('links', () => {
-    const renderToElem = (string: string, options?: AiAssistance.AIv2MarkdownRendererOptions): Element => {
+    const renderToElem = (string: string, options?: Partial<AiAssistance.AIv2MarkdownRendererOptions>): Element => {
       const component = new MarkdownView.MarkdownView.MarkdownView();
       renderElementIntoDOM(component, {allowMultipleChildren: true});
       component.data = {
         tokens: Marked.Marked.lexer(string),
-        renderer: new AiAssistance.AIv2MarkdownRenderer(options),
+        renderer: new AiAssistance.AIv2MarkdownRenderer({
+          getOriginLock: () => ({status: 'UNINITIALIZED'}),
+          ...options,
+        }),
       };
       for (const el of component.shadowRoot?.children ?? []) {
         if (el.nodeType === Node.ELEMENT_NODE && el.tagName !== 'STYLE') {
@@ -65,6 +70,10 @@ color: red;
     };
 
     describe('DevTools resources', () => {
+      beforeEach(() => {
+        AiAssistanceModel.ListSources.ListSourcesTool.reset();
+      });
+
       it('works for requests', () => {
         const request = createNetworkRequest({
           url: 'https://example.com/',
@@ -97,7 +106,8 @@ color: red;
         AiAssistanceModel.ListSources.ListSourcesTool.uiSourceCodeId.set(file, 1);
 
         const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
-        const el = renderToElem('[text](#file-1)', {getEstablishedOrigin: () => origin});
+        const originLock: AiAssistanceModel.Tool.OriginLockState = {status: 'ESTABLISHED_ORIGIN', origin};
+        const el = renderToElem('[text](#file-1)', {getOriginLock: () => originLock});
 
         const link = el.querySelector('devtools-link');
         assert.exists(link);
@@ -120,13 +130,31 @@ color: red;
 
         const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
         const crossOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-        const elCrossOrigin = renderToElem('[text](#file-1)', {getEstablishedOrigin: () => crossOrigin});
+        const elCrossOrigin = renderToElem(
+            '[text](#file-1)',
+            {getOriginLock: () => ({status: 'ESTABLISHED_ORIGIN', origin: crossOrigin})},
+        );
         assert.isNull(elCrossOrigin.querySelector('devtools-link'));
 
         const elNoOrigin = renderToElem('[text](#file-1)');
         assert.isNull(elNoOrigin.querySelector('devtools-link'));
 
-        const elInvalidId = renderToElem('[text](#file-notanumber)', {getEstablishedOrigin: () => origin});
+        const elUninitialized = renderToElem(
+            '[text](#file-1)',
+            {getOriginLock: () => ({status: 'UNINITIALIZED'})},
+        );
+        assert.isNull(elUninitialized.querySelector('devtools-link'));
+
+        const elBlocked = renderToElem(
+            '[text](#file-1)',
+            {getOriginLock: () => ({status: 'BLOCKED_BY_NAVIGATION'})},
+        );
+        assert.isNull(elBlocked.querySelector('devtools-link'));
+
+        const elInvalidId = renderToElem(
+            '[text](#file-notanumber)',
+            {getOriginLock: () => ({status: 'ESTABLISHED_ORIGIN', origin})},
+        );
         assert.isNull(elInvalidId.querySelector('devtools-link'));
       });
 

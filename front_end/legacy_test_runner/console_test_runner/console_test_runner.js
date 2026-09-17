@@ -479,9 +479,8 @@ ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {
   const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   const properties = [];
   let propertiesCount = 0;
-  TestRunner.addSniffer(
-      ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.prototype, 'updateExpandable',
-      propertyExpandableUpdated);
+  TestRunner.addSniffer(ObjectUI.ObjectPropertiesSection.ObjectTreeNode.prototype, 'invokeGetter',
+                        propertyExpandableUpdated, true);
   for (let i = 0; i < messageViews.length; ++i) {
     const element = messageViews[i].element();
     for (let node = element; node; node = node.traverseNextNode(element)) {
@@ -497,7 +496,9 @@ ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {
     return;
   }
 
-  async function propertyExpandableUpdated() {
+  async function propertyExpandableUpdated(getter, promise) {
+    await promise;
+    await UI.Widget.Widget.allUpdatesComplete;
     --propertiesCount;
     if (propertiesCount === 0) {
       for (let i = 0; i < properties.length; ++i) {
@@ -505,10 +506,6 @@ ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {
       }
       await new Promise(requestAnimationFrame);
       TestRunner.deprecatedRunAfterPendingDispatches(callback);
-    } else {
-      TestRunner.addSniffer(
-          ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.prototype, 'updateExpandable',
-          propertyExpandableUpdated);
     }
   }
 };

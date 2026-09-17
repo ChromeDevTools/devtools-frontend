@@ -114,14 +114,15 @@ ElementsTestRunner.findNodePromise = function(matchFunction) {
 /**
  * @param {!UI.TreeOutline.TreeElement} treeElement
  */
-function dumpObjectPropertyTreeElement(treeElement) {
+function dumpEventListenerTreeElement(treeElement) {
   const expandedSubstring = treeElement.expanded ? '[expanded]' : '[collapsed]';
   TestRunner.addResult(expandedSubstring + ' ' + treeElement.listItemElement.deepTextContent());
 
   for (const child of treeElement.children()) {
-    const property = child.property;
-    const key = property.name;
-    const value = property.object.description;
+    const key = child.listItemElement.querySelector('.name')?.textContent;
+    const valueElement = child.listItemElement.querySelector('.value');
+    const value = valueElement?.querySelector('.object-value-function')?.getAttribute('title') ||
+        valueElement?.getAttribute('title') || valueElement?.textContent;
     TestRunner.addResult('    ' + key + ': ' + value);
   }
 }
@@ -138,7 +139,8 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
 
   function listenersArrived() {
     const view = eventListenersView || this;
-    TestRunner.deprecatedRunAfterPendingDispatches(() => {
+    TestRunner.deprecatedRunAfterPendingDispatches(async () => {
+      await UI.Widget.Widget.allUpdatesComplete;
       const treeOutline = getTreeOutline(view);
       if (!treeOutline) {
         callback();
@@ -150,7 +152,10 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
           item.expand();
         }
       }
-      TestRunner.deprecatedRunAfterPendingDispatches(() => objectsExpanded(view));
+      TestRunner.deprecatedRunAfterPendingDispatches(async () => {
+        await UI.Widget.Widget.allUpdatesComplete;
+        objectsExpanded(view);
+      });
     });
   }
 
@@ -167,7 +172,7 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
         for (const item of typeElement.children()) {
           const origin = item.configElement.dataset.origin;
           TestRunner.addResult('== ' + origin);
-          dumpObjectPropertyTreeElement(item);
+          dumpEventListenerTreeElement(item);
         }
       }
     }

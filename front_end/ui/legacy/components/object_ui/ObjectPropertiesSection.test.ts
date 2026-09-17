@@ -119,572 +119,636 @@ export function createDeepRemoteObjectMock(
   return remoteObject;
 }
 
-describe('ObjectPropertiesSection', () => {
-  describeWithEnvironment('ObjectPropertiesSection', () => {
-    const expandedPropertyNames =
-        async(value: unknown, options?: {sortPropertiesAlphabetically?: boolean}): Promise<string[]> => {
-      const object = SDK.RemoteObject.RemoteObject.fromLocalObject(value);
-      const tree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
-        readOnly: true,
-        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-      });
-      if (options?.sortPropertiesAlphabetically !== undefined) {
-        tree.sortPropertiesAlphabetically = options.sortPropertiesAlphabetically;
-      }
-      const children = await tree.populateChildrenIfNeeded();
-      return (children.properties ?? []).map(p => p.name);
-    };
+describeWithEnvironment('ObjectPropertiesSection', () => {
+  const expandedPropertyNames =
+      async(value: unknown, options?: {sortPropertiesAlphabetically?: boolean}): Promise<string[]> => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject(value);
+    const tree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+      readOnly: true,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    });
+    if (options?.sortPropertiesAlphabetically !== undefined) {
+      tree.sortPropertiesAlphabetically = options.sortPropertiesAlphabetically;
+    }
+    const children = await tree.populateChildrenIfNeeded();
+    return (children.properties ?? []).map(p => p.name);
+  };
 
-    it('properties with null and undefined values are shown by default', async () => {
-      const object = SDK.RemoteObject.RemoteObject.fromLocalObject({
-        s: 'string',
-        n: null,
-        u: undefined,
-      });
-      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-      section.root = object;
-      section.title = html`title`;
-      assert.exists(section.objectTree);
-      section.objectTree.expanded = true;
-      renderElementIntoDOM(section);
-      await UI.Widget.Widget.allUpdatesComplete;
-      await raf();
-      const rootElement = getRootTreeElement(section);
+  it('properties with null and undefined values are shown by default', async () => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({
+      s: 'string',
+      n: null,
+      u: undefined,
+    });
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.root = object;
+    section.title = html`title`;
+    assert.exists(section.objectTree);
+    section.objectTree.expanded = true;
+    renderElementIntoDOM(section);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+    const rootElement = getRootTreeElement(section);
 
-      assert.strictEqual(rootElement.childCount(), 3);
-      const properties = [rootElement.childAt(0)!, rootElement.childAt(1)!, rootElement.childAt(2)!] as
-          ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement[];
-      const n = properties.find(p => p.property.name === 'n')!;
-      const s = properties.find(p => p.property.name === 's')!;
-      const u = properties.find(p => p.property.name === 'u')!;
+    assert.strictEqual(rootElement.childCount(), 3);
+    const properties = rootElement.children();
+    const n = properties.find(p => p.listItemElement.dataset.objectPropertyNameForTest === 'n');
+    const s = properties.find(p => p.listItemElement.dataset.objectPropertyNameForTest === 's');
+    const u = properties.find(p => p.listItemElement.dataset.objectPropertyNameForTest === 'u');
 
-      assert.isFalse(n.hidden);
-      assert.isFalse(s.hidden);
-      assert.isFalse(u.hidden);
+    assert.exists(n);
+    assert.exists(s);
+    assert.exists(u);
+    assert.isFalse(n.hidden);
+    assert.isFalse(s.hidden);
+    assert.isFalse(u.hidden);
+  });
+
+  it('properties with null and undefined values are hidden when the setting is disabled', async () => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({
+      s: 'string',
+      n: null,
+      u: undefined,
+    });
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.root = object;
+    section.title = html`title`;
+    assert.exists(section.objectTree);
+    section.objectTree.includeNullOrUndefinedValues = false;
+    section.objectTree.expanded = true;
+    renderElementIntoDOM(section);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+    const rootElement = getRootTreeElement(section);
+
+    const properties = rootElement.children();
+    const n = properties.find(p => p.listItemElement.dataset.objectPropertyNameForTest === 'n');
+    const s = properties.find(p => p.listItemElement.dataset.objectPropertyNameForTest === 's');
+    const u = properties.find(p => p.listItemElement.dataset.objectPropertyNameForTest === 'u');
+
+    assert.exists(n);
+    assert.exists(s);
+    assert.exists(u);
+    assert.isTrue(n.hidden);
+    assert.isFalse(s.hidden);
+    assert.isTrue(u.hidden);
+  });
+
+  it('sorts expanded properties alphabetically by default', async () => {
+    const propertyNames = await expandedPropertyNames({
+      _a: 1,
+      beta: 2,
+      _z: 3,
+      alpha: 4,
+    },
+                                                      {sortPropertiesAlphabetically: true});
+    assert.deepEqual(propertyNames, ['alpha', 'beta', '_a', '_z']);
+  });
+
+  it('preserves insertion order when the setting is disabled', async () => {
+    const propertyNames = await expandedPropertyNames({
+      _a: 1,
+      beta: 2,
+      _z: 3,
+      alpha: 4,
+    },
+                                                      {sortPropertiesAlphabetically: false});
+    assert.deepEqual(propertyNames, ['_a', 'beta', '_z', 'alpha']);
+  });
+
+  it('compareProperties sorts enumerable properties before non-enumerable in alphabetical mode', () => {
+    const properties = [
+      new SDK.RemoteObject.RemoteObjectProperty('hiddenA', SDK.RemoteObject.RemoteObject.fromLocalObject(1), false,
+                                                true, true),
+      new SDK.RemoteObject.RemoteObjectProperty('visibleA', SDK.RemoteObject.RemoteObject.fromLocalObject(2), true,
+                                                true, true),
+      new SDK.RemoteObject.RemoteObjectProperty('hiddenB', SDK.RemoteObject.RemoteObject.fromLocalObject(3), false,
+                                                true, true),
+      new SDK.RemoteObject.RemoteObjectProperty('visibleB', SDK.RemoteObject.RemoteObject.fromLocalObject(4), true,
+                                                true, true),
+    ];
+
+    properties.sort(ObjectUI.ObjectPropertiesSection.compareProperties);
+    assert.deepEqual(properties.map(property => property.name), ['visibleA', 'visibleB', 'hiddenA', 'hiddenB']);
+  });
+
+  it('compareProperties preserves insertion order within enumerable buckets when alphabetical sorting is disabled',
+     () => {
+       const properties = [
+         new SDK.RemoteObject.RemoteObjectProperty('hiddenB', SDK.RemoteObject.RemoteObject.fromLocalObject(1), false,
+                                                   true, true),
+         new SDK.RemoteObject.RemoteObjectProperty('visibleB', SDK.RemoteObject.RemoteObject.fromLocalObject(2), true,
+                                                   true, true),
+         new SDK.RemoteObject.RemoteObjectProperty('hiddenA', SDK.RemoteObject.RemoteObject.fromLocalObject(3), false,
+                                                   true, true),
+         new SDK.RemoteObject.RemoteObjectProperty('visibleA', SDK.RemoteObject.RemoteObject.fromLocalObject(4), true,
+                                                   true, true),
+       ];
+
+       properties.sort((a, b) => ObjectUI.ObjectPropertiesSection.compareProperties(a, b, false));
+       assert.deepEqual(properties.map(property => property.name), ['visibleB', 'visibleA', 'hiddenB', 'hiddenA']);
+     });
+
+  it('shows sorting and "Show all" toggles in context menu', async () => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.root = object;
+    section.title = html`title`;
+    renderElementIntoDOM(section);
+    await UI.Widget.Widget.allUpdatesComplete;
+    const tree = section.element.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement;
+    assert.exists(tree);
+    const rootElement = tree.shadowRoot?.querySelector('.object-properties-section-root-element') ??
+        section.element.querySelector('.object-properties-section-root-element');
+    assert.exists(rootElement);
+    const event = new MouseEvent('contextmenu');
+
+    const showSpy = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+    const appendCheckboxItemSpy = sinon.spy(UI.ContextMenu.Section.prototype, 'appendCheckboxItem');
+
+    rootElement.dispatchEvent(event);
+
+    sinon.assert.called(appendCheckboxItemSpy);
+    const sortPropertiesItem = appendCheckboxItemSpy.args.find(args => args[0] === 'Sort properties alphabetically');
+    assert.exists(sortPropertiesItem);
+    assert.exists(section.objectTree);
+    assert.strictEqual(sortPropertiesItem[2]?.checked, section.objectTree.sortPropertiesAlphabetically);
+
+    const showAllItem = appendCheckboxItemSpy.args.find(args => args[0] === 'Show all');
+    assert.exists(showAllItem);
+    assert.isTrue(showAllItem[2]?.checked);
+
+    showSpy.restore();
+    appendCheckboxItemSpy.restore();
+  });
+
+  describe('getMemoryIcon', () => {
+    it('returns a memory icon for inspectable object types', () => {
+      const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
+      object.isLinearMemoryInspectable.returns(true);
+
+      const div = document.createElement('div');
+      assert.isFalse(div.hasChildNodes());
+      render(ObjectUI.ObjectPropertiesSection.getMemoryIcon(object), div);
+      assert.isTrue(div.hasChildNodes());
+      const icon = div.querySelector('devtools-icon');
+      assert.isNotNull(icon);
     });
 
-    it('properties with null and undefined values are hidden when the setting is disabled', async () => {
-      const object = SDK.RemoteObject.RemoteObject.fromLocalObject({
-        s: 'string',
-        n: null,
-        u: undefined,
-      });
-      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-      section.root = object;
-      section.title = html`title`;
-      assert.exists(section.objectTree);
-      section.objectTree.includeNullOrUndefinedValues = false;
-      section.objectTree.expanded = true;
-      renderElementIntoDOM(section);
-      await UI.Widget.Widget.allUpdatesComplete;
-      await raf();
-      const rootElement = getRootTreeElement(section);
+    it('returns nothing for non-inspectable object types', () => {
+      const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
+      object.isLinearMemoryInspectable.returns(false);
 
-      const properties = [rootElement.childAt(0)!, rootElement.childAt(1)!, rootElement.childAt(2)!].map(
-          x => x as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
-      const n = properties.find(p => p.property.name === 'n')!;
-      const s = properties.find(p => p.property.name === 's')!;
-      const u = properties.find(p => p.property.name === 'u')!;
-
-      assert.isTrue(n.hidden);
-      assert.isFalse(s.hidden);
-      assert.isTrue(u.hidden);
+      const div = document.createElement('div');
+      assert.isFalse(div.hasChildNodes());
+      render(ObjectUI.ObjectPropertiesSection.getMemoryIcon(object), div);
+      assert.strictEqual(div.childElementCount, 0);
     });
 
-    it('sorts expanded properties alphabetically by default', async () => {
-      const propertyNames = await expandedPropertyNames({
-        _a: 1,
-        beta: 2,
-        _z: 3,
-        alpha: 4,
-      },
-                                                        {sortPropertiesAlphabetically: true});
-      assert.deepEqual(propertyNames, ['alpha', 'beta', '_a', '_z']);
-    });
+    it('triggers the correct revealer upon \'click\'', () => {
+      const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
+      object.isLinearMemoryInspectable.returns(true);
+      const expression = 'foo';
 
-    it('preserves insertion order when the setting is disabled', async () => {
-      const propertyNames = await expandedPropertyNames({
-        _a: 1,
-        beta: 2,
-        _z: 3,
-        alpha: 4,
-      },
-                                                        {sortPropertiesAlphabetically: false});
-      assert.deepEqual(propertyNames, ['_a', 'beta', '_z', 'alpha']);
-    });
+      const div = document.createElement('div');
+      render(ObjectUI.ObjectPropertiesSection.getMemoryIcon(object, expression), div);
+      const icon = div.querySelector('devtools-icon');
+      assert.exists(icon);
+      const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');
 
-    it('compareProperties sorts enumerable properties before non-enumerable in alphabetical mode', () => {
-      const properties = [
-        new SDK.RemoteObject.RemoteObjectProperty('hiddenA', SDK.RemoteObject.RemoteObject.fromLocalObject(1), false,
-                                                  true, true),
-        new SDK.RemoteObject.RemoteObjectProperty('visibleA', SDK.RemoteObject.RemoteObject.fromLocalObject(2), true,
-                                                  true, true),
-        new SDK.RemoteObject.RemoteObjectProperty('hiddenB', SDK.RemoteObject.RemoteObject.fromLocalObject(3), false,
-                                                  true, true),
-        new SDK.RemoteObject.RemoteObjectProperty('visibleB', SDK.RemoteObject.RemoteObject.fromLocalObject(4), true,
-                                                  true, true),
-      ];
+      dispatchClickEvent(icon);
 
-      properties.sort(ObjectUI.ObjectPropertiesSection.compareProperties);
-      assert.deepEqual(properties.map(property => property.name), ['visibleA', 'visibleB', 'hiddenA', 'hiddenB']);
-    });
-
-    it('compareProperties preserves insertion order within enumerable buckets when alphabetical sorting is disabled',
-       () => {
-         const properties = [
-           new SDK.RemoteObject.RemoteObjectProperty('hiddenB', SDK.RemoteObject.RemoteObject.fromLocalObject(1), false,
-                                                     true, true),
-           new SDK.RemoteObject.RemoteObjectProperty('visibleB', SDK.RemoteObject.RemoteObject.fromLocalObject(2), true,
-                                                     true, true),
-           new SDK.RemoteObject.RemoteObjectProperty('hiddenA', SDK.RemoteObject.RemoteObject.fromLocalObject(3), false,
-                                                     true, true),
-           new SDK.RemoteObject.RemoteObjectProperty('visibleA', SDK.RemoteObject.RemoteObject.fromLocalObject(4), true,
-                                                     true, true),
-         ];
-
-         properties.sort((a, b) => ObjectUI.ObjectPropertiesSection.compareProperties(a, b, false));
-         assert.deepEqual(properties.map(property => property.name), ['visibleB', 'visibleA', 'hiddenB', 'hiddenA']);
-       });
-
-    it('shows sorting and "Show all" toggles in context menu', async () => {
-      const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
-      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-      section.root = object;
-      section.title = html`title`;
-      renderElementIntoDOM(section);
-      await UI.Widget.Widget.allUpdatesComplete;
-      const tree = section.element.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement;
-      assert.exists(tree);
-      const rootElement = tree.shadowRoot?.querySelector('.object-properties-section-root-element') ??
-          section.element.querySelector('.object-properties-section-root-element');
-      assert.exists(rootElement);
-      const event = new MouseEvent('contextmenu');
-
-      const showSpy = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-      const appendCheckboxItemSpy = sinon.spy(UI.ContextMenu.Section.prototype, 'appendCheckboxItem');
-
-      rootElement.dispatchEvent(event);
-
-      sinon.assert.called(appendCheckboxItemSpy);
-      const sortPropertiesItem = appendCheckboxItemSpy.args.find(args => args[0] === 'Sort properties alphabetically');
-      assert.exists(sortPropertiesItem);
-      assert.exists(section.objectTree);
-      assert.strictEqual(sortPropertiesItem[2]?.checked, section.objectTree.sortPropertiesAlphabetically);
-
-      const showAllItem = appendCheckboxItemSpy.args.find(args => args[0] === 'Show all');
-      assert.exists(showAllItem);
-      assert.isTrue(showAllItem[2]?.checked);
-
-      showSpy.restore();
-      appendCheckboxItemSpy.restore();
-    });
-
-    describe('getMemoryIcon', () => {
-      it('returns a memory icon for inspectable object types', () => {
-        const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
-        object.isLinearMemoryInspectable.returns(true);
-
-        const div = document.createElement('div');
-        assert.isFalse(div.hasChildNodes());
-        render(ObjectUI.ObjectPropertiesSection.getMemoryIcon(object), div);
-        assert.isTrue(div.hasChildNodes());
-        const icon = div.querySelector('devtools-icon');
-        assert.isNotNull(icon);
-      });
-
-      it('returns nothing for non-inspectable object types', () => {
-        const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
-        object.isLinearMemoryInspectable.returns(false);
-
-        const div = document.createElement('div');
-        assert.isFalse(div.hasChildNodes());
-        render(ObjectUI.ObjectPropertiesSection.getMemoryIcon(object), div);
-        assert.strictEqual(div.childElementCount, 0);
-      });
-
-      it('triggers the correct revealer upon \'click\'', () => {
-        const object = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
-        object.isLinearMemoryInspectable.returns(true);
-        const expression = 'foo';
-
-        const div = document.createElement('div');
-        render(ObjectUI.ObjectPropertiesSection.getMemoryIcon(object, expression), div);
-        const icon = div.querySelector('devtools-icon');
-        assert.exists(icon);
-        const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');
-
-        dispatchClickEvent(icon);
-
-        sinon.assert.calledOnceWithMatch(reveal, sinon.match({object, expression}), false);
-      });
-    });
-
-    describe('ArrayGrouping', () => {
-      let previousBucketThreshold: number;
-      before(() => {
-        previousBucketThreshold = ObjectUI.ObjectPropertiesSection.ArrayGroupingTreeElement.bucketThreshold;
-        ObjectUI.ObjectPropertiesSection.ArrayGroupingTreeElement.bucketThreshold = 20;
-      });
-
-      after(() => {
-        ObjectUI.ObjectPropertiesSection.ArrayGroupingTreeElement.bucketThreshold = previousBucketThreshold;
-      });
-
-      function createLocalArrayRemoteObject(array: unknown[]|Uint8Array): SDK.RemoteObject.RemoteObject {
-        const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(array);
-        sinon.stub(remoteObject, 'arrayLength').returns(array.length);
-        const isTypedArray = ArrayBuffer.isView(array);
-        if (isTypedArray) {
-          sinon.stub(remoteObject, 'subtype').get(() => 'typedarray');
-        } else {
-          sinon.stub(remoteObject, 'subtype').get(() => 'array');
-        }
-
-        const originalGetOwnProperties = remoteObject.getOwnProperties;
-        sinon.stub(remoteObject, 'getOwnProperties').callsFake(async (generatePreview, nonIndexedPropertiesOnly) => {
-          let properties: SDK.RemoteObject.RemoteObjectProperty[] = [];
-
-          if (isTypedArray && array.length > 1000) {
-            // For large typed arrays, avoid Object.entries which is very slow.
-          } else {
-            const result = await originalGetOwnProperties.call(remoteObject, generatePreview, nonIndexedPropertiesOnly);
-            properties = result.properties ? [...result.properties] : [];
-          }
-
-          if (!properties.some(p => p.name === 'length')) {
-            const lengthObject = SDK.RemoteObject.RemoteObject.fromLocalObject(array.length);
-            properties.push(new SDK.RemoteObject.RemoteObjectProperty('length', lengthObject, false, false, false));
-          }
-          return {properties, internalProperties: null};
-        });
-        return remoteObject;
-      }
-
-      it('formats sparse array with custom grouping threshold', async () => {
-        const array = [];
-        for (let i = 0; i < 42; ++i) {
-          array[i] = i;
-        }
-        array[100] = 100;
-        const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-        section.root = object;
-        section.title = html`title`;
-        assert.exists(section.objectTree);
-        section.objectTree.expanded = true;
-        renderElementIntoDOM(section);
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const rootElement = getRootTreeElement(section);
-
-        const children = rootElement.children();
-        const childTexts = children.map(c => c.listItemElement.textContent || '');
-
-        assert.deepEqual(childTexts, [
-          '[0 … 19]',
-          '[20 … 39]',
-          '[40 … 100]',
-          'length: 101',
-        ]);
-
-        const group1 = children[0];
-        group1.expand();
-        await raf();
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const group1Children = group1.children().map(c => c.listItemElement.textContent || '');
-        assert.lengthOf(group1Children, 20);
-        assert.strictEqual(group1Children[0], '0: 0');
-        assert.strictEqual(group1Children[19], '19: 19');
-
-        const group3 = children[2];
-        group3.expand();
-        await raf();
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const group3Children = group3.children().map(c => c.listItemElement.textContent || '');
-        assert.deepEqual(group3Children, [
-          '40: 40',
-          '41: 41',
-          '100: 100',
-        ]);
-      });
-
-      it('does not group arrays smaller than threshold', async () => {
-        const array = [];
-        for (let i = 0; i < 10; ++i) {
-          array[i] = undefined;
-        }
-        const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-        section.root = object;
-        section.title = html`title`;
-        assert.exists(section.objectTree);
-        section.objectTree.expanded = true;
-        renderElementIntoDOM(section);
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const rootElement = getRootTreeElement(section);
-
-        const children = rootElement.children();
-        const childTexts = children.map(c => c.listItemElement.textContent || '');
-
-        assert.deepEqual(childTexts, [
-          '0: undefined',
-          '1: undefined',
-          '2: undefined',
-          '3: undefined',
-          '4: undefined',
-          '5: undefined',
-          '6: undefined',
-          '7: undefined',
-          '8: undefined',
-          '9: undefined',
-          'length: 10',
-        ]);
-      });
-
-      it('does not group sparse arrays if total element count is below threshold', async () => {
-        const array = [];
-        for (let i = 0; i < 10; ++i) {
-          array[i] = i;
-        }
-        array[100] = 100;
-        const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-        section.root = object;
-        section.title = html`title`;
-        assert.exists(section.objectTree);
-        section.objectTree.expanded = true;
-        renderElementIntoDOM(section);
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const rootElement = getRootTreeElement(section);
-
-        const children = rootElement.children();
-        const childTexts = children.map(c => c.listItemElement.textContent || '');
-
-        assert.deepEqual(childTexts, [
-          '0: 0',
-          '1: 1',
-          '2: 2',
-          '3: 3',
-          '4: 4',
-          '5: 5',
-          '6: 6',
-          '7: 7',
-          '8: 8',
-          '9: 9',
-          '100: 100',
-          'length: 101',
-        ]);
-      });
-
-      it('formats large dense arrays with multi-level grouping', async () => {
-        const array = [];
-        for (let i = 0; i < 405; ++i) {
-          array[i] = i;
-        }
-        const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-        section.root = object;
-        section.title = html`title`;
-        assert.exists(section.objectTree);
-        section.objectTree.expanded = true;
-        renderElementIntoDOM(section);
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const rootElement = getRootTreeElement(section);
-
-        const children = rootElement.children();
-        const childTexts = children.map(c => c.listItemElement.textContent || '');
-
-        assert.deepEqual(childTexts, [
-          '[0 … 399]',
-          '[400 … 404]',
-          'length: 405',
-        ]);
-
-        const group1 = children[0];
-        group1.expand();
-        await raf();
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const group1Children = group1.children().map(c => c.listItemElement.textContent || '');
-        assert.lengthOf(group1Children, 20);
-        assert.strictEqual(group1Children[0], '[0 … 19]');
-        assert.strictEqual(group1Children[19], '[380 … 399]');
-
-        const group2 = children[1];
-        group2.expand();
-        await raf();
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const group2Children = group2.children().map(c => c.listItemElement.textContent || '');
-        assert.deepEqual(group2Children, [
-          '400: 400',
-          '401: 401',
-          '402: 402',
-          '403: 403',
-          '404: 404',
-        ]);
-      });
-
-      it('formats arrays with non-index properties', async () => {
-        const array = [];
-        for (let i = 0; i < 10; ++i) {
-          array[i] = i;
-        }
-        array[123] = 123;
-        const arrayObj = array as unknown as Record<string, unknown>;
-        arrayObj['-123'] = -123;
-        arrayObj['3.14'] = 3.14;
-        arrayObj['4294967295'] = 4294967295;
-        arrayObj['4294967296'] = 4294967296;
-        arrayObj['Infinity'] = Infinity;
-        arrayObj['-Infinity'] = -Infinity;
-        arrayObj['NaN'] = NaN;
-
-        const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-        section.root = object;
-        section.title = html`title`;
-        assert.exists(section.objectTree);
-        section.objectTree.expanded = true;
-        renderElementIntoDOM(section);
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const rootElement = getRootTreeElement(section);
-
-        const children = rootElement.children();
-        const childTexts = children.map(c => c.listItemElement.textContent || '');
-
-        assert.include(childTexts, '0: 0');
-        assert.include(childTexts, '9: 9');
-        assert.include(childTexts, '123: 123');
-        assert.include(childTexts, '-123: -123');
-        assert.include(childTexts, '3.14: 3.14');
-        assert.include(childTexts, '4294967295: 4294967295');
-        assert.include(childTexts, '4294967296: 4294967296');
-        assert.include(childTexts, 'Infinity: Infinity');
-        assert.include(childTexts, '-Infinity: -Infinity');
-        assert.include(childTexts, 'NaN: NaN');
-        assert.include(childTexts, 'length: 124');
-      });
-
-      it('formats very large sparse arrays', async () => {
-        const array: unknown[] = [];
-        const arrayObj = array as unknown as Record<string, unknown>;
-        array[4294967294] = 4294967294;
-        for (let i = 20; i >= 0; i -= 2) {
-          array[i] = i;
-        }
-        for (let i = 2, n = 33; n--; i *= 2) {
-          if (i <= 4294967294) {
-            array[i] = i;
-          } else {
-            arrayObj[String(i)] = i;
-          }
-        }
-        for (let i = 1; i < 20; i += 2) {
-          array[i] = i;
-        }
-
-        const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-        section.root = object;
-        section.title = html`title`;
-        assert.exists(section.objectTree);
-        section.objectTree.expanded = true;
-        renderElementIntoDOM(section);
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const rootElement = getRootTreeElement(section);
-
-        const children = rootElement.children();
-        const childTexts = children.map(c => c.listItemElement.textContent || '');
-
-        assert.deepEqual(childTexts, [
-          '[0 … 19]',
-          '[20 … 8388608]',
-          '[16777216 … 4294967294]',
-          '4294967296: 4294967296',
-          '8589934592: 8589934592',
-          'length: 4294967295',
-        ]);
-      });
-
-      it('formats large typed arrays with consecutive range grouping', async () => {
-        const array = new Uint8Array(64160003);
-        const object = createLocalArrayRemoteObject(array);
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-        section.root = object;
-        section.title = html`title`;
-        assert.exists(section.objectTree);
-        section.objectTree.expanded = true;
-        renderElementIntoDOM(section);
-        await UI.Widget.Widget.allUpdatesComplete;
-        await raf();
-        const rootElement = getRootTreeElement(section);
-
-        const children = rootElement.children();
-        const childTexts = children.map(c => c.listItemElement.textContent || '');
-
-        assert.deepEqual(childTexts, [
-          '[0 … 63999999]',
-          '[64000000 … 64160002]',
-          'length: 64160003',
-        ]);
-      });
+      sinon.assert.calledOnceWithMatch(reveal, sinon.match({object, expression}), false);
     });
   });
-});
 
-describeWithEnvironment('ObjectPropertyTreeElement', () => {
-  it('populates the context menu with a copy option for LocalJSONObjects', () => {
-    const parentObject = SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'});
-    const parentProperty = new SDK.RemoteObject.RemoteObjectProperty('parentNode', parentObject);
-    const parentNode = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(parentProperty, undefined, {
-      readOnly: false,
-      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+  describe('ArrayGrouping', () => {
+    function createLocalArrayRemoteObject(array: unknown[]|Uint8Array): SDK.RemoteObject.RemoteObject {
+      const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(array);
+      sinon.stub(remoteObject, 'arrayLength').returns(array.length);
+      const isTypedArray = ArrayBuffer.isView(array);
+      if (isTypedArray) {
+        sinon.stub(remoteObject, 'subtype').get(() => 'typedarray');
+      } else {
+        sinon.stub(remoteObject, 'subtype').get(() => 'array');
+      }
+
+      const originalGetOwnProperties = remoteObject.getOwnProperties;
+      sinon.stub(remoteObject, 'getOwnProperties').callsFake(async (generatePreview, nonIndexedPropertiesOnly) => {
+        let properties: SDK.RemoteObject.RemoteObjectProperty[] = [];
+
+        if (isTypedArray && array.length > 1000) {
+          // For large typed arrays, avoid Object.entries which is very slow.
+        } else {
+          const result = await originalGetOwnProperties.call(remoteObject, generatePreview, nonIndexedPropertiesOnly);
+          properties = result.properties ? [...result.properties] : [];
+        }
+
+        if (!properties.some(p => p.name === 'length')) {
+          const lengthObject = SDK.RemoteObject.RemoteObject.fromLocalObject(array.length);
+          properties.push(new SDK.RemoteObject.RemoteObjectProperty('length', lengthObject, false, false, false));
+        }
+        return {properties, internalProperties: null};
+      });
+      return remoteObject;
+    }
+
+    it('formats sparse array', async () => {
+      const array = [];
+      for (let i = 0; i < 202; ++i) {
+        array[i] = i;
+      }
+      array[300] = 300;
+      const object = createLocalArrayRemoteObject(array);
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+      section.root = object;
+      section.title = html`title`;
+      assert.exists(section.objectTree);
+      section.objectTree.expanded = true;
+      renderElementIntoDOM(section);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const rootElement = getRootTreeElement(section);
+
+      const children = rootElement.children();
+      const childTexts = children.map(c => c.listItemElement.textContent || '');
+
+      assert.deepEqual(childTexts, [
+        '[0 … 99]',
+        '[100 … 199]',
+        '[200 … 300]',
+        'length: 301',
+      ]);
+
+      const group1 = children[0];
+      group1.expand();
+      await raf();
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const group1Children = group1.children().map(c => c.listItemElement.textContent || '');
+      assert.lengthOf(group1Children, 100);
+      assert.strictEqual(group1Children[0], '0: 0');
+      assert.strictEqual(group1Children[99], '99: 99');
+
+      const group3 = children[2];
+      group3.expand();
+      await raf();
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const group3Children = group3.children().map(c => c.listItemElement.textContent || '');
+      assert.deepEqual(group3Children, [
+        '200: 200',
+        '201: 201',
+        '300: 300',
+      ]);
     });
 
-    const childObject = SDK.RemoteObject.RemoteObject.fromLocalObject('bar');
-    const childProperty = new SDK.RemoteObject.RemoteObjectProperty('foo', childObject);
-    const childNode = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(childProperty, parentNode, {
-      readOnly: false,
-      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    it('does not group arrays smaller than threshold', async () => {
+      const array = [];
+      for (let i = 0; i < 10; ++i) {
+        array[i] = undefined;
+      }
+      const object = createLocalArrayRemoteObject(array);
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+      section.root = object;
+      section.title = html`title`;
+      assert.exists(section.objectTree);
+      section.objectTree.expanded = true;
+      renderElementIntoDOM(section);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const rootElement = getRootTreeElement(section);
+
+      const children = rootElement.children();
+      const childTexts = children.map(c => c.listItemElement.textContent || '');
+
+      assert.deepEqual(childTexts, [
+        '0: undefined',
+        '1: undefined',
+        '2: undefined',
+        '3: undefined',
+        '4: undefined',
+        '5: undefined',
+        '6: undefined',
+        '7: undefined',
+        '8: undefined',
+        '9: undefined',
+        'length: 10',
+      ]);
     });
 
-    const treeElement = new ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement(childNode);
+    it('does not group sparse arrays if total element count is below threshold', async () => {
+      const array = [];
+      for (let i = 0; i < 10; ++i) {
+        array[i] = i;
+      }
+      array[100] = 100;
+      const object = createLocalArrayRemoteObject(array);
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+      section.root = object;
+      section.title = html`title`;
+      assert.exists(section.objectTree);
+      section.objectTree.expanded = true;
+      renderElementIntoDOM(section);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const rootElement = getRootTreeElement(section);
 
-    const event = new MouseEvent('contextmenu');
-    const contextMenu = treeElement.getContextMenu(event);
+      const children = rootElement.children();
+      const childTexts = children.map(c => c.listItemElement.textContent || '');
 
-    const copyValueItem = contextMenu.clipboardSection().items.find(
-        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Copy value');
-    assert.exists(copyValueItem);
+      assert.deepEqual(childTexts, [
+        '0: 0',
+        '1: 1',
+        '2: 2',
+        '3: 3',
+        '4: 4',
+        '5: 5',
+        '6: 6',
+        '7: 7',
+        '8: 8',
+        '9: 9',
+        '100: 100',
+        'length: 101',
+      ]);
+    });
+
+    it('formats large dense arrays with multi-level grouping', async () => {
+      const array = [];
+      for (let i = 0; i < 10005; ++i) {
+        array[i] = i;
+      }
+      const object = createLocalArrayRemoteObject(array);
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+      section.root = object;
+      section.title = html`title`;
+      assert.exists(section.objectTree);
+      section.objectTree.expanded = true;
+      renderElementIntoDOM(section);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const rootElement = getRootTreeElement(section);
+
+      const children = rootElement.children();
+      const childTexts = children.map(c => c.listItemElement.textContent || '');
+
+      assert.deepEqual(childTexts, [
+        '[0 … 9999]',
+        '[10000 … 10004]',
+        'length: 10005',
+      ]);
+
+      const group1 = children[0];
+      group1.expand();
+      await raf();
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const group1Children = group1.children().map(c => c.listItemElement.textContent || '');
+      assert.lengthOf(group1Children, 100);
+      assert.strictEqual(group1Children[0], '[0 … 99]');
+      assert.strictEqual(group1Children[99], '[9900 … 9999]');
+
+      const group2 = children[1];
+      group2.expand();
+      await raf();
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const group2Children = group2.children().map(c => c.listItemElement.textContent || '');
+      assert.deepEqual(group2Children, [
+        '10000: 10000',
+        '10001: 10001',
+        '10002: 10002',
+        '10003: 10003',
+        '10004: 10004',
+      ]);
+    });
+
+    it('formats arrays with non-index properties', async () => {
+      const array = [];
+      for (let i = 0; i < 10; ++i) {
+        array[i] = i;
+      }
+      array[123] = 123;
+      const arrayObj = array as unknown as Record<string, unknown>;
+      arrayObj['-123'] = -123;
+      arrayObj['3.14'] = 3.14;
+      arrayObj['4294967295'] = 4294967295;
+      arrayObj['4294967296'] = 4294967296;
+      arrayObj['Infinity'] = Infinity;
+      arrayObj['-Infinity'] = -Infinity;
+      arrayObj['NaN'] = NaN;
+
+      const object = createLocalArrayRemoteObject(array);
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+      section.root = object;
+      section.title = html`title`;
+      assert.exists(section.objectTree);
+      section.objectTree.expanded = true;
+      renderElementIntoDOM(section);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const rootElement = getRootTreeElement(section);
+
+      const children = rootElement.children();
+      const childTexts = children.map(c => c.listItemElement.textContent || '');
+
+      assert.include(childTexts, '0: 0');
+      assert.include(childTexts, '9: 9');
+      assert.include(childTexts, '123: 123');
+      assert.include(childTexts, '-123: -123');
+      assert.include(childTexts, '3.14: 3.14');
+      assert.include(childTexts, '4294967295: 4294967295');
+      assert.include(childTexts, '4294967296: 4294967296');
+      assert.include(childTexts, 'Infinity: Infinity');
+      assert.include(childTexts, '-Infinity: -Infinity');
+      assert.include(childTexts, 'NaN: NaN');
+      assert.include(childTexts, 'length: 124');
+    });
+
+    it('formats very large sparse arrays', async () => {
+      const array: unknown[] = [];
+      const arrayObj = array as unknown as Record<string, unknown>;
+      array[4294967294] = 4294967294;
+      for (let i = 176; i >= 0; i -= 2) {
+        array[i] = i;
+      }
+      for (let i = 2, n = 33; n--; i *= 2) {
+        if (i <= 4294967294) {
+          array[i] = i;
+        } else {
+          arrayObj[String(i)] = i;
+        }
+      }
+      for (let i = 1; i <= 177; i += 2) {
+        array[i] = i;
+      }
+
+      const object = createLocalArrayRemoteObject(array);
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+      section.root = object;
+      section.title = html`title`;
+      assert.exists(section.objectTree);
+      section.objectTree.expanded = true;
+      renderElementIntoDOM(section);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const rootElement = getRootTreeElement(section);
+
+      const children = rootElement.children();
+      const childTexts = children.map(c => c.listItemElement.textContent || '');
+
+      assert.deepEqual(childTexts, [
+        '[0 … 99]',
+        '[100 … 536870912]',
+        '[1073741824 … 4294967294]',
+        '4294967296: 4294967296',
+        '8589934592: 8589934592',
+        'length: 4294967295',
+      ]);
+    });
+
+    it('formats large typed arrays with consecutive range grouping', async () => {
+      const array = new Uint8Array(1005003);
+      const object = createLocalArrayRemoteObject(array);
+      const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+      section.root = object;
+      section.title = html`title`;
+      assert.exists(section.objectTree);
+      section.objectTree.expanded = true;
+      renderElementIntoDOM(section);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+      const rootElement = getRootTreeElement(section);
+
+      const children = rootElement.children();
+      const childTexts = children.map(c => c.listItemElement.textContent || '');
+
+      assert.deepEqual(childTexts, [
+        '[0 … 999999]',
+        '[1000000 … 1005002]',
+        'length: 1005003',
+      ]);
+    });
+
+    it('expands and collapses when the underlying node is expanded and collapsed', async () => {
+      const array = [];
+      for (let i = 0; i < 202; ++i) {
+        array[i] = i;
+      }
+      array[300] = 300;
+      const object = createLocalArrayRemoteObject(array);
+      const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+        readOnly: false,
+        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+      });
+
+      const rootChildren = await objectTree.populateChildrenIfNeeded();
+      objectTree.expanded = true;
+      const node = rootChildren.arrayRanges?.[0];
+      assert.exists(node);
+
+      const container = document.createElement('div');
+      ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW({
+        objectTree,
+        skipProto: false,
+        showOverflow: false,
+        onRootItemContextMenu: () => {},
+        onExpand: () => {},
+      },
+                                                                              {}, container);
+      renderElementIntoDOM(container);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+
+      const tree = container.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+      assert.exists(tree);
+      assert.exists(tree.shadowRoot);
+      const groupElement =
+          Array.from(tree.shadowRoot.querySelectorAll('li')).find(el => el.textContent?.includes('[0 … 99]'));
+      assert.exists(groupElement);
+
+      node.expanded = true;
+      assert.isTrue(groupElement.classList.contains('expanded'));
+
+      node.expanded = false;
+      assert.isFalse(groupElement.classList.contains('expanded'));
+    });
+  });
+
+  it('populates the context menu with a copy option for LocalJSONObjects', async () => {
+    const objectTree =
+        new ObjectUI.ObjectPropertiesSection.ObjectTree(SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'}), {
+          readOnly: false,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+        });
+    await objectTree.populateChildrenIfNeeded();
+    objectTree.expanded = true;
+
+    const container = document.createElement('div');
+    ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW({
+      objectTree,
+      skipProto: false,
+      showOverflow: false,
+      onRootItemContextMenu: () => {},
+      onExpand: () => {},
+    },
+                                                                            {}, container);
+    renderElementIntoDOM(container);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    const tree = container.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement;
+    assert.exists(tree);
+    const fooElement = tree.shadowRoot?.querySelector('[data-object-property-name-for-test="foo"]');
+    assert.exists(fooElement);
+
+    sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+    const appendItemSpy = sinon.spy(UI.ContextMenu.Section.prototype, 'appendItem');
+
+    fooElement.dispatchEvent(new MouseEvent('contextmenu'));
+
+    const copyValueCall = appendItemSpy.args.find(args => args[0] === 'Copy value');
+    assert.exists(copyValueCall);
 
     const copyText = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
-    contextMenu.invokeHandler(copyValueItem.id());
+    copyValueCall[1]();
     sinon.assert.calledWith(copyText, 'bar');
   });
 
   it('expands and collapses when the underlying node is expanded and collapsed', async () => {
-    const property = new SDK.RemoteObject.RemoteObjectProperty(
-        'name', SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'}), true, true);
-    const node = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property, undefined, {
-      readOnly: false,
-      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-    });
+    const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(
+        SDK.RemoteObject.RemoteObject.fromLocalObject({nested: {foo: 'bar'}}), {
+          readOnly: false,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+        });
+    const children = await objectTree.populateChildrenIfNeeded();
+    objectTree.expanded = true;
+    const nestedNode = children.properties?.[0];
+    assert.exists(nestedNode);
 
-    const treeElement = new ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement(node);
+    const container = document.createElement('div');
+    ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW({
+      objectTree,
+      skipProto: false,
+      showOverflow: false,
+      onRootItemContextMenu: () => {},
+      onExpand: () => {},
+    },
+                                                                            {}, container);
+    renderElementIntoDOM(container);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
 
-    node.expanded = true;
-    assert.isTrue(treeElement.expanded);
+    const tree = container.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement;
+    assert.exists(tree);
+    const nestedElement = tree.shadowRoot?.querySelector('[data-object-property-name-for-test="nested"]');
+    assert.exists(nestedElement);
 
-    node.expanded = false;
-    assert.isFalse(treeElement.expanded);
+    nestedNode.expanded = true;
+    assert.isTrue(nestedElement.classList.contains('expanded'));
+
+    nestedNode.expanded = false;
+    assert.isFalse(nestedElement.classList.contains('expanded'));
   });
 
   it('does not edit readonly values', async () => {
@@ -973,40 +1037,6 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     assert.strictEqual(nameElements[1].textContent,
                        '"  \uD835\uDC14\uD835\uDC0D\uD835\uDC08\uD835\uDC02\uD835\uDC0E\uD835\uDC03\\uD835"');
     assert.strictEqual(valueElements[1].textContent, '\'foo\'');
-  });
-});
-
-describeWithEnvironment('ArrayGroupingTreeElement', () => {
-  let target: SDK.Target.Target;
-  let runtimeModel: SDK.RuntimeModel.RuntimeModel;
-
-  beforeEach(() => {
-    target = createTarget();
-    runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel)!;
-  });
-
-  it('expands and collapses when the underlying node is expanded and collapsed', async () => {
-    const rootObj = createDeepRemoteObjectMock(runtimeModel, {});
-
-    // Inject array behavior into rootObj to get arrayRanges
-    sinon.stub(rootObj, 'subtype').get(() => Protocol.Runtime.RemoteObjectSubtype.Array);
-    sinon.stub(rootObj, 'arrayLength').returns(1000);
-    sinon.stub(rootObj, 'callFunctionJSON').resolves({ranges: [[0, 10, 11]]});
-
-    const root = new ObjectUI.ObjectPropertiesSection.ObjectTree(rootObj, {
-      readOnly: false,
-      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-    });
-
-    const rootChildren = await root.populateChildrenIfNeeded();
-    const node = rootChildren.arrayRanges?.[0]!;
-    const treeElement = new ObjectUI.ObjectPropertiesSection.ArrayGroupingTreeElement(node);
-
-    node.expanded = true;
-    assert.isTrue(treeElement.expanded);
-
-    node.expanded = false;
-    assert.isFalse(treeElement.expanded);
   });
 });
 

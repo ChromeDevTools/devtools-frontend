@@ -388,6 +388,10 @@ export class ObjectTreeExpansionTracker {
   }
 }
 
+const ARRAY_LOAD_THRESHOLD = 100;
+const ARRAY_BUCKET_THRESHOLD = 100;
+const ARRAY_SPARSE_ITERATION_THRESHOLD = 250000;
+
 export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<ObjectTreeNodeBase.EventTypes> {
   #children?: NodeChildren;
   protected readonly options: ObjectTreeOptions;
@@ -715,7 +719,7 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
   }
 
   override async populateChildrenIfNeededImpl(): Promise<NodeChildren> {
-    if (this.#range.count > ArrayGroupingTreeElement.bucketThreshold) {
+    if (this.#range.count > ARRAY_BUCKET_THRESHOLD) {
       const ranges = await arrayRangeGroups(this.object, this.#range.fromIndex, this.#range.toIndex);
       const arrayRanges = ranges?.ranges.map(
           ([fromIndex, toIndex, count]) => new ArrayGroupTreeNode(this.object, {fromIndex, toIndex, count}, this, {
@@ -729,7 +733,7 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
     const result = await this.#object.callFunction(buildArrayFragment, [
       {value: this.#range.fromIndex},
       {value: this.#range.toIndex},
-      {value: ArrayGroupingTreeElement.sparseIterationThreshold},
+      {value: ARRAY_SPARSE_ITERATION_THRESHOLD},
     ]);
     if (!result.object || result.wasThrown) {
       return {};
@@ -1240,9 +1244,6 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
   };
 }
 
-/** @constant */
-const ARRAY_LOAD_THRESHOLD = 100;
-
 const maxRenderableStringLength = 10000;
 
 export const enum ObjectPropertiesMode {
@@ -1289,7 +1290,7 @@ export function populateObjectTreeContextMenu(
       {checked: object.includeNullOrUndefinedValues, jslogContext: 'show-all'});
 }
 
-export interface ObjectTreeViewInput {
+interface ObjectTreeViewInput {
   renderAsSubtree: boolean;
   objectTree?: ObjectTree;
   linkifier?: Components.Linkifier.Linkifier;
@@ -1298,8 +1299,8 @@ export interface ObjectTreeViewInput {
   skipGettersAndSetters: boolean;
   onExpand: (expanded: boolean) => void;
 }
-export type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
-export const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
+type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
+const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
   const objectTree = input.objectTree;
   if (!objectTree) {
     render(nothing, target);
@@ -1454,7 +1455,7 @@ export function renderObjectTree(
       widgetRef(ObjectTreeWidget, () => {})}></ul>`;
 }
 
-export interface ObjectPropertiesSectionViewInput {
+interface ObjectPropertiesSectionViewInput {
   objectTree: ObjectTree;
   title?: Element|TemplateResult;
   linkifier?: Components.Linkifier.Linkifier;
@@ -1464,8 +1465,8 @@ export interface ObjectPropertiesSectionViewInput {
   onExpand: (expanded: boolean) => void;
 }
 
-export type ObjectPropertiesSectionView =
-    (input: ObjectPropertiesSectionViewInput, output: object, target: HTMLElement) => void;
+type ObjectPropertiesSectionView = (input: ObjectPropertiesSectionViewInput, output: object, target: HTMLElement) =>
+    void;
 
 export const OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: ObjectPropertiesSectionView = (input, _output, target) => {
 
@@ -1674,9 +1675,9 @@ export interface ObjectPropertyViewInput {
   node: ObjectTreeNode;
   search?: UI.TreeOutline.TreeSearch<ObjectTreeNodeBase>;
 }
-export type ObjectPropertyViewOutput = undefined;
-export type ObjectPropertyView =
-    (input: ObjectPropertyViewInput, output: ObjectPropertyViewOutput, target: HTMLElement) => void;
+type ObjectPropertyViewOutput = undefined;
+type ObjectPropertyView = (input: ObjectPropertyViewInput, output: ObjectPropertyViewOutput, target: HTMLElement) =>
+    void;
 export const OBJECT_PROPERTY_DEFAULT_VIEW: ObjectPropertyView = (input, _output, target) => {
   const {property} = input.node;
   const isInternalEntries = property.synthetic && input.node.name === '[[Entries]]';
@@ -1897,7 +1898,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
   }
 }
 
-export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
+class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   property: ObjectTreeNode;
   override toggleOnClick: boolean;
   private linkifier: Components.Linkifier.Linkifier|undefined;
@@ -2232,8 +2233,8 @@ async function arrayRangeGroups(object: SDK.RemoteObject.RemoteObject, fromIndex
   return await object.callFunctionJSON(packArrayRanges, [
     {value: fromIndex},
     {value: toIndex},
-    {value: ArrayGroupingTreeElement.bucketThreshold},
-    {value: ArrayGroupingTreeElement.sparseIterationThreshold},
+    {value: ARRAY_BUCKET_THRESHOLD},
+    {value: ARRAY_SPARSE_ITERATION_THRESHOLD},
   ]);
 
   /**
@@ -2361,7 +2362,7 @@ function buildArrayFragment(
   return result;
 }
 
-export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
+class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
   override toggleOnClick: boolean;
   private readonly linkifier: Components.Linkifier.Linkifier|undefined;
   readonly #child: ArrayGroupTreeNode;
@@ -2442,13 +2443,9 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
   override onattach(): void {
     this.listItemElement.classList.add('object-properties-section-name');
   }
-
-  // These should be module constants but they are modified by layout tests.
-  static bucketThreshold = 100;
-  static sparseIterationThreshold = 250000;
 }
 
-export interface ExpandableTextViewInput {
+interface ExpandableTextViewInput {
   copyText: () => void;
   expandText: () => void;
   expanded: boolean;
@@ -2456,8 +2453,8 @@ export interface ExpandableTextViewInput {
   byteCount: number;
   text: string;
 }
-export type ExpandableTextView = (input: ExpandableTextViewInput, output: object, target: HTMLElement) => void;
-export const EXPANDABLE_TEXT_DEFAULT_VIEW: ExpandableTextView = (input, output, target) => {
+type ExpandableTextView = (input: ExpandableTextViewInput, output: object, target: HTMLElement) => void;
+const EXPANDABLE_TEXT_DEFAULT_VIEW: ExpandableTextView = (input, output, target) => {
   const totalBytesText = i18n.ByteUtilities.bytesToString(input.byteCount);
   const canExpand = input.text.length < ExpandableTextPropertyValue.MAX_DISPLAYABLE_TEXT_LENGTH;
   const onContextMenu = (e: Event): void => {

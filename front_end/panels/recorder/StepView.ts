@@ -18,6 +18,7 @@ import stepViewStyles from './stepView.css.js';
 import {TimelineSection} from './TimelineSection.js';
 
 const {html} = Lit;
+const {ifDefined} = Lit.Directives;
 const {widget} = UI.Widget;
 
 const UIStrings = {
@@ -312,6 +313,8 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
     section: input.section,
   });
   const subtitle = input.step ? getSelectorPreview(input.step) : getSectionPreview(input.section);
+  const breakpointTitle =
+      input.hasBreakpoint ? i18nString(UIStrings.removeBreakpoint) : i18nString(UIStrings.addBreakpoint);
 
   // clang-format off
   Lit.render(
@@ -347,13 +350,26 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
           }
         }}
         class=${Lit.Directives.classMap(stepClasses)}>
-        <svg slot="icon" width="24" height="24" class="icon">
+        <svg slot="icon" width="24" height="24" class="icon"
+          role=${input.step ? 'button' : 'presentation'}
+          aria-label=${ifDefined(input.step ? breakpointTitle : undefined)}
+          aria-hidden=${ifDefined(input.step ? undefined : 'true')}
+          tabindex=${ifDefined(input.step ? 0 : undefined)}
+          @click=${input.step ? input.onBreakpointClick : undefined}
+          @keydown=${input.step ? (event: KeyboardEvent) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              input.onBreakpointClick();
+              event.preventDefault();
+              event.stopPropagation();
+            }
+          } : undefined}
+          jslog=${ifDefined(input.step ? VisualLogging.action('breakpoint').track({click: true}) : undefined)}>
           <circle class="circle-icon"/>
           <g class="error-icon">
             <path d="M1.5 1.5L6.5 6.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M1.5 6.5L6.5 1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </g>
-          <path @click=${input.onBreakpointClick} jslog=${VisualLogging.action('breakpoint').track({click: true})} class="breakpoint-icon" d="M2.5 5.5H17.7098L21.4241 12L17.7098 18.5H2.5V5.5Z"/>
+          <path class="breakpoint-icon" d="M2.5 5.5H17.7098L21.4241 12L17.7098 18.5H2.5V5.5Z"/>
         </svg>
         <div class="summary">
           <div class="title-container ${isExpandable ? 'action' : ''}"

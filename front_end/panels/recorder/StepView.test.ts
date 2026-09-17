@@ -47,6 +47,37 @@ describeWithEnvironment('StepView', () => {
     return component;
   }
 
+  function createViewInput(opts: Partial<StepView.ViewInput> = {}): StepView.ViewInput {
+    return {
+      state: StepView.State.DEFAULT,
+      showDetails: false,
+      isEndOfGroup: false,
+      isStartOfGroup: false,
+      stepIndex: 0,
+      sectionIndex: 0,
+      isFirstSection: false,
+      isLastSection: false,
+      isRecording: false,
+      isPlaying: false,
+      isVisible: true,
+      hasBreakpoint: false,
+      removable: false,
+      builtInConverters: [],
+      extensionConverters: [],
+      isSelected: false,
+      actions: [],
+      stepEdited: sinon.stub(),
+      onBreakpointClick: sinon.stub(),
+      handleStepAction: sinon.stub(),
+      toggleShowDetails: sinon.stub(),
+      onToggleShowDetailsKeydown: sinon.stub(),
+      populateStepContextMenu: sinon.stub(),
+      onStepClick: sinon.stub(),
+      onStepHover: sinon.stub(),
+      ...opts,
+    };
+  }
+
   describe('Step and section actions menu', () => {
     it('should produce actions for a step', async () => {
       const viewFunction = createViewFunctionStub(StepView.StepView);
@@ -80,9 +111,7 @@ describeWithEnvironment('StepView', () => {
 
       viewFunction.input.handleStepAction(new Menus.Menu.MenuItemSelectedEvent('add-step-before'));
 
-      sinon.assert.calledOnce(onAddStepSpy);
-      assert.strictEqual(onAddStepSpy.firstCall.args[0], step);
-      assert.strictEqual(onAddStepSpy.firstCall.args[1], 'before');
+      sinon.assert.calledOnceWithExactly(onAddStepSpy, step, StepView.AddStepPosition.BEFORE);
     });
 
     it('should call onAddStep before on sections', async () => {
@@ -93,9 +122,7 @@ describeWithEnvironment('StepView', () => {
 
       viewFunction.input.handleStepAction(new Menus.Menu.MenuItemSelectedEvent('add-step-before'));
 
-      sinon.assert.calledOnce(onAddStepSpy);
-      assert.strictEqual(onAddStepSpy.firstCall.args[0], section);
-      assert.strictEqual(onAddStepSpy.firstCall.args[1], 'before');
+      sinon.assert.calledOnceWithExactly(onAddStepSpy, section, StepView.AddStepPosition.BEFORE);
     });
 
     it('should call onAddStep after on steps', async () => {
@@ -106,9 +133,7 @@ describeWithEnvironment('StepView', () => {
 
       viewFunction.input.handleStepAction(new Menus.Menu.MenuItemSelectedEvent('add-step-after'));
 
-      sinon.assert.calledOnce(onAddStepSpy);
-      assert.strictEqual(onAddStepSpy.firstCall.args[0], step);
-      assert.strictEqual(onAddStepSpy.firstCall.args[1], 'after');
+      sinon.assert.calledOnceWithExactly(onAddStepSpy, step, StepView.AddStepPosition.AFTER);
     });
 
     it('should call onRemoveStep on steps', async () => {
@@ -119,8 +144,7 @@ describeWithEnvironment('StepView', () => {
 
       viewFunction.input.handleStepAction(new Menus.Menu.MenuItemSelectedEvent('remove-step'));
 
-      sinon.assert.calledOnce(onRemoveStepSpy);
-      assert.strictEqual(onRemoveStepSpy.firstCall.args[0], step);
+      sinon.assert.calledOnceWithExactly(onRemoveStepSpy, step);
     });
 
     it('should call onAddBreakpoint on steps', async () => {
@@ -131,8 +155,7 @@ describeWithEnvironment('StepView', () => {
 
       viewFunction.input.handleStepAction(new Menus.Menu.MenuItemSelectedEvent('add-breakpoint'));
 
-      sinon.assert.calledOnce(onAddBreakpointSpy);
-      assert.strictEqual(onAddBreakpointSpy.firstCall.args[0], 0);
+      sinon.assert.calledOnceWithExactly(onAddBreakpointSpy, 0);
     });
 
     it('should call onRemoveBreakpoint on steps', async () => {
@@ -143,8 +166,7 @@ describeWithEnvironment('StepView', () => {
 
       viewFunction.input.handleStepAction(new Menus.Menu.MenuItemSelectedEvent('remove-breakpoint'));
 
-      sinon.assert.calledOnce(onRemoveBreakpointSpy);
-      assert.strictEqual(onRemoveBreakpointSpy.firstCall.args[0], 0);
+      sinon.assert.calledOnceWithExactly(onRemoveBreakpointSpy, 0);
     });
 
     it('should call onCopyStep as JSON', async () => {
@@ -160,29 +182,86 @@ describeWithEnvironment('StepView', () => {
   });
 
   describe('Breakpoint events', () => {
-    it('should call onAddBreakpoint on breakpoint icon click if there is not a breakpoint on the step', async () => {
-      const viewFunction = createViewFunctionStub(StepView.StepView);
-      const component = await createStepView(viewFunction, {step});
-      const onAddBreakpointSpy = sinon.spy();
-      component.onAddBreakpoint = onAddBreakpointSpy;
+    describe('controller', () => {
+      it('adds a breakpoint when the breakpoint callback is invoked', async () => {
+        const viewFunction = createViewFunctionStub(StepView.StepView);
+        const component = await createStepView(viewFunction, {step});
+        const onAddBreakpointSpy = sinon.spy();
+        component.onAddBreakpoint = onAddBreakpointSpy;
 
-      viewFunction.input.onBreakpointClick();
+        viewFunction.input.onBreakpointClick();
 
-      sinon.assert.calledOnce(onAddBreakpointSpy);
-      assert.strictEqual(onAddBreakpointSpy.firstCall.args[0], 0);
+        sinon.assert.calledOnceWithExactly(onAddBreakpointSpy, 0);
+      });
+
+      it('removes a breakpoint when the breakpoint callback is invoked', async () => {
+        const viewFunction = createViewFunctionStub(StepView.StepView);
+        const component = await createStepView(viewFunction, {hasBreakpoint: true, step});
+        const onRemoveBreakpointSpy = sinon.spy();
+        component.onRemoveBreakpoint = onRemoveBreakpointSpy;
+
+        viewFunction.input.onBreakpointClick();
+
+        sinon.assert.calledOnceWithExactly(onRemoveBreakpointSpy, 0);
+      });
     });
 
-    it('should call onRemoveBreakpoint on breakpoint icon click if there already is a breakpoint on the step',
-       async () => {
-         const viewFunction = createViewFunctionStub(StepView.StepView);
-         const component = await createStepView(viewFunction, {hasBreakpoint: true, step});
-         const onRemoveBreakpointSpy = sinon.spy();
-         component.onRemoveBreakpoint = onRemoveBreakpointSpy;
+    describe('view', () => {
+      it('exposes the breakpoint icon as an add breakpoint button', () => {
+        const container = document.createElement('div');
 
-         viewFunction.input.onBreakpointClick();
+        StepView.DEFAULT_VIEW(createViewInput({step}), {}, container);
+        const icon = container.querySelector<SVGElement>('.icon');
+        assert.exists(icon);
+        assert.strictEqual(icon.getAttribute('role'), 'button');
+        assert.strictEqual(icon.getAttribute('aria-label'), 'Add breakpoint');
+      });
 
-         sinon.assert.calledOnce(onRemoveBreakpointSpy);
-         assert.strictEqual(onRemoveBreakpointSpy.firstCall.args[0], 0);
-       });
+      it('exposes the breakpoint icon as a remove breakpoint button', () => {
+        const container = document.createElement('div');
+
+        StepView.DEFAULT_VIEW(createViewInput({hasBreakpoint: true, step}), {}, container);
+        const icon = container.querySelector<SVGElement>('.icon');
+        assert.exists(icon);
+        assert.strictEqual(icon.getAttribute('aria-label'), 'Remove breakpoint');
+      });
+
+      it('hides the non-actionable section icon from assistive technology', () => {
+        const container = document.createElement('div');
+
+        StepView.DEFAULT_VIEW(createViewInput({section}), {}, container);
+        const icon = container.querySelector<SVGElement>('.icon');
+        assert.exists(icon);
+        assert.strictEqual(icon.getAttribute('aria-hidden'), 'true');
+        assert.isFalse(icon.hasAttribute('jslog'));
+      });
+
+      it('invokes the breakpoint callback when the breakpoint button is clicked', () => {
+        const onBreakpointClick = sinon.spy();
+        const container = document.createElement('div');
+
+        StepView.DEFAULT_VIEW(createViewInput({step, onBreakpointClick}), {}, container);
+        const icon = container.querySelector<SVGElement>('.icon');
+        assert.exists(icon);
+        const event = new MouseEvent('click', {bubbles: true});
+        icon.dispatchEvent(event);
+
+        sinon.assert.calledOnceWithExactly(onBreakpointClick, event);
+      });
+
+      it('invokes the breakpoint callback when the breakpoint button is activated with the keyboard', () => {
+        const onBreakpointClick = sinon.spy();
+        const container = document.createElement('div');
+
+        StepView.DEFAULT_VIEW(createViewInput({step, onBreakpointClick}), {}, container);
+        const icon = container.querySelector<SVGElement>('.icon');
+        assert.exists(icon);
+        icon.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+        icon.dispatchEvent(new KeyboardEvent('keydown', {key: ' ', bubbles: true}));
+
+        sinon.assert.calledTwice(onBreakpointClick);
+        sinon.assert.alwaysCalledWithExactly(onBreakpointClick);
+      });
+    });
   });
 });

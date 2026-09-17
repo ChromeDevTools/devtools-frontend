@@ -37,7 +37,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
     <div class=${Lit.Directives.classMap(classes)}>
       <div class="overlay"></div>
       <div class="icon"><slot name="icon"></slot></div>
-      <svg width="24" height="100%" class="bar">
+      <svg width="24" height="100%" class="bar" aria-hidden="true">
         <rect class="line" x="7" y="0" width="2" height="100%" />
       </svg>
       <slot></slot>

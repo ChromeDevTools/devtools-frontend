@@ -12,6 +12,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createWorkspaceProject} from '../../testing/OverridesHelpers.js';
+import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
@@ -2645,7 +2646,8 @@ describe('InterceptedRequest', () => {
   async function checkRequestOverride(
       target: SDK.Target.Target, request: Protocol.Network.Request, requestId: Protocol.Fetch.RequestId,
       responseStatusCode: number, responseHeaders: Protocol.Fetch.HeaderEntry[], responseBody: string,
-      expectedOverriddenResponse: OverriddenResponse, expectedSetCookieHeaders: Protocol.Fetch.HeaderEntry[] = []) {
+      expectedOverriddenResponse: OverriddenResponse,
+      expectedSetCookieHeaders: Protocol.Fetch.HeaderEntry[] = []): Promise<SDK.NetworkRequest.NetworkRequest> {
     const multitargetNetworkManager = universe.multitargetNetworkManager;
     const fetchAgent = target.fetchAgent();
 
@@ -2677,6 +2679,7 @@ describe('InterceptedRequest', () => {
     sinon.assert.calledOnceWithExactly(fulfillRequestSpy, expectedOverriddenResponse);
     assert.deepEqual(networkRequest.setCookieHeaders, expectedSetCookieHeaders);
     fulfillRequestSpy.resetHistory();
+    return networkRequest;
   }
 
   async function checkSetCookieOverride(
@@ -2927,7 +2930,7 @@ describe('InterceptedRequest', () => {
     const responseCode = 200;
     const requestId = 'request_id_2' as Protocol.Fetch.RequestId;
     const responseBody = 'interceptedRequest content';
-    await checkRequestOverride(
+    const networkRequest = await checkRequestOverride(
         target, {
           method: 'GET',
           url: 'https://www.example.com/helloWorld.html',
@@ -2941,7 +2944,98 @@ describe('InterceptedRequest', () => {
             {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],
         });
+    const contentData = await networkRequest.requestContentData();
+    assert.isFalse(TextUtils.ContentData.ContentData.isError(contentData));
+    assert.strictEqual((contentData as TextUtils.ContentData.ContentData).text, 'Hello World!');
   });
+
+  it('provides overridden content data without querying backend with preserve-log off', async () => {
+    universe.settings.resolve(SDK.SDKSettings.preserveNetworkLogSettingDescriptor).set(false);
+    const responseCode = 200;
+    const requestId = 'request_id_override_preserve_log_off' as Protocol.Fetch.RequestId;
+    const serverResponseBody = 'original server content that should not be shown';
+    const networkRequest = await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'https://www.example.com/helloWorld.html',
+        } as Protocol.Network.Request,
+        requestId, responseCode, [{name: 'content-type', value: 'text/html; charset=utf-8'}], serverResponseBody, {
+          requestId,
+          responseCode,
+          body: btoa('Hello World!'),
+          responseHeaders: [
+            {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+          ],
+        });
+
+    const requestContentDataSpy = sinon.spy(SDK.NetworkManager.NetworkManager, 'requestContentData');
+    const contentData = await networkRequest.requestContentData();
+    assert.isFalse(TextUtils.ContentData.ContentData.isError(contentData));
+    assert.strictEqual((contentData as TextUtils.ContentData.ContentData).text, 'Hello World!');
+    sinon.assert.notCalled(requestContentDataSpy);
+    requestContentDataSpy.restore();
+  });
+
+  it('preserves overridden content data across cross-origin navigation with preserve-log on', async () => {
+    universe.settings.resolve(SDK.SDKSettings.preserveNetworkLogSettingDescriptor).set(true);
+    const responseCode = 200;
+    const requestId = 'request_id_override_cross_origin_nav' as Protocol.Fetch.RequestId;
+    const serverResponseBody = 'original server content that should not be shown';
+    const networkRequest = await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'https://www.example.com/helloWorld.html',
+        } as Protocol.Network.Request,
+        requestId, responseCode, [{name: 'content-type', value: 'text/html; charset=utf-8'}], serverResponseBody, {
+          requestId,
+          responseCode,
+          body: btoa('Hello World!'),
+          responseHeaders: [
+            {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+          ],
+        });
+
+    // Simulate cross-origin navigation to a new page
+    navigate(getMainFrame(target), {
+      url: urlString`https://www.different-origin.com/index.html`,
+      securityOrigin: 'https://www.different-origin.com',
+    });
+
+    const requestContentDataSpy = sinon.spy(SDK.NetworkManager.NetworkManager, 'requestContentData');
+    const contentData = await networkRequest.requestContentData();
+    assert.isFalse(TextUtils.ContentData.ContentData.isError(contentData));
+    assert.strictEqual((contentData as TextUtils.ContentData.ContentData).text, 'Hello World!');
+    sinon.assert.notCalled(requestContentDataSpy);
+    requestContentDataSpy.restore();
+  });
+
+  it('populates content data on networkRequest when continueRequestWithContent is called with overridden body',
+     async () => {
+       const fetchAgent = target.fetchAgent();
+       const requestId = 'request_id_continue_with_content' as Protocol.Fetch.RequestId;
+       const request = {
+         method: 'GET',
+         url: 'https://www.example.com/custom.json',
+       } as Protocol.Network.Request;
+       const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
+           requestId as unknown as Protocol.Network.RequestId, urlString`${request.url}`, urlString`${request.url}`,
+           null, null, null);
+
+       const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
+           universe.multitargetNetworkManager, fetchAgent, request, Protocol.Network.ResourceType.XHR, requestId,
+           networkRequest, 200, [{name: 'content-type', value: 'application/json'}]);
+
+       const overriddenJson = '{"overridden": true}';
+       const blob = new Blob([overriddenJson], {type: 'application/json'});
+       await interceptedRequest.continueRequestWithContent(blob, /* encoded= */ false, [],
+                                                           /* isBodyOverridden= */ true);
+
+       const contentData = await networkRequest.requestContentData();
+       assert.isFalse(TextUtils.ContentData.ContentData.isError(contentData));
+       assert.strictEqual((contentData as TextUtils.ContentData.ContentData).text, overriddenJson);
+     });
 
   describe('NetworkPersistenceManager', () => {
     it('decodes the intercepted response body with the right charset', async () => {

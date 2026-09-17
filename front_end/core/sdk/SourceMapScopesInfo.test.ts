@@ -1001,6 +1001,44 @@ describe('SourceMapScopesInfo', () => {
       assert.strictEqual(scopeChain[2].type(), Protocol.Debugger.ScopeType.Global);
       assert.notInstanceOf(scopeChain[2], SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry);
     });
+
+    it('builds scope chain for outlined functions (isHidden: true) if and only if they have an associated original scope',
+       () => {
+         const builder = new ScopeInfoBuilder();
+         builder.startScope(0, 0, {kind: 'global', key: 'global'})
+             .startScope(
+                 5, 0,
+                 {kind: 'function', isStackFrame: true, name: 'outlinedWithScope', variables: ['v'], key: 'outlined'})
+             .endScope(15, 0)
+             .endScope(20, 0);
+
+         builder.startRange(0, 0, {scopeKey: 'global'})
+             .startRange(0, 20, {scopeKey: 'outlined', isStackFrame: true, isHidden: true, values: ['"val"']})
+             .endRange(0, 50)
+             .startRange(0, 60, {isStackFrame: true, isHidden: true})
+             .endRange(0, 90)
+             .endRange(0, 100);
+
+         // Case 1: Outlined function WITH linked OriginalScope via definition -> returns scope chain.
+         const setup1 = setUpCallFrameAndSourceMap({
+           generatedPausedPosition: {line: 0, column: 30},
+           mappedPausedPosition: {sourceIndex: 0, line: 10, column: 0},
+         });
+         const info1 = new SourceMapScopesInfo(setup1.sourceMap, builder.build());
+         const scopeChain1 = info1.resolveMappedScopeChain(setup1.callFrame);
+         assert.isNotNull(scopeChain1);
+         assert.lengthOf(scopeChain1, 2);
+         assert.strictEqual(scopeChain1[0].type(), Protocol.Debugger.ScopeType.Local);
+         assert.strictEqual(scopeChain1[0].name(), 'outlinedWithScope');
+
+         // Case 2: Outlined function WITHOUT linked OriginalScope -> returns null.
+         const setup2 = setUpCallFrameAndSourceMap({
+           generatedPausedPosition: {line: 0, column: 75},
+         });
+         const info2 = new SourceMapScopesInfo(setup2.sourceMap, builder.build());
+         const scopeChain2 = info2.resolveMappedScopeChain(setup2.callFrame);
+         assert.isNull(scopeChain2);
+       });
   });
 
   describe('findOriginalFunctionName', () => {

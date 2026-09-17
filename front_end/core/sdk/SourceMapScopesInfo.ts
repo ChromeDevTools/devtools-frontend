@@ -357,7 +357,8 @@ export class SourceMapScopesInfo {
     let seenFunctionScope = false;
     const result: ScopeChainEntry[] = [];
     // Walk the original scope chain outwards and try to find the corresponding generated range along the way.
-    for (let originalScope = rangeChain.at(-1)?.originalScope; originalScope; originalScope = originalScope.parent) {
+    for (let originalScope: ScopesCodec.OriginalScope|null|undefined = innerMostOriginalScope; originalScope;
+         originalScope = originalScope.parent) {
       const range = rangeChain.findLast(r => r.originalScope === originalScope);
       // `kind` is just a label for scope UI views and has no semantic significance, so `isStackFrame`
       // decides whether this scope is a function scope.

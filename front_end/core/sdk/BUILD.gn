@@ -167,6 +167,7 @@ ts_library("unittests") {
     "CSSMatchedStyles.test.ts",
     "CSSPropertyParser.test.ts",
     "CSSPropertyParserMatchers.test.ts",
+    "Connections.test.ts",
     "RehydratingConnection.test.ts",
   ]
 

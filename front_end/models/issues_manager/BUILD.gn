@@ -85,7 +85,6 @@ devtools_issue_description_files = [
   "connectionAllowlistReportingEndpointNotToken.md",
   "CompatibilityModeQuirks.md",
   "CookieAttributeValueExceedsMaxSize.md",
-  "cookieExcludeBlockedWithinRelatedWebsiteSet.md",
   "cookieExcludeDomainNonAscii.md",
   "cookieWarnDomainNonAscii.md",
   "corsAllowCredentialsRequired.md",

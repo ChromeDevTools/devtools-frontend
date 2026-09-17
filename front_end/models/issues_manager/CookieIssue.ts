@@ -403,11 +403,6 @@ const excludeDomainNonAscii: LazyMarkdownIssueDescription = {
   links: [],
 };
 
-const excludeBlockedWithinRelatedWebsiteSet: LazyMarkdownIssueDescription = {
-  file: 'cookieExcludeBlockedWithinRelatedWebsiteSet.md',
-  links: [],
-};
-
 const cookieCrossSiteRedirectDowngrade: LazyMarkdownIssueDescription = {
   file: 'cookieCrossSiteRedirectDowngrade.md',
   links: [{
@@ -451,14 +446,6 @@ const issueDescriptions = new Map<string, LazyMarkdownIssueDescription>([
   ['CookieIssue::WarnDomainNonASCII::SetCookie', warnDomainNonAscii],
   ['CookieIssue::ExcludeDomainNonASCII::ReadCookie', excludeDomainNonAscii],
   ['CookieIssue::ExcludeDomainNonASCII::SetCookie', excludeDomainNonAscii],
-  [
-    'CookieIssue::ExcludeThirdPartyCookieBlockedInRelatedWebsiteSet::ReadCookie',
-    excludeBlockedWithinRelatedWebsiteSet,
-  ],
-  [
-    'CookieIssue::ExcludeThirdPartyCookieBlockedInRelatedWebsiteSet::SetCookie',
-    excludeBlockedWithinRelatedWebsiteSet,
-  ],
   ['CookieIssue::WarnThirdPartyPhaseout::ReadCookie', placeholderDescriptionForInvisibleIssues],
   ['CookieIssue::WarnThirdPartyPhaseout::SetCookie', placeholderDescriptionForInvisibleIssues],
   ['CookieIssue::WarnDeprecationTrialMetadata::ReadCookie', placeholderDescriptionForInvisibleIssues],

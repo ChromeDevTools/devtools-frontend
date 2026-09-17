@@ -1454,3 +1454,36 @@ Node.prototype.removeChildren = function(): void {
   }
   return originalRemoveChildren.call(this);
 };
+
+export interface WrapperWidgetParams {
+  widget: Widget;
+}
+
+export class WrapperWidget extends Widget {
+  #widget: Widget|null = null;
+  constructor(element: HTMLElement, _deps: never[], params?: WrapperWidgetParams) {
+    super(element);
+    this.element.style.setProperty('display', 'contents');
+    if (params?.widget) {
+      this.widget = params.widget;
+    }
+  }
+
+  set widget(widget: Widget|null) {
+    if (this.#widget === widget) {
+      return;
+    }
+    if (this.#widget) {
+      this.#widget.detach();
+    }
+    this.#widget = widget;
+    if (this.#widget) {
+      this.#widget.show(this.element, undefined, /* suppressOrphanWidgetError */ true);
+    }
+  }
+  override focus(): void {
+    if (this.#widget) {
+      this.#widget.focus();
+    }
+  }
+}

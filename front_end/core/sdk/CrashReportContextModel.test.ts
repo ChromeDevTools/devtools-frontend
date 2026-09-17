@@ -5,14 +5,19 @@
 import {assert} from 'chai';
 
 import type * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import * as SDK from './sdk.js';
 
-describeWithEnvironment('CrashReportContextModel', () => {
+describe('CrashReportContextModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
   let model: SDK.CrashReportContextModel.CrashReportContextModel;
   let universe: TestUniverse;
   let connection: MockCDPConnection;

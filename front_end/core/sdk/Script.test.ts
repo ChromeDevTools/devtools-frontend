@@ -5,14 +5,19 @@
 import {assert} from 'chai';
 
 import type * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import * as SDK from './sdk.js';
 
-describeWithEnvironment('Script', () => {
+describe('Script', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
   let universe: TestUniverse;
   let connection: MockCDPConnection;
 

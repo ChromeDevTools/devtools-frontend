@@ -7,8 +7,8 @@ import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {
@@ -19,6 +19,8 @@ import {
   mockResourceTree,
   navigate,
 } from '../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SDK from './sdk.js';
@@ -27,7 +29,10 @@ const {urlString} = Platform.DevToolsPath;
 const MAIN_FRAME_RESOURCE_DOMAIN = urlString`example.org`;
 const CHILD_FRAME_RESOURCE_DOMAIN = urlString`example.net`;
 
-describeWithEnvironment('CookieModel', () => {
+describe('CookieModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
   const PROTOCOL_COOKIE = {
     domain: '.example.com',
     name: 'name',

@@ -6,7 +6,10 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import type * as Common from '../common/common.js';
 
 import * as SDK from './sdk.js';
@@ -56,7 +59,15 @@ class StorageBucketModelListener {
   }
 }
 
-describeWithEnvironment('StorageBucketsModel', () => {
+describe('StorageBucketsModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
   let storageKeyManager: SDK.StorageKeyManager.StorageKeyManager;
   let storageBucketsModel: SDK.StorageBucketsModel.StorageBucketsModel;
   let target: SDK.Target.Target;
@@ -128,7 +139,7 @@ describeWithEnvironment('StorageBucketsModel', () => {
   };
 
   beforeEach(() => {
-    target = createTarget();
+    target = universe.createTarget();
     storageKeyManager =
         target.model(SDK.StorageKeyManager.StorageKeyManager) as SDK.StorageKeyManager.StorageKeyManager;
     storageBucketsModel =

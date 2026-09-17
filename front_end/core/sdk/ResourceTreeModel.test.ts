@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {
   addChildFrame,
@@ -18,6 +18,8 @@ import {
   mockResourceTree,
   navigate,
 } from '../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Platform from '../platform/platform.js';
 
@@ -25,7 +27,10 @@ import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithEnvironment('ResourceTreeModel', () => {
+describe('ResourceTreeModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
   let universe: TestUniverse;
   let connection: MockCDPConnection;
 

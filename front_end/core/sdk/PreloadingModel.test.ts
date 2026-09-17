@@ -5,18 +5,37 @@
 import {assert} from 'chai';
 
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {dispatchEvent} from '../../testing/MockConnection.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Platform from '../platform/platform.js';
+import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithEnvironment('PreloadingModel', () => {
+describe('PreloadingModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+  let connection: MockCDPConnection;
+  beforeEach(() => {
+    universe = new TestUniverse();
+    connection = new MockCDPConnection();
+  });
+
+  function dispatchEvent<T extends ProtocolClient.CDPConnection.Event>(
+      target: SDK.Target.Target, event: T, payload: ProtocolClient.CDPConnection.EventParams<T>): void {
+    connection.dispatchEvent(event, payload, target.sessionId);
+  }
   it('adds and deletes rule sets and preloading attempts', async () => {
-    const target = createTarget();
+    const target = universe.createTarget({connection});
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
     assert.exists(model);
 
@@ -299,7 +318,7 @@ describeWithEnvironment('PreloadingModel', () => {
   });
 
   it('registers preloading attempt with status NotTriggered', async () => {
-    const target = createTarget();
+    const target = universe.createTarget({connection});
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
     assert.exists(model);
 
@@ -360,7 +379,7 @@ describeWithEnvironment('PreloadingModel', () => {
   });
 
   it('clears rule sets and preloading attempts for previous pages', async () => {
-    const target = createTarget();
+    const target = universe.createTarget({connection});
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
     assert.exists(model);
 
@@ -494,7 +513,7 @@ describeWithEnvironment('PreloadingModel', () => {
   });
 
   it('filters preloading attempts by rule set id', async () => {
-    const target = createTarget();
+    const target = universe.createTarget({connection});
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
     assert.exists(model);
 
@@ -675,7 +694,7 @@ describeWithEnvironment('PreloadingModel', () => {
   });
 
   it('regards attempts with strongest action as representative', async () => {
-    const target = createTarget();
+    const target = universe.createTarget({connection});
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
     assert.exists(model);
 
@@ -872,7 +891,7 @@ describeWithEnvironment('PreloadingModel', () => {
   });
 
   it('adds and deletes a preloading attempt for prerender-until-script', async () => {
-    const target = createTarget();
+    const target = universe.createTarget({connection});
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
     assert.exists(model);
 
@@ -943,7 +962,7 @@ describeWithEnvironment('PreloadingModel', () => {
   });
 
   it('reset() clears all rule sets and preloading attempts', async () => {
-    const target = createTarget();
+    const target = universe.createTarget({connection});
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
     assert.exists(model);
 

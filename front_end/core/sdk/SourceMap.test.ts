@@ -6,7 +6,9 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Formatter from '../../models/formatter/formatter.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Common from '../common/common.js';
@@ -54,7 +56,10 @@ describe('SourceMapEntry', () => {
   });
 });
 
-describeWithEnvironment('SourceMap', () => {
+describe('SourceMap', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
   const compiledUrl = urlString`compiled.js`;
   const sourceMapJsonUrl = urlString`source-map.json`;
   const sourceUrlExample = urlString`example.js`;

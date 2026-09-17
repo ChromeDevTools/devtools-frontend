@@ -6,8 +6,11 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SDK from './sdk.js';
 
@@ -411,7 +414,15 @@ describe('RemoteObjectProperty', () => {
   });
 });
 
-describeWithEnvironment('ScopeRemoteObject', () => {
+describe('ScopeRemoteObject', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
   it('preserves writability of properties', async () => {
     const connection = new MockCDPConnection();
     connection.setSuccessHandler('Runtime.getProperties',
@@ -422,7 +433,7 @@ describeWithEnvironment('ScopeRemoteObject', () => {
                                      {name: 'c', configurable: true, enumerable: true, writable: true},
                                    ],
                                  }));
-    const target = createTarget({connection});
+    const target = universe.createTarget({connection});
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;
     const scopeRef = new SDK.RemoteObject.ScopeRef(0, '0' as Protocol.Debugger.CallFrameId);
 
@@ -434,12 +445,20 @@ describeWithEnvironment('ScopeRemoteObject', () => {
   });
 });
 
-describeWithEnvironment('RemoteError', () => {
+describe('RemoteError', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
   let target: SDK.Target.Target;
   let runtimeModel: SDK.RuntimeModel.RuntimeModel;
 
   beforeEach(() => {
-    target = createTarget();
+    target = universe.createTarget();
     runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;
   });
 
@@ -496,12 +515,20 @@ describeWithEnvironment('RemoteError', () => {
   });
 });
 
-describeWithEnvironment('RemoteObject TypedArray', () => {
+describe('RemoteObject TypedArray', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
   let target: SDK.Target.Target;
   let runtimeModel: SDK.RuntimeModel.RuntimeModel;
 
   beforeEach(() => {
-    target = createTarget();
+    target = universe.createTarget();
     runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;
   });
 

@@ -6,8 +6,10 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SDK from './sdk.js';
@@ -96,7 +98,10 @@ async function stopMockScreencast(connection: MockCDPConnection,
   });
 }
 
-describeWithEnvironment('ScreenCaptureModel', () => {
+describe('ScreenCaptureModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
   let target: SDK.Target.Target;
   let screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel;
   let universe: TestUniverse;

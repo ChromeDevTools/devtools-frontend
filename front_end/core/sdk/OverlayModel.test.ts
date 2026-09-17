@@ -5,8 +5,10 @@
 import {assert} from 'chai';
 
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Platform from '../platform/platform.js';
 
@@ -14,7 +16,10 @@ import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithEnvironment('OverlayModel', () => {
+describe('OverlayModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
   const DOCUMENT_URL_FOR_TEST = urlString`https://example.com/`;
 
   let cssModel: SDK.CSSModel.CSSModel|null;

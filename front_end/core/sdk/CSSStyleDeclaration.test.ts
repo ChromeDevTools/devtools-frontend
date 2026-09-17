@@ -5,7 +5,10 @@
 import {assert} from 'chai';
 
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SDK from './sdk.js';
 
@@ -15,9 +18,17 @@ function assertPropertValues<T>(object: T, expectedKeyValuePairs: Array<[key: st
   }
 }
 
-describeWithEnvironment('CSSStyleDeclaration', () => {
+describe('CSSStyleDeclaration', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
   it('should correctly construct new CSSStyleDeclaration', () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const stubCSSStyle = {
       styleSheetId: 'STYLE_SHEET_ID' as Protocol.DOM.StyleSheetId,
@@ -103,7 +114,7 @@ describeWithEnvironment('CSSStyleDeclaration', () => {
   });
 
   it('should correctly compute active and inactive declarations', () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const stubCSSStyle = {
       styleSheetId: 'STYLE_SHEET_ID' as Protocol.DOM.StyleSheetId,
@@ -179,7 +190,7 @@ describeWithEnvironment('CSSStyleDeclaration', () => {
   });
 
   it('correclty computes inactive variable properties in the presence of properties that failed to parse', () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const stubCSSStyle = {
       styleSheetId: 'STYLE_SHEET_ID' as Protocol.DOM.StyleSheetId,
@@ -224,7 +235,7 @@ describeWithEnvironment('CSSStyleDeclaration', () => {
   });
 
   it('should use ranged declaration as the active one', () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const stubCSSStyle = {
       styleSheetId: 'STYLE_SHEET_ID' as Protocol.DOM.StyleSheetId,

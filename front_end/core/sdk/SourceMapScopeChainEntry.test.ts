@@ -6,17 +6,28 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 
 import * as SDK from './sdk.js';
 
-describeWithEnvironment('SourceMapScopeRemoteObject', () => {
+describe('SourceMapScopeRemoteObject', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
   let callFrame: sinon.SinonStubbedInstance<SDK.DebuggerModel.CallFrame>;
 
   beforeEach(() => {
     callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
-    const target = createTarget();
+    const target = universe.createTarget();
     callFrame.debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
   });
 
@@ -187,12 +198,20 @@ describeWithEnvironment('SourceMapScopeRemoteObject', () => {
   });
 });
 
-describeWithEnvironment('SourceMapScopeChainEntry', () => {
+describe('SourceMapScopeChainEntry', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
   let callFrame: sinon.SinonStubbedInstance<SDK.DebuggerModel.CallFrame>;
 
   beforeEach(() => {
     callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
-    callFrame.debuggerModel = createTarget().model(SDK.DebuggerModel.DebuggerModel)!;
+    callFrame.debuggerModel = universe.createTarget().model(SDK.DebuggerModel.DebuggerModel)!;
   });
 
   function entry(scope: Partial<ScopesCodec.OriginalScope>, isInnerMostFunction = false) {

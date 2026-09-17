@@ -28,6 +28,11 @@ describe('The Elements tab', function() {
   it('shows adopted stylesheets in document root', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/adopted-stylesheet.html');
     const tree = await devToolsPage.waitForAria('Page DOM');
+    await waitForStartsWith(devToolsPage, tree, '#adopted-style-sheets');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '#adopted-style-sheets', 'adopted-style-sheets');
+    await devToolsPage.pressKey('ArrowRight');
+    await devToolsPage.pressKey('ArrowDown');
+    await devToolsPage.pressKey('ArrowRight');
     const expectedAdoptedStyleSheet = '#adopted-style-sheets#adopted-style-sheet/* For document */';
     await waitForStartsWith(devToolsPage, tree, expectedAdoptedStyleSheet);
   });
@@ -35,6 +40,11 @@ describe('The Elements tab', function() {
   it('updates adopted stylesheets in document root', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/adopted-stylesheet.html');
     const tree = await devToolsPage.waitForAria('Page DOM');
+    await waitForStartsWith(devToolsPage, tree, '#adopted-style-sheets');
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '#adopted-style-sheets', 'adopted-style-sheets');
+    await devToolsPage.pressKey('ArrowRight');
+    await devToolsPage.pressKey('ArrowDown');
+    await devToolsPage.pressKey('ArrowRight');
     const initialAdoptedStyleSheet = '#adopted-style-sheets#adopted-style-sheet/* For document */';
     await waitForStartsWith(devToolsPage, tree, initialAdoptedStyleSheet);
     await inspectedPage.evaluate(() => {
@@ -48,6 +58,9 @@ describe('The Elements tab', function() {
     await inspectedPage.evaluate(() => {
       document.adoptedStyleSheets[0].replaceSync('/**/');
     });
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '#adopted-style-sheets', 'adopted-style-sheets');
+    await devToolsPage.pressKey('ArrowDown');
+    await devToolsPage.pressKey('ArrowRight');
     await waitForStartsWith(devToolsPage, tree,
                             '#adopted-style-sheets#adopted-style-sheet/**/#adopted-style-sheet<html>');
   });

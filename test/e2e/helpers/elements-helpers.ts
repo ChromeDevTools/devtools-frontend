@@ -277,8 +277,9 @@ export const waitForChildrenOfSelectedElementNode =
 };
 
 export const waitForAndClickTreeElementWithPartialText =
-    async(devToolsPage: DevToolsPage, text: string): Promise<void> => {
-  await devToolsPage.waitForFunction(async () => await clickTreeElementWithPartialText(devToolsPage, text));
+    async(devToolsPage: DevToolsPage, text: string, jslogContext?: string): Promise<void> => {
+  await devToolsPage.waitForFunction(async () =>
+                                         await clickTreeElementWithPartialText(devToolsPage, text, jslogContext));
 };
 
 export const waitForElementWithPartialText =
@@ -299,11 +300,13 @@ export const elementWithPartialText =
   return null;
 };
 
-export const clickTreeElementWithPartialText = async(devToolsPage: DevToolsPage, text: string): Promise<boolean> => {
+export const clickTreeElementWithPartialText =
+    async(devToolsPage: DevToolsPage, text: string, jslogContext?: string): Promise<boolean> => {
   const handle = await elementWithPartialText(devToolsPage, text);
   if (handle) {
     await devToolsPage.clickElement(handle);
-    await expectVeEvents(devToolsPage, [veClick('Panel: elements > Tree: elements > TreeItem')], undefined);
+    const treeItemVe = jslogContext ? `TreeItem: ${jslogContext}` : 'TreeItem';
+    await expectVeEvents(devToolsPage, [veClick(`Panel: elements > Tree: elements > ${treeItemVe}`)], undefined);
     return true;
   }
 

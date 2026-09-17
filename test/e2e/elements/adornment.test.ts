@@ -410,6 +410,8 @@ describe('Adornment in the Elements Tab', function() {
 
     let adorners = await devToolsPage.$$('[aria-label="Keep this popover open"]');
     await adorners[0].click();
+    await waitForAndClickTreeElementWithPartialText(devToolsPage, '#top-layer');
+    await devToolsPage.pressKey('ArrowRight');
     await waitForAdorners(devToolsPage,
                           [
                             {textContent: 'view-source', isActive: false},
@@ -448,6 +450,8 @@ describe('Adornment in the Elements Tab', function() {
 
        let adorners = await devToolsPage.$$('[aria-label="Keep this popover open"]');
        await adorners[0].click();
+       await waitForAndClickTreeElementWithPartialText(devToolsPage, '#top-layer');
+       await devToolsPage.pressKey('ArrowRight');
        await waitForAdorners(devToolsPage,
                              [
                                {textContent: 'view-source', isActive: false},

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import * as sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -13,6 +14,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
@@ -282,6 +284,122 @@ describeWithEnvironment('NavigatorView', () => {
       const children = topChildren[0].children();
       assert.lengthOf(children, 1);
       assert.strictEqual(children[0].title, '(no domain)');
+    });
+  });
+
+  describe('placeholder visibility', () => {
+    it('toggles placeholder and tree visibility when elements are attached and detached', async () => {
+      const navigatorView = new Sources.NavigatorView.NavigatorView('test', networkProjectManager);
+      renderElementIntoDOM(navigatorView);
+      const placeholder = new UI.EmptyWidget.EmptyWidget('No content scripts', 'Explanation');
+      navigatorView.setPlaceholder(placeholder);
+
+      assert.isTrue(placeholder.isShowing());
+      assert.isFalse(placeholder.element.parentElement?.hasAttribute('hidden'));
+      assert.isTrue(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
+
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/script.js`;
+      const {project} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      assert.isTrue(placeholder.element.parentElement?.hasAttribute('hidden'));
+      assert.isFalse(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
+
+      project.removeUISourceCode(url);
+      assert.isFalse(placeholder.element.parentElement?.hasAttribute('hidden'));
+      assert.isTrue(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
+    });
+  });
+
+  describe('NavigatorGroupTreeNode automatic file system controls', () => {
+    const root = '/path/to/bar' as Platform.DevToolsPath.RawPathString;
+    const uuid = '549bbf9b-48b2-4af7-aebd-d3ba68993094';
+
+    it('renders a spinner when automatic file system is connecting', () => {
+      const automaticFileSystemManager =
+          sinon.createStubInstance(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
+      const fileSystem = new Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem(
+          {root, uuid, state: 'connecting'}, automaticFileSystemManager, workspace);
+      const navigatorView =
+          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
+          navigatorView, fileSystem, 'auto-fs', Sources.NavigatorView.Types.AutomaticFileSystem, 'bar');
+      const treeElement = groupNode.treeNode();
+
+      const spinner = treeElement.listItemElement.querySelector('devtools-spinner');
+      assert.exists(spinner);
+    });
+
+    it('renders a connect button when automatic file system is disconnected and connects on click', async () => {
+      const automaticFileSystemManager =
+          sinon.createStubInstance(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
+      const fileSystem = new Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem(
+          {root, uuid, state: 'disconnected'}, automaticFileSystemManager, workspace);
+      const navigatorView =
+          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
+          navigatorView, fileSystem, 'auto-fs', Sources.NavigatorView.Types.AutomaticFileSystem, 'bar');
+      const treeElement = groupNode.treeNode();
+
+      const button = treeElement.listItemElement.querySelector('devtools-button');
+      assert.exists(button);
+      assert.strictEqual(button.textContent?.trim(), 'Connect');
+
+      button.click();
+      sinon.assert.calledOnceWithExactly(automaticFileSystemManager.connectAutomaticFileSystem, true);
+    });
+  });
+
+  describe('NavigatorSourceTreeElement AI floating button', () => {
+    it('renders AI floating button when action is registered and executes it on click', async () => {
+      const actionExecuteSpy = sinon.spy();
+      const mockAction = {
+        title: () => 'Ask AI',
+        execute: actionExecuteSpy,
+      } as unknown as UI.ActionRegistration.Action;
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
+          .withArgs('drjones.sources-floating-button')
+          .returns(true);
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction')
+          .withArgs('drjones.sources-floating-button')
+          .returns(mockAction);
+
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/app.js`;
+      addResourceAndUISourceCode(url, mainFrame, 'console.log(1);', 'text/javascript');
+      const uiSourceCode = workspace.uiSourceCodeForURL(url) as Workspace.UISourceCode.UISourceCode;
+
+      const navigatorView =
+          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const sourceSelectedSpy = sinon.spy(navigatorView, 'sourceSelected');
+      const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
+      const treeElement = node.treeNode() as Sources.NavigatorView.NavigatorSourceTreeElement;
+      treeElement.onattach();
+
+      const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button');
+      assert.exists(floatingButton);
+
+      floatingButton.click();
+      sinon.assert.calledOnceWithExactly(sourceSelectedSpy, uiSourceCode, false);
+      sinon.assert.calledOnce(actionExecuteSpy);
+    });
+  });
+
+  describe('view injection', () => {
+    it('passes view input to custom view function on performUpdate', async () => {
+      const viewSpy = sinon.spy<Sources.NavigatorView.View>((input, _output, targetElement) => {
+        Sources.NavigatorView.DEFAULT_VIEW(input, _output, targetElement);
+      });
+      const navigatorView = new Sources.NavigatorView.NavigatorView('test', networkProjectManager, false, viewSpy);
+      sinon.assert.calledOnce(viewSpy);
+      assert.strictEqual(viewSpy.firstCall.args[0].treeElement, navigatorView.scriptsTree.element);
+      assert.isNull(viewSpy.firstCall.args[0].placeholder);
+
+      const placeholder = new UI.EmptyWidget.EmptyWidget('Empty', 'Description');
+      navigatorView.setPlaceholder(placeholder);
+      sinon.assert.calledTwice(viewSpy);
+      assert.strictEqual(viewSpy.secondCall.args[0].placeholder, placeholder);
+      assert.isFalse(viewSpy.secondCall.args[0].showTree);
     });
   });
 });

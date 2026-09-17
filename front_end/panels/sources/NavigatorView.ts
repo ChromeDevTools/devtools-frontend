@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/components/spinners/spinners.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -15,9 +15,9 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Spinners from '../../ui/components/spinners/spinners.js';
 import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 import {PanelUtils} from '../utils/utils.js';
@@ -25,6 +25,8 @@ import {PanelUtils} from '../utils/utils.js';
 import navigatorTreeStyles from './navigatorTree.css.js';
 import navigatorViewStyles from './navigatorView.css.js';
 import {SearchSources} from './SearchSourcesView.js';
+
+const {html, render} = Lit;
 
 const UIStrings = {
   /**
@@ -168,6 +170,34 @@ const TYPE_ORDERS = new Map([
   [Types.FileSystem, 100],
 ]);
 
+export interface ViewInput {
+  treeElement: HTMLElement;
+  placeholder: UI.Widget.Widget|null;
+  showTree: boolean;
+  onContextMenu: (event: Event) => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target): void => {
+  const showPlaceholder = Boolean(input.placeholder && !input.showTree);
+  // clang-format off
+  render(
+      html`
+        <style>${navigatorViewStyles}</style>
+        ${input.placeholder ? html`
+          <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder}>
+            ${input.placeholder.element}
+          </devtools-widget>
+        ` : Lit.nothing}
+        <div class="vbox flex-auto" ?hidden=${showPlaceholder} @contextmenu=${input.onContextMenu}>
+          ${input.treeElement}
+        </div>
+      `,
+      target);
+  // clang-format on
+};
+
 export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.Observer {
   private placeholder: UI.Widget.Widget|null;
   scriptsTree: UI.TreeOutline.TreeOutlineInShadow;
@@ -186,13 +216,14 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private groupByAuthored?: boolean;
   private groupByDomain?: boolean;
   private groupByFolder?: boolean;
+  #view: View;
   constructor(jslogContext: string, networkProjectManager: Bindings.NetworkProject.NetworkProjectManager,
-              enableAuthoredGrouping?: boolean) {
+              enableAuthoredGrouping?: boolean, view: View = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.pane(jslogContext).track({resize: true})}`,
       useShadowDom: true,
     });
-    this.registerRequiredCSS(navigatorViewStyles);
+    this.#view = view;
 
     this.placeholder = null;
     this.scriptsTree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
@@ -201,8 +232,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.scriptsTree.setHideOverflow(true);
     this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
     this.scriptsTree.setFocusable(false);
-    this.contentElement.appendChild(this.scriptsTree.element);
     this.setDefaultFocusedElement(this.scriptsTree.element);
+    this.performUpdate();
 
     this.uiSourceCodeNodes = new Platform.MapUtilities.Multimap();
     this.subfolderNodes = new Map();
@@ -211,8 +242,6 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.rootNode.populate();
 
     this.frameNodes = new Map();
-
-    this.contentElement.addEventListener('contextmenu', this.handleContextMenu.bind(this), false);
     UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(
         this.contentElement, {'sources.rename': this.renameShortcut.bind(this)});
 
@@ -298,20 +327,19 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   setPlaceholder(placeholder: UI.Widget.Widget): void {
     console.assert(!this.placeholder, 'A placeholder widget was already set');
     this.placeholder = placeholder;
-    placeholder.show(this.contentElement, this.contentElement.firstChild);
-    updateVisibility.call(this);
-    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, updateVisibility.bind(this));
-    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, updateVisibility.bind(this));
+    this.performUpdate();
+    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, () => this.performUpdate());
+    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, () => this.performUpdate());
+  }
 
-    function updateVisibility(this: NavigatorView): void {
-      const showTree = this.scriptsTree.firstChild();
-      if (showTree) {
-        placeholder.hideWidget();
-      } else {
-        placeholder.showWidget();
-      }
-      this.scriptsTree.element.classList.toggle('hidden', !showTree);
-    }
+  override performUpdate(): void {
+    this.#view({
+      treeElement: this.scriptsTree.element,
+      placeholder: this.placeholder,
+      showTree: Boolean(this.scriptsTree.firstChild()),
+      onContextMenu: this.handleContextMenu.bind(this),
+    },
+               undefined, this.contentElement);
   }
 
   private onBindingChanged(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>):
@@ -1392,7 +1420,6 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   readonly node: NavigatorUISourceCodeTreeNode;
   private readonly navigatorView: NavigatorView;
   #uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  private aiButtonContainer?: HTMLElement;
 
   constructor(
       navigatorView: NavigatorView, uiSourceCode: Workspace.UISourceCode.UISourceCode, title: string,
@@ -1431,20 +1458,32 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.sources-floating-button');
-    if (!this.aiButtonContainer) {
-      this.aiButtonContainer = this.listItemElement.createChild('span', 'ai-button-container');
-      const icon = AiAssistance.AiUtils.getIconName();
-      const floatingButton = Buttons.FloatingButton.create(icon, action.title(), 'ask-ai');
-      floatingButton.addEventListener('click', ev => {
-        ev.stopPropagation();
-        this.navigatorView.sourceSelected(this.uiSourceCode, false);
-        void action.execute();
-      }, {capture: true});
-      floatingButton.addEventListener('mousedown', ev => {
-        ev.stopPropagation();
-      }, {capture: true});
-      this.aiButtonContainer.appendChild(floatingButton);
-    }
+    const icon = AiAssistance.AiUtils.getIconName();
+    // clang-format off
+    this.setTrailingIcons([
+      html`<span class="ai-button-container">
+        <devtools-floating-button
+          .iconName=${icon}
+          .title=${action.title()}
+          .jslogContext=${'ask-ai'}
+          @click=${{
+            handleEvent: (ev: Event) => {
+              ev.stopPropagation();
+              this.navigatorView.sourceSelected(this.uiSourceCode, false);
+              void action.execute();
+            },
+            capture: true,
+          }}
+          @mousedown=${{
+            handleEvent: (ev: Event) => {
+              ev.stopPropagation();
+            },
+            capture: true,
+          }}
+        ></devtools-floating-button>
+      </span>`,
+    ]);
+    // clang-format on
   }
 
   get uiSourceCode(): Workspace.UISourceCode.UISourceCode {
@@ -2063,25 +2102,31 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
       const {automaticFileSystem, automaticFileSystemManager} = this.project;
       switch (automaticFileSystem?.state) {
         case 'connecting': {
-          const spinner = new Spinners.Spinner.Spinner();
-          this.treeElement.listItemElement.append(spinner);
+          // clang-format off
+          this.treeElement.setTrailingIcons([
+            html`<devtools-spinner></devtools-spinner>`,
+          ]);
+          // clang-format on
           break;
         }
         case 'disconnected': {
-          const button = new Buttons.Button.Button();
-          button.data = {
-            variant: Buttons.Button.Variant.OUTLINED,
-            size: Buttons.Button.Size.MICRO,
-            title: i18nString(UIStrings.connectFolderToWorkspace),
-            jslogContext: 'automatic-workspace-folders.connect',
-          };
-          button.textContent = i18nString(UIStrings.connect);
-          button.addEventListener('click', async event => {
-            event.consume();
-            await automaticFileSystemManager.connectAutomaticFileSystem(
-                /* addIfMissing= */ true);
-          });
-          this.treeElement.listItemElement.append(button);
+          // clang-format off
+          this.treeElement.setTrailingIcons([
+            html`<devtools-button
+              .data=${{
+                variant: Buttons.Button.Variant.OUTLINED,
+                size: Buttons.Button.Size.MICRO,
+                title: i18nString(UIStrings.connectFolderToWorkspace),
+                jslogContext: 'automatic-workspace-folders.connect',
+              } as Buttons.Button.ButtonData}
+              @click=${async (event: Event) => {
+                event.consume();
+                await automaticFileSystemManager.connectAutomaticFileSystem(
+                    /* addIfMissing= */ true);
+              }}
+            >${i18nString(UIStrings.connect)}</devtools-button>`,
+          ]);
+          // clang-format on
           break;
         }
       }

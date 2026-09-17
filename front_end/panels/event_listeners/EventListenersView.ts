@@ -17,7 +17,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {frameworkEventListeners} from './EventListenersUtils.js';
 import eventListenersViewStyles from './eventListenersView.css.js';
-const {widget} = UI.Widget;
+const {widget, widgetRef} = UI.Widget;
 const {html, render} = Lit;
 const {repeat} = Lit.Directives;
 
@@ -54,16 +54,23 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/event_listeners/EventListenersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+interface ListenerEntry {
+  object: SDK.RemoteObject.RemoteObject;
+  listener: SDK.DOMDebuggerModel.EventListener;
+  objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree;
+}
+
 interface ViewInput {
   togglePassiveListener(listener: SDK.DOMDebuggerModel.EventListener): void;
   removeListener(listener: SDK.DOMDebuggerModel.EventListener): boolean;
   reveal(object: SDK.RemoteObject.RemoteObject): void;
   linkifier: Components.Linkifier.Linkifier;
-  listeners: Map<string, Array<{object: SDK.RemoteObject.RemoteObject, listener: SDK.DOMDebuggerModel.EventListener}>>;
+  listeners: Map<string, ListenerEntry[]>;
   filter?: {showFramework: boolean, showPassive: boolean, showBlocking: boolean};
 }
 
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const types = input.listeners.keys().toArray().sort();
 
@@ -90,37 +97,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                                                jslogContext: 'passive',
                                              });
     void menu.show();
-  };
-
-  const listenerProperties = (listener: SDK.DOMDebuggerModel.EventListener): Iterable<Lit.TemplateResult> => {
-    const runtimeModel = listener.domDebuggerModel().runtimeModel();
-    const properties = [
-      new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-          runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', listener.useCapture()), undefined, {
-            readOnly: false,
-            propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-          }),
-      new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-          runtimeModel.createRemotePropertyFromPrimitiveValue('passive', listener.passive()), undefined, {
-            readOnly: false,
-            propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-          }),
-      new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-          runtimeModel.createRemotePropertyFromPrimitiveValue('once', listener.once()), undefined, {
-            readOnly: false,
-            propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-          }),
-    ];
-    if (typeof listener.handler() !== 'undefined') {
-      properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-          new SDK.RemoteObject.RemoteObjectProperty('handler', listener.handler()), undefined, {
-            readOnly: false,
-            propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-          }));
-    }
-    return ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement
-        .createPropertyNodes({properties}, true, true, undefined)
-        .map(node => html`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`);
   };
 
   const shouldHide = (listenerOrType: SDK.DOMDebuggerModel.EventListener|string): boolean => {
@@ -183,7 +159,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           <li role=treeitem toggle-on-click aria-label="${type}, event listener" ?hidden=${shouldHide(type)}>
            ${type}
            <ul role=group>
-             ${repeat(input.listeners.get(type) ?? [], ({listener}) => listener, ({listener, object}) => html`
+             ${repeat(input.listeners.get(type) ?? [], ({listener}) => listener, ({listener, object, objectTree}) => html`
                <li role=treeitem
                    data-origin=${listener.origin()}
                    @contextmenu=${(e: Event) => onContextMenu(e, listener, object)}
@@ -213,9 +189,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                          undefined, {tabStop: true})}
                    </span>
                  </span>
-                 <ul role=group>
-                   ${listenerProperties(listener)}
-                 </ul>
+                 <ul role=group ${widget(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, {objectTree})} ${
+                     widgetRef(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, () => {})}></ul>
                </li>`)}
              </ul>
           </li>`)}
@@ -229,8 +204,7 @@ export class EventListenersView extends UI.Widget.VBox {
   #objects: Array<SDK.RemoteObject.RemoteObject|null> = [];
   #filter: {showFramework: boolean, showPassive: boolean, showBlocking: boolean}|undefined;
   #view: View;
-  #listeners?:
-      Map<string, Array<{object: SDK.RemoteObject.RemoteObject, listener: SDK.DOMDebuggerModel.EventListener}>>;
+  #listeners?: Map<string, ListenerEntry[]>;
   #linkifier = new Components.Linkifier.Linkifier();
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
@@ -271,6 +245,7 @@ export class EventListenersView extends UI.Widget.VBox {
       filter: this.#filter,
       togglePassiveListener: (listener: SDK.DOMDebuggerModel.EventListener) => {
         void listener.togglePassive().then(() => {
+          this.#listeners = undefined;
           this.requestUpdate();
         });
       },
@@ -305,14 +280,27 @@ export class EventListenersView extends UI.Widget.VBox {
     this.eventListenersArrivedForTest();
   }
 
-  static async #loadListeners(objects: SDK.RemoteObject.RemoteObject[]): Promise<
-      Map<string, Array<{object: SDK.RemoteObject.RemoteObject, listener: SDK.DOMDebuggerModel.EventListener}>>> {
+  static #createObjectTree(listener: SDK.DOMDebuggerModel.EventListener): ObjectUI.ObjectPropertiesSection.ObjectTree {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({
+      useCapture: listener.useCapture(),
+      passive: listener.passive(),
+      once: listener.once(),
+      ...(typeof listener.handler() !== 'undefined' ? {handler: listener.handler()} : {}),
+    });
+    const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+      readOnly: false,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    });
+    objectTree.expanded = true;
+    return objectTree;
+  }
+
+  static async #loadListeners(objects: SDK.RemoteObject.RemoteObject[]): Promise<Map<string, ListenerEntry[]>> {
     return Map.groupBy((await Promise.all(objects.map(this.#loadListenersForObject))).flat(),
                        ({listener}) => listener.type());
   }
 
-  static async #loadListenersForObject(object: SDK.RemoteObject.RemoteObject):
-      Promise<Array<{object: SDK.RemoteObject.RemoteObject, listener: SDK.DOMDebuggerModel.EventListener}>> {
+  static async #loadListenersForObject(object: SDK.RemoteObject.RemoteObject): Promise<ListenerEntry[]> {
     const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);
     const [eventListeners, frameworkEventListenersObject] =
         await Promise.all([domDebuggerModel?.eventListeners(object), frameworkEventListeners(object)]);
@@ -335,7 +323,8 @@ export class EventListenersView extends UI.Widget.VBox {
     }
 
     return [eventListeners, frameworkEventListenersObject.eventListeners].flatMap(
-        listeners => listeners.map(listener => ({object, listener})));
+        listeners => listeners.map(
+            listener => ({object, listener, objectTree: EventListenersView.#createObjectTree(listener)})));
 
     function isInternalEventListener(this: Array<Platform.Constructor.Constructor<unknown>>): boolean[] {
       const isInternal = [];

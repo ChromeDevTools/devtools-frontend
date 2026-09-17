@@ -1295,6 +1295,7 @@ export interface ObjectTreeViewInput {
   linkifier?: Components.Linkifier.Linkifier;
   emptyPlaceholder?: string;
   skipProto: boolean;
+  skipGettersAndSetters: boolean;
   onExpand: (expanded: boolean) => void;
 }
 export type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
@@ -1310,8 +1311,8 @@ export const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) 
     if (entry) {
       objectTree.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, entry.listener);
     }
-    const nodes = Array.from(ObjectPropertyTreeElement.createNodes(objectTree, input.skipProto, false, input.linkifier,
-                                                                   input.emptyPlaceholder));
+    const nodes = Array.from(ObjectPropertyTreeElement.createNodes(
+        objectTree, input.skipProto, input.skipGettersAndSetters, input.linkifier, input.emptyPlaceholder));
     const listener = (): void => {
       topLevelNodesCache.delete(objectTree);
       objectTree.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, listener);
@@ -1337,6 +1338,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
   #emptyPlaceholder?: string;
   #renderAsSubtree = false;
   #skipProto = false;
+  #skipGettersAndSetters = false;
   readonly #view: ObjectTreeView;
 
   constructor(element?: HTMLElement, view: ObjectTreeView = OBJECT_TREE_DEFAULT_VIEW) {
@@ -1356,6 +1358,15 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
 
   set skipProto(val: boolean) {
     this.#skipProto = val;
+    this.requestUpdate();
+  }
+
+  get skipGettersAndSetters(): boolean {
+    return this.#skipGettersAndSetters;
+  }
+
+  set skipGettersAndSetters(val: boolean) {
+    this.#skipGettersAndSetters = val;
     this.requestUpdate();
   }
 

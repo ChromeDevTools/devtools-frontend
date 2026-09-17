@@ -272,6 +272,7 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
       propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
       readOnly: true,
     });
+    objectTree.expanded = true;
 
     const viewFunction = createViewFunctionStub(Elements.PropertiesWidget.PropertiesWidget);
     new Elements.PropertiesWidget.PropertiesWidget(viewFunction);

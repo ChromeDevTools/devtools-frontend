@@ -283,4 +283,23 @@ describe('SourceMapScopeChainEntry', () => {
     assert.notStrictEqual(type, Protocol.Debugger.ScopeType.Local);
     assert.notStrictEqual(type, Protocol.Debugger.ScopeType.Closure);
   });
+
+  it('includes exception and editable returnValue in extraProperties for innermost function scope', () => {
+    const exceptionObj = new SDK.RemoteObject.LocalJSONObject('boom');
+    const returnObj = new SDK.RemoteObject.LocalJSONObject(42);
+    Object.defineProperty(callFrame, 'exception', {value: exceptionObj, configurable: true});
+
+    const innerEntry = entry({kind: 'function', isStackFrame: true}, /* isInnerMostFunction */ true, returnObj);
+    const innerExtra = innerEntry.extraProperties();
+    assert.lengthOf(innerExtra, 2);
+    assert.strictEqual(innerExtra[0].name, 'Exception');
+    assert.strictEqual(innerExtra[0].value, exceptionObj);
+    assert.strictEqual(innerExtra[1].name, 'Return value');
+    assert.strictEqual(innerExtra[1].value, returnObj);
+    assert.isDefined(innerExtra[1].syntheticSetter);
+
+    // Outer closure scope should not include exception even if callFrame.exception is set.
+    const outerEntry = entry({kind: 'function', isStackFrame: true}, /* isInnerMostFunction */ false);
+    assert.isEmpty(outerEntry.extraProperties());
+  });
 });

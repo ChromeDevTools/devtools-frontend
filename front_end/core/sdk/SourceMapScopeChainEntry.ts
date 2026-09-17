@@ -30,6 +30,10 @@ const UIStrings = {
   /**
    * @description Text in Scope Chain section of the Sources panel.
    */
+  exception: 'Exception',
+  /**
+   * @description Text in Scope Chain section of the Sources panel.
+   */
   returnValue: 'Return value',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/SourceMapScopeChainEntry.ts', UIStrings);
@@ -60,12 +64,18 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
   }
 
   extraProperties(): RemoteObjectProperty[] {
-    if (this.#returnValue) {
-      return [new RemoteObjectProperty(
-          i18nString(UIStrings.returnValue), this.#returnValue, undefined, undefined, undefined, undefined, undefined,
-          /* synthetic */ true)];
+    const extraProperties = [];
+    if (this.#isInnerMostFunction && this.#callFrame.exception) {
+      extraProperties.push(new RemoteObjectProperty(i18nString(UIStrings.exception), this.#callFrame.exception,
+                                                    undefined, undefined, undefined, undefined, undefined,
+                                                    /* synthetic */ true));
     }
-    return [];
+    if (this.#returnValue) {
+      extraProperties.push(new RemoteObjectProperty(
+          i18nString(UIStrings.returnValue), this.#returnValue, undefined, undefined, undefined, undefined, undefined,
+          /* synthetic */ true, this.#callFrame.setReturnValue.bind(this.#callFrame)));
+    }
+    return extraProperties;
   }
 
   callFrame(): CallFrame {

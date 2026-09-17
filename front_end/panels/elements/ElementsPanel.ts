@@ -228,6 +228,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     return this.#domTreeWidget.getTreeOutlineForTesting();
   }
 
+  getDOMTreeWidgetForTesting(): DOMTreeWidget {
+    return this.#domTreeWidget;
+  }
+
   constructor(
       targetManager?: SDK.TargetManager.TargetManager,
       settings?: Common.Settings.Settings,
@@ -1300,7 +1304,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   toggleHideElement(node: SDK.DOMModel.DOMNode): void {
-    this.#domTreeWidget.toggleHideElement(node);
+    void this.#domTreeWidget.toggleHideElement(node);
   }
 
   toggleEditAsHTML(node: SDK.DOMModel.DOMNode): void {

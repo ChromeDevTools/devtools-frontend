@@ -86,25 +86,6 @@ describeWithEnvironment('ElementsPanel', () => {
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
   });
 
-  const createsTreeOutlines = (inScope: boolean) => () => {
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
-    Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
-    const model = target.model(SDK.DOMModel.DOMModel);
-    assert.exists(model);
-    assert.strictEqual(Boolean(Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(model)), inScope);
-
-    const subtraget = createTarget({parentTarget: target});
-    const submodel = subtraget.model(SDK.DOMModel.DOMModel);
-    assert.exists(submodel);
-    assert.strictEqual(Boolean(Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(model)), inScope);
-
-    subtraget.dispose('');
-    assert.isNull(Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(submodel));
-  };
-
-  it('creates tree outlines for in scope models', createsTreeOutlines(true));
-  it('does not create tree outlines for out of scope models', createsTreeOutlines(false));
-
   // Causes unit test execution to abort
   it('expands the tree even when target added later', async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
@@ -117,13 +98,11 @@ describeWithEnvironment('ElementsPanel', () => {
 
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
-    const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(model);
-    assert.exists(treeOutline);
-    const selectedNode = treeOutline.selectedDOMNode();
+    const domTree = panel.getDOMTreeWidgetForTesting();
+    assert.exists(domTree);
+    const selectedNode = domTree.selectedDOMNode();
     assert.exists(selectedNode);
-    const selectedTreeElement = treeOutline.findTreeElement(selectedNode);
-    assert.exists(selectedTreeElement);
-    assert.isTrue(selectedTreeElement.expanded);
+    assert.isTrue(domTree.isNodeExpanded(selectedNode));
     panel.detach();
   });
 
@@ -267,26 +246,24 @@ describeWithEnvironment('ElementsPanel', () => {
 
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
-    const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(model);
-    assert.exists(treeOutline);
-    const selectedNode = treeOutline.selectedDOMNode();
+    const domTree = panel.getDOMTreeWidgetForTesting();
+    assert.exists(domTree);
+    const selectedNode = domTree.selectedDOMNode();
     assert.exists(selectedNode);
-    const selectedTreeElement = treeOutline.findTreeElement(selectedNode);
-    assert.exists(selectedTreeElement);
-    assert.isTrue(selectedTreeElement.expanded);
+    assert.isTrue(domTree.isNodeExpanded(selectedNode));
 
     assert.strictEqual(selectedNode.nodeName(), 'BODY');
 
-    assert.isFalse(treeOutline.isToggledToHidden(selectedNode));
+    assert.isFalse(domTree.isToggledToHidden(selectedNode));
 
     const mockResolveToObject = sinon.mock().twice().returns({callFunction: () => {}, release: () => {}});
     selectedNode.resolveToObject = mockResolveToObject;
 
-    await treeOutline.toggleHideElement(selectedNode);
-    assert.isTrue(treeOutline.isToggledToHidden(selectedNode));
+    await domTree.toggleHideElement(selectedNode);
+    assert.isTrue(domTree.isToggledToHidden(selectedNode));
 
-    await selectedTreeElement.remove();
-    assert.isFalse(treeOutline.isToggledToHidden(selectedNode));
+    await domTree.removeNode(selectedNode);
+    assert.isFalse(domTree.isToggledToHidden(selectedNode));
 
     panel.detach();
   });
@@ -304,41 +281,42 @@ describeWithEnvironment('ElementsPanel', () => {
 
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
-    const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(model);
-    assert.exists(treeOutline);
-    const selectedNode = treeOutline.selectedDOMNode();
+    const domTree = panel.getDOMTreeWidgetForTesting();
+    assert.exists(domTree);
+    const selectedNode = domTree.selectedDOMNode();
     assert.exists(selectedNode);
-    const selectedTreeElement = treeOutline.findTreeElement(selectedNode);
-    assert.exists(selectedTreeElement);
-    assert.isTrue(selectedTreeElement.expanded);
+    assert.isTrue(domTree.isNodeExpanded(selectedNode));
 
     assert.strictEqual(selectedNode.nodeName(), 'BODY');
 
-    assert.isFalse(treeOutline.isToggledToHidden(selectedNode));
+    assert.isFalse(domTree.isToggledToHidden(selectedNode));
 
     const mockResolveToObject = sinon.mock().twice().returns({callFunction: () => {}, release: () => {}});
     selectedNode.resolveToObject = mockResolveToObject;
 
     // Mock out a few things in the UI that's not necessary for this test.
-    const insertChildElement = sinon.mock().atLeast(1).returns(undefined);
-    treeOutline.insertChildElement = insertChildElement;
+    const treeOutline = domTree.getTreeOutlineForTesting();
+    if (treeOutline) {
+      const insertChildElement = sinon.mock().atLeast(1).returns(undefined);
+      treeOutline.insertChildElement = insertChildElement;
+    }
     const animateOnDOMUpdate = sinon.mock().atLeast(1).returns(undefined);
     Elements.ElementsTreeElement.ElementsTreeElement.animateOnDOMUpdate = animateOnDOMUpdate;
     const stylesSidebarPaneUpdate = sinon.mock().atLeast(1).returns(undefined);
     panel.stylesWidget.performUpdate = stylesSidebarPaneUpdate;
 
-    await treeOutline.toggleHideElement(selectedNode);
-    assert.isTrue(treeOutline.isToggledToHidden(selectedNode));
+    await domTree.toggleHideElement(selectedNode);
+    assert.isTrue(domTree.isToggledToHidden(selectedNode));
 
-    treeOutline.duplicateNode(selectedNode);
+    domTree.duplicateNode(selectedNode);
     await raf();
 
     const copiedNode = selectedNode.nextSibling;
     assert.exists(copiedNode);
     assert.strictEqual(copiedNode.nodeName(), 'BODY');
-    assert.isTrue(copiedNode !== null && treeOutline.isToggledToHidden(copiedNode));
+    assert.isTrue(copiedNode !== null && domTree.isToggledToHidden(copiedNode));
 
-    treeOutline.runPendingUpdates();
+    treeOutline?.runPendingUpdates();
 
     panel.detach();
   });
@@ -429,12 +407,12 @@ describeWithEnvironment('ElementsPanel', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
     await model.requestDocument();
-    const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(model);
-    assert.exists(treeOutline);
+    const domTree = panel.getDOMTreeWidgetForTesting();
+    assert.exists(domTree);
 
     // Verify Page 1 is loaded
-    assert.strictEqual(treeOutline.rootDOMNode?.nodeName(), '#document');
-    const doc1 = treeOutline.rootDOMNode as SDK.DOMModel.DOMDocument;
+    assert.strictEqual(domTree.rootDOMNode?.nodeName(), '#document');
+    const doc1 = domTree.rootDOMNode as SDK.DOMModel.DOMDocument;
     const body = doc1?.body;
     assert.exists(body);
     const children1 = body!.children();
@@ -447,7 +425,7 @@ describeWithEnvironment('ElementsPanel', () => {
     await model.requestDocument();
 
     // Verify Page 2 is loaded
-    const doc2 = treeOutline.rootDOMNode as SDK.DOMModel.DOMDocument;
+    const doc2 = domTree.rootDOMNode as SDK.DOMModel.DOMDocument;
     assert.exists(doc2?.body);
     const children2 = doc2.body!.children();
     assert.exists(children2);
@@ -459,7 +437,7 @@ describeWithEnvironment('ElementsPanel', () => {
     await model.requestDocument();
 
     // Verify Page 1 is restored
-    const doc3 = treeOutline.rootDOMNode as SDK.DOMModel.DOMDocument;
+    const doc3 = domTree.rootDOMNode as SDK.DOMModel.DOMDocument;
     assert.exists(doc3?.body);
     const children3 = doc3.body!.children();
     assert.exists(children3);

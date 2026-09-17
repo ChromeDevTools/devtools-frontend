@@ -150,7 +150,7 @@ interface ViewInput {
   onClearMaxRows?: () => void;
   onHoverNode?: (node: SDK.DOMModel.DOMNode|null, showInfo?: boolean, isClosingTag?: boolean) => void;
   onLeave?: () => void;
-  onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
+  onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
   onKeyDown?: (event: KeyboardEvent) => void;
   isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
   onDuplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
@@ -967,8 +967,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
             input.onSelectNodeAfterEdit?.(wasExpanded, error, newNode, moveDirection);
           },
           toggleHideElement: (n: SDK.DOMModel.DOMNode) => {
-            input.onToggleHideElement?.(n);
-            return Promise.resolve();
+            return input.onToggleHideElement?.(n) ?? Promise.resolve();
           },
           isToggledToHidden: (n: SDK.DOMModel.DOMNode) => input.isToggledToHidden?.(n) ?? false,
           showContextMenu: (event: Event) => {
@@ -1724,6 +1723,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       }
       return;
     }
+    if (isClosingTag && node) {
+      const rootTreeElement = this.#viewOutput?.elementsTreeOutline?.findTreeElement(node);
+      const closingTreeElement = rootTreeElement?.childAt(rootTreeElement.childCount() - 1);
+      closingTreeElement?.select(!focus, true);
+      return;
+    }
     this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
   }
 
@@ -1956,7 +1961,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     if (this.#view === DECLARATIVE_VIEW) {
       this.performUpdate();
     } else {
-      const treeElement = node ? this.treeElementForNode(node) : null;
+      let treeElement = node ? this.treeElementForNode(node) : null;
+      if (isClosingTag && treeElement) {
+        treeElement = treeElement.childAt(treeElement.childCount() - 1) as ElementsTreeElement | null;
+      }
       this.#viewOutput.elementsTreeOutline?.setHoverEffect(treeElement);
     }
   }
@@ -2092,7 +2100,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         void this.showContextMenu(node, event);
       },
       onToggleHideElement: (node: SDK.DOMModel.DOMNode) => {
-        this.toggleHideElement(node);
+        return this.toggleHideElement(node);
       },
       onKeyDown: (event: KeyboardEvent) => {
         this.onKeyDown(event);
@@ -2331,11 +2339,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
   }
 
-  toggleHideElement(node: SDK.DOMModel.DOMNode): void {
+  async toggleHideElement(node: SDK.DOMModel.DOMNode): Promise<void> {
     const changeTracker = this.changeTracker;
     Elements.DOMChanges.trackVisibilityToggle(changeTracker, node, buildChangeSelector(changeTracker, node),
                                               !this.isToggledToHidden(node));
-    void node.toggleHideElement();
+    await node.toggleHideElement();
   }
 
   async removeNode(node: SDK.DOMModel.DOMNode): Promise<void> {
@@ -2849,7 +2857,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
 
     if (event.key === 'h' || event.key === 'H') {
-      this.toggleHideElement(node);
+      void this.toggleHideElement(node);
       event.consume(true);
       return true;
     }

@@ -4106,12 +4106,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement = treeOutline.findTreeElement(rootNode);
-          assert.exists(rootTreeElement);
-          await rootTreeElement.expandRecursively();
-          domTree.performUpdate();
+          await domTree.expandRecursively(rootNode);
 
           await waitForTreeUpdates();
 
@@ -4144,11 +4139,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement = treeOutline.findTreeElement(rootNode);
-          assert.exists(rootTreeElement);
-          rootTreeElement.expand();
+          domTree.setNodeExpanded(rootNode, true);
           domTree.performUpdate();
 
           await waitForTreeUpdates();
@@ -4177,11 +4168,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement = treeOutline.findTreeElement(rootNode);
-          assert.exists(rootTreeElement);
-          rootTreeElement.collapse();
+          domTree.setNodeExpanded(rootNode, false);
           domTree.performUpdate();
 
           await waitForTreeUpdates();
@@ -4238,20 +4225,13 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement = treeOutline.findTreeElement(rootNode);
-          assert.exists(rootTreeElement);
-          rootTreeElement.expand();
+          domTree.setNodeExpanded(rootNode, true);
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const headerTreeElement = treeOutline.findTreeElement(headerNode);
-          const mainTreeElement = treeOutline.findTreeElement(mainNode);
-          const footerTreeElement = treeOutline.findTreeElement(footerNode);
-          headerTreeElement?.collapse();
-          mainTreeElement?.expand();
-          footerTreeElement?.collapse();
+          domTree.setNodeExpanded(headerNode, false);
+          domTree.setNodeExpanded(mainNode, true);
+          domTree.setNodeExpanded(footerNode, false);
           domTree.performUpdate();
 
           await waitForTreeUpdates();
@@ -4279,11 +4259,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement = treeOutline.findTreeElement(rootNode);
-          assert.exists(rootTreeElement);
-          rootTreeElement.expand();
+          domTree.setNodeExpanded(rootNode, true);
           domTree.selectDOMNode(rootNode, true);
           domTree.performUpdate();
 
@@ -4311,11 +4287,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement = treeOutline.findTreeElement(rootNode);
-          assert.exists(rootTreeElement);
-          rootTreeElement.expand();
+          domTree.setNodeExpanded(rootNode, true);
           domTree.performUpdate();
           await waitForTreeUpdates();
 
@@ -4346,19 +4318,11 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement = treeOutline.findTreeElement(rootNode);
-          assert.exists(rootTreeElement);
-          rootTreeElement.expand();
+          domTree.setNodeExpanded(rootNode, true);
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const closingTreeElement = rootTreeElement.childAt(rootTreeElement.childCount() - 1) as
-              Elements.ElementsTreeElement.ElementsTreeElement;
-          assert.exists(closingTreeElement);
-          assert.isTrue(closingTreeElement.isClosingTag());
-          closingTreeElement.select(/* omitFocus= */ true, /* selectedByUser= */ true);
+          domTree.selectDOMNode(rootNode, /* focus= */ true, /* isClosingTag= */ true);
           domTree.performUpdate();
           await waitForTreeUpdates();
 
@@ -4384,15 +4348,11 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement = treeOutline.findTreeElement(rootNode);
-          assert.exists(rootTreeElement);
-          rootTreeElement.expand();
+          domTree.setNodeExpanded(rootNode, true);
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          rootTreeElement.listItemElement.dispatchEvent(new MouseEvent('mousemove', {bubbles: true}));
+          domTree.setHoveredNode(rootNode, /* showInfo= */ true, /* isClosingTag= */ false);
           domTree.performUpdate();
           await waitForTreeUpdates();
 
@@ -4418,20 +4378,11 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement = treeOutline.findTreeElement(rootNode);
-          assert.exists(rootTreeElement);
-          rootTreeElement.expand();
+          domTree.setNodeExpanded(rootNode, true);
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const closingTreeElement = rootTreeElement.childAt(rootTreeElement.childCount() - 1) as
-              Elements.ElementsTreeElement.ElementsTreeElement;
-          assert.exists(closingTreeElement);
-          assert.isTrue(closingTreeElement.isClosingTag());
-
-          closingTreeElement.listItemElement.dispatchEvent(new MouseEvent('mousemove', {bubbles: true}));
+          domTree.setHoveredNode(rootNode, /* showInfo= */ true, /* isClosingTag= */ true);
           domTree.performUpdate();
           await waitForTreeUpdates();
 
@@ -4443,6 +4394,27 @@ describeWithEnvironment('DOMTreeWidget', () => {
     });
 
     describe('editing', () => {
+      function cancelActiveEditing(domTree: Elements.ElementsTreeOutline.DOMTreeWidget): void {
+        const tree = domTree.contentElement.querySelector('devtools-tree');
+        if (tree) {
+          for (const el of tree.getInternalTreeOutlineForTest().element.querySelectorAll('devtools-widget')) {
+            const widget = UI.Widget.Widget.get(el) as Elements.ElementsTreeElement.ElementsTreeWidget | undefined;
+            widget?.editing?.cancel();
+          }
+          return;
+        }
+        const treeOutline = domTree.getTreeOutlineForTesting();
+        if (treeOutline) {
+          let item: UI.TreeOutline.TreeElement|null = treeOutline.rootElement();
+          while (item) {
+            if (item instanceof Elements.ElementsTreeElement.ElementsTreeElement) {
+              item.widget.editing?.cancel();
+            }
+            item = item.traverseNextTreeElement(false, null, true);
+          }
+        }
+      }
+
       it('renders screenshot of in-place attribute editing', async () => {
         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
         sinon.stub(domModel, 'requestDocument').resolves(null);
@@ -4459,25 +4431,15 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement =
-              treeOutline.findTreeElement(rootNode) as Elements.ElementsTreeElement.ElementsTreeElement;
-          assert.exists(rootTreeElement);
-
           domTree.selectDOMNode(rootNode);
           await waitForTreeUpdates();
 
-          rootTreeElement.onenter();
+          domTree.startEditing(rootNode);
           await waitForTreeUpdates();
 
           await assertScreenshot('elements/dom_tree_widget_editing_attribute.png');
         } finally {
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          const rootTreeElement =
-              treeOutline?.findTreeElement(domTree.rootDOMNode!) as Elements.ElementsTreeElement.ElementsTreeElement |
-              undefined;
-          rootTreeElement?.widget.editing?.cancel();
+          cancelActiveEditing(domTree);
           domTree.detach();
         }
       });
@@ -4551,11 +4513,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
           await assertScreenshot('elements/dom_tree_widget_editing_new_attribute.png');
         } finally {
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          const rootTreeElement =
-              treeOutline?.findTreeElement(domTree.rootDOMNode!) as Elements.ElementsTreeElement.ElementsTreeElement |
-              undefined;
-          rootTreeElement?.widget.editing?.cancel();
+          cancelActiveEditing(domTree);
           domTree.detach();
         }
       });
@@ -4578,29 +4536,19 @@ describeWithEnvironment('DOMTreeWidget', () => {
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          assert.exists(treeOutline);
-          const rootTreeElement = treeOutline.findTreeElement(rootNode);
-          assert.exists(rootTreeElement);
-          rootTreeElement.expand();
+          domTree.setNodeExpanded(rootNode, true);
           domTree.performUpdate();
           await waitForTreeUpdates();
 
-          const textTreeElement =
-              treeOutline.findTreeElement(textNode) as Elements.ElementsTreeElement.ElementsTreeElement;
-          assert.exists(textTreeElement);
-          textTreeElement.select();
-          textTreeElement.onenter();
+          domTree.selectDOMNode(textNode);
+          await waitForTreeUpdates();
+
+          domTree.startEditing(rootNode);
           await waitForTreeUpdates();
 
           await assertScreenshot('elements/dom_tree_widget_editing_text_node.png');
         } finally {
-          const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
-          const textNode = domTree.rootDOMNode?.children() ? domTree.rootDOMNode.children()![0] : null;
-          const textTreeElement = textNode ?
-              treeOutline?.findTreeElement(textNode) as Elements.ElementsTreeElement.ElementsTreeElement | undefined :
-              null;
-          textTreeElement?.widget.editing?.cancel();
+          cancelActiveEditing(domTree);
           domTree.detach();
         }
       });
@@ -4875,7 +4823,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       sinon.stub(childNode1, 'toggleHideElement');
       sinon.stub(childNode1, 'isToggledToHidden').returns(false);
 
-      domTree.toggleHideElement(childNode1);
+      void domTree.toggleHideElement(childNode1);
 
       const record = tracker.getLastChange();
       assert.exists(record);

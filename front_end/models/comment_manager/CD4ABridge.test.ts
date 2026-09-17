@@ -19,8 +19,23 @@ describe('CD4ABridge', () => {
     commentManager = new CommentManager.CommentManager.CommentManager();
   });
 
-  it('formats comment threads without DOM access', () => {
-    const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager);
+  it('formats comment threads with anchor text, DOM node selector, and editor info', () => {
+    const mockNode = {
+      backendNodeId: () => 10,
+      simpleSelector: () => 'div.card#main',
+    } as unknown as SDK.DOMModel.DOMNode;
+    const mockDomModel = {
+      idToDOMNode: new Map([[1, mockNode]]),
+    };
+    const mockTarget = {
+      model: sinon.stub().withArgs(SDK.DOMModel.DOMModel).returns(mockDomModel),
+    };
+    const mockTargetManager = {
+      targetById: sinon.stub().withArgs('target-1').returns(mockTarget),
+      primaryPageTarget: () => null,
+    } as unknown as SDK.TargetManager.TargetManager;
+
+    const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager, mockTargetManager);
 
     const thread = commentManager.createCommentThread(
         {
@@ -44,17 +59,52 @@ describe('CD4ABridge', () => {
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 1);
     assert.strictEqual(threads[0].id, thread.id);
-    assert.strictEqual(threads[0].text, 'Need color contrast fix');
+    assert.strictEqual(
+        threads[0].text,
+        'Need color contrast fix\n\n- DevTools element: color: red\n- DOM node selector: div.card#main\n- Editor: index.html:42',
+    );
     assert.strictEqual(threads[0].networkRequestId, 'req-1');
-    assert.strictEqual(threads[0].backendNodeId, 10);
-    assert.deepEqual(threads[0].editor, {
-      filePath: 'index.html',
-      lineNumber: 42,
+    assert.deepEqual(threads[0].node, {
+      backendNodeId: 10,
+      targetId: 'target-1',
     });
+    assert.isUndefined((threads[0] as unknown as Record<string, unknown>).editor);
+    assert.isUndefined((threads[0] as unknown as Record<string, unknown>).backendNodeId);
 
     // Second retrieval returns empty array as unsent comments were taken
     const threadsAfter = bridge.getCommentThreads();
     assert.lengthOf(threadsAfter, 0);
+  });
+
+  it('formats editor without filePath and handles missing DOM node gracefully', () => {
+    const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager);
+
+    const thread = commentManager.createCommentThread(
+        {
+          vePath: 'Panel: sources',
+          textSignature: 'const x = 1;',
+          node: {
+            backendNodeId: 99,
+            targetId: 'target-1',
+          },
+          editor: {
+            lineNumber: 15,
+          },
+        },
+        'Check variable',
+    );
+    thread.save();
+
+    const threads = bridge.getCommentThreads();
+    assert.lengthOf(threads, 1);
+    assert.strictEqual(
+        threads[0].text,
+        'Check variable\n\n- DevTools element: const x = 1;\n- Editor: line 15',
+    );
+    assert.deepEqual(threads[0].node, {
+      backendNodeId: 99,
+      targetId: 'target-1',
+    });
   });
 
   it('only takes the first comment text', () => {
@@ -76,7 +126,7 @@ describe('CD4ABridge', () => {
 
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 1);
-    assert.strictEqual(threads[0].text, 'First comment');
+    assert.strictEqual(threads[0].text, 'First comment\n\n- DevTools element: h1');
   });
 
   it('delegates resolve to CommentManager and dispatches events', () => {
@@ -173,17 +223,18 @@ describe('CD4ABridge', () => {
       const mockDomModel = {
         pushNodesByBackendIdsToFrontend: sinon.stub().resolves(new Map([[10, mockNode]])),
       };
-      const mockPrimaryTarget = {
+      const mockTarget = {
         model: sinon.stub().withArgs(SDK.DOMModel.DOMModel).returns(mockDomModel),
       };
       const mockTargetManager = {
-        primaryPageTarget: () => mockPrimaryTarget,
+        targetById: sinon.stub().withArgs('target-1').returns(mockTarget),
+        primaryPageTarget: () => null,
       } as unknown as SDK.TargetManager.TargetManager;
 
       const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
 
       const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager, mockTargetManager, undefined, mockHost);
-      await bridge.reveal('elements', {backendNodeId: 10});
+      await bridge.reveal('elements', {node: {backendNodeId: 10, targetId: 'target-1'}});
 
       assert.isTrue(showPanelSpy.calledOnceWith('elements'));
       assert.isTrue(revealStub.calledOnceWith(mockNode));
@@ -203,6 +254,7 @@ describe('CD4ABridge', () => {
         model: sinon.stub().withArgs(SDK.DOMModel.DOMModel).returns(mockDomModel),
       };
       const mockTargetManager = {
+        targetById: sinon.stub().returns(null),
         primaryPageTarget: () => mockPrimaryTarget,
       } as unknown as SDK.TargetManager.TargetManager;
 
@@ -210,7 +262,10 @@ describe('CD4ABridge', () => {
 
       const bridge =
           new CommentManager.CD4ABridge.CD4ABridge(commentManager, mockTargetManager, mockNetworkLog, mockHost);
-      await bridge.reveal('summary_panel', {networkRequestId: 'req-1', backendNodeId: 10});
+      await bridge.reveal('summary_panel', {
+        networkRequestId: 'req-1',
+        node: {backendNodeId: 10, targetId: 'target-1'},
+      });
 
       assert.isTrue(showPanelSpy.calledOnceWith('summary_panel'));
       sinon.assert.callCount(revealStub, 2);

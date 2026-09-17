@@ -443,6 +443,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
                 url: urlString`https://www.example.com/app.js`,
               },
           );
+          file.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://www.example.com'));
           return new AiAssistanceModel.FileContext.FileContext(file);
         },
         action: 'drjones.sources-panel-context',

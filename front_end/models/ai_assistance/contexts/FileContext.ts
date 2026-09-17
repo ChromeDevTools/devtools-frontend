@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../core/sdk/sdk.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Bindings from '../../bindings/bindings.js';
 import type * as Workspace from '../../workspace/workspace.js';
 import {type ContextDetail, ConversationContext} from '../agents/AiAgent.js';
@@ -21,19 +21,11 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
   }
 
   /**
-   * Resolves the security origin of a given UISourceCode.
-   * Prefers the project security origin, falling back to the origin of the file URL.
-   */
-  static originForUISourceCode(file: Workspace.UISourceCode.UISourceCode): SDK.SecurityOrigin.SecurityOrigin {
-    return file.project()?.securityOrigin?.() ?? SDK.SecurityOrigin.SecurityOrigin.create(file.url());
-  }
-
-  /**
    * Returns the security origin of the project containing the file, falling
    * back to the origin derived from the file URL.
    */
   override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
-    return FileContext.originForUISourceCode(this.#file);
+    return this.#file.securityOrigin();
   }
 
   override getItem(): Workspace.UISourceCode.UISourceCode {

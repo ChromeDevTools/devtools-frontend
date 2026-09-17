@@ -7,6 +7,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 
 import {IgnoreListManager} from './IgnoreListManager.js';
@@ -29,6 +30,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     TextUtils.ContentProvider.ContentProvider {
   readonly #origin: Platform.DevToolsPath.UrlString;
   readonly #parentURL: Platform.DevToolsPath.UrlString;
+  #securityOrigin?: SDK.SecurityOrigin.SecurityOrigin;
   #project: Project;
   #url: Platform.DevToolsPath.UrlString;
   #name: string;
@@ -110,6 +112,23 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.#origin;
   }
 
+  /**
+   * Returns the security origin for this source code.
+   * Prefers the project security origin if available. If the project does not
+   * define a security origin, derives it from the source code's URL and caches
+   * the result until the source code is renamed.
+   */
+  securityOrigin(): SDK.SecurityOrigin.SecurityOrigin {
+    const projectOrigin = this.#project.securityOrigin?.();
+    if (projectOrigin) {
+      return projectOrigin;
+    }
+    if (!this.#securityOrigin) {
+      this.#securityOrigin = SDK.SecurityOrigin.SecurityOrigin.create(this.#url);
+    }
+    return this.#securityOrigin;
+  }
+
   fullDisplayName(): string {
     return this.#project.fullDisplayName(this);
   }
@@ -150,6 +169,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   #updateName(
       name: Platform.DevToolsPath.RawPathString, url: Platform.DevToolsPath.UrlString,
       contentType?: Common.ResourceType.ResourceType): void {
+    this.#securityOrigin = undefined;
     const oldURL = this.#url;
     this.#name = name;
     if (url) {

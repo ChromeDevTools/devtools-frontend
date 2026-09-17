@@ -6,7 +6,6 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Workspace from '../../workspace/workspace.js';
-import {FileContext} from '../contexts/FileContext.js';
 
 import {
   type BaseToolCapability,
@@ -78,8 +77,7 @@ export class ListSourcesTool implements
     }
 
     const originLock: OriginLockState = {status: 'ESTABLISHED_ORIGIN', origin: establishedOrigin};
-    return [...uiSourceCodes.values()].filter(
-        file => isOriginAllowedByLock(originLock, FileContext.originForUISourceCode(file)));
+    return [...uiSourceCodes.values()].filter(file => isOriginAllowedByLock(originLock, file.securityOrigin()));
   }
 
   static getSourceById(

@@ -7,6 +7,16 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {DeferredDOMNode, type DOMNode} from './DOMModel.js';
+import {
+  horizontalScrollRangeInPage,
+  removeScrollListenerInPage,
+  scrollLeftInPage,
+  scrollListenerInPage,
+  scrollTopInPage,
+  setScrollLeftInPage,
+  setScrollTopInPage,
+  verticalScrollRangeInPage,
+} from './PageFunctions.js';
 import {RemoteObject} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {Events as RuntimeModelEvents, type EventTypes as RuntimeModelEventTypes, RuntimeModel} from './RuntimeModel.js';
@@ -127,25 +137,6 @@ export class AnimationDOMNode {
     ].map(arg => RemoteObject.toCallArgument(arg)));
     object.release();
     return id;
-
-    function scrollListenerInPage(
-        this: HTMLElement|Document, id: number, reportScrollPositionBindingName: string,
-        scrollListenerNameInPage: string): void {
-      if ('scrollingElement' in this && !this.scrollingElement) {
-        return;
-      }
-
-      const scrollingElement = ('scrollingElement' in this ? this.scrollingElement : this) as HTMLElement;
-      // @ts-expect-error We're setting a custom field on `Element` or `Document` for retaining the function on the page.
-      this[scrollListenerNameInPage] = () => {
-        // @ts-expect-error `reportScrollPosition` binding is injected to the page before calling the function.
-        globalThis[reportScrollPositionBindingName](
-            JSON.stringify({scrollTop: scrollingElement.scrollTop, scrollLeft: scrollingElement.scrollLeft, id}));
-      };
-
-      // @ts-expect-error We've already defined the function used below.
-      this.addEventListener('scroll', this[scrollListenerNameInPage], true);
-    }
   }
 
   async removeScrollEventListener(id: number): Promise<void> {
@@ -154,8 +145,8 @@ export class AnimationDOMNode {
       return;
     }
 
-    await object.callFunction(
-        removeScrollListenerInPage, [getScrollListenerNameInPage(id)].map(arg => RemoteObject.toCallArgument(arg)));
+    await object.callFunction(removeScrollListenerInPage,
+                              [getScrollListenerNameInPage(id)].map(arg => RemoteObject.toCallArgument(arg)));
     object.release();
 
     this.#scrollListenersById.delete(id);
@@ -164,107 +155,30 @@ export class AnimationDOMNode {
     if (this.#scrollListenersById.size === 0) {
       await this.#removeReportScrollPositionBinding();
     }
-
-    function removeScrollListenerInPage(this: HTMLElement|Document, scrollListenerNameInPage: string): void {
-      // @ts-expect-error We've already set this custom field while adding scroll listener.
-      this.removeEventListener('scroll', this[scrollListenerNameInPage]);
-      // @ts-expect-error We've already set this custom field while adding scroll listener.
-      delete this[scrollListenerNameInPage];
-    }
   }
 
   async scrollTop(): Promise<number|null> {
     return await this.#domNode.callFunction(scrollTopInPage).then(res => res?.value ?? null);
-
-    function scrollTopInPage(this: Element|Document): number {
-      if ('scrollingElement' in this) {
-        if (!this.scrollingElement) {
-          return 0;
-        }
-
-        return this.scrollingElement.scrollTop;
-      }
-      return this.scrollTop;
-    }
   }
 
   async scrollLeft(): Promise<number|null> {
     return await this.#domNode.callFunction(scrollLeftInPage).then(res => res?.value ?? null);
-
-    function scrollLeftInPage(this: Element|Document): number {
-      if ('scrollingElement' in this) {
-        if (!this.scrollingElement) {
-          return 0;
-        }
-
-        return this.scrollingElement.scrollLeft;
-      }
-      return this.scrollLeft;
-    }
   }
 
   async setScrollTop(offset: number): Promise<void> {
     await this.#domNode.callFunction(setScrollTopInPage, [offset]);
-
-    function setScrollTopInPage(this: Element|Document, offsetInPage: number): void {
-      if ('scrollingElement' in this) {
-        if (!this.scrollingElement) {
-          return;
-        }
-
-        this.scrollingElement.scrollTop = offsetInPage;
-      } else {
-        this.scrollTop = offsetInPage;
-      }
-    }
   }
 
   async setScrollLeft(offset: number): Promise<void> {
     await this.#domNode.callFunction(setScrollLeftInPage, [offset]);
-
-    function setScrollLeftInPage(this: Element|Document, offsetInPage: number): void {
-      if ('scrollingElement' in this) {
-        if (!this.scrollingElement) {
-          return;
-        }
-
-        this.scrollingElement.scrollLeft = offsetInPage;
-      } else {
-        this.scrollLeft = offsetInPage;
-      }
-    }
   }
 
   async verticalScrollRange(): Promise<number|null> {
     return await this.#domNode.callFunction(verticalScrollRangeInPage).then(res => res?.value ?? null);
-
-    function verticalScrollRangeInPage(this: Element|Document): number {
-      if ('scrollingElement' in this) {
-        if (!this.scrollingElement) {
-          return 0;
-        }
-
-        return this.scrollingElement.scrollHeight - this.scrollingElement.clientHeight;
-      }
-
-      return this.scrollHeight - this.clientHeight;
-    }
   }
 
   async horizontalScrollRange(): Promise<number|null> {
     return await this.#domNode.callFunction(horizontalScrollRangeInPage).then(res => res?.value ?? null);
-
-    function horizontalScrollRangeInPage(this: Element|Document): number {
-      if ('scrollingElement' in this) {
-        if (!this.scrollingElement) {
-          return 0;
-        }
-
-        return this.scrollingElement.scrollWidth - this.scrollingElement.clientWidth;
-      }
-
-      return this.scrollWidth - this.clientWidth;
-    }
   }
 }
 

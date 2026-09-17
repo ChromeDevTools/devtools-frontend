@@ -130,6 +130,8 @@ async function saveScreenshot(options: Api.HostRuntime.ScreenshotOptions): Promi
   link.click();
 }
 
+let cssEvaluationElement: HTMLElement|null = null;
+
 export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
   createWorker(url: string): Api.HostRuntime.Worker {
     return new WebWorker(url);
@@ -145,6 +147,10 @@ export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
       undefined {
         return 'localStorage' in globalThis ? globalThis.localStorage : undefined;
       },
+  getCacheStorage(): Api.HostRuntime.CacheStorageLike |
+      undefined {
+        return 'caches' in globalThis ? globalThis.caches : undefined;
+      },
   getDevicePixelRatio(): number {
     return window.devicePixelRatio;
   },
@@ -153,5 +159,33 @@ export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
   async loadTextFile(url: URL): Promise<string> {
     const response = await fetch(url);
     return await response.text();
+  },
+  evaluateCSS(dataValue: string|null, customExpr: string): string |
+      null {
+        if (!cssEvaluationElement || !cssEvaluationElement.isConnected) {
+          cssEvaluationElement = document.getElementById('css-evaluation-element');
+          if (!cssEvaluationElement) {
+            cssEvaluationElement = document.createElement('div');
+            cssEvaluationElement.id = 'css-evaluation-element';
+            cssEvaluationElement.setAttribute('style', 'hidden: true; --evaluation: attr(data-custom-expr type(*))');
+
+            document.body.appendChild(cssEvaluationElement);
+          }
+        }
+
+        if (dataValue !== null) {
+          cssEvaluationElement.setAttribute('data-value', dataValue);
+        } else {
+          cssEvaluationElement.removeAttribute('data-value');
+        }
+        cssEvaluationElement.setAttribute('data-custom-expr', customExpr);
+        return cssEvaluationElement.computedStyleMap().get('--evaluation')?.toString() ?? null;
+      },
+  removeCSSEvaluationElement(): void {
+    const element = cssEvaluationElement ?? document.getElementById('css-evaluation-element');
+    if (element) {
+      element.remove();
+    }
+    cssEvaluationElement = null;
   },
 };

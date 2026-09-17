@@ -1,10 +1,9 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 
 import type {CSSMatchedStyles, CSSValueSource, CSSVariableValue} from './CSSMatchedStyles.js';
@@ -212,33 +211,6 @@ export class AttributeMatch extends BaseVariableMatch {
   }
 }
 
-let cssEvaluationElement: HTMLElement|null = null;
-function getCssEvaluationElement(): HTMLElement {
-  const id = 'css-evaluation-element';
-  if (!cssEvaluationElement) {
-    cssEvaluationElement = document.getElementById(id);
-    if (!cssEvaluationElement) {
-      cssEvaluationElement = document.createElement('div');
-      cssEvaluationElement.setAttribute('id', id);
-      cssEvaluationElement.setAttribute('style', 'hidden: true; --evaluation: attr(data-custom-expr type(*))');
-      document.body.appendChild(cssEvaluationElement);
-    }
-  }
-  return cssEvaluationElement;
-}
-
-/**
- * If a test calls localEvalCSS, an element is created on demand for this
- * purpose. This element is not removed from the DOM and will leak between tests
- * if not removed.
- */
-export function removeCSSEvaluationElement(): void {
-  if (cssEvaluationElement) {
-    document.body.removeChild(cssEvaluationElement);
-    cssEvaluationElement = null;
-  }
-}
-
 /**
  * These functions use an element in the frontend to evaluate CSS. The advantage
  * of this is that it is synchronous and doesn't require a CDP method. The
@@ -249,10 +221,7 @@ export function removeCSSEvaluationElement(): void {
  * substitutions (but not for actual evaluation) and for applying units.
  **/
 export function localEvalCSS(value: string, type: string): string|null {
-  const element = getCssEvaluationElement();
-  element.setAttribute('data-value', value);
-  element.setAttribute('data-custom-expr', `attr(data-value ${type})`);
-  return element.computedStyleMap().get('--evaluation')?.toString() ?? null;
+  return Platform.HostRuntime.HOST_RUNTIME.evaluateCSS(value, `attr(data-value ${type})`);
 }
 
 /**
@@ -261,15 +230,11 @@ export function localEvalCSS(value: string, type: string): string|null {
  * raw string, returning '' if the attribute is not set.
  **/
 export function isValidCSSType(type: string): boolean {
-  const element = getCssEvaluationElement();
-  element.setAttribute('data-custom-expr', `attr(data-nonexistent ${type}, "good")`);
-  return '"good"' === (element.computedStyleMap().get('--evaluation')?.toString() ?? null);
+  return '"good"' === Platform.HostRuntime.HOST_RUNTIME.evaluateCSS(null, `attr(data-nonexistent ${type}, "good")`);
 }
 
 export function defaultValueForCSSType(type: string|null): string|null {
-  const element = getCssEvaluationElement();
-  element.setAttribute('data-custom-expr', `attr(data-nonexistent ${type ?? ''})`);
-  return element.computedStyleMap().get('--evaluation')?.toString() ?? null;
+  return Platform.HostRuntime.HOST_RUNTIME.evaluateCSS(null, `attr(data-nonexistent ${type ?? ''})`);
 }
 
 export const RAW_STRING_TYPE = 'raw-string';
@@ -370,11 +335,6 @@ export class TextMatch implements Match {
     if (node.name === 'Comment') {
       this.computedText = () => '';
     }
-  }
-  render(): Node[] {
-    const span = document.createElement('span');
-    span.appendChild(document.createTextNode(this.text));
-    return [span];
   }
 }
 

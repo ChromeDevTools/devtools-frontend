@@ -44,6 +44,7 @@ import {ConsoleModel} from './ConsoleModel.js';
 import {CSSModel} from './CSSModel.js';
 import type {FrameManager} from './FrameManager.js';
 import {OverlayModel} from './OverlayModel.js';
+import {focusInPage, scrollIntoViewInPage, toggleClassAndInjectStyleRule} from './PageFunctions.js';
 import {RemoteObject} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, type ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';
 import {RuntimeModel} from './RuntimeModel.js';
@@ -1127,47 +1128,6 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
                               [{value: pseudoElementName}, {value: !hidden}]);
     object.release();
     this.setMarker('hidden-marker', hidden ? null : true);
-
-    function toggleClassAndInjectStyleRule(this: Element, pseudoElementName: string|null, hidden: boolean): void {
-      const classNamePrefix = '__web-inspector-hide';
-      const classNameSuffix = '-shortcut__';
-      const styleTagId = '__web-inspector-hide-shortcut-style__';
-      const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[\(\)\:]/g, '_') : '';
-      const className = classNamePrefix + pseudoElementNameEscaped + classNameSuffix;
-      this.classList.toggle(className, hidden);
-
-      let localRoot: Element|HTMLHeadElement = this;
-      while (localRoot.parentNode) {
-        localRoot = (localRoot.parentNode as Element);
-      }
-      if (localRoot.nodeType === Node.DOCUMENT_NODE) {
-        localRoot = document.head;
-      }
-
-      let style = localRoot.querySelector('style#' + styleTagId);
-      if (!style) {
-        const selectors = [];
-        selectors.push('.__web-inspector-hide-shortcut__');
-        selectors.push('.__web-inspector-hide-shortcut__ *');
-        const selector = selectors.join(', ');
-        const ruleBody = '    visibility: hidden !important;';
-        const rule = '\n' + selector + '\n{\n' + ruleBody + '\n}\n';
-
-        style = document.createElement('style');
-        style.id = styleTagId;
-        style.textContent = rule;
-
-        localRoot.appendChild(style);
-      }
-
-      // In addition to putting them on the element we want to hide, we will
-      // also add pseudo element classes to the style element to keep track of
-      // which pseudo elements we have style rules for.
-      if (pseudoElementName && !style.classList.contains(className)) {
-        style.classList.add(className);
-        style.textContent = `.${className}${pseudoElementName}, ${style.textContent}`;
-      }
-    }
   }
 
   isToggledToHidden(): boolean {
@@ -1329,8 +1289,8 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
     return node;
   }
 
-  async callFunction<T, U extends string|number>(fn: (this: HTMLElement, ...args: U[]) => T, args: U[] = []):
-      Promise<{value: T}|null> {
+  async callFunction<T, U extends string|number, This = never>(fn: (this: This, ...args: U[]) => T,
+                                                               args: U[] = []): Promise<{value: T}|null> {
     const object = await this.resolveToObject();
     if (!object) {
       return null;
@@ -1365,10 +1325,6 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
     }
 
     node.highlightForTwoSeconds();
-
-    function scrollIntoViewInPage(this: Element): void {
-      this.scrollIntoViewIfNeeded(true);
-    }
   }
 
   async focus(): Promise<void> {
@@ -1383,10 +1339,6 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
 
     node.highlightForTwoSeconds();
     await this.#domModel.target().pageAgent().invoke_bringToFront();
-
-    function focusInPage(this: HTMLElement): void {
-      this.focus();
-    }
   }
 
   simpleSelector(): string {

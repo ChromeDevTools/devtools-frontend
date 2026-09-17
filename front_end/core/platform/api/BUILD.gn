@@ -2,17 +2,20 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/typescript/typescript.gni")
 
-devtools_foundation_module("api") {
-  sources = [ "HostRuntime.ts" ]
-}
+ts_library("api") {
+  sources = [
+    "HostRuntime.ts",
+    "api.ts",
+  ]
 
-devtools_entrypoint("bundle") {
-  entrypoint = "api.ts"
-
-  ts_deps = [ ":api" ]
-
-  visibility = [ "*" ]
+  # This library has restricted visibility so downstream dependents
+  # should must use the `platform` entrypoint.
+  visibility = []
+  visibility = [
+    "../*",
+    "../browser/*",
+    "../node/*",
+  ]
 }

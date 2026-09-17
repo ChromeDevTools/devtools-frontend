@@ -35,6 +35,7 @@ import {CSSValueTraceView} from './CSSValueTraceView.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {
   BinOpRenderer,
+  type CSSControlMap,
   type MatchRenderer,
   Renderer,
   rendererBase,
@@ -713,7 +714,7 @@ export class ColorRenderer extends ColorRendererBase {
 
   #getValueChild(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): {
     valueChild: HTMLSpanElement,
-    cssControls?: SDK.CSSPropertyParser.CSSControlMap,
+    cssControls?: CSSControlMap,
     childTracingContexts?: TracingContext[],
   } {
     const valueChild = document.createElement('span');
@@ -906,11 +907,10 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
     return [colorSwatch, content];
   }
 
-  async applyColorScheme(
-      match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext,
-      colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: HTMLSpanElement, dark: HTMLSpanElement,
-      lightControls: SDK.CSSPropertyParser.CSSControlMap,
-      darkControls: SDK.CSSPropertyParser.CSSControlMap): Promise<void> {
+  async applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext,
+                         colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: HTMLSpanElement,
+                         dark: HTMLSpanElement, lightControls: CSSControlMap,
+                         darkControls: CSSControlMap): Promise<void> {
     const activeColor = await this.#activeColor(match);
     if (context.signal?.aborted) {
       return;

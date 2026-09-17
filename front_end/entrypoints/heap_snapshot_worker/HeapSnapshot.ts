@@ -5,7 +5,6 @@
 /* eslint-disable @devtools/prefer-private-class-members */
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as PlatformApi from '../../core/platform/api/api.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js';
 
@@ -724,8 +723,8 @@ function formatProblemReport(snapshot: HeapSnapshot, report: HeapSnapshotProblem
       })
       .join('\n  ');
 }
-function reportProblemToPrimaryWorker(
-    problemReport: HeapSnapshotProblemReport, port: PlatformApi.HostRuntime.WorkerMessagePort): void {
+function reportProblemToPrimaryWorker(problemReport: HeapSnapshotProblemReport,
+                                      port: Platform.HostRuntime.WorkerMessagePort): void {
   port.postMessage({problemReport});
 }
 
@@ -790,7 +789,7 @@ interface ArgumentsToComputeDominatorsAndRetainedSizes extends SecondaryInitArgu
   // should be used when computing dominators.
   essentialEdges: Platform.TypedArrayUtilities.BitVector;
   // A message port for reporting problems to the primary worker.
-  port: PlatformApi.HostRuntime.WorkerMessagePort;
+  port: Platform.HostRuntime.WorkerMessagePort;
   // For each node ordinal, this array will contain the node's shallow size.
   nodeSelfSizesPromise: Promise<Uint32Array>;
 }
@@ -825,7 +824,7 @@ export class SecondaryInitManager {
   argsStep1: Promise<SecondaryInitArgumentsStep1>;
   argsStep2: Promise<SecondaryInitArgumentsStep2>;
   argsStep3: Promise<SecondaryInitArgumentsStep3>;
-  constructor(port: PlatformApi.HostRuntime.WorkerMessagePort) {
+  constructor(port: Platform.HostRuntime.WorkerMessagePort) {
     const {promise: argsStep1, resolve: resolveArgsStep1} = Promise.withResolvers<SecondaryInitArgumentsStep1>();
     this.argsStep1 = argsStep1;
     const {promise: argsStep2, resolve: resolveArgsStep2} = Promise.withResolvers<SecondaryInitArgumentsStep2>();
@@ -833,7 +832,7 @@ export class SecondaryInitManager {
     const {promise: argsStep3, resolve: resolveArgsStep3} = Promise.withResolvers<SecondaryInitArgumentsStep3>();
     this.argsStep3 = argsStep3;
     const listener = (e: unknown): void => {
-      const data = (e as PlatformApi.HostRuntime.WorkerMessageEvent).data;
+      const data = (e as Platform.HostRuntime.WorkerMessageEvent).data;
       switch (data.step) {
         case 1:
           resolveArgsStep1(data.args);
@@ -856,7 +855,7 @@ export class SecondaryInitManager {
     return (await this.argsStep3).nodeSelfSizes;
   }
 
-  private async initialize(port: PlatformApi.HostRuntime.WorkerMessagePort): Promise<void> {
+  private async initialize(port: Platform.HostRuntime.WorkerMessagePort): Promise<void> {
     try {
       const argsStep1 = await this.argsStep1;
       const retainers = HeapSnapshot.buildRetainers(argsStep1);
@@ -1024,7 +1023,7 @@ export abstract class HeapSnapshot {
     this.#edgeNamesThatAreNotWeakMaps = Platform.TypedArrayUtilities.createBitVector(this.strings.length);
   }
 
-  async initialize(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort): Promise<void> {
+  async initialize(secondWorker: Platform.HostRuntime.WorkerMessagePort): Promise<void> {
     const meta = this.#metaNode;
 
     this.nodeTypeOffset = meta.node_fields.indexOf('type');
@@ -1170,11 +1169,11 @@ export abstract class HeapSnapshot {
     };
   }
 
-  private startInitStep1InSecondThread(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort):
+  private startInitStep1InSecondThread(secondWorker: Platform.HostRuntime.WorkerMessagePort):
       Promise<ResultsFromSecondWorker> {
     const resultsFromSecondWorker = new Promise<ResultsFromSecondWorker>((resolve, reject) => {
       const listener = (e: unknown): void => {
-        const data = (e as PlatformApi.HostRuntime.WorkerMessageEvent).data;
+        const data = (e as Platform.HostRuntime.WorkerMessageEvent).data;
         if (data?.problemReport) {
           const problemReport: HeapSnapshotProblemReport = data.problemReport;
           console.warn(formatProblemReport(this, problemReport));
@@ -1211,14 +1210,14 @@ export abstract class HeapSnapshot {
     return resultsFromSecondWorker;
   }
 
-  private startInitStep2InSecondThread(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort): void {
+  private startInitStep2InSecondThread(secondWorker: Platform.HostRuntime.WorkerMessagePort): void {
     const rootNodeOrdinal = this.rootNodeIndexInternal / this.nodeFieldCount;
     const essentialEdges = this.initEssentialEdges();
     const args: SecondaryInitArgumentsStep2 = {rootNodeOrdinal, essentialEdgesBuffer: essentialEdges.buffer};
     secondWorker.postMessage({step: 2, args}, [essentialEdges.buffer]);
   }
 
-  private startInitStep3InSecondThread(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort): void {
+  private startInitStep3InSecondThread(secondWorker: Platform.HostRuntime.WorkerMessagePort): void {
     const {nodes, nodeFieldCount, nodeSelfSizeOffset, nodeCount} = this;
     const nodeSelfSizes = new Uint32Array(nodeCount);
     for (let nodeOrdinal = 0; nodeOrdinal < nodeCount; ++nodeOrdinal) {

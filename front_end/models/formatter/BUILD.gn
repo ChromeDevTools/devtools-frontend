@@ -16,7 +16,6 @@ devtools_foundation_module("formatter") {
   ts_deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
-    "../../core/platform/api:bundle",
     "../../entrypoints/formatter_actions:bundle",
   ]
 }

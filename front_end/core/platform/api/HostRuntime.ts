@@ -13,6 +13,16 @@ export interface ScreenshotOptions {
   };
 }
 
+export interface CacheEntry {
+  put(url: string, response: Response): Promise<void>;
+  match(url: string): Promise<Response|undefined>;
+}
+
+export interface CacheStorageLike {
+  open(name: string): Promise<CacheEntry>;
+  delete(name: string): Promise<boolean>;
+}
+
 /**
  * Provides abstractions for host features that require different implementations depending
  * on whether DevTools runs in the browser or Node.js
@@ -23,10 +33,13 @@ export interface HostRuntime {
   getOnLine(): boolean;
   getUserAgent(): string;
   getLocalStorage(): Storage|undefined;
+  getCacheStorage(): CacheStorageLike|undefined;
   getDevicePixelRatio(): number;
   saveScreenshot(options: ScreenshotOptions): Promise<void>;
   revokeLastScreenshotUrl(): void;
   loadTextFile(url: URL): Promise<string>;
+  evaluateCSS(dataValue: string|null, customExpr: string): string|null;
+  removeCSSEvaluationElement(): void;
 }
 
 /**

@@ -338,8 +338,8 @@ describe('Highlighting', () => {
 
   beforeEach(() => {
     const highlighting = new Elements.PropertyRenderer.Highlighting();
-    const match1 = sinon.createStubInstance(SDK.CSSPropertyParserMatchers.TextMatch);
-    const match2 = sinon.createStubInstance(SDK.CSSPropertyParserMatchers.TextMatch);
+    const match1 = new SDK.CSSPropertyParserMatchers.TextMatch('match1', {} as CodeMirror.SyntaxNode);
+    const match2 = new SDK.CSSPropertyParserMatchers.TextMatch('match2', {} as CodeMirror.SyntaxNode);
     highlighting.addMatch(match1, [node('1'), node('2'), node('3')]);
     highlighting.addMatch(match1, [node('4'), node('5'), node('6'), node('7')]);
     highlighting.addMatch(match1, [node('8')]);

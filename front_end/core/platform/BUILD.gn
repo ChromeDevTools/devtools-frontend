@@ -30,7 +30,7 @@ devtools_foundation_module("platform") {
   ]
 
   ts_deps = [
-    "./api:bundle",
+    "./api",
     "./browser:bundle",
     "./node:bundle",
   ]
@@ -39,7 +39,10 @@ devtools_foundation_module("platform") {
 devtools_entrypoint("bundle") {
   entrypoint = "platform.ts"
 
-  ts_deps = [ ":platform" ]
+  ts_deps = [
+    ":platform",
+    "./api",
+  ]
 
   visibility = [ "*" ]
 }

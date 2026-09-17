@@ -199,7 +199,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     return TextUtils.TextUtils.performSearchInSearchMatches(result.result || [], query, caseSensitive, isRegex);
   }
 
-  async populateImageSource(image: HTMLImageElement): Promise<void> {
+  async populateImageSource(image: {src: string}): Promise<void> {
     const contentData = await this.requestContentData();
     if (TextUtils.ContentData.ContentData.isError(contentData)) {
       return;

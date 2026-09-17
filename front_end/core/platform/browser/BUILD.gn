@@ -14,7 +14,7 @@ devtools_module("browser") {
     "dom.iterable",
   ]
 
-  ts_deps = [ "../api:bundle" ]
+  ts_deps = [ "../api" ]
 }
 
 devtools_entrypoint("bundle") {

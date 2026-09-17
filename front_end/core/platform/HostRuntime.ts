@@ -4,6 +4,18 @@
 
 import type * as Api from './api/api.js';
 
+export type {
+  CacheEntry,
+  CacheStorageLike,
+  HostRuntime,
+  ScreenshotOptions,
+  Worker,
+  WorkerMessageEvent,
+  WorkerMessagePort,
+  WorkerScope,
+  WorkerTransferable,
+} from './api/HostRuntime.js';
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore 'process' is not available when type-checking against browser types.
 export const IS_NODE: boolean = typeof (process as unknown) !== 'undefined' && process.versions?.node !== null;

@@ -497,8 +497,10 @@ export class ComputedText {
  * ignored for the spacing requirement.
  **/
 export function requiresSpace(a: string, b: string): boolean;
-export function requiresSpace(a: Node[], b: Node[]): boolean;
-export function requiresSpace(a: Node[]|string|undefined, b: Node[]|string|undefined): boolean {
+export function requiresSpace(a: Array<{textContent?: string | null}>,
+                              b: Array<{textContent?: string | null}>): boolean;
+export function requiresSpace(a: Array<{textContent?: string | null}>|string|undefined,
+                              b: Array<{textContent?: string | null}>|string|undefined): boolean {
   const tail = Array.isArray(a) ? a.findLast(node => node.textContent)?.textContent : a;
   const head = Array.isArray(b) ? b.find(node => node.textContent)?.textContent : b;
   const trailingChar = tail ? tail[tail.length - 1] : '';
@@ -510,8 +512,6 @@ export function requiresSpace(a: Node[]|string|undefined, b: Node[]|string|undef
       !noSpaceBefore.includes(leadingChar);
 }
 
-export const CSSControlMap: MapConstructor = Map;
-export type CSSControlMap = Map<string, HTMLElement[]>;
 export namespace ASTUtils {
   export function siblings(node: CodeMirror.SyntaxNode|null): CodeMirror.SyntaxNode[] {
     const result = [];

@@ -10,6 +10,7 @@ import type * as Platform from '../platform/platform.js';
 
 import {DebuggerModel, type FunctionDetails} from './DebuggerModel.js';
 import {HeapProfilerModel} from './HeapProfilerModel.js';
+import {toStringForClipboard} from './PageFunctions.js';
 import {
   RemoteFunction,
   RemoteObject,
@@ -313,26 +314,6 @@ export class RuntimeModel extends SDKModel<EventTypes> {
                           }])
         .then(Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
             Host.InspectorFrontendHost.InspectorFrontendHostInstance));
-
-    function toStringForClipboard(this: Object, data: {
-      subtype: string,
-      indent: string,
-    }): string|undefined {
-      const subtype = data.subtype;
-      const indent = data.indent;
-
-      if (subtype === 'node') {
-        return this instanceof Element ? this.outerHTML : undefined;
-      }
-      if (subtype && typeof this === 'undefined') {
-        return String(subtype);
-      }
-      try {
-        return JSON.stringify(this, null, indent);
-      } catch {
-        return String(this);
-      }
-    }
   }
 
   private async queryObjectsRequested(object: RemoteObject, executionContextId?: number): Promise<void> {

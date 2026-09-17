@@ -18,6 +18,7 @@ import {
   LOGPOINT_SOURCE_URL,
 } from './DebuggerModel.js';
 import {LogModel} from './LogModel.js';
+import {saveVariable} from './PageFunctions.js';
 import {RemoteObject} from './RemoteObject.js';
 import {
   Events as ResourceTreeModelEvents,
@@ -457,18 +458,6 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     }
     if (callFunctionResult.object) {
       callFunctionResult.object.release();
-    }
-
-    function saveVariable(this: Window, value: Protocol.Runtime.CallArgument): string {
-      const prefix = 'temp';
-      let index = 1;
-      while ((prefix + index) in this) {
-        ++index;
-      }
-      const name = prefix + index;
-      // @ts-expect-error Assignment to global object
-      this[name] = value;
-      return name;
     }
   }
 }

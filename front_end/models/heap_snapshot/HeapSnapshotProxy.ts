@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as PlatformApi from '../../core/platform/api/api.js';
 import * as Platform from '../../core/platform/platform.js';
 
 import type {ChildrenProvider} from './ChildrenProvider.js';
@@ -17,7 +16,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
   callbacks: Map<number, (error?: string, result?: unknown) => void> =
       new Map<number, (error?: string, result?: unknown) => void>();
   readonly previousCallbacks: Set<number> = new Set<number>();
-  readonly worker: PlatformApi.HostRuntime.Worker;
+  readonly worker: Platform.HostRuntime.Worker;
   interval?: ReturnType<typeof setInterval>;
   readonly workerUrl?: string;
 
@@ -69,17 +68,18 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     this.postMessage({callId, disposition: 'evaluateForTest', source: script});
   }
 
-  callFactoryMethod<T extends Object>(
-      callback: null, objectId: string, methodName: string, proxyConstructor: new(...arg1: any[]) => T,
-      transfer: PlatformApi.HostRuntime.WorkerTransferable[], ...methodArguments: any[]): T;
+  callFactoryMethod<T extends Object>(callback: null, objectId: string, methodName: string,
+                                      proxyConstructor: new(...arg1: any[]) => T,
+                                      transfer: Platform.HostRuntime.WorkerTransferable[],
+                                      ...methodArguments: any[]): T;
   callFactoryMethod<T extends Object>(callback: ((error?: string, result?: T) => void), objectId: string,
                                       methodName: string, proxyConstructor: new(...arg1: any[]) => T,
-                                      transfer: PlatformApi.HostRuntime.WorkerTransferable[],
+                                      transfer: Platform.HostRuntime.WorkerTransferable[],
                                       ...methodArguments: any[]): null;
   callFactoryMethod<T extends Object>(callback: ((error?: string, result?: T) => void)|null, objectId: string,
                                       methodName: string, proxyConstructor: new(...arg1: any[]) => T,
-                                      transfer: PlatformApi.HostRuntime.WorkerTransferable[],
-                                      ...methodArguments: any[]): T|null {
+                                      transfer: Platform.HostRuntime.WorkerTransferable[], ...methodArguments: any[]): T
+      |null {
     const callId = this.nextCallId++;
     const newObjectId = this.nextObjectId++;
 
@@ -154,7 +154,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     }
   }
 
-  setupForSecondaryInit(port: PlatformApi.HostRuntime.WorkerMessagePort): Promise<void> {
+  setupForSecondaryInit(port: Platform.HostRuntime.WorkerMessagePort): Promise<void> {
     const callId = this.nextCallId++;
     const done = new Promise<void>((resolve, reject) => {
       this.callbacks.set(callId, error => {
@@ -175,7 +175,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     return done;
   }
 
-  messageReceived(event: PlatformApi.HostRuntime.WorkerMessageEvent): void {
+  messageReceived(event: Platform.HostRuntime.WorkerMessageEvent): void {
     const data = event.data;
     if (data.eventName) {
       if (this.eventHandler) {
@@ -199,7 +199,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     callback(undefined, data.result);
   }
 
-  postMessage(message: unknown, transfer?: PlatformApi.HostRuntime.WorkerTransferable[]): void {
+  postMessage(message: unknown, transfer?: Platform.HostRuntime.WorkerTransferable[]): void {
     this.worker.postMessage(message, transfer);
   }
 }
@@ -231,9 +231,9 @@ export class HeapSnapshotProxyObject {
     return this.worker.callFactoryMethod(null, String(this.objectId), methodName, proxyConstructor, [], ...args);
   }
 
-  callFactoryMethodPromise<T extends Object>(
-      methodName: string, proxyConstructor: new(...arg1: any[]) => T,
-      transfer: PlatformApi.HostRuntime.WorkerTransferable[], ...args: any[]): Promise<T> {
+  callFactoryMethodPromise<T extends Object>(methodName: string, proxyConstructor: new(...arg1: any[]) => T,
+                                             transfer: Platform.HostRuntime.WorkerTransferable[],
+                                             ...args: any[]): Promise<T> {
     return new Promise((resolve, reject) => this.worker.callFactoryMethod((error, result) => {
       if (error) {
         reject(new Error(error));

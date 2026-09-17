@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as PlatformApi from '../../core/platform/api/api.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js';
 
 // We mirror what heap_snapshot_worker.ts does, but we can't use it here as we'd have a
@@ -24,8 +24,8 @@ export class HeapSnapshotWorkerDispatcher {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #objects: any[] = [];
-  readonly #postMessage: PlatformApi.HostRuntime.Worker['postMessage'];
-  constructor(postMessage: PlatformApi.HostRuntime.Worker['postMessage']) {
+  readonly #postMessage: Platform.HostRuntime.Worker['postMessage'];
+  constructor(postMessage: Platform.HostRuntime.Worker['postMessage']) {
     this.#postMessage = postMessage;
   }
 
@@ -36,7 +36,7 @@ export class HeapSnapshotWorkerDispatcher {
   async dispatchMessage({
     data,
     ports,
-  }: PlatformApi.HostRuntime.WorkerMessageEvent<HeapSnapshotModel.HeapSnapshotModel.WorkerCommand>): Promise<void> {
+  }: Platform.HostRuntime.WorkerMessageEvent<HeapSnapshotModel.HeapSnapshotModel.WorkerCommand>): Promise<void> {
     const response: DispatcherResponse = {
       callId: data.callId,
       result: null,

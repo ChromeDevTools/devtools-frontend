@@ -603,7 +603,7 @@ describe('SourceMapScopesInfo', () => {
       const scopeChain = info.resolveMappedScopeChain(callFrame);
 
       assert.isNotNull(scopeChain);
-      assert.lengthOf(scopeChain, 3);
+      assert.lengthOf(scopeChain, 4);
       await scopeChain[0].object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
       await scopeChain[1].object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
 
@@ -966,6 +966,40 @@ describe('SourceMapScopesInfo', () => {
         assert.lengthOf(scopeChain, 1);
         assert.strictEqual(scopeChain[0].type(), Protocol.Debugger.ScopeType.Global);
       }
+    });
+
+    it('retains both authored global scope and V8 global scope when V8 global scope is present', () => {
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', variables: ['authoredGlobal'], key: 'global'})
+          .startScope(5, 0, {kind: 'function', isStackFrame: true, name: 'fn', variables: ['localVar'], key: 'fn'})
+          .endScope(15, 0)
+          .endScope(20, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'global', values: ['"authored"']})
+          .startRange(0, 20, {scopeKey: 'fn', isStackFrame: true, values: ['"local"']})
+          .endRange(0, 80)
+          .endRange(0, 100);
+
+      const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
+        generatedPausedPosition: {line: 0, column: 50},
+        mappedPausedPosition: {sourceIndex: 0, line: 10, column: 0},
+        scopeChain: [
+          scopePayload(Protocol.Debugger.ScopeType.Local, {line: 0, column: 20}, {line: 0, column: 80}),
+          scopePayload(Protocol.Debugger.ScopeType.Global),
+        ],
+      });
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
+
+      const scopeChain = info.resolveMappedScopeChain(callFrame);
+
+      assert.isNotNull(scopeChain);
+      assert.lengthOf(scopeChain, 3);
+      assert.strictEqual(scopeChain[0].type(), Protocol.Debugger.ScopeType.Local);
+      assert.instanceOf(scopeChain[0], SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry);
+      assert.strictEqual(scopeChain[1].type(), Protocol.Debugger.ScopeType.Global);
+      assert.instanceOf(scopeChain[1], SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry);
+      assert.strictEqual(scopeChain[2].type(), Protocol.Debugger.ScopeType.Global);
+      assert.notInstanceOf(scopeChain[2], SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry);
     });
   });
 

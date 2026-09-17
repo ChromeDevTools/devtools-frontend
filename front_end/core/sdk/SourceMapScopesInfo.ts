@@ -355,7 +355,7 @@ export class SourceMapScopesInfo {
     //         w.r.t. each other.
 
     let seenFunctionScope = false;
-    const result: SourceMapScopeChainEntry[] = [];
+    const result: ScopeChainEntry[] = [];
     // Walk the original scope chain outwards and try to find the corresponding generated range along the way.
     for (let originalScope = rangeChain.at(-1)?.originalScope; originalScope; originalScope = originalScope.parent) {
       const range = rangeChain.findLast(r => r.originalScope === originalScope);
@@ -368,6 +368,11 @@ export class SourceMapScopesInfo {
       result.push(new SourceMapScopeChainEntry(callFrame, originalScope, range, isInnerMostFunction,
                                                returnValue ?? undefined, scopeNumber));
       seenFunctionScope ||= isFunctionScope;
+    }
+
+    const globalScope = callFrame.scopeChain()?.find(s => s.type() === Protocol.Debugger.ScopeType.Global);
+    if (globalScope) {
+      result.push(globalScope);
     }
 
     // If we are paused on a return statement, we need to drop inner block scopes. This is because V8 only emits a

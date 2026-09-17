@@ -7,13 +7,13 @@ import * as Platform from '../platform/platform.js';
 
 import type {FrameAssociated} from './FrameAssociated.js';
 import {PageResourceLoader, type PageResourceLoadInitiator, type ResourceLoader} from './PageResourceLoader.js';
-import {type DebugId, parseSourceMap, SourceMap, type SourceMapV3} from './SourceMap.js';
+import {type DebugId, parseSourceMap, SourceMap, type SourceMapProvenance, type SourceMapV3} from './SourceMap.js';
 import {SourceMapCache} from './SourceMapCache.js';
 import {type Target, Type} from './Target.js';
 
 export type SourceMapFactory<T> =
     (compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString,
-     payload: SourceMapV3, client: T) => SourceMap;
+     payload: SourceMapV3, client: T, provenance: SourceMapProvenance) => SourceMap;
 
 export const lazyLoadingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
   name: 'source-maps-lazy-loading',
@@ -37,8 +37,8 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
 
     this.#target = target;
     this.#factory = factory ??
-        ((compiledURL, sourceMappingURL, payload) =>
-             new SourceMap(compiledURL, sourceMappingURL, payload, this.#target.targetManager().getConsole()));
+        ((compiledURL, sourceMappingURL, payload, _client, provenance) => new SourceMap(
+             compiledURL, sourceMappingURL, payload, this.#target.targetManager().getConsole(), undefined, provenance));
     const settings = target.targetManager().settings;
     this.#lazyLoadingSetting = settings.resolve(lazyLoadingSettingDescriptor);
   }
@@ -60,8 +60,8 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
       this.detachSourceMap(client);
     }
     this.#isEnabled = isEnabled;
-    for (const [client, {relativeSourceURL, relativeSourceMapURL}] of clientData) {
-      this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL);
+    for (const [client, {relativeSourceURL, relativeSourceMapURL, provenance}] of clientData) {
+      this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL, provenance);
     }
   }
 
@@ -97,8 +97,8 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }
 
   // TODO(bmeurer): We are lying about the type of |relativeSourceURL| here.
-  attachSourceMap(
-      client: T, relativeSourceURL: Platform.DevToolsPath.UrlString, relativeSourceMapURL: string|undefined): void {
+  attachSourceMap(client: T, relativeSourceURL: Platform.DevToolsPath.UrlString, relativeSourceMapURL: string|undefined,
+                  provenance: SourceMapProvenance): void {
     if (this.#clientData.has(client)) {
       throw new Error('SourceMap is already attached or being attached to client');
     }
@@ -109,6 +109,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     const clientData: ClientData = {
       relativeSourceURL,
       relativeSourceMapURL,
+      provenance,
       getSourceMap: () => Promise.resolve(undefined),
     };
     this.#clientData.set(client, clientData);
@@ -142,7 +143,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
                   loadSourceMap(resourceLoader, this.#sourceMapCache, sourceMapURL, client.debugId(), initiator)
                       .then(
                           payload => {
-                            const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
+                            const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client, provenance);
                             if (this.#clientData.get(client) === clientData) {
                               clientData.sourceMap = sourceMap;
                               this.#sourceMaps.set(sourceMap, client);
@@ -257,6 +258,7 @@ interface ClientData {
   // Stores the raw sourceMappingURL as provided by V8. These are not guaranteed to
   // be valid URLs and will be checked and resolved once `attachSourceMap` is called.
   relativeSourceMapURL: string;
+  provenance: SourceMapProvenance;
   sourceMap?: SourceMap;
   getSourceMap: () => Promise<SourceMap|undefined>;
 }

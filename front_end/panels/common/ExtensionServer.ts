@@ -1287,7 +1287,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (scriptFiles.length > 0) {
       for (const script of scriptFiles) {
         const resourceFile = debuggerBindingsInstance.scriptFile(resource.uiSourceCode, script.debuggerModel);
-        resourceFile?.addSourceMapURL(message.sourceMapURL as Platform.DevToolsPath.UrlString);
+        resourceFile?.addSourceMapURL(message.sourceMapURL as Platform.DevToolsPath.UrlString,
+                                      SDK.SourceMap.SourceMapProvenance.EXTENSION);
       }
     }
 

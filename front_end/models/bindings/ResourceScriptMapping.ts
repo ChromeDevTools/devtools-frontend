@@ -312,11 +312,11 @@ export class ResourceScriptFile {
     this.script = this.uiSourceCode.contentType().isScript() ? script : null;
   }
 
-  addSourceMapURL(sourceMapURL: Platform.DevToolsPath.UrlString): void {
+  addSourceMapURL(sourceMapURL: Platform.DevToolsPath.UrlString, provenance: SDK.SourceMap.SourceMapProvenance): void {
     if (!this.script) {
       return;
     }
-    this.script.debuggerModel.setSourceMapURL(this.script, sourceMapURL);
+    this.script.debuggerModel.setSourceMapURL(this.script, sourceMapURL, provenance);
   }
 
   addDebugInfoURL(debugInfoURL: Platform.DevToolsPath.UrlString): void {

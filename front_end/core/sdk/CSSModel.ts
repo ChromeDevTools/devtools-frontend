@@ -27,6 +27,7 @@ import {
 } from './ResourceTreeModel.js';
 import {SDKModel} from './SDKModel.js';
 import {cssSourceMapsEnabledSettingDescriptor} from './SDKSettings.js';
+import {SourceMapProvenance} from './SourceMap.js';
 import {SourceMapManager} from './SourceMapManager.js';
 import {Capability, type Target} from './Target.js';
 
@@ -784,7 +785,8 @@ export class CSSModel extends SDKModel<EventTypes> {
       }
       styleSheetIds.add(styleSheetHeader.id);
     }
-    this.#sourceMapManager.attachSourceMap(styleSheetHeader, styleSheetHeader.sourceURL, styleSheetHeader.sourceMapURL);
+    this.#sourceMapManager.attachSourceMap(styleSheetHeader, styleSheetHeader.sourceURL, styleSheetHeader.sourceMapURL,
+                                           SourceMapProvenance.CDP);
     this.dispatchEventToListeners(Events.StyleSheetAdded, styleSheetHeader);
   }
 
@@ -846,7 +848,7 @@ export class CSSModel extends SDKModel<EventTypes> {
 
     this.#sourceMapManager.detachSourceMap(header);
     header.setSourceMapURL(sourceMapURL);
-    this.#sourceMapManager.attachSourceMap(header, header.sourceURL, header.sourceMapURL);
+    this.#sourceMapManager.attachSourceMap(header, header.sourceURL, header.sourceMapURL, SourceMapProvenance.CDP);
     if (sourceMapURL === null) {
       return 'Error in CSS.setStyleSheetText';
     }

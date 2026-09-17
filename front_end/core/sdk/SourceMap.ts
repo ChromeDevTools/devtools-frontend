@@ -130,6 +130,12 @@ interface SourceInfo {
   reverseMappings: number[]|null;
 }
 
+export const enum SourceMapProvenance {
+  CDP = 'cdp',
+  EXTENSION = 'extension',
+  USER = 'user',
+}
+
 export class SourceMap {
   static retainRawSourceMaps = false;
 
@@ -149,13 +155,15 @@ export class SourceMap {
 
   #scopesFallbackPromise?: Promise<void>;
   readonly #console: Common.Console.Console;
+  readonly #provenance: SourceMapProvenance;
 
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
    * for format description.
    */
   constructor(compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString,
-              payload: SourceMapV3, console: Common.Console.Console, script?: Script) {
+              payload: SourceMapV3, console: Common.Console.Console, script?: Script,
+              provenance: SourceMapProvenance = SourceMapProvenance.CDP) {
     this.#json = payload;
     this.#script = script;
     this.#compiledURL = compiledURL;
@@ -163,6 +171,7 @@ export class SourceMap {
     this.#baseURL = (Common.ParsedURL.schemeIs(sourceMappingURL, 'data:')) ? compiledURL : sourceMappingURL;
     this.#debugId = 'debugId' in payload ? (payload.debugId as DebugId | undefined) : undefined;
     this.#console = console;
+    this.#provenance = provenance;
 
     if ('sections' in this.#json) {
       if (this.#json.sections.find(section => 'url' in section)) {
@@ -170,6 +179,10 @@ export class SourceMap {
       }
     }
     this.eachSection(this.parseSources.bind(this));
+  }
+
+  provenance(): SourceMapProvenance {
+    return this.#provenance;
   }
 
   json(): SourceMapV3|null {
@@ -823,7 +836,7 @@ export class SourceMap {
 
   resolveScopeChain(frame: CallFrame): ScopeChainEntry[]|null {
     this.#ensureSourceMapProcessed();
-    if (this.#scopesInfo === null) {
+    if (this.#provenance === SourceMapProvenance.USER || this.#scopesInfo === null) {
       return null;
     }
 

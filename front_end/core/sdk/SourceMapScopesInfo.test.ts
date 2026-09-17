@@ -1039,6 +1039,45 @@ describe('SourceMapScopesInfo', () => {
          const scopeChain2 = info2.resolveMappedScopeChain(setup2.callFrame);
          assert.isNull(scopeChain2);
        });
+
+    it('disallows resolveScopeChain for user-attached source maps while keeping other source map features working',
+       () => {
+         const builder = new ScopeInfoBuilder();
+         builder.startScope(0, 0, {kind: 'global', key: 'global'})
+             .startScope(5, 0, {kind: 'function', isStackFrame: true, name: 'authoredFn', variables: ['x'], key: 'fn'})
+             .endScope(15, 0)
+             .endScope(20, 0);
+         builder.startRange(0, 0, {scopeKey: 'global'})
+             .startRange(0, 20, {scopeKey: 'fn', isStackFrame: true, values: ['"val"']})
+             .endRange(0, 80)
+             .endRange(0, 100);
+
+         const {callFrame} = setUpCallFrameAndSourceMap({
+           generatedPausedPosition: {line: 0, column: 50},
+           mappedPausedPosition: {sourceIndex: 0, line: 10, column: 0},
+         });
+         const payload = ScopesCodec.encode(builder.build(), {version: 3, sources: ['foo.ts'], mappings: ''}) as
+             SDK.SourceMap.SourceMapV3;
+
+         const userMap = new SDK.SourceMap.SourceMap(
+             urlString`http://example.com/bundle.js`, urlString`http://example.com/bundle.js.map`, payload,
+             universe.console, undefined, SDK.SourceMap.SourceMapProvenance.USER);
+         assert.strictEqual(userMap.provenance(), SDK.SourceMap.SourceMapProvenance.USER);
+         assert.isNull(userMap.resolveScopeChain(callFrame));
+         assert.strictEqual(userMap.findOriginalFunctionName({line: 0, column: 50}), 'authoredFn');
+
+         const cdpMap = new SDK.SourceMap.SourceMap(urlString`http://example.com/bundle.js`,
+                                                    urlString`http://example.com/bundle.js.map`, payload,
+                                                    universe.console, undefined, SDK.SourceMap.SourceMapProvenance.CDP);
+         assert.strictEqual(cdpMap.provenance(), SDK.SourceMap.SourceMapProvenance.CDP);
+         assert.isNotNull(cdpMap.resolveScopeChain(callFrame));
+
+         const extMap = new SDK.SourceMap.SourceMap(
+             urlString`http://example.com/bundle.js`, urlString`http://example.com/bundle.js.map`, payload,
+             universe.console, undefined, SDK.SourceMap.SourceMapProvenance.EXTENSION);
+         assert.strictEqual(extMap.provenance(), SDK.SourceMap.SourceMapProvenance.EXTENSION);
+         assert.isNotNull(extMap.resolveScopeChain(callFrame));
+       });
   });
 
   describe('findOriginalFunctionName', () => {

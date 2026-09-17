@@ -23,7 +23,7 @@ import {
   pauseOnExceptionEnabledSettingDescriptor,
   pauseOnUncaughtExceptionSettingDescriptor,
 } from './SDKSettings.js';
-import {SourceMap} from './SourceMap.js';
+import {SourceMap, SourceMapProvenance} from './SourceMap.js';
 import {SourceMapManager} from './SourceMapManager.js';
 import {Capability, type Target} from './Target.js';
 
@@ -189,10 +189,10 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.agent = target.debuggerAgent();
     this.#runtimeModel = (target.model(RuntimeModel) as RuntimeModel);
 
-    this.#sourceMapManager =
-        new SourceMapManager(target,
-                             (compiledURL, sourceMappingURL, payload, script) => new SourceMap(
-                                 compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
+    this.#sourceMapManager = new SourceMapManager(
+        target,
+        (compiledURL, sourceMappingURL, payload, script, provenance) => new SourceMap(
+            compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script, provenance));
 
     const settings = this.target().targetManager().settings;
     this.#pauseOnExceptionEnabledSetting = settings.resolve(pauseOnExceptionEnabledSettingDescriptor);
@@ -719,7 +719,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
     if ((!selectedDebugSymbol || selectedDebugSymbol.type === Protocol.Debugger.DebugSymbolsType.SourceMap) &&
         script.sourceMapURL && !hasSyntaxError) {
-      this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
+      this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL, SourceMapProvenance.CDP);
     }
 
     const isDiscardable = hasSyntaxError && script.isAnonymousScript();
@@ -730,11 +730,12 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     return script;
   }
 
-  setSourceMapURL(script: Script, newSourceMapURL: Platform.DevToolsPath.UrlString): void {
+  setSourceMapURL(script: Script, newSourceMapURL: Platform.DevToolsPath.UrlString,
+                  provenance: SourceMapProvenance): void {
     // Detach any previous source map from the `script` first.
     this.#sourceMapManager.detachSourceMap(script);
     script.sourceMapURL = newSourceMapURL;
-    this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
+    this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL, provenance);
   }
 
   async setDebugInfoURL(script: Script, _externalURL: Platform.DevToolsPath.UrlString): Promise<void> {

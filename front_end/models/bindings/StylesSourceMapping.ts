@@ -310,7 +310,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     const sourceMapManager = this.#cssModel.sourceMapManager();
     this.headers.forEach(header => {
       sourceMapManager.detachSourceMap(header);
-      sourceMapManager.attachSourceMap(header, sourceUrl, sourceMapUrl);
+      sourceMapManager.attachSourceMap(header, sourceUrl, sourceMapUrl, SDK.SourceMap.SourceMapProvenance.USER);
     });
   }
 }

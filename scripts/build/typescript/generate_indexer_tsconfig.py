@@ -54,7 +54,9 @@ def main():
                         nargs='*',
                         default=[],
                         help='List of additional TypeScript declaration files')
-    parser.add_argument('--tsconfig-output-location',
+    parser.add_argument('--tsconfig_output_location',
+                        '--tsconfig-output-location',
+                        dest='tsconfig_output_location',
                         required=True,
                         help='Path to output tsconfig.json')
     parser.add_argument('--front-end-directory',
@@ -82,22 +84,31 @@ def main():
     all_ts_files = list(
         dict.fromkeys(sources + (opts.additional_type_definitions or [])))
 
+    root_dir = get_relative_path_from_output_directory(
+        opts.front_end_directory)
+
     tsconfig['files'] = [
         get_relative_path_from_output_directory(x) for x in all_ts_files
     ]
     tsconfig['compilerOptions'].pop('isolatedDeclarations', None)
-    tsconfig['compilerOptions']['checkJs'] = True
+    tsconfig['compilerOptions']['allowJs'] = False
+    tsconfig['compilerOptions']['checkJs'] = False
     tsconfig['compilerOptions']['composite'] = False
     tsconfig['compilerOptions']['declaration'] = False
     tsconfig['compilerOptions']['noEmit'] = True
     tsconfig['compilerOptions']['skipLibCheck'] = True
     tsconfig['compilerOptions'][
         'disableSourceOfProjectReferenceRedirect'] = True
-    tsconfig['compilerOptions'][
-        'rootDir'] = get_relative_path_from_output_directory(
-            opts.front_end_directory)
-    tsconfig['compilerOptions']['types'] = []
-    tsconfig['compilerOptions']['typeRoots'] = []
+    tsconfig['compilerOptions']['rootDir'] = root_dir
+    tsconfig['compilerOptions']['rootDirs'] = [root_dir, '.']
+    tsconfig['compilerOptions']['moduleResolution'] = 'bundler'
+    tsconfig['compilerOptions']['types'] = ['mocha']
+    tsconfig['compilerOptions']['typeRoots'] = [
+        get_relative_path_from_output_directory(
+            path.join(opts.front_end_directory, 'node_modules', '@types')),
+        get_relative_path_from_output_directory(
+            path.join(opts.front_end_directory, 'node_modules')),
+    ]
     tsconfig['compilerOptions']['module'] = 'esnext'
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['target'] = 'ES2023'

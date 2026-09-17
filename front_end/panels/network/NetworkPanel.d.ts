@@ -59,8 +59,7 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
     recordLogSetting: Common.Settings.Setting<boolean>;
     private readonly throttlingSelect;
     private readonly displayScreenshotDelay;
-    readonly backendLinkingRulesSetting: Common.Settings.Setting<BackendLinkingRule[]>;
-    readonly backendLinking: BackendLinking;
+    readonly backendLinking: BackendLinking | null;
     constructor(displayScreenshotDelay: number);
     static instance(opts?: {
         forceNew: boolean;

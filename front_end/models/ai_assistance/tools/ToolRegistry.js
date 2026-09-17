@@ -5,18 +5,18 @@ import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
 import { GetCookieValuesTool } from './GetCookieValues.js';
 import { GetDetailedCallTreeTool } from './GetDetailedCallTree.js';
 import { GetElementAccessibilityDetailsTool } from './GetElementAccessibilityDetails.js';
-import { GetFunctionCodeTool } from './GetFunctionCode.js';
 import { GetInsightDetailsTool } from './GetInsightDetails.js';
 import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
-import { GetResourceContentTool } from './GetResourceContent.js';
 import { GetSourceContentTool } from './GetSourceContent.js';
 import { GetStorageBreakdownTool } from './GetStorageBreakdown.js';
 import { GetStorageValuesTool } from './GetStorageValues.js';
 import { GetStylesTool } from './GetStyles.js';
 import { GetTraceEventByKeyTool } from './GetTraceEventByKey.js';
+import { GetTraceFunctionCodeTool } from './GetTraceFunctionCode.js';
 import { GetTraceMainThreadSummaryTool } from './GetTraceMainThreadSummary.js';
 import { GetTraceNetworkSummaryTool } from './GetTraceNetworkSummary.js';
+import { GetTraceResourceContentTool } from './GetTraceResourceContent.js';
 import { ListCookiesTool } from './ListCookies.js';
 import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
 import { ListPageOriginsTool } from './ListPageOrigins.js';
@@ -51,8 +51,8 @@ export const TOOLS = {
     ["getTraceNetworkSummary" /* ToolName.GET_TRACE_NETWORK_SUMMARY */]: new GetTraceNetworkSummaryTool(),
     ["runLighthouse" /* ToolName.RUN_LIGHTHOUSE */]: new RunLighthouseTool(),
     ["getDetailedCallTree" /* ToolName.GET_DETAILED_CALL_TREE */]: new GetDetailedCallTreeTool(),
-    ["getFunctionCode" /* ToolName.GET_FUNCTION_CODE */]: new GetFunctionCodeTool(),
-    ["getResourceContent" /* ToolName.GET_RESOURCE_CONTENT */]: new GetResourceContentTool(),
+    ["getTraceFunctionCode" /* ToolName.GET_TRACE_FUNCTION_CODE */]: new GetTraceFunctionCodeTool(),
+    ["getTraceResourceContent" /* ToolName.GET_TRACE_RESOURCE_CONTENT */]: new GetTraceResourceContentTool(),
     ["getInsightDetails" /* ToolName.GET_INSIGHT_DETAILS */]: new GetInsightDetailsTool(),
     ["getStorageBreakdown" /* ToolName.GET_STORAGE_BREAKDOWN */]: new GetStorageBreakdownTool(),
 };

@@ -54,6 +54,9 @@
   ],
   "references": [
     {
+      "path": "extension_api-tsconfig.ref.json"
+    },
+    {
       "path": "extensions-tsconfig.ref.json"
     }
   ]

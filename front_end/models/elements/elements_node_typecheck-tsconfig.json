@@ -46,11 +46,21 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/models/elements/DOMChanges.ts",
     "../../../../../../front_end/models/elements/ElementUpdateRecord.ts"
   ],
   "references": [
     {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../change_tracker/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../comment_manager/bundle-tsconfig.ref.json"
     }
   ]
 }

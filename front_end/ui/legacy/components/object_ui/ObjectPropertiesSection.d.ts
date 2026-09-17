@@ -254,7 +254,6 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     getContextMenu(event: Event): UI.ContextMenu.ContextMenu;
     private contextMenuFired;
     private updateExpandable;
-    path(): string;
 }
 export declare class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     #private;

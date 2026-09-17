@@ -5,6 +5,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import { DebuggerModel } from './DebuggerModel.js';
 import { HeapProfilerModel } from './HeapProfilerModel.js';
+import { toStringForClipboard } from './PageFunctions.js';
 import { RemoteFunction, RemoteObject, RemoteObjectImpl, RemoteObjectProperty, ScopeRemoteObject, } from './RemoteObject.js';
 import { SDKModel } from './SDKModel.js';
 import { customFormattersSettingDescriptor } from './SDKSettings.js';
@@ -235,22 +236,6 @@ export class RuntimeModel extends SDKModel {
                 },
             }])
             .then(Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host.InspectorFrontendHost.InspectorFrontendHostInstance));
-        function toStringForClipboard(data) {
-            const subtype = data.subtype;
-            const indent = data.indent;
-            if (subtype === 'node') {
-                return this instanceof Element ? this.outerHTML : undefined;
-            }
-            if (subtype && typeof this === 'undefined') {
-                return String(subtype);
-            }
-            try {
-                return JSON.stringify(this, null, indent);
-            }
-            catch {
-                return String(this);
-            }
-        }
     }
     async queryObjectsRequested(object, executionContextId) {
         const result = await this.queryObjects(object);

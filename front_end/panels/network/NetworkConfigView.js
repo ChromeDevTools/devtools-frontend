@@ -59,6 +59,14 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkConfigView.ts', 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkConfigViewInstance;
 export class NetworkConfigView extends UI.Widget.VBox {
+    #cacheDisabledSetting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor);
+    #customUserAgentSetting = Common.Settings.Settings.instance().createSetting('custom-user-agent', '');
+    #customUserAgentMetadataSetting = Common.Settings.Settings.instance().createSetting('custom-user-agent-metadata', null);
+    #autoCheckbox;
+    #customUserAgentSelectBox;
+    #customSelectAndInput;
+    #clientHints;
+    #userAgentUpdateButtonStatusText;
     constructor() {
         super({
             jslog: `${VisualLogging.panel('network-conditions').track({ resize: true })}`,
@@ -79,11 +87,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
         }
         return networkConfigViewInstance;
     }
-    static createUserAgentSelectAndInput(title) {
-        const userAgentSetting = Common.Settings.Settings.instance().createSetting('custom-user-agent', '');
-        const userAgentMetadataSetting = Common.Settings.Settings.instance().createSetting('custom-user-agent-metadata', null);
+    createUserAgentSelectAndInput(title) {
         const userAgentSelectElement = document.createElement('select');
-        userAgentSelectElement.setAttribute('jslog', `${VisualLogging.dropDown().track({ change: true }).context(userAgentSetting.name)}`);
+        userAgentSelectElement.setAttribute('jslog', `${VisualLogging.dropDown().track({ change: true }).context(this.#customUserAgentSetting.name)}`);
         UI.ARIAUtils.setLabel(userAgentSelectElement, title);
         const customOverride = { title: i18nString(UIStrings.custom), value: 'custom' };
         const { patchUserAgentWithChromeVersion } = SDK.NetworkManager.MultitargetNetworkManager;
@@ -109,9 +115,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
         // clang-format on
         userAgentSelectElement.selectedIndex = 0;
         const otherUserAgentElement = UI.UIUtils.createInput('', 'text');
-        otherUserAgentElement.setAttribute('jslog', `${VisualLogging.textField().track({ change: true }).context(userAgentSetting.name)}`);
-        otherUserAgentElement.value = userAgentSetting.get();
-        UI.Tooltip.Tooltip.install(otherUserAgentElement, userAgentSetting.get());
+        otherUserAgentElement.setAttribute('jslog', `${VisualLogging.textField().track({ change: true }).context(this.#customUserAgentSetting.name)}`);
+        otherUserAgentElement.value = this.#customUserAgentSetting.get();
+        UI.Tooltip.Tooltip.install(otherUserAgentElement, this.#customUserAgentSetting.get());
         otherUserAgentElement.placeholder = i18nString(UIStrings.enterACustomUserAgent);
         otherUserAgentElement.required = true;
         UI.ARIAUtils.setLabel(otherUserAgentElement, otherUserAgentElement.placeholder);
@@ -121,55 +127,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
         if (!otherUserAgentElement.value) {
             errorElement.textContent = i18nString(UIStrings.customUserAgentFieldIsRequired);
         }
-        settingChanged();
-        userAgentSelectElement.addEventListener('change', userAgentSelected, false);
-        otherUserAgentElement.addEventListener('input', applyOtherUserAgent, false);
-        function userAgentSelected() {
-            const value = userAgentSelectElement.options[userAgentSelectElement.selectedIndex].value;
-            if (value !== customOverride.value) {
-                userAgentSetting.set(value);
-                otherUserAgentElement.value = value;
-                UI.Tooltip.Tooltip.install(otherUserAgentElement, value);
-                const userAgentMetadata = getUserAgentMetadata(value);
-                userAgentMetadataSetting.set(userAgentMetadata);
-                SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(value, userAgentMetadata);
-            }
-            else {
-                userAgentMetadataSetting.set(null);
-                otherUserAgentElement.select();
-            }
-            errorElement.textContent = '';
-            const userAgentChangeEvent = new CustomEvent('user-agent-change', { detail: { value } });
-            userAgentSelectElement.dispatchEvent(userAgentChangeEvent);
-        }
-        function settingChanged() {
-            const value = userAgentSetting.get();
-            const options = userAgentSelectElement.options;
-            let selectionRestored = false;
-            for (let i = 0; i < options.length; ++i) {
-                if (options[i].value === value) {
-                    userAgentSelectElement.selectedIndex = i;
-                    selectionRestored = true;
-                    break;
-                }
-            }
-            if (!selectionRestored) {
-                userAgentSelectElement.selectedIndex = 0;
-            }
-        }
-        function applyOtherUserAgent() {
-            if (userAgentSetting.get() !== otherUserAgentElement.value) {
-                if (!otherUserAgentElement.value) {
-                    errorElement.textContent = i18nString(UIStrings.customUserAgentFieldIsRequired);
-                }
-                else {
-                    errorElement.textContent = '';
-                }
-                userAgentSetting.set(otherUserAgentElement.value);
-                UI.Tooltip.Tooltip.install(otherUserAgentElement, otherUserAgentElement.value);
-                settingChanged();
-            }
-        }
+        this.#settingChanged(userAgentSelectElement);
+        userAgentSelectElement.addEventListener('change', () => this.#onUserAgentSelect(userAgentSelectElement.value), false);
+        otherUserAgentElement.addEventListener('input', () => this.#onCustomUserAgentInput(otherUserAgentElement.value), false);
         return { select: userAgentSelectElement, input: otherUserAgentElement, error: errorElement };
     }
     createSection(title, className) {
@@ -182,7 +142,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     }
     createCacheSection() {
         const section = this.createSection(i18nString(UIStrings.caching), 'network-config-disable-cache');
-        section.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.disableCache), Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor)));
+        section.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.disableCache), this.#cacheDisabledSetting));
     }
     createNetworkThrottlingSection() {
         const title = i18nString(UIStrings.networkThrottling);
@@ -192,70 +152,131 @@ export class NetworkConfigView extends UI.Widget.VBox {
         section.appendChild(saveDataSelect);
     }
     createUserAgentSection() {
-        const userAgentMetadataSetting = Common.Settings.Settings.instance().createSetting('custom-user-agent-metadata', null);
-        const customUserAgentSetting = Common.Settings.Settings.instance().createSetting('custom-user-agent', '');
         const title = i18nString(UIStrings.userAgent);
         const section = this.createSection(title, 'network-config-ua');
-        const autoCheckbox = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.selectAutomatically), true, undefined, customUserAgentSetting.name);
-        section.appendChild(autoCheckbox);
-        customUserAgentSetting.addChangeListener(() => {
-            if (autoCheckbox.checked) {
+        this.#autoCheckbox = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.selectAutomatically), true, undefined, this.#customUserAgentSetting.name);
+        section.appendChild(this.#autoCheckbox);
+        this.#customUserAgentSetting.addChangeListener(() => {
+            if (this.#autoCheckbox?.checked) {
                 return;
             }
-            const customUA = customUserAgentSetting.get();
+            const customUA = this.#customUserAgentSetting.get();
             const userAgentMetadata = getUserAgentMetadata(customUA);
             SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
         });
-        const customUserAgentSelectBox = section.createChild('div', 'network-config-ua-custom');
-        autoCheckbox.addEventListener('change', userAgentSelectBoxChanged);
-        const customSelectAndInput = NetworkConfigView.createUserAgentSelectAndInput(title);
-        customUserAgentSelectBox.appendChild(customSelectAndInput.select);
-        customUserAgentSelectBox.appendChild(customSelectAndInput.input);
-        customUserAgentSelectBox.appendChild(customSelectAndInput.error);
-        const clientHints = new EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm();
-        const userAgentMetaDataSetting = userAgentMetadataSetting.get();
-        const initialUserAgentMetaData = getUserAgentMetadata(customSelectAndInput.select.value);
-        clientHints.value = {
+        this.#customUserAgentSelectBox = section.createChild('div', 'network-config-ua-custom');
+        this.#autoCheckbox.addEventListener('change', () => this.#onAutoCheckboxChange(this.#autoCheckbox?.checked ?? false));
+        this.#customSelectAndInput = this.createUserAgentSelectAndInput(title);
+        this.#customUserAgentSelectBox.appendChild(this.#customSelectAndInput.select);
+        this.#customUserAgentSelectBox.appendChild(this.#customSelectAndInput.input);
+        this.#customUserAgentSelectBox.appendChild(this.#customSelectAndInput.error);
+        this.#clientHints = new EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm();
+        const userAgentMetaDataSetting = this.#customUserAgentMetadataSetting.get();
+        const initialUserAgentMetaData = getUserAgentMetadata(this.#customSelectAndInput.select.value);
+        this.#clientHints.value = {
             showMobileCheckbox: true,
             showSubmitButton: true,
             metaData: userAgentMetaDataSetting || initialUserAgentMetaData || undefined,
         };
-        customUserAgentSelectBox.appendChild(clientHints);
-        customSelectAndInput.select.addEventListener('user-agent-change', (event) => {
-            const userStringValue = event.detail.value;
-            const userAgentMetadata = userStringValue ? getUserAgentMetadata(userStringValue) : null;
-            clientHints.value = {
+        this.#customUserAgentSelectBox.appendChild(this.#clientHints);
+        this.#clientHints.addEventListener('clienthintschange', () => this.#onClientHintsChange());
+        this.#clientHints.addEventListener('clienthintssubmit', event => this.#onClientHintsSubmit(event.detail.value));
+        this.#userAgentUpdateButtonStatusText = section.createChild('span', 'status-text');
+        this.#userAgentUpdateButtonStatusText.textContent = '';
+        this.#onAutoCheckboxChange(this.#autoCheckbox.checked);
+    }
+    #onAutoCheckboxChange(checked) {
+        const useCustomUA = !checked;
+        if (this.#customUserAgentSelectBox && this.#customSelectAndInput && this.#clientHints) {
+            this.#customUserAgentSelectBox.classList.toggle('checked', useCustomUA);
+            this.#customSelectAndInput.select.disabled = !useCustomUA;
+            this.#customSelectAndInput.input.disabled = !useCustomUA;
+            this.#customSelectAndInput.error.hidden = !useCustomUA;
+            this.#clientHints.disabled = !useCustomUA;
+        }
+        const customUA = useCustomUA ? this.#customUserAgentSetting.get() : '';
+        const userAgentMetadata = useCustomUA ? getUserAgentMetadata(customUA) : null;
+        SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
+    }
+    #onUserAgentSelect(value) {
+        if (!this.#customSelectAndInput || !this.#clientHints || !this.#userAgentUpdateButtonStatusText) {
+            return;
+        }
+        const customOverride = 'custom';
+        if (value !== customOverride) {
+            this.#customUserAgentSetting.set(value);
+            this.#customSelectAndInput.input.value = value;
+            UI.Tooltip.Tooltip.install(this.#customSelectAndInput.input, value);
+            const userAgentMetadata = getUserAgentMetadata(value);
+            this.#customUserAgentMetadataSetting.set(userAgentMetadata);
+            SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(value, userAgentMetadata);
+            this.#clientHints.value = {
                 metaData: userAgentMetadata || undefined,
                 showMobileCheckbox: true,
                 showSubmitButton: true,
             };
-            userAgentUpdateButtonStatusText.textContent = '';
-        });
-        clientHints.addEventListener('clienthintschange', () => {
-            customSelectAndInput.select.value = 'custom';
-            userAgentUpdateButtonStatusText.textContent = '';
-        });
-        clientHints.addEventListener('clienthintssubmit', event => {
-            const metaData = event.detail.value;
-            const customUA = customUserAgentSetting.get();
-            userAgentMetadataSetting.set(metaData);
-            SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, metaData);
-            userAgentUpdateButtonStatusText.textContent = i18nString(UIStrings.clientHintsStatusText);
-        });
-        const userAgentUpdateButtonStatusText = section.createChild('span', 'status-text');
-        userAgentUpdateButtonStatusText.textContent = '';
-        userAgentSelectBoxChanged();
-        function userAgentSelectBoxChanged() {
-            const useCustomUA = !autoCheckbox.checked;
-            customUserAgentSelectBox.classList.toggle('checked', useCustomUA);
-            customSelectAndInput.select.disabled = !useCustomUA;
-            customSelectAndInput.input.disabled = !useCustomUA;
-            customSelectAndInput.error.hidden = !useCustomUA;
-            clientHints.disabled = !useCustomUA;
-            const customUA = useCustomUA ? customUserAgentSetting.get() : '';
-            const userAgentMetadata = useCustomUA ? getUserAgentMetadata(customUA) : null;
-            SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
         }
+        else {
+            this.#customUserAgentMetadataSetting.set(null);
+            this.#clientHints.value = {
+                showMobileCheckbox: true,
+                showSubmitButton: true,
+            };
+            this.#customSelectAndInput.input.select();
+        }
+        this.#customSelectAndInput.error.textContent = '';
+        this.#userAgentUpdateButtonStatusText.textContent = '';
+    }
+    #onCustomUserAgentInput(value) {
+        if (!this.#customSelectAndInput) {
+            return;
+        }
+        if (this.#customUserAgentSetting.get() !== value) {
+            if (!value) {
+                this.#customSelectAndInput.error.textContent = i18nString(UIStrings.customUserAgentFieldIsRequired);
+            }
+            else {
+                this.#customSelectAndInput.error.textContent = '';
+            }
+            this.#customUserAgentSetting.set(value);
+            UI.Tooltip.Tooltip.install(this.#customSelectAndInput.input, value);
+            this.#settingChanged(this.#customSelectAndInput.select);
+        }
+    }
+    #settingChanged(selectElement) {
+        const select = selectElement ?? this.#customSelectAndInput?.select;
+        if (!select) {
+            return;
+        }
+        const value = this.#customUserAgentSetting.get();
+        const options = select.options;
+        let selectionRestored = false;
+        for (let i = 0; i < options.length; ++i) {
+            if (options[i].value === value) {
+                select.selectedIndex = i;
+                selectionRestored = true;
+                break;
+            }
+        }
+        if (!selectionRestored) {
+            select.selectedIndex = 0;
+        }
+    }
+    #onClientHintsChange() {
+        if (!this.#customSelectAndInput || !this.#userAgentUpdateButtonStatusText) {
+            return;
+        }
+        this.#customSelectAndInput.select.value = 'custom';
+        this.#userAgentUpdateButtonStatusText.textContent = '';
+    }
+    #onClientHintsSubmit(metaData) {
+        if (!this.#userAgentUpdateButtonStatusText) {
+            return;
+        }
+        const customUA = this.#customUserAgentSetting.get();
+        this.#customUserAgentMetadataSetting.set(metaData);
+        SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, metaData);
+        this.#userAgentUpdateButtonStatusText.textContent = i18nString(UIStrings.clientHintsStatusText);
     }
     wasShown() {
         super.wasShown();

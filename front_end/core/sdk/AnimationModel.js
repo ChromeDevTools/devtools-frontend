@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import { DeferredDOMNode } from './DOMModel.js';
+import { horizontalScrollRangeInPage, removeScrollListenerInPage, scrollLeftInPage, scrollListenerInPage, scrollTopInPage, setScrollLeftInPage, setScrollTopInPage, verticalScrollRangeInPage, } from './PageFunctions.js';
 import { RemoteObject } from './RemoteObject.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel } from './ResourceTreeModel.js';
 import { Events as RuntimeModelEvents, RuntimeModel } from './RuntimeModel.js';
@@ -101,19 +102,6 @@ export class AnimationDOMNode {
         ].map(arg => RemoteObject.toCallArgument(arg)));
         object.release();
         return id;
-        function scrollListenerInPage(id, reportScrollPositionBindingName, scrollListenerNameInPage) {
-            if ('scrollingElement' in this && !this.scrollingElement) {
-                return;
-            }
-            const scrollingElement = ('scrollingElement' in this ? this.scrollingElement : this);
-            // @ts-expect-error We're setting a custom field on `Element` or `Document` for retaining the function on the page.
-            this[scrollListenerNameInPage] = () => {
-                // @ts-expect-error `reportScrollPosition` binding is injected to the page before calling the function.
-                globalThis[reportScrollPositionBindingName](JSON.stringify({ scrollTop: scrollingElement.scrollTop, scrollLeft: scrollingElement.scrollLeft, id }));
-            };
-            // @ts-expect-error We've already defined the function used below.
-            this.addEventListener('scroll', this[scrollListenerNameInPage], true);
-        }
     }
     async removeScrollEventListener(id) {
         const object = await resolveToObjectInWorld(this.#domNode, DEVTOOLS_ANIMATIONS_WORLD_NAME);
@@ -128,88 +116,24 @@ export class AnimationDOMNode {
         if (this.#scrollListenersById.size === 0) {
             await this.#removeReportScrollPositionBinding();
         }
-        function removeScrollListenerInPage(scrollListenerNameInPage) {
-            // @ts-expect-error We've already set this custom field while adding scroll listener.
-            this.removeEventListener('scroll', this[scrollListenerNameInPage]);
-            // @ts-expect-error We've already set this custom field while adding scroll listener.
-            delete this[scrollListenerNameInPage];
-        }
     }
     async scrollTop() {
         return await this.#domNode.callFunction(scrollTopInPage).then(res => res?.value ?? null);
-        function scrollTopInPage() {
-            if ('scrollingElement' in this) {
-                if (!this.scrollingElement) {
-                    return 0;
-                }
-                return this.scrollingElement.scrollTop;
-            }
-            return this.scrollTop;
-        }
     }
     async scrollLeft() {
         return await this.#domNode.callFunction(scrollLeftInPage).then(res => res?.value ?? null);
-        function scrollLeftInPage() {
-            if ('scrollingElement' in this) {
-                if (!this.scrollingElement) {
-                    return 0;
-                }
-                return this.scrollingElement.scrollLeft;
-            }
-            return this.scrollLeft;
-        }
     }
     async setScrollTop(offset) {
         await this.#domNode.callFunction(setScrollTopInPage, [offset]);
-        function setScrollTopInPage(offsetInPage) {
-            if ('scrollingElement' in this) {
-                if (!this.scrollingElement) {
-                    return;
-                }
-                this.scrollingElement.scrollTop = offsetInPage;
-            }
-            else {
-                this.scrollTop = offsetInPage;
-            }
-        }
     }
     async setScrollLeft(offset) {
         await this.#domNode.callFunction(setScrollLeftInPage, [offset]);
-        function setScrollLeftInPage(offsetInPage) {
-            if ('scrollingElement' in this) {
-                if (!this.scrollingElement) {
-                    return;
-                }
-                this.scrollingElement.scrollLeft = offsetInPage;
-            }
-            else {
-                this.scrollLeft = offsetInPage;
-            }
-        }
     }
     async verticalScrollRange() {
         return await this.#domNode.callFunction(verticalScrollRangeInPage).then(res => res?.value ?? null);
-        function verticalScrollRangeInPage() {
-            if ('scrollingElement' in this) {
-                if (!this.scrollingElement) {
-                    return 0;
-                }
-                return this.scrollingElement.scrollHeight - this.scrollingElement.clientHeight;
-            }
-            return this.scrollHeight - this.clientHeight;
-        }
     }
     async horizontalScrollRange() {
         return await this.#domNode.callFunction(horizontalScrollRangeInPage).then(res => res?.value ?? null);
-        function horizontalScrollRangeInPage() {
-            if ('scrollingElement' in this) {
-                if (!this.scrollingElement) {
-                    return 0;
-                }
-                return this.scrollingElement.scrollWidth - this.scrollingElement.clientWidth;
-            }
-            return this.scrollWidth - this.clientWidth;
-        }
     }
 }
 function shouldGroupAnimations(firstAnimation, anim) {
@@ -747,7 +671,15 @@ export class AnimationGroup {
         return this.#scrollNode;
     }
     seekTo(currentTime) {
-        void this.#animationModel.agent.invoke_seekAnimations({ animations: this.animationIds(), currentTime });
+        const animations = [];
+        const currentTimes = [];
+        for (const animation of this.#animations) {
+            // Seek from the end of the animation if it is reversed.
+            animations.push(animation.id());
+            currentTimes.push(animation.playbackRate() >= 0 ? currentTime :
+                animation.endTime() - animation.startTime() - currentTime);
+        }
+        void this.#animationModel.agent.invoke_seekAnimations({ animations, currentTimes });
     }
     paused() {
         return this.#paused;

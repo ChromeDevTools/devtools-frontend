@@ -47,6 +47,7 @@
   "files": [
     "../../../../../../front_end/ui/comments/CommentAnchorResolver.ts",
     "../../../../../../front_end/ui/comments/CommentOverlayManager.ts",
+    "../../../../../../front_end/ui/comments/CommentThreadWidget.ts",
     "../../../../../../front_end/ui/comments/CommentsOverlayWidget.ts",
     "../../../../../../front_end/ui/comments/CommentsStatusBarPill.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
@@ -78,6 +79,15 @@
     },
     {
       "path": "../visual_logging/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../components/input/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../components/markdown_view/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../components/tooltips/bundle-tsconfig.ref.json"
     }
   ]
 }

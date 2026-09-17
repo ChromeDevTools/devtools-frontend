@@ -1,47 +1,39 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+interface ViewInput {
+    togglePassiveListener(listener: SDK.DOMDebuggerModel.EventListener): void;
+    removeListener(listener: SDK.DOMDebuggerModel.EventListener): boolean;
+    reveal(object: SDK.RemoteObject.RemoteObject): void;
+    linkifier: Components.Linkifier.Linkifier;
+    listeners: Map<string, Array<{
+        object: SDK.RemoteObject.RemoteObject;
+        listener: SDK.DOMDebuggerModel.EventListener;
+    }>>;
+    filter?: {
+        showFramework: boolean;
+        showPassive: boolean;
+        showBlocking: boolean;
+    };
+}
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class EventListenersView extends UI.Widget.VBox {
     #private;
-    changeCallback: () => void;
-    enableDefaultTreeFocus: boolean;
-    treeOutline: UI.TreeOutline.TreeOutlineInShadow;
-    emptyHolder: HTMLDivElement;
-    objects: Array<SDK.RemoteObject.RemoteObject | null>;
-    filter: {
+    constructor(element?: HTMLElement, view?: View);
+    get objects(): Array<SDK.RemoteObject.RemoteObject | null>;
+    set objects(val: Array<SDK.RemoteObject.RemoteObject | null>);
+    get filter(): {
         showFramework: boolean;
         showPassive: boolean;
         showBlocking: boolean;
     } | undefined;
-    constructor(element?: HTMLElement);
-    focus(): void;
+    set filter(val: {
+        showFramework: boolean;
+        showPassive: boolean;
+        showBlocking: boolean;
+    } | undefined);
     performUpdate(): Promise<void>;
-    addObjects(objects: Array<SDK.RemoteObject.RemoteObject | null>): Promise<void>;
-    showFrameworkListeners(showFramework: boolean, showPassive: boolean, showBlocking: boolean): void;
-    private getOrCreateTreeElementForType;
-    addEmptyHolderIfNeeded(): void;
     private eventListenersArrivedForTest;
 }
-export declare class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
-    toggleOnClick: boolean;
-    private readonly linkifier;
-    private readonly changeCallback;
-    constructor(type: string, linkifier: Components.Linkifier.Linkifier, changeCallback: () => void);
-    static comparator(element1: UI.TreeOutline.TreeElement, element2: UI.TreeOutline.TreeElement): number;
-    addObjectEventListener(eventListener: SDK.DOMDebuggerModel.EventListener, object: SDK.RemoteObject.RemoteObject): void;
-}
-export declare class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
-    #private;
-    editable: boolean;
-    private readonly changeCallback;
-    private valueTitle?;
-    constructor(eventListener: SDK.DOMDebuggerModel.EventListener, object: SDK.RemoteObject.RemoteObject, linkifier: Components.Linkifier.Linkifier, changeCallback: () => void);
-    onpopulate(): Promise<void>;
-    private setTitle;
-    private removeListener;
-    private togglePassiveListener;
-    private removeListenerBar;
-    eventListener(): SDK.DOMDebuggerModel.EventListener;
-    onenter(): boolean;
-    ondelete(): boolean;
-}
+export {};

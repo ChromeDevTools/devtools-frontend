@@ -40,7 +40,6 @@
     "../../../../../../front_end/core/sdk/CategorizedBreakpoint.ts",
     "../../../../../../front_end/core/sdk/ChildTargetManager.ts",
     "../../../../../../front_end/core/sdk/CompilerSourceMappingContentProvider.ts",
-    "../../../../../../front_end/core/sdk/Connections.ts",
     "../../../../../../front_end/core/sdk/ConsoleModel.ts",
     "../../../../../../front_end/core/sdk/ConsoleModelTypes.ts",
     "../../../../../../front_end/core/sdk/Cookie.ts",
@@ -74,7 +73,6 @@
     "../../../../../../front_end/core/sdk/PaintProfiler.ts",
     "../../../../../../front_end/core/sdk/PerformanceMetricsModel.ts",
     "../../../../../../front_end/core/sdk/PreloadingModel.ts",
-    "../../../../../../front_end/core/sdk/RehydratingConnection.ts",
     "../../../../../../front_end/core/sdk/RehydratingObject.ts",
     "../../../../../../front_end/core/sdk/RemoteObject.ts",
     "../../../../../../front_end/core/sdk/Resource.ts",
@@ -111,6 +109,9 @@
     "../../../../../../node_modules/@types/filewriter/index.d.ts"
   ],
   "references": [
+    {
+      "path": "page_functions-tsconfig.ref.json"
+    },
     {
       "path": "../common/bundle-tsconfig.ref.json"
     },

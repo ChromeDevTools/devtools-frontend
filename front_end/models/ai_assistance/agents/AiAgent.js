@@ -5,6 +5,7 @@ import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { debugLog, isStructuredLogEnabled } from '../debug.js';
+import { dispatchAiAssistanceDoneEvent } from '../DOMHelpers.js';
 const MAX_SUGGESTION_LENGTH = 200;
 export var ResponseType;
 (function (ResponseType) {
@@ -485,7 +486,7 @@ export class AiAgent {
             }
         }
         if (isStructuredLogEnabled()) {
-            window.dispatchEvent(new CustomEvent('aiassistancedone'));
+            dispatchAiAssistanceDoneEvent();
         }
         return;
     }

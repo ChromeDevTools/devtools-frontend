@@ -6,7 +6,7 @@ import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
-import { type MatchRenderer, type RendererBase, RenderingContext } from './PropertyRenderer.js';
+import { type CSSControlMap, type MatchRenderer, type RendererBase, RenderingContext } from './PropertyRenderer.js';
 import type { ActiveAiSuggestionProperty, StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylesContainer } from './StylesContainer.js';
 interface StylePropertyTreeElementParams {
@@ -81,7 +81,7 @@ export declare class LightDarkColorRenderer extends LightDarkColorRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): Node[];
-    applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext, colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: HTMLSpanElement, dark: HTMLSpanElement, lightControls: SDK.CSSPropertyParser.CSSControlMap, darkControls: SDK.CSSPropertyParser.CSSControlMap): Promise<void>;
+    applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext, colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: HTMLSpanElement, dark: HTMLSpanElement, lightControls: CSSControlMap, darkControls: CSSControlMap): Promise<void>;
 }
 declare const ColorMixRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ColorMixMatch>;
 export declare class ColorMixRenderer extends ColorMixRendererBase {

@@ -408,6 +408,8 @@ declare global {
         chrome: PublicAPI.Chrome.DevTools.Chrome;
         webInspector?: APIImpl.InspectorExtensionAPI;
     }
+    var injectedExtensionAPI: Window['injectedExtensionAPI'];
+    var buildExtensionAPIInjectedScript: Window['buildExtensionAPIInjectedScript'];
 }
 export interface ExtensionDescriptor {
     startPage: string;

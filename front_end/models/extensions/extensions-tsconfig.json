@@ -35,7 +35,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2023",
+    "target": "es2023",
     "typeRoots": [
 
     ],
@@ -45,7 +45,6 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/models/extensions/ExtensionAPI.ts",
     "../../../../../../front_end/models/extensions/ExtensionEndpoint.ts",
     "../../../../../../front_end/models/extensions/HostUrlPattern.ts",
     "../../../../../../front_end/models/extensions/LanguageExtensionEndpoint.ts",
@@ -57,6 +56,9 @@
     "../../../../../../node_modules/@types/filewriter/index.d.ts"
   ],
   "references": [
+    {
+      "path": "extension_api-tsconfig.ref.json"
+    },
     {
       "path": "../../../extension-api/extension-api-tsconfig.ref.json"
     },

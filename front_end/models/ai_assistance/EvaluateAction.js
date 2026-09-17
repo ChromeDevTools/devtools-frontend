@@ -2,40 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as SDK from '../../core/sdk/sdk.js';
+import { getErrorStackOnThePage, stringifyObjectOnThePage, } from './DOMHelpers.js';
 import { PAGE_EXPOSED_FUNCTIONS } from './injected.js';
 export function formatError(message) {
     return `Error: ${message}`;
 }
 export class SideEffectError extends Error {
-}
-/* istanbul ignore next */
-export function getErrorStackOnThePage() {
-    // Using this.stack causes side effect checks to throw.
-    return { stack: '', message: this.message };
-}
-/* istanbul ignore next */
-export function stringifyObjectOnThePage() {
-    const seenBefore = new Map();
-    return JSON.stringify(this, function replacer(key, value) {
-        if (typeof value === 'object' && value !== null) {
-            if (seenBefore.has(value)) {
-                return '(cycle)';
-            }
-            seenBefore.set(value, true);
-        }
-        if (value instanceof HTMLElement) {
-            const idAttribute = value.id ? ` id="${value.id}"` : '';
-            const classAttribute = value.classList.value ? ` class="${value.classList.value}"` : '';
-            return `<${value.nodeName.toLowerCase()}${idAttribute}${classAttribute}>${value.hasChildNodes() ? '...' : ''}</${value.nodeName.toLowerCase()}>`;
-        }
-        if (this instanceof CSSStyleDeclaration) {
-            // Do not add number keys to the output.
-            if (!isNaN(Number(key))) {
-                return undefined;
-            }
-        }
-        return value;
-    });
 }
 export async function stringifyRemoteObject(object, functionDeclaration) {
     switch (object.type) {

@@ -4,6 +4,7 @@
     "outDir": "."
   },
   "files": [
+    "commentThreadWidget.css.js",
     "commentsOverlay.css.js"
   ]
 }

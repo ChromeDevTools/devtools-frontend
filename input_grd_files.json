@@ -325,7 +325,6 @@
   "front_end/Images/touchCursor.png",
   "front_end/Images/gdp-logo-light.png",
   "front_end/Images/gdp-logo-dark.png",
-  "front_end/core/platform/api/api.js",
   "front_end/core/platform/browser/browser.js",
   "front_end/core/platform/node/node.js",
   "front_end/core/platform/platform.js",

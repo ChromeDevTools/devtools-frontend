@@ -14414,7 +14414,7 @@ __export(NetworkRequest_exports, {
 });
 import * as Common30 from "../common/common.js";
 import * as i18n25 from "../i18n/i18n.js";
-import * as Platform18 from "../platform/platform.js";
+import * as Platform20 from "../platform/platform.js";
 import * as TextUtils24 from "../text_utils/text_utils.js";
 
 // ../../front_end/core/sdk/Cookie.ts
@@ -14668,7 +14668,7 @@ __export(CookieModel_exports, {
   Events: () => Events20
 });
 import * as Common28 from "../common/common.js";
-import * as Platform17 from "../platform/platform.js";
+import * as Platform19 from "../platform/platform.js";
 import * as Root8 from "../root/root.js";
 
 // ../../front_end/core/sdk/NetworkManager.ts
@@ -14704,7 +14704,7 @@ __export(NetworkManager_exports, {
 import * as Common27 from "../common/common.js";
 import * as Host7 from "../host/host.js";
 import * as i18n19 from "../i18n/i18n.js";
-import * as Platform16 from "../platform/platform.js";
+import * as Platform18 from "../platform/platform.js";
 import * as Root7 from "../root/root.js";
 import * as TextUtils21 from "../text_utils/text_utils.js";
 
@@ -15687,7 +15687,7 @@ __export(ResourceTreeModel_exports, {
 });
 import * as Common23 from "../common/common.js";
 import * as i18n13 from "../i18n/i18n.js";
-import * as Platform14 from "../platform/platform.js";
+import * as Platform16 from "../platform/platform.js";
 
 // ../../front_end/core/sdk/DOMModel.ts
 var DOMModel_exports = {};
@@ -15708,7 +15708,7 @@ __export(DOMModel_exports, {
   cssEscape: () => cssEscape
 });
 import * as Common20 from "../common/common.js";
-import * as Platform12 from "../platform/platform.js";
+import * as Platform14 from "../platform/platform.js";
 import * as Root5 from "../root/root.js";
 
 // ../../front_end/core/sdk/ConsoleModel.ts
@@ -15723,7 +15723,7 @@ __export(ConsoleModel_exports, {
 import * as Common19 from "../common/common.js";
 import * as Host5 from "../host/host.js";
 import * as i18n11 from "../i18n/i18n.js";
-import * as Platform11 from "../platform/platform.js";
+import * as Platform13 from "../platform/platform.js";
 
 // ../../front_end/core/sdk/ConsoleModelTypes.ts
 var FrontendMessageType = /* @__PURE__ */ ((FrontendMessageType2) => {
@@ -16353,6 +16353,143 @@ var Events2 = /* @__PURE__ */ ((Events35) => {
 })(Events2 || {});
 SDKModel.register(LogModel, { capabilities: 8 /* LOG */, autostart: true });
 
+// ../../front_end/core/sdk/PageFunctions.ts
+function scrollListenerInPage(id, reportScrollPositionBindingName, scrollListenerNameInPage) {
+  if ("scrollingElement" in this && !this.scrollingElement) {
+    return;
+  }
+  const scrollingElement = "scrollingElement" in this ? this.scrollingElement : this;
+  this[scrollListenerNameInPage] = () => {
+    globalThis[reportScrollPositionBindingName](
+      JSON.stringify({ scrollTop: scrollingElement.scrollTop, scrollLeft: scrollingElement.scrollLeft, id })
+    );
+  };
+  this.addEventListener("scroll", this[scrollListenerNameInPage], true);
+}
+function removeScrollListenerInPage(scrollListenerNameInPage) {
+  this.removeEventListener("scroll", this[scrollListenerNameInPage]);
+  delete this[scrollListenerNameInPage];
+}
+function scrollTopInPage() {
+  if ("scrollingElement" in this) {
+    if (!this.scrollingElement) {
+      return 0;
+    }
+    return this.scrollingElement.scrollTop;
+  }
+  return this.scrollTop;
+}
+function scrollLeftInPage() {
+  if ("scrollingElement" in this) {
+    if (!this.scrollingElement) {
+      return 0;
+    }
+    return this.scrollingElement.scrollLeft;
+  }
+  return this.scrollLeft;
+}
+function setScrollTopInPage(offsetInPage) {
+  if ("scrollingElement" in this) {
+    if (!this.scrollingElement) {
+      return;
+    }
+    this.scrollingElement.scrollTop = offsetInPage;
+  } else {
+    this.scrollTop = offsetInPage;
+  }
+}
+function setScrollLeftInPage(offsetInPage) {
+  if ("scrollingElement" in this) {
+    if (!this.scrollingElement) {
+      return;
+    }
+    this.scrollingElement.scrollLeft = offsetInPage;
+  } else {
+    this.scrollLeft = offsetInPage;
+  }
+}
+function verticalScrollRangeInPage() {
+  if ("scrollingElement" in this) {
+    if (!this.scrollingElement) {
+      return 0;
+    }
+    return this.scrollingElement.scrollHeight - this.scrollingElement.clientHeight;
+  }
+  return this.scrollHeight - this.clientHeight;
+}
+function horizontalScrollRangeInPage() {
+  if ("scrollingElement" in this) {
+    if (!this.scrollingElement) {
+      return 0;
+    }
+    return this.scrollingElement.scrollWidth - this.scrollingElement.clientWidth;
+  }
+  return this.scrollWidth - this.clientWidth;
+}
+function toggleClassAndInjectStyleRule(pseudoElementName, hidden) {
+  const classNamePrefix = "__web-inspector-hide";
+  const classNameSuffix = "-shortcut__";
+  const styleTagId = "__web-inspector-hide-shortcut-style__";
+  const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[\(\)\:]/g, "_") : "";
+  const className = classNamePrefix + pseudoElementNameEscaped + classNameSuffix;
+  this.classList.toggle(className, hidden);
+  let localRoot = this;
+  while (localRoot.parentNode) {
+    localRoot = localRoot.parentNode;
+  }
+  if (localRoot.nodeType === Node.DOCUMENT_NODE) {
+    localRoot = document.head;
+  }
+  let style = localRoot.querySelector("style#" + styleTagId);
+  if (!style) {
+    const selectors = [];
+    selectors.push(".__web-inspector-hide-shortcut__");
+    selectors.push(".__web-inspector-hide-shortcut__ *");
+    const selector = selectors.join(", ");
+    const ruleBody = "    visibility: hidden !important;";
+    const rule = "\n" + selector + "\n{\n" + ruleBody + "\n}\n";
+    style = document.createElement("style");
+    style.id = styleTagId;
+    style.textContent = rule;
+    localRoot.appendChild(style);
+  }
+  if (pseudoElementName && !style.classList.contains(className)) {
+    style.classList.add(className);
+    style.textContent = `.${className}${pseudoElementName}, ${style.textContent}`;
+  }
+}
+function scrollIntoViewInPage() {
+  this.scrollIntoViewIfNeeded(true);
+}
+function focusInPage() {
+  this.focus();
+}
+function toStringForClipboard(data) {
+  const subtype = data.subtype;
+  const indent = data.indent;
+  if (subtype === "node") {
+    return this instanceof Element ? this.outerHTML : void 0;
+  }
+  if (subtype && typeof this === "undefined") {
+    return String(subtype);
+  }
+  try {
+    return JSON.stringify(this, null, indent);
+  } catch {
+    return String(this);
+  }
+}
+function saveVariable(value) {
+  const prefix = "temp";
+  let index = 1;
+  while (prefix + index in this) {
+    ++index;
+  }
+  const name = prefix + index;
+  this[name] = value;
+  return name;
+}
+
 // ../../front_end/core/sdk/SDKSettings.ts
 var SDKSettings_exports = {};
 __export(SDKSettings_exports, {
@@ -16433,7 +16570,7 @@ __export(CSSModel_exports, {
 });
 import * as Common14 from "../common/common.js";
 import * as Host4 from "../host/host.js";
-import * as Platform9 from "../platform/platform.js";
+import * as Platform11 from "../platform/platform.js";
 import * as Root4 from "../root/root.js";
 import * as TextUtils16 from "../text_utils/text_utils.js";
 
@@ -16506,7 +16643,7 @@ __export(CSSMatchedStyles_exports, {
   PropertyState: () => PropertyState,
   distanceToTreeScope: () => distanceToTreeScope
 });
-import * as Platform4 from "../platform/platform.js";
+import * as Platform5 from "../platform/platform.js";
 
 // ../../front_end/core/sdk/CSSProperty.ts
 var CSSProperty_exports = {};
@@ -16516,7 +16653,7 @@ __export(CSSProperty_exports, {
 });
 import * as Common6 from "../common/common.js";
 import * as HostModule from "../host/host.js";
-import * as Platform2 from "../platform/platform.js";
+import * as Platform3 from "../platform/platform.js";
 import * as TextUtils from "../text_utils/text_utils.js";
 
 // ../../front_end/core/sdk/CSSPropertyParser.ts
@@ -16524,7 +16661,6 @@ var CSSPropertyParser_exports = {};
 __export(CSSPropertyParser_exports, {
   ASTUtils: () => ASTUtils,
   BottomUpTreeMatching: () => BottomUpTreeMatching,
-  CSSControlMap: () => CSSControlMap,
   ComputedText: () => ComputedText,
   SyntaxTree: () => SyntaxTree,
   TreeSearch: () => TreeSearch,
@@ -16613,10 +16749,10 @@ __export(CSSPropertyParserMatchers_exports, {
   VariableNameMatcher: () => VariableNameMatcher,
   defaultValueForCSSType: () => defaultValueForCSSType,
   isValidCSSType: () => isValidCSSType,
-  localEvalCSS: () => localEvalCSS,
-  removeCSSEvaluationElement: () => removeCSSEvaluationElement
+  localEvalCSS: () => localEvalCSS
 });
 import * as Common5 from "../common/common.js";
+import * as Platform2 from "../platform/platform.js";
 var BaseVariableMatch = class {
   constructor(text, node, name, fallback, matching, computedTextCallback) {
     this.text = text;
@@ -16796,41 +16932,14 @@ var AttributeMatch = class extends BaseVariableMatch {
     );
   }
 };
-var cssEvaluationElement = null;
-function getCssEvaluationElement() {
-  const id = "css-evaluation-element";
-  if (!cssEvaluationElement) {
-    cssEvaluationElement = document.getElementById(id);
-    if (!cssEvaluationElement) {
-      cssEvaluationElement = document.createElement("div");
-      cssEvaluationElement.setAttribute("id", id);
-      cssEvaluationElement.setAttribute("style", "hidden: true; --evaluation: attr(data-custom-expr type(*))");
-      document.body.appendChild(cssEvaluationElement);
-    }
-  }
-  return cssEvaluationElement;
-}
-function removeCSSEvaluationElement() {
-  if (cssEvaluationElement) {
-    document.body.removeChild(cssEvaluationElement);
-    cssEvaluationElement = null;
-  }
-}
 function localEvalCSS(value, type) {
-  const element = getCssEvaluationElement();
-  element.setAttribute("data-value", value);
-  element.setAttribute("data-custom-expr", `attr(data-value ${type})`);
-  return element.computedStyleMap().get("--evaluation")?.toString() ?? null;
+  return Platform2.HostRuntime.HOST_RUNTIME.evaluateCSS(value, `attr(data-value ${type})`);
 }
 function isValidCSSType(type) {
-  const element = getCssEvaluationElement();
-  element.setAttribute("data-custom-expr", `attr(data-nonexistent ${type}, "good")`);
-  return '"good"' === (element.computedStyleMap().get("--evaluation")?.toString() ?? null);
+  return '"good"' === Platform2.HostRuntime.HOST_RUNTIME.evaluateCSS(null, `attr(data-nonexistent ${type}, "good")`);
 }
 function defaultValueForCSSType(type) {
-  const element = getCssEvaluationElement();
-  element.setAttribute("data-custom-expr", `attr(data-nonexistent ${type ?? ""})`);
-  return element.computedStyleMap().get("--evaluation")?.toString() ?? null;
+  return Platform2.HostRuntime.HOST_RUNTIME.evaluateCSS(null, `attr(data-nonexistent ${type ?? ""})`);
 }
 var RAW_STRING_TYPE = "raw-string";
 var AttributeMatcherBase = matcherBase(AttributeMatch);
@@ -16932,11 +17041,6 @@ var TextMatch = class {
   text;
   node;
   computedText;
-  render() {
-    const span = document.createElement("span");
-    span.appendChild(document.createTextNode(this.text));
-    return [span];
-  }
 };
 var TextMatcherBase = matcherBase(TextMatch);
 var TextMatcher = class extends TextMatcherBase {
@@ -18451,7 +18555,6 @@ function requiresSpace(a, b) {
   const noSpaceBefore = ["", "(", ")", ",", ":", "*", "{", ";", "]"];
   return !/\s/.test(trailingChar) && !/\s/.test(leadingChar) && !noSpaceAfter.includes(trailingChar) && !noSpaceBefore.includes(leadingChar);
 }
-var CSSControlMap = Map;
 var ASTUtils;
 ((ASTUtils2) => {
   function siblings(node) {
@@ -18768,7 +18871,7 @@ var CSSProperty = class _CSSProperty extends Common6.ObjectWrapper.ObjectWrapper
     const indentation = this.ownerStyle.cssText ? this.detectIndentation(this.ownerStyle.cssText) : this.ownerStyle.cssModel().target().targetManager().settings.moduleSetting("text-editor-indent").get();
     const endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : "";
     const text = new TextUtils.Text.Text(this.ownerStyle.cssText || "");
-    const newStyleText = text.replaceRange(range, Platform2.StringUtilities.sprintf(";%s;", propertyText));
+    const newStyleText = text.replaceRange(range, Platform3.StringUtilities.sprintf(";%s;", propertyText));
     const styleText = await _CSSProperty.formatStyle(newStyleText, indentation, endIndentation);
     return await this.ownerStyle.setText(styleText, majorChange);
   }
@@ -18928,7 +19031,7 @@ __export(CSSRule_exports, {
   CSSRule: () => CSSRule,
   CSSStyleRule: () => CSSStyleRule
 });
-import * as Platform3 from "../platform/platform.js";
+import * as Platform4 from "../platform/platform.js";
 import * as TextUtils11 from "../text_utils/text_utils.js";
 
 // ../../front_end/core/sdk/CSSContainerQuery.ts
@@ -19639,7 +19742,7 @@ var CSSRule = class {
     this.style.rebase(edit);
   }
   resourceURL() {
-    return this.header?.resourceURL() ?? Platform3.DevToolsPath.EmptyUrlString;
+    return this.header?.resourceURL() ?? Platform4.DevToolsPath.EmptyUrlString;
   }
   isUserAgent() {
     return this.origin === CSS.StyleSheetOrigin.UserAgent;
@@ -20717,7 +20820,7 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
     map.set(selectorText, value);
   }
   nodeStyles() {
-    Platform4.assertNotNullOrUndefined(this.#mainDOMCascade);
+    Platform5.assertNotNullOrUndefined(this.#mainDOMCascade);
     return this.#mainDOMCascade.styles();
   }
   inheritedStyles() {
@@ -20769,21 +20872,21 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
     return this.#activePositionFallbackIndex;
   }
   pseudoStyles(pseudoType) {
-    Platform4.assertNotNullOrUndefined(this.#pseudoDOMCascades);
+    Platform5.assertNotNullOrUndefined(this.#pseudoDOMCascades);
     const domCascade = this.#pseudoDOMCascades.get(pseudoType);
     return domCascade ? domCascade.styles() : [];
   }
   pseudoTypes() {
-    Platform4.assertNotNullOrUndefined(this.#pseudoDOMCascades);
+    Platform5.assertNotNullOrUndefined(this.#pseudoDOMCascades);
     return new Set(this.#pseudoDOMCascades.keys());
   }
   customHighlightPseudoStyles(highlightName) {
-    Platform4.assertNotNullOrUndefined(this.#customHighlightPseudoDOMCascades);
+    Platform5.assertNotNullOrUndefined(this.#customHighlightPseudoDOMCascades);
     const domCascade = this.#customHighlightPseudoDOMCascades.get(highlightName);
     return domCascade ? domCascade.styles() : [];
   }
   customHighlightPseudoNames() {
-    Platform4.assertNotNullOrUndefined(this.#customHighlightPseudoDOMCascades);
+    Platform5.assertNotNullOrUndefined(this.#customHighlightPseudoDOMCascades);
     return new Set(this.#customHighlightPseudoDOMCascades.keys());
   }
   /**
@@ -20912,9 +21015,9 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
     return domCascade?.isPropertyOverriddenByAnimation(property) ?? false;
   }
   resetActiveProperties() {
-    Platform4.assertNotNullOrUndefined(this.#mainDOMCascade);
-    Platform4.assertNotNullOrUndefined(this.#pseudoDOMCascades);
-    Platform4.assertNotNullOrUndefined(this.#customHighlightPseudoDOMCascades);
+    Platform5.assertNotNullOrUndefined(this.#mainDOMCascade);
+    Platform5.assertNotNullOrUndefined(this.#pseudoDOMCascades);
+    Platform5.assertNotNullOrUndefined(this.#customHighlightPseudoDOMCascades);
     this.#mainDOMCascade.reset();
     for (const domCascade of this.#pseudoDOMCascades.values()) {
       domCascade.reset();
@@ -21589,7 +21692,7 @@ __export(CSSStyleSheetHeader_exports, {
 });
 import * as Common7 from "../common/common.js";
 import * as i18n3 from "../i18n/i18n.js";
-import * as Platform5 from "../platform/platform.js";
+import * as Platform6 from "../platform/platform.js";
 import * as TextUtils12 from "../text_utils/text_utils.js";
 var UIStrings2 = {
   /**
@@ -21750,7 +21853,7 @@ var CSSStyleSheetHeader = class {
     return {
       target: this.#cssModel.target(),
       frameId: this.frameId,
-      initiatorUrl: this.hasSourceURL ? Platform5.DevToolsPath.EmptyUrlString : this.sourceURL
+      initiatorUrl: this.hasSourceURL ? Platform6.DevToolsPath.EmptyUrlString : this.sourceURL
     };
   }
   debugId() {
@@ -21767,7 +21870,7 @@ __export(SourceMapManager_exports, {
   tryLoadSourceMap: () => tryLoadSourceMap
 });
 import * as Common13 from "../common/common.js";
-import * as Platform8 from "../platform/platform.js";
+import * as Platform10 from "../platform/platform.js";
 
 // ../../front_end/core/sdk/PageResourceLoader.ts
 var PageResourceLoader_exports = {};
@@ -21870,7 +21973,7 @@ __export(TargetManager_exports, {
 });
 import * as Common10 from "../common/common.js";
 import * as Host2 from "../host/host.js";
-import * as Platform6 from "../platform/platform.js";
+import * as Platform7 from "../platform/platform.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "../platform/platform.js";
 import * as Root2 from "../root/root.js";
 
@@ -22127,8 +22230,8 @@ var TargetManager = class _TargetManager extends Common10.ObjectWrapper.ObjectWr
     this.context = context;
     this.#targets = /* @__PURE__ */ new Set();
     this.#observers = /* @__PURE__ */ new Set();
-    this.#modelListeners = new Platform6.MapUtilities.Multimap();
-    this.#modelObservers = new Platform6.MapUtilities.Multimap();
+    this.#modelListeners = new Platform7.MapUtilities.Multimap();
+    this.#modelObservers = new Platform7.MapUtilities.Multimap();
     this.#isSuspended = false;
     this.#browserTarget = null;
     this.#scopeTarget = null;
@@ -22171,7 +22274,7 @@ var TargetManager = class _TargetManager extends Common10.ObjectWrapper.ObjectWr
       return;
     }
     Host2.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(
-      target.inspectedURL() || Platform6.DevToolsPath.EmptyUrlString
+      target.inspectedURL() || Platform7.DevToolsPath.EmptyUrlString
     );
     this.dispatchEventToListeners("InspectedURLChanged" /* INSPECTED_URL_CHANGED */, target);
   }
@@ -22875,7 +22978,7 @@ __export(SourceMap_exports, {
 });
 import * as ScopesCodec from "../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
 import * as Common12 from "../common/common.js";
-import * as Platform7 from "../platform/platform.js";
+import * as Platform8 from "../platform/platform.js";
 import * as TextUtils15 from "../text_utils/text_utils.js";
 
 // ../../front_end/core/sdk/ScopeTreeCache.ts
@@ -23060,6 +23163,10 @@ var UIStrings4 = {
   /**
    * @description Text in Scope Chain section of the Sources panel.
    */
+  exception: "Exception",
+  /**
+   * @description Text in Scope Chain section of the Sources panel.
+   */
   returnValue: "Return value"
 };
 var str_4 = i18n7.i18n.registerUIStrings("core/sdk/SourceMapScopeChainEntry.ts", UIStrings4);
@@ -23086,8 +23193,22 @@ var SourceMapScopeChainEntry = class {
     this.#scopeNumber = scopeNumber;
   }
   extraProperties() {
+    const extraProperties = [];
+    if (this.#isInnerMostFunction && this.#callFrame.exception) {
+      extraProperties.push(new RemoteObjectProperty(
+        i18nString4(UIStrings4.exception),
+        this.#callFrame.exception,
+        void 0,
+        void 0,
+        void 0,
+        void 0,
+        void 0,
+        /* synthetic */
+        true
+      ));
+    }
     if (this.#returnValue) {
-      return [new RemoteObjectProperty(
+      extraProperties.push(new RemoteObjectProperty(
         i18nString4(UIStrings4.returnValue),
         this.#returnValue,
         void 0,
@@ -23096,10 +23217,11 @@ var SourceMapScopeChainEntry = class {
         void 0,
         void 0,
         /* synthetic */
-        true
-      )];
+        true,
+        this.#callFrame.setReturnValue.bind(this.#callFrame)
+      ));
     }
-    return [];
+    return extraProperties;
   }
   callFrame() {
     return this.#callFrame;
@@ -23169,20 +23291,47 @@ var SourceMapScopeRemoteObject = class _SourceMapScopeRemoteObject extends Remot
     if (accessorPropertiesOnly) {
       return { properties: [], internalProperties: [] };
     }
+    if (this.#scope.variables.length === 0) {
+      return { properties: [], internalProperties: [] };
+    }
+    const expressions = this.#scope.variables.map((_, index) => this.#findExpression(index));
+    if (expressions.every((expr) => expr === null)) {
+      const properties2 = this.#scope.variables.map((v) => _SourceMapScopeRemoteObject.#unavailableProperty(v));
+      return { properties: properties2, internalProperties: [] };
+    }
+    const spreadEntries = [];
+    for (const [index, expr] of expressions.entries()) {
+      if (expr !== null) {
+        spreadEntries.push(`...(() => { try { return {${index}: eval(${JSON.stringify(expr)})}; } catch {} })()`);
+      }
+    }
+    const batchExpression = `({ __proto__: null, ${spreadEntries.join(", ")} })`;
+    const result = await this.#callFrame.evaluate({
+      expression: batchExpression,
+      generatePreview: false,
+      scopeNumber: this.#scopeNumber
+    });
+    if ("error" in result || result.exceptionDetails || !result.object) {
+      const properties2 = this.#scope.variables.map((v) => _SourceMapScopeRemoteObject.#unavailableProperty(v));
+      return { properties: properties2, internalProperties: [] };
+    }
+    const { properties: objectProperties } = await result.object.getOwnProperties(generatePreview);
+    result.object.release();
+    const propertyMap = /* @__PURE__ */ new Map();
+    if (objectProperties) {
+      for (const prop of objectProperties) {
+        propertyMap.set(prop.name, prop);
+      }
+    }
     const properties = [];
     for (const [index, variable] of this.#scope.variables.entries()) {
-      const expression = this.#findExpression(index);
-      if (expression === null) {
-        properties.push(_SourceMapScopeRemoteObject.#unavailableProperty(variable));
-        continue;
-      }
-      const result = await this.#callFrame.evaluate({ expression, generatePreview, scopeNumber: this.#scopeNumber });
-      if ("error" in result || result.exceptionDetails) {
+      const prop = propertyMap.get(String(index));
+      if (!prop || !prop.value) {
         properties.push(_SourceMapScopeRemoteObject.#unavailableProperty(variable));
       } else {
         properties.push(new RemoteObjectProperty(
           variable,
-          result.object,
+          prop.value,
           /* enumerable */
           false,
           /* writable */
@@ -23205,7 +23354,7 @@ var SourceMapScopeRemoteObject = class _SourceMapScopeRemoteObject extends Remot
     if (typeof expressionOrSubRanges === "string") {
       return expressionOrSubRanges;
     }
-    if (expressionOrSubRanges === null) {
+    if (expressionOrSubRanges === null || expressionOrSubRanges === void 0) {
       return null;
     }
     const pausedPosition = this.#callFrame.location();
@@ -23846,7 +23995,7 @@ var SourceMap = class _SourceMap {
   findEntry(lineNumber, columnNumber) {
     this.#ensureSourceMapProcessed();
     const mappings = this.mappings();
-    const index = Platform7.ArrayUtilities.upperBound(
+    const index = Platform8.ArrayUtilities.upperBound(
       mappings,
       void 0,
       (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber
@@ -23863,7 +24012,7 @@ var SourceMap = class _SourceMap {
   }
   findEntryRanges(lineNumber, columnNumber) {
     const mappings = this.mappings();
-    const endIndex = Platform7.ArrayUtilities.upperBound(
+    const endIndex = Platform8.ArrayUtilities.upperBound(
       mappings,
       void 0,
       (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber
@@ -23887,7 +24036,7 @@ var SourceMap = class _SourceMap {
     const reverseMappings = this.reversedMappings(sourceURL);
     const startSourceLine = mappings[startIndex].sourceLineNumber;
     const startSourceColumn = mappings[startIndex].sourceColumnNumber;
-    const endReverseIndex = Platform7.ArrayUtilities.upperBound(
+    const endReverseIndex = Platform8.ArrayUtilities.upperBound(
       reverseMappings,
       void 0,
       (_, i) => startSourceLine - mappings[i].sourceLineNumber || startSourceColumn - mappings[i].sourceColumnNumber
@@ -23903,8 +24052,8 @@ var SourceMap = class _SourceMap {
   sourceLineMapping(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();
     const reverseMappings = this.reversedMappings(sourceURL);
-    const first = Platform7.ArrayUtilities.lowerBound(reverseMappings, lineNumber, lineComparator);
-    const last = Platform7.ArrayUtilities.upperBound(reverseMappings, lineNumber, lineComparator);
+    const first = Platform8.ArrayUtilities.lowerBound(reverseMappings, lineNumber, lineComparator);
+    const last = Platform8.ArrayUtilities.upperBound(reverseMappings, lineNumber, lineComparator);
     if (first >= reverseMappings.length || mappings[reverseMappings[first]].sourceLineNumber !== lineNumber) {
       return null;
     }
@@ -23912,7 +24061,7 @@ var SourceMap = class _SourceMap {
     if (!columnMappings.length) {
       return null;
     }
-    const index = Platform7.ArrayUtilities.lowerBound(
+    const index = Platform8.ArrayUtilities.lowerBound(
       columnMappings,
       columnNumber,
       (columnNumber2, i) => columnNumber2 - mappings[i].sourceColumnNumber
@@ -23925,7 +24074,7 @@ var SourceMap = class _SourceMap {
   findReverseIndices(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();
     const reverseMappings = this.reversedMappings(sourceURL);
-    const endIndex = Platform7.ArrayUtilities.upperBound(
+    const endIndex = Platform8.ArrayUtilities.upperBound(
       reverseMappings,
       void 0,
       (_, i) => lineNumber - mappings[i].sourceLineNumber || columnNumber - mappings[i].sourceColumnNumber
@@ -24228,7 +24377,7 @@ var SourceMap = class _SourceMap {
     if (reverseMappings.length === 0) {
       return [];
     }
-    let startReverseIndex = Platform7.ArrayUtilities.lowerBound(reverseMappings, textRange, ({ startLine, startColumn }, index) => {
+    let startReverseIndex = Platform8.ArrayUtilities.lowerBound(reverseMappings, textRange, ({ startLine, startColumn }, index) => {
       const { sourceLineNumber, sourceColumnNumber } = mappings[index];
       return startLine - sourceLineNumber || startColumn - sourceColumnNumber;
     });
@@ -24452,9 +24601,10 @@ var SourceMapCache_exports = {};
 __export(SourceMapCache_exports, {
   SourceMapCache: () => SourceMapCache
 });
+import * as Platform9 from "../platform/platform.js";
 var SourceMapCache = class _SourceMapCache {
   static create() {
-    if (typeof window === "undefined") {
+    if (!Platform9.HostRuntime.HOST_RUNTIME.getCacheStorage()) {
       return IN_MEMORY_INSTANCE;
     }
     return new _SourceMapCache("devtools-source-map-cache");
@@ -24469,18 +24619,22 @@ var SourceMapCache = class _SourceMapCache {
   }
   async set(debugId, securityOrigin, sourceMap) {
     const cache = await this.#cache();
-    await cache.put(_SourceMapCache.#urlForDebugId(debugId, securityOrigin), new Response(JSON.stringify(sourceMap)));
+    await cache?.put(_SourceMapCache.#urlForDebugId(debugId, securityOrigin), new Response(JSON.stringify(sourceMap)));
   }
   async get(debugId, securityOrigin) {
     const cache = await this.#cache();
-    const response = await cache.match(_SourceMapCache.#urlForDebugId(debugId, securityOrigin));
+    const response = await cache?.match(_SourceMapCache.#urlForDebugId(debugId, securityOrigin));
     return await response?.json() ?? null;
   }
   async #cache() {
     if (this.#cachePromise) {
       return await this.#cachePromise;
     }
-    this.#cachePromise = window.caches.open(this.#name);
+    const cacheStorage = Platform9.HostRuntime.HOST_RUNTIME.getCacheStorage();
+    if (!cacheStorage) {
+      return void 0;
+    }
+    this.#cachePromise = cacheStorage.open(this.#name);
     return await this.#cachePromise;
   }
   /** The Cache API only allows URL as keys, so we construct a simple one. Given that we have our own cache, we have no risk of conflicting URLs */
@@ -24488,7 +24642,7 @@ var SourceMapCache = class _SourceMapCache {
     return `http://debug.id/${encodeURIComponent(debugId)}?origin=${encodeURIComponent(securityOrigin)}`;
   }
   async disposeForTest() {
-    await window.caches.delete(this.#name);
+    await Platform9.HostRuntime.HOST_RUNTIME.getCacheStorage()?.delete(this.#name);
   }
 };
 var IN_MEMORY_INSTANCE = new class {
@@ -24546,7 +24700,7 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
     while (target && target.type() !== "frame" /* FRAME */) {
       target = target.parentTarget();
     }
-    return target?.inspectedURL() ?? Platform8.DevToolsPath.EmptyUrlString;
+    return target?.inspectedURL() ?? Platform10.DevToolsPath.EmptyUrlString;
   }
   static resolveRelativeSourceURL(target, url) {
     url = Common13.ParsedURL.ParsedURL.completeURL(_SourceMapManager.getBaseUrl(target), url) ?? url;
@@ -24666,7 +24820,7 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
 async function loadSourceMap(resourceLoader, sourceMapCache, url, debugId, initiator) {
   try {
     if (debugId) {
-      const securityOrigin = initiator.initiatorUrl ? Common13.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) : Platform8.DevToolsPath.EmptyUrlString;
+      const securityOrigin = initiator.initiatorUrl ? Common13.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) : Platform10.DevToolsPath.EmptyUrlString;
       const cachedSourceMap = await sourceMapCache.get(debugId, securityOrigin);
       if (cachedSourceMap) {
         return cachedSourceMap;
@@ -24675,7 +24829,7 @@ async function loadSourceMap(resourceLoader, sourceMapCache, url, debugId, initi
     const { content } = await resourceLoader.loadResource(url, initiator);
     const sourceMap = parseSourceMap(content);
     if (debugId && "debugId" in sourceMap && sourceMap.debugId === debugId) {
-      const securityOrigin = initiator.initiatorUrl ? Common13.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) : Platform8.DevToolsPath.EmptyUrlString;
+      const securityOrigin = initiator.initiatorUrl ? Common13.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) : Platform10.DevToolsPath.EmptyUrlString;
       await sourceMapCache.set(sourceMap.debugId, securityOrigin, sourceMap).catch();
     }
     return sourceMap;
@@ -24780,7 +24934,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   createRawLocationsByURL(sourceURL, lineNumber, columnNumber = 0) {
     const headers = this.headersForSourceURL(sourceURL);
     headers.sort(stylesheetComparator);
-    const endIndex = Platform9.ArrayUtilities.upperBound(
+    const endIndex = Platform11.ArrayUtilities.upperBound(
       headers,
       void 0,
       (_, header) => lineNumber - header.startLine || columnNumber - header.startColumn
@@ -25082,7 +25236,7 @@ var CSSModel = class _CSSModel extends SDKModel {
       if (!hasPseudoClass) {
         return false;
       }
-      Platform9.ArrayUtilities.removeElement(forcedPseudoClasses, pseudoClass);
+      Platform11.ArrayUtilities.removeElement(forcedPseudoClasses, pseudoClass);
       if (forcedPseudoClasses.length) {
         node.setMarker(PseudoStateMarker, forcedPseudoClasses);
       } else {
@@ -25632,7 +25786,7 @@ __export(OverlayPersistentHighlighter_exports, {
   OverlayPersistentHighlighter: () => OverlayPersistentHighlighter
 });
 import * as Common16 from "../common/common.js";
-import * as Platform10 from "../platform/platform.js";
+import * as Platform12 from "../platform/platform.js";
 
 // ../../front_end/core/sdk/OverlayColorGenerator.ts
 var OverlayColorGenerator_exports = {};
@@ -26002,7 +26156,7 @@ var OverlayPersistentHighlighter = class {
     this.#containerQueryHighlights = /* @__PURE__ */ new Map();
     this.#isolatedElementHighlights = /* @__PURE__ */ new Map();
     const document2 = await this.#model.getDOMModel().requestDocument();
-    const currentURL = document2 ? document2.documentURL : Platform10.DevToolsPath.EmptyUrlString;
+    const currentURL = document2 ? document2.documentURL : Platform12.DevToolsPath.EmptyUrlString;
     await Promise.all(this.#persistentHighlightSetting.get().map(async (persistentHighlight) => {
       if (persistentHighlight.url === currentURL) {
         return await this.#model.getDOMModel().pushNodeByPathToFrontend(persistentHighlight.path).then((nodeId) => {
@@ -26038,7 +26192,7 @@ var OverlayPersistentHighlighter = class {
   }
   currentUrl() {
     const domDocument = this.#model.getDOMModel().existingDocument();
-    return domDocument ? domDocument.documentURL : Platform10.DevToolsPath.EmptyUrlString;
+    return domDocument ? domDocument.documentURL : Platform12.DevToolsPath.EmptyUrlString;
   }
   getPersistentHighlightSettingForOneType(highlights, type) {
     const persistentHighlights = [];
@@ -27796,7 +27950,7 @@ var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var ConsoleModel = class _ConsoleModel extends SDKModel {
   #console;
   #messages = [];
-  #messagesByTimestamp = new Platform11.MapUtilities.Multimap();
+  #messagesByTimestamp = new Platform13.MapUtilities.Multimap();
   #messageByExceptionId = /* @__PURE__ */ new Map();
   #warnings = 0;
   #errors = 0;
@@ -28178,16 +28332,6 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     }
     if (callFunctionResult.object) {
       callFunctionResult.object.release();
-    }
-    function saveVariable(value) {
-      const prefix = "temp";
-      let index = 1;
-      while (prefix + index in this) {
-        ++index;
-      }
-      const name = prefix + index;
-      this[name] = value;
-      return name;
     }
   }
 };
@@ -29319,38 +29463,6 @@ var DOMNode = class _DOMNode extends Common20.ObjectWrapper.ObjectWrapper {
     );
     object.release();
     this.setMarker("hidden-marker", hidden ? null : true);
-    function toggleClassAndInjectStyleRule(pseudoElementName2, hidden2) {
-      const classNamePrefix = "__web-inspector-hide";
-      const classNameSuffix = "-shortcut__";
-      const styleTagId = "__web-inspector-hide-shortcut-style__";
-      const pseudoElementNameEscaped = pseudoElementName2 ? pseudoElementName2.replace(/[\(\)\:]/g, "_") : "";
-      const className = classNamePrefix + pseudoElementNameEscaped + classNameSuffix;
-      this.classList.toggle(className, hidden2);
-      let localRoot = this;
-      while (localRoot.parentNode) {
-        localRoot = localRoot.parentNode;
-      }
-      if (localRoot.nodeType === Node.DOCUMENT_NODE) {
-        localRoot = document.head;
-      }
-      let style = localRoot.querySelector("style#" + styleTagId);
-      if (!style) {
-        const selectors = [];
-        selectors.push(".__web-inspector-hide-shortcut__");
-        selectors.push(".__web-inspector-hide-shortcut__ *");
-        const selector = selectors.join(", ");
-        const ruleBody = "    visibility: hidden !important;";
-        const rule = "\n" + selector + "\n{\n" + ruleBody + "\n}\n";
-        style = document.createElement("style");
-        style.id = styleTagId;
-        style.textContent = rule;
-        localRoot.appendChild(style);
-      }
-      if (pseudoElementName2 && !style.classList.contains(className)) {
-        style.classList.add(className);
-        style.textContent = `.${className}${pseudoElementName2}, ${style.textContent}`;
-      }
-    }
   }
   isToggledToHidden() {
     return Boolean(this.marker("hidden-marker"));
@@ -29522,9 +29634,6 @@ var DOMNode = class _DOMNode extends Common20.ObjectWrapper.ObjectWrapper {
       return;
     }
     node.highlightForTwoSeconds();
-    function scrollIntoViewInPage() {
-      this.scrollIntoViewIfNeeded(true);
-    }
   }
   async focus() {
     const node = this.enclosingElementOrSelf();
@@ -29537,9 +29646,6 @@ var DOMNode = class _DOMNode extends Common20.ObjectWrapper.ObjectWrapper {
     }
     node.highlightForTwoSeconds();
     await this.#domModel.target().pageAgent().invoke_bringToFront();
-    function focusInPage() {
-      this.focus();
-    }
   }
   simpleSelector() {
     const lowerCaseName = this.localName() || this.nodeName().toLowerCase();
@@ -30480,7 +30586,7 @@ var DOMModelUndoStack = class _DOMModelUndoStack {
         ++shift;
       }
     }
-    Platform12.ArrayUtilities.removeElement(this.#stack, model);
+    Platform14.ArrayUtilities.removeElement(this.#stack, model);
     this.#index -= shift;
     if (this.#lastModelWithMinorChange === model) {
       this.#lastModelWithMinorChange = null;
@@ -30561,7 +30667,7 @@ __export(Resource_exports, {
   Resource: () => Resource
 });
 import * as Common21 from "../common/common.js";
-import * as Platform13 from "../platform/platform.js";
+import * as Platform15 from "../platform/platform.js";
 import * as TextUtils17 from "../text_utils/text_utils.js";
 var Resource = class {
   #resourceTreeModel;
@@ -30592,7 +30698,7 @@ var Resource = class {
     this.#type = type || Common21.ResourceType.resourceTypes.Other;
     this.#mimeType = mimeType;
     this.#isGenerated = false;
-    this.#lastModified = lastModified && Platform13.DateUtilities.isValid(lastModified) ? lastModified : null;
+    this.#lastModified = lastModified && Platform15.DateUtilities.isValid(lastModified) ? lastModified : null;
     this.#contentSize = contentSize;
   }
   lastModified() {
@@ -30601,7 +30707,7 @@ var Resource = class {
     }
     const lastModifiedHeader = this.#request.responseLastModified();
     const date = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
-    this.#lastModified = date && Platform13.DateUtilities.isValid(date) ? date : null;
+    this.#lastModified = date && Platform15.DateUtilities.isValid(date) ? date : null;
     return this.#lastModified;
   }
   contentSize() {
@@ -31446,11 +31552,11 @@ var ResourceTreeFrame = class {
     this.#id = frameId;
     this.#loaderId = payload?.loaderId ?? "";
     this.#name = payload?.name;
-    this.#url = payload && payload.url || Platform14.DevToolsPath.EmptyUrlString;
+    this.#url = payload && payload.url || Platform16.DevToolsPath.EmptyUrlString;
     this.#domainAndRegistry = payload?.domainAndRegistry || "";
     this.#securityOrigin = SecurityOrigin.create(payload?.securityOrigin ?? "");
     this.#securityOriginDetails = payload?.securityOriginDetails;
-    this.#unreachableUrl = payload && payload.unreachableUrl || Platform14.DevToolsPath.EmptyUrlString;
+    this.#unreachableUrl = payload && payload.unreachableUrl || Platform16.DevToolsPath.EmptyUrlString;
     this.#adFrameStatus = payload?.adFrameStatus;
     this.#secureContextType = payload?.secureContextType ?? null;
     this.#crossOriginIsolatedContextType = payload?.crossOriginIsolatedContextType ?? null;
@@ -31492,7 +31598,7 @@ var ResourceTreeFrame = class {
       /* forceFetch */
       true
     );
-    this.#unreachableUrl = framePayload.unreachableUrl || Platform14.DevToolsPath.EmptyUrlString;
+    this.#unreachableUrl = framePayload.unreachableUrl || Platform16.DevToolsPath.EmptyUrlString;
     this.#adFrameStatus = framePayload?.adFrameStatus;
     this.#secureContextType = framePayload.secureContextType;
     this.#crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
@@ -31871,7 +31977,7 @@ __export(Script_exports, {
   disassembleWasm: () => disassembleWasm,
   sourceURLRegex: () => sourceURLRegex
 });
-import * as Platform15 from "../platform/platform.js";
+import * as Platform17 from "../platform/platform.js";
 import * as Common24 from "../common/common.js";
 import * as i18n15 from "../i18n/i18n.js";
 import * as TextUtils19 from "../text_utils/text_utils.js";
@@ -32204,7 +32310,7 @@ function frameIdForScript(script) {
 }
 var sourceURLRegex = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
 async function disassembleWasm(content) {
-  const worker = Platform15.HostRuntime.HOST_RUNTIME.createWorker(
+  const worker = Platform17.HostRuntime.HOST_RUNTIME.createWorker(
     new URL("../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js", import.meta.url).toString()
   );
   const promise = new Promise((resolve, reject) => {
@@ -33945,21 +34051,6 @@ var RuntimeModel = class extends SDKModel {
     }]).then(Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
       Host6.InspectorFrontendHost.InspectorFrontendHostInstance
     ));
-    function toStringForClipboard(data) {
-      const subtype = data.subtype;
-      const indent2 = data.indent;
-      if (subtype === "node") {
-        return this instanceof Element ? this.outerHTML : void 0;
-      }
-      if (subtype && typeof this === "undefined") {
-        return String(subtype);
-      }
-      try {
-        return JSON.stringify(this, null, indent2);
-      } catch {
-        return String(this);
-      }
-    }
   }
   async queryObjectsRequested(object, executionContextId) {
     const result = await this.queryObjects(object);
@@ -34580,7 +34671,7 @@ var NetworkManager = class _NetworkManager extends SDKModel {
           bytes[i] = binaryString.charCodeAt(i);
         }
         const requestContentType = request.requestContentType();
-        const charset = requestContentType ? Platform16.MimeType.parseContentType(requestContentType).charset ?? "utf-8" : "utf-8";
+        const charset = requestContentType ? Platform18.MimeType.parseContentType(requestContentType).charset ?? "utf-8" : "utf-8";
         const contentEncoding = request.requestContentEncoding()?.toLowerCase();
         if (contentEncoding) {
           const decompressed = await _NetworkManager.#tryDecompressBody(bytes.buffer, contentEncoding, charset);
@@ -34622,7 +34713,7 @@ var NetworkManager = class _NetworkManager extends SDKModel {
         return { error: "No post data" };
       }
       const requestContentType = request.requestContentType() ?? "application/octet-stream";
-      const { charset } = Platform16.MimeType.parseContentType(requestContentType);
+      const { charset } = Platform18.MimeType.parseContentType(requestContentType);
       if (base64Encoded && postData) {
         return await TextUtils21.ContentData.ContentData.fromCompressedBase64(
           postData,
@@ -35947,7 +36038,7 @@ var RequestConditions = class _RequestConditions extends Common27.ObjectWrapper.
     if (index < 0 || index >= this.#conditions.length - 1) {
       return;
     }
-    Platform16.ArrayUtilities.swap(this.#conditions, index, index + 1);
+    Platform18.ArrayUtilities.swap(this.#conditions, index, index + 1);
     this.#conditionsChanged();
   }
   increasePriority(condition) {
@@ -35955,7 +36046,7 @@ var RequestConditions = class _RequestConditions extends Common27.ObjectWrapper.
     if (index <= 0) {
       return;
     }
-    Platform16.ArrayUtilities.swap(this.#conditions, index - 1, index);
+    Platform18.ArrayUtilities.swap(this.#conditions, index - 1, index);
     this.#conditionsChanged();
   }
   delete(condition) {
@@ -36085,7 +36176,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   #networkConditions = NoThrottlingConditions;
   #updatingInterceptionPatternsPromise = null;
   #requestConditions;
-  #urlsForRequestInterceptor = new Platform16.MapUtilities.Multimap();
+  #urlsForRequestInterceptor = new Platform18.MapUtilities.Multimap();
   #extraHeaders;
   #customUserAgent;
   #isBlocking = false;
@@ -36122,7 +36213,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     const chromeVersion = Root7.Runtime.getChromeVersion();
     if (chromeVersion.length > 0) {
       const additionalAppVersion = chromeVersion.split(".", 1)[0] + ".0.100.0";
-      return Platform16.StringUtilities.sprintf(uaString, chromeVersion, additionalAppVersion);
+      return Platform18.StringUtilities.sprintf(uaString, chromeVersion, additionalAppVersion);
     }
     return uaString;
   }
@@ -36137,12 +36228,12 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     const majorVersion = chromeVersion.split(".", 1)[0];
     for (const brand of userAgentMetadata.brands) {
       if (brand.version.includes("%s")) {
-        brand.version = Platform16.StringUtilities.sprintf(brand.version, majorVersion);
+        brand.version = Platform18.StringUtilities.sprintf(brand.version, majorVersion);
       }
     }
     if (userAgentMetadata.fullVersion) {
       if (userAgentMetadata.fullVersion.includes("%s")) {
-        userAgentMetadata.fullVersion = Platform16.StringUtilities.sprintf(userAgentMetadata.fullVersion, chromeVersion);
+        userAgentMetadata.fullVersion = Platform18.StringUtilities.sprintf(userAgentMetadata.fullVersion, chromeVersion);
       }
     }
   }
@@ -36465,7 +36556,7 @@ var InterceptedRequest = class _InterceptedRequest {
   getMimeTypeAndCharset() {
     for (const header of this.responseHeaders ?? []) {
       if (header.name.toLowerCase() === "content-type") {
-        return Platform16.MimeType.parseContentType(header.value);
+        return Platform18.MimeType.parseContentType(header.value);
       }
     }
     const mimeType = this.networkRequest?.mimeType ?? null;
@@ -36784,7 +36875,7 @@ var CookieModel = class extends SDKModel {
     return this.#refreshThrottler.schedule(() => this.#refresh());
   }
   #refresh() {
-    const resourceURLs = new Platform17.MapUtilities.Multimap();
+    const resourceURLs = new Platform19.MapUtilities.Multimap();
     function populateResourceURLs(resource) {
       const documentURL = Common28.ParsedURL.ParsedURL.fromString(resource.documentURL);
       if (documentURL) {
@@ -37690,7 +37781,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
       backendRequestId,
       backendRequestId,
       requestURL,
-      Platform18.DevToolsPath.EmptyUrlString,
+      Platform20.DevToolsPath.EmptyUrlString,
       null,
       null,
       initiator || null,
@@ -38069,7 +38160,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
   }
   set mimeType(x) {
     this.#mimeType = x;
-    if (x === Platform18.MimeType.MimeType.EVENTSTREAM && !this.#serverSentEvents) {
+    if (x === Platform20.MimeType.MimeType.EVENTSTREAM && !this.#serverSentEvents) {
       const parseFromStreamedData = this.resourceType() !== Common30.ResourceType.resourceTypes.EventSource;
       this.#serverSentEvents = new ServerSentEvents(
         this,
@@ -38110,7 +38201,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
       const inspectedURL = networkManager ? Common30.ParsedURL.ParsedURL.fromString(
         networkManager.target().inspectedURL()
       ) : null;
-      this.#path = Platform18.StringUtilities.trimURL(
+      this.#path = Platform20.StringUtilities.trimURL(
         this.#path,
         inspectedURL ? inspectedURL.host : ""
       );
@@ -38292,7 +38383,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
     }
     this.#sortedResponseHeaders = this.responseHeaders.slice();
     return this.#sortedResponseHeaders.sort(function(a, b) {
-      return Platform18.StringUtilities.compare(
+      return Platform20.StringUtilities.compare(
         a.name.toLowerCase(),
         b.name.toLowerCase()
       );
@@ -38304,7 +38395,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
     }
     this.#sortedOriginalResponseHeaders = this.originalResponseHeaders.slice();
     return this.#sortedOriginalResponseHeaders.sort(function(a, b) {
-      return Platform18.StringUtilities.compare(
+      return Platform20.StringUtilities.compare(
         a.name.toLowerCase(),
         b.name.toLowerCase()
       );
@@ -38539,7 +38630,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
    * --boundaryString--
    */
   parseMultipartFormDataParameters(data, boundary) {
-    const sanitizedBoundary = Platform18.StringUtilities.escapeForRegExp(boundary);
+    const sanitizedBoundary = Platform20.StringUtilities.escapeForRegExp(boundary);
     const keyValuePattern = new RegExp(
       // Header with an optional file #name.
       '^\\r\\ncontent-disposition\\s*:\\s*form-data\\s*;\\s*name="([^"]*)"(?:\\s*;\\s*filename="([^"]*)")?(?:\\r\\ncontent-type\\s*:\\s*([^\\r\\n]*))?\\r\\n\\r\\n(.*)\\r\\n$',
@@ -39654,18 +39745,6 @@ var AnimationDOMNode = class _AnimationDOMNode {
     ].map((arg) => RemoteObject.toCallArgument(arg)));
     object.release();
     return id;
-    function scrollListenerInPage(id2, reportScrollPositionBindingName, scrollListenerNameInPage) {
-      if ("scrollingElement" in this && !this.scrollingElement) {
-        return;
-      }
-      const scrollingElement = "scrollingElement" in this ? this.scrollingElement : this;
-      this[scrollListenerNameInPage] = () => {
-        globalThis[reportScrollPositionBindingName](
-          JSON.stringify({ scrollTop: scrollingElement.scrollTop, scrollLeft: scrollingElement.scrollLeft, id: id2 })
-        );
-      };
-      this.addEventListener("scroll", this[scrollListenerNameInPage], true);
-    }
   }
   async removeScrollEventListener(id) {
     const object = await resolveToObjectInWorld(this.#domNode, DEVTOOLS_ANIMATIONS_WORLD_NAME);
@@ -39681,84 +39760,24 @@ var AnimationDOMNode = class _AnimationDOMNode {
     if (this.#scrollListenersById.size === 0) {
       await this.#removeReportScrollPositionBinding();
     }
-    function removeScrollListenerInPage(scrollListenerNameInPage) {
-      this.removeEventListener("scroll", this[scrollListenerNameInPage]);
-      delete this[scrollListenerNameInPage];
-    }
   }
   async scrollTop() {
     return await this.#domNode.callFunction(scrollTopInPage).then((res) => res?.value ?? null);
-    function scrollTopInPage() {
-      if ("scrollingElement" in this) {
-        if (!this.scrollingElement) {
-          return 0;
-        }
-        return this.scrollingElement.scrollTop;
-      }
-      return this.scrollTop;
-    }
   }
   async scrollLeft() {
     return await this.#domNode.callFunction(scrollLeftInPage).then((res) => res?.value ?? null);
-    function scrollLeftInPage() {
-      if ("scrollingElement" in this) {
-        if (!this.scrollingElement) {
-          return 0;
-        }
-        return this.scrollingElement.scrollLeft;
-      }
-      return this.scrollLeft;
-    }
   }
   async setScrollTop(offset) {
     await this.#domNode.callFunction(setScrollTopInPage, [offset]);
-    function setScrollTopInPage(offsetInPage) {
-      if ("scrollingElement" in this) {
-        if (!this.scrollingElement) {
-          return;
-        }
-        this.scrollingElement.scrollTop = offsetInPage;
-      } else {
-        this.scrollTop = offsetInPage;
-      }
-    }
   }
   async setScrollLeft(offset) {
     await this.#domNode.callFunction(setScrollLeftInPage, [offset]);
-    function setScrollLeftInPage(offsetInPage) {
-      if ("scrollingElement" in this) {
-        if (!this.scrollingElement) {
-          return;
-        }
-        this.scrollingElement.scrollLeft = offsetInPage;
-      } else {
-        this.scrollLeft = offsetInPage;
-      }
-    }
   }
   async verticalScrollRange() {
     return await this.#domNode.callFunction(verticalScrollRangeInPage).then((res) => res?.value ?? null);
-    function verticalScrollRangeInPage() {
-      if ("scrollingElement" in this) {
-        if (!this.scrollingElement) {
-          return 0;
-        }
-        return this.scrollingElement.scrollHeight - this.scrollingElement.clientHeight;
-      }
-      return this.scrollHeight - this.clientHeight;
-    }
   }
   async horizontalScrollRange() {
     return await this.#domNode.callFunction(horizontalScrollRangeInPage).then((res) => res?.value ?? null);
-    function horizontalScrollRangeInPage() {
-      if ("scrollingElement" in this) {
-        if (!this.scrollingElement) {
-          return 0;
-        }
-        return this.scrollingElement.scrollWidth - this.scrollingElement.clientWidth;
-      }
-      return this.scrollWidth - this.clientWidth;
-    }
   }
 };
 function shouldGroupAnimations(firstAnimation, anim) {
@@ -40283,7 +40302,13 @@ var AnimationGroup = class {
     return this.#scrollNode;
   }
   seekTo(currentTime) {
-    void this.#animationModel.agent.invoke_seekAnimations({ animations: this.animationIds(), currentTime });
+    const animations = [];
+    const currentTimes = [];
+    for (const animation of this.#animations) {
+      animations.push(animation.id());
+      currentTimes.push(animation.playbackRate() >= 0 ? currentTime : animation.endTime() - animation.startTime() - currentTime);
+    }
+    void this.#animationModel.agent.invoke_seekAnimations({ animations, currentTimes });
   }
   paused() {
     return this.#paused;
@@ -42212,7 +42237,7 @@ __export(DOMDebuggerModel_exports, {
   EventListener: () => EventListener,
   Events: () => Events26
 });
-import * as Platform19 from "../platform/platform.js";
+import * as Platform21 from "../platform/platform.js";
 import * as Root12 from "../root/root.js";
 var DOMDebuggerModel = class extends SDKModel {
   agent;
@@ -42352,7 +42377,7 @@ var DOMDebuggerModel = class extends SDKModel {
   }
   currentURL() {
     const domDocument = this.#domModel.existingDocument();
-    return domDocument ? domDocument.documentURL : Platform19.DevToolsPath.EmptyUrlString;
+    return domDocument ? domDocument.documentURL : Platform21.DevToolsPath.EmptyUrlString;
   }
   async documentUpdated() {
     if (this.suspended) {
@@ -42362,7 +42387,7 @@ var DOMDebuggerModel = class extends SDKModel {
     this.#domBreakpoints = [];
     this.dispatchEventToListeners("DOMBreakpointsRemoved" /* DOM_BREAKPOINTS_REMOVED */, removed);
     const document2 = await this.#domModel.requestDocument();
-    const currentURL = document2 ? document2.documentURL : Platform19.DevToolsPath.EmptyUrlString;
+    const currentURL = document2 ? document2.documentURL : Platform21.DevToolsPath.EmptyUrlString;
     for (const breakpoint of this.#domBreakpointsSetting.get()) {
       if (breakpoint.url === currentURL) {
         void this.#domModel.pushNodeByPathToFrontend(breakpoint.path).then(appendBreakpoint.bind(this, breakpoint));
@@ -42469,7 +42494,7 @@ var EventListener = class _EventListener {
     this.#originalHandler = originalHandler || handler;
     this.#location = location;
     const script = location.script();
-    this.#sourceURL = script ? script.contentURL() : Platform19.DevToolsPath.EmptyUrlString;
+    this.#sourceURL = script ? script.contentURL() : Platform21.DevToolsPath.EmptyUrlString;
     this.#customRemoveFunction = customRemoveFunction;
     this.#origin = origin || _EventListener.Origin.RAW;
   }
@@ -43830,7 +43855,7 @@ var PerformanceMetricsModel_exports = {};
 __export(PerformanceMetricsModel_exports, {
   PerformanceMetricsModel: () => PerformanceMetricsModel
 });
-import * as Platform20 from "../platform/platform.js";
+import * as Platform22 from "../platform/platform.js";
 var PerformanceMetricsModel = class extends SDKModel {
   #agent;
   #metricModes = /* @__PURE__ */ new Map([
@@ -43865,7 +43890,7 @@ var PerformanceMetricsModel = class extends SDKModel {
       let value;
       switch (this.#metricModes.get(metric.name)) {
         case "CumulativeTime" /* CUMULATIVE_TIME */:
-          value = data.lastTimestamp && data.lastValue ? Platform20.NumberUtilities.clamp(
+          value = data.lastTimestamp && data.lastValue ? Platform22.NumberUtilities.clamp(
             (metric.value - data.lastValue) * 1e3 / (timestamp - data.lastTimestamp),
             0,
             1

@@ -1,11 +1,11 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Platform from '../platform/platform.js';
 /** A thin wrapper around the Cache API to store source map JSONs keyed on Debug IDs */
 export class SourceMapCache {
     static create() {
-        if (typeof window === 'undefined') {
-            // TODO(crbug.com/451502260): Move this behind a `HostRuntime` interface.
+        if (!Platform.HostRuntime.HOST_RUNTIME.getCacheStorage()) {
             return IN_MEMORY_INSTANCE; // TS doesn't like that our in-memory class doesn't have the same private fields.
         }
         return new SourceMapCache('devtools-source-map-cache');
@@ -20,18 +20,22 @@ export class SourceMapCache {
     }
     async set(debugId, securityOrigin, sourceMap) {
         const cache = await this.#cache();
-        await cache.put(SourceMapCache.#urlForDebugId(debugId, securityOrigin), new Response(JSON.stringify(sourceMap)));
+        await cache?.put(SourceMapCache.#urlForDebugId(debugId, securityOrigin), new Response(JSON.stringify(sourceMap)));
     }
     async get(debugId, securityOrigin) {
         const cache = await this.#cache();
-        const response = await cache.match(SourceMapCache.#urlForDebugId(debugId, securityOrigin));
+        const response = await cache?.match(SourceMapCache.#urlForDebugId(debugId, securityOrigin));
         return await response?.json() ?? null;
     }
     async #cache() {
         if (this.#cachePromise) {
             return await this.#cachePromise;
         }
-        this.#cachePromise = window.caches.open(this.#name);
+        const cacheStorage = Platform.HostRuntime.HOST_RUNTIME.getCacheStorage();
+        if (!cacheStorage) {
+            return undefined;
+        }
+        this.#cachePromise = cacheStorage.open(this.#name);
         return await this.#cachePromise;
     }
     /** The Cache API only allows URL as keys, so we construct a simple one. Given that we have our own cache, we have no risk of conflicting URLs */
@@ -39,7 +43,7 @@ export class SourceMapCache {
         return `http://debug.id/${encodeURIComponent(debugId)}?origin=${encodeURIComponent(securityOrigin)}`;
     }
     async disposeForTest() {
-        await window.caches.delete(this.#name);
+        await Platform.HostRuntime.HOST_RUNTIME.getCacheStorage()?.delete(this.#name);
     }
 }
 const IN_MEMORY_INSTANCE = new (class {

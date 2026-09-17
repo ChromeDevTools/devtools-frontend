@@ -108,7 +108,7 @@ var PrivateAPI;
     RecorderExtensionPluginEvents2["UnregisteredRecorderExtensionPlugin"] = "unregisteredRecorderExtensionPlugin";
   })(RecorderExtensionPluginEvents = PrivateAPI2.RecorderExtensionPluginEvents || (PrivateAPI2.RecorderExtensionPluginEvents = {}));
 })(PrivateAPI || (PrivateAPI = {}));
-self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, keysToForward, testHook, injectedScriptId, targetWindowForTest) {
+globalThis.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, keysToForward, testHook, injectedScriptId, targetWindowForTest) {
   const keysToForwardSet = new Set(keysToForward);
   const chrome = window.chrome || {};
   const devtools_descriptor = Object.getOwnPropertyDescriptor(chrome, "devtools");
@@ -1059,13 +1059,13 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
   }
   testHook(extensionServer, coreAPI);
 };
-self.buildExtensionAPIInjectedScript = function(extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {
+globalThis.buildExtensionAPIInjectedScript = function(extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {
   const argumentsJSON = [extensionInfo, inspectedTabId || null, themeName, keysToForward].map((_) => JSON.stringify(_)).join(",");
   if (!testHook) {
     testHook = () => {
     };
   }
-  return "(function(injectedScriptId){ (" + self.injectedExtensionAPI.toString() + ")(" + argumentsJSON + "," + testHook + ", injectedScriptId);})";
+  return "(function(injectedScriptId){ (" + globalThis.injectedExtensionAPI.toString() + ")(" + argumentsJSON + "," + testHook + ", injectedScriptId);})";
 };
 
 // ../../front_end/models/extensions/ExtensionEndpoint.ts
@@ -1079,7 +1079,9 @@ var ExtensionEndpoint = class {
   pendingRequests;
   constructor(port) {
     this.port = port;
-    this.port.onmessage = this.onResponse.bind(this);
+    this.port.addEventListener("message", (event) => this.onResponse(event));
+    this.port.start?.();
+    this.port.unref?.();
     this.pendingRequests = /* @__PURE__ */ new Map();
   }
   sendRequest(method, parameters) {
@@ -1096,7 +1098,8 @@ var ExtensionEndpoint = class {
     this.pendingRequests.clear();
     this.port.close();
   }
-  onResponse({ data }) {
+  onResponse(event) {
+    const data = event.data;
     if ("event" in data) {
       this.handleEvent(data);
       return;
@@ -1188,7 +1191,8 @@ function parseHostAndPort(pattern, scheme) {
   if (asUrl.hostname.endsWith(".")) {
     asUrl.hostname = asUrl.hostname.substr(0, asUrl.hostname.length - 1);
   }
-  if (asUrl.hostname !== "%2A" && asUrl.hostname.includes("%2A")) {
+  const isWildcardHost = asUrl.hostname === "%2A" || asUrl.hostname === "*";
+  if (!isWildcardHost && (asUrl.hostname.includes("%2A") || asUrl.hostname.includes("*"))) {
     return void 0;
   }
   const httpPort = defaultPort("http");
@@ -1200,7 +1204,7 @@ function parseHostAndPort(pattern, scheme) {
   if (port !== "*" && !schemesWithPort.includes(scheme)) {
     return void 0;
   }
-  const host = asUrl.hostname !== "%2A" ? pattern.startsWith("*.") ? `*.${asUrl.hostname}` : asUrl.hostname : "*";
+  const host = !isWildcardHost ? pattern.startsWith("*.") ? `*.${asUrl.hostname}` : asUrl.hostname : "*";
   return {
     host,
     port

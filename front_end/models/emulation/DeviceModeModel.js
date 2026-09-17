@@ -91,6 +91,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     #appliedUserAgentType;
     #scaleSetting;
     #scale;
+    #autoAdjustScaleSetting;
+    #deviceScaleMapSetting;
     #widthSetting;
     #heightSetting;
     #uaSetting;
@@ -129,6 +131,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         }
         this.#scaleSetting.addChangeListener(this.scaleSettingChanged, this);
         this.#scale = 1;
+        this.#autoAdjustScaleSetting = this.#settings.createSetting('emulation.auto-adjust-scale', true);
+        this.#deviceScaleMapSetting = this.#settings.createSetting('emulation.device-scale-map', {});
         this.#widthSetting = this.#settings.createSetting('emulation.device-width', 400);
         if (this.#widthSetting.get() < MinDeviceSize) {
             this.#widthSetting.set(MinDeviceSize);
@@ -280,11 +284,41 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     }
     emulate(type, device, mode, scale) {
         const resetPageScaleFactor = this.#type !== type || this.#device !== device || this.#mode !== mode;
+        const deviceChanged = this.#type !== type || this.#device !== device;
+        if (deviceChanged) {
+            if (this.#type === Type.Device && this.#device) {
+                const map = this.#deviceScaleMapSetting.get();
+                map[this.#device.title] = {
+                    scale: this.#scaleSetting.get(),
+                    autoAdjust: this.#autoAdjustScaleSetting.get(),
+                };
+                this.#deviceScaleMapSetting.set(map);
+            }
+            else if (this.#type === Type.Responsive) {
+                const map = this.#deviceScaleMapSetting.get();
+                map['Responsive'] = {
+                    scale: this.#scaleSetting.get(),
+                    autoAdjust: this.#autoAdjustScaleSetting.get(),
+                };
+                this.#deviceScaleMapSetting.set(map);
+            }
+        }
         this.#type = type;
         if (type === Type.Device && device && mode) {
             console.assert(Boolean(device) && Boolean(mode), 'Must pass device and mode for device emulation');
             this.#mode = mode;
             this.#device = device;
+            if (deviceChanged) {
+                const map = this.#deviceScaleMapSetting.get();
+                const savedDevice = map[device.title];
+                if (savedDevice) {
+                    this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
+                    scale = savedDevice.autoAdjust ? undefined : savedDevice.scale;
+                }
+                else {
+                    this.#autoAdjustScaleSetting.set(scale === undefined);
+                }
+            }
             if (scale !== undefined) {
                 this.#autoFitScaleOnInitialize = false;
                 this.#scaleSetting.set(scale);
@@ -301,6 +335,23 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             this.#device = null;
             this.#mode = null;
             this.#autoFitScaleOnInitialize = false;
+            if (deviceChanged && type === Type.Responsive) {
+                const map = this.#deviceScaleMapSetting.get();
+                const savedDevice = map['Responsive'];
+                if (savedDevice) {
+                    this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
+                    if (!savedDevice.autoAdjust) {
+                        this.#scaleSetting.set(savedDevice.scale);
+                    }
+                    else {
+                        this.#scaleSetting.set(this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get()));
+                    }
+                }
+                else {
+                    this.#autoAdjustScaleSetting.set(true);
+                    this.#scaleSetting.set(1);
+                }
+            }
         }
         if (type !== Type.None) {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.DeviceModeEnabled);

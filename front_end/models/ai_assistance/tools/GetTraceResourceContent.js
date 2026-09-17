@@ -10,17 +10,28 @@ const UIStringsNotTranslate = {
     lookingAtResourceContent: 'Looking at resource content',
 };
 const lockedString = i18n.i18n.lockedString;
-export class GetResourceContentTool {
-    name = "getResourceContent" /* ToolName.GET_RESOURCE_CONTENT */;
-    description = 'Retrieves the content of the resource with the given url. Only use this for text resource types.';
+/**
+ * Retrieves text content for a resource or script captured in the performance trace.
+ *
+ * Precedence:
+ * 1. Checks trace metadata (`parsedTrace.data.Scripts`) for scripts captured during recording.
+ * 2. Falls back to querying the live page target's `ResourceTreeModel`.
+ *
+ * Preconditions:
+ * - Requires an active, freshly recorded trace session (fails on imported traces).
+ * - Fails if resource is binary/non-text, cross-origin, or a `file://` URL.
+ */
+export class GetTraceResourceContentTool {
+    name = "getTraceResourceContent" /* ToolName.GET_TRACE_RESOURCE_CONTENT */;
+    description = 'Retrieves the text content of a script or resource captured within the recorded performance trace by URL. Only use this for text resource types. Do not call this tool on imported traces or for general workspace files (use listSources and getSourceContent instead).';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-        description: 'Arguments for looking up resource content.',
+        description: 'Arguments for looking up resource content from the performance trace.',
         nullable: false,
         properties: {
             url: {
                 type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                description: 'The url for the resource.',
+                description: 'The URL of the resource captured in the performance trace to retrieve.',
                 nullable: false,
             },
         },
@@ -29,7 +40,7 @@ export class GetResourceContentTool {
     displayInfoFromArgs(params) {
         return {
             title: lockedString(UIStringsNotTranslate.lookingAtResourceContent),
-            action: `getResourceContent('${params.url}')`,
+            action: `getTraceResourceContent('${params.url}')`,
         };
     }
     async handler(params, capabilities) {
@@ -40,6 +51,9 @@ export class GetResourceContentTool {
         if (performanceTraceContext.isImported()) {
             return { error: 'Cannot use this tool on an imported file.' };
         }
+        if (!params.url) {
+            return { error: 'Missing arg: url' };
+        }
         if (!performanceTraceContext.canAccessResource(params.url)) {
             return { error: 'Resource not found' };
         }
@@ -47,6 +61,7 @@ export class GetResourceContentTool {
         const { parsedTrace } = focus;
         let content;
         const url = params.url;
+        // Check trace metadata for scripts captured during recording before falling back to live page resources.
         const script = parsedTrace.data.Scripts?.scripts.find(script => script.url === params.url);
         if (script?.content !== undefined) {
             content = script.content;
@@ -87,4 +102,4 @@ export class GetResourceContentTool {
         };
     }
 }
-//# sourceMappingURL=GetResourceContent.js.map
+//# sourceMappingURL=GetTraceResourceContent.js.map

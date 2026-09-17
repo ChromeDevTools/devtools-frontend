@@ -1596,7 +1596,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         if (arrayRanges && arrayRanges.length > 0) {
             empty = false;
         }
-        const sortPropertiesAlphabetically = properties?.[0]?.parent?.sortPropertiesAlphabetically ?? true;
+        const sortPropertiesAlphabetically = properties?.[0]?.sortPropertiesAlphabetically ?? true;
         properties?.sort((a, b) => compareProperties(a, b, sortPropertiesAlphabetically));
         const entriesProperty = internalProperties?.find(({ property }) => property.name === '[[Entries]]');
         if (entriesProperty) {
@@ -1734,7 +1734,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     getContextMenu(event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
-        contextMenu.appendApplicableItems(this);
+        contextMenu.appendApplicableItems(this.property);
         if (this.property.property.symbol) {
             contextMenu.appendApplicableItems(this.property.property.symbol);
         }
@@ -1789,9 +1789,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         else {
             this.setExpandable(false);
         }
-    }
-    path() {
-        return this.property.path;
     }
 }
 async function arrayRangeGroups(object, fromIndex, toIndex) {

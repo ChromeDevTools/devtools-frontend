@@ -1,5 +1,6 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import * as Elements from '../../models/elements/elements.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ElementsTreeElement, type InitialEditState } from './ElementsTreeElement.js';
@@ -122,6 +123,7 @@ export declare const DECLARATIVE_VIEW: View;
  */
 export declare class DOMTreeWidget extends UI.Widget.Widget {
     #private;
+    static readonly INJECT: readonly [typeof ChangeTracker.ChangeTracker.ChangeTracker];
     omitRootDOMNode: boolean;
     selectEnabled: boolean;
     hideGutter: boolean;
@@ -154,7 +156,8 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     set disableEdits(disableEdits: boolean);
     get expandRoot(): boolean;
     set expandRoot(expandRoot: boolean);
-    constructor(element?: HTMLElement, view?: View);
+    get changeTracker(): ChangeTracker.ChangeTracker.ChangeTracker | undefined;
+    constructor(element?: HTMLElement, [changeTracker]?: UI.Widget.WidgetDependencies<typeof DOMTreeWidget> | [ChangeTracker.ChangeTracker.ChangeTracker?], view?: View);
     updateRecordsForTest(): Map<SDK.DOMModel.DOMNode, Elements.ElementUpdateRecord.ElementUpdateRecord>;
     updateModifiedNodes(): void;
     selectDOMNode(node: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet | null, focus?: boolean, isClosingTag?: boolean): void;

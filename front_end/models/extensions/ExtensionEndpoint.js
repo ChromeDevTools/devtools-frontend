@@ -7,7 +7,9 @@ export class ExtensionEndpoint {
     pendingRequests;
     constructor(port) {
         this.port = port;
-        this.port.onmessage = this.onResponse.bind(this);
+        this.port.addEventListener('message', (event) => this.onResponse(event));
+        this.port.start?.();
+        this.port.unref?.();
         this.pendingRequests = new Map();
     }
     sendRequest(method, parameters) {
@@ -24,7 +26,8 @@ export class ExtensionEndpoint {
         this.pendingRequests.clear();
         this.port.close();
     }
-    onResponse({ data }) {
+    onResponse(event) {
+        const data = event.data;
         if ('event' in data) {
             this.handleEvent(data);
             return;

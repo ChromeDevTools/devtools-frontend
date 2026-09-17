@@ -70,6 +70,30 @@ class NodeWorker {
         });
     }
 }
+class NodeCacheEntry {
+    #entries = new Map();
+    async put(url, response) {
+        this.#entries.set(url, response.clone());
+    }
+    async match(url) {
+        return this.#entries.get(url)?.clone();
+    }
+}
+class NodeCacheStorage {
+    #caches = new Map();
+    async open(name) {
+        let cache = this.#caches.get(name);
+        if (!cache) {
+            cache = new NodeCacheEntry();
+            this.#caches.set(name, cache);
+        }
+        return cache;
+    }
+    async delete(name) {
+        return this.#caches.delete(name);
+    }
+}
+const nodeCacheStorage = new NodeCacheStorage();
 export const HOST_RUNTIME = {
     createWorker(url) {
         return new NodeWorker(url);
@@ -84,6 +108,9 @@ export const HOST_RUNTIME = {
     getLocalStorage() {
         return undefined;
     },
+    getCacheStorage() {
+        return nodeCacheStorage;
+    },
     getDevicePixelRatio() {
         return 1;
     },
@@ -92,5 +119,9 @@ export const HOST_RUNTIME = {
     async loadTextFile(url) {
         return await Fs.promises.readFile(Url.fileURLToPath(url), 'utf-8');
     },
+    evaluateCSS(_dataValue, _customExpr) {
+        return null;
+    },
+    removeCSSEvaluationElement() { },
 };
 //# sourceMappingURL=HostRuntime.js.map

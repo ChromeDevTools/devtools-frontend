@@ -27,4 +27,4 @@ export interface BackendLinkingRule {
 }
 export declare const BACKEND_LINKING_PLACEHOLDERS: readonly ['${devtoolsDebugId}', '${requestId}', '${correlationId}', '${traceId}', '${spanId}'];
 export type BackendLinkingPlaceholder = typeof BACKEND_LINKING_PLACEHOLDERS[number];
-export declare const backendLinkingRulesSettingDescriptor: Common.Settings.SettingDescriptor<BackendLinkingRule[]>;
+export declare const backendLinkingRulesSettingDescriptor: Common.Settings.ConditionalSettingDescriptor<BackendLinkingRule[], void>;

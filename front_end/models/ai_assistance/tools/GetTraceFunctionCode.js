@@ -7,27 +7,34 @@ const UIStringsNotTranslate = {
     lookingUpFunctionCode: 'Looking up function code',
 };
 const lockedString = i18n.i18n.lockedString;
-export class GetFunctionCodeTool {
-    name = "getFunctionCode" /* ToolName.GET_FUNCTION_CODE */;
-    description = 'Retrieves the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.';
+/**
+ * Retrieves function code and line-by-line CPU profile execution costs from the performance trace.
+ *
+ * Preconditions:
+ * - Requires an active, freshly recorded trace session (fails on imported traces).
+ * - Requires resource access via the performance trace context.
+ */
+export class GetTraceFunctionCodeTool {
+    name = "getTraceFunctionCode" /* ToolName.GET_TRACE_FUNCTION_CODE */;
+    description = 'Retrieves the code for a function recorded in the performance trace at the specified location, annotated with line-by-line CPU runtime profiling execution costs. Do not call this tool unless a performance trace recording is actively loaded.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-        description: 'Arguments for looking up function code.',
+        description: 'Arguments for looking up function code from the performance trace profile.',
         nullable: false,
         properties: {
             scriptUrl: {
                 type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                description: 'The url of the function.',
+                description: 'The URL of the script containing the function recorded in the performance trace.',
                 nullable: false,
             },
             line: {
                 type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                description: 'The line number where the function is defined.',
+                description: 'The line number where the function is defined (0-based, as reported in the call tree).',
                 nullable: false,
             },
             column: {
                 type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                description: 'The column number where the function is defined.',
+                description: 'The column number where the function is defined (0-based, as reported in the call tree).',
                 nullable: false,
             },
         },
@@ -36,7 +43,7 @@ export class GetFunctionCodeTool {
     displayInfoFromArgs(params) {
         return {
             title: lockedString(UIStringsNotTranslate.lookingUpFunctionCode),
-            action: `getFunctionCode('${params.scriptUrl}', ${params.line}, ${params.column})`,
+            action: `getTraceFunctionCode('${params.scriptUrl}', ${params.line}, ${params.column})`,
         };
     }
     async handler(params, capabilities) {
@@ -80,4 +87,4 @@ export class GetFunctionCodeTool {
         };
     }
 }
-//# sourceMappingURL=GetFunctionCode.js.map
+//# sourceMappingURL=GetTraceFunctionCode.js.map

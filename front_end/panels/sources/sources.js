@@ -18523,11 +18523,11 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     return true;
   }
   appendApplicableItems(_event, contextMenu, target) {
-    if (target instanceof ObjectUI4.ObjectPropertiesSection.ObjectPropertyTreeElement) {
-      if (!target.property.property.synthetic) {
+    if (target instanceof ObjectUI4.ObjectPropertiesSection.ObjectTreeNode) {
+      if (!target.property.synthetic) {
         contextMenu.debugSection().appendItem(
           i18nString24(UIStrings25.addPropertyPathToWatch),
-          () => this.#focusAndAddExpressionToWatch(target.path()),
+          () => this.#focusAndAddExpressionToWatch(target.path),
           { jslogContext: "add-property-path-to-watch" }
         );
       }

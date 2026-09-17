@@ -252,7 +252,9 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     priority(): Protocol.Network.ResourcePriority | null;
     setSignedExchangeInfo(info: Protocol.Network.SignedExchangeInfo): void;
     signedExchangeInfo(): Protocol.Network.SignedExchangeInfo | null;
-    populateImageSource(image: HTMLImageElement): Promise<void>;
+    populateImageSource(image: {
+        src: string;
+    }): Promise<void>;
     initiator(): Protocol.Network.Initiator | null;
     hasUserGesture(): boolean | null;
     frames(): WebSocketFrame[];

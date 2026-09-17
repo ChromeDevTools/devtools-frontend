@@ -5139,7 +5139,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     if (arrayRanges && arrayRanges.length > 0) {
       empty = false;
     }
-    const sortPropertiesAlphabetically = properties?.[0]?.parent?.sortPropertiesAlphabetically ?? true;
+    const sortPropertiesAlphabetically = properties?.[0]?.sortPropertiesAlphabetically ?? true;
     properties?.sort((a, b) => compareProperties(a, b, sortPropertiesAlphabetically));
     const entriesProperty = internalProperties?.find(({ property }) => property.name === "[[Entries]]");
     if (entriesProperty) {
@@ -5282,7 +5282,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
   }
   getContextMenu(event) {
     const contextMenu = new UI2.ContextMenu.ContextMenu(event);
-    contextMenu.appendApplicableItems(this);
+    contextMenu.appendApplicableItems(this.property);
     if (this.property.property.symbol) {
       contextMenu.appendApplicableItems(this.property.property.symbol);
     }
@@ -5354,9 +5354,6 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     } else {
       this.setExpandable(false);
     }
-  }
-  path() {
-    return this.property.path;
   }
 };
 async function arrayRangeGroups(object, fromIndex, toIndex) {

@@ -55,6 +55,9 @@
   "references": [
     {
       "path": "platform-tsconfig.ref.json"
+    },
+    {
+      "path": "api/api-tsconfig.ref.json"
     }
   ]
 }

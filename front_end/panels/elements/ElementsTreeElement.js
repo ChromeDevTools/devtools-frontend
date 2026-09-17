@@ -44,6 +44,8 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
+import * as Elements from '../../models/elements/elements.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -57,12 +59,38 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 import * as Media from '../media/media.js';
 import * as ElementsComponents from './components/components.js';
+import { cssPath } from './DOMPath.js';
 import { getElementIssueDetails } from './ElementIssueUtils.js';
 import { ElementsPanel } from './ElementsPanel.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
 import { MappedCharToEntity } from './ElementsTreeOutline.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import { getRegisteredDecorators } from './MarkerDecorator.js';
+/**
+ * Returns the CSS selector of `node` that is used as the text signature of the anchor a change is
+ * recorded on, or `undefined` if `tracker` is absent or not recording changes.
+ *
+ * Resolving the selector walks the ancestor chain and scans sibling lists, so it is skipped
+ * entirely while change tracking is disabled.
+ */
+export function buildChangeSelector(tracker, node) {
+    if (!tracker?.isTracking) {
+        return undefined;
+    }
+    if (node.nodeType() === Node.ELEMENT_NODE) {
+        const selector = cssPath(node, true);
+        if (selector) {
+            return selector;
+        }
+    }
+    else if (node.parentNode && node.parentNode.nodeType() === Node.ELEMENT_NODE) {
+        const selector = cssPath(node.parentNode, true);
+        if (selector) {
+            return selector;
+        }
+    }
+    return undefined;
+}
 const { html, nothing, render, Directives: { classMap, ref, repeat, until } } = Lit;
 const { animateOn } = UI.UIUtils;
 const UIStrings = {
@@ -596,13 +624,6 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
         hasUpdates = updateRecord.hasRemovedAttributes() || updateRecord.hasRemovedChildren();
         hasUpdates = hasUpdates || (!expanded && updateRecord.hasChangedChildren());
     }
-    // We are taking full text content of the tag, including attributes and children, to set the aria label.
-    // FIXME: we should compute the aria label ourselves if it is event needed.
-    const setAriaLabel = ref(el => {
-        if (el?.textContent) {
-            UI.ARIAUtils.setLabel(el, el.textContent);
-        }
-    });
     const tagNameClass = isClosingTag ? 'webkit-html-close-tag-name' : 'webkit-html-tag-name';
     const hasTagIssues = !isClosingTag && Boolean(issues?.some(issue => {
         const details = getElementIssueDetails(issue);
@@ -614,8 +635,11 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
     };
     const tagString = (isClosingTag ? '/' : '') + tagName;
     const jslog = !isClosingTag ? VisualLogging.value('tag-name').track({ change: true, dblclick: true }) : '';
+    const ariaLabel = isClosingTag ?
+        `</${tagName}>` :
+        `<${tagName}${attributes.map(attr => (attr.value ? ` ${attr.name}="${attr.value}"` : ` ${attr.name}`)).join('')}>`;
     return html `<span
-      class=${classMap(tagClasses)} ${setAriaLabel}
+      class=${classMap(tagClasses)} aria-label=${ariaLabel}
       >&lt;<span class=${classMap(tagNameClasses)} jslog=${jslog || nothing} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map(attr => html ` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
 }
 function maybeRenderAdAdorner(input) {
@@ -911,7 +935,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
         if (event.key === 'Escape') {
             event.consume(true);
         }
-    }} class="source-code elements-tree-editor" style="width: ${input.editorWidth ?? 0}px;">
+    }}
+      @mousedown=${(event) => event.stopPropagation()}
+      @click=${(event) => event.stopPropagation()}
+      class="source-code elements-tree-editor" style="width: ${input.editorWidth ?? 0}px;">
         <devtools-text-editor .state=${input.editorState} ${ref(el => {
         output.editorRef = el;
     })}></devtools-text-editor>
@@ -921,8 +948,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format on
 };
 export class ElementsTreeWidget extends UI.Widget.Widget {
-    static INJECT = [IssuesManager.DOMIssuesManager.DOMIssuesManager];
+    static INJECT = [
+        IssuesManager.DOMIssuesManager.DOMIssuesManager,
+        ChangeTracker.ChangeTracker.ChangeTracker,
+    ];
     #domIssuesManager;
+    #changeTracker;
     #node;
     #eventsBound = false;
     #isClosingTag = false;
@@ -1136,9 +1167,18 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         }
         return this.#domIssuesManager?.issuesForNode(this.node) ?? [];
     }
-    constructor(element, [domIssuesManager] = [undefined], view = DEFAULT_VIEW) {
+    get changeTracker() {
+        // The widget is currently created for non-widget ElementsTreeElement so
+        // the changeTracker can be empty, relying on the manual resolution.
+        // Note that this only works once the widget is attached to the DOM.
+        this.#changeTracker ??=
+            UI.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker.ChangeTracker.ChangeTracker);
+        return this.#changeTracker;
+    }
+    constructor(element, [domIssuesManager, changeTracker] = [], view = DEFAULT_VIEW) {
         super(element);
         this.#domIssuesManager = domIssuesManager;
+        this.#changeTracker = changeTracker;
         this.#view = view;
         this.#expandedChildrenLimit = InitialChildrenLimit;
         this.inClipboard = false;
@@ -2069,7 +2109,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
                         }
                         // The relatedTarget is null when no element gains focus, e.g. switching windows.
                         const relatedTarget = event.relatedTarget;
-                        if (relatedTarget && !relatedTarget.isSelfOrDescendant(this.#editorRef)) {
+                        if (relatedTarget && !relatedTarget.isSelfOrDescendant(this.#editorRef) &&
+                            !relatedTarget.isSelfOrDescendant(this.contentElement)) {
                             this.editing?.commit();
                         }
                     },
@@ -2202,10 +2243,15 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             }
         }
         if (attributeName !== null && (attributeName.trim() || newText.trim()) && oldText !== newText) {
+            const edit = { attributeName, oldText, newText };
             this.node.setAttribute(attributeName, newText, (error) => {
+                if (!error) {
+                    const changeTracker = this.changeTracker;
+                    Elements.DOMChanges.trackAttributeEdit(changeTracker, this.node, buildChangeSelector(changeTracker, this.node), edit);
+                    Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
+                }
                 moveToNextAttributeIfNeeded.call(this, error);
             });
-            Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
             return;
         }
         this.updateTitle();
@@ -2251,6 +2297,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
                 return;
             }
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
+            const changeTracker = this.changeTracker;
+            Elements.DOMChanges.trackTagNameEdit(changeTracker, newNode, buildChangeSelector(changeTracker, newNode), oldText ?? tagName ?? '', newText);
             if (this.selectNodeAfterEdit) {
                 this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
             }
@@ -2258,7 +2306,12 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
     textNodeEditingCommitted(textNode, _element, newText) {
         this.editing = null;
-        function callback() {
+        const oldValue = textNode.nodeValue() ?? '';
+        function callback(error) {
+            if (!error && oldValue !== newText) {
+                const changeTracker = this.changeTracker;
+                Elements.DOMChanges.trackTextNodeEdit(changeTracker, textNode, buildChangeSelector(changeTracker, textNode), oldValue, newText);
+            }
             this.#clearDOMNextUpdate = true;
             this.updateTitle();
         }
@@ -2380,7 +2433,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     async remove() {
         if (this.isToggledToHidden?.(this.node)) {
             // Unhide the node before removing. This avoids inconsistent state if the node is restored via undo.
-            await this.toggleHideElement?.(this.node);
+            await this.node.toggleHideElement();
         }
         if (this.node.pseudoType()) {
             return;
@@ -2388,7 +2441,14 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         if (!this.node.parentNode || this.node.parentNode.nodeType() === Node.DOCUMENT_NODE) {
             return;
         }
-        void this.node.removeNode();
+        // The selector has to be resolved before the node is detached from the tree.
+        const changeTracker = this.changeTracker;
+        const selector = buildChangeSelector(changeTracker, this.node);
+        await this.node.removeNode((err) => {
+            if (!err) {
+                Elements.DOMChanges.trackNodeRemoval(changeTracker, this.node, selector);
+            }
+        });
     }
     toggleEditAsHTML(callback, startEditing) {
         if (this.editing && this.#editorState) {
@@ -2405,7 +2465,15 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         }
         const commitChange = (initialValue, value) => {
             if (initialValue !== value) {
-                node.setOuterHTML(value, selectNode);
+                // The selector has to be resolved before the node is detached from the tree.
+                const changeTracker = this.changeTracker;
+                const selector = buildChangeSelector(changeTracker, node);
+                node.setOuterHTML(value, (error) => {
+                    if (!error) {
+                        Elements.DOMChanges.trackHTMLEdit(changeTracker, node, selector, initialValue, value);
+                    }
+                    selectNode(error);
+                });
             }
         };
         function disposeCallback() {

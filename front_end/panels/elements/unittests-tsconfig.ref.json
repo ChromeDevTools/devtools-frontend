@@ -87,7 +87,13 @@
       "path": "../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/change_tracker/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/computed_style/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/elements/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../models/issues_manager/bundle-tsconfig.ref.json"

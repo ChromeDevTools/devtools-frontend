@@ -21,7 +21,7 @@
   ],
   "references": [
     {
-      "path": "../api/bundle-tsconfig.ref.json"
+      "path": "../api/api-tsconfig.ref.json"
     }
   ]
 }

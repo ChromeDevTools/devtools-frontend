@@ -61,7 +61,7 @@ export declare class WatchExpressionsSidebarPane extends UI.Widget.VBox implemen
     private refreshButtonClicked;
     performUpdate(): Promise<void>;
     handleAction(_context: UI.Context.Context, _actionId: string): boolean;
-    appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement | UISourceCodeFrame): void;
+    appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: ObjectUI.ObjectPropertiesSection.ObjectTreeNode | UISourceCodeFrame): void;
 }
 export declare class WatchExpression {
     #private;

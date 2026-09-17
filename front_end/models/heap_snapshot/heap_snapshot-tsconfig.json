@@ -59,9 +59,6 @@
     },
     {
       "path": "../../core/platform/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../core/platform/api/bundle-tsconfig.ref.json"
     }
   ]
 }

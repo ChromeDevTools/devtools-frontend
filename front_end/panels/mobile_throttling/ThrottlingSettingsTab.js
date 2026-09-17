@@ -55,6 +55,14 @@ const UIStrings = {
      */
     packetLoss: 'Packet Loss',
     /**
+     * @description Label for a textbox that sets the low-tier mobile device CPU throttling in the throttling settings tab.
+     */
+    calibratedLowTierMobile: 'Low-tier mobile device',
+    /**
+     * @description Label for a textbox that sets the mid-tier mobile device CPU throttling in the throttling settings tab.
+     */
+    calibratedMidTierMobile: 'Mid-tier mobile device',
+    /**
      * @description Label for a textbox that sets the maximum packet queue length for real-time networks in the throttling settings tab.
      */
     packetQueueLength: 'Packet Queue Length',
@@ -222,10 +230,10 @@ export class CPUThrottlingCard {
         const descriptionEl = this.element.createChild('span');
         descriptionEl.textContent = i18nString(UIStrings.cpuCalibrationDescription);
         this.lowTierMobileDeviceEl = this.element.createChild('div', 'cpu-preset-section');
-        this.lowTierMobileDeviceEl.append('Low-tier mobile device');
+        this.lowTierMobileDeviceEl.append(i18nString(UIStrings.calibratedLowTierMobile));
         this.lowTierMobileDeviceEl.createChild('div', 'cpu-preset-result');
         this.midTierMobileDeviceEl = this.element.createChild('div', 'cpu-preset-section');
-        this.midTierMobileDeviceEl.append('Mid-tier mobile device');
+        this.midTierMobileDeviceEl.append(i18nString(UIStrings.calibratedMidTierMobile));
         this.midTierMobileDeviceEl.createChild('div', 'cpu-preset-result');
         this.calibrateEl = this.element.createChild('div', 'cpu-preset-section cpu-preset-calibrate');
         const buttonContainerEl = this.calibrateEl.createChild('div', 'button-container');

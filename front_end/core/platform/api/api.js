@@ -1,6 +1,6 @@
-// ../../front_end/core/platform/api/HostRuntime.ts
-var HostRuntime_exports = {};
-export {
-  HostRuntime_exports as HostRuntime
-};
+// Copyright 2025 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+import * as HostRuntime from './HostRuntime.js';
+export { HostRuntime };
 //# sourceMappingURL=api.js.map

@@ -101,7 +101,7 @@ export var PrivateAPI;
         RecorderExtensionPluginEvents["UnregisteredRecorderExtensionPlugin"] = "unregisteredRecorderExtensionPlugin";
     })(RecorderExtensionPluginEvents = PrivateAPI.RecorderExtensionPluginEvents || (PrivateAPI.RecorderExtensionPluginEvents = {}));
 })(PrivateAPI || (PrivateAPI = {}));
-self.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, keysToForward, testHook, injectedScriptId, targetWindowForTest) {
+globalThis.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, keysToForward, testHook, injectedScriptId, targetWindowForTest) {
     const keysToForwardSet = new Set(keysToForward);
     const chrome = window.chrome || {};
     const devtools_descriptor = Object.getOwnPropertyDescriptor(chrome, 'devtools');
@@ -1039,13 +1039,14 @@ self.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, 
     }
     testHook(extensionServer, coreAPI);
 };
-self.buildExtensionAPIInjectedScript = function (extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {
+globalThis.buildExtensionAPIInjectedScript = function (extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {
     const argumentsJSON = [extensionInfo, inspectedTabId || null, themeName, keysToForward].map(_ => JSON.stringify(_)).join(',');
     if (!testHook) {
         testHook = () => { };
     }
     return '(function(injectedScriptId){ ' +
-        '(' + self.injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook + ', injectedScriptId);' +
+        '(' + globalThis.injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook +
+        ', injectedScriptId);' +
         '})';
 };
 //# sourceMappingURL=ExtensionAPI.js.map

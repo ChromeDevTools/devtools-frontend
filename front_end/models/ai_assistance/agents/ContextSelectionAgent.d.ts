@@ -42,4 +42,12 @@ export declare class ContextSelectionAgent extends AiAgent<never> {
      * usually is what the user authored.
      */
     static getUISourceCodes(workspace?: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UISourceCode[];
+    /**
+     * Resolves a workspace source file by its ID, ensuring that the file's security
+     * origin is authorized by the conversation's established origin lock.
+     *
+     * Fails closed by returning `undefined` if the established origin is missing or opaque,
+     * if the file ID is invalid, or if the file origin does not match the lock.
+     */
+    static getSourceById(id: number, establishedOrigin?: SDK.SecurityOrigin.SecurityOrigin, workspace?: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UISourceCode | undefined;
 }

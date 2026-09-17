@@ -1627,6 +1627,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "emulation.device-orientation-override",
   "emulation.device-scale",
   "emulation.device-scale-factor",
+  "emulation.device-scale-map",
   "emulation.device-ua",
   "emulation.device-width",
   "emulation.idle-detection",

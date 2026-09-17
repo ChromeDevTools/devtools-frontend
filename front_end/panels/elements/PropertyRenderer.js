@@ -293,6 +293,7 @@ export class TracingContext {
         return results.some(result => result !== false);
     }
 }
+export const CSSControlMap = Map;
 export class RenderingContext {
     ast;
     property;
@@ -362,7 +363,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         if (!Array.isArray(nodeOrNodes)) {
             return this.render([nodeOrNodes], context);
         }
-        const cssControls = new SDK.CSSPropertyParser.CSSControlMap();
+        const cssControls = new CSSControlMap();
         const renderers = nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal));
         const nodes = renderers.map(node => node.#output).reduce(mergeWithSpacing, []);
         return { nodes, cssControls };
@@ -382,8 +383,15 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         const renderer = match &&
             this.#context.renderers.get(match.constructor);
         if (renderer || match instanceof SDK.CSSPropertyParserMatchers.TextMatch) {
-            const output = renderer ? renderer.render(match, this.#context) :
-                match.render();
+            let output;
+            if (renderer) {
+                output = renderer.render(match, this.#context);
+            }
+            else {
+                const span = document.createElement('span');
+                span.appendChild(document.createTextNode(match.text));
+                output = [span];
+            }
             this.#context.tracing?.highlighting.addMatch(match, output);
             this.renderedMatchForTest(output, match);
             this.#output = mergeWithSpacing(this.#output, output);

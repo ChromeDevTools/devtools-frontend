@@ -9,6 +9,7 @@ import { FrontendMessageType } from './ConsoleModelTypes.js';
 import { CPUProfilerModel } from './CPUProfilerModel.js';
 import { COND_BREAKPOINT_SOURCE_URL, Events as DebuggerModelEvents, LOGPOINT_SOURCE_URL, } from './DebuggerModel.js';
 import { LogModel } from './LogModel.js';
+import { saveVariable } from './PageFunctions.js';
 import { RemoteObject } from './RemoteObject.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel, } from './ResourceTreeModel.js';
 import { Events as RuntimeModelEvents, RuntimeModel, } from './RuntimeModel.js';
@@ -365,17 +366,6 @@ export class ConsoleModel extends SDKModel {
         }
         if (callFunctionResult.object) {
             callFunctionResult.object.release();
-        }
-        function saveVariable(value) {
-            const prefix = 'temp';
-            let index = 1;
-            while ((prefix + index) in this) {
-                ++index;
-            }
-            const name = prefix + index;
-            // @ts-expect-error Assignment to global object
-            this[name] = value;
-            return name;
         }
     }
 }

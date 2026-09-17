@@ -509,6 +509,9 @@
   "core/sdk/SourceMapScopeChainEntry.ts | closure": {
     "message": "Closure"
   },
+  "core/sdk/SourceMapScopeChainEntry.ts | exception": {
+    "message": "Exception"
+  },
   "core/sdk/SourceMapScopeChainEntry.ts | global": {
     "message": "Global"
   },
@@ -10013,6 +10016,12 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrate": {
     "message": "Calibrate"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibratedLowTierMobile": {
+    "message": "Low-tier mobile device"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibratedMidTierMobile": {
+    "message": "Mid-tier mobile device"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationConfirmationPrompt": {
     "message": "Calibration will take ~5 seconds, and temporarily navigate away from your current page. Do you wish to continue?"
   },
@@ -17503,6 +17512,24 @@
   },
   "ui/comments/CommentsStatusBarPill.ts | commentsCount": {
     "message": "Comments ({PH1})"
+  },
+  "ui/comments/CommentThreadWidget.ts | addCommentButton": {
+    "message": "Add comment"
+  },
+  "ui/comments/CommentThreadWidget.ts | commentInputAriaLabel": {
+    "message": "Comment input"
+  },
+  "ui/comments/CommentThreadWidget.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "ui/comments/CommentThreadWidget.ts | response": {
+    "message": "Response:"
+  },
+  "ui/comments/CommentThreadWidget.ts | sent": {
+    "message": "Sent"
+  },
+  "ui/comments/CommentThreadWidget.ts | sentCheckmark": {
+    "message": "Sent checkmark"
   },
   "ui/components/dialogs/Dialog.ts | close": {
     "message": "Close"

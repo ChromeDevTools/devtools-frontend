@@ -22,7 +22,7 @@ var backendLinkingRulesSettingDescriptor = {
   name: "network.backend-linking-rules",
   type: Common.Settings.SettingType.ARRAY,
   defaultValue: [],
-  storageType: Common.Settings.SettingStorageType.SYNCED
+  isAvailable: (config) => config.devToolsNetworkBackendLinking?.enabled ? { status: Common.Settings.SettingAvailability.AVAILABLE } : { status: Common.Settings.SettingAvailability.UNAVAILABLE, reason: void 0 }
 };
 
 // ../../front_end/panels/network/forward/NetworkRequestId.ts

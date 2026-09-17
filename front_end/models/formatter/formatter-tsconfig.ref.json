@@ -28,9 +28,6 @@
       "path": "../../core/platform/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/platform/api/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../entrypoints/formatter_actions/bundle-tsconfig.ref.json"
     }
   ]

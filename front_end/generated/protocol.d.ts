@@ -702,9 +702,15 @@ export declare namespace Animation {
          */
         animations: string[];
         /**
-         * Set the current time of each animation.
+         * Set each animation to the same time.
          */
-        currentTime: number;
+        currentTime?: number;
+        /**
+         * Set each animation to a different time. If set, should have the same
+         * length as animations. Exactly one of currentTime or currentTimes should
+         * be set.
+         */
+        currentTimes?: number[];
     }
     interface SetPausedRequest {
         /**

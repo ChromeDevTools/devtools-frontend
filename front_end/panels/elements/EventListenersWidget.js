@@ -101,7 +101,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         </devtools-checkbox>
       </devtools-toolbar>
       ${widget(EventListeners.EventListenersView.EventListenersView, {
-        changeCallback: input.onEventListenersViewChange,
         objects: input.eventListenerObjects,
         filter: input.filter,
     })}

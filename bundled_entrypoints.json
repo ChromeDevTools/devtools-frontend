@@ -4,7 +4,6 @@
   "front_end/core/common/common.js",
   "front_end/core/host/host.js",
   "front_end/core/i18n/i18n.js",
-  "front_end/core/platform/api/api.js",
   "front_end/core/platform/browser/browser.js",
   "front_end/core/platform/node/node.js",
   "front_end/core/platform/platform.js",

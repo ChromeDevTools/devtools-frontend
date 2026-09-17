@@ -78,6 +78,30 @@ var NodeWorker = class {
     });
   }
 };
+var NodeCacheEntry = class {
+  #entries = /* @__PURE__ */ new Map();
+  async put(url, response) {
+    this.#entries.set(url, response.clone());
+  }
+  async match(url) {
+    return this.#entries.get(url)?.clone();
+  }
+};
+var NodeCacheStorage = class {
+  #caches = /* @__PURE__ */ new Map();
+  async open(name) {
+    let cache = this.#caches.get(name);
+    if (!cache) {
+      cache = new NodeCacheEntry();
+      this.#caches.set(name, cache);
+    }
+    return cache;
+  }
+  async delete(name) {
+    return this.#caches.delete(name);
+  }
+};
+var nodeCacheStorage = new NodeCacheStorage();
 var HOST_RUNTIME = {
   createWorker(url) {
     return new NodeWorker(url);
@@ -92,6 +116,9 @@ var HOST_RUNTIME = {
   getLocalStorage() {
     return void 0;
   },
+  getCacheStorage() {
+    return nodeCacheStorage;
+  },
   getDevicePixelRatio() {
     return 1;
   },
@@ -101,6 +128,11 @@ var HOST_RUNTIME = {
   },
   async loadTextFile(url) {
     return await Fs.promises.readFile(Url.fileURLToPath(url), "utf-8");
+  },
+  evaluateCSS(_dataValue, _customExpr) {
+    return null;
+  },
+  removeCSSEvaluationElement() {
   }
 };
 export {

@@ -287,7 +287,9 @@ function getMarkdownRenderer(conversation) {
         const mainDocumentURL = domModel?.existingDocument()?.documentURL;
         return new AccessibilityAgentMarkdownRenderer(mainDocumentURL);
     }
-    return new MarkdownRendererWithCodeBlock();
+    return new MarkdownRendererWithCodeBlock({
+        getEstablishedOrigin: () => conversation?.origin,
+    });
 }
 export var ViewState;
 (function (ViewState) {

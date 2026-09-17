@@ -1,5 +1,5 @@
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type { CSSMatchedStyles, CSSValueSource, CSSVariableValue } from './CSSMatchedStyles.js';
 import { type CSSWideKeyword } from './CSSMetadata.js';
@@ -66,12 +66,6 @@ export declare class AttributeMatch extends BaseVariableMatch {
     resolveAttributeValue(): string | null;
 }
 /**
- * If a test calls localEvalCSS, an element is created on demand for this
- * purpose. This element is not removed from the DOM and will leak between tests
- * if not removed.
- */
-export declare function removeCSSEvaluationElement(): void;
-/**
  * These functions use an element in the frontend to evaluate CSS. The advantage
  * of this is that it is synchronous and doesn't require a CDP method. The
  * disadvantage is it lacks context that would allow substitutions such as
@@ -112,7 +106,6 @@ export declare class TextMatch implements Match {
     readonly node: CodeMirror.SyntaxNode;
     computedText?: () => string;
     constructor(text: string, node: CodeMirror.SyntaxNode);
-    render(): Node[];
 }
 declare const TextMatcherBase: MatcherClass<TextMatch>;
 export declare class TextMatcher extends TextMatcherBase {

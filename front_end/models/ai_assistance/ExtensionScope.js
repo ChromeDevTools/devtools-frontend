@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 var _a;
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import { getOrCreateIsolatedWorld } from './agents/ExecuteJavascript.js';
+import { sanitizeStyleChanges } from './DOMHelpers.js';
 import { AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_BINDING_NAME, freestylerBinding, injectedFunctions, } from './injected.js';
 /**
  * Injects Freestyler extension functions in to the isolated world.
@@ -262,34 +262,7 @@ export class ExtensionScope {
         });
     }
     async sanitizedStyleChanges(selector, styles) {
-        const cssStyleValue = [];
-        const changedStyles = [];
-        const styleSheet = new CSSStyleSheet({ disabled: true });
-        const kebabStyles = Platform.StringUtilities.toKebabCaseKeys(styles);
-        for (const [style, value] of Object.entries(kebabStyles)) {
-            // Build up the CSS style
-            cssStyleValue.push(`${style}: ${value};`);
-            // Keep track of what style changed to query later.
-            changedStyles.push(style);
-        }
-        // Build up the CSS stylesheet value.
-        await styleSheet.replace(`${selector} { ${cssStyleValue.join(' ')} }`);
-        const sanitizedStyles = {};
-        for (const cssRule of styleSheet.cssRules) {
-            if (!(cssRule instanceof CSSStyleRule)) {
-                continue;
-            }
-            for (const style of changedStyles) {
-                // We need to use the style rather then the stylesMap
-                // as the latter expands the styles to each separate part
-                // Example:
-                // padding: 10px 20px -> padding-top: 10px, padding-bottom: 10px, etc.
-                const value = cssRule.style.getPropertyValue(style);
-                if (value) {
-                    sanitizedStyles[style] = value;
-                }
-            }
-        }
+        const sanitizedStyles = await sanitizeStyleChanges(selector, styles);
         if (Object.keys(sanitizedStyles).length === 0) {
             throw new Error('None of the suggested CSS properties or their values for selector were considered valid by the browser\'s CSS engine. Please ensure property names are correct and values match the expected format for those properties.');
         }

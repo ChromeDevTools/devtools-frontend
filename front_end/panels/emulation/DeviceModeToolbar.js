@@ -712,8 +712,7 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         if (!this.model) {
             return;
         }
-        const scale = this.autoAdjustScaleSetting.get() ? undefined : this.model.scaleSetting().get();
-        this.model.emulate(EmulationModel.DeviceModeModel.Type.Device, device, this.lastMode.get(device) || device.modes[0], scale);
+        this.model.emulate(EmulationModel.DeviceModeModel.Type.Device, device, this.lastMode.get(device) || device.modes[0]);
     }
     switchToResponsive() {
         this.model?.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);

@@ -249,7 +249,8 @@ export class BackendLinking {
             }
             let backendLink = rule.template;
             for (const placeholder of rule.placeholders) {
-                backendLink = backendLink.replaceAll(placeholder, placeholderValues[placeholder]);
+                backendLink =
+                    backendLink.replaceAll(placeholder, () => encodeURIComponent(placeholderValues[placeholder]));
             }
             try {
                 return { label: rule.label, url: new URL(backendLink) };
@@ -291,11 +292,12 @@ export class NetworkPanel extends UI.Panel.Panel {
     recordLogSetting;
     throttlingSelect;
     displayScreenshotDelay;
-    backendLinkingRulesSetting = Common.Settings.Settings.instance().resolve(backendLinkingRulesSettingDescriptor);
-    backendLinking = new BackendLinking(this.backendLinkingRulesSetting);
+    backendLinking;
     constructor(displayScreenshotDelay) {
         super('network');
         this.registerRequiredCSS(networkPanelStyles);
+        const backendLinkingSetting = Common.Settings.Settings.instance().maybeResolve(backendLinkingRulesSettingDescriptor);
+        this.backendLinking = 'setting' in backendLinkingSetting ? new BackendLinking(backendLinkingSetting.setting) : null;
         this.displayScreenshotDelay = displayScreenshotDelay;
         this.networkLogShowOverviewSetting =
             Common.Settings.Settings.instance().createSetting('network-log-show-overview', true);

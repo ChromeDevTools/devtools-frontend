@@ -21,6 +21,9 @@
   ],
   "references": [
     {
+      "path": "connections-tsconfig.ref.json"
+    },
+    {
       "path": "sdk-tsconfig.ref.json"
     },
     {

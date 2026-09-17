@@ -8,6 +8,7 @@
     "skipLibCheck": true
   },
   "files": [
+    "commentThreadWidget.css.js",
     "commentsOverlay.css.js"
   ]
 }

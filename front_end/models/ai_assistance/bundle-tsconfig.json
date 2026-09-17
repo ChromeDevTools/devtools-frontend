@@ -55,6 +55,15 @@
   "references": [
     {
       "path": "ai_assistance-tsconfig.ref.json"
+    },
+    {
+      "path": "built_in_ai-tsconfig.ref.json"
+    },
+    {
+      "path": "dom_helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "injected-tsconfig.ref.json"
     }
   ]
 }

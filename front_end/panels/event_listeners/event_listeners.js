@@ -364,15 +364,151 @@ async function frameworkEventListeners(object) {
 // ../../front_end/panels/event_listeners/EventListenersView.ts
 var EventListenersView_exports = {};
 __export(EventListenersView_exports, {
-  EventListenersTreeElement: () => EventListenersTreeElement,
-  EventListenersView: () => EventListenersView,
-  ObjectEventListenerBar: () => ObjectEventListenerBar
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  EventListenersView: () => EventListenersView
 });
 import * as Common2 from "../../core/common/common.js";
 import * as i18n from "../../core/i18n/i18n.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as Buttons from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
+
+// gen/front_end/ui/legacy/components/object_ui/objectPropertiesSection.css.js
+var objectPropertiesSection_css_default = `/*
+ * Copyright 2015 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.object-properties-section-dimmed {
+  opacity: 60%;
+}
+
+:host {
+  display: block;
+}
+
+.object-properties-section {
+  padding: 0;
+  margin: 0;
+  color: var(--sys-color-on-surface);
+  display: flex;
+  flex-direction: column;
+  overflow: auto hidden;
+}
+
+.object-properties-section li,
+li.object-properties-section  {
+  user-select: text;
+
+  &::before {
+    flex-shrink: 0;
+    margin-right: var(--sys-size-2);
+    align-self: flex-start;
+  }
+}
+
+.object-properties-section li.editing-sub-part {
+  padding: 3px var(--sys-size-6) var(--sys-size-5) var(--sys-size-4);
+  margin: calc(-1 * var(--sys-size-1)) calc(-1 * var(--sys-size-4)) calc(-1 * var(--sys-size-5));
+  text-overflow: clip;
+}
+
+.object-properties-section li.editing {
+  margin-left: 10px;
+  text-overflow: clip;
+}
+
+.tree-outline ol.title-less-mode {
+  padding-left: 0;
+}
+
+.object-properties-section .own-property {
+  font-weight: bold;
+}
+
+.object-properties-section .synthetic-property {
+  color: var(--sys-color-token-subtle);
+}
+
+.object-properties-section .private-property-hash {
+  color: var(--sys-color-on-surface);
+}
+
+.object-properties-section-root-element {
+  display: flex;
+  flex-direction: row;
+}
+
+.object-properties-section .editable-div {
+  overflow: hidden;
+}
+
+.name-and-value {
+  line-height: var(--sys-size-8);
+  display: flex;
+  white-space: nowrap;
+}
+
+.name-and-value .separator {
+  white-space: pre;
+  flex-shrink: 0;
+}
+
+.editing-sub-part .name-and-value {
+  overflow: visible;
+  display: inline-flex;
+}
+
+.property-prompt {
+  margin-left: var(--sys-size-3);
+}
+
+.tree-outline.hide-selection-when-blurred .selected:focus-visible {
+  background: none;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: calc(-1 * var(--sys-size-2));
+}
+
+.tree-outline.hide-selection-when-blurred .selected:focus-visible ::slotted(*),
+.tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title,
+.tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value,
+.tree-outline.hide-selection-when-blurred .selected:focus-visible .gray-info-message {
+  background: var(--sys-color-state-focus-highlight);
+  border-radius: var(--sys-size-2);
+}
+
+@media (forced-colors: active) {
+  .object-properties-section-dimmed {
+    opacity: 100%;
+  }
+
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible {
+    background: Highlight;
+  }
+
+  .tree-outline li:hover .tree-element-title,
+  .tree-outline li.selected .tree-element-title {
+    color: ButtonText;
+  }
+
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title,
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible span,
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible .gray-info-message {
+    color: HighlightText;
+  }
+
+  .tree-outline-disclosure:hover li.parent::before {
+    background-color: ButtonText;
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./objectPropertiesSection.css")} */`;
 
 // gen/front_end/ui/legacy/components/object_ui/objectValue.css.js
 var objectValue_css_default = `/*
@@ -486,7 +622,7 @@ var objectValue_css_default = `/*
 // ../../front_end/panels/event_listeners/EventListenersView.ts
 import * as Components from "../../ui/legacy/components/utils/utils.js";
 import * as UI from "../../ui/legacy/legacy.js";
-import { render } from "../../ui/lit/lit.js";
+import * as Lit from "../../ui/lit/lit.js";
 import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/event_listeners/eventListenersView.css.js
@@ -612,6 +748,9 @@ var eventListenersView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./eventListenersView.css")} */`;
 
 // ../../front_end/panels/event_listeners/EventListenersView.ts
+var { widget } = UI.Widget;
+var { html, render } = Lit;
+var { repeat } = Lit.Directives;
 var UIStrings = {
   /**
    * @description Empty holder text content in Event Listeners view of the Event Listeners sidebar in the Sources panel.
@@ -644,49 +783,265 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/event_listeners/EventListenersView.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var EventListenersView = class _EventListenersView extends UI.Widget.VBox {
-  changeCallback = () => {
-  };
-  enableDefaultTreeFocus = false;
-  treeOutline;
-  emptyHolder;
-  objects = [];
-  filter;
-  #linkifier = new Components.Linkifier.Linkifier();
-  #treeItemMap = /* @__PURE__ */ new Map();
-  constructor(element) {
-    super(element);
-    this.registerRequiredCSS(eventListenersView_css_default);
-    this.emptyHolder = this.element.createChild("div", "placeholder hidden");
-    this.emptyHolder.createChild("span", "gray-info-message").textContent = i18nString(UIStrings.noEventListeners);
-    const emptyWidget = new UI.EmptyWidget.EmptyWidget(
-      i18nString(UIStrings.noEventListeners),
-      i18nString(UIStrings.eventListenersExplanation)
+var DEFAULT_VIEW = (input, output, target) => {
+  const types = input.listeners.keys().toArray().sort();
+  const onContextMenu = (event, listener, object) => {
+    const menu = new UI.ContextMenu.ContextMenu(event);
+    if (event.target instanceof HTMLElement && !event.target.closest(".event-listener-tree-subtitle") && event.currentTarget instanceof HTMLElement) {
+      const link = event.currentTarget.querySelector(".event-listener-tree-subtitle .devtools-link");
+      if (link) {
+        menu.appendApplicableItems(link);
+      }
+    }
+    if (object.subtype === "node") {
+      menu.defaultSection().appendItem(
+        i18nString(UIStrings.openInElementsPanel),
+        () => input.reveal(object),
+        { jslogContext: "reveal-in-elements" }
+      );
+    }
+    menu.defaultSection().appendItem(
+      i18nString(UIStrings.deleteEventListener),
+      () => input.removeListener(listener),
+      { disabled: !listener.canRemove(), jslogContext: "delete-event-listener" }
     );
-    emptyWidget.show(this.emptyHolder);
-    this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this.treeOutline.setComparator(EventListenersTreeElement.comparator);
-    this.treeOutline.element.classList.add("event-listener-tree", "monospace");
-    this.treeOutline.setShowSelectionOnKeyboardFocus(true);
-    this.treeOutline.setFocusable(true);
-    this.treeOutline.registerRequiredCSS(eventListenersView_css_default, objectValue_css_default);
-    this.element.appendChild(this.treeOutline.element);
-  }
-  focus() {
-    if (!this.enableDefaultTreeFocus) {
+    menu.defaultSection().appendCheckboxItem(
+      i18nString(UIStrings.passive),
+      () => input.togglePassiveListener(listener),
+      {
+        checked: listener.passive(),
+        disabled: !listener.canTogglePassive(),
+        jslogContext: "passive"
+      }
+    );
+    void menu.show();
+  };
+  const listenerProperties = (listener) => {
+    const runtimeModel = listener.domDebuggerModel().runtimeModel();
+    const properties = [
+      new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
+        runtimeModel.createRemotePropertyFromPrimitiveValue("useCapture", listener.useCapture()),
+        void 0,
+        {
+          readOnly: false,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+        }
+      ),
+      new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
+        runtimeModel.createRemotePropertyFromPrimitiveValue("passive", listener.passive()),
+        void 0,
+        {
+          readOnly: false,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+        }
+      ),
+      new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
+        runtimeModel.createRemotePropertyFromPrimitiveValue("once", listener.once()),
+        void 0,
+        {
+          readOnly: false,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+        }
+      )
+    ];
+    if (typeof listener.handler() !== "undefined") {
+      properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
+        new SDK2.RemoteObject.RemoteObjectProperty("handler", listener.handler()),
+        void 0,
+        {
+          readOnly: false,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+        }
+      ));
+    }
+    return ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes({ properties }, true, true, void 0).map((node) => html`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`);
+  };
+  const shouldHide = (listenerOrType) => {
+    if (!input.filter) {
+      return false;
+    }
+    if (typeof listenerOrType === "string") {
+      return input.listeners.get(listenerOrType)?.every(({ listener }) => shouldHide(listener)) ?? true;
+    }
+    const listenerOrigin = listenerOrType.origin();
+    if (listenerOrigin === SDK2.DOMDebuggerModel.EventListener.Origin.FRAMEWORK_USER && !input.filter.showFramework) {
+      return true;
+    }
+    if (listenerOrigin === SDK2.DOMDebuggerModel.EventListener.Origin.FRAMEWORK && input.filter.showFramework) {
+      return true;
+    }
+    if (!input.filter.showPassive && listenerOrType.passive()) {
+      return true;
+    }
+    if (!input.filter.showBlocking && !listenerOrType.passive()) {
+      return true;
+    }
+    return false;
+  };
+  const onKeyDown = (event, listener, object) => {
+    if (event.target !== event.currentTarget) {
       return;
     }
-    if (!this.emptyHolder.classList.contains("hidden")) {
-      this.treeOutline.forceSelect();
-    } else {
-      this.emptyHolder.focus();
+    if (event.key === "Delete" || event.key === "Backspace") {
+      if (input.removeListener(listener)) {
+        event.consume();
+      }
+    } else if (event.key === "Enter") {
+      input.reveal(object);
+      event.consume();
     }
+  };
+  const hasVisibleListeners = types.some((type) => !shouldHide(type));
+  render(
+    html`
+    <style>${eventListenersView_css_default}</style>
+    ${!hasVisibleListeners ? html`
+    <div autofocus class=placeholder><!--emptyHolder-->
+      <span class=gray-info-message>${i18nString(UIStrings.noEventListeners)}</span>
+      ${widget(UI.EmptyWidget.EmptyWidget, {
+      header: i18nString(UIStrings.noEventListeners),
+      text: i18nString(UIStrings.eventListenersExplanation)
+    })}
+    </div>` : html`
+    <devtools-tree autofocus class="event-listener-tree monospace" show-selection-on-keyboard-focus .template=${html`
+      <ul role=tree>
+        <style>${eventListenersView_css_default}</style>
+        <style>${objectValue_css_default}</style>
+        <style>${objectPropertiesSection_css_default}</style>
+        ${repeat(types, (type) => type, (type) => html`
+          <li role=treeitem toggle-on-click aria-label="${type}, event listener" ?hidden=${shouldHide(type)}>
+           ${type}
+           <ul role=group>
+             ${repeat(input.listeners.get(type) ?? [], ({ listener }) => listener, ({ listener, object }) => html`
+               <li role=treeitem
+                   data-origin=${listener.origin()}
+                   @contextmenu=${(e) => onContextMenu(e, listener, object)}
+                   @keydown=${(e) => onKeyDown(e, listener, object)}
+                   ?hidden=${shouldHide(listener)}>
+                 <span class=event-listener-details>
+                   ${ObjectUI.ObjectPropertiesSection.renderPropertyValue(
+      object,
+      /* wasThrown */
+      false,
+      /* showPreview */
+      false,
+      input.linkifier
+    )}
+                   <devtools-button
+                     .iconName=${"bin"}
+                     .variant=${Buttons.Button.Variant.ICON}
+                     .size=${Buttons.Button.Size.MICRO}
+                     .jslogContext=${"delete-event-listener"}
+                     title=${i18nString(UIStrings.deleteEventListener)}
+                     @click=${(event) => {
+      input.removeListener(listener);
+      event.consume();
+    }}
+                     ?hidden=${!listener.canRemove()}></devtools-button>
+                   ${listener.isScrollBlockingType() && listener.canTogglePassive() ? html`
+                     <button class=event-listener-button
+                       jslog=${VisualLogging.action("passive").track({ click: true })}
+                       title=${i18nString(UIStrings.toggleWhetherEventListenerIs)}
+                       @click=${(e) => {
+      input.togglePassiveListener(listener);
+      e.consume();
+    }}>
+                         ${i18nString(UIStrings.togglePassive)}
+                     </button>` : Lit.nothing}
+                   <span class=event-listener-tree-subtitle>
+                     ${input.linkifier.linkifyRawLocation(
+      listener.location(),
+      listener.sourceURL(),
+      /* FIXME template version */
+      void 0,
+      { tabStop: true }
+    )}
+                   </span>
+                 </span>
+                 <ul role=group>
+                   ${listenerProperties(listener)}
+                 </ul>
+               </li>`)}
+             </ul>
+          </li>`)}
+      </ul>
+    `}></devtools-tree>`}`,
+    // clang-format on
+    target
+  );
+};
+var EventListenersView = class _EventListenersView extends UI.Widget.VBox {
+  #objects = [];
+  #filter;
+  #view;
+  #listeners;
+  #linkifier = new Components.Linkifier.Linkifier();
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+  get objects() {
+    return this.#objects;
+  }
+  set objects(val) {
+    if (this.#objects === val) {
+      return;
+    }
+    this.#listeners = void 0;
+    this.#objects = val;
+    this.requestUpdate();
+  }
+  get filter() {
+    return this.#filter;
+  }
+  set filter(val) {
+    if (this.#filter === val) {
+      return;
+    }
+    this.#filter = val;
+    this.requestUpdate();
   }
   async performUpdate() {
-    await this.addObjects(this.objects);
-    if (this.filter) {
-      this.showFrameworkListeners(this.filter.showFramework, this.filter.showPassive, this.filter.showBlocking);
+    if (!this.#listeners && this.#objects) {
+      this.#listeners = await _EventListenersView.#loadListeners(this.#objects.filter((o) => !!o));
     }
+    const input = {
+      listeners: this.#listeners ?? /* @__PURE__ */ new Map(),
+      filter: this.#filter,
+      togglePassiveListener: (listener) => {
+        void listener.togglePassive().then(() => {
+          this.requestUpdate();
+        });
+      },
+      removeListener: (listener) => {
+        if (!listener.canRemove()) {
+          return false;
+        }
+        void listener.remove();
+        if (this.#listeners) {
+          const list = this.#listeners.get(listener.type());
+          if (list) {
+            const index = list.findIndex((item) => item.listener === listener);
+            if (index !== -1) {
+              list.splice(index, 1);
+              if (list.length === 0) {
+                this.#listeners.delete(listener.type());
+              }
+            }
+          }
+        }
+        this.requestUpdate();
+        return true;
+      },
+      reveal: (object) => {
+        if (object.subtype === "node") {
+          void Common2.Revealer.reveal(object);
+        }
+      },
+      linkifier: this.#linkifier
+    };
+    this.#view(input, {}, this.contentElement);
+    this.eventListenersArrivedForTest();
   }
   static async #loadListeners(objects) {
     return Map.groupBy(
@@ -723,284 +1078,7 @@ var EventListenersView = class _EventListenersView extends UI.Widget.VBox {
       return isInternal2;
     }
   }
-  async addObjects(objects) {
-    const eventTypes = this.treeOutline.rootElement().children();
-    for (const eventType of eventTypes) {
-      eventType.removeChildren();
-    }
-    this.#linkifier.reset();
-    const listeners = await _EventListenersView.#loadListeners(objects.filter((o) => !!o));
-    for (const [type, groupedListeners] of listeners) {
-      const treeItem = this.getOrCreateTreeElementForType(type);
-      for (const { object, listener } of groupedListeners) {
-        treeItem.addObjectEventListener(listener, object);
-      }
-    }
-    this.addEmptyHolderIfNeeded();
-    this.eventListenersArrivedForTest();
-  }
-  showFrameworkListeners(showFramework, showPassive, showBlocking) {
-    const eventTypes = this.treeOutline.rootElement().children();
-    for (const eventType of eventTypes) {
-      let hiddenEventType = true;
-      for (const listenerElement of eventType.children()) {
-        const objectListenerElement = listenerElement;
-        const listenerOrigin = objectListenerElement.eventListener().origin();
-        let hidden = false;
-        if (listenerOrigin === SDK2.DOMDebuggerModel.EventListener.Origin.FRAMEWORK_USER && !showFramework) {
-          hidden = true;
-        }
-        if (listenerOrigin === SDK2.DOMDebuggerModel.EventListener.Origin.FRAMEWORK && showFramework) {
-          hidden = true;
-        }
-        if (!showPassive && objectListenerElement.eventListener().passive()) {
-          hidden = true;
-        }
-        if (!showBlocking && !objectListenerElement.eventListener().passive()) {
-          hidden = true;
-        }
-        objectListenerElement.hidden = hidden;
-        hiddenEventType = hiddenEventType && hidden;
-      }
-      eventType.hidden = hiddenEventType;
-    }
-  }
-  getOrCreateTreeElementForType(type) {
-    let treeItem = this.#treeItemMap.get(type);
-    if (!treeItem) {
-      treeItem = new EventListenersTreeElement(type, this.#linkifier, this.changeCallback);
-      this.#treeItemMap.set(type, treeItem);
-      treeItem.hidden = true;
-      this.treeOutline.appendChild(treeItem);
-    }
-    this.emptyHolder.classList.add("hidden");
-    return treeItem;
-  }
-  addEmptyHolderIfNeeded() {
-    let allHidden = true;
-    let firstVisibleChild = null;
-    for (const eventType of this.treeOutline.rootElement().children()) {
-      eventType.hidden = !eventType.firstChild();
-      allHidden = allHidden && eventType.hidden;
-      if (!firstVisibleChild && !eventType.hidden) {
-        firstVisibleChild = eventType;
-      }
-    }
-    if (allHidden && this.emptyHolder.classList.contains("hidden")) {
-      this.emptyHolder.classList.remove("hidden");
-    }
-    if (firstVisibleChild) {
-      firstVisibleChild.select(
-        true
-        /* omitFocus */
-      );
-    }
-    this.treeOutline.setFocusable(Boolean(firstVisibleChild));
-  }
   eventListenersArrivedForTest() {
-  }
-};
-var EventListenersTreeElement = class extends UI.TreeOutline.TreeElement {
-  toggleOnClick;
-  linkifier;
-  changeCallback;
-  constructor(type, linkifier, changeCallback) {
-    super(type);
-    this.toggleOnClick = true;
-    this.linkifier = linkifier;
-    this.changeCallback = changeCallback;
-    UI.ARIAUtils.setLabel(this.listItemElement, `${type}, event listener`);
-  }
-  static comparator(element1, element2) {
-    if (element1.title === element2.title) {
-      return 0;
-    }
-    return element1.title > element2.title ? 1 : -1;
-  }
-  addObjectEventListener(eventListener, object) {
-    const treeElement = new ObjectEventListenerBar(eventListener, object, this.linkifier, this.changeCallback);
-    this.appendChild(treeElement);
-  }
-};
-var ObjectEventListenerBar = class extends UI.TreeOutline.TreeElement {
-  #eventListener;
-  editable;
-  changeCallback;
-  valueTitle;
-  constructor(eventListener, object, linkifier, changeCallback) {
-    super("", true);
-    this.#eventListener = eventListener;
-    this.editable = false;
-    this.setTitle(object, linkifier);
-    this.changeCallback = changeCallback;
-  }
-  async onpopulate() {
-    const properties = [];
-    const eventListener = this.#eventListener;
-    const runtimeModel = eventListener.domDebuggerModel().runtimeModel();
-    properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-      runtimeModel.createRemotePropertyFromPrimitiveValue("useCapture", eventListener.useCapture()),
-      void 0,
-      {
-        readOnly: false,
-        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
-      }
-    ));
-    properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-      runtimeModel.createRemotePropertyFromPrimitiveValue("passive", eventListener.passive()),
-      void 0,
-      {
-        readOnly: false,
-        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
-      }
-    ));
-    properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-      runtimeModel.createRemotePropertyFromPrimitiveValue("once", eventListener.once()),
-      void 0,
-      {
-        readOnly: false,
-        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
-      }
-    ));
-    if (typeof eventListener.handler() !== "undefined") {
-      properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-        new SDK2.RemoteObject.RemoteObjectProperty("handler", eventListener.handler()),
-        void 0,
-        {
-          readOnly: false,
-          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
-        }
-      ));
-    }
-    ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
-      this,
-      { properties },
-      true,
-      true,
-      void 0
-    );
-  }
-  setTitle(object, linkifier) {
-    const title = this.listItemElement.createChild("span", "event-listener-details");
-    const propertyValue = ObjectUI.ObjectPropertiesSection.renderPropertyValue(
-      object,
-      /* wasThrown */
-      false,
-      /* showPreview */
-      false,
-      linkifier,
-      /* isSyntheticProperty */
-      false,
-      /* variableName */
-      void 0,
-      /* includeNullOrUndefined */
-      void 0,
-      /* useCustomPreview */
-      false,
-      (element) => {
-        this.valueTitle = element;
-      }
-    );
-    render(propertyValue, title);
-    if (this.#eventListener.canRemove()) {
-      const deleteButton = new Buttons.Button.Button();
-      deleteButton.data = {
-        variant: Buttons.Button.Variant.ICON,
-        size: Buttons.Button.Size.MICRO,
-        iconName: "bin",
-        jslogContext: "delete-event-listener"
-      };
-      UI.Tooltip.Tooltip.install(deleteButton, i18nString(UIStrings.deleteEventListener));
-      deleteButton.addEventListener("click", (event) => {
-        this.removeListener();
-        event.consume();
-      }, false);
-      title.appendChild(deleteButton);
-    }
-    if (this.#eventListener.isScrollBlockingType() && this.#eventListener.canTogglePassive()) {
-      const passiveButton = title.createChild("button", "event-listener-button");
-      passiveButton.textContent = i18nString(UIStrings.togglePassive);
-      passiveButton.setAttribute("jslog", `${VisualLogging.action("passive").track({ click: true })}`);
-      UI.Tooltip.Tooltip.install(passiveButton, i18nString(UIStrings.toggleWhetherEventListenerIs));
-      passiveButton.addEventListener("click", (event) => {
-        this.togglePassiveListener();
-        event.consume();
-      }, false);
-      title.appendChild(passiveButton);
-    }
-    const subtitle = title.createChild("span", "event-listener-tree-subtitle");
-    const linkElement = linkifier.linkifyRawLocation(
-      this.#eventListener.location(),
-      this.#eventListener.sourceURL(),
-      void 0,
-      { tabStop: true }
-    );
-    subtitle.appendChild(linkElement);
-    this.listItemElement.addEventListener("contextmenu", (event) => {
-      const menu = new UI.ContextMenu.ContextMenu(event);
-      if (event.target !== linkElement) {
-        menu.appendApplicableItems(linkElement);
-      }
-      if (object.subtype === "node") {
-        menu.defaultSection().appendItem(
-          i18nString(UIStrings.openInElementsPanel),
-          () => Common2.Revealer.reveal(object),
-          { jslogContext: "reveal-in-elements" }
-        );
-      }
-      menu.defaultSection().appendItem(
-        i18nString(UIStrings.deleteEventListener),
-        this.removeListener.bind(this),
-        { disabled: !this.#eventListener.canRemove(), jslogContext: "delete-event-listener" }
-      );
-      menu.defaultSection().appendCheckboxItem(i18nString(UIStrings.passive), this.togglePassiveListener.bind(this), {
-        checked: this.#eventListener.passive(),
-        disabled: !this.#eventListener.canTogglePassive(),
-        jslogContext: "passive"
-      });
-      void menu.show();
-    });
-  }
-  removeListener() {
-    this.removeListenerBar();
-    void this.#eventListener.remove();
-  }
-  togglePassiveListener() {
-    void this.#eventListener.togglePassive().then(() => this.changeCallback());
-  }
-  removeListenerBar() {
-    const parent = this.parent;
-    if (!parent) {
-      return;
-    }
-    parent.removeChild(this);
-    if (!parent.childCount()) {
-      parent.collapse();
-    }
-    let allHidden = true;
-    for (const child of parent.children()) {
-      if (!child.hidden) {
-        allHidden = false;
-      }
-    }
-    parent.hidden = allHidden;
-  }
-  eventListener() {
-    return this.#eventListener;
-  }
-  onenter() {
-    if (this.valueTitle) {
-      this.valueTitle.click();
-      return true;
-    }
-    return false;
-  }
-  ondelete() {
-    if (this.#eventListener.canRemove()) {
-      this.removeListener();
-      return true;
-    }
-    return false;
   }
 };
 export {

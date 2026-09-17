@@ -1,4 +1,5 @@
 import type { Chrome } from '../../../extension-api/ExtensionAPI.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Bindings from '../bindings/bindings.js';
 export declare class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
@@ -10,7 +11,7 @@ export declare class LanguageExtensionEndpoint implements Bindings.DebuggerLangu
     constructor(allowFileAccess: boolean, extensionOrigin: string, name: string, supportedScriptTypes: {
         language: string;
         symbol_types: string[];
-    }, port: MessagePort, pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager);
+    }, port: Platform.HostRuntime.WorkerMessagePort, pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager);
     canAccessURL(url: string): boolean;
     handleScript(script: SDK.Script.Script): boolean;
     createPageResourceLoadInitiator(): SDK.PageResourceLoader.PageResourceLoadInitiator;

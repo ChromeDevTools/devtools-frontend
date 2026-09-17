@@ -108,6 +108,7 @@ async function saveScreenshot(options) {
     link.href = blobUrl;
     link.click();
 }
+let cssEvaluationElement = null;
 export const HOST_RUNTIME = {
     createWorker(url) {
         return new WebWorker(url);
@@ -122,6 +123,9 @@ export const HOST_RUNTIME = {
     getLocalStorage() {
         return 'localStorage' in globalThis ? globalThis.localStorage : undefined;
     },
+    getCacheStorage() {
+        return 'caches' in globalThis ? globalThis.caches : undefined;
+    },
     getDevicePixelRatio() {
         return window.devicePixelRatio;
     },
@@ -130,6 +134,32 @@ export const HOST_RUNTIME = {
     async loadTextFile(url) {
         const response = await fetch(url);
         return await response.text();
+    },
+    evaluateCSS(dataValue, customExpr) {
+        if (!cssEvaluationElement || !cssEvaluationElement.isConnected) {
+            cssEvaluationElement = document.getElementById('css-evaluation-element');
+            if (!cssEvaluationElement) {
+                cssEvaluationElement = document.createElement('div');
+                cssEvaluationElement.id = 'css-evaluation-element';
+                cssEvaluationElement.setAttribute('style', 'hidden: true; --evaluation: attr(data-custom-expr type(*))');
+                document.body.appendChild(cssEvaluationElement);
+            }
+        }
+        if (dataValue !== null) {
+            cssEvaluationElement.setAttribute('data-value', dataValue);
+        }
+        else {
+            cssEvaluationElement.removeAttribute('data-value');
+        }
+        cssEvaluationElement.setAttribute('data-custom-expr', customExpr);
+        return cssEvaluationElement.computedStyleMap().get('--evaluation')?.toString() ?? null;
+    },
+    removeCSSEvaluationElement() {
+        const element = cssEvaluationElement ?? document.getElementById('css-evaluation-element');
+        if (element) {
+            element.remove();
+        }
+        cssEvaluationElement = null;
     },
 };
 //# sourceMappingURL=HostRuntime.js.map

@@ -13,6 +13,8 @@ export const backendLinkingRulesSettingDescriptor = {
     name: 'network.backend-linking-rules',
     type: "array" /* Common.Settings.SettingType.ARRAY */,
     defaultValue: [],
-    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+    isAvailable: config => config.devToolsNetworkBackendLinking?.enabled ?
+        { status: 1 /* Common.Settings.SettingAvailability.AVAILABLE */ } :
+        { status: 2 /* Common.Settings.SettingAvailability.UNAVAILABLE */, reason: undefined },
 };
 //# sourceMappingURL=BackendLinking.js.map

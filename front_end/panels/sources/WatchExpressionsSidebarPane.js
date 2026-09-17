@@ -505,9 +505,9 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         return true;
     }
     appendApplicableItems(_event, contextMenu, target) {
-        if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement) {
-            if (!target.property.property.synthetic) {
-                contextMenu.debugSection().appendItem(i18nString(UIStrings.addPropertyPathToWatch), () => this.#focusAndAddExpressionToWatch(target.path()), { jslogContext: 'add-property-path-to-watch' });
+        if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectTreeNode) {
+            if (!target.property.synthetic) {
+                contextMenu.debugSection().appendItem(i18nString(UIStrings.addPropertyPathToWatch), () => this.#focusAndAddExpressionToWatch(target.path), { jslogContext: 'add-property-path-to-watch' });
             }
             return;
         }

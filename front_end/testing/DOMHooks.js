@@ -1,7 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as SDK from '../core/sdk/sdk.js';
+import * as Platform from '../core/platform/platform.js';
 import * as TextEditor from '../ui/components/text_editor/text_editor.js';
 import * as UI from '../ui/legacy/legacy.js';
 import { raf, removeChildren, setColorScheme, TEST_CONTAINER_ID } from './DOMHelpers.js';
@@ -59,7 +59,7 @@ export const cleanTestDOM = (testName = '') => {
     removeGlassPanes();
     removeTextEditorTooltip();
     removeAnnouncer();
-    SDK.CSSPropertyParserMatchers.removeCSSEvaluationElement();
+    Platform.HostRuntime.HOST_RUNTIME.removeCSSEvaluationElement();
     UI.UIUtils.resetElementsBeingEditedForTest();
     // Verify that nothing was left behind
     for (const child of document.body.children) {

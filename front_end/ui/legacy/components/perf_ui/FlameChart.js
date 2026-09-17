@@ -436,6 +436,9 @@ export class FlameChart extends FlameChartBase {
         return Boolean(this.dimIndices);
     }
     #transformColor(entryIndex, color) {
+        if (!color) {
+            return '';
+        }
         if (this.#shouldDimEvent(entryIndex)) {
             let dimmed = this.colorDimmingCache.get(color);
             if (dimmed) {

@@ -27,7 +27,9 @@ export declare class Resource implements TextUtils.ContentProvider.ContentProvid
     requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError>;
     canonicalMimeType(): string;
     searchInContent(query: string, caseSensitive: boolean, isRegex: boolean): Promise<TextUtils.ContentProvider.SearchMatch[]>;
-    populateImageSource(image: HTMLImageElement): Promise<void>;
+    populateImageSource(image: {
+        src: string;
+    }): Promise<void>;
     private innerRequestContent;
     frame(): ResourceTreeFrame | null;
     statusCode(): number;

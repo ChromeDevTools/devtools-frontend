@@ -12,11 +12,11 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as VisualLogging from '../visual_logging/visual_logging.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import * as Comments from './comments.js';
+import * as PanelCommon from './common.js';
 
-const {CommentsStatusBarPill, DEFAULT_VIEW} = Comments.CommentsStatusBarPill;
+const {CommentsStatusBarPill, DEFAULT_VIEW} = PanelCommon.CommentsStatusBarPill;
 
 describeWithEnvironment('CommentsStatusBarPill', () => {
   async function createWidget() {

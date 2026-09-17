@@ -12,6 +12,8 @@ generate_css("css_files") {
   sources = [
     "aiCodeCompletionSummaryToolbar.css",
     "badgeNotification.css",
+    "commentThreadWidget.css",
+    "commentsOverlay.css",
     "domLinkifier.css",
     "gdpSignUpDialog.css",
     "geminiRebrandPromoDialog.css",
@@ -23,6 +25,9 @@ devtools_ui_module("common") {
     "AiCodeCompletionSummaryToolbar.ts",
     "BadgeNotification.ts",
     "CPUThrottlingOption.ts",
+    "CommentThreadWidget.ts",
+    "CommentsOverlayWidget.ts",
+    "CommentsStatusBarPill.ts",
     "DOMLinkifier.ts",
     "ExtensionPanel.ts",
     "ExtensionServer.ts",
@@ -44,12 +49,16 @@ devtools_ui_module("common") {
     "../../generated",
     "../../models/badges:bundle",
     "../../models/bindings:bundle",
+    "../../models/comment_manager:bundle",
     "../../models/extensions:bundle",
     "../../models/har:bundle",
     "../../models/logs:bundle",
     "../../models/persistence:bundle",
     "../../models/workspace:bundle",
+    "../../ui/comments:bundle",
     "../../ui/components/buttons:bundle",
+    "../../ui/components/input:bundle",
+    "../../ui/components/markdown_view:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/components/spinners:bundle",
     "../../ui/components/switch:bundle",
@@ -83,12 +92,28 @@ devtools_entrypoint("bundle") {
   visibility += devtools_panels_visibility
 }
 
+devtools_entrypoint("meta") {
+  entrypoint = "common-meta.ts"
+
+  ts_deps = [
+    ":bundle",
+    "../../core/i18n:bundle",
+    "../../core/root:bundle",
+    "../../ui/legacy:bundle",
+  ]
+
+  visibility = [ "../../entrypoints/*" ]
+}
+
 devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
     "AiCodeCompletionSummaryToolbar.test.ts",
     "BadgeNotification.test.ts",
+    "CommentThreadWidget.test.ts",
+    "CommentsOverlayWidget.test.ts",
+    "CommentsStatusBarPill.test.ts",
     "DOMLinkifier.test.ts",
     "ExtensionPanel.test.ts",
     "ExtensionServer.test.ts",
@@ -105,15 +130,18 @@ devtools_ui_module("unittests") {
     "../../generated",
     "../../models/badges:bundle",
     "../../models/bindings:bundle",
+    "../../models/comment_manager:bundle",
     "../../models/extensions:bundle",
     "../../models/har:bundle",
     "../../models/logs:bundle",
     "../../models/workspace:bundle",
     "../../testing",
+    "../../ui/comments:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }

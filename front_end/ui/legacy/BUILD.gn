@@ -145,7 +145,6 @@ devtools_entrypoint("bundle") {
     "../../legacy_test_runner/*",
     "../../panels/*",
     "../../testing/*",
-    "../comments:*",
     "../components/adorners:*",
     "../components/data_grid:*",
     "../components/dialogs:*",

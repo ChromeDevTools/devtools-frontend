@@ -9,11 +9,11 @@ import type * as CommentManager from '../../models/comment_manager/comment_manag
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as Lit from '../lit/lit.js';
+import * as Lit from '../../ui/lit/lit.js';
 
-import * as Comments from './comments.js';
+import * as PanelCommon from './common.js';
 
-const {DEFAULT_VIEW, CommentThreadWidget} = Comments.CommentThreadWidget;
+const {DEFAULT_VIEW, CommentThreadWidget} = PanelCommon.CommentThreadWidget;
 
 describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
   function renderView(inputOverrides: Partial<Parameters<typeof DEFAULT_VIEW>[0]> = {}): HTMLElement {

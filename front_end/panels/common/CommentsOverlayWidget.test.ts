@@ -8,9 +8,10 @@ import * as CommentManager from '../../models/comment_manager/comment_manager.js
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as Comments from '../../ui/comments/comments.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 
-import * as Comments from './comments.js';
+import * as PanelCommon from './common.js';
 
 describeWithEnvironment('CommentsOverlayWidget', () => {
   let commentManager: CommentManager.CommentManager.CommentManager;
@@ -22,13 +23,14 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
   });
 
   afterEach(() => {
+    PanelCommon.CommentsOverlayWidget.ActionDelegate.resetForTest();
     overlayManager.clear();
     commentManager.clear();
   });
 
   it('renders pins and highlights into DOM via Lit-html view function stub', async () => {
-    const view = createViewFunctionStub(Comments.CommentsOverlayWidget.CommentsOverlayWidget);
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
+    const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
         undefined,
         [commentManager],
         view,
@@ -62,8 +64,8 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
   });
 
   it('passes pin, highlight, and activeThread to view input when comment is in draft state', async () => {
-    const view = createViewFunctionStub(Comments.CommentsOverlayWidget.CommentsOverlayWidget);
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
+    const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
         undefined,
         [commentManager],
         view,
@@ -95,7 +97,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
   });
 
   it('renders live DOM elements for pins, anchor highlights, and hover highlights with DEFAULT_VIEW', async () => {
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
         undefined,
         [commentManager],
     );
@@ -134,7 +136,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
   });
 
   it('renders sequential numbers for multiple comment pins in order of creation', async () => {
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
     widget.setOverlayManagerForTest(overlayManager);
     widget.markAsRoot();
     renderElementIntoDOM(widget, {allowMultipleChildren: true});
@@ -178,7 +180,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
   });
 
   it('does not increment pin index when clicking another element without saving draft', async () => {
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
     widget.setOverlayManagerForTest(overlayManager);
     widget.markAsRoot();
     renderElementIntoDOM(widget, {allowMultipleChildren: true});
@@ -216,8 +218,8 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
   });
 
   it('does not respond to manager events when hidden/detached', async () => {
-    const view = createViewFunctionStub(Comments.CommentsOverlayWidget.CommentsOverlayWidget);
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
+    const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
         undefined,
         [commentManager],
         view,
@@ -235,7 +237,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
   });
 
   it('toggles comment mode when ActionDelegate handles comments.toggle-comment-mode', () => {
-    const delegate = new Comments.CommentsOverlayWidget.ActionDelegate(commentManager);
+    const delegate = new PanelCommon.CommentsOverlayWidget.ActionDelegate(commentManager);
     const context = {} as UI.Context.Context;
     assert.isFalse(commentManager.isCommentMode());
     const handled = delegate.handleAction(context, 'comments.toggle-comment-mode');
@@ -244,7 +246,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
   });
 
   it('resets draft text when clicking a different element while a draft is open', async () => {
-    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
     widget.setOverlayManagerForTest(overlayManager);
     widget.markAsRoot();
     renderElementIntoDOM(widget, {allowMultipleChildren: true});

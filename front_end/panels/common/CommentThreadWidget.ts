@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../components/tooltips/tooltips.js';
+import '../../ui/components/tooltips/tooltips.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
+import * as Input from '../../ui/components/input/input.js';
+import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
-import * as Input from '../components/input/input.js';
-import * as MarkdownView from '../components/markdown_view/markdown_view.js';
 
 import commentThreadWidgetStyles from './commentThreadWidget.css.js';
 
@@ -52,7 +52,7 @@ const UIStringsNotTranslate = {
       'Comment strings, DOM hierarchy snippets, tracked CSS and DOM changes, Visual Element (VE) paths and signatures, and tracked presenter changes are sent to the connected third-party agent to assist with debugging and code updates.',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('ui/comments/CommentThreadWidget.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/common/CommentThreadWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 

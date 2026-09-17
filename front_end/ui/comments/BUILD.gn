@@ -4,44 +4,24 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
-import("../../../scripts/build/ninja/generate_css.gni")
 import("../../visibility.gni")
-
-generate_css("css_files") {
-  sources = [
-    "commentThreadWidget.css",
-    "commentsOverlay.css",
-  ]
-}
 
 devtools_ui_module("comments") {
   sources = [
     "CommentAnchorResolver.ts",
     "CommentOverlayManager.ts",
-    "CommentThreadWidget.ts",
-    "CommentsOverlayWidget.ts",
-    "CommentsStatusBarPill.ts",
   ]
 
   ts_deps = [
     "../../core/common:bundle",
-    "../../core/i18n:bundle",
-    "../../core/root:bundle",
     "../../models/comment_manager:bundle",
     "../../third_party/codemirror.next:bundle",
-    "../../ui/legacy:bundle",
-    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
-    "../components/input:bundle",
-    "../components/markdown_view:bundle",
-    "../components/tooltips:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
   entrypoint = "comments.ts"
-
-  deps = [ ":css_files" ]
 
   ts_deps = [ ":comments" ]
 
@@ -57,28 +37,12 @@ devtools_entrypoint("bundle") {
   visibility += devtools_visibility
 }
 
-devtools_entrypoint("meta") {
-  entrypoint = "comments-meta.ts"
-
-  ts_deps = [
-    ":bundle",
-    "../../core/i18n:bundle",
-    "../../core/root:bundle",
-    "../../ui/legacy:bundle",
-  ]
-
-  visibility = [ "../../entrypoints/*" ]
-}
-
 devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
     "CommentAnchorResolver.test.ts",
     "CommentOverlayManager.test.ts",
-    "CommentThreadWidget.test.ts",
-    "CommentsOverlayWidget.test.ts",
-    "CommentsStatusBarPill.test.ts",
   ]
 
   ts_deps = [
@@ -86,7 +50,6 @@ devtools_ui_module("unittests") {
     "../../models/comment_manager:bundle",
     "../../testing",
     "../../third_party/codemirror.next:bundle",
-    "../../ui/legacy:bundle",
     "../../ui/visual_logging:bundle",
     "../components/text_editor:bundle",
   ]

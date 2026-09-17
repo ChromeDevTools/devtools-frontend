@@ -4,9 +4,9 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
-import * as UI from '../legacy/legacy.js';
-import * as Lit from '../lit/lit.js';
-import * as VisualLogging from '../visual_logging/visual_logging.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
@@ -15,7 +15,7 @@ const UIStrings = {
    */
   commentsCount: 'Comments ({PH1})',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('ui/comments/CommentsStatusBarPill.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/common/CommentsStatusBarPill.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const {html, render} = Lit;

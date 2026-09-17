@@ -5,16 +5,10 @@
 import type * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
+import * as Comments from '../../ui/comments/comments.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
-import {
-  CommentOverlayManager,
-  Events as CommentOverlayManagerEvents,
-  type HighlightRectData,
-  type HoverHighlightData,
-  type PinPositionData,
-} from './CommentOverlayManager.js';
 import commentsOverlayStyles from './commentsOverlay.css.js';
 import {CommentThreadWidget} from './CommentThreadWidget.js';
 
@@ -26,13 +20,13 @@ const {
 } = Lit;
 
 export interface ViewInput {
-  pins: PinPositionData[];
-  highlights: HighlightRectData[];
-  hoverHighlight: HoverHighlightData|null;
+  pins: Comments.CommentOverlayManager.PinPositionData[];
+  highlights: Comments.CommentOverlayManager.HighlightRectData[];
+  hoverHighlight: Comments.CommentOverlayManager.HoverHighlightData|null;
   commentMode: boolean;
   onPinClick: (threadId: string) => void;
   activeThread: CommentManager.CommentManager.CommentThread|null;
-  activePin: PinPositionData|null;
+  activePin: Comments.CommentOverlayManager.PinPositionData|null;
   onAddComment: (text: string) => void;
 }
 
@@ -119,7 +113,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
 
   readonly #view: View;
   readonly #commentManager: CommentManager.CommentManager.CommentManager;
-  #commentOverlayManager: CommentOverlayManager;
+  #commentOverlayManager: Comments.CommentOverlayManager.CommentOverlayManager;
   #activeThreadId: string|null = null;
 
   constructor(
@@ -130,12 +124,12 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     super(element, {useShadowDom: false});
     this.#view = view;
     this.#commentManager = commentManager;
-    this.#commentOverlayManager = new CommentOverlayManager(
+    this.#commentOverlayManager = new Comments.CommentOverlayManager.CommentOverlayManager(
         this.#commentManager,
     );
   }
 
-  setOverlayManagerForTest(overlayManager: CommentOverlayManager): void {
+  setOverlayManagerForTest(overlayManager: Comments.CommentOverlayManager.CommentOverlayManager): void {
     this.#commentOverlayManager = overlayManager;
   }
 
@@ -143,12 +137,12 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     super.wasShown();
     this.#commentOverlayManager.start();
     this.#commentOverlayManager.addEventListener(
-        CommentOverlayManagerEvents.POSITIONS_UPDATED,
+        Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
         this.#onStateChanged,
         this,
     );
     this.#commentOverlayManager.addEventListener(
-        CommentOverlayManagerEvents.HOVER_HIGHLIGHT_CHANGED,
+        Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED,
         this.#onStateChanged,
         this,
     );
@@ -170,12 +164,12 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   override willHide(): void {
     this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
-        CommentOverlayManagerEvents.POSITIONS_UPDATED,
+        Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
         this.#onStateChanged,
         this,
     );
     this.#commentOverlayManager.removeEventListener(
-        CommentOverlayManagerEvents.HOVER_HIGHLIGHT_CHANGED,
+        Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED,
         this.#onStateChanged,
         this,
     );
@@ -237,7 +231,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     const pins = this.#commentOverlayManager.getPinPositions();
     const highlights = this.#commentOverlayManager.getHighlightRects();
 
-    let activePin: PinPositionData|null = null;
+    let activePin: Comments.CommentOverlayManager.PinPositionData|null = null;
     let activeThread: CommentManager.CommentManager.CommentThread|null = null;
     if (this.#activeThreadId) {
       activePin = pins.find(p => p.id === this.#activeThreadId) ?? null;
@@ -288,5 +282,12 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       return true;
     }
     return false;
+  }
+
+  static resetForTest(): void {
+    if (widgetInstance) {
+      widgetInstance.detach();
+      widgetInstance = null;
+    }
   }
 }

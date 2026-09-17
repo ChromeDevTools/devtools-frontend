@@ -6,7 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type * as Comments from './comments.js';
+import type * as Common from './common.js';
 
 const UIStrings = {
   /**
@@ -22,16 +22,16 @@ const UIStrings = {
    */
   comments: 'Comments',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('ui/comments/comments-meta.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/common/common-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-let loadedCommentsModule: (typeof Comments|undefined);
+let loadedCommonModule: (typeof Common|undefined);
 
-async function loadCommentsModule(): Promise<typeof Comments> {
-  if (!loadedCommentsModule) {
-    loadedCommentsModule = await import('./comments.js');
+async function loadCommonModule(): Promise<typeof Common> {
+  if (!loadedCommonModule) {
+    loadedCommonModule = await import('./common.js');
   }
-  return loadedCommentsModule;
+  return loadedCommonModule;
 }
 
 function isCommentsEnabled(config?: Root.Runtime.HostConfig): boolean {
@@ -46,8 +46,8 @@ UI.ViewManager.registerViewExtension({
   commandPrompt: i18nLazyString(UIStrings.showComments),
   title: i18nLazyString(UIStrings.comments),
   async loadView(universe) {
-    const Comments = await loadCommentsModule();
-    return new Comments.CommentsStatusBarPill.CommentsStatusBarPill(undefined, [universe.commentManager]);
+    const Common = await loadCommonModule();
+    return new Common.CommentsStatusBarPill.CommentsStatusBarPill(undefined, [universe.commentManager]);
   },
 });
 
@@ -59,8 +59,8 @@ UI.ActionRegistration.registerActionExtension({
   toggleable: true,
   condition: isCommentsEnabled,
   async loadActionDelegate() {
-    const Comments = await loadCommentsModule();
-    return new Comments.CommentsOverlayWidget.ActionDelegate();
+    const Common = await loadCommonModule();
+    return new Common.CommentsOverlayWidget.ActionDelegate();
   },
 });
 

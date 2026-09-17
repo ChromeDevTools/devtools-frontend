@@ -77,7 +77,7 @@ describe('Click-to-Comment mode across DevTools panels', function() {
 
        // 6. Submit the draft comment.
        await devToolsPage.click('[aria-label="Add comment"]');
-       await devToolsPage.waitFor('.comment-pin[data-comment-id]');
+       await devToolsPage.waitFor('.comment-thread-widget.submitted');
 
        // 7. Toggle comment mode OFF.
        await toggleCommentMode(devToolsPage);

@@ -1199,6 +1199,7 @@ grd_files_unbundled_sources = [
   "front_end/models/change_tracker/ChangeTracker.js",
   "front_end/models/comment_manager/CD4ABridge.js",
   "front_end/models/comment_manager/CommentManager.js",
+  "front_end/models/comment_manager/CommentThread.js",
   "front_end/models/computed_style/ComputedStyleModel.js",
   "front_end/models/cpu_profile/CPUProfileDataModel.js",
   "front_end/models/cpu_profile/ProfileTreeModel.js",

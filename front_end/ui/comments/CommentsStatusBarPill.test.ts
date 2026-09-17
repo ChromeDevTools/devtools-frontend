@@ -39,13 +39,17 @@ describeWithEnvironment('CommentsStatusBarPill', () => {
   it('updates threads on COMMENT_THREADS_CHANGED while shown', async () => {
     const {commentManager, view} = await createWidget();
 
-    commentManager.createCommentThread(
+    const thread = commentManager.createCommentThread(
         {} as CommentManager.CommentManager.CommentAnchorSignature,
         'test',
     );
 
     const input = await view.nextInput;
-    assert.lengthOf(input.threads, 1);
+    assert.deepEqual(input.threads, []);
+
+    thread.save();
+    const inputAfterSave = await view.nextInput;
+    assert.lengthOf(inputAfterSave.threads, 1);
   });
 
   it('unsubscribes from commentManager on willHide', async () => {
@@ -68,20 +72,14 @@ describeWithEnvironment('DEFAULT_VIEW', () => {
     DEFAULT_VIEW(
         {
           threads: [
-            {
-              id: '1',
+            new CommentManager.CommentThread.CommentThread({
               comments: [],
               anchor: {} as CommentManager.CommentManager.CommentAnchorSignature,
-              status: 'ACTIVE',
-              index: 1,
-            },
-            {
-              id: '2',
+            }),
+            new CommentManager.CommentThread.CommentThread({
               comments: [],
               anchor: {} as CommentManager.CommentManager.CommentAnchorSignature,
-              status: 'ACTIVE',
-              index: 2,
-            },
+            }),
           ],
           onPillClick: () => {},
           disabled: false,

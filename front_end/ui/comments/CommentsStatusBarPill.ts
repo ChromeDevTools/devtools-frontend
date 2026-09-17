@@ -86,7 +86,7 @@ export class CommentsStatusBarPill extends UI.Widget.Widget {
 
   override performUpdate(): void {
     const viewInput: ViewInput = {
-      threads: this.#commentManager.getCommentThreads(),
+      threads: this.#commentManager.getCommentThreads().filter(thread => thread.status !== 'DRAFT'),
       onPillClick: this.#handlePillClick,
     };
     this.#view(viewInput, undefined, this.contentElement);

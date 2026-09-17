@@ -22,7 +22,7 @@ describe('CD4ABridge', () => {
   it('formats comment threads without DOM access', () => {
     const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager);
 
-    commentManager.createCommentThread(
+    const thread = commentManager.createCommentThread(
         {
           vePath: 'Panel: elements > Pane: styles',
           textSignature: 'color: red',
@@ -39,10 +39,11 @@ describe('CD4ABridge', () => {
         'Need color contrast fix',
         'DEVELOPER',
     );
+    thread.save();
 
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 1);
-    assert.strictEqual(threads[0].id, 'comment-1');
+    assert.strictEqual(threads[0].id, thread.id);
     assert.strictEqual(threads[0].text, 'Need color contrast fix');
     assert.strictEqual(threads[0].networkRequestId, 'req-1');
     assert.strictEqual(threads[0].backendNodeId, 10);
@@ -71,6 +72,7 @@ describe('CD4ABridge', () => {
       text: 'Second comment',
       timestamp: Date.now(),
     });
+    thread.save();
 
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 1);

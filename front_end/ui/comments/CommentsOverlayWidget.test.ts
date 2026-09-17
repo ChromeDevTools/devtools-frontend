@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import sinon from 'sinon';
 
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -62,7 +61,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     widget.detach();
   });
 
-  it('passes pending pin and highlight to view input when comment is in draft state', () => {
+  it('passes pin, highlight, and activeThread to view input when comment is in draft state', async () => {
     const view = createViewFunctionStub(Comments.CommentsOverlayWidget.CommentsOverlayWidget);
     const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
         undefined,
@@ -70,23 +69,29 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
         view,
     );
     widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+    await view.nextInput;
 
-    sinon.stub(overlayManager, 'getPendingDraft').returns({
-      element: document.createElement('div'),
-      anchor: {vePath: 'TreeItem: test', textSignature: 'test'},
-      pin: {top: 10, left: 20, visible: true, index: 1},
-      highlight: {top: 10, left: 20, width: 100, height: 20, visible: true},
-      pinOffset: null,
-    });
+    const testEl = document.createElement('div');
+    testEl.setAttribute('jslog', 'TreeItem; context: draft-test');
+    testEl.textContent = 'draft test content';
+    testEl.getBoundingClientRect = () => new DOMRect(10, 20, 100, 20);
+    renderElementIntoDOM(testEl, {allowMultipleChildren: true});
+
     commentManager.setCommentMode(true);
+    overlayManager.handleElementClick(testEl);
 
-    widget.performUpdate();
+    const updatedInput = await view.nextInput;
+    assert.isTrue(updatedInput.commentMode);
+    assert.lengthOf(updatedInput.pins, 1);
+    assert.lengthOf(updatedInput.highlights, 1);
+    assert.isNotNull(updatedInput.activePin);
+    assert.isNotNull(updatedInput.activeThread);
+    assert.strictEqual(updatedInput.activeThread.status, 'DRAFT');
 
-    assert.isTrue(view.input.commentMode);
-    assert.deepEqual(view.input.pins, []);
-    assert.lengthOf(view.input.highlights, 1);
-    assert.isNotNull(view.input.pendingPin);
-    assert.isNotNull(view.input.activePin);
+    testEl.remove();
+    widget.detach();
   });
 
   it('renders live DOM elements for pins, anchor highlights, and hover highlights with DEFAULT_VIEW', async () => {
@@ -120,11 +125,9 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     const cursor = pin.querySelector('.comment-cursor');
     assert.isNotNull(cursor);
     assert.strictEqual(cursor.textContent?.trim(), '1');
-    assert.strictEqual(pin.getAttribute('data-comment-id'), thread.id);
 
     const highlight = widget.contentElement.querySelector('.comment-anchor-highlight') as HTMLElement;
     assert.isNotNull(highlight);
-    assert.strictEqual(highlight.getAttribute('data-comment-id'), thread.id);
 
     testEl.remove();
     widget.detach();
@@ -155,9 +158,9 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     renderElementIntoDOM(el3, {allowMultipleChildren: true});
 
     commentManager.setCommentMode(true);
-    overlayManager.createComment(el1, 'First comment');
-    overlayManager.createComment(el2, 'Second comment');
-    overlayManager.createComment(el3, 'Third comment');
+    overlayManager.createComment(el1, 'First comment')?.save();
+    overlayManager.createComment(el2, 'Second comment')?.save();
+    overlayManager.createComment(el3, 'Third comment')?.save();
 
     widget.requestUpdate();
     await widget.updateComplete;
@@ -171,6 +174,44 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     el1.remove();
     el2.remove();
     el3.remove();
+    widget.detach();
+  });
+
+  it('does not increment pin index when clicking another element without saving draft', async () => {
+    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const el1 = document.createElement('div');
+    el1.setAttribute('jslog', 'TreeItem; context: draft-idx-1');
+    el1.textContent = 'item 1';
+    el1.getBoundingClientRect = () => new DOMRect(10, 10, 100, 30);
+    renderElementIntoDOM(el1, {allowMultipleChildren: true});
+
+    const el2 = document.createElement('div');
+    el2.setAttribute('jslog', 'TreeItem; context: draft-idx-2');
+    el2.textContent = 'item 2';
+    el2.getBoundingClientRect = () => new DOMRect(10, 50, 100, 30);
+    renderElementIntoDOM(el2, {allowMultipleChildren: true});
+
+    commentManager.setCommentMode(true);
+    overlayManager.handleElementClick(el1);
+    widget.requestUpdate();
+    await widget.updateComplete;
+
+    let pin = widget.contentElement.querySelector('.comment-pin .comment-cursor');
+    assert.strictEqual(pin?.textContent?.trim(), '1');
+
+    overlayManager.handleElementClick(el2);
+    widget.requestUpdate();
+    await widget.updateComplete;
+
+    pin = widget.contentElement.querySelector('.comment-pin .comment-cursor');
+    assert.strictEqual(pin?.textContent?.trim(), '1');
+
+    el1.remove();
+    el2.remove();
     widget.detach();
   });
 

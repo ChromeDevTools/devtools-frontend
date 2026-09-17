@@ -13,8 +13,6 @@ import {
   Events as CommentOverlayManagerEvents,
   type HighlightRectData,
   type HoverHighlightData,
-  type PendingHighlightRectData,
-  type PendingPinPositionData,
   type PinPositionData,
 } from './CommentOverlayManager.js';
 import commentsOverlayStyles from './commentsOverlay.css.js';
@@ -27,18 +25,14 @@ const {
   Directives: {repeat, styleMap},
 } = Lit;
 
-export type ViewHighlightRectData = HighlightRectData|PendingHighlightRectData;
-
 export interface ViewInput {
   pins: PinPositionData[];
-  pendingPin: PendingPinPositionData|null;
-  highlights: ViewHighlightRectData[];
+  highlights: HighlightRectData[];
   hoverHighlight: HoverHighlightData|null;
   commentMode: boolean;
   onPinClick: (threadId: string) => void;
   activeThread: CommentManager.CommentManager.CommentThread|null;
-  activePin: PinPositionData|PendingPinPositionData|null;
-  activeTargetKey: unknown;
+  activePin: PinPositionData|null;
   onAddComment: (text: string) => void;
 }
 
@@ -72,7 +66,6 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
       ${input.highlights.map(h => h.visible ? html`
         <div
           class="comment-anchor-highlight"
-          data-comment-id=${('id' in h && h.id) || nothing}
           style=${styleMap({
             top: `${h.top}px`,
             left: `${h.left}px`,
@@ -81,20 +74,9 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
           })}>
         </div>
       ` : nothing)}
-      ${input.pendingPin && input.pendingPin.visible ? html`
-        <div
-          class="comment-pin"
-          style=${styleMap({
-            top: `${input.pendingPin.top}px`,
-            left: `${input.pendingPin.left}px`,
-          })}>
-          <div class="comment-cursor">${input.pendingPin.index}</div>
-        </div>
-      ` : nothing}
       ${input.pins.map(p => p.visible ? html`
         <div
           class="comment-pin"
-          data-comment-id=${p.id}
           style=${styleMap({
             top: `${p.top}px`,
             left: `${p.left}px`,
@@ -103,9 +85,9 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
           <div class="comment-cursor">${p.index}</div>
         </div>
       ` : nothing)}
-      ${input.activePin ? repeat(
-        [{pin: input.activePin, key: input.activeTargetKey}],
-        item => item.key,
+      ${input.activePin && input.activeThread ? repeat(
+        [{pin: input.activePin, thread: input.activeThread}],
+        item => item.thread.id,
         item => html`
           <div
             class="comment-popup-widget"
@@ -120,7 +102,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
               )}px`,
             })}>
             ${UI.Widget.widget(CommentThreadWidget, {
-              comments: input.activeThread ? [...input.activeThread.comments] : [],
+              comments: [...item.thread.comments],
               onAddComment: input.onAddComment,
             })}
           </div>
@@ -217,6 +199,9 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
           CommentManager.CommentManager.EventTypes[CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED]>,
       ): void {
     const isModeActive = event.data;
+    if (!isModeActive) {
+      this.#activeThreadId = null;
+    }
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction(
         'comments.toggle-comment-mode',
     );
@@ -225,17 +210,24 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   }
 
   #onStateChanged(): void {
-    if (this.#commentOverlayManager.getPendingDraft()) {
+    const draftThread = this.#commentManager.getCommentThreads().find(t => t.status === 'DRAFT');
+    if (draftThread) {
+      this.#activeThreadId = draftThread.id;
+    } else if (this.#activeThreadId && !this.#commentManager.getCommentThread(this.#activeThreadId)) {
       this.#activeThreadId = null;
     }
     this.requestUpdate();
   }
 
   #handlePinClick = (threadId: string): void => {
-    this.#commentOverlayManager.clearPendingAnchor();
+    const thread = this.#commentManager.getCommentThread(threadId);
     if (this.#activeThreadId === threadId) {
+      if (thread?.status === 'DRAFT') {
+        this.#commentOverlayManager.clearDraftThreads();
+      }
       this.#activeThreadId = null;
     } else {
+      this.#commentOverlayManager.clearDraftThreads();
       this.#activeThreadId = threadId;
     }
     this.requestUpdate();
@@ -243,41 +235,25 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
 
   override performUpdate(): void {
     const pins = this.#commentOverlayManager.getPinPositions();
-    const draft = this.#commentOverlayManager.getPendingDraft();
-    const pendingPin = draft?.pin ?? null;
-    const highlights: ViewHighlightRectData[] = [
-      ...this.#commentOverlayManager.getHighlightRects(),
-    ];
+    const highlights = this.#commentOverlayManager.getHighlightRects();
 
-    if (draft?.highlight) {
-      highlights.push(draft.highlight);
-    }
-
-    let activePin: PinPositionData|PendingPinPositionData|null = null;
+    let activePin: PinPositionData|null = null;
     let activeThread: CommentManager.CommentManager.CommentThread|null = null;
-    if (pendingPin) {
-      activePin = pendingPin;
-    } else if (this.#activeThreadId) {
+    if (this.#activeThreadId) {
       activePin = pins.find(p => p.id === this.#activeThreadId) ?? null;
       activeThread = this.#commentManager.getCommentThread(this.#activeThreadId) ?? null;
     }
 
     const viewInput: ViewInput = {
       pins,
-      pendingPin,
       highlights,
       hoverHighlight: this.#commentOverlayManager.getHoverHighlight(),
       commentMode: this.#commentManager.isCommentMode(),
       onPinClick: this.#handlePinClick,
       activeThread,
       activePin,
-      activeTargetKey: draft ?? activeThread,
       onAddComment: (text: string) => {
-        const pendingDraft = this.#commentOverlayManager.getPendingDraft();
-
-        if (pendingDraft) {
-          this.#commentOverlayManager.createComment(pendingDraft.element, text, {pendingDraft});
-        }
+        activeThread?.save(text);
       },
     };
     this.#view(viewInput, undefined, this.contentElement);

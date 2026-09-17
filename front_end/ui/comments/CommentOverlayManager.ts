@@ -36,8 +36,6 @@ export interface PinPositionData {
   index: number;
 }
 
-export type PendingPinPositionData = Omit<PinPositionData, 'id'>;
-
 export interface HighlightRectData {
   id: string;
   top: number;
@@ -47,21 +45,10 @@ export interface HighlightRectData {
   visible: boolean;
 }
 
-export type PendingHighlightRectData = Omit<HighlightRectData, 'id'>;
-
-export interface PendingDraft {
-  element: Element;
-  anchor: CommentAnchorSignature;
-  pin: PendingPinPositionData|null;
-  highlight: PendingHighlightRectData|null;
-  pinOffset: {offsetX: number, offsetY: number}|null;
-}
-
 export interface CreateCommentOptions {
   author?: 'DEVELOPER'|'AGENT';
   changes?: CommentManager.CommentManager.ChangeRecord[];
   coordinates?: {clientX: number, clientY: number};
-  pendingDraft?: PendingDraft;
 }
 
 export interface HoverHighlightData {
@@ -99,7 +86,6 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
   #hoverData: HoverHighlightData|null = null;
   #pinPositions: PinPositionData[] = [];
   #highlightRects: HighlightRectData[] = [];
-  #pendingDraft: PendingDraft|null = null;
 
   #clickListener?: (event: Event) => void;
   #hoverListener?: (event: Event) => void;
@@ -133,6 +119,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
   #mutationObserver?: MutationObserver;
   #rematchTimeoutId?: ReturnType<typeof setTimeout>;
   #cursorElement: HTMLElement|null = null;
+  #isCreatingComment = false;
 
   constructor(commentManager: CommentManager.CommentManager.CommentManager) {
     super();
@@ -140,7 +127,9 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     this.#commentManager.addEventListener(
         CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED,
         () => {
-          this.#updatePositions();
+          if (!this.#isCreatingComment) {
+            this.#updatePositions();
+          }
         },
         this,
     );
@@ -149,7 +138,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
         ({data: active}) => {
           if (!active) {
             this.#clearHover();
-            this.clearPendingAnchor();
+            this.clearDraftThreads();
           }
           document.body.style.cursor = active ? COMMENT_MODE_CURSOR : '';
         },
@@ -237,83 +226,58 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     return this.#highlightRects;
   }
 
-  getPendingDraft(): PendingDraft|null {
-    return this.#pendingDraft;
+  getAnchorElement(thread: CommentThread): Element|undefined {
+    return this.#liveNodeCache.get(thread);
   }
 
-  clearPendingAnchor(): void {
-    if (!this.#pendingDraft) {
-      return;
+  clearDraftThreads(): void {
+    const draftThreads = this.#commentManager.getCommentThreads().filter(t => t.status === 'DRAFT');
+    for (const thread of draftThreads) {
+      this.removeCommentThread(thread.id);
     }
-
-    if (!this.#observedThreads.has(this.#pendingDraft.element)) {
-      this.#intersectionObserver?.unobserve(this.#pendingDraft.element);
-    }
-    this.#pendingDraft = null;
-    this.#updatePositions();
   }
 
   handleElementClick(element: Element, options?: {clientX: number, clientY: number}): boolean {
     if (!this.isCommentMode() || closestAcrossShadow(element, '.comment-thread-widget')) {
       return false;
     }
-    this.clearPendingAnchor();
+    this.clearDraftThreads();
 
     const resolved = this.#resolveAnchor(element, options);
     if (!resolved) {
       return false;
     }
-    const {anchor, anchorElement: anchorEl} = resolved;
+    const {anchorElement: anchorEl} = resolved;
     const visibleRect = computeVisibleRect(anchorEl);
     if (!visibleRect) {
       return false;
     }
-    const anchorRect = anchorEl.getBoundingClientRect();
 
-    let pinOffset: {offsetX: number, offsetY: number}|null = null;
-    if (options) {
-      pinOffset = {
-        offsetX: Math.min(Math.max(options.clientX, visibleRect.left), visibleRect.right) - anchorRect.left,
-        offsetY: Math.min(Math.max(options.clientY, visibleRect.top), visibleRect.bottom) - anchorRect.top,
-      };
-    }
-
-    this.#pendingDraft = {
-      element: anchorEl,
-      anchor,
-      pin: null,
-      highlight: null,
-      pinOffset,
-    };
-    const observer = this.#getIntersectionObserver();
-    if (!this.#observedThreads.has(anchorEl)) {
-      observer.observe(anchorEl);
-    }
-    this.#updatePositions();
-    return true;
+    const thread = this.createComment(element, undefined, {coordinates: options});
+    return thread !== null;
   }
 
   createComment(
       element: Element,
-      text: string,
+      text?: string,
       options?: CreateCommentOptions,
       ): CommentThread|null {
     const author = options?.author ?? 'DEVELOPER';
     const changes = options?.changes;
-    const pendingDraft = options?.pendingDraft;
-    let resolved: {anchor: CommentAnchorSignature, anchorElement: Element}|null;
-    if (pendingDraft) {
-      resolved = {anchor: pendingDraft.anchor, anchorElement: pendingDraft.element};
-    } else {
-      resolved = this.#resolveAnchor(element, options?.coordinates);
-      if (!resolved) {
-        return null;
-      }
+    const resolved = this.#resolveAnchor(element, options?.coordinates);
+    if (!resolved) {
+      return null;
     }
 
     const {anchor, anchorElement} = resolved;
 
-    const thread = this.#commentManager.createCommentThread(anchor, text, author, changes);
+    let thread: CommentThread;
+    this.#isCreatingComment = true;
+    try {
+      thread = this.#commentManager.createCommentThread(anchor, text, author, changes);
+    } finally {
+      this.#isCreatingComment = false;
+    }
     // Non-DOM anchors (e.g. canvas-rendered timeline entries) manage their own overlays
     // and do not have individual backing DOM nodes to cache or observe.
     if (isDomTrackedAnchor(anchor)) {
@@ -324,11 +288,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
       this.#observedThreads.add(anchorElement);
     }
 
-    if (pendingDraft) {
-      this.clearPendingAnchor();
-    } else {
-      this.#updatePositions();
-    }
+    this.#updatePositions();
 
     return thread;
   }
@@ -493,52 +453,10 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
 
     this.#pinPositions = newPins;
     this.#highlightRects = newHighlights;
-    this.#updatePendingPositions(scrollX, scrollY);
     this.dispatchEventToListeners(Events.POSITIONS_UPDATED, {
       pins: newPins,
       highlights: newHighlights,
     });
-  }
-
-  #updatePendingPositions(scrollX: number, scrollY: number): void {
-    if (!this.#pendingDraft) {
-      return;
-    }
-
-    const visibleRect = computeVisibleRect(this.#pendingDraft.element);
-    if (!visibleRect) {
-      if (this.#pendingDraft.pin) {
-        this.#pendingDraft.pin.visible = false;
-      }
-      if (this.#pendingDraft.highlight) {
-        this.#pendingDraft.highlight.visible = false;
-      }
-      return;
-    }
-
-    const anchorRect = this.#pendingDraft.element.getBoundingClientRect();
-    const pinOffset = this.#pendingDraft.pinOffset;
-    const pinClientX = pinOffset ?
-        Math.min(Math.max(anchorRect.left + pinOffset.offsetX, visibleRect.left), visibleRect.right) :
-        visibleRect.right;
-    const pinClientY = pinOffset ?
-        Math.min(Math.max(anchorRect.top + pinOffset.offsetY, visibleRect.top), visibleRect.bottom) :
-        visibleRect.top;
-
-    this.#pendingDraft.pin = {
-      top: scrollY + pinClientY - 12,
-      left: scrollX + pinClientX - 12,
-      visible: true,
-      index: this.#commentManager.getCommentThreads().length + 1,
-    };
-
-    this.#pendingDraft.highlight = {
-      top: scrollY + visibleRect.top,
-      left: scrollX + visibleRect.left,
-      width: visibleRect.width,
-      height: visibleRect.height,
-      visible: true,
-    };
   }
 
   /**
@@ -579,7 +497,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
    */
   stop(): void {
     document.body.style.cursor = '';
-    this.clearPendingAnchor();
+    this.clearDraftThreads();
     this.#removeClickListener();
     this.#removeScrollListener();
     this.#removeResizeObserver();

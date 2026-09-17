@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -648,8 +649,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       container.appendChild(textEditor);
 
       // Verify rematching line 150 (outside initial viewport) directly via document model
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'virtualized-line-thread',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'TextField: editor',
           textSignature: 'const variable_150 = 150;',
@@ -659,9 +659,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           },
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, textEditor.editor.dom);
@@ -981,8 +979,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       shadow.appendChild(target);
       container.appendChild(host);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-1',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'Panel: network > TreeItem: req',
           textSignature: 'Request 1234',
@@ -993,9 +990,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           text: 'Check this request',
           timestamp: Date.now(),
         }],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, target);
@@ -1007,34 +1002,28 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       target.textContent = 'Special Request';
       container.appendChild(target);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-special-id',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'Panel: network > TreeItem: req',
           textSignature: 'Special Request',
           networkRequestId: 'req"with"quotes.[1]',
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, target);
     });
 
     it('returns null when element with networkRequestId is not found', () => {
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-missing-id',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'Panel: network > TreeItem: req',
           textSignature: 'Request',
           networkRequestId: 'non-existent-req',
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.isNull(rematched);
@@ -1047,8 +1036,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       el.textContent = '<button>Submit</button>';
       container.appendChild(el);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-dom',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'Panel: elements > TreeItem: node',
           textSignature: '<button>Submit</button>',
@@ -1058,9 +1046,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           },
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, el);
@@ -1079,8 +1065,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       el2.textContent = '<button>Submit</button>';
       container.appendChild(el2);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-dom',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'Panel: elements > TreeItem: node',
           textSignature: '<button>Submit</button>',
@@ -1090,9 +1075,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           },
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, el2);
@@ -1104,8 +1087,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       item.textContent = 'color: blue;';
       container.appendChild(item);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-2',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'TreeItem: my-rule',
           textSignature: 'color: blue;',
@@ -1115,9 +1097,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           text: 'Why blue?',
           timestamp: Date.now(),
         }],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, item);
@@ -1138,17 +1118,14 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       panel.appendChild(item2);
       container.appendChild(panel);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-sibling',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'Panel: elements > TreeItem: prop',
           textSignature: 'color: red;',
           siblingIndex: 1,
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, item2);
@@ -1176,17 +1153,14 @@ describeWithEnvironment('CommentAnchorResolver', () => {
 
       container.appendChild(host);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-shadow-sibling',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'TreeItem: shadow-prop',
           textSignature: 'font-size: 14px;',
           siblingIndex: 1,
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, item2);
@@ -1212,13 +1186,10 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       assert.isNotNull(anchor);
       assert.strictEqual(anchor?.vePath, 'Panel: sources > TextField: editor');
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'cm-thread',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: anchor!,
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, sourcesEditor.editor.dom);
@@ -1231,8 +1202,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       const editor2 = createTextEditor('const a = 1;', 'src/fileB.ts');
       container.appendChild(editor2);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'file-b-thread',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'TextField: editor',
           textSignature: 'const a = 1;',
@@ -1242,9 +1212,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           },
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, editor2.editor.dom);
@@ -1254,8 +1222,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       const editor = createTextEditor('const a = 1;', 'src/foo.ts');
       container.appendChild(editor);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'missing-file-thread',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'TextField: editor',
           textSignature: 'const a = 1;',
@@ -1265,9 +1232,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           },
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.isNull(rematched);
@@ -1277,8 +1242,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       const editor = createTextEditor('const modified = 999;', 'src/app.ts');
       container.appendChild(editor);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'modified-line-thread',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'TextField: editor',
           textSignature: 'const original = 1;',
@@ -1288,9 +1252,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           },
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, editor.editor.dom);
@@ -1300,8 +1262,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       const editor = createTextEditor('const cached = 42;', 'src/cached.ts');
       container.appendChild(editor);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'cached-editor-thread',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'TextField: editor',
           textSignature: 'const cached = 42;',
@@ -1311,9 +1272,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           },
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const cachedElements = Comments.CommentAnchorResolver.deepQuerySelectorAll(container, '[jslog]');
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container, cachedElements);
@@ -1350,13 +1309,10 @@ describeWithEnvironment('CommentAnchorResolver', () => {
          const anchorB2 = Comments.CommentAnchorResolver.resolveCommentAnchor(itemB2);
          assert.isNotNull(anchorB2);
 
-         const thread: Comments.CommentAnchorResolver.CommentThread = {
-           id: 'comment-b2',
+         const thread = new CommentManager.CommentThread.CommentThread({
            anchor: anchorB2!,
            comments: [],
-           status: 'ACTIVE',
-           index: 1,
-         };
+         });
 
          const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
          assert.strictEqual(rematched, itemB2);
@@ -1377,17 +1333,14 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       panel.appendChild(item2);
       container.appendChild(panel);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-modified-text',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'Panel: elements > TreeItem: rule',
           textSignature: 'color: red;',  // Old text
           siblingIndex: 1,
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, item2);
@@ -1424,13 +1377,10 @@ describeWithEnvironment('CommentAnchorResolver', () => {
          item1.textContent = 'padding: 5px;';
          item2.textContent = 'padding: 10px;';
 
-         const thread: Comments.CommentAnchorResolver.CommentThread = {
-           id: 'comment-text-changed',
+         const thread = new CommentManager.CommentThread.CommentThread({
            anchor: anchor2!,
            comments: [],
-           status: 'ACTIVE',
-           index: 1,
-         };
+         });
 
          const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
          assert.strictEqual(rematched, item2);
@@ -1447,16 +1397,13 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       treeItem.textContent = 'Tree item';
       container.appendChild(treeItem);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-tree',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'Tree: tree-root',
           textSignature: 'Tree root',
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, tree);
@@ -1468,16 +1415,13 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       el.textContent = 'Spaced item';
       container.appendChild(el);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-spaced',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'TreeItem: spaced',
           textSignature: 'Spaced item',
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, el);
@@ -1493,17 +1437,14 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       shadow.appendChild(target);
       container.appendChild(host);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-root-shadow-req',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'Panel: network > TreeItem: req',
           textSignature: 'Shadow Request',
           networkRequestId: 'req-root-shadow',
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, host);
       assert.strictEqual(rematched, target);
@@ -1519,32 +1460,26 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       shadow.appendChild(target);
       container.appendChild(host);
 
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'comment-root-shadow-ve',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'TreeItem: root-shadow-item',
           textSignature: 'Shadow Item',
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, host);
       assert.strictEqual(rematched, target);
     });
 
     it('returns null when no matching candidate exists in the root', () => {
-      const thread: Comments.CommentAnchorResolver.CommentThread = {
-        id: 'missing',
+      const thread = new CommentManager.CommentThread.CommentThread({
         anchor: {
           vePath: 'Panel: elements > TreeItem: deleted-node',
           textSignature: 'non-existent',
         },
         comments: [],
-        status: 'ACTIVE',
-        index: 1,
-      };
+      });
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.isNull(rematched);

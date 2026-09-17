@@ -58,7 +58,7 @@ describeWithEnvironment('CommentOverlayManager', () => {
     assert.strictEqual(manager.getCommentThread(thread!.id), thread);
     assert.strictEqual(thread?.comments[0].text, 'Needs adjustment');
     assert.strictEqual(thread?.comments[0].author, 'DEVELOPER');
-    assert.strictEqual(thread?.status, 'ACTIVE');
+    assert.strictEqual(thread?.status, 'DRAFT');
 
     const pins = manager.getPinPositions();
     assert.lengthOf(pins, 1);
@@ -175,16 +175,19 @@ describeWithEnvironment('CommentOverlayManager', () => {
 
     const handledInactive = manager.handleElementClick(item);
     assert.isFalse(handledInactive);
-    assert.isNull(manager.getPendingDraft());
+    assert.isEmpty(manager.getCommentThreads());
 
     manager.setCommentMode(true);
     const handledActive = manager.handleElementClick(item);
     assert.isTrue(handledActive);
-    assert.strictEqual(manager.getPendingDraft()?.element, item);
-    assert.isNotNull(manager.getPendingDraft()?.pin);
+    const threads = manager.getCommentThreads();
+    assert.lengthOf(threads, 1);
+    assert.strictEqual(threads[0].status, 'DRAFT');
+    assert.strictEqual(manager.getAnchorElement(threads[0]), item);
+    assert.lengthOf(manager.getPinPositions(), 1);
   });
 
-  it('sets pending anchor when clicking elements inside Shadow DOM using composed target', () => {
+  it('creates draft thread when clicking elements inside Shadow DOM using composed target', () => {
     manager.start(container);
     manager.setCommentMode(true);
 
@@ -198,11 +201,14 @@ describeWithEnvironment('CommentOverlayManager', () => {
 
     innerEl.click();
 
-    assert.strictEqual(manager.getPendingDraft()?.element, innerEl);
-    assert.isNotNull(manager.getPendingDraft()?.pin);
+    const threads = manager.getCommentThreads();
+    assert.lengthOf(threads, 1);
+    assert.strictEqual(threads[0].status, 'DRAFT');
+    assert.strictEqual(manager.getAnchorElement(threads[0]), innerEl);
+    assert.lengthOf(manager.getPinPositions(), 1);
   });
 
-  it('sets pending anchor and updates positions when clicking in Comment Mode', () => {
+  it('creates draft thread and updates positions when clicking in Comment Mode', () => {
     manager.start(container);
     manager.setCommentMode(true);
 
@@ -222,17 +228,18 @@ describeWithEnvironment('CommentOverlayManager', () => {
       clientY: 250,
     });
     el.dispatchEvent(clickEvent);
-    const pendingDraft = manager.getPendingDraft();
+    const threads = manager.getCommentThreads();
 
     assert.isTrue(clickEvent.defaultPrevented);
-    assert.isNotNull(pendingDraft);
-    assert.strictEqual(pendingDraft.element, el);
-    assert.isTrue(pendingDraft.pin?.visible ?? false);
-    assert.isTrue(pendingDraft.highlight?.visible ?? false);
+    assert.lengthOf(threads, 1);
+    assert.strictEqual(threads[0].status, 'DRAFT');
+    assert.strictEqual(manager.getAnchorElement(threads[0]), el);
+    assert.isTrue(manager.getPinPositions()[0]?.visible ?? false);
+    assert.isTrue(manager.getHighlightRects()[0]?.visible ?? false);
     sinon.assert.calledOnce(positionsListener);
   });
 
-  it('clears pending anchor when clicking an unanchorable element', () => {
+  it('clears draft thread when clicking an unanchorable element', () => {
     manager.start(container);
     manager.setCommentMode(true);
 
@@ -241,16 +248,16 @@ describeWithEnvironment('CommentOverlayManager', () => {
     el.textContent = 'draft clear item';
     container.appendChild(el);
     manager.handleElementClick(el);
-    assert.strictEqual(manager.getPendingDraft()?.element, el);
+    assert.lengthOf(manager.getCommentThreads(), 1);
 
     const emptyDiv = document.createElement('div');
     container.appendChild(emptyDiv);
     emptyDiv.click();
 
-    assert.isNull(manager.getPendingDraft());
+    assert.isEmpty(manager.getCommentThreads());
   });
 
-  it('clears pending anchor when toggling Comment Mode off', () => {
+  it('clears draft thread when toggling Comment Mode off', () => {
     manager.start(container);
     manager.setCommentMode(true);
 
@@ -259,10 +266,10 @@ describeWithEnvironment('CommentOverlayManager', () => {
     el.textContent = 'mode toggle item';
     container.appendChild(el);
     manager.handleElementClick(el);
-    assert.strictEqual(manager.getPendingDraft()?.element, el);
+    assert.lengthOf(manager.getCommentThreads(), 1);
 
     manager.setCommentMode(false);
-    assert.isNull(manager.getPendingDraft());
+    assert.isEmpty(manager.getCommentThreads());
   });
 
   it('suppresses pointer and mouse events on anchorable elements in Comment Mode', () => {
@@ -536,17 +543,16 @@ describeWithEnvironment('CommentOverlayManager', () => {
 
       line2.dispatchEvent(new MouseEvent('click', {bubbles: true, composed: true}));
 
-      assert.lengthOf(manager.getCommentThreads(), 0);
-      assert.isNotNull(manager.getPendingDraft()?.element);
-      assert.isNotNull(manager.getPendingDraft()?.pin);
+      const threads = manager.getCommentThreads();
+      assert.lengthOf(threads, 1);
+      const thread = threads[0];
+      assert.strictEqual(thread.status, 'DRAFT');
+      assert.strictEqual(thread.anchor.editor?.lineNumber, 2);
+      assert.strictEqual(thread.anchor.editor?.filePath, 'src/code.ts');
 
-      const draft = manager.getPendingDraft();
-      assert.isNotNull(draft);
-
-      const thread = manager.createComment(draft.element, 'Editor comment', {pendingDraft: draft});
-      assert.isNotNull(thread);
-      assert.strictEqual(thread?.anchor.editor?.lineNumber, 2);
-      assert.strictEqual(thread?.anchor.editor?.filePath, 'src/code.ts');
+      thread.save('Editor comment');
+      assert.strictEqual(thread.status, 'ACTIVE');
+      assert.strictEqual(thread.comments[0].text, 'Editor comment');
 
       const highlights = manager.getHighlightRects();
       assert.lengthOf(highlights, 1);

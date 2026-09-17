@@ -55,24 +55,32 @@ describe('CommentManager', () => {
     assert.lengthOf(thread.comments, 1);
     assert.strictEqual(thread.comments[0].author, 'DEVELOPER');
     assert.strictEqual(thread.comments[0].text, 'Initial comment');
-    assert.strictEqual(thread.status, 'ACTIVE');
+    assert.strictEqual(thread.status, 'DRAFT');
 
     assert.lengthOf(manager.getCommentThreads(), 1);
     assert.strictEqual(manager.getCommentThread(thread.id), thread);
     assert.lengthOf(threadChangedEvents, 1);
     assert.strictEqual(threadChangedEvents[0][0], thread);
+
+    thread.save();
+    assert.strictEqual(thread.status, 'ACTIVE');
+    assert.lengthOf(threadChangedEvents, 2);
   });
 
-  it('assigns incrementing index to created threads', () => {
+  it('assigns incrementing index to saved threads', () => {
     const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
       vePath: 'Panel: elements > TreeItem: rule',
       textSignature: 'color: red;',
     };
 
     const thread1 = manager.createCommentThread(anchor, 'First comment');
-    const thread2 = manager.createCommentThread(anchor, 'Second comment');
-
     assert.strictEqual(thread1.index, 1);
+    thread1.save();
+    assert.strictEqual(thread1.index, 1);
+
+    const thread2 = manager.createCommentThread(anchor, 'Second comment');
+    assert.strictEqual(thread2.index, 2);
+    thread2.save();
     assert.strictEqual(thread2.index, 2);
   });
 
@@ -125,7 +133,7 @@ describe('CommentManager', () => {
       textSignature: 'color: red;',
     };
     const thread = manager.createCommentThread(anchor, 'Initial comment');
-    assert.strictEqual(thread.status, 'ACTIVE');
+    assert.strictEqual(thread.status, 'DRAFT');
 
     const success = manager.resolveCommentThread(thread.id, 'Done');
     assert.isTrue(success);
@@ -150,7 +158,7 @@ describe('CommentManager', () => {
     assert.isNotNull(thread);
     assert.isEmpty(thread.comments);
     assert.deepEqual(thread.changes, changes);
-    assert.strictEqual(thread.status, 'ACTIVE');
+    assert.strictEqual(thread.status, 'DRAFT');
   });
 
   it('returns undefined for non-existent comment thread ID', () => {
@@ -209,6 +217,13 @@ describe('CommentManager', () => {
 
     const thread1 = manager.createCommentThread(anchor, 'Initial developer comment', 'DEVELOPER');
     assert.isFalse(thread1.transmitted);
+    assert.strictEqual(thread1.status, 'DRAFT');
+
+    // Returns empty array when thread is in DRAFT state
+    assert.isEmpty(manager.takeComments());
+    assert.isFalse(thread1.transmitted);
+
+    thread1.save();
 
     const taken = manager.takeComments();
     assert.lengthOf(taken, 1);
@@ -222,9 +237,12 @@ describe('CommentManager', () => {
     const takenAgain = manager.takeComments();
     assert.lengthOf(takenAgain, 0);
 
-    // Creating another thread makes it available in takeComments
+    // Creating another thread makes it available in takeComments after save()
     const thread2 = manager.createCommentThread(anchor, 'Second thread', 'DEVELOPER');
     assert.isFalse(thread2.transmitted);
+    assert.isEmpty(manager.takeComments());
+
+    thread2.save();
 
     const takenNew = manager.takeComments();
     assert.lengthOf(takenNew, 1);

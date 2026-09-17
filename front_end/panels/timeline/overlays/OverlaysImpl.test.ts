@@ -1474,7 +1474,6 @@ describeWithEnvironment('Overlays', () => {
       assert.isNotNull(pin);
       assert.strictEqual(pin?.getAttribute('role'), 'button');
       assert.strictEqual(pin?.getAttribute('tabindex'), '0');
-      assert.strictEqual(pin?.getAttribute('data-comment-id'), 'thread-test-pin-1');
       assert.isNotNull(pin?.querySelector('.comment-cursor'));
     });
 

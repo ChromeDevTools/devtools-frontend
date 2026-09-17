@@ -4,75 +4,30 @@
 
 import * as Common from '../../core/common/common.js';
 
-export interface EditorAnchorSignature {
-  /** 1-based line number for CodeMirror text editor anchors */
-  lineNumber: number;
-  /** File path associated with the editor */
-  filePath?: string;
-}
+import {
+  type ChangeRecord,
+  type Comment,
+  type CommentAnchorSignature,
+  CommentThread,
+  type CommentThreadOptions,
+  type CommentThreadStatus,
+  type DOMNodeAnchorSignature,
+  type EditorAnchorSignature,
+  Events as CommentThreadEvents,
+  type TimelineAnchorSignature,
+} from './CommentThread.js';
 
-export interface DOMNodeAnchorSignature {
-  /** Backend NodeId for DOM nodes (`data-backend-node-id`) */
-  backendNodeId: number;
-  /** Target ID associated with the DOM node (`data-target-id`) */
-  targetId: string;
-}
-
-export interface TimelineAnchorSignature {
-  /** Identifier of the trace to scope comments to a specific recording */
-  traceId: string;
-  /** Serializable key from Trace.EventsSerializer (e.g. 'r-123', 'p-1-2-3-4', 's-5') */
-  traceEventKey: string;
-  /** Primary event title or category name */
-  entryName: string;
-  /** Event start timestamp in microseconds */
-  startTimeMicro: number;
-  /** Chart location */
-  chartLocation: 'main'|'network';
-  /** Event duration in microseconds (omitted for instant markers) */
-  durationMicro?: number;
-}
-
-export interface CommentAnchorSignature {
-  /** Visual logging tree path, e.g. "Panel: elements > Pane: styles > TreeOutline > TreeItem: color" */
-  vePath: string;
-  /** Normalized text content of the target node */
-  textSignature: string;
-  /** Text content of the parent container VE node for sibling disambiguation */
-  parentTextSignature?: string;
-  /** 0-indexed position among siblings sharing the same visual logging path */
-  siblingIndex?: number;
-  /** Optional backend RequestId for Network panel elements (`data-network-request-id`) */
-  networkRequestId?: string;
-  /** Optional DOM node identifiers (`data-backend-node-id`, `data-target-id`) */
-  node?: DOMNodeAnchorSignature;
-  /** Optional editor anchor coordinates for CodeMirror text editors */
-  editor?: EditorAnchorSignature;
-  /** Optional timeline flamechart anchor coordinates for Performance panel trace entries */
-  timeline?: TimelineAnchorSignature;
-}
-
-export interface Comment {
-  author: 'DEVELOPER'|'AGENT';
-  text: string;
-  timestamp: number;
-}
-
-export interface ChangeRecord {
-  id: string;
-  description: string;
-  timestamp: number;
-}
-
-export interface CommentThread {
-  id: string;
-  anchor: CommentAnchorSignature;
-  comments: Comment[];
-  status: 'ACTIVE'|'RESOLVED';
-  transmitted?: boolean;
-  changes?: ChangeRecord[];
-  index: number;
-}
+export {
+  type ChangeRecord,
+  type Comment,
+  type CommentAnchorSignature,
+  CommentThread,
+  type CommentThreadOptions,
+  type CommentThreadStatus,
+  type DOMNodeAnchorSignature,
+  type EditorAnchorSignature,
+  type TimelineAnchorSignature,
+};
 
 export const enum Events {
   COMMENT_THREADS_CHANGED = 'CommentThreadsChanged',
@@ -90,7 +45,15 @@ export interface EventTypes {
 export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #commentThreads = new Map<string, CommentThread>();
   #commentMode = false;
-  #nextId = 1;
+
+  constructor() {
+    super();
+    CommentThread.resetIndex();
+  }
+
+  #onThreadChanged(): void {
+    this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, this.getCommentThreads());
+  }
 
   setCommentMode(active: boolean): void {
     if (this.#commentMode === active) {
@@ -110,25 +73,20 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
       author: 'DEVELOPER'|'AGENT' = 'DEVELOPER',
       changes?: ChangeRecord[],
       ): CommentThread {
-    const index = this.#nextId++;
-    const id = `comment-${index}`;
     const comments: Comment[] = text ? [{
       author,
       text,
       timestamp: Date.now(),
     }] :
                                        [];
-    const thread: CommentThread = {
-      id,
+    const thread = new CommentThread({
       anchor,
       comments,
-      status: 'ACTIVE',
-      transmitted: false,
       changes,
-      index,
-    };
+    });
+    thread.addEventListener(CommentThreadEvents.CHANGED, this.#onThreadChanged, this);
 
-    this.#commentThreads.set(id, thread);
+    this.#commentThreads.set(thread.id, thread);
     this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, this.getCommentThreads());
     return thread;
   }
@@ -144,7 +102,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
   takeComments(): CommentThread[] {
     const threads: CommentThread[] = [];
     for (const thread of this.#commentThreads.values()) {
-      if (!thread.transmitted) {
+      if (thread.status === 'ACTIVE' && !thread.transmitted) {
         thread.transmitted = true;
         threads.push(thread);
       }
@@ -157,30 +115,27 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     if (!thread) {
       return false;
     }
-    if (replyText && replyText.trim().length > 0) {
-      const comment: Comment = {
-        author: 'AGENT',
-        text: replyText.trim(),
-        timestamp: Date.now(),
-      };
-      thread.comments.push(comment);
-    }
-    thread.status = 'RESOLVED';
-    this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, this.getCommentThreads());
+    thread.resolve(replyText);
     return true;
   }
 
   removeCommentThread(id: string): void {
-    if (!this.#commentThreads.has(id)) {
+    const thread = this.#commentThreads.get(id);
+    if (!thread) {
       return;
     }
+    thread.removeEventListener(CommentThreadEvents.CHANGED, this.#onThreadChanged, this);
     this.#commentThreads.delete(id);
     this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, this.getCommentThreads());
   }
 
   clear(): void {
     this.setCommentMode(false);
+    for (const thread of this.#commentThreads.values()) {
+      thread.removeEventListener(CommentThreadEvents.CHANGED, this.#onThreadChanged, this);
+    }
     this.#commentThreads.clear();
+    CommentThread.resetIndex();
     this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, []);
   }
 }

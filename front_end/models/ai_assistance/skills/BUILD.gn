@@ -29,7 +29,10 @@ action_foreach("_generate_skills") {
     "../../../../scripts/build/ninja/write-if-changed.js",
   ]
 
-  outputs = [ "$target_gen_dir/{{source_name_part}}.skill.js" ]
+  outputs = [
+    "$target_gen_dir/{{source_name_part}}.skill.js",
+    "$target_gen_dir/{{source_name_part}}.skill.d.ts",
+  ]
 
   args = [
     rebase_path("../../../../scripts/build/build_ai_skills.mjs",
@@ -55,5 +58,8 @@ group("generate_skills") {
   public_deps = [ ":_generate_skills" ]
   public_inputs =
       process_file_template(_skill_sources,
-                            [ "$target_gen_dir/{{source_name_part}}.skill.js" ])
+                            [
+                              "$target_gen_dir/{{source_name_part}}.skill.js",
+                              "$target_gen_dir/{{source_name_part}}.skill.d.ts",
+                            ])
 }

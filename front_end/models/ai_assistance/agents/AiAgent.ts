@@ -12,6 +12,7 @@ import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
+import {dispatchAiAssistanceDoneEvent} from '../DOMHelpers.js';
 import type {ContextHandlerResult, DataHandlerResult} from '../tools/Tool.js';
 
 type UrlString = Platform.DevToolsPath.UrlString;
@@ -956,7 +957,7 @@ export abstract class AiAgent<T> {
     }
 
     if (isStructuredLogEnabled()) {
-      window.dispatchEvent(new CustomEvent('aiassistancedone'));
+      dispatchAiAssistanceDoneEvent();
     }
     return;
   }

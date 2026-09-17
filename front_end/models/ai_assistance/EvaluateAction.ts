@@ -5,54 +5,17 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
+import {
+  getErrorStackOnThePage,
+  type GetErrorStackOutput,
+  stringifyObjectOnThePage,
+} from './DOMHelpers.js';
 import {PAGE_EXPOSED_FUNCTIONS} from './injected.js';
 
 export function formatError(message: string): string {
   return `Error: ${message}`;
 }
 export class SideEffectError extends Error {}
-
-export interface GetErrorStackOutput {
-  message: string;
-  stack?: string;
-}
-
-/* istanbul ignore next */
-export function getErrorStackOnThePage(this: Error): GetErrorStackOutput {
-  // Using this.stack causes side effect checks to throw.
-  return {stack: '', message: this.message};
-}
-
-/* istanbul ignore next */
-export function stringifyObjectOnThePage(this: unknown): string {
-  const seenBefore = new Map();
-  return JSON.stringify(this, function replacer(this: unknown, key: string, value: unknown) {
-    if (typeof value === 'object' && value !== null) {
-      if (seenBefore.has(value)) {
-        return '(cycle)';
-      }
-
-      seenBefore.set(value, true);
-    }
-
-    if (value instanceof HTMLElement) {
-      const idAttribute = value.id ? ` id="${value.id}"` : '';
-      const classAttribute = value.classList.value ? ` class="${value.classList.value}"` : '';
-
-      return `<${value.nodeName.toLowerCase()}${idAttribute}${classAttribute}>${value.hasChildNodes() ? '...' : ''}</${
-          value.nodeName.toLowerCase()}>`;
-    }
-
-    if (this instanceof CSSStyleDeclaration) {
-      // Do not add number keys to the output.
-      if (!isNaN(Number(key))) {
-        return undefined;
-      }
-    }
-
-    return value;
-  });
-}
 
 export async function stringifyRemoteObject(
     object: SDK.RemoteObject.RemoteObject, functionDeclaration: string): Promise<string> {

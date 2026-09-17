@@ -18,7 +18,6 @@ template("devtools_base_module") {
 _devtools_module_folder_exceptions = [
   "front_end/core/platform/browser",
   "front_end/core/platform/node",
-  "front_end/models/ai_assistance",
 ]
 
 _devtools_module_folder_exceptions_full = []

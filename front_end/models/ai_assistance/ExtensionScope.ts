@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {getOrCreateIsolatedWorld} from './agents/ExecuteJavascript.js';
 import type {ChangeManager} from './ChangeManager.js';
+import {sanitizeStyleChanges} from './DOMHelpers.js';
 import {
   AI_ASSISTANCE_CSS_CLASS_NAME,
   type FreestyleCallbackArgs,
@@ -330,36 +330,7 @@ export class ExtensionScope {
   }
 
   async sanitizedStyleChanges(selector: string, styles: Record<string, string>): Promise<Record<string, string>> {
-    const cssStyleValue: string[] = [];
-    const changedStyles: string[] = [];
-    const styleSheet = new CSSStyleSheet({disabled: true});
-    const kebabStyles = Platform.StringUtilities.toKebabCaseKeys(styles);
-    for (const [style, value] of Object.entries(kebabStyles)) {
-      // Build up the CSS style
-      cssStyleValue.push(`${style}: ${value};`);
-      // Keep track of what style changed to query later.
-      changedStyles.push(style);
-    }
-
-    // Build up the CSS stylesheet value.
-    await styleSheet.replace(`${selector} { ${cssStyleValue.join(' ')} }`);
-
-    const sanitizedStyles: Record<string, string> = {};
-    for (const cssRule of styleSheet.cssRules) {
-      if (!(cssRule instanceof CSSStyleRule)) {
-        continue;
-      }
-      for (const style of changedStyles) {
-        // We need to use the style rather then the stylesMap
-        // as the latter expands the styles to each separate part
-        // Example:
-        // padding: 10px 20px -> padding-top: 10px, padding-bottom: 10px, etc.
-        const value = cssRule.style.getPropertyValue(style);
-        if (value) {
-          sanitizedStyles[style] = value;
-        }
-      }
-    }
+    const sanitizedStyles = await sanitizeStyleChanges(selector, styles);
 
     if (Object.keys(sanitizedStyles).length === 0) {
       throw new Error(

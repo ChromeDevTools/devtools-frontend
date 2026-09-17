@@ -73,9 +73,10 @@ describe('SourceMapScopeRemoteObject', () => {
     };
     callFrame.location.returns(
         new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 50));
-    callFrame.evaluate.callsFake(({expression}) => {
-      assert.strictEqual(expression, 'a');
-      return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject(42)});
+    callFrame.evaluate.callsFake(({expression, generatePreview}) => {
+      assert.strictEqual(expression, '({ __proto__: null, ...(() => { try { return {0: eval("a")}; } catch {} })() })');
+      assert.isFalse(generatePreview);
+      return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject({0: 42})});
     });
 
     const entry =
@@ -118,8 +119,12 @@ describe('SourceMapScopeRemoteObject', () => {
       new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 100),
       new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 175),
     ];
-    const expectedExpressions = ['a', 'does not matter since it must not be called', 'b'];
-    const values = [42, undefined, 21];
+    const expectedExpressions = [
+      '({ __proto__: null, ...(() => { try { return {0: eval("a")}; } catch {} })() })',
+      'does not matter since it must not be called',
+      '({ __proto__: null, ...(() => { try { return {0: eval("b")}; } catch {} })() })',
+    ];
+    const values = [{0: 42}, undefined, {0: 21}];
 
     for (let i = 0; i < 3; ++i) {
       callFrame.location.returns(pauseLocations[i]);
@@ -136,17 +141,17 @@ describe('SourceMapScopeRemoteObject', () => {
       assert.isNotNull(properties);
       assert.lengthOf(properties, 1);
       assert.strictEqual(properties[0].name, 'variable1');
-      assert.strictEqual(properties[0].value?.value, values[i]);
+      assert.strictEqual(properties[0].value?.value, values[i]?.[0]);
     }
   });
 
-  it('evaluates binding expressions in the V8 scope matching the range', async () => {
+  it('batches multiple variables and passes scopeNumber to evaluate', async () => {
     const originalScope: ScopesCodec.OriginalScope = {
       start: {line: 0, column: 0},
       end: {line: 20, column: 0},
       isStackFrame: true,
       kind: 'function',
-      variables: ['variable1'],
+      variables: ['var1', 'var2', 'var3'],
       children: [],
     };
     const range: ScopesCodec.GeneratedRange = {
@@ -154,27 +159,42 @@ describe('SourceMapScopeRemoteObject', () => {
       end: {line: 0, column: 200},
       isStackFrame: false,
       isHidden: false,
-      values: ['a'],
+      values: ['expr1', null, 'expr3'],
       children: [],
     };
     callFrame.location.returns(
         new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 50));
-    callFrame.evaluate.resolves({object: new SDK.RemoteObject.LocalJSONObject(42)});
+    callFrame.evaluate.callsFake(options => {
+      assert.strictEqual(
+          options.expression,
+          '({ __proto__: null, ...(() => { try { return {0: eval("expr1")}; } catch {} })(), ...(() => { try { return {2: eval("expr3")}; } catch {} })() })');
+      assert.strictEqual(options.scopeNumber, 2);
+      assert.isFalse(options.generatePreview);
+      return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject({0: 100, 2: 200})});
+    });
 
-    const entry = new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, range, false,
+    const entry = new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, range, true,
                                                                             undefined, /* scopeNumber */ 2);
-    await entry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ true);
+    const {properties} =
+        await entry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ true);
 
-    sinon.assert.calledOnceWithMatch(callFrame.evaluate, {expression: 'a', scopeNumber: 2, generatePreview: true});
+    assert.isNotNull(properties);
+    assert.lengthOf(properties, 3);
+    assert.strictEqual(properties[0].name, 'var1');
+    assert.strictEqual(properties[0].value?.value, 100);
+    assert.strictEqual(properties[1].name, 'var2');
+    assert.isUndefined(properties[1].value);
+    assert.strictEqual(properties[2].name, 'var3');
+    assert.strictEqual(properties[2].value?.value, 200);
   });
 
-  it('lets the backend pick the inner-most scope when no scope number was resolved', async () => {
+  it('distinguishes between variables with value undefined and throwing expressions', async () => {
     const originalScope: ScopesCodec.OriginalScope = {
       start: {line: 0, column: 0},
       end: {line: 20, column: 0},
       isStackFrame: true,
       kind: 'function',
-      variables: ['variable1'],
+      variables: ['definedAsUndefined', 'throwsError'],
       children: [],
     };
     const range: ScopesCodec.GeneratedRange = {
@@ -182,19 +202,29 @@ describe('SourceMapScopeRemoteObject', () => {
       end: {line: 0, column: 200},
       isStackFrame: false,
       isHidden: false,
-      values: ['a'],
+      values: ['undefExpr', 'errorExpr'],
       children: [],
     };
     callFrame.location.returns(
         new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 50));
-    callFrame.evaluate.resolves({object: new SDK.RemoteObject.LocalJSONObject(42)});
+    callFrame.evaluate.callsFake(() => {
+      // Index 0 was evaluated to undefined, so property 0 is in the object.
+      // Index 1 threw an error, so property 1 is NOT in the object.
+      return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject({0: undefined})});
+    });
 
     const entry =
-        new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, range, false, undefined);
-    await entry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
+        new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, range, true, undefined, 0);
+    const {properties} =
+        await entry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ true);
 
-    sinon.assert.calledOnceWithMatch(callFrame.evaluate,
-                                     {expression: 'a', scopeNumber: undefined, generatePreview: false});
+    assert.isNotNull(properties);
+    assert.lengthOf(properties, 2);
+    assert.strictEqual(properties[0].name, 'definedAsUndefined');
+    assert.isDefined(properties[0].value);
+    assert.strictEqual(properties[0].value?.type, 'undefined');
+    assert.strictEqual(properties[1].name, 'throwsError');
+    assert.isUndefined(properties[1].value);
   });
 });
 
@@ -214,7 +244,8 @@ describe('SourceMapScopeChainEntry', () => {
     callFrame.debuggerModel = universe.createTarget().model(SDK.DebuggerModel.DebuggerModel)!;
   });
 
-  function entry(scope: Partial<ScopesCodec.OriginalScope>, isInnerMostFunction = false) {
+  function entry(scope: Partial<ScopesCodec.OriginalScope>, isInnerMostFunction = false,
+                 returnValue?: SDK.RemoteObject.RemoteObject) {
     const originalScope: ScopesCodec.OriginalScope = {
       start: {line: 0, column: 0},
       end: {line: 20, column: 0},
@@ -224,7 +255,7 @@ describe('SourceMapScopeChainEntry', () => {
       ...scope,
     };
     return new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, undefined,
-                                                                     isInnerMostFunction, undefined);
+                                                                     isInnerMostFunction, returnValue);
   }
 
   it('labels stack frames as Local or Closure independent of the kind label', () => {

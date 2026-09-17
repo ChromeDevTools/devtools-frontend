@@ -144,23 +144,55 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
       return {properties: [], internalProperties: []};
     }
 
+    if (this.#scope.variables.length === 0) {
+      return {properties: [], internalProperties: []};
+    }
+
+    const expressions = this.#scope.variables.map((_, index) => this.#findExpression(index));
+
+    if (expressions.every(expr => expr === null)) {
+      const properties = this.#scope.variables.map(v => SourceMapScopeRemoteObject.#unavailableProperty(v));
+      return {properties, internalProperties: []};
+    }
+
+    const spreadEntries: string[] = [];
+    for (const [index, expr] of expressions.entries()) {
+      if (expr !== null) {
+        spreadEntries.push(`...(() => { try { return {${index}: eval(${JSON.stringify(expr)})}; } catch {} })()`);
+      }
+    }
+
+    const batchExpression = `({ __proto__: null, ${spreadEntries.join(', ')} })`;
+    const result = await this.#callFrame.evaluate({
+      expression: batchExpression,
+      generatePreview: false,
+      scopeNumber: this.#scopeNumber,
+    });
+
+    if ('error' in result || result.exceptionDetails || !result.object) {
+      const properties = this.#scope.variables.map(v => SourceMapScopeRemoteObject.#unavailableProperty(v));
+      return {properties, internalProperties: []};
+    }
+
+    const {properties: objectProperties} = await result.object.getOwnProperties(generatePreview);
+    result.object.release();
+
+    const propertyMap = new Map<string, RemoteObjectProperty>();
+    if (objectProperties) {
+      for (const prop of objectProperties) {
+        propertyMap.set(prop.name, prop);
+      }
+    }
+
     const properties: RemoteObjectProperty[] = [];
     for (const [index, variable] of this.#scope.variables.entries()) {
-      const expression = this.#findExpression(index);
-      if (expression === null) {
-        properties.push(SourceMapScopeRemoteObject.#unavailableProperty(variable));
-        continue;
-      }
-
-      const result = await this.#callFrame.evaluate({expression, generatePreview, scopeNumber: this.#scopeNumber});
-      if ('error' in result || result.exceptionDetails) {
-        // TODO(crbug.com/40277685): Make these errors user-visible to aid tooling developers.
-        //         E.g. show the error on hover or expose it in the developer resources panel.
+      const prop = propertyMap.get(String(index));
+      if (!prop || !prop.value) {
         properties.push(SourceMapScopeRemoteObject.#unavailableProperty(variable));
       } else {
-        properties.push(new RemoteObjectProperty(
-            variable, result.object, /* enumerable */ false, /* writable */ false, /* isOwn */ true,
-            /* wasThrown */ false));
+        properties.push(new RemoteObjectProperty(variable, prop.value, /* enumerable */ false, /* writable */ false,
+                                                 /* isOwn */ true,
+                                                 /* wasThrown */ false));
       }
     }
 
@@ -177,7 +209,7 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
     if (typeof expressionOrSubRanges === 'string') {
       return expressionOrSubRanges;
     }
-    if (expressionOrSubRanges === null) {
+    if (expressionOrSubRanges === null || expressionOrSubRanges === undefined) {
       return null;
     }
 

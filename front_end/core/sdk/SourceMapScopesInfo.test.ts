@@ -597,7 +597,7 @@ describe('SourceMapScopesInfo', () => {
           scopePayload(Protocol.Debugger.ScopeType.Global),
         ],
       });
-      callFrame.evaluate.resolves({object: new SDK.RemoteObject.LocalJSONObject(42)});
+      callFrame.evaluate.resolves({object: new SDK.RemoteObject.LocalJSONObject({0: 42})});
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       const scopeChain = info.resolveMappedScopeChain(callFrame);
@@ -607,8 +607,14 @@ describe('SourceMapScopesInfo', () => {
       await scopeChain[0].object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
       await scopeChain[1].object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
 
-      sinon.assert.calledWithMatch(callFrame.evaluate, {expression: 'i', scopeNumber: 0});
-      sinon.assert.calledWithMatch(callFrame.evaluate, {expression: 'o', scopeNumber: 1});
+      sinon.assert.calledWithMatch(callFrame.evaluate, {
+        expression: '({ __proto__: null, ...(() => { try { return {0: eval("i")}; } catch {} })() })',
+        scopeNumber: 0,
+      });
+      sinon.assert.calledWithMatch(callFrame.evaluate, {
+        expression: '({ __proto__: null, ...(() => { try { return {0: eval("o")}; } catch {} })() })',
+        scopeNumber: 1,
+      });
     });
 
     it('returns the original global scope when paused in the global scope', () => {
@@ -805,8 +811,9 @@ describe('SourceMapScopesInfo', () => {
 
       // Attempt to get `someFn`s  variables and check that we only call callFrame.evaluate once.
       callFrame.evaluate.callsFake(({expression}) => {
-        assert.strictEqual(expression, 'f');
-        return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject(42)});
+        assert.strictEqual(expression,
+                           '({ __proto__: null, ...(() => { try { return {0: eval("f")}; } catch {} })() })');
+        return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject({0: 42})});
       });
       const {properties} = await scopeChain[0].object().getAllProperties(
           /* accessorPropertiesOnly */ false, /* generatePreview */ true, /* nonIndexedPropertiesOnly */ false);
@@ -867,8 +874,9 @@ describe('SourceMapScopesInfo', () => {
 
       // Attempt to get the global scope's variables and check that we only call callFrame.evaluate once.
       callFrame.evaluate.callsFake(({expression}) => {
-        assert.strictEqual(expression, '42');
-        return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject(42)});
+        assert.strictEqual(expression,
+                           '({ __proto__: null, ...(() => { try { return {0: eval("42")}; } catch {} })() })');
+        return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject({0: 42})});
       });
       const {properties} = await scopeChain[0].object().getAllProperties(
           /* accessorPropertiesOnly */ false, /* generatePreview */ true, /* nonIndexedPropertiesOnly */ false);

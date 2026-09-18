@@ -50,7 +50,7 @@ Or to make it depend on another branch C:
 ```bash
 git reparent-branch <branch-C>
 ```
-* **Detaching from landed CLs:** When parent CLs in a stack have landed on `main`, first run `git fetch` so `origin/main` includes the landed commits (otherwise reparenting will trigger merge conflicts). Then check out the first unlanded branch in the chain and run `git reparent-branch --root` **before** deleting the landed branches (so `depot_tools` can still resolve the old upstream tracking branch). After reparenting (which automatically runs `git rebase-update`), delete the landed branches (`git branch -D <landed-branches>`) and run `gclient sync -Df`.
+* **Detaching from landed CLs:** When parent CLs in a stack have landed on `main`, first run `git fetch` so `origin/main` includes the landed commits (otherwise reparenting will trigger merge conflicts). Then check out the first unlanded branch in the chain and run `git reparent-branch --root` **before** archiving the landed branches (so `depot_tools` can still resolve the old upstream tracking branch). After reparenting (which automatically runs `git rebase-update`), archive the landed branches (`git cl archive -f`) and run `gclient sync -Df`.
 
 ### Syncing with Upstream
 To update all your branches with the latest changes from `main` and their respective upstreams, and synchronize dependencies:
@@ -58,7 +58,7 @@ To update all your branches with the latest changes from `main` and their respec
 git rebase-update && gclient sync -Df
 ```
 * **Always use `git rebase-update` for stacks:** Never write manual `git checkout && git rebase` loops across stacked branches. `git rebase-update` automatically rebases the entire dependency graph in order.
-* **Clean up old branches first:** Before running `git rebase-update`, delete (`git branch -D <branch>`) or mark dormant (`git config branch.<branch>.dormant true`) any obsolete or landed branches so they do not trigger unnecessary rebase conflicts.
+* **Clean up old branches first:** Before running `git rebase-update`, archive landed/closed branches (`git cl archive -f`) or mark dormant (`git config branch.<branch>.dormant true`) any obsolete branches so they do not trigger unnecessary rebase conflicts.
 * **Always sync dependencies after rebase:** Always run `gclient sync -Df` after a `git rebase-update`. CIPD dependency updates do not show up in `git status`, so skipping `gclient sync -Df` risks leaving your checkout out of sync.
 
 ### Initial upload
@@ -97,6 +97,7 @@ To check whether a DevTools commit (`devtools/devtools-frontend`) has rolled int
 | Subsequent CL upload (or update stack from leaf) | `git cl upload -f -d -t "<message>"` |
 | Reparent branch to root (`origin/main`) | `git reparent-branch --root` |
 | Change branch parent | `git reparent-branch <new-parent>` |
+| Archive landed/closed branches | `git cl archive -f` |
 | Rebase all branches in stack | `git rebase-update` |
 | Sync dependencies after rebase | `gclient sync -Df` |
 | Check release & roll status | Query `https://chromiumdash.appspot.com/fetch_commit?commit=<sha>` |
@@ -106,4 +107,4 @@ To check whether a DevTools commit (`devtools/devtools-frontend`) has rolled int
 - **Using `git checkout -b`:** Does not set up tracking information correctly for `depot_tools`. Use `git new-branch`.
 - **Manual rebasing of stacked branches:** Never use manual `git rebase` loops. Always use `git rebase-update` or `git reparent-branch` to let `depot_tools` handle tracking updates.
 - **Uploading intermediate branches when updating a stack:** When updating an existing stack of CLs, do not run `git cl upload` on each branch in a chain—uploading from the leaf branch uploads new patchsets for all parent CLs automatically (note: initial uploads must still be done per branch).
-- **Deleting parent branches before reparenting:** Always run `git fetch` and `git reparent-branch --root` on the child branch before deleting a landed parent branch.
+- **Archiving parent branches before reparenting:** Always run `git fetch` and `git reparent-branch --root` on the child branch before archiving a landed parent branch with `git cl archive -f`.

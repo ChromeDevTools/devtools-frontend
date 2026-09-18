@@ -12,7 +12,6 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as Menus from '../../ui/components/menus/menus.js';
 
 import * as Converters from './converters/converters.js';
 import * as Models from './models/models.js';
@@ -168,8 +167,7 @@ describeWithEnvironment('RecordingView', () => {
       assert.isOk(input.showCodeView);
     }
 
-    view.input.onCodeFormatChange(
-        new Menus.SelectMenu.SelectMenuItemSelectedEvent(Models.ConverterIds.ConverterIds.REPLAY));
+    view.input.onCodeFormatChange(Models.ConverterIds.ConverterIds.REPLAY);
     {
       const input = await view.nextInput;
       assert.strictEqual(input.recorderSettings?.preferredCopyFormat, Models.ConverterIds.ConverterIds.REPLAY);

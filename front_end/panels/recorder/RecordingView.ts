@@ -13,9 +13,7 @@ import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.j
 import type * as PuppeteerReplay from '../../third_party/puppeteer-replay/puppeteer-replay.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
-import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as Input from '../../ui/components/input/input.js';
-import type * as Menus from '../../ui/components/menus/menus.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -148,6 +146,10 @@ const UIStrings = {
    * @description The announcement when the code sidebar is closed.
    */
   codeSidebarClosed: 'Code sidebar closed',
+  /**
+   * @description Label for the select that changes the code format in the Recorder panel.
+   */
+  codeFormat: 'Code format',
 } as const;
 const str_ = i18n.i18n.registerUIStrings(
     'panels/recorder/RecordingView.ts',
@@ -182,7 +184,6 @@ const networkConditionPresets = [
 function renderSettings({
   settings,
   replaySettingsExpanded,
-  onSelectMenuLabelClick,
   onNetworkConditionsChange,
   onTimeoutInput,
   isRecording,
@@ -277,7 +278,7 @@ function renderSettings({
     }
 
     replaySettingsFragments.push(html`<div class="editable-setting">
-      <label class="wrapping-label" @click=${onSelectMenuLabelClick}>
+      <label class="wrapping-label">
         ${i18nString(UIStrings.network)}
         <select
             title=${menuButtonTitle}
@@ -380,7 +381,7 @@ function renderTimelineArea(input: ViewInput, output: ViewOutput): Lit.LitTempla
     // clang-format on
   }
   // clang-format off
-    /* eslint-disable @devtools/no-deprecated-component-usages */
+
     return html`
         <devtools-split-view
           direction="auto"
@@ -394,35 +395,33 @@ function renderTimelineArea(input: ViewInput, output: ViewOutput): Lit.LitTempla
           <div slot="sidebar" jslog=${VisualLogging.pane('source-code').track({resize: true})}>
             ${input.showCodeView ? html`
             <div class="section-toolbar" jslog=${VisualLogging.toolbar()}>
-              <devtools-select-menu
-                @selectmenuselected=${input.onCodeFormatChange}
-                .showDivider=${true}
-                .showArrow=${true}
-                .sideButton=${false}
-                .showSelectedItem=${true}
-                .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
-                .buttonTitle=${input.converterName || ''}
-                .jslogContext=${'code-format'}
-              >
+              <label class="code-format-label">
+                ${i18nString(UIStrings.codeFormat)}
+                <select
+                  @change=${(event: Event) => {
+                    if (event.target instanceof HTMLSelectElement) {
+                      input.onCodeFormatChange(event.target.value);
+                    }
+                  }}
+                  jslog=${VisualLogging.dropDown('code-format').track({change: true})}>
                 ${input.builtInConverters.map(converter => {
-                  return html`<devtools-menu-item
-                    .value=${converter.getId()}
-                    .selected=${input.converterId === converter.getId()}
-                    jslog=${VisualLogging.action().track({click: true}).context(`converter-${Platform.StringUtilities.toKebabCase(converter.getId())}`)}
-                  >
+                  return html`<option
+                    value=${converter.getId()}
+                    ?selected=${input.converterId === converter.getId()}
+                    jslog=${VisualLogging.item(`converter-${Platform.StringUtilities.toKebabCase(converter.getId())}`)}>
                     ${converter.getFormatName()}
-                  </devtools-menu-item>`;
+                  </option>`;
                 })}
                 ${input.extensionConverters.map(converter => {
-                  return html`<devtools-menu-item
-                    .value=${converter.getId()}
-                    .selected=${input.converterId === converter.getId()}
-                    jslog=${VisualLogging.action().track({click: true}).context('converter-extension')}
-                  >
+                  return html`<option
+                    value=${converter.getId()}
+                    ?selected=${input.converterId === converter.getId()}
+                    jslog=${VisualLogging.item('converter-extension')}>
                     ${converter.getFormatName()}
-                  </devtools-menu-item>`;
+                  </option>`;
                 })}
-              </devtools-select-menu>
+                </select>
+              </label>
               <devtools-button
                 title=${Models.Tooltip.getTooltipForActions(
                   i18nString(UIStrings.hideCode),
@@ -444,7 +443,7 @@ function renderTimelineArea(input: ViewInput, output: ViewOutput): Lit.LitTempla
           </div>
         </devtools-split-view>
       `;
-    /* eslint-enable @devtools/no-deprecated-component-usages */
+
   // clang-format on
 }
 
@@ -735,7 +734,6 @@ interface ViewInput {
   breakpointIndexes: Set<number>;
   builtInConverters: readonly Converters.Converter.Converter[];
   converterId: string;
-  converterName: string|null;
   currentError: Error|null;
   currentStep: Models.Schema.Step|null;
   editorState: CodeMirror.EditorState|null;
@@ -766,14 +764,11 @@ interface ViewInput {
       speed: Models.RecordingPlayer.PlayRecordingSpeed,
       extension?: Extensions.ExtensionManager.Extension,
       ) => void;
-  onCodeFormatChange: (
-      event: Menus.SelectMenu.SelectMenuItemSelectedEvent,
-      ) => void;
+  onCodeFormatChange: (codeFormat: string) => void;
   onCopyStep: (step: Models.Schema.Step) => void;
   onEditTitleButtonClick: (event: Event) => void;
   onNetworkConditionsChange: (event: Event) => void;
   onReplaySettingsKeydown: (event: Event) => void;
-  onSelectMenuLabelClick: (event: Event) => void;
   onStepClick: (step: Models.Schema.Step|Models.Section.Section) => void;
   onStepHover: (step: Models.Schema.Step|Models.Section.Section) => void;
   onTimeoutInput: (event: Event) => void;
@@ -932,19 +927,11 @@ export class RecordingView extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    const converter =
-        [
-          ...(this.builtInConverters || []),
-          ...(this.extensionConverters || []),
-        ].find(converter => converter.getId() === this.#converterId) ??
-        this.builtInConverters[0];
-
     this.#view(
         {
           breakpointIndexes: this.breakpointIndexes,
           builtInConverters: this.builtInConverters,
           converterId: this.#converterId,
-          converterName: converter?.getFormatName(),
           currentError: this.currentError ?? null,
           currentStep: this.currentStep ?? null,
           editorState: this.#editorState ?? null,
@@ -998,7 +985,6 @@ export class RecordingView extends UI.Widget.Widget {
           onEditTitleButtonClick: this.#onEditTitleButtonClick.bind(this),
           onNetworkConditionsChange: this.#onNetworkConditionsChange.bind(this),
           onReplaySettingsKeydown: this.#onReplaySettingsKeydown.bind(this),
-          onSelectMenuLabelClick: this.#onSelectMenuLabelClick.bind(this),
           onStepClick: this.#onStepClick.bind(this),
           onStepHover: this.#onStepHover.bind(this),
           onTimeoutInput: this.#onTimeoutInput.bind(this),
@@ -1175,13 +1161,6 @@ export class RecordingView extends UI.Widget.Widget {
     input.focus();
   };
 
-  #onSelectMenuLabelClick = (event: Event): void => {
-    const target = event.target as HTMLElement;
-    if (target.matches('.wrapping-label')) {
-      target.querySelector('devtools-select-menu')?.click();
-    }
-  };
-
   async #copyCurrentSelection(step?: Models.Schema.Step|null): Promise<void> {
     let converter =
         [
@@ -1294,10 +1273,10 @@ export class RecordingView extends UI.Widget.Widget {
     this.#viewOutput.highlightLinesInEditor?.(line, length, scroll);
   };
 
-  #onCodeFormatChange = (event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void => {
-    this.#converterId = event.itemValue as string;
+  #onCodeFormatChange = (codeFormat: string): void => {
+    this.#converterId = codeFormat;
     if (this.recorderSettings) {
-      this.recorderSettings.preferredCopyFormat = event.itemValue as string;
+      this.recorderSettings.preferredCopyFormat = codeFormat;
     }
 
     void this.#convertToCode();

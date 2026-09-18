@@ -33,6 +33,7 @@ ts_e2e_library("harness_library") {
     "../e2e/helpers",
     "../shared",
     "helpers",
+    "report",
   ]
 }
 

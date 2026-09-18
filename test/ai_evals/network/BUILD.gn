@@ -11,5 +11,6 @@ ts_e2e_library("network") {
     "../../conductor:implementation",
     "../../e2e/helpers",
     "../helpers",
+    "../report",
   ]
 }

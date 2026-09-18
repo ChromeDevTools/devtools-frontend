@@ -8,7 +8,7 @@ import * as path from 'node:path';
 import {SOURCE_ROOT} from '../../conductor/paths.js';
 import {openNetworkTab} from '../../e2e/helpers/network-helpers.js';
 import {findAndSetContext} from '../helpers/ai_eval-helpers.js';
-import {type Step, TrajectoryBuilder} from '../helpers/trajectory-builder.js';
+import {type Step, TrajectoryBuilder} from '../report/trajectory-builder.js';
 
 describe('Network AI Eval: server-error-5xx', function() {
   this.timeout(180_000);

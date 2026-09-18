@@ -27,12 +27,13 @@ export function expandResponseFiles(args: string[]): string[] {
   return expanded;
 }
 
-export enum DiffBehaviors {
-  UPDATE = 'update',
-  THROW = 'throw',
-  NO_THROW = 'no-throw',
-  NO_UPDATE = 'no-update',
-}
+export const DiffBehaviors = {
+  UPDATE: 'update',
+  THROW: 'throw',
+  NO_THROW: 'no-throw',
+  NO_UPDATE: 'no-update',
+} as const;
+export type DiffBehaviors = typeof DiffBehaviors[keyof typeof DiffBehaviors];
 
 export function asArray(value?: string|string[]): string[] {
   if (!value) {

@@ -16,8 +16,10 @@ import {TEST_ID_REGEX} from '../conductor/paths.js';
 import {TestConfig} from '../conductor/test_config.js';
 import {getSkippedTests} from '../conductor/test_expectations.js';
 
+import {ResultsDbReporter} from './mocha-resultsdb-reporter.js';
+
 type Options = Mocha.MochaOptions&{spec?: string[], suiteName?: string};
-type OmitOptions = 'reporter'|'allowUncaught'|'retries'|'failZero';
+type OmitOptions = 'reporter'|'allowUncaught'|'retries';
 
 function optionsWithDefalts(options: Options): Options {
   const withDefaults = {
@@ -25,7 +27,7 @@ function optionsWithDefalts(options: Options): Options {
     // See https://github.com/mochajs/mocha/blob/master/docs/index.md#--allow-uncaught.
     allowUncaught: true,
     retries: TestConfig.retries,
-    reporter: path.join(import.meta.dirname, 'mocha-resultsdb-reporter.js'),
+    reporter: ResultsDbReporter,
     slow: 1000,
     failZero: false,
     bail: TestConfig.bail,

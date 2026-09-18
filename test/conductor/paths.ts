@@ -10,7 +10,7 @@ import build from '../build.json' with {type : 'json'};
 export const SOURCE_ROOT: string = path.join(import.meta.dirname, '..', build.SOURCE_ROOT);
 export const CHECKOUT_ROOT: string = path.join(import.meta.dirname, '..', build.CHECKOUT_ROOT);
 export const BUILD_ROOT: string = path.join(import.meta.dirname, '..', build.BUILD_ROOT);
-export const GEN_DIR: string = path.normalize(path.join(import.meta.dirname, '..', '..'));
+export const GEN_DIR: string = path.join(BUILD_ROOT, 'gen', path.relative(CHECKOUT_ROOT, SOURCE_ROOT));
 export const BUILD_WITH_CHROMIUM: boolean = build.BUILD_WITH_CHROMIUM;
 export const TEST_ID_REGEX: RegExp = /^(.*\.[tj]s):(.*)$/;
 
@@ -41,7 +41,11 @@ export function isContainedInDirectory(contained: string, directory: string): bo
 }
 
 export class PathPair {
-  protected constructor(readonly sourcePath: string, readonly buildPath: string) {
+  readonly sourcePath: string;
+  readonly buildPath: string;
+  protected constructor(sourcePath: string, buildPath: string) {
+    this.sourcePath = sourcePath;
+    this.buildPath = buildPath;
     if (!path.isAbsolute(sourcePath) || !path.isAbsolute(buildPath)) {
       throw new Error('Repo paths must be absolute');
     }
@@ -63,7 +67,11 @@ export class PathPair {
 // Test is either identified by the test file or a test file + the id for the
 // subtest in that file.
 export class TestId<Pair extends PathPair = PathPair> {
-  protected constructor(readonly pathPair: Pair, readonly subTestId?: string) {
+  readonly pathPair: Pair;
+  readonly subTestId?: string;
+  protected constructor(pathPair: Pair, subTestId?: string) {
+    this.pathPair = pathPair;
+    this.subTestId = subTestId;
   }
 
   toBuildTestId(): string {

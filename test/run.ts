@@ -145,8 +145,6 @@ function ninja(stdio: 'inherit'|'pipe', ...args: string[]) {
   return {status, output};
 }
 
-const MOCHA_BIN_PATH = path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha.js');
-
 class Tests {
   readonly suite: PathPair;
   readonly extraPaths: PathPair[];
@@ -322,21 +320,14 @@ class ScriptTestId extends TestId {
   }
 }
 
-class ScriptsMochaTests extends Tests {
+class ScriptTests extends Tests {
   override readonly cwd = SOURCE_ROOT;
-  override readonly useResponseFile = false;
 
   override run(tests: TestId[]) {
     return super.run(
         tests.map(test => ScriptTestId.getFromTestId(test)),
         [
-          MOCHA_BIN_PATH,
-          // Some test require spinning up a TypeScript
-          // typechecking service which take some time on
-          // the first test. We set 2 x Default(2000)
-          '--timeout=4000',
-          '--extension=ts,js',
-          '--fail-zero',
+          path.join(SOURCE_ROOT, 'test', 'scripts', 'run_mocha.ts'),
         ],
     );
   }
@@ -376,10 +367,10 @@ function main() {
     new MochaTests(path.join(GEN_DIR, 'test/e2e')),
     new MochaTests(path.join(GEN_DIR, 'test/ai_evals')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),
-    new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/eslint_rules/tests')),
-    new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/stylelint_rules/tests')),
-    new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/build/tests')),
-    new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/gn_deps_verifier/tests')),
+    new ScriptTests(path.join(SOURCE_ROOT, 'scripts/eslint_rules/tests')),
+    new ScriptTests(path.join(SOURCE_ROOT, 'scripts/stylelint_rules/tests')),
+    new ScriptTests(path.join(SOURCE_ROOT, 'scripts/build/tests')),
+    new ScriptTests(path.join(SOURCE_ROOT, 'scripts/gn_deps_verifier/tests')),
   ];
 
   if (!options['skip-ninja']) {

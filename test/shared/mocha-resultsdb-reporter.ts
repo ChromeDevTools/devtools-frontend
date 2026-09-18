@@ -8,7 +8,7 @@ import * as path from 'node:path';
 
 import {formatFailedTestsSummary, generateExactTestId} from '../../front_end/testing/TestIdGeneration.js';
 import * as DiffUtils from '../conductor/diff-utils.js';
-import {GEN_DIR} from '../conductor/paths.js';
+import {GEN_DIR, SOURCE_ROOT} from '../conductor/paths.js';
 import * as ResultsDb from '../conductor/resultsdb.js';
 import {
   ScreenshotError,
@@ -48,7 +48,7 @@ interface HookWithParent {
   parent: Record<string, any>;
 }
 
-class ResultsDbReporter extends Mocha.reporters.Base {
+export class ResultsDbReporter extends Mocha.reporters.Base {
   private suitePrefix?: string;
   private n = 0;
   private expectedFailuresCount = 0;
@@ -57,9 +57,8 @@ class ResultsDbReporter extends Mocha.reporters.Base {
   htmlResult: fs.WriteStream|undefined;
 
   localResultsPath(): string|undefined {
-    return !ResultsDb.available() && this.suitePrefix ?
-        path.join(import.meta.dirname, '..', this.suitePrefix, 'results.html') :
-        undefined;
+    return !ResultsDb.available() && this.suitePrefix ? path.join(GEN_DIR, 'test', this.suitePrefix, 'results.html') :
+                                                        undefined;
   }
 
   constructor(runner: Mocha.Runner, options?: Mocha.MochaOptions) {
@@ -71,6 +70,7 @@ class ResultsDbReporter extends Mocha.reporters.Base {
     const localResults = this.localResultsPath();
 
     if (localResults) {
+      fs.mkdirSync(path.dirname(localResults), {recursive: true});
       this.htmlResult = fs.createWriteStream(localResults, {});
     }
 
@@ -83,7 +83,7 @@ class ResultsDbReporter extends Mocha.reporters.Base {
   }
 
   private onTestPass(test: Mocha.Test) {
-    const {exactTestId} = generateExactTestId(GEN_DIR, test.file!, test.titlePath());
+    const {exactTestId} = generateExactTestId(GEN_DIR, test.file!, test.titlePath(), SOURCE_ROOT);
     this.failedTestIds.delete(exactTestId);
     const isExpected = isExpectedResult({exactTestId, success: true, skipped: false});
     if (!isExpected) {
@@ -117,7 +117,7 @@ class ResultsDbReporter extends Mocha.reporters.Base {
       targetTest = test as Mocha.Test;
     }
 
-    const {exactTestId} = generateExactTestId(GEN_DIR, targetTest.file!, targetTest.titlePath());
+    const {exactTestId} = generateExactTestId(GEN_DIR, targetTest.file!, targetTest.titlePath(), SOURCE_ROOT);
     const isExpected = isExpectedResult({exactTestId, success: false, skipped: false});
     if (isExpected) {
       this.expectedFailuresCount++;
@@ -172,10 +172,11 @@ class ResultsDbReporter extends Mocha.reporters.Base {
 
   private onTestSkip(test: Mocha.Test) {
     if (!TestConfig.isAiAgent) {
-      process.stdout.write(`[SKIP] ${generateExactTestId(GEN_DIR, test.file!, test.titlePath()).exactTestId}\n`);
+      process.stdout.write(
+          `[SKIP] ${generateExactTestId(GEN_DIR, test.file!, test.titlePath(), SOURCE_ROOT).exactTestId}\n`);
     }
     const testResult = this.buildDefaultTestResultFrom(test);
-    const {exactTestId} = generateExactTestId(GEN_DIR, test.file!, test.titlePath());
+    const {exactTestId} = generateExactTestId(GEN_DIR, test.file!, test.titlePath(), SOURCE_ROOT);
     testResult.status = 'SKIP';
     testResult.expected = isExpectedResult({exactTestId, success: false, skipped: true});
     ResultsDb.sendTestResult(testResult);
@@ -183,7 +184,8 @@ class ResultsDbReporter extends Mocha.reporters.Base {
 
   private buildDefaultTestResultFrom(test: Mocha.Test): ResultsDb.TestResult {
     const testRetry = ((test as unknown) as TestRetry);
-    const {exactTestId, coarseName, fineName, caseName} = generateExactTestId(GEN_DIR, test.file!, test.titlePath());
+    const {exactTestId, coarseName, fineName, caseName} =
+        generateExactTestId(GEN_DIR, test.file!, test.titlePath(), SOURCE_ROOT);
     const result = {
       duration: `${((test.duration || 1) * .001).toFixed(3)}s`,
       tags: [{key: 'run', value: String(testRetry.currentRetry() + 1)}],
@@ -222,6 +224,3 @@ class ResultsDbReporter extends Mocha.reporters.Base {
     }
   }
 }
-
-// eslint-disable-next-line no-restricted-syntax
-export default ResultsDbReporter;

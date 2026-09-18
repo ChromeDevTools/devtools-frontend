@@ -151,7 +151,7 @@ export function isAIAgent(): boolean {
 const getDefaultArtifactDir = () => {
   const artifactsPath = path.join(BUILD_ROOT, 'artifacts');
   if (!fs.existsSync(artifactsPath)) {
-    fs.mkdirSync(artifactsPath);
+    fs.mkdirSync(artifactsPath, {recursive: true});
   }
   return artifactsPath;
 };
@@ -187,6 +187,16 @@ export const TestConfig: Config = {
   otaUsername: options['ota-username'],
 };
 
+export function shuffleTests(tests: string[]): string[] {
+  if (TestConfig.shuffle) {
+    for (let i = tests.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tests[i], tests[j]] = [tests[j], tests[i]];
+    }
+  }
+  return tests;
+}
+
 export function loadTests(testDirectory: string, filename = 'tests.txt'): string[] {
   const tests = fs.readFileSync(path.join(testDirectory, filename))
                     .toString()
@@ -211,11 +221,5 @@ export function loadTests(testDirectory: string, filename = 'tests.txt'): string
                             path.relative(testDirectory, t).replaceAll('\\', '/'),
                             ),
                     );
-  if (TestConfig.shuffle) {
-    for (let i = tests.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [tests[i], tests[j]] = [tests[j], tests[i]];
-    }
-  }
-  return tests;
+  return shuffleTests(tests);
 }

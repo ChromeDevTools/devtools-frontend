@@ -91,6 +91,34 @@ describe('TestIdGeneration', () => {
       });
     });
 
+    it('computes correct exact test id from file inside sourceDir when outside genDir', () => {
+      const genDir = '/out/Default/gen';
+      const sourceDir = '/repo';
+      const file = '/repo/scripts/eslint_rules/tests/my_test.ts';
+      const titlePath = ['Suite', 'test case'];
+      const result = generateExactTestId(genDir, file, titlePath, sourceDir);
+      assert.deepEqual(result, {
+        exactTestId: 'scripts/eslint_rules/tests/my_test.ts:suite:test_case',
+        coarseName: 'scripts/eslint_rules/tests/',
+        fineName: 'my_test.ts',
+        caseName: 'suite:test_case',
+      });
+    });
+
+    it('preserves .js extension for file inside sourceDir when outside genDir', () => {
+      const genDir = '/out/Default/gen';
+      const sourceDir = '/repo';
+      const file = '/repo/scripts/stylelint_rules/tests/my_test.test.js';
+      const titlePath = ['Suite', 'test case'];
+      const result = generateExactTestId(genDir, file, titlePath, sourceDir);
+      assert.deepEqual(result, {
+        exactTestId: 'scripts/stylelint_rules/tests/my_test.test.js:suite:test_case',
+        coarseName: 'scripts/stylelint_rules/tests/',
+        fineName: 'my_test.test.js',
+        caseName: 'suite:test_case',
+      });
+    });
+
     it('normalizes backslashes', () => {
       const genDir = 'C:\\gen';
       const file = 'C:\\gen\\front_end\\my_test.js';

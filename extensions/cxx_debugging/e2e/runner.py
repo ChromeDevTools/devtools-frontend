@@ -3,6 +3,13 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+# /// script
+# requires-python = '>=3.11,<3.12'
+# dependencies = [
+#   'pyyaml==5.4.1+chromium.1'
+# ]
+# ///
+
 import argparse
 from collections import Counter
 import http.server

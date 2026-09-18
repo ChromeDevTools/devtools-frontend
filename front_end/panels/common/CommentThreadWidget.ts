@@ -17,10 +17,6 @@ const {html, render, Directives: {createRef, ref}} = Lit;
 
 const UIStrings = {
   /**
-   * @description Link text in the info tooltip for learning more about comments sent to the agent.
-   */
-  learnMore: 'Learn more',
-  /**
    * @description Text next to the checkmark in the comment thread header indicating that comments have been sent to
    * the agent.
    */
@@ -61,7 +57,6 @@ export interface ViewInput {
   comments: CommentManager.CommentManager.Comment[];
   commentText: string;
   textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
-  onLearnMoreClick: () => void;
   onAddComment: (text: string) => void;
   onCommentTextChange: (event: Event) => void;
 }
@@ -139,11 +134,6 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
           >
             <div class="info-tooltip-container">
               ${lockedString(UIStringsNotTranslate.inputDisclaimer)}
-              <button
-                class="tooltip-link"
-                role="link"
-                @click=${input.onLearnMoreClick}
-              >${i18nString(UIStrings.learnMore)}</button>
             </div>
           </devtools-tooltip>
           <devtools-button
@@ -187,10 +177,6 @@ export class CommentThreadWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #handleLearnMoreClick = (): void => {
-    // TODO: wire up the learn more click
-  };
-
   #handleAddComment = (text: string): void => {
     const commentText = text.trim();
     if (commentText && this.onAddComment) {
@@ -212,7 +198,6 @@ export class CommentThreadWidget extends UI.Widget.Widget {
       comments: this.#comments,
       commentText: this.#commentText,
       textAreaRef: this.#textAreaRef,
-      onLearnMoreClick: this.#handleLearnMoreClick,
       onAddComment: this.#handleAddComment,
       onCommentTextChange: this.#handleCommentTextChange,
     };

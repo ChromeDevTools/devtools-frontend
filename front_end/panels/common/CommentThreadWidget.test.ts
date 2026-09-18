@@ -26,7 +26,6 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
           comments: [],
           commentText: '',
           textAreaRef: Lit.Directives.createRef(),
-          onLearnMoreClick: () => {},
           onAddComment: () => {},
           onCommentTextChange: () => {},
           ...inputOverrides,

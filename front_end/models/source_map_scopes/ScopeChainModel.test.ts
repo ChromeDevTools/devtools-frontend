@@ -81,4 +81,36 @@ describe('ScopeChainModel', () => {
 
     assert.isFalse(listenerStub.calledOnce);
   });
+
+  it('emits an event when a source map is attached or detached for the call frame script', async () => {
+    const target = universe.createTarget();
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
+    const fakeFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+    fakeFrame.debuggerModel = debuggerModel;
+    const script = sinon.createStubInstance(SDK.Script.Script, {isWasm: false});
+    // @ts-expect-error readonly for test.
+    fakeFrame.script = script;
+    fakeFrame.scopeChain.returns([]);
+
+    const scopeChainModel =
+        new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame, universe.debuggerWorkspaceBinding);
+    const listenerStub = sinon.stub();
+    scopeChainModel.addEventListener(SourceMapScopes.ScopeChainModel.Events.SCOPE_CHAIN_UPDATED, listenerStub);
+
+    await clock.tickAsync(10);
+    sinon.assert.calledOnce(listenerStub);
+
+    const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+    debuggerModel.sourceMapManager().dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapAttached,
+                                                              {client: script, sourceMap});
+    await clock.tickAsync(10);
+    sinon.assert.calledTwice(listenerStub);
+
+    debuggerModel.sourceMapManager().dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapDetached,
+                                                              {client: script, sourceMap});
+    await clock.tickAsync(10);
+    sinon.assert.calledThrice(listenerStub);
+
+    scopeChainModel.dispose();
+  });
 });

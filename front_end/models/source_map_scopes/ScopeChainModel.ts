@@ -35,8 +35,10 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     this.#callFrame.debuggerModel.addEventListener(
         SDK.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
-    this.#callFrame.debuggerModel.sourceMapManager().addEventListener(
-        SDK.SourceMapManager.Events.SourceMapAttached, this.#sourceMapAttached, this);
+    this.#callFrame.debuggerModel.sourceMapManager().addEventListener(SDK.SourceMapManager.Events.SourceMapAttached,
+                                                                      this.#sourceMapChanged, this);
+    this.#callFrame.debuggerModel.sourceMapManager().addEventListener(SDK.SourceMapManager.Events.SourceMapDetached,
+                                                                      this.#sourceMapChanged, this);
 
     void this.#throttler.schedule(this.#boundUpdate);
   }
@@ -44,8 +46,10 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   dispose(): void {
     this.#callFrame.debuggerModel.removeEventListener(
         SDK.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
-    this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(
-        SDK.SourceMapManager.Events.SourceMapAttached, this.#sourceMapAttached, this);
+    this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(SDK.SourceMapManager.Events.SourceMapAttached,
+                                                                         this.#sourceMapChanged, this);
+    this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(SDK.SourceMapManager.Events.SourceMapDetached,
+                                                                         this.#sourceMapChanged, this);
     this.listeners?.clear();
   }
 
@@ -60,8 +64,8 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
   }
 
-  #sourceMapAttached(event: Common.EventTarget
-                         .EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>): void {
+  #sourceMapChanged(event: Common.EventTarget
+                        .EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>): void {
     if (event.data.client === this.#callFrame.script) {
       void this.#throttler.schedule(this.#boundUpdate);
     }

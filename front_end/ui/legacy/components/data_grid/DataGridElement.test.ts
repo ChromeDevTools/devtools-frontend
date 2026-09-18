@@ -611,6 +611,81 @@ describeWithEnvironment('DataGrid', () => {
     assert.strictEqual(alerts[0], 'Column 1: Value 5');
   });
 
+  describe('deletable attribute', () => {
+    function captureContextMenu(): () => UI.ContextMenu.ContextMenu | null {
+      let capturedMenu: UI.ContextMenu.ContextMenu|null = null;
+      sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').callsFake(function(this: UI.ContextMenu.ContextMenu) {
+        capturedMenu = this;
+        return Promise.resolve();
+      });
+      return () => capturedMenu;
+    }
+
+    async function renderGrid(deletable: boolean, onDelete: () => void): Promise<HTMLElement> {
+      return await renderDataGrid(html`
+          <devtools-data-grid striped name="Display Name" ?deletable=${deletable}>
+            <table>
+              <tr>
+                <th id="column-1">Column 1</th>
+              </tr>
+              <tr @delete=${onDelete}>
+                <td>Value 1</td>
+              </tr>
+            </table>
+          </devtools-data-grid>`);
+    }
+
+    function openContextMenuOnFirstRow(element: HTMLElement): void {
+      const cell = element.shadowRoot!.querySelector('tbody tr:not(.filler-row) td');
+      assert.isNotNull(cell);
+      // `button: 2`, since a context menu with `button: 0` is interpreted as
+      // being invoked through the context menu key on the selected node.
+      cell!.dispatchEvent(
+          new MouseEvent('contextmenu', {bubbles: true, cancelable: true, composed: true, button: 2}));
+    }
+
+    it('adds a delete item to the row context menu and dispatches `delete` on the row', async () => {
+      const onDelete = sinon.stub();
+      const element = await renderGrid(/* deletable=*/ true, onDelete);
+      const getMenu = captureContextMenu();
+
+      openContextMenuOnFirstRow(element);
+
+      const menu = getMenu();
+      assert.isNotNull(menu);
+      const deleteItem = menu!.defaultSection().items.find(item => item.buildDescriptor().label === 'Delete');
+      assert.isDefined(deleteItem);
+
+      menu!.invokeHandler(deleteItem!.id());
+      sinon.assert.calledOnce(onDelete);
+    });
+
+    it('does not add a delete item to the row context menu without the attribute', async () => {
+      const onDelete = sinon.stub();
+      const element = await renderGrid(/* deletable=*/ false, onDelete);
+      const getMenu = captureContextMenu();
+
+      openContextMenuOnFirstRow(element);
+
+      const menu = getMenu();
+      assert.isNotNull(menu);
+      assert.isUndefined(menu!.defaultSection().items.find(item => item.buildDescriptor().label === 'Delete'));
+    });
+
+    it('dispatches `delete` on the row when pressing the Delete key', async () => {
+      const onDelete = sinon.stub();
+      const element = await renderGrid(/* deletable=*/ true, onDelete);
+
+      sendKeydown(element, 'ArrowDown');
+      // The data grid checks `keyCode`, which isn't inferred from `key`.
+      element.focus();
+      getFocusedElement().dispatchEvent(
+          new KeyboardEvent('keydown', {key: 'Delete', keyCode: 46, bubbles: true, composed: true}));
+
+      sinon.assert.calledOnce(onDelete);
+    });
+  });
+
   describe('column visibility setting', () => {
     it('restores column visibility from setting on initialization', async () => {
       const setting = createFakeSetting<Record<string, {visible: boolean}>>(

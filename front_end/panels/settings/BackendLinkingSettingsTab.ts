@@ -168,6 +168,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               name=${i18nString(UIStrings.rulesSectionHeading)}
               striped
               inline
+              deletable
               @delete=${() => {}}
               @create=${onCreate}>
               <table>

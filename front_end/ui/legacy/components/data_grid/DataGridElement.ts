@@ -48,6 +48,8 @@ const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least o
  * visible rows are layed out and sorting is provided out of the box.
  *
  * @property filters Set of text filters to be applied to the data grid.
+ * @attribute deletable If true, rows can be deleted through the context menu or the Delete
+ *            key, which dispatches a `delete` event on the corresponding <tr> element.
  * @attribute inline If true, the data grid will render inline instead of taking a full container height.
  * @attribute resize Column resize method, one of 'nearest' (default), 'first' or 'last'.
  * @attribute striped If true, the data grid will have striped rows.
@@ -58,7 +60,7 @@ type DataGridElementNode = SortableNode|DynamicHeightNode;
 const elementToNode = new WeakMap<Element, DataGridElementNode>();
 
 export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
-  static readonly observedAttributes: string[] = ['striped', 'name', 'inline', 'resize', 'highlight'];
+  static readonly observedAttributes: string[] = ['striped', 'name', 'inline', 'resize', 'highlight', 'deletable'];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #dataGrid!: DataGridImpl<any>;
@@ -220,6 +222,9 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
           this.#revealHighlightedNode(Number(newValue));
         });
         break;
+      case 'deletable':
+        this.#dataGrid.deleteCallback = this.deletable ? this.#deleteCallback.bind(this) : undefined;
+        break;
     }
   }
 
@@ -229,6 +234,14 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
 
   get striped(): boolean {
     return hasBooleanAttribute(this, 'striped');
+  }
+
+  set deletable(deletable: boolean) {
+    this.toggleAttribute('deletable', deletable);
+  }
+
+  get deletable(): boolean {
+    return hasBooleanAttribute(this, 'deletable');
   }
 
   set inline(striped: boolean) {
@@ -583,9 +596,6 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
     super.addEventListener(...args);
     if (args[0] === 'refresh') {
       this.#dataGrid.refreshCallback = this.#refreshCallback.bind(this);
-    }
-    if (args[0] === 'delete') {
-      this.#dataGrid.deleteCallback = this.#deleteCallback.bind(this);
     }
   }
 

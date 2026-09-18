@@ -415,8 +415,115 @@ ElementsTestRunner.selectNodeAndWaitForStylesWithComputed = function(idValue, ca
   }
 };
 
+const treeOutlineShimByWidget = new WeakMap();
+
 ElementsTestRunner.firstElementsTreeOutline = function() {
-  return Elements.ElementsPanel.ElementsPanel.instance().getTreeOutlineForTesting();
+  const panel = Elements.ElementsPanel.ElementsPanel.instance();
+  const legacyOutline = panel.getTreeOutlineForTesting();
+  if (legacyOutline) {
+    return legacyOutline;
+  }
+  const domTreeWidget = panel.getDOMTreeWidgetForTesting();
+  let shim = treeOutlineShimByWidget.get(domTreeWidget);
+  if (shim) {
+    return shim;
+  }
+  function getInternalOutline() {
+    const treeView = domTreeWidget.contentElement.querySelector('devtools-tree');
+    return treeView ? treeView.getInternalTreeOutlineForTest() : null;
+  }
+  function getWidgetForTreeElement(treeElement) {
+    const widgetEl = treeElement.titleElement?.querySelector?.('devtools-widget');
+    return widgetEl ? UI.Widget.Widget.get(widgetEl) : null;
+  }
+  function decorateTreeElement(treeElement) {
+    if (!treeElement) {
+      return null;
+    }
+    if (typeof treeElement.isClosingTag !== 'function') {
+      treeElement.isClosingTag = function() {
+        return Boolean(getWidgetForTreeElement(this)?.isClosingTag);
+      };
+    }
+    if (typeof treeElement.node !== 'function') {
+      treeElement.node = function() {
+        return getWidgetForTreeElement(this)?.node ?? null;
+      };
+    }
+    if (!treeElement.title || typeof treeElement.title === 'string') {
+      treeElement.title = treeElement.titleElement;
+    }
+    return treeElement;
+  }
+  function findTreeElementRecursive(parent, targetNode) {
+    if (!parent) {
+      return null;
+    }
+    const children = parent.children();
+    for (let i = 0; children && i < children.length; ++i) {
+      const child = decorateTreeElement(children[i]);
+      const widget = getWidgetForTreeElement(child);
+      if (widget && widget.node === targetNode && !widget.isClosingTag) {
+        return child;
+      }
+      const found = findTreeElementRecursive(child, targetNode);
+      if (found) {
+        return found;
+      }
+    }
+    return null;
+  }
+  shim = {
+    runPendingUpdates() {
+      domTreeWidget.performUpdate();
+    },
+    rootElement() {
+      domTreeWidget.performUpdate();
+      const root = getInternalOutline()?.rootElement() ?? null;
+      if (root) {
+        const stack = [...root.children()];
+        while (stack.length) {
+          const item = decorateTreeElement(stack.pop());
+          if (item?.children()) {
+            stack.push(...item.children());
+          }
+        }
+      }
+      return root;
+    },
+    findTreeElement(node) {
+      domTreeWidget.performUpdate();
+      return findTreeElementRecursive(getInternalOutline()?.rootElement(), node);
+    },
+    selectedDOMNode() {
+      return domTreeWidget.selectedDOMNode();
+    },
+    get selectedTreeElement() {
+      return decorateTreeElement(getInternalOutline()?.selectedTreeElement ?? null);
+    },
+    get element() {
+      return domTreeWidget.contentElement;
+    },
+    toggleHideElement(node) {
+      return domTreeWidget.toggleHideElement(node);
+    },
+    addEventListener(eventType, listener, thisObject) {
+      if (eventType === Elements.ElementsTreeOutline.ElementsTreeOutline.Events.SelectedNodeChanged) {
+        return domTreeWidget.addEventListener(Elements.ElementsTreeOutline.DOMTreeWidget.Events.SelectedNodeChanged,
+                                              listener, thisObject);
+      }
+      return domTreeWidget.addEventListener(eventType, listener, thisObject);
+    },
+    removeEventListener(eventType, listener, thisObject) {
+      if (eventType === Elements.ElementsTreeOutline.ElementsTreeOutline.Events.SelectedNodeChanged) {
+        return domTreeWidget.removeEventListener(Elements.ElementsTreeOutline.DOMTreeWidget.Events.SelectedNodeChanged,
+                                                 listener, thisObject);
+      }
+      return domTreeWidget.removeEventListener(eventType, listener, thisObject);
+    },
+  };
+  treeOutlineShimByWidget.set(domTreeWidget, shim);
+  return shim;
 };
 
 ElementsTestRunner.filterMatchedStyles = function(text) {
@@ -882,6 +989,7 @@ ElementsTestRunner.expandElementsTree = function(callback) {
 
       if (child.isExpandable() && !child.expanded) {
         child.expand();
+        ElementsTestRunner.firstElementsTreeOutline().runPendingUpdates();
         expandedSomething = true;
       }
 

@@ -1,0 +1,96 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/util/generate_wrapper.gni")
+import("./vars.gni")
+
+template("script_test") {
+  assert(defined(invoker.script), "You must define 'script' for script_test")
+
+  _shared_data = [ invoker.script ]
+  if (defined(invoker.data)) {
+    _shared_data += invoker.data
+  }
+
+  _shared_data_deps = []
+  if (defined(invoker.data_deps)) {
+    _shared_data_deps += invoker.data_deps
+  }
+
+  if (defined(invoker.wrapper_output_name)) {
+    _wrapper_name = invoker.wrapper_output_name
+  } else {
+    _wrapper_name = target_name
+  }
+
+  _executable_args = []
+  if (defined(invoker.args)) {
+    _executable_args += invoker.args
+  }
+
+  generate_wrapper(target_name) {
+    testonly = true
+    wrapper_script = "${root_build_dir}/bin/${_wrapper_name}"
+    executable = invoker.script
+    executable_args = _executable_args
+
+    data = _shared_data
+    data_deps = _shared_data_deps
+
+    forward_variables_from(invoker,
+                           "*",
+                           [
+                             "args",
+                             "data",
+                             "data_deps",
+                             "executable",
+                             "executable_args",
+                             "script",
+                             "testonly",
+                             "wrapper_script",
+                           ])
+
+    write_runtime_deps = "${root_build_dir}/${target_name}.runtime_deps"
+  }
+}
+
+template("node_script_test") {
+  assert(defined(invoker.script),
+         "You must define 'script' for node_script_test")
+
+  script_test(target_name) {
+    script = devtools_location_prepend + "third_party/node/node.py"
+
+    _rebased_script = rebase_path(invoker.script, root_build_dir)
+    args = [
+      "--output",
+      "@WrappedPath(${_rebased_script})",
+    ]
+    if (defined(invoker.args)) {
+      args += invoker.args
+    }
+
+    data = [
+      devtools_location_prepend + "package.json",
+      devtools_location_prepend + "node_modules/",
+      devtools_location_prepend + "third_party/node/",
+      invoker.script,
+    ]
+    if (build_with_chromium) {
+      data += [ "//third_party/node/" ]
+    }
+    if (defined(invoker.data)) {
+      data += invoker.data
+    }
+
+    forward_variables_from(invoker,
+                           "*",
+                           [
+                             "args",
+                             "data",
+                             "script",
+                             "testonly",
+                           ])
+  }
+}

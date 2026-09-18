@@ -3,6 +3,8 @@
 # found in the LICENSE file.
 
 import("../../scripts/build/ninja/devtools_pre_built.gni")
+import("../../scripts/build/ninja/script_test.gni")
+import("../../scripts/build/ninja/vars.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
 # We expose types.d.ts as a devtools_pre_built library so that the
@@ -48,5 +50,19 @@ node_ts_library("api") {
     "../conductor:implementation",
     "../e2e/conductor:implementation",
     "../shared",
+  ]
+}
+
+node_script_test("run_api_tests") {
+  script = "$target_gen_dir/run-mocha.js"
+
+  if (!build_with_chromium) {
+    data = [ devtools_location_prepend + "third_party/chrome/" ]
+  }
+
+  data_deps = [
+    ":api",
+    "../../front_end:api_test_inputs",
+    "../../front_end:api_tests",
   ]
 }

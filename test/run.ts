@@ -11,6 +11,7 @@ import unparse from 'yargs-unparser';
 
 import {commandLineArgs, expandResponseFiles} from './conductor/commandline.js';
 import {
+  BUILD_ROOT,
   BUILD_WITH_CHROMIUM,
   CHECKOUT_ROOT,
   GEN_DIR,
@@ -88,11 +89,19 @@ function forwardOptions(): string[] {
 }
 
 function runProcess(exe: string, args: string[], options: childProcess.SpawnSyncOptionsWithStringEncoding) {
+  if (os.platform() === 'win32' && !exe.endsWith('.exe')) {
+    args = ['/c', 'vpython3.bat', '-x', exe, ...args];
+    exe = process.env.ComSpec ?? 'cmd.exe';
+  }
   if (logLevel !== 'error') {
     // eslint-disable-next-line no-console
     console.info(`Running '${exe}${args.length > 0 ? ` "${args.join('" "')}"` : ''}'`);
   }
-  return childProcess.spawnSync(exe, args, options);
+  const result = childProcess.spawnSync(exe, args, options);
+  if (result.error) {
+    console.error(result.error);
+  }
+  return result;
 }
 
 function ninja(stdio: 'inherit'|'pipe', ...args: string[]) {
@@ -142,6 +151,9 @@ class Tests {
   readonly suite: PathPair;
   readonly extraPaths: PathPair[];
   protected readonly cwd = path.dirname(GEN_DIR);
+  protected get executable(): string {
+    return process.argv[0];
+  }
   constructor(suite: string, ...extraSuites: string[]) {
     const suitePath = PathPair.get(suite);
     if (!suitePath) {
@@ -198,7 +210,7 @@ class Tests {
         argumentsForNode.unshift('--inspect');
       }
 
-      const result = runProcess(process.argv[0], argumentsForNode, {
+      const result = runProcess(this.executable, argumentsForNode, {
         encoding: 'utf-8',
         stdio: 'inherit',
         cwd: this.cwd,
@@ -240,11 +252,23 @@ class MochaFrontendTests extends Tests {
 }
 
 class MochaApiTests extends Tests {
+  #getWrapper(): string|undefined {
+    const wrapper = path.join(BUILD_ROOT, 'bin', 'run_api_tests');
+    return fs.existsSync(wrapper) ? wrapper : undefined;
+  }
+
+  override get executable() {
+    return this.#getWrapper() ?? super.executable;
+  }
+
   override match(path: TestId): boolean {
     return super.match(path) && !isUnitTestFile(path);
   }
 
   override run(tests: TestId[]) {
+    if (this.#getWrapper()) {
+      return super.run(tests, []);
+    }
     return super.run(
         tests,
         [
@@ -366,6 +390,7 @@ function main() {
           'chrome',
           'third_party/devtools-frontend/src/test:test',
           'third_party/devtools-frontend/src/scripts/hosted_mode:hosted_mode',
+          'third_party/devtools-frontend/src/test/api:run_api_tests',
         ] :
         [];
     const {status} = ninja(isAIAgent() ? 'pipe' : 'inherit', ...targets);

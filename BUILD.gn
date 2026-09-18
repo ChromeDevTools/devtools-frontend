@@ -261,4 +261,9 @@ group("harness_tests") {
   deps = [ "./test/harness" ]
 }
 
+group("api_tests") {
+  testonly = true
+  public_deps = [ "test:api_tests" ]
+}
+
 write_file("$target_gen_dir/package.json", "{\"type\": \"module\"}")

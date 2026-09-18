@@ -5,6 +5,7 @@
 # Variable that can be used to support multiple build scenarios, like having
 # Chromium specific targets in a client project's GN file etc.
 build_with_chromium = false
+vpython_spec_files = []
 
 # Turns on unsafe buffer warning suppressions during C/C++ builds, see
 # Chromium docs: `docs/unsafe_buffers.md`.

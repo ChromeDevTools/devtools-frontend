@@ -25,6 +25,7 @@ group("api_tests") {
     "../front_end:api_test_inputs",
     "../front_end:api_tests",
     "api",
+    "api:run_api_tests",
   ]
 }
 

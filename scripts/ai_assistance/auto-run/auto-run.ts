@@ -938,8 +938,11 @@ function uploadTaskArtifacts(ctx: EvalRunContext, trajectory: Trajectory, evalOu
       uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
   const verificationStdoutUploaded =
       uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDOUT, formatVerificationStdout(ctx, taskId));
+  const verificationStderrUploaded =
+      uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDERR, formatVerificationStderr(ctx, taskId));
 
-  return trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded && verificationStdoutUploaded;
+  return trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded &&
+      verificationStdoutUploaded && verificationStderrUploaded;
 }
 
 /**
@@ -957,6 +960,21 @@ function formatVerificationStdout(ctx: EvalRunContext, taskId: TaskId): string {
     `[Verification] Result: ${hasError ? 'FAILED' : 'PASSED'}`,
     '',
   ].join('\n');
+}
+
+/**
+ * Collects the errors and assertion failures of a task for the
+ * verification_stderr.log artifact. Returns an empty string when the
+ * task did not fail.
+ */
+function formatVerificationStderr(ctx: EvalRunContext, taskId: TaskId): string {
+  const matchingTrajectories = ctx.output.trajectories.filter(e => e.session_id === taskId);
+  const errorLines = matchingTrajectories.flatMap(
+      e => [...(e.error ? [`[Error]: ${e.error}`] : []),
+            ...(e.assertionFailures ?? []).map(failure => `[AssertionFailure]: ${failure}`),
+  ]);
+
+  return errorLines.length > 0 ? `${errorLines.join('\n')}\n` : '';
 }
 
 /**

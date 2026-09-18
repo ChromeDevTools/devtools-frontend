@@ -29,7 +29,8 @@ export const PROJECT_ID = 'ai_evals';
  *      │   ├── chat_log.txt          - Clean human-readable conversation transcript (archived in CNS)
  *      │   └── agent_stderr.log      - Diagnostic per-task agent error/stderr log (archived in CNS)
  *      ├── verification/
- *      │   └── verification_stdout.log - Diagnostic verification stdout log (archived in CNS)
+ *      │   ├── verification_stdout.log - Diagnostic verification stdout log (archived in CNS)
+ *      │   └── verification_stderr.log - Diagnostic verification error/stderr log (archived in CNS)
  *      ├── eval_result.json          - Optional inline grading result (if --grade)
  *      ├── grader_output/
  *      │   └── grader.log            - Diagnostic grading execution log (archived in CNS)
@@ -58,7 +59,8 @@ export const PROJECT_ID = 'ai_evals';
  *       │       │   ├── chat_log.txt
  *       │       │   └── agent_stderr.log
  *       │       ├── verification/
- *       │       │   └── verification_stdout.log
+ *       │       │   ├── verification_stdout.log
+ *       │       │   └── verification_stderr.log
  *       │       ├── eval_result.json
  *       │       ├── grader_output/
  *       │       │   └── grader.log
@@ -72,7 +74,8 @@ export const PROJECT_ID = 'ai_evals';
  *               │   ├── chat_log.txt
  *               │   └── agent_stderr.log
  *               ├── verification/
- *               │   └── verification_stdout.log
+ *               │   ├── verification_stdout.log
+ *               │   └── verification_stderr.log
  *               ├── eval_result.json
  *               ├── grader_output/
  *               │   └── grader.log
@@ -94,6 +97,7 @@ export const TaskOutputFile = {
   AGENT_STDERR: 'agent_logs/agent_stderr.log',
   GRADER_LOG: 'grader_output/grader.log',
   VERIFICATION_STDOUT: 'verification/verification_stdout.log',
+  VERIFICATION_STDERR: 'verification/verification_stderr.log',
 } as const;
 export type TaskOutputFile = (typeof TaskOutputFile)[keyof typeof TaskOutputFile];
 

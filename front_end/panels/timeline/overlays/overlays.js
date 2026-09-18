@@ -1155,9 +1155,6 @@ var Overlays = class extends EventTarget {
         pin.setAttribute("role", "button");
         pin.setAttribute("tabindex", "0");
         UI.ARIAUtils.setLabel(pin, i18nString(UIStrings.commentPin));
-        if (overlay.commentThreadId) {
-          pin.setAttribute("data-comment-id", overlay.commentThreadId);
-        }
         const cursor = document.createElement("div");
         cursor.classList.add("comment-cursor");
         pin.appendChild(cursor);

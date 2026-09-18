@@ -19,7 +19,7 @@ const { until } = Lit.Directives;
  */
 export class AIv2MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
     options;
-    constructor(options = {}) {
+    constructor(options) {
         super();
         this.options = options;
     }
@@ -79,10 +79,7 @@ export class AIv2MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownInsi
         }
         if (href.startsWith('#file-')) {
             const fileId = Number(href.substring(6));
-            const origin = this.options.getEstablishedOrigin?.();
-            const file = (origin && Number.isInteger(fileId) && fileId > 0) ?
-                AiAssistanceModel.ListSources.ListSourcesTool.getSourceById(fileId, origin) :
-                undefined;
+            const file = AiAssistanceModel.ListSources.ListSourcesTool.getSourceById(fileId, this.options.getOriginLock());
             if (file) {
                 return this.#revealableLink(file, file.name());
             }

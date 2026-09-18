@@ -34,17 +34,20 @@ export default `/*
 
 .metric-box {
   background-color: var(--sys-color-surface);
-  padding: var(--sys-size-6);
+  padding: var(--sys-size-4);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .metric-title {
   font-size: var(--sys-typescale-body4-size);
   color: var(--sys-color-on-surface-subtle);
   margin: 0 0 var(--sys-size-3);
+  padding: 0 var(--sys-size-8);
+  text-align: center;
 }
 
 .metric-value {
@@ -62,6 +65,13 @@ export default `/*
   font-size: var(--sys-typescale-body4-size);
   font-weight: normal;
   color: var(--sys-color-on-surface-subtle);
+}
+
+.metric-info-icon {
+  position: absolute;
+  top: var(--sys-size-4);
+  right: var(--sys-size-4);
+  cursor: pointer;
 }
 
 .metrics-title,

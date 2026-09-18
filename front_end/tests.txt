@@ -153,6 +153,7 @@ models/breakpoints/BreakpointManager.test.js
 models/change_tracker/ChangeTracker.test.js
 models/comment_manager/CD4ABridge.test.js
 models/comment_manager/CommentManager.test.js
+models/comment_manager/CommentThread.test.js
 models/computed_style/ComputedStyleModel.test.js
 models/cpu_profile/CPUProfileDataModel.test.js
 models/crux-manager/CrUXManager.test.js
@@ -189,6 +190,7 @@ models/issues_manager/SelectivePermissionsInterventionIssue.test.js
 models/issues_manager/SharedDictionaryIssue.test.js
 models/issues_manager/StylesheetLoadingIssue.test.js
 models/issues_manager/UnencodedDigestIssue.test.js
+models/issues_manager/WebInstallIssue.test.js
 models/javascript_metadata/JavaScriptMetadata.test.js
 models/live-metrics/LiveMetrics.test.js
 models/logs/NetworkLog.test.js
@@ -306,6 +308,7 @@ testing/TestIdGeneration.test.js
 core/sdk/CSSMatchedStyles.test.js
 core/sdk/CSSPropertyParser.test.js
 core/sdk/CSSPropertyParserMatchers.test.js
+core/sdk/Connections.test.js
 core/sdk/RehydratingConnection.test.js
 entrypoints/inspector_main/InspectorMain.test.js
 entrypoints/inspector_main/OutermostTargetSelector.test.js
@@ -445,6 +448,9 @@ panels/changes/CombinedDiffView.test.js
 panels/changes/changes.test.js
 panels/common/AiCodeCompletionSummaryToolbar.test.js
 panels/common/BadgeNotification.test.js
+panels/common/CommentThreadWidget.test.js
+panels/common/CommentsOverlayWidget.test.js
+panels/common/CommentsStatusBarPill.test.js
 panels/common/DOMLinkifier.test.js
 panels/common/ExtensionPanel.test.js
 panels/common/ExtensionServer.test.js
@@ -724,9 +730,6 @@ third_party/chromium/client-variations/ClientVariations.test.js
 third_party/i18n/i18n.test.js
 ui/comments/CommentAnchorResolver.test.js
 ui/comments/CommentOverlayManager.test.js
-ui/comments/CommentThreadWidget.test.js
-ui/comments/CommentsOverlayWidget.test.js
-ui/comments/CommentsStatusBarPill.test.js
 ui/components/adorners/Adorner.test.js
 ui/components/buttons/Button.test.js
 ui/components/code_highlighter/CodeHighlighter.test.js

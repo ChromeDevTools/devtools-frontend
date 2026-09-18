@@ -48,6 +48,9 @@
   "files": [
     "../../../../../../front_end/panels/common/AiCodeCompletionSummaryToolbar.test.ts",
     "../../../../../../front_end/panels/common/BadgeNotification.test.ts",
+    "../../../../../../front_end/panels/common/CommentThreadWidget.test.ts",
+    "../../../../../../front_end/panels/common/CommentsOverlayWidget.test.ts",
+    "../../../../../../front_end/panels/common/CommentsStatusBarPill.test.ts",
     "../../../../../../front_end/panels/common/DOMLinkifier.test.ts",
     "../../../../../../front_end/panels/common/ExtensionPanel.test.ts",
     "../../../../../../front_end/panels/common/ExtensionServer.test.ts",
@@ -89,6 +92,9 @@
       "path": "../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/comment_manager/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/extensions/bundle-tsconfig.ref.json"
     },
     {
@@ -104,6 +110,9 @@
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/comments/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/components/snackbars/bundle-tsconfig.ref.json"
     },
     {
@@ -117,6 +126,9 @@
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.ref.json"
     }
   ]
 }

@@ -12,6 +12,10 @@ const UIStrings = {
      * @description Text on the remote debugging window to indicate the connection is lost.
      */
     websocketDisconnected: 'WebSocket disconnected',
+    /**
+     * @description Text in the remote debugging terminated dialog when the WebSocket connection fails, instructing the user to check the --remote-allow-origins flag on the Chrome instance.
+     */
+    websocketConnectionFailed: 'WebSocket disconnected. Make sure `--remote-allow-origins` on the Chrome instance allows the current origin.',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/Connections.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -93,7 +97,7 @@ export class WebSocketTransport {
     }
     onError() {
         if (this.#onWebSocketDisconnect) {
-            this.#onWebSocketDisconnect.call(null, i18nString(UIStrings.websocketDisconnected));
+            this.#onWebSocketDisconnect.call(null, i18nString(UIStrings.websocketConnectionFailed));
         }
         if (this.#onDisconnect) {
             // This is called if error occurred while connecting.

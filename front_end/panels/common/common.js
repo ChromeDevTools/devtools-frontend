@@ -1939,8 +1939,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
   hasExtensions() {
     return Boolean(this.registeredExtensions.size);
   }
-  notifySearchAction(panelId, action2, searchString) {
-    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.PanelSearch + panelId, [action2, searchString]);
+  notifySearchAction(panelId, action3, searchString) {
+    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.PanelSearch + panelId, [action3, searchString]);
   }
   notifyViewShown(identifier, frameIndex) {
     this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.ViewShown + identifier, [frameIndex]);
@@ -2834,7 +2834,10 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (scriptFiles.length > 0) {
       for (const script of scriptFiles) {
         const resourceFile = debuggerBindingsInstance.scriptFile(resource.uiSourceCode, script.debuggerModel);
-        resourceFile?.addSourceMapURL(message.sourceMapURL);
+        resourceFile?.addSourceMapURL(
+          message.sourceMapURL,
+          SDK3.SourceMap.SourceMapProvenance.EXTENSION
+        );
       }
     }
     return this.status.OK();
@@ -3832,10 +3835,776 @@ var Linkifier3 = class _Linkifier {
     throw new Error("Can't linkify non-node");
   }
 };
+
+// ../../front_end/panels/common/CommentThreadWidget.ts
+var CommentThreadWidget_exports = {};
+__export(CommentThreadWidget_exports, {
+  CommentThreadWidget: () => CommentThreadWidget,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6
+});
+import "../../ui/components/tooltips/tooltips.js";
+import * as i18n17 from "../../core/i18n/i18n.js";
+import * as Input from "../../ui/components/input/input.js";
+import * as MarkdownView from "../../ui/components/markdown_view/markdown_view.js";
+import * as UI9 from "../../ui/legacy/legacy.js";
+import * as Lit3 from "../../ui/lit/lit.js";
+
+// gen/front_end/panels/common/commentThreadWidget.css.js
+var commentThreadWidget_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  .comment-thread-widget {
+    display: flex;
+    width: var(--sys-size-30);
+    padding: var(--sys-size-8);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sys-size-4);
+    border-radius: var(--sys-shape-corner-medium);
+    background: var(--sys-color-base);
+    box-shadow: var(--sys-elevation-level2);
+    cursor: default;
+  }
+
+  .comment-thread-widget.submitted {
+    background: var(--sys-color-surface2);
+  }
+
+  .header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sent-status {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-2);
+    font-size: var(--sys-typescale-body5-size);
+    color: var(--sys-color-on-surface-subtle);
+  }
+
+  .check-icon {
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+    color: var(--sys-color-on-surface-subtle);
+  }
+
+  .selected-item {
+    display: flex;
+    height: calc(var(--sys-size-8) + var(--sys-size-2));
+    padding: var(--sys-size-2) var(--sys-size-4) var(--sys-size-2) var(--sys-size-3);
+    align-items: center;
+    border-radius: var(--sys-shape-corner-extra-small);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+    background: var(--sys-color-base);
+    font-family: var(--source-code-font-family);
+    font-size: var(--monospace-font-size);
+    color: var(--sys-color-token-tag);
+    overflow: hidden;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .comment-text {
+    width: 100%;
+    font-family: var(--default-font-family);
+    font-size: var(--sys-typescale-body4-size);
+    color: var(--sys-color-on-surface-subtle);
+    line-height: var(--sys-size-9);
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+  }
+
+  .agent-response {
+    display: flex;
+    gap: var(--sys-size-2);
+    margin-top: var(--sys-size-4);
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .elbow {
+    width: var(--sys-size-6);
+    height: var(--sys-size-6);
+    margin-left: var(--sys-size-3);
+    margin-right: var(--sys-size-3);
+    border-left: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    border-bottom-left-radius: var(--sys-size-6);
+    flex-shrink: 0;
+  }
+
+  .response-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+
+    --code-block-background-color: var(--sys-color-base);
+    --code-background-color: var(--sys-color-base);
+  }
+
+  .response-header {
+    font-weight: bold;
+    margin-bottom: var(--sys-size-2);
+    font-family: var(--default-font-family);
+    font-size: var(--sys-typescale-body5-size);
+    line-height: var(--sys-size-8);
+    color: var(--sys-color-on-surface-subtle);
+  }
+
+  .response-content devtools-markdown-view {
+    font-family: var(--default-font-family);
+    font-size: var(--sys-typescale-body4-size);
+    color: var(--sys-color-on-surface-subtle);
+    line-height: var(--sys-size-9);
+  }
+
+  .input {
+    height: auto;
+    min-height: var(--sys-size-14);
+    max-height: var(--sys-size-27);
+    field-sizing: content;
+    resize: none;
+    scrollbar-width: none;
+    padding: var(--sys-size-5) var(--sys-size-8);
+    border-radius: var(--sys-shape-corner-small);
+    border: var(--sys-size-1) solid var(--sys-color-outline);
+    background: var(--sys-color-base);
+    font-family: var(--default-font-family);
+    font-size: var(--sys-typescale-body5-size);
+    line-height: var(--sys-size-9);
+    letter-spacing: 0;
+  }
+
+  .input::placeholder {
+    color: var(--sys-color-on-surface-subtle);
+  }
+
+  .footer {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--sys-size-5);
+  }
+
+  .info-icon {
+    color: var(--sys-color-on-surface-subtle);
+    cursor: pointer;
+  }
+
+  .info-tooltip-container {
+    max-width: var(--sys-size-28);
+    padding: var(--sys-size-4) var(--sys-size-5);
+  }
+
+  .tooltip-link {
+    display: block;
+    margin-top: var(--sys-size-4);
+    color: var(--sys-color-primary);
+    padding-left: 0;
+    background: none;
+    border: none;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .selected-item-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./commentThreadWidget.css")} */`;
+
+// ../../front_end/panels/common/CommentThreadWidget.ts
+var { html: html8, render: render7, Directives: { createRef, ref: ref2 } } = Lit3;
+var UIStrings7 = {
+  /**
+   * @description Link text in the info tooltip for learning more about comments sent to the agent.
+   */
+  learnMore: "Learn more",
+  /**
+   * @description Text next to the checkmark in the comment thread header indicating that comments have been sent to
+   * the agent.
+   */
+  sent: "Sent",
+  /**
+   * @description Alt text for the checkmark icon in the comment thread header indicating that comments have been sent
+   * to the agent.
+   */
+  sentCheckmark: "Sent checkmark",
+  /**
+   * @description Label for the agent response section in the comment thread.
+   */
+  response: "Response:",
+  /**
+   * @description Label for the aria-label of the add comment button.
+   */
+  addCommentButton: "Add comment",
+  /**
+   * @description aria-label for the comment text area.
+   */
+  commentInputAriaLabel: "Comment input"
+};
+var UIStringsNotTranslate2 = {
+  /**
+   * @description Disclaimer text in the comment thread info tooltip.
+   */
+  inputDisclaimer: "Comment strings, DOM hierarchy snippets, tracked CSS and DOM changes, Visual Element (VE) paths and signatures, and tracked presenter changes are sent to the connected third-party agent to assist with debugging and code updates."
+};
+var str_7 = i18n17.i18n.registerUIStrings("panels/common/CommentThreadWidget.ts", UIStrings7);
+var i18nString7 = i18n17.i18n.getLocalizedString.bind(void 0, str_7);
+var lockedString3 = i18n17.i18n.lockedString;
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  const hasComment = input.comments.length > 0;
+  render7(html8`
+    <style>${Input.textInputStyles}${commentThreadWidget_css_default}</style>
+    <div class="comment-thread-widget ${hasComment ? "submitted" : ""}">
+      <div class="header">
+        <span class="selected-item">
+          <span class="selected-item-text">${input.title}</span>
+        </span>
+        ${hasComment ? html8`
+          <div class="sent-status">
+            <devtools-icon
+              class="check-icon"
+              name="checkmark"
+              aria-label=${i18nString7(UIStrings7.sentCheckmark)}>
+            </devtools-icon>
+            <span>${i18nString7(UIStrings7.sent)}</span>
+          </div>
+        ` : Lit3.nothing}
+      </div>
+
+      ${hasComment ? html8`
+        ${input.comments.map((comment) => comment.author === "DEVELOPER" ? html8`
+          <div class="comment-text">
+            ${comment.text}
+          </div>
+        ` : html8`
+          <div class="agent-response">
+            <div class="elbow"></div>
+            <div class="response-content">
+              <div class="response-header">${i18nString7(UIStrings7.response)}</div>
+              ${MarkdownView.MarkdownView.renderTextAsMarkdown(
+    comment.text,
+    new MarkdownView.MarkdownView.MarkdownInsightRenderer()
+  )}
+            </div>
+          </div>
+        `)}
+      ` : Lit3.nothing}
+
+      ${!hasComment ? html8`
+        <textarea
+          ${ref2(input.textAreaRef)}
+          class="devtools-text-input input"
+          rows="1"
+          aria-label=${i18nString7(UIStrings7.commentInputAriaLabel)}
+          .value=${input.commentText}
+          @input=${input.onCommentTextChange}
+          @keydown=${(event) => {
+    if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      input.onAddComment(input.commentText);
+    }
+  }}
+        ></textarea>
+        <div class="footer">
+          <devtools-icon
+            class="info-icon"
+            name="info"
+            aria-label="Info"
+            aria-details="comment-thread-info-tooltip"
+            tabindex="0"
+          ></devtools-icon>
+          <devtools-tooltip
+            id="comment-thread-info-tooltip"
+            variant="rich"
+          >
+            <div class="info-tooltip-container">
+              ${lockedString3(UIStringsNotTranslate2.inputDisclaimer)}
+              <button
+                class="tooltip-link"
+                role="link"
+                @click=${input.onLearnMoreClick}
+              >${i18nString7(UIStrings7.learnMore)}</button>
+            </div>
+          </devtools-tooltip>
+          <devtools-button
+            aria-label=${i18nString7(UIStrings7.addCommentButton)}
+            .disabled=${!input.commentText.trim()}
+            @click=${() => input.onAddComment(input.commentText)}>
+            ${i18nString7(UIStrings7.addCommentButton)}
+          </devtools-button>
+        </div>
+      ` : Lit3.nothing}
+    </div>
+  `, target);
+};
+var CommentThreadWidget = class extends UI9.Widget.Widget {
+  title = "Comment Thread";
+  #comments = [];
+  #commentText = "";
+  #textAreaRef = createRef();
+  #view;
+  onAddComment;
+  constructor(element, view = DEFAULT_VIEW6) {
+    super(element);
+    this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+    void this.updateComplete.then(() => {
+      this.#textAreaRef.value?.focus({ preventScroll: true });
+    });
+  }
+  set comments(comments) {
+    this.#comments = comments;
+    this.requestUpdate();
+  }
+  #handleLearnMoreClick = () => {
+  };
+  #handleAddComment = (text) => {
+    const commentText = text.trim();
+    if (commentText && this.onAddComment) {
+      this.onAddComment(commentText);
+      this.#commentText = "";
+      this.requestUpdate();
+    }
+  };
+  #handleCommentTextChange = (event) => {
+    const input = event.target;
+    this.#commentText = input.value;
+    this.requestUpdate();
+  };
+  performUpdate() {
+    const viewInput = {
+      title: this.title,
+      comments: this.#comments,
+      commentText: this.#commentText,
+      textAreaRef: this.#textAreaRef,
+      onLearnMoreClick: this.#handleLearnMoreClick,
+      onAddComment: this.#handleAddComment,
+      onCommentTextChange: this.#handleCommentTextChange
+    };
+    this.#view(viewInput, void 0, this.contentElement);
+  }
+};
+
+// ../../front_end/panels/common/CommentsOverlayWidget.ts
+var CommentsOverlayWidget_exports = {};
+__export(CommentsOverlayWidget_exports, {
+  ActionDelegate: () => ActionDelegate,
+  CommentsOverlayWidget: () => CommentsOverlayWidget
+});
+import * as Root3 from "../../core/root/root.js";
+import * as CommentManager from "../../models/comment_manager/comment_manager.js";
+import * as Comments from "../../ui/comments/comments.js";
+import * as UI10 from "../../ui/legacy/legacy.js";
+import * as Lit4 from "../../ui/lit/lit.js";
+
+// gen/front_end/panels/common/commentsOverlay.css.js
+var commentsOverlay_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope,
+  .comments-overlay-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    /* Needs to be above regular panel widgets (e.g. flame chart at z-index 2000)
+       but below floating glass panes (which start at z-index 3000). */
+    z-index: 2500;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .comment-pin {
+    position: absolute;
+    pointer-events: auto;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.1s ease;
+    transform-origin: center center;
+      will-change: transform;
+  }
+
+  .comment-pin:hover {
+    transform: scale(1.15);
+  }
+
+    .comment-cursor {
+      display: flex;
+      width: var(--sys-size-9);
+      height: var(--sys-size-9);
+      box-sizing: border-box;
+      padding: 0;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      box-shadow: var(--sys-elevation-level2);
+      border-radius: 100px 100px 100px var(--sys-shape-corner-extra-small, 4px);
+      background: var(--sys-color-primary);
+      color: var(--sys-color-on-primary);
+      font-family: var(--default-font-family);
+      font-size: var(--sys-typescale-body5-size);
+      font-weight: var(--ref-typeface-weight-bold, 600);
+      line-height: 1;
+    }
+
+  .comment-anchor-highlight {
+    position: absolute;
+    pointer-events: none;
+    border: var(--sys-size-2) dashed var(--sys-color-primary);
+    background-color: color-mix(in srgb, var(--sys-color-primary), transparent 90%);
+    box-sizing: border-box;
+  }
+
+  .comment-hover-highlight {
+    position: absolute;
+    pointer-events: none;
+    border: var(--sys-size-2) solid var(--sys-color-primary);
+    background-color: color-mix(in srgb, var(--sys-color-primary), transparent 85%);
+    box-sizing: border-box;
+  }
+
+  .comment-popup-widget {
+    position: absolute;
+    z-index: 2501;
+    pointer-events: auto;
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./commentsOverlay.css")} */`;
+
+// ../../front_end/panels/common/CommentsOverlayWidget.ts
+var {
+  html: html9,
+  render: render8,
+  nothing: nothing5,
+  Directives: { repeat, styleMap }
+} = Lit4;
+var POPUP_MARGIN = 8;
+var PIN_HEIGHT = 30;
+var POPUP_WIDTH = 288;
+var POPUP_HEIGHT = 220;
+var DEFAULT_VIEW7 = (input, _output, target) => {
+  render8(html9`
+    <style>${commentsOverlay_css_default}</style>
+    <div class="comments-overlay-container">
+      ${input.hoverHighlight && input.hoverHighlight.visible ? html9`
+        <div
+          class="comment-hover-highlight"
+          style=${styleMap({
+    top: `${input.hoverHighlight.top}px`,
+    left: `${input.hoverHighlight.left}px`,
+    width: `${input.hoverHighlight.width}px`,
+    height: `${input.hoverHighlight.height}px`
+  })}>
+        </div>
+      ` : nothing5}
+      ${input.highlights.map((h) => h.visible ? html9`
+        <div
+          class="comment-anchor-highlight"
+          style=${styleMap({
+    top: `${h.top}px`,
+    left: `${h.left}px`,
+    width: `${h.width}px`,
+    height: `${h.height}px`
+  })}>
+        </div>
+      ` : nothing5)}
+      ${input.pins.map((p) => p.visible ? html9`
+        <div
+          class="comment-pin"
+          style=${styleMap({
+    top: `${p.top}px`,
+    left: `${p.left}px`
+  })}
+          @click=${() => input.onPinClick(p.id)}>
+          <div class="comment-cursor">${p.index}</div>
+        </div>
+      ` : nothing5)}
+      ${input.activePin && input.activeThread ? repeat(
+    [{ pin: input.activePin, thread: input.activeThread }],
+    (item2) => item2.thread.id,
+    (item2) => html9`
+          <div
+            class="comment-popup-widget"
+            style=${styleMap({
+      top: `${Math.min(
+        Math.max(POPUP_MARGIN, item2.pin.top + PIN_HEIGHT),
+        Math.max(POPUP_MARGIN, target.clientHeight - POPUP_HEIGHT)
+      )}px`,
+      left: `${Math.min(
+        Math.max(POPUP_MARGIN, item2.pin.left),
+        Math.max(POPUP_MARGIN, target.clientWidth - POPUP_WIDTH - POPUP_MARGIN)
+      )}px`
+    })}>
+            ${UI10.Widget.widget(CommentThreadWidget, {
+      comments: [...item2.thread.comments],
+      onAddComment: input.onAddComment
+    })}
+          </div>
+        `
+  ) : nothing5}
+    </div>
+  `, target);
+};
+var CommentsOverlayWidget = class extends UI10.Widget.Widget {
+  static INJECT = [CommentManager.CommentManager.CommentManager];
+  #view;
+  #commentManager;
+  #commentOverlayManager;
+  #activeThreadId = null;
+  constructor(element, [commentManager], view = DEFAULT_VIEW7) {
+    super(element, { useShadowDom: false });
+    this.#view = view;
+    this.#commentManager = commentManager;
+    this.#commentOverlayManager = new Comments.CommentOverlayManager.CommentOverlayManager(
+      this.#commentManager
+    );
+  }
+  setOverlayManagerForTest(overlayManager) {
+    this.#commentOverlayManager = overlayManager;
+  }
+  wasShown() {
+    super.wasShown();
+    this.#commentOverlayManager.start();
+    this.#commentOverlayManager.addEventListener(
+      Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
+      this.#onStateChanged,
+      this
+    );
+    this.#commentOverlayManager.addEventListener(
+      Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED,
+      this.#onStateChanged,
+      this
+    );
+    this.#commentManager.addEventListener(
+      CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED,
+      this.#onStateChanged,
+      this
+    );
+    this.#commentManager.addEventListener(
+      CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED,
+      this.#onCommentModeChanged,
+      this
+    );
+    this.requestUpdate();
+  }
+  willHide() {
+    this.#commentOverlayManager.stop();
+    this.#commentOverlayManager.removeEventListener(
+      Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
+      this.#onStateChanged,
+      this
+    );
+    this.#commentOverlayManager.removeEventListener(
+      Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED,
+      this.#onStateChanged,
+      this
+    );
+    this.#commentManager.removeEventListener(
+      CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED,
+      this.#onStateChanged,
+      this
+    );
+    this.#commentManager.removeEventListener(
+      CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED,
+      this.#onCommentModeChanged,
+      this
+    );
+    super.willHide();
+  }
+  #onCommentModeChanged(event) {
+    const isModeActive = event.data;
+    if (!isModeActive) {
+      this.#activeThreadId = null;
+    }
+    const action3 = UI10.ActionRegistry.ActionRegistry.instance().getAction(
+      "comments.toggle-comment-mode"
+    );
+    action3?.setToggled(isModeActive);
+    this.requestUpdate();
+  }
+  #onStateChanged() {
+    const draftThread = this.#commentManager.getCommentThreads().find((t) => t.status === "DRAFT");
+    if (draftThread) {
+      this.#activeThreadId = draftThread.id;
+    } else if (this.#activeThreadId && !this.#commentManager.getCommentThread(this.#activeThreadId)) {
+      this.#activeThreadId = null;
+    }
+    this.requestUpdate();
+  }
+  #handlePinClick = (threadId) => {
+    const thread = this.#commentManager.getCommentThread(threadId);
+    if (this.#activeThreadId === threadId) {
+      if (thread?.status === "DRAFT") {
+        this.#commentOverlayManager.clearDraftThreads();
+      }
+      this.#activeThreadId = null;
+    } else {
+      this.#commentOverlayManager.clearDraftThreads();
+      this.#activeThreadId = threadId;
+    }
+    this.requestUpdate();
+  };
+  performUpdate() {
+    const pins = this.#commentOverlayManager.getPinPositions();
+    const highlights = this.#commentOverlayManager.getHighlightRects();
+    let activePin = null;
+    let activeThread = null;
+    if (this.#activeThreadId) {
+      activePin = pins.find((p) => p.id === this.#activeThreadId) ?? null;
+      activeThread = this.#commentManager.getCommentThread(this.#activeThreadId) ?? null;
+    }
+    const viewInput = {
+      pins,
+      highlights,
+      hoverHighlight: this.#commentOverlayManager.getHoverHighlight(),
+      commentMode: this.#commentManager.isCommentMode(),
+      onPinClick: this.#handlePinClick,
+      activeThread,
+      activePin,
+      onAddComment: (text) => {
+        activeThread?.save(text);
+      }
+    };
+    this.#view(viewInput, void 0, this.contentElement);
+  }
+};
+var widgetInstance = null;
+var ActionDelegate = class {
+  #commentManager;
+  constructor(commentManager) {
+    this.#commentManager = commentManager ?? Root3.DevToolsContext.globalInstance().get(
+      CommentManager.CommentManager.CommentManager
+    );
+  }
+  handleAction(_context, actionId) {
+    if (actionId === "comments.toggle-comment-mode") {
+      if (!widgetInstance) {
+        widgetInstance = new CommentsOverlayWidget(
+          void 0,
+          [this.#commentManager]
+        );
+        widgetInstance.markAsRoot();
+        widgetInstance.show(document.body);
+      }
+      this.#commentManager.setCommentMode(
+        !this.#commentManager.isCommentMode()
+      );
+      return true;
+    }
+    return false;
+  }
+  static resetForTest() {
+    if (widgetInstance) {
+      widgetInstance.detach();
+      widgetInstance = null;
+    }
+  }
+};
+
+// ../../front_end/panels/common/CommentsStatusBarPill.ts
+var CommentsStatusBarPill_exports = {};
+__export(CommentsStatusBarPill_exports, {
+  CommentsStatusBarPill: () => CommentsStatusBarPill,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8
+});
+import * as i18n19 from "../../core/i18n/i18n.js";
+import * as CommentManager3 from "../../models/comment_manager/comment_manager.js";
+import * as UI11 from "../../ui/legacy/legacy.js";
+import * as Lit5 from "../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
+var UIStrings8 = {
+  /**
+   * @description Button text for the comments status bar pill showing the number of open comments.
+   * @example {2} PH1
+   */
+  commentsCount: "Comments ({PH1})"
+};
+var str_8 = i18n19.i18n.registerUIStrings("panels/common/CommentsStatusBarPill.ts", UIStrings8);
+var i18nString8 = i18n19.i18n.getLocalizedString.bind(void 0, str_8);
+var { html: html10, render: render9 } = Lit5;
+var DEFAULT_VIEW8 = (input, _output, target) => {
+  render9(html10`
+    ${input.threads.length <= 0 ? Lit5.nothing : html10`
+      <button
+        class="devtools-pill"
+        ?disabled=${input.disabled}
+        @click=${input.onPillClick}
+        jslog=${VisualLogging4.action("comments-status-bar-pill").track({ click: true })}>
+        ${i18nString8(UIStrings8.commentsCount, { PH1: input.threads.length })}
+      </button>
+    `}
+  `, target);
+};
+var CommentsStatusBarPill = class extends UI11.Widget.Widget {
+  static INJECT = [CommentManager3.CommentManager.CommentManager];
+  #view;
+  #commentManager;
+  constructor(element, [commentManager], view = DEFAULT_VIEW8) {
+    super(element);
+    this.#view = view;
+    this.#commentManager = commentManager;
+  }
+  #onThreadsChanged() {
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.#commentManager.addEventListener(
+      CommentManager3.CommentManager.Events.COMMENT_THREADS_CHANGED,
+      this.#onThreadsChanged,
+      this
+    );
+    this.requestUpdate();
+  }
+  willHide() {
+    this.#commentManager.removeEventListener(
+      CommentManager3.CommentManager.Events.COMMENT_THREADS_CHANGED,
+      this.#onThreadsChanged,
+      this
+    );
+    super.willHide();
+  }
+  performUpdate() {
+    const viewInput = {
+      threads: this.#commentManager.getCommentThreads().filter((thread) => thread.status !== "DRAFT"),
+      onPillClick: this.#handlePillClick
+    };
+    this.#view(viewInput, void 0, this.contentElement);
+  }
+  #handlePillClick = () => {
+  };
+};
 export {
   AiCodeCompletionSummaryToolbar_exports as AiCodeCompletionSummaryToolbar,
   BadgeNotification,
   CPUThrottlingOption_exports as CPUThrottlingOption,
+  CommentThreadWidget_exports as CommentThreadWidget,
+  CommentsOverlayWidget_exports as CommentsOverlayWidget,
+  CommentsStatusBarPill_exports as CommentsStatusBarPill,
   DOMLinkifier_exports as DOMLinkifier,
   ExtensionView_exports as ExtensionIframe,
   ExtensionPanel_exports as ExtensionPanel,

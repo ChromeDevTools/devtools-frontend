@@ -147,7 +147,7 @@ export class MockDebuggerBackend {
             hash: '',
             hasSourceURL: Boolean(scriptDescription.hasSourceURL),
             ...(sourceMap ? { sourceMapURL: sourceMap.url } : null),
-            embedderName: scriptDescription.embedderName,
+            embedderName: scriptDescription.embedderName ?? (scriptDescription.hasSourceURL ? undefined : scriptDescription.url),
             scriptLanguage: scriptDescription.scriptLanguage,
         }, target.sessionId);
         const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);

@@ -1,7 +1,6 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as SDK from '../../../core/sdk/sdk.js';
 import { ConversationContext } from '../agents/AiAgent.js';
 import { FileFormatter } from '../data_formatters/FileFormatter.js';
 export class FileContext extends ConversationContext {
@@ -14,18 +13,11 @@ export class FileContext extends ConversationContext {
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     }
     /**
-     * Resolves the security origin of a given UISourceCode.
-     * Prefers the project security origin, falling back to the origin of the file URL.
-     */
-    static originForUISourceCode(file) {
-        return file.project()?.securityOrigin?.() ?? SDK.SecurityOrigin.SecurityOrigin.create(file.url());
-    }
-    /**
      * Returns the security origin of the project containing the file, falling
      * back to the origin derived from the file URL.
      */
     getOrigin() {
-        return FileContext.originForUISourceCode(this.#file);
+        return this.#file.securityOrigin();
     }
     getItem() {
         return this.#file;

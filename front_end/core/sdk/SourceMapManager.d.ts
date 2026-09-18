@@ -2,9 +2,9 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import type { FrameAssociated } from './FrameAssociated.js';
 import { type PageResourceLoadInitiator, type ResourceLoader } from './PageResourceLoader.js';
-import { SourceMap, type SourceMapV3 } from './SourceMap.js';
+import { SourceMap, type SourceMapProvenance, type SourceMapV3 } from './SourceMap.js';
 import { type Target } from './Target.js';
-export type SourceMapFactory<T> = (compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString, payload: SourceMapV3, client: T) => SourceMap;
+export type SourceMapFactory<T> = (compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString, payload: SourceMapV3, client: T, provenance: SourceMapProvenance) => SourceMap;
 export declare const lazyLoadingSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
     #private;
@@ -16,7 +16,7 @@ export declare class SourceMapManager<T extends FrameAssociated> extends Common.
     sourceMapForClient(client: T): SourceMap | undefined;
     sourceMapForClientPromise(client: T): Promise<SourceMap | undefined>;
     clientForSourceMap(sourceMap: SourceMap): T | undefined;
-    attachSourceMap(client: T, relativeSourceURL: Platform.DevToolsPath.UrlString, relativeSourceMapURL: string | undefined): void;
+    attachSourceMap(client: T, relativeSourceURL: Platform.DevToolsPath.UrlString, relativeSourceMapURL: string | undefined, provenance: SourceMapProvenance): void;
     cancelAttachSourceMap(client: T): void;
     detachSourceMap(client: T): void;
     waitForSourceMapsProcessedForTest(): Promise<unknown>;

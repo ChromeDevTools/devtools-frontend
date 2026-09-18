@@ -189,6 +189,9 @@ export class ElementsPanel extends UI.Panel.Panel {
     getTreeOutlineForTesting() {
         return this.#domTreeWidget.getTreeOutlineForTesting();
     }
+    getDOMTreeWidgetForTesting() {
+        return this.#domTreeWidget;
+    }
     constructor(targetManager, settings) {
         super('elements');
         this.#targetManager = targetManager ?? SDK.TargetManager.TargetManager.instance();
@@ -1070,7 +1073,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         adornerSet.delete(adorner);
     }
     toggleHideElement(node) {
-        this.#domTreeWidget.toggleHideElement(node);
+        void this.#domTreeWidget.toggleHideElement(node);
     }
     toggleEditAsHTML(node) {
         this.#domTreeWidget.toggleEditAsHTML(node);

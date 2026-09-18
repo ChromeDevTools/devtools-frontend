@@ -379,16 +379,9 @@ export class CompilerScriptMapping {
         const scripts = new Set([script]);
         this.removeStubUISourceCode(script);
         const target = script.target();
-        const embedderName = script.embedderName();
-        let securityOrigin;
-        if (embedderName) {
-            const extractedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(embedderName);
-            if (extractedOrigin && extractedOrigin !== 'null') {
-                securityOrigin = SDK.SecurityOrigin.SecurityOrigin.create(extractedOrigin);
-            }
-        }
-        const parsedOrigin = securityOrigin ? `:${securityOrigin.siteId()}` : '';
-        const projectId = `jsSourceMaps:${script.isContentScript() ? 'extensions' : ''}:${target.id()}${parsedOrigin}`;
+        const securityOrigin = script.securityOrigin();
+        const originPart = securityOrigin.isOpaque() ? '' : `:${securityOrigin.siteId()}`;
+        const projectId = `jsSourceMaps:${script.isContentScript() ? 'extensions' : ''}:${target.id()}${originPart}`;
         let project = this.#projects.get(projectId);
         if (!project) {
             const projectType = script.isContentScript() ? Workspace.Workspace.projectTypes.ContentScripts :

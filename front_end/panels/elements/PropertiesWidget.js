@@ -37,12 +37,12 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import propertiesWidgetStyles from './propertiesWidget.css.js';
 const OBJECT_GROUP_NAME = 'properties-sidebar-pane';
 const { bindToSetting } = UI.UIUtils;
-const { repeat } = Directives;
+const { widget, widgetRef } = UI.Widget;
 const UIStrings = {
     /**
      * @description Text on the checkbox in the Properties tab of the Elements panel, which controls whether
@@ -86,10 +86,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         <div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>
       ` : nothing}
       <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html `
-        <ul role=tree class="source-code object-properties-section">
-          <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;
-          <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>;
-          ${repeat(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(input.objectTree?.children ?? {}, true /* skipProto */, true /* skipGettersAndSetters */), node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+        <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
+        <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
+        <ul role=tree open class="source-code object-properties-section" ${widget(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, {
+        objectTree: input.objectTree ?? undefined,
+        skipProto: true,
+        skipGettersAndSetters: true,
+    })} ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, () => { })}>
         </ul>
       `}></devtools-tree>
     </div>`, target);
@@ -181,6 +184,7 @@ export class PropertiesWidget extends UI.Widget.VBox {
             propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
             readOnly: true,
         });
+        this.#objectTree.expanded = true;
         this.#updateFilter();
     }
     async performUpdate() {

@@ -253,7 +253,7 @@ export class ContextSelectionAgent extends AiAgent {
                 const files = [];
                 const uiSourceCodes = [];
                 for (const file of ContextSelectionAgent.getUISourceCodes(this.#workspace)) {
-                    const fileSecurityOrigin = FileContext.originForUISourceCode(file);
+                    const fileSecurityOrigin = file.securityOrigin();
                     if (origin && !fileSecurityOrigin.isSameOriginWith(origin)) {
                         continue;
                     }
@@ -307,7 +307,7 @@ export class ContextSelectionAgent extends AiAgent {
                     if (ContextSelectionAgent.uiSourceCodeId.get(file) !== params.id) {
                         return false;
                     }
-                    const fileSecurityOrigin = FileContext.originForUISourceCode(file);
+                    const fileSecurityOrigin = file.securityOrigin();
                     return !origin || fileSecurityOrigin.isSameOriginWith(origin);
                 });
                 if (!file) {
@@ -534,7 +534,7 @@ export class ContextSelectionAgent extends AiAgent {
             if (ContextSelectionAgent.uiSourceCodeId.get(file) !== id) {
                 return false;
             }
-            return isOriginAllowedByLock({ status: 'ESTABLISHED_ORIGIN', origin: establishedOrigin }, FileContext.originForUISourceCode(file));
+            return isOriginAllowedByLock({ status: 'ESTABLISHED_ORIGIN', origin: establishedOrigin }, file.securityOrigin());
         });
     }
 }

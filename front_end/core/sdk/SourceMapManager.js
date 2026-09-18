@@ -26,7 +26,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
         super();
         this.#target = target;
         this.#factory = factory ??
-            ((compiledURL, sourceMappingURL, payload) => new SourceMap(compiledURL, sourceMappingURL, payload, this.#target.targetManager().getConsole()));
+            ((compiledURL, sourceMappingURL, payload, _client, provenance) => new SourceMap(compiledURL, sourceMappingURL, payload, this.#target.targetManager().getConsole(), undefined, provenance));
         const settings = target.targetManager().settings;
         this.#lazyLoadingSetting = settings.resolve(lazyLoadingSettingDescriptor);
     }
@@ -45,8 +45,8 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
             this.detachSourceMap(client);
         }
         this.#isEnabled = isEnabled;
-        for (const [client, { relativeSourceURL, relativeSourceMapURL }] of clientData) {
-            this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL);
+        for (const [client, { relativeSourceURL, relativeSourceMapURL, provenance }] of clientData) {
+            this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL, provenance);
         }
     }
     static getBaseUrl(target) {
@@ -74,7 +74,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
         return this.#sourceMaps.get(sourceMap);
     }
     // TODO(bmeurer): We are lying about the type of |relativeSourceURL| here.
-    attachSourceMap(client, relativeSourceURL, relativeSourceMapURL) {
+    attachSourceMap(client, relativeSourceURL, relativeSourceMapURL, provenance) {
         if (this.#clientData.has(client)) {
             throw new Error('SourceMap is already attached or being attached to client');
         }
@@ -84,6 +84,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
         const clientData = {
             relativeSourceURL,
             relativeSourceMapURL,
+            provenance,
             getSourceMap: () => Promise.resolve(undefined),
         };
         this.#clientData.set(client, clientData);
@@ -114,7 +115,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
                             sourceMapPromise =
                                 loadSourceMap(resourceLoader, this.#sourceMapCache, sourceMapURL, client.debugId(), initiator)
                                     .then(payload => {
-                                    const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
+                                    const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client, provenance);
                                     if (this.#clientData.get(client) === clientData) {
                                         clientData.sourceMap = sourceMap;
                                         this.#sourceMaps.set(sourceMap, client);

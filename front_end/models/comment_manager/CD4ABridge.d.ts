@@ -7,12 +7,11 @@ export interface CommentThread {
     id: string;
     text: string;
     networkRequestId?: string;
-    backendNodeId?: number;
-    editor?: CommentManager.EditorAnchorSignature;
+    node?: CommentManager.DOMNodeAnchorSignature;
 }
 export interface RevealTarget {
     networkRequestId?: string;
-    backendNodeId?: number;
+    node?: CommentManager.DOMNodeAnchorSignature;
 }
 export declare const enum Events {
     COMMENT_THREADS_CHANGED = "CommentThreadsChanged"

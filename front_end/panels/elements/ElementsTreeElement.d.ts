@@ -92,6 +92,7 @@ export interface ViewInput {
     descendantDecorations: Decoration[];
     decorationsTooltip: string;
     indent: number;
+    renderSelection?: boolean;
     editorState: CodeMirror.EditorState | null;
     editorWidth: number | null;
 }
@@ -124,6 +125,7 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     isXMLMimeType: boolean;
     disableEdits: boolean;
     showAIButton: boolean;
+    renderSelection: boolean;
     isDOMNodeSelected: boolean;
     initialEdit?: InitialEditState | null;
     onInitialEditCompleted?: () => void;

@@ -251,11 +251,11 @@ export class ResourceScriptFile {
         this.uiSourceCode = uiSourceCode;
         this.script = this.uiSourceCode.contentType().isScript() ? script : null;
     }
-    addSourceMapURL(sourceMapURL) {
+    addSourceMapURL(sourceMapURL, provenance) {
         if (!this.script) {
             return;
         }
-        this.script.debuggerModel.setSourceMapURL(this.script, sourceMapURL);
+        this.script.debuggerModel.setSourceMapURL(this.script, sourceMapURL, provenance);
     }
     addDebugInfoURL(debugInfoURL) {
         if (!this.script) {

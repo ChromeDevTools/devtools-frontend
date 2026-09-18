@@ -9488,7 +9488,7 @@ var DebuggerPlugin = class extends Plugin {
       if (!url) {
         return;
       }
-      scriptFile.addSourceMapURL(url);
+      scriptFile.addSourceMapURL(url, SDK8.SourceMap.SourceMapProvenance.USER);
     }
     function addDebugInfoURL(scriptFile) {
       const dialog4 = AddDebugInfoURLDialog.createAddDWARFSymbolsURLDialog(addDebugInfoURLDialogCallback.bind(this, scriptFile));
@@ -18286,6 +18286,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     const completionsId = `watch-expression-completions-${input.watchExpressions.indexOf(e)}`;
     return html14`<li
           class=${classMap3({ "watch-expression-tree-item": true, "watch-expression-editing": e.editing })}
+          ?open=${Boolean(e.result?.expanded)}
           @keydown=${onExpressionKeydown.bind(void 0, e)}
           @expand=${(event) => input.onExpand(e, event.detail.expanded)}
           role=treeitem>
@@ -18299,17 +18300,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       onDelete: () => input.onDelete(e),
       onContextMenu: (event) => onContextMenu(e, event)
     })}></devtools-widget>
-        ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing8 : html14`
-          <ul role=group>
-            ${ObjectUI4.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(
-      e.result.children ?? {},
-      false,
-      false,
-      input.linkifier
-    ).map(
-      (node) => html14`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`
-    )}
-          </ul>`}
+        ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing8 : ObjectUI4.ObjectPropertiesSection.renderObjectTree(e.result, input.linkifier)}
       </li>`;
   };
   render11(
@@ -18477,10 +18468,9 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
           this.saveExpressions();
           this.requestUpdate();
         },
-        onExpand: async (e, expanded) => {
-          if (expanded) {
-            await e.result?.populateChildrenIfNeeded();
-            this.requestUpdate();
+        onExpand: (e, expanded) => {
+          if (e.result) {
+            e.result.expanded = expanded;
           }
         }
       },

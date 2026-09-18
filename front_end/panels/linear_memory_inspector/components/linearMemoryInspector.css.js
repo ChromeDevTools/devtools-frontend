@@ -34,7 +34,11 @@ export default `/*
     justify-content: center;
   }
 
-  .navigator-widget ~ devtools-linear-memory-inspector-viewer {
+  .navigator-widget {
+    flex: none;
+  }
+
+  .navigator-widget + devtools-linear-memory-inspector-viewer {
     margin-top: var(--sys-size-6);
   }
 

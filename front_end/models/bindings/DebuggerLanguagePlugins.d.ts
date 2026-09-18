@@ -79,7 +79,7 @@ export declare class DebuggerLanguagePluginManager implements SDK.TargetManager.
      * set to undefined to indicate that there's no #plugin for the script.
      */
     private rawModuleIdAndPluginForScript;
-    uiSourceCodeForURL(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString): Workspace.UISourceCode.UISourceCode | null;
+    uiSourceCodeForURL(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString, script?: SDK.Script.Script): Workspace.UISourceCode.UISourceCode | null;
     rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Promise<Workspace.UISourceCode.UILocation | null>;
     uiLocationToRawLocationRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber?: number | undefined): Promise<Array<{
         start: SDK.DebuggerModel.Location;

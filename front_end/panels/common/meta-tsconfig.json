@@ -28,7 +28,7 @@
     "noImplicitReturns": true,
     "outDir": ".",
     "preserveConstEnums": true,
-    "rootDir": "../../../../../../front_end/ui/comments",
+    "rootDir": "../../../../../../front_end/panels/common",
     "rootDirs": [
       "../../../../../../",
       "../../../"
@@ -46,7 +46,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/ui/comments/comments-meta.ts",
+    "../../../../../../front_end/panels/common/common-meta.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",
@@ -63,7 +63,7 @@
       "path": "../../core/root/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../legacy/bundle-tsconfig.ref.json"
+      "path": "../../ui/legacy/bundle-tsconfig.ref.json"
     }
   ]
 }

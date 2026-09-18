@@ -8974,21 +8974,21 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     triggerButton.onclick = async (event) => {
       event.stopPropagation();
       const popoverHelper = stylesContainer.swatchPopoverHelper();
-      const widget4 = _StyleEditorWidget.instance();
-      widget4.element.classList.toggle("with-padding", true);
-      widget4.setEditor(editorClass);
-      widget4.bindContext(stylesContainer, section5);
-      widget4.setTriggerKey(triggerKey);
-      await widget4.render();
-      widget4.focus();
+      const widget5 = _StyleEditorWidget.instance();
+      widget5.element.classList.toggle("with-padding", true);
+      widget5.setEditor(editorClass);
+      widget5.bindContext(stylesContainer, section5);
+      widget5.setTriggerKey(triggerKey);
+      await widget5.render();
+      widget5.focus();
       const scrollerElement = triggerButton.enclosingNodeOrSelfWithClass("style-panes-wrapper");
       const onScroll = () => {
         popoverHelper.hide(true);
       };
-      const onStylesUpdateCompleted = widget4.requestUpdate.bind(widget4);
+      const onStylesUpdateCompleted = widget5.requestUpdate.bind(widget5);
       stylesContainer.addStyleUpdateListener(onStylesUpdateCompleted);
-      popoverHelper.show(widget4, triggerButton, () => {
-        widget4.unbindContext();
+      popoverHelper.show(widget5, triggerButton, () => {
+        widget5.unbindContext();
         if (scrollerElement) {
           scrollerElement.removeEventListener("scroll", onScroll);
         }
@@ -13069,17 +13069,17 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     const toolbarPaneContent = toolbarPaneContainer.createChild("div", "styles-sidebar-toolbar-pane");
     return toolbarPaneContent;
   }
-  showToolbarPane(widget4, toggle4) {
+  showToolbarPane(widget5, toggle4) {
     if (this.pendingWidgetToggle) {
       this.pendingWidgetToggle.setToggled(false);
     }
     this.pendingWidgetToggle = toggle4;
     if (this.animatedToolbarPane) {
-      this.pendingWidget = widget4;
+      this.pendingWidget = widget5;
     } else {
-      this.startToolbarPaneAnimation(widget4);
+      this.startToolbarPaneAnimation(widget5);
     }
-    if (widget4 && toggle4) {
+    if (widget5 && toggle4) {
       toggle4.setToggled(true);
     }
   }
@@ -13094,25 +13094,25 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
   removeStyleUpdateListener(listener) {
     this.removeEventListener("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, listener);
   }
-  startToolbarPaneAnimation(widget4) {
-    if (widget4 === this.currentToolbarPane) {
+  startToolbarPaneAnimation(widget5) {
+    if (widget5 === this.currentToolbarPane) {
       return;
     }
-    if (widget4 && this.currentToolbarPane) {
+    if (widget5 && this.currentToolbarPane) {
       this.currentToolbarPane.detach();
-      widget4.show(this.toolbarPaneElement);
-      this.currentToolbarPane = widget4;
+      widget5.show(this.toolbarPaneElement);
+      this.currentToolbarPane = widget5;
       this.currentToolbarPane.focus();
       return;
     }
-    this.animatedToolbarPane = widget4;
+    this.animatedToolbarPane = widget5;
     if (this.currentToolbarPane) {
       this.toolbarPaneElement.style.animationName = "styles-element-state-pane-slideout";
-    } else if (widget4) {
+    } else if (widget5) {
       this.toolbarPaneElement.style.animationName = "styles-element-state-pane-slidein";
     }
-    if (widget4) {
-      widget4.show(this.toolbarPaneElement);
+    if (widget5) {
+      widget5.show(this.toolbarPaneElement);
     }
     const listener = onAnimationEnd.bind(this);
     this.toolbarPaneElement.addEventListener("animationend", listener, false);
@@ -15371,7 +15371,7 @@ import { PanelUtils as PanelUtils2 } from "../utils/utils.js";
 var { Directives: { ref: ref3 }, html: html10, render: render8 } = Lit7;
 var AdoptedStyleSheetSetTreeElement = class extends UI13.TreeOutline.TreeElement {
   constructor(adoptedStyleSheets) {
-    super("");
+    super("", void 0, "adopted-style-sheets");
     this.adoptedStyleSheets = adoptedStyleSheets;
     const documentElement = this.listItemElement.createChild("span");
     UI13.UIUtils.createTextChild(documentElement, "#adopted-style-sheets");
@@ -15383,7 +15383,7 @@ var AdoptedStyleSheetSetTreeElement = class extends UI13.TreeOutline.TreeElement
 };
 var AdoptedStyleSheetTreeElement = class _AdoptedStyleSheetTreeElement extends UI13.TreeOutline.TreeElement {
   constructor(adoptedStyleSheet) {
-    super("");
+    super("", void 0, "adopted-style-sheet");
     this.adoptedStyleSheet = adoptedStyleSheet;
     const header = adoptedStyleSheet.cssModel.styleSheetHeaderForId(adoptedStyleSheet.id);
     if (header) {
@@ -15431,7 +15431,7 @@ var AdoptedStyleSheetContentsTreeElement = class extends UI13.TreeOutline.TreeEl
   widget;
   widgetWrapper;
   constructor(styleSheetHeader) {
-    super("");
+    super("", void 0, "adopted-style-sheet-contents");
     this.widgetWrapper = document.createElement("div");
     this.widgetWrapper.style.display = "contents";
     this.title = this.widgetWrapper;
@@ -17253,7 +17253,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     input.onExpand,
     input.issues
   )}</span>` : nothing5}
-      <div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>
+      ${input.renderSelection !== false ? html13`<div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>` : nothing5}
       <div class=${classMap3(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
@@ -17502,6 +17502,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   isXMLMimeType = false;
   disableEdits = false;
   showAIButton = false;
+  renderSelection = true;
   isDOMNodeSelected = false;
   initialEdit;
   onInitialEditCompleted;
@@ -17847,6 +17848,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
         descendantDecorations: this.#expanded ? [] : this.#descendantDecorations,
         decorationsTooltip: this.#decorationsTooltip,
         indent: this.#getLeftIndent(),
+        renderSelection: this.renderSelection,
         showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
         scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
         showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,
@@ -18040,10 +18042,10 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     await UI15.ViewManager.ViewManager.instance().showView("medias");
     const view = UI15.ViewManager.ViewManager.instance().view("medias");
     if (view) {
-      const widget4 = await view.widget();
-      if (widget4 instanceof Media2.MainView.MainView) {
-        await widget4.waitForInitialPlayers();
-        widget4.selectPlayerByDOMNodeId(this.node.backendNodeId());
+      const widget5 = await view.widget();
+      if (widget5 instanceof Media2.MainView.MainView) {
+        await widget5.waitForInitialPlayers();
+        widget5.selectPlayerByDOMNodeId(this.node.backendNodeId());
       }
     }
   }
@@ -20243,11 +20245,13 @@ var elementsTreeOutline_css_default = `/*
   line-height: normal;
 }
 
+:host(.elements-tree-outline),
 .elements-disclosure devtools-tree {
   width: 100%;
   min-width: 100%;
   min-height: 100%;
   display: inline-block;
+  padding: 0;
 }
 
 .elements-disclosure li {
@@ -20757,7 +20761,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 .tree-outline-disclosure li .selection {
   display: none;
   z-index: -1;
-  margin-left: 0;
+  margin-left: calc(var(--indent, 0px) * -1);
 }
 
 .tree-outline-disclosure li.selected .selection {
@@ -20790,6 +20794,10 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 
 .tree-outline-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
   background-color: var(--sys-color-tonal-container);
+}
+
+.tree-outline-disclosure .elements-tree-outline li:has(.elements-tree-editor) .selection {
+  display: none;
 }
 
 .tree-outline-disclosure ol {
@@ -21296,6 +21304,12 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     }
   }
   const on = Lit10.Directive.directive(Lit10.CustomDirectives.InterceptBindingDirective);
+  const treeItemJslog = (context, drag) => VisualLogging10.treeItem(context).parent("elementsTreeOutline").track({
+    keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
+    resize: true,
+    ...drag ? { drag: true } : {},
+    click: true
+  });
   const renderShortcut = (shortcut, shortcutDepth) => {
     const hasShortcutChildren = shortcut.childShortcuts.length > 0;
     const isShortcutExpanded = Boolean(input.isTopLayerShortcutExpanded?.(shortcut));
@@ -21328,12 +21342,11 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
           ?open=${isShortcutExpanded}
           class="elements-tree-shortcut"
           style=${styleMap({ "--indent": `${computeLeftIndent(shortcutDepth, hasShortcutChildren)}px` })}
-          @select=${onShortcutSelect}
-          @expand=${onShortcutExpand}
+          @select=${on(onShortcutSelect)}
+          @expand=${on(onShortcutExpand)}
           @mousemove=${on(onShortcutMouseMove)}
           @mouseleave=${on(onShortcutMouseLeave)}
-          jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline")}>
-        <div class="selection fill"></div>
+          jslog=${treeItemJslog()}>
         <span class="elements-tree-shortcut-title">\u21AA ${title}</span>
         <devtools-adorner
             .name=${ElementsComponents7.AdornerManager.RegisteredAdorners.REVEAL}
@@ -21353,9 +21366,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
         </devtools-adorner>
         ${hasShortcutChildren ? html15`
           <ul role="group">
-            ${UI19.TreeOutline.ifExpanded(html15`
-              ${shortcut.childShortcuts.map((child) => renderShortcut(child, shortcutDepth + 1))}
-            `)}
+            ${shortcut.childShortcuts.map((child) => renderShortcut(child, shortcutDepth + 1))}
           </ul>
         ` : nothing6}
       </li>
@@ -21378,15 +21389,12 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
               ?open=${isTopLayerExpanded}
               class="elements-tree-top-layer-container"
               style=${styleMap({ "--indent": `${computeLeftIndent(containerDepth, true)}px` })}
-              @select=${onTopLayerSelect}
-              @expand=${onTopLayerExpand}
-              jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline")}>
-            <div class="selection fill"></div>
+              @select=${on(onTopLayerSelect)}
+              @expand=${on(onTopLayerExpand)}
+              jslog=${treeItemJslog()}>
             <span class="elements-tree-shortcut-title">#top-layer</span>
             <ul role="group">
-              ${UI19.TreeOutline.ifExpanded(html15`
-                ${shortcuts.map((sc) => renderShortcut(sc, containerDepth + 1))}
-              `)}
+              ${shortcuts.map((sc) => renderShortcut(sc, containerDepth + 1))}
             </ul>
           </li>
         `;
@@ -21408,10 +21416,9 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
           ?open=${isExpanded}
           class="elements-tree-adopted-style-sheet"
           style=${styleMap({ "--indent": `${computeLeftIndent(depth, true)}px` })}
-          @select=${onSelect}
-          @expand=${onExpand2}
-          jslog=${VisualLogging10.treeItem("adopted-style-sheet").parent("elementsTreeOutline")}>
-        <div class="selection fill"></div>
+          @select=${on(onSelect)}
+          @expand=${on(onExpand2)}
+          jslog=${treeItemJslog("adopted-style-sheet")}>
         <span class="elements-tree-shortcut-title">#adopted-style-sheet${linkText ? html15` (${UIComponentUtils.Linkifier.Linkifier.linkifyURL(linkText, {
       text: linkText,
       preventClick: true,
@@ -21423,8 +21430,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
               <li role="treeitem"
                   class="elements-tree-adopted-style-sheet-contents"
                   style=${styleMap({ "--indent": `${computeLeftIndent(depth + 1, false)}px` })}
-                  jslog=${VisualLogging10.treeItem("adopted-style-sheet-contents").parent("elementsTreeOutline")}>
-                <div class="selection fill"></div>
+                  jslog=${treeItemJslog("adopted-style-sheet-contents")}>
                 ${UI19.Widget.widget(AdoptedStyleSheetContentsWidget, { styleSheetHeader: header })}
               </li>
             ` : nothing6}
@@ -21450,10 +21456,9 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
           ?open=${isExpanded}
           class="elements-tree-adopted-style-sheets"
           style=${styleMap({ "--indent": `${computeLeftIndent(depth, true)}px` })}
-          @select=${onSelect}
-          @expand=${onExpand2}
-          jslog=${VisualLogging10.treeItem("adopted-style-sheets").parent("elementsTreeOutline")}>
-        <div class="selection fill"></div>
+          @select=${on(onSelect)}
+          @expand=${on(onExpand2)}
+          jslog=${treeItemJslog("adopted-style-sheets")}>
         <span class="elements-tree-shortcut-title">#adopted-style-sheets</span>
         <ul role="group">
           ${UI19.TreeOutline.ifExpanded(html15`
@@ -21552,7 +21557,8 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     return totalRows;
   };
   const renderNode = (node, depth = 0) => {
-    const isSelected = input.selectedNode === node;
+    const isDOMNodeSelected = input.selectedNode === node;
+    const isSelected = Boolean(input.selectEnabled) && isDOMNodeSelected;
     const isOpeningHovered = input.currentHighlightedNode === node || input.hoveredNode === node && !input.hoveredClosingTag;
     const isClosingHovered = input.hoveredNode === node && Boolean(input.hoveredClosingTag);
     const isEditingAsHTML = input.multilineEditingNode === node || input.nodeToEdit?.node === node && Boolean(input.nodeToEdit.isEditAsHTML);
@@ -21672,7 +21678,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
           ?selected=${isSelected && !input.selectedClosingTag}
           class=${classes}
           style=${styleMap({ "--indent": `${computeLeftIndent(depth, isExpandable)}px` })}
-          ?open=${isExpanded && !isEditingAsHTML}
+          ?open=${hasChildren && isExpanded && !isEditingAsHTML}
           draggable=${isDraggable ? "true" : "false"}
           @select=${on2((event) => onSelect(false, Boolean(event.detail?.selectedByUser)))}
           @expand=${on2(onExpand2)}
@@ -21683,19 +21689,15 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
           @dragleave=${on2(onDragLeave)}
           @drop=${on2(onDrop)}
           @dragend=${on2(onDragEnd)}
-          jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline").track({
-      keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
-      resize: true,
-      drag: true,
-      click: true
-    })}>
+          jslog=${treeItemJslog(void 0, true)}>
         ${UI19.Widget.widget(ElementsTreeWidget, {
       node,
       isClosingTag: false,
+      renderSelection: false,
       expanded: isExpanded && !isEditingAsHTML,
       isExpandable: hasChildren,
       selected: isSelected && !input.selectedClosingTag,
-      isDOMNodeSelected: isSelected,
+      isDOMNodeSelected,
       hovered: isOpeningHovered,
       searchQuery: input.searchMatchNode === node ? input.searchMatchQuery ?? null : null,
       inClipboard: input.isNodeInClipboard?.(node) ?? false,
@@ -21720,8 +21722,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
         input.onSelectNodeAfterEdit?.(wasExpanded, error, newNode, moveDirection);
       },
       toggleHideElement: (n) => {
-        input.onToggleHideElement?.(n);
-        return Promise.resolve();
+        return input.onToggleHideElement?.(n) ?? Promise.resolve();
       },
       isToggledToHidden: (n) => input.isToggledToHidden?.(n) ?? false,
       showContextMenu: (event) => {
@@ -21740,7 +21741,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
                 <li role="treeitem"
                     class="elements-tree-expand-all"
                     style=${styleMap({ "--indent": `${computeLeftIndent(depth + 1, false)}px` })}
-                    jslog=${VisualLogging10.treeItem("show-all-nodes").parent("elementsTreeOutline")}>
+                    jslog=${treeItemJslog("show-all-nodes")}>
                   <devtools-button
                       .variant=${Buttons3.Button.Variant.OUTLINED}
                       title=${i18nString16(UIStrings17.showAllNodesDMore, { PH1: remainingChildrenCount })}
@@ -21764,7 +21765,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     })}
                     style=${styleMap({ "--indent": `${computeLeftIndent(depth + 1, false)}px` })}
                     draggable=${isDraggable ? "true" : "false"}
-                    jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline")}
+                    jslog=${treeItemJslog(void 0, true)}
                     @select=${on2((event) => onSelect(true, Boolean(event.detail?.selectedByUser)))}
                     @contextmenu=${on2(onContextMenu)}
                     @mousemove=${on2(onClosingMouseMove)}
@@ -21776,10 +21777,11 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
                   ${UI19.Widget.widget(ElementsTreeWidget, {
       node,
       isClosingTag: true,
+      renderSelection: false,
       expanded: false,
       isExpandable: false,
       selected: isSelected && Boolean(input.selectedClosingTag),
-      isDOMNodeSelected: isSelected,
+      isDOMNodeSelected,
       hovered: isClosingHovered,
       computeLeftIndent: computeLeftIndent(depth + 1, false),
       disableEdits: input.disableEdits ?? false,
@@ -21843,7 +21845,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
                 <li role="treeitem"
                     class="elements-tree-expand-all"
                     style=${styleMap({ "--indent": `${computeLeftIndent(0, false)}px` })}
-                    jslog=${VisualLogging10.treeItem("show-all-nodes").parent("elementsTreeOutline")}>
+                    jslog=${treeItemJslog("show-all-nodes")}>
                   <devtools-button
                     .variant=${Buttons3.Button.Variant.OUTLINED}
                     title=${i18nString16(UIStrings17.showAllNodesDMore, { PH1: remaining })}
@@ -21885,9 +21887,9 @@ function getElementsTreeWidgetAndNode(element) {
       }
       const devtoolsWidget = current.querySelector(":scope > devtools-widget, :scope > .tree-element-title > devtools-widget");
       if (devtoolsWidget) {
-        const widget4 = UI19.Widget.Widget.get(devtoolsWidget);
-        if (widget4 instanceof ElementsTreeWidget) {
-          return { node: widget4.node, widget: widget4 };
+        const widget5 = UI19.Widget.Widget.get(devtoolsWidget);
+        if (widget5 instanceof ElementsTreeWidget) {
+          return { node: widget5.node, widget: widget5 };
         }
       }
     }
@@ -22106,11 +22108,11 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       if (!(hoveredNode instanceof Element) || !hoveredNode.matches(".violating-element")) {
         return null;
       }
-      const { node, widget: widget4 } = getElementsTreeWidgetAndNode(hoveredNode);
+      const { node, widget: widget5 } = getElementsTreeWidgetAndNode(hoveredNode);
       if (!node) {
         return null;
       }
-      let issues = widget4?.issues ?? [];
+      let issues = widget5?.issues ?? [];
       if (hoveredNode.classList.contains("webkit-html-attribute-name")) {
         const attrName = hoveredNode.textContent;
         issues = issues.filter((issue) => getElementIssueDetails(issue)?.attribute === attrName);
@@ -22399,6 +22401,12 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       }
       return;
     }
+    if (isClosingTag && node) {
+      const rootTreeElement = this.#viewOutput?.elementsTreeOutline?.findTreeElement(node);
+      const closingTreeElement = rootTreeElement?.childAt(rootTreeElement.childCount() - 1);
+      closingTreeElement?.select(!focus, true);
+      return;
+    }
     this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
   }
   highlightNodeAttribute(node, attribute) {
@@ -22485,16 +22493,18 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   }
   async expandRecursively(node, maxDepth = Number.MAX_VALUE) {
     if (this.#view === DECLARATIVE_VIEW) {
-      await node.getSubtree(100, true);
       const expand2 = async (n, depth) => {
         if (depth > maxDepth) {
           return;
         }
-        this.#expandedNodes.add(n);
-        if (!n.children() && (n.childNodeCount() || n.isIframe() || n.nodeType() === Node.DOCUMENT_NODE)) {
-          await new Promise((resolve) => {
-            void n.getChildNodes(() => resolve());
-          });
+        if (n.childDocumentPromiseForTesting) {
+          await n.childDocumentPromiseForTesting;
+        }
+        if (!n.children() && !n.contentDocument() && (n === node || n.childNodeCount() || n.isIframe() || n.nodeType() === Node.DOCUMENT_NODE)) {
+          await n.getSubtree(100, true);
+        }
+        if (nodeHasVisibleChildren(n, this.rootDOMNode, this.maxTreeDepth, this.omitRootDOMNode)) {
+          this.#expandedNodes.add(n);
         }
         const visibleChildren = getVisibleChildren(n, this.#showComments);
         if (visibleChildren.length) {
@@ -22605,7 +22615,10 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     if (this.#view === DECLARATIVE_VIEW) {
       this.performUpdate();
     } else {
-      const treeElement = node ? this.treeElementForNode(node) : null;
+      let treeElement = node ? this.treeElementForNode(node) : null;
+      if (isClosingTag && treeElement) {
+        treeElement = treeElement.childAt(treeElement.childCount() - 1);
+      }
       this.#viewOutput.elementsTreeOutline?.setHoverEffect(treeElement);
     }
   }
@@ -22738,7 +22751,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
           void this.showContextMenu(node, event);
         },
         onToggleHideElement: (node) => {
-          this.toggleHideElement(node);
+          return this.toggleHideElement(node);
         },
         onKeyDown: (event) => {
           this.onKeyDown(event);
@@ -22966,7 +22979,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       this.performUpdate();
     }
   }
-  toggleHideElement(node) {
+  async toggleHideElement(node) {
     const changeTracker = this.changeTracker;
     Elements2.DOMChanges.trackVisibilityToggle(
       changeTracker,
@@ -22974,7 +22987,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       buildChangeSelector(changeTracker, node),
       !this.isToggledToHidden(node)
     );
-    void node.toggleHideElement();
+    await node.toggleHideElement();
   }
   async removeNode(node) {
     if (this.isToggledToHidden(node)) {
@@ -23444,7 +23457,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       return true;
     }
     if (event.key === "h" || event.key === "H") {
-      this.toggleHideElement(node);
+      void this.toggleHideElement(node);
       event.consume(true);
       return true;
     }
@@ -26278,6 +26291,9 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
   getTreeOutlineForTesting() {
     return this.#domTreeWidget.getTreeOutlineForTesting();
   }
+  getDOMTreeWidgetForTesting() {
+    return this.#domTreeWidget;
+  }
   constructor(targetManager, settings) {
     super("elements");
     this.#targetManager = targetManager ?? SDK19.TargetManager.TargetManager.instance();
@@ -26441,8 +26457,8 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
   resolveLocation(_locationName) {
     return this.sidebarPaneView || null;
   }
-  showToolbarPane(widget4, toggle4) {
-    this.stylesWidget.showToolbarPane(widget4, toggle4);
+  showToolbarPane(widget5, toggle4) {
+    this.stylesWidget.showToolbarPane(widget5, toggle4);
   }
   modelAdded(domModel) {
     this.setupStyleTracking(domModel.cssModel());
@@ -27169,7 +27185,7 @@ ${node.simpleSelector()} {}`, false);
     adornerSet.delete(adorner4);
   }
   toggleHideElement(node) {
-    this.#domTreeWidget.toggleHideElement(node);
+    void this.#domTreeWidget.toggleHideElement(node);
   }
   toggleEditAsHTML(node) {
     this.#domTreeWidget.toggleEditAsHTML(node);
@@ -27738,7 +27754,7 @@ import * as Platform11 from "../../core/platform/platform.js";
 import * as SDK22 from "../../core/sdk/sdk.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI26 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html20, nothing as nothing8, render as render18 } from "../../ui/lit/lit.js";
+import { html as html20, nothing as nothing8, render as render18 } from "../../ui/lit/lit.js";
 import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -27767,7 +27783,7 @@ var propertiesWidget_css_default = `/*
 // ../../front_end/panels/elements/PropertiesWidget.ts
 var OBJECT_GROUP_NAME = "properties-sidebar-pane";
 var { bindToSetting: bindToSetting4 } = UI26.UIUtils;
-var { repeat: repeat3 } = Directives2;
+var { widget: widget4, widgetRef } = UI26.Widget;
 var UIStrings22 = {
   /**
    * @description Text on the checkbox in the Properties tab of the Elements panel, which controls whether
@@ -27810,18 +27826,14 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
         <div class="gray-info-message">${i18nString21(UIStrings22.noMatchingProperty)}</div>
       ` : nothing8}
       <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html20`
-        <ul role=tree class="source-code object-properties-section">
-          <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;
-          <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>;
-          ${repeat3(
-    ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(
-      input.objectTree?.children ?? {},
-      true,
-      true
-      /* skipGettersAndSetters */
-    ),
-    (node) => html20`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`
-  )}
+        <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
+        <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
+        <ul role=tree open class="source-code object-properties-section" ${widget4(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, {
+    objectTree: input.objectTree ?? void 0,
+    skipProto: true,
+    skipGettersAndSetters: true
+  })} ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, () => {
+  })}>
         </ul>
       `}></devtools-tree>
     </div>`, target);
@@ -27938,6 +27950,7 @@ var PropertiesWidget = class extends UI26.Widget.VBox {
       propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
       readOnly: true
     });
+    this.#objectTree.expanded = true;
     this.#updateFilter();
   }
   async performUpdate() {

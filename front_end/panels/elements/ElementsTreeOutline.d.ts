@@ -48,7 +48,7 @@ interface ViewInput {
     onClearMaxRows?: () => void;
     onHoverNode?: (node: SDK.DOMModel.DOMNode | null, showInfo?: boolean, isClosingTag?: boolean) => void;
     onLeave?: () => void;
-    onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
+    onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
     onKeyDown?: (event: KeyboardEvent) => void;
     isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
     onDuplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
@@ -205,7 +205,7 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     updateNodeAdorners(node: SDK.DOMModel.DOMNode): void;
     highlightMatch(node: SDK.DOMModel.DOMNode, query?: string): void;
     hideMatchHighlights(node: SDK.DOMModel.DOMNode): void;
-    toggleHideElement(node: SDK.DOMModel.DOMNode): void;
+    toggleHideElement(node: SDK.DOMModel.DOMNode): Promise<void>;
     removeNode(node: SDK.DOMModel.DOMNode): Promise<void>;
     isToggledToHidden(node: SDK.DOMModel.DOMNode): boolean;
     setMultilineEditing(multilineEditing: MultilineEditorController | null, node?: SDK.DOMModel.DOMNode): void;

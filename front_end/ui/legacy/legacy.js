@@ -24280,6 +24280,10 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
     this.refresh();
   }
   updateExpansionFromAttribute() {
+    if (!this.isExpandable()) {
+      this.#previousOpenAttributeValue = void 0;
+      return;
+    }
     const openAttr = this.configElement.getAttribute("open");
     if (openAttr === this.#previousOpenAttributeValue) {
       return;

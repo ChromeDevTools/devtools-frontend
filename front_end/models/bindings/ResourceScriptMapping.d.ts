@@ -28,7 +28,7 @@ export declare class ResourceScriptFile {
     readonly uiSourceCode: Workspace.UISourceCode.UISourceCode;
     readonly script: SDK.Script.Script | null;
     constructor(resourceScriptMapping: ResourceScriptMapping, uiSourceCode: Workspace.UISourceCode.UISourceCode, script: SDK.Script.Script);
-    addSourceMapURL(sourceMapURL: Platform.DevToolsPath.UrlString): void;
+    addSourceMapURL(sourceMapURL: Platform.DevToolsPath.UrlString, provenance: SDK.SourceMap.SourceMapProvenance): void;
     addDebugInfoURL(debugInfoURL: Platform.DevToolsPath.UrlString): void;
     hasSourceMapURL(): boolean;
     missingSymbolFiles(): Promise<SDK.DebuggerModel.MissingDebugFiles[] | null>;

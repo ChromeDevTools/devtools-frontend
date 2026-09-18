@@ -47,6 +47,9 @@
       "path": "../../front_end/foundation/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../front_end/testing/testing-tsconfig.ref.json"
+    },
+    {
       "path": "../conductor/implementation-tsconfig.ref.json"
     },
     {

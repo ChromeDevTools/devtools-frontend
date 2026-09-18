@@ -14,6 +14,7 @@
   },
   "files": [
     "../../../../../../front_end/entrypoints/heap_snapshot_worker/AllocationProfile.ts",
+    "../../../../../../front_end/entrypoints/heap_snapshot_worker/ContextAnalyzer.ts",
     "../../../../../../front_end/entrypoints/heap_snapshot_worker/HeapSnapshot.ts",
     "../../../../../../front_end/entrypoints/heap_snapshot_worker/HeapSnapshotLoader.ts",
     "../../../../../../front_end/entrypoints/heap_snapshot_worker/HeapSnapshotWorkerDispatcher.ts",

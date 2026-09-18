@@ -48,7 +48,8 @@
   },
   "files": [
     "../../../../../../front_end/models/comment_manager/CD4ABridge.test.ts",
-    "../../../../../../front_end/models/comment_manager/CommentManager.test.ts"
+    "../../../../../../front_end/models/comment_manager/CommentManager.test.ts",
+    "../../../../../../front_end/models/comment_manager/CommentThread.test.ts"
   ],
   "references": [
     {

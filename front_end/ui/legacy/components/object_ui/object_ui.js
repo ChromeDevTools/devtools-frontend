@@ -4596,7 +4596,7 @@ var OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
     const nodes = Array.from(ObjectPropertyTreeElement.createNodes(
       objectTree,
       input.skipProto,
-      false,
+      input.skipGettersAndSetters,
       input.linkifier,
       input.emptyPlaceholder
     ));
@@ -4623,6 +4623,7 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
   #emptyPlaceholder;
   #renderAsSubtree = false;
   #skipProto = false;
+  #skipGettersAndSetters = false;
   #view;
   constructor(element, view = OBJECT_TREE_DEFAULT_VIEW) {
     super(element);
@@ -4638,6 +4639,13 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
   }
   set skipProto(val) {
     this.#skipProto = val;
+    this.requestUpdate();
+  }
+  get skipGettersAndSetters() {
+    return this.#skipGettersAndSetters;
+  }
+  set skipGettersAndSetters(val) {
+    this.#skipGettersAndSetters = val;
     this.requestUpdate();
   }
   get objectTree() {

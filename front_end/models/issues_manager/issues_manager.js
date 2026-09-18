@@ -7970,6 +7970,58 @@ var UnencodedDigestIssue = class _UnencodedDigestIssue extends Issue {
   }
 };
 
+// ../../front_end/models/issues_manager/WebInstallIssue.ts
+var WebInstallIssue_exports = {};
+__export(WebInstallIssue_exports, {
+  WebInstallIssue: () => WebInstallIssue
+});
+var WebInstallIssue = class _WebInstallIssue extends Issue {
+  constructor(issueDetails, issuesModel) {
+    super(`${Audits.InspectorIssueCode.WebInstallIssue}::${issueDetails.reason}`, issueDetails, issuesModel);
+  }
+  requests() {
+    const { manifestUrl, reason } = this.details();
+    if (reason === Audits.WebInstallIssueReason.NoManifest || !manifestUrl) {
+      return [];
+    }
+    return [{ url: manifestUrl }];
+  }
+  getCategory() {
+    return "Other" /* OTHER */;
+  }
+  getDescription() {
+    switch (this.details().reason) {
+      case Audits.WebInstallIssueReason.ManifestParsingOrNetworkError:
+        return { file: "webInstallManifestParsingOrNetworkError.md", links: [] };
+      case Audits.WebInstallIssueReason.StartUrlInvalid:
+        return { file: "webInstallStartUrlInvalid.md", links: [] };
+      case Audits.WebInstallIssueReason.ManifestMissingNameOrShortName:
+        return { file: "webInstallManifestMissingNameOrShortName.md", links: [] };
+      case Audits.WebInstallIssueReason.ManifestMissingId:
+        return { file: "webInstallManifestMissingId.md", links: [] };
+      case Audits.WebInstallIssueReason.NoManifest:
+        return { file: "webInstallNoManifest.md", links: [] };
+      default:
+        console.warn("Unknown WebInstallIssueReason:", this.details().reason);
+        return null;
+    }
+  }
+  getKind() {
+    return "PageError" /* PAGE_ERROR */;
+  }
+  primaryKey() {
+    return JSON.stringify(this.details());
+  }
+  static fromInspectorIssue(issuesModel, inspectorIssue) {
+    const details = inspectorIssue.details.webInstallIssueDetails;
+    if (!details) {
+      console.warn("Web install issue without details received.");
+      return [];
+    }
+    return [new _WebInstallIssue(details, issuesModel)];
+  }
+};
+
 // ../../front_end/models/issues_manager/IssuesManager.ts
 function createIssuesForBlockedByResponseIssue(issuesModel, inspectorIssue) {
   const blockedByResponseIssueDetails = inspectorIssue.details.blockedByResponseIssueDetails;
@@ -8072,6 +8124,10 @@ var issueCodeHandlers = /* @__PURE__ */ new Map(
     [
       Audits.InspectorIssueCode.ConnectionAllowlistIssue,
       ConnectionAllowlistIssue.fromInspectorIssue
+    ],
+    [
+      Audits.InspectorIssueCode.WebInstallIssue,
+      WebInstallIssue.fromInspectorIssue
     ],
     [
       Audits.InspectorIssueCode.PermissionElementIssue,
@@ -8490,6 +8546,7 @@ export {
   SharedDictionaryIssue_exports as SharedDictionaryIssue,
   SourceFrameIssuesManager_exports as SourceFrameIssuesManager,
   StylesheetLoadingIssue_exports as StylesheetLoadingIssue,
-  UnencodedDigestIssue_exports as UnencodedDigestIssue
+  UnencodedDigestIssue_exports as UnencodedDigestIssue,
+  WebInstallIssue_exports as WebInstallIssue
 };
 //# sourceMappingURL=issues_manager.js.map

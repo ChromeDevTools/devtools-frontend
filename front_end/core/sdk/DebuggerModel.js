@@ -162,8 +162,7 @@ export class DebuggerModel extends SDKModel {
         target.registerDebuggerDispatcher(new DebuggerDispatcher(this));
         this.agent = target.debuggerAgent();
         this.#runtimeModel = target.model(RuntimeModel);
-        this.#sourceMapManager =
-            new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
+        this.#sourceMapManager = new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script, provenance) => new SourceMap(compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script, provenance));
         const settings = this.target().targetManager().settings;
         this.#pauseOnExceptionEnabledSetting = settings.resolve(pauseOnExceptionEnabledSettingDescriptor);
         this.#pauseOnExceptionEnabledSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
@@ -597,7 +596,7 @@ export class DebuggerModel extends SDKModel {
         this.dispatchEventToListeners(Events.ParsedScriptSource, script);
         if ((!selectedDebugSymbol || selectedDebugSymbol.type === "SourceMap" /* Protocol.Debugger.DebugSymbolsType.SourceMap */) &&
             script.sourceMapURL && !hasSyntaxError) {
-            this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
+            this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL, "cdp" /* SourceMapProvenance.CDP */);
         }
         const isDiscardable = hasSyntaxError && script.isAnonymousScript();
         if (isDiscardable) {
@@ -606,11 +605,11 @@ export class DebuggerModel extends SDKModel {
         }
         return script;
     }
-    setSourceMapURL(script, newSourceMapURL) {
+    setSourceMapURL(script, newSourceMapURL, provenance) {
         // Detach any previous source map from the `script` first.
         this.#sourceMapManager.detachSourceMap(script);
         script.sourceMapURL = newSourceMapURL;
-        this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
+        this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL, provenance);
     }
     async setDebugInfoURL(script, _externalURL) {
         this.dispatchEventToListeners(Events.DebugInfoAttached, script);

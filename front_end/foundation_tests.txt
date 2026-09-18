@@ -153,6 +153,7 @@ models/breakpoints/BreakpointManager.test.js
 models/change_tracker/ChangeTracker.test.js
 models/comment_manager/CD4ABridge.test.js
 models/comment_manager/CommentManager.test.js
+models/comment_manager/CommentThread.test.js
 models/computed_style/ComputedStyleModel.test.js
 models/cpu_profile/CPUProfileDataModel.test.js
 models/crux-manager/CrUXManager.test.js
@@ -189,6 +190,7 @@ models/issues_manager/SelectivePermissionsInterventionIssue.test.js
 models/issues_manager/SharedDictionaryIssue.test.js
 models/issues_manager/StylesheetLoadingIssue.test.js
 models/issues_manager/UnencodedDigestIssue.test.js
+models/issues_manager/WebInstallIssue.test.js
 models/javascript_metadata/JavaScriptMetadata.test.js
 models/live-metrics/LiveMetrics.test.js
 models/logs/NetworkLog.test.js

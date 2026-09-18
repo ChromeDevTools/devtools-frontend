@@ -111,7 +111,7 @@ import * as Common4 from "../../core/common/common.js";
 import * as i18n3 from "../../core/i18n/i18n.js";
 import * as Platform2 from "../../core/platform/platform.js";
 import * as Root3 from "../../core/root/root.js";
-import * as SDK from "../../core/sdk/sdk.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
 
 // ../../front_end/models/workspace/WorkspaceImpl.ts
 var WorkspaceImpl_exports = {};
@@ -140,6 +140,7 @@ __export(UISourceCode_exports, {
 import * as Common2 from "../../core/common/common.js";
 import * as i18n from "../../core/i18n/i18n.js";
 import * as Platform from "../../core/platform/platform.js";
+import * as SDK from "../../core/sdk/sdk.js";
 import * as TextUtils from "../../core/text_utils/text_utils.js";
 var UIStrings = {
   /**
@@ -156,6 +157,7 @@ var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
   #origin;
   #parentURL;
+  #securityOrigin;
   #project;
   #url;
   #name;
@@ -222,6 +224,22 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
   origin() {
     return this.#origin;
   }
+  /**
+   * Returns the security origin for this source code.
+   * Prefers the project security origin if available. If the project does not
+   * define a security origin, derives it from the source code's URL and caches
+   * the result until the source code is renamed.
+   */
+  securityOrigin() {
+    const projectOrigin = this.#project.securityOrigin?.();
+    if (projectOrigin) {
+      return projectOrigin;
+    }
+    if (!this.#securityOrigin) {
+      this.#securityOrigin = SDK.SecurityOrigin.SecurityOrigin.create(this.#url);
+    }
+    return this.#securityOrigin;
+  }
   fullDisplayName() {
     return this.#project.fullDisplayName(this);
   }
@@ -254,6 +272,7 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
     this.#project.deleteFile(this);
   }
   #updateName(name, url, contentType) {
+    this.#securityOrigin = void 0;
     const oldURL = this.#url;
     this.#name = name;
     if (url) {
@@ -990,21 +1009,21 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
     this.#settings = settings;
     this.#targetManager = targetManager;
     this.#targetManager.addModelListener(
-      SDK.DebuggerModel.DebuggerModel,
-      SDK.DebuggerModel.Events.GlobalObjectCleared,
+      SDK2.DebuggerModel.DebuggerModel,
+      SDK2.DebuggerModel.Events.GlobalObjectCleared,
       this.clearCacheIfNeeded.bind(this),
       this
     );
     this.#targetManager.addModelListener(
-      SDK.RuntimeModel.RuntimeModel,
-      SDK.RuntimeModel.Events.ExecutionContextCreated,
+      SDK2.RuntimeModel.RuntimeModel,
+      SDK2.RuntimeModel.Events.ExecutionContextCreated,
       this.onExecutionContextCreated,
       this,
       { scoped: true }
     );
     this.#targetManager.addModelListener(
-      SDK.RuntimeModel.RuntimeModel,
-      SDK.RuntimeModel.Events.ExecutionContextDestroyed,
+      SDK2.RuntimeModel.RuntimeModel,
+      SDK2.RuntimeModel.Events.ExecutionContextDestroyed,
       this.onExecutionContextDestroyed,
       this,
       { scoped: true }
@@ -1014,7 +1033,7 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
     this.#settings.resolve(automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
     this.#settings.resolve(enableIgnoreListingSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
     this.#settings.resolve(skipAnonymousScriptsSettingDescriptor).addChangeListener(this.patternChanged.bind(this));
-    this.#targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
+    this.#targetManager.observeModels(SDK2.DebuggerModel.DebuggerModel, this);
   }
   static instance(opts = {
     forceNew: null
@@ -1027,7 +1046,7 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
           // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
           opts.settings ?? Common4.Settings.Settings.instance(),
           // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-          opts.targetManager ?? SDK.TargetManager.TargetManager.instance()
+          opts.targetManager ?? SDK2.TargetManager.TargetManager.instance()
         )
       );
     }
@@ -1045,14 +1064,14 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
   modelAdded(debuggerModel) {
     void this.setIgnoreListPatterns(debuggerModel);
     const sourceMapManager = debuggerModel.sourceMapManager();
-    sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this);
-    sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this.sourceMapDetached, this);
+    sourceMapManager.addEventListener(SDK2.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this);
+    sourceMapManager.addEventListener(SDK2.SourceMapManager.Events.SourceMapDetached, this.sourceMapDetached, this);
   }
   modelRemoved(debuggerModel) {
     this.clearCacheIfNeeded();
     const sourceMapManager = debuggerModel.sourceMapManager();
-    sourceMapManager.removeEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this);
-    sourceMapManager.removeEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this.sourceMapDetached, this);
+    sourceMapManager.removeEventListener(SDK2.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this);
+    sourceMapManager.removeEventListener(SDK2.SourceMapManager.Events.SourceMapDetached, this.sourceMapDetached, this);
   }
   isContentScript(executionContext) {
     return !executionContext.isDefault;
@@ -1061,7 +1080,7 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
     if (this.isContentScript(event.data)) {
       this.#contentScriptExecutionContexts.add(event.data.uniqueId);
       if (this.skipContentScripts) {
-        for (const debuggerModel of this.#targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
+        for (const debuggerModel of this.#targetManager.models(SDK2.DebuggerModel.DebuggerModel)) {
           void this.updateIgnoredExecutionContexts(debuggerModel);
         }
       }
@@ -1071,7 +1090,7 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
     if (this.isContentScript(event.data)) {
       this.#contentScriptExecutionContexts.delete(event.data.uniqueId);
       if (this.skipContentScripts) {
-        for (const debuggerModel of this.#targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
+        for (const debuggerModel of this.#targetManager.models(SDK2.DebuggerModel.DebuggerModel)) {
           void this.updateIgnoredExecutionContexts(debuggerModel);
         }
       }
@@ -1334,7 +1353,7 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
   async patternChanged() {
     this.#isIgnoreListedURLCache.clear();
     const promises = [];
-    for (const debuggerModel of this.#targetManager.models(SDK.DebuggerModel.DebuggerModel)) {
+    for (const debuggerModel of this.#targetManager.models(SDK2.DebuggerModel.DebuggerModel)) {
       promises.push(this.setIgnoreListPatterns(debuggerModel));
       const sourceMapManager = debuggerModel.sourceMapManager();
       for (const script of debuggerModel.scripts()) {

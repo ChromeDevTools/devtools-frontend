@@ -30,6 +30,9 @@
       "path": "../../panels/changes/meta-tsconfig.ref.json"
     },
     {
+      "path": "../../panels/common/meta-tsconfig.ref.json"
+    },
+    {
       "path": "../../panels/console/meta-tsconfig.ref.json"
     },
     {
@@ -55,9 +58,6 @@
     },
     {
       "path": "../../panels/sources/meta-tsconfig.ref.json"
-    },
-    {
-      "path": "../../ui/comments/meta-tsconfig.ref.json"
     },
     {
       "path": "../../ui/dom_extension/bundle-tsconfig.ref.json"

@@ -37,11 +37,12 @@ export class GetSourceContentTool {
         };
     }
     async handler(args, context) {
-        const originResult = resolveOriginFromLock(context.getOriginLock());
+        const originLock = context.getOriginLock();
+        const originResult = resolveOriginFromLock(originLock);
         if ('error' in originResult) {
             return originResult;
         }
-        const file = ListSourcesTool.getSourceById(args.id, originResult.origin);
+        const file = ListSourcesTool.getSourceById(args.id, originLock);
         if (!file) {
             return {
                 error: 'Unable to find file.',

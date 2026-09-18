@@ -33,6 +33,7 @@ import { SourceFrameIssuesManager } from './SourceFrameIssuesManager.js';
 import { SRIMessageSignatureIssue } from './SRIMessageSignatureIssue.js';
 import { StylesheetLoadingIssue } from './StylesheetLoadingIssue.js';
 import { UnencodedDigestIssue } from './UnencodedDigestIssue.js';
+import { WebInstallIssue } from './WebInstallIssue.js';
 export { Events } from './IssuesManagerEvents.js';
 function createIssuesForBlockedByResponseIssue(issuesModel, inspectorIssue) {
     const blockedByResponseIssueDetails = inspectorIssue.details.blockedByResponseIssueDetails;
@@ -134,6 +135,10 @@ const issueCodeHandlers = new Map([
     [
         "ConnectionAllowlistIssue" /* Protocol.Audits.InspectorIssueCode.ConnectionAllowlistIssue */,
         ConnectionAllowlistIssue.fromInspectorIssue,
+    ],
+    [
+        "WebInstallIssue" /* Protocol.Audits.InspectorIssueCode.WebInstallIssue */,
+        WebInstallIssue.fromInspectorIssue,
     ],
     [
         "PermissionElementIssue" /* Protocol.Audits.InspectorIssueCode.PermissionElementIssue */,

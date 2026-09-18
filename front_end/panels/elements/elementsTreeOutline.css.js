@@ -61,11 +61,13 @@ export default `/*
   line-height: normal;
 }
 
+:host(.elements-tree-outline),
 .elements-disclosure devtools-tree {
   width: 100%;
   min-width: 100%;
   min-height: 100%;
   display: inline-block;
+  padding: 0;
 }
 
 .elements-disclosure li {
@@ -575,7 +577,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 .tree-outline-disclosure li .selection {
   display: none;
   z-index: -1;
-  margin-left: 0;
+  margin-left: calc(var(--indent, 0px) * -1);
 }
 
 .tree-outline-disclosure li.selected .selection {
@@ -608,6 +610,10 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 
 .tree-outline-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
   background-color: var(--sys-color-tonal-container);
+}
+
+.tree-outline-disclosure .elements-tree-outline li:has(.elements-tree-editor) .selection {
+  display: none;
 }
 
 .tree-outline-disclosure ol {

@@ -7,6 +7,7 @@ import { type RemoteObject, RemoteObjectProperty } from './RemoteObject.js';
 import { type EvaluationOptions, type EvaluationResult, type ExecutionContext, RuntimeModel } from './RuntimeModel.js';
 import { Script } from './Script.js';
 import { SDKModel } from './SDKModel.js';
+import { SourceMapProvenance } from './SourceMap.js';
 import { SourceMapManager } from './SourceMapManager.js';
 import { type Target } from './Target.js';
 export declare function sortAndMergeRanges(locationRanges: Protocol.Debugger.LocationRange[]): Protocol.Debugger.LocationRange[];
@@ -78,7 +79,7 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     pausedScript(callFrames: Protocol.Debugger.CallFrame[], reason: Protocol.Debugger.PausedEventReason, auxData: Object | undefined, breakpointIds: string[], asyncStackTrace?: Protocol.Runtime.StackTrace, asyncStackTraceId?: Protocol.Runtime.StackTraceId): Promise<void>;
     resumedScript(): void;
     parsedScriptSource(scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString, startLine: number, startColumn: number, endLine: number, endColumn: number, executionContextId: number, hash: string, executionContextAuxData: any, sourceMapURL: string | undefined, hasSourceURLComment: boolean, hasSyntaxError: boolean, length: number, isModule: boolean | null, originStackTrace: Protocol.Runtime.StackTrace | null, codeOffset: number | null, scriptLanguage: string | null, debugSymbols: Protocol.Debugger.DebugSymbols[] | null, embedderName: Platform.DevToolsPath.UrlString | null, buildId: string | null): Script;
-    setSourceMapURL(script: Script, newSourceMapURL: Platform.DevToolsPath.UrlString): void;
+    setSourceMapURL(script: Script, newSourceMapURL: Platform.DevToolsPath.UrlString, provenance: SourceMapProvenance): void;
     setDebugInfoURL(script: Script, _externalURL: Platform.DevToolsPath.UrlString): Promise<void>;
     executionContextDestroyed(executionContext: ExecutionContext): void;
     private registerScript;

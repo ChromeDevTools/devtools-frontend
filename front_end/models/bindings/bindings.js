@@ -647,16 +647,9 @@ var CompilerScriptMapping = class {
     const scripts = /* @__PURE__ */ new Set([script]);
     this.removeStubUISourceCode(script);
     const target = script.target();
-    const embedderName = script.embedderName();
-    let securityOrigin;
-    if (embedderName) {
-      const extractedOrigin = Common2.ParsedURL.ParsedURL.extractOrigin(embedderName);
-      if (extractedOrigin && extractedOrigin !== "null") {
-        securityOrigin = SDK2.SecurityOrigin.SecurityOrigin.create(extractedOrigin);
-      }
-    }
-    const parsedOrigin = securityOrigin ? `:${securityOrigin.siteId()}` : "";
-    const projectId = `jsSourceMaps:${script.isContentScript() ? "extensions" : ""}:${target.id()}${parsedOrigin}`;
+    const securityOrigin = script.securityOrigin();
+    const originPart = securityOrigin.isOpaque() ? "" : `:${securityOrigin.siteId()}`;
+    const projectId = `jsSourceMaps:${script.isContentScript() ? "extensions" : ""}:${target.id()}${originPart}`;
     let project = this.#projects.get(projectId);
     if (!project) {
       const projectType = script.isContentScript() ? Workspace3.Workspace.projectTypes.ContentScripts : Workspace3.Workspace.projectTypes.Network;
@@ -1399,7 +1392,7 @@ var StyleFile = class {
     const sourceMapManager = this.#cssModel.sourceMapManager();
     this.headers.forEach((header) => {
       sourceMapManager.detachSourceMap(header);
-      sourceMapManager.attachSourceMap(header, sourceUrl, sourceMapUrl);
+      sourceMapManager.attachSourceMap(header, sourceUrl, sourceMapUrl, SDK5.SourceMap.SourceMapProvenance.USER);
     });
   }
 };
@@ -4978,10 +4971,10 @@ var DebuggerLanguagePluginManager = class {
     }
     return { rawModuleId, plugin: null };
   }
-  uiSourceCodeForURL(debuggerModel, url) {
+  uiSourceCodeForURL(debuggerModel, url, script) {
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
-      return modelData.getProject().uiSourceCodeForURL(url);
+      return modelData.uiSourceCodeForURL(url, script);
     }
     return null;
   }
@@ -5006,7 +4999,8 @@ var DebuggerLanguagePluginManager = class {
       for (const sourceLocation of sourceLocations) {
         const uiSourceCode = this.uiSourceCodeForURL(
           script.debuggerModel,
-          sourceLocation.sourceFileURL
+          sourceLocation.sourceFileURL,
+          script
         );
         if (!uiSourceCode) {
           continue;
@@ -5440,26 +5434,44 @@ var DebuggerLanguagePluginManager = class {
   }
 };
 var ModelData = class {
-  project;
+  #debuggerModel;
+  #workspace;
+  #projects = /* @__PURE__ */ new Map();
   uiSourceCodeToScripts;
   constructor(debuggerModel, workspace) {
-    this.project = new ContentProviderBasedProject(
-      workspace,
-      "language_plugins::" + debuggerModel.target().id(),
-      Workspace11.Workspace.projectTypes.Network,
-      "",
-      false
-      /* isServiceProject */
-    );
-    NetworkProject.setTargetForProject(this.project, debuggerModel.target());
+    this.#debuggerModel = debuggerModel;
+    this.#workspace = workspace;
     this.uiSourceCodeToScripts = /* @__PURE__ */ new Map();
   }
+  #projectIdForScript(script) {
+    const securityOrigin = script.securityOrigin();
+    const originPart = securityOrigin.isOpaque() ? "" : `:${securityOrigin.siteId()}`;
+    return `language_plugins::${this.#debuggerModel.target().id()}${originPart}`;
+  }
+  #projectForScript(script) {
+    const projectId = this.#projectIdForScript(script);
+    let project = this.#projects.get(projectId);
+    if (!project) {
+      project = new ContentProviderBasedProject(
+        this.#workspace,
+        projectId,
+        Workspace11.Workspace.projectTypes.Network,
+        "",
+        false,
+        script.securityOrigin()
+      );
+      NetworkProject.setTargetForProject(project, this.#debuggerModel.target());
+      this.#projects.set(projectId, project);
+    }
+    return project;
+  }
   addSourceFiles(script, urls) {
+    const project = this.#projectForScript(script);
     const initiator = script.createPageResourceLoadInitiator();
     for (const url of urls) {
-      let uiSourceCode = this.project.uiSourceCodeForURL(url);
+      let uiSourceCode = project.uiSourceCodeForURL(url);
       if (!uiSourceCode) {
-        uiSourceCode = this.project.createUISourceCode(url, Common7.ResourceType.resourceTypes.SourceMapScript);
+        uiSourceCode = project.createUISourceCode(url, Common7.ResourceType.resourceTypes.SourceMapScript);
         NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
         this.uiSourceCodeToScripts.set(uiSourceCode, [script]);
         const contentProvider = new SDK7.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
@@ -5469,7 +5481,7 @@ var ModelData = class {
           script.target().targetManager().getPageResourceLoader()
         );
         const mimeType = Common7.ResourceType.ResourceType.mimeFromURL(url) || "text/javascript";
-        this.project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
+        project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
       } else {
         const scripts = this.uiSourceCodeToScripts.get(uiSourceCode);
         if (!scripts.includes(script)) {
@@ -5483,17 +5495,29 @@ var ModelData = class {
       scripts = scripts.filter((s) => s !== script);
       if (scripts.length === 0) {
         this.uiSourceCodeToScripts.delete(uiSourceCode);
-        this.project.removeUISourceCode(uiSourceCode.url());
+        uiSourceCode.project().removeUISourceCode(uiSourceCode.url());
       } else {
         this.uiSourceCodeToScripts.set(uiSourceCode, scripts);
       }
     });
   }
   dispose() {
-    this.project.dispose();
+    for (const project of this.#projects.values()) {
+      project.dispose();
+    }
+    this.#projects.clear();
   }
-  getProject() {
-    return this.project;
+  uiSourceCodeForURL(url, script) {
+    if (script) {
+      return this.#projects.get(this.#projectIdForScript(script))?.uiSourceCodeForURL(url) ?? null;
+    }
+    for (const project of this.#projects.values()) {
+      const uiSourceCode = project.uiSourceCodeForURL(url);
+      if (uiSourceCode) {
+        return uiSourceCode;
+      }
+    }
+    return null;
   }
 };
 
@@ -5892,11 +5916,11 @@ var ResourceScriptFile = class {
     this.uiSourceCode = uiSourceCode;
     this.script = this.uiSourceCode.contentType().isScript() ? script : null;
   }
-  addSourceMapURL(sourceMapURL) {
+  addSourceMapURL(sourceMapURL, provenance) {
     if (!this.script) {
       return;
     }
-    this.script.debuggerModel.setSourceMapURL(this.script, sourceMapURL);
+    this.script.debuggerModel.setSourceMapURL(this.script, sourceMapURL, provenance);
   }
   addDebugInfoURL(debugInfoURL) {
     if (!this.script) {

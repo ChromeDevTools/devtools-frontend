@@ -713,7 +713,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     render(html `
     <div ${ref(el => { output.contentElement = el; })}>
       ${input.node ? html `<span class="highlight ${input.editorState ? 'hidden' : ''}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand, input.issues)}</span>` : nothing}
-      <div class="selection fill ${input.editorState ? 'hidden' : ''}" style=${`margin-left: ${-input.indent}px`}></div>
+      ${input.renderSelection !== false ? html `<div class="selection fill ${input.editorState ? 'hidden' : ''}" style=${`margin-left: ${-input.indent}px`}></div>` : nothing}
       <div class=${classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
@@ -963,6 +963,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     isXMLMimeType = false;
     disableEdits = false;
     showAIButton = false;
+    renderSelection = true;
     isDOMNodeSelected = false;
     initialEdit;
     onInitialEditCompleted;
@@ -1321,6 +1322,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             descendantDecorations: this.#expanded ? [] : this.#descendantDecorations,
             decorationsTooltip: this.#decorationsTooltip,
             indent: this.#getLeftIndent(),
+            renderSelection: this.renderSelection,
             showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
             scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
             showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,

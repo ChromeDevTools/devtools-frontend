@@ -249,5 +249,10 @@
   "unencodedDigestIncorrectDigestLength.md",
   "unencodedDigestIncorrectDigestType.md",
   "unencodedDigestMalformedDictionary.md",
-  "unencodedDigestUnknownAlgorithm.md"
+  "unencodedDigestUnknownAlgorithm.md",
+  "webInstallManifestMissingId.md",
+  "webInstallManifestMissingNameOrShortName.md",
+  "webInstallManifestParsingOrNetworkError.md",
+  "webInstallNoManifest.md",
+  "webInstallStartUrlInvalid.md"
 ]

@@ -368,6 +368,12 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         }
     }
     const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
+    const treeItemJslog = (context, drag) => VisualLogging.treeItem(context).parent('elementsTreeOutline').track({
+        keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
+        resize: true,
+        ...(drag ? { drag: true } : {}),
+        click: true,
+    });
     const renderShortcut = (shortcut, shortcutDepth) => {
         const hasShortcutChildren = shortcut.childShortcuts.length > 0;
         const isShortcutExpanded = Boolean(input.isTopLayerShortcutExpanded?.(shortcut));
@@ -401,12 +407,11 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
           ?open=${isShortcutExpanded}
           class="elements-tree-shortcut"
           style=${styleMap({ '--indent': `${computeLeftIndent(shortcutDepth, hasShortcutChildren)}px` })}
-          @select=${onShortcutSelect}
-          @expand=${onShortcutExpand}
+          @select=${on(onShortcutSelect)}
+          @expand=${on(onShortcutExpand)}
           @mousemove=${on(onShortcutMouseMove)}
           @mouseleave=${on(onShortcutMouseLeave)}
-          jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
-        <div class="selection fill"></div>
+          jslog=${treeItemJslog()}>
         <span class="elements-tree-shortcut-title">\u21AA ${title}</span>
         <devtools-adorner
             .name=${ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL}
@@ -426,9 +431,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         </devtools-adorner>
         ${hasShortcutChildren ? html `
           <ul role="group">
-            ${UI.TreeOutline.ifExpanded(html `
-              ${shortcut.childShortcuts.map(child => renderShortcut(child, shortcutDepth + 1))}
-            `)}
+            ${shortcut.childShortcuts.map(child => renderShortcut(child, shortcutDepth + 1))}
           </ul>
         ` : nothing}
       </li>
@@ -453,15 +456,12 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
               ?open=${isTopLayerExpanded}
               class="elements-tree-top-layer-container"
               style=${styleMap({ '--indent': `${computeLeftIndent(containerDepth, true)}px` })}
-              @select=${onTopLayerSelect}
-              @expand=${onTopLayerExpand}
-              jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
-            <div class="selection fill"></div>
+              @select=${on(onTopLayerSelect)}
+              @expand=${on(onTopLayerExpand)}
+              jslog=${treeItemJslog()}>
             <span class="elements-tree-shortcut-title">#top-layer</span>
             <ul role="group">
-              ${UI.TreeOutline.ifExpanded(html `
-                ${shortcuts.map(sc => renderShortcut(sc, containerDepth + 1))}
-              `)}
+              ${shortcuts.map(sc => renderShortcut(sc, containerDepth + 1))}
             </ul>
           </li>
         `;
@@ -485,10 +485,9 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
           ?open=${isExpanded}
           class="elements-tree-adopted-style-sheet"
           style=${styleMap({ '--indent': `${computeLeftIndent(depth, true)}px` })}
-          @select=${onSelect}
-          @expand=${onExpand}
-          jslog=${VisualLogging.treeItem('adopted-style-sheet').parent('elementsTreeOutline')}>
-        <div class="selection fill"></div>
+          @select=${on(onSelect)}
+          @expand=${on(onExpand)}
+          jslog=${treeItemJslog('adopted-style-sheet')}>
         <span class="elements-tree-shortcut-title">#adopted-style-sheet${linkText ? html ` (${UIComponentUtils.Linkifier.Linkifier.linkifyURL(linkText, {
             text: linkText,
             preventClick: true,
@@ -500,8 +499,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
               <li role="treeitem"
                   class="elements-tree-adopted-style-sheet-contents"
                   style=${styleMap({ '--indent': `${computeLeftIndent(depth + 1, false)}px` })}
-                  jslog=${VisualLogging.treeItem('adopted-style-sheet-contents').parent('elementsTreeOutline')}>
-                <div class="selection fill"></div>
+                  jslog=${treeItemJslog('adopted-style-sheet-contents')}>
                 ${UI.Widget.widget(AdoptedStyleSheetContentsWidget, { styleSheetHeader: header })}
               </li>
             ` : nothing}
@@ -529,10 +527,9 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
           ?open=${isExpanded}
           class="elements-tree-adopted-style-sheets"
           style=${styleMap({ '--indent': `${computeLeftIndent(depth, true)}px` })}
-          @select=${onSelect}
-          @expand=${onExpand}
-          jslog=${VisualLogging.treeItem('adopted-style-sheets').parent('elementsTreeOutline')}>
-        <div class="selection fill"></div>
+          @select=${on(onSelect)}
+          @expand=${on(onExpand)}
+          jslog=${treeItemJslog('adopted-style-sheets')}>
         <span class="elements-tree-shortcut-title">#adopted-style-sheets</span>
         <ul role="group">
           ${UI.TreeOutline.ifExpanded(html `
@@ -640,7 +637,8 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         return totalRows;
     };
     const renderNode = (node, depth = 0) => {
-        const isSelected = input.selectedNode === node;
+        const isDOMNodeSelected = input.selectedNode === node;
+        const isSelected = Boolean(input.selectEnabled) && isDOMNodeSelected;
         const isOpeningHovered = (input.currentHighlightedNode === node) || (input.hoveredNode === node && !input.hoveredClosingTag);
         const isClosingHovered = input.hoveredNode === node && Boolean(input.hoveredClosingTag);
         const isEditingAsHTML = input.multilineEditingNode === node ||
@@ -734,7 +732,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
           ?selected=${isSelected && !input.selectedClosingTag}
           class=${classes}
           style=${styleMap({ '--indent': `${computeLeftIndent(depth, isExpandable)}px` })}
-          ?open=${isExpanded && !isEditingAsHTML}
+          ?open=${hasChildren && isExpanded && !isEditingAsHTML}
           draggable=${isDraggable ? 'true' : 'false'}
           @select=${on((event) => onSelect(false, Boolean(event.detail?.selectedByUser)))}
           @expand=${on(onExpand)}
@@ -745,19 +743,15 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
           @dragleave=${on(onDragLeave)}
           @drop=${on(onDrop)}
           @dragend=${on(onDragEnd)}
-          jslog=${VisualLogging.treeItem().parent('elementsTreeOutline').track({
-            keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
-            resize: true,
-            drag: true,
-            click: true,
-        })}>
+          jslog=${treeItemJslog(undefined, true)}>
         ${UI.Widget.widget(ElementsTreeWidget, {
             node,
             isClosingTag: false,
+            renderSelection: false,
             expanded: isExpanded && !isEditingAsHTML,
             isExpandable: hasChildren,
             selected: isSelected && !input.selectedClosingTag,
-            isDOMNodeSelected: isSelected,
+            isDOMNodeSelected,
             hovered: isOpeningHovered,
             searchQuery: input.searchMatchNode === node ? (input.searchMatchQuery ?? null) : null,
             inClipboard: input.isNodeInClipboard?.(node) ?? false,
@@ -782,8 +776,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
                 input.onSelectNodeAfterEdit?.(wasExpanded, error, newNode, moveDirection);
             },
             toggleHideElement: (n) => {
-                input.onToggleHideElement?.(n);
-                return Promise.resolve();
+                return input.onToggleHideElement?.(n) ?? Promise.resolve();
             },
             isToggledToHidden: (n) => input.isToggledToHidden?.(n) ?? false,
             showContextMenu: (event) => {
@@ -802,7 +795,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
                 <li role="treeitem"
                     class="elements-tree-expand-all"
                     style=${styleMap({ '--indent': `${computeLeftIndent(depth + 1, false)}px` })}
-                    jslog=${VisualLogging.treeItem('show-all-nodes').parent('elementsTreeOutline')}>
+                    jslog=${treeItemJslog('show-all-nodes')}>
                   <devtools-button
                       .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
                       title=${i18nString(UIStrings.showAllNodesDMore, { PH1: remainingChildrenCount })}
@@ -826,7 +819,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         })}
                     style=${styleMap({ '--indent': `${computeLeftIndent(depth + 1, false)}px` })}
                     draggable=${isDraggable ? 'true' : 'false'}
-                    jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}
+                    jslog=${treeItemJslog(undefined, true)}
                     @select=${on((event) => onSelect(true, Boolean(event.detail?.selectedByUser)))}
                     @contextmenu=${on(onContextMenu)}
                     @mousemove=${on(onClosingMouseMove)}
@@ -838,10 +831,11 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
                   ${UI.Widget.widget(ElementsTreeWidget, {
             node,
             isClosingTag: true,
+            renderSelection: false,
             expanded: false,
             isExpandable: false,
             selected: isSelected && Boolean(input.selectedClosingTag),
-            isDOMNodeSelected: isSelected,
+            isDOMNodeSelected,
             hovered: isClosingHovered,
             computeLeftIndent: computeLeftIndent(depth + 1, false),
             disableEdits: input.disableEdits ?? false,
@@ -909,7 +903,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
                 <li role="treeitem"
                     class="elements-tree-expand-all"
                     style=${styleMap({ '--indent': `${computeLeftIndent(0, false)}px` })}
-                    jslog=${VisualLogging.treeItem('show-all-nodes').parent('elementsTreeOutline')}>
+                    jslog=${treeItemJslog('show-all-nodes')}>
                   <devtools-button
                     .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
                     title=${i18nString(UIStrings.showAllNodesDMore, { PH1: remaining })}
@@ -1459,6 +1453,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             }
             return;
         }
+        if (isClosingTag && node) {
+            const rootTreeElement = this.#viewOutput?.elementsTreeOutline?.findTreeElement(node);
+            const closingTreeElement = rootTreeElement?.childAt(rootTreeElement.childCount() - 1);
+            closingTreeElement?.select(!focus, true);
+            return;
+        }
         this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
     }
     highlightNodeAttribute(node, attribute) {
@@ -1548,16 +1548,19 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     async expandRecursively(node, maxDepth = Number.MAX_VALUE) {
         if (this.#view === DECLARATIVE_VIEW) {
-            await node.getSubtree(100, true);
             const expand = async (n, depth) => {
                 if (depth > maxDepth) {
                     return;
                 }
-                this.#expandedNodes.add(n);
-                if (!n.children() && (n.childNodeCount() || n.isIframe() || n.nodeType() === Node.DOCUMENT_NODE)) {
-                    await new Promise(resolve => {
-                        void n.getChildNodes(() => resolve());
-                    });
+                if (n.childDocumentPromiseForTesting) {
+                    await n.childDocumentPromiseForTesting;
+                }
+                if (!n.children() && !n.contentDocument() &&
+                    (n === node || n.childNodeCount() || n.isIframe() || n.nodeType() === Node.DOCUMENT_NODE)) {
+                    await n.getSubtree(100, true);
+                }
+                if (nodeHasVisibleChildren(n, this.rootDOMNode, this.maxTreeDepth, this.omitRootDOMNode)) {
+                    this.#expandedNodes.add(n);
                 }
                 const visibleChildren = getVisibleChildren(n, this.#showComments);
                 if (visibleChildren.length) {
@@ -1670,7 +1673,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             this.performUpdate();
         }
         else {
-            const treeElement = node ? this.treeElementForNode(node) : null;
+            let treeElement = node ? this.treeElementForNode(node) : null;
+            if (isClosingTag && treeElement) {
+                treeElement = treeElement.childAt(treeElement.childCount() - 1);
+            }
             this.#viewOutput.elementsTreeOutline?.setHoverEffect(treeElement);
         }
     }
@@ -1800,7 +1806,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
                 void this.showContextMenu(node, event);
             },
             onToggleHideElement: (node) => {
-                this.toggleHideElement(node);
+                return this.toggleHideElement(node);
             },
             onKeyDown: (event) => {
                 this.onKeyDown(event);
@@ -2024,10 +2030,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             this.performUpdate();
         }
     }
-    toggleHideElement(node) {
+    async toggleHideElement(node) {
         const changeTracker = this.changeTracker;
         Elements.DOMChanges.trackVisibilityToggle(changeTracker, node, buildChangeSelector(changeTracker, node), !this.isToggledToHidden(node));
-        void node.toggleHideElement();
+        await node.toggleHideElement();
     }
     async removeNode(node) {
         if (this.isToggledToHidden(node)) {
@@ -2491,7 +2497,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             return true;
         }
         if (event.key === 'h' || event.key === 'H') {
-            this.toggleHideElement(node);
+            void this.toggleHideElement(node);
             event.consume(true);
             return true;
         }

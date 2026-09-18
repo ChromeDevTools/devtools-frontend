@@ -650,7 +650,7 @@ export class CSSModel extends SDKModel {
             }
             styleSheetIds.add(styleSheetHeader.id);
         }
-        this.#sourceMapManager.attachSourceMap(styleSheetHeader, styleSheetHeader.sourceURL, styleSheetHeader.sourceMapURL);
+        this.#sourceMapManager.attachSourceMap(styleSheetHeader, styleSheetHeader.sourceURL, styleSheetHeader.sourceMapURL, "cdp" /* SourceMapProvenance.CDP */);
         this.dispatchEventToListeners(Events.StyleSheetAdded, styleSheetHeader);
     }
     styleSheetRemoved(id) {
@@ -704,7 +704,7 @@ export class CSSModel extends SDKModel {
         const sourceMapURL = response.sourceMapURL;
         this.#sourceMapManager.detachSourceMap(header);
         header.setSourceMapURL(sourceMapURL);
-        this.#sourceMapManager.attachSourceMap(header, header.sourceURL, header.sourceMapURL);
+        this.#sourceMapManager.attachSourceMap(header, header.sourceURL, header.sourceMapURL, "cdp" /* SourceMapProvenance.CDP */);
         if (sourceMapURL === null) {
             return 'Error in CSS.setStyleSheetText';
         }

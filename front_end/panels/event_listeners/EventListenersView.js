@@ -14,7 +14,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { frameworkEventListeners } from './EventListenersUtils.js';
 import eventListenersViewStyles from './eventListenersView.css.js';
-const { widget } = UI.Widget;
+const { widget, widgetRef } = UI.Widget;
 const { html, render } = Lit;
 const { repeat } = Lit.Directives;
 const UIStrings = {
@@ -70,32 +70,6 @@ export const DEFAULT_VIEW = (input, output, target) => {
             jslogContext: 'passive',
         });
         void menu.show();
-    };
-    const listenerProperties = (listener) => {
-        const runtimeModel = listener.domDebuggerModel().runtimeModel();
-        const properties = [
-            new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', listener.useCapture()), undefined, {
-                readOnly: false,
-                propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
-            }),
-            new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(runtimeModel.createRemotePropertyFromPrimitiveValue('passive', listener.passive()), undefined, {
-                readOnly: false,
-                propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
-            }),
-            new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(runtimeModel.createRemotePropertyFromPrimitiveValue('once', listener.once()), undefined, {
-                readOnly: false,
-                propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
-            }),
-        ];
-        if (typeof listener.handler() !== 'undefined') {
-            properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(new SDK.RemoteObject.RemoteObjectProperty('handler', listener.handler()), undefined, {
-                readOnly: false,
-                propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
-            }));
-        }
-        return ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement
-            .createPropertyNodes({ properties }, true, true, undefined)
-            .map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`);
     };
     const shouldHide = (listenerOrType) => {
         if (!input.filter) {
@@ -154,7 +128,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           <li role=treeitem toggle-on-click aria-label="${type}, event listener" ?hidden=${shouldHide(type)}>
            ${type}
            <ul role=group>
-             ${repeat(input.listeners.get(type) ?? [], ({ listener }) => listener, ({ listener, object }) => html `
+             ${repeat(input.listeners.get(type) ?? [], ({ listener }) => listener, ({ listener, object, objectTree }) => html `
                <li role=treeitem
                    data-origin=${listener.origin()}
                    @contextmenu=${(e) => onContextMenu(e, listener, object)}
@@ -181,9 +155,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                      ${input.linkifier.linkifyRawLocation(listener.location(), listener.sourceURL(), /* FIXME template version */ undefined, { tabStop: true })}
                    </span>
                  </span>
-                 <ul role=group>
-                   ${listenerProperties(listener)}
-                 </ul>
+                 <ul role=group ${widget(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, { objectTree })} ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, () => { })}></ul>
                </li>`)}
              </ul>
           </li>`)}
@@ -233,6 +205,7 @@ export class EventListenersView extends UI.Widget.VBox {
             filter: this.#filter,
             togglePassiveListener: (listener) => {
                 void listener.togglePassive().then(() => {
+                    this.#listeners = undefined;
                     this.requestUpdate();
                 });
             },
@@ -266,6 +239,20 @@ export class EventListenersView extends UI.Widget.VBox {
         this.#view(input, {}, this.contentElement);
         this.eventListenersArrivedForTest();
     }
+    static #createObjectTree(listener) {
+        const object = SDK.RemoteObject.RemoteObject.fromLocalObject({
+            useCapture: listener.useCapture(),
+            passive: listener.passive(),
+            once: listener.once(),
+            ...(typeof listener.handler() !== 'undefined' ? { handler: listener.handler() } : {}),
+        });
+        const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+            readOnly: false,
+            propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
+        });
+        objectTree.expanded = true;
+        return objectTree;
+    }
     static async #loadListeners(objects) {
         return Map.groupBy((await Promise.all(objects.map(this.#loadListenersForObject))).flat(), ({ listener }) => listener.type());
     }
@@ -284,7 +271,7 @@ export class EventListenersView extends UI.Widget.VBox {
                 }
             }
         }
-        return [eventListeners, frameworkEventListenersObject.eventListeners].flatMap(listeners => listeners.map(listener => ({ object, listener })));
+        return [eventListeners, frameworkEventListenersObject.eventListeners].flatMap(listeners => listeners.map(listener => ({ object, listener, objectTree: EventListenersView.#createObjectTree(listener) })));
         function isInternalEventListener() {
             const isInternal = [];
             const internalHandlersSet = new Set(this);

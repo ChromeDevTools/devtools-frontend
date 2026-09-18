@@ -265,7 +265,7 @@ import * as PanelsCommon2 from "../common/common.js";
 var { html: html3 } = Lit3.StaticHtml;
 var { until: until2 } = Lit3.Directives;
 var AIv2MarkdownRenderer = class extends MarkdownView3.MarkdownView.MarkdownInsightRenderer {
-  constructor(options = {}) {
+  constructor(options) {
     super();
     this.options = options;
   }
@@ -325,8 +325,7 @@ var AIv2MarkdownRenderer = class extends MarkdownView3.MarkdownView.MarkdownInsi
     }
     if (href.startsWith("#file-")) {
       const fileId = Number(href.substring(6));
-      const origin = this.options.getEstablishedOrigin?.();
-      const file = origin && Number.isInteger(fileId) && fileId > 0 ? AiAssistanceModel2.ListSources.ListSourcesTool.getSourceById(fileId, origin) : void 0;
+      const file = AiAssistanceModel2.ListSources.ListSourcesTool.getSourceById(fileId, this.options.getOriginLock());
       if (file) {
         return this.#revealableLink(file, file.name());
       }
@@ -9645,10 +9644,9 @@ async function getEmptyStateSuggestions(conversation) {
   }
 }
 function createV2MarkdownRenderer(conversation) {
-  const options = {};
-  if (conversation) {
-    options.getEstablishedOrigin = () => conversation.origin;
-  }
+  const options = {
+    getOriginLock: () => conversation.getOriginLock()
+  };
   const primaryTarget = SDK6.TargetManager.TargetManager.instance().primaryPageTarget();
   const domModel = primaryTarget?.model(SDK6.DOMModel.DOMModel);
   const resourceTreeModel = primaryTarget?.model(SDK6.ResourceTreeModel.ResourceTreeModel);

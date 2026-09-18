@@ -31,6 +31,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import { COND_BREAKPOINT_SOURCE_URL, Location, LOGPOINT_SOURCE_URL, } from './DebuggerModel.js';
 import { ResourceTreeModel } from './ResourceTreeModel.js';
+import { SecurityOrigin } from './SecurityOrigin.js';
 const UIStrings = {
     /**
      * @description Error message for when a script can't be loaded because it was removed or deleted.
@@ -68,6 +69,7 @@ export class Script {
     #language;
     #contentPromise;
     #embedderName;
+    #securityOrigin;
     isModule;
     buildId;
     constructor(debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, sourceMapURL, hasSourceURL, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
@@ -92,9 +94,27 @@ export class Script {
         this.#language = scriptLanguage;
         this.#contentPromise = null;
         this.#embedderName = embedderName;
+        this.#securityOrigin = SecurityOrigin.create(this.#embedderName ?? '');
     }
     embedderName() {
         return this.#embedderName;
+    }
+    /**
+     * Returns the security origin of the script derived exclusively from its
+     * embedder/network URL (`#embedderName`), or a unique opaque origin if the
+     * script has no valid network provenance (e.g. `eval()` or buffer-based Wasm).
+     *
+     * Security note: Do NOT fall back to `this.sourceURL` or
+     * `this.target().inspectedSecurityOrigin()`:
+     * - `sourceURL` is overwritten by `//# sourceURL=` comments, allowing a script
+     *   to spoof an arbitrary origin.
+     * - Third-party scripts (`<script src="https://attacker.example/...">`) run in
+     *   the same target/frame as the main page; falling back to the target's
+     *   origin would allow them to launder their origin by dynamically evaluating
+     *   code via `eval()` or `WebAssembly.instantiate(buffer)`.
+     */
+    securityOrigin() {
+        return this.#securityOrigin;
     }
     target() {
         return this.debuggerModel.target();

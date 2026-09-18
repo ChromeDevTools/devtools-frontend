@@ -281,6 +281,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         // clang-format off
         return html `<li
           class=${classMap({ 'watch-expression-tree-item': true, 'watch-expression-editing': e.editing })}
+          ?open=${Boolean(e.result?.expanded)}
           @keydown=${onExpressionKeydown.bind(undefined, e)}
           @expand=${(event) => input.onExpand(e, event.detail.expanded)}
           role=treeitem>
@@ -295,10 +296,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
             onContextMenu: (event) => onContextMenu(e, event),
         })}></devtools-widget>
         ${e.editing || !e.result || e.exceptionDetails ||
-            !e.result.hasChildren || e.result.object.customPreview() ? nothing : html `
-          <ul role=group>
-            ${ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(e.result.children ?? {}, false /* skipProto */, false /* skipGettersAndSetters */, input.linkifier).map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
-          </ul>`}
+            !e.result.hasChildren || e.result.object.customPreview() ? nothing :
+            ObjectUI.ObjectPropertiesSection.renderObjectTree(e.result, input.linkifier)}
       </li>`;
         // clang-format on
     };
@@ -462,10 +461,9 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
                 this.saveExpressions();
                 this.requestUpdate();
             },
-            onExpand: async (e, expanded) => {
-                if (expanded) {
-                    await e.result?.populateChildrenIfNeeded();
-                    this.requestUpdate();
+            onExpand: (e, expanded) => {
+                if (e.result) {
+                    e.result.expanded = expanded;
                 }
             },
         }, {}, this.contentElement);

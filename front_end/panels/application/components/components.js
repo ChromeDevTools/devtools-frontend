@@ -78,17 +78,20 @@ var adsView_css_default = `/*
 
 .metric-box {
   background-color: var(--sys-color-surface);
-  padding: var(--sys-size-6);
+  padding: var(--sys-size-4);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .metric-title {
   font-size: var(--sys-typescale-body4-size);
   color: var(--sys-color-on-surface-subtle);
   margin: 0 0 var(--sys-size-3);
+  padding: 0 var(--sys-size-8);
+  text-align: center;
 }
 
 .metric-value {
@@ -106,6 +109,13 @@ var adsView_css_default = `/*
   font-size: var(--sys-typescale-body4-size);
   font-weight: normal;
   color: var(--sys-color-on-surface-subtle);
+}
+
+.metric-info-icon {
+  position: absolute;
+  top: var(--sys-size-4);
+  right: var(--sys-size-4);
+  cursor: pointer;
 }
 
 .metrics-title,
@@ -168,6 +178,11 @@ var adsView_css_default = `/*
 var { html } = Lit;
 var { repeat } = Lit.Directives;
 var { bindToSetting } = UI.UIUtils;
+var DENSITY_DOC_URL = "https://developer.chrome.com/docs/ads/metrics/density";
+var COUNT_DOC_URL = "https://developer.chrome.com/docs/ads/metrics/count";
+var CPU_USAGE_DOC_URL = "https://developer.chrome.com/docs/ads/metrics/weight-cpu";
+var NETWORK_USAGE_DOC_URL = "https://developer.chrome.com/docs/ads/metrics/weight-network";
+var AD_DETECTION_DOC_URL = "https://developer.chrome.com/docs/ads/detection";
 var UIStrings = {
   /**
    * @description Title for the metrics table.
@@ -178,17 +193,33 @@ var UIStrings = {
    */
   viewportAdDensity: "Viewport ad density",
   /**
+   * @description Tooltip text explaining the viewport ad density metric in the ads view of the Application panel.
+   */
+  viewportAdDensityExplanation: "Percentage of the viewport covered by ads",
+  /**
    * @description Title for a metric showing the number of ads in the viewport.
    */
   viewportAdCount: "Viewport ad count",
+  /**
+   * @description Tooltip text explaining the viewport ad count metric in the ads view of the Application panel.
+   */
+  viewportAdCountExplanation: "Number of ads in the viewport",
   /**
    * @description Title for a metric showing the total CPU usage by ads.
    */
   totalCpuUsage: "Total CPU usage by ads",
   /**
+   * @description Tooltip text explaining the total CPU usage metric in the ads view of the Application panel.
+   */
+  totalCpuUsageExplanation: "Total CPU time consumed by ads",
+  /**
    * @description Title for a metric showing the total network usage by ads.
    */
   totalNetworkUsage: "Total network usage by ads",
+  /**
+   * @description Tooltip text explaining the total network usage metric in the ads view of the Application panel.
+   */
+  totalNetworkUsageExplanation: "Total network data consumed by ads",
   /**
    * @description Subtext showing the average value of a metric.
    * @example {5.00%} PH1
@@ -332,6 +363,25 @@ var DEFAULT_VIEW = (input, output, target) => {
       }).format(v);
     });
   };
+  const renderMetricTooltip = (tooltipId, explanation, url) => {
+    return html`
+      <devtools-icon
+        name="info"
+        class="small metric-info-icon"
+        tabindex="0"
+        role="button"
+        aria-details=${tooltipId}
+        aria-label=${explanation}
+      ></devtools-icon>
+      <devtools-tooltip id=${tooltipId} variant="rich" prefer-span-left @copy=${stopPropagation}>
+        <span>${explanation}</span>
+        &#32;
+        <devtools-link href=${url} jslogcontext="learn-more">
+          ${i18nString(UIStrings.learnMore)}
+        </devtools-link>
+      </devtools-tooltip>
+    `;
+  };
   Lit.render(html`
     <style>${adsView_css_default}</style>
     <div class="ads-view-container" jslog=${VisualLogging.pane("ads")}>
@@ -345,6 +395,11 @@ var DEFAULT_VIEW = (input, output, target) => {
     PH1: formatAverage(metrics.averageViewportAdDensityByArea, true)
   })}</span>
           </dd>
+          ${renderMetricTooltip(
+    "density-metric-tooltip",
+    i18nString(UIStrings.viewportAdDensityExplanation),
+    DENSITY_DOC_URL
+  )}
         </div>
         <div class="metric-box">
           <dt class="metric-title">${i18nString(UIStrings.viewportAdCount)}</dt>
@@ -354,18 +409,33 @@ var DEFAULT_VIEW = (input, output, target) => {
     PH1: formatAverage(metrics.averageViewportAdCount, false)
   })}</span>
           </dd>
+          ${renderMetricTooltip(
+    "count-metric-tooltip",
+    i18nString(UIStrings.viewportAdCountExplanation),
+    COUNT_DOC_URL
+  )}
         </div>
         <div class="metric-box">
           <dt class="metric-title">${i18nString(UIStrings.totalCpuUsage)}</dt>
           <dd class="metric-value">
             <span>${formatCpu(metrics.totalAdCpuTime)}</span>
           </dd>
+          ${renderMetricTooltip(
+    "cpu-metric-tooltip",
+    i18nString(UIStrings.totalCpuUsageExplanation),
+    CPU_USAGE_DOC_URL
+  )}
         </div>
         <div class="metric-box">
           <dt class="metric-title">${i18nString(UIStrings.totalNetworkUsage)}</dt>
           <dd class="metric-value">
             <span>${formatNetwork(metrics.totalAdNetworkBytes)}</span>
           </dd>
+          ${renderMetricTooltip(
+    "network-metric-tooltip",
+    i18nString(UIStrings.totalNetworkUsageExplanation),
+    NETWORK_USAGE_DOC_URL
+  )}
         </div>
       </dl>
       <hr class="divider">
@@ -471,7 +541,7 @@ var DEFAULT_VIEW = (input, output, target) => {
         <span>
           ${i18nString(UIStrings.adDetectionMistakes)}
           &#32;
-          <devtools-link class="link devtools-link" href="https://chromium.googlesource.com/chromium/src/+/main/docs/ad_tagging.md" jslogcontext="learn-more">
+          <devtools-link href=${AD_DETECTION_DOC_URL} jslogcontext="learn-more">
             ${i18nString(UIStrings.learnMore)}
           </devtools-link>
         </span>

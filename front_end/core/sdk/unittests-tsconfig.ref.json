@@ -16,6 +16,7 @@
     "../../../../../../front_end/core/sdk/CSSMatchedStyles.test.ts",
     "../../../../../../front_end/core/sdk/CSSPropertyParser.test.ts",
     "../../../../../../front_end/core/sdk/CSSPropertyParserMatchers.test.ts",
+    "../../../../../../front_end/core/sdk/Connections.test.ts",
     "../../../../../../front_end/core/sdk/RehydratingConnection.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

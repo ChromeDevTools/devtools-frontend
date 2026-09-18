@@ -305,7 +305,7 @@ export class SourceMapScopesInfo {
         let seenFunctionScope = false;
         const result = [];
         // Walk the original scope chain outwards and try to find the corresponding generated range along the way.
-        for (let originalScope = rangeChain.at(-1)?.originalScope; originalScope; originalScope = originalScope.parent) {
+        for (let originalScope = innerMostOriginalScope; originalScope; originalScope = originalScope.parent) {
             const range = rangeChain.findLast(r => r.originalScope === originalScope);
             // `kind` is just a label for scope UI views and has no semantic significance, so `isStackFrame`
             // decides whether this scope is a function scope.
@@ -315,6 +315,10 @@ export class SourceMapScopesInfo {
             const scopeNumber = range ? findMatchingScopeNumber(callFrame, range) : undefined;
             result.push(new SourceMapScopeChainEntry(callFrame, originalScope, range, isInnerMostFunction, returnValue ?? undefined, scopeNumber));
             seenFunctionScope ||= isFunctionScope;
+        }
+        const globalScope = callFrame.scopeChain()?.find(s => s.type() === "global" /* Protocol.Debugger.ScopeType.Global */);
+        if (globalScope) {
+            result.push(globalScope);
         }
         // If we are paused on a return statement, we need to drop inner block scopes. This is because V8 only emits a
         // single return bytecode and "gotos" at the functions' end, where we are now paused.

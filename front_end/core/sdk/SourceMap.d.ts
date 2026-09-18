@@ -83,6 +83,11 @@ export declare class SourceMapEntry {
     constructor(lineNumber: number, columnNumber: number, sourceIndex?: number, sourceURL?: Platform.DevToolsPath.UrlString, sourceLineNumber?: number, sourceColumnNumber?: number, name?: string, isRangeMapping?: boolean);
     static compare(entry1: SourceMapEntry, entry2: SourceMapEntry): number;
 }
+export declare const enum SourceMapProvenance {
+    CDP = "cdp",
+    EXTENSION = "extension",
+    USER = "user"
+}
 export declare class SourceMap {
     #private;
     static retainRawSourceMaps: boolean;
@@ -90,7 +95,8 @@ export declare class SourceMap {
      * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
      * for format description.
      */
-    constructor(compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString, payload: SourceMapV3, console: Common.Console.Console, script?: Script);
+    constructor(compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString, payload: SourceMapV3, console: Common.Console.Console, script?: Script, provenance?: SourceMapProvenance);
+    provenance(): SourceMapProvenance;
     json(): SourceMapV3 | null;
     augmentWithScopes(scriptUrl: Platform.DevToolsPath.UrlString, ranges: NamedFunctionRange[]): void;
     compiledURL(): Platform.DevToolsPath.UrlString;

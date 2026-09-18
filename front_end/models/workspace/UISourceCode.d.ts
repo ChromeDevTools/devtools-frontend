@@ -1,5 +1,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import { IgnoreListManager } from './IgnoreListManager.js';
 import { type Project } from './WorkspaceImpl.js';
@@ -13,6 +14,13 @@ export declare class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<Eve
     canonicalScriptId(): string;
     parentURL(): Platform.DevToolsPath.UrlString;
     origin(): Platform.DevToolsPath.UrlString;
+    /**
+     * Returns the security origin for this source code.
+     * Prefers the project security origin if available. If the project does not
+     * define a security origin, derives it from the source code's URL and caches
+     * the result until the source code is renamed.
+     */
+    securityOrigin(): SDK.SecurityOrigin.SecurityOrigin;
     fullDisplayName(): string;
     displayName(skipTrim?: boolean): string;
     canRename(): boolean;

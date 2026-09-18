@@ -157,6 +157,7 @@ export interface ObjectTreeViewInput {
     linkifier?: Components.Linkifier.Linkifier;
     emptyPlaceholder?: string;
     skipProto: boolean;
+    skipGettersAndSetters: boolean;
     onExpand: (expanded: boolean) => void;
 }
 export type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
@@ -167,6 +168,8 @@ export declare class ObjectTreeWidget extends UI.Widget.Widget {
     onExpand: (expanded: boolean) => void;
     get skipProto(): boolean;
     set skipProto(val: boolean);
+    get skipGettersAndSetters(): boolean;
+    set skipGettersAndSetters(val: boolean);
     get objectTree(): ObjectTree | undefined;
     set objectTree(val: ObjectTree);
     get linkifier(): Components.Linkifier.Linkifier | undefined;

@@ -221,6 +221,9 @@
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Could not load content for {PH1} ({PH2})"
   },
+  "core/sdk/Connections.ts | websocketConnectionFailed": {
+    "message": "WebSocket disconnected. Make sure --remote-allow-origins on the Chrome instance allows the current origin."
+  },
   "core/sdk/Connections.ts | websocketDisconnected": {
     "message": "WebSocket disconnected"
   },
@@ -3788,8 +3791,14 @@
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "Total CPU usage by ads"
   },
+  "panels/application/components/AdsView.ts | totalCpuUsageExplanation": {
+    "message": "Total CPU time consumed by ads"
+  },
   "panels/application/components/AdsView.ts | totalNetworkUsage": {
     "message": "Total network usage by ads"
+  },
+  "panels/application/components/AdsView.ts | totalNetworkUsageExplanation": {
+    "message": "Total network data consumed by ads"
   },
   "panels/application/components/AdsView.ts | unnamed": {
     "message": "<unnamed>"
@@ -3800,8 +3809,14 @@
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "Viewport ad count"
   },
+  "panels/application/components/AdsView.ts | viewportAdCountExplanation": {
+    "message": "Number of ads in the viewport"
+  },
   "panels/application/components/AdsView.ts | viewportAdDensity": {
     "message": "Viewport ad density"
+  },
+  "panels/application/components/AdsView.ts | viewportAdDensityExplanation": {
+    "message": "Percentage of the viewport covered by ads"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Pages that requested an AppBanner are not currently eligible for back/forward cache"
@@ -6568,6 +6583,36 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "View profile"
+  },
+  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
+    "message": "Comments ({PH1})"
+  },
+  "panels/common/CommentThreadWidget.ts | addCommentButton": {
+    "message": "Add comment"
+  },
+  "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
+    "message": "Comment input"
+  },
+  "panels/common/CommentThreadWidget.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/common/CommentThreadWidget.ts | response": {
+    "message": "Response:"
+  },
+  "panels/common/CommentThreadWidget.ts | sent": {
+    "message": "Sent"
+  },
+  "panels/common/CommentThreadWidget.ts | sentCheckmark": {
+    "message": "Sent checkmark"
+  },
+  "panels/common/common-meta.ts | comments": {
+    "message": "Comments"
+  },
+  "panels/common/common-meta.ts | showComments": {
+    "message": "Show comments"
+  },
+  "panels/common/common-meta.ts | toggleCommentMode": {
+    "message": "Add comments to send to your AI coding agent"
   },
   "panels/common/CPUThrottlingOption.ts | calibratedLowTierMobile": {
     "message": "Low-tier mobile"
@@ -17500,36 +17545,6 @@
   },
   "panels/whats_new/whats_new-meta.ts | whatsNew": {
     "message": "What’s new"
-  },
-  "ui/comments/comments-meta.ts | comments": {
-    "message": "Comments"
-  },
-  "ui/comments/comments-meta.ts | showComments": {
-    "message": "Show comments"
-  },
-  "ui/comments/comments-meta.ts | toggleCommentMode": {
-    "message": "Add comments to send to your AI coding agent"
-  },
-  "ui/comments/CommentsStatusBarPill.ts | commentsCount": {
-    "message": "Comments ({PH1})"
-  },
-  "ui/comments/CommentThreadWidget.ts | addCommentButton": {
-    "message": "Add comment"
-  },
-  "ui/comments/CommentThreadWidget.ts | commentInputAriaLabel": {
-    "message": "Comment input"
-  },
-  "ui/comments/CommentThreadWidget.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "ui/comments/CommentThreadWidget.ts | response": {
-    "message": "Response:"
-  },
-  "ui/comments/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
-  },
-  "ui/comments/CommentThreadWidget.ts | sentCheckmark": {
-    "message": "Sent checkmark"
   },
   "ui/components/dialogs/Dialog.ts | close": {
     "message": "Close"

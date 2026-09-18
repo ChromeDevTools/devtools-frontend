@@ -262,7 +262,7 @@ export class StyleFile {
         const sourceMapManager = this.#cssModel.sourceMapManager();
         this.headers.forEach(header => {
             sourceMapManager.detachSourceMap(header);
-            sourceMapManager.attachSourceMap(header, sourceUrl, sourceMapUrl);
+            sourceMapManager.attachSourceMap(header, sourceUrl, sourceMapUrl, "user" /* SDK.SourceMap.SourceMapProvenance.USER */);
         });
     }
 }

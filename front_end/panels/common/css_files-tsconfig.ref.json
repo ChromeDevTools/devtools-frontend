@@ -10,6 +10,8 @@
   "files": [
     "aiCodeCompletionSummaryToolbar.css.js",
     "badgeNotification.css.js",
+    "commentThreadWidget.css.js",
+    "commentsOverlay.css.js",
     "domLinkifier.css.js",
     "gdpSignUpDialog.css.js",
     "geminiRebrandPromoDialog.css.js"

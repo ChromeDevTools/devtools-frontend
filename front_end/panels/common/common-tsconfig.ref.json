@@ -16,6 +16,9 @@
     "../../../../../../front_end/panels/common/AiCodeCompletionSummaryToolbar.ts",
     "../../../../../../front_end/panels/common/BadgeNotification.ts",
     "../../../../../../front_end/panels/common/CPUThrottlingOption.ts",
+    "../../../../../../front_end/panels/common/CommentThreadWidget.ts",
+    "../../../../../../front_end/panels/common/CommentsOverlayWidget.ts",
+    "../../../../../../front_end/panels/common/CommentsStatusBarPill.ts",
     "../../../../../../front_end/panels/common/DOMLinkifier.ts",
     "../../../../../../front_end/panels/common/ExtensionPanel.ts",
     "../../../../../../front_end/panels/common/ExtensionServer.ts",
@@ -66,6 +69,9 @@
       "path": "../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/comment_manager/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/extensions/bundle-tsconfig.ref.json"
     },
     {
@@ -81,7 +87,16 @@
       "path": "../../models/workspace/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/comments/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/input/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/markdown_view/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/components/snackbars/bundle-tsconfig.ref.json"

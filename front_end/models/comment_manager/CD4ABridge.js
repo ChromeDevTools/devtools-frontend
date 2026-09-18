@@ -33,21 +33,58 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper {
     dispose() {
         Common.EventTarget.removeEventListeners(this.#eventListeners);
     }
+    #getDOMNode(nodeSignature) {
+        if (!this.#targetManager) {
+            return undefined;
+        }
+        const target = this.#targetManager.targetById(nodeSignature.targetId) ?? this.#targetManager.primaryPageTarget();
+        const domModel = target?.model(SDK.DOMModel.DOMModel);
+        if (!domModel) {
+            return undefined;
+        }
+        for (const node of domModel.idToDOMNode.values()) {
+            if (node.backendNodeId() === nodeSignature.backendNodeId) {
+                return node;
+            }
+        }
+        return undefined;
+    }
+    #formatCommentText(thread) {
+        const rawText = thread.comments[0]?.text ?? '';
+        const details = [];
+        if (thread.anchor.textSignature) {
+            details.push(`- DevTools element: ${thread.anchor.textSignature}`);
+        }
+        if (thread.anchor.node) {
+            const domNode = this.#getDOMNode(thread.anchor.node);
+            const simpleSelector = domNode?.simpleSelector();
+            if (simpleSelector) {
+                details.push(`- DOM node selector: ${simpleSelector}`);
+            }
+        }
+        if (thread.anchor.editor) {
+            const editorInfo = thread.anchor.editor.filePath ?
+                `${thread.anchor.editor.filePath}:${thread.anchor.editor.lineNumber}` :
+                `line ${thread.anchor.editor.lineNumber}`;
+            details.push(`- Editor: ${editorInfo}`);
+        }
+        if (details.length === 0) {
+            return rawText;
+        }
+        return rawText ? `${rawText}\n\n${details.join('\n')}` : details.join('\n');
+    }
     getCommentThreads() {
         const threads = this.#commentManager.takeComments();
         return threads.map(thread => {
             const threadPayload = {
                 id: thread.id,
-                text: thread.comments[0]?.text ?? '',
+                text: this.#formatCommentText(thread),
             };
             if (thread.anchor.networkRequestId) {
                 threadPayload.networkRequestId = thread.anchor.networkRequestId;
             }
             if (thread.anchor.node) {
-                threadPayload.backendNodeId = thread.anchor.node.backendNodeId;
-            }
-            if (thread.anchor.editor) {
-                threadPayload.editor = thread.anchor.editor;
+                threadPayload.node = { ...thread.anchor.node };
             }
             return threadPayload;
         });
@@ -68,11 +105,11 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper {
                 await Common.Revealer.reveal(request);
             }
         }
-        if (target?.backendNodeId !== undefined && this.#targetManager) {
-            const primaryTarget = this.#targetManager.primaryPageTarget();
-            const domModel = primaryTarget?.model(SDK.DOMModel.DOMModel);
+        if (target?.node && this.#targetManager) {
+            const sdkTarget = this.#targetManager.targetById(target.node.targetId) ?? this.#targetManager.primaryPageTarget();
+            const domModel = sdkTarget?.model(SDK.DOMModel.DOMModel);
             if (domModel) {
-                const cdpNodeId = target.backendNodeId;
+                const cdpNodeId = target.node.backendNodeId;
                 const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(new Set([cdpNodeId]));
                 const node = nodeMap?.get(cdpNodeId);
                 if (node) {

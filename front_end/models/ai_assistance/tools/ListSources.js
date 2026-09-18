@@ -4,7 +4,6 @@
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Workspace from '../../workspace/workspace.js';
-import { FileContext } from '../contexts/FileContext.js';
 import { isOriginAllowedByLock, resolveOriginFromLock, } from './Tool.js';
 const UIStringsNotTranslate = {
     listingSources: 'Listing workspace sources',
@@ -23,17 +22,23 @@ export class ListSourcesTool {
         ListSourcesTool.lastSourceId = 0;
         ListSourcesTool.uiSourceCodeId = new WeakMap();
     }
-    static getUISourceCodes(establishedOrigin, 
+    static getUISourceCodes(originLock, 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     workspace = Workspace.Workspace.WorkspaceImpl.instance()) {
-        if (establishedOrigin.isOpaque()) {
+        if (originLock.status !== 'ESTABLISHED_ORIGIN' || originLock.origin.isOpaque()) {
             return [];
         }
-        const projects = workspace.projects().filter(project => project.type() === Workspace.Workspace.projectTypes.Network);
         const uiSourceCodes = new Map();
-        for (const project of projects) {
+        for (const project of workspace.projectsForType(Workspace.Workspace.projectTypes.Network)) {
+            const projectOrigin = project.securityOrigin?.();
+            if (projectOrigin && !isOriginAllowedByLock(originLock, projectOrigin)) {
+                continue;
+            }
             for (const uiSourceCode of project.uiSourceCodes()) {
                 if (uiSourceCode.isIgnoreListed()) {
+                    continue;
+                }
+                if (!projectOrigin && !isOriginAllowedByLock(originLock, uiSourceCode.securityOrigin())) {
                     continue;
                 }
                 const url = uiSourceCode.url();
@@ -45,13 +50,15 @@ export class ListSourcesTool {
                 }
             }
         }
-        const originLock = { status: 'ESTABLISHED_ORIGIN', origin: establishedOrigin };
-        return [...uiSourceCodes.values()].filter(file => isOriginAllowedByLock(originLock, FileContext.originForUISourceCode(file)));
+        return Array.from(uiSourceCodes.values());
     }
-    static getSourceById(id, establishedOrigin, 
+    static getSourceById(id, originLock, 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     workspace = Workspace.Workspace.WorkspaceImpl.instance()) {
-        return ListSourcesTool.getUISourceCodes(establishedOrigin, workspace)
+        if (!Number.isInteger(id) || id <= 0) {
+            return undefined;
+        }
+        return ListSourcesTool.getUISourceCodes(originLock, workspace)
             .find(file => ListSourcesTool.uiSourceCodeId.get(file) === id);
     }
     parameters = {
@@ -68,11 +75,12 @@ export class ListSourcesTool {
         };
     }
     async handler(_params, context) {
-        const originResult = resolveOriginFromLock(context.getOriginLock());
+        const originLock = context.getOriginLock();
+        const originResult = resolveOriginFromLock(originLock);
         if ('error' in originResult) {
             return originResult;
         }
-        const files = ListSourcesTool.getUISourceCodes(originResult.origin);
+        const files = ListSourcesTool.getUISourceCodes(originLock);
         return {
             result: {
                 files: files.map(file => ({

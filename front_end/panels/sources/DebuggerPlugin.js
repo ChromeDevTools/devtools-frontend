@@ -452,7 +452,7 @@ export class DebuggerPlugin extends Plugin {
             if (!url) {
                 return;
             }
-            scriptFile.addSourceMapURL(url);
+            scriptFile.addSourceMapURL(url, "user" /* SDK.SourceMap.SourceMapProvenance.USER */);
         }
         function addDebugInfoURL(scriptFile) {
             const dialog = AddDebugInfoURLDialog.createAddDWARFSymbolsURLDialog(addDebugInfoURLDialogCallback.bind(this, scriptFile));

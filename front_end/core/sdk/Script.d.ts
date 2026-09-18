@@ -6,6 +6,7 @@ import { type DebuggerModel, Location } from './DebuggerModel.js';
 import type { FrameAssociated } from './FrameAssociated.js';
 import type { PageResourceLoadInitiator } from './PageResourceLoader.js';
 import type { ExecutionContext } from './RuntimeModel.js';
+import { SecurityOrigin } from './SecurityOrigin.js';
 import type { DebugId, SourceMap } from './SourceMap.js';
 import type { Target } from './Target.js';
 export declare class Script implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
@@ -32,6 +33,21 @@ export declare class Script implements TextUtils.ContentProvider.ContentProvider
     readonly buildId: string | null;
     constructor(debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString, startLine: number, startColumn: number, endLine: number, endColumn: number, executionContextId: number, hash: string, isContentScript: boolean, sourceMapURL: string | undefined, hasSourceURL: boolean, length: number, isModule: boolean | null, originStackTrace: Protocol.Runtime.StackTrace | null, codeOffset: number | null, scriptLanguage: string | null, debugSymbols: Protocol.Debugger.DebugSymbols | null, embedderName: Platform.DevToolsPath.UrlString | null, buildId: string | null);
     embedderName(): Platform.DevToolsPath.UrlString | null;
+    /**
+     * Returns the security origin of the script derived exclusively from its
+     * embedder/network URL (`#embedderName`), or a unique opaque origin if the
+     * script has no valid network provenance (e.g. `eval()` or buffer-based Wasm).
+     *
+     * Security note: Do NOT fall back to `this.sourceURL` or
+     * `this.target().inspectedSecurityOrigin()`:
+     * - `sourceURL` is overwritten by `//# sourceURL=` comments, allowing a script
+     *   to spoof an arbitrary origin.
+     * - Third-party scripts (`<script src="https://attacker.example/...">`) run in
+     *   the same target/frame as the main page; falling back to the target's
+     *   origin would allow them to launder their origin by dynamically evaluating
+     *   code via `eval()` or `WebAssembly.instantiate(buffer)`.
+     */
+    securityOrigin(): SecurityOrigin;
     target(): Target;
     private static trimSourceURLComment;
     isContentScript(): boolean;

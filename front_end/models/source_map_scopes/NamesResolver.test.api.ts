@@ -684,4 +684,96 @@ describe('NamesResolver API Test', () => {
          Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
        }
      });
+
+  it('resolves scope variables on pages with CSP blocking unsafe-eval and isolates runtime and syntax errors',
+     async ({inspectedPage, universe}) => {
+       const primaryTarget = universe.targetManager.primaryPageTarget();
+       assert.isNotNull(primaryTarget);
+
+       const debuggerModel = primaryTarget.model(SDK.DebuggerModel.DebuggerModel);
+       assert.isNotNull(debuggerModel);
+
+       // Page with a strict Content-Security-Policy that allows inline scripts but blocks `eval()` (no 'unsafe-eval').
+       await inspectedPage.goToHtml([
+         '<!DOCTYPE html>',
+         '<html>',
+         '<head>',
+         '  <meta http-equiv="Content-Security-Policy" content="script-src \'unsafe-inline\'">',
+         '</head>',
+         '<body></body>',
+         '</html>',
+       ].join('\n'));
+
+       // First scope (Block): All expressions are valid or throw runtime errors (batched execution succeeds in one call).
+       // Also verifies `evalBlocked` is true (confirming `eval()` is blocked by CSP in the page & frame).
+       // Second scope (Local): Contains a syntax error ('brokenSyntax)') alongside valid and runtime-throwing expressions
+       // (batch fails to parse and falls back to per-variable evaluation without losing valid variables).
+       const builder = new ScopesCodec.ScopeInfoBuilder();
+       builder.startScope(0, 0, {kind: 'global', key: 'global'});
+       builder.startScope(0, 0, {
+         kind: 'function',
+         name: 'testCspAndErrors',
+         isStackFrame: true,
+         variables: ['fnValid', 'fnSyntaxError', 'fnRuntimeError', 'fnAfterErrors'],
+         key: 'fn',
+       });
+       builder.startScope(2, 2, {
+         kind: 'block',
+         variables: ['evalBlocked', 'blockValid', 'blockThrowing', 'blockUndefined'],
+         key: 'block',
+       });
+       builder.endScope(5, 3);
+       builder.endScope(6, 1);
+       builder.endScope(8, 0);
+
+       builder.startRange(0, 0, {scopeKey: 'global'});
+       builder.startRange(0, 0, {
+         scopeKey: 'fn',
+         isStackFrame: true,
+         values: ['a + 1', 'brokenSyntax)', 'nonExistentFnVar.prop', 'b * 2'],
+       });
+       builder.startRange(2, 2, {
+         scopeKey: 'block',
+         values: ['evalBlocked', 'a', '(() => { throw new Error("boom"); })()', 'undefVal'],
+       });
+       builder.endRange(5, 3);
+       builder.endRange(6, 1);
+       builder.endRange(8, 0);
+
+       const code = [
+         'function testCspAndErrors() {',
+         '  const a = 10, b = 20, undefVal = undefined;',
+         '  {',
+         '    let evalBlocked = false; try { eval("1 + 1"); } catch (e) { evalBlocked = e instanceof EvalError; }',
+         '    debugger;',
+         '  }',
+         '}',
+         'window.runTest = testCspAndErrors;',
+       ].join('\n');
+
+       const {callFrame} = await setupScriptAndPause(inspectedPage, debuggerModel, code, builder);
+       try {
+         const scopeChain =
+             await SourceMapScopes.NamesResolver.resolveScopeChain(callFrame, universe.debuggerWorkspaceBinding);
+
+         assert.strictEqual(await stringifyScopeChain(scopeChain), [
+           'Block',
+           '  evalBlocked: true',
+           '  blockValid: 10',
+           '  blockThrowing: <unavailable>',
+           '  blockUndefined: undefined',
+           'Local (testCspAndErrors)',
+           '  fnValid: 11',
+           '  fnSyntaxError: <unavailable>',
+           '  fnRuntimeError: <unavailable>',
+           '  fnAfterErrors: 40',
+           'Global',
+           'Global (<global>)',
+         ].join('\n'));
+       } finally {
+         if (debuggerModel.isPaused()) {
+           await debuggerModel.resume();
+         }
+       }
+     });
 });

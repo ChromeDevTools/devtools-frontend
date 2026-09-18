@@ -154,59 +154,91 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
       return {properties: [], internalProperties: []};
     }
 
-    if (this.#scope.variables.length === 0) {
-      return {properties: [], internalProperties: []};
-    }
-
     const expressions = this.#scope.variables.map((_, index) => this.#findExpression(index));
+    const values = await this.#evaluateAsBatch(expressions, generatePreview) ??
+        await this.#evaluateSeparately(expressions, generatePreview);
 
-    if (expressions.every(expr => expr === null)) {
-      const properties = this.#scope.variables.map(v => SourceMapScopeRemoteObject.#unavailableProperty(v));
-      return {properties, internalProperties: []};
-    }
+    const properties = this.#scope.variables.map((variable, index) => {
+      const value = values[index];
+      if (value === null) {
+        return SourceMapScopeRemoteObject.#unavailableProperty(variable);
+      }
+      return new RemoteObjectProperty(variable, value, /* enumerable */ false, /* writable */ false, /* isOwn */ true,
+                                      /* wasThrown */ false);
+    });
 
-    const spreadEntries: string[] = [];
-    for (const [index, expr] of expressions.entries()) {
-      if (expr !== null) {
-        spreadEntries.push(`...(() => { try { return {${index}: eval(${JSON.stringify(expr)})}; } catch {} })()`);
+    return {properties, internalProperties: []};
+  }
+
+  /**
+   * Evaluates all binding expressions of this scope with a single `evaluateOnCallFrame` call.
+   *
+   * We build an object literal that spreads in one `{index: value}` object per binding, each produced by
+   * its own arrow function wrapped in `try`/`catch`. A binding that throws contributes nothing, which is
+   * how we tell it apart from one that legitimately evaluates to `undefined`, and it doesn't take the
+   * rest of the scope down with it.
+   *
+   * The expressions are inlined rather than passed to `eval`. `eval` in the evaluated code is the page's
+   * `eval`, which a `script-src` CSP without `'unsafe-eval'` blocks. `Runtime.evaluate` can opt out of
+   * that via `allowUnsafeEvalBlockedByCSP`, but `Debugger.evaluateOnCallFrame` has no such option.
+   * Inlining also means we don't introduce bindings of our own that could shadow the names a binding
+   * expression refers to, and arrow functions keep `this` pointing at the paused frame's receiver.
+   *
+   * @returns The value for each expression, or null if the batch failed as a whole. The latter happens
+   *          when a binding expression doesn't parse, since that takes out the entire object literal.
+   */
+  async #evaluateAsBatch(expressions: Array<string|null>,
+                         generatePreview: boolean): Promise<Array<RemoteObject|null>|null> {
+    const spreads: string[] = [];
+    for (const [index, expression] of expressions.entries()) {
+      if (expression !== null) {
+        spreads.push(`...(() => { try { return {${index}: (${expression})}; } catch {} })()`);
       }
     }
+    if (spreads.length === 0) {
+      return expressions.map(() => null);
+    }
 
-    const batchExpression = `({ __proto__: null, ${spreadEntries.join(', ')} })`;
     const result = await this.#callFrame.evaluate({
-      expression: batchExpression,
+      expression: `({__proto__: null, ${spreads.join(', ')}})`,
+      // The wrapper object is a throw-away. We only need previews for the values inside of it.
       generatePreview: false,
       scopeNumber: this.#scopeNumber,
     });
-
     if ('error' in result || result.exceptionDetails || !result.object) {
-      const properties = this.#scope.variables.map(v => SourceMapScopeRemoteObject.#unavailableProperty(v));
-      return {properties, internalProperties: []};
+      return null;
     }
 
-    const {properties: objectProperties} = await result.object.getOwnProperties(generatePreview);
+    const {properties} = await result.object.getOwnProperties(generatePreview);
     result.object.release();
 
-    const propertyMap = new Map<string, RemoteObjectProperty>();
-    if (objectProperties) {
-      for (const prop of objectProperties) {
-        propertyMap.set(prop.name, prop);
-      }
-    }
+    const valueByIndex = new Map(properties?.map(({name, value}) => [name, value] as const));
+    return expressions.map((_, index) => valueByIndex.get(String(index)) ?? null);
+  }
 
-    const properties: RemoteObjectProperty[] = [];
-    for (const [index, variable] of this.#scope.variables.entries()) {
-      const prop = propertyMap.get(String(index));
-      if (!prop || !prop.value) {
-        properties.push(SourceMapScopeRemoteObject.#unavailableProperty(variable));
+  /**
+   * Fallback for when {@link #evaluateAsBatch} fails as a whole, so that a single binding expression
+   * that doesn't parse only costs us that one variable.
+   */
+  async #evaluateSeparately(expressions: Array<string|null>,
+                            generatePreview: boolean): Promise<Array<RemoteObject|null>> {
+    const values: Array<RemoteObject|null> = [];
+    for (const expression of expressions) {
+      if (expression === null) {
+        values.push(null);
+        continue;
+      }
+
+      const result = await this.#callFrame.evaluate({expression, generatePreview, scopeNumber: this.#scopeNumber});
+      if ('error' in result || result.exceptionDetails) {
+        // TODO(crbug.com/40277685): Make these errors user-visible to aid tooling developers.
+        //         E.g. show the error on hover or expose it in the developer resources panel.
+        values.push(null);
       } else {
-        properties.push(new RemoteObjectProperty(variable, prop.value, /* enumerable */ false, /* writable */ false,
-                                                 /* isOwn */ true,
-                                                 /* wasThrown */ false));
+        values.push(result.object);
       }
     }
-
-    return {properties, internalProperties: []};
+    return values;
   }
 
   /** @returns null if the variable is unavailable at the current paused location */
@@ -219,7 +251,7 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
     if (typeof expressionOrSubRanges === 'string') {
       return expressionOrSubRanges;
     }
-    if (expressionOrSubRanges === null || expressionOrSubRanges === undefined) {
+    if (!expressionOrSubRanges) {
       return null;
     }
 

@@ -74,7 +74,7 @@ describe('SourceMapScopeRemoteObject', () => {
     callFrame.location.returns(
         new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 50));
     callFrame.evaluate.callsFake(({expression, generatePreview}) => {
-      assert.strictEqual(expression, '({ __proto__: null, ...(() => { try { return {0: eval("a")}; } catch {} })() })');
+      assert.strictEqual(expression, '({__proto__: null, ...(() => { try { return {0: (a)}; } catch {} })()})');
       assert.isFalse(generatePreview);
       return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject({0: 42})});
     });
@@ -120,9 +120,9 @@ describe('SourceMapScopeRemoteObject', () => {
       new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 175),
     ];
     const expectedExpressions = [
-      '({ __proto__: null, ...(() => { try { return {0: eval("a")}; } catch {} })() })',
+      '({__proto__: null, ...(() => { try { return {0: (a)}; } catch {} })()})',
       'does not matter since it must not be called',
-      '({ __proto__: null, ...(() => { try { return {0: eval("b")}; } catch {} })() })',
+      '({__proto__: null, ...(() => { try { return {0: (b)}; } catch {} })()})',
     ];
     const values = [{0: 42}, undefined, {0: 21}];
 
@@ -167,7 +167,7 @@ describe('SourceMapScopeRemoteObject', () => {
     callFrame.evaluate.callsFake(options => {
       assert.strictEqual(
           options.expression,
-          '({ __proto__: null, ...(() => { try { return {0: eval("expr1")}; } catch {} })(), ...(() => { try { return {2: eval("expr3")}; } catch {} })() })');
+          '({__proto__: null, ...(() => { try { return {0: (expr1)}; } catch {} })(), ...(() => { try { return {2: (expr3)}; } catch {} })()})');
       assert.strictEqual(options.scopeNumber, 2);
       assert.isFalse(options.generatePreview);
       return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject({0: 100, 2: 200})});
@@ -225,6 +225,81 @@ describe('SourceMapScopeRemoteObject', () => {
     assert.strictEqual(properties[0].value?.type, 'undefined');
     assert.strictEqual(properties[1].name, 'throwsError');
     assert.isUndefined(properties[1].value);
+  });
+
+  it('generates previews for the values rather than the throw-away wrapper object', async () => {
+    const originalScope: ScopesCodec.OriginalScope = {
+      start: {line: 0, column: 0},
+      end: {line: 20, column: 0},
+      isStackFrame: true,
+      kind: 'function',
+      variables: ['var1'],
+      children: [],
+    };
+    const range: ScopesCodec.GeneratedRange = {
+      start: {line: 0, column: 0},
+      end: {line: 0, column: 200},
+      isStackFrame: false,
+      isHidden: false,
+      values: ['a'],
+      children: [],
+    };
+    callFrame.location.returns(
+        new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 50));
+    const wrapper = new SDK.RemoteObject.LocalJSONObject({0: 42});
+    const getOwnProperties = sinon.spy(wrapper, 'getOwnProperties');
+    callFrame.evaluate.resolves({object: wrapper});
+
+    const entry =
+        new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, range, true, undefined, 0);
+    await entry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ true);
+
+    sinon.assert.calledWithMatch(callFrame.evaluate, {generatePreview: false});
+    sinon.assert.calledWith(getOwnProperties, true);
+  });
+
+  it('falls back to evaluating one by one when the batch fails as a whole', async () => {
+    // A binding expression that doesn't parse takes out the whole object literal, so the other
+    // variables must not be lost with it.
+    const originalScope: ScopesCodec.OriginalScope = {
+      start: {line: 0, column: 0},
+      end: {line: 20, column: 0},
+      isStackFrame: true,
+      kind: 'function',
+      variables: ['brokenSyntax', 'validVar'],
+      children: [],
+    };
+    const range: ScopesCodec.GeneratedRange = {
+      start: {line: 0, column: 0},
+      end: {line: 0, column: 200},
+      isStackFrame: false,
+      isHidden: false,
+      values: ['a)', 'b'],
+      children: [],
+    };
+    callFrame.location.returns(
+        new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 50));
+    const syntaxError = {
+      object: new SDK.RemoteObject.LocalJSONObject(undefined),
+      exceptionDetails: {text: 'Uncaught SyntaxError'} as Protocol.Runtime.ExceptionDetails,
+    };
+    callFrame.evaluate.callsFake(({expression}) => {
+      if (expression === 'b') {
+        return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject(42)});
+      }
+      // Both the batch and the individual evaluation of 'a)' hit the syntax error.
+      return Promise.resolve(syntaxError);
+    });
+
+    const entry =
+        new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, range, true, undefined, 0);
+    const {properties} =
+        await entry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
+
+    // The failed batch, plus one call per variable.
+    sinon.assert.calledThrice(callFrame.evaluate);
+    assert.isUndefined(properties?.[0].value);
+    assert.strictEqual(properties?.[1].value?.value, 42);
   });
 });
 

@@ -608,11 +608,11 @@ describe('SourceMapScopesInfo', () => {
       await scopeChain[1].object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
 
       sinon.assert.calledWithMatch(callFrame.evaluate, {
-        expression: '({ __proto__: null, ...(() => { try { return {0: eval("i")}; } catch {} })() })',
+        expression: '({__proto__: null, ...(() => { try { return {0: (i)}; } catch {} })()})',
         scopeNumber: 0,
       });
       sinon.assert.calledWithMatch(callFrame.evaluate, {
-        expression: '({ __proto__: null, ...(() => { try { return {0: eval("o")}; } catch {} })() })',
+        expression: '({__proto__: null, ...(() => { try { return {0: (o)}; } catch {} })()})',
         scopeNumber: 1,
       });
     });
@@ -811,8 +811,7 @@ describe('SourceMapScopesInfo', () => {
 
       // Attempt to get `someFn`s  variables and check that we only call callFrame.evaluate once.
       callFrame.evaluate.callsFake(({expression}) => {
-        assert.strictEqual(expression,
-                           '({ __proto__: null, ...(() => { try { return {0: eval("f")}; } catch {} })() })');
+        assert.strictEqual(expression, '({__proto__: null, ...(() => { try { return {0: (f)}; } catch {} })()})');
         return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject({0: 42})});
       });
       const {properties} = await scopeChain[0].object().getAllProperties(
@@ -874,8 +873,7 @@ describe('SourceMapScopesInfo', () => {
 
       // Attempt to get the global scope's variables and check that we only call callFrame.evaluate once.
       callFrame.evaluate.callsFake(({expression}) => {
-        assert.strictEqual(expression,
-                           '({ __proto__: null, ...(() => { try { return {0: eval("42")}; } catch {} })() })');
+        assert.strictEqual(expression, '({__proto__: null, ...(() => { try { return {0: (42)}; } catch {} })()})');
         return Promise.resolve({object: new SDK.RemoteObject.LocalJSONObject({0: 42})});
       });
       const {properties} = await scopeChain[0].object().getAllProperties(

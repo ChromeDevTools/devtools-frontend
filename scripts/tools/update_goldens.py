@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env vpython3
 # Copyright 2023 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -28,16 +28,18 @@ import argparse
 import json
 import os
 import re
-import time
 import shutil
 import ssl
 import subprocess
 import sys
+import time
 import urllib.request
 
-ssl._create_default_https_context = ssl._create_unverified_context
+ssl._create_default_https_context = ssl._create_unverified_context  # pylint: disable=protected-access
+
 
 class ProjectConfig:
+
     def __init__(self,
                  name='devtools-frontend',
                  gs_root='gs://devtools-frontend-screenshots',
@@ -49,8 +51,8 @@ class ProjectConfig:
         self.gs_folder = self.gs_root + '/screenshots'
         self.builder_prefix = builder_prefix
         self.platforms = platforms or ['linux', 'mac', 'win']
-        platforms_re = "|".join(self.platforms)
-        self.builder_pattern = (f'{self.builder_prefix}_({platforms_re})_rel')
+        platforms_re = '|'.join(self.platforms)
+        self.builder_pattern = f'{self.builder_prefix}_({platforms_re})_(rel|dbg)'
         self.ignore_failed_builders = ignore_failed_builders
 
 
@@ -60,28 +62,32 @@ DEPOT_TOOLS_DIR = os.path.join(BASE_DIR, 'third_party', 'depot_tools')
 VPYTHON = os.path.join(DEPOT_TOOLS_DIR, 'vpython3')
 GOLDENS_DIR = os.path.join(BASE_DIR, 'test', 'goldens')
 
-WARNING_BUILDERS_STILL_RUNNING = 'Patchset %s has builders that are still ' \
-    'running.\nBuilders in progress:\n  %s\n'
+WARNING_BUILDERS_STILL_RUNNING = (
+    'Patchset %s has builders that are still running.\n'
+    'Builders in progress:\n  %s\n')
 WARNING_BUILDERS_FAILED = 'Patchset %s has builders that failed:\n  %s\n'
-WARNING_BUILDERS_MISSING = 'Patchset %s does not have screenshot tests for ' \
-    'all platform.\nOnly these builders found:\n  %s'
+WARNING_BUILDERS_MISSING = (
+    'Patchset %s does not have screenshot tests for all platforms.\n'
+    'Only these builders found:\n  %s')
 WARNING_GCS_CONNECTIVITY = (
     'Ups! "gcloud storage" seems to not work for you right '
     'now.\nThis is either a connectivity problem or a configuration issue.\n'
     'Make sure you are logged in with your Google account and you are included '
     'in the devtools-dev@google.com group.\n'
     'Try running "gcloud config set core/project v8-infra" command.\n')
-WARNING_GIT_DIRTY = 'Before attempting to apply screenshot patches, please' \
-    'make sure your local repo is clean.\nFolder %s seems to contain ' \
-    'un-committed changes.' % GOLDENS_DIR
-WARNING_RESULTS_EXIST = 'Screenshot builders were already triggered for the' \
-    ' current patch!'
+WARNING_GIT_DIRTY = (
+    'Before attempting to apply screenshot patches, please '
+    'make sure your local repo is clean.\nFolder %s seems to contain '
+    'un-committed changes.' % GOLDENS_DIR)
+WARNING_RESULTS_EXIST = (
+    'Screenshot builders were already triggered for the current patch!')
 
-INFO_BUILDERS_TRIGGERED = 'Screenshot builders were triggered for the ' \
-    'current patchset.'
-INFO_PATCHES_APPLIED = 'Patches containing screenshot updates were ' \
-    'applied to your local repo.\n To quickly see what is new just run "git ' \
-    'status".'
+INFO_BUILDERS_TRIGGERED = (
+    'Screenshot builders were triggered for the current patchset.')
+INFO_PATCHES_APPLIED = (
+    'Patches containing screenshot updates were applied to your local repo.\n'
+    ' To quickly see what is new just run "git status".')
+
 
 def main(project_config, *args):
     parser = build_parser()
@@ -94,44 +100,56 @@ def build_parser():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter, epilog=__doc__)
 
-    parser.add_argument('--wait-sec', type=int,
-        help='Wait and retry update every specified number of seconds. ' \
-            'Minimum value is 30s to avoid overwhelming Gerrit.')
+    parser.add_argument(
+        '--wait-sec',
+        type=int,
+        help='Wait and retry update every specified number of seconds. '
+        'Minimum value is 30s to avoid overwhelming Gerrit.')
     parser.set_defaults(func=update)
     parser.add_argument('--verbose',
                         action='store_true',
                         help='Show more debugging info')
-
-    #Deprecated options. These are no longer used, but are kept here
-    #to avoid breaking existing scripts."""
+    parser.add_argument('--cl',
+                        type=int,
+                        help='Gerrit CL number to inspect (optional).')
     parser.add_argument('--patchset',
-                        help='Deprecated. Not used by this tool.')
+                        type=int,
+                        help='Patchset number to inspect (optional).')
     parser.add_argument('--ignore-failed',
                         help='Deprecated. Not used by this tool.')
     parser.add_argument('--retry', help='Deprecated. Not used by this tool.')
 
     return parser
 
+
 def update(project_config, options):
     test_clean_git()
     wait_sec = options.wait_sec
     if wait_sec:
         wait_sec = max(wait_sec, 30)
-    query_rdb_for_screenshots(project_config, options.patchset, wait_sec,
-                              options.ignore_failed, options.retry,
-                              options.verbose)
+    query_rdb_for_screenshots(project_config,
+                              options.patchset,
+                              wait_sec,
+                              options.ignore_failed,
+                              options.retry,
+                              options.verbose,
+                              cl=options.cl)
 
 
-def query_rdb_for_screenshots(project_config, patchset, wait_sec,
-                              ignore_failed, retry, verbose):
+def query_rdb_for_screenshots(project_config,
+                              patchset,
+                              wait_sec,
+                              ignore_failed,
+                              retry,
+                              verbose,
+                              cl=None):
     """Download and apply the patches from the builders."""
-    results = screenshot_results(project_config, patchset)
+    results = screenshot_results(project_config, patchset, cl=cl)
     check_not_empty(results)
     check_all_platforms(project_config, results)
     retry, should_wait = check_all_success(project_config, results, wait_sec,
                                            ignore_failed, retry)
     if retry:
-        # Avoiding to force the user to run a 'trigger' command
         trigger_screenshots(project_config, retry)
         sys.exit(0)
     if not should_wait:
@@ -140,87 +158,134 @@ def query_rdb_for_screenshots(project_config, patchset, wait_sec,
         sys.exit(0)
     print(f'Waiting {wait_sec} seconds ...')
     time.sleep(wait_sec)
-    query_rdb_for_screenshots(project_config, patchset, wait_sec,
-                              ignore_failed, retry, verbose)
+    query_rdb_for_screenshots(project_config,
+                              patchset,
+                              wait_sec,
+                              ignore_failed,
+                              retry,
+                              verbose,
+                              cl=cl)
 
 
 def download_generated_imgs(try_results):
     for _, try_result in try_results.items():
         if try_result['status'] == 'FAILURE':
             unexpected_results = get_unexpected_results(try_result['id'])
-            for result in unexpected_results['testResults']:
-                result = get_result_with_tags(result['name'])
+            artifacts_by_result = get_unexpected_artifacts(try_result['id'])
+            for result in unexpected_results.get('testResults', []):
                 screenshot_path = get_screenshot_path(result)
                 if not screenshot_path:
                     continue
-                artifacts = list_artifacts(result['name'])
-                for artifact in artifacts['artifacts']:
+                for artifact in artifacts_by_result.get(result['name'], []):
                     if artifact['artifactId'] in ['actual_image', 'generated']:
                         download_individual_screenshot(screenshot_path,
                                                        artifact['fetchUrl'])
 
 
 def get_unexpected_results(invocation_suffix):
+    """Queries all unexpected test results with full metadata (readMask='*')."""
     invocation_id = f'build-{invocation_suffix}'
-    return _rdb_rpc(
-        'QueryTestResults', {
-            "invocations": [f'invocations/{invocation_id}'],
-            "predicate": {
-                "excludeExonerated": True,
-                "expectancy": "VARIANTS_WITH_ONLY_UNEXPECTED_RESULTS",
-            }
-        })
+    all_results = []
+    page_token = None
+    while True:
+        payload = {
+            'invocations': [f'invocations/{invocation_id}'],
+            'predicate': {
+                'excludeExonerated': True,
+                'expectancy': 'VARIANTS_WITH_ONLY_UNEXPECTED_RESULTS',
+            },
+            'readMask': '*',
+            'pageSize': 1000,
+        }
+        if page_token:
+            payload['pageToken'] = page_token
+        resp = rdb_rpc('QueryTestResults', payload)
+        all_results.extend(resp.get('testResults', []))
+        page_token = resp.get('nextPageToken')
+        if not page_token:
+            break
+    return {'testResults': all_results}
+
+
+def get_unexpected_artifacts(invocation_suffix):
+    """Queries all unexpected test result artifacts in a build, indexed by parent result name."""
+    invocation_id = f'build-{invocation_suffix}'
+    artifacts_by_result = {}
+    page_token = None
+    while True:
+        payload = {
+            'invocations': [f'invocations/{invocation_id}'],
+            'predicate': {
+                'testResultPredicate': {
+                    'expectancy': 'VARIANTS_WITH_ONLY_UNEXPECTED_RESULTS',
+                }
+            },
+            'pageSize': 1000,
+        }
+        if page_token:
+            payload['pageToken'] = page_token
+        resp = rdb_rpc('QueryArtifacts', payload)
+        for artifact in resp.get('artifacts', []):
+            name = artifact.get('name', '')
+            if '/artifacts/' in name:
+                parent_result_name = name.split('/artifacts/')[0]
+                artifacts_by_result.setdefault(parent_result_name,
+                                               []).append(artifact)
+        page_token = resp.get('nextPageToken')
+        if not page_token:
+            break
+    return artifacts_by_result
 
 
 def get_result_with_tags(name):
-    return _rdb_rpc('GetTestResult', {"name": name})
+    return rdb_rpc('GetTestResult', {'name': name})
 
 
 def list_artifacts(name):
-    return _rdb_rpc('ListArtifacts', {
-        "parent": name,
+    return rdb_rpc('ListArtifacts', {
+        'parent': name,
     })
 
 
-def download_individual_screenshot(screenshot_path, fetchUrl):
-    with urllib.request.urlopen(fetchUrl) as response:
-        os.makedirs(os.path.dirname(screenshot_path), exist_ok=True)
+def download_individual_screenshot(screenshot_path, fetch_url):
+    with urllib.request.urlopen(fetch_url) as response:
+        parent_dir = os.path.dirname(screenshot_path)
+        if parent_dir:
+            os.makedirs(parent_dir, exist_ok=True)
         with open(screenshot_path, 'w+b') as screenshot_file:
             shutil.copyfileobj(response, screenshot_file)
 
 
-def _rdb_rpc(service, request_payload):
-    results_command = ['rdb', 'rpc', 'luci.resultdb.v1.ResultDB']
-    results_command.append(service)
-    p = subprocess.Popen(results_command,
-                         stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE,
-                         text=True)
-
-    stdout, stderr = p.communicate(json.dumps(request_payload))
-    if p.returncode != 0:
-        # rdb doesn't return unique status codes for different errors, so we have to
-        # just match on the output.
-        if 'interactive login is required' in stderr:
-            print("Authentication is required to fetch test metadata.\n" +
-                  "Please run:\n\trdb auth-login\nand try again")
-        else:
-            print(f'rdb rpc {service} failed with: {stderr}')
-        sys.exit(1)
+def rdb_rpc(service, request_payload):
+    results_command = ['rdb', 'rpc', 'luci.resultdb.v1.ResultDB', service]
+    with subprocess.Popen(results_command,
+                          stdin=subprocess.PIPE,
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE,
+                          text=True) as proc:
+        stdout, stderr = proc.communicate(json.dumps(request_payload))
+        if proc.returncode != 0:
+            if 'interactive login is required' in stderr:
+                print('Authentication is required to fetch test metadata.\n'
+                      'Please run:\n\trdb auth-login\nand try again')
+            else:
+                print(f'rdb rpc {service} failed with: {stderr}')
+            sys.exit(1)
 
     return json.loads(stdout)
 
 
 def get_screenshot_path(individual_result):
-    for tag in individual_result['tags']:
+    for tag in individual_result.get('tags', []):
         if tag['key'] == 'run_phase' and tag['value'] != 'default':
             return None
         if tag['key'] == 'screenshot_path':
             return tag['value'].replace('\\', '/')
     return None
 
+
 def get_help(parser, subparsers):
+
     def _help(options):
         if options.name:
             subparsers.choices[options.name].print_help()
@@ -263,31 +328,33 @@ def test_clean_git():
         sys.exit(0)
 
 
-def screenshot_results(project_config, patchset=None):
+def screenshot_results(project_config, patchset=None, cl=None):
     """Select only screenshot builders results."""
-    results = read_try_results(patchset)
+    results = read_try_results(patchset, cl=cl)
     screenshots = filter_screenshots(project_config, results)
     return filter_last_results(screenshots)
 
 
-def read_try_results(patchset):
-    """Collect results from the existing try-jobs."""
+def read_try_results(patchset=None, cl=None):
+    """Collect results from existing try-jobs via git cl try-results."""
     results_command = ['git', 'cl', 'try-results', '--json=-']
+    if cl:
+        results_command.append(f'--issue={cl}')
     if patchset:
-        results_command.extend(['-p', patchset])
+        results_command.extend(['-p', str(patchset)])
     stdout = subprocess.check_output(results_command)
     if stdout:
         try:
             return json.loads(stdout)
-        except Exception as e:
-            print(f'Unable to parse try-results output. \n{str(e)}\n')
+        except Exception as exc:  # pylint: disable=broad-except
+            print(f'Unable to parse try-results output. \n{str(exc)}\n')
             print('Usually this goes away if you set SKIP_GCE_AUTH_FOR_GIT=1.')
             sys.exit(1)
-    return {}
+    return []
 
 
 def filter_screenshots(project_config, results):
-    """Remove results comming from other builders."""
+    """Remove results coming from other builders."""
     sht_results = []
 
     for r in results:
@@ -313,22 +380,31 @@ def abbreviate_result(result):
     cl, patch = find_buildset(result)
     build_id = int(result['id'])
     status = result['status']
-    return dict(id=build_id, status=status, cl=cl, patch=patch)
+    summary_markdown = result.get('summaryMarkdown', '')
+    return {
+        'id': build_id,
+        'status': status,
+        'cl': cl,
+        'patch': patch,
+        'summaryMarkdown': summary_markdown,
+    }
 
 
 def is_newer(abbreviated_result, last_results, builder):
     maybe_older = last_results.get(builder)
     if maybe_older:
-        if not maybe_older['id'] > abbreviated_result['id']:
+        if abbreviated_result['patch'] != maybe_older['patch']:
+            return abbreviated_result['patch'] > maybe_older['patch']
+        if maybe_older['id'] > abbreviated_result['id']:
             return False
     return True
 
 
 def find_buildset(result):
     """Select the CL number and the patch number from the result."""
-    for t in result['tags']:
-        if t['key'] == 'buildset':
-            components = t['value'].split('/')
+    for tag in result.get('tags', []):
+        if tag['key'] == 'buildset':
+            components = tag['value'].split('/')
             return int(components[-2]), int(components[-1])
     raise RuntimeError('Cannot find tag buildset in a try-job result')
 
@@ -336,7 +412,7 @@ def find_buildset(result):
 def check_not_empty(results):
     if results:
         return
-    print('No screenshot test results found! ' +
+    print('No screenshot test results found! '
           'Make sure to run CQ against your change first.')
     sys.exit(1)
 
@@ -350,12 +426,7 @@ def check_all_platforms(project_config, results):
 
 
 def check_all_success(project_config, results, wait_sec, ignore_failed, retry):
-    """Verify and react to the presence of in progress or failed builds.
-    Returns tuple (list of failed builders, boolean whether to wait)
-    The list might be used to re-trigger if --retry options is set.
-    The boolean, if true, will make the script wait and later make
-    another attempt to collect results.
-    """
+    """Verify and react to the presence of in progress or failed builds."""
     in_progress, failed = find_exceptions(results)
     if in_progress:
         warn_on_exceptions(results, in_progress,
@@ -368,8 +439,7 @@ def check_all_success(project_config, results, wait_sec, ignore_failed, retry):
 
 
 def find_exceptions(results):
-    """Find the two kinds of results that we cannot process: builds in progress
-    and failed builds"""
+    """Find builds in progress and failed builds."""
     assert results
     in_progress = []
     failed = []
@@ -408,21 +478,21 @@ def builder_status(results, builders):
 
 
 def run_command(command, verbose, message=None):
-    """Run command and deal with return code and output from the subprocess"""
-    process = subprocess.Popen(command,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    if verbose:
-        print(stdout.decode('utf-8'))
-    if process.returncode != 0:
-        print(stderr.decode('utf-8'))
-        if message:
-            print(message)
-        else:
-            print('Ups! Something went wrong.')
-        print('Try --verbose to debug.')
-        sys.exit(1)
+    """Run command and deal with return code and output from the subprocess."""
+    with subprocess.Popen(command,
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE) as process:
+        stdout, stderr = process.communicate()
+        if verbose:
+            print(stdout.decode('utf-8'))
+        if process.returncode != 0:
+            print(stderr.decode('utf-8'))
+            if message:
+                print(message)
+            else:
+                print('Ups! Something went wrong.')
+            print('Try --verbose to debug.')
+            sys.exit(1)
 
 
 if __name__ == '__main__':

@@ -5,8 +5,7 @@
 import * as os from 'node:os';
 import * as path from 'node:path';
 
-// @ts-expect-error created at test/BUILD.gn
-import build from '../build.js';
+import build from '../build.json' with {type : 'json'};
 
 export const SOURCE_ROOT: string = path.join(import.meta.dirname, '..', build.SOURCE_ROOT);
 export const CHECKOUT_ROOT: string = path.join(import.meta.dirname, '..', build.CHECKOUT_ROOT);

@@ -24,6 +24,7 @@ node_ts_library("implementation") {
   testonly = false
   inputs = typescript_test_types_inputs + typescript_yargs_types_inputs +
            typescript_puppeteer_types_inputs + typescript_diff_types_inputs
+  deps = [ "../:build_config" ]
   ts_deps = [
     ":expectations_parser",
     "../../front_end/testing:test_id_generation",

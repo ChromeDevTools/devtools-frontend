@@ -1361,6 +1361,25 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
     assert.exists(highlight);
     assert.deepEqual(Array.from(highlight).map(range => range.toString()), ['Foo', 'foo']);
   });
+
+  it('hides search highlights and clears searchQuery without resurrecting on update', async () => {
+    attrTestTreeElement.highlightSearchResults('foo');
+    await attrTestTreeElement.widget.updateComplete;
+    let highlight = CSS.highlights.get('highlighted-search-result');
+    assert.exists(highlight);
+    assert.strictEqual(highlight.size, 2);
+
+    attrTestTreeElement.hideSearchHighlights();
+    await attrTestTreeElement.widget.updateComplete;
+    assert.isNull(attrTestTreeElement.widget.searchQuery);
+    highlight = CSS.highlights.get('highlighted-search-result');
+    assert.strictEqual(highlight?.size ?? 0, 0);
+
+    attrTestTreeElement.widget.requestUpdate();
+    await attrTestTreeElement.widget.updateComplete;
+    highlight = CSS.highlights.get('highlighted-search-result');
+    assert.strictEqual(highlight?.size ?? 0, 0);
+  });
 });
 
 describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {

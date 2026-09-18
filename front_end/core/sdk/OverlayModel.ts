@@ -342,13 +342,13 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       // overlay, so that it is not cleared by the highlight
       return;
     }
-      clearTimeout(this.#hideHighlightTimeout);
-      this.#hideHighlightTimeout = undefined;
+    clearTimeout(this.#hideHighlightTimeout);
+    this.#hideHighlightTimeout = undefined;
 
-      const highlightConfig = this.buildHighlightConfig(mode);
-      if (typeof showInfo !== 'undefined') {
-        highlightConfig.showInfo = showInfo;
-      }
+    const highlightConfig = this.buildHighlightConfig(mode);
+    if (typeof showInfo !== 'undefined') {
+      highlightConfig.showInfo = showInfo;
+    }
     this.#highlighter.highlightInOverlay(data, highlightConfig);
   }
 
@@ -496,12 +496,11 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   }
 
   private delayedHideHighlight(delay: number): void {
-    if (this.#hideHighlightTimeout === undefined) {
-      this.#hideHighlightTimeout = globalThis.setTimeout(
-          () => this.highlightInOverlay({clear: true}),
-          delay,
-      );
-    }
+    clearTimeout(this.#hideHighlightTimeout);
+    this.#hideHighlightTimeout = globalThis.setTimeout(
+        () => this.highlightInOverlay({clear: true}),
+        delay,
+    );
   }
 
   highlightFrame(frameId: Protocol.Page.FrameId): void {

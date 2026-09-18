@@ -1761,6 +1761,61 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('clears previous search match highlights when navigating to a new match in default (imperative) view',
+       async () => {
+         SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             children: [
+               {nodeId: 2, nodeName: 'P', attributes: ['id', 'match-one']},
+               {nodeId: 3, nodeName: 'P', attributes: ['id', 'match-two']},
+             ],
+           });
+           domTree.omitRootDOMNode = true;
+           domTree.rootDOMNode = rootNode;
+           domTree.performUpdate();
+
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const p1 = rootNode.children()![0];
+           const p2 = rootNode.children()![1];
+
+           // 1. Highlight first match
+           domTree.highlightMatch(p1, 'match');
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           let highlights = CSS.highlights.get(Highlighting.HighlightManager.HIGHLIGHT_REGISTRY);
+           assert.exists(highlights);
+           assert.strictEqual(highlights.size, 1);
+
+           const treeElement1 = domTree.treeElementForNode(p1) as Elements.ElementsTreeElement.ElementsTreeElement;
+           assert.isNotNull(treeElement1);
+           assert.strictEqual(treeElement1.widget.searchQuery, 'match');
+
+           // 2. Navigate to second match (which deselects treeElement1 and triggers its performUpdate)
+           domTree.highlightMatch(p2, 'match');
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           assert.isNull(treeElement1.widget.searchQuery);
+           highlights = CSS.highlights.get(Highlighting.HighlightManager.HIGHLIGHT_REGISTRY);
+           assert.exists(highlights);
+           assert.strictEqual(highlights.size, 1);
+
+           const treeElement2 = domTree.treeElementForNode(p2) as Elements.ElementsTreeElement.ElementsTreeElement;
+           assert.isNotNull(treeElement2);
+           assert.strictEqual(treeElement2.widget.searchQuery, 'match');
+           const activeRange = Array.from(highlights)[0];
+           assert.isTrue(treeElement2.listItemElement.contains(activeRange.startContainer));
+         } finally {
+           domTree.detach();
+         }
+       });
+
     it('updates rendered attributes on AttrModified and AttrRemoved in DECLARATIVE_VIEW without duplicates',
        async () => {
          const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;

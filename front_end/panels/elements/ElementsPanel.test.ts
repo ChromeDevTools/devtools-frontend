@@ -233,6 +233,36 @@ describeWithEnvironment('ElementsPanel', () => {
     anotherTarget.dispose('test');
   });
 
+  it('hides DOM node highlight on search canceled and when navigating search results', async () => {
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    const domModel = target.model(SDK.DOMModel.DOMModel)!;
+    const node1 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    const node2 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    sinon.stub(domModel, 'performSearch').resolves(2);
+    const searchResultStub = sinon.stub(domModel, 'searchResult');
+    searchResultStub.withArgs(0).resolves(node1);
+    searchResultStub.withArgs(1).resolves(node2);
+
+    const hideStub = sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+    const panel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
+
+    panel.performSearch({query: 'div'} as UI.SearchableView.SearchConfig, true);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    sinon.assert.calledOnce(node1.scrollIntoView);
+
+    hideStub.resetHistory();
+    panel.jumpToNextSearchResult();
+    sinon.assert.calledWith(hideStub, SDK.TargetManager.TargetManager.instance());
+    await new Promise(resolve => setTimeout(resolve, 0));
+    sinon.assert.calledOnce(node2.scrollIntoView);
+
+    hideStub.resetHistory();
+    panel.onSearchCanceled();
+    sinon.assert.calledWith(hideStub, SDK.TargetManager.TargetManager.instance());
+
+    hideStub.restore();
+  });
+
   // Causes unit test execution to abort
   it('deleting a node unhides it if it was hidden', async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(null);

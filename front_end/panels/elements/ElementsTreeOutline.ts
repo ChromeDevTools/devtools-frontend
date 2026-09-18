@@ -2326,9 +2326,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#searchMatchQuery = query ?? null;
     if (this.selectedDOMNode() !== node) {
       this.selectDOMNode(node, /* focus= */ false);
-    } else {
-      this.performUpdate();
     }
+    this.performUpdate();
   }
 
   hideMatchHighlights(node: SDK.DOMModel.DOMNode): void {

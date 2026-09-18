@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -182,5 +183,30 @@ describe('OverlayModel', () => {
     expectedStyleSheet = `: env(titlebar-area-xxx, 9px); width: env(titlebar-area-width, calc(100% - ${width}px));`;
     parsedStyleSheet = windowControls.transformStyleSheetforTesting(x, y, width, height, originalStyleSheet);
     assert.strictEqual(parsedStyleSheet, expectedStyleSheet);
+  });
+
+  it('clears active highlight when hideDOMNodeHighlight is called', () => {
+    assert.exists(overlayModel);
+    const clock = sinon.useFakeTimers();
+    try {
+      let hideCalled = false;
+      connection.setSuccessHandler('Overlay.hideHighlight', () => {
+        hideCalled = true;
+        return {};
+      });
+
+      overlayModel.highlightInOverlayForTwoSeconds({node: {id: 1 as Protocol.DOM.NodeId}} as unknown as
+                                                   SDK.OverlayModel.HighlightData);
+      assert.isFalse(hideCalled);
+
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(universe.targetManager);
+      assert.isFalse(hideCalled);
+
+      // Advance clock by 0ms (next tick)
+      clock.tick(0);
+      assert.isTrue(hideCalled);
+    } finally {
+      clock.restore();
+    }
   });
 });

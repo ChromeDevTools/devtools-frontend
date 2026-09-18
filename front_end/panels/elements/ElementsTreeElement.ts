@@ -1821,9 +1821,14 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
   }
 
-  hideSearchHighlights(): void {
+  #clearHighlights(): void {
     Highlighting.HighlightManager.HighlightManager.instance().removeHighlights(this.#highlights);
     this.#highlights = [];
+  }
+
+  hideSearchHighlights(): void {
+    this.#searchQuery = null;
+    this.#clearHighlights();
   }
 
   setInClipboard(inClipboard: boolean): void {
@@ -2949,7 +2954,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   }
 
   #highlightSearchResults(): void {
-    this.hideSearchHighlights();
+    this.#clearHighlights();
 
     if (!this.searchQuery) {
       return;

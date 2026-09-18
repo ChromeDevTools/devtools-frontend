@@ -377,4 +377,47 @@ describe('SourceMapScopeChainEntry', () => {
     const outerEntry = entry({kind: 'function', isStackFrame: true}, /* isInnerMostFunction */ false);
     assert.isEmpty(outerEntry.extraProperties());
   });
+
+  it('exposes originalScope and memoizes the scope RemoteObject and its properties evaluation', async () => {
+    const originalScope: ScopesCodec.OriginalScope = {
+      start: {line: 2, column: 4},
+      end: {line: 18, column: 1},
+      isStackFrame: true,
+      kind: 'function',
+      variables: ['x'],
+      children: [],
+    };
+    const range: ScopesCodec.GeneratedRange = {
+      start: {line: 0, column: 0},
+      end: {line: 0, column: 200},
+      isStackFrame: true,
+      isHidden: false,
+      values: ['a'],
+      children: [],
+    };
+    callFrame.location.returns(
+        new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 50));
+    callFrame.evaluate.resolves({object: new SDK.RemoteObject.LocalJSONObject({0: 99})});
+
+    const scopeEntry =
+        new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, range, true, undefined);
+    assert.strictEqual(scopeEntry.originalScope(), originalScope);
+    assert.strictEqual(scopeEntry.object(), scopeEntry.object());
+
+    const [firstResult, secondResult] = await Promise.all([
+      scopeEntry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ true),
+      scopeEntry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false),
+    ]);
+    sinon.assert.calledOnce(callFrame.evaluate);
+    assert.strictEqual(firstResult.properties?.[0].value?.value, 99);
+    assert.strictEqual(secondResult.properties?.[0].value?.value, 99);
+
+    // If first fetched with generatePreview=false, requesting generatePreview=true upgrades the cache.
+    const unpreviewedEntry =
+        new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, originalScope, range, true, undefined);
+    await unpreviewedEntry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ false);
+    sinon.assert.calledTwice(callFrame.evaluate);
+    await unpreviewedEntry.object().getAllProperties(/* accessorPropertiesOnly */ false, /* generatePreview */ true);
+    sinon.assert.calledThrice(callFrame.evaluate);
+  });
 });

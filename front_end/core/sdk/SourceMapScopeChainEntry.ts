@@ -46,6 +46,7 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
   readonly #isInnerMostFunction: boolean;
   readonly #returnValue?: RemoteObject;
   readonly #scopeNumber?: number;
+  #object?: SourceMapScopeRemoteObject;
 
   /**
    * @param isInnerMostFunction If `scope` is the innermost 'function' scope. Only used for labeling as we name the
@@ -61,6 +62,10 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
     this.#isInnerMostFunction = isInnerMostFunction;
     this.#returnValue = returnValue;
     this.#scopeNumber = scopeNumber;
+  }
+
+  originalScope(): ScopesCodec.OriginalScope {
+    return this.#scope;
   }
 
   extraProperties(): RemoteObjectProperty[] {
@@ -118,7 +123,10 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
   }
 
   object(): RemoteObject {
-    return new SourceMapScopeRemoteObject(this.#callFrame, this.#scope, this.#range, this.#scopeNumber);
+    if (!this.#object) {
+      this.#object = new SourceMapScopeRemoteObject(this.#callFrame, this.#scope, this.#range, this.#scopeNumber);
+    }
+    return this.#object;
   }
 
   description(): string {
@@ -135,6 +143,8 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
   readonly #scope: ScopesCodec.OriginalScope;
   readonly #range?: ScopesCodec.GeneratedRange;
   readonly #scopeNumber?: number;
+  #propertiesPromise?: Promise<GetPropertiesResult>;
+  #cachedWithPreview = false;
 
   constructor(callFrame: CallFrame, scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange|undefined,
               scopeNumber: number|undefined) {
@@ -153,7 +163,17 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
     if (accessorPropertiesOnly) {
       return {properties: [], internalProperties: []};
     }
+    if (!this.#propertiesPromise || (generatePreview && !this.#cachedWithPreview)) {
+      this.#cachedWithPreview = generatePreview;
+      this.#propertiesPromise = this.#evaluateProperties(generatePreview);
+    }
+    return await this.#propertiesPromise;
+  }
 
+  async #evaluateProperties(generatePreview: boolean): Promise<GetPropertiesResult> {
+    if (this.#scope.variables.length === 0) {
+      return {properties: [], internalProperties: []};
+    }
     const expressions = this.#scope.variables.map((_, index) => this.#findExpression(index));
     const values = await this.#evaluateAsBatch(expressions, generatePreview) ??
         await this.#evaluateSeparately(expressions, generatePreview);

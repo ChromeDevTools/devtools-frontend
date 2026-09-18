@@ -1678,6 +1678,8 @@ class TreeViewTreeElement extends TreeElement {
       this.#clonedClasses.add(className);
     }
     this.hidden = hasBooleanAttribute(this.configElement, 'hidden');
+    this.selectable =
+        !this.configElement.hasAttribute('selectable') || hasBooleanAttribute(this.configElement, 'selectable');
     this.updateExpansionFromAttribute();
   }
 

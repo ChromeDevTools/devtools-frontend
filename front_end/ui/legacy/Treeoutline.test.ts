@@ -950,6 +950,22 @@ describe('TreeViewElement', () => {
     assert.strictEqual(children[0].titleElement.textContent?.trim(), 'first node');
     assert.strictEqual(children[1].titleElement.textContent?.trim(), 'last node');
   });
+
+  it('respects selectable="false" on tree items', async () => {
+    const component = await makeTree(html`<devtools-tree .template=${html`
+      <ul role="tree">
+        <li role="treeitem" selectable="false">Non-selectable node</li>
+        <li role="treeitem">Selectable node</li>
+      </ul>
+    `}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const children = treeOutline.rootElement().children();
+    assert.lengthOf(children, 2);
+    assert.isFalse(children[0].selectable);
+    assert.isTrue(children[1].selectable);
+    assert.isFalse(children[0].select());
+    assert.isFalse(children[0].selected);
+  });
 });
 
 type NodeSpec = {

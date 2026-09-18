@@ -82,6 +82,11 @@ describe('gcs-upload', () => {
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/grader_output/grader.log`,
     );
     assert.strictEqual(
+        formatGCSTaskDestination(runId, taskId, TaskOutputFile.VERIFICATION_STDOUT),
+        `gs://${BUCKET}/${
+            PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/verification/verification_stdout.log`,
+    );
+    assert.strictEqual(
         formatGCSTaskDestination(runId, taskId, 'eval_task_completed.json'),
         `gs://${BUCKET}/${
             PROJECT_ID}/runs/2026-08-25-134619-c0c1-8f25f69/tasks/example-target-html/output/eval_task_completed.json`,
@@ -99,6 +104,7 @@ describe('gcs-upload', () => {
     assert.strictEqual(getContentType(TaskOutputFile.CHAT_LOG), 'text/plain; charset=utf-8');
     assert.strictEqual(getContentType(TaskOutputFile.AGENT_STDERR), 'text/plain; charset=utf-8');
     assert.strictEqual(getContentType(TaskOutputFile.GRADER_LOG), 'text/plain; charset=utf-8');
+    assert.strictEqual(getContentType(TaskOutputFile.VERIFICATION_STDOUT), 'text/plain; charset=utf-8');
     assert.strictEqual(getContentType(TaskOutputFile.TRAJECTORY), 'application/json; charset=utf-8');
     assert.strictEqual(getContentType('eval_report.html'), 'text/html; charset=utf-8');
     assert.strictEqual(getContentType('run_started.marker'), 'text/plain');

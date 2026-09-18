@@ -936,8 +936,27 @@ function uploadTaskArtifacts(ctx: EvalRunContext, trajectory: Trajectory, evalOu
   const chatLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.CHAT_LOG, formatChatLog(trajectory));
   const agentStderrUploaded =
       uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
+  const verificationStdoutUploaded =
+      uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDOUT, formatVerificationStdout(ctx, taskId));
 
-  return trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded;
+  return trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded && verificationStdoutUploaded;
+}
+
+/**
+ * Summarises the outcome of a task's verification step for the
+ * verification_stdout.log artifact.
+ */
+function formatVerificationStdout(ctx: EvalRunContext, taskId: TaskId): string {
+  const matchingTrajectories = ctx.output.trajectories.filter(e => e.session_id === taskId);
+  const hasError = matchingTrajectories.some(e => Boolean(e.error) ||
+                                                 Boolean(e.assertionFailures && e.assertionFailures.length > 0));
+
+  return [
+    `[Verification] Task: ${taskId}`,
+    `[Verification] Target: ${ctx.userArgs.testTarget}`,
+    `[Verification] Result: ${hasError ? 'FAILED' : 'PASSED'}`,
+    '',
+  ].join('\n');
 }
 
 /**

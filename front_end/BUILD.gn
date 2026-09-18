@@ -305,6 +305,7 @@ group("api_tests") {
   deps = [
     "core/sdk:api_tests",
     "foundation:api_tests",
+    "models/source_map_scopes:api_tests",
   ]
 }
 

@@ -17,6 +17,7 @@ devtools_foundation_module("source_map_scopes") {
   ts_deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
     "../../generated",
@@ -60,7 +61,25 @@ devtools_foundation_module("foundation_unittests") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",
+    "../../third_party/source-map-scopes-codec:bundle",
     "../bindings:bundle",
     "../workspace:bundle",
+  ]
+}
+
+devtools_api_test_module("api_tests") {
+  sources = [ "NamesResolver.test.api.ts" ]
+
+  ts_deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
+    "../../models/bindings:bundle",
+    "../../models/formatter:bundle",
+    "../../testing",
+    "../../third_party/source-map-scopes-codec:bundle",
   ]
 }

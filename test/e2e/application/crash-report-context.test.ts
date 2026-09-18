@@ -10,7 +10,7 @@ import type {DevToolsPage} from '../shared/DevToolsPage.js';
 import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
-const CRASH_REPORT_CONTEXT_SELECTOR = '[aria-label="Crash Report Context"]';
+const CRASH_REPORT_CONTEXT_SELECTOR = '[aria-label="Crash report context"]';
 const TOOLBAR_SELECTOR = '.crash-report-context-toolbar';
 const FILTER_INPUT_SELECTOR = '.toolbar-input-prompt';
 const EMPTY_STATE_HEADER_SELECTOR = '.empty-state-header';

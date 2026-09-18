@@ -100,7 +100,7 @@ describeWithEnvironment('CrashReportContextView', () => {
     const input = await view.nextInput;
 
     assert.lengthOf(input.frames, 1);
-    assert.strictEqual(input.frames[0].url, 'Unknown Frame');
+    assert.strictEqual(input.frames[0].url, 'Unknown frame');
   });
 
   it('disambiguates frames with the same URL', async () => {

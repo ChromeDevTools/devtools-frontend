@@ -22,7 +22,7 @@ describe('The Manifest Page', () => {
     await devToolsPage.waitForFunction(async () => {
       const fieldNames = await getTrimmedTextContent(devToolsPage, FIELD_NAMES_SELECTOR);
       const fieldValues = await getTrimmedTextContent(devToolsPage, FIELD_VALUES_SELECTOR);
-      return fieldNames[3] === 'Computed App ID' && fieldValues[3] === expectedValue;
+      return fieldNames[3] === 'Computed app ID' && fieldValues[3] === expectedValue;
     });
   });
 
@@ -34,14 +34,14 @@ describe('The Manifest Page', () => {
 
     const expectedValue =
         `https://localhost:${inspectedPage.serverPort}/test/e2e/resources/application/some_start_url` +
-        'Learn moreNote: id is not specified in the manifest, start_url is used instead. To specify an ' +
-        'App ID that matches the current identity, set the id field to ' +
+        'Learn moreNote: id isn’t specified in the manifest, start_url is used instead. To specify an ' +
+        'app ID that matches the current identity, set the id field to ' +
         '/test/e2e/resources/application/some_start_url .';
 
     await devToolsPage.waitForFunction(async () => {
       const fieldNames = await getTrimmedTextContent(devToolsPage, FIELD_NAMES_SELECTOR);
       const fieldValues = await getTrimmedTextContent(devToolsPage, FIELD_VALUES_SELECTOR);
-      return fieldNames[3] === 'Computed App ID' && fieldValues[3] === expectedValue;
+      return fieldNames[3] === 'Computed app ID' && fieldValues[3] === expectedValue;
     });
   });
 });

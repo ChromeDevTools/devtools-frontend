@@ -1940,7 +1940,7 @@
     },
     {
       name: "CSSRandomFunction",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "CSSRandomFunctionTypedOM",
@@ -3283,6 +3283,11 @@
       status: "stable",
     },
     {
+      // crbug.com/325826179
+      name: "FontUniqueNameTypefaceCache",
+      status: "stable",
+    },
+    {
       // crbug.com/40398871
       name: "FontVariationSettingsDescriptor",
       status: "stable",
@@ -4296,7 +4301,7 @@
     {
       // NavigationState class and the :navigation-source CSS pseudo-class.
       name: "NavigationSourcePseudoClass",
-      status: "experimental",
+      status: "stable",
       implied_by: ["RouteMatching"],
     },
     {

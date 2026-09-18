@@ -51,7 +51,7 @@ describe('hardwareConcurrency emulation on Sensors panel', () => {
     assert.deepEqual(concurrency, initialValue + 1);
 
     // Check that the warning is shown when exceeding the default value:
-    const warning = await devToolsPage.waitForAria('Exceeding the default value may degrade system performance.') as
+    const warning = await devToolsPage.waitForAria('Exceeding the default value may degrade system performance') as
         puppeteer.ElementHandle<HTMLElement>;
     await devToolsPage.waitForFunction(
         async () => await warning.evaluate(e => getComputedStyle(e).visibility) === 'visible');

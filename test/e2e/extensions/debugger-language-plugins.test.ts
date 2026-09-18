@@ -528,7 +528,7 @@ describe('The Debugger Language Plugins', () => {
     const infoBar = await devToolsPage.waitFor(`.infobar-error[aria-label="${incompleteMessage}"`);
     const details = await devToolsPage.waitFor('.infobar-details-rows', infoBar);
     const text = await details.evaluate(e => e.textContent);
-    assert.deepEqual(text, 'Failed to load debug file "test.wasm".');
+    assert.deepEqual(text, 'Failed to load debug file "test.wasm"');
 
     const banners = await devToolsPage.$$('.call-frame-warnings-message');
     const bannerTexts = await Promise.all(banners.map(e => e.evaluate(e => e.textContent)));
@@ -599,7 +599,7 @@ describe('The Debugger Language Plugins', () => {
     const infoBar = await devToolsPage.waitFor(`.infobar-error[aria-label="${incompleteMessage}"`);
     const details = await devToolsPage.waitFor('.infobar-details-rows', infoBar);
     const text = await details.evaluate(e => e.textContent);
-    assert.deepEqual(text, 'Failed to load debug file "test.dwo".');
+    assert.deepEqual(text, 'Failed to load debug file "test.dwo"');
 
     const banners = await devToolsPage.$$('.call-frame-warnings-message');
     const bannerTexts = await Promise.all(banners.map(e => e.evaluate(e => e.textContent)));

@@ -57,7 +57,7 @@ describe('The Crash Report Context Page', function() {
     await clickCrashReportContext(devToolsPage);
     const emptyHeader = await devToolsPage.waitFor(EMPTY_STATE_HEADER_SELECTOR);
     const text = await emptyHeader.evaluate(el => el.textContent);
-    assert.strictEqual(text, 'No context entries detected across frames.');
+    assert.strictEqual(text, 'No context entries detected across frames');
   });
 
   it('shows crash report context entries', async ({devToolsPage, inspectedPage}) => {

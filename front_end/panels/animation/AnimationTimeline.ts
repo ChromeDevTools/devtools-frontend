@@ -72,7 +72,7 @@ const UIStrings = {
   /**
    * @description Empty buffer hint text content in the animation timeline of the Animations panel that explains the panel.
    */
-  animationDescription: 'On this page you can inspect and modify animations.',
+  animationDescription: 'On this page you can inspect and modify animations',
   /**
    * @description Tooltip text that appears when hovering over largeicon replay animation button in the animation timeline of the Animations panel.
    */

@@ -714,7 +714,7 @@ describeWithEnvironment('AnimationTimeline', () => {
     assert.deepEqual(emptyWidget.shadowRoot?.querySelector('.empty-state-header')?.textContent,
                      'Currently waiting for animations');
     assert.deepEqual(emptyWidget.shadowRoot?.querySelector('.empty-state-description span')?.textContent,
-                     'On this page you can inspect and modify animations.');
+                     'On this page you can inspect and modify animations');
 
     view.detach();
   });

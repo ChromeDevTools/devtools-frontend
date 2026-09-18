@@ -188,7 +188,7 @@ describe('Overrides panel', function() {
     icons = await networkPanel.$$('devtools-icon.warning');
 
     assert.lengthOf(icons, 1);
-    assert.strictEqual('Requests may be overridden locally. See the Sources panel',
+    assert.strictEqual('Requests may be overridden locally. See the Sources panel.',
                        await icons[0].evaluate(icon => icon.title));
 
     await waitForOverrideContentMenuItemIsEnabled('coffees.json', devToolsPage);
@@ -213,7 +213,7 @@ describe('Overrides panel', function() {
     icons = await networkPanel.$$('devtools-icon.warning');
 
     assert.lengthOf(icons, 1);
-    assert.strictEqual('Requests may be overridden locally. See the Sources panel',
+    assert.strictEqual('Requests may be overridden locally. See the Sources panel.',
                        await icons[0].evaluate(icon => icon.title));
   });
 

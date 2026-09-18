@@ -265,6 +265,6 @@ describe('Custom devices', () => {
 
     const error = await devToolsPage.waitFor('.list-widget-input-validation-error');
     const errorText = await error.evaluate(element => element.textContent);
-    assert.strictEqual(errorText, 'Device pixel ratio must be a number or blank.');
+    assert.strictEqual(errorText, 'Device pixel ratio must be a number or blank');
   });
 });

@@ -93,7 +93,7 @@ const UIStrings = {
   /**
    * @description Warning message displayed below the backend linking rules table when one or more rules are invalid.
    */
-  invalidRulesWarning: 'Invalid rules will not be applied or saved.',
+  invalidRulesWarning: 'Invalid rules will not be applied or saved',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/settings/BackendLinkingSettingsTab.ts', UIStrings);

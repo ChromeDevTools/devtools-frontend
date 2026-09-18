@@ -532,7 +532,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
       assert.deepEqual(rowData, [
         {
           title: 'Warning',
-          value: 'Long interaction indicates poor page responsiveness.',
+          value: 'Long interaction indicates poor page responsiveness',
         },
         {title: 'Duration', value: '979.97\xA0ms'},
         {
@@ -1211,7 +1211,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
           [
             {
               title: 'Warning',
-              value: 'Long task took 1.30\u00A0s.',
+              value: 'Long task took 1.30\u00A0s',
             },
             {title: 'Duration', value: '1.30\xA0s (self 47\xA0μs)'},
           ],

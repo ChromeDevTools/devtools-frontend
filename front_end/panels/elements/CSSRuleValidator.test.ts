@@ -505,4 +505,48 @@ describeWithEnvironment('CSSRuleValidator', () => {
       }
     });
   }
+
+  it('formats multiple font variation settings warnings correctly', () => {
+    const computedStyles = new Map<string, string>([
+      ['font-variation-settings', '"wght" 251, "wdth" 59'],
+      ['font-family', 'Family'],
+    ]);
+    const fontFaces = [new SDK.CSSFontFace.CSSFontFace({
+      fontFamily: 'Family',
+      fontStyle: 'string',
+      fontVariant: 'string',
+      fontWeight: 'string',
+      fontStretch: 'string',
+      fontDisplay: 'string',
+      unicodeRange: 'string',
+      src: 'string',
+      platformFontFamily: 'Family',
+      fontVariationAxes: [
+        {
+          tag: 'wght',
+          name: 'Weight',
+          minValue: 10,
+          maxValue: 20,
+          defaultValue: 15,
+        },
+        {
+          tag: 'wdth',
+          name: 'Width',
+          minValue: 100,
+          maxValue: 200,
+          defaultValue: 150,
+        },
+      ],
+    })];
+    const validator = new Elements.CSSRuleValidator.FontVariationSettingsValidator();
+    const hint = validator.getHint('font-variation-settings', computedStyles, undefined, 'div', fontFaces);
+    assert.exists(hint);
+    const message = hint.getMessage() as string;
+    assert.isFalse(message.includes('Family" Value'),
+                   'Multiple font variation settings warnings should not form a run-on sentence');
+    assert.include(message,
+                   'Value for setting "wght" 251 is outside the supported range [10, 20] for font-family "Family".');
+    assert.include(message,
+                   'Value for setting "wdth" 59 is outside the supported range [100, 200] for font-family "Family".');
+  });
 });

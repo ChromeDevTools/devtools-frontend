@@ -19,7 +19,7 @@ describe('Revealing insights in RPP', function() {
     await uploadTraceFile(devToolsPage, 'test/e2e/resources/performance/timeline/web.dev-trace.json.gz');
 
     await devToolsPage.click('aria/Show sidebar');
-    await devToolsPage.click('aria/View details for LCP breakdown insight.');
+    await devToolsPage.click('aria/View details for LCP breakdown insight');
 
     // Ensure that the LCP timespan breakdown is showing.
     await devToolsPage.waitFor('.overlay-type-TIMESPAN_BREAKDOWN');

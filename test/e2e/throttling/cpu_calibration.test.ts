@@ -14,7 +14,7 @@ describe('CPU Calibration', () => {
         await devToolsPage.getAllTextContents('.cpu-preset-result'), ['Needs calibration', 'Needs calibration']);
 
     await devToolsPage.waitForElementWithTextContent(
-        'To use the CPU throttling presets, run the calibration process to determine the ideal throttling rate for your device.');
+        'To use the CPU throttling presets, run the calibration process to determine the ideal throttling rate for your device');
     await devToolsPage.click('.calibrate-button');
     await devToolsPage.waitForElementWithTextContent(
         'Calibration will take ~5 seconds, and temporarily navigate away from your current page. Do you wish to continue?');

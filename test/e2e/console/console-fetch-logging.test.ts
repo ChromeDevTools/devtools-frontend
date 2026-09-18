@@ -19,12 +19,12 @@ describe('The Console Tab', () => {
     await toggleShowLogXmlHttpRequests(devToolsPage);
     const expectedResults = [
       `Fetch finished loading: GET "https://localhost:${
-          inspectedPage.serverPort}/test/e2e/resources/console/xhr-exists.html".`,
+          inspectedPage.serverPort}/test/e2e/resources/console/xhr-exists.html"`,
       `Fetch failed loading: GET "https://localhost:${
-          inspectedPage.serverPort}/test/e2e/resources/console/xhr-does-not-exist.html".`,
+          inspectedPage.serverPort}/test/e2e/resources/console/xhr-does-not-exist.html"`,
       `Fetch finished loading: POST "https://localhost:${
-          inspectedPage.serverPort}/test/e2e/resources/console/post-target.rawresponse".`,
-      'Fetch failed loading: GET "http://localhost:8000/devtools/resources/xhr-exists.html".',
+          inspectedPage.serverPort}/test/e2e/resources/console/post-target.rawresponse"`,
+      'Fetch failed loading: GET "http://localhost:8000/devtools/resources/xhr-exists.html"',
     ];
 
     await typeIntoConsoleAndWaitForResult(devToolsPage, 'await makeRequests();', 4, Level.Info);
@@ -38,12 +38,12 @@ describe('The Console Tab', () => {
     await navigateToConsoleTab(devToolsPage);
     const expectedResults = [
       `Fetch finished loading: GET "https://localhost:${
-          inspectedPage.serverPort}/test/e2e/resources/console/xhr-exists.html".`,
+          inspectedPage.serverPort}/test/e2e/resources/console/xhr-exists.html"`,
       `Fetch failed loading: GET "https://localhost:${
-          inspectedPage.serverPort}/test/e2e/resources/console/xhr-does-not-exist.html".`,
+          inspectedPage.serverPort}/test/e2e/resources/console/xhr-does-not-exist.html"`,
       `Fetch finished loading: POST "https://localhost:${
-          inspectedPage.serverPort}/test/e2e/resources/console/post-target.rawresponse".`,
-      'Fetch failed loading: GET "http://localhost:8000/devtools/resources/xhr-exists.html".',
+          inspectedPage.serverPort}/test/e2e/resources/console/post-target.rawresponse"`,
+      'Fetch failed loading: GET "http://localhost:8000/devtools/resources/xhr-exists.html"',
     ];
 
     await typeIntoConsoleAndWaitForResult(devToolsPage, 'await makeRequests();', 1, Level.Info);

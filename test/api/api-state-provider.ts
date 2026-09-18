@@ -5,6 +5,7 @@
 import type * as Mocha from 'mocha';
 import type * as puppeteer from 'puppeteer-core';
 
+import {deinitializeGlobalLocaleVars, initializeGlobalLocaleVars} from '../../front_end/testing/LocaleHelpers.js';
 import type {TestStateProvider} from '../conductor/mocha-interface-helpers.js';
 import {StateProvider} from '../e2e/conductor/state-provider.js';
 import {type InspectedPage, setupInspectedPage} from '../e2e/shared/InspectedPage.js';
@@ -54,6 +55,7 @@ export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteS
     await inspectedPage.goTo(targetUrl);
     const session = await inspectedPage.page.createCDPSession();
 
+    await initializeGlobalLocaleVars();
     const targetUniverse = await createTargetUniverse(session, settings?.creationOptions);
 
     const state: API.State = {
@@ -77,6 +79,7 @@ export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteS
     } catch (e) {
       console.error('Unexpected error during cleanup', e);
     }
+    deinitializeGlobalLocaleVars();
   }
 
   async closeBrowser(): Promise<void> {

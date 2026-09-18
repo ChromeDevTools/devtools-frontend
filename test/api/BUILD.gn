@@ -44,6 +44,7 @@ node_ts_library("api") {
     "../../front_end/core/root:bundle",
     "../../front_end/core/sdk:bundle",
     "../../front_end/foundation:bundle",
+    "../../front_end/testing",
     "../conductor:implementation",
     "../e2e/conductor:implementation",
     "../shared",

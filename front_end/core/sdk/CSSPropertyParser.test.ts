@@ -502,22 +502,21 @@ describe('CSSPropertyParser', () => {
     });
 
     it('parses vars correctly', () => {
-      for (const succeed
-               of ['var(--a)', 'var(--a, 123)', 'var(--a, calc(1+1))', 'var(--a, var(--b))', 'var(--a, var(--b, 123))',
-                   'var(--a, a b c)', 'var(--a,)']) {
+      for (const succeed of ['var(--a)', 'var(---a)', 'var(----a)', 'var(---)', 'var(--a, 123)', 'var(--a, calc(1+1))',
+                             'var(--a, var(--b))', 'var(--a, var(---b))', 'var(--a, var(--b, 123))', 'var(--a, a b c)',
+                             'var(--a,)']) {
         const {ast, match, text} =
             matchSingleValue('width', succeed, new SDK.CSSPropertyParserMatchers.BaseVariableMatcher(() => ''));
 
         assert.exists(ast, succeed);
         assert.exists(match, text);
         assert.strictEqual(match.text, succeed);
-        assert.strictEqual(match.name, '--a');
         const [name, ...fallback] = succeed.substring(4, succeed.length - 1).split(/, */);
         assert.strictEqual(match.name, name);
         assert.strictEqual(
             match.fallback?.map(n => ast.text(n)).join(' '), fallback.length > 0 ? fallback.join(', ') : undefined);
       }
-      for (const fail of ['var', 'var(a)', 'var(--a']) {
+      for (const fail of ['var', 'var(a)', 'var(--)', 'var(--a']) {
         const {match, text} =
             matchSingleValue('width', fail, new SDK.CSSPropertyParserMatchers.BaseVariableMatcher(() => ''));
 

@@ -64,6 +64,8 @@ describe('CSSMatchedStyles', () => {
                       {name: '--out-of-cycle', value: 'var(--cycle-2, 20px)'},
                       {name: '--non-inherited', value: 'var(--inherited)'},
                       {name: '--also-inherited-overloaded', value: 'this is overloaded here'},
+                      {name: '---', value: 'blue'},
+                      {name: '---triple-dash', value: 'var(---)'},
                     ]),
           ruleMatch('html',
                     [
@@ -89,6 +91,8 @@ describe('CSSMatchedStyles', () => {
       await testCssValueEquals('--diamond', 'active-foo active-foo');
       await testCssValueEquals('--empty', '');
       await testCssValueEquals('--empty2', '');
+      await testCssValueEquals('---', 'blue');
+      await testCssValueEquals('---triple-dash', 'blue');
     });
 
     it('correctly resolves the declaration', async () => {

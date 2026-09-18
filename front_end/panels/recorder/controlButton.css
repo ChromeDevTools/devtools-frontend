@@ -14,9 +14,15 @@
 .control {
   background: none;
   border: none;
+  border-radius: var(--sys-shape-corner-small);
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.control:focus-visible {
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: var(--sys-size-2);
 }
 
 .control[disabled] {

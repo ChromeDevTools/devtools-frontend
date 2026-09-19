@@ -2504,6 +2504,7 @@ __export(Widget_exports, {
   WidgetDirective: () => WidgetDirective,
   WidgetElement: () => WidgetElement,
   WidgetFocusRestorer: () => WidgetFocusRestorer,
+  WrapperWidget: () => WrapperWidget,
   instantiateWidget: () => instantiateWidget,
   lookupUniverseForElement: () => lookupUniverseForElement,
   registerWidgetConfig: () => registerWidgetConfig,
@@ -3747,6 +3748,38 @@ Node.prototype.removeChildren = function() {
     throw domOperationError("removeChildren");
   }
   return originalRemoveChildren.call(this);
+};
+var WrapperWidget = class extends Widget {
+  #widget = null;
+  constructor(element, _deps, params) {
+    super(element);
+    this.element.style.setProperty("display", "contents");
+    if (params?.widget) {
+      this.widget = params.widget;
+    }
+  }
+  set widget(widget2) {
+    if (this.#widget === widget2) {
+      return;
+    }
+    if (this.#widget) {
+      this.#widget.detach();
+    }
+    this.#widget = widget2;
+    if (this.#widget) {
+      this.#widget.show(
+        this.element,
+        void 0,
+        /* suppressOrphanWidgetError */
+        true
+      );
+    }
+  }
+  focus() {
+    if (this.#widget) {
+      this.#widget.focus();
+    }
+  }
 };
 
 // ../../front_end/ui/legacy/ZoomManager.ts
@@ -6936,7 +6969,7 @@ var PLUS_BUTTON_VIEW = (input, output, target) => {
     })}
             slot="trailing-button"
             .iconName=${"plus"}
-            .title=${input.title}
+            .accessibleLabel=${input.title}
             .jslogContext=${input.jslogContext}
             .populateMenuCall=${input.populateMenuCall}>
         </devtools-menu-button>`,
@@ -10848,12 +10881,22 @@ var MenuButton = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #triggerTimeoutId;
   #populateMenuCall;
+  #accessibleLabel;
   /**
    * Sets the callback function used to populate the context menu when the button is clicked.
    * @param populateCall A function that takes a `ContextMenu` instance and adds items to it.
    */
   set populateMenuCall(populateCall) {
     this.#populateMenuCall = populateCall;
+  }
+  set accessibleLabel(accessibleLabel) {
+    this.#accessibleLabel = accessibleLabel;
+    if (this.iconName) {
+      this.#render();
+    }
+  }
+  get accessibleLabel() {
+    return this.#accessibleLabel;
   }
   /**
    * Reflects the `soft-menu` attribute. If true, uses the `SoftContextMenu` implementation.
@@ -10951,12 +10994,14 @@ var MenuButton = class extends HTMLElement {
     if (!this.iconName) {
       throw new Error("<devtools-menu-button> expects an icon.");
     }
+    const accessibleLabel = this.accessibleLabel ?? this.title;
     render6(
       html5`
         <devtools-button .disabled=${this.disabled}
                          .iconName=${this.iconName}
                          .variant=${Buttons4.Button.Variant.ICON}
-                         .title=${this.title}
+                         .accessibleLabel=${accessibleLabel}
+                         .buttonTitle=${accessibleLabel}
                          aria-haspopup='menu'
                          @click=${this.#triggerContextMenu}>
         </devtools-button>`,
@@ -24324,6 +24369,7 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
       this.#clonedClasses.add(className);
     }
     this.hidden = hasBooleanAttribute(this.configElement, "hidden");
+    this.selectable = !this.configElement.hasAttribute("selectable") || hasBooleanAttribute(this.configElement, "selectable");
     this.updateExpansionFromAttribute();
   }
   refresh() {

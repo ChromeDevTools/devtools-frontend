@@ -18,6 +18,8 @@ export declare class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMT
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
     set striped(striped: boolean);
     get striped(): boolean;
+    set deletable(deletable: boolean);
+    get deletable(): boolean;
     set inline(striped: boolean);
     get inline(): boolean;
     set displayName(displayName: string);

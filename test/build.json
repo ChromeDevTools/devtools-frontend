@@ -1,0 +1,6 @@
+{
+  "BUILD_ROOT": "../..",
+  "BUILD_WITH_CHROMIUM": false,
+  "CHECKOUT_ROOT": "../../../../",
+  "SOURCE_ROOT": "../../../../"
+}

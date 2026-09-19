@@ -11,10 +11,6 @@ import commentThreadWidgetStyles from './commentThreadWidget.css.js';
 const { html, render, Directives: { createRef, ref } } = Lit;
 const UIStrings = {
     /**
-     * @description Link text in the info tooltip for learning more about comments sent to the agent.
-     */
-    learnMore: 'Learn more',
-    /**
      * @description Text next to the checkmark in the comment thread header indicating that comments have been sent to
      * the agent.
      */
@@ -41,7 +37,7 @@ const UIStringsNotTranslate = {
     /**
      * @description Disclaimer text in the comment thread info tooltip.
      */
-    inputDisclaimer: 'Comment strings, DOM hierarchy snippets, tracked CSS and DOM changes, Visual Element (VE) paths and signatures, and tracked presenter changes are sent to the connected third-party agent to assist with debugging and code updates.',
+    inputDisclaimer: 'Comment strings, DOM hierarchy snippets, tracked CSS and DOM changes, Visual Element (VE) paths and signatures, and tracked presenter changes are sent to the connected third-party agent to assist with debugging and code updates',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/common/CommentThreadWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -113,11 +109,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           >
             <div class="info-tooltip-container">
               ${lockedString(UIStringsNotTranslate.inputDisclaimer)}
-              <button
-                class="tooltip-link"
-                role="link"
-                @click=${input.onLearnMoreClick}
-              >${i18nString(UIStrings.learnMore)}</button>
             </div>
           </devtools-tooltip>
           <devtools-button
@@ -154,9 +145,6 @@ export class CommentThreadWidget extends UI.Widget.Widget {
         this.#comments = comments;
         this.requestUpdate();
     }
-    #handleLearnMoreClick = () => {
-        // TODO: wire up the learn more click
-    };
     #handleAddComment = (text) => {
         const commentText = text.trim();
         if (commentText && this.onAddComment) {
@@ -176,7 +164,6 @@ export class CommentThreadWidget extends UI.Widget.Widget {
             comments: this.#comments,
             commentText: this.#commentText,
             textAreaRef: this.#textAreaRef,
-            onLearnMoreClick: this.#handleLearnMoreClick,
             onAddComment: this.#handleAddComment,
             onCommentTextChange: this.#handleCommentTextChange,
         };

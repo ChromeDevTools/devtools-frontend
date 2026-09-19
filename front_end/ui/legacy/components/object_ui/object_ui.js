@@ -94,16 +94,12 @@ var customPreviewComponent_css_default = `/*
 // ../../front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.ts
 var ObjectPropertiesSection_exports = {};
 __export(ObjectPropertiesSection_exports, {
-  ArrayGroupingTreeElement: () => ArrayGroupingTreeElement,
   EXPANDABLE_MAX_DEPTH: () => EXPANDABLE_MAX_DEPTH,
-  EXPANDABLE_TEXT_DEFAULT_VIEW: () => EXPANDABLE_TEXT_DEFAULT_VIEW,
   ExpandableTextPropertyValue: () => ExpandableTextPropertyValue,
   OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: () => OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW,
   OBJECT_PROPERTY_DEFAULT_VIEW: () => OBJECT_PROPERTY_DEFAULT_VIEW,
-  OBJECT_TREE_DEFAULT_VIEW: () => OBJECT_TREE_DEFAULT_VIEW,
   ObjectPropertiesMode: () => ObjectPropertiesMode,
   ObjectPropertiesSectionWidget: () => ObjectPropertiesSectionWidget,
-  ObjectPropertyTreeElement: () => ObjectPropertyTreeElement,
   ObjectPropertyWidget: () => ObjectPropertyWidget,
   ObjectTree: () => ObjectTree,
   ObjectTreeExpansionTracker: () => ObjectTreeExpansionTracker,
@@ -3797,6 +3793,9 @@ var ObjectTreeExpansionTracker = class _ObjectTreeExpansionTracker {
     }
   }
 };
+var ARRAY_LOAD_THRESHOLD = 100;
+var ARRAY_BUCKET_THRESHOLD = 100;
+var ARRAY_SPARSE_ITERATION_THRESHOLD = 25e4;
 var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common2.ObjectWrapper.ObjectWrapper {
   constructor(parent, options) {
     super();
@@ -4085,7 +4084,7 @@ var ArrayGroupTreeNode = class _ArrayGroupTreeNode extends ObjectTreeNodeBase {
     this.#range = range;
   }
   async populateChildrenIfNeededImpl() {
-    if (this.#range.count > ArrayGroupingTreeElement.bucketThreshold) {
+    if (this.#range.count > ARRAY_BUCKET_THRESHOLD) {
       const ranges = await arrayRangeGroups(this.object, this.#range.fromIndex, this.#range.toIndex);
       const arrayRanges = ranges?.ranges.map(
         ([fromIndex, toIndex, count]) => new _ArrayGroupTreeNode(this.object, { fromIndex, toIndex, count }, this, {
@@ -4099,7 +4098,7 @@ var ArrayGroupTreeNode = class _ArrayGroupTreeNode extends ObjectTreeNodeBase {
     const result = await this.#object.callFunction(buildArrayFragment, [
       { value: this.#range.fromIndex },
       { value: this.#range.toIndex },
-      { value: ArrayGroupingTreeElement.sparseIterationThreshold }
+      { value: ARRAY_SPARSE_ITERATION_THRESHOLD }
     ]);
     if (!result.object || result.wasThrown) {
       return {};
@@ -4533,7 +4532,6 @@ var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
     );
   };
 };
-var ARRAY_LOAD_THRESHOLD = 100;
 var maxRenderableStringLength = 1e4;
 var ObjectPropertiesMode = /* @__PURE__ */ ((ObjectPropertiesMode2) => {
   ObjectPropertiesMode2[ObjectPropertiesMode2["ALL"] = 0] = "ALL";
@@ -5368,8 +5366,8 @@ async function arrayRangeGroups(object, fromIndex, toIndex) {
   return await object.callFunctionJSON(packArrayRanges, [
     { value: fromIndex },
     { value: toIndex },
-    { value: ArrayGroupingTreeElement.bucketThreshold },
-    { value: ArrayGroupingTreeElement.sparseIterationThreshold }
+    { value: ARRAY_BUCKET_THRESHOLD },
+    { value: ARRAY_SPARSE_ITERATION_THRESHOLD }
   ]);
   function packArrayRanges(fromIndex2, toIndex2, bucketThreshold, sparseIterationThreshold) {
     if (fromIndex2 === void 0 || toIndex2 === void 0 || sparseIterationThreshold === void 0 || bucketThreshold === void 0) {
@@ -5551,9 +5549,6 @@ var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement extends UI2.TreeO
   onattach() {
     this.listItemElement.classList.add("object-properties-section-name");
   }
-  // These should be module constants but they are modified by layout tests.
-  static bucketThreshold = 100;
-  static sparseIterationThreshold = 25e4;
 };
 var EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {
   const totalBytesText = i18n3.ByteUtilities.bytesToString(input.byteCount);

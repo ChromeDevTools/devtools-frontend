@@ -729,6 +729,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         // clang-format off
         return html `
       <li role="treeitem"
+          selectable=${input.selectEnabled ? 'true' : 'false'}
           ?selected=${isSelected && !input.selectedClosingTag}
           class=${classes}
           style=${styleMap({ '--indent': `${computeLeftIndent(depth, isExpandable)}px` })}
@@ -743,8 +744,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
           @dragleave=${on(onDragLeave)}
           @drop=${on(onDrop)}
           @dragend=${on(onDragEnd)}
-          jslog=${treeItemJslog(undefined, true)}>
-        ${UI.Widget.widget(ElementsTreeWidget, {
+          jslog=${treeItemJslog(undefined, true)}>${UI.Widget.widget(ElementsTreeWidget, {
             node,
             isClosingTag: false,
             renderSelection: false,
@@ -785,32 +785,28 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
                 }
             },
             updateRecord: input.updateRecordForNode?.(node) ?? null,
-        })}
-        ${hasChildren ? html `
-          <ul role="group">
+        })}${hasChildren ? html `<ul role="group">
             ${UI.TreeOutline.ifExpanded(html `
               ${node.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(node, depth + 1) : nothing}
               ${repeat(children, child => child.id, child => renderNode(child, depth + 1))}
               ${remainingChildrenCount > 0 ? html `
                 <li role="treeitem"
+                    selectable="false"
                     class="elements-tree-expand-all"
                     style=${styleMap({ '--indent': `${computeLeftIndent(depth + 1, false)}px` })}
-                    jslog=${treeItemJslog('show-all-nodes')}>
-                  <devtools-button
+                    jslog=${treeItemJslog('show-all-nodes')}><devtools-button
                       .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
                       title=${i18nString(UIStrings.showAllNodesDMore, { PH1: remainingChildrenCount })}
                       @click=${on((event) => {
             event.stopPropagation();
             input.onExpandAllChildren?.(node);
-        })}>
-                    ${i18nString(UIStrings.showAllNodesDMore, { PH1: remainingChildrenCount })}
-                  </devtools-button>
-                </li>
+        })}>${i18nString(UIStrings.showAllNodesDMore, { PH1: remainingChildrenCount })}</devtools-button></li>
               ` : nothing}
               ${node.isInsertionPoint() ? node.distributedNodes().map(distributedNode => renderShortcut(distributedNode, depth + 1)) : nothing}
               ${node instanceof SDK.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing}
               ${needsClosingTag ? html `
                 <li role="treeitem"
+                    selectable=${input.selectEnabled ? 'true' : 'false'}
                     ?selected=${isSelected && Boolean(input.selectedClosingTag)}
                     class=${classMap({
             selected: isSelected && Boolean(input.selectedClosingTag),
@@ -827,8 +823,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
                     @dragover=${on(onClosingTagDragOver)}
                     @dragleave=${on(onDragLeave)}
                     @drop=${on(onClosingTagDrop)}
-                    @dragend=${on(onDragEnd)}>
-                  ${UI.Widget.widget(ElementsTreeWidget, {
+                    @dragend=${on(onDragEnd)}>${UI.Widget.widget(ElementsTreeWidget, {
             node,
             isClosingTag: true,
             renderSelection: false,
@@ -846,13 +841,10 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
                 }
             },
             updateRecord: input.updateRecordForNode?.(node) ?? null,
-        })}
-                </li>
+        })}</li>
               ` : nothing}
             `)}
-          </ul>
-        ` : nothing}
-      </li>
+          </ul>` : nothing}</li>
     `;
         // clang-format on
     };
@@ -901,19 +893,16 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         const root = input.rootDOMNode;
         return html `
                 <li role="treeitem"
+                    selectable="false"
                     class="elements-tree-expand-all"
                     style=${styleMap({ '--indent': `${computeLeftIndent(0, false)}px` })}
-                    jslog=${treeItemJslog('show-all-nodes')}>
-                  <devtools-button
+                    jslog=${treeItemJslog('show-all-nodes')}><devtools-button
                     .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
                     title=${i18nString(UIStrings.showAllNodesDMore, { PH1: remaining })}
                     @click=${on((event) => {
             event.stopPropagation();
             input.onExpandAllChildren?.(root);
-        })}>
-                    ${i18nString(UIStrings.showAllNodesDMore, { PH1: remaining })}
-                  </devtools-button>
-                </li>
+        })}>${i18nString(UIStrings.showAllNodesDMore, { PH1: remaining })}</devtools-button></li>
               `;
     })() : nothing}
             ${input.omitRootDOMNode && input.rootDOMNode instanceof SDK.DOMModel.DOMDocument ? renderTopLayerContainer(input.rootDOMNode, 0) : nothing}
@@ -2019,9 +2008,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         if (this.selectedDOMNode() !== node) {
             this.selectDOMNode(node, /* focus= */ false);
         }
-        else {
-            this.performUpdate();
-        }
+        this.performUpdate();
     }
     hideMatchHighlights(node) {
         if (this.#searchMatchNode === node) {

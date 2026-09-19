@@ -4005,18 +4005,6 @@ var commentThreadWidget_css_default = `/*
     padding: var(--sys-size-4) var(--sys-size-5);
   }
 
-  .tooltip-link {
-    display: block;
-    margin-top: var(--sys-size-4);
-    color: var(--sys-color-primary);
-    padding-left: 0;
-    background: none;
-    border: none;
-    font: inherit;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
   .selected-item-text {
     overflow: hidden;
     white-space: nowrap;
@@ -4029,10 +4017,6 @@ var commentThreadWidget_css_default = `/*
 // ../../front_end/panels/common/CommentThreadWidget.ts
 var { html: html8, render: render7, Directives: { createRef, ref: ref2 } } = Lit3;
 var UIStrings7 = {
-  /**
-   * @description Link text in the info tooltip for learning more about comments sent to the agent.
-   */
-  learnMore: "Learn more",
   /**
    * @description Text next to the checkmark in the comment thread header indicating that comments have been sent to
    * the agent.
@@ -4060,7 +4044,7 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Disclaimer text in the comment thread info tooltip.
    */
-  inputDisclaimer: "Comment strings, DOM hierarchy snippets, tracked CSS and DOM changes, Visual Element (VE) paths and signatures, and tracked presenter changes are sent to the connected third-party agent to assist with debugging and code updates."
+  inputDisclaimer: "Comment strings, DOM hierarchy snippets, tracked CSS and DOM changes, Visual Element (VE) paths and signatures, and tracked presenter changes are sent to the connected third-party agent to assist with debugging and code updates"
 };
 var str_7 = i18n17.i18n.registerUIStrings("panels/common/CommentThreadWidget.ts", UIStrings7);
 var i18nString7 = i18n17.i18n.getLocalizedString.bind(void 0, str_7);
@@ -4134,11 +4118,6 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           >
             <div class="info-tooltip-container">
               ${lockedString3(UIStringsNotTranslate2.inputDisclaimer)}
-              <button
-                class="tooltip-link"
-                role="link"
-                @click=${input.onLearnMoreClick}
-              >${i18nString7(UIStrings7.learnMore)}</button>
             </div>
           </devtools-tooltip>
           <devtools-button
@@ -4174,8 +4153,6 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
     this.#comments = comments;
     this.requestUpdate();
   }
-  #handleLearnMoreClick = () => {
-  };
   #handleAddComment = (text) => {
     const commentText = text.trim();
     if (commentText && this.onAddComment) {
@@ -4195,7 +4172,6 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
       comments: this.#comments,
       commentText: this.#commentText,
       textAreaRef: this.#textAreaRef,
-      onLearnMoreClick: this.#handleLearnMoreClick,
       onAddComment: this.#handleAddComment,
       onCommentTextChange: this.#handleCommentTextChange
     };

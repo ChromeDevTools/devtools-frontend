@@ -8130,7 +8130,7 @@ var populateContextMenu = (e) => {
 };
 var renderDataGrid = (input) => {
   const keyPath = input.isIndex && input.index ? input.index.keyPath : input.objectStore.keyPath;
-  return html6`<devtools-data-grid row-height="auto" striped style="flex: auto;" name=${i18nString8(UIStrings8.indexedDb)} .template=${html6`
+  return html6`<devtools-data-grid row-height="auto" striped deletable style="flex: auto;" name=${i18nString8(UIStrings8.indexedDb)} .template=${html6`
     <style>${indexedDBViews_css_default}</style>
     <table>
       <tr>
@@ -9893,7 +9893,7 @@ var UIStrings12 = {
   /**
    * @description Placeholder text when no context is detected.
    */
-  noContext: "No context entries detected across frames.",
+  noContext: "No context entries detected across frames",
   /**
    * @description Fallback label when a frame has no URL.
    */
@@ -14727,6 +14727,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
                 <devtools-data-grid
                   .name=${`${id}-datagrid-with-preview`}
                   striped
+                  deletable
                   style="flex: auto"
                   @sort=${(e) => input.onSort(e.detail.ascending)}
                   @refresh=${input.onRefresh}

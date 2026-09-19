@@ -192,6 +192,7 @@ var CookiesTable = class extends UI.Widget.VBox {
                id="cookies-table"
                striped
                ?inline=${input.renderInline}
+               ?deletable=${input.deletable}
                @create=${(e) => input.onCreate(e.detail)}
                @refresh=${input.onRefresh}
                @deselect=${() => input.onSelect(void 0)}
@@ -372,6 +373,7 @@ var CookiesTable = class extends UI.Widget.VBox {
       data: this.data,
       selectedKey: this.selectedKey,
       editable: this.#editable,
+      deletable: Boolean(this.#deleteCallback),
       renderInline: this.renderInline,
       schemeBindingEnabled: this.schemeBindingEnabled,
       portBindingEnabled: this.portBindingEnabled,

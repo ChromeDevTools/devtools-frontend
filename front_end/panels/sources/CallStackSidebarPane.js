@@ -74,7 +74,7 @@ const UIStrings = {
      * @description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
      * @example {src/myapp.debug.wasm.dwp} PH1
      */
-    debugFileNotFound: 'Failed to load debug file "{PH1}".',
+    debugFileNotFound: 'Failed to load debug file "{PH1}"',
     /**
      * @description A context menu item in the call stack sidebar pane. "Restart" is a verb and
      * "frame" is a noun. "Frame" refers to an individual item in the call stack, i.e. a call frame.

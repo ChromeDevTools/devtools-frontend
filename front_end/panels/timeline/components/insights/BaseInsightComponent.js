@@ -46,7 +46,7 @@ const UIStrings = {
      * @description Accessible label for the button to expand an insight to view details in the Performance panel sidebar.
      * @example {LCP breakdown} PH1
      */
-    viewDetails: 'View details for {PH1} insight.',
+    viewDetails: 'View details for {PH1} insight',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/BaseInsightComponent.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -59,8 +59,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
     });
     let ariaLabel = `${i18nString(UIStrings.viewDetails, { PH1: model.title })}`;
     if (estimatedSavingsAriaLabel) {
-        // space prefix is deliberate to add a gap after the view details text
-        ariaLabel += ` ${estimatedSavingsAriaLabel}`;
+        ariaLabel += `. ${estimatedSavingsAriaLabel}`;
     }
     function renderInsightContent() {
         if (!selected && !minimal) {

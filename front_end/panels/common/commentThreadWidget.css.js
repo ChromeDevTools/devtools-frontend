@@ -158,18 +158,6 @@ export default `/*
     padding: var(--sys-size-4) var(--sys-size-5);
   }
 
-  .tooltip-link {
-    display: block;
-    margin-top: var(--sys-size-4);
-    color: var(--sys-color-primary);
-    padding-left: 0;
-    background: none;
-    border: none;
-    font: inherit;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
   .selected-item-text {
     overflow: hidden;
     white-space: nowrap;

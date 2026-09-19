@@ -327,10 +327,10 @@
     "message": "Request was blocked by DevTools: \"{PH1}\""
   },
   "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
-    "message": "{PH1} failed loading: {PH2} \"{PH3}\"."
+    "message": "{PH1} failed loading: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
-    "message": "{PH1} finished loading: {PH2} \"{PH3}\"."
+    "message": "{PH1} finished loading: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G"
@@ -1416,7 +1416,7 @@
     "message": "Field metrics are for a different URL than the current page"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Device pixel ratio must be a number or blank."
+    "message": "Device pixel ratio must be a number or blank"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
     "message": "Device pixel ratio must be greater than or equal to {PH1}"
@@ -2576,8 +2576,50 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
     "message": "Time"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | announcementsOnly": {
+    "message": "Announcements only"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveOnly": {
+    "message": "ARIA-live only"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
     "message": "Announcements recording"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | clearAnnouncements": {
+    "message": "Clear announcements"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filterByType": {
+    "message": "Filter by type"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | frameBlockedReason": {
+    "message": "{PH1}: {PH2}"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | nEventsMatch": {
+    "message": "{PH1} events match"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | noEventsMatch": {
+    "message": "No events match"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | oneEventMatches": {
+    "message": "1 event matches"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordBoth": {
+    "message": "Record both"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
+    "message": "Recording was blocked for some frames:"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
+    "message": "Start recording"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | stopRecording": {
+    "message": "Stop recording"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | unknownError": {
+    "message": "Unknown error"
   },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Accessibility node not exposed"
@@ -3144,7 +3186,7 @@
     "message": "Show Animations"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
-    "message": "On this page you can inspect and modify animations."
+    "message": "On this page you can inspect and modify animations"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviews": {
     "message": "Animation previews"
@@ -4494,7 +4536,7 @@
     "message": "Filter by key or value"
   },
   "panels/application/CrashReportContextView.ts | noContext": {
-    "message": "No context entries detected across frames."
+    "message": "No context entries detected across frames"
   },
   "panels/application/CrashReportContextView.ts | refresh": {
     "message": "Refresh"
@@ -6593,9 +6635,6 @@
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Comment input"
   },
-  "panels/common/CommentThreadWidget.ts | learnMore": {
-    "message": "Learn more"
-  },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Response:"
   },
@@ -7647,7 +7686,7 @@
     "message": "This element is a {CONTAINER_DISPLAY_NAME} item, i.e. a child of a {CONTAINER_DISPLAY_NAME} container, but {PROPERTY_NAME} only applies to containers"
   },
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
-    "message": "Value for setting \"{PH1}\" {PH2} is outside the supported range [{PH3}, {PH4}] for font-family \"{PH5}\""
+    "message": "Value for setting \"{PH1}\" {PH2} is outside the supported range [{PH3}, {PH4}] for font-family \"{PH5}\"."
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
     "message": "An anchor was defined but the element was not anchor-positioned but positioned \"{POSITION}\""
@@ -9366,7 +9405,7 @@
     "message": "Apply mobile emulation during auditing"
   },
   "panels/lighthouse/LighthouseController.ts | atLeastOneCategoryMustBeSelected": {
-    "message": "At least one category must be selected."
+    "message": "At least one category must be selected"
   },
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Best practices"
@@ -9954,7 +9993,7 @@
     "message": "Requests may be blocked. See the Request conditions panel."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
-    "message": "Requests may be overridden locally. See the Sources panel"
+    "message": "Requests may be overridden locally. See the Sources panel."
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
     "message": "Add…"
@@ -9990,7 +10029,7 @@
     "message": "CPU throttling is enabled"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
-    "message": "Exceeding the default value may degrade system performance."
+    "message": "Exceeding the default value may degrade system performance"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "Force disconnected from network"
@@ -10071,7 +10110,7 @@
     "message": "Calibration will take ~5 seconds, and temporarily navigate away from your current page. Do you wish to continue?"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationCTA": {
-    "message": "To use the CPU throttling presets, run the calibration process to determine the ideal throttling rate for your device."
+    "message": "To use the CPU throttling presets, run the calibration process to determine the ideal throttling rate for your device"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationWarningHighCPU": {
     "message": "CPU utilization is too high"
@@ -13854,7 +13893,7 @@
     "message": "Referenced header / property"
   },
   "panels/settings/BackendLinkingSettingsTab.ts | invalidRulesWarning": {
-    "message": "Invalid rules will not be applied or saved."
+    "message": "Invalid rules will not be applied or saved"
   },
   "panels/settings/BackendLinkingSettingsTab.ts | invalidUrlPattern": {
     "message": "URL pattern must be a valid URL pattern"
@@ -14538,7 +14577,7 @@
     "message": "Copy stack trace"
   },
   "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
-    "message": "Failed to load debug file \"{PH1}\"."
+    "message": "Failed to load debug file \"{PH1}\""
   },
   "panels/sources/CallStackSidebarPane.ts | debugSymbolsIncomplete": {
     "message": "The debug information for function {PH1} is incomplete"
@@ -14751,7 +14790,7 @@
     "message": "Configure"
   },
   "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
-    "message": "Failed to load debug file \"{PH1}\"."
+    "message": "Failed to load debug file \"{PH1}\""
   },
   "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
     "message": "DevTools can’t show authored sources, but you can debug the deployed code"
@@ -15612,13 +15651,13 @@
     "message": "Long task"
   },
   "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
-    "message": "{PH1} is a likely performance bottleneck."
+    "message": "{PH1} is a likely performance bottleneck"
   },
   "panels/timeline/components/DetailsView.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} indicates poor page responsiveness."
+    "message": "{PH1} indicates poor page responsiveness"
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
-    "message": "{PH1} took {PH2}."
+    "message": "{PH1} took {PH2}"
   },
   "panels/timeline/components/DetailsView.ts | webSocketBytes": {
     "message": "{PH1} byte(s)"
@@ -15747,7 +15786,7 @@
     "message": "Estimated savings for this insight: {PH1} and {PH2} transfer size"
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "View details for {PH1} insight."
+    "message": "View details for {PH1} insight"
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "Insight check failed: {PH1}"

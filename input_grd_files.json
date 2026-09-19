@@ -417,7 +417,6 @@
   "front_end/models/issues_manager/descriptions/connectionAllowlistReportingEndpointNotToken.md",
   "front_end/models/issues_manager/descriptions/CompatibilityModeQuirks.md",
   "front_end/models/issues_manager/descriptions/CookieAttributeValueExceedsMaxSize.md",
-  "front_end/models/issues_manager/descriptions/cookieExcludeBlockedWithinRelatedWebsiteSet.md",
   "front_end/models/issues_manager/descriptions/cookieExcludeDomainNonAscii.md",
   "front_end/models/issues_manager/descriptions/cookieWarnDomainNonAscii.md",
   "front_end/models/issues_manager/descriptions/corsAllowCredentialsRequired.md",

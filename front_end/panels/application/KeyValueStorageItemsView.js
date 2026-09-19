@@ -106,6 +106,7 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
                 <devtools-data-grid
                   .name=${`${id}-datagrid-with-preview`}
                   striped
+                  deletable
                   style="flex: auto"
                   @sort=${(e) => input.onSort(e.detail.ascending)}
                   @refresh=${input.onRefresh}

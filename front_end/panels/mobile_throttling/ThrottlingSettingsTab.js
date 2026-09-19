@@ -153,7 +153,7 @@ const UIStrings = {
     /**
      * @description Text to explain why the user should run the CPU calibration process.
      */
-    calibrationCTA: 'To use the CPU throttling presets, run the calibration process to determine the ideal throttling rate for your device.',
+    calibrationCTA: 'To use the CPU throttling presets, run the calibration process to determine the ideal throttling rate for your device',
     /**
      * @description Text to explain what CPU throttling presets are.
      */

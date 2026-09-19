@@ -190,7 +190,7 @@ var UIStrings2 = {
   /**
    * @description Tooltip text in throttling manager of the Performance panel.
    */
-  excessConcurrency: "Exceeding the default value may degrade system performance.",
+  excessConcurrency: "Exceeding the default value may degrade system performance",
   /**
    * @description Tooltip text in throttling manager of the Performance panel.
    */
@@ -818,7 +818,7 @@ var UIStrings4 = {
   /**
    * @description Icon title for warning indicator in the Network panel title.
    */
-  requestsMayBeOverridden: "Requests may be overridden locally. See the Sources panel",
+  requestsMayBeOverridden: "Requests may be overridden locally. See the Sources panel.",
   /**
    * @description Icon title for warning indicator in the Network panel title.
    */
@@ -1734,7 +1734,7 @@ var UIStrings7 = {
   /**
    * @description Text to explain why the user should run the CPU calibration process.
    */
-  calibrationCTA: "To use the CPU throttling presets, run the calibration process to determine the ideal throttling rate for your device.",
+  calibrationCTA: "To use the CPU throttling presets, run the calibration process to determine the ideal throttling rate for your device",
   /**
    * @description Text to explain what CPU throttling presets are.
    */

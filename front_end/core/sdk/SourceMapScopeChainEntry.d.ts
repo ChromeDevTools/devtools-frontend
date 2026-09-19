@@ -10,6 +10,7 @@ export declare class SourceMapScopeChainEntry implements ScopeChainEntry {
      * inner-most scope.
      */
     constructor(callFrame: CallFrame, scope: ScopesCodec.OriginalScope, range: ScopesCodec.GeneratedRange | undefined, isInnerMostFunction: boolean, returnValue: RemoteObject | undefined, scopeNumber?: number);
+    originalScope(): ScopesCodec.OriginalScope;
     extraProperties(): RemoteObjectProperty[];
     callFrame(): CallFrame;
     type(): string;

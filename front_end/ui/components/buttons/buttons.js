@@ -479,6 +479,7 @@ var Button = class extends HTMLElement {
     if (data.title) {
       this.title = data.title;
     }
+    this.#props.buttonTitle = data.buttonTitle;
     if (data.accessibleLabel) {
       this.accessibleLabel = data.accessibleLabel;
     }
@@ -539,6 +540,13 @@ var Button = class extends HTMLElement {
   }
   set title(title) {
     super.title = title;
+    this.#render();
+  }
+  get buttonTitle() {
+    return this.#props.buttonTitle;
+  }
+  set buttonTitle(buttonTitle) {
+    this.#props.buttonTitle = buttonTitle;
     this.#render();
   }
   get disabled() {
@@ -672,7 +680,7 @@ var Button = class extends HTMLElement {
     Lit.render(
       html`
         <style>${button_css_default}</style>
-        <button title=${ifDefined(this.title || void 0)}
+        <button title=${ifDefined(this.buttonTitle || this.title || void 0)}
                 ?disabled=${this.#props.disabled}
                 class=${classMap(classes)}
                 aria-pressed=${ifDefined(this.#props.toggled)}

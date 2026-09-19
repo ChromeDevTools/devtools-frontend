@@ -235,7 +235,7 @@ const populateContextMenu = (e) => {
 const renderDataGrid = (input) => {
     const keyPath = input.isIndex && input.index ? input.index.keyPath : input.objectStore.keyPath;
     // clang-format off
-    return html `<devtools-data-grid row-height="auto" striped style="flex: auto;" name=${i18nString(UIStrings.indexedDb)} .template=${html `
+    return html `<devtools-data-grid row-height="auto" striped deletable style="flex: auto;" name=${i18nString(UIStrings.indexedDb)} .template=${html `
     <style>${indexedDBViewsStyles}</style>
     <table>
       <tr>

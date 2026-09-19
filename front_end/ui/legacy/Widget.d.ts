@@ -290,4 +290,13 @@ export declare class WidgetFocusRestorer {
     constructor(widget: AnyWidget);
     restore(): void;
 }
+export interface WrapperWidgetParams {
+    widget: Widget;
+}
+export declare class WrapperWidget extends Widget {
+    #private;
+    constructor(element: HTMLElement, _deps: never[], params?: WrapperWidgetParams);
+    set widget(widget: Widget | null);
+    focus(): void;
+}
 export {};

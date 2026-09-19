@@ -1550,9 +1550,13 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             this.#highlightSearchResults();
         }
     }
-    hideSearchHighlights() {
+    #clearHighlights() {
         Highlighting.HighlightManager.HighlightManager.instance().removeHighlights(this.#highlights);
         this.#highlights = [];
+    }
+    hideSearchHighlights() {
+        this.#searchQuery = null;
+        this.#clearHighlights();
     }
     setInClipboard(inClipboard) {
         if (this.inClipboard === inClipboard) {
@@ -2489,7 +2493,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             .catch(disposeCallback);
     }
     #highlightSearchResults() {
-        this.hideSearchHighlights();
+        this.#clearHighlights();
         if (!this.searchQuery) {
             return;
         }

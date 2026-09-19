@@ -33,7 +33,7 @@ const UIStrings = {
     /**
      * @description Tooltip text in throttling manager of the Performance panel.
      */
-    excessConcurrency: 'Exceeding the default value may degrade system performance.',
+    excessConcurrency: 'Exceeding the default value may degrade system performance',
     /**
      * @description Tooltip text in throttling manager of the Performance panel.
      */

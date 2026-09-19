@@ -13,7 +13,7 @@ const UIStrings = {
     /**
      * @description Icon title for warning indicator in the Network panel title.
      */
-    requestsMayBeOverridden: 'Requests may be overridden locally. See the Sources panel',
+    requestsMayBeOverridden: 'Requests may be overridden locally. See the Sources panel.',
     /**
      * @description Icon title for warning indicator in the Network panel title.
      */

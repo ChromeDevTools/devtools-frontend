@@ -710,7 +710,7 @@ export class ElementsPanel extends UI.Panel.Panel {
                 searchResult.node = node;
                 // If any of these properties are undefined or reset to an invalid value,
                 // this means the search/highlight request is outdated.
-                const highlightRequestValid = this.searchConfig && this.searchResults && (this.currentSearchResultIndex !== -1);
+                const highlightRequestValid = this.searchConfig && this.searchResults && (this.currentSearchResultIndex === index);
                 if (highlightRequestValid) {
                     this.highlightCurrentSearchResult();
                 }
@@ -718,11 +718,10 @@ export class ElementsPanel extends UI.Panel.Panel {
             return;
         }
         void searchResult.node.scrollIntoView();
-        if (searchResult.node) {
-            this.#domTreeWidget.highlightMatch(searchResult.node, this.searchConfig?.query);
-        }
+        this.#domTreeWidget.highlightMatch(searchResult.node, this.searchConfig?.query);
     }
     hideSearchHighlights() {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(this.#targetManager);
         if (!this.searchResults?.length || this.currentSearchResultIndex === -1) {
             return;
         }

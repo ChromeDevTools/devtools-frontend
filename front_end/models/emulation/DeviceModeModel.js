@@ -57,7 +57,7 @@ const UIStrings = {
      * @description Error message shown on the Devices settings tab when the user enters an invalid
      * device pixel ratio for a custom device.
      */
-    devicePixelRatioMustBeANumberOr: 'Device pixel ratio must be a number or blank.',
+    devicePixelRatioMustBeANumberOr: 'Device pixel ratio must be a number or blank',
     /**
      * @description Error message shown on the Devices settings tab when the user enters a device
      * pixel ratio for a custom device that is too large.

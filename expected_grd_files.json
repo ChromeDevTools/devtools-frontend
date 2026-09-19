@@ -399,7 +399,6 @@
   "front_end/models/issues_manager/descriptions/connectionAllowlistMoreThanOneList.md",
   "front_end/models/issues_manager/descriptions/connectionAllowlistReportingEndpointNotToken.md",
   "front_end/models/issues_manager/descriptions/cookieCrossSiteRedirectDowngrade.md",
-  "front_end/models/issues_manager/descriptions/cookieExcludeBlockedWithinRelatedWebsiteSet.md",
   "front_end/models/issues_manager/descriptions/cookieExcludeDomainNonAscii.md",
   "front_end/models/issues_manager/descriptions/cookieExcludePortMismatch.md",
   "front_end/models/issues_manager/descriptions/cookieExcludeSchemeMismatch.md",

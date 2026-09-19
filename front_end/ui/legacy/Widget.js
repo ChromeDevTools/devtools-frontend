@@ -1170,4 +1170,31 @@ Node.prototype.removeChildren = function () {
     }
     return originalRemoveChildren.call(this);
 };
+export class WrapperWidget extends Widget {
+    #widget = null;
+    constructor(element, _deps, params) {
+        super(element);
+        this.element.style.setProperty('display', 'contents');
+        if (params?.widget) {
+            this.widget = params.widget;
+        }
+    }
+    set widget(widget) {
+        if (this.#widget === widget) {
+            return;
+        }
+        if (this.#widget) {
+            this.#widget.detach();
+        }
+        this.#widget = widget;
+        if (this.#widget) {
+            this.#widget.show(this.element, undefined, /* suppressOrphanWidgetError */ true);
+        }
+    }
+    focus() {
+        if (this.#widget) {
+            this.#widget.focus();
+        }
+    }
+}
 //# sourceMappingURL=Widget.js.map

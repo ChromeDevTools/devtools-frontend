@@ -7,6 +7,7 @@ export interface ViewInput {
     data: CookieData[];
     selectedKey?: string;
     editable?: boolean;
+    deletable?: boolean;
     renderInline?: boolean;
     portBindingEnabled?: boolean;
     schemeBindingEnabled?: boolean;

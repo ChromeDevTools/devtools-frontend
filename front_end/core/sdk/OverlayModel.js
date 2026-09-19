@@ -360,9 +360,8 @@ export class OverlayModel extends SDKModel {
         this.#sourceOrderModeActive = isActive;
     }
     delayedHideHighlight(delay) {
-        if (this.#hideHighlightTimeout === undefined) {
-            this.#hideHighlightTimeout = globalThis.setTimeout(() => this.highlightInOverlay({ clear: true }), delay);
-        }
+        clearTimeout(this.#hideHighlightTimeout);
+        this.#hideHighlightTimeout = globalThis.setTimeout(() => this.highlightInOverlay({ clear: true }), delay);
     }
     highlightFrame(frameId) {
         clearTimeout(this.#hideHighlightTimeout);

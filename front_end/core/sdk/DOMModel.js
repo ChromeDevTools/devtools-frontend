@@ -1094,11 +1094,10 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         if (!node) {
             return;
         }
-        const result = await node.callFunction(scrollIntoViewInPage);
-        if (!result) {
-            return;
-        }
+        // Highlight synchronously before scrolling to avoid out-of-order highlights
+        // if asynchronous scroll calls resolve late during rapid navigation.
         node.highlightForTwoSeconds();
+        await node.callFunction(scrollIntoViewInPage);
     }
     async focus() {
         const node = this.enclosingElementOrSelf();

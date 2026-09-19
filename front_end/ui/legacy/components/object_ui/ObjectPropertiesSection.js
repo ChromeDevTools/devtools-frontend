@@ -315,6 +315,9 @@ export class ObjectTreeExpansionTracker {
         }
     }
 }
+const ARRAY_LOAD_THRESHOLD = 100;
+const ARRAY_BUCKET_THRESHOLD = 100;
+const ARRAY_SPARSE_ITERATION_THRESHOLD = 250000;
 export class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
     parent;
     #children;
@@ -584,7 +587,7 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
         this.#range = range;
     }
     async populateChildrenIfNeededImpl() {
-        if (this.#range.count > ArrayGroupingTreeElement.bucketThreshold) {
+        if (this.#range.count > ARRAY_BUCKET_THRESHOLD) {
             const ranges = await arrayRangeGroups(this.object, this.#range.fromIndex, this.#range.toIndex);
             const arrayRanges = ranges?.ranges.map(([fromIndex, toIndex, count]) => new ArrayGroupTreeNode(this.object, { fromIndex, toIndex, count }, this, {
                 readOnly: this.readOnly,
@@ -596,7 +599,7 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
         const result = await this.#object.callFunction(buildArrayFragment, [
             { value: this.#range.fromIndex },
             { value: this.#range.toIndex },
-            { value: ArrayGroupingTreeElement.sparseIterationThreshold },
+            { value: ARRAY_SPARSE_ITERATION_THRESHOLD },
         ]);
         if (!result.object || result.wasThrown) {
             return {};
@@ -1039,8 +1042,6 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
         });
     };
 }
-/** @constant */
-const ARRAY_LOAD_THRESHOLD = 100;
 const maxRenderableStringLength = 10000;
 export var ObjectPropertiesMode;
 (function (ObjectPropertiesMode) {
@@ -1070,7 +1071,7 @@ export function populateObjectTreeContextMenu(contextMenu, object, expandRecursi
     }
     contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.showAll), onShowAllToggled, { checked: object.includeNullOrUndefinedValues, jslogContext: 'show-all' });
 }
-export const OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
+const OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
     const objectTree = input.objectTree;
     if (!objectTree) {
         render(nothing, target);
@@ -1543,7 +1544,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
         void this.#property?.invokeGetter(getter);
     }
 }
-export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
+class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     property;
     toggleOnClick;
     linkifier;
@@ -1803,8 +1804,8 @@ async function arrayRangeGroups(object, fromIndex, toIndex) {
     return await object.callFunctionJSON(packArrayRanges, [
         { value: fromIndex },
         { value: toIndex },
-        { value: ArrayGroupingTreeElement.bucketThreshold },
-        { value: ArrayGroupingTreeElement.sparseIterationThreshold },
+        { value: ARRAY_BUCKET_THRESHOLD },
+        { value: ARRAY_SPARSE_ITERATION_THRESHOLD },
     ]);
     /**
      * This function is called on the RemoteObject.
@@ -1916,7 +1917,7 @@ function buildArrayFragment(fromIndex, toIndex, sparseIterationThreshold) {
     }
     return result;
 }
-export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
+class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     toggleOnClick;
     linkifier;
     #child;
@@ -1984,11 +1985,8 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     onattach() {
         this.listItemElement.classList.add('object-properties-section-name');
     }
-    // These should be module constants but they are modified by layout tests.
-    static bucketThreshold = 100;
-    static sparseIterationThreshold = 250000;
 }
-export const EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {
+const EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {
     const totalBytesText = i18n.ByteUtilities.bytesToString(input.byteCount);
     const canExpand = input.text.length < ExpandableTextPropertyValue.MAX_DISPLAYABLE_TEXT_LENGTH;
     const onContextMenu = (e) => {

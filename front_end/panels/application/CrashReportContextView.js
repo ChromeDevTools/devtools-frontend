@@ -14,7 +14,7 @@ const UIStrings = {
     /**
      * @description Placeholder text when no context is detected.
      */
-    noContext: 'No context entries detected across frames.',
+    noContext: 'No context entries detected across frames',
     /**
      * @description Fallback label when a frame has no URL.
      */

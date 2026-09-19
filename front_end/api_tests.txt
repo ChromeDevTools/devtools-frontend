@@ -3,3 +3,4 @@ core/sdk/DOMModel.test.api.js
 core/sdk/DebuggerModel.test.api.js
 core/sdk/TargetManager.test.api.js
 foundation/Universe.test.api.js
+models/source_map_scopes/NamesResolver.test.api.js

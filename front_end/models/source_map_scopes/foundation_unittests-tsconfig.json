@@ -71,6 +71,9 @@
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {
+      "path": "../../third_party/source-map-scopes-codec/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../bindings/bundle-tsconfig.ref.json"
     },
     {

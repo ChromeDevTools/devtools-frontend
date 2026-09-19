@@ -84,6 +84,7 @@ export class Button extends HTMLElement {
         if (data.title) {
             this.title = data.title;
         }
+        this.#props.buttonTitle = data.buttonTitle;
         if (data.accessibleLabel) {
             this.accessibleLabel = data.accessibleLabel;
         }
@@ -145,6 +146,13 @@ export class Button extends HTMLElement {
     }
     set title(title) {
         super.title = title;
+        this.#render();
+    }
+    get buttonTitle() {
+        return this.#props.buttonTitle;
+    }
+    set buttonTitle(buttonTitle) {
+        this.#props.buttonTitle = buttonTitle;
         this.#render();
     }
     get disabled() {
@@ -279,7 +287,7 @@ export class Button extends HTMLElement {
         // clang-format off
         Lit.render(html `
         <style>${buttonStyles}</style>
-        <button title=${ifDefined(this.title || undefined)}
+        <button title=${ifDefined(this.buttonTitle || this.title || undefined)}
                 ?disabled=${this.#props.disabled}
                 class=${classMap(classes)}
                 aria-pressed=${ifDefined(this.#props.toggled)}

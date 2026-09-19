@@ -21,7 +21,7 @@ const UIStrings = {
      * @description Warning message indicating that an event is likely a performance bottleneck in the Performance panel.
      * @example {Forced reflow} PH1
      */
-    sIsALikelyPerformanceBottleneck: '{PH1} is a likely performance bottleneck.',
+    sIsALikelyPerformanceBottleneck: '{PH1} is a likely performance bottleneck',
     /**
      * @description Warning message in the Performance panel for an idle callback function that took longer to execute than its predefined deadline.
      * @example {10ms} PH1
@@ -32,7 +32,7 @@ const UIStrings = {
      * @example {Task} PH1
      * @example {10ms} PH2
      */
-    sTookS: '{PH1} took {PH2}.',
+    sTookS: '{PH1} took {PH2}',
     /**
      * @description Label in the Performance panel for a task that took a long time.
      */
@@ -45,7 +45,7 @@ const UIStrings = {
      * @description Warning message in the Performance panel indicating that an interaction caused poor responsiveness.
      * @example {Long interaction} PH1
      */
-    sIsLikelyPoorPageResponsiveness: '{PH1} indicates poor page responsiveness.',
+    sIsLikelyPoorPageResponsiveness: '{PH1} indicates poor page responsiveness',
     /**
      * @description Label for the WebSocket sub-protocol in the event details view of the Performance panel.
      */

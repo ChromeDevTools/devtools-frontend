@@ -7,7 +7,6 @@ export interface ViewInput {
     comments: CommentManager.CommentManager.Comment[];
     commentText: string;
     textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
-    onLearnMoreClick: () => void;
     onAddComment: (text: string) => void;
     onCommentTextChange: (event: Event) => void;
 }

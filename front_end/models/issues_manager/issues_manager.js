@@ -3752,10 +3752,6 @@ var excludeDomainNonAscii = {
   file: "cookieExcludeDomainNonAscii.md",
   links: []
 };
-var excludeBlockedWithinRelatedWebsiteSet = {
-  file: "cookieExcludeBlockedWithinRelatedWebsiteSet.md",
-  links: []
-};
 var cookieCrossSiteRedirectDowngrade = {
   file: "cookieCrossSiteRedirectDowngrade.md",
   links: [{
@@ -3791,14 +3787,6 @@ var issueDescriptions3 = /* @__PURE__ */ new Map([
   ["CookieIssue::WarnDomainNonASCII::SetCookie", warnDomainNonAscii],
   ["CookieIssue::ExcludeDomainNonASCII::ReadCookie", excludeDomainNonAscii],
   ["CookieIssue::ExcludeDomainNonASCII::SetCookie", excludeDomainNonAscii],
-  [
-    "CookieIssue::ExcludeThirdPartyCookieBlockedInRelatedWebsiteSet::ReadCookie",
-    excludeBlockedWithinRelatedWebsiteSet
-  ],
-  [
-    "CookieIssue::ExcludeThirdPartyCookieBlockedInRelatedWebsiteSet::SetCookie",
-    excludeBlockedWithinRelatedWebsiteSet
-  ],
   ["CookieIssue::WarnThirdPartyPhaseout::ReadCookie", placeholderDescriptionForInvisibleIssues],
   ["CookieIssue::WarnThirdPartyPhaseout::SetCookie", placeholderDescriptionForInvisibleIssues],
   ["CookieIssue::WarnDeprecationTrialMetadata::ReadCookie", placeholderDescriptionForInvisibleIssues],

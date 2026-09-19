@@ -10,7 +10,7 @@ import { SortableDataGrid, SortableDataGridNode } from './SortableDataGrid.js';
 const DUMMY_COLUMN_ID = 'dummy'; // SortableDataGrid.create requires at least one column.
 const elementToNode = new WeakMap();
 export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
-    static observedAttributes = ['striped', 'name', 'inline', 'resize', 'highlight'];
+    static observedAttributes = ['striped', 'name', 'inline', 'resize', 'highlight', 'deletable'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #dataGrid;
     #resizeObserver = new ResizeObserver(() => {
@@ -150,6 +150,9 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
                     this.#revealHighlightedNode(Number(newValue));
                 });
                 break;
+            case 'deletable':
+                this.#dataGrid.deleteCallback = this.deletable ? this.#deleteCallback.bind(this) : undefined;
+                break;
         }
     }
     set striped(striped) {
@@ -157,6 +160,12 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
     }
     get striped() {
         return hasBooleanAttribute(this, 'striped');
+    }
+    set deletable(deletable) {
+        this.toggleAttribute('deletable', deletable);
+    }
+    get deletable() {
+        return hasBooleanAttribute(this, 'deletable');
     }
     set inline(striped) {
         this.toggleAttribute('inline', striped);
@@ -484,9 +493,6 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
         super.addEventListener(...args);
         if (args[0] === 'refresh') {
             this.#dataGrid.refreshCallback = this.#refreshCallback.bind(this);
-        }
-        if (args[0] === 'delete') {
-            this.#dataGrid.deleteCallback = this.#deleteCallback.bind(this);
         }
     }
     #refreshCallback() {

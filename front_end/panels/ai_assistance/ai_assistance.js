@@ -9708,9 +9708,8 @@ function toolbarView(input) {
           @click=${input.onNewChatClick}></devtools-button>
         <div class="toolbar-divider"></div>
         <devtools-menu-button
-          title=${i18nString6(UIStrings6.history)}
-          aria-label=${i18nString6(UIStrings6.history)}
           .iconName=${"history"}
+          .accessibleLabel=${i18nString6(UIStrings6.history)}
           .jslogContext=${"freestyler.history"}
           .populateMenuCall=${input.populateHistoryMenu}
         ></devtools-menu-button>` : Lit10.nothing}

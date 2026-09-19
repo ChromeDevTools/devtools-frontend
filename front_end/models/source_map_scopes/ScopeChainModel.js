@@ -27,12 +27,14 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper {
         this.#callFrame = callFrame;
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
         this.#callFrame.debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
-        this.#callFrame.debuggerModel.sourceMapManager().addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.#sourceMapAttached, this);
+        this.#callFrame.debuggerModel.sourceMapManager().addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.#sourceMapChanged, this);
+        this.#callFrame.debuggerModel.sourceMapManager().addEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this.#sourceMapChanged, this);
         void this.#throttler.schedule(this.#boundUpdate);
     }
     dispose() {
         this.#callFrame.debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
-        this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.#sourceMapAttached, this);
+        this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.#sourceMapChanged, this);
+        this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this.#sourceMapChanged, this);
         this.listeners?.clear();
     }
     async #update() {
@@ -44,7 +46,7 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper {
             void this.#throttler.schedule(this.#boundUpdate);
         }
     }
-    #sourceMapAttached(event) {
+    #sourceMapChanged(event) {
         if (event.data.client === this.#callFrame.script) {
             void this.#throttler.schedule(this.#boundUpdate);
         }

@@ -155,7 +155,7 @@ export const PLUS_BUTTON_VIEW = (input, output, target) => {
     })}
             slot="trailing-button"
             .iconName=${'plus'}
-            .title=${input.title}
+            .accessibleLabel=${input.title}
             .jslogContext=${input.jslogContext}
             .populateMenuCall=${input.populateMenuCall}>
         </devtools-menu-button>`, target);

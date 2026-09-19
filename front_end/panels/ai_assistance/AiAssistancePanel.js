@@ -311,9 +311,8 @@ function toolbarView(input) {
           @click=${input.onNewChatClick}></devtools-button>
         <div class="toolbar-divider"></div>
         <devtools-menu-button
-          title=${i18nString(UIStrings.history)}
-          aria-label=${i18nString(UIStrings.history)}
           .iconName=${'history'}
+          .accessibleLabel=${i18nString(UIStrings.history)}
           .jslogContext=${'freestyler.history'}
           .populateMenuCall=${input.populateHistoryMenu}
         ></devtools-menu-button>`

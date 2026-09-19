@@ -9,6 +9,7 @@
   },
   "files": [
     "accessibilityAnnouncementRecordingListView.css.js",
+    "accessibilityAnnouncementRecordingView.css.js",
     "accessibilityNode.css.js",
     "accessibilityProperties.css.js",
     "accessibilitySidebarView.css.js",

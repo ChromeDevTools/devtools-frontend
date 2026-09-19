@@ -207,6 +207,7 @@ __export(NamesResolver_exports, {
   scopeIdentifiers: () => scopeIdentifiers,
   setScopeResolvedForTest: () => setScopeResolvedForTest
 });
+import * as Root from "../../core/root/root.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as TextUtils3 from "../../core/text_utils/text_utils.js";
 
@@ -2873,13 +2874,13 @@ var Debugger;
   })(PausedEventReason = Debugger2.PausedEventReason || (Debugger2.PausedEventReason = {}));
 })(Debugger || (Debugger = {}));
 var Runtime;
-((Runtime2) => {
+((Runtime3) => {
   let SerializationOptionsSerialization;
   ((SerializationOptionsSerialization2) => {
     SerializationOptionsSerialization2["Deep"] = "deep";
     SerializationOptionsSerialization2["Json"] = "json";
     SerializationOptionsSerialization2["IdOnly"] = "idOnly";
-  })(SerializationOptionsSerialization = Runtime2.SerializationOptionsSerialization || (Runtime2.SerializationOptionsSerialization = {}));
+  })(SerializationOptionsSerialization = Runtime3.SerializationOptionsSerialization || (Runtime3.SerializationOptionsSerialization = {}));
   let DeepSerializedValueType;
   ((DeepSerializedValueType2) => {
     DeepSerializedValueType2["Undefined"] = "undefined";
@@ -2906,7 +2907,7 @@ var Runtime;
     DeepSerializedValueType2["Node"] = "node";
     DeepSerializedValueType2["Window"] = "window";
     DeepSerializedValueType2["Generator"] = "generator";
-  })(DeepSerializedValueType = Runtime2.DeepSerializedValueType || (Runtime2.DeepSerializedValueType = {}));
+  })(DeepSerializedValueType = Runtime3.DeepSerializedValueType || (Runtime3.DeepSerializedValueType = {}));
   let RemoteObjectType;
   ((RemoteObjectType2) => {
     RemoteObjectType2["Object"] = "object";
@@ -2917,7 +2918,7 @@ var Runtime;
     RemoteObjectType2["Boolean"] = "boolean";
     RemoteObjectType2["Symbol"] = "symbol";
     RemoteObjectType2["Bigint"] = "bigint";
-  })(RemoteObjectType = Runtime2.RemoteObjectType || (Runtime2.RemoteObjectType = {}));
+  })(RemoteObjectType = Runtime3.RemoteObjectType || (Runtime3.RemoteObjectType = {}));
   let RemoteObjectSubtype;
   ((RemoteObjectSubtype2) => {
     RemoteObjectSubtype2["Array"] = "array";
@@ -2941,7 +2942,7 @@ var Runtime;
     RemoteObjectSubtype2["Wasmvalue"] = "wasmvalue";
     RemoteObjectSubtype2["Deferredmodule"] = "deferredmodule";
     RemoteObjectSubtype2["Trustedtype"] = "trustedtype";
-  })(RemoteObjectSubtype = Runtime2.RemoteObjectSubtype || (Runtime2.RemoteObjectSubtype = {}));
+  })(RemoteObjectSubtype = Runtime3.RemoteObjectSubtype || (Runtime3.RemoteObjectSubtype = {}));
   let ObjectPreviewType;
   ((ObjectPreviewType2) => {
     ObjectPreviewType2["Object"] = "object";
@@ -2952,7 +2953,7 @@ var Runtime;
     ObjectPreviewType2["Boolean"] = "boolean";
     ObjectPreviewType2["Symbol"] = "symbol";
     ObjectPreviewType2["Bigint"] = "bigint";
-  })(ObjectPreviewType = Runtime2.ObjectPreviewType || (Runtime2.ObjectPreviewType = {}));
+  })(ObjectPreviewType = Runtime3.ObjectPreviewType || (Runtime3.ObjectPreviewType = {}));
   let ObjectPreviewSubtype;
   ((ObjectPreviewSubtype2) => {
     ObjectPreviewSubtype2["Array"] = "array";
@@ -2976,7 +2977,7 @@ var Runtime;
     ObjectPreviewSubtype2["Wasmvalue"] = "wasmvalue";
     ObjectPreviewSubtype2["Deferredmodule"] = "deferredmodule";
     ObjectPreviewSubtype2["Trustedtype"] = "trustedtype";
-  })(ObjectPreviewSubtype = Runtime2.ObjectPreviewSubtype || (Runtime2.ObjectPreviewSubtype = {}));
+  })(ObjectPreviewSubtype = Runtime3.ObjectPreviewSubtype || (Runtime3.ObjectPreviewSubtype = {}));
   let PropertyPreviewType;
   ((PropertyPreviewType2) => {
     PropertyPreviewType2["Object"] = "object";
@@ -2988,7 +2989,7 @@ var Runtime;
     PropertyPreviewType2["Symbol"] = "symbol";
     PropertyPreviewType2["Accessor"] = "accessor";
     PropertyPreviewType2["Bigint"] = "bigint";
-  })(PropertyPreviewType = Runtime2.PropertyPreviewType || (Runtime2.PropertyPreviewType = {}));
+  })(PropertyPreviewType = Runtime3.PropertyPreviewType || (Runtime3.PropertyPreviewType = {}));
   let PropertyPreviewSubtype;
   ((PropertyPreviewSubtype2) => {
     PropertyPreviewSubtype2["Array"] = "array";
@@ -3012,7 +3013,7 @@ var Runtime;
     PropertyPreviewSubtype2["Wasmvalue"] = "wasmvalue";
     PropertyPreviewSubtype2["Deferredmodule"] = "deferredmodule";
     PropertyPreviewSubtype2["Trustedtype"] = "trustedtype";
-  })(PropertyPreviewSubtype = Runtime2.PropertyPreviewSubtype || (Runtime2.PropertyPreviewSubtype = {}));
+  })(PropertyPreviewSubtype = Runtime3.PropertyPreviewSubtype || (Runtime3.PropertyPreviewSubtype = {}));
   let ConsoleAPICalledEventType;
   ((ConsoleAPICalledEventType2) => {
     ConsoleAPICalledEventType2["Log"] = "log";
@@ -3033,7 +3034,7 @@ var Runtime;
     ConsoleAPICalledEventType2["ProfileEnd"] = "profileEnd";
     ConsoleAPICalledEventType2["Count"] = "count";
     ConsoleAPICalledEventType2["TimeEnd"] = "timeEnd";
-  })(ConsoleAPICalledEventType = Runtime2.ConsoleAPICalledEventType || (Runtime2.ConsoleAPICalledEventType = {}));
+  })(ConsoleAPICalledEventType = Runtime3.ConsoleAPICalledEventType || (Runtime3.ConsoleAPICalledEventType = {}));
 })(Runtime || (Runtime = {}));
 
 // ../../front_end/models/source_map_scopes/NamesResolver.ts
@@ -3305,6 +3306,16 @@ var resolveScopeChain = async function(callFrame, debuggerWorkspaceBinding) {
   const scopeChain = await pluginManager.resolveScopeChain(callFrame);
   if (scopeChain) {
     return scopeChain;
+  }
+  if (Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel?.enabled) {
+    let sourceMap = callFrame.script.sourceMap();
+    if (!sourceMap && callFrame.debuggerModel?.sourceMapManager) {
+      sourceMap = await callFrame.debuggerModel.sourceMapManager().sourceMapForClientPromise(callFrame.script);
+    }
+    const mappedScopeChain = sourceMap?.resolveScopeChain(callFrame);
+    if (mappedScopeChain) {
+      return mappedScopeChain;
+    }
   }
   if (callFrame.script.isWasm()) {
     return callFrame.scopeChain().filter((scope) => !scope.empty());
@@ -3633,7 +3644,12 @@ var ScopeChainModel = class extends Common.ObjectWrapper.ObjectWrapper {
     );
     this.#callFrame.debuggerModel.sourceMapManager().addEventListener(
       SDK3.SourceMapManager.Events.SourceMapAttached,
-      this.#sourceMapAttached,
+      this.#sourceMapChanged,
+      this
+    );
+    this.#callFrame.debuggerModel.sourceMapManager().addEventListener(
+      SDK3.SourceMapManager.Events.SourceMapDetached,
+      this.#sourceMapChanged,
       this
     );
     void this.#throttler.schedule(this.#boundUpdate);
@@ -3646,7 +3662,12 @@ var ScopeChainModel = class extends Common.ObjectWrapper.ObjectWrapper {
     );
     this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(
       SDK3.SourceMapManager.Events.SourceMapAttached,
-      this.#sourceMapAttached,
+      this.#sourceMapChanged,
+      this
+    );
+    this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(
+      SDK3.SourceMapManager.Events.SourceMapDetached,
+      this.#sourceMapChanged,
       this
     );
     this.listeners?.clear();
@@ -3660,7 +3681,7 @@ var ScopeChainModel = class extends Common.ObjectWrapper.ObjectWrapper {
       void this.#throttler.schedule(this.#boundUpdate);
     }
   }
-  #sourceMapAttached(event) {
+  #sourceMapChanged(event) {
     if (event.data.client === this.#callFrame.script) {
       void this.#throttler.schedule(this.#boundUpdate);
     }

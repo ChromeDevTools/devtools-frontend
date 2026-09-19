@@ -86,7 +86,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     }
     // clang-format off
     Lit.render(html `
-    <devtools-data-grid striped inline
+    <devtools-data-grid striped inline deletable
         @click=${(e) => { e.stopPropagation(); }}
         @create=${input.onCreate}>
       <table>

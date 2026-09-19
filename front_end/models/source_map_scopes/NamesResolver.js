@@ -1,6 +1,7 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Formatter from '../formatter/formatter.js';
@@ -310,9 +311,16 @@ export const resolveScopeChain = async function (callFrame, debuggerWorkspaceBin
     if (scopeChain) {
         return scopeChain;
     }
-    // TODO(crbug.com/465968290): Re-enable creating the scope chain from the source map once:
-    //    1) We have a flag indicating whether the source map contained variable/binding information.
-    //    2) We have a chrome feature flag.
+    if (Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel?.enabled) {
+        let sourceMap = callFrame.script.sourceMap();
+        if (!sourceMap && callFrame.debuggerModel?.sourceMapManager) {
+            sourceMap = await callFrame.debuggerModel.sourceMapManager().sourceMapForClientPromise(callFrame.script);
+        }
+        const mappedScopeChain = sourceMap?.resolveScopeChain(callFrame);
+        if (mappedScopeChain) {
+            return mappedScopeChain;
+        }
+    }
     if (callFrame.script.isWasm()) {
         return callFrame.scopeChain().filter(scope => !scope.empty());
     }

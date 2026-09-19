@@ -3087,7 +3087,7 @@ var UIStrings = {
   /**
    * @description Help text in the Lighthouse panel.
    */
-  atLeastOneCategoryMustBeSelected: "At least one category must be selected.",
+  atLeastOneCategoryMustBeSelected: "At least one category must be selected",
   /**
    * @description Text in sidebar of the Application panel.
    */

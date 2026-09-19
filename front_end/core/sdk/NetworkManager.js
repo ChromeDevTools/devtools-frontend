@@ -72,14 +72,14 @@ const UIStrings = {
      * @example {GET} PH2
      * @example {https://example.com} PH3
      */
-    sFailedLoadingSS: '{PH1} failed loading: {PH2} "{PH3}".',
+    sFailedLoadingSS: '{PH1} failed loading: {PH2} "{PH3}"',
     /**
      * @description Console message when a request finished loading.
      * @example {XHR} PH1
      * @example {GET} PH2
      * @example {https://example.com} PH3
      */
-    sFinishedLoadingSS: '{PH1} finished loading: {PH2} "{PH3}".',
+    sFinishedLoadingSS: '{PH1} finished loading: {PH2} "{PH3}"',
     /**
      * @description One of direct socket connection statuses.
      */

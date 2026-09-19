@@ -131,7 +131,7 @@ const UIStrings = {
      * @description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing.
      * @example {src/myapp.debug.wasm.dwp} PH1
      */
-    debugFileNotFound: 'Failed to load debug file "{PH1}".',
+    debugFileNotFound: 'Failed to load debug file "{PH1}"',
     /**
      * @description Error message that is displayed when no debug info could be loaded.
      * @example {app.wasm} PH1

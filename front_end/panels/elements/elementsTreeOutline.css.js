@@ -93,6 +93,10 @@ export default `/*
   display: flex;
 }
 
+.elements-disclosure li .tree-element-title {
+  display: contents;
+}
+
 .elements-disclosure li.parent:not(.always-parent) {
   /** Keep it in sync with ElementsTreeElements.updateDecorations **/
   margin-left: calc(-1 * var(--sys-size-6));
@@ -633,10 +637,6 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 
 .tree-outline-disclosure li.in-clipboard .highlight {
   outline: 1px dotted var(--sys-color-divider);
-}
-
-.tree-outline-disclosure li.elements-tree-expand-all {
-  margin: var(--sys-size-2) 0;
 }
 
 /*# sourceURL=${import.meta.resolve('./elementsTreeOutline.css')} */`;

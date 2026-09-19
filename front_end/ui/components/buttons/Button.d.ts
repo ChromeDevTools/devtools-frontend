@@ -40,7 +40,14 @@ interface CommonButtonData {
     spinner?: boolean;
     type?: ButtonType;
     value?: string;
+    /**
+     * Sets title on the host and, unless buttonTitle is provided, the internal <button> element.
+     */
     title?: string;
+    /**
+     * Sets title on the internal <button> element, taking precedence over title.
+     */
+    buttonTitle?: string;
     jslogContext?: string;
     longClickable?: boolean;
     inverseColorTheme?: boolean;
@@ -88,6 +95,8 @@ export declare class Button extends HTMLElement {
     set type(type: ButtonType);
     get title(): string;
     set title(title: string);
+    get buttonTitle(): string | undefined;
+    set buttonTitle(buttonTitle: string | undefined);
     get disabled(): boolean;
     set disabled(disabled: boolean);
     set toggleOnClick(toggleOnClick: boolean);

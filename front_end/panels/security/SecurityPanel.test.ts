@@ -341,6 +341,138 @@ describeWithEnvironment('SecurityOriginView', () => {
     });
   });
 
+  describe('certificate transparency section', () => {
+    it('renders the heading, SCT summary, and details', () => {
+      const view = new Security.SecurityPanel.SecurityOriginView(
+          urlString`https://foo.bar`, createOriginState({
+            signedCertificateTimestampList: [{
+              logDescription: 'Test log',
+              logId: 'AABB',
+              status: 'Verified',
+              origin: 'Embedded in certificate',
+              timestamp: 1_000,
+              hashAlgorithm: 'SHA-256',
+              signatureAlgorithm: 'ECDSA',
+              signatureData: 'CCDD',
+            }],
+            certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Compliant,
+          }));
+
+      const section = querySelectorErrorOnMissing(view.element, '.certificate-transparency-section');
+      const heading = querySelectorErrorOnMissing(section, '.origin-view-section-title');
+      assert.strictEqual(heading.textContent, 'Certificate Transparency');
+      assert.strictEqual(heading.getAttribute('role'), 'heading');
+      assert.strictEqual(heading.getAttribute('aria-level'), '2');
+
+      const summary = querySelectorErrorOnMissing(section, '.sct-summary');
+      assert.deepEqual(getDetailsTableRows(summary), [['SCT', 'Test log (Embedded in certificate, Verified)']]);
+
+      const details = querySelectorErrorOnMissing(section, '.sct-details');
+      assert.deepEqual(getDetailsTableRows(details), [
+        ['Log name', 'Test log'],
+        ['Log ID', 'AA BB '],
+        ['Validation status', 'Verified'],
+        ['Source', 'Embedded in certificate'],
+        ['Issued at', 'Thu, 01 Jan 1970 00:00:01 GMT'],
+        ['Hash algorithm', 'SHA-256'],
+        ['Signature algorithm', 'ECDSA'],
+        ['Signature data', 'CC DD '],
+      ]);
+    });
+
+    it('does not render when the SCT list is empty and compliance is unknown', () => {
+      const view = new Security.SecurityPanel.SecurityOriginView(
+          urlString`https://foo.bar`, createOriginState({
+            signedCertificateTimestampList: [],
+            certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
+          }));
+
+      assert.notExists(view.element.querySelector('.certificate-transparency-section'));
+      assert.notExists(view.element.querySelector('.origin-view-notes'));
+    });
+
+    it('renders without a note when the SCT list is not empty and compliance is unknown', () => {
+      const view = new Security.SecurityPanel.SecurityOriginView(
+          urlString`https://foo.bar`, createOriginState({
+            signedCertificateTimestampList: [{
+              logDescription: 'Test log',
+              logId: '00',
+              status: 'Verified',
+              origin: 'Embedded in certificate',
+              timestamp: 0,
+              hashAlgorithm: 'SHA-256',
+              signatureAlgorithm: 'ECDSA',
+              signatureData: '00',
+            }],
+            certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
+          }));
+
+      const section = querySelectorErrorOnMissing(view.element, '.certificate-transparency-section');
+      assert.notExists(section.querySelector('.origin-view-section-notes'));
+    });
+
+    const cases = [
+      {
+        compliance: Protocol.Network.CertificateTransparencyCompliance.Compliant,
+        expectedNote: 'This request complies with Chrome’s Certificate Transparency policy.',
+      },
+      {
+        compliance: Protocol.Network.CertificateTransparencyCompliance.NotCompliant,
+        expectedNote: 'This request doesn’t comply with Chrome’s Certificate Transparency policy.',
+      },
+    ];
+    for (const {compliance, expectedNote} of cases) {
+      it(`renders with a note when compliance is ${compliance}`, () => {
+        const originState = createOriginState({
+          signedCertificateTimestampList: [],
+          certificateTransparencyCompliance: compliance,
+        });
+        const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+
+        const section = querySelectorErrorOnMissing(view.element, '.certificate-transparency-section');
+        const note = querySelectorErrorOnMissing(section, '.origin-view-section-notes');
+        assert.strictEqual(note.textContent, expectedNote);
+      });
+    }
+
+    it('toggles SCT details', () => {
+      const view = new Security.SecurityPanel.SecurityOriginView(
+          urlString`https://foo.bar`, createOriginState({
+            signedCertificateTimestampList: [{
+              logDescription: 'Test log',
+              logId: '00',
+              status: 'Verified',
+              origin: 'Embedded in certificate',
+              timestamp: 0,
+              hashAlgorithm: 'SHA-256',
+              signatureAlgorithm: 'ECDSA',
+              signatureData: '00',
+            }],
+            certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Compliant,
+          }));
+      renderElementIntoDOM(view, {includeCommonStyles: true});
+      const section = querySelectorErrorOnMissing(view.element, '.certificate-transparency-section');
+      const summary = querySelectorErrorOnMissing(section, '.sct-summary');
+      const details = querySelectorErrorOnMissing(section, '.sct-details');
+      const toggle = section.querySelector('devtools-button');
+
+      assert.isTrue(summary.checkVisibility());
+      assert.isFalse(details.checkVisibility());
+      assert.instanceOf(toggle, HTMLElement);
+      assert.strictEqual(toggle.textContent, 'Show full details');
+      assert.strictEqual(toggle.accessibleLabel, 'Show full details');
+      assert.isFalse(toggle.accessibleExpanded);
+
+      toggle.click();
+
+      assert.isFalse(summary.checkVisibility());
+      assert.isTrue(details.checkVisibility());
+      assert.strictEqual(toggle.textContent, 'Hide full details');
+      assert.strictEqual(toggle.accessibleLabel, 'Hide full details');
+      assert.isTrue(toggle.accessibleExpanded);
+    });
+  });
+
   it('renders an empty SAN', () => {
     const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
 

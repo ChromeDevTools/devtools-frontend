@@ -13,7 +13,7 @@ import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import {createIcon, type Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import lockIconStyles from './lockIcon.css.js';
@@ -1347,10 +1347,10 @@ interface DetailsTableRow {
   value: string|TemplateResult;
 }
 
-function renderDetailsTable(rows: DetailsTableRow[]): TemplateResult {
+function renderDetailsTable(rows: DetailsTableRow[], additionalClasses: Directives.ClassInfo = {}): TemplateResult {
   // clang-format off
   return html`
-    <table class="details-table">
+    <table class=${Directives.classMap({'details-table': true, ...additionalClasses})}>
       ${rows.map(row => html`
         <tr class="details-table-row">
           <td>${row.key ?? nothing}</td>
@@ -1492,6 +1492,74 @@ function renderCertificateSection(input: CertificateSectionInput): TemplateResul
   // clang-format on
 }
 
+interface CertificateTransparencySectionInput {
+  securityDetails: Protocol.Network.SecurityDetails;
+  isDetailsShown: boolean;
+  onToggleDetails: () => void;
+}
+
+function renderSctSummary(scts: Protocol.Network.SignedCertificateTimestamp[], isShown: boolean): TemplateResult {
+  const rows = scts.map(sct => ({
+                          key: i18nString(UIStrings.sct),
+                          value: `${sct.logDescription} (${sct.origin}, ${sct.status})`,
+                        }));
+  return renderDetailsTable(rows, {'sct-summary': true, hidden: !isShown});
+}
+
+function renderSctDetails(scts: Protocol.Network.SignedCertificateTimestamp[], isShown: boolean): TemplateResult {
+  // clang-format off
+  return html`
+    <div class=${Directives.classMap({'sct-details': true, hidden: !isShown})}>
+      ${scts.map(sct => renderDetailsTable([
+        {key: i18nString(UIStrings.logName), value: sct.logDescription},
+        {key: i18nString(UIStrings.logId), value: sct.logId.replace(/(.{2})/g, '$1 ')},
+        {key: i18nString(UIStrings.validationStatus), value: sct.status},
+        {key: i18nString(UIStrings.source), value: sct.origin},
+        {key: i18nString(UIStrings.issuedAt), value: new Date(sct.timestamp).toUTCString()},
+        {key: i18nString(UIStrings.hashAlgorithm), value: sct.hashAlgorithm},
+        {key: i18nString(UIStrings.signatureAlgorithm), value: sct.signatureAlgorithm},
+        {key: i18nString(UIStrings.signatureData), value: sct.signatureData.replace(/(.{2})/g, '$1 ')},
+      ]))}
+    </div>`;
+  // clang-format on
+}
+
+function renderCertificateTransparencyNote(compliance: Protocol.Network.CertificateTransparencyCompliance):
+    LitTemplate {
+  if (compliance === Protocol.Network.CertificateTransparencyCompliance.Unknown) {
+    return nothing;
+  }
+
+  const note = compliance === Protocol.Network.CertificateTransparencyCompliance.Compliant ?
+      i18nString(UIStrings.thisRequestCompliesWithChromes) :
+      i18nString(UIStrings.thisRequestDoesNotComplyWith);
+
+  return html`<div class="origin-view-section-notes">${note}</div>`;
+}
+
+function renderCertificateTransparencySection(input: CertificateTransparencySectionInput): TemplateResult {
+  const {securityDetails, isDetailsShown, onToggleDetails} = input;
+  const scts = securityDetails.signedCertificateTimestampList;
+  const toggleButtonText =
+      isDetailsShown ? i18nString(UIStrings.hideFullDetails) : i18nString(UIStrings.showFullDetails);
+
+  // clang-format off
+  return html`
+    <div class="origin-view-section-title" role="heading" aria-level="2">${i18nString(UIStrings.certificateTransparency)}</div>
+    ${renderSctSummary(scts, !isDetailsShown)}
+    ${renderSctDetails(scts, isDetailsShown)}
+    ${scts.length ? html`
+      <devtools-button
+          class="details-toggle"
+          .variant=${Buttons.Button.Variant.OUTLINED}
+          .accessibleLabel=${toggleButtonText}
+          .accessibleExpanded=${isDetailsShown}
+          .jslogContext=${'security.toggle-scts-details'}
+          @click=${onToggleDetails}>${toggleButtonText}</devtools-button>` : nothing}
+    ${renderCertificateTransparencyNote(securityDetails.certificateTransparencyCompliance)}`;
+  // clang-format on
+}
+
 export class SecurityOriginView extends UI.Widget.VBox {
   readonly #origin: Platform.DevToolsPath.UrlString;
   readonly #titleSection: HTMLElement;
@@ -1516,80 +1584,10 @@ export class SecurityOriginView extends UI.Widget.VBox {
 
       const sctListLength = originState.securityDetails.signedCertificateTimestampList.length;
       const ctCompliance = originState.securityDetails.certificateTransparencyCompliance;
-      let sctSection;
-      if (sctListLength || ctCompliance !== Protocol.Network.CertificateTransparencyCompliance.Unknown) {
-        // Create the Certificate Transparency section outside the callback, so that it appears in the right place.
-        sctSection = this.element.createChild('div', 'origin-view-section');
-        const sctDiv = sctSection.createChild('div', 'origin-view-section-title');
-        sctDiv.textContent = i18nString(UIStrings.certificateTransparency);
-        UI.ARIAUtils.markAsHeading(sctDiv, 2);
-      }
-
-      if (!sctSection) {
+      if (!sctListLength && ctCompliance === Protocol.Network.CertificateTransparencyCompliance.Unknown) {
         return;
       }
-
-      // Show summary of SCT(s) of Certificate Transparency.
-      const sctSummaryTable = new SecurityDetailsTable();
-      sctSummaryTable.element().classList.add('sct-summary');
-      sctSection.appendChild(sctSummaryTable.element());
-      for (let i = 0; i < sctListLength; i++) {
-        const sct = originState.securityDetails.signedCertificateTimestampList[i];
-        sctSummaryTable.addRow(
-            i18nString(UIStrings.sct), sct.logDescription + ' (' + sct.origin + ', ' + sct.status + ')');
-      }
-
-      // Show detailed SCT(s) of Certificate Transparency.
-      const sctTableWrapper = sctSection.createChild('div', 'sct-details');
-      sctTableWrapper.classList.add('hidden');
-      for (let i = 0; i < sctListLength; i++) {
-        const sctTable = new SecurityDetailsTable();
-        sctTableWrapper.appendChild(sctTable.element());
-        const sct = originState.securityDetails.signedCertificateTimestampList[i];
-        sctTable.addRow(i18nString(UIStrings.logName), sct.logDescription);
-        sctTable.addRow(i18nString(UIStrings.logId), sct.logId.replace(/(.{2})/g, '$1 '));
-        sctTable.addRow(i18nString(UIStrings.validationStatus), sct.status);
-        sctTable.addRow(i18nString(UIStrings.source), sct.origin);
-        sctTable.addRow(i18nString(UIStrings.issuedAt), new Date(sct.timestamp).toUTCString());
-        sctTable.addRow(i18nString(UIStrings.hashAlgorithm), sct.hashAlgorithm);
-        sctTable.addRow(i18nString(UIStrings.signatureAlgorithm), sct.signatureAlgorithm);
-        sctTable.addRow(i18nString(UIStrings.signatureData), sct.signatureData.replace(/(.{2})/g, '$1 '));
-      }
-
-      // Add link to toggle between displaying of the summary of the SCT(s) and the detailed SCT(s).
-      if (sctListLength) {
-        function toggleSctDetailsDisplay(): void {
-          let buttonText;
-          const isDetailsShown = !sctTableWrapper.classList.contains('hidden');
-          if (isDetailsShown) {
-            buttonText = i18nString(UIStrings.showFullDetails);
-          } else {
-            buttonText = i18nString(UIStrings.hideFullDetails);
-          }
-          toggleSctsDetailsLink.textContent = buttonText;
-          UI.ARIAUtils.setLabel(toggleSctsDetailsLink, buttonText);
-          UI.ARIAUtils.setExpanded(toggleSctsDetailsLink, !isDetailsShown);
-          sctSummaryTable.element().classList.toggle('hidden');
-          sctTableWrapper.classList.toggle('hidden');
-        }
-        const toggleSctsDetailsLink = UI.UIUtils.createTextButton(
-            i18nString(UIStrings.showFullDetails), toggleSctDetailsDisplay,
-            {className: 'details-toggle', jslogContext: 'security.toggle-scts-details'});
-        sctSection.appendChild(toggleSctsDetailsLink);
-      }
-
-      switch (ctCompliance) {
-        case Protocol.Network.CertificateTransparencyCompliance.Compliant:
-          sctSection.createChild('div', 'origin-view-section-notes').textContent =
-              i18nString(UIStrings.thisRequestCompliesWithChromes);
-          break;
-        case Protocol.Network.CertificateTransparencyCompliance.NotCompliant:
-          sctSection.createChild('div', 'origin-view-section-notes').textContent =
-              i18nString(UIStrings.thisRequestDoesNotComplyWith);
-          break;
-        case Protocol.Network.CertificateTransparencyCompliance.Unknown:
-          break;
-      }
+      this.#createCertificateTransparencySection(originState.securityDetails);
 
       const noteSection = this.element.createChild('div', 'origin-view-section origin-view-notes');
       if (originState.loadedFromCache) {
@@ -1640,6 +1638,20 @@ export class SecurityOriginView extends UI.Widget.VBox {
     updateCertificateSection();
   }
 
+  #createCertificateTransparencySection(securityDetails: Protocol.Network.SecurityDetails): void {
+    const section = this.element.createChild('div', 'origin-view-section certificate-transparency-section');
+    let isDetailsShown = false;
+    const onToggleDetails = (): void => {
+      isDetailsShown = !isDetailsShown;
+      updateSection();
+    };
+    const updateSection = (): void => {
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(renderCertificateTransparencySection({securityDetails, isDetailsShown, onToggleDetails}), section);
+    };
+    updateSection();
+  }
+
   #showCertificateViewer = async(event: Event): Promise<void> => {
     event.consume();
     const names = await SDK.NetworkManager.MultitargetNetworkManager.instance().getCertificate(this.#origin);
@@ -1667,30 +1679,6 @@ export class SecurityOriginView extends UI.Widget.VBox {
   };
 }
 
-export class SecurityDetailsTable {
-  readonly #element: HTMLTableElement;
-
-  constructor() {
-    this.#element = document.createElement('table');
-    this.#element.classList.add('details-table');
-  }
-
-  element(): HTMLTableElement {
-    return this.#element;
-  }
-
-  addRow(key: string, value: string|Node): void {
-    const row = this.#element.createChild('tr', 'details-table-row');
-    row.createChild('td').textContent = key;
-
-    const valueCell = row.createChild('td');
-    if (typeof value === 'string') {
-      valueCell.textContent = value;
-    } else {
-      valueCell.appendChild(value);
-    }
-  }
-}
 export interface OriginState {
   securityState: Protocol.Security.SecurityState;
   securityDetails: Protocol.Network.SecurityDetails|null;

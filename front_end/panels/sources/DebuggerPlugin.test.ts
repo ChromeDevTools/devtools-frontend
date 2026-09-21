@@ -6,11 +6,11 @@ import {assert} from 'chai';
 import * as sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import {deinitializeGlobalVars, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, deinitializeGlobalVars, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -480,6 +480,58 @@ describeWithEnvironment('Inline variable view scope value resolution', () => {
     assert.strictEqual(valuesByLine?.get(10)?.size, 2);
     assert.strictEqual(valuesByLine?.get(10)?.get('a')?.value, 1);
     assert.strictEqual(valuesByLine?.get(10)?.get('b')?.value, 2);
+  });
+
+  it('shadows outer variables when an inner or inactive sibling scope maps a variable to null', async () => {
+    const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+    const target = createTarget();
+    callFrame.debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
+    callFrame.location.returns(
+        new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 50));
+    callFrame.evaluate.resolves({object: new SDK.RemoteObject.LocalJSONObject({0: 42})});
+
+    const inactiveBlockScope = {
+      start: {line: 2, column: 0},
+      end: {line: 4, column: 0},
+      isStackFrame: false,
+      kind: 'block',
+      variables: ['x'],
+      children: [],
+    };
+    const functionScope = {
+      start: {line: 0, column: 0},
+      end: {line: 10, column: 0},
+      isStackFrame: true,
+      kind: 'function',
+      variables: ['x'],
+      children: [inactiveBlockScope],
+    };
+    const generatedRange = {
+      start: {line: 0, column: 0},
+      end: {line: 0, column: 200},
+      isStackFrame: true,
+      isHidden: false,
+      values: ['a'],
+      children: [],
+    };
+    const entry = new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, functionScope, generatedRange,
+                                                                            true, undefined);
+
+    const scopeMappings = await Sources.DebuggerPlugin.computeScopeMappings(
+        callFrame,
+        async () => null,
+        (line, col) => line * 10 + col,
+        [entry],
+    );
+    const valuesByLine = Sources.DebuggerPlugin.getVariableValuesByLine(scopeMappings, [
+      {line: 1, from: 15, id: 'x'},  // In functionScope (outside inactive block): resolves to 42.
+      {line: 3, from: 30, id: 'x'},  // Inside inactiveBlockScope (20..40): shadowed by null!
+      {line: 6, from: 60, id: 'x'},  // After inactiveBlockScope: resolves to 42.
+    ]);
+
+    assert.strictEqual(valuesByLine?.get(1)?.get('x')?.value, 42);
+    assert.isUndefined(valuesByLine?.get(3)?.get('x'));
+    assert.strictEqual(valuesByLine?.get(6)?.get('x')?.value, 42);
   });
 });
 

@@ -970,11 +970,22 @@ export class DebuggerPlugin extends Plugin {
 
     const rawLocationToEditorOffset: (location: SDK.DebuggerModel.Location|null) => Promise<number|null> = location =>
         this.#rawLocationToEditorOffset(location, url);
+    const uiPositionToEditorOffset = (lineNumber: number, columnNumber: number): number|null =>
+        this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(lineNumber, columnNumber)) ?? null;
+    const scopeChain = await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(
+        callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+    const localOriginalScope = scopeChain
+                                   .find((s): s is SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry =>
+                                             s instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry &&
+                                             s.type() === Protocol.Debugger.ScopeType.Local)
+                                   ?.originalScope();
 
-    const functionOffsetPromise = this.#rawLocationToEditorOffset(callFrame.functionLocation(), url);
+    const functionOffsetPromise = localOriginalScope ?
+        Promise.resolve(uiPositionToEditorOffset(localOriginalScope.start.line, localOriginalScope.start.column)) :
+        this.#rawLocationToEditorOffset(callFrame.functionLocation(), url);
     const executionOffsetPromise = this.#rawLocationToEditorOffset(callFrame.location(), url);
     const [functionOffset, executionOffset] = await Promise.all([functionOffsetPromise, executionOffsetPromise]);
-    if (!functionOffset || !executionOffset || !this.editor) {
+    if (functionOffset === null || !executionOffset || !this.editor) {
       return null;
     }
 
@@ -996,7 +1007,8 @@ export class DebuggerPlugin extends Plugin {
       return null;
     }
 
-    const scopeMappings = await computeScopeMappings(callFrame, rawLocationToEditorOffset);
+    const scopeMappings =
+        await computeScopeMappings(callFrame, rawLocationToEditorOffset, uiPositionToEditorOffset, scopeChain);
     // After the `await` the DebuggerPlugin could have been disposed. Re-check `this.editor`.
     if (!this.editor || scopeMappings.length === 0) {
       return null;
@@ -2083,30 +2095,61 @@ export function getVariableNamesByLine(
   return names;
 }
 
+export interface ScopeMapping {
+  scopeStart: number;
+  scopeEnd: number;
+  variableMap: Map<string, SDK.RemoteObject.RemoteObject|null>;
+}
+
 export async function computeScopeMappings(
     callFrame: SDK.DebuggerModel.CallFrame,
-    rawLocationToEditorOffset: (l: SDK.DebuggerModel.Location|null) => Promise<number|null>):
-    Promise<Array<{scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}>> {
-  const scopeMappings:
-      Array<{scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}> = [];
-  for (const scope of callFrame.scopeChain()) {
-    const scopeStart = await rawLocationToEditorOffset(scope.range()?.start ?? null);
-    if (!scopeStart) {
-      break;
+    rawLocationToEditorOffset: (l: SDK.DebuggerModel.Location|null) => Promise<number|null>,
+    uiPositionToEditorOffset?: (line: number, column: number) => number | null,
+    resolvedScopeChain?: SDK.DebuggerModel.ScopeChainEntry[]): Promise<ScopeMapping[]> {
+  const scopeMappings: ScopeMapping[] = [];
+  const scopeChain = resolvedScopeChain ??
+      await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(
+          callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+  const activeScopes =
+      new Set(scopeChain.filter(s => s instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry)
+                  .map(s => s.originalScope()));
+  const addInactiveChildren =
+      (children: ReturnType<SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry['originalScope']>['children']):
+          void => {
+            for (const child of children) {
+              if (!activeScopes.has(child)) {
+                const scopeStart = uiPositionToEditorOffset?.(child.start.line, child.start.column) ?? null;
+                const scopeEnd = uiPositionToEditorOffset?.(child.end.line, child.end.column) ?? null;
+                if (scopeStart !== null && scopeEnd !== null && child.variables.length > 0) {
+                  scopeMappings.push({scopeStart, scopeEnd, variableMap: new Map(child.variables.map(v => [v, null]))});
+                }
+                addInactiveChildren(child.children);
+              }
+            }
+          };
+
+  for (const scope of scopeChain) {
+    let scopeStart: number|null = null;
+    let scopeEnd: number|null = null;
+    if (scope instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry) {
+      const orig = scope.originalScope();
+      scopeStart = uiPositionToEditorOffset?.(orig.start.line, orig.start.column) ?? null;
+      scopeEnd = uiPositionToEditorOffset?.(orig.end.line, orig.end.column) ?? null;
+      addInactiveChildren(orig.children);
+    } else {
+      scopeStart = await rawLocationToEditorOffset(scope.range()?.start ?? null);
+      scopeEnd = await rawLocationToEditorOffset(scope.range()?.end ?? null);
     }
-    const scopeEnd = await rawLocationToEditorOffset(scope.range()?.end ?? null);
-    if (!scopeEnd) {
+    if (scopeStart === null || scopeEnd === null) {
       break;
     }
 
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-    const {properties} = await SourceMapScopes.NamesResolver.resolveScopeInObject(scope, debuggerWorkspaceBinding)
-                             .getAllProperties(false, false);
+    const {properties} = await scope.object().getAllProperties(false, true);
     if (!properties || properties.length > MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS) {
       break;
     }
-    const variableMap = new Map<string, SDK.RemoteObject.RemoteObject>(
-        properties.map(p => [p.name, p.value] as [string, SDK.RemoteObject.RemoteObject]));
+    const variableMap =
+        new Map<string, SDK.RemoteObject.RemoteObject|null>(properties.map(p => [p.name, p.value ?? null]));
 
     scopeMappings.push({scopeStart, scopeEnd, variableMap});
 
@@ -2118,10 +2161,8 @@ export async function computeScopeMappings(
   return scopeMappings;
 }
 
-export function getVariableValuesByLine(
-    scopeMappings:
-        Array<{scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}>,
-    variableNames: Array<{line: number, from: number, id: string}>):
+export function getVariableValuesByLine(scopeMappings: ScopeMapping[],
+                                        variableNames: Array<{line: number, from: number, id: string}>):
     Map<number, Map<string, SDK.RemoteObject.RemoteObject>>|null {
   const namesPerLine = new Map<number, Map<string, SDK.RemoteObject.RemoteObject>>();
   for (const {line, from, id} of variableNames) {
@@ -2141,16 +2182,14 @@ export function getVariableValuesByLine(
   function findVariableInChain(
       name: string,
       pos: number,
-      scopeMappings:
-          Array<{scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}>,
+      scopeMappings: ScopeMapping[],
       ): SDK.RemoteObject.RemoteObject|null {
     for (const scope of scopeMappings) {
       if (pos < scope.scopeStart || pos >= scope.scopeEnd) {
         continue;
       }
-      const value = scope.variableMap.get(name);
-      if (value) {
-        return value;
+      if (scope.variableMap.has(name)) {
+        return scope.variableMap.get(name) ?? null;
       }
     }
     return null;

@@ -77,6 +77,8 @@ export interface TabInfo {
   jslogContext?: string;
   enabled?: boolean;
   selected?: boolean;
+  icon?: Element|null;
+  suffix?: Element|null;
 }
 
 const TabbedPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof VBox> = Common.ObjectWrapper.eventMixin(
@@ -120,6 +122,8 @@ export class TabbedPane extends TabbedPaneBase {
     this.registerRequiredCSS(tabbedPaneStyles);
     this.element.classList.add('tabbed-pane');
     this.contentElement.classList.add('tabbed-pane-shadow');
+    this.element.classList.add('flex-auto', 'vbox');
+    this.contentElement.classList.add('flex-auto', 'vbox');
     this.contentElement.tabIndex = -1;
     this.setDefaultFocusedElement(this.contentElement);
     this.#headerElement = this.contentElement.createChild('div', 'tabbed-pane-header');
@@ -563,47 +567,6 @@ export class TabbedPane extends TabbedPaneBase {
                             enabled: this.tabIsEnabled(tab.id),
                             selected: this.currentTab?.id === tab.id,
                           }));
-  }
-
-  set tabs(tabs: TabInfo[]) {
-    const newIds = new Set(tabs.map(tab => tab.id));
-    for (const id of this.tabsById.keys()) {
-      if (!newIds.has(id)) {
-        this.#closeTab(id);
-      }
-    }
-    let index = 0;
-    for (const tab of tabs) {
-      const existingTab = this.tabsById.get(tab.id);
-      if (existingTab) {
-        this.changeTabView(tab.id, tab.view);
-        this.changeTabTitle(tab.id, tab.title, tab.tabTooltip);
-        if (tab.jslogContext !== undefined) {
-          existingTab.jslogContext = tab.jslogContext;
-        }
-        if (tab.isCloseable !== undefined) {
-          existingTab.closeable = tab.isCloseable;
-        }
-        if (tab.previewFeature !== undefined) {
-          existingTab.previewFeature = tab.previewFeature;
-        }
-        const currentIndex = this.#tabs.indexOf(existingTab);
-        if (currentIndex !== index) {
-          this.insertBefore(existingTab, index);
-        }
-      } else {
-        this.appendTab(
-            tab.id, tab.title, tab.view, tab.tabTooltip, /* userGesture=*/ false, tab.isCloseable, tab.previewFeature,
-            index, tab.jslogContext);
-      }
-      if (tab.enabled !== undefined) {
-        this.setTabEnabled(tab.id, tab.enabled);
-      }
-      if (tab.selected) {
-        this.selectTab(tab.id);
-      }
-      ++index;
-    }
   }
 
   override onResize(): void {
@@ -1694,42 +1657,72 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
     this.#automaticReorder = automatic;
     this.getWidget()?.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
   }
+
+  get tabs(): TabInfo[] {
+    const widget = Widget.getOrCreateWidget(this) as TabbedPane;
+    if (widget) {
+      this.#updateTabs(widget);
+      return widget.tabs;
+    }
+    return [];
+  }
+
+  #delegate?: TabbedPaneTabDelegate;
+  set tabDelegate(delegate: TabbedPaneTabDelegate) {
+    this.#delegate = delegate;
+    this.getWidget()?.setTabDelegate(delegate);
+  }
+
+  #placeholderElement?: Element;
+  #managedTabIds = new Set<string>();
+  set placeholder(element: Element) {
+    this.#placeholderElement = element;
+    this.getWidget()?.setPlaceholderElement(element);
+  }
+
   readonly #tabObserver = new MutationObserver(() => this.#updateTabs());
 
   constructor() {
     super();
 
-    registerWidgetConfig(this, widgetConfig(element => {
-                           const widget = new TabbedPane(element as TabbedPaneElement);
-                           widget.setCloseableTabs(this.#closeableTabs);
-                           widget.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
-                           const slot = widget.contentElement.querySelector('slot:not([name])');
-                           if (slot) {
-                             slot.addEventListener('slotchange', () => this.#syncTabs());
-                           }
-                           widget.addEventListener(Events.TabSelected, () => {
-                             const slot =
-                                 widget.contentElement.querySelector('slot:not([name])') as HTMLSlotElement | null;
-                             const nodes = slot ? slot.assignedElements() : [];
-                             for (const child of nodes) {
-                               if (child.id === widget.selectedTabId) {
-                                 child.setAttribute('selected', '');
-                               } else {
-                                 child.removeAttribute('selected');
-                               }
-                             }
-                             this.dispatchEvent(new CustomEvent('select', {detail: {tabId: widget.selectedTabId}}));
-                           });
-                           widget.addEventListener(Events.TabClosed, event => {
-                             this.dispatchEvent(new CustomEvent('close', {detail: {tabId: event.data.tabId}}));
-                           });
-                           widget.addEventListener(Events.TabOrderChanged, event => {
-                             this.dispatchEvent(new CustomEvent(
-                                 'taborderchanged', {detail: {tabId: event.data.tabId, tabIds: widget.tabIds()}}));
-                           });
-                           this.#syncTabs(widget);
-                           return widget;
-                         }));
+    registerWidgetConfig(
+        this, widgetConfig(element => {
+          const widget = new TabbedPane(element as TabbedPaneElement);
+          widget.setCloseableTabs(this.#closeableTabs);
+          widget.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
+          if (this.#delegate) {
+            widget.setTabDelegate(this.#delegate);
+          }
+          const slot = widget.contentElement.querySelector('slot:not([name])');
+          if (slot) {
+            slot.addEventListener('slotchange', () => this.#syncTabs());
+          }
+          widget.addEventListener(Events.TabSelected, event => {
+            const nodes = this.#getTabNodes(widget);
+            for (const child of nodes) {
+              if (child.id === widget.selectedTabId) {
+                child.setAttribute('selected', '');
+              } else {
+                child.removeAttribute('selected');
+              }
+            }
+            this.dispatchEvent(new CustomEvent(
+                'select', {detail: {tabId: widget.selectedTabId, isUserGesture: event.data?.isUserGesture}}));
+          });
+          widget.addEventListener(Events.TabClosed, event => {
+            this.dispatchEvent(
+                new CustomEvent('close', {detail: {tabId: event.data.tabId, isUserGesture: event.data.isUserGesture}}));
+          });
+          widget.addEventListener(Events.TabOrderChanged, event => {
+            this.dispatchEvent(
+                new CustomEvent('taborderchanged', {detail: {tabId: event.data.tabId, tabIds: widget.tabIds()}}));
+          });
+          if (this.#placeholderElement) {
+            widget.setPlaceholderElement(this.#placeholderElement);
+          }
+          this.#syncTabs(widget);
+          return widget;
+        }));
   }
 
   override disconnectedCallback(): void {
@@ -1747,8 +1740,7 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
 
   #updateObserver(widget: TabbedPane): void {
     this.#tabObserver.disconnect();
-    const slot = widget.contentElement.querySelector('slot:not([name])') as HTMLSlotElement | null;
-    const nodes = slot ? slot.assignedElements() : [];
+    const nodes = this.#getTabNodes(widget);
     for (const child of nodes) {
       this.#tabObserver.observe(child, {
         attributes: true,
@@ -1757,13 +1749,18 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
     }
   }
 
+  #getTabNodes(widget: TabbedPane): Element[] {
+    return Array.from(widget.element.children)
+        .filter(c => c.id !== '' && !c.hasAttribute('slot') && !c.classList.contains('tabbed-pane-header') &&
+                    !c.classList.contains('tabbed-pane-content'));
+  }
+
   #updateTabs(widget = this.getWidget()): void {
     if (!widget) {
       return;
     }
     const tabs: TabInfo[] = [];
-    const slot = widget.contentElement.querySelector('slot:not([name])') as HTMLSlotElement | null;
-    const nodes = slot ? slot.assignedElements() : [];
+    const nodes = this.#getTabNodes(widget);
     for (const child of nodes) {
       const id = child.id;
       const title = child.getAttribute('title') || '';
@@ -1772,13 +1769,12 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
       const enabled = !child.hasAttribute('disabled');
       const isCloseable =
           child.hasAttribute('closeable') ? true : (child.hasAttribute('uncloseable') ? false : undefined);
+      const icon = child.querySelector('[slot="icon"]') ?? undefined;
+      const suffix = child.querySelector('[slot="suffix"]') ?? undefined;
       const view = Widget.getOrCreateWidget(child as HTMLElement);
       view.setHideOnDetach();
       if (widget.selectedTabId !== id) {
-        view.hideWidget();
         child.classList.add('hidden');
-      } else {
-        view.showWidget();
       }
       tabs.push({
         id,
@@ -1788,10 +1784,55 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
         selected,
         enabled,
         isCloseable,
+        icon,
+        suffix,
       });
     }
 
-    widget.tabs = tabs;
+    const newIds = new Set(tabs.map(tab => tab.id));
+    for (const id of this.#managedTabIds) {
+      if (!newIds.has(id)) {
+        widget.closeTab(id);
+      }
+    }
+    this.#managedTabIds = newIds;
+    let index = 0;
+    for (const tab of tabs) {
+      const existingTab = widget.tabsById.get(tab.id);
+      if (existingTab) {
+        widget.changeTabView(tab.id, tab.view);
+        widget.changeTabTitle(tab.id, tab.title, tab.tabTooltip);
+        if (tab.jslogContext !== undefined) {
+          existingTab.jslogContext = tab.jslogContext;
+        }
+        if (tab.isCloseable !== undefined) {
+          existingTab.closeable = tab.isCloseable;
+        }
+        if (tab.previewFeature !== undefined) {
+          existingTab.previewFeature = tab.previewFeature;
+        }
+        const currentIndex = widget.tabIndex(tab.id);
+        if (currentIndex !== index) {
+          widget.insertBefore(existingTab, index);
+        }
+      } else {
+        widget.appendTab(tab.id, tab.title, tab.view, tab.tabTooltip, /* userGesture=*/ false, tab.isCloseable,
+                         tab.previewFeature, index, tab.jslogContext);
+      }
+      if (tab.icon !== undefined) {
+        widget.setTabIcon(tab.id, tab.icon as unknown as Icon);
+      }
+      if (tab.suffix !== undefined) {
+        widget.setSuffixElement(tab.id, tab.suffix as unknown as HTMLElement);
+      }
+      if (tab.enabled !== undefined) {
+        widget.setTabEnabled(tab.id, tab.enabled);
+      }
+      if (tab.selected) {
+        widget.selectTab(tab.id);
+      }
+      ++index;
+    }
   }
 }
 

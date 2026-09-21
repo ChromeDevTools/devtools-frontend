@@ -13,7 +13,7 @@ import { MockDebuggerBackend } from './MockScopeChain.js';
 export function getExtensionOrigin() {
     return window.location.origin;
 }
-export function setupDevtoolsExtensionHooks(extension = {}) {
+export function setupDevtoolsExtensionHooks(extension = {}, keysToForward = []) {
     const extensionDescriptor = {
         startPage: `${getExtensionOrigin()}/blank.html`,
         name: 'TestExtension',
@@ -33,7 +33,7 @@ export function setupDevtoolsExtensionHooks(extension = {}) {
             if (origin === getExtensionOrigin()) {
                 const chrome = {};
                 window.chrome = chrome;
-                self.injectedExtensionAPI(extensionDescriptor, 'main', 'dark', [], () => { }, 1, window);
+                self.injectedExtensionAPI(extensionDescriptor, 'main', 'dark', keysToForward, () => { }, 1, window);
                 context.chrome = chrome;
             }
         });

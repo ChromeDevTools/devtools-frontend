@@ -8,4 +8,4 @@ export interface ExtensionContext {
     backend?: Partial<MockDebuggerBackend>;
 }
 export declare function getExtensionOrigin(): string;
-export declare function setupDevtoolsExtensionHooks(extension?: Partial<Host.InspectorFrontendHostAPI.ExtensionDescriptor>): ExtensionContext;
+export declare function setupDevtoolsExtensionHooks(extension?: Partial<Host.InspectorFrontendHostAPI.ExtensionDescriptor>, keysToForward?: number[]): ExtensionContext;

@@ -893,7 +893,10 @@ globalThis.injectedExtensionAPI = function (extensionInfo, inspectedTabId, theme
         const targetDocument = targetWindowForTest?.document ?? document;
         const focused = targetDocument.activeElement;
         if (focused) {
-            const isInput = focused.nodeName === 'INPUT' || focused.nodeName === 'TEXTAREA' || focused.isContentEditable;
+            // Elements made editable through the EditContext API are not reported as contentEditable.
+            const hasEditContext = 'editContext' in focused && Boolean(focused.editContext);
+            const isInput = focused.nodeName === 'INPUT' || focused.nodeName === 'TEXTAREA' ||
+                focused.isContentEditable || hasEditContext;
             if (isInput && !(requestPayload.ctrlKey || requestPayload.altKey || requestPayload.metaKey)) {
                 return;
             }

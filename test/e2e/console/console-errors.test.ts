@@ -143,7 +143,9 @@ performActions @ resource-errors.html:8
     await navigateToConsoleTab(devToolsPage);
     await inspectedPage.evaluate(() => {
       try {
-        eval('function syntaxErrorDemo() { const class = 1; } \n//# sourceURL=http://example.com/buggy-script.js');
+        // Note: the `//# sourceURL` must be same-origin with the inspected page, since
+        // cross-origin annotations are ignored to prevent URL spoofing (b/553931271).
+        eval('function syntaxErrorDemo() { const class = 1; } \n//# sourceURL=buggy-script.js');
       } catch (e) {
         console.error(e);
       }

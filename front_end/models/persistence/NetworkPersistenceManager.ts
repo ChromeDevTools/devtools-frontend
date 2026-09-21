@@ -9,6 +9,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../bindings/bindings.js';
 import * as Breakpoints from '../breakpoints/breakpoints.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -431,8 +432,32 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   isUISourceCodeOverridable(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
-        !NetworkPersistenceManager.isForbiddenNetworkUrl(uiSourceCode.url());
+    if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Network) {
+      return false;
+    }
+    if (NetworkPersistenceManager.isForbiddenNetworkUrl(uiSourceCode.url())) {
+      return false;
+    }
+    // A `//# sourceURL=` annotation is fully controlled by the page and doesn't refer
+    // to an actual network resource, so there is nothing to override here. Persisting
+    // it would poison the overrides folder with a file that masquerades as a genuine
+    // resource (b/553931271).
+    if (Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(uiSourceCode)) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Whether the contents of `uiSourceCode` may be written into the overrides folder.
+   *
+   * Sources that originate from a source map are overridable in the sense that the
+   * deployed resource they are mapped from can be overridden (see
+   * `PersistenceActions`), but their own URL and content are page controlled and
+   * must never be persisted themselves (b/553931271).
+   */
+  #canPersistUISourceCodeAsOverride(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    return this.isUISourceCodeOverridable(uiSourceCode) && !uiSourceCode.contentType().isFromSourceMap();
   }
 
   #isUISourceCodeAlreadyOverridden(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
@@ -445,12 +470,12 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   #canSaveUISourceCodeForOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return this.#active && this.isUISourceCodeOverridable(uiSourceCode) &&
+    return this.#active && this.#canPersistUISourceCodeAsOverride(uiSourceCode) &&
         !this.#isUISourceCodeAlreadyOverridden(uiSourceCode);
   }
 
   async setupAndStartLocalOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<boolean> {
-    if (!this.isUISourceCodeOverridable(uiSourceCode)) {
+    if (!this.#canPersistUISourceCodeAsOverride(uiSourceCode)) {
       return false;
     }
     // No overrides folder, set it up

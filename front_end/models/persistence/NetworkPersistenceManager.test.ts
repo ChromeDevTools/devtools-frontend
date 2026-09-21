@@ -17,6 +17,7 @@ import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {createTarget} from '../../testing/TargetHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -114,6 +115,48 @@ describe('NetworkPersistenceManager', () => {
     const resourceType = Common.ResourceType.resourceTypes.Script;
 
     const {uiSourceCode} = setUpEnvironmentWithUISourceCode(url, resourceType);
+    const networkPersistenceManager = await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+
+    assert.isFalse(networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode));
+
+    const saveSpy = sinon.spy(networkPersistenceManager, 'saveUISourceCodeForOverrides');
+    const actual = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
+
+    saveSpy.restore();
+
+    assert.isFalse(actual, 'should not allow override');
+    assert.isTrue(saveSpy.notCalled, 'should not attempt to save override');
+  });
+
+  it('does not persist sources that come from a source map', async () => {
+    const url = 'http://www.example.com/src/script.ts';
+    const resourceType = Common.ResourceType.resourceTypes.SourceMapScript;
+
+    const {uiSourceCode} = setUpEnvironmentWithUISourceCode(url, resourceType);
+    const networkPersistenceManager = await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+    const overridesProject = networkPersistenceManager.project();
+    assert.exists(overridesProject);
+    const createFileSpy = sinon.spy(overridesProject, 'createFile');
+
+    // The context menu still offers "Override content" for source mapped files, but it
+    // redirects to the deployed file instead of persisting the source mapped one.
+    assert.isTrue(networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode));
+
+    const actual = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
+    await networkPersistenceManager.saveUISourceCodeForOverrides(uiSourceCode);
+
+    createFileSpy.restore();
+
+    assert.isFalse(actual, 'should not allow override');
+    assert.isTrue(createFileSpy.notCalled, 'should not write an override file');
+  });
+
+  it('does not allow overrides for sources synthesized from a `//# sourceURL` annotation', async () => {
+    const url = 'http://www.example.com/script.js';
+    const resourceType = Common.ResourceType.resourceTypes.Script;
+
+    const {uiSourceCode} = setUpEnvironmentWithUISourceCode(url, resourceType);
+    Bindings.NetworkProject.NetworkProject.setSourceURLSynthesized(uiSourceCode);
     const networkPersistenceManager = await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
 
     assert.isFalse(networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode));

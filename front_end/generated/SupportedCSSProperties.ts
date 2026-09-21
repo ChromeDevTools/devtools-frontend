@@ -660,6 +660,7 @@ export const generatedProperties: CSSProperty[] = [
    "line-clamp",
    "line-gap-override",
    "line-height",
+   "link-parameters",
    "list-style-image",
    "list-style-position",
    "list-style-type",
@@ -3682,6 +3683,14 @@ export const generatedProperties: CSSProperty[] = [
    "normal"
   ],
   "name": "line-height"
+ },
+ {
+  "keywords": [
+   "none"
+  ],
+  "name": "link-parameters",
+  "runtime_flag": "CSSLinkParametersProperty",
+  "runtime_flag_status": "experimental"
  },
  {
   "inherited": true,
@@ -7932,6 +7941,11 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
  "line-height": {
   "values": [
    "normal"
+  ]
+ },
+ "link-parameters": {
+  "values": [
+   "none"
   ]
  },
  "list-style-image": {

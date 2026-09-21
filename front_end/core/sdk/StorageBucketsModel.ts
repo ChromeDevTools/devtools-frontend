@@ -154,6 +154,8 @@ export class StorageBucketsModel extends SDKModel<EventTypes> implements Protoco
   cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void {
   }
 
+  privateVerificationTokensUpdated(): void {
+  }
 }
 
 SDKModel.register(StorageBucketsModel, {capabilities: Capability.STORAGE, autostart: false});

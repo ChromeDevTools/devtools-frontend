@@ -279,6 +279,9 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
   }
 
+  privateVerificationTokensUpdated(): void {
+  }
+
   setThrottlerSchedulesAsSoonAsPossibleForTest(): void {
     this.#scheduleAsSoonAsPossible = true;
   }

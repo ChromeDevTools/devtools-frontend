@@ -418,7 +418,7 @@
     // tracked using the Element::SetTrackedElementSubRect() method.
     {
       name: "AIPageContentTrackedElementsPassword",
-      status: "test"
+      status: "stable"
     },
     // Clamp AIPageContent visible bounding boxes to the local-root viewport
     // after visual-viewport mapping to normalize viewport-relative geometry.
@@ -1082,6 +1082,13 @@
       status: "experimental",
     },
     {
+      // Kill switch for https://crbug.com/385194416. Makes the canvas 2D
+      // context's `direction` getter reflect the stored keyword (including
+      // "inherit") instead of always resolving it to "ltr"/"rtl".
+      name: "CanvasTextDirectionReflect",
+      status: "stable",
+    },
+    {
       // https://crbug.com/479240778
       name: "CanvasTextMetricsPreciseBounds",
       status: "experimental",
@@ -1180,6 +1187,15 @@
     },
     {
       name: "CheckableInputTypeLayoutInline",
+      status: "stable",
+    },
+    {
+      // Run the CSP "Should element's inline behavior be blocked?" check when
+      // an event handler content attribute is set to an inline script.
+      // See the specs:
+      // https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes
+      // https://w3c.github.io/webappsec-csp/#should-block-inline
+      name: "CheckCSPOnInlineScriptAttributeSet",
       status: "stable",
     },
     {
@@ -1291,12 +1307,6 @@
       status: "experimental",
     },
     {
-      // @container allowing multiple comma separated container queries.
-      // Also introduces the 'conditions' attribute on CSSContainerRule.
-      name: "CommaSeparatedContainerQueries",
-      status: "stable",
-    },
-    {
       // Return the current target from composedPath() while
       // dispatching.
       // This was added in M142 and can be removed after M144.
@@ -1394,7 +1404,7 @@
     },
     {
       name: "ConstructableStylesheetCache",
-      status: "stable",
+      status: "test",
     },
     {
       name: "ContactsManager",
@@ -1403,10 +1413,6 @@
     {
       name: "ContactsManagerExtraProperties",
       status:  {"Android": "stable", "default": "test"},
-    },
-    {
-      name: "ContainerNameOnly",
-      status: "stable",
     },
     {
       name: "ContainerTiming",
@@ -1653,11 +1659,6 @@
       status: "stable",
     },
     {
-      // https://drafts.csswg.org/css-color-5/#contrast-color
-      name: "CSSContrastColor",
-      status: "stable",
-    },
-    {
       // https://drafts.csswg.org/css-borders-4/#corner-shaping
       name: "CSSCornersShorthand",
       status: "experimental",
@@ -1806,6 +1807,11 @@
     {
       name: "CSSLineClampLineBreakingEllipsis",
       depends_on: ["CSSLineClamp"],
+      status: "experimental",
+    },
+    {
+      // https://chromestatus.com/feature/5095153430822912
+      name: "CSSLinkParametersProperty",
       status: "experimental",
     },
     {
@@ -2678,15 +2684,6 @@
       status: "experimental",
       base_feature: "none",
       browser_process_read_access: true,
-    },
-    {
-      name: "EmailVerificationStatusIndicator",
-      status: "experimental",
-      depends_on: ["EmailVerificationProtocol"],
-      origin_trial_feature_name: "EmailVerificationProtocol",
-      origin_trial_allows_third_party: true,
-      origin_trial_os: ["win", "mac", "linux", "chromeos", "android"],
-      base_feature: "none",
     },
     {
       // This was added in M151 and can be removed after M153.
@@ -4883,9 +4880,10 @@
       status: "stable",
     },
     {
-      // Kill switch for skipping MathML <script src> and simulating the HTML
-      // breakout tags in the HTML preload scanner. https://crbug.com/40728681
-      name: "PreloadScannerSkipMathMLScript",
+      // Kill switch for spec-compliant handling of HTML <image> and SVG/MathML
+      // foreign content in the HTML preload scanner. Ships in M155 and can be
+      // removed in M158. https://crbug.com/40728681
+      name: "PreloadScannerImprovements",
       status: "stable",
     },
     {
@@ -5957,14 +5955,6 @@
       name: "SpellCheckCustomDictionaryAPI",
       status: "experimental",
       public: true,
-    },
-    {
-      // Historically, the parser split Text nodes at ~64k boundaries. This
-      // behavior is no longer necessary; by default the parser keeps each run
-      // of text in a single Text node. Enabling this flag restores the legacy
-      // behavior of splitting Text nodes at 64k boundaries. Shipping in M151
-      // and can be removed in M153.
-      name: "SplitLargeTextNodes",
     },
     {
       // Splits a qualified name on its first colon, per the DOM "validate and
@@ -7431,6 +7421,15 @@
     {
       name: "WindowOpenAlwaysOnTop",
       status: "test",
+    },
+    {
+      // If enabled, "attributionsrc" in window.open() features will not
+      // disable UI features (avoiding opening as a popup instead of a new tab)
+      // when Attribution Reporting is disabled/removed. Can be removed once
+      // kAttributionReportingWindowOpen usage is sufficiently low.
+      // https://crbug.com/553155942
+      name: "WindowOpenAttributionSrc",
+      status: "stable",
     },
     {
       // Fixes an issue where Ctrl+Right Arrow skips punctuation before a newline.

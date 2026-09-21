@@ -20670,6 +20670,67 @@
                     ]
                 },
                 {
+                    "id": "ImcbHighlightConfig",
+                    "description": "Configuration for Inset-Modified Containing Block (IMCB) and CSS Anchor Positioning highlight.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "imcbBorderColor",
+                            "description": "Border color for the Inset-Modified Containing Block (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "imcbBackgroundColor",
+                            "description": "Background fill color for the Inset-Modified Containing Block (default: transparent).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "insetsBackgroundColor",
+                            "description": "Fill color for the inset modifiers area (difference between CB and IMCB).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "insetsHatchColor",
+                            "description": "Hatch color for the inset modifiers area.",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "anchorBorderColor",
+                            "description": "Border color for the referenced target anchor element(s) (when element is anchor-positioned).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "anchorBackgroundColor",
+                            "description": "Background fill color for the referenced target anchor element(s) (when element is anchor-positioned).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "showPositionAreaGrid",
+                            "description": "Whether to render the 3x3 position-area grid lines when position-area is used.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "positionAreaGridLineColor",
+                            "description": "Line color for the 3x3 position-area grid lines.",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "positionAreaActiveRegionColor",
+                            "description": "Fill color for the active region within the position-area grid.",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        }
+                    ]
+                },
+                {
                     "id": "HighlightConfig",
                     "description": "Configuration data for the highlighting of page elements.",
                     "type": "object",
@@ -20787,6 +20848,12 @@
                             "description": "The container query container highlight configuration (default: all transparent).",
                             "optional": true,
                             "$ref": "ContainerQueryContainerHighlightConfig"
+                        },
+                        {
+                            "name": "imcbHighlightConfig",
+                            "description": "The IMCB highlight configuration (default: all transparent).",
+                            "optional": true,
+                            "$ref": "ImcbHighlightConfig"
                         }
                     ]
                 },
@@ -23219,6 +23286,32 @@
                     ]
                 },
                 {
+                    "id": "SubApp",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "Display name of the sub-app.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "scope",
+                            "description": "Scope of the sub-app.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "manifestId",
+                            "description": "Manifest id of the sub-app.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "startUrl",
+                            "description": "Start URL of the sub-app.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "NavigationType",
                     "description": "The type of a frameNavigated event.",
                     "experimental": true,
@@ -23791,7 +23884,7 @@
                 },
                 {
                     "name": "getAppId",
-                    "description": "Returns the unique (PWA) app id.\nOnly returns values if the feature flag 'WebAppEnableManifestId' is enabled",
+                    "description": "Returns the unique (PWA) app id, along with IWA bundle ID and parent app info.\nOnly returns values if the feature flag 'WebAppEnableManifestId' is enabled",
                     "experimental": true,
                     "returns": [
                         {
@@ -23805,6 +23898,46 @@
                             "description": "Recommendation for manifest's id attribute to match current id computed from start_url",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "bundleId",
+                            "description": "The bundle ID for an Isolated Web App (IWA)",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "parentAppName",
+                            "description": "The name of the parent app if this app is a Sub-App",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "getSubApps",
+                    "description": "Returns the list of installed child Sub-Apps for the inspected parent app.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "subApps",
+                            "type": "array",
+                            "items": {
+                                "$ref": "SubApp"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "getSiblingSubApps",
+                    "description": "Returns the list of sibling Sub-Apps sharing the same parent app if the inspected context is a Sub-App.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "subApps",
+                            "type": "array",
+                            "items": {
+                                "$ref": "SubApp"
+                            }
                         }
                     ]
                 },
@@ -27643,6 +27776,49 @@
                     ]
                 },
                 {
+                    "id": "PrivateVerificationToken",
+                    "description": "Details of a stored Private Verification Token.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "id",
+                            "description": "Unique identifier of the token in the database.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "issuerOrigin",
+                            "description": "Origin of the token issuer.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "keyId",
+                            "description": "Public key ID used to issue the token.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "expiration",
+                            "description": "Expiration timestamp in seconds since the epoch.",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "creationTime",
+                            "description": "Token creation timestamp in seconds since the epoch.",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "version",
+                            "description": "Token protocol version.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "token",
+                            "description": "Base64-encoded serialized token.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "StorageBucketsDurability",
                     "type": "string",
                     "enum": [
@@ -28027,6 +28203,53 @@
                     ]
                 },
                 {
+                    "name": "getPrivateVerificationTokens",
+                    "description": "Returns all stored Private Verification Tokens for the current browsing\ncontext.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "tokens",
+                            "type": "array",
+                            "items": {
+                                "$ref": "PrivateVerificationToken"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "clearPrivateVerificationTokens",
+                    "description": "Removes all Private Verification Tokens issued by the provided issuerOrigin.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "issuerOrigin",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "deletePrivateVerificationToken",
+                    "description": "Removes a specific Private Verification Token by its ID.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "tokenId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "setPrivateVerificationTokensTracking",
+                    "description": "Set tracking for Private Verification Tokens.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enable",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "setStorageBucketTracking",
                     "description": "Set tracking for a storage key's buckets.",
                     "experimental": true,
@@ -28198,6 +28421,11 @@
                             "type": "string"
                         }
                     ]
+                },
+                {
+                    "name": "privateVerificationTokensUpdated",
+                    "description": "Private Verification Tokens have been stored or deleted.",
+                    "experimental": true
                 }
             ]
         },

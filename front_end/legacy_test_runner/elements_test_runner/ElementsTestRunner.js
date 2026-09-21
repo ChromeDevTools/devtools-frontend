@@ -453,6 +453,52 @@ ElementsTestRunner.firstElementsTreeOutline = function() {
     if (!treeElement.title || typeof treeElement.title === 'string') {
       treeElement.title = treeElement.titleElement;
     }
+    if (!treeElement._selectDecorated) {
+      treeElement._selectDecorated = true;
+      const origSelect = treeElement.select?.bind(treeElement);
+      treeElement.select = function(omitFocus, selectedByUser) {
+        const node = getWidgetForTreeElement(this)?.node;
+        if (node && selectedByUser === undefined && !omitFocus) {
+          domTreeWidget.selectDOMNode(node, true);
+          return true;
+        }
+        return origSelect?.(omitFocus, selectedByUser);
+      };
+      const origRemove = (treeElement.removeFromTree ?? treeElement.remove)?.bind(treeElement);
+      treeElement.remove = function() {
+        const node = getWidgetForTreeElement(this)?.node;
+        if (node) {
+          return node.removeNode();
+        }
+        return origRemove?.();
+      };
+      Object.defineProperty(treeElement, 'expandedChildrenLimitInternal', {
+        configurable: true,
+        get() {
+          const node = getWidgetForTreeElement(this)?.node;
+          return node ? domTreeWidget.expandedChildrenLimit(node) : 500;
+        },
+        set(limit) {
+          const node = getWidgetForTreeElement(this)?.node;
+          if (node) {
+            domTreeWidget.setExpandedChildrenLimit(node, limit);
+          }
+        },
+      });
+      Object.defineProperty(treeElement, 'expandAllButtonElement', {
+        configurable: true,
+        get() {
+          const children = this.children?.() ?? [];
+          for (const child of children) {
+            const btn = child.listItemElement?.querySelector('devtools-button, button');
+            if (btn) {
+              return {button: btn};
+            }
+          }
+          return null;
+        },
+      });
+    }
     return treeElement;
   }
   function findTreeElementRecursive(parent, targetNode) {
@@ -473,32 +519,79 @@ ElementsTestRunner.firstElementsTreeOutline = function() {
     }
     return null;
   }
-  shim = {
-    runPendingUpdates() {
-      domTreeWidget.performUpdate();
-    },
-    rootElement() {
-      domTreeWidget.performUpdate();
-      const root = getInternalOutline()?.rootElement() ?? null;
-      if (root) {
-        const stack = [...root.children()];
-        while (stack.length) {
-          const item = decorateTreeElement(stack.pop());
-          if (item?.children()) {
-            stack.push(...item.children());
-          }
+  function flushUpdates() {
+    domTreeWidget.runPendingUpdates();
+    domTreeWidget.performUpdate();
+    const treeView = domTreeWidget.contentElement.querySelector('devtools-tree');
+    treeView?.flushPendingUpdatesForTesting();
+    const root = getInternalOutline()?.rootElement();
+    if (root) {
+      const stack = [...root.children()];
+      while (stack.length) {
+        const item = decorateTreeElement(stack.pop());
+        if (item?.children()) {
+          stack.push(...item.children());
         }
       }
-      return root;
+    }
+  }
+  const eventTarget = new Common.ObjectWrapper.ObjectWrapper();
+  const origOnSelectedNodeChanged = domTreeWidget.onSelectedNodeChanged;
+  domTreeWidget.onSelectedNodeChanged = event => {
+    origOnSelectedNodeChanged?.call(domTreeWidget, event);
+    eventTarget.dispatchEventToListeners(Elements.ElementsTreeOutline.ElementsTreeOutline.Events.SelectedNodeChanged,
+                                         event.data);
+  };
+  const origOnElementsTreeUpdated = domTreeWidget.onElementsTreeUpdated;
+  domTreeWidget.onElementsTreeUpdated = event => {
+    origOnElementsTreeUpdated?.call(domTreeWidget, event);
+    eventTarget.dispatchEventToListeners(Elements.ElementsTreeOutline.ElementsTreeOutline.Events.ElementsTreeUpdated,
+                                         event.data);
+    Elements.ElementsTreeOutline.ElementsTreeOutline.prototype.updateModifiedNodes.call({});
+    Elements.ElementsTreeOutline.ElementsTreeOutline.prototype.updateChildren.call({});
+  };
+  shim = {
+    runPendingUpdates() {
+      flushUpdates();
+    },
+    rootElement() {
+      flushUpdates();
+      return getInternalOutline()?.rootElement() ?? null;
     },
     findTreeElement(node) {
-      domTreeWidget.performUpdate();
-      return findTreeElementRecursive(getInternalOutline()?.rootElement(), node);
+      flushUpdates();
+      let found = findTreeElementRecursive(getInternalOutline()?.rootElement(), node);
+      if (!found && node) {
+        for (let current = node.parentNode; current; current = current.parentNode) {
+          domTreeWidget.setNodeExpanded(current, true);
+        }
+        flushUpdates();
+        found = findTreeElementRecursive(getInternalOutline()?.rootElement(), node);
+      }
+      if (!found && node?.nodeType() === Node.TEXT_NODE) {
+        found = findTreeElementRecursive(getInternalOutline()?.rootElement(), node.parentNode);
+      }
+      return found;
     },
     selectedDOMNode() {
       return domTreeWidget.selectedDOMNode();
     },
+    selectDOMNode(node, focus) {
+      return domTreeWidget.selectDOMNode(node, focus);
+    },
+    revealAndSelectNode(node, omitFocus) {
+      return domTreeWidget.selectDOMNode(node, !omitFocus);
+    },
+    setVisible(visible) {},
     get selectedTreeElement() {
+      flushUpdates();
+      const selectedNode = domTreeWidget.selectedDOMNode();
+      if (selectedNode) {
+        const found = shim.findTreeElement(selectedNode);
+        if (found) {
+          return found;
+        }
+      }
       return decorateTreeElement(getInternalOutline()?.selectedTreeElement ?? null);
     },
     get element() {
@@ -508,23 +601,36 @@ ElementsTestRunner.firstElementsTreeOutline = function() {
       return domTreeWidget.toggleHideElement(node);
     },
     addEventListener(eventType, listener, thisObject) {
-      if (eventType === Elements.ElementsTreeOutline.ElementsTreeOutline.Events.SelectedNodeChanged) {
-        return domTreeWidget.addEventListener(Elements.ElementsTreeOutline.DOMTreeWidget.Events.SelectedNodeChanged,
-                                              listener, thisObject);
-      }
-      return domTreeWidget.addEventListener(eventType, listener, thisObject);
+      return eventTarget.addEventListener(eventType, listener, thisObject);
     },
     removeEventListener(eventType, listener, thisObject) {
-      if (eventType === Elements.ElementsTreeOutline.ElementsTreeOutline.Events.SelectedNodeChanged) {
-        return domTreeWidget.removeEventListener(Elements.ElementsTreeOutline.DOMTreeWidget.Events.SelectedNodeChanged,
-                                                 listener, thisObject);
-      }
-      return domTreeWidget.removeEventListener(eventType, listener, thisObject);
+      return eventTarget.removeEventListener(eventType, listener, thisObject);
     },
   };
   treeOutlineShimByWidget.set(domTreeWidget, shim);
   return shim;
 };
+
+(function() {
+const OutlineClass = Elements.ElementsTreeOutline.ElementsTreeOutline;
+const OutlineProto = OutlineClass.prototype;
+const origUpdateModifiedNodes = OutlineProto.updateModifiedNodes;
+OutlineProto.updateModifiedNodes = function(...args) {
+  if (this instanceof OutlineClass) {
+    return origUpdateModifiedNodes.apply(this, args);
+  }
+};
+const origUpdateChildren = OutlineProto.updateChildren;
+OutlineProto.updateChildren = function(...args) {
+  if (this instanceof OutlineClass) {
+    return origUpdateChildren.apply(this, args);
+  }
+};
+const origForDOMModel = OutlineClass.forDOMModel;
+OutlineClass.forDOMModel = function(domModel) {
+  return origForDOMModel.call(this, domModel) || ElementsTestRunner.firstElementsTreeOutline();
+};
+})();
 
 ElementsTestRunner.filterMatchedStyles = function(text) {
   TestRunner.addResult('Filtering styles by: ' + text);

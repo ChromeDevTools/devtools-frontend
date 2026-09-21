@@ -63,6 +63,7 @@ devtools_foundation_module("foundation_unittests") {
     "../../testing",
     "../../third_party/source-map-scopes-codec:bundle",
     "../bindings:bundle",
+    "../formatter:bundle",
     "../workspace:bundle",
   ]
 }
@@ -72,12 +73,8 @@ devtools_api_test_module("api_tests") {
 
   ts_deps = [
     ":bundle",
-    "../../core/common:bundle",
     "../../core/platform:bundle",
-    "../../core/root:bundle",
     "../../core/sdk:bundle",
-    "../../generated",
-    "../../models/bindings:bundle",
     "../../models/formatter:bundle",
     "../../testing",
     "../../third_party/source-map-scopes-codec:bundle",

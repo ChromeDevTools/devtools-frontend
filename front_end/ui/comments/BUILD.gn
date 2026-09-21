@@ -50,7 +50,6 @@ devtools_ui_module("unittests") {
     "../../models/comment_manager:bundle",
     "../../testing",
     "../../third_party/codemirror.next:bundle",
-    "../../ui/visual_logging:bundle",
     "../components/text_editor:bundle",
   ]
 }

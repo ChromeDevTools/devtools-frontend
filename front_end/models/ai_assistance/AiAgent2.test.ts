@@ -18,9 +18,10 @@ import type * as LHModel from '../lighthouse/lighthouse.js';
 import type * as Trace from '../trace/trace.js';
 
 import * as AiAssistance from './ai_assistance.js';
-// TODO(nvitkov): crbug.com/468942591 Fix the target for this import
-import type {Skill, SkillName} from './skills/Skill.js';
-import {SKILLS} from './skills/SkillRegistry.js';
+
+type Skill = AiAssistance.Skill.Skill;
+type SkillName = AiAssistance.Skill.SkillName;
+const SKILLS = AiAssistance.SkillRegistry.SKILLS;
 
 function assertIsFunctionResponse(part: Host.AidaClient.Part): asserts part is Host.AidaClient.FunctionResponsePart {
   assert.isTrue('functionResponse' in part);

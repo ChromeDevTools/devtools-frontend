@@ -5,7 +5,8 @@
 import {assert} from 'chai';
 
 import * as AiAssistance from '../ai_assistance.js';
-import {SKILLS} from '../skills/SkillRegistry.js';
+
+const SKILLS = AiAssistance.SkillRegistry.SKILLS;
 
 describe('ToolRegistry', () => {
   it('can retrieve executeJavaScript tool by name', () => {

@@ -36,21 +36,17 @@ const UIStrings = {
    */
   debugWithAi: 'Debug with AI',
   /**
-   * @description The title of the Gemini panel.
-   */
-  gemini: 'Gemini',
-  /**
    * @description The title of the command menu action for showing the Gemini panel.
    */
-  showGemini: 'Show Gemini',
+  showGemini: 'Show `Gemini`',
   /**
    * @description The setting title to enable the Gemini via the settings tab.
    */
-  enableGemini: 'Enable Gemini',
+  enableGemini: 'Enable `Gemini`',
   /**
    * @description Text of a context menu item to redirect to the Gemini panel with the current context.
    */
-  debugWithGemini: 'Debug with Gemini',
+  debugWithGemini: 'Debug with `Gemini`',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/ai_assistance-meta.ts', UIStrings);
@@ -108,7 +104,8 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'freestyler',
   commandPrompt: i18nAiBrandedString(UIStrings.showGemini, UIStrings.showAiAssistance),
-  title: i18nAiBrandedString(UIStrings.gemini, UIStrings.aiAssistance),
+  title: () => Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled ? i18n.i18n.lockedString('Gemini') :
+                                                                           i18nString(UIStrings.aiAssistance),
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   hasToolbar: false,

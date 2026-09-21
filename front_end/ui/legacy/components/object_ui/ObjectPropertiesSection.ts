@@ -770,7 +770,7 @@ export class ObjectTreeNode extends ObjectTreeNodeBase {
       readonly property: SDK.RemoteObject.RemoteObjectProperty,
       parent: ObjectTreeNodeBase|undefined,
       options: ObjectTreeOptions,
-      readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject,
+      readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject|undefined,
   ) {
     super(parent, options);
   }
@@ -1232,13 +1232,15 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
     populateObjectTreeContextMenu(
         contextMenu,
         root,
-        root.expandRecursively.bind(root, EXPANDABLE_MAX_DEPTH),
-        root.collapseRecursively.bind(root),
-        () => {
-          root.sortPropertiesAlphabetically = !root.sortPropertiesAlphabetically;
-        },
-        () => {
-          root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
+        {
+          expandRecursively: root.expandRecursively.bind(root, EXPANDABLE_MAX_DEPTH),
+          collapseChildren: root.collapseRecursively.bind(root),
+          sortPropertiesAlphabetically: root => {
+            root.sortPropertiesAlphabetically = !root.sortPropertiesAlphabetically;
+          },
+          onShowAllToggled: root => {
+            root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
+          },
         },
     );
   };
@@ -1251,18 +1253,24 @@ export const enum ObjectPropertiesMode {
   OWN_AND_INTERNAL_AND_INHERITED = 1,  // Own, internal, and inherited properties
 }
 
-export function populateObjectTreeContextMenu(
-    contextMenu: UI.ContextMenu.ContextMenu,
-    object: ObjectTree,
-    expandRecursively: () => void,
-    collapseChildren: () => void,
-    sortPropertiesAlphabetically: () => void,
-    onShowAllToggled: () => void,
-    ): void {
-  contextMenu.appendApplicableItems(object.object);
+export function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu,
+                                              objectOrProperty: ObjectTree|ObjectTreeNode, handlers: {
+                                                expandRecursively: (node: ObjectTreeNodeBase) => void,
+                                                collapseChildren: (node: ObjectTreeNodeBase) => void,
+                                                sortPropertiesAlphabetically: (node: ObjectTreeNodeBase) => void,
+                                                onShowAllToggled: (node: ObjectTreeNodeBase) => void,
+                                              }): void {
+  contextMenu.appendApplicableItems(objectOrProperty);
+  if (objectOrProperty instanceof ObjectTreeNode && objectOrProperty.property.symbol) {
+    contextMenu.appendApplicableItems(objectOrProperty.property.symbol);
+  }
+  if (objectOrProperty.object) {
+    contextMenu.appendApplicableItems(objectOrProperty.object);
+  }
 
-  if (object.object instanceof SDK.RemoteObject.LocalJSONObject) {
-    const {value} = object.object;
+  const object = objectOrProperty instanceof ObjectTree ? objectOrProperty.object : objectOrProperty.parent?.object;
+  if (objectOrProperty.object && object instanceof SDK.RemoteObject.LocalJSONObject) {
+    const {value} = objectOrProperty.object;
     const propertyValue = typeof value === 'object' ?
         Platform.StringUtilities.escapeUnicodeAsText(JSON.stringify(value, null, 2)) :
         value;
@@ -1274,20 +1282,36 @@ export function populateObjectTreeContextMenu(
                                               {jslogContext: 'copy-value'});
   }
 
-  contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively), expandRecursively,
-                                       {jslogContext: 'expand-recursively'});
-  contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), collapseChildren,
-                                       {jslogContext: 'collapse-children'});
-  if (!object.isWasm) {
+  if (objectOrProperty instanceof ObjectTreeNode && !objectOrProperty.property.synthetic && objectOrProperty.path) {
+    const copyPathHandler = Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance, objectOrProperty.path);
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyPropertyPath), copyPathHandler,
+                                              {jslogContext: 'copy-property-path'});
+  }
+
+  if (objectOrProperty instanceof ObjectTree || object instanceof SDK.RemoteObject.LocalJSONObject) {
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively),
+                                         () => handlers.expandRecursively(objectOrProperty),
+                                         {jslogContext: 'expand-recursively'});
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren),
+                                         () => handlers.collapseChildren(objectOrProperty),
+                                         {jslogContext: 'collapse-children'});
+  }
+
+  let root: ObjectTreeNodeBase = objectOrProperty;
+  while (root.parent) {
+    root = root.parent;
+  }
+  if (!root.isWasm) {
     contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.sortPropertiesAlphabetically),
-                                                 sortPropertiesAlphabetically, {
-                                                   checked: object.sortPropertiesAlphabetically,
+                                                 () => handlers.sortPropertiesAlphabetically(root), {
+                                                   checked: objectOrProperty.sortPropertiesAlphabetically,
                                                    jslogContext: 'sort-properties-alphabetically',
                                                  });
   }
   contextMenu.viewSection().appendCheckboxItem(
-      i18nString(UIStrings.showAll), onShowAllToggled,
-      {checked: object.includeNullOrUndefinedValues, jslogContext: 'show-all'});
+      i18nString(UIStrings.showAll), () => handlers.onShowAllToggled(root),
+      {checked: objectOrProperty.includeNullOrUndefinedValues, jslogContext: 'show-all'});
 }
 
 interface ObjectTreeViewInput {
@@ -1332,6 +1356,19 @@ const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
     },
   });
 };
+
+async function populateChildrenIfNeeded(node: ObjectTreeNodeBase): Promise<void> {
+  const children = await node.populateChildrenIfNeeded();
+  if (!children.arrayRanges) {
+    return;
+  }
+  if (children.arrayRanges.length === 1) {
+    await populateChildrenIfNeeded(children.arrayRanges[0]);
+  } else {
+    await Promise.all(
+        children.arrayRanges.filter(child => child.singular).map(child => populateChildrenIfNeeded(child)));
+  }
+}
 
 export class ObjectTreeWidget extends UI.Widget.Widget {
   #objectTree: ObjectTree|undefined = undefined;
@@ -1425,7 +1462,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
 
   override async performUpdate(): Promise<void> {
     if (this.#objectTree?.expanded) {
-      await ObjectPropertyTreeElement.populateChildrenIfNeeded(this.#objectTree);
+      await populateChildrenIfNeeded(this.#objectTree);
     }
     this.#view(this, {}, this.contentElement);
   }
@@ -1469,7 +1506,6 @@ type ObjectPropertiesSectionView = (input: ObjectPropertiesSectionViewInput, out
     void;
 
 export const OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: ObjectPropertiesSectionView = (input, _output, target) => {
-
   const onRootItemContextMenuHandler = (event: Event): void => {
     event.consume(true);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -1936,14 +1972,9 @@ class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       linkifier?: Components.Linkifier.Linkifier,
       emptyPlaceholder?: string|null,
       ): Promise<void> {
-    await ObjectPropertyTreeElement.populateChildrenIfNeeded(value);
+    await populateChildrenIfNeeded(value);
     ObjectPropertyTreeElement.populateImpl(treeElement, value, skipProto, skipGettersAndSetters, linkifier,
                                            emptyPlaceholder);
-  }
-
-  static async populateChildrenIfNeeded(value: ObjectTreeNodeBase): Promise<void> {
-    const children = await value.populateChildrenIfNeeded();
-    await ArrayGroupingTreeElement.populateChildrenIfNeeded(children);
   }
 
   static populateImpl(
@@ -1985,10 +2016,11 @@ class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   static *
-      createPropertyNodes(
-          {properties, internalProperties, accessors, arrayRanges}: NodeChildren, skipProto: boolean,
-          skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null,
-          isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean):
+      createPropertyNodes({properties, internalProperties, accessors, arrayRanges}: NodeChildren, skipProto: boolean,
+                          skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier,
+                          emptyPlaceholder?: string|null,
+                          isNotDisplayablePropertyCallback?:
+                              (property: SDK.RemoteObject.RemoteObjectProperty) => boolean):
           Generator<UI.TreeOutline.TreeElement> {
     let empty = true;
     // Arrays with large numbers of elements are paginated into arrayRanges.
@@ -2052,9 +2084,9 @@ class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  static populateWithProperties(
-      treeNode: UI.TreeOutline.TreeElement, children: NodeChildren, skipProto: boolean, skipGettersAndSetters: boolean,
-      linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null): void {
+  static populateWithProperties(treeNode: UI.TreeOutline.TreeElement, children: NodeChildren, skipProto: boolean,
+                                skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier,
+                                emptyPlaceholder?: string|null): void {
     for (const childNode of this.createPropertyNodes(
              children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder,
              property => treeNode instanceof ObjectPropertyTreeElement &&
@@ -2159,77 +2191,34 @@ class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  getContextMenu(event: Event): UI.ContextMenu.ContextMenu {
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.appendApplicableItems(this.property);
-    if (this.property.property.symbol) {
-      contextMenu.appendApplicableItems(this.property.property.symbol);
-    }
-    if (this.property.object) {
-      contextMenu.appendApplicableItems(this.property.object);
-      if (this.property.parent?.object instanceof SDK.RemoteObject.LocalJSONObject) {
-        const {object: {value}} = this.property;
-        const propertyValue = typeof value === 'object' ?
-            Platform.StringUtilities.escapeUnicodeAsText(JSON.stringify(value, null, 2)) :
-            value;
-        const copyValueHandler = (): void => {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText((propertyValue as string | undefined));
-        };
-        contextMenu.clipboardSection().appendItem(
-            i18nString(UIStrings.copyValue), copyValueHandler, {jslogContext: 'copy-value'});
-      }
-    }
-    if (!this.property.property.synthetic && this.property.path) {
-      const copyPathHandler = Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance, this.property.path);
-      contextMenu.clipboardSection().appendItem(
-          i18nString(UIStrings.copyPropertyPath), copyPathHandler, {jslogContext: 'copy-property-path'});
-    }
-    if (this.property.parent?.object instanceof SDK.RemoteObject.LocalJSONObject) {
-      contextMenu.viewSection().appendItem(
-          i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH),
-          {jslogContext: 'expand-recursively'});
-      contextMenu.viewSection().appendItem(
-          i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this),
-          {jslogContext: 'collapse-children'});
-    }
-    let root: ObjectTreeNodeBase = this.property;
-    while (root.parent) {
-      root = root.parent;
-    }
-    if (!root.isWasm) {
-      contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.sortPropertiesAlphabetically), () => {
-        root.sortPropertiesAlphabetically = !root.sortPropertiesAlphabetically;
-      }, {
-        checked: root.sortPropertiesAlphabetically,
-        jslogContext: 'sort-properties-alphabetically',
-      });
-    }
-    contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.showAll), () => {
-      root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
-    }, {checked: root.includeNullOrUndefinedValues, jslogContext: 'show-all'});
-    return contextMenu;
-  }
-
   private contextMenuFired(event: Event): void {
-    const contextMenu = this.getContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    populateObjectTreeContextMenu(contextMenu, this.property, {
+      expandRecursively: () => this.expandRecursively(EXPANDABLE_MAX_DEPTH),
+      collapseChildren: () => this.collapseChildren(),
+      sortPropertiesAlphabetically: node => {
+        node.sortPropertiesAlphabetically = !node.sortPropertiesAlphabetically;
+      },
+      onShowAllToggled: node => {
+        node.includeNullOrUndefinedValues = !node.includeNullOrUndefinedValues;
+      },
+    });
+
     void contextMenu.show();
   }
 
   private updateExpandable(): void {
     if (this.property.object) {
-      this.setExpandable(
-          !this.property.object.customPreview() && this.property.object.hasChildren &&
-          !this.property.property.wasThrown);
+      this.setExpandable(!this.property.object.customPreview() && this.property.object.hasChildren &&
+                         !this.property.property.wasThrown);
     } else {
       this.setExpandable(false);
     }
   }
 }
 
-async function arrayRangeGroups(object: SDK.RemoteObject.RemoteObject, fromIndex: number, toIndex: number):
-    Promise<{ranges: number[][]}|null|undefined> {
+async function arrayRangeGroups(object: SDK.RemoteObject.RemoteObject, fromIndex: number,
+                                toIndex: number): Promise<{ranges: number[][]}|null|undefined> {
   return await object.callFunctionJSON(packArrayRanges, [
     {value: fromIndex},
     {value: toIndex},
@@ -2241,9 +2230,8 @@ async function arrayRangeGroups(object: SDK.RemoteObject.RemoteObject, fromIndex
    * This function is called on the RemoteObject.
    * Note: must declare params as optional.
    */
-  function packArrayRanges(
-      this: Object, fromIndex?: number, toIndex?: number, bucketThreshold?: number,
-      sparseIterationThreshold?: number): {
+  function packArrayRanges(this: Object, fromIndex?: number, toIndex?: number, bucketThreshold?: number,
+                           sparseIterationThreshold?: number): {
     ranges: number[][],
   }|undefined {
     if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined ||
@@ -2415,18 +2403,6 @@ class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
                                                       isNotDisplayablePropertyCallback);
   }
 
-  static async populateChildrenIfNeeded(children: NodeChildren): Promise<void> {
-    if (!children.arrayRanges) {
-      return;
-    }
-    if (children.arrayRanges.length === 1) {
-      await ObjectPropertyTreeElement.populateChildrenIfNeeded(children.arrayRanges[0]);
-    } else {
-      await Promise.all(children.arrayRanges.filter(child => child.singular)
-                            .map(child => ObjectPropertyTreeElement.populateChildrenIfNeeded(child)));
-    }
-  }
-
   override onexpand(): void {
     this.#child.expanded = true;
   }
@@ -2457,31 +2433,11 @@ type ExpandableTextView = (input: ExpandableTextViewInput, output: object, targe
 const EXPANDABLE_TEXT_DEFAULT_VIEW: ExpandableTextView = (input, output, target) => {
   const totalBytesText = i18n.ByteUtilities.bytesToString(input.byteCount);
   const canExpand = input.text.length < ExpandableTextPropertyValue.MAX_DISPLAYABLE_TEXT_LENGTH;
-  const onContextMenu = (e: Event): void => {
-    const {target} = e;
-    if (!(target instanceof Element)) {
-      return;
-    }
-    const listItem = target.closest('li');
-    const element = listItem && UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
-    if (!(element instanceof ObjectPropertyTreeElement)) {
-      return;
-    }
-    const contextMenu = element.getContextMenu(e);
-    if (canExpand && !input.expanded) {
-      contextMenu.clipboardSection().appendItem(
-          i18nString(UIStrings.showMoreS, {PH1: totalBytesText}), input.expandText, {jslogContext: 'show-more'});
-    }
-    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copy), input.copyText, {jslogContext: 'copy'});
-    void contextMenu.show();
-    e.consume(true);
-  };
-
   const croppedText = input.text.slice(0, input.maxLength);
 
   render(
       // clang-format off
-        html`<span title=${croppedText + '…'} @contextmenu=${onContextMenu}>
+        html`<span title=${croppedText + '…'}>
                ${input.expanded ? input.text : croppedText}
                <button
                  ?hidden=${input.expanded}
@@ -2499,7 +2455,7 @@ const EXPANDABLE_TEXT_DEFAULT_VIEW: ExpandableTextView = (input, output, target)
                  ></button>
               </span>`,
       // clang-format on
-      target);
+      target, {container: {classes: ['expandable-text-property-value']}});
 };
 
 export class ExpandableTextPropertyValue extends UI.Widget.Widget {
@@ -2527,15 +2483,31 @@ export class ExpandableTextPropertyValue extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  #copyText = (): void => {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#text);
+  };
+
+  #expandText = (): void => {
+    if (!this.#expanded) {
+      this.#expanded = true;
+      this.requestUpdate();
+    }
+  };
+
+  appendApplicableItems(contextMenu: UI.ContextMenu.ContextMenu): void {
+    const totalBytesText = i18n.ByteUtilities.bytesToString(this.#byteCount);
+    const canExpand = this.#text.length < ExpandableTextPropertyValue.MAX_DISPLAYABLE_TEXT_LENGTH;
+    if (canExpand && !this.#expanded) {
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.showMoreS, {PH1: totalBytesText}),
+                                                this.#expandText, {jslogContext: 'show-more'});
+    }
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copy), this.#copyText, {jslogContext: 'copy'});
+  }
+
   override performUpdate(): void {
     const input: ExpandableTextViewInput = {
-      copyText: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#text),
-      expandText: () => {
-        if (!this.#expanded) {
-          this.#expanded = true;
-          this.requestUpdate();
-        }
-      },
+      copyText: this.#copyText,
+      expandText: this.#expandText,
       expanded: this.#expanded,
       byteCount: this.#byteCount,
       maxLength: this.#maxLength,
@@ -2544,3 +2516,20 @@ export class ExpandableTextPropertyValue extends UI.Widget.Widget {
     this.#view(input, {}, this.contentElement);
   }
 }
+
+UI.ContextMenu.registerProvider({
+  contextTypes() {
+    return [ObjectTreeNodeBase];
+  },
+  async loadProvider() {
+    return {
+      appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu): void {
+        const widgetElement = (event.target as Element | null)?.closest('.expandable-text-property-value');
+        const widget = widgetElement && UI.Widget.Widget.get(widgetElement);
+        if (widget instanceof ExpandableTextPropertyValue) {
+          widget.appendApplicableItems(contextMenu);
+        }
+      },
+    };
+  },
+});

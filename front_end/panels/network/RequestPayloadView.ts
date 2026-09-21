@@ -471,21 +471,23 @@ export class RequestPayloadView extends UI.Widget.VBox {
         ObjectUI.ObjectPropertiesSection.populateObjectTreeContextMenu(
             contextMenu,
             objectTree,
-            async () => {
-              await objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
-              this.requestUpdate();
-            },
-            () => {
-              objectTree.collapseRecursively();
-              this.requestUpdate();
-            },
-            () => {
-              objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
-              this.requestUpdate();
-            },
-            () => {
-              objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
-              this.requestUpdate();
+            {
+              expandRecursively: async () => {
+                await objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+                this.requestUpdate();
+              },
+              collapseChildren: () => {
+                objectTree.collapseRecursively();
+                this.requestUpdate();
+              },
+              sortPropertiesAlphabetically: () => {
+                objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
+                this.requestUpdate();
+              },
+              onShowAllToggled: () => {
+                objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
+                this.requestUpdate();
+              },
             },
         );
       },

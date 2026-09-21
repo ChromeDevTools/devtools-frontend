@@ -32,6 +32,7 @@ devtools_ui_module("panel_feedback") {
     "../buttons:bundle",
     "../helpers:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

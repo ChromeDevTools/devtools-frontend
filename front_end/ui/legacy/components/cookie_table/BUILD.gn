@@ -28,6 +28,10 @@ devtools_ui_module("cookie_table") {
     "../../../kit:bundle",
     "../../../lit:bundle",
   ]
+  deps = [
+    ":css_files",
+    "../data_grid:css_files",
+  ]
 }
 
 devtools_entrypoint("bundle") {

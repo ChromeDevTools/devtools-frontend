@@ -23,6 +23,7 @@ devtools_ui_module("linkifier") {
     "../../lit:bundle",
     "../render_coordinator:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

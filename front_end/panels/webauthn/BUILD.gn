@@ -29,6 +29,7 @@ devtools_ui_module("webauthn") {
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

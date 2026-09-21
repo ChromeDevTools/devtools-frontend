@@ -44,6 +44,7 @@ devtools_foundation_module("foundation_unittests") {
 
   ts_deps = [
     ":bundle",
+    "../../core/sdk:bundle",
     "../../testing",
     "../change_tracker:bundle",
     "../comment_manager:bundle",

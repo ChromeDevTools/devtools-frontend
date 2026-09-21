@@ -125,6 +125,10 @@ devtools_ui_module("timeline") {
   ]
 
   visibility = [ "../../component_docs/*" ]
+  deps = [
+    ":css_files",
+    "../../ui/legacy/components/utils:css_files",
+  ]
 }
 
 devtools_entrypoint("bundle") {
@@ -211,6 +215,7 @@ devtools_ui_module("unittests") {
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",

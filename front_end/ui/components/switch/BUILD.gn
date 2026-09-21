@@ -19,6 +19,7 @@ devtools_ui_module("switch_impl") {
     "../../lit:bundle",
     "../../visual_logging:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

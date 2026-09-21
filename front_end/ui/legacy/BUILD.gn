@@ -128,6 +128,7 @@ devtools_ui_module("ui") {
     "../settings:bundle",
     "../visual_logging:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

@@ -247,7 +247,6 @@ ts_library("unittests") {
     "../../generated",
     "../../services/tracing:bundle",
     "../../testing",
-    "../../ui/components/render_coordinator:bundle",
     "../bindings:bundle",
     "../formatter:bundle",
     "../lighthouse:bundle",

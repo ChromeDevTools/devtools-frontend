@@ -17,7 +17,6 @@ devtools_foundation_module("comment_manager") {
   ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
-    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
     "../logs:bundle",
@@ -56,9 +55,7 @@ devtools_foundation_module("foundation_unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
-    "../../core/root:bundle",
     "../../core/sdk:bundle",
-    "../../testing",
     "../logs:bundle",
   ]
 }

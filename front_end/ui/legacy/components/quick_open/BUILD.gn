@@ -36,6 +36,7 @@ devtools_ui_module("quick_open") {
     "../../../settings:bundle",
     "../../../visual_logging:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

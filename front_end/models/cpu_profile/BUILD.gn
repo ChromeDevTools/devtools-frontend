@@ -42,6 +42,5 @@ devtools_foundation_module("foundation_unittests") {
   ts_deps = [
     ":bundle",
     "../../generated",
-    "../../testing",
   ]
 }

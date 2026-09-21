@@ -134,6 +134,7 @@ devtools_foundation_module("foundation_unittests") {
     "../../generated",
     "../../testing",
     "../../third_party/source-map-scopes-codec:bundle",
+    "../formatter:bundle",
     "../persistence:bundle",
     "../stack_trace:bundle",
     "../stack_trace:impl",

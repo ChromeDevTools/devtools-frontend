@@ -22,7 +22,10 @@ devtools_ui_module("icon_button") {
     "IconButton.ts",
   ]
 
-  deps = [ "../../../Images:optimize_images" ]
+  deps = [
+    ":css_files",
+    "../../../Images:optimize_images",
+  ]
 
   ts_deps = [
     "../../kit:bundle",

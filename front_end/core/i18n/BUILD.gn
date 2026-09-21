@@ -21,9 +21,8 @@ devtools_foundation_module("i18n") {
     "time-utilities.ts",
   ]
 
-  deps = [ ":locales_js" ]
-
   ts_deps = [
+    ":locales_js",
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../third_party/i18n:bundle",
@@ -32,7 +31,10 @@ devtools_foundation_module("i18n") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "i18n.ts"
-  ts_deps = [ ":i18n" ]
+  ts_deps = [
+    ":i18n",
+    "../platform:bundle",
+  ]
 
   visibility = [
     # IMPORTANT: Be careful when extending visibility of front_end/core/i18n,

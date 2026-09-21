@@ -33,6 +33,7 @@ devtools_ui_module("issue_counter") {
     "../icon_button:bundle",
     "../render_coordinator:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

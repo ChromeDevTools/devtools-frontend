@@ -34,6 +34,7 @@ devtools_ui_module("animation") {
     "../../ui/visual_logging:bundle",
     "../common:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

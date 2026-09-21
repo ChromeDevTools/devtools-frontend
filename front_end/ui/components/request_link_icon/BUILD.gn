@@ -28,6 +28,7 @@ devtools_ui_module("request_link_icon") {
     "../../visual_logging:bundle",
     "../render_coordinator:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

@@ -40,6 +40,7 @@ devtools_module("inspector_main") {
     "../../ui/settings:bundle",
     "../../ui/visual_logging:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

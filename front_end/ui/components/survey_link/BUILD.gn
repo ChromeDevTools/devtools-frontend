@@ -22,6 +22,7 @@ devtools_ui_module("survey_link") {
     "../../kit:bundle",
     "../../lit:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

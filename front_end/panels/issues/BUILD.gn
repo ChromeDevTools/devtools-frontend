@@ -66,6 +66,7 @@ devtools_ui_module("issues") {
     "../common:bundle",
     "./components:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

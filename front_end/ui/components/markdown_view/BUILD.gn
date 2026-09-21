@@ -36,6 +36,7 @@ devtools_ui_module("markdown_view") {
     "../buttons:bundle",
     "../text_editor:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

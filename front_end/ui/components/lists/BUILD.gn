@@ -20,6 +20,7 @@ devtools_module("lists") {
     "../../lit:bundle",
     "../buttons:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

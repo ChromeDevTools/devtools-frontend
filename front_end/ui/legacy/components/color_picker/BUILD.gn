@@ -35,6 +35,7 @@ devtools_ui_module("color_picker") {
     "../../../../ui/visual_logging:bundle",
     "../../../helpers:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

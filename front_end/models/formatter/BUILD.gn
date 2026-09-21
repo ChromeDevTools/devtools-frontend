@@ -33,6 +33,7 @@ devtools_entrypoint("bundle") {
     "../../models/ai_assistance/*",
     "../../models/bindings/*",
     "../../models/breakpoints/*",
+    "../../models/persistence/*",
     "../../models/source_map_scopes/*",
     "../../models/workspace_diff/*",
     "../../panels/ai_assistance/*",

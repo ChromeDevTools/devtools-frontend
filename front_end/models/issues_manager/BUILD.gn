@@ -399,7 +399,6 @@ devtools_foundation_module("foundation_unittests") {
 
   ts_deps = [
     ":bundle",
-    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",

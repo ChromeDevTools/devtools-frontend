@@ -37,6 +37,7 @@ devtools_ui_module("mobile_throttling") {
     "../../ui/visual_logging:bundle",
     "../common:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -87,6 +88,7 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../models/crux-manager:bundle",
     "../../testing",
     "../../ui/legacy:bundle",

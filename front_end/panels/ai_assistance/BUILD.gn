@@ -167,7 +167,6 @@ devtools_ui_module("unittests") {
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../panels/lighthouse:bundle",
-    "../../panels/network:bundle",
     "../../testing",
     "../../third_party/marked:bundle",
     "../../ui/components/buttons:bundle",

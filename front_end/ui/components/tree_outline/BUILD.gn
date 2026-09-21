@@ -26,6 +26,7 @@ devtools_ui_module("tree_outline") {
     "../code_highlighter:bundle",
     "../render_coordinator:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

@@ -54,7 +54,6 @@ devtools_foundation_module("host") {
     ":host_base",
     ":host_stub",
     "../../core/common:bundle",
-    "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
   ]
@@ -66,7 +65,6 @@ devtools_entrypoint("bundle") {
   ts_deps = [
     ":host",
     ":host_base",
-    ":host_stub",
   ]
 
   visibility = [ "*" ]

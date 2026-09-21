@@ -75,6 +75,7 @@ devtools_ui_module("insights") {
     "../../overlays:bundle",
     "../../utils:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

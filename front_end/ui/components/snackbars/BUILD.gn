@@ -23,6 +23,7 @@ devtools_ui_module("snackbar") {
     "../../visual_logging:bundle",
     "../buttons:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

@@ -55,6 +55,7 @@ devtools_ui_module("components") {
     "../../../../ui/visual_logging:bundle",
     "../helper:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

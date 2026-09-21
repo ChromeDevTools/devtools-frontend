@@ -32,6 +32,7 @@ devtools_ui_module("button") {
     "../../../ui/visual_logging:bundle",
     "../../kit:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

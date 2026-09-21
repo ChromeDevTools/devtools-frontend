@@ -61,6 +61,7 @@ devtools_ui_module("perf_ui") {
   ]
 
   visibility = [ "../../../../component_docs/perf_piechart" ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

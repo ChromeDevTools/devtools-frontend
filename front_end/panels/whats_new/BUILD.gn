@@ -34,6 +34,7 @@ devtools_ui_module("whats_new") {
   ]
 
   public_deps = [ "./resources:whats_new_resources" ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

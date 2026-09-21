@@ -19,6 +19,7 @@ devtools_ui_module("expandable_list") {
     "../../lit:bundle",
     "../../visual_logging:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

@@ -16,6 +16,7 @@ devtools_ui_module("spinner") {
   sources = [ "Spinner.ts" ]
 
   ts_deps = [ "../../lit:bundle" ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

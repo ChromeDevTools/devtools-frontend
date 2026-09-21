@@ -101,6 +101,7 @@ devtools_ui_module("application") {
     "../../ui/components/buttons:bundle",
     "../../ui/components/expandable_list:bundle",
     "../../ui/components/icon_button:bundle",
+    "../../ui/components/input:bundle",
     "../../ui/components/legacy_wrapper:bundle",
     "../../ui/components/lists:bundle",
     "../../ui/components/node_text:bundle",
@@ -125,6 +126,12 @@ devtools_ui_module("application") {
     "./components:bundle",
     "./preloading/components:bundle",
     "./preloading/helper:bundle",
+  ]
+  deps = [
+    ":css_files",
+    "../../ui/legacy:css_files",
+    "../../ui/legacy/components/data_grid:css_files",
+    "../console:css_files",
   ]
 }
 
@@ -225,4 +232,5 @@ devtools_ui_module("unittests") {
     "../protocol_monitor:bundle",
     "preloading/components:bundle",
   ]
+  deps = [ ":css_files" ]
 }

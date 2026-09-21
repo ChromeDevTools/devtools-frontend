@@ -49,6 +49,7 @@ devtools_ui_module("object_ui") {
     "../../../lit:bundle",
     "../../../visual_logging:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

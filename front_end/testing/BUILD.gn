@@ -160,7 +160,6 @@ ts_library("unittests") {
   ]
 
   ts_deps = [
-    ":foundation_unittests",
     ":testing",
     "../core/protocol_client:bundle",
     "../generated",

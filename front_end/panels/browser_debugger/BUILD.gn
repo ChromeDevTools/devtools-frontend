@@ -40,6 +40,7 @@ devtools_ui_module("browser_debugger") {
     "../../ui/visual_logging:bundle",
     "../common:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

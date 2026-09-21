@@ -20,9 +20,7 @@ devtools_foundation_module("emulation") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
-    "../../core/text_utils:bundle",
     "../../generated",
-    "../workspace:bundle",
   ]
 }
 

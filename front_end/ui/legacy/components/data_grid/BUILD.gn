@@ -36,6 +36,7 @@ devtools_ui_module("data_grid") {
     "../../../lit:bundle",
     "../../../visual_logging:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

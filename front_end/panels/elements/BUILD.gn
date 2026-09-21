@@ -121,6 +121,7 @@ devtools_ui_module("elements") {
   ]
 
   visibility = [ "../../component_docs/*" ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -221,12 +222,12 @@ devtools_ui_module("unittests") {
     "../../models/bindings:bundle",
     "../../models/change_tracker:bundle",
     "../../models/computed_style:bundle",
-    "../../models/elements:bundle",
     "../../models/issues_manager:bundle",
     "../../models/workspace:bundle",
     "../../testing",
     "../../third_party/codemirror.next:bundle",
     "../../ui/components/adorners:bundle",
+    "../../ui/components/highlighting:bundle",
     "../../ui/components/text_editor:bundle",
     "../../ui/components/tooltips:bundle",
     "../../ui/components/tree_outline:bundle",

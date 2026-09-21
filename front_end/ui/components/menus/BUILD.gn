@@ -30,6 +30,7 @@ devtools_ui_module("menus") {
     "../helpers:bundle",
     "../render_coordinator:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

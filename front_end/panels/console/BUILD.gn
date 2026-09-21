@@ -37,7 +37,10 @@ devtools_ui_module("console") {
     "SymbolizedErrorWidget.ts",
   ]
 
-  deps = [ "../../ui/legacy/components/object_ui:css_files" ]
+  deps = [
+    ":css_files",
+    "../../ui/legacy/components/object_ui:css_files",
+  ]
 
   ts_deps = [
     "../../core/common:bundle",
@@ -159,6 +162,8 @@ devtools_ui_module("unittests") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../../ui/settings:bundle",
     "../common:bundle",
   ]
+  deps = [ ":css_files" ]
 }

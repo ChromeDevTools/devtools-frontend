@@ -68,6 +68,10 @@ devtools_ui_module("profiler") {
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
+  deps = [
+    ":css_files",
+    "../../ui/legacy/components/object_ui:css_files",
+  ]
 }
 
 devtools_entrypoint("bundle") {

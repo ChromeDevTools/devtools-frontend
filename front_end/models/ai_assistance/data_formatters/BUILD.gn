@@ -19,8 +19,6 @@ ts_library("unittests") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../testing",
-    "../../bindings:bundle",
-    "../../workspace:bundle",
   ]
 }
 
@@ -44,6 +42,8 @@ devtools_foundation_module("foundation_unittests") {
     "../../../testing",
     "../../crux-manager:bundle",
     "../../lighthouse:bundle",
+    "../../logs:bundle",
+    "../../network_time_calculator:bundle",
     "../../trace:bundle",
     "../../workspace:bundle",
   ]

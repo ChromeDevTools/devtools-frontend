@@ -114,6 +114,11 @@ devtools_ui_module("network") {
     "./components:bundle",
     "./forward:bundle",
   ]
+  deps = [
+    ":css_files",
+    "../../ui/legacy/components/data_grid:css_files",
+    "../../ui/legacy/components/object_ui:css_files",
+  ]
 }
 
 devtools_entrypoint("bundle") {
@@ -198,7 +203,6 @@ devtools_ui_module("unittests") {
 
   ts_deps = [
     ":bundle",
-    ":meta",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -215,6 +219,7 @@ devtools_ui_module("unittests") {
     "../../testing",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/components/source_frame:bundle",

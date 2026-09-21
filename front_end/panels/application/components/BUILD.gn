@@ -64,6 +64,7 @@ devtools_ui_module("components") {
     "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -109,5 +110,6 @@ devtools_ui_module("unittests") {
     "../../../ui/components/report_view:bundle",
     "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
+    "../../../ui/legacy/components/utils:bundle",
   ]
 }

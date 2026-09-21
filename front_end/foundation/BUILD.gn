@@ -56,7 +56,6 @@ devtools_api_test_module("api_tests") {
   ts_deps = [
     "../core/root:bundle",
     "../core/sdk:bundle",
-    "../testing",
   ]
 }
 

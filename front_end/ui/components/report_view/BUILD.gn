@@ -27,6 +27,7 @@ devtools_ui_module("report_view") {
     "../../legacy/components/utils:bundle",
     "../../lit:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

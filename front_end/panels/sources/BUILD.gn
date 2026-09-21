@@ -111,10 +111,15 @@ devtools_ui_module("sources") {
     "../../ui/legacy/components/source_frame:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
+    "../../ui/settings:bundle",
     "../../ui/visual_logging:bundle",
     "../common:bundle",
     "../utils:bundle",
     "./components:bundle",
+  ]
+  deps = [
+    ":css_files",
+    "../../ui/legacy/components/object_ui:css_files",
   ]
 }
 

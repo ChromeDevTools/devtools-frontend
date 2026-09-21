@@ -65,6 +65,7 @@ devtools_ui_module("text_editor") {
     "../spinners:bundle",
     "../tooltips:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

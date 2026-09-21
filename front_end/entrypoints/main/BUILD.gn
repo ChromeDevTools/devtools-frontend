@@ -43,6 +43,7 @@ devtools_module("main") {
     "../../ui/settings:bundle",
     "../../ui/visual_logging:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 generate_css("css_files") {

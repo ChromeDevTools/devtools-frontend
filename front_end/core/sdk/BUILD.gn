@@ -173,18 +173,13 @@ ts_library("unittests") {
 
   ts_deps = [
     ":bundle",
-    "../../entrypoints/formatter_worker:bundle",
     "../../generated",
-    "../../models/formatter:bundle",
-    "../../models/trace:bundle",
     "../../testing",
     "../../third_party/codemirror.next:bundle",
-    "../../third_party/source-map-scopes-codec:bundle",
     "../common:bundle",
     "../platform:bundle",
     "../protocol_client:bundle",
     "../root:bundle",
-    "../text_utils:bundle",
   ]
 }
 
@@ -259,7 +254,6 @@ devtools_foundation_module("foundation_unittests") {
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../testing",
-    "../../third_party/codemirror.next:bundle",
     "../../third_party/source-map-scopes-codec:bundle",
     "../common:bundle",
     "../host:bundle",
@@ -280,7 +274,6 @@ devtools_api_test_module("api_tests") {
 
   ts_deps = [
     ":bundle",
-    "../../testing",
     "../common:bundle",
   ]
 }

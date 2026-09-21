@@ -24,6 +24,7 @@ devtools_ui_module("emulation") {
     "../../../ui/visual_logging:bundle",
     "./components:bundle",
   ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

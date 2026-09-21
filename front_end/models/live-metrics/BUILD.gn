@@ -52,6 +52,7 @@ devtools_foundation_module("foundation_unittests") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",
+    "../../third_party/web-vitals:bundle",
     "../trace:bundle",
     "web-vitals-injected/spec:bundle",
   ]

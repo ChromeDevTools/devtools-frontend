@@ -176,6 +176,17 @@ describe('CD4ABridge', () => {
     assert.isFalse(eventFired);
   });
 
+  it('delegates setAgentAttached to CommentManager', () => {
+    const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager);
+    assert.isFalse(commentManager.isAgentAttached());
+
+    bridge.setAgentAttached(true);
+    assert.isTrue(commentManager.isAgentAttached());
+
+    bridge.setAgentAttached(false);
+    assert.isFalse(commentManager.isAgentAttached());
+  });
+
   describe('reveal', () => {
     let mockHost: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI;
     let showPanelSpy: sinon.SinonSpy;

@@ -4623,6 +4623,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
           enabled: true,
         },
       });
+      universe.commentManager.setAgentAttached(true);
       tracker = universe.changeTracker;
       const testDomModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
       rootNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {

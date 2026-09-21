@@ -22,6 +22,7 @@ describeWithEnvironment('CommentsStatusBarPill', () => {
   async function createWidget() {
     const view = createViewFunctionStub(CommentsStatusBarPill);
     const commentManager = new CommentManager.CommentManager.CommentManager();
+    commentManager.setAgentAttached(true);
     const widget = new CommentsStatusBarPill(undefined, [commentManager], view);
 
     widget.wasShown();
@@ -50,6 +51,10 @@ describeWithEnvironment('CommentsStatusBarPill', () => {
     thread.save();
     const inputAfterSave = await view.nextInput;
     assert.lengthOf(inputAfterSave.threads, 1);
+
+    commentManager.setAgentAttached(false);
+    const inputAfterDetach = await view.nextInput;
+    assert.deepEqual(inputAfterDetach.threads, []);
   });
 
   it('unsubscribes from commentManager on willHide', async () => {
@@ -61,6 +66,10 @@ describeWithEnvironment('CommentsStatusBarPill', () => {
     sinon.assert.calledWith(
         removeListenerSpy,
         CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED,
+    );
+    sinon.assert.calledWith(
+        removeListenerSpy,
+        CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
     );
   });
 });

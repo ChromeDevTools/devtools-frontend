@@ -19,6 +19,10 @@ describe('Click-to-Comment mode across DevTools panels', function() {
         enabled: true,
       },
     });
+    await devToolsPage.evaluate(() => {
+      // @ts-expect-error globalThis.universe is set by MainImpl
+      globalThis.universe.cd4aBridge.setAgentAttached(true);
+    });
     await inspectedPage.goToResource('cross_tool/default.html');
     await devToolsPage.closeAllCloseableTabs();
   }

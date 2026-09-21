@@ -72,6 +72,11 @@ export class CommentsStatusBarPill extends UI.Widget.Widget {
         this.#onThreadsChanged,
         this,
     );
+    this.#commentManager.addEventListener(
+        CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+        this.#onThreadsChanged,
+        this,
+    );
     this.requestUpdate();
   }
 
@@ -81,12 +86,19 @@ export class CommentsStatusBarPill extends UI.Widget.Widget {
         this.#onThreadsChanged,
         this,
     );
+    this.#commentManager.removeEventListener(
+        CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+        this.#onThreadsChanged,
+        this,
+    );
     super.willHide();
   }
 
   override performUpdate(): void {
     const viewInput: ViewInput = {
-      threads: this.#commentManager.getCommentThreads().filter(thread => thread.status !== 'DRAFT'),
+      threads: this.#commentManager.isAgentAttached() ?
+          this.#commentManager.getCommentThreads().filter(thread => thread.status !== 'DRAFT') :
+          [],
       onPillClick: this.#handlePillClick,
     };
     this.#view(viewInput, undefined, this.contentElement);

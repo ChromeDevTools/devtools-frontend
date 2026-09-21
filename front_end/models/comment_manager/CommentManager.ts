@@ -32,11 +32,13 @@ export {
 export const enum Events {
   COMMENT_THREADS_CHANGED = 'CommentThreadsChanged',
   COMMENT_MODE_CHANGED = 'CommentModeChanged',
+  AGENT_ATTACHED_CHANGED = 'AgentAttachedChanged',
 }
 
 export interface EventTypes {
   [Events.COMMENT_THREADS_CHANGED]: CommentThread[];
   [Events.COMMENT_MODE_CHANGED]: boolean;
+  [Events.AGENT_ATTACHED_CHANGED]: boolean;
 }
 
 /**
@@ -45,6 +47,7 @@ export interface EventTypes {
 export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #commentThreads = new Map<string, CommentThread>();
   #commentMode = false;
+  #agentAttached = false;
 
   constructor() {
     super();
@@ -53,6 +56,21 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   #onThreadChanged(): void {
     this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, this.getCommentThreads());
+  }
+
+  setAgentAttached(value: boolean): void {
+    if (this.#agentAttached === value) {
+      return;
+    }
+    this.#agentAttached = value;
+    if (!value) {
+      this.setCommentMode(false);
+    }
+    this.dispatchEventToListeners(Events.AGENT_ATTACHED_CHANGED, value);
+  }
+
+  isAgentAttached(): boolean {
+    return this.#agentAttached;
   }
 
   setCommentMode(active: boolean): void {

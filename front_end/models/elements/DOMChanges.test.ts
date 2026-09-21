@@ -22,6 +22,7 @@ describe('DOMChanges', () => {
       },
     });
     commentManager = new CommentManager.CommentManager.CommentManager();
+    commentManager.setAgentAttached(true);
     tracker = new ChangeTracker.ChangeTracker.ChangeTracker(commentManager);
   });
 

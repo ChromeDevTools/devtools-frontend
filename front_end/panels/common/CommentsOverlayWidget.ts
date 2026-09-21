@@ -163,6 +163,11 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.#onCommentModeChanged,
         this,
     );
+    this.#commentManager.addEventListener(
+        CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+        this.#onAgentAttachedChanged,
+        this,
+    );
 
     this.requestUpdate();
   }
@@ -190,8 +195,23 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.#onCommentModeChanged,
         this,
     );
+    this.#commentManager.removeEventListener(
+        CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+        this.#onAgentAttachedChanged,
+        this,
+    );
 
     super.willHide();
+  }
+
+  #onAgentAttachedChanged(
+      event: Common.EventTarget.EventTargetEvent<
+          CommentManager.CommentManager.EventTypes[CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED]>,
+      ): void {
+    if (!event.data) {
+      this.#activeThreadId = null;
+    }
+    this.requestUpdate();
   }
 
   #onCommentModeChanged(
@@ -271,6 +291,25 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   };
 
   override async performUpdate(signal?: AbortSignal): Promise<void> {
+    if (!this.#commentManager.isAgentAttached()) {
+      this.#view(
+          {
+            pins: [],
+            highlights: [],
+            hoverHighlight: null,
+            commentMode: false,
+            onPinClick: this.#handlePinClick,
+            activeThread: null,
+            activePin: null,
+            title: {text: ''},
+            onAddComment: () => {},
+          },
+          undefined,
+          this.contentElement,
+      );
+      return;
+    }
+
     const activeThread =
         this.#activeThreadId ? this.#commentManager.getCommentThread(this.#activeThreadId) ?? null : null;
     const title = await this.#getOrComputeTitle(activeThread?.anchor ?? null);
@@ -332,5 +371,29 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       widgetInstance.detach();
       widgetInstance = null;
     }
+  }
+}
+
+export class ButtonProvider implements UI.Toolbar.Provider {
+  readonly #button: UI.Toolbar.ToolbarButton;
+  readonly #commentManager: CommentManager.CommentManager.CommentManager;
+
+  constructor(commentManager?: CommentManager.CommentManager.CommentManager) {
+    this.#commentManager = commentManager ??
+        Root.DevToolsContext.globalInstance().get(
+            CommentManager.CommentManager.CommentManager,
+        );
+    this.#button = UI.Toolbar.Toolbar.createActionButton('comments.toggle-comment-mode');
+    this.#button.setVisible(this.#commentManager.isAgentAttached());
+    this.#commentManager.addEventListener(
+        CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+        event => {
+          this.#button.setVisible(event.data);
+        },
+    );
+  }
+
+  item(): UI.Toolbar.ToolbarItem|null {
+    return this.#button;
   }
 }

@@ -38,6 +38,31 @@ describe('CommentManager', () => {
     assert.deepEqual(modeChangedEvents, [true, false]);
   });
 
+  it('manages agent attached state and dispatches AGENT_ATTACHED_CHANGED event', () => {
+    const attachedChangedEvents: boolean[] = [];
+    manager.addEventListener(CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED, event => {
+      attachedChangedEvents.push(event.data);
+    });
+
+    assert.isFalse(manager.isAgentAttached());
+
+    manager.setAgentAttached(true);
+    assert.isTrue(manager.isAgentAttached());
+    assert.deepEqual(attachedChangedEvents, [true]);
+
+    // Setting same value should not dispatch again
+    manager.setAgentAttached(true);
+    assert.deepEqual(attachedChangedEvents, [true]);
+
+    manager.setCommentMode(true);
+    assert.isTrue(manager.isCommentMode());
+
+    manager.setAgentAttached(false);
+    assert.isFalse(manager.isAgentAttached());
+    assert.isFalse(manager.isCommentMode());
+    assert.deepEqual(attachedChangedEvents, [true, false]);
+  });
+
   it('creates and retrieves comment threads and dispatches COMMENT_THREADS_CHANGED event', () => {
     const threadChangedEvents: CommentManager.CommentManager.CommentThread[][] = [];
     manager.addEventListener(CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED, event => {

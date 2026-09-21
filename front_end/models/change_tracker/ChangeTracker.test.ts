@@ -20,6 +20,7 @@ describe('ChangeTracker', () => {
       },
     });
     commentManager = new CommentManager.CommentManager.CommentManager();
+    commentManager.setAgentAttached(true);
     tracker = new ChangeTracker.ChangeTracker.ChangeTracker(commentManager);
   });
 
@@ -112,9 +113,20 @@ describe('ChangeTracker', () => {
     assert.lengthOf(commentManager.getCommentThreads(), 0);
   });
 
+  it('does not track changes or create comment threads when agent is not attached', () => {
+    commentManager.setAgentAttached(false);
+
+    const record = tracker.trackChange('Modified node', nodeAnchor(1));
+    assert.isNull(record);
+    assert.isEmpty(tracker.getChanges());
+    assert.lengthOf(commentManager.getCommentThreads(), 0);
+  });
+
   it('allows creating multiple independent instances', () => {
     const cm1 = new CommentManager.CommentManager.CommentManager();
     const cm2 = new CommentManager.CommentManager.CommentManager();
+    cm1.setAgentAttached(true);
+    cm2.setAgentAttached(true);
     const instance1 = new ChangeTracker.ChangeTracker.ChangeTracker(cm1);
     const instance2 = new ChangeTracker.ChangeTracker.ChangeTracker(cm2);
     assert.notStrictEqual(instance1, instance2);

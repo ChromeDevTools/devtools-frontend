@@ -2385,6 +2385,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
       },
     });
     universe = new TestUniverse();
+    universe.commentManager.setAgentAttached(true);
     tracker = universe.changeTracker;
     setTestUniverseForWidgets(universe);
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')

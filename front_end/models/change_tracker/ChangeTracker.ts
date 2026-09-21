@@ -25,7 +25,7 @@ export class ChangeTracker {
   }
 
   get isTracking(): boolean {
-    return Boolean(Root.Runtime.hostConfig.devToolsComments?.enabled);
+    return Boolean(Root.Runtime.hostConfig.devToolsComments?.enabled) && this.#commentManager.isAgentAttached();
   }
 
   trackChange(

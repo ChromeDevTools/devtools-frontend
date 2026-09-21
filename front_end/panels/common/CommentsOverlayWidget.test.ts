@@ -19,6 +19,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
 
   beforeEach(() => {
     commentManager = new CommentManager.CommentManager.CommentManager();
+    commentManager.setAgentAttached(true);
     overlayManager = new Comments.CommentOverlayManager.CommentOverlayManager(commentManager);
   });
 
@@ -243,6 +244,53 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     const handled = delegate.handleAction(context, 'comments.toggle-comment-mode');
     assert.isTrue(handled);
     assert.isTrue(commentManager.isCommentMode());
+  });
+
+  it('updates ButtonProvider item visibility when agentAttached changes', () => {
+    commentManager.setAgentAttached(false);
+    UI.ActionRegistration.registerActionExtension({
+      category: UI.ActionRegistration.ActionCategory.GLOBAL,
+      actionId: 'comments.toggle-comment-mode',
+      toggleable: true,
+    });
+    UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    const provider = new PanelCommon.CommentsOverlayWidget.ButtonProvider(commentManager);
+    const item = provider.item();
+    assert.exists(item);
+    assert.isFalse(item.visible());
+
+    commentManager.setAgentAttached(true);
+    assert.isTrue(item.visible());
+
+    commentManager.setAgentAttached(false);
+    assert.isFalse(item.visible());
+  });
+
+  it('hides active thread widget, pins, and highlights when agent detaches', async () => {
+    const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
+        undefined,
+        [commentManager],
+        view,
+    );
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.wasShown();
+    await view.nextInput;
+
+    commentManager.setCommentMode(true);
+    await view.nextInput;
+
+    const thread = commentManager.createCommentThread({vePath: 'Panel: elements', textSignature: 'div'});
+    const inputWithDraft = await view.nextInput;
+    assert.strictEqual(inputWithDraft.activeThread, thread);
+
+    commentManager.setAgentAttached(false);
+    const inputAfterDetach = await view.nextInput;
+    assert.isNull(inputAfterDetach.activeThread);
+    assert.isNull(inputAfterDetach.activePin);
+    assert.isEmpty(inputAfterDetach.pins);
+    assert.isEmpty(inputAfterDetach.highlights);
+    assert.isFalse(inputAfterDetach.commentMode);
   });
 
   it('resets draft text when clicking a different element while a draft is open', async () => {

@@ -132,8 +132,8 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     });
   }
 
-  takeComments(): CommentThread[] {
-    return this.getCommentThreads();
+  setAgentAttached(value: boolean): void {
+    this.#commentManager.setAgentAttached(value);
   }
 
   resolveCommentThread(threadId: string, replyText?: string): boolean {

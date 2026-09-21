@@ -65,7 +65,10 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 UI.Toolbar.registerToolbarItem({
-  actionId: 'comments.toggle-comment-mode',
+  async loadItem() {
+    const Common = await loadCommonModule();
+    return new Common.CommentsOverlayWidget.ButtonProvider();
+  },
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,
   order: 1,
   condition: isCommentsEnabled,

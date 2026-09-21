@@ -27,6 +27,7 @@ devtools_module("main") {
     "../../foundation:bundle",
     "../../models/ai_assistance:bundle",
     "../../models/badges:bundle",
+    "../../models/comment_manager:bundle",
     "../../models/crux-manager:bundle",
     "../../models/persistence:bundle",
     "../../models/workspace:bundle",

@@ -44,6 +44,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Foundation from '../../foundation/foundation.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../models/badges/badges.js';
+import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -554,7 +555,13 @@ export class MainImpl {
           inspectorView.displaySelectOverrideFolderInfobar(event.data);
         });
     await inspectorView.createToolbars();
-    inspectorView.renderStatusBar();
+    inspectorView.renderStatusBar(this.#universe.commentManager.isAgentAttached());
+    this.#universe.commentManager.addEventListener(
+        CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+        event => {
+          inspectorView.renderStatusBar(event.data);
+        },
+    );
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.loadCompleted();
 
     // Initialize elements for the live announcer functionality for a11y.

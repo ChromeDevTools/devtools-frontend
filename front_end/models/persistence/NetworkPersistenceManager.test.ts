@@ -262,6 +262,16 @@ describe('NetworkPersistenceManager', () => {
         urlString`mailto:test@example.com`));
     assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
         urlString`vbscript:alert(1)`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`https://./.headers`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`http://./script.js`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`https://../.headers`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`https:///.headers`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`http:///victim.com/script.js`));
     assert.isFalse(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
         urlString`https://www.example.com/script.js`));
     assert.isFalse(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
@@ -286,6 +296,14 @@ describe('NetworkPersistenceManager', () => {
     assert.strictEqual(networkPersistenceManager.fileUrlFromNetworkUrl(invalidUrl),
                        Platform.DevToolsPath.EmptyUrlString);
     assert.isNull(networkPersistenceManager.getHeadersUISourceCodeFromUrl(invalidUrl));
+
+    const dotHostUrl = urlString`https://./.headers`;
+    assert.strictEqual(networkPersistenceManager.rawPathFromUrl(dotHostUrl), Platform.DevToolsPath.EmptyRawPathString);
+    assert.strictEqual(networkPersistenceManager.encodedPathFromUrl(dotHostUrl),
+                       Platform.DevToolsPath.EmptyEncodedPathString);
+    assert.strictEqual(networkPersistenceManager.fileUrlFromNetworkUrl(dotHostUrl),
+                       Platform.DevToolsPath.EmptyUrlString);
+    assert.isNull(networkPersistenceManager.getHeadersUISourceCodeFromUrl(dotHostUrl));
   });
 
   it('encodes path traversal components in local path parts', () => {
@@ -293,6 +311,29 @@ describe('NetworkPersistenceManager', () => {
         'data:/../victim.com/script.js' as Platform.DevToolsPath.EncodedPathString);
     assert.isFalse(parts.includes('..'));
     assert.isTrue(parts.includes('%2E%2E'));
+
+    const singleDotParts =
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.encodeEncodedPathToLocalPathParts(
+            './.headers' as Platform.DevToolsPath.EncodedPathString);
+    assert.isFalse(singleDotParts.includes('.'));
+    assert.deepEqual(singleDotParts, ['%2E', '.headers']);
+  });
+
+  it('does not allow overrides for dot-host URLs or plant .headers via content overrides', async () => {
+    for (const url of ['https://./.headers', 'https://./victim.com/.headers', 'https:///.headers',
+                       'https://www.example.com/.headers']) {
+      const {uiSourceCode} = setUpEnvironmentWithUISourceCode(url, Common.ResourceType.resourceTypes.Script);
+      const networkPersistenceManager = await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+      const overridesProject = networkPersistenceManager.project();
+      assert.exists(overridesProject);
+      const createFileSpy = sinon.spy(overridesProject, 'createFile');
+
+      await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
+      await networkPersistenceManager.saveUISourceCodeForOverrides(uiSourceCode);
+
+      createFileSpy.restore();
+      assert.isTrue(createFileSpy.notCalled, `should not write an override file for ${url}`);
+    }
   });
 });
 
@@ -539,8 +580,8 @@ describe('NetworkPersistenceManager', () => {
       },
       {
         url: 'www.example.com/.',
-        raw: 'www.example.com/.',
-        encoded: 'www.example.com/',
+        raw: 'www.example.com/%2E',
+        encoded: 'www.example.com/%252E',
       },
       {
         url: 'localhost:8090/endswith.',

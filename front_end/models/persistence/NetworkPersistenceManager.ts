@@ -270,6 +270,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
           encodeURI(pathPart).replace(/[\/\*]/g, match => '%' + match[0].charCodeAt(0).toString(16).toUpperCase());
       if (encodedName === '..') {
         encodedName = '%2E%2E';
+      } else if (encodedName === '.') {
+        encodedName = '%2E';
       }
       if (Host.Platform.isWin()) {
         // Windows does not allow ':' and '?' in filenames
@@ -335,7 +337,10 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       if (!encodedFilePath) {
         return null;
       }
-      const encodedPath = Common.ParsedURL.ParsedURL.substring(encodedFilePath, 0, encodedFilePath.lastIndexOf('/'));
+      const encodedPath = Common.ParsedURL.ParsedURL.substr(encodedFilePath, 0, encodedFilePath.lastIndexOf('/'));
+      if (!encodedPath) {
+        return null;
+      }
       uiSourceCode = await this.#project.createFile(encodedPath, HEADERS_FILENAME, '');
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideFileCreated);
     }
@@ -525,6 +530,10 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const encodedFileName = Common.ParsedURL.ParsedURL.substring(encodedPath, lastIndexOfSlash + 1);
     const rawFileName = Common.ParsedURL.ParsedURL.encodedPathToRawPathString(encodedFileName);
     encodedPath = Common.ParsedURL.ParsedURL.substr(encodedPath, 0, lastIndexOfSlash);
+    if (!encodedPath || rawFileName === HEADERS_FILENAME) {
+      this.#savingForOverrides.delete(uiSourceCode);
+      return;
+    }
     if (this.#project) {
       await this.#project.createFile(encodedPath, rawFileName, content ?? '', isEncoded);
     }
@@ -564,7 +573,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const relativePathParts = FileSystemWorkspaceBinding.relativePath(uiSourceCode);
     // Decode twice to handle paths generated on Windows OS.
     const host = this.decodeLocalPathToUrlPath(this.decodeLocalPathToUrlPath(relativePathParts[0] || '')).toLowerCase();
-    return ['chrome:', 'data:', 'blob:', 'javascript:', 'about:', 'mailto:', 'vbscript:'].includes(host) ||
+    return ['chrome:', 'data:', 'blob:', 'javascript:', 'about:', 'mailto:', 'vbscript:', '.', '..'].includes(host) ||
         forbiddenUrls.includes(host);
   }
 
@@ -577,6 +586,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const url = Common.ParsedURL.ParsedURL.fromString(urlString);
     if (!url) {
       return false;
+    }
+    if ((url.scheme === 'http' || url.scheme === 'https') && (!url.host || url.host === '.' || url.host === '..')) {
+      return true;
     }
     return !['http', 'https', 'file'].includes(url.scheme) || forbiddenUrls.includes(url.host);
   }

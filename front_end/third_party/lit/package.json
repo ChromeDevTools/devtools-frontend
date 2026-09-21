@@ -6,6 +6,9 @@
     "lit": "3.3.3"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "16.0.3",
+    "@rollup/plugin-terser": "1.0.0",
+    "rollup": "4.62.4",
     "rollup-plugin-dts": "6.4.1"
   }
 }

@@ -10,6 +10,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as EventListeners from './event_listeners.js';
 
@@ -294,6 +295,90 @@ describeWithEnvironment('EventListenersView', () => {
     assert.exists(siblingMouseoverTreeElement);
     assert.isFalse(siblingMouseoverTreeElement.hidden);
     assert.lengthOf(siblingMouseoverTreeElement.children(), 1);
+  });
+
+  it('resets the linkifier on view updates', async () => {
+    const target = createTarget();
+    const domDebuggerModel = target.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+    assert.exists(domDebuggerModel);
+    const {eventTarget} = createMockEventTarget(target);
+    const clickListener = createMockListener({
+      domDebuggerModel,
+      eventTarget,
+      type: 'click',
+    });
+    sinon.stub(domDebuggerModel, 'eventListeners').withArgs(eventTarget).resolves([clickListener]);
+
+    const view = createViewFunctionStub(EventListeners.EventListenersView.EventListenersView);
+    const eventListenersView = new EventListeners.EventListenersView.EventListenersView(undefined, view);
+
+    eventListenersView.objects = [];
+    const {linkifier} = await view.nextInput;
+    const resetSpy = sinon.spy(linkifier, 'reset');
+
+    eventListenersView.objects = [eventTarget];
+    await view.nextInput;
+    sinon.assert.calledOnce(resetSpy);
+
+    eventListenersView.filter = {showFramework: true, showPassive: true, showBlocking: true};
+    await view.nextInput;
+    sinon.assert.calledTwice(resetSpy);
+
+    view.input.togglePassiveListener(clickListener);
+    await view.nextInput;
+    sinon.assert.calledThrice(resetSpy);
+
+    view.input.removeListener(clickListener);
+    await view.nextInput;
+    sinon.assert.callCount(resetSpy, 4);
+  });
+
+  it('does not show stale event listeners when objects change while loading', async () => {
+    const target = createTarget();
+    const domDebuggerModel = target.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+    assert.exists(domDebuggerModel);
+
+    const {eventTarget: node1} = createMockEventTarget(target, '1');
+    const {eventTarget: node2} = createMockEventTarget(target, '2');
+
+    const clickListener1 = createMockListener({
+      domDebuggerModel,
+      eventTarget: node1,
+      type: 'click1',
+    });
+
+    const clickListener2 = createMockListener({
+      domDebuggerModel,
+      eventTarget: node2,
+      type: 'click2',
+    });
+
+    const node1Listeners = Promise.withResolvers<SDK.DOMDebuggerModel.EventListener[]>();
+    const node1Requested = Promise.withResolvers<void>();
+
+    const eventListenersStub = sinon.stub(domDebuggerModel, 'eventListeners');
+    eventListenersStub.callsFake((obj: SDK.RemoteObject.RemoteObject) => {
+      if (obj === node1) {
+        node1Requested.resolve();
+        return node1Listeners.promise;
+      }
+      if (obj === node2) {
+        return Promise.resolve([clickListener2]);
+      }
+      return Promise.resolve([]);
+    });
+
+    const view = createViewFunctionStub(EventListeners.EventListenersView.EventListenersView);
+    const eventListenersView = new EventListeners.EventListenersView.EventListenersView(undefined, view);
+
+    eventListenersView.objects = [node1];
+    await node1Requested.promise;
+
+    eventListenersView.objects = [node2];
+    node1Listeners.resolve([clickListener1]);
+    await eventListenersView.updateComplete;
+
+    assert.deepEqual([...view.input.listeners.keys()], ['click2']);
   });
 
   it('renders the event listeners view screenshot', async () => {

@@ -236,12 +236,16 @@ export class EventListenersView extends UI.Widget.VBox {
   }
 
   override async performUpdate(): Promise<void> {
-    if (!this.#listeners && this.#objects) {
-      this.#listeners =
-          await EventListenersView.#loadListeners(this.#objects.filter((o): o is NonNullable<typeof o> => !!o));
+    let listeners = this.#listeners;
+    if (!listeners && this.#objects) {
+      const objects = this.#objects;
+      listeners = await EventListenersView.#loadListeners(objects.filter((o): o is NonNullable<typeof o> => !!o));
+      if (this.#objects === objects) {
+        this.#listeners = listeners;
+      }
     }
     const input: ViewInput = {
-      listeners: this.#listeners ?? new Map(),
+      listeners: listeners ?? new Map(),
       filter: this.#filter,
       togglePassiveListener: (listener: SDK.DOMDebuggerModel.EventListener) => {
         void listener.togglePassive().then(() => {
@@ -276,6 +280,7 @@ export class EventListenersView extends UI.Widget.VBox {
       },
       linkifier: this.#linkifier,
     };
+    this.#linkifier.reset();
     this.#view(input, {}, this.contentElement);
     this.eventListenersArrivedForTest();
   }

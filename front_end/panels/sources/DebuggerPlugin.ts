@@ -1002,7 +1002,8 @@ export class DebuggerPlugin extends Plugin {
       CodeMirror.ensureSyntaxTree(this.editor.state, executionOffset, 16);
     }
 
-    const variableNames = getVariableNamesByLine(this.editor.state, functionOffset, executionOffset, executionOffset);
+    const variableNames = getVariableNamesByLine(this.editor.state, functionOffset, executionOffset, executionOffset,
+                                                 Boolean(localOriginalScope));
     if (variableNames.length === 0) {
       return null;
     }
@@ -1998,8 +1999,19 @@ class ValueDecoration extends CodeMirror.WidgetType {
 
 const valueDecorations = defineStatefulDecoration();
 
-function isVariableIdentifier(tokenType: string): boolean {
-  return tokenType === 'VariableName' || tokenType === 'VariableDefinition';
+function isVariableIdentifierNode(node: {name: string, from: number, to: number}, doc: CodeMirror.Text): boolean {
+  switch (node.name) {
+    case 'VariableName':
+    case 'VariableDefinition':
+    case 'Identifier':
+    case 'Definition':
+    case 'variableName':
+    case 'variableName.definition':
+      return (node.from === 0 || doc.sliceString(node.from - 1, node.from) !== '.') &&
+          doc.sliceString(node.to, node.to + 1) !== '(';
+    default:
+      return false;
+  }
 }
 
 function isVariableDefinition(tokenType: string): boolean {
@@ -2019,9 +2031,9 @@ class SiblingScopeVariables {
   variables: Array<{line: number, from: number, id: string}> = [];
 }
 
-export function getVariableNamesByLine(
-    editorState: CodeMirror.EditorState, fromPos: number, toPos: number,
-    currentPos: number): Array<{line: number, from: number, id: string}> {
+export function getVariableNamesByLine(editorState: CodeMirror.EditorState, fromPos: number, toPos: number,
+                                       currentPos: number,
+                                       useOriginalScopes = false): Array<{line: number, from: number, id: string}> {
   const fromLine = editorState.doc.lineAt(fromPos);
   fromPos = Math.min(fromLine.to, fromPos);
   toPos = editorState.doc.lineAt(toPos).from;
@@ -2032,7 +2044,7 @@ export function getVariableNamesByLine(
    * We will exclude variables that are defined (and used in those scopes (since we are currently outside of their lifetime).
    **/
   function isSiblingScopeNode(node: {name: string, from: number, to: number}): boolean {
-    return isScopeNode(node.name) && (node.to < currentPos || currentPos < node.from);
+    return !useOriginalScopes && isScopeNode(node.name) && (node.to < currentPos || currentPos < node.from);
   }
 
   const names: Array<{line: number, from: number, id: string}> = [];
@@ -2062,7 +2074,7 @@ export function getVariableNamesByLine(
         return;
       }
 
-      const varName = isVariableIdentifier(node.name) && editorState.sliceDoc(node.from, node.to);
+      const varName = isVariableIdentifierNode(node, editorState.doc) && editorState.sliceDoc(node.from, node.to);
       if (!varName) {
         return;
       }

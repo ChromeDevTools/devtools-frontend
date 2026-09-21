@@ -427,6 +427,40 @@ describeWithEnvironment('Inline variable view parser', () => {
       {line: 6, from: 125, id: 'a'},
     ]);
   });
+
+  it('extracts variable identifiers across C++, Java, and StreamLanguage (Go) while excluding member fields',
+     async () => {
+       const cppCode = `int compute(int input) {
+  int localVal = input + obj.memberField;
+  return localVal;
+}`;
+       const {cppLanguage} = await CodeMirror.cpp();
+       const cppState = makeState(cppCode, cppLanguage);
+       const cppVars = Sources.DebuggerPlugin.getVariableNamesByLine(cppState, 0, cppCode.length, cppCode.length,
+                                                                     /* useOriginalScopes */ true);
+       assert.deepEqual(cppVars.map(v => v.id), ['input', 'localVal', 'input', 'obj', 'localVal']);
+
+       const javaCode = `int compute(int input) {
+  int localVal = input + obj.memberField + helper();
+  return localVal;
+}`;
+       const {javaLanguage} = await CodeMirror.java();
+       const javaState = makeState(javaCode, javaLanguage);
+       const javaVars = Sources.DebuggerPlugin.getVariableNamesByLine(javaState, 0, javaCode.length, javaCode.length,
+                                                                      /* useOriginalScopes */ true);
+       assert.deepEqual(javaVars.map(v => v.id), ['input', 'localVal', 'input', 'obj', 'localVal']);
+
+       const goCode = `func compute(input int) int {
+  localVal := input + obj.memberField
+  return localVal
+}`;
+       const goLanguage = await CodeMirror.go();
+       const goState = makeState(goCode, goLanguage);
+       const goVars = Sources.DebuggerPlugin.getVariableNamesByLine(goState, 0, goCode.length, goCode.length,
+                                                                    /* useOriginalScopes */ true);
+       assert.includeMembers(goVars.map(v => v.id), ['input', 'localVal', 'obj']);
+       assert.notInclude(goVars.map(v => v.id), 'memberField');
+     });
 });
 
 describeWithEnvironment('Inline variable view scope value resolution', () => {

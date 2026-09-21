@@ -25,7 +25,7 @@ group("api_tests") {
     "../front_end:api_test_inputs",
     "../front_end:api_tests",
     "api",
-    "api:run_api_tests",
+    "api:run_devtools_api_tests",
   ]
 }
 
@@ -38,6 +38,9 @@ group("unittests") {
     "../mcp:foundation_unittests",
     "shared",
     "unit:karma",
+    "unit:mocha",
+    "unit:run_devtools_node_unit_tests",
+    "unit:run_devtools_unit_tests",
   ]
 }
 

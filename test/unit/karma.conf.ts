@@ -24,6 +24,14 @@ const require = createRequire(import.meta.url);
 
 const COVERAGE_OUTPUT_DIRECTORY = 'karma-coverage';
 
+if (TestConfig.tests.length === 0) {
+  TestConfig.tests.push(
+      path.join(GEN_DIR, 'front_end'),
+      path.join(GEN_DIR, 'inspector_overlay'),
+      path.join(GEN_DIR, 'test', 'harness', 'unit'),
+  );
+}
+
 const tests = [
   ...loadTests(path.join(GEN_DIR, 'front_end')),
   ...loadTests(path.join(GEN_DIR, 'inspector_overlay')),

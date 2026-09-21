@@ -53,7 +53,7 @@ node_ts_library("api") {
   ]
 }
 
-node_script_test("run_api_tests") {
+node_script_test("run_devtools_api_tests") {
   script = "$target_gen_dir/run-mocha.js"
 
   if (!build_with_chromium) {

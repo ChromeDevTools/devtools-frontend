@@ -3,6 +3,8 @@
 # found in the LICENSE file.
 
 import("../../scripts/build/ninja/copy.gni")
+import("../../scripts/build/ninja/script_test.gni")
+import("../../scripts/build/ninja/vars.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
 ts_library("browser-globals") {
@@ -29,11 +31,7 @@ ts_library("mocha-adapter-browser") {
 node_ts_library("karma") {
   inputs = typescript_puppeteer_types_inputs
 
-  sources = [
-    "karma.conf.ts",
-    "mocha-hooks.ts",
-    "run-mocha.ts",
-  ]
+  sources = [ "karma.conf.ts" ]
   ts_deps = [
     "../../front_end/testing:test_id_generation",
     "../conductor:implementation",
@@ -47,9 +45,56 @@ node_ts_library("karma") {
   ]
 }
 
+node_ts_library("mocha") {
+  sources = [
+    "mocha-hooks.ts",
+    "run-mocha.ts",
+  ]
+  ts_deps = [
+    "../conductor:implementation",
+    "../shared",
+  ]
+}
+
 copy_to_gen("context") {
   sources = [
     "context.html",
     "debug.html",
+  ]
+}
+
+node_script_test("run_devtools_unit_tests") {
+  script = devtools_location_prepend + "node_modules/karma/bin/karma"
+
+  _rebased_karma_conf =
+      rebase_path("$target_gen_dir/karma.conf.js", root_build_dir)
+  args = [
+    "start",
+    "@WrappedPath(${_rebased_karma_conf})",
+  ]
+
+  if (!build_with_chromium) {
+    data = [ devtools_location_prepend + "third_party/chrome/" ]
+  }
+
+  data_deps = [
+    ":karma",
+    "../../front_end:test_inputs",
+    "../../front_end:unittests",
+    "../../inspector_overlay:unittests",
+    "../harness",
+  ]
+}
+
+node_script_test("run_devtools_node_unit_tests") {
+  script = "$target_gen_dir/run-mocha.js"
+
+  data_deps = [
+    ":mocha",
+    "../../front_end:foundation_test_inputs",
+    "../../front_end:foundation_unittests",
+    "../../mcp:foundation_unittests",
+    "../../mcp:test_inputs",
+    "../harness",
   ]
 }

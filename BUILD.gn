@@ -266,4 +266,9 @@ group("api_tests") {
   public_deps = [ "test:api_tests" ]
 }
 
+group("unittests") {
+  testonly = true
+  public_deps = [ "test:unittests" ]
+}
+
 write_file("$target_gen_dir/package.json", "{\"type\": \"module\"}")

@@ -235,11 +235,23 @@ function isUnitTestFile(testId: TestId): boolean {
 }
 
 class MochaFrontendTests extends Tests {
+  #getWrapper(): string|undefined {
+    const wrapper = path.join(BUILD_ROOT, 'bin', 'run_devtools_node_unit_tests');
+    return fs.existsSync(wrapper) ? wrapper : undefined;
+  }
+
+  override get executable() {
+    return this.#getWrapper() ?? super.executable;
+  }
+
   override match(path: TestId): boolean {
     return super.match(path) && !isApiTestFile(path);
   }
 
   override run(tests: TestId[]) {
+    if (this.#getWrapper()) {
+      return super.run(tests, []);
+    }
     return super.run(
         tests,
         [
@@ -251,7 +263,7 @@ class MochaFrontendTests extends Tests {
 
 class MochaApiTests extends Tests {
   #getWrapper(): string|undefined {
-    const wrapper = path.join(BUILD_ROOT, 'bin', 'run_api_tests');
+    const wrapper = path.join(BUILD_ROOT, 'bin', 'run_devtools_api_tests');
     return fs.existsSync(wrapper) ? wrapper : undefined;
   }
 
@@ -339,11 +351,26 @@ class ScriptTests extends Tests {
 }
 
 class KarmaTests extends Tests {
+  #getWrapper(): string|undefined {
+    const wrapper = path.join(BUILD_ROOT, 'bin', 'run_devtools_unit_tests');
+    return fs.existsSync(wrapper) ? wrapper : undefined;
+  }
+
+  override get executable() {
+    return this.#getWrapper() ?? super.executable;
+  }
+
   override match(path: TestId): boolean {
     return super.match(path) && !isApiTestFile(path);
   }
 
   override run(tests: TestId[]) {
+    if (this.#getWrapper()) {
+      return super.run(tests, [
+        '--log-level',
+        logLevel,
+      ]);
+    }
     return super.run(tests, [
       path.join(SOURCE_ROOT, 'node_modules', 'karma', 'bin', 'karma'),
       'start',
@@ -381,7 +408,9 @@ function main() {
           'chrome',
           'third_party/devtools-frontend/src/test:test',
           'third_party/devtools-frontend/src/scripts/hosted_mode:hosted_mode',
-          'third_party/devtools-frontend/src/test/api:run_api_tests',
+          'third_party/devtools-frontend/src/test/api:run_devtools_api_tests',
+          'third_party/devtools-frontend/src/test/unit:run_devtools_node_unit_tests',
+          'third_party/devtools-frontend/src/test/unit:run_devtools_unit_tests',
         ] :
         [];
     const {status} = ninja(isAIAgent() ? 'pipe' : 'inherit', ...targets);

@@ -183,7 +183,7 @@ export class IssuesPane extends UI.Widget.VBox {
   #noIssuesMessageDiv: UI.EmptyWidget.EmptyWidget;
   #issuesManager: IssuesManager.IssuesManager.IssuesManager;
   #aggregator: IssuesManager.IssueAggregator.IssueAggregator;
-  #issueViewUpdatePromise: Promise<void> = Promise.resolve();
+  #dirtyIssues = new Set<IssuesManager.IssueAggregator.AggregatedIssue>();
 
   constructor() {
     super({
@@ -217,14 +217,16 @@ export class IssuesPane extends UI.Widget.VBox {
 
     this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.#aggregator = new IssuesManager.IssueAggregator.IssueAggregator(this.#issuesManager);
-    this.#aggregator.addEventListener(
-        IssuesManager.IssueAggregator.Events.AGGREGATED_ISSUE_UPDATED, this.#issueUpdated, this);
+    this.#aggregator.addEventListener(IssuesManager.IssueAggregator.Events.AGGREGATED_ISSUE_UPDATED, event => {
+      this.#dirtyIssues.add(event.data);
+      this.requestUpdate();
+    });
     this.#aggregator.addEventListener(
         IssuesManager.IssueAggregator.Events.FULL_UPDATE_REQUIRED, this.#onFullUpdate, this);
     this.#hiddenIssuesRow.hidden = this.#issuesManager.numberOfHiddenIssues() === 0;
     this.#onFullUpdate();
-    this.#issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#updateCounts, this);
+    this.#issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.requestUpdate,
+                                         this);
   }
 
   override elementsToRestoreScrollPositionsFor(): Element[] {
@@ -289,15 +291,15 @@ export class IssuesPane extends UI.Widget.VBox {
     return {toolbarContainer};
   }
 
-  #issueUpdated(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssueAggregator.AggregatedIssue>): void {
-    this.#scheduleIssueViewUpdate(event.data);
+  override async performUpdate(): Promise<void> {
+    // Snapshot and clear so new arrivals during `await` schedule a fresh update
+    const issuesToUpdate = [...this.#dirtyIssues];
+    this.#dirtyIssues.clear();
+    await Promise.allSettled(issuesToUpdate.map(issue => this.#updateIssueView(issue)));
+    this.#updateCounts();
   }
 
-  #scheduleIssueViewUpdate(issue: IssuesManager.IssueAggregator.AggregatedIssue): void {
-    this.#issueViewUpdatePromise = this.#issueViewUpdatePromise.then(() => this.#updateIssueView(issue));
-  }
-
-  /** Don't call directly. Use `scheduleIssueViewUpdate` instead. */
+  /** Don't call directly. Use `requestUpdate` instead. */
   async #updateIssueView(issue: IssuesManager.IssueAggregator.AggregatedIssue): Promise<void> {
     let issueView = this.#issueViews.get(issue.aggregationKey());
     if (!issueView) {
@@ -306,12 +308,22 @@ export class IssuesPane extends UI.Widget.VBox {
         console.warn('Could not find description for issue code:', issue.code());
         return;
       }
-      const markdownDescription =
-          await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(description);
-      issueView = new IssueView(issue, markdownDescription);
-      this.#issueViews.set(issue.aggregationKey(), issueView);
-      const parent = this.#getIssueViewParent(issue);
-      this.appendIssueViewToParent(issueView, parent);
+      try {
+        const markdownDescription =
+            await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(description);
+        issueView = new IssueView(issue, markdownDescription);
+        const parent = this.#getIssueViewParent(issue);
+        // `appendIssueViewToParent` attaches `issueView` to the tree and synchronously invokes
+        // `IssueView.onattach()`, which renders `MarkdownView` tokens and can throw if an unsupported
+        // token or missing link key is encountered. Since `TreeElement.insertChild()` attaches the
+        // child before calling `onattach()`, we must detach `issueView` if `onattach()` fails.
+        this.appendIssueViewToParent(issueView, parent);
+        this.#issueViews.set(issue.aggregationKey(), issueView);
+      } catch (err) {
+        console.error(err);
+        issueView?.parent?.removeChild(issueView);
+        return;
+      }
     } else {
       issueView.setIssue(issue);
       const newParent = this.#getIssueViewParent(issue);
@@ -322,7 +334,6 @@ export class IssuesPane extends UI.Widget.VBox {
       }
     }
     issueView.update();
-    this.#updateCounts();
   }
 
   appendIssueViewToParent(issueView: IssueView, parent: UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement): void {
@@ -415,15 +426,16 @@ export class IssuesPane extends UI.Widget.VBox {
   }
 
   #fullUpdate(force: boolean): void {
+    this.#dirtyIssues.clear();
     this.#clearViews(this.#categoryViews, force ? undefined : this.#aggregator.aggregatedIssueCategories());
     this.#clearViews(this.#kindViews, force ? undefined : this.#aggregator.aggregatedIssueKinds());
     this.#clearViews(this.#issueViews, force ? undefined : this.#aggregator.aggregatedIssueCodes());
     if (this.#aggregator) {
       for (const issue of this.#aggregator.aggregatedIssues()) {
-        this.#scheduleIssueViewUpdate(issue);
+        this.#dirtyIssues.add(issue);
       }
     }
-    this.#updateCounts();
+    this.requestUpdate();
   }
 
   #updateIssueKindViewsCount(): void {
@@ -465,7 +477,7 @@ export class IssuesPane extends UI.Widget.VBox {
   }
 
   async reveal(issue: IssuesManager.Issue.Issue): Promise<void> {
-    await this.#issueViewUpdatePromise;
+    await this.updateComplete;
     const key = this.#aggregator.keyForIssue(issue);
     const issueView = this.#issueViews.get(key);
     if (issueView) {

@@ -43,6 +43,7 @@ describe('Hide issues row', () => {
     await hideIssuesMenuBtn.click();
     const menuItem = await getHideIssuesMenuItem(devToolsPage);
     await menuItem!.click();
+    await devToolsPage.waitFor('.hidden-issue');
     const hiddenIssuesRow = await getHiddenIssuesRow(devToolsPage);
     let isHidden = await hiddenIssuesRow?.evaluate(node => node.classList.contains('hidden'));
     assert.isFalse(isHidden);
@@ -89,6 +90,7 @@ describe('Hide issues row', () => {
     await hideIssuesMenuBtn.click();
     const menuItem = await getHideIssuesMenuItem(devToolsPage);
     await menuItem!.click();
+    await devToolsPage.waitFor('.hidden-issue');
     const hiddenIssuesRow = await getHiddenIssuesRow(devToolsPage);
     const isHidden = await hiddenIssuesRow?.evaluate(node => node.classList.contains('hidden'));
     assert.isFalse(isHidden);
@@ -109,11 +111,12 @@ describe('Hide issues row', () => {
        await hideIssuesMenuBtn.click();
        const menuItem = await getHideIssuesMenuItem(devToolsPage);
        await menuItem!.click();
+       await devToolsPage.waitFor('.hidden-issue');
        const unhideAllIssuesbtn = await devToolsPage.waitFor('.unhide-all-issues-button');
        await unhideAllIssuesbtn.click();
+       await devToolsPage.waitFor(ISSUE);
        const hiddenIssuesRow = await getHiddenIssuesRow(devToolsPage);
        const isHidden = await hiddenIssuesRow?.evaluate(node => node.classList.contains('hidden'));
        assert.isTrue(isHidden);
-       await devToolsPage.waitFor(ISSUE);
      });
 });

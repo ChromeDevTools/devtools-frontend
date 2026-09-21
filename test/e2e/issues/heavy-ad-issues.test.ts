@@ -15,7 +15,7 @@ import {
 
 describe('Heavy Ad issue', () => {
   it('should display correct information', async ({devToolsPage, inspectedPage}) => {
-    await inspectedPage.goToResource('elements/quirks-mode.html');
+    await inspectedPage.goToResource('empty.html');
     await navigateToIssuesTab(devToolsPage);
     await devToolsPage.evaluate(() => {
       const issue = {

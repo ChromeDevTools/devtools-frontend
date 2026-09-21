@@ -70,21 +70,15 @@ function getClearLogButton(view: Components.LiveMetricsView.LiveMetricsView): HT
 }
 
 function selectDeviceOption(view: Components.LiveMetricsView.LiveMetricsView, deviceOption: string): void {
-  const deviceScopeSelector =
-      view.contentElement.querySelector('devtools-select-menu#device-scope-select') as HTMLElement;
-  const deviceScopeOptions = Array.from(deviceScopeSelector.querySelectorAll('devtools-menu-item'));
-
-  deviceScopeSelector.click();
-  deviceScopeOptions.find(o => o.value === deviceOption)!.click();
+  const deviceScopeSelector = view.contentElement.querySelector<HTMLSelectElement>('select#device-scope-select')!;
+  deviceScopeSelector.value = deviceOption;
+  deviceScopeSelector.dispatchEvent(new Event('change'));
 }
 
 function selectPageScope(view: Components.LiveMetricsView.LiveMetricsView, pageScope: string): void {
-  const pageScopeSelector = view.contentElement.querySelector('devtools-select-menu#page-scope-select') as HTMLElement;
-  pageScopeSelector.click();
-
-  const pageScopeOptions = Array.from(pageScopeSelector.querySelectorAll('devtools-menu-item'));
-  const originOption = pageScopeOptions.find(o => o.value === pageScope);
-  originOption!.click();
+  const pageScopeSelector = view.contentElement.querySelector<HTMLSelectElement>('select#page-scope-select')!;
+  pageScopeSelector.value = pageScope;
+  pageScopeSelector.dispatchEvent(new Event('change'));
 }
 
 function getFieldMessage(view: Components.LiveMetricsView.LiveMetricsView): HTMLElement|null {

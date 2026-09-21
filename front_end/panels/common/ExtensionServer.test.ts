@@ -97,6 +97,31 @@ describe('Extensions', () => {
     assert.isTrue(addExtensionSpy.returned(true), 'addExtension returned true');
   });
 
+  it('does not allow extensions on foreign extension URLs', async () => {
+    const addExtensionSpy = sinon.spy(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    const target = getBackend(context).createTarget({type: SDK.Target.Type.FRAME});
+    for (const url of [urlString`chrome-extension://other-extension/page.html`,
+                       urlString`blob:chrome-extension://other-extension/uuid`,
+                       urlString`filesystem:chrome-extension://other-extension/temporary/page.html`,
+    ]) {
+      addExtensionSpy.resetHistory();
+      target.setInspectedURL(url);
+      assert.isTrue(addExtensionSpy.calledOnce, `addExtension called once for ${url}`);
+      assert.isUndefined(addExtensionSpy.firstCall.returnValue, `addExtension returned undefined for ${url}`);
+    }
+  });
+
+  it('does not allow extensions without file access on file and blob:file URLs', async () => {
+    const addExtensionSpy = sinon.spy(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    const target = getBackend(context).createTarget({type: SDK.Target.Type.FRAME});
+    for (const url of [urlString`file:///path/to/file.html`, urlString`blob:file:///path/to/file.html`]) {
+      addExtensionSpy.resetHistory();
+      target.setInspectedURL(url);
+      assert.isTrue(addExtensionSpy.calledOnce, `addExtension called once for ${url}`);
+      assert.isUndefined(addExtensionSpy.firstCall.returnValue, `addExtension returned undefined for ${url}`);
+    }
+  });
+
   it('only returns page resources for allowed targets', async () => {
     const urls = ['http://example.com', 'chrome://version'] as Platform.DevToolsPath.UrlString[];
     const targets = urls.map(async url => {
@@ -646,12 +671,33 @@ describe('Runtime hosts policy', () => {
     });
   }
 
+  it('blocks API calls on nested blocked protocols', async () => {
+    assert.isUndefined(context.chrome.devtools);
+    const addExtensionStub = sinon.stub(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    for (const protocol of ['devtools', 'chrome', 'chrome-untrusted', 'chrome-error', 'chrome-search']) {
+      const target = getBackend(context).createTarget({type: SDK.Target.Type.FRAME});
+      target.setInspectedURL(urlString`${`blob:${protocol}://foo/uuid`}`);
+      sinon.assert.notCalled(addExtensionStub);
+      assert.isUndefined(context.chrome.devtools);
+    }
+  });
+
   it('blocks API calls on blocked hosts', async () => {
     assert.isUndefined(context.chrome.devtools);
     const target = getBackend(context).createTarget({type: SDK.Target.Type.FRAME});
     const addExtensionStub = sinon.spy(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
 
     target.setInspectedURL(blockedUrl);
+    assert.isTrue(addExtensionStub.alwaysReturned(undefined));
+    assert.isUndefined(context.chrome.devtools);
+  });
+
+  it('blocks API calls on nested blocked hosts', async () => {
+    assert.isUndefined(context.chrome.devtools);
+    const target = getBackend(context).createTarget({type: SDK.Target.Type.FRAME});
+    const addExtensionStub = sinon.spy(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+
+    target.setInspectedURL(urlString`blob:${blockedUrl}/uuid`);
     assert.isTrue(addExtensionStub.alwaysReturned(undefined));
     assert.isUndefined(context.chrome.devtools);
   });

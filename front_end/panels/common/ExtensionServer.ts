@@ -44,6 +44,18 @@ declare global {
 
 let extensionServerInstance: ExtensionServer|null;
 
+function parseCanonicalURL(url: Platform.DevToolsPath.UrlString): URL|null {
+  try {
+    let parsedURL = new URL(url);
+    while (parsedURL.protocol === 'blob:' || parsedURL.protocol === 'filesystem:') {
+      parsedURL = new URL(parsedURL.href.slice(parsedURL.protocol.length));
+    }
+    return parsedURL;
+  } catch {
+    return null;
+  }
+}
+
 export class HostsPolicy {
   static create(policy?: Host.InspectorFrontendHostAPI.ExtensionHostsPolicy): HostsPolicy|null {
     const runtimeAllowedHosts = [];
@@ -98,12 +110,11 @@ class RegisteredExtension {
       return false;
     }
 
-    let parsedURL;
-    try {
-      parsedURL = new URL(inspectedURL);
-    } catch {
+    const parsedURL = parseCanonicalURL(inspectedURL);
+    if (!parsedURL) {
       return false;
     }
+    inspectedURL = parsedURL.href as Platform.DevToolsPath.UrlString;
 
     if (parsedURL.protocol === 'chrome-extension:') {
       if (parsedURL.origin !== this.origin) {
@@ -1827,12 +1838,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   static canInspectURL(url: Platform.DevToolsPath.UrlString): boolean {
-    let parsedURL;
     // This is only to work around invalid URLs we're occasionally getting from some tests.
     // TODO(caseq): make sure tests supply valid URLs or we specifically handle invalid ones.
-    try {
-      parsedURL = new URL(url);
-    } catch {
+    const parsedURL = parseCanonicalURL(url);
+    if (!parsedURL) {
       return false;
     }
 

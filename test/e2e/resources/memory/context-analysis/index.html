@@ -1,0 +1,36 @@
+<!--
+  Copyright 2026 The Chromium Authors
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<h1>Heap snapshot context analysis fixtures</h1>
+<!--
+  Each fixture is loaded as its own script so that it shows up under its own
+  name in the heap snapshot. `with` and top-level `let`/`const` in a script
+  context require classic scripts, `module.js` requires a module.
+-->
+<script src="async.js"></script>
+<script src="block.js"></script>
+<script src="block-variable.js"></script>
+<script src="block-variable-inner.js"></script>
+<script src="captured-this.js"></script>
+<script src="catch-parameter.js"></script>
+<script src="catch.js"></script>
+<script src="class-direct.js"></script>
+<script src="class-initializer-context.js"></script>
+<script src="class-methods.js"></script>
+<script src="class.js"></script>
+<script src="context.js"></script>
+<script src="dead-closure.js"></script>
+<script src="direct-eval.js"></script>
+<script src="for-of.js"></script>
+<script src="generator.js"></script>
+<script src="inside-direct-eval.js"></script>
+<script src="nested.js"></script>
+<script src="parameter.js"></script>
+<script src="script.js"></script>
+<script src="shadowed.js"></script>
+<script src="uninstantiated-inner.js"></script>
+<script src="with.js"></script>
+<script type="module" src="module.js"></script>

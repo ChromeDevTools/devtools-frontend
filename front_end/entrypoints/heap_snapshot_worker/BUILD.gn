@@ -66,3 +66,13 @@ devtools_foundation_module("unittests") {
     "../../models/heap_snapshot:bundle",
   ]
 }
+
+devtools_api_test_module("api_tests") {
+  sources = [ "HeapSnapshot.test.api.ts" ]
+
+  ts_deps = [
+    ":bundle",
+    "../../core/sdk:bundle",
+    "../../models/heap_snapshot:bundle",
+  ]
+}

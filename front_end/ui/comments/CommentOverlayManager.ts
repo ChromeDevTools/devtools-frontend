@@ -7,6 +7,7 @@ import * as CommentManager from '../../models/comment_manager/comment_manager.js
 
 import {
   closestAcrossShadow,
+  COMMENT_THREAD_UI_SELECTOR,
   type CommentAnchorSignature,
   type CommentThread,
   computeVisibleRect,
@@ -238,7 +239,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   handleElementClick(element: Element, options?: {clientX: number, clientY: number}): boolean {
-    if (!this.isCommentMode() || closestAcrossShadow(element, '.comment-thread-widget')) {
+    if (!this.isCommentMode() || closestAcrossShadow(element, COMMENT_THREAD_UI_SELECTOR)) {
       return false;
     }
     this.clearDraftThreads();

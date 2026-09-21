@@ -59,6 +59,7 @@ devtools_ui_module("common") {
     "../../ui/components/buttons:bundle",
     "../../ui/components/input:bundle",
     "../../ui/components/markdown_view:bundle",
+    "../../ui/components/node_text:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/components/spinners:bundle",
     "../../ui/components/switch:bundle",

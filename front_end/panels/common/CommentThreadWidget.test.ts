@@ -22,7 +22,7 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
 
     DEFAULT_VIEW(
         {
-          title: 'div#container',
+          title: {text: 'div#container.grid'},
           comments: [],
           commentText: '',
           textAreaRef: Lit.Directives.createRef(),
@@ -83,11 +83,11 @@ describeWithEnvironment('CommentThreadWidget presenter', () => {
     const comments: CommentManager.CommentManager.Comment[] = [
       {author: 'DEVELOPER', text: 'First comment', timestamp: 0},
     ];
-    widget.title = 'div#header';
+    widget.title = {text: 'div#header'};
     widget.comments = comments;
     widget.performUpdate();
 
-    assert.strictEqual(view.input.title, 'div#header');
+    assert.deepEqual(view.input.title, {text: 'div#header'});
     assert.deepEqual(view.input.comments, comments);
 
     view.input.onCommentTextChange({target: {value: '  hello  '}} as unknown as Event);

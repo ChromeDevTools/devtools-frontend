@@ -9,7 +9,7 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Comments from '../../ui/comments/comments.js';
-import type * as UI from '../../ui/legacy/legacy.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as PanelCommon from './common.js';
 
@@ -267,18 +267,18 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     overlayManager.handleElementClick(el1);
 
     widget.requestUpdate();
-    await widget.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     let textarea = widget.contentElement.querySelector('textarea') as HTMLTextAreaElement;
     assert.isNotNull(textarea);
     textarea.value = 'Unsaved draft text';
     textarea.dispatchEvent(new Event('input', {bubbles: true}));
-    await widget.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
     assert.strictEqual(textarea.value, 'Unsaved draft text');
 
     overlayManager.handleElementClick(el2);
     widget.requestUpdate();
-    await widget.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     textarea = widget.contentElement.querySelector('textarea') as HTMLTextAreaElement;
     assert.isNotNull(textarea);

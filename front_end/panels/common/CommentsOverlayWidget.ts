@@ -4,13 +4,15 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Comments from '../../ui/comments/comments.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
 import commentsOverlayStyles from './commentsOverlay.css.js';
-import {CommentThreadWidget} from './CommentThreadWidget.js';
+import {CommentThreadWidget, type Title} from './CommentThreadWidget.js';
 
 const {
   html,
@@ -27,6 +29,7 @@ export interface ViewInput {
   onPinClick: (threadId: string) => void;
   activeThread: CommentManager.CommentManager.CommentThread|null;
   activePin: Comments.CommentOverlayManager.PinPositionData|null;
+  title: Title;
   onAddComment: (text: string) => void;
 }
 
@@ -96,6 +99,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
               )}px`,
             })}>
             ${UI.Widget.widget(CommentThreadWidget, {
+              title: input.title,
               comments: [...item.thread.comments],
               onAddComment: input.onAddComment,
             })}
@@ -115,6 +119,8 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   readonly #commentManager: CommentManager.CommentManager.CommentManager;
   #commentOverlayManager: Comments.CommentOverlayManager.CommentOverlayManager;
   #activeThreadId: string|null = null;
+  #cachedTitle: Title = {text: ''};
+  #cachedTitleAnchor: CommentManager.CommentManager.CommentAnchorSignature|null = null;
 
   constructor(
       element: HTMLElement|undefined,
@@ -213,6 +219,43 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  async #getOrComputeTitle(anchor: CommentManager.CommentManager.CommentAnchorSignature|null): Promise<Title> {
+    if (anchor === this.#cachedTitleAnchor) {
+      return this.#cachedTitle;
+    }
+    const title = anchor ? await this.#computeTitle(anchor) : {text: ''};
+    this.#cachedTitleAnchor = anchor;
+    this.#cachedTitle = title;
+    return title;
+  }
+
+  async #computeTitle(anchor: CommentManager.CommentManager.CommentAnchorSignature): Promise<Title> {
+    if (anchor.node) {
+      const target = SDK.TargetManager.TargetManager.instance().targetById(anchor.node.targetId);
+      if (target) {
+        const deferredNode = new SDK.DOMModel.DeferredDOMNode(
+            target,
+            anchor.node.backendNodeId as Protocol.DOM.BackendNodeId,
+        );
+        const node = await deferredNode.resolvePromise();
+        if (node) {
+          return {node};
+        }
+      }
+      return {text: ''};
+    }
+
+    if (anchor.networkRequestId) {
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      const request = target?.model(SDK.NetworkManager.NetworkManager)?.requestForId(anchor.networkRequestId);
+      if (request) {
+        return {text: request.name()};
+      }
+    }
+
+    return {text: anchor.textSignature || ''};
+  }
+
   #handlePinClick = (threadId: string): void => {
     const thread = this.#commentManager.getCommentThread(threadId);
     if (this.#activeThreadId === threadId) {
@@ -227,16 +270,15 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     this.requestUpdate();
   };
 
-  override performUpdate(): void {
+  override async performUpdate(signal?: AbortSignal): Promise<void> {
+    const activeThread =
+        this.#activeThreadId ? this.#commentManager.getCommentThread(this.#activeThreadId) ?? null : null;
+    const title = await this.#getOrComputeTitle(activeThread?.anchor ?? null);
+    signal?.throwIfAborted();
+
     const pins = this.#commentOverlayManager.getPinPositions();
     const highlights = this.#commentOverlayManager.getHighlightRects();
-
-    let activePin: Comments.CommentOverlayManager.PinPositionData|null = null;
-    let activeThread: CommentManager.CommentManager.CommentThread|null = null;
-    if (this.#activeThreadId) {
-      activePin = pins.find(p => p.id === this.#activeThreadId) ?? null;
-      activeThread = this.#commentManager.getCommentThread(this.#activeThreadId) ?? null;
-    }
+    const activePin = this.#activeThreadId ? pins.find(p => p.id === this.#activeThreadId) ?? null : null;
 
     const viewInput: ViewInput = {
       pins,
@@ -246,6 +288,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       onPinClick: this.#handlePinClick,
       activeThread,
       activePin,
+      title,
       onAddComment: (text: string) => {
         activeThread?.save(text);
       },

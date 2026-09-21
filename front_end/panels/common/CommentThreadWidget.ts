@@ -5,6 +5,7 @@
 import '../../ui/components/tooltips/tooltips.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
@@ -12,8 +13,10 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
 import commentThreadWidgetStyles from './commentThreadWidget.css.js';
+import {DOMNodeLink} from './DOMLinkifier.js';
 
 const {html, render, Directives: {createRef, ref}} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -52,8 +55,16 @@ const str_ = i18n.i18n.registerUIStrings('panels/common/CommentThreadWidget.ts',
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
+/**
+ * Either the DOM node the thread is anchored to, or a plain text label for anchors that are not
+ * DOM nodes (e.g. network requests).
+ */
+export type Title = {
+  node: SDK.DOMModel.DOMNode,
+}|{text: string};
+
 export interface ViewInput {
-  title: string;
+  title: Title;
   comments: CommentManager.CommentManager.Comment[];
   commentText: string;
   textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
@@ -72,7 +83,9 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
     <div class="comment-thread-widget ${hasComment ? 'submitted' : ''}">
       <div class="header">
         <span class="selected-item">
-          <span class="selected-item-text">${input.title}</span>
+          ${'node' in input.title ?
+            widget(DOMNodeLink, {node: input.title.node}) :
+            html`<span class="selected-item-text">${input.title.text}</span>`}
         </span>
         ${hasComment ? html`
           <div class="sent-status">
@@ -152,7 +165,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
 type View = typeof DEFAULT_VIEW;
 
 export class CommentThreadWidget extends UI.Widget.Widget {
-  title = 'Comment Thread';
+  title: Title = {text: ''};
   #comments: CommentManager.CommentManager.Comment[] = [];
   #commentText = '';
   #textAreaRef = createRef<HTMLTextAreaElement>();

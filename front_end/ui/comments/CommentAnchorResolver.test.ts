@@ -337,6 +337,34 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       assert.strictEqual(anchorEl, nodeEl);
     });
 
+    it('does not resolve elements inside the comment thread UI', () => {
+      const threadWidget = document.createElement('div');
+      threadWidget.className = 'comment-thread-widget';
+      const textarea = document.createElement('textarea');
+      textarea.setAttribute('jslog', 'TextField; context: comment');
+      threadWidget.appendChild(textarea);
+      container.appendChild(threadWidget);
+
+      assert.isNull(Comments.CommentAnchorResolver.resolveCommentAnchorElement(textarea));
+    });
+
+    it('does not resolve nodes rendered in a shadow root inside the comment thread UI', () => {
+      const threadWidget = document.createElement('div');
+      threadWidget.className = 'comment-thread-widget';
+      const host = document.createElement('div');
+      threadWidget.appendChild(host);
+      container.appendChild(threadWidget);
+
+      const shadow = host.attachShadow({mode: 'open'});
+      const link = document.createElement('button');
+      link.setAttribute('jslog', 'Link; context: node');
+      link.setAttribute('data-backend-node-id', '42');
+      link.textContent = 'div#container';
+      shadow.appendChild(link);
+
+      assert.isNull(Comments.CommentAnchorResolver.resolveCommentAnchorElement(link));
+    });
+
     it('escalates table cell to entire TableRow in grids/tables', () => {
       const row = document.createElement('div');
       row.setAttribute('jslog', 'TableRow; context: grid-row');

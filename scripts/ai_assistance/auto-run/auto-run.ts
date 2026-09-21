@@ -832,6 +832,7 @@ type TaskId = string;
 /** Run-wide state shared by every per-task step. */
 interface EvalRunContext {
   output: {metadata: ExampleMetadata[], trajectories: IndividualPromptRequestResponse[]};
+  trajectoriesByTaskId: Map<TaskId, IndividualPromptRequestResponse[]>;
   userArgs: UserArgs;
   runId: string;
   outputDir: string;
@@ -842,7 +843,7 @@ interface EvalRunContext {
 }
 
 /** The parts of {@link EvalRunContext} supplied by the caller; the rest is derived. */
-type WriteOutputOptions = Omit<EvalRunContext, 'outputDir'|'gradeTargetDir'>;
+type WriteOutputOptions = Omit<EvalRunContext, 'outputDir'|'gradeTargetDir'|'trajectoriesByTaskId'>;
 
 /**
  * Persists the results of one `--label` group.
@@ -882,7 +883,8 @@ function writeOutput(options: WriteOutputOptions) {
     fs.mkdirSync(gradeTargetDir, {recursive: true});
   }
 
-  const ctx: EvalRunContext = {...options, outputDir, gradeTargetDir};
+  const trajectoriesByTaskId = Map.groupBy(output.trajectories, e => e.session_id);
+  const ctx: EvalRunContext = {...options, outputDir, gradeTargetDir, trajectoriesByTaskId};
 
   for (const trajectory of trajectories) {
     const evalOutputPath = exportEvalTrajectory(ctx, trajectory);
@@ -950,7 +952,7 @@ function uploadTaskArtifacts(ctx: EvalRunContext, trajectory: Trajectory, evalOu
  * verification_stdout.log artifact.
  */
 function formatVerificationStdout(ctx: EvalRunContext, taskId: TaskId): string {
-  const matchingTrajectories = ctx.output.trajectories.filter(e => e.session_id === taskId);
+  const matchingTrajectories = ctx.trajectoriesByTaskId.get(taskId) ?? [];
   const hasError = matchingTrajectories.some(e => Boolean(e.error) ||
                                                  Boolean(e.assertionFailures && e.assertionFailures.length > 0));
 
@@ -968,7 +970,7 @@ function formatVerificationStdout(ctx: EvalRunContext, taskId: TaskId): string {
  * task did not fail.
  */
 function formatVerificationStderr(ctx: EvalRunContext, taskId: TaskId): string {
-  const matchingTrajectories = ctx.output.trajectories.filter(e => e.session_id === taskId);
+  const matchingTrajectories = ctx.trajectoriesByTaskId.get(taskId) ?? [];
   const errorLines = matchingTrajectories.flatMap(
       e => [...(e.error ? [`[Error]: ${e.error}`] : []),
             ...(e.assertionFailures ?? []).map(failure => `[AssertionFailure]: ${failure}`),
@@ -982,9 +984,9 @@ function formatVerificationStderr(ctx: EvalRunContext, taskId: TaskId): string {
  * to the in-memory run summary.
  */
 function recordTaskCompletion(ctx: EvalRunContext, taskId: TaskId, allUploadsSucceeded: boolean): void {
-  const {runId, taskDurations, taskStatuses} = ctx;
+  const {runId, taskDurations, taskStatuses, trajectoriesByTaskId} = ctx;
   // Raw results carry the auto-run example id in their `session_id` field.
-  const matchingTrajectories = ctx.output.trajectories.filter(e => e.session_id === taskId);
+  const matchingTrajectories = trajectoriesByTaskId.get(taskId) ?? [];
   const hasError = matchingTrajectories.some(e => Boolean(e.error) ||
                                                  Boolean(e.assertionFailures && e.assertionFailures.length > 0));
 

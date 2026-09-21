@@ -60,6 +60,7 @@ import {
   HTMLElementWithLightDOMTemplate,
   isEditing,
 } from './UIUtils.js';
+import {Widget} from './Widget.js';
 
 const UIStrings = {
   /**
@@ -1304,9 +1305,9 @@ export class TreeElement {
     }
   }
 
-  revealAndSelect(omitFocus?: boolean): void {
+  revealAndSelect(omitFocus?: boolean, selectedByUser?: boolean): void {
     this.reveal(true);
-    this.select(omitFocus);
+    this.select(omitFocus, selectedByUser ?? false);
   }
 
   deselect(): void {
@@ -1653,9 +1654,16 @@ class TreeViewTreeElement extends TreeElement {
     }
     this.#refreshScheduled = true;
     queueMicrotask(() => {
-      this.#refreshScheduled = false;
-      this.refresh();
+      if (this.#refreshScheduled) {
+        this.refresh();
+      }
     });
+  }
+
+  flushPendingRefreshForTesting(): void {
+    if (this.#refreshScheduled) {
+      this.refresh();
+    }
   }
 
   updateAttributes(): void {
@@ -1684,6 +1692,7 @@ class TreeViewTreeElement extends TreeElement {
   }
 
   refresh(): void {
+    this.#refreshScheduled = false;
     const hadFocus = this.listItemElement.hasFocus();
     this.titleElement.textContent = '';
     this.updateAttributes();
@@ -1726,7 +1735,7 @@ class TreeViewTreeElement extends TreeElement {
     return super.onenter();
   }
 
-  remove(): void {
+  removeFromTree(): void {
     removeNode(this,
                Boolean(this.parent &&
                        (this.parent as TreeViewTreeElement).configElement?.querySelector(':scope > ul[role="group"]')));
@@ -1892,6 +1901,26 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     return this.#treeOutline;
   }
 
+  flushPendingUpdatesForTesting(): void {
+    this.flushPendingMutationsForTesting();
+    const stack: TreeElement[] = [...this.#treeOutline.rootElement().children()];
+    while (stack.length > 0) {
+      const item = stack.pop();
+      if (!item) {
+        continue;
+      }
+      if (item instanceof TreeViewTreeElement) {
+        item.flushPendingRefreshForTesting();
+      }
+      if (item.children()) {
+        stack.push(...item.children());
+      }
+    }
+    for (const widgetEl of this.#treeOutline.shadowRoot.querySelectorAll('devtools-widget')) {
+      void Widget.get(widgetEl)?.performUpdate();
+    }
+  }
+
   override focus(): void {
     if (!this.#treeOutline.selectedTreeElement && this.#treeOutline.firstChild()) {
       this.#treeOutline.firstChild()?.select(/* omitFocus */ true, /* selectedByUser */ false);
@@ -2030,7 +2059,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
   protected override removeNodes(nodes: NodeList|Node[]): void {
     for (const node of getTreeNodes(nodes)) {
       if (node instanceof HTMLLIElement) {
-        TreeViewTreeElement.get(node)?.remove();
+        TreeViewTreeElement.get(node)?.removeFromTree();
       } else if (node.treeElement) {
         removeNode(node.treeElement,
                    Boolean(node.treeElement.parent &&

@@ -2196,6 +2196,13 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     render(template, this.#contentTemplate.content);
   }
 
+  flushPendingMutationsForTesting(): void {
+    const records = this.#mutationObserver.takeRecords();
+    if (records.length > 0) {
+      this.#onChange(records);
+    }
+  }
+
   #onChange(mutationList: MutationRecord[]): void {
     this.onChange(mutationList);
     const addedNodes = new Set<Node>();

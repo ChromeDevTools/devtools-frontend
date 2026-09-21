@@ -7,6 +7,7 @@ import * as Platform from '../platform/platform.js';
 
 import type {FrameAssociated} from './FrameAssociated.js';
 import {PageResourceLoader, type PageResourceLoadInitiator, type ResourceLoader} from './PageResourceLoader.js';
+import {SecurityOrigin} from './SecurityOrigin.js';
 import {type DebugId, parseSourceMap, SourceMap, type SourceMapProvenance, type SourceMapV3} from './SourceMap.js';
 import {SourceMapCache} from './SourceMapCache.js';
 import {type Target, Type} from './Target.js';
@@ -215,14 +216,24 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }
 }
 
+function getCacheOrigin(initiator: PageResourceLoadInitiator): Platform.DevToolsPath.UrlString|null {
+  if (!initiator.initiatorUrl) {
+    return null;
+  }
+  const securityOrigin = SecurityOrigin.create(initiator.initiatorUrl);
+  if (securityOrigin.isOpaque() || (securityOrigin.isFile() && securityOrigin.siteId() === 'file:///')) {
+    return null;
+  }
+  return securityOrigin.siteId() as Platform.DevToolsPath.UrlString;
+}
+
 async function loadSourceMap(resourceLoader: ResourceLoader, sourceMapCache: SourceMapCache,
                              url: Platform.DevToolsPath.UrlString, debugId: DebugId|null,
                              initiator: PageResourceLoadInitiator): Promise<SourceMapV3> {
   try {
-    if (debugId) {
-      const securityOrigin = initiator.initiatorUrl ? Common.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) :
-                                                      Platform.DevToolsPath.EmptyUrlString;
-      const cachedSourceMap = await sourceMapCache.get(debugId, securityOrigin);
+    const cacheOrigin = debugId ? getCacheOrigin(initiator) : null;
+    if (debugId && cacheOrigin) {
+      const cachedSourceMap = await sourceMapCache.get(debugId, cacheOrigin);
       if (cachedSourceMap) {
         return cachedSourceMap;
       }
@@ -230,11 +241,9 @@ async function loadSourceMap(resourceLoader: ResourceLoader, sourceMapCache: Sou
 
     const {content} = await resourceLoader.loadResource(url, initiator);
     const sourceMap = parseSourceMap(content);
-    if (debugId && 'debugId' in sourceMap && sourceMap.debugId === debugId) {
+    if (debugId && cacheOrigin && 'debugId' in sourceMap && sourceMap.debugId === debugId) {
       // In case something goes wrong with updating the cache, we still want to use the source map.
-      const securityOrigin = initiator.initiatorUrl ? Common.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) :
-                                                      Platform.DevToolsPath.EmptyUrlString;
-      await sourceMapCache.set(sourceMap.debugId as DebugId, securityOrigin, sourceMap).catch();
+      await sourceMapCache.set(sourceMap.debugId as DebugId, cacheOrigin, sourceMap).catch();
     }
     return sourceMap;
   } catch (cause) {

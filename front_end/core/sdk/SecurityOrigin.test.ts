@@ -40,6 +40,8 @@ describe('SecurityOrigin', () => {
     it('treats opaque URLs as unique opaque origins that do not match each other', () => {
       const data1 = SDK.SecurityOrigin.SecurityOrigin.create('data:text/html,hello');
       const data2 = SDK.SecurityOrigin.SecurityOrigin.create('data:text/html,hello');
+      const blobFile1 = SDK.SecurityOrigin.SecurityOrigin.create('blob:file:///1234-5678');
+      const blobFile2 = SDK.SecurityOrigin.SecurityOrigin.create('blob:file:///1234-5678');
       const aboutBlank = SDK.SecurityOrigin.SecurityOrigin.create('about:blank');
       const nullOrigin = SDK.SecurityOrigin.SecurityOrigin.create('null');
       const emptyOrigin = SDK.SecurityOrigin.SecurityOrigin.create('');
@@ -47,12 +49,15 @@ describe('SecurityOrigin', () => {
 
       assert.isTrue(data1.isOpaque());
       assert.isTrue(data2.isOpaque());
+      assert.isTrue(blobFile1.isOpaque());
+      assert.isTrue(blobFile2.isOpaque());
       assert.isTrue(aboutBlank.isOpaque());
       assert.isTrue(nullOrigin.isOpaque());
       assert.isTrue(emptyOrigin.isOpaque());
       assert.isTrue(detachedOrigin.isOpaque());
 
       assert.isFalse(data1.isSameOriginWith(data2));
+      assert.isFalse(blobFile1.isSameOriginWith(blobFile2));
       assert.isFalse(data1.isSameOriginWith(aboutBlank));
       assert.isFalse(nullOrigin.isSameOriginWith(emptyOrigin));
       assert.isFalse(detachedOrigin.isSameOriginWith(emptyOrigin));

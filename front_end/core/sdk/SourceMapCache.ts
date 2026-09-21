@@ -28,11 +28,17 @@ export class SourceMapCache {
   }
 
   async set(debugId: DebugId, securityOrigin: Platform.DevToolsPath.UrlString, sourceMap: SourceMapV3): Promise<void> {
+    if (!securityOrigin || securityOrigin === 'file://') {
+      return;
+    }
     const cache = await this.#cache();
     await cache?.put(SourceMapCache.#urlForDebugId(debugId, securityOrigin), new Response(JSON.stringify(sourceMap)));
   }
 
   async get(debugId: DebugId, securityOrigin: Platform.DevToolsPath.UrlString): Promise<SourceMapV3|null> {
+    if (!securityOrigin || securityOrigin === 'file://') {
+      return null;
+    }
     const cache = await this.#cache();
     const response = await cache?.match(SourceMapCache.#urlForDebugId(debugId, securityOrigin));
     return (await response?.json() as SourceMapV3 | undefined) ?? null;
@@ -65,10 +71,16 @@ const IN_MEMORY_INSTANCE = new (class implements Pick<SourceMapCache, 'get'|'set
   readonly #cache = new Map<string, SourceMapV3>();
 
   async set(debugId: DebugId, securityOrigin: Platform.DevToolsPath.UrlString, sourceMap: SourceMapV3): Promise<void> {
+    if (!securityOrigin || securityOrigin === 'file://') {
+      return;
+    }
     this.#cache.set(`${debugId}|${securityOrigin}`, sourceMap);
   }
 
   async get(debugId: DebugId, securityOrigin: Platform.DevToolsPath.UrlString): Promise<SourceMapV3|null> {
+    if (!securityOrigin || securityOrigin === 'file://') {
+      return null;
+    }
     return this.#cache.get(`${debugId}|${securityOrigin}`) ?? null;
   }
 

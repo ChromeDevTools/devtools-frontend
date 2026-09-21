@@ -480,6 +480,112 @@ describe('SourceMapManager', () => {
       const storedMap = await sourceMapCache.get(debugId, clientOrigin);
       assert.deepEqual(storedMap, networkMap);
     });
+
+    it('isolates cached source maps across different file:// URLs', async () => {
+      const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
+      const attackerFileUrl = urlString`file:///tmp/attacker/poison.js`;
+      const victimFileUrl = urlString`file:///tmp/victim/dist/app.js`;
+
+      const poisonedMap: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['forged.ts'],
+        mappings: '',
+        debugId,
+      };
+
+      const genuineMap: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['genuine.ts'],
+        mappings: '',
+        debugId,
+      };
+
+      const loadResourceSpy = sinon.spy();
+      const universe = new TestUniverse({
+        pageResourceLoaderOptions: {
+          loadOverride: async url => {
+            loadResourceSpy(url);
+            return {
+              success: true,
+              content: JSON.stringify(genuineMap),
+              errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+            };
+          },
+        },
+      });
+      const target = universe.createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+
+      await sourceMapCache.set(debugId, attackerFileUrl, poisonedMap);
+
+      const victimClient = new MockClient(target, debugId, victimFileUrl);
+      sourceMapManager.attachSourceMap(victimClient, sourceURL, sourceMappingURL,
+                                       SDK.SourceMap.SourceMapProvenance.CDP);
+      const victimSourceMap = await sourceMapManager.sourceMapForClientPromise(victimClient);
+
+      assert.isNotNull(victimSourceMap);
+      assert.deepEqual(victimSourceMap?.sourceURLs(), [urlString`http://localhost/genuine.ts`]);
+      assert.strictEqual(loadResourceSpy.callCount, 1,
+                         'loadResource should have been called for a different file:// path');
+
+      const storedVictimMap = await sourceMapCache.get(debugId, victimFileUrl);
+      assert.deepEqual(storedVictimMap, genuineMap);
+
+      // Same file:// path should hit the cache without re-fetching.
+      const sameVictimClient = new MockClient(target, debugId, victimFileUrl);
+      sourceMapManager.attachSourceMap(sameVictimClient, sourceURL, sourceMappingURL,
+                                       SDK.SourceMap.SourceMapProvenance.CDP);
+      const cachedVictimSourceMap = await sourceMapManager.sourceMapForClientPromise(sameVictimClient);
+      assert.isNotNull(cachedVictimSourceMap);
+      assert.deepEqual(cachedVictimSourceMap?.sourceURLs(), [urlString`http://localhost/genuine.ts`]);
+      assert.strictEqual(loadResourceSpy.callCount, 1,
+                         'loadResource should not be called again for the same file:// path');
+    });
+
+    it('skips caching for scripts with no initiator URL or opaque initiator URLs', async () => {
+      const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
+      const map1: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['eval1.ts'],
+        mappings: '',
+        debugId,
+      };
+      const map2: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['eval2.ts'],
+        mappings: '',
+        debugId,
+      };
+
+      let callCount = 0;
+      const universe = new TestUniverse({
+        pageResourceLoaderOptions: {
+          loadOverride: async () => {
+            callCount++;
+            return {
+              success: true,
+              content: JSON.stringify(callCount === 1 ? map1 : map2),
+              errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+            };
+          },
+        },
+      });
+      const target = universe.createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+
+      const anonymousClient1 = new MockClient(target, debugId, null);
+      sourceMapManager.attachSourceMap(anonymousClient1, sourceURL, sourceMappingURL,
+                                       SDK.SourceMap.SourceMapProvenance.CDP);
+      const sourceMap1 = await sourceMapManager.sourceMapForClientPromise(anonymousClient1);
+      assert.deepEqual(sourceMap1?.sourceURLs(), [urlString`http://localhost/eval1.ts`]);
+
+      const anonymousClient2 = new MockClient(target, debugId, Platform.DevToolsPath.EmptyUrlString);
+      sourceMapManager.attachSourceMap(anonymousClient2, sourceURL, sourceMappingURL,
+                                       SDK.SourceMap.SourceMapProvenance.CDP);
+      const sourceMap2 = await sourceMapManager.sourceMapForClientPromise(anonymousClient2);
+      assert.deepEqual(sourceMap2?.sourceURLs(), [urlString`http://localhost/eval2.ts`]);
+      assert.strictEqual(callCount, 2, 'anonymous scripts must not share a cache entry');
+    });
   });
 
   describe('lazy loading source maps', () => {

@@ -90,7 +90,7 @@ describe('SourceMapCache', () => {
     assert.isNull(await cache.get(debugId, origin2));
   });
 
-  it('supports empty security origin', async () => {
+  it('rejects empty and collapsed file:// security origins', async () => {
     const map: SDK.SourceMap.SourceMapV3 = {
       version: 3,
       sources: ['foo.ts'],
@@ -98,7 +98,9 @@ describe('SourceMapCache', () => {
     };
     const debugId = '1' as SDK.SourceMap.DebugId;
     await cache.set(debugId, Platform.DevToolsPath.EmptyUrlString, map);
+    await cache.set(debugId, urlString`file://`, map);
 
-    assert.deepEqual(await cache.get(debugId, Platform.DevToolsPath.EmptyUrlString), map);
+    assert.isNull(await cache.get(debugId, Platform.DevToolsPath.EmptyUrlString));
+    assert.isNull(await cache.get(debugId, urlString`file://`));
   });
 });

@@ -545,6 +545,7 @@ class ScopeWithSourceMappedVariables implements SDK.DebuggerModel.ScopeChainEntr
   /** The resolved `this` of the current call frame */
   readonly #thisObject: SDK.RemoteObject.RemoteObject|null;
   readonly #debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+  #object?: SDK.RemoteObject.RemoteObject;
 
   constructor(scope: SDK.DebuggerModel.ScopeChainEntry, thisObject: SDK.RemoteObject.RemoteObject|null,
               debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) {
@@ -574,7 +575,10 @@ class ScopeWithSourceMappedVariables implements SDK.DebuggerModel.ScopeChainEntr
   }
 
   object(): SDK.RemoteObject.RemoteObject {
-    return resolveScopeInObject(this.#debuggerScope, this.#debuggerWorkspaceBinding);
+    if (!this.#object) {
+      this.#object = resolveScopeInObject(this.#debuggerScope, this.#debuggerWorkspaceBinding);
+    }
+    return this.#object;
   }
 
   description(): string {
@@ -599,6 +603,8 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
   private readonly scope: SDK.DebuggerModel.ScopeChainEntry;
   private readonly object: SDK.RemoteObject.RemoteObject;
   readonly #debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+  #allPropertiesPromise?: Promise<SDK.RemoteObject.GetPropertiesResult>;
+  #cachedWithPreview = false;
 
   constructor(scope: SDK.DebuggerModel.ScopeChainEntry,
               debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) {
@@ -650,6 +656,18 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
 
   override async getAllProperties(accessorPropertiesOnly: boolean, generatePreview: boolean):
       Promise<SDK.RemoteObject.GetPropertiesResult> {
+    if (accessorPropertiesOnly) {
+      return await this.#resolveAllProperties(true, generatePreview);
+    }
+    if (!this.#allPropertiesPromise || (generatePreview && !this.#cachedWithPreview)) {
+      this.#cachedWithPreview = generatePreview;
+      this.#allPropertiesPromise = this.#resolveAllProperties(false, generatePreview);
+    }
+    return await this.#allPropertiesPromise;
+  }
+
+  async #resolveAllProperties(accessorPropertiesOnly: boolean,
+                              generatePreview: boolean): Promise<SDK.RemoteObject.GetPropertiesResult> {
     const allProperties = await this.object.getAllProperties(accessorPropertiesOnly, generatePreview);
     const {variableMapping} = await resolveDebuggerScope(this.scope, this.#debuggerWorkspaceBinding);
 
@@ -664,6 +682,8 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
 
   override async setPropertyValue(argumentName: string|Protocol.Runtime.CallArgument, value: string):
       Promise<string|undefined> {
+    this.#allPropertiesPromise = undefined;
+    this.#cachedWithPreview = false;
     const {variableMapping} = await resolveDebuggerScope(this.scope, this.#debuggerWorkspaceBinding);
 
     let name;
@@ -684,6 +704,8 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
   }
 
   override async deleteProperty(name: Protocol.Runtime.CallArgument): Promise<string|undefined> {
+    this.#allPropertiesPromise = undefined;
+    this.#cachedWithPreview = false;
     return await this.object.deleteProperty(name);
   }
 

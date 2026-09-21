@@ -21,6 +21,9 @@ import {resolveScopeChain} from './NamesResolver.js';
  * This class tracks all that and sends events with the latest scope chain for a specific call frame.
  */
 export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+  static readonly #cachedScopeChainByCallFrame =
+      new WeakMap<SDK.DebuggerModel.CallFrame, Promise<SDK.DebuggerModel.ScopeChainEntry[]>>();
+
   readonly #callFrame: SDK.DebuggerModel.CallFrame;
   readonly #debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
 
@@ -53,13 +56,29 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.listeners?.clear();
   }
 
+  static resolveScopeChain(callFrame: SDK.DebuggerModel.CallFrame,
+                           debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding):
+      Promise<SDK.DebuggerModel.ScopeChainEntry[]> {
+    let cachedPromise = ScopeChainModel.#cachedScopeChainByCallFrame.get(callFrame);
+    if (!cachedPromise) {
+      cachedPromise = resolveScopeChain(callFrame, debuggerWorkspaceBinding);
+      ScopeChainModel.#cachedScopeChainByCallFrame.set(callFrame, cachedPromise);
+    }
+    return cachedPromise;
+  }
+
+  resolveScopeChain(): Promise<SDK.DebuggerModel.ScopeChainEntry[]> {
+    return ScopeChainModel.resolveScopeChain(this.#callFrame, this.#debuggerWorkspaceBinding);
+  }
+
   async #update(): Promise<void> {
-    const scopeChain = await resolveScopeChain(this.#callFrame, this.#debuggerWorkspaceBinding);
+    const scopeChain = await this.resolveScopeChain();
     this.dispatchEventToListeners(Events.SCOPE_CHAIN_UPDATED, new ScopeChain(scopeChain));
   }
 
   #debugInfoAttached(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
     if (event.data === this.#callFrame.script) {
+      ScopeChainModel.#cachedScopeChainByCallFrame.delete(this.#callFrame);
       void this.#throttler.schedule(this.#boundUpdate);
     }
   }
@@ -67,6 +86,7 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #sourceMapChanged(event: Common.EventTarget
                         .EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>): void {
     if (event.data.client === this.#callFrame.script) {
+      ScopeChainModel.#cachedScopeChainByCallFrame.delete(this.#callFrame);
       void this.#throttler.schedule(this.#boundUpdate);
     }
   }

@@ -76,7 +76,7 @@ describe('Click-to-Comment mode across DevTools panels', function() {
        await commentInput.type('Test comment');
 
        // 6. Submit the draft comment.
-       await devToolsPage.click('[aria-label="Add comment"]');
+       await devToolsPage.click('[aria-label="Send to agent"]');
        await devToolsPage.waitFor('.comment-thread-widget.submitted');
 
        // 7. Toggle comment mode OFF.

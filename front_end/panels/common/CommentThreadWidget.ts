@@ -36,7 +36,7 @@ const UIStrings = {
   /**
    * @description Label for the aria-label of the add comment button.
    */
-  addCommentButton: 'Add comment',
+  sendToAgent: 'Send to agent',
   /**
    * @description aria-label for the comment text area.
    */
@@ -150,10 +150,10 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             </div>
           </devtools-tooltip>
           <devtools-button
-            aria-label=${i18nString(UIStrings.addCommentButton)}
+            aria-label=${i18nString(UIStrings.sendToAgent)}
             .disabled=${!input.commentText.trim()}
             @click=${() => input.onAddComment(input.commentText)}>
-            ${i18nString(UIStrings.addCommentButton)}
+            ${i18nString(UIStrings.sendToAgent)}
           </devtools-button>
         </div>
       ` : Lit.nothing}

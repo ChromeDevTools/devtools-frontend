@@ -15,7 +15,7 @@ bundle("build_inspector_overlay") {
   format = "iife"
   global_name = "InspectorOverlay"
   css_style_sheet = true
-  max_size = 85000
+  max_size = 90000
 
   # Explicitly declare imported CSS stylesheets as inputs so they are
   # available to esbuild under remote execution (e.g. Siso with -strict_remote).
@@ -47,6 +47,7 @@ ts_library("inspector_overlay") {
     "common.ts",
     "css_grid_label_helpers.ts",
     "drag_resize_handler.ts",
+    "highlight_anchor.ts",
     "highlight_common.ts",
     "highlight_container_query.ts",
     "highlight_flex_common.ts",
@@ -73,6 +74,7 @@ ts_library("unittests") {
   sources = [
     "common.test.ts",
     "css_grid_label_helpers.test.ts",
+    "highlight_anchor.test.ts",
     "highlight_common.test.ts",
     "highlight_flex_common.test.ts",
     "highlight_grid_common.test.ts",

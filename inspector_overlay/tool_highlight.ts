@@ -20,6 +20,7 @@ import {
   type PathCommands,
   type ResetData,
 } from './common.js';
+import {type AnchorHighlight, drawAnchorHighlight} from './highlight_anchor.js';
 import {drawPath, emptyBounds, formatColor, formatRgba, type PathBounds} from './highlight_common.js';
 import {type ContainerQueryHighlight, drawContainerQueryHighlight} from './highlight_container_query.js';
 import {
@@ -87,6 +88,7 @@ interface Highlight {
   flexItemInfo: FlexItemHighlight[];
   containerQueryInfo: ContainerQueryHighlight[];
   isolatedElementInfo: IsolatedElementHighlight[];
+  imcbInfo?: AnchorHighlight[];
 }
 
 export class HighlightOverlay extends Overlay {
@@ -217,6 +219,12 @@ export class HighlightOverlay extends Overlay {
           continue;
         }
         drawLayoutFlexItemHighlight(flexItem, path, this.context, this.emulationScaleFactor);
+      }
+    }
+
+    if (highlight.imcbInfo) {
+      for (const anchor of highlight.imcbInfo) {
+        drawAnchorHighlight(anchor, this.context, this.emulationScaleFactor, this.canvasWidth, this.canvasHeight);
       }
     }
     this.context.restore();

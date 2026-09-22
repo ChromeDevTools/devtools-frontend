@@ -34,6 +34,7 @@ devtools_ui_module("accessibility") {
 
   ts_deps = [
     "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
@@ -91,6 +92,7 @@ devtools_ui_module("unittests") {
 
   ts_deps = [
     ":bundle",
+    "../../core/host:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",

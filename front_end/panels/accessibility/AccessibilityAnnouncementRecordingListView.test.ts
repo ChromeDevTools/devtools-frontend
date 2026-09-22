@@ -5,9 +5,11 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import * as Host from '../../core/host/host.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Accessibility from './accessibility.js';
 
@@ -115,6 +117,76 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingListView', () => {
     assert.isNull(input.selectedItem);
   });
 
+  describe('context menu', () => {
+    it('populates copy message and copy element HTML actions and copies to clipboard', async () => {
+      const {view} = await createListView([mockAnnouncement]);
+      const copyTextStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
+      const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('contextmenu'));
+
+      view.input.onContextMenu(contextMenu, mockAnnouncement);
+
+      const clipboardItems = contextMenu.clipboardSection().items;
+      assert.lengthOf(clipboardItems, 2);
+
+      const copyMessageItem = clipboardItems.find(item => item.buildDescriptor().label === 'Copy message');
+      assert.exists(copyMessageItem);
+      assert.strictEqual(copyMessageItem.buildDescriptor().jslogContext, 'copy-message');
+
+      const copyElementHtmlItem = clipboardItems.find(item => item.buildDescriptor().label === 'Copy element HTML');
+      assert.exists(copyElementHtmlItem);
+      assert.strictEqual(copyElementHtmlItem.buildDescriptor().jslogContext, 'copy-element-html');
+
+      contextMenu.invokeHandler(copyMessageItem.id());
+      sinon.assert.calledOnceWithExactly(copyTextStub, mockAnnouncement.message);
+
+      copyTextStub.resetHistory();
+      contextMenu.invokeHandler(copyElementHtmlItem.id());
+      sinon.assert.calledOnceWithExactly(copyTextStub, mockAnnouncement.element);
+    });
+
+    it('omits clipboard actions when message or element is empty', async () => {
+      const emptyAnnouncement: A11yAnnouncement = {
+        api: AnnouncementApi.ARIA_LIVE,
+        message: '',
+        politeness: 'polite',
+        element: '',
+        time: 1700000000000,
+      };
+      const {view} = await createListView([emptyAnnouncement]);
+      const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('contextmenu'));
+
+      view.input.onContextMenu(contextMenu, emptyAnnouncement);
+
+      assert.isEmpty(contextMenu.clipboardSection().items);
+    });
+
+    it('forwards CustomEvent<ContextMenu> from DEFAULT_VIEW row to onContextMenu', async () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      const onContextMenuSpy = sinon.spy();
+
+      Accessibility.AccessibilityAnnouncementRecordingListView.DEFAULT_VIEW({
+        items: [mockAnnouncement],
+        selectedItem: null,
+        onContextMenu: onContextMenuSpy,
+        onSelect: () => {},
+        onDeselect: () => {},
+      },
+                                                                            undefined, target);
+      // The data grid sets up its columns asynchronously, in response to a
+      // mutation observer. Wait for that to settle so that it does not run
+      // during teardown, once the test environment is already gone.
+      await raf();
+
+      const dataRow = target.querySelector('devtools-data-grid table tr:nth-child(2)');
+      assert.exists(dataRow);
+      const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('contextmenu'));
+      dataRow.dispatchEvent(new CustomEvent('contextmenu', {detail: contextMenu}));
+
+      sinon.assert.calledOnceWithExactly(onContextMenuSpy, contextMenu, mockAnnouncement);
+    });
+  });
+
   describe('DEFAULT_VIEW screenshots', () => {
     let target: HTMLElement;
 
@@ -128,13 +200,20 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingListView', () => {
 
     it('renders empty state', async () => {
       Accessibility.AccessibilityAnnouncementRecordingListView.DEFAULT_VIEW(
-          {items: [], selectedItem: null, onSelect: () => {}, onDeselect: () => {}}, undefined, target);
+          {items: [], selectedItem: null, onContextMenu: () => {}, onSelect: () => {}, onDeselect: () => {}}, undefined,
+          target);
       await assertScreenshot('accessibility/accessibility_announcement_recording_list_view_empty.png');
     });
 
     it('renders announcements list', async () => {
-      Accessibility.AccessibilityAnnouncementRecordingListView.DEFAULT_VIEW(
-          {items: [mockAnnouncement], selectedItem: null, onSelect: () => {}, onDeselect: () => {}}, undefined, target);
+      Accessibility.AccessibilityAnnouncementRecordingListView.DEFAULT_VIEW({
+        items: [mockAnnouncement],
+        selectedItem: null,
+        onContextMenu: () => {},
+        onSelect: () => {},
+        onDeselect: () => {},
+      },
+                                                                            undefined, target);
       await assertScreenshot('accessibility/accessibility_announcement_recording_list_view.png');
     });
   });

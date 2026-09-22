@@ -415,6 +415,14 @@ export class MainImpl {
       requiresChromeRestart: false,
     });
 
+    Root.Runtime.experiments.register({
+      name: Root.ExperimentNames.ExperimentName.SOURCE_MAP_SCOPES_IN_SOURCES_PANEL,
+      title: 'Source map scopes in the Sources panel',
+      aboutFlag: 'devtools-source-map-scopes-in-sources-panel',
+      isEnabled: Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel?.enabled ?? false,
+      requiresChromeRestart: false,
+    });
+
     for (const experiment of Root.Runtime.experiments.allConfigurableExperiments()) {
       if (experiment.isEnabled()) {
         Host.userMetrics.experimentEnabledAtLaunch(experiment.name);

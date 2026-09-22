@@ -9,6 +9,7 @@ export enum ExperimentName {
   DURABLE_MESSAGES = 'durable-messages',
   JPEG_XL = 'jpeg-xl',
   PLUS_BUTTON = 'plus-button',
+  SOURCE_MAP_SCOPES_IN_SOURCES_PANEL = 'source-map-scopes-in-sources-panel',
   // Adding or removing an entry from this enum?
   // You will need to update:
   // 1. DevToolsExperiments enum in host/UserMetrics.ts

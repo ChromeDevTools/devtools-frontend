@@ -498,10 +498,11 @@ export enum DevtoolsExperiments {
   'durable-messages' = 110,
   'jpeg-xl' = 111,
   'plus-button' = 112,
+  'source-map-scopes-in-sources-panel' = 113,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 113,
+  MAX_VALUE = 114,
 }
 
 /** Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added. **/

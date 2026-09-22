@@ -876,7 +876,8 @@
       'durable-messages': 110,
       'jpeg-xl': 111,
       'plus-button': 112,
-      MAX_VALUE: 113,
+      'source-map-scopes-in-sources-panel': 113,
+      MAX_VALUE: 114,
     },
     IssueExpanded: {
       CrossOriginEmbedderPolicy: 0,

@@ -32,6 +32,23 @@ describe('createIssueDescriptionFromMarkdown', () => {
         () => IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(
             invalidIssueDescription, emptyMarkdownDescription));
   });
+
+  it('overrides the Markdown heading title with description.title while still validating that a heading exists', () => {
+    const descriptionWithTitle = {
+      file: '<unused>',
+      title: 'Custom localized title',
+      links: [],
+    };
+
+    const validIssueDescription = '# Markdown Heading\n\n...and some text describing the issue.';
+    const description = IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(
+        validIssueDescription, descriptionWithTitle);
+    assert.strictEqual(description.title, 'Custom localized title');
+
+    const invalidIssueDescription = 'Just some text, but the heading is missing!';
+    assert.throws(() => IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(
+                      invalidIssueDescription, descriptionWithTitle));
+  });
 });
 
 describe('substitutePlaceholders', () => {

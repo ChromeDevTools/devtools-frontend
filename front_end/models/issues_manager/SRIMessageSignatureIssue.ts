@@ -77,10 +77,8 @@ export class SRIMessageSignatureIssue extends Issue<Protocol.Audits.SRIMessageSi
       description.substitutions?.set('PLACEHOLDER_signatureBase', () => details.signatureBase);
     }
     if (details.error === Protocol.Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch) {
-      description.substitutions?.set('PLACEHOLDER_integrityAssertions', () => {
-        const prefix = '\n* ';
-        return prefix + this.details().integrityAssertions.join(prefix);
-      });
+      description.substitutions?.set('PLACEHOLDER_integrityAssertions',
+                                     () => this.details().integrityAssertions.join('\n'));
     }
     return resolveLazyDescription(description);
   }

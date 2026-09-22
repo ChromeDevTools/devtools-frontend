@@ -516,9 +516,9 @@ describe('Issue description smoke test', () => {
       const description = (Deprecation.UIStrings as Record<string, string>)[deprecation];
       const issueDescription = await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown({
         file: 'deprecation.md',
+        title: 'Deprecated feature used',
         links: [],
         substitutions: new Map([
-          ['PLACEHOLDER_title', 'Deprecated feature used'],
           ['PLACEHOLDER_message', i18nDeprecationString(description)],
         ]),
       });

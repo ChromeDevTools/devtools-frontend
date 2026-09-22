@@ -71,8 +71,8 @@ export class DeprecationIssue extends Issue<Protocol.Audits.DeprecationIssueDeta
     }
     return resolveLazyDescription({
       file: 'deprecation.md',
+      title: i18nLazyString(UIStrings.title),
       substitutions: new Map([
-        ['PLACEHOLDER_title', i18nLazyString(UIStrings.title)],
         ['PLACEHOLDER_message', messageFunction],
       ]),
       links,

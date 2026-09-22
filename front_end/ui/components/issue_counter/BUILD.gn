@@ -64,4 +64,6 @@ devtools_ui_module("unittests") {
     "../icon_button:bundle",
     "../render_coordinator:bundle",
   ]
+
+  data_deps = [ "../../../models/issues_manager:descriptions" ]
 }

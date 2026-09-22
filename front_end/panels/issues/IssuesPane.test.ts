@@ -95,8 +95,8 @@ describe('IssuesPane', () => {
     const badIssue = new StubIssue('BadIssue', [], []);
     sinon.stub(badIssue, 'getDescription').returns({
       file: 'deprecation.md',
+      title: 'Deprecated feature used',
       substitutions: new Map([
-        ['PLACEHOLDER_title', 'Deprecated feature used'],
         ['PLACEHOLDER_message', 'Some deprecation message'],
       ]),
       links: [],

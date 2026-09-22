@@ -69,4 +69,22 @@ describe('SRIMessageSignatureIssue', () => {
       assert.isNotNull(sriMessageSignatureIssue.getDescription());
     }
   });
+
+  it('formats integrityAssertions with newline separators for ValidationFailedIntegrityMismatch', () => {
+    const issueDetails = {
+      error: Protocol.Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch,
+      request: {
+        requestId: 'test-request-id' as Protocol.Network.RequestId,
+        url: 'https://example.com/',
+      },
+      signatureBase: 'test-signature-base',
+      integrityAssertions: ['ed25519-key1', 'ed25519-key2'],
+    };
+    const issue = createProtocolIssue(issueDetails);
+    const [sriIssue] =
+        IssuesManager.SRIMessageSignatureIssue.SRIMessageSignatureIssue.fromInspectorIssue(mockModel, issue);
+    const description = sriIssue.getDescription();
+    assert.exists(description);
+    assert.strictEqual(description.substitutions?.get('PLACEHOLDER_integrityAssertions'), 'ed25519-key1\ned25519-key2');
+  });
 });

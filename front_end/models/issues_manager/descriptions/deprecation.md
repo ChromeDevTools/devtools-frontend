@@ -1,3 +1,3 @@
-# {PLACEHOLDER_title}
+# Deprecated feature used
 
 {PLACEHOLDER_message}

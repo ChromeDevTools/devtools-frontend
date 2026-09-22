@@ -13,12 +13,14 @@ import * as Marked from '../../third_party/marked/marked.js';
  */
 export interface MarkdownIssueDescription {
   file: string;
+  title?: string;
   substitutions?: Map<string, string>;
   links: Array<{link: string, linkTitle: string}>;
 }
 
 export interface LazyMarkdownIssueDescription {
   file: string;
+  title?: () => string;
   substitutions?: Map<string, () => string>;
   links: Array<{link: string, linkTitle: () => string}>;
 }
@@ -38,8 +40,9 @@ export function resolveLazyDescription(lazyDescription: LazyMarkdownIssueDescrip
     substitutionMap.set(key, value());
   });
 
-  const description = {
+  const description: MarkdownIssueDescription = {
     file: lazyDescription.file,
+    title: lazyDescription.title?.(),
     links: lazyDescription.links.map(linksMap),
     substitutions: substitutionMap,
   };
@@ -54,6 +57,7 @@ export interface IssueDescription {
   title: string;
   markdown: Marked.Marked.Token[];
   links: Array<{link: string, linkTitle: string}>;
+  substitutions?: Map<string, string>;
 }
 
 export async function getFileContent(url: URL): Promise<string> {
@@ -82,15 +86,16 @@ export async function createIssueDescriptionFromMarkdown(description: MarkdownIs
 export function createIssueDescriptionFromRawMarkdown(
     markdown: string, description: MarkdownIssueDescription): IssueDescription {
   const markdownAst = Marked.Marked.lexer(markdown);
-  const title = findTitleFromMarkdownAst(markdownAst);
-  if (!title) {
+  const markdownTitle = findTitleFromMarkdownAst(markdownAst);
+  if (!markdownTitle) {
     throw new Error('Markdown issue descriptions must start with a heading');
   }
 
   return {
-    title,
+    title: description.title ?? markdownTitle,
     markdown: markdownAst.slice(1),
     links: description.links,
+    substitutions: description.substitutions,
   };
 }
 
@@ -148,5 +153,9 @@ export async function getIssueTitleFromMarkdownDescription(description: Markdown
     Promise<string|null> {
   const rawMarkdown = await getMarkdownFileContent(description.file);
   const markdownAst = Marked.Marked.lexer(rawMarkdown);
-  return findTitleFromMarkdownAst(markdownAst);
+  const markdownTitle = findTitleFromMarkdownAst(markdownAst);
+  if (!markdownTitle) {
+    return null;
+  }
+  return description.title ?? markdownTitle;
 }

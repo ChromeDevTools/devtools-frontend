@@ -666,6 +666,23 @@ export class DebuggerPlugin extends Plugin {
     return {
       box,
       show: async (popover: UI.GlassPane.GlassPane) => {
+        const scopeMappings = await this.#getScopeMappings(selectedCallFrame);
+        const scopedVariable = findVariableInScopeMappings(evaluationText, highlightRange.from, scopeMappings);
+        if (scopedVariable.found) {
+          if (!scopedVariable.value) {
+            return false;
+          }
+          objectPopoverHelper =
+              await ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildObjectPopover(scopedVariable.value, popover);
+          const potentiallyUpdatedCallFrame =
+              UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+          if (!objectPopoverHelper || debuggableFrame !== potentiallyUpdatedCallFrame) {
+            objectPopoverHelper?.dispose();
+            return false;
+          }
+          return true;
+        }
+
         let resolvedText = '';
         if (selectedCallFrame.script.isJavaScript()) {
           const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
@@ -950,6 +967,23 @@ export class DebuggerPlugin extends Plugin {
     return offset ?? null;
   }
 
+  #cachedScopeMappings?: {callFrame: SDK.DebuggerModel.CallFrame, promise: Promise<ScopeMapping[]>};
+
+  #getScopeMappings(callFrame: SDK.DebuggerModel.CallFrame,
+                    resolvedScopeChain?: SDK.DebuggerModel.ScopeChainEntry[]): Promise<ScopeMapping[]> {
+    if (this.#cachedScopeMappings?.callFrame !== callFrame) {
+      const url = this.uiSourceCode.url();
+      this.#cachedScopeMappings = {
+        callFrame,
+        promise: computeScopeMappings(
+            callFrame, location => this.#rawLocationToEditorOffset(location, url),
+            (line, col) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(line, col)) ?? null,
+            resolvedScopeChain),
+      };
+    }
+    return this.#cachedScopeMappings.promise;
+  }
+
   private async computeValueDecorations(): Promise<CodeMirror.DecorationSet|null> {
     if (!this.editor) {
       return null;
@@ -968,8 +1002,6 @@ export class DebuggerPlugin extends Plugin {
     const callFrame = debuggableFrame.sdkFrame;
     const url = this.uiSourceCode.url();
 
-    const rawLocationToEditorOffset: (location: SDK.DebuggerModel.Location|null) => Promise<number|null> = location =>
-        this.#rawLocationToEditorOffset(location, url);
     const uiPositionToEditorOffset = (lineNumber: number, columnNumber: number): number|null =>
         this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(lineNumber, columnNumber)) ?? null;
     const scopeChain = await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(
@@ -1008,8 +1040,7 @@ export class DebuggerPlugin extends Plugin {
       return null;
     }
 
-    const scopeMappings =
-        await computeScopeMappings(callFrame, rawLocationToEditorOffset, uiPositionToEditorOffset, scopeChain);
+    const scopeMappings = await this.#getScopeMappings(callFrame, scopeChain);
     // After the `await` the DebuggerPlugin could have been disposed. Re-check `this.editor`.
     if (!this.editor || scopeMappings.length === 0) {
       return null;
@@ -2166,11 +2197,25 @@ export async function computeScopeMappings(
     scopeMappings.push({scopeStart, scopeEnd, variableMap});
 
     // Let us only get mappings for block scopes until we see a surrounding function (local) scope.
-    if (scope.type() === Protocol.Debugger.ScopeType.Local) {
+    if (scope.type() === Protocol.Debugger.ScopeType.Local &&
+        !(scope instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry)) {
       break;
     }
   }
   return scopeMappings;
+}
+
+export function findVariableInScopeMappings(name: string, pos: number, scopeMappings: ScopeMapping[]):
+    {found: boolean, value: SDK.RemoteObject.RemoteObject|null} {
+  for (const scope of scopeMappings) {
+    if (pos < scope.scopeStart || pos >= scope.scopeEnd) {
+      continue;
+    }
+    if (scope.variableMap.has(name)) {
+      return {found: true, value: scope.variableMap.get(name) ?? null};
+    }
+  }
+  return {found: false, value: null};
 }
 
 export function getVariableValuesByLine(scopeMappings: ScopeMapping[],
@@ -2178,7 +2223,7 @@ export function getVariableValuesByLine(scopeMappings: ScopeMapping[],
     Map<number, Map<string, SDK.RemoteObject.RemoteObject>>|null {
   const namesPerLine = new Map<number, Map<string, SDK.RemoteObject.RemoteObject>>();
   for (const {line, from, id} of variableNames) {
-    const varValue = findVariableInChain(id, from, scopeMappings);
+    const varValue = findVariableInScopeMappings(id, from, scopeMappings).value;
     if (!varValue) {
       continue;
     }
@@ -2190,22 +2235,6 @@ export function getVariableValuesByLine(scopeMappings: ScopeMapping[],
     names.set(id, varValue);
   }
   return namesPerLine;
-
-  function findVariableInChain(
-      name: string,
-      pos: number,
-      scopeMappings: ScopeMapping[],
-      ): SDK.RemoteObject.RemoteObject|null {
-    for (const scope of scopeMappings) {
-      if (pos < scope.scopeStart || pos >= scope.scopeEnd) {
-        continue;
-      }
-      if (scope.variableMap.has(name)) {
-        return scope.variableMap.get(name) ?? null;
-      }
-    }
-    return null;
-  }
 }
 
 // Pop-over
@@ -2280,8 +2309,9 @@ export function computePopoverHighlightRange(state: CodeMirror.EditorState, mime
 
     default: {
       // In other languages, just assume a token consisting entirely
-      // of identifier-like characters is an identifier.
-      if (node.to - node.from > 50 || /[^\w_\-$]/.test(state.sliceDoc(node.from, node.to))) {
+      // of identifier-like characters is an identifier, unless it is a member access.
+      if (node.to - node.from > 50 || /[^\w_\-$]/.test(state.sliceDoc(node.from, node.to)) ||
+          state.sliceDoc(node.from - 1, node.from) === '.' || state.sliceDoc(node.from - 2, node.from) === '->') {
         return null;
       }
       return {from: node.from, to: node.to, containsSideEffects: false};

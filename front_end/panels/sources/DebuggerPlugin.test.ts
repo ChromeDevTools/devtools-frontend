@@ -567,6 +567,68 @@ describeWithEnvironment('Inline variable view scope value resolution', () => {
     assert.isUndefined(valuesByLine?.get(3)?.get('x'));
     assert.strictEqual(valuesByLine?.get(6)?.get('x')?.value, 42);
   });
+
+  it('includes outer Closure and Global SourceMapScopeChainEntry scopes beyond the Local scope', async () => {
+    const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+    const target = createTarget();
+    callFrame.debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
+    callFrame.location.returns(
+        new SDK.DebuggerModel.Location(callFrame.debuggerModel, '0' as Protocol.Runtime.ScriptId, 0, 20));
+    callFrame.evaluate.callsFake(
+        async ({expression}) => ({
+          object: new SDK.RemoteObject.LocalJSONObject({0: expression.includes('localCompiled') ? 10 : 20}),
+        }));
+
+    const innerFunctionScope = {
+      start: {line: 2, column: 0},
+      end: {line: 5, column: 0},
+      isStackFrame: true,
+      kind: 'function',
+      variables: ['localVar'],
+      children: [],
+    };
+    const outerClosureScope = {
+      start: {line: 0, column: 0},
+      end: {line: 10, column: 0},
+      isStackFrame: true,
+      kind: 'function',
+      variables: ['closureVar'],
+      children: [innerFunctionScope],
+    };
+
+    const innerEntry =
+        new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, innerFunctionScope, {
+          start: {line: 0, column: 10},
+          end: {line: 0, column: 50},
+          isStackFrame: true,
+          isHidden: false,
+          values: ['localCompiled'],
+          children: [],
+        },
+                                                                  /* isInnerMostFunction */ true, undefined);
+    const outerEntry =
+        new SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry(callFrame, outerClosureScope, {
+          start: {line: 0, column: 0},
+          end: {line: 0, column: 100},
+          isStackFrame: true,
+          isHidden: false,
+          values: ['closureCompiled'],
+          children: [],
+        },
+                                                                  /* isInnerMostFunction */ false, undefined);
+
+    const scopeMappings = await Sources.DebuggerPlugin.computeScopeMappings(
+        callFrame,
+        async () => null,
+        (line, col) => line * 10 + col,
+        [innerEntry, outerEntry],
+    );
+
+    assert.strictEqual(Sources.DebuggerPlugin.findVariableInScopeMappings('localVar', 30, scopeMappings).value?.value,
+                       10);
+    assert.strictEqual(Sources.DebuggerPlugin.findVariableInScopeMappings('closureVar', 30, scopeMappings).value?.value,
+                       20);
+  });
 });
 
 describe('DebuggerPlugin', () => {
@@ -847,6 +909,48 @@ globalThis.foo = bar + baz;
               `did not correct highlight '${name}'`,
           );
         }
+      });
+    });
+
+    describe('in non-JS languages with Lezer and StreamLanguage', () => {
+      it('highlights variable identifiers and `this` while excluding `.` and `->` member fields', async () => {
+        const cppDoc = 'int val = this->ptrField + obj.dotField + val;';
+        const {cppLanguage} = await CodeMirror.cpp();
+        const cppState = CodeMirror.EditorState.create({doc: cppDoc, extensions: [cppLanguage]});
+
+        const valPos = cppDoc.indexOf('val');
+        assert.deepEqual(
+            computePopoverHighlightRange(cppState, 'text/x-c++src', valPos),
+            {from: valPos, to: valPos + 3, containsSideEffects: false},
+        );
+        const thisPos = cppDoc.indexOf('this');
+        assert.deepEqual(
+            computePopoverHighlightRange(cppState, 'text/x-c++src', thisPos),
+            {from: thisPos, to: thisPos + 4, containsSideEffects: false},
+        );
+        assert.isNull(computePopoverHighlightRange(cppState, 'text/x-c++src', cppDoc.indexOf('ptrField')));
+        assert.isNull(computePopoverHighlightRange(cppState, 'text/x-c++src', cppDoc.indexOf('dotField')));
+      });
+
+      it('resolves hovered variables and shadowed null bindings via findVariableInScopeMappings', () => {
+        const valueObj = {type: Protocol.Runtime.RemoteObjectType.Number, value: 99} as SDK.RemoteObject.RemoteObject;
+        const scopeMappings: Sources.DebuggerPlugin.ScopeMapping[] = [
+          {scopeStart: 20, scopeEnd: 40, variableMap: new Map([['x', null]])},
+          {scopeStart: 0, scopeEnd: 100, variableMap: new Map([['x', valueObj]])},
+        ];
+
+        assert.deepEqual(
+            Sources.DebuggerPlugin.findVariableInScopeMappings('x', 10, scopeMappings),
+            {found: true, value: valueObj},
+        );
+        assert.deepEqual(
+            Sources.DebuggerPlugin.findVariableInScopeMappings('x', 30, scopeMappings),
+            {found: true, value: null},
+        );
+        assert.deepEqual(
+            Sources.DebuggerPlugin.findVariableInScopeMappings('unknownVar', 10, scopeMappings),
+            {found: false, value: null},
+        );
       });
     });
   });

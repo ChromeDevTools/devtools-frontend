@@ -529,11 +529,11 @@ function mulWithOffset(param1, param2, offset) {
       const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
           location, backend.universe.debuggerWorkspaceBinding);
 
-      assert.strictEqual(mapping.get('param1'), 'n');
-      assert.strictEqual(mapping.get('param2'), 't');
-      assert.strictEqual(mapping.get('offset'), 'e');
-      assert.strictEqual(mapping.get('intermediate'), 'f');
-      assert.strictEqual(mapping.get('result'), 'u');
+      assert.strictEqual(mapping[0].get('param1'), 'n');
+      assert.strictEqual(mapping[0].get('param2'), 't');
+      assert.strictEqual(mapping[0].get('offset'), 'e');
+      assert.strictEqual(mapping[0].get('intermediate'), 'f');
+      assert.strictEqual(mapping[0].get('result'), 'u');
     });
 
     it('has the right mapping in a block scope with shadowing in the authored code', async () => {
@@ -543,8 +543,12 @@ function mulWithOffset(param1, param2, offset) {
       const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
           location, backend.universe.debuggerWorkspaceBinding);
 
-      // Block scope {intermediate} shadows function scope {intermediate}.
-      assert.strictEqual(mapping.get('intermediate'), 'n');
+      // Block scope {intermediate} precedes function scope {intermediate} in the scope chain.
+      assert.strictEqual(mapping[0].get('intermediate'), 'n');
+      assert.strictEqual(mapping[1].get('intermediate'), 'f');
+      const substituted =
+          await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute('intermediate', mapping);
+      assert.strictEqual(substituted, 'n');
     });
 
     it('has the right mapping in a block scope with shadowing in the compiled code', async () => {
@@ -554,7 +558,11 @@ function mulWithOffset(param1, param2, offset) {
       const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
           location, backend.universe.debuggerWorkspaceBinding);
 
-      assert.isNull(mapping.get('param1'));
+      assert.strictEqual(mapping[0].get('intermediate'), 'n');
+      assert.strictEqual(mapping[1].get('param1'), 'n');
+      const substituted = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(
+          'param2 + intermediate', mapping);
+      assert.strictEqual(substituted, 't + n');
     });
   });
 
@@ -869,7 +877,7 @@ function mulWithOffset(param1, param2, offset) {
       const variableMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
           callFrame, backend.universe.debuggerWorkspaceBinding);
 
-      assert.strictEqual(variableMap.get('par1'), 'o');
+      assert.deepEqual(variableMap, [new Map<string, string|null>([['par1', 'o']])]);
     });
   });
 });

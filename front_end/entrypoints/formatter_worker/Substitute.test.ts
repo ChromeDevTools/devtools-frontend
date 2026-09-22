@@ -17,7 +17,7 @@ const mapping = new Map<string, string|null>([
 ]);
 
 function substitute(expression: string): string {
-  return FormatterWorker.Substitute.substituteExpression(expression, mapping);
+  return FormatterWorker.Substitute.substituteExpression(expression, [mapping]);
 }
 
 describe('Substitute', () => {
@@ -200,7 +200,7 @@ describe('Substitute', () => {
     ]);
 
     function substituteExpr(expression: string, customMap = exprMapping): string {
-      return FormatterWorker.Substitute.substituteExpression(expression, customMap);
+      return FormatterWorker.Substitute.substituteExpression(expression, [customMap]);
     }
 
     it('Substitutes member expressions without outer parentheses', () => {

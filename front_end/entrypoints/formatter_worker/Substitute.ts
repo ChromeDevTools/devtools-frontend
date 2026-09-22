@@ -8,8 +8,7 @@ import {DefinitionKind} from '../formatter_actions/formatter_actions.js';
 import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ScopeVariableAnalysis, type VariableUses} from './ScopeParser.js';
 
-export function substituteExpression(expression: string,
-                                     nameMaps: Map<string, string|null>|Array<Map<string, string|null>>): string {
+export function substituteExpression(expression: string, nameMaps: Array<Map<string, string|null>>): string {
   const replacements = computeSubstitution(expression, nameMaps);
   return applySubstitution(expression, replacements);
 }
@@ -58,8 +57,7 @@ function parseBindingExpression(expression: string): {
  * it cannot parse the expression or the substitution is impossible to perform (for example
  * if the substitution target is 'this' within a function, it would become bound there).
  **/
-function computeSubstitution(expression: string,
-                             nameMaps: Map<string, string|null>|Array<Map<string, string|null>>): Replacement[] {
+function computeSubstitution(expression: string, nameMaps: Array<Map<string, string|null>>): Replacement[] {
   // Parse the expression and find variables and scopes.
   const root = Acorn.parse(expression, {
     ecmaVersion: ECMA_VERSION,
@@ -78,7 +76,7 @@ function computeSubstitution(expression: string,
   const nameMap = new Map<string, string|null>();
   const parsedBindings = new Map<string, ReturnType<typeof parseBindingExpression>>();
   const shadowedNames = new Set<string>();
-  for (const scopeMap of Array.isArray(nameMaps) ? nameMaps : [nameMaps]) {
+  for (const scopeMap of nameMaps) {
     const scopeNames = new Set<string>();
     for (const [name, rename] of scopeMap.entries()) {
       let parsed: ReturnType<typeof parseBindingExpression>|undefined;

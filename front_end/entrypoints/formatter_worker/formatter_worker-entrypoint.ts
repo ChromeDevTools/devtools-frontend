@@ -13,7 +13,7 @@ Platform.HostRuntime.HOST_RUNTIME.workerScope.onmessage = function(event): void 
     indentString: string,
     content: string,
     mimeType: string,
-    mapping: Map<string, string|null>,
+    mapping: Array<Map<string, string|null>>,
     sourceType: 'module'|'script',
   } = event.data.params;
   if (!method) {

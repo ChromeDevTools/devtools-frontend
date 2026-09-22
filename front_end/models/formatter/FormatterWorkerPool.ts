@@ -134,9 +134,8 @@ export class FormatterWorkerPool {
     return this.runTask(FormatterActions.FormatterActions.FORMAT, parameters) as Promise<FormatterActions.FormatResult>;
   }
 
-  javaScriptSubstitute(expression: string,
-                       mapping: Map<string, string|null>|Array<Map<string, string|null>>): Promise<string> {
-    if ((Array.isArray(mapping) ? mapping : [mapping]).every(m => m.size === 0)) {
+  javaScriptSubstitute(expression: string, mapping: Array<Map<string, string|null>>): Promise<string> {
+    if (mapping.every(m => m.size === 0)) {
       return Promise.resolve(expression);
     }
     return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE, {content: expression, mapping})

@@ -284,4 +284,128 @@ describe('Substitute', () => {
       assert.throws(() => substituteExpr('multiStmtVar + 1'), SyntaxError);
     });
   });
+
+  describe('Scope chain shadowing', () => {
+    it('prioritizes inner scope authored variables over outer scope variables of the same name', () => {
+      const scopes = [
+        new Map<string, string|null>([
+          ['shadowedAvailable', 'inner_a'],
+          ['shadowedUnavailable', null],
+          ['shadowedBroken', 'valid_inner'],
+        ]),
+        new Map<string, string|null>([
+          ['shadowedAvailable', 'outer_a'],
+          ['shadowedUnavailable', 'outer_u'],
+          ['shadowedBroken', 'broken +'],
+          ['outerOnly', 'outer_o'],
+        ]),
+      ];
+
+      assert.strictEqual(
+          FormatterWorker.Substitute.substituteExpression('shadowedAvailable + shadowedBroken + outerOnly', scopes),
+          'inner_a + valid_inner + outer_o');
+      // Even when the inner variable is null (e.g. TDZ/optimized out), it still lexically shadows the outer variable.
+      assert.throws(() => FormatterWorker.Substitute.substituteExpression('shadowedUnavailable', scopes),
+                    'Cannot substitute \'shadowedUnavailable\' as the underlying variable \'null\' is unavailable');
+    });
+
+    it('marks outer variable bindings as unavailable when their generated identifier is shadowed by an inner scope',
+       () => {
+         const scopes = [
+           new Map<string, string|null>([['innerN', 'n']]),
+           new Map<string, string|null>([['outerN', 'n'], ['outerM', 'm']]),
+         ];
+
+         assert.strictEqual(FormatterWorker.Substitute.substituteExpression('innerN + outerM', scopes), 'n + m');
+         assert.throws(() => FormatterWorker.Substitute.substituteExpression('outerN', scopes),
+                       'Cannot substitute \'outerN\' as the underlying variable \'null\' is unavailable');
+       });
+
+    it('distinguishes base object shadowing vs property name declarations for member expression bindings', () => {
+      const outerScope = new Map<string, string|null>([
+        ['importedX', '_mod.x'],
+        ['localX', 'x'],
+      ]);
+      const block1Scope = new Map<string, string|null>([['blockX', 'x']]);
+      const block2Scope = new Map<string, string|null>([['blockMod', '_mod']]);
+
+      // In block1: `blockX` ('x') shadows `localX` ('x'), but NOT `importedX` ('_mod.x').
+      assert.strictEqual(
+          FormatterWorker.Substitute.substituteExpression('importedX + blockX', [block1Scope, outerScope]),
+          '_mod.x + x');
+      assert.throws(() => FormatterWorker.Substitute.substituteExpression('localX', [block1Scope, outerScope]),
+                    'Cannot substitute \'localX\' as the underlying variable \'null\' is unavailable');
+
+      // In block2: `blockMod` ('_mod') shadows `importedX` ('_mod.x').
+      assert.strictEqual(
+          FormatterWorker.Substitute.substituteExpression('blockMod', [block2Scope, block1Scope, outerScope]), '_mod');
+      assert.throws(
+          () => FormatterWorker.Substitute.substituteExpression('importedX', [block2Scope, block1Scope, outerScope]),
+          'Cannot substitute \'importedX\' as the underlying variable \'null\' is unavailable');
+    });
+
+    it('checks free variables of complex and computed binding expressions against inner scopes', () => {
+      const scopes = [
+        new Map<string, string|null>([['innerB', 'b']]),
+        new Map<string, string|null>([
+          ['sum', 'a + b'],
+          ['doubled', 'a * 2'],
+          ['computed', 'a[b]'],
+        ]),
+      ];
+
+      assert.strictEqual(FormatterWorker.Substitute.substituteExpression('doubled + innerB', scopes), '(a * 2) + b');
+      assert.throws(() => FormatterWorker.Substitute.substituteExpression('sum', scopes),
+                    'Cannot substitute \'sum\' as the underlying variable \'null\' is unavailable');
+      assert.throws(() => FormatterWorker.Substitute.substituteExpression('computed', scopes),
+                    'Cannot substitute \'computed\' as the underlying variable \'null\' is unavailable');
+    });
+
+    it('shadows outer `this` and `this.prop` bindings when an inner scope binds `this`', () => {
+      const outerScope = new Map<string, string|null>([
+        ['this', 'this'],
+        ['selfProp', 'this.prop'],
+      ]);
+      const arrowScope = new Map<string, string|null>([['arrowLocal', 'x']]);
+      const innerFnScope = new Map<string, string|null>([['this', 'this']]);
+
+      // Inside arrow function: `this` is not rebound in `arrowScope`, so outer `this` and `selfProp` remain available.
+      assert.strictEqual(
+          FormatterWorker.Substitute.substituteExpression('this.a + selfProp + arrowLocal', [arrowScope, outerScope]),
+          'this.a + this.prop + x');
+
+      // Inside regular function: `innerFnScope` binds `this`, shadowing outer `selfProp` ('this.prop').
+      assert.strictEqual(FormatterWorker.Substitute.substituteExpression('this', [innerFnScope, outerScope]), 'this');
+      assert.throws(() => FormatterWorker.Substitute.substituteExpression('selfProp', [innerFnScope, outerScope]),
+                    'Cannot substitute \'selfProp\' as the underlying variable \'null\' is unavailable');
+    });
+
+    it('does not falsely shadow multiple variables in the same scope that share free generated identifiers', () => {
+      const scopes = [
+        new Map<string, string|null>([
+          ['propX', '_state.x'],
+          ['propY', '_state.y'],
+          ['plusOne', 'a + 1'],
+          ['plusTwo', 'a + 2'],
+        ]),
+      ];
+
+      assert.strictEqual(FormatterWorker.Substitute.substituteExpression('propX + propY + plusOne + plusTwo', scopes),
+                         '_state.x + _state.y + (a + 1) + (a + 2)');
+    });
+
+    it('tracks generated identifiers from middle scopes even when their authored name is shadowed by an inner scope',
+       () => {
+         const scopes = [
+           new Map<string, string|null>([['x', 'a']]),
+           new Map<string, string|null>([['x', 'b']]),
+           new Map<string, string|null>([['outerY', 'b'], ['outerZ', 'c']]),
+         ];
+
+         // `x` resolves to `'a'` from scope 0, while scope 1's binding `'b'` still shadows scope 2's `outerY` ('b').
+         assert.strictEqual(FormatterWorker.Substitute.substituteExpression('x + outerZ', scopes), 'a + c');
+         assert.throws(() => FormatterWorker.Substitute.substituteExpression('outerY', scopes),
+                       'Cannot substitute \'outerY\' as the underlying variable \'null\' is unavailable');
+       });
+  });
 });

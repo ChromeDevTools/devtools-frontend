@@ -8,8 +8,9 @@ import {DefinitionKind} from '../formatter_actions/formatter_actions.js';
 import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ScopeVariableAnalysis, type VariableUses} from './ScopeParser.js';
 
-export function substituteExpression(expression: string, nameMap: Map<string, string|null>): string {
-  const replacements = computeSubstitution(expression, nameMap);
+export function substituteExpression(expression: string,
+                                     nameMaps: Map<string, string|null>|Array<Map<string, string|null>>): string {
+  const replacements = computeSubstitution(expression, nameMaps);
   return applySubstitution(expression, replacements);
 }
 
@@ -22,7 +23,7 @@ interface Replacement {
 
 function parseBindingExpression(expression: string): {
   replacement: string,
-  freeVariables: IterableIterator<string>,
+  freeVariables: string[],
   allNames: Set<string>,
 } {
   const options = {
@@ -46,7 +47,7 @@ function parseBindingExpression(expression: string): {
   const needsParens = expr.type !== 'Identifier' && expr.type !== 'MemberExpression' && expr.type !== 'ThisExpression';
   return {
     replacement: needsParens ? `(${expression})` : expression,
-    freeVariables: analysis.getFreeVariables().keys(),
+    freeVariables: [...analysis.getFreeVariables().keys()],
     allNames: analysis.getAllNames(),
   };
 }
@@ -57,7 +58,8 @@ function parseBindingExpression(expression: string): {
  * it cannot parse the expression or the substitution is impossible to perform (for example
  * if the substitution target is 'this' within a function, it would become bound there).
  **/
-function computeSubstitution(expression: string, nameMap: Map<string, string|null>): Replacement[] {
+function computeSubstitution(expression: string,
+                             nameMaps: Map<string, string|null>|Array<Map<string, string|null>>): Replacement[] {
   // Parse the expression and find variables and scopes.
   const root = Acorn.parse(expression, {
     ecmaVersion: ECMA_VERSION,
@@ -73,21 +75,33 @@ function computeSubstitution(expression: string, nameMap: Map<string, string|nul
 
   // Prepare the machinery for generating fresh names (to avoid variable captures).
   const allNames = scopeVariables.getAllNames();
+  const nameMap = new Map<string, string|null>();
   const parsedBindings = new Map<string, ReturnType<typeof parseBindingExpression>>();
-  for (const [name, rename] of nameMap.entries()) {
-    if (rename !== null) {
-      try {
-        const parsed = parseBindingExpression(rename);
-        parsedBindings.set(name, parsed);
-        for (const id of parsed.allNames) {
-          allNames.add(id);
+  const shadowedNames = new Set<string>();
+  for (const scopeMap of Array.isArray(nameMaps) ? nameMaps : [nameMaps]) {
+    const scopeNames = new Set<string>();
+    for (const [name, rename] of scopeMap.entries()) {
+      let parsed: ReturnType<typeof parseBindingExpression>|undefined;
+      if (rename !== null) {
+        try {
+          parsed = parseBindingExpression(rename);
+          parsed.allNames.forEach(id => allNames.add(id));
+          parsed.freeVariables.forEach(id => scopeNames.add(id));
+        } catch (error) {
+          if (!nameMap.has(name) && freeVariables.has(name)) {
+            throw error;
+          }
         }
-      } catch (error) {
-        if (freeVariables.has(name)) {
-          throw error;
+      }
+      if (!nameMap.has(name)) {
+        const isShadowed = parsed?.freeVariables.some(id => shadowedNames.has(id));
+        nameMap.set(name, isShadowed ? null : rename);
+        if (parsed && !isShadowed) {
+          parsedBindings.set(name, parsed);
         }
       }
     }
+    scopeNames.forEach(id => shadowedNames.add(id));
   }
   function getNewName(base: string): string {
     let i = 1;

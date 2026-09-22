@@ -310,22 +310,22 @@ describe('The Memory Panel', function() {
   it('shows the list of a detached node', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/detached-node.html');
     await navigateToMemoryTab(devToolsPage);
-    void takeDetachedElementsProfile(devToolsPage);
+    await takeDetachedElementsProfile(devToolsPage);
     await devToolsPage.waitFor('.detached-elements-view');
   });
 
   it('shows the flamechart for an allocation sample', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/allocations.html');
     await navigateToMemoryTab(devToolsPage);
-    void takeAllocationProfile(devToolsPage);
-    void changeAllocationSampleViewViaDropdown(devToolsPage, 'Chart');
+    await takeAllocationProfile(devToolsPage);
+    await changeAllocationSampleViewViaDropdown(devToolsPage, 'Chart');
     await devToolsPage.waitFor('canvas.flame-chart-canvas');
   });
 
   it('shows allocations for an allocation timeline', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/allocations.html');
     await navigateToMemoryTab(devToolsPage);
-    void takeAllocationTimelineProfile(devToolsPage, {recordStacks: true});
+    await takeAllocationTimelineProfile(devToolsPage, {recordStacks: true});
     await changeViewViaDropdown(devToolsPage, 'Allocation');
 
     const header = await devToolsPage.waitForElementWithTextContent('Live count');
@@ -338,25 +338,19 @@ describe('The Memory Panel', function() {
   it('does not show allocations perspective when stacks not recorded', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/allocations.html');
     await navigateToMemoryTab(devToolsPage);
-    void takeAllocationTimelineProfile(devToolsPage, {recordStacks: false});
+    await takeAllocationTimelineProfile(devToolsPage, {recordStacks: false});
     const dropdown = await devToolsPage.waitFor('select[aria-label="Perspective"]');
     await devToolsPage.waitForNoElementsWithTextContent('Allocation', dropdown);
   });
 
   it('enables the sampling timeline checkbox only when allocation sampling is selected',
      async ({devToolsPage, inspectedPage}) => {
-       await inspectedPage.goToResource('memory/allocations.html');
+       await inspectedPage.goToResource('memory/default.html');
        await navigateToMemoryTab(devToolsPage);
 
-       const input = await devToolsPage.waitFor('input[title="Sampling heap profiler timeline"]');
-       assert.isNotNull(input, 'Input not found');
-
-       const isDisabled = await input.evaluate(el => (el as HTMLInputElement).disabled);
-       assert.isTrue(isDisabled, 'Checkbox should be disabled by default');
-
+       await devToolsPage.waitFor('input[title="Sampling heap profiler timeline"]:disabled');
        await devToolsPage.click('xpath///label[text()="Allocation sampling"]');
-
-       await devToolsPage.waitForFunction(async () => !(await input.evaluate(el => (el as HTMLInputElement).disabled)));
+       await devToolsPage.waitFor('input[title="Sampling heap profiler timeline"]:not(:disabled)');
      });
 
   it('shows object source links in snapshot', async ({devToolsPage, inspectedPage}) => {

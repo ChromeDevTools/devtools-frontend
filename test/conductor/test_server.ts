@@ -33,7 +33,7 @@ export function startServer(commandLineArgs: string[]): Promise<number> {
     runningServer = spawn(process.execPath, processArguments, {
       cwd,
       env,
-      stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+      stdio: ['pipe', 'ignore', 'pipe', 'ipc'],
     });
     runningServer.on('message', message => {
       if (message === 'ERROR') {

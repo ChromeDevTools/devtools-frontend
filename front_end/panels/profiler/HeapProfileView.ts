@@ -1067,12 +1067,14 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   }
 
   override customContent(): Element|null {
-    const checkboxSetting = SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.samplingHeapProfilerTimeline), this.#recordTimelineSetting);
-    this.customContentInternal = checkboxSetting;
-    checkboxSetting.setAttribute(
-        'jslog', `${VisualLogging.toggle('record-sampling-heap-profiler-timeline').track({click: true})}`);
-    return checkboxSetting;
+    if (!this.customContentInternal) {
+      const checkboxSetting = SettingsUI.SettingsUI.createSettingCheckbox(
+          i18nString(UIStrings.samplingHeapProfilerTimeline), this.#recordTimelineSetting);
+      this.customContentInternal = checkboxSetting;
+      checkboxSetting.setAttribute(
+          'jslog', `${VisualLogging.toggle('record-sampling-heap-profiler-timeline').track({click: true})}`);
+    }
+    return this.customContentInternal;
   }
 
   override setCustomContentEnabled(enable: boolean): void {

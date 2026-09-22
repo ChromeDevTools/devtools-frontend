@@ -1640,10 +1640,12 @@ export class TrackingHeapSnapshotProfileType extends TrackingHeapSnapshotProfile
   }
 
   override customContent(): Element|null {
-    const checkboxSetting = SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.recordAllocationStacksExtra), this.recordAllocationStacksSettingInternal);
-    this.customContentInternal = (checkboxSetting);
-    return checkboxSetting;
+    if (!this.customContentInternal) {
+      const checkboxSetting = SettingsUI.SettingsUI.createSettingCheckbox(
+          i18nString(UIStrings.recordAllocationStacksExtra), this.recordAllocationStacksSettingInternal);
+      this.customContentInternal = checkboxSetting;
+    }
+    return this.customContentInternal;
   }
 
   override setCustomContentEnabled(enable: boolean): void {

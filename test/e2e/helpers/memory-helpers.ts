@@ -23,8 +23,8 @@ export async function navigateToMemoryTab(devToolsPage: DevToolsPage): Promise<v
 export async function takeDetachedElementsProfile(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('xpath///label[text()="Detached elements"]');
   await devToolsPage.click('devtools-button[aria-label="Get detached elements"]');
-  await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
-  await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
+  await devToolsPage.waitForNone('.profile-sidebar-tree-item.wait');
+  await devToolsPage.waitFor('.profile-sidebar-tree-item.selected');
 }
 
 export async function takeAllocationProfile(devToolsPage: DevToolsPage): Promise<void> {
@@ -32,8 +32,8 @@ export async function takeAllocationProfile(devToolsPage: DevToolsPage): Promise
   await devToolsPage.click('devtools-button[aria-label="Start heap profiling"]');
   await new Promise(r => setTimeout(r, 200));
   await devToolsPage.click('devtools-button[aria-label="Stop heap profiling"]');
-  await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
-  await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
+  await devToolsPage.waitForNone('.profile-sidebar-tree-item.wait');
+  await devToolsPage.waitFor('.profile-sidebar-tree-item.selected');
 }
 
 export async function takeAllocationTimelineProfile(devToolsPage: DevToolsPage,
@@ -41,7 +41,9 @@ export async function takeAllocationTimelineProfile(devToolsPage: DevToolsPage,
                                                       recordStacks: false,
                                                     }): Promise<void> {
   await devToolsPage.click('xpath///label[text()="Allocations on timeline"]');
-  if (recordStacks) {
+  const checkbox = await devToolsPage.waitFor('input[title="Allocation stack traces (more overhead)"]');
+  const isChecked = await checkbox.evaluate(el => (el as HTMLInputElement).checked);
+  if (isChecked !== recordStacks) {
     await devToolsPage.click('[title="Allocation stack traces (more overhead)"]');
   }
   await devToolsPage.click('devtools-button[aria-label="Start recording heap profile"]');
@@ -97,16 +99,18 @@ export async function setSearchFilter(devToolsPage: DevToolsPage, text: string):
   const grid = await devToolsPage.waitFor('#profile-views table.data');
   await grid.focus();
 
-  await devToolsPage.pressKey('f', {control: true});
   const SEARCH_QUERY = '[aria-label="Find"]';
+  const existingInput = await devToolsPage.$(SEARCH_QUERY);
+  if (!existingInput || !(await existingInput.evaluate(el => el.checkVisibility()))) {
+    await devToolsPage.pressKey('f', {control: true});
+  }
   const inputElement = await devToolsPage.waitFor(SEARCH_QUERY);
   assert.isOk(inputElement, 'Unable to find search input field');
-  await inputElement.evaluate(el => {
-    (el as HTMLInputElement).value = '';
-    el.dispatchEvent(new Event('input', {bubbles: true}));
-  });
   await inputElement.focus();
-  await inputElement.type(text);
+  await inputElement.evaluate((el, value) => {
+    (el as HTMLInputElement).value = value;
+    el.dispatchEvent(new Event('input', {bubbles: true}));
+  }, text);
 }
 
 export async function waitForSearchResultNumber(devToolsPage: DevToolsPage,

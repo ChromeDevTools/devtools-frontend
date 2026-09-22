@@ -532,19 +532,26 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     const scrollTop = this.scrollContainer.scrollTop;
     const scrollBottom = scrollTop + this.scrollContainer.offsetHeight;
     if (height >= scrollTop && height < scrollBottom) {
+      if (!node.dataGrid) {
+        this.updateVisibleNodes(false);
+      }
       return Promise.resolve(node);
     }
 
     const scrollGap = 40;
     this.scrollContainer.scrollTop = Math.max(0, height - scrollGap);
+    this.updateVisibleNodes(false);
     return new Promise(resolve => {
-      console.assert(!this.scrollToResolveCallback);
+      if (this.scrollToResolveCallback) {
+        this.scrollToResolveCallback();
+      }
       this.scrollToResolveCallback = resolve.bind(null, node);
       // Still resolve the promise if it does not scroll for some reason.
       this.scrollContainer.window().requestAnimationFrame(() => {
         if (!this.scrollToResolveCallback) {
           return;
         }
+        this.updateVisibleNodes(false);
         this.scrollToResolveCallback();
         this.scrollToResolveCallback = null;
       });

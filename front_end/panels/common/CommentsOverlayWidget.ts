@@ -272,7 +272,6 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
           return {node};
         }
       }
-      return {text: ''};
     }
 
     if (anchor.networkRequestId) {

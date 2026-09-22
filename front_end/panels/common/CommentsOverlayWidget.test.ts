@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import type * as Protocol from '../../generated/protocol.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -404,5 +405,34 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     } finally {
       clock.restore();
     }
+  });
+
+  it('falls back to text signature if backend node fails to resolve', async () => {
+    const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
+        undefined,
+        [commentManager],
+        view,
+    );
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+    await view.nextInput;
+
+    commentManager.createCommentThread(
+        {
+          node: {targetId: 'invalid-target', backendNodeId: 42 as Protocol.DOM.BackendNodeId},
+          textSignature: 'div#container',
+          vePath: 'Panel: elements > Pane: styles > TreeOutline > TreeItem: color',
+        },
+        'Test comment',
+    );
+
+    const updatedInput = await view.nextInput;
+
+    // We should be able to get title text
+    assert.deepEqual(updatedInput.title, {text: 'div#container'});
+
+    widget.detach();
   });
 });

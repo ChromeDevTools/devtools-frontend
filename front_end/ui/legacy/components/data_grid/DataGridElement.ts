@@ -646,7 +646,7 @@ function nodeMixin<TBase extends Constructor<DataGridNode<any>>>(base: TBase) {
 
     override createElement(): HTMLElement {
       const element = super.createElement();
-      element.addEventListener('click', this.#onRowMouseEvent.bind(this));
+      element.addEventListener('click', this.#onRowMouseEvent.bind(this), {capture: true});
       element.addEventListener('mouseenter', this.#onRowMouseEvent.bind(this));
       element.addEventListener('mouseleave', this.#onRowMouseEvent.bind(this));
       if (this.#configElement.hasAttribute('style')) {

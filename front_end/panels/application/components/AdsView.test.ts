@@ -13,6 +13,7 @@ import {raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {cleanTestDOM} from '../../../testing/DOMHooks.js';
 import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
+import {setUpEnvironment} from '../../../testing/OverridesHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as Components from '../../../ui/legacy/components/utils/utils.js';
 import type * as UI from '../../../ui/legacy/legacy.js';
@@ -61,6 +62,7 @@ describeWithEnvironment('AdsView', () => {
                                                        newScripts: [],
                                                      }));
 
+    setUpEnvironment();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
@@ -544,10 +546,11 @@ describeWithEnvironment('AdsView', () => {
     renderElementIntoDOM(panel);
 
     await panel.updateComplete;
-    await RenderCoordinator.done();
+    await RenderCoordinator.done({waitForWork: true});
 
-    const dataGrid = panel.contentElement.querySelector('devtools-data-grid');
+    const dataGrid = panel.contentElement.querySelector('.ad-scripts-data-grid');
     assert.isNotNull(dataGrid);
+    assert.isNotNull(dataGrid.shadowRoot);
 
     // Check that we have an aria-details element for each script
     const ariaDetailsDivs = panel.contentElement.querySelectorAll('div[aria-details]');
@@ -607,6 +610,23 @@ describeWithEnvironment('AdsView', () => {
     const linkComponent2 = script4Widgets[1].getWidget();
     assert.exists(linkComponent2);
     assert.strictEqual(linkComponent2.scriptId, 'script-1');
+
+    // Verify clicking the ancestor script links inside the rendered DataGrid shadow DOM tooltip triggers the link action.
+    await Promise.all([linkComponent1.updateComplete, linkComponent2.updateComplete]);
+    await RenderCoordinator.done();
+
+    const linkifierClass = linkComponent1.linkifier.constructor as typeof Components.Linkifier.Linkifier;
+    const invokeFirstActionStub = sinon.stub(linkifierClass, 'invokeFirstAction').returns(true);
+    const shadowTooltip = dataGrid.shadowRoot.querySelector('devtools-tooltip[id="ad-tooltip-script-4"]');
+    assert.isNotNull(shadowTooltip);
+    const tooltipLinks = shadowTooltip.querySelectorAll<HTMLElement>('.devtools-link');
+    assert.lengthOf(tooltipLinks, 2);
+
+    tooltipLinks[0].click();
+    sinon.assert.calledOnce(invokeFirstActionStub);
+
+    tooltipLinks[1].click();
+    sinon.assert.calledTwice(invokeFirstActionStub);
 
     panel.detach();
   });

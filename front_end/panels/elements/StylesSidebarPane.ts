@@ -813,12 +813,13 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
   #scheduleResetUpdateIfNotEditing(): void {
     this.scheduleResetUpdateIfNotEditingCalledForTest();
 
-    if (this.isSuppressingResets) {
+    // Don't schedule if editing; the edit completion will handle the update.
+    if (this.userOperation || this.isEditingStyle) {
       return;
     }
 
-    // Don't schedule if editing; the edit completion will handle the update.
-    if (this.userOperation || this.isEditingStyle) {
+    if (this.isSuppressingResets) {
+      this.isSuppressingResets = false;
       return;
     }
 

@@ -1906,6 +1906,57 @@ describe('StylesSidebarPane', () => {
             sinon.assert.called(resetUpdateSpy);
           });
 
+          it('suppresses the trailing post-edit reset once and allows subsequent resets', async () => {
+            mockGetAnimatedComputedStyles({
+              transitionsStyle: {
+                cssProperties: [{
+                  name: 'color',
+                  value: 'red',
+                }],
+                shorthandEntries: [],
+              },
+            });
+            const {node} = createStubbedDomNodeWithModels({nodeId: 1});
+
+            const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
+                new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node));
+            const matchedStyles = await getMatchedStyles({
+              connection,
+              cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+              node,
+              transitionsStylePayload: null,
+            });
+            stylesSidebarPane.setMatchedStylesForTest(matchedStyles);
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const resetThrottlerSpy = sinon.spy((stylesSidebarPane as any).resetUpdateThrottler, 'schedule');
+            const handledStub = sinon.stub(stylesSidebarPane, 'handledComputedStyleChangedForTest');
+
+            // 1. Start editing and suppress resets.
+            stylesSidebarPane.setEditingStyle(true);
+            stylesSidebarPane.suppressResets();
+
+            // A computed style change arriving while still editing should not consume isSuppressingResets.
+            let handledComputedStyleChanged = expectCall(handledStub);
+            stylesSidebarPane.onComputedStyleChanged();
+            await handledComputedStyleChanged;
+            sinon.assert.notCalled(resetThrottlerSpy);
+
+            // 2. Finish editing. The trailing computed style change from the edit should be suppressed
+            // and should clear isSuppressingResets.
+            stylesSidebarPane.setEditingStyle(false);
+            handledComputedStyleChanged = expectCall(handledStub);
+            stylesSidebarPane.onComputedStyleChanged();
+            await handledComputedStyleChanged;
+            sinon.assert.notCalled(resetThrottlerSpy);
+
+            // 3. Subsequent computed style changes should no longer be suppressed.
+            handledComputedStyleChanged = expectCall(handledStub);
+            stylesSidebarPane.onComputedStyleChanged();
+            await handledComputedStyleChanged;
+            sinon.assert.calledOnce(resetThrottlerSpy);
+          });
+
           it('should update value only when there was a transition style before', async () => {
             mockGetAnimatedComputedStyles({
               transitionsStyle: {

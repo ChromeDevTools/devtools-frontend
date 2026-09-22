@@ -1348,7 +1348,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       element?: HTMLElement,
       [changeTracker]:
           UI.Widget.WidgetDependencies<typeof DOMTreeWidget>|[ChangeTracker.ChangeTracker.ChangeTracker?] = [],
-      view: View = DEFAULT_VIEW,
+      view: View = DECLARATIVE_VIEW,
   ) {
     super(element, {
       useShadowDom: false,

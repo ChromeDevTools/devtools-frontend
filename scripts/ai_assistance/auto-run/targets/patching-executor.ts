@@ -5,7 +5,7 @@
 import * as yaml from 'js-yaml';
 import type {Page} from 'puppeteer-core';
 
-import type {IndividualPromptRequestResponse, PatchTest, TestTarget} from '../../types.d.ts';
+import type {IndividualPromptRequestResponse, PatchTest, TaskId, TestTarget} from '../../types.d.ts';
 
 import type {TargetExecutor, TargetPreparationResult} from './interface.ts';
 
@@ -37,11 +37,11 @@ export class PatchingExecutor implements TargetExecutor {
   async execute(
       devtoolsPage: Page,
       preparationResult: TargetPreparationResult,
-      exampleId: string,
+      taskId: TaskId,
       randomize: boolean,
       commonLog: (text: string) => void,
       ): Promise<IndividualPromptRequestResponse[]> {
-    commonLog(`[PatchingExecutor] Executing for exampleId: ${exampleId}`);
+    commonLog(`[PatchingExecutor] Executing for taskId: ${taskId}`);
     if (!preparationResult.patchTest) {
       throw new Error('PatchTest data is missing from preparationResult for PatchingExecutor');
     }
@@ -61,7 +61,7 @@ export class PatchingExecutor implements TargetExecutor {
       score: error ? 0.25 : Math.max((1 - (assertionFailures.length * 0.25)), 0.25),
       request: test.query,
       response: debugInfo,
-      session_id: exampleId,
+      taskId,
       error,
       assertionFailures,
     }];

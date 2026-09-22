@@ -4,7 +4,7 @@
 
 import type {ElementHandle, Page} from 'puppeteer-core';
 
-import type {IndividualPromptRequestResponse, PatchTest} from '../../types.d.ts';
+import type {IndividualPromptRequestResponse, PatchTest, TaskId} from '../../types.d.ts';
 
 export interface TargetPreparationResult {
   queries: string[];
@@ -22,7 +22,7 @@ export interface TargetExecutor {
   execute(
       devtoolsPage: Page,
       preparationResult: TargetPreparationResult,
-      exampleId: string,
+      taskId: TaskId,
       randomize: boolean,
       commonLog: (text: string) => void,
       ): Promise<IndividualPromptRequestResponse[]>;

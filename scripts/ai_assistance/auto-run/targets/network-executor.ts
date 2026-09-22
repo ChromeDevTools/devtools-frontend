@@ -4,7 +4,7 @@
 
 import type {ElementHandle, Page} from 'puppeteer-core';
 
-import type {IndividualPromptRequestResponse, TestTarget} from '../../types.d.ts';
+import type {IndividualPromptRequestResponse, TaskId, TestTarget} from '../../types.d.ts';
 import {
   executePromptCycle,
   extractCommentMetadata,
@@ -91,7 +91,7 @@ export class NetworkExecutor implements TargetExecutor {
   async execute(
       devtoolsPage: Page,
       preparationResult: TargetPreparationResult,
-      exampleId: string,
+      taskId: TaskId,
       randomize: boolean,
       commonLog: (text: string) => void,
       ): Promise<IndividualPromptRequestResponse[]> {
@@ -99,12 +99,12 @@ export class NetworkExecutor implements TargetExecutor {
     const inputSelector = 'aria/Ask a question about the selected network request';
 
     for (const query of preparationResult.queries) {
-      commonLog(`[NetworkExecutor] Executing query: "${query}" for example: ${exampleId}`);
+      commonLog(`[NetworkExecutor] Executing query: "${query}" for task: ${taskId}`);
       const results = await executePromptCycle(
           devtoolsPage,
           query,
           inputSelector,
-          exampleId,
+          taskId,
           /* isMultimodal */ false,
           randomize,
           commonLog,

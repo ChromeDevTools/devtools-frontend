@@ -12,7 +12,9 @@ import yargs from 'yargs/yargs';
 
 import {convertRawOutputToEval, formatChatLog, type RawOutput, slug} from '../suite/to_eval_output.ts';
 import type {Trajectory} from '../suite/types.js';
-import type {ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId} from '../types.js';
+import type {
+  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId, RunId, TaskId} from
+  '../types.js';
 
 import {
   generateRunId,
@@ -61,6 +63,7 @@ const userArgsBuilder =
           default: false,
         })
         .option('randomize', {
+          describe: 'Append a random query ID suffix to prompts to bypass AIDA caching',
           boolean: true,
           default: false,
         })
@@ -139,7 +142,7 @@ class Logger {
     }
   }
 
-  #recordTaskLog(taskId: string, text: string, isError = false) {
+  #recordTaskLog(taskId: TaskId, text: string, isError = false) {
     const cleanText = this.#stripAnsi(text);
     if (!cleanText) {
       return;
@@ -155,7 +158,7 @@ class Logger {
     }
   }
 
-  #recordTaskStderr(taskId: string, text: string) {
+  #recordTaskStderr(taskId: TaskId, text: string) {
     const cleanText = this.#stripAnsi(text);
     if (!cleanText) {
       return;
@@ -218,13 +221,13 @@ class Logger {
     this.log(id, index, text);
   }
 
-  taskLog(taskId: string, index: number, total: number, text: string) {
+  taskLog(taskId: TaskId, index: number, total: number, text: string) {
     this.#recordTaskLog(taskId, text);
     const indexPrefix = total > 0 ? `[${index + 1}/${total}] ` : '';
     this.log(taskId, index, `${ANSI_YELLOW}${indexPrefix}${taskId}:${ANSI_RESET} ${text}`);
   }
 
-  taskError(taskId: string, index: number, total: number, text: string) {
+  taskError(taskId: TaskId, index: number, total: number, text: string) {
     this.#recordTaskLog(taskId, text, /* isError= */ true);
     this.#recordTaskStderr(taskId, text);
     const indexPrefix = total > 0 ? `[${index + 1}/${total}] ` : '';
@@ -267,7 +270,7 @@ class Logger {
    * [2026-09-11T11:45:10.000Z] [ElementsExecutor] Finished executing all queries for example: life-with-charlie
    * [2026-09-11T11:45:10.000Z] Finished (10.25s)
    */
-  getTaskLogContent(taskId: string): string {
+  getTaskLogContent(taskId: TaskId): string {
     const entries = this.#taskLogEntries.get(taskId);
     if (!entries || entries.length === 0) {
       return '(No log entries recorded)\n';
@@ -280,7 +283,7 @@ class Logger {
    * as `agent_logs/agent_stderr.log`. Captures errors, assertion failures, and stack traces.
    * Returns an empty string if no errors occurred.
    */
-  getTaskStderrContent(taskId: string): string {
+  getTaskStderrContent(taskId: TaskId): string {
     const entries = this.#taskStderrEntries.get(taskId);
     if (!entries || entries.length === 0) {
       return '';
@@ -328,7 +331,17 @@ export class Example {
     return this.#url;
   }
 
-  id(): string {
+  /**
+   * Returns the canonical `TaskId` for this example (e.g. `'life-with-charlie'`),
+   * derived from the example URL filename without `.html`.
+   *
+   * This single identifier is used consistently as:
+   * - The GCS task directory (`runs/<runId>/tasks/<taskId>/output/`)
+   * - `task_id` in `eval_task_completed.json`
+   * - `taskId` on raw prompt turns (`IndividualPromptRequestResponse`) and `ExampleMetadata`
+   * - `metadata.task_id` on the exported `Trajectory` (`trajectory.json`)
+   */
+  taskId(): TaskId {
     return this.#url.split('/').pop()?.replace('.html', '') ?? 'unknown-id';
   }
 
@@ -387,7 +400,7 @@ export class Example {
       const results: IndividualPromptRequestResponse[] = await this.#executor.execute(
           this.#devtoolsPage,
           this.#preparationResult,
-          this.id(),
+          this.taskId(),
           this.#userArgs.randomize,
           (text: string) => this.log(text),
       );
@@ -430,7 +443,7 @@ export class Example {
 
       return {
         results: filteredResults,
-        metadata: {session_id: this.id(), explanation: this.#preparationResult.explanation},
+        metadata: {taskId: this.taskId(), explanation: this.#preparationResult.explanation},
         label: this.#label,
       };
 
@@ -448,18 +461,18 @@ export class Example {
 
   log(text: string) {
     const indexOfExample = this.#exampleUrls.indexOf(this.#url);
-    this.#logger.taskLog(this.id(), indexOfExample, this.#exampleUrls.length, text);
+    this.#logger.taskLog(this.taskId(), indexOfExample, this.#exampleUrls.length, text);
   }
 
   error(text: string) {
     const indexOfExample = this.#exampleUrls.indexOf(this.#url);
-    this.#logger.taskError(this.id(), indexOfExample, this.#exampleUrls.length, text);
+    this.#logger.taskError(this.taskId(), indexOfExample, this.#exampleUrls.length, text);
   }
 }
 
 function recordTaskFailure(
-    taskId: string,
-    runId: string,
+    taskId: TaskId,
+    runId: RunId,
     durationSeconds: number,
     taskStatuses: TaskStatus[],
 ) {
@@ -477,18 +490,18 @@ function recordTaskFailure(
 
 function handleTaskFailure(
     example: Example,
-    runId: string,
+    runId: RunId,
     phase: 'Preparation'|'Execution',
     logger: Logger,
     taskStatuses: TaskStatus[],
-    taskDurations: Map<string, number>,
+    taskDurations: Map<TaskId, number>,
     userArgs: UserArgs,
 ) {
+  const taskId = example.taskId();
   const durationSeconds = example.durationSeconds();
-  taskDurations.set(example.id(), durationSeconds);
-  logger.append(`[Task ${example.id()}] ${phase} failed (${durationSeconds}s)`);
+  taskDurations.set(taskId, durationSeconds);
+  logger.append(`[Task ${taskId}] ${phase} failed (${durationSeconds}s)`);
   if (userArgs.upload) {
-    const taskId = example.id();
     uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_LOG, logger.getTaskLogContent(taskId));
     uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
     recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
@@ -499,9 +512,9 @@ async function runInParallel(
     examples: Example[],
     logger: Logger,
     userArgs: UserArgs,
-    runId: string,
+    runId: RunId,
     taskStatuses: TaskStatus[],
-    taskDurations: Map<string, number>,
+    taskDurations: Map<TaskId, number>,
     ): Promise<Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}>> {
   logger.head('Preparing examples...');
   for (const example of examples) {
@@ -518,8 +531,8 @@ async function runInParallel(
         try {
           const executedExample = await example.execute();
           const durationSeconds = example.durationSeconds();
-          taskDurations.set(example.id(), durationSeconds);
-          logger.append(`[Task ${example.id()}] Finished execution (${durationSeconds}s)`);
+          taskDurations.set(example.taskId(), durationSeconds);
+          logger.append(`[Task ${example.taskId()}] Finished execution (${durationSeconds}s)`);
           results.push(executedExample);
         } catch (err) {
           const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
@@ -538,9 +551,9 @@ async function runSequentially(
     examples: Example[],
     logger: Logger,
     userArgs: UserArgs,
-    runId: string,
+    runId: RunId,
     taskStatuses: TaskStatus[],
-    taskDurations: Map<string, number>,
+    taskDurations: Map<TaskId, number>,
     ): Promise<Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}>> {
   const results: Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}> = [];
   logger.head('Running examples sequentially...');
@@ -554,8 +567,8 @@ async function runSequentially(
     try {
       const executedExample = await example.execute();
       const durationSeconds = example.durationSeconds();
-      taskDurations.set(example.id(), durationSeconds);
-      logger.append(`[Task ${example.id()}] Finished execution (${durationSeconds}s)`);
+      taskDurations.set(example.taskId(), durationSeconds);
+      logger.append(`[Task ${example.taskId()}] Finished execution (${durationSeconds}s)`);
       results.push(executedExample);
     } catch (err) {
       const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
@@ -736,7 +749,7 @@ async function main() {
                            },
                                           null, 2));
 
-          const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
+          const allTaskIds = new Set(executionResults.map(r => r.metadata.taskId));
           for (const taskId of allTaskIds) {
             uploadEvalToGCS({
               runId,
@@ -765,7 +778,7 @@ async function main() {
         console.error(`\n${errorMessage}`);
         logger.append(errorMessage);
         if (userArgs.upload) {
-          const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
+          const allTaskIds = new Set(executionResults.map(r => r.metadata.taskId));
           for (const taskId of allTaskIds) {
             uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, errorMessage);
             const durationSeconds = taskDurations.get(taskId) ?? 0.0;
@@ -779,7 +792,7 @@ async function main() {
       console.error(`\n${notFoundMessage}`);
       logger.append(notFoundMessage);
       if (userArgs.upload) {
-        const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
+        const allTaskIds = new Set(executionResults.map(r => r.metadata.taskId));
         for (const taskId of allTaskIds) {
           uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, notFoundMessage);
           const durationSeconds = taskDurations.get(taskId) ?? 0.0;
@@ -815,26 +828,21 @@ async function main() {
 }
 
 /**
- * Identifies a single auto-run example, i.e. one "task".
+ * Run-wide state shared by every per-task output and upload step.
  *
- * The very same value is stored as `session_id` on the raw
- * {@link IndividualPromptRequestResponse} results and as `auto_run_example_id`
- * on the converted {@link Trajectory} metadata, and it is the key that every
- * per-task GCS artifact and every {@link TaskStatus} is recorded under.
- *
- * Not to be confused with `Trajectory['metadata']['session_id']`, which is a
- * synthetic `<input-hash>-<index>` identifier minted by
- * `convertRawOutputToEval` and only used to name the exported `.eval.json`
- * file.
+ * Key identifiers:
+ * - `runId` (`RunId`): Identifies the overall `auto-run` suite execution (`runs/<runId>/`).
+ * - `taskId` (`TaskId`): Identifies a single example/task (`tasks/<taskId>/`), stored as
+ *   `taskId` on raw prompt logs (`IndividualPromptRequestResponse`), `ExampleMetadata`,
+ *   `Trajectory['metadata']['task_id']`, and `eval_task_completed.json`.
+ * - `Trajectory['metadata']['session_id']`: Deterministic `<15-char-hash>-<index>` session
+ *   identifier used inside `trajectory.json` and to name local `.eval.json` files.
  */
-type TaskId = string;
-
-/** Run-wide state shared by every per-task step. */
 interface EvalRunContext {
   output: {metadata: ExampleMetadata[], trajectories: IndividualPromptRequestResponse[]};
   trajectoriesByTaskId: Map<TaskId, IndividualPromptRequestResponse[]>;
   userArgs: UserArgs;
-  runId: string;
+  runId: RunId;
   outputDir: string;
   gradeTargetDir?: string;
   taskStatuses: TaskStatus[];
@@ -883,7 +891,7 @@ function writeOutput(options: WriteOutputOptions) {
     fs.mkdirSync(gradeTargetDir, {recursive: true});
   }
 
-  const trajectoriesByTaskId = Map.groupBy(output.trajectories, e => e.session_id);
+  const trajectoriesByTaskId = Map.groupBy(output.trajectories, e => e.taskId);
   const ctx: EvalRunContext = {...options, outputDir, gradeTargetDir, trajectoriesByTaskId};
 
   for (const trajectory of trajectories) {
@@ -895,7 +903,7 @@ function writeOutput(options: WriteOutputOptions) {
 
     const allUploadsSucceeded = uploadTaskArtifacts(ctx, trajectory, evalOutputPath);
     if (!userArgs.grade) {
-      recordTaskCompletion(ctx, trajectory.metadata.auto_run_example_id, allUploadsSucceeded);
+      recordTaskCompletion(ctx, trajectory.metadata.task_id, allUploadsSucceeded);
     }
   }
 }
@@ -926,7 +934,7 @@ function exportEvalTrajectory(ctx: EvalRunContext, trajectory: Trajectory): stri
  */
 function uploadTaskArtifacts(ctx: EvalRunContext, trajectory: Trajectory, evalOutputPath: string): boolean {
   const {runId, logger} = ctx;
-  const taskId: TaskId = trajectory.metadata.auto_run_example_id;
+  const taskId: TaskId = trajectory.metadata.task_id;
 
   const trajectoryUploaded = uploadEvalToGCS({
     runId,
@@ -985,7 +993,6 @@ function formatVerificationStderr(ctx: EvalRunContext, taskId: TaskId): string {
  */
 function recordTaskCompletion(ctx: EvalRunContext, taskId: TaskId, allUploadsSucceeded: boolean): void {
   const {runId, taskDurations, taskStatuses, trajectoriesByTaskId} = ctx;
-  // Raw results carry the auto-run example id in their `session_id` field.
   const matchingTrajectories = trajectoriesByTaskId.get(taskId) ?? [];
   const hasError = matchingTrajectories.some(e => Boolean(e.error) ||
                                                  Boolean(e.assertionFailures && e.assertionFailures.length > 0));

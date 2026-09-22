@@ -4,7 +4,7 @@
 
 import type {Page} from 'puppeteer-core';
 
-import type {IndividualPromptRequestResponse, TestTarget} from '../../types.js';
+import type {IndividualPromptRequestResponse, TaskId, TestTarget} from '../../types.js';
 import {
   executePromptCycle,
   extractCommentMetadata,
@@ -62,7 +62,7 @@ export class PerformanceExecutor implements TargetExecutor {
   async execute(
       devtoolsPage: Page,
       preparationResult: TargetPreparationResult,
-      exampleId: string,
+      taskId: TaskId,
       randomize: boolean,
       commonLog: (text: string) => void,
       ): Promise<IndividualPromptRequestResponse[]> {
@@ -70,19 +70,19 @@ export class PerformanceExecutor implements TargetExecutor {
     const inputSelector = 'aria/Ask a question about the selected performance trace';
 
     for (const query of preparationResult.queries) {
-      commonLog(`[PerformanceExecutor] Executing query: "${query}" for example: ${exampleId}`);
+      commonLog(`[PerformanceExecutor] Executing query: "${query}" for task: ${taskId}`);
       const results = await executePromptCycle(
           devtoolsPage,
           query,
           inputSelector,
-          exampleId,
+          taskId,
           /* isMultimodal */ false,
           randomize,
           commonLog,
       );
       allResults.push(...results);
     }
-    commonLog(`[PerformanceExecutor] Finished executing all queries for example: ${exampleId}`);
+    commonLog(`[PerformanceExecutor] Finished executing all queries for task: ${taskId}`);
     return allResults;
   }
 }

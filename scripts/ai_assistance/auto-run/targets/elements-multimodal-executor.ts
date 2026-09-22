@@ -4,7 +4,7 @@
 
 import type {Page} from 'puppeteer-core';
 
-import type {IndividualPromptRequestResponse, TestTarget} from '../../types.d.ts';
+import type {IndividualPromptRequestResponse, TaskId, TestTarget} from '../../types.d.ts';
 import {
   executePromptCycle,
   extractCommentMetadata,
@@ -38,7 +38,7 @@ export class ElementsMultimodalExecutor implements TargetExecutor {
   async execute(
       devtoolsPage: Page,
       preparationResult: TargetPreparationResult,
-      exampleId: string,
+      taskId: TaskId,
       randomize: boolean,
       commonLog: (text: string) => void,
       ): Promise<IndividualPromptRequestResponse[]> {
@@ -46,19 +46,19 @@ export class ElementsMultimodalExecutor implements TargetExecutor {
     const inputSelector = 'aria/Ask a question about the selected element';
 
     for (const query of preparationResult.queries) {
-      commonLog(`[ElementsMultimodalExecutor] Executing query: "${query}" for example: ${exampleId}`);
+      commonLog(`[ElementsMultimodalExecutor] Executing query: "${query}" for task: ${taskId}`);
       const results = await executePromptCycle(
           devtoolsPage,
           query,
           inputSelector,
-          exampleId,
+          taskId,
           /* isMultimodal */ true,
           randomize,
           commonLog,
       );
       allResults.push(...results);
     }
-    commonLog(`[ElementsMultimodalExecutor] Finished executing all queries for example: ${exampleId}`);
+    commonLog(`[ElementsMultimodalExecutor] Finished executing all queries for task: ${taskId}`);
     return allResults;
   }
 }

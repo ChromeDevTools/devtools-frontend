@@ -5,7 +5,7 @@
 import * as path from 'node:path';
 import type {ElementHandle, Page} from 'puppeteer-core';
 
-import type {IndividualPromptRequestResponse} from '../../types.d.ts';
+import type {IndividualPromptRequestResponse, TaskId} from '../../types.d.ts';
 import {TraceDownloader} from '../trace-downloader.ts';
 
 import {findInstructionCommentIndex, parseComment, parseFollowUps} from './comment-parsers.ts';
@@ -37,7 +37,7 @@ export async function waitForElementToHaveHeight(
  * @param devtoolsPage The Puppeteer page object for the DevTools frontend.
  * @param query The query to send to the AI Assistant.
  * @param inputSelector The CSS selector for the prompt input field.
- * @param exampleId The ID of the current example, used for tagging results.
+ * @param taskId The ID of the current task/example (e.g. `'life-with-charlie'`), used for tagging results.
  * @param isMultimodal Whether the current test target is multimodal (e.g., requires a screenshot).
  * @param randomize Whether to add a random suffix.
  * @param commonLog A logging function.
@@ -47,7 +47,7 @@ export async function executePromptCycle(
     devtoolsPage: Page,
     query: string,
     inputSelector: string,
-    exampleId: string,
+    taskId: TaskId,
     isMultimodal: boolean,
     randomize: boolean,
     commonLog: (text: string) => void,
@@ -61,9 +61,10 @@ export async function executePromptCycle(
   }
 
   await devtoolsPage.locator(inputSelector).click();
-  // Add randomness to bust cache
-  const id = randomize ? `${(Math.random() * 1000)}`.split('.')[0] : '';
-  const suffix = id ? ` [qid=${id}]` : '';
+  // When the `--randomize` CLI flag (`userArgs.randomize` in `auto-run.ts`) is enabled,
+  // append a random query ID suffix (`[qid=...]`) to bust AIDA response caching.
+  const cacheBusterId = randomize ? `${(Math.random() * 1000)}`.split('.')[0] : '';
+  const suffix = cacheBusterId ? ` [qid=${cacheBusterId}]` : '';
   await devtoolsPage.locator(inputSelector).fill(`${query}${suffix}`);
 
   const abort = new AbortController();
@@ -109,7 +110,7 @@ export async function executePromptCycle(
   }
   const results = JSON.parse(logs) as IndividualPromptRequestResponse[];
 
-  return results.map(r => ({...r, session_id: exampleId}));
+  return results.map(r => ({...r, taskId}));
 }
 
 /**

@@ -9,6 +9,8 @@ import * as path from 'node:path';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
+import type {SessionId, TaskId} from '../types.d.ts';
+
 import type {Trajectory, Turn} from './types.js';
 
 /** Note: non-exhaustive. **/
@@ -42,7 +44,6 @@ export interface RawFunctionCall {
 
 export interface RawAidaResponse {
   metadata: {
-    rcpGlobalId?: string,
     inferenceOptionMetadata?: {
       modelId: string,
       modelVersion: string,
@@ -52,21 +53,21 @@ export interface RawAidaResponse {
   functionCalls?: RawFunctionCall[];
   completed?: true;
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export interface RawExample {
-  session_id: string;
+  taskId: TaskId;
   request: RawRequest;
   aidaResponse: RawAidaResponse;
 }
 
 export interface RawOutput {
   metadata: Array<{
-    session_id: string,
+    taskId: TaskId,
   }>;
   examples?: RawExample[];
   trajectories?: RawExample[];
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 interface RawToEvalOptions {
   inputFromAutoRun: RawOutput;
@@ -84,12 +85,12 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
 
   return metadata
       .map((meta, index) => {
-        const sessionExamples = rawEntries.filter(e => e.session_id === meta.session_id);
+        const sessionExamples = rawEntries.filter(e => e.taskId === meta.taskId);
         if (!sessionExamples.length) {
           return null;
         }
-        const sessionId = `${inputHash}-${index}`;
-        return buildTrajectory(sessionId, /* autoRunExampleId: */ meta.session_id, sessionExamples);
+        const sessionId: SessionId = `${inputHash}-${index}`;
+        return buildTrajectory(sessionId, meta.taskId, sessionExamples);
       })
       .filter((trajectory): trajectory is Trajectory => trajectory !== null);
 }
@@ -98,8 +99,8 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
  * Constructs a single Trajectory from session metadata and its corresponding raw turns.
  */
 function buildTrajectory(
-    sessionId: string,
-    autoRunExampleId: string,
+    sessionId: SessionId,
+    taskId: TaskId,
     examples: RawExample[],
     ): Trajectory {
   const firstExample = examples[0];
@@ -114,7 +115,7 @@ function buildTrajectory(
       session_id: sessionId,
       model: modelData.modelId ?? '',
       chrome_version: chromeVersion,
-      auto_run_example_id: autoRunExampleId,
+      task_id: taskId,
     },
     data: buildTurns(examples),
   };

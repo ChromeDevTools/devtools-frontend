@@ -12,6 +12,7 @@ import * as Geometry from '../../ui/geometry/geometry.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
+import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
@@ -129,6 +130,15 @@ const UIStrings = {
    */
   forcesSelectedIdleStateEmulation: 'Forces selected idle state emulation',
   /**
+   * @description Description of the Emulate CPU Performance Tier select in the Sensors view.
+   */
+  forcesSelectedCpuPerformanceTierEmulation: 'Forces CPU performance tier emulation',
+  /**
+   * @description Option value for no CPU Performance override with default value
+   * @example {Tier 3: HIGH} PH1
+   */
+  cpuPerformanceNoOverrideWithDefault: 'No override ({PH1})',
+  /**
    * @description Description of the Emulate CPU Pressure State select in the Sensors view.
    */
   forcesSelectedPressureStateEmulation: 'Forces selected pressure state emulation',
@@ -206,6 +216,8 @@ export class SensorsView extends UI.Widget.VBox {
   private boxMatrix?: DOMMatrix;
   private mouseDownVector?: Geometry.Vector|null;
   private originalBoxMatrix?: DOMMatrix;
+  readonly #cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
+  #cpuPerformanceNoOverrideOptionElement?: HTMLOptionElement;
 
   constructor() {
     super({
@@ -214,6 +226,8 @@ export class SensorsView extends UI.Widget.VBox {
     });
     this.registerRequiredCSS(sensorsStyles);
     this.contentElement.classList.add('sensors-view');
+
+    this.#cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
 
     this.#locationSetting = Common.Settings.Settings.instance().createSetting('emulation.location-override', '');
     this.#location = SDK.EmulationModel.Location.parseSetting(this.#locationSetting.get());
@@ -249,6 +263,10 @@ export class SensorsView extends UI.Widget.VBox {
     this.createPanelSeparator();
 
     this.createPressureSection();
+
+    this.createPanelSeparator();
+
+    this.createCPUPerformanceSection();
 
     this.createPanelSeparator();
   }
@@ -731,6 +749,75 @@ export class SensorsView extends UI.Widget.VBox {
 
     if (control) {
       container.appendChild(control);
+    }
+  }
+
+  private createCPUPerformanceSection(): void {
+    const container = this.contentElement.createChild('div', 'cpu-performance-section');
+    const control = SettingsUI.SettingsUI.createControlForSetting(
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor),
+        i18nString(UIStrings.forcesSelectedCpuPerformanceTierEmulation));
+
+    if (control) {
+      container.appendChild(control);
+      // The text of the "no override" option element needs to be updated dynamically.
+      const noOverrideOption = control.querySelector<HTMLOptionElement>('select option[value="no-override"]');
+      if (noOverrideOption) {
+        this.#cpuPerformanceNoOverrideOptionElement = noOverrideOption;
+        this.#updateCPUPerformanceNoOverrideLabel();
+      } else {
+        this.#cpuPerformanceNoOverrideOptionElement = undefined;
+      }
+    }
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    if (this.#cpuPerformanceNoOverrideOptionElement) {
+      this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
+                                                  this.#updateCPUPerformanceNoOverrideLabel, this);
+      this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED,
+                                                  this.#updateCPUPerformanceNoOverrideLabel, this);
+      this.#updateCPUPerformanceNoOverrideLabel();
+    }
+  }
+
+  override willHide(): void {
+    super.willHide();
+    if (this.#cpuPerformanceNoOverrideOptionElement) {
+      this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
+                                                     this.#updateCPUPerformanceNoOverrideLabel, this);
+      this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED,
+                                                     this.#updateCPUPerformanceNoOverrideLabel, this);
+    }
+  }
+
+  #updateCPUPerformanceNoOverrideLabel(): void {
+    if (!this.#cpuPerformanceNoOverrideOptionElement) {
+      return;
+    }
+    // Helper function to retrieve the tier labels (i18n) from the settings.
+    const options =
+        SettingUIRegistration.SettingUIRegistration.resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor).options;
+    const getOptionTitle = (value: string): string => {
+      const opt = options.find(o => o.value === value);
+      if (!opt) {
+        return '';
+      }
+      return opt.title;
+    };
+    // Helper function to return a fallback title, to be used if the above fails.
+    const getFallbackTitle = (tier: SDK.CPUThrottlingManager.CPUPerformanceTier): string => {
+      return `Tier ${SDK.CPUThrottlingManager.tierToNumber(tier)}: ${tier.toUpperCase()}`;
+    };
+    // Update the text of the "no-override" element using the calculated tier.
+    const calculatedTier = this.#cpuThrottlingManager.calculatedCPUPerformanceTier();
+    if (calculatedTier !== undefined) {
+      const tierTitle = getOptionTitle(calculatedTier) || getFallbackTitle(calculatedTier);
+      this.#cpuPerformanceNoOverrideOptionElement.text =
+          i18nString(UIStrings.cpuPerformanceNoOverrideWithDefault, {PH1: tierTitle});
+    } else {
+      this.#cpuPerformanceNoOverrideOptionElement.text = getOptionTitle('no-override') || 'No override';
     }
   }
 

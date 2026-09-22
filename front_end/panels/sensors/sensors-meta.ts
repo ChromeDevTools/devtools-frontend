@@ -119,6 +119,34 @@ const UIStrings = {
    * @description Command that shows the Locations settings tab.
    */
   showLocations: 'Show Locations',
+  /**
+   * @description Text for the CPU Performance Tier type to simulate on a device.
+   */
+  cpuPerformance: 'CPU Performance Tier',
+  /**
+   * @description Option value for no CPU Performance override
+   */
+  cpuPerformanceNoOverride: 'No override',
+  /**
+   * @description Label for Unknown CPU Performance tier
+   */
+  cpuPerformanceTierUnknown: 'Tier 0: UNKNOWN',
+  /**
+   * @description Label for Low CPU Performance tier
+   */
+  cpuPerformanceTierLow: 'Tier 1: LOW',
+  /**
+   * @description Label for Mid CPU Performance tier
+   */
+  cpuPerformanceTierMid: 'Tier 2: MID',
+  /**
+   * @description Label for High CPU Performance tier
+   */
+  cpuPerformanceTierHigh: 'Tier 3: HIGH',
+  /**
+   * @description Label for Ultra CPU Performance tier
+   */
+  cpuPerformanceTierUltra: 'Tier 4: ULTRA',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/sensors-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -140,7 +168,11 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
   async loadView() {
-    const Sensors = await loadEmulationModule();
+    const [Sensors] = await Promise.all([
+      loadEmulationModule(),
+      // Ensure that this is available when the sensors panel is constructed.
+      SDK.CPUThrottlingManager.CPUThrottlingManager.instance().updateHostDefaultCPUPerformanceTier(),
+    ]);
     return new Sensors.SensorsView.SensorsView();
   },
   tags: [
@@ -327,6 +359,42 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.idleDetectionSettingDe
       value: '{"isUserActive":false,"isScreenUnlocked":false}',
       title: i18nLazyString(UIStrings.userIdleScreenLocked),
       text: i18nLazyString(UIStrings.userIdleScreenLocked),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.cpuPerformanceSettingDescriptor, {
+  title: i18nLazyString(UIStrings.cpuPerformance),
+  options: [
+    {
+      value: 'no-override',
+      title: i18nLazyString(UIStrings.cpuPerformanceNoOverride),
+      text: i18nLazyString(UIStrings.cpuPerformanceNoOverride),
+    },
+    {
+      value: 'unknown',
+      title: i18nLazyString(UIStrings.cpuPerformanceTierUnknown),
+      text: i18nLazyString(UIStrings.cpuPerformanceTierUnknown),
+    },
+    {
+      value: 'low',
+      title: i18nLazyString(UIStrings.cpuPerformanceTierLow),
+      text: i18nLazyString(UIStrings.cpuPerformanceTierLow),
+    },
+    {
+      value: 'mid',
+      title: i18nLazyString(UIStrings.cpuPerformanceTierMid),
+      text: i18nLazyString(UIStrings.cpuPerformanceTierMid),
+    },
+    {
+      value: 'high',
+      title: i18nLazyString(UIStrings.cpuPerformanceTierHigh),
+      text: i18nLazyString(UIStrings.cpuPerformanceTierHigh),
+    },
+    {
+      value: 'ultra',
+      title: i18nLazyString(UIStrings.cpuPerformanceTierUltra),
+      text: i18nLazyString(UIStrings.cpuPerformanceTierUltra),
     },
   ],
 });

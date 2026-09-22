@@ -55,6 +55,9 @@
   "references": [
     {
       "path": "i18n-tsconfig.ref.json"
+    },
+    {
+      "path": "../platform/bundle-tsconfig.ref.json"
     }
   ]
 }

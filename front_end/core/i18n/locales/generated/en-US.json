@@ -884,9 +884,6 @@
   "entrypoints/main/GlobalAiButton.ts | aiAssistance": {
     "message": "AI assistance"
   },
-  "entrypoints/main/GlobalAiButton.ts | gemini": {
-    "message": "Gemini"
-  },
   "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
     "message": "Open AI assistance panel"
   },
@@ -3032,9 +3029,6 @@
   "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
     "message": "Enable Gemini"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | gemini": {
-    "message": "Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "Show AI assistance"
   },
@@ -3411,19 +3405,19 @@
     "message": "On this page you can view dedicated workers that are created by the parent frame"
   },
   "panels/application/AppManifestView.ts | actualHeightSpxOfSSDoesNotMatch": {
-    "message": "Actual height ({PH1}px) of {PH2} {PH3} does not match specified height ({PH4}px)"
+    "message": "Actual height ({PH1}px) of {PH2} {PH3} doesn’t match specified height ({PH4}px)"
   },
   "panels/application/AppManifestView.ts | actualSizeSspxOfSSDoesNotMatch": {
-    "message": "Actual size ({PH1}×{PH2})px of {PH3} {PH4} does not match specified size ({PH5}×{PH6}px)"
+    "message": "Actual size ({PH1}×{PH2})px of {PH3} {PH4} doesn’t match specified size ({PH5}×{PH6}px)"
   },
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
-    "message": "Actual width ({PH1}px) of {PH2} {PH3} does not match specified width ({PH4}px)"
+    "message": "Actual width ({PH1}px) of {PH2} {PH3} doesn’t match specified width ({PH4}px)"
   },
   "panels/application/AppManifestView.ts | appIdExplainer": {
     "message": "This is used by the browser to know whether the manifest should be updating an existing application, or whether it refers to a new web app that can be installed"
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "Note: id is not specified in the manifest, start_url is used instead. To specify an App ID that matches the current identity, set the id field to {PH1} {PH2}."
+    "message": "Note: id isn’t specified in the manifest, start_url is used instead. To specify an app ID that matches the current identity, set the id field to {PH1} {PH2}."
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifest"
@@ -3432,13 +3426,13 @@
     "message": "A URL in the manifest contains a username, password, or port"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Declaring an icon with 'purpose' of 'any maskable' is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding."
+    "message": "Declaring an icon with 'purpose' of 'any maskable' is discouraged. It’s likely to look incorrect on some platforms due to too much or too little padding."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Background color"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
-    "message": "Computed App ID"
+    "message": "Computed app ID"
   },
   "panels/application/AppManifestView.ts | copiedToClipboard": {
     "message": "Copied suggested ID {PH1} to clipboard"
@@ -3447,13 +3441,13 @@
     "message": "Copy suggested ID to clipboard"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
-    "message": "Could not check service worker without a 'start_url' field in the manifest"
+    "message": "Couldn’t check service worker without a 'start_url' field in the manifest"
   },
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
-    "message": "Could not download a required icon from the manifest"
+    "message": "Couldn’t download a required icon from the manifest"
   },
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
-    "message": "Customize the window controls overlay of your PWA’s title bar"
+    "message": "Customize the Window Controls Overlay of your PWA’s title bar"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Description"
@@ -3501,7 +3495,7 @@
     "message": "Manifest contains 'display_override' field, and the first supported display mode must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
   },
   "panels/application/AppManifestView.ts | manifestCouldNotBeFetchedIsEmpty": {
-    "message": "Manifest could not be fetched, is empty, or could not be parsed"
+    "message": "Manifest couldn’t be fetched, is empty, or couldn’t be parsed"
   },
   "panels/application/AppManifestView.ts | manifestDescription": {
     "message": "A manifest defines how your app appears on phone’s home screens and what the app looks like on launch"
@@ -3510,16 +3504,16 @@
     "message": "Manifest 'display' property must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainANameOr": {
-    "message": "Manifest does not contain a 'name' or 'short_name' field"
+    "message": "Manifest doesn’t contain a 'name' or 'short_name' field"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifest does not contain a suitable icon—PNG, SVG, or WebP format of at least {PH1}px is required, the 'sizes' attribute must be set, and the 'purpose' attribute, if set, must include 'any'"
+    "message": "Manifest doesn’t contain an icon that fits—PNG, SVG, or WebP format of at least {PH1}px is required, the 'sizes' attribute must be set, and the 'purpose' attribute, if set, must include 'any'"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifest specifies 'prefer_related_applications: true'"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Manifest 'start_url' is not valid"
+    "message": "Manifest 'start_url' isn’t valid"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Name"
@@ -3534,13 +3528,13 @@
     "message": "No manifest detected"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
-    "message": "No Play store ID provided"
+    "message": "No Play Store ID provided"
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
-    "message": "Richer PWA Install UI won’t be available on desktop. Please add at least one screenshot with the form_factor set to wide."
+    "message": "Richer PWA install UI won’t be available on desktop. Add at least one screenshot with the form_factor set to wide."
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
-    "message": "Richer PWA Install UI won’t be available on mobile. Please add at least one screenshot for which form_factor is not set or set to a value other than wide."
+    "message": "Richer PWA install UI won’t be available on mobile. Add at least one screenshot for which form_factor isn’t set or set to a value other than wide."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "No supplied icon is at least {PH1} pixels square in PNG, SVG, or WebP format, with the purpose attribute unset or set to 'any'"
@@ -3552,10 +3546,10 @@
     "message": "Orientation"
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOffline": {
-    "message": "Page does not work offline"
+    "message": "Page doesn’t work offline"
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
-    "message": "Page does not work offline. Starting in Chrome 93, the installability criteria are changing, and this site will not be installable. See {PH1} for more information."
+    "message": "Page doesn’t work offline. Starting in Chrome 93, the installability criteria are changing, and this site won’t be installable. See {PH1} for more information."
   },
   "panels/application/AppManifestView.ts | pageHasNoManifestLinkUrl": {
     "message": "Page has no manifest <link> URL"
@@ -3564,10 +3558,10 @@
     "message": "Page is loaded in an incognito window"
   },
   "panels/application/AppManifestView.ts | pageIsNotLoadedInTheMainFrame": {
-    "message": "Page is not loaded in the main frame"
+    "message": "Page isn’t loaded in the main frame"
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
-    "message": "Page is not served from a secure origin"
+    "message": "Page isn’t served from a secure origin"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platform"
@@ -3579,7 +3573,7 @@
     "message": "Presentation"
   },
   "panels/application/AppManifestView.ts | protocolHandlers": {
-    "message": "Protocol Handlers"
+    "message": "Protocol handlers"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Screenshot"
@@ -3594,13 +3588,13 @@
     "message": "All screenshots with the same form_factor must have the same aspect ratio as the first screenshot with that form_factor. Some screenshots will be ignored."
   },
   "panels/application/AppManifestView.ts | selectWindowControlsOverlayEmulationOs": {
-    "message": "Emulate the Window Controls Overlay on"
+    "message": "Emulate Window Controls Overlay"
   },
   "panels/application/AppManifestView.ts | shortcutS": {
     "message": "Shortcut #{PH1}"
   },
   "panels/application/AppManifestView.ts | shortcutsMayBeNotAvailable": {
-    "message": "The maximum number of shortcuts is platform dependent. Some shortcuts may be not available."
+    "message": "The maximum number of shortcuts is platform dependent. Some shortcuts may not be available."
   },
   "panels/application/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
     "message": "Shortcut #{PH1} should include a 96×96 pixel icon"
@@ -3612,7 +3606,7 @@
     "message": "Show only the minimum safe area for maskable icons"
   },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
-    "message": "{PH1} {PH2} does not specify its size in the manifest"
+    "message": "{PH1} {PH2} doesn’t specify its size in the manifest"
   },
   "panels/application/AppManifestView.ts | sSFailedToLoad": {
     "message": "{PH1} {PH2} failed to load"
@@ -3621,10 +3615,10 @@
     "message": "{PH1} {PH2} height can’t be more than 2.3 times as long as the width"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} 'src' is not set"
+    "message": "{PH1} 'src' isn’t set"
   },
   "panels/application/AppManifestView.ts | sSShouldHaveSquareIcon": {
-    "message": "Most operating systems require square icons. Please include at least one square icon in the array."
+    "message": "Most operating systems require square icons. Include at least one square icon in the array."
   },
   "panels/application/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
     "message": "{PH1} {PH2} should specify its size as [width]x[height]"
@@ -3642,7 +3636,7 @@
     "message": "Start URL"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL ''{PH2}'' failed to parse"
+    "message": "{PH1} URL \"{PH2}\" failed to parse"
   },
   "panels/application/AppManifestView.ts | theAppIsAlreadyInstalled": {
     "message": "The app is already installed"
@@ -3651,10 +3645,10 @@
     "message": "Theme color"
   },
   "panels/application/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
-    "message": "The Play Store app URL and Play Store ID do not match"
+    "message": "The Play Store app URL and Play Store ID don’t match"
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
-    "message": "The specified application platform is not supported on Android"
+    "message": "The specified application platform isn’t supported on Android"
   },
   "panels/application/AppManifestView.ts | tooManyScreenshotsForDesktop": {
     "message": "No more than 8 screenshots will be displayed on desktop. The rest will be ignored."
@@ -3666,16 +3660,13 @@
     "message": "URL"
   },
   "panels/application/AppManifestView.ts | wcoFound": {
-    "message": "Chrome has successfully found the {PH1} value for the {PH2} field in the {PH3}"
+    "message": "Chrome found the {PH1} value for the {PH2} field in the {PH3}"
   },
   "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
     "message": "Need help? Read {PH1}."
   },
   "panels/application/AppManifestView.ts | wcoNotFound": {
     "message": "Define {PH1} in the manifest to use the Window Controls Overlay API and customize your app’s title bar"
-  },
-  "panels/application/AppManifestView.ts | windowControlsOverlay": {
-    "message": "Window Controls Overlay"
   },
   "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
     "message": "Back/forward cache"
@@ -4542,7 +4533,7 @@
     "message": "Refresh"
   },
   "panels/application/CrashReportContextView.ts | unknownFrame": {
-    "message": "Unknown Frame"
+    "message": "Unknown frame"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
     "message": "Clear"
@@ -4557,10 +4548,10 @@
     "message": "No session"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | sessionWithErrors": {
-    "message": "{sessionName}, Session has errors"
+    "message": "{sessionName}, session has errors"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | terminatedSession": {
-    "message": "{sessionName}, Session terminated"
+    "message": "{sessionName}, session terminated"
   },
   "panels/application/DeviceBoundSessionsView.ts | allowedRefreshInitiators": {
     "message": "Allowed refresh initiators"
@@ -4569,7 +4560,7 @@
     "message": "Attestation key generation error"
   },
   "panels/application/DeviceBoundSessionsView.ts | boundCookieSetForbidden": {
-    "message": "Registration in a context that cannot set bound cookies"
+    "message": "Registration in a context that can’t set bound cookies"
   },
   "panels/application/DeviceBoundSessionsView.ts | cachedChallenge": {
     "message": "Cached challenge"
@@ -4740,7 +4731,7 @@
     "message": "Invalid scope specification"
   },
   "panels/application/DeviceBoundSessionsView.ts | invalidScopeSpecificationType": {
-    "message": "Scope specification type is neiher include or exclude"
+    "message": "Scope specification type is neither include nor exclude"
   },
   "panels/application/DeviceBoundSessionsView.ts | invalidSessionId": {
     "message": "Invalid session ID"
@@ -4812,7 +4803,7 @@
     "message": "Allowed refresh initiator has invalid host pattern"
   },
   "panels/application/DeviceBoundSessionsView.ts | refreshInitiatorNotString": {
-    "message": "Allowed refresh initiator is not a string"
+    "message": "Allowed refresh initiator isn’t a string"
   },
   "panels/application/DeviceBoundSessionsView.ts | refreshResult": {
     "message": "Refresh result"
@@ -4869,7 +4860,7 @@
     "message": "Site-scoped session has mismatch between host pattern and site"
   },
   "panels/application/DeviceBoundSessionsView.ts | selectEventToViewDetails": {
-    "message": "Select an event row to view more details"
+    "message": "Select an event row to view details"
   },
   "panels/application/DeviceBoundSessionsView.ts | serverError": {
     "message": "Endpoint transient error"
@@ -4911,7 +4902,7 @@
     "message": "Removed from storage partition"
   },
   "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationUnauthorized": {
-    "message": ".well-known did not authorize registration by subdomain"
+    "message": ".well-known didn’t authorize registration by subdomain"
   },
   "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationWellKnownMalformed": {
     "message": "Subdomain registration .well-known content malformed"
@@ -5274,13 +5265,13 @@
     "message": "Yes"
   },
   "panels/application/OriginTrialTreeView.ts | expiryTime": {
-    "message": "Expiry Time"
+    "message": "Expiry time"
   },
   "panels/application/OriginTrialTreeView.ts | isThirdParty": {
-    "message": "Third Party"
+    "message": "Third party"
   },
   "panels/application/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Subdomain Matching"
+    "message": "Subdomain matching"
   },
   "panels/application/OriginTrialTreeView.ts | noTrialTokens": {
     "message": "No trial tokens"
@@ -5289,10 +5280,10 @@
     "message": "Origin"
   },
   "panels/application/OriginTrialTreeView.ts | rawTokenText": {
-    "message": "Raw Token"
+    "message": "Raw token"
   },
   "panels/application/OriginTrialTreeView.ts | status": {
-    "message": "Token Status"
+    "message": "Token status"
   },
   "panels/application/OriginTrialTreeView.ts | token": {
     "message": "Token"
@@ -5301,10 +5292,10 @@
     "message": "{PH1} tokens"
   },
   "panels/application/OriginTrialTreeView.ts | trialName": {
-    "message": "Trial Name"
+    "message": "Trial name"
   },
   "panels/application/OriginTrialTreeView.ts | usageRestriction": {
-    "message": "Usage Restriction"
+    "message": "Usage restriction"
   },
   "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
     "message": "Action"
@@ -5883,13 +5874,13 @@
     "message": "Speculative loads"
   },
   "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
-    "message": "Crash Report Context"
+    "message": "Crash report context"
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
   "panels/application/ReportingApiView.ts | clickToDisplayBody": {
-    "message": "Click on any report to display its body"
+    "message": "Click any report to display its body"
   },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "No report or endpoint"
@@ -5898,7 +5889,7 @@
     "message": "No report selected"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
-    "message": "On this page you will be able to inspect Reporting API reports and endpoints"
+    "message": "Inspect Reporting API reports and endpoints"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "Cache storage"
@@ -6629,14 +6620,14 @@
   "panels/common/CommentsStatusBarPill.ts | commentsCount": {
     "message": "Comments ({PH1})"
   },
-  "panels/common/CommentThreadWidget.ts | addCommentButton": {
-    "message": "Add comment"
-  },
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Comment input"
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Response:"
+  },
+  "panels/common/CommentThreadWidget.ts | sendToAgent": {
+    "message": "Send to agent"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
     "message": "Sent"
@@ -12836,6 +12827,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "Cancel replay"
   },
+  "panels/recorder/RecordingView.ts | codeFormat": {
+    "message": "Code format"
+  },
   "panels/recorder/RecordingView.ts | codeSidebarClosed": {
     "message": "Code sidebar closed"
   },
@@ -15867,7 +15861,7 @@
     "message": "Desktop"
   },
   "panels/timeline/components/LiveMetricsView.ts | device": {
-    "message": "Device: {PH1}"
+    "message": "Device:"
   },
   "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
     "message": "Disable network cache"
@@ -15939,9 +15933,6 @@
     "message": "{PH1} - No data"
   },
   "panels/timeline/components/LiveMetricsView.ts | network": {
-    "message": "Network: {PH1}"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | networkThrottling": {
     "message": "Network:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {

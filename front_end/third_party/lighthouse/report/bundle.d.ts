@@ -100,9 +100,9 @@ declare var ne: {
         _saveFile(e: any): void;
     };
 };
-declare namespace Ct {
+declare namespace St {
     export { Lt as registerLocaleData };
-    export { St as hasLocale };
+    export { Ct as hasLocale };
 }
 declare function kt(r: any, e?: {}): HTMLElement;
 declare function Et(r: any, e: any): {
@@ -110,5 +110,5 @@ declare function Et(r: any, e: any): {
     missingIcuMessageIds: never[];
 };
 declare function Lt(r: any, e: any): void;
-declare function St(r: any): boolean;
-export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, Ct as format, kt as renderReport, Et as swapLocale };
+declare function Ct(r: any): boolean;
+export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, St as format, kt as renderReport, Et as swapLocale };

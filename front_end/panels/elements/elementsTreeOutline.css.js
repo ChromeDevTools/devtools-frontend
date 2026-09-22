@@ -491,6 +491,10 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   margin-left: -12px;
 }
 
+.tree-outline-disclosure > ol > li.parent:only-of-type:not(.expanded) {
+  margin-top: 2px;
+}
+
 .tree-outline-disclosure li.parent:not(.always-parent)::before {
   box-sizing: border-box;
   user-select: none;

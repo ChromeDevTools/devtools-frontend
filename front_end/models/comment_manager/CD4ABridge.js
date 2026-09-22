@@ -89,8 +89,8 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper {
             return threadPayload;
         });
     }
-    takeComments() {
-        return this.getCommentThreads();
+    setAgentAttached(value) {
+        this.#commentManager.setAgentAttached(value);
     }
     resolveCommentThread(threadId, replyText) {
         return this.#commentManager.resolveCommentThread(threadId, replyText);

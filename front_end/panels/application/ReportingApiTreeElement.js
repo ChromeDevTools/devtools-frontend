@@ -9,13 +9,13 @@ import { CrashReportContextView } from './CrashReportContextView.js';
 import { ReportingApiView } from './ReportingApiView.js';
 const UIStrings = {
     /**
-     * @description Label for an item in the Application Panel Sidebar of the Application panel
+     * @description Label for an item in the sidebar of the Application panel.
      */
     reportingApi: 'Reporting API',
     /**
-     * @description Label for the Crash Report Context child item in the Reporting API section.
+     * @description Label for the crash report context item in the sidebar of the Application panel.
      */
-    crashReportContext: 'Crash Report Context',
+    crashReportContext: 'Crash report context',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ReportingApiTreeElement.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

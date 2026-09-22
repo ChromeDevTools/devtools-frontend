@@ -61,11 +61,11 @@ export class BaseVariableMatcher extends BaseVariableMatcherBase {
         }
         const nameNode = args[0][0];
         const fallback = args.length === 2 ? args[1] : undefined;
-        if (nameNode?.name !== 'VariableName') {
+        if (nameNode?.name !== 'VariableName' && nameNode?.name !== 'ValueName') {
             return null;
         }
         const varName = matching.ast.text(nameNode);
-        if (!varName.startsWith('--')) {
+        if (!varName.startsWith('--') || varName.length <= 2) {
             return null;
         }
         return new BaseVariableMatch(matching.ast.text(node), node, varName, fallback, matching, this.#computedTextCallback);

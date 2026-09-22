@@ -61,9 +61,6 @@
       "path": "../../core/host/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/root/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {

@@ -27,9 +27,6 @@
       "path": "../../core/common/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/platform/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {

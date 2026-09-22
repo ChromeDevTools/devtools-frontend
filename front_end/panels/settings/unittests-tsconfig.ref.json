@@ -53,16 +53,10 @@
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/render_coordinator/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../ui/components/switch/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../ui/settings/bundle-tsconfig.ref.json"
     },
     {
       "path": "../network/forward/bundle-tsconfig.ref.json"

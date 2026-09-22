@@ -48,6 +48,7 @@
   "files": [
     "../../../../inspector_overlay/common.test.ts",
     "../../../../inspector_overlay/css_grid_label_helpers.test.ts",
+    "../../../../inspector_overlay/highlight_anchor.test.ts",
     "../../../../inspector_overlay/highlight_common.test.ts",
     "../../../../inspector_overlay/highlight_flex_common.test.ts",
     "../../../../inspector_overlay/highlight_grid_common.test.ts",

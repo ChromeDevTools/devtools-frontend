@@ -79,9 +79,6 @@
       "path": "bundle-tsconfig.ref.json"
     },
     {
-      "path": "meta-tsconfig.ref.json"
-    },
-    {
       "path": "../../core/common/bundle-tsconfig.ref.json"
     },
     {
@@ -128,6 +125,9 @@
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/data_grid/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/legacy/components/object_ui/bundle-tsconfig.ref.json"

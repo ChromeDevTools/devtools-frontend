@@ -3533,6 +3533,7 @@ var generatedProperties = [
       "line-clamp",
       "line-gap-override",
       "line-height",
+      "link-parameters",
       "list-style-image",
       "list-style-position",
       "list-style-type",
@@ -6555,6 +6556,14 @@ var generatedProperties = [
       "normal"
     ],
     "name": "line-height"
+  },
+  {
+    "keywords": [
+      "none"
+    ],
+    "name": "link-parameters",
+    "runtime_flag": "CSSLinkParametersProperty",
+    "runtime_flag_status": "experimental"
   },
   {
     "inherited": true,
@@ -10805,6 +10814,11 @@ var generatedPropertyValues = {
   "line-height": {
     "values": [
       "normal"
+    ]
+  },
+  "link-parameters": {
+    "values": [
+      "none"
     ]
   },
   "list-style-image": {
@@ -16803,11 +16817,11 @@ var BaseVariableMatcher = class extends BaseVariableMatcherBase {
     }
     const nameNode = args[0][0];
     const fallback = args.length === 2 ? args[1] : void 0;
-    if (nameNode?.name !== "VariableName") {
+    if (nameNode?.name !== "VariableName" && nameNode?.name !== "ValueName") {
       return null;
     }
     const varName = matching.ast.text(nameNode);
-    if (!varName.startsWith("--")) {
+    if (!varName.startsWith("--") || varName.length <= 2) {
       return null;
     }
     return new BaseVariableMatch(
@@ -44939,6 +44953,8 @@ var StorageBucketsModel = class extends SDKModel {
   }
   cacheStorageContentUpdated(_event) {
   }
+  privateVerificationTokensUpdated() {
+  }
 };
 SDKModel.register(StorageBucketsModel, { capabilities: 8192 /* STORAGE */, autostart: false });
 var Events31 = /* @__PURE__ */ ((Events35) => {
@@ -45177,6 +45193,8 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   storageBucketCreatedOrUpdated(_event) {
   }
   storageBucketDeleted(_event) {
+  }
+  privateVerificationTokensUpdated() {
   }
   setThrottlerSchedulesAsSoonAsPossibleForTest() {
     this.#scheduleAsSoonAsPossible = true;

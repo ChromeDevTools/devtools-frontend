@@ -12,528 +12,527 @@ import deviceBoundSessionsViewStyles from './deviceBoundSessionsView.css.js';
 const { widget } = UI.Widget;
 const UIStrings = {
     /**
-     *@description Label for a site, e.g. https://example.com/.
+     *@description Label for the site in the device bound sessions view of the Application panel.
      */
     keySite: 'Site',
     /**
-     *@description Label for the ID of a session.
+     *@description Label for the session ID in the device bound sessions view of the Application panel.
      */
     keyId: 'ID',
     /**
-     *@description Label that shows the URL that can be used to refresh a session.
+     *@description Label for the refresh URL in the device bound sessions view of the Application panel.
      */
     refreshUrl: 'Refresh URL',
     /**
-     *@description Section header for how a session's scope is defined.
+     *@description Section header and datagrid name for the session scope in the device bound sessions view of the Application panel.
      */
     scope: 'Scope',
     /**
-     *@description Section header for HTTP cookies.
+     *@description Section header and datagrid name for cookies in the device bound sessions view of the Application panel.
      */
     cookieCravings: 'Cookies',
     /**
-     *@description Label for the name of an HTTP cookie.
+     *@description Column header for the cookie name in the cookies datagrid of the device bound sessions view in the Application panel.
      */
     name: 'Name',
     /**
-     *@description Label for an expiration date.
+     *@description Label for the expiration date in the device bound sessions view of the Application panel.
      */
     expiryDate: 'Expiry date',
     /**
-     *@description Label for a cryptographic string challenge that has been cached for a session.
+     *@description Label for a cached cryptographic challenge in the device bound sessions view of the Application panel.
      */
     cachedChallenge: 'Cached challenge',
     /**
-     *@description Label for the HTTP initiator that is allowed to trigger a refresh of a session.
+     *@description Label for the allowed refresh initiators in the device bound sessions view of the Application panel.
      */
     allowedRefreshInitiators: 'Allowed refresh initiators',
     /**
-     *@description Section header for a session's basic configuration.
+     *@description Section header for the session configuration in the device bound sessions view of the Application panel.
      */
     sessionConfig: 'Session config',
     /**
-     *@description Label for an HTTP origin.
+     *@description Label for the origin in the device bound sessions view of the Application panel.
      */
     origin: 'Origin',
     /**
-     *@description Text for whether a site is included.
+     *@description Label indicating whether a site is included in the device bound sessions view of the Application panel.
      */
     includeSite: 'Include site',
     /**
-     *@description Value for a label that indicates that a site is included.
+     *@description Value indicating affirmative or true in the device bound sessions view of the Application panel.
      */
     yes: 'Yes',
     /**
-     *@description Value for a label that indicates that a site is not included.
+     *@description Value indicating negative or false in the device bound sessions view of the Application panel.
      */
     no: 'No',
     /**
-     *@description Label the host pattern of a URL, e.g. *.example.com
+     *@description Column header for the URL host pattern in the scope datagrid of the device bound sessions view in the Application panel.
      */
     ruleHostPattern: 'Host pattern',
     /**
-     *@description Label for the path prefix of a URL, e.g. /path/1/2/3
+     *@description Column header for the URL path prefix in the scope datagrid of the device bound sessions view in the Application panel.
      */
     rulePathPrefix: 'Path prefix',
     /**
-     *@description The type of a rule. The possible types are "exclude" or "include".
+     *@description Column header for the rule type in the scope datagrid of the device bound sessions view in the Application panel.
      */
     ruleType: 'Rule type',
     /**
-     *@description Text describing that a rule excludes something.
+     *@description Table cell value indicating that a rule excludes a URL in the device bound sessions view of the Application panel.
      */
     ruleTypeExclude: 'Exclude',
     /**
-     *@description Text describing that a rule includes something.
+     *@description Table cell value indicating that a rule includes a URL in the device bound sessions view of the Application panel.
      */
     ruleTypeInclude: 'Include',
     /**
-     *@description Label for an event that has created something.
+     *@description Event type label for a creation event in the device bound sessions view of the Application panel.
      */
     creation: 'Creation',
     /**
-     *@description Label for an event that has refreshed something.
+     *@description Event type label for a refresh event in the device bound sessions view of the Application panel.
      */
     refresh: 'Refresh',
     /**
-     *@description Label for an event that has set a cryptographic string challenge.
+     *@description Event type label and report key for a challenge event in the device bound sessions view of the Application panel.
      */
     challenge: 'Challenge',
     /**
-     *@description Label for an event that has terminated something.
+     *@description Event type label for a termination event in the device bound sessions view of the Application panel.
      */
     termination: 'Termination',
     /**
-     *@description Label for an event whose type is not known.
+     *@description Event type label for an unknown event in the device bound sessions view of the Application panel.
      */
     unknown: 'Unknown',
     /**
-     *@description Heading for a section that will display events that have occurred.
+     *@description Section header and datagrid name for events in the device bound sessions view of the Application panel.
      */
     events: 'Events',
     /**
-     *@description Section header for details about an event.
+     *@description Section header and accessible label for event details in the device bound sessions view of the Application panel.
      */
     eventDetails: 'Event details',
     /**
-     *@description Accessible label for the main area containing session details.
+     *@description Accessible label for the session details area in the device bound sessions view of the Application panel.
      */
     sessionDetails: 'Session details',
     /**
-     *@description Placeholder text when no row is selected in a table of events.
+     *@description Empty state text displayed in the event details sidebar when no event row is selected in the device bound sessions view of the Application panel.
      */
-    selectEventToViewDetails: 'Select an event row to view more details',
+    selectEventToViewDetails: 'Select an event row to view details',
     /**
-     *@description Column heading for the type of event that has occurred.
+     *@description Column header for the event type in the events datagrid of the device bound sessions view in the Application panel.
      */
     type: 'Type',
     /**
-     *@description Column heading for the date + time that an event occurred.
+     *@description Column header for the date and time that an event occurred in the events datagrid of the device bound sessions view in the Application panel.
      */
     timestamp: 'Date',
     /**
-     *@description Column heading for the result of an event (whether it succeeded or had an error).
+     *@description Column header for the event result in the events datagrid of the device bound sessions view in the Application panel.
      */
     result: 'Result',
     /**
-     *@description Notes the result status of an event was that it succeeded.
+     *@description Table cell or report value indicating that an event succeeded in the device bound sessions view of the Application panel.
      */
     success: 'Success',
     /**
-     *@description Notes the result status of an event was that it had an error.
+     *@description Table cell or report value indicating that an event had an error in the device bound sessions view of the Application panel.
      */
     error: 'Error',
     /**
-     *@description Default message when no events have appeared yet.
+     *@description Message displayed when no events have been logged in the device bound sessions view of the Application panel.
      */
     noEvents: 'No events have been logged yet',
     /**
-     *@description Text to keep the log of events after refreshing.
+     *@description Label for the checkbox to keep the event log across page reloads in the device bound sessions view of the Application panel.
      */
     preserveLog: 'Keep log',
     /**
-     *@description Tooltip text that appears on the keep log setting when hovering over it.
+     *@description Tooltip text for the keep log checkbox in the device bound sessions view of the Application panel.
      */
     doNotClearLogOnPageReload: 'Don’t clear log on page reload/navigation',
     /**
-     *@description Label for the ID of a session.
+     *@description Label for the session ID in the event details section of the device bound sessions view in the Application panel.
      */
     sessionId: 'Session ID',
     /**
-     *@description Label for the result of an event (whether it succeeded or had an error).
+     *@description Label for the event result in the event details section of the device bound sessions view in the Application panel.
      */
     eventResult: 'Event result',
     /**
-     *@description Label for the result of fetching new session information.
+     *@description Label for the fetch result in the event details section of the device bound sessions view in the Application panel.
      */
     fetchResult: 'Fetch result',
     /**
-     *@description Label for whether a session's basic configuration was updated. The corresponding value is yes or no.
+     *@description Label indicating whether the session configuration was updated in the event details section of the device bound sessions view in the Application panel.
      */
     updatedSessionConfig: 'Updated session config',
     /**
-     *@description Label for the result of an attempted refresh.
+     *@description Label for the refresh result in the event details section of the device bound sessions view in the Application panel.
      */
     refreshResult: 'Refresh result',
     /**
-     *@description Label for whether a particular event caused any HTTP request to be deferred (i.e. paused and
-     * later unpaused). The corresponding value is yes or no.
+     *@description Label indicating whether an event caused HTTP requests to be deferred in the event details section of the device bound sessions view in the Application panel.
      */
     causedAnyRequestDeferrals: 'Caused any request deferrals',
     /**
-     *@description Label for the result of attempting to set a cryptographic string challenge.
+     *@description Label for the challenge result in the event details section of the device bound sessions view in the Application panel.
      */
     challengeResult: 'Challenge result',
     /**
-     *@description Label for the reason why a session was deleted.
+     *@description Label for the deletion reason in the event details section of the device bound sessions view in the Application panel.
      */
     deletionReason: 'Deletion reason',
     /**
-     *@description Label for the URL of a failed network request.
+     *@description Label for the URL of a failed network request in the event details section of the device bound sessions view in the Application panel.
      */
     failedRequestUrl: 'Failed request URL',
     /**
-     *@description Label for the network error of a failed network request.
+     *@description Label for the network error of a failed network request in the event details section of the device bound sessions view in the Application panel.
      */
     failedRequestNetError: 'Net error',
     /**
-     *@description Label for the HTTP response error code of a failed network request.
+     *@description Label for the HTTP response error code of a failed network request in the event details section of the device bound sessions view in the Application panel.
      */
     failedRequestResponseCode: 'Response error code',
     /**
-     *@description Label for the response body of a failed network request.
+     *@description Label for the response body of a failed network request in the event details section of the device bound sessions view in the Application panel.
      */
     failedRequestResponseBody: 'Response body',
     /**
-     *@description Explanation for an event outcome. Key refers to a cryptographic key.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Key refers to a cryptographic key.
      */
     signingKeyGenerationError: 'Signing key generation error',
     /**
-     *@description Explanation for an event outcome. Key refers to a cryptographic key.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Key refers to a cryptographic key.
      */
     attestationKeyGenerationError: 'Attestation key generation error',
     /**
-     *@description Explanation for an event outcome. Signing refers to cryptographic signing.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Signing refers to cryptographic signing.
      */
     signingError: 'Signing error',
     /**
-     *@description Explanation for an event outcome. Signing refers to cryptographic signing.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Signing refers to cryptographic signing.
      */
     transientSigningError: 'Transient signing error',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     serverRequestedTermination: 'Server requested termination',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidSessionId: 'Invalid session ID',
     /**
-     *@description Explanation for an event outcome. Challenge refers to a cryptographic string challenge.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Challenge refers to a cryptographic string challenge.
      */
     invalidChallenge: 'Invalid challenge',
     /**
-     *@description Explanation for an event outcome. Challenge refers to a cryptographic string challenge.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Challenge refers to a cryptographic string challenge.
      */
     tooManyChallenges: 'Too many challenges',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidFetcherUrl: 'Invalid fetcher URL',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidRefreshUrl: 'Invalid refresh URL',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     transientHttpError: 'Transient HTTP error',
     /**
-     *@description Explanation for an event outcome. This means there is a URL origin written into a session configuration's scope that is causing failures because it's for a different site.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. This means there is a URL origin written into a session configuration's scope that is causing failures because it's for a different site.
      */
     scopeOriginSameSiteMismatch: 'Same-site mismatch scope origin',
     /**
-     *@description Explanation for an event outcome. This means the session configuration's URL for refreshing is causing failures because it's for a different site.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. This means the session configuration's URL for refreshing is causing failures because it's for a different site.
      */
     refreshUrlSameSiteMismatch: 'Same-site mismatch refresh URL',
     /**
-     *@description Explanation for an event outcome. This means the session configuration's session ID does not match the relevant session ID.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. This means the session configuration's session ID does not match the relevant session ID.
      */
     mismatchedSessionId: 'Mismatched session ID',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     missingScope: 'Missing scope',
     /**
-     *@description Explanation for an event outcome. This means the credentials field in the session configuration is missing.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. This means the credentials field in the session configuration is missing.
      */
     noCredentials: 'No credentials',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     subdomainRegistrationWellKnownUnavailable: 'Subdomain registration .well-known unavailable',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
-    subdomainRegistrationUnauthorized: '.well-known did not authorize registration by subdomain',
+    subdomainRegistrationUnauthorized: '.well-known didn’t authorize registration by subdomain',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     subdomainRegistrationWellKnownMalformed: 'Subdomain registration .well-known content malformed',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     sessionProviderWellKnownUnavailable: 'Session provider .well-known unavailable',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     relyingPartyWellKnownUnavailable: 'Relying party .well-known unavailable',
     /**
-     *@description Explanation for an event outcome. This refers to a JSON Web Key thumbprint (https://www.rfc-editor.org/rfc/rfc7638). Federated sessions are described in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. This refers to a JSON Web Key thumbprint (https://www.rfc-editor.org/rfc/rfc7638). Federated sessions are described in https://w3c.github.io/webappsec-dbsc/.
      */
     federatedKeyThumbprintMismatch: 'Federated key had incorrect thumbprint',
     /**
-     *@description Explanation for an event outcome. Federated sessions are described in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are described in https://w3c.github.io/webappsec-dbsc/.
      */
     invalidFederatedSessionUrl: 'Federated provider URL not valid',
     /**
-     *@description Explanation for an event outcome. Federated sessions are described in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are described in https://w3c.github.io/webappsec-dbsc/.
      */
     invalidFederatedKey: 'Federated key invalid',
     /**
-     *@description Explanation for an event outcome. Origin labels are described in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Origin labels are described in https://w3c.github.io/webappsec-dbsc/.
      */
     tooManyRelyingOriginLabels: 'Too many relying origin labels in .well-known',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
-    boundCookieSetForbidden: 'Registration in a context that cannot set bound cookies',
+    boundCookieSetForbidden: 'Registration in a context that can’t set bound cookies',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     netError: 'Network error',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     proxyError: 'Proxy error',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     emptySessionConfig: 'Empty session configuration for registration',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidCredentialsConfig: 'Invalid credentials configuration',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidCredentialsType: 'Invalid credentials - empty or non-cookie type',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidCredentialsEmptyName: 'Invalid credentials - empty name',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidCredentialsCookie: 'Invalid credentials - cookie invalid',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     persistentHttpError: 'Persistent HTTP error',
     /**
-     *@description Explanation for an event outcome. Challenge refers to a cryptographic string challenge.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Challenge refers to a cryptographic string challenge.
      */
     registrationAttemptedChallenge: 'Registration returned challenge error response code',
     /**
-     *@description Explanation for an event outcome. This refers to a URL's origin.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. This refers to a URL's origin.
      */
     invalidScopeOrigin: 'Invalid scope origin',
     /**
-     *@description Explanation for an event outcome. This refers to an URL's path / origin.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. This refers to an URL's path / origin.
      */
     scopeOriginContainsPath: 'Scope origin contains a path',
     /**
-     *@description Explanation for an event outcome. This refers to an HTTP request's initiator.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. This refers to an HTTP request's initiator.
      */
-    refreshInitiatorNotString: 'Allowed refresh initiator is not a string',
+    refreshInitiatorNotString: 'Allowed refresh initiator isn’t a string',
     /**
-     *@description Explanation for an event outcome. This refers to an HTTP request's initiator and a URL's host.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. This refers to an HTTP request's initiator and a URL's host.
      */
     refreshInitiatorInvalidHostPattern: 'Allowed refresh initiator has invalid host pattern',
     /**
-     *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
      */
     invalidScopeSpecification: 'Invalid scope specification',
     /**
-     *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
      */
     missingScopeSpecificationType: 'Missing scope specification type',
     /**
-     *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
      */
     emptyScopeSpecificationDomain: 'Empty scope specification domain',
     /**
-     *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
      */
     emptyScopeSpecificationPath: 'Empty scope specification path',
     /**
-     *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
      */
-    invalidScopeSpecificationType: 'Scope specification type is neiher include or exclude',
+    invalidScopeSpecificationType: 'Scope specification type is neither include nor exclude',
     /**
-     *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
      */
     invalidScopeIncludeSite: 'Invalid include_site in scope',
     /**
-     *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
      */
     missingScopeIncludeSite: 'Missing include_site in scope',
     /**
-     *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
      */
     federatedNotAuthorizedByProvider: 'Federated session not authorized by provider .well-known',
     /**
-     *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
      */
     federatedNotAuthorizedByRelyingParty: 'Federated session not authorized by relying party .well-known',
     /**
-     *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
      */
     sessionProviderWellKnownMalformed: 'Session provider .well-known content malformed',
     /**
-     *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
      */
     sessionProviderWellKnownHasProviderOrigin: 'Session provider .well-known content has provider_origin',
     /**
-     *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
      */
     relyingPartyWellKnownMalformed: 'Relying party .well-known content malformed',
     /**
-     *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
      */
     relyingPartyWellKnownHasRelyingOrigins: 'Relying party .well-known content has relying_origins',
     /**
-     *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
      */
     invalidFederatedSessionProviderSessionMissing: 'Federated session invalid due to provider session not found',
     /**
-     *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/.
      */
     invalidFederatedSessionWrongProviderOrigin: 'Federated session invalid due to provider origin mismatch',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidCredentialsCookieCreationTime: 'Invalid credentials - cookie creation time invalid',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidCredentialsCookieName: 'Invalid credentials - cookie name invalid',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidCredentialsCookieParsing: 'Invalid credentials - cookie parsing failed',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidCredentialsCookieUnpermittedAttribute: 'Invalid credentials - cookie attribute not permitted',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidCredentialsCookieInvalidDomain: 'Invalid credentials - cookie invalid domain',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidCredentialsCookiePrefix: 'Invalid credentials - cookie invalid prefix',
     /**
-     *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
      */
     invalidScopeRulePath: 'Invalid scope rule path',
     /**
-     *@description Explanation for an event outcome. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Scope specification is defined in https://w3c.github.io/webappsec-dbsc/.
      */
     invalidScopeRuleHostPattern: 'Invalid scope rule host pattern',
     /**
-     *@description Explanation for an event outcome. A session can be scoped to just a specific URL origin. This error means that the session's origin does not match the provided URL host pattern.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. A session can be scoped to just a specific URL origin. This error means that the session's origin does not match the provided URL host pattern.
      */
     scopeRuleOriginScopedHostPatternMismatch: 'Origin-scoped session has mismatch between host pattern and origin',
     /**
-     *@description Explanation for an event outcome. A session can be scoped to an entire site. This error means that the session's site does not match the provided URL host pattern.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. A session can be scoped to an entire site. This error means that the session's site does not match the provided URL host pattern.
      */
     scopeRuleSiteScopedHostPatternMismatch: 'Site-scoped session has mismatch between host pattern and site',
     /**
-     *@description Explanation for an event outcome. This refers to cryptographic signing.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. This refers to cryptographic signing.
      */
     signingQuotaExceeded: 'Signing quota exceeded',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidConfigJson: 'Invalid session configuration JSON',
     /**
-     *@description Explanation for an event outcome. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/. Key refers to a cryptographic key.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Federated sessions are defined in https://w3c.github.io/webappsec-dbsc/. Key refers to a cryptographic key.
      */
     invalidFederatedSessionProviderFailedToRestoreKey: 'Federated session invalid due to failure to restore session provider key',
     /**
-     *@description Explanation for an event outcome. Key refers to a cryptographic key.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Key refers to a cryptographic key.
      */
     failedToUnwrapKey: 'Failed to unwrap key',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     sessionDeletedDuringRefresh: 'Session deleted during refresh',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     refreshed: 'Refreshed',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     initializedService: 'Service initialized',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     unreachable: 'Endpoint unreachable',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     serverError: 'Endpoint transient error',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     fatalError: 'Fatal error',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     noSessionId: 'No session ID',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     noSessionMatch: 'No matching session ID',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     cantSetBoundCookie: 'Not allowed to set bound cookie',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     expired: 'Expired',
     /**
-     *@description Explanation for an event outcome. Key refers to a cryptographic key. This means there was an attempt to read a key from disk but it failed.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel. Key refers to a cryptographic key. This means there was an attempt to read a key from disk but it failed.
      */
     failedToRestoreKey: 'Failed to restore key from disk',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     storagePartitionCleared: 'Removed from storage partition',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     clearBrowsingData: 'User-initiated browser data removal',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     invalidSessionParams: 'Invalid session parameters',
     /**
-     *@description Explanation for an event outcome.
+     *@description Explanation for an event outcome in the device bound sessions view of the Application panel.
      */
     refreshFatalError: 'Fatal error during refresh',
 };

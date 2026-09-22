@@ -46,6 +46,7 @@ import { Keys } from './KeyboardShortcut.js';
 import { Tooltip } from './Tooltip.js';
 import treeoutlineStyles from './treeoutline.css.js';
 import { createShadowRootWithCoreStyles, deepElementFromPoint, enclosingNodeOrSelfWithNodeNameInArray, HTMLElementWithLightDOMTemplate, isEditing, } from './UIUtils.js';
+import { Widget } from './Widget.js';
 const UIStrings = {
     /**
      * @description Screen reader announcement made when the user expands a tree item, such as a DOM
@@ -1131,9 +1132,9 @@ export class TreeElement {
             this.listItemNode.classList.remove('force-white-icons');
         }
     }
-    revealAndSelect(omitFocus) {
+    revealAndSelect(omitFocus, selectedByUser) {
         this.reveal(true);
-        this.select(omitFocus);
+        this.select(omitFocus, selectedByUser ?? false);
     }
     deselect() {
         const hadFocus = this.listItemNode.hasFocus();
@@ -1409,9 +1410,15 @@ class TreeViewTreeElement extends TreeElement {
         }
         this.#refreshScheduled = true;
         queueMicrotask(() => {
-            this.#refreshScheduled = false;
-            this.refresh();
+            if (this.#refreshScheduled) {
+                this.refresh();
+            }
         });
+    }
+    flushPendingRefreshForTesting() {
+        if (this.#refreshScheduled) {
+            this.refresh();
+        }
     }
     updateAttributes() {
         const expandable = Boolean(this.configElement.querySelector(':scope > ul[role="group"]'));
@@ -1437,6 +1444,7 @@ class TreeViewTreeElement extends TreeElement {
         this.updateExpansionFromAttribute();
     }
     refresh() {
+        this.#refreshScheduled = false;
         const hadFocus = this.listItemElement.hasFocus();
         this.titleElement.textContent = '';
         this.updateAttributes();
@@ -1472,7 +1480,7 @@ class TreeViewTreeElement extends TreeElement {
         }
         return super.onenter();
     }
-    remove() {
+    removeFromTree() {
         removeNode(this, Boolean(this.parent &&
             this.parent.configElement?.querySelector(':scope > ul[role="group"]')));
         TreeViewTreeElement.#elementToTreeElement.delete(this.configElement);
@@ -1628,6 +1636,25 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     getInternalTreeOutlineForTest() {
         return this.#treeOutline;
     }
+    flushPendingUpdatesForTesting() {
+        this.flushPendingMutationsForTesting();
+        const stack = [...this.#treeOutline.rootElement().children()];
+        while (stack.length > 0) {
+            const item = stack.pop();
+            if (!item) {
+                continue;
+            }
+            if (item instanceof TreeViewTreeElement) {
+                item.flushPendingRefreshForTesting();
+            }
+            if (item.children()) {
+                stack.push(...item.children());
+            }
+        }
+        for (const widgetEl of this.#treeOutline.shadowRoot.querySelectorAll('devtools-widget')) {
+            void Widget.get(widgetEl)?.performUpdate();
+        }
+    }
     focus() {
         if (!this.#treeOutline.selectedTreeElement && this.#treeOutline.firstChild()) {
             this.#treeOutline.firstChild()?.select(/* omitFocus */ true, /* selectedByUser */ false);
@@ -1763,7 +1790,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     removeNodes(nodes) {
         for (const node of getTreeNodes(nodes)) {
             if (node instanceof HTMLLIElement) {
-                TreeViewTreeElement.get(node)?.remove();
+                TreeViewTreeElement.get(node)?.removeFromTree();
             }
             else if (node.treeElement) {
                 removeNode(node.treeElement, Boolean(node.treeElement.parent &&

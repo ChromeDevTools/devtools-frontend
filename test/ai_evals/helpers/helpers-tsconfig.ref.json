@@ -14,10 +14,6 @@
   },
   "files": [
     "../../../../../../test/ai_evals/helpers/ai_eval-helpers.ts",
-    "../../../../../../test/ai_evals/helpers/eval-logger.ts",
-    "../../../../../../test/ai_evals/helpers/eval-task-recorder.ts",
-    "../../../../../../test/ai_evals/helpers/gcs-upload.ts",
-    "../../../../../../test/ai_evals/helpers/trajectory-builder.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",

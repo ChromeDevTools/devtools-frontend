@@ -89,21 +89,22 @@ export declare class DebuggerPlugin extends Plugin {
 export declare class BreakpointLocationRevealer implements Common.Revealer.Revealer<Breakpoints.BreakpointManager.BreakpointLocation> {
     reveal(breakpointLocation: Breakpoints.BreakpointManager.BreakpointLocation, omitFocus?: boolean | undefined): Promise<void>;
 }
-export declare function getVariableNamesByLine(editorState: CodeMirror.EditorState, fromPos: number, toPos: number, currentPos: number): Array<{
+export declare function getVariableNamesByLine(editorState: CodeMirror.EditorState, fromPos: number, toPos: number, currentPos: number, useOriginalScopes?: boolean): Array<{
     line: number;
     from: number;
     id: string;
 }>;
-export declare function computeScopeMappings(callFrame: SDK.DebuggerModel.CallFrame, rawLocationToEditorOffset: (l: SDK.DebuggerModel.Location | null) => Promise<number | null>): Promise<Array<{
+export interface ScopeMapping {
     scopeStart: number;
     scopeEnd: number;
-    variableMap: Map<string, SDK.RemoteObject.RemoteObject>;
-}>>;
-export declare function getVariableValuesByLine(scopeMappings: Array<{
-    scopeStart: number;
-    scopeEnd: number;
-    variableMap: Map<string, SDK.RemoteObject.RemoteObject>;
-}>, variableNames: Array<{
+    variableMap: Map<string, SDK.RemoteObject.RemoteObject | null>;
+}
+export declare function computeScopeMappings(callFrame: SDK.DebuggerModel.CallFrame, rawLocationToEditorOffset: (l: SDK.DebuggerModel.Location | null) => Promise<number | null>, uiPositionToEditorOffset?: (line: number, column: number) => number | null, resolvedScopeChain?: SDK.DebuggerModel.ScopeChainEntry[]): Promise<ScopeMapping[]>;
+export declare function findVariableInScopeMappings(name: string, pos: number, scopeMappings: ScopeMapping[]): {
+    found: boolean;
+    value: SDK.RemoteObject.RemoteObject | null;
+};
+export declare function getVariableValuesByLine(scopeMappings: ScopeMapping[], variableNames: Array<{
     line: number;
     from: number;
     id: string;

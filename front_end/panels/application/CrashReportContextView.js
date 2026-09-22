@@ -12,19 +12,19 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ApplicationComponents from './components/components.js';
 const UIStrings = {
     /**
-     * @description Placeholder text when no context is detected.
+     * @description Header text in an empty state view when no context entries are detected in the crash report context view of the Application panel.
      */
     noContext: 'No context entries detected across frames',
     /**
-     * @description Fallback label when a frame has no URL.
+     * @description Fallback label when a frame has no URL in the crash report context view of the Application panel.
      */
-    unknownFrame: 'Unknown Frame',
+    unknownFrame: 'Unknown frame',
     /**
-     * @description Placeholder for a search field in a toolbar
+     * @description Placeholder text for the filter input in the crash report context view of the Application panel.
      */
     filterByText: 'Filter by key or value',
     /**
-     * @description Text to refresh the page
+     * @description Tooltip text for the refresh button in the toolbar of the crash report context view in the Application panel.
      */
     refresh: 'Refresh',
 };

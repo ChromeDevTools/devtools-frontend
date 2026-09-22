@@ -16,6 +16,8 @@ export interface TabInfo {
     jslogContext?: string;
     enabled?: boolean;
     selected?: boolean;
+    icon?: Element | null;
+    suffix?: Element | null;
 }
 declare const TabbedPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof VBox>;
 export declare class TabbedPane extends TabbedPaneBase {
@@ -87,7 +89,6 @@ export declare class TabbedPane extends TabbedPaneBase {
     changeTabTitle(id: string, tabTitle: string, tabTooltip?: string): void;
     changeTabView(id: string, view: AnyWidget): void;
     get tabs(): TabInfo[];
-    set tabs(tabs: TabInfo[]);
     onResize(): void;
     headerResized(): void;
     wasShown(): void;
@@ -224,6 +225,9 @@ export declare class TabbedPaneElement extends WidgetElement<TabbedPane> {
     set closeableTabs(closeable: boolean);
     set allowTabReorder(allow: boolean);
     set automaticReorder(automatic: boolean);
+    get tabs(): TabInfo[];
+    set tabDelegate(delegate: TabbedPaneTabDelegate);
+    set placeholder(element: Element);
     constructor();
     disconnectedCallback(): void;
 }

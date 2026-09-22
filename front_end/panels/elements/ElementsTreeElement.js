@@ -2695,6 +2695,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             drag: true,
             click: true,
         })}`);
+        this.listItemElement.setAttribute('data-backend-node-id', String(node.backendNodeId()));
+        this.listItemElement.setAttribute('data-target-id', node.domModel().target().id());
         this.widgetWrapper = document.createElement('div');
         this.widgetWrapper.style.display = 'contents';
         this.title = this.widgetWrapper;

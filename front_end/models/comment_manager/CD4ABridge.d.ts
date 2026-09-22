@@ -28,7 +28,7 @@ export declare class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper<Event
     constructor(commentManager: CommentManager.CommentManager, targetManager?: SDK.TargetManager.TargetManager, networkLog?: Logs.NetworkLog.NetworkLog, inspectorFrontendHost?: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI);
     dispose(): void;
     getCommentThreads(): CommentThread[];
-    takeComments(): CommentThread[];
+    setAgentAttached(value: boolean): void;
     resolveCommentThread(threadId: string, replyText?: string): boolean;
     reveal(panelName: string, target?: RevealTarget): Promise<void>;
 }

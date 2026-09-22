@@ -8989,6 +8989,7 @@ __export(DebuggerPlugin_exports, {
   computePopoverHighlightRange: () => computePopoverHighlightRange,
   computeScopeMappings: () => computeScopeMappings,
   containsSideEffects: () => containsSideEffects,
+  findVariableInScopeMappings: () => findVariableInScopeMappings,
   getVariableNamesByLine: () => getVariableNamesByLine,
   getVariableValuesByLine: () => getVariableValuesByLine
 });
@@ -9600,6 +9601,20 @@ var DebuggerPlugin = class extends Plugin {
     return {
       box,
       show: async (popover) => {
+        const scopeMappings = await this.#getScopeMappings(selectedCallFrame);
+        const scopedVariable = findVariableInScopeMappings(evaluationText, highlightRange.from, scopeMappings);
+        if (scopedVariable.found) {
+          if (!scopedVariable.value) {
+            return false;
+          }
+          objectPopoverHelper = await ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildObjectPopover(scopedVariable.value, popover);
+          const potentiallyUpdatedCallFrame2 = UI10.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+          if (!objectPopoverHelper || debuggableFrame !== potentiallyUpdatedCallFrame2) {
+            objectPopoverHelper?.dispose();
+            return false;
+          }
+          return true;
+        }
         let resolvedText = "";
         if (selectedCallFrame.script.isJavaScript()) {
           const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
@@ -9851,6 +9866,22 @@ var DebuggerPlugin = class extends Plugin {
     );
     return offset ?? null;
   }
+  #cachedScopeMappings;
+  #getScopeMappings(callFrame, resolvedScopeChain) {
+    if (this.#cachedScopeMappings?.callFrame !== callFrame) {
+      const url = this.uiSourceCode.url();
+      this.#cachedScopeMappings = {
+        callFrame,
+        promise: computeScopeMappings(
+          callFrame,
+          (location) => this.#rawLocationToEditorOffset(location, url),
+          (line, col) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(line, col)) ?? null,
+          resolvedScopeChain
+        )
+      };
+    }
+    return this.#cachedScopeMappings.promise;
+  }
   async computeValueDecorations() {
     if (!this.editor) {
       return null;
@@ -9868,11 +9899,16 @@ var DebuggerPlugin = class extends Plugin {
     }
     const callFrame = debuggableFrame.sdkFrame;
     const url = this.uiSourceCode.url();
-    const rawLocationToEditorOffset = (location) => this.#rawLocationToEditorOffset(location, url);
-    const functionOffsetPromise = this.#rawLocationToEditorOffset(callFrame.functionLocation(), url);
+    const uiPositionToEditorOffset = (lineNumber, columnNumber) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(lineNumber, columnNumber)) ?? null;
+    const scopeChain = await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(
+      callFrame,
+      Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+    );
+    const localOriginalScope = scopeChain.find((s) => s instanceof SDK8.SourceMapScopeChainEntry.SourceMapScopeChainEntry && s.type() === Debugger.ScopeType.Local)?.originalScope();
+    const functionOffsetPromise = localOriginalScope ? Promise.resolve(uiPositionToEditorOffset(localOriginalScope.start.line, localOriginalScope.start.column)) : this.#rawLocationToEditorOffset(callFrame.functionLocation(), url);
     const executionOffsetPromise = this.#rawLocationToEditorOffset(callFrame.location(), url);
     const [functionOffset, executionOffset] = await Promise.all([functionOffsetPromise, executionOffsetPromise]);
-    if (!functionOffset || !executionOffset || !this.editor) {
+    if (functionOffset === null || !executionOffset || !this.editor) {
       return null;
     }
     if (functionOffset >= executionOffset || executionOffset - functionOffset > MAX_CODE_SIZE_FOR_VALUE_DECORATIONS) {
@@ -9885,11 +9921,17 @@ var DebuggerPlugin = class extends Plugin {
       }
       CodeMirror4.ensureSyntaxTree(this.editor.state, executionOffset, 16);
     }
-    const variableNames = getVariableNamesByLine(this.editor.state, functionOffset, executionOffset, executionOffset);
+    const variableNames = getVariableNamesByLine(
+      this.editor.state,
+      functionOffset,
+      executionOffset,
+      executionOffset,
+      Boolean(localOriginalScope)
+    );
     if (variableNames.length === 0) {
       return null;
     }
-    const scopeMappings = await computeScopeMappings(callFrame, rawLocationToEditorOffset);
+    const scopeMappings = await this.#getScopeMappings(callFrame, scopeChain);
     if (!this.editor || scopeMappings.length === 0) {
       return null;
     }
@@ -10808,8 +10850,18 @@ var ValueDecoration = class extends CodeMirror4.WidgetType {
   }
 };
 var valueDecorations = defineStatefulDecoration();
-function isVariableIdentifier(tokenType) {
-  return tokenType === "VariableName" || tokenType === "VariableDefinition";
+function isVariableIdentifierNode(node, doc) {
+  switch (node.name) {
+    case "VariableName":
+    case "VariableDefinition":
+    case "Identifier":
+    case "Definition":
+    case "variableName":
+    case "variableName.definition":
+      return (node.from === 0 || doc.sliceString(node.from - 1, node.from) !== ".") && doc.sliceString(node.to, node.to + 1) !== "(";
+    default:
+      return false;
+  }
 }
 function isVariableDefinition(tokenType) {
   return tokenType === "VariableDefinition";
@@ -10824,13 +10876,13 @@ var SiblingScopeVariables = class {
   blockList = /* @__PURE__ */ new Set();
   variables = [];
 };
-function getVariableNamesByLine(editorState, fromPos, toPos, currentPos) {
+function getVariableNamesByLine(editorState, fromPos, toPos, currentPos, useOriginalScopes = false) {
   const fromLine = editorState.doc.lineAt(fromPos);
   fromPos = Math.min(fromLine.to, fromPos);
   toPos = editorState.doc.lineAt(toPos).from;
   const tree = CodeMirror4.syntaxTree(editorState);
   function isSiblingScopeNode(node) {
-    return isScopeNode(node.name) && (node.to < currentPos || currentPos < node.from);
+    return !useOriginalScopes && isScopeNode(node.name) && (node.to < currentPos || currentPos < node.from);
   }
   const names = [];
   let curLine = fromLine;
@@ -10854,7 +10906,7 @@ function getVariableNamesByLine(editorState, fromPos, toPos, currentPos) {
         siblingStack.push(new SiblingScopeVariables());
         return;
       }
-      const varName = isVariableIdentifier(node.name) && editorState.sliceDoc(node.from, node.to);
+      const varName = isVariableIdentifierNode(node, editorState.doc) && editorState.sliceDoc(node.from, node.to);
       if (!varName) {
         return;
       }
@@ -10883,36 +10935,67 @@ function getVariableNamesByLine(editorState, fromPos, toPos, currentPos) {
   });
   return names;
 }
-async function computeScopeMappings(callFrame, rawLocationToEditorOffset) {
+async function computeScopeMappings(callFrame, rawLocationToEditorOffset, uiPositionToEditorOffset, resolvedScopeChain) {
   const scopeMappings = [];
-  for (const scope of callFrame.scopeChain()) {
-    const scopeStart = await rawLocationToEditorOffset(scope.range()?.start ?? null);
-    if (!scopeStart) {
+  const scopeChain = resolvedScopeChain ?? await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(
+    callFrame,
+    Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+  );
+  const activeScopes = new Set(scopeChain.filter((s) => s instanceof SDK8.SourceMapScopeChainEntry.SourceMapScopeChainEntry).map((s) => s.originalScope()));
+  const addInactiveChildren = (children) => {
+    for (const child of children) {
+      if (!activeScopes.has(child)) {
+        const scopeStart = uiPositionToEditorOffset?.(child.start.line, child.start.column) ?? null;
+        const scopeEnd = uiPositionToEditorOffset?.(child.end.line, child.end.column) ?? null;
+        if (scopeStart !== null && scopeEnd !== null && child.variables.length > 0) {
+          scopeMappings.push({ scopeStart, scopeEnd, variableMap: new Map(child.variables.map((v) => [v, null])) });
+        }
+        addInactiveChildren(child.children);
+      }
+    }
+  };
+  for (const scope of scopeChain) {
+    let scopeStart = null;
+    let scopeEnd = null;
+    if (scope instanceof SDK8.SourceMapScopeChainEntry.SourceMapScopeChainEntry) {
+      const orig = scope.originalScope();
+      scopeStart = uiPositionToEditorOffset?.(orig.start.line, orig.start.column) ?? null;
+      scopeEnd = uiPositionToEditorOffset?.(orig.end.line, orig.end.column) ?? null;
+      addInactiveChildren(orig.children);
+    } else {
+      scopeStart = await rawLocationToEditorOffset(scope.range()?.start ?? null);
+      scopeEnd = await rawLocationToEditorOffset(scope.range()?.end ?? null);
+    }
+    if (scopeStart === null || scopeEnd === null) {
       break;
     }
-    const scopeEnd = await rawLocationToEditorOffset(scope.range()?.end ?? null);
-    if (!scopeEnd) {
-      break;
-    }
-    const debuggerWorkspaceBinding = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-    const { properties } = await SourceMapScopes.NamesResolver.resolveScopeInObject(scope, debuggerWorkspaceBinding).getAllProperties(false, false);
+    const { properties } = await scope.object().getAllProperties(false, true);
     if (!properties || properties.length > MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS) {
       break;
     }
-    const variableMap = new Map(
-      properties.map((p) => [p.name, p.value])
-    );
+    const variableMap = new Map(properties.map((p) => [p.name, p.value ?? null]));
     scopeMappings.push({ scopeStart, scopeEnd, variableMap });
-    if (scope.type() === Debugger.ScopeType.Local) {
+    if (scope.type() === Debugger.ScopeType.Local && !(scope instanceof SDK8.SourceMapScopeChainEntry.SourceMapScopeChainEntry)) {
       break;
     }
   }
   return scopeMappings;
 }
+function findVariableInScopeMappings(name, pos, scopeMappings) {
+  for (const scope of scopeMappings) {
+    if (pos < scope.scopeStart || pos >= scope.scopeEnd) {
+      continue;
+    }
+    if (scope.variableMap.has(name)) {
+      return { found: true, value: scope.variableMap.get(name) ?? null };
+    }
+  }
+  return { found: false, value: null };
+}
 function getVariableValuesByLine(scopeMappings, variableNames) {
   const namesPerLine = /* @__PURE__ */ new Map();
   for (const { line, from, id } of variableNames) {
-    const varValue = findVariableInChain(id, from, scopeMappings);
+    const varValue = findVariableInScopeMappings(id, from, scopeMappings).value;
     if (!varValue) {
       continue;
     }
@@ -10924,18 +11007,6 @@ function getVariableValuesByLine(scopeMappings, variableNames) {
     names.set(id, varValue);
   }
   return namesPerLine;
-  function findVariableInChain(name, pos, scopeMappings2) {
-    for (const scope of scopeMappings2) {
-      if (pos < scope.scopeStart || pos >= scope.scopeEnd) {
-        continue;
-      }
-      const value2 = scope.variableMap.get(name);
-      if (value2) {
-        return value2;
-      }
-    }
-    return null;
-  }
 }
 function computePopoverHighlightRange(state, mimeType, cursorPos) {
   const { main } = state.selection;
@@ -10985,7 +11056,7 @@ function computePopoverHighlightRange(state, mimeType, cursorPos) {
       return { from: current.from, to: current.to, containsSideEffects: containsSideEffects(state.doc, current) };
     }
     default: {
-      if (node.to - node.from > 50 || /[^\w_\-$]/.test(state.sliceDoc(node.from, node.to))) {
+      if (node.to - node.from > 50 || /[^\w_\-$]/.test(state.sliceDoc(node.from, node.to)) || state.sliceDoc(node.from - 1, node.from) === "." || state.sliceDoc(node.from - 2, node.from) === "->") {
         return null;
       }
       return { from: node.from, to: node.to, containsSideEffects: false };
@@ -17181,21 +17252,23 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
           ObjectUI3.ObjectPropertiesSection.populateObjectTreeContextMenu(
             contextMenu,
             objectTree,
-            async () => {
-              await objectTree.expandRecursively(ObjectUI3.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
-              this.requestUpdate();
-            },
-            () => {
-              objectTree.collapseRecursively();
-              this.requestUpdate();
-            },
-            () => {
-              objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
-              this.requestUpdate();
-            },
-            () => {
-              objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
-              this.requestUpdate();
+            {
+              expandRecursively: async () => {
+                await objectTree.expandRecursively(ObjectUI3.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+                this.requestUpdate();
+              },
+              collapseChildren: () => {
+                objectTree.collapseRecursively();
+                this.requestUpdate();
+              },
+              sortPropertiesAlphabetically: (node) => {
+                node.sortPropertiesAlphabetically = !node.sortPropertiesAlphabetically;
+                this.requestUpdate();
+              },
+              onShowAllToggled: (node) => {
+                node.includeNullOrUndefinedValues = !node.includeNullOrUndefinedValues;
+                this.requestUpdate();
+              }
             }
           );
         }

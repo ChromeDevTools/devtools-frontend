@@ -167,7 +167,7 @@ export declare class TreeElement {
     setFocusable(focusable: boolean): void;
     private onFocus;
     private onBlur;
-    revealAndSelect(omitFocus?: boolean): void;
+    revealAndSelect(omitFocus?: boolean, selectedByUser?: boolean): void;
     deselect(): void;
     private populateIfNeeded;
     onpopulate(): Promise<void>;
@@ -292,6 +292,7 @@ export declare class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     static readonly observedAttributes: string[];
     constructor();
     getInternalTreeOutlineForTest(): TreeOutlineInShadow;
+    flushPendingUpdatesForTesting(): void;
     focus(): void;
     protected updateNode(node: Node, attributeName: string | null): void;
     protected addNodes(nodes: NodeList | Node[]): void;

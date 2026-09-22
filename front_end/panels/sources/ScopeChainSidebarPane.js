@@ -173,18 +173,23 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
                 this.requestUpdate();
             },
             onContextMenu: (objectTree, contextMenu) => {
-                ObjectUI.ObjectPropertiesSection.populateObjectTreeContextMenu(contextMenu, objectTree, async () => {
-                    await objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
-                    this.requestUpdate();
-                }, () => {
-                    objectTree.collapseRecursively();
-                    this.requestUpdate();
-                }, () => {
-                    objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
-                    this.requestUpdate();
-                }, () => {
-                    objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
-                    this.requestUpdate();
+                ObjectUI.ObjectPropertiesSection.populateObjectTreeContextMenu(contextMenu, objectTree, {
+                    expandRecursively: async () => {
+                        await objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+                        this.requestUpdate();
+                    },
+                    collapseChildren: () => {
+                        objectTree.collapseRecursively();
+                        this.requestUpdate();
+                    },
+                    sortPropertiesAlphabetically: node => {
+                        node.sortPropertiesAlphabetically = !node.sortPropertiesAlphabetically;
+                        this.requestUpdate();
+                    },
+                    onShowAllToggled: node => {
+                        node.includeNullOrUndefinedValues = !node.includeNullOrUndefinedValues;
+                        this.requestUpdate();
+                    },
                 });
             },
         }, {}, this.contentElement);

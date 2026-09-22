@@ -12862,6 +12862,47 @@ export declare namespace Overlay {
         Apca = "apca"
     }
     /**
+     * Configuration for Inset-Modified Containing Block (IMCB) and CSS Anchor Positioning highlight.
+     */
+    interface ImcbHighlightConfig {
+        /**
+         * Border color for the Inset-Modified Containing Block (default: transparent).
+         */
+        imcbBorderColor?: DOM.RGBA;
+        /**
+         * Background fill color for the Inset-Modified Containing Block (default: transparent).
+         */
+        imcbBackgroundColor?: DOM.RGBA;
+        /**
+         * Fill color for the inset modifiers area (difference between CB and IMCB).
+         */
+        insetsBackgroundColor?: DOM.RGBA;
+        /**
+         * Hatch color for the inset modifiers area.
+         */
+        insetsHatchColor?: DOM.RGBA;
+        /**
+         * Border color for the referenced target anchor element(s) (when element is anchor-positioned).
+         */
+        anchorBorderColor?: DOM.RGBA;
+        /**
+         * Background fill color for the referenced target anchor element(s) (when element is anchor-positioned).
+         */
+        anchorBackgroundColor?: DOM.RGBA;
+        /**
+         * Whether to render the 3x3 position-area grid lines when position-area is used.
+         */
+        showPositionAreaGrid?: boolean;
+        /**
+         * Line color for the 3x3 position-area grid lines.
+         */
+        positionAreaGridLineColor?: DOM.RGBA;
+        /**
+         * Fill color for the active region within the position-area grid.
+         */
+        positionAreaActiveRegionColor?: DOM.RGBA;
+    }
+    /**
      * Configuration data for the highlighting of page elements.
      */
     interface HighlightConfig {
@@ -12941,6 +12982,10 @@ export declare namespace Overlay {
          * The container query container highlight configuration (default: all transparent).
          */
         containerQueryContainerHighlightConfig?: ContainerQueryContainerHighlightConfig;
+        /**
+         * The IMCB highlight configuration (default: all transparent).
+         */
+        imcbHighlightConfig?: ImcbHighlightConfig;
     }
     const enum ColorFormat {
         Rgb = "rgb",
@@ -14372,6 +14417,24 @@ export declare namespace Page {
         startUrl?: string;
         themeColor?: string;
     }
+    interface SubApp {
+        /**
+         * Display name of the sub-app.
+         */
+        name: string;
+        /**
+         * Scope of the sub-app.
+         */
+        scope: string;
+        /**
+         * Manifest id of the sub-app.
+         */
+        manifestId: string;
+        /**
+         * Start URL of the sub-app.
+         */
+        startUrl: string;
+    }
     /**
      * The type of a frameNavigated event.
      */
@@ -14758,6 +14821,20 @@ export declare namespace Page {
          * Recommendation for manifest's id attribute to match current id computed from start_url
          */
         recommendedId?: string;
+        /**
+         * The bundle ID for an Isolated Web App (IWA)
+         */
+        bundleId?: string;
+        /**
+         * The name of the parent app if this app is a Sub-App
+         */
+        parentAppName?: string;
+    }
+    interface GetSubAppsResponse extends ProtocolResponseWithError {
+        subApps: SubApp[];
+    }
+    interface GetSiblingSubAppsResponse extends ProtocolResponseWithError {
+        subApps: SubApp[];
     }
     interface GetAdScriptAncestryRequest {
         frameId: FrameId;
@@ -17054,6 +17131,39 @@ export declare namespace Storage {
         issuerOrigin: string;
         count: number;
     }
+    /**
+     * Details of a stored Private Verification Token.
+     */
+    interface PrivateVerificationToken {
+        /**
+         * Unique identifier of the token in the database.
+         */
+        id: string;
+        /**
+         * Origin of the token issuer.
+         */
+        issuerOrigin: string;
+        /**
+         * Public key ID used to issue the token.
+         */
+        keyId: integer;
+        /**
+         * Expiration timestamp in seconds since the epoch.
+         */
+        expiration: Network.TimeSinceEpoch;
+        /**
+         * Token creation timestamp in seconds since the epoch.
+         */
+        creationTime: Network.TimeSinceEpoch;
+        /**
+         * Token protocol version.
+         */
+        version: integer;
+        /**
+         * Base64-encoded serialized token.
+         */
+        token: string;
+    }
     const enum StorageBucketsDurability {
         Relaxed = "relaxed",
         Strict = "strict"
@@ -17252,6 +17362,18 @@ export declare namespace Storage {
          * True if any tokens were deleted, false otherwise.
          */
         didDeleteTokens: boolean;
+    }
+    interface GetPrivateVerificationTokensResponse extends ProtocolResponseWithError {
+        tokens: PrivateVerificationToken[];
+    }
+    interface ClearPrivateVerificationTokensRequest {
+        issuerOrigin: string;
+    }
+    interface DeletePrivateVerificationTokenRequest {
+        tokenId: string;
+    }
+    interface SetPrivateVerificationTokensTrackingRequest {
+        enable: boolean;
     }
     interface SetStorageBucketTrackingRequest {
         storageKey: string;

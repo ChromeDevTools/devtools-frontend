@@ -40,6 +40,9 @@
       "path": "../../core/platform/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
@@ -52,7 +55,13 @@
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {
+      "path": "../bindings/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../breakpoints/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../formatter/bundle-tsconfig.ref.json"
     },
     {
       "path": "../project_settings/bundle-tsconfig.ref.json"

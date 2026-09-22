@@ -217,6 +217,8 @@ export class ServiceWorkerCacheModel extends SDKModel {
     }
     storageBucketDeleted(_event) {
     }
+    privateVerificationTokensUpdated() {
+    }
     setThrottlerSchedulesAsSoonAsPossibleForTest() {
         this.#scheduleAsSoonAsPossible = true;
     }

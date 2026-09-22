@@ -139,9 +139,6 @@
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/render_coordinator/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../bindings/bundle-tsconfig.ref.json"
     },
     {

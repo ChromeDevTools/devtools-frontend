@@ -196,12 +196,16 @@ export class EventListenersView extends UI.Widget.VBox {
         this.requestUpdate();
     }
     async performUpdate() {
-        if (!this.#listeners && this.#objects) {
-            this.#listeners =
-                await EventListenersView.#loadListeners(this.#objects.filter((o) => !!o));
+        let listeners = this.#listeners;
+        if (!listeners && this.#objects) {
+            const objects = this.#objects;
+            listeners = await EventListenersView.#loadListeners(objects.filter((o) => !!o));
+            if (this.#objects === objects) {
+                this.#listeners = listeners;
+            }
         }
         const input = {
-            listeners: this.#listeners ?? new Map(),
+            listeners: listeners ?? new Map(),
             filter: this.#filter,
             togglePassiveListener: (listener) => {
                 void listener.togglePassive().then(() => {
@@ -236,6 +240,7 @@ export class EventListenersView extends UI.Widget.VBox {
             },
             linkifier: this.#linkifier,
         };
+        this.#linkifier.reset();
         this.#view(input, {}, this.contentElement);
         this.eventListenersArrivedForTest();
     }

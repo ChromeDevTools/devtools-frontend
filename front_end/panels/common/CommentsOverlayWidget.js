@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Comments from '../../ui/comments/comments.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -59,6 +60,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
         left: `${Math.min(Math.max(POPUP_MARGIN, item.pin.left), Math.max(POPUP_MARGIN, target.clientWidth - POPUP_WIDTH - POPUP_MARGIN))}px`,
     })}>
             ${UI.Widget.widget(CommentThreadWidget, {
+        title: input.title,
         comments: [...item.thread.comments],
         onAddComment: input.onAddComment,
     })}
@@ -74,6 +76,8 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     #commentManager;
     #commentOverlayManager;
     #activeThreadId = null;
+    #cachedTitle = { text: '' };
+    #cachedTitleAnchor = null;
     constructor(element, [commentManager], view = DEFAULT_VIEW) {
         super(element, { useShadowDom: false });
         this.#view = view;
@@ -90,6 +94,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.#commentOverlayManager.addEventListener("HoverHighlightChanged" /* Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED */, this.#onStateChanged, this);
         this.#commentManager.addEventListener("CommentThreadsChanged" /* CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED */, this.#onStateChanged, this);
         this.#commentManager.addEventListener("CommentModeChanged" /* CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED */, this.#onCommentModeChanged, this);
+        this.#commentManager.addEventListener("AgentAttachedChanged" /* CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED */, this.#onAgentAttachedChanged, this);
         this.requestUpdate();
     }
     willHide() {
@@ -98,7 +103,14 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.#commentOverlayManager.removeEventListener("HoverHighlightChanged" /* Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED */, this.#onStateChanged, this);
         this.#commentManager.removeEventListener("CommentThreadsChanged" /* CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED */, this.#onStateChanged, this);
         this.#commentManager.removeEventListener("CommentModeChanged" /* CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED */, this.#onCommentModeChanged, this);
+        this.#commentManager.removeEventListener("AgentAttachedChanged" /* CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED */, this.#onAgentAttachedChanged, this);
         super.willHide();
+    }
+    #onAgentAttachedChanged(event) {
+        if (!event.data) {
+            this.#activeThreadId = null;
+        }
+        this.requestUpdate();
     }
     #onCommentModeChanged(event) {
         const isModeActive = event.data;
@@ -119,6 +131,36 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         }
         this.requestUpdate();
     }
+    async #getOrComputeTitle(anchor) {
+        if (anchor === this.#cachedTitleAnchor) {
+            return this.#cachedTitle;
+        }
+        const title = anchor ? await this.#computeTitle(anchor) : { text: '' };
+        this.#cachedTitleAnchor = anchor;
+        this.#cachedTitle = title;
+        return title;
+    }
+    async #computeTitle(anchor) {
+        if (anchor.node) {
+            const target = SDK.TargetManager.TargetManager.instance().targetById(anchor.node.targetId);
+            if (target) {
+                const deferredNode = new SDK.DOMModel.DeferredDOMNode(target, anchor.node.backendNodeId);
+                const node = await deferredNode.resolvePromise();
+                if (node) {
+                    return { node };
+                }
+            }
+            return { text: '' };
+        }
+        if (anchor.networkRequestId) {
+            const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+            const request = target?.model(SDK.NetworkManager.NetworkManager)?.requestForId(anchor.networkRequestId);
+            if (request) {
+                return { text: request.name() };
+            }
+        }
+        return { text: anchor.textSignature || '' };
+    }
     #handlePinClick = (threadId) => {
         const thread = this.#commentManager.getCommentThread(threadId);
         if (this.#activeThreadId === threadId) {
@@ -133,15 +175,27 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         }
         this.requestUpdate();
     };
-    performUpdate() {
+    async performUpdate(signal) {
+        if (!this.#commentManager.isAgentAttached()) {
+            this.#view({
+                pins: [],
+                highlights: [],
+                hoverHighlight: null,
+                commentMode: false,
+                onPinClick: this.#handlePinClick,
+                activeThread: null,
+                activePin: null,
+                title: { text: '' },
+                onAddComment: () => { },
+            }, undefined, this.contentElement);
+            return;
+        }
+        const activeThread = this.#activeThreadId ? this.#commentManager.getCommentThread(this.#activeThreadId) ?? null : null;
+        const title = await this.#getOrComputeTitle(activeThread?.anchor ?? null);
+        signal?.throwIfAborted();
         const pins = this.#commentOverlayManager.getPinPositions();
         const highlights = this.#commentOverlayManager.getHighlightRects();
-        let activePin = null;
-        let activeThread = null;
-        if (this.#activeThreadId) {
-            activePin = pins.find(p => p.id === this.#activeThreadId) ?? null;
-            activeThread = this.#commentManager.getCommentThread(this.#activeThreadId) ?? null;
-        }
+        const activePin = this.#activeThreadId ? pins.find(p => p.id === this.#activeThreadId) ?? null : null;
         const viewInput = {
             pins,
             highlights,
@@ -150,6 +204,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
             onPinClick: this.#handlePinClick,
             activeThread,
             activePin,
+            title,
             onAddComment: (text) => {
                 activeThread?.save(text);
             },
@@ -181,6 +236,22 @@ export class ActionDelegate {
             widgetInstance.detach();
             widgetInstance = null;
         }
+    }
+}
+export class ButtonProvider {
+    #button;
+    #commentManager;
+    constructor(commentManager) {
+        this.#commentManager = commentManager ??
+            Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
+        this.#button = UI.Toolbar.Toolbar.createActionButton('comments.toggle-comment-mode');
+        this.#button.setVisible(this.#commentManager.isAgentAttached());
+        this.#commentManager.addEventListener("AgentAttachedChanged" /* CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED */, event => {
+            this.#button.setVisible(event.data);
+        });
+    }
+    item() {
+        return this.#button;
     }
 }
 //# sourceMappingURL=CommentsOverlayWidget.js.map

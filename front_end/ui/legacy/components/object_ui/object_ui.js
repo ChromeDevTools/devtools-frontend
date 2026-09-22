@@ -4521,13 +4521,15 @@ var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
     populateObjectTreeContextMenu(
       contextMenu,
       root,
-      root.expandRecursively.bind(root, EXPANDABLE_MAX_DEPTH),
-      root.collapseRecursively.bind(root),
-      () => {
-        root.sortPropertiesAlphabetically = !root.sortPropertiesAlphabetically;
-      },
-      () => {
-        root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
+      {
+        expandRecursively: root.expandRecursively.bind(root, EXPANDABLE_MAX_DEPTH),
+        collapseChildren: root.collapseRecursively.bind(root),
+        sortPropertiesAlphabetically: (root2) => {
+          root2.sortPropertiesAlphabetically = !root2.sortPropertiesAlphabetically;
+        },
+        onShowAllToggled: (root2) => {
+          root2.includeNullOrUndefinedValues = !root2.includeNullOrUndefinedValues;
+        }
       }
     );
   };
@@ -4538,10 +4540,17 @@ var ObjectPropertiesMode = /* @__PURE__ */ ((ObjectPropertiesMode2) => {
   ObjectPropertiesMode2[ObjectPropertiesMode2["OWN_AND_INTERNAL_AND_INHERITED"] = 1] = "OWN_AND_INTERNAL_AND_INHERITED";
   return ObjectPropertiesMode2;
 })(ObjectPropertiesMode || {});
-function populateObjectTreeContextMenu(contextMenu, object, expandRecursively, collapseChildren, sortPropertiesAlphabetically, onShowAllToggled) {
-  contextMenu.appendApplicableItems(object.object);
-  if (object.object instanceof SDK3.RemoteObject.LocalJSONObject) {
-    const { value } = object.object;
+function populateObjectTreeContextMenu(contextMenu, objectOrProperty, handlers) {
+  contextMenu.appendApplicableItems(objectOrProperty);
+  if (objectOrProperty instanceof ObjectTreeNode && objectOrProperty.property.symbol) {
+    contextMenu.appendApplicableItems(objectOrProperty.property.symbol);
+  }
+  if (objectOrProperty.object) {
+    contextMenu.appendApplicableItems(objectOrProperty.object);
+  }
+  const object = objectOrProperty instanceof ObjectTree ? objectOrProperty.object : objectOrProperty.parent?.object;
+  if (objectOrProperty.object && object instanceof SDK3.RemoteObject.LocalJSONObject) {
+    const { value } = objectOrProperty.object;
     const propertyValue = typeof value === "object" ? Platform2.StringUtilities.escapeUnicodeAsText(JSON.stringify(value, null, 2)) : value;
     const copyValueHandler = () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
@@ -4553,30 +4562,47 @@ function populateObjectTreeContextMenu(contextMenu, object, expandRecursively, c
       { jslogContext: "copy-value" }
     );
   }
-  contextMenu.viewSection().appendItem(
-    i18nString2(UIStrings2.expandRecursively),
-    expandRecursively,
-    { jslogContext: "expand-recursively" }
-  );
-  contextMenu.viewSection().appendItem(
-    i18nString2(UIStrings2.collapseChildren),
-    collapseChildren,
-    { jslogContext: "collapse-children" }
-  );
-  if (!object.isWasm) {
+  if (objectOrProperty instanceof ObjectTreeNode && !objectOrProperty.property.synthetic && objectOrProperty.path) {
+    const copyPathHandler = Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+      objectOrProperty.path
+    );
+    contextMenu.clipboardSection().appendItem(
+      i18nString2(UIStrings2.copyPropertyPath),
+      copyPathHandler,
+      { jslogContext: "copy-property-path" }
+    );
+  }
+  if (objectOrProperty instanceof ObjectTree || object instanceof SDK3.RemoteObject.LocalJSONObject) {
+    contextMenu.viewSection().appendItem(
+      i18nString2(UIStrings2.expandRecursively),
+      () => handlers.expandRecursively(objectOrProperty),
+      { jslogContext: "expand-recursively" }
+    );
+    contextMenu.viewSection().appendItem(
+      i18nString2(UIStrings2.collapseChildren),
+      () => handlers.collapseChildren(objectOrProperty),
+      { jslogContext: "collapse-children" }
+    );
+  }
+  let root = objectOrProperty;
+  while (root.parent) {
+    root = root.parent;
+  }
+  if (!root.isWasm) {
     contextMenu.viewSection().appendCheckboxItem(
       i18nString2(UIStrings2.sortPropertiesAlphabetically),
-      sortPropertiesAlphabetically,
+      () => handlers.sortPropertiesAlphabetically(root),
       {
-        checked: object.sortPropertiesAlphabetically,
+        checked: objectOrProperty.sortPropertiesAlphabetically,
         jslogContext: "sort-properties-alphabetically"
       }
     );
   }
   contextMenu.viewSection().appendCheckboxItem(
     i18nString2(UIStrings2.showAll),
-    onShowAllToggled,
-    { checked: object.includeNullOrUndefinedValues, jslogContext: "show-all" }
+    () => handlers.onShowAllToggled(root),
+    { checked: objectOrProperty.includeNullOrUndefinedValues, jslogContext: "show-all" }
   );
 }
 var OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
@@ -4615,6 +4641,19 @@ var OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
     }
   });
 };
+async function populateChildrenIfNeeded(node) {
+  const children = await node.populateChildrenIfNeeded();
+  if (!children.arrayRanges) {
+    return;
+  }
+  if (children.arrayRanges.length === 1) {
+    await populateChildrenIfNeeded(children.arrayRanges[0]);
+  } else {
+    await Promise.all(
+      children.arrayRanges.filter((child) => child.singular).map((child) => populateChildrenIfNeeded(child))
+    );
+  }
+}
 var ObjectTreeWidget = class extends UI2.Widget.Widget {
   #objectTree = void 0;
   #linkifier = void 0;
@@ -4692,7 +4731,7 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
   }
   async performUpdate() {
     if (this.#objectTree?.expanded) {
-      await ObjectPropertyTreeElement.populateChildrenIfNeeded(this.#objectTree);
+      await populateChildrenIfNeeded(this.#objectTree);
     }
     this.#view(this, {}, this.contentElement);
   }
@@ -5096,7 +5135,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     }
   }
   static async populate(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
-    await _ObjectPropertyTreeElement.populateChildrenIfNeeded(value);
+    await populateChildrenIfNeeded(value);
     _ObjectPropertyTreeElement.populateImpl(
       treeElement,
       value,
@@ -5105,10 +5144,6 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       linkifier,
       emptyPlaceholder
     );
-  }
-  static async populateChildrenIfNeeded(value) {
-    const children = await value.populateChildrenIfNeeded();
-    await ArrayGroupingTreeElement.populateChildrenIfNeeded(children);
   }
   static populateImpl(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
     for (const childNode of _ObjectPropertyTreeElement.createNodes(
@@ -5286,77 +5321,23 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       this.collapse();
     }
   }
-  getContextMenu(event) {
-    const contextMenu = new UI2.ContextMenu.ContextMenu(event);
-    contextMenu.appendApplicableItems(this.property);
-    if (this.property.property.symbol) {
-      contextMenu.appendApplicableItems(this.property.property.symbol);
-    }
-    if (this.property.object) {
-      contextMenu.appendApplicableItems(this.property.object);
-      if (this.property.parent?.object instanceof SDK3.RemoteObject.LocalJSONObject) {
-        const { object: { value } } = this.property;
-        const propertyValue = typeof value === "object" ? Platform2.StringUtilities.escapeUnicodeAsText(JSON.stringify(value, null, 2)) : value;
-        const copyValueHandler = () => {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyValue);
-        };
-        contextMenu.clipboardSection().appendItem(
-          i18nString2(UIStrings2.copyValue),
-          copyValueHandler,
-          { jslogContext: "copy-value" }
-        );
-      }
-    }
-    if (!this.property.property.synthetic && this.property.path) {
-      const copyPathHandler = Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
-        this.property.path
-      );
-      contextMenu.clipboardSection().appendItem(
-        i18nString2(UIStrings2.copyPropertyPath),
-        copyPathHandler,
-        { jslogContext: "copy-property-path" }
-      );
-    }
-    if (this.property.parent?.object instanceof SDK3.RemoteObject.LocalJSONObject) {
-      contextMenu.viewSection().appendItem(
-        i18nString2(UIStrings2.expandRecursively),
-        this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH),
-        { jslogContext: "expand-recursively" }
-      );
-      contextMenu.viewSection().appendItem(
-        i18nString2(UIStrings2.collapseChildren),
-        this.collapseChildren.bind(this),
-        { jslogContext: "collapse-children" }
-      );
-    }
-    let root = this.property;
-    while (root.parent) {
-      root = root.parent;
-    }
-    if (!root.isWasm) {
-      contextMenu.viewSection().appendCheckboxItem(i18nString2(UIStrings2.sortPropertiesAlphabetically), () => {
-        root.sortPropertiesAlphabetically = !root.sortPropertiesAlphabetically;
-      }, {
-        checked: root.sortPropertiesAlphabetically,
-        jslogContext: "sort-properties-alphabetically"
-      });
-    }
-    contextMenu.viewSection().appendCheckboxItem(i18nString2(UIStrings2.showAll), () => {
-      root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
-    }, { checked: root.includeNullOrUndefinedValues, jslogContext: "show-all" });
-    return contextMenu;
-  }
   contextMenuFired(event) {
-    const contextMenu = this.getContextMenu(event);
+    const contextMenu = new UI2.ContextMenu.ContextMenu(event);
+    populateObjectTreeContextMenu(contextMenu, this.property, {
+      expandRecursively: () => this.expandRecursively(EXPANDABLE_MAX_DEPTH),
+      collapseChildren: () => this.collapseChildren(),
+      sortPropertiesAlphabetically: (node) => {
+        node.sortPropertiesAlphabetically = !node.sortPropertiesAlphabetically;
+      },
+      onShowAllToggled: (node) => {
+        node.includeNullOrUndefinedValues = !node.includeNullOrUndefinedValues;
+      }
+    });
     void contextMenu.show();
   }
   updateExpandable() {
     if (this.property.object) {
-      this.setExpandable(
-        !this.property.object.customPreview() && this.property.object.hasChildren && !this.property.property.wasThrown
-      );
+      this.setExpandable(!this.property.object.customPreview() && this.property.object.hasChildren && !this.property.property.wasThrown);
     } else {
       this.setExpandable(false);
     }
@@ -5526,16 +5507,6 @@ var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement extends UI2.TreeO
       isNotDisplayablePropertyCallback
     );
   }
-  static async populateChildrenIfNeeded(children) {
-    if (!children.arrayRanges) {
-      return;
-    }
-    if (children.arrayRanges.length === 1) {
-      await ObjectPropertyTreeElement.populateChildrenIfNeeded(children.arrayRanges[0]);
-    } else {
-      await Promise.all(children.arrayRanges.filter((child) => child.singular).map((child) => ObjectPropertyTreeElement.populateChildrenIfNeeded(child)));
-    }
-  }
   onexpand() {
     this.#child.expanded = true;
   }
@@ -5553,32 +5524,10 @@ var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement extends UI2.TreeO
 var EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {
   const totalBytesText = i18n3.ByteUtilities.bytesToString(input.byteCount);
   const canExpand = input.text.length < ExpandableTextPropertyValue.MAX_DISPLAYABLE_TEXT_LENGTH;
-  const onContextMenu = (e) => {
-    const { target: target2 } = e;
-    if (!(target2 instanceof Element)) {
-      return;
-    }
-    const listItem = target2.closest("li");
-    const element = listItem && UI2.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
-    if (!(element instanceof ObjectPropertyTreeElement)) {
-      return;
-    }
-    const contextMenu = element.getContextMenu(e);
-    if (canExpand && !input.expanded) {
-      contextMenu.clipboardSection().appendItem(
-        i18nString2(UIStrings2.showMoreS, { PH1: totalBytesText }),
-        input.expandText,
-        { jslogContext: "show-more" }
-      );
-    }
-    contextMenu.clipboardSection().appendItem(i18nString2(UIStrings2.copy), input.copyText, { jslogContext: "copy" });
-    void contextMenu.show();
-    e.consume(true);
-  };
   const croppedText = input.text.slice(0, input.maxLength);
   render2(
     // clang-format off
-    html2`<span title=${croppedText + "\u2026"} @contextmenu=${onContextMenu}>
+    html2`<span title=${croppedText + "\u2026"}>
                ${input.expanded ? input.text : croppedText}
                <button
                  ?hidden=${input.expanded}
@@ -5595,7 +5544,8 @@ var EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {
                  ></button>
               </span>`,
     // clang-format on
-    target
+    target,
+    { container: { classes: ["expandable-text-property-value"] } }
   );
 };
 var ExpandableTextPropertyValue = class _ExpandableTextPropertyValue extends UI2.Widget.Widget {
@@ -5619,15 +5569,31 @@ var ExpandableTextPropertyValue = class _ExpandableTextPropertyValue extends UI2
     this.#maxLength = maxLength;
     this.requestUpdate();
   }
+  #copyText = () => {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#text);
+  };
+  #expandText = () => {
+    if (!this.#expanded) {
+      this.#expanded = true;
+      this.requestUpdate();
+    }
+  };
+  appendApplicableItems(contextMenu) {
+    const totalBytesText = i18n3.ByteUtilities.bytesToString(this.#byteCount);
+    const canExpand = this.#text.length < _ExpandableTextPropertyValue.MAX_DISPLAYABLE_TEXT_LENGTH;
+    if (canExpand && !this.#expanded) {
+      contextMenu.clipboardSection().appendItem(
+        i18nString2(UIStrings2.showMoreS, { PH1: totalBytesText }),
+        this.#expandText,
+        { jslogContext: "show-more" }
+      );
+    }
+    contextMenu.clipboardSection().appendItem(i18nString2(UIStrings2.copy), this.#copyText, { jslogContext: "copy" });
+  }
   performUpdate() {
     const input = {
-      copyText: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#text),
-      expandText: () => {
-        if (!this.#expanded) {
-          this.#expanded = true;
-          this.requestUpdate();
-        }
-      },
+      copyText: this.#copyText,
+      expandText: this.#expandText,
       expanded: this.#expanded,
       byteCount: this.#byteCount,
       maxLength: this.#maxLength,
@@ -5636,6 +5602,22 @@ var ExpandableTextPropertyValue = class _ExpandableTextPropertyValue extends UI2
     this.#view(input, {}, this.contentElement);
   }
 };
+UI2.ContextMenu.registerProvider({
+  contextTypes() {
+    return [ObjectTreeNodeBase];
+  },
+  async loadProvider() {
+    return {
+      appendApplicableItems(event, contextMenu) {
+        const widgetElement = event.target?.closest(".expandable-text-property-value");
+        const widget2 = widgetElement && UI2.Widget.Widget.get(widgetElement);
+        if (widget2 instanceof ExpandableTextPropertyValue) {
+          widget2.appendApplicableItems(contextMenu);
+        }
+      }
+    };
+  }
+});
 
 // ../../front_end/ui/legacy/components/object_ui/CustomPreviewComponent.ts
 var UIStrings3 = {

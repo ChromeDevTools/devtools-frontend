@@ -121,6 +121,8 @@ export class StorageBucketsModel extends SDKModel {
     }
     cacheStorageContentUpdated(_event) {
     }
+    privateVerificationTokensUpdated() {
+    }
 }
 SDKModel.register(StorageBucketsModel, { capabilities: 8192 /* Capability.STORAGE */, autostart: false });
 export var Events;

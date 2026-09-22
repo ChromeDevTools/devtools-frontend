@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
-import { closestAcrossShadow, computeVisibleRect, deepQuerySelectorAll, getCustomAnchorResolverForElement, getEditorFilePath, isDomTrackedAnchor, rematchCommentAnchor, resolveCommentAnchor, resolveCommentAnchorElement, } from './CommentAnchorResolver.js';
+import { closestAcrossShadow, COMMENT_THREAD_UI_SELECTOR, computeVisibleRect, deepQuerySelectorAll, getCustomAnchorResolverForElement, getEditorFilePath, isDomTrackedAnchor, rematchCommentAnchor, resolveCommentAnchor, resolveCommentAnchorElement, } from './CommentAnchorResolver.js';
 export const COMMENT_MODE_CURSOR = 'var(--comment-cursor)';
 export var Events;
 (function (Events) {
@@ -143,7 +143,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     handleElementClick(element, options) {
-        if (!this.isCommentMode() || closestAcrossShadow(element, '.comment-thread-widget')) {
+        if (!this.isCommentMode() || closestAcrossShadow(element, COMMENT_THREAD_UI_SELECTOR)) {
             return false;
         }
         this.clearDraftThreads();

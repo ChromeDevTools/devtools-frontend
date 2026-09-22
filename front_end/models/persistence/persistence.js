@@ -5460,6 +5460,7 @@ var Runtime;
 })(Runtime || (Runtime = {}));
 
 // ../../front_end/models/persistence/NetworkPersistenceManager.ts
+import * as Bindings3 from "../bindings/bindings.js";
 import * as Breakpoints from "../breakpoints/breakpoints.js";
 import * as Workspace9 from "../workspace/workspace.js";
 var forbiddenUrls = ["chromewebstore.google.com", "chrome.google.com"];
@@ -5820,7 +5821,27 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     return uiSourceCode.url().endsWith(HEADERS_FILENAME) && this.hasMatchingNetworkUISourceCodeForHeaderOverridesFile(uiSourceCode);
   }
   isUISourceCodeOverridable(uiSourceCode) {
-    return uiSourceCode.project().type() === Workspace9.Workspace.projectTypes.Network && !_NetworkPersistenceManager.isForbiddenNetworkUrl(uiSourceCode.url());
+    if (uiSourceCode.project().type() !== Workspace9.Workspace.projectTypes.Network) {
+      return false;
+    }
+    if (_NetworkPersistenceManager.isForbiddenNetworkUrl(uiSourceCode.url())) {
+      return false;
+    }
+    if (Bindings3.NetworkProject.NetworkProject.isSourceURLSynthesized(uiSourceCode)) {
+      return false;
+    }
+    return true;
+  }
+  /**
+   * Whether the contents of `uiSourceCode` may be written into the overrides folder.
+   *
+   * Sources that originate from a source map are overridable in the sense that the
+   * deployed resource they are mapped from can be overridden (see
+   * `PersistenceActions`), but their own URL and content are page controlled and
+   * must never be persisted themselves (b/553931271).
+   */
+  #canPersistUISourceCodeAsOverride(uiSourceCode) {
+    return this.isUISourceCodeOverridable(uiSourceCode) && !uiSourceCode.contentType().isFromSourceMap();
   }
   #isUISourceCodeAlreadyOverridden(uiSourceCode) {
     return this.#bindings.has(uiSourceCode) || this.#savingForOverrides.has(uiSourceCode);
@@ -5829,10 +5850,10 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     return this.isUISourceCodeOverridable(uiSourceCode) && !this.#isUISourceCodeAlreadyOverridden(uiSourceCode) && !this.#active && !this.#project;
   }
   #canSaveUISourceCodeForOverrides(uiSourceCode) {
-    return this.#active && this.isUISourceCodeOverridable(uiSourceCode) && !this.#isUISourceCodeAlreadyOverridden(uiSourceCode);
+    return this.#active && this.#canPersistUISourceCodeAsOverride(uiSourceCode) && !this.#isUISourceCodeAlreadyOverridden(uiSourceCode);
   }
   async setupAndStartLocalOverrides(uiSourceCode) {
-    if (!this.isUISourceCodeOverridable(uiSourceCode)) {
+    if (!this.#canPersistUISourceCodeAsOverride(uiSourceCode)) {
       return false;
     }
     if (this.#shouldPromptSaveForOverridesDialog(uiSourceCode)) {

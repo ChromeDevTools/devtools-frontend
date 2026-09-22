@@ -120,9 +120,6 @@
       "path": "../lighthouse/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../network/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {

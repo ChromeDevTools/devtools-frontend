@@ -19264,6 +19264,8 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
         click: true
       })}`
     );
+    this.listItemElement.setAttribute("data-backend-node-id", String(node.backendNodeId()));
+    this.listItemElement.setAttribute("data-target-id", node.domModel().target().id());
     this.widgetWrapper = document.createElement("div");
     this.widgetWrapper.style.display = "contents";
     this.title = this.widgetWrapper;
@@ -20679,6 +20681,10 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   margin-left: -12px;
 }
 
+.tree-outline-disclosure > ol > li.parent:only-of-type:not(.expanded) {
+  margin-top: 2px;
+}
+
 .tree-outline-disclosure li.parent:not(.always-parent)::before {
   box-sizing: border-box;
   user-select: none;
@@ -21736,7 +21742,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       },
       updateRecord: input.updateRecordForNode?.(node) ?? null
     })}${hasChildren ? html15`<ul role="group">
-            ${UI19.TreeOutline.ifExpanded(html15`
+            ${isExpanded && !isEditingAsHTML ? html15`
               ${node.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(node, depth + 1) : nothing6}
               ${repeat2(children, (child) => child.id, (child) => renderNode(child, depth + 1))}
               ${remainingChildrenCount > 0 ? html15`
@@ -21793,7 +21799,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       updateRecord: input.updateRecordForNode?.(node) ?? null
     })}</li>
               ` : nothing6}
-            `)}
+            ` : nothing6}
           </ul>` : nothing6}</li>
     `;
   };
@@ -21814,7 +21820,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     <style>${CodeHighlighter5.codeHighlighterStyles}</style>
     <div class=${disclosureClasses} style=${disclosureStyles}>
       <devtools-tree
-        class="elements-tree-outline source-code ${input.wrap ? "" : "elements-tree-nowrap"} ${input.hideGutter ? "elements-hide-gutter" : ""} ${isSingleNode ? "single-node" : ""}"
+        class="elements-tree-outline ${input.wrap ? "" : "elements-tree-nowrap"} ${input.hideGutter ? "elements-hide-gutter" : ""} ${isSingleNode ? "single-node" : ""}"
         disclosure-class="elements-disclosure ${isSingleNode ? "single-node" : ""} ${input.maxRowsShown ? "elements-tree-truncated" : ""}"
         jslog=${VisualLogging10.tree("elements")}
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
@@ -22168,7 +22174,6 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     if (domModel.existingDocument()) {
       this.rootDOMNode = domModel.existingDocument();
     }
-    this.onDocumentUpdated(domModel);
   }
   #updateModifiedNodesTimeout;
   #updateModifiedNodesSoon() {
@@ -22216,11 +22221,11 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   #onNodeRemoved(event) {
     const { node, parent } = event.data;
     this.resetClipboardIfNeeded(node);
-    if (this.#selectedDOMNode && (this.#selectedDOMNode === node || node.isAncestor(this.#selectedDOMNode))) {
-      this.selectDOMNode(this.#findNextNodeOnRemoval(node, parent), true);
-    }
     if (parent) {
       this.#addUpdateRecord(parent).nodeRemoved(node);
+    }
+    if (this.#selectedDOMNode && (this.#selectedDOMNode === node || node.isAncestor(this.#selectedDOMNode))) {
+      this.selectDOMNode(this.#findNextNodeOnRemoval(node, parent), true);
     }
     this.#updateModifiedNodesSoon();
   }
@@ -22353,6 +22358,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     }
     this.#selectedAdoptedStyleSheet = null;
     if (this.#view === DECLARATIVE_VIEW) {
+      if (node?.nodeType() === Node.TEXT_NODE && node.parentNode && (!nodeHasVisibleChildren(node.parentNode, this.rootDOMNode, this.maxTreeDepth, this.omitRootDOMNode) || !getVisibleChildren(node.parentNode, this.#showComments).includes(node))) {
+        node = node.parentNode;
+      }
       const isSameNode = this.#selectedDOMNode === node && this.#selectedClosingTag === Boolean(isClosingTag);
       this.#selectedDOMNode = node;
       this.#selectedClosingTag = Boolean(isClosingTag);

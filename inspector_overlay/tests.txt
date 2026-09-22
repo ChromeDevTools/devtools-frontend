@@ -1,5 +1,6 @@
 common.test.js
 css_grid_label_helpers.test.js
+highlight_anchor.test.js
 highlight_common.test.js
 highlight_flex_common.test.js
 highlight_grid_common.test.js

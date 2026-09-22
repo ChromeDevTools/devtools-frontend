@@ -11,6 +11,18 @@ import { ContentProviderBasedProject } from './ContentProviderBasedProject.js';
 import { DebuggerWorkspaceBinding } from './DebuggerWorkspaceBinding.js';
 import { NetworkProject } from './NetworkProject.js';
 import { metadataForURL } from './ResourceUtils.js';
+/**
+ * The security origin of the URL that `target` (or its closest ancestor that has
+ * one) is inspecting, or `null` if none of them has an inspected URL yet.
+ */
+function inspectedSecurityOrigin(target) {
+    for (let current = target; current; current = current.parentTarget()) {
+        if (current.inspectedURL()) {
+            return current.inspectedSecurityOrigin();
+        }
+    }
+    return null;
+}
 export class ResourceScriptMapping {
     debuggerModel;
     #workspace;
@@ -154,6 +166,17 @@ export class ResourceScriptMapping {
             // Try to resolve `//# sourceURL=` annotations relative to
             // the base URL, according to the sourcemap specification.
             url = SDK.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(script.debuggerModel.target(), url);
+            // `//# sourceURL=` annotations are fully controlled by the page, so don't let
+            // them impersonate a resource of a different origin (b/553931271).
+            if (!this.#isTrustworthySourceURL(script, url)) {
+                return;
+            }
+            // Don't let a synthetic source evict the `UISourceCode` of a script that was
+            // actually fetched from the network under the same URL.
+            const previousUISourceCode = this.project(script).uiSourceCodeForURL(url);
+            if (previousUISourceCode && !NetworkProject.isSourceURLSynthesized(previousUISourceCode)) {
+                return;
+            }
         }
         else {
             // Ignore inline <script>s without `//# sourceURL` annotation here.
@@ -180,6 +203,9 @@ export class ResourceScriptMapping {
         // Create UISourceCode.
         const originalContentProvider = script.originalContentProvider();
         const uiSourceCode = project.createUISourceCode(url, originalContentProvider.contentType());
+        if (script.hasSourceURL) {
+            NetworkProject.setSourceURLSynthesized(uiSourceCode);
+        }
         NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
         const metadata = metadataForURL(this.debuggerModel.target(), script.frameId, url);
         // Bind UISourceCode to scripts.
@@ -189,6 +215,38 @@ export class ResourceScriptMapping {
         const mimeType = script.isWasm() ? 'application/wasm' : 'text/javascript';
         project.addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, mimeType);
         void this.debuggerWorkspaceBinding.updateLocations(script);
+    }
+    /**
+     * Whether the (already resolved) `//# sourceURL=` annotation `url` of `script` may
+     * be used as-is.
+     *
+     * Only `http(s)` URLs can collide with genuine network resources, so an origin is
+     * only enforced for those. Annotations using other schemes (e.g. `webpack-internal://`,
+     * `snippet://` or `chrome-extension://` for content scripts) cannot impersonate a
+     * network resource and are always accepted.
+     *
+     * The origin of the script's frame is authoritative. For targets that don't have a
+     * frame (e.g. workers) we fall back to the inspected URL of the target (or of its
+     * closest ancestor that has one). If no origin can be established at all, the
+     * annotation is rejected, since we cannot rule out that it spoofs another origin.
+     */
+    #isTrustworthySourceURL(script, url) {
+        if (script.isContentScript()) {
+            return true;
+        }
+        const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
+        if (!parsedURL || !['http', 'https'].includes(parsedURL.scheme)) {
+            return true;
+        }
+        const target = script.debuggerModel.target();
+        const frame = script.frameId ?
+            target.model(SDK.ResourceTreeModel.ResourceTreeModel)?.frameForId(script.frameId) ?? null :
+            null;
+        const securityOrigin = frame ? frame.securityOrigin() : inspectedSecurityOrigin(target);
+        if (!securityOrigin) {
+            return false;
+        }
+        return SDK.SecurityOrigin.SecurityOrigin.create(url).isSameOriginWith(securityOrigin);
     }
     scriptFile(uiSourceCode) {
         return this.#uiSourceCodeToScriptFile.get(uiSourceCode) || null;

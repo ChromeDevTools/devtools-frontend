@@ -17,6 +17,8 @@ export declare class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<
     #private;
     constructor(callFrame: SDK.DebuggerModel.CallFrame, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
     dispose(): void;
+    static resolveScopeChain(callFrame: SDK.DebuggerModel.CallFrame, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<SDK.DebuggerModel.ScopeChainEntry[]>;
+    resolveScopeChain(): Promise<SDK.DebuggerModel.ScopeChainEntry[]>;
 }
 export declare const enum Events {
     SCOPE_CHAIN_UPDATED = "ScopeChainUpdated"

@@ -33,6 +33,9 @@
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {
+      "path": "../../third_party/web-vitals/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../trace/bundle-tsconfig.ref.json"
     },
     {

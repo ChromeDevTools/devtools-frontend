@@ -243,8 +243,6 @@ export function isCausedByThirdParty(outermostFrame, cookieUrl, siteForCookies) 
     //     site. Only cookies that have their domain also set to this third-party
     //     are included in the request. We assume that the cookie was set by the same
     //     third-party at some point, so we treat this as a third-party issue.
-    //
-    // TODO(crbug.com/1080589): Use "First-Party sets" instead of the sites registered domain.
     return !isSubdomainOf(parsedCookieUrl.domain(), outermostFrame.domainAndRegistry());
 }
 function isSubdomainOf(subdomain, superdomain) {

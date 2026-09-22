@@ -4,10 +4,10 @@
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/kit/kit.js';
 import './FieldSettingsDialog.js';
-import '../../../ui/components/menus/menus.js';
 import './MetricCard.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
@@ -85,14 +85,12 @@ const UIStrings = {
     notEnoughData: 'Not enough data',
     /**
      * @description Label for real user network conditions in the live metrics view of the Performance panel.
-     * @example {75th percentile is similar to Slow 4G throttling} PH1
      */
-    network: 'Network: {PH1}',
+    network: 'Network:',
     /**
      * @description Label for a select dropdown to choose the device form factor in the Performance panel.
-     * @example {Mobile} PH1
      */
-    device: 'Device: {PH1}',
+    device: 'Device:',
     /**
      * @description Label for an option to select all device form factors in the Performance panel.
      */
@@ -286,10 +284,6 @@ const UIStrings = {
      * @description Description text for recording a performance timeline of a connected Node process in the Performance panel.
      */
     nodeClickToRecord: 'Record a performance timeline of the connected Node process',
-    /**
-     * @description Label for the network throttling dropdown in the live metrics view of the Performance panel.
-     */
-    networkThrottling: 'Network:',
     /**
      * @description Tooltip text explaining why the user should adjust throttling settings in the Performance panel.
      */
@@ -540,8 +534,8 @@ function renderRecordingSettings(input) {
     <div class="device-toolbar-description">${Insights.Helpers.md(i18nString(UIStrings.useDeviceToolbar))}</div>
     ${fieldEnabled ? html `
       <ul class="environment-recs-list">
-        <li>${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.device, { PH1: html `<span class="environment-rec">${deviceRec}</span>` })}</li>
-        <li>${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.network, { PH1: html `<span class="environment-rec">${networkRec}</span>` })}</li>
+        <li>${i18nString(UIStrings.device)} <span class="environment-rec">${deviceRec}</span></li>
+        <li>${i18nString(UIStrings.network)} <span class="environment-rec">${networkRec}</span></li>
       </ul>
     ` : nothing}
     <div class="environment-option">
@@ -553,7 +547,7 @@ function renderRecordingSettings(input) {
     </div>
     <div class="environment-option">
       <label class="environment-option-label">
-        ${i18nString(UIStrings.networkThrottling)}
+        ${i18nString(UIStrings.network)}
         <select
           ${widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
         bindToGlobalConditions: true,
@@ -584,35 +578,37 @@ function renderPageScopeSetting(input) {
     const accessibleTitle = i18nString(UIStrings.showFieldDataForPage, { PH1: buttonTitle });
     // If there is no data at all we should force users to switch pages or reconfigure CrUX.
     const shouldDisable = !input.cruxManager.pageResult?.['url-ALL'] && !input.cruxManager.pageResult?.['origin-ALL'];
-    /* eslint-disable @devtools/no-deprecated-component-usages */
     return html `
-    <devtools-select-menu
+    <select
       id="page-scope-select"
       class="field-data-option"
-      @selectmenuselected=${input.handlePageScopeSelected}
-      .showDivider=${true}
-      .showArrow=${true}
-      .sideButton=${false}
-      .showSelectedItem=${true}
-      .buttonTitle=${buttonTitle}
-      .disabled=${shouldDisable}
+      @change=${(e) => input.handlePageScopeSelected(e.target.value)}
+      ?disabled=${shouldDisable}
       title=${accessibleTitle}
+      aria-label=${accessibleTitle}
+      .value=${live(input.cruxManager.fieldPageScope)}
+      jslog=${VisualLogging.dropDown('page-scope').track({
+        change: true,
+    })}
     >
-      <devtools-menu-item
-        .value=${'url'}
-        .selected=${input.cruxManager.fieldPageScope === 'url'}
+      <option
+        value="url"
+        jslog=${VisualLogging.item('url').track({
+        click: true,
+    })}
       >
         ${urlLabel}
-      </devtools-menu-item>
-      <devtools-menu-item
-        .value=${'origin'}
-        .selected=${input.cruxManager.fieldPageScope === 'origin'}
+      </option>
+      <option
+        value="origin"
+        jslog=${VisualLogging.item('origin').track({
+        click: true,
+    })}
       >
         ${originLabel}
-      </devtools-menu-item>
-    </devtools-select-menu>
+      </option>
+    </select>
   `;
-    /* eslint-enable @devtools/no-deprecated-component-usages */
 }
 function renderDeviceScopeSetting(input) {
     if (!input.cruxManager.getConfigSetting().get().enabled) {
@@ -622,34 +618,34 @@ function renderDeviceScopeSetting(input) {
     // before coming back to this option.
     const shouldDisable = !input.cruxManager.getFieldResponse(input.cruxManager.fieldPageScope, 'ALL');
     const currentDeviceLabel = getLabelForDeviceOption(input.cruxManager, input.cruxManager.fieldDeviceOption);
+    const accessibleTitle = i18nString(UIStrings.showFieldDataForDevice, { PH1: currentDeviceLabel });
     // clang-format off
-    /* eslint-disable @devtools/no-deprecated-component-usages */
     return html `
-    <devtools-select-menu
-      id="device-scope-select"
-      class="field-data-option"
-      @selectmenuselected=${input.handleDeviceOptionSelected}
-      .showDivider=${true}
-      .showArrow=${true}
-      .sideButton=${false}
-      .showSelectedItem=${true}
-      .buttonTitle=${i18nString(UIStrings.device, { PH1: currentDeviceLabel })}
-      .disabled=${shouldDisable}
-      title=${i18nString(UIStrings.showFieldDataForDevice, { PH1: currentDeviceLabel })}
-    >
-      ${DEVICE_OPTION_LIST.map(deviceOption => {
+    <label class="field-data-option">
+      ${i18nString(UIStrings.device)}
+      <select
+        id="device-scope-select"
+        @change=${(e) => input.handleDeviceOptionSelected(e.target.value)}
+        ?disabled=${shouldDisable}
+        title=${accessibleTitle}
+        aria-label=${accessibleTitle}
+        .value=${live(input.cruxManager.fieldDeviceOption)}
+        jslog=${VisualLogging.dropDown('device-scope').track({ change: true })}
+      >
+        ${DEVICE_OPTION_LIST.map(deviceOption => {
         return html `
-          <devtools-menu-item
-            .value=${deviceOption}
-            .selected=${input.cruxManager.fieldDeviceOption === deviceOption}
-          >
-            ${getLabelForDeviceOption(input.cruxManager, deviceOption)}
-          </devtools-menu-item>
-        `;
+            <option
+              value=${deviceOption}
+              ?selected=${input.cruxManager.fieldDeviceOption === deviceOption}
+              jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(deviceOption)).track({ click: true })}
+            >
+              ${getLabelForDeviceOption(input.cruxManager, deviceOption)}
+            </option>
+          `;
     })}
-    </devtools-select-menu>
+      </select>
+    </label>
   `;
-    /* eslint-enable @devtools/no-deprecated-component-usages */
     // clang-format on
 }
 function renderFieldDataHistoryLink(cruxManager) {
@@ -1050,8 +1046,8 @@ export class LiveMetricsView extends UI.Widget.Widget {
         cruxManager.removeEventListener("field-data-changed" /* CrUXManager.Events.FIELD_DATA_CHANGED */, this.#onFieldDataChanged, this);
         this.#deviceModeModel?.removeEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.#onEmulationChanged, this);
     }
-    #onPageScopeMenuItemSelected(event) {
-        if (event.itemValue === 'url') {
+    #onPageScopeMenuItemSelected(pageScope) {
+        if (pageScope === 'url') {
             this.#cruxManager.fieldPageScope = 'url';
         }
         else {
@@ -1059,8 +1055,8 @@ export class LiveMetricsView extends UI.Widget.Widget {
         }
         this.requestUpdate();
     }
-    #onDeviceOptionMenuItemSelected(event) {
-        this.#cruxManager.fieldDeviceOption = event.itemValue;
+    #onDeviceOptionMenuItemSelected(deviceOption) {
+        this.#cruxManager.fieldDeviceOption = deviceOption;
         this.requestUpdate();
     }
     async #revealInteraction(interaction) {

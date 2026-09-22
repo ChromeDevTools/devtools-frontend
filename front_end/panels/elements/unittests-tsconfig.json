@@ -126,9 +126,6 @@
       "path": "../../models/computed_style/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/elements/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../models/issues_manager/bundle-tsconfig.ref.json"
     },
     {
@@ -142,6 +139,9 @@
     },
     {
       "path": "../../ui/components/adorners/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/highlighting/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/components/text_editor/bundle-tsconfig.ref.json"

@@ -26,6 +26,18 @@ const kForbiddenSchemes = [
     'devtools:',
 ];
 let extensionServerInstance;
+function parseCanonicalURL(url) {
+    try {
+        let parsedURL = new URL(url);
+        while (parsedURL.protocol === 'blob:' || parsedURL.protocol === 'filesystem:') {
+            parsedURL = new URL(parsedURL.href.slice(parsedURL.protocol.length));
+        }
+        return parsedURL;
+    }
+    catch {
+        return null;
+    }
+}
 export class HostsPolicy {
     runtimeAllowedHosts;
     runtimeBlockedHosts;
@@ -84,13 +96,11 @@ class RegisteredExtension {
         if (!inspectedURL) {
             return false;
         }
-        let parsedURL;
-        try {
-            parsedURL = new URL(inspectedURL);
-        }
-        catch {
+        const parsedURL = parseCanonicalURL(inspectedURL);
+        if (!parsedURL) {
             return false;
         }
+        inspectedURL = parsedURL.href;
         if (parsedURL.protocol === 'chrome-extension:') {
             if (parsedURL.origin !== this.origin) {
                 if (!Root.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
@@ -459,7 +469,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     hasSubscribers(type) {
         return this.subscribers.has(type);
     }
-    postNotification(type, args, filter) {
+    postNotification(type, args, filter, argsForExtension) {
         if (!this.extensionsEnabled) {
             return;
         }
@@ -467,18 +477,22 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (!subscribers) {
             return;
         }
-        const message = { command: 'notify-' + type, arguments: args };
         for (const subscriber of subscribers) {
             if (!this.extensionEnabled(subscriber)) {
                 continue;
             }
-            if (filter) {
+            let extension;
+            if (filter || argsForExtension) {
                 const origin = extensionOrigins.get(subscriber);
-                const extension = origin && this.registeredExtensions.get(origin);
-                if (!extension || !filter(extension)) {
+                extension = origin && this.registeredExtensions.get(origin);
+                if (!extension || (filter && !filter(extension))) {
                     continue;
                 }
             }
+            const message = {
+                command: 'notify-' + type,
+                arguments: extension && argsForExtension ? argsForExtension(extension) : args,
+            };
             subscriber.postMessage(message);
         }
     }
@@ -906,9 +920,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         return this.evaluate(expression, true, true, evaluateOptions, this.getExtensionOrigin(port), callback.bind(this));
     }
-    harEntryReferencesBlockedURL(entry, extension) {
+    sanitizeHarEntry(entry, extension) {
         const baseURL = entry.request.url;
-        // Helper to cleanly resolve and check permission
         const isBlocked = (url) => {
             if (!url) {
                 return false;
@@ -918,45 +931,47 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
                 return !extension.isAllowedOnTarget(absoluteURL);
             }
             catch {
-                return true; // Fallback safely: treat unparsable URLs as blocked
-            }
-        };
-        if (isBlocked(entry.response.redirectURL)) {
-            return true;
-        }
-        if (entry._initiator) {
-            if (isBlocked(entry._initiator.url)) {
                 return true;
             }
-            let stack = entry._initiator.stack;
-            while (stack) {
-                if (stack.callFrames.some(f => isBlocked(f.url))) {
-                    return true;
+        };
+        let initiator = entry._initiator;
+        if (entry._initiator) {
+            if (isBlocked(entry._initiator.url)) {
+                initiator = null;
+            }
+            else {
+                let stack = entry._initiator.stack;
+                while (stack) {
+                    if (stack.callFrames.some(f => isBlocked(f.url))) {
+                        initiator = null;
+                        break;
+                    }
+                    stack = stack.parent;
                 }
-                stack = stack.parent;
             }
         }
-        for (const header of entry.response.headers) {
+        const headerReferencesBlockedURL = (header) => {
             const name = header.name.toLowerCase();
             if (name === 'location' || name === 'content-location') {
-                if (isBlocked(header.value)) {
-                    return true;
-                }
+                return isBlocked(header.value);
             }
-            else if (name === 'refresh') {
+            if (name === 'refresh') {
                 const match = header.value.match(/;\s*url\s*=\s*(.+)$/i);
-                if (isBlocked(match?.[1]?.trim())) {
-                    return true;
-                }
+                return isBlocked(match?.[1]?.trim());
             }
-            else if (name === 'link') {
+            if (name === 'link') {
                 const urls = [...header.value.matchAll(/<([^>]+)>/g)].map(m => m[1]);
-                if (urls.some(url => isBlocked(url))) {
-                    return true;
-                }
+                return urls.some(url => isBlocked(url));
             }
+            return false;
+        };
+        const headers = entry.response.headers.filter(header => !headerReferencesBlockedURL(header));
+        const redirectURL = isBlocked(entry.response.redirectURL) ? '' : entry.response.redirectURL;
+        if (initiator === entry._initiator && headers.length === entry.response.headers.length &&
+            redirectURL === entry.response.redirectURL) {
+            return entry;
         }
-        return false;
+        return { ...entry, _initiator: initiator, response: { ...entry.response, headers, redirectURL } };
     }
     async onGetHAR(message, port) {
         if (message.command !== "getHAR" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetHAR */) {
@@ -972,7 +987,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
             // @ts-expect-error
             harLog.entries[i]._requestId = this.requestId(requests[i]);
         }
-        harLog.entries = harLog.entries.filter(entry => !this.harEntryReferencesBlockedURL(entry, extension));
+        harLog.entries = harLog.entries.map(entry => this.sanitizeHarEntry(entry, extension));
         return harLog;
     }
     makeResource(contentProvider) {
@@ -1236,8 +1251,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
         const targetUrl = networkManager?.target()?.inspectedURL();
         this.postNotification("network-request-finished" /* Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished */, [this.requestId(request), entry], extension => extension.isAllowedOnTarget(entry.request.url) &&
-            (!targetUrl || extension.isAllowedOnTarget(targetUrl)) &&
-            !this.harEntryReferencesBlockedURL(entry, extension));
+            (!targetUrl || extension.isAllowedOnTarget(targetUrl)), extension => [this.requestId(request), this.sanitizeHarEntry(entry, extension)]);
     }
     notifyElementsSelectionChanged() {
         this.postNotification("panel-objectSelected-" /* Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected */ + 'elements', []);
@@ -1486,13 +1500,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         return undefined;
     }
     static canInspectURL(url) {
-        let parsedURL;
         // This is only to work around invalid URLs we're occasionally getting from some tests.
         // TODO(caseq): make sure tests supply valid URLs or we specifically handle invalid ones.
-        try {
-            parsedURL = new URL(url);
-        }
-        catch {
+        const parsedURL = parseCanonicalURL(url);
+        if (!parsedURL) {
             return false;
         }
         if (kForbiddenSchemes.includes(parsedURL.protocol)) {

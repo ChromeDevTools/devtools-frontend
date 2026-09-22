@@ -104,7 +104,7 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     private extensionAllowedOnTarget;
     private onReload;
     private onEvaluateOnInspectedPage;
-    private harEntryReferencesBlockedURL;
+    private sanitizeHarEntry;
     private onGetHAR;
     private makeResource;
     private onGetPageResources;

@@ -43,6 +43,7 @@ export declare class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> im
     cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void;
     storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
     storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void;
+    privateVerificationTokensUpdated(): void;
 }
 export declare enum Events {
     DatabaseAdded = "DatabaseAdded",

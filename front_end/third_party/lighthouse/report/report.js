@@ -31,6 +31,9 @@ var E = class r {
   static get MS_DISPLAY_VALUE() {
     return `%10d${He}ms`;
   }
+  static isPluginCategory(e) {
+    return /^(@[a-z0-9-~][a-z0-9-._~]*\/)?lighthouse-plugin-[a-z0-9-._~]*$/.test(e);
+  }
   static getFinalDisplayedUrl(e) {
     if (e.finalDisplayedUrl) return e.finalDisplayedUrl;
     if (e.finalUrl) return e.finalUrl;
@@ -1094,6 +1097,9 @@ function lt(r5) {
 }
 .lh-report-icon--experiment::before {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none"><path d="M4.50002 17C3.86136 17 3.40302 16.7187 3.12502 16.156C2.84702 15.5933 2.90936 15.069 3.31202 14.583L7.50002 9.5V4.5H6.75002C6.54202 4.5 6.36502 4.427 6.21902 4.281C6.07302 4.135 6.00002 3.958 6.00002 3.75C6.00002 3.542 6.07302 3.365 6.21902 3.219C6.36502 3.073 6.54202 3 6.75002 3H13.25C13.458 3 13.635 3.073 13.781 3.219C13.927 3.365 14 3.542 14 3.75C14 3.958 13.927 4.135 13.781 4.281C13.635 4.427 13.458 4.5 13.25 4.5H12.5V9.5L16.688 14.583C17.0767 15.069 17.132 15.5933 16.854 16.156C16.5767 16.7187 16.1254 17 15.5 17H4.50002ZM4.50002 15.5H15.5L11 10V4.5H9.00002V10L4.50002 15.5Z" fill="black"/></svg>');
+}
+.lh-report-icon--plugin::before {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>');
 }
 
 /** These are still icons, but w/o the auto-color invert / opacity / etc. that come with .lh-report-icon */
@@ -2614,6 +2620,10 @@ details[open] .lh-clump-toggletext--hide { display: block;}
   cursor: unset; /* disable pointer cursor from report-icon */
 }
 
+.lh-meta__item a {
+  color: inherit;
+}
+
 .lh-meta__item.lh-tooltip-boundary {
   text-decoration: dotted underline var(--color-gray-500);
   cursor: help;
@@ -3094,8 +3104,8 @@ function st(r5) {
   x.setAttribute("id", "lh-tools-dropdown"), x.setAttribute("role", "menu"), x.setAttribute("aria-labelledby", "lh-tools-button");
   let L = r5.createElement("a", "lh-report-icon lh-report-icon--print");
   L.setAttribute("role", "menuitem"), L.setAttribute("tabindex", "-1"), L.setAttribute("href", "#"), L.setAttribute("data-i18n", "dropdownPrintSummary"), L.setAttribute("data-action", "print-summary");
-  let C = r5.createElement("a", "lh-report-icon lh-report-icon--print");
-  C.setAttribute("role", "menuitem"), C.setAttribute("tabindex", "-1"), C.setAttribute("href", "#"), C.setAttribute("data-i18n", "dropdownPrintExpanded"), C.setAttribute("data-action", "print-expanded");
+  let S = r5.createElement("a", "lh-report-icon lh-report-icon--print");
+  S.setAttribute("role", "menuitem"), S.setAttribute("tabindex", "-1"), S.setAttribute("href", "#"), S.setAttribute("data-i18n", "dropdownPrintExpanded"), S.setAttribute("data-action", "print-expanded");
   let A = r5.createElement("a", "lh-report-icon lh-report-icon--copy");
   A.setAttribute("role", "menuitem"), A.setAttribute("tabindex", "-1"), A.setAttribute("href", "#"), A.setAttribute("data-i18n", "dropdownCopyJSON"), A.setAttribute("data-action", "copy");
   let z = r5.createElement("a", "lh-report-icon lh-report-icon--download lh-hidden");
@@ -3109,7 +3119,7 @@ function st(r5) {
   let P = r5.createElement("a", "lh-report-icon lh-report-icon--open lh-hidden");
   P.setAttribute("role", "menuitem"), P.setAttribute("tabindex", "-1"), P.setAttribute("href", "#"), P.setAttribute("data-i18n", "dropdownViewUnthrottledTrace"), P.setAttribute("data-action", "view-unthrottled-trace");
   let H = r5.createElement("a", "lh-report-icon lh-report-icon--dark");
-  return H.setAttribute("role", "menuitem"), H.setAttribute("tabindex", "-1"), H.setAttribute("href", "#"), H.setAttribute("data-i18n", "dropdownDarkTheme"), H.setAttribute("data-action", "toggle-dark"), x.append(" ", L, " ", C, " ", A, " ", " ", z, " ", V, " ", N, " ", I, " ", " ", P, " ", H, " "), c.append(" ", d, " ", f, " ", x, " "), n.append(" ", " ", o, " ", s, " ", c, " "), e.append(n), e;
+  return H.setAttribute("role", "menuitem"), H.setAttribute("tabindex", "-1"), H.setAttribute("href", "#"), H.setAttribute("data-i18n", "dropdownDarkTheme"), H.setAttribute("data-action", "toggle-dark"), x.append(" ", L, " ", S, " ", A, " ", " ", z, " ", V, " ", N, " ", I, " ", " ", P, " ", H, " "), c.append(" ", d, " ", f, " ", x, " "), n.append(" ", " ", o, " ", s, " ", c, " "), e.append(n), e;
 }
 function ct(r5) {
   let e = r5.createFragment(), t = r5.createElement("div", "lh-warnings lh-warnings--toplevel"), n = r5.createElement("p", "lh-warnings__msg"), o = r5.createElement("ul");
@@ -3466,7 +3476,7 @@ var k = class r3 {
     return { numPassed: n, numPassableAudits: t, numInformative: o, totalWeight: i };
   }
   static isPluginCategory(e) {
-    return e.startsWith("lighthouse-plugin-");
+    return E.isPluginCategory(e);
   }
   static shouldDisplayAsFraction(e, t) {
     return e === "timespan" || e === "snapshot" || t?.categoryScoreDisplayMode === "fraction";
@@ -3955,7 +3965,7 @@ var ee = class {
     }
     if (n.homepage) {
       let i = this._dom.createElement("a");
-      i.href = n.homepage, i.target = "_blank", i.title = m.strings.openInANewTabTooltip, i.classList.add("lh-report-icon--external"), o.append(" ", i);
+      this._dom.safelySetHref(i, n.homepage), i.href && (i.target = "_blank", i.title = m.strings.openInANewTabTooltip, i.classList.add("lh-report-icon--external"), o.append(" ", i));
     }
   }
   _renderEntityGroupRow(e, t) {
@@ -4156,14 +4166,14 @@ function mt(r5, e, t) {
   r5.find(".lh-exp-gauge__label", f).textContent = t.title, f.setAttribute("viewBox", [-64, -64 / 2, 128, 128 / 2].join(" ")), f.style.setProperty("--stroke-width", `${b}px`), f.style.setProperty("--circle-meas", (2 * Math.PI).toFixed(4));
   let u = r5.find("g.lh-exp-gauge__outer", e), v = r5.find("g.lh-exp-gauge__inner", e), _ = r5.find("circle.lh-cover", u), x = r5.find("circle.lh-exp-gauge__arc", v), L = r5.find("text.lh-exp-gauge__percentage", v);
   u.style.setProperty("--scale-initial", String(a / l)), u.style.setProperty("--radius", `${l}px`), _.style.setProperty("--radius", `${0.5 * (a + l)}px`), _.setAttribute("stroke-width", String(w)), f.style.setProperty("--radius", `${a}px`), x.setAttribute("stroke-dasharray", `${d()} ${(s - d()).toFixed(4)}`), x.setAttribute("stroke-dashoffset", String(0.25 * s - p)), L.textContent = Math.round(i * 100).toString();
-  let C = l + b, A = l - b, z = t.auditRefs.filter((y) => y.group === "metrics" && y.weight), V = z.reduce((y, S) => y += S.weight, 0), N = 0.25 * c - g - 0.5 * w, I = -0.5 * Math.PI;
+  let S = l + b, A = l - b, z = t.auditRefs.filter((y) => y.group === "metrics" && y.weight), V = z.reduce((y, C) => y += C.weight, 0), N = 0.25 * c - g - 0.5 * w, I = -0.5 * Math.PI;
   u.querySelectorAll(".metric").forEach((y) => {
     z.map((R) => `metric--${R.id}`).find((R) => y.classList.contains(R)) || y.remove();
-  }), z.forEach((y, S) => {
+  }), z.forEach((y, C) => {
     let M = y.acronym ?? y.id, R = !u.querySelector(`.metric--${M}`), T = r5.maybeFind(`g.metric--${M}`, u) || r5.createSVGElement("g"), K = r5.maybeFind(`.metric--${M} circle.lh-exp-gauge--faded`, u) || r5.createSVGElement("circle"), q = r5.maybeFind(`.metric--${M} circle.lh-exp-gauge--miniarc`, u) || r5.createSVGElement("circle"), U = r5.maybeFind(`.metric--${M} circle.lh-exp-gauge-hovertarget`, u) || r5.createSVGElement("circle"), D = r5.maybeFind(`.metric--${M} text.metric__label`, u) || r5.createSVGElement("text"), F = r5.maybeFind(`.metric--${M} text.metric__value`, u) || r5.createSVGElement("text");
     T.classList.add("metric", `metric--${M}`), K.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--faded"), q.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--miniarc"), U.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget");
     let j = y.weight / V, ce = h(j), de = y.result.score ? y.result.score * j : 0, he = h(de), Fe = j * c, pe = h(j, true), ue = k.calculateRating(y.result.score, y.result.scoreDisplayMode);
-    T.style.setProperty("--metric-rating", ue), T.style.setProperty("--metric-color", `var(--color-${ue})`), T.style.setProperty("--metric-offset", `${N}`), T.style.setProperty("--i", S.toString()), K.setAttribute("stroke-dasharray", `${ce} ${c - ce}`), q.style.setProperty("--metric-array", `${he} ${c - he}`), U.setAttribute("stroke-dasharray", `${pe} ${c - pe - g}`), D.classList.add("metric__label"), F.classList.add("metric__value"), D.textContent = M, F.textContent = `+${Math.round(de * 100)}`;
+    T.style.setProperty("--metric-rating", ue), T.style.setProperty("--metric-color", `var(--color-${ue})`), T.style.setProperty("--metric-offset", `${N}`), T.style.setProperty("--i", C.toString()), K.setAttribute("stroke-dasharray", `${ce} ${c - ce}`), q.style.setProperty("--metric-array", `${he} ${c - he}`), U.setAttribute("stroke-dasharray", `${pe} ${c - pe - g}`), D.classList.add("metric__label"), F.classList.add("metric__value"), D.textContent = M, F.textContent = `+${Math.round(de * 100)}`;
     let ge = I + j * Math.PI, Z = Math.cos(ge), J = Math.sin(ge);
     switch (true) {
       case Z > 0:
@@ -4187,7 +4197,7 @@ function mt(r5, e, t) {
         D.setAttribute("dominant-baseline", "middle"), F.setAttribute("dominant-baseline", "middle");
         break;
     }
-    D.setAttribute("x", (C * Z).toFixed(2)), D.setAttribute("y", (C * J).toFixed(2)), F.setAttribute("x", (A * Z).toFixed(2)), F.setAttribute("y", (A * J).toFixed(2)), R && (T.appendChild(K), T.appendChild(q), T.appendChild(U), T.appendChild(D), T.appendChild(F), u.appendChild(T)), N -= Fe, I += j * 2 * Math.PI;
+    D.setAttribute("x", (S * Z).toFixed(2)), D.setAttribute("y", (S * J).toFixed(2)), F.setAttribute("x", (A * Z).toFixed(2)), F.setAttribute("y", (A * J).toFixed(2)), R && (T.appendChild(K), T.appendChild(q), T.appendChild(U), T.appendChild(D), T.appendChild(F), u.appendChild(T)), N -= Fe, I += j * 2 * Math.PI;
   });
   let P = u.querySelector(".lh-exp-gauge-underhovertarget") || r5.createSVGElement("circle");
   P.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget", "lh-exp-gauge-underhovertarget");
@@ -4199,18 +4209,18 @@ function mt(r5, e, t) {
       return;
     }
     if (!(y.target instanceof Element)) return;
-    let S = y.target.parentNode;
-    if (S instanceof SVGElement) {
-      if (S && S === v) {
+    let C = y.target.parentNode;
+    if (C instanceof SVGElement) {
+      if (C && C === v) {
         f.classList.contains("state--expanded") ? f.classList.contains("state--highlight") && (f.classList.remove("state--highlight"), r5.find(".metric--highlight", f).classList.remove("metric--highlight")) : f.classList.add("state--expanded");
         return;
       }
-      if (S && S.classList && S.classList.contains("metric")) {
-        let M = S.style.getPropertyValue("--metric-rating");
-        if (e.style.setProperty("--color-highlight", `var(--color-${M}-secondary)`), !f.classList.contains("state--highlight")) f.classList.add("state--highlight"), S.classList.add("metric--highlight");
+      if (C && C.classList && C.classList.contains("metric")) {
+        let M = C.style.getPropertyValue("--metric-rating");
+        if (e.style.setProperty("--color-highlight", `var(--color-${M}-secondary)`), !f.classList.contains("state--highlight")) f.classList.add("state--highlight"), C.classList.add("metric--highlight");
         else {
           let R = r5.find(".metric--highlight", f);
-          S !== R && (R.classList.remove("metric--highlight"), S.classList.add("metric--highlight"));
+          C !== R && (R.classList.remove("metric--highlight"), C.classList.add("metric--highlight"));
         }
       }
     }
@@ -4219,7 +4229,7 @@ function mt(r5, e, t) {
   });
   async function Te(y) {
     if (await new Promise((U) => setTimeout(U, 1e3)), y.classList.contains("state--expanded")) return;
-    let S = r5.find(".lh-exp-gauge__inner", y), M = Array.from(S.querySelectorAll("circle")).map((U) => {
+    let C = r5.find(".lh-exp-gauge__inner", y), M = Array.from(C.querySelectorAll("circle")).map((U) => {
       let D = `uniq-${Math.random()}`;
       U.setAttribute("id", D);
       let F = r5.createSVGElement("use");
@@ -4299,9 +4309,9 @@ var oe = class extends B {
       if (p.insertBefore(x, g), a.forEach((L) => {
         x.append(this._renderMetric(L));
       }), i.querySelector(".lh-gauge__wrapper")) {
-        let L = this.dom.find(".lh-category-header__description", i), C = this.dom.createChildOf(L, "div", "lh-metrics__disclaimer"), A = this.dom.convertMarkdownLinkSnippets(o.varianceDisclaimer);
-        C.append(A);
-        let z = this.dom.createChildOf(C, "a", "lh-calclink");
+        let L = this.dom.find(".lh-category-header__description", i), S = this.dom.createChildOf(L, "div", "lh-metrics__disclaimer"), A = this.dom.convertMarkdownLinkSnippets(o.varianceDisclaimer);
+        S.append(A);
+        let z = this.dom.createChildOf(S, "a", "lh-calclink");
         z.target = "_blank", z.textContent = o.calculatorLink, this.dom.safelySetHref(z, this._getScoringCalculatorHref(e.auditRefs));
       }
       p.classList.add("lh-audit-group--metrics"), i.append(p);
@@ -4339,8 +4349,8 @@ var oe = class extends B {
         let x = v.auditRef.result.score || 0, L = _.auditRef.result.score || 0;
         if (x !== L) return x - L;
         if (u !== "All") {
-          let C = v.auditRef.result.metricSavings?.[u] ?? -1, A = _.auditRef.result.metricSavings?.[u] ?? -1;
-          if (C !== A) return A - C;
+          let S = v.auditRef.result.metricSavings?.[u] ?? -1, A = _.auditRef.result.metricSavings?.[u] ?? -1;
+          if (S !== A) return A - S;
         }
         return v.overallImpact !== _.overallImpact ? _.overallImpact * _.guidanceLevel - v.overallImpact * v.guidanceLevel : v.overallImpact === 0 && _.overallImpact === 0 && v.overallLinearImpact !== _.overallLinearImpact ? _.overallLinearImpact * _.guidanceLevel - v.overallLinearImpact * v.guidanceLevel : _.guidanceLevel - v.guidanceLevel;
       });
@@ -4421,15 +4431,24 @@ var te = class {
     let d = m.strings.runtimeAnalysisWindow;
     e.gatherMode === "timespan" ? d = m.strings.runtimeAnalysisWindowTimespan : e.gatherMode === "snapshot" && (d = m.strings.runtimeAnalysisWindowSnapshot);
     let h = [["date", `Captured at ${m.i18n.formatDateTime(e.fetchTime)}`], ["devices", `${n.deviceEmulation} with Lighthouse ${e.lighthouseVersion}`, c.join(`
-`)], ["samples-one", m.strings.runtimeSingleLoad, m.strings.runtimeSingleLoadTooltip], ["stopwatch", d], ["networkspeed", `${n.summary}`, `${m.strings.runtimeSettingsNetworkThrottling}: ${n.networkThrottling}`], ["chrome", `Using ${i}` + (a ? ` with ${a}` : ""), `${m.strings.runtimeSettingsUANetwork}: "${e.environment.networkUserAgent}"`]], p = this._dom.find(".lh-meta__items", t);
-    for (let [g, b, w] of h) {
-      let f = this._dom.createChildOf(p, "li", "lh-meta__item");
-      if (f.textContent = b, w) {
-        f.classList.add("lh-tooltip-boundary");
-        let u = this._dom.createChildOf(f, "div", "lh-tooltip");
-        u.textContent = w;
+`)], ["samples-one", m.strings.runtimeSingleLoad, m.strings.runtimeSingleLoadTooltip], ["stopwatch", d], ["networkspeed", `${n.summary}`, `${m.strings.runtimeSettingsNetworkThrottling}: ${n.networkThrottling}`], ["chrome", `Using ${i}` + (a ? ` with ${a}` : ""), `${m.strings.runtimeSettingsUANetwork}: "${e.environment.networkUserAgent}"`]], p = Object.keys(e.categories).filter((b) => k.isPluginCategory(b));
+    for (let b of p) {
+      let w = e.environment.credits?.[b];
+      h.push(["plugin", w ? `${b} ${w}` : b, void 0, `https://www.npmjs.com/package/${b}`]);
+    }
+    let g = this._dom.find(".lh-meta__items", t);
+    for (let [b, w, f, u] of h) {
+      let v = this._dom.createChildOf(g, "li", "lh-meta__item");
+      if (u) {
+        let _ = this._dom.createChildOf(v, "a");
+        _.rel = "noopener", _.target = "_blank", _.textContent = w, this._dom.safelySetHref(_, u);
+      } else v.textContent = w;
+      if (f) {
+        v.classList.add("lh-tooltip-boundary");
+        let _ = this._dom.createChildOf(v, "div", "lh-tooltip");
+        _.textContent = f;
       }
-      f.classList.add("lh-report-icon", `lh-report-icon--${g}`);
+      v.classList.add("lh-report-icon", `lh-report-icon--${b}`);
     }
   }
   _renderReportWarnings(e) {
@@ -4522,13 +4541,13 @@ function wt(r5, e, t) {
   });
   let o = window.open(e, t);
 }
-async function Se(r5, e, t) {
+async function Ce(r5, e, t) {
   let n = new URL(e), o = !!window.CompressionStream;
   n.hash = await Le.toBase64(JSON.stringify(r5), { gzip: o }), o && n.searchParams.set("gzip", "1"), window.open(n.toString(), t);
 }
-async function Ce(r5) {
+async function Se(r5) {
   let e = "viewer-" + se(r5), t = le() + "/viewer/";
-  await Se({ lhr: r5 }, t, e);
+  await Ce({ lhr: r5 }, t, e);
 }
 async function Ae(r5) {
   let e = "viewer-" + se(r5), t = le() + "/viewer/";
@@ -4537,7 +4556,7 @@ async function Ae(r5) {
 function ze(r5) {
   if (!r5.audits["script-treemap-data"].details) throw new Error("no script treemap data found");
   let t = { lhr: { mainDocumentUrl: r5.mainDocumentUrl, finalUrl: r5.finalUrl, finalDisplayedUrl: r5.finalDisplayedUrl, audits: { "script-treemap-data": r5.audits["script-treemap-data"] }, configSettings: { locale: r5.configSettings.locale } } }, n = le() + "/treemap/", o = "treemap-" + se(r5);
-  Se(t, n, o);
+  Ce(t, n, o);
 }
 var ie = class {
   constructor(e) {
@@ -4644,7 +4663,7 @@ var ae = class {
           break;
         }
         case "open-viewer": {
-          this._dom.isDevTools() ? Ce(this.lhr) : Ae(this.lhr);
+          this._dom.isDevTools() ? Se(this.lhr) : Ae(this.lhr);
           break;
         }
         case "save-gist": {
@@ -4846,15 +4865,15 @@ function Et(r5, e) {
 }
 function Lt(r5, e) {
 }
-function St(r5) {
+function Ct(r5) {
   return false;
 }
-var Ct = { registerLocaleData: Lt, hasLocale: St };
+var St = { registerLocaleData: Lt, hasLocale: Ct };
 export {
   Q as DOM,
   te as ReportRenderer,
   ne as ReportUIFeatures,
-  Ct as format,
+  St as format,
   kt as renderReport,
   Et as swapLocale
 };

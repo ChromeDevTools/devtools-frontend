@@ -61,25 +61,13 @@
       "path": "bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../entrypoints/formatter_worker/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../generated/generated-tsconfig.ref.json"
-    },
-    {
-      "path": "../../models/formatter/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../models/trace/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {
       "path": "../../third_party/codemirror.next/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../third_party/source-map-scopes-codec/bundle-tsconfig.ref.json"
     },
     {
       "path": "../common/bundle-tsconfig.ref.json"
@@ -92,9 +80,6 @@
     },
     {
       "path": "../root/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../text_utils/bundle-tsconfig.ref.json"
     }
   ]
 }

@@ -163,6 +163,7 @@ import * as SDK from "../../core/sdk/sdk.js";
 var uiSourceCodeToAttributionMap = /* @__PURE__ */ new WeakMap();
 var NetworkProjectManager = class _NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
   #projectToTargetMap = /* @__PURE__ */ new WeakMap();
+  #sourceURLSynthesizedUISourceCodes = /* @__PURE__ */ new WeakSet();
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root.DevToolsContext.globalInstance().has(_NetworkProjectManager) || forceNew) {
       Root.DevToolsContext.globalInstance().set(_NetworkProjectManager, new _NetworkProjectManager());
@@ -181,6 +182,12 @@ var NetworkProjectManager = class _NetworkProjectManager extends Common.ObjectWr
   getTargetForUISourceCode(uiSourceCode) {
     return this.#projectToTargetMap.get(uiSourceCode.project()) ?? null;
   }
+  setSourceURLSynthesized(uiSourceCode) {
+    this.#sourceURLSynthesizedUISourceCodes.add(uiSourceCode);
+  }
+  isSourceURLSynthesized(uiSourceCode) {
+    return this.#sourceURLSynthesizedUISourceCodes.has(uiSourceCode);
+  }
 };
 var Events = /* @__PURE__ */ ((Events3) => {
   Events3["FRAME_ATTRIBUTION_ADDED"] = "FrameAttributionAdded";
@@ -188,6 +195,23 @@ var Events = /* @__PURE__ */ ((Events3) => {
   return Events3;
 })(Events || {});
 var NetworkProject = class _NetworkProject {
+  /**
+   * Records that `uiSourceCode` was synthesized from a `//# sourceURL=` annotation,
+   * and therefore doesn't correspond to an actual network resource.
+   */
+  static setSourceURLSynthesized(uiSourceCode) {
+    NetworkProjectManager.instance().setSourceURLSynthesized(uiSourceCode);
+  }
+  /**
+   * Whether `uiSourceCode` was synthesized from a `//# sourceURL=` annotation.
+   *
+   * Both the URL and the content of such a source are fully controlled by the page,
+   * so it must never be treated like a genuine network resource (for example it must
+   * not be persisted as a local override, see b/553931271).
+   */
+  static isSourceURLSynthesized(uiSourceCode) {
+    return NetworkProjectManager.instance().isSourceURLSynthesized(uiSourceCode);
+  }
   static resolveFrame(uiSourceCode, frameId) {
     const target = _NetworkProject.targetForUISourceCode(uiSourceCode);
     const resourceTreeModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -5667,6 +5691,14 @@ import * as SDK9 from "../../core/sdk/sdk.js";
 import * as TextUtils6 from "../../core/text_utils/text_utils.js";
 import * as Formatter from "../formatter/formatter.js";
 import * as Workspace15 from "../workspace/workspace.js";
+function inspectedSecurityOrigin(target) {
+  for (let current = target; current; current = current.parentTarget()) {
+    if (current.inspectedURL()) {
+      return current.inspectedSecurityOrigin();
+    }
+  }
+  return null;
+}
 var ResourceScriptMapping = class {
   debuggerModel;
   #workspace;
@@ -5829,6 +5861,13 @@ var ResourceScriptMapping = class {
     }
     if (script.hasSourceURL) {
       url = SDK9.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(script.debuggerModel.target(), url);
+      if (!this.#isTrustworthySourceURL(script, url)) {
+        return;
+      }
+      const previousUISourceCode = this.project(script).uiSourceCodeForURL(url);
+      if (previousUISourceCode && !NetworkProject.isSourceURLSynthesized(previousUISourceCode)) {
+        return;
+      }
     } else {
       if (script.isInlineScript()) {
         return;
@@ -5850,6 +5889,9 @@ var ResourceScriptMapping = class {
     }
     const originalContentProvider = script.originalContentProvider();
     const uiSourceCode = project.createUISourceCode(url, originalContentProvider.contentType());
+    if (script.hasSourceURL) {
+      NetworkProject.setSourceURLSynthesized(uiSourceCode);
+    }
     NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
     const metadata = metadataForURL(this.debuggerModel.target(), script.frameId, url);
     const scriptFile = new ResourceScriptFile(this, uiSourceCode, script);
@@ -5858,6 +5900,36 @@ var ResourceScriptMapping = class {
     const mimeType = script.isWasm() ? "application/wasm" : "text/javascript";
     project.addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, mimeType);
     void this.debuggerWorkspaceBinding.updateLocations(script);
+  }
+  /**
+   * Whether the (already resolved) `//# sourceURL=` annotation `url` of `script` may
+   * be used as-is.
+   *
+   * Only `http(s)` URLs can collide with genuine network resources, so an origin is
+   * only enforced for those. Annotations using other schemes (e.g. `webpack-internal://`,
+   * `snippet://` or `chrome-extension://` for content scripts) cannot impersonate a
+   * network resource and are always accepted.
+   *
+   * The origin of the script's frame is authoritative. For targets that don't have a
+   * frame (e.g. workers) we fall back to the inspected URL of the target (or of its
+   * closest ancestor that has one). If no origin can be established at all, the
+   * annotation is rejected, since we cannot rule out that it spoofs another origin.
+   */
+  #isTrustworthySourceURL(script, url) {
+    if (script.isContentScript()) {
+      return true;
+    }
+    const parsedURL = Common9.ParsedURL.ParsedURL.fromString(url);
+    if (!parsedURL || !["http", "https"].includes(parsedURL.scheme)) {
+      return true;
+    }
+    const target = script.debuggerModel.target();
+    const frame = script.frameId ? target.model(SDK9.ResourceTreeModel.ResourceTreeModel)?.frameForId(script.frameId) ?? null : null;
+    const securityOrigin = frame ? frame.securityOrigin() : inspectedSecurityOrigin(target);
+    if (!securityOrigin) {
+      return false;
+    }
+    return SDK9.SecurityOrigin.SecurityOrigin.create(url).isSameOriginWith(securityOrigin);
   }
   scriptFile(uiSourceCode) {
     return this.#uiSourceCodeToScriptFile.get(uiSourceCode) || null;

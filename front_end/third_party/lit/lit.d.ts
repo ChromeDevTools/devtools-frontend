@@ -4,4 +4,5 @@ import * as Directives from './lib/directives.js';
 import * as Directive from './lib/directive.js';
 import * as Decorators from './lib/decorators.js';
 import * as StaticHtml from './lib/static-html.js';
+export type { DirectiveResult } from './lib/directive.js';
 export { AsyncDirective, Directives, Directive, Decorators, StaticHtml };

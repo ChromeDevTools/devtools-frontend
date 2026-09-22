@@ -5083,7 +5083,6 @@ __export(IgnoreListSetting_exports, {
   IgnoreListSetting: () => IgnoreListSetting,
   regexInputIsValid: () => regexInputIsValid
 });
-import "../../../ui/components/menus/menus.js";
 import * as Common2 from "../../../core/common/common.js";
 import * as i18n15 from "../../../core/i18n/i18n.js";
 import * as Platform4 from "../../../core/platform/platform.js";
@@ -6003,7 +6002,6 @@ __export(LiveMetricsView_exports, {
 });
 import "../../../ui/components/settings/settings.js";
 import "../../../ui/kit/kit.js";
-import "../../../ui/components/menus/menus.js";
 
 // ../../front_end/panels/timeline/components/MetricCard.ts
 var MetricCard_exports = {};
@@ -7041,6 +7039,7 @@ customElements.define("devtools-metric-card", MetricCard);
 // ../../front_end/panels/timeline/components/LiveMetricsView.ts
 import * as Common3 from "../../../core/common/common.js";
 import * as i18n25 from "../../../core/i18n/i18n.js";
+import * as Platform6 from "../../../core/platform/platform.js";
 import * as Root from "../../../core/root/root.js";
 import * as SDK3 from "../../../core/sdk/sdk.js";
 import * as CrUXManager9 from "../../../models/crux-manager/crux-manager.js";
@@ -7328,6 +7327,7 @@ var liveMetricsView_css_default = `/*
 }
 
 .field-data-option {
+  display: block;
   margin: var(--sys-size-5) 0;
   max-width: 100%;
 }
@@ -7535,14 +7535,12 @@ var UIStrings13 = {
   notEnoughData: "Not enough data",
   /**
    * @description Label for real user network conditions in the live metrics view of the Performance panel.
-   * @example {75th percentile is similar to Slow 4G throttling} PH1
    */
-  network: "Network: {PH1}",
+  network: "Network:",
   /**
    * @description Label for a select dropdown to choose the device form factor in the Performance panel.
-   * @example {Mobile} PH1
    */
-  device: "Device: {PH1}",
+  device: "Device:",
   /**
    * @description Label for an option to select all device form factors in the Performance panel.
    */
@@ -7736,10 +7734,6 @@ var UIStrings13 = {
    * @description Description text for recording a performance timeline of a connected Node process in the Performance panel.
    */
   nodeClickToRecord: "Record a performance timeline of the connected Node process",
-  /**
-   * @description Label for the network throttling dropdown in the live metrics view of the Performance panel.
-   */
-  networkThrottling: "Network:",
   /**
    * @description Tooltip text explaining why the user should adjust throttling settings in the Performance panel.
    */
@@ -7982,8 +7976,8 @@ function renderRecordingSettings(input) {
     <div class="device-toolbar-description">${Insights4.Helpers.md(i18nString12(UIStrings13.useDeviceToolbar))}</div>
     ${fieldEnabled ? html10`
       <ul class="environment-recs-list">
-        <li>${uiI18n4.getFormatLocalizedStringTemplate(str_13, UIStrings13.device, { PH1: html10`<span class="environment-rec">${deviceRec}</span>` })}</li>
-        <li>${uiI18n4.getFormatLocalizedStringTemplate(str_13, UIStrings13.network, { PH1: html10`<span class="environment-rec">${networkRec}</span>` })}</li>
+        <li>${i18nString12(UIStrings13.device)} <span class="environment-rec">${deviceRec}</span></li>
+        <li>${i18nString12(UIStrings13.network)} <span class="environment-rec">${networkRec}</span></li>
       </ul>
     ` : nothing10}
     <div class="environment-option">
@@ -7995,7 +7989,7 @@ function renderRecordingSettings(input) {
     </div>
     <div class="environment-option">
       <label class="environment-option-label">
-        ${i18nString12(UIStrings13.networkThrottling)}
+        ${i18nString12(UIStrings13.network)}
         <select
           ${widget2(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
     bindToGlobalConditions: true
@@ -8025,31 +8019,35 @@ function renderPageScopeSetting(input) {
   const accessibleTitle = i18nString12(UIStrings13.showFieldDataForPage, { PH1: buttonTitle });
   const shouldDisable = !input.cruxManager.pageResult?.["url-ALL"] && !input.cruxManager.pageResult?.["origin-ALL"];
   return html10`
-    <devtools-select-menu
+    <select
       id="page-scope-select"
       class="field-data-option"
-      @selectmenuselected=${input.handlePageScopeSelected}
-      .showDivider=${true}
-      .showArrow=${true}
-      .sideButton=${false}
-      .showSelectedItem=${true}
-      .buttonTitle=${buttonTitle}
-      .disabled=${shouldDisable}
+      @change=${(e) => input.handlePageScopeSelected(e.target.value)}
+      ?disabled=${shouldDisable}
       title=${accessibleTitle}
+      aria-label=${accessibleTitle}
+      .value=${live2(input.cruxManager.fieldPageScope)}
+      jslog=${VisualLogging7.dropDown("page-scope").track({
+    change: true
+  })}
     >
-      <devtools-menu-item
-        .value=${"url"}
-        .selected=${input.cruxManager.fieldPageScope === "url"}
+      <option
+        value="url"
+        jslog=${VisualLogging7.item("url").track({
+    click: true
+  })}
       >
         ${urlLabel}
-      </devtools-menu-item>
-      <devtools-menu-item
-        .value=${"origin"}
-        .selected=${input.cruxManager.fieldPageScope === "origin"}
+      </option>
+      <option
+        value="origin"
+        jslog=${VisualLogging7.item("origin").track({
+    click: true
+  })}
       >
         ${originLabel}
-      </devtools-menu-item>
-    </devtools-select-menu>
+      </option>
+    </select>
   `;
 }
 function renderDeviceScopeSetting(input) {
@@ -8058,30 +8056,32 @@ function renderDeviceScopeSetting(input) {
   }
   const shouldDisable = !input.cruxManager.getFieldResponse(input.cruxManager.fieldPageScope, "ALL");
   const currentDeviceLabel = getLabelForDeviceOption(input.cruxManager, input.cruxManager.fieldDeviceOption);
+  const accessibleTitle = i18nString12(UIStrings13.showFieldDataForDevice, { PH1: currentDeviceLabel });
   return html10`
-    <devtools-select-menu
-      id="device-scope-select"
-      class="field-data-option"
-      @selectmenuselected=${input.handleDeviceOptionSelected}
-      .showDivider=${true}
-      .showArrow=${true}
-      .sideButton=${false}
-      .showSelectedItem=${true}
-      .buttonTitle=${i18nString12(UIStrings13.device, { PH1: currentDeviceLabel })}
-      .disabled=${shouldDisable}
-      title=${i18nString12(UIStrings13.showFieldDataForDevice, { PH1: currentDeviceLabel })}
-    >
-      ${DEVICE_OPTION_LIST.map((deviceOption) => {
+    <label class="field-data-option">
+      ${i18nString12(UIStrings13.device)}
+      <select
+        id="device-scope-select"
+        @change=${(e) => input.handleDeviceOptionSelected(e.target.value)}
+        ?disabled=${shouldDisable}
+        title=${accessibleTitle}
+        aria-label=${accessibleTitle}
+        .value=${live2(input.cruxManager.fieldDeviceOption)}
+        jslog=${VisualLogging7.dropDown("device-scope").track({ change: true })}
+      >
+        ${DEVICE_OPTION_LIST.map((deviceOption) => {
     return html10`
-          <devtools-menu-item
-            .value=${deviceOption}
-            .selected=${input.cruxManager.fieldDeviceOption === deviceOption}
-          >
-            ${getLabelForDeviceOption(input.cruxManager, deviceOption)}
-          </devtools-menu-item>
-        `;
+            <option
+              value=${deviceOption}
+              ?selected=${input.cruxManager.fieldDeviceOption === deviceOption}
+              jslog=${VisualLogging7.item(Platform6.StringUtilities.toKebabCase(deviceOption)).track({ click: true })}
+            >
+              ${getLabelForDeviceOption(input.cruxManager, deviceOption)}
+            </option>
+          `;
   })}
-    </devtools-select-menu>
+      </select>
+    </label>
   `;
 }
 function renderFieldDataHistoryLink(cruxManager) {
@@ -8485,16 +8485,16 @@ var LiveMetricsView = class extends UI9.Widget.Widget {
       this
     );
   }
-  #onPageScopeMenuItemSelected(event) {
-    if (event.itemValue === "url") {
+  #onPageScopeMenuItemSelected(pageScope) {
+    if (pageScope === "url") {
       this.#cruxManager.fieldPageScope = "url";
     } else {
       this.#cruxManager.fieldPageScope = "origin";
     }
     this.requestUpdate();
   }
-  #onDeviceOptionMenuItemSelected(event) {
-    this.#cruxManager.fieldDeviceOption = event.itemValue;
+  #onDeviceOptionMenuItemSelected(deviceOption) {
+    this.#cruxManager.fieldDeviceOption = deviceOption;
     this.requestUpdate();
   }
   async #revealInteraction(interaction) {
@@ -8913,7 +8913,7 @@ __export(NetworkRequestTooltip_exports, {
 });
 import "../../../ui/kit/kit.js";
 import * as i18n27 from "../../../core/i18n/i18n.js";
-import * as Platform6 from "../../../core/platform/platform.js";
+import * as Platform7 from "../../../core/platform/platform.js";
 import * as SDK4 from "../../../core/sdk/sdk.js";
 import * as Trace6 from "../../../models/trace/trace.js";
 import * as PerfUI from "../../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -8980,7 +8980,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   Lit11.render(html11`
     <style>${networkRequestTooltip_css_default}</style>
     <div class="performance-card">
-      <div class="url">${Platform6.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_URL_LENGTH2)}</div>
+      <div class="url">${Platform7.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_URL_LENGTH2)}</div>
       <div class="url url--host">${originWithEntity}</div>
 
       <div class="divider"></div>
@@ -9831,7 +9831,7 @@ __export(SidebarAnnotationsTab_exports, {
 import "../../../ui/components/settings/settings.js";
 import * as Common5 from "../../../core/common/common.js";
 import * as i18n33 from "../../../core/i18n/i18n.js";
-import * as Platform7 from "../../../core/platform/platform.js";
+import * as Platform8 from "../../../core/platform/platform.js";
 import * as Trace9 from "../../../models/trace/trace.js";
 import * as TraceBounds3 from "../../../services/trace_bounds/trace_bounds.js";
 import * as UI13 from "../../../ui/legacy/legacy.js";
@@ -10071,7 +10071,7 @@ var SidebarAnnotationsTab = class extends UI13.Widget.Widget {
         return annotation.bounds.min;
       }
       default: {
-        Platform7.assertNever(annotation, `Invalid annotation type ${annotation}`);
+        Platform8.assertNever(annotation, `Invalid annotation type ${annotation}`);
       }
     }
   }
@@ -10138,7 +10138,7 @@ function detailedAriaDescriptionForAnnotation(annotation) {
       });
     }
     default:
-      Platform7.assertNever(annotation, "Unsupported annotation");
+      Platform8.assertNever(annotation, "Unsupported annotation");
   }
 }
 function findTextColorForContrast(bgColorText) {
@@ -10197,7 +10197,7 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
     `;
     }
     default:
-      Platform7.assertNever(annotation, "Unsupported annotation type");
+      Platform8.assertNever(annotation, "Unsupported annotation type");
   }
 }
 function renderEntryToIdentifier(annotation, annotationEntryToColorMap) {
@@ -10225,7 +10225,7 @@ function jslogForAnnotation(annotation) {
     case "ENTRIES_LINK":
       return "entries-link";
     default:
-      Platform7.assertNever(annotation, "unknown annotation type");
+      Platform8.assertNever(annotation, "unknown annotation type");
   }
 }
 function renderTutorial() {
@@ -11002,7 +11002,7 @@ __export(TimelineRangeSummaryView_exports, {
   TimelineRangeSummaryView: () => TimelineRangeSummaryView,
   statsForTimeRange: () => statsForTimeRange
 });
-import * as Platform9 from "../../../core/platform/platform.js";
+import * as Platform10 from "../../../core/platform/platform.js";
 import * as Trace12 from "../../../models/trace/trace.js";
 import * as UI18 from "../../../ui/legacy/legacy.js";
 import * as Lit19 from "../../../ui/lit/lit.js";
@@ -11060,7 +11060,7 @@ __export(TimelineSummary_exports, {
   CategorySummary: () => CategorySummary
 });
 import * as i18n37 from "../../../core/i18n/i18n.js";
-import * as Platform8 from "../../../core/platform/platform.js";
+import * as Platform9 from "../../../core/platform/platform.js";
 import * as Buttons9 from "../../../ui/components/buttons/buttons.js";
 import * as UI17 from "../../../ui/legacy/legacy.js";
 import * as Lit18 from "../../../ui/lit/lit.js";
@@ -11176,7 +11176,7 @@ var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
             <div class="category-summary">
                 ${input.categories.map((category) => {
     return html18`
-                        <div class="category-row" jslog=${VisualLogging10.item(category.name || Platform8.StringUtilities.toKebabCase(category.title))}>
+                        <div class="category-row" jslog=${VisualLogging10.item(category.name || Platform9.StringUtilities.toKebabCase(category.title))}>
                         <div class="category-swatch" style="background-color: ${category.color};"></div>
                         <div class="category-name">${category.title}</div>
                         <div class="category-value" jslog=${VisualLogging10.value()}>
@@ -11317,7 +11317,7 @@ function statsForTimeRange(events, startTime, endTime) {
     const cache = events[categoryBreakdownCacheSymbol];
     for (const category in cache) {
       const categoryCache = cache[category];
-      const index = Platform9.ArrayUtilities.upperBound(categoryCache.time, time, Platform9.ArrayUtilities.DEFAULT_COMPARATOR);
+      const index = Platform10.ArrayUtilities.upperBound(categoryCache.time, time, Platform10.ArrayUtilities.DEFAULT_COMPARATOR);
       let value2;
       if (index === 0) {
         value2 = 0;

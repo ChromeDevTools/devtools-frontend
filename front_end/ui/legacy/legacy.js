@@ -653,7 +653,7 @@ __export(Dialog_exports, {
 });
 import * as Common16 from "../../core/common/common.js";
 import * as i18n27 from "../../core/i18n/i18n.js";
-import { nothing as nothing4, render as render10 } from "../lit/lit.js";
+import { nothing as nothing5, render as render10 } from "../lit/lit.js";
 import * as Buttons7 from "../components/buttons/buttons.js";
 import * as VisualLogging17 from "../visual_logging/visual_logging.js";
 
@@ -841,7 +841,7 @@ import * as Root8 from "../../core/root/root.js";
 import * as Buttons5 from "../components/buttons/buttons.js";
 import * as VisualLogging15 from "../visual_logging/visual_logging.js";
 import { createIcon as createIcon7 } from "../kit/kit.js";
-import { nothing as nothing2, render as render7 } from "../lit/lit.js";
+import { nothing as nothing3, render as render7 } from "../lit/lit.js";
 import * as SettingUIRegistration from "../settings/settings.js";
 
 // ../../front_end/ui/legacy/ContextMenu.ts
@@ -5269,6 +5269,8 @@ var TabbedPane = class extends TabbedPaneBase {
     this.registerRequiredCSS(tabbedPane_css_default);
     this.element.classList.add("tabbed-pane");
     this.contentElement.classList.add("tabbed-pane-shadow");
+    this.element.classList.add("flex-auto", "vbox");
+    this.contentElement.classList.add("flex-auto", "vbox");
     this.contentElement.tabIndex = -1;
     this.setDefaultFocusedElement(this.contentElement);
     this.#headerElement = this.contentElement.createChild("div", "tabbed-pane-header");
@@ -5637,55 +5639,6 @@ var TabbedPane = class extends TabbedPaneBase {
       enabled: this.tabIsEnabled(tab.id),
       selected: this.currentTab?.id === tab.id
     }));
-  }
-  set tabs(tabs) {
-    const newIds = new Set(tabs.map((tab) => tab.id));
-    for (const id2 of this.tabsById.keys()) {
-      if (!newIds.has(id2)) {
-        this.#closeTab(id2);
-      }
-    }
-    let index = 0;
-    for (const tab of tabs) {
-      const existingTab = this.tabsById.get(tab.id);
-      if (existingTab) {
-        this.changeTabView(tab.id, tab.view);
-        this.changeTabTitle(tab.id, tab.title, tab.tabTooltip);
-        if (tab.jslogContext !== void 0) {
-          existingTab.jslogContext = tab.jslogContext;
-        }
-        if (tab.isCloseable !== void 0) {
-          existingTab.closeable = tab.isCloseable;
-        }
-        if (tab.previewFeature !== void 0) {
-          existingTab.previewFeature = tab.previewFeature;
-        }
-        const currentIndex = this.#tabs.indexOf(existingTab);
-        if (currentIndex !== index) {
-          this.insertBefore(existingTab, index);
-        }
-      } else {
-        this.appendTab(
-          tab.id,
-          tab.title,
-          tab.view,
-          tab.tabTooltip,
-          /* userGesture=*/
-          false,
-          tab.isCloseable,
-          tab.previewFeature,
-          index,
-          tab.jslogContext
-        );
-      }
-      if (tab.enabled !== void 0) {
-        this.setTabEnabled(tab.id, tab.enabled);
-      }
-      if (tab.selected) {
-        this.selectTab(tab.id);
-      }
-      ++index;
-    }
   }
   onResize() {
     if (this.currentDevicePixelRatio !== window.devicePixelRatio) {
@@ -6603,41 +6556,72 @@ var TabbedPaneElement = class extends WidgetElement {
     this.#automaticReorder = automatic;
     this.getWidget()?.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
   }
+  get tabs() {
+    const widget2 = Widget.getOrCreateWidget(this);
+    if (widget2) {
+      this.#updateTabs(widget2);
+      return widget2.tabs;
+    }
+    return [];
+  }
+  #delegate;
+  set tabDelegate(delegate) {
+    this.#delegate = delegate;
+    this.getWidget()?.setTabDelegate(delegate);
+  }
+  #placeholderElement;
+  #managedTabIds = /* @__PURE__ */ new Set();
+  set placeholder(element) {
+    this.#placeholderElement = element;
+    this.getWidget()?.setPlaceholderElement(element);
+  }
   #tabObserver = new MutationObserver(() => this.#updateTabs());
   constructor() {
     super();
-    registerWidgetConfig(this, widgetConfig((element) => {
-      const widget2 = new TabbedPane(element);
-      widget2.setCloseableTabs(this.#closeableTabs);
-      widget2.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
-      const slot = widget2.contentElement.querySelector("slot:not([name])");
-      if (slot) {
-        slot.addEventListener("slotchange", () => this.#syncTabs());
-      }
-      widget2.addEventListener("TabSelected" /* TabSelected */, () => {
-        const slot2 = widget2.contentElement.querySelector("slot:not([name])");
-        const nodes = slot2 ? slot2.assignedElements() : [];
-        for (const child of nodes) {
-          if (child.id === widget2.selectedTabId) {
-            child.setAttribute("selected", "");
-          } else {
-            child.removeAttribute("selected");
-          }
+    registerWidgetConfig(
+      this,
+      widgetConfig((element) => {
+        const widget2 = new TabbedPane(element);
+        widget2.setCloseableTabs(this.#closeableTabs);
+        widget2.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
+        if (this.#delegate) {
+          widget2.setTabDelegate(this.#delegate);
         }
-        this.dispatchEvent(new CustomEvent("select", { detail: { tabId: widget2.selectedTabId } }));
-      });
-      widget2.addEventListener("TabClosed" /* TabClosed */, (event) => {
-        this.dispatchEvent(new CustomEvent("close", { detail: { tabId: event.data.tabId } }));
-      });
-      widget2.addEventListener("TabOrderChanged" /* TabOrderChanged */, (event) => {
-        this.dispatchEvent(new CustomEvent(
-          "taborderchanged",
-          { detail: { tabId: event.data.tabId, tabIds: widget2.tabIds() } }
-        ));
-      });
-      this.#syncTabs(widget2);
-      return widget2;
-    }));
+        const slot = widget2.contentElement.querySelector("slot:not([name])");
+        if (slot) {
+          slot.addEventListener("slotchange", () => this.#syncTabs());
+        }
+        widget2.addEventListener("TabSelected" /* TabSelected */, (event) => {
+          const nodes = this.#getTabNodes(widget2);
+          for (const child of nodes) {
+            if (child.id === widget2.selectedTabId) {
+              child.setAttribute("selected", "");
+            } else {
+              child.removeAttribute("selected");
+            }
+          }
+          this.dispatchEvent(new CustomEvent(
+            "select",
+            { detail: { tabId: widget2.selectedTabId, isUserGesture: event.data?.isUserGesture } }
+          ));
+        });
+        widget2.addEventListener("TabClosed" /* TabClosed */, (event) => {
+          this.dispatchEvent(
+            new CustomEvent("close", { detail: { tabId: event.data.tabId, isUserGesture: event.data.isUserGesture } })
+          );
+        });
+        widget2.addEventListener("TabOrderChanged" /* TabOrderChanged */, (event) => {
+          this.dispatchEvent(
+            new CustomEvent("taborderchanged", { detail: { tabId: event.data.tabId, tabIds: widget2.tabIds() } })
+          );
+        });
+        if (this.#placeholderElement) {
+          widget2.setPlaceholderElement(this.#placeholderElement);
+        }
+        this.#syncTabs(widget2);
+        return widget2;
+      })
+    );
   }
   disconnectedCallback() {
     super.disconnectedCallback();
@@ -6652,8 +6636,7 @@ var TabbedPaneElement = class extends WidgetElement {
   }
   #updateObserver(widget2) {
     this.#tabObserver.disconnect();
-    const slot = widget2.contentElement.querySelector("slot:not([name])");
-    const nodes = slot ? slot.assignedElements() : [];
+    const nodes = this.#getTabNodes(widget2);
     for (const child of nodes) {
       this.#tabObserver.observe(child, {
         attributes: true,
@@ -6661,13 +6644,15 @@ var TabbedPaneElement = class extends WidgetElement {
       });
     }
   }
+  #getTabNodes(widget2) {
+    return Array.from(widget2.element.children).filter((c) => c.id !== "" && !c.hasAttribute("slot") && !c.classList.contains("tabbed-pane-header") && !c.classList.contains("tabbed-pane-content"));
+  }
   #updateTabs(widget2 = this.getWidget()) {
     if (!widget2) {
       return;
     }
     const tabs = [];
-    const slot = widget2.contentElement.querySelector("slot:not([name])");
-    const nodes = slot ? slot.assignedElements() : [];
+    const nodes = this.#getTabNodes(widget2);
     for (const child of nodes) {
       const id2 = child.id;
       const title = child.getAttribute("title") || "";
@@ -6675,13 +6660,12 @@ var TabbedPaneElement = class extends WidgetElement {
       const selected = child.hasAttribute("selected");
       const enabled = !child.hasAttribute("disabled");
       const isCloseable = child.hasAttribute("closeable") ? true : child.hasAttribute("uncloseable") ? false : void 0;
+      const icon = child.querySelector('[slot="icon"]') ?? void 0;
+      const suffix = child.querySelector('[slot="suffix"]') ?? void 0;
       const view = Widget.getOrCreateWidget(child);
       view.setHideOnDetach();
       if (widget2.selectedTabId !== id2) {
-        view.hideWidget();
         child.classList.add("hidden");
-      } else {
-        view.showWidget();
       }
       tabs.push({
         id: id2,
@@ -6690,10 +6674,65 @@ var TabbedPaneElement = class extends WidgetElement {
         jslogContext,
         selected,
         enabled,
-        isCloseable
+        isCloseable,
+        icon,
+        suffix
       });
     }
-    widget2.tabs = tabs;
+    const newIds = new Set(tabs.map((tab) => tab.id));
+    for (const id2 of this.#managedTabIds) {
+      if (!newIds.has(id2)) {
+        widget2.closeTab(id2);
+      }
+    }
+    this.#managedTabIds = newIds;
+    let index = 0;
+    for (const tab of tabs) {
+      const existingTab = widget2.tabsById.get(tab.id);
+      if (existingTab) {
+        widget2.changeTabView(tab.id, tab.view);
+        widget2.changeTabTitle(tab.id, tab.title, tab.tabTooltip);
+        if (tab.jslogContext !== void 0) {
+          existingTab.jslogContext = tab.jslogContext;
+        }
+        if (tab.isCloseable !== void 0) {
+          existingTab.closeable = tab.isCloseable;
+        }
+        if (tab.previewFeature !== void 0) {
+          existingTab.previewFeature = tab.previewFeature;
+        }
+        const currentIndex = widget2.tabIndex(tab.id);
+        if (currentIndex !== index) {
+          widget2.insertBefore(existingTab, index);
+        }
+      } else {
+        widget2.appendTab(
+          tab.id,
+          tab.title,
+          tab.view,
+          tab.tabTooltip,
+          /* userGesture=*/
+          false,
+          tab.isCloseable,
+          tab.previewFeature,
+          index,
+          tab.jslogContext
+        );
+      }
+      if (tab.icon !== void 0) {
+        widget2.setTabIcon(tab.id, tab.icon);
+      }
+      if (tab.suffix !== void 0) {
+        widget2.setSuffixElement(tab.id, tab.suffix);
+      }
+      if (tab.enabled !== void 0) {
+        widget2.setTabEnabled(tab.id, tab.enabled);
+      }
+      if (tab.selected) {
+        widget2.selectTab(tab.id);
+      }
+      ++index;
+    }
   }
 };
 customElements.define("devtools-tabbed-pane", TabbedPaneElement);
@@ -9189,14 +9228,14 @@ var InspectorView = class _InspectorView extends VBox {
       });
     }
   }
-  renderStatusBar() {
+  renderStatusBar(visible = true) {
     if (!this.#statusBarContainer) {
       this.#statusBarContainer = document.createElement("div");
       this.#statusBarContainer.style.display = "contents";
       this.element.appendChild(this.#statusBarContainer);
     }
     Lit3.render(
-      html4`<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>`,
+      visible ? html4`<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>` : Lit3.nothing,
       this.#statusBarContainer
     );
   }
@@ -13500,7 +13539,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
       }
     }
     this.items = [];
-    render7(nothing2, this);
+    render7(nothing3, this);
   }
   hideSeparatorDupes() {
     if (!this.items.length) {
@@ -17638,6 +17677,12 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
     render9(template, this.#contentTemplate.content);
   }
+  flushPendingMutationsForTesting() {
+    const records = this.#mutationObserver.takeRecords();
+    if (records.length > 0) {
+      this.#onChange(records);
+    }
+  }
   #onChange(mutationList) {
     this.onChange(mutationList);
     const addedNodes = /* @__PURE__ */ new Set();
@@ -18352,7 +18397,7 @@ var DialogWidget = class extends DialogWidgetBase {
   #open = false;
   #jslogContext = "";
   #dialogStack = false;
-  #content = nothing4;
+  #content = nothing5;
   #dialog = new Dialog();
   constructor(element) {
     super(element);
@@ -18412,7 +18457,7 @@ var DialogWidget = class extends DialogWidgetBase {
   }
   performUpdate() {
     if (this.open) {
-      render10(this.#content ?? nothing4, this.#dialog.contentElement);
+      render10(this.#content ?? nothing5, this.#dialog.contentElement);
       if (!this.#dialog.isShowing()) {
         this.#dialog.show(this.contentElement.ownerDocument, this.#dialogStack);
         this.#dialog.contentElement.focus();
@@ -19892,7 +19937,7 @@ __export(ListWidget_exports, {
 import * as i18n33 from "../../core/i18n/i18n.js";
 import * as Platform21 from "../../core/platform/platform.js";
 import * as Buttons8 from "../components/buttons/buttons.js";
-import { html as html7, nothing as nothing5, render as render12 } from "../lit/lit.js";
+import { html as html7, nothing as nothing6, render as render12 } from "../lit/lit.js";
 import * as VisualLogging20 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -20243,7 +20288,7 @@ var ListWidget = class extends VBox {
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
-          ${controlLabels?.hideEdit ? nothing5 : html7`<devtools-button class=toolbar-button
+          ${controlLabels?.hideEdit ? nothing6 : html7`<devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
                            .title=${controlLabels?.edit ?? i18nString17(UIStrings17.editString)}
@@ -24068,9 +24113,9 @@ var TreeElement = class {
       this.listItemNode.classList.remove("force-white-icons");
     }
   }
-  revealAndSelect(omitFocus) {
+  revealAndSelect(omitFocus, selectedByUser) {
     this.reveal(true);
-    this.select(omitFocus);
+    this.select(omitFocus, selectedByUser ?? false);
   }
   deselect() {
     const hadFocus = this.listItemNode.hasFocus();
@@ -24346,9 +24391,15 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
     }
     this.#refreshScheduled = true;
     queueMicrotask(() => {
-      this.#refreshScheduled = false;
-      this.refresh();
+      if (this.#refreshScheduled) {
+        this.refresh();
+      }
     });
+  }
+  flushPendingRefreshForTesting() {
+    if (this.#refreshScheduled) {
+      this.refresh();
+    }
   }
   updateAttributes() {
     const expandable = Boolean(this.configElement.querySelector(':scope > ul[role="group"]'));
@@ -24373,6 +24424,7 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
     this.updateExpansionFromAttribute();
   }
   refresh() {
+    this.#refreshScheduled = false;
     const hadFocus = this.listItemElement.hasFocus();
     this.titleElement.textContent = "";
     this.updateAttributes();
@@ -24408,7 +24460,7 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
     }
     return super.onenter();
   }
-  remove() {
+  removeFromTree() {
     removeNode(
       this,
       Boolean(this.parent && this.parent.configElement?.querySelector(':scope > ul[role="group"]'))
@@ -24495,6 +24547,25 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
   }
   getInternalTreeOutlineForTest() {
     return this.#treeOutline;
+  }
+  flushPendingUpdatesForTesting() {
+    this.flushPendingMutationsForTesting();
+    const stack = [...this.#treeOutline.rootElement().children()];
+    while (stack.length > 0) {
+      const item8 = stack.pop();
+      if (!item8) {
+        continue;
+      }
+      if (item8 instanceof TreeViewTreeElement) {
+        item8.flushPendingRefreshForTesting();
+      }
+      if (item8.children()) {
+        stack.push(...item8.children());
+      }
+    }
+    for (const widgetEl of this.#treeOutline.shadowRoot.querySelectorAll("devtools-widget")) {
+      void Widget.get(widgetEl)?.performUpdate();
+    }
   }
   focus() {
     if (!this.#treeOutline.selectedTreeElement && this.#treeOutline.firstChild()) {
@@ -24633,7 +24704,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
   removeNodes(nodes) {
     for (const node of getTreeNodes(nodes)) {
       if (node instanceof HTMLLIElement) {
-        TreeViewTreeElement.get(node)?.remove();
+        TreeViewTreeElement.get(node)?.removeFromTree();
       } else if (node.treeElement) {
         removeNode(
           node.treeElement,

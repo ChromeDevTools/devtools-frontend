@@ -77,6 +77,9 @@
       "path": "../bindings/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../formatter/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../workspace/bundle-tsconfig.ref.json"
     }
   ]

@@ -8,6 +8,7 @@ export var Events;
 (function (Events) {
     Events["COMMENT_THREADS_CHANGED"] = "CommentThreadsChanged";
     Events["COMMENT_MODE_CHANGED"] = "CommentModeChanged";
+    Events["AGENT_ATTACHED_CHANGED"] = "AgentAttachedChanged";
 })(Events || (Events = {}));
 /**
  * Headless model managing comment thread data, CRUD operations, and comment mode.
@@ -15,12 +16,26 @@ export var Events;
 export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
     #commentThreads = new Map();
     #commentMode = false;
+    #agentAttached = false;
     constructor() {
         super();
         CommentThread.resetIndex();
     }
     #onThreadChanged() {
         this.dispatchEventToListeners("CommentThreadsChanged" /* Events.COMMENT_THREADS_CHANGED */, this.getCommentThreads());
+    }
+    setAgentAttached(value) {
+        if (this.#agentAttached === value) {
+            return;
+        }
+        this.#agentAttached = value;
+        if (!value) {
+            this.setCommentMode(false);
+        }
+        this.dispatchEventToListeners("AgentAttachedChanged" /* Events.AGENT_ATTACHED_CHANGED */, value);
+    }
+    isAgentAttached() {
+        return this.#agentAttached;
     }
     setCommentMode(active) {
         if (this.#commentMode === active) {

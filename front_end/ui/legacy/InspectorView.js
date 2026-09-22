@@ -718,14 +718,14 @@ export class InspectorView extends VBox {
             });
         }
     }
-    renderStatusBar() {
+    renderStatusBar(visible = true) {
         if (!this.#statusBarContainer) {
             this.#statusBarContainer = document.createElement('div');
             this.#statusBarContainer.style.display = 'contents';
             this.element.appendChild(this.#statusBarContainer);
         }
         // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        Lit.render(html `<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>`, this.#statusBarContainer);
+        Lit.render(visible ? html `<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>` : Lit.nothing, this.#statusBarContainer);
     }
     createInfoBarDiv() {
         if (!this.infoBarDiv) {

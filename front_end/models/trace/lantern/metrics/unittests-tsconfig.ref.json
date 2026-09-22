@@ -31,6 +31,9 @@
       "path": "../bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../../testing/testing-tsconfig.ref.json"
     },
     {

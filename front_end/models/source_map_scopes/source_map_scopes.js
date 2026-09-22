@@ -3419,6 +3419,7 @@ var ScopeWithSourceMappedVariables = class {
   /** The resolved `this` of the current call frame */
   #thisObject;
   #debuggerWorkspaceBinding;
+  #object;
   constructor(scope, thisObject, debuggerWorkspaceBinding) {
     this.#debuggerScope = scope;
     this.#thisObject = thisObject;
@@ -3440,7 +3441,10 @@ var ScopeWithSourceMappedVariables = class {
     return this.#debuggerScope.range();
   }
   object() {
-    return resolveScopeInObject(this.#debuggerScope, this.#debuggerWorkspaceBinding);
+    if (!this.#object) {
+      this.#object = resolveScopeInObject(this.#debuggerScope, this.#debuggerWorkspaceBinding);
+    }
+    return this.#object;
   }
   description() {
     return this.#debuggerScope.description();
@@ -3470,6 +3474,8 @@ var RemoteObject2 = class extends SDK2.RemoteObject.RemoteObject {
   scope;
   object;
   #debuggerWorkspaceBinding;
+  #allPropertiesPromise;
+  #cachedWithPreview = false;
   constructor(scope, debuggerWorkspaceBinding) {
     super();
     this.scope = scope;
@@ -3507,6 +3513,16 @@ var RemoteObject2 = class extends SDK2.RemoteObject.RemoteObject {
     return this.object.getOwnProperties(generatePreview);
   }
   async getAllProperties(accessorPropertiesOnly, generatePreview) {
+    if (accessorPropertiesOnly) {
+      return await this.#resolveAllProperties(true, generatePreview);
+    }
+    if (!this.#allPropertiesPromise || generatePreview && !this.#cachedWithPreview) {
+      this.#cachedWithPreview = generatePreview;
+      this.#allPropertiesPromise = this.#resolveAllProperties(false, generatePreview);
+    }
+    return await this.#allPropertiesPromise;
+  }
+  async #resolveAllProperties(accessorPropertiesOnly, generatePreview) {
     const allProperties = await this.object.getAllProperties(accessorPropertiesOnly, generatePreview);
     const { variableMapping } = await resolveDebuggerScope(this.scope, this.#debuggerWorkspaceBinding);
     const properties = allProperties.properties;
@@ -3518,6 +3534,8 @@ var RemoteObject2 = class extends SDK2.RemoteObject.RemoteObject {
     return { properties: newProperties ?? [], internalProperties };
   }
   async setPropertyValue(argumentName, value) {
+    this.#allPropertiesPromise = void 0;
+    this.#cachedWithPreview = false;
     const { variableMapping } = await resolveDebuggerScope(this.scope, this.#debuggerWorkspaceBinding);
     let name;
     if (typeof argumentName === "string") {
@@ -3535,6 +3553,8 @@ var RemoteObject2 = class extends SDK2.RemoteObject.RemoteObject {
     return await this.object.setPropertyValue(actualName, value);
   }
   async deleteProperty(name) {
+    this.#allPropertiesPromise = void 0;
+    this.#cachedWithPreview = false;
     return await this.object.deleteProperty(name);
   }
   callFunction(functionDeclaration, args) {
@@ -3627,7 +3647,8 @@ __export(ScopeChainModel_exports, {
 });
 import * as Common from "../../core/common/common.js";
 import * as SDK3 from "../../core/sdk/sdk.js";
-var ScopeChainModel = class extends Common.ObjectWrapper.ObjectWrapper {
+var ScopeChainModel = class _ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper {
+  static #cachedScopeChainByCallFrame = /* @__PURE__ */ new WeakMap();
   #callFrame;
   #debuggerWorkspaceBinding;
   /** We use the `Throttler` here to make sure that `#boundUpdate` is not run multiple times simultanously */
@@ -3672,17 +3693,30 @@ var ScopeChainModel = class extends Common.ObjectWrapper.ObjectWrapper {
     );
     this.listeners?.clear();
   }
+  static resolveScopeChain(callFrame, debuggerWorkspaceBinding) {
+    let cachedPromise = _ScopeChainModel.#cachedScopeChainByCallFrame.get(callFrame);
+    if (!cachedPromise) {
+      cachedPromise = resolveScopeChain(callFrame, debuggerWorkspaceBinding);
+      _ScopeChainModel.#cachedScopeChainByCallFrame.set(callFrame, cachedPromise);
+    }
+    return cachedPromise;
+  }
+  resolveScopeChain() {
+    return _ScopeChainModel.resolveScopeChain(this.#callFrame, this.#debuggerWorkspaceBinding);
+  }
   async #update() {
-    const scopeChain = await resolveScopeChain(this.#callFrame, this.#debuggerWorkspaceBinding);
+    const scopeChain = await this.resolveScopeChain();
     this.dispatchEventToListeners("ScopeChainUpdated" /* SCOPE_CHAIN_UPDATED */, new ScopeChain(scopeChain));
   }
   #debugInfoAttached(event) {
     if (event.data === this.#callFrame.script) {
+      _ScopeChainModel.#cachedScopeChainByCallFrame.delete(this.#callFrame);
       void this.#throttler.schedule(this.#boundUpdate);
     }
   }
   #sourceMapChanged(event) {
     if (event.data.client === this.#callFrame.script) {
+      _ScopeChainModel.#cachedScopeChainByCallFrame.delete(this.#callFrame);
       void this.#throttler.schedule(this.#boundUpdate);
     }
   }

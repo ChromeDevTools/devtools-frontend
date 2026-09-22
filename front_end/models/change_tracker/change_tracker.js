@@ -25,7 +25,7 @@ var ChangeTracker = class {
     return this.#maxRecords;
   }
   get isTracking() {
-    return Boolean(Root.Runtime.hostConfig.devToolsComments?.enabled);
+    return Boolean(Root.Runtime.hostConfig.devToolsComments?.enabled) && this.#commentManager.isAgentAttached();
   }
   trackChange(description, anchor) {
     if (!this.isTracking) {

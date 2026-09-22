@@ -81,6 +81,12 @@
       "path": "../../lighthouse/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../logs/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../network_time_calculator/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../trace/bundle-tsconfig.ref.json"
     },
     {

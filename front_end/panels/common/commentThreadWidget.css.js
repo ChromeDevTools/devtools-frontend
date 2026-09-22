@@ -32,6 +32,7 @@ export default `/*
     width: 100%;
     justify-content: space-between;
     align-items: center;
+    gap: var(--sys-size-4);
   }
 
   .sent-status {
@@ -40,6 +41,7 @@ export default `/*
     gap: var(--sys-size-2);
     font-size: var(--sys-typescale-body5-size);
     color: var(--sys-color-on-surface-subtle);
+    flex-shrink: 0;
   }
 
   .check-icon {
@@ -158,7 +160,23 @@ export default `/*
     padding: var(--sys-size-4) var(--sys-size-5);
   }
 
+  .tooltip-link {
+    display: block;
+    margin-top: var(--sys-size-4);
+    color: var(--sys-color-primary);
+    padding-left: 0;
+    background: none;
+    border: none;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .selected-item devtools-widget,
   .selected-item-text {
+    display: block;
+    flex: 0 1 auto;
+    min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

@@ -1,6 +1,7 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+var _a;
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import { resolveScopeChain } from './NamesResolver.js';
@@ -17,6 +18,7 @@ import { resolveScopeChain } from './NamesResolver.js';
  * This class tracks all that and sends events with the latest scope chain for a specific call frame.
  */
 export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper {
+    static #cachedScopeChainByCallFrame = new WeakMap();
     #callFrame;
     #debuggerWorkspaceBinding;
     /** We use the `Throttler` here to make sure that `#boundUpdate` is not run multiple times simultanously */
@@ -37,21 +39,35 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper {
         this.#callFrame.debuggerModel.sourceMapManager().removeEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this.#sourceMapChanged, this);
         this.listeners?.clear();
     }
+    static resolveScopeChain(callFrame, debuggerWorkspaceBinding) {
+        let cachedPromise = _a.#cachedScopeChainByCallFrame.get(callFrame);
+        if (!cachedPromise) {
+            cachedPromise = resolveScopeChain(callFrame, debuggerWorkspaceBinding);
+            _a.#cachedScopeChainByCallFrame.set(callFrame, cachedPromise);
+        }
+        return cachedPromise;
+    }
+    resolveScopeChain() {
+        return _a.resolveScopeChain(this.#callFrame, this.#debuggerWorkspaceBinding);
+    }
     async #update() {
-        const scopeChain = await resolveScopeChain(this.#callFrame, this.#debuggerWorkspaceBinding);
+        const scopeChain = await this.resolveScopeChain();
         this.dispatchEventToListeners("ScopeChainUpdated" /* Events.SCOPE_CHAIN_UPDATED */, new ScopeChain(scopeChain));
     }
     #debugInfoAttached(event) {
         if (event.data === this.#callFrame.script) {
+            _a.#cachedScopeChainByCallFrame.delete(this.#callFrame);
             void this.#throttler.schedule(this.#boundUpdate);
         }
     }
     #sourceMapChanged(event) {
         if (event.data.client === this.#callFrame.script) {
+            _a.#cachedScopeChainByCallFrame.delete(this.#callFrame);
             void this.#throttler.schedule(this.#boundUpdate);
         }
     }
 }
+_a = ScopeChainModel;
 export var Events;
 (function (Events) {
     Events["SCOPE_CHAIN_UPDATED"] = "ScopeChainUpdated";

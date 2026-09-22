@@ -191,6 +191,9 @@
       "path": "../../ui/lit/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/settings/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/visual_logging/bundle-tsconfig.ref.json"
     },
     {

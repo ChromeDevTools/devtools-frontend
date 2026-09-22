@@ -448,6 +448,7 @@ class ScopeWithSourceMappedVariables {
     /** The resolved `this` of the current call frame */
     #thisObject;
     #debuggerWorkspaceBinding;
+    #object;
     constructor(scope, thisObject, debuggerWorkspaceBinding) {
         this.#debuggerScope = scope;
         this.#thisObject = thisObject;
@@ -469,7 +470,10 @@ class ScopeWithSourceMappedVariables {
         return this.#debuggerScope.range();
     }
     object() {
-        return resolveScopeInObject(this.#debuggerScope, this.#debuggerWorkspaceBinding);
+        if (!this.#object) {
+            this.#object = resolveScopeInObject(this.#debuggerScope, this.#debuggerWorkspaceBinding);
+        }
+        return this.#object;
     }
     description() {
         return this.#debuggerScope.description();
@@ -489,6 +493,8 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
     scope;
     object;
     #debuggerWorkspaceBinding;
+    #allPropertiesPromise;
+    #cachedWithPreview = false;
     constructor(scope, debuggerWorkspaceBinding) {
         super();
         this.scope = scope;
@@ -526,6 +532,16 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
         return this.object.getOwnProperties(generatePreview);
     }
     async getAllProperties(accessorPropertiesOnly, generatePreview) {
+        if (accessorPropertiesOnly) {
+            return await this.#resolveAllProperties(true, generatePreview);
+        }
+        if (!this.#allPropertiesPromise || (generatePreview && !this.#cachedWithPreview)) {
+            this.#cachedWithPreview = generatePreview;
+            this.#allPropertiesPromise = this.#resolveAllProperties(false, generatePreview);
+        }
+        return await this.#allPropertiesPromise;
+    }
+    async #resolveAllProperties(accessorPropertiesOnly, generatePreview) {
         const allProperties = await this.object.getAllProperties(accessorPropertiesOnly, generatePreview);
         const { variableMapping } = await resolveDebuggerScope(this.scope, this.#debuggerWorkspaceBinding);
         const properties = allProperties.properties;
@@ -537,6 +553,8 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
         return { properties: newProperties ?? [], internalProperties };
     }
     async setPropertyValue(argumentName, value) {
+        this.#allPropertiesPromise = undefined;
+        this.#cachedWithPreview = false;
         const { variableMapping } = await resolveDebuggerScope(this.scope, this.#debuggerWorkspaceBinding);
         let name;
         if (typeof argumentName === 'string') {
@@ -555,6 +573,8 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
         return await this.object.setPropertyValue(actualName, value);
     }
     async deleteProperty(name) {
+        this.#allPropertiesPromise = undefined;
+        this.#cachedWithPreview = false;
         return await this.object.deleteProperty(name);
     }
     callFunction(functionDeclaration, args) {

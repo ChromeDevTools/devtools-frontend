@@ -1878,6 +1878,12 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
         // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
         render(template, this.#contentTemplate.content);
     }
+    flushPendingMutationsForTesting() {
+        const records = this.#mutationObserver.takeRecords();
+        if (records.length > 0) {
+            this.#onChange(records);
+        }
+    }
     #onChange(mutationList) {
         this.onChange(mutationList);
         const addedNodes = new Set();

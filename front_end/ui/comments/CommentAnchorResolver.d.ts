@@ -4,6 +4,11 @@ export type TimelineAnchorSignature = CommentManager.CommentManager.TimelineAnch
 export type CommentAnchorSignature = CommentManager.CommentManager.CommentAnchorSignature;
 export type CommentThread = CommentManager.CommentManager.CommentThread;
 /**
+ * The comment thread UI itself is never a valid comment target: anything inside it (including the
+ * DOM node link in its header) must stay inert while comment mode is on.
+ */
+export declare const COMMENT_THREAD_UI_SELECTOR = ".comment-thread-widget";
+/**
  * Finds the closest ancestor (or the element itself) matching a CSS selector,
  * traversing across Shadow DOM boundaries (shadow root boundaries to shadow hosts).
  *
@@ -120,7 +125,7 @@ export declare function isTabTitle(element: Element): boolean;
  * Resolves an arbitrary clicked or targeted DOM element to its appropriate semantic comment anchor element.
  *
  * Traversal hierarchy:
- * 1. Checks if the element is part of a tab title (returns null if so).
+ * 1. Checks if the element is part of a tab title or of the comment thread UI (returns null if so).
  * 2. Escalates CodeMirror line/gutter elements to .cm-editor (only if the clicked line is non-empty).
  * 3. Checks for domain IDs (`data-network-request-id` or `data-backend-node-id`) across shadow boundaries,
  *    returning the owning domain element.

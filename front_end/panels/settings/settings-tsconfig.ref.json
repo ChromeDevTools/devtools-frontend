@@ -42,9 +42,6 @@
       "path": "../../core/root/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/sdk/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../models/ai_assistance/bundle-tsconfig.ref.json"
     },
     {

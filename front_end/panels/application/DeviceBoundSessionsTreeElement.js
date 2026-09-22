@@ -7,7 +7,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 const UIStrings = {
     /**
-     *@description Text for section title Application panel sidebar. A website
+     *@description Section title in the sidebar of the Application panel. A website
      * may decide to create a session for a user, for example when the user logs
      * in. They can use a protocol to make it a "device bound session". That
      * means that when the session expires, it is only possible for it to be
@@ -18,36 +18,36 @@ const UIStrings = {
      */
     deviceBoundSessions: 'Device bound sessions',
     /**
-     *@description Empty state description for root tree element and site tree
-     * elements. A website may decide to create a session for a user, for example
-     * when the user logs in. They can use a protocol to make it a "device bound
-     * session". That means that when the session expires, it is only possible
-     * for it to be extended on the device it was created on. Thus the session
-     * is considered to be bound to that device. A session can have various events,
-     * such as when it's first created, when it's extended, or when it's
-     * terminated. For more details on the protocol, see
+     *@description Empty state description for the root tree element and site tree
+     * elements in the Application panel sidebar. A website may decide to create a
+     * session for a user, for example when the user logs in. They can use a
+     * protocol to make it a "device bound session". That means that when the
+     * session expires, it is only possible for it to be extended on the device it
+     * was created on. Thus the session is considered to be bound to that device. A
+     * session can have various events, such as when it's first created, when it's
+     * extended, or when it's terminated. For more details on the protocol, see
      * https://github.com/w3c/webappsec-dbsc/blob/main/README.md and
      * https://w3c.github.io/webappsec-dbsc/.
      */
     deviceBoundSessionsCategoryDescription: 'On this page you can view device bound sessions and associated events',
     /**
-     *@description Events are sometimes linked to sessions. These are grouped
-     * visually either by session name or by 'No session' if any events are not
-     * linked to a session.
+     *@description Label for a tree item in the Application panel sidebar. Events
+     * are sometimes linked to sessions. These are grouped visually either by
+     * session name or by 'No session' if any events are not linked to a session.
      */
     noSession: 'No session',
     /**
-     *@description Tooltip text for a terminated session.
+     *@description Accessible label for a terminated session tree item in the Application panel sidebar.
      *@example {session_1} sessionName
      */
-    terminatedSession: '{sessionName}, Session terminated',
+    terminatedSession: '{sessionName}, session terminated',
     /**
-     *@description Tooltip text for a session with errors.
+     *@description Accessible label for a session tree item with errors in the Application panel sidebar.
      *@example {session_1} sessionName
      */
-    sessionWithErrors: '{sessionName}, Session has errors',
+    sessionWithErrors: '{sessionName}, session has errors',
     /**
-     *@description Context menu item for clearing a session.
+     *@description Context menu item in the Application panel sidebar to clear a session.
      */
     clear: 'Clear',
 };

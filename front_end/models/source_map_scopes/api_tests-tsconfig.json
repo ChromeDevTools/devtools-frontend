@@ -58,22 +58,10 @@
       "path": "bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/common/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../core/platform/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/root/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../generated/generated-tsconfig.ref.json"
-    },
-    {
-      "path": "../bindings/bundle-tsconfig.ref.json"
     },
     {
       "path": "../formatter/bundle-tsconfig.ref.json"

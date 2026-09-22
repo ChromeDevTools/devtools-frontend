@@ -406,7 +406,7 @@ var UIStrings2 = {
   /**
    * @description ARIA label for the dialog.
    */
-  dialogAriaLabel: "Gemini 3 Flash in DevTools",
+  dialogAriaLabel: "`Gemini 3 Flash` in `DevTools`",
   /**
    * @description Button text for dismissing the dialog.
    */
@@ -1662,6 +1662,17 @@ var kForbiddenSchemes = [
   "devtools:"
 ];
 var extensionServerInstance;
+function parseCanonicalURL(url) {
+  try {
+    let parsedURL = new URL(url);
+    while (parsedURL.protocol === "blob:" || parsedURL.protocol === "filesystem:") {
+      parsedURL = new URL(parsedURL.href.slice(parsedURL.protocol.length));
+    }
+    return parsedURL;
+  } catch {
+    return null;
+  }
+}
 var HostsPolicy = class _HostsPolicy {
   constructor(runtimeAllowedHosts, runtimeBlockedHosts) {
     this.runtimeAllowedHosts = runtimeAllowedHosts;
@@ -1718,12 +1729,11 @@ var RegisteredExtension = class {
     if (!inspectedURL) {
       return false;
     }
-    let parsedURL;
-    try {
-      parsedURL = new URL(inspectedURL);
-    } catch {
+    const parsedURL = parseCanonicalURL(inspectedURL);
+    if (!parsedURL) {
       return false;
     }
+    inspectedURL = parsedURL.href;
     if (parsedURL.protocol === "chrome-extension:") {
       if (parsedURL.origin !== this.origin) {
         if (!Root2.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
@@ -2225,7 +2235,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
   hasSubscribers(type) {
     return this.subscribers.has(type);
   }
-  postNotification(type, args, filter) {
+  postNotification(type, args, filter, argsForExtension) {
     if (!this.extensionsEnabled) {
       return;
     }
@@ -2233,18 +2243,22 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (!subscribers) {
       return;
     }
-    const message = { command: "notify-" + type, arguments: args };
     for (const subscriber of subscribers) {
       if (!this.extensionEnabled(subscriber)) {
         continue;
       }
-      if (filter) {
+      let extension;
+      if (filter || argsForExtension) {
         const origin = extensionOrigins.get(subscriber);
-        const extension = origin && this.registeredExtensions.get(origin);
-        if (!extension || !filter(extension)) {
+        extension = origin && this.registeredExtensions.get(origin);
+        if (!extension || filter && !filter(extension)) {
           continue;
         }
       }
+      const message = {
+        command: "notify-" + type,
+        arguments: extension && argsForExtension ? argsForExtension(extension) : args
+      };
       subscriber.postMessage(message);
     }
   }
@@ -2677,7 +2691,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     return this.evaluate(expression, true, true, evaluateOptions, this.getExtensionOrigin(port), callback.bind(this));
   }
-  harEntryReferencesBlockedURL(entry, extension) {
+  sanitizeHarEntry(entry, extension) {
     const baseURL = entry.request.url;
     const isBlocked = (url) => {
       if (!url) {
@@ -2690,40 +2704,42 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
         return true;
       }
     };
-    if (isBlocked(entry.response.redirectURL)) {
-      return true;
-    }
+    let initiator = entry._initiator;
     if (entry._initiator) {
       if (isBlocked(entry._initiator.url)) {
-        return true;
-      }
-      let stack = entry._initiator.stack;
-      while (stack) {
-        if (stack.callFrames.some((f) => isBlocked(f.url))) {
-          return true;
+        initiator = null;
+      } else {
+        let stack = entry._initiator.stack;
+        while (stack) {
+          if (stack.callFrames.some((f) => isBlocked(f.url))) {
+            initiator = null;
+            break;
+          }
+          stack = stack.parent;
         }
-        stack = stack.parent;
       }
     }
-    for (const header of entry.response.headers) {
+    const headerReferencesBlockedURL = (header) => {
       const name = header.name.toLowerCase();
       if (name === "location" || name === "content-location") {
-        if (isBlocked(header.value)) {
-          return true;
-        }
-      } else if (name === "refresh") {
-        const match = header.value.match(/;\s*url\s*=\s*(.+)$/i);
-        if (isBlocked(match?.[1]?.trim())) {
-          return true;
-        }
-      } else if (name === "link") {
-        const urls = [...header.value.matchAll(/<([^>]+)>/g)].map((m) => m[1]);
-        if (urls.some((url) => isBlocked(url))) {
-          return true;
-        }
+        return isBlocked(header.value);
       }
+      if (name === "refresh") {
+        const match = header.value.match(/;\s*url\s*=\s*(.+)$/i);
+        return isBlocked(match?.[1]?.trim());
+      }
+      if (name === "link") {
+        const urls = [...header.value.matchAll(/<([^>]+)>/g)].map((m) => m[1]);
+        return urls.some((url) => isBlocked(url));
+      }
+      return false;
+    };
+    const headers = entry.response.headers.filter((header) => !headerReferencesBlockedURL(header));
+    const redirectURL = isBlocked(entry.response.redirectURL) ? "" : entry.response.redirectURL;
+    if (initiator === entry._initiator && headers.length === entry.response.headers.length && redirectURL === entry.response.redirectURL) {
+      return entry;
     }
-    return false;
+    return { ...entry, _initiator: initiator, response: { ...entry.response, headers, redirectURL } };
   }
   async onGetHAR(message, port) {
     if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetHAR) {
@@ -2738,7 +2754,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     for (let i = 0; i < harLog.entries.length; ++i) {
       harLog.entries[i]._requestId = this.requestId(requests[i]);
     }
-    harLog.entries = harLog.entries.filter((entry) => !this.harEntryReferencesBlockedURL(entry, extension));
+    harLog.entries = harLog.entries.map((entry) => this.sanitizeHarEntry(entry, extension));
     return harLog;
   }
   makeResource(contentProvider) {
@@ -3055,7 +3071,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     this.postNotification(
       Extensions2.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished,
       [this.requestId(request), entry],
-      (extension) => extension.isAllowedOnTarget(entry.request.url) && (!targetUrl || extension.isAllowedOnTarget(targetUrl)) && !this.harEntryReferencesBlockedURL(entry, extension)
+      (extension) => extension.isAllowedOnTarget(entry.request.url) && (!targetUrl || extension.isAllowedOnTarget(targetUrl)),
+      (extension) => [this.requestId(request), this.sanitizeHarEntry(entry, extension)]
     );
   }
   notifyElementsSelectionChanged() {
@@ -3339,10 +3356,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return void 0;
   }
   static canInspectURL(url) {
-    let parsedURL;
-    try {
-      parsedURL = new URL(url);
-    } catch {
+    const parsedURL = parseCanonicalURL(url);
+    if (!parsedURL) {
       return false;
     }
     if (kForbiddenSchemes.includes(parsedURL.protocol)) {
@@ -3879,6 +3894,7 @@ var commentThreadWidget_css_default = `/*
     width: 100%;
     justify-content: space-between;
     align-items: center;
+    gap: var(--sys-size-4);
   }
 
   .sent-status {
@@ -3887,6 +3903,7 @@ var commentThreadWidget_css_default = `/*
     gap: var(--sys-size-2);
     font-size: var(--sys-typescale-body5-size);
     color: var(--sys-color-on-surface-subtle);
+    flex-shrink: 0;
   }
 
   .check-icon {
@@ -4005,7 +4022,23 @@ var commentThreadWidget_css_default = `/*
     padding: var(--sys-size-4) var(--sys-size-5);
   }
 
+  .tooltip-link {
+    display: block;
+    margin-top: var(--sys-size-4);
+    color: var(--sys-color-primary);
+    padding-left: 0;
+    background: none;
+    border: none;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .selected-item devtools-widget,
   .selected-item-text {
+    display: block;
+    flex: 0 1 auto;
+    min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -4016,6 +4049,7 @@ var commentThreadWidget_css_default = `/*
 
 // ../../front_end/panels/common/CommentThreadWidget.ts
 var { html: html8, render: render7, Directives: { createRef, ref: ref2 } } = Lit3;
+var { widget: widget3 } = UI9.Widget;
 var UIStrings7 = {
   /**
    * @description Text next to the checkmark in the comment thread header indicating that comments have been sent to
@@ -4034,7 +4068,7 @@ var UIStrings7 = {
   /**
    * @description Label for the aria-label of the add comment button.
    */
-  addCommentButton: "Add comment",
+  sendToAgent: "Send to agent",
   /**
    * @description aria-label for the comment text area.
    */
@@ -4056,7 +4090,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     <div class="comment-thread-widget ${hasComment ? "submitted" : ""}">
       <div class="header">
         <span class="selected-item">
-          <span class="selected-item-text">${input.title}</span>
+          ${"node" in input.title ? widget3(DOMNodeLink, { node: input.title.node }) : html8`<span class="selected-item-text">${input.title.text}</span>`}
         </span>
         ${hasComment ? html8`
           <div class="sent-status">
@@ -4121,10 +4155,10 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
             </div>
           </devtools-tooltip>
           <devtools-button
-            aria-label=${i18nString7(UIStrings7.addCommentButton)}
+            aria-label=${i18nString7(UIStrings7.sendToAgent)}
             .disabled=${!input.commentText.trim()}
             @click=${() => input.onAddComment(input.commentText)}>
-            ${i18nString7(UIStrings7.addCommentButton)}
+            ${i18nString7(UIStrings7.sendToAgent)}
           </devtools-button>
         </div>
       ` : Lit3.nothing}
@@ -4132,7 +4166,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   `, target);
 };
 var CommentThreadWidget = class extends UI9.Widget.Widget {
-  title = "Comment Thread";
+  title = { text: "" };
   #comments = [];
   #commentText = "";
   #textAreaRef = createRef();
@@ -4183,9 +4217,11 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
 var CommentsOverlayWidget_exports = {};
 __export(CommentsOverlayWidget_exports, {
   ActionDelegate: () => ActionDelegate,
+  ButtonProvider: () => ButtonProvider,
   CommentsOverlayWidget: () => CommentsOverlayWidget
 });
 import * as Root3 from "../../core/root/root.js";
+import * as SDK5 from "../../core/sdk/sdk.js";
 import * as CommentManager from "../../models/comment_manager/comment_manager.js";
 import * as Comments from "../../ui/comments/comments.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
@@ -4336,6 +4372,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       )}px`
     })}>
             ${UI10.Widget.widget(CommentThreadWidget, {
+      title: input.title,
       comments: [...item2.thread.comments],
       onAddComment: input.onAddComment
     })}
@@ -4351,6 +4388,8 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
   #commentManager;
   #commentOverlayManager;
   #activeThreadId = null;
+  #cachedTitle = { text: "" };
+  #cachedTitleAnchor = null;
   constructor(element, [commentManager], view = DEFAULT_VIEW7) {
     super(element, { useShadowDom: false });
     this.#view = view;
@@ -4385,6 +4424,11 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       this.#onCommentModeChanged,
       this
     );
+    this.#commentManager.addEventListener(
+      CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+      this.#onAgentAttachedChanged,
+      this
+    );
     this.requestUpdate();
   }
   willHide() {
@@ -4409,7 +4453,18 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       this.#onCommentModeChanged,
       this
     );
+    this.#commentManager.removeEventListener(
+      CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+      this.#onAgentAttachedChanged,
+      this
+    );
     super.willHide();
+  }
+  #onAgentAttachedChanged(event) {
+    if (!event.data) {
+      this.#activeThreadId = null;
+    }
+    this.requestUpdate();
   }
   #onCommentModeChanged(event) {
     const isModeActive = event.data;
@@ -4431,6 +4486,39 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     }
     this.requestUpdate();
   }
+  async #getOrComputeTitle(anchor) {
+    if (anchor === this.#cachedTitleAnchor) {
+      return this.#cachedTitle;
+    }
+    const title = anchor ? await this.#computeTitle(anchor) : { text: "" };
+    this.#cachedTitleAnchor = anchor;
+    this.#cachedTitle = title;
+    return title;
+  }
+  async #computeTitle(anchor) {
+    if (anchor.node) {
+      const target = SDK5.TargetManager.TargetManager.instance().targetById(anchor.node.targetId);
+      if (target) {
+        const deferredNode = new SDK5.DOMModel.DeferredDOMNode(
+          target,
+          anchor.node.backendNodeId
+        );
+        const node = await deferredNode.resolvePromise();
+        if (node) {
+          return { node };
+        }
+      }
+      return { text: "" };
+    }
+    if (anchor.networkRequestId) {
+      const target = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
+      const request = target?.model(SDK5.NetworkManager.NetworkManager)?.requestForId(anchor.networkRequestId);
+      if (request) {
+        return { text: request.name() };
+      }
+    }
+    return { text: anchor.textSignature || "" };
+  }
   #handlePinClick = (threadId) => {
     const thread = this.#commentManager.getCommentThread(threadId);
     if (this.#activeThreadId === threadId) {
@@ -4444,15 +4532,32 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     }
     this.requestUpdate();
   };
-  performUpdate() {
+  async performUpdate(signal) {
+    if (!this.#commentManager.isAgentAttached()) {
+      this.#view(
+        {
+          pins: [],
+          highlights: [],
+          hoverHighlight: null,
+          commentMode: false,
+          onPinClick: this.#handlePinClick,
+          activeThread: null,
+          activePin: null,
+          title: { text: "" },
+          onAddComment: () => {
+          }
+        },
+        void 0,
+        this.contentElement
+      );
+      return;
+    }
+    const activeThread = this.#activeThreadId ? this.#commentManager.getCommentThread(this.#activeThreadId) ?? null : null;
+    const title = await this.#getOrComputeTitle(activeThread?.anchor ?? null);
+    signal?.throwIfAborted();
     const pins = this.#commentOverlayManager.getPinPositions();
     const highlights = this.#commentOverlayManager.getHighlightRects();
-    let activePin = null;
-    let activeThread = null;
-    if (this.#activeThreadId) {
-      activePin = pins.find((p) => p.id === this.#activeThreadId) ?? null;
-      activeThread = this.#commentManager.getCommentThread(this.#activeThreadId) ?? null;
-    }
+    const activePin = this.#activeThreadId ? pins.find((p) => p.id === this.#activeThreadId) ?? null : null;
     const viewInput = {
       pins,
       highlights,
@@ -4461,6 +4566,7 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       onPinClick: this.#handlePinClick,
       activeThread,
       activePin,
+      title,
       onAddComment: (text) => {
         activeThread?.save(text);
       }
@@ -4498,6 +4604,26 @@ var ActionDelegate = class {
       widgetInstance.detach();
       widgetInstance = null;
     }
+  }
+};
+var ButtonProvider = class {
+  #button;
+  #commentManager;
+  constructor(commentManager) {
+    this.#commentManager = commentManager ?? Root3.DevToolsContext.globalInstance().get(
+      CommentManager.CommentManager.CommentManager
+    );
+    this.#button = UI10.Toolbar.Toolbar.createActionButton("comments.toggle-comment-mode");
+    this.#button.setVisible(this.#commentManager.isAgentAttached());
+    this.#commentManager.addEventListener(
+      CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+      (event) => {
+        this.#button.setVisible(event.data);
+      }
+    );
+  }
+  item() {
+    return this.#button;
   }
 };
 
@@ -4554,6 +4680,11 @@ var CommentsStatusBarPill = class extends UI11.Widget.Widget {
       this.#onThreadsChanged,
       this
     );
+    this.#commentManager.addEventListener(
+      CommentManager3.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+      this.#onThreadsChanged,
+      this
+    );
     this.requestUpdate();
   }
   willHide() {
@@ -4562,11 +4693,16 @@ var CommentsStatusBarPill = class extends UI11.Widget.Widget {
       this.#onThreadsChanged,
       this
     );
+    this.#commentManager.removeEventListener(
+      CommentManager3.CommentManager.Events.AGENT_ATTACHED_CHANGED,
+      this.#onThreadsChanged,
+      this
+    );
     super.willHide();
   }
   performUpdate() {
     const viewInput = {
-      threads: this.#commentManager.getCommentThreads().filter((thread) => thread.status !== "DRAFT"),
+      threads: this.#commentManager.isAgentAttached() ? this.#commentManager.getCommentThreads().filter((thread) => thread.status !== "DRAFT") : [],
       onPillClick: this.#handlePillClick
     };
     this.#view(viewInput, void 0, this.contentElement);

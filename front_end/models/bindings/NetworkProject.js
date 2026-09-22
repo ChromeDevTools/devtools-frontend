@@ -7,6 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 const uiSourceCodeToAttributionMap = new WeakMap();
 export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
     #projectToTargetMap = new WeakMap();
+    #sourceURLSynthesizedUISourceCodes = new WeakSet();
     static instance({ forceNew } = { forceNew: false }) {
         if (!Root.DevToolsContext.globalInstance().has(NetworkProjectManager) || forceNew) {
             Root.DevToolsContext.globalInstance().set(NetworkProjectManager, new NetworkProjectManager());
@@ -25,6 +26,12 @@ export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
     getTargetForUISourceCode(uiSourceCode) {
         return this.#projectToTargetMap.get(uiSourceCode.project()) ?? null;
     }
+    setSourceURLSynthesized(uiSourceCode) {
+        this.#sourceURLSynthesizedUISourceCodes.add(uiSourceCode);
+    }
+    isSourceURLSynthesized(uiSourceCode) {
+        return this.#sourceURLSynthesizedUISourceCodes.has(uiSourceCode);
+    }
 }
 export var Events;
 (function (Events) {
@@ -32,6 +39,25 @@ export var Events;
     Events["FRAME_ATTRIBUTION_REMOVED"] = "FrameAttributionRemoved";
 })(Events || (Events = {}));
 export class NetworkProject {
+    /**
+     * Records that `uiSourceCode` was synthesized from a `//# sourceURL=` annotation,
+     * and therefore doesn't correspond to an actual network resource.
+     */
+    static setSourceURLSynthesized(uiSourceCode) {
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        NetworkProjectManager.instance().setSourceURLSynthesized(uiSourceCode);
+    }
+    /**
+     * Whether `uiSourceCode` was synthesized from a `//# sourceURL=` annotation.
+     *
+     * Both the URL and the content of such a source are fully controlled by the page,
+     * so it must never be treated like a genuine network resource (for example it must
+     * not be persisted as a local override, see b/553931271).
+     */
+    static isSourceURLSynthesized(uiSourceCode) {
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        return NetworkProjectManager.instance().isSourceURLSynthesized(uiSourceCode);
+    }
     static resolveFrame(uiSourceCode, frameId) {
         const target = NetworkProject.targetForUISourceCode(uiSourceCode);
         const resourceTreeModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);

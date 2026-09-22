@@ -277,6 +277,7 @@ export declare class HTMLElementWithLightDOMTemplate extends HTMLElement {
     private static patchLitTemplate;
     get templateRoot(): DocumentFragment | HTMLElement;
     set template(template: Lit.LitTemplate);
+    flushPendingMutationsForTesting(): void;
     protected onChange(_mutationList: MutationRecord[]): void;
     protected updateNode(_node: Node, _attributeName: string | null): void;
     protected addNodes(_nodes: NodeList | Node[]): void;

@@ -555,6 +555,21 @@ export class DebuggerPlugin extends Plugin {
         return {
             box,
             show: async (popover) => {
+                const scopeMappings = await this.#getScopeMappings(selectedCallFrame);
+                const scopedVariable = findVariableInScopeMappings(evaluationText, highlightRange.from, scopeMappings);
+                if (scopedVariable.found) {
+                    if (!scopedVariable.value) {
+                        return false;
+                    }
+                    objectPopoverHelper =
+                        await ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildObjectPopover(scopedVariable.value, popover);
+                    const potentiallyUpdatedCallFrame = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+                    if (!objectPopoverHelper || debuggableFrame !== potentiallyUpdatedCallFrame) {
+                        objectPopoverHelper?.dispose();
+                        return false;
+                    }
+                    return true;
+                }
                 let resolvedText = '';
                 if (selectedCallFrame.script.isJavaScript()) {
                     const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(selectedCallFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
@@ -820,6 +835,17 @@ export class DebuggerPlugin extends Plugin {
         const offset = this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber));
         return offset ?? null;
     }
+    #cachedScopeMappings;
+    #getScopeMappings(callFrame, resolvedScopeChain) {
+        if (this.#cachedScopeMappings?.callFrame !== callFrame) {
+            const url = this.uiSourceCode.url();
+            this.#cachedScopeMappings = {
+                callFrame,
+                promise: computeScopeMappings(callFrame, location => this.#rawLocationToEditorOffset(location, url), (line, col) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(line, col)) ?? null, resolvedScopeChain),
+            };
+        }
+        return this.#cachedScopeMappings.promise;
+    }
     async computeValueDecorations() {
         if (!this.editor) {
             return null;
@@ -837,11 +863,18 @@ export class DebuggerPlugin extends Plugin {
         }
         const callFrame = debuggableFrame.sdkFrame;
         const url = this.uiSourceCode.url();
-        const rawLocationToEditorOffset = location => this.#rawLocationToEditorOffset(location, url);
-        const functionOffsetPromise = this.#rawLocationToEditorOffset(callFrame.functionLocation(), url);
+        const uiPositionToEditorOffset = (lineNumber, columnNumber) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(lineNumber, columnNumber)) ?? null;
+        const scopeChain = await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+        const localOriginalScope = scopeChain
+            .find((s) => s instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry &&
+            s.type() === "local" /* Protocol.Debugger.ScopeType.Local */)
+            ?.originalScope();
+        const functionOffsetPromise = localOriginalScope ?
+            Promise.resolve(uiPositionToEditorOffset(localOriginalScope.start.line, localOriginalScope.start.column)) :
+            this.#rawLocationToEditorOffset(callFrame.functionLocation(), url);
         const executionOffsetPromise = this.#rawLocationToEditorOffset(callFrame.location(), url);
         const [functionOffset, executionOffset] = await Promise.all([functionOffsetPromise, executionOffsetPromise]);
-        if (!functionOffset || !executionOffset || !this.editor) {
+        if (functionOffset === null || !executionOffset || !this.editor) {
             return null;
         }
         if (functionOffset >= executionOffset || executionOffset - functionOffset > MAX_CODE_SIZE_FOR_VALUE_DECORATIONS) {
@@ -855,11 +888,11 @@ export class DebuggerPlugin extends Plugin {
             }
             CodeMirror.ensureSyntaxTree(this.editor.state, executionOffset, 16);
         }
-        const variableNames = getVariableNamesByLine(this.editor.state, functionOffset, executionOffset, executionOffset);
+        const variableNames = getVariableNamesByLine(this.editor.state, functionOffset, executionOffset, executionOffset, Boolean(localOriginalScope));
         if (variableNames.length === 0) {
             return null;
         }
-        const scopeMappings = await computeScopeMappings(callFrame, rawLocationToEditorOffset);
+        const scopeMappings = await this.#getScopeMappings(callFrame, scopeChain);
         // After the `await` the DebuggerPlugin could have been disposed. Re-check `this.editor`.
         if (!this.editor || scopeMappings.length === 0) {
             return null;
@@ -1712,8 +1745,19 @@ class ValueDecoration extends CodeMirror.WidgetType {
     }
 }
 const valueDecorations = defineStatefulDecoration();
-function isVariableIdentifier(tokenType) {
-    return tokenType === 'VariableName' || tokenType === 'VariableDefinition';
+function isVariableIdentifierNode(node, doc) {
+    switch (node.name) {
+        case 'VariableName':
+        case 'VariableDefinition':
+        case 'Identifier':
+        case 'Definition':
+        case 'variableName':
+        case 'variableName.definition':
+            return (node.from === 0 || doc.sliceString(node.from - 1, node.from) !== '.') &&
+                doc.sliceString(node.to, node.to + 1) !== '(';
+        default:
+            return false;
+    }
 }
 function isVariableDefinition(tokenType) {
     return tokenType === 'VariableDefinition';
@@ -1728,7 +1772,7 @@ class SiblingScopeVariables {
     blockList = new Set();
     variables = [];
 }
-export function getVariableNamesByLine(editorState, fromPos, toPos, currentPos) {
+export function getVariableNamesByLine(editorState, fromPos, toPos, currentPos, useOriginalScopes = false) {
     const fromLine = editorState.doc.lineAt(fromPos);
     fromPos = Math.min(fromLine.to, fromPos);
     toPos = editorState.doc.lineAt(toPos).from;
@@ -1738,7 +1782,7 @@ export function getVariableNamesByLine(editorState, fromPos, toPos, currentPos) 
      * We will exclude variables that are defined (and used in those scopes (since we are currently outside of their lifetime).
      **/
     function isSiblingScopeNode(node) {
-        return isScopeNode(node.name) && (node.to < currentPos || currentPos < node.from);
+        return !useOriginalScopes && isScopeNode(node.name) && (node.to < currentPos || currentPos < node.from);
     }
     const names = [];
     let curLine = fromLine;
@@ -1762,7 +1806,7 @@ export function getVariableNamesByLine(editorState, fromPos, toPos, currentPos) 
                 siblingStack.push(new SiblingScopeVariables());
                 return;
             }
-            const varName = isVariableIdentifier(node.name) && editorState.sliceDoc(node.from, node.to);
+            const varName = isVariableIdentifierNode(node, editorState.doc) && editorState.sliceDoc(node.from, node.to);
             if (!varName) {
                 return;
             }
@@ -1792,36 +1836,69 @@ export function getVariableNamesByLine(editorState, fromPos, toPos, currentPos) 
     });
     return names;
 }
-export async function computeScopeMappings(callFrame, rawLocationToEditorOffset) {
+export async function computeScopeMappings(callFrame, rawLocationToEditorOffset, uiPositionToEditorOffset, resolvedScopeChain) {
     const scopeMappings = [];
-    for (const scope of callFrame.scopeChain()) {
-        const scopeStart = await rawLocationToEditorOffset(scope.range()?.start ?? null);
-        if (!scopeStart) {
+    const scopeChain = resolvedScopeChain ??
+        await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+    const activeScopes = new Set(scopeChain.filter(s => s instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry)
+        .map(s => s.originalScope()));
+    const addInactiveChildren = (children) => {
+        for (const child of children) {
+            if (!activeScopes.has(child)) {
+                const scopeStart = uiPositionToEditorOffset?.(child.start.line, child.start.column) ?? null;
+                const scopeEnd = uiPositionToEditorOffset?.(child.end.line, child.end.column) ?? null;
+                if (scopeStart !== null && scopeEnd !== null && child.variables.length > 0) {
+                    scopeMappings.push({ scopeStart, scopeEnd, variableMap: new Map(child.variables.map(v => [v, null])) });
+                }
+                addInactiveChildren(child.children);
+            }
+        }
+    };
+    for (const scope of scopeChain) {
+        let scopeStart = null;
+        let scopeEnd = null;
+        if (scope instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry) {
+            const orig = scope.originalScope();
+            scopeStart = uiPositionToEditorOffset?.(orig.start.line, orig.start.column) ?? null;
+            scopeEnd = uiPositionToEditorOffset?.(orig.end.line, orig.end.column) ?? null;
+            addInactiveChildren(orig.children);
+        }
+        else {
+            scopeStart = await rawLocationToEditorOffset(scope.range()?.start ?? null);
+            scopeEnd = await rawLocationToEditorOffset(scope.range()?.end ?? null);
+        }
+        if (scopeStart === null || scopeEnd === null) {
             break;
         }
-        const scopeEnd = await rawLocationToEditorOffset(scope.range()?.end ?? null);
-        if (!scopeEnd) {
-            break;
-        }
-        const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-        const { properties } = await SourceMapScopes.NamesResolver.resolveScopeInObject(scope, debuggerWorkspaceBinding)
-            .getAllProperties(false, false);
+        const { properties } = await scope.object().getAllProperties(false, true);
         if (!properties || properties.length > MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS) {
             break;
         }
-        const variableMap = new Map(properties.map(p => [p.name, p.value]));
+        const variableMap = new Map(properties.map(p => [p.name, p.value ?? null]));
         scopeMappings.push({ scopeStart, scopeEnd, variableMap });
         // Let us only get mappings for block scopes until we see a surrounding function (local) scope.
-        if (scope.type() === "local" /* Protocol.Debugger.ScopeType.Local */) {
+        if (scope.type() === "local" /* Protocol.Debugger.ScopeType.Local */ &&
+            !(scope instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry)) {
             break;
         }
     }
     return scopeMappings;
 }
+export function findVariableInScopeMappings(name, pos, scopeMappings) {
+    for (const scope of scopeMappings) {
+        if (pos < scope.scopeStart || pos >= scope.scopeEnd) {
+            continue;
+        }
+        if (scope.variableMap.has(name)) {
+            return { found: true, value: scope.variableMap.get(name) ?? null };
+        }
+    }
+    return { found: false, value: null };
+}
 export function getVariableValuesByLine(scopeMappings, variableNames) {
     const namesPerLine = new Map();
     for (const { line, from, id } of variableNames) {
-        const varValue = findVariableInChain(id, from, scopeMappings);
+        const varValue = findVariableInScopeMappings(id, from, scopeMappings).value;
         if (!varValue) {
             continue;
         }
@@ -1833,18 +1910,6 @@ export function getVariableValuesByLine(scopeMappings, variableNames) {
         names.set(id, varValue);
     }
     return namesPerLine;
-    function findVariableInChain(name, pos, scopeMappings) {
-        for (const scope of scopeMappings) {
-            if (pos < scope.scopeStart || pos >= scope.scopeEnd) {
-                continue;
-            }
-            const value = scope.variableMap.get(name);
-            if (value) {
-                return value;
-            }
-        }
-        return null;
-    }
 }
 // Pop-over
 export function computePopoverHighlightRange(state, mimeType, cursorPos) {
@@ -1908,8 +1973,9 @@ export function computePopoverHighlightRange(state, mimeType, cursorPos) {
         }
         default: {
             // In other languages, just assume a token consisting entirely
-            // of identifier-like characters is an identifier.
-            if (node.to - node.from > 50 || /[^\w_\-$]/.test(state.sliceDoc(node.from, node.to))) {
+            // of identifier-like characters is an identifier, unless it is a member access.
+            if (node.to - node.from > 50 || /[^\w_\-$]/.test(state.sliceDoc(node.from, node.to)) ||
+                state.sliceDoc(node.from - 1, node.from) === '.' || state.sliceDoc(node.from - 2, node.from) === '->') {
                 return null;
             }
             return { from: node.from, to: node.to, containsSideEffects: false };

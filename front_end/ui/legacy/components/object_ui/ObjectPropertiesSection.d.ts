@@ -110,8 +110,8 @@ declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
 export declare class ObjectTreeNode extends ObjectTreeNodeBase {
     #private;
     readonly property: SDK.RemoteObject.RemoteObjectProperty;
-    readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject;
-    constructor(property: SDK.RemoteObject.RemoteObjectProperty, parent: ObjectTreeNodeBase | undefined, options: ObjectTreeOptions, nonSyntheticParent?: SDK.RemoteObject.RemoteObject);
+    readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined;
+    constructor(property: SDK.RemoteObject.RemoteObjectProperty, parent: ObjectTreeNodeBase | undefined, options: ObjectTreeOptions, nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined);
     get object(): SDK.RemoteObject.RemoteObject | undefined;
     get isFiltered(): boolean;
     get canExpandRecursively(): boolean;
@@ -150,7 +150,12 @@ export declare const enum ObjectPropertiesMode {
     ALL = 0,// All properties, including prototype properties
     OWN_AND_INTERNAL_AND_INHERITED = 1
 }
-export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu, object: ObjectTree, expandRecursively: () => void, collapseChildren: () => void, sortPropertiesAlphabetically: () => void, onShowAllToggled: () => void): void;
+export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu, objectOrProperty: ObjectTree | ObjectTreeNode, handlers: {
+    expandRecursively: (node: ObjectTreeNodeBase) => void;
+    collapseChildren: (node: ObjectTreeNodeBase) => void;
+    sortPropertiesAlphabetically: (node: ObjectTreeNodeBase) => void;
+    onShowAllToggled: (node: ObjectTreeNodeBase) => void;
+}): void;
 interface ObjectTreeViewInput {
     renderAsSubtree: boolean;
     objectTree?: ObjectTree;
@@ -245,5 +250,6 @@ export declare class ExpandableTextPropertyValue extends UI.Widget.Widget {
     constructor(target?: HTMLElement, view?: ExpandableTextView);
     set text(text: string);
     set maxLength(maxLength: number);
+    appendApplicableItems(contextMenu: UI.ContextMenu.ContextMenu): void;
     performUpdate(): void;
 }

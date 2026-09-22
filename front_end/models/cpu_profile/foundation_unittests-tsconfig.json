@@ -58,9 +58,6 @@
     },
     {
       "path": "../../generated/generated-tsconfig.ref.json"
-    },
-    {
-      "path": "../../testing/testing-tsconfig.ref.json"
     }
   ]
 }

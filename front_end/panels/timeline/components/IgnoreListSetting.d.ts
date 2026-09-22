@@ -1,4 +1,3 @@
-import '../../../ui/components/menus/menus.js';
 import * as Common from '../../../core/common/common.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 interface ViewInput {

@@ -46,15 +46,19 @@ export class CommentsStatusBarPill extends UI.Widget.Widget {
     wasShown() {
         super.wasShown();
         this.#commentManager.addEventListener("CommentThreadsChanged" /* CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED */, this.#onThreadsChanged, this);
+        this.#commentManager.addEventListener("AgentAttachedChanged" /* CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED */, this.#onThreadsChanged, this);
         this.requestUpdate();
     }
     willHide() {
         this.#commentManager.removeEventListener("CommentThreadsChanged" /* CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED */, this.#onThreadsChanged, this);
+        this.#commentManager.removeEventListener("AgentAttachedChanged" /* CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED */, this.#onThreadsChanged, this);
         super.willHide();
     }
     performUpdate() {
         const viewInput = {
-            threads: this.#commentManager.getCommentThreads().filter(thread => thread.status !== 'DRAFT'),
+            threads: this.#commentManager.isAgentAttached() ?
+                this.#commentManager.getCommentThreads().filter(thread => thread.status !== 'DRAFT') :
+                [],
             onPillClick: this.#handlePillClick,
         };
         this.#view(viewInput, undefined, this.contentElement);

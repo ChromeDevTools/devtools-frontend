@@ -96,17 +96,32 @@ var CommentThread = class _CommentThread extends Common.ObjectWrapper.ObjectWrap
 var Events2 = /* @__PURE__ */ ((Events4) => {
   Events4["COMMENT_THREADS_CHANGED"] = "CommentThreadsChanged";
   Events4["COMMENT_MODE_CHANGED"] = "CommentModeChanged";
+  Events4["AGENT_ATTACHED_CHANGED"] = "AgentAttachedChanged";
   return Events4;
 })(Events2 || {});
 var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
   #commentThreads = /* @__PURE__ */ new Map();
   #commentMode = false;
+  #agentAttached = false;
   constructor() {
     super();
     CommentThread.resetIndex();
   }
   #onThreadChanged() {
     this.dispatchEventToListeners("CommentThreadsChanged" /* COMMENT_THREADS_CHANGED */, this.getCommentThreads());
+  }
+  setAgentAttached(value) {
+    if (this.#agentAttached === value) {
+      return;
+    }
+    this.#agentAttached = value;
+    if (!value) {
+      this.setCommentMode(false);
+    }
+    this.dispatchEventToListeners("AgentAttachedChanged" /* AGENT_ATTACHED_CHANGED */, value);
+  }
+  isAgentAttached() {
+    return this.#agentAttached;
   }
   setCommentMode(active) {
     if (this.#commentMode === active) {
@@ -263,8 +278,8 @@ ${details.join("\n")}` : details.join("\n");
       return threadPayload;
     });
   }
-  takeComments() {
-    return this.getCommentThreads();
+  setAgentAttached(value) {
+    this.#commentManager.setAgentAttached(value);
   }
   resolveCommentThread(threadId, replyText) {
     return this.#commentManager.resolveCommentThread(threadId, replyText);

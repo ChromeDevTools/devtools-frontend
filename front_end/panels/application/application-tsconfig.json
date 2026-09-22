@@ -164,6 +164,9 @@
       "path": "../../ui/components/icon_button/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/components/input/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/components/legacy_wrapper/bundle-tsconfig.ref.json"
     },
     {

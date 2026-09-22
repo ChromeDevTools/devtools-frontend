@@ -1,13 +1,12 @@
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/kit/kit.js';
 import './FieldSettingsDialog.js';
-import '../../../ui/components/menus/menus.js';
 import './MetricCard.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import type * as Spec from '../../../models/live-metrics/web-vitals-injected/spec/spec.js';
-import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+type DeviceOption = CrUXManager.DeviceScope | 'AUTO';
 export interface ViewInput {
     isNode: boolean;
     lcpValue?: LiveMetrics.LcpValue;
@@ -18,8 +17,8 @@ export interface ViewInput {
     toggleRecordAction: UI.ActionRegistration.Action;
     recordReloadAction: UI.ActionRegistration.Action;
     cruxManager: CrUXManager.CrUXManager;
-    handlePageScopeSelected: (event: Menus.SelectMenu.SelectMenuItemSelectedEvent) => void;
-    handleDeviceOptionSelected: (event: Menus.SelectMenu.SelectMenuItemSelectedEvent) => void;
+    handlePageScopeSelected: (pageScope: CrUXManager.PageScope) => void;
+    handleDeviceOptionSelected: (deviceOption: DeviceOption) => void;
     revealLayoutShiftCluster: (clusterIds: Set<LiveMetrics.LayoutShift['uniqueLayoutShiftId']>) => void;
     revealInteraction: (interaction: LiveMetrics.Interaction) => void;
     logExtraInteractionDetails: (interaction: LiveMetrics.Interaction) => void;
@@ -43,3 +42,4 @@ export declare class LiveMetricsView extends UI.Widget.Widget {
     willHide(): void;
     performUpdate(): void;
 }
+export {};

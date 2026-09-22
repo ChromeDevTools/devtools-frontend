@@ -274,6 +274,7 @@ export default `/*
 }
 
 .field-data-option {
+  display: block;
   margin: var(--sys-size-5) 0;
   max-width: 100%;
 }

@@ -13,53 +13,48 @@ const { classMap } = Directives;
 const { widget } = UI.Widget;
 const UIStrings = {
     /**
-     * @description Label for the 'origin' field in a parsed Origin Trial Token.
+     * @description Label for the origin field in an origin trial token.
      */
     origin: 'Origin',
     /**
-     * @description Label for `trialName` field in a parsed Origin Trial Token.
-     * This field is only shown when token has unknown trial name as the token
-     * will be put into 'UNKNOWN' group.
+     * @description Label for the trial name field in an origin trial token.
      */
-    trialName: 'Trial Name',
+    trialName: 'Trial name',
     /**
-     * @description Label for `expiryTime` field in a parsed Origin Trial Token.
+     * @description Label for the expiry time field in an origin trial token.
      */
-    expiryTime: 'Expiry Time',
+    expiryTime: 'Expiry time',
     /**
-     * @description Label for `usageRestriction` field in a parsed Origin Trial Token.
+     * @description Label for the usage restriction field in an origin trial token.
      */
-    usageRestriction: 'Usage Restriction',
+    usageRestriction: 'Usage restriction',
     /**
-     * @description Label for `isThirdParty` field in a parsed Origin Trial Token.
+     * @description Label for the third party field in an origin trial token.
      */
-    isThirdParty: 'Third Party',
+    isThirdParty: 'Third party',
     /**
-     * @description Label for a field containing info about an Origin Trial Token's `matchSubDomains` field.
-     *An Origin Trial Token contains an origin URL. The `matchSubDomains` field describes whether the token
-     *only applies to the origin URL or to all subdomains of the origin URL as well.
-     *The field contains either 'true' or 'false'.
+     * @description Label for the subdomain matching field in an origin trial token.
      */
-    matchSubDomains: 'Subdomain Matching',
+    matchSubDomains: 'Subdomain matching',
     /**
-     * @description Label for the raw(= encoded / not human-readable) Origin Trial Token.
+     * @description Label for the raw token text in an origin trial token.
      */
-    rawTokenText: 'Raw Token',
+    rawTokenText: 'Raw token',
     /**
-     * @description Label for `status` field in an Origin Trial Token.
+     * @description Label for the token status field in an origin trial token.
      */
-    status: 'Token Status',
+    status: 'Token status',
     /**
-     * @description Label for tokenWithStatus node.
+     * @description Label for a token node in the origin trials tree view.
      */
     token: 'Token',
     /**
-     * @description Label for a badge showing the number of Origin Trial Tokens. This number is always greater than 1.
+     * @description Label for a badge showing the number of origin trial tokens.
      * @example {2} PH1
      */
     tokens: '{PH1} tokens',
     /**
-     * @description Label shown when there are no Origin Trial Tokens in the Frame view of the Application panel.
+     * @description Label shown when there are no origin trial tokens in the frame details view of the Application panel.
      */
     noTrialTokens: 'No trial tokens',
 };

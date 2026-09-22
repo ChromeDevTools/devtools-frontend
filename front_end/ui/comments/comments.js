@@ -7,6 +7,7 @@ var __export = (target, all) => {
 // ../../front_end/ui/comments/CommentAnchorResolver.ts
 var CommentAnchorResolver_exports = {};
 __export(CommentAnchorResolver_exports, {
+  COMMENT_THREAD_UI_SELECTOR: () => COMMENT_THREAD_UI_SELECTOR,
   clearCustomAnchorResolversForTest: () => clearCustomAnchorResolversForTest,
   closestAcrossShadow: () => closestAcrossShadow,
   computeVisibleRect: () => computeVisibleRect,
@@ -46,6 +47,7 @@ var DISALLOWED_COMMENT_TARGETS = /* @__PURE__ */ new Set([
   VisualLogging.VisualElements.ToggleSubpane,
   VisualLogging.VisualElements.Toolbar
 ]);
+var COMMENT_THREAD_UI_SELECTOR = ".comment-thread-widget";
 function closestAcrossShadow(element, selector) {
   let current = element;
   while (current) {
@@ -146,7 +148,7 @@ function resolveCodeMirrorLineInfo(element) {
   return null;
 }
 function resolveCommentAnchorElement(element, options) {
-  if (isTabTitle(element)) {
+  if (isTabTitle(element) || closestAcrossShadow(element, COMMENT_THREAD_UI_SELECTOR)) {
     return null;
   }
   const customResolver = getCustomAnchorResolverForElement(element);
@@ -603,7 +605,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
   handleElementClick(element, options) {
-    if (!this.isCommentMode() || closestAcrossShadow(element, ".comment-thread-widget")) {
+    if (!this.isCommentMode() || closestAcrossShadow(element, COMMENT_THREAD_UI_SELECTOR)) {
       return false;
     }
     this.clearDraftThreads();

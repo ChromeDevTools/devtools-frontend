@@ -8,7 +8,9 @@ import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.j
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import commentThreadWidgetStyles from './commentThreadWidget.css.js';
+import { DOMNodeLink } from './DOMLinkifier.js';
 const { html, render, Directives: { createRef, ref } } = Lit;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Text next to the checkmark in the comment thread header indicating that comments have been sent to
@@ -27,7 +29,7 @@ const UIStrings = {
     /**
      * @description Label for the aria-label of the add comment button.
      */
-    addCommentButton: 'Add comment',
+    sendToAgent: 'Send to agent',
     /**
      * @description aria-label for the comment text area.
      */
@@ -50,7 +52,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     <div class="comment-thread-widget ${hasComment ? 'submitted' : ''}">
       <div class="header">
         <span class="selected-item">
-          <span class="selected-item-text">${input.title}</span>
+          ${'node' in input.title ?
+        widget(DOMNodeLink, { node: input.title.node }) :
+        html `<span class="selected-item-text">${input.title.text}</span>`}
         </span>
         ${hasComment ? html `
           <div class="sent-status">
@@ -112,10 +116,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             </div>
           </devtools-tooltip>
           <devtools-button
-            aria-label=${i18nString(UIStrings.addCommentButton)}
+            aria-label=${i18nString(UIStrings.sendToAgent)}
             .disabled=${!input.commentText.trim()}
             @click=${() => input.onAddComment(input.commentText)}>
-            ${i18nString(UIStrings.addCommentButton)}
+            ${i18nString(UIStrings.sendToAgent)}
           </devtools-button>
         </div>
       ` : Lit.nothing}
@@ -124,7 +128,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 export class CommentThreadWidget extends UI.Widget.Widget {
-    title = 'Comment Thread';
+    title = { text: '' };
     #comments = [];
     #commentText = '';
     #textAreaRef = createRef();

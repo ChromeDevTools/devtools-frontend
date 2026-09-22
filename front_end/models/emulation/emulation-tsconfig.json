@@ -72,13 +72,7 @@
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../core/text_utils/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../generated/generated-tsconfig.ref.json"
-    },
-    {
-      "path": "../workspace/bundle-tsconfig.ref.json"
     }
   ]
 }

@@ -48,6 +48,7 @@
     "../../../../inspector_overlay/common.ts",
     "../../../../inspector_overlay/css_grid_label_helpers.ts",
     "../../../../inspector_overlay/drag_resize_handler.ts",
+    "../../../../inspector_overlay/highlight_anchor.ts",
     "../../../../inspector_overlay/highlight_common.ts",
     "../../../../inspector_overlay/highlight_container_query.ts",
     "../../../../inspector_overlay/highlight_flex_common.ts",

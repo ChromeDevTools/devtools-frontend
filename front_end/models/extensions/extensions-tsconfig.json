@@ -76,9 +76,6 @@
     },
     {
       "path": "../bindings/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../har/bundle-tsconfig.ref.json"
     }
   ]
 }

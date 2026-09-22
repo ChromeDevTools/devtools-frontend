@@ -21,7 +21,7 @@ const UIStrings = {
     /**
      * @description ARIA label for the dialog.
      */
-    dialogAriaLabel: 'Gemini 3 Flash in DevTools',
+    dialogAriaLabel: '`Gemini 3 Flash` in `DevTools`',
     /**
      * @description Button text for dismissing the dialog.
      */

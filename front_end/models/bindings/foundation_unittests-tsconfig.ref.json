@@ -64,6 +64,9 @@
       "path": "../../third_party/source-map-scopes-codec/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../formatter/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../persistence/bundle-tsconfig.ref.json"
     },
     {

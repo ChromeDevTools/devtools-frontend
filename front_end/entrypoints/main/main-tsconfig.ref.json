@@ -54,6 +54,9 @@
       "path": "../../models/badges/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/comment_manager/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/crux-manager/bundle-tsconfig.ref.json"
     },
     {

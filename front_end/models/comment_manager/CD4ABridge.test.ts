@@ -107,6 +107,43 @@ describe('CD4ABridge', () => {
     });
   });
 
+  it('does not format comment with unrelated node when target is missing', () => {
+    const mockPrimaryNode = {
+      backendNodeId: () => 10,
+      simpleSelector: () => 'div.unrelated',
+    } as unknown as SDK.DOMModel.DOMNode;
+    const mockPrimaryDomModel = {
+      idToDOMNode: new Map([[10, mockPrimaryNode]]),
+    };
+    const mockPrimaryTarget = {
+      model: sinon.stub().withArgs(SDK.DOMModel.DOMModel).returns(mockPrimaryDomModel),
+    };
+    const mockTargetManager = {
+      targetById: sinon.stub().withArgs('destroyed-target').returns(null),
+      primaryPageTarget: () => mockPrimaryTarget,
+    } as unknown as SDK.TargetManager.TargetManager;
+
+    const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager, mockTargetManager);
+
+    const thread = commentManager.createCommentThread(
+        {
+          vePath: 'Panel: elements',
+          textSignature: 'color: red',
+          node: {
+            backendNodeId: 10,
+            targetId: 'destroyed-target',
+          },
+        },
+        'Missing target comment',
+        'DEVELOPER',
+    );
+    thread.save();
+
+    const threads = bridge.getCommentThreads();
+    assert.lengthOf(threads, 1);
+    assert.strictEqual(threads[0].text, 'Missing target comment\n\n- DevTools element: color: red');
+  });
+
   it('only takes the first comment text', () => {
     const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager);
 
@@ -251,6 +288,29 @@ describe('CD4ABridge', () => {
       assert.isTrue(revealStub.calledOnceWith(mockNode));
     });
 
+    it('does not reveal unrelated DOM node from primary page target when node target is missing', async () => {
+      const mockNode = {} as SDK.DOMModel.DOMNode;
+      const mockDomModel = {
+        pushNodesByBackendIdsToFrontend: sinon.stub().resolves(new Map([[10, mockNode]])),
+      };
+      const mockPrimaryTarget = {
+        model: sinon.stub().withArgs(SDK.DOMModel.DOMModel).returns(mockDomModel),
+      };
+      const mockTargetManager = {
+        targetById: sinon.stub().withArgs('destroyed-target').returns(null),
+        primaryPageTarget: () => mockPrimaryTarget,
+      } as unknown as SDK.TargetManager.TargetManager;
+
+      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+
+      const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager, mockTargetManager, undefined, mockHost);
+      await bridge.reveal('elements', {node: {backendNodeId: 10, targetId: 'destroyed-target'}});
+
+      assert.isTrue(showPanelSpy.calledOnceWith('elements'));
+      sinon.assert.notCalled(revealStub);
+      sinon.assert.notCalled(mockDomModel.pushNodesByBackendIdsToFrontend);
+    });
+
     it('reveals both network request and DOM node if both are present in target', async () => {
       const mockRequest = {requestId: () => 'req-1'} as SDK.NetworkRequest.NetworkRequest;
       const mockNetworkLog = {
@@ -265,7 +325,7 @@ describe('CD4ABridge', () => {
         model: sinon.stub().withArgs(SDK.DOMModel.DOMModel).returns(mockDomModel),
       };
       const mockTargetManager = {
-        targetById: sinon.stub().returns(null),
+        targetById: sinon.stub().withArgs('target-1').returns(mockPrimaryTarget),
         primaryPageTarget: () => mockPrimaryTarget,
       } as unknown as SDK.TargetManager.TargetManager;
 

@@ -72,7 +72,7 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     if (!this.#targetManager) {
       return undefined;
     }
-    const target = this.#targetManager.targetById(nodeSignature.targetId) ?? this.#targetManager.primaryPageTarget();
+    const target = this.#targetManager.targetById(nodeSignature.targetId);
     const domModel = target?.model(SDK.DOMModel.DOMModel);
     if (!domModel) {
       return undefined;
@@ -156,7 +156,7 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     }
 
     if (target?.node && this.#targetManager) {
-      const sdkTarget = this.#targetManager.targetById(target.node.targetId) ?? this.#targetManager.primaryPageTarget();
+      const sdkTarget = this.#targetManager.targetById(target.node.targetId);
       const domModel = sdkTarget?.model(SDK.DOMModel.DOMModel);
       if (domModel) {
         const cdpNodeId = target.node.backendNodeId as Protocol.DOM.BackendNodeId;

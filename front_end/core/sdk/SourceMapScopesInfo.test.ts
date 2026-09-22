@@ -1498,4 +1498,243 @@ describe('SourceMapScopesInfo', () => {
       assert.isTrue(scopeInfo.isEmpty());
     });
   });
+
+  describe('resolveMappedVariablesAtPosition', () => {
+    it('returns null when the inner-most generated range has no original scope', () => {
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', variables: ['g'], key: 'global'}).endScope(20, 0);
+      builder.startRange(0, 0, {scopeKey: 'global', values: ['g_gen']})
+          .startRange(0, 10)
+          .endRange(0, 20)
+          .endRange(0, 100);
+
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
+
+      assert.isNull(info.resolveMappedVariablesAtPosition(0, 15));
+    });
+
+    it('resolves variables across nested original scopes from inner-most to outer-most', () => {
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', variables: ['globalVar'], key: 'global'})
+          .startScope(2, 0, {
+            kind: 'function',
+            isStackFrame: true,
+            name: 'outer',
+            variables: ['this', 'outerParam', 'memberVar'],
+            key: 'outer',
+          })
+          .startScope(4, 0, {kind: 'block', variables: ['blockVar', 'computedVar'], key: 'block'})
+          .endScope(8, 0)
+          .endScope(10, 0)
+          .endScope(12, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'global', values: ['_global']})
+          .startRange(0, 10, {scopeKey: 'outer', isStackFrame: true, values: ['_this', 'n', '_module.prop']})
+          .startRange(0, 30, {scopeKey: 'block', values: ['b', 'n + 1']})
+          .endRange(0, 60)
+          .endRange(0, 80)
+          .endRange(0, 100);
+
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
+      const scopes = info.resolveMappedVariablesAtPosition(0, 45);
+
+      assert.deepEqual(scopes, [
+        new Map<string, string|null>([
+          ['blockVar', 'b'],
+          ['computedVar', 'n + 1'],
+        ]),
+        new Map<string, string|null>([
+          ['this', '_this'],
+          ['outerParam', 'n'],
+          ['memberVar', '_module.prop'],
+        ]),
+        new Map<string, string|null>([
+          ['globalVar', '_global'],
+        ]),
+      ]);
+    });
+
+    it('preserves per-scope entries when inner and outer original scopes declare the same variable name', () => {
+      const builder = new ScopeInfoBuilder();
+      builder
+          .startScope(0, 0, {
+            kind: 'function',
+            isStackFrame: true,
+            variables: ['shadowedAvailable', 'shadowedUnavailable', 'outerOnly'],
+            key: 'fn',
+          })
+          .startScope(2, 0, {
+            kind: 'block',
+            variables: ['shadowedAvailable', 'shadowedUnavailable'],
+            key: 'block',
+          })
+          .endScope(6, 0)
+          .endScope(10, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['outer_a', 'outer_u', 'outer_o']})
+          .startRange(0, 20, {scopeKey: 'block', values: ['inner_a', null]})
+          .endRange(0, 50)
+          .endRange(0, 80);
+
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
+      const scopes = info.resolveMappedVariablesAtPosition(0, 30);
+
+      assert.deepEqual(scopes, [
+        new Map<string, string|null>([
+          ['shadowedAvailable', 'inner_a'],
+          ['shadowedUnavailable', null],
+        ]),
+        new Map<string, string|null>([
+          ['shadowedAvailable', 'outer_a'],
+          ['shadowedUnavailable', 'outer_u'],
+          ['outerOnly', 'outer_o'],
+        ]),
+      ]);
+    });
+
+    it('resolves sub-range bindings based on the position', () => {
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['x'], key: 'fn'}).endScope(10, 0);
+      builder
+          .startRange(0, 0, {
+            scopeKey: 'fn',
+            isStackFrame: true,
+            values: [[
+              {from: {line: 0, column: 0}, to: {line: 0, column: 20}, value: undefined},
+              {from: {line: 0, column: 20}, to: {line: 0, column: 50}, value: 'r1'},
+              {from: {line: 0, column: 50}, to: {line: 0, column: 80}, value: 'r2.val'},
+            ]],
+          })
+          .endRange(0, 80);
+
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
+
+      const scopesTdz = info.resolveMappedVariablesAtPosition(0, 10);
+      assert.deepEqual(scopesTdz, [new Map<string, string|null>([['x', null]])]);
+
+      const scopesFirst = info.resolveMappedVariablesAtPosition(0, 35);
+      assert.deepEqual(scopesFirst, [new Map<string, string|null>([['x', 'r1']])]);
+
+      const scopesSecond = info.resolveMappedVariablesAtPosition(0, 65);
+      assert.deepEqual(scopesSecond, [new Map<string, string|null>([['x', 'r2.val']])]);
+    });
+
+    it('marks variables as null when an enclosing original scope has no generated range in the chain', () => {
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', variables: ['g'], key: 'global'})
+          .startScope(2, 0, {kind: 'function', isStackFrame: true, variables: ['outerVar'], key: 'outer'})
+          .startScope(4, 0, {kind: 'function', isStackFrame: true, variables: ['innerVar'], key: 'inner'})
+          .endScope(6, 0)
+          .endScope(8, 0)
+          .endScope(10, 0);
+
+      // `inner` is outlined directly inside `global`, so `outer` has no range containing column 50.
+      builder.startRange(0, 0, {scopeKey: 'global', values: ['g_val']})
+          .startRange(0, 40, {scopeKey: 'inner', isStackFrame: true, values: ['i_val']})
+          .endRange(0, 60)
+          .endRange(0, 100);
+
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
+      const scopes = info.resolveMappedVariablesAtPosition(0, 50);
+
+      assert.deepEqual(scopes, [
+        new Map<string, string|null>([['innerVar', 'i_val']]),
+        new Map<string, string|null>([['outerVar', null]]),
+        new Map<string, string|null>([['g', 'g_val']]),
+      ]);
+    });
+
+    it('prefers the inner-most generated range when multiple ranges map to the same original scope', () => {
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['a', 'b'], key: 'fn'})
+          .endScope(10, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'fn', values: [null, 'outer_b']})
+          .startRange(0, 20, {scopeKey: 'fn', values: ['inner_a', null]})
+          .endRange(0, 60)
+          .endRange(0, 100);
+
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
+      const scopes = info.resolveMappedVariablesAtPosition(0, 40);
+
+      assert.deepEqual(scopes, [
+        new Map<string, string|null>([['a', 'inner_a'], ['b', null]]),
+      ]);
+    });
+
+    it('drops inner block scopes when ignoreInnerBlockScopes is true (e.g. paused on a return statement)', () => {
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['x', 'fnVar'], key: 'fn'})
+          .startScope(2, 0, {kind: 'block', variables: ['x', 'blockVar'], key: 'block'})
+          .endScope(6, 0)
+          .endScope(10, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['fn_x', 'fn_v']})
+          .startRange(0, 20, {scopeKey: 'block', values: ['block_x', 'block_v']})
+          .endRange(0, 60)
+          .endRange(0, 100);
+
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
+      const scopesOnReturn = info.resolveMappedVariablesAtPosition(0, 40, /* ignoreInnerBlockScopes=*/ true);
+
+      assert.deepEqual(scopesOnReturn, [
+        new Map<string, string|null>([['x', 'fn_x'], ['fnVar', 'fn_v']]),
+      ]);
+    });
+
+    it('resolves lexical scopes for inlined function bodies both with and without inner scopes of their own', () => {
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', variables: ['globalVar'], key: 'global'})
+          .startScope(1, 0, {kind: 'function', isStackFrame: true, variables: ['inlinedParam'], key: 'inlinedFn'})
+          .startScope(2, 0, {kind: 'block', variables: ['inlinedBlockVar'], key: 'inlinedBlock'})
+          .endScope(4, 0)
+          .endScope(5, 0)
+          .startScope(7, 0, {kind: 'function', isStackFrame: true, variables: ['callerParam'], key: 'callerFn'})
+          .startScope(8, 0, {kind: 'block', variables: ['callerBlockVar'], key: 'callerBlock'})
+          .endScope(10, 0)
+          .endScope(11, 0)
+          .endScope(12, 0);
+
+      // Generated code range hierarchy:
+      // global [0..100] -> callerFn [10..90] -> callerBlock [20..80] -> inlinedFn [30..70] -> inlinedBlock [45..65]
+      builder.startRange(0, 0, {scopeKey: 'global', values: ['g_val']})
+          .startRange(0, 10, {scopeKey: 'callerFn', isStackFrame: true, values: ['c_param']})
+          .startRange(0, 20, {scopeKey: 'callerBlock', values: ['c_block']})
+          .startRange(0, 30, {
+            scopeKey: 'inlinedFn',
+            callSite: {sourceIndex: 0, line: 9, column: 4},
+            values: ['i_param'],
+          })
+          .startRange(0, 45, {scopeKey: 'inlinedBlock', values: ['i_block']})
+          .endRange(0, 65)
+          .endRange(0, 70)
+          .endRange(0, 80)
+          .endRange(0, 90)
+          .endRange(0, 100);
+
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
+
+      // 1. Inlined function body WITHOUT inner scopes of its own (column 35):
+      // Walks inlinedFn -> global, excluding callerBlock and callerFn.
+      assert.deepEqual(info.resolveMappedVariablesAtPosition(0, 35), [
+        new Map<string, string|null>([['inlinedParam', 'i_param']]),
+        new Map<string, string|null>([['globalVar', 'g_val']]),
+      ]);
+
+      // 2. Inlined function body WITH an inner block scope of its own (column 50):
+      // Walks inlinedBlock -> inlinedFn -> global, excluding callerBlock and callerFn.
+      assert.deepEqual(info.resolveMappedVariablesAtPosition(0, 50), [
+        new Map<string, string|null>([['inlinedBlockVar', 'i_block']]),
+        new Map<string, string|null>([['inlinedParam', 'i_param']]),
+        new Map<string, string|null>([['globalVar', 'g_val']]),
+      ]);
+
+      // 3. With ignoreInnerBlockScopes = true at column 50:
+      // Drops inlinedBlock and starts at inlinedFn -> global.
+      assert.deepEqual(info.resolveMappedVariablesAtPosition(0, 50, /* ignoreInnerBlockScopes=*/ true), [
+        new Map<string, string|null>([['inlinedParam', 'i_param']]),
+        new Map<string, string|null>([['globalVar', 'g_val']]),
+      ]);
+    });
+  });
 });

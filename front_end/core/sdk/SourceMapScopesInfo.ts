@@ -406,6 +406,20 @@ export class SourceMapScopesInfo {
     return rangeChain;
   }
 
+  resolveMappedVariablesAtPosition(line: number, column: number,
+                                   ignoreInnerBlockScopes = false): Array<Map<string, string|null>>|null {
+    const rangeChain = this.#findGeneratedRangeChain(line, column);
+    const startScope = rangeChain.at(-1)?.originalScope;
+    const innerMostScope =
+        (startScope && ignoreInnerBlockScopes && this.#findFunctionScopeInOriginalScopeChain(startScope)) || startScope;
+    const result: Array<Map<string, string|null>> = [];
+    for (let scope = innerMostScope; scope; scope = scope.parent) {
+      const range = rangeChain.findLast(r => r.originalScope === scope);
+      result.push(new Map(scope.variables.map((v, i) => [v, findExpression(range, i, line, column)])));
+    }
+    return innerMostScope ? result : null;
+  }
+
   /**
    * Returns the authored function name of the function containing the provided generated position.
    */
@@ -568,6 +582,13 @@ export interface TranslatedFrame {
   column: number;
   name?: string;
   url?: Platform.DevToolsPath.UrlString;
+}
+
+export function findExpression(range: ScopesCodec.GeneratedRange|undefined, index: number, line = 0,
+                               column = 0): string|null {
+  const val = range?.values[index];
+  return (typeof val === 'string' ? val : val?.find(r => contains({start: r.from, end: r.to}, line, column))?.value) ??
+      null;
 }
 
 export function contains(

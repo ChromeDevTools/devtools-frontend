@@ -8,7 +8,7 @@ import * as i18n from '../i18n/i18n.js';
 
 import type {CallFrame, LocationRange, ScopeChainEntry} from './DebuggerModel.js';
 import {type GetPropertiesResult, type RemoteObject, RemoteObjectImpl, RemoteObjectProperty} from './RemoteObject.js';
-import {contains} from './SourceMapScopesInfo.js';
+import {findExpression} from './SourceMapScopesInfo.js';
 
 const UIStrings = {
   /**
@@ -263,25 +263,8 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
 
   /** @returns null if the variable is unavailable at the current paused location */
   #findExpression(index: number): string|null {
-    if (!this.#range) {
-      return null;
-    }
-
-    const expressionOrSubRanges = this.#range.values[index];
-    if (typeof expressionOrSubRanges === 'string') {
-      return expressionOrSubRanges;
-    }
-    if (!expressionOrSubRanges) {
-      return null;
-    }
-
     const pausedPosition = this.#callFrame.location();
-    for (const range of expressionOrSubRanges) {
-      if (contains({start: range.from, end: range.to}, pausedPosition.lineNumber, pausedPosition.columnNumber)) {
-        return range.value ?? null;
-      }
-    }
-    return null;
+    return findExpression(this.#range, index, pausedPosition?.lineNumber, pausedPosition?.columnNumber);
   }
 
   static #unavailableProperty(name: string): RemoteObjectProperty {

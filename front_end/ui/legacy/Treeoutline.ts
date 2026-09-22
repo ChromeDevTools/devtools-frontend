@@ -1676,7 +1676,8 @@ class TreeViewTreeElement extends TreeElement {
     this.#clonedClasses.clear();
     for (let i = 0; i < this.configElement.attributes.length; ++i) {
       const attribute = this.configElement.attributes.item(i);
-      if (attribute && attribute.name !== 'role' && TreeViewTreeElement.CLONED_ATTRIBUTES.has(attribute.name)) {
+      if (attribute && attribute.name !== 'role' &&
+          (TreeViewTreeElement.CLONED_ATTRIBUTES.has(attribute.name) || attribute.name.startsWith('data-'))) {
         this.listItemElement.setAttribute(attribute.name, attribute.value);
         this.#clonedAttributes.add(attribute.name);
       }

@@ -75,7 +75,7 @@ import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {ShortcutTreeElement} from './ShortcutTreeElement.js';
 import {TopLayerContainer} from './TopLayerContainer.js';
 
-const {html, nothing, render, Directives: {classMap, repeat, styleMap}} = Lit;
+const {html, nothing, render, Directives: {classMap, ifDefined, repeat, styleMap}} = Lit;
 
 const UIStrings = {
   /**
@@ -919,6 +919,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     // clang-format off
     return html`
       <li role="treeitem"
+          data-backend-node-id=${ifDefined(node.backendNodeId())}
+          data-target-id=${ifDefined(node.domModel().target().id())}
           selectable=${input.selectEnabled ? 'true' : 'false'}
           ?selected=${isSelected && !input.selectedClosingTag}
           class=${classes}
@@ -997,6 +999,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
               ${node instanceof SDK.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing}
               ${needsClosingTag ? html`
                 <li role="treeitem"
+                    data-backend-node-id=${ifDefined(node.backendNodeId())}
+                    data-target-id=${ifDefined(node.domModel().target().id())}
                     selectable=${input.selectEnabled ? 'true' : 'false'}
                     ?selected=${isSelected && Boolean(input.selectedClosingTag)}
                     class=${classMap({

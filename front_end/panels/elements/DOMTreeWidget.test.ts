@@ -364,6 +364,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
   interface TestDOMNodeConfig {
     nodeId: number;
+    backendNodeId?: number;
     nodeName: string;
     nodeType?: number;
     attributes?: string[];
@@ -379,7 +380,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       return {
         nodeId: nodeConfig.nodeId as Protocol.DOM.NodeId,
         parentId: pId,
-        backendNodeId: nodeConfig.nodeId as Protocol.DOM.BackendNodeId,
+        backendNodeId: nodeConfig.backendNodeId as Protocol.DOM.BackendNodeId,
         nodeType: nodeConfig.nodeType ?? (isText ? Node.TEXT_NODE : Node.ELEMENT_NODE),
         nodeName: nodeConfig.nodeName,
         localName: isText ? '#text' : nodeConfig.nodeName.toLowerCase(),
@@ -4999,4 +5000,37 @@ describeWithEnvironment('DOMTreeWidget', () => {
          domTree.detach();
        }
      });
+
+  it('sets data-backend-node-id and data-target-id on tree item li elements in DECLARATIVE_VIEW', async () => {
+    const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+    try {
+      const rootNode = createTestDOMTree(domModel, {
+        nodeId: 1,
+        backendNodeId: 101,
+        nodeName: 'DIV',
+        children: [{nodeId: 2, backendNodeId: 202, nodeName: 'SPAN'}],
+      });
+      domTree.rootDOMNode = rootNode;
+      domTree.setNodeExpanded(rootNode, true);
+      domTree.performUpdate();
+      await waitForTreeUpdates();
+
+      const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree')!;
+      const internalTree = tree.getInternalTreeOutlineForTest();
+      const rootTreeElement = internalTree.rootElement().children()[0];
+      const childTreeElement = rootTreeElement.children()[0];
+      const closingTagTreeElement = rootTreeElement.children()[1];
+
+      assert.strictEqual(rootTreeElement.listItemElement.getAttribute('data-backend-node-id'), '101');
+      assert.strictEqual(rootTreeElement.listItemElement.getAttribute('data-target-id'), target.id());
+
+      assert.strictEqual(childTreeElement.listItemElement.getAttribute('data-backend-node-id'), '202');
+      assert.strictEqual(childTreeElement.listItemElement.getAttribute('data-target-id'), target.id());
+
+      assert.strictEqual(closingTagTreeElement.listItemElement.getAttribute('data-backend-node-id'), '101');
+      assert.strictEqual(closingTagTreeElement.listItemElement.getAttribute('data-target-id'), target.id());
+    } finally {
+      domTree.detach();
+    }
+  });
 });

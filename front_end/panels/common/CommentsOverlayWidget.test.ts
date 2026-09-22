@@ -247,24 +247,44 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     assert.isTrue(commentManager.isCommentMode());
   });
 
-  it('updates ButtonProvider item visibility when agentAttached changes', () => {
+  it('does not toggle comment mode via ActionDelegate if agent is not attached', () => {
+    commentManager.setAgentAttached(false);
+    const delegate = new PanelCommon.CommentsOverlayWidget.ActionDelegate(commentManager);
+    const context = {} as UI.Context.Context;
+    assert.isFalse(commentManager.isCommentMode());
+    const handled = delegate.handleAction(context, 'comments.toggle-comment-mode');
+    assert.isFalse(handled);
+    assert.isFalse(commentManager.isCommentMode(), 'Comment mode should not be toggled when agent is not attached');
+  });
+
+  it('updates ButtonProvider item visibility and action enabled state when agentAttached changes', () => {
     commentManager.setAgentAttached(false);
     UI.ActionRegistration.registerActionExtension({
       category: UI.ActionRegistration.ActionCategory.GLOBAL,
       actionId: 'comments.toggle-comment-mode',
       toggleable: true,
+      async loadActionDelegate() {
+        return new PanelCommon.CommentsOverlayWidget.ActionDelegate(commentManager);
+      },
     });
-    UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    const action = actionRegistry.getAction('comments.toggle-comment-mode');
     const provider = new PanelCommon.CommentsOverlayWidget.ButtonProvider(commentManager);
     const item = provider.item();
     assert.exists(item);
     assert.isFalse(item.visible());
+    assert.isFalse(action.enabled());
+    assert.notInclude(actionRegistry.availableActions(), action);
 
     commentManager.setAgentAttached(true);
     assert.isTrue(item.visible());
+    assert.isTrue(action.enabled());
+    assert.include(actionRegistry.availableActions(), action);
 
     commentManager.setAgentAttached(false);
     assert.isFalse(item.visible());
+    assert.isFalse(action.enabled());
+    assert.notInclude(actionRegistry.availableActions(), action);
   });
 
   it('hides active thread widget, pins, and highlights when agent detaches', async () => {

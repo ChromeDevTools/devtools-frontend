@@ -371,6 +371,9 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
     if (actionId === 'comments.toggle-comment-mode') {
+      if (!this.#commentManager.isAgentAttached()) {
+        return false;
+      }
       if (!widgetInstance) {
         widgetInstance = new CommentsOverlayWidget(
             undefined,
@@ -404,11 +407,14 @@ export class ButtonProvider implements UI.Toolbar.Provider {
         Root.DevToolsContext.globalInstance().get(
             CommentManager.CommentManager.CommentManager,
         );
-    this.#button = UI.Toolbar.Toolbar.createActionButton('comments.toggle-comment-mode');
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('comments.toggle-comment-mode');
+    action.setEnabled(this.#commentManager.isAgentAttached());
+    this.#button = UI.Toolbar.Toolbar.createActionButton(action);
     this.#button.setVisible(this.#commentManager.isAgentAttached());
     this.#commentManager.addEventListener(
         CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
         event => {
+          action.setEnabled(event.data);
           this.#button.setVisible(event.data);
         },
     );

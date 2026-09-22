@@ -25,6 +25,12 @@ describe('CommentManager', () => {
 
     assert.isFalse(manager.isCommentMode());
 
+    // Cannot enable comment mode when agent is not attached
+    manager.setCommentMode(true);
+    assert.isFalse(manager.isCommentMode());
+    assert.deepEqual(modeChangedEvents, []);
+
+    manager.setAgentAttached(true);
     manager.setCommentMode(true);
     assert.isTrue(manager.isCommentMode());
     assert.deepEqual(modeChangedEvents, [true]);
@@ -220,6 +226,7 @@ describe('CommentManager', () => {
   });
 
   it('clears all threads and resets comment mode on clear()', () => {
+    manager.setAgentAttached(true);
     manager.setCommentMode(true);
     const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
       vePath: 'Panel: sources > TreeItem: file',

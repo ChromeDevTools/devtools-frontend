@@ -38,6 +38,7 @@ describeWithEnvironment('CommentOverlayManager', () => {
     container = document.createElement('div');
     renderElementIntoDOM(container);
     const commentManager = new CommentManager.CommentManager.CommentManager();
+    commentManager.setAgentAttached(true);
     manager = new Comments.CommentOverlayManager.CommentOverlayManager(commentManager);
   });
 

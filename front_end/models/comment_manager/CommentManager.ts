@@ -74,6 +74,9 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   setCommentMode(active: boolean): void {
+    if (active && !this.#agentAttached) {
+      return;
+    }
     if (this.#commentMode === active) {
       return;
     }

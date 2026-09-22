@@ -7,11 +7,19 @@
  */
 
 export function isDebugMode(): boolean {
-  return Boolean(localStorage.getItem('debugAiAssistancePanelEnabled'));
+  try {
+    return Boolean(localStorage.getItem('debugAiAssistancePanelEnabled'));
+  } catch {
+    return false;
+  }
 }
 
 export function isStructuredLogEnabled(): boolean {
-  return Boolean(localStorage.getItem('aiAssistanceStructuredLogEnabled'));
+  try {
+    return Boolean(localStorage.getItem('aiAssistanceStructuredLogEnabled'));
+  } catch {
+    return false;
+  }
 }
 
 export function debugLog(...log: unknown[]): void {

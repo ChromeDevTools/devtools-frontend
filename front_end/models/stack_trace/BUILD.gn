@@ -56,7 +56,7 @@ devtools_entrypoint("impl") {
   ]
 }
 
-devtools_foundation_module("unittests") {
+devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [

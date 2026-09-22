@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import sinon from 'sinon';
+
 import type * as Host from '../core/host/host.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
@@ -62,7 +64,7 @@ export async function loadBasicSourceMapExample(target: SDK.Target.Target):
     workspace,
     ignoreListManager,
   });
-  SDK.PageResourceLoader.PageResourceLoader.instance({
+  const pageResourceLoader = SDK.PageResourceLoader.PageResourceLoader.instance({
     forceNew: true,
     loadOverride: async (_: string) => ({
       success: true,
@@ -71,6 +73,10 @@ export async function loadBasicSourceMapExample(target: SDK.Target.Target):
     }),
     maxConcurrentLoads: 1,
   });
+  sinon.stub(target.targetManager().context, 'get')
+      .callThrough()
+      .withArgs(SDK.PageResourceLoader.PageResourceLoader)
+      .returns(pageResourceLoader);
 
   const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
   let sourceMapAttachedCallback = () => {};

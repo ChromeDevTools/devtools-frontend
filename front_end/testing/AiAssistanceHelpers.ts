@@ -17,16 +17,12 @@ import * as ProjectSettings from '../models/project_settings/project_settings.js
 import type * as Trace from '../models/trace/trace.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
-import * as AiAssistancePanel from '../panels/ai_assistance/ai_assistance.js';
-import * as UI from '../ui/legacy/legacy.js';
+import type * as AiAssistancePanel from '../panels/ai_assistance/ai_assistance.js';
 
-import {findMenuItemWithLabel} from './ContextMenuHelpers.js';
-import {renderElementIntoDOM} from './DOMHelpers.js';
 import {
   createTarget,
 } from './EnvironmentHelpers.js';
 import {createContentProviderUISourceCodes, createFileSystemUISourceCode} from './UISourceCodeHelpers.js';
-import {createViewFunctionStub, type ViewFunctionStub} from './ViewFunctionHelpers.js';
 
 function createMockAidaClient(doConversation: Host.AidaClient.AidaClient['doConversation']):
     sinon.SinonStubbedInstance<Host.AidaClient.AidaClient> {
@@ -140,54 +136,6 @@ export async function createUISourceCode(options?: {
   return uiSourceCode;
 }
 
-let panels: AiAssistancePanel.AiAssistancePanel[] = [];
-/**
- * Creates and shows an AiAssistancePanel instance returning the view
- * stubs and the initial view input caused by Widget.show().
- */
-export async function createAiAssistancePanel(options?: {
-  aidaClient?: Host.AidaClient.AidaClient,
-  aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
-  chatView?: AiAssistancePanel.ChatView,
-}): Promise<{
-  panel: AiAssistancePanel.AiAssistancePanel,
-  view: ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>,
-  aidaClient: Host.AidaClient.AidaClient,
-  stubAidaCheckAccessPreconditions: (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) =>
-      sinon.SinonStub<[], Promise<Host.AidaClient.AidaAccessPreconditions>>,
-}> {
-  let aidaAvailabilityForStub = options?.aidaAvailability ?? Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
-
-  const view = createViewFunctionStub(AiAssistancePanel.AiAssistancePanel, {chatView: options?.chatView});
-  const aidaClient = options?.aidaClient ?? mockAidaClient();
-  const checkAccessPreconditionsStub =
-      sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions').callsFake(() => {
-        return Promise.resolve(aidaAvailabilityForStub);
-      });
-  const panel = new AiAssistancePanel.AiAssistancePanel(view, {
-    aidaClient,
-    aidaAvailability: aidaAvailabilityForStub,
-  });
-  panels.push(panel);
-
-  // In many of the tests we create other panels to allow the right contexts to
-  // be set for the AI Assistance panel.
-  renderElementIntoDOM(panel, {allowMultipleChildren: true});
-  await view.nextInput;
-
-  const stubAidaCheckAccessPreconditions = (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => {
-    aidaAvailabilityForStub = aidaAvailability;
-    return checkAccessPreconditionsStub;
-  };
-
-  return {
-    panel,
-    view,
-    aidaClient,
-    stubAidaCheckAccessPreconditions,
-  };
-}
-
 export const setupAutomaticFileSystem = (options: {hasFileSystem: boolean} = {
   hasFileSystem: false,
 }): void => {
@@ -229,13 +177,6 @@ export function initializePersistenceImplForTests(): void {
   WorkspaceDiff.WorkspaceDiff.workspaceDiff({forceNew: true});
 }
 
-export function cleanup(): void {
-  for (const panel of panels) {
-    panel.detach();
-  }
-  panels = [];
-}
-
 /**
  * Removes the 'id' field from a message.
  * Note: the return type is a distributive conditional type. This is required
@@ -250,25 +191,6 @@ export function stripId<T extends {id: string}>(message: T): T extends AiAssista
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {id, ...rest} = message;
   return rest as (T extends AiAssistancePanel.ChatMessage.Message ? Omit<T, 'id'>: never);
-}
-
-export function openHistoryContextMenu(
-    lastUpdate: AiAssistancePanel.ViewInput,
-    item: string,
-    ): {
-  contextMenu: UI.ContextMenu.ContextMenu,
-  id: number|undefined,
-  entry: UI.ContextMenu.Item|undefined,
-} {
-  const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('click'));
-  lastUpdate.populateHistoryMenu(contextMenu);
-
-  const entry = findMenuItemWithLabel(contextMenu.defaultSection(), item);
-  return {
-    contextMenu,
-    id: entry?.id(),
-    entry,
-  };
 }
 
 export function createTestFilesystem(fileSystemPath: string, files?: Array<{
@@ -415,47 +337,4 @@ export function assertSkillNotLoaded(prompt: string, skillName: AiAssistance.Ski
   assert.include(prompt, UNLOADED_SKILLS_MANIFEST_HEADER);
   const expectedLine = `- ${skillName}: ${AiAssistance.SkillRegistry.SKILLS[skillName].description}`;
   assert.include(prompt, expectedLine, `Expected skill "${skillName}" to be in the unloaded skills manifest`);
-}
-
-/**
- * Consumes view updates sequentially until a side-effect confirmation dialog
- * (`needs_approval` step state) appears in the message stream.
- *
- * @param view The view function stub representing the AI Assistance panel view.
- * @returns The confirmation dialog handler to approve or decline the side effect.
- */
-export async function waitForSideEffectDialog(
-    view: ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>,
-    ): Promise<AiAssistancePanel.ChatMessage.ConfirmSideEffectDialog> {
-  let nextInput = await view.nextInput;
-  while (nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW) {
-    const lastMessage = nextInput.props.messages.at(-1);
-    const stepPart = lastMessage && 'parts' in lastMessage ?
-        lastMessage.parts.find(p => p.type === 'step' && p.step.state.type === 'needs_approval') :
-        null;
-    if (stepPart && stepPart.type === 'step' && stepPart.step.state.type === 'needs_approval') {
-      return stepPart.step.state.sideEffectDialog;
-    }
-    if (!nextInput.props.isLoading) {
-      throw new Error('Conversation finished without showing a side effect dialog');
-    }
-    nextInput = await view.nextInput;
-  }
-  throw new Error('Side effect dialog was not reached');
-}
-
-/**
- * Consumes view updates sequentially until the conversation finishes loading.
- *
- * @param view The view function stub representing the AI Assistance panel view.
- * @returns The final view input after loading has completed.
- */
-export async function waitForLoadingToFinish(
-    view: ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>,
-    ): Promise<AiAssistancePanel.ViewInput> {
-  let nextInput = await view.nextInput;
-  while (nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW && nextInput.props.isLoading) {
-    nextInput = await view.nextInput;
-  }
-  return nextInput;
 }

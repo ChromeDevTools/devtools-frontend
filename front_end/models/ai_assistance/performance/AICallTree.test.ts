@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import * as Trace from '../../../models/trace/trace.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
-import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
+import {allThreadEntriesInTrace} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import {AICallTree} from '../ai_assistance.js';
 

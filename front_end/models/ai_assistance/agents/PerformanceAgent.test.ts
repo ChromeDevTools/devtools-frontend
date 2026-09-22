@@ -24,7 +24,7 @@ import {createNetworkRequest} from '../../../testing/NetworkRequestHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
-import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
+import {allThreadEntriesInTrace} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Bindings from '../../bindings/bindings.js';
 import * as Logs from '../../logs/logs.js';

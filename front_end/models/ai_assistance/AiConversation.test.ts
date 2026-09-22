@@ -22,6 +22,7 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Logs from '../logs/logs.js';
@@ -32,6 +33,7 @@ import * as AiAssistance from './ai_assistance.js';
 
 describe('AiConversation', () => {
   setupLocaleHooks();
+  setupRuntimeHooks();
 
   after(async () => {
     await deinitializeGlobalVars();

@@ -13,18 +13,29 @@ import {createUISourceCode} from '../../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {createNetworkRequest, stubInitiatorGraph} from '../../../testing/NetworkRequestHelpers.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {loadBasicSourceMapExample} from '../../../testing/SourceMapHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as Logs from '../../logs/logs.js';
+import * as Workspace from '../../workspace/workspace.js';
 import {FileFormatter} from '../ai_assistance.js';
 
 describe('FileFormatter', () => {
   setupLocaleHooks();
+  setupSettingsHooks();
   setupRuntimeHooks();
 
   let universe: TestUniverse;
 
   beforeEach(() => {
     universe = new TestUniverse();
+    sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(universe.workspace);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
+    sinon.stub(Common.Settings.Settings, 'instance').returns(universe.settings);
+    sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(universe.networkLog);
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(universe.debuggerWorkspaceBinding);
   });
 
   describe('formatSourceMapDetails', () => {

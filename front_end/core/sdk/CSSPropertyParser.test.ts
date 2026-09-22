@@ -138,7 +138,7 @@ describe('CSSPropertyParser', () => {
   describe('PropertyParser', () => {
     it('correctly identifies spacing', () => {
       const requiresSpace = (a: string, b: string) =>
-          SDK.CSSPropertyParser.requiresSpace([document.createTextNode(a)], [document.createTextNode(b)]);
+          SDK.CSSPropertyParser.requiresSpace([{textContent: a}], [{textContent: b}]);
 
       assert.isTrue(requiresSpace('a', 'b'));
       assert.isFalse(requiresSpace('', 'text'));
@@ -171,20 +171,18 @@ describe('CSSPropertyParser', () => {
       assert.isFalse(requiresSpace('text', '{ text'));
       assert.isFalse(requiresSpace('text', '; text'));
 
-      assert.isTrue(SDK.CSSPropertyParser.requiresSpace(
-          [document.createTextNode('text'), document.createElement('div')], [document.createTextNode('text')]));
-      assert.isTrue(SDK.CSSPropertyParser.requiresSpace(
-          [document.createTextNode('text')], [document.createElement('div'), document.createTextNode('text')]));
-      assert.isTrue(SDK.CSSPropertyParser.requiresSpace(
-          [document.createTextNode('text'), document.createElement('div')],
-          [document.createElement('div'), document.createTextNode('text')]));
-      assert.isFalse(SDK.CSSPropertyParser.requiresSpace(
-          [document.createTextNode('text'), document.createElement('div')], [document.createTextNode(' text')]));
-      assert.isFalse(SDK.CSSPropertyParser.requiresSpace(
-          [document.createTextNode('text')], [document.createElement('div'), document.createTextNode(' text')]));
-      assert.isFalse(SDK.CSSPropertyParser.requiresSpace(
-          [document.createTextNode('text'), document.createElement('div')],
-          [document.createElement('div'), document.createTextNode(' text')]));
+      assert.isTrue(
+          SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}, {textContent: null}], [{textContent: 'text'}]));
+      assert.isTrue(
+          SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}], [{textContent: null}, {textContent: 'text'}]));
+      assert.isTrue(SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}, {textContent: null}],
+                                                        [{textContent: null}, {textContent: 'text'}]));
+      assert.isFalse(
+          SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}, {textContent: null}], [{textContent: ' text'}]));
+      assert.isFalse(
+          SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}], [{textContent: null}, {textContent: ' text'}]));
+      assert.isFalse(SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}, {textContent: null}],
+                                                         [{textContent: null}, {textContent: ' text'}]));
     });
 
     it('parses comments', () => {

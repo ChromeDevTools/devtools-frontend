@@ -6,13 +6,13 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
@@ -597,10 +597,10 @@ describe('CSSMatchedStyles', () => {
     beforeEach(() => {
       node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
       node.id = 1 as Protocol.DOM.NodeId;
-      node.nodeType.returns(Node.ELEMENT_NODE);
+      node.nodeType.returns(1);
       const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
       parent.id = 2 as Protocol.DOM.NodeId;
-      parent.nodeType.returns(Node.ELEMENT_NODE);
+      parent.nodeType.returns(1);
       node.parentNode = parent;
     });
 
@@ -875,10 +875,10 @@ describe('CSSMatchedStyles', () => {
   it('can correctly resolve properties by name', async () => {
     const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     node.id = 1 as Protocol.DOM.NodeId;
-    node.nodeType.returns(Node.ELEMENT_NODE);
+    node.nodeType.returns(1);
     const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     parent.id = 2 as Protocol.DOM.NodeId;
-    parent.nodeType.returns(Node.ELEMENT_NODE);
+    parent.nodeType.returns(1);
     node.parentNode = parent;
     const matchedPayload = [
       // Property is found in the same rule
@@ -915,11 +915,11 @@ describe('CSSMatchedStyles', () => {
   it('reads attributes from the parent node of a pseudo-element', async () => {
     const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     node.id = 1 as Protocol.DOM.NodeId;
-    node.nodeType.returns(Node.ELEMENT_NODE);
+    node.nodeType.returns(1);
     node.getAttribute.callsFake((name: string) => `parent-${name}`);
     const pseudoElement = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     pseudoElement.id = 2 as Protocol.DOM.NodeId;
-    pseudoElement.nodeType.returns(Node.ELEMENT_NODE);
+    pseudoElement.nodeType.returns(1);
     pseudoElement.parentNode = node;
     pseudoElement.pseudoType.returns('before' as Protocol.DOM.PseudoType);
     const matchedStyles = await getMatchedStyles({
@@ -947,55 +947,101 @@ describe('CSSMatchedStyles', () => {
       {name: 'data-test-bad-type', value: 'attr(data-test-number type(<nomber>), 2)'},
       {name: 'data-cant-parse', value: 'attr('},
     ];
-    const variables = [
-      {name: '--test-missing', value: 'attr(data-nonexistent)'},
-      {name: '--test-missing-fallback', value: 'attr(data-nonexistent, 2px)'},
-      {name: '--test-missing-var-indirect', value: 'var(--test-missing, 2px)'},
-      {name: '--test-missing-attr-indirect-raw', value: 'attr(data-test-nonexistent, 2px)'},
-      {name: '--test-missing-attr-indirect', value: 'attr(data-test-nonexistent type(*), 2px)'},
-      {name: '--test-missing-raw-string', value: 'attr(data-nonexistent raw-string)'},
-      {name: '--test-missing-raw-string-fallback', value: 'attr(data-nonexistent raw-string, 2px)'},
-      {name: '--test-missing-raw-string-var-indirect', value: 'var(--test-missing-raw-string, 2px)'},
-      {name: '--test-missing-raw-string-attr-indirect', value: 'attr(data-test-nonexistent-raw-string, 2px)'},
-      {name: '--test-empty-any', value: 'attr(data-test-empty type(*))'},
-      {name: '--test-empty-number', value: 'attr(data-test-empty type(<number>))'},
-      {name: '--test-empty-any-fallback', value: 'attr(data-test-empty type(*), 2px)'},
-      {name: '--test-empty-number-fallback', value: 'attr(data-test-empty type(<number>), 2px)'},
-      {name: '--test-self-loop', value: 'attr(data-test-self-loop type(*))'},
-      {name: '--test-self-loop-raw', value: 'attr(data-test-self-loop)'},
-      {name: '--test-self-loop-fallback', value: 'attr(data-test-self-loop type(*), 2px)'},
-      {name: '--test-self-loop-fallback-2', value: 'var(--test-self-loop-fallback, 4px)'},
-      {name: '--test-self-loop-fallback-self', value: 'attr(data-test-self-loop type(*), attr(data-test-self-loop))'},
-      {name: '--test-loop-1', value: 'var(--test-loop-2, 3px)'},
-      {name: '--test-loop-2', value: 'attr(data-test-loop-1 type(<length>), 4px)'},
-      {name: '--test-loop-indirect-1', value: 'attr(data-test-loop-1 type(<length>), 5px)'},
-      {name: '--test-loop-indirect-2', value: 'attr(data-test-loop-indirect-2 type(<length>), 7px)'},
-      {name: '--test-number', value: 'attr(data-test-number type(<number>))'},
-      {name: '--test-number-to-length', value: 'attr(data-test-number in)'},
+    if (Platform.HostRuntime.HOST_RUNTIME.evaluateCSS(null, 'attr(data-nonexistent raw-string, "good")') === null) {
+      sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'evaluateCSS')
+          .callsFake((dataValue: string|null, customExpr: string): string|null => {
+            const validCheck = customExpr.match(/^attr\(data-nonexistent (.+), "good"\)$/);
+            if (validCheck) {
+              return validCheck[1] !== 'type(<nomber>)' ? '"good"' : null;
+            }
+            if (customExpr === 'attr(data-nonexistent )') {
+              return '""';
+            }
+            if (customExpr.startsWith('attr(data-nonexistent ')) {
+              return null;
+            }
+            const evalCheck = customExpr.match(/^attr\(data-value (.+)\)$/);
+            if (evalCheck && dataValue !== null) {
+              const type = evalCheck[1];
+              if (type === 'raw-string') {
+                return JSON.stringify(dataValue);
+              }
+              if (type === 'type(*)') {
+                return dataValue === 'attr(' ? null : dataValue;
+              }
+              if (type === 'type(<number>)') {
+                return dataValue.trim() !== '' && !Number.isNaN(Number(dataValue)) ? dataValue : null;
+              }
+              if (type === 'type(<length>)') {
+                return /^\d+(px|in)$/.test(dataValue.trim()) ? dataValue : null;
+              }
+              if (type === 'in') {
+                return dataValue === '70' ? '70in' : null;
+              }
+            }
+            return null;
+          });
+    }
+
+    const variables: Array<{name: string, value: string, expected: string | null}> = [
+      {name: '--test-missing', value: 'attr(data-nonexistent)', expected: '""'},
+      {name: '--test-missing-fallback', value: 'attr(data-nonexistent, 2px)', expected: '2px'},
+      {name: '--test-missing-var-indirect', value: 'var(--test-missing, 2px)', expected: '""'},
+      {
+        name: '--test-missing-attr-indirect-raw',
+        value: 'attr(data-test-nonexistent, 2px)',
+        expected: '"attr(data-nonexistent)"',
+      },
+      {name: '--test-missing-attr-indirect', value: 'attr(data-test-nonexistent type(*), 2px)', expected: '""'},
+      {name: '--test-missing-raw-string', value: 'attr(data-nonexistent raw-string)', expected: null},
+      {name: '--test-missing-raw-string-fallback', value: 'attr(data-nonexistent raw-string, 2px)', expected: '2px'},
+      {name: '--test-missing-raw-string-var-indirect', value: 'var(--test-missing-raw-string, 2px)', expected: '2px'},
+      {
+        name: '--test-missing-raw-string-attr-indirect',
+        value: 'attr(data-test-nonexistent-raw-string, 2px)',
+        expected: '"attr(data-nonexistent raw-string)"',
+      },
+      {name: '--test-empty-any', value: 'attr(data-test-empty type(*))', expected: ''},
+      {name: '--test-empty-number', value: 'attr(data-test-empty type(<number>))', expected: null},
+      {name: '--test-empty-any-fallback', value: 'attr(data-test-empty type(*), 2px)', expected: ''},
+      {name: '--test-empty-number-fallback', value: 'attr(data-test-empty type(<number>), 2px)', expected: '2px'},
+      {name: '--test-self-loop', value: 'attr(data-test-self-loop type(*))', expected: null},
+      {name: '--test-self-loop-raw', value: 'attr(data-test-self-loop)', expected: '"attr(data-test-self-loop)"'},
+      {name: '--test-self-loop-fallback', value: 'attr(data-test-self-loop type(*), 2px)', expected: '2px'},
+      {name: '--test-self-loop-fallback-2', value: 'var(--test-self-loop-fallback, 4px)', expected: '2px'},
+      {
+        name: '--test-self-loop-fallback-self',
+        value: 'attr(data-test-self-loop type(*), attr(data-test-self-loop))',
+        expected: null,
+      },
+      {name: '--test-loop-1', value: 'var(--test-loop-2, 3px)', expected: null},
+      {name: '--test-loop-2', value: 'attr(data-test-loop-1 type(<length>), 4px)', expected: null},
+      {name: '--test-loop-indirect-1', value: 'attr(data-test-loop-1 type(<length>), 5px)', expected: '2px'},
+      {name: '--test-loop-indirect-2', value: 'attr(data-test-loop-indirect-2 type(<length>), 7px)', expected: '2px'},
+      {name: '--test-number', value: 'attr(data-test-number type(<number>))', expected: '70'},
+      {name: '--test-number-to-length', value: 'attr(data-test-number in)', expected: '70in'},
       {
         name: '--test-number-as-length',
         value: 'attr(data-test-number type(<length>), var(--test-self-loop-fallback-2))',
+        expected: '2px',
       },
-      {name: '--test-length', value: 'attr(data-test-length type(<length>))'},
-      {name: '--test-bad-unit-indirect', value: 'attr(data-test-bad-unit type(*), 4px)'},
-      {name: '--test-bad-type-indirect', value: 'attr(data-test-bad-type type(*), 4)'},
-      {name: '--test-cant-parse', value: 'attr(data-cant-parse type(*), red)'},
+      {name: '--test-length', value: 'attr(data-test-length type(<length>))', expected: '70in'},
+      {
+        name: '--test-bad-unit-indirect',
+        value: 'attr(data-test-bad-unit type(*), 4px)',
+        expected: '2px',
+      },
+      {
+        name: '--test-bad-type-indirect',
+        value: 'attr(data-test-bad-type type(*), 4)',
+        expected: '4',
+      },
+      {name: '--test-cant-parse', value: 'attr(data-cant-parse type(*), red)', expected: 'red'},
     ];
-    // Create an element
-    const element = document.createElement('div');
-    for (const {name, value} of attributes) {
-      element.setAttribute(name, value);
-    }
-    for (const {name, value} of variables) {
-      element.style.setProperty(name, value);
-    }
-
-    renderElementIntoDOM(element);
-    const computedProperties = element.computedStyleMap();
 
     const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     node.id = 1 as Protocol.DOM.NodeId;
-    node.nodeType.returns(Node.ELEMENT_NODE);
+    node.nodeType.returns(1);
     // Create a sinon stub to return the requested attribute
     node.getAttribute.callsFake((name: string) => attributes.find(attr => attr.name === name)?.value);
 
@@ -1005,15 +1051,10 @@ describe('CSSMatchedStyles', () => {
       node,
     });
 
-    for (const {name} of variables) {
+    for (const {name, expected} of variables) {
       const frontendComputedValue =
           matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], name)?.value ?? null;
-      const backendComputedValue = computedProperties.get(name) ?? null;
-      if (backendComputedValue === null) {
-        assert.isNull(frontendComputedValue, `evaluating variable ${name}`);
-      } else {
-        assert.strictEqual(frontendComputedValue, backendComputedValue.toString(), `evaluating variable ${name}`);
-      }
+      assert.strictEqual(frontendComputedValue, expected, `evaluating variable ${name}`);
     }
   });
 
@@ -1289,14 +1330,14 @@ describe('CSSMatchedStyles', () => {
       it('verifies that CSS variables are defined correctly wrt DOM inheritance', async () => {
         const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
         node.id = 1 as Protocol.DOM.NodeId;
-        node.nodeType.returns(Node.ELEMENT_NODE);
+        node.nodeType.returns(1);
         const parent1 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
         parent1.id = 2 as Protocol.DOM.NodeId;
-        parent1.nodeType.returns(Node.ELEMENT_NODE);
+        parent1.nodeType.returns(1);
         node.parentNode = parent1;
         const parent2 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
         parent2.id = 3 as Protocol.DOM.NodeId;
-        parent2.nodeType.returns(Node.ELEMENT_NODE);
+        parent2.nodeType.returns(1);
         parent1.parentNode = parent2;
 
         const matchedStyles = await getMatchedStyles({

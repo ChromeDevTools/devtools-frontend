@@ -78,10 +78,10 @@ describe('DOMNodeContext', function() {
       sinon.createStubInstance(SDK.DOMModel.DOMNode),
       sinon.createStubInstance(SDK.DOMModel.DOMNode),
     ];
-    childNodes[0].nodeType.returns(Node.ELEMENT_NODE);
+    childNodes[0].nodeType.returns(1);
     childNodes[0].simpleSelector.returns('span.child1');
-    childNodes[1].nodeType.returns(Node.TEXT_NODE);
-    childNodes[2].nodeType.returns(Node.ELEMENT_NODE);
+    childNodes[1].nodeType.returns(3);
+    childNodes[2].nodeType.returns(1);
     childNodes[2].simpleSelector.returns('span.child2');
 
     element.simpleSelector.returns('div#parentElement');
@@ -98,9 +98,9 @@ describe('DOMNodeContext', function() {
 
   it('describes an element with siblings and a parent', async function() {
     const nextSibling = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    nextSibling.nodeType.returns(Node.ELEMENT_NODE);
+    nextSibling.nodeType.returns(1);
     const previousSibling = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    previousSibling.nodeType.returns(Node.TEXT_NODE);
+    previousSibling.nodeType.returns(3);
 
     const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     parentNode.simpleSelector.returns('div#grandparentElement');
@@ -108,9 +108,9 @@ describe('DOMNodeContext', function() {
       sinon.createStubInstance(SDK.DOMModel.DOMNode),
       sinon.createStubInstance(SDK.DOMModel.DOMNode),
     ];
-    parentChildNodes[0].nodeType.returns(Node.ELEMENT_NODE);
+    parentChildNodes[0].nodeType.returns(1);
     parentChildNodes[0].simpleSelector.returns('span.sibling1');
-    parentChildNodes[1].nodeType.returns(Node.TEXT_NODE);
+    parentChildNodes[1].nodeType.returns(3);
     parentNode.getChildNodesPromise.resolves(parentChildNodes);
 
     element.simpleSelector.returns('div#parentElement');

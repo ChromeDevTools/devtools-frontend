@@ -20,7 +20,7 @@ function createNode(options?: {getAttribute?: (attribute: string) => string | un
   const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
   node.id = 1 as Protocol.DOM.NodeId;
   // Needed to process the inline styles
-  node.nodeType.returns(Node.ELEMENT_NODE);
+  node.nodeType.returns(1);
   node.localName.returns('div');
   node.simpleSelector.callThrough();
   if (options?.getAttribute) {

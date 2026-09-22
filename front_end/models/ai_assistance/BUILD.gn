@@ -178,12 +178,28 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "BuiltInAi.test.ts",
+    "DOMHelpers.test.ts",
+  ]
+
+  ts_deps = [
+    ":bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/root:bundle",
+    "../../testing",
+  ]
+}
+
+devtools_foundation_module("foundation_unittests") {
+  testonly = true
+
+  sources = [
     "AiAgent2.test.ts",
     "AiConversation.test.ts",
     "AiHistoryStorage.test.ts",
     "AiSetting.test.ts",
     "AiUtils.test.ts",
-    "BuiltInAi.test.ts",
     "ChangeManager.test.ts",
     "ConversationSummary.test.ts",
     "EvaluateAction.test.ts",
@@ -236,6 +252,8 @@ ts_library("unittests") {
     "tools/ToolRegistry.test.ts",
   ]
 
+  public_deps = [ "./data_formatters:foundation_unittests" ]
+
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",
@@ -256,9 +274,4 @@ ts_library("unittests") {
     "../trace:bundle",
     "../workspace:bundle",
   ]
-}
-
-group("foundation_unittests") {
-  testonly = true
-  deps = [ "./data_formatters:foundation_unittests" ]
 }

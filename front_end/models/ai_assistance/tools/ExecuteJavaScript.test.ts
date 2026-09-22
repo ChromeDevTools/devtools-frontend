@@ -14,6 +14,7 @@ import {
 } from '../../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import * as Formatter from '../../formatter/formatter.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -21,6 +22,7 @@ import * as AiAssistance from '../ai_assistance.js';
 describe('ExecuteJavaScriptTool', () => {
   setupLocaleHooks();
   setupSettingsHooks();
+  setupRuntimeHooks();
   let element: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
   let target: sinon.SinonStubbedInstance<SDK.Target.Target>;
   let domModel: sinon.SinonStubbedInstance<SDK.DOMModel.DOMModel>;

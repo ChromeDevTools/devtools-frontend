@@ -164,9 +164,6 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
-    "CSSMatchedStyles.test.ts",
-    "CSSPropertyParser.test.ts",
-    "CSSPropertyParserMatchers.test.ts",
     "Connections.test.ts",
     "RehydratingConnection.test.ts",
   ]
@@ -175,7 +172,6 @@ ts_library("unittests") {
     ":bundle",
     "../../generated",
     "../../testing",
-    "../../third_party/codemirror.next:bundle",
     "../common:bundle",
     "../platform:bundle",
     "../protocol_client:bundle",
@@ -192,9 +188,12 @@ devtools_foundation_module("foundation_unittests") {
     "AutofillModel.test.ts",
     "CPUThrottlingManager.test.ts",
     "CSSContainerQuery.test.ts",
+    "CSSMatchedStyles.test.ts",
     "CSSMetadata.test.ts",
     "CSSModel.test.ts",
     "CSSProperty.test.ts",
+    "CSSPropertyParser.test.ts",
+    "CSSPropertyParserMatchers.test.ts",
     "CSSRule.test.ts",
     "CSSStyleDeclaration.test.ts",
     "CSSStyleSheetHeader.test.ts",
@@ -254,6 +253,7 @@ devtools_foundation_module("foundation_unittests") {
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../testing",
+    "../../third_party/codemirror.next:bundle",
     "../../third_party/source-map-scopes-codec:bundle",
     "../common:bundle",
     "../host:bundle",

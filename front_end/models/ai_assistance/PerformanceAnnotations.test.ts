@@ -6,7 +6,8 @@ import {assert} from 'chai';
 
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
-import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {allThreadEntriesInTrace} from '../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Trace from '../trace/trace.js';
 
@@ -14,6 +15,7 @@ import {AICallTree, PerformanceAnnotations} from './ai_assistance.js';
 
 describe('PerformanceAnnotations', () => {
   setupLocaleHooks();
+  setupRuntimeHooks();
   it('generates a label from the response', async function() {
     const annotationsGenerator = new PerformanceAnnotations.PerformanceAnnotations({
       aidaClient: mockAidaClient([[{

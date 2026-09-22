@@ -53,7 +53,7 @@ devtools_entrypoint("bundle") {
   visibility += devtools_visibility
 }
 
-devtools_foundation_module("unittests") {
+devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [

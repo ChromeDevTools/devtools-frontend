@@ -6,11 +6,13 @@ import {assert} from 'chai';
 
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 
 import {ConversationSummary} from './ai_assistance.js';
 
 describe('ConversationSummary', () => {
   setupLocaleHooks();
+  setupRuntimeHooks();
   it('summarizes a conversation', async () => {
     const summaryRunner = new ConversationSummary.ConversationSummary({
       aidaClient: mockAidaClient([[{

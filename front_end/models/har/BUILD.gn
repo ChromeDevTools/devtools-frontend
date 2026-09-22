@@ -37,7 +37,7 @@ devtools_entrypoint("bundle") {
   ]
 }
 
-devtools_foundation_module("unittests") {
+devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [

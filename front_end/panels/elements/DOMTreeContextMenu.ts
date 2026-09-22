@@ -9,9 +9,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 
 import {canGetJSPath} from './DOMPath.js';
+import type {DOMTreeWidget} from './DOMTreeWidget.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeElement} from './ElementsTreeElement.js';
-import type {DOMTreeWidget} from './ElementsTreeOutline.js';
 
 const UIStrings = {
   /**

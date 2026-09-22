@@ -67,10 +67,10 @@ import * as Media from '../media/media.js';
 
 import * as ElementsComponents from './components/components.js';
 import {cssPath} from './DOMPath.js';
+import {type ElementsTreeOutline, MappedCharToEntity} from './DOMTreeWidget.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
-import {type ElementsTreeOutline, MappedCharToEntity} from './ElementsTreeOutline.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {getRegisteredDecorators, type MarkerDecorator, type MarkerDecoratorRegistration} from './MarkerDecorator.js';
 

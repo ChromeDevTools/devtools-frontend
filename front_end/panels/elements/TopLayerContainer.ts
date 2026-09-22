@@ -6,7 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {ElementsTreeOutline} from './ElementsTreeOutline.js';
+import type {ElementsTreeOutline} from './DOMTreeWidget.js';
 import {ShortcutTreeElement} from './ShortcutTreeElement.js';
 
 export class TopLayerContainer extends UI.TreeOutline.TreeElement {

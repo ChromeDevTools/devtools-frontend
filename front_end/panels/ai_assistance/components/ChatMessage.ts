@@ -1636,7 +1636,7 @@ async function makeDomTreeWidget(widgetData: AiAssistanceModel.AiAgent.DomTreeAi
   // clang-format off
   const renderedWidget = html`
     ${networkRequest ? renderNetworkRequestPreview(networkRequest) : Lit.nothing}
-    <devtools-widget class="dom-tree-widget" ${widget(Elements.ElementsTreeOutline.DOMTreeWidget, {
+    <devtools-widget class="dom-tree-widget" ${widget(Elements.DOMTreeWidget.DOMTreeWidget, {
       maxTreeDepth: 2,
       enableContextMenu: false,
       showComments: false,

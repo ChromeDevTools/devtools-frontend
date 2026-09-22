@@ -40,8 +40,8 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualElements from '../../ui/visual_logging/visual_logging.js';
 
 import * as ElementsComponents from './components/components.js';
+import {ElementsTreeOutline} from './DOMTreeWidget.js';
 import {adornerRef, ElementsTreeElement, handleAdornerKeydown} from './ElementsTreeElement.js';
-import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 
 const {html, render} = Lit;
 

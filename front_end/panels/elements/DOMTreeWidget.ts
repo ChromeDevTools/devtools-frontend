@@ -101,7 +101,7 @@ const UIStrings = {
    */
   reveal: 'reveal',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeOutline.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMTreeWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const elementsTreeOutlineByDOMModel = new WeakMap<SDK.DOMModel.DOMModel, ElementsTreeOutline>();
 
@@ -1362,12 +1362,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#changeTracker = changeTracker;
     this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
     if (Common.Settings.Settings.instance().moduleSetting('highlight-node-on-hover-in-overlay').get()) {
-      SDK.TargetManager.TargetManager.instance().addModelListener(
-          SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, this.#highlightNode, this,
-          {scoped: true});
-      SDK.TargetManager.TargetManager.instance().addModelListener(
-          SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
-          this.#clearHighlightedNode, this, {scoped: true});
+      SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel,
+                                                                  SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED,
+                                                                  this.#highlightNode, this, {scoped: true});
+      SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel,
+                                                                  SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
+                                                                  this.#clearHighlightedNode, this, {scoped: true});
     }
     this.#setupPopovers();
   }
@@ -3482,8 +3482,8 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
   }
 
   selectedNodeChanged(focus: boolean): void {
-    this.dispatchEventToListeners(
-        ElementsTreeOutline.Events.SelectedNodeChanged, {node: this.selectedDOMNodeInternal, focus});
+    this.dispatchEventToListeners(ElementsTreeOutline.Events.SelectedNodeChanged,
+                                  {node: this.selectedDOMNodeInternal, focus});
   }
 
   private fireElementsTreeUpdated(nodes: SDK.DOMModel.DOMNode[]): void {
@@ -3797,8 +3797,8 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     domModel.addEventListener(SDK.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
     domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-    domModel.addEventListener(
-        SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
+    domModel.addEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated,
+                              this.affectedByStartingStylesFlagUpdated, this);
     domModel.addEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
   }
 
@@ -3813,8 +3813,8 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     domModel.removeEventListener(SDK.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
     domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-    domModel.removeEventListener(
-        SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated,
+                                 this.affectedByStartingStylesFlagUpdated, this);
     domModel.removeEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
     elementsTreeOutlineByDOMModel.delete(domModel);
   }
@@ -4036,8 +4036,8 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     return false;
   }
 
-  private createElementTreeElement(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[], isClosingTag?: boolean):
-      UI.TreeOutline.TreeElement {
+  private createElementTreeElement(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[],
+                                   isClosingTag?: boolean): UI.TreeOutline.TreeElement {
     if (node instanceof Array) {
       return new AdoptedStyleSheetSetTreeElement(node);
     }
@@ -4212,9 +4212,9 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     this.#updateChildren(treeElement);
   }
 
-  insertChildElement(
-      treeElement: ElementsTreeElement|TopLayerContainer, child: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[],
-      index: number, isClosingTag?: boolean): UI.TreeOutline.TreeElement {
+  insertChildElement(treeElement: ElementsTreeElement|TopLayerContainer,
+                     child: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[], index: number,
+                     isClosingTag?: boolean): UI.TreeOutline.TreeElement {
     const newElement = this.createElementTreeElement(child, isClosingTag);
     treeElement.insertChild(newElement, index);
     return newElement;
@@ -4247,8 +4247,8 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
 
     // Remove any tree elements that no longer have this node as their parent and save
     // all existing elements that could be reused. This also removes closing tag element.
-    const existingTreeElements = new Map<
-        SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[], UI.TreeOutline.TreeElement&ElementsTreeElement>();
+    const existingTreeElements = new Map<SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[],
+                                         UI.TreeOutline.TreeElement&ElementsTreeElement>();
     for (let i = treeElement.childCount() - 1; i >= 0; --i) {
       const existingTreeElement = treeElement.childAt(i);
       if (!(existingTreeElement instanceof ElementsTreeElement)) {

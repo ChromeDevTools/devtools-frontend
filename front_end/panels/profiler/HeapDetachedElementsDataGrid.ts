@@ -64,7 +64,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|
           <tr jslog=${VisualLogging.tableRow('detached-element')}>
             <td>
               <devtools-widget
-                ${widget(Elements.ElementsTreeOutline.DOMTreeWidget, {
+                ${widget(Elements.DOMTreeWidget.DOMTreeWidget, {
                   omitRootDOMNode: false,
                   selectEnabled: true,
                   hideGutter: true,

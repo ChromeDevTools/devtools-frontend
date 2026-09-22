@@ -11,6 +11,10 @@ const UIStrings = {
    * @description Text to show more content
    */
   showMore: 'Show more',
+  /**
+   * @description Context menu item to copy the shown text to the clipboard
+   */
+  copy: 'Copy',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/ShowMoreDetailsWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -20,7 +24,7 @@ interface ViewInput {
   text: string;
   showMore: boolean;
   onToggle: () => void;
-  copy: CopyMenuItem|null;
+  copy: (() => void)|null;
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 const MAX_LENGTH = 3000;
@@ -29,7 +33,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   const onContextMenuShowMore = (event: Event): void => {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (input.copy) {
-      contextMenu.clipboardSection().appendItem(input.copy.menuItem, input.copy.handler);
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copy), input.copy, {jslogContext: 'copy'});
     }
     if (!input.showMore) {
       contextMenu.newSection().appendItem(i18nString(UIStrings.showMore), input.onToggle, {jslogContext: 'show-more'});
@@ -51,16 +55,11 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       target);
 };
 
-interface CopyMenuItem {
-  menuItem: UI.ContextMenu.Item;
-  handler: () => void;
-}
-
 export class ShowMoreDetailsWidget extends UI.Widget.Widget {
   readonly #view: View;
   #text = '';
   #showMore = false;
-  #copy: CopyMenuItem|null = null;
+  #copy: (() => void)|null = null;
   constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target);
     this.#view = view;
@@ -75,7 +74,11 @@ export class ShowMoreDetailsWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  set copy(copy: CopyMenuItem) {
+  get copy(): (() => void)|null {
+    return this.#copy;
+  }
+
+  set copy(copy: () => void) {
     this.#copy = copy;
     this.requestUpdate();
   }

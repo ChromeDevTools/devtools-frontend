@@ -154,11 +154,16 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     void contextMenu.show();
   };
 
-  const createSourceText = (text: string): TemplateResult => html`<li role=treeitem
+  const createSourceText = (text: string): TemplateResult => {
+    const copy = (): void => input.copyValue(text);
+    // clang-format off
+    return html`<li role=treeitem
       @contextmenu=${copyValueContextmenu(i18nString(UIStrings.copyPayload), () => text, 'copy-payload')}>
-        <devtools-widget class='payload-value source-code' ${widget(ShowMoreDetailsWidget, {text})}>
+        <devtools-widget class='payload-value source-code' ${widget(ShowMoreDetailsWidget, {text, copy})}>
         </devtools-widget>
       </li>`;
+    // clang-format on
+  };
 
   const createParsedParams = (params: SDK.NetworkRequest.NameValue[],
                               decodeParameters: boolean): TemplateResult[] => params.map(param => {

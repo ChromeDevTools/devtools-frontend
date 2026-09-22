@@ -199,6 +199,50 @@ describeWithEnvironment('RequestPayloadView', () => {
     await assertScreenshot('network/request-payload-show-more.png');
   });
 
+  it('passes a copy item for the source text to the ShowMore widget', async () => {
+    const text = 'A'.repeat(3010);
+    const copyValue = sinon.spy();
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+
+    const input: Network.RequestPayloadView.ViewInput = {
+      decodeQueryParameters: true,
+      setDecodeQueryParameters: sinon.spy(),
+      decodeFormParameters: true,
+      setDecodeFormParameters: sinon.spy(),
+      viewQueryParamSource: false,
+      setViewQueryParamSource: sinon.spy(),
+      viewFormParamSource: false,
+      setViewFormParamSource: sinon.spy(),
+      viewJSONPayloadSource: true,
+      setViewJSONPayloadSource: sinon.spy(),
+      copyValue,
+      formData: text,
+      formParameters: undefined,
+      queryString: null,
+      queryParameters: null,
+      objectTree: null,
+      onPayloadContextMenu: sinon.spy(),
+      onPayloadToggle: sinon.spy(),
+      binaryPayloadContentData: null,
+      requestUrl: urlString`https://example.com/api`,
+    };
+
+    Network.RequestPayloadView.DEFAULT_VIEW(input, {}, container);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const shadowRoot = container.querySelector<HTMLElement>('.request-payload-tree')?.shadowRoot;
+    assert.exists(shadowRoot);
+    const payloadValue = shadowRoot.querySelector('devtools-widget');
+    assert.exists(payloadValue);
+    const payloadValueWidget = UI.Widget.Widget.get(payloadValue);
+    assert.instanceOf(payloadValueWidget, Network.ShowMoreDetailsWidget.ShowMoreDetailsWidget);
+
+    assert.exists(payloadValueWidget.copy);
+    payloadValueWidget.copy();
+    sinon.assert.calledOnceWithExactly(copyValue, text);
+  });
+
   it('displays JSON payload and toggles between parsed and source view', async () => {
     const request = createNetworkRequest({
       url: 'https://example.com/api',

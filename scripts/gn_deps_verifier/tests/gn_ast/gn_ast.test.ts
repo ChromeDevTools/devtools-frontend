@@ -221,6 +221,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('bundle', {
         unusedDeps: [unusedCssFiles],
         missingDeps: [':new_dependency'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);
@@ -250,6 +251,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('css_files', {
         unusedDeps: [],
         missingDeps: [':css_dep'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);
@@ -270,6 +272,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('non_existent_target', {
         unusedDeps: [],
         missingDeps: [':some_dep'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isFalse(updated);
@@ -281,6 +284,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('bundle', {
         unusedDeps: [':css_files'],
         missingDeps: [],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);
@@ -299,6 +303,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('bundle', {
         unusedDeps: ['":css_files"'],
         missingDeps: [],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);
@@ -317,6 +322,7 @@ describe('GnBuildFile', () => {
       gnBuild.updateTargetDeps('bundle', {
         unusedDeps: [],
         missingDeps: [':animation', ':new_unique', ':new_unique', '":new_unique"'],
+        targetProperty: 'ts_deps',
       });
 
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
@@ -346,6 +352,7 @@ describe('GnBuildFile', () => {
           ':new_dup_rel',
           GnLabel.resolveDeclaredDep(':new_dup_rel', currentDir, rootDir),  // Absolute version of ':new_dup_rel'
         ],
+        targetProperty: 'ts_deps',
       });
 
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
@@ -373,6 +380,7 @@ describe('GnBuildFile', () => {
           '//front_end/core/common:bundle',
           GnLabel.resolveDeclaredDep(':new_local_dep', currentDir, rootDir),
         ],
+        targetProperty: 'ts_deps',
       });
 
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
@@ -392,6 +400,7 @@ describe('GnBuildFile', () => {
       gnBuild.updateTargetDeps('bundle', {
         unusedDeps: [],
         missingDeps: ['":already_quoted"'],
+        targetProperty: 'ts_deps',
       });
 
       const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
@@ -411,6 +420,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('subtraction_target', {
         unusedDeps: [':keep_dep'],
         missingDeps: [':new_sub_dep'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);
@@ -438,6 +448,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('only_subtraction', {
         unusedDeps: [],
         missingDeps: [':added_dep'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);
@@ -462,6 +473,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('bundle', {
         unusedDeps: [],
         missingDeps: [],
+        targetProperty: 'ts_deps',
       });
 
       assert.isFalse(updated);
@@ -473,6 +485,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('bundle', {
         unusedDeps: [':non_existent_dep'],
         missingDeps: [':animation', ':css_files'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isFalse(updated);
@@ -484,6 +497,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('css_files', {
         unusedDeps: [':some_dep'],
         missingDeps: [],
+        targetProperty: 'ts_deps',
       });
 
       assert.isFalse(updated);
@@ -495,6 +509,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('variable_deps', {
         unusedDeps: [],
         missingDeps: [':new_var_dep'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);
@@ -519,6 +534,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('variable_plus_assign_deps', {
         unusedDeps: [],
         missingDeps: [':another_dep'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);
@@ -542,6 +558,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('complex_assignments', {
         unusedDeps: [],
         missingDeps: [':new_complex_dep'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);
@@ -574,6 +591,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('conditional_deps', {
         unusedDeps: [],
         missingDeps: [':new_cond_dep'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);
@@ -606,6 +624,7 @@ describe('GnBuildFile', () => {
       const updated = gnBuild.updateTargetDeps('only_conditional_deps', {
         unusedDeps: [],
         missingDeps: [':new_uncond_dep'],
+        targetProperty: 'ts_deps',
       });
 
       assert.isTrue(updated);

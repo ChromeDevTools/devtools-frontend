@@ -116,6 +116,7 @@ export class TypeScriptAnalyzer {
   static isConsumerTarget(
       targetLabel: string,
       targetInfo?: AstTargetInfo,
+      bundleTargetInfo?: AstTargetInfo,
       ): boolean {
     const gnLabel = GnLabel.parse(targetLabel);
     if (!gnLabel) {
@@ -125,34 +126,40 @@ export class TypeScriptAnalyzer {
     if (name === 'bundle') {
       return false;
     }
+    if (bundleTargetInfo) {
+      const bundleDeps = [
+        ...(bundleTargetInfo.ts_deps ?? []),
+        ...(bundleTargetInfo.deps ?? []),
+      ];
+      if (bundleDeps.includes(`:${name}`) || bundleDeps.includes(targetLabel)) {
+        return false;
+      }
+    }
     if (targetInfo?.testonly || targetInfo?.templateName === 'devtools_entrypoint') {
       return true;
     }
 
-    if (targetInfo?.templateName) {
-      const moduleTemplates = new Set([
-        'devtools_module',
-        'devtools_ui_module',
-        'devtools_foundation_module',
-        'devtools_base_module',
-      ]);
-      if (moduleTemplates.has(targetInfo.templateName)) {
-        return false;
-      }
-    }
     return gnLabel.isConsumerTarget;
   }
 
   /**
-   * Computes missing and unused dependencies between a target's declared deps
-   * and its required dependencies, normalizing formats and converting missingDeps
-   * to relative GN dependencies.
+   * Computes missing and unused dependencies between a target's declared `ts_deps` / `deps`
+   * and its required dependencies, separating TypeScript dependencies (`missingTsDeps`,
+   * `unusedTsDeps`) from non-TypeScript dependencies (`missingDeps`, `unusedDeps`) such as
+   * CSS (`generate_css`) or GN `group` targets, and formatting missing dependencies as
+   * relative GN labels.
    */
-  static computeTargetDepsDiff(
+  static async computeTargetDepsDiff(
       targetInfo: AstTargetInfo,
       requiredDeps: Set<string>,
       rootDir: string,
-      ): {missingDeps: string[], unusedDeps: string[]} {
+      astExtractor: GnAstExtractor,
+      ): Promise<{
+    missingTsDeps: string[],
+    unusedTsDeps: string[],
+    missingDeps: string[],
+    unusedDeps: string[],
+  }> {
     const currentDir = path.dirname(targetInfo.buildFile);
 
     // Resolve all existing declared ts_deps
@@ -162,28 +169,52 @@ export class TypeScriptAnalyzer {
       resolvedExistingTsDeps.set(resolved, rawDep);
     }
 
+    const resolvedExistingDeps = new Set<string>();
+    for (const rawDep of targetInfo.deps || []) {
+      const resolved = GnLabel.resolveDeclaredDep(rawDep, currentDir, rootDir);
+      resolvedExistingDeps.add(resolved);
+    }
+
     const resolvedReqSet = new Set(
-        Array.from(requiredDeps, d => GnLabel.resolveDeclaredDep(d, currentDir, rootDir)),
+        Array.from(
+            requiredDeps,
+            d => GnLabel.resolveDeclaredDep(d, currentDir, rootDir),
+            ),
     );
 
-    const unusedDeps: string[] = [];
+    const unusedTsDeps: string[] = [];
+    const missingTsDeps: string[] = [];
+    const unusedDeps: string[] = [];  // Currently we do not detect unused non-TS deps
     const missingDeps: string[] = [];
 
-    // 1. Any required ts dependency that is NOT already in ts_deps should be added
+    // Helper to determine if target belongs in `deps` instead of `ts_deps` (e.g. CSS or GN group)
+    const isNonTsTarget = async(resolvedReq: string): Promise<boolean> => {
+      const depInfo = await astExtractor.getTargetInfoByLabel(resolvedReq);
+      return depInfo?.templateName === 'generate_css' || depInfo?.templateName === 'group';
+    };
+
     for (const resolvedReq of resolvedReqSet) {
-      if (!resolvedExistingTsDeps.has(resolvedReq)) {
-        missingDeps.push(GnLabel.formatRelativeDep(resolvedReq, currentDir, rootDir));
+      const isNonTs = await isNonTsTarget(resolvedReq);
+      if (isNonTs) {
+        if (!resolvedExistingDeps.has(resolvedReq)) {
+          missingDeps.push(
+              GnLabel.formatRelativeDep(resolvedReq, currentDir, rootDir),
+          );
+        }
+      } else if (!resolvedExistingTsDeps.has(resolvedReq)) {
+        missingTsDeps.push(
+            GnLabel.formatRelativeDep(resolvedReq, currentDir, rootDir),
+        );
       }
     }
 
-    // 2. Any ts dependency that is in ts_deps but not required should be removed
     for (const [resolvedExisting, rawDep] of resolvedExistingTsDeps.entries()) {
-      if (!resolvedReqSet.has(resolvedExisting)) {
-        unusedDeps.push(rawDep);
+      if (!resolvedReqSet.has(resolvedExisting) || await isNonTsTarget(resolvedExisting)) {
+        unusedTsDeps.push(rawDep);
       }
     }
 
-    return {missingDeps, unusedDeps};
+    return {missingTsDeps, unusedTsDeps, missingDeps, unusedDeps};
   }
   async resolveImportDependencies(
       importedFile: string,
@@ -209,11 +240,21 @@ export class TypeScriptAnalyzer {
     }
 
     const targetGnLabel = GnLabel.parse(targetLabel);
-    const isConsumerTarget = TypeScriptAnalyzer.isConsumerTarget(targetLabel, targetInfo);
     const labelBundle = targetGnLabel?.bundleLabel;
+    const bundleTargetInfo = labelBundle ? await this.#astExtractor.getTargetInfoByLabel(labelBundle) : undefined;
+    const isConsumerTarget = TypeScriptAnalyzer.isConsumerTarget(
+        targetLabel,
+        targetInfo,
+        bundleTargetInfo,
+    );
 
     const deps = new Set<string>();
     for (const impTarget of impTargets) {
+      const impTargetInfo = await this.#astExtractor.getTargetInfoByLabel(impTarget);
+      if (impTargetInfo?.templateName === 'bundle' || impTargetInfo?.templateName === 'copy_to_gen' ||
+          impTargetInfo?.templateName === 'node_action') {
+        continue;
+      }
       const finalTarget = TypeScriptAnalyzer.getMappedTarget(impTarget);
 
       // Do not allow a target to depend on itself.
@@ -241,7 +282,10 @@ export class TypeScriptAnalyzer {
       return await cachedPromise;
     }
 
-    const analyzePromise = this.#computeTargetDependencies(targetLabel, targetInfo);
+    const analyzePromise = this.#computeTargetDependencies(
+        targetLabel,
+        targetInfo,
+    );
     this.#targetDeps.set(targetLabel, analyzePromise);
     analyzePromise.catch(() => {
       this.#targetDeps.delete(targetLabel);
@@ -258,7 +302,10 @@ export class TypeScriptAnalyzer {
       return null;
     }
 
-    const allTargetFiles = TypeScriptAnalyzer.resolveTargetSourceFiles(targetInfo, this.#astExtractor.rootDir);
+    const allTargetFiles = TypeScriptAnalyzer.resolveTargetSourceFiles(
+        targetInfo,
+        this.#astExtractor.rootDir,
+    );
     if (allTargetFiles.length === 0) {
       return null;
     }
@@ -266,9 +313,17 @@ export class TypeScriptAnalyzer {
     const importsMap = await this.#importExtractor.extractTsImports(allTargetFiles);
     const importToSources = TypeScriptAnalyzer.mapImportsToSources(importsMap);
 
-    const resolutionTasks = Array.from(importToSources.entries(), ([imp, sources]) => {
-      return this.resolveImportDependencies(imp, sources, targetLabel, targetInfo);
-    });
+    const resolutionTasks = Array.from(
+        importToSources.entries(),
+        ([imp, sources]) => {
+          return this.resolveImportDependencies(
+              imp,
+              sources,
+              targetLabel,
+              targetInfo,
+          );
+        },
+    );
 
     const results = await Promise.all(resolutionTasks);
     const hasTargetNotFound = results.some(r => !r.success);
@@ -313,24 +368,26 @@ export class TypeScriptAnalyzer {
       return;
     }
 
-    const targetTasks = Array.from(gnBuild.targets.entries(), ([targetLabel, targetInfo]) => {
-      return this.analyzeTarget(targetLabel, targetInfo);
-    });
+    const targetTasks = Array.from(
+        gnBuild.targets.entries(),
+        ([targetLabel, targetInfo]) => {
+          return this.analyzeTarget(targetLabel, targetInfo);
+        },
+    );
 
     await Promise.all(targetTasks);
   }
 
   async #processDiscoveredBuildFiles(): Promise<void> {
-    const pending: Array<Promise<void>> = [];
-
+    let processedAny = false;
     for (const filePath of this.#astExtractor.buildFiles.keys()) {
       if (!this.#buildFiles.has(filePath)) {
-        pending.push(this.processBuildFile(filePath));
+        await this.processBuildFile(filePath);
+        processedAny = true;
       }
     }
 
-    if (pending.length > 0) {
-      await Promise.all(pending);
+    if (processedAny) {
       await this.#processDiscoveredBuildFiles();
     }
   }

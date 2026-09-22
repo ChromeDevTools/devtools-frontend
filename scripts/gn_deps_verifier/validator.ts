@@ -8,6 +8,7 @@ import * as path from 'node:path';
 import {GnAstExtractor} from './extractors/gn_ast_extractor.ts';
 import {TypeScriptAnalyzer} from './extractors/typescript_analyzer.ts';
 import {logger} from './utils/debug.ts';
+import {isNotFoundError} from './utils/error.ts';
 import {updateBuildGnFiles} from './utils/gn_ast_updater.ts';
 
 export async function checkDepsGn(
@@ -28,7 +29,10 @@ export async function checkDepsGn(
           if (isDirectory) {
             return;
           }
-        } catch {
+        } catch (e) {
+          if (!isNotFoundError(e)) {
+            throw e;
+          }
           // Not a directory or does not exist
           return;
         }

@@ -7,6 +7,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {promisify} from 'node:util';
 
+import {isNotFoundError} from '../utils/error.ts';
 import {GnLabel} from '../utils/gn_label.ts';
 
 import {createAstNode, unquoteFromGn} from './gn_ast_factory.ts';
@@ -45,7 +46,10 @@ export class GnBuildFile {
       ): Promise<GnBuildFile> {
     try {
       await fs.promises.access(absPath);
-    } catch {
+    } catch (e) {
+      if (!isNotFoundError(e)) {
+        throw e;
+      }
       throw new Error(`BUILD.gn file not found: ${absPath}`);
     }
     try {
@@ -154,7 +158,7 @@ export class GnBuildFile {
     );
 
     const unusedDepsSet = new Set(options.unusedDeps.map(resolveDep));
-    const targetProperty = 'ts_deps';
+    const targetProperty = options.targetProperty;
 
     const depsAssigns = findAssignments(block.child || [], targetProperty);
     const additiveAssigns = depsAssigns.filter(

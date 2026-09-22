@@ -7,6 +7,8 @@ import * as path from 'node:path';
 
 import {GnBuildFile} from '../gn_ast/gn_ast.ts';
 import type {AstTargetInfo} from '../gn_ast/gn_ast_types.ts';
+import {isNotFoundError} from '../utils/error.ts';
+import {GnLabel} from '../utils/gn_label.ts';
 
 export type {AstTargetInfo};
 
@@ -67,6 +69,23 @@ export class GnAstExtractor {
 
   findNearestBuildGnForTesting(filePath: string): Promise<string|null> {
     return this.#findNearestBuildGn(filePath);
+  }
+
+  async getTargetInfoByLabel(label: string): Promise<AstTargetInfo|undefined> {
+    const gnLabel = GnLabel.parse(label);
+    if (!gnLabel) {
+      return undefined;
+    }
+    const absDir = path.resolve(this.rootDir, gnLabel.dirPath);
+    const absBuildFile = await this.#findNearestBuildGn(absDir);
+    if (!absBuildFile) {
+      return undefined;
+    }
+    const gnBuild = await this.#parseAndCacheBuildFile(absBuildFile);
+    if (!gnBuild) {
+      return undefined;
+    }
+    return gnBuild.targets.get(label);
   }
 
   async getTargetsForFile(filePath: string): Promise<string[]> {
@@ -130,31 +149,24 @@ export class GnAstExtractor {
     try {
       const entries = await fs.promises.readdir(dir, {withFileTypes: true});
       const results: string[] = [];
-      const subDirTasks: Array<Promise<string[]>> = [];
-
       for (const entry of entries) {
         if (entry.name.startsWith('.')) {
           continue;
         }
         if (entry.isDirectory()) {
           if (!this.#excludedDirs.has(entry.name)) {
-            subDirTasks.push(
-                this.#findAllBuildGnsUnderDir(path.join(dir, entry.name)),
-            );
+            const subResults = await this.#findAllBuildGnsUnderDir(path.join(dir, entry.name));
+            results.push(...subResults);
           }
         } else if (entry.name === 'BUILD.gn') {
           results.push(path.join(dir, entry.name));
         }
       }
-
-      if (subDirTasks.length > 0) {
-        const subResults = await Promise.all(subDirTasks);
-        for (const sub of subResults) {
-          results.push(...sub);
-        }
-      }
       return results;
-    } catch {
+    } catch (e) {
+      if (!isNotFoundError(e)) {
+        throw e;
+      }
       return [];
     }
   }
@@ -163,23 +175,20 @@ export class GnAstExtractor {
     const absPath = path.resolve(this.rootDir, filePath);
     let currentDir = path.dirname(absPath);
 
-    const selfCached = this.#buildGnCache.get(absPath);
-    if (selfCached !== undefined) {
-      return selfCached;
-    }
-
-    const parentCached = this.#buildGnCache.get(currentDir);
-    if (parentCached !== undefined) {
-      return parentCached;
-    }
-
     try {
       const stats = await fs.promises.stat(absPath);
       if (stats.isDirectory()) {
         currentDir = absPath;
       }
-    } catch {
-      // Fallback to dirname
+    } catch (e) {
+      if (!isNotFoundError(e)) {
+        throw e;
+      }
+    }
+
+    const cachedResult = this.#buildGnCache.get(currentDir);
+    if (cachedResult !== undefined) {
+      return cachedResult;
     }
     const visitedDirs: string[] = [];
 
@@ -200,7 +209,10 @@ export class GnAstExtractor {
           this.#buildGnCache.set(dir, buildPath);
         }
         return buildPath;
-      } catch {
+      } catch (e) {
+        if (!isNotFoundError(e)) {
+          throw e;
+        }
         // BUILD.gn does not exist in this dir
       }
 
@@ -231,7 +243,10 @@ export class GnAstExtractor {
             return buildGns;
           }
         }
-      } catch {
+      } catch (e) {
+        if (!isNotFoundError(e)) {
+          throw e;
+        }
         // Ignore stats error, fallback to findNearestBuildGn
       }
       const buildFile = await this.#findNearestBuildGn(absPath);
@@ -245,11 +260,8 @@ export class GnAstExtractor {
       }
     }
 
-    await Promise.all(
-        Array.from(buildFilesToParse,
-                   async buildFile => {
-                     await this.#parseAndCacheBuildFile(buildFile);
-                   }),
-    );
+    for (const buildFile of buildFilesToParse) {
+      await this.#parseAndCacheBuildFile(buildFile);
+    }
   }
 }

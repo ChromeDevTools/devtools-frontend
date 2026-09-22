@@ -39,10 +39,11 @@ export async function updateBuildGnFiles(
         continue;
       }
 
-      const {missingDeps, unusedDeps} = TypeScriptAnalyzer.computeTargetDepsDiff(
+      const {missingTsDeps, unusedTsDeps, missingDeps, unusedDeps} = await TypeScriptAnalyzer.computeTargetDepsDiff(
           targetInfo,
           requiredDeps,
           rootDir,
+          extractionResult,
       );
 
       const shouldKeepDep = (rawDep: string) => {
@@ -51,13 +52,18 @@ export async function updateBuildGnFiles(
         return !ignore;
       };
 
+      const filteredUnusedTsDeps = unusedTsDeps.filter(shouldKeepDep);
+      const filteredMissingTsDeps = missingTsDeps.filter(shouldKeepDep);
       const filteredUnusedDeps = unusedDeps.filter(shouldKeepDep);
       const filteredMissingDeps = missingDeps.filter(shouldKeepDep);
 
-      if (filteredMissingDeps.length > 0 || filteredUnusedDeps.length > 0) {
+      if (filteredMissingTsDeps.length > 0 || filteredUnusedTsDeps.length > 0 || filteredMissingDeps.length > 0 ||
+          filteredUnusedDeps.length > 0) {
         logger(`Mismatch in ${targetLabel}:`);
-        filteredMissingDeps.forEach(d => logger(`  Missing (ts_deps): ${d}`));
-        filteredUnusedDeps.forEach(d => logger(`  Unused (ts_deps): ${d}`));
+        filteredMissingTsDeps.forEach(d => logger(`  Missing (ts_deps): ${d}`));
+        filteredUnusedTsDeps.forEach(d => logger(`  Unused (ts_deps): ${d}`));
+        filteredMissingDeps.forEach(d => logger(`  Missing (deps): ${d}`));
+        filteredUnusedDeps.forEach(d => logger(`  Unused (deps): ${d}`));
 
         // Update AST
         const realTargetName = GnLabel.parse(targetLabel)?.name;
@@ -67,12 +73,19 @@ export async function updateBuildGnFiles(
           return;
         }
 
-        const updated = gnBuild.updateTargetDeps(realTargetName, {
-          unusedDeps: filteredUnusedDeps,
-          missingDeps: filteredMissingDeps,
+        const updatedTs = gnBuild.updateTargetDeps(realTargetName, {
+          unusedDeps: filteredUnusedTsDeps,
+          missingDeps: filteredMissingTsDeps,
+          targetProperty: 'ts_deps',
         });
 
-        if (updated) {
+        const updatedDeps = gnBuild.updateTargetDeps(realTargetName, {
+          unusedDeps: filteredUnusedDeps,
+          missingDeps: filteredMissingDeps,
+          targetProperty: 'deps',
+        });
+
+        if (updatedTs || updatedDeps) {
           modifiedBuildFiles.add(gnBuild);
         }
       }

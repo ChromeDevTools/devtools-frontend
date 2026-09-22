@@ -163,19 +163,66 @@ describe('typescript_analyzer', () => {
     });
   });
   describe('isConsumerTarget', () => {
-    it('returns false for implementation module even when target name differs from directory name', () => {
-      const targetInfo: AstTargetInfo = {
-        label: '//front_end/entrypoints/worker_app:worker_main',
-        templateName: 'devtools_module',
-        buildFile: '/path/to/BUILD.gn',
-        sources: ['WorkerMain.ts'],
-        deps: [],
-        testonly: false,
-      };
-      assert.isFalse(
-          TypeScriptAnalyzer.isConsumerTarget(targetInfo.label, targetInfo),
-      );
-    });
+    it('returns true for secondary module in same directory when not a dependency of bundle (e.g. stack_trace_impl)',
+       () => {
+         const targetInfo: AstTargetInfo = {
+           label: '//front_end/models/stack_trace:stack_trace_impl',
+           templateName: 'devtools_foundation_module',
+           buildFile: '/path/to/front_end/models/stack_trace/BUILD.gn',
+           sources: ['StackTraceImpl.ts'],
+           deps: [],
+           ts_deps: [':bundle'],
+           testonly: false,
+         };
+         const bundleTargetInfo: AstTargetInfo = {
+           label: '//front_end/models/stack_trace:bundle',
+           templateName: 'devtools_entrypoint',
+           buildFile: '/path/to/front_end/models/stack_trace/BUILD.gn',
+           sources: ['stack_trace.ts'],
+           deps: [],
+           ts_deps: [':stack_trace'],
+           testonly: false,
+         };
+         assert.isTrue(
+             TypeScriptAnalyzer.isConsumerTarget(
+                 targetInfo.label,
+                 targetInfo,
+                 bundleTargetInfo,
+                 ),
+         );
+         assert.isTrue(
+             TypeScriptAnalyzer.isConsumerTarget(targetInfo.label, targetInfo),
+         );
+       });
+
+    it('returns false for implementation module when bundle depends on it even if target name differs from directory name',
+       () => {
+         const targetInfo: AstTargetInfo = {
+           label: '//front_end/ui/components/buttons:button',
+           templateName: 'devtools_ui_module',
+           buildFile: '/path/to/front_end/ui/components/buttons/BUILD.gn',
+           sources: ['Button.ts'],
+           deps: [],
+           ts_deps: [],
+           testonly: false,
+         };
+         const bundleTargetInfo: AstTargetInfo = {
+           label: '//front_end/ui/components/buttons:bundle',
+           templateName: 'devtools_entrypoint',
+           buildFile: '/path/to/front_end/ui/components/buttons/BUILD.gn',
+           sources: ['buttons.ts'],
+           deps: [],
+           ts_deps: [':button'],
+           testonly: false,
+         };
+         assert.isFalse(
+             TypeScriptAnalyzer.isConsumerTarget(
+                 targetInfo.label,
+                 targetInfo,
+                 bundleTargetInfo,
+                 ),
+         );
+       });
 
     it('returns false for standard devtools_ui_module and devtools_foundation_module', () => {
       const uiModule: AstTargetInfo = {
@@ -265,7 +312,7 @@ describe('typescript_analyzer', () => {
   });
 
   describe('computeTargetDepsDiff', () => {
-    it('normalizes formats and computes missing and unused dependencies', () => {
+    it('normalizes formats and computes missing and unused dependencies', async () => {
       const targetInfo: AstTargetInfo = {
         label: '//front_end/panels/animation:animation',
         templateName: 'devtools_ui_module',
@@ -286,17 +333,29 @@ describe('typescript_analyzer', () => {
         '//front_end/core/host:bundle',
       ]);
 
-      const diff = TypeScriptAnalyzer.computeTargetDepsDiff(
+      const astExtractor = {
+        getTargetInfoByLabel: async (label: string) => {
+          if (label.includes('css_files')) {
+            return {templateName: 'generate_css'} as AstTargetInfo;
+          }
+          return undefined;
+        },
+      } as unknown as GnAstExtractor;
+
+      const diff = await TypeScriptAnalyzer.computeTargetDepsDiff(
           targetInfo,
           requiredDeps,
           ROOT_DIR,
+          astExtractor,
       );
 
-      assert.deepEqual(diff.missingDeps, ['../../core/host:bundle']);
-      assert.deepEqual(diff.unusedDeps, ['../../core/unused:bundle']);
+      assert.deepEqual(diff.missingTsDeps, ['../../core/host:bundle']);
+      assert.deepEqual(diff.unusedTsDeps, [':css_files', '../../core/unused:bundle']);
+      assert.deepEqual(diff.missingDeps, [':css_files']);
+      assert.deepEqual(diff.unusedDeps, []);
     });
 
-    it('returns empty missing and unused deps when deps perfectly match', () => {
+    it('returns empty missing and unused deps when deps perfectly match', async () => {
       const targetInfo: AstTargetInfo = {
         label: '//front_end/panels/animation:animation',
         templateName: 'devtools_ui_module',
@@ -308,17 +367,24 @@ describe('typescript_analyzer', () => {
       };
 
       const requiredDeps = new Set(['//front_end/core/common:bundle']);
-      const diff = TypeScriptAnalyzer.computeTargetDepsDiff(
+      const astExtractor = {
+        getTargetInfoByLabel: async () => undefined,
+      } as unknown as GnAstExtractor;
+
+      const diff = await TypeScriptAnalyzer.computeTargetDepsDiff(
           targetInfo,
           requiredDeps,
           ROOT_DIR,
+          astExtractor,
       );
 
+      assert.deepEqual(diff.missingTsDeps, []);
+      assert.deepEqual(diff.unusedTsDeps, []);
       assert.deepEqual(diff.missingDeps, []);
       assert.deepEqual(diff.unusedDeps, []);
     });
 
-    it('handles required dependencies with missing implicit target names', () => {
+    it('handles required dependencies with missing implicit target names', async () => {
       const targetInfo: AstTargetInfo = {
         label: '//front_end/panels/animation:animation',
         templateName: 'devtools_ui_module',
@@ -333,14 +399,63 @@ describe('typescript_analyzer', () => {
         '//front_end/core/common:bundle',
         '//front_end/core/host',  // Missing implicit target name
       ]);
+      const astExtractor = {
+        getTargetInfoByLabel: async () => undefined,
+      } as unknown as GnAstExtractor;
 
-      const diff = TypeScriptAnalyzer.computeTargetDepsDiff(
+      const diff = await TypeScriptAnalyzer.computeTargetDepsDiff(
           targetInfo,
           requiredDeps,
           ROOT_DIR,
+          astExtractor,
       );
 
-      assert.deepEqual(diff.missingDeps, ['../../core/host']);
+      assert.deepEqual(diff.missingTsDeps, ['../../core/host']);
+      assert.deepEqual(diff.unusedTsDeps, []);
+      assert.deepEqual(diff.missingDeps, []);
+      assert.deepEqual(diff.unusedDeps, []);
+    });
+
+    it('places group targets like third_party/lighthouse into deps rather than ts_deps', async () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//front_end/panels/lighthouse:bundle',
+        templateName: 'devtools_entrypoint',
+        buildFile: path.join(ROOT_DIR, 'front_end/panels/lighthouse/BUILD.gn'),
+        sources: ['lighthouse.ts'],
+        deps: [':css_files', '../../third_party/lighthouse'],
+        ts_deps: [
+          ':lighthouse',
+          '../../third_party/lighthouse:lighthouse-javascript-sources-debug',
+        ],
+        testonly: false,
+      };
+
+      const requiredDeps = new Set([
+        '//front_end/panels/lighthouse:lighthouse',
+        '//front_end/third_party/lighthouse:lighthouse',
+      ]);
+
+      const astExtractor = {
+        getTargetInfoByLabel: async (label: string) => {
+          if (label === '//front_end/third_party/lighthouse:lighthouse') {
+            return {templateName: 'group'} as AstTargetInfo;
+          }
+          return undefined;
+        },
+      } as unknown as GnAstExtractor;
+
+      const diff = await TypeScriptAnalyzer.computeTargetDepsDiff(
+          targetInfo,
+          requiredDeps,
+          ROOT_DIR,
+          astExtractor,
+      );
+
+      assert.deepEqual(diff.missingTsDeps, []);
+      assert.deepEqual(diff.unusedTsDeps, [
+        '../../third_party/lighthouse:lighthouse-javascript-sources-debug',
+      ]);
+      assert.deepEqual(diff.missingDeps, []);
       assert.deepEqual(diff.unusedDeps, []);
     });
   });
@@ -473,23 +588,83 @@ describe('typescript_analyzer', () => {
       assert.deepEqual(res.deps, []);
     });
 
-    it('does not require own bundle for implementation module when name differs from directory', async () => {
+    it('includes own bundle for secondary module in same directory when bundle does not depend on it (e.g. stack_trace_impl)',
+       async () => {
+         const targetInfo: AstTargetInfo = {
+           testonly: false,
+           label: '//front_end/models/stack_trace:stack_trace_impl',
+           templateName: 'devtools_foundation_module',
+           buildFile: '/path/to/front_end/models/stack_trace/BUILD.gn',
+           sources: ['StackTraceImpl.ts'],
+           deps: [],
+           ts_deps: [':bundle'],
+         };
+
+         const bundleTargetInfo: AstTargetInfo = {
+           testonly: false,
+           label: '//front_end/models/stack_trace:bundle',
+           templateName: 'devtools_entrypoint',
+           buildFile: '/path/to/front_end/models/stack_trace/BUILD.gn',
+           sources: ['stack_trace.ts'],
+           deps: [],
+           ts_deps: [':stack_trace'],
+         };
+
+         sinon.stub(extractor, 'getTargetsForFile').resolves([
+           '//front_end/models/stack_trace:bundle',
+         ]);
+         sinon.stub(extractor, 'getTargetInfoByLabel').callsFake(async (label: string) => {
+           if (label === '//front_end/models/stack_trace:bundle') {
+             return bundleTargetInfo;
+           }
+           return undefined;
+         });
+
+         const res = await analyzer.resolveImportDependencies(
+             '/path/to/front_end/models/stack_trace/stack_trace.ts',
+             ['StackTraceImpl.ts'],
+             targetInfo.label,
+             targetInfo,
+         );
+
+         assert.isTrue(res.success);
+         assert.deepEqual(res.deps, ['//front_end/models/stack_trace:bundle']);
+       });
+
+    it('does not require own bundle for implementation module when bundle depends on it', async () => {
       const targetInfo: AstTargetInfo = {
         testonly: false,
-        label: '//front_end/entrypoints/worker_app:worker_main',
-        templateName: 'devtools_module',
-        buildFile: '/path/to/BUILD.gn',
-        sources: ['WorkerMain.ts'],
+        label: '//front_end/ui/components/buttons:button',
+        templateName: 'devtools_ui_module',
+        buildFile: '/path/to/front_end/ui/components/buttons/BUILD.gn',
+        sources: ['Button.ts'],
         deps: [],
+        ts_deps: [],
+      };
+
+      const bundleTargetInfo: AstTargetInfo = {
+        testonly: false,
+        label: '//front_end/ui/components/buttons:bundle',
+        templateName: 'devtools_entrypoint',
+        buildFile: '/path/to/front_end/ui/components/buttons/BUILD.gn',
+        sources: ['buttons.ts'],
+        deps: [],
+        ts_deps: [':button'],
       };
 
       sinon.stub(extractor, 'getTargetsForFile').resolves([
-        '//front_end/entrypoints/worker_app:bundle',
+        '//front_end/ui/components/buttons:bundle',
       ]);
+      sinon.stub(extractor, 'getTargetInfoByLabel').callsFake(async (label: string) => {
+        if (label === '//front_end/ui/components/buttons:bundle') {
+          return bundleTargetInfo;
+        }
+        return undefined;
+      });
 
       const res = await analyzer.resolveImportDependencies(
-          '/path/to/other.ts',
-          ['WorkerMain.ts'],
+          '/path/to/front_end/ui/components/buttons/buttons.ts',
+          ['Button.ts'],
           targetInfo.label,
           targetInfo,
       );

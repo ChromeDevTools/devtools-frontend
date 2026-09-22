@@ -6,6 +6,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import ts from 'typescript';
 
+import {isNotFoundError} from '../utils/error.ts';
+
 export class TypeScriptImportExtractor {
   #tsImportsCache = new Map<string, Promise<string[]>>();
   static #instance: TypeScriptImportExtractor|undefined;
@@ -35,7 +37,13 @@ export class TypeScriptImportExtractor {
     if (cached) {
       return await cached;
     }
-    const promise = fs.promises.readdir(dirPath).then(files => new Set(files)).catch(() => new Set<string>());
+    const promise = fs.promises.readdir(dirPath).then(files => new Set(files)).catch(e => {
+      if (!isNotFoundError(e)) {
+        this.#dirListingsCache.delete(dirPath);
+        throw e;
+      }
+      return new Set<string>();
+    });
     this.#dirListingsCache.set(dirPath, promise);
     return await promise;
   }
@@ -119,7 +127,10 @@ export class TypeScriptImportExtractor {
     let fileContent: string;
     try {
       fileContent = await fs.promises.readFile(absPath, 'utf-8');
-    } catch {
+    } catch (e) {
+      if (!isNotFoundError(e)) {
+        throw e;
+      }
       console.warn(`File not found: ${absPath}`);
       return [];
     }

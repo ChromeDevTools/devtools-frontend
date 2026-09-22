@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import * as fs from 'node:fs';
 import * as path from 'node:path';
+import sinon from 'sinon';
 
 import {GnAstExtractor, isInsideRoot} from '../../extractors/gn_ast_extractor.ts';
 
@@ -12,6 +14,7 @@ const ROOT_DIR = path.resolve(import.meta.dirname, '../../../../');
 
 describe('GnAstExtractor', () => {
   afterEach(() => {
+    sinon.restore();
     GnAstExtractor.clearCacheForTesting();
   });
 
@@ -145,6 +148,23 @@ describe('GnAstExtractor', () => {
       const cachedChildBuildGn = await extractor.findNearestBuildGnForTesting(childDir);
       assert.strictEqual(cachedChildBuildGn, path.join(childDir, 'BUILD.gn'));
     });
+
+    it('does not eagerly use parent cache if a subdirectory has its own BUILD.gn', async () => {
+      // The bug: If a parent is requested first, its path is cached.
+      // If a subdirectory is requested later, the cache logic previously checked the dirname
+      // first before verifying if the sub-path was actually a directory, causing it to eagerly
+      // return the parent's BUILD.gn.
+      const parentDir = path.join(ROOT_DIR, 'front_end/core/platform');
+      const childDir = path.join(ROOT_DIR, 'front_end/core/platform/api');
+
+      // 1. Visit parent first so it enters the `#buildGnCache`.
+      const parentBuildGn = await extractor.findNearestBuildGnForTesting(parentDir);
+      assert.strictEqual(parentBuildGn, path.join(parentDir, 'BUILD.gn'));
+
+      // 2. Visit child. It should resolve its own BUILD.gn, not the parent's.
+      const childBuildGn = await extractor.findNearestBuildGnForTesting(childDir);
+      assert.strictEqual(childBuildGn, path.join(childDir, 'BUILD.gn'));
+    });
   });
 
   describe('extractTargetsFromAst', () => {
@@ -208,6 +228,19 @@ describe('GnAstExtractor', () => {
          const target = await extractor.getTargetsForFile(path.join(FIXTURES_DIR, 'AnimationTimeline.ts'));
          assert.deepEqual(target, ['//scripts/gn_deps_verifier/tests/fixtures:animation']);
        });
+
+    it('rethrows unexpected system errors such as EMFILE', async () => {
+      const emfileError: NodeJS.ErrnoException = new Error('EMFILE: too many open files');
+      emfileError.code = 'EMFILE';
+      sinon.stub(fs.promises, 'stat').rejects(emfileError);
+
+      try {
+        await extractor.extractTargetsFromAst([FIXTURES_DIR]);
+        assert.fail('Expected extractTargetsFromAst to throw EMFILE');
+      } catch (e) {
+        assert.strictEqual((e as NodeJS.ErrnoException).code, 'EMFILE');
+      }
+    });
   });
 
   describe('isInsideRoot', () => {

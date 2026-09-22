@@ -126,7 +126,8 @@ describe('gn_ast_updater', () => {
       buildFiles: new Map([['test_file', Promise.resolve(gnBuildMock)]]),
     };
     sandbox.stub(GnAstExtractor, 'create').returns(extractorStub as unknown as GnAstExtractor);
-    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').returns({missingDeps: [], unusedDeps: []});
+    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff')
+        .resolves({missingTsDeps: [], unusedTsDeps: [], missingDeps: [], unusedDeps: []});
 
     const requiredDeps = new Map([['//test:target', new Set(['dep1'])]]);
 
@@ -153,9 +154,11 @@ describe('gn_ast_updater', () => {
     sandbox.stub(GnAstExtractor, 'create').returns(extractorStub as unknown as GnAstExtractor);
 
     // Provide unused and missing deps that match IGNORED_TARGET_SUBSTRINGS
-    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').returns({
-      missingDeps: ['//other:Images'],
-      unusedDeps: ['//other:Images', '//foo/legacy_test_runner/bar:target'],
+    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').resolves({
+      missingTsDeps: ['//other:Images'],
+      unusedTsDeps: ['//other:Images', '//foo/legacy_test_runner/bar:target'],
+      missingDeps: [],
+      unusedDeps: [],
     });
 
     const requiredDeps = new Map([['//test:target', new Set(['dep1'])]]);
@@ -185,9 +188,11 @@ describe('gn_ast_updater', () => {
     };
     sandbox.stub(GnAstExtractor, 'create').returns(extractorStub as unknown as GnAstExtractor);
 
-    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').returns({
-      missingDeps: ['//new:dep', '//other:Images'],
-      unusedDeps: ['//old:dep', '//foo/legacy_test_runner/bar:target'],
+    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').resolves({
+      missingTsDeps: ['//new:dep', '//other:Images'],
+      unusedTsDeps: ['//old:dep', '//foo/legacy_test_runner/bar:target'],
+      missingDeps: [],
+      unusedDeps: [],
     });
 
     const requiredDeps = new Map([['//test:target', new Set(['dep1'])]]);
@@ -200,6 +205,7 @@ describe('gn_ast_updater', () => {
         {
           unusedDeps: ['//old:dep'],
           missingDeps: ['//new:dep'],
+          targetProperty: 'ts_deps',
         },
     );
     sinon.assert.calledOnce(gnBuildMock.writeGnFile as sinon.SinonStub);
@@ -226,9 +232,11 @@ describe('gn_ast_updater', () => {
     };
     sandbox.stub(GnAstExtractor, 'create').returns(extractorStub as unknown as GnAstExtractor);
 
-    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').returns({
-      missingDeps: ['//new:dep'],
-      unusedDeps: ['//old:dep'],
+    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').resolves({
+      missingTsDeps: ['//new:dep'],
+      unusedTsDeps: ['//old:dep'],
+      missingDeps: [],
+      unusedDeps: [],
     });
 
     const requiredDeps = new Map([['//test:target', new Set(['dep1'])]]);
@@ -241,6 +249,7 @@ describe('gn_ast_updater', () => {
         {
           unusedDeps: ['//old:dep'],
           missingDeps: ['//new:dep'],
+          targetProperty: 'ts_deps',
         },
     );
     sinon.assert.calledOnce(gnBuildMock.writeGnFile as sinon.SinonStub);
@@ -266,8 +275,10 @@ describe('gn_ast_updater', () => {
       buildFiles: new Map([['test_file', Promise.resolve(gnBuildMock)]]),
     };
     sandbox.stub(GnAstExtractor, 'create').returns(extractorStub as unknown as GnAstExtractor);
-    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').returns({
-      missingDeps: ['//new:dep'],
+    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').resolves({
+      missingTsDeps: ['//new:dep'],
+      unusedTsDeps: [],
+      missingDeps: [],
       unusedDeps: [],
     });
 
@@ -298,8 +309,10 @@ describe('gn_ast_updater', () => {
       buildFiles: new Map([['test_file', Promise.resolve(gnBuildMock)]]),
     };
     sandbox.stub(GnAstExtractor, 'create').returns(extractorStub as unknown as GnAstExtractor);
-    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').returns({
-      missingDeps: ['//new:dep'],
+    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').resolves({
+      missingTsDeps: ['//new:dep'],
+      unusedTsDeps: [],
+      missingDeps: [],
       unusedDeps: [],
     });
 

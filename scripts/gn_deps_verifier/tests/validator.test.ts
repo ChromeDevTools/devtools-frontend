@@ -27,7 +27,7 @@ describe('validator', () => {
 
     const relFile = 'missing_target_file.ts';
     const absPathInFixtures = path.join(tempDir, relFile);
-    fs.writeFileSync(absPathInFixtures, 'console.log("hello");');
+    await fs.promises.writeFile(absPathInFixtures, 'console.log("hello");');
 
     const originalCwd = process.cwd();
     const originalConsoleWarn = console.warn;

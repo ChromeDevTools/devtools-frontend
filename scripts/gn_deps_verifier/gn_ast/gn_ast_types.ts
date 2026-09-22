@@ -38,4 +38,5 @@ export interface AstTargetInfo {
 export interface UpdateTargetDepsOptions {
   unusedDeps: string[];
   missingDeps: string[];
+  targetProperty: string;
 }

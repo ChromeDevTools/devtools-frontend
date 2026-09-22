@@ -56,6 +56,15 @@ export class BaseVariableMatch implements Match {
   }
 }
 
+// TODO(b/533783988): Remove ValueName handling once https://code.haverbeke.berlin/lezer/css/issues/36 is fixed and rolled.
+function isVariableNameNode(node: CodeMirror.SyntaxNode|null|undefined, ast: SyntaxTree): boolean {
+  if (node?.name !== 'VariableName' && node?.name !== 'ValueName') {
+    return false;
+  }
+  const text = ast.text(node);
+  return text.length > 2 && text.startsWith('--');
+}
+
 const BaseVariableMatcherBase: MatcherClass<BaseVariableMatch> = matcherBase(BaseVariableMatch);
 // This matcher provides matching for var() functions and basic computedText support. Computed text is resolved by a
 // callback. This matcher is intended to be used directly only in environments where CSSMatchedStyles is not available.
@@ -83,15 +92,11 @@ export class BaseVariableMatcher extends BaseVariableMatcherBase {
     const nameNode = args[0][0];
     const fallback = args.length === 2 ? args[1] : undefined;
 
-    if (nameNode?.name !== 'VariableName' && nameNode?.name !== 'ValueName') {
+    if (!isVariableNameNode(nameNode, matching.ast)) {
       return null;
     }
 
     const varName = matching.ast.text(nameNode);
-    if (!varName.startsWith('--') || varName.length <= 2) {
-      return null;
-    }
-
     return new BaseVariableMatch(
         matching.ast.text(node), node, varName, fallback, matching, this.#computedTextCallback);
   }
@@ -903,7 +908,7 @@ export class LinkableNameMatcher extends LinkableNameMatcherBase {
         propertyName === LinkableNameProperties.POSITION_TRY_FALLBACKS;
     // We only mark top level nodes or nodes that are inside `var()` expressions as linkable names.
     if (!propertyName || (node.name !== 'ValueName' && node.name !== 'VariableName') ||
-        !isAParentDeclarationOrVarCall || (node.name === 'ValueName' && shouldMatchOnlyVariableName)) {
+        !isAParentDeclarationOrVarCall || (shouldMatchOnlyVariableName && !isVariableNameNode(node, matching.ast))) {
       return null;
     }
 
@@ -1117,8 +1122,8 @@ export class CustomFunctionMatcher extends CustomFunctionMatcherBase {
     if (node.name !== 'CallExpression') {
       return null;
     }
-    const callee = matching.ast.text(node.getChild('VariableName'));
-    if (!callee?.startsWith('--')) {
+    const callee = matching.ast.text(node.getChild('VariableName') ?? node.getChild('Callee'));
+    if (!callee || callee.length <= 2 || !callee.startsWith('--')) {
       return null;
     }
     const args = ASTUtils.callArgs(node);
@@ -1295,7 +1300,7 @@ export class AnchorFunctionMatcher extends AnchorFunctionMatcherBase {
   }
 
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): AnchorFunctionMatch|null {
-    if (node.name === 'VariableName') {
+    if (isVariableNameNode(node, matching.ast)) {
       // Double-dashed anchor reference to be rendered with a link to its matching anchor.
       let parent = node.parent;
       if (parent?.name !== 'ArgList') {
@@ -1316,7 +1321,7 @@ export class AnchorFunctionMatcher extends AnchorFunctionMatcherBase {
     if (calleeText === 'anchor' && args.length <= 2) {
       return null;
     }
-    if (args.find(arg => arg.name === 'VariableName')) {
+    if (args.find(arg => isVariableNameNode(arg, matching.ast))) {
       // We have an explicit anchor reference, no need to render swatch.
       return null;
     }
@@ -1339,7 +1344,7 @@ export class PositionAnchorMatcher extends PositionAnchorMatcherBase {
   }
 
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): PositionAnchorMatch|null {
-    if (node.name !== 'VariableName') {
+    if (!isVariableNameNode(node, matching.ast)) {
       return null;
     }
 

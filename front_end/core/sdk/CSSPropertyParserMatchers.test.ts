@@ -311,13 +311,19 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     assert.deepEqual(match('font-palette', 'first'), ['first']);
     {
       assert.deepEqual(match('position-try-fallbacks', 'flip-block'), []);
+      assert.deepEqual(match('position-try-fallbacks', '--'), []);
       assert.deepEqual(match('position-try-fallbacks', '--one'), ['--one']);
+      assert.deepEqual(match('position-try-fallbacks', '---three'), ['---three']);
       assert.deepEqual(match('position-try-fallbacks', '--one, --two'), ['--one', '--two']);
+      assert.deepEqual(match('position-try-fallbacks', '--one, ---two'), ['--one', '---two']);
     }
     {
       assert.deepEqual(match('position-try', 'flip-block'), []);
+      assert.deepEqual(match('position-try', '--'), []);
       assert.deepEqual(match('position-try', '--one'), ['--one']);
+      assert.deepEqual(match('position-try', '---three'), ['---three']);
       assert.deepEqual(match('position-try', '--one, --two'), ['--one', '--two']);
+      assert.deepEqual(match('position-try', '--one, ---two'), ['--one', '---two']);
     }
     {
       assert.deepEqual(match('list-style-type', 'custom'), ['custom']);
@@ -566,6 +572,11 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       assert.exists(anchorMatch, anchorText);
       assert.strictEqual(anchorMatch.text, '--dashed-ident');
 
+      const {match: tripleDashMatch, text: tripleDashText} = matchSingleValue(
+          'left', 'anchor(---dashed-ident left)', new SDK.CSSPropertyParserMatchers.AnchorFunctionMatcher());
+      assert.exists(tripleDashMatch, tripleDashText);
+      assert.strictEqual(tripleDashMatch.text, '---dashed-ident');
+
       const {match: anchorSizeMatch, text: anchorSizeText} = matchSingleValue(
           'width', 'anchor-size(--dashed-ident width)', new SDK.CSSPropertyParserMatchers.AnchorFunctionMatcher());
       assert.exists(anchorSizeMatch, anchorSizeText);
@@ -591,12 +602,21 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
           'position-anchor', '--dashed-ident', new SDK.CSSPropertyParserMatchers.PositionAnchorMatcher());
       assert.exists(match, text);
       assert.strictEqual(match.text, '--dashed-ident');
+
+      const {match: tripleDashMatch, text: tripleDashText} = matchSingleValue(
+          'position-anchor', '---dashed-ident', new SDK.CSSPropertyParserMatchers.PositionAnchorMatcher());
+      assert.exists(tripleDashMatch, tripleDashText);
+      assert.strictEqual(tripleDashMatch.text, '---dashed-ident');
     });
 
     it('should not match `position-anchor` property when it is not a dashed identifier', () => {
       const {match} = matchSingleValue(
           'position-anchor', 'something-non-dashed', new SDK.CSSPropertyParserMatchers.PositionAnchorMatcher());
       assert.isNull(match);
+
+      const {match: emptyDashMatch} =
+          matchSingleValue('position-anchor', '--', new SDK.CSSPropertyParserMatchers.PositionAnchorMatcher());
+      assert.isNull(emptyDashMatch);
     });
   });
 
@@ -654,7 +674,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
 
   describe('CustomFunctionMatcher', () => {
     it('matches custom functions', () => {
-      const success = ['--darklight(blue, green)', '--riemann-zeta(2.0, 1.0)'];
+      const success = ['--darklight(blue, green)', '--riemann-zeta(2.0, 1.0)', '---triple-dash(1px)'];
       for (const value of success) {
         const {match, text} =
             matchSingleValue('width', value, new SDK.CSSPropertyParserMatchers.CustomFunctionMatcher());
@@ -664,7 +684,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
         assert.isAbove(match.args.length, 0);
       }
 
-      const failure = ['clamp(1px, 2px, 3px)', '-foo()'];
+      const failure = ['clamp(1px, 2px, 3px)', '-foo()', '--(1px)'];
       for (const value of failure) {
         const {match, text} =
             matchSingleValue('width', value, new SDK.CSSPropertyParserMatchers.CustomFunctionMatcher());

@@ -4361,12 +4361,6 @@ declare namespace ProtocolProxyApi {
      */
     invoke_runBounceTrackingMitigations(): Promise<Protocol.Storage.RunBounceTrackingMitigationsResponse>;
 
-    /**
-     * Returns the effective Related Website Sets in use by this profile for the browser
-     * session. The effective Related Website Sets will not change during a browser session.
-     */
-    invoke_getRelatedWebsiteSets(): Promise<Protocol.Storage.GetRelatedWebsiteSetsResponse>;
-
   }
   export interface StorageDispatcher {
     /**

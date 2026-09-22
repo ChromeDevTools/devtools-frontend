@@ -1253,6 +1253,12 @@
       status: "stable",
     },
     {
+      // It is only enabled in extension environment.
+      name: "ClipboardOnExtensionServiceWorker",
+      base_feature: "none",
+      public: true,
+    },
+    {
       // Fix middle-click paste (kSelection buffer) from leaking images on
       // the kStandard buffer via the image fallback in GetFragmentFromClipboard.
       // crbug.com/497251066
@@ -2150,12 +2156,6 @@
       status: "experimental",
     },
     {
-      // Support resolving naming conficts for scroll and view timeline names
-      // by selecting the last in flat tree order.
-      name: "CSSTimelineNameConflictResolution",
-      status: "experimental",
-    },
-    {
       // Support for the 'all' keyword of the 'timeline-scope' property.
       //
       // https://drafts.csswg.org/scroll-animations-1/#timeline-scope
@@ -2167,6 +2167,12 @@
       //
       // https://github.com/w3c/csswg-drafts/issues/12581
       name: "CSSTimelineScopeGlobal",
+    },
+    {
+      // Support tree-scoped scroll and view timeline names according to the
+      // CSSWG resolution on tree-scoped references.
+      name: "CSSTreeScopedScrollTimeline",
+      status: "experimental",
     },
     {
       name: "CSSTypedArithmetic",
@@ -3363,7 +3369,7 @@
       // drags not start if the "dragstart" event caused a layout shift that
       // made the mouse hit test miss the drag source.
       name: "GenerateDragOverlayBeforeDragStart",
-      status: "experimental",
+      status: "stable",
     },
     {
       // Killswitch for the visible deprecation warning banner shown on
@@ -3447,6 +3453,12 @@
       // This was added in M141 and can be removed after M143.
       // https://issues.chromium.org/issues/40502558
       name: "GetElementsByNameOnlyHTMLElements",
+      status: "stable",
+    },
+    {
+      // Performs retargeting on the output of InputEvent.getTargetRanges() to
+      // prevent leaking nodes in shadow roots.
+      name: "GetTargetRangesRetargeting",
       status: "stable",
     },
     {
@@ -3591,14 +3603,6 @@
       name: "HTMLElementScrollParent",
       status: "experimental",
     },
-    // Remove support for `::-webkit-clear-button`.
-    // This shipped in M149 and the flag can be removed in M151.,
-    // NOTE: when this flag is removed, be sure to also remove "clear"
-    // from third_party/blink/renderer/core/html/shadow/shadow_element_names.json5.
-    {
-      name: "HTMLInputElementDropWebkitClearButton",
-      status: "stable"
-    },
     // Adds support for the `::interest-button` pseudo element, which is a sub-
     // feature of the interest invokers feature.
     // https://open-ui.org/components/interest-invokers.explainer/
@@ -3649,6 +3653,13 @@
       // https://open-ui.org/components/switch.attribute.explainer/
       name: "HTMLSwitchAttribute",
       status: "experimental",
+    },
+    {
+      // Use orientation segmentation for hyphenation strings in vertical mixed
+      // text, so characters such as "+=" render sideways instead of upright.
+      // https://crbug.com/562849567
+      name: "HyphenVerticalOrientationFix",
+      status: "stable",
     },
     {
       name: "ICUCapitalization",
@@ -3836,7 +3847,7 @@
     },
     {
       name: "JavaScriptImportText",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "JavaScriptSourcePhaseImports",
@@ -4249,7 +4260,7 @@
     // https://crbug.com/534781954
     {
       name: "ModuleMapDoNotCacheFailedFetch",
-      status: "experimental",
+      status: "stable",
     },
     // ModulePreloadReferrer enables modulepreload to send proper referrer
     // headers as specified in the HTML spec.
@@ -4787,6 +4798,18 @@
       name: "PermissionsRequestRevoke",
       status: "experimental",
     },
+    {
+      // Enables the <persistentwidget> element, which is like an <iframe> but
+      // can stay alive without reloading when its opener/embedder navigates
+      // from one same-origin document to another.
+      // There are checks for this flag in content/browser, which means that
+      // setting status to "experimental" would not actually enable this
+      // feature, it has to be "stable" in order for it to actually get enabled
+      // in the browser process. Manual and automated tests must pass the
+      // --enable-features=PersistentWidgetAPI command line flag to the
+      // browser.
+      name: "PersistentWidgetAPI",
+    },
     // This is a reverse OT used for a phased deprecation.
     // https://crbug.com/918374
     {
@@ -5023,6 +5046,13 @@
     {
       // ChromeStatus: https://chromestatus.com/feature/6194847180128256
       name: "QuotaExceededErrorUpdate",
+      status: "stable",
+    },
+    {
+      // Gives a natively painted input[type=radio] a 50% border radius so that
+      // box-shadow and outline follow the circle the theme paints instead of
+      // the square border box. See crbug.com/40877887.
+      name: "RadioButtonCircularBorderRadius",
       status: "stable",
     },
     {
@@ -6513,12 +6543,6 @@
       name: "TrustedTypesFromLiteral",
       status: "experimental",
       base_feature: "none",
-    },
-    {
-      // Adapt Trusted Types to its new spec, as part of HTML.
-      // Tracking bug: 330516530
-      name: "TrustedTypesHTML",
-      status: "stable",
     },
     {
       name: "TrustedTypesUseCodeLike",

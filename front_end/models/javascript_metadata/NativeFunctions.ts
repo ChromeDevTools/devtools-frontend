@@ -1368,6 +1368,11 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
     receivers: ["Window"]
   },
   {
+    name: "postMessage",
+    signatures: [["message","targetOrigin"],["message","?options"]],
+    receivers: ["HTMLPersistentWidgetElement","PersistentWidgetOpener"]
+  },
+  {
     name: "deleteRule",
     signatures: [["index"]],
     receivers: ["CSSGroupingRule","CSSStyleSheet","CSSStyleRule"]
@@ -2050,7 +2055,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "write",
-    signatures: [["...text"],["text"],["text1","...text"]],
+    signatures: [["...text"]],
     receivers: ["Document"]
   },
   {
@@ -2489,7 +2494,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "writeln",
-    signatures: [["...text"],["text"],["text1","...text"]]
+    signatures: [["...text"]]
   },
   {
     name: "elementFromPoint",

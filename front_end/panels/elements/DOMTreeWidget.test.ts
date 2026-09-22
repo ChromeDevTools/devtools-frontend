@@ -4947,4 +4947,56 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
   });
+
+  it('preserves syntax highlighting colors when a tree element is selected and focused in DECLARATIVE_VIEW',
+     async () => {
+       const {domTree, domModel} =
+           setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW, {includeCommonStyles: true});
+       try {
+         const rootNode = createTestDOMTree(domModel, {
+           nodeId: 1,
+           nodeName: 'DIV',
+           children: [{nodeId: 2, nodeName: 'SPAN', attributes: ['id', 'main', 'class', 'container']}],
+         });
+         const childNode = rootNode.children()![0];
+         domTree.rootDOMNode = rootNode;
+         domTree.selectEnabled = true;
+         domTree.setNodeExpanded(rootNode, true);
+         domTree.performUpdate();
+         await waitForTreeUpdates();
+
+         const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree')!;
+         const internalTree = tree.getInternalTreeOutlineForTest();
+         const initialChildElement = internalTree.rootElement().children()[0].children()[0];
+         assert.exists(initialChildElement);
+         assert.isFalse(initialChildElement.selected);
+
+         const initialTagEl = initialChildElement.listItemElement.querySelector('.webkit-html-tag-name')!;
+         const initialAttrNameEl = initialChildElement.listItemElement.querySelector('.webkit-html-attribute-name')!;
+         const initialAttrValueEl = initialChildElement.listItemElement.querySelector('.webkit-html-attribute-value')!;
+         const unselectedTagColor = window.getComputedStyle(initialTagEl).color;
+         const unselectedAttrNameColor = window.getComputedStyle(initialAttrNameEl).color;
+         const unselectedAttrValueColor = window.getComputedStyle(initialAttrValueEl).color;
+
+         // Select and focus the child tree element.
+         domTree.selectDOMNode(childNode, /* focus= */ true);
+         await waitForTreeUpdates();
+
+         const selectedChildElement = internalTree.rootElement().children()[0].children()[0];
+         selectedChildElement.listItemElement.focus();
+         assert.isTrue(selectedChildElement.selected);
+         assert.strictEqual(tree.shadowRoot?.activeElement, selectedChildElement.listItemElement);
+
+         const tagNameEl = selectedChildElement.listItemElement.querySelector('.webkit-html-tag-name')!;
+         const attrNameEl = selectedChildElement.listItemElement.querySelector('.webkit-html-attribute-name')!;
+         const attrValueEl = selectedChildElement.listItemElement.querySelector('.webkit-html-attribute-value')!;
+
+         // Syntax highlighting token colors must remain unchanged when selected and focused.
+         assert.strictEqual(window.getComputedStyle(tagNameEl).color, unselectedTagColor);
+         assert.strictEqual(window.getComputedStyle(attrNameEl).color, unselectedAttrNameColor);
+         assert.strictEqual(window.getComputedStyle(attrValueEl).color, unselectedAttrValueColor);
+       } finally {
+         domTree.detach();
+       }
+     });
 });

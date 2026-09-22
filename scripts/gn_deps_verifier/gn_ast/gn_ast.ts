@@ -104,7 +104,9 @@ export class GnBuildFile {
     const relBuildDir = path.relative(this.rootDir, path.dirname(this.filePath)).split(path.sep).join(path.posix.sep);
     const baseLabel = `//${relBuildDir}`;
 
-    const variables = new Map<string, string[]>();
+    const variables = new Map<string, string[]>([
+      ['devtools_location_prepend', ['//']],
+    ]);
 
     const visitNode = (node: GnAstNode) => {
       if (applyAssignment(variables, node)) {

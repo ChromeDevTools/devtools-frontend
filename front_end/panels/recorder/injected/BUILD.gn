@@ -28,7 +28,6 @@ devtools_module("injected") {
 
   ts_deps = [
     "../../../third_party/puppeteer",
-    "../../../third_party/puppeteer:bundle",
     "../../../third_party/puppeteer-replay:bundle",
   ]
 

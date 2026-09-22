@@ -2,8 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as path from 'node:path';
+
 import {unquoteFromGn} from './gn_ast_factory.ts';
 import type {AstTargetInfo, GnAstNode} from './gn_ast_types.ts';
+
+function isScalarStringNode(node?: GnAstNode): boolean {
+  if (!node) {
+    return false;
+  }
+  if (node.type === 'LITERAL') {
+    return true;
+  }
+  if (node.type === 'BINARY' && node.value === '+' && node.child) {
+    return isScalarStringNode(node.child[0]) || isScalarStringNode(node.child[1]);
+  }
+  return false;
+}
 
 /**
  * Depth-first AST visitor.
@@ -28,7 +43,7 @@ export function findFirstNode<T>(
 }
 
 /**
- * Extracts string values from literals, lists, binary +/- expressions, and variable references.
+ * Extracts string values from literals, lists, binary +/- expressions, function calls, and variable references.
  */
 export function extractStringValues(
     node?: GnAstNode,
@@ -49,7 +64,23 @@ export function extractStringValues(
       const rhsValues = new Set(extractStringValues(node.child[1], variables));
       return lhsValues.filter(val => !rhsValues.has(val));
     }
+    if (node.value === '+' && isScalarStringNode(node)) {
+      const lhsValues = extractStringValues(node.child[0], variables);
+      const rhsValues = extractStringValues(node.child[1], variables);
+      return lhsValues.flatMap(lhs => rhsValues.map(rhs => lhs + rhs));
+    }
     return node.child.flatMap(child => extractStringValues(child, variables));
+  }
+  if (node.type === 'FUNCTION' && (node.value === 'filter_exclude' || node.value === 'filter_include')) {
+    const args = node.child?.[0]?.child;
+    if (args && args.length >= 2) {
+      const values = extractStringValues(args[0], variables);
+      const patterns = extractStringValues(args[1], variables);
+      const matchesPattern = (val: string): boolean =>
+          patterns.some(pattern => val === pattern || path.matchesGlob(val, pattern));
+      return node.value === 'filter_exclude' ? values.filter(val => !matchesPattern(val)) :
+                                               values.filter(val => matchesPattern(val));
+    }
   }
   if (node.type === 'IDENTIFIER' && node.value) {
     return variables.get(node.value) || [];

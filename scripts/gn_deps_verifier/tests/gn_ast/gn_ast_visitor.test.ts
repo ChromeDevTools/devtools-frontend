@@ -187,6 +187,52 @@ describe('gn_ast_visitor', () => {
       };
       assert.deepEqual(extractStringValues(partialBinary), ['a.ts']);
     });
+
+    it('concatenates scalar strings in binary plus expressions', () => {
+      const variables = new Map<string, string[]>([
+        ['devtools_location_prepend', ['//']],
+      ]);
+      const listWithStringConcat = createAstNode.list([
+        createAstNode.binary(
+            '+',
+            createAstNode.identifier('devtools_location_prepend'),
+            createAstNode.stringLiteral('node_modules/@types/json-schema/index.d.ts'),
+            ),
+      ]);
+      assert.deepEqual(extractStringValues(listWithStringConcat, variables), [
+        '//node_modules/@types/json-schema/index.d.ts',
+      ]);
+    });
+
+    it('evaluates filter_exclude and filter_include function calls', () => {
+      const variables = new Map<string, string[]>([
+        ['SOURCES', ['a.ts', 'b.test.ts', 'c.d.ts']],
+        ['EXCLUDED_SOURCES', ['b.test.ts']],
+      ]);
+      const filterExcludeNode: GnAstNode = {
+        type: 'FUNCTION',
+        value: 'filter_exclude',
+        child: [
+          createAstNode.list([
+            createAstNode.identifier('SOURCES'),
+            createAstNode.identifier('EXCLUDED_SOURCES'),
+          ]),
+        ],
+      };
+      assert.deepEqual(extractStringValues(filterExcludeNode, variables), ['a.ts', 'c.d.ts']);
+
+      const filterIncludeNode: GnAstNode = {
+        type: 'FUNCTION',
+        value: 'filter_include',
+        child: [
+          createAstNode.list([
+            createAstNode.identifier('SOURCES'),
+            createAstNode.list([createAstNode.stringLiteral('*.d.ts')]),
+          ]),
+        ],
+      };
+      assert.deepEqual(extractStringValues(filterIncludeNode, variables), ['c.d.ts']);
+    });
   });
 
   describe('walkListNodes & findFirstListNode', () => {

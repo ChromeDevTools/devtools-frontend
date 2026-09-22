@@ -2245,7 +2245,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           this.onDocumentUpdated(domModel);
         } else {
           void domModel.requestDocument().then(document => {
-            if (document && this.isShowing()) {
+            if (document && this.isShowing() && this.#wiredDOMModels.has(domModel)) {
               this.rootDOMNode = document;
               this.onDocumentUpdated(domModel);
             }
@@ -2268,6 +2268,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       if (this.#wiredDOMModels.has(domModel)) {
         this.#wiredDOMModels.delete(domModel);
         this.#unwireDOMModel(domModel);
+      }
+      if (this.#rootDOMNode?.domModel() === domModel) {
+        this.#rootDOMNode = null;
+        this.#selectedDOMNode = null;
+        this.#expandedNodes.clear();
+        this.#updateRecords.clear();
       }
       this.performUpdate();
       return;
@@ -3141,7 +3147,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           this.onDocumentUpdated(domModel);
         } else if (this.#view === DECLARATIVE_VIEW) {
           void domModel.requestDocument().then(document => {
-            if (document && this.isShowing()) {
+            if (document && this.isShowing() && this.#wiredDOMModels.has(domModel)) {
               this.rootDOMNode = document;
               this.onDocumentUpdated(domModel);
             }

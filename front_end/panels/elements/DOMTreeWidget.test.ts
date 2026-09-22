@@ -4886,5 +4886,65 @@ describeWithEnvironment('DOMTreeWidget', () => {
       assert.strictEqual(record?.description, 'Hid element <p>');
       assert.strictEqual(lastChangeBackendNodeId(), 2);
     });
+
+    it('ignores late requestDocument resolution for a DOMModel that was removed via modelRemoved', async () => {
+      const {domTree, domModel: primaryDomModel} =
+          setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      const prerenderTarget = createTarget({type: SDK.Target.Type.FRAME, subtype: 'prerender'});
+      const prerenderDomModel = prerenderTarget.model(SDK.DOMModel.DOMModel)!;
+
+      try {
+        const primaryDoc = createTestDOMTree(primaryDomModel, {
+                             nodeId: 1,
+                             nodeType: Node.DOCUMENT_NODE,
+                             nodeName: '#document',
+                             children: [{nodeId: 2, nodeName: 'HTML'}],
+                           }) as SDK.DOMModel.DOMDocument;
+        const prerenderDoc = createTestDOMTree(prerenderDomModel, {
+                               nodeId: 10,
+                               nodeType: Node.DOCUMENT_NODE,
+                               nodeName: '#document',
+                               children: [{nodeId: 11, nodeName: 'HTML'}],
+                             }) as SDK.DOMModel.DOMDocument;
+
+        let resolvePrerenderDocument!: (doc: SDK.DOMModel.DOMDocument|null) => void;
+        const prerenderExistingDocStub = sinon.stub(prerenderDomModel, 'existingDocument').returns(null);
+        sinon.stub(prerenderDomModel, 'requestDocument').returns(new Promise(resolve => {
+          resolvePrerenderDocument = resolve;
+        }));
+
+        sinon.stub(primaryDomModel, 'existingDocument').returns(primaryDoc);
+
+        // Wire prerenderDomModel and then remove it before its requestDocument() resolves.
+        domTree.modelAdded(prerenderDomModel);
+        domTree.modelRemoved(prerenderDomModel);
+
+        // Wire primaryDomModel which sets rootDOMNode to primaryDoc.
+        domTree.modelAdded(primaryDomModel);
+        assert.strictEqual(domTree.rootDOMNode, primaryDoc);
+
+        const onDocumentUpdatedSpy = sinon.spy(domTree, 'onDocumentUpdated');
+
+        // Resolve the stale prerender requestDocument() promise.
+        resolvePrerenderDocument(prerenderDoc);
+        await new Promise<void>(resolve => queueMicrotask(resolve));
+
+        // Ensure rootDOMNode remains primaryDoc and onDocumentUpdated was not called for prerenderDomModel.
+        assert.strictEqual(domTree.rootDOMNode, primaryDoc);
+        sinon.assert.notCalled(onDocumentUpdatedSpy);
+
+        // Removing the active primaryDomModel clears rootDOMNode.
+        domTree.modelRemoved(primaryDomModel);
+        assert.isNull(domTree.rootDOMNode);
+
+        // Manually switching to prerenderDomModel (e.g. via target selector) renders prerenderDoc.
+        prerenderExistingDocStub.returns(prerenderDoc);
+        domTree.modelAdded(prerenderDomModel);
+        assert.strictEqual(domTree.rootDOMNode, prerenderDoc);
+      } finally {
+        domTree.detach();
+        prerenderTarget.dispose('test cleanup');
+      }
+    });
   });
 });

@@ -34,6 +34,7 @@ const kForbiddenSchemes = [
   'chrome-error:',
   'chrome-search:',
   'devtools:',
+  'isolated-app:',
 ];
 
 declare global {

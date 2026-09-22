@@ -1682,6 +1682,7 @@ describe('ExtensionServer', () => {
       'chrome-untrusted://extensions',
       'chrome-error://crash',
       'chrome-search://foo/bar',
+      'isolated-app://bundle-id/index.html',
     ];
     for (const url of blockedUrls as Platform.DevToolsPath.UrlString[]) {
       assert.isFalse(PanelCommon.ExtensionServer.ExtensionServer.canInspectURL(url), url);

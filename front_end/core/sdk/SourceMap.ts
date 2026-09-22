@@ -7,7 +7,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
-import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
+import type {CallFrame, Location, ScopeChainEntry} from './DebuggerModel.js';
 import {scopeTreeForScript} from './ScopeTreeCache.js';
 import type {Script} from './Script.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
@@ -841,6 +841,17 @@ export class SourceMap {
     }
 
     return this.#scopesInfo.resolveMappedScopeChain(frame);
+  }
+
+  resolveMappedVariablesAtPosition(location: Location,
+                                   ignoreInnerBlockScopes = false): Array<Map<string, string|null>>|null {
+    this.#ensureSourceMapProcessed();
+    if (this.#provenance === SourceMapProvenance.USER || !this.#scopesInfo?.hasVariablesAndBindings()) {
+      return null;
+    }
+
+    return this.#scopesInfo.resolveMappedVariablesAtPosition(location.lineNumber, location.columnNumber,
+                                                             ignoreInnerBlockScopes);
   }
 
   findOriginalFunctionName(position: ScopesCodec.Position): string|null {

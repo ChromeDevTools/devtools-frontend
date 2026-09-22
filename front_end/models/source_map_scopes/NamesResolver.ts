@@ -429,6 +429,17 @@ export const allVariablesInCallFrame = async(
         return cached;
       }
 
+      if (Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel?.enabled) {
+        const sourceMap = callFrame.script.sourceMap() ??
+            await callFrame.debuggerModel.sourceMapManager().sourceMapForClientPromise(callFrame.script);
+        const mappedVariables =
+            sourceMap?.resolveMappedVariablesAtPosition(callFrame.location(), callFrame.returnValue() !== null);
+        if (mappedVariables) {
+          cachedMapByCallFrame.set(callFrame, mappedVariables);
+          return mappedVariables;
+        }
+      }
+
       const scopeChain = callFrame.scopeChain().filter(scope => !scope.empty());
       const nameMappings =
           await Promise.all(scopeChain.map(scope => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
@@ -454,6 +465,15 @@ export const allVariablesAtPosition =
                    .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
                    .get()) {
             return reverseMapping;
+          }
+
+          if (Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel?.enabled) {
+            const sourceMap =
+                script.sourceMap() ?? await script.debuggerModel.sourceMapManager().sourceMapForClientPromise(script);
+            const mappedVariables = sourceMap?.resolveMappedVariablesAtPosition(location);
+            if (mappedVariables) {
+              return mappedVariables;
+            }
           }
 
           const scopeTreeAndText = await computeScopeTree(script);

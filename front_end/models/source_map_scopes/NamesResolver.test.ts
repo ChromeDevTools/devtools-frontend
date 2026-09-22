@@ -879,6 +879,221 @@ function mulWithOffset(param1, param2, offset) {
 
       assert.deepEqual(variableMap, [new Map<string, string|null>([['par1', 'o']])]);
     });
+
+    it('uses source map scope binding expressions when devToolsSourceMapScopesInSourcesPanel is enabled', async () => {
+      const sourceMapUrl = 'file:///tmp/example.js.min.map';
+      const builder = new ScopesCodec.ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 0, {
+            kind: 'function',
+            name: 'fn',
+            isStackFrame: true,
+            variables: ['origParam', 'importedVal', 'computedVal', 'this'],
+            key: 'fn',
+          })
+          .endScope(0, 40)
+          .endScope(0, 40);
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['o', '_mod.imported', 'o + 1', '_this']})
+          .endRange(0, 40)
+          .endRange(0, 40);
+
+      const baseMap = encodeSourceMap(['0:0 => index.js:0:0', '0:11 => index.js:0:11@legacyParam']);
+      const map = ScopesCodec.encode(builder.build(), baseMap as ScopesCodec.SourceMapJson);
+      const sourceMapContent = JSON.stringify(map);
+
+      const source = `function f(o){console.log(o)}f(1);\n//# sourceMappingURL=${sourceMapUrl}`;
+      const scopes = '          {  <             >}';
+      const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 42}]);
+
+      // 1. With flag disabled: falls back to legacy mapping ('legacyParam' -> 'o')
+      updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: false}});
+      const callFrameDisabled = await backend.createCallFrame(
+          target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
+      const disabledMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+          callFrameDisabled, backend.universe.debuggerWorkspaceBinding);
+      assert.strictEqual(disabledMap[0].get('legacyParam'), 'o');
+      assert.isFalse(disabledMap[0].has('importedVal'));
+
+      // 2. With flag enabled: uses source map scope binding expressions and substitutes accurately
+      updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
+      const callFrameEnabled = await backend.createCallFrame(
+          target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
+      const enabledMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+          callFrameEnabled, backend.universe.debuggerWorkspaceBinding);
+      assert.strictEqual(enabledMap[0].get('origParam'), 'o');
+      assert.strictEqual(enabledMap[0].get('importedVal'), '_mod.imported');
+      assert.strictEqual(enabledMap[0].get('computedVal'), 'o + 1');
+      assert.strictEqual(enabledMap[0].get('this'), '_this');
+
+      const substituted = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(
+          'importedVal.foo + computedVal * 2 + this.bar', enabledMap);
+      assert.strictEqual(substituted, '_mod.imported.foo + (o + 1) * 2 + _this.bar');
+    });
+
+    it('ignores inner block scopes when paused on a return statement', async () => {
+      updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
+      const sourceMapUrl = 'file:///tmp/example.js.min.map';
+      const builder = new ScopesCodec.ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['x', 'fnVar'], key: 'fn'})
+          .startScope(0, 14, {kind: 'block', variables: ['x', 'blockVar'], key: 'block'})
+          .endScope(0, 28)
+          .endScope(0, 30);
+      builder.startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['fn_x', 'fn_v']})
+          .startRange(0, 14, {scopeKey: 'block', values: ['block_x', 'block_v']})
+          .endRange(0, 28)
+          .endRange(0, 30);
+
+      const baseMap = encodeSourceMap(['0:0 => index.js:0:0']);
+      const map = ScopesCodec.encode(builder.build(), baseMap as ScopesCodec.SourceMapJson);
+      const sourceMapContent = JSON.stringify(map);
+
+      const source = `function f(o){console.log(o)}f(1);\n//# sourceMappingURL=${sourceMapUrl}`;
+      const scopes = '          {  <             >}';
+      const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 1}]);
+      const callFrame = await backend.createCallFrame(target, {url: URL, content: source}, scopes,
+                                                      {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
+      sinon.stub(callFrame, 'returnValue').returns(new SDK.RemoteObject.LocalJSONObject(42));
+
+      const frameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+          callFrame, backend.universe.debuggerWorkspaceBinding);
+      assert.deepEqual(frameMap, [
+        new Map<string, string|null>([['x', 'fn_x'], ['fnVar', 'fn_v']]),
+      ]);
+    });
+
+    it('awaits sourceMapForClientPromise when source map is not yet attached to script', async () => {
+      updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
+      const sourceMapUrl = 'file:///tmp/example.js.min.map';
+      const builder = new ScopesCodec.ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['lazyVar'], key: 'fn'})
+          .endScope(0, 30)
+          .endScope(0, 30);
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['_lazy.val']})
+          .endRange(0, 30)
+          .endRange(0, 30);
+
+      const baseMap = encodeSourceMap(['0:0 => index.js:0:0']);
+      const map = ScopesCodec.encode(builder.build(), baseMap as ScopesCodec.SourceMapJson);
+      const sourceMapContent = JSON.stringify(map);
+
+      const source = `function f(o){console.log(o)}f(1);\n//# sourceMappingURL=${sourceMapUrl}`;
+      const scopes = '          {  <             >}';
+      const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 1}]);
+      const callFrame = await backend.createCallFrame(target, {url: URL, content: source}, scopes,
+                                                      {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
+
+      const actualSourceMap = callFrame.script.sourceMap();
+      assert.isDefined(actualSourceMap);
+
+      sinon.stub(callFrame.script, 'sourceMap').returns(undefined);
+      const promiseStub =
+          sinon.stub(callFrame.debuggerModel.sourceMapManager(), 'sourceMapForClientPromise').resolves(actualSourceMap);
+
+      const frameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+          callFrame, backend.universe.debuggerWorkspaceBinding);
+      assert.strictEqual(frameMap[0].get('lazyVar'), '_lazy.val');
+
+      const posMap = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
+          callFrame.location(), backend.universe.debuggerWorkspaceBinding);
+      assert.strictEqual(posMap[0].get('lazyVar'), '_lazy.val');
+      sinon.assert.calledTwice(promiseStub);
+    });
+
+    it('falls back to legacy resolution when source map scopes have no variables or bindings', async () => {
+      updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
+      const sourceMapUrl = 'file:///tmp/example.js.min.map';
+      const builder = new ScopesCodec.ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 0, {kind: 'function', name: 'onlyName', isStackFrame: true, key: 'fn'})
+          .endScope(0, 30)
+          .endScope(0, 30);
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'fn', isStackFrame: true})
+          .endRange(0, 30)
+          .endRange(0, 30);
+
+      const baseMap = encodeSourceMap(['0:0 => index.js:0:0', '0:11 => index.js:0:11@legacyParam']);
+      const map = ScopesCodec.encode(builder.build(), baseMap as ScopesCodec.SourceMapJson);
+      const sourceMapContent = JSON.stringify(map);
+
+      const source = `function f(o){console.log(o)}f(1);\n//# sourceMappingURL=${sourceMapUrl}`;
+      const scopes = '          {  <             >}';
+      const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 123}]);
+      const callFrame = await backend.createCallFrame(target, {url: URL, content: source}, scopes,
+                                                      {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
+
+      const frameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+          callFrame, backend.universe.debuggerWorkspaceBinding);
+      assert.strictEqual(frameMap[0].get('legacyParam'), 'o');
+
+      const posMap = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
+          callFrame.location(), backend.universe.debuggerWorkspaceBinding);
+      assert.strictEqual(posMap[0].get('legacyParam'), 'o');
+    });
+  });
+
+  describe('allVariablesAtPosition with source map scopes', () => {
+    it('resolves sub-range bindings and detects generated-code shadowing for breakpoint positions', async () => {
+      updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
+      const sourceMapUrl = 'file:///tmp/example.js.min.map';
+      const builder = new ScopesCodec.ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['origA', 'origB'], key: 'fn'})
+          .startScope(1, 0, {kind: 'block', variables: ['innerA'], key: 'block'})
+          .endScope(3, 0)
+          .endScope(5, 0);
+
+      // 0         1         2         3         4         5
+      // 012345678901234567890123456789012345678901234567890123456
+      // function f(a, b) { { let a = 99; console.log(a, b); } }
+      builder
+          .startRange(0, 0, {
+            scopeKey: 'fn',
+            isStackFrame: true,
+            values: [
+              'a',
+              [
+                {from: {line: 0, column: 0}, to: {line: 0, column: 19}, value: 'b'},
+                {from: {line: 0, column: 19}, to: {line: 0, column: 55}, value: 'b.val'},
+              ],
+            ],
+          })
+          .startRange(0, 19, {scopeKey: 'block', values: ['a']})
+          .endRange(0, 53)
+          .endRange(0, 55);
+
+      const baseMap = encodeSourceMap(['0:0 => index.js:0:0']);
+      const map = ScopesCodec.encode(builder.build(), baseMap as ScopesCodec.SourceMapJson);
+      const sourceMapContent = JSON.stringify(map);
+
+      const source = `function f(a, b) { { let a = 99; console.log(a, b); } }\n//# sourceMappingURL=${sourceMapUrl}`;
+      const scopes = '                {  <                                > }';
+      const scopeObject = backend.createSimpleRemoteObject([]);
+      const callFrame = await backend.createCallFrame(target, {url: URL, content: source}, scopes,
+                                                      {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
+      const script = callFrame.script;
+
+      // Position before inner block (column 18): origA -> 'a', origB -> 'b'
+      const locBefore = new SDK.DebuggerModel.Location(callFrame.debuggerModel, script.scriptId, 0, 18);
+      const mapBefore = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
+          locBefore, backend.universe.debuggerWorkspaceBinding);
+      assert.strictEqual(mapBefore[0].get('origA'), 'a');
+      assert.strictEqual(mapBefore[0].get('origB'), 'b');
+
+      // Position inside inner block (column 35): inner scope {innerA -> 'a'} precedes outer scope {origA -> 'a', origB -> 'b.val'}
+      const locInside = new SDK.DebuggerModel.Location(callFrame.debuggerModel, script.scriptId, 0, 35);
+      const mapInside = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
+          locInside, backend.universe.debuggerWorkspaceBinding);
+      assert.strictEqual(mapInside[0].get('innerA'), 'a');
+      assert.strictEqual(mapInside[1].get('origA'), 'a');
+      assert.strictEqual(mapInside[1].get('origB'), 'b.val');
+
+      const substituted =
+          await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute('innerA + origB', mapInside);
+      assert.strictEqual(substituted, 'a + b.val');
+    });
   });
 });
 

@@ -178,4 +178,110 @@ describe('Substitute', () => {
   it('Throws if the renamed variable is unavailable', () => {
     assert.throws(() => substitute('varQ'), Error);
   });
+
+  describe('Binding expressions', () => {
+    const exprMapping = new Map<string, string|null>([
+      ['memberVar', '_module.x'],
+      ['memberVarY', '_module.y'],
+      ['nestedMemberVar', 'a.b.c'],
+      ['privateFieldVar', 'this.#secret'],
+      ['argVar', 'arguments[0]'],
+      ['computedMemberVar', 'arr[idx]'],
+      ['binaryVar', 'a + 1'],
+      ['ternaryVar', 'cond ? a : b'],
+      ['objectVar', '{a: 1}'],
+      ['numberVar', '42'],
+      ['optionalChainVar', 'a?.b'],
+      ['callVar', 'getVal(a)'],
+      ['iifeVar', '((tmp) => tmp + freeVar)(1)'],
+      ['brokenVar', 'a +'],
+      ['unbalancedVar', 'a) + (b'],
+      ['multiStmtVar', 'a; b'],
+    ]);
+
+    function substituteExpr(expression: string, customMap = exprMapping): string {
+      return FormatterWorker.Substitute.substituteExpression(expression, customMap);
+    }
+
+    it('Substitutes member expressions without outer parentheses', () => {
+      assert.strictEqual(substituteExpr('memberVar'), '_module.x');
+      assert.strictEqual(substituteExpr('nestedMemberVar'), 'a.b.c');
+      assert.strictEqual(substituteExpr('privateFieldVar'), 'this.#secret');
+      assert.strictEqual(substituteExpr('argVar'), 'arguments[0]');
+      assert.strictEqual(substituteExpr('computedMemberVar'), 'arr[idx]');
+      assert.strictEqual(substituteExpr('memberVar.prop'), '_module.x.prop');
+      assert.strictEqual(substituteExpr('memberVar()'), '_module.x()');
+      assert.strictEqual(substituteExpr('memberVar + 1'), '_module.x + 1');
+    });
+
+    it('Preserves L-value assignability for member expressions', () => {
+      assert.strictEqual(substituteExpr('memberVar = 5'), '_module.x = 5');
+      assert.strictEqual(substituteExpr('memberVar += 1'), '_module.x += 1');
+      assert.strictEqual(substituteExpr('memberVar++'), '_module.x++');
+      assert.strictEqual(substituteExpr('--privateFieldVar'), '--this.#secret');
+      assert.strictEqual(substituteExpr('argVar = 10'), 'arguments[0] = 10');
+      assert.strictEqual(substituteExpr('[memberVar] = [1]'), '[_module.x] = [1]');
+      assert.strictEqual(substituteExpr('({a: memberVar} = obj)'), '({a: _module.x} = obj)');
+      assert.strictEqual(substituteExpr('({memberVar} = obj)'), '({memberVar: _module.x} = obj)');
+      assert.strictEqual(substituteExpr('for (memberVar of list) {}'), 'for (_module.x of list) {}');
+    });
+
+    it('Parenthesizes non-member expressions to preserve operator precedence', () => {
+      assert.strictEqual(substituteExpr('binaryVar * 2'), '(a + 1) * 2');
+      assert.strictEqual(substituteExpr('!binaryVar'), '!(a + 1)');
+      assert.strictEqual(substituteExpr('ternaryVar ? 1 : 2'), '(cond ? a : b) ? 1 : 2');
+      assert.strictEqual(substituteExpr('objectVar.a'), '({a: 1}).a');
+      assert.strictEqual(substituteExpr('numberVar.toFixed(2)'), '(42).toFixed(2)');
+      assert.strictEqual(substituteExpr('optionalChainVar.c'), '(a?.b).c');
+      assert.strictEqual(substituteExpr('new callVar()'), 'new (getVal(a))()');
+    });
+
+    it('Expands shorthand object properties with binding expressions', () => {
+      assert.strictEqual(substituteExpr('({ memberVar })'), '({ memberVar: _module.x })');
+      assert.strictEqual(substituteExpr('({ binaryVar })'), '({ binaryVar: (a + 1) })');
+      assert.strictEqual(substituteExpr('({ privateFieldVar })'), '({ privateFieldVar: this.#secret })');
+    });
+
+    it('Performs capture-avoiding alpha-renaming for free identifiers in binding expressions', () => {
+      assert.strictEqual(substituteExpr('(_module) => _module + memberVar'), '(_module_1) => _module_1 + _module.x');
+      assert.strictEqual(substituteExpr('(a, b) => a + b + ternaryVar'), '(a_1, b_1) => a_1 + b_1 + (cond ? a : b)');
+      assert.strictEqual(substituteExpr('(arr, idx) => arr[idx] + computedMemberVar'),
+                         '(arr_1, idx_1) => arr_1[idx_1] + arr[idx]');
+    });
+
+    it('Deduplicates captured binders across multiple uses and multiple mapped variables', () => {
+      assert.strictEqual(substituteExpr('(_module) => _module + memberVar + memberVar'),
+                         '(_module_1) => _module_1 + _module.x + _module.x');
+      assert.strictEqual(substituteExpr('(_module) => _module + memberVar + memberVarY'),
+                         '(_module_1) => _module_1 + _module.x + _module.y');
+    });
+
+    it('Does not alpha-rename identifiers that are bound locally inside a binding expression', () => {
+      // In `((tmp) => tmp + freeVar)(1)`, `tmp` is bound inside the binding expression while `freeVar` is free.
+      assert.strictEqual(substituteExpr('(tmp) => tmp + iifeVar'), '(tmp) => tmp + (((tmp) => tmp + freeVar)(1))');
+      assert.strictEqual(substituteExpr('(freeVar) => freeVar + iifeVar'),
+                         '(freeVar_1) => freeVar_1 + (((tmp) => tmp + freeVar)(1))');
+    });
+
+    it('Handles `this` and `arguments` inside binding expressions for arrow functions vs regular functions', () => {
+      // Arrow functions do not bind their own `this` or `arguments`.
+      assert.strictEqual(substituteExpr('() => privateFieldVar'), '() => this.#secret');
+      assert.strictEqual(substituteExpr('() => argVar'), '() => arguments[0]');
+
+      // Regular functions bind `this` and `arguments` as FIXED, so capture cannot be avoided.
+      assert.throws(() => substituteExpr('function f() { return privateFieldVar; }'),
+                    'Cannot avoid capture of \'this\'');
+      assert.throws(() => substituteExpr('function f() { return argVar; }'), 'Cannot avoid capture of \'arguments\'');
+    });
+
+    it('Only throws on malformed binding expressions if the mapped variable is referenced', () => {
+      // `brokenVar`, `unbalancedVar`, and `multiStmtVar` are in `exprMapping` but not used in `'memberVar + 1'`.
+      assert.strictEqual(substituteExpr('memberVar + 1'), '_module.x + 1');
+
+      // Referencing a variable with a malformed binding expression throws SyntaxError.
+      assert.throws(() => substituteExpr('brokenVar + 1'), SyntaxError);
+      assert.throws(() => substituteExpr('unbalancedVar + 1'), SyntaxError);
+      assert.throws(() => substituteExpr('multiStmtVar + 1'), SyntaxError);
+    });
+  });
 });

@@ -11,9 +11,13 @@ export function parseScopes(expression: string, sourceType: 'module'|'script' = 
   // Parse the expression and find variables and scopes.
   let root: Acorn.ESTree.Node|null = null;
   try {
-    root = Acorn.parse(
-               expression, {ecmaVersion: ECMA_VERSION, allowAwaitOutsideFunction: true, ranges: false, sourceType}) as
-        Acorn.ESTree.Node;
+    root = Acorn.parse(expression, {
+      ecmaVersion: ECMA_VERSION,
+      allowAwaitOutsideFunction: true,
+      checkPrivateFields: false,
+      ranges: false,
+      sourceType,
+    }) as Acorn.ESTree.Node;
   } catch {
     return null;
   }

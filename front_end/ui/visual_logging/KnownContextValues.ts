@@ -287,6 +287,7 @@ export const knownContextValues: Set<string> = new Set([
   'accessibility-default',
   'accessibility-tree',
   'accessibility.clear-announcements',
+  'accessibility.export-csv',
   'accessibility.toggle-recording',
   'accessibility.view',
   'accuracy',

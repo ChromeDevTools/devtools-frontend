@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -335,5 +336,53 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     el1.remove();
     el2.remove();
     widget.detach();
+  });
+
+  it('closes the active comment thread 2 seconds after a comment is sent', async () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
+    try {
+      const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+      const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
+          undefined,
+          [commentManager],
+          view,
+      );
+      widget.setOverlayManagerForTest(overlayManager);
+      widget.markAsRoot();
+      renderElementIntoDOM(widget, {allowMultipleChildren: true});
+      await view.nextInput;
+
+      const testEl = document.createElement('div');
+      testEl.setAttribute('jslog', 'TreeItem; context: auto-close-test');
+      testEl.textContent = 'auto close test content';
+      testEl.getBoundingClientRect = () => new DOMRect(10, 20, 100, 20);
+      renderElementIntoDOM(testEl, {allowMultipleChildren: true});
+
+      commentManager.setCommentMode(true);
+      overlayManager.handleElementClick(testEl);
+
+      const draftInput = await view.nextInput;
+      assert.isNotNull(draftInput.activeThread);
+      assert.strictEqual(draftInput.activeThread.status, 'DRAFT');
+
+      draftInput.onAddComment('Sent comment');
+      const submittedInput = await view.nextInput;
+      assert.isNotNull(submittedInput.activeThread);
+      assert.strictEqual(submittedInput.activeThread.status, 'ACTIVE');
+
+      clock.tick(1999);
+      assert.isNotNull(view.input.activeThread);
+
+      const closedInputPromise = view.nextInput;
+      clock.tick(1);
+      const closedInput = await closedInputPromise;
+      assert.isNull(closedInput.activeThread);
+      assert.isNull(closedInput.activePin);
+
+      testEl.remove();
+      widget.detach();
+    } finally {
+      clock.restore();
+    }
   });
 });

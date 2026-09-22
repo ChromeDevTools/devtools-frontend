@@ -43,6 +43,7 @@ const POPUP_MARGIN = 8;
 const PIN_HEIGHT = 30;
 const POPUP_WIDTH = 288;
 const POPUP_HEIGHT = 220;
+const AUTO_CLOSE_DELAY_MS = 2000;
 
 const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   // clang-format off
@@ -119,6 +120,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   readonly #commentManager: CommentManager.CommentManager.CommentManager;
   #commentOverlayManager: Comments.CommentOverlayManager.CommentOverlayManager;
   #activeThreadId: string|null = null;
+  #closeTimeoutId: number|null = null;
   #cachedTitle: Title = {text: ''};
   #cachedTitleAnchor: CommentManager.CommentManager.CommentAnchorSignature|null = null;
 
@@ -173,6 +175,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   }
 
   override willHide(): void {
+    this.#clearCloseTimeout();
     this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
         Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
@@ -202,6 +205,13 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     );
 
     super.willHide();
+  }
+
+  #clearCloseTimeout(): void {
+    if (this.#closeTimeoutId !== null) {
+      window.clearTimeout(this.#closeTimeoutId);
+      this.#closeTimeoutId = null;
+    }
   }
 
   #onAgentAttachedChanged(
@@ -329,7 +339,18 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       activePin,
       title,
       onAddComment: (text: string) => {
-        activeThread?.save(text);
+        if (!activeThread) {
+          return;
+        }
+        activeThread.save(text);
+        const threadId = activeThread.id;
+        this.#closeTimeoutId = window.setTimeout(() => {
+          this.#closeTimeoutId = null;
+          if (this.#activeThreadId === threadId) {
+            this.#activeThreadId = null;
+            this.requestUpdate();
+          }
+        }, AUTO_CLOSE_DELAY_MS);
       },
     };
     this.#view(viewInput, undefined, this.contentElement);

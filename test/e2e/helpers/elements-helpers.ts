@@ -1039,6 +1039,10 @@ export const typeInClassesPaneInput =
   if (commitWith) {
     await step(`Committing the changes with ${commitWith}`, async () => {
       await devToolsPage.pressKey(commitWith);
+      await devToolsPage.waitForFunction(async () => {
+        const input = await devToolsPage.waitFor(CLS_INPUT_SELECTOR);
+        return (await input.evaluate(el => el.textContent)) === '';
+      });
     });
   }
 
@@ -1060,6 +1064,7 @@ export const toggleClassesPaneCheckbox = async(devToolsPage: DevToolsPage, check
   const initialValue = await getContentOfSelectedNode(devToolsPage);
 
   const classesPane = await devToolsPage.waitFor(CLS_PANE_SELECTOR);
+  await devToolsPage.waitFor(`[title="${checkboxLabel}"]`, classesPane);
   await expectVeEvents(devToolsPage, [veImpressionsUnder('Panel: elements > Pane: styles > Pane: elements-classes',
                                                          [veImpression('Toggle', 'element-class')])],
                        undefined);

@@ -7,7 +7,6 @@ import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
 import {expectCookie} from '../../testing/Cookies.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
@@ -454,11 +453,13 @@ describe('requestStreamingContent', () => {
   setupLocaleHooks();
   setupSettingsHooks();
   setupRuntimeHooks();
+  let universe: TestUniverse;
   let target: SDK.Target.Target;
   let networkManager: SDK.NetworkManager.NetworkManager;
 
   beforeEach(() => {
-    target = createTarget();
+    universe = new TestUniverse();
+    target = universe.createTarget();
     networkManager = target.model(SDK.NetworkManager.NetworkManager) as SDK.NetworkManager.NetworkManager;
   });
 

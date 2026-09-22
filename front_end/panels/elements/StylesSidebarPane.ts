@@ -729,9 +729,6 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
   }
 
   setEditingStyle(editing: boolean): void {
-    if (editing) {
-      this.isSuppressingResets = false;
-    }
     if (this.isEditingStyle === editing) {
       return;
     }

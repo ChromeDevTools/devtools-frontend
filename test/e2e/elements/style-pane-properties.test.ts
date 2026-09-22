@@ -520,7 +520,7 @@ describe('The Styles pane', () => {
          </style>`);
     await waitForElementsStyleSection(devToolsPage, undefined);
 
-    await devToolsPage.hover('text/1em', {root: await devToolsPage.waitForAria('CSS property value: 1em')});
+    await devToolsPage.hover('[aria-label="CSS property value: 1em"] [aria-details]');
 
     const infobox = await devToolsPage.waitFor('[aria-label="CSS property value: 1em"] :popover-open');
     const textContent = await infobox.evaluate(e => e.deepInnerText());
@@ -1961,13 +1961,16 @@ describe('The Styles pane', () => {
         'incorrectly displayed style after initialization');
 
     await devToolsPage.click(propertiesSectionSelector);
+    await devToolsPage.waitFor('.webkit-css-property.text-prompt', propertiesSection);
     await devToolsPage.pasteText('margin-left: 1px');
-    propertiesSection = await devToolsPage.waitFor(propertiesSectionSelector);
     await devToolsPage.waitForFunction(async () => {
+      propertiesSection = await devToolsPage.waitFor(propertiesSectionSelector);
       const names = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
-      return names.includes('margin-left');
+      const isEditingValue = Boolean(await devToolsPage.$('.value.text-prompt', propertiesSection));
+      return names.includes('margin-left') && isEditingValue;
     });
     await devToolsPage.click(propertiesSectionSelector);
+    await devToolsPage.waitForNone('.tree-outline .child-editing');
     displayedNames =
         await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));
     assert.sameDeepMembers(
@@ -1980,12 +1983,16 @@ describe('The Styles pane', () => {
 
     await devToolsPage.click(propertiesSectionSelector);
     propertiesSection = await devToolsPage.waitFor(propertiesSectionSelector);
+    await devToolsPage.waitFor('.webkit-css-property.text-prompt', propertiesSection);
     await devToolsPage.pasteText('margin-top: 1px; color: red;');
     await devToolsPage.waitForFunction(async () => {
+      propertiesSection = await devToolsPage.waitFor(propertiesSectionSelector);
       const names = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
-      return names.includes('margin-top') && names.includes('color');
+      const isEditingValue = Boolean(await devToolsPage.$('.value.text-prompt', propertiesSection));
+      return names.includes('margin-top') && names.includes('color') && isEditingValue;
     });
     await devToolsPage.click(propertiesSectionSelector);
+    await devToolsPage.waitForNone('.tree-outline .child-editing');
     displayedNames =
         await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));
     assert.sameDeepMembers(
@@ -2001,13 +2008,16 @@ describe('The Styles pane', () => {
     await devToolsPage.click(
         '.webkit-css-property[aria-label="CSS property name: margin-top"]',
         {root: await devToolsPage.waitFor(propertiesSectionSelector)});
+    await devToolsPage.waitFor('.webkit-css-property.text-prompt[aria-label="CSS property name: margin-top"]');
     await devToolsPage.pasteText('foo: bar; moo: zoo;');
     await devToolsPage.waitForFunction(async () => {
-      const names =
-          await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));
-      return names.includes('foo') && names.includes('moo');
+      propertiesSection = await devToolsPage.waitFor(propertiesSectionSelector);
+      const names = await getDisplayedCSSPropertyNames(devToolsPage, propertiesSection);
+      const isEditingValue = Boolean(await devToolsPage.$('.value.text-prompt', propertiesSection));
+      return names.includes('foo') && names.includes('moo') && isEditingValue;
     });
     await devToolsPage.click(propertiesSectionSelector);
+    await devToolsPage.waitForNone('.tree-outline .child-editing');
     displayedNames =
         await getDisplayedCSSPropertyNames(devToolsPage, await devToolsPage.waitFor(propertiesSectionSelector));
     assert.sameDeepMembers(

@@ -3785,6 +3785,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     styleText = styleText.replace(/[\xA0\t]/g, ' ').trim();  // Replace &nbsp; with whitespace.
     if (!styleText.length && majorChange && this.newProperty && !hasBeenEditedIncrementally) {
       // The user deleted everything and never applied a new property value via Up/Down scrolling/live editing, so remove the tree element and update.
+      this.#stylesContainer.suppressResets();
       this.parent?.removeChild(this);
       return;
     }

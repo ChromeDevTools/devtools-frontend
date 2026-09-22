@@ -814,15 +814,12 @@ export const getCSSPropertyInRule =
   }
 
   const propertyNames = await devToolsPage.$$(CSS_PROPERTY_NAME_SELECTOR, ruleSection);
-  for (const node of propertyNames) {
-    const parent =
-        (await node.evaluateHandle((node, name) => (name === node.textContent) ? node.parentNode : undefined, name))
-            .asElement();
-    if (parent) {
-      return parent as puppeteer.ElementHandle<HTMLElement>;
-    }
-  }
-  return undefined;
+  const parents = await Promise.all(propertyNames.map(async node => {
+    return (await node.evaluateHandle((node, name) => (name === node.textContent) ? node.parentNode : undefined, name))
+               .asElement() as puppeteer.ElementHandle<HTMLElement>|
+        null;
+  }));
+  return parents.find((parent): parent is puppeteer.ElementHandle<HTMLElement> => Boolean(parent));
 };
 
 export const focusCSSPropertyValue =
@@ -837,7 +834,9 @@ export const focusCSSPropertyValue =
   await devToolsPage.waitForFunction(async () => {
     property = await getCSSPropertyInRule(devToolsPage, selector, propertyName, undefined);
     const value = property ? await devToolsPage.$(CSS_PROPERTY_VALUE_SELECTOR, property) : null;
-    assert.isOk(value, `Could not find property ${propertyName} in rule ${selector}`);
+    if (!value) {
+      return false;
+    }
     return await value.evaluate(node => {
       return node.classList.contains('text-prompt') && node.hasAttribute('contenteditable');
     });
@@ -867,7 +866,9 @@ export async function editCSSProperty(devToolsPage: DevToolsPage, selector: stri
     // Wait until the value element is not a text-prompt anymore.
     const property = await getCSSPropertyInRule(devToolsPage, selector, propertyName, undefined);
     const value = property ? await devToolsPage.$(CSS_PROPERTY_VALUE_SELECTOR, property) : null;
-    assert.isOk(value, `Could not find property ${propertyName} in rule ${selector}`);
+    if (!value) {
+      return false;
+    }
     return await value.evaluate(node => {
       return !node.classList.contains('text-prompt') && !node.hasAttribute('contenteditable');
     });
@@ -888,7 +889,9 @@ export async function editQueryRuleText(devToolsPage: DevToolsPage,
   await devToolsPage.waitForFunction(async () => {
     // Wait until the value element has been marked as a text-prompt.
     const queryText = await devToolsPage.$(STYLE_QUERY_RULE_TEXT_SELECTOR, queryStylesSections);
-    assert.isOk(queryText, 'Could not find any query in the given styles section');
+    if (!queryText) {
+      return false;
+    }
     const check = await queryText.evaluate(node => {
       return node.classList.contains('being-edited') && node.hasAttribute('contenteditable');
     });
@@ -906,7 +909,9 @@ export async function editQueryRuleText(devToolsPage: DevToolsPage,
     await devToolsPage.waitForFunction(async () => {
       // Wait until the value element is not a text-prompt anymore.
       const queryText = await devToolsPage.$(STYLE_QUERY_RULE_TEXT_SELECTOR, queryStylesSections);
-      assert.isOk(queryText, 'Could not find any query in the given styles section');
+      if (!queryText) {
+        return false;
+      }
       const check = await queryText.evaluate(node => {
         return !node.classList.contains('being-edited') && !node.hasAttribute('contenteditable');
       });
@@ -949,7 +954,9 @@ export async function waitForPropertyToHighlight(devToolsPage: DevToolsPage, rul
                                                  propertyName: string): Promise<void> {
   await devToolsPage.waitForFunction(async () => {
     const property = await getCSSPropertyInRule(devToolsPage, ruleSelector, propertyName, undefined);
-    assert.isOk(property, `Could not find property ${propertyName} in rule ${ruleSelector}`);
+    if (!property) {
+      return false;
+    }
     // StylePropertyHighlighter temporarily highlights the property using the Web Animations API, so the only way to
     // know it's happening is by listing all animations.
     const animationCount = await property.evaluate(node => node.getAnimations().length);

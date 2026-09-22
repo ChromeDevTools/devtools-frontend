@@ -788,6 +788,9 @@ export class TreeElement {
 
   set selectable(x: boolean) {
     this.selectableInternal = x;
+    if (!x && this.selected) {
+      this.deselect();
+    }
   }
 
   get listItemElement(): HTMLLIElement {
@@ -1713,7 +1716,7 @@ class TreeViewTreeElement extends TreeElement {
     this.updateExpansionFromAttribute();
 
     Highlighting.HighlightManager.HighlightManager.instance().apply(this.titleElement);
-    if (hadFocus) {
+    if (hadFocus && this.selected) {
       this.listItemElement.focus();
     }
   }

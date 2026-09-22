@@ -966,6 +966,39 @@ describe('TreeViewElement', () => {
     assert.isFalse(children[0].select());
     assert.isFalse(children[0].selected);
   });
+
+  it('deselects a selected item when its selectable attribute dynamically changes to false', async () => {
+    const {html, render} = Lit;
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+
+    const renderTree = (selectable: boolean) => {
+      render(html`<devtools-tree .template=${html`
+          <ul role="tree">
+            <li role="treeitem" selectable=${selectable ? 'true' : 'false'}>Node</li>
+          </ul>`}></devtools-tree>`,
+             container);
+    };
+
+    renderTree(true);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const component = container.querySelector('devtools-tree')!;
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const children = treeOutline.rootElement().children();
+    assert.lengthOf(children, 1);
+
+    assert.isTrue(children[0].selectable);
+    children[0].select();
+    assert.isTrue(children[0].selected);
+    assert.strictEqual(treeOutline.selectedTreeElement, children[0]);
+
+    renderTree(false);
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.isFalse(children[0].selectable);
+    assert.isFalse(children[0].selected);
+    assert.isNull(treeOutline.selectedTreeElement);
+  });
 });
 
 type NodeSpec = {

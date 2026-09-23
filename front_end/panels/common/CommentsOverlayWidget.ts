@@ -31,6 +31,7 @@ export interface ViewInput {
   activePin: Comments.CommentOverlayManager.PinPositionData|null;
   title: Title;
   onAddComment: (text: string) => void;
+  onCloseCommentThread: () => void;
 }
 
 export type View = (
@@ -103,6 +104,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
               title: input.title,
               comments: [...item.thread.comments],
               onAddComment: input.onAddComment,
+              onClose: input.onCloseCommentThread,
             })}
           </div>
         `,
@@ -128,6 +130,11 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     if (this.#activeThreadId !== threadId) {
       this.#clearCloseTimeout();
       this.#activeThreadId = threadId;
+      if (threadId && this.isShowing()) {
+        document.documentElement.addEventListener('keydown', this.#onKeyDown);
+      } else {
+        document.documentElement.removeEventListener('keydown', this.#onKeyDown);
+      }
     }
   }
 
@@ -177,12 +184,16 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.#onAgentAttachedChanged,
         this,
     );
+    if (this.#activeThreadId) {
+      document.documentElement.addEventListener('keydown', this.#onKeyDown);
+    }
 
     this.requestUpdate();
   }
 
   override willHide(): void {
     this.#clearCloseTimeout();
+    document.documentElement.removeEventListener('keydown', this.#onKeyDown);
     this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
         Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
@@ -293,17 +304,33 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   }
 
   #handlePinClick = (threadId: string): void => {
-    const thread = this.#commentManager.getCommentThread(threadId);
     if (this.#activeThreadId === threadId) {
-      if (thread?.status === 'DRAFT') {
-        this.#commentOverlayManager.clearDraftThreads();
-      }
-      this.#setActiveThreadId(null);
-    } else {
-      this.#commentOverlayManager.clearDraftThreads();
-      this.#setActiveThreadId(threadId);
+      this.#handleCloseCommentThread();
+      return;
     }
+
+    this.#commentOverlayManager.clearDraftThreads();
+    this.#setActiveThreadId(threadId);
     this.requestUpdate();
+  };
+
+  #handleCloseCommentThread = (): void => {
+    if (!this.#activeThreadId) {
+      return;
+    }
+    const thread = this.#commentManager.getCommentThread(this.#activeThreadId);
+    if (thread?.status === 'DRAFT') {
+      this.#commentOverlayManager.clearDraftThreads();
+    }
+    this.#setActiveThreadId(null);
+    this.requestUpdate();
+  };
+
+  #onKeyDown = (event: KeyboardEvent): void => {
+    if (this.#activeThreadId && event.key === 'Escape' && !event.isComposing) {
+      event.consume(true);
+      this.#handleCloseCommentThread();
+    }
   };
 
   override async performUpdate(signal?: AbortSignal): Promise<void> {
@@ -319,6 +346,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
             activePin: null,
             title: {text: ''},
             onAddComment: () => {},
+            onCloseCommentThread: this.#handleCloseCommentThread,
           },
           undefined,
           this.contentElement,
@@ -359,6 +387,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
           }
         }, AUTO_CLOSE_DELAY_MS);
       },
+      onCloseCommentThread: this.#handleCloseCommentThread,
     };
     this.#view(viewInput, undefined, this.contentElement);
   }

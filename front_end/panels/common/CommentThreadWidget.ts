@@ -7,6 +7,7 @@ import '../../ui/components/tooltips/tooltips.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -41,6 +42,10 @@ const UIStrings = {
    * @description aria-label for the comment text area.
    */
   commentInputAriaLabel: 'Comment input',
+  /**
+   * @description Tooltip and aria-label for the close button in the comment thread header.
+   */
+  close: 'Close',
 } as const;
 
 const UIStringsNotTranslate = {
@@ -70,6 +75,7 @@ export interface ViewInput {
   textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
   onAddComment: (text: string) => void;
   onCommentTextChange: (event: Event) => void;
+  onClose?: () => void;
 }
 
 export type ViewOutput = undefined;
@@ -87,16 +93,27 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             widget(DOMNodeLink, {node: input.title.node}) :
             html`<span class="selected-item-text">${input.title.text}</span>`}
         </span>
-        ${hasComment ? html`
-          <div class="sent-status">
-            <devtools-icon
-              class="check-icon"
-              name="checkmark"
-              aria-label=${i18nString(UIStrings.sentCheckmark)}>
-            </devtools-icon>
-            <span>${i18nString(UIStrings.sent)}</span>
-          </div>
-        ` : Lit.nothing}
+        <div class="header-actions">
+          ${hasComment ? html`
+            <div class="sent-status">
+              <devtools-icon
+                class="check-icon"
+                name="checkmark"
+                aria-label=${i18nString(UIStrings.sentCheckmark)}>
+              </devtools-icon>
+              <span>${i18nString(UIStrings.sent)}</span>
+            </div>
+          ` : Lit.nothing}
+          <devtools-button
+            class="close-button"
+            aria-label=${i18nString(UIStrings.close)}
+            .iconName=${'cross'}
+            .variant=${Buttons.Button.Variant.ICON}
+            .size=${Buttons.Button.Size.SMALL}
+            .title=${i18nString(UIStrings.close)}
+            @click=${input.onClose}
+          ></devtools-button>
+        </div>
       </div>
 
       ${hasComment ? html`
@@ -171,6 +188,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
   #textAreaRef = createRef<HTMLTextAreaElement>();
   #view: View;
   onAddComment?: (text: string) => void;
+  onClose?: () => void;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
@@ -213,6 +231,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
       textAreaRef: this.#textAreaRef,
       onAddComment: this.#handleAddComment,
       onCommentTextChange: this.#handleCommentTextChange,
+      onClose: this.onClose,
     };
     this.#view(viewInput, undefined, this.contentElement);
   }

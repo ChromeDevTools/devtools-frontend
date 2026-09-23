@@ -504,4 +504,81 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       clock.restore();
     }
   });
+
+  it('closes comment thread UI and clears draft when pressing Escape while typing a comment', async () => {
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const el = document.createElement('div');
+    el.setAttribute('jslog', 'TreeItem; context: escape-test');
+    el.textContent = 'escape test content';
+    el.getBoundingClientRect = () => new DOMRect(100, 100, 150, 40);
+    renderElementIntoDOM(el, {allowMultipleChildren: true});
+
+    commentManager.setCommentMode(true);
+    overlayManager.handleElementClick(el);
+
+    widget.requestUpdate();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const popup = widget.contentElement.querySelector('.comment-popup-widget');
+    assert.isNotNull(popup);
+    const textarea = widget.contentElement.querySelector('textarea') as HTMLTextAreaElement;
+    assert.isNotNull(textarea);
+    textarea.value = 'Unfinished comment';
+    textarea.dispatchEvent(new Event('input', {bubbles: true}));
+
+    const escapeEvent = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true});
+    textarea.dispatchEvent(escapeEvent);
+
+    widget.requestUpdate();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const popupAfterEscape = widget.contentElement.querySelector('.comment-popup-widget');
+    assert.isNull(popupAfterEscape);
+    assert.lengthOf(commentManager.getCommentThreads(), 0);
+
+    el.remove();
+    widget.detach();
+  });
+
+  it('closes active submitted comment thread and consumes event when pressing Escape globally', async () => {
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const el = document.createElement('div');
+    el.setAttribute('jslog', 'TreeItem; context: existing-escape-test');
+    el.textContent = 'existing escape content';
+    el.getBoundingClientRect = () => new DOMRect(100, 100, 150, 40);
+    renderElementIntoDOM(el, {allowMultipleChildren: true});
+
+    commentManager.setCommentMode(true);
+    const thread = overlayManager.createComment(el, 'Saved comment');
+    assert.isNotNull(thread);
+    thread.save();
+
+    widget.requestUpdate();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    let popup = widget.contentElement.querySelector('.comment-popup-widget');
+    assert.isNotNull(popup);
+
+    const escapeEvent = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true});
+    document.body.dispatchEvent(escapeEvent);
+    assert.isTrue(escapeEvent.defaultPrevented);
+
+    widget.requestUpdate();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    popup = widget.contentElement.querySelector('.comment-popup-widget');
+    assert.isNull(popup);
+    assert.lengthOf(commentManager.getCommentThreads(), 1);
+
+    el.remove();
+    widget.detach();
+  });
 });

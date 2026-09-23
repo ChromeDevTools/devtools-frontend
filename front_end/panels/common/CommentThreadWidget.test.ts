@@ -28,6 +28,7 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
           textAreaRef: Lit.Directives.createRef(),
           onAddComment: () => {},
           onCommentTextChange: () => {},
+          onClose: () => {},
           ...inputOverrides,
         },
         undefined,
@@ -70,6 +71,55 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
     const target = renderView({comments});
     renderElementIntoDOM(target, {includeCommonStyles: true});
     await assertScreenshot('comments/comment_thread_widget_agent_response.png');
+  });
+
+  it('calls onClose when clicking the close button in both draft and submitted states', () => {
+    const onCloseDraft = sinon.spy();
+    const draftTarget = renderView({onClose: onCloseDraft});
+    renderElementIntoDOM(draftTarget);
+
+    const draftCloseButton = draftTarget.querySelector('.close-button') as HTMLElement;
+    assert.isNotNull(draftCloseButton);
+    draftCloseButton.click();
+    sinon.assert.calledOnce(onCloseDraft);
+    draftTarget.remove();
+
+    const onCloseSubmitted = sinon.spy();
+    const comments: CommentManager.CommentManager.Comment[] = [
+      {author: 'DEVELOPER', text: 'Align this to the grid', timestamp: 0},
+    ];
+    const submittedTarget = renderView({comments, onClose: onCloseSubmitted});
+    renderElementIntoDOM(submittedTarget);
+
+    const submittedCloseButton = submittedTarget.querySelector('.close-button') as HTMLElement;
+    assert.isNotNull(submittedCloseButton);
+    submittedCloseButton.click();
+    sinon.assert.calledOnce(onCloseSubmitted);
+  });
+
+  it('keeps sent status and close button within widget bounds when title is long', () => {
+    const comments: CommentManager.CommentManager.Comment[] = [
+      {author: 'DEVELOPER', text: 'Align this to the grid', timestamp: 0},
+    ];
+    const target = renderView({
+      title: {text: 'div#very-long-container-id.class-one.class-two.class-three.class-four'},
+      comments,
+    });
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    const widgetEl = target.querySelector('.comment-thread-widget') as HTMLElement;
+    const sentStatusEl = target.querySelector('.sent-status') as HTMLElement;
+    const closeButtonEl = target.querySelector('.close-button') as HTMLElement;
+    assert.isNotNull(widgetEl);
+    assert.isNotNull(sentStatusEl);
+    assert.isNotNull(closeButtonEl);
+
+    const widgetRect = widgetEl.getBoundingClientRect();
+    const sentRect = sentStatusEl.getBoundingClientRect();
+    const closeRect = closeButtonEl.getBoundingClientRect();
+
+    assert.isAtMost(sentRect.right, widgetRect.right);
+    assert.isAtMost(closeRect.right, widgetRect.right);
   });
 });
 

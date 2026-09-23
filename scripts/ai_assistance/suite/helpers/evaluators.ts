@@ -5,6 +5,8 @@
 import * as jsRouge from 'js-rouge';
 import assert from 'node:assert';
 import {AsyncLocalStorage} from 'node:async_hooks';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
@@ -52,10 +54,17 @@ class ConcurrencyLimiter {
 const geminiLimiter = new ConcurrencyLimiter(25);
 
 const allStores: ResultStore[] = [];
+// Maps each task's `task_id` to its weighted rubric score [0.0 - 1.0] computed during `itEval`.
+const scoresByTaskId: Record<string, number> = {};
 
 process.on('exit', () => {
   if (allStores.length > 0) {
     generateReport(allStores);
+    // Persist per-task numeric scores to `eval_scores.json` because `auto-run.ts` executes
+    // `node suite/<target>.eval.ts` in a child process (`execSync`) and needs the structured
+    // `{ [taskId]: score }` map to report per-task scores and pass/fail statuses to GCS
+    // (`eval_task_completed.json`) without parsing `console.table` stdout.
+    fs.writeFileSync(path.join(process.cwd(), 'eval_scores.json'), JSON.stringify(scoresByTaskId, null, 2));
   }
 });
 
@@ -386,6 +395,10 @@ export async function itEval(config: ItEval): Promise<void> {
           })));
       const results = await Promise.all(scoredEvals);
       const rubricWeights = results.length > 0 ? results[0].rubricWeights : {};
+      for (const r of results) {
+        scoresByTaskId[r.conversation.metadata.task_id] =
+            Number(calculateWeightedScore(r.rubricScores, r.rubricWeights).toFixed(2));
+      }
 
       state.store.saveResult(config.test, date, {
         type: 'JUDGE',

@@ -37,6 +37,17 @@ const numberFormatter = new Intl.NumberFormat('en-EN', {
   maximumSignificantDigits: 3,
 });
 const acquiredDevToolsTargets = new WeakMap();
+
+/**
+ * Minimum weighted rubric score (on a 0.0 - 1.0 scale) required for a graded task to pass.
+ * Matches the rubric scale in `scripts/ai_assistance/suite/instructions/scoring.md`, where:
+ * - 0.0 - 0.3: Major flaws
+ * - 0.4 - 0.6: Functional but flawed
+ * - 0.7 - 0.9: High quality
+ * - 1.0:       Perfect
+ */
+export const PASS_SCORE_THRESHOLD = 0.7;
+
 function formatElapsedTime() {
   return `${numberFormatter.format((performance.now() - startTime) / 1000)}s`;
 }
@@ -480,12 +491,13 @@ function recordTaskFailure(
     taskId,
     runId,
     status: 'FAILED',
-    // Failed tasks receive 0.0 as they encountered an error or timeout prior to completing.
-    score: 0.0,
+    // Tasks that failed during preparation, execution, or grading receive null so
+    // infrastructure/execution failures do not skew model evaluation averages.
+    score: null,
     durationSeconds,
     tokens: {},
   });
-  taskStatuses.push({taskId, status: 'FAILED', score: 0.0});
+  taskStatuses.push({taskId, status: 'FAILED', score: null});
 }
 
 function handleTaskFailure(
@@ -749,8 +761,15 @@ async function main() {
                            },
                                           null, 2));
 
+          const scoresPath = path.join(cwd, 'eval_scores.json');
+          const scoresByTaskId: Record<TaskId, number> =
+              fs.existsSync(scoresPath) ? JSON.parse(fs.readFileSync(scoresPath, 'utf8')) : {};
+
           const allTaskIds = new Set(executionResults.map(r => r.metadata.taskId));
           for (const taskId of allTaskIds) {
+            const score = scoresByTaskId[taskId] ?? null;
+            const status = (score !== null && score >= PASS_SCORE_THRESHOLD) ? 'PASSED' : 'FAILED';
+
             uploadEvalToGCS({
               runId,
               taskId,
@@ -759,16 +778,15 @@ async function main() {
             });
             uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, stdout);
             const durationSeconds = taskDurations.get(taskId) ?? 0.0;
-            // TODO: Parse grader output to report individual task pass/fail status and scores instead of defaulting to 1.0.
             uploadTaskCompleted({
               taskId,
               runId,
-              status: 'PASSED',
-              score: 1.0,
+              status,
+              score,
               durationSeconds,
               tokens: {},
             });
-            taskStatuses.push({taskId, status: 'PASSED', score: 1.0});
+            taskStatuses.push({taskId, status, score});
           }
         }
       } catch (error) {
@@ -997,12 +1015,12 @@ function recordTaskCompletion(ctx: EvalRunContext, taskId: TaskId, allUploadsSuc
   const hasError = matchingTrajectories.some(e => Boolean(e.error) ||
                                                  Boolean(e.assertionFailures && e.assertionFailures.length > 0));
 
-  // TODO: Parse grader output or evaluation assertions to report individual task scores instead of defaulting to 1.0.
-  const baseScore = matchingTrajectories.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
-  const score = allUploadsSucceeded ? baseScore : 0.0;
-  // Status indicates execution outcome (PASSED if prompt turns completed and uploaded without error,
-  // FAILED if upload failed, assertion failures occurred, or score is 0.0).
-  const status = (!allUploadsSucceeded || hasError || score <= 0.0) ? 'FAILED' : 'PASSED';
+  // Only report a numeric score if an executor computed an inline assertion score (e.g. PatchingExecutor)
+  // and execution/upload succeeded; otherwise emit null so ungraded tasks or execution failures do not skew averages.
+  const inlineScore = matchingTrajectories.find(e => e.score !== undefined)?.score ?? null;
+  const score = (!allUploadsSucceeded || hasError) ? null : inlineScore;
+  const status =
+      (!allUploadsSucceeded || hasError || (score !== null && score < PASS_SCORE_THRESHOLD)) ? 'FAILED' : 'PASSED';
   const durationSeconds = taskDurations.get(taskId) ?? 0.0;
 
   uploadTaskCompleted({

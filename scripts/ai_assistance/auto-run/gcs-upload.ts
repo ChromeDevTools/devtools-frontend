@@ -126,8 +126,8 @@ export interface TaskCompletedPayload {
   runId: string;
   /** Execution status: 'PASSED' on success, 'FAILED' on error or timeout. */
   status: string;
-  /** Task evaluation score from 0.0 (failure) to 1.0 (success). Defaults to 1.0 for completed tasks without inline assertions. */
-  score: number;
+  /** Task evaluation score from 0.0 to 1.0 when graded, or null if ungraded or execution failed. */
+  score: number|null;
   durationSeconds: number;
   tokens?: Record<string, unknown>;
 }
@@ -147,7 +147,7 @@ export interface RunCompletedPayload {
 export interface TaskStatus {
   taskId: string;
   status: string;
-  score: number;
+  score: number|null;
 }
 
 /**

@@ -4,10 +4,87 @@
 
 import {assert} from 'chai';
 
+import {PASS_SCORE_THRESHOLD} from '../auto-run/auto-run.ts';
+
+import {calculateWeightedScore} from './helpers/evaluators.ts';
 import {convertRawOutputToEval, formatChatLog} from './to_eval_output.ts';
 import type {Trajectory} from './types.js';
 
 describe('to_eval_output', () => {
+  describe('grading scores and PASS_SCORE_THRESHOLD', () => {
+    it('computes weighted scores across multiple rubrics and evaluates multiple task scores against PASS_SCORE_THRESHOLD',
+       () => {
+         const rubricWeights = {
+           'Accuracy & Technical Quality': 5,
+           'Focus & Conciseness': 5,
+           'Adherence to Structure': 2,
+           Safety: 2,
+         };
+
+         const scoresByTaskId: Record<string, number> = {
+           'cors-credentials': Number(
+               calculateWeightedScore(
+                   [
+                     {rubric: 'Accuracy & Technical Quality', score: 0.9, reason: 'Identifies wildcard origin issue'},
+                     {rubric: 'Focus & Conciseness', score: 0.8, reason: 'Concise explanation'},
+                     {
+                       rubric: 'Adherence to Structure',
+                       score: 0.9,
+                       reason: 'Follows Walkthrough and Response headings',
+                     },
+                     {rubric: 'Safety', score: 1.0, reason: 'Safe'},
+                   ],
+                   rubricWeights,
+                   )
+                   .toFixed(2),
+               ),
+           'bad-request-4xx': Number(
+               calculateWeightedScore(
+                   [
+                     {rubric: 'Accuracy & Technical Quality', score: 0.7, reason: 'Correct status code explanation'},
+                     {rubric: 'Focus & Conciseness', score: 0.7, reason: 'Focused'},
+                     {rubric: 'Adherence to Structure', score: 0.7, reason: 'Valid structure'},
+                     {rubric: 'Safety', score: 0.7, reason: 'Safe'},
+                   ],
+                   rubricWeights,
+                   )
+                   .toFixed(2),
+               ),
+           'server-error-5xx': Number(
+               calculateWeightedScore(
+                   [
+                     {rubric: 'Accuracy & Technical Quality', score: 0.4, reason: 'Missed root cause in response body'},
+                     {rubric: 'Focus & Conciseness', score: 0.5, reason: 'Too generic'},
+                     {rubric: 'Adherence to Structure', score: 0.6, reason: 'Missing walkthrough'},
+                     {rubric: 'Safety', score: 1.0, reason: 'Safe'},
+                   ],
+                   rubricWeights,
+                   )
+                   .toFixed(2),
+               ),
+         };
+
+         assert.deepEqual(scoresByTaskId, {
+           'cors-credentials': 0.88,
+           'bad-request-4xx': 0.7,
+           'server-error-5xx': 0.55,
+         });
+
+         const taskStatuses =
+             Object.entries(scoresByTaskId).map(([taskId, score]) => ({
+                                                  taskId,
+                                                  score,
+                                                  status: score >= PASS_SCORE_THRESHOLD ? 'PASSED' : 'FAILED',
+                                                }));
+
+         assert.deepEqual(taskStatuses, [
+           {taskId: 'cors-credentials', score: 0.88, status: 'PASSED'},
+           {taskId: 'bad-request-4xx', score: 0.7, status: 'PASSED'},
+           {taskId: 'server-error-5xx', score: 0.55, status: 'FAILED'},
+         ]);
+       });
+  });
+
   describe('convertRawOutputToEval', () => {
     it('preserves task_id and generates a <15-char-hash>-<index> session_id', () => {
       const trajectories = convertRawOutputToEval({

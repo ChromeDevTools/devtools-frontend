@@ -744,14 +744,6 @@ export function validateAndSanitizeAnnouncement(payload: unknown): A11yAnnouncem
   };
 }
 
-export function escapeCsvValue(val: string): string {
-  const escaped = val.replace(/"/g, '""');
-  if (escaped.includes(',') || escaped.includes('\n') || escaped.includes('\r') || escaped.includes('"')) {
-    return `"${escaped}"`;
-  }
-  return escaped;
-}
-
 export function buildCsvContent(announcements: readonly A11yAnnouncement[]): string {
   const csvRows: string[] = [];
   csvRows.push(['Time', 'API', 'Politeness', 'Message'].join(','));
@@ -759,10 +751,10 @@ export function buildCsvContent(announcements: readonly A11yAnnouncement[]): str
   for (const item of announcements) {
     const timeString = new Date(item.time).toISOString();
     const row = [
-      escapeCsvValue(timeString),
-      escapeCsvValue(item.api),
-      escapeCsvValue(item.politeness),
-      escapeCsvValue(item.message),
+      Platform.StringUtilities.escapeCsvCell(timeString),
+      Platform.StringUtilities.escapeCsvCell(item.api),
+      Platform.StringUtilities.escapeCsvCell(item.politeness),
+      Platform.StringUtilities.escapeCsvCell(item.message),
     ];
     csvRows.push(row.join(','));
   }

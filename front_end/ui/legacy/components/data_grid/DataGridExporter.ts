@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../../core/platform/platform.js';
+
 import type {DataGridImpl} from './DataGrid.js';
 
 /**
@@ -72,18 +74,10 @@ function escapeMarkdown(val: string): string {
       .replace(/\r?\n/g, '<br>');
 }
 
+/**
+ * Escapes a string for CSV export (handling both RFC 4180 quoting and
+ * prefixing spreadsheet formula characters like `=`, `+`, `-`, `@` with `'`).
+ */
 function escapeCSV(val: string): string {
-  let needQuotes = false;
-  let escaped = val;
-  if (escaped.includes('"')) {
-    escaped = escaped.replace(/"/g, '""');
-    needQuotes = true;
-  }
-  if (escaped.includes(',') || escaped.includes('\n') || escaped.includes('\r')) {
-    needQuotes = true;
-  }
-  if (needQuotes) {
-    return `"${escaped}"`;
-  }
-  return escaped;
+  return Platform.StringUtilities.escapeCsvCell(val);
 }

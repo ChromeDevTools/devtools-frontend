@@ -740,3 +740,68 @@ export const concatBase64 = function(lhs: string, rhs: string): string {
   const lhsToDecode = lhs.substring(lhs.length - 4);
   return lhsLeaveAsIs + globalThis.btoa(globalThis.atob(lhsToDecode) + globalThis.atob(rhs));
 };
+
+/**
+ * Characters that cause spreadsheet viewers (Excel, Google Sheets, LibreOffice
+ * Calc) to evaluate a cell as a formula rather than rendering it as plain text
+ * when they appear at the start of a cell.
+ */
+const CSV_FORMULA_TRIGGERS = new Set(['=', '+', '-', '@', '\t', '\r']);
+
+/**
+ * Matches plain numeric literals (e.g. `-42`, `+3.14`, `-1e-3`).
+ * Even though negative/signed numbers start with `-` or `+`, spreadsheets parse
+ * them as numbers rather than formulas, so we exempt them from `'` prefixing to
+ * keep numeric columns usable.
+ */
+const CSV_PLAIN_NUMBER = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/;
+
+/**
+ * Returns true if a spreadsheet viewer could interpret `value` as a formula
+ * (for example `=SUM(A1:A2)`, `"- Loading..."`, or `"@alice"`).
+ */
+function isCsvFormula(value: string): boolean {
+  // Check both the raw string and the leading-whitespace-trimmed string, since
+  // some spreadsheet parsers ignore leading spaces before `=`, `+`, `-`, or `@`.
+  const trimmed = value.trimStart();
+  if (!CSV_FORMULA_TRIGGERS.has(value[0]) && !CSV_FORMULA_TRIGGERS.has(trimmed[0])) {
+    return false;
+  }
+  return !CSV_PLAIN_NUMBER.test(trimmed.trimEnd());
+}
+
+/**
+ * Formats and escapes `value` so it can be safely written as a single CSV cell.
+ *
+ * This handles two separate layers of escaping:
+ * 1. Spreadsheet formula escaping (CWE-1236 & viewer fidelity):
+ *    RFC 4180 double-quoting (`"=1+1"` or `"- Loading..."`) only groups text
+ *    into a single CSV column; spreadsheet apps strip the outer `"` and still
+ *    evaluate cells starting with `=`, `+`, `-`, or `@` as formulas (often
+ *    resulting in `#NAME?` errors or unintended formula execution). Prefixing
+ *    the value with a single quote (`'`) tells spreadsheet apps to treat the
+ *    cell as literal text (and they hide the leading `'` when displaying it).
+ *    - Example without commas: `=SUM(A1:A2)` -> `'=SUM(A1:A2)`
+ * 2. RFC 4180 structural CSV quoting:
+ *    If the cell also contains commas (`,`), double quotes (`"`), or newlines,
+ *    it is wrapped in `"..."` (with inner `"` doubled to `""`) so CSV parsers
+ *    do not split the cell across columns or rows.
+ *    - Example with commas: `=SUM(1,2)` -> `"'=SUM(1,2)"`
+ *    - Example starting with a literal quote: `"=SUM(1,2)"` -> `"""=SUM(1,2)"""`
+ *      (not treated as a formula since the first character is `"`, not `=`).
+ */
+export const escapeCsvCell = function(value: string): string {
+  // Step 1: Prefix formula-like text with `'` so spreadsheets render it as literal text.
+  let escaped = isCsvFormula(value) ? `'${value}` : value;
+
+  // Step 2: Apply standard RFC 4180 double-quoting if the cell contains quotes,
+  // commas, or line breaks so the CSV structure stays intact.
+  if (escaped.includes('"')) {
+    escaped = escaped.replace(/"/g, '""');
+    return `"${escaped}"`;
+  }
+  if (escaped.includes(',') || escaped.includes('\n') || escaped.includes('\r')) {
+    return `"${escaped}"`;
+  }
+  return escaped;
+};

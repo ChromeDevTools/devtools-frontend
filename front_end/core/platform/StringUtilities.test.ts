@@ -913,4 +913,52 @@ describe('StringUtilities', () => {
       });
     });
   });
+
+  describe('escapeCsvCell', () => {
+    const escapeCsvCell = Platform.StringUtilities.escapeCsvCell;
+
+    it('leaves harmless values untouched', () => {
+      assert.strictEqual(escapeCsvCell(''), '');
+      assert.strictEqual(escapeCsvCell('SimpleText'), 'SimpleText');
+      assert.strictEqual(escapeCsvCell('text with spaces'), 'text with spaces');
+    });
+
+    it('quotes and escapes according to RFC 4180', () => {
+      assert.strictEqual(escapeCsvCell('with, comma'), '"with, comma"');
+      assert.strictEqual(escapeCsvCell('with "quotes"'), '"with ""quotes"""');
+      assert.strictEqual(escapeCsvCell('with\nnewline'), '"with\nnewline"');
+      assert.strictEqual(escapeCsvCell('with\r\nCRLF'), '"with\r\nCRLF"');
+    });
+
+    it('neutralizes values a spreadsheet would evaluate as a formula', () => {
+      assert.strictEqual(escapeCsvCell('=1+1'), '\'=1+1');
+      assert.strictEqual(escapeCsvCell('+1+1'), '\'+1+1');
+      assert.strictEqual(escapeCsvCell('@SUM(1)'), '\'@SUM(1)');
+      assert.strictEqual(escapeCsvCell('-2+3+cmd|\' /C calc\'!A0'), '\'-2+3+cmd|\' /C calc\'!A0');
+      assert.strictEqual(escapeCsvCell('\tvalue'), '\'\tvalue');
+      assert.strictEqual(escapeCsvCell('\rvalue'), '"\'\rvalue"');
+    });
+
+    it('neutralizes formulas hidden behind leading whitespace', () => {
+      assert.strictEqual(escapeCsvCell(' =1+1'), '\' =1+1');
+      assert.strictEqual(escapeCsvCell('  @SUM(1)'), '\'  @SUM(1)');
+    });
+
+    it('combines neutralization with RFC 4180 quoting', () => {
+      assert.strictEqual(escapeCsvCell('=SUM(A1:A2)'), '\'=SUM(A1:A2)');
+      assert.strictEqual(escapeCsvCell('=SUM(1,2)'), '"\'=SUM(1,2)"');
+      assert.strictEqual(escapeCsvCell('"=SUM(1,2)"'), '"""=SUM(1,2)"""');
+      assert.strictEqual(escapeCsvCell('=HYPERLINK("https://evil.test","Click")'),
+                         '"\'=HYPERLINK(""https://evil.test"",""Click"")"');
+      assert.strictEqual(escapeCsvCell('=A1,B1'), '"\'=A1,B1"');
+    });
+
+    it('does not neutralize plain numbers', () => {
+      assert.strictEqual(escapeCsvCell('-1'), '-1');
+      assert.strictEqual(escapeCsvCell('+2.5e3'), '+2.5e3');
+      assert.strictEqual(escapeCsvCell('-0.5'), '-0.5');
+      assert.strictEqual(escapeCsvCell('-1e-3'), '-1e-3');
+      assert.strictEqual(escapeCsvCell('-.5'), '-.5');
+    });
+  });
 });

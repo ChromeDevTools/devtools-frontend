@@ -26,7 +26,6 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     TEARDOWN_SCRIPT_SOURCE,
     AnnouncementApi,
     RecordTypeFilter,
-    escapeCsvValue,
     buildCsvContent,
   } = Accessibility.AccessibilityAnnouncementRecordingView;
 
@@ -949,14 +948,29 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
         assert.notInclude(csvContent, 'submit (https://example.com/app.js:10:5)');
       });
 
-      it('correctly escapes values according to RFC 4180', () => {
-        assert.strictEqual(escapeCsvValue('SimpleText'), 'SimpleText');
-        assert.strictEqual(escapeCsvValue('Text with, comma'), '"Text with, comma"');
-        assert.strictEqual(escapeCsvValue('Text with "quotes"'), '"Text with ""quotes"""');
-        assert.strictEqual(escapeCsvValue('Text with\nnewline'), '"Text with\nnewline"');
-        assert.strictEqual(escapeCsvValue('Text with\r\nCRLF'), '"Text with\r\nCRLF"');
-        assert.strictEqual(escapeCsvValue('Text with "quotes", commas, and\nnewlines'),
-                           '"Text with ""quotes"", commas, and\nnewlines"');
+      it('escapes special characters and formula prefixes in CSV cells', () => {
+        const csvContent = buildCsvContent([
+          {
+            api: AnnouncementApi.ARIA_LIVE,
+            message: 'Text with "quotes", commas, and\nnewlines',
+            politeness: 'polite',
+            element: '',
+            time: 0,
+          },
+          {
+            api: AnnouncementApi.ARIA_LIVE,
+            message: '=SUM(1,2)',
+            politeness: 'polite',
+            element: '',
+            time: 0,
+          },
+        ]);
+        const expectedTime = new Date(0).toISOString();
+        assert.strictEqual(csvContent, [
+          'Time,API,Politeness,Message',
+          `${expectedTime},aria-live,polite,"Text with ""quotes"", commas, and\nnewlines"`,
+          `${expectedTime},aria-live,polite,"'=SUM(1,2)"`,
+        ].join('\r\n'));
       });
 
       it('exports empty CSV with only header when no announcements are recorded', () => {

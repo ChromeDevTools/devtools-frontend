@@ -56,13 +56,8 @@ export class BaseVariableMatch implements Match {
   }
 }
 
-// TODO(b/533783988): Remove ValueName handling once https://code.haverbeke.berlin/lezer/css/issues/36 is fixed and rolled.
 function isVariableNameNode(node: CodeMirror.SyntaxNode|null|undefined, ast: SyntaxTree): boolean {
-  if (node?.name !== 'VariableName' && node?.name !== 'ValueName') {
-    return false;
-  }
-  const text = ast.text(node);
-  return text.length > 2 && text.startsWith('--');
+  return node?.name === 'VariableName' && ast.text(node).length > 2;
 }
 
 const BaseVariableMatcherBase: MatcherClass<BaseVariableMatch> = matcherBase(BaseVariableMatch);
@@ -1122,7 +1117,7 @@ export class CustomFunctionMatcher extends CustomFunctionMatcherBase {
     if (node.name !== 'CallExpression') {
       return null;
     }
-    const callee = matching.ast.text(node.getChild('VariableName') ?? node.getChild('Callee'));
+    const callee = matching.ast.text(node.getChild('VariableName'));
     if (!callee || callee.length <= 2 || !callee.startsWith('--')) {
       return null;
     }

@@ -2044,7 +2044,7 @@ export class AnchorFunctionRenderer extends AnchorFunctionRendererBase {
 
   override render(match: SDK.CSSPropertyParserMatchers.AnchorFunctionMatch, context: RenderingContext): Node[] {
     const content = document.createElement('span');
-    if (match.node.name !== 'CallExpression') {
+    if (match.node.name === 'VariableName') {
       // Link an anchor double-dashed ident to its matching anchor element.
       void AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, content, {identifier: match.text});
     } else {

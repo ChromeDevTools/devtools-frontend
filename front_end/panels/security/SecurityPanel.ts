@@ -31,6 +31,7 @@ import {SecurityPanelSidebar} from './SecurityPanelSidebar.js';
 
 const {widget, widgetRef} = UI.Widget;
 
+/* eslint-disable @devtools/l10n-uistrings-sentence-punctuation -- Kept with periods to avoid breaking Blink layout tests in chromium/src: http/tests/devtools/security/ */
 const UIStrings = {
   /**
    * @description Title of the overview section in the Security panel.
@@ -428,6 +429,7 @@ const UIStrings = {
    */
   enabled: 'enabled',
 } as const;
+/* eslint-enable @devtools/l10n-uistrings-sentence-punctuation */
 const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

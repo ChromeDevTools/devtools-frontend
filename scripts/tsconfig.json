@@ -6,6 +6,8 @@
     "target": "ESNext",
     "noEmit": true,
     "composite": false,
+    "declaration": false,
+    "isolatedDeclarations": false,
     "noImplicitAny": false,
     "erasableSyntaxOnly": true
   }

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "noEmit": true,
     "allowImportingTsExtensions": true,
+    "lib": ["esnext"],
     "types": ["node", "mocha"]
   },
   "exclude": ["tests/fixtures/**/*"]

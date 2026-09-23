@@ -25,6 +25,7 @@ devtools_foundation_module("foundation_unittests") {
     "../../../core/text_utils:bundle",
     "../../../generated",
     "../../../testing",
+    "../../bindings:bundle",
     "../../crux-manager:bundle",
     "../../lighthouse:bundle",
     "../../logs:bundle",

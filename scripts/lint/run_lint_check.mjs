@@ -10,7 +10,7 @@ import {hideBin} from 'yargs/helpers';
 import {runESLint} from './eslint.mjs';
 import {runLitAnalyzer} from './litanalyzer.mjs';
 import {runStylelint} from './stylelint.mjs';
-import {runEslintRulesTypeCheck} from './typecheck.mjs';
+import {runTypeCheck} from './typecheck.mjs';
 
 const flags = yargs(hideBin(process.argv))
   .option('fix', {
@@ -140,10 +140,6 @@ async function run() {
       !isInExcludedFolder
     );
   });
-  const esLintRules = scripts.filter(script =>
-    script.includes('scripts/eslint_rules'),
-  );
-
   const options = {
     fix: flags.fix,
     forceFix: flags.forceFix,
@@ -155,7 +151,7 @@ async function run() {
     runESLint(scripts, options),
     runLitAnalyzer(frontEndFiles, options),
     runStylelint(styles, options),
-    runEslintRulesTypeCheck(esLintRules, options),
+    runTypeCheck(scripts, options),
   ]);
 
   let succeed = true;

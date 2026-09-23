@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
 import sinon from 'sinon';
 
 import {GnAstExtractor} from '../../extractors/gn_ast_extractor.ts';
@@ -59,7 +58,7 @@ describe('gn_ast_updater', () => {
 
     await updateBuildGnFiles(requiredDeps, '/root');
 
-    assert.isTrue(computeDepsSpy.notCalled);
+    sinon.assert.notCalled(computeDepsSpy);
   });
 
   it('ignores group, devtools_pre_built, and bundle template targets', async () => {
@@ -106,7 +105,7 @@ describe('gn_ast_updater', () => {
 
     await updateBuildGnFiles(requiredDeps, '/root');
 
-    assert.isTrue(computeDepsSpy.notCalled);
+    sinon.assert.notCalled(computeDepsSpy);
   });
 
   it('does nothing if no missing or unused deps are found', async () => {

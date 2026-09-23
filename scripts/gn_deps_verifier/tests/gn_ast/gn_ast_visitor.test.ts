@@ -60,12 +60,12 @@ describe('gn_ast_visitor', () => {
       assert.isAtLeast(visited.length, 2);
 
       const sourcesAssigns = findAssignments(block.child, 'sources');
-      assert.strictEqual(sourcesAssigns.length, 1);
+      assert.lengthOf(sourcesAssigns, 1);
       assert.strictEqual(sourcesAssigns[0].type, 'BINARY');
       assert.strictEqual(sourcesAssigns[0].value, '=');
 
       const depsAssigns = findAssignments(block.child, 'ts_deps');
-      assert.strictEqual(depsAssigns.length, 1);
+      assert.lengthOf(depsAssigns, 1);
       assert.strictEqual(depsAssigns[0].type, 'BINARY');
       assert.strictEqual(depsAssigns[0].value, '=');
 
@@ -76,7 +76,7 @@ describe('gn_ast_visitor', () => {
         createAstNode.assignment('sources', createAstNode.list(), '='),
       ];
       const foundDepsAssigns = findAssignments(stmtsWithMinus, 'ts_deps');
-      assert.strictEqual(foundDepsAssigns.length, 3);
+      assert.lengthOf(foundDepsAssigns, 3);
       assert.deepEqual(
           foundDepsAssigns.map(s => s.value),
           ['=', '+=', '-='],
@@ -105,10 +105,10 @@ describe('gn_ast_visitor', () => {
       const stmts: GnAstNode[] = [topLevelAssign, conditionBlock];
 
       const allAssigns = findAssignments(stmts, 'ts_deps', true);
-      assert.strictEqual(allAssigns.length, 2);
+      assert.lengthOf(allAssigns, 2);
 
       const topLevelOnly = findAssignments(stmts, 'ts_deps', false);
-      assert.strictEqual(topLevelOnly.length, 1);
+      assert.lengthOf(topLevelOnly, 1);
       assert.strictEqual(topLevelOnly[0], topLevelAssign);
     });
   });
@@ -249,7 +249,7 @@ describe('gn_ast_visitor', () => {
 
       const foundLists: GnAstNode[] = [];
       walkListNodes(rhs, listNode => foundLists.push(listNode));
-      assert.strictEqual(foundLists.length, 1);
+      assert.lengthOf(foundLists, 1);
       assert.strictEqual(foundLists[0].type, 'LIST');
 
       const firstList = findFirstListNode(rhs);
@@ -276,7 +276,7 @@ describe('gn_ast_visitor', () => {
 
       const foundLists: GnAstNode[] = [];
       walkListNodes(customContainer, node => foundLists.push(node));
-      assert.strictEqual(foundLists.length, 4);
+      assert.lengthOf(foundLists, 4);
 
       const firstList = findFirstListNode(customContainer);
       assert.strictEqual(firstList, listA);

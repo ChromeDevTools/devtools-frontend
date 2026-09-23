@@ -34,6 +34,7 @@ devtools_ui_module("sensors") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/lit:bundle",
+    "../../ui/settings:bundle",
     "../../ui/visual_logging:bundle",
   ]
   deps = [ ":css_files" ]
@@ -85,6 +86,8 @@ ts_library("unittests") {
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/legacy:bundle",

@@ -90,6 +90,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/to/repo/test/dir/BUILD.gn',
         sources: ['file1.ts', 'file2.js', 'style.css', 'data.json'],
         deps: [],
+        ts_deps: [],
         testonly: false,
       };
 
@@ -110,6 +111,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/to/repo/test/dir/BUILD.gn',
         sources: ['//front_end/core/common.ts', 'local.ts'],
         deps: [],
+        ts_deps: [],
         testonly: false,
       };
 
@@ -130,6 +132,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/to/repo/test/dir/BUILD.gn',
         sources: ['file1.ts', 'file1.ts', './file1.ts'],
         deps: [],
+        ts_deps: [],
         testonly: false,
       };
 
@@ -231,6 +234,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/to/BUILD.gn',
         sources: ['AnimationTimeline.ts'],
         deps: [],
+        ts_deps: [],
         testonly: false,
       };
       assert.isFalse(
@@ -243,6 +247,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/to/BUILD.gn',
         sources: ['platform.ts'],
         deps: [],
+        ts_deps: [],
         testonly: false,
       };
       assert.isFalse(
@@ -260,6 +265,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/to/BUILD.gn',
         sources: ['AnimationTimeline.test.ts'],
         deps: [],
+        ts_deps: [],
         testonly: true,
       };
       assert.isTrue(
@@ -275,6 +281,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/to/BUILD.gn',
         sources: ['HelperModule.ts'],
         deps: [],
+        ts_deps: [],
         testonly: true,
       };
       assert.isTrue(
@@ -289,6 +296,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/to/BUILD.gn',
         sources: ['animation-meta.ts'],
         deps: [],
+        ts_deps: [],
         testonly: false,
       };
       assert.isTrue(
@@ -303,6 +311,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/to/BUILD.gn',
         sources: ['animation.ts'],
         deps: [],
+        ts_deps: [],
         testonly: false,
       };
       assert.isFalse(
@@ -477,6 +486,7 @@ describe('typescript_analyzer', () => {
         buildFile: FIXTURES_BUILD_GN,
         sources: ['main.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       const res = await analyzer.resolveImportDependencies(
@@ -499,6 +509,7 @@ describe('typescript_analyzer', () => {
         buildFile: FIXTURES_BUILD_GN,
         sources: ['AnimationTimeline.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       await extractor.getTargetsForFile(animFile);
@@ -524,6 +535,7 @@ describe('typescript_analyzer', () => {
         buildFile: FIXTURES_BUILD_GN,
         sources: ['AnimationTimeline.test.ts'],
         deps: [],
+        ts_deps: [],
         testonly: true,
       };
 
@@ -547,6 +559,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/to/BUILD.gn',
         sources: ['bundle.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       sinon.stub(extractor, 'getTargetsForFile').resolves([
@@ -575,6 +588,7 @@ describe('typescript_analyzer', () => {
         buildFile: FIXTURES_BUILD_GN,
         sources: ['animation.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       const res = await analyzer.resolveImportDependencies(
@@ -681,6 +695,7 @@ describe('typescript_analyzer', () => {
         buildFile: FIXTURES_BUILD_GN,
         sources: ['consumer.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       // Both map to //front_end/third_party/codemirror.next:bundle
@@ -716,6 +731,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/BUILD.gn',
         sources: ['file.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       const res = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
@@ -745,6 +761,7 @@ describe('typescript_analyzer', () => {
         buildFile: '/path/BUILD.gn',
         sources: ['file.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       const res = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
@@ -759,6 +776,7 @@ describe('typescript_analyzer', () => {
         buildFile: FIXTURES_BUILD_GN,
         sources: ['style.css'],
         deps: [],
+        ts_deps: [],
       };
 
       const res = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
@@ -777,6 +795,7 @@ describe('typescript_analyzer', () => {
         buildFile: FIXTURES_BUILD_GN,
         sources: ['AnimationTimeline.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       const res = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
@@ -791,6 +810,7 @@ describe('typescript_analyzer', () => {
         buildFile: FIXTURES_BUILD_GN,
         sources: ['AnimationTimeline.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       const importExtractor = TypeScriptImportExtractor.create();
@@ -897,6 +917,7 @@ describe('typescript_analyzer', () => {
         buildFile: FIXTURES_BUILD_GN,
         sources: ['AnimationTimeline.test.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       const deps = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
@@ -917,6 +938,7 @@ describe('typescript_analyzer', () => {
         buildFile: FIXTURES_BUILD_GN,
         sources: ['AnimationTimeline.test.ts'],
         deps: [],
+        ts_deps: [],
       };
 
       const p1 = analyzer.analyzeTarget(targetInfo.label, targetInfo);

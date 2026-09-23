@@ -11,22 +11,41 @@ import {
   vpython3ExecutablePath,
 } from '../devtools_paths.js';
 
-export async function runEslintRulesTypeCheck(files, {debug}) {
-  if (files.length === 0) {
+const TS_CONFIGS = [
+  {
+    prefix: 'scripts/eslint_rules',
+    configPath: join(
+      devtoolsRootPath(),
+      'scripts',
+      'eslint_rules',
+      'tsconfig.json',
+    ),
+  },
+  {
+    prefix: 'scripts/gn_deps_verifier',
+    configPath: join(
+      devtoolsRootPath(),
+      'scripts',
+      'gn_deps_verifier',
+      'tsconfig.json',
+    ),
+  },
+];
+
+export async function runTypeCheck(files, {debug}) {
+  const configsToRun = TS_CONFIGS.filter(({prefix}) =>
+    files.some(file => file.includes(prefix)),
+  ).map(({configPath}) => configPath);
+
+  if (configsToRun.length === 0) {
     return {status: true, output: ''};
   }
   const messages = [];
   if (debug) {
-    messages.push('[lint]: Running EsLint custom rules typechecking...');
+    messages.push('[lint]: Running scripts typechecking...');
   }
   const tscPath = typescriptPyPath();
-  const tsConfigEslintRules = join(
-    devtoolsRootPath(),
-    'scripts',
-    'eslint_rules',
-    'tsconfig.json',
-  );
-  const args = [tscPath, '-b', tsConfigEslintRules];
+  const args = [tscPath, '-b', ...configsToRun];
 
   /**
    * @returns

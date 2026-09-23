@@ -195,6 +195,7 @@ export function getContentType(filePath: string): string {
  * Uploads a local file to GCS using system gcloud CLI.
  */
 export function uploadFileToGCS(localFilePath: string, destination: string, contentType?: string): boolean {
+  const fileName = path.posix.basename(destination);
   console.log(`[GCS] Preparing upload of ${localFilePath} to ${destination}`);
 
   try {
@@ -204,10 +205,12 @@ export function uploadFileToGCS(localFilePath: string, destination: string, cont
       stdio: 'inherit',
     });
 
-    console.log('[GCS] ✅ Upload successful!');
+    console.log(`[GCS] ✅ Upload successful: ${fileName}`);
     return true;
   } catch (error) {
-    console.error(`[GCS] ❌ Failed to upload to ${destination}. Ensure you are logged in via 'gcloud auth login'.`);
+    console.error(
+        `[GCS] ❌ Failed to upload ${fileName} to ${destination}. Ensure you are logged in via 'gcloud auth login'.`,
+    );
     console.error(error);
     return false;
   }

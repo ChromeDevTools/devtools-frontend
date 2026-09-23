@@ -3565,63 +3565,6 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
-    it('does not lose selection when node with selected closing tag transitions to inline text', async () => {
-      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
-
-      try {
-        const rootNode = createTestDOMTree(domModel, {
-          nodeId: 1,
-          nodeName: 'DIV',
-          children: [{nodeId: 2, nodeName: 'SPAN'}],
-        });
-
-        domTree.rootDOMNode = rootNode;
-        domTree.selectEnabled = true;
-        domTree.performUpdate();
-        await waitForTreeUpdates();
-
-        // Select the closing tag
-        domTree.selectDOMNode(rootNode, false, /* isClosingTag= */ true);
-        await waitForTreeUpdates();
-        assert.strictEqual(domTree.selectedDOMNode(), rootNode);
-        assert.isTrue(domTree.selectedClosingTag());
-
-        // Replace children with a short text child, causing the node to become inline (no closing tag rendered)
-        rootNode.setChildren([]);
-        const textPayload: Protocol.DOM.Node = {
-          nodeId: 3 as Protocol.DOM.NodeId,
-          parentId: 1 as Protocol.DOM.NodeId,
-          backendNodeId: 3 as Protocol.DOM.BackendNodeId,
-          nodeType: Node.TEXT_NODE,
-          nodeName: '#text',
-          localName: '',
-          nodeValue: 'short text',
-          childNodeCount: 0,
-        };
-        rootNode.insertChild(undefined, textPayload);
-
-        domTree.performUpdate();
-        await waitForTreeUpdates();
-
-        assert.isFalse(domTree.selectedClosingTag());
-        const devtoolsTree = domTree.contentElement.querySelector('devtools-tree');
-        assert.exists(devtoolsTree?.shadowRoot);
-        const widgetEls = Array.from(devtoolsTree.shadowRoot.querySelectorAll('devtools-widget'));
-        const widgets = widgetEls.map(el => UI.Widget.Widget.get(el))
-                            .filter((w): w is Elements.ElementsTreeElement.ElementsTreeWidget =>
-                                        w instanceof Elements.ElementsTreeElement.ElementsTreeWidget);
-        const openingWidget = widgets.find(w => w.node === rootNode && !w.isClosingTag);
-        assert.exists(openingWidget);
-        assert.isTrue(openingWidget.selected);
-        const openingLi = openingWidget.element.closest('li');
-        assert.exists(openingLi);
-        assert.isTrue(openingLi.classList.contains('selected'),
-                      'Opening tag should be selected after closing tag disappears');
-      } finally {
-        domTree.detach();
-      }
-    });
-
     it('focuses devtools-tree when focus() is called and when selecting with focus', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target, Elements.DOMTreeWidget.DECLARATIVE_VIEW);
 

@@ -779,8 +779,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         rows += countTopLayerRows(node);
       }
       const tagName = node.nodeName().toLowerCase();
-      const needsClosingTag = hasChildren && node.nodeType() === Node.ELEMENT_NODE &&
-          !ForbiddenClosingTagElements.has(tagName) && !node.pseudoType();
+      const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) &&
+          !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
       if (needsClosingTag) {
         rows += 1;
       }
@@ -828,8 +828,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     const children = allVisibleChildren.slice(0, limit);
     const remainingChildrenCount = allVisibleChildren.length - children.length;
     const tagName = node.nodeName().toLowerCase();
-    const needsClosingTag = hasChildren && node.nodeType() === Node.ELEMENT_NODE &&
-        !ForbiddenClosingTagElements.has(tagName) && !node.pseudoType();
+    const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) &&
+        !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
 
     const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
 
@@ -1461,7 +1461,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     const domModel = event.data;
     if (this.#view === DECLARATIVE_VIEW) {
       this.#selectedDOMNode = null;
-      this.#selectedClosingTag = false;
       this.#expandedNodes.clear();
       this.#currentHighlightedNode = null;
       this.#updateRecords.clear();
@@ -1680,6 +1679,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
            !getVisibleChildren(node.parentNode, this.#showComments).includes(node))) {
         node = node.parentNode;
       }
+      const isSameNode = this.#selectedDOMNode === node && this.#selectedClosingTag === Boolean(isClosingTag);
+      this.#selectedDOMNode = node;
+      this.#selectedClosingTag = Boolean(isClosingTag);
       if (node) {
         const ancestors: SDK.DOMModel.DOMNode[] = [];
         for (let current: (SDK.DOMModel.DOMNode|null) = node.parentNode; current; current = current.parentNode) {
@@ -1705,14 +1707,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             });
           }
         }
-        if (isClosingTag && nodeHasVisibleChildren(node, this.rootDOMNode, this.maxTreeDepth, this.omitRootDOMNode)) {
-          this.#expandedNodes.add(node);
-        }
       }
-      const selectClosingTag = Boolean(isClosingTag) && Boolean(node && this.#hasClosingTag(node));
-      const isSameNode = this.#selectedDOMNode === node && this.#selectedClosingTag === selectClosingTag;
-      this.#selectedDOMNode = node;
-      this.#selectedClosingTag = selectClosingTag;
       this.#clearHighlightedNode();
       if (!isSameNode) {
         this.onSelectedNodeChanged(
@@ -2019,22 +2014,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     return current === this.#rootDOMNode ? selectedNode : (fallback ?? this.#rootDOMNode);
   }
 
-  #hasClosingTag(node: SDK.DOMModel.DOMNode): boolean {
-    const isEditingAsHTML = this.#multilineEditingNode === node ||
-        (this.#nodeToEdit?.node === node && Boolean(this.#nodeToEdit.isEditAsHTML));
-    if (isEditingAsHTML || !this.isNodeExpanded(node)) {
-      return false;
-    }
-    if (!nodeHasVisibleChildren(node, this.#rootDOMNode, this.#maxTreeDepth, this.omitRootDOMNode)) {
-      return false;
-    }
-    const tagName = node.nodeName().toLowerCase();
-    return node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) && !node.pseudoType();
-  }
-
   #validateSelectedNode(): void {
     if (!this.#selectedDOMNode) {
-      this.#selectedClosingTag = false;
       return;
     }
     const validNode = this.#findValidSelectedNode(this.#selectedDOMNode);
@@ -2045,8 +2026,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       this.onSelectedNodeChanged(
           {data: {node: validNode, focus: false}} as
           Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>);
-    } else if (this.#selectedClosingTag && !this.#hasClosingTag(this.#selectedDOMNode)) {
-      this.#selectedClosingTag = false;
     }
   }
 
@@ -2297,7 +2276,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       if (this.#rootDOMNode?.domModel() === domModel) {
         this.#rootDOMNode = null;
         this.#selectedDOMNode = null;
-        this.#selectedClosingTag = false;
         this.#expandedNodes.clear();
         this.#updateRecords.clear();
       }

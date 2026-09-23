@@ -737,6 +737,55 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.strictEqual(originElement.textContent, 'https://foo.test');
   });
 
+  it('shows origins with failed requests in the sidebar', async () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+
+    const request1 = createNetworkRequest({
+      url: 'https://foo.test/foo.jpg',
+      documentURL: 'https://foo.test',
+      frameId: '0',
+      loaderId: '0',
+    });
+    request1.setSecurityState(Protocol.Security.SecurityState.Secure);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request1);
+
+    const request2 = createNetworkRequest({
+      url: 'https://does-not-resolve.test',
+      documentURL: 'https://does-not-resolve.test',
+      frameId: '0',
+      loaderId: '0',
+    });
+    // Leave the security state unknown.
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request2);
+    await doubleRaf();
+
+    const sidebarRoot = securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!;
+    const groupTitles = Array.from(sidebarRoot.querySelectorAll('.security-sidebar-origins-title'))
+                            .filter(element => element.checkVisibility())
+                            .map(element => element.textContent);
+    assert.deepEqual(groupTitles, ['Main origin', 'Secure origins', 'Unknown / canceled']);
+
+    const allOriginElements = sidebarRoot.querySelectorAll<HTMLLIElement>('.security-sidebar-tree-item');
+    assert.lengthOf(allOriginElements, 2);
+
+    const secureOriginGroup = sidebarRoot.querySelector('[aria-label="Secure origins"]');
+    assert.exists(secureOriginGroup);
+    const secureOriginElements = secureOriginGroup.querySelectorAll<HTMLLIElement>('.security-sidebar-tree-item');
+    assert.lengthOf(secureOriginElements, 1);
+    const secureOriginElement = querySelectorErrorOnMissing(secureOriginElements[0], '.highlighted-url');
+    assert.strictEqual(secureOriginElement.textContent, 'https://foo.test');
+
+    const unknownOriginGroup = sidebarRoot.querySelector('[aria-label="Unknown / canceled"]');
+    assert.exists(unknownOriginGroup);
+    const unknownOriginElements = unknownOriginGroup.querySelectorAll<HTMLLIElement>('.security-sidebar-tree-item');
+    assert.lengthOf(unknownOriginElements, 1);
+    const unknownOriginElement = querySelectorErrorOnMissing(unknownOriginElements[0], '.highlighted-url');
+    assert.strictEqual(unknownOriginElement.textContent, 'https://does-not-resolve.test');
+  });
+
   it('shows origins with blockable and optionally blockable resources in the sidebar', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
 

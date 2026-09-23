@@ -170,7 +170,7 @@ describe('CD4ABridge', () => {
     assert.strictEqual(threads[0].text, 'First comment\n\n- DevTools element: h1');
   });
 
-  it('formats tracked change descriptions on threads with or without comment text', () => {
+  it('formats recorded change threads using their comment text', () => {
     const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager);
 
     const changeOnlyThread = commentManager.createCommentThread(
@@ -178,47 +178,32 @@ describe('CD4ABridge', () => {
           vePath: 'Panel: elements > Tree: elements > TreeItem',
           textSignature: '',
         },
-        undefined,
+        'Changed attribute "class" from "old" to "new"',
         'DEVELOPER',
-        [
-          {
-            id: 'change-1',
-            description: 'Changed attribute "class" from "old" to "new"',
-            timestamp: 1000,
-          },
-          {
-            id: 'change-2',
-            description: 'Hid element <div>',
-            timestamp: 1500,
-          },
-        ],
+        true,
     );
     changeOnlyThread.sendToAgent();
 
-    const commentAndChangeThread = commentManager.createCommentThread(
+    const commentAndElementThread = commentManager.createCommentThread(
         {
           vePath: 'Panel: elements > Tree: elements > TreeItem',
           textSignature: 'button.cta',
         },
-        'Keep this change',
+        'Changed text from "Submit" to "Send"',
         'DEVELOPER',
-        [{
-          id: 'change-3',
-          description: 'Changed text from "Submit" to "Send"',
-          timestamp: 2000,
-        }],
+        true,
     );
-    commentAndChangeThread.sendToAgent();
+    commentAndElementThread.sendToAgent();
 
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 2);
     assert.strictEqual(
         threads[0].text,
-        '- Change: Changed attribute "class" from "old" to "new"\n- Change: Hid element <div>',
+        'Changed attribute "class" from "old" to "new"',
     );
     assert.strictEqual(
         threads[1].text,
-        'Keep this change\n\n- DevTools element: button.cta\n- Change: Changed text from "Submit" to "Send"',
+        'Changed text from "Submit" to "Send"\n\n- DevTools element: button.cta',
     );
   });
 

@@ -39,7 +39,7 @@ describe('DOMChanges', () => {
   }
 
   function lastDescription(): string|undefined {
-    return tracker.getLastChange()?.description;
+    return commentManager.getCommentThreads().at(-1)?.comments[0]?.text;
   }
 
   function trackAttributeEdit(edit: Elements.DOMChanges.AttributeEdit): void {
@@ -191,7 +191,7 @@ describe('DOMChanges', () => {
 
     Elements.DOMChanges.trackNodeRemoval(tracker, createNode(), 'div.main');
 
-    assert.isUndefined(tracker.getLastChange());
+    assert.isUndefined(lastDescription());
     assert.isEmpty(commentManager.getCommentThreads());
   });
 });

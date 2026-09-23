@@ -2325,12 +2325,14 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
   let outline: Elements.DOMTreeWidget.ElementsTreeOutline;
 
   /**
-   * `ChangeTracker` records the location of a change on the comment thread it
-   * creates, not on the `ChangeRecord` itself, so the affected node has to be
-   * read back from the `CommentManager`.
+   * `ChangeTracker` records changes on comment threads in `CommentManager`.
    */
   function lastChangeBackendNodeId(): number|undefined {
     return universe.commentManager.getCommentThreads().at(-1)?.anchor.node?.backendNodeId;
+  }
+
+  function lastChange(): string|undefined {
+    return universe.commentManager.getCommentThreads().at(-1)?.comments[0]?.text;
   }
 
   /** Types `newText` into the attribute that is currently edited in place and commits it. */
@@ -2432,11 +2434,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.isTrue(treeElement.widget.addNewAttribute());
     commitEditedAttribute('data-test="value"');
 
-    const record = tracker.getLastChange();
-    assert.exists(record);
-    assert.strictEqual(record?.description, 'Added attribute data-test="value"');
-    assert.isString(record?.id);
-    assert.isNumber(record?.timestamp);
+    assert.strictEqual(lastChange(), 'Added attribute data-test="value"');
     assert.strictEqual(lastChangeBackendNodeId(), 1);
   });
 
@@ -2446,9 +2444,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
     commitEditedAttribute('class="container active"');
 
-    const record = tracker.getLastChange();
-    assert.exists(record);
-    assert.strictEqual(record?.description, 'Changed attribute "class" from "container" to "container active"');
+    assert.strictEqual(lastChange(), 'Changed attribute "class" from "container" to "container active"');
     assert.strictEqual(lastChangeBackendNodeId(), 1);
   });
 
@@ -2458,9 +2454,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
     commitEditedAttribute('foo="container"');
 
-    const record = tracker.getLastChange();
-    assert.exists(record);
-    assert.strictEqual(record?.description, 'Renamed attribute "class" to "foo"');
+    assert.strictEqual(lastChange(), 'Renamed attribute "class" to "foo"');
     assert.strictEqual(lastChangeBackendNodeId(), 1);
   });
 
@@ -2470,9 +2464,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
     commitEditedAttribute('foo="bar"');
 
-    const record = tracker.getLastChange();
-    assert.exists(record);
-    assert.strictEqual(record?.description, 'Renamed attribute "class"="container" to "foo"="bar"');
+    assert.strictEqual(lastChange(), 'Renamed attribute "class"="container" to "foo"="bar"');
     assert.strictEqual(lastChangeBackendNodeId(), 1);
   });
 
@@ -2482,9 +2474,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
     commitEditedAttribute('');
 
-    const record = tracker.getLastChange();
-    assert.exists(record);
-    assert.strictEqual(record?.description, 'Removed attribute "class"');
+    assert.strictEqual(lastChange(), 'Removed attribute "class"');
     assert.strictEqual(lastChangeBackendNodeId(), 1);
   });
 
@@ -2494,8 +2484,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.isTrue(treeElement.widget.addNewAttribute());
     commitEditedAttribute('invalid<attr>=1');
 
-    const record = tracker.getLastChange();
-    assert.isUndefined(record);
+    assert.isUndefined(lastChange());
     assert.isEmpty(universe.commentManager.getCommentThreads());
   });
 
@@ -2511,9 +2500,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.exists(callbackCaptured);
     callbackCaptured(null, node);
 
-    const record = tracker.getLastChange();
-    assert.exists(record);
-    assert.strictEqual(record?.description, 'Renamed tag from <div> to <section>');
+    assert.strictEqual(lastChange(), 'Renamed tag from <div> to <section>');
     assert.strictEqual(lastChangeBackendNodeId(), 1);
   });
 
@@ -2528,8 +2515,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.exists(callbackCaptured);
     callbackCaptured('Invalid tag name syntax', null);
 
-    const record = tracker.getLastChange();
-    assert.isUndefined(record);
+    assert.isUndefined(lastChange());
     assert.isEmpty(universe.commentManager.getCommentThreads());
   });
 
@@ -2539,9 +2525,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
 
     editInlineTextNode('Updated Text');
 
-    const record = tracker.getLastChange();
-    assert.exists(record);
-    assert.strictEqual(record?.description, 'Changed text from "Initial Text" to "Updated Text"');
+    assert.strictEqual(lastChange(), 'Changed text from "Initial Text" to "Updated Text"');
     assert.strictEqual(lastChangeBackendNodeId(), 2);
   });
 
@@ -2554,8 +2538,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     editInlineTextNode('Updated Text');
 
     sinon.assert.calledOnceWithMatch(setNodeValue, 'Updated Text');
-    const record = tracker.getLastChange();
-    assert.isUndefined(record);
+    assert.isUndefined(lastChange());
     assert.isEmpty(universe.commentManager.getCommentThreads());
   });
 
@@ -2566,10 +2549,8 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     const editor = await startEditingAsHTML();
     commitEditedHTML(editor, '<div id="main-div" class="container"><p>New Child</p></div>');
 
-    const record = tracker.getLastChange();
-    assert.exists(record);
     assert.strictEqual(
-        record?.description,
+        lastChange(),
         'Changed HTML from "<div id="main-div" class="container"></div>" to ' +
             '"<div id="main-div" class="container"><p>New Child</p></div>"',
     );
@@ -2586,8 +2567,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     commitEditedHTML(editor, '<div id="main-div" class="container"><p>New Child</p></div>');
 
     sinon.assert.calledOnceWithMatch(setOuterHTML, '<div id="main-div" class="container"><p>New Child</p></div>');
-    const record = tracker.getLastChange();
-    assert.isUndefined(record);
+    assert.isUndefined(lastChange());
     assert.isEmpty(universe.commentManager.getCommentThreads());
   });
 
@@ -2621,9 +2601,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     childTreeElement.widget.node = childNode;
     await childTreeElement.widget.remove();
 
-    const record = tracker.getLastChange();
-    assert.exists(record);
-    assert.strictEqual(record?.description, 'Removed node <span>');
+    assert.strictEqual(lastChange(), 'Removed node <span>');
     assert.strictEqual(lastChangeBackendNodeId(), 11);
   });
 
@@ -2657,8 +2635,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     childTreeElement.widget.node = childNode;
     await childTreeElement.widget.remove();
 
-    const record = tracker.getLastChange();
-    assert.isUndefined(record);
+    assert.isUndefined(lastChange());
     assert.isEmpty(universe.commentManager.getCommentThreads());
   });
 
@@ -2696,8 +2673,8 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     await childTreeElement.widget.remove();
 
     sinon.assert.calledOnce(toggleHideStub);
-    const changes = tracker.getChanges();
-    assert.lengthOf(changes, 1);
-    assert.strictEqual(changes[0].description, 'Removed node <span>');
+    const threads = universe.commentManager.getCommentThreads();
+    assert.lengthOf(threads, 1);
+    assert.strictEqual(threads[0].comments[0].text, 'Removed node <span>');
   });
 });

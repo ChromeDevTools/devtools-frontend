@@ -4671,12 +4671,14 @@ describeWithEnvironment('DOMTreeWidget', () => {
     });
 
     /**
-     * `ChangeTracker` records the location of a change on the comment thread it
-     * creates, not on the `ChangeRecord` itself, so the affected node has to be
-     * read back from the `CommentManager`.
+     * `ChangeTracker` records changes on comment threads in `CommentManager`.
      */
     function lastChangeBackendNodeId(): number|undefined {
       return universe.commentManager.getCommentThreads().at(-1)?.anchor.node?.backendNodeId;
+    }
+
+    function lastChange(): string|undefined {
+      return universe.commentManager.getCommentThreads().at(-1)?.comments[0]?.text;
     }
 
     it('records a change when removeNode is called', async () => {
@@ -4685,9 +4687,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       });
       await domTree.removeNode(childNode1);
 
-      const record = tracker.getLastChange();
-      assert.exists(record);
-      assert.strictEqual(record?.description, 'Removed node <p>');
+      assert.strictEqual(lastChange(), 'Removed node <p>');
       assert.strictEqual(lastChangeBackendNodeId(), 2);
     });
 
@@ -4697,8 +4697,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       });
       await domTree.removeNode(childNode1);
 
-      const record = tracker.getLastChange();
-      assert.isUndefined(record);
+      assert.isUndefined(lastChange());
     });
 
     it('unhides hidden node before removal without emitting a visibility change', async () => {
@@ -4710,9 +4709,9 @@ describeWithEnvironment('DOMTreeWidget', () => {
       await domTree.removeNode(childNode1);
 
       sinon.assert.calledOnce(toggleHideStub);
-      const changes = tracker.getChanges();
-      assert.lengthOf(changes, 1);
-      assert.strictEqual(changes[0].description, 'Removed node <p>');
+      const threads = universe.commentManager.getCommentThreads();
+      assert.lengthOf(threads, 1);
+      assert.strictEqual(threads[0].comments[0].text, 'Removed node <p>');
     });
 
     it('records a change when duplicateNode is called', async () => {
@@ -4730,9 +4729,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       domTree.duplicateNode(childNode1);
       await new Promise(resolve => setTimeout(resolve, 0));
 
-      const record = tracker.getLastChange();
-      assert.exists(record);
-      assert.strictEqual(record?.description, 'Duplicated node <p>');
+      assert.strictEqual(lastChange(), 'Duplicated node <p>');
       assert.strictEqual(lastChangeBackendNodeId(), 4);
     });
 
@@ -4741,8 +4738,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       domTree.duplicateNode(childNode1);
       await new Promise(resolve => setTimeout(resolve, 0));
 
-      const record = tracker.getLastChange();
-      assert.isUndefined(record);
+      assert.isUndefined(lastChange());
     });
 
     it('records a change when pasteNode is called with copied node', () => {
@@ -4763,9 +4759,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
       domTree.pasteNode(childNode2);
 
-      const record = tracker.getLastChange();
-      assert.exists(record);
-      assert.strictEqual(record?.description, 'Pasted node <p>');
+      assert.strictEqual(lastChange(), 'Pasted node <p>');
       assert.strictEqual(lastChangeBackendNodeId(), 4);
     });
 
@@ -4777,8 +4771,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
       domTree.pasteNode(childNode2);
 
-      const record = tracker.getLastChange();
-      assert.isUndefined(record);
+      assert.isUndefined(lastChange());
     });
 
     it('records a change when pasteNode is called with cut node', () => {
@@ -4789,9 +4782,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
       domTree.pasteNode(childNode2);
 
-      const record = tracker.getLastChange();
-      assert.exists(record);
-      assert.strictEqual(record?.description, 'Pasted (moved) node <p>');
+      assert.strictEqual(lastChange(), 'Pasted (moved) node <p>');
       assert.strictEqual(lastChangeBackendNodeId(), 2);
     });
 
@@ -4803,8 +4794,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
       domTree.pasteNode(childNode2);
 
-      const record = tracker.getLastChange();
-      assert.isUndefined(record);
+      assert.isUndefined(lastChange());
     });
 
     it('records a change when reordering nodes with Ctrl+Up and Ctrl+Down', () => {
@@ -4817,9 +4807,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       const upEvent = new KeyboardEvent('keydown', {key: 'ArrowUp', ctrlKey: !isMac, metaKey: isMac, bubbles: true});
       domTree.onKeyDown(upEvent);
 
-      let record = tracker.getLastChange();
-      assert.exists(record);
-      assert.strictEqual(record?.description, 'Moved node <span> up');
+      assert.strictEqual(lastChange(), 'Moved node <span> up');
       assert.strictEqual(lastChangeBackendNodeId(), 3);
 
       sinon.stub(childNode1, 'moveTo').callsFake((_targetNode, _anchorNode, callback) => {
@@ -4831,9 +4819,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
           new KeyboardEvent('keydown', {key: 'ArrowDown', ctrlKey: !isMac, metaKey: isMac, bubbles: true});
       domTree.onKeyDown(downEvent);
 
-      record = tracker.getLastChange();
-      assert.exists(record);
-      assert.strictEqual(record?.description, 'Moved node <p> down');
+      assert.strictEqual(lastChange(), 'Moved node <p> down');
       assert.strictEqual(lastChangeBackendNodeId(), 2);
     });
 
@@ -4847,8 +4833,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       const upEvent = new KeyboardEvent('keydown', {key: 'ArrowUp', ctrlKey: !isMac, metaKey: isMac, bubbles: true});
       domTree.onKeyDown(upEvent);
 
-      const record = tracker.getLastChange();
-      assert.isUndefined(record);
+      assert.isUndefined(lastChange());
     });
 
     it('records a change when drag and drop moves a node', () => {
@@ -4858,9 +4843,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
       domTree.moveNode(childNode1, childNode2, /* isClosingTag= */ false);
 
-      const record = tracker.getLastChange();
-      assert.exists(record);
-      assert.strictEqual(record?.description, 'Moved node <p> via drag and drop');
+      assert.strictEqual(lastChange(), 'Moved node <p> via drag and drop');
       assert.strictEqual(lastChangeBackendNodeId(), 2);
     });
 
@@ -4871,8 +4854,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
       domTree.moveNode(childNode1, childNode2, /* isClosingTag= */ false);
 
-      const record = tracker.getLastChange();
-      assert.isUndefined(record);
+      assert.isUndefined(lastChange());
     });
 
     it('records a change when toggleHideElement is called', () => {
@@ -4881,9 +4863,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
       void domTree.toggleHideElement(childNode1);
 
-      const record = tracker.getLastChange();
-      assert.exists(record);
-      assert.strictEqual(record?.description, 'Hid element <p>');
+      assert.strictEqual(lastChange(), 'Hid element <p>');
       assert.strictEqual(lastChangeBackendNodeId(), 2);
     });
 

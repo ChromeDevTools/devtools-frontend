@@ -48,7 +48,7 @@ export interface HighlightRectData {
 
 export interface CreateCommentOptions {
   author?: 'DEVELOPER'|'AGENT';
-  changes?: CommentManager.CommentManager.ChangeRecord[];
+  isGeneratedComment?: boolean;
   coordinates?: {clientX: number, clientY: number};
 }
 
@@ -264,7 +264,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
       options?: CreateCommentOptions,
       ): CommentThread|null {
     const author = options?.author ?? 'DEVELOPER';
-    const changes = options?.changes;
+    const isGeneratedComment = options?.isGeneratedComment;
     const resolved = this.#resolveAnchor(element, options?.coordinates);
     if (!resolved) {
       return null;
@@ -275,13 +275,13 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     let thread: CommentThread;
     this.#isCreatingComment = true;
     try {
-      thread = this.#commentManager.createCommentThread(anchor, text, author, changes);
+      thread = this.#commentManager.createCommentThread(anchor, text, author, isGeneratedComment);
     } finally {
       this.#isCreatingComment = false;
     }
-    // Non-DOM anchors (e.g. canvas-rendered timeline entries) manage their own overlays
-    // and do not have individual backing DOM nodes to cache or observe.
-    if (isDomTrackedAnchor(anchor)) {
+    // Non-DOM anchors (e.g. canvas-rendered timeline entries) and generated comments
+    // do not render overlay pins or observe backing DOM nodes.
+    if (!thread.isGeneratedComment && isDomTrackedAnchor(anchor)) {
       this.#liveNodeCache.set(thread, anchorElement);
 
       const observer = this.#getIntersectionObserver();
@@ -360,8 +360,8 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     const newElements = new Set<Element>();
 
     for (const thread of this.#commentManager.getCommentThreads()) {
-      // Non-DOM anchors do not track DOM nodes and should not be rematched here.
-      if (!isDomTrackedAnchor(thread.anchor)) {
+      // Non-DOM anchors and generated comments do not track DOM nodes and should not be rematched here.
+      if (thread.isGeneratedComment || !isDomTrackedAnchor(thread.anchor)) {
         continue;
       }
       const oldEl = this.#liveNodeCache.get(thread);
@@ -401,8 +401,9 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     const elementPinCounts = new Map<Element, number>();
 
     for (const thread of this.#commentManager.getCommentThreads()) {
-      // Non-DOM anchors have their positions managed by their respective panels.
-      if (!isDomTrackedAnchor(thread.anchor)) {
+      // Non-DOM anchors have their positions managed by their respective panels,
+      // and generated comments do not render overlay pins.
+      if (thread.isGeneratedComment || !isDomTrackedAnchor(thread.anchor)) {
         continue;
       }
       const el = this.#liveNodeCache.get(thread) || null;

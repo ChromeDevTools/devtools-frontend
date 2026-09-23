@@ -141,21 +141,17 @@ describe('CommentManager', () => {
     });
     assert.strictEqual(thread.comments[0].text, 'Flamechart comment');
   });
-  it('supports changes metadata in created threads', () => {
+  it('supports isGeneratedComment metadata in created threads', () => {
     const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
       vePath: 'Panel: elements > TreeItem: rule',
       textSignature: 'margin: 0;',
     };
-    const changes: CommentManager.CommentManager.ChangeRecord[] = [{
-      id: 'change-1',
-      description: 'Changed property "margin" from "0" to "8px"',
-      timestamp: 123456789,
-    }];
-    const thread = manager.createCommentThread(anchor, 'CSS fix', 'DEVELOPER', changes);
+    const thread =
+        manager.createCommentThread(anchor, 'Changed property "margin" from "0" to "8px"', 'DEVELOPER', true);
 
     assert.strictEqual(thread.comments[0].author, 'DEVELOPER');
-    assert.strictEqual(thread.comments[0].text, 'CSS fix');
-    assert.deepEqual(thread.changes, changes);
+    assert.strictEqual(thread.comments[0].text, 'Changed property "margin" from "0" to "8px"');
+    assert.isTrue(thread.isGeneratedComment);
   });
 
   it('resolves comment threads with optional reply text', () => {
@@ -165,6 +161,7 @@ describe('CommentManager', () => {
     };
     const thread = manager.createCommentThread(anchor, 'Initial comment');
     assert.strictEqual(thread.status, 'DRAFT');
+    assert.isFalse(thread.isGeneratedComment);
 
     const success = manager.resolveCommentThread(thread.id, 'Done');
     assert.isTrue(success);
@@ -179,16 +176,11 @@ describe('CommentManager', () => {
       vePath: 'Panel: elements > TreeOutline > TreeItem',
       textSignature: 'div.header',
     };
-    const changes: CommentManager.CommentManager.ChangeRecord[] = [{
-      id: 'change-2',
-      description: 'Changed attribute "class" to "header active"',
-      timestamp: 123456789,
-    }];
-    const thread = manager.createCommentThread(anchor, undefined, undefined, changes);
+    const thread = manager.createCommentThread(anchor, undefined, undefined, true);
 
     assert.isNotNull(thread);
     assert.isEmpty(thread.comments);
-    assert.deepEqual(thread.changes, changes);
+    assert.isTrue(thread.isGeneratedComment);
     assert.strictEqual(thread.status, 'DRAFT');
   });
 

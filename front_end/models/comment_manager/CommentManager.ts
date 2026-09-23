@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 
 import {
-  type ChangeRecord,
   type Comment,
   type CommentAnchorSignature,
   CommentThread,
@@ -18,7 +17,6 @@ import {
 } from './CommentThread.js';
 
 export {
-  type ChangeRecord,
   type Comment,
   type CommentAnchorSignature,
   CommentThread,
@@ -92,7 +90,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
       anchor: CommentAnchorSignature,
       text?: string,
       author: 'DEVELOPER'|'AGENT' = 'DEVELOPER',
-      changes?: ChangeRecord[],
+      isGeneratedComment?: boolean,
       ): CommentThread {
     const comments: Comment[] = text ? [{
       author,
@@ -103,7 +101,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     const thread = new CommentThread({
       anchor,
       comments,
-      changes,
+      isGeneratedComment,
     });
     thread.addEventListener(CommentThreadEvents.CHANGED, this.#onThreadChanged, this);
 

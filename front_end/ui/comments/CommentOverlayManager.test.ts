@@ -75,23 +75,20 @@ describeWithEnvironment('CommentOverlayManager', () => {
     assert.lengthOf(manager.getCommentThreads(), 0);
   });
 
-  it('supports AGENT author and custom changes metadata in created comment threads', () => {
+  it('supports AGENT author and isGeneratedComment metadata in created comment threads and skips pins', () => {
     const item = document.createElement('div');
     item.setAttribute('jslog', 'TreeItem; context: agent-item');
     item.textContent = 'color: #333;';
     container.appendChild(item);
 
-    const changes: CommentManager.CommentManager.ChangeRecord[] = [{
-      id: 'change-1',
-      description: 'Changed property "color" from "#333" to "#000"',
-      timestamp: 123456789,
-    }];
-    const thread = manager.createComment(item, 'Auto-fixed color', {author: 'AGENT', changes});
+    const thread = manager.createComment(item, 'Auto-fixed color', {author: 'AGENT', isGeneratedComment: true});
 
     assert.isNotNull(thread);
     assert.strictEqual(thread?.comments[0].author, 'AGENT');
     assert.strictEqual(thread?.comments[0].text, 'Auto-fixed color');
-    assert.deepEqual(thread?.changes, changes);
+    assert.isTrue(thread?.isGeneratedComment);
+    assert.isEmpty(manager.getPinPositions());
+    assert.isEmpty(manager.getHighlightRects());
   });
 
   it('removes comment threads and cleans up DOM observer and pin positions', () => {

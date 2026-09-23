@@ -65,7 +65,7 @@ describe('CD4ABridge', () => {
     assert.strictEqual(threads[0].id, thread.id);
     assert.strictEqual(
         threads[0].text,
-        'Need color contrast fix\n\n- DevTools element: color: red\n- DOM node selector: div.card#main\n- Editor: index.html:42',
+        'Need color contrast fix\n\n- DevTools VEPath: Panel: elements > Pane: styles\n- DevTools element: color: red\n- DOM node selector: div.card#main\n- Editor: index.html:42',
     );
     assert.strictEqual(threads[0].networkRequestId, 'req-1');
     assert.deepEqual(threads[0].node, {
@@ -103,7 +103,7 @@ describe('CD4ABridge', () => {
     assert.lengthOf(threads, 1);
     assert.strictEqual(
         threads[0].text,
-        'Check variable\n\n- DevTools element: const x = 1;\n- Editor: line 15',
+        'Check variable\n\n- DevTools VEPath: Panel: sources\n- DevTools element: const x = 1;\n- Editor: line 15',
     );
     assert.deepEqual(threads[0].node, {
       backendNodeId: 99,
@@ -145,7 +145,10 @@ describe('CD4ABridge', () => {
 
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 1);
-    assert.strictEqual(threads[0].text, 'Missing target comment\n\n- DevTools element: color: red');
+    assert.strictEqual(
+        threads[0].text,
+        'Missing target comment\n\n- DevTools VEPath: Panel: elements\n- DevTools element: color: red',
+    );
   });
 
   it('only takes the first comment text', () => {
@@ -167,7 +170,10 @@ describe('CD4ABridge', () => {
 
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 1);
-    assert.strictEqual(threads[0].text, 'First comment\n\n- DevTools element: h1');
+    assert.strictEqual(
+        threads[0].text,
+        'First comment\n\n- DevTools VEPath: Panel: elements\n- DevTools element: h1',
+    );
   });
 
   it('formats recorded change threads using their comment text', () => {
@@ -199,11 +205,11 @@ describe('CD4ABridge', () => {
     assert.lengthOf(threads, 2);
     assert.strictEqual(
         threads[0].text,
-        'Changed attribute "class" from "old" to "new"',
+        'Changed attribute "class" from "old" to "new"\n\n- DevTools VEPath: Panel: elements > Tree: elements > TreeItem',
     );
     assert.strictEqual(
         threads[1].text,
-        'Changed text from "Submit" to "Send"\n\n- DevTools element: button.cta',
+        'Changed text from "Submit" to "Send"\n\n- DevTools VEPath: Panel: elements > Tree: elements > TreeItem\n- DevTools element: button.cta',
     );
   });
 

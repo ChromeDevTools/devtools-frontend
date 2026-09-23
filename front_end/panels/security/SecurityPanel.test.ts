@@ -696,6 +696,47 @@ describeWithEnvironment('SecurityPanel', () => {
         '.security-main-view-reload-message'));
   });
 
+  it('does not show blank origins in the sidebar', async () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+
+    const request1 = createNetworkRequest({
+      url: 'https://foo.test/foo.jpg',
+      documentURL: 'https://foo.test',
+      frameId: '0',
+      loaderId: '0',
+    });
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request1);
+
+    const request2 = createNetworkRequest({
+      url:
+          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAKCAYAAABmBXS+AAAAPElEQVR42mNgQAMZGRn/GfABkIIdO3b8x6kQpgAEsCpEVgADKAqxKcBQCCLwARRFIBodYygiyiSCighhAO4e2jskhrm3AAAAAElFTkSuQmCC',
+      documentURL: 'https://foo.test',
+      frameId: '0',
+      loaderId: '0',
+    });
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request2);
+    await doubleRaf();
+
+    const sidebarRoot = securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!;
+    const groupTitles = Array.from(sidebarRoot.querySelectorAll('.security-sidebar-origins-title'))
+                            .filter(element => element.checkVisibility())
+                            .map(element => element.textContent);
+    assert.deepEqual(groupTitles, ['Main origin', 'Unknown / canceled']);
+
+    const allOriginElements = sidebarRoot.querySelectorAll<HTMLLIElement>('.security-sidebar-tree-item');
+    assert.lengthOf(allOriginElements, 1);
+
+    const unknownOriginGroup = sidebarRoot.querySelector('[aria-label="Unknown / canceled"]');
+    assert.exists(unknownOriginGroup);
+    const originElements = unknownOriginGroup.querySelectorAll<HTMLLIElement>('.security-sidebar-tree-item');
+    assert.lengthOf(originElements, 1);
+    const originElement = querySelectorErrorOnMissing(originElements[0], '.highlighted-url');
+    assert.strictEqual(originElement.textContent, 'https://foo.test');
+  });
+
   it('shows origins with blockable and optionally blockable resources in the sidebar', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
 

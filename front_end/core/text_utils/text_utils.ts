@@ -5,6 +5,7 @@
 import * as CodeMirrorUtils from './CodeMirrorUtils.js';
 import * as ContentData from './ContentData.js';
 import * as ContentProvider from './ContentProvider.js';
+import * as Markdown from './Markdown.js';
 import * as StaticContentProvider from './StaticContentProvider.js';
 import * as StreamingContentData from './StreamingContentData.js';
 import * as Text from './Text.js';
@@ -17,6 +18,7 @@ export {
   CodeMirrorUtils,
   ContentData,
   ContentProvider,
+  Markdown,
   StaticContentProvider,
   StreamingContentData,
   Text,

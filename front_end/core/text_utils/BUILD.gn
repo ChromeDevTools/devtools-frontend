@@ -12,6 +12,7 @@ devtools_foundation_module("text_utils") {
     "CodeMirrorUtils.ts",
     "ContentData.ts",
     "ContentProvider.ts",
+    "Markdown.ts",
     "StaticContentProvider.ts",
     "StreamingContentData.ts",
     "Text.ts",
@@ -25,6 +26,7 @@ devtools_foundation_module("text_utils") {
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../third_party/codemirror.next:bundle",
+    "../../third_party/marked:bundle",
   ]
 }
 
@@ -58,6 +60,7 @@ devtools_foundation_module("foundation_unittests") {
 
   sources = [
     "ContentData.test.ts",
+    "Markdown.test.ts",
     "StaticContentProvider.test.ts",
     "StreamingContentData.test.ts",
     "Text.test.ts",

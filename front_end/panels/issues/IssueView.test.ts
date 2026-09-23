@@ -87,4 +87,64 @@ describeWithEnvironment('IssueView', () => {
     assert.strictEqual(row.getAttribute('data-backend-node-id'), '42');
     assert.strictEqual(row.getAttribute('data-target-id'), target.id());
   });
+
+  it('renders issue title and substitutes placeholders in description body using MarkdownPlaceholderLitRenderer',
+     () => {
+       const aggregationKey = 'key' as unknown as IssuesManager.IssueAggregator.AggregationKey;
+       const issue = StubIssue.createFromRequestIds(['id1']);
+       const aggregatedIssue = new IssuesManager.IssueAggregator.AggregatedIssue('code', aggregationKey);
+       aggregatedIssue.addInstance(issue);
+       const description = IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(
+           '# Fallback heading\n\nCheck {PLACEHOLDER_message} for details.', {
+             file: '<unused>',
+             title: 'Deprecated feature used',
+             links: [],
+             substitutions: new Map([
+               ['PLACEHOLDER_message', 'body details'],
+             ]),
+           });
+       const view = new Issues.IssueView.IssueView(aggregatedIssue, description);
+       const treeOutline = new UI.TreeOutline.TreeOutline();
+       treeOutline.appendChild(view);
+
+       assert.strictEqual(view.getIssueTitle(), 'Deprecated feature used');
+       assert.strictEqual(view.listItemElement.querySelector('.title')?.textContent, 'Deprecated feature used');
+       const markdownView = view.childrenListElement.querySelector('devtools-markdown-view');
+       assert.exists(markdownView);
+       assert.strictEqual(markdownView.shadowRoot?.querySelector('.markdown-placeholder')?.textContent, 'body details');
+       view.clear();
+     });
+
+  it('safely escapes HTML, Markdown links, and Unicode BiDi overrides in MarkdownView body without double-escaping special characters',
+     () => {
+       const aggregationKey = 'key' as unknown as IssuesManager.IssueAggregator.AggregationKey;
+       const issue = StubIssue.createFromRequestIds(['id1']);
+       const aggregatedIssue = new IssuesManager.IssueAggregator.AggregatedIssue('code', aggregationKey);
+       aggregatedIssue.addInstance(issue);
+       const description = IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(
+           '# Issue title\n\nBody with \'quotes\' & {PLACEHOLDER_message}.', {
+             file: '<unused>',
+             links: [],
+             substitutions: new Map([
+               [
+                 'PLACEHOLDER_message',
+                 '<script>alert(1)</script> [MDN](https://developer.mozilla.org) & \'val\' \u202Espoof',
+               ],
+             ]),
+           });
+       const view = new Issues.IssueView.IssueView(aggregatedIssue, description);
+       const treeOutline = new UI.TreeOutline.TreeOutline();
+       treeOutline.appendChild(view);
+
+       const markdownView = view.childrenListElement.querySelector('devtools-markdown-view');
+       assert.exists(markdownView);
+       const placeholderElement = markdownView.shadowRoot?.querySelector('.markdown-placeholder');
+       assert.exists(placeholderElement);
+       assert.strictEqual(placeholderElement.textContent,
+                          '<script>alert(1)</script> [MDN](https://developer.mozilla.org) & \'val\' \\u202Espoof');
+       assert.isNull(markdownView.shadowRoot?.querySelector('script'));
+       assert.isNull(markdownView.shadowRoot?.querySelector('a'));
+       assert.isNull(markdownView.shadowRoot?.querySelector('devtools-link'));
+       view.clear();
+     });
 });

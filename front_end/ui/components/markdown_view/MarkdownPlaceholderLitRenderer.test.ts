@@ -4,6 +4,8 @@
 
 import {assert} from 'chai';
 
+import * as Protocol from '../../../generated/protocol.js';
+import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
@@ -265,4 +267,91 @@ describeWithEnvironment('MarkdownPlaceholderLitRenderer', () => {
     const innerImg = imgComponent.shadowRoot?.querySelector('img');
     assert.strictEqual(innerImg?.getAttribute('alt'), 'Icon for warning');
   });
+
+  it('renders CookieDeprecationMetadataIssue opt-out and non-opt-out descriptions with proper <devtools-link> and placeholder values',
+     async () => {
+       MarkdownView.MarkdownLinksMap.markdownLinks.set('chromeSettingsThirdPartyCookies', 'chrome://settings/cookies');
+       MarkdownView.MarkdownLinksMap.markdownLinks.set(
+           'gracePeriodStagedControlExplainer',
+           'https://developers.google.com/privacy-sandbox/blog/grace-period-opt-out');
+
+       const optOutIssue = new IssuesManager.CookieDeprecationMetadataIssue.CookieDeprecationMetadataIssue({
+         allowedSites: ['example.com'],
+         optOutPercentage: 25,
+         isOptOutTopLevel: true,
+         operation: Protocol.Audits.CookieOperation.ReadCookie,
+       },
+                                                                                                           null);
+       const optOutDesc = optOutIssue.getDescription();
+       assert.exists(optOutDesc);
+       const parsedOptOut = await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(optOutDesc);
+
+       const optOutComponent = new MarkdownView.MarkdownView.MarkdownView();
+       renderElementIntoDOM(optOutComponent);
+       optOutComponent.data = {
+         tokens: parsedOptOut.markdown,
+         renderer:
+             new MarkdownView.MarkdownPlaceholderLitRenderer.MarkdownPlaceholderLitRenderer(parsedOptOut.substitutions),
+       };
+
+       const placeholderSpan = optOutComponent.shadowRoot?.querySelector('.markdown-placeholder');
+       assert.exists(placeholderSpan);
+       assert.strictEqual(placeholderSpan.textContent, '25');
+       const links = Array.from(optOutComponent.shadowRoot?.querySelectorAll('devtools-link') ?? []);
+       assert.include(links.map(l => l.textContent), 'learn more');
+
+       const nonOptOutIssue = new IssuesManager.CookieDeprecationMetadataIssue.CookieDeprecationMetadataIssue({
+         allowedSites: ['example.com'],
+         optOutPercentage: 0,
+         isOptOutTopLevel: false,
+         operation: Protocol.Audits.CookieOperation.SetCookie,
+       },
+                                                                                                              null);
+       const nonOptOutDesc = nonOptOutIssue.getDescription();
+       assert.exists(nonOptOutDesc);
+       const parsedNonOptOut =
+           await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(nonOptOutDesc);
+
+       const nonOptOutComponent = new MarkdownView.MarkdownView.MarkdownView();
+       renderElementIntoDOM(nonOptOutComponent, {allowMultipleChildren: true});
+       nonOptOutComponent.data = {
+         tokens: parsedNonOptOut.markdown,
+         renderer: new MarkdownView.MarkdownPlaceholderLitRenderer.MarkdownPlaceholderLitRenderer(
+             parsedNonOptOut.substitutions),
+       };
+       assert.isNull(nonOptOutComponent.shadowRoot?.querySelector('.markdown-placeholder'));
+     });
+
+  it('renders SRIMessageSignatureIssue ValidationFailedIntegrityMismatch assertions inside <devtools-code-block>',
+     async () => {
+       const [sriIssue] = IssuesManager.SRIMessageSignatureIssue.SRIMessageSignatureIssue.fromInspectorIssue(null, {
+         code: Protocol.Audits.InspectorIssueCode.SRIMessageSignatureIssue,
+         details: {
+           sriMessageSignatureIssueDetails: {
+             error: Protocol.Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch,
+             request: {
+               requestId: 'req-1' as Protocol.Network.RequestId,
+               url: 'https://example.com/',
+             },
+             signatureBase: 'sig-base',
+             integrityAssertions: ['ed25519-assertion1', 'ed25519-assertion2'],
+           },
+         },
+       });
+       const desc = sriIssue.getDescription();
+       assert.exists(desc);
+       const parsed = await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(desc);
+
+       const component = new MarkdownView.MarkdownView.MarkdownView();
+       renderElementIntoDOM(component);
+       component.data = {
+         tokens: parsed.markdown,
+         renderer: new MarkdownView.MarkdownPlaceholderLitRenderer.MarkdownPlaceholderLitRenderer(parsed.substitutions),
+       };
+
+       const codeBlock = component.shadowRoot?.querySelector('devtools-code-block');
+       assert.exists(codeBlock);
+       assert.strictEqual((codeBlock as MarkdownView.CodeBlock.CodeBlock).code,
+                          'ed25519-assertion1\ned25519-assertion2');
+     });
 });

@@ -32,7 +32,6 @@ describe('createIssueDescriptionFromMarkdown', () => {
         () => IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(
             invalidIssueDescription, emptyMarkdownDescription));
   });
-
   it('overrides the Markdown heading title with description.title while still validating that a heading exists', () => {
     const descriptionWithTitle = {
       file: '<unused>',
@@ -49,63 +48,40 @@ describe('createIssueDescriptionFromMarkdown', () => {
     assert.throws(() => IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(
                       invalidIssueDescription, descriptionWithTitle));
   });
-});
 
-describe('substitutePlaceholders', () => {
-  it('returns the input as-is, with no placeholders present in the input', () => {
-    const str = 'Example string with no placeholders';
+  it('tokenizes placeholders into AST nodes without substituting untrusted strings before Markdown lexing', () => {
+    const rawMarkdown = '# Issue Title\n\nBody with {PLACEHOLDER_Untrusted}.';
+    const description = IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(rawMarkdown, {
+      file: '<unused>',
+      links: [],
+      substitutions: new Map([
+        ['PLACEHOLDER_Untrusted', '[Spoofed Link](https://example.com)'],
+      ]),
+    });
 
-    assert.strictEqual(IssuesManager.MarkdownIssueDescription.substitutePlaceholders(str), str);
+    const paragraph = description.markdown.find(t => t.type === 'paragraph');
+    assert.exists(paragraph);
+    const tokens = 'tokens' in paragraph && paragraph.tokens ? paragraph.tokens : [];
+    assert.isTrue(tokens.some(t => t.type === 'placeholder'));
+    assert.isFalse(tokens.some(t => t.type === 'link'));
   });
 
-  it('subsitutes a single placeholder', () => {
-    const str = 'Example string with a single {PLACEHOLDER_placeholder}';
+  it('validates placeholder names and required replacements during description creation', () => {
+    assert.throws(() => {
+      IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(
+          '# Title\n\nMissing {PLACEHOLDER_Missing}', {
+            file: '<unused>',
+            links: [],
+            substitutions: new Map(),
+          });
+    }, /No replacement provided for placeholder 'PLACEHOLDER_Missing'/);
 
-    const actual = IssuesManager.MarkdownIssueDescription.substitutePlaceholders(
-        str, new Map<string, string>([['PLACEHOLDER_placeholder', 'fooholder']]));
-    assert.strictEqual(actual, 'Example string with a single fooholder');
-  });
-
-  it('substitutes multiple placeholders', () => {
-    const str = 'Example string with two placeholders, \'{PLACEHOLDER_ph1}\' and \'{PLACEHOLDER_ph2}\'.';
-
-    const actual = IssuesManager.MarkdownIssueDescription.substitutePlaceholders(
-        str, new Map<string, string>([['PLACEHOLDER_ph1', 'foo'], ['PLACEHOLDER_ph2', 'bar']]));
-    assert.strictEqual(actual, 'Example string with two placeholders, \'foo\' and \'bar\'.');
-  });
-
-  it('throws an error for placeholders that don\'t have a replacement in the map', () => {
-    const str = 'Example string where a replacement for {PLACEHOLDER_placeholder} is not provided.';
-
-    assert.throws(() => IssuesManager.MarkdownIssueDescription.substitutePlaceholders(str));
-  });
-
-  it('ignores placeholder syntax where the placeholder doesn\'t have the PLACEHOLDER prefix', () => {
-    const str = 'Example string with a {placeholder} that must be ignored.';
-
-    assert.strictEqual(IssuesManager.MarkdownIssueDescription.substitutePlaceholders(str), str);
-  });
-
-  it('throws an error for unused replacements', () => {
-    const str = 'Example string with no placeholder';
-
-    assert.throws(
-        () =>
-            IssuesManager.MarkdownIssueDescription.substitutePlaceholders(str, new Map([['PLACEHOLDER_FOO', 'bar']])));
-  });
-
-  it('allows the same placeholder to be used multiple times', () => {
-    const str = 'Example string with the same placeholder used twice: {PLACEHOLDER_PH1} {PLACEHOLDER_PH1}';
-
-    const actual =
-        IssuesManager.MarkdownIssueDescription.substitutePlaceholders(str, new Map([['PLACEHOLDER_PH1', 'foo']]));
-    assert.strictEqual(actual, 'Example string with the same placeholder used twice: foo foo');
-  });
-
-  it('throws an error for invalid placeholder syntax provided in the substitutions map', () => {
-    const str = 'Example string with no placeholder';
-
-    assert.throws(
-        () => IssuesManager.MarkdownIssueDescription.substitutePlaceholders(str, new Map([['invalid_ph', 'foo']])));
+    assert.throws(() => {
+      IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown('# Title\n\nBody', {
+        file: '<unused>',
+        links: [],
+        substitutions: new Map([['PLACEHOLDER_Unused', 'val']]),
+      });
+    }, /Unused replacements provided: PLACEHOLDER_Unused/);
   });
 });

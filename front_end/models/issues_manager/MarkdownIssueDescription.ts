@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Marked from '../../third_party/marked/marked.js';
 
 /**
@@ -75,9 +76,8 @@ export async function getMarkdownFileContent(filename: string): Promise<string> 
 
 export async function createIssueDescriptionFromMarkdown(description: MarkdownIssueDescription):
     Promise<IssueDescription> {
-  const rawMarkdown = await getMarkdownFileContent(description.file);
-  const rawMarkdownWithPlaceholdersReplaced = substitutePlaceholders(rawMarkdown, description.substitutions);
-  return createIssueDescriptionFromRawMarkdown(rawMarkdownWithPlaceholdersReplaced, description);
+  const markdown = await getMarkdownFileContent(description.file);
+  return createIssueDescriptionFromRawMarkdown(markdown, description);
 }
 
 /**
@@ -85,7 +85,7 @@ export async function createIssueDescriptionFromMarkdown(description: MarkdownIs
  */
 export function createIssueDescriptionFromRawMarkdown(
     markdown: string, description: MarkdownIssueDescription): IssueDescription {
-  const markdownAst = Marked.Marked.lexer(markdown);
+  const markdownAst = TextUtils.Markdown.tokenizeWithPlaceholders(markdown, description.substitutions);
   const markdownTitle = findTitleFromMarkdownAst(markdownAst);
   if (!markdownTitle) {
     throw new Error('Markdown issue descriptions must start with a heading');
@@ -97,49 +97,6 @@ export function createIssueDescriptionFromRawMarkdown(
     links: description.links,
     substitutions: description.substitutions,
   };
-}
-
-const validPlaceholderMatchPattern = /\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*)\}/g;
-const validPlaceholderNamePattern = /PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*/;
-
-/**
- * Replaces placeholders in markdown text with a string provided by the
- * `substitutions` map. To keep mental overhead to a minimum, the same
- * syntax is used as for l10n placeholders. Please note that the
- * placeholders require a mandatory 'PLACEHOLDER_' prefix.
- *
- * Example:
- *   const str = "This is markdown with `code` and two placeholders, namely {PLACEHOLDER_PH1} and {PLACEHOLDER_PH2}".
- *   const result = substitutePlaceholders(str, new Map([['PLACEHOLDER_PH1', 'foo'], ['PLACEHOLDER_PH2', 'bar']]));
- *
- * Exported only for unit testing.
- */
-export function substitutePlaceholders(markdown: string, substitutions?: Map<string, string>): string {
-  const unusedPlaceholders = new Set(substitutions ? substitutions.keys() : []);
-  validatePlaceholders(unusedPlaceholders);
-
-  const result = markdown.replace(validPlaceholderMatchPattern, (_, placeholder) => {
-    const replacement = substitutions ? substitutions.get(placeholder) : undefined;
-    if (replacement === undefined) {
-      throw new Error(`No replacement provided for placeholder '${placeholder}'.`);
-    }
-    unusedPlaceholders.delete(placeholder);
-    return replacement;
-  });
-
-  if (unusedPlaceholders.size > 0) {
-    throw new Error(`Unused replacements provided: ${[...unusedPlaceholders]}`);
-  }
-
-  return result;
-}
-
-/** Ensure that all provided placeholders match the naming pattern. **/
-function validatePlaceholders(placeholders: Set<string>): void {
-  const invalidPlaceholders = [...placeholders].filter(placeholder => !validPlaceholderNamePattern.test(placeholder));
-  if (invalidPlaceholders.length > 0) {
-    throw new Error(`Invalid placeholders provided in the substitutions map: ${invalidPlaceholders}`);
-  }
 }
 
 export function findTitleFromMarkdownAst(markdownAst: Marked.Marked.Token[]): string|null {

@@ -435,7 +435,11 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     messageElement.setCollapsible(false);
     messageElement.selectable = false;
     const markdownComponent = new MarkdownView.MarkdownView.MarkdownView();
-    markdownComponent.data = {tokens: this.#description.markdown};
+    markdownComponent.data = {
+      tokens: this.#description.markdown,
+      renderer: new MarkdownView.MarkdownPlaceholderLitRenderer.MarkdownPlaceholderLitRenderer(
+          this.#description.substitutions),
+    };
     messageElement.listItemElement.appendChild(markdownComponent);
     UI.ARIAUtils.setPositionInSet(messageElement.listItemElement, 1);
     UI.ARIAUtils.setSetSize(messageElement.listItemElement, this.#description.links.length === 0 ? 2 : 3);

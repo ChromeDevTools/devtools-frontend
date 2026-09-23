@@ -1050,6 +1050,7 @@ grd_files_unbundled_sources = [
   "front_end/core/text_utils/CodeMirrorUtils.js",
   "front_end/core/text_utils/ContentData.js",
   "front_end/core/text_utils/ContentProvider.js",
+  "front_end/core/text_utils/Markdown.js",
   "front_end/core/text_utils/StaticContentProvider.js",
   "front_end/core/text_utils/StreamingContentData.js",
   "front_end/core/text_utils/Text.js",

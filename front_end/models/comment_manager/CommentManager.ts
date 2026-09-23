@@ -123,7 +123,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
   takeComments(): CommentThread[] {
     const threads: CommentThread[] = [];
     for (const thread of this.#commentThreads.values()) {
-      if (thread.status === 'ACTIVE' && !thread.transmitted) {
+      if (thread.status === 'SENT_TO_AGENT' && !thread.transmitted) {
         thread.transmitted = true;
         threads.push(thread);
       }

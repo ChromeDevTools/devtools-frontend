@@ -108,6 +108,12 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       details.push(`- Editor: ${editorInfo}`);
     }
 
+    if (thread.changes?.length) {
+      for (const change of thread.changes) {
+        details.push(`- Change: ${change.description}`);
+      }
+    }
+
     if (details.length === 0) {
       return rawText;
     }

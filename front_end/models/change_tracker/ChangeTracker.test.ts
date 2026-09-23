@@ -48,6 +48,7 @@ describe('ChangeTracker', () => {
 
     const threads = commentManager.getCommentThreads();
     assert.lengthOf(threads, 1);
+    assert.strictEqual(threads[0].status, 'ACTIVE');
     assert.strictEqual(threads[0].anchor.node?.backendNodeId, 1);
     assert.strictEqual(threads[0].anchor.textSignature, '#test');
     assert.isEmpty(threads[0].comments);

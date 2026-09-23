@@ -389,7 +389,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       draftInput.onAddComment('Sent comment');
       const submittedInput = await view.nextInput;
       assert.isNotNull(submittedInput.activeThread);
-      assert.strictEqual(submittedInput.activeThread.status, 'ACTIVE');
+      assert.strictEqual(submittedInput.activeThread.status, 'SENT_TO_AGENT');
 
       clock.tick(1999);
       assert.isNotNull(view.input.activeThread);

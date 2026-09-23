@@ -120,4 +120,40 @@ describe('CommentThread', () => {
     assert.strictEqual(thread.comments[0].text, 'First comment');
     assert.strictEqual(thread.comments[0].author, 'DEVELOPER');
   });
+
+  it('sendToAgent() transitions DRAFT or ACTIVE to SENT_TO_AGENT, assigns index, appends optional text, and dispatches CHANGED',
+     () => {
+       let changeCount = 0;
+       const thread1 = new CommentManager.CommentThread.CommentThread({
+         anchor: defaultAnchor,
+       });
+       thread1.addEventListener(CommentManager.CommentThread.Events.CHANGED, () => {
+         changeCount++;
+       });
+
+       assert.strictEqual(thread1.status, 'DRAFT');
+       thread1.sendToAgent('Send from draft');
+       assert.strictEqual(thread1.status, 'SENT_TO_AGENT');
+       assert.strictEqual(thread1.index, 1);
+       assert.strictEqual(changeCount, 1);
+       assert.lengthOf(thread1.comments, 1);
+       assert.strictEqual(thread1.comments[0].text, 'Send from draft');
+
+       // Calling sendToAgent() again without text does not dispatch CHANGED
+       thread1.sendToAgent();
+       assert.strictEqual(thread1.status, 'SENT_TO_AGENT');
+       assert.strictEqual(changeCount, 1);
+
+       // Transition from ACTIVE (saved) to SENT_TO_AGENT preserves saved index
+       const thread2 = new CommentManager.CommentThread.CommentThread({
+         anchor: defaultAnchor,
+       });
+       thread2.save();
+       assert.strictEqual(thread2.status, 'ACTIVE');
+       assert.strictEqual(thread2.index, 2);
+
+       thread2.sendToAgent();
+       assert.strictEqual(thread2.status, 'SENT_TO_AGENT');
+       assert.strictEqual(thread2.index, 2);
+     });
 });

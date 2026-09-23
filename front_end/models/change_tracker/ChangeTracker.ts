@@ -45,6 +45,7 @@ export class ChangeTracker {
     }
 
     const thread = this.#commentManager.createCommentThread(anchor, undefined, undefined, [record]);
+    thread.save();
     this.#records.set(thread.id, record);
     this.#lastRecord = record;
     return record;

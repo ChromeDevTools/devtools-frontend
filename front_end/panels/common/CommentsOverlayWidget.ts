@@ -341,7 +341,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         if (!activeThread) {
           return;
         }
-        activeThread.save(text);
+        activeThread.sendToAgent(text);
         const threadId = activeThread.id;
         this.#closeTimeoutId = window.setTimeout(() => {
           this.#closeTimeoutId = null;

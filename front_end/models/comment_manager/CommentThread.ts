@@ -64,7 +64,7 @@ export interface ChangeRecord {
   timestamp: number;
 }
 
-export type CommentThreadStatus = 'DRAFT'|'ACTIVE'|'RESOLVED';
+export type CommentThreadStatus = 'DRAFT'|'ACTIVE'|'SENT_TO_AGENT'|'RESOLVED';
 
 export const enum Events {
   CHANGED = 'Changed',
@@ -106,21 +106,42 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return this.#savedIndex ?? CommentThread.#nextIndex;
   }
 
-  save(text?: string, author: 'DEVELOPER'|'AGENT' = 'DEVELOPER'): void {
-    let changed = false;
+  /**
+   * Returns whether it was changed.
+   */
+  #saveText(text?: string, author: 'DEVELOPER'|'AGENT' = 'DEVELOPER'): boolean {
     if (text && text.trim().length > 0) {
       this.comments.push({
         author,
         text: text.trim(),
         timestamp: Date.now(),
       });
-      changed = true;
+      return true;
     }
+    return false;
+  }
+
+  save(text?: string, author: 'DEVELOPER'|'AGENT' = 'DEVELOPER'): void {
+    let changed = this.#saveText(text, author);
     if (this.status === 'DRAFT') {
       if (this.#savedIndex === undefined) {
         this.#savedIndex = CommentThread.#nextIndex++;
       }
       this.status = 'ACTIVE';
+      changed = true;
+    }
+    if (changed) {
+      this.dispatchEventToListeners(Events.CHANGED);
+    }
+  }
+
+  sendToAgent(text?: string, author: 'DEVELOPER'|'AGENT' = 'DEVELOPER'): void {
+    let changed = this.#saveText(text, author);
+    if (this.status === 'DRAFT' || this.status === 'ACTIVE') {
+      if (this.#savedIndex === undefined) {
+        this.#savedIndex = CommentThread.#nextIndex++;
+      }
+      this.status = 'SENT_TO_AGENT';
       changed = true;
     }
     if (changed) {

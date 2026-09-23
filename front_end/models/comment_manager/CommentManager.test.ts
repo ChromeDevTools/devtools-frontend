@@ -255,7 +255,14 @@ describe('CommentManager', () => {
     assert.isEmpty(manager.takeComments());
     assert.isFalse(thread1.transmitted);
 
+    // Returns empty array when thread is in ACTIVE (saved, unsent) state
     thread1.save();
+    assert.strictEqual(thread1.status, 'ACTIVE');
+    assert.isEmpty(manager.takeComments());
+    assert.isFalse(thread1.transmitted);
+
+    thread1.sendToAgent();
+    assert.strictEqual(thread1.status, 'SENT_TO_AGENT');
 
     const taken = manager.takeComments();
     assert.lengthOf(taken, 1);
@@ -269,12 +276,12 @@ describe('CommentManager', () => {
     const takenAgain = manager.takeComments();
     assert.lengthOf(takenAgain, 0);
 
-    // Creating another thread makes it available in takeComments after save()
+    // Creating another thread makes it available in takeComments after sendToAgent()
     const thread2 = manager.createCommentThread(anchor, 'Second thread', 'DEVELOPER');
     assert.isFalse(thread2.transmitted);
     assert.isEmpty(manager.takeComments());
 
-    thread2.save();
+    thread2.sendToAgent();
 
     const takenNew = manager.takeComments();
     assert.lengthOf(takenNew, 1);

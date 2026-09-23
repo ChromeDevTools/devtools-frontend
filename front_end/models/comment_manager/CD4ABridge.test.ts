@@ -55,6 +55,10 @@ describe('CD4ABridge', () => {
         'DEVELOPER',
     );
     thread.save();
+    // Saved (ACTIVE) threads are not exposed over the bridge until sent to agent
+    assert.isEmpty(bridge.getCommentThreads());
+
+    thread.sendToAgent();
 
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 1);
@@ -93,7 +97,7 @@ describe('CD4ABridge', () => {
         },
         'Check variable',
     );
-    thread.save();
+    thread.sendToAgent();
 
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 1);
@@ -137,7 +141,7 @@ describe('CD4ABridge', () => {
         'Missing target comment',
         'DEVELOPER',
     );
-    thread.save();
+    thread.sendToAgent();
 
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 1);
@@ -159,11 +163,63 @@ describe('CD4ABridge', () => {
       text: 'Second comment',
       timestamp: Date.now(),
     });
-    thread.save();
+    thread.sendToAgent();
 
     const threads = bridge.getCommentThreads();
     assert.lengthOf(threads, 1);
     assert.strictEqual(threads[0].text, 'First comment\n\n- DevTools element: h1');
+  });
+
+  it('formats tracked change descriptions on threads with or without comment text', () => {
+    const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager);
+
+    const changeOnlyThread = commentManager.createCommentThread(
+        {
+          vePath: 'Panel: elements > Tree: elements > TreeItem',
+          textSignature: '',
+        },
+        undefined,
+        'DEVELOPER',
+        [
+          {
+            id: 'change-1',
+            description: 'Changed attribute "class" from "old" to "new"',
+            timestamp: 1000,
+          },
+          {
+            id: 'change-2',
+            description: 'Hid element <div>',
+            timestamp: 1500,
+          },
+        ],
+    );
+    changeOnlyThread.sendToAgent();
+
+    const commentAndChangeThread = commentManager.createCommentThread(
+        {
+          vePath: 'Panel: elements > Tree: elements > TreeItem',
+          textSignature: 'button.cta',
+        },
+        'Keep this change',
+        'DEVELOPER',
+        [{
+          id: 'change-3',
+          description: 'Changed text from "Submit" to "Send"',
+          timestamp: 2000,
+        }],
+    );
+    commentAndChangeThread.sendToAgent();
+
+    const threads = bridge.getCommentThreads();
+    assert.lengthOf(threads, 2);
+    assert.strictEqual(
+        threads[0].text,
+        '- Change: Changed attribute "class" from "old" to "new"\n- Change: Hid element <div>',
+    );
+    assert.strictEqual(
+        threads[1].text,
+        'Keep this change\n\n- DevTools element: button.cta\n- Change: Changed text from "Submit" to "Send"',
+    );
   });
 
   it('delegates resolve to CommentManager and dispatches events', () => {

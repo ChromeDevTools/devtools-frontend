@@ -6,6 +6,7 @@ import * as CodeBlock from './CodeBlock.js';
 import * as MarkdownImage from './MarkdownImage.js';
 import * as MarkdownImagesMap from './MarkdownImagesMap.js';
 import * as MarkdownLinksMap from './MarkdownLinksMap.js';
+import * as MarkdownPlaceholderLitRenderer from './MarkdownPlaceholderLitRenderer.js';
 import * as MarkdownView from './MarkdownView.js';
 
 export {
@@ -13,5 +14,6 @@ export {
   MarkdownImage,
   MarkdownImagesMap,
   MarkdownLinksMap,
+  MarkdownPlaceholderLitRenderer,
   MarkdownView,
 };

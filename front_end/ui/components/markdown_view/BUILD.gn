@@ -23,10 +23,12 @@ devtools_ui_module("markdown_view") {
     "MarkdownImage.ts",
     "MarkdownImagesMap.ts",
     "MarkdownLinksMap.ts",
+    "MarkdownPlaceholderLitRenderer.ts",
     "MarkdownView.ts",
   ]
   ts_deps = [
     "../../../core/i18n:bundle",
+    "../../../core/platform:bundle",
     "../../../third_party/codemirror.next:bundle",
     "../../../third_party/marked:bundle",
     "../../kit:bundle",
@@ -55,6 +57,7 @@ devtools_ui_module("unittests") {
   sources = [
     "CodeBlock.test.ts",
     "MarkdownImage.test.ts",
+    "MarkdownPlaceholderLitRenderer.test.ts",
     "MarkdownView.test.ts",
   ]
 

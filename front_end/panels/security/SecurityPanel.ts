@@ -1562,6 +1562,14 @@ function renderCertificateTransparencySection(input: CertificateTransparencySect
   // clang-format on
 }
 
+function renderNoteSection(loadedFromCache: boolean): TemplateResult {
+  // clang-format off
+  return html`
+    ${loadedFromCache ? html`<div>${i18nString(UIStrings.thisResponseWasLoadedFromCache)}</div>` : nothing}
+    <div>${i18nString(UIStrings.theSecurityDetailsAboveAreFrom)}</div>`;
+  // clang-format on
+}
+
 export class SecurityOriginView extends UI.Widget.VBox {
   readonly #origin: Platform.DevToolsPath.UrlString;
   readonly #titleSection: HTMLElement;
@@ -1586,16 +1594,13 @@ export class SecurityOriginView extends UI.Widget.VBox {
 
       const sctListLength = originState.securityDetails.signedCertificateTimestampList.length;
       const ctCompliance = originState.securityDetails.certificateTransparencyCompliance;
-      if (!sctListLength && ctCompliance === Protocol.Network.CertificateTransparencyCompliance.Unknown) {
-        return;
+      if (sctListLength || ctCompliance !== Protocol.Network.CertificateTransparencyCompliance.Unknown) {
+        this.#createCertificateTransparencySection(originState.securityDetails);
       }
-      this.#createCertificateTransparencySection(originState.securityDetails);
 
       const noteSection = this.element.createChild('div', 'origin-view-section origin-view-notes');
-      if (originState.loadedFromCache) {
-        noteSection.createChild('div').textContent = i18nString(UIStrings.thisResponseWasLoadedFromCache);
-      }
-      noteSection.createChild('div').textContent = i18nString(UIStrings.theSecurityDetailsAboveAreFrom);
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(renderNoteSection(originState.loadedFromCache), noteSection);
     } else if (originState.securityState === Protocol.Security.SecurityState.Secure) {
       // If the security state is secure but there are no security details,
       // this means that the origin is a non-cryptographic secure origin, e.g.

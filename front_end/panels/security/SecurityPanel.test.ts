@@ -388,7 +388,6 @@ describeWithEnvironment('SecurityOriginView', () => {
           }));
 
       assert.notExists(view.element.querySelector('.certificate-transparency-section'));
-      assert.notExists(view.element.querySelector('.origin-view-notes'));
     });
 
     it('renders without a note when the SCT list is not empty and compliance is unknown', () => {
@@ -471,6 +470,85 @@ describeWithEnvironment('SecurityOriginView', () => {
       assert.strictEqual(toggle.accessibleLabel, 'Hide full details');
       assert.isTrue(toggle.accessibleExpanded);
     });
+  });
+
+  describe('note section', () => {
+    function getNoteTexts(view: Security.SecurityPanel.SecurityOriginView): string[] {
+      const notes = querySelectorErrorOnMissing(view.element, '.origin-view-notes');
+      return Array.from(notes.children, note => note.textContent ?? '');
+    }
+
+    it('renders when security details are available', () => {
+      const originState = createOriginState();
+      originState.securityDetails = {
+        protocol: 'TLS 1.3',
+        keyExchange: '',
+        cipher: 'AES_128_GCM',
+        certificateId: 0 as Protocol.Security.CertificateId,
+        subjectName: 'example.com',
+        sanList: [],
+        issuer: 'Test CA',
+        validFrom: 0,
+        validTo: 1,
+        signedCertificateTimestampList: [],
+        certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
+        encryptedClientHello: false,
+      };
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+
+      assert.deepEqual(getNoteTexts(view), ['The security details above are from the first inspected response.']);
+    });
+
+    it('does not render when security details are null', () => {
+      const originState = createOriginState();
+      originState.securityDetails = null;
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+
+      assert.notExists(view.element.querySelector('.origin-view-notes'));
+    });
+
+    it('renders with the cache note when loadedFromCache is true', () => {
+      const originState = createOriginState();
+      originState.loadedFromCache = true;
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+
+      assert.deepEqual(getNoteTexts(view), [
+        'This response was loaded from cache. Some security details might be missing.',
+        'The security details above are from the first inspected response.',
+      ]);
+    });
+
+    it('renders when the SCT list is not empty', () => {
+      const originState = createOriginState({
+        signedCertificateTimestampList: [{
+          logDescription: 'Test log',
+          logId: '00',
+          status: 'Verified',
+          origin: 'Embedded in certificate',
+          timestamp: 0,
+          hashAlgorithm: 'SHA-256',
+          signatureAlgorithm: 'ECDSA',
+          signatureData: '00',
+        }],
+      });
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+
+      assert.exists(view.element.querySelector('.origin-view-notes'));
+    });
+
+    const compliances = [
+      Protocol.Network.CertificateTransparencyCompliance.Unknown,
+      Protocol.Network.CertificateTransparencyCompliance.Compliant,
+      Protocol.Network.CertificateTransparencyCompliance.NotCompliant,
+    ];
+    for (const compliance of compliances) {
+      it(`renders when certificate transparency compliance is ${compliance}`, () => {
+        const originState = createOriginState({certificateTransparencyCompliance: compliance});
+        const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+
+        assert.exists(view.element.querySelector('.origin-view-notes'));
+      });
+    }
   });
 
   it('renders an empty SAN', () => {

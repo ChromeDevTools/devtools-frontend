@@ -141,7 +141,7 @@ describe('ElementsTreeElement', () => {
     target.style.height = '20px';
     const style = document.createElement('style');
     // FIXME: styles are currently external to ElementsTreeElement.
-    style.innerText = Elements.ElementsTreeOutline.elementsTreeOutlineStyles;
+    style.innerText = Elements.DOMTreeWidget.elementsTreeOutlineStyles;
     target.append(style);
     renderElementIntoDOM(target, {
       includeCommonStyles: true,
@@ -443,7 +443,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
     sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
     sinon.stub(node, 'nodeName').returns('DIV');
-    const domTreeWidget = new Elements.ElementsTreeOutline.DOMTreeWidget();
+    const domTreeWidget = new Elements.DOMTreeWidget.DOMTreeWidget();
     const event = new Event('contextmenu');
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     await Elements.DOMTreeContextMenu.populateNodeContextMenu(contextMenu, domTreeWidget, node);
@@ -535,7 +535,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
     sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
     sinon.stub(node, 'nodeName').returns('DIV');
-    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
     const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
     treeElement.treeOutline = treeOutline;
 
@@ -567,7 +567,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
     sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
     sinon.stub(node, 'nodeName').returns('DIV');
-    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
     const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
     treeElement.treeOutline = treeOutline;
 
@@ -608,7 +608,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
         highlight: () => {},
       },
     } as unknown as SDK.DOMModel.DOMNodeShortcut;
-    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
 
     sinon.stub(node, 'hasAssignedSlot').returns(true);
     sinon.stub(node, 'assignedSlot').value(shortcut);
@@ -638,7 +638,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.stub(node, 'nodeName').returns('DIV');
     node.id = 1 as Protocol.DOM.NodeId;
 
-    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
 
     sinon.stub(node, 'affectedByStartingStyles').returns(true);
 
@@ -677,7 +677,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
        };
        const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
 
-       const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+       const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
        const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
        treeElement.treeOutline = treeOutline;
        treeElement.onbind();
@@ -739,7 +739,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     };
     const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
 
-    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
     const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
     treeElement.treeOutline = treeOutline;
     treeElement.onbind();
@@ -772,7 +772,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     };
     const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
 
-    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
     const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
     treeElement.treeOutline = treeOutline;
     treeElement.onbind();
@@ -806,7 +806,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     // Stub resolveURL to return the URL as-is, which triggers DevTools linkification logic.
     sinon.stub(node, 'resolveURL').callsFake(url => Platform.DevToolsPath.urlString`${url}`);
 
-    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
     const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
     treeElement.treeOutline = treeOutline;
     treeElement.performUpdate();
@@ -856,7 +856,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     });
 
     function renderTreeNode(node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeElement {
-      const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+      const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
       const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
       treeElement.treeOutline = treeOutline;
       treeElement.performUpdate();
@@ -975,7 +975,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
 
 describeWithEnvironment('ElementsTreeElement highlighting', () => {
   let domModel: SDK.DOMModel.DOMModel;
-  let treeOutline: Elements.ElementsTreeOutline.ElementsTreeOutline;
+  let treeOutline: Elements.DOMTreeWidget.ElementsTreeOutline;
   let containerNode: SDK.DOMModel.DOMNode;
   let attrTestNode: SDK.DOMModel.DOMNode;
   let childTestNode: SDK.DOMModel.DOMNode;
@@ -1047,7 +1047,7 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
     childTestNode = containerNode.children()![1];
     textTestNode = containerNode.children()![2];
 
-    treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
     treeOutline.wireToDOMModel(domModel);
 
     const containerTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(containerNode);
@@ -1385,7 +1385,7 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
 describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
   let target: SDK.Target.Target;
   let domModel: SDK.DOMModel.DOMModel;
-  let treeOutline: Elements.ElementsTreeOutline.ElementsTreeOutline;
+  let treeOutline: Elements.DOMTreeWidget.ElementsTreeOutline;
   let node: SDK.DOMModel.DOMNode;
   let treeElement: Elements.ElementsTreeElement.ElementsTreeElement;
 
@@ -1405,7 +1405,7 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     sinon.stub(node, 'adProvenance').returns({} as Protocol.Network.AdProvenance);
     sinon.stub(node, 'isMediaNode').returns(true);
 
-    treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+    treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline(
         /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ false, /* maxTreeDepth */ 2,
         /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ true);
     treeOutline.wireToDOMModel(domModel);
@@ -1439,7 +1439,7 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     const nodeSnapshot = snapshot.children()?.[0];
     assert.exists(nodeSnapshot);
 
-    treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+    treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline(
         /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ false, /* maxTreeDepth */ 2,
         /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ true);
     treeOutline.wireToDOMModel(domModel);
@@ -1561,7 +1561,7 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
       assert.exists(topLayerAdorner);
 
       const revealSpy =
-          sinon.spy((treeElement.treeOutline as Elements.ElementsTreeOutline.ElementsTreeOutline)!, 'revealInTopLayer');
+          sinon.spy((treeElement.treeOutline as Elements.DOMTreeWidget.ElementsTreeOutline)!, 'revealInTopLayer');
       topLayerAdorner!.dispatchEvent(new Event('click'));
       sinon.assert.notCalled(revealSpy);
     });
@@ -1645,7 +1645,7 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
 
     sinon.stub(node, 'attributes').returns([{name: 'interestfor', value: 'my-tooltip'}] as SDK.DOMModel.Attribute[]);
 
-    treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+    treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline(
         /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ false, /* maxTreeDepth */ 2,
         /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ false);
     treeOutline.wireToDOMModel(domModel);
@@ -1702,7 +1702,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
   let domIssuesManager: IssuesManager.DOMIssuesManager.DOMIssuesManager;
   let issuesManager: IssuesManager.IssuesManager.IssuesManager;
   let labelNode: SDK.DOMModel.DOMNode;
-  let outline: Elements.ElementsTreeOutline.ElementsTreeOutline;
+  let outline: Elements.DOMTreeWidget.ElementsTreeOutline;
   let testTreeElement: Elements.ElementsTreeElement.ElementsTreeElement;
   let mockModel: SDK.IssuesModel.IssuesModel;
 
@@ -1742,7 +1742,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     labelNode = rootNode.children()![0];
     assert.isNotNull(labelNode);
 
-    outline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    outline = new Elements.DOMTreeWidget.ElementsTreeOutline();
     outline.wireToDOMModel(testDomModel);
     outline.setVisible(true);
     renderElementIntoDOM(outline.element);
@@ -2322,7 +2322,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
   let tracker: ChangeTracker.ChangeTracker.ChangeTracker;
   let node: SDK.DOMModel.DOMNode;
   let treeElement: Elements.ElementsTreeElement.ElementsTreeElement;
-  let outline: Elements.ElementsTreeOutline.ElementsTreeOutline;
+  let outline: Elements.DOMTreeWidget.ElementsTreeOutline;
 
   /**
    * `ChangeTracker` records the location of a change on the comment thread it
@@ -2417,7 +2417,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.isNotNull(rootNode);
     node = rootNode;
 
-    outline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    outline = new Elements.DOMTreeWidget.ElementsTreeOutline();
     treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node, false);
     treeElement.widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
     treeElement.widget.node = node;

@@ -81,7 +81,6 @@ export {
   DOMPath,
   DOMTreeContextMenu,
   DOMTreeWidget,
-  DOMTreeWidget as ElementsTreeOutline,
   ElementsPanel,
   ElementsSidebarPane,
   ElementStatePaneWidget,

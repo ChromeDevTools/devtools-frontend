@@ -75,12 +75,12 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
   }
 
   for (const viewName of ['DECLARATIVE_VIEW', 'DEFAULT_VIEW'] as const) {
-    const getView = () => viewName === 'DECLARATIVE_VIEW' ? Elements.ElementsTreeOutline.DECLARATIVE_VIEW :
-                                                            Elements.ElementsTreeOutline.DEFAULT_VIEW;
+    const getView = () =>
+        viewName === 'DECLARATIVE_VIEW' ? Elements.DOMTreeWidget.DECLARATIVE_VIEW : Elements.DOMTreeWidget.DEFAULT_VIEW;
 
     describe(viewName, () => {
       it('populates context menu with standard actions for element nodes', async () => {
-        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], getView());
+        const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], getView());
         try {
           const node = createTestNode();
           const event = createContextMenuEvent();
@@ -102,7 +102,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
       });
 
       it('does not show context menu when enableContextMenu is false', async () => {
-        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], getView());
+        const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], getView());
         try {
           domTree.enableContextMenu = false;
           const node = createTestNode();
@@ -115,7 +115,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
       });
 
       it('triggers performCopyOrCut, toggleHideElement, and removeNode from context menu actions', async () => {
-        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], getView());
+        const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], getView());
         try {
           const node = createTestNode();
           const copyOrCutSpy = sinon.spy(domTree, 'performCopyOrCut');
@@ -156,7 +156,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
       });
 
       it('triggers expandRecursively and collapseChildren on DOMTreeWidget', async () => {
-        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], getView());
+        const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], getView());
         try {
           const node = createTestNode();
           const expandSpy = sinon.spy(domTree, 'expandRecursively');
@@ -187,7 +187,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
       });
 
       it('triggers addNewAttribute on DOMTreeWidget when Add attribute is clicked', async () => {
-        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], getView());
+        const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], getView());
         try {
           const node = createTestNode();
           const addNewAttributeSpy = sinon.spy(domTree, 'addNewAttribute');
@@ -210,7 +210,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
       });
 
       it('triggers startEditing on DOMTreeWidget when Edit attribute is clicked', async () => {
-        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], getView());
+        const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], getView());
         try {
           const node = createTestNode();
           const startEditingSpy = sinon.spy(domTree, 'startEditing');
@@ -242,7 +242,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
       });
 
       it('triggers startEditingTextNode on DOMTreeWidget when Edit text is clicked', async () => {
-        const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], getView());
+        const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], getView());
         try {
           const node = createTestNode(Node.TEXT_NODE);
           const startEditingTextNodeSpy = sinon.spy(domTree, 'startEditingTextNode');
@@ -270,8 +270,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
   }
 
   it('declarative expandRecursively calls getSubtree on the node', async () => {
-    const domTree =
-        new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, [], Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+    const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], Elements.DOMTreeWidget.DECLARATIVE_VIEW);
     try {
       const node = createTestNode();
       const getSubtreeStub = sinon.stub(node, 'getSubtree').resolves(null);

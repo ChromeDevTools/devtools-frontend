@@ -16,7 +16,7 @@ import * as Elements from './elements.js';
 
 describeWithEnvironment('AdoptedStyleSheetTreeElement highlighting', () => {
   let domModel: SDK.DOMModel.DOMModel;
-  let treeOutline: Elements.ElementsTreeOutline.ElementsTreeOutline;
+  let treeOutline: Elements.DOMTreeWidget.ElementsTreeOutline;
   let containerNode: SDK.DOMModel.DOMNode;
   let shadowRootNode: SDK.DOMModel.DOMNode;
   let shadowRootTreeElement: Elements.ElementsTreeElement.ElementsTreeElement;
@@ -56,7 +56,7 @@ describeWithEnvironment('AdoptedStyleSheetTreeElement highlighting', () => {
     containerNode = SDK.DOMModel.DOMNode.create(domModel, null, false, containerPayload);
     shadowRootNode = containerNode.shadowRoots()![0];
 
-    treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+    treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
     treeOutline.wireToDOMModel(domModel);
 
     const containerTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(containerNode);

@@ -539,16 +539,16 @@ ElementsTestRunner.firstElementsTreeOutline = function() {
   const origOnSelectedNodeChanged = domTreeWidget.onSelectedNodeChanged;
   domTreeWidget.onSelectedNodeChanged = event => {
     origOnSelectedNodeChanged?.call(domTreeWidget, event);
-    eventTarget.dispatchEventToListeners(Elements.ElementsTreeOutline.ElementsTreeOutline.Events.SelectedNodeChanged,
+    eventTarget.dispatchEventToListeners(Elements.DOMTreeWidget.ElementsTreeOutline.Events.SelectedNodeChanged,
                                          event.data);
   };
   const origOnElementsTreeUpdated = domTreeWidget.onElementsTreeUpdated;
   domTreeWidget.onElementsTreeUpdated = event => {
     origOnElementsTreeUpdated?.call(domTreeWidget, event);
-    eventTarget.dispatchEventToListeners(Elements.ElementsTreeOutline.ElementsTreeOutline.Events.ElementsTreeUpdated,
+    eventTarget.dispatchEventToListeners(Elements.DOMTreeWidget.ElementsTreeOutline.Events.ElementsTreeUpdated,
                                          event.data);
-    Elements.ElementsTreeOutline.ElementsTreeOutline.prototype.updateModifiedNodes.call({});
-    Elements.ElementsTreeOutline.ElementsTreeOutline.prototype.updateChildren.call({});
+    Elements.DOMTreeWidget.ElementsTreeOutline.prototype.updateModifiedNodes.call({});
+    Elements.DOMTreeWidget.ElementsTreeOutline.prototype.updateChildren.call({});
   };
   shim = {
     runPendingUpdates() {
@@ -612,7 +612,7 @@ ElementsTestRunner.firstElementsTreeOutline = function() {
 };
 
 (function() {
-const OutlineClass = Elements.ElementsTreeOutline.ElementsTreeOutline;
+const OutlineClass = Elements.DOMTreeWidget.ElementsTreeOutline;
 const OutlineProto = OutlineClass.prototype;
 const origUpdateModifiedNodes = OutlineProto.updateModifiedNodes;
 OutlineProto.updateModifiedNodes = function(...args) {

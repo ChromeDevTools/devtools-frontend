@@ -45,10 +45,25 @@ describe('The Console Tab', function() {
 
     // Check that the sidebar is also cleared.
     await devToolsPage.click('[aria-label="Show Console sidebar"]');
-    const sideBar = await devToolsPage.waitFor('div[slot="sidebar"]');
-    const treeOutline = await devToolsPage.waitFor('.tree-outline', sideBar);
-    const entries = await devToolsPage.$$('li', treeOutline);
-    const entriesText = await Promise.all(entries.map(e => e.evaluate(e => e.innerText)));
+    await devToolsPage.waitFor('div[slot="sidebar"]');
+    const entriesText = await devToolsPage.waitForFunction(async () => {
+      // Find the sidebar element explicitly inside the polling loop, in case lit removes and recreates elements
+      const sideBarHandle = await devToolsPage.$('div[slot="sidebar"]');
+      if (!sideBarHandle) {
+        return false;
+      }
+      const treeOutlineHandle = await devToolsPage.waitFor('.tree-outline', sideBarHandle);
+      const entries = await devToolsPage.$$('li', treeOutlineHandle);
+      if (entries.length === 0) {
+        return false;
+      }
+      const text = await Promise.all(entries.map(e => e.evaluate(e => e.innerText as string)));
+      if (text.length > 0 && text[0] === '1 message') {
+        return text;
+      }
+      return false;
+    });
+
     assert.deepEqual(entriesText, [
       '1 message',
       '<other> 1',

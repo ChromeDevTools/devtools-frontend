@@ -331,6 +331,15 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
   private reloadPlugins(): void {
     this.disposePlugins();
     this.loadPlugins();
+    if (!this.loaded) {
+      // Until the content is loaded the editor still holds the placeholder
+      // state, which doesn't contain `pluginCompartment` at all. Reconfiguring
+      // a compartment that isn't part of the state is a no-op, so the plugins
+      // would end up initialized against a state that can never hold their
+      // `StateField`s. `setContent` re-creates and initializes the plugins once
+      // the content arrives, so there's nothing to do here.
+      return;
+    }
     const editor = this.textEditor;
     editor.dispatch({effects: pluginCompartment.reconfigure(this.plugins.map(plugin => plugin.editorExtension()))});
     for (const plugin of this.plugins) {

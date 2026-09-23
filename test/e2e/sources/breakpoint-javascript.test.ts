@@ -16,6 +16,8 @@ import {
   PAUSE_INDICATOR_SELECTOR,
   RESUME_BUTTON,
   retrieveTopCallFrameWithoutResuming,
+  SourceFileEvents,
+  waitForSourceFiles,
 } from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 import type {InspectedPage} from '../shared/InspectedPage.js';
@@ -193,7 +195,10 @@ describe('The Sources Tab', function() {
          const firstItemTitle = await getMenuItemTitleAtPosition(devToolsPage, 0);
          const firstItem = await getMenuItemAtPosition(devToolsPage, 0);
          assert.strictEqual(firstItemTitle, 'hello.js');
-         await devToolsPage.clickElement(firstItem);
+         // Calling clickElement triggers an asynchronous panel switch and CodeMirror request in Quick Open.
+         await waitForSourceFiles(devToolsPage, SourceFileEvents.SOURCE_FILE_LOADED,
+                                  files => files.some(f => f.endsWith('hello.js')),
+                                  () => devToolsPage.clickElement(firstItem));
 
          await addBreakpointForLine(devToolsPage, 2);
 

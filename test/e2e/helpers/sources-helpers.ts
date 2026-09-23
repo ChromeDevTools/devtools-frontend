@@ -41,8 +41,12 @@ export async function getLineNumberElement(devToolsPage: DevToolsPage,
   return await devToolsPage.waitForFunction(async () => {
     const visibleLines = await devToolsPage.$$(CODE_LINE_SELECTOR);
     for (let i = 0; i < visibleLines.length; i++) {
-      const lineValue = await visibleLines[i].evaluate(node => (node as HTMLElement).innerText);
-      if (lineValue === `${lineNumber}`) {
+      // Editors of tabs that aren't currently selected stay in the DOM, but are
+      // hidden. Their gutter elements must not be considered here, as they
+      // cannot be interacted with.
+      const [lineValue, isRendered] = await visibleLines[i].evaluate(
+          node => [(node as HTMLElement).innerText, node.getClientRects().length > 0] as const);
+      if (isRendered && lineValue === `${lineNumber}`) {
         return visibleLines[i];
       }
     }

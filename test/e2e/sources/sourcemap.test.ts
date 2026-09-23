@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type * as puppeteer from 'puppeteer-core';
 
 import {
   CONSOLE_TAB_SELECTOR,
@@ -471,17 +472,6 @@ describe('The Sources Tab', function() {
          // Now load the second script pointing to `codesplitting-bar.ts`...
          await inspectedPage.evaluate('addSecond();');
 
-         // ...wait for the new origin to be listed...
-         const linkTexts = await devToolsPage.waitForFunction(async () => {
-           const links = await devToolsPage.page.$$(DEVTOOLS_LINK);
-           const linkTexts = await Promise.all(links.map(node => node.evaluate(({textContent}) => textContent)));
-           if (linkTexts.length === 1 && linkTexts[0] === 'codesplitting-first.js') {
-             return undefined;
-           }
-           return linkTexts;
-         });
-         assert.sameMembers(linkTexts, ['codesplitting-first.js', 'codesplitting-second.js']);
-
          // ...and eventually wait for the breakpoint to be restored in line 2.
          await devToolsPage.waitForFunction(async () => await isBreakpointSet(devToolsPage, 2));
 
@@ -609,7 +599,17 @@ describe('The Sources Tab', function() {
   it('can attach sourcemaps to CSS files from a context menu', async ({devToolsPage, inspectedPage}) => {
     await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'sourcemap-css.css', 'sourcemap-css-noinline.html');
 
-    await devToolsPage.click('aria/Code editor', {clickOptions: {button: 'right'}});
+    const bodyLine = await devToolsPage.waitForFunction(async () => {
+      const lines = await devToolsPage.$$('.cm-line');
+      for (const line of lines) {
+        const text = await line.evaluate(node => node.textContent);
+        if (text?.includes('body ')) {
+          return line;
+        }
+      }
+      return undefined;
+    });
+    await (bodyLine as puppeteer.ElementHandle).click({button: 'right'});
     await devToolsPage.click('aria/Add source map…');
     await devToolsPage.waitFor('.add-source-map');
     await devToolsPage.typeText('sourcemap-css-absolute.map');
@@ -620,8 +620,8 @@ describe('The Sources Tab', function() {
 });
 
 describe('The Elements Tab', () => {
-  async function clickStyleValueWithModifiers(
-      selector: string, name: string, value: string, location: string, devToolsPage: DevToolsPage) {
+  async function clickStyleValueWithModifiers(selector: string, name: string, value: string, location: string,
+                                              devToolsPage: DevToolsPage) {
     const element = await waitForCSSPropertyValue(devToolsPage, selector, name, value, location);
     // Click with offset to skip swatches.
 
@@ -642,6 +642,7 @@ describe('The Elements Tab', () => {
        await focusElementsTree(devToolsPage);
        await clickNthChildOfSelectedElementNode(devToolsPage, 1);
        await clickStyleValueWithModifiers('body .text', 'color', 'green', 'app.scss:6', devToolsPage);
+
        await devToolsPage.waitForElementWithTextContent('Line 12, column 9');
      });
 

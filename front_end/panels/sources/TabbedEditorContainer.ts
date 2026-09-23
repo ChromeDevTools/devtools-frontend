@@ -15,7 +15,7 @@ import * as uiI18n from '../../ui/i18n/i18n.js';
 import {Icon, Link} from '../../ui/kit/kit.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {Directives, html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelCommon from '../common/common.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -75,6 +75,8 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/TabbedEditorContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {repeat} = Directives;
+const {widget} = UI.Widget;
 
 const enum SourceViewType {
   IMAGE_VIEW = 'ImageView',
@@ -84,6 +86,95 @@ const enum SourceViewType {
 }
 const HEADER_OVERRIDES_FILENAME = '.headers';
 
+export interface TabbedEditorViewInput {
+  openTabs: Array<{
+    tabId: string,
+    title: string,
+    tooltip: string,
+    uiSourceCode: Workspace.UISourceCode.UISourceCode,
+    isCloseable: boolean,
+    widget?: UI.Widget.Widget,
+    icon?: TemplateResult|HTMLElement,
+    suffix?: HTMLElement,
+  }>;
+  activeTabId?: string;
+}
+
+export interface TabbedEditorViewOutput {
+  onClose(e: Event): void;
+  onTabOrderChanged(e: Event): void;
+  onSelect(e: Event): void;
+}
+
+export type View = (input: TabbedEditorViewInput, output: TabbedEditorViewOutput, target: HTMLElement) => void;
+
+const UI_SOURCE_CODE_WIDGET_MAP = new WeakMap<Workspace.UISourceCode.UISourceCode, UI.Widget.Widget>();
+
+function getOrCreateSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode,
+                               onCreate: (view: UI.Widget.Widget) => void): UI.Widget.Widget {
+  const existing = UI_SOURCE_CODE_WIDGET_MAP.get(uiSourceCode);
+  if (existing) {
+    return existing;
+  }
+
+  let sourceView: UI.Widget.Widget;
+  const contentType = uiSourceCode.contentType();
+  if (contentType === Common.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith('image/')) {
+    sourceView = new SourceFrame.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
+  } else if (contentType === Common.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes('font')) {
+    sourceView = new SourceFrame.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
+  } else if (uiSourceCode.name() === Persistence.NetworkPersistenceManager.HEADERS_FILENAME) {
+    sourceView = new Components.HeadersView.HeadersView(uiSourceCode);
+  } else {
+    sourceView = new UISourceCodeFrame(uiSourceCode);
+  }
+
+  UI_SOURCE_CODE_WIDGET_MAP.set(uiSourceCode, sourceView);
+  onCreate(sourceView);
+  return sourceView;
+}
+
+function recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame,
+                                  uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+  UI_SOURCE_CODE_WIDGET_MAP.delete(sourceFrame.uiSourceCode());
+  sourceFrame.setUISourceCode(uiSourceCode);
+  UI_SOURCE_CODE_WIDGET_MAP.set(uiSourceCode, sourceFrame);
+}
+
+function getViewByUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget|undefined {
+  return UI_SOURCE_CODE_WIDGET_MAP.get(uiSourceCode);
+}
+
+function removeSourceViewCache(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget|undefined {
+  const view = UI_SOURCE_CODE_WIDGET_MAP.get(uiSourceCode);
+  if (view) {
+    UI_SOURCE_CODE_WIDGET_MAP.delete(uiSourceCode);
+  }
+  return view;
+}
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  // clang-format off
+  render(html`
+    <devtools-tabbed-pane
+      class="flex-auto vbox"
+      @close=${output.onClose}
+      @taborderchanged=${output.onTabOrderChanged}
+      @select=${output.onSelect}
+    >
+      ${repeat(input.openTabs, tab => tab.tabId, tab => html`
+        <div id=${tab.tabId}
+             title=${tab.title}
+             ?closeable=${tab.isCloseable}
+             ?selected=${input.activeTabId === tab.tabId}
+             style="display: flex; flex: auto;">
+             ${tab.icon ? html`<span slot="icon">${tab.icon}</span>` : nothing}
+             ${tab.suffix ? html`<span slot="suffix">${tab.suffix}</span>` : nothing}
+             ${tab.widget ? html`${widget(UI.Widget.WrapperWidget, {widget: tab.widget})}` : nothing}
+        </div>`)}
+    </devtools-tabbed-pane>`, target);
+  // clang-format on
+};
 let tabId = 0;
 
 const TabbedEditorContainerBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
@@ -92,14 +183,70 @@ const TabbedEditorContainerBase: Common.ObjectWrapper.EventMixin<EventTypes, typ
     );
 
 export class TabbedEditorContainer extends TabbedEditorContainerBase {
+  override focus(): void {
+    if (this.visibleView) {
+      this.visibleView.focus();
+    }
+  }
+
+  #scheduleUpdate(): void {
+    this.#renderView();
+  }
+
+  #renderView(): void {
+    const input: TabbedEditorViewInput = {
+      openTabs: [...this.files.entries()].map(
+          ([tabId, uiSourceCode]) => ({
+            tabId,
+            title: this.titleForFile(uiSourceCode),
+            tooltip: this.tooltipForFile(uiSourceCode),
+            uiSourceCode,
+            isCloseable: true,
+            icon: this.#tabIcons.get(uiSourceCode),
+            suffix: this.#tabSuffixes.get(uiSourceCode),
+            widget: (this.#currentFile === uiSourceCode) ? this.getOrCreateSourceView(uiSourceCode) :
+                                                           this.getCreatedSourceView(uiSourceCode),
+          })),
+      activeTabId: this.#currentFile ? this.tabIds.get(this.#currentFile) : undefined,
+    };
+    const output: TabbedEditorViewOutput = {
+      onClose: (e: Event) => {
+        this.tabClosed((e as CustomEvent<{tabId: string}>).detail.tabId,
+                       (e as CustomEvent<{isUserGesture?: boolean}>).detail.isUserGesture);
+        this.#scheduleUpdate();
+      },
+      onTabOrderChanged: (e: Event) => {
+        const tabIds = (e as CustomEvent<{tabIds: string[]}>).detail.tabIds;
+        const newFiles = new Map<string, Workspace.UISourceCode.UISourceCode>();
+        for (const id of tabIds) {
+          if (this.files.has(id)) {
+            const file = this.files.get(id);
+            if (file) {
+              newFiles.set(id, file);
+            }
+          }
+        }
+        this.files = newFiles;
+        this.#scheduleUpdate();
+      },
+      onSelect: (e: Event) => {
+        this.tabSelected((e as CustomEvent<{tabId: string}>).detail.tabId,
+                         (e as CustomEvent<{isUserGesture?: boolean}>).detail.isUserGesture);
+        this.#scheduleUpdate();
+      },
+    };
+    DEFAULT_VIEW(input, output, this.contentElement);
+  }
   #historyManager!: EditingLocationHistoryManager;
   set historyManager(historyManager: EditingLocationHistoryManager) {
     this.#historyManager = historyManager;
   }
-  private readonly sourceViewByUISourceCode = new Map<Workspace.UISourceCode.UISourceCode, UI.Widget.Widget>();
-  private readonly tabbedPane: UI.TabbedPane.TabbedPane;
+
+  private readonly tabbedPane: UI.TabbedPane.TabbedPaneElement;
   private tabIds: Map<Workspace.UISourceCode.UISourceCode, string>;
-  private readonly files: Map<string, Workspace.UISourceCode.UISourceCode>;
+  private files: Map<string, Workspace.UISourceCode.UISourceCode>;
+  readonly #tabIcons = new Map<Workspace.UISourceCode.UISourceCode, TemplateResult|HTMLElement>();
+  readonly #tabSuffixes = new Map<Workspace.UISourceCode.UISourceCode, HTMLElement>();
   #previouslyViewedFilesSetting!: Common.Settings.Setting<SerializedHistoryItem[]>;
   history!: History;
   set previouslyViewedFilesSetting(setting: Common.Settings.Setting<SerializedHistoryItem[]>) {
@@ -118,43 +265,46 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   constructor(element?: HTMLElement) {
     super(element);
 
-    this.tabbedPane = new UI.TabbedPane.TabbedPane();
-    // eslint-disable-next-line @devtools/no-imperative-dom-api
-    this.tabbedPane.show(this.contentElement);
-    // eslint-disable-next-line @devtools/no-imperative-dom-api
-    const placeholderElement = document.createElement('div');
-    placeholderElement.classList.add('sources-placeholder');
-    this.tabbedPane.setPlaceholderElement(placeholderElement);
-    this.#renderPlaceholder(placeholderElement as HTMLElement);
-    this.tabbedPane.setTabDelegate(new EditorContainerTabDelegate(this));
-
-    this.tabbedPane.setCloseableTabs(true);
-    this.tabbedPane.setAllowTabReorder(true, true);
-
-    this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this.tabClosed, this);
-    this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
-
-    this.tabbedPane.headerElement().setAttribute(
-        'jslog',
-        `${VisualLogging.toolbar('top').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
-
-    Persistence.Persistence.PersistenceImpl.instance().addEventListener(
-        Persistence.Persistence.Events.BindingCreated, this.onBindingCreated, this);
-    Persistence.Persistence.PersistenceImpl.instance().addEventListener(
-        Persistence.Persistence.Events.BindingRemoved, this.onBindingRemoved, this);
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
-        Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
-        this.#onRequestsForHeaderOverridesFileChanged, this);
-
     this.tabIds = new Map();
     this.files = new Map();
-
     this.uriToUISourceCode = new Map();
     this.idToUISourceCode = new Map();
     this.reentrantShow = false;
+
+    this.#renderView();
+
+    this.tabbedPane = this.contentElement.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+
+    // eslint-disable-next-line @devtools/no-imperative-dom-api
+    const placeholderElement = document.createElement('div');
+    placeholderElement.classList.add('sources-placeholder');
+    this.tabbedPane.placeholder = placeholderElement;
+    this.#renderPlaceholder(placeholderElement as HTMLElement);
+    this.tabbedPane.tabDelegate = new EditorContainerTabDelegate(this);
+
+    this.tabbedPane.closeableTabs = true;
+    this.tabbedPane.allowTabReorder = true;
+    this.tabbedPane.automaticReorder = true;
+
+    const widget = UI.Widget.Widget.getOrCreateWidget(this.tabbedPane) as UI.TabbedPane.TabbedPane;
+    widget.headerElement().setAttribute(
+        'jslog',
+        `${VisualLogging.toolbar('top').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
+
+    Persistence.Persistence.PersistenceImpl.instance().addEventListener(Persistence.Persistence.Events.BindingCreated,
+                                                                        this.onBindingCreated, this);
+    Persistence.Persistence.PersistenceImpl.instance().addEventListener(Persistence.Persistence.Events.BindingRemoved,
+                                                                        this.onBindingRemoved, this);
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
+        Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
+        this.#onRequestsForHeaderOverridesFileChanged, this);
+  }
+  #tabsHistory: string[] = [];
+  #appendHistory(tabId: string): void {
+    this.#tabsHistory.unshift(tabId);
   }
 
-  get tabbedPaneForTesting(): UI.TabbedPane.TabbedPane {
+  get tabbedPaneForTesting(): UI.TabbedPane.TabbedPaneElement {
     return this.tabbedPane;
   }
 
@@ -177,21 +327,24 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     }
 
     if (!fileSystemTabId) {
-      const networkView = this.tabbedPane.tabView(networkTabId);
-      const tabIndex = this.tabbedPane.tabIndex(networkTabId);
+      const networkView: UI.Widget.Widget|null = this.viewForFile(binding.network);
+      const tabIndex = Array.from(this.files.keys()).indexOf(networkTabId);
       if (networkView instanceof UISourceCodeFrame) {
         this.recycleUISourceCodeFrame(networkView, binding.fileSystem);
-        fileSystemTabId = this.appendFileTab(binding.fileSystem, false, tabIndex, networkView);
+        fileSystemTabId = this.appendFileTab(binding.fileSystem, tabIndex, true);
       } else {
-        fileSystemTabId = this.appendFileTab(binding.fileSystem, false, tabIndex);
-        const fileSystemTabView = (this.tabbedPane.tabView(fileSystemTabId) as UI.Widget.Widget);
-        this.restoreEditorProperties(fileSystemTabView, currentSelectionRange, currentScrollLineNumber);
+        fileSystemTabId = this.appendFileTab(binding.fileSystem, tabIndex);
+        const fileSystemTabView = this.viewForFile(binding.fileSystem);
+        if (fileSystemTabView) {
+          this.restoreEditorProperties(fileSystemTabView, currentSelectionRange, currentScrollLineNumber);
+        }
       }
     }
 
     this.closeTabs([networkTabId], true);
     if (wasSelectedInNetwork) {
-      this.tabbedPane.selectTab(fileSystemTabId, false);
+      this.#currentFile = this.files.get(fileSystemTabId) || null;
+      this.#scheduleUpdate();
     }
 
     this.updateHistory();
@@ -209,19 +362,35 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   }
 
   get visibleView(): UI.Widget.Widget|null {
-    return this.tabbedPane.visibleView as UI.Widget.Widget | null;
+    return this.#currentFile ? getViewByUISourceCode(this.#currentFile) || null : null;
   }
 
   fileViews(): UI.Widget.Widget[] {
-    return this.tabbedPane.tabViews() as UI.Widget.Widget[];
+    return Array.from(this.files.values()).map(getViewByUISourceCode).filter(Boolean) as UI.Widget.Widget[];
   }
 
+  #leftToolbar?: UI.Toolbar.Toolbar;
   leftToolbar(): UI.Toolbar.Toolbar {
-    return this.tabbedPane.leftToolbar();
+    if (!this.#leftToolbar) {
+      this.#leftToolbar =
+          document.createElement('devtools-toolbar') /* eslint-disable-line @devtools/no-imperative-dom-api */;
+      this.#leftToolbar.classList.add('tabbed-pane-left-toolbar');
+      this.#leftToolbar.slot = 'left';
+      this.tabbedPane.appendChild(this.#leftToolbar);
+    }
+    return this.#leftToolbar;
   }
 
+  #rightToolbar?: UI.Toolbar.Toolbar;
   rightToolbar(): UI.Toolbar.Toolbar {
-    return this.tabbedPane.rightToolbar();
+    if (!this.#rightToolbar) {
+      this.#rightToolbar =
+          document.createElement('devtools-toolbar') /* eslint-disable-line @devtools/no-imperative-dom-api */;
+      this.#rightToolbar.classList.add('tabbed-pane-right-toolbar');
+      this.#rightToolbar.slot = 'right';
+      this.tabbedPane.appendChild(this.#rightToolbar);
+    }
+    return this.#rightToolbar;
   }
 
   showFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
@@ -250,11 +419,13 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   }
 
   closeAllFiles(): void {
-    this.closeTabs(this.tabbedPane.tabIds());
+    this.closeTabs(Array.from(this.files.keys()));
   }
 
   detachEditors(): void {
-    this.tabbedPane.detachChildWidgets();
+    for (const view of this.fileViews()) {
+      view.detach();
+    }
   }
 
   historyUISourceCodes(): Workspace.UISourceCode.UISourceCode[] {
@@ -269,11 +440,37 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   }
 
   selectNextTab(): void {
-    this.tabbedPane.selectNextTab();
+    const tabIds = Array.from(this.files.keys());
+    if (tabIds.length === 0 || !this.#currentFile) {
+      return;
+    }
+    const currentTabId = this.tabIds.get(this.#currentFile);
+    if (!currentTabId) {
+      return;
+    }
+    const index = tabIds.indexOf(currentTabId);
+    const nextIndex = (index + 1) % tabIds.length;
+    const nextFile = this.files.get(tabIds[nextIndex]);
+    if (nextFile) {
+      this.#showFile(nextFile, false);
+    }
   }
 
   selectPrevTab(): void {
-    this.tabbedPane.selectPrevTab();
+    const tabIds = Array.from(this.files.keys());
+    if (tabIds.length === 0 || !this.#currentFile) {
+      return;
+    }
+    const currentTabId = this.tabIds.get(this.#currentFile);
+    if (!currentTabId) {
+      return;
+    }
+    const index = tabIds.indexOf(currentTabId);
+    const prevIndex = (index - 1 + tabIds.length) % tabIds.length;
+    const prevFile = this.files.get(tabIds[prevIndex]);
+    if (prevFile) {
+      this.#showFile(prevFile, false);
+    }
   }
 
   private addViewListeners(): void {
@@ -311,8 +508,8 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     if (update.docChanged || update.selectionSet) {
       const {main} = update.state.selection;
       const lineFrom = update.state.doc.lineAt(main.from), lineTo = update.state.doc.lineAt(main.to);
-      const range = new TextUtils.TextRange.TextRange(
-          lineFrom.number - 1, main.from - lineFrom.from, lineTo.number - 1, main.to - lineTo.from);
+      const range = new TextUtils.TextRange.TextRange(lineFrom.number - 1, main.from - lineFrom.from, lineTo.number - 1,
+                                                      main.to - lineTo.from);
       if (this.#currentFile) {
         this.history.updateSelectionRange(historyItemKey(this.#currentFile), range);
       }
@@ -342,9 +539,12 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
       // Selecting the tab may cause showFile to be called again, but with the canonical source code,
       // which is not what we want, so we prevent reentrant calls.
       this.reentrantShow = true;
-      const tabId = this.tabIds.get(canonicalSourceCode) || this.appendFileTab(canonicalSourceCode, userGesture);
+      const tabId = this.tabIds.get(canonicalSourceCode) || this.appendFileTab(canonicalSourceCode);
+      this.#appendHistory(tabId);
 
-      this.tabbedPane.selectTab(tabId, userGesture);
+      this.#scheduleUpdate();
+      // Force TabbedPaneElement to sync its tabs synchronously to avoid layout races in E2E tests.
+      this.tabbedPane.tabs;
     } finally {
       this.reentrantShow = false;
     }
@@ -354,6 +554,9 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     }
 
     const previousView = this.currentView;
+    if (uiSourceCode) {
+      this.getOrCreateSourceView(uiSourceCode);
+    }
     this.currentView = this.visibleView;
     this.addViewListeners();
 
@@ -396,9 +599,13 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     if (!shouldPrompt || confirm(i18nString(UIStrings.areYouSureYouWantToCloseUnsaved, {PH1: uiSourceCode.name()}))) {
       uiSourceCode.resetWorkingCopy();
       if (nextTabId) {
-        this.tabbedPane.selectTab(nextTabId, true);
+        const nextFile = this.files.get(nextTabId);
+        if (nextFile) {
+          this.#showFile(nextFile, false);
+        }
       }
-      this.tabbedPane.closeTab(id, true);
+      this.tabClosed(id, true);
+      this.#scheduleUpdate();
       return true;
     }
     return false;
@@ -419,9 +626,13 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
       }
     }
     if (dirtyTabs.length) {
-      this.tabbedPane.selectTab(dirtyTabs[0], true);
+      const dirtyFile = this.files.get(dirtyTabs[0]);
+      if (dirtyFile) {
+        this.#showFile(dirtyFile, false);
+      }
     }
-    this.tabbedPane.closeTabs(cleanTabs, true);
+    cleanTabs.forEach(id => this.tabClosed(id, true));
+    this.#scheduleUpdate();
     for (let i = 0; i < dirtyTabs.length; ++i) {
       const nextTabId = i + 1 < dirtyTabs.length ? dirtyTabs[i + 1] : null;
       if (!this.maybeCloseTab(dirtyTabs[i], nextTabId)) {
@@ -470,7 +681,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     }
 
     if (!this.tabIds.has(uiSourceCode)) {
-      this.appendFileTab(uiSourceCode, false);
+      this.appendFileTab(uiSourceCode);
     }
 
     // Select tab if this file was the last to be shown.
@@ -500,16 +711,22 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
       const tabId = this.tabIds.get(uiSourceCode);
       if (tabId) {
         tabIds.push(tabId);
+      } else {
+        this.removeSourceFrame(uiSourceCode);
       }
-      if (this.uriToUISourceCode.get(uiSourceCode.url()) === uiSourceCode) {
-        this.uriToUISourceCode.delete(uiSourceCode.url());
+      for (const [k, v] of this.uriToUISourceCode) {
+        if (v === uiSourceCode) {
+          this.uriToUISourceCode.delete(k);
+        }
       }
-      if (this.idToUISourceCode.get(uiSourceCode.canonicalScriptId()) === uiSourceCode) {
-        this.idToUISourceCode.delete(uiSourceCode.canonicalScriptId());
+      for (const [k, v] of this.idToUISourceCode) {
+        if (v === uiSourceCode) {
+          this.idToUISourceCode.delete(k);
+        }
       }
-      this.removeSourceFrame(uiSourceCode);
     }
-    this.tabbedPane.closeTabs(tabIds);
+    tabIds.forEach(id => this.tabClosed(id, false));
+    this.#scheduleUpdate();
   }
 
   private editorClosedByUserAction(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
@@ -523,7 +740,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
 
   private updateHistory(): void {
     const historyItemKeys = [];
-    for (const tabId of this.tabbedPane.lastOpenedTabIds(MAX_PREVIOUSLY_VIEWED_FILES_COUNT)) {
+    for (const tabId of this.#tabsHistory.slice(0, MAX_PREVIOUSLY_VIEWED_FILES_COUNT)) {
       const uiSourceCode = this.files.get(tabId);
       if (uiSourceCode !== undefined) {
         historyItemKeys.push(historyItemKey(uiSourceCode));
@@ -538,24 +755,27 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     return uiSourceCode.url();
   }
 
-  private appendFileTab(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, userGesture?: boolean, index?: number,
-      replaceView?: UI.Widget.Widget): string {
-    const view = replaceView || this.viewForFile(uiSourceCode);
-    const title = this.titleForFile(uiSourceCode);
-    const tooltip = this.tooltipForFile(uiSourceCode);
-
+  private appendFileTab(uiSourceCode: Workspace.UISourceCode.UISourceCode, index?: number,
+                        ignoreHistory?: boolean): string {
     const tabId = this.generateTabId();
     this.tabIds.set(uiSourceCode, tabId);
-    this.files.set(tabId, uiSourceCode);
 
-    if (!replaceView) {
-      const savedSelectionRange = this.history.selectionRange(historyItemKey(uiSourceCode));
-      const savedScrollLineNumber = this.history.scrollLineNumber(historyItemKey(uiSourceCode));
+    if (index !== undefined) {
+      const entries = Array.from(this.files.entries());
+      entries.splice(index, 0, [tabId, uiSourceCode]);
+      this.files = new Map(entries);
+    } else {
+      this.files.set(tabId, uiSourceCode);
+    }
+
+    const savedSelectionRange = this.history.selectionRange(historyItemKey(uiSourceCode));
+    const savedScrollLineNumber = this.history.scrollLineNumber(historyItemKey(uiSourceCode));
+    const view = this.viewForFile(uiSourceCode);
+    if (view && !ignoreHistory) {
       this.restoreEditorProperties(view, savedSelectionRange, savedScrollLineNumber);
     }
 
-    this.tabbedPane.appendTab(tabId, title, view, tooltip, userGesture, undefined, undefined, index, 'editor');
+    this.#scheduleUpdate();
 
     this.updateFileTitle(uiSourceCode);
     this.addUISourceCodeListeners(uiSourceCode);
@@ -568,6 +788,10 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         }
       });
     }
+
+    if (!this.#currentFile) {
+      this.#showFile(uiSourceCode, false);
+    }
     return tabId;
   }
 
@@ -577,13 +801,15 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
                                      title=${i18nString(UIStrings.unableToLoadThisContent)}>
                       </devtools-icon>`;
     // clang-format on
-    if (this.tabbedPane.tabView(tabId)) {
-      this.tabbedPane.setTrailingTabIcon(tabId, icon);
+    const uiSourceCode = this.files.get(tabId);
+    if (uiSourceCode) {
+      this.#tabIcons.set(uiSourceCode, icon);
+      this.#scheduleUpdate();
     }
   }
 
-  private restoreEditorProperties(
-      editorView: UI.Widget.Widget, selection?: TextUtils.TextRange.TextRange, firstLineNumber?: number): void {
+  private restoreEditorProperties(editorView: UI.Widget.Widget, selection?: TextUtils.TextRange.TextRange,
+                                  firstLineNumber?: number): void {
     const sourceFrame = editorView instanceof SourceFrame.SourceFrame.SourceFrameImpl ? editorView : null;
     if (!sourceFrame) {
       return;
@@ -596,8 +822,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     }
   }
 
-  private tabClosed(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
-    const {tabId, isUserGesture} = event.data;
+  private tabClosed(tabId: string, isUserGesture?: boolean): void {
     const uiSourceCode = this.files.get(tabId);
     if (this.#currentFile && this.#currentFile.canonicalScriptId() === uiSourceCode?.canonicalScriptId()) {
       this.removeViewListeners();
@@ -621,9 +846,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     }
   }
 
-  private tabSelected(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
-    const {tabId, isUserGesture} = event.data;
-
+  private tabSelected(tabId: string, isUserGesture?: boolean): void {
     const uiSourceCode = this.files.get(tabId);
     if (uiSourceCode) {
       this.#showFile(uiSourceCode, isUserGesture);
@@ -632,33 +855,32 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
 
   private addUISourceCodeListeners(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
-    uiSourceCode.addEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyChanged, this.uiSourceCodeWorkingCopyChanged, this);
-    uiSourceCode.addEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyCommitted, this.uiSourceCodeWorkingCopyCommitted, this);
+    uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.uiSourceCodeWorkingCopyChanged,
+                                  this);
+    uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted,
+                                  this.uiSourceCodeWorkingCopyCommitted, this);
   }
 
   private removeUISourceCodeListeners(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
-    uiSourceCode.removeEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyChanged, this.uiSourceCodeWorkingCopyChanged, this);
-    uiSourceCode.removeEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyCommitted, this.uiSourceCodeWorkingCopyCommitted, this);
+    uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged,
+                                     this.uiSourceCodeWorkingCopyChanged, this);
+    uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted,
+                                     this.uiSourceCodeWorkingCopyCommitted, this);
   }
 
   private updateFileTitle(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const tabId = this.tabIds.get(uiSourceCode);
     if (tabId) {
-      const title = this.titleForFile(uiSourceCode);
-      const tooltip = this.tooltipForFile(uiSourceCode);
-      this.tabbedPane.changeTabTitle(tabId, title, tooltip);
+      this.#scheduleUpdate();
       if (uiSourceCode.loadError()) {
         // clang-format off
         const icon = html`<devtools-icon class="small" name="cross-circle-filled"
                                          title=${i18nString(UIStrings.unableToLoadThisContent)}>
                           </devtools-icon>`;
         // clang-format on
-        this.tabbedPane.setTrailingTabIcon(tabId, icon);
+        this.#tabIcons.set(uiSourceCode, icon);
+        this.#scheduleUpdate();
       } else if (Persistence.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
         /* eslint-disable @devtools/no-imperative-dom-api --
          * This is a temporary solution using the <devtools-tooltip>
@@ -691,10 +913,16 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         }
         suffixElement.append(icon, tooltip);
         /* eslint-enable @devtools/no-imperative-dom-api */
-        this.tabbedPane.setSuffixElement(tabId, suffixElement);
+        this.#tabSuffixes.set(uiSourceCode, suffixElement);
+        this.#scheduleUpdate();
       } else {
         const icon = PanelCommon.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode);
-        this.tabbedPane.setTrailingTabIcon(tabId, icon);
+        if (icon) {
+          this.#tabIcons.set(uiSourceCode, icon as TemplateResult);
+        } else {
+          this.#tabIcons.delete(uiSourceCode);
+        }
+        this.#scheduleUpdate();
       }
     }
   }
@@ -703,7 +931,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
       void {
     const uiSourceCode = event.data;
 
-    const widget = this.sourceViewByUISourceCode.get(uiSourceCode);
+    const widget = getViewByUISourceCode(uiSourceCode);
     if (widget) {
       if (this.#sourceViewTypeForWidget(widget) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
         // Remove the existing editor tab and create a new one of the correct type.
@@ -813,49 +1041,35 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   }
 
   getCreatedSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget|undefined {
-    return this.sourceViewByUISourceCode.get(uiSourceCode);
+    return getViewByUISourceCode(uiSourceCode);
+  }
+
+  private getOrCreateSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
+    const view = getViewByUISourceCode(uiSourceCode);
+    if (view) {
+      return view;
+    }
+    return getOrCreateSourceView(uiSourceCode, sourceView => {
+      if (sourceView instanceof UISourceCodeFrame) {
+        this.#historyManager.trackSourceFrameCursorJumps(sourceView);
+      }
+      uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+    });
   }
 
   viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
     return this.getOrCreateSourceView(uiSourceCode);
   }
 
-  private getOrCreateSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
-    return this.sourceViewByUISourceCode.get(uiSourceCode) || this.createSourceView(uiSourceCode);
-  }
-
-  private createSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
-    let sourceView;
-    const contentType = uiSourceCode.contentType();
-
-    if (contentType === Common.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith('image/')) {
-      sourceView = new SourceFrame.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
-    } else if (contentType === Common.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes('font')) {
-      sourceView = new SourceFrame.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
-    } else if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
-      sourceView = new Components.HeadersView.HeadersView(uiSourceCode);
-    } else {
-      sourceView = new UISourceCodeFrame(uiSourceCode);
-      this.#historyManager.trackSourceFrameCursorJumps(sourceView);
-    }
-
-    this.sourceViewByUISourceCode.set(uiSourceCode, sourceView);
-    uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
-    return sourceView;
-  }
-
   recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame, uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     sourceFrame.uiSourceCode().removeEventListener(Workspace.UISourceCode.Events.TitleChanged,
                                                    this.uiSourceCodeTitleChanged, this);
-    this.sourceViewByUISourceCode.delete(sourceFrame.uiSourceCode());
-    sourceFrame.setUISourceCode(uiSourceCode);
-    this.sourceViewByUISourceCode.set(uiSourceCode, sourceFrame);
+    recycleUISourceCodeFrame(sourceFrame, uiSourceCode);
     uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
   }
 
   private removeSourceFrame(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const sourceView = this.sourceViewByUISourceCode.get(uiSourceCode);
-    this.sourceViewByUISourceCode.delete(uiSourceCode);
+    const sourceView = removeSourceViewCache(uiSourceCode);
     if (sourceView) {
       uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
     }
@@ -941,9 +1155,8 @@ export class HistoryItem implements HistoryItemKey {
   selectionRange: TextUtils.TextRange.TextRange|undefined;
   scrollLineNumber: number|undefined;
 
-  constructor(
-      url: Platform.DevToolsPath.UrlString, resourceType: Common.ResourceType.ResourceType,
-      selectionRange?: TextUtils.TextRange.TextRange, scrollLineNumber?: number) {
+  constructor(url: Platform.DevToolsPath.UrlString, resourceType: Common.ResourceType.ResourceType,
+              selectionRange?: TextUtils.TextRange.TextRange, scrollLineNumber?: number) {
     this.url = url;
     this.resourceType = resourceType;
     this.selectionRange = selectionRange;

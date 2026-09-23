@@ -148,13 +148,12 @@ export class ContextSelectionAgent extends AiAgent<never> {
           };
         }
         const origin = allowedOriginResult.origin;
-        if (origin?.isOpaque()) {
+        if (!origin || origin.isOpaque()) {
           return {
             error: 'No requests recorded by DevTools',
           };
         }
 
-        const allowedSecurityOrigin = origin ?? null;
         let hasCrossOriginRequest = false;
         const requestsToShow: NetworkRequest[] = [];
         for (const request of this.#networkLog.requests()) {
@@ -166,7 +165,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
            * during the loading of the target page, and do not leak URLs from
            * other pages.
            */
-          if (allowedSecurityOrigin && !request.initiatorSecurityOrigin().isSameOriginWith(allowedSecurityOrigin)) {
+          if (!isOriginAllowedByLock({status: 'ESTABLISHED_ORIGIN', origin}, request.initiatorSecurityOrigin())) {
             hasCrossOriginRequest = true;
             continue;
           }
@@ -184,7 +183,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
         if (requests.length === 0) {
           return {
             error: hasCrossOriginRequest ?
-                `No requests showing with origin ${origin?.siteId() ?? ''}. Tell the user to start a new chat` :
+                `No requests showing with origin ${origin.siteId()}. Tell the user to start a new chat` :
                 'No requests recorded by DevTools',
           };
         }
@@ -231,18 +230,17 @@ export class ContextSelectionAgent extends AiAgent<never> {
           };
         }
         const origin = allowedOriginResult.origin;
-        if (origin?.isOpaque()) {
+        if (!origin || origin.isOpaque()) {
           return {
             error: 'No request found',
           };
         }
-        const allowedSecurityOrigin = origin ?? null;
         const request = this.#networkLog.requests().find(req => {
           if (req.requestId() !== id) {
             return false;
           }
 
-          return !allowedSecurityOrigin || req.initiatorSecurityOrigin().isSameOriginWith(allowedSecurityOrigin);
+          return isOriginAllowedByLock({status: 'ESTABLISHED_ORIGIN', origin}, req.initiatorSecurityOrigin());
         });
 
         if (request) {
@@ -288,13 +286,16 @@ export class ContextSelectionAgent extends AiAgent<never> {
           };
         }
         const origin = allowedOriginResult.origin;
+        if (!origin || origin.isOpaque()) {
+          return {
+            result: [],
+          };
+        }
 
         const files: Array<{file: string, id: number | undefined}> = [];
         const uiSourceCodes: Workspace.UISourceCode.UISourceCode[] = [];
         for (const file of ContextSelectionAgent.getUISourceCodes(this.#workspace)) {
-          const fileSecurityOrigin = file.securityOrigin();
-
-          if (origin && !fileSecurityOrigin.isSameOriginWith(origin)) {
+          if (!isOriginAllowedByLock({status: 'ESTABLISHED_ORIGIN', origin}, file.securityOrigin())) {
             continue;
           }
 
@@ -347,14 +348,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
           };
         }
         const origin = allowedOriginResult.origin;
-
-        const file = ContextSelectionAgent.getUISourceCodes(this.#workspace).find(file => {
-          if (ContextSelectionAgent.uiSourceCodeId.get(file) !== params.id) {
-            return false;
-          }
-          const fileSecurityOrigin = file.securityOrigin();
-          return !origin || fileSecurityOrigin.isSameOriginWith(origin);
-        });
+        const file = ContextSelectionAgent.getSourceById(params.id, origin, this.#workspace);
 
         if (!file) {
           return {
@@ -524,7 +518,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
             };
           }
           const origin = allowedOriginResult.origin;
-          if (!origin) {
+          if (!origin || origin.isOpaque()) {
             return {
               error: 'Unable to find page storage.',
             };

@@ -141,7 +141,19 @@ export class AiAgent2 extends AiAgent<unknown> {
   readonly #declaredTools = new Set<string>();
 
   constructor(opts: AiAgent2Options) {
-    super(opts);
+    super({
+      ...opts,
+      allowedOrigin: opts.allowedOrigin ?? (() => {
+                       const lock = opts.originLock();
+                       if (lock.status === 'BLOCKED_BY_NAVIGATION') {
+                         return {blocked: true};
+                       }
+                       if (lock.status === 'ESTABLISHED_ORIGIN') {
+                         return {origin: lock.origin};
+                       }
+                       return {origin: undefined};
+                     }),
+    });
     this.#changes = opts.changeManager ?? new ChangeManager(opts.targetManager);
     this.#lighthouseRecording = opts.lighthouseRecording;
     this.#performanceRecordAndReload = opts.performanceRecordAndReload;

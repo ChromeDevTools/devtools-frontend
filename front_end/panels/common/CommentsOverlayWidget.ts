@@ -124,6 +124,13 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   #cachedTitle: Title = {text: ''};
   #cachedTitleAnchor: CommentManager.CommentManager.CommentAnchorSignature|null = null;
 
+  #setActiveThreadId(threadId: string|null): void {
+    if (this.#activeThreadId !== threadId) {
+      this.#clearCloseTimeout();
+      this.#activeThreadId = threadId;
+    }
+  }
+
   constructor(
       element: HTMLElement|undefined,
       [commentManager]: UI.Widget.WidgetDependencies<typeof CommentsOverlayWidget>,
@@ -219,7 +226,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
           CommentManager.CommentManager.EventTypes[CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED]>,
       ): void {
     if (!event.data) {
-      this.#activeThreadId = null;
+      this.#setActiveThreadId(null);
     }
     this.requestUpdate();
   }
@@ -230,7 +237,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       ): void {
     const isModeActive = event.data;
     if (!isModeActive) {
-      this.#activeThreadId = null;
+      this.#setActiveThreadId(null);
     }
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction(
         'comments.toggle-comment-mode',
@@ -242,9 +249,9 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   #onStateChanged(): void {
     const draftThread = this.#commentManager.getCommentThreads().find(t => t.status === 'DRAFT');
     if (draftThread) {
-      this.#activeThreadId = draftThread.id;
+      this.#setActiveThreadId(draftThread.id);
     } else if (this.#activeThreadId && !this.#commentManager.getCommentThread(this.#activeThreadId)) {
-      this.#activeThreadId = null;
+      this.#setActiveThreadId(null);
     }
     this.requestUpdate();
   }
@@ -291,10 +298,10 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       if (thread?.status === 'DRAFT') {
         this.#commentOverlayManager.clearDraftThreads();
       }
-      this.#activeThreadId = null;
+      this.#setActiveThreadId(null);
     } else {
       this.#commentOverlayManager.clearDraftThreads();
-      this.#activeThreadId = threadId;
+      this.#setActiveThreadId(threadId);
     }
     this.requestUpdate();
   };
@@ -343,10 +350,11 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         }
         activeThread.sendToAgent(text);
         const threadId = activeThread.id;
+        this.#clearCloseTimeout();
         this.#closeTimeoutId = window.setTimeout(() => {
           this.#closeTimeoutId = null;
           if (this.#activeThreadId === threadId) {
-            this.#activeThreadId = null;
+            this.#setActiveThreadId(null);
             this.requestUpdate();
           }
         }, AUTO_CLOSE_DELAY_MS);

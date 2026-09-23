@@ -435,4 +435,73 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
 
     widget.detach();
   });
+
+  it('clears the close timeout when switching away from a submitted thread', async () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
+    try {
+      const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+      const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
+          undefined,
+          [commentManager],
+          view,
+      );
+      widget.setOverlayManagerForTest(overlayManager);
+      widget.markAsRoot();
+      renderElementIntoDOM(widget, {allowMultipleChildren: true});
+      await view.nextInput;
+
+      const testEl1 = document.createElement('div');
+      testEl1.setAttribute('jslog', 'TreeItem; context: timeout-test-1');
+      testEl1.textContent = 'test content 1';
+      testEl1.getBoundingClientRect = () => new DOMRect(10, 20, 100, 20);
+      renderElementIntoDOM(testEl1, {allowMultipleChildren: true});
+
+      const testEl2 = document.createElement('div');
+      testEl2.setAttribute('jslog', 'TreeItem; context: timeout-test-2');
+      testEl2.textContent = 'test content 2';
+      testEl2.getBoundingClientRect = () => new DOMRect(10, 50, 100, 20);
+      renderElementIntoDOM(testEl2, {allowMultipleChildren: true});
+
+      commentManager.setCommentMode(true);
+
+      // Open first thread
+      overlayManager.handleElementClick(testEl1);
+      const draftInput1 = await view.nextInput;
+      const thread1Id = draftInput1.activeThread!.id;
+
+      // Submit comment on first thread
+      draftInput1.onAddComment('Sent comment 1');
+      const submittedInput1 = await view.nextInput;
+      assert.isNotNull(submittedInput1.activeThread);
+      assert.strictEqual(submittedInput1.activeThread.id, thread1Id);
+
+      // Quickly switch to second thread
+      overlayManager.handleElementClick(testEl2);
+      const draftInput2 = await view.nextInput;
+      assert.isNotNull(draftInput2.activeThread);
+      const thread2Id = draftInput2.activeThread.id;
+      assert.notStrictEqual(thread2Id, thread1Id);
+
+      // Switch back to first thread
+      draftInput2.onPinClick(thread1Id);
+      const switchedBackInput = await view.nextInput;
+      assert.isNotNull(switchedBackInput.activeThread);
+      assert.strictEqual(switchedBackInput.activeThread.id, thread1Id);
+
+      // Advance time so the original 2-second timeout would fire
+      clock.tick(2000);
+
+      // Wait for any pending microtasks so requestUpdate() has a chance to execute
+      await widget.updateComplete;
+
+      assert.isNotNull(view.input.activeThread, 'Active thread was unexpectedly closed by an orphaned timeout');
+      assert.strictEqual(view.input.activeThread.id, thread1Id);
+
+      testEl1.remove();
+      testEl2.remove();
+      widget.detach();
+    } finally {
+      clock.restore();
+    }
+  });
 });

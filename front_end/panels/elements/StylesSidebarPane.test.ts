@@ -88,6 +88,14 @@ describe('StylesSidebarPane', () => {
         inactive?: boolean;
       }
 
+      const toggleActive = (item: TestItem, active: boolean) => {
+        if (active) {
+          delete item.inactive;
+        } else {
+          item.inactive = true;
+        }
+      };
+
       it('preserves the relative ordering of inactive items when some items become inactive', () => {
         const oldItems: TestItem[] = [{id: 'a'}, {id: 'b'}, {id: 'c'}];
         const newItems: TestItem[] = [{id: 'a'}, {id: 'c'}];
@@ -96,9 +104,7 @@ describe('StylesSidebarPane', () => {
             oldItems,
             newItems,
             item => item.id,
-            item => {
-              item.inactive = true;
-            },
+            toggleActive,
         );
 
         assert.deepEqual(merged, [
@@ -116,9 +122,7 @@ describe('StylesSidebarPane', () => {
             oldItems,
             newItems,
             item => item.id,
-            item => {
-              item.inactive = true;
-            },
+            toggleActive,
         );
 
         assert.deepEqual(merged, [
@@ -137,9 +141,7 @@ describe('StylesSidebarPane', () => {
             oldItems,
             newItems,
             item => item.id,
-            item => {
-              item.inactive = true;
-            },
+            toggleActive,
         );
 
         assert.deepEqual(merged, [
@@ -149,16 +151,15 @@ describe('StylesSidebarPane', () => {
       });
 
       it('restores previously inactive items to active state when matched again', () => {
-        const oldItems: TestItem[] = [{id: 'a'}, {id: 'b', inactive: true}, {id: 'c'}];
+        const itemB: TestItem = {id: 'b', inactive: true};
+        const oldItems: TestItem[] = [{id: 'a'}, itemB, {id: 'c'}];
         const newItems: TestItem[] = [{id: 'a'}, {id: 'b'}, {id: 'c'}];
 
         const merged = Elements.StylesSidebarPane.mergeOrderedItems(
             oldItems,
             newItems,
             item => item.id,
-            item => {
-              item.inactive = true;
-            },
+            toggleActive,
         );
 
         assert.deepEqual(merged, [
@@ -166,6 +167,7 @@ describe('StylesSidebarPane', () => {
           {id: 'b'},
           {id: 'c'},
         ]);
+        assert.strictEqual(merged[1], itemB);
       });
 
       it('handles empty old items list', () => {
@@ -176,9 +178,7 @@ describe('StylesSidebarPane', () => {
             oldItems,
             newItems,
             item => item.id,
-            item => {
-              item.inactive = true;
-            },
+            toggleActive,
         );
 
         assert.deepEqual(merged, [
@@ -195,9 +195,7 @@ describe('StylesSidebarPane', () => {
             oldItems,
             newItems,
             item => item.id,
-            item => {
-              item.inactive = true;
-            },
+            toggleActive,
         );
 
         assert.deepEqual(merged, [
@@ -3932,5 +3930,244 @@ describeWithEnvironment('StylesSidebarPane Inactive Styles', () => {
     assert.strictEqual(blocks3[2].titleElement()?.textContent, '@property');
     assert.isTrue(blocks3[1].sections[0].isInactive(), '@keyframes section should be marked inactive');
     assert.isFalse(blocks3[2].sections[0].isInactive(), '@property section should remain active');
+  });
+
+  it('distinguishes inherited section blocks across different ancestor nodes without collisions', async () => {
+    const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    parentNode.id = 2 as Protocol.DOM.NodeId;
+    const grandParentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    grandParentNode.id = 3 as Protocol.DOM.NodeId;
+    node.parentNode = parentNode;
+    parentNode.parentNode = grandParentNode;
+
+    const grandParentRule = ruleMatch('.grandparent', {color: 'red'});
+    const parentRule = ruleMatch('.parent:focus-within', {'font-weight': 'bold'});
+
+    // 1. Unfocused: only grandParent has inherited styles (parent has empty matchedCSSRules)
+    const matchedStyles1 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      inheritedPayload: [
+        {matchedCSSRules: []},
+        {matchedCSSRules: [grandParentRule]},
+      ],
+    });
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    assert.lengthOf(blocks1, 2);
+    assert.strictEqual(blocks1[1].id, 'inherited-node:3');
+    assert.lengthOf(blocks1[1].sections, 1);
+    assert.strictEqual(blocks1[1].sections[0].headerText(), '.grandparent');
+    assert.isFalse(blocks1[1].sections[0].isInactive());
+
+    // 2. Focused: parent also matches an inherited rule
+    const matchedStyles2 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      inheritedPayload: [
+        {matchedCSSRules: [parentRule]},
+        {matchedCSSRules: [grandParentRule]},
+      ],
+    });
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks2;
+
+    assert.lengthOf(blocks2, 3);
+    assert.strictEqual(blocks2[1].id, 'inherited-node:2');
+    assert.lengthOf(blocks2[1].sections, 1, 'Parent block should only contain parent rule, not grandparent rule');
+    assert.strictEqual(blocks2[1].sections[0].headerText(), '.parent:focus-within');
+    assert.isFalse(blocks2[1].sections[0].isInactive());
+
+    assert.strictEqual(blocks2[2].id, 'inherited-node:3');
+    assert.lengthOf(blocks2[2].sections, 1);
+    assert.strictEqual(blocks2[2].sections[0].headerText(), '.grandparent');
+    assert.isFalse(blocks2[2].sections[0].isInactive());
+
+    // 3. Unfocused again: parent rule becomes inactive in its own block
+    const blocks3 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks3;
+
+    assert.lengthOf(blocks3, 3);
+    assert.strictEqual(blocks3[1].id, 'inherited-node:2');
+    assert.isTrue(blocks3[1].sections[0].isInactive());
+    assert.strictEqual(blocks3[2].id, 'inherited-node:3');
+    assert.isFalse(blocks3[2].sections[0].isInactive());
+  });
+
+  it('preserves outer and nested @starting-style rules as inactive', async () => {
+    const normalRule = ruleMatch('.target', {color: 'green'});
+    const outerStartingRule: Protocol.CSS.RuleMatch = {
+      rule: {
+        selectorList: {selectors: [{text: '.target'}], text: '.target'},
+        origin: Protocol.CSS.StyleSheetOrigin.Regular,
+        style: {cssProperties: [{name: 'color', value: 'yellow'}], shorthandEntries: []},
+        ruleTypes: [Protocol.CSS.CSSRuleType.StartingStyleRule],
+        startingStyles: [{} as Protocol.CSS.CSSStartingStyle],
+      },
+      matchingSelectors: [0],
+    };
+    const nestedStartingRule: Protocol.CSS.RuleMatch = {
+      rule: {
+        selectorList: {selectors: [], text: ''},
+        origin: Protocol.CSS.StyleSheetOrigin.Regular,
+        style: {cssProperties: [{name: 'background-color', value: 'red'}], shorthandEntries: []},
+        nestingSelectors: ['.target'],
+        ruleTypes: [Protocol.CSS.CSSRuleType.StartingStyleRule, Protocol.CSS.CSSRuleType.StyleRule],
+        startingStyles: [{} as Protocol.CSS.CSSStartingStyle],
+      },
+      matchingSelectors: [],
+    };
+
+    // 1. @starting-style forced on: all 3 rules match
+    const matchedStyles1 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [normalRule, nestedStartingRule, outerStartingRule],
+    });
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    assert.lengthOf(blocks1[0].sections, 3);
+
+    // 2. @starting-style forced off: only normalRule matches
+    const matchedStyles2 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [normalRule],
+    });
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+
+    assert.lengthOf(blocks2[0].sections, 3);
+    const [outerSection, nestedSection, normalSection] = blocks2[0].sections;
+    assert.isTrue(outerSection.isInactive(), 'Outer @starting-style rule should be inactive');
+    assert.isTrue(nestedSection.isInactive(), 'Nested @starting-style rule should be inactive');
+    assert.isFalse(normalSection.isInactive(), 'Normal rule should remain active');
+
+    const cssQuery = nestedSection.element.querySelector('devtools-css-query');
+    assert.isNotNull(cssQuery);
+    assert.isNotNull(cssQuery.querySelector('devtools-icon.styles-section-status'));
+    assert.isNotNull(cssQuery.querySelector('devtools-icon.section-collapse-icon'));
+  });
+
+  it('preserves manually toggled collapsed state of an inactive rule when it becomes active again', async () => {
+    const focusRule = ruleMatch('.target:focus', {color: 'red'});
+    const baseRule = ruleMatch('.target', {color: 'blue'});
+
+    // Step 1: Both .target:focus and .target are active
+    const matchedStyles1 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [baseRule, focusRule],
+    });
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+    assert.lengthOf(blocks1[0].sections, 2);
+
+    // Step 2: .target:focus becomes inactive (collapsible, expanded by default when collapse-non-contributing-css-rules is off)
+    const matchedStyles2 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [baseRule],
+    });
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks2;
+    assert.lengthOf(blocks2[0].sections, 2);
+    const inactiveFocusSection = blocks2[0].sections[0];
+    assert.isTrue(inactiveFocusSection.isInactive());
+    assert.isTrue(inactiveFocusSection.element.classList.contains('collapsible'));
+    assert.isFalse(inactiveFocusSection.element.classList.contains('collapsed'));
+
+    // User manually collapses the inactive rule by clicking its collapse icon
+    const collapseIcon = inactiveFocusSection.element.querySelector<HTMLElement>('devtools-icon.section-collapse-icon');
+    assert.isNotNull(collapseIcon);
+    collapseIcon.click();
+    assert.isTrue(inactiveFocusSection.element.classList.contains('collapsed'));
+
+    // Step 3: .target:focus becomes active again -> should reuse section and preserve manual collapsed state!
+    const matchedStyles3 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [baseRule, focusRule],
+    });
+    const blocks3 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles3, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks3;
+    assert.lengthOf(blocks3[0].sections, 2);
+    const reactivatedFocusSection = blocks3[0].sections[0];
+    assert.strictEqual(reactivatedFocusSection, inactiveFocusSection);
+    assert.isFalse(reactivatedFocusSection.isInactive());
+    assert.isTrue(reactivatedFocusSection.element.classList.contains('collapsed'),
+                  'Manually collapsed state should be preserved when rule becomes active again');
+  });
+
+  it('updates childBlocks on reused parent SectionBlock when new @layer child blocks match', async () => {
+    const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    parentNode.id = 2 as Protocol.DOM.NodeId;
+    node.parentNode = parentNode;
+
+    const baseInheritedRule = ruleMatch('.parent', {color: 'red'});
+    const layeredInheritedRule: Protocol.CSS.RuleMatch = {
+      rule: {
+        selectorList: {selectors: [{text: '.parent-layered'}], text: '.parent-layered'},
+        origin: Protocol.CSS.StyleSheetOrigin.Regular,
+        style: {cssProperties: [{name: 'font-size', value: '20px'}], shorthandEntries: []},
+        layers: [{text: 'my-layer', range: {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10}}],
+      },
+      matchingSelectors: [0],
+    };
+
+    // 1. Initial match: inherited parent block has no layer child blocks yet.
+    const matchedStyles1 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      inheritedPayload: [{matchedCSSRules: [baseInheritedRule]}],
+    });
+    const blocks1 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles1, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks1;
+
+    assert.lengthOf(blocks1, 2);
+    const inheritedBlock1 = blocks1[1];
+    assert.strictEqual(inheritedBlock1.id, 'inherited-node:2');
+    assert.isEmpty(inheritedBlock1.childBlocks);
+
+    // 2. Update: a new @layer rule matches on the inherited parent, creating a new child SectionBlock.
+    const matchedStyles2 = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      inheritedPayload: [{matchedCSSRules: [layeredInheritedRule, baseInheritedRule]}],
+    });
+    const blocks2 =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles2, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks2;
+
+    assert.lengthOf(blocks2, 3);
+    const inheritedBlock2 = blocks2[1];
+    const layerBlock2 = blocks2[2];
+    assert.strictEqual(inheritedBlock2, inheritedBlock1, 'Inherited parent block should be reused');
+    assert.strictEqual(layerBlock2.id, 'layer:inherited-node:2:my-layer');
+    assert.deepEqual(inheritedBlock2.childBlocks, [layerBlock2]);
+
+    // Verify filtering by a property only in the child layer block keeps the inherited parent block's title visible.
+    stylesSidebarPane.setFilter(/font-size/i);
+    assert.isFalse(inheritedBlock2.titleElement()?.classList.contains('hidden'),
+                   'Parent block title should remain visible when child block has a matching section');
   });
 });

@@ -304,6 +304,7 @@ export class StylePropertiesSection {
       closeBrace.createChild('span').textContent = '}';
     } else {
       this.titleElement.classList.add('hidden');
+      this.updateAncestorRuleList();
     }
 
     if (rule) {
@@ -425,6 +426,7 @@ export class StylePropertiesSection {
     this.computedStyleExtraFields = computedStyleExtraFields;
     this.#lastInheritedNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
     this.update(true);
+    this.updateCollapsedState();
   }
 
   inheritedNode(): SDK.DOMModel.DOMNode|null {
@@ -1250,6 +1252,14 @@ export class StylePropertiesSection {
     this.#ancestorClosingBracesElement.removeChildren();
     this.maybeCreateAncestorRules(this.styleInternal);
     this.#styleRuleElement.style.paddingLeft = `${this.nestingLevel}ch`;
+    if (this.headerText().length === 0 && (this.styleInternal.parentRule instanceof SDK.CSSRule.CSSStyleRule)) {
+      const lastAncestor = this.#ancestorRuleListElement.lastElementChild;
+      if (lastAncestor && this.#collapseIcon && this.#statusElement) {
+        this.#collapseIcon.slot = 'indent';
+        lastAncestor.append(this.#collapseIcon, this.#statusElement);
+      }
+      this.#ancestorClosingBracesElement.firstElementChild?.classList.add('sidebar-pane-closing-brace');
+    }
   }
 
   isPropertyInherited(propertyName: string): boolean {

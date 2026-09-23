@@ -78,6 +78,37 @@
       .ab-element.state-b {
         color: purple;
       }
+
+      /* Inherited + pseudo + highlight test case */
+      .parent-inherited {
+        font-size: 20px;
+      }
+      .parent-inherited::selection {
+        background-color: yellow;
+      }
+      .intermediate-inherited:focus-within {
+        font-weight: bold;
+      }
+      .intermediate-inherited:focus-within::selection {
+        color: orange;
+      }
+      .inherited-target:focus::before {
+        content: "focused";
+        color: green;
+      }
+
+      /* @starting-style test case */
+      .starting-style-target {
+        background-color: green;
+        @starting-style {
+          background-color: red;
+        }
+      }
+      @starting-style {
+        .starting-style-target {
+          color: yellow;
+        }
+      }
     </style>
   </head>
   <body>
@@ -105,5 +136,13 @@
         }
       });
     </script>
+
+    <div class="parent-inherited" id="parent-inherited">
+      <div class="intermediate-inherited" id="intermediate-inherited">
+        <button class="inherited-target" id="inherited-target">Inherited test button</button>
+      </div>
+    </div>
+
+    <div class="starting-style-target" id="starting-style-target">Starting style element</div>
   </body>
 </html>

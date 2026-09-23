@@ -497,10 +497,18 @@ __export(debug_exports, {
   isStructuredLogEnabled: () => isStructuredLogEnabled
 });
 function isDebugMode() {
-  return Boolean(localStorage.getItem("debugAiAssistancePanelEnabled"));
+  try {
+    return Boolean(localStorage.getItem("debugAiAssistancePanelEnabled"));
+  } catch {
+    return false;
+  }
 }
 function isStructuredLogEnabled() {
-  return Boolean(localStorage.getItem("aiAssistanceStructuredLogEnabled"));
+  try {
+    return Boolean(localStorage.getItem("aiAssistanceStructuredLogEnabled"));
+  } catch {
+    return false;
+  }
 }
 function debugLog(...log) {
   if (!isDebugMode()) {

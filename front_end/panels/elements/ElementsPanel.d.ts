@@ -3,7 +3,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ComputedStyleWidget } from './ComputedStyleWidget.js';
-import { DOMTreeWidget, type ElementsTreeOutline } from './ElementsTreeOutline.js';
+import { DOMTreeWidget, type ElementsTreeOutline } from './DOMTreeWidget.js';
 import type { MarkerDecorator } from './MarkerDecorator.js';
 import { StylesSidebarPane } from './StylesSidebarPane.js';
 /**

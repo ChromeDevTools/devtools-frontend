@@ -7,6 +7,7 @@ import * as Marked from '../../third_party/marked/marked.js';
  */
 export interface MarkdownIssueDescription {
     file: string;
+    title?: string;
     substitutions?: Map<string, string>;
     links: Array<{
         link: string;
@@ -15,6 +16,7 @@ export interface MarkdownIssueDescription {
 }
 export interface LazyMarkdownIssueDescription {
     file: string;
+    title?: () => string;
     substitutions?: Map<string, () => string>;
     links: Array<{
         link: string;
@@ -38,6 +40,7 @@ export interface IssueDescription {
         link: string;
         linkTitle: string;
     }>;
+    substitutions?: Map<string, string>;
 }
 export declare function getFileContent(url: URL): Promise<string>;
 export declare function getMarkdownFileContent(filename: string): Promise<string>;

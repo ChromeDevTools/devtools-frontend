@@ -123,7 +123,7 @@ export function stubInitiatorGraph(request, options = {}) {
     // InitiatorGraph.initiated is a Map<ChildRequest, ParentInitiator>:
     // - [request, init]: target request was initiated by upstream ancestor `init`.
     // - [init, request]: downstream child `init` was initiated by target `request`.
-    stub.withArgs(request).returns({
+    stub.withArgs(sinon.match.same(request)).returns({
         initiators: new Set([request, ...initiators]),
         initiated: new Map([
             ...initiators.map(init => [request, init]),
@@ -132,7 +132,7 @@ export function stubInitiatorGraph(request, options = {}) {
     });
     // Downstream consumers may recursively query initiatorGraphForRequest on child requests:
     for (const init of initiated) {
-        stub.withArgs(init).returns({
+        stub.withArgs(sinon.match.same(init)).returns({
             initiators: new Set([]),
             initiated: new Map([[init, request]]),
         });

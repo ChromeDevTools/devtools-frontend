@@ -14,6 +14,7 @@ const POPUP_MARGIN = 8;
 const PIN_HEIGHT = 30;
 const POPUP_WIDTH = 288;
 const POPUP_HEIGHT = 220;
+const AUTO_CLOSE_DELAY_MS = 2000;
 const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
@@ -76,6 +77,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     #commentManager;
     #commentOverlayManager;
     #activeThreadId = null;
+    #closeTimeoutId = null;
     #cachedTitle = { text: '' };
     #cachedTitleAnchor = null;
     constructor(element, [commentManager], view = DEFAULT_VIEW) {
@@ -98,6 +100,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.requestUpdate();
     }
     willHide() {
+        this.#clearCloseTimeout();
         this.#commentOverlayManager.stop();
         this.#commentOverlayManager.removeEventListener("PositionsUpdated" /* Comments.CommentOverlayManager.Events.POSITIONS_UPDATED */, this.#onStateChanged, this);
         this.#commentOverlayManager.removeEventListener("HoverHighlightChanged" /* Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED */, this.#onStateChanged, this);
@@ -105,6 +108,12 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.#commentManager.removeEventListener("CommentModeChanged" /* CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED */, this.#onCommentModeChanged, this);
         this.#commentManager.removeEventListener("AgentAttachedChanged" /* CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED */, this.#onAgentAttachedChanged, this);
         super.willHide();
+    }
+    #clearCloseTimeout() {
+        if (this.#closeTimeoutId !== null) {
+            window.clearTimeout(this.#closeTimeoutId);
+            this.#closeTimeoutId = null;
+        }
     }
     #onAgentAttachedChanged(event) {
         if (!event.data) {
@@ -150,7 +159,6 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
                     return { node };
                 }
             }
-            return { text: '' };
         }
         if (anchor.networkRequestId) {
             const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -206,7 +214,18 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
             activePin,
             title,
             onAddComment: (text) => {
-                activeThread?.save(text);
+                if (!activeThread) {
+                    return;
+                }
+                activeThread.save(text);
+                const threadId = activeThread.id;
+                this.#closeTimeoutId = window.setTimeout(() => {
+                    this.#closeTimeoutId = null;
+                    if (this.#activeThreadId === threadId) {
+                        this.#activeThreadId = null;
+                        this.requestUpdate();
+                    }
+                }, AUTO_CLOSE_DELAY_MS);
             },
         };
         this.#view(viewInput, undefined, this.contentElement);
@@ -221,6 +240,9 @@ export class ActionDelegate {
     }
     handleAction(_context, actionId) {
         if (actionId === 'comments.toggle-comment-mode') {
+            if (!this.#commentManager.isAgentAttached()) {
+                return false;
+            }
             if (!widgetInstance) {
                 widgetInstance = new CommentsOverlayWidget(undefined, [this.#commentManager]);
                 widgetInstance.markAsRoot();
@@ -244,9 +266,12 @@ export class ButtonProvider {
     constructor(commentManager) {
         this.#commentManager = commentManager ??
             Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
-        this.#button = UI.Toolbar.Toolbar.createActionButton('comments.toggle-comment-mode');
+        const action = UI.ActionRegistry.ActionRegistry.instance().getAction('comments.toggle-comment-mode');
+        action.setEnabled(this.#commentManager.isAgentAttached());
+        this.#button = UI.Toolbar.Toolbar.createActionButton(action);
         this.#button.setVisible(this.#commentManager.isAgentAttached());
         this.#commentManager.addEventListener("AgentAttachedChanged" /* CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED */, event => {
+            action.setEnabled(event.data);
             this.#button.setVisible(event.data);
         });
     }

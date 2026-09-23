@@ -669,6 +669,13 @@ export class SourceMap {
         }
         return this.#scopesInfo.resolveMappedScopeChain(frame);
     }
+    resolveMappedVariablesAtPosition(location, ignoreInnerBlockScopes = false) {
+        this.#ensureSourceMapProcessed();
+        if (this.#provenance === "user" /* SourceMapProvenance.USER */ || !this.#scopesInfo?.hasVariablesAndBindings()) {
+            return null;
+        }
+        return this.#scopesInfo.resolveMappedVariablesAtPosition(location.lineNumber, location.columnNumber, ignoreInnerBlockScopes);
+    }
     findOriginalFunctionName(position) {
         this.#ensureSourceMapProcessed();
         return this.#scopesInfo?.findOriginalFunctionName(position) ?? null;

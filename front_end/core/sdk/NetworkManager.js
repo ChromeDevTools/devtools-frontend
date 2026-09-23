@@ -2163,6 +2163,12 @@ export class InterceptedRequest {
             this.networkRequest.setCookieHeaders =
                 InterceptedRequest.mergeSetCookieHeaders(originalSetCookieHeaders, setCookieHeadersFromOverrides);
             this.networkRequest.hasOverriddenContent = isBodyOverridden;
+            if (isBodyOverridden) {
+                this.networkRequest.setContentDataProvider(async () => {
+                    const { mimeType, charset } = this.getMimeTypeAndCharset();
+                    return new TextUtils.ContentData.ContentData(body, /* isBase64= */ true, mimeType ?? 'application/octet-stream', charset ?? undefined);
+                });
+            }
         }
         void this.#fetchAgent.invoke_fulfillRequest({ requestId: this.requestId, responseCode, body, responseHeaders });
         this.#multitargetNetworkManager.dispatchEventToListeners("RequestFulfilled" /* MultitargetNetworkManager.Events.REQUEST_FULFILLED */, this.request.url);

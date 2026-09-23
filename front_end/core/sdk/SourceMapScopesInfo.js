@@ -344,6 +344,17 @@ export class SourceMapScopesInfo {
         }
         return rangeChain;
     }
+    resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes = false) {
+        const rangeChain = this.#findGeneratedRangeChain(line, column);
+        const startScope = rangeChain.at(-1)?.originalScope;
+        const innerMostScope = (startScope && ignoreInnerBlockScopes && this.#findFunctionScopeInOriginalScopeChain(startScope)) || startScope;
+        const result = [];
+        for (let scope = innerMostScope; scope; scope = scope.parent) {
+            const range = rangeChain.findLast(r => r.originalScope === scope);
+            result.push(new Map(scope.variables.map((v, i) => [v, findExpression(range, i, line, column)])));
+        }
+        return innerMostScope ? result : null;
+    }
     /**
      * Returns the authored function name of the function containing the provided generated position.
      */
@@ -472,6 +483,11 @@ export class SourceMapScopesInfo {
         }
         return result;
     }
+}
+export function findExpression(range, index, line = 0, column = 0) {
+    const val = range?.values[index];
+    return (typeof val === 'string' ? val : val?.find(r => contains({ start: r.from, end: r.to }, line, column))?.value) ??
+        null;
 }
 export function contains(range, line, column) {
     if (range.start.line > line || (range.start.line === line && range.start.column > column)) {

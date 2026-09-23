@@ -1366,6 +1366,11 @@ var NativeFunctions = [
     receivers: ["Window"]
   },
   {
+    name: "postMessage",
+    signatures: [["message", "targetOrigin"], ["message", "?options"]],
+    receivers: ["HTMLPersistentWidgetElement", "PersistentWidgetOpener"]
+  },
+  {
     name: "deleteRule",
     signatures: [["index"]],
     receivers: ["CSSGroupingRule", "CSSStyleSheet", "CSSStyleRule"]
@@ -2048,7 +2053,7 @@ var NativeFunctions = [
   },
   {
     name: "write",
-    signatures: [["...text"], ["text"], ["text1", "...text"]],
+    signatures: [["...text"]],
     receivers: ["Document"]
   },
   {
@@ -2487,7 +2492,7 @@ var NativeFunctions = [
   },
   {
     name: "writeln",
-    signatures: [["...text"], ["text"], ["text1", "...text"]]
+    signatures: [["...text"]]
   },
   {
     name: "elementFromPoint",

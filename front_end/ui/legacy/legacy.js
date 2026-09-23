@@ -22778,7 +22778,7 @@ var treeoutline_css_default = `/*
   margin-left: -10000px;
 }
 
-.tree-outline:not(.hide-selection-when-blurred) li.selected {
+.tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.selected {
   color: var(--sys-color-on-surface-subtle);
 }
 
@@ -22833,7 +22833,7 @@ ol.tree-outline,
   min-height: var(--sys-size-8);
 }
 
-ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
+ol.tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.selected:focus {
   color: var(--sys-color-on-tonal-container);
 
   & ::selection {
@@ -24410,7 +24410,7 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
     this.#clonedClasses.clear();
     for (let i = 0; i < this.configElement.attributes.length; ++i) {
       const attribute = this.configElement.attributes.item(i);
-      if (attribute && attribute.name !== "role" && _TreeViewTreeElement.CLONED_ATTRIBUTES.has(attribute.name)) {
+      if (attribute && attribute.name !== "role" && (_TreeViewTreeElement.CLONED_ATTRIBUTES.has(attribute.name) || attribute.name.startsWith("data-"))) {
         this.listItemElement.setAttribute(attribute.name, attribute.value);
         this.#clonedAttributes.add(attribute.name);
       }

@@ -5586,7 +5586,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
         return;
       }
-      const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+      const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline(
         /* omitRootDOMNode: */
         false,
         /* selectEnabled: */

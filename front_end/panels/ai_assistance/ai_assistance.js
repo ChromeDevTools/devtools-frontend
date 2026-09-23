@@ -2899,7 +2899,7 @@ async function makeDomTreeWidget(widgetData) {
   const networkRequest = widgetData.data.networkRequest;
   const renderedWidget = html5`
     ${networkRequest ? renderNetworkRequestPreview(networkRequest) : Lit5.nothing}
-    <devtools-widget class="dom-tree-widget" ${widget(Elements.ElementsTreeOutline.DOMTreeWidget, {
+    <devtools-widget class="dom-tree-widget" ${widget(Elements.DOMTreeWidget.DOMTreeWidget, {
     maxTreeDepth: 2,
     enableContextMenu: false,
     showComments: false,

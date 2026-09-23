@@ -6,9 +6,7 @@ import * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import type * as Trace from '../models/trace/trace.js';
 import * as Workspace from '../models/workspace/workspace.js';
-import * as AiAssistancePanel from '../panels/ai_assistance/ai_assistance.js';
-import * as UI from '../ui/legacy/legacy.js';
-import { type ViewFunctionStub } from './ViewFunctionHelpers.js';
+import type * as AiAssistancePanel from '../panels/ai_assistance/ai_assistance.js';
 export declare const MockAidaAbortError: {
     readonly abortError: true;
 };
@@ -39,25 +37,10 @@ export declare function createUISourceCode(options?: {
     resourceType?: Common.ResourceType.ResourceType;
     requestContentData?: boolean;
 }): Promise<Workspace.UISourceCode.UISourceCode>;
-/**
- * Creates and shows an AiAssistancePanel instance returning the view
- * stubs and the initial view input caused by Widget.show().
- */
-export declare function createAiAssistancePanel(options?: {
-    aidaClient?: Host.AidaClient.AidaClient;
-    aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
-    chatView?: AiAssistancePanel.ChatView;
-}): Promise<{
-    panel: AiAssistancePanel.AiAssistancePanel;
-    view: ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>;
-    aidaClient: Host.AidaClient.AidaClient;
-    stubAidaCheckAccessPreconditions: (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => sinon.SinonStub<[], Promise<Host.AidaClient.AidaAccessPreconditions>>;
-}>;
 export declare const setupAutomaticFileSystem: (options?: {
     hasFileSystem: boolean;
 }) => void;
 export declare function initializePersistenceImplForTests(): void;
-export declare function cleanup(): void;
 /**
  * Removes the 'id' field from a message.
  * Note: the return type is a distributive conditional type. This is required
@@ -69,11 +52,6 @@ export declare function cleanup(): void;
 export declare function stripId<T extends {
     id: string;
 }>(message: T): T extends AiAssistancePanel.ChatMessage.Message ? Omit<T, 'id'> : never;
-export declare function openHistoryContextMenu(lastUpdate: AiAssistancePanel.ViewInput, item: string): {
-    contextMenu: UI.ContextMenu.ContextMenu;
-    id: number | undefined;
-    entry: UI.ContextMenu.Item | undefined;
-};
 export declare function createTestFilesystem(fileSystemPath: string, files?: Array<{
     path: string;
     content: string;
@@ -114,18 +92,3 @@ export declare function assertSkillLoaded(prompt: string, skillName: AiAssistanc
  * (`- <name>: <description>`) is present in the prompt's unloaded skills manifest.
  */
 export declare function assertSkillNotLoaded(prompt: string, skillName: AiAssistance.Skill.SkillName): void;
-/**
- * Consumes view updates sequentially until a side-effect confirmation dialog
- * (`needs_approval` step state) appears in the message stream.
- *
- * @param view The view function stub representing the AI Assistance panel view.
- * @returns The confirmation dialog handler to approve or decline the side effect.
- */
-export declare function waitForSideEffectDialog(view: ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>): Promise<AiAssistancePanel.ChatMessage.ConfirmSideEffectDialog>;
-/**
- * Consumes view updates sequentially until the conversation finishes loading.
- *
- * @param view The view function stub representing the AI Assistance panel view.
- * @returns The final view input after loading has completed.
- */
-export declare function waitForLoadingToFinish(view: ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>): Promise<AiAssistancePanel.ViewInput>;

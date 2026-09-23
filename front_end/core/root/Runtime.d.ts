@@ -264,6 +264,9 @@ interface DevToolsMobileSafeAreaEmulation {
 interface DevToolsNetworkBackendLinking {
     enabled: boolean;
 }
+interface DevToolsAiNaturalLanguageInterface {
+    enabled: boolean;
+}
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -294,6 +297,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsAiCodeGeneration: HostConfigAiCodeGeneration;
     devToolsAiCodeCompletionStyles: HostConfigAiCodeCompletionStyles;
     devToolsVeLogging: HostConfigVeLogging;
+    devToolsAiNaturalLanguageInterface: DevToolsAiNaturalLanguageInterface;
     /**
      * OffTheRecord here indicates that the user's profile is either incognito,
      * or guest mode, rather than a "normal" profile.

@@ -18,6 +18,7 @@ export function resolveLazyDescription(lazyDescription) {
     });
     const description = {
         file: lazyDescription.file,
+        title: lazyDescription.title?.(),
         links: lazyDescription.links.map(linksMap),
         substitutions: substitutionMap,
     };
@@ -44,14 +45,15 @@ export async function createIssueDescriptionFromMarkdown(description) {
  */
 export function createIssueDescriptionFromRawMarkdown(markdown, description) {
     const markdownAst = Marked.Marked.lexer(markdown);
-    const title = findTitleFromMarkdownAst(markdownAst);
-    if (!title) {
+    const markdownTitle = findTitleFromMarkdownAst(markdownAst);
+    if (!markdownTitle) {
         throw new Error('Markdown issue descriptions must start with a heading');
     }
     return {
-        title,
+        title: description.title ?? markdownTitle,
         markdown: markdownAst.slice(1),
         links: description.links,
+        substitutions: description.substitutions,
     };
 }
 const validPlaceholderMatchPattern = /\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*)\}/g;
@@ -100,6 +102,10 @@ export function findTitleFromMarkdownAst(markdownAst) {
 export async function getIssueTitleFromMarkdownDescription(description) {
     const rawMarkdown = await getMarkdownFileContent(description.file);
     const markdownAst = Marked.Marked.lexer(rawMarkdown);
-    return findTitleFromMarkdownAst(markdownAst);
+    const markdownTitle = findTitleFromMarkdownAst(markdownAst);
+    if (!markdownTitle) {
+        return null;
+    }
+    return description.title ?? markdownTitle;
 }
 //# sourceMappingURL=MarkdownIssueDescription.js.map

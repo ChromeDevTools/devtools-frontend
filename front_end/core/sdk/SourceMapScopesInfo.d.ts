@@ -57,6 +57,7 @@ export declare class SourceMapScopesInfo {
      *      values.
      */
     resolveMappedScopeChain(callFrame: CallFrame): ScopeChainEntry[] | null;
+    resolveMappedVariablesAtPosition(line: number, column: number, ignoreInnerBlockScopes?: boolean): Array<Map<string, string | null>> | null;
     /**
      * Returns the authored function name of the function containing the provided generated position.
      */
@@ -90,6 +91,7 @@ export interface TranslatedFrame {
     name?: string;
     url?: Platform.DevToolsPath.UrlString;
 }
+export declare function findExpression(range: ScopesCodec.GeneratedRange | undefined, index: number, line?: number, column?: number): string | null;
 export declare function contains(range: Pick<ScopesCodec.GeneratedRange, 'start' | 'end'>, line: number, column: number): boolean;
 export declare function comparePositions(a: ScopesCodec.Position, b: ScopesCodec.Position): number;
 /**

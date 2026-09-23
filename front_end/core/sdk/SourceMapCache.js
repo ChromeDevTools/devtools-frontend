@@ -19,10 +19,16 @@ export class SourceMapCache {
         this.#name = name;
     }
     async set(debugId, securityOrigin, sourceMap) {
+        if (!securityOrigin || securityOrigin === 'file://') {
+            return;
+        }
         const cache = await this.#cache();
         await cache?.put(SourceMapCache.#urlForDebugId(debugId, securityOrigin), new Response(JSON.stringify(sourceMap)));
     }
     async get(debugId, securityOrigin) {
+        if (!securityOrigin || securityOrigin === 'file://') {
+            return null;
+        }
         const cache = await this.#cache();
         const response = await cache?.match(SourceMapCache.#urlForDebugId(debugId, securityOrigin));
         return await response?.json() ?? null;
@@ -49,9 +55,15 @@ export class SourceMapCache {
 const IN_MEMORY_INSTANCE = new (class {
     #cache = new Map();
     async set(debugId, securityOrigin, sourceMap) {
+        if (!securityOrigin || securityOrigin === 'file://') {
+            return;
+        }
         this.#cache.set(`${debugId}|${securityOrigin}`, sourceMap);
     }
     async get(debugId, securityOrigin) {
+        if (!securityOrigin || securityOrigin === 'file://') {
+            return null;
+        }
         return this.#cache.get(`${debugId}|${securityOrigin}`) ?? null;
     }
     async disposeForTest() {

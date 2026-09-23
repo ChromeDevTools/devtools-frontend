@@ -17186,23 +17186,6 @@ export declare namespace Storage {
         persistent: boolean;
         durability: StorageBucketsDurability;
     }
-    /**
-     * A single Related Website Set object.
-     */
-    interface RelatedWebsiteSet {
-        /**
-         * The primary site of this set, along with the ccTLDs if there is any.
-         */
-        primarySites: string[];
-        /**
-         * The associated sites of this set, along with the ccTLDs if there is any.
-         */
-        associatedSites: string[];
-        /**
-         * The service sites of this set, along with the ccTLDs if there is any.
-         */
-        serviceSites: string[];
-    }
     interface GetStorageKeyForFrameRequest {
         frameId: Page.FrameId;
     }
@@ -17384,9 +17367,6 @@ export declare namespace Storage {
     }
     interface RunBounceTrackingMitigationsResponse extends ProtocolResponseWithError {
         deletedSites: string[];
-    }
-    interface GetRelatedWebsiteSetsResponse extends ProtocolResponseWithError {
-        sets: RelatedWebsiteSet[];
     }
     /**
      * A cache's contents have been modified.
@@ -18911,6 +18891,10 @@ export declare namespace WebMCP {
          * A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.
          */
         consequential?: boolean;
+        /**
+         * If true, indicates that the tool is intended for debugging and developer tooling rather than end-user interactions.
+         */
+        debugging?: boolean;
         /**
          * If the declarative tool was declared with the autosubmit attribute.
          */

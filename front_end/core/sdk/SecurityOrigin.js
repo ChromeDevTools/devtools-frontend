@@ -15,6 +15,7 @@ const OPAQUE_PREFIXES = [
     'about:',
     'blob:about',
     'blob:data',
+    'blob:file',
     'blob:null',
 ];
 /**

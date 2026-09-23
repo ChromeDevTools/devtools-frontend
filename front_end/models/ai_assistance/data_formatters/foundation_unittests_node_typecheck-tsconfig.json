@@ -47,10 +47,12 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../../front_end/models/ai_assistance/data_formatters/FileFormatter.test.ts",
     "../../../../../../../front_end/models/ai_assistance/data_formatters/LighthouseFormatter.test.ts",
     "../../../../../../../front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.test.ts",
     "../../../../../../../front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.ts",
-    "../../../../../../../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.ts"
+    "../../../../../../../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.ts",
+    "../../../../../../../front_end/models/ai_assistance/data_formatters/UnitFormatters.test.ts"
   ],
   "references": [
     {

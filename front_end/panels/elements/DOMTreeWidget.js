@@ -57,7 +57,7 @@ import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import { ShortcutTreeElement } from './ShortcutTreeElement.js';
 import { TopLayerContainer } from './TopLayerContainer.js';
-const { html, nothing, render, Directives: { classMap, repeat, styleMap } } = Lit;
+const { html, nothing, render, Directives: { classMap, ifDefined, repeat, styleMap } } = Lit;
 const UIStrings = {
     /**
      * @description ARIA accessible name in the DOM tree outline of the Elements panel.
@@ -82,7 +82,7 @@ const UIStrings = {
      */
     reveal: 'reveal',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeOutline.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMTreeWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const elementsTreeOutlineByDOMModel = new WeakMap();
 const populatedTreeElements = new WeakSet();
@@ -729,6 +729,8 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         // clang-format off
         return html `
       <li role="treeitem"
+          data-backend-node-id=${ifDefined(node.backendNodeId())}
+          data-target-id=${ifDefined(node.domModel().target().id())}
           selectable=${input.selectEnabled ? 'true' : 'false'}
           ?selected=${isSelected && !input.selectedClosingTag}
           class=${classes}
@@ -806,6 +808,8 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
               ${node instanceof SDK.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing}
               ${needsClosingTag ? html `
                 <li role="treeitem"
+                    data-backend-node-id=${ifDefined(node.backendNodeId())}
+                    data-target-id=${ifDefined(node.domModel().target().id())}
                     selectable=${input.selectEnabled ? 'true' : 'false'}
                     ?selected=${isSelected && Boolean(input.selectedClosingTag)}
                     class=${classMap({
@@ -1118,7 +1122,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             UI.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker.ChangeTracker.ChangeTracker);
         return this.#changeTracker;
     }
-    constructor(element, [changeTracker] = [], view = DEFAULT_VIEW) {
+    constructor(element, [changeTracker] = [], view = DECLARATIVE_VIEW) {
         super(element, {
             useShadowDom: false,
             delegatesFocus: false,
@@ -1944,7 +1948,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
                 }
                 else {
                     void domModel.requestDocument().then(document => {
-                        if (document && this.isShowing()) {
+                        if (document && this.isShowing() && this.#wiredDOMModels.has(domModel)) {
                             this.rootDOMNode = document;
                             this.onDocumentUpdated(domModel);
                         }
@@ -1966,6 +1970,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             if (this.#wiredDOMModels.has(domModel)) {
                 this.#wiredDOMModels.delete(domModel);
                 this.#unwireDOMModel(domModel);
+            }
+            if (this.#rootDOMNode?.domModel() === domModel) {
+                this.#rootDOMNode = null;
+                this.#selectedDOMNode = null;
+                this.#expandedNodes.clear();
+                this.#updateRecords.clear();
             }
             this.performUpdate();
             return;
@@ -2744,7 +2754,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
                 }
                 else if (this.#view === DECLARATIVE_VIEW) {
                     void domModel.requestDocument().then(document => {
-                        if (document && this.isShowing()) {
+                        if (document && this.isShowing() && this.#wiredDOMModels.has(domModel)) {
                             this.rootDOMNode = document;
                             this.onDocumentUpdated(domModel);
                         }
@@ -3786,4 +3796,4 @@ export const MappedCharToEntity = new Map([
     ['\u2060', 'NoBreak'],
     ['\uFEFF', '#xFEFF'],
 ]);
-//# sourceMappingURL=ElementsTreeOutline.js.map
+//# sourceMappingURL=DOMTreeWidget.js.map

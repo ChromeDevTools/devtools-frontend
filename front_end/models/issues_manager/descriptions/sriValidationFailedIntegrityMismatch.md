@@ -7,4 +7,6 @@ assertions made by the request’s initiator. Verification failed.
 
 The following are the keys specified by the request’s initiator:
 
+```
 {PLACEHOLDER_integrityAssertions}
+```

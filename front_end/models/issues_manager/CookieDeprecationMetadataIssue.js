@@ -22,17 +22,16 @@ export class CookieDeprecationMetadataIssue extends Issue {
         return "Other" /* IssueCategory.OTHER */;
     }
     getDescription() {
-        const fileName = this.details().operation === 'SetCookie' ? 'cookieWarnMetadataGrantSet.md' : 'cookieWarnMetadataGrantRead.md';
-        let optOutText = '';
+        let fileName = this.details().operation === 'SetCookie' ? 'cookieWarnMetadataGrantSet.md' : 'cookieWarnMetadataGrantRead.md';
+        const substitutions = new Map();
         if (this.details().isOptOutTopLevel) {
-            optOutText = '\n\n (Top level site opt-out: ' + this.details().optOutPercentage +
-                '% - [learn more](gracePeriodStagedControlExplainer))';
+            fileName = this.details().operation === 'SetCookie' ? 'cookieWarnMetadataGrantSetOptOut.md' :
+                'cookieWarnMetadataGrantReadOptOut.md';
+            substitutions.set('PLACEHOLDER_optOutPercentage', String(this.details().optOutPercentage));
         }
         return {
             file: fileName,
-            substitutions: new Map([
-                ['PLACEHOLDER_topleveloptout', optOutText],
-            ]),
+            substitutions,
             links: [
                 {
                     link: 'https://goo.gle/changes-to-chrome-browsing',

@@ -124,6 +124,9 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
     return this.#agentAttached;
   }
   setCommentMode(active) {
+    if (active && !this.#agentAttached) {
+      return;
+    }
     if (this.#commentMode === active) {
       return;
     }
@@ -226,7 +229,7 @@ var CD4ABridge = class extends Common3.ObjectWrapper.ObjectWrapper {
     if (!this.#targetManager) {
       return void 0;
     }
-    const target = this.#targetManager.targetById(nodeSignature.targetId) ?? this.#targetManager.primaryPageTarget();
+    const target = this.#targetManager.targetById(nodeSignature.targetId);
     const domModel = target?.model(SDK.DOMModel.DOMModel);
     if (!domModel) {
       return void 0;
@@ -298,7 +301,7 @@ ${details.join("\n")}` : details.join("\n");
       }
     }
     if (target?.node && this.#targetManager) {
-      const sdkTarget = this.#targetManager.targetById(target.node.targetId) ?? this.#targetManager.primaryPageTarget();
+      const sdkTarget = this.#targetManager.targetById(target.node.targetId);
       const domModel = sdkTarget?.model(SDK.DOMModel.DOMModel);
       if (domModel) {
         const cdpNodeId = target.node.backendNodeId;

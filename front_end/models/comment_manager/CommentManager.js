@@ -38,6 +38,9 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
         return this.#agentAttached;
     }
     setCommentMode(active) {
+        if (active && !this.#agentAttached) {
+            return;
+        }
         if (this.#commentMode === active) {
             return;
         }

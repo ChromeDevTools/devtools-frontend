@@ -23,15 +23,13 @@ export declare const scopeIdentifiers: (script: SDK.Script.Script, scope: Format
 } | null>;
 export declare const resolveScopeChain: (callFrame: SDK.DebuggerModel.CallFrame, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) => Promise<SDK.DebuggerModel.ScopeChainEntry[]>;
 /**
- * @returns A mapping from original name -> compiled name. If the orignal name is unavailable (e.g. because the compiled name was
- * shadowed) we set it to `null`.
+ * @returns An array of mappings (from inner-most to outer-most scope) of original name -> compiled name or binding expression.
  */
-export declare const allVariablesInCallFrame: (callFrame: SDK.DebuggerModel.CallFrame, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) => Promise<Map<string, string | null>>;
+export declare const allVariablesInCallFrame: (callFrame: SDK.DebuggerModel.CallFrame, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) => Promise<Array<Map<string, string | null>>>;
 /**
- * @returns A mapping from original name -> compiled name. If the orignal name is unavailable (e.g. because the compiled name was
- * shadowed) we set it to `null`.
+ * @returns An array of mappings (from inner-most to outer-most scope) of original name -> compiled name or binding expression.
  */
-export declare const allVariablesAtPosition: (location: SDK.DebuggerModel.Location, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) => Promise<Map<string, string | null>>;
+export declare const allVariablesAtPosition: (location: SDK.DebuggerModel.Location, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) => Promise<Array<Map<string, string | null>>>;
 export declare const resolveThisObject: (callFrame: SDK.DebuggerModel.CallFrame, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) => Promise<SDK.RemoteObject.RemoteObject | null>;
 export declare const resolveScopeInObject: (scope: SDK.DebuggerModel.ScopeChainEntry, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) => SDK.RemoteObject.RemoteObject;
 export declare class RemoteObject extends SDK.RemoteObject.RemoteObject {

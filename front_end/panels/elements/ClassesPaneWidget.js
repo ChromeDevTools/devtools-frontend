@@ -303,7 +303,8 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
         }
         let completions = await this.classNamesPromise;
         const classesMap = this.nodeClasses((selectedNode));
-        completions = completions.filter(value => !classesMap.get(value));
+        const existingClasses = new Set(expression.split(/[,\s]/).map(className => className.trim()).filter(Boolean));
+        completions = completions.filter(value => !classesMap.get(value) && !existingClasses.has(value));
         if (prefix[0] === '.') {
             completions = completions.map(value => '.' + value);
         }

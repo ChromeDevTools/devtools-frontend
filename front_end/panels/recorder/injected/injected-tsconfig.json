@@ -69,9 +69,6 @@
       "path": "../../../third_party/puppeteer/puppeteer-tsconfig.ref.json"
     },
     {
-      "path": "../../../third_party/puppeteer/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../../third_party/puppeteer-replay/bundle-tsconfig.ref.json"
     }
   ]

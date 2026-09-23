@@ -329,47 +329,49 @@ export const resolveScopeChain = async function (callFrame, debuggerWorkspaceBin
         scope.type() === "local" /* Protocol.Debugger.ScopeType.Local */);
     return scopes.map(scope => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
 };
+function reverseScopeMapping(variableMapping) {
+    const result = new Map();
+    for (const [compiledName, originalName] of variableMapping) {
+        if (originalName && !result.has(originalName)) {
+            result.set(originalName, compiledName);
+        }
+    }
+    return result;
+}
 /**
- * @returns A mapping from original name -> compiled name. If the orignal name is unavailable (e.g. because the compiled name was
- * shadowed) we set it to `null`.
+ * @returns An array of mappings (from inner-most to outer-most scope) of original name -> compiled name or binding expression.
  */
 export const allVariablesInCallFrame = async (callFrame, debuggerWorkspaceBinding) => {
     if (!callFrame.debuggerModel.target()
         .targetManager()
         .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
         .get()) {
-        return new Map();
+        return [];
     }
-    const cachedMap = cachedMapByCallFrame.get(callFrame);
-    if (cachedMap) {
-        return cachedMap;
+    const cached = cachedMapByCallFrame.get(callFrame);
+    if (cached) {
+        return cached;
+    }
+    if (Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel?.enabled) {
+        const sourceMap = callFrame.script.sourceMap() ??
+            await callFrame.debuggerModel.sourceMapManager().sourceMapForClientPromise(callFrame.script);
+        const mappedVariables = sourceMap?.resolveMappedVariablesAtPosition(callFrame.location(), callFrame.returnValue() !== null);
+        if (mappedVariables) {
+            cachedMapByCallFrame.set(callFrame, mappedVariables);
+            return mappedVariables;
+        }
     }
     const scopeChain = callFrame.scopeChain().filter(scope => !scope.empty());
     const nameMappings = await Promise.all(scopeChain.map(scope => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
-    const reverseMapping = new Map();
-    const compiledNames = new Set();
-    for (const { variableMapping } of nameMappings) {
-        for (const [compiledName, originalName] of variableMapping) {
-            if (!originalName) {
-                continue;
-            }
-            if (!reverseMapping.has(originalName)) {
-                // An inner scope might have shadowed {compiledName}. Mark it as "unavailable" in that case.
-                const compiledNameOrNull = compiledNames.has(compiledName) ? null : compiledName;
-                reverseMapping.set(originalName, compiledNameOrNull);
-            }
-            compiledNames.add(compiledName);
-        }
-    }
+    const reverseMapping = nameMappings.map(({ variableMapping }) => reverseScopeMapping(variableMapping));
     cachedMapByCallFrame.set(callFrame, reverseMapping);
     return reverseMapping;
 };
 /**
- * @returns A mapping from original name -> compiled name. If the orignal name is unavailable (e.g. because the compiled name was
- * shadowed) we set it to `null`.
+ * @returns An array of mappings (from inner-most to outer-most scope) of original name -> compiled name or binding expression.
  */
 export const allVariablesAtPosition = async (location, debuggerWorkspaceBinding) => {
-    const reverseMapping = new Map();
+    const reverseMapping = [];
     const script = location.script();
     if (!script) {
         return reverseMapping;
@@ -380,6 +382,13 @@ export const allVariablesAtPosition = async (location, debuggerWorkspaceBinding)
         .get()) {
         return reverseMapping;
     }
+    if (Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel?.enabled) {
+        const sourceMap = script.sourceMap() ?? await script.debuggerModel.sourceMapManager().sourceMapForClientPromise(script);
+        const mappedVariables = sourceMap?.resolveMappedVariablesAtPosition(location);
+        if (mappedVariables) {
+            return mappedVariables;
+        }
+    }
     const scopeTreeAndText = await computeScopeTree(script);
     if (!scopeTreeAndText) {
         return reverseMapping;
@@ -387,20 +396,9 @@ export const allVariablesAtPosition = async (location, debuggerWorkspaceBinding)
     const { scopeTree, text } = scopeTreeAndText;
     const locationOffset = text.offsetFromPosition(location.lineNumber, location.columnNumber);
     const scopeChain = findScopeChain(scopeTree, { start: locationOffset, end: locationOffset });
-    const compiledNames = new Set();
     while (scopeChain.length > 0) {
         const { variableMapping } = await resolveScope(script, scopeChain, debuggerWorkspaceBinding);
-        for (const [compiledName, originalName] of variableMapping) {
-            if (!originalName) {
-                continue;
-            }
-            if (!reverseMapping.has(originalName)) {
-                // An inner scope might have shadowed {compiledName}. Mark it as "unavailable" in that case.
-                const compiledNameOrNull = compiledNames.has(compiledName) ? null : compiledName;
-                reverseMapping.set(originalName, compiledNameOrNull);
-            }
-            compiledNames.add(compiledName);
-        }
+        reverseMapping.push(reverseScopeMapping(variableMapping));
         scopeChain.pop();
     }
     return reverseMapping;

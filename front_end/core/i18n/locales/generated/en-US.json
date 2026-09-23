@@ -2585,6 +2585,9 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | clearAnnouncements": {
     "message": "Clear announcements"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | exportCsv": {
+    "message": "Export to CSV"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filter": {
     "message": "Filter"
   },
@@ -7850,6 +7853,21 @@
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "Wrap these items"
   },
+  "panels/elements/DOMTreeWidget.ts | pageDom": {
+    "message": "Page DOM"
+  },
+  "panels/elements/DOMTreeWidget.ts | reveal": {
+    "message": "reveal"
+  },
+  "panels/elements/DOMTreeWidget.ts | showAllLines": {
+    "message": "Show all ({PH1} lines)"
+  },
+  "panels/elements/DOMTreeWidget.ts | showAllNodesDMore": {
+    "message": "Show all nodes ({PH1} more)"
+  },
+  "panels/elements/DOMTreeWidget.ts | viewIssue": {
+    "message": "View issue:"
+  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "Invalid element or text node within <optgroup>"
   },
@@ -8230,21 +8248,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
     "message": "View source code"
-  },
-  "panels/elements/ElementsTreeOutline.ts | pageDom": {
-    "message": "Page DOM"
-  },
-  "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "reveal"
-  },
-  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
-    "message": "Show all ({PH1} lines)"
-  },
-  "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
-    "message": "Show all nodes ({PH1} more)"
-  },
-  "panels/elements/ElementsTreeOutline.ts | viewIssue": {
-    "message": "View issue:"
   },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "All"
@@ -13553,6 +13556,27 @@
   "panels/sensors/sensors-meta.ts | accelerometer": {
     "message": "accelerometer"
   },
+  "panels/sensors/sensors-meta.ts | cpuPerformance": {
+    "message": "CPU Performance Tier"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceNoOverride": {
+    "message": "No override"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierHigh": {
+    "message": "Tier 3: HIGH"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierLow": {
+    "message": "Tier 1: LOW"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierMid": {
+    "message": "Tier 2: MID"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierUltra": {
+    "message": "Tier 4: ULTRA"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierUnknown": {
+    "message": "Tier 0: UNKNOWN"
+  },
   "panels/sensors/sensors-meta.ts | cpuPressure": {
     "message": "CPU Pressure"
   },
@@ -13637,6 +13661,9 @@
   "panels/sensors/SensorsView.ts | beta": {
     "message": "β (beta)"
   },
+  "panels/sensors/SensorsView.ts | cpuPerformanceNoOverrideWithDefault": {
+    "message": "No override ({PH1})"
+  },
   "panels/sensors/SensorsView.ts | customOrientation": {
     "message": "Custom orientation"
   },
@@ -13654,6 +13681,9 @@
   },
   "panels/sensors/SensorsView.ts | error": {
     "message": "Error"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedCpuPerformanceTierEmulation": {
+    "message": "Forces CPU performance tier emulation"
   },
   "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
     "message": "Forces selected idle state emulation"

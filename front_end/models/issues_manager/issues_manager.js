@@ -3039,6 +3039,7 @@ function resolveLazyDescription(lazyDescription) {
   });
   const description = {
     file: lazyDescription.file,
+    title: lazyDescription.title?.(),
     links: lazyDescription.links.map(linksMap),
     substitutions: substitutionMap
   };
@@ -3063,14 +3064,15 @@ async function createIssueDescriptionFromMarkdown(description) {
 }
 function createIssueDescriptionFromRawMarkdown(markdown, description) {
   const markdownAst = Marked.Marked.lexer(markdown);
-  const title = findTitleFromMarkdownAst(markdownAst);
-  if (!title) {
+  const markdownTitle = findTitleFromMarkdownAst(markdownAst);
+  if (!markdownTitle) {
     throw new Error("Markdown issue descriptions must start with a heading");
   }
   return {
-    title,
+    title: description.title ?? markdownTitle,
     markdown: markdownAst.slice(1),
-    links: description.links
+    links: description.links,
+    substitutions: description.substitutions
   };
 }
 var validPlaceholderMatchPattern = /\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*)\}/g;
@@ -3106,7 +3108,11 @@ function findTitleFromMarkdownAst(markdownAst) {
 async function getIssueTitleFromMarkdownDescription(description) {
   const rawMarkdown = await getMarkdownFileContent(description.file);
   const markdownAst = Marked.Marked.lexer(rawMarkdown);
-  return findTitleFromMarkdownAst(markdownAst);
+  const markdownTitle = findTitleFromMarkdownAst(markdownAst);
+  if (!markdownTitle) {
+    return null;
+  }
+  return description.title ?? markdownTitle;
 }
 
 // ../../front_end/models/issues_manager/ClientHintIssue.ts
@@ -3403,16 +3409,15 @@ var CookieDeprecationMetadataIssue = class _CookieDeprecationMetadataIssue exten
     return "Other" /* OTHER */;
   }
   getDescription() {
-    const fileName = this.details().operation === "SetCookie" ? "cookieWarnMetadataGrantSet.md" : "cookieWarnMetadataGrantRead.md";
-    let optOutText = "";
+    let fileName = this.details().operation === "SetCookie" ? "cookieWarnMetadataGrantSet.md" : "cookieWarnMetadataGrantRead.md";
+    const substitutions = /* @__PURE__ */ new Map();
     if (this.details().isOptOutTopLevel) {
-      optOutText = "\n\n (Top level site opt-out: " + this.details().optOutPercentage + "% - [learn more](gracePeriodStagedControlExplainer))";
+      fileName = this.details().operation === "SetCookie" ? "cookieWarnMetadataGrantSetOptOut.md" : "cookieWarnMetadataGrantReadOptOut.md";
+      substitutions.set("PLACEHOLDER_optOutPercentage", String(this.details().optOutPercentage));
     }
     return {
       file: fileName,
-      substitutions: /* @__PURE__ */ new Map([
-        ["PLACEHOLDER_topleveloptout", optOutText]
-      ]),
+      substitutions,
       links: [
         {
           link: "https://goo.gle/changes-to-chrome-browsing",
@@ -4661,8 +4666,8 @@ var DeprecationIssue = class _DeprecationIssue extends Issue {
     }
     return resolveLazyDescription({
       file: "deprecation.md",
+      title: i18nLazyString6(UIStrings10.title),
       substitutions: /* @__PURE__ */ new Map([
-        ["PLACEHOLDER_title", i18nLazyString6(UIStrings10.title)],
         ["PLACEHOLDER_message", messageFunction]
       ]),
       links
@@ -7865,10 +7870,10 @@ var SRIMessageSignatureIssue = class _SRIMessageSignatureIssue extends Issue {
       description.substitutions?.set("PLACEHOLDER_signatureBase", () => details.signatureBase);
     }
     if (details.error === Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch) {
-      description.substitutions?.set("PLACEHOLDER_integrityAssertions", () => {
-        const prefix = "\n* ";
-        return prefix + this.details().integrityAssertions.join(prefix);
-      });
+      description.substitutions?.set(
+        "PLACEHOLDER_integrityAssertions",
+        () => this.details().integrityAssertions.join("\n")
+      );
     }
     return resolveLazyDescription(description);
   }

@@ -24,6 +24,7 @@ const kForbiddenSchemes = [
     'chrome-error:',
     'chrome-search:',
     'devtools:',
+    'isolated-app:',
 ];
 let extensionServerInstance;
 function parseCanonicalURL(url) {

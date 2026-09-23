@@ -1,6 +1,7 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import sinon from 'sinon';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Workspace from '../models/workspace/workspace.js';
@@ -40,7 +41,7 @@ export async function loadBasicSourceMapExample(target) {
         workspace,
         ignoreListManager,
     });
-    SDK.PageResourceLoader.PageResourceLoader.instance({
+    const pageResourceLoader = SDK.PageResourceLoader.PageResourceLoader.instance({
         forceNew: true,
         loadOverride: async (_) => ({
             success: true,
@@ -49,6 +50,10 @@ export async function loadBasicSourceMapExample(target) {
         }),
         maxConcurrentLoads: 1,
     });
+    sinon.stub(target.targetManager().context, 'get')
+        .callThrough()
+        .withArgs(SDK.PageResourceLoader.PageResourceLoader)
+        .returns(pageResourceLoader);
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     let sourceMapAttachedCallback = () => { };
     const sourceMapAttachedPromise = new Promise(res => {

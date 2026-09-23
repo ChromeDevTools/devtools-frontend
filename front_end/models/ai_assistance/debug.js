@@ -5,10 +5,20 @@
  * @file Local debugging utilities.
  */
 export function isDebugMode() {
-    return Boolean(localStorage.getItem('debugAiAssistancePanelEnabled'));
+    try {
+        return Boolean(localStorage.getItem('debugAiAssistancePanelEnabled'));
+    }
+    catch {
+        return false;
+    }
 }
 export function isStructuredLogEnabled() {
-    return Boolean(localStorage.getItem('aiAssistanceStructuredLogEnabled'));
+    try {
+        return Boolean(localStorage.getItem('aiAssistanceStructuredLogEnabled'));
+    }
+    catch {
+        return false;
+    }
 }
 export function debugLog(...log) {
     if (!isDebugMode()) {

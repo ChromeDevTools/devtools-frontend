@@ -7268,7 +7268,7 @@ var AnchorFunctionRenderer = class _AnchorFunctionRenderer extends AnchorFunctio
   }
   render(match, context) {
     const content = document.createElement("span");
-    if (match.node.name === "VariableName") {
+    if (match.node.name !== "CallExpression") {
       void _AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, content, { identifier: match.text });
     } else {
       content.appendChild(document.createTextNode(`${match.functionName}(`));
@@ -12334,9 +12334,6 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     }
   }
   setEditingStyle(editing) {
-    if (editing) {
-      this.isSuppressingResets = false;
-    }
     if (this.isEditingStyle === editing) {
       return;
     }
@@ -12408,10 +12405,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
   }
   #scheduleResetUpdateIfNotEditing() {
     this.scheduleResetUpdateIfNotEditingCalledForTest();
-    if (this.isSuppressingResets) {
+    if (this.userOperation || this.isEditingStyle) {
       return;
     }
-    if (this.userOperation || this.isEditingStyle) {
+    if (this.isSuppressingResets) {
+      this.isSuppressingResets = false;
       return;
     }
     void this.resetUpdateThrottler.schedule(async () => {
@@ -15230,104 +15228,9 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
 var maxLinkLength = 30;
 var alwaysShownComputedProperties = /* @__PURE__ */ new Set(["display", "height", "width"]);
 
-// gen/front_end/panels/elements/elementsPanel.css.js
-var elementsPanel_css_default = `/* Copyright 2026 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- *
- * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
- * Copyright (C) 2009 Anthony Ricaud <rik@webkit.org>
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- * 2.  Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
- *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL APPLE OR ITS CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-#main-content {
-  position: relative;
-  flex: 1 1;
-}
-
-#elements-content {
-  overflow: auto;
-  padding: var(--sys-size-2) 0 0;
-  height: 100%;
-}
-
-.style-panes-wrapper {
-  overflow: hidden scroll;
-  background-color: var(--sys-color-cdt-base-container);
-}
-
-.style-panes-wrapper:not(.computed-styles-pane-wrapper) > div:not(:last-child) {
-    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.style-panes-wrapper > div:has(+ .ai-code-completion-summary-toolbar-container) {
-  border-bottom: 0;
-}
-
-.style-panes-wrapper .ai-code-completion-summary-toolbar-container {
-  container-type: inline-size;
-  flex-shrink: 0;
-  overflow: hidden;
-  position: fixed;
-  bottom: 0;
-  background-color: var(--sys-color-cdt-base-container);
-  width: 100%;
-}
-
-#elements-content:not(.elements-wrap) > div {
-  display: inline-block;
-  min-width: 100%;
-}
-
-#elements-crumbs {
-  background-color: var(--sys-color-cdt-base-container);
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  overflow: hidden;
-  width: 100%;
-}
-
-devtools-adorner-settings-pane {
-  margin-bottom: 10px;
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  overflow: auto;
-}
-
-devtools-tree-outline {
-  overflow: auto;
-}
-
-.computed-styles-wrapper {
-  flex-shrink: 0;
-}
-
-/*# sourceURL=${import.meta.resolve("./elementsPanel.css")} */`;
-
-// ../../front_end/panels/elements/ElementsTreeOutline.ts
-var ElementsTreeOutline_exports = {};
-__export(ElementsTreeOutline_exports, {
+// ../../front_end/panels/elements/DOMTreeWidget.ts
+var DOMTreeWidget_exports = {};
+__export(DOMTreeWidget_exports, {
   DECLARATIVE_VIEW: () => DECLARATIVE_VIEW,
   DEFAULT_VIEW: () => DEFAULT_VIEW7,
   DOMTreeWidget: () => DOMTreeWidget,
@@ -15660,7 +15563,7 @@ var AdoptedStyleSheetContentsWidget = class extends UI13.Widget.Widget {
   }
 };
 
-// ../../front_end/panels/elements/ElementsTreeOutline.ts
+// ../../front_end/panels/elements/DOMTreeWidget.ts
 import * as ElementsComponents7 from "./components/components.js";
 
 // ../../front_end/panels/elements/DOMPath.ts
@@ -20998,8 +20901,8 @@ var TopLayerContainer = class extends UI18.TreeOutline.TreeElement {
   }
 };
 
-// ../../front_end/panels/elements/ElementsTreeOutline.ts
-var { html: html15, nothing: nothing6, render: render13, Directives: { classMap: classMap4, repeat: repeat2, styleMap } } = Lit10;
+// ../../front_end/panels/elements/DOMTreeWidget.ts
+var { html: html15, nothing: nothing6, render: render13, Directives: { classMap: classMap4, ifDefined: ifDefined2, repeat: repeat2, styleMap } } = Lit10;
 var UIStrings17 = {
   /**
    * @description ARIA accessible name in the DOM tree outline of the Elements panel.
@@ -21024,7 +20927,7 @@ var UIStrings17 = {
    */
   reveal: "reveal"
 };
-var str_17 = i18n34.i18n.registerUIStrings("panels/elements/ElementsTreeOutline.ts", UIStrings17);
+var str_17 = i18n34.i18n.registerUIStrings("panels/elements/DOMTreeWidget.ts", UIStrings17);
 var i18nString16 = i18n34.i18n.getLocalizedString.bind(void 0, str_17);
 var elementsTreeOutlineByDOMModel = /* @__PURE__ */ new WeakMap();
 var populatedTreeElements = /* @__PURE__ */ new WeakSet();
@@ -21685,6 +21588,8 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     };
     return html15`
       <li role="treeitem"
+          data-backend-node-id=${ifDefined2(node.backendNodeId())}
+          data-target-id=${ifDefined2(node.domModel().target().id())}
           selectable=${input.selectEnabled ? "true" : "false"}
           ?selected=${isSelected && !input.selectedClosingTag}
           class=${classes}
@@ -21762,6 +21667,8 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
               ${node instanceof SDK16.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing6}
               ${needsClosingTag ? html15`
                 <li role="treeitem"
+                    data-backend-node-id=${ifDefined2(node.backendNodeId())}
+                    data-target-id=${ifDefined2(node.domModel().target().id())}
                     selectable=${input.selectEnabled ? "true" : "false"}
                     ?selected=${isSelected && Boolean(input.selectedClosingTag)}
                     class=${classMap4({
@@ -22060,7 +21967,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     this.#changeTracker ??= UI19.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker3.ChangeTracker.ChangeTracker);
     return this.#changeTracker;
   }
-  constructor(element, [changeTracker] = [], view = DEFAULT_VIEW7) {
+  constructor(element, [changeTracker] = [], view = DECLARATIVE_VIEW) {
     super(element, {
       useShadowDom: false,
       delegatesFocus: false
@@ -22896,7 +22803,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
           this.onDocumentUpdated(domModel);
         } else {
           void domModel.requestDocument().then((document2) => {
-            if (document2 && this.isShowing()) {
+            if (document2 && this.isShowing() && this.#wiredDOMModels.has(domModel)) {
               this.rootDOMNode = document2;
               this.onDocumentUpdated(domModel);
             }
@@ -22918,6 +22825,12 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       if (this.#wiredDOMModels.has(domModel)) {
         this.#wiredDOMModels.delete(domModel);
         this.#unwireDOMModel(domModel);
+      }
+      if (this.#rootDOMNode?.domModel() === domModel) {
+        this.#rootDOMNode = null;
+        this.#selectedDOMNode = null;
+        this.#expandedNodes.clear();
+        this.#updateRecords.clear();
       }
       this.performUpdate();
       return;
@@ -23715,7 +23628,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
           this.onDocumentUpdated(domModel);
         } else if (this.#view === DECLARATIVE_VIEW) {
           void domModel.requestDocument().then((document2) => {
-            if (document2 && this.isShowing()) {
+            if (document2 && this.isShowing() && this.#wiredDOMModels.has(domModel)) {
               this.rootDOMNode = document2;
               this.onDocumentUpdated(domModel);
             }
@@ -24738,6 +24651,101 @@ var MappedCharToEntity = /* @__PURE__ */ new Map([
   ["\u2060", "NoBreak"],
   ["\uFEFF", "#xFEFF"]
 ]);
+
+// gen/front_end/panels/elements/elementsPanel.css.js
+var elementsPanel_css_default = `/* Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ *
+ * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
+ * Copyright (C) 2009 Anthony Ricaud <rik@webkit.org>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1.  Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ * 2.  Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
+ *     its contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL APPLE OR ITS CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#main-content {
+  position: relative;
+  flex: 1 1;
+}
+
+#elements-content {
+  overflow: auto;
+  padding: var(--sys-size-2) 0 0;
+  height: 100%;
+}
+
+.style-panes-wrapper {
+  overflow: hidden scroll;
+  background-color: var(--sys-color-cdt-base-container);
+}
+
+.style-panes-wrapper:not(.computed-styles-pane-wrapper) > div:not(:last-child) {
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.style-panes-wrapper > div:has(+ .ai-code-completion-summary-toolbar-container) {
+  border-bottom: 0;
+}
+
+.style-panes-wrapper .ai-code-completion-summary-toolbar-container {
+  container-type: inline-size;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  background-color: var(--sys-color-cdt-base-container);
+  width: 100%;
+}
+
+#elements-content:not(.elements-wrap) > div {
+  display: inline-block;
+  min-width: 100%;
+}
+
+#elements-crumbs {
+  background-color: var(--sys-color-cdt-base-container);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  overflow: hidden;
+  width: 100%;
+}
+
+devtools-adorner-settings-pane {
+  margin-bottom: 10px;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  overflow: auto;
+}
+
+devtools-tree-outline {
+  overflow: auto;
+}
+
+.computed-styles-wrapper {
+  flex-shrink: 0;
+}
+
+/*# sourceURL=${import.meta.resolve("./elementsPanel.css")} */`;
 
 // ../../front_end/panels/elements/LayoutPane.ts
 var LayoutPane_exports = {};
@@ -28341,7 +28349,8 @@ var ClassNamePrompt = class extends UI27.TextPrompt.TextPrompt {
     }
     let completions = await this.classNamesPromise;
     const classesMap = this.nodeClasses(selectedNode);
-    completions = completions.filter((value5) => !classesMap.get(value5));
+    const existingClasses = new Set(expression.split(/[,\s]/).map((className) => className.trim()).filter(Boolean));
+    completions = completions.filter((value5) => !classesMap.get(value5) && !existingClasses.has(value5));
     if (prefix[0] === ".") {
       completions = completions.map((value5) => "." + value5);
     }
@@ -28644,11 +28653,12 @@ export {
   ComputedStyleWidget_exports as ComputedStyleWidget,
   DOMPath_exports as DOMPath,
   DOMTreeContextMenu_exports as DOMTreeContextMenu,
+  DOMTreeWidget_exports as DOMTreeWidget,
   ElementStatePaneWidget_exports as ElementStatePaneWidget,
   ElementsPanel_exports as ElementsPanel,
   ElementsSidebarPane_exports as ElementsSidebarPane,
   ElementsTreeElement_exports as ElementsTreeElement,
-  ElementsTreeOutline_exports as ElementsTreeOutline,
+  DOMTreeWidget_exports as ElementsTreeOutline,
   EventListenersWidget_exports as EventListenersWidget,
   ImagePreviewPopover_exports as ImagePreviewPopover,
   InspectElementModeController_exports as InspectElementModeController,

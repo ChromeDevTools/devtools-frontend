@@ -1659,7 +1659,8 @@ var kForbiddenSchemes = [
   "chrome-untrusted:",
   "chrome-error:",
   "chrome-search:",
-  "devtools:"
+  "devtools:",
+  "isolated-app:"
 ];
 var extensionServerInstance;
 function parseCanonicalURL(url) {
@@ -4318,6 +4319,7 @@ var POPUP_MARGIN = 8;
 var PIN_HEIGHT = 30;
 var POPUP_WIDTH = 288;
 var POPUP_HEIGHT = 220;
+var AUTO_CLOSE_DELAY_MS = 2e3;
 var DEFAULT_VIEW7 = (input, _output, target) => {
   render8(html9`
     <style>${commentsOverlay_css_default}</style>
@@ -4388,6 +4390,7 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
   #commentManager;
   #commentOverlayManager;
   #activeThreadId = null;
+  #closeTimeoutId = null;
   #cachedTitle = { text: "" };
   #cachedTitleAnchor = null;
   constructor(element, [commentManager], view = DEFAULT_VIEW7) {
@@ -4432,6 +4435,7 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     this.requestUpdate();
   }
   willHide() {
+    this.#clearCloseTimeout();
     this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
       Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
@@ -4459,6 +4463,12 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       this
     );
     super.willHide();
+  }
+  #clearCloseTimeout() {
+    if (this.#closeTimeoutId !== null) {
+      window.clearTimeout(this.#closeTimeoutId);
+      this.#closeTimeoutId = null;
+    }
   }
   #onAgentAttachedChanged(event) {
     if (!event.data) {
@@ -4508,7 +4518,6 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
           return { node };
         }
       }
-      return { text: "" };
     }
     if (anchor.networkRequestId) {
       const target = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -4568,7 +4577,18 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       activePin,
       title,
       onAddComment: (text) => {
-        activeThread?.save(text);
+        if (!activeThread) {
+          return;
+        }
+        activeThread.save(text);
+        const threadId = activeThread.id;
+        this.#closeTimeoutId = window.setTimeout(() => {
+          this.#closeTimeoutId = null;
+          if (this.#activeThreadId === threadId) {
+            this.#activeThreadId = null;
+            this.requestUpdate();
+          }
+        }, AUTO_CLOSE_DELAY_MS);
       }
     };
     this.#view(viewInput, void 0, this.contentElement);
@@ -4584,6 +4604,9 @@ var ActionDelegate = class {
   }
   handleAction(_context, actionId) {
     if (actionId === "comments.toggle-comment-mode") {
+      if (!this.#commentManager.isAgentAttached()) {
+        return false;
+      }
       if (!widgetInstance) {
         widgetInstance = new CommentsOverlayWidget(
           void 0,
@@ -4613,11 +4636,14 @@ var ButtonProvider = class {
     this.#commentManager = commentManager ?? Root3.DevToolsContext.globalInstance().get(
       CommentManager.CommentManager.CommentManager
     );
-    this.#button = UI10.Toolbar.Toolbar.createActionButton("comments.toggle-comment-mode");
+    const action3 = UI10.ActionRegistry.ActionRegistry.instance().getAction("comments.toggle-comment-mode");
+    action3.setEnabled(this.#commentManager.isAgentAttached());
+    this.#button = UI10.Toolbar.Toolbar.createActionButton(action3);
     this.#button.setVisible(this.#commentManager.isAgentAttached());
     this.#commentManager.addEventListener(
       CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
       (event) => {
+        action3.setEnabled(event.data);
         this.#button.setVisible(event.data);
       }
     );

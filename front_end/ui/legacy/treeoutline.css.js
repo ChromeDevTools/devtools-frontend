@@ -40,7 +40,7 @@ export default `/*
   margin-left: -10000px;
 }
 
-.tree-outline:not(.hide-selection-when-blurred) li.selected {
+.tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.selected {
   color: var(--sys-color-on-surface-subtle);
 }
 
@@ -95,7 +95,7 @@ ol.tree-outline,
   min-height: var(--sys-size-8);
 }
 
-ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
+ol.tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.selected:focus {
   color: var(--sys-color-on-tonal-container);
 
   & ::selection {

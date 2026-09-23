@@ -51,9 +51,12 @@
     "../../../../../../front_end/core/sdk/AutofillModel.test.ts",
     "../../../../../../front_end/core/sdk/CPUThrottlingManager.test.ts",
     "../../../../../../front_end/core/sdk/CSSContainerQuery.test.ts",
+    "../../../../../../front_end/core/sdk/CSSMatchedStyles.test.ts",
     "../../../../../../front_end/core/sdk/CSSMetadata.test.ts",
     "../../../../../../front_end/core/sdk/CSSModel.test.ts",
     "../../../../../../front_end/core/sdk/CSSProperty.test.ts",
+    "../../../../../../front_end/core/sdk/CSSPropertyParser.test.ts",
+    "../../../../../../front_end/core/sdk/CSSPropertyParserMatchers.test.ts",
     "../../../../../../front_end/core/sdk/CSSRule.test.ts",
     "../../../../../../front_end/core/sdk/CSSStyleDeclaration.test.ts",
     "../../../../../../front_end/core/sdk/CSSStyleSheetHeader.test.ts",
@@ -133,6 +136,9 @@
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../third_party/source-map-scopes-codec/bundle-tsconfig.ref.json"

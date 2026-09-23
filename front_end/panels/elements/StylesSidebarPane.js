@@ -605,9 +605,6 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
         }
     }
     setEditingStyle(editing) {
-        if (editing) {
-            this.isSuppressingResets = false;
-        }
         if (this.isEditingStyle === editing) {
             return;
         }
@@ -676,11 +673,12 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
     }
     #scheduleResetUpdateIfNotEditing() {
         this.scheduleResetUpdateIfNotEditingCalledForTest();
-        if (this.isSuppressingResets) {
-            return;
-        }
         // Don't schedule if editing; the edit completion will handle the update.
         if (this.userOperation || this.isEditingStyle) {
+            return;
+        }
+        if (this.isSuppressingResets) {
+            this.isSuppressingResets = false;
             return;
         }
         void this.resetUpdateThrottler.schedule(async () => {

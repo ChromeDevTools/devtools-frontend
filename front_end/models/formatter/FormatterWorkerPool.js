@@ -110,7 +110,7 @@ export class FormatterWorkerPool {
         return this.runTask("format" /* FormatterActions.FormatterActions.FORMAT */, parameters);
     }
     javaScriptSubstitute(expression, mapping) {
-        if (mapping.size === 0) {
+        if (mapping.every(m => m.size === 0)) {
             return Promise.resolve(expression);
         }
         return this.runTask("javaScriptSubstitute" /* FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE */, { content: expression, mapping })

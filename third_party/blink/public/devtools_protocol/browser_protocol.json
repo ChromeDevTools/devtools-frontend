@@ -1210,7 +1210,6 @@
                         "ExcludeSameSiteLax",
                         "ExcludeSameSiteStrict",
                         "ExcludeDomainNonASCII",
-                        "ExcludeThirdPartyCookieBlockedInFirstPartySet",
                         "ExcludeThirdPartyPhaseout",
                         "ExcludePortMismatch",
                         "ExcludeSchemeMismatch"
@@ -17029,7 +17028,6 @@
                         "SameSiteNoneInsecure",
                         "UserPreferences",
                         "ThirdPartyPhaseout",
-                        "ThirdPartyBlockedInFirstPartySet",
                         "SyntaxError",
                         "SchemeNotSupported",
                         "OverwriteSecure",
@@ -17059,7 +17057,6 @@
                         "SameSiteNoneInsecure",
                         "UserPreferences",
                         "ThirdPartyPhaseout",
-                        "ThirdPartyBlockedInFirstPartySet",
                         "UnknownError",
                         "SchemefulSameSiteStrict",
                         "SchemefulSameSiteLax",

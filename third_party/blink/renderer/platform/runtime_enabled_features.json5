@@ -2955,13 +2955,6 @@
       status: "stable",
     },
     {
-      // Consumes user activation when showing a picker via input.click() for
-      // file and color inputs to match input.showPicker() and avoid issues
-      // with multiple pickers trying to open at the same time.
-      name: "FileColorPickerConsumeActivation",
-      status: "stable",
-    },
-    {
       // Also enabled when blink::features::kFileHandlingAPI is overridden
       // on the command line (or via chrome://flags).
       name: "FileHandling",
@@ -3375,7 +3368,7 @@
       // Killswitch for the visible deprecation warning banner shown on
       // XSLT-transformed documents.
       name: "GenerateXSLTWarningBanner",
-      status: "stable",
+      status: "experimental",
     },
     {
       // Tracking bug for the implementation: https://crbug.com/430204832
@@ -5484,6 +5477,13 @@
       name: "ScrollIntoViewNearest",
       status: "stable"
     },
+    {
+      // Prevents scrollIntoView() from creating the initial sequential focus
+      // navigation starting point before one has been established.
+      // https://crbug.com/537801211
+      name: "ScrollIntoViewNoInitialFocusNavigationStartingPoint",
+      status: "stable",
+    },
     // TODO(355460994): Remove after M129.
     // scroll into root frame didn't take scrollbar and borders into account,
     // while this is fixed, to avoid any web compat issues we have this killswitch.
@@ -5891,11 +5891,6 @@
     {
       // See crbug.com/446113738.
       name: "SkipUnselectableElementsInParagraphBoundary",
-      status: "stable",
-    },
-    {
-      // See crbug.com/502616235.
-      name: "SkipViewTransitionSnapshotResumeRendering",
       status: "stable",
     },
     {
@@ -7237,7 +7232,6 @@
     {
       name: "WebTransportDatagramsReadableType",
       status: "experimental",
-      base_feature: "none",
     },
     {
       name: "WebTransportDatagramsWritable",

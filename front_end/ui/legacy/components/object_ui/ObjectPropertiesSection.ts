@@ -383,6 +383,139 @@ const ARRAY_LOAD_THRESHOLD = 100;
 const ARRAY_BUCKET_THRESHOLD = 100;
 const ARRAY_SPARSE_ITERATION_THRESHOLD = 250000;
 
+async function arrayRangeGroups(object: SDK.RemoteObject.RemoteObject, fromIndex: number,
+                                toIndex: number): Promise<{ranges: number[][]}|null|undefined> {
+  return await object.callFunctionJSON(packArrayRanges, [
+    {value: fromIndex},
+    {value: toIndex},
+    {value: ARRAY_BUCKET_THRESHOLD},
+    {value: ARRAY_SPARSE_ITERATION_THRESHOLD},
+  ]);
+
+  /**
+   * This function is called on the RemoteObject.
+   * Note: must declare params as optional.
+   */
+  function packArrayRanges(this: Object, fromIndex?: number, toIndex?: number, bucketThreshold?: number,
+                           sparseIterationThreshold?: number): {
+    ranges: number[][],
+  }|undefined {
+    if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined ||
+        bucketThreshold === undefined) {
+      return;
+    }
+    let ownPropertyNames: string[]|null = null;
+    const consecutiveRange = (toIndex - fromIndex >= sparseIterationThreshold) && ArrayBuffer.isView(this);
+
+    function* arrayIndexes(object: Object): Generator<number, void, unknown> {
+      if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined) {
+        return;
+      }
+
+      if (toIndex - fromIndex < sparseIterationThreshold) {
+        for (let i = fromIndex; i <= toIndex; ++i) {
+          if (i in object) {
+            yield i;
+          }
+        }
+      } else {
+        ownPropertyNames = ownPropertyNames || Object.getOwnPropertyNames(object);
+        for (let i = 0; i < ownPropertyNames.length; ++i) {
+          const name = ownPropertyNames[i];
+
+          const index = Number(name) >>> 0;
+          if ((String(index)) === name && fromIndex <= index && index <= toIndex) {
+            yield index;
+          }
+        }
+      }
+    }
+
+    let count = 0;
+    if (consecutiveRange) {
+      count = toIndex - fromIndex + 1;
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const ignored of arrayIndexes(this)) {
+        ++count;
+      }
+    }
+
+    let bucketSize: number = count;
+    if (count <= bucketThreshold) {
+      bucketSize = count;
+    } else {
+      bucketSize = Math.pow(bucketThreshold, Math.ceil(Math.log(count) / Math.log(bucketThreshold)) - 1);
+    }
+
+    const ranges = [];
+    if (consecutiveRange) {
+      for (let i = fromIndex; i <= toIndex; i += bucketSize) {
+        const groupStart = i;
+        let groupEnd: number = groupStart + bucketSize - 1;
+        if (groupEnd > toIndex) {
+          groupEnd = toIndex;
+        }
+        ranges.push([groupStart, groupEnd, groupEnd - groupStart + 1]);
+      }
+    } else {
+      count = 0;
+      let groupStart = -1;
+      let groupEnd = 0;
+      for (const i of arrayIndexes(this)) {
+        if (groupStart === -1) {
+          groupStart = i;
+        }
+        groupEnd = i;
+        if (++count === bucketSize) {
+          ranges.push([groupStart, groupEnd, count]);
+          count = 0;
+          groupStart = -1;
+        }
+      }
+      if (count > 0) {
+        ranges.push([groupStart, groupEnd, count]);
+      }
+    }
+
+    return {ranges};
+  }
+}
+
+/**
+ * This function is called on the RemoteObject.
+ */
+function buildArrayFragment(
+    this: Record<number, Object>,
+    fromIndex?: number,
+    toIndex?: number,
+    sparseIterationThreshold?: number,
+    ): unknown {
+  const result = Object.create(null);
+
+  if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined) {
+    return;
+  }
+
+  if (toIndex - fromIndex < sparseIterationThreshold) {
+    for (let i = fromIndex; i <= toIndex; ++i) {
+      if (i in this) {
+        result[i] = this[i];
+      }
+    }
+  } else {
+    const ownPropertyNames = Object.getOwnPropertyNames(this);
+    for (let i = 0; i < ownPropertyNames.length; ++i) {
+      const name = ownPropertyNames[i];
+      const index = Number(name) >>> 0;
+      if (String(index) === name && fromIndex <= index && index <= toIndex) {
+        result[index] = this[index];
+      }
+    }
+  }
+  return result;
+}
+
 export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<ObjectTreeNodeBase.EventTypes> {
   #children?: NodeChildren;
   protected readonly options: ObjectTreeOptions;
@@ -1249,11 +1382,6 @@ export interface ContextMenuHandlers {
   onShowAllToggled: (node: ObjectTreeNodeBase) => void;
 }
 
-interface StateHandlers extends ContextMenuHandlers {
-  onShowAllProperties: (node: ObjectTreeNode) => void;
-  onExpand: (node: ObjectTreeNodeBase, expanded: boolean) => void;
-}
-
 export function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu,
                                               objectOrProperty: ObjectTree|ObjectTreeNode,
                                               handlers: ContextMenuHandlers): void {
@@ -1311,7 +1439,9 @@ export function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.Contex
       {checked: objectOrProperty.includeNullOrUndefinedValues, jslogContext: 'show-all'});
 }
 
-interface ObjectTreeViewInput extends StateHandlers {
+interface ObjectTreeViewInput extends ContextMenuHandlers {
+  onShowAllProperties: (node: ObjectTreeNode) => void;
+  onExpand: (node: ObjectTreeNodeBase, expanded: boolean) => void;
   renderAsSubtree: boolean;
   objectTree?: ObjectTree;
   linkifier?: Components.Linkifier.Linkifier;
@@ -1327,8 +1457,166 @@ const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
     return;
   }
 
-  const nodes = Array.from(ObjectPropertyTreeElement.createNodes(
-      objectTree, input, input.skipProto, input.skipGettersAndSetters, input.linkifier, input.emptyPlaceholder));
+  function renderProperty(property: ObjectTreeNode): LitTemplate {
+    const onContextMenu = (e: Event): void => {
+      const contextMenu = new UI.ContextMenu.ContextMenu(e);
+      populateObjectTreeContextMenu(contextMenu, property, input);
+      void contextMenu.show();
+    };
+
+    const onExpand = (e: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+      input.onExpand(property, e.detail.expanded);
+      e.consume(true);
+    };
+    const childCount = (property.children?.properties?.length ?? 0) +
+        (property.children?.internalProperties?.length ?? 0) + (property.children?.accessors?.length ?? 0) +
+        (property.children?.arrayRanges?.length ?? 0);
+
+    const showAllChildren = childCount <= InitialVisibleChildrenLimit || property.showAllChildren;
+    const children = (): Iterable<LitTemplate> => {
+      const nodes = createNodes(property, false, false, undefined, p => !isDisplayableProperty(p, property.property));
+      return showAllChildren ? nodes : nodes.take(InitialVisibleChildrenLimit);
+    };
+
+    const expandable = property.object && !property.object.customPreview() && property.object.hasChildren &&
+        !property.property.wasThrown;
+
+    // clang-format off
+    return html`<li
+      ?hidden=${property.isFiltered}
+      ?open=${property.expanded}
+      @contextmenu=${onContextMenu}
+      @expand=${onExpand}
+      data-object-property-name-for-test=${property.name}
+      toggle-on-click
+      role=treeitem>
+        ${widget(ObjectPropertyWidget, {property, linkifier: input.linkifier, editable: !property.readOnly, expanded: property.expanded})}
+        ${expandable ? html`
+          <ul role=group>
+            ${children()}
+            ${showAllChildren ? nothing : html`
+              <li role=treeitem @select=${() => input.onShowAllProperties(property)}>
+                <div
+                    class=object-value-calculate-value-button
+                    title=${i18nString(UIStrings.showAllD, {PH1: childCount})}>
+                  ${i18nString(UIStrings.dots)}
+                </div>
+              </li>`}
+          </ul>` : nothing}
+      </li>`;
+    // clang-format on
+  }
+
+  function renderArrayGroup(child: ArrayGroupTreeNode): LitTemplate {
+    const onExpand = (e: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+      input.onExpand(child, e.detail.expanded);
+      e.consume(true);
+    };
+
+    // clang-format off
+    return html`<li
+      class=object-properties-section-name
+      role=treeitem
+      toggle-on-click
+      ?open=${child.expanded}
+      @expand=${onExpand}>
+        ${Platform.StringUtilities.sprintf('[%d … %d]', child.range.fromIndex, child.range.toIndex)}
+        <ul role=group>
+          ${ifExpanded(() => createNodes(child, false, false))}
+        </ul>
+      </li>`;
+    // clang-format on
+  }
+
+  function*
+      createNodes(
+          value: ObjectTreeNodeBase,
+          skipProto: boolean,
+          skipGettersAndSetters: boolean,
+          emptyPlaceholder?: LitTemplate,
+          isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean,
+          ): Generator<LitTemplate> {
+    const properties = value.children;
+    if (!properties) {
+      return;
+    }
+    if (properties.arrayRanges) {
+      if (properties.arrayRanges.length === 1) {
+        yield* createNodes(properties.arrayRanges[0], false, false, undefined, isNotDisplayablePropertyCallback);
+      } else {
+        for (const child of properties.arrayRanges) {
+          if (child.singular) {
+            yield* createNodes(child, false, false, undefined, isNotDisplayablePropertyCallback);
+          } else {
+            yield renderArrayGroup(child);
+          }
+        }
+      }
+
+      yield* createPropertyNodes(properties, false, false, undefined, isNotDisplayablePropertyCallback);
+    } else {
+      yield*
+          createPropertyNodes(properties, skipProto, skipGettersAndSetters, emptyPlaceholder,
+                              isNotDisplayablePropertyCallback);
+    }
+  }
+
+  function*
+      createPropertyNodes({properties, internalProperties, accessors, arrayRanges}: NodeChildren, skipProto: boolean,
+                          skipGettersAndSetters: boolean, emptyPlaceholder?: LitTemplate,
+                          isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) =>
+                              boolean): Generator<LitTemplate> {
+    let empty = true;
+    // Arrays with large numbers of elements are paginated into arrayRanges.
+    // If we have array ranges, the object is not empty.
+    if (arrayRanges && arrayRanges.length > 0) {
+      empty = false;
+    }
+
+    const entriesProperty = internalProperties?.find(({property}) => property.name === '[[Entries]]');
+    if (entriesProperty) {
+      yield renderProperty(entriesProperty);
+      empty = false;
+    }
+
+    for (const property of properties ?? []) {
+      if (isNotDisplayablePropertyCallback?.(property.property)) {
+        continue;
+      }
+
+      const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
+      if (canShowProperty) {
+        yield renderProperty(property);
+        empty = false;
+      }
+    }
+
+    if (!skipGettersAndSetters) {
+      for (const accessor of accessors ?? []) {
+        yield renderProperty(accessor);
+      }
+    }
+
+    for (const property of internalProperties ?? []) {
+      if (property.property.name === '[[Entries]]') {
+        continue;
+      }
+      if (property.property.name === '[[Prototype]]' && skipProto) {
+        continue;
+      }
+      yield renderProperty(property);
+      empty = false;
+    }
+
+    if (empty) {
+      yield html`<li role=treeitem>
+          <div class=gray-info-message>${emptyPlaceholder || i18nString(UIStrings.noProperties)}</div>
+        </li>`;
+    }
+  }
+
+  const nodes =
+      Array.from(createNodes(objectTree, input.skipProto, input.skipGettersAndSetters, input.emptyPlaceholder));
   nodes.forEach(UI.UIUtils.HTMLElementWithLightDOMTemplate.patchLitTemplate);
 
   render(nodes, target, {
@@ -1984,325 +2272,6 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
 
   #invokeGetter(getter: SDK.RemoteObject.RemoteObject): void {
     void this.#property?.invokeGetter(getter);
-  }
-}
-
-class ObjectPropertyTreeElement {
-  static #render(property: ObjectTreeNode, linkifier: Components.Linkifier.Linkifier|undefined,
-                 handlers: StateHandlers): LitTemplate {
-    const onContextMenu = (e: Event): void => {
-      const contextMenu = new UI.ContextMenu.ContextMenu(e);
-      populateObjectTreeContextMenu(contextMenu, property, handlers);
-      void contextMenu.show();
-    };
-
-    const onExpand = (e: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-      handlers.onExpand(property, e.detail.expanded);
-      e.consume(true);
-    };
-    const childCount = (property.children?.properties?.length ?? 0) +
-        (property.children?.internalProperties?.length ?? 0) + (property.children?.accessors?.length ?? 0) +
-        (property.children?.arrayRanges?.length ?? 0);
-
-    const showAllChildren = childCount <= InitialVisibleChildrenLimit || property.showAllChildren;
-    const children = (): Iterable<LitTemplate> => {
-      const nodes = ObjectPropertyTreeElement.createNodes(property, handlers, false, false, linkifier, undefined,
-                                                          p => !isDisplayableProperty(p, property.property));
-      return showAllChildren ? nodes : nodes.take(InitialVisibleChildrenLimit);
-    };
-
-    const expandable = property.object && !property.object.customPreview() && property.object.hasChildren &&
-        !property.property.wasThrown;
-
-    // clang-format off
-    return html`<li
-      ?hidden=${property.isFiltered}
-      ?open=${property.expanded}
-      @contextmenu=${onContextMenu}
-      @expand=${onExpand}
-      data-object-property-name-for-test=${property.name}
-      toggle-on-click
-      role=treeitem>
-        ${widget(ObjectPropertyWidget, {property, linkifier, editable: !property.readOnly, expanded: property.expanded})}
-        ${expandable ? html`
-          <ul role=group>
-            ${children()}
-            ${showAllChildren ? nothing : html`
-              <li role=treeitem @select=${() => handlers.onShowAllProperties(property)}>
-                <div
-                    class=object-value-calculate-value-button
-                    title=${i18nString(UIStrings.showAllD, {PH1: childCount})}>
-                  ${i18nString(UIStrings.dots)}
-                </div>
-              </li>`}
-          </ul>` : nothing}
-      </li>`;
-    // clang-format on
-  }
-
-  static *
-      createNodes(
-          value: ObjectTreeNodeBase,
-          handlers: StateHandlers,
-          skipProto: boolean,
-          skipGettersAndSetters: boolean,
-          linkifier?: Components.Linkifier.Linkifier,
-          emptyPlaceholder?: LitTemplate,
-          isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean,
-          ): Generator<LitTemplate> {
-    const properties = value.children;
-    if (!properties) {
-      return;
-    }
-    if (properties.arrayRanges) {
-      yield* ArrayGroupingTreeElement.createNodes(properties, handlers, linkifier, isNotDisplayablePropertyCallback);
-    } else {
-      yield*
-          ObjectPropertyTreeElement.createPropertyNodes(properties, handlers, skipProto, skipGettersAndSetters,
-                                                        linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback);
-    }
-  }
-
-  static *
-      createPropertyNodes({properties, internalProperties, accessors, arrayRanges}: NodeChildren,
-                          handlers: StateHandlers, skipProto: boolean, skipGettersAndSetters: boolean,
-                          linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: LitTemplate,
-                          isNotDisplayablePropertyCallback?:
-                              (property: SDK.RemoteObject.RemoteObjectProperty) => boolean): Generator<LitTemplate> {
-    let empty = true;
-    // Arrays with large numbers of elements are paginated into arrayRanges.
-    // If we have array ranges, the object is not empty.
-    if (arrayRanges && arrayRanges.length > 0) {
-      empty = false;
-    }
-    const sortPropertiesAlphabetically = properties?.[0]?.sortPropertiesAlphabetically ?? true;
-    properties?.sort((a, b) => compareProperties(a, b, sortPropertiesAlphabetically));
-
-    const entriesProperty = internalProperties?.find(({property}) => property.name === '[[Entries]]');
-    if (entriesProperty) {
-      yield ObjectPropertyTreeElement.#render(entriesProperty, linkifier, handlers);
-      empty = false;
-    }
-
-    for (const property of properties ?? []) {
-      if (isNotDisplayablePropertyCallback?.(property.property)) {
-        continue;
-      }
-
-      const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
-      if (canShowProperty) {
-        yield ObjectPropertyTreeElement.#render(property, linkifier, handlers);
-        empty = false;
-      }
-    }
-
-    if (!skipGettersAndSetters) {
-      for (const accessor of accessors ?? []) {
-        yield ObjectPropertyTreeElement.#render(accessor, linkifier, handlers);
-      }
-    }
-
-    for (const property of internalProperties ?? []) {
-      if (property.property.name === '[[Entries]]') {
-        continue;
-      }
-      if (property.property.name === '[[Prototype]]' && skipProto) {
-        continue;
-      }
-      yield ObjectPropertyTreeElement.#render(property, linkifier, handlers);
-      empty = false;
-    }
-
-    if (empty) {
-      yield html`<li role=treeitem>
-          <div class=gray-info-message>${emptyPlaceholder || i18nString(UIStrings.noProperties)}</div>
-        </li>`;
-    }
-  }
-}
-
-async function arrayRangeGroups(object: SDK.RemoteObject.RemoteObject, fromIndex: number,
-                                toIndex: number): Promise<{ranges: number[][]}|null|undefined> {
-  return await object.callFunctionJSON(packArrayRanges, [
-    {value: fromIndex},
-    {value: toIndex},
-    {value: ARRAY_BUCKET_THRESHOLD},
-    {value: ARRAY_SPARSE_ITERATION_THRESHOLD},
-  ]);
-
-  /**
-   * This function is called on the RemoteObject.
-   * Note: must declare params as optional.
-   */
-  function packArrayRanges(this: Object, fromIndex?: number, toIndex?: number, bucketThreshold?: number,
-                           sparseIterationThreshold?: number): {
-    ranges: number[][],
-  }|undefined {
-    if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined ||
-        bucketThreshold === undefined) {
-      return;
-    }
-    let ownPropertyNames: string[]|null = null;
-    const consecutiveRange = (toIndex - fromIndex >= sparseIterationThreshold) && ArrayBuffer.isView(this);
-
-    function* arrayIndexes(object: Object): Generator<number, void, unknown> {
-      if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined) {
-        return;
-      }
-
-      if (toIndex - fromIndex < sparseIterationThreshold) {
-        for (let i = fromIndex; i <= toIndex; ++i) {
-          if (i in object) {
-            yield i;
-          }
-        }
-      } else {
-        ownPropertyNames = ownPropertyNames || Object.getOwnPropertyNames(object);
-        for (let i = 0; i < ownPropertyNames.length; ++i) {
-          const name = ownPropertyNames[i];
-
-          const index = Number(name) >>> 0;
-          if ((String(index)) === name && fromIndex <= index && index <= toIndex) {
-            yield index;
-          }
-        }
-      }
-    }
-
-    let count = 0;
-    if (consecutiveRange) {
-      count = toIndex - fromIndex + 1;
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const ignored of arrayIndexes(this)) {
-        ++count;
-      }
-    }
-
-    let bucketSize: number = count;
-    if (count <= bucketThreshold) {
-      bucketSize = count;
-    } else {
-      bucketSize = Math.pow(bucketThreshold, Math.ceil(Math.log(count) / Math.log(bucketThreshold)) - 1);
-    }
-
-    const ranges = [];
-    if (consecutiveRange) {
-      for (let i = fromIndex; i <= toIndex; i += bucketSize) {
-        const groupStart = i;
-        let groupEnd: number = groupStart + bucketSize - 1;
-        if (groupEnd > toIndex) {
-          groupEnd = toIndex;
-        }
-        ranges.push([groupStart, groupEnd, groupEnd - groupStart + 1]);
-      }
-    } else {
-      count = 0;
-      let groupStart = -1;
-      let groupEnd = 0;
-      for (const i of arrayIndexes(this)) {
-        if (groupStart === -1) {
-          groupStart = i;
-        }
-        groupEnd = i;
-        if (++count === bucketSize) {
-          ranges.push([groupStart, groupEnd, count]);
-          count = 0;
-          groupStart = -1;
-        }
-      }
-      if (count > 0) {
-        ranges.push([groupStart, groupEnd, count]);
-      }
-    }
-
-    return {ranges};
-  }
-}
-
-/**
- * This function is called on the RemoteObject.
- */
-function buildArrayFragment(
-    this: Record<number, Object>,
-    fromIndex?: number,
-    toIndex?: number,
-    sparseIterationThreshold?: number,
-    ): unknown {
-  const result = Object.create(null);
-
-  if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined) {
-    return;
-  }
-
-  if (toIndex - fromIndex < sparseIterationThreshold) {
-    for (let i = fromIndex; i <= toIndex; ++i) {
-      if (i in this) {
-        result[i] = this[i];
-      }
-    }
-  } else {
-    const ownPropertyNames = Object.getOwnPropertyNames(this);
-    for (let i = 0; i < ownPropertyNames.length; ++i) {
-      const name = ownPropertyNames[i];
-      const index = Number(name) >>> 0;
-      if (String(index) === name && fromIndex <= index && index <= toIndex) {
-        result[index] = this[index];
-      }
-    }
-  }
-  return result;
-}
-
-class ArrayGroupingTreeElement {
-  static #render(child: ArrayGroupTreeNode, linkifier: Components.Linkifier.Linkifier|undefined,
-                 handlers: StateHandlers): LitTemplate {
-    const onExpand = (e: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-      handlers.onExpand(child, e.detail.expanded);
-      e.consume(true);
-    };
-
-    // clang-format off
-    return html`<li
-      class=object-properties-section-name
-      role=treeitem
-      toggle-on-click
-      ?open=${child.expanded}
-      @expand=${onExpand}>
-        ${Platform.StringUtilities.sprintf('[%d … %d]', child.range.fromIndex, child.range.toIndex)}
-        <ul role=group>
-          ${ifExpanded(() => ObjectPropertyTreeElement.createNodes(child, handlers, false, false, linkifier))}
-        </ul>
-      </li>`;
-    // clang-format on
-  }
-
-  static *
-      createNodes(children: NodeChildren, handlers: StateHandlers, linkifier?: Components.Linkifier.Linkifier,
-                  isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean):
-          Generator<LitTemplate> {
-    if (!children.arrayRanges) {
-      return;
-    }
-    if (children.arrayRanges.length === 1) {
-      yield*
-          ObjectPropertyTreeElement.createNodes(children.arrayRanges[0], handlers, false, false, linkifier, undefined,
-                                                isNotDisplayablePropertyCallback);
-    } else {
-      for (const child of children.arrayRanges) {
-        if (child.singular) {
-          yield*
-              ObjectPropertyTreeElement.createNodes(child, handlers, false, false, linkifier, undefined,
-                                                    isNotDisplayablePropertyCallback);
-        } else {
-          yield ArrayGroupingTreeElement.#render(child, linkifier, handlers);
-        }
-      }
-    }
-
-    yield*
-        ObjectPropertyTreeElement.createPropertyNodes(children, handlers, false, false, linkifier, undefined,
-                                                      isNotDisplayablePropertyCallback);
   }
 }
 

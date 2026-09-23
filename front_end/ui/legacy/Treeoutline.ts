@@ -647,8 +647,8 @@ export class TreeElement {
       throw new Error('child can\'t be undefined or null');
     }
 
-    console.assert(
-        !child.parent, 'Attempting to insert a child that is already in the tree, reparenting is not supported.');
+    console.assert(!child.parent,
+                   'Attempting to insert a child that is already in the tree, reparenting is not supported.');
 
     const previousChild = (index > 0 ? this.childrenInternal[index - 1] : null);
     if (previousChild) {
@@ -905,8 +905,8 @@ export class TreeElement {
       this.collapse();
       ARIAUtils.unsetExpandable(this.listItemNode);
     } else {
-      VisualLogging.registerLoggable(
-          this.expandLoggable, `${VisualLogging.expand()}`, this.listItemNode, new DOMRect(0, 0, 16, 16));
+      VisualLogging.registerLoggable(this.expandLoggable, `${VisualLogging.expand()}`, this.listItemNode,
+                                     new DOMRect(0, 0, 16, 16));
       ARIAUtils.setExpanded(this.listItemNode, false);
     }
   }
@@ -1440,9 +1440,8 @@ export class TreeElement {
       if (!dontPopulate) {
         void element.populateIfNeeded();
       }
-      element =
-          (skipUnrevealed ? (element.revealed() && element.expanded ? element.lastChild() : null) :
-                            element.lastChild());
+      element = (skipUnrevealed ? (element.revealed() && element.expanded ? element.lastChild() : null) :
+                                  element.lastChild());
     }
 
     if (element) {
@@ -1526,8 +1525,8 @@ export class TreeSearch < NodeT extends TreeNode<NodeT>,
     return this.#getNodeMatchMap().get(node) ?? [];
   }
 
-  static highlight(ranges: TextUtils.TextRange.SourceRange[], selectedRange: TextUtils.TextRange.SourceRange|undefined):
-      ReturnType<typeof Lit.Directives.ref> {
+  static highlight(ranges: TextUtils.TextRange.SourceRange[],
+                   selectedRange: TextUtils.TextRange.SourceRange|undefined): ReturnType<typeof Lit.Directives.ref> {
     return Lit.Directives.ref(element => {
       if (!(element instanceof HTMLElement)) {
         return;
@@ -1535,8 +1534,8 @@ export class TreeSearch < NodeT extends TreeNode<NodeT>,
       const configListItem = element.closest<HTMLLIElement>('li[role="treeitem"]');
       const titleElement = configListItem ? TreeViewTreeElement.get(configListItem)?.titleElement : undefined;
       if (configListItem && titleElement) {
-        const targetElement = HTMLElementWithLightDOMTemplate.findCorrespondingElement(
-            element, configListItem, titleElement as HTMLElement);
+        const targetElement = HTMLElementWithLightDOMTemplate.findCorrespondingElement(element, configListItem,
+                                                                                       titleElement as HTMLElement);
         if (targetElement) {
           Highlighting.HighlightManager.HighlightManager.instance().set(targetElement, ranges, selectedRange);
         }
@@ -1563,9 +1562,8 @@ export class TreeSearch < NodeT extends TreeNode<NodeT>,
 
   // This is a generator to sidestep stack overflow risks
   *
-      #innerSearch(
-          node: NodeT, currentMatch: SearchResultT|undefined, jumpBackwards: boolean,
-          match: (node: NodeT, isPostOrder: boolean) => SearchResultT[]): Generator<SearchResultT> {
+      #innerSearch(node: NodeT, currentMatch: SearchResultT|undefined, jumpBackwards: boolean,
+                   match: (node: NodeT, isPostOrder: boolean) => SearchResultT[]): Generator<SearchResultT> {
     const updateCurrentMatchIndex = (isPostOrder: boolean): void => {
       if (currentMatch?.node === node && currentMatch.isPostOrderMatch === isPostOrder) {
         // We're current matching the node that contains the currently focused search result, the n-th result
@@ -2161,8 +2159,15 @@ class IfExpandedDirective extends Lit.Directive.Directive {
     this.#partInfo = partInfo as {type: Lit.Directive.PartType, startNode: Node};
   }
 
-  render(content: Lit.LitTemplate|Iterable<Lit.LitTemplate>): Lit.LitTemplate|Iterable<Lit.LitTemplate> {
-    return this.#isInExpandedRow(this.#partInfo.startNode) ? content : Lit.nothing;
+  render(content: Lit.LitTemplate|Iterable<Lit.LitTemplate>|
+         (() => Lit.LitTemplate | Iterable<Lit.LitTemplate>)): Lit.LitTemplate|Iterable<Lit.LitTemplate> {
+    if (!this.#isInExpandedRow(this.#partInfo.startNode)) {
+      return Lit.nothing;
+    }
+    if (typeof content === 'function') {
+      return content();
+    }
+    return content;
   }
 
   #isInExpandedRow(element: Node|null|undefined): boolean {
@@ -2189,8 +2194,9 @@ class IfExpandedDirective extends Lit.Directive.Directive {
     return node.expanded;
   }
 }
-export const ifExpanded: (content: Lit.LitTemplate|Iterable<Lit.LitTemplate>) =>
-    Lit.DirectiveResult<typeof IfExpandedDirective> = Lit.Directive.directive(IfExpandedDirective);
+export const ifExpanded:
+    (content: Lit.LitTemplate|Iterable<Lit.LitTemplate>|(() => Lit.LitTemplate | Iterable<Lit.LitTemplate>)) =>
+        Lit.DirectiveResult<typeof IfExpandedDirective> = Lit.Directive.directive(IfExpandedDirective);
 
 export class TreeElementWrapper extends HTMLElement {
   #treeElement?: TreeElement;

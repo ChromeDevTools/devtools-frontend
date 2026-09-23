@@ -28,7 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -38,7 +37,7 @@ import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import scopeChainSidebarPaneStyles from './scopeChainSidebarPane.css.js';
@@ -89,9 +88,9 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     scope: SDK.DebuggerModel.ScopeChainEntry,
     objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree,
   }): TemplateResult => {
-    let emptyPlaceholder: Common.UIString.LocalizedString|undefined;
+    let emptyPlaceholder: LitTemplate|undefined;
     if (scope.type() === Protocol.Debugger.ScopeType.Local || scope.type() === Protocol.Debugger.ScopeType.Closure) {
-      emptyPlaceholder = i18nString(UIStrings.noVariables);
+      emptyPlaceholder = html`${i18nString(UIStrings.noVariables)}`;
     }
     const icon = scope.icon();
     const {title, subtitle} = scopeTitle(scope);

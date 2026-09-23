@@ -450,6 +450,7 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
         }
       }
     }
+    await UI.Widget.Widget.allUpdatesComplete;
     await new Promise(requestAnimationFrame);
     TestRunner.deprecatedRunAfterPendingDispatches(callback);
   }
@@ -504,6 +505,7 @@ ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {
       for (let i = 0; i < properties.length; ++i) {
         properties[i].click();
       }
+      await UI.Widget.Widget.allUpdatesComplete;
       await new Promise(requestAnimationFrame);
       TestRunner.deprecatedRunAfterPendingDispatches(callback);
     }

@@ -668,9 +668,13 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
       assert.exists(groupElement);
 
       node.expanded = true;
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
       assert.isTrue(groupElement.classList.contains('expanded'));
 
       node.expanded = false;
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
       assert.isFalse(groupElement.classList.contains('expanded'));
     });
   });
@@ -745,10 +749,97 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
     assert.exists(nestedElement);
 
     nestedNode.expanded = true;
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
     assert.isTrue(nestedElement.classList.contains('expanded'));
 
     nestedNode.expanded = false;
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
     assert.isFalse(nestedElement.classList.contains('expanded'));
+  });
+
+  it('omits [[Prototype]] at the root level but keeps it at nested levels when skipProto is true', async () => {
+    const target = createTarget();
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+    const object = createDeepRemoteObjectMock(runtimeModel, {
+      nested: {
+        bar: 1,
+        '[[Prototype]]': {nestedProto: 2},
+      },
+      '[[Prototype]]': {rootProto: 3},
+    });
+
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.root = object;
+    section.title = html`Object`;
+    section.skipProto = false;
+    assert.exists(section.objectTree);
+    section.objectTree.expanded = true;
+    renderElementIntoDOM(section);
+    await section.objectTree.expandRecursively(2);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    let rootElement = getRootTreeElement(section);
+    assert.exists(
+        rootElement.children().find(c => c.listItemElement.dataset.objectPropertyNameForTest === '[[Prototype]]'));
+    let nestedElement =
+        rootElement.children().find(c => c.listItemElement.dataset.objectPropertyNameForTest === 'nested');
+    assert.exists(nestedElement);
+    assert.exists(
+        nestedElement.children().find(c => c.listItemElement.dataset.objectPropertyNameForTest === '[[Prototype]]'));
+
+    section.skipProto = true;
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    rootElement = getRootTreeElement(section);
+    assert.isUndefined(
+        rootElement.children().find(c => c.listItemElement.dataset.objectPropertyNameForTest === '[[Prototype]]'));
+    nestedElement = rootElement.children().find(c => c.listItemElement.dataset.objectPropertyNameForTest === 'nested');
+    assert.exists(nestedElement);
+    assert.exists(nestedElement.children().find(c => c.listItemElement.dataset.objectPropertyNameForTest === 'bar'));
+    assert.exists(
+        nestedElement.children().find(c => c.listItemElement.dataset.objectPropertyNameForTest === '[[Prototype]]'));
+  });
+
+  it('omits getter and setter accessor rows when skipGettersAndSetters is true', async () => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
+    const getter = SDK.RemoteObject.RemoteObject.fromLocalObject(() => 1);
+    const setter = SDK.RemoteObject.RemoteObject.fromLocalObject(() => {});
+    const accessorProp = new SDK.RemoteObject.RemoteObjectProperty('foo', null, /* enumerable= */ true,
+                                                                   /* writable= */ false, /* isOwn= */ true);
+    accessorProp.getter = getter;
+    accessorProp.setter = setter;
+    sinon.stub(object, 'getOwnProperties').resolves({properties: [accessorProp], internalProperties: []});
+    sinon.stub(object, 'getAllProperties').resolves({properties: [accessorProp], internalProperties: []});
+
+    const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+      readOnly: true,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    });
+    objectTree.expanded = true;
+
+    const treeWidget = new ObjectUI.ObjectPropertiesSection.ObjectTreeWidget();
+    treeWidget.objectTree = objectTree;
+    treeWidget.skipGettersAndSetters = false;
+    renderElementIntoDOM(treeWidget);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    assert.exists(treeWidget.contentElement.querySelector('[data-object-property-name-for-test="foo"]'));
+    assert.exists(treeWidget.contentElement.querySelector('[data-object-property-name-for-test="get foo"]'));
+    assert.exists(treeWidget.contentElement.querySelector('[data-object-property-name-for-test="set foo"]'));
+
+    treeWidget.skipGettersAndSetters = true;
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    assert.exists(treeWidget.contentElement.querySelector('[data-object-property-name-for-test="foo"]'));
+    assert.isNull(treeWidget.contentElement.querySelector('[data-object-property-name-for-test="get foo"]'));
+    assert.isNull(treeWidget.contentElement.querySelector('[data-object-property-name-for-test="set foo"]'));
   });
 
   it('does not edit readonly values', async () => {
@@ -1404,8 +1495,8 @@ describeWithEnvironment('ObjectTreeExpansionTracker', () => {
     await section.updateComplete;
     await raf();
     const rootElement = getRootTreeElement(section);
-    await rootElement.expandRecursively(10);
-
+    await section.objectTree.expandRecursively(10);
+    await UI.Widget.Widget.allUpdatesComplete;
     await new Promise(requestAnimationFrame);
 
     assert.strictEqual(rootElement.childCount(), 1);

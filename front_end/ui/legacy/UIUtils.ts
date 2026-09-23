@@ -2116,7 +2116,7 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     return clone;
   }
 
-  private static patchLitTemplate(template: Lit.LitTemplate): void {
+  static patchLitTemplate(template: Lit.LitTemplate): void {
     const interceptingWrapper = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const patchingWrapper = <Args extends any[], R>(fn: (...args: Args) => R): ((...args: Args) => R) => {

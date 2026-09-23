@@ -545,13 +545,13 @@ export const expandProperties = function(properties, callback) {
 
     const parentTreeElement = properties[index++];
     const path = properties[index++];
-    expandProperty(parentTreeElement, path, 0, expandNextPath);
+    void expandProperty(parentTreeElement, path, 0, expandNextPath);
   }
 
   TestRunner.deprecatedRunAfterPendingDispatches(expandNextPath);
 };
 
-export const expandProperty = function(parentTreeElement, path, pathIndex, callback) {
+export const expandProperty = async function(parentTreeElement, path, pathIndex, callback) {
   if (pathIndex === path.length) {
     TestRunner.addResult('Expanded property: ' + path.join('.'));
     callback();
@@ -559,7 +559,16 @@ export const expandProperty = function(parentTreeElement, path, pathIndex, callb
   }
 
   const name = path[pathIndex++];
-  const propertyTreeElement = findChildPropertyTreeElement(parentTreeElement, name);
+  let propertyTreeElement = findChildPropertyTreeElement(parentTreeElement, name);
+  // Objects with more than InitialVisibleChildrenLimit (200) properties render a '...'
+  // button as the last child to show the remaining properties (including [[Prototype]]).
+  if (!propertyTreeElement &&
+      parentTreeElement.lastChild()?.titleElement?.querySelector('.object-value-calculate-value-button')) {
+    parentTreeElement.lastChild().select();
+    await UI.Widget.Widget.allUpdatesComplete;
+    await new Promise(requestAnimationFrame);
+    propertyTreeElement = findChildPropertyTreeElement(parentTreeElement, name);
+  }
 
   if (!propertyTreeElement) {
     TestRunner.addResult('Failed to expand property: ' + path.slice(0, pathIndex).join('.'));
@@ -568,6 +577,8 @@ export const expandProperty = function(parentTreeElement, path, pathIndex, callb
   }
 
   propertyTreeElement.expand();
+  await UI.Widget.Widget.allUpdatesComplete;
+  await new Promise(requestAnimationFrame);
   TestRunner.deprecatedRunAfterPendingDispatches(
       expandProperty.bind(undefined, propertyTreeElement, path, pathIndex, callback));
 };
@@ -577,9 +588,7 @@ export const findChildPropertyTreeElement = function(parent, childName) {
 
   for (let i = 0; i < children.length; i++) {
     const treeElement = children[i];
-    const property = treeElement.property;
-
-    if (property.name === childName) {
+    if (treeElement.listItemElement.dataset.objectPropertyNameForTest === childName) {
       return treeElement;
     }
   }

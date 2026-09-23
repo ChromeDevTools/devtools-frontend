@@ -1,7 +1,6 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2008 Apple Inc. All Rights Reserved.
@@ -66,6 +65,7 @@ export interface ObjectPropertySearchResult extends UI.TreeOutline.TreeSearchRes
   range: TextUtils.TextRange.SourceRange;
 }
 const {widget, widgetRef} = UI.Widget;
+const {ifExpanded} = UI.TreeOutline;
 const {ref, repeat, ifDefined, classMap} = Directives;
 const UIStrings = {
   /**
@@ -147,20 +147,11 @@ const UIStrings = {
   /**
    * @description Tooltip text for the button to open a memory buffer object in the Memory inspector panel.
    */
-  openInMemoryInpector: 'Open in Memory inspector panel',
+  openInMemoryInspector: 'Open in Memory inspector panel',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectPropertiesSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const EXPANDABLE_MAX_DEPTH = 100;
-
-// TODO(crbug.com/457388389): This cache is a temporary workaround for the <devtools-tree> migration.
-// It can be removed once the entire ObjectPropertiesSection is fully migrated to Lit and
-// the legacy TreeOutline/TreeElement dependencies are removed.
-const topLevelNodesCache = new WeakMap<ObjectTreeNodeBase, {
-  nodes: UI.TreeOutline.TreeElement[],
-  listener: () => void,
-  linkifier?: Components.Linkifier.Linkifier,
-}>();
 
 interface NodeChildren {
   properties?: ObjectTreeNode[];
@@ -502,8 +493,6 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
   }
 
   setFilter(filter: {includeNullOrUndefinedValues: boolean, regex: RegExp|null}|null): void {
-    this.filter = filter;
-    this.dispatchEventToListeners(ObjectTreeNodeBase.Events.FILTER_CHANGED);
     this.#walk().forEach(c => {
       c.filter = filter;
       c.dispatchEventToListeners(ObjectTreeNodeBase.Events.FILTER_CHANGED);
@@ -766,11 +755,11 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
 
 export class ObjectTreeNode extends ObjectTreeNodeBase {
   #path?: string;
+  showAllChildren: boolean = false;
   constructor(
       readonly property: SDK.RemoteObject.RemoteObjectProperty,
       parent: ObjectTreeNodeBase|undefined,
       options: ObjectTreeOptions,
-      readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject|undefined,
   ) {
     super(parent, options);
   }
@@ -1084,8 +1073,8 @@ export function getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?
       void Common.Revealer.reveal(new SDK.RemoteObject.LinearMemoryInspectable(object, expression));
     }}
     jslog=${VisualLogging.action('open-memory-inspector').track({click: true})}
-    title=${i18nString(UIStrings.openInMemoryInpector)}
-    aria-label=${i18nString(UIStrings.openInMemoryInpector)}></devtools-icon>`;
+    title=${i18nString(UIStrings.openInMemoryInspector)}
+    aria-label=${i18nString(UIStrings.openInMemoryInspector)}></devtools-icon>`;
   // clang-format on
 }
 
@@ -1253,13 +1242,21 @@ export const enum ObjectPropertiesMode {
   OWN_AND_INTERNAL_AND_INHERITED = 1,  // Own, internal, and inherited properties
 }
 
+export interface ContextMenuHandlers {
+  expandRecursively: (node: ObjectTreeNodeBase) => void;
+  collapseChildren: (node: ObjectTreeNodeBase) => void;
+  sortPropertiesAlphabetically: (node: ObjectTreeNodeBase) => void;
+  onShowAllToggled: (node: ObjectTreeNodeBase) => void;
+}
+
+interface StateHandlers extends ContextMenuHandlers {
+  onShowAllProperties: (node: ObjectTreeNode) => void;
+  onExpand: (node: ObjectTreeNodeBase, expanded: boolean) => void;
+}
+
 export function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu,
-                                              objectOrProperty: ObjectTree|ObjectTreeNode, handlers: {
-                                                expandRecursively: (node: ObjectTreeNodeBase) => void,
-                                                collapseChildren: (node: ObjectTreeNodeBase) => void,
-                                                sortPropertiesAlphabetically: (node: ObjectTreeNodeBase) => void,
-                                                onShowAllToggled: (node: ObjectTreeNodeBase) => void,
-                                              }): void {
+                                              objectOrProperty: ObjectTree|ObjectTreeNode,
+                                              handlers: ContextMenuHandlers): void {
   contextMenu.appendApplicableItems(objectOrProperty);
   if (objectOrProperty instanceof ObjectTreeNode && objectOrProperty.property.symbol) {
     contextMenu.appendApplicableItems(objectOrProperty.property.symbol);
@@ -1314,14 +1311,13 @@ export function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.Contex
       {checked: objectOrProperty.includeNullOrUndefinedValues, jslogContext: 'show-all'});
 }
 
-interface ObjectTreeViewInput {
+interface ObjectTreeViewInput extends StateHandlers {
   renderAsSubtree: boolean;
   objectTree?: ObjectTree;
   linkifier?: Components.Linkifier.Linkifier;
-  emptyPlaceholder?: string;
+  emptyPlaceholder?: LitTemplate;
   skipProto: boolean;
   skipGettersAndSetters: boolean;
-  onExpand: (expanded: boolean) => void;
 }
 type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
 const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
@@ -1330,50 +1326,20 @@ const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
     render(nothing, target);
     return;
   }
-  const classes = input.renderAsSubtree ? ['source-code', 'object-properties-section'] : [];
-  let entry = topLevelNodesCache.get(objectTree);
-  if (!entry || entry.linkifier !== input.linkifier || (!entry.nodes.length && objectTree.children)) {
-    if (entry) {
-      objectTree.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, entry.listener);
-    }
-    const nodes = Array.from(ObjectPropertyTreeElement.createNodes(
-        objectTree, input.skipProto, input.skipGettersAndSetters, input.linkifier, input.emptyPlaceholder));
-    const listener = (): void => {
-      topLevelNodesCache.delete(objectTree);
-      objectTree.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, listener);
-    };
-    entry = {linkifier: input.linkifier, nodes, listener};
-    topLevelNodesCache.set(objectTree, entry);
-    objectTree.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, listener);
-  }
 
-  render(entry.nodes.map(node => html`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`), target, {
-    container: {
-      classes,
-      interceptedListeners: {
-        expand: (e: Event) => input.onExpand((e as UI.TreeOutline.TreeViewElement.ExpandEvent).detail.expanded),
-      },
-    },
+  const nodes = Array.from(ObjectPropertyTreeElement.createNodes(
+      objectTree, input, input.skipProto, input.skipGettersAndSetters, input.linkifier, input.emptyPlaceholder));
+  nodes.forEach(UI.UIUtils.HTMLElementWithLightDOMTemplate.patchLitTemplate);
+
+  render(nodes, target, {
+    container: {classes: input.renderAsSubtree ? ['source-code', 'object-properties-section'] : []},
   });
 };
-
-async function populateChildrenIfNeeded(node: ObjectTreeNodeBase): Promise<void> {
-  const children = await node.populateChildrenIfNeeded();
-  if (!children.arrayRanges) {
-    return;
-  }
-  if (children.arrayRanges.length === 1) {
-    await populateChildrenIfNeeded(children.arrayRanges[0]);
-  } else {
-    await Promise.all(
-        children.arrayRanges.filter(child => child.singular).map(child => populateChildrenIfNeeded(child)));
-  }
-}
 
 export class ObjectTreeWidget extends UI.Widget.Widget {
   #objectTree: ObjectTree|undefined = undefined;
   #linkifier: Components.Linkifier.Linkifier|undefined = undefined;
-  #emptyPlaceholder?: string;
+  #emptyPlaceholder?: LitTemplate;
   #renderAsSubtree = false;
   #skipProto = false;
   #skipGettersAndSetters = false;
@@ -1384,9 +1350,77 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
     this.#view = view;
   }
 
-  onExpand = (expanded: boolean): void => {
-    if (this.#objectTree) {
-      this.#objectTree.expanded = expanded;
+  async #populateChildrenIfNeeded(node: ObjectTreeNodeBase): Promise<void> {
+    const isFirstPopulation = !node.children;
+    const children = await node.populateChildrenIfNeeded();
+
+    if (isFirstPopulation) {
+      const entriesProperty = children.internalProperties?.find(({property}) => property.name === '[[Entries]]');
+      if (entriesProperty) {
+        entriesProperty.expanded = true;
+      }
+
+      for (const property of children.properties ?? []) {
+        const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
+        if (canShowProperty) {
+          if (property.property.name === 'memories' && property.object?.className === 'Memories') {
+            property.expanded = true;
+          }
+        }
+      }
+    }
+
+    for (const child of node.treeNodeChildren()) {
+      child.removeEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.requestUpdate, this);
+      child.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+      child.removeEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
+      child.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+      child.addEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.requestUpdate, this);
+      child.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+      child.addEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
+      child.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+      if (child.expanded) {
+        await this.#populateChildrenIfNeeded(child);
+      }
+    }
+
+    if (!children.arrayRanges) {
+      return;
+    }
+    if (children.arrayRanges.length === 1) {
+      await this.#populateChildrenIfNeeded(children.arrayRanges[0]);
+    } else {
+      await Promise.all(
+          children.arrayRanges.filter(child => child.singular).map(child => this.#populateChildrenIfNeeded(child)));
+    }
+  }
+
+  onExpand = (node: ObjectTreeNodeBase, expanded: boolean): void => {
+    if (node.expanded !== expanded) {
+      node.expanded = expanded;
+      this.requestUpdate();
+    }
+  };
+  expandRecursively = (node: ObjectTreeNodeBase): void => {
+    void node.expandRecursively(EXPANDABLE_MAX_DEPTH);
+    this.requestUpdate();
+  };
+  collapseChildren = (node: ObjectTreeNodeBase): void => {
+    node.collapseRecursively();
+    this.requestUpdate();
+  };
+  sortPropertiesAlphabetically = (node: ObjectTreeNodeBase): void => {
+    node.sortPropertiesAlphabetically = !node.sortPropertiesAlphabetically;
+    this.requestUpdate();
+  };
+  onShowAllToggled = (node: ObjectTreeNodeBase): void => {
+    node.includeNullOrUndefinedValues = !node.includeNullOrUndefinedValues;
+    this.requestUpdate();
+  };
+  onShowAllProperties = (node: ObjectTreeNode): void => {
+    if (!node.showAllChildren) {
+      node.showAllChildren = true;
+      this.requestUpdate();
     }
   };
 
@@ -1436,11 +1470,11 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  get emptyPlaceholder(): string|undefined {
+  get emptyPlaceholder(): LitTemplate|undefined {
     return this.#emptyPlaceholder;
   }
 
-  set emptyPlaceholder(val: string) {
+  set emptyPlaceholder(val: LitTemplate) {
     if (val === this.#emptyPlaceholder) {
       return;
     }
@@ -1462,7 +1496,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
 
   override async performUpdate(): Promise<void> {
     if (this.#objectTree?.expanded) {
-      await populateChildrenIfNeeded(this.#objectTree);
+      await this.#populateChildrenIfNeeded(this.#objectTree);
     }
     this.#view(this, {}, this.contentElement);
   }
@@ -1484,7 +1518,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
 export function renderObjectTree(
     objectTree: ObjectTree,
     linkifier?: Components.Linkifier.Linkifier,
-    emptyPlaceholder?: string,
+    emptyPlaceholder?: LitTemplate,
     ): LitTemplate|DirectiveResult {
   return html`<ul role="group" ${
       widget(ObjectTreeWidget, {objectTree, linkifier, emptyPlaceholder, renderAsSubtree: true})} ${
@@ -1840,19 +1874,38 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
   }
 
   set property(property: ObjectTreeNode) {
-    if (this.#property) {
-      this.#property.removeEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
-      this.#property.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
-      this.#property.removeEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.requestUpdate, this);
+    if (property === this.#property) {
+      return;
     }
-    this.#search?.removeEventListener(UI.TreeOutline.TreeSearch.Events.SEARCH_CHANGED, this.requestUpdate, this);
+    this.#removePropertyListeners();
     this.#property = property;
-    this.#property.addEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
-    this.#property.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
-    this.#property.addEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.requestUpdate, this);
     this.#search = property.search;
-    this.#search?.addEventListener(UI.TreeOutline.TreeSearch.Events.SEARCH_CHANGED, this.requestUpdate, this);
+    this.#addPropertyListeners();
     this.requestUpdate();
+  }
+
+  #addPropertyListeners(): void {
+    this.#property?.addEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
+    this.#property?.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#property?.addEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.requestUpdate, this);
+    this.#search?.addEventListener(UI.TreeOutline.TreeSearch.Events.SEARCH_CHANGED, this.requestUpdate, this);
+  }
+
+  #removePropertyListeners(): void {
+    this.#property?.removeEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
+    this.#property?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#property?.removeEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.requestUpdate, this);
+    this.#search?.removeEventListener(UI.TreeOutline.TreeSearch.Events.SEARCH_CHANGED, this.requestUpdate, this);
+  }
+
+  override onDetach(): void {
+    this.#removePropertyListeners();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.#removePropertyListeners();
+    this.#addPropertyListeners();
   }
 
   get expanded(): boolean {
@@ -1934,94 +1987,88 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
   }
 }
 
-class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
-  property: ObjectTreeNode;
-  override toggleOnClick: boolean;
-  private linkifier: Components.Linkifier.Linkifier|undefined;
-  private readonly maxNumPropertiesToShow: number;
-  readonly #widget: ObjectPropertyWidget;
-  constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier) {
-    // Pass an empty title, the title gets made later in onattach.
-    super();
+class ObjectPropertyTreeElement {
+  static #render(property: ObjectTreeNode, linkifier: Components.Linkifier.Linkifier|undefined,
+                 handlers: StateHandlers): LitTemplate {
+    const onContextMenu = (e: Event): void => {
+      const contextMenu = new UI.ContextMenu.ContextMenu(e);
+      populateObjectTreeContextMenu(contextMenu, property, handlers);
+      void contextMenu.show();
+    };
 
-    this.#widget = new ObjectPropertyWidget();
-    this.#widget.markAsRoot();
-    this.property = property;
-    this.hidden = property.isFiltered;
-    this.property.addEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.#updateValue, this);
-    this.property.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.#updateChildren, this);
-    this.property.addEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.#updateFilter, this);
-    this.property.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.#onExpandedChanged, this);
-    this.toggleOnClick = true;
-    this.linkifier = linkifier;
-    this.maxNumPropertiesToShow = InitialVisibleChildrenLimit;
-    this.listItemElement.addEventListener('contextmenu', this.contextMenuFired.bind(this), false);
-    this.listItemElement.dataset.objectPropertyNameForTest = property.name;
-    this.updateExpandable();
-    this.setExpandRecursively(property.name !== '[[Prototype]]');
-    if (property.expanded) {
-      this.expand();
-    }
-  }
+    const onExpand = (e: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+      handlers.onExpand(property, e.detail.expanded);
+      e.consume(true);
+    };
+    const childCount = (property.children?.properties?.length ?? 0) +
+        (property.children?.internalProperties?.length ?? 0) + (property.children?.accessors?.length ?? 0) +
+        (property.children?.arrayRanges?.length ?? 0);
 
-  static async populate(
-      treeElement: UI.TreeOutline.TreeElement,
-      value: ObjectTreeNodeBase,
-      skipProto: boolean,
-      skipGettersAndSetters: boolean,
-      linkifier?: Components.Linkifier.Linkifier,
-      emptyPlaceholder?: string|null,
-      ): Promise<void> {
-    await populateChildrenIfNeeded(value);
-    ObjectPropertyTreeElement.populateImpl(treeElement, value, skipProto, skipGettersAndSetters, linkifier,
-                                           emptyPlaceholder);
-  }
+    const showAllChildren = childCount <= InitialVisibleChildrenLimit || property.showAllChildren;
+    const children = (): Iterable<LitTemplate> => {
+      const nodes = ObjectPropertyTreeElement.createNodes(property, handlers, false, false, linkifier, undefined,
+                                                          p => !isDisplayableProperty(p, property.property));
+      return showAllChildren ? nodes : nodes.take(InitialVisibleChildrenLimit);
+    };
 
-  static populateImpl(
-      treeElement: UI.TreeOutline.TreeElement,
-      value: ObjectTreeNodeBase,
-      skipProto: boolean,
-      skipGettersAndSetters: boolean,
-      linkifier?: Components.Linkifier.Linkifier,
-      emptyPlaceholder?: string|null,
-      ): void {
-    for (const childNode of ObjectPropertyTreeElement.createNodes(
-             value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder,
-             property => treeElement instanceof ObjectPropertyTreeElement &&
-                 !isDisplayableProperty(property, treeElement.property?.property))) {
-      treeElement.appendChild(childNode);
-    }
+    const expandable = property.object && !property.object.customPreview() && property.object.hasChildren &&
+        !property.property.wasThrown;
+
+    // clang-format off
+    return html`<li
+      ?hidden=${property.isFiltered}
+      ?open=${property.expanded}
+      @contextmenu=${onContextMenu}
+      @expand=${onExpand}
+      data-object-property-name-for-test=${property.name}
+      toggle-on-click
+      role=treeitem>
+        ${widget(ObjectPropertyWidget, {property, linkifier, editable: !property.readOnly, expanded: property.expanded})}
+        ${expandable ? html`
+          <ul role=group>
+            ${children()}
+            ${showAllChildren ? nothing : html`
+              <li role=treeitem @select=${() => handlers.onShowAllProperties(property)}>
+                <div
+                    class=object-value-calculate-value-button
+                    title=${i18nString(UIStrings.showAllD, {PH1: childCount})}>
+                  ${i18nString(UIStrings.dots)}
+                </div>
+              </li>`}
+          </ul>` : nothing}
+      </li>`;
+    // clang-format on
   }
 
   static *
       createNodes(
           value: ObjectTreeNodeBase,
+          handlers: StateHandlers,
           skipProto: boolean,
           skipGettersAndSetters: boolean,
           linkifier?: Components.Linkifier.Linkifier,
-          emptyPlaceholder?: string|null,
+          emptyPlaceholder?: LitTemplate,
           isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean,
-          ): Generator<UI.TreeOutline.TreeElement> {
+          ): Generator<LitTemplate> {
     const properties = value.children;
     if (!properties) {
       return;
     }
     if (properties.arrayRanges) {
-      yield* ArrayGroupingTreeElement.createNodes(properties, linkifier, isNotDisplayablePropertyCallback);
+      yield* ArrayGroupingTreeElement.createNodes(properties, handlers, linkifier, isNotDisplayablePropertyCallback);
     } else {
       yield*
-          ObjectPropertyTreeElement.createPropertyNodes(properties, skipProto, skipGettersAndSetters, linkifier,
-                                                        emptyPlaceholder, isNotDisplayablePropertyCallback);
+          ObjectPropertyTreeElement.createPropertyNodes(properties, handlers, skipProto, skipGettersAndSetters,
+                                                        linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback);
     }
   }
 
   static *
-      createPropertyNodes({properties, internalProperties, accessors, arrayRanges}: NodeChildren, skipProto: boolean,
-                          skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier,
-                          emptyPlaceholder?: string|null,
+      createPropertyNodes({properties, internalProperties, accessors, arrayRanges}: NodeChildren,
+                          handlers: StateHandlers, skipProto: boolean, skipGettersAndSetters: boolean,
+                          linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: LitTemplate,
                           isNotDisplayablePropertyCallback?:
-                              (property: SDK.RemoteObject.RemoteObjectProperty) => boolean):
-          Generator<UI.TreeOutline.TreeElement> {
+                              (property: SDK.RemoteObject.RemoteObjectProperty) => boolean): Generator<LitTemplate> {
     let empty = true;
     // Arrays with large numbers of elements are paginated into arrayRanges.
     // If we have array ranges, the object is not empty.
@@ -2033,11 +2080,8 @@ class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const entriesProperty = internalProperties?.find(({property}) => property.name === '[[Entries]]');
     if (entriesProperty) {
-      const treeElement = new ObjectPropertyTreeElement(entriesProperty, linkifier);
-      treeElement.setExpandable(true);
-      treeElement.expand();
+      yield ObjectPropertyTreeElement.#render(entriesProperty, linkifier, handlers);
       empty = false;
-      yield treeElement;
     }
 
     for (const property of properties ?? []) {
@@ -2047,172 +2091,32 @@ class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
       const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
       if (canShowProperty) {
-        const element = new ObjectPropertyTreeElement(property, linkifier);
-        if (property.property.name === 'memories' && property.object?.className === 'Memories') {
-          element.updateExpandable();
-          if (element.isExpandable()) {
-            element.expand();
-          }
-        }
+        yield ObjectPropertyTreeElement.#render(property, linkifier, handlers);
         empty = false;
-        yield element;
       }
     }
 
-    for (const accessor of accessors ?? []) {
-      yield new ObjectPropertyTreeElement(accessor, linkifier);
+    if (!skipGettersAndSetters) {
+      for (const accessor of accessors ?? []) {
+        yield ObjectPropertyTreeElement.#render(accessor, linkifier, handlers);
+      }
     }
 
     for (const property of internalProperties ?? []) {
-      const treeElement = new ObjectPropertyTreeElement(property, linkifier);
       if (property.property.name === '[[Entries]]') {
         continue;
       }
       if (property.property.name === '[[Prototype]]' && skipProto) {
         continue;
       }
+      yield ObjectPropertyTreeElement.#render(property, linkifier, handlers);
       empty = false;
-      yield treeElement;
     }
 
     if (empty) {
-      const title = document.createElement('div');
-      title.classList.add('gray-info-message');
-      title.textContent = emptyPlaceholder || i18nString(UIStrings.noProperties);
-      const infoElement = new UI.TreeOutline.TreeElement(title);
-      yield infoElement;
-    }
-  }
-
-  static populateWithProperties(treeNode: UI.TreeOutline.TreeElement, children: NodeChildren, skipProto: boolean,
-                                skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier,
-                                emptyPlaceholder?: string|null): void {
-    for (const childNode of this.createPropertyNodes(
-             children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder,
-             property => treeNode instanceof ObjectPropertyTreeElement &&
-                 !isDisplayableProperty(property, treeNode.property?.property))) {
-      treeNode.appendChild(childNode);
-    }
-  }
-
-  // This is called by layout tests
-  startEditing(): void {
-    this.#widget.startEditing();
-  }
-
-  // This is called by layout tests
-  get editing(): boolean {
-    return this.#widget.editing;
-  }
-
-  get editable(): boolean {
-    return this.#widget.editable;
-  }
-
-  set editable(val: boolean) {
-    this.#widget.editable = val;
-  }
-
-  // This is called by layout tests
-  async applyExpression(expression: string): Promise<void> {
-    await this.property.setValue(expression);
-  }
-
-  private showAllPropertiesElementSelected(element: UI.TreeOutline.TreeElement): boolean {
-    this.removeChild(element);
-    this.children().forEach(x => {
-      x.hidden = false;
-    });
-    return false;
-  }
-
-  private createShowAllPropertiesButton(): void {
-    const element = document.createElement('div');
-    element.classList.add('object-value-calculate-value-button');
-    element.textContent = i18nString(UIStrings.dots);
-    UI.Tooltip.Tooltip.install(element, i18nString(UIStrings.showAllD, {PH1: this.childCount()}));
-    const children = this.children();
-    for (let i = this.maxNumPropertiesToShow; i < this.childCount(); ++i) {
-      children[i].hidden = true;
-    }
-    const showAllPropertiesButton = new UI.TreeOutline.TreeElement(element);
-    showAllPropertiesButton.onselect = this.showAllPropertiesElementSelected.bind(this, showAllPropertiesButton);
-    this.appendChild(showAllPropertiesButton);
-  }
-
-  override async onpopulate(): Promise<void> {
-    this.removeChildren();
-
-    if (this.property.object) {
-      await ObjectPropertyTreeElement.populate(this, this.property, false, false, this.linkifier);
-      if (this.childCount() > this.maxNumPropertiesToShow) {
-        this.createShowAllPropertiesButton();
-      }
-    }
-  }
-
-  override onattach(): void {
-    this.updateExpandable();
-    this.#widget.show(this.listItemElement);
-    this.#widget.property = this.property;
-    this.#widget.linkifier = this.linkifier;
-    this.#widget.editable = !this.property.readOnly;
-  }
-
-  override onexpand(): void {
-    this.property.expanded = true;
-    this.#widget.expanded = true;
-  }
-
-  override oncollapse(): void {
-    this.property.expanded = false;
-    this.#widget.expanded = false;
-  }
-
-  #updateValue(): void {
-    this.updateExpandable();
-  }
-
-  #updateChildren(): void {
-    this.removeChildren();
-    void this.onpopulate();
-  }
-
-  #updateFilter(): void {
-    this.hidden = this.property.isFiltered;
-  }
-
-  #onExpandedChanged(event: Common.EventTarget.EventTargetEvent<boolean>): void {
-    const expanded = event.data;
-    if (expanded) {
-      this.expand();
-    } else {
-      this.collapse();
-    }
-  }
-
-  private contextMenuFired(event: Event): void {
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    populateObjectTreeContextMenu(contextMenu, this.property, {
-      expandRecursively: () => this.expandRecursively(EXPANDABLE_MAX_DEPTH),
-      collapseChildren: () => this.collapseChildren(),
-      sortPropertiesAlphabetically: node => {
-        node.sortPropertiesAlphabetically = !node.sortPropertiesAlphabetically;
-      },
-      onShowAllToggled: node => {
-        node.includeNullOrUndefinedValues = !node.includeNullOrUndefinedValues;
-      },
-    });
-
-    void contextMenu.show();
-  }
-
-  private updateExpandable(): void {
-    if (this.property.object) {
-      this.setExpandable(!this.property.object.customPreview() && this.property.object.hasChildren &&
-                         !this.property.property.wasThrown);
-    } else {
-      this.setExpandable(false);
+      yield html`<li role=treeitem>
+          <div class=gray-info-message>${emptyPlaceholder || i18nString(UIStrings.noProperties)}</div>
+        </li>`;
     }
   }
 }
@@ -2350,74 +2254,55 @@ function buildArrayFragment(
   return result;
 }
 
-class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
-  override toggleOnClick: boolean;
-  private readonly linkifier: Components.Linkifier.Linkifier|undefined;
-  readonly #child: ArrayGroupTreeNode;
-  constructor(child: ArrayGroupTreeNode, linkifier?: Components.Linkifier.Linkifier) {
-    super(Platform.StringUtilities.sprintf('[%d … %d]', child.range.fromIndex, child.range.toIndex), true);
-    this.#child = child;
-    this.#child.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.onpopulate, this);
-    this.#child.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.#onExpandedChanged, this);
-    this.toggleOnClick = true;
-    this.linkifier = linkifier;
-    if (child.expanded) {
-      this.expand();
-    }
-  }
+class ArrayGroupingTreeElement {
+  static #render(child: ArrayGroupTreeNode, linkifier: Components.Linkifier.Linkifier|undefined,
+                 handlers: StateHandlers): LitTemplate {
+    const onExpand = (e: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+      handlers.onExpand(child, e.detail.expanded);
+      e.consume(true);
+    };
 
-  #onExpandedChanged(event: Common.EventTarget.EventTargetEvent<boolean>): void {
-    const expanded = event.data;
-    if (expanded) {
-      this.expand();
-    } else {
-      this.collapse();
-    }
+    // clang-format off
+    return html`<li
+      class=object-properties-section-name
+      role=treeitem
+      toggle-on-click
+      ?open=${child.expanded}
+      @expand=${onExpand}>
+        ${Platform.StringUtilities.sprintf('[%d … %d]', child.range.fromIndex, child.range.toIndex)}
+        <ul role=group>
+          ${ifExpanded(() => ObjectPropertyTreeElement.createNodes(child, handlers, false, false, linkifier))}
+        </ul>
+      </li>`;
+    // clang-format on
   }
 
   static *
-      createNodes(children: NodeChildren, linkifier?: Components.Linkifier.Linkifier,
+      createNodes(children: NodeChildren, handlers: StateHandlers, linkifier?: Components.Linkifier.Linkifier,
                   isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean):
-          Generator<UI.TreeOutline.TreeElement> {
+          Generator<LitTemplate> {
     if (!children.arrayRanges) {
       return;
     }
     if (children.arrayRanges.length === 1) {
       yield*
-          ObjectPropertyTreeElement.createNodes(children.arrayRanges[0], false, false, linkifier, null,
+          ObjectPropertyTreeElement.createNodes(children.arrayRanges[0], handlers, false, false, linkifier, undefined,
                                                 isNotDisplayablePropertyCallback);
     } else {
       for (const child of children.arrayRanges) {
         if (child.singular) {
           yield*
-              ObjectPropertyTreeElement.createNodes(child, false, false, linkifier, null,
+              ObjectPropertyTreeElement.createNodes(child, handlers, false, false, linkifier, undefined,
                                                     isNotDisplayablePropertyCallback);
         } else {
-          yield new ArrayGroupingTreeElement(child, linkifier);
+          yield ArrayGroupingTreeElement.#render(child, linkifier, handlers);
         }
       }
     }
 
     yield*
-        ObjectPropertyTreeElement.createPropertyNodes(children, false, false, linkifier, null,
+        ObjectPropertyTreeElement.createPropertyNodes(children, handlers, false, false, linkifier, undefined,
                                                       isNotDisplayablePropertyCallback);
-  }
-
-  override onexpand(): void {
-    this.#child.expanded = true;
-  }
-
-  override oncollapse(): void {
-    this.#child.expanded = false;
-  }
-
-  override async onpopulate(): Promise<void> {
-    this.removeChildren();
-    await ObjectPropertyTreeElement.populate(this, this.#child, false, false, this.linkifier);
-  }
-
-  override onattach(): void {
-    this.listItemElement.classList.add('object-properties-section-name');
   }
 }
 

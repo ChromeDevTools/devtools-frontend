@@ -5,6 +5,7 @@
 import * as path from 'node:path';
 
 import type {AstTargetInfo} from '../gn_ast/gn_ast_types.ts';
+import {withConcurrencyLimit} from '../utils/concurrency.ts';
 import {GnLabel} from '../utils/gn_label.ts';
 
 import {GnAstExtractor} from './gn_ast_extractor.ts';
@@ -380,11 +381,16 @@ export class TypeScriptAnalyzer {
 
   async #processDiscoveredBuildFiles(): Promise<void> {
     let processedAny = false;
+    const tasks: Array<() => Promise<void>> = [];
     for (const filePath of this.#astExtractor.buildFiles.keys()) {
       if (!this.#buildFiles.has(filePath)) {
-        await this.processBuildFile(filePath);
+        tasks.push(() => this.processBuildFile(filePath));
         processedAny = true;
       }
+    }
+
+    if (tasks.length > 0) {
+      await withConcurrencyLimit(tasks, 50);
     }
 
     if (processedAny) {

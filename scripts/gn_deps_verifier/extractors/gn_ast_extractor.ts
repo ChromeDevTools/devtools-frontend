@@ -7,6 +7,7 @@ import * as path from 'node:path';
 
 import {GnBuildFile} from '../gn_ast/gn_ast.ts';
 import type {AstTargetInfo} from '../gn_ast/gn_ast_types.ts';
+import {Semaphore, withConcurrencyLimit} from '../utils/concurrency.ts';
 import {isNotFoundError} from '../utils/error.ts';
 import {GnLabel} from '../utils/gn_label.ts';
 
@@ -145,22 +146,35 @@ export class GnAstExtractor {
     }
   }
 
+  static readonly #fsSemaphore = new Semaphore(50);
+
   async #findAllBuildGnsUnderDir(dir: string): Promise<string[]> {
     try {
-      const entries = await fs.promises.readdir(dir, {withFileTypes: true});
+      await GnAstExtractor.#fsSemaphore.acquire();
+      let entries;
+      try {
+        entries = await fs.promises.readdir(dir, {withFileTypes: true});
+      } finally {
+        GnAstExtractor.#fsSemaphore.release();
+      }
+
       const results: string[] = [];
+      const promises: Array<Promise<string[]>> = [];
       for (const entry of entries) {
         if (entry.name.startsWith('.')) {
           continue;
         }
         if (entry.isDirectory()) {
           if (!this.#excludedDirs.has(entry.name)) {
-            const subResults = await this.#findAllBuildGnsUnderDir(path.join(dir, entry.name));
-            results.push(...subResults);
+            promises.push(this.#findAllBuildGnsUnderDir(path.join(dir, entry.name)));
           }
         } else if (entry.name === 'BUILD.gn') {
           results.push(path.join(dir, entry.name));
         }
+      }
+      const subResultsArray = await Promise.all(promises);
+      for (const subResults of subResultsArray) {
+        results.push(...subResults);
       }
       return results;
     } catch (e) {
@@ -260,8 +274,10 @@ export class GnAstExtractor {
       }
     }
 
+    const parseTasks: Array<() => Promise<GnBuildFile|null>> = [];
     for (const buildFile of buildFilesToParse) {
-      await this.#parseAndCacheBuildFile(buildFile);
+      parseTasks.push(() => this.#parseAndCacheBuildFile(buildFile));
     }
+    await withConcurrencyLimit(parseTasks, 50);
   }
 }

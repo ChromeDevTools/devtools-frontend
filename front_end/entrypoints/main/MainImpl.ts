@@ -121,9 +121,9 @@ const UIStrings = {
    */
   aiModelDownloaded: 'AI model downloaded',
   /**
-   * @description Title of the menu item in the customize and control menu leading to the DevTools MCP repository.
+   * @description Title of the menu item in the customize and control menu leading to the Chrome DevTools for agents repository.
    */
-  getDevToolsMcp: 'Get `DevTools MCP`',
+  getChromeDevToolsForAgents: 'Give your agent access to `DevTools`',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -893,7 +893,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
 
     contextMenu.defaultSection().appendAction('freestyler.main-menu', undefined, /* optional */ true);
 
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.getDevToolsMcp), () => {
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.getChromeDevToolsForAgents), () => {
       UIHelpers.openInNewTab('https://github.com/ChromeDevTools/chrome-devtools-mcp');
     }, {
       additionalElement: UI.UIUtils.maybeCreateNewBadge('get-devtools-mcp'),

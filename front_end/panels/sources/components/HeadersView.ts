@@ -1,8 +1,6 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -18,7 +16,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import headersViewStyles from './HeadersView.css.js';
 
-const {html} = Lit;
+const {html, Directives: {ref}} = Lit;
 
 const UIStrings = {
   /**
@@ -59,23 +57,68 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const DEFAULT_HEADER_VALUE = 'header value';
 const getDefaultHeaderName = (i: number): string => `header-name-${i}`;
 
-export class HeadersView extends UI.View.SimpleView {
-  readonly #headersViewComponent = new HeadersViewComponent();
-  #uiSourceCode: Workspace.UISourceCode.UISourceCode;
+export interface WrapperViewInput {
+  data: HeadersViewComponentData;
+}
 
-  constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
+export interface WrapperViewOutput {
+  component?: HeadersViewComponent;
+}
+
+export type WrapperView = (input: WrapperViewInput, output: WrapperViewOutput, target: HTMLElement) => void;
+
+// clang-format off
+export const HEADERS_VIEW_DEFAULT_VIEW: WrapperView = (input, output, target) => {
+  Lit.render(html`
+    <devtools-sources-headers-view
+      .data=${input.data}
+      ${ref(el => {
+        if (el) {
+          output.component = el as HeadersViewComponent;
+        }
+      })}
+    ></devtools-sources-headers-view>
+  `, target);
+};
+// clang-format on
+
+export class HeadersView extends UI.View.SimpleView {
+  #headersViewComponent!: HeadersViewComponent;
+  #uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  readonly #view: WrapperView;
+  #componentData: HeadersViewComponentData;
+
+  constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode, view: WrapperView = HEADERS_VIEW_DEFAULT_VIEW) {
     super({
       title: i18n.i18n.lockedString('HeadersView'),
       viewId: 'headers-view',
       jslog: `${VisualLogging.pane('headers-view')}`,
     });
+    this.#view = view;
     this.#uiSourceCode = uiSourceCode;
-    this.#uiSourceCode.addEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);
-    this.#uiSourceCode.addEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#onWorkingCopyCommitted, this);
-    this.element.appendChild(this.#headersViewComponent);
+    this.#componentData = {
+      headerOverrides: [],
+      uiSourceCode: this.#uiSourceCode,
+      parsingError: false,
+    };
+    this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged,
+                                        this);
+    this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted,
+                                        this.#onWorkingCopyCommitted, this);
+    this.performUpdate();
     void this.#setInitialData();
+  }
+
+  override performUpdate(): void {
+    const that = this;
+    const output: WrapperViewOutput = {
+      set component(value: HeadersViewComponent|undefined) {
+        if (value) {
+          that.#headersViewComponent = value;
+        }
+      },
+    };
+    this.#view({data: this.#componentData}, output, this.contentElement);
   }
 
   async #setInitialData(): Promise<void> {
@@ -97,11 +140,12 @@ export class HeadersView extends UI.View.SimpleView {
       parsingError = true;
     }
 
-    this.#headersViewComponent.data = {
+    this.#componentData = {
       headerOverrides,
       uiSourceCode: this.#uiSourceCode,
       parsingError,
     };
+    this.performUpdate();
   }
 
   #onWorkingCopyChanged(): void {
@@ -117,10 +161,10 @@ export class HeadersView extends UI.View.SimpleView {
   }
 
   dispose(): void {
-    this.#uiSourceCode.removeEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);
-    this.#uiSourceCode.removeEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#onWorkingCopyCommitted, this);
+    this.#uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged,
+                                           this);
+    this.#uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted,
+                                           this.#onWorkingCopyCommitted, this);
   }
 }
 
@@ -323,7 +367,7 @@ export class HeadersViewComponent extends HTMLElement {
       }
       range.deleteContents();
 
-      const textNode = document.createTextNode(text);
+      const textNode = new Text(text);
       range.insertNode(textNode);
       range.selectNodeContents(textNode);
       range.collapse(false);
@@ -341,119 +385,42 @@ export class HeadersViewComponent extends HTMLElement {
       throw new Error('HeadersView render was not scheduled');
     }
 
-    if (this.#parsingError) {
-      const fileName = this.#uiSourceCode?.name() || '.headers';
-      // clang-format off
-      Lit.render(html`
-        <style>${headersViewStyles}</style>
-        <div class="center-wrapper">
-          <div class="centered">
-            <div class="error-header">${i18nString(UIStrings.errorWhenParsing, {PH1: fileName})}</div>
-            <div class="error-body">${i18nString(UIStrings.parsingErrorExplainer, {PH1: fileName})}</div>
-          </div>
-        </div>
-      `, this.#shadow, {host: this});
-      // clang-format on
-      return;
-    }
-
-    // clang-format off
-    Lit.render(html`
-      <style>${headersViewStyles}</style>
-      ${this.#headerOverrides.map((headerOverride, blockIndex) =>
-        html`
-          ${this.#renderApplyToRow(headerOverride.applyTo, blockIndex)}
-          ${headerOverride.headers.map((header, headerIndex) =>
-            html`
-              ${this.#renderHeaderRow(header, blockIndex, headerIndex)}
-            `,
-          )}
-        `,
-      )}
-      <devtools-button
-          .variant=${Buttons.Button.Variant.OUTLINED}
-          .jslogContext=${'headers-view.add-override-rule'}
-          class="add-block">
-        ${i18nString(UIStrings.addOverrideRule)}
-      </devtools-button>
-      <div class="learn-more-row">
-        <devtools-link
-            href="https://goo.gle/devtools-override"
-            class="link"
-            jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>
-      </div>
-    `, this.#shadow, {host: this});
-    // clang-format on
+    const output: ComponentViewOutput = {};
+    DEFAULT_VIEW(
+        {
+          headerOverrides: this.#headerOverrides,
+          parsingError: this.#parsingError,
+          fileName: this.#uiSourceCode?.name() || '.headers',
+          isDeletable: (blockIndex: number, headerIndex: number) => this.#isDeletable(blockIndex, headerIndex),
+        },
+        output,
+        this.#shadow,
+    );
 
     if (this.#focusElement) {
-      let focusElement: Element|null = null;
-      if (this.#focusElement.headerIndex) {
-        focusElement = this.#shadow.querySelector(`[data-block-index="${
-            this.#focusElement.blockIndex}"][data-header-index="${this.#focusElement.headerIndex}"] .header-name`);
-      } else {
-        focusElement = this.#shadow.querySelector(`[data-block-index="${this.#focusElement.blockIndex}"] .apply-to`);
-      }
-      if (focusElement) {
-        (focusElement as HTMLElement).focus();
-      }
+      output.focusElement?.(this.#focusElement.blockIndex, this.#focusElement.headerIndex);
       this.#focusElement = null;
     }
   }
+}
 
-  #renderApplyToRow(pattern: string, blockIndex: number): Lit.TemplateResult {
-    // clang-format off
-    return html`
-      <div class="row" data-block-index=${blockIndex}
-           jslog=${VisualLogging.treeItem(pattern === '*' ? pattern : undefined).track({resize: true})}>
-        <div>${i18n.i18n.lockedString('Apply to')}</div>
-        <div class="separator">:</div>
-        ${this.#renderEditable(pattern, 'apply-to')}
-        <devtools-button
-        title=${i18nString(UIStrings.removeBlock)}
-        .size=${Buttons.Button.Size.SMALL}
-        .iconName=${'bin'}
-        .iconWidth=${'14px'}
-        .iconHeight=${'14px'}
-        .variant=${Buttons.Button.Variant.ICON}
-        .jslogContext=${'headers-view.remove-apply-to-section'}
-        class="remove-block inline-button"
-      ></devtools-button>
-      </div>
-    `;
-    // clang-format on
-  }
+export interface ComponentViewInput {
+  headerOverrides: Persistence.NetworkPersistenceManager.HeaderOverride[];
+  parsingError: boolean;
+  fileName: string;
+  isDeletable: (blockIndex: number, headerIndex: number) => boolean;
+}
 
-  #renderHeaderRow(header: Protocol.Fetch.HeaderEntry, blockIndex: number, headerIndex: number): Lit.TemplateResult {
-    // clang-format off
-    return html`
-      <div class="row padded" data-block-index=${blockIndex} data-header-index=${headerIndex}
-           jslog=${VisualLogging.treeItem(header.name).parent('headers-editor-row-parent').track({resize: true})}>
-        ${this.#renderEditable(header.name, 'header-name red', true)}
-        <div class="separator">:</div>
-        ${this.#renderEditable(header.value, 'header-value')}
-        <devtools-button
-          title=${i18nString(UIStrings.addHeader)}
-          .size=${Buttons.Button.Size.SMALL}
-          .iconName=${'plus'}
-          .variant=${Buttons.Button.Variant.ICON}
-          .jslogContext=${'headers-view.add-header'}
-          class="add-header inline-button"
-        ></devtools-button>
-        <devtools-button
-          title=${i18nString(UIStrings.removeHeader)}
-          .size=${Buttons.Button.Size.SMALL}
-          .iconName=${'bin'}
-          .variant=${Buttons.Button.Variant.ICON}
-          ?hidden=${!this.#isDeletable(blockIndex, headerIndex)}
-          .jslogContext=${'headers-view.remove-header'}
-          class="remove-header inline-button"
-        ></devtools-button>
-      </div>
-    `;
-    // clang-format on
-  }
+export interface ComponentViewOutput {
+  focusElement?: (blockIndex: number, headerIndex?: number) => void;
+}
 
-  #renderEditable(value: string, className?: string, isKey?: boolean): Lit.TemplateResult {
+export const DEFAULT_VIEW = (
+    input: ComponentViewInput,
+    output: ComponentViewOutput,
+    target: HTMLElement|DocumentFragment,
+    ): void => {
+  const renderEditable = (value: string, className?: string, isKey?: boolean): Lit.TemplateResult => {
     // This uses Lit's `live`-directive, so that when checking whether to
     // update during re-render, `value` is compared against the actual live DOM
     // value of the contenteditable element and not the potentially outdated
@@ -466,8 +433,111 @@ export class HeadersViewComponent extends HTMLElement {
                               tabindex="0"
                               .innerText=${Lit.Directives.live(value)}></span>`;
     // clang-format on
-  }
-}
+  };
+
+  const renderApplyToRow = (pattern: string, blockIndex: number): Lit.TemplateResult => {
+    // clang-format off
+    return html`
+      <div class="row" data-block-index=${blockIndex}
+           jslog=${VisualLogging.treeItem(pattern === '*' ? pattern : undefined).track({resize: true})}>
+        <div>${i18n.i18n.lockedString('Apply to')}</div>
+        <div class="separator">:</div>
+        ${renderEditable(pattern, 'apply-to')}
+        <devtools-button
+          title=${i18nString(UIStrings.removeBlock)}
+          .size=${Buttons.Button.Size.SMALL}
+          .iconName=${'bin'}
+          .iconWidth=${'14px'}
+          .iconHeight=${'14px'}
+          .variant=${Buttons.Button.Variant.ICON}
+          .jslogContext=${'headers-view.remove-apply-to-section'}
+          class="remove-block inline-button"
+        ></devtools-button>
+      </div>
+    `;
+    // clang-format on
+  };
+
+  const renderHeaderRow =
+      (header: Protocol.Fetch.HeaderEntry, blockIndex: number, headerIndex: number): Lit.TemplateResult => {
+        // clang-format off
+        return html`
+          <div class="row padded" data-block-index=${blockIndex} data-header-index=${headerIndex}
+               jslog=${VisualLogging.treeItem(header.name).parent('headers-editor-row-parent').track({resize: true})}>
+            ${renderEditable(header.name, 'header-name red', true)}
+            <div class="separator">:</div>
+            ${renderEditable(header.value, 'header-value')}
+            <devtools-button
+              title=${i18nString(UIStrings.addHeader)}
+              .size=${Buttons.Button.Size.SMALL}
+              .iconName=${'plus'}
+              .variant=${Buttons.Button.Variant.ICON}
+              .jslogContext=${'headers-view.add-header'}
+              class="add-header inline-button"
+            ></devtools-button>
+            <devtools-button
+              title=${i18nString(UIStrings.removeHeader)}
+              .size=${Buttons.Button.Size.SMALL}
+              .iconName=${'bin'}
+              .variant=${Buttons.Button.Variant.ICON}
+              ?hidden=${!input.isDeletable(blockIndex, headerIndex)}
+              .jslogContext=${'headers-view.remove-header'}
+              class="remove-header inline-button"
+            ></devtools-button>
+          </div>
+        `;
+        // clang-format on
+      };
+
+  // clang-format off
+  Lit.render(
+      input.parsingError
+          ? html`
+              <style>${headersViewStyles}</style>
+              <div class="center-wrapper">
+                <div class="centered">
+                  <div class="error-header">${i18nString(UIStrings.errorWhenParsing, {PH1: input.fileName})}</div>
+                  <div class="error-body">${i18nString(UIStrings.parsingErrorExplainer, {PH1: input.fileName})}</div>
+                </div>
+              </div>
+            `
+          : html`
+              <style>${headersViewStyles}</style>
+              ${input.headerOverrides.map((headerOverride, blockIndex) =>
+                html`
+                  ${renderApplyToRow(headerOverride.applyTo, blockIndex)}
+                  ${headerOverride.headers.map((header, headerIndex) =>
+                    html`
+                      ${renderHeaderRow(header, blockIndex, headerIndex)}
+                    `,
+                  )}
+                `,
+              )}
+              <devtools-button
+                  .variant=${Buttons.Button.Variant.OUTLINED}
+                  .jslogContext=${'headers-view.add-override-rule'}
+                  class="add-block">
+                ${i18nString(UIStrings.addOverrideRule)}
+              </devtools-button>
+              <div class="learn-more-row">
+                <devtools-link
+                    href="https://goo.gle/devtools-override"
+                    class="link"
+                    jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>
+              </div>
+            `,
+      target);
+  // clang-format on
+
+  output.focusElement = (blockIndex: number, headerIndex?: number) => {
+    const focusElement = headerIndex !== undefined ?
+        target.querySelector(`[data-block-index="${blockIndex}"][data-header-index="${headerIndex}"] .header-name`) :
+        target.querySelector(`[data-block-index="${blockIndex}"] .apply-to`);
+    if (focusElement) {
+      (focusElement as HTMLElement).focus();
+    }
+  };
+};
 
 VisualLogging.registerParentProvider('headers-editor-row-parent', (e: Element) => {
   while (e.previousElementSibling?.classList?.contains('padded')) {

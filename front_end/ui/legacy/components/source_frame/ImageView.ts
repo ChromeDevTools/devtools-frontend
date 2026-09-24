@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -31,13 +30,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../../kit/kit.js';
+
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
-import {createIcon} from '../../../kit/kit.js';
+import {html, render} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -90,6 +91,54 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/ImageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export interface ViewInput {
+  url: Platform.DevToolsPath.UrlString;
+  imageSrc: string|null;
+  isUnavailable: boolean;
+  onImageLoad: (event: Event) => void;
+  onContextMenu: (event: Event) => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+// clang-format off
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  render(html`
+    <style>${imageViewStyles}</style>
+    <div class="image">
+      ${input.imageSrc ? html`
+        <img
+          class="resource-image-view"
+          src=${input.imageSrc}
+          alt=${i18nString(UIStrings.imageFromS, {PH1: input.url})}
+          @load=${input.onImageLoad}
+          @contextmenu=${{handleEvent: input.onContextMenu, capture: true}}
+        >` : html`
+        <img
+          class="resource-image-view"
+          alt=${i18nString(UIStrings.imageFromS, {PH1: input.url})}
+          hidden
+        >`}
+      <devtools-link
+        class="resource-image-unavailable ${input.isUnavailable ? '' : 'hidden'}"
+        href=${input.url}
+      >
+        <devtools-icon name="open-externally"></devtools-icon>
+        ${i18nString(UIStrings.thisImageIsTooBig)}
+      </devtools-link>
+    </div>
+  `, target, {
+    container: {
+      classes: ['image-view'],
+      attributes: {
+        tabindex: '-1',
+      },
+    },
+  });
+};
+// clang-format on
+
 export class ImageView extends UI.View.SimpleView {
   private url: Platform.DevToolsPath.UrlString;
   private parsedURL: Common.ParsedURL.ParsedURL;
@@ -100,46 +149,57 @@ export class ImageView extends UI.View.SimpleView {
   private readonly dimensionsLabel: UI.Toolbar.ToolbarText;
   private readonly aspectRatioLabel: UI.Toolbar.ToolbarText;
   private readonly mimeTypeLabel: UI.Toolbar.ToolbarText;
-  private readonly container: HTMLElement;
-  private imagePreviewElement: HTMLImageElement;
-  private imageUnavailableElement: HTMLElement;
   private cachedContent?: TextUtils.ContentData.ContentData;
-  constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
+  readonly #view: View;
+  #imageSrc: string|null = null;
+  #isUnavailable = false;
+  #loadResolve?: () => void;
+
+  constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, view: View = DEFAULT_VIEW) {
     super({
       title: i18nString(UIStrings.image),
       viewId: 'image',
       jslog: `${VisualLogging.pane('image-view')}`,
     });
-    this.registerRequiredCSS(imageViewStyles);
-    this.element.tabIndex = -1;
-    this.element.classList.add('image-view');
+    this.#view = view;
     this.url = contentProvider.contentURL();
     this.parsedURL = new Common.ParsedURL.ParsedURL(this.url);
     this.contentProvider = contentProvider;
     this.uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ? contentProvider : null;
     if (this.uiSourceCode) {
-      this.uiSourceCode.addEventListener(
-          Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
-      new UI.DropTarget.DropTarget(
-          this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI], i18nString(UIStrings.dropImageFileHere),
-          this.handleDrop.bind(this));
+      this.uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted,
+                                         this);
+      new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI],
+                                   i18nString(UIStrings.dropImageFileHere), this.handleDrop.bind(this));
     }
     this.sizeLabel = new UI.Toolbar.ToolbarText();
     this.dimensionsLabel = new UI.Toolbar.ToolbarText();
     this.aspectRatioLabel = new UI.Toolbar.ToolbarText();
     this.mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
-    this.container = this.element.createChild('div', 'image');
-    this.imagePreviewElement = this.container.createChild('img', 'resource-image-view');
-    this.imagePreviewElement.addEventListener('contextmenu', this.contextMenu.bind(this), true);
-
-    const link = document.createElement('devtools-link');
-    link.setAttribute('href', this.url);
-    link.classList.add('resource-image-unavailable', 'hidden');
-    link.appendChild(createIcon('open-externally'));
-    link.appendChild(document.createTextNode(i18nString(UIStrings.thisImageIsTooBig)));
-    this.container.appendChild(link);
-    this.imageUnavailableElement = link;
+    this.performUpdate();
   }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          url: this.url,
+          imageSrc: this.#imageSrc,
+          isUnavailable: this.#isUnavailable,
+          onImageLoad: this.#onImageLoad,
+          onContextMenu: this.contextMenu.bind(this),
+        },
+        undefined,
+        this.contentElement,
+    );
+  }
+
+  #onImageLoad = (event: Event): void => {
+    const img = event.target as HTMLImageElement;
+    this.dimensionsLabel.setText(i18nString(UIStrings.dD, {PH1: img.naturalWidth, PH2: img.naturalHeight}));
+    this.aspectRatioLabel.setText(Platform.NumberUtilities.aspectRatio(img.naturalWidth, img.naturalHeight));
+    this.#loadResolve?.();
+    this.#loadResolve = undefined;
+  };
 
   override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     await this.updateContentIfNeeded();
@@ -156,13 +216,14 @@ export class ImageView extends UI.View.SimpleView {
 
   override wasShown(): void {
     super.wasShown();
+    this.requestUpdate();
     void this.updateContentIfNeeded();
   }
 
   override disposeView(): void {
     if (this.uiSourceCode) {
-      this.uiSourceCode.removeEventListener(
-          Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
+      this.uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted,
+                                            this.workingCopyCommitted, this);
     }
   }
 
@@ -179,37 +240,35 @@ export class ImageView extends UI.View.SimpleView {
     this.cachedContent = content;
     const imageSrc = content.asImagePreviewUrl();
     if (imageSrc === null) {
-      this.imageUnavailableElement.classList.remove('hidden');
+      this.#isUnavailable = true;
+      this.#imageSrc = null;
+      this.performUpdate();
       return;
     }
-    this.imageUnavailableElement.classList.add('hidden');
-    const loadPromise = new Promise(x => {
-      this.imagePreviewElement.onload = x;
+    this.#isUnavailable = false;
+    const loadPromise = new Promise<void>(resolve => {
+      this.#loadResolve = resolve;
     });
-    this.imagePreviewElement.src = imageSrc;
-    this.imagePreviewElement.alt = i18nString(UIStrings.imageFromS, {PH1: this.url});
+    this.#imageSrc = imageSrc;
     const size = content.isTextContent ? content.text.length : Platform.StringUtilities.base64ToSize(content.base64);
     this.sizeLabel.setText(i18n.ByteUtilities.bytesToString(size));
+    this.performUpdate();
     await loadPromise;
-    this.dimensionsLabel.setText(i18nString(
-        UIStrings.dD, {PH1: this.imagePreviewElement.naturalWidth, PH2: this.imagePreviewElement.naturalHeight}));
-    this.aspectRatioLabel.setText(Platform.NumberUtilities.aspectRatio(
-        this.imagePreviewElement.naturalWidth, this.imagePreviewElement.naturalHeight));
   }
 
   private contextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const parsedSrc = new Common.ParsedURL.ParsedURL(this.imagePreviewElement.src);
+    const parsedSrc = new Common.ParsedURL.ParsedURL(this.#imageSrc ?? '');
     if (!this.parsedURL.isDataURL()) {
       contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageUrl), this.copyImageURL.bind(this), {
         jslogContext: 'image-view.copy-image-url',
       });
     }
     if (parsedSrc.isDataURL()) {
-      contextMenu.clipboardSection().appendItem(
-          i18nString(UIStrings.copyImageAsDataUri), this.copyImageAsDataURL.bind(this), {
-            jslogContext: 'image-view.copy-image-as-data-url',
-          });
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageAsDataUri),
+                                                this.copyImageAsDataURL.bind(this), {
+                                                  jslogContext: 'image-view.copy-image-as-data-url',
+                                                });
     }
 
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.openImageInNewTab), this.openInNewTab.bind(this), {
@@ -223,7 +282,7 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   private copyImageAsDataURL(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.imagePreviewElement.src);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#imageSrc ?? '');
   }
 
   private copyImageURL(): void {

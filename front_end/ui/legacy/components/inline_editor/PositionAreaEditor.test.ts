@@ -353,8 +353,8 @@ describe('PositionAreaEditor', () => {
     const auto = ['start', 'end', 'span-start', 'span-end'];
     const autoSelf = ['self-start', 'self-end', 'span-self-start', 'span-self-end'];
 
-    function checkMode(axis: InlineEditor.PositionAreaEditor.Axis, current: [string[], string[]],
-                       mode: InlineEditor.PositionAreaEditor.Mode, expected: [string[], string[]]) {
+    function checkMode(current: [string[], string[]], mode: InlineEditor.PositionAreaEditor.Mode,
+                       expected: [string[], string[]]) {
       for (const keyword of [0, 1, 2, 3]) {
         const area = parsePositionArea(`${current[0][keyword]} ${current[1][keyword]}`);
         assert.exists(area);
@@ -362,7 +362,7 @@ describe('PositionAreaEditor', () => {
         // Intentionally using performUpdate instead of requestUpdate. Otherwise each helper would take 4 animation
         // frames, which would make this test take around 15s.
         editor.performUpdate();
-        view.input.onModeChange(axis, mode);
+        view.input.onModeChange(mode);
         editor.performUpdate();
         assert.exists(view.input.area);
         const expectedFirst = expected[0][keyword];
@@ -375,7 +375,7 @@ describe('PositionAreaEditor', () => {
           assert.exists(flippedArea);
           editor.area = flippedArea;
           editor.performUpdate();
-          view.input.onModeChange(axis, mode);
+          view.input.onModeChange(mode);
           editor.performUpdate();
           assert.exists(view.input.area);
           assert.strictEqual(stringifyPositionArea(view.input.area),
@@ -384,14 +384,13 @@ describe('PositionAreaEditor', () => {
       }
     }
 
-    function checkSelf(axis: InlineEditor.PositionAreaEditor.Axis, current: [string[], string[]], self: boolean,
-                       expected: [string[], string[]]) {
+    function checkSelf(current: [string[], string[]], self: boolean, expected: [string[], string[]]) {
       for (const keyword of [0, 1, 2, 3]) {
         const area = parsePositionArea(`${current[0][keyword]} ${current[1][keyword]}`);
         assert.exists(area);
         editor.area = area;
         editor.performUpdate();
-        view.input.onSelfChange(axis, self);
+        view.input.onSelfChange(self);
         editor.performUpdate();
         assert.exists(view.input.area);
         const expectedFirst = expected[0][keyword];
@@ -404,7 +403,7 @@ describe('PositionAreaEditor', () => {
           assert.exists(flippedArea);
           editor.area = flippedArea;
           editor.performUpdate();
-          view.input.onSelfChange(axis, self);
+          view.input.onSelfChange(self);
           editor.performUpdate();
           assert.exists(view.input.area);
           assert.strictEqual(stringifyPositionArea(view.input.area),
@@ -413,169 +412,112 @@ describe('PositionAreaEditor', () => {
       }
     }
 
-    // [physical, physical] + coordinate = [coordinate, physical] / [physical, coordinate]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [physicalInline, physicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateInline, physicalBlock]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, physicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [physicalInline, coordinateBlock]);
+    // [physical, physical] + coordinate = [coordinate, coordinate]
+    checkMode([physicalInline, physicalBlock], InlineEditor.PositionAreaEditor.Mode.COORDINATE,
+              [coordinateInline, coordinateBlock]);
 
     // [coordinate, physical] + physical = [physical, physical]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [coordinateInline, physicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalInline, physicalBlock]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, coordinateBlock],
-              InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalInline, physicalBlock]);
+    checkMode([coordinateInline, physicalBlock], InlineEditor.PositionAreaEditor.Mode.PHYSICAL,
+              [physicalInline, physicalBlock]);
+    checkMode([physicalInline, coordinateBlock], InlineEditor.PositionAreaEditor.Mode.PHYSICAL,
+              [physicalInline, physicalBlock]);
 
     // [coordinate/s, physical] + physical = [physical, physical]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [coordinateInlineSelf, physicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalInline, physicalBlock]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, coordinateBlockSelf],
-              InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalInline, physicalBlock]);
+    checkMode([coordinateInlineSelf, physicalBlock], InlineEditor.PositionAreaEditor.Mode.PHYSICAL,
+              [physicalInline, physicalBlock]);
+    checkMode([physicalInline, coordinateBlockSelf], InlineEditor.PositionAreaEditor.Mode.PHYSICAL,
+              [physicalInline, physicalBlock]);
 
     // [physical, physical] + logical = [logical, logical]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [physicalInline, physicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.LOGICAL, [logicalInline, logicalBlock]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, physicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.LOGICAL, [logicalInline, logicalBlock]);
+    checkMode([physicalInline, physicalBlock], InlineEditor.PositionAreaEditor.Mode.LOGICAL,
+              [logicalInline, logicalBlock]);
 
     // [coordinate, physical] + logical = [logical, logical]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [coordinateInline, physicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.LOGICAL, [logicalInline, logicalBlock]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, coordinateBlock],
-              InlineEditor.PositionAreaEditor.Mode.LOGICAL, [logicalInline, logicalBlock]);
+    checkMode([coordinateInline, physicalBlock], InlineEditor.PositionAreaEditor.Mode.LOGICAL,
+              [logicalInline, logicalBlock]);
+    checkMode([physicalInline, coordinateBlock], InlineEditor.PositionAreaEditor.Mode.LOGICAL,
+              [logicalInline, logicalBlock]);
 
     // [coordinate/s, physical] + logical = [logical/s, logical/s]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [coordinateInlineSelf, physicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.LOGICAL, [logicalInlineSelf, logicalBlockSelf]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, coordinateBlockSelf],
-              InlineEditor.PositionAreaEditor.Mode.LOGICAL, [logicalInlineSelf, logicalBlockSelf]);
+    checkMode([coordinateInlineSelf, physicalBlock], InlineEditor.PositionAreaEditor.Mode.LOGICAL,
+              [logicalInlineSelf, logicalBlockSelf]);
+    checkMode([physicalInline, coordinateBlockSelf], InlineEditor.PositionAreaEditor.Mode.LOGICAL,
+              [logicalInlineSelf, logicalBlockSelf]);
 
     // [coordinate, physical] + auto = [auto, auto]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [coordinateInline, physicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.AUTO, [auto, auto]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, coordinateBlock],
-              InlineEditor.PositionAreaEditor.Mode.AUTO, [auto, auto]);
+    checkMode([coordinateInline, physicalBlock], InlineEditor.PositionAreaEditor.Mode.AUTO, [auto, auto]);
+    checkMode([physicalInline, coordinateBlock], InlineEditor.PositionAreaEditor.Mode.AUTO, [auto, auto]);
 
     // [coordinate/s, physical] + auto = [auto/s, auto/s]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [coordinateInlineSelf, physicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.AUTO, [autoSelf, autoSelf]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, coordinateBlockSelf],
-              InlineEditor.PositionAreaEditor.Mode.AUTO, [autoSelf, autoSelf]);
+    checkMode([coordinateInlineSelf, physicalBlock], InlineEditor.PositionAreaEditor.Mode.AUTO, [autoSelf, autoSelf]);
+    checkMode([physicalInline, coordinateBlockSelf], InlineEditor.PositionAreaEditor.Mode.AUTO, [autoSelf, autoSelf]);
 
     // [logical, logical] + physical = [physical, physical]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [logicalInline, logicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalInline, physicalBlock]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [logicalInline, logicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalInline, physicalBlock]);
+    checkMode([logicalInline, logicalBlock], InlineEditor.PositionAreaEditor.Mode.PHYSICAL,
+              [physicalInline, physicalBlock]);
 
-    // [logical/s, logical/s] + physical = [physical, coordinate/s] / [coordinate/s, physical]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [logicalInlineSelf, logicalBlockSelf],
-              InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalInline, coordinateBlockSelf]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [logicalInlineSelf, logicalBlockSelf],
-              InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [coordinateInlineSelf, physicalBlock]);
+    // [logical/s, logical/s] + physical = [physical, physical]
+    checkMode([logicalInlineSelf, logicalBlockSelf], InlineEditor.PositionAreaEditor.Mode.PHYSICAL,
+              [physicalInline, physicalBlock]);
 
     // [auto, auto] + physical = [physical, physical]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [auto, auto], InlineEditor.PositionAreaEditor.Mode.PHYSICAL,
-              [physicalBlock, physicalInline]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [auto, auto], InlineEditor.PositionAreaEditor.Mode.PHYSICAL,
-              [physicalBlock, physicalInline]);
+    checkMode([auto, auto], InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalBlock, physicalInline]);
 
-    // [auto/s, auto/s] + physical = [coordinate/s, physical] / [physical, coordinate/s]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [autoSelf, autoSelf],
-              InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [coordinateBlockSelf, physicalInline]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [autoSelf, autoSelf],
-              InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalBlock, coordinateInlineSelf]);
+    // [auto/s, auto/s] + physical = [physical, physical]
+    checkMode([autoSelf, autoSelf], InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalBlock, physicalInline]);
 
     // [logical, logical] + coordinate = [coordinate, coordinate]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [logicalInline, logicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateInline, coordinateBlock]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [logicalInline, logicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateInline, coordinateBlock]);
+    checkMode([logicalInline, logicalBlock], InlineEditor.PositionAreaEditor.Mode.COORDINATE,
+              [coordinateInline, coordinateBlock]);
 
     // [logical/s, logical/s] + coordinate = [coordinate/s, coordinate/s]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [logicalInlineSelf, logicalBlockSelf],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateInlineSelf, coordinateBlockSelf]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [logicalInlineSelf, logicalBlockSelf],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateInlineSelf, coordinateBlockSelf]);
+    checkMode([logicalInlineSelf, logicalBlockSelf], InlineEditor.PositionAreaEditor.Mode.COORDINATE,
+              [coordinateInlineSelf, coordinateBlockSelf]);
 
     // [auto, auto] + coordinate = [coordinate, coordinate]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [auto, auto],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateBlock, coordinateInline]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [auto, auto], InlineEditor.PositionAreaEditor.Mode.COORDINATE,
-              [coordinateBlock, coordinateInline]);
+    checkMode([auto, auto], InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateBlock, coordinateInline]);
 
     // [auto/s, auto/s] + coordinate = [coordinate/s, coordinate/s]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [autoSelf, autoSelf],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateBlockSelf, coordinateInlineSelf]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [autoSelf, autoSelf],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateBlockSelf, coordinateInlineSelf]);
+    checkMode([autoSelf, autoSelf], InlineEditor.PositionAreaEditor.Mode.COORDINATE,
+              [coordinateBlockSelf, coordinateInlineSelf]);
 
     // [logical, logical] + auto = [auto, auto]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [logicalInline, logicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.AUTO, [auto, auto]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [logicalInline, logicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.AUTO, [auto, auto]);
+    checkMode([logicalInline, logicalBlock], InlineEditor.PositionAreaEditor.Mode.AUTO, [auto, auto]);
 
     // [logical/s, logical/s] + auto = [auto/s, auto/s]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [logicalInlineSelf, logicalBlockSelf],
-              InlineEditor.PositionAreaEditor.Mode.AUTO, [autoSelf, autoSelf]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [logicalInlineSelf, logicalBlockSelf],
-              InlineEditor.PositionAreaEditor.Mode.AUTO, [autoSelf, autoSelf]);
+    checkMode([logicalInlineSelf, logicalBlockSelf], InlineEditor.PositionAreaEditor.Mode.AUTO, [autoSelf, autoSelf]);
 
     // [auto, auto] + logical = [logical, logical]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [auto, auto], InlineEditor.PositionAreaEditor.Mode.LOGICAL,
-              [logicalBlock, logicalInline]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [auto, auto], InlineEditor.PositionAreaEditor.Mode.LOGICAL,
-              [logicalBlock, logicalInline]);
+    checkMode([auto, auto], InlineEditor.PositionAreaEditor.Mode.LOGICAL, [logicalBlock, logicalInline]);
 
     // [auto/s, auto/s] + logical = [logical/s, logical/s]
-    checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [autoSelf, autoSelf],
-              InlineEditor.PositionAreaEditor.Mode.LOGICAL, [logicalBlockSelf, logicalInlineSelf]);
-    checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [autoSelf, autoSelf],
-              InlineEditor.PositionAreaEditor.Mode.LOGICAL, [logicalBlockSelf, logicalInlineSelf]);
+    checkMode([autoSelf, autoSelf], InlineEditor.PositionAreaEditor.Mode.LOGICAL,
+              [logicalBlockSelf, logicalInlineSelf]);
 
     // physical + self = coordinate/s
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.INLINE, [physicalInline, physicalBlock], true,
-              [coordinateInlineSelf, physicalBlock]);
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, physicalBlock], true,
-              [physicalInline, coordinateBlockSelf]);
+    checkSelf([physicalInline, physicalBlock], true, [coordinateInlineSelf, coordinateBlockSelf]);
 
     // physical + !self = physical
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.INLINE, [physicalInline, physicalBlock], false,
-              [physicalInline, physicalBlock]);
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, physicalBlock], false,
-              [physicalInline, physicalBlock]);
+    checkSelf([physicalInline, physicalBlock], false, [physicalInline, physicalBlock]);
 
     // coordinate + self = coordinate/s
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.INLINE, [coordinateInline, physicalBlock], true,
-              [coordinateInlineSelf, physicalBlock]);
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.BLOCK, [physicalInline, coordinateBlock], true,
-              [physicalInline, coordinateBlockSelf]);
+    checkSelf([coordinateInline, physicalBlock], true, [coordinateInlineSelf, coordinateBlockSelf]);
+    checkSelf([physicalInline, coordinateBlock], true, [coordinateInlineSelf, coordinateBlockSelf]);
 
     // logical + self = logical/s
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.INLINE, [logicalInline, logicalBlock], true,
-              [logicalInlineSelf, logicalBlockSelf]);
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.BLOCK, [logicalInline, logicalBlock], true,
-              [logicalInlineSelf, logicalBlockSelf]);
+    checkSelf([logicalInline, logicalBlock], true, [logicalInlineSelf, logicalBlockSelf]);
 
     // auto + self = auto/s
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.INLINE, [auto, auto], true, [autoSelf, autoSelf]);
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.BLOCK, [auto, auto], true, [autoSelf, autoSelf]);
+    checkSelf([auto, auto], true, [autoSelf, autoSelf]);
 
     // coordinate/s + !self = coordinate
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.INLINE, [coordinateInlineSelf, coordinateBlockSelf], false,
-              [coordinateInline, coordinateBlockSelf]);
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.BLOCK, [coordinateInlineSelf, coordinateBlockSelf], false,
-              [coordinateInlineSelf, coordinateBlock]);
+    checkSelf([coordinateInlineSelf, coordinateBlockSelf], false, [coordinateInline, coordinateBlock]);
 
     // logical/s + !self = logical
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.INLINE, [logicalInlineSelf, logicalBlockSelf], false,
-              [logicalInline, logicalBlock]);
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.BLOCK, [logicalInlineSelf, logicalBlockSelf], false,
-              [logicalInline, logicalBlock]);
+    checkSelf([logicalInlineSelf, logicalBlockSelf], false, [logicalInline, logicalBlock]);
 
     // auto/s + !self = auto
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.INLINE, [autoSelf, autoSelf], false, [auto, auto]);
-    checkSelf(InlineEditor.PositionAreaEditor.Axis.BLOCK, [autoSelf, autoSelf], false, [auto, auto]);
+    checkSelf([autoSelf, autoSelf], false, [auto, auto]);
 
     await editor.updateComplete;
   });
@@ -590,8 +532,8 @@ describe('PositionAreaEditor', () => {
     editor.area = topCenter;
     editor.performUpdate();
 
-    // Switch block mode to logical: center should also change to logical
-    view.input.onModeChange(InlineEditor.PositionAreaEditor.Axis.BLOCK, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+    // Switch mode to logical: center should also change to logical
+    view.input.onModeChange(InlineEditor.PositionAreaEditor.Mode.LOGICAL);
     editor.performUpdate();
 
     assert.exists(view.input.area);
@@ -615,7 +557,7 @@ describe('PositionAreaEditor', () => {
     editor.area = centerLeft;
     editor.performUpdate();
 
-    view.input.onModeChange(InlineEditor.PositionAreaEditor.Axis.INLINE, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+    view.input.onModeChange(InlineEditor.PositionAreaEditor.Mode.LOGICAL);
     editor.performUpdate();
 
     assert.exists(view.input.area);
@@ -631,7 +573,7 @@ describe('PositionAreaEditor', () => {
     editor.area = center;
     editor.performUpdate();
 
-    view.input.onModeChange(InlineEditor.PositionAreaEditor.Axis.BLOCK, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+    view.input.onModeChange(InlineEditor.PositionAreaEditor.Mode.LOGICAL);
     editor.performUpdate();
 
     assert.exists(view.input.area);

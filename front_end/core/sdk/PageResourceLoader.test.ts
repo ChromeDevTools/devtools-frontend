@@ -417,6 +417,148 @@ describe('PageResourceLoader', () => {
       // Fallback must not be called, null status keeps the guard armed.
       sinon.assert.notCalled(loadHostBindingsStub);
     });
+
+    it('does not fall back to host bindings or retry without frameId when explicit frame status query fails',
+       async () => {
+         const {loader, settings, targetManager} = setup();
+         settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(false);
+         const connection = new MockCDPConnection();
+         const requestedFrameIds: Array<Protocol.Page.FrameId|undefined> = [];
+
+         connection.setHandler('Network.getSecurityIsolationStatus', params => {
+           requestedFrameIds.push(params?.frameId);
+           if (params?.frameId) {
+             return {
+               error: {
+                 code: -32000 as ProtocolClient.CDPConnection.CDPErrorStatus,
+                 message: 'Frame not found',
+               },
+             };
+           }
+           return {
+             result: {
+               status: {},
+             },
+           };
+         });
+
+         connection.setFailureHandler('Network.loadNetworkResource', () => {
+           return {
+             code: -32000 as ProtocolClient.CDPConnection.CDPErrorStatus,
+             message: 'Frame not found',
+           };
+         });
+
+         const target = createTarget({connection, targetManager});
+         const initiator = {
+           target,
+           frameId: '123' as Protocol.Page.FrameId,
+           initiatorUrl: urlString`https://example.com`,
+         };
+         const url = urlString`https://example.com/source.map`;
+
+         const loadHostBindingsStub =
+             sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource');
+
+         try {
+           await loader.loadResource(url, initiator);
+           assert.fail('Expected loadResource to throw');
+         } catch (e) {
+           assert.strictEqual(e.message, 'Frame not found');
+         }
+
+         assert.deepEqual(requestedFrameIds, ['123' as Protocol.Page.FrameId]);
+         sinon.assert.notCalled(loadHostBindingsStub);
+       });
+
+    it('does not fall back to host bindings if security isolation status has no csp field', async () => {
+      const {loader, settings, targetManager} = setup();
+      settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(false);
+      const connection = new MockCDPConnection();
+
+      connection.setSuccessHandler('Network.getSecurityIsolationStatus', () => {
+        return {
+          status: {},
+        };
+      });
+
+      connection.setFailureHandler('Network.loadNetworkResource', () => {
+        return {
+          code: -32000 as ProtocolClient.CDPConnection.CDPErrorStatus,
+          message: 'Frame not found',
+        };
+      });
+
+      const target = createTarget({connection, targetManager});
+      const initiator = {target, frameId: '123' as Protocol.Page.FrameId, initiatorUrl: urlString`https://example.com`};
+      const url = urlString`https://example.com/source.map`;
+
+      const loadHostBindingsStub =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource');
+
+      try {
+        await loader.loadResource(url, initiator);
+        assert.fail('Expected loadResource to throw');
+      } catch (e) {
+        assert.strictEqual(e.message, 'Frame not found');
+      }
+
+      sinon.assert.notCalled(loadHostBindingsStub);
+    });
+
+    it('uses parent frame target for worker initiators without frameId', async () => {
+      const {loader, settings, targetManager} = setup();
+      settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(false);
+      const frameConnection = new MockCDPConnection();
+      const requestedFrameIds: Array<Protocol.Page.FrameId|undefined> = [];
+
+      frameConnection.setHandler('Network.getSecurityIsolationStatus', params => {
+        requestedFrameIds.push(params?.frameId);
+        return {
+          result: {
+            status: {
+              csp: [],
+            },
+          },
+        };
+      });
+
+      frameConnection.setFailureHandler('Network.loadNetworkResource', () => {
+        return {
+          code: -32000 as ProtocolClient.CDPConnection.CDPErrorStatus,
+          message: 'Failed to load in target',
+        };
+      });
+
+      const frameTarget = createTarget({connection: frameConnection, targetManager});
+      const resourceTreeModel = frameTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      sinon.stub(resourceTreeModel!, 'mainFrame').get(() => ({id: 'main-frame-123' as Protocol.Page.FrameId}));
+
+      const workerTarget = createTarget({
+        targetManager,
+        parentTarget: frameTarget,
+        type: SDK.Target.Type.Worker,
+      });
+
+      const initiator = {
+        target: workerTarget,
+        frameId: null,
+        initiatorUrl: urlString`https://example.com/worker.js`,
+      };
+      const url = urlString`https://example.com/worker.js.map`;
+
+      const loadHostBindingsStub =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource')
+              .callsFake((_url, _headers, streamId, callback) => {
+                Host.ResourceLoader.streamWrite(streamId, 'worker map content');
+                callback({statusCode: 200});
+              });
+
+      const result = await loader.loadResource(url, initiator);
+      assert.strictEqual(result.content, 'worker map content');
+      assert.deepEqual(requestedFrameIds, ['main-frame-123' as Protocol.Page.FrameId]);
+      sinon.assert.calledOnce(loadHostBindingsStub);
+    });
   });
 });
 

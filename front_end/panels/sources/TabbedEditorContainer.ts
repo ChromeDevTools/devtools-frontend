@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/tooltips/tooltips.js';
+import '../../ui/kit/kit.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -10,12 +13,10 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
-import {Icon, Link} from '../../ui/kit/kit.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelCommon from '../common/common.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -75,7 +76,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/TabbedEditorContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {repeat} = Directives;
+const {ref, repeat} = Directives;
 const {widget} = UI.Widget;
 
 const enum SourceViewType {
@@ -86,24 +87,38 @@ const enum SourceViewType {
 }
 const HEADER_OVERRIDES_FILENAME = '.headers';
 
+interface TabInfo {
+  tabId: string;
+  title: string;
+  tooltip: string;
+  uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  isCloseable: boolean;
+  widget?: UI.Widget.Widget;
+  hasLoadError: boolean;
+  hasUnsavedCommittedChanges: boolean;
+  disconnectedAutomaticFileSystemRoot?: string;
+  icon?: LitTemplate;
+}
+
 export interface TabbedEditorViewInput {
-  openTabs: Array<{
-    tabId: string,
-    title: string,
-    tooltip: string,
-    uiSourceCode: Workspace.UISourceCode.UISourceCode,
-    isCloseable: boolean,
-    widget?: UI.Widget.Widget,
-    icon?: TemplateResult|HTMLElement,
-    suffix?: HTMLElement,
-  }>;
+  openTabs: TabInfo[];
   activeTabId?: string;
+  tabDelegate: UI.TabbedPane.TabbedPaneTabDelegate;
+  shortcuts: Array<{
+    description: Platform.UIString.LocalizedString,
+    onClick: () => void,
+    keys: string[],
+  }>;
+  onAddFileSystemClicked: () => void;
+  onConnectAutomaticFileSystem: (e: Event) => void;
+  onClose: (e: Event) => void;
+  onTabOrderChanged: (e: Event) => void;
+  onSelect: (e: Event) => void;
 }
 
 export interface TabbedEditorViewOutput {
-  onClose(e: Event): void;
-  onTabOrderChanged(e: Event): void;
-  onSelect(e: Event): void;
+  leftToolbar: UI.Toolbar.Toolbar;
+  rightToolbar: UI.Toolbar.Toolbar;
 }
 
 export type View = (input: TabbedEditorViewInput, output: TabbedEditorViewOutput, target: HTMLElement) => void;
@@ -152,24 +167,113 @@ function removeSourceViewCache(uiSourceCode: Workspace.UISourceCode.UISourceCode
   }
   return view;
 }
+function renderPlaceholder(input: TabbedEditorViewInput): LitTemplate {
+  // clang-format off
+  return html`
+    <div class="sources-placeholder">
+      <div class="tabbed-pane-placeholder-row workspace">
+        <span class="icon-container">
+          <devtools-icon name="sync" class="sync-icon"></devtools-icon>
+        </span>
+        <span>
+          ${i18nString(UIStrings.workspaceDropInAFolderToSyncSources)}
+          <button @click=${input.onAddFileSystemClicked}>${i18nString(UIStrings.selectFolder)}</button>
+        </span>
+      </div>
+      <div class="shortcuts-list tabbed-pane-placeholder-row" role="list"
+            aria-label=${i18nString(UIStrings.sourceViewActions)}>
+        ${input.shortcuts.map(shortcut => !shortcut.keys.length
+            ? html`<div class="shortcut-line" role="listitem"></div>`
+            : html`<div class="shortcut-line" role="listitem">
+              <button @click=${shortcut.onClick}>${shortcut.description}</button>
+              <span class="shortcuts">
+                ${shortcut.keys.map(key => html`
+                  <span class="keybinds-key"><span>${key}</span></span>
+                `)}
+              </span>
+            </div>`)}
+      </div>
+    </div>`;
+  // clang-format on
+}
+
+function renderTabIcon(tab: TabInfo): LitTemplate {
+  if (tab.hasLoadError) {
+    // clang-format off
+    return html`
+      <span slot="icon">
+        <devtools-icon class="small" name="cross-circle-filled"
+                        title=${i18nString(UIStrings.unableToLoadThisContent)}>
+        </devtools-icon>
+      </span>`;
+    // clang-format on
+  }
+  if (tab.icon) {
+    return html`<span slot="icon">${tab.icon}</span>`;
+  }
+  return nothing;
+}
+
+function renderTabSuffix(tab: TabInfo, input: TabbedEditorViewInput): LitTemplate {
+  if (!tab.hasUnsavedCommittedChanges) {
+    return nothing;
+  }
+  const tooltipId = `tab-tooltip-${tab.tabId}`;
+  // clang-format off
+  return html`
+    <span slot="suffix">
+      <div>
+        <devtools-icon name="warning-filled" class="small" aria-describedby=${tooltipId}></devtools-icon>
+        <devtools-tooltip id=${tooltipId} variant="rich">
+          ${tab.disconnectedAutomaticFileSystemRoot !== undefined
+              ? uiI18n.getFormatLocalizedStringTemplate(
+                    str_, UIStrings.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, {
+                      PH1: html`<devtools-link class="devtools-link" @click=${input.onConnectAutomaticFileSystem}>${
+                          tab.disconnectedAutomaticFileSystemRoot}</devtools-link>`,
+                    })
+              : uiI18n.getFormatLocalizedStringTemplate(
+                    str_, UIStrings.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, {
+                      PH1: html`<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`,
+                    })}
+        </devtools-tooltip>
+      </div>
+    </span>`;
+  // clang-format on
+}
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   render(html`
     <devtools-tabbed-pane
       class="flex-auto vbox"
-      @close=${output.onClose}
-      @taborderchanged=${output.onTabOrderChanged}
-      @select=${output.onSelect}
+      .closeableTabs=${true}
+      .allowTabReorder=${true}
+      .automaticReorder=${true}
+      .tabDelegate=${input.tabDelegate}
+      .headerJslog=${`${VisualLogging.toolbar('top').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`}
+      .placeholder=${renderPlaceholder(input)}
+      @close=${input.onClose}
+      @taborderchanged=${input.onTabOrderChanged}
+      @select=${input.onSelect}
     >
+      <devtools-toolbar class="tabbed-pane-left-toolbar" slot="left" ${ref(e => {
+        if (e instanceof UI.Toolbar.Toolbar) {
+          output.leftToolbar = e;
+        }
+      })}></devtools-toolbar>
+      <devtools-toolbar class="tabbed-pane-right-toolbar" slot="right" ${ref(e => {
+        if (e instanceof UI.Toolbar.Toolbar) {
+          output.rightToolbar = e;
+        }
+      })}></devtools-toolbar>
       ${repeat(input.openTabs, tab => tab.tabId, tab => html`
         <div id=${tab.tabId}
              title=${tab.title}
              ?closeable=${tab.isCloseable}
              ?selected=${input.activeTabId === tab.tabId}
              style="display: flex; flex: auto;">
-             ${tab.icon ? html`<span slot="icon">${tab.icon}</span>` : nothing}
-             ${tab.suffix ? html`<span slot="suffix">${tab.suffix}</span>` : nothing}
+             ${renderTabIcon(tab)}
+             ${renderTabSuffix(tab, input)}
              ${tab.widget ? html`${widget(UI.Widget.WrapperWidget, {widget: tab.widget})}` : nothing}
         </div>`)}
     </devtools-tabbed-pane>`, target);
@@ -190,26 +294,79 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   }
 
   #scheduleUpdate(): void {
-    this.#renderView();
+    this.performUpdate();
   }
 
-  #renderView(): void {
+  override performUpdate(): void {
+    if (false) {
+      return;
+    }
+    const shortcuts = [
+      {actionId: 'quick-open.show', description: i18nString(UIStrings.openFile)},
+      {actionId: 'quick-open.show-command-menu', description: i18nString(UIStrings.runCommand)},
+    ];
+    const separator = Host.Platform.isMac() ? '\u2004' : ' + ';
+    const shortcutElements = shortcuts.map(shortcut => {
+      const shortcutKeys = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
+      if (!shortcutKeys?.[0]) {
+        return {
+          description: shortcut.description,
+          onClick: () => {},
+          keys: [],
+        };
+      }
+      const action = UI.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
+      const keys = shortcutKeys[0].descriptors.flatMap(descriptor => descriptor.name.split(separator));
+      return {
+        description: shortcut.description,
+        onClick: () => {
+          void action.execute();
+        },
+        keys,
+      };
+    });
+
     const input: TabbedEditorViewInput = {
-      openTabs: [...this.files.entries()].map(
-          ([tabId, uiSourceCode]) => ({
-            tabId,
-            title: this.titleForFile(uiSourceCode),
-            tooltip: this.tooltipForFile(uiSourceCode),
-            uiSourceCode,
-            isCloseable: true,
-            icon: this.#tabIcons.get(uiSourceCode),
-            suffix: this.#tabSuffixes.get(uiSourceCode),
-            widget: (this.#currentFile === uiSourceCode) ? this.getOrCreateSourceView(uiSourceCode) :
-                                                           this.getCreatedSourceView(uiSourceCode),
-          })),
+      openTabs: [...this.files.entries()].map(([tabId, uiSourceCode]) => {
+        const hasLoadError = Boolean(uiSourceCode.loadError()) || this.#loadErrorFiles.has(uiSourceCode);
+        const hasUnsavedCommittedChanges = !hasLoadError &&
+            Persistence.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode);
+        let disconnectedAutomaticFileSystemRoot: string|undefined;
+        if (hasUnsavedCommittedChanges) {
+          const {automaticFileSystem} = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
+          if (automaticFileSystem?.state === 'disconnected') {
+            disconnectedAutomaticFileSystemRoot = Common.ParsedURL.ParsedURL.extractName(automaticFileSystem.root);
+          }
+        }
+        const icon = !hasLoadError ?
+            (PanelCommon.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode) ?? undefined) :
+            undefined;
+        return {
+          tabId,
+          title: this.titleForFile(uiSourceCode),
+          tooltip: this.tooltipForFile(uiSourceCode),
+          uiSourceCode,
+          isCloseable: true,
+          hasLoadError,
+          hasUnsavedCommittedChanges,
+          disconnectedAutomaticFileSystemRoot,
+          icon,
+          widget: (this.#currentFile === uiSourceCode) ? this.getOrCreateSourceView(uiSourceCode) :
+                                                         this.getCreatedSourceView(uiSourceCode),
+        };
+      }),
       activeTabId: this.#currentFile ? this.tabIds.get(this.#currentFile) : undefined,
-    };
-    const output: TabbedEditorViewOutput = {
+      tabDelegate: this.#tabDelegate,
+      shortcuts: shortcutElements,
+      onAddFileSystemClicked: () => {
+        void this.#addFileSystemClicked();
+      },
+      onConnectAutomaticFileSystem: async (event: Event) => {
+        event.consume();
+        await UI.ViewManager.ViewManager.instance().showView('navigator-files');
+        await Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance().connectAutomaticFileSystem(
+            /* addIfMissing= */ true);
+      },
       onClose: (e: Event) => {
         this.tabClosed((e as CustomEvent<{tabId: string}>).detail.tabId,
                        (e as CustomEvent<{isUserGesture?: boolean}>).detail.isUserGesture);
@@ -235,18 +392,27 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         this.#scheduleUpdate();
       },
     };
-    DEFAULT_VIEW(input, output, this.contentElement);
+    const that = this;
+    const output = {
+      set leftToolbar(toolbar: UI.Toolbar.Toolbar) {
+        that.#leftToolbar = toolbar;
+      },
+      set rightToolbar(toolbar: UI.Toolbar.Toolbar) {
+        that.#rightToolbar = toolbar;
+      },
+    };
+    this.#view(input, output, this.contentElement);
   }
   #historyManager!: EditingLocationHistoryManager;
   set historyManager(historyManager: EditingLocationHistoryManager) {
     this.#historyManager = historyManager;
   }
 
-  private readonly tabbedPane: UI.TabbedPane.TabbedPaneElement;
+  readonly #view: View;
+  readonly #tabDelegate: EditorContainerTabDelegate;
   private tabIds: Map<Workspace.UISourceCode.UISourceCode, string>;
   private files: Map<string, Workspace.UISourceCode.UISourceCode>;
-  readonly #tabIcons = new Map<Workspace.UISourceCode.UISourceCode, TemplateResult|HTMLElement>();
-  readonly #tabSuffixes = new Map<Workspace.UISourceCode.UISourceCode, HTMLElement>();
+  readonly #loadErrorFiles = new Set<Workspace.UISourceCode.UISourceCode>();
   #previouslyViewedFilesSetting!: Common.Settings.Setting<SerializedHistoryItem[]>;
   history!: History;
   set previouslyViewedFilesSetting(setting: Common.Settings.Setting<SerializedHistoryItem[]>) {
@@ -262,8 +428,10 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   private currentView!: UI.Widget.Widget|null;
   private scrollTimer?: number;
   private reentrantShow: boolean;
-  constructor(element?: HTMLElement) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
+    this.#view = view;
+    this.#tabDelegate = new EditorContainerTabDelegate(this);
 
     this.tabIds = new Map();
     this.files = new Map();
@@ -271,25 +439,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     this.idToUISourceCode = new Map();
     this.reentrantShow = false;
 
-    this.#renderView();
-
-    this.tabbedPane = this.contentElement.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
-
-    // eslint-disable-next-line @devtools/no-imperative-dom-api
-    const placeholderElement = document.createElement('div');
-    placeholderElement.classList.add('sources-placeholder');
-    this.tabbedPane.placeholder = placeholderElement;
-    this.#renderPlaceholder(placeholderElement as HTMLElement);
-    this.tabbedPane.tabDelegate = new EditorContainerTabDelegate(this);
-
-    this.tabbedPane.closeableTabs = true;
-    this.tabbedPane.allowTabReorder = true;
-    this.tabbedPane.automaticReorder = true;
-
-    const widget = UI.Widget.Widget.getOrCreateWidget(this.tabbedPane) as UI.TabbedPane.TabbedPane;
-    widget.headerElement().setAttribute(
-        'jslog',
-        `${VisualLogging.toolbar('top').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
+    this.performUpdate();
 
     Persistence.Persistence.PersistenceImpl.instance().addEventListener(Persistence.Persistence.Events.BindingCreated,
                                                                         this.onBindingCreated, this);
@@ -304,8 +454,16 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     this.#tabsHistory.unshift(tabId);
   }
 
+  get #tabbedPane(): UI.TabbedPane.TabbedPaneElement|null {
+    return this.contentElement.querySelector('devtools-tabbed-pane');
+  }
+
+  get tabbedPane(): UI.TabbedPane.TabbedPaneElement {
+    return this.#tabbedPane as UI.TabbedPane.TabbedPaneElement;
+  }
+
   get tabbedPaneForTesting(): UI.TabbedPane.TabbedPaneElement {
-    return this.tabbedPane;
+    return this.#tabbedPane as UI.TabbedPane.TabbedPaneElement;
   }
 
   private onBindingCreated(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>):
@@ -369,27 +527,13 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     return Array.from(this.files.values()).map(getViewByUISourceCode).filter(Boolean) as UI.Widget.Widget[];
   }
 
-  #leftToolbar?: UI.Toolbar.Toolbar;
+  #leftToolbar!: UI.Toolbar.Toolbar;
   leftToolbar(): UI.Toolbar.Toolbar {
-    if (!this.#leftToolbar) {
-      this.#leftToolbar =
-          document.createElement('devtools-toolbar') /* eslint-disable-line @devtools/no-imperative-dom-api */;
-      this.#leftToolbar.classList.add('tabbed-pane-left-toolbar');
-      this.#leftToolbar.slot = 'left';
-      this.tabbedPane.appendChild(this.#leftToolbar);
-    }
     return this.#leftToolbar;
   }
 
-  #rightToolbar?: UI.Toolbar.Toolbar;
+  #rightToolbar!: UI.Toolbar.Toolbar;
   rightToolbar(): UI.Toolbar.Toolbar {
-    if (!this.#rightToolbar) {
-      this.#rightToolbar =
-          document.createElement('devtools-toolbar') /* eslint-disable-line @devtools/no-imperative-dom-api */;
-      this.#rightToolbar.classList.add('tabbed-pane-right-toolbar');
-      this.#rightToolbar.slot = 'right';
-      this.tabbedPane.appendChild(this.#rightToolbar);
-    }
     return this.#rightToolbar;
   }
 
@@ -544,7 +688,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
 
       this.#scheduleUpdate();
       // Force TabbedPaneElement to sync its tabs synchronously to avoid layout races in E2E tests.
-      this.tabbedPane.tabs;
+      this.#tabbedPane?.tabs;
     } finally {
       this.reentrantShow = false;
     }
@@ -796,14 +940,9 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   }
 
   private addLoadErrorIcon(tabId: string): void {
-    // clang-format off
-    const icon = html`<devtools-icon class="small" name="cross-circle-filled"
-                                     title=${i18nString(UIStrings.unableToLoadThisContent)}>
-                      </devtools-icon>`;
-    // clang-format on
     const uiSourceCode = this.files.get(tabId);
     if (uiSourceCode) {
-      this.#tabIcons.set(uiSourceCode, icon);
+      this.#loadErrorFiles.add(uiSourceCode);
       this.#scheduleUpdate();
     }
   }
@@ -831,6 +970,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     }
     if (uiSourceCode) {
       this.tabIds.delete(uiSourceCode);
+      this.#loadErrorFiles.delete(uiSourceCode);
     }
     this.files.delete(tabId);
 
@@ -870,60 +1010,11 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   }
 
   private updateFileTitle(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const tabId = this.tabIds.get(uiSourceCode);
-    if (tabId) {
-      this.#scheduleUpdate();
-      if (uiSourceCode.loadError()) {
-        // clang-format off
-        const icon = html`<devtools-icon class="small" name="cross-circle-filled"
-                                         title=${i18nString(UIStrings.unableToLoadThisContent)}>
-                          </devtools-icon>`;
-        // clang-format on
-        this.#tabIcons.set(uiSourceCode, icon);
-        this.#scheduleUpdate();
-      } else if (Persistence.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
-        /* eslint-disable @devtools/no-imperative-dom-api --
-         * This is a temporary solution using the <devtools-tooltip>
-         * and we will use a toast instead once available.
-         **/
-        const suffixElement = document.createElement('div');
-        const icon = new Icon();
-        icon.name = 'warning-filled';
-        icon.classList.add('small');
-        const id = `tab-tooltip-${nextTooltipId++}`;
-        icon.setAttribute('aria-describedby', id);
-        const tooltip = new Tooltips.Tooltip.Tooltip({id, anchor: icon, variant: 'rich'});
-        const automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
-        const {automaticFileSystem} = automaticFileSystemManager;
-        if (automaticFileSystem?.state === 'disconnected') {
-          const link = document.createElement('a');
-          link.className = 'devtools-link';
-          link.textContent = Common.ParsedURL.ParsedURL.extractName(automaticFileSystem.root);
-          link.addEventListener('click', async event => {
-            event.consume();
-            await UI.ViewManager.ViewManager.instance().showView('navigator-files');
-            await automaticFileSystemManager.connectAutomaticFileSystem(/* addIfMissing= */ true);
-          });
-          tooltip.append(uiI18n.getFormatLocalizedString(
-              str_, UIStrings.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, {PH1: link}));
-        } else {
-          const link = Link.create('https://developer.chrome.com/docs/devtools/workspaces/', 'Workspace');
-          tooltip.append(uiI18n.getFormatLocalizedString(
-              str_, UIStrings.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, {PH1: link}));
-        }
-        suffixElement.append(icon, tooltip);
-        /* eslint-enable @devtools/no-imperative-dom-api */
-        this.#tabSuffixes.set(uiSourceCode, suffixElement);
-        this.#scheduleUpdate();
-      } else {
-        const icon = PanelCommon.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode);
-        if (icon) {
-          this.#tabIcons.set(uiSourceCode, icon as TemplateResult);
-        } else {
-          this.#tabIcons.delete(uiSourceCode);
-        }
-        this.#scheduleUpdate();
+    if (this.tabIds.has(uiSourceCode)) {
+      if (!uiSourceCode.loadError()) {
+        this.#loadErrorFiles.delete(uiSourceCode);
       }
+      this.#scheduleUpdate();
     }
   }
 
@@ -975,60 +1066,6 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
 
   private generateTabId(): Lowercase<string> {
     return 'tab-' + (tabId++) as Lowercase<string>;
-  }
-
-  #renderPlaceholder(placeholderElement: HTMLElement): void {
-    const shortcuts = [
-      {actionId: 'quick-open.show', description: i18nString(UIStrings.openFile)},
-      {actionId: 'quick-open.show-command-menu', description: i18nString(UIStrings.runCommand)},
-    ];
-    const separator = Host.Platform.isMac() ? '\u2004' : ' + ';
-    const shortcutElements = shortcuts.map(shortcut => {
-      const shortcutKeys = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
-      if (!shortcutKeys?.[0]) {
-        return {
-          description: shortcut.description,
-          onClick: () => {},
-          keys: [],
-        };
-      }
-      const action = UI.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
-      const keys = shortcutKeys[0].descriptors.flatMap(descriptor => descriptor.name.split(separator));
-      return {
-        description: shortcut.description,
-        onClick: () => {
-          void action.execute();
-        },
-        keys,
-      };
-    });
-
-    // clang-format off
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(html`
-    <div class="tabbed-pane-placeholder-row workspace">
-      <span class="icon-container">
-        <devtools-icon name="sync" class="sync-icon"></devtools-icon>
-      </span>
-      <span>
-        ${i18nString(UIStrings.workspaceDropInAFolderToSyncSources)}
-        <button @click=${this.#addFileSystemClicked.bind(this)}>${i18nString(UIStrings.selectFolder)}</button>
-      </span>
-    </div>
-    <div class="shortcuts-list tabbed-pane-placeholder-row" role="list"
-         aria-label=${i18nString(UIStrings.sourceViewActions)}>
-      ${shortcutElements.map(shortcut => !shortcut.keys.length
-          ? html`<div class="shortcut-line" role="listitem"></div>`
-          : html`<div class="shortcut-line" role="listitem">
-            <button @click=${shortcut.onClick}>${shortcut.description}</button>
-            <span class="shortcuts">
-              ${shortcut.keys.map(key => html`
-                <span class="keybinds-key"><span>${key}</span></span>
-              `)}
-            </span>
-          </div>`)}
-    </div>`, placeholderElement);
-    // clang-format on
   }
 
   async #addFileSystemClicked(): Promise<void> {
@@ -1110,8 +1147,6 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     return this.#currentFile || null;
   }
 }
-
-let nextTooltipId = 1;
 
 export const enum Events {
   EDITOR_SELECTED = 'EditorSelected',

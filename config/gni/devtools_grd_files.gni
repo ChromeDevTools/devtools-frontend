@@ -1584,6 +1584,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/common/badgeNotification.css.js",
   "front_end/panels/common/commentThreadWidget.css.js",
   "front_end/panels/common/commentsOverlay.css.js",
+  "front_end/panels/common/commentsStatusBarPill.css.js",
   "front_end/panels/common/domLinkifier.css.js",
   "front_end/panels/common/gdpSignUpDialog.css.js",
   "front_end/panels/common/geminiRebrandPromoDialog.css.js",

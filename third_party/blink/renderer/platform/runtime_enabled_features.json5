@@ -829,9 +829,9 @@
       status: "stable",
     },
     {
-      // Killswitch M153.
+      // Killswitch M156.
       name: "AvoidEmbeddedContentViewLocation",
-      status: "test",
+      status: "stable",
     },
     {
       // Don't use a position inside non-selectable content as a selection
@@ -1210,8 +1210,9 @@
     {
       // This is a kill switch for a refactor of the way activation
       // behaviors are triggered. It should not affect behavior.
+      // This flag shipped in M155 and can be removed in M158.
       name: "CleanUpActivationBehavior",
-      status: "experimental",
+      status: "stable",
     },
     {
       // Set currentTarget to null after dispatch for EventTarget.
@@ -3366,9 +3367,10 @@
     },
     {
       // Killswitch for the visible deprecation warning banner shown on
-      // XSLT-transformed documents.
+      // XSLT-transformed documents. This will be present until the banner is
+      // removed in M158.
       name: "GenerateXSLTWarningBanner",
-      status: "experimental",
+      status: "stable",
     },
     {
       // Tracking bug for the implementation: https://crbug.com/430204832
@@ -4433,6 +4435,14 @@
       depends_on: ["NormalizeNbspForPasteAndDrop"],
     },
     {
+      // Dispatch an error event for the cross-origin violation for the worker
+      // script URL fetching, instead of throwing error synchronously on worker
+      // construction.
+      // See https://github.com/whatwg/html/issues/337
+      name: "NoSynchronousThrowForCrossOriginBlockedWorker",
+      status: "experimental",
+    },
+    {
       name: "NotificationConstructor",
       // Android won't be able to reliably support non-persistent notifications, the
       // intended behavior for which is in flux by itself.
@@ -4687,6 +4697,7 @@
       // https://chromestatus.com/feature/5261280285949952
       name: "OverscrollGestures",
       status: "experimental",
+      depends_on: ["CSSScrollSnapTypePair"],
     },
     {
       name: "PagePopup",
@@ -7484,7 +7495,7 @@
       // with its responseXML document.
       // https://crbug.com/466303347
       name: "XMLRustForNonXslt",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "XMLSerializerConsistentDefaultNsDeclMatching",

@@ -76,7 +76,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/TabbedEditorContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {ref, repeat} = Directives;
+const {repeat} = Directives;
 const {widget} = UI.Widget;
 
 const enum SourceViewType {
@@ -103,6 +103,8 @@ interface TabInfo {
 export interface TabbedEditorViewInput {
   openTabs: TabInfo[];
   activeTabId?: string;
+  leftToolbarItems: UI.Toolbar.ToolbarItem[];
+  rightToolbarItems: UI.Toolbar.ToolbarItem[];
   tabDelegate: UI.TabbedPane.TabbedPaneTabDelegate;
   shortcuts: Array<{
     description: Platform.UIString.LocalizedString,
@@ -116,12 +118,7 @@ export interface TabbedEditorViewInput {
   onSelect: (e: Event) => void;
 }
 
-export interface TabbedEditorViewOutput {
-  leftToolbar: UI.Toolbar.Toolbar;
-  rightToolbar: UI.Toolbar.Toolbar;
-}
-
-export type View = (input: TabbedEditorViewInput, output: TabbedEditorViewOutput, target: HTMLElement) => void;
+export type View = (input: TabbedEditorViewInput, output: undefined, target: HTMLElement) => void;
 
 const UI_SOURCE_CODE_WIDGET_MAP = new WeakMap<Workspace.UISourceCode.UISourceCode, UI.Widget.Widget>();
 
@@ -241,7 +238,7 @@ function renderTabSuffix(tab: TabInfo, input: TabbedEditorViewInput): LitTemplat
   // clang-format on
 }
 
-export const DEFAULT_VIEW: View = (input, output, target) => {
+export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
     <devtools-tabbed-pane
@@ -256,16 +253,12 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       @taborderchanged=${input.onTabOrderChanged}
       @select=${input.onSelect}
     >
-      <devtools-toolbar class="tabbed-pane-left-toolbar" slot="left" ${ref(e => {
-        if (e instanceof UI.Toolbar.Toolbar) {
-          output.leftToolbar = e;
-        }
-      })}></devtools-toolbar>
-      <devtools-toolbar class="tabbed-pane-right-toolbar" slot="right" ${ref(e => {
-        if (e instanceof UI.Toolbar.Toolbar) {
-          output.rightToolbar = e;
-        }
-      })}></devtools-toolbar>
+            <devtools-toolbar class="tabbed-pane-left-toolbar" slot="left">
+        ${input.leftToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+      </devtools-toolbar>
+      <devtools-toolbar class="tabbed-pane-right-toolbar" slot="right">
+        ${input.rightToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+      </devtools-toolbar>
       ${repeat(input.openTabs, tab => tab.tabId, tab => html`
         <div id=${tab.tabId}
              title=${tab.title}
@@ -356,6 +349,8 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         };
       }),
       activeTabId: this.#currentFile ? this.tabIds.get(this.#currentFile) : undefined,
+      leftToolbarItems: this.#leftToolbarItems,
+      rightToolbarItems: this.#rightToolbarItems,
       tabDelegate: this.#tabDelegate,
       shortcuts: shortcutElements,
       onAddFileSystemClicked: () => {
@@ -392,21 +387,55 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         this.#scheduleUpdate();
       },
     };
-    const that = this;
-    const output = {
-      set leftToolbar(toolbar: UI.Toolbar.Toolbar) {
-        that.#leftToolbar = toolbar;
-      },
-      set rightToolbar(toolbar: UI.Toolbar.Toolbar) {
-        that.#rightToolbar = toolbar;
-      },
-    };
-    this.#view(input, output, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
   #historyManager!: EditingLocationHistoryManager;
   set historyManager(historyManager: EditingLocationHistoryManager) {
     this.#historyManager = historyManager;
   }
+
+  #leftToolbarItems: UI.Toolbar.ToolbarItem[] = [];
+  set leftToolbarItems(items: UI.Toolbar.ToolbarItem[]) {
+    if (this.#leftToolbarItems === items) {
+      return;
+    }
+    this.#leftToolbarItems = items;
+    this.#scheduleUpdate();
+  }
+
+  #rightToolbarItems: UI.Toolbar.ToolbarItem[] = [];
+  set rightToolbarItems(items: UI.Toolbar.ToolbarItem[]) {
+    if (this.#rightToolbarItems === items) {
+      return;
+    }
+    this.#rightToolbarItems = items;
+    this.#scheduleUpdate();
+  }
+
+  readonly #syncedUISourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
+  set uiSourceCodes(uiSourceCodes: ReadonlySet<Workspace.UISourceCode.UISourceCode>) {
+    const removed: Workspace.UISourceCode.UISourceCode[] = [];
+    for (const existing of this.#syncedUISourceCodes) {
+      if (!uiSourceCodes.has(existing)) {
+        removed.push(existing);
+        this.#syncedUISourceCodes.delete(existing);
+      }
+    }
+    if (removed.length > 0) {
+      this.removeUISourceCodes(removed);
+    }
+    UI.UIUtils.startBatchUpdate();
+    for (const uiSourceCode of uiSourceCodes) {
+      if (!this.#syncedUISourceCodes.has(uiSourceCode)) {
+        this.#syncedUISourceCodes.add(uiSourceCode);
+        this.addUISourceCode(uiSourceCode);
+      }
+    }
+    UI.UIUtils.endBatchUpdate();
+  }
+
+  onEditorSelected?: (event: EditorSelectedEvent) => void;
+  onEditorClosed?: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
 
   readonly #view: View;
   readonly #tabDelegate: EditorContainerTabDelegate;
@@ -416,6 +445,9 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   #previouslyViewedFilesSetting!: Common.Settings.Setting<SerializedHistoryItem[]>;
   history!: History;
   set previouslyViewedFilesSetting(setting: Common.Settings.Setting<SerializedHistoryItem[]>) {
+    if (this.#previouslyViewedFilesSetting === setting) {
+      return;
+    }
     this.#previouslyViewedFilesSetting = setting;
     this.history = History.fromObject(this.#previouslyViewedFilesSetting.get());
   }
@@ -525,16 +557,6 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
 
   fileViews(): UI.Widget.Widget[] {
     return Array.from(this.files.values()).map(getViewByUISourceCode).filter(Boolean) as UI.Widget.Widget[];
-  }
-
-  #leftToolbar!: UI.Toolbar.Toolbar;
-  leftToolbar(): UI.Toolbar.Toolbar {
-    return this.#leftToolbar;
-  }
-
-  #rightToolbar!: UI.Toolbar.Toolbar;
-  rightToolbar(): UI.Toolbar.Toolbar {
-    return this.#rightToolbar;
   }
 
   showFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
@@ -722,6 +744,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
       userGesture,
     };
     this.dispatchEventToListeners(Events.EDITOR_SELECTED, eventData);
+    this.onEditorSelected?.(eventData);
   }
 
   private titleForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
@@ -979,6 +1002,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
       this.removeSourceFrame(uiSourceCode);
 
       this.dispatchEventToListeners(Events.EDITOR_CLOSED, uiSourceCode);
+      this.onEditorClosed?.(uiSourceCode);
 
       if (isUserGesture) {
         this.editorClosedByUserAction(uiSourceCode);

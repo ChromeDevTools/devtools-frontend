@@ -23,7 +23,6 @@ import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js'
 import sourcesViewStyles from './sourcesView.css.js';
 import {
   type EditorSelectedEvent,
-  Events as TabbedEditorContainerEvents,
   type SerializedHistoryItem,
   TabbedEditorContainer,
 } from './TabbedEditorContainer.js';
@@ -70,6 +69,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const {ref} = Directives;
 const {widget, widgetRef} = UI.Widget;
 
 export interface ViewInput {
@@ -78,8 +78,14 @@ export interface ViewInput {
   searchableViewId: string;
   scriptViewToolbarItems: UI.Toolbar.ToolbarItem[];
   bottomToolbarItems: UI.Toolbar.ToolbarItem[];
+  leftToolbarItems: UI.Toolbar.ToolbarItem[];
+  rightToolbarItems: UI.Toolbar.ToolbarItem[];
+  breakpointsActive: boolean;
+  uiSourceCodes: ReadonlySet<Workspace.UISourceCode.UISourceCode>;
   historyManager: EditingLocationHistoryManager;
   previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
+  onEditorSelected: (event: EditorSelectedEvent) => void;
+  onEditorClosed: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
 }
 
 export interface ViewOutput {
@@ -101,13 +107,21 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
       })}
       ${widgetRef(UI.SearchableView.SearchableView, e => { output.searchableView = e; })}
     >
-      <devtools-widget class="vbox flex-auto"
-        ${widget(TabbedEditorContainer, {historyManager: input.historyManager, previouslyViewedFilesSetting: input.previouslyViewedFilesSetting})}
+      <devtools-widget class="vbox flex-auto ${input.breakpointsActive ? '' : 'breakpoints-deactivated'}"
+        ${widget(TabbedEditorContainer, {
+          historyManager: input.historyManager,
+          previouslyViewedFilesSetting: input.previouslyViewedFilesSetting,
+          leftToolbarItems: input.leftToolbarItems,
+          rightToolbarItems: input.rightToolbarItems,
+          uiSourceCodes: input.uiSourceCodes,
+          onEditorSelected: input.onEditorSelected,
+          onEditorClosed: input.onEditorClosed,
+        })}
         ${widgetRef(TabbedEditorContainer, e => { output.editorContainer = e; })}>
       </devtools-widget>
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging.toolbar('bottom')}>
-      <devtools-toolbar class="script-view-toolbar" style="flex: auto;" ${Directives.ref(el => { output.scriptViewToolbar = el as UI.Toolbar.Toolbar; })}>
+      <devtools-toolbar class="script-view-toolbar" style="flex: auto;" ${ref(el => { output.scriptViewToolbar = el as UI.Toolbar.Toolbar; })}>
         ${input.scriptViewToolbarItems.map(item => item.element)}
       </devtools-toolbar>
       <devtools-toolbar class="bottom-toolbar">
@@ -145,9 +159,9 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   #navigatorSidebarInitialized = false;
   #debuggerSidebarInitialized = false;
   #isVertical = false;
-  #leftToolbarItems?: UI.Toolbar.ToolbarItem[];
-  #rightToolbarItems?: UI.Toolbar.ToolbarItem[];
-  #breakpointsActive?: boolean;
+  #leftToolbarItems: UI.Toolbar.ToolbarItem[] = [];
+  #rightToolbarItems: UI.Toolbar.ToolbarItem[] = [];
+  #breakpointsActive = true;
   #editorContainerPromise: Promise<TabbedEditorContainer>;
   #editorContainerResolve!: (container: TabbedEditorContainer) => void;
   readonly previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
@@ -236,8 +250,14 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       searchableViewId: 'sources-view-search-config',
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
       bottomToolbarItems: this.#bottomToolbarItems,
+      leftToolbarItems: this.#leftToolbarItems,
+      rightToolbarItems: this.#rightToolbarItems,
+      breakpointsActive: this.#breakpointsActive,
+      uiSourceCodes: new Set(this.#uiSourceCodes),
       historyManager: this.historyManager,
       previouslyViewedFilesSetting: this.previouslyViewedFilesSetting,
+      onEditorSelected: this.editorSelected.bind(this),
+      onEditorClosed: this.editorClosed.bind(this),
     };
 
     const that = this;
@@ -265,36 +285,9 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     if (this.editorContainer === editorContainer) {
       return;
     }
-    if (this.editorContainer) {
-      this.editorContainer.removeEventListener(TabbedEditorContainerEvents.EDITOR_SELECTED, this.editorSelected, this);
-      this.editorContainer.removeEventListener(TabbedEditorContainerEvents.EDITOR_CLOSED, this.editorClosed, this);
-    }
     this.editorContainer = editorContainer;
     if (this.editorContainer) {
-      if (this.#leftToolbarItems) {
-        this.editorContainer.leftToolbar().removeToolbarItems();
-        for (const item of this.#leftToolbarItems) {
-          this.editorContainer.leftToolbar().appendToolbarItem(item);
-        }
-      }
-      if (this.#rightToolbarItems) {
-        this.editorContainer.rightToolbar().removeToolbarItems();
-        for (const item of this.#rightToolbarItems) {
-          this.editorContainer.rightToolbar().appendToolbarItem(item);
-        }
-      }
-      if (this.#breakpointsActive !== undefined) {
-        this.editorContainer.element.classList.toggle('breakpoints-deactivated', !this.#breakpointsActive);
-      }
-
       this.#editorContainerResolve(editorContainer);
-      this.editorContainer.addEventListener(TabbedEditorContainerEvents.EDITOR_SELECTED, this.editorSelected, this);
-      this.editorContainer.addEventListener(TabbedEditorContainerEvents.EDITOR_CLOSED, this.editorClosed, this);
-      UI.UIUtils.startBatchUpdate();
-      for (const uiSourceCode of this.#uiSourceCodes) {
-        this.editorContainer.addUISourceCode(uiSourceCode);
-      }
-      UI.UIUtils.endBatchUpdate();
     }
   }
 
@@ -398,15 +391,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
 
     this.#leftToolbarItems = leftItems;
     this.#rightToolbarItems = rightItems;
-
-    if (this.editorContainer) {
-      const editorContainer = this.editorContainer;
-      editorContainer.leftToolbar().removeToolbarItems();
-      leftItems.forEach(item => editorContainer.leftToolbar().appendToolbarItem(item));
-
-      editorContainer.rightToolbar().removeToolbarItems();
-      rightItems.forEach(item => editorContainer.rightToolbar().appendToolbarItem(item));
-    }
     this.requestUpdate();
   }
 
@@ -500,7 +484,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       }
     }
     this.#uiSourceCodes.add(uiSourceCode);
-    this.editorContainer?.addUISourceCode(uiSourceCode);
+    this.requestUpdate();
   }
 
   private uiSourceCodeRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
@@ -510,10 +494,10 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
 
   private removeUISourceCodes(uiSourceCodes: Workspace.UISourceCode.UISourceCode[]): void {
     uiSourceCodes.forEach(ui => this.#uiSourceCodes.delete(ui));
-    this.editorContainer?.removeUISourceCodes(uiSourceCodes);
     for (let i = 0; i < uiSourceCodes.length; ++i) {
       this.historyManager.removeHistoryForSourceCode(uiSourceCodes[i]);
     }
+    this.requestUpdate();
   }
 
   private projectRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
@@ -570,8 +554,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     return this.editorContainer?.getCreatedSourceView(uiSourceCode);
   }
 
-  private editorClosed(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
-    const uiSourceCode = event.data;
+  private editorClosed(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     this.historyManager.removeHistoryForSourceCode(uiSourceCode);
 
     let wasSelected = false;
@@ -591,12 +574,12 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     this.dispatchEventToListeners(Events.EDITOR_CLOSED, data);
   }
 
-  private editorSelected(event: Common.EventTarget.EventTargetEvent<EditorSelectedEvent>): void {
-    const previousSourceFrame = event.data.previousView instanceof UISourceCodeFrame ? event.data.previousView : null;
+  private editorSelected(event: EditorSelectedEvent): void {
+    const previousSourceFrame = event.previousView instanceof UISourceCodeFrame ? event.previousView : null;
     if (previousSourceFrame) {
       previousSourceFrame.setSearchableView(null);
     }
-    const currentSourceFrame = event.data.currentView instanceof UISourceCodeFrame ? event.data.currentView : null;
+    const currentSourceFrame = event.currentView instanceof UISourceCodeFrame ? event.currentView : null;
     if (currentSourceFrame) {
       currentSourceFrame.setSearchableView(this.searchableView());
     }
@@ -738,7 +721,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
 
   toggleBreakpointsActiveState(active: boolean): void {
     this.#breakpointsActive = active;
-    this.editorContainer?.element.classList.toggle('breakpoints-deactivated', !active);
     this.requestUpdate();
   }
 }

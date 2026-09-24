@@ -71,20 +71,18 @@ describeWithEnvironment('SourcesView', () => {
       mimeType: 'text/html',
     });
     project.canSetFileContent = () => true;
-    project.rename =
-        (_uiSourceCode: Workspace.UISourceCode.UISourceCode, newName: string,
-         callback: (
-             arg0: boolean, arg1?: string, arg2?: Platform.DevToolsPath.UrlString,
-             arg3?: Common.ResourceType.ResourceType) => void) => {
-          const newURL = urlString`${'file:///path/to/overrides/' + newName}`;
-          let newContentType = Common.ResourceType.resourceTypes.Document;
-          if (newName.endsWith('.jpg')) {
-            newContentType = Common.ResourceType.resourceTypes.Image;
-          } else if (newName.endsWith('.woff')) {
-            newContentType = Common.ResourceType.resourceTypes.Font;
-          }
-          callback(true, newName, newURL, newContentType);
-        };
+    project.rename = (_uiSourceCode: Workspace.UISourceCode.UISourceCode, newName: string,
+                      callback: (arg0: boolean, arg1?: string, arg2?: Platform.DevToolsPath.UrlString,
+                                 arg3?: Common.ResourceType.ResourceType) => void) => {
+      const newURL = urlString`${'file:///path/to/overrides/' + newName}`;
+      let newContentType = Common.ResourceType.resourceTypes.Document;
+      if (newName.endsWith('.jpg')) {
+        newContentType = Common.ResourceType.resourceTypes.Image;
+      } else if (newName.endsWith('.woff')) {
+        newContentType = Common.ResourceType.resourceTypes.Font;
+      }
+      callback(true, newName, newURL, newContentType);
+    };
 
     sourcesView.viewForFile(uiSourceCode);
 
@@ -218,7 +216,7 @@ describeWithEnvironment('SourcesView', () => {
     await sourcesView.updateComplete;
     addedURLs = addUISourceCodeSpy.args.map(args => args[0].url());
     assert.deepEqual(addedURLs, ['http://foo.com/script.js']);
-    const removedURLs = removeUISourceCodesSpy.args.map(args => args[0][0].url());
+    const removedURLs = removeUISourceCodesSpy.args.flatMap(args => args[0].map(c => c.url()));
     assert.deepEqual(removedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
     sourcesView.detach();
   });

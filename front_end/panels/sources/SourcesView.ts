@@ -1,7 +1,6 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../ui/legacy/legacy.js';
 
@@ -13,10 +12,11 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
@@ -76,10 +76,16 @@ export interface ViewInput {
   searchProvider: UI.SearchableView.Searchable;
   replaceProvider: UI.SearchableView.Replaceable;
   searchableViewId: string;
-  scriptViewToolbarItems: UI.Toolbar.ToolbarItem[];
-  bottomToolbarItems: UI.Toolbar.ToolbarItem[];
-  leftToolbarItems: UI.Toolbar.ToolbarItem[];
-  rightToolbarItems: UI.Toolbar.ToolbarItem[];
+  scriptViewToolbarItems: UI.Toolbar.ToolbarItem[]|LitTemplate;
+  isNavigatorSidebarOpen: boolean;
+  isDebuggerSidebarOpen: boolean;
+  isDebuggerSidebarButtonEnabled: boolean;
+  isVertical: boolean;
+  isInWrapper: boolean;
+  isTraceApp: boolean;
+  splitWidget?: UI.SplitWidget.SplitWidget;
+  onToggleNavigatorSidebar?: () => void;
+  onToggleDebuggerSidebar?: () => void;
   breakpointsActive: boolean;
   uiSourceCodes: ReadonlySet<Workspace.UISourceCode.UISourceCode>;
   historyManager: EditingLocationHistoryManager;
@@ -89,7 +95,6 @@ export interface ViewInput {
 }
 
 export interface ViewOutput {
-  scriptViewToolbar?: UI.Toolbar.Toolbar;
   editorContainer?: TabbedEditorContainer;
   searchableView?: UI.SearchableView.SearchableView;
 }
@@ -97,8 +102,52 @@ export interface ViewOutput {
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target): void => {
+  const renderNavigatorToggleButton = (): LitTemplate => {
+    const navHidden = !input.isNavigatorSidebarOpen;
+    const title = navHidden ? i18nString(UIStrings.showNavigator) : i18nString(UIStrings.hideNavigator);
+    // clang-format off
+    return html`
+      <devtools-button
+        class="toolbar-button"
+        title=${title}
+        aria-label=${title}
+        .iconName=${navHidden ? 'left-panel-open' : 'left-panel-close'}
+        .variant=${Buttons.Button.Variant.TOOLBAR}
+        jslog=${VisualLogging.toggleSubpane().track({click: true}).context('navigator')}
+        @click=${() => input.onToggleNavigatorSidebar?.()}
+      ></devtools-button>`;
+    // clang-format on
+  };
+
+  const renderDebuggerToggleButton = (): LitTemplate => {
+    const debuggerHidden = !input.isDebuggerSidebarOpen;
+    const title = debuggerHidden ? i18nString(UIStrings.showDebugger) : i18nString(UIStrings.hideDebugger);
+    const glyph = debuggerHidden ? (input.isVertical ? 'right-panel-open' : 'bottom-panel-open') :
+                                   (input.isVertical ? 'right-panel-close' : 'bottom-panel-close');
+    // clang-format off
+    return html`
+      <devtools-button
+        class="toolbar-button"
+        title=${title}
+        aria-label=${title}
+        .iconName=${glyph}
+        .variant=${Buttons.Button.Variant.TOOLBAR}
+        ?disabled=${!input.isDebuggerSidebarButtonEnabled}
+        jslog=${VisualLogging.toggleSubpane().track({click: true}).context('debugger')}
+        @click=${() => input.onToggleDebuggerSidebar?.()}
+      ></devtools-button>`;
+    // clang-format on
+  };
+
+  const leftToolbarItems: LitTemplate[] = !input.isInWrapper ? [renderNavigatorToggleButton()] : [];
+  const rightToolbarItems: LitTemplate[] =
+      (!input.isInWrapper && !input.isTraceApp && input.isVertical) ? [renderDebuggerToggleButton()] : [];
+  const bottomToolbarContent: LitTemplate =
+      (!input.isInWrapper && !input.isTraceApp && !input.isVertical) ? renderDebuggerToggleButton() : nothing;
+
   // clang-format off
   render(html`
+    <style>${sourcesViewStyles}</style>
     <devtools-widget class="vbox flex-auto"
       ${widget(element => {
         const searchableView = new UI.SearchableView.SearchableView(input.searchProvider, input.replaceProvider, input.searchableViewId, element);
@@ -111,8 +160,8 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
         ${widget(TabbedEditorContainer, {
           historyManager: input.historyManager,
           previouslyViewedFilesSetting: input.previouslyViewedFilesSetting,
-          leftToolbarItems: input.leftToolbarItems,
-          rightToolbarItems: input.rightToolbarItems,
+          leftToolbarItems,
+          rightToolbarItems,
           uiSourceCodes: input.uiSourceCodes,
           onEditorSelected: input.onEditorSelected,
           onEditorClosed: input.onEditorClosed,
@@ -121,13 +170,25 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
       </devtools-widget>
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging.toolbar('bottom')}>
-      <devtools-toolbar class="script-view-toolbar" style="flex: auto;" ${ref(el => { output.scriptViewToolbar = el as UI.Toolbar.Toolbar; })}>
-        ${input.scriptViewToolbarItems.map(item => item.element)}
+      <devtools-toolbar class="script-view-toolbar" style="flex: auto;" ${ref(el => {
+        if (el && input.splitWidget) {
+          input.splitWidget.toggleResizer(el, !input.isVertical && !input.isInWrapper);
+        }
+      })}>
+        ${Array.isArray(input.scriptViewToolbarItems)
+            ? input.scriptViewToolbarItems.map(item => item.element)
+            : input.scriptViewToolbarItems}
       </devtools-toolbar>
       <devtools-toolbar class="bottom-toolbar">
-        ${input.bottomToolbarItems.map(item => item.element)}
+        ${bottomToolbarContent}
       </devtools-toolbar>
-    </div>`, target);
+    </div>`, target, {
+    container: {
+      attributes: {
+        id: 'sources-panel-sources-view',
+      },
+    },
+  });
   // clang-format on
 };
 
@@ -142,38 +203,33 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   editorContainer?: TabbedEditorContainer;
   #uiSourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
   private readonly historyManager: EditingLocationHistoryManager;
-  #scriptViewToolbar?: UI.Toolbar.Toolbar;
-  #scriptViewToolbarItems: UI.Toolbar.ToolbarItem[] = [];
-  #bottomToolbarItems: UI.Toolbar.ToolbarItem[] = [];
+  #scriptViewToolbarItems: UI.Toolbar.ToolbarItem[]|LitTemplate = [];
   private toolbarChangedListener: Common.EventTarget.EventDescriptor|null;
   private searchView?: UISourceCodeFrame;
   private searchConfig?: UI.SearchableView.SearchConfig;
-  #view: View = DEFAULT_VIEW;
+  readonly #view: View;
 
-  #toggleNavigatorSidebarButton: UI.Toolbar.ToolbarButton;
-  #toggleDebuggerSidebarButton: UI.Toolbar.ToolbarButton;
   #onToggleNavigatorSidebar?: () => void;
   #onToggleDebuggerSidebar?: () => void;
   #isNavigatorSidebarOpen = false;
   #isDebuggerSidebarOpen = false;
+  #isDebuggerSidebarButtonEnabled = true;
   #navigatorSidebarInitialized = false;
   #debuggerSidebarInitialized = false;
   #isVertical = false;
-  #leftToolbarItems: UI.Toolbar.ToolbarItem[] = [];
-  #rightToolbarItems: UI.Toolbar.ToolbarItem[] = [];
+  #isInWrapper = true;
+  #splitWidget?: UI.SplitWidget.SplitWidget;
   #breakpointsActive = true;
   #editorContainerPromise: Promise<TabbedEditorContainer>;
   #editorContainerResolve!: (container: TabbedEditorContainer) => void;
   readonly previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
 
-  constructor() {
-    super({jslog: `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`});
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {jslog: `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`});
+    this.#view = view;
     this.#editorContainerPromise = new Promise(resolve => {
       this.#editorContainerResolve = resolve;
     });
-    this.registerRequiredCSS(sourcesViewStyles);
-
-    this.element.id = 'sources-panel-sources-view';
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -181,22 +237,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     this.historyManager = new EditingLocationHistoryManager(this);
 
     this.toolbarChangedListener = null;
-
-    this.#toggleNavigatorSidebarButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showNavigator), 'left-panel-open');
-    this.#toggleNavigatorSidebarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      this.#onToggleNavigatorSidebar?.();
-    });
-    this.#toggleNavigatorSidebarButton.element.setAttribute(
-        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('navigator')}`);
-
-    this.#toggleDebuggerSidebarButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showDebugger), 'right-panel-open');
-    this.#toggleDebuggerSidebarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      this.#onToggleDebuggerSidebar?.();
-    });
-    this.#toggleDebuggerSidebarButton.element.setAttribute(
-        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('debugger')}`);
 
     this.previouslyViewedFilesSetting =
         Common.Settings.Settings.instance().createLocalSetting('previously-viewed-files', []);
@@ -249,9 +289,15 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       replaceProvider: this,
       searchableViewId: 'sources-view-search-config',
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
-      bottomToolbarItems: this.#bottomToolbarItems,
-      leftToolbarItems: this.#leftToolbarItems,
-      rightToolbarItems: this.#rightToolbarItems,
+      isNavigatorSidebarOpen: this.#isNavigatorSidebarOpen,
+      isDebuggerSidebarOpen: this.#isDebuggerSidebarOpen,
+      isDebuggerSidebarButtonEnabled: this.#isDebuggerSidebarButtonEnabled,
+      isVertical: this.#isVertical,
+      isInWrapper: this.#isInWrapper,
+      isTraceApp: Root.Runtime.Runtime.isTraceApp(),
+      splitWidget: this.#splitWidget,
+      onToggleNavigatorSidebar: this.#onToggleNavigatorSidebar,
+      onToggleDebuggerSidebar: this.#onToggleDebuggerSidebar,
       breakpointsActive: this.#breakpointsActive,
       uiSourceCodes: new Set(this.#uiSourceCodes),
       historyManager: this.historyManager,
@@ -262,9 +308,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
 
     const that = this;
     const output: ViewOutput = {
-      set scriptViewToolbar(value: UI.Toolbar.Toolbar) {
-        that.#scriptViewToolbar = value;
-      },
       set editorContainer(value: TabbedEditorContainer) {
         that.setEditorContainer(value);
       },
@@ -306,10 +349,12 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
 
   set onToggleNavigatorSidebar(callback: () => void) {
     this.#onToggleNavigatorSidebar = callback;
+    this.requestUpdate();
   }
 
   set onToggleDebuggerSidebar(callback: () => void) {
     this.#onToggleDebuggerSidebar = callback;
+    this.requestUpdate();
   }
 
   set isNavigatorSidebarOpen(isOpen: boolean) {
@@ -319,7 +364,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       return;
     }
     this.#isNavigatorSidebarOpen = isOpen;
-    this.#updateNavigatorSidebarButton();
+    this.requestUpdate();
     if (isInitialized) {
       UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.navigatorShown) :
                                                 i18nString(UIStrings.navigatorHidden));
@@ -333,64 +378,22 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       return;
     }
     this.#isDebuggerSidebarOpen = isOpen;
-    this.#updateDebuggerSidebarButton();
+    this.requestUpdate();
     if (isInitialized) {
       UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.debuggerShown) :
                                                 i18nString(UIStrings.debuggerHidden));
     }
   }
 
-  #updateNavigatorSidebarButton(): void {
-    const navHidden = !this.#isNavigatorSidebarOpen;
-    this.#toggleNavigatorSidebarButton.setGlyph(navHidden ? 'left-panel-open' : 'left-panel-close');
-    this.#toggleNavigatorSidebarButton.setTitle(navHidden ? i18nString(UIStrings.showNavigator) :
-                                                            i18nString(UIStrings.hideNavigator));
-  }
-
-  #updateDebuggerSidebarButton(): void {
-    const debuggerHidden = !this.#isDebuggerSidebarOpen;
-    const debuggerGlyph = debuggerHidden ? (this.#isVertical ? 'right-panel-open' : 'bottom-panel-open') :
-                                           (this.#isVertical ? 'right-panel-close' : 'bottom-panel-close');
-    this.#toggleDebuggerSidebarButton.setGlyph(debuggerGlyph);
-    this.#toggleDebuggerSidebarButton.setTitle(debuggerHidden ? i18nString(UIStrings.showDebugger) :
-                                                                i18nString(UIStrings.hideDebugger));
-  }
-
   toggleDebuggerSidebarButtonEnabled(enabled: boolean): void {
-    this.#toggleDebuggerSidebarButton.setEnabled(enabled);
+    this.#isDebuggerSidebarButtonEnabled = enabled;
+    this.requestUpdate();
   }
 
   setLayoutMode(splitWidget: UI.SplitWidget.SplitWidget, isVertical: boolean, isInWrapper: boolean): void {
-    this.#bottomToolbarItems = [];
-
-    if (isVertical || isInWrapper) {
-      if (this.#scriptViewToolbar) {
-        splitWidget.uninstallResizer(this.#scriptViewToolbar);
-      }
-    } else if (this.#scriptViewToolbar) {
-      splitWidget.installResizer(this.#scriptViewToolbar);
-    }
-
+    this.#splitWidget = splitWidget;
     this.#isVertical = isVertical;
-    this.#updateNavigatorSidebarButton();
-    this.#updateDebuggerSidebarButton();
-
-    const leftItems: UI.Toolbar.ToolbarItem[] = [];
-    const rightItems: UI.Toolbar.ToolbarItem[] = [];
-
-    if (!isInWrapper) {
-      leftItems.push(this.#toggleNavigatorSidebarButton);
-      if (!Root.Runtime.Runtime.isTraceApp()) {
-        if (isVertical) {
-          rightItems.push(this.#toggleDebuggerSidebarButton);
-        } else {
-          this.#bottomToolbarItems.push(this.#toggleDebuggerSidebarButton);
-        }
-      }
-    }
-
-    this.#leftToolbarItems = leftItems;
-    this.#rightToolbarItems = rightItems;
+    this.#isInWrapper = isInWrapper;
     this.requestUpdate();
   }
 
@@ -510,17 +513,12 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     const view = this.visibleView();
     if (view instanceof UI.View.SimpleView) {
       void view.toolbarItems().then(items => {
-        if (Array.isArray(items)) {
-          this.#scriptViewToolbarItems = items;
-        } else {
-          const wrapper = document.createElement('div');
-          wrapper.style.display = 'contents';
-          // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-          render(items, wrapper);
-          this.#scriptViewToolbarItems = [new UI.Toolbar.ToolbarItem(wrapper)];
-        }
+        this.#scriptViewToolbarItems = items;
         this.requestUpdate();
       });
+    } else {
+      this.#scriptViewToolbarItems = [];
+      this.requestUpdate();
     }
   }
 

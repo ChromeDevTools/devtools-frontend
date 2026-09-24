@@ -103,8 +103,8 @@ interface TabInfo {
 export interface TabbedEditorViewInput {
   openTabs: TabInfo[];
   activeTabId?: string;
-  leftToolbarItems: UI.Toolbar.ToolbarItem[];
-  rightToolbarItems: UI.Toolbar.ToolbarItem[];
+  leftToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate>;
+  rightToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate>;
   tabDelegate: UI.TabbedPane.TabbedPaneTabDelegate;
   shortcuts: Array<{
     description: Platform.UIString.LocalizedString,
@@ -253,7 +253,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       @taborderchanged=${input.onTabOrderChanged}
       @select=${input.onSelect}
     >
-            <devtools-toolbar class="tabbed-pane-left-toolbar" slot="left">
+      <devtools-toolbar class="tabbed-pane-left-toolbar" slot="left">
         ${input.leftToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
       </devtools-toolbar>
       <devtools-toolbar class="tabbed-pane-right-toolbar" slot="right">
@@ -394,8 +394,8 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     this.#historyManager = historyManager;
   }
 
-  #leftToolbarItems: UI.Toolbar.ToolbarItem[] = [];
-  set leftToolbarItems(items: UI.Toolbar.ToolbarItem[]) {
+  #leftToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate> = [];
+  set leftToolbarItems(items: Array<UI.Toolbar.ToolbarItem|LitTemplate>) {
     if (this.#leftToolbarItems === items) {
       return;
     }
@@ -403,8 +403,8 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     this.#scheduleUpdate();
   }
 
-  #rightToolbarItems: UI.Toolbar.ToolbarItem[] = [];
-  set rightToolbarItems(items: UI.Toolbar.ToolbarItem[]) {
+  #rightToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate> = [];
+  set rightToolbarItems(items: Array<UI.Toolbar.ToolbarItem|LitTemplate>) {
     if (this.#rightToolbarItems === items) {
       return;
     }

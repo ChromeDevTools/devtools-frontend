@@ -22571,6 +22571,12 @@
                             "description": "Frame swap timestamp.",
                             "optional": true,
                             "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "monotonicTimestamp",
+                            "description": "Frame swap timestamp as monotonic time.",
+                            "optional": true,
+                            "$ref": "Network.MonotonicTime"
                         }
                     ]
                 },
@@ -27816,6 +27822,27 @@
                     ]
                 },
                 {
+                    "id": "PrivateVerificationTokensIssuerConfig",
+                    "description": "Configuration for a Private Verification Tokens issuer.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "issuerOrigin",
+                            "description": "Origin of the token issuer.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "redeemerOrigins",
+                            "description": "Origins authorized to redeem tokens from this issuer.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "StorageBucketsDurability",
                     "type": "string",
                     "enum": [
@@ -28177,6 +28204,20 @@
                             "type": "array",
                             "items": {
                                 "$ref": "PrivateVerificationToken"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "getPrivateVerificationTokensIssuerConfigs",
+                    "description": "Returns the configured Private Verification Tokens issuers and their redeemer\norigins.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "configs",
+                            "type": "array",
+                            "items": {
+                                "$ref": "PrivateVerificationTokensIssuerConfig"
                             }
                         }
                     ]

@@ -4332,6 +4332,12 @@ declare namespace ProtocolProxyApi {
     invoke_getPrivateVerificationTokens(): Promise<Protocol.Storage.GetPrivateVerificationTokensResponse>;
 
     /**
+     * Returns the configured Private Verification Tokens issuers and their redeemer
+     * origins.
+     */
+    invoke_getPrivateVerificationTokensIssuerConfigs(): Promise<Protocol.Storage.GetPrivateVerificationTokensIssuerConfigsResponse>;
+
+    /**
      * Removes all Private Verification Tokens issued by the provided issuerOrigin.
      */
     invoke_clearPrivateVerificationTokens(params: Protocol.Storage.ClearPrivateVerificationTokensRequest): Promise<Protocol.ProtocolResponseWithError>;

@@ -786,6 +786,43 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.strictEqual(unknownOriginElement.textContent, 'https://does-not-resolve.test');
   });
 
+  it('shows an explanation for blocked mixed content', () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
+    const securityModel = target.model(Security.SecurityModel.SecurityModel);
+    assert.exists(securityModel);
+    const pageVisibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Neutral, null, null, ['scheme-is-not-cryptographic']);
+    securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                           pageVisibleSecurityState);
+
+    const request = createNetworkRequest({
+      url: 'http://foo.test',
+      documentURL: 'https://foo.test',
+      frameId: '0',
+      loaderId: '0',
+    });
+    request.setBlockedReason(Protocol.Network.BlockedReason.MixedContent);
+    request.mixedContentType = Protocol.Security.MixedContentType.Blockable;
+    const networkManager = securityModel.networkManager();
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+
+    const explanations = securityPanel.mainView.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
+    assert.lengthOf(explanations, 1);
+    const explanation = explanations[0];
+    assert.isTrue(explanation.classList.contains('security-explanation-info'));
+
+    const title = querySelectorErrorOnMissing(explanation, '.security-explanation-title');
+    assert.strictEqual(title.textContent, 'Blocked mixed content');
+
+    const explanationText = querySelectorErrorOnMissing(explanation, '.security-explanation-text');
+    assert.include(explanationText.textContent, 'Your page requested non-secure resources that were blocked.');
+
+    const requestsLink = querySelectorErrorOnMissing(explanation, 'button.security-mixed-content');
+    assert.strictEqual(requestsLink.textContent, 'View 1 request in Network panel');
+    assert.strictEqual(requestsLink.getAttribute('role'), 'link');
+  });
+
   it('shows origins with blockable and optionally blockable resources in the sidebar', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
 

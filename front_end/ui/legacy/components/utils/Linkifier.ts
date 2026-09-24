@@ -593,8 +593,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     const lineNumber = options.lineNumber;
     const columnNumber = options.columnNumber;
     const showColumnNumber = options.showColumnNumber;
-    const isPrivileged = Common.ParsedURL.schemeIs(url, 'chrome:') || Common.ParsedURL.schemeIs(url, 'file:') ||
-        Common.ParsedURL.schemeIs(url, 'devtools:');
+    const isPrivileged = Common.ParsedURL.isPrivilegedScheme(url);
     const preventClick = options.preventClick;
     const maxLength = options.maxLength || UI.UIUtils.MaxLengthForDisplayedURLs;
     const bypassURLTrimming = options.bypassURLTrimming;

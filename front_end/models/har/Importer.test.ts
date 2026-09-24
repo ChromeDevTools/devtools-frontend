@@ -587,4 +587,28 @@ describe('HAR Importer', () => {
     assert.isTrue(parsedRequests[0].isImportedHar());
     assert.isTrue(parsedRequests[1].isImportedHar());
   });
+
+  it('sanitizes non-web-safe URLs in HARInitiator and HARCallFrame', () => {
+    const unsafeInitiator = new HAR.HARFormat.HARInitiator({
+      type: 'parser',
+      url: 'chrome-extension://nnkmpipfcdgmkgepigmhifcgbddoohgk/secret.html',
+    });
+    assert.isUndefined(unsafeInitiator.url);
+
+    const safeInitiator = new HAR.HARFormat.HARInitiator({
+      type: 'parser',
+      url: 'https://example.com/index.html',
+    });
+    assert.strictEqual(safeInitiator.url, 'https://example.com/index.html');
+
+    const unsafeCallFrame = new HAR.HARFormat.HARCallFrame({
+      url: 'chrome-extension://nnkmpipfcdgmkgepigmhifcgbddoohgk/secret.js',
+    });
+    assert.strictEqual(unsafeCallFrame.url, '');
+
+    const safeCallFrame = new HAR.HARFormat.HARCallFrame({
+      url: 'https://example.com/valid.js',
+    });
+    assert.strictEqual(safeCallFrame.url, 'https://example.com/valid.js');
+  });
 });

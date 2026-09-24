@@ -128,6 +128,24 @@ describeWithEnvironment('Linkifier', () => {
       assert.strictEqual(link.tagName, 'SPAN');
       assert.isFalse(link.classList.contains('devtools-link'));
     });
+
+    it('renders non-web-safe URLs as plain span by default', () => {
+      const privilegedUrls = [
+        urlString`chrome-extension://abcdefghijklmnop/options.html`,
+        urlString`chrome-search://local-ntp/local-ntp.html`,
+        urlString`chrome-untrusted://terminal/html/terminal.html`,
+        urlString`isolated-app://abcdefghijklmnop/index.html`,
+        urlString`blob:chrome-extension://abcdefghijklmnop/550e8400-e29b-41d4-a716-446655440000`,
+      ];
+      for (const url of privilegedUrls) {
+        const link = Components.Linkifier.Linkifier.linkifyURL(url);
+        assert.strictEqual(link.tagName, 'SPAN');
+        assert.isFalse(link.classList.contains('devtools-link'));
+
+        const allowedLink = Components.Linkifier.Linkifier.linkifyURL(url, {allowPrivileged: true});
+        assert.isTrue(allowedLink.classList.contains('devtools-link'));
+      }
+    });
   });
 
   it('creates an empty placeholder anchor if the debugger is disabled and no url exists', () => {

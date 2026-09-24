@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -420,7 +421,9 @@ export class HARInitiator extends HARBase {
     super(data);
     this.type = (HARBase.optionalString(data['type']) ?? SDK.NetworkRequest.InitiatorType.OTHER) as
         Protocol.Network.InitiatorType;
-    this.url = HARBase.optionalString(data['url']);
+    const url = HARBase.optionalString(data['url']);
+    // Ignore privileged/non-web schemes in imported HARs.
+    this.url = url && Common.ParsedURL.hasWebSafeScheme(url) ? url : undefined;
     this.lineNumber = HARBase.optionalNumber(data['lineNumber']);
     this.requestId = HARBase.optionalString(data['requestId']) as Protocol.Network.RequestId;
     if (data['stack']) {
@@ -477,7 +480,9 @@ export class HARCallFrame extends HARBase {
 
     this.functionName = HARBase.optionalString(data['functionName']) ?? '';
     this.scriptId = (HARBase.optionalString(data['scriptId']) ?? '') as Protocol.Runtime.ScriptId;
-    this.url = HARBase.optionalString(data['url']) ?? '';
+    const url = HARBase.optionalString(data['url']) ?? '';
+    // Ignore privileged/non-web schemes in imported HARs.
+    this.url = Common.ParsedURL.hasWebSafeScheme(url) ? url : '';
     this.lineNumber = HARBase.optionalNumber(data['lineNumber']) ?? -1;
     this.columnNumber = HARBase.optionalNumber(data['columnNumber']) ?? -1;
   }

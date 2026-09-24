@@ -777,4 +777,70 @@ describe('Parsed URL', () => {
     assert.strictEqual(ParsedURL.rawPathToUrlString(platformPathTest), urlTest);
     assert.strictEqual(ParsedURL.urlToRawPathString(urlTest), platformPathTest);
   });
+
+  describe('hasWebSafeScheme', () => {
+    it('returns true for standard web schemes and blob URLs wrapping web schemes', () => {
+      const safeUrls = [
+        urlString`http://example.com/script.js`,
+        urlString`https://example.com/script.js`,
+        urlString`ws://example.com/socket`,
+        urlString`wss://example.com/socket`,
+        urlString`data:text/javascript,console.log(1)`,
+        urlString`blob:https://example.com/550e8400-e29b-41d4-a716-446655440000`,
+        urlString`blob:http://example.com/550e8400-e29b-41d4-a716-446655440000`,
+      ];
+      for (const url of safeUrls) {
+        assert.isTrue(Common.ParsedURL.hasWebSafeScheme(url), `Expected ${url} to have a web-safe scheme`);
+      }
+    });
+
+    it('returns false for privileged, internal, or non-web schemes and blob URLs wrapping them', () => {
+      const unsafeUrls = [
+        urlString`chrome://settings`,
+        urlString`chrome-extension://abcdefghijklmnop/page.html`,
+        urlString`chrome-search://local-ntp/local-ntp.html`,
+        urlString`chrome-untrusted://terminal/html/terminal.html`,
+        urlString`devtools://devtools/bundled/inspector.html`,
+        urlString`file:///etc/passwd`,
+        urlString`javascript:alert(1)`,
+        urlString`isolated-app://abcdefghijklmnop/index.html`,
+        urlString`blob:chrome-extension://abcdefghijklmnop/550e8400-e29b-41d4-a716-446655440000`,
+        urlString``,
+      ];
+      for (const url of unsafeUrls) {
+        assert.isFalse(Common.ParsedURL.hasWebSafeScheme(url));
+      }
+    });
+  });
+
+  describe('isPrivilegedScheme', () => {
+    it('returns true for privileged browser and local schemes and blob URLs wrapping them', () => {
+      const privilegedUrls = [
+        urlString`chrome://settings`,
+        urlString`chrome-extension://abcdefghijklmnop/page.html`,
+        urlString`chrome-search://local-ntp/local-ntp.html`,
+        urlString`chrome-untrusted://terminal/html/terminal.html`,
+        urlString`devtools://devtools/bundled/inspector.html`,
+        urlString`file:///etc/passwd`,
+        urlString`isolated-app://abcdefghijklmnop/index.html`,
+        urlString`blob:chrome-extension://abcdefghijklmnop/550e8400-e29b-41d4-a716-446655440000`,
+      ];
+      for (const url of privilegedUrls) {
+        assert.isTrue(Common.ParsedURL.isPrivilegedScheme(url));
+      }
+    });
+
+    it('returns false for web schemes, relative paths, and unprivileged schemes', () => {
+      const unprivilegedUrls = [
+        urlString`https://example.com/script.js`,
+        urlString`blob:https://example.com/550e8400-e29b-41d4-a716-446655440000`,
+        urlString`bar.js`,
+        urlString`<anonymous>`,
+        urlString`unknown-scheme://foo`,
+      ];
+      for (const url of unprivilegedUrls) {
+        assert.isFalse(Common.ParsedURL.isPrivilegedScheme(url));
+      }
+    });
+  });
 });

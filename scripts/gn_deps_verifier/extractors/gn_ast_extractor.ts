@@ -15,7 +15,7 @@ export type {AstTargetInfo};
 
 export function isInsideRoot(rootDir: string, candidate: string): boolean {
   const relative = path.relative(rootDir, candidate);
-  return (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
+  return !relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative);
 }
 
 export interface GnAstExtractorOptions {
@@ -72,9 +72,7 @@ export class GnAstExtractor {
     return this.#findNearestBuildGn(filePath);
   }
 
-  async getTargetInfoByLabel(
-      label: string,
-      ): Promise<AstTargetInfo|undefined> {
+  async getTargetInfoByLabel(label: string): Promise<AstTargetInfo|undefined> {
     const gnLabel = GnLabel.parse(label);
     if (!gnLabel) {
       return undefined;
@@ -168,9 +166,7 @@ export class GnAstExtractor {
         }
         if (entry.isDirectory()) {
           if (!this.#excludedDirs.has(entry.name)) {
-            promises.push(
-                this.#findAllBuildGnsUnderDir(path.join(dir, entry.name)),
-            );
+            promises.push(this.#findAllBuildGnsUnderDir(path.join(dir, entry.name)));
           }
         } else if (entry.name === 'BUILD.gn') {
           results.push(path.join(dir, entry.name));

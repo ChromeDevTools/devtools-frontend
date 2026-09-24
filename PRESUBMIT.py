@@ -213,43 +213,6 @@ def CheckESBuildVersion(input_api, output_api):
                                 message='ESBuild version')
 
 
-def CheckBuildGN(input_api, output_api):
-    devtools_root = input_api.PresubmitLocalPath()
-    devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
-    verifier_dir = input_api.os_path.join(devtools_root, 'scripts',
-                                          'gn_deps_verifier')
-    script_path = input_api.os_path.join(verifier_dir, 'cli.ts')
-
-    verifier_files = _GetAffectedFiles(input_api, [verifier_dir], ['D'], [])
-    affected_front_end_files = _GetAffectedFiles(
-        input_api, [devtools_front_end], ['D'],
-        ['.ts', '.js', '.css', 'BUILD.gn'])
-
-    excluded_front_end_dirs = [
-        input_api.os_path.join(devtools_front_end, 'third_party'),
-        input_api.os_path.join(devtools_front_end, 'legacy_test_runner'),
-    ]
-    affected_front_end_files = [
-        f for f in affected_front_end_files
-        if not any(excluded_dir in f
-                   for excluded_dir in excluded_front_end_dirs)
-    ]
-
-    if len(verifier_files) == 0 and len(affected_front_end_files) == 0:
-        return []
-
-    if len(verifier_files) > 0 or len(affected_front_end_files) > 50:
-        script_arguments = ['--dry-run', '--all']
-    else:
-        script_arguments = ['--dry-run'] + affected_front_end_files
-
-    return _CheckWithNodeScript(input_api,
-                                output_api,
-                                script_path,
-                                script_arguments=script_arguments,
-                                message='BUILD.gn dependency check')
-
-
 def CheckDevToolsLint(input_api, output_api):
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                        'scripts', 'lint', 'run_lint_check.mjs')

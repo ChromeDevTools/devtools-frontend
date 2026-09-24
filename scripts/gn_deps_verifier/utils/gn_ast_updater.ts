@@ -122,9 +122,7 @@ function applyDiffToBuildFile(
   }
 }
 
-async function writeModifiedBuildFiles(
-    modifiedBuildFiles: Set<GnBuildFile>,
-    ): Promise<void> {
+async function writeModifiedBuildFiles(modifiedBuildFiles: Set<GnBuildFile>): Promise<void> {
   const tasks = Array.from(modifiedBuildFiles, build => async () => {
     try {
       const success = await build.writeGnFile();
@@ -176,17 +174,15 @@ export async function updateBuildGnFiles(
         continue;
       }
 
-      computeTasks.push(
-          createComputeTask(
-              gnBuild,
-              targetLabel,
-              realTargetName,
-              targetInfo,
-              requiredDeps,
-              rootDir,
-              extractionResult,
-              ),
-      );
+      computeTasks.push(createComputeTask(
+          gnBuild,
+          targetLabel,
+          realTargetName,
+          targetInfo,
+          requiredDeps,
+          rootDir,
+          extractionResult,
+          ));
     }
   }
 

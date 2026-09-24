@@ -35,6 +35,17 @@ export default `/*
     gap: var(--sys-size-4);
   }
 
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-3);
+    flex-shrink: 0;
+  }
+
+  .close-button {
+    flex-shrink: 0;
+  }
+
   .sent-status {
     display: flex;
     align-items: center;

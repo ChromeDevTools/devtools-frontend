@@ -350,7 +350,7 @@ export class AiConversation {
     }
     async *run(initialQuery, options = {}) {
         this.#navigationOccurredDuringRun = false;
-        const originAtRunStart = getPrimaryPageSecurityOrigin(this.#targetManager);
+        const originAtRunStart = this.#origin ?? getPrimaryPageSecurityOrigin(this.#targetManager);
         const listener = () => {
             // Prevent the agent from executing tools or reading data from an untrusted origin
             // if the page navigates unexpectedly during execution.

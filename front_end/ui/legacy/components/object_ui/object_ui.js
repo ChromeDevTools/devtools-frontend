@@ -284,7 +284,6 @@ var Audits;
     CookieExclusionReason2["ExcludeSameSiteLax"] = "ExcludeSameSiteLax";
     CookieExclusionReason2["ExcludeSameSiteStrict"] = "ExcludeSameSiteStrict";
     CookieExclusionReason2["ExcludeDomainNonASCII"] = "ExcludeDomainNonASCII";
-    CookieExclusionReason2["ExcludeThirdPartyCookieBlockedInFirstPartySet"] = "ExcludeThirdPartyCookieBlockedInFirstPartySet";
     CookieExclusionReason2["ExcludeThirdPartyPhaseout"] = "ExcludeThirdPartyPhaseout";
     CookieExclusionReason2["ExcludePortMismatch"] = "ExcludePortMismatch";
     CookieExclusionReason2["ExcludeSchemeMismatch"] = "ExcludeSchemeMismatch";
@@ -1536,7 +1535,6 @@ var Network;
     SetCookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
     SetCookieBlockedReason2["UserPreferences"] = "UserPreferences";
     SetCookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
-    SetCookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
     SetCookieBlockedReason2["SyntaxError"] = "SyntaxError";
     SetCookieBlockedReason2["SchemeNotSupported"] = "SchemeNotSupported";
     SetCookieBlockedReason2["OverwriteSecure"] = "OverwriteSecure";
@@ -1561,7 +1559,6 @@ var Network;
     CookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
     CookieBlockedReason2["UserPreferences"] = "UserPreferences";
     CookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
-    CookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
     CookieBlockedReason2["UnknownError"] = "UnknownError";
     CookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
     CookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
@@ -3320,17 +3317,6 @@ li.object-properties-section  {
   }
 }
 
-.object-properties-section li.editing-sub-part {
-  padding: 3px var(--sys-size-6) var(--sys-size-5) var(--sys-size-4);
-  margin: calc(-1 * var(--sys-size-1)) calc(-1 * var(--sys-size-4)) calc(-1 * var(--sys-size-5));
-  text-overflow: clip;
-}
-
-.object-properties-section li.editing {
-  margin-left: 10px;
-  text-overflow: clip;
-}
-
 .tree-outline ol.title-less-mode {
   padding-left: 0;
 }
@@ -3352,10 +3338,6 @@ li.object-properties-section  {
   flex-direction: row;
 }
 
-.object-properties-section .editable-div {
-  overflow: hidden;
-}
-
 .name-and-value {
   line-height: var(--sys-size-8);
   display: flex;
@@ -3367,15 +3349,6 @@ li.object-properties-section  {
   flex-shrink: 0;
 }
 
-.editing-sub-part .name-and-value {
-  overflow: visible;
-  display: inline-flex;
-}
-
-.property-prompt {
-  margin-left: var(--sys-size-3);
-}
-
 .tree-outline.hide-selection-when-blurred .selected:focus-visible {
   background: none;
   outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
@@ -3383,7 +3356,7 @@ li.object-properties-section  {
 }
 
 .tree-outline.hide-selection-when-blurred .selected:focus-visible ::slotted(*),
-.tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title,
+.tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title:not(:has(.name-and-value, .gray-info-message)),
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value,
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .gray-info-message {
   background: var(--sys-color-state-focus-highlight);
@@ -3404,8 +3377,7 @@ li.object-properties-section  {
     color: ButtonText;
   }
 
-  .tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title,
-  .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value {
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title {
     background: transparent;
     box-shadow: none;
   }
@@ -3533,6 +3505,7 @@ var objectValue_css_default = `/*
 
 // ../../front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.ts
 var { widget, widgetRef } = UI2.Widget;
+var { ifExpanded } = UI2.TreeOutline;
 var { ref, repeat: repeat2, ifDefined: ifDefined2, classMap } = Directives2;
 var UIStrings2 = {
   /**
@@ -3614,12 +3587,11 @@ var UIStrings2 = {
   /**
    * @description Tooltip text for the button to open a memory buffer object in the Memory inspector panel.
    */
-  openInMemoryInpector: "Open in Memory inspector panel"
+  openInMemoryInspector: "Open in Memory inspector panel"
 };
 var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/object_ui/ObjectPropertiesSection.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var EXPANDABLE_MAX_DEPTH = 100;
-var topLevelNodesCache = /* @__PURE__ */ new WeakMap();
 function isWasmObject(object) {
   return object?.subtype === "webassemblymemory" || object?.subtype === "wasmvalue";
 }
@@ -3891,8 +3863,6 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common2.ObjectWrapper
     }
   }
   setFilter(filter) {
-    this.filter = filter;
-    this.dispatchEventToListeners(_ObjectTreeNodeBase.Events.FILTER_CHANGED);
     this.#walk().forEach((c) => {
       c.filter = filter;
       c.dispatchEventToListeners(_ObjectTreeNodeBase.Events.FILTER_CHANGED);
@@ -4129,14 +4099,13 @@ var ArrayGroupTreeNode = class _ArrayGroupTreeNode extends ObjectTreeNodeBase {
   }
 };
 var ObjectTreeNode = class _ObjectTreeNode extends ObjectTreeNodeBase {
-  constructor(property, parent, options, nonSyntheticParent) {
+  constructor(property, parent, options) {
     super(parent, options);
     this.property = property;
-    this.nonSyntheticParent = nonSyntheticParent;
   }
   property;
-  nonSyntheticParent;
   #path;
+  showAllChildren = false;
   get object() {
     return this.property.value;
   }
@@ -4391,8 +4360,8 @@ function getMemoryIcon(object, expression) {
     void Common2.Revealer.reveal(new SDK3.RemoteObject.LinearMemoryInspectable(object, expression));
   }}
     jslog=${VisualLogging.action("open-memory-inspector").track({ click: true })}
-    title=${i18nString2(UIStrings2.openInMemoryInpector)}
-    aria-label=${i18nString2(UIStrings2.openInMemoryInpector)}></devtools-icon>`;
+    title=${i18nString2(UIStrings2.openInMemoryInspector)}
+    aria-label=${i18nString2(UIStrings2.openInMemoryInspector)}></devtools-icon>`;
 }
 function isDisplayableProperty(property, parentProperty) {
   if (!parentProperty?.synthetic) {
@@ -4611,49 +4580,19 @@ var OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
     render2(nothing2, target);
     return;
   }
-  const classes = input.renderAsSubtree ? ["source-code", "object-properties-section"] : [];
-  let entry = topLevelNodesCache.get(objectTree);
-  if (!entry || entry.linkifier !== input.linkifier || !entry.nodes.length && objectTree.children) {
-    if (entry) {
-      objectTree.removeEventListener("children-changed" /* CHILDREN_CHANGED */, entry.listener);
-    }
-    const nodes = Array.from(ObjectPropertyTreeElement.createNodes(
-      objectTree,
-      input.skipProto,
-      input.skipGettersAndSetters,
-      input.linkifier,
-      input.emptyPlaceholder
-    ));
-    const listener = () => {
-      topLevelNodesCache.delete(objectTree);
-      objectTree.removeEventListener("children-changed" /* CHILDREN_CHANGED */, listener);
-    };
-    entry = { linkifier: input.linkifier, nodes, listener };
-    topLevelNodesCache.set(objectTree, entry);
-    objectTree.addEventListener("children-changed" /* CHILDREN_CHANGED */, listener);
-  }
-  render2(entry.nodes.map((node) => html2`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`), target, {
-    container: {
-      classes,
-      interceptedListeners: {
-        expand: (e) => input.onExpand(e.detail.expanded)
-      }
-    }
+  const nodes = Array.from(ObjectPropertyTreeElement.createNodes(
+    objectTree,
+    input,
+    input.skipProto,
+    input.skipGettersAndSetters,
+    input.linkifier,
+    input.emptyPlaceholder
+  ));
+  nodes.forEach(UI2.UIUtils.HTMLElementWithLightDOMTemplate.patchLitTemplate);
+  render2(nodes, target, {
+    container: { classes: input.renderAsSubtree ? ["source-code", "object-properties-section"] : [] }
   });
 };
-async function populateChildrenIfNeeded(node) {
-  const children = await node.populateChildrenIfNeeded();
-  if (!children.arrayRanges) {
-    return;
-  }
-  if (children.arrayRanges.length === 1) {
-    await populateChildrenIfNeeded(children.arrayRanges[0]);
-  } else {
-    await Promise.all(
-      children.arrayRanges.filter((child) => child.singular).map((child) => populateChildrenIfNeeded(child))
-    );
-  }
-}
 var ObjectTreeWidget = class extends UI2.Widget.Widget {
   #objectTree = void 0;
   #linkifier = void 0;
@@ -4666,9 +4605,73 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
     super(element);
     this.#view = view;
   }
-  onExpand = (expanded) => {
-    if (this.#objectTree) {
-      this.#objectTree.expanded = expanded;
+  async #populateChildrenIfNeeded(node) {
+    const isFirstPopulation = !node.children;
+    const children = await node.populateChildrenIfNeeded();
+    if (isFirstPopulation) {
+      const entriesProperty = children.internalProperties?.find(({ property }) => property.name === "[[Entries]]");
+      if (entriesProperty) {
+        entriesProperty.expanded = true;
+      }
+      for (const property of children.properties ?? []) {
+        const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
+        if (canShowProperty) {
+          if (property.property.name === "memories" && property.object?.className === "Memories") {
+            property.expanded = true;
+          }
+        }
+      }
+    }
+    for (const child of node.treeNodeChildren()) {
+      child.removeEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
+      child.removeEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
+      child.removeEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
+      child.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
+      child.addEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
+      child.addEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
+      child.addEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
+      child.addEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
+      if (child.expanded) {
+        await this.#populateChildrenIfNeeded(child);
+      }
+    }
+    if (!children.arrayRanges) {
+      return;
+    }
+    if (children.arrayRanges.length === 1) {
+      await this.#populateChildrenIfNeeded(children.arrayRanges[0]);
+    } else {
+      await Promise.all(
+        children.arrayRanges.filter((child) => child.singular).map((child) => this.#populateChildrenIfNeeded(child))
+      );
+    }
+  }
+  onExpand = (node, expanded) => {
+    if (node.expanded !== expanded) {
+      node.expanded = expanded;
+      this.requestUpdate();
+    }
+  };
+  expandRecursively = (node) => {
+    void node.expandRecursively(EXPANDABLE_MAX_DEPTH);
+    this.requestUpdate();
+  };
+  collapseChildren = (node) => {
+    node.collapseRecursively();
+    this.requestUpdate();
+  };
+  sortPropertiesAlphabetically = (node) => {
+    node.sortPropertiesAlphabetically = !node.sortPropertiesAlphabetically;
+    this.requestUpdate();
+  };
+  onShowAllToggled = (node) => {
+    node.includeNullOrUndefinedValues = !node.includeNullOrUndefinedValues;
+    this.requestUpdate();
+  };
+  onShowAllProperties = (node) => {
+    if (!node.showAllChildren) {
+      node.showAllChildren = true;
+      this.requestUpdate();
     }
   };
   get skipProto() {
@@ -4731,7 +4734,7 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
   }
   async performUpdate() {
     if (this.#objectTree?.expanded) {
-      await populateChildrenIfNeeded(this.#objectTree);
+      await this.#populateChildrenIfNeeded(this.#objectTree);
     }
     this.#view(this, {}, this.contentElement);
   }
@@ -5027,19 +5030,34 @@ var ObjectPropertyWidget = class extends UI2.Widget.Widget {
     return this.#property;
   }
   set property(property) {
-    if (this.#property) {
-      this.#property.removeEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
-      this.#property.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
-      this.#property.removeEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
+    if (property === this.#property) {
+      return;
     }
-    this.#search?.removeEventListener(UI2.TreeOutline.TreeSearch.Events.SEARCH_CHANGED, this.requestUpdate, this);
+    this.#removePropertyListeners();
     this.#property = property;
-    this.#property.addEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
-    this.#property.addEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
-    this.#property.addEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
     this.#search = property.search;
-    this.#search?.addEventListener(UI2.TreeOutline.TreeSearch.Events.SEARCH_CHANGED, this.requestUpdate, this);
+    this.#addPropertyListeners();
     this.requestUpdate();
+  }
+  #addPropertyListeners() {
+    this.#property?.addEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
+    this.#property?.addEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
+    this.#property?.addEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
+    this.#search?.addEventListener(UI2.TreeOutline.TreeSearch.Events.SEARCH_CHANGED, this.requestUpdate, this);
+  }
+  #removePropertyListeners() {
+    this.#property?.removeEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
+    this.#property?.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
+    this.#property?.removeEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
+    this.#search?.removeEventListener(UI2.TreeOutline.TreeSearch.Events.SEARCH_CHANGED, this.requestUpdate, this);
+  }
+  onDetach() {
+    this.#removePropertyListeners();
+  }
+  wasShown() {
+    super.wasShown();
+    this.#removePropertyListeners();
+    this.#addPropertyListeners();
   }
   get expanded() {
     return this.#expanded;
@@ -5107,66 +5125,66 @@ var ObjectPropertyWidget = class extends UI2.Widget.Widget {
     void this.#property?.invokeGetter(getter);
   }
 };
-var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.TreeOutline.TreeElement {
-  property;
-  toggleOnClick;
-  linkifier;
-  maxNumPropertiesToShow;
-  #widget;
-  constructor(property, linkifier) {
-    super();
-    this.#widget = new ObjectPropertyWidget();
-    this.#widget.markAsRoot();
-    this.property = property;
-    this.hidden = property.isFiltered;
-    this.property.addEventListener("value-changed" /* VALUE_CHANGED */, this.#updateValue, this);
-    this.property.addEventListener("children-changed" /* CHILDREN_CHANGED */, this.#updateChildren, this);
-    this.property.addEventListener("filter-changed" /* FILTER_CHANGED */, this.#updateFilter, this);
-    this.property.addEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.#onExpandedChanged, this);
-    this.toggleOnClick = true;
-    this.linkifier = linkifier;
-    this.maxNumPropertiesToShow = InitialVisibleChildrenLimit;
-    this.listItemElement.addEventListener("contextmenu", this.contextMenuFired.bind(this), false);
-    this.listItemElement.dataset.objectPropertyNameForTest = property.name;
-    this.updateExpandable();
-    this.setExpandRecursively(property.name !== "[[Prototype]]");
-    if (property.expanded) {
-      this.expand();
-    }
+var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement {
+  static #render(property, linkifier, handlers) {
+    const onContextMenu = (e) => {
+      const contextMenu = new UI2.ContextMenu.ContextMenu(e);
+      populateObjectTreeContextMenu(contextMenu, property, handlers);
+      void contextMenu.show();
+    };
+    const onExpand = (e) => {
+      handlers.onExpand(property, e.detail.expanded);
+      e.consume(true);
+    };
+    const childCount = (property.children?.properties?.length ?? 0) + (property.children?.internalProperties?.length ?? 0) + (property.children?.accessors?.length ?? 0) + (property.children?.arrayRanges?.length ?? 0);
+    const showAllChildren = childCount <= InitialVisibleChildrenLimit || property.showAllChildren;
+    const children = () => {
+      const nodes = _ObjectPropertyTreeElement.createNodes(
+        property,
+        handlers,
+        false,
+        false,
+        linkifier,
+        void 0,
+        (p) => !isDisplayableProperty(p, property.property)
+      );
+      return showAllChildren ? nodes : nodes.take(InitialVisibleChildrenLimit);
+    };
+    const expandable = property.object && !property.object.customPreview() && property.object.hasChildren && !property.property.wasThrown;
+    return html2`<li
+      ?hidden=${property.isFiltered}
+      ?open=${property.expanded}
+      @contextmenu=${onContextMenu}
+      @expand=${onExpand}
+      data-object-property-name-for-test=${property.name}
+      toggle-on-click
+      role=treeitem>
+        ${widget(ObjectPropertyWidget, { property, linkifier, editable: !property.readOnly, expanded: property.expanded })}
+        ${expandable ? html2`
+          <ul role=group>
+            ${children()}
+            ${showAllChildren ? nothing2 : html2`
+              <li role=treeitem @select=${() => handlers.onShowAllProperties(property)}>
+                <div
+                    class=object-value-calculate-value-button
+                    title=${i18nString2(UIStrings2.showAllD, { PH1: childCount })}>
+                  ${i18nString2(UIStrings2.dots)}
+                </div>
+              </li>`}
+          </ul>` : nothing2}
+      </li>`;
   }
-  static async populate(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
-    await populateChildrenIfNeeded(value);
-    _ObjectPropertyTreeElement.populateImpl(
-      treeElement,
-      value,
-      skipProto,
-      skipGettersAndSetters,
-      linkifier,
-      emptyPlaceholder
-    );
-  }
-  static populateImpl(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
-    for (const childNode of _ObjectPropertyTreeElement.createNodes(
-      value,
-      skipProto,
-      skipGettersAndSetters,
-      linkifier,
-      emptyPlaceholder,
-      (property) => treeElement instanceof _ObjectPropertyTreeElement && !isDisplayableProperty(property, treeElement.property?.property)
-    )) {
-      treeElement.appendChild(childNode);
-    }
-  }
-  static *createNodes(value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
+  static *createNodes(value, handlers, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
     const properties = value.children;
     if (!properties) {
       return;
     }
     if (properties.arrayRanges) {
-      yield* ArrayGroupingTreeElement.createNodes(properties, linkifier, isNotDisplayablePropertyCallback);
+      yield* ArrayGroupingTreeElement.createNodes(properties, handlers, linkifier, isNotDisplayablePropertyCallback);
     } else {
       yield* _ObjectPropertyTreeElement.createPropertyNodes(
         properties,
+        handlers,
         skipProto,
         skipGettersAndSetters,
         linkifier,
@@ -5175,7 +5193,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       );
     }
   }
-  static *createPropertyNodes({ properties, internalProperties, accessors, arrayRanges }, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
+  static *createPropertyNodes({ properties, internalProperties, accessors, arrayRanges }, handlers, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
     let empty = true;
     if (arrayRanges && arrayRanges.length > 0) {
       empty = false;
@@ -5184,11 +5202,8 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     properties?.sort((a, b) => compareProperties(a, b, sortPropertiesAlphabetically));
     const entriesProperty = internalProperties?.find(({ property }) => property.name === "[[Entries]]");
     if (entriesProperty) {
-      const treeElement = new _ObjectPropertyTreeElement(entriesProperty, linkifier);
-      treeElement.setExpandable(true);
-      treeElement.expand();
+      yield _ObjectPropertyTreeElement.#render(entriesProperty, linkifier, handlers);
       empty = false;
-      yield treeElement;
     }
     for (const property of properties ?? []) {
       if (isNotDisplayablePropertyCallback?.(property.property)) {
@@ -5196,150 +5211,29 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       }
       const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
       if (canShowProperty) {
-        const element = new _ObjectPropertyTreeElement(property, linkifier);
-        if (property.property.name === "memories" && property.object?.className === "Memories") {
-          element.updateExpandable();
-          if (element.isExpandable()) {
-            element.expand();
-          }
-        }
+        yield _ObjectPropertyTreeElement.#render(property, linkifier, handlers);
         empty = false;
-        yield element;
       }
     }
-    for (const accessor of accessors ?? []) {
-      yield new _ObjectPropertyTreeElement(accessor, linkifier);
+    if (!skipGettersAndSetters) {
+      for (const accessor of accessors ?? []) {
+        yield _ObjectPropertyTreeElement.#render(accessor, linkifier, handlers);
+      }
     }
     for (const property of internalProperties ?? []) {
-      const treeElement = new _ObjectPropertyTreeElement(property, linkifier);
       if (property.property.name === "[[Entries]]") {
         continue;
       }
       if (property.property.name === "[[Prototype]]" && skipProto) {
         continue;
       }
+      yield _ObjectPropertyTreeElement.#render(property, linkifier, handlers);
       empty = false;
-      yield treeElement;
     }
     if (empty) {
-      const title = document.createElement("div");
-      title.classList.add("gray-info-message");
-      title.textContent = emptyPlaceholder || i18nString2(UIStrings2.noProperties);
-      const infoElement = new UI2.TreeOutline.TreeElement(title);
-      yield infoElement;
-    }
-  }
-  static populateWithProperties(treeNode, children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
-    for (const childNode of this.createPropertyNodes(
-      children,
-      skipProto,
-      skipGettersAndSetters,
-      linkifier,
-      emptyPlaceholder,
-      (property) => treeNode instanceof _ObjectPropertyTreeElement && !isDisplayableProperty(property, treeNode.property?.property)
-    )) {
-      treeNode.appendChild(childNode);
-    }
-  }
-  // This is called by layout tests
-  startEditing() {
-    this.#widget.startEditing();
-  }
-  // This is called by layout tests
-  get editing() {
-    return this.#widget.editing;
-  }
-  get editable() {
-    return this.#widget.editable;
-  }
-  set editable(val) {
-    this.#widget.editable = val;
-  }
-  // This is called by layout tests
-  async applyExpression(expression) {
-    await this.property.setValue(expression);
-  }
-  showAllPropertiesElementSelected(element) {
-    this.removeChild(element);
-    this.children().forEach((x) => {
-      x.hidden = false;
-    });
-    return false;
-  }
-  createShowAllPropertiesButton() {
-    const element = document.createElement("div");
-    element.classList.add("object-value-calculate-value-button");
-    element.textContent = i18nString2(UIStrings2.dots);
-    UI2.Tooltip.Tooltip.install(element, i18nString2(UIStrings2.showAllD, { PH1: this.childCount() }));
-    const children = this.children();
-    for (let i = this.maxNumPropertiesToShow; i < this.childCount(); ++i) {
-      children[i].hidden = true;
-    }
-    const showAllPropertiesButton = new UI2.TreeOutline.TreeElement(element);
-    showAllPropertiesButton.onselect = this.showAllPropertiesElementSelected.bind(this, showAllPropertiesButton);
-    this.appendChild(showAllPropertiesButton);
-  }
-  async onpopulate() {
-    this.removeChildren();
-    if (this.property.object) {
-      await _ObjectPropertyTreeElement.populate(this, this.property, false, false, this.linkifier);
-      if (this.childCount() > this.maxNumPropertiesToShow) {
-        this.createShowAllPropertiesButton();
-      }
-    }
-  }
-  onattach() {
-    this.updateExpandable();
-    this.#widget.show(this.listItemElement);
-    this.#widget.property = this.property;
-    this.#widget.linkifier = this.linkifier;
-    this.#widget.editable = !this.property.readOnly;
-  }
-  onexpand() {
-    this.property.expanded = true;
-    this.#widget.expanded = true;
-  }
-  oncollapse() {
-    this.property.expanded = false;
-    this.#widget.expanded = false;
-  }
-  #updateValue() {
-    this.updateExpandable();
-  }
-  #updateChildren() {
-    this.removeChildren();
-    void this.onpopulate();
-  }
-  #updateFilter() {
-    this.hidden = this.property.isFiltered;
-  }
-  #onExpandedChanged(event) {
-    const expanded = event.data;
-    if (expanded) {
-      this.expand();
-    } else {
-      this.collapse();
-    }
-  }
-  contextMenuFired(event) {
-    const contextMenu = new UI2.ContextMenu.ContextMenu(event);
-    populateObjectTreeContextMenu(contextMenu, this.property, {
-      expandRecursively: () => this.expandRecursively(EXPANDABLE_MAX_DEPTH),
-      collapseChildren: () => this.collapseChildren(),
-      sortPropertiesAlphabetically: (node) => {
-        node.sortPropertiesAlphabetically = !node.sortPropertiesAlphabetically;
-      },
-      onShowAllToggled: (node) => {
-        node.includeNullOrUndefinedValues = !node.includeNullOrUndefinedValues;
-      }
-    });
-    void contextMenu.show();
-  }
-  updateExpandable() {
-    if (this.property.object) {
-      this.setExpandable(!this.property.object.customPreview() && this.property.object.hasChildren && !this.property.property.wasThrown);
-    } else {
-      this.setExpandable(false);
+      yield html2`<li role=treeitem>
+          <div class=gray-info-message>${emptyPlaceholder || i18nString2(UIStrings2.noProperties)}</div>
+        </li>`;
     }
   }
 };
@@ -5446,40 +5340,36 @@ function buildArrayFragment(fromIndex, toIndex, sparseIterationThreshold) {
   }
   return result;
 }
-var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement extends UI2.TreeOutline.TreeElement {
-  toggleOnClick;
-  linkifier;
-  #child;
-  constructor(child, linkifier) {
-    super(Platform2.StringUtilities.sprintf("[%d \u2026 %d]", child.range.fromIndex, child.range.toIndex), true);
-    this.#child = child;
-    this.#child.addEventListener("children-changed" /* CHILDREN_CHANGED */, this.onpopulate, this);
-    this.#child.addEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.#onExpandedChanged, this);
-    this.toggleOnClick = true;
-    this.linkifier = linkifier;
-    if (child.expanded) {
-      this.expand();
-    }
+var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement {
+  static #render(child, linkifier, handlers) {
+    const onExpand = (e) => {
+      handlers.onExpand(child, e.detail.expanded);
+      e.consume(true);
+    };
+    return html2`<li
+      class=object-properties-section-name
+      role=treeitem
+      toggle-on-click
+      ?open=${child.expanded}
+      @expand=${onExpand}>
+        ${Platform2.StringUtilities.sprintf("[%d \u2026 %d]", child.range.fromIndex, child.range.toIndex)}
+        <ul role=group>
+          ${ifExpanded(() => ObjectPropertyTreeElement.createNodes(child, handlers, false, false, linkifier))}
+        </ul>
+      </li>`;
   }
-  #onExpandedChanged(event) {
-    const expanded = event.data;
-    if (expanded) {
-      this.expand();
-    } else {
-      this.collapse();
-    }
-  }
-  static *createNodes(children, linkifier, isNotDisplayablePropertyCallback) {
+  static *createNodes(children, handlers, linkifier, isNotDisplayablePropertyCallback) {
     if (!children.arrayRanges) {
       return;
     }
     if (children.arrayRanges.length === 1) {
       yield* ObjectPropertyTreeElement.createNodes(
         children.arrayRanges[0],
+        handlers,
         false,
         false,
         linkifier,
-        null,
+        void 0,
         isNotDisplayablePropertyCallback
       );
     } else {
@@ -5487,38 +5377,27 @@ var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement extends UI2.TreeO
         if (child.singular) {
           yield* ObjectPropertyTreeElement.createNodes(
             child,
+            handlers,
             false,
             false,
             linkifier,
-            null,
+            void 0,
             isNotDisplayablePropertyCallback
           );
         } else {
-          yield new _ArrayGroupingTreeElement(child, linkifier);
+          yield _ArrayGroupingTreeElement.#render(child, linkifier, handlers);
         }
       }
     }
     yield* ObjectPropertyTreeElement.createPropertyNodes(
       children,
+      handlers,
       false,
       false,
       linkifier,
-      null,
+      void 0,
       isNotDisplayablePropertyCallback
     );
-  }
-  onexpand() {
-    this.#child.expanded = true;
-  }
-  oncollapse() {
-    this.#child.expanded = false;
-  }
-  async onpopulate() {
-    this.removeChildren();
-    await ObjectPropertyTreeElement.populate(this, this.#child, false, false, this.linkifier);
-  }
-  onattach() {
-    this.listItemElement.classList.add("object-properties-section-name");
   }
 };
 var EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {

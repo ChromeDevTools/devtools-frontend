@@ -50,7 +50,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
     isCommentMode() {
         return this.#commentMode;
     }
-    createCommentThread(anchor, text, author = 'DEVELOPER', changes) {
+    createCommentThread(anchor, text, author = 'DEVELOPER', isGeneratedComment) {
         const comments = text ? [{
                 author,
                 text,
@@ -60,7 +60,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
         const thread = new CommentThread({
             anchor,
             comments,
-            changes,
+            isGeneratedComment,
         });
         thread.addEventListener("Changed" /* CommentThreadEvents.CHANGED */, this.#onThreadChanged, this);
         this.#commentThreads.set(thread.id, thread);
@@ -76,7 +76,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
     takeComments() {
         const threads = [];
         for (const thread of this.#commentThreads.values()) {
-            if (thread.status === 'ACTIVE' && !thread.transmitted) {
+            if (thread.status === 'SENT_TO_AGENT' && !thread.transmitted) {
                 thread.transmitted = true;
                 threads.push(thread);
             }

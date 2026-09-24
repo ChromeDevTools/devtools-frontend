@@ -15,6 +15,7 @@
   "files": [
     "../../../../../../../front_end/ui/components/markdown_view/CodeBlock.test.ts",
     "../../../../../../../front_end/ui/components/markdown_view/MarkdownImage.test.ts",
+    "../../../../../../../front_end/ui/components/markdown_view/MarkdownPlaceholderLitRenderer.test.ts",
     "../../../../../../../front_end/ui/components/markdown_view/MarkdownView.test.ts",
     "../../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../../front_end/global_typings/global_defs.d.ts",

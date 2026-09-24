@@ -110,8 +110,8 @@ declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
 export declare class ObjectTreeNode extends ObjectTreeNodeBase {
     #private;
     readonly property: SDK.RemoteObject.RemoteObjectProperty;
-    readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined;
-    constructor(property: SDK.RemoteObject.RemoteObjectProperty, parent: ObjectTreeNodeBase | undefined, options: ObjectTreeOptions, nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined);
+    showAllChildren: boolean;
+    constructor(property: SDK.RemoteObject.RemoteObjectProperty, parent: ObjectTreeNodeBase | undefined, options: ObjectTreeOptions);
     get object(): SDK.RemoteObject.RemoteObject | undefined;
     get isFiltered(): boolean;
     get canExpandRecursively(): boolean;
@@ -150,26 +150,35 @@ export declare const enum ObjectPropertiesMode {
     ALL = 0,// All properties, including prototype properties
     OWN_AND_INTERNAL_AND_INHERITED = 1
 }
-export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu, objectOrProperty: ObjectTree | ObjectTreeNode, handlers: {
+export interface ContextMenuHandlers {
     expandRecursively: (node: ObjectTreeNodeBase) => void;
     collapseChildren: (node: ObjectTreeNodeBase) => void;
     sortPropertiesAlphabetically: (node: ObjectTreeNodeBase) => void;
     onShowAllToggled: (node: ObjectTreeNodeBase) => void;
-}): void;
-interface ObjectTreeViewInput {
+}
+interface StateHandlers extends ContextMenuHandlers {
+    onShowAllProperties: (node: ObjectTreeNode) => void;
+    onExpand: (node: ObjectTreeNodeBase, expanded: boolean) => void;
+}
+export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu, objectOrProperty: ObjectTree | ObjectTreeNode, handlers: ContextMenuHandlers): void;
+interface ObjectTreeViewInput extends StateHandlers {
     renderAsSubtree: boolean;
     objectTree?: ObjectTree;
     linkifier?: Components.Linkifier.Linkifier;
-    emptyPlaceholder?: string;
+    emptyPlaceholder?: LitTemplate;
     skipProto: boolean;
     skipGettersAndSetters: boolean;
-    onExpand: (expanded: boolean) => void;
 }
 type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
 export declare class ObjectTreeWidget extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: ObjectTreeView);
-    onExpand: (expanded: boolean) => void;
+    onExpand: (node: ObjectTreeNodeBase, expanded: boolean) => void;
+    expandRecursively: (node: ObjectTreeNodeBase) => void;
+    collapseChildren: (node: ObjectTreeNodeBase) => void;
+    sortPropertiesAlphabetically: (node: ObjectTreeNodeBase) => void;
+    onShowAllToggled: (node: ObjectTreeNodeBase) => void;
+    onShowAllProperties: (node: ObjectTreeNode) => void;
     get skipProto(): boolean;
     set skipProto(val: boolean);
     get skipGettersAndSetters(): boolean;
@@ -178,15 +187,15 @@ export declare class ObjectTreeWidget extends UI.Widget.Widget {
     set objectTree(val: ObjectTree);
     get linkifier(): Components.Linkifier.Linkifier | undefined;
     set linkifier(val: Components.Linkifier.Linkifier);
-    get emptyPlaceholder(): string | undefined;
-    set emptyPlaceholder(val: string);
+    get emptyPlaceholder(): LitTemplate | undefined;
+    set emptyPlaceholder(val: LitTemplate);
     get renderAsSubtree(): boolean;
     set renderAsSubtree(val: boolean);
     performUpdate(): Promise<void>;
     onDetach(): void;
     wasShown(): void;
 }
-export declare function renderObjectTree(objectTree: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string): LitTemplate | DirectiveResult;
+export declare function renderObjectTree(objectTree: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: LitTemplate): LitTemplate | DirectiveResult;
 interface ObjectPropertiesSectionViewInput {
     objectTree: ObjectTree;
     title?: Element | TemplateResult;
@@ -224,6 +233,8 @@ export declare class ObjectPropertyWidget extends UI.Widget.Widget {
     constructor(target?: HTMLElement, view?: ObjectPropertyView);
     get property(): ObjectTreeNode | undefined;
     set property(property: ObjectTreeNode);
+    onDetach(): void;
+    wasShown(): void;
     get expanded(): boolean;
     set expanded(expanded: boolean);
     get linkifier(): Components.Linkifier.Linkifier | undefined;

@@ -3,16 +3,37 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type TemplateResult } from '../../ui/lit/lit.js';
 import type { EditingLocationHistoryManager } from './EditingLocationHistoryManager.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
+export interface TabbedEditorViewInput {
+    openTabs: Array<{
+        tabId: string;
+        title: string;
+        tooltip: string;
+        uiSourceCode: Workspace.UISourceCode.UISourceCode;
+        isCloseable: boolean;
+        widget?: UI.Widget.Widget;
+        icon?: TemplateResult | HTMLElement;
+        suffix?: HTMLElement;
+    }>;
+    activeTabId?: string;
+}
+export interface TabbedEditorViewOutput {
+    onClose(e: Event): void;
+    onTabOrderChanged(e: Event): void;
+    onSelect(e: Event): void;
+}
+export type View = (input: TabbedEditorViewInput, output: TabbedEditorViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 declare const TabbedEditorContainerBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class TabbedEditorContainer extends TabbedEditorContainerBase {
     #private;
+    focus(): void;
     set historyManager(historyManager: EditingLocationHistoryManager);
-    private readonly sourceViewByUISourceCode;
     private readonly tabbedPane;
     private tabIds;
-    private readonly files;
+    private files;
     history: History;
     set previouslyViewedFilesSetting(setting: Common.Settings.Setting<SerializedHistoryItem[]>);
     get previouslyViewedFilesSetting(): Common.Settings.Setting<SerializedHistoryItem[]>;
@@ -22,7 +43,7 @@ export declare class TabbedEditorContainer extends TabbedEditorContainerBase {
     private scrollTimer?;
     private reentrantShow;
     constructor(element?: HTMLElement);
-    get tabbedPaneForTesting(): UI.TabbedPane.TabbedPane;
+    get tabbedPaneForTesting(): UI.TabbedPane.TabbedPaneElement;
     private onBindingCreated;
     private onBindingRemoved;
     get visibleView(): UI.Widget.Widget | null;
@@ -65,9 +86,8 @@ export declare class TabbedEditorContainer extends TabbedEditorContainerBase {
     private uiSourceCodeWorkingCopyCommitted;
     private generateTabId;
     getCreatedSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget | undefined;
-    viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget;
     private getOrCreateSourceView;
-    private createSourceView;
+    viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget;
     recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame, uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
     private removeSourceFrame;
     currentFile(): Workspace.UISourceCode.UISourceCode | null;

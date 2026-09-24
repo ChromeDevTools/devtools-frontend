@@ -614,6 +614,16 @@ var getMarkdownLink = (key) => {
   return link3;
 };
 
+// ../../front_end/ui/components/markdown_view/MarkdownPlaceholderLitRenderer.ts
+var MarkdownPlaceholderLitRenderer_exports = {};
+__export(MarkdownPlaceholderLitRenderer_exports, {
+  MarkdownPlaceholderLitRenderer: () => MarkdownPlaceholderLitRenderer,
+  tokenizeWithPlaceholders: () => tokenizeWithPlaceholders
+});
+import * as Platform from "../../../core/platform/platform.js";
+import * as Marked3 from "../../../third_party/marked/marked.js";
+import * as Lit4 from "../../lit/lit.js";
+
 // ../../front_end/ui/components/markdown_view/MarkdownView.ts
 var MarkdownView_exports = {};
 __export(MarkdownView_exports, {
@@ -1124,11 +1134,102 @@ function renderTextAsMarkdown(text, markdownRenderer = new MarkdownLitRenderer()
     ${refFn ? Lit3.Directives.ref(refFn) : Lit3.nothing}>
   </devtools-markdown-view>`;
 }
+
+// ../../front_end/ui/components/markdown_view/MarkdownPlaceholderLitRenderer.ts
+var { html: html6 } = Lit4;
+var validPlaceholderMatchPattern = /\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9_]*)\}/g;
+var validPlaceholderNamePattern = /^PLACEHOLDER_[a-zA-Z][a-zA-Z0-9_]*$/;
+var placeholderExtension = {
+  name: "placeholder",
+  level: "inline",
+  start(src) {
+    return src.match(/\{PLACEHOLDER_[a-zA-Z][a-zA-Z0-9_]*\}/)?.index;
+  },
+  tokenizer(src) {
+    const match = /^\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9_]*)\}/.exec(src);
+    if (match) {
+      return {
+        type: "placeholder",
+        raw: match[0],
+        key: match[1]
+      };
+    }
+    return void 0;
+  }
+};
+function validateSubstitutions(rawMarkdown, substitutions) {
+  if (!substitutions) {
+    return;
+  }
+  const unusedPlaceholders = new Set(substitutions.keys());
+  for (const key of unusedPlaceholders) {
+    if (!validPlaceholderNamePattern.test(key)) {
+      throw new Error(`Invalid placeholder '${key}' provided in the substitutions map.`);
+    }
+  }
+  for (const [, placeholder] of rawMarkdown.matchAll(validPlaceholderMatchPattern)) {
+    if (!substitutions.has(placeholder)) {
+      throw new Error(`No replacement provided for placeholder '${placeholder}'.`);
+    }
+    unusedPlaceholders.delete(placeholder);
+  }
+  if (unusedPlaceholders.size > 0) {
+    throw new Error(`Unused replacements provided: ${[...unusedPlaceholders]}`);
+  }
+}
+function tokenizeWithPlaceholders(markdown2, substitutions) {
+  const rawMarkdown = typeof markdown2 === "string" ? markdown2 : markdown2.map((token) => token.raw).join("");
+  validateSubstitutions(rawMarkdown, substitutions);
+  if (typeof markdown2 !== "string" && !rawMarkdown.includes("{PLACEHOLDER_")) {
+    return markdown2;
+  }
+  const markedInstance = new Marked3.Marked.Marked({
+    extensions: [placeholderExtension]
+  });
+  return markedInstance.lexer(rawMarkdown);
+}
+var MarkdownPlaceholderLitRenderer = class extends MarkdownLitRenderer {
+  #substitutions;
+  constructor(substitutions) {
+    super();
+    this.#substitutions = substitutions;
+  }
+  #resolvePlaceholder(key, raw) {
+    const replacement = this.#substitutions?.get(key) ?? this.#substitutions?.get(key.replace(/^PLACEHOLDER_/, ""));
+    return replacement !== void 0 ? Platform.StringUtilities.safeEscapeUnicode(replacement) : raw;
+  }
+  unescape(text) {
+    return super.unescape(text).replace(validPlaceholderMatchPattern, (raw, key) => this.#resolvePlaceholder(key, raw));
+  }
+  templateForToken(token) {
+    if (token.type === "placeholder") {
+      const placeholder = token;
+      const value = this.#resolvePlaceholder(placeholder.key, placeholder.raw);
+      return html6`<span class="markdown-placeholder">${value}</span>`;
+    }
+    if (token.type === "link" && token.text.includes("{PLACEHOLDER_")) {
+      return html6`<devtools-link
+        class=${this.customClassMapForToken("link")}
+        href=${getMarkdownLink(token.href)}
+        >${this.renderText(token)}</devtools-link>`;
+    }
+    if (token.type === "image" && token.text.includes("{PLACEHOLDER_")) {
+      return html6`<devtools-markdown-image
+        class=${this.customClassMapForToken("image")}
+        .data=${{
+        key: token.href,
+        title: this.unescape(token.text)
+      }}></devtools-markdown-image>`;
+    }
+    return super.templateForToken(token);
+  }
+};
 export {
   CodeBlock_exports as CodeBlock,
   MarkdownImage_exports as MarkdownImage,
   MarkdownImagesMap_exports as MarkdownImagesMap,
   MarkdownLinksMap_exports as MarkdownLinksMap,
+  MarkdownPlaceholderLitRenderer_exports as MarkdownPlaceholderLitRenderer,
   MarkdownView_exports as MarkdownView
 };
 //# sourceMappingURL=markdown_view.js.map

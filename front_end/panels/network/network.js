@@ -1144,7 +1144,6 @@ var Audits;
     CookieExclusionReason2["ExcludeSameSiteLax"] = "ExcludeSameSiteLax";
     CookieExclusionReason2["ExcludeSameSiteStrict"] = "ExcludeSameSiteStrict";
     CookieExclusionReason2["ExcludeDomainNonASCII"] = "ExcludeDomainNonASCII";
-    CookieExclusionReason2["ExcludeThirdPartyCookieBlockedInFirstPartySet"] = "ExcludeThirdPartyCookieBlockedInFirstPartySet";
     CookieExclusionReason2["ExcludeThirdPartyPhaseout"] = "ExcludeThirdPartyPhaseout";
     CookieExclusionReason2["ExcludePortMismatch"] = "ExcludePortMismatch";
     CookieExclusionReason2["ExcludeSchemeMismatch"] = "ExcludeSchemeMismatch";
@@ -2396,7 +2395,6 @@ var Network;
     SetCookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
     SetCookieBlockedReason2["UserPreferences"] = "UserPreferences";
     SetCookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
-    SetCookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
     SetCookieBlockedReason2["SyntaxError"] = "SyntaxError";
     SetCookieBlockedReason2["SchemeNotSupported"] = "SchemeNotSupported";
     SetCookieBlockedReason2["OverwriteSecure"] = "OverwriteSecure";
@@ -2421,7 +2419,6 @@ var Network;
     CookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
     CookieBlockedReason2["UserPreferences"] = "UserPreferences";
     CookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
-    CookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
     CookieBlockedReason2["UnknownError"] = "UnknownError";
     CookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
     CookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
@@ -15905,17 +15902,6 @@ li.object-properties-section  {
   }
 }
 
-.object-properties-section li.editing-sub-part {
-  padding: 3px var(--sys-size-6) var(--sys-size-5) var(--sys-size-4);
-  margin: calc(-1 * var(--sys-size-1)) calc(-1 * var(--sys-size-4)) calc(-1 * var(--sys-size-5));
-  text-overflow: clip;
-}
-
-.object-properties-section li.editing {
-  margin-left: 10px;
-  text-overflow: clip;
-}
-
 .tree-outline ol.title-less-mode {
   padding-left: 0;
 }
@@ -15937,10 +15923,6 @@ li.object-properties-section  {
   flex-direction: row;
 }
 
-.object-properties-section .editable-div {
-  overflow: hidden;
-}
-
 .name-and-value {
   line-height: var(--sys-size-8);
   display: flex;
@@ -15952,15 +15934,6 @@ li.object-properties-section  {
   flex-shrink: 0;
 }
 
-.editing-sub-part .name-and-value {
-  overflow: visible;
-  display: inline-flex;
-}
-
-.property-prompt {
-  margin-left: var(--sys-size-3);
-}
-
 .tree-outline.hide-selection-when-blurred .selected:focus-visible {
   background: none;
   outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
@@ -15968,7 +15941,7 @@ li.object-properties-section  {
 }
 
 .tree-outline.hide-selection-when-blurred .selected:focus-visible ::slotted(*),
-.tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title,
+.tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title:not(:has(.name-and-value, .gray-info-message)),
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value,
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .gray-info-message {
   background: var(--sys-color-state-focus-highlight);
@@ -15989,8 +15962,7 @@ li.object-properties-section  {
     color: ButtonText;
   }
 
-  .tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title,
-  .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value {
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title {
     background: transparent;
     box-shadow: none;
   }

@@ -77,6 +77,9 @@
       "path": "../../../testing/testing-tsconfig.ref.json"
     },
     {
+      "path": "../../bindings/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../crux-manager/bundle-tsconfig.ref.json"
     },
     {

@@ -2994,7 +2994,8 @@ var DevtoolsExperiments = /* @__PURE__ */ ((DevtoolsExperiments3) => {
   DevtoolsExperiments3[DevtoolsExperiments3["durable-messages"] = 110] = "durable-messages";
   DevtoolsExperiments3[DevtoolsExperiments3["jpeg-xl"] = 111] = "jpeg-xl";
   DevtoolsExperiments3[DevtoolsExperiments3["plus-button"] = 112] = "plus-button";
-  DevtoolsExperiments3[DevtoolsExperiments3["MAX_VALUE"] = 113] = "MAX_VALUE";
+  DevtoolsExperiments3[DevtoolsExperiments3["source-map-scopes-in-sources-panel"] = 113] = "source-map-scopes-in-sources-panel";
+  DevtoolsExperiments3[DevtoolsExperiments3["MAX_VALUE"] = 114] = "MAX_VALUE";
   return DevtoolsExperiments3;
 })(DevtoolsExperiments || {});
 var IssueExpanded = /* @__PURE__ */ ((IssueExpanded3) => {

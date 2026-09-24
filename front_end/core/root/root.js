@@ -58,6 +58,7 @@ var ExperimentName = /* @__PURE__ */ ((ExperimentName2) => {
   ExperimentName2["DURABLE_MESSAGES"] = "durable-messages";
   ExperimentName2["JPEG_XL"] = "jpeg-xl";
   ExperimentName2["PLUS_BUTTON"] = "plus-button";
+  ExperimentName2["SOURCE_MAP_SCOPES_IN_SOURCES_PANEL"] = "source-map-scopes-in-sources-panel";
   return ExperimentName2;
 })(ExperimentName || {});
 

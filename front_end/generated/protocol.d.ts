@@ -816,7 +816,6 @@ export declare namespace Audits {
         ExcludeSameSiteLax = "ExcludeSameSiteLax",
         ExcludeSameSiteStrict = "ExcludeSameSiteStrict",
         ExcludeDomainNonASCII = "ExcludeDomainNonASCII",
-        ExcludeThirdPartyCookieBlockedInFirstPartySet = "ExcludeThirdPartyCookieBlockedInFirstPartySet",
         ExcludeThirdPartyPhaseout = "ExcludeThirdPartyPhaseout",
         ExcludePortMismatch = "ExcludePortMismatch",
         ExcludeSchemeMismatch = "ExcludeSchemeMismatch"
@@ -10479,7 +10478,6 @@ export declare namespace Network {
         SameSiteNoneInsecure = "SameSiteNoneInsecure",
         UserPreferences = "UserPreferences",
         ThirdPartyPhaseout = "ThirdPartyPhaseout",
-        ThirdPartyBlockedInFirstPartySet = "ThirdPartyBlockedInFirstPartySet",
         SyntaxError = "SyntaxError",
         SchemeNotSupported = "SchemeNotSupported",
         OverwriteSecure = "OverwriteSecure",
@@ -10506,7 +10504,6 @@ export declare namespace Network {
         SameSiteNoneInsecure = "SameSiteNoneInsecure",
         UserPreferences = "UserPreferences",
         ThirdPartyPhaseout = "ThirdPartyPhaseout",
-        ThirdPartyBlockedInFirstPartySet = "ThirdPartyBlockedInFirstPartySet",
         UnknownError = "UnknownError",
         SchemefulSameSiteStrict = "SchemefulSameSiteStrict",
         SchemefulSameSiteLax = "SchemefulSameSiteLax",

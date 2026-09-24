@@ -926,27 +926,38 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             this.#lastNode = node;
         }
     }
-    getStyleId(style) {
+    getStyleId(section) {
+        const style = section.styleInternal;
+        const node = section.matchedStyles.isInherited(style) ? section.matchedStyles.nodeForStyle(style) :
+            section.matchedStyles.node();
+        const nodeId = node?.id ?? '';
         if (style.range) {
-            return `${style.styleSheetId || ''}:${style.range.toString()}`;
+            return `${nodeId}:${style.styleSheetId || ''}:${style.range.toString()}`;
         }
         if (style.type === SDK.CSSStyleDeclaration.Type.Inline || style.type === SDK.CSSStyleDeclaration.Type.Attributes) {
-            return style.type;
+            return `${nodeId}:${style.type}`;
         }
         if (style.type === SDK.CSSStyleDeclaration.Type.Animation) {
-            return `${style.type}:${style.animationName() || ''}:${style.cssText}`;
+            return `${nodeId}:${style.type}:${style.animationName() || ''}:${style.cssText}`;
         }
         const parentRule = style.parentRule;
         if (parentRule instanceof SDK.CSSRule.CSSStyleRule) {
-            return `${style.type}:${parentRule.selectorText()}`;
+            const ruleTypes = parentRule.ruleTypes.join(',');
+            const nesting = parentRule.nestingSelectors?.join(',') ?? '';
+            const media = parentRule.media.map(m => m.text).join(',');
+            const containers = parentRule.containerQueries.map(c => c.text).join(',');
+            const supports = parentRule.supports.map(s => s.text).join(',');
+            const scopes = parentRule.scopes.map(s => s.text).join(',');
+            const layers = parentRule.layers.map(l => l.text).join(',');
+            return `${nodeId}:${style.type}:${parentRule.selectorText()}:${ruleTypes}:${nesting}:${media}:${containers}:${supports}:${scopes}:${layers}`;
         }
         if (parentRule instanceof SDK.CSSRule.CSSKeyframeRule) {
-            return `${style.type}:${parentRule.parentRuleName()}:${parentRule.key().text}`;
+            return `${nodeId}:${style.type}:${parentRule.parentRuleName()}:${parentRule.key().text}`;
         }
         if (parentRule instanceof SDK.CSSRule.CSSPropertyRule) {
-            return `${style.type}:${parentRule.propertyName().text}`;
+            return `${nodeId}:${style.type}:${parentRule.propertyName().text}`;
         }
-        return `${style.type}:${style.cssText}`;
+        return `${nodeId}:${style.type}:${style.cssText}`;
     }
     rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
         return this.rebuildSectionsForMatchedStyleRules(undefined, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
@@ -956,7 +967,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             this.idleCallbackManager.discard();
         }
         this.idleCallbackManager = new IdleCallbackManager();
-        const blocks = [new SectionBlock(null)];
+        const blocks = [new SectionBlock(null, undefined, undefined, 'main')];
         let sectionIdx = 0;
         let lastParentNode = null;
         let lastLayerParent = blocks[0];
@@ -967,7 +978,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             if (parentRule instanceof SDK.CSSRule.CSSStyleRule) {
                 const layers = parentRule.layers;
                 if ((layers.length || lastLayers) && lastLayers !== layers) {
-                    const block = SectionBlock.createLayerBlock(parentRule);
+                    const block = SectionBlock.createLayerBlock(parentRule, lastLayerParent?.id);
                     blocks.push(block);
                     lastLayerParent?.childBlocks.push(block);
                     sawLayers = true;
@@ -1157,36 +1168,43 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
         if (!showInactiveCSSRules) {
             return blocks;
         }
-        return this.mergeInactiveStyles(blocks);
+        return this.mergeInactiveStyles(blocks, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
     }
-    computeBlockIds(blocks) {
-        let nullBlockCounter = 0;
-        const blockIds = new Map();
-        for (const block of blocks) {
-            blockIds.set(block, block.titleElement()?.textContent || `MAIN_BLOCK_NULL_${nullBlockCounter++}`);
-        }
-        return blockIds;
-    }
-    mergeInactiveStyles(blocks) {
-        const blockIds = this.computeBlockIds(blocks);
-        for (const [id, block] of this.#allKnownBlocks) {
-            if (!blockIds.has(block)) {
-                blockIds.set(block, id);
-            }
-        }
-        const getBlockId = (block) => blockIds.get(block) || 'UNKNOWN_BLOCK';
+    mergeInactiveStyles(blocks, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
+        const getBlockId = (block) => block.id;
         for (const block of blocks) {
             const bid = getBlockId(block);
             const knownBlock = this.#allKnownBlocks.get(bid);
             if (knownBlock) {
-                block.sections = mergeOrderedItems(knownBlock.sections, block.sections, section => this.getStyleId(section.styleInternal), section => section.setInactive(true));
+                knownBlock.sections = mergeOrderedItems(knownBlock.sections, block.sections, section => this.getStyleId(section), (section, active, newSection) => {
+                    if (active && newSection) {
+                        section.rebuildWithPayload(matchedStyles, newSection.style(), computedStyles, parentsComputedStyles, computedStyleExtraFields);
+                    }
+                    section.setInactive(!active);
+                });
+                block.sections = knownBlock.sections;
             }
         }
         const oldBlocks = Array.from(this.#allKnownBlocks.values());
-        const finalBlocks = mergeOrderedItems(oldBlocks, blocks, getBlockId, block => block.sections.forEach(section => section.setInactive(true)));
+        const finalBlocks = mergeOrderedItems(oldBlocks, blocks, getBlockId, (block, active) => {
+            if (!active) {
+                block.sections.forEach(section => section.setInactive(true));
+            }
+        });
         this.#allKnownBlocks.clear();
         for (const block of finalBlocks) {
             this.#allKnownBlocks.set(getBlockId(block), block);
+        }
+        // Restore child relationships using the new tree structure,
+        // but pointing to the final instances.
+        for (const newBlock of blocks) {
+            const finalBlock = this.#allKnownBlocks.get(getBlockId(newBlock));
+            if (finalBlock) {
+                const newChildBlocks = newBlock.childBlocks.map(child => this.#allKnownBlocks.get(getBlockId(child))).filter(b => b !== undefined);
+                finalBlock.childBlocks = finalBlock === newBlock ?
+                    newChildBlocks :
+                    mergeOrderedItems(finalBlock.childBlocks, newChildBlocks, getBlockId, () => { });
+            }
         }
         return finalBlocks;
     }
@@ -1522,12 +1540,14 @@ export var Events;
 })(Events || (Events = {}));
 const MAX_LINK_LENGTH = 23;
 export class SectionBlock {
+    id;
     #titleElement;
     sections;
     childBlocks = [];
     #expanded = false;
     #icon;
-    constructor(titleElement, expandable, expandedByDefault) {
+    constructor(titleElement, expandable, expandedByDefault, id = 'main') {
+        this.id = id;
         this.#titleElement = titleElement;
         this.sections = [];
         this.#expanded = expandedByDefault ?? false;
@@ -1558,7 +1578,7 @@ export class SectionBlock {
         const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
         const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
         separatorElement.textContent = i18nString(UIStrings.pseudoSElement, { PH1: pseudoTypeString });
-        return new SectionBlock(separatorElement);
+        return new SectionBlock(separatorElement, false, false, `pseudo:${pseudoType}:${pseudoArgument ?? ''}`);
     }
     static async createInheritedPseudoTypeBlock(pseudoType, pseudoArgument, node) {
         const separatorElement = document.createElement('div');
@@ -1569,18 +1589,18 @@ export class SectionBlock {
         UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFromSPseudoOf, { PH1: pseudoTypeString }));
         const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, { preventKeyboardFocus: true });
         render(link, separatorElement);
-        return new SectionBlock(separatorElement);
+        return new SectionBlock(separatorElement, false, false, `inherited-pseudo:${pseudoType}:${pseudoArgument ?? ''}:${node.id}`);
     }
     static createRegisteredPropertiesBlock(expandedByDefault) {
         const separatorElement = document.createElement('div');
-        const block = new SectionBlock(separatorElement, true, expandedByDefault);
+        const block = new SectionBlock(separatorElement, true, expandedByDefault, 'registered-properties');
         separatorElement.className = 'sidebar-separator';
         separatorElement.appendChild(document.createTextNode(REGISTERED_PROPERTY_SECTION_NAME));
         return block;
     }
     static createFunctionBlock(expandedByDefault) {
         const separatorElement = document.createElement('div');
-        const block = new SectionBlock(separatorElement, true, expandedByDefault);
+        const block = new SectionBlock(separatorElement, true, expandedByDefault, 'functions');
         separatorElement.className = 'sidebar-separator';
         separatorElement.appendChild(document.createTextNode(FUNCTION_SECTION_NAME));
         return block;
@@ -1590,11 +1610,11 @@ export class SectionBlock {
         separatorElement.className = 'sidebar-separator';
         separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('keyframes')}`);
         separatorElement.textContent = `@keyframes ${keyframesName}`;
-        return new SectionBlock(separatorElement);
+        return new SectionBlock(separatorElement, false, false, `keyframes:${keyframesName}`);
     }
     static createAtRuleBlock(expandedByDefault) {
         const separatorElement = document.createElement('div');
-        const block = new SectionBlock(separatorElement, true, expandedByDefault);
+        const block = new SectionBlock(separatorElement, true, expandedByDefault, 'at-rules');
         separatorElement.className = 'sidebar-separator';
         separatorElement.appendChild(document.createTextNode(i18nString(UIStrings.atRuleSection)));
         return block;
@@ -1604,7 +1624,7 @@ export class SectionBlock {
         separatorElement.className = 'sidebar-separator';
         separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('position-try')}`);
         separatorElement.textContent = `@position-try ${positionTryName}`;
-        return new SectionBlock(separatorElement);
+        return new SectionBlock(separatorElement, false, false, `position-try:${positionTryName}`);
     }
     static async createInheritedNodeBlock(node) {
         const separatorElement = document.createElement('div');
@@ -1615,9 +1635,9 @@ export class SectionBlock {
             preventKeyboardFocus: true,
         });
         render(link, separatorElement);
-        return new SectionBlock(separatorElement);
+        return new SectionBlock(separatorElement, false, false, `inherited-node:${node.id}`);
     }
-    static createLayerBlock(rule) {
+    static createLayerBlock(rule, parentBlockId = 'main') {
         const separatorElement = document.createElement('div');
         separatorElement.className = 'sidebar-separator layer-separator';
         separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('layer')}`);
@@ -1627,7 +1647,7 @@ export class SectionBlock {
             const name = rule.origin === "user-agent" /* Protocol.CSS.StyleSheetOrigin.UserAgent */ ? '\xa0user\xa0agent\xa0stylesheet' :
                 '\xa0implicit\xa0outer\xa0layer';
             UI.UIUtils.createTextChild(separatorElement.createChild('div'), name);
-            return new SectionBlock(separatorElement);
+            return new SectionBlock(separatorElement, false, false, `layer:${parentBlockId}:${name}`);
         }
         const layerLink = separatorElement.createChild('button');
         layerLink.className = 'link';
@@ -1635,7 +1655,7 @@ export class SectionBlock {
         const name = layers.map(layer => SDK.CSSModel.CSSModel.readableLayerName(layer.text)).join('.');
         layerLink.textContent = name;
         layerLink.onclick = () => LayersWidget.LayersWidget.instance().revealLayer(name);
-        return new SectionBlock(separatorElement);
+        return new SectionBlock(separatorElement, false, false, `layer:${parentBlockId}:${name}`);
     }
     updateFilter() {
         let numVisibleSections = 0;
@@ -2263,28 +2283,53 @@ export function escapeUrlAsCssComment(urlText) {
  * Merges a newly active list of items with an existing (previously known) list of items,
  * preserving the relative order of inactive items while updating and inserting active items.
  */
-export function mergeOrderedItems(oldItems, newItems, getId, markInactive) {
+export function mergeOrderedItems(oldItems, newItems, getId, toggleActive) {
     const newIds = new Set(newItems.map(getId));
+    const oldItemById = new Map(oldItems.map(item => [getId(item), item]));
+    const handledIds = new Set();
     const merged = [];
     let newIdx = 0;
     for (const oldItem of oldItems) {
         const oldId = getId(oldItem);
+        if (handledIds.has(oldId)) {
+            continue;
+        }
         if (newIds.has(oldId)) {
             while (newIdx < newItems.length) {
                 const newItem = newItems[newIdx++];
-                merged.push(newItem);
-                if (getId(newItem) === oldId) {
+                const newId = getId(newItem);
+                const existingItem = oldItemById.get(newId);
+                if (existingItem) {
+                    toggleActive(existingItem, true, newItem);
+                    merged.push(existingItem);
+                    handledIds.add(newId);
+                }
+                else {
+                    merged.push(newItem);
+                }
+                if (newId === oldId) {
                     break;
                 }
             }
         }
         else {
-            markInactive(oldItem);
+            toggleActive(oldItem, false);
             merged.push(oldItem);
+            handledIds.add(oldId);
         }
     }
     while (newIdx < newItems.length) {
-        merged.push(newItems[newIdx++]);
+        const newItem = newItems[newIdx++];
+        const newId = getId(newItem);
+        const existingItem = oldItemById.get(newId);
+        if (existingItem && !handledIds.has(newId)) {
+            toggleActive(existingItem, true, newItem);
+            merged.push(existingItem);
+            handledIds.add(newId);
+        }
+        else if (!handledIds.has(newId)) {
+            merged.push(newItem);
+        }
     }
     return merged;
 }

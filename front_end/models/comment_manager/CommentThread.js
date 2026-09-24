@@ -13,35 +13,55 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper {
     }
     id = crypto.randomUUID();
     anchor;
+    /** True for comments generated from the change tracker. */
+    isGeneratedComment;
     #savedIndex;
     comments;
     status = 'DRAFT';
     transmitted = false;
-    changes;
     constructor(options) {
         super();
         this.anchor = options.anchor;
         this.comments = options.comments ?? [];
-        this.changes = options.changes;
+        this.isGeneratedComment = Boolean(options.isGeneratedComment);
     }
     get index() {
         return this.#savedIndex ?? CommentThread.#nextIndex;
     }
-    save(text, author = 'DEVELOPER') {
-        let changed = false;
+    /**
+     * Returns whether it was changed.
+     */
+    #saveText(text, author = 'DEVELOPER') {
         if (text && text.trim().length > 0) {
             this.comments.push({
                 author,
                 text: text.trim(),
                 timestamp: Date.now(),
             });
-            changed = true;
+            return true;
         }
+        return false;
+    }
+    save(text, author = 'DEVELOPER') {
+        let changed = this.#saveText(text, author);
         if (this.status === 'DRAFT') {
             if (this.#savedIndex === undefined) {
                 this.#savedIndex = CommentThread.#nextIndex++;
             }
             this.status = 'ACTIVE';
+            changed = true;
+        }
+        if (changed) {
+            this.dispatchEventToListeners("Changed" /* Events.CHANGED */);
+        }
+    }
+    sendToAgent(text, author = 'DEVELOPER') {
+        let changed = this.#saveText(text, author);
+        if (this.status === 'DRAFT' || this.status === 'ACTIVE') {
+            if (this.#savedIndex === undefined) {
+                this.#savedIndex = CommentThread.#nextIndex++;
+            }
+            this.status = 'SENT_TO_AGENT';
             changed = true;
         }
         if (changed) {

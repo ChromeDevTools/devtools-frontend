@@ -48,12 +48,7 @@ export interface Comment {
     text: string;
     timestamp: number;
 }
-export interface ChangeRecord {
-    id: string;
-    description: string;
-    timestamp: number;
-}
-export type CommentThreadStatus = 'DRAFT' | 'ACTIVE' | 'RESOLVED';
+export type CommentThreadStatus = 'DRAFT' | 'ACTIVE' | 'SENT_TO_AGENT' | 'RESOLVED';
 export declare const enum Events {
     CHANGED = "Changed"
 }
@@ -63,19 +58,22 @@ export interface EventTypes {
 export interface CommentThreadOptions {
     anchor: CommentAnchorSignature;
     comments?: Comment[];
-    changes?: ChangeRecord[];
+    /** True for comments generated from the change tracker. */
+    isGeneratedComment?: boolean;
 }
 export declare class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     static resetIndex(): void;
     readonly id: string;
     readonly anchor: CommentAnchorSignature;
+    /** True for comments generated from the change tracker. */
+    readonly isGeneratedComment: boolean;
     comments: Comment[];
     status: CommentThreadStatus;
     transmitted: boolean;
-    changes?: ChangeRecord[];
     constructor(options: CommentThreadOptions);
     get index(): number;
     save(text?: string, author?: 'DEVELOPER' | 'AGENT'): void;
+    sendToAgent(text?: string, author?: 'DEVELOPER' | 'AGENT'): void;
     resolve(replyText?: string): void;
 }

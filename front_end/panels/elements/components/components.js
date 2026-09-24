@@ -1313,6 +1313,10 @@ var cssQuery_css_default = `/*
   cursor: var(--override-styles-section-text-hover-cursor);
 }
 
+:host-context(.collapsed):host(:has(devtools-icon)) .sidebar-pane-open-brace::after {
+  content: "}";
+}
+
 /*# sourceURL=${import.meta.resolve("./cssQuery.css")} */`;
 
 // ../../front_end/panels/elements/components/CSSQuery.ts
@@ -1435,7 +1439,7 @@ var CSSQuery = class extends HTMLElement {
           <slot name="indent"></slot>
           ${this.#queryPrefix ? html6`<span>${this.#queryPrefix + " "}</span>` : Lit.nothing}
           ${this.#queryName ? html6`<span>${this.#queryName + " "}</span>` : Lit.nothing}
-          ${queryText} {
+          ${queryText}<slot></slot> <span class="sidebar-pane-open-brace">{</span>
         </div>`,
       this.#shadow,
       { host: this }

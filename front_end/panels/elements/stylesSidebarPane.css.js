@@ -120,11 +120,17 @@ export default `/**
   & .section-collapse-icon {
     width: var(--sys-size-6);
     height: var(--sys-size-6);
+    margin-block: calc(-1 * var(--sys-size-3));
     margin-right: var(--sys-size-2);
     margin-left: calc(-1 * var(--sys-size-2));
     vertical-align: middle;
     cursor: pointer;
     display: none;
+  }
+
+  & .styles-section-status {
+    margin-block: calc(-1 * var(--sys-size-4));
+    vertical-align: middle;
   }
 
   &.collapsible .section-collapse-icon {

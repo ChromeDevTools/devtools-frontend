@@ -336,9 +336,9 @@ export declare namespace TreeViewElement {
 declare class IfExpandedDirective extends Lit.Directive.Directive {
     #private;
     constructor(partInfo: Lit.Directive.PartInfo);
-    render(content: Lit.LitTemplate | Iterable<Lit.LitTemplate>): Lit.LitTemplate | Iterable<Lit.LitTemplate>;
+    render(content: Lit.LitTemplate | Iterable<Lit.LitTemplate> | (() => Lit.LitTemplate | Iterable<Lit.LitTemplate>)): Lit.LitTemplate | Iterable<Lit.LitTemplate>;
 }
-export declare const ifExpanded: (content: Lit.LitTemplate | Iterable<Lit.LitTemplate>) => Lit.DirectiveResult<typeof IfExpandedDirective>;
+export declare const ifExpanded: (content: Lit.LitTemplate | Iterable<Lit.LitTemplate> | (() => Lit.LitTemplate | Iterable<Lit.LitTemplate>)) => Lit.DirectiveResult<typeof IfExpandedDirective>;
 export declare class TreeElementWrapper extends HTMLElement {
     #private;
     set treeElement(treeElement: TreeElement);

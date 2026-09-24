@@ -64,6 +64,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
         title: input.title,
         comments: [...item.thread.comments],
         onAddComment: input.onAddComment,
+        onClose: input.onCloseCommentThread,
     })}
           </div>
         `) : nothing}
@@ -80,6 +81,18 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     #closeTimeoutId = null;
     #cachedTitle = { text: '' };
     #cachedTitleAnchor = null;
+    #setActiveThreadId(threadId) {
+        if (this.#activeThreadId !== threadId) {
+            this.#clearCloseTimeout();
+            this.#activeThreadId = threadId;
+            if (threadId && this.isShowing()) {
+                document.documentElement.addEventListener('keydown', this.#onKeyDown);
+            }
+            else {
+                document.documentElement.removeEventListener('keydown', this.#onKeyDown);
+            }
+        }
+    }
     constructor(element, [commentManager], view = DEFAULT_VIEW) {
         super(element, { useShadowDom: false });
         this.#view = view;
@@ -97,10 +110,14 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.#commentManager.addEventListener("CommentThreadsChanged" /* CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED */, this.#onStateChanged, this);
         this.#commentManager.addEventListener("CommentModeChanged" /* CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED */, this.#onCommentModeChanged, this);
         this.#commentManager.addEventListener("AgentAttachedChanged" /* CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED */, this.#onAgentAttachedChanged, this);
+        if (this.#activeThreadId) {
+            document.documentElement.addEventListener('keydown', this.#onKeyDown);
+        }
         this.requestUpdate();
     }
     willHide() {
         this.#clearCloseTimeout();
+        document.documentElement.removeEventListener('keydown', this.#onKeyDown);
         this.#commentOverlayManager.stop();
         this.#commentOverlayManager.removeEventListener("PositionsUpdated" /* Comments.CommentOverlayManager.Events.POSITIONS_UPDATED */, this.#onStateChanged, this);
         this.#commentOverlayManager.removeEventListener("HoverHighlightChanged" /* Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED */, this.#onStateChanged, this);
@@ -117,14 +134,14 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     }
     #onAgentAttachedChanged(event) {
         if (!event.data) {
-            this.#activeThreadId = null;
+            this.#setActiveThreadId(null);
         }
         this.requestUpdate();
     }
     #onCommentModeChanged(event) {
         const isModeActive = event.data;
         if (!isModeActive) {
-            this.#activeThreadId = null;
+            this.#setActiveThreadId(null);
         }
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction('comments.toggle-comment-mode');
         action?.setToggled(isModeActive);
@@ -133,10 +150,10 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     #onStateChanged() {
         const draftThread = this.#commentManager.getCommentThreads().find(t => t.status === 'DRAFT');
         if (draftThread) {
-            this.#activeThreadId = draftThread.id;
+            this.#setActiveThreadId(draftThread.id);
         }
         else if (this.#activeThreadId && !this.#commentManager.getCommentThread(this.#activeThreadId)) {
-            this.#activeThreadId = null;
+            this.#setActiveThreadId(null);
         }
         this.requestUpdate();
     }
@@ -170,18 +187,30 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         return { text: anchor.textSignature || '' };
     }
     #handlePinClick = (threadId) => {
-        const thread = this.#commentManager.getCommentThread(threadId);
         if (this.#activeThreadId === threadId) {
-            if (thread?.status === 'DRAFT') {
-                this.#commentOverlayManager.clearDraftThreads();
-            }
-            this.#activeThreadId = null;
+            this.#handleCloseCommentThread();
+            return;
         }
-        else {
-            this.#commentOverlayManager.clearDraftThreads();
-            this.#activeThreadId = threadId;
-        }
+        this.#commentOverlayManager.clearDraftThreads();
+        this.#setActiveThreadId(threadId);
         this.requestUpdate();
+    };
+    #handleCloseCommentThread = () => {
+        if (!this.#activeThreadId) {
+            return;
+        }
+        const thread = this.#commentManager.getCommentThread(this.#activeThreadId);
+        if (thread?.status === 'DRAFT') {
+            this.#commentOverlayManager.clearDraftThreads();
+        }
+        this.#setActiveThreadId(null);
+        this.requestUpdate();
+    };
+    #onKeyDown = (event) => {
+        if (this.#activeThreadId && event.key === 'Escape' && !event.isComposing) {
+            event.consume(true);
+            this.#handleCloseCommentThread();
+        }
     };
     async performUpdate(signal) {
         if (!this.#commentManager.isAgentAttached()) {
@@ -195,6 +224,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
                 activePin: null,
                 title: { text: '' },
                 onAddComment: () => { },
+                onCloseCommentThread: this.#handleCloseCommentThread,
             }, undefined, this.contentElement);
             return;
         }
@@ -217,16 +247,18 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
                 if (!activeThread) {
                     return;
                 }
-                activeThread.save(text);
+                activeThread.sendToAgent(text);
                 const threadId = activeThread.id;
+                this.#clearCloseTimeout();
                 this.#closeTimeoutId = window.setTimeout(() => {
                     this.#closeTimeoutId = null;
                     if (this.#activeThreadId === threadId) {
-                        this.#activeThreadId = null;
+                        this.#setActiveThreadId(null);
                         this.requestUpdate();
                     }
                 }, AUTO_CLOSE_DELAY_MS);
             },
+            onCloseCommentThread: this.#handleCloseCommentThread,
         };
         this.#view(viewInput, undefined, this.contentElement);
     }

@@ -667,7 +667,6 @@ var Audits;
     CookieExclusionReason2["ExcludeSameSiteLax"] = "ExcludeSameSiteLax";
     CookieExclusionReason2["ExcludeSameSiteStrict"] = "ExcludeSameSiteStrict";
     CookieExclusionReason2["ExcludeDomainNonASCII"] = "ExcludeDomainNonASCII";
-    CookieExclusionReason2["ExcludeThirdPartyCookieBlockedInFirstPartySet"] = "ExcludeThirdPartyCookieBlockedInFirstPartySet";
     CookieExclusionReason2["ExcludeThirdPartyPhaseout"] = "ExcludeThirdPartyPhaseout";
     CookieExclusionReason2["ExcludePortMismatch"] = "ExcludePortMismatch";
     CookieExclusionReason2["ExcludeSchemeMismatch"] = "ExcludeSchemeMismatch";
@@ -1919,7 +1918,6 @@ var Network;
     SetCookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
     SetCookieBlockedReason2["UserPreferences"] = "UserPreferences";
     SetCookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
-    SetCookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
     SetCookieBlockedReason2["SyntaxError"] = "SyntaxError";
     SetCookieBlockedReason2["SchemeNotSupported"] = "SchemeNotSupported";
     SetCookieBlockedReason2["OverwriteSecure"] = "OverwriteSecure";
@@ -1944,7 +1942,6 @@ var Network;
     CookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
     CookieBlockedReason2["UserPreferences"] = "UserPreferences";
     CookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
-    CookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
     CookieBlockedReason2["UnknownError"] = "UnknownError";
     CookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
     CookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
@@ -11652,16 +11649,15 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
           };
         }
         const origin = allowedOriginResult.origin;
-        if (origin?.isOpaque()) {
+        if (!origin || origin.isOpaque()) {
           return {
             error: "No requests recorded by DevTools"
           };
         }
-        const allowedSecurityOrigin = origin ?? null;
         let hasCrossOriginRequest = false;
         const requestsToShow = [];
         for (const request of this.#networkLog.requests()) {
-          if (allowedSecurityOrigin && !request.initiatorSecurityOrigin().isSameOriginWith(allowedSecurityOrigin)) {
+          if (!isOriginAllowedByLock({ status: "ESTABLISHED_ORIGIN", origin }, request.initiatorSecurityOrigin())) {
             hasCrossOriginRequest = true;
             continue;
           }
@@ -11676,7 +11672,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         }
         if (requests.length === 0) {
           return {
-            error: hasCrossOriginRequest ? `No requests showing with origin ${origin?.siteId() ?? ""}. Tell the user to start a new chat` : "No requests recorded by DevTools"
+            error: hasCrossOriginRequest ? `No requests showing with origin ${origin.siteId()}. Tell the user to start a new chat` : "No requests recorded by DevTools"
           };
         }
         return {
@@ -11719,17 +11715,16 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
           };
         }
         const origin = allowedOriginResult.origin;
-        if (origin?.isOpaque()) {
+        if (!origin || origin.isOpaque()) {
           return {
             error: "No request found"
           };
         }
-        const allowedSecurityOrigin = origin ?? null;
         const request = this.#networkLog.requests().find((req) => {
           if (req.requestId() !== id) {
             return false;
           }
-          return !allowedSecurityOrigin || req.initiatorSecurityOrigin().isSameOriginWith(allowedSecurityOrigin);
+          return isOriginAllowedByLock({ status: "ESTABLISHED_ORIGIN", origin }, req.initiatorSecurityOrigin());
         });
         if (request) {
           const calculator = this.#networkTimeCalculator ?? new NetworkTimeCalculator3.NetworkTransferTimeCalculator();
@@ -11772,11 +11767,15 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
           };
         }
         const origin = allowedOriginResult.origin;
+        if (!origin || origin.isOpaque()) {
+          return {
+            result: []
+          };
+        }
         const files = [];
         const uiSourceCodes = [];
         for (const file of _ContextSelectionAgent.getUISourceCodes(this.#workspace)) {
-          const fileSecurityOrigin = file.securityOrigin();
-          if (origin && !fileSecurityOrigin.isSameOriginWith(origin)) {
+          if (!isOriginAllowedByLock({ status: "ESTABLISHED_ORIGIN", origin }, file.securityOrigin())) {
             continue;
           }
           files.push({
@@ -11825,13 +11824,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
           };
         }
         const origin = allowedOriginResult.origin;
-        const file = _ContextSelectionAgent.getUISourceCodes(this.#workspace).find((file2) => {
-          if (_ContextSelectionAgent.uiSourceCodeId.get(file2) !== params.id) {
-            return false;
-          }
-          const fileSecurityOrigin = file2.securityOrigin();
-          return !origin || fileSecurityOrigin.isSameOriginWith(origin);
-        });
+        const file = _ContextSelectionAgent.getSourceById(params.id, origin, this.#workspace);
         if (!file) {
           return {
             error: "Unable to find file."
@@ -11984,7 +11977,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
             };
           }
           const origin = allowedOriginResult.origin;
-          if (!origin) {
+          if (!origin || origin.isOpaque()) {
             return {
               error: "Unable to find page storage."
             };
@@ -14207,7 +14200,19 @@ var AiAgent2 = class extends AiAgent {
   #activeSkills = /* @__PURE__ */ new Set();
   #declaredTools = /* @__PURE__ */ new Set();
   constructor(opts) {
-    super(opts);
+    super({
+      ...opts,
+      allowedOrigin: opts.allowedOrigin ?? (() => {
+        const lock = opts.originLock();
+        if (lock.status === "BLOCKED_BY_NAVIGATION") {
+          return { blocked: true };
+        }
+        if (lock.status === "ESTABLISHED_ORIGIN") {
+          return { origin: lock.origin };
+        }
+        return { origin: void 0 };
+      })
+    });
     this.#changes = opts.changeManager ?? new ChangeManager(opts.targetManager);
     this.#lighthouseRecording = opts.lighthouseRecording;
     this.#performanceRecordAndReload = opts.performanceRecordAndReload;
@@ -15136,7 +15141,7 @@ ${item.text.trim()}`);
   }
   async *run(initialQuery, options = {}) {
     this.#navigationOccurredDuringRun = false;
-    const originAtRunStart = getPrimaryPageSecurityOrigin(this.#targetManager);
+    const originAtRunStart = this.#origin ?? getPrimaryPageSecurityOrigin(this.#targetManager);
     const listener = () => {
       const newInspectedURL = this.#targetManager.primaryPageTarget()?.inspectedURL();
       const newOrigin = newInspectedURL ? SDK29.SecurityOrigin.SecurityOrigin.create(newInspectedURL) : void 0;

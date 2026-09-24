@@ -23679,6 +23679,9 @@ var TreeElement = class {
   }
   set selectable(x) {
     this.selectableInternal = x;
+    if (!x && this.selected) {
+      this.deselect();
+    }
   }
   get listItemElement() {
     return this.listItemNode;
@@ -24441,7 +24444,7 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
     this.toggleOnClick = hasBooleanAttribute(this.configElement, "toggle-on-click");
     this.updateExpansionFromAttribute();
     Highlighting.HighlightManager.HighlightManager.instance().apply(this.titleElement);
-    if (hadFocus) {
+    if (hadFocus && this.selected) {
       this.listItemElement.focus();
     }
   }
@@ -24791,7 +24794,13 @@ var IfExpandedDirective = class extends Lit5.Directive.Directive {
     this.#partInfo = partInfo;
   }
   render(content) {
-    return this.#isInExpandedRow(this.#partInfo.startNode) ? content : Lit5.nothing;
+    if (!this.#isInExpandedRow(this.#partInfo.startNode)) {
+      return Lit5.nothing;
+    }
+    if (typeof content === "function") {
+      return content();
+    }
+    return content;
   }
   #isInExpandedRow(element) {
     if (!element) {

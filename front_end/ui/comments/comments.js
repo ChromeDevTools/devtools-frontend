@@ -623,7 +623,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
   }
   createComment(element, text, options) {
     const author = options?.author ?? "DEVELOPER";
-    const changes = options?.changes;
+    const isGeneratedComment = options?.isGeneratedComment;
     const resolved = this.#resolveAnchor(element, options?.coordinates);
     if (!resolved) {
       return null;
@@ -632,11 +632,11 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     let thread;
     this.#isCreatingComment = true;
     try {
-      thread = this.#commentManager.createCommentThread(anchor, text, author, changes);
+      thread = this.#commentManager.createCommentThread(anchor, text, author, isGeneratedComment);
     } finally {
       this.#isCreatingComment = false;
     }
-    if (isDomTrackedAnchor(anchor)) {
+    if (!thread.isGeneratedComment && isDomTrackedAnchor(anchor)) {
       this.#liveNodeCache.set(thread, anchorElement);
       const observer = this.#getIntersectionObserver();
       observer.observe(anchorElement);
@@ -703,7 +703,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     const oldElements = /* @__PURE__ */ new Set();
     const newElements = /* @__PURE__ */ new Set();
     for (const thread of this.#commentManager.getCommentThreads()) {
-      if (!isDomTrackedAnchor(thread.anchor)) {
+      if (thread.isGeneratedComment || !isDomTrackedAnchor(thread.anchor)) {
         continue;
       }
       const oldEl = this.#liveNodeCache.get(thread);
@@ -735,7 +735,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     const newHighlights = [];
     const elementPinCounts = /* @__PURE__ */ new Map();
     for (const thread of this.#commentManager.getCommentThreads()) {
-      if (!isDomTrackedAnchor(thread.anchor)) {
+      if (thread.isGeneratedComment || !isDomTrackedAnchor(thread.anchor)) {
         continue;
       }
       const el = this.#liveNodeCache.get(thread) || null;

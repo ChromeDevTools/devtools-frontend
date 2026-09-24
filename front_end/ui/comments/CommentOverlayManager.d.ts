@@ -24,7 +24,7 @@ export interface HighlightRectData {
 }
 export interface CreateCommentOptions {
     author?: 'DEVELOPER' | 'AGENT';
-    changes?: CommentManager.CommentManager.ChangeRecord[];
+    isGeneratedComment?: boolean;
     coordinates?: {
         clientX: number;
         clientY: number;

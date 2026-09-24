@@ -102,7 +102,6 @@ export declare class StylesSidebarPane extends StylesSidebarPaneBase implements 
     private getStyleId;
     rebuildSectionsForMatchedStyleRulesForTest(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string> | null, parentsComputedStyles: Map<string, string> | null, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): Promise<SectionBlock[]>;
     private rebuildSectionsForMatchedStyleRules;
-    private computeBlockIds;
     private mergeInactiveStyles;
     createNewRuleInViaInspectorStyleSheet(): Promise<void>;
     private createNewRuleInStyleSheet;
@@ -140,9 +139,10 @@ export interface EventTypes {
 }
 export declare class SectionBlock {
     #private;
+    readonly id: string;
     sections: StylePropertiesSection[];
     childBlocks: SectionBlock[];
-    constructor(titleElement: Element | null, expandable?: boolean, expandedByDefault?: boolean);
+    constructor(titleElement: Element | null, expandable?: boolean, expandedByDefault?: boolean, id?: string);
     expand(expand: boolean): void;
     static createPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string | null): SectionBlock;
     static createInheritedPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string | null, node: SDK.DOMModel.DOMNode): Promise<SectionBlock>;
@@ -152,7 +152,7 @@ export declare class SectionBlock {
     static createAtRuleBlock(expandedByDefault: boolean): SectionBlock;
     static createPositionTryBlock(positionTryName: string): SectionBlock;
     static createInheritedNodeBlock(node: SDK.DOMModel.DOMNode): Promise<SectionBlock>;
-    static createLayerBlock(rule: SDK.CSSRule.CSSStyleRule): SectionBlock;
+    static createLayerBlock(rule: SDK.CSSRule.CSSStyleRule, parentBlockId?: string): SectionBlock;
     updateFilter(): number;
     titleElement(): Element | null;
 }
@@ -203,7 +203,7 @@ export declare function escapeUrlAsCssComment(urlText: string): string;
  * Merges a newly active list of items with an existing (previously known) list of items,
  * preserving the relative order of inactive items while updating and inserting active items.
  */
-export declare function mergeOrderedItems<T>(oldItems: T[], newItems: T[], getId: (item: T) => string, markInactive: (item: T) => void): T[];
+export declare function mergeOrderedItems<T>(oldItems: T[], newItems: T[], getId: (item: T) => string, toggleActive: (item: T, active: boolean, newItem?: T) => void): T[];
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(_context: UI.Context.Context, actionId: string): boolean;
 }

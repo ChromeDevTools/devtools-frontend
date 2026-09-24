@@ -41,35 +41,55 @@ var CommentThread = class _CommentThread extends Common.ObjectWrapper.ObjectWrap
   }
   id = crypto.randomUUID();
   anchor;
+  /** True for comments generated from the change tracker. */
+  isGeneratedComment;
   #savedIndex;
   comments;
   status = "DRAFT";
   transmitted = false;
-  changes;
   constructor(options) {
     super();
     this.anchor = options.anchor;
     this.comments = options.comments ?? [];
-    this.changes = options.changes;
+    this.isGeneratedComment = Boolean(options.isGeneratedComment);
   }
   get index() {
     return this.#savedIndex ?? _CommentThread.#nextIndex;
   }
-  save(text, author = "DEVELOPER") {
-    let changed = false;
+  /**
+   * Returns whether it was changed.
+   */
+  #saveText(text, author = "DEVELOPER") {
     if (text && text.trim().length > 0) {
       this.comments.push({
         author,
         text: text.trim(),
         timestamp: Date.now()
       });
-      changed = true;
+      return true;
     }
+    return false;
+  }
+  save(text, author = "DEVELOPER") {
+    let changed = this.#saveText(text, author);
     if (this.status === "DRAFT") {
       if (this.#savedIndex === void 0) {
         this.#savedIndex = _CommentThread.#nextIndex++;
       }
       this.status = "ACTIVE";
+      changed = true;
+    }
+    if (changed) {
+      this.dispatchEventToListeners("Changed" /* CHANGED */);
+    }
+  }
+  sendToAgent(text, author = "DEVELOPER") {
+    let changed = this.#saveText(text, author);
+    if (this.status === "DRAFT" || this.status === "ACTIVE") {
+      if (this.#savedIndex === void 0) {
+        this.#savedIndex = _CommentThread.#nextIndex++;
+      }
+      this.status = "SENT_TO_AGENT";
       changed = true;
     }
     if (changed) {
@@ -136,7 +156,7 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
   isCommentMode() {
     return this.#commentMode;
   }
-  createCommentThread(anchor, text, author = "DEVELOPER", changes) {
+  createCommentThread(anchor, text, author = "DEVELOPER", isGeneratedComment) {
     const comments = text ? [{
       author,
       text,
@@ -145,7 +165,7 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
     const thread = new CommentThread({
       anchor,
       comments,
-      changes
+      isGeneratedComment
     });
     thread.addEventListener("Changed" /* CHANGED */, this.#onThreadChanged, this);
     this.#commentThreads.set(thread.id, thread);
@@ -161,7 +181,7 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
   takeComments() {
     const threads = [];
     for (const thread of this.#commentThreads.values()) {
-      if (thread.status === "ACTIVE" && !thread.transmitted) {
+      if (thread.status === "SENT_TO_AGENT" && !thread.transmitted) {
         thread.transmitted = true;
         threads.push(thread);
       }

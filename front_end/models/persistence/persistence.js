@@ -2758,7 +2758,6 @@ var Audits;
     CookieExclusionReason2["ExcludeSameSiteLax"] = "ExcludeSameSiteLax";
     CookieExclusionReason2["ExcludeSameSiteStrict"] = "ExcludeSameSiteStrict";
     CookieExclusionReason2["ExcludeDomainNonASCII"] = "ExcludeDomainNonASCII";
-    CookieExclusionReason2["ExcludeThirdPartyCookieBlockedInFirstPartySet"] = "ExcludeThirdPartyCookieBlockedInFirstPartySet";
     CookieExclusionReason2["ExcludeThirdPartyPhaseout"] = "ExcludeThirdPartyPhaseout";
     CookieExclusionReason2["ExcludePortMismatch"] = "ExcludePortMismatch";
     CookieExclusionReason2["ExcludeSchemeMismatch"] = "ExcludeSchemeMismatch";
@@ -4010,7 +4009,6 @@ var Network;
     SetCookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
     SetCookieBlockedReason2["UserPreferences"] = "UserPreferences";
     SetCookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
-    SetCookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
     SetCookieBlockedReason2["SyntaxError"] = "SyntaxError";
     SetCookieBlockedReason2["SchemeNotSupported"] = "SchemeNotSupported";
     SetCookieBlockedReason2["OverwriteSecure"] = "OverwriteSecure";
@@ -4035,7 +4033,6 @@ var Network;
     CookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
     CookieBlockedReason2["UserPreferences"] = "UserPreferences";
     CookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
-    CookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
     CookieBlockedReason2["UnknownError"] = "UnknownError";
     CookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
     CookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
@@ -5679,6 +5676,8 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
       let encodedName = encodeURI(pathPart).replace(/[\/\*]/g, (match) => "%" + match[0].charCodeAt(0).toString(16).toUpperCase());
       if (encodedName === "..") {
         encodedName = "%2E%2E";
+      } else if (encodedName === ".") {
+        encodedName = "%2E";
       }
       if (Host8.Platform.isWin()) {
         encodedName = encodedName.replace(/[:\?]/g, (match) => "%" + match[0].charCodeAt(0).toString(16).toUpperCase());
@@ -5742,7 +5741,10 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
       if (!encodedFilePath) {
         return null;
       }
-      const encodedPath = Common9.ParsedURL.ParsedURL.substring(encodedFilePath, 0, encodedFilePath.lastIndexOf("/"));
+      const encodedPath = Common9.ParsedURL.ParsedURL.substr(encodedFilePath, 0, encodedFilePath.lastIndexOf("/"));
+      if (!encodedPath) {
+        return null;
+      }
       uiSourceCode = await this.#project.createFile(encodedPath, HEADERS_FILENAME, "");
       Host8.userMetrics.actionTaken(Host8.UserMetrics.Action.HeaderOverrideFileCreated);
     }
@@ -5895,6 +5897,10 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     const encodedFileName = Common9.ParsedURL.ParsedURL.substring(encodedPath, lastIndexOfSlash + 1);
     const rawFileName = Common9.ParsedURL.ParsedURL.encodedPathToRawPathString(encodedFileName);
     encodedPath = Common9.ParsedURL.ParsedURL.substr(encodedPath, 0, lastIndexOfSlash);
+    if (!encodedPath || rawFileName === HEADERS_FILENAME) {
+      this.#savingForOverrides.delete(uiSourceCode);
+      return;
+    }
     if (this.#project) {
       await this.#project.createFile(encodedPath, rawFileName, content ?? "", isEncoded);
     }
@@ -5926,7 +5932,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   isForbiddenFileUrl(uiSourceCode) {
     const relativePathParts = FileSystemWorkspaceBinding.relativePath(uiSourceCode);
     const host = this.decodeLocalPathToUrlPath(this.decodeLocalPathToUrlPath(relativePathParts[0] || "")).toLowerCase();
-    return ["chrome:", "data:", "blob:", "javascript:", "about:", "mailto:", "vbscript:"].includes(host) || forbiddenUrls.includes(host);
+    return ["chrome:", "data:", "blob:", "javascript:", "about:", "mailto:", "vbscript:", ".", ".."].includes(host) || forbiddenUrls.includes(host);
   }
   static isForbiddenNetworkUrl(urlString) {
     const trimmedUrl = urlString.trim().toLowerCase();
@@ -5936,6 +5942,9 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     const url = Common9.ParsedURL.ParsedURL.fromString(urlString);
     if (!url) {
       return false;
+    }
+    if ((url.scheme === "http" || url.scheme === "https") && (!url.host || url.host === "." || url.host === "..")) {
+      return true;
     }
     return !["http", "https", "file"].includes(url.scheme) || forbiddenUrls.includes(url.host);
   }

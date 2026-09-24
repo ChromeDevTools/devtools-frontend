@@ -19,6 +19,7 @@ export interface ViewInput {
     textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
     onAddComment: (text: string) => void;
     onCommentTextChange: (event: Event) => void;
+    onClose?: () => void;
 }
 export type ViewOutput = undefined;
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: ViewOutput, target: HTMLElement) => void;
@@ -27,6 +28,7 @@ export declare class CommentThreadWidget extends UI.Widget.Widget {
     #private;
     title: Title;
     onAddComment?: (text: string) => void;
+    onClose?: () => void;
     constructor(element?: HTMLElement, view?: View);
     wasShown(): void;
     set comments(comments: CommentManager.CommentManager.Comment[]);

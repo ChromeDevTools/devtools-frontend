@@ -24,7 +24,7 @@ const NODE_ID = 1 as Protocol.DOM.NodeId;
 
 describeWithEnvironment('AccessibilitySidebarView', () => {
   let target: SDK.Target.Target;
-  let view: Accessibility.AccessibilitySidebarView.AccessibilitySidebarView;
+  let view: Accessibility.AccessibilitySidebarView.AccessibilitySidebarView|undefined;
 
   beforeEach(() => {
     stubNoopSettings();
@@ -45,6 +45,8 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
   afterEach(() => {
     UI.ActionRegistration.maybeRemoveActionExtension('elements.toggle-a11y-tree');
     view?.detach();
+    view = undefined;
+    UI.ViewManager.ViewManager.removeInstance();
   });
 
   it('notifies ViewManager when visibility is toggled', async () => {

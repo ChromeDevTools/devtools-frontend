@@ -32,6 +32,35 @@ export function compareAssignmentPriority(a: GnAstNode, b: GnAstNode): number {
   return getPriority(b) - getPriority(a);
 }
 
+function isEmptyListAssignment(node: GnAstNode): boolean {
+  const rhs = node.child?.[1];
+  return rhs?.type === 'LIST' && (rhs.child?.length ?? 0) === 0;
+}
+
+/**
+ * Removes top-level `targetProperty` assignments within a target block whose value is an
+ * empty list literal (e.g. `deps = []` or `deps += []`).
+ *
+ * A `=` assignment is only removed when it is the sole remaining assignment to
+ * `targetProperty`, because subsequent `+=`/`-=` assignments require the variable to be defined.
+ */
+function removeEmptyTopLevelAssignments(block: GnAstNode, targetProperty: string): void {
+  if (!block.child) {
+    return;
+  }
+  block.child = block.child.filter(node => {
+    const isEmptyAppend = node.type === 'BINARY' && node.value === '+=' && node.child?.[0]?.value === targetProperty &&
+        isEmptyListAssignment(node);
+    return !isEmptyAppend;
+  });
+
+  const remainingAssigns = findAssignments(block.child, targetProperty);
+  if (remainingAssigns.length === 1 && remainingAssigns[0].value === '=' &&
+      isEmptyListAssignment(remainingAssigns[0])) {
+    block.child = block.child.filter(node => node !== remainingAssigns[0]);
+  }
+}
+
 export class GnBuildFile {
   static #cache = new Map<string, Promise<GnBuildFile>>();
 
@@ -189,6 +218,10 @@ export class GnBuildFile {
           modified = true;
         }
       });
+    }
+
+    if (modified && options.missingDeps.length === 0) {
+      removeEmptyTopLevelAssignments(block, targetProperty);
     }
 
     // Append missing deps to a top-level target assignment.

@@ -149,6 +149,10 @@ export class TypeScriptAnalyzer {
    * `unusedTsDeps`) from non-TypeScript dependencies (`missingDeps`, `unusedDeps`) such as
    * CSS (`generate_css`) or GN `group` targets, and formatting missing dependencies as
    * relative GN labels.
+   *
+   * Only `generate_css` targets are reported as unused non-TypeScript dependencies
+   * (`unusedDeps`), since their usage is fully determined by `.css.js` imports. Other
+   * non-TypeScript dependencies (e.g. GN `group` targets) are never reported as unused.
    */
   static async computeTargetDepsDiff(
       targetInfo: AstTargetInfo,
@@ -170,10 +174,10 @@ export class TypeScriptAnalyzer {
       resolvedExistingTsDeps.set(resolved, rawDep);
     }
 
-    const resolvedExistingDeps = new Set<string>();
+    const resolvedExistingDeps = new Map<string, string>();
     for (const rawDep of targetInfo.deps || []) {
       const resolved = GnLabel.resolveDeclaredDep(rawDep, currentDir, rootDir);
-      resolvedExistingDeps.add(resolved);
+      resolvedExistingDeps.set(resolved, rawDep);
     }
 
     const resolvedReqSet = new Set(
@@ -185,13 +189,16 @@ export class TypeScriptAnalyzer {
 
     const unusedTsDeps: string[] = [];
     const missingTsDeps: string[] = [];
-    const unusedDeps: string[] = [];  // Currently we do not detect unused non-TS deps
+    const unusedDeps: string[] = [];
     const missingDeps: string[] = [];
+
+    const getTemplateName = async(resolvedLabel: string): Promise<string|undefined> =>
+        (await astExtractor.getTargetInfoByLabel(resolvedLabel))?.templateName;
 
     // Helper to determine if target belongs in `deps` instead of `ts_deps` (e.g. CSS or GN group)
     const isNonTsTarget = async(resolvedReq: string): Promise<boolean> => {
-      const depInfo = await astExtractor.getTargetInfoByLabel(resolvedReq);
-      return depInfo?.templateName === 'generate_css' || depInfo?.templateName === 'group';
+      const templateName = await getTemplateName(resolvedReq);
+      return templateName === 'generate_css' || templateName === 'group';
     };
 
     for (const resolvedReq of resolvedReqSet) {
@@ -212,6 +219,13 @@ export class TypeScriptAnalyzer {
     for (const [resolvedExisting, rawDep] of resolvedExistingTsDeps.entries()) {
       if (!resolvedReqSet.has(resolvedExisting) || await isNonTsTarget(resolvedExisting)) {
         unusedTsDeps.push(rawDep);
+      }
+    }
+
+    // CSS targets (e.g. `:css_files`) are only needed when a source imports one of their files.
+    for (const [resolvedExisting, rawDep] of resolvedExistingDeps.entries()) {
+      if (!resolvedReqSet.has(resolvedExisting) && await getTemplateName(resolvedExisting) === 'generate_css') {
+        unusedDeps.push(rawDep);
       }
     }
 

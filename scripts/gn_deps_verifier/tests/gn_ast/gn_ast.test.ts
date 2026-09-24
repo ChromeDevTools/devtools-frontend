@@ -652,6 +652,63 @@ describe('GnBuildFile', () => {
           [':cros_dep'],
       );
     });
+
+    it('removes the assignment entirely when all of its deps are removed', async () => {
+      const gnBuild = await GnBuildFile.from(fixturePath, rootDir);
+
+      const updated = gnBuild.updateTargetDeps('complex_assignments', {
+        unusedDeps: [':dep1', ':dep2'],
+        missingDeps: [],
+        targetProperty: 'ts_deps',
+      });
+
+      assert.isTrue(updated);
+
+      const targetNode = findTargetNode(gnBuild.ast, 'complex_assignments');
+      const block = targetNode?.child?.[1];
+      assert.isEmpty(findAssignments(block?.child || [], 'ts_deps'));
+    });
+
+    it('removes an emptied += assignment but keeps the = assignment', async () => {
+      const gnBuild = await GnBuildFile.from(fixturePath, rootDir);
+
+      const updated = gnBuild.updateTargetDeps('complex_assignments', {
+        unusedDeps: [':dep2'],
+        missingDeps: [],
+        targetProperty: 'ts_deps',
+      });
+
+      assert.isTrue(updated);
+
+      const targetNode = findTargetNode(gnBuild.ast, 'complex_assignments');
+      const block = targetNode?.child?.[1];
+      const assigns = findAssignments(block?.child || [], 'ts_deps');
+      assert.lengthOf(assigns, 1);
+      assert.strictEqual(assigns[0].value, '=');
+      assert.deepEqual(extractStringValues(assigns[0].child?.[1] as GnAstNode), [':dep1']);
+    });
+
+    it('keeps an emptied = assignment when other assignments to the property remain', async () => {
+      const gnBuild = await GnBuildFile.from(fixturePath, rootDir);
+
+      const updated = gnBuild.updateTargetDeps('complex_assignments', {
+        unusedDeps: [':dep1'],
+        missingDeps: [],
+        targetProperty: 'ts_deps',
+      });
+
+      assert.isTrue(updated);
+
+      const targetNode = findTargetNode(gnBuild.ast, 'complex_assignments');
+      const block = targetNode?.child?.[1];
+      const assigns = findAssignments(block?.child || [], 'ts_deps');
+      assert.lengthOf(assigns, 2);
+      const equalsAssign = assigns.find(a => a.value === '=');
+      assert.isDefined(equalsAssign);
+      assert.deepEqual(extractStringValues(equalsAssign?.child?.[1] as GnAstNode), []);
+      const plusAssign = assigns.find(a => a.value === '+=');
+      assert.deepEqual(extractStringValues(plusAssign?.child?.[1] as GnAstNode), [':dep2']);
+    });
   });
 
   describe('compareAssignmentPriority', () => {

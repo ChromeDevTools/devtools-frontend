@@ -467,6 +467,117 @@ describe('typescript_analyzer', () => {
       assert.deepEqual(diff.missingDeps, []);
       assert.deepEqual(diff.unusedDeps, []);
     });
+
+    it('reports generate_css targets in deps as unused when no source imports them', async () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//front_end/panels/network:bundle',
+        templateName: 'devtools_entrypoint',
+        buildFile: path.join(ROOT_DIR, 'front_end/panels/network/BUILD.gn'),
+        sources: ['network.ts'],
+        deps: [
+          ':css_files',
+          '../../ui/legacy/components/data_grid:css_files',
+        ],
+        ts_deps: [':network'],
+        testonly: false,
+      };
+
+      const requiredDeps = new Set(['//front_end/panels/network:network']);
+
+      const astExtractor = {
+        getTargetInfoByLabel: async (label: string) => {
+          if (label.endsWith(':css_files')) {
+            return {templateName: 'generate_css'} as AstTargetInfo;
+          }
+          return undefined;
+        },
+      } as unknown as GnAstExtractor;
+
+      const diff = await TypeScriptAnalyzer.computeTargetDepsDiff(
+          targetInfo,
+          requiredDeps,
+          ROOT_DIR,
+          astExtractor,
+      );
+
+      assert.deepEqual(diff.missingTsDeps, []);
+      assert.deepEqual(diff.unusedTsDeps, []);
+      assert.deepEqual(diff.missingDeps, []);
+      assert.deepEqual(diff.unusedDeps, [
+        ':css_files',
+        '../../ui/legacy/components/data_grid:css_files',
+      ]);
+    });
+
+    it('keeps generate_css targets in deps when a source imports them', async () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//front_end/panels/network:network',
+        templateName: 'devtools_ui_module',
+        buildFile: path.join(ROOT_DIR, 'front_end/panels/network/BUILD.gn'),
+        sources: ['NetworkPanel.ts'],
+        deps: [
+          ':css_files',
+          '../../ui/legacy/components/data_grid:css_files',
+        ],
+        ts_deps: [],
+        testonly: false,
+      };
+
+      // Only the local CSS is imported; the data_grid CSS is not.
+      const requiredDeps = new Set(['//front_end/panels/network:css_files']);
+
+      const astExtractor = {
+        getTargetInfoByLabel: async (label: string) => {
+          if (label.endsWith(':css_files')) {
+            return {templateName: 'generate_css'} as AstTargetInfo;
+          }
+          return undefined;
+        },
+      } as unknown as GnAstExtractor;
+
+      const diff = await TypeScriptAnalyzer.computeTargetDepsDiff(
+          targetInfo,
+          requiredDeps,
+          ROOT_DIR,
+          astExtractor,
+      );
+
+      assert.deepEqual(diff.missingDeps, []);
+      assert.deepEqual(diff.unusedDeps, ['../../ui/legacy/components/data_grid:css_files']);
+    });
+
+    it('does not report non-CSS deps (e.g. groups or unknown targets) as unused', async () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//front_end/panels/lighthouse:lighthouse',
+        templateName: 'devtools_ui_module',
+        buildFile: path.join(ROOT_DIR, 'front_end/panels/lighthouse/BUILD.gn'),
+        sources: ['LighthousePanel.ts'],
+        deps: [
+          '../../third_party/lighthouse',
+          ':some_unknown_target',
+        ],
+        ts_deps: [],
+        testonly: false,
+      };
+
+      const astExtractor = {
+        getTargetInfoByLabel: async (label: string) => {
+          if (label === '//front_end/third_party/lighthouse:lighthouse') {
+            return {templateName: 'group'} as AstTargetInfo;
+          }
+          return undefined;
+        },
+      } as unknown as GnAstExtractor;
+
+      const diff = await TypeScriptAnalyzer.computeTargetDepsDiff(
+          targetInfo,
+          new Set(),
+          ROOT_DIR,
+          astExtractor,
+      );
+
+      assert.deepEqual(diff.unusedDeps, []);
+    });
   });
   describe('resolveImportDependencies', () => {
     let extractor: GnAstExtractor;

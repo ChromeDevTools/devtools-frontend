@@ -255,6 +255,92 @@ describe('gn_ast_updater', () => {
     sinon.assert.calledOnce(gnBuildMock.writeGnFile as sinon.SinonStub);
   });
 
+  it('removes unused css_files deps from the deps property', async () => {
+    const gnBuildMock = {
+      filePath: '/root/BUILD.gn',
+      targets: new Map<string, AstTargetInfo>([
+        [
+          '//test:bundle',
+          {
+            templateName: 'devtools_entrypoint',
+            label: '//test:bundle',
+          } as AstTargetInfo,
+        ],
+      ]),
+      updateTargetDeps: sandbox.stub().returns(true),
+      writeGnFile: sandbox.stub().resolves(true),
+    } as unknown as GnBuildFile;
+
+    const extractorStub = {
+      buildFiles: new Map([['test_file', Promise.resolve(gnBuildMock)]]),
+    };
+    sandbox.stub(GnAstExtractor, 'create').returns(extractorStub as unknown as GnAstExtractor);
+
+    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').resolves({
+      missingTsDeps: [],
+      unusedTsDeps: [],
+      missingDeps: [],
+      unusedDeps: [':css_files'],
+    });
+
+    const requiredDeps = new Map([['//test:bundle', new Set(['//test:test'])]]);
+
+    await updateBuildGnFiles(requiredDeps, '/root');
+
+    sinon.assert.calledWith(
+        gnBuildMock.updateTargetDeps as sinon.SinonStub,
+        'bundle',
+        {
+          unusedDeps: [':css_files'],
+          missingDeps: [],
+          targetProperty: 'deps',
+        },
+    );
+    sinon.assert.calledOnce(gnBuildMock.writeGnFile as sinon.SinonStub);
+  });
+
+  it('reports unused css_files deps in dryRun mode', async () => {
+    const gnBuildMock = {
+      filePath: '/root/BUILD.gn',
+      targets: new Map<string, AstTargetInfo>([
+        [
+          '//test:bundle',
+          {
+            templateName: 'devtools_entrypoint',
+            label: '//test:bundle',
+          } as AstTargetInfo,
+        ],
+      ]),
+      updateTargetDeps: sandbox.stub().returns(true),
+      writeGnFile: sandbox.stub().resolves(true),
+    } as unknown as GnBuildFile;
+
+    const extractorStub = {
+      buildFiles: new Map([['test_file', Promise.resolve(gnBuildMock)]]),
+    };
+    sandbox.stub(GnAstExtractor, 'create').returns(extractorStub as unknown as GnAstExtractor);
+
+    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').resolves({
+      missingTsDeps: [],
+      unusedTsDeps: [],
+      missingDeps: [],
+      unusedDeps: [':css_files'],
+    });
+
+    const requiredDeps = new Map([['//test:bundle', new Set(['//test:test'])]]);
+
+    let thrownError: Error|undefined;
+    try {
+      await updateBuildGnFiles(requiredDeps, '/root', true);
+    } catch (e) {
+      thrownError = e as Error;
+    }
+
+    assert.isDefined(thrownError);
+    assert.include(thrownError.message, 'Unused (deps): :css_files');
+    sinon.assert.notCalled(gnBuildMock.updateTargetDeps as sinon.SinonStub);
+  });
+
   it('logs failure if writeGnFile returns false', async () => {
     const gnBuildMock = {
       filePath: '/root/BUILD.gn',

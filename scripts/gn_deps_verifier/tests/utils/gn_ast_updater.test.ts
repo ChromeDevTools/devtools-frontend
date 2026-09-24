@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
 import sinon from 'sinon';
 
 import {GnAstExtractor} from '../../extractors/gn_ast_extractor.ts';
@@ -320,5 +321,50 @@ describe('gn_ast_updater', () => {
     await updateBuildGnFiles(requiredDeps, '/root');
 
     sinon.assert.calledOnce(gnBuildMock.writeGnFile as sinon.SinonStub);
+  });
+
+  it('throws on first mismatch and does not modify AST or write files when dryRun is true', async () => {
+    const gnBuildMock = {
+      filePath: '/root/BUILD.gn',
+      targets: new Map<string, AstTargetInfo>([
+        [
+          '//test:target',
+          {
+            templateName: 'devtools_module',
+            label: '//test:target',
+          } as AstTargetInfo,
+        ],
+      ]),
+      updateTargetDeps: sandbox.stub().returns(true),
+      writeGnFile: sandbox.stub().resolves(true),
+    } as unknown as GnBuildFile;
+
+    const extractorStub = {
+      buildFiles: new Map([['test_file', Promise.resolve(gnBuildMock)]]),
+    };
+    sandbox.stub(GnAstExtractor, 'create').returns(extractorStub as unknown as GnAstExtractor);
+    sandbox.stub(TypeScriptAnalyzer, 'computeTargetDepsDiff').resolves({
+      missingTsDeps: ['//new:dep'],
+      unusedTsDeps: ['//old:dep'],
+      missingDeps: [],
+      unusedDeps: [],
+    });
+
+    const requiredDeps = new Map([['//test:target', new Set(['dep1'])]]);
+
+    let thrownError: Error|undefined;
+    try {
+      await updateBuildGnFiles(requiredDeps, '/root', true);
+    } catch (e) {
+      thrownError = e as Error;
+    }
+
+    assert.isDefined(thrownError);
+    assert.include(thrownError.message, 'Mismatch in //test:target (BUILD.gn)');
+    assert.include(thrownError.message, 'Missing (ts_deps): //new:dep');
+    assert.include(thrownError.message, 'Unused (ts_deps): //old:dep');
+    assert.include(thrownError.message, 'npm run check-gn -- BUILD.gn');
+    sinon.assert.notCalled(gnBuildMock.updateTargetDeps as sinon.SinonStub);
+    sinon.assert.notCalled(gnBuildMock.writeGnFile as sinon.SinonStub);
   });
 });

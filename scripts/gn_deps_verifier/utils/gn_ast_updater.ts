@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as path from 'node:path';
+
 import {GnAstExtractor} from '../extractors/gn_ast_extractor.ts';
 import {TypeScriptAnalyzer} from '../extractors/typescript_analyzer.ts';
 import type {GnBuildFile} from '../gn_ast/gn_ast.ts';
@@ -15,6 +17,7 @@ const IGNORED_TARGET_SUBSTRINGS = ['Images', 'legacy_test_runner'];
 export async function updateBuildGnFiles(
     targetRequiredDeps: Map<string, Set<string>>,
     rootDir: string,
+    dryRun = false,
 ) {
   const extractionResult = GnAstExtractor.create(rootDir);
   const modifiedBuildFiles = new Set<GnBuildFile>();
@@ -59,6 +62,19 @@ export async function updateBuildGnFiles(
 
       if (filteredMissingTsDeps.length > 0 || filteredUnusedTsDeps.length > 0 || filteredMissingDeps.length > 0 ||
           filteredUnusedDeps.length > 0) {
+        if (dryRun) {
+          const relBuildFile = path.relative(rootDir, gnBuild.filePath);
+          const details = [
+            ...filteredMissingTsDeps.map(d => `  Missing (ts_deps): ${d}`),
+            ...filteredUnusedTsDeps.map(d => `  Unused (ts_deps): ${d}`),
+            ...filteredMissingDeps.map(d => `  Missing (deps): ${d}`),
+            ...filteredUnusedDeps.map(d => `  Unused (deps): ${d}`),
+          ].join('\n');
+          throw new Error(
+              `Mismatch in ${targetLabel} (${relBuildFile}):\n${details}\n\n` +
+                  `Run \`npm run check-gn -- --all\` to automatically fix this.`,
+          );
+        }
         logger(`Mismatch in ${targetLabel}:`);
         filteredMissingTsDeps.forEach(d => logger(`  Missing (ts_deps): ${d}`));
         filteredUnusedTsDeps.forEach(d => logger(`  Unused (ts_deps): ${d}`));

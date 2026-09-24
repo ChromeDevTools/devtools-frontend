@@ -32,6 +32,11 @@ const argv = yargs(hideBin(process.argv))
                    description: 'Check all targets in front_end',
                    default: false,
                  })
+                 .option('dry-run', {
+                   type: 'boolean',
+                   description: 'Fail on the first found issue without modifying BUILD.gn files',
+                   default: false,
+                 })
                  .positional('files', {
                    describe: 'Files to check',
                    type: 'string',
@@ -60,6 +65,7 @@ try {
   await checkDepsGn(
       argv.root,
       files.map(f => path.resolve(f)),
+      argv.dryRun,
   );
 } catch (e) {
   console.error((e as Error).message);

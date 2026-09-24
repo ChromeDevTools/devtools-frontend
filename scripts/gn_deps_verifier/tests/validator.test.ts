@@ -51,4 +51,61 @@ describe('validator', () => {
       await fs.promises.rm(tempDir, {recursive: true, force: true});
     }
   });
+
+  it('throws on first missing target when dryRun is true', async () => {
+    const tempDir = await fs.promises.mkdtemp(
+        path.join(os.tmpdir(), 'gn-test-'),
+    );
+    await fs.promises.cp(FIXTURES_DIR, tempDir, {recursive: true});
+
+    const relFile = 'missing_target_file.ts';
+    const absPathInFixtures = path.join(tempDir, relFile);
+    await fs.promises.writeFile(absPathInFixtures, 'console.log("hello");');
+
+    try {
+      let thrownError: Error|undefined;
+      try {
+        await checkDepsGn(tempDir, [relFile], true);
+      } catch (e) {
+        thrownError = e as Error;
+      }
+      assert.isDefined(thrownError);
+      assert.include(
+          thrownError.message,
+          'Could not find target for file missing_target_file.ts in project BUILD.gn ASTs',
+      );
+    } finally {
+      await fs.promises.rm(tempDir, {recursive: true, force: true});
+    }
+  });
+
+  it('does not warn for BUILD.gn files and throws on dependency mismatch in dryRun mode', async () => {
+    const tempDir = await fs.promises.mkdtemp(
+        path.join(os.tmpdir(), 'gn-test-'),
+    );
+    await fs.promises.cp(FIXTURES_DIR, tempDir, {recursive: true});
+
+    const originalConsoleWarn = console.warn;
+    const warnings: string[] = [];
+    console.warn = (msg: string) => {
+      warnings.push(msg);
+    };
+
+    try {
+      let thrownError: Error|undefined;
+      try {
+        await checkDepsGn(tempDir, [path.join(tempDir, 'BUILD.gn')], true);
+      } catch (e) {
+        thrownError = e as Error;
+      }
+      assert.isFalse(
+          warnings.some(w => w.includes('Could not find target for file')),
+      );
+      assert.isDefined(thrownError);
+      assert.include(thrownError.message, 'Mismatch in //:animation');
+    } finally {
+      console.warn = originalConsoleWarn;
+      await fs.promises.rm(tempDir, {recursive: true, force: true});
+    }
+  });
 });

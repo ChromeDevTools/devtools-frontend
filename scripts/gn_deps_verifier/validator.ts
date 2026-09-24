@@ -14,6 +14,7 @@ import {updateBuildGnFiles} from './utils/gn_ast_updater.ts';
 export async function checkDepsGn(
     rootDir: string,
     files: string[],
+    dryRun = false,
 ) {
   logger(`Phase 1: Extracting GN Targets from AST...`);
   const extractionResult = GnAstExtractor.create(rootDir);
@@ -37,8 +38,19 @@ export async function checkDepsGn(
           return;
         }
 
+        if (path.basename(absPath) === 'BUILD.gn' || absPath.endsWith('.d.ts')) {
+          return;
+        }
+
         const fileTargets = await extractionResult.getTargetsForFile(absPath);
         if (!fileTargets || fileTargets.length === 0) {
+          const relFile = path.relative(rootDir, absPath);
+          if (dryRun) {
+            throw new Error(
+                `Could not find target for file ${relFile} in project BUILD.gn ASTs.\n` +
+                    `Please add ${relFile} to the appropriate target's sources in BUILD.gn.`,
+            );
+          }
           console.warn(
               `Warning: Could not find target for file ${file} in project BUILD.gn ASTs`,
           );
@@ -51,5 +63,5 @@ export async function checkDepsGn(
   const requiredDeps = await analyzer.analyze(files);
 
   logger(`Phase 3: Updating BUILD.gn ASTs...`);
-  await updateBuildGnFiles(requiredDeps, rootDir);
+  await updateBuildGnFiles(requiredDeps, rootDir, dryRun);
 }

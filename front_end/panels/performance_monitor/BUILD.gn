@@ -32,8 +32,6 @@ devtools_ui_module("performance_monitor") {
 devtools_entrypoint("bundle") {
   entrypoint = "performance_monitor.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":performance_monitor" ]
 
   visibility = [

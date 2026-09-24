@@ -30,8 +30,6 @@ devtools_ui_module("emulation") {
 devtools_entrypoint("bundle") {
   entrypoint = "emulation.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":emulation" ]
 
   visibility = [

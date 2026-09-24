@@ -29,8 +29,6 @@ devtools_ui_module("linkifier") {
 devtools_entrypoint("bundle") {
   entrypoint = "linkifier.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":linkifier" ]
 
   visibility = default_components_visibility

@@ -29,8 +29,6 @@ devtools_ui_module("snackbar") {
 devtools_entrypoint("bundle") {
   entrypoint = "snackbars.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":snackbar" ]
 
   visibility = [ "../../../entrypoints/main/*" ]

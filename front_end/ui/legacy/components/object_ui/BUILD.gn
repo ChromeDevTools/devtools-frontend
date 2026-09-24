@@ -55,8 +55,6 @@ devtools_ui_module("object_ui") {
 devtools_entrypoint("bundle") {
   entrypoint = "object_ui.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":object_ui" ]
 
   visibility = [

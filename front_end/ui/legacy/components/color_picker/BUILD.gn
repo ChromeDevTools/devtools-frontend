@@ -41,8 +41,6 @@ devtools_ui_module("color_picker") {
 devtools_entrypoint("bundle") {
   entrypoint = "color_picker.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":color_picker" ]
 
   visibility = [

@@ -49,8 +49,6 @@ devtools_ui_module("utils") {
 devtools_entrypoint("bundle") {
   entrypoint = "utils.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":utils" ]
 
   visibility = [

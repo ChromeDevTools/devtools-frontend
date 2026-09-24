@@ -127,8 +127,6 @@ devtools_ui_module("elements") {
 devtools_entrypoint("bundle") {
   entrypoint = "elements.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":elements" ]
 
   visibility = [

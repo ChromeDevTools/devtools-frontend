@@ -81,8 +81,6 @@ devtools_ui_module("insights") {
 devtools_entrypoint("bundle") {
   entrypoint = "insights.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":insights" ]
 
   visibility = [

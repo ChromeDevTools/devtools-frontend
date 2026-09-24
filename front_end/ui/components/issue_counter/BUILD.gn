@@ -39,8 +39,6 @@ devtools_ui_module("issue_counter") {
 devtools_entrypoint("bundle") {
   entrypoint = "issue_counter.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":issue_counter" ]
 
   visibility = default_components_visibility

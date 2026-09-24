@@ -33,8 +33,6 @@ devtools_ui_module("settings") {
 devtools_entrypoint("bundle") {
   entrypoint = "settings.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":settings" ]
 
   visibility = default_components_visibility + [ "../../legacy/*" ]

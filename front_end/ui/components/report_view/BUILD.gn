@@ -33,8 +33,6 @@ devtools_ui_module("report_view") {
 devtools_entrypoint("bundle") {
   entrypoint = "report_view.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":report_view" ]
 
   visibility = default_components_visibility

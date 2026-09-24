@@ -22,8 +22,6 @@ devtools_ui_module("spinner") {
 devtools_entrypoint("bundle") {
   entrypoint = "spinners.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":spinner" ]
 
   visibility = default_components_visibility

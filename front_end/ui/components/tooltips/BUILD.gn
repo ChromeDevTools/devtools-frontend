@@ -27,8 +27,6 @@ devtools_ui_module("tooltip") {
 devtools_entrypoint("bundle") {
   entrypoint = "tooltips.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":tooltip" ]
 
   visibility = default_components_visibility

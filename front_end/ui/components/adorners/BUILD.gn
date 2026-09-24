@@ -25,8 +25,6 @@ devtools_ui_module("adorners") {
 devtools_entrypoint("bundle") {
   entrypoint = "adorners.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":adorners" ]
 
   visibility = default_components_visibility + [ "../../legacy/*" ]

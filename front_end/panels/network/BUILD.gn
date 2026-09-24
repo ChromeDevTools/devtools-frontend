@@ -124,12 +124,6 @@ devtools_ui_module("network") {
 devtools_entrypoint("bundle") {
   entrypoint = "network.ts"
 
-  deps = [
-    ":css_files",
-    "../../ui/legacy/components/data_grid:css_files",
-    "../../ui/legacy/components/object_ui:css_files",
-  ]
-
   ts_deps = [
     ":network",
     "../../models/network_time_calculator:bundle",

@@ -26,8 +26,6 @@ devtools_ui_module("suggestion_input") {
 devtools_entrypoint("bundle") {
   entrypoint = "suggestion_input.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":suggestion_input" ]
 
   visibility = default_components_visibility

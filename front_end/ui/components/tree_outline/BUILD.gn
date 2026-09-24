@@ -32,8 +32,6 @@ devtools_ui_module("tree_outline") {
 devtools_entrypoint("bundle") {
   entrypoint = "tree_outline.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":tree_outline" ]
 
   visibility = default_components_visibility

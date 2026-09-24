@@ -81,7 +81,6 @@ devtools_ui_module("common") {
 
 devtools_entrypoint("bundle") {
   entrypoint = "common.ts"
-  deps = [ ":css_files" ]
 
   ts_deps = [ ":common" ]
 

@@ -36,8 +36,6 @@ devtools_ui_module("autofill") {
 devtools_entrypoint("bundle") {
   entrypoint = "autofill.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":autofill" ]
 
   visibility = [

@@ -43,8 +43,6 @@ devtools_ui_module("mobile_throttling") {
 devtools_entrypoint("bundle") {
   entrypoint = "mobile_throttling.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":mobile_throttling" ]
 
   visibility = [

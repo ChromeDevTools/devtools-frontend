@@ -57,11 +57,6 @@ devtools_ui_module("accessibility") {
 devtools_entrypoint("bundle") {
   entrypoint = "accessibility.ts"
 
-  deps = [
-    ":css_files",
-    "../../ui/legacy/components/object_ui:css_files",
-  ]
-
   ts_deps = [ ":accessibility" ]
 
   visibility = [

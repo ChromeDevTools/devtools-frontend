@@ -21,8 +21,6 @@ devtools_ui_module("theme_support") {
 devtools_entrypoint("bundle") {
   entrypoint = "theme_support.ts"
 
-  deps = [ "../:css_files" ]
-
   ts_deps = [ ":theme_support" ]
 
   visibility = [

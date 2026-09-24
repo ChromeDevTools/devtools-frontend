@@ -45,8 +45,6 @@ devtools_ui_module("markdown_view") {
 devtools_entrypoint("bundle") {
   entrypoint = "markdown_view.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":markdown_view" ]
 
   visibility = default_components_visibility

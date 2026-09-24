@@ -34,8 +34,6 @@ devtools_ui_module("request_link_icon") {
 devtools_entrypoint("bundle") {
   entrypoint = "request_link_icon.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":request_link_icon" ]
 
   visibility = default_components_visibility

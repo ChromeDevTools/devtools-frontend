@@ -126,11 +126,6 @@ devtools_ui_module("sources") {
 devtools_entrypoint("bundle") {
   entrypoint = "sources.ts"
 
-  deps = [
-    ":css_files",
-    "../../ui/legacy/components/object_ui:css_files",
-  ]
-
   ts_deps = [ ":sources" ]
 
   visibility = [

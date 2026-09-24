@@ -47,8 +47,6 @@ devtools_ui_module("layer_viewer") {
 devtools_entrypoint("bundle") {
   entrypoint = "layer_viewer.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":layer_viewer" ]
 
   visibility = [

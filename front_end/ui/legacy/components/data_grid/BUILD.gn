@@ -42,8 +42,6 @@ devtools_ui_module("data_grid") {
 devtools_entrypoint("bundle") {
   entrypoint = "data_grid.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":data_grid" ]
 
   visibility = [

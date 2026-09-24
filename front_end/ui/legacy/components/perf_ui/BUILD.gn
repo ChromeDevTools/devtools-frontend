@@ -67,8 +67,6 @@ devtools_ui_module("perf_ui") {
 devtools_entrypoint("bundle") {
   entrypoint = "perf_ui.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":perf_ui" ]
 
   visibility = [

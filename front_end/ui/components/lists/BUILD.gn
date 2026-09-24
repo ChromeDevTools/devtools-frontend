@@ -26,8 +26,6 @@ devtools_module("lists") {
 devtools_entrypoint("bundle") {
   entrypoint = "lists.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":lists" ]
 
   visibility = default_components_visibility

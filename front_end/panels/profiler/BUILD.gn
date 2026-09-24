@@ -77,11 +77,6 @@ devtools_ui_module("profiler") {
 devtools_entrypoint("bundle") {
   entrypoint = "profiler.ts"
 
-  deps = [
-    ":css_files",
-    "../../ui/legacy/components/object_ui:css_files",
-  ]
-
   ts_deps = [ ":profiler" ]
 
   visibility = [

@@ -46,7 +46,6 @@ devtools_module("inspector_main") {
 devtools_entrypoint("bundle") {
   entrypoint = "inspector_main.ts"
 
-  deps = [ ":css_files" ]
   ts_deps = [ ":inspector_main" ]
 
   visibility = [

@@ -33,8 +33,6 @@ devtools_ui_module("linear_memory_inspector") {
 devtools_entrypoint("bundle") {
   entrypoint = "linear_memory_inspector.ts"
 
-  deps = [ "../../ui/legacy:css_files" ]
-
   ts_deps = [ ":linear_memory_inspector" ]
 
   visibility = [

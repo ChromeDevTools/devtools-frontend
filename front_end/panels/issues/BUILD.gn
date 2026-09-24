@@ -72,8 +72,6 @@ devtools_ui_module("issues") {
 devtools_entrypoint("bundle") {
   entrypoint = "issues.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":issues" ]
 
   visibility = [

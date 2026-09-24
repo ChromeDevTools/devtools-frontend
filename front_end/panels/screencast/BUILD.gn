@@ -38,8 +38,6 @@ devtools_ui_module("screencast") {
 devtools_entrypoint("bundle") {
   entrypoint = "screencast.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":screencast" ]
 
   visibility = [

@@ -34,8 +34,6 @@ devtools_ui_module("web_audio") {
 devtools_entrypoint("bundle") {
   entrypoint = "web_audio.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":web_audio" ]
 
   visibility = [

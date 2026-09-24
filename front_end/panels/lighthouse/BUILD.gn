@@ -59,10 +59,7 @@ devtools_ui_module("lighthouse") {
 devtools_entrypoint("bundle") {
   entrypoint = "lighthouse.ts"
 
-  deps = [
-    ":css_files",
-    "../../third_party/lighthouse",
-  ]
+  deps = [ "../../third_party/lighthouse" ]
 
   ts_deps = [ ":lighthouse" ]
 

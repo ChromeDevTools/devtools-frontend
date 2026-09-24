@@ -38,11 +38,6 @@ devtools_ui_module("event_listeners") {
 devtools_entrypoint("bundle") {
   entrypoint = "event_listeners.ts"
 
-  deps = [
-    ":css_files",
-    "../../ui/legacy/components/object_ui:css_files",
-  ]
-
   ts_deps = [ ":event_listeners" ]
 
   visibility = [

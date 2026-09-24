@@ -138,13 +138,6 @@ devtools_ui_module("application") {
 devtools_entrypoint("bundle") {
   entrypoint = "application.ts"
 
-  deps = [
-    ":css_files",
-    "../../ui/legacy:css_files",
-    "../../ui/legacy/components/data_grid:css_files",
-    "../console:css_files",
-  ]
-
   ts_deps = [
     ":application",
     "components:bundle",

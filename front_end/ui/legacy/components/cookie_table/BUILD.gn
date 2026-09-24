@@ -37,11 +37,6 @@ devtools_ui_module("cookie_table") {
 devtools_entrypoint("bundle") {
   entrypoint = "cookie_table.ts"
 
-  deps = [
-    ":css_files",
-    "../data_grid:css_files",
-  ]
-
   ts_deps = [ ":cookie_table" ]
 
   visibility = [

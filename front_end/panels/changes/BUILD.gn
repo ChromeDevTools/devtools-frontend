@@ -46,8 +46,6 @@ devtools_ui_module("changes") {
 devtools_entrypoint("bundle") {
   entrypoint = "changes.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":changes" ]
 
   visibility = [

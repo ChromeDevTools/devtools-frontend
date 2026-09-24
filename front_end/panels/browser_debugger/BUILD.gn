@@ -46,8 +46,6 @@ devtools_ui_module("browser_debugger") {
 devtools_entrypoint("bundle") {
   entrypoint = "browser_debugger.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":browser_debugger" ]
 
   visibility = [

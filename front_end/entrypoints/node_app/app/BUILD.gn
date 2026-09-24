@@ -37,7 +37,6 @@ devtools_module("app") {
 devtools_entrypoint("bundle") {
   entrypoint = "app.ts"
 
-  deps = [ ":css_files" ]
   ts_deps = [ ":app" ]
 
   visibility = [

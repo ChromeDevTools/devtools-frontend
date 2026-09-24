@@ -36,8 +36,6 @@ devtools_ui_module("icon_button") {
 devtools_entrypoint("bundle") {
   entrypoint = "icon_button.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":icon_button" ]
 
   visibility = [

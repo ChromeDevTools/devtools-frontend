@@ -61,8 +61,6 @@ devtools_ui_module("source_frame") {
 devtools_entrypoint("bundle") {
   entrypoint = "source_frame.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":source_frame" ]
 
   visibility = [

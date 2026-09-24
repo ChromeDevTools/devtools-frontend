@@ -40,8 +40,6 @@ devtools_ui_module("whats_new") {
 devtools_entrypoint("bundle") {
   entrypoint = "whats_new.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":whats_new" ]
 
   visibility = [ ":*" ]

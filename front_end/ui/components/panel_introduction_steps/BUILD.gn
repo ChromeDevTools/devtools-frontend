@@ -23,8 +23,6 @@ devtools_ui_module("panel_introduction_steps") {
 devtools_entrypoint("bundle") {
   entrypoint = "panel_introduction_steps.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":panel_introduction_steps" ]
 
   visibility = default_components_visibility

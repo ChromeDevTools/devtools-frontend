@@ -134,11 +134,6 @@ devtools_ui_module("timeline") {
 devtools_entrypoint("bundle") {
   entrypoint = "timeline.ts"
 
-  deps = [
-    ":css_files",
-    "../../ui/legacy/components/utils:css_files",
-  ]
-
   ts_deps = [
     ":timeline",
     "utils:bundle",

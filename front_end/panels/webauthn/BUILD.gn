@@ -35,8 +35,6 @@ devtools_ui_module("webauthn") {
 devtools_entrypoint("bundle") {
   entrypoint = "webauthn.ts"
 
-  deps = [ ":css_files" ]
-
   ts_deps = [ ":webauthn" ]
 
   visibility = [

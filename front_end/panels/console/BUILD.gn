@@ -88,11 +88,6 @@ devtools_ui_module("console") {
 devtools_entrypoint("bundle") {
   entrypoint = "console.ts"
 
-  deps = [
-    ":css_files",
-    "../../ui/legacy/components/object_ui:css_files",
-  ]
-
   ts_deps = [ ":console" ]
 
   visibility = [

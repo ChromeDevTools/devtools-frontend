@@ -13,7 +13,7 @@ import type {ResourcesPanel} from './ResourcesPanel.js';
 
 const UIStrings = {
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Label for the back/forward cache tree item in the sidebar of the Application panel.
    */
   backForwardCache: 'Back/forward cache',
 } as const;

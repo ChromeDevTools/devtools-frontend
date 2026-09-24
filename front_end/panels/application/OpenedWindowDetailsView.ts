@@ -14,76 +14,75 @@ import openedWindowDetailsViewStyles from './openedWindowDetailsView.css.js';
 
 const UIStrings = {
   /**
-   * @description Text in Timeline indicating that input has happened recently
+   * @description Text indicating that the opened window has access to its opener.
    */
   yes: 'Yes',
   /**
-   * @description Text in Timeline indicating that input has not happened recently
+   * @description Text indicating that the opened window does not have access to its opener.
    */
   no: 'No',
   /**
-   * @description Title for a link to the Elements panel
+   * @description Tooltip for the button to reveal the opener frame DOM node in the Elements panel.
    */
   clickToOpenInElementsPanel: 'Click to open in Elements panel',
   /**
-   * @description Name of a network resource type
+   * @description Section header for document details in the opened window details view and worker details view.
    */
   document: 'Document',
   /**
-   * @description Text for web URLs
+   * @description Field label for the URL in the opened window details view and worker details view.
    */
   url: 'URL',
   /**
-   * @description Title of the 'Security' tool
+   * @description Section header for security information in the opened window details view.
    */
   security: 'Security',
   /**
-   * @description Label for link to Opener Frame in Detail View for Opened Window
+   * @description Field label for the link to the opener frame in the opened window details view.
    */
-  openerFrame: 'Opener Frame',
+  openerFrame: 'Opener frame',
   /**
-   * @description Label in opened window's details view whether window has access to its opener
+   * @description Field label indicating whether the opened window has access to its opener in the opened window details view.
    */
   accessToOpener: 'Access to opener',
   /**
-   * @description Description for the 'Access to Opener' field
+   * @description Tooltip explaining whether the opened window has access to its opener in the opened window details view.
    */
   showsWhetherTheOpenedWindowIs: 'Shows whether the opened window is able to access its opener and vice versa',
   /**
-   * @description Text in Frames View of the Application panel
+   * @description Fallback title for an opened window without a title in the opened window details view.
    */
   windowWithoutTitle: 'Window without title',
   /**
-   * @description Label suffix in the Application Panel Frames section for windows which are already closed
+   * @description Suffix for the title of an opened window that has been closed in the opened window details view.
    */
   closed: 'closed',
   /**
-   * @description Default name for worker
+   * @description Fallback title for a worker in the worker details view.
    */
   worker: 'worker',
   /**
-   * @description Text that refers to some types
+   * @description Field label for the worker type in the worker details view.
    */
   type: 'Type',
   /**
-   * @description Section header in the Frame Details view
+   * @description Section header for security and isolation in the worker details view.
    */
-  securityIsolation: 'Security & Isolation',
+  securityIsolation: 'Security & isolation',
   /**
-   * @description Row title in the Frame Details view
+   * @description Field label for the Cross-Origin Embedder Policy in the worker details view.
    */
   crossoriginEmbedderPolicy: 'Cross-Origin Embedder Policy',
   /**
-   * @description Label for worker type: web worker
+   * @description Value for dedicated Web Worker type in the worker details view.
    */
   webWorker: 'Web Worker',
   /**
-   * @description Text for an unspecified service worker response source
+   * @description Value for an unknown worker type in the worker details view.
    */
   unknown: 'Unknown',
   /**
-   * @description This label specifies the server endpoints to which the server is reporting errors
-   *and warnings through the Report-to API. Following this label will be the URL of the server.
+   * @description Prefix for the reporting endpoint in the security & isolation section of the worker details view.
    */
   reportingTo: 'reporting to',
 } as const;

@@ -4,7 +4,7 @@
 
 import {getTrimmedTextContent, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
-const MANIFEST_SELECTOR = '[aria-label="Manifest: Invoke to scroll to the top of manifest"]';
+const MANIFEST_SELECTOR = '[aria-label="Manifest: invoke to scroll to the top of manifest"]';
 const APP_ID_SELECTOR = '[aria-label="App Id"]';
 const FIELD_NAMES_SELECTOR = 'devtools-report-key';
 const FIELD_VALUES_SELECTOR = 'devtools-report-value';

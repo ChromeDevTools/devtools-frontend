@@ -64,7 +64,7 @@ export async function navigateToStorage(devToolsPage: DevToolsPage): Promise<voi
 }
 
 export async function navigateToOpenedWindows(devToolsPage: DevToolsPage): Promise<void> {
-  await doubleClickTreeItem(devToolsPage, '[aria-label="Opened Windows"]');
+  await doubleClickTreeItem(devToolsPage, '[aria-label="Opened windows"]');
   await devToolsPage.waitFor('.empty-state');
   await expectVeEvents(
       devToolsPage,

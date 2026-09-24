@@ -18,7 +18,7 @@ import {
 import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
-const OPENED_WINDOWS_SELECTOR = '[aria-label="Opened Windows"]';
+const OPENED_WINDOWS_SELECTOR = '[aria-label="Opened windows"]';
 const EXPAND_STACKTRACE_BUTTON_SELECTOR = '.arrow-icon-button';
 const STACKTRACE_ROW_SELECTOR = '.stack-preview-container tbody tr';
 const APPLICATION_PANEL_SELECTED_SELECTOR = '.tabbed-pane-header-tab.selected[aria-label="Application"]';

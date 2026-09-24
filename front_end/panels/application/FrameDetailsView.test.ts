@@ -195,18 +195,18 @@ describeWithEnvironment('FrameDetailsView', () => {
     assert.deepEqual(keys, [
       'URL',
       'Origin',
-      'Owner Element',
-      'Frame Creation Stack Trace',
-      'Ad Status',
-      'Creator Ad Script Ancestry',
-      'Root Script Filterlist Rule',
-      'Secure Context',
-      'Cross-Origin Isolated',
+      'Owner element',
+      'Frame creation stack trace',
+      'Ad status',
+      'Creator ad script ancestry',
+      'Root script filterlist rule',
+      'Secure context',
+      'Cross-origin isolated',
       'Cross-Origin Embedder Policy (COEP)',
       'Cross-Origin Opener Policy (COOP)',
       'Content-Security-Policy',
       'SharedArrayBuffers',
-      'Measure Memory',
+      'Measure memory',
     ]);
 
     const values = [...component.contentElement.querySelectorAll('devtools-report-value')].map(v => v.deepInnerText());

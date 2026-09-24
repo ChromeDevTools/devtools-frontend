@@ -179,7 +179,11 @@ export class ParsedURL {
         preEncodedPath = 'file:///' + preEncodedPath;
       }
     }
-    return new URL(preEncodedPath).toString() as Platform.DevToolsPath.UrlString;
+    let url = new URL(preEncodedPath).toString();
+    while (url.endsWith('/') && url.length > 'file:///'.length) {
+      url = url.substring(0, url.length - 1);
+    }
+    return url as Platform.DevToolsPath.UrlString;
   }
 
   static relativePathToUrlString(

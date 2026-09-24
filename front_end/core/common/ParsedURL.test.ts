@@ -180,6 +180,17 @@ describe('Parsed URL', () => {
     assert.strictEqual(convertedUrl, 'file://usr/lib', 'URL was not converted correctly');
   });
 
+  it('drops trailing path separators when converting platform paths to URLs', () => {
+    assert.strictEqual(ParsedURL.rawPathToUrlString('/usr/lib/' as Platform.DevToolsPath.RawPathString),
+                       'file:///usr/lib');
+    assert.strictEqual(ParsedURL.rawPathToUrlString('/usr/lib///' as Platform.DevToolsPath.RawPathString),
+                       'file:///usr/lib');
+    assert.strictEqual(ParsedURL.rawPathToUrlString('C:\\proj\\' as Platform.DevToolsPath.RawPathString),
+                       'file:///C:/proj');
+    assert.strictEqual(ParsedURL.rawPathToUrlString('C:\\' as Platform.DevToolsPath.RawPathString), 'file:///C:');
+    assert.strictEqual(ParsedURL.rawPathToUrlString('/' as Platform.DevToolsPath.RawPathString), 'file:///');
+  });
+
   it('converts path that starts with "file://" to a platform path', () => {
     const pathTest = urlString`file://usr/lib`;
     const convertedPath = ParsedURL.urlToRawPathString(pathTest);

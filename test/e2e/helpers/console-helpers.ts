@@ -408,11 +408,17 @@ export async function waitForIssueButtonLabel(devToolsPage: DevToolsPage, expect
 
 export async function clickOnContextMenu(devToolsPage: DevToolsPage, selectorForNode: string,
                                          jslogContext: string): Promise<void> {
+  const isObject = ['copy-object', 'expand-recursively'].includes(jslogContext);
+  const prefix = isObject ? 'Tree > TreeItem > ' : '';
+  const root = `${await veRoot(devToolsPage)} > Item: console-message`;
+  if (isObject) {
+    await expectVeEvents(devToolsPage, [veImpression('Tree', undefined, [veImpression('TreeItem')])], root);
+  } else {
+    await expectVeEvents(devToolsPage, [veImpressionForConsoleMessage()], await veRoot(devToolsPage));
+  }
   await devToolsPage.click(selectorForNode, {clickOptions: {button: 'right'}});
   const menuItem = await devToolsPage.waitFor(`[jslog*="context: ${jslogContext}"]`);
   await menuItem.click();
-  const isObject = ['copy-object', 'expand-recursively'].includes(jslogContext);
-  const prefix = isObject ? 'Tree > TreeItem > ' : '';
   await expectVeEvents(devToolsPage,
                        [
                          veClick(isObject ? 'Tree > TreeItem' : ''),
@@ -420,7 +426,7 @@ export async function clickOnContextMenu(devToolsPage: DevToolsPage, selectorFor
                          veClick(`${prefix}Menu > Action: ${jslogContext}`),
                          veResize(`${prefix}Menu`),
                        ],
-                       `${await veRoot(devToolsPage)} > Item: console-message`);
+                       root);
 }
 
 /**

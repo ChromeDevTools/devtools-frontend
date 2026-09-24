@@ -315,14 +315,6 @@ function checkCatchParameter({snapshot, analysis}: ContextFixture): void {
 }
 
 // Analyzes contexts of closures created inside a with statement.
-//
-// TODO(crbug.com/557403144): Call this from the test below once the pinned
-// Chrome for Testing ships V8 15.6.5 or later, which includes
-// https://crrev.com/c/8379162 ("[profiler] Emit uses for potential accesses
-// inside with"). Without it, V8 does not report that `withReader` reads
-// `outerCaptured` through the `with` scope and the analysis reports
-// `outerCaptured` as dead as well.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function checkWithStatement({snapshot, analysis}: ContextFixture): void {
   const scope = singleScopeForScript(analysis, 'with.js');
 
@@ -424,9 +416,7 @@ describe('HeapSnapshot analyze context fields API Test', () => {
     checkClassInitializerContexts(fixture);
     checkCatchBody(fixture);
     checkCatchParameter(fixture);
-    // Disabled until the pinned Chrome for Testing ships V8 15.6.5, see the
-    // TODO on `checkWithStatement`.
-    // checkWithStatement(fixture);
+    checkWithStatement(fixture);
     checkCapturedThis(fixture);
     checkDirectEval(fixture);
     checkInsideDirectEval(fixture);

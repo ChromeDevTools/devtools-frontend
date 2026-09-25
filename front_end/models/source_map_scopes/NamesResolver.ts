@@ -9,25 +9,13 @@ import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
 
-/**
- * The result of resolving a generated scope via the source map's mappings/names.
- */
-interface ResolvedScope {
-  /** Generated name -> authored name, for generated names that we could map. */
-  variableMapping: Map<string, string>;
-  thisMapping: string|null;
-  /** All generated names declared by the scope, including ones that we couldn't map. */
-  generatedNames: string[];
-}
-
 interface CachedScopeMap {
   sourceMap: SDK.SourceMap.SourceMap|undefined;
-  mappingPromise: Promise<ResolvedScope>;
+  mappingPromise: Promise<{variableMapping: Map<string, string>, thisMapping: string|null}>;
 }
 
 const scopeToCachedIdentifiersMap = new WeakMap<Formatter.FormatterWorkerPool.ScopeTreeNode, CachedScopeMap>();
-const cachedMapByCallFrame =
-    new WeakMap<SDK.DebuggerModel.CallFrame, Formatter.FormatterWorkerPool.ScopeVariableMapping[]>();
+const cachedMapByCallFrame = new WeakMap<SDK.DebuggerModel.CallFrame, Array<Map<string, string|null>>>();
 
 export async function getTextFor(contentProvider: TextUtils.ContentProvider.ContentProvider):
     Promise<TextUtils.Text.Text|null> {
@@ -205,13 +193,13 @@ const enum Punctuation {
 const resolveDebuggerScope =
     async(scope: SDK.DebuggerModel.ScopeChainEntry,
           debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding):
-        Promise<ResolvedScope> => {
+        Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
           if (!scope.callFrame()
                    .debuggerModel.target()
                    .targetManager()
                    .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
                    .get()) {
-            return {variableMapping: new Map(), thisMapping: null, generatedNames: []};
+            return {variableMapping: new Map(), thisMapping: null};
           }
           const script = scope.callFrame().script;
           const scopeChain = await findScopeChainForDebuggerScope(scope);
@@ -220,10 +208,10 @@ const resolveDebuggerScope =
 
 const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.FormatterWorkerPool.ScopeTreeNode[],
                            debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding):
-    Promise<ResolvedScope> => {
+    Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
       const parsedScope = scopeChain[scopeChain.length - 1];
       if (!parsedScope) {
-        return {variableMapping: new Map<string, string>(), thisMapping: null, generatedNames: []};
+        return {variableMapping: new Map<string, string>(), thisMapping: null};
       }
       let cachedScopeMap = scopeToCachedIdentifiersMap.get(parsedScope);
       const sourceMap = script.sourceMap();
@@ -235,7 +223,7 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
               let thisMapping = null;
 
               if (!sourceMap) {
-                return {variableMapping, thisMapping, generatedNames: []};
+                return {variableMapping, thisMapping};
               }
               // Extract as much as possible from SourceMap and resolve
               // missing identifier names from SourceMap ranges.
@@ -273,7 +261,7 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
 
               const parsedVariables = await scopeIdentifiers(script, parsedScope, scopeChain.slice(0, -1));
               if (!parsedVariables) {
-                return {variableMapping, thisMapping, generatedNames: []};
+                return {variableMapping, thisMapping};
               }
               for (const id of parsedVariables.boundVariables) {
                 resolveEntry(id, sourceName => {
@@ -291,8 +279,7 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
                 });
               }
               await Promise.all(promises).then(getScopeResolvedForTest());
-              const generatedNames = parsedVariables.boundVariables.map(id => id.name);
-              return {variableMapping, thisMapping, generatedNames};
+              return {variableMapping, thisMapping};
             })();
         cachedScopeMap = {sourceMap, mappingPromise: identifiersPromise};
         scopeToCachedIdentifiersMap.set(parsedScope, {sourceMap, mappingPromise: identifiersPromise});
@@ -416,39 +403,23 @@ export const resolveScopeChain =
           return scopes.map(scope => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
         };
 
-/**
- * Converts the generated name -> authored name mapping of a resolved scope into the
- * authored name -> generated name form expected by `javaScriptSubstitute`.
- */
-function toScopeVariableMapping({variableMapping, generatedNames}: ResolvedScope):
-    Formatter.FormatterWorkerPool.ScopeVariableMapping {
-  const bindings = new Map<string, string|null>();
-  for (const [generatedName, authoredName] of variableMapping) {
-    // Multiple generated names can map to the same authored name. We pick the first one. The worker still
-    // learns about the others via `generatedNames`, which it needs to detect shadowing of outer bindings.
-    if (authoredName && !bindings.has(authoredName)) {
-      bindings.set(authoredName, generatedName);
+function reverseScopeMapping(variableMapping: Map<string, string>): Map<string, string|null> {
+  const result = new Map<string, string|null>();
+  for (const [compiledName, originalName] of variableMapping) {
+    if (originalName && !result.has(originalName)) {
+      result.set(originalName, compiledName);
     }
   }
-  return {bindings, generatedNames};
+  return result;
 }
 
 /**
- * Source map scopes don't tell us which generated names a generated range declares. The worker falls back
- * to the free identifiers of the binding expressions in that case.
- */
-function fromSourceMapScopes(mappedVariables: Array<Map<string, string|null>>):
-    Formatter.FormatterWorkerPool.ScopeVariableMapping[] {
-  return mappedVariables.map(bindings => ({bindings, generatedNames: []}));
-}
-
-/**
- * @returns An array of scopes (from inner-most to outer-most) with their original name -> compiled name or binding expression mappings.
+ * @returns An array of mappings (from inner-most to outer-most scope) of original name -> compiled name or binding expression.
  */
 export const allVariablesInCallFrame = async(
     callFrame: SDK.DebuggerModel.CallFrame,
     debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding):
-    Promise<Formatter.FormatterWorkerPool.ScopeVariableMapping[]> => {
+    Promise<Array<Map<string, string|null>>> => {
       if (!callFrame.debuggerModel.target()
                .targetManager()
                .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
@@ -466,37 +437,36 @@ export const allVariablesInCallFrame = async(
         const mappedVariables =
             sourceMap?.resolveMappedVariablesAtPosition(callFrame.location(), callFrame.returnValue() !== null);
         if (mappedVariables) {
-          const result = fromSourceMapScopes(mappedVariables);
-          cachedMapByCallFrame.set(callFrame, result);
-          return result;
+          cachedMapByCallFrame.set(callFrame, mappedVariables);
+          return mappedVariables;
         }
       }
 
       const scopeChain = callFrame.scopeChain().filter(scope => !scope.empty());
-      const resolvedScopes =
+      const nameMappings =
           await Promise.all(scopeChain.map(scope => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
-      const result = resolvedScopes.map(toScopeVariableMapping);
-      cachedMapByCallFrame.set(callFrame, result);
-      return result;
+      const reverseMapping = nameMappings.map(({variableMapping}) => reverseScopeMapping(variableMapping));
+      cachedMapByCallFrame.set(callFrame, reverseMapping);
+      return reverseMapping;
     };
 
 /**
- * @returns An array of scopes (from inner-most to outer-most) with their original name -> compiled name or binding expression mappings.
+ * @returns An array of mappings (from inner-most to outer-most scope) of original name -> compiled name or binding expression.
  */
 export const allVariablesAtPosition =
     async(location: SDK.DebuggerModel.Location,
           debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding):
-        Promise<Formatter.FormatterWorkerPool.ScopeVariableMapping[]> => {
-          const result: Formatter.FormatterWorkerPool.ScopeVariableMapping[] = [];
+        Promise<Array<Map<string, string|null>>> => {
+          const reverseMapping: Array<Map<string, string|null>> = [];
           const script = location.script();
           if (!script) {
-            return result;
+            return reverseMapping;
           }
           if (!script.debuggerModel.target()
                    .targetManager()
                    .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
                    .get()) {
-            return result;
+            return reverseMapping;
           }
 
           if (Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel?.enabled) {
@@ -504,13 +474,13 @@ export const allVariablesAtPosition =
                 script.sourceMap() ?? await script.debuggerModel.sourceMapManager().sourceMapForClientPromise(script);
             const mappedVariables = sourceMap?.resolveMappedVariablesAtPosition(location);
             if (mappedVariables) {
-              return fromSourceMapScopes(mappedVariables);
+              return mappedVariables;
             }
           }
 
           const scopeTreeAndText = await computeScopeTree(script);
           if (!scopeTreeAndText) {
-            return result;
+            return reverseMapping;
           }
 
           const {scopeTree, text} = scopeTreeAndText;
@@ -519,10 +489,11 @@ export const allVariablesAtPosition =
           const scopeChain = findScopeChain(scopeTree, {start: locationOffset, end: locationOffset});
 
           while (scopeChain.length > 0) {
-            result.push(toScopeVariableMapping(await resolveScope(script, scopeChain, debuggerWorkspaceBinding)));
+            const {variableMapping} = await resolveScope(script, scopeChain, debuggerWorkspaceBinding);
+            reverseMapping.push(reverseScopeMapping(variableMapping));
             scopeChain.pop();
           }
-          return result;
+          return reverseMapping;
         };
 
 export const resolveThisObject = async(

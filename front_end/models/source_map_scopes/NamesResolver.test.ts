@@ -529,11 +529,11 @@ function mulWithOffset(param1, param2, offset) {
       const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
           location, backend.universe.debuggerWorkspaceBinding);
 
-      assert.strictEqual(mapping[0].bindings.get('param1'), 'n');
-      assert.strictEqual(mapping[0].bindings.get('param2'), 't');
-      assert.strictEqual(mapping[0].bindings.get('offset'), 'e');
-      assert.strictEqual(mapping[0].bindings.get('intermediate'), 'f');
-      assert.strictEqual(mapping[0].bindings.get('result'), 'u');
+      assert.strictEqual(mapping[0].get('param1'), 'n');
+      assert.strictEqual(mapping[0].get('param2'), 't');
+      assert.strictEqual(mapping[0].get('offset'), 'e');
+      assert.strictEqual(mapping[0].get('intermediate'), 'f');
+      assert.strictEqual(mapping[0].get('result'), 'u');
     });
 
     it('has the right mapping in a block scope with shadowing in the authored code', async () => {
@@ -544,8 +544,8 @@ function mulWithOffset(param1, param2, offset) {
           location, backend.universe.debuggerWorkspaceBinding);
 
       // Block scope {intermediate} precedes function scope {intermediate} in the scope chain.
-      assert.strictEqual(mapping[0].bindings.get('intermediate'), 'n');
-      assert.strictEqual(mapping[1].bindings.get('intermediate'), 'f');
+      assert.strictEqual(mapping[0].get('intermediate'), 'n');
+      assert.strictEqual(mapping[1].get('intermediate'), 'f');
       const substituted =
           await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute('intermediate', mapping);
       assert.strictEqual(substituted, 'n');
@@ -558,40 +558,11 @@ function mulWithOffset(param1, param2, offset) {
       const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
           location, backend.universe.debuggerWorkspaceBinding);
 
-      assert.strictEqual(mapping[0].bindings.get('intermediate'), 'n');
-      assert.strictEqual(mapping[1].bindings.get('param1'), 'n');
+      assert.strictEqual(mapping[0].get('intermediate'), 'n');
+      assert.strictEqual(mapping[1].get('param1'), 'n');
       const substituted = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(
           'param2 + intermediate', mapping);
       assert.strictEqual(substituted, 't + n');
-    });
-
-    it('reports all generated names of a scope, even if multiple map to the same authored name', async () => {
-      // Both `x1` and `x2` in the block scope map to the authored name `A`, while the function parameter `x2`
-      // maps to `B`. Inside the block, `B` must not be substituted with `x2`, since that refers to the block's `x2`.
-      const sourceMap = encodeSourceMap([
-        '0:11 => example.js:0:11@B',
-        '0:22 => example.js:0:22@A',
-        '0:27 => example.js:0:27@A',
-      ]);
-      const scriptContent = 'function f(x2){{const x1=1,x2=2;return x2;}}';
-      const blockScript =
-          await backend.addScript(target, {url: 'file:///tmp/bundle2.js', content: scriptContent},
-                                  {url: 'file:///tmp/example2.js.min.map', content: JSON.stringify(sourceMap)});
-
-      const location = blockScript.rawLocation(0, 32);  // Inside the block scope.
-      assert.exists(location);
-
-      const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
-          location, backend.universe.debuggerWorkspaceBinding);
-
-      assert.deepEqual(mapping[0].bindings, new Map<string, string|null>([['A', 'x1']]));
-      // `x2` must be reported so that the worker marks the outer `B` -> `x2` binding as shadowed. See the
-      // "Scope chain shadowing" tests in Substitute.test.ts.
-      assert.sameMembers(mapping[0].generatedNames, ['x1', 'x2']);
-      assert.deepEqual(mapping[1].bindings, new Map<string, string|null>([['B', 'x2']]));
-
-      const substituted = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute('A', mapping);
-      assert.strictEqual(substituted, 'x1');
     });
   });
 
@@ -906,7 +877,7 @@ function mulWithOffset(param1, param2, offset) {
       const variableMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
           callFrame, backend.universe.debuggerWorkspaceBinding);
 
-      assert.deepEqual(variableMap, [{bindings: new Map<string, string|null>([['par1', 'o']]), generatedNames: ['o']}]);
+      assert.deepEqual(variableMap, [new Map<string, string|null>([['par1', 'o']])]);
     });
 
     it('uses source map scope binding expressions when devToolsSourceMapScopesInSourcesPanel is enabled', async () => {
@@ -941,8 +912,8 @@ function mulWithOffset(param1, param2, offset) {
           target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
       const disabledMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
           callFrameDisabled, backend.universe.debuggerWorkspaceBinding);
-      assert.strictEqual(disabledMap[0].bindings.get('legacyParam'), 'o');
-      assert.isFalse(disabledMap[0].bindings.has('importedVal'));
+      assert.strictEqual(disabledMap[0].get('legacyParam'), 'o');
+      assert.isFalse(disabledMap[0].has('importedVal'));
 
       // 2. With flag enabled: uses source map scope binding expressions and substitutes accurately
       updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
@@ -950,10 +921,10 @@ function mulWithOffset(param1, param2, offset) {
           target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
       const enabledMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
           callFrameEnabled, backend.universe.debuggerWorkspaceBinding);
-      assert.strictEqual(enabledMap[0].bindings.get('origParam'), 'o');
-      assert.strictEqual(enabledMap[0].bindings.get('importedVal'), '_mod.imported');
-      assert.strictEqual(enabledMap[0].bindings.get('computedVal'), 'o + 1');
-      assert.strictEqual(enabledMap[0].bindings.get('this'), '_this');
+      assert.strictEqual(enabledMap[0].get('origParam'), 'o');
+      assert.strictEqual(enabledMap[0].get('importedVal'), '_mod.imported');
+      assert.strictEqual(enabledMap[0].get('computedVal'), 'o + 1');
+      assert.strictEqual(enabledMap[0].get('this'), '_this');
 
       const substituted = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(
           'importedVal.foo + computedVal * 2 + this.bar', enabledMap);
@@ -987,7 +958,7 @@ function mulWithOffset(param1, param2, offset) {
       const frameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
           callFrame, backend.universe.debuggerWorkspaceBinding);
       assert.deepEqual(frameMap, [
-        {bindings: new Map<string, string|null>([['x', 'fn_x'], ['fnVar', 'fn_v']]), generatedNames: []},
+        new Map<string, string|null>([['x', 'fn_x'], ['fnVar', 'fn_v']]),
       ]);
     });
 
@@ -1023,11 +994,11 @@ function mulWithOffset(param1, param2, offset) {
 
       const frameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
           callFrame, backend.universe.debuggerWorkspaceBinding);
-      assert.strictEqual(frameMap[0].bindings.get('lazyVar'), '_lazy.val');
+      assert.strictEqual(frameMap[0].get('lazyVar'), '_lazy.val');
 
       const posMap = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
           callFrame.location(), backend.universe.debuggerWorkspaceBinding);
-      assert.strictEqual(posMap[0].bindings.get('lazyVar'), '_lazy.val');
+      assert.strictEqual(posMap[0].get('lazyVar'), '_lazy.val');
       sinon.assert.calledTwice(promiseStub);
     });
 
@@ -1056,11 +1027,11 @@ function mulWithOffset(param1, param2, offset) {
 
       const frameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
           callFrame, backend.universe.debuggerWorkspaceBinding);
-      assert.strictEqual(frameMap[0].bindings.get('legacyParam'), 'o');
+      assert.strictEqual(frameMap[0].get('legacyParam'), 'o');
 
       const posMap = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
           callFrame.location(), backend.universe.debuggerWorkspaceBinding);
-      assert.strictEqual(posMap[0].bindings.get('legacyParam'), 'o');
+      assert.strictEqual(posMap[0].get('legacyParam'), 'o');
     });
   });
 
@@ -1108,16 +1079,16 @@ function mulWithOffset(param1, param2, offset) {
       const locBefore = new SDK.DebuggerModel.Location(callFrame.debuggerModel, script.scriptId, 0, 18);
       const mapBefore = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
           locBefore, backend.universe.debuggerWorkspaceBinding);
-      assert.strictEqual(mapBefore[0].bindings.get('origA'), 'a');
-      assert.strictEqual(mapBefore[0].bindings.get('origB'), 'b');
+      assert.strictEqual(mapBefore[0].get('origA'), 'a');
+      assert.strictEqual(mapBefore[0].get('origB'), 'b');
 
       // Position inside inner block (column 35): inner scope {innerA -> 'a'} precedes outer scope {origA -> 'a', origB -> 'b.val'}
       const locInside = new SDK.DebuggerModel.Location(callFrame.debuggerModel, script.scriptId, 0, 35);
       const mapInside = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
           locInside, backend.universe.debuggerWorkspaceBinding);
-      assert.strictEqual(mapInside[0].bindings.get('innerA'), 'a');
-      assert.strictEqual(mapInside[1].bindings.get('origA'), 'a');
-      assert.strictEqual(mapInside[1].bindings.get('origB'), 'b.val');
+      assert.strictEqual(mapInside[0].get('innerA'), 'a');
+      assert.strictEqual(mapInside[1].get('origA'), 'a');
+      assert.strictEqual(mapInside[1].get('origB'), 'b.val');
 
       const substituted =
           await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute('innerA + origB', mapInside);

@@ -5,12 +5,7 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as FormatterActions from '../../entrypoints/formatter_actions/formatter_actions.js';
 
-export {
-  DefinitionKind,
-  ScopeKind,
-  type ScopeTreeNode,
-  type ScopeVariableMapping,
-} from '../../entrypoints/formatter_actions/formatter_actions.js';
+export {DefinitionKind, ScopeKind, type ScopeTreeNode} from '../../entrypoints/formatter_actions/formatter_actions.js';
 
 let formatterWorkerPoolInstance: FormatterWorkerPool|undefined;
 
@@ -139,8 +134,8 @@ export class FormatterWorkerPool {
     return this.runTask(FormatterActions.FormatterActions.FORMAT, parameters) as Promise<FormatterActions.FormatResult>;
   }
 
-  javaScriptSubstitute(expression: string, mapping: FormatterActions.ScopeVariableMapping[]): Promise<string> {
-    if (mapping.every(scope => scope.bindings.size === 0)) {
+  javaScriptSubstitute(expression: string, mapping: Array<Map<string, string|null>>): Promise<string> {
+    if (mapping.every(m => m.size === 0)) {
       return Promise.resolve(expression);
     }
     return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE, {content: expression, mapping})

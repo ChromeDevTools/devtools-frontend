@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import * as Acorn from '../../third_party/acorn/acorn.js';
-import {DefinitionKind, type ScopeVariableMapping} from '../formatter_actions/formatter_actions.js';
+import {DefinitionKind} from '../formatter_actions/formatter_actions.js';
 
 import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ScopeVariableAnalysis, type VariableUses} from './ScopeParser.js';
 
-export function substituteExpression(expression: string, scopes: ScopeVariableMapping[]): string {
-  const replacements = computeSubstitution(expression, scopes);
+export function substituteExpression(expression: string, nameMaps: Array<Map<string, string|null>>): string {
+  const replacements = computeSubstitution(expression, nameMaps);
   return applySubstitution(expression, replacements);
 }
 
@@ -52,12 +52,12 @@ function parseBindingExpression(expression: string): {
 }
 
 /**
- * Given an |expression| and a list of |scopes| (from inner-most to outer-most), the |computeSubstitution|
+ * Given an |expression| and a mapping from names to new names, the |computeSubstitution|
  * function returns a list of replacements sorted by the offset. The function throws if
  * it cannot parse the expression or the substitution is impossible to perform (for example
  * if the substitution target is 'this' within a function, it would become bound there).
  **/
-function computeSubstitution(expression: string, scopes: ScopeVariableMapping[]): Replacement[] {
+function computeSubstitution(expression: string, nameMaps: Array<Map<string, string|null>>): Replacement[] {
   // Parse the expression and find variables and scopes.
   const root = Acorn.parse(expression, {
     ecmaVersion: ECMA_VERSION,
@@ -75,11 +75,10 @@ function computeSubstitution(expression: string, scopes: ScopeVariableMapping[])
   const allNames = scopeVariables.getAllNames();
   const nameMap = new Map<string, string|null>();
   const parsedBindings = new Map<string, ReturnType<typeof parseBindingExpression>>();
-  // Generated identifiers declared by the scopes visited so far. Outer bindings referring to them are shadowed.
   const shadowedNames = new Set<string>();
-  for (const {bindings, generatedNames} of scopes) {
-    const scopeNames = new Set<string>(generatedNames);
-    for (const [name, rename] of bindings.entries()) {
+  for (const scopeMap of nameMaps) {
+    const scopeNames = new Set<string>();
+    for (const [name, rename] of scopeMap.entries()) {
       let parsed: ReturnType<typeof parseBindingExpression>|undefined;
       if (rename !== null) {
         try {

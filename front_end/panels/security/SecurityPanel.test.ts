@@ -901,6 +901,79 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.strictEqual(requestsLink.getAttribute('role'), 'link');
   });
 
+  it('replaces active and passive mixed content reload prompts with request links when requests are recorded', () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
+    const securityModel = target.model(Security.SecurityModel.SecurityModel);
+    assert.exists(securityModel);
+
+    const pageVisibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content', 'ran-mixed-content']);
+    securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                           pageVisibleSecurityState);
+
+    function assertMixedContentExplanations() {
+      const explanations = securityPanel.mainView.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
+      assert.lengthOf(explanations, 2);
+      const [activeExplanation, passiveExplanation] = explanations;
+
+      assert.isTrue(activeExplanation.classList.contains('security-explanation-insecure'));
+
+      const activeExplanationTitle = querySelectorErrorOnMissing(activeExplanation, '.security-explanation-title');
+      assert.strictEqual(activeExplanationTitle.textContent, 'Resources - active mixed content');
+
+      const activeExplanationText = querySelectorErrorOnMissing(activeExplanation, '.security-explanation-text');
+      assert.include(activeExplanationText.textContent,
+                     'You have recently allowed non-secure content (such as scripts or iframes) to run on this site.');
+
+      assert.isTrue(passiveExplanation.classList.contains('security-explanation-neutral'));
+
+      const passiveExplanationTitle = querySelectorErrorOnMissing(passiveExplanation, '.security-explanation-title');
+      assert.strictEqual(passiveExplanationTitle.textContent, 'Resources - mixed content');
+
+      const passiveExplanationText = querySelectorErrorOnMissing(passiveExplanation, '.security-explanation-text');
+      assert.include(passiveExplanationText.textContent, 'This page includes HTTP resources.');
+      return [activeExplanation, passiveExplanation];
+    }
+
+    // At this point, the page has mixed content but no mixed requests have been recorded,
+    // so the user should be prompted to refresh.
+    const explanationsBeforeReload = assertMixedContentExplanations();
+    for (const explanation of explanationsBeforeReload) {
+      const reloadPrompt = querySelectorErrorOnMissing(explanation, '.security-mixed-content');
+      assert.strictEqual(reloadPrompt.textContent, 'Reload the page to record requests for HTTP resources.');
+    }
+
+    // Now simulate a refresh.
+    securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                           pageVisibleSecurityState);
+    const networkManager = securityModel.networkManager();
+    const passiveRequest = createNetworkRequest({
+      url: 'http://foo.test',
+      documentURL: 'https://foo.test',
+      frameId: '0',
+      loaderId: '0',
+    });
+    passiveRequest.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, passiveRequest);
+
+    const activeRequest = createNetworkRequest({
+      url: 'http://foo.test',
+      documentURL: 'https://foo.test',
+      frameId: '0',
+      loaderId: '0',
+    });
+    activeRequest.mixedContentType = Protocol.Security.MixedContentType.Blockable;
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, activeRequest);
+
+    const explanationsAfterReload = assertMixedContentExplanations();
+    for (const explanation of explanationsAfterReload) {
+      const requestsLink = querySelectorErrorOnMissing(explanation, '.security-mixed-content');
+      assert.strictEqual(requestsLink.textContent, 'View 1 request in Network panel');
+      assert.strictEqual(requestsLink.getAttribute('role'), 'link');
+    }
+  });
+
   it('shows origins with blockable and optionally blockable resources in the sidebar', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
 

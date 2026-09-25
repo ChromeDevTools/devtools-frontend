@@ -134,7 +134,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         html`
           <style>${styles}</style>
           <style>@scope to (devtools-widget > *) { ${UI.inspectorCommonStyles} }</style>
-          <div class="ai-code-completion-teaser-screen-reader-only">${teaserAriaLabel}</div>
+          <div class="screen-reader-only">${teaserAriaLabel}</div>
           <div class="ai-code-completion-teaser" aria-hidden="true">
             <span class="ai-code-completion-teaser-action">
               <span>${cmdOrCtrl}</span>

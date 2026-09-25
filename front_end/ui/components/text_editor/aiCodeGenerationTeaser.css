@@ -5,17 +5,6 @@
  */
 
 @scope to (devtools-widget > *) {
-    .ai-code-generation-teaser-screen-reader-only {
-        position: absolute;
-        overflow: hidden;
-        clip-path: rect(0 0 0 0);
-        height: var(--sys-size-1);
-        width: var(--sys-size-1);
-        margin: -1 * var(--sys-size-1);;
-        padding: 0;
-        border: 0;
-    }
-
     .ai-code-generation-teaser {
         pointer-events: all;
         font-style: italic;

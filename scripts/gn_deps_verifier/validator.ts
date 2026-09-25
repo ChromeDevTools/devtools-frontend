@@ -7,6 +7,7 @@ import * as path from 'node:path';
 
 import {GnAstExtractor} from './extractors/gn_ast_extractor.ts';
 import {TypeScriptAnalyzer} from './extractors/typescript_analyzer.ts';
+import {getGnBinary} from './gn_ast/gn_ast.ts';
 import {logger} from './utils/debug.ts';
 import {isNotFoundError} from './utils/error.ts';
 import {updateBuildGnFiles} from './utils/gn_ast_updater.ts';
@@ -16,6 +17,9 @@ export async function checkDepsGn(
     files: string[],
     dryRun = false,
 ) {
+  // Fail fast if GN binary is not available.
+  getGnBinary(rootDir);
+
   logger(`Phase 1: Extracting GN Targets from AST...`);
   const extractionResult = GnAstExtractor.create(rootDir);
   await extractionResult.extractTargetsFromAst(files);

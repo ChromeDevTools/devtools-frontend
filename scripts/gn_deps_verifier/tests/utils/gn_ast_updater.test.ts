@@ -449,7 +449,7 @@ describe('gn_ast_updater', () => {
     assert.include(thrownError.message, 'Mismatch in //test:target (BUILD.gn)');
     assert.include(thrownError.message, 'Missing (ts_deps): //new:dep');
     assert.include(thrownError.message, 'Unused (ts_deps): //old:dep');
-    assert.include(thrownError.message, 'npm run check-gn -- BUILD.gn');
+    assert.include(thrownError.message, 'npm run check-gn -- --all');
     sinon.assert.notCalled(gnBuildMock.updateTargetDeps as sinon.SinonStub);
     sinon.assert.notCalled(gnBuildMock.writeGnFile as sinon.SinonStub);
   });

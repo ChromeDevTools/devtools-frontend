@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 import * as fs from 'node:fs';
-import * as os from 'node:os';
 import * as path from 'node:path';
 
 import {GnAstExtractor} from '../extractors/gn_ast_extractor.ts';
@@ -14,14 +13,22 @@ import {checkDepsGn} from '../validator.ts';
 const FIXTURES_DIR = path.join(import.meta.dirname, 'fixtures');
 
 describe('validator', () => {
-  afterEach(() => {
+  afterEach(async () => {
     GnAstExtractor.clearCacheForTesting();
     TypeScriptAnalyzer.clearCacheForTesting();
+
+    // Clean up any remaining temp dirs
+    const files = await fs.promises.readdir(import.meta.dirname);
+    for (const file of files) {
+      if (file.startsWith('gn-test-')) {
+        await fs.promises.rm(path.join(import.meta.dirname, file), {recursive: true, force: true});
+      }
+    }
   });
 
   it('warns correctly for missing targets even when files are relative and cwd is different', async () => {
     const tempDir = await fs.promises.mkdtemp(
-        path.join(os.tmpdir(), 'gn-test-'),
+        path.join(import.meta.dirname, 'gn-test-'),
     );
     await fs.promises.cp(FIXTURES_DIR, tempDir, {recursive: true});
 
@@ -54,7 +61,7 @@ describe('validator', () => {
 
   it('throws on first missing target when dryRun is true', async () => {
     const tempDir = await fs.promises.mkdtemp(
-        path.join(os.tmpdir(), 'gn-test-'),
+        path.join(import.meta.dirname, 'gn-test-'),
     );
     await fs.promises.cp(FIXTURES_DIR, tempDir, {recursive: true});
 
@@ -81,7 +88,7 @@ describe('validator', () => {
 
   it('does not warn for BUILD.gn files and throws on dependency mismatch in dryRun mode', async () => {
     const tempDir = await fs.promises.mkdtemp(
-        path.join(os.tmpdir(), 'gn-test-'),
+        path.join(import.meta.dirname, 'gn-test-'),
     );
     await fs.promises.cp(FIXTURES_DIR, tempDir, {recursive: true});
 

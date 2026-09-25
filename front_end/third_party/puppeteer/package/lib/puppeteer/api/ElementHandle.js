@@ -93,6 +93,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { getQueryHandlerAndSelector } from '../common/GetQueryHandler.js';
 import { LazyArg } from '../common/LazyArg.js';
 import { isString, withSourcePuppeteerURLIfNone } from '../common/util.js';
@@ -765,20 +766,25 @@ let ElementHandle = (() => {
          * returned.
          */
         async drag(target) {
-            await this.scrollIntoViewIfNeeded();
             const page = this.frame.page();
             if (page.isDragInterceptionEnabled()) {
+                await this.scrollIntoViewIfNeeded();
                 const source = await this.clickablePoint();
                 if (target instanceof ElementHandle) {
                     target = await target.clickablePoint();
                 }
                 return await page.mouse.drag(source, target);
             }
+            // The button is down either because an earlier `drag()` pressed it, or
+            // because this call is about to.
+            let isMouseDown = page._isDragging;
             try {
+                await this.scrollIntoViewIfNeeded();
                 if (!page._isDragging) {
                     page._isDragging = true;
                     await this.hover();
                     await page.mouse.down();
+                    isMouseDown = true;
                 }
                 if (target instanceof ElementHandle) {
                     await target.hover();
@@ -789,6 +795,14 @@ let ElementHandle = (() => {
             }
             catch (error) {
                 page._isDragging = false;
+                if (isMouseDown) {
+                    // `drop()` is the only thing that releases the button and it will never
+                    // run now, so without this the button stays pressed for the rest of the
+                    // session. It must not mask the error that got us here.
+                    await page.mouse.up().catch(error => {
+                        this.logger(DEBUG_PREFIXES.error)?.(error);
+                    });
+                }
                 throw error;
             }
         }

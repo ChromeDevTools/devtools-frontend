@@ -2524,9 +2524,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         return;
       }
       return (...logArgs) => {
-        if (captureLogs) {
-          capturedLogs.push(prefix + logArgs);
-        }
         nodeDebug(...logArgs);
       };
     }
@@ -2549,27 +2546,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       console.log(`${prefix}:`, ...logArgs);
     };
   };
-  /**
-   * @internal
-   */
-  let capturedLogs = [];
-  /**
-   * @internal
-   */
-  let captureLogs = false;
-  /**
-   * @internal
-   */
-  function setLogCapture(value) {
-    capturedLogs = [];
-    captureLogs = value;
-  }
-  /**
-   * @internal
-   */
-  function getCapturedLogs() {
-    return capturedLogs;
-  }
 
   /**
   MIT License
@@ -3178,7 +3154,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.11.0';
+  const packageVersion = '25.12.0';
   // x-release-please-end
 
   /**
@@ -7756,20 +7732,25 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * returned.
        */
       async drag(target) {
-        await this.scrollIntoViewIfNeeded();
         const page = this.frame.page();
         if (page.isDragInterceptionEnabled()) {
+          await this.scrollIntoViewIfNeeded();
           const source = await this.clickablePoint();
           if (target instanceof ElementHandle) {
             target = await target.clickablePoint();
           }
           return await page.mouse.drag(source, target);
         }
+        // The button is down either because an earlier `drag()` pressed it, or
+        // because this call is about to.
+        let isMouseDown = page._isDragging;
         try {
+          await this.scrollIntoViewIfNeeded();
           if (!page._isDragging) {
             page._isDragging = true;
             await this.hover();
             await page.mouse.down();
+            isMouseDown = true;
           }
           if (target instanceof ElementHandle) {
             await target.hover();
@@ -7778,6 +7759,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           }
         } catch (error) {
           page._isDragging = false;
+          if (isMouseDown) {
+            // `drop()` is the only thing that releases the button and it will never
+            // run now, so without this the button stays pressed for the rest of the
+            // session. It must not mask the error that got us here.
+            await page.mouse.up().catch(error => {
+              this.logger(DEBUG_PREFIXES.error)?.(error);
+            });
+          }
           throw error;
         }
       }
@@ -13544,7 +13533,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             // Since Text nodes are not elements, we want to
             // return a handle to the parent element for them.
             return await handle.evaluateHandle(node => {
-              return node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+              if (node.nodeType !== Node.TEXT_NODE) {
+                return node;
+              }
+              // A text node placed directly in a shadow root has no parent
+              // element, so fall back to the shadow host.
+              return node.parentElement ?? node.parentNode?.host ?? null;
             });
           } catch (e_2) {
             env_2.error = e_2;
@@ -28302,9 +28296,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '153.0.8010.36',
-    'chrome-headless-shell': '153.0.8010.36',
-    firefox: 'stable_155.0.1'
+    chrome: '154.0.8037.57',
+    'chrome-headless-shell': '154.0.8037.57',
+    firefox: 'stable_156.0.1'
   });
 
   /**
@@ -28472,7 +28466,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.filterAsync = filterAsync;
   exports.fromAbortSignal = fromAbortSignal;
   exports.fromEmitterEvent = fromEmitterEvent;
-  exports.getCapturedLogs = getCapturedLogs;
   exports.getQueryHandlerAndSelector = getQueryHandlerAndSelector;
   exports.getReadableAsTypedArray = getReadableAsTypedArray;
   exports.getReadableFromProtocolStream = getReadableFromProtocolStream;
@@ -28498,7 +28491,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.rewriteError = rewriteError$1;
   exports.scriptInjector = scriptInjector;
   exports.setDefaultScreenshotOptions = setDefaultScreenshotOptions;
-  exports.setLogCapture = setLogCapture;
   exports.supportedMetrics = supportedMetrics$1;
   exports.throwIfDetached = throwIfDetached;
   exports.timeout = timeout;

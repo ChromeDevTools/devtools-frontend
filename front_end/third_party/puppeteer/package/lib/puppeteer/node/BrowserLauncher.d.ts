@@ -121,4 +121,16 @@ export declare abstract class BrowserLauncher {
      */
     resolveExecutablePath(headless?: boolean | 'shell', validatePath?: boolean): Promise<string>;
 }
+interface ProcessExitEmitter {
+    once(event: 'exit', listener: () => void): void;
+    off(event: 'exit', listener: () => void): void;
+}
+/**
+ * Registers a synchronous fallback for removing a temporary profile when the
+ * host process exits before the browser process can run its async cleanup.
+ *
+ * @internal
+ */
+export declare function registerProcessExitCleanup(userDataDir: string, logger: Logger, processEmitter?: ProcessExitEmitter): () => void;
+export {};
 //# sourceMappingURL=BrowserLauncher.d.ts.map

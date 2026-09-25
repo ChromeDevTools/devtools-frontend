@@ -96,12 +96,4 @@ export type Logger = (prefix: string) => LoggerFunction | undefined;
  * @internal
  */
 export declare const debug: Logger;
-/**
- * @internal
- */
-export declare function setLogCapture(value: boolean): void;
-/**
- * @internal
- */
-export declare function getCapturedLogs(): string[];
 //# sourceMappingURL=Debug.d.ts.map

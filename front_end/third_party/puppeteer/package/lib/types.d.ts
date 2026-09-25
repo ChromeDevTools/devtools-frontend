@@ -8392,6 +8392,11 @@ export declare const PredefinedNetworkConditions: Readonly<{
 export declare type Predicate<From, To extends From = From> =
   ((value: From) => value is To) | ((value: From) => Awaitable<boolean>);
 
+declare interface ProcessExitEmitter {
+  once(event: 'exit', listener: () => void): void;
+  off(event: 'exit', listener: () => void): void;
+}
+
 export {Protocol};
 
 /**

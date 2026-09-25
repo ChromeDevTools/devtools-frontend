@@ -467,7 +467,14 @@ class AXNode {
                     // Since Text nodes are not elements, we want to
                     // return a handle to the parent element for them.
                     return (await handle.evaluateHandle(node => {
-                        return node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+                        if (node.nodeType !== Node.TEXT_NODE) {
+                            return node;
+                        }
+                        // A text node placed directly in a shadow root has no parent
+                        // element, so fall back to the shadow host.
+                        return (node.parentElement ??
+                            node.parentNode?.host ??
+                            null);
                     }));
                 }
                 catch (e_2) {

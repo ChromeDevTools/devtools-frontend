@@ -924,6 +924,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "command",
   "command-editor",
   "command-input",
+  "comments-send-to-agent",
   "comments-status-bar-pill",
   "comments.toggle-comment-mode",
   "commit",

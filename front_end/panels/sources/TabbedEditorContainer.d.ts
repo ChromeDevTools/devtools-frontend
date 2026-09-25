@@ -1,37 +1,55 @@
+import '../../ui/components/tooltips/tooltips.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { type TemplateResult } from '../../ui/lit/lit.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import type { EditingLocationHistoryManager } from './EditingLocationHistoryManager.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
+interface TabInfo {
+    tabId: string;
+    title: string;
+    tooltip: string;
+    uiSourceCode: Workspace.UISourceCode.UISourceCode;
+    isCloseable: boolean;
+    widget?: UI.Widget.Widget;
+    hasLoadError: boolean;
+    hasUnsavedCommittedChanges: boolean;
+    disconnectedAutomaticFileSystemRoot?: string;
+    icon?: LitTemplate;
+}
 export interface TabbedEditorViewInput {
-    openTabs: Array<{
-        tabId: string;
-        title: string;
-        tooltip: string;
-        uiSourceCode: Workspace.UISourceCode.UISourceCode;
-        isCloseable: boolean;
-        widget?: UI.Widget.Widget;
-        icon?: TemplateResult | HTMLElement;
-        suffix?: HTMLElement;
-    }>;
+    openTabs: TabInfo[];
     activeTabId?: string;
+    leftToolbarItems: Array<UI.Toolbar.ToolbarItem | LitTemplate>;
+    rightToolbarItems: Array<UI.Toolbar.ToolbarItem | LitTemplate>;
+    tabDelegate: UI.TabbedPane.TabbedPaneTabDelegate;
+    shortcuts: Array<{
+        description: Platform.UIString.LocalizedString;
+        onClick: () => void;
+        keys: string[];
+    }>;
+    onAddFileSystemClicked: () => void;
+    onConnectAutomaticFileSystem: (e: Event) => void;
+    onClose: (e: Event) => void;
+    onTabOrderChanged: (e: Event) => void;
+    onSelect: (e: Event) => void;
 }
-export interface TabbedEditorViewOutput {
-    onClose(e: Event): void;
-    onTabOrderChanged(e: Event): void;
-    onSelect(e: Event): void;
-}
-export type View = (input: TabbedEditorViewInput, output: TabbedEditorViewOutput, target: HTMLElement) => void;
+export type View = (input: TabbedEditorViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 declare const TabbedEditorContainerBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class TabbedEditorContainer extends TabbedEditorContainerBase {
     #private;
     focus(): void;
+    performUpdate(): void;
     set historyManager(historyManager: EditingLocationHistoryManager);
-    private readonly tabbedPane;
+    set leftToolbarItems(items: Array<UI.Toolbar.ToolbarItem | LitTemplate>);
+    set rightToolbarItems(items: Array<UI.Toolbar.ToolbarItem | LitTemplate>);
+    set uiSourceCodes(uiSourceCodes: ReadonlySet<Workspace.UISourceCode.UISourceCode>);
+    onEditorSelected?: (event: EditorSelectedEvent) => void;
+    onEditorClosed?: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
     private tabIds;
     private files;
     history: History;
@@ -42,14 +60,13 @@ export declare class TabbedEditorContainer extends TabbedEditorContainerBase {
     private currentView;
     private scrollTimer?;
     private reentrantShow;
-    constructor(element?: HTMLElement);
+    constructor(element?: HTMLElement, view?: View);
+    get tabbedPane(): UI.TabbedPane.TabbedPaneElement;
     get tabbedPaneForTesting(): UI.TabbedPane.TabbedPaneElement;
     private onBindingCreated;
     private onBindingRemoved;
     get visibleView(): UI.Widget.Widget | null;
     fileViews(): UI.Widget.Widget[];
-    leftToolbar(): UI.Toolbar.Toolbar;
-    rightToolbar(): UI.Toolbar.Toolbar;
     showFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
     closeFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
     closeAllFiles(): void;

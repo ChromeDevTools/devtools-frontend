@@ -3544,7 +3544,11 @@ var ParsedURL = class _ParsedURL {
         preEncodedPath = "file:///" + preEncodedPath;
       }
     }
-    return new URL(preEncodedPath).toString();
+    let url = new URL(preEncodedPath).toString();
+    while (url.endsWith("/") && url.length > "file:///".length) {
+      url = url.substring(0, url.length - 1);
+    }
+    return url;
   }
   static relativePathToUrlString(relativePath, baseURL) {
     const preEncodedPath = _ParsedURL.preEncodeSpecialCharactersInPath(

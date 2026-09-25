@@ -21206,6 +21206,9 @@ function nodeHasVisibleChildren(node, rootDOMNode = null, maxTreeDepth, omitRoot
   }
   return Boolean(node.childNodeCount()) && !ElementsTreeWidget.canShowInlineText(node);
 }
+function nodeNeedsClosingTag(node, hasChildren) {
+  return hasChildren && node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(node.nodeName().toLowerCase()) && !node.pseudoType();
+}
 function getVisibleChildren(node, showComments = true) {
   const children = [];
   children.push(...ElementsTreeWidget.visibleShadowRoots(node));
@@ -21511,9 +21514,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       if (node instanceof SDK16.DOMModel.DOMDocument) {
         rows += countTopLayerRows(node);
       }
-      const tagName = node.nodeName().toLowerCase();
-      const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) && !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
-      if (needsClosingTag) {
+      if (nodeNeedsClosingTag(node, hasChildren)) {
         rows += 1;
       }
     }
@@ -21553,8 +21554,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
     const children = allVisibleChildren.slice(0, limit);
     const remainingChildrenCount = allVisibleChildren.length - children.length;
-    const tagName = node.nodeName().toLowerCase();
-    const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) && !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
+    const needsClosingTag = nodeNeedsClosingTag(node, hasChildren);
     const on2 = Lit10.Directive.directive(Lit10.CustomDirectives.InterceptBindingDirective);
     const onSelect = (isClosingTag = false, selectedByUser = false) => {
       input.onSelect?.(node, isClosingTag, selectedByUser);
@@ -22143,6 +22143,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     const domModel = event.data;
     if (this.#view === DECLARATIVE_VIEW) {
       this.#selectedDOMNode = null;
+      this.#selectedClosingTag = false;
       this.#expandedNodes.clear();
       this.#currentHighlightedNode = null;
       this.#updateRecords.clear();
@@ -22337,9 +22338,6 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       if (node?.nodeType() === Node.TEXT_NODE && node.parentNode && (!nodeHasVisibleChildren(node.parentNode, this.rootDOMNode, this.maxTreeDepth, this.omitRootDOMNode) || !getVisibleChildren(node.parentNode, this.#showComments).includes(node))) {
         node = node.parentNode;
       }
-      const isSameNode = this.#selectedDOMNode === node && this.#selectedClosingTag === Boolean(isClosingTag);
-      this.#selectedDOMNode = node;
-      this.#selectedClosingTag = Boolean(isClosingTag);
       if (node) {
         const ancestors = [];
         for (let current = node.parentNode; current; current = current.parentNode) {
@@ -22365,7 +22363,14 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
             });
           }
         }
+        if (isClosingTag && nodeHasVisibleChildren(node, this.rootDOMNode, this.maxTreeDepth, this.omitRootDOMNode)) {
+          this.#expandedNodes.add(node);
+        }
       }
+      const selectClosingTag = Boolean(isClosingTag) && Boolean(node && this.#hasClosingTag(node));
+      const isSameNode = this.#selectedDOMNode === node && this.#selectedClosingTag === selectClosingTag;
+      this.#selectedDOMNode = node;
+      this.#selectedClosingTag = selectClosingTag;
       this.#clearHighlightedNode();
       if (!isSameNode) {
         this.onSelectedNodeChanged(
@@ -22646,8 +22651,17 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     }
     return current === this.#rootDOMNode ? selectedNode : fallback ?? this.#rootDOMNode;
   }
+  #hasClosingTag(node) {
+    const isEditingAsHTML = this.#multilineEditingNode === node || this.#nodeToEdit?.node === node && Boolean(this.#nodeToEdit.isEditAsHTML);
+    if (isEditingAsHTML || !this.isNodeExpanded(node)) {
+      return false;
+    }
+    const hasChildren = nodeHasVisibleChildren(node, this.#rootDOMNode, this.#maxTreeDepth, this.omitRootDOMNode);
+    return nodeNeedsClosingTag(node, hasChildren);
+  }
   #validateSelectedNode() {
     if (!this.#selectedDOMNode) {
+      this.#selectedClosingTag = false;
       return;
     }
     const validNode = this.#findValidSelectedNode(this.#selectedDOMNode);
@@ -22658,6 +22672,8 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       this.onSelectedNodeChanged(
         { data: { node: validNode, focus: false } }
       );
+    } else if (this.#selectedClosingTag && !this.#hasClosingTag(this.#selectedDOMNode)) {
+      this.#selectedClosingTag = false;
     }
   }
   performUpdate() {
@@ -22898,6 +22914,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       if (this.#rootDOMNode?.domModel() === domModel) {
         this.#rootDOMNode = null;
         this.#selectedDOMNode = null;
+        this.#selectedClosingTag = false;
         this.#expandedNodes.clear();
         this.#updateRecords.clear();
       }

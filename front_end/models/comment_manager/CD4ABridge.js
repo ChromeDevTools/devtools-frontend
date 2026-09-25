@@ -52,6 +52,9 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper {
     #formatCommentText(thread) {
         const rawText = thread.comments[0]?.text ?? '';
         const details = [];
+        if (thread.anchor.vePath) {
+            details.push(`- DevTools VEPath: ${thread.anchor.vePath}`);
+        }
         if (thread.anchor.textSignature) {
             details.push(`- DevTools element: ${thread.anchor.textSignature}`);
         }

@@ -38,7 +38,7 @@ export class FileSystem {
         return null;
     }
     displayName() {
-        const { root } = this.automaticFileSystem;
+        const root = this.automaticFileSystem.root.replace(Host.Platform.isWin() ? /[/\\]+$/ : /\/+$/, '');
         let slash = root.lastIndexOf('/');
         if (slash === -1 && Host.Platform.isWin()) {
             slash = root.lastIndexOf('\\');

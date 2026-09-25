@@ -14046,6 +14046,10 @@ export declare namespace Page {
          * Frame swap timestamp.
          */
         timestamp?: Network.TimeSinceEpoch;
+        /**
+         * Frame swap timestamp as monotonic time.
+         */
+        monotonicTimestamp?: Network.MonotonicTime;
     }
     /**
      * Javascript dialog type.
@@ -17161,6 +17165,19 @@ export declare namespace Storage {
          */
         token: string;
     }
+    /**
+     * Configuration for a Private Verification Tokens issuer.
+     */
+    interface PrivateVerificationTokensIssuerConfig {
+        /**
+         * Origin of the token issuer.
+         */
+        issuerOrigin: string;
+        /**
+         * Origins authorized to redeem tokens from this issuer.
+         */
+        redeemerOrigins: string[];
+    }
     const enum StorageBucketsDurability {
         Relaxed = "relaxed",
         Strict = "strict"
@@ -17345,6 +17362,9 @@ export declare namespace Storage {
     }
     interface GetPrivateVerificationTokensResponse extends ProtocolResponseWithError {
         tokens: PrivateVerificationToken[];
+    }
+    interface GetPrivateVerificationTokensIssuerConfigsResponse extends ProtocolResponseWithError {
+        configs: PrivateVerificationTokensIssuerConfig[];
     }
     interface ClearPrivateVerificationTokensRequest {
         issuerOrigin: string;

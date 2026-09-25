@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import { render } from '../../ui/lit/lit.js';
+import { nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Geometry from '../geometry/geometry.js';
 import { createIcon, Icon } from '../kit/kit.js';
@@ -527,8 +527,14 @@ export class TabbedPane extends TabbedPaneBase {
             this.focusedPlaceholderElement = focusedElement;
         }
         if (this.placeholderContainerElement) {
-            this.placeholderContainerElement.removeChildren();
-            this.placeholderContainerElement.appendChild(element);
+            if (element instanceof Element) {
+                render(nothing, this.placeholderContainerElement);
+                this.placeholderContainerElement.removeChildren();
+                this.placeholderContainerElement.appendChild(element);
+            }
+            else {
+                render(element, this.placeholderContainerElement);
+            }
         }
     }
     async waitForTabElementUpdate() {
@@ -542,7 +548,12 @@ export class TabbedPane extends TabbedPaneBase {
             this.#contentElement.classList.add('has-no-tabs');
             if (this.placeholderElement && !this.placeholderContainerElement) {
                 this.placeholderContainerElement = this.#contentElement.createChild('div', 'tabbed-pane-placeholder fill');
-                this.placeholderContainerElement.appendChild(this.placeholderElement);
+                if (this.placeholderElement instanceof Element) {
+                    this.placeholderContainerElement.appendChild(this.placeholderElement);
+                }
+                else {
+                    render(this.placeholderElement, this.placeholderContainerElement);
+                }
                 if (this.focusedPlaceholderElement) {
                     this.setDefaultFocusedElement(this.focusedPlaceholderElement);
                 }
@@ -1428,10 +1439,15 @@ export class TabbedPaneElement extends WidgetElement {
         this.getWidget()?.setTabDelegate(delegate);
     }
     #placeholderElement;
+    #headerJslog;
     #managedTabIds = new Set();
     set placeholder(element) {
         this.#placeholderElement = element;
         this.getWidget()?.setPlaceholderElement(element);
+    }
+    set headerJslog(jslog) {
+        this.#headerJslog = jslog;
+        this.getWidget()?.headerElement().setAttribute('jslog', jslog);
     }
     #tabObserver = new MutationObserver(() => this.#updateTabs());
     constructor() {
@@ -1442,6 +1458,9 @@ export class TabbedPaneElement extends WidgetElement {
             widget.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
             if (this.#delegate) {
                 widget.setTabDelegate(this.#delegate);
+            }
+            if (this.#headerJslog) {
+                widget.headerElement().setAttribute('jslog', this.#headerJslog);
             }
             const slot = widget.contentElement.querySelector('slot:not([name])');
             if (slot) {

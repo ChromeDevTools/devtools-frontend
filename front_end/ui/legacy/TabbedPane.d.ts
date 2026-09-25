@@ -96,7 +96,7 @@ export declare class TabbedPane extends TabbedPaneBase {
     makeTabSlider(): void;
     private setTabSlider;
     calculateConstraints(): Geometry.Constraints;
-    setPlaceholderElement(element: Element, focusedElement?: Element): void;
+    setPlaceholderElement(element: Element | LitTemplate, focusedElement?: Element): void;
     waitForTabElementUpdate(): Promise<void>;
     performUpdate(): void;
     private adjustToolbarWidth;
@@ -227,7 +227,8 @@ export declare class TabbedPaneElement extends WidgetElement<TabbedPane> {
     set automaticReorder(automatic: boolean);
     get tabs(): TabInfo[];
     set tabDelegate(delegate: TabbedPaneTabDelegate);
-    set placeholder(element: Element);
+    set placeholder(element: Element | LitTemplate);
+    set headerJslog(jslog: string);
     constructor();
     disconnectedCallback(): void;
 }

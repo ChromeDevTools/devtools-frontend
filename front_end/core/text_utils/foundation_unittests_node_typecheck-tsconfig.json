@@ -48,6 +48,7 @@
   },
   "files": [
     "../../../../../../front_end/core/text_utils/ContentData.test.ts",
+    "../../../../../../front_end/core/text_utils/Markdown.test.ts",
     "../../../../../../front_end/core/text_utils/StaticContentProvider.test.ts",
     "../../../../../../front_end/core/text_utils/StreamingContentData.test.ts",
     "../../../../../../front_end/core/text_utils/Text.test.ts",

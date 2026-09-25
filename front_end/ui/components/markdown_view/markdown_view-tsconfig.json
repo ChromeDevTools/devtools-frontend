@@ -64,6 +64,9 @@
       "path": "../../../core/platform/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../core/text_utils/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {

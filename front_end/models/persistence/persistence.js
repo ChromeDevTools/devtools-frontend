@@ -2430,7 +2430,7 @@ var FileSystem2 = class {
     return null;
   }
   displayName() {
-    const { root } = this.automaticFileSystem;
+    const root = this.automaticFileSystem.root.replace(Host7.Platform.isWin() ? /[/\\]+$/ : /\/+$/, "");
     let slash = root.lastIndexOf("/");
     if (slash === -1 && Host7.Platform.isWin()) {
       slash = root.lastIndexOf("\\");

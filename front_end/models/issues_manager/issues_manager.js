@@ -3021,10 +3021,10 @@ __export(MarkdownIssueDescription_exports, {
   getFileContent: () => getFileContent,
   getIssueTitleFromMarkdownDescription: () => getIssueTitleFromMarkdownDescription,
   getMarkdownFileContent: () => getMarkdownFileContent,
-  resolveLazyDescription: () => resolveLazyDescription,
-  substitutePlaceholders: () => substitutePlaceholders
+  resolveLazyDescription: () => resolveLazyDescription
 });
 import * as Platform from "../../core/platform/platform.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
 import * as Marked from "../../third_party/marked/marked.js";
 function resolveLazyDescription(lazyDescription) {
   function linksMap(currentLink) {
@@ -3055,12 +3055,11 @@ async function getMarkdownFileContent(filename) {
   return await getFileContent(new URL(`descriptions/${filename}`, import.meta.url));
 }
 async function createIssueDescriptionFromMarkdown(description) {
-  const rawMarkdown = await getMarkdownFileContent(description.file);
-  const rawMarkdownWithPlaceholdersReplaced = substitutePlaceholders(rawMarkdown, description.substitutions);
-  return createIssueDescriptionFromRawMarkdown(rawMarkdownWithPlaceholdersReplaced, description);
+  const markdown = await getMarkdownFileContent(description.file);
+  return createIssueDescriptionFromRawMarkdown(markdown, description);
 }
 function createIssueDescriptionFromRawMarkdown(markdown, description) {
-  const markdownAst = Marked.Marked.lexer(markdown);
+  const markdownAst = TextUtils.Markdown.tokenizeWithPlaceholders(markdown, description.substitutions);
   const markdownTitle = findTitleFromMarkdownAst(markdownAst);
   if (!markdownTitle) {
     throw new Error("Markdown issue descriptions must start with a heading");
@@ -3071,30 +3070,6 @@ function createIssueDescriptionFromRawMarkdown(markdown, description) {
     links: description.links,
     substitutions: description.substitutions
   };
-}
-var validPlaceholderMatchPattern = /\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*)\}/g;
-var validPlaceholderNamePattern = /PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*/;
-function substitutePlaceholders(markdown, substitutions) {
-  const unusedPlaceholders = new Set(substitutions ? substitutions.keys() : []);
-  validatePlaceholders(unusedPlaceholders);
-  const result = markdown.replace(validPlaceholderMatchPattern, (_, placeholder) => {
-    const replacement = substitutions ? substitutions.get(placeholder) : void 0;
-    if (replacement === void 0) {
-      throw new Error(`No replacement provided for placeholder '${placeholder}'.`);
-    }
-    unusedPlaceholders.delete(placeholder);
-    return replacement;
-  });
-  if (unusedPlaceholders.size > 0) {
-    throw new Error(`Unused replacements provided: ${[...unusedPlaceholders]}`);
-  }
-  return result;
-}
-function validatePlaceholders(placeholders) {
-  const invalidPlaceholders = [...placeholders].filter((placeholder) => !validPlaceholderNamePattern.test(placeholder));
-  if (invalidPlaceholders.length > 0) {
-    throw new Error(`Invalid placeholders provided in the substitutions map: ${invalidPlaceholders}`);
-  }
 }
 function findTitleFromMarkdownAst(markdownAst) {
   if (markdownAst.length === 0 || markdownAst[0].type !== "heading" || markdownAst[0].depth !== 1) {

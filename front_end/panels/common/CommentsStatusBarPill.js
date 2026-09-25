@@ -3,30 +3,52 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import commentsStatusBarPillStyles from './commentsStatusBarPill.css.js';
 const UIStrings = {
     /**
      * @description Button text for the comments status bar pill showing the number of open comments.
      * @example {2} PH1
      */
     commentsCount: 'Comments ({PH1})',
+    /**
+     * @description Button text for sending all draft comments to the agent in the comments status bar pill.
+     * @example {2} PH1
+     */
+    sendToAgentCount: 'Send to agent ({PH1})',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/common/CommentsStatusBarPill.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { html, render } = Lit;
 export const DEFAULT_VIEW = (input, _output, target) => {
+    const unsentCount = input.threads.filter(thread => thread.status === 'ACTIVE').length;
+    const tooltip = input.threads.flatMap(thread => thread.comments.map(comment => comment.text)).join('\n');
     // clang-format off
     render(html `
+    <style>${commentsStatusBarPillStyles}</style>
     ${input.threads.length <= 0 ? Lit.nothing : html `
-      <button
-        class="devtools-pill"
-        ?disabled=${input.disabled}
-        @click=${input.onPillClick}
-        jslog=${VisualLogging.action('comments-status-bar-pill').track({ click: true })}>
-        ${i18nString(UIStrings.commentsCount, { PH1: input.threads.length })}
-      </button>
+      <div class="pill-container">
+        <button
+          class="devtools-pill"
+          title=${tooltip}
+          ?disabled=${input.disabled}
+          @click=${input.onPillClick}
+          jslog=${VisualLogging.action('comments-status-bar-pill').track({ click: true })}>
+          ${i18nString(UIStrings.commentsCount, { PH1: input.threads.length })}
+        </button>
+        ${unsentCount > 0 ? html `
+          <devtools-button
+            .variant=${"primary" /* Buttons.Button.Variant.PRIMARY */}
+            .disabled=${Boolean(input.disabled)}
+            .jslogContext=${'comments-send-to-agent'}
+            @click=${input.onSendToAgentClick}>
+            ${i18nString(UIStrings.sendToAgentCount, { PH1: unsentCount })}
+          </devtools-button>
+        ` : Lit.nothing}
+      </div>
     `}
   `, target);
     // clang-format on
@@ -60,9 +82,17 @@ export class CommentsStatusBarPill extends UI.Widget.Widget {
                 this.#commentManager.getCommentThreads().filter(thread => thread.status !== 'DRAFT') :
                 [],
             onPillClick: this.#handlePillClick,
+            onSendToAgentClick: this.#handleSendToAgentClick,
         };
         this.#view(viewInput, undefined, this.contentElement);
     }
     #handlePillClick = () => { };
+    #handleSendToAgentClick = () => {
+        for (const thread of this.#commentManager.getCommentThreads()) {
+            if (thread.status === 'ACTIVE') {
+                thread.sendToAgent();
+            }
+        }
+    };
 }
 //# sourceMappingURL=CommentsStatusBarPill.js.map

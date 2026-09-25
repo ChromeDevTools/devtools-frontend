@@ -3768,6 +3768,109 @@ var ObjectTreeExpansionTracker = class _ObjectTreeExpansionTracker {
 var ARRAY_LOAD_THRESHOLD = 100;
 var ARRAY_BUCKET_THRESHOLD = 100;
 var ARRAY_SPARSE_ITERATION_THRESHOLD = 25e4;
+async function arrayRangeGroups(object, fromIndex, toIndex) {
+  return await object.callFunctionJSON(packArrayRanges, [
+    { value: fromIndex },
+    { value: toIndex },
+    { value: ARRAY_BUCKET_THRESHOLD },
+    { value: ARRAY_SPARSE_ITERATION_THRESHOLD }
+  ]);
+  function packArrayRanges(fromIndex2, toIndex2, bucketThreshold, sparseIterationThreshold) {
+    if (fromIndex2 === void 0 || toIndex2 === void 0 || sparseIterationThreshold === void 0 || bucketThreshold === void 0) {
+      return;
+    }
+    let ownPropertyNames = null;
+    const consecutiveRange = toIndex2 - fromIndex2 >= sparseIterationThreshold && ArrayBuffer.isView(this);
+    function* arrayIndexes(object2) {
+      if (fromIndex2 === void 0 || toIndex2 === void 0 || sparseIterationThreshold === void 0) {
+        return;
+      }
+      if (toIndex2 - fromIndex2 < sparseIterationThreshold) {
+        for (let i = fromIndex2; i <= toIndex2; ++i) {
+          if (i in object2) {
+            yield i;
+          }
+        }
+      } else {
+        ownPropertyNames = ownPropertyNames || Object.getOwnPropertyNames(object2);
+        for (let i = 0; i < ownPropertyNames.length; ++i) {
+          const name = ownPropertyNames[i];
+          const index = Number(name) >>> 0;
+          if (String(index) === name && fromIndex2 <= index && index <= toIndex2) {
+            yield index;
+          }
+        }
+      }
+    }
+    let count = 0;
+    if (consecutiveRange) {
+      count = toIndex2 - fromIndex2 + 1;
+    } else {
+      for (const ignored of arrayIndexes(this)) {
+        ++count;
+      }
+    }
+    let bucketSize = count;
+    if (count <= bucketThreshold) {
+      bucketSize = count;
+    } else {
+      bucketSize = Math.pow(bucketThreshold, Math.ceil(Math.log(count) / Math.log(bucketThreshold)) - 1);
+    }
+    const ranges = [];
+    if (consecutiveRange) {
+      for (let i = fromIndex2; i <= toIndex2; i += bucketSize) {
+        const groupStart = i;
+        let groupEnd = groupStart + bucketSize - 1;
+        if (groupEnd > toIndex2) {
+          groupEnd = toIndex2;
+        }
+        ranges.push([groupStart, groupEnd, groupEnd - groupStart + 1]);
+      }
+    } else {
+      count = 0;
+      let groupStart = -1;
+      let groupEnd = 0;
+      for (const i of arrayIndexes(this)) {
+        if (groupStart === -1) {
+          groupStart = i;
+        }
+        groupEnd = i;
+        if (++count === bucketSize) {
+          ranges.push([groupStart, groupEnd, count]);
+          count = 0;
+          groupStart = -1;
+        }
+      }
+      if (count > 0) {
+        ranges.push([groupStart, groupEnd, count]);
+      }
+    }
+    return { ranges };
+  }
+}
+function buildArrayFragment(fromIndex, toIndex, sparseIterationThreshold) {
+  const result = /* @__PURE__ */ Object.create(null);
+  if (fromIndex === void 0 || toIndex === void 0 || sparseIterationThreshold === void 0) {
+    return;
+  }
+  if (toIndex - fromIndex < sparseIterationThreshold) {
+    for (let i = fromIndex; i <= toIndex; ++i) {
+      if (i in this) {
+        result[i] = this[i];
+      }
+    }
+  } else {
+    const ownPropertyNames = Object.getOwnPropertyNames(this);
+    for (let i = 0; i < ownPropertyNames.length; ++i) {
+      const name = ownPropertyNames[i];
+      const index = Number(name) >>> 0;
+      if (String(index) === name && fromIndex <= index && index <= toIndex) {
+        result[index] = this[index];
+      }
+    }
+  }
+  return result;
+}
 var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common2.ObjectWrapper.ObjectWrapper {
   constructor(parent, options) {
     super();
@@ -4580,14 +4683,133 @@ var OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
     render2(nothing2, target);
     return;
   }
-  const nodes = Array.from(ObjectPropertyTreeElement.createNodes(
-    objectTree,
-    input,
-    input.skipProto,
-    input.skipGettersAndSetters,
-    input.linkifier,
-    input.emptyPlaceholder
-  ));
+  function renderProperty(property) {
+    const onContextMenu = (e) => {
+      const contextMenu = new UI2.ContextMenu.ContextMenu(e);
+      populateObjectTreeContextMenu(contextMenu, property, input);
+      void contextMenu.show();
+    };
+    const onExpand = (e) => {
+      input.onExpand(property, e.detail.expanded);
+      e.consume(true);
+    };
+    const childCount = (property.children?.properties?.length ?? 0) + (property.children?.internalProperties?.length ?? 0) + (property.children?.accessors?.length ?? 0) + (property.children?.arrayRanges?.length ?? 0);
+    const showAllChildren = childCount <= InitialVisibleChildrenLimit || property.showAllChildren;
+    const children = () => {
+      const nodes2 = createNodes(property, false, false, void 0, (p) => !isDisplayableProperty(p, property.property));
+      return showAllChildren ? nodes2 : nodes2.take(InitialVisibleChildrenLimit);
+    };
+    const expandable = property.object && !property.object.customPreview() && property.object.hasChildren && !property.property.wasThrown;
+    return html2`<li
+      ?hidden=${property.isFiltered}
+      ?open=${property.expanded}
+      @contextmenu=${onContextMenu}
+      @expand=${onExpand}
+      data-object-property-name-for-test=${property.name}
+      toggle-on-click
+      role=treeitem>
+        ${widget(ObjectPropertyWidget, { property, linkifier: input.linkifier, editable: !property.readOnly, expanded: property.expanded })}
+        ${expandable ? html2`
+          <ul role=group>
+            ${children()}
+            ${showAllChildren ? nothing2 : html2`
+              <li role=treeitem @select=${() => input.onShowAllProperties(property)}>
+                <div
+                    class=object-value-calculate-value-button
+                    title=${i18nString2(UIStrings2.showAllD, { PH1: childCount })}>
+                  ${i18nString2(UIStrings2.dots)}
+                </div>
+              </li>`}
+          </ul>` : nothing2}
+      </li>`;
+  }
+  function renderArrayGroup(child) {
+    const onExpand = (e) => {
+      input.onExpand(child, e.detail.expanded);
+      e.consume(true);
+    };
+    return html2`<li
+      class=object-properties-section-name
+      role=treeitem
+      toggle-on-click
+      ?open=${child.expanded}
+      @expand=${onExpand}>
+        ${Platform2.StringUtilities.sprintf("[%d \u2026 %d]", child.range.fromIndex, child.range.toIndex)}
+        <ul role=group>
+          ${ifExpanded(() => createNodes(child, false, false))}
+        </ul>
+      </li>`;
+  }
+  function* createNodes(value, skipProto, skipGettersAndSetters, emptyPlaceholder, isNotDisplayablePropertyCallback) {
+    const properties = value.children;
+    if (!properties) {
+      return;
+    }
+    if (properties.arrayRanges) {
+      if (properties.arrayRanges.length === 1) {
+        yield* createNodes(properties.arrayRanges[0], false, false, void 0, isNotDisplayablePropertyCallback);
+      } else {
+        for (const child of properties.arrayRanges) {
+          if (child.singular) {
+            yield* createNodes(child, false, false, void 0, isNotDisplayablePropertyCallback);
+          } else {
+            yield renderArrayGroup(child);
+          }
+        }
+      }
+      yield* createPropertyNodes(properties, false, false, void 0, isNotDisplayablePropertyCallback);
+    } else {
+      yield* createPropertyNodes(
+        properties,
+        skipProto,
+        skipGettersAndSetters,
+        emptyPlaceholder,
+        isNotDisplayablePropertyCallback
+      );
+    }
+  }
+  function* createPropertyNodes({ properties, internalProperties, accessors, arrayRanges }, skipProto, skipGettersAndSetters, emptyPlaceholder, isNotDisplayablePropertyCallback) {
+    let empty = true;
+    if (arrayRanges && arrayRanges.length > 0) {
+      empty = false;
+    }
+    const entriesProperty = internalProperties?.find(({ property }) => property.name === "[[Entries]]");
+    if (entriesProperty) {
+      yield renderProperty(entriesProperty);
+      empty = false;
+    }
+    for (const property of properties ?? []) {
+      if (isNotDisplayablePropertyCallback?.(property.property)) {
+        continue;
+      }
+      const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
+      if (canShowProperty) {
+        yield renderProperty(property);
+        empty = false;
+      }
+    }
+    if (!skipGettersAndSetters) {
+      for (const accessor of accessors ?? []) {
+        yield renderProperty(accessor);
+      }
+    }
+    for (const property of internalProperties ?? []) {
+      if (property.property.name === "[[Entries]]") {
+        continue;
+      }
+      if (property.property.name === "[[Prototype]]" && skipProto) {
+        continue;
+      }
+      yield renderProperty(property);
+      empty = false;
+    }
+    if (empty) {
+      yield html2`<li role=treeitem>
+          <div class=gray-info-message>${emptyPlaceholder || i18nString2(UIStrings2.noProperties)}</div>
+        </li>`;
+    }
+  }
+  const nodes = Array.from(createNodes(objectTree, input.skipProto, input.skipGettersAndSetters, input.emptyPlaceholder));
   nodes.forEach(UI2.UIUtils.HTMLElementWithLightDOMTemplate.patchLitTemplate);
   render2(nodes, target, {
     container: { classes: input.renderAsSubtree ? ["source-code", "object-properties-section"] : [] }
@@ -5123,281 +5345,6 @@ var ObjectPropertyWidget = class extends UI2.Widget.Widget {
   }
   #invokeGetter(getter) {
     void this.#property?.invokeGetter(getter);
-  }
-};
-var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement {
-  static #render(property, linkifier, handlers) {
-    const onContextMenu = (e) => {
-      const contextMenu = new UI2.ContextMenu.ContextMenu(e);
-      populateObjectTreeContextMenu(contextMenu, property, handlers);
-      void contextMenu.show();
-    };
-    const onExpand = (e) => {
-      handlers.onExpand(property, e.detail.expanded);
-      e.consume(true);
-    };
-    const childCount = (property.children?.properties?.length ?? 0) + (property.children?.internalProperties?.length ?? 0) + (property.children?.accessors?.length ?? 0) + (property.children?.arrayRanges?.length ?? 0);
-    const showAllChildren = childCount <= InitialVisibleChildrenLimit || property.showAllChildren;
-    const children = () => {
-      const nodes = _ObjectPropertyTreeElement.createNodes(
-        property,
-        handlers,
-        false,
-        false,
-        linkifier,
-        void 0,
-        (p) => !isDisplayableProperty(p, property.property)
-      );
-      return showAllChildren ? nodes : nodes.take(InitialVisibleChildrenLimit);
-    };
-    const expandable = property.object && !property.object.customPreview() && property.object.hasChildren && !property.property.wasThrown;
-    return html2`<li
-      ?hidden=${property.isFiltered}
-      ?open=${property.expanded}
-      @contextmenu=${onContextMenu}
-      @expand=${onExpand}
-      data-object-property-name-for-test=${property.name}
-      toggle-on-click
-      role=treeitem>
-        ${widget(ObjectPropertyWidget, { property, linkifier, editable: !property.readOnly, expanded: property.expanded })}
-        ${expandable ? html2`
-          <ul role=group>
-            ${children()}
-            ${showAllChildren ? nothing2 : html2`
-              <li role=treeitem @select=${() => handlers.onShowAllProperties(property)}>
-                <div
-                    class=object-value-calculate-value-button
-                    title=${i18nString2(UIStrings2.showAllD, { PH1: childCount })}>
-                  ${i18nString2(UIStrings2.dots)}
-                </div>
-              </li>`}
-          </ul>` : nothing2}
-      </li>`;
-  }
-  static *createNodes(value, handlers, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
-    const properties = value.children;
-    if (!properties) {
-      return;
-    }
-    if (properties.arrayRanges) {
-      yield* ArrayGroupingTreeElement.createNodes(properties, handlers, linkifier, isNotDisplayablePropertyCallback);
-    } else {
-      yield* _ObjectPropertyTreeElement.createPropertyNodes(
-        properties,
-        handlers,
-        skipProto,
-        skipGettersAndSetters,
-        linkifier,
-        emptyPlaceholder,
-        isNotDisplayablePropertyCallback
-      );
-    }
-  }
-  static *createPropertyNodes({ properties, internalProperties, accessors, arrayRanges }, handlers, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
-    let empty = true;
-    if (arrayRanges && arrayRanges.length > 0) {
-      empty = false;
-    }
-    const sortPropertiesAlphabetically = properties?.[0]?.sortPropertiesAlphabetically ?? true;
-    properties?.sort((a, b) => compareProperties(a, b, sortPropertiesAlphabetically));
-    const entriesProperty = internalProperties?.find(({ property }) => property.name === "[[Entries]]");
-    if (entriesProperty) {
-      yield _ObjectPropertyTreeElement.#render(entriesProperty, linkifier, handlers);
-      empty = false;
-    }
-    for (const property of properties ?? []) {
-      if (isNotDisplayablePropertyCallback?.(property.property)) {
-        continue;
-      }
-      const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
-      if (canShowProperty) {
-        yield _ObjectPropertyTreeElement.#render(property, linkifier, handlers);
-        empty = false;
-      }
-    }
-    if (!skipGettersAndSetters) {
-      for (const accessor of accessors ?? []) {
-        yield _ObjectPropertyTreeElement.#render(accessor, linkifier, handlers);
-      }
-    }
-    for (const property of internalProperties ?? []) {
-      if (property.property.name === "[[Entries]]") {
-        continue;
-      }
-      if (property.property.name === "[[Prototype]]" && skipProto) {
-        continue;
-      }
-      yield _ObjectPropertyTreeElement.#render(property, linkifier, handlers);
-      empty = false;
-    }
-    if (empty) {
-      yield html2`<li role=treeitem>
-          <div class=gray-info-message>${emptyPlaceholder || i18nString2(UIStrings2.noProperties)}</div>
-        </li>`;
-    }
-  }
-};
-async function arrayRangeGroups(object, fromIndex, toIndex) {
-  return await object.callFunctionJSON(packArrayRanges, [
-    { value: fromIndex },
-    { value: toIndex },
-    { value: ARRAY_BUCKET_THRESHOLD },
-    { value: ARRAY_SPARSE_ITERATION_THRESHOLD }
-  ]);
-  function packArrayRanges(fromIndex2, toIndex2, bucketThreshold, sparseIterationThreshold) {
-    if (fromIndex2 === void 0 || toIndex2 === void 0 || sparseIterationThreshold === void 0 || bucketThreshold === void 0) {
-      return;
-    }
-    let ownPropertyNames = null;
-    const consecutiveRange = toIndex2 - fromIndex2 >= sparseIterationThreshold && ArrayBuffer.isView(this);
-    function* arrayIndexes(object2) {
-      if (fromIndex2 === void 0 || toIndex2 === void 0 || sparseIterationThreshold === void 0) {
-        return;
-      }
-      if (toIndex2 - fromIndex2 < sparseIterationThreshold) {
-        for (let i = fromIndex2; i <= toIndex2; ++i) {
-          if (i in object2) {
-            yield i;
-          }
-        }
-      } else {
-        ownPropertyNames = ownPropertyNames || Object.getOwnPropertyNames(object2);
-        for (let i = 0; i < ownPropertyNames.length; ++i) {
-          const name = ownPropertyNames[i];
-          const index = Number(name) >>> 0;
-          if (String(index) === name && fromIndex2 <= index && index <= toIndex2) {
-            yield index;
-          }
-        }
-      }
-    }
-    let count = 0;
-    if (consecutiveRange) {
-      count = toIndex2 - fromIndex2 + 1;
-    } else {
-      for (const ignored of arrayIndexes(this)) {
-        ++count;
-      }
-    }
-    let bucketSize = count;
-    if (count <= bucketThreshold) {
-      bucketSize = count;
-    } else {
-      bucketSize = Math.pow(bucketThreshold, Math.ceil(Math.log(count) / Math.log(bucketThreshold)) - 1);
-    }
-    const ranges = [];
-    if (consecutiveRange) {
-      for (let i = fromIndex2; i <= toIndex2; i += bucketSize) {
-        const groupStart = i;
-        let groupEnd = groupStart + bucketSize - 1;
-        if (groupEnd > toIndex2) {
-          groupEnd = toIndex2;
-        }
-        ranges.push([groupStart, groupEnd, groupEnd - groupStart + 1]);
-      }
-    } else {
-      count = 0;
-      let groupStart = -1;
-      let groupEnd = 0;
-      for (const i of arrayIndexes(this)) {
-        if (groupStart === -1) {
-          groupStart = i;
-        }
-        groupEnd = i;
-        if (++count === bucketSize) {
-          ranges.push([groupStart, groupEnd, count]);
-          count = 0;
-          groupStart = -1;
-        }
-      }
-      if (count > 0) {
-        ranges.push([groupStart, groupEnd, count]);
-      }
-    }
-    return { ranges };
-  }
-}
-function buildArrayFragment(fromIndex, toIndex, sparseIterationThreshold) {
-  const result = /* @__PURE__ */ Object.create(null);
-  if (fromIndex === void 0 || toIndex === void 0 || sparseIterationThreshold === void 0) {
-    return;
-  }
-  if (toIndex - fromIndex < sparseIterationThreshold) {
-    for (let i = fromIndex; i <= toIndex; ++i) {
-      if (i in this) {
-        result[i] = this[i];
-      }
-    }
-  } else {
-    const ownPropertyNames = Object.getOwnPropertyNames(this);
-    for (let i = 0; i < ownPropertyNames.length; ++i) {
-      const name = ownPropertyNames[i];
-      const index = Number(name) >>> 0;
-      if (String(index) === name && fromIndex <= index && index <= toIndex) {
-        result[index] = this[index];
-      }
-    }
-  }
-  return result;
-}
-var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement {
-  static #render(child, linkifier, handlers) {
-    const onExpand = (e) => {
-      handlers.onExpand(child, e.detail.expanded);
-      e.consume(true);
-    };
-    return html2`<li
-      class=object-properties-section-name
-      role=treeitem
-      toggle-on-click
-      ?open=${child.expanded}
-      @expand=${onExpand}>
-        ${Platform2.StringUtilities.sprintf("[%d \u2026 %d]", child.range.fromIndex, child.range.toIndex)}
-        <ul role=group>
-          ${ifExpanded(() => ObjectPropertyTreeElement.createNodes(child, handlers, false, false, linkifier))}
-        </ul>
-      </li>`;
-  }
-  static *createNodes(children, handlers, linkifier, isNotDisplayablePropertyCallback) {
-    if (!children.arrayRanges) {
-      return;
-    }
-    if (children.arrayRanges.length === 1) {
-      yield* ObjectPropertyTreeElement.createNodes(
-        children.arrayRanges[0],
-        handlers,
-        false,
-        false,
-        linkifier,
-        void 0,
-        isNotDisplayablePropertyCallback
-      );
-    } else {
-      for (const child of children.arrayRanges) {
-        if (child.singular) {
-          yield* ObjectPropertyTreeElement.createNodes(
-            child,
-            handlers,
-            false,
-            false,
-            linkifier,
-            void 0,
-            isNotDisplayablePropertyCallback
-          );
-        } else {
-          yield _ArrayGroupingTreeElement.#render(child, linkifier, handlers);
-        }
-      }
-    }
-    yield* ObjectPropertyTreeElement.createPropertyNodes(
-      children,
-      handlers,
-      false,
-      false,
-      linkifier,
-      void 0,
-      isNotDisplayablePropertyCallback
-    );
   }
 };
 var EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {

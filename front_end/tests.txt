@@ -110,6 +110,7 @@ core/sdk/Target.test.js
 core/sdk/TargetManager.test.js
 core/sdk/TraceObject.test.js
 core/text_utils/ContentData.test.js
+core/text_utils/Markdown.test.js
 core/text_utils/StaticContentProvider.test.js
 core/text_utils/StreamingContentData.test.js
 core/text_utils/Text.test.js

@@ -4955,6 +4955,14 @@ export namespace ProtocolMapping {
       returnType: Protocol.Storage.GetPrivateVerificationTokensResponse;
     };
     /**
+     * Returns the configured Private Verification Tokens issuers and their redeemer
+     * origins.
+     */
+    'Storage.getPrivateVerificationTokensIssuerConfigs': {
+      paramsType: [];
+      returnType: Protocol.Storage.GetPrivateVerificationTokensIssuerConfigsResponse;
+    };
+    /**
      * Removes all Private Verification Tokens issued by the provided issuerOrigin.
      */
     'Storage.clearPrivateVerificationTokens': {

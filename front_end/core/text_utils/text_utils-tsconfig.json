@@ -48,6 +48,7 @@
     "../../../../../../front_end/core/text_utils/CodeMirrorUtils.ts",
     "../../../../../../front_end/core/text_utils/ContentData.ts",
     "../../../../../../front_end/core/text_utils/ContentProvider.ts",
+    "../../../../../../front_end/core/text_utils/Markdown.ts",
     "../../../../../../front_end/core/text_utils/StaticContentProvider.ts",
     "../../../../../../front_end/core/text_utils/StreamingContentData.ts",
     "../../../../../../front_end/core/text_utils/Text.ts",
@@ -69,6 +70,9 @@
     },
     {
       "path": "../../third_party/codemirror.next/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/marked/bundle-tsconfig.ref.json"
     }
   ]
 }

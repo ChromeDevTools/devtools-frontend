@@ -6623,6 +6623,9 @@
   "panels/common/CommentsStatusBarPill.ts | commentsCount": {
     "message": "Comments ({PH1})"
   },
+  "panels/common/CommentsStatusBarPill.ts | sendToAgentCount": {
+    "message": "Send to agent ({PH1})"
+  },
   "panels/common/CommentThreadWidget.ts | close": {
     "message": "Close"
   },

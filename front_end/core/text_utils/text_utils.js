@@ -641,6 +641,66 @@ var EMPTY_TEXT_CONTENT_DATA = new ContentData(
   "text/plain"
 );
 
+// ../../front_end/core/text_utils/Markdown.ts
+var Markdown_exports = {};
+__export(Markdown_exports, {
+  VALID_PLACEHOLDER_MATCH_PATTERN: () => VALID_PLACEHOLDER_MATCH_PATTERN,
+  tokenizeWithPlaceholders: () => tokenizeWithPlaceholders,
+  validateSubstitutions: () => validateSubstitutions
+});
+import * as Marked from "../../third_party/marked/marked.js";
+var VALID_PLACEHOLDER_MATCH_PATTERN = /\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9_]*)\}/g;
+var VALID_PLACEHOLDER_NAME_PATTERN = /^PLACEHOLDER_[a-zA-Z][a-zA-Z0-9_]*$/;
+var placeholderExtension = {
+  name: "placeholder",
+  level: "inline",
+  start(src) {
+    return src.match(/\{PLACEHOLDER_[a-zA-Z][a-zA-Z0-9_]*\}/)?.index;
+  },
+  tokenizer(src) {
+    const match = /^\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9_]*)\}/.exec(src);
+    if (match) {
+      return {
+        type: "placeholder",
+        raw: match[0],
+        key: match[1]
+      };
+    }
+    return void 0;
+  }
+};
+function validateSubstitutions(rawMarkdown, substitutions) {
+  if (!substitutions) {
+    return;
+  }
+  const unusedPlaceholders = new Set(substitutions.keys());
+  for (const key of unusedPlaceholders) {
+    if (!VALID_PLACEHOLDER_NAME_PATTERN.test(key)) {
+      throw new Error(`Invalid placeholder '${key}' provided in the substitutions map.`);
+    }
+  }
+  for (const [, placeholder] of rawMarkdown.matchAll(VALID_PLACEHOLDER_MATCH_PATTERN)) {
+    if (!substitutions.has(placeholder)) {
+      throw new Error(`No replacement provided for placeholder '${placeholder}'.`);
+    }
+    unusedPlaceholders.delete(placeholder);
+  }
+  if (unusedPlaceholders.size > 0) {
+    throw new Error(`Unused replacements provided: ${[...unusedPlaceholders]}`);
+  }
+}
+function tokenizeWithPlaceholders(markdown, substitutions) {
+  const rawMarkdown = typeof markdown === "string" ? markdown : markdown.map((token) => token.raw).join("");
+  validateSubstitutions(rawMarkdown, substitutions);
+  if (typeof markdown !== "string" && !rawMarkdown.includes("{PLACEHOLDER_")) {
+    return markdown;
+  }
+  const markedInstance = new Marked.Marked.Marked({
+    extensions: [placeholderExtension]
+  });
+  return markedInstance.lexer(rawMarkdown);
+}
+
 // ../../front_end/core/text_utils/StaticContentProvider.ts
 var StaticContentProvider_exports = {};
 __export(StaticContentProvider_exports, {
@@ -1131,6 +1191,7 @@ export {
   CodeMirrorUtils_exports as CodeMirrorUtils,
   ContentData_exports as ContentData,
   ContentProvider_exports as ContentProvider,
+  Markdown_exports as Markdown,
   StaticContentProvider_exports as StaticContentProvider,
   StreamingContentData_exports as StreamingContentData,
   Text_exports as Text,

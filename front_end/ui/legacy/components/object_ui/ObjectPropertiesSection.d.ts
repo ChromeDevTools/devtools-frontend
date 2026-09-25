@@ -156,12 +156,10 @@ export interface ContextMenuHandlers {
     sortPropertiesAlphabetically: (node: ObjectTreeNodeBase) => void;
     onShowAllToggled: (node: ObjectTreeNodeBase) => void;
 }
-interface StateHandlers extends ContextMenuHandlers {
+export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu, objectOrProperty: ObjectTree | ObjectTreeNode, handlers: ContextMenuHandlers): void;
+interface ObjectTreeViewInput extends ContextMenuHandlers {
     onShowAllProperties: (node: ObjectTreeNode) => void;
     onExpand: (node: ObjectTreeNodeBase, expanded: boolean) => void;
-}
-export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu, objectOrProperty: ObjectTree | ObjectTreeNode, handlers: ContextMenuHandlers): void;
-interface ObjectTreeViewInput extends StateHandlers {
     renderAsSubtree: boolean;
     objectTree?: ObjectTree;
     linkifier?: Components.Linkifier.Linkifier;

@@ -49,18 +49,5 @@ export declare function createIssueDescriptionFromMarkdown(description: Markdown
  * This function is exported separately for unit testing.
  */
 export declare function createIssueDescriptionFromRawMarkdown(markdown: string, description: MarkdownIssueDescription): IssueDescription;
-/**
- * Replaces placeholders in markdown text with a string provided by the
- * `substitutions` map. To keep mental overhead to a minimum, the same
- * syntax is used as for l10n placeholders. Please note that the
- * placeholders require a mandatory 'PLACEHOLDER_' prefix.
- *
- * Example:
- *   const str = "This is markdown with `code` and two placeholders, namely {PLACEHOLDER_PH1} and {PLACEHOLDER_PH2}".
- *   const result = substitutePlaceholders(str, new Map([['PLACEHOLDER_PH1', 'foo'], ['PLACEHOLDER_PH2', 'bar']]));
- *
- * Exported only for unit testing.
- */
-export declare function substitutePlaceholders(markdown: string, substitutions?: Map<string, string>): string;
 export declare function findTitleFromMarkdownAst(markdownAst: Marked.Marked.Token[]): string | null;
 export declare function getIssueTitleFromMarkdownDescription(description: MarkdownIssueDescription): Promise<string | null>;

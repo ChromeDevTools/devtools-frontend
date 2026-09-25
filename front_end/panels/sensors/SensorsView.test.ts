@@ -290,6 +290,21 @@ describeWithEnvironment('SensorsView', () => {
       assert.strictEqual(option.text, 'No override (Tier 2: MID)');
     });
 
+    it('shows the throttled tier in "no-override" option label when throttling is active on startup', () => {
+      CPUThrottlingManager.instance().setCPUThrottlingRate(4);
+
+      const localView = new Sensors.SensorsView.SensorsView();
+
+      const select = localView.contentElement.querySelector('.cpu-performance-section select') as HTMLSelectElement;
+      assert.exists(select);
+
+      const option = select.querySelector('option[value="no-override"]') as HTMLOptionElement;
+      assert.exists(option);
+
+      assert.strictEqual(option.text, 'No override (Tier 2: MID)');
+      assert.strictEqual(CPUThrottlingManager.instance().effectiveCPUPerformanceTier(), CPUPerformanceTier.Mid);
+    });
+
     it('resets effective tier when "no-override" is selected after an override', () => {
       const select = view.contentElement.querySelector('.cpu-performance-section select') as HTMLSelectElement;
       assert.exists(select);

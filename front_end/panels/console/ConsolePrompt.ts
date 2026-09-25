@@ -459,7 +459,8 @@ export class ConsolePrompt extends ConsolePromptBase {
         ?.evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI);
   }
 
-  private async substituteNames(expression: string, mapping: Array<Map<string, string|null>>): Promise<string> {
+  private async substituteNames(expression: string,
+                                mapping: Formatter.FormatterWorkerPool.ScopeVariableMapping[]): Promise<string> {
     try {
       return await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, mapping);
     } catch {

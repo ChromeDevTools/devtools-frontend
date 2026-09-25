@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
-import {FormatterActions} from '../formatter_actions/formatter_actions.js';
+import {FormatterActions, type ScopeVariableMapping} from '../formatter_actions/formatter_actions.js';
 
 import * as FormatterWorker from './formatter_worker.js';
 
@@ -13,7 +13,7 @@ Platform.HostRuntime.HOST_RUNTIME.workerScope.onmessage = function(event): void 
     indentString: string,
     content: string,
     mimeType: string,
-    mapping: Array<Map<string, string|null>>,
+    mapping: ScopeVariableMapping[],
     sourceType: 'module'|'script',
   } = event.data.params;
   if (!method) {

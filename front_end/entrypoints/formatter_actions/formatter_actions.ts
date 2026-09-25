@@ -51,6 +51,24 @@ export const enum ScopeKind {
   ARROW_FUNCTION = 4,
 }
 
+/**
+ * Describes a single scope for `javaScriptSubstitute`.
+ */
+export interface ScopeVariableMapping {
+  /**
+   * Authored variable name -> generated binding expression, or `null` if the variable is unavailable.
+   */
+  bindings: Map<string, string|null>;
+  /**
+   * Generated identifiers declared by this scope. Together with the free identifiers of `bindings`, these
+   * shadow bindings of outer scopes that refer to the same generated identifiers.
+   *
+   * This is needed when a generated identifier doesn't show up in any binding expression, e.g. because
+   * multiple generated identifiers map to the same authored name, or the authored name is unknown.
+   */
+  generatedNames: string[];
+}
+
 export interface ScopeTreeNode {
   variables: Array<{name: string, kind: DefinitionKind, offsets: number[]}>;
   start: number;

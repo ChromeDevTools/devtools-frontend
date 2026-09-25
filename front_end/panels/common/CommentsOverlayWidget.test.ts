@@ -581,4 +581,50 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     el.remove();
     widget.detach();
   });
+
+  it('positions pins and highlights with translate3d and preserves DOM nodes across realtime updates', async () => {
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    let currentTop = 100;
+    const el = document.createElement('div');
+    el.setAttribute('jslog', 'TreeItem; context: translate3d-test');
+    el.textContent = 'translate3d item';
+    el.getBoundingClientRect = () => new DOMRect(50, currentTop, 120, 30);
+    renderElementIntoDOM(el, {allowMultipleChildren: true});
+
+    commentManager.setCommentMode(true);
+    const thread = overlayManager.createComment(el, 'Pinned comment');
+    assert.isNotNull(thread);
+    thread.save();
+
+    widget.requestUpdate();
+    await widget.updateComplete;
+
+    const pinBefore = widget.contentElement.querySelector('.comment-pin') as HTMLElement;
+    const highlightBefore = widget.contentElement.querySelector('.comment-anchor-highlight') as HTMLElement;
+    assert.isNotNull(pinBefore);
+    assert.isNotNull(highlightBefore);
+    assert.include(pinBefore.style.transform, 'translate3d(');
+    assert.include(highlightBefore.style.transform, 'translate3d(50px, 100px, 0');
+
+    // Simulate a realtime scroll/resize update and verify it renders synchronously in the same frame
+    // while preserving the exact same DOM elements via keyed repeat().
+    currentTop = 160;
+    overlayManager.dispatchEventToListeners(Comments.CommentOverlayManager.Events.POSITIONS_UPDATED, {
+      pins: [{id: thread.id, top: 148, left: 158, visible: true, index: 1}],
+      highlights: [{id: thread.id, top: 160, left: 50, width: 120, height: 30, visible: true}],
+      isRealtimeSync: true,
+    });
+
+    const pinAfter = widget.contentElement.querySelector('.comment-pin') as HTMLElement;
+    const highlightAfter = widget.contentElement.querySelector('.comment-anchor-highlight') as HTMLElement;
+    assert.strictEqual(pinAfter, pinBefore, 'Expected pin DOM element to be reused across updates');
+    assert.strictEqual(highlightAfter, highlightBefore, 'Expected highlight DOM element to be reused across updates');
+
+    el.remove();
+    widget.detach();
+  });
 });

@@ -870,4 +870,37 @@ describeWithEnvironment('CommentOverlayManager', () => {
       Comments.CommentAnchorResolver.unregisterCustomAnchorResolver(customResolver);
     }
   });
+
+  it('updates positions synchronously when a scroll container inside a ShadowRoot fires a non-composed scroll event',
+     () => {
+       manager.start(container);
+       manager.setCommentMode(true);
+
+       const host = document.createElement('div');
+       const shadow = host.attachShadow({mode: 'open'});
+       const shadowScrollContainer = document.createElement('div');
+       shadowScrollContainer.style.overflow = 'auto';
+       shadowScrollContainer.getBoundingClientRect = () => new DOMRect(0, 0, 300, 300);
+
+       let itemTop = 80;
+       const innerEl = document.createElement('div');
+       innerEl.setAttribute('jslog', 'TreeItem; context: shadow-scroll-item');
+       innerEl.textContent = 'shadow scrollable item';
+       innerEl.getBoundingClientRect = () => new DOMRect(10, itemTop, 100, 24);
+
+       shadowScrollContainer.appendChild(innerEl);
+       shadow.appendChild(shadowScrollContainer);
+       container.appendChild(host);
+
+       const thread = manager.createComment(innerEl, 'Shadow scroll comment');
+       assert.isNotNull(thread);
+       assert.strictEqual(manager.getHighlightRects()[0]?.top, 80);
+
+       // Simulate scrolling inside the ShadowRoot: native scroll events have bubbles: false, composed: false.
+       itemTop = 40;
+       shadowScrollContainer.dispatchEvent(new Event('scroll', {bubbles: false, composed: false}));
+
+       // Position should be updated synchronously on the leading edge of the scroll event without waiting for a timer.
+       assert.strictEqual(manager.getHighlightRects()[0]?.top, 40);
+     });
 });

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -1673,6 +1674,41 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       assert.strictEqual(rect?.left, 15);
       assert.strictEqual(rect?.width, 80);
       assert.strictEqual(rect?.height, 40);
+    });
+
+    it('caches clipping ancestors across calls and deduplicates ancestor rects via rectCache', () => {
+      const scrollContainer = document.createElement('div');
+      scrollContainer.style.overflow = 'auto';
+      scrollContainer.getBoundingClientRect = sinon.stub().returns(new DOMRect(0, 0, 200, 200));
+      container.appendChild(scrollContainer);
+
+      const el = document.createElement('div');
+      el.textContent = 'Cached item';
+      el.getBoundingClientRect = () => new DOMRect(10, 10, 100, 30);
+      scrollContainer.appendChild(el);
+
+      const getComputedStyleSpy = sinon.spy(window, 'getComputedStyle');
+      try {
+        const rectCache = new Map<Element, DOMRect>();
+        const rect1 = Comments.CommentAnchorResolver.computeVisibleRect(el, undefined, rectCache);
+        assert.isNotNull(rect1);
+        const initialComputedStyleCalls = getComputedStyleSpy.callCount;
+        assert.isAbove(initialComputedStyleCalls, 0);
+
+        // Second call for the same element with the same rectCache should not call getComputedStyle
+        // or re-query scrollContainer.getBoundingClientRect()
+        const rect2 = Comments.CommentAnchorResolver.computeVisibleRect(el, undefined, rectCache);
+        assert.isNotNull(rect2);
+        sinon.assert.callCount(getComputedStyleSpy, initialComputedStyleCalls);
+        sinon.assert.calledOnce(scrollContainer.getBoundingClientRect as sinon.SinonStub);
+
+        // Clearing the cache should re-evaluate getComputedStyle on next call
+        Comments.CommentAnchorResolver.clearClippingAncestorsCache();
+        Comments.CommentAnchorResolver.computeVisibleRect(el);
+        assert.isAbove(getComputedStyleSpy.callCount, initialComputedStyleCalls);
+      } finally {
+        getComputedStyleSpy.restore();
+      }
     });
   });
 

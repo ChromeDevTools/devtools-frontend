@@ -55,59 +55,67 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
         <div
           class="comment-hover-highlight"
           style=${styleMap({
-            top: `${input.hoverHighlight.top}px`,
-            left: `${input.hoverHighlight.left}px`,
+            transform: `translate3d(${input.hoverHighlight.left}px, ${input.hoverHighlight.top}px, 0)`,
             width: `${input.hoverHighlight.width}px`,
             height: `${input.hoverHighlight.height}px`,
           })}>
         </div>
       ` : nothing}
-      ${input.highlights.map(h => h.visible ? html`
-        <div
-          class="comment-anchor-highlight"
-          style=${styleMap({
-            top: `${h.top}px`,
-            left: `${h.left}px`,
-            width: `${h.width}px`,
-            height: `${h.height}px`,
-          })}>
-        </div>
-      ` : nothing)}
-      ${input.pins.map(p => p.visible ? html`
-        <div
-          class="comment-pin"
-          style=${styleMap({
-            top: `${p.top}px`,
-            left: `${p.left}px`,
-          })}
-          @click=${() => input.onPinClick(p.id)}>
-          <div class="comment-cursor">${p.index}</div>
-        </div>
-      ` : nothing)}
+      ${repeat(
+        input.highlights.filter(h => h.visible),
+        h => h.id,
+        h => html`
+          <div
+            class="comment-anchor-highlight"
+            style=${styleMap({
+              transform: `translate3d(${h.left}px, ${h.top}px, 0)`,
+              width: `${h.width}px`,
+              height: `${h.height}px`,
+            })}>
+          </div>
+        `,
+      )}
+      ${repeat(
+        input.pins.filter(p => p.visible),
+        p => p.id,
+        p => html`
+          <div
+            class="comment-pin"
+            style=${styleMap({
+              transform: `translate3d(${p.left}px, ${p.top}px, 0)`,
+            })}
+            @click=${() => input.onPinClick(p.id)}>
+            <div class="comment-cursor">${p.index}</div>
+          </div>
+        `,
+      )}
       ${input.activePin && input.activeThread ? repeat(
         [{pin: input.activePin, thread: input.activeThread}],
         item => item.thread.id,
-        item => html`
-          <div
-            class="comment-popup-widget"
-            style=${styleMap({
-              top: `${Math.min(
-                Math.max(POPUP_MARGIN, item.pin.top + PIN_HEIGHT),
-                Math.max(POPUP_MARGIN, target.clientHeight - POPUP_HEIGHT),
-              )}px`,
-              left: `${Math.min(
-                Math.max(POPUP_MARGIN, item.pin.left),
-                Math.max(POPUP_MARGIN, target.clientWidth - POPUP_WIDTH - POPUP_MARGIN),
-              )}px`,
-            })}>
-            ${UI.Widget.widget(CommentThreadWidget, {
-              title: input.title,
-              comments: [...item.thread.comments],
-              onAddComment: input.onAddComment,
-              onClose: input.onCloseCommentThread,
-            })}
-          </div>
-        `,
+        item => {
+          const popupTop = Math.min(
+            Math.max(POPUP_MARGIN, item.pin.top + PIN_HEIGHT),
+            Math.max(POPUP_MARGIN, target.clientHeight - POPUP_HEIGHT),
+          );
+          const popupLeft = Math.min(
+            Math.max(POPUP_MARGIN, item.pin.left),
+            Math.max(POPUP_MARGIN, target.clientWidth - POPUP_WIDTH - POPUP_MARGIN),
+          );
+          return html`
+            <div
+              class="comment-popup-widget"
+              style=${styleMap({
+                transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)`,
+              })}>
+              ${UI.Widget.widget(CommentThreadWidget, {
+                title: input.title,
+                comments: [...item.thread.comments],
+                onAddComment: input.onAddComment,
+                onClose: input.onCloseCommentThread,
+              })}
+            </div>
+          `;
+        },
       ) : nothing}
     </div>
   `, target);
@@ -160,12 +168,12 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     this.#commentOverlayManager.start();
     this.#commentOverlayManager.addEventListener(
         Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
-        this.#onStateChanged,
+        this.#onPositionsUpdated,
         this,
     );
     this.#commentOverlayManager.addEventListener(
         Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED,
-        this.#onStateChanged,
+        this.#onHoverHighlightChanged,
         this,
     );
 
@@ -197,12 +205,12 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
         Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
-        this.#onStateChanged,
+        this.#onPositionsUpdated,
         this,
     );
     this.#commentOverlayManager.removeEventListener(
         Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED,
-        this.#onStateChanged,
+        this.#onHoverHighlightChanged,
         this,
     );
 
@@ -257,14 +265,58 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #onStateChanged(): void {
+  #syncActiveThreadFromManager(): void {
     const draftThread = this.#commentManager.getCommentThreads().find(t => t.status === 'DRAFT');
     if (draftThread) {
       this.#setActiveThreadId(draftThread.id);
     } else if (this.#activeThreadId && !this.#commentManager.getCommentThread(this.#activeThreadId)) {
       this.#setActiveThreadId(null);
     }
+  }
+
+  #onPositionsUpdated(
+      event: Common.EventTarget.EventTargetEvent<
+          Comments.CommentOverlayManager.EventTypes[Comments.CommentOverlayManager.Events.POSITIONS_UPDATED]>,
+      ): void {
+    this.#syncActiveThreadFromManager();
+    if (event.data.isRealtimeSync && this.isShowing() && this.#trySynchronousRender()) {
+      return;
+    }
     this.requestUpdate();
+  }
+
+  #onHoverHighlightChanged(): void {
+    this.#syncActiveThreadFromManager();
+    if (this.isShowing() && this.#trySynchronousRender()) {
+      return;
+    }
+    this.requestUpdate();
+  }
+
+  #onStateChanged(): void {
+    this.#syncActiveThreadFromManager();
+    this.requestUpdate();
+  }
+
+  #trySynchronousRender(): boolean {
+    if (!this.#commentManager.isAgentAttached()) {
+      this.#renderDisconnectedView();
+      return true;
+    }
+    const activeThread =
+        this.#activeThreadId ? this.#commentManager.getCommentThread(this.#activeThreadId) ?? null : null;
+    const anchor = activeThread?.anchor ?? null;
+    if (anchor === null) {
+      this.#cachedTitleAnchor = null;
+      this.#cachedTitle = {text: ''};
+      this.#renderWithTitle(activeThread, this.#cachedTitle);
+      return true;
+    }
+    if (anchor === this.#cachedTitleAnchor) {
+      this.#renderWithTitle(activeThread, this.#cachedTitle);
+      return true;
+    }
+    return false;
   }
 
   async #getOrComputeTitle(anchor: CommentManager.CommentManager.CommentAnchorSignature|null): Promise<Title> {
@@ -333,32 +385,29 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     }
   };
 
-  override async performUpdate(signal?: AbortSignal): Promise<void> {
-    if (!this.#commentManager.isAgentAttached()) {
-      this.#view(
-          {
-            pins: [],
-            highlights: [],
-            hoverHighlight: null,
-            commentMode: false,
-            onPinClick: this.#handlePinClick,
-            activeThread: null,
-            activePin: null,
-            title: {text: ''},
-            onAddComment: () => {},
-            onCloseCommentThread: this.#handleCloseCommentThread,
-          },
-          undefined,
-          this.contentElement,
-      );
-      return;
-    }
+  #renderDisconnectedView(): void {
+    this.#view(
+        {
+          pins: [],
+          highlights: [],
+          hoverHighlight: null,
+          commentMode: false,
+          onPinClick: this.#handlePinClick,
+          activeThread: null,
+          activePin: null,
+          title: {text: ''},
+          onAddComment: () => {},
+          onCloseCommentThread: this.#handleCloseCommentThread,
+        },
+        undefined,
+        this.contentElement,
+    );
+  }
 
-    const activeThread =
-        this.#activeThreadId ? this.#commentManager.getCommentThread(this.#activeThreadId) ?? null : null;
-    const title = await this.#getOrComputeTitle(activeThread?.anchor ?? null);
-    signal?.throwIfAborted();
-
+  #renderWithTitle(
+      activeThread: CommentManager.CommentManager.CommentThread|null,
+      title: Title,
+      ): void {
     const pins = this.#commentOverlayManager.getPinPositions();
     const highlights = this.#commentOverlayManager.getHighlightRects();
     const activePin = this.#activeThreadId ? pins.find(p => p.id === this.#activeThreadId) ?? null : null;
@@ -390,6 +439,30 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       onCloseCommentThread: this.#handleCloseCommentThread,
     };
     this.#view(viewInput, undefined, this.contentElement);
+  }
+
+  override async performUpdate(signal?: AbortSignal): Promise<void> {
+    if (!this.#commentManager.isAgentAttached()) {
+      this.#renderDisconnectedView();
+      return;
+    }
+
+    const activeThread =
+        this.#activeThreadId ? this.#commentManager.getCommentThread(this.#activeThreadId) ?? null : null;
+    const anchor = activeThread?.anchor ?? null;
+    let title: Title;
+    if (anchor === null) {
+      this.#cachedTitleAnchor = null;
+      this.#cachedTitle = {text: ''};
+      title = this.#cachedTitle;
+    } else if (anchor === this.#cachedTitleAnchor) {
+      title = this.#cachedTitle;
+    } else {
+      title = await this.#getOrComputeTitle(anchor);
+      signal?.throwIfAborted();
+    }
+
+    this.#renderWithTitle(activeThread, title);
   }
 }
 

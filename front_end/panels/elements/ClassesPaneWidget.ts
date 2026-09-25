@@ -359,7 +359,10 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
 
     let completions: string[] = await this.classNamesPromise;
     const classesMap = this.nodeClasses((selectedNode));
-    const existingClasses = new Set(expression.split(/[,\s]/).map(className => className.trim()).filter(Boolean));
+    // Classes may be typed with a leading dot (e.g. `.btn`), while completions
+    // are raw class names, so normalize before de-duplicating.
+    const existingClasses =
+        new Set(expression.split(/[,\s]/).map(className => className.trim().replace(/^\./, '')).filter(Boolean));
     completions = completions.filter(value => !classesMap.get(value) && !existingClasses.has(value));
 
     if (prefix[0] === '.') {

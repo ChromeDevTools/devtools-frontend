@@ -119,5 +119,15 @@ describeWithEnvironment('ClassesPaneWidget', () => {
       const texts = await getCompletions('a', new Map([['abc', true]]));
       assert.deepEqual(texts, ['a1', 'a2']);
     });
+
+    it('filters out classes already present in the prompt', async () => {
+      const texts = await getCompletions('a1 a');
+      assert.deepEqual(texts, ['a2', 'abc']);
+    });
+
+    it('filters out dot-prefixed classes already present in the prompt', async () => {
+      const texts = await getCompletions('.a1 .a');
+      assert.deepEqual(texts, ['.a2', '.abc']);
+    });
   });
 });

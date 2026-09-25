@@ -1596,7 +1596,7 @@
       // https://drafts.csswg.org/css-backgrounds/#layering
       // https://github.com/w3c/csswg-drafts/issues/7164
       name: "CSSBackgroundLayerCountIndependence",
-      status: "test",
+      status: "experimental",
     },
     // https://chromestatus.com/feature/5459864205393920
     {
@@ -3891,6 +3891,10 @@
       public: true,
     },
     {
+      name: "LayoutCloneForScrollableOverflowChange",
+      status: "stable",
+    },
+    {
       name: "LayoutIgnoreMarginsForSticky",
     },
     {
@@ -4913,6 +4917,10 @@
       // foreign content in the HTML preload scanner. Ships in M155 and can be
       // removed in M158. https://crbug.com/40728681
       name: "PreloadScannerImprovements",
+      status: "stable",
+    },
+    {
+      name: "PrePaintBoxInvalidatorUsesFragments",
       status: "stable",
     },
     {
@@ -6351,6 +6359,12 @@
       status: "stable",
     },
     {
+      // Kill switch for crbug.com/562543774.
+      name: "TextBoxTrimOnInlineBoxTextDecoration",
+      depends_on: ["TextBoxTrimOnInlineBox"],
+      status: "stable",
+    },
+    {
       name: "TextDetector",
       status: "experimental",
     },
@@ -6540,11 +6554,6 @@
       //
       // This feature acts as a kill switch for https://crbug.com/40580002.
       name: "TreatMhtmlInitialDocumentLoadsAsCrossDocument",
-      status: "stable",
-    },
-    {
-      // crbug.com/451651633
-      name: "TreeRubyPlacement",
       status: "stable",
     },
     {
@@ -6927,6 +6936,15 @@
     {
       name: "WebAuthenticationCrossDeviceFallbackUrl",
       status: {"Android": "", "default": "experimental"},
+      base_feature: "none",
+      public: true,
+    },
+    // Lets an authorized remote desktop client supply the clientDataJSON for a
+    // WebAuthn request. Can be enabled only in conjunction with
+    // the device::kWebAuthnRemoteClientDataJson base::Feature.
+    // https://w3c.github.io/webauthn/#sctn-remote-client-data-json-extension
+    {
+      name: "WebAuthenticationRemoteClientDataJson",
       base_feature: "none",
       public: true,
     },

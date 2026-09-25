@@ -3,11 +3,28 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
+
+function renderAndOpenContextMenu(text: string): string[] {
+  const container = document.createElement('div');
+  renderElementIntoDOM(container);
+  Network.ShowMoreDetailsWidget.DEFAULT_VIEW({text, showMore: false, onToggle: () => {}, copy: null}, {}, container);
+
+  const sourceText = container.querySelector('span');
+  assert.exists(sourceText);
+  sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+  const appendItemSpy = sinon.spy(UI.ContextMenu.Section.prototype, 'appendItem');
+  sourceText.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, cancelable: true}));
+
+  return appendItemSpy.getCalls().map(call => String(call.args[0]));
+}
 
 describeWithEnvironment('ShowMoreDetailsWidget', () => {
   it('updates view on text change', async () => {
@@ -29,6 +46,18 @@ describeWithEnvironment('ShowMoreDetailsWidget', () => {
 
     const input = await view.nextInput;
     assert.strictEqual(input.copy, copyHandler);
+  });
+
+  it('does not offer to show more when the text is not truncated', async () => {
+    const appendedItems = renderAndOpenContextMenu('some text');
+
+    assert.notInclude(appendedItems, 'Show more');
+  });
+
+  it('offers to show more when the text is truncated', async () => {
+    const appendedItems = renderAndOpenContextMenu('A'.repeat(3010));
+
+    assert.include(appendedItems, 'Show more');
   });
 
   it('toggles showMore state', async () => {

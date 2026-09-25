@@ -10,9 +10,11 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import {createTarget, deinitializeGlobalVars, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 
@@ -628,6 +630,62 @@ describeWithEnvironment('Inline variable view scope value resolution', () => {
                        10);
     assert.strictEqual(Sources.DebuggerPlugin.findVariableInScopeMappings('closureVar', 30, scopeMappings).value?.value,
                        20);
+  });
+});
+
+describeWithEnvironment('ScopeMappingsCache', () => {
+  const scopeMappings: Sources.DebuggerPlugin.ScopeMapping[] = [{scopeStart: 0, scopeEnd: 10, variableMap: new Map()}];
+
+  function setup() {
+    const {uiSourceCode} = createContentProviderUISourceCode(
+        {url: urlString`http://example.com/script.js`, mimeType: 'text/javascript', content: 'let x = 42;'});
+    const cache = new Sources.DebuggerPlugin.ScopeMappingsCache(uiSourceCode);
+    const compute = sinon.stub<[], Promise<Sources.DebuggerPlugin.ScopeMapping[]>>().resolves(scopeMappings);
+    const sdkFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+    const frame = StackTrace.StackTrace.DebuggableFrameFlavor.for({sdkFrame, line: 0, column: 0});
+    return {uiSourceCode, cache, compute, sdkFrame, frame};
+  }
+
+  it('computes the scope mappings once per frame', async () => {
+    const {cache, compute, frame} = setup();
+
+    assert.strictEqual(await cache.get(frame, compute), scopeMappings);
+    assert.strictEqual(await cache.get(frame, compute), scopeMappings);
+    sinon.assert.calledOnce(compute);
+  });
+
+  it('re-computes the scope mappings when the same SDK CallFrame gets re-translated', async () => {
+    const {cache, compute, sdkFrame, frame} = setup();
+    await cache.get(frame, compute);
+
+    // E.g. a source map got attached and the frame now points somewhere else.
+    const retranslatedFrame = StackTrace.StackTrace.DebuggableFrameFlavor.for({sdkFrame, line: 5, column: 2});
+    assert.notStrictEqual(retranslatedFrame, frame);
+    await cache.get(retranslatedFrame, compute);
+
+    sinon.assert.calledTwice(compute);
+  });
+
+  it('does not provide scope mappings while the UISourceCode has unsaved edits', async () => {
+    const {uiSourceCode, cache, compute, frame} = setup();
+    await cache.get(frame, compute);
+
+    uiSourceCode.setWorkingCopy('\n\n\nlet x = 42;');
+    assert.isNull(cache.get(frame, compute));
+
+    uiSourceCode.resetWorkingCopy();
+    assert.strictEqual(await cache.get(frame, compute), scopeMappings);
+    sinon.assert.calledOnce(compute);
+  });
+
+  it('re-computes the scope mappings after being cleared', async () => {
+    const {cache, compute, frame} = setup();
+    await cache.get(frame, compute);
+
+    cache.clear();
+    await cache.get(frame, compute);
+
+    sinon.assert.calledTwice(compute);
   });
 });
 

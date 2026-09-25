@@ -12,7 +12,7 @@ import {scopeTreeForScript} from './ScopeTreeCache.js';
 import type {Script} from './Script.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
 import {decodeRangeMappings} from './SourceMapRangeMappings.js';
-import {SourceMapScopesInfo, type TranslatedFrame} from './SourceMapScopesInfo.js';
+import {scriptRelativePosition, SourceMapScopesInfo, type TranslatedFrame} from './SourceMapScopesInfo.js';
 
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
@@ -850,8 +850,8 @@ export class SourceMap {
       return null;
     }
 
-    return this.#scopesInfo.resolveMappedVariablesAtPosition(location.lineNumber, location.columnNumber,
-                                                             ignoreInnerBlockScopes);
+    const {line, column} = scriptRelativePosition(location);
+    return this.#scopesInfo.resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes);
   }
 
   findOriginalFunctionName(position: ScopesCodec.Position): string|null {

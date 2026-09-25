@@ -270,18 +270,26 @@ export class MockDebuggerBackend {
   // start and end (if '<', '>' are missing then the nested scope is the function scope).
   // Other characters in |scopeDescriptor| are not significant (so that tests can use the other characters in
   // the descriptors to describe other assertions).
-  async createCallFrame(target: SDK.Target.Target, script: {url: string, content: string}, scopeDescriptor: string,
+  // Positions in |scopeDescriptor| are relative to the script content. For inline scripts (i.e. scripts with
+  // a `startLine` or `startColumn` but without a sourceURL), they are shifted into raw V8 positions, which
+  // are relative to the start of the surrounding document.
+  async createCallFrame(target: SDK.Target.Target, script: ScriptDescription, scopeDescriptor: string,
                         sourceMap: {url: string, content: string}|null,
                         scopeObjects: Protocol.Runtime.RemoteObject[] = [],
                         emptyScopes: boolean[] = []): Promise<SDK.DebuggerModel.CallFrame> {
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
     const scriptObject = await this.addScript(target, script, sourceMap);
 
+    const lineOffset = script.hasSourceURL ? 0 : script.startLine ?? 0;
+    const columnOffset = script.hasSourceURL ? 0 : script.startColumn ?? 0;
+    const toRawLine = (line: number): number => line + lineOffset;
+    const toRawColumn = (line: number, column: number): number => line === 0 ? column + columnOffset : column;
+
     const parsedScopes = parseScopeChain(scopeDescriptor);
     const scopeChain = parsedScopes.map(
-        s => this.#createProtocolScope(
-            s.type, {type: Protocol.Runtime.RemoteObjectType.Object}, scriptObject.scriptId, s.startLine, s.startColumn,
-            s.endLine, s.endColumn));
+        s => this.#createProtocolScope(s.type, {type: Protocol.Runtime.RemoteObjectType.Object}, scriptObject.scriptId,
+                                       toRawLine(s.startLine), toRawColumn(s.startLine, s.startColumn),
+                                       toRawLine(s.endLine), toRawColumn(s.endLine, s.endColumn)));
 
     const innerScope = scopeChain[0];
     console.assert(scopeObjects.length <= scopeChain.length);

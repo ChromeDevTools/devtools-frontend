@@ -8,7 +8,7 @@ import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/sou
 import type * as Platform from '../platform/platform.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 
-import type {CallFrame, Scope, ScopeChainEntry} from './DebuggerModel.js';
+import type {CallFrame, Location, Scope, ScopeChainEntry} from './DebuggerModel.js';
 import type {SourceMap} from './SourceMap.js';
 import {SourceMapScopeChainEntry} from './SourceMapScopeChainEntry.js';
 
@@ -389,8 +389,8 @@ export class SourceMapScopesInfo {
 
   /** Similar to #findGeneratedRangeChain, but takes inlineFrameIndex of virtual call frames into account */
   #findGeneratedRangeChainForFrame(callFrame: CallFrame): ScopesCodec.GeneratedRange[] {
-    const rangeChain =
-        this.#findGeneratedRangeChain(callFrame.location().lineNumber, callFrame.location().columnNumber);
+    const {line, column} = scriptRelativePosition(callFrame.location());
+    const rangeChain = this.#findGeneratedRangeChain(line, column);
     if (callFrame.inlineFrameIndex === 0) {
       return rangeChain;
     }
@@ -611,6 +611,18 @@ export function comparePositions(a: ScopesCodec.Position, b: ScopesCodec.Positio
   return a.column - b.column;
 }
 
+/**
+ * Converts a raw V8 {@link location} into a generated position relative to the start of its script.
+ *
+ * Positions in source maps (mappings and generated ranges) are relative to the start of the script,
+ * while V8 reports locations in inline `<script>`s (without `//# sourceURL`) relative to the start of
+ * the surrounding document.
+ */
+export function scriptRelativePosition(location: Location): ScopesCodec.Position {
+  const {lineNumber, columnNumber} = location.script()?.rawLocationToRelativeLocation(location) ?? location;
+  return {line: lineNumber, column: columnNumber};
+}
+
 function positionRange(callFrame: CallFrame, scope: Scope): {start: ScopesCodec.Position, end: ScopesCodec.Position}|
     null {
   const range = scope.range();
@@ -619,8 +631,8 @@ function positionRange(callFrame: CallFrame, scope: Scope): {start: ScopesCodec.
     return null;
   }
   return {
-    start: {line: range.start.lineNumber, column: range.start.columnNumber},
-    end: {line: range.end.lineNumber, column: range.end.columnNumber},
+    start: scriptRelativePosition(range.start),
+    end: scriptRelativePosition(range.end),
   };
 }
 

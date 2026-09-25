@@ -824,5 +824,47 @@ describe('CompilerScriptMapping', () => {
       assert.strictEqual(translatedFrames[0][1].uiSourceCode, uiSourceCode);
       assert.strictEqual(translatedFrames[0][2].uiSourceCode, uiSourceCode);
     });
+
+    it('expands inlined frames for inline scripts with line and column offsets', async () => {
+      const target = backend.createTarget();
+      const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
+          target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
+
+      // Same as above, but the generated code is an inline <script> at line 4, column 10 of the document.
+      // Raw V8 positions are relative to the document, while the source map is relative to the script.
+      const builder = new ScopesCodec.ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 14, {kind: 'function', name: 'inner', key: 'inner', isStackFrame: true})
+          .endScope(2, 1)
+          .startScope(4, 14, {kind: 'function', name: 'outer', key: 'outer', isStackFrame: true})
+          .endScope(8, 1)
+          .endScope(11, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'outer', callSite: {sourceIndex: 0, line: 10, column: 5}})
+          .startRange(0, 0, {scopeKey: 'inner', callSite: {sourceIndex: 0, line: 6, column: 9}})
+          .endRange(0, 14)
+          .endRange(0, 14)
+          .endRange(1, 0);
+
+      const sourceMap =
+          ScopesCodec.encode(builder.build(), encodeSourceMap(['0:5 => index.ts:1:7']) as ScopesCodec.SourceMapJson);
+      const script = await backend.addScript(
+          target, {url: 'http://example.com/index.html', content: 'print(\'hello\')', startLine: 4, startColumn: 10}, {
+            url: 'http://example.com/index.js.map',
+            content: sourceMap as SDK.SourceMap.SourceMapV3,
+          });
+
+      const translatedFrames:
+          Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1] = [];
+      assert.isTrue(await compilerScriptMapping.translateRawFramesStep(
+          [protocolCallFrame(`${script.sourceURL}:${script.scriptId}::4:15`)], translatedFrames));
+
+      assert.deepEqual(translatedFrames[0].map(stringifyFrame), [
+        'at inner (index.ts:1:7)',
+        'at outer (index.ts:6:9)',
+        'at <anonymous> (index.ts:10:5)',
+      ]);
+    });
   });
 });

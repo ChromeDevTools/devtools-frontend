@@ -1095,6 +1095,149 @@ function mulWithOffset(param1, param2, offset) {
       assert.strictEqual(substituted, 'a + b.val');
     });
   });
+
+  describe('inline scripts with line and column offsets', () => {
+    // V8 reports locations in inline <script>s (without `//# sourceURL`) relative to the surrounding
+    // document, while source maps and the script text are relative to the start of the script.
+    const INLINE_SCRIPT = {url: 'http://example.com/index.html', startLine: 4, startColumn: 10};
+    const sourceMapUrl = 'file:///tmp/example.js.min.map';
+
+    it('resolves the scope chain and binding expressions from source map scopes', async () => {
+      updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
+      const builder = new ScopesCodec.ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(
+              0, 10,
+              {kind: 'function', name: 'authoredFn', isStackFrame: true, variables: ['authoredParam'], key: 'fn'})
+          .startScope(1, 2, {kind: 'block', variables: ['authoredLocal'], key: 'block'})
+          .endScope(4, 3)
+          .endScope(5, 1)
+          .endScope(7, 0);
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 10, {scopeKey: 'fn', isStackFrame: true, values: ['o']})
+          .startRange(1, 2, {
+            scopeKey: 'block',
+            values: [[
+              {from: {line: 1, column: 2}, to: {line: 3, column: 0}, value: 'earlyB'},
+              {from: {line: 3, column: 0}, to: {line: 4, column: 3}, value: 'b'},
+            ]],
+          })
+          .endRange(4, 3)
+          .endRange(5, 1)
+          .endRange(7, 0);
+      const map =
+          ScopesCodec.encode(builder.build(), encodeSourceMap(['0:0 => index.js:0:0']) as ScopesCodec.SourceMapJson);
+
+      const source = [
+        'function f(o) {',
+        '  {',
+        '    let b = o + 1;',
+        '    console.log(b);',
+        '  }',
+        '}',
+        `//# sourceMappingURL=${sourceMapUrl}`,
+      ].join('\n');
+      const scopes = [
+        '          {',
+        '  <',
+        '',
+        '',
+        '  >',
+        '}',
+      ].join('\n');
+
+      const evaluations: Array<{expression: string, scopeNumber?: number}> = [];
+      backend.cdpConnection.setSuccessHandler('Debugger.evaluateOnCallFrame', ({expression, scopeNumber}) => {
+        evaluations.push({expression, scopeNumber});
+        return {result: backend.createSimpleRemoteObject([{name: '0', value: 42}])};
+      });
+
+      const callFrame = await backend.createCallFrame(target, {...INLINE_SCRIPT, content: source}, scopes,
+                                                      {url: sourceMapUrl, content: JSON.stringify(map)});
+      assert.deepEqual(callFrame.location().payload(),
+                       {scriptId: callFrame.script.scriptId, lineNumber: 5, columnNumber: 2});
+
+      const scopeChain =
+          await SourceMapScopes.NamesResolver.resolveScopeChain(callFrame, backend.universe.debuggerWorkspaceBinding);
+      assert.deepEqual(scopeChain.slice(0, 2).map(scope => [scope.type(), scope.name()]), [
+        [Protocol.Debugger.ScopeType.Block, undefined],
+        [Protocol.Debugger.ScopeType.Local, 'authoredFn'],
+      ]);
+
+      // Evaluates the binding expression for the paused position in the matching V8 scope.
+      await scopeChain[0].object().getAllProperties(false, false);
+      await scopeChain[1].object().getAllProperties(false, false);
+      assert.deepEqual(evaluations, [
+        {expression: '({__proto__: null, ...(() => { try { return {0: (earlyB)}; } catch {} })()})', scopeNumber: 0},
+        {expression: '({__proto__: null, ...(() => { try { return {0: (o)}; } catch {} })()})', scopeNumber: 1},
+      ]);
+
+      const expectedMappings = [
+        new Map([['authoredLocal', 'earlyB']]),
+        new Map([['authoredParam', 'o']]),
+        new Map(),
+      ];
+      assert.deepEqual(await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+                           callFrame, backend.universe.debuggerWorkspaceBinding),
+                       expectedMappings);
+      assert.deepEqual(await SourceMapScopes.NamesResolver.allVariablesAtPosition(
+                           callFrame.location(), backend.universe.debuggerWorkspaceBinding),
+                       expectedMappings);
+    });
+
+    it('resolves variable names from mappings', async () => {
+      // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map" --toplevel' v5.7.0.
+      const sourceMapContent = JSON.stringify({
+        version: 3,
+        names: ['f', 'par1', 'par2', 'console', 'log'],
+        sources: ['index.js'],
+        sourcesContent: ['function f(par1, par2) {\n  console.log(par1, par2);\n}\nf(1, 2);\n'],
+        mappings: 'AAAA,SAASA,EAAEC,EAAMC,GACfC,QAAQC,IAAIH,EAAMC,GAEpBF,EAAE,EAAG',
+      });
+
+      const source = `function o(o,n){console.log(o,n)}o(1,2);\n//# sourceMappingURL=${sourceMapUrl}`;
+      const scopes = '          {                     }';
+
+      const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 1}, {name: 'n', value: 2}]);
+      const callFrame = await backend.createCallFrame(target, {...INLINE_SCRIPT, content: source}, scopes,
+                                                      {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
+
+      const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(
+          callFrame.scopeChain()[0], backend.universe.debuggerWorkspaceBinding);
+      const properties = await resolvedScopeObject.getAllProperties(false, false);
+      const namesAndValues = properties.properties?.map(p => ({name: p.name, value: p.value?.value})) ?? [];
+      assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 1}, {name: 'par2', value: 2}]);
+
+      const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(
+          callFrame.location(), backend.universe.debuggerWorkspaceBinding);
+      assert.strictEqual(mapping[0].get('par1'), 'o');
+      assert.strictEqual(mapping[0].get('par2'), 'n');
+    });
+
+    it('resolves function names at scope start for debugger and profiler frames', async () => {
+      // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
+      const sourceMapContent = JSON.stringify({
+        version: 3,
+        names: ['unminified', 'par1', 'par2', 'console', 'log'],
+        sources: ['index.js'],
+        sourcesContent: ['function unminified(par1, par2) {\n  console.log(par1, par2);\n}\n'],
+        mappings: 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC',
+      });
+
+      const source = `function o(o,n){console.log(o,n)}o(1,2);\n//# sourceMappingURL=${sourceMapUrl}`;
+      const scopes = '          {                     }';
+
+      const callFrame = await backend.createCallFrame(target, {...INLINE_SCRIPT, content: source}, scopes,
+                                                      {url: sourceMapUrl, content: sourceMapContent});
+
+      assert.strictEqual(await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(callFrame), 'unminified');
+
+      const {scriptId, lineNumber, columnNumber} = callFrame.location();
+      assert.strictEqual(await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(
+                             {scriptId, lineNumber, columnNumber}, target, backend.universe.debuggerWorkspaceBinding),
+                         'unminified');
+    });
+  });
 });
 
 function getIdentifiersFromScopeDescriptor(source: string, scopeDescriptor: string): {

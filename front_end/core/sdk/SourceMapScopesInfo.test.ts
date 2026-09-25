@@ -1737,4 +1737,38 @@ describe('SourceMapScopesInfo', () => {
       ]);
     });
   });
+
+  describe('scriptRelativePosition', () => {
+    function createLocation(options: {lineOffset: number, columnOffset: number, hasSourceURL: boolean},
+                            lineNumber: number, columnNumber: number): SDK.DebuggerModel.Location {
+      const debuggerModel = universe.createTarget().model(SDK.DebuggerModel.DebuggerModel)!;
+      const script =
+          new SDK.Script.Script(debuggerModel, SCRIPT_ID, urlString`http://example.com/index.html`, options.lineOffset,
+                                options.columnOffset, options.lineOffset + 10, 0, 0, '', false, undefined,
+                                options.hasSourceURL, 0, null, null, null, null, null, null, null);
+      sinon.stub(debuggerModel, 'scriptForId').withArgs(SCRIPT_ID).returns(script);
+      return new SDK.DebuggerModel.Location(debuggerModel, SCRIPT_ID, lineNumber, columnNumber);
+    }
+
+    it('subtracts the line and column offset of inline scripts on the first line', () => {
+      const location = createLocation({lineOffset: 4, columnOffset: 10, hasSourceURL: false}, 4, 15);
+      assert.deepEqual(SDK.SourceMapScopesInfo.scriptRelativePosition(location), {line: 0, column: 5});
+    });
+
+    it('only subtracts the line offset of inline scripts on subsequent lines', () => {
+      const location = createLocation({lineOffset: 4, columnOffset: 10, hasSourceURL: false}, 6, 15);
+      assert.deepEqual(SDK.SourceMapScopesInfo.scriptRelativePosition(location), {line: 2, column: 15});
+    });
+
+    it('keeps the raw position for inline scripts with a sourceURL', () => {
+      const location = createLocation({lineOffset: 4, columnOffset: 10, hasSourceURL: true}, 6, 15);
+      assert.deepEqual(SDK.SourceMapScopesInfo.scriptRelativePosition(location), {line: 6, column: 15});
+    });
+
+    it('keeps the raw position if the script is unknown', () => {
+      const debuggerModel = universe.createTarget().model(SDK.DebuggerModel.DebuggerModel)!;
+      const location = new SDK.DebuggerModel.Location(debuggerModel, SCRIPT_ID, 6, 15);
+      assert.deepEqual(SDK.SourceMapScopesInfo.scriptRelativePosition(location), {line: 6, column: 15});
+    });
+  });
 });

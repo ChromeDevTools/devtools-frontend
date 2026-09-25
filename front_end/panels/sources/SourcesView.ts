@@ -74,7 +74,6 @@ const {widget, widgetRef} = UI.Widget;
 export interface ViewInput {
   searchProvider: UI.SearchableView.Searchable;
   replaceProvider: UI.SearchableView.Replaceable;
-  searchableViewId: string;
   scriptViewToolbarItems: UI.Toolbar.ToolbarItem[]|LitTemplate;
   isNavigatorSidebarOpen: boolean;
   isDebuggerSidebarOpen: boolean;
@@ -148,7 +147,8 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
     <style>${sourcesViewStyles}</style>
     <devtools-widget class="vbox flex-auto"
       ${widget(element => {
-        const searchableView = new UI.SearchableView.SearchableView(input.searchProvider, input.replaceProvider, input.searchableViewId, element);
+        const searchableView = new UI.SearchableView.SearchableView(
+            input.searchProvider, input.replaceProvider, 'sources-view-search-config', element);
         searchableView.setMinimalSearchQuerySize(0);
         return searchableView;
       })}
@@ -168,7 +168,7 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
       </devtools-widget>
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging.toolbar('bottom')}>
-      <devtools-toolbar class="script-view-toolbar" style="flex: auto;">
+      <devtools-toolbar class="script-view-toolbar">
         ${Array.isArray(input.scriptViewToolbarItems)
             ? input.scriptViewToolbarItems.map(item => item.element)
             : input.scriptViewToolbarItems}
@@ -280,7 +280,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     const input: ViewInput = {
       searchProvider: this,
       replaceProvider: this,
-      searchableViewId: 'sources-view-search-config',
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
       isNavigatorSidebarOpen: this.#isNavigatorSidebarOpen,
       isDebuggerSidebarOpen: this.#isDebuggerSidebarOpen,
@@ -308,7 +307,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       },
     };
 
-    this.#view(input, output, this.element);
+    this.#view(input, output, this.contentElement);
   }
 
   override onDetach(): void {

@@ -2396,6 +2396,12 @@ const evalExpression = defineStatefulDecoration();
 // Styling for plugin-local elements
 
 const theme = CodeMirror.EditorView.baseTheme({
+  '&.source-frame-debugger-script': {
+    backgroundColor: 'rgb(255 255 194 / 50%)',
+  },
+  '&dark.source-frame-debugger-script': {
+    backgroundColor: 'rgb(61 61 0 / 50%)',
+  },
   '.cm-line::selection': {
     backgroundColor: 'transparent',
     color: 'currentColor',

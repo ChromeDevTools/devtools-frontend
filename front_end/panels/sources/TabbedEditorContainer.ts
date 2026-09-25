@@ -103,8 +103,8 @@ interface TabInfo {
 export interface TabbedEditorViewInput {
   openTabs: TabInfo[];
   activeTabId?: string;
-  leftToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate>;
-  rightToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate>;
+  leftToolbarItems: LitTemplate[];
+  rightToolbarItems: LitTemplate[];
   tabDelegate: UI.TabbedPane.TabbedPaneTabDelegate;
   shortcuts: Array<{
     description: Platform.UIString.LocalizedString,
@@ -254,17 +254,17 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       @select=${input.onSelect}
     >
       <devtools-toolbar class="tabbed-pane-left-toolbar" slot="left">
-        ${input.leftToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+        ${input.leftToolbarItems}
       </devtools-toolbar>
       <devtools-toolbar class="tabbed-pane-right-toolbar" slot="right">
-        ${input.rightToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+        ${input.rightToolbarItems}
       </devtools-toolbar>
       ${repeat(input.openTabs, tab => tab.tabId, tab => html`
         <div id=${tab.tabId}
+             class="vbox flex-auto"
              title=${tab.title}
              ?closeable=${tab.isCloseable}
-             ?selected=${input.activeTabId === tab.tabId}
-             style="display: flex; flex: auto;">
+             ?selected=${input.activeTabId === tab.tabId}>
              ${renderTabIcon(tab)}
              ${renderTabSuffix(tab, input)}
              ${tab.widget ? html`${widget(UI.Widget.WrapperWidget, {widget: tab.widget})}` : nothing}
@@ -391,8 +391,8 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     this.#historyManager = historyManager;
   }
 
-  #leftToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate> = [];
-  set leftToolbarItems(items: Array<UI.Toolbar.ToolbarItem|LitTemplate>) {
+  #leftToolbarItems: LitTemplate[] = [];
+  set leftToolbarItems(items: LitTemplate[]) {
     if (this.#leftToolbarItems === items) {
       return;
     }
@@ -400,8 +400,8 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     this.#scheduleUpdate();
   }
 
-  #rightToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate> = [];
-  set rightToolbarItems(items: Array<UI.Toolbar.ToolbarItem|LitTemplate>) {
+  #rightToolbarItems: LitTemplate[] = [];
+  set rightToolbarItems(items: LitTemplate[]) {
     if (this.#rightToolbarItems === items) {
       return;
     }

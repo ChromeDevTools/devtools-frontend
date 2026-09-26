@@ -102,8 +102,8 @@ export interface ViewInput {
     onSelectStart: (x: number, y: number) => void;
     onSelect: (x: number, y: number) => void;
     onSelectEnd: (x?: number, y?: number) => void;
-    onModeChange: (axis: Axis, mode: Mode) => void;
-    onSelfChange: (axis: Axis, self: boolean) => void;
+    onModeChange: (mode: Mode) => void;
+    onSelfChange: (self: boolean) => void;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;

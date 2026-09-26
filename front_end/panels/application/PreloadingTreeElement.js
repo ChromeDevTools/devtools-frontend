@@ -8,15 +8,15 @@ import * as PreloadingHelper from './preloading/helper/helper.js';
 import { PreloadingAttemptView, PreloadingRuleSetView, PreloadingSummaryView } from './preloading/PreloadingView.js';
 const UIStrings = {
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Label for the speculative loads tree item in the sidebar of the Application panel.
      */
     speculativeLoads: 'Speculative loads',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Label for the rules child tree item under speculative loads in the sidebar of the Application panel.
      */
     rules: 'Rules',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Label for the speculations child tree item under speculative loads in the sidebar of the Application panel.
      */
     speculations: 'Speculations',
 };

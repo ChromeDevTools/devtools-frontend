@@ -554,15 +554,43 @@ export function rematchCommentAnchor(comment, root = document, cachedJslogElemen
 function isClippingOverflow(overflow) {
     return overflow === 'hidden' || overflow === 'auto' || overflow === 'scroll' || overflow === 'clip';
 }
+let clippingAncestorsCache = new WeakMap();
+/**
+ * Clears the cached clipping ancestor chains for elements.
+ * Called when DOM mutations or comment rematches occur.
+ */
+export function clearClippingAncestorsCache() {
+    clippingAncestorsCache = new WeakMap();
+}
+function getClippingAncestors(element, doc, win) {
+    const cached = clippingAncestorsCache.get(element);
+    if (cached && cached.every(item => item.element.isConnected)) {
+        return cached;
+    }
+    const ancestors = [];
+    let current = element.parentElementOrShadowHost();
+    while (current && current !== doc.documentElement && current !== doc.body) {
+        const style = win.getComputedStyle(current);
+        const clipsX = isClippingOverflow(style.overflowX);
+        const clipsY = isClippingOverflow(style.overflowY);
+        if (clipsX || clipsY) {
+            ancestors.push({ element: current, clipsX, clipsY });
+        }
+        current = current.parentElementOrShadowHost();
+    }
+    clippingAncestorsCache.set(element, ancestors);
+    return ancestors;
+}
 /**
  * Computes the visible viewport-relative bounding box of an element after clipping against
  * all ancestor scroll/overflow containers and viewport boundaries across shadow DOM roots.
  *
  * @param element The source DOM element.
  * @param targetRect Optional explicit bounding box (e.g. for sub-lines or custom targets).
+ * @param rectCache Optional per-frame cache of element bounding client rects to avoid redundant queries.
  * @returns The clipped viewport-relative rectangle or null if the element is completely clipped out of view or invisible.
  */
-export function computeVisibleRect(element, targetRect) {
+export function computeVisibleRect(element, targetRect, rectCache) {
     if (!element.isConnected) {
         return null;
     }
@@ -588,26 +616,24 @@ export function computeVisibleRect(element, targetRect) {
     if (visibleLeft >= visibleRight || visibleTop >= visibleBottom) {
         return null;
     }
-    let current = element.parentElementOrShadowHost();
-    while (current && current !== doc.documentElement && current !== doc.body) {
-        const style = win.getComputedStyle(current);
-        const clipsX = isClippingOverflow(style.overflowX);
-        const clipsY = isClippingOverflow(style.overflowY);
-        if (clipsX || clipsY) {
-            const parentRect = current.getBoundingClientRect();
-            if (clipsX) {
-                visibleLeft = Math.max(visibleLeft, parentRect.left);
-                visibleRight = Math.min(visibleRight, parentRect.right);
-            }
-            if (clipsY) {
-                visibleTop = Math.max(visibleTop, parentRect.top);
-                visibleBottom = Math.min(visibleBottom, parentRect.bottom);
-            }
-            if (visibleLeft >= visibleRight || visibleTop >= visibleBottom) {
-                return null;
-            }
+    const clippingAncestors = getClippingAncestors(element, doc, win);
+    for (const { element: ancestor, clipsX, clipsY } of clippingAncestors) {
+        let parentRect = rectCache?.get(ancestor);
+        if (!parentRect) {
+            parentRect = ancestor.getBoundingClientRect();
+            rectCache?.set(ancestor, parentRect);
         }
-        current = current.parentElementOrShadowHost();
+        if (clipsX) {
+            visibleLeft = Math.max(visibleLeft, parentRect.left);
+            visibleRight = Math.min(visibleRight, parentRect.right);
+        }
+        if (clipsY) {
+            visibleTop = Math.max(visibleTop, parentRect.top);
+            visibleBottom = Math.min(visibleBottom, parentRect.bottom);
+        }
+        if (visibleLeft >= visibleRight || visibleTop >= visibleBottom) {
+            return null;
+        }
     }
     const width = visibleRight - visibleLeft;
     const height = visibleBottom - visibleTop;

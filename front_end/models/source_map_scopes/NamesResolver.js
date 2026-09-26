@@ -89,9 +89,11 @@ export async function findScopeChainForDebuggerScope(scope) {
     }
     const { scopeTree, text } = scopeTreeAndText;
     // Compute the offset within the scope tree coordinate space.
+    const start = script.rawLocationToRelativeLocation(startLocation);
+    const end = script.rawLocationToRelativeLocation(endLocation);
     const scopeOffsets = {
-        start: text.offsetFromPosition(startLocation.lineNumber, startLocation.columnNumber),
-        end: text.offsetFromPosition(endLocation.lineNumber, endLocation.columnNumber),
+        start: text.offsetFromPosition(start.lineNumber, start.columnNumber),
+        end: text.offsetFromPosition(end.lineNumber, end.columnNumber),
     };
     return findScopeChain(scopeTree, scopeOffsets);
 }
@@ -394,7 +396,8 @@ export const allVariablesAtPosition = async (location, debuggerWorkspaceBinding)
         return reverseMapping;
     }
     const { scopeTree, text } = scopeTreeAndText;
-    const locationOffset = text.offsetFromPosition(location.lineNumber, location.columnNumber);
+    const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(location);
+    const locationOffset = text.offsetFromPosition(lineNumber, columnNumber);
     const scopeChain = findScopeChain(scopeTree, { start: locationOffset, end: locationOffset });
     while (scopeChain.length > 0) {
         const { variableMapping } = await resolveScope(script, scopeChain, debuggerWorkspaceBinding);
@@ -600,7 +603,7 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
  * start or if the function scope does not start with a left paren (e.g., arrow
  * function with one parameter), the resolution returns null.
  **/
-async function getFunctionNameFromScopeStart(script, lineNumber, columnNumber) {
+async function getFunctionNameFromScopeStart(script, rawLineNumber, rawColumnNumber) {
     // To reduce the overhead of resolving function names,
     // we check for source maps first and immediately leave
     // this function if the script doesn't have a sourcemap.
@@ -608,6 +611,9 @@ async function getFunctionNameFromScopeStart(script, lineNumber, columnNumber) {
     if (!sourceMap) {
         return null;
     }
+    // The source map and the script text are relative to the start of the script, whereas
+    // raw V8 positions in inline scripts are relative to the start of the document.
+    const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation({ lineNumber: rawLineNumber, columnNumber: rawColumnNumber });
     const scopeName = sourceMap.findOriginalFunctionName({ line: lineNumber, column: columnNumber });
     if (scopeName !== null) {
         return scopeName;

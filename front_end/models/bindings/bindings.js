@@ -577,7 +577,7 @@ var CompilerScriptMapping = class {
       return false;
     }
     const { sourceMap, script } = sourceMapAndScript;
-    const { lineNumber, columnNumber } = script.relativeLocationToRawLocation(frame);
+    const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(frame);
     if (!sourceMap.isOutlinedFrame(lineNumber, columnNumber)) {
       const frames = sourceMap.translateCallSite(lineNumber, columnNumber);
       if (!frames.length) {

@@ -3109,9 +3109,11 @@ async function findScopeChainForDebuggerScope(scope) {
     return [];
   }
   const { scopeTree, text } = scopeTreeAndText;
+  const start = script.rawLocationToRelativeLocation(startLocation);
+  const end = script.rawLocationToRelativeLocation(endLocation);
   const scopeOffsets = {
-    start: text.offsetFromPosition(startLocation.lineNumber, startLocation.columnNumber),
-    end: text.offsetFromPosition(endLocation.lineNumber, endLocation.columnNumber)
+    start: text.offsetFromPosition(start.lineNumber, start.columnNumber),
+    end: text.offsetFromPosition(end.lineNumber, end.columnNumber)
   };
   return findScopeChain(scopeTree, scopeOffsets);
 }
@@ -3373,7 +3375,8 @@ var allVariablesAtPosition = async (location, debuggerWorkspaceBinding) => {
     return reverseMapping;
   }
   const { scopeTree, text } = scopeTreeAndText;
-  const locationOffset = text.offsetFromPosition(location.lineNumber, location.columnNumber);
+  const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(location);
+  const locationOffset = text.offsetFromPosition(lineNumber, columnNumber);
   const scopeChain = findScopeChain(scopeTree, { start: locationOffset, end: locationOffset });
   while (scopeChain.length > 0) {
     const { variableMapping } = await resolveScope(script, scopeChain, debuggerWorkspaceBinding);
@@ -3574,11 +3577,12 @@ var RemoteObject2 = class extends SDK2.RemoteObject.RemoteObject {
     return this.object.isNode();
   }
 };
-async function getFunctionNameFromScopeStart(script, lineNumber, columnNumber) {
+async function getFunctionNameFromScopeStart(script, rawLineNumber, rawColumnNumber) {
   const sourceMap = script.sourceMap();
   if (!sourceMap) {
     return null;
   }
+  const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation({ lineNumber: rawLineNumber, columnNumber: rawColumnNumber });
   const scopeName = sourceMap.findOriginalFunctionName({ line: lineNumber, column: columnNumber });
   if (scopeName !== null) {
     return scopeName;

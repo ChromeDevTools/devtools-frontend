@@ -281,7 +281,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     static updateResizerAndSidebarButtons(panel) {
         const isInWrapper = Boolean(UI.Context.Context.instance().flavor(QuickSourceView)) &&
             !UI.InspectorView.InspectorView.instance().isDrawerMinimized();
-        panel.#sourcesView.setLayoutMode(panel.splitWidget, panel.splitWidget.isVertical(), isInWrapper);
+        panel.#sourcesView.setLayoutMode(panel.splitWidget.isVertical(), isInWrapper);
     }
     targetAdded(_target) {
         this.showThreadsIfNeeded();

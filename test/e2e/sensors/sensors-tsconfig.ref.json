@@ -13,6 +13,7 @@
     "skipLibCheck": true
   },
   "files": [
+    "../../../../../../test/e2e/sensors/emulate-cpu-performance.test.ts",
     "../../../../../../test/e2e/sensors/emulate-hardware-concurrency.test.ts",
     "../../../../../../test/e2e/sensors/helpers.ts",
     "../../../../../../test/e2e/sensors/idle.test.ts",

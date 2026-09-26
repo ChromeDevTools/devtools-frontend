@@ -231,9 +231,6 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         this.performUpdate();
     }
     performUpdate() {
-        if (false) {
-            return;
-        }
         const shortcuts = [
             { actionId: 'quick-open.show', description: i18nString(UIStrings.openFile) },
             { actionId: 'quick-open.show-command-menu', description: i18nString(UIStrings.runCommand) },

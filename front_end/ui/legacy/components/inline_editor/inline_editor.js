@@ -2772,6 +2772,7 @@ __export(PositionAreaEditor_exports, {
 import * as Common5 from "../../../../core/common/common.js";
 import * as i18n7 from "../../../../core/i18n/i18n.js";
 import * as Lit7 from "../../../lit/lit.js";
+import * as VisualLogging9 from "../../../visual_logging/visual_logging.js";
 import * as UI6 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/inline_editor/positionAreaEditor.css.js
@@ -2949,21 +2950,9 @@ var UIStrings4 = {
    */
   positionAreaGrid: "position-area grid",
   /**
-   * @description Title for the block axis section in the position-area editor.
+   * @description Title for the mode section and accessible label for the mode radio button group in the position-area editor.
    */
-  block: "Block",
-  /**
-   * @description Title for the inline axis section in the position-area editor.
-   */
-  inline: "Inline",
-  /**
-   * @description Accessible label for the block axis mode radio button group.
-   */
-  blockAxisMode: "Block axis mode",
-  /**
-   * @description Accessible label for the inline axis mode radio button group.
-   */
-  inlineAxisMode: "Inline axis mode",
+  mode: "Mode",
   /**
    * @description Label for physical mode radio button in the position-area editor.
    */
@@ -3172,7 +3161,8 @@ function stringifyPositionArea(area) {
 var DEFAULT_VIEW = (input, output, target) => {
   const container = {
     attributes: {
-      tabindex: "0"
+      tabindex: "0",
+      jslog: `${VisualLogging9.dialog("position-area-editor").parent("mapped").track({ keydown: "Enter|Escape" })}`
     }
   };
   if (!input.area) {
@@ -3329,32 +3319,37 @@ var DEFAULT_VIEW = (input, output, target) => {
   const propertyValue = stringifyPositionArea(input.area);
   const blockAxis = input.area.primaryAxis === "block" /* BLOCK */ ? input.area.first : input.area.second;
   const inlineAxis = input.area.primaryAxis === "inline" /* INLINE */ ? input.area.first : input.area.second;
-  function renderModeRadioGroup(axis, currentMode) {
+  const currentMode = blockAxis.mode === inlineAxis.mode ? blockAxis.mode : void 0;
+  const selfDisabled = (isGeneric(blockAxis) || blockAxis.mode === "physical" /* PHYSICAL */) && (isGeneric(inlineAxis) || inlineAxis.mode === "physical" /* PHYSICAL */);
+  const selfIndeterminate = !isGeneric(blockAxis) && !isGeneric(inlineAxis) && blockAxis.self !== inlineAxis.self;
+  const selfChecked = !selfIndeterminate && (blockAxis.self || inlineAxis.self);
+  function renderModeRadioGroup(currentMode2) {
     const modes = [
       { mode: "physical" /* PHYSICAL */, label: i18nString4(UIStrings4.physical) },
       { mode: "coordinate" /* COORDINATE */, label: i18nString4(UIStrings4.coordinate) },
       { mode: "logical" /* LOGICAL */, label: i18nString4(UIStrings4.logical) },
       { mode: "auto" /* AUTO */, label: i18nString4(UIStrings4.auto) }
     ];
-    const axisModeLabel = axis === "block" /* BLOCK */ ? i18nString4(UIStrings4.blockAxisMode) : i18nString4(UIStrings4.inlineAxisMode);
     return html7`
-      <fieldset class="chip-radio-group" aria-label=${axisModeLabel}>
+      <fieldset class="chip-radio-group" aria-label=${i18nString4(UIStrings4.mode)}>
         ${modes.map(({ mode, label }) => {
-      const id = `${axis}-mode-${mode}`;
+      const id = `mode-${mode}`;
       return html7`
-            <input
-              type="radio"
-              id=${id}
-              name="${axis}-mode"
-              value=${mode}
-              .checked=${currentMode === mode}
-              @change=${() => input.onModeChange(axis, mode)}
-            >
-            <label for=${id}>${label}</label>
-          `;
+                <input
+                  type="radio"
+                  id=${id}
+                  name="mode"
+                  value=${mode}
+                  .checked=${currentMode2 === mode}
+                  @change=${() => input.onModeChange(mode)}
+                >
+                <label
+                  for=${id}
+                  jslog=${VisualLogging9.toggle(mode).track({ click: true })}
+                >${label}</label>
+              `;
     })}
-      </fieldset>
-    `;
+      </fieldset>`;
   }
   render7(
     html7`
@@ -3370,6 +3365,7 @@ var DEFAULT_VIEW = (input, output, target) => {
         aria-label=${i18nString4(UIStrings4.positionAreaGrid)}
         aria-description=${i18nString4(UIStrings4.positionAreaGridDescription)}
         aria-multiselectable="true"
+        jslog=${VisualLogging9.canvas("position-area-grid").track({ click: true, drag: true, keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space" })}
         data-x-start=${x.start} data-x-end=${x.end} data-y-start=${y.start} data-y-end=${y.end}
         @pointerdown=${onPointerDown}
         @pointermove=${onPointerMove}
@@ -3397,27 +3393,17 @@ var DEFAULT_VIEW = (input, output, target) => {
     <div class=position-area-controls>
       <div class=axis-section>
         <div class=axis-header>
-          <span class=axis-title>${i18nString4(UIStrings4.block)}</span>
+          <span class=axis-title>${i18nString4(UIStrings4.mode)}</span>
           <devtools-checkbox
-            .checked=${blockAxis.self}
-            ?disabled=${isGeneric(blockAxis)}
-            @change=${(e) => input.onSelfChange("block" /* BLOCK */, e.target.checked)}>
+            .checked=${selfChecked}
+            .indeterminate=${selfIndeterminate}
+            ?disabled=${selfDisabled}
+            jslog=${VisualLogging9.toggle("self").track({ change: true })}
+            @change=${(e) => input.onSelfChange(e.target.checked)}>
             <span class="self-checkbox-label source-code">self</span>
           </devtools-checkbox>
         </div>
-        ${renderModeRadioGroup("block" /* BLOCK */, blockAxis.mode)}
-      </div>
-      <div class=axis-section>
-        <div class=axis-header>
-          <span class=axis-title>${i18nString4(UIStrings4.inline)}</span>
-          <devtools-checkbox
-            .checked=${inlineAxis.self}
-            ?disabled=${isGeneric(inlineAxis)}
-            @change=${(e) => input.onSelfChange("inline" /* INLINE */, e.target.checked)}>
-            <span class="self-checkbox-label source-code">self</span>
-          </devtools-checkbox>
-        </div>
-        ${renderModeRadioGroup("inline" /* INLINE */, inlineAxis.mode)}
+        ${renderModeRadioGroup(currentMode)}
       </div>
     </div>
     `,
@@ -3533,10 +3519,10 @@ var PositionAreaEditor = class extends PositionAreaEditorBase {
           other.mode = mode === "coordinate" /* COORDINATE */ ? "coordinate" /* COORDINATE */ : other.self ? "coordinate" /* COORDINATE */ : "physical" /* PHYSICAL */;
         }
       } else {
+        const self = current.self || other.self;
+        current.self = !isGeneric(current) && self;
         other.mode = mode;
-        if (!isGeneric(current)) {
-          other.self = current.self;
-        }
+        other.self = !isGeneric(other) && self;
       }
     } else {
       other.mode = mode;
@@ -3580,8 +3566,14 @@ var PositionAreaEditor = class extends PositionAreaEditorBase {
         onSelectStart: this.#startSelection.bind(this),
         onSelect: this.#select.bind(this),
         onSelectEnd: this.#finishSelection.bind(this),
-        onModeChange: this.#setAxisMode.bind(this),
-        onSelfChange: this.#setAxisSelf.bind(this)
+        onModeChange: (mode) => {
+          this.#setAxisMode("block" /* BLOCK */, mode);
+          this.#setAxisMode("inline" /* INLINE */, mode);
+        },
+        onSelfChange: (self) => {
+          this.#setAxisSelf("block" /* BLOCK */, self);
+          this.#setAxisSelf("inline" /* INLINE */, self);
+        }
       },
       void 0,
       this.contentElement
@@ -3653,7 +3645,7 @@ __export(SwatchPopoverHelper_exports, {
 });
 import * as Common6 from "../../../../core/common/common.js";
 import * as Platform8 from "../../../../core/platform/platform.js";
-import * as VisualLogging9 from "../../../visual_logging/visual_logging.js";
+import * as VisualLogging10 from "../../../visual_logging/visual_logging.js";
 import * as UI7 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/inline_editor/swatchPopover.css.js
@@ -3724,7 +3716,7 @@ var SwatchPopoverHelper = class extends Common6.ObjectWrapper.ObjectWrapper {
       }
       this.hide(true);
     }
-    VisualLogging9.setMappedParent(view.contentElement, anchorElement);
+    VisualLogging10.setMappedParent(view.contentElement, anchorElement);
     this.popover.registerRequiredCSS(swatchPopover_css_default);
     this.dispatchEventToListeners("WillShowPopover" /* WILL_SHOW_POPOVER */);
     this.isHidden = false;

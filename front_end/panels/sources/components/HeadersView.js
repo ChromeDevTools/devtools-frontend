@@ -1,8 +1,6 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
@@ -14,7 +12,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import headersViewStyles from './HeadersView.css.js';
-const { html } = Lit;
+const { html, Directives: { ref } } = Lit;
 const UIStrings = {
     /**
      * @description The title of a button that adds a field to input a header in the editor form.
@@ -51,20 +49,53 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/components/HeadersView.
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const DEFAULT_HEADER_VALUE = 'header value';
 const getDefaultHeaderName = (i) => `header-name-${i}`;
+// clang-format off
+export const HEADERS_VIEW_DEFAULT_VIEW = (input, output, target) => {
+    Lit.render(html `
+    <devtools-sources-headers-view
+      .data=${input.data}
+      ${ref(el => {
+        if (el) {
+            output.component = el;
+        }
+    })}
+    ></devtools-sources-headers-view>
+  `, target);
+};
+// clang-format on
 export class HeadersView extends UI.View.SimpleView {
-    #headersViewComponent = new HeadersViewComponent();
+    #headersViewComponent;
     #uiSourceCode;
-    constructor(uiSourceCode) {
+    #view;
+    #componentData;
+    constructor(uiSourceCode, view = HEADERS_VIEW_DEFAULT_VIEW) {
         super({
             title: i18n.i18n.lockedString('HeadersView'),
             viewId: 'headers-view',
             jslog: `${VisualLogging.pane('headers-view')}`,
         });
+        this.#view = view;
         this.#uiSourceCode = uiSourceCode;
+        this.#componentData = {
+            headerOverrides: [],
+            uiSourceCode: this.#uiSourceCode,
+            parsingError: false,
+        };
         this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);
         this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#onWorkingCopyCommitted, this);
-        this.element.appendChild(this.#headersViewComponent);
+        this.performUpdate();
         void this.#setInitialData();
+    }
+    performUpdate() {
+        const that = this;
+        const output = {
+            set component(value) {
+                if (value) {
+                    that.#headersViewComponent = value;
+                }
+            },
+        };
+        this.#view({ data: this.#componentData }, output, this.contentElement);
     }
     async #setInitialData() {
         const contentDataOrError = await this.#uiSourceCode.requestContentData();
@@ -84,11 +115,12 @@ export class HeadersView extends UI.View.SimpleView {
             console.error('Failed to parse', this.#uiSourceCode.url(), 'for locally overriding headers.');
             parsingError = true;
         }
-        this.#headersViewComponent.data = {
+        this.#componentData = {
             headerOverrides,
             uiSourceCode: this.#uiSourceCode,
             parsingError,
         };
+        this.performUpdate();
     }
     #onWorkingCopyChanged() {
         this.#setComponentData(this.#uiSourceCode.workingCopy());
@@ -280,7 +312,7 @@ export class HeadersViewComponent extends HTMLElement {
                 return;
             }
             range.deleteContents();
-            const textNode = document.createTextNode(text);
+            const textNode = new Text(text);
             range.insertNode(textNode);
             range.selectNodeContents(textNode);
             range.collapse(false);
@@ -294,110 +326,21 @@ export class HeadersViewComponent extends HTMLElement {
         if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
             throw new Error('HeadersView render was not scheduled');
         }
-        if (this.#parsingError) {
-            const fileName = this.#uiSourceCode?.name() || '.headers';
-            // clang-format off
-            Lit.render(html `
-        <style>${headersViewStyles}</style>
-        <div class="center-wrapper">
-          <div class="centered">
-            <div class="error-header">${i18nString(UIStrings.errorWhenParsing, { PH1: fileName })}</div>
-            <div class="error-body">${i18nString(UIStrings.parsingErrorExplainer, { PH1: fileName })}</div>
-          </div>
-        </div>
-      `, this.#shadow, { host: this });
-            // clang-format on
-            return;
-        }
-        // clang-format off
-        Lit.render(html `
-      <style>${headersViewStyles}</style>
-      ${this.#headerOverrides.map((headerOverride, blockIndex) => html `
-          ${this.#renderApplyToRow(headerOverride.applyTo, blockIndex)}
-          ${headerOverride.headers.map((header, headerIndex) => html `
-              ${this.#renderHeaderRow(header, blockIndex, headerIndex)}
-            `)}
-        `)}
-      <devtools-button
-          .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
-          .jslogContext=${'headers-view.add-override-rule'}
-          class="add-block">
-        ${i18nString(UIStrings.addOverrideRule)}
-      </devtools-button>
-      <div class="learn-more-row">
-        <devtools-link
-            href="https://goo.gle/devtools-override"
-            class="link"
-            jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>
-      </div>
-    `, this.#shadow, { host: this });
-        // clang-format on
+        const output = {};
+        DEFAULT_VIEW({
+            headerOverrides: this.#headerOverrides,
+            parsingError: this.#parsingError,
+            fileName: this.#uiSourceCode?.name() || '.headers',
+            isDeletable: (blockIndex, headerIndex) => this.#isDeletable(blockIndex, headerIndex),
+        }, output, this.#shadow);
         if (this.#focusElement) {
-            let focusElement = null;
-            if (this.#focusElement.headerIndex) {
-                focusElement = this.#shadow.querySelector(`[data-block-index="${this.#focusElement.blockIndex}"][data-header-index="${this.#focusElement.headerIndex}"] .header-name`);
-            }
-            else {
-                focusElement = this.#shadow.querySelector(`[data-block-index="${this.#focusElement.blockIndex}"] .apply-to`);
-            }
-            if (focusElement) {
-                focusElement.focus();
-            }
+            output.focusElement?.(this.#focusElement.blockIndex, this.#focusElement.headerIndex);
             this.#focusElement = null;
         }
     }
-    #renderApplyToRow(pattern, blockIndex) {
-        // clang-format off
-        return html `
-      <div class="row" data-block-index=${blockIndex}
-           jslog=${VisualLogging.treeItem(pattern === '*' ? pattern : undefined).track({ resize: true })}>
-        <div>${i18n.i18n.lockedString('Apply to')}</div>
-        <div class="separator">:</div>
-        ${this.#renderEditable(pattern, 'apply-to')}
-        <devtools-button
-        title=${i18nString(UIStrings.removeBlock)}
-        .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
-        .iconName=${'bin'}
-        .iconWidth=${'14px'}
-        .iconHeight=${'14px'}
-        .variant=${"icon" /* Buttons.Button.Variant.ICON */}
-        .jslogContext=${'headers-view.remove-apply-to-section'}
-        class="remove-block inline-button"
-      ></devtools-button>
-      </div>
-    `;
-        // clang-format on
-    }
-    #renderHeaderRow(header, blockIndex, headerIndex) {
-        // clang-format off
-        return html `
-      <div class="row padded" data-block-index=${blockIndex} data-header-index=${headerIndex}
-           jslog=${VisualLogging.treeItem(header.name).parent('headers-editor-row-parent').track({ resize: true })}>
-        ${this.#renderEditable(header.name, 'header-name red', true)}
-        <div class="separator">:</div>
-        ${this.#renderEditable(header.value, 'header-value')}
-        <devtools-button
-          title=${i18nString(UIStrings.addHeader)}
-          .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
-          .iconName=${'plus'}
-          .variant=${"icon" /* Buttons.Button.Variant.ICON */}
-          .jslogContext=${'headers-view.add-header'}
-          class="add-header inline-button"
-        ></devtools-button>
-        <devtools-button
-          title=${i18nString(UIStrings.removeHeader)}
-          .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
-          .iconName=${'bin'}
-          .variant=${"icon" /* Buttons.Button.Variant.ICON */}
-          ?hidden=${!this.#isDeletable(blockIndex, headerIndex)}
-          .jslogContext=${'headers-view.remove-header'}
-          class="remove-header inline-button"
-        ></devtools-button>
-      </div>
-    `;
-        // clang-format on
-    }
-    #renderEditable(value, className, isKey) {
+}
+export const DEFAULT_VIEW = (input, output, target) => {
+    const renderEditable = (value, className, isKey) => {
         // This uses Lit's `live`-directive, so that when checking whether to
         // update during re-render, `value` is compared against the actual live DOM
         // value of the contenteditable element and not the potentially outdated
@@ -410,8 +353,100 @@ export class HeadersViewComponent extends HTMLElement {
                               tabindex="0"
                               .innerText=${Lit.Directives.live(value)}></span>`;
         // clang-format on
-    }
-}
+    };
+    const renderApplyToRow = (pattern, blockIndex) => {
+        // clang-format off
+        return html `
+      <div class="row" data-block-index=${blockIndex}
+           jslog=${VisualLogging.treeItem(pattern === '*' ? pattern : undefined).track({ resize: true })}>
+        <div>${i18n.i18n.lockedString('Apply to')}</div>
+        <div class="separator">:</div>
+        ${renderEditable(pattern, 'apply-to')}
+        <devtools-button
+          title=${i18nString(UIStrings.removeBlock)}
+          .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+          .iconName=${'bin'}
+          .iconWidth=${'14px'}
+          .iconHeight=${'14px'}
+          .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+          .jslogContext=${'headers-view.remove-apply-to-section'}
+          class="remove-block inline-button"
+        ></devtools-button>
+      </div>
+    `;
+        // clang-format on
+    };
+    const renderHeaderRow = (header, blockIndex, headerIndex) => {
+        // clang-format off
+        return html `
+          <div class="row padded" data-block-index=${blockIndex} data-header-index=${headerIndex}
+               jslog=${VisualLogging.treeItem(header.name).parent('headers-editor-row-parent').track({ resize: true })}>
+            ${renderEditable(header.name, 'header-name red', true)}
+            <div class="separator">:</div>
+            ${renderEditable(header.value, 'header-value')}
+            <devtools-button
+              title=${i18nString(UIStrings.addHeader)}
+              .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+              .iconName=${'plus'}
+              .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+              .jslogContext=${'headers-view.add-header'}
+              class="add-header inline-button"
+            ></devtools-button>
+            <devtools-button
+              title=${i18nString(UIStrings.removeHeader)}
+              .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+              .iconName=${'bin'}
+              .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+              ?hidden=${!input.isDeletable(blockIndex, headerIndex)}
+              .jslogContext=${'headers-view.remove-header'}
+              class="remove-header inline-button"
+            ></devtools-button>
+          </div>
+        `;
+        // clang-format on
+    };
+    // clang-format off
+    Lit.render(input.parsingError
+        ? html `
+              <style>${headersViewStyles}</style>
+              <div class="center-wrapper">
+                <div class="centered">
+                  <div class="error-header">${i18nString(UIStrings.errorWhenParsing, { PH1: input.fileName })}</div>
+                  <div class="error-body">${i18nString(UIStrings.parsingErrorExplainer, { PH1: input.fileName })}</div>
+                </div>
+              </div>
+            `
+        : html `
+              <style>${headersViewStyles}</style>
+              ${input.headerOverrides.map((headerOverride, blockIndex) => html `
+                  ${renderApplyToRow(headerOverride.applyTo, blockIndex)}
+                  ${headerOverride.headers.map((header, headerIndex) => html `
+                      ${renderHeaderRow(header, blockIndex, headerIndex)}
+                    `)}
+                `)}
+              <devtools-button
+                  .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+                  .jslogContext=${'headers-view.add-override-rule'}
+                  class="add-block">
+                ${i18nString(UIStrings.addOverrideRule)}
+              </devtools-button>
+              <div class="learn-more-row">
+                <devtools-link
+                    href="https://goo.gle/devtools-override"
+                    class="link"
+                    jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>
+              </div>
+            `, target);
+    // clang-format on
+    output.focusElement = (blockIndex, headerIndex) => {
+        const focusElement = headerIndex !== undefined ?
+            target.querySelector(`[data-block-index="${blockIndex}"][data-header-index="${headerIndex}"] .header-name`) :
+            target.querySelector(`[data-block-index="${blockIndex}"] .apply-to`);
+        if (focusElement) {
+            focusElement.focus();
+        }
+    };
+};
 VisualLogging.registerParentProvider('headers-editor-row-parent', (e) => {
     while (e.previousElementSibling?.classList?.contains('padded')) {
         e = e.previousElementSibling;

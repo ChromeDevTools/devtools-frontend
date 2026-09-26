@@ -1580,15 +1580,17 @@ var fontId = 0;
 // ../../front_end/ui/legacy/components/source_frame/ImageView.ts
 var ImageView_exports = {};
 __export(ImageView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   ImageView: () => ImageView
 });
+import "../../../kit/kit.js";
 import * as Common3 from "../../../../core/common/common.js";
 import * as Host2 from "../../../../core/host/host.js";
 import * as i18n7 from "../../../../core/i18n/i18n.js";
 import * as Platform2 from "../../../../core/platform/platform.js";
 import * as TextUtils7 from "../../../../core/text_utils/text_utils.js";
 import * as Workspace from "../../../../models/workspace/workspace.js";
-import { createIcon } from "../../../kit/kit.js";
+import { html as html2, render as render3 } from "../../../lit/lit.js";
 import * as VisualLogging3 from "../../../visual_logging/visual_logging.js";
 import * as UI5 from "../../legacy.js";
 
@@ -1680,6 +1682,40 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/components/source_frame/ImageView.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  render3(html2`
+    <style>${imageView_css_default}</style>
+    <div class="image">
+      ${input.imageSrc ? html2`
+        <img
+          class="resource-image-view"
+          src=${input.imageSrc}
+          alt=${i18nString4(UIStrings4.imageFromS, { PH1: input.url })}
+          @load=${input.onImageLoad}
+          @contextmenu=${{ handleEvent: input.onContextMenu, capture: true }}
+        >` : html2`
+        <img
+          class="resource-image-view"
+          alt=${i18nString4(UIStrings4.imageFromS, { PH1: input.url })}
+          hidden
+        >`}
+      <devtools-link
+        class="resource-image-unavailable ${input.isUnavailable ? "" : "hidden"}"
+        href=${input.url}
+      >
+        <devtools-icon name="open-externally"></devtools-icon>
+        ${i18nString4(UIStrings4.thisImageIsTooBig)}
+      </devtools-link>
+    </div>
+  `, target, {
+    container: {
+      classes: ["image-view"],
+      attributes: {
+        tabindex: "-1"
+      }
+    }
+  });
+};
 var ImageView = class extends UI5.View.SimpleView {
   url;
   parsedURL;
@@ -1689,19 +1725,18 @@ var ImageView = class extends UI5.View.SimpleView {
   dimensionsLabel;
   aspectRatioLabel;
   mimeTypeLabel;
-  container;
-  imagePreviewElement;
-  imageUnavailableElement;
   cachedContent;
-  constructor(mimeType, contentProvider) {
+  #view;
+  #imageSrc = null;
+  #isUnavailable = false;
+  #loadResolve;
+  constructor(mimeType, contentProvider, view = DEFAULT_VIEW2) {
     super({
       title: i18nString4(UIStrings4.image),
       viewId: "image",
       jslog: `${VisualLogging3.pane("image-view")}`
     });
-    this.registerRequiredCSS(imageView_css_default);
-    this.element.tabIndex = -1;
-    this.element.classList.add("image-view");
+    this.#view = view;
     this.url = contentProvider.contentURL();
     this.parsedURL = new Common3.ParsedURL.ParsedURL(this.url);
     this.contentProvider = contentProvider;
@@ -1723,17 +1758,28 @@ var ImageView = class extends UI5.View.SimpleView {
     this.dimensionsLabel = new UI5.Toolbar.ToolbarText();
     this.aspectRatioLabel = new UI5.Toolbar.ToolbarText();
     this.mimeTypeLabel = new UI5.Toolbar.ToolbarText(mimeType);
-    this.container = this.element.createChild("div", "image");
-    this.imagePreviewElement = this.container.createChild("img", "resource-image-view");
-    this.imagePreviewElement.addEventListener("contextmenu", this.contextMenu.bind(this), true);
-    const link = document.createElement("devtools-link");
-    link.setAttribute("href", this.url);
-    link.classList.add("resource-image-unavailable", "hidden");
-    link.appendChild(createIcon("open-externally"));
-    link.appendChild(document.createTextNode(i18nString4(UIStrings4.thisImageIsTooBig)));
-    this.container.appendChild(link);
-    this.imageUnavailableElement = link;
+    this.performUpdate();
   }
+  performUpdate() {
+    this.#view(
+      {
+        url: this.url,
+        imageSrc: this.#imageSrc,
+        isUnavailable: this.#isUnavailable,
+        onImageLoad: this.#onImageLoad,
+        onContextMenu: this.contextMenu.bind(this)
+      },
+      void 0,
+      this.contentElement
+    );
+  }
+  #onImageLoad = (event) => {
+    const img = event.target;
+    this.dimensionsLabel.setText(i18nString4(UIStrings4.dD, { PH1: img.naturalWidth, PH2: img.naturalHeight }));
+    this.aspectRatioLabel.setText(Platform2.NumberUtilities.aspectRatio(img.naturalWidth, img.naturalHeight));
+    this.#loadResolve?.();
+    this.#loadResolve = void 0;
+  };
   async toolbarItems() {
     await this.updateContentIfNeeded();
     return [
@@ -1748,6 +1794,7 @@ var ImageView = class extends UI5.View.SimpleView {
   }
   wasShown() {
     super.wasShown();
+    this.requestUpdate();
     void this.updateContentIfNeeded();
   }
   disposeView() {
@@ -1770,30 +1817,24 @@ var ImageView = class extends UI5.View.SimpleView {
     this.cachedContent = content;
     const imageSrc = content.asImagePreviewUrl();
     if (imageSrc === null) {
-      this.imageUnavailableElement.classList.remove("hidden");
+      this.#isUnavailable = true;
+      this.#imageSrc = null;
+      this.performUpdate();
       return;
     }
-    this.imageUnavailableElement.classList.add("hidden");
-    const loadPromise = new Promise((x) => {
-      this.imagePreviewElement.onload = x;
+    this.#isUnavailable = false;
+    const loadPromise = new Promise((resolve) => {
+      this.#loadResolve = resolve;
     });
-    this.imagePreviewElement.src = imageSrc;
-    this.imagePreviewElement.alt = i18nString4(UIStrings4.imageFromS, { PH1: this.url });
+    this.#imageSrc = imageSrc;
     const size = content.isTextContent ? content.text.length : Platform2.StringUtilities.base64ToSize(content.base64);
     this.sizeLabel.setText(i18n7.ByteUtilities.bytesToString(size));
+    this.performUpdate();
     await loadPromise;
-    this.dimensionsLabel.setText(i18nString4(
-      UIStrings4.dD,
-      { PH1: this.imagePreviewElement.naturalWidth, PH2: this.imagePreviewElement.naturalHeight }
-    ));
-    this.aspectRatioLabel.setText(Platform2.NumberUtilities.aspectRatio(
-      this.imagePreviewElement.naturalWidth,
-      this.imagePreviewElement.naturalHeight
-    ));
   }
   contextMenu(event) {
     const contextMenu = new UI5.ContextMenu.ContextMenu(event);
-    const parsedSrc = new Common3.ParsedURL.ParsedURL(this.imagePreviewElement.src);
+    const parsedSrc = new Common3.ParsedURL.ParsedURL(this.#imageSrc ?? "");
     if (!this.parsedURL.isDataURL()) {
       contextMenu.clipboardSection().appendItem(i18nString4(UIStrings4.copyImageUrl), this.copyImageURL.bind(this), {
         jslogContext: "image-view.copy-image-url"
@@ -1817,7 +1858,7 @@ var ImageView = class extends UI5.View.SimpleView {
     void contextMenu.show();
   }
   copyImageAsDataURL() {
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.imagePreviewElement.src);
+    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#imageSrc ?? "");
   }
   copyImageURL() {
     Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.url);
@@ -1899,7 +1940,7 @@ __export(JSONView_exports, {
 });
 import * as i18n9 from "../../../../core/i18n/i18n.js";
 import * as SDK2 from "../../../../core/sdk/sdk.js";
-import { html as html2, render as render3 } from "../../../lit/lit.js";
+import { html as html3, render as render4 } from "../../../lit/lit.js";
 import * as VisualLogging4 from "../../../visual_logging/visual_logging.js";
 import * as UI6 from "../../legacy.js";
 import * as ObjectUI from "../object_ui/object_ui.js";
@@ -1931,12 +1972,12 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/components/source_frame/JSONView.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW3 = (input, _output, target) => {
   const obj = SDK2.RemoteObject.RemoteObject.fromLocalObject(input.parsedJSON.data);
   const titleText = input.parsedJSON.prefix + obj.description + input.parsedJSON.suffix;
-  const title = html2`<span>${titleText}</span>`;
-  render3(
-    html2`
+  const title = html3`<span>${titleText}</span>`;
+  render4(
+    html3`
     <style>${jsonView_css_default}</style>
     ${UI6.Widget.widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
       objectTree: input.objectTree,
@@ -1961,7 +2002,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
   objectTree = null;
   search;
   view;
-  constructor(parsedJSON, startCollapsed, element, view = DEFAULT_VIEW2) {
+  constructor(parsedJSON, startCollapsed, element, view = DEFAULT_VIEW3) {
     super(element);
     this.#parsedJSON = parsedJSON;
     this.startCollapsed = Boolean(startCollapsed);
@@ -2194,7 +2235,7 @@ import * as UI8 from "../../legacy.js";
 // ../../front_end/ui/legacy/components/source_frame/XMLView.ts
 var XMLView_exports = {};
 __export(XMLView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   XMLTreeViewModel: () => XMLTreeViewModel,
   XMLTreeViewNode: () => XMLTreeViewNode,
   XMLView: () => XMLView
@@ -2289,7 +2330,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/source_frame/XMLView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var { render: render4, html: html3 } = Lit;
+var { render: render5, html: html4 } = Lit;
 var { ifExpanded } = UI7.TreeOutline;
 function* attributes(element) {
   for (let i = 0; i < element.attributes.length; ++i) {
@@ -2328,33 +2369,33 @@ function htmlView(treeNode) {
     case Node.ELEMENT_NODE:
       if (node instanceof Element) {
         const tag = node.tagName;
-        return html3`<span part='shadow-xml-view-tag'>${"<" + tag}</span>${attributes(node).map((attributeNode) => html3`<span part='shadow-xml-view-tag'>${"\xA0"}</span>
+        return html4`<span part='shadow-xml-view-tag'>${"<" + tag}</span>${attributes(node).map((attributeNode) => html4`<span part='shadow-xml-view-tag'>${"\xA0"}</span>
                 <span part='shadow-xml-view-attribute-name'>${attributeNode.name}</span>
                 <span part='shadow-xml-view-tag'>${'="'}</span>
                 <span part='shadow-xml-view-attribute-value'>${attributeNode.value}</span>
                 <span part='shadow-xml-view-tag'>${'"'}</span>`)}
-                <span ?hidden=${treeNode.expanded}>${hasNonTextChildren(node) ? html3`<span part='shadow-xml-view-tag'>${">"}</span>
+                <span ?hidden=${treeNode.expanded}>${hasNonTextChildren(node) ? html4`<span part='shadow-xml-view-tag'>${">"}</span>
                   <span part='shadow-xml-view-comment'>${"\u2026"}</span>
-                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : node.textContent ? html3`<span part='shadow-xml-view-tag'>${">"}</span>
+                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : node.textContent ? html4`<span part='shadow-xml-view-tag'>${">"}</span>
                   <span part='shadow-xml-view-text'>${node.textContent}</span>
-                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : html3`<span part='shadow-xml-view-tag'>${" /"}</span>`}</span>
+                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : html4`<span part='shadow-xml-view-tag'>${" /"}</span>`}</span>
                 <span part='shadow-xml-view-tag'>${">"}</span>`;
       }
       return Lit.nothing;
     case Node.TEXT_NODE:
-      return node.nodeValue ? html3`<span part='shadow-xml-view-text'>${node.nodeValue}</span>` : Lit.nothing;
+      return node.nodeValue ? html4`<span part='shadow-xml-view-text'>${node.nodeValue}</span>` : Lit.nothing;
     case Node.CDATA_SECTION_NODE:
-      return node.nodeValue ? html3`<span part='shadow-xml-view-cdata'>${"<![CDATA["}</span>
+      return node.nodeValue ? html4`<span part='shadow-xml-view-cdata'>${"<![CDATA["}</span>
           <span part='shadow-xml-view-text'>${node.nodeValue}</span>
           <span part='shadow-xml-view-cdata'>${"]]>"}</span>` : Lit.nothing;
     case Node.PROCESSING_INSTRUCTION_NODE:
-      return node.nodeValue ? html3`<span part='shadow-xml-view-processing-instruction'>${"<?" + node.nodeName + " " + node.nodeValue + "?>"}</span>` : Lit.nothing;
+      return node.nodeValue ? html4`<span part='shadow-xml-view-processing-instruction'>${"<?" + node.nodeName + " " + node.nodeValue + "?>"}</span>` : Lit.nothing;
     case Node.COMMENT_NODE:
-      return html3`<span part='shadow-xml-view-comment'>${"<!--" + node.nodeValue + "-->"}</span>`;
+      return html4`<span part='shadow-xml-view-comment'>${"<!--" + node.nodeValue + "-->"}</span>`;
   }
   return Lit.nothing;
 }
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   function highlight(node, closeTag) {
     let highlights = "";
     let selected = "";
@@ -2392,7 +2433,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       }
       return false;
     };
-    return html3`
+    return html4`
       <li role="treeitem"
           ?selected=${input.jumpToNextSearchResult?.node === node}
           @expand=${onExpand}
@@ -2400,7 +2441,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
         <devtools-highlight ranges=${highlights} current-range=${selected}>
           ${htmlView(node)}
         </devtools-highlight>
-        ${node.children().length ? html3`
+        ${node.children().length ? html4`
           <ul role="group">
             ${ifExpanded(subtree(node))}
           </ul>` : Lit.nothing}
@@ -2416,21 +2457,21 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       /* closeTag=*/
       true
     );
-    return html3`
+    return html4`
       ${children2.map((child) => layOutNode(child))}
-      ${treeNode.node instanceof Element ? html3`
+      ${treeNode.node instanceof Element ? html4`
         <li role="treeitem">
           <devtools-highlight ranges=${highlights} current-range=${selected}>
             <span part='shadow-xml-view-close-tag'>${"</" + treeNode.node.tagName + ">"}</span>
           </devtools-highlight>
         </li>` : Lit.nothing}`;
   }
-  render4(html3`
+  render5(html4`
     <style>${xmlView_css_default}</style>
     <style>${xmlTree_css_default}</style>
     <devtools-tree
       class="shadow-xml-view source-code"
-      .template=${html3`
+      .template=${html4`
         <ul role="tree">
             ${input.xml.children().map((node) => layOutNode(node))}
         </ul>`}
@@ -2496,7 +2537,7 @@ var XMLView = class _XMLView extends UI7.Widget.Widget {
   #treeViewModel;
   #view;
   #nextJump;
-  constructor(target, view = DEFAULT_VIEW3) {
+  constructor(target, view = DEFAULT_VIEW4) {
     super(target);
     this.#view = view;
   }

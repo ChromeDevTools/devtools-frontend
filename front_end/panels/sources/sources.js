@@ -2127,7 +2127,7 @@ import * as StackTrace5 from "../../models/stack_trace/stack_trace.js";
 import * as Workspace23 from "../../models/workspace/workspace.js";
 import { Icon as Icon2 } from "../../ui/kit/kit.js";
 import * as UI18 from "../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html8, render as render9 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html8, render as render9 } from "../../ui/lit/lit.js";
 import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/callStackSidebarPane.css.js
@@ -8121,7 +8121,7 @@ import * as Workspace19 from "../../models/workspace/workspace.js";
 import * as Buttons4 from "../../ui/components/buttons/buttons.js";
 import * as QuickOpen from "../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html6, nothing as nothing5, render as render7 } from "../../ui/lit/lit.js";
+import { html as html6, nothing as nothing5, render as render7 } from "../../ui/lit/lit.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/sources/EditingLocationHistoryManager.ts
@@ -8985,6 +8985,7 @@ var DebuggerPlugin_exports = {};
 __export(DebuggerPlugin_exports, {
   BreakpointLocationRevealer: () => BreakpointLocationRevealer,
   DebuggerPlugin: () => DebuggerPlugin,
+  ScopeMappingsCache: () => ScopeMappingsCache,
   computePopoverHighlightRange: () => computePopoverHighlightRange,
   computeScopeMappings: () => computeScopeMappings,
   containsSideEffects: () => containsSideEffects,
@@ -9525,6 +9526,7 @@ var DebuggerPlugin = class extends Plugin {
     }
   }
   workingCopyChanged() {
+    this.#scopeMappingsCache.clear();
     this.setMuted(this.uiSourceCode.isDirty());
   }
   workingCopyCommitted() {
@@ -9600,7 +9602,7 @@ var DebuggerPlugin = class extends Plugin {
     return {
       box,
       show: async (popover) => {
-        const scopeMappings = await this.#getScopeMappings(selectedCallFrame);
+        const scopeMappings = await this.#getScopeMappings(debuggableFrame) ?? [];
         const scopedVariable = findVariableInScopeMappings(evaluationText, highlightRange.from, scopeMappings);
         if (scopedVariable.found) {
           if (!scopedVariable.value) {
@@ -9865,21 +9867,19 @@ var DebuggerPlugin = class extends Plugin {
     );
     return offset ?? null;
   }
-  #cachedScopeMappings;
-  #getScopeMappings(callFrame, resolvedScopeChain) {
-    if (this.#cachedScopeMappings?.callFrame !== callFrame) {
-      const url = this.uiSourceCode.url();
-      this.#cachedScopeMappings = {
-        callFrame,
-        promise: computeScopeMappings(
-          callFrame,
-          (location) => this.#rawLocationToEditorOffset(location, url),
-          (line, col) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(line, col)) ?? null,
-          resolvedScopeChain
-        )
-      };
-    }
-    return this.#cachedScopeMappings.promise;
+  #scopeMappingsCache = new ScopeMappingsCache(this.uiSourceCode);
+  /** @returns `null` if the scope mappings can't be used because the file has unsaved edits. */
+  #getScopeMappings(debuggableFrame, resolvedScopeChain) {
+    const url = this.uiSourceCode.url();
+    return this.#scopeMappingsCache.get(
+      debuggableFrame,
+      () => computeScopeMappings(
+        debuggableFrame.sdkFrame,
+        (location) => this.#rawLocationToEditorOffset(location, url),
+        (line, col) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(line, col)) ?? null,
+        resolvedScopeChain
+      )
+    );
   }
   async computeValueDecorations() {
     if (!this.editor) {
@@ -9930,8 +9930,8 @@ var DebuggerPlugin = class extends Plugin {
     if (variableNames.length === 0) {
       return null;
     }
-    const scopeMappings = await this.#getScopeMappings(callFrame, scopeChain);
-    if (!this.editor || scopeMappings.length === 0) {
+    const scopeMappings = await this.#getScopeMappings(debuggableFrame, scopeChain);
+    if (!this.editor || !scopeMappings?.length) {
       return null;
     }
     const variablesByLine = getVariableValuesByLine(scopeMappings, variableNames);
@@ -10934,6 +10934,26 @@ function getVariableNamesByLine(editorState, fromPos, toPos, currentPos, useOrig
   });
   return names;
 }
+var ScopeMappingsCache = class {
+  #uiSourceCode;
+  #cached;
+  constructor(uiSourceCode) {
+    this.#uiSourceCode = uiSourceCode;
+  }
+  /** @returns the (cached) scope mappings for `frame`, or `null` if the UISourceCode has unsaved edits. */
+  get(frame, compute) {
+    if (this.#uiSourceCode.isDirty()) {
+      return null;
+    }
+    if (this.#cached?.frame !== frame) {
+      this.#cached = { frame, promise: compute() };
+    }
+    return this.#cached.promise;
+  }
+  clear() {
+    this.#cached = void 0;
+  }
+};
 async function computeScopeMappings(callFrame, rawLocationToEditorOffset, uiPositionToEditorOffset, resolvedScopeChain) {
   const scopeMappings = [];
   const scopeChain = resolvedScopeChain ?? await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(
@@ -12493,9 +12513,6 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     this.performUpdate();
   }
   performUpdate() {
-    if (false) {
-      return;
-    }
     const shortcuts = [
       { actionId: "quick-open.show", description: i18nString13(UIStrings14.openFile) },
       { actionId: "quick-open.show-command-menu", description: i18nString13(UIStrings14.runCommand) }
@@ -13468,7 +13485,6 @@ var UIStrings15 = {
 };
 var str_15 = i18n29.i18n.registerUIStrings("panels/sources/SourcesView.ts", UIStrings15);
 var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var { ref: ref2 } = Directives3;
 var { widget: widget2, widgetRef } = UI15.Widget;
 var DEFAULT_VIEW6 = (input, output, target) => {
   const renderNavigatorToggleButton = () => {
@@ -13532,11 +13548,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
       </devtools-widget>
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging9.toolbar("bottom")}>
-      <devtools-toolbar class="script-view-toolbar" style="flex: auto;" ${ref2((el) => {
-    if (el && input.splitWidget) {
-      input.splitWidget.toggleResizer(el, !input.isVertical && !input.isInWrapper);
-    }
-  })}>
+      <devtools-toolbar class="script-view-toolbar" style="flex: auto;">
         ${Array.isArray(input.scriptViewToolbarItems) ? input.scriptViewToolbarItems.map((item) => item.element) : input.scriptViewToolbarItems}
       </devtools-toolbar>
       <devtools-toolbar class="bottom-toolbar">
@@ -13572,7 +13584,6 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
   #debuggerSidebarInitialized = false;
   #isVertical = false;
   #isInWrapper = true;
-  #splitWidget;
   #breakpointsActive = true;
   #editorContainerPromise;
   #editorContainerResolve;
@@ -13634,7 +13645,6 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
       isVertical: this.#isVertical,
       isInWrapper: this.#isInWrapper,
       isTraceApp: Root.Runtime.Runtime.isTraceApp(),
-      splitWidget: this.#splitWidget,
       onToggleNavigatorSidebar: this.#onToggleNavigatorSidebar,
       onToggleDebuggerSidebar: this.#onToggleDebuggerSidebar,
       breakpointsActive: this.#breakpointsActive,
@@ -13715,8 +13725,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     this.#isDebuggerSidebarButtonEnabled = enabled;
     this.requestUpdate();
   }
-  setLayoutMode(splitWidget, isVertical, isInWrapper) {
-    this.#splitWidget = splitWidget;
+  setLayoutMode(isVertical, isInWrapper) {
     this.#isVertical = isVertical;
     this.#isInWrapper = isInWrapper;
     this.requestUpdate();
@@ -14538,7 +14547,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   static updateResizerAndSidebarButtons(panel2) {
     const isInWrapper = Boolean(UI17.Context.Context.instance().flavor(QuickSourceView)) && !UI17.InspectorView.InspectorView.instance().isDrawerMinimized();
-    panel2.#sourcesView.setLayoutMode(panel2.splitWidget, panel2.splitWidget.isVertical(), isInWrapper);
+    panel2.#sourcesView.setLayoutMode(panel2.splitWidget.isVertical(), isInWrapper);
   }
   targetAdded(_target) {
     this.showThreadsIfNeeded();
@@ -15563,7 +15572,7 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/sources/CallStackSidebarPane.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var { createRef, ref: ref3 } = Directives4;
+var { createRef, ref: ref2 } = Directives3;
 var callstackSidebarPaneInstance;
 var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleView {
   ignoreListMessageElement;
@@ -15615,22 +15624,22 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     };
     render9(html8`
       <style>${callStackSidebarPane_css_default}</style>
-      <div class='ignore-listed-message' ${ref3(ignoreListMessageRef)}>
+      <div class='ignore-listed-message' ${ref2(ignoreListMessageRef)}>
         <label class='ignore-listed-message-label'>
           <input type='checkbox' tabindex=0 class='ignore-listed-checkbox'
-              @change=${ignoreListCheckboxChanged} ${ref3(ignoreListCheckboxRef)} />
+              @change=${ignoreListCheckboxChanged} ${ref2(ignoreListCheckboxRef)} />
           ${i18nString17(UIStrings18.showIgnorelistedFrames)}
         </label>
       </div>
-      <div class='gray-info-message' tabindex=-1 ${ref3(notPausedRef)}>
+      <div class='gray-info-message' tabindex=-1 ${ref2(notPausedRef)}>
         ${i18nString17(UIStrings18.notPaused)}
       </div>
-      <div class='call-frame-warnings-message' tabindex=-1 ${ref3(warningRef)}>
+      <div class='call-frame-warnings-message' tabindex=-1 ${ref2(warningRef)}>
         <devtools-icon .name=${"warning-filled"} class='call-frame-warning-icon small'></devtools-icon>
         ${i18nString17(UIStrings18.callFrameWarnings)}
       </div>
       ${this.list.element}
-      <div class='show-more-message hidden' ${ref3(showMoreRef)}>
+      <div class='show-more-message hidden' ${ref2(showMoreRef)}>
         <button class='link' @click=${onShowMoreClicked}>${i18nString17(UIStrings18.showMore)}</button>
       </div>
     `, this.contentElement);
@@ -16137,7 +16146,7 @@ import * as i18n37 from "../../core/i18n/i18n.js";
 import * as Persistence12 from "../../models/persistence/persistence.js";
 import * as Workspace24 from "../../models/workspace/workspace.js";
 import * as QuickOpen3 from "../../ui/legacy/components/quick_open/quick_open.js";
-import { Directives as Directives5, html as html9, nothing as nothing7 } from "../../ui/lit/lit.js";
+import { Directives as Directives4, html as html9, nothing as nothing7 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
 var filteredUISourceCodeListProvider_css_default = `/*
@@ -16213,7 +16222,7 @@ var UIStrings19 = {
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/sources/FilteredUISourceCodeListProvider.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
-var { classMap: classMap2 } = Directives5;
+var { classMap: classMap2 } = Directives4;
 var FILE_SYSTEM_SCORE_BONUS = 1e6;
 var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidget.Provider {
   queryLineNumberAndColumnNumber;
@@ -16604,8 +16613,8 @@ import "../../ui/kit/kit.js";
 import * as Common15 from "../../core/common/common.js";
 import * as Host10 from "../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "../utils/utils.js";
-import { Directives as Directives6, html as html11 } from "../../ui/lit/lit.js";
-var { styleMap } = Directives6;
+import { Directives as Directives5, html as html11 } from "../../ui/lit/lit.js";
+var { styleMap } = Directives5;
 var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   attach() {
     this.setDefaultScores(SourcesView.defaultUISourceCodeScores());
@@ -18132,7 +18141,7 @@ var objectValue_css_default = `/*
 // ../../front_end/panels/sources/WatchExpressionsSidebarPane.ts
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI24 from "../../ui/legacy/legacy.js";
-import { Directives as Directives7, html as html14, nothing as nothing10, render as render11 } from "../../ui/lit/lit.js";
+import { Directives as Directives6, html as html14, nothing as nothing10, render as render11 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
@@ -18345,7 +18354,7 @@ var UIStrings25 = {
 var str_25 = i18n49.i18n.registerUIStrings("panels/sources/WatchExpressionsSidebarPane.ts", UIStrings25);
 var i18nString24 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
 var watchExpressionsSidebarPaneInstance;
-var { classMap: classMap3, ifDefined: ifDefined3 } = Directives7;
+var { classMap: classMap3, ifDefined: ifDefined3 } = Directives6;
 var { widget: widget3 } = UI24.Widget;
 var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
   const e = input.expression;

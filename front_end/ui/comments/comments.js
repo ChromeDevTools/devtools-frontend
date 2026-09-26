@@ -8,6 +8,7 @@ var __export = (target, all) => {
 var CommentAnchorResolver_exports = {};
 __export(CommentAnchorResolver_exports, {
   COMMENT_THREAD_UI_SELECTOR: () => COMMENT_THREAD_UI_SELECTOR,
+  clearClippingAncestorsCache: () => clearClippingAncestorsCache,
   clearCustomAnchorResolversForTest: () => clearCustomAnchorResolversForTest,
   closestAcrossShadow: () => closestAcrossShadow,
   computeVisibleRect: () => computeVisibleRect,
@@ -383,7 +384,30 @@ function rematchCommentAnchor(comment, root = document, cachedJslogElements) {
 function isClippingOverflow(overflow) {
   return overflow === "hidden" || overflow === "auto" || overflow === "scroll" || overflow === "clip";
 }
-function computeVisibleRect(element, targetRect) {
+var clippingAncestorsCache = /* @__PURE__ */ new WeakMap();
+function clearClippingAncestorsCache() {
+  clippingAncestorsCache = /* @__PURE__ */ new WeakMap();
+}
+function getClippingAncestors(element, doc, win) {
+  const cached = clippingAncestorsCache.get(element);
+  if (cached && cached.every((item) => item.element.isConnected)) {
+    return cached;
+  }
+  const ancestors = [];
+  let current = element.parentElementOrShadowHost();
+  while (current && current !== doc.documentElement && current !== doc.body) {
+    const style = win.getComputedStyle(current);
+    const clipsX = isClippingOverflow(style.overflowX);
+    const clipsY = isClippingOverflow(style.overflowY);
+    if (clipsX || clipsY) {
+      ancestors.push({ element: current, clipsX, clipsY });
+    }
+    current = current.parentElementOrShadowHost();
+  }
+  clippingAncestorsCache.set(element, ancestors);
+  return ancestors;
+}
+function computeVisibleRect(element, targetRect, rectCache) {
   if (!element.isConnected) {
     return null;
   }
@@ -409,26 +433,24 @@ function computeVisibleRect(element, targetRect) {
   if (visibleLeft >= visibleRight || visibleTop >= visibleBottom) {
     return null;
   }
-  let current = element.parentElementOrShadowHost();
-  while (current && current !== doc.documentElement && current !== doc.body) {
-    const style = win.getComputedStyle(current);
-    const clipsX = isClippingOverflow(style.overflowX);
-    const clipsY = isClippingOverflow(style.overflowY);
-    if (clipsX || clipsY) {
-      const parentRect = current.getBoundingClientRect();
-      if (clipsX) {
-        visibleLeft = Math.max(visibleLeft, parentRect.left);
-        visibleRight = Math.min(visibleRight, parentRect.right);
-      }
-      if (clipsY) {
-        visibleTop = Math.max(visibleTop, parentRect.top);
-        visibleBottom = Math.min(visibleBottom, parentRect.bottom);
-      }
-      if (visibleLeft >= visibleRight || visibleTop >= visibleBottom) {
-        return null;
-      }
+  const clippingAncestors = getClippingAncestors(element, doc, win);
+  for (const { element: ancestor, clipsX, clipsY } of clippingAncestors) {
+    let parentRect = rectCache?.get(ancestor);
+    if (!parentRect) {
+      parentRect = ancestor.getBoundingClientRect();
+      rectCache?.set(ancestor, parentRect);
     }
-    current = current.parentElementOrShadowHost();
+    if (clipsX) {
+      visibleLeft = Math.max(visibleLeft, parentRect.left);
+      visibleRight = Math.min(visibleRight, parentRect.right);
+    }
+    if (clipsY) {
+      visibleTop = Math.max(visibleTop, parentRect.top);
+      visibleBottom = Math.min(visibleBottom, parentRect.bottom);
+    }
+    if (visibleLeft >= visibleRight || visibleTop >= visibleBottom) {
+      return null;
+    }
   }
   const width = visibleRight - visibleLeft;
   const height = visibleBottom - visibleTop;
@@ -501,9 +523,11 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #scrollListener;
   #scrollTarget;
   #scrollRafId;
+  #observedScrollRoots = /* @__PURE__ */ new Set();
   #devToolsResizeObserver;
-  #resizeRafId;
+  #resizeObservedElements = /* @__PURE__ */ new WeakSet();
   #mutationObserver;
+  #mutationRafId;
   #rematchTimeoutId;
   #cursorElement = null;
   #isCreatingComment = false;
@@ -545,7 +569,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #getIntersectionObserver() {
     if (!this.#intersectionObserver) {
       this.#intersectionObserver = new IntersectionObserver(() => {
-        this.#updatePositions();
+        this.#updatePositions(true);
       });
     }
     return this.#intersectionObserver;
@@ -641,9 +665,28 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
       const observer = this.#getIntersectionObserver();
       observer.observe(anchorElement);
       this.#observedThreads.add(anchorElement);
+      this.#trackElementAncestors(anchorElement);
     }
     this.#updatePositions();
     return thread;
+  }
+  #trackElementAncestors(element) {
+    if (!this.#devToolsResizeObserver || !this.#scrollListener) {
+      return;
+    }
+    let current = element;
+    while (current) {
+      if (this.#resizeObservedElements.has(current)) {
+        break;
+      }
+      this.#devToolsResizeObserver.observe(current);
+      this.#resizeObservedElements.add(current);
+      if (current.parentNode instanceof ShadowRoot && !this.#observedScrollRoots.has(current.parentNode)) {
+        current.parentNode.addEventListener("scroll", this.#scrollListener, { capture: true, passive: true });
+        this.#observedScrollRoots.add(current.parentNode);
+      }
+      current = current.parentElementOrShadowHost();
+    }
   }
   #resolveAnchor(element, options) {
     let anchorElement = null;
@@ -699,6 +742,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
    * during batch rematching, and cleans up unobserved IntersectionObserver nodes in O(N) time.
    */
   #rematchAllComments(root = document) {
+    clearClippingAncestorsCache();
     const jslogElements = deepQuerySelectorAll(root, "[jslog]");
     const oldElements = /* @__PURE__ */ new Set();
     const newElements = /* @__PURE__ */ new Set();
@@ -728,12 +772,13 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     }
     this.#updatePositions();
   }
-  #updatePositions() {
+  #updatePositions(isRealtimeSync = false) {
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
     const newPins = [];
     const newHighlights = [];
     const elementPinCounts = /* @__PURE__ */ new Map();
+    const rectCache = /* @__PURE__ */ new Map();
     for (const thread of this.#commentManager.getCommentThreads()) {
       if (thread.isGeneratedComment || !isDomTrackedAnchor(thread.anchor)) {
         continue;
@@ -753,7 +798,8 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
         observer.observe(el);
         this.#observedThreads.add(el);
       }
-      const visibleRect = computeVisibleRect(el);
+      this.#trackElementAncestors(el);
+      const visibleRect = computeVisibleRect(el, void 0, rectCache);
       if (!visibleRect) {
         continue;
       }
@@ -780,7 +826,8 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     this.#highlightRects = newHighlights;
     this.dispatchEventToListeners("PositionsUpdated" /* POSITIONS_UPDATED */, {
       pins: newPins,
-      highlights: newHighlights
+      highlights: newHighlights,
+      isRealtimeSync
     });
   }
   /**
@@ -811,12 +858,14 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     this.#installScrollListener(scrollTarget);
     this.#installResizeObserver(resizeTarget);
     this.#installMutationObserver(root);
+    this.#updatePositions();
   }
   /**
    * Stops and detaches all active listeners and observers without clearing comment threads.
    */
   stop() {
     document.body.style.cursor = "";
+    clearClippingAncestorsCache();
     this.clearDraftThreads();
     this.#removeClickListener();
     this.#removeScrollListener();
@@ -997,21 +1046,34 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #installScrollListener(target = window) {
     this.#removeScrollListener();
     this.#scrollTarget = target;
+    let needsTrailingUpdate = false;
     this.#scrollListener = () => {
       this.#clearHover();
-      if (this.#scrollRafId !== void 0) {
-        cancelAnimationFrame(this.#scrollRafId);
+      if (this.#scrollRafId === void 0) {
+        this.#updatePositions(true);
+        needsTrailingUpdate = false;
+        this.#scrollRafId = requestAnimationFrame(() => {
+          this.#scrollRafId = void 0;
+          if (needsTrailingUpdate) {
+            needsTrailingUpdate = false;
+            this.#updatePositions(true);
+          }
+        });
+      } else {
+        needsTrailingUpdate = true;
       }
-      this.#scrollRafId = requestAnimationFrame(() => {
-        this.#scrollRafId = void 0;
-        this.#updatePositions();
-      });
     };
     target.addEventListener("scroll", this.#scrollListener, { capture: true, passive: true });
   }
   #removeScrollListener() {
-    if (this.#scrollTarget && this.#scrollListener) {
-      this.#scrollTarget.removeEventListener("scroll", this.#scrollListener, { capture: true });
+    if (this.#scrollListener) {
+      if (this.#scrollTarget) {
+        this.#scrollTarget.removeEventListener("scroll", this.#scrollListener, { capture: true });
+      }
+      for (const root of this.#observedScrollRoots) {
+        root.removeEventListener("scroll", this.#scrollListener, { capture: true });
+      }
+      this.#observedScrollRoots.clear();
       this.#scrollListener = void 0;
       this.#scrollTarget = void 0;
     }
@@ -1031,30 +1093,28 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     this.#removeResizeObserver();
     this.#devToolsResizeObserver = new ResizeObserver(() => {
       this.#clearHover();
-      if (this.#resizeRafId !== void 0) {
-        cancelAnimationFrame(this.#resizeRafId);
-      }
-      this.#resizeRafId = requestAnimationFrame(() => {
-        this.#resizeRafId = void 0;
-        this.#updatePositions();
-      });
+      this.#updatePositions(true);
     });
     this.#devToolsResizeObserver.observe(element);
+    this.#resizeObservedElements.add(element);
   }
   #removeResizeObserver() {
     if (this.#devToolsResizeObserver) {
       this.#devToolsResizeObserver.disconnect();
       this.#devToolsResizeObserver = void 0;
     }
-    if (this.#resizeRafId !== void 0) {
-      cancelAnimationFrame(this.#resizeRafId);
-      this.#resizeRafId = void 0;
-    }
+    this.#resizeObservedElements = /* @__PURE__ */ new WeakSet();
   }
   /**
    * Debounces rematching of comments across dynamic DOM updates.
    */
   #scheduleRematch(root = document) {
+    if (this.#mutationRafId === void 0) {
+      this.#mutationRafId = requestAnimationFrame(() => {
+        this.#mutationRafId = void 0;
+        this.#updatePositions(true);
+      });
+    }
     if (this.#rematchTimeoutId) {
       clearTimeout(this.#rematchTimeoutId);
     }
@@ -1073,8 +1133,15 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
    */
   #installMutationObserver(root = document) {
     this.#removeMutationObserver();
-    this.#mutationObserver = new MutationObserver(() => {
-      this.#scheduleRematch(root);
+    this.#mutationObserver = new MutationObserver((records) => {
+      const hasExternalMutation = records.some((record) => {
+        const target = record.target;
+        const element = target instanceof Element ? target : target.parentElement;
+        return !(element && element.closest(".comments-overlay-container"));
+      });
+      if (hasExternalMutation) {
+        this.#scheduleRematch(root);
+      }
     });
     const targetNode = root instanceof Document ? root.body || root.documentElement : root;
     this.#mutationObserver.observe(targetNode, {
@@ -1094,6 +1161,10 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     if (this.#mutationObserver) {
       this.#mutationObserver.disconnect();
       this.#mutationObserver = void 0;
+    }
+    if (this.#mutationRafId !== void 0) {
+      cancelAnimationFrame(this.#mutationRafId);
+      this.#mutationRafId = void 0;
     }
     if (this.#rematchTimeoutId) {
       clearTimeout(this.#rematchTimeoutId);

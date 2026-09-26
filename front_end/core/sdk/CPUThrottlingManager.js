@@ -236,9 +236,9 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         return result.value;
     }
     async updateHostDefaultCPUPerformanceTier() {
-        if (this.#manualCPUPerformanceOverride !== undefined) {
-            // We do not want to update the host default tier when it is manually overridden
-            // via the sensors panel (in which case, `navigator.cpuPerformance` would return the override).
+        if (this.#isCPUPerformanceOverrideActive()) {
+            // We do not want to update the host default tier when it is overridden
+            // (in which case, `navigator.cpuPerformance` would return the override).
             return;
         }
         const target = this.#targetManager.primaryPageTarget();

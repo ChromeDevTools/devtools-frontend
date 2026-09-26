@@ -18,7 +18,6 @@ export interface ViewInput {
     isVertical: boolean;
     isInWrapper: boolean;
     isTraceApp: boolean;
-    splitWidget?: UI.SplitWidget.SplitWidget;
     onToggleNavigatorSidebar?: () => void;
     onToggleDebuggerSidebar?: () => void;
     breakpointsActive: boolean;
@@ -53,7 +52,7 @@ export declare class SourcesView extends SourcesViewBase implements UI.Searchabl
     set isNavigatorSidebarOpen(isOpen: boolean);
     set isDebuggerSidebarOpen(isOpen: boolean);
     toggleDebuggerSidebarButtonEnabled(enabled: boolean): void;
-    setLayoutMode(splitWidget: UI.SplitWidget.SplitWidget, isVertical: boolean, isInWrapper: boolean): void;
+    setLayoutMode(isVertical: boolean, isInWrapper: boolean): void;
     wasShown(): void;
     willHide(): void;
     searchableView(): UI.SearchableView.SearchableView;

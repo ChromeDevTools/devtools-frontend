@@ -2,7 +2,7 @@ import * as Formatter from '../../models/formatter/formatter.js';
 import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import type * as Platform from '../platform/platform.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
-import type { CallFrame, ScopeChainEntry } from './DebuggerModel.js';
+import type { CallFrame, Location, ScopeChainEntry } from './DebuggerModel.js';
 import type { SourceMap } from './SourceMap.js';
 export declare class SourceMapScopesInfo {
     #private;
@@ -94,6 +94,14 @@ export interface TranslatedFrame {
 export declare function findExpression(range: ScopesCodec.GeneratedRange | undefined, index: number, line?: number, column?: number): string | null;
 export declare function contains(range: Pick<ScopesCodec.GeneratedRange, 'start' | 'end'>, line: number, column: number): boolean;
 export declare function comparePositions(a: ScopesCodec.Position, b: ScopesCodec.Position): number;
+/**
+ * Converts a raw V8 {@link location} into a generated position relative to the start of its script.
+ *
+ * Positions in source maps (mappings and generated ranges) are relative to the start of the script,
+ * while V8 reports locations in inline `<script>`s (without `//# sourceURL`) relative to the start of
+ * the surrounding document.
+ */
+export declare function scriptRelativePosition(location: Location): ScopesCodec.Position;
 /**
  * Finds the V8 scope that corresponds to the source map's generated `range`.
  *

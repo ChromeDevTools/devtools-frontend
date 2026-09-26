@@ -43,6 +43,58 @@ export function schemeIs(url, scheme) {
         return false;
     }
 }
+/**
+ * Schemes safe for unprivileged web contexts (matching ChildProcessSecurityPolicyImpl::RegisterDefaultSchemes).
+ */
+const WEB_SAFE_SCHEMES = new Set([
+    'http:',
+    'https:',
+    'ws:',
+    'wss:',
+    'data:',
+]);
+/**
+ * Returns true if the URL uses an unprivileged web-safe scheme (or is a `blob:` URL wrapping one).
+ */
+export function hasWebSafeScheme(url) {
+    try {
+        const parsed = new URL(url);
+        if (parsed.protocol === 'blob:') {
+            return hasWebSafeScheme(parsed.pathname);
+        }
+        return WEB_SAFE_SCHEMES.has(parsed.protocol);
+    }
+    catch {
+        return false;
+    }
+}
+/**
+ * Privileged browser and local schemes that must not be opened via external/new-tab links by default.
+ */
+const PRIVILEGED_SCHEMES = new Set([
+    'chrome:',
+    'chrome-extension:',
+    'chrome-search:',
+    'chrome-untrusted:',
+    'devtools:',
+    'file:',
+    'isolated-app:',
+]);
+/**
+ * Returns true if the URL uses a privileged scheme (or is a `blob:` URL wrapping one).
+ */
+export function isPrivilegedScheme(url) {
+    try {
+        const parsed = new URL(url);
+        if (parsed.protocol === 'blob:') {
+            return isPrivilegedScheme(parsed.pathname);
+        }
+        return PRIVILEGED_SCHEMES.has(parsed.protocol);
+    }
+    catch {
+        return false;
+    }
+}
 export class ParsedURL {
     isValid = false;
     url;

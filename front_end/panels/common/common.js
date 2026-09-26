@@ -4280,58 +4280,69 @@ var commentsOverlay_css_default = `/*
 
   .comment-pin {
     position: absolute;
+    top: 0;
+    left: 0;
     pointer-events: auto;
     cursor: pointer;
     user-select: none;
-    transition: transform 0.1s ease;
-    transform-origin: center center;
-      will-change: transform;
+    will-change: transform;
   }
 
-  .comment-pin:hover {
+  .comment-pin:hover .comment-cursor {
     transform: scale(1.15);
   }
 
-    .comment-cursor {
-      display: flex;
-      width: var(--sys-size-9);
-      height: var(--sys-size-9);
-      box-sizing: border-box;
-      padding: 0;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      flex-shrink: 0;
-      box-shadow: var(--sys-elevation-level2);
-      border-radius: 100px 100px 100px var(--sys-shape-corner-extra-small, 4px);
-      background: var(--sys-color-primary);
-      color: var(--sys-color-on-primary);
-      font-family: var(--default-font-family);
-      font-size: var(--sys-typescale-body5-size);
-      font-weight: var(--ref-typeface-weight-bold, 600);
-      line-height: 1;
-    }
+  .comment-cursor {
+    display: flex;
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
+    box-sizing: border-box;
+    padding: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    box-shadow: var(--sys-elevation-level2);
+    border-radius: 100px 100px 100px var(--sys-shape-corner-extra-small, 4px);
+    background: var(--sys-color-primary);
+    color: var(--sys-color-on-primary);
+    font-family: var(--default-font-family);
+    font-size: var(--sys-typescale-body5-size);
+    font-weight: var(--ref-typeface-weight-bold, 600);
+    line-height: 1;
+    transition: transform 0.1s ease;
+    transform-origin: center center;
+  }
 
   .comment-anchor-highlight {
     position: absolute;
+    top: 0;
+    left: 0;
     pointer-events: none;
     border: var(--sys-size-2) dashed var(--sys-color-primary);
     background-color: color-mix(in srgb, var(--sys-color-primary), transparent 90%);
     box-sizing: border-box;
+    will-change: transform;
   }
 
   .comment-hover-highlight {
     position: absolute;
+    top: 0;
+    left: 0;
     pointer-events: none;
     border: var(--sys-size-2) solid var(--sys-color-primary);
     background-color: color-mix(in srgb, var(--sys-color-primary), transparent 85%);
     box-sizing: border-box;
+    will-change: transform;
   }
 
   .comment-popup-widget {
     position: absolute;
+    top: 0;
+    left: 0;
     z-index: 2501;
     pointer-events: auto;
+    will-change: transform;
   }
 }
 
@@ -4357,59 +4368,67 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
         <div
           class="comment-hover-highlight"
           style=${styleMap({
-    top: `${input.hoverHighlight.top}px`,
-    left: `${input.hoverHighlight.left}px`,
+    transform: `translate3d(${input.hoverHighlight.left}px, ${input.hoverHighlight.top}px, 0)`,
     width: `${input.hoverHighlight.width}px`,
     height: `${input.hoverHighlight.height}px`
   })}>
         </div>
       ` : nothing5}
-      ${input.highlights.map((h) => h.visible ? html9`
-        <div
-          class="comment-anchor-highlight"
-          style=${styleMap({
-    top: `${h.top}px`,
-    left: `${h.left}px`,
-    width: `${h.width}px`,
-    height: `${h.height}px`
-  })}>
-        </div>
-      ` : nothing5)}
-      ${input.pins.map((p) => p.visible ? html9`
-        <div
-          class="comment-pin"
-          style=${styleMap({
-    top: `${p.top}px`,
-    left: `${p.left}px`
-  })}
-          @click=${() => input.onPinClick(p.id)}>
-          <div class="comment-cursor">${p.index}</div>
-        </div>
-      ` : nothing5)}
+      ${repeat(
+    input.highlights.filter((h) => h.visible),
+    (h) => h.id,
+    (h) => html9`
+          <div
+            class="comment-anchor-highlight"
+            style=${styleMap({
+      transform: `translate3d(${h.left}px, ${h.top}px, 0)`,
+      width: `${h.width}px`,
+      height: `${h.height}px`
+    })}>
+          </div>
+        `
+  )}
+      ${repeat(
+    input.pins.filter((p) => p.visible),
+    (p) => p.id,
+    (p) => html9`
+          <div
+            class="comment-pin"
+            style=${styleMap({
+      transform: `translate3d(${p.left}px, ${p.top}px, 0)`
+    })}
+            @click=${() => input.onPinClick(p.id)}>
+            <div class="comment-cursor">${p.index}</div>
+          </div>
+        `
+  )}
       ${input.activePin && input.activeThread ? repeat(
     [{ pin: input.activePin, thread: input.activeThread }],
     (item2) => item2.thread.id,
-    (item2) => html9`
-          <div
-            class="comment-popup-widget"
-            style=${styleMap({
-      top: `${Math.min(
+    (item2) => {
+      const popupTop = Math.min(
         Math.max(POPUP_MARGIN, item2.pin.top + PIN_HEIGHT),
         Math.max(POPUP_MARGIN, target.clientHeight - POPUP_HEIGHT)
-      )}px`,
-      left: `${Math.min(
+      );
+      const popupLeft = Math.min(
         Math.max(POPUP_MARGIN, item2.pin.left),
         Math.max(POPUP_MARGIN, target.clientWidth - POPUP_WIDTH - POPUP_MARGIN)
-      )}px`
-    })}>
-            ${UI10.Widget.widget(CommentThreadWidget, {
-      title: input.title,
-      comments: [...item2.thread.comments],
-      onAddComment: input.onAddComment,
-      onClose: input.onCloseCommentThread
-    })}
-          </div>
-        `
+      );
+      return html9`
+            <div
+              class="comment-popup-widget"
+              style=${styleMap({
+        transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)`
+      })}>
+              ${UI10.Widget.widget(CommentThreadWidget, {
+        title: input.title,
+        comments: [...item2.thread.comments],
+        onAddComment: input.onAddComment,
+        onClose: input.onCloseCommentThread
+      })}
+            </div>
+          `;
+    }
   ) : nothing5}
     </div>
   `, target);
@@ -4450,12 +4469,12 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     this.#commentOverlayManager.start();
     this.#commentOverlayManager.addEventListener(
       Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
-      this.#onStateChanged,
+      this.#onPositionsUpdated,
       this
     );
     this.#commentOverlayManager.addEventListener(
       Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED,
-      this.#onStateChanged,
+      this.#onHoverHighlightChanged,
       this
     );
     this.#commentManager.addEventListener(
@@ -4484,12 +4503,12 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
       Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
-      this.#onStateChanged,
+      this.#onPositionsUpdated,
       this
     );
     this.#commentOverlayManager.removeEventListener(
       Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED,
-      this.#onStateChanged,
+      this.#onHoverHighlightChanged,
       this
     );
     this.#commentManager.removeEventListener(
@@ -4532,14 +4551,50 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     action3?.setToggled(isModeActive);
     this.requestUpdate();
   }
-  #onStateChanged() {
+  #syncActiveThreadFromManager() {
     const draftThread = this.#commentManager.getCommentThreads().find((t) => t.status === "DRAFT");
     if (draftThread) {
       this.#setActiveThreadId(draftThread.id);
     } else if (this.#activeThreadId && !this.#commentManager.getCommentThread(this.#activeThreadId)) {
       this.#setActiveThreadId(null);
     }
+  }
+  #onPositionsUpdated(event) {
+    this.#syncActiveThreadFromManager();
+    if (event.data.isRealtimeSync && this.isShowing() && this.#trySynchronousRender()) {
+      return;
+    }
     this.requestUpdate();
+  }
+  #onHoverHighlightChanged() {
+    this.#syncActiveThreadFromManager();
+    if (this.isShowing() && this.#trySynchronousRender()) {
+      return;
+    }
+    this.requestUpdate();
+  }
+  #onStateChanged() {
+    this.#syncActiveThreadFromManager();
+    this.requestUpdate();
+  }
+  #trySynchronousRender() {
+    if (!this.#commentManager.isAgentAttached()) {
+      this.#renderDisconnectedView();
+      return true;
+    }
+    const activeThread = this.#activeThreadId ? this.#commentManager.getCommentThread(this.#activeThreadId) ?? null : null;
+    const anchor = activeThread?.anchor ?? null;
+    if (anchor === null) {
+      this.#cachedTitleAnchor = null;
+      this.#cachedTitle = { text: "" };
+      this.#renderWithTitle(activeThread, this.#cachedTitle);
+      return true;
+    }
+    if (anchor === this.#cachedTitleAnchor) {
+      this.#renderWithTitle(activeThread, this.#cachedTitle);
+      return true;
+    }
+    return false;
   }
   async #getOrComputeTitle(anchor) {
     if (anchor === this.#cachedTitleAnchor) {
@@ -4599,30 +4654,26 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       this.#handleCloseCommentThread();
     }
   };
-  async performUpdate(signal) {
-    if (!this.#commentManager.isAgentAttached()) {
-      this.#view(
-        {
-          pins: [],
-          highlights: [],
-          hoverHighlight: null,
-          commentMode: false,
-          onPinClick: this.#handlePinClick,
-          activeThread: null,
-          activePin: null,
-          title: { text: "" },
-          onAddComment: () => {
-          },
-          onCloseCommentThread: this.#handleCloseCommentThread
+  #renderDisconnectedView() {
+    this.#view(
+      {
+        pins: [],
+        highlights: [],
+        hoverHighlight: null,
+        commentMode: false,
+        onPinClick: this.#handlePinClick,
+        activeThread: null,
+        activePin: null,
+        title: { text: "" },
+        onAddComment: () => {
         },
-        void 0,
-        this.contentElement
-      );
-      return;
-    }
-    const activeThread = this.#activeThreadId ? this.#commentManager.getCommentThread(this.#activeThreadId) ?? null : null;
-    const title = await this.#getOrComputeTitle(activeThread?.anchor ?? null);
-    signal?.throwIfAborted();
+        onCloseCommentThread: this.#handleCloseCommentThread
+      },
+      void 0,
+      this.contentElement
+    );
+  }
+  #renderWithTitle(activeThread, title) {
     const pins = this.#commentOverlayManager.getPinPositions();
     const highlights = this.#commentOverlayManager.getHighlightRects();
     const activePin = this.#activeThreadId ? pins.find((p) => p.id === this.#activeThreadId) ?? null : null;
@@ -4653,6 +4704,26 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       onCloseCommentThread: this.#handleCloseCommentThread
     };
     this.#view(viewInput, void 0, this.contentElement);
+  }
+  async performUpdate(signal) {
+    if (!this.#commentManager.isAgentAttached()) {
+      this.#renderDisconnectedView();
+      return;
+    }
+    const activeThread = this.#activeThreadId ? this.#commentManager.getCommentThread(this.#activeThreadId) ?? null : null;
+    const anchor = activeThread?.anchor ?? null;
+    let title;
+    if (anchor === null) {
+      this.#cachedTitleAnchor = null;
+      this.#cachedTitle = { text: "" };
+      title = this.#cachedTitle;
+    } else if (anchor === this.#cachedTitleAnchor) {
+      title = this.#cachedTitle;
+    } else {
+      title = await this.#getOrComputeTitle(anchor);
+      signal?.throwIfAborted();
+    }
+    this.#renderWithTitle(activeThread, title);
   }
 };
 var widgetInstance = null;

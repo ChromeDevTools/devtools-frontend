@@ -1,6 +1,7 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class HARBase {
@@ -377,7 +378,9 @@ export class HARInitiator extends HARBase {
     constructor(data) {
         super(data);
         this.type = (HARBase.optionalString(data['type']) ?? "other" /* SDK.NetworkRequest.InitiatorType.OTHER */);
-        this.url = HARBase.optionalString(data['url']);
+        const url = HARBase.optionalString(data['url']);
+        // Ignore privileged/non-web schemes in imported HARs.
+        this.url = url && Common.ParsedURL.hasWebSafeScheme(url) ? url : undefined;
         this.lineNumber = HARBase.optionalNumber(data['lineNumber']);
         this.requestId = HARBase.optionalString(data['requestId']);
         if (data['stack']) {
@@ -424,7 +427,9 @@ export class HARCallFrame extends HARBase {
         super(data);
         this.functionName = HARBase.optionalString(data['functionName']) ?? '';
         this.scriptId = (HARBase.optionalString(data['scriptId']) ?? '');
-        this.url = HARBase.optionalString(data['url']) ?? '';
+        const url = HARBase.optionalString(data['url']) ?? '';
+        // Ignore privileged/non-web schemes in imported HARs.
+        this.url = Common.ParsedURL.hasWebSafeScheme(url) ? url : '';
         this.lineNumber = HARBase.optionalNumber(data['lineNumber']) ?? -1;
         this.columnNumber = HARBase.optionalNumber(data['columnNumber']) ?? -1;
     }

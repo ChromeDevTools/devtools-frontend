@@ -22040,7 +22040,8 @@ __export(SourceMapScopesInfo_exports, {
   comparePositions: () => comparePositions2,
   contains: () => contains,
   findExpression: () => findExpression,
-  findMatchingScopeNumber: () => findMatchingScopeNumber
+  findMatchingScopeNumber: () => findMatchingScopeNumber,
+  scriptRelativePosition: () => scriptRelativePosition
 });
 import * as Formatter2 from "../../models/formatter/formatter.js";
 
@@ -22302,8 +22303,9 @@ var SourceMapScopeRemoteObject = class _SourceMapScopeRemoteObject extends Remot
   }
   /** @returns null if the variable is unavailable at the current paused location */
   #findExpression(index) {
-    const pausedPosition = this.#callFrame.location();
-    return findExpression(this.#range, index, pausedPosition?.lineNumber, pausedPosition?.columnNumber);
+    const pausedLocation = this.#callFrame.location();
+    const pausedPosition = pausedLocation ? scriptRelativePosition(pausedLocation) : void 0;
+    return findExpression(this.#range, index, pausedPosition?.line, pausedPosition?.column);
   }
   static #unavailableProperty(name) {
     return new RemoteObjectProperty(
@@ -22618,7 +22620,8 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
   }
   /** Similar to #findGeneratedRangeChain, but takes inlineFrameIndex of virtual call frames into account */
   #findGeneratedRangeChainForFrame(callFrame) {
-    const rangeChain = this.#findGeneratedRangeChain(callFrame.location().lineNumber, callFrame.location().columnNumber);
+    const { line, column } = scriptRelativePosition(callFrame.location());
+    const rangeChain = this.#findGeneratedRangeChain(line, column);
     if (callFrame.inlineFrameIndex === 0) {
       return rangeChain;
     }
@@ -22774,14 +22777,18 @@ function comparePositions2(a, b) {
   }
   return a.column - b.column;
 }
+function scriptRelativePosition(location) {
+  const { lineNumber, columnNumber } = location.script()?.rawLocationToRelativeLocation(location) ?? location;
+  return { line: lineNumber, column: columnNumber };
+}
 function positionRange(callFrame, scope) {
   const range = scope.range();
   if (range === null || range.start.scriptId !== callFrame.location().scriptId || range.end.scriptId !== callFrame.location().scriptId) {
     return null;
   }
   return {
-    start: { line: range.start.lineNumber, column: range.start.columnNumber },
-    end: { line: range.end.lineNumber, column: range.end.columnNumber }
+    start: scriptRelativePosition(range.start),
+    end: scriptRelativePosition(range.end)
   };
 }
 function findMatchingScopeNumber(callFrame, range) {
@@ -23457,11 +23464,8 @@ var SourceMap = class _SourceMap {
     if (this.#provenance === "user" /* USER */ || !this.#scopesInfo?.hasVariablesAndBindings()) {
       return null;
     }
-    return this.#scopesInfo.resolveMappedVariablesAtPosition(
-      location.lineNumber,
-      location.columnNumber,
-      ignoreInnerBlockScopes
-    );
+    const { line, column } = scriptRelativePosition(location);
+    return this.#scopesInfo.resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes);
   }
   findOriginalFunctionName(position) {
     this.#ensureSourceMapProcessed();
@@ -42310,7 +42314,7 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWr
     return result.value;
   }
   async updateHostDefaultCPUPerformanceTier() {
-    if (this.#manualCPUPerformanceOverride !== void 0) {
+    if (this.#isCPUPerformanceOverrideActive()) {
       return;
     }
     const target = this.#targetManager.primaryPageTarget();

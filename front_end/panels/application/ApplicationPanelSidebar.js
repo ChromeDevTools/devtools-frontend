@@ -67,206 +67,205 @@ import { TrustTokensTreeElement } from './TrustTokensTreeElement.js';
 import { WebMCPTreeElement } from './WebMCPTreeElement.js';
 const UIStrings = {
     /**
-     * @description Text of a context menu item to start a chat with AI
+     * @description Context menu item to start a chat with AI in the Application panel sidebar.
      */
     startAChat: 'Start a chat',
     /**
-     * @description Text of a context menu item to explain contents of a local/session storage bucket with AI
+     * @description Context menu item to explain storage with AI in the Application panel sidebar.
      */
     explainStorage: 'Explain storage',
     /**
-     * @description Text of a context menu item to explain web cookies with AI
+     * @description Context menu item to explain cookies with AI in the Application panel sidebar.
      */
     explainCookies: 'Explain cookies',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Section header for the application section in the sidebar of the Application panel.
      */
     application: 'Application',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Tree item label for ads in the sidebar of the Application panel.
      */
     ads: 'Ads',
     /**
-     * @description Tooltip for the experimental icon in the Ads panel
+     * @description Tooltip for the experimental feature icon next to the ads item in the sidebar of the Application panel.
      */
     experimental: 'Experimental',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Tree item label for storage in the sidebar of the Application panel.
      */
     storage: 'Storage',
     /**
-     * @description Text in Application Panelthat shows if no local storage
-     *             can be shown.
+     * @description Empty state text displayed when no local storage is detected in the Application panel.
      */
     noLocalStorage: 'No local storage detected',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Tree item label for local storage in the sidebar of the Application panel.
      */
     localStorage: 'Local storage',
     /**
-     * @description Text in the Application panel describing the local storage tab.
+     * @description Informational text describing the local storage view in the Application panel.
      */
     localStorageDescription: 'On this page you can view, add, edit, and delete local storage key-value pairs',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Tree item label for session storage in the sidebar of the Application panel.
      */
     sessionStorage: 'Session storage',
     /**
-     * @description Text in Application Panel if no session storage can be shown.
+     * @description Empty state text displayed when no session storage is detected in the Application panel.
      */
     noSessionStorage: 'No session storage detected',
     /**
-     * @description Text in the Application panel describing the session storage tab.
+     * @description Informational text describing the session storage view in the Application panel.
      */
     sessionStorageDescription: 'On this page you can view, add, edit, and delete session storage key-value pairs',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Tree item label for extension storage in the sidebar of the Application panel.
      */
     extensionStorage: 'Extension storage',
     /**
-     * @description Text in Application Panel if no extension storage can be shown
+     * @description Empty state text displayed when no extension storage is detected in the Application panel.
      */
     noExtensionStorage: 'No extension storage detected',
     /**
-     * @description Text in the Application panel describing the extension storage tab.
+     * @description Informational text describing the extension storage view in the Application panel.
      */
     extensionStorageDescription: 'On this page you can view, add, edit, and delete extension storage key-value pairs',
     /**
-     * @description Text for extension session storage in Application panel
+     * @description Label for extension session storage in the Application panel.
      */
     extensionSessionStorage: 'Session',
     /**
-     * @description Text for extension local storage in Application panel
+     * @description Label for extension local storage in the Application panel.
      */
     extensionLocalStorage: 'Local',
     /**
-     * @description Text for extension sync storage in Application panel
+     * @description Label for extension sync storage in the Application panel.
      */
     extensionSyncStorage: 'Sync',
     /**
-     * @description Text for extension managed storage in Application panel
+     * @description Label for extension managed storage in the Application panel.
      */
     extensionManagedStorage: 'Managed',
     /**
-     * @description Text for web cookies
+     * @description Tree item label for cookies in the sidebar of the Application panel.
      */
     cookies: 'Cookies',
     /**
-     * @description Text in the Application Panel if no cookies are set
+     * @description Empty state text displayed when no cookies are set in the Application panel.
      */
     noCookies: 'No cookies set',
     /**
-     * @description Text for web cookies
+     * @description Informational text describing the cookies view in the Application panel.
      */
     cookiesDescription: 'On this page you can view, add, edit, and delete cookies',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Tree item label for background services in the sidebar of the Application panel.
      */
     backgroundServices: 'Background services',
     /**
-     * @description Text for rendering frames
+     * @description Tree item label for frames in the sidebar of the Application panel.
      */
     frames: 'Frames',
     /**
-     * @description Text that appears on a button for the manifest resource type filter.
+     * @description Tree item label for the web app manifest in the sidebar of the Application panel.
      */
     manifest: 'Manifest',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Tree item label for IndexedDB in the sidebar of the Application panel.
      */
     indexeddb: 'IndexedDB',
     /**
-     * @description Text in Application Panel if no indexedDB is detected
+     * @description Empty state text displayed when no IndexedDB database is detected in the Application panel.
      */
-    noIndexeddb: 'No indexedDB detected',
+    noIndexeddb: 'No IndexedDB detected',
     /**
-     * @description Text in the Application panel describing the extension storage tab.
+     * @description Informational text describing the IndexedDB view in the Application panel.
      */
-    indexeddbDescription: 'On this page you can view and delete indexedDB key-value pairs and databases',
+    indexeddbDescription: 'On this page you can view and delete IndexedDB key-value pairs and databases',
     /**
-     * @description A context menu item in the Application Panel Sidebar of the Application panel
+     * @description Context menu item to refresh IndexedDB in the Application panel sidebar.
      */
     refreshIndexeddb: 'Refresh IndexedDB',
     /**
-     * @description Tooltip in Application Panel Sidebar of the Application panel
+     * @description Tooltip for an empty database showing its version in the IndexedDB tree item in the Application panel sidebar.
      * @example {1.0} PH1
      */
     versionSEmpty: 'Version: {PH1} (empty)',
     /**
-     * @description Tooltip in Application Panel Sidebar of the Application panel
+     * @description Tooltip for a database showing its version in the IndexedDB tree item in the Application panel sidebar.
      * @example {1.0} PH1
      */
     versionS: 'Version: {PH1}',
     /**
-     * @description Text to clear content
+     * @description Context menu item to clear data in the Application panel sidebar.
      */
     clear: 'Clear',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Tooltip for an object store showing its key path in the IndexedDB tree item in the Application panel sidebar.
      * @example {"key path"} PH1
      */
     keyPathS: 'Key path: {PH1}',
     /**
-     * @description Text in Application Panel Sidebar of the Application panel
+     * @description Tree item label for local files in the sidebar of the Application panel.
      */
-    localFiles: 'Local Files',
+    localFiles: 'Local files',
     /**
-     * @description Tooltip in Application Panel Sidebar of the Application panel
+     * @description Tooltip for a cookie domain showing which frames use its cookies in the Application panel sidebar.
      * @example {https://example.com} PH1
      */
     cookiesUsedByFramesFromS: 'Cookies used by frames from {PH1}',
     /**
-     * @description Text in Frames View of the Application panel
+     * @description Tree item label for opened windows in the sidebar of the Application panel.
      */
-    openedWindows: 'Opened Windows',
+    openedWindows: 'Opened windows',
     /**
-     * @description Text in Frames View of the Application panel
+     * @description Informational text describing the opened windows view in the Application panel.
      */
-    openedWindowsDescription: 'On this page you can view windows opened via window\.open\(\)',
+    openedWindowsDescription: 'On this page you can view windows opened via `window.open()`',
     /**
-     * @description Label for plural of worker type: web workers
+     * @description Tree item label for Web Workers in the sidebar of the Application panel.
      */
     webWorkers: 'Web Workers',
     /**
-     * @description Label in frame tree for unavailable document
+     * @description Tree item label in the frame tree when no document is detected in the Application panel sidebar.
      */
     documentNotAvailable: 'No document detected',
     /**
-     * @description Description of content of unavailable document in Application panel
+     * @description Informational text explaining that a document was generated dynamically via document.write().
      */
-    theContentOfThisDocumentHasBeen: 'The content of this document has been generated dynamically via \'document.write()\'',
+    theContentOfThisDocumentHasBeen: 'The content of this document has been generated dynamically via `document.write()`',
     /**
-     * @description Text in Frames View of the Application panel
+     * @description Tree item label for an opened window without a title in the sidebar of the Application panel.
      */
     windowWithoutTitle: 'Window without title',
     /**
-     * @description Default name for worker
+     * @description Fallback tree item label for a worker without a title or URL in the sidebar of the Application panel.
      */
     worker: 'worker',
     /**
-     * @description Description text for describing the dedicated worker tab.
+     * @description Informational text describing the dedicated workers view in the Application panel.
      */
-    workerDescription: 'On this page you can view dedicated workers that are created by the parent frame',
+    workerDescription: 'On this page you can view dedicated workers added by the parent frame',
     /**
-     * @description Aria text for screen reader to announce they can scroll to top of manifest if invoked
+     * @description Accessibility announcement indicating that invoking the element scrolls to the top of the manifest.
      */
-    onInvokeManifestAlert: 'Manifest: Invoke to scroll to the top of manifest',
+    onInvokeManifestAlert: 'Manifest: invoke to scroll to the top of manifest',
     /**
-     * @description Aria text for screen reader to announce they can scroll to a section if invoked
+     * @description Accessibility announcement indicating that invoking the element scrolls to a section in the manifest.
      * @example {"Identity"} PH1
      */
-    beforeInvokeAlert: '{PH1}: Invoke to scroll to this section in manifest',
+    beforeInvokeAlert: '{PH1}: invoke to scroll to this section in manifest',
     /**
-     * @description Alert message for screen reader to announce which subsection is being scrolled to
+     * @description Accessibility announcement indicating that the manifest view was scrolled to a section.
      * @example {"Identity"} PH1
      */
     onInvokeAlert: 'Scrolled to {PH1}',
     /**
-     * @description Application sidebar panel
+     * @description Accessibility label for the Application panel sidebar.
      */
     applicationSidebarPanel: 'Application panel sidebar',
     /**
-     * @description Description text in the Application Panel describing a frame's resources
+     * @description Informational text describing a frame's resources in the Application panel.
      */
     resourceDescription: 'On this page you can view the frame’s resources',
 };

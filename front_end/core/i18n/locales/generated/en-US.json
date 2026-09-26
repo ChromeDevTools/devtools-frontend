@@ -1097,8 +1097,8 @@
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Focus page"
   },
-  "entrypoints/main/MainImpl.ts | getDevToolsMcp": {
-    "message": "Get DevTools MCP"
+  "entrypoints/main/MainImpl.ts | getChromeDevToolsForAgents": {
+    "message": "Give your agent access to DevTools"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "Help"
@@ -2561,6 +2561,12 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | ariaLiveRecordingList": {
     "message": "Accessibility Announcements"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | copyElementHtml": {
+    "message": "Copy element HTML"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | copyMessage": {
+    "message": "Copy message"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | jsTriggered": {
     "message": "JS-triggered"
   },
@@ -3273,7 +3279,7 @@
     "message": "Background services"
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
-    "message": "{PH1}: Invoke to scroll to this section in manifest"
+    "message": "{PH1}: invoke to scroll to this section in manifest"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Clear"
@@ -3324,13 +3330,13 @@
     "message": "IndexedDB"
   },
   "panels/application/ApplicationPanelSidebar.ts | indexeddbDescription": {
-    "message": "On this page you can view and delete indexedDB key-value pairs and databases"
+    "message": "On this page you can view and delete IndexedDB key-value pairs and databases"
   },
   "panels/application/ApplicationPanelSidebar.ts | keyPathS": {
     "message": "Key path: {PH1}"
   },
   "panels/application/ApplicationPanelSidebar.ts | localFiles": {
-    "message": "Local Files"
+    "message": "Local files"
   },
   "panels/application/ApplicationPanelSidebar.ts | localStorage": {
     "message": "Local storage"
@@ -3348,7 +3354,7 @@
     "message": "No extension storage detected"
   },
   "panels/application/ApplicationPanelSidebar.ts | noIndexeddb": {
-    "message": "No indexedDB detected"
+    "message": "No IndexedDB detected"
   },
   "panels/application/ApplicationPanelSidebar.ts | noLocalStorage": {
     "message": "No local storage detected"
@@ -3360,10 +3366,10 @@
     "message": "Scrolled to {PH1}"
   },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
-    "message": "Manifest: Invoke to scroll to the top of manifest"
+    "message": "Manifest: invoke to scroll to the top of manifest"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
-    "message": "Opened Windows"
+    "message": "Opened windows"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
     "message": "On this page you can view windows opened via window.open()"
@@ -3387,7 +3393,7 @@
     "message": "Storage"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
-    "message": "The content of this document has been generated dynamically via 'document.write()'"
+    "message": "The content of this document has been generated dynamically via document.write()"
   },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Version: {PH1}"
@@ -3405,7 +3411,7 @@
     "message": "worker"
   },
   "panels/application/ApplicationPanelSidebar.ts | workerDescription": {
-    "message": "On this page you can view dedicated workers that are created by the parent frame"
+    "message": "On this page you can view dedicated workers added by the parent frame"
   },
   "panels/application/AppManifestView.ts | actualHeightSpxOfSSDoesNotMatch": {
     "message": "Actual height ({PH1}px) of {PH2} {PH3} doesn’t match specified height ({PH4}px)"
@@ -4971,10 +4977,10 @@
     "message": "Extension Storage Items cleared"
   },
   "panels/application/FrameDetailsView.ts | additionalInformation": {
-    "message": "Additional Information"
+    "message": "More information"
   },
   "panels/application/FrameDetailsView.ts | adStatus": {
-    "message": "Ad Status"
+    "message": "Ad status"
   },
   "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
     "message": "A frame ancestor is an insecure context"
@@ -5013,19 +5019,19 @@
     "message": "Content Security Policy (CSP)"
   },
   "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "There was an ad script in the (async) stack when this frame was created. Examining the creation stack trace of this frame might provide more insight."
+    "message": "An ad script was in the (async) stack when this frame was created. Examining the creation stack trace of this frame might provide more insight."
   },
   "panels/application/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Frame Creation Stack Trace"
+    "message": "Frame creation stack trace"
   },
   "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "This frame was created programmatically. The stack trace shows where this happened."
   },
   "panels/application/FrameDetailsView.ts | creatorAdScriptAncestry": {
-    "message": "Creator Ad Script Ancestry"
+    "message": "Creator ad script ancestry"
   },
   "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "Cross-Origin Isolated"
+    "message": "Cross-origin isolated"
   },
   "panels/application/FrameDetailsView.ts | document": {
     "message": "Document"
@@ -5043,7 +5049,7 @@
     "message": "This frame is considered an ad frame because its current (or previous) main document is an ad resource"
   },
   "panels/application/FrameDetailsView.ts | measureMemory": {
-    "message": "Measure Memory"
+    "message": "Measure memory"
   },
   "panels/application/FrameDetailsView.ts | no": {
     "message": "No"
@@ -5058,7 +5064,7 @@
     "message": "Origin trials give you access to a new or experimental feature"
   },
   "panels/application/FrameDetailsView.ts | ownerElement": {
-    "message": "Owner Element"
+    "message": "Owner element"
   },
   "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "This frame is considered an ad frame because its parent frame is an ad frame"
@@ -5076,19 +5082,19 @@
     "message": "This frame has been identified as the root frame of an ad"
   },
   "panels/application/FrameDetailsView.ts | rootScriptFilterlistRule": {
-    "message": "Root Script Filterlist Rule"
+    "message": "Root script filterlist rule"
   },
   "panels/application/FrameDetailsView.ts | secureContext": {
-    "message": "Secure Context"
+    "message": "Secure context"
   },
   "panels/application/FrameDetailsView.ts | securityIsolation": {
-    "message": "Security & Isolation"
+    "message": "Security & isolation"
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
     "message": "SharedArrayBuffer constructor is available and SABs can be transferred via postMessage"
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage"
+    "message": "SharedArrayBuffer constructor is available but SABs can’t be transferred via postMessage"
   },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "The frame’s scheme is insecure"
@@ -5097,10 +5103,10 @@
     "message": "The performance.measureUserAgentSpecificMemory() API is available"
   },
   "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "The performance.measureUserAgentSpecificMemory() API is not available"
+    "message": "The performance.measureUserAgentSpecificMemory() API isn’t available"
   },
   "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled"
+    "message": "This debugging information is shown because the \"Protocol Monitor\" experiment is enabled"
   },
   "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
     "message": "SharedArrayBuffer transfer requires enabling the permission policy:"
@@ -5232,7 +5238,7 @@
     "message": "No"
   },
   "panels/application/OpenedWindowDetailsView.ts | openerFrame": {
-    "message": "Opener Frame"
+    "message": "Opener frame"
   },
   "panels/application/OpenedWindowDetailsView.ts | reportingTo": {
     "message": "reporting to"
@@ -5241,7 +5247,7 @@
     "message": "Security"
   },
   "panels/application/OpenedWindowDetailsView.ts | securityIsolation": {
-    "message": "Security & Isolation"
+    "message": "Security & isolation"
   },
   "panels/application/OpenedWindowDetailsView.ts | showsWhetherTheOpenedWindowIs": {
     "message": "Shows whether the opened window is able to access its opener and vice versa"
@@ -11858,6 +11864,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "WebSocket frame"
   },
+  "panels/network/ShowMoreDetailsWidget.ts | copy": {
+    "message": "Copy"
+  },
   "panels/network/ShowMoreDetailsWidget.ts | showMore": {
     "message": "Show more"
   },
@@ -18044,23 +18053,14 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | auto": {
     "message": "Auto"
   },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | block": {
-    "message": "Block"
-  },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | blockAxisMode": {
-    "message": "Block axis mode"
-  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "Coordinate"
   },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | inline": {
-    "message": "Inline"
-  },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | inlineAxisMode": {
-    "message": "Inline axis mode"
-  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "Logical"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | mode": {
+    "message": "Mode"
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | physical": {
     "message": "Physical"

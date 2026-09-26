@@ -230,14 +230,20 @@ export interface VisibleRect {
     height: number;
 }
 /**
+ * Clears the cached clipping ancestor chains for elements.
+ * Called when DOM mutations or comment rematches occur.
+ */
+export declare function clearClippingAncestorsCache(): void;
+/**
  * Computes the visible viewport-relative bounding box of an element after clipping against
  * all ancestor scroll/overflow containers and viewport boundaries across shadow DOM roots.
  *
  * @param element The source DOM element.
  * @param targetRect Optional explicit bounding box (e.g. for sub-lines or custom targets).
+ * @param rectCache Optional per-frame cache of element bounding client rects to avoid redundant queries.
  * @returns The clipped viewport-relative rectangle or null if the element is completely clipped out of view or invisible.
  */
-export declare function computeVisibleRect(element: Element, targetRect?: DOMRect): VisibleRect | null;
+export declare function computeVisibleRect(element: Element, targetRect?: DOMRect, rectCache?: Map<Element, DOMRect>): VisibleRect | null;
 /**
  * Checks whether an element is connected to the DOM, visible according to `checkVisibility()`,
  * and has non-zero bounding box dimensions.

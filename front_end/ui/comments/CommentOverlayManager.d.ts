@@ -45,6 +45,7 @@ export interface EventTypes {
     [Events.POSITIONS_UPDATED]: {
         pins: PinPositionData[];
         highlights: HighlightRectData[];
+        isRealtimeSync?: boolean;
     };
     [Events.HOVER_HIGHLIGHT_CHANGED]: HoverHighlightData | null;
 }

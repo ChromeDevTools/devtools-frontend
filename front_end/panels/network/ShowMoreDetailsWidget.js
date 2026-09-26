@@ -10,6 +10,10 @@ const UIStrings = {
      * @description Text to show more content
      */
     showMore: 'Show more',
+    /**
+     * @description Context menu item to copy the shown text to the clipboard
+     */
+    copy: 'Copy',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/ShowMoreDetailsWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -19,7 +23,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     const onContextMenuShowMore = (event) => {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
         if (input.copy) {
-            contextMenu.clipboardSection().appendItem(input.copy.menuItem, input.copy.handler);
+            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copy), input.copy, { jslogContext: 'copy' });
         }
         if (!input.showMore) {
             contextMenu.newSection().appendItem(i18nString(UIStrings.showMore), input.onToggle, { jslogContext: 'show-more' });
@@ -52,6 +56,9 @@ export class ShowMoreDetailsWidget extends UI.Widget.Widget {
     set text(text) {
         this.#text = text;
         this.requestUpdate();
+    }
+    get copy() {
+        return this.#copy;
     }
     set copy(copy) {
         this.#copy = copy;

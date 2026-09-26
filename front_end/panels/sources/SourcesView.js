@@ -13,7 +13,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { EditingLocationHistoryManager } from './EditingLocationHistoryManager.js';
 import sourcesViewStyles from './sourcesView.css.js';
@@ -59,7 +59,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const { ref } = Directives;
 const { widget, widgetRef } = UI.Widget;
 export const DEFAULT_VIEW = (input, output, target) => {
     const renderNavigatorToggleButton = () => {
@@ -125,11 +124,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
       </devtools-widget>
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging.toolbar('bottom')}>
-      <devtools-toolbar class="script-view-toolbar" style="flex: auto;" ${ref(el => {
-        if (el && input.splitWidget) {
-            input.splitWidget.toggleResizer(el, !input.isVertical && !input.isInWrapper);
-        }
-    })}>
+      <devtools-toolbar class="script-view-toolbar" style="flex: auto;">
         ${Array.isArray(input.scriptViewToolbarItems)
         ? input.scriptViewToolbarItems.map(item => item.element)
         : input.scriptViewToolbarItems}
@@ -166,7 +161,6 @@ export class SourcesView extends SourcesViewBase {
     #debuggerSidebarInitialized = false;
     #isVertical = false;
     #isInWrapper = true;
-    #splitWidget;
     #breakpointsActive = true;
     #editorContainerPromise;
     #editorContainerResolve;
@@ -229,7 +223,6 @@ export class SourcesView extends SourcesViewBase {
             isVertical: this.#isVertical,
             isInWrapper: this.#isInWrapper,
             isTraceApp: Root.Runtime.Runtime.isTraceApp(),
-            splitWidget: this.#splitWidget,
             onToggleNavigatorSidebar: this.#onToggleNavigatorSidebar,
             onToggleDebuggerSidebar: this.#onToggleDebuggerSidebar,
             breakpointsActive: this.#breakpointsActive,
@@ -313,8 +306,7 @@ export class SourcesView extends SourcesViewBase {
         this.#isDebuggerSidebarButtonEnabled = enabled;
         this.requestUpdate();
     }
-    setLayoutMode(splitWidget, isVertical, isInWrapper) {
-        this.#splitWidget = splitWidget;
+    setLayoutMode(isVertical, isInWrapper) {
         this.#isVertical = isVertical;
         this.#isInWrapper = isInWrapper;
         this.requestUpdate();

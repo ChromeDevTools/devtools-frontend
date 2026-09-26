@@ -578,6 +578,7 @@ __export(StringUtilities_exports, {
   createPlainTextSearchRegex: () => createPlainTextSearchRegex,
   createSearchRegex: () => createSearchRegex,
   escapeCharacters: () => escapeCharacters,
+  escapeCsvCell: () => escapeCsvCell,
   escapeForRegExp: () => escapeForRegExp,
   escapeForURLPattern: () => escapeForURLPattern,
   escapeUnicodeAsText: () => escapeUnicodeAsText,
@@ -1144,6 +1145,26 @@ var concatBase64 = function(lhs, rhs) {
   const lhsLeaveAsIs = lhs.substring(0, lhs.length - 4);
   const lhsToDecode = lhs.substring(lhs.length - 4);
   return lhsLeaveAsIs + globalThis.btoa(globalThis.atob(lhsToDecode) + globalThis.atob(rhs));
+};
+var CSV_FORMULA_TRIGGERS = /* @__PURE__ */ new Set(["=", "+", "-", "@", "	", "\r"]);
+var CSV_PLAIN_NUMBER = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/;
+function isCsvFormula(value) {
+  const trimmed = value.trimStart();
+  if (!CSV_FORMULA_TRIGGERS.has(value[0]) && !CSV_FORMULA_TRIGGERS.has(trimmed[0])) {
+    return false;
+  }
+  return !CSV_PLAIN_NUMBER.test(trimmed.trimEnd());
+}
+var escapeCsvCell = function(value) {
+  let escaped = isCsvFormula(value) ? `'${value}` : value;
+  if (escaped.includes('"')) {
+    escaped = escaped.replace(/"/g, '""');
+    return `"${escaped}"`;
+  }
+  if (escaped.includes(",") || escaped.includes("\n") || escaped.includes("\r")) {
+    return `"${escaped}"`;
+  }
+  return escaped;
 };
 
 // ../../front_end/core/platform/Timing.ts

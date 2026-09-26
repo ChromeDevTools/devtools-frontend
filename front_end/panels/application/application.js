@@ -4565,7 +4565,7 @@ import * as UI3 from "../../ui/legacy/legacy.js";
 import * as ApplicationComponents2 from "./components/components.js";
 var UIStrings2 = {
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Label for the back/forward cache tree item in the sidebar of the Application panel.
    */
   backForwardCache: "Back/forward cache"
 };
@@ -6506,220 +6506,203 @@ var OriginTrialTreeView = class extends UI7.Widget.Widget {
 var { widget: widget3 } = UI8.Widget;
 var UIStrings7 = {
   /**
-   * @description Section header in the Frame Details view
+   * @description Section header for debugging information in the frame details view.
    */
-  additionalInformation: "Additional Information",
+  additionalInformation: "More information",
   /**
-   * @description Explanation for why the additional information section is being shown
+   * @description Explanation for why the debugging information section is shown in the frame details view.
    */
-  thisAdditionalDebugging: "This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled",
+  thisAdditionalDebugging: 'This debugging information is shown because the "Protocol Monitor" experiment is enabled',
   /**
-   * @description Label for subtitle of frame details view
+   * @description Field label for the frame ID in the frame details view.
    */
   frameId: "Frame ID",
   /**
-   * @description Name of a network resource type
+   * @description Section header for document details in the frame details view.
    */
   document: "Document",
   /**
-   * @description A web URL (for a lot of languages this does not need to be translated, please translate only where necessary)
+   * @description Field label for the URL in the frame details view.
    */
   url: "URL",
   /**
-   * /**
-   * @description Title for a link to the Sources panel
+   * @description Tooltip for the button to open the URL in the Sources panel.
    */
   clickToOpenInSourcesPanel: "Click to open in Sources panel",
   /**
-   * @description Title for a link to the Network panel
+   * @description Tooltip for the button to open the URL in the Network panel.
    */
   clickToOpenInNetworkPanel: "Click to open in Network panel",
   /**
-   * @description Title for unreachable URL field
+   * @description Field label for an unreachable URL in the frame details view.
    */
   unreachableUrl: "Unreachable URL",
   /**
-   * @description Title for a link that applies a filter to the network panel
+   * @description Tooltip for the button to filter by frame in the Network panel.
    */
   clickToOpenInNetworkPanelMight: "Click to open in Network panel (might require page reload)",
   /**
-   * @description The origin of a URL (https://web.dev/same-site-same-origin/#origin)
-   *(for a lot of languages this does not need to be translated, please translate only where necessary)
+   * @description Field label for the origin of a URL in the frame details view.
    */
   origin: "Origin",
   /**
-   * /**
-   * @description Related node label in Timeline UIUtils of the Performance panel
+   * @description Field label for the owner DOM element of the frame in the frame details view.
    */
-  ownerElement: "Owner Element",
+  ownerElement: "Owner element",
   /**
-   * @description Title for ad frame type field
+   * @description Field label for the ad status in the frame details view.
    */
-  adStatus: "Ad Status",
+  adStatus: "Ad status",
   /**
-   * @description Description for ad frame type
+   * @description Description explaining that this frame is the root frame of an ad in the frame details view.
    */
   rootDescription: "This frame has been identified as the root frame of an ad",
   /**
-   * @description Value for ad frame type
+   * @description Value for the root ad frame type in the frame details view.
    */
   root: "root",
   /**
-   * @description Description for ad frame type
+   * @description Description explaining that this frame is a child frame of an ad in the frame details view.
    */
   childDescription: "This frame has been identified as a child frame of an ad",
   /**
-   * @description Value for ad frame type
+   * @description Value for the child ad frame type in the frame details view.
    */
   child: "child",
   /**
-   * @description Section header in the Frame Details view
+   * @description Section header for security and isolation in the frame details view.
    */
-  securityIsolation: "Security & Isolation",
+  securityIsolation: "Security & isolation",
   /**
-   * @description Section header in the Frame Details view
+   * @description Section header for Content Security Policy in the frame details view.
    */
   contentSecurityPolicy: "Content Security Policy (CSP)",
   /**
-   * @description Row title for in the Frame Details view
+   * @description Field label indicating whether the frame is a secure context in the frame details view.
    */
-  secureContext: "Secure Context",
+  secureContext: "Secure context",
   /**
-   * @description Text in Timeline indicating that input has happened recently
+   * @description Value indicating affirmative status in the frame details view.
    */
   yes: "Yes",
   /**
-   * @description Text in Timeline indicating that input has not happened recently
+   * @description Value indicating negative status in the frame details view.
    */
   no: "No",
   /**
-   * @description Label for whether a frame is cross-origin isolated
-   *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
-   *(for a lot of languages this does not need to be translated, please translate only where necessary)
+   * @description Field label indicating whether the frame is cross-origin isolated in the frame details view.
    */
-  crossoriginIsolated: "Cross-Origin Isolated",
+  crossoriginIsolated: "Cross-origin isolated",
   /**
-   * @description Explanatory text in the Frame Details view
+   * @description Explanatory text indicating that localhost is always a secure context in the frame details view.
    */
   localhostIsAlwaysASecureContext: "`Localhost` is always a secure context",
   /**
-   * @description Explanatory text in the Frame Details view
+   * @description Explanatory text indicating that a frame ancestor is an insecure context in the frame details view.
    */
   aFrameAncestorIsAnInsecure: "A frame ancestor is an insecure context",
   /**
-   * @description Explanatory text in the Frame Details view
+   * @description Explanatory text indicating that the frame's scheme is insecure in the frame details view.
    */
   theFramesSchemeIsInsecure: "The frame\u2019s scheme is insecure",
   /**
-   * @description This label specifies the server endpoints to which the server is reporting errors
-   *and warnings through the Report-to API. Following this label will be the URL of the server.
+   * @description Label prefix for the reporting endpoint in the security & isolation section of the frame details view.
    */
   reportingTo: "reporting to",
   /**
-   * @description Section header in the Frame Details view
+   * @description Section header for API availability in the frame details view.
    */
   apiAvailability: "API availability",
   /**
-   * @description Explanation of why cross-origin isolation is important
-   *(https://web.dev/why-coop-coep/)
-   *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary)
+   * @description Explanation of why cross-origin isolation is needed for certain APIs in the frame details view.
    */
   availabilityOfCertainApisDepends: "Availability of certain APIs depends on the document being cross-origin isolated",
   /**
-   * @description Description of the SharedArrayBuffer status
+   * @description Status indicating that SharedArrayBuffer is available and transferable in the frame details view.
    */
   availableTransferable: "available, transferable",
   /**
-   * @description Description of the SharedArrayBuffer status
+   * @description Status indicating that SharedArrayBuffer is available but not transferable in the frame details view.
    */
   availableNotTransferable: "available, not transferable",
   /**
-   * @description Explanation for the SharedArrayBuffer availability status
+   * @description Status indicating that a feature is unavailable in the frame details view.
    */
   unavailable: "unavailable",
   /**
-   * @description Tooltip for the SharedArrayBuffer availability status
+   * @description Tooltip explaining that the SharedArrayBuffer constructor is available and SABs can be transferred via postMessage in the frame details view.
    */
   sharedarraybufferConstructorIs: "`SharedArrayBuffer` constructor is available and `SABs` can be transferred via `postMessage`",
   /**
-   * @description Tooltip for the SharedArrayBuffer availability status
+   * @description Tooltip explaining that the SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage in the frame details view.
    */
-  sharedarraybufferConstructorIsAvailable: "`SharedArrayBuffer` constructor is available but `SABs` cannot be transferred via `postMessage`",
+  sharedarraybufferConstructorIsAvailable: "`SharedArrayBuffer` constructor is available but `SABs` can\u2019t be transferred via `postMessage`",
   /**
-   * @description Explanation why SharedArrayBuffer will not be available in the future
-   *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
-   *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary)
+   * @description Warning indicating that a feature will require a cross-origin isolated context in the future in the frame details view.
    */
   willRequireCrossoriginIsolated: "\u26A0\uFE0F will require cross-origin isolated context in the future",
   /**
-   * @description Explanation why SharedArrayBuffer is not available
-   *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
-   *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary).
+   * @description Status explanation indicating that a feature requires a cross-origin isolated context in the frame details view.
    */
   requiresCrossoriginIsolated: "requires cross-origin isolated context",
   /**
-   * @description Explanation for the SharedArrayBuffer availability status in case the transfer of a SAB requires the
-   * permission policy `cross-origin-isolated` to be enabled (e.g. because the message refers to the situation in an iframe).
+   * @description Explanation that SharedArrayBuffer transfer requires enabling the permission policy in the frame details view.
    */
   transferRequiresCrossoriginIsolatedPermission: "`SharedArrayBuffer` transfer requires enabling the permission policy:",
   /**
-   * @description Explanation for the Measure Memory availability status
+   * @description Status indicating that a feature is available in the frame details view.
    */
   available: "available",
   /**
-   * @description Tooltip for the Measure Memory availability status
+   * @description Tooltip indicating that the performance.measureUserAgentSpecificMemory() API is available in the frame details view.
    */
   thePerformanceAPI: "The `performance.measureUserAgentSpecificMemory()` API is available",
   /**
-   * @description Tooltip for the Measure Memory availability status
+   * @description Tooltip indicating that the performance.measureUserAgentSpecificMemory() API is not available in the frame details view.
    */
-  thePerformancemeasureuseragentspecificmemory: "The `performance.measureUserAgentSpecificMemory()` API is not available",
+  thePerformancemeasureuseragentspecificmemory: "The `performance.measureUserAgentSpecificMemory()` API isn\u2019t available",
   /**
-   * @description Entry in the API availability section of the frame details view
+   * @description Field label for the measure memory API in the frame details view.
    */
-  measureMemory: "Measure Memory",
+  measureMemory: "Measure memory",
   /**
-   * @description Text that is usually a hyperlink to more documentation
+   * @description Link text to open documentation in the frame details view.
    */
   learnMore: "Learn more",
   /**
-   * @description Label for a stack trace. If a frame is created programmatically (i.e. via JavaScript), there is a
-   * stack trace for the line of code which caused the creation of the iframe. This is the stack trace we are showing here.
+   * @description Field label for the stack trace showing where the frame was created in the frame details view.
    */
-  creationStackTrace: "Frame Creation `Stack Trace`",
+  creationStackTrace: "Frame creation `stack trace`",
   /**
-   * @description Tooltip for 'Frame Creation Stack Trace' explaining that the stack
-   *trace shows where in the code the frame has been created programmatically
+   * @description Tooltip explaining that the stack trace shows where the frame was created in the frame details view.
    */
   creationStackTraceExplanation: "This frame was created programmatically. The `stack trace` shows where this happened.",
   /**
-   * @description Text descripting why a frame has been indentified as an advertisement.
+   * @description Tooltip explaining that this frame is considered an ad because its parent frame is an ad in the frame details view.
    */
   parentIsAdExplanation: "This frame is considered an ad frame because its parent frame is an ad frame",
   /**
-   * @description Text descripting why a frame has been indentified as an advertisement.
+   * @description Tooltip explaining that this frame is considered an ad because its main document is an ad resource in the frame details view.
    */
   matchedBlockingRuleExplanation: "This frame is considered an ad frame because its current (or previous) main document is an ad resource",
   /**
-   * @description Text descripting why a frame has been indentified as an advertisement.
+   * @description Tooltip explaining that this frame is considered an ad because an ad script was in the stack when it was created in the frame details view.
    */
-  createdByAdScriptExplanation: "There was an ad script in the `(async) stack` when this frame was created. Examining the creation `stack trace` of this frame might provide more insight.",
+  createdByAdScriptExplanation: "An ad script was in the `(async) stack` when this frame was created. Examining the creation `stack trace` of this frame might provide more insight.",
   /**
-   * @description Label for the link(s) to the ad script(s) that led to this frame's creation.
+   * @description Field label for the ad script ancestry that led to the frame creation in the frame details view.
    */
-  creatorAdScriptAncestry: "Creator Ad Script Ancestry",
+  creatorAdScriptAncestry: "Creator ad script ancestry",
   /**
-   * @description Label for the filterlist rule that identified the root script in 'Creator Ad Script Ancestry' as an ad.
+   * @description Field label for the filterlist rule that identified the root script as an ad in the frame details view.
    */
-  rootScriptFilterlistRule: "Root Script Filterlist Rule",
+  rootScriptFilterlistRule: "Root script filterlist rule",
   /**
-   * @description Text describing the absence of a value.
+   * @description Value indicating the absence of a value in the frame details view.
    */
   none: "None",
   /**
-   * @description Explanation of what origin trials are
-   *(https://developer.chrome.com/docs/web-platform/origin-trials/)
-   *(please don't translate 'origin trials').
+   * @description Explanation of origin trials in the origin trials section of the frame details view.
    */
   originTrialsExplanation: "Origin trials give you access to a new or experimental feature"
 };
@@ -8627,76 +8610,75 @@ var openedWindowDetailsView_css_default = `/*
 // ../../front_end/panels/application/OpenedWindowDetailsView.ts
 var UIStrings9 = {
   /**
-   * @description Text in Timeline indicating that input has happened recently
+   * @description Text indicating that the opened window has access to its opener.
    */
   yes: "Yes",
   /**
-   * @description Text in Timeline indicating that input has not happened recently
+   * @description Text indicating that the opened window does not have access to its opener.
    */
   no: "No",
   /**
-   * @description Title for a link to the Elements panel
+   * @description Tooltip for the button to reveal the opener frame DOM node in the Elements panel.
    */
   clickToOpenInElementsPanel: "Click to open in Elements panel",
   /**
-   * @description Name of a network resource type
+   * @description Section header for document details in the opened window details view and worker details view.
    */
   document: "Document",
   /**
-   * @description Text for web URLs
+   * @description Field label for the URL in the opened window details view and worker details view.
    */
   url: "URL",
   /**
-   * @description Title of the 'Security' tool
+   * @description Section header for security information in the opened window details view.
    */
   security: "Security",
   /**
-   * @description Label for link to Opener Frame in Detail View for Opened Window
+   * @description Field label for the link to the opener frame in the opened window details view.
    */
-  openerFrame: "Opener Frame",
+  openerFrame: "Opener frame",
   /**
-   * @description Label in opened window's details view whether window has access to its opener
+   * @description Field label indicating whether the opened window has access to its opener in the opened window details view.
    */
   accessToOpener: "Access to opener",
   /**
-   * @description Description for the 'Access to Opener' field
+   * @description Tooltip explaining whether the opened window has access to its opener in the opened window details view.
    */
   showsWhetherTheOpenedWindowIs: "Shows whether the opened window is able to access its opener and vice versa",
   /**
-   * @description Text in Frames View of the Application panel
+   * @description Fallback title for an opened window without a title in the opened window details view.
    */
   windowWithoutTitle: "Window without title",
   /**
-   * @description Label suffix in the Application Panel Frames section for windows which are already closed
+   * @description Suffix for the title of an opened window that has been closed in the opened window details view.
    */
   closed: "closed",
   /**
-   * @description Default name for worker
+   * @description Fallback title for a worker in the worker details view.
    */
   worker: "worker",
   /**
-   * @description Text that refers to some types
+   * @description Field label for the worker type in the worker details view.
    */
   type: "Type",
   /**
-   * @description Section header in the Frame Details view
+   * @description Section header for security and isolation in the worker details view.
    */
-  securityIsolation: "Security & Isolation",
+  securityIsolation: "Security & isolation",
   /**
-   * @description Row title in the Frame Details view
+   * @description Field label for the Cross-Origin Embedder Policy in the worker details view.
    */
   crossoriginEmbedderPolicy: "Cross-Origin Embedder Policy",
   /**
-   * @description Label for worker type: web worker
+   * @description Value for dedicated Web Worker type in the worker details view.
    */
   webWorker: "Web Worker",
   /**
-   * @description Text for an unspecified service worker response source
+   * @description Value for an unknown worker type in the worker details view.
    */
   unknown: "Unknown",
   /**
-   * @description This label specifies the server endpoints to which the server is reporting errors
-   *and warnings through the Report-to API. Following this label will be the URL of the server.
+   * @description Prefix for the reporting endpoint in the security & isolation section of the worker details view.
    */
   reportingTo: "reporting to"
 };
@@ -9700,15 +9682,15 @@ var PreloadingRuleSetSelector = class {
 // ../../front_end/panels/application/PreloadingTreeElement.ts
 var UIStrings11 = {
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Label for the speculative loads tree item in the sidebar of the Application panel.
    */
   speculativeLoads: "Speculative loads",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Label for the rules child tree item under speculative loads in the sidebar of the Application panel.
    */
   rules: "Rules",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Label for the speculations child tree item under speculative loads in the sidebar of the Application panel.
    */
   speculations: "Speculations"
 };
@@ -18308,206 +18290,205 @@ var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
 // ../../front_end/panels/application/ApplicationPanelSidebar.ts
 var UIStrings29 = {
   /**
-   * @description Text of a context menu item to start a chat with AI
+   * @description Context menu item to start a chat with AI in the Application panel sidebar.
    */
   startAChat: "Start a chat",
   /**
-   * @description Text of a context menu item to explain contents of a local/session storage bucket with AI
+   * @description Context menu item to explain storage with AI in the Application panel sidebar.
    */
   explainStorage: "Explain storage",
   /**
-   * @description Text of a context menu item to explain web cookies with AI
+   * @description Context menu item to explain cookies with AI in the Application panel sidebar.
    */
   explainCookies: "Explain cookies",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Section header for the application section in the sidebar of the Application panel.
    */
   application: "Application",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Tree item label for ads in the sidebar of the Application panel.
    */
   ads: "Ads",
   /**
-   * @description Tooltip for the experimental icon in the Ads panel
+   * @description Tooltip for the experimental feature icon next to the ads item in the sidebar of the Application panel.
    */
   experimental: "Experimental",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Tree item label for storage in the sidebar of the Application panel.
    */
   storage: "Storage",
   /**
-   * @description Text in Application Panelthat shows if no local storage
-   *             can be shown.
+   * @description Empty state text displayed when no local storage is detected in the Application panel.
    */
   noLocalStorage: "No local storage detected",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Tree item label for local storage in the sidebar of the Application panel.
    */
   localStorage: "Local storage",
   /**
-   * @description Text in the Application panel describing the local storage tab.
+   * @description Informational text describing the local storage view in the Application panel.
    */
   localStorageDescription: "On this page you can view, add, edit, and delete local storage key-value pairs",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Tree item label for session storage in the sidebar of the Application panel.
    */
   sessionStorage: "Session storage",
   /**
-   * @description Text in Application Panel if no session storage can be shown.
+   * @description Empty state text displayed when no session storage is detected in the Application panel.
    */
   noSessionStorage: "No session storage detected",
   /**
-   * @description Text in the Application panel describing the session storage tab.
+   * @description Informational text describing the session storage view in the Application panel.
    */
   sessionStorageDescription: "On this page you can view, add, edit, and delete session storage key-value pairs",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Tree item label for extension storage in the sidebar of the Application panel.
    */
   extensionStorage: "Extension storage",
   /**
-   * @description Text in Application Panel if no extension storage can be shown
+   * @description Empty state text displayed when no extension storage is detected in the Application panel.
    */
   noExtensionStorage: "No extension storage detected",
   /**
-   * @description Text in the Application panel describing the extension storage tab.
+   * @description Informational text describing the extension storage view in the Application panel.
    */
   extensionStorageDescription: "On this page you can view, add, edit, and delete extension storage key-value pairs",
   /**
-   * @description Text for extension session storage in Application panel
+   * @description Label for extension session storage in the Application panel.
    */
   extensionSessionStorage: "Session",
   /**
-   * @description Text for extension local storage in Application panel
+   * @description Label for extension local storage in the Application panel.
    */
   extensionLocalStorage: "Local",
   /**
-   * @description Text for extension sync storage in Application panel
+   * @description Label for extension sync storage in the Application panel.
    */
   extensionSyncStorage: "Sync",
   /**
-   * @description Text for extension managed storage in Application panel
+   * @description Label for extension managed storage in the Application panel.
    */
   extensionManagedStorage: "Managed",
   /**
-   * @description Text for web cookies
+   * @description Tree item label for cookies in the sidebar of the Application panel.
    */
   cookies: "Cookies",
   /**
-   * @description Text in the Application Panel if no cookies are set
+   * @description Empty state text displayed when no cookies are set in the Application panel.
    */
   noCookies: "No cookies set",
   /**
-   * @description Text for web cookies
+   * @description Informational text describing the cookies view in the Application panel.
    */
   cookiesDescription: "On this page you can view, add, edit, and delete cookies",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Tree item label for background services in the sidebar of the Application panel.
    */
   backgroundServices: "Background services",
   /**
-   * @description Text for rendering frames
+   * @description Tree item label for frames in the sidebar of the Application panel.
    */
   frames: "Frames",
   /**
-   * @description Text that appears on a button for the manifest resource type filter.
+   * @description Tree item label for the web app manifest in the sidebar of the Application panel.
    */
   manifest: "Manifest",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Tree item label for IndexedDB in the sidebar of the Application panel.
    */
   indexeddb: "IndexedDB",
   /**
-   * @description Text in Application Panel if no indexedDB is detected
+   * @description Empty state text displayed when no IndexedDB database is detected in the Application panel.
    */
-  noIndexeddb: "No indexedDB detected",
+  noIndexeddb: "No IndexedDB detected",
   /**
-   * @description Text in the Application panel describing the extension storage tab.
+   * @description Informational text describing the IndexedDB view in the Application panel.
    */
-  indexeddbDescription: "On this page you can view and delete indexedDB key-value pairs and databases",
+  indexeddbDescription: "On this page you can view and delete IndexedDB key-value pairs and databases",
   /**
-   * @description A context menu item in the Application Panel Sidebar of the Application panel
+   * @description Context menu item to refresh IndexedDB in the Application panel sidebar.
    */
   refreshIndexeddb: "Refresh IndexedDB",
   /**
-   * @description Tooltip in Application Panel Sidebar of the Application panel
+   * @description Tooltip for an empty database showing its version in the IndexedDB tree item in the Application panel sidebar.
    * @example {1.0} PH1
    */
   versionSEmpty: "Version: {PH1} (empty)",
   /**
-   * @description Tooltip in Application Panel Sidebar of the Application panel
+   * @description Tooltip for a database showing its version in the IndexedDB tree item in the Application panel sidebar.
    * @example {1.0} PH1
    */
   versionS: "Version: {PH1}",
   /**
-   * @description Text to clear content
+   * @description Context menu item to clear data in the Application panel sidebar.
    */
   clear: "Clear",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Tooltip for an object store showing its key path in the IndexedDB tree item in the Application panel sidebar.
    * @example {"key path"} PH1
    */
   keyPathS: "Key path: {PH1}",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Tree item label for local files in the sidebar of the Application panel.
    */
-  localFiles: "Local Files",
+  localFiles: "Local files",
   /**
-   * @description Tooltip in Application Panel Sidebar of the Application panel
+   * @description Tooltip for a cookie domain showing which frames use its cookies in the Application panel sidebar.
    * @example {https://example.com} PH1
    */
   cookiesUsedByFramesFromS: "Cookies used by frames from {PH1}",
   /**
-   * @description Text in Frames View of the Application panel
+   * @description Tree item label for opened windows in the sidebar of the Application panel.
    */
-  openedWindows: "Opened Windows",
+  openedWindows: "Opened windows",
   /**
-   * @description Text in Frames View of the Application panel
+   * @description Informational text describing the opened windows view in the Application panel.
    */
-  openedWindowsDescription: "On this page you can view windows opened via window.open()",
+  openedWindowsDescription: "On this page you can view windows opened via `window.open()`",
   /**
-   * @description Label for plural of worker type: web workers
+   * @description Tree item label for Web Workers in the sidebar of the Application panel.
    */
   webWorkers: "Web Workers",
   /**
-   * @description Label in frame tree for unavailable document
+   * @description Tree item label in the frame tree when no document is detected in the Application panel sidebar.
    */
   documentNotAvailable: "No document detected",
   /**
-   * @description Description of content of unavailable document in Application panel
+   * @description Informational text explaining that a document was generated dynamically via document.write().
    */
-  theContentOfThisDocumentHasBeen: "The content of this document has been generated dynamically via 'document.write()'",
+  theContentOfThisDocumentHasBeen: "The content of this document has been generated dynamically via `document.write()`",
   /**
-   * @description Text in Frames View of the Application panel
+   * @description Tree item label for an opened window without a title in the sidebar of the Application panel.
    */
   windowWithoutTitle: "Window without title",
   /**
-   * @description Default name for worker
+   * @description Fallback tree item label for a worker without a title or URL in the sidebar of the Application panel.
    */
   worker: "worker",
   /**
-   * @description Description text for describing the dedicated worker tab.
+   * @description Informational text describing the dedicated workers view in the Application panel.
    */
-  workerDescription: "On this page you can view dedicated workers that are created by the parent frame",
+  workerDescription: "On this page you can view dedicated workers added by the parent frame",
   /**
-   * @description Aria text for screen reader to announce they can scroll to top of manifest if invoked
+   * @description Accessibility announcement indicating that invoking the element scrolls to the top of the manifest.
    */
-  onInvokeManifestAlert: "Manifest: Invoke to scroll to the top of manifest",
+  onInvokeManifestAlert: "Manifest: invoke to scroll to the top of manifest",
   /**
-   * @description Aria text for screen reader to announce they can scroll to a section if invoked
+   * @description Accessibility announcement indicating that invoking the element scrolls to a section in the manifest.
    * @example {"Identity"} PH1
    */
-  beforeInvokeAlert: "{PH1}: Invoke to scroll to this section in manifest",
+  beforeInvokeAlert: "{PH1}: invoke to scroll to this section in manifest",
   /**
-   * @description Alert message for screen reader to announce which subsection is being scrolled to
+   * @description Accessibility announcement indicating that the manifest view was scrolled to a section.
    * @example {"Identity"} PH1
    */
   onInvokeAlert: "Scrolled to {PH1}",
   /**
-   * @description Application sidebar panel
+   * @description Accessibility label for the Application panel sidebar.
    */
   applicationSidebarPanel: "Application panel sidebar",
   /**
-   * @description Description text in the Application Panel describing a frame's resources
+   * @description Informational text describing a frame's resources in the Application panel.
    */
   resourceDescription: "On this page you can view the frame\u2019s resources"
 };

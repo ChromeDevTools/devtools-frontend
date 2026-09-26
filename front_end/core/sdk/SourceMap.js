@@ -9,7 +9,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import { scopeTreeForScript } from './ScopeTreeCache.js';
 import { buildOriginalScopes, decodePastaRanges } from './SourceMapFunctionRanges.js';
 import { decodeRangeMappings } from './SourceMapRangeMappings.js';
-import { SourceMapScopesInfo } from './SourceMapScopesInfo.js';
+import { scriptRelativePosition, SourceMapScopesInfo } from './SourceMapScopesInfo.js';
 /**
  * Parses the {@link content} as JSON, ignoring BOM markers in the beginning, and
  * also handling the CORB bypass prefix correctly.
@@ -674,7 +674,8 @@ export class SourceMap {
         if (this.#provenance === "user" /* SourceMapProvenance.USER */ || !this.#scopesInfo?.hasVariablesAndBindings()) {
             return null;
         }
-        return this.#scopesInfo.resolveMappedVariablesAtPosition(location.lineNumber, location.columnNumber, ignoreInnerBlockScopes);
+        const { line, column } = scriptRelativePosition(location);
+        return this.#scopesInfo.resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes);
     }
     findOriginalFunctionName(position) {
         this.#ensureSourceMapProcessed();

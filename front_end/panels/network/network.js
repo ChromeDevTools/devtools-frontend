@@ -15297,7 +15297,11 @@ var UIStrings16 = {
   /**
    * @description Text to show more content
    */
-  showMore: "Show more"
+  showMore: "Show more",
+  /**
+   * @description Context menu item to copy the shown text to the clipboard
+   */
+  copy: "Copy"
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/network/ShowMoreDetailsWidget.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
@@ -15307,7 +15311,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   const onContextMenuShowMore = (event) => {
     const contextMenu = new UI16.ContextMenu.ContextMenu(event);
     if (input.copy) {
-      contextMenu.clipboardSection().appendItem(input.copy.menuItem, input.copy.handler);
+      contextMenu.clipboardSection().appendItem(i18nString15(UIStrings16.copy), input.copy, { jslogContext: "copy" });
     }
     if (!input.showMore) {
       contextMenu.newSection().appendItem(i18nString15(UIStrings16.showMore), input.onToggle, { jslogContext: "show-more" });
@@ -15342,6 +15346,9 @@ var ShowMoreDetailsWidget = class extends UI16.Widget.Widget {
   set text(text) {
     this.#text = text;
     this.requestUpdate();
+  }
+  get copy() {
+    return this.#copy;
   }
   set copy(copy) {
     this.#copy = copy;
@@ -16321,11 +16328,14 @@ var DEFAULT_VIEW9 = (input, output, target) => {
     contextMenu.clipboardSection().appendItem(title, copyValueHandler, { jslogContext });
     void contextMenu.show();
   };
-  const createSourceText = (text) => html11`<li role=treeitem
+  const createSourceText = (text) => {
+    const copy = () => input.copyValue(text);
+    return html11`<li role=treeitem
       @contextmenu=${copyValueContextmenu(i18nString17(UIStrings18.copyPayload), () => text, "copy-payload")}>
-        <devtools-widget class='payload-value source-code' ${widget6(ShowMoreDetailsWidget, { text })}>
+        <devtools-widget class='payload-value source-code' ${widget6(ShowMoreDetailsWidget, { text, copy })}>
         </devtools-widget>
       </li>`;
+  };
   const createParsedParams = (params, decodeParameters) => params.map((param) => {
     return html11`
         <li role=treeitem

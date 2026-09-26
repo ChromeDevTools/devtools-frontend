@@ -7,6 +7,8 @@ var __export = (target, all) => {
 // ../../front_end/panels/sources/components/HeadersView.ts
 var HeadersView_exports = {};
 __export(HeadersView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  HEADERS_VIEW_DEFAULT_VIEW: () => HEADERS_VIEW_DEFAULT_VIEW,
   HeadersView: () => HeadersView,
   HeadersViewComponent: () => HeadersViewComponent
 });
@@ -143,7 +145,7 @@ var HeadersView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./HeadersView.css")} */`;
 
 // ../../front_end/panels/sources/components/HeadersView.ts
-var { html } = Lit;
+var { html, Directives: { ref } } = Lit;
 var UIStrings = {
   /**
    * @description The title of a button that adds a field to input a header in the editor form.
@@ -180,16 +182,36 @@ var str_ = i18n.i18n.registerUIStrings("panels/sources/components/HeadersView.ts
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var DEFAULT_HEADER_VALUE = "header value";
 var getDefaultHeaderName = (i) => `header-name-${i}`;
+var HEADERS_VIEW_DEFAULT_VIEW = (input, output, target) => {
+  Lit.render(html`
+    <devtools-sources-headers-view
+      .data=${input.data}
+      ${ref((el) => {
+    if (el) {
+      output.component = el;
+    }
+  })}
+    ></devtools-sources-headers-view>
+  `, target);
+};
 var HeadersView = class extends UI.View.SimpleView {
-  #headersViewComponent = new HeadersViewComponent();
+  #headersViewComponent;
   #uiSourceCode;
-  constructor(uiSourceCode) {
+  #view;
+  #componentData;
+  constructor(uiSourceCode, view = HEADERS_VIEW_DEFAULT_VIEW) {
     super({
       title: i18n.i18n.lockedString("HeadersView"),
       viewId: "headers-view",
       jslog: `${VisualLogging.pane("headers-view")}`
     });
+    this.#view = view;
     this.#uiSourceCode = uiSourceCode;
+    this.#componentData = {
+      headerOverrides: [],
+      uiSourceCode: this.#uiSourceCode,
+      parsingError: false
+    };
     this.#uiSourceCode.addEventListener(
       Workspace.UISourceCode.Events.WorkingCopyChanged,
       this.#onWorkingCopyChanged,
@@ -200,8 +222,19 @@ var HeadersView = class extends UI.View.SimpleView {
       this.#onWorkingCopyCommitted,
       this
     );
-    this.element.appendChild(this.#headersViewComponent);
+    this.performUpdate();
     void this.#setInitialData();
+  }
+  performUpdate() {
+    const that = this;
+    const output = {
+      set component(value2) {
+        if (value2) {
+          that.#headersViewComponent = value2;
+        }
+      }
+    };
+    this.#view({ data: this.#componentData }, output, this.contentElement);
   }
   async #setInitialData() {
     const contentDataOrError = await this.#uiSourceCode.requestContentData();
@@ -220,11 +253,12 @@ var HeadersView = class extends UI.View.SimpleView {
       console.error("Failed to parse", this.#uiSourceCode.url(), "for locally overriding headers.");
       parsingError = true;
     }
-    this.#headersViewComponent.data = {
+    this.#componentData = {
       headerOverrides,
       uiSourceCode: this.#uiSourceCode,
       parsingError
     };
+    this.performUpdate();
   }
   #onWorkingCopyChanged() {
     this.#setComponentData(this.#uiSourceCode.workingCopy());
@@ -421,7 +455,7 @@ var HeadersViewComponent = class extends HTMLElement {
         return;
       }
       range.deleteContents();
-      const textNode = document.createTextNode(text);
+      const textNode = new Text(text);
       range.insertNode(textNode);
       range.selectNodeContents(textNode);
       range.collapse(false);
@@ -435,112 +469,121 @@ var HeadersViewComponent = class extends HTMLElement {
     if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error("HeadersView render was not scheduled");
     }
-    if (this.#parsingError) {
-      const fileName = this.#uiSourceCode?.name() || ".headers";
-      Lit.render(html`
-        <style>${HeadersView_css_default}</style>
-        <div class="center-wrapper">
-          <div class="centered">
-            <div class="error-header">${i18nString(UIStrings.errorWhenParsing, { PH1: fileName })}</div>
-            <div class="error-body">${i18nString(UIStrings.parsingErrorExplainer, { PH1: fileName })}</div>
-          </div>
-        </div>
-      `, this.#shadow, { host: this });
-      return;
-    }
-    Lit.render(html`
-      <style>${HeadersView_css_default}</style>
-      ${this.#headerOverrides.map(
-      (headerOverride, blockIndex) => html`
-          ${this.#renderApplyToRow(headerOverride.applyTo, blockIndex)}
-          ${headerOverride.headers.map(
-        (header, headerIndex) => html`
-              ${this.#renderHeaderRow(header, blockIndex, headerIndex)}
-            `
-      )}
-        `
-    )}
-      <devtools-button
-          .variant=${Buttons.Button.Variant.OUTLINED}
-          .jslogContext=${"headers-view.add-override-rule"}
-          class="add-block">
-        ${i18nString(UIStrings.addOverrideRule)}
-      </devtools-button>
-      <div class="learn-more-row">
-        <devtools-link
-            href="https://goo.gle/devtools-override"
-            class="link"
-            jslogContext=${"learn-more"}>${i18nString(UIStrings.learnMore)}</devtools-link>
-      </div>
-    `, this.#shadow, { host: this });
+    const output = {};
+    DEFAULT_VIEW(
+      {
+        headerOverrides: this.#headerOverrides,
+        parsingError: this.#parsingError,
+        fileName: this.#uiSourceCode?.name() || ".headers",
+        isDeletable: (blockIndex, headerIndex) => this.#isDeletable(blockIndex, headerIndex)
+      },
+      output,
+      this.#shadow
+    );
     if (this.#focusElement) {
-      let focusElement = null;
-      if (this.#focusElement.headerIndex) {
-        focusElement = this.#shadow.querySelector(`[data-block-index="${this.#focusElement.blockIndex}"][data-header-index="${this.#focusElement.headerIndex}"] .header-name`);
-      } else {
-        focusElement = this.#shadow.querySelector(`[data-block-index="${this.#focusElement.blockIndex}"] .apply-to`);
-      }
-      if (focusElement) {
-        focusElement.focus();
-      }
+      output.focusElement?.(this.#focusElement.blockIndex, this.#focusElement.headerIndex);
       this.#focusElement = null;
     }
   }
-  #renderApplyToRow(pattern, blockIndex) {
-    return html`
-      <div class="row" data-block-index=${blockIndex}
-           jslog=${VisualLogging.treeItem(pattern === "*" ? pattern : void 0).track({ resize: true })}>
-        <div>${i18n.i18n.lockedString("Apply to")}</div>
-        <div class="separator">:</div>
-        ${this.#renderEditable(pattern, "apply-to")}
-        <devtools-button
-        title=${i18nString(UIStrings.removeBlock)}
-        .size=${Buttons.Button.Size.SMALL}
-        .iconName=${"bin"}
-        .iconWidth=${"14px"}
-        .iconHeight=${"14px"}
-        .variant=${Buttons.Button.Variant.ICON}
-        .jslogContext=${"headers-view.remove-apply-to-section"}
-        class="remove-block inline-button"
-      ></devtools-button>
-      </div>
-    `;
-  }
-  #renderHeaderRow(header, blockIndex, headerIndex) {
-    return html`
-      <div class="row padded" data-block-index=${blockIndex} data-header-index=${headerIndex}
-           jslog=${VisualLogging.treeItem(header.name).parent("headers-editor-row-parent").track({ resize: true })}>
-        ${this.#renderEditable(header.name, "header-name red", true)}
-        <div class="separator">:</div>
-        ${this.#renderEditable(header.value, "header-value")}
-        <devtools-button
-          title=${i18nString(UIStrings.addHeader)}
-          .size=${Buttons.Button.Size.SMALL}
-          .iconName=${"plus"}
-          .variant=${Buttons.Button.Variant.ICON}
-          .jslogContext=${"headers-view.add-header"}
-          class="add-header inline-button"
-        ></devtools-button>
-        <devtools-button
-          title=${i18nString(UIStrings.removeHeader)}
-          .size=${Buttons.Button.Size.SMALL}
-          .iconName=${"bin"}
-          .variant=${Buttons.Button.Variant.ICON}
-          ?hidden=${!this.#isDeletable(blockIndex, headerIndex)}
-          .jslogContext=${"headers-view.remove-header"}
-          class="remove-header inline-button"
-        ></devtools-button>
-      </div>
-    `;
-  }
-  #renderEditable(value2, className, isKey) {
+};
+var DEFAULT_VIEW = (input, output, target) => {
+  const renderEditable = (value2, className, isKey) => {
     const jslog = isKey ? VisualLogging.key() : VisualLogging.value();
     return html`<span jslog=${jslog.track({ change: true, keydown: "Enter|Escape|Tab", click: true })}
                               contenteditable="true"
                               class="editable ${className}"
                               tabindex="0"
                               .innerText=${Lit.Directives.live(value2)}></span>`;
-  }
+  };
+  const renderApplyToRow = (pattern, blockIndex) => {
+    return html`
+      <div class="row" data-block-index=${blockIndex}
+           jslog=${VisualLogging.treeItem(pattern === "*" ? pattern : void 0).track({ resize: true })}>
+        <div>${i18n.i18n.lockedString("Apply to")}</div>
+        <div class="separator">:</div>
+        ${renderEditable(pattern, "apply-to")}
+        <devtools-button
+          title=${i18nString(UIStrings.removeBlock)}
+          .size=${Buttons.Button.Size.SMALL}
+          .iconName=${"bin"}
+          .iconWidth=${"14px"}
+          .iconHeight=${"14px"}
+          .variant=${Buttons.Button.Variant.ICON}
+          .jslogContext=${"headers-view.remove-apply-to-section"}
+          class="remove-block inline-button"
+        ></devtools-button>
+      </div>
+    `;
+  };
+  const renderHeaderRow = (header, blockIndex, headerIndex) => {
+    return html`
+          <div class="row padded" data-block-index=${blockIndex} data-header-index=${headerIndex}
+               jslog=${VisualLogging.treeItem(header.name).parent("headers-editor-row-parent").track({ resize: true })}>
+            ${renderEditable(header.name, "header-name red", true)}
+            <div class="separator">:</div>
+            ${renderEditable(header.value, "header-value")}
+            <devtools-button
+              title=${i18nString(UIStrings.addHeader)}
+              .size=${Buttons.Button.Size.SMALL}
+              .iconName=${"plus"}
+              .variant=${Buttons.Button.Variant.ICON}
+              .jslogContext=${"headers-view.add-header"}
+              class="add-header inline-button"
+            ></devtools-button>
+            <devtools-button
+              title=${i18nString(UIStrings.removeHeader)}
+              .size=${Buttons.Button.Size.SMALL}
+              .iconName=${"bin"}
+              .variant=${Buttons.Button.Variant.ICON}
+              ?hidden=${!input.isDeletable(blockIndex, headerIndex)}
+              .jslogContext=${"headers-view.remove-header"}
+              class="remove-header inline-button"
+            ></devtools-button>
+          </div>
+        `;
+  };
+  Lit.render(
+    input.parsingError ? html`
+              <style>${HeadersView_css_default}</style>
+              <div class="center-wrapper">
+                <div class="centered">
+                  <div class="error-header">${i18nString(UIStrings.errorWhenParsing, { PH1: input.fileName })}</div>
+                  <div class="error-body">${i18nString(UIStrings.parsingErrorExplainer, { PH1: input.fileName })}</div>
+                </div>
+              </div>
+            ` : html`
+              <style>${HeadersView_css_default}</style>
+              ${input.headerOverrides.map(
+      (headerOverride, blockIndex) => html`
+                  ${renderApplyToRow(headerOverride.applyTo, blockIndex)}
+                  ${headerOverride.headers.map(
+        (header, headerIndex) => html`
+                      ${renderHeaderRow(header, blockIndex, headerIndex)}
+                    `
+      )}
+                `
+    )}
+              <devtools-button
+                  .variant=${Buttons.Button.Variant.OUTLINED}
+                  .jslogContext=${"headers-view.add-override-rule"}
+                  class="add-block">
+                ${i18nString(UIStrings.addOverrideRule)}
+              </devtools-button>
+              <div class="learn-more-row">
+                <devtools-link
+                    href="https://goo.gle/devtools-override"
+                    class="link"
+                    jslogContext=${"learn-more"}>${i18nString(UIStrings.learnMore)}</devtools-link>
+              </div>
+            `,
+    target
+  );
+  output.focusElement = (blockIndex, headerIndex) => {
+    const focusElement = headerIndex !== void 0 ? target.querySelector(`[data-block-index="${blockIndex}"][data-header-index="${headerIndex}"] .header-name`) : target.querySelector(`[data-block-index="${blockIndex}"] .apply-to`);
+    if (focusElement) {
+      focusElement.focus();
+    }
+  };
 };
 VisualLogging.registerParentProvider("headers-editor-row-parent", (e) => {
   while (e.previousElementSibling?.classList?.contains("padded")) {

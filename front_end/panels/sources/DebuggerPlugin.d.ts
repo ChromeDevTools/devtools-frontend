@@ -1,6 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
+import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
@@ -98,6 +99,23 @@ export interface ScopeMapping {
     scopeStart: number;
     scopeEnd: number;
     variableMap: Map<string, SDK.RemoteObject.RemoteObject | null>;
+}
+/**
+ * Caches the {@link ScopeMapping}s for the selected frame of a single {@link DebuggerPlugin}.
+ *
+ * The editor offsets in a {@link ScopeMapping} are derived from raw and UI locations, which describe
+ * the committed script content. Once the user edits the file, these offsets no longer match the
+ * editor content. So no mappings are handed out while the UISourceCode has unsaved edits.
+ *
+ * The cache is keyed on the DebuggableFrameFlavor rather than the SDK CallFrame: Re-translating a
+ * frame (e.g. after a source map is attached) produces a new flavor for the same SDK CallFrame.
+ */
+export declare class ScopeMappingsCache {
+    #private;
+    constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode);
+    /** @returns the (cached) scope mappings for `frame`, or `null` if the UISourceCode has unsaved edits. */
+    get(frame: StackTrace.StackTrace.DebuggableFrameFlavor, compute: () => Promise<ScopeMapping[]>): Promise<ScopeMapping[]> | null;
+    clear(): void;
 }
 export declare function computeScopeMappings(callFrame: SDK.DebuggerModel.CallFrame, rawLocationToEditorOffset: (l: SDK.DebuggerModel.Location | null) => Promise<number | null>, uiPositionToEditorOffset?: (line: number, column: number) => number | null, resolvedScopeChain?: SDK.DebuggerModel.ScopeChainEntry[]): Promise<ScopeMapping[]>;
 export declare function findVariableInScopeMappings(name: string, pos: number, scopeMappings: ScopeMapping[]): {

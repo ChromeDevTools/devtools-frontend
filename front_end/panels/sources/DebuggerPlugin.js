@@ -482,6 +482,7 @@ export class DebuggerPlugin extends Plugin {
         }
     }
     workingCopyChanged() {
+        this.#scopeMappingsCache.clear();
         this.setMuted(this.uiSourceCode.isDirty());
     }
     workingCopyCommitted() {
@@ -555,7 +556,7 @@ export class DebuggerPlugin extends Plugin {
         return {
             box,
             show: async (popover) => {
-                const scopeMappings = await this.#getScopeMappings(selectedCallFrame);
+                const scopeMappings = await this.#getScopeMappings(debuggableFrame) ?? [];
                 const scopedVariable = findVariableInScopeMappings(evaluationText, highlightRange.from, scopeMappings);
                 if (scopedVariable.found) {
                     if (!scopedVariable.value) {
@@ -835,16 +836,11 @@ export class DebuggerPlugin extends Plugin {
         const offset = this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber));
         return offset ?? null;
     }
-    #cachedScopeMappings;
-    #getScopeMappings(callFrame, resolvedScopeChain) {
-        if (this.#cachedScopeMappings?.callFrame !== callFrame) {
-            const url = this.uiSourceCode.url();
-            this.#cachedScopeMappings = {
-                callFrame,
-                promise: computeScopeMappings(callFrame, location => this.#rawLocationToEditorOffset(location, url), (line, col) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(line, col)) ?? null, resolvedScopeChain),
-            };
-        }
-        return this.#cachedScopeMappings.promise;
+    #scopeMappingsCache = new ScopeMappingsCache(this.uiSourceCode);
+    /** @returns `null` if the scope mappings can't be used because the file has unsaved edits. */
+    #getScopeMappings(debuggableFrame, resolvedScopeChain) {
+        const url = this.uiSourceCode.url();
+        return this.#scopeMappingsCache.get(debuggableFrame, () => computeScopeMappings(debuggableFrame.sdkFrame, location => this.#rawLocationToEditorOffset(location, url), (line, col) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(line, col)) ?? null, resolvedScopeChain));
     }
     async computeValueDecorations() {
         if (!this.editor) {
@@ -892,9 +888,9 @@ export class DebuggerPlugin extends Plugin {
         if (variableNames.length === 0) {
             return null;
         }
-        const scopeMappings = await this.#getScopeMappings(callFrame, scopeChain);
+        const scopeMappings = await this.#getScopeMappings(debuggableFrame, scopeChain);
         // After the `await` the DebuggerPlugin could have been disposed. Re-check `this.editor`.
-        if (!this.editor || scopeMappings.length === 0) {
+        if (!this.editor || !scopeMappings?.length) {
             return null;
         }
         const variablesByLine = getVariableValuesByLine(scopeMappings, variableNames);
@@ -1835,6 +1831,36 @@ export function getVariableNamesByLine(editorState, fromPos, toPos, currentPos, 
         },
     });
     return names;
+}
+/**
+ * Caches the {@link ScopeMapping}s for the selected frame of a single {@link DebuggerPlugin}.
+ *
+ * The editor offsets in a {@link ScopeMapping} are derived from raw and UI locations, which describe
+ * the committed script content. Once the user edits the file, these offsets no longer match the
+ * editor content. So no mappings are handed out while the UISourceCode has unsaved edits.
+ *
+ * The cache is keyed on the DebuggableFrameFlavor rather than the SDK CallFrame: Re-translating a
+ * frame (e.g. after a source map is attached) produces a new flavor for the same SDK CallFrame.
+ */
+export class ScopeMappingsCache {
+    #uiSourceCode;
+    #cached;
+    constructor(uiSourceCode) {
+        this.#uiSourceCode = uiSourceCode;
+    }
+    /** @returns the (cached) scope mappings for `frame`, or `null` if the UISourceCode has unsaved edits. */
+    get(frame, compute) {
+        if (this.#uiSourceCode.isDirty()) {
+            return null;
+        }
+        if (this.#cached?.frame !== frame) {
+            this.#cached = { frame, promise: compute() };
+        }
+        return this.#cached.promise;
+    }
+    clear() {
+        this.#cached = undefined;
+    }
 }
 export async function computeScopeMappings(callFrame, rawLocationToEditorOffset, uiPositionToEditorOffset, resolvedScopeChain) {
     const scopeMappings = [];

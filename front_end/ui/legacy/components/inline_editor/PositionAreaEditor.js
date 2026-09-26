@@ -4,6 +4,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Lit from '../../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import positionAreaEditorStyles from './positionAreaEditor.css.js';
 const UIStrings = {
@@ -16,21 +17,9 @@ const UIStrings = {
      */
     positionAreaGrid: 'position-area grid',
     /**
-     * @description Title for the block axis section in the position-area editor.
+     * @description Title for the mode section and accessible label for the mode radio button group in the position-area editor.
      */
-    block: 'Block',
-    /**
-     * @description Title for the inline axis section in the position-area editor.
-     */
-    inline: 'Inline',
-    /**
-     * @description Accessible label for the block axis mode radio button group.
-     */
-    blockAxisMode: 'Block axis mode',
-    /**
-     * @description Accessible label for the inline axis mode radio button group.
-     */
-    inlineAxisMode: 'Inline axis mode',
+    mode: 'Mode',
     /**
      * @description Label for physical mode radio button in the position-area editor.
      */
@@ -262,6 +251,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     const container = {
         attributes: {
             tabindex: '0',
+            jslog: `${VisualLogging.dialog('position-area-editor').parent('mapped').track({ keydown: 'Enter|Escape' })}`,
         },
     };
     if (!input.area) {
@@ -424,32 +414,40 @@ export const DEFAULT_VIEW = (input, output, target) => {
     const propertyValue = stringifyPositionArea(input.area);
     const blockAxis = input.area.primaryAxis === "block" /* Axis.BLOCK */ ? input.area.first : input.area.second;
     const inlineAxis = input.area.primaryAxis === "inline" /* Axis.INLINE */ ? input.area.first : input.area.second;
-    function renderModeRadioGroup(axis, currentMode) {
+    const currentMode = blockAxis.mode === inlineAxis.mode ? blockAxis.mode : undefined;
+    const selfDisabled = (isGeneric(blockAxis) || blockAxis.mode === "physical" /* Mode.PHYSICAL */) &&
+        (isGeneric(inlineAxis) || inlineAxis.mode === "physical" /* Mode.PHYSICAL */);
+    const selfIndeterminate = !isGeneric(blockAxis) && !isGeneric(inlineAxis) && blockAxis.self !== inlineAxis.self;
+    const selfChecked = !selfIndeterminate && (blockAxis.self || inlineAxis.self);
+    function renderModeRadioGroup(currentMode) {
         const modes = [
             { mode: "physical" /* Mode.PHYSICAL */, label: i18nString(UIStrings.physical) },
             { mode: "coordinate" /* Mode.COORDINATE */, label: i18nString(UIStrings.coordinate) },
             { mode: "logical" /* Mode.LOGICAL */, label: i18nString(UIStrings.logical) },
             { mode: "auto" /* Mode.AUTO */, label: i18nString(UIStrings.auto) },
         ];
-        const axisModeLabel = axis === "block" /* Axis.BLOCK */ ? i18nString(UIStrings.blockAxisMode) : i18nString(UIStrings.inlineAxisMode);
+        // clang-format off
         return html `
-      <fieldset class="chip-radio-group" aria-label=${axisModeLabel}>
+      <fieldset class="chip-radio-group" aria-label=${i18nString(UIStrings.mode)}>
         ${modes.map(({ mode, label }) => {
-            const id = `${axis}-mode-${mode}`;
+            const id = `mode-${mode}`;
             return html `
-            <input
-              type="radio"
-              id=${id}
-              name="${axis}-mode"
-              value=${mode}
-              .checked=${currentMode === mode}
-              @change=${() => input.onModeChange(axis, mode)}
-            >
-            <label for=${id}>${label}</label>
-          `;
+                <input
+                  type="radio"
+                  id=${id}
+                  name="mode"
+                  value=${mode}
+                  .checked=${currentMode === mode}
+                  @change=${() => input.onModeChange(mode)}
+                >
+                <label
+                  for=${id}
+                  jslog=${VisualLogging.toggle(mode).track({ click: true })}
+                >${label}</label>
+              `;
         })}
-      </fieldset>
-    `;
+      </fieldset>`;
+        // clang-format on
     }
     // clang-format off
     render(html `
@@ -463,6 +461,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         aria-label=${i18nString(UIStrings.positionAreaGrid)}
         aria-description=${i18nString(UIStrings.positionAreaGridDescription)}
         aria-multiselectable="true"
+        jslog=${VisualLogging.canvas('position-area-grid').track({ click: true, drag: true, keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space' })}
         data-x-start=${x.start} data-x-end=${x.end} data-y-start=${y.start} data-y-end=${y.end}
         @pointerdown=${onPointerDown}
         @pointermove=${onPointerMove}
@@ -490,27 +489,17 @@ export const DEFAULT_VIEW = (input, output, target) => {
     <div class=position-area-controls>
       <div class=axis-section>
         <div class=axis-header>
-          <span class=axis-title>${i18nString(UIStrings.block)}</span>
+          <span class=axis-title>${i18nString(UIStrings.mode)}</span>
           <devtools-checkbox
-            .checked=${blockAxis.self}
-            ?disabled=${isGeneric(blockAxis)}
-            @change=${(e) => input.onSelfChange("block" /* Axis.BLOCK */, e.target.checked)}>
+            .checked=${selfChecked}
+            .indeterminate=${selfIndeterminate}
+            ?disabled=${selfDisabled}
+            jslog=${VisualLogging.toggle('self').track({ change: true })}
+            @change=${(e) => input.onSelfChange(e.target.checked)}>
             <span class="self-checkbox-label source-code">self</span>
           </devtools-checkbox>
         </div>
-        ${renderModeRadioGroup("block" /* Axis.BLOCK */, blockAxis.mode)}
-      </div>
-      <div class=axis-section>
-        <div class=axis-header>
-          <span class=axis-title>${i18nString(UIStrings.inline)}</span>
-          <devtools-checkbox
-            .checked=${inlineAxis.self}
-            ?disabled=${isGeneric(inlineAxis)}
-            @change=${(e) => input.onSelfChange("inline" /* Axis.INLINE */, e.target.checked)}>
-            <span class="self-checkbox-label source-code">self</span>
-          </devtools-checkbox>
-        </div>
-        ${renderModeRadioGroup("inline" /* Axis.INLINE */, inlineAxis.mode)}
+        ${renderModeRadioGroup(currentMode)}
       </div>
     </div>
     `, 
@@ -626,10 +615,10 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
                 }
             }
             else {
+                const self = current.self || other.self;
+                current.self = !isGeneric(current) && self;
                 other.mode = mode;
-                if (!isGeneric(current)) {
-                    other.self = current.self;
-                }
+                other.self = !isGeneric(other) && self;
             }
         }
         else {
@@ -673,8 +662,14 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
             onSelectStart: this.#startSelection.bind(this),
             onSelect: this.#select.bind(this),
             onSelectEnd: this.#finishSelection.bind(this),
-            onModeChange: this.#setAxisMode.bind(this),
-            onSelfChange: this.#setAxisSelf.bind(this),
+            onModeChange: (mode) => {
+                this.#setAxisMode("block" /* Axis.BLOCK */, mode);
+                this.#setAxisMode("inline" /* Axis.INLINE */, mode);
+            },
+            onSelfChange: (self) => {
+                this.#setAxisSelf("block" /* Axis.BLOCK */, self);
+                this.#setAxisSelf("inline" /* Axis.INLINE */, self);
+            },
         }, undefined, this.contentElement);
     }
 }

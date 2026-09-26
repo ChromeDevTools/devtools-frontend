@@ -119,11 +119,16 @@ export const DEFAULT_VIEW = (input, output, target) => {
         contextMenu.clipboardSection().appendItem(title, copyValueHandler, { jslogContext });
         void contextMenu.show();
     };
-    const createSourceText = (text) => html `<li role=treeitem
+    const createSourceText = (text) => {
+        const copy = () => input.copyValue(text);
+        // clang-format off
+        return html `<li role=treeitem
       @contextmenu=${copyValueContextmenu(i18nString(UIStrings.copyPayload), () => text, 'copy-payload')}>
-        <devtools-widget class='payload-value source-code' ${widget(ShowMoreDetailsWidget, { text })}>
+        <devtools-widget class='payload-value source-code' ${widget(ShowMoreDetailsWidget, { text, copy })}>
         </devtools-widget>
       </li>`;
+        // clang-format on
+    };
     const createParsedParams = (params, decodeParameters) => params.map(param => {
         // clang-format off
         return html `

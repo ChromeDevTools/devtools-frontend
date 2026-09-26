@@ -45,10 +45,7 @@ export declare class MockDebuggerBackend {
         name: string;
         value?: number;
     }>): Protocol.Runtime.RemoteObject;
-    createCallFrame(target: SDK.Target.Target, script: {
-        url: string;
-        content: string;
-    }, scopeDescriptor: string, sourceMap: {
+    createCallFrame(target: SDK.Target.Target, script: ScriptDescription, scopeDescriptor: string, sourceMap: {
         url: string;
         content: string;
     } | null, scopeObjects?: Protocol.Runtime.RemoteObject[], emptyScopes?: boolean[]): Promise<SDK.DebuggerModel.CallFrame>;

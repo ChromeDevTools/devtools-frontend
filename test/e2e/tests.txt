@@ -166,6 +166,7 @@ recorder/ui.test.js
 rendering/rendering.test.js
 search/search-scope.test.js
 security/security.test.js
+sensors/emulate-cpu-performance.test.js
 sensors/emulate-hardware-concurrency.test.js
 sensors/idle.test.js
 sensors/location.test.js

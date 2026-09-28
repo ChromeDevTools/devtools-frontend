@@ -16,6 +16,7 @@ import {
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Accessibility from './accessibility.js';
@@ -50,9 +51,8 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
     UI.ViewManager.ViewManager.removeInstance();
   });
 
-  it('notifies ViewManager when visibility is toggled', async () => {
+  it('notifies ViewManager when visibility is toggled', () => {
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
-    renderElementIntoDOM(view);
     const viewManager = UI.ViewManager.ViewManager.instance();
     const visibilitySpy = sinon.spy();
     viewManager.addEventListener(UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED, visibilitySpy);
@@ -67,37 +67,33 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
     sinon.assert.calledWith(visibilitySpy, sinon.match({data: sinon.match({hiddenViewId: 'aria-attributes'})}));
   });
 
-  it('executes toggle action when switch is changed', async () => {
-    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
-    renderElementIntoDOM(view);
-    await view.updateComplete;
+  it('executes toggle action when view onToggleChange is called', async () => {
+    const viewFunctionStub = createViewFunctionStub(Accessibility.AccessibilitySidebarView.AccessibilitySidebarView);
+    view = new Accessibility.AccessibilitySidebarView.AccessibilitySidebarView(viewFunctionStub);
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
     const executeStub = sinon.stub(action, 'execute').resolves(true);
 
-    const switchElement = view.element.querySelector('devtools-switch');
-    assert.exists(switchElement);
-
-    switchElement.dispatchEvent(new Event('switchchange'));
+    const input = await viewFunctionStub.nextInput;
+    input.onToggleChange(new Event('switchchange'));
 
     sinon.assert.calledOnce(executeStub);
   });
 
-  it('updates switch checked state when action is toggled', async () => {
-    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
-    renderElementIntoDOM(view);
-    await view.updateComplete;
+  it('updates view input when action is toggled', async () => {
+    const viewFunctionStub = createViewFunctionStub(Accessibility.AccessibilitySidebarView.AccessibilitySidebarView);
+    view = new Accessibility.AccessibilitySidebarView.AccessibilitySidebarView(viewFunctionStub);
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
-    const switchElement = view.element.querySelector('devtools-switch');
-    assert.exists(switchElement);
-    assert.isFalse(switchElement.checked);
+
+    let input = await viewFunctionStub.nextInput;
+    assert.isFalse(input.isToggled);
 
     action.setToggled(true);
-    await view.updateComplete;
-    assert.isTrue(switchElement.checked);
+    input = await viewFunctionStub.nextInput;
+    assert.isTrue(input.isToggled);
 
     action.setToggled(false);
-    await view.updateComplete;
-    assert.isFalse(switchElement.checked);
+    input = await viewFunctionStub.nextInput;
+    assert.isFalse(input.isToggled);
   });
 
   it('updates node on DOMNode flavor change', () => {
@@ -284,17 +280,15 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
     await assertScreenshot('accessibility/accessibility_sidebar_view_toggled.png');
   });
 
-  it('shows announcement recording subpane when enabled in hostConfig', async () => {
+  it('shows announcement recording subpane when enabled in hostConfig', () => {
     updateHostConfig({devToolsAriaLiveRecording: {enabled: true}});
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
-    renderElementIntoDOM(view);
     assert.isTrue(UI.ViewManager.ViewManager.instance().hasView('aria-live-recording'));
   });
 
-  it('does not show announcement recording subpane when disabled in hostConfig', async () => {
+  it('does not show announcement recording subpane when disabled in hostConfig', () => {
     updateHostConfig({devToolsAriaLiveRecording: {enabled: false}});
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
-    renderElementIntoDOM(view);
     assert.isFalse(UI.ViewManager.ViewManager.instance().hasView('aria-live-recording'));
   });
 });

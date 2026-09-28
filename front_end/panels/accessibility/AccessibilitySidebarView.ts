@@ -1,7 +1,6 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../ui/components/switch/switch.js';
 
@@ -59,6 +58,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       <devtools-widget ${widget(() => input.sidebarPaneStackWidget)}></devtools-widget>
     `,
       target,
+      {container: {classes: ['accessibility-sidebar-view']}},
   );
 };
 
@@ -80,7 +80,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
     super();
     this.#view = view;
     this.registerRequiredCSS(accessibilitySidebarViewStyles);
-    this.element.classList.add('accessibility-sidebar-view');
     this.#node = null;
     this.#axNode = null;
     this.skipNextPullNode = false;

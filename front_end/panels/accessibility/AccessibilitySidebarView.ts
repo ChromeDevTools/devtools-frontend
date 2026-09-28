@@ -31,9 +31,36 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilitySidebarView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface ViewInput {
+  isToggled: boolean;
+  onToggleChange: (event: Event) => void;
+}
+
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  render(
+      html`
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <devtools-switch
+          role="switch"
+          aria-label=${i18nString(UIStrings.showAccessibilityTree)}
+          .checked=${input.isToggled}
+          .label=${i18nString(UIStrings.showAccessibilityTree)}
+          .jslogContext=${'elements.toggle-a11y-tree'}
+          @switchchange=${input.onToggleChange}
+        ></devtools-switch>
+        <span style="color: var(--sys-color-on-surface);">${i18nString(UIStrings.showAccessibilityTree)}</span>
+      </div>
+    `,
+      target,
+  );
+};
+
 let accessibilitySidebarViewInstance: AccessibilitySidebarView;
 
 export class AccessibilitySidebarView extends UI.Widget.VBox {
+  readonly #view: View;
   #node: SDK.DOMModel.DOMNode|null;
   #axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   private skipNextPullNode: boolean;
@@ -45,8 +72,9 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   private readonly toggleContainer: HTMLElement;
   private readonly toggleAction: UI.ActionRegistration.Action;
 
-  private constructor() {
+  constructor(view: View = DEFAULT_VIEW) {
     super();
+    this.#view = view;
     this.registerRequiredCSS(accessibilitySidebarViewStyles);
     this.element.classList.add('accessibility-sidebar-view');
     this.#node = null;
@@ -77,9 +105,9 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
     this.pullNode();
   }
 
-  static instance(opts?: {forceNew: boolean}): AccessibilitySidebarView {
+  static instance(opts?: {forceNew: boolean, view?: View}): AccessibilitySidebarView {
     if (!accessibilitySidebarViewInstance || opts?.forceNew) {
-      accessibilitySidebarViewInstance = new AccessibilitySidebarView();
+      accessibilitySidebarViewInstance = new AccessibilitySidebarView(opts?.view);
     }
     return accessibilitySidebarViewInstance;
   }
@@ -169,27 +197,19 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   private updateToggle(): void {
     const isToggled = this.toggleAction.toggled();
     this.sidebarPaneStack.notifyVisibilityChanged(isToggled);
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(
-        html`
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <devtools-switch
-          role="switch"
-          aria-label=${i18nString(UIStrings.showAccessibilityTree)}
-          .checked=${isToggled}
-          .label=${i18nString(UIStrings.showAccessibilityTree)}
-          .jslogContext=${'elements.toggle-a11y-tree'}
-          @switchchange=${this.onToggleChange}
-        ></devtools-switch>
-        <span style="color: var(--sys-color-on-surface);">${i18nString(UIStrings.showAccessibilityTree)}</span>
-      </div>
-    `,
-        this.toggleContainer, {host: this});
+    this.#view(
+        {
+          isToggled,
+          onToggleChange: this.onToggleChange,
+        },
+        {},
+        this.toggleContainer,
+    );
   }
 
-  private onToggleChange(_event: Event): void {
+  private onToggleChange = (_event: Event): void => {
     void this.toggleAction.execute();
-  }
+  };
 
   private onNodeChange(
       event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}|SDK.DOMModel.DOMNode>):

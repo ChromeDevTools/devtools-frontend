@@ -932,4 +932,59 @@ describeWithEnvironment('CommentOverlayManager', () => {
         removeEventListenerSpy.calledWith('scroll'),
         'ShadowRoot was not removed from observedScrollRoots (removeEventListener was not called), causing a leak');
   });
+
+  it('tracks scroll events on new ancestors when a comment anchor is reparented', async () => {
+    const clock = sinon.useFakeTimers();
+    try {
+      manager.start(container);
+      manager.setCommentMode(true);
+
+      const host1 = document.createElement('div');
+      const shadow1 = host1.attachShadow({mode: 'open'});
+      const scrollContainer1 = document.createElement('div');
+      scrollContainer1.style.overflow = 'auto';
+      scrollContainer1.getBoundingClientRect = () => new DOMRect(0, 0, 300, 300);
+
+      let itemTop = 80;
+      const innerEl = document.createElement('div');
+      innerEl.setAttribute('jslog', 'TreeItem; context: shadow-scroll-item');
+      innerEl.textContent = 'shadow scrollable item';
+      innerEl.getBoundingClientRect = () => new DOMRect(10, itemTop, 100, 24);
+
+      scrollContainer1.appendChild(innerEl);
+      shadow1.appendChild(scrollContainer1);
+      container.appendChild(host1);
+
+      const thread = manager.createComment(innerEl, 'Reparented shadow scroll comment');
+      assert.isNotNull(thread);
+      assert.strictEqual(manager.getHighlightRects()[0]?.top, 80);
+
+      const host2 = document.createElement('div');
+      const shadow2 = host2.attachShadow({mode: 'open'});
+      const scrollContainer2 = document.createElement('div');
+      scrollContainer2.style.overflow = 'auto';
+      scrollContainer2.getBoundingClientRect = () => new DOMRect(0, 0, 300, 300);
+
+      container.appendChild(host2);
+
+      // Reparent the element
+      scrollContainer2.appendChild(innerEl);
+      shadow2.appendChild(scrollContainer2);
+
+      // Give MutationObserver a chance to trigger scheduleRematch
+      await Promise.resolve();
+      clock.tick(250);
+
+      assert.strictEqual(manager.getHighlightRects()[0]?.top, 80);
+
+      // Simulate scrolling the new container
+      itemTop = 40;
+      scrollContainer2.dispatchEvent(new Event('scroll', {bubbles: false, composed: false}));
+
+      // Position should be updated synchronously on the leading edge of the scroll event without waiting for a timer.
+      assert.strictEqual(manager.getHighlightRects()[0]?.top, 40);
+    } finally {
+      clock.restore();
+    }
+  });
 });

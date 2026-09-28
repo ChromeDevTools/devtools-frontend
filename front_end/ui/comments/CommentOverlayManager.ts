@@ -803,6 +803,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
    * Debounces rematching of comments across dynamic DOM updates.
    */
   #scheduleRematch(root: Document|Element = document): void {
+    clearClippingAncestorsCache();
     if (this.#mutationRafId === undefined) {
       this.#mutationRafId = requestAnimationFrame(() => {
         this.#mutationRafId = undefined;

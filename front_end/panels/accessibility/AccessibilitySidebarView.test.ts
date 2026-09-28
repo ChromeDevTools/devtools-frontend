@@ -70,6 +70,7 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
   it('executes toggle action when switch is changed', async () => {
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
     renderElementIntoDOM(view);
+    await view.updateComplete;
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
     const executeStub = sinon.stub(action, 'execute').resolves(true);
 
@@ -84,6 +85,7 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
   it('updates switch checked state when action is toggled', async () => {
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
     renderElementIntoDOM(view);
+    await view.updateComplete;
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
     const switchElement = view.element.querySelector('devtools-switch');
     assert.exists(switchElement);

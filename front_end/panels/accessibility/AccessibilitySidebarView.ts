@@ -21,6 +21,7 @@ import {ARIAAttributesPane} from './ARIAAttributesView.js';
 import {SourceOrderPane} from './SourceOrderView.js';
 
 const {html, render} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -34,6 +35,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface ViewInput {
   isToggled: boolean;
   onToggleChange: (event: Event) => void;
+  sidebarPaneStackWidget: UI.Widget.AnyWidget;
 }
 
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
@@ -41,17 +43,20 @@ export type View = (input: ViewInput, output: object, target: HTMLElement) => vo
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   render(
       html`
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <devtools-switch
-          role="switch"
-          aria-label=${i18nString(UIStrings.showAccessibilityTree)}
-          .checked=${input.isToggled}
-          .label=${i18nString(UIStrings.showAccessibilityTree)}
-          .jslogContext=${'elements.toggle-a11y-tree'}
-          @switchchange=${input.onToggleChange}
-        ></devtools-switch>
-        <span style="color: var(--sys-color-on-surface);">${i18nString(UIStrings.showAccessibilityTree)}</span>
+      <div class="accessibility-toggle-container">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <devtools-switch
+            role="switch"
+            aria-label=${i18nString(UIStrings.showAccessibilityTree)}
+            .checked=${input.isToggled}
+            .label=${i18nString(UIStrings.showAccessibilityTree)}
+            .jslogContext=${'elements.toggle-a11y-tree'}
+            @switchchange=${input.onToggleChange}
+          ></devtools-switch>
+          <span style="color: var(--sys-color-on-surface);">${i18nString(UIStrings.showAccessibilityTree)}</span>
+        </div>
       </div>
+      <devtools-widget ${widget(() => input.sidebarPaneStackWidget)}></devtools-widget>
     `,
       target,
   );
@@ -69,7 +74,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   private readonly axNodeSubPane: AXNodeSubPane;
   private readonly sourceOrderSubPane: SourceOrderPane;
   private readonly announcementsRecordingSubPane?: AccessibilityAnnouncementRecordingView;
-  private readonly toggleContainer: HTMLElement;
   private readonly toggleAction: UI.ActionRegistration.Action;
 
   constructor(view: View = DEFAULT_VIEW) {
@@ -82,13 +86,8 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
     this.skipNextPullNode = false;
     this.sidebarPaneStack = UI.ViewManager.ViewManager.instance().createStackLocation();
 
-    this.toggleContainer = document.createElement('div');
-    this.toggleContainer.classList.add('accessibility-toggle-container');
-    this.element.appendChild(this.toggleContainer);
-
     this.toggleAction = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
     this.toggleAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.updateToggle, this);
-    this.updateToggle();
 
     this.ariaSubPane = new ARIAAttributesPane();
     void this.sidebarPaneStack.showView(this.ariaSubPane);
@@ -100,7 +99,7 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
       this.announcementsRecordingSubPane = new AccessibilityAnnouncementRecordingView();
       void this.sidebarPaneStack.showView(this.announcementsRecordingSubPane);
     }
-    this.sidebarPaneStack.widget().show(this.element);
+    this.updateToggle();
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.pullNode, this);
     this.pullNode();
   }
@@ -143,6 +142,16 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   }
 
   override async performUpdate(): Promise<void> {
+    this.#view(
+        {
+          isToggled: this.toggleAction.toggled(),
+          onToggleChange: this.onToggleChange,
+          sidebarPaneStackWidget: this.sidebarPaneStack.widget(),
+        },
+        {},
+        this.contentElement,
+    );
+
     const node = this.node();
     this.axNodeSubPane.setNode(node);
     this.ariaSubPane.setNode(node);
@@ -161,8 +170,8 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   override wasShown(): void {
     super.wasShown();
 
-    // Pull down the latest date for this node.
-    void this.performUpdate();
+    // Pull down the latest data for this node.
+    this.requestUpdate();
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onNodeChange, this, {scoped: true});
@@ -197,14 +206,7 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   private updateToggle(): void {
     const isToggled = this.toggleAction.toggled();
     this.sidebarPaneStack.notifyVisibilityChanged(isToggled);
-    this.#view(
-        {
-          isToggled,
-          onToggleChange: this.onToggleChange,
-        },
-        {},
-        this.toggleContainer,
-    );
+    this.requestUpdate();
   }
 
   private onToggleChange = (_event: Event): void => {

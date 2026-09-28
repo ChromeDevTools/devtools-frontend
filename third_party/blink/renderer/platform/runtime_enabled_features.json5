@@ -1212,7 +1212,7 @@
       // behaviors are triggered. It should not affect behavior.
       // This flag shipped in M155 and can be removed in M158.
       name: "CleanUpActivationBehavior",
-      status: "stable",
+      status: "experimental",
     },
     {
       // Set currentTarget to null after dispatch for EventTarget.
@@ -2048,7 +2048,7 @@
     },
     {
       name: "CSSScrollSnapTypePair",
-      status: "experimental",
+      status: "stable",
     },
     {
       // scroll-target-group property
@@ -4288,6 +4288,10 @@
       base_feature: "none",
       custom_enable_check: "CanEnableMojoJSTest",
     },
+    // Optimization for monospace text.
+    {
+      name: "MonospaceGlyphCompaction",
+    },
     // Move the selection to the last position in the list item. See
     // https://crbug.com/331841851
     {
@@ -4852,6 +4856,15 @@
       // M151. The behavior was tweaked slightly in M153, and milestones
       // now happen twice as quickly, so the flag can be removed in M157.
       name: "PopoverHintNewBehavior",
+      status: "stable",
+    },
+    {
+      // Kill switch for requiring and consuming transient user activation in
+      // the browser process when creating a form-control popup widget,
+      // guarding against compromised renderers opening popups without a user
+      // gesture.
+      // See https://crbug.com/506152584.
+      name: "PopupWidgetRequiresUserActivation",
       status: "stable",
     },
     {
@@ -5623,7 +5636,6 @@
       // https://github.com/whatwg/html/issues/12227
       name: "SelectedcontentelementAttribute",
       status: "experimental",
-      depends_on: ["SelectedcontentSpec"],
     },
     {
       // Makes the <selectedcontent> element work in <select multiple> by
@@ -5632,14 +5644,7 @@
       // https://issues.chromium.org/issues/483769482
       name: "SelectedcontentMultiple",
       status: "experimental",
-      depends_on: ["SelectedcontentSpec", "CustomizableSelectMultiplePopup"],
-    },
-    {
-      // Aligns the implementation of the <selectedcontent> element with the
-      // HTML spec. https://issues.chromium.org/issues/458113204
-      // Enabled in M151, safe to remove in M153.
-      name: "SelectedcontentSpec",
-      status: "stable",
+      depends_on: ["CustomizableSelectMultiplePopup"],
     },
     {
       // See https://crbug.com/40664519

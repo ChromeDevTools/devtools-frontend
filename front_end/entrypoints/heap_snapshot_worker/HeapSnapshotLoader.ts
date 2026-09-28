@@ -60,16 +60,22 @@ export class HeapSnapshotLoader {
     return result;
   }
 
-  #parseUintArray(): boolean {
+  /**
+   * Parses (possibly negative) integers from `#json` into `#array`. Assumes
+   * valid input. Returns true if more input is needed and false once the
+   * closing bracket was reached.
+   */
+  #parseIntArray(): boolean {
     let index = 0;
     const char0 = '0'.charCodeAt(0);
     const char9 = '9'.charCodeAt(0);
+    const minus = '-'.charCodeAt(0);
     const closingBracket = ']'.charCodeAt(0);
     const length = this.#json.length;
     while (true) {
       while (index < length) {
         const code = this.#json.charCodeAt(index);
-        if (char0 <= code && code <= char9) {
+        if ((char0 <= code && code <= char9) || code === minus) {
           break;
         } else if (code === closingBracket) {
           this.#json = this.#json.slice(index + 1);
@@ -81,8 +87,13 @@ export class HeapSnapshotLoader {
         this.#json = '';
         return true;
       }
-      let nextNumber = 0;
       const startIndex = index;
+      let negative = false;
+      if (this.#json.charCodeAt(index) === minus) {
+        negative = true;
+        ++index;
+      }
+      let nextNumber = 0;
       while (index < length) {
         const code = this.#json.charCodeAt(index);
         if (char0 > code || code > char9) {
@@ -99,7 +110,7 @@ export class HeapSnapshotLoader {
       if (!this.#array) {
         throw new Error('Array not instantiated');
       }
-      this.#array.setValue(this.#arrayIndex++, nextNumber);
+      this.#array.setValue(this.#arrayIndex++, negative ? -nextNumber : nextNumber);
     }
   }
 
@@ -170,7 +181,7 @@ export class HeapSnapshotLoader {
     this.#array = length === undefined ? Platform.TypedArrayUtilities.createExpandableBigUint32Array() :
                                          Platform.TypedArrayUtilities.createFixedBigUint32Array(length);
     this.#arrayIndex = 0;
-    while (this.#parseUintArray()) {
+    while (this.#parseIntArray()) {
       if (length) {
         this.#progress.updateProgress(title, this.#arrayIndex, this.#array.length);
       } else {

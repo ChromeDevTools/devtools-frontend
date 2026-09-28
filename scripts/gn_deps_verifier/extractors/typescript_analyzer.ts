@@ -159,12 +159,7 @@ export class TypeScriptAnalyzer {
       requiredDeps: Set<string>,
       rootDir: string,
       astExtractor: GnAstExtractor,
-      ): Promise<{
-    missingTsDeps: string[],
-    unusedTsDeps: string[],
-    missingDeps: string[],
-    unusedDeps: string[],
-  }> {
+      ): Promise<{missingTsDeps: string[], unusedTsDeps: string[], missingDeps: string[], unusedDeps: string[]}> {
     const currentDir = path.dirname(targetInfo.buildFile);
 
     // Resolve all existing declared ts_deps
@@ -192,8 +187,9 @@ export class TypeScriptAnalyzer {
     const unusedDeps: string[] = [];
     const missingDeps: string[] = [];
 
-    const getTemplateName = async(resolvedLabel: string): Promise<string|undefined> =>
-        (await astExtractor.getTargetInfoByLabel(resolvedLabel))?.templateName;
+    const getTemplateName = async(
+        resolvedLabel: string,
+        ): Promise<string|undefined> => (await astExtractor.getTargetInfoByLabel(resolvedLabel))?.templateName;
 
     // Helper to determine if target belongs in `deps` instead of `ts_deps` (e.g. CSS or GN group)
     const isNonTsTarget = async(resolvedReq: string): Promise<boolean> => {
@@ -217,14 +213,14 @@ export class TypeScriptAnalyzer {
     }
 
     for (const [resolvedExisting, rawDep] of resolvedExistingTsDeps.entries()) {
-      if (!resolvedReqSet.has(resolvedExisting) || await isNonTsTarget(resolvedExisting)) {
+      if (!resolvedReqSet.has(resolvedExisting) || (await isNonTsTarget(resolvedExisting))) {
         unusedTsDeps.push(rawDep);
       }
     }
 
     // CSS targets (e.g. `:css_files`) are only needed when a source imports one of their files.
     for (const [resolvedExisting, rawDep] of resolvedExistingDeps.entries()) {
-      if (!resolvedReqSet.has(resolvedExisting) && await getTemplateName(resolvedExisting) === 'generate_css') {
+      if (!resolvedReqSet.has(resolvedExisting) && (await getTemplateName(resolvedExisting)) === 'generate_css') {
         unusedDeps.push(rawDep);
       }
     }
@@ -237,6 +233,10 @@ export class TypeScriptAnalyzer {
       targetLabel: string,
       targetInfo: AstTargetInfo,
       ): Promise<ImportResolutionResult> {
+    if (importedFile.endsWith('.json')) {
+      return {success: true, deps: []};
+    }
+
     const impTargets = await this.#astExtractor.getTargetsForFile(importedFile);
 
     if (impTargets.length === 0) {

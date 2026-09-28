@@ -611,6 +611,28 @@ describe('typescript_analyzer', () => {
       assert.deepEqual(res.deps, []);
     });
 
+    it('returns empty deps successfully when imported file is a .json file', async () => {
+      const targetInfo: AstTargetInfo = {
+        testonly: false,
+        label: '//test:target',
+        templateName: 'devtools_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['main.ts'],
+        deps: [],
+        ts_deps: [],
+      };
+
+      const res = await analyzer.resolveImportDependencies(
+          '/path/to/some/data.json',
+          ['main.ts'],
+          '//test:target',
+          targetInfo,
+      );
+
+      assert.isTrue(res.success);
+      assert.deepEqual(res.deps, []);
+    });
+
     it('returns empty deps for internal imports within the same target', async () => {
       const animFile = path.join(FIXTURES_DIR, 'AnimationTimeline.ts');
       const targetInfo: AstTargetInfo = {

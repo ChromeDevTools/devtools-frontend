@@ -1062,6 +1062,82 @@ function mulWithOffset(param1, param2, offset) {
           callFrame.location(), backend.universe.debuggerWorkspaceBinding);
       assert.strictEqual(posMap[0].bindings.get('legacyParam'), 'o');
     });
+
+    it('resolves variable mappings for virtual call frames of inlined functions', async () => {
+      updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
+      const sourceMapUrl = 'file:///tmp/example.js.min.map';
+      const builder = new ScopesCodec.ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', variables: ['globalVar'], key: 'global'})
+          .startScope(1, 0, {kind: 'function', name: 'inner', isStackFrame: true, variables: ['x'], key: 'inner'})
+          .endScope(3, 0)
+          .startScope(5, 0, {kind: 'function', name: 'outer', isStackFrame: true, variables: ['x', 'y'], key: 'outer'})
+          .startScope(6, 0, {kind: 'block', variables: ['blockVar'], key: 'block'})
+          .endScope(8, 0)
+          .endScope(9, 0)
+          .endScope(12, 0);
+
+      builder.startRange(0, 0, {scopeKey: 'global', values: ['g']})
+          .startRange(0, 0, {
+            scopeKey: 'outer',
+            callSite: {sourceIndex: 0, line: 11, column: 0},
+            values: ['outer_x', 'outer_y'],
+          })
+          .startRange(0, 0, {scopeKey: 'block', values: ['b']})
+          .startRange(0, 0, {
+            scopeKey: 'inner',
+            callSite: {sourceIndex: 0, line: 7, column: 4},
+            values: ['inner_x'],
+          })
+          .endRange(0, 30)
+          .endRange(0, 30)
+          .endRange(0, 30)
+          .endRange(0, 30);
+
+      const baseMap = encodeSourceMap(['0:0 => index.js:0:0']);
+      const map = ScopesCodec.encode(builder.build(), baseMap as ScopesCodec.SourceMapJson);
+      const sourceMapContent = JSON.stringify(map);
+
+      const source = `function f(o){console.log(o)}f(1);\n//# sourceMappingURL=${sourceMapUrl}`;
+      const scopes = '          {  <             >}';
+      const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 1}]);
+      const innerCallFrame = await backend.createCallFrame(
+          target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
+      const outerCallFrame = innerCallFrame.createVirtualCallFrame(1, 'outer');
+      const globalCallFrame = innerCallFrame.createVirtualCallFrame(2, '');
+
+      const expectedInnerMappings: Formatter.FormatterWorkerPool.ScopeVariableMapping[] = [
+        {bindings: new Map([['x', 'inner_x']]), generatedNames: []},
+        {bindings: new Map([['globalVar', 'g']]), generatedNames: []},
+      ];
+      assert.deepEqual(await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+                           innerCallFrame, backend.universe.debuggerWorkspaceBinding),
+                       expectedInnerMappings);
+      assert.deepEqual(await SourceMapScopes.NamesResolver.allVariablesAtPosition(
+                           innerCallFrame.location(), backend.universe.debuggerWorkspaceBinding),
+                       expectedInnerMappings);
+
+      const expectedOuterMappings: Formatter.FormatterWorkerPool.ScopeVariableMapping[] = [
+        {bindings: new Map([['blockVar', 'b']]), generatedNames: []},
+        {bindings: new Map([['x', 'outer_x'], ['y', 'outer_y']]), generatedNames: []},
+        {bindings: new Map([['globalVar', 'g']]), generatedNames: []},
+      ];
+      assert.deepEqual(await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+                           outerCallFrame, backend.universe.debuggerWorkspaceBinding),
+                       expectedOuterMappings);
+      assert.deepEqual(await SourceMapScopes.NamesResolver.allVariablesAtPosition(
+                           outerCallFrame.location(), backend.universe.debuggerWorkspaceBinding),
+                       expectedOuterMappings);
+
+      const expectedGlobalMappings: Formatter.FormatterWorkerPool.ScopeVariableMapping[] = [
+        {bindings: new Map([['globalVar', 'g']]), generatedNames: []},
+      ];
+      assert.deepEqual(await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+                           globalCallFrame, backend.universe.debuggerWorkspaceBinding),
+                       expectedGlobalMappings);
+      assert.deepEqual(await SourceMapScopes.NamesResolver.allVariablesAtPosition(
+                           globalCallFrame.location(), backend.universe.debuggerWorkspaceBinding),
+                       expectedGlobalMappings);
+    });
   });
 
   describe('allVariablesAtPosition with source map scopes', () => {

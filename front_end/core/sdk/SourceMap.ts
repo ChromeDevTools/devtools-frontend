@@ -851,7 +851,8 @@ export class SourceMap {
     }
 
     const {line, column} = scriptRelativePosition(location);
-    return this.#scopesInfo.resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes);
+    return this.#scopesInfo.resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes,
+                                                             location.inlineFrameIndex);
   }
 
   findOriginalFunctionName(position: ScopesCodec.Position): string|null {

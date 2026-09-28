@@ -1735,6 +1735,19 @@ describe('SourceMapScopesInfo', () => {
         new Map<string, string|null>([['inlinedParam', 'i_param']]),
         new Map<string, string|null>([['globalVar', 'g_val']]),
       ]);
+
+      // 4. Selecting the caller frame (inlineFrameIndex = 1) at column 50:
+      // Drops inlinedBlock and inlinedFn, walking callerBlock -> callerFn -> global.
+      assert.deepEqual(
+          info.resolveMappedVariablesAtPosition(0, 50, /* ignoreInnerBlockScopes=*/ false, /* inlineFrameIndex=*/ 1), [
+            new Map<string, string|null>([['callerBlockVar', 'c_block']]),
+            new Map<string, string|null>([['callerParam', 'c_param']]),
+            new Map<string, string|null>([['globalVar', 'g_val']]),
+          ]);
+
+      // 5. Out-of-bounds inlineFrameIndex returns null without hanging.
+      assert.isNull(
+          info.resolveMappedVariablesAtPosition(0, 50, /* ignoreInnerBlockScopes=*/ false, /* inlineFrameIndex=*/ 99));
     });
   });
 

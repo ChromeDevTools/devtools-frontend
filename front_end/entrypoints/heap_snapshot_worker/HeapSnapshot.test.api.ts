@@ -190,6 +190,14 @@ function checkForOfScopes({snapshot, analysis}: ContextFixture): void {
   assert.deepEqual(deadFieldNames(bodyScope), [['dead'], ['dead']]);
 }
 
+// Analyzes per-iteration contexts of a classic for loop.
+function checkClassicForLoop({snapshot, analysis}: ContextFixture): void {
+  const scope = singleScopeForScript(analysis, 'classic-for-loop.js');
+
+  assert.deepEqual(allContextFields(snapshot, scope), ['index', 'loopDead']);
+  assert.deepEqual(deadFieldNames(scope), [['loopDead'], ['loopDead']]);
+}
+
 // Classifies a field per context based on whether its reader closure is live.
 function checkDeadClosure({snapshot, analysis}: ContextFixture): void {
   const scope = singleScopeForScript(analysis, 'dead-closure.js');
@@ -406,6 +414,7 @@ describe('HeapSnapshot analyze context fields API Test', () => {
     checkBlockVariables(fixture);
     checkBlockVariablesInInnerClosure(fixture);
     checkForOfScopes(fixture);
+    checkClassicForLoop(fixture);
     checkDeadClosure(fixture);
     checkUninstantiatedInnerClosure(fixture);
     checkShadowedFields(fixture);

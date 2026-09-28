@@ -2069,8 +2069,8 @@ describe('HeapSnapshot', () => {
       /** Name of the ScopeInfo linked through `name_or_scope_info`. */
       scopeInfo: string;
       /**
-       * Name of the script linked through `script`. This is the only edge tying any of the objects
-       * below to a script.
+       * Name of the script linked through `script`. The script also lists this SharedFunctionInfo
+       * in its `infos`. These are the only edges tying any of the objects below to a script.
        */
       script: string;
       /** `scope_id` edge, which is how closures of this function are attributed to a scope. */
@@ -2165,11 +2165,24 @@ describe('HeapSnapshot', () => {
         }
       }
 
+      // Script lists the SharedFunctionInfos of its functions in `infos`.
+      const infosByScript = new Map<string, HeapNode>();
+      function infosOf(scriptName: string): HeapNode {
+        let infos = infosByScript.get(scriptName);
+        if (!infos) {
+          infos = new HeapNode('system / WeakFixedArray', 0, 'array');
+          node(scriptName).linkNode(infos, 'internal', 'infos');
+          infosByScript.set(scriptName, infos);
+        }
+        return infos;
+      }
+
       for (const sfiMock of snapshotMock.sfis) {
         const sfi = node(sfiMock.name);
         sfi.linkNode(node(sfiMock.scopeInfo), 'internal', 'name_or_scope_info');
         sfi.linkNode(node(sfiMock.script), 'internal', 'script');
         addIntEdge(sfi, 'scope_id', sfiMock.scopeId);
+        infosOf(sfiMock.script).linkNode(sfi, 'weak');
       }
 
       for (const contextMock of snapshotMock.contexts) {

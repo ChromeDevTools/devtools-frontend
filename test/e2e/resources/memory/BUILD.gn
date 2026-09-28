@@ -19,6 +19,7 @@ copy_to_gen("memory") {
     "context-analysis/class-initializer-context.js",
     "context-analysis/class-methods.js",
     "context-analysis/class.js",
+    "context-analysis/classic-for-loop.js",
     "context-analysis/context.js",
     "context-analysis/dead-closure.js",
     "context-analysis/direct-eval.js",

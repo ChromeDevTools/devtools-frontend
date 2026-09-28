@@ -51,8 +51,10 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
     UI.ViewManager.ViewManager.removeInstance();
   });
 
-  it('notifies ViewManager when visibility is toggled', () => {
+  it('notifies ViewManager when visibility is toggled', async () => {
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    renderElementIntoDOM(view);
+    await view.updateComplete;
     const viewManager = UI.ViewManager.ViewManager.instance();
     const visibilitySpy = sinon.spy();
     viewManager.addEventListener(UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED, visibilitySpy);
@@ -120,8 +122,10 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
     assert.strictEqual(view.node(), node1);
   });
 
-  it('shows aria-attributes subpane for DOM node and removes it for non-DOM node', () => {
+  it('shows aria-attributes subpane for DOM node and removes it for non-DOM node', async () => {
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    renderElementIntoDOM(view);
+    await view.updateComplete;
     const accessibilityModel = target.model(SDK.AccessibilityModel.AccessibilityModel);
     assert.exists(accessibilityModel);
 
@@ -131,6 +135,7 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
       properties: [],
     });
     view.accessibilityNodeCallback(nonDomAxNode);
+    await view.updateComplete;
 
     assert.strictEqual(view.axNode(), nonDomAxNode);
     assert.isFalse(UI.ViewManager.ViewManager.instance().hasView('aria-attributes'));
@@ -142,6 +147,7 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
       properties: [],
     });
     view.accessibilityNodeCallback(domAxNode);
+    await view.updateComplete;
 
     assert.strictEqual(view.axNode(), domAxNode);
     assert.isTrue(UI.ViewManager.ViewManager.instance().hasView('aria-attributes'));

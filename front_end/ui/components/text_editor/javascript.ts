@@ -5,6 +5,7 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
+import * as Formatter from '../../../models/formatter/formatter.js';
 import * as JavaScriptMetaData from '../../../models/javascript_metadata/javascript_metadata.js';
 import * as SourceMapScopes from '../../../models/source_map_scopes/source_map_scopes.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
@@ -236,7 +237,17 @@ async function evaluateExpression(
     context: SDK.RuntimeModel.ExecutionContext,
     expression: string,
     group: string,
+    substituteNames = true,
     ): Promise<SDK.RemoteObject.RemoteObject|null> {
+  const callFrame = context.debuggerModel.selectedCallFrame();
+  if (substituteNames && callFrame?.script.isJavaScript()) {
+    const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+        callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+    try {
+      expression = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);
+    } catch {
+    }
+  }
   const result = await context.evaluateWithSelectedFrameFallback({
     expression,
     objectGroup: group,
@@ -265,7 +276,7 @@ const primitivePrototypes = new Map<string, string>([
 
 const maxCacheAge = 30_000;
 
-let cacheInstance: PropertyCache|null = null;
+const cacheByTargetManager = new WeakMap<SDK.TargetManager.TargetManager, PropertyCache>();
 
 /**
  * Store recent collections of property completions. The empty string
@@ -274,15 +285,13 @@ let cacheInstance: PropertyCache|null = null;
 class PropertyCache {
   readonly #cache = new Map<string, Promise<CompletionSet>>();
 
-  constructor() {
+  constructor(targetManager: SDK.TargetManager.TargetManager) {
     const clear = (): void => this.#cache.clear();
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, clear);
+    targetManager.addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, clear);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, clear);
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, clear);
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, clear);
+    targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, clear);
+    targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, clear);
+    targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.CallFrameSelected, clear);
   }
 
   get(expression: string): Promise<CompletionSet>|undefined {
@@ -299,10 +308,13 @@ class PropertyCache {
   }
 
   static instance(): PropertyCache {
-    if (!cacheInstance) {
-      cacheInstance = new PropertyCache();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    let cache = cacheByTargetManager.get(targetManager);
+    if (!cache) {
+      cache = new PropertyCache(targetManager);
+      cacheByTargetManager.set(targetManager, cache);
     }
-    return cacheInstance;
+    return cache;
   }
 }
 
@@ -362,7 +374,7 @@ async function completePropertiesInner(
   if (!context) {
     return result;
   }
-  let object = await evaluateExpression(context, expression, 'completion');
+  let object = await evaluateExpression(context, expression, 'completion', expression !== 'globalThis');
   if (!object) {
     return result;
   }
@@ -378,7 +390,7 @@ async function completePropertiesInner(
 
   const toPrototype = primitivePrototypes.get(object.type);
   if (toPrototype) {
-    object = await evaluateExpression(context, toPrototype + '.prototype', 'completion');
+    object = await evaluateExpression(context, toPrototype + '.prototype', 'completion', /* substituteNames */ false);
   }
 
   const functionType = expression === 'globalThis' ? 'function' : 'method';
@@ -410,12 +422,14 @@ async function completeExpressionInScope(): Promise<CompletionSet> {
     return result;
   }
 
-  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-  const scopes = await Promise.all(selectedFrame.scopeChain().map(
-      scope => SourceMapScopes.NamesResolver.resolveScopeInObject(scope, debuggerWorkspaceBinding)
-                   .getAllProperties(false, false)));
+  const scopeChain =
+      await SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance().resolveScopeChain(selectedFrame);
+  const scopes = await Promise.all(scopeChain.map(scope => scope.object().getAllProperties(false, false)));
   for (const scope of scopes) {
     for (const property of scope.properties || []) {
+      if (!property.value && !property.getter) {
+        continue;
+      }
       result.add({
         label: property.name,
         type: property.value?.type === 'function' ? 'function' : 'variable',

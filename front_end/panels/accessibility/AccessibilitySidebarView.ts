@@ -42,6 +42,7 @@ export type View = (input: ViewInput, output: object, target: HTMLElement) => vo
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   render(
       html`
+      <style>${accessibilitySidebarViewStyles}</style>
       <div class="accessibility-toggle-container">
         <div style="display: flex; align-items: center; gap: 8px;">
           <devtools-switch
@@ -79,7 +80,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   constructor(view: View = DEFAULT_VIEW) {
     super();
     this.#view = view;
-    this.registerRequiredCSS(accessibilitySidebarViewStyles);
     this.#node = null;
     this.#axNode = null;
     this.skipNextPullNode = false;

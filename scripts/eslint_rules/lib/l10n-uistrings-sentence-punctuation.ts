@@ -46,9 +46,7 @@ const SENTENCE_STARTERS = new Set(['`', '"', '\'', '{', '[']);
 const URL_PREFIXES = ['http://', 'https://', 'goo.gle/', 'g.co/', 'web.dev/'];
 
 const ASCII_LETTER_REGEX = /[a-zA-Z]/;
-const ICU_PLURAL_BRANCH_REGEX = /(=\d+|other)\s*\{([^}]+)\}/g;
-const ICU_PLURAL_TRAILING_PERIOD_REGEX = /((?:=\d+|other)\s*\{[^}]+)\.([ \t]*\})/g;
-const ICU_PLURAL_BRANCH_END_REGEX = /((?:=\d+|other)\s*\{[^}]+?)([ \t]*\})/g;
+const ICU_PLURAL_BRANCH_REGEX = /((?:=\d+|zero|one|two|few|many|other)\s*\{)((?:[^{}]|\{[^{}]*\})+)(\})/g;
 const TRAILING_PERIOD_BEFORE_QUOTE_REGEX = /\.(\s*['"`])$/;
 const CLOSING_QUOTE_REGEX = /(\s*)(['"`])$/;
 
@@ -237,29 +235,22 @@ export default createRule({
               }
             }
 
-            if (messageId === 'singleSentenceEndingPeriod') {
-              context.report({
-                node: property.key,
-                messageId,
-                fix: fixer => {
-                  return fixer.replaceText(
-                      valueNode,
-                      rawText.replace(ICU_PLURAL_TRAILING_PERIOD_REGEX, '$1$2'),
-                  );
-                },
-              });
-            } else if (messageId === 'multiSentenceMissingPeriod') {
+            if (messageId) {
               context.report({
                 node: property.key,
                 messageId,
                 fix: fixer => {
                   const fixedText = rawText.replace(
-                      ICU_PLURAL_BRANCH_END_REGEX,
-                      (fullMatch, branchContent, closingBrace) => {
-                        if (hasTerminalPunctuation(branchContent)) {
-                          return fullMatch;
+                      ICU_PLURAL_BRANCH_REGEX,
+                      (fullMatch, prefix: string, branchContent: string, closingBrace: string) => {
+                        const branchError = checkPunctuation(branchContent);
+                        if (branchError === 'singleSentenceEndingPeriod') {
+                          return `${prefix}${branchContent.replace(/\.([ \t]*)$/, '$1')}${closingBrace}`;
                         }
-                        return `${branchContent}.${closingBrace}`;
+                        if (branchError === 'multiSentenceMissingPeriod') {
+                          return `${prefix}${branchContent.replace(/([ \t]*)$/, '.$1')}${closingBrace}`;
+                        }
+                        return fullMatch;
                       },
                   );
                   return fixer.replaceText(valueNode, fixedText);

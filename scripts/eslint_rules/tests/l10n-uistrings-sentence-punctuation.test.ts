@@ -100,6 +100,10 @@ new RuleTester().run('l10n-uistrings-sentence-punctuation', rule, {
     {
       code: 'const notUIStrings = { foo: \'Single sentence ending with period.\' } as const;',
     },
+    {
+      code:
+          'const UIStrings = { foo: \'{n, plural, =1 {First sentence. Second sentence {PH1}} other {One sentence}}\' } as const;',
+    },
   ],
   invalid: [
     {
@@ -176,6 +180,28 @@ new RuleTester().run('l10n-uistrings-sentence-punctuation', rule, {
       errors: [
         {
           messageId: 'singleSentenceEndingPeriod',
+        },
+      ],
+    },
+    {
+      code:
+          'const UIStrings = { foo: \'{n, plural, =1 {# issue found in {m} frames.} other {# issues found in {m} frames.}}\' } as const;',
+      output:
+          'const UIStrings = { foo: \'{n, plural, =1 {# issue found in {m} frames} other {# issues found in {m} frames}}\' } as const;',
+      errors: [
+        {
+          messageId: 'singleSentenceEndingPeriod',
+        },
+      ],
+    },
+    {
+      code:
+          'const UIStrings = { foo: \'{n, plural, =1 {First sentence {PH1}. Second sentence} other {One sentence}}\' } as const;',
+      output:
+          'const UIStrings = { foo: \'{n, plural, =1 {First sentence {PH1}. Second sentence.} other {One sentence}}\' } as const;',
+      errors: [
+        {
+          messageId: 'multiSentenceMissingPeriod',
         },
       ],
     },

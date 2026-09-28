@@ -44,6 +44,7 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
 
   afterEach(() => {
     UI.ActionRegistration.maybeRemoveActionExtension('elements.toggle-a11y-tree');
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
     view?.detach();
     view = undefined;
     UI.ViewManager.ViewManager.removeInstance();
@@ -64,6 +65,163 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
     action.setToggled(false);
 
     sinon.assert.calledWith(visibilitySpy, sinon.match({data: sinon.match({hiddenViewId: 'aria-attributes'})}));
+  });
+
+  it('executes toggle action when switch is changed', async () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    renderElementIntoDOM(view);
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
+    const executeStub = sinon.stub(action, 'execute').resolves(true);
+
+    const switchElement = view.element.querySelector('devtools-switch');
+    assert.exists(switchElement);
+
+    switchElement.dispatchEvent(new Event('switchchange'));
+
+    sinon.assert.calledOnce(executeStub);
+  });
+
+  it('updates switch checked state when action is toggled', async () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    renderElementIntoDOM(view);
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
+    const switchElement = view.element.querySelector('devtools-switch');
+    assert.exists(switchElement);
+    assert.isFalse(switchElement.checked);
+
+    action.setToggled(true);
+    await view.updateComplete;
+    assert.isTrue(switchElement.checked);
+
+    action.setToggled(false);
+    await view.updateComplete;
+    assert.isFalse(switchElement.checked);
+  });
+
+  it('updates node on DOMNode flavor change', () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+    assert.strictEqual(view.node(), node);
+  });
+
+  it('skips next node pull when fromAXTree is true', () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const node1 = new SDK.DOMModel.DOMNode(domModel);
+    const node2 = new SDK.DOMModel.DOMNode(domModel);
+
+    view.setNode(node1, true);
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node2);
+
+    assert.strictEqual(view.node(), node1);
+  });
+
+  it('shows aria-attributes subpane for DOM node and removes it for non-DOM node', () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    const accessibilityModel = target.model(SDK.AccessibilityModel.AccessibilityModel);
+    assert.exists(accessibilityModel);
+
+    const nonDomAxNode = new SDK.AccessibilityModel.AccessibilityNode(accessibilityModel, {
+      nodeId: 'non-dom' as Protocol.Accessibility.AXNodeId,
+      ignored: false,
+      properties: [],
+    });
+    view.accessibilityNodeCallback(nonDomAxNode);
+
+    assert.strictEqual(view.axNode(), nonDomAxNode);
+    assert.isFalse(UI.ViewManager.ViewManager.instance().hasView('aria-attributes'));
+
+    const domAxNode = new SDK.AccessibilityModel.AccessibilityNode(accessibilityModel, {
+      nodeId: 'dom' as Protocol.Accessibility.AXNodeId,
+      ignored: false,
+      backendDOMNodeId: 1 as Protocol.DOM.BackendNodeId,
+      properties: [],
+    });
+    view.accessibilityNodeCallback(domAxNode);
+
+    assert.strictEqual(view.axNode(), domAxNode);
+    assert.isTrue(UI.ViewManager.ViewManager.instance().hasView('aria-attributes'));
+  });
+
+  it('handles performUpdate when node is null', async () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    const accessibilityModel = target.model(SDK.AccessibilityModel.AccessibilityModel);
+    assert.exists(accessibilityModel);
+    const requestTreeSpy = sinon.spy(accessibilityModel, 'requestPartialAXTree');
+
+    view.setNode(null);
+    await view.performUpdate();
+
+    sinon.assert.notCalled(requestTreeSpy);
+    assert.isNull(view.node());
+    assert.isNull(view.axNode());
+  });
+
+  it('requests partial AX tree and updates axNode during performUpdate', async () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+
+    const accessibilityModel = target.model(SDK.AccessibilityModel.AccessibilityModel);
+    assert.exists(accessibilityModel);
+
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    const axNode = new SDK.AccessibilityModel.AccessibilityNode(accessibilityModel, {
+      nodeId: 'test-node' as Protocol.Accessibility.AXNodeId,
+      ignored: false,
+      backendDOMNodeId: 1 as Protocol.DOM.BackendNodeId,
+      properties: [],
+    });
+
+    const requestPartialAXTreeStub = sinon.stub(accessibilityModel, 'requestPartialAXTree').resolves();
+    sinon.stub(accessibilityModel, 'axNodeForDOMNode').withArgs(node).returns(axNode);
+
+    view.setNode(node);
+    await view.performUpdate();
+
+    sinon.assert.calledOnceWithExactly(requestPartialAXTreeStub, node);
+    assert.strictEqual(view.axNode(), axNode);
+  });
+
+  it('ignores DOM model events for a different node', async () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    renderElementIntoDOM(view);
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+
+    const node1 = new SDK.DOMModel.DOMNode(domModel);
+    const node2 = new SDK.DOMModel.DOMNode(domModel);
+    view.setNode(node1);
+    await view.updateComplete;
+
+    const requestUpdateSpy = sinon.spy(view, 'requestUpdate');
+    domModel.dispatchEventToListeners(SDK.DOMModel.Events.AttrModified, {node: node2, name: 'class'});
+
+    sinon.assert.notCalled(requestUpdateSpy);
+  });
+
+  it('stops listening to DOM model events when hidden', async () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    renderElementIntoDOM(view);
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    view.setNode(node);
+    await view.updateComplete;
+
+    view.detach();
+
+    const requestUpdateSpy = sinon.spy(view, 'requestUpdate');
+    domModel.dispatchEventToListeners(SDK.DOMModel.Events.AttrModified, {node, name: 'class'});
+    domModel.dispatchEventToListeners(SDK.DOMModel.Events.ChildNodeCountUpdated, node);
+
+    sinon.assert.notCalled(requestUpdateSpy);
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,6 +265,21 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
     renderElementIntoDOM(view, {includeCommonStyles: true});
     await assertScreenshot('accessibility/accessibility_sidebar_view.png');
+  });
+
+  it('renders the view when aria live recording is enabled in hostConfig', async () => {
+    updateHostConfig({devToolsAriaLiveRecording: {enabled: true}});
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    renderElementIntoDOM(view, {includeCommonStyles: true});
+    await assertScreenshot('accessibility/accessibility_sidebar_view_aria_live_recording.png');
+  });
+
+  it('renders the view when accessibility tree toggle is active', async () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
+    action.setToggled(true);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
+    await assertScreenshot('accessibility/accessibility_sidebar_view_toggled.png');
   });
 
   it('shows announcement recording subpane when enabled in hostConfig', async () => {

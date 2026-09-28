@@ -24,6 +24,7 @@ import * as LiveMetrics from '../models/live-metrics/live-metrics.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
+import * as SourceMapScopes from '../models/source_map_scopes/source_map_scopes.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
 
@@ -306,6 +307,11 @@ export class TestUniverse implements Foundation.Universe.Universe {
       },
     ],
     [
+      SourceMapScopes.ScopeChainResolver.ScopeChainResolver,
+      () =>
+          new SourceMapScopes.ScopeChainResolver.ScopeChainResolver(this.targetManager, this.debuggerWorkspaceBinding),
+    ],
+    [
       Workspace.FileManager.FileManager,
       () => new Workspace.FileManager.FileManager(),
     ],
@@ -545,6 +551,10 @@ export class TestUniverse implements Foundation.Universe.Universe {
 
   get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel {
     return this.get(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+  }
+
+  get scopeChainResolver(): SourceMapScopes.ScopeChainResolver.ScopeChainResolver {
+    return this.get(SourceMapScopes.ScopeChainResolver.ScopeChainResolver);
   }
 
   get targetManager(): SDK.TargetManager.TargetManager {

@@ -8,6 +8,7 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -34,6 +35,8 @@ describe('ScopeChainSidebarPane', () => {
     backend = new MockDebuggerBackend();
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(backend.universe.debuggerWorkspaceBinding);
+    sinon.stub(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, 'instance')
+        .returns(backend.universe.scopeChainResolver);
     sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
     sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
     sinon.stub(Common.Settings.Settings, 'instance').returns(backend.universe.settings);

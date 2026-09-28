@@ -12,6 +12,7 @@ devtools_foundation_module("source_map_scopes") {
     "FunctionCodeResolver.ts",
     "NamesResolver.ts",
     "ScopeChainModel.ts",
+    "ScopeChainResolver.ts",
   ]
 
   ts_deps = [
@@ -34,9 +35,11 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../foundation/*",
     "../../panels/console/*",
     "../../panels/sources/*",
     "../../panels/timeline/*",
+    "../../testing/*",
     "../../ui/components/text_editor/*",
     "../../ui/legacy/components/object_ui/*",
     "../ai_assistance/*",
@@ -53,6 +56,7 @@ devtools_foundation_module("foundation_unittests") {
     "FunctionCodeResolver.test.ts",
     "NamesResolver.test.ts",
     "ScopeChainModel.test.ts",
+    "ScopeChainResolver.test.ts",
   ]
 
   ts_deps = [

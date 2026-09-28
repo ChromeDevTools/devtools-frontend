@@ -21,6 +21,7 @@ import * as LiveMetrics from '../models/live-metrics/live-metrics.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
+import * as SourceMapScopes from '../models/source_map_scopes/source_map_scopes.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
 
@@ -159,6 +160,10 @@ export class Universe {
     const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(
         resourceMapping, targetManager, ignoreListManager, workspace);
     context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
+
+    const scopeChainResolver =
+        new SourceMapScopes.ScopeChainResolver.ScopeChainResolver(targetManager, debuggerWorkspaceBinding);
+    context.set(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, scopeChainResolver);
 
     const presentationConsoleMessageManager =
         new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager(
@@ -381,6 +386,10 @@ export class Universe {
   get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel|null {
     return this.initAutomaticFilesystem ? this.context.get(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel) :
                                           null;
+  }
+
+  get scopeChainResolver(): SourceMapScopes.ScopeChainResolver.ScopeChainResolver {
+    return this.context.get(SourceMapScopes.ScopeChainResolver.ScopeChainResolver);
   }
 
   get settings(): Common.Settings.Settings {

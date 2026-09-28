@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import {createTarget, deinitializeGlobalVars, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
@@ -34,6 +35,8 @@ describe('Inline variable view scope helpers', () => {
     target = backend.createTarget();
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(backend.universe.debuggerWorkspaceBinding);
+    sinon.stub(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, 'instance')
+        .returns(backend.universe.scopeChainResolver);
   });
 
   afterEach(async () => {

@@ -28,6 +28,7 @@ devtools_foundation_module("foundation") {
     "../models/logs:bundle",
     "../models/persistence:bundle",
     "../models/project_settings:bundle",
+    "../models/source_map_scopes:bundle",
     "../models/workspace:bundle",
     "../models/workspace_diff:bundle",
   ]

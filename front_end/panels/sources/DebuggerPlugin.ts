@@ -1002,8 +1002,8 @@ export class DebuggerPlugin extends Plugin {
 
     const uiPositionToEditorOffset = (lineNumber: number, columnNumber: number): number|null =>
         this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(lineNumber, columnNumber)) ?? null;
-    const scopeChain = await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(
-        callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+    const scopeChain =
+        await SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance().resolveScopeChain(callFrame);
     const localOriginalScope = scopeChain
                                    .find((s): s is SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry =>
                                              s instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry &&
@@ -2184,8 +2184,7 @@ export async function computeScopeMappings(
     resolvedScopeChain?: SDK.DebuggerModel.ScopeChainEntry[]): Promise<ScopeMapping[]> {
   const scopeMappings: ScopeMapping[] = [];
   const scopeChain = resolvedScopeChain ??
-      await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(
-          callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+      await SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance().resolveScopeChain(callFrame);
   const activeScopes =
       new Set(scopeChain.filter(s => s instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry)
                   .map(s => s.originalScope()));

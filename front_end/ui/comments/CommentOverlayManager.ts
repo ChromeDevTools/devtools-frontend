@@ -299,20 +299,22 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     return thread;
   }
 
-  #trackElementAncestors(element: Element): void {
+  #trackElementAncestors(element: Element, activeScrollRoots?: Set<ShadowRoot>): void {
     if (!this.#devToolsResizeObserver || !this.#scrollListener) {
       return;
     }
     let current: Element|null = element;
     while (current) {
-      if (this.#resizeObservedElements.has(current)) {
-        break;
+      if (!this.#resizeObservedElements.has(current)) {
+        this.#devToolsResizeObserver.observe(current);
+        this.#resizeObservedElements.add(current);
       }
-      this.#devToolsResizeObserver.observe(current);
-      this.#resizeObservedElements.add(current);
-      if (current.parentNode instanceof ShadowRoot && !this.#observedScrollRoots.has(current.parentNode)) {
-        current.parentNode.addEventListener('scroll', this.#scrollListener, {capture: true, passive: true});
-        this.#observedScrollRoots.add(current.parentNode);
+      if (current.parentNode instanceof ShadowRoot) {
+        activeScrollRoots?.add(current.parentNode);
+        if (!this.#observedScrollRoots.has(current.parentNode)) {
+          current.parentNode.addEventListener('scroll', this.#scrollListener, {capture: true, passive: true});
+          this.#observedScrollRoots.add(current.parentNode);
+        }
       }
       current = current.parentElementOrShadowHost();
     }
@@ -425,6 +427,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     const newHighlights: HighlightRectData[] = [];
     const elementPinCounts = new Map<Element, number>();
     const rectCache = new Map<Element, DOMRect>();
+    const activeScrollRoots = new Set<ShadowRoot>();
 
     for (const thread of this.#commentManager.getCommentThreads()) {
       // Non-DOM anchors have their positions managed by their respective panels,
@@ -449,7 +452,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
         observer.observe(el);
         this.#observedThreads.add(el);
       }
-      this.#trackElementAncestors(el);
+      this.#trackElementAncestors(el, activeScrollRoots);
 
       const visibleRect = computeVisibleRect(el, undefined, rectCache);
       if (!visibleRect) {
@@ -478,6 +481,15 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
         height: visibleRect.height,
         visible: true,
       });
+    }
+
+    if (this.#scrollListener) {
+      for (const root of this.#observedScrollRoots) {
+        if (!activeScrollRoots.has(root)) {
+          root.removeEventListener('scroll', this.#scrollListener, {capture: true});
+          this.#observedScrollRoots.delete(root);
+        }
+      }
     }
 
     this.#pinPositions = newPins;

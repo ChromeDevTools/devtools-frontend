@@ -903,4 +903,33 @@ describeWithEnvironment('CommentOverlayManager', () => {
        // Position should be updated synchronously on the leading edge of the scroll event without waiting for a timer.
        assert.strictEqual(manager.getHighlightRects()[0]?.top, 40);
      });
+
+  it('does not leak ShadowRoots in observedScrollRoots when comment is deleted', () => {
+    const host = document.createElement('div');
+    const shadowRoot = host.attachShadow({mode: 'open'});
+    const anchor = document.createElement('div');
+    anchor.setAttribute('jslog', 'TreeItem; context: shadow-test');
+    anchor.textContent = 'shadow test anchor';
+    shadowRoot.appendChild(anchor);
+    container.appendChild(host);
+
+    manager.start(container);
+
+    const addEventListenerSpy = sinon.spy(shadowRoot, 'addEventListener');
+    const removeEventListenerSpy = sinon.spy(shadowRoot, 'removeEventListener');
+
+    const thread = manager.createComment(anchor, 'Test comment');
+    assert.isNotNull(thread);
+    assert.isTrue(addEventListenerSpy.calledWith('scroll'), 'Scroll listener was not added to ShadowRoot');
+
+    // Remove the comment thread and its anchor from the DOM
+    if (thread) {
+      manager.removeCommentThread(thread.id);
+    }
+    anchor.remove();
+
+    assert.isTrue(
+        removeEventListenerSpy.calledWith('scroll'),
+        'ShadowRoot was not removed from observedScrollRoots (removeEventListener was not called), causing a leak');
+  });
 });

@@ -10,14 +10,18 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import {createTarget, deinitializeGlobalVars, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
 
@@ -1013,6 +1017,86 @@ globalThis.foo = bar + baz;
             {found: false, value: null},
         );
       });
+    });
+  });
+
+  describeWithEnvironment('getPopoverRequest', () => {
+    it('highlights the evaluated expression for both scoped variables and evaluated expressions', async () => {
+      const backend = new MockDebuggerBackend();
+      const target = backend.createTarget();
+      sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+          .returns(backend.universe.debuggerWorkspaceBinding);
+      sinon.stub(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, 'instance')
+          .returns(backend.universe.scopeChainResolver);
+      sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
+      sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
+      sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance')
+          .returns(sinon.createStubInstance(UI.ShortcutRegistry.ShortcutRegistry, {
+            getShortcutListener: () => {},
+          }));
+      sinon.stub(Sources.SourcesPanel.SourcesPanel, 'instance')
+          .returns(sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
+      sinon.stub(Breakpoints.BreakpointManager.BreakpointManager, 'instance')
+          .returns(sinon.createStubInstance(Breakpoints.BreakpointManager.BreakpointManager, {
+            breakpointLocationsForUISourceCode: [],
+          }));
+      sinon.stub(ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper, 'buildObjectPopover')
+          .resolves(sinon.createStubInstance(ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper));
+
+      const source = 'function f(localVar) { return localVar + obj.prop; }';
+      const scopes = '          {                                        }';
+      const url = urlString`http://example.com/script.js`;
+      const {uiSourceCode} = createContentProviderUISourceCode({url, mimeType: 'text/javascript', content: source});
+      sinon.stub(backend.universe.debuggerWorkspaceBinding, 'rawLocationToUILocation')
+          .callsFake(async loc =>
+                         new Workspace.UISourceCode.UILocation(uiSourceCode, loc.lineNumber, loc.columnNumber));
+
+      const scopeObject = backend.createSimpleRemoteObject([{name: 'localVar', value: 42}]);
+      const callFrame = await backend.createCallFrame(target, {url, content: source}, scopes, null, [scopeObject]);
+      const evaluateStub =
+          sinon.stub(callFrame, 'evaluate').resolves({object: new SDK.RemoteObject.LocalJSONObject(99)});
+
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
+      sinon.stub(debuggerModel, 'isPaused').returns(true);
+      const frameFlavor = StackTrace.StackTrace.DebuggableFrameFlavor.for({sdkFrame: callFrame, line: 0, column: 23});
+      UI.Context.Context.instance().setFlavor(SDK.Target.Target, target);
+      UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, frameFlavor);
+
+      const plugin = new Sources.DebuggerPlugin.DebuggerPlugin(uiSourceCode, {
+        editorLocationToUILocation: (lineNumber: number, columnNumber?: number) =>
+            ({lineNumber, columnNumber: columnNumber ?? 0}),
+        uiLocationToEditorLocation: (lineNumber: number, columnNumber?: number) =>
+            ({lineNumber, columnNumber: columnNumber ?? 0}),
+      });
+      const editor = new TextEditor.TextEditor.TextEditor(
+          makeState(source, [CodeMirror.javascript.javascript(), plugin.editorExtension()]));
+      sinon.stub(editor.editor, 'posAtCoords').callsFake(({x}) => x);
+      sinon.stub(editor.editor, 'coordsAtPos').returns({left: 0, right: 50, top: 0, bottom: 20});
+      plugin.editorInitialized(editor);
+
+      // 1. Hover over `localVar` (resolved via scopeMappings without calling callFrame.evaluate).
+      const localVarPos = source.lastIndexOf('localVar');
+      const localVarRequest =
+          plugin.getPopoverRequest(new MouseEvent('mousemove', {clientX: localVarPos, clientY: 10}));
+      assert.isNotNull(localVarRequest);
+      assert.isTrue(await localVarRequest.show(new UI.GlassPane.GlassPane()));
+      sinon.assert.notCalled(evaluateStub);
+      assert.strictEqual(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression')?.textContent, 'localVar');
+
+      localVarRequest.hide?.();
+      assert.isNull(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression'));
+
+      // 2. Hover over `obj.prop` (falls back to callFrame.evaluate).
+      const propPos = source.indexOf('prop');
+      const propRequest = plugin.getPopoverRequest(new MouseEvent('mousemove', {clientX: propPos, clientY: 10}));
+      assert.isNotNull(propRequest);
+      assert.isTrue(await propRequest.show(new UI.GlassPane.GlassPane()));
+      sinon.assert.calledOnce(evaluateStub);
+      assert.strictEqual(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression')?.textContent, 'obj.prop');
+
+      propRequest.hide?.();
+      assert.isNull(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression'));
+      plugin.dispose();
     });
   });
 });

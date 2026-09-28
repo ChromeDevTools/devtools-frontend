@@ -611,7 +611,7 @@ export class DebuggerPlugin extends Plugin {
         tokenType === 'PropertyDefinition';
   }
 
-  private getPopoverRequest(event: MouseEvent|KeyboardEvent): UI.PopoverHelper.PopoverRequest|null {
+  getPopoverRequest(event: MouseEvent|KeyboardEvent): UI.PopoverHelper.PopoverRequest|null {
     if (event instanceof KeyboardEvent) {
       return null;
     }
@@ -629,7 +629,6 @@ export class DebuggerPlugin extends Plugin {
     if (!debuggableFrame) {
       return null;
     }
-    const selectedCallFrame = debuggableFrame.sdkFrame;
 
     let textPosition = editor.editor.posAtCoords(event);
     if (!textPosition) {
@@ -667,65 +666,17 @@ export class DebuggerPlugin extends Plugin {
     return {
       box,
       show: async (popover: UI.GlassPane.GlassPane) => {
-        const scopeMappings = await this.#getScopeMappings(debuggableFrame) ?? [];
-        const scopedVariable = findVariableInScopeMappings(evaluationText, highlightRange.from, scopeMappings);
-        if (scopedVariable.found) {
-          if (!scopedVariable.value) {
-            return false;
-          }
-          objectPopoverHelper =
-              await ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildObjectPopover(scopedVariable.value, popover);
-          const potentiallyUpdatedCallFrame =
-              UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
-          if (!objectPopoverHelper || debuggableFrame !== potentiallyUpdatedCallFrame) {
-            objectPopoverHelper?.dispose();
-            return false;
-          }
-          return true;
-        }
-
-        let resolvedText = '';
-        if (selectedCallFrame.script.isJavaScript()) {
-          const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
-              selectedCallFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
-          try {
-            resolvedText =
-                await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(evaluationText, nameMap);
-          } catch {
-          }
-        }
-        // We use side-effect free debug-evaluate when the highlighted expression contains a
-        // function/method call. Otherwise we allow side-effects. The motiviation here are
-        // frameworks like Vue, that heavily use proxies for caching:
-        //
-        //   * We deem a simple property access of a proxy as deterministic so it should be
-        //     successful even if V8 thinks its side-effecting.
-        //   * Explicit function calls on the other hand must be side-effect free. The canonical
-        //     example is hovering over {Math.random()} which would result in a different value
-        //     each time the user hovers over it.
-        const throwOnSideEffect = highlightRange.containsSideEffects;
-        const result = await selectedCallFrame.evaluate({
-          expression: resolvedText || evaluationText,
-          objectGroup: 'popover',
-          includeCommandLineAPI: false,
-          silent: true,
-          returnByValue: false,
-          generatePreview: false,
-          throwOnSideEffect,
-        });
-        if (!result || 'error' in result || !result.object ||
-            (result.object.type === 'object' && result.object.subtype === 'error')) {
+        const object = await this.#evaluateForPopover(debuggableFrame, highlightRange, evaluationText);
+        if (!object) {
           return false;
         }
         objectPopoverHelper =
-            await ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildObjectPopover(result.object, popover);
+            await ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper.buildObjectPopover(object, popover);
         const potentiallyUpdatedCallFrame =
             UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
         if (!objectPopoverHelper || debuggableFrame !== potentiallyUpdatedCallFrame) {
           debuggerModel.runtimeModel().releaseObjectGroup('popover');
-          if (objectPopoverHelper) {
-            objectPopoverHelper.dispose();
-          }
+          objectPopoverHelper?.dispose();
           return false;
         }
         const decoration = CodeMirror.Decoration.set(evalExpressionMark.range(highlightRange.from, highlightRange.to));
@@ -740,6 +691,52 @@ export class DebuggerPlugin extends Plugin {
         editor.dispatch({effects: evalExpression.update.of(CodeMirror.Decoration.none)});
       },
     };
+  }
+
+  async #evaluateForPopover(debuggableFrame: StackTrace.StackTrace.DebuggableFrameFlavor,
+                            highlightRange: {from: number, to: number, containsSideEffects: boolean},
+                            evaluationText: string): Promise<SDK.RemoteObject.RemoteObject|null> {
+    const scopeMappings = await this.#getScopeMappings(debuggableFrame) ?? [];
+    const scopedVariable = findVariableInScopeMappings(evaluationText, highlightRange.from, scopeMappings);
+    if (scopedVariable.found) {
+      return scopedVariable.value;
+    }
+
+    const selectedCallFrame = debuggableFrame.sdkFrame;
+    let resolvedText = '';
+    if (selectedCallFrame.script.isJavaScript()) {
+      const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+          selectedCallFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+      try {
+        resolvedText =
+            await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(evaluationText, nameMap);
+      } catch {
+      }
+    }
+    // We use side-effect free debug-evaluate when the highlighted expression contains a
+    // function/method call. Otherwise we allow side-effects. The motivation here are
+    // frameworks like Vue, that heavily use proxies for caching:
+    //
+    //   * We deem a simple property access of a proxy as deterministic so it should be
+    //     successful even if V8 thinks its side-effecting.
+    //   * Explicit function calls on the other hand must be side-effect free. The canonical
+    //     example is hovering over {Math.random()} which would result in a different value
+    //     each time the user hovers over it.
+    const throwOnSideEffect = highlightRange.containsSideEffects;
+    const result = await selectedCallFrame.evaluate({
+      expression: resolvedText || evaluationText,
+      objectGroup: 'popover',
+      includeCommandLineAPI: false,
+      silent: true,
+      returnByValue: false,
+      generatePreview: false,
+      throwOnSideEffect,
+    });
+    if (!result || 'error' in result || !result.object ||
+        (result.object.type === 'object' && result.object.subtype === 'error')) {
+      return null;
+    }
+    return result.object;
   }
 
   private onEditorUpdate(update: CodeMirror.ViewUpdate): void {

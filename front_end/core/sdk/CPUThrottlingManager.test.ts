@@ -232,12 +232,31 @@ describe('CPUThrottlingManager', () => {
     manager.setCPUPerformanceTier(CPUPerformanceTier.Low);
     assert.strictEqual(manager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
 
-    // Enable 4x throttling (which would normally calculate to Mid).
+    // Enable 4x throttling (which maps Ultra to Mid), but manual override to Low still takes precedence.
     manager.setCPUThrottlingRate(4);
     assert.strictEqual(manager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
 
     // Clear manual override -> should fall back to Mid (from 4x throttling).
     manager.setCPUPerformanceTier(undefined);
+    assert.strictEqual(manager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Mid);
+  });
+
+  it('calculates effective CPU performance tier when host tier is discovered while throttling is active', async () => {
+    const universe = new TestUniverse();
+
+    // Apply manual override to Low before initialization so the host tier is not queried on startup.
+    universe.cpuThrottlingManager.setCPUPerformanceTier(CPUPerformanceTier.Low);
+
+    const manager = await createManagerWithHostTier(universe, CPUPerformanceTier.Ultra);
+    assert.strictEqual(manager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
+
+    // Enable 4x throttling; the manual override to Low still takes precedence.
+    manager.setCPUThrottlingRate(4);
+    assert.strictEqual(manager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
+
+    // Clear manual override -> should discover the Ultra host tier and calculate Mid (from 4x throttling).
+    manager.setCPUPerformanceTier(undefined);
+    await new Promise(resolve => setTimeout(resolve, 0));
     assert.strictEqual(manager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Mid);
   });
 

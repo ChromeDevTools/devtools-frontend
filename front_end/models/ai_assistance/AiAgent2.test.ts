@@ -912,6 +912,51 @@ describe('AiAgent2', () => {
     assert.isNull(context.getLighthouseReport());
   });
 
+  it('learns accessibility skill and invokes runLighthouse when a performance trace is selected', async () => {
+    const mockReport = {
+      finalDisplayedUrl: 'https://example.com',
+      categories: {},
+      audits: {},
+    } as unknown as LHModel.ReporterTypes.ReportJSON;
+    const runLighthouseStub = sinon.stub().resolves(mockReport);
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+      }],
+      [{
+        explanation: 'Running lighthouse audits',
+        functionCalls: [{name: 'runLighthouse', args: {explanation: 'Auditing page', categoryId: 'accessibility'}}],
+      }],
+      [{
+        explanation: 'Audits complete.',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({
+      aidaClient,
+      lighthouseRecording: runLighthouseStub,
+      originLock: defaultOriginLock,
+    });
+    const traceContext = sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext);
+
+    const runLighthouseTool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.RUN_LIGHTHOUSE);
+    assert.exists(runLighthouseTool);
+    const handlerStub = sinon.stub(runLighthouseTool, 'handler').callsFake(async (_args, context) => {
+      await context.runLighthouse();
+      return {result: {audits: 'mock audits'}};
+    });
+
+    const responses = await Array.fromAsync(
+        agent.run('record a lighthouse report and check accessibility score', {selected: traceContext}));
+
+    sinon.assert.calledOnce(handlerStub);
+    sinon.assert.calledOnce(runLighthouseStub);
+    const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.lengthOf(actionResponses, 2);
+    assert.strictEqual(actionResponses[0].code, 'learnSkills(\'accessibility\')');
+    assert.strictEqual(actionResponses[1].code, 'runLighthouse(\'accessibility\', \'snapshot\')');
+  });
+
   it('provides getPerformanceTraceContext capability to performance tools', async () => {
     const traceContext = sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext);
     const aidaClient = mockAidaClient([

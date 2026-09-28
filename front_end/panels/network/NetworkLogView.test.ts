@@ -832,6 +832,37 @@ describeWithEnvironment('NetworkLogView', () => {
     assert.strictEqual((networkColumnWidget).showMode(), UI.SplitWidget.ShowMode.BOTH);
   });
 
+  it('persists waterfall and custom header column visibility across reloads', async () => {
+    const columnSettings = Common.Settings.Settings.instance().createSetting<Record<string, {
+      visible: boolean,
+      title?: string,
+    }>>('network-log-columns', {});
+    columnSettings.set({
+      'response-header-content-type': {visible: false, title: 'Content-Type'},
+      waterfall: {visible: true, title: 'Waterfall'},
+    });
+
+    // First open of NetworkLogView loads custom columns and settings.
+    networkLogView = createNetworkLogView();
+    let columns = networkLogView.columns();
+    columns.switchViewMode(true);
+    let networkColumnWidget = columns.dataGrid().asWidget().parentWidget();
+    assert.instanceOf(networkColumnWidget, UI.SplitWidget.SplitWidget);
+    assert.strictEqual(networkColumnWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
+    assert.isFalse(columns.dataGrid().visibleColumnsArray.some(c => c.id === 'response-header-content-type'));
+
+    // Second open of NetworkLogView (simulating closing and reopening DevTools) should preserve visibility.
+    networkLogView = createNetworkLogView();
+    columns = networkLogView.columns();
+    columns.switchViewMode(true);
+    networkColumnWidget = columns.dataGrid().asWidget().parentWidget();
+    assert.instanceOf(networkColumnWidget, UI.SplitWidget.SplitWidget);
+    assert.strictEqual(networkColumnWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
+    assert.isFalse(columns.dataGrid().visibleColumnsArray.some(c => c.id === 'response-header-content-type'));
+    assert.isTrue(columnSettings.get()['waterfall'].visible);
+    assert.isFalse(columnSettings.get()['response-header-content-type'].visible);
+  });
+
   function createOverrideRequests() {
     const urlNotOverridden = urlString`https://url-not-overridden`;
     const urlHeaderOverridden = urlString`https://url-header-overridden`;

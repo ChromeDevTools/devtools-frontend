@@ -29,6 +29,7 @@ export * as SDKSettings from '../front_end/core/sdk/SDKSettings.js';
 export * as SourceMapManager from '../front_end/core/sdk/SourceMapManager.js';
 export {Target} from '../front_end/core/sdk/Target.js';
 export {TargetManager} from '../front_end/core/sdk/TargetManager.js';
+export {VALID_PLACEHOLDER_MATCH_PATTERN} from '../front_end/core/text_utils/Markdown.js';
 export * as Foundation from '../front_end/foundation/foundation.js';
 export * as Protocol from '../front_end/generated/protocol.js';
 export * as NetworkRequestFormatter from '../front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js';

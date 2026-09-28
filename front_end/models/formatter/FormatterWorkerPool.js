@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../../core/platform/platform.js';
-export { DefinitionKind, ScopeKind } from '../../entrypoints/formatter_actions/formatter_actions.js';
+export { DefinitionKind, ScopeKind, } from '../../entrypoints/formatter_actions/formatter_actions.js';
 let formatterWorkerPoolInstance;
 export class FormatterWorkerPool {
     taskQueue;
@@ -110,7 +110,7 @@ export class FormatterWorkerPool {
         return this.runTask("format" /* FormatterActions.FormatterActions.FORMAT */, parameters);
     }
     javaScriptSubstitute(expression, mapping) {
-        if (mapping.every(m => m.size === 0)) {
+        if (mapping.every(scope => scope.bindings.size === 0)) {
             return Promise.resolve(expression);
         }
         return this.runTask("javaScriptSubstitute" /* FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE */, { content: expression, mapping })

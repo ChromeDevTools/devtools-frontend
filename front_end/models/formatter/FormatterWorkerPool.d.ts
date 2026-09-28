@@ -1,5 +1,5 @@
 import * as FormatterActions from '../../entrypoints/formatter_actions/formatter_actions.js';
-export { DefinitionKind, ScopeKind, type ScopeTreeNode } from '../../entrypoints/formatter_actions/formatter_actions.js';
+export { DefinitionKind, ScopeKind, type ScopeTreeNode, type ScopeVariableMapping, } from '../../entrypoints/formatter_actions/formatter_actions.js';
 export declare class FormatterWorkerPool {
     private taskQueue;
     private workerTasks;
@@ -18,7 +18,7 @@ export declare class FormatterWorkerPool {
     private runChunkedTask;
     private runTask;
     format(mimeType: string, content: string, indentString: string): Promise<FormatterActions.FormatResult>;
-    javaScriptSubstitute(expression: string, mapping: Array<Map<string, string | null>>): Promise<string>;
+    javaScriptSubstitute(expression: string, mapping: FormatterActions.ScopeVariableMapping[]): Promise<string>;
     javaScriptScopeTree(expression: string, sourceType?: 'module' | 'script'): Promise<FormatterActions.ScopeTreeNode | null>;
     parseCSS(content: string, callback: (arg0: boolean, arg1: CSSRule[]) => void): void;
 }

@@ -15,6 +15,7 @@ import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as LiveMetrics from '../models/live-metrics/live-metrics.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
+import * as SourceMapScopes from '../models/source_map_scopes/source_map_scopes.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
 export interface CreationOptions {
@@ -65,6 +66,7 @@ export declare class Universe {
     get persistence(): Persistence.Persistence.PersistenceImpl;
     get presentationConsoleMessageManager(): Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager;
     get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel | null;
+    get scopeChainResolver(): SourceMapScopes.ScopeChainResolver.ScopeChainResolver;
     get settings(): Common.Settings.Settings;
     get targetManager(): SDK.TargetManager.TargetManager;
     get userBadges(): Badges.UserBadges;

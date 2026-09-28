@@ -1107,6 +1107,11 @@ export var Emulation;
         SetDeviceMetricsOverrideRequestViewportMeta["Enable"] = "enable";
         SetDeviceMetricsOverrideRequestViewportMeta["Default"] = "default";
     })(SetDeviceMetricsOverrideRequestViewportMeta = Emulation.SetDeviceMetricsOverrideRequestViewportMeta || (Emulation.SetDeviceMetricsOverrideRequestViewportMeta = {}));
+    let SetDeviceMetricsOverrideRequestTextLayoutMode;
+    (function (SetDeviceMetricsOverrideRequestTextLayoutMode) {
+        SetDeviceMetricsOverrideRequestTextLayoutMode["Mobile"] = "mobile";
+        SetDeviceMetricsOverrideRequestTextLayoutMode["Default"] = "default";
+    })(SetDeviceMetricsOverrideRequestTextLayoutMode = Emulation.SetDeviceMetricsOverrideRequestTextLayoutMode || (Emulation.SetDeviceMetricsOverrideRequestTextLayoutMode = {}));
     let SetEmitTouchEventsForMouseRequestConfiguration;
     (function (SetEmitTouchEventsForMouseRequestConfiguration) {
         SetEmitTouchEventsForMouseRequestConfiguration["Mobile"] = "mobile";

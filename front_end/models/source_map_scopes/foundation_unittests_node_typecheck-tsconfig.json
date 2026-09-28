@@ -49,7 +49,8 @@
   "files": [
     "../../../../../../front_end/models/source_map_scopes/FunctionCodeResolver.test.ts",
     "../../../../../../front_end/models/source_map_scopes/NamesResolver.test.ts",
-    "../../../../../../front_end/models/source_map_scopes/ScopeChainModel.test.ts"
+    "../../../../../../front_end/models/source_map_scopes/ScopeChainModel.test.ts",
+    "../../../../../../front_end/models/source_map_scopes/ScopeChainResolver.test.ts"
   ],
   "references": [
     {

@@ -18,6 +18,7 @@ import * as LiveMetrics from '../models/live-metrics/live-metrics.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
+import * as SourceMapScopes from '../models/source_map_scopes/source_map_scopes.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
 import { createTarget } from './TargetHelpers.js';
@@ -93,6 +94,7 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get persistence(): Persistence.Persistence.PersistenceImpl;
     get presentationConsoleMessageManager(): Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager;
     get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel;
+    get scopeChainResolver(): SourceMapScopes.ScopeChainResolver.ScopeChainResolver;
     get targetManager(): SDK.TargetManager.TargetManager;
     get userBadges(): Badges.UserBadges;
     get settings(): Common.Settings.Settings;

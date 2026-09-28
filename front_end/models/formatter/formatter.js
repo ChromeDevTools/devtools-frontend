@@ -14,7 +14,10 @@ __export(FormatterWorkerPool_exports, {
 });
 import * as Platform from "../../core/platform/platform.js";
 import * as FormatterActions from "../../entrypoints/formatter_actions/formatter_actions.js";
-import { DefinitionKind, ScopeKind } from "../../entrypoints/formatter_actions/formatter_actions.js";
+import {
+  DefinitionKind,
+  ScopeKind
+} from "../../entrypoints/formatter_actions/formatter_actions.js";
 var formatterWorkerPoolInstance;
 var FormatterWorkerPool = class _FormatterWorkerPool {
   taskQueue;
@@ -124,7 +127,7 @@ var FormatterWorkerPool = class _FormatterWorkerPool {
     return this.runTask(FormatterActions.FormatterActions.FORMAT, parameters);
   }
   javaScriptSubstitute(expression, mapping) {
-    if (mapping.every((m) => m.size === 0)) {
+    if (mapping.every((scope) => scope.bindings.size === 0)) {
       return Promise.resolve(expression);
     }
     return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE, { content: expression, mapping }).then((result) => result || "");

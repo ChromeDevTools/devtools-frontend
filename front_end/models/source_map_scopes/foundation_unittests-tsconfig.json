@@ -49,6 +49,7 @@
     "../../../../../../front_end/models/source_map_scopes/FunctionCodeResolver.test.ts",
     "../../../../../../front_end/models/source_map_scopes/NamesResolver.test.ts",
     "../../../../../../front_end/models/source_map_scopes/ScopeChainModel.test.ts",
+    "../../../../../../front_end/models/source_map_scopes/ScopeChainResolver.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",

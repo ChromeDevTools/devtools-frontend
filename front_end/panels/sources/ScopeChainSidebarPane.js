@@ -27,7 +27,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Bindings from '../../models/bindings/bindings.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
@@ -178,7 +177,8 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
         this.#scopeChain = null;
         this.#linkifier.reset();
         if (callFrame) {
-            const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(callFrame.sdkFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+            // TODO(crbug.com/458180550): Receive the ScopeChainResolver via constructor.
+            const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(callFrame.sdkFrame, SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance());
             this.#scopeChainModel = scopeChainModel;
             this.#scopeChainModel.addEventListener("ScopeChainUpdated" /* SourceMapScopes.ScopeChainModel.Events.SCOPE_CHAIN_UPDATED */, event => {
                 if (this.#scopeChainModel === scopeChainModel) {

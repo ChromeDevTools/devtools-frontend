@@ -1,6 +1,6 @@
 import * as Common from '../../core/common/common.js';
-import * as SDK from '../../core/sdk/sdk.js';
-import type * as Bindings from '../bindings/bindings.js';
+import type * as SDK from '../../core/sdk/sdk.js';
+import { type ScopeChainResolver } from './ScopeChainResolver.js';
 /**
  * This class is responsible for resolving / updating the scope chain for a specific {@link SDK.DebuggerModel.CallFrame}
  * instance.
@@ -11,13 +11,13 @@ import type * as Bindings from '../bindings/bindings.js';
  *
  * Source maps can be enabled/disabled dynamically and debugger plugins can attach debug info after the fact.
  *
- * This class tracks all that and sends events with the latest scope chain for a specific call frame.
+ * The {@link ScopeChainResolver} tracks all that and invalidates its cache accordingly. This class
+ * sends events with the latest scope chain for a specific call frame.
  */
 export declare class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    constructor(callFrame: SDK.DebuggerModel.CallFrame, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+    constructor(callFrame: SDK.DebuggerModel.CallFrame, scopeChainResolver: ScopeChainResolver);
     dispose(): void;
-    static resolveScopeChain(callFrame: SDK.DebuggerModel.CallFrame, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<SDK.DebuggerModel.ScopeChainEntry[]>;
     resolveScopeChain(): Promise<SDK.DebuggerModel.ScopeChainEntry[]>;
 }
 export declare const enum Events {

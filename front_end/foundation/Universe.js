@@ -20,6 +20,7 @@ import * as LiveMetrics from '../models/live-metrics/live-metrics.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
+import * as SourceMapScopes from '../models/source_map_scopes/source_map_scopes.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
 export class Universe {
@@ -108,6 +109,8 @@ export class Universe {
         context.set(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, cssWorkspaceBinding);
         const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace);
         context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
+        const scopeChainResolver = new SourceMapScopes.ScopeChainResolver.ScopeChainResolver(targetManager, debuggerWorkspaceBinding);
+        context.set(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, scopeChainResolver);
         const presentationConsoleMessageManager = new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager(targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding);
         context.set(Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager, presentationConsoleMessageManager);
         const networkProjectManager = new Bindings.NetworkProject.NetworkProjectManager();
@@ -254,6 +257,9 @@ export class Universe {
     get projectSettingsModel() {
         return this.initAutomaticFilesystem ? this.context.get(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel) :
             null;
+    }
+    get scopeChainResolver() {
+        return this.context.get(SourceMapScopes.ScopeChainResolver.ScopeChainResolver);
     }
     get settings() {
         return this.context.get(Common.Settings.Settings);

@@ -110,6 +110,9 @@
       "path": "../../models/persistence/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/source_map_scopes/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/stack_trace/bundle-tsconfig.ref.json"
     },
     {

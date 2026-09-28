@@ -3229,6 +3229,11 @@ var Emulation;
     SetDeviceMetricsOverrideRequestViewportMeta2["Enable"] = "enable";
     SetDeviceMetricsOverrideRequestViewportMeta2["Default"] = "default";
   })(SetDeviceMetricsOverrideRequestViewportMeta = Emulation2.SetDeviceMetricsOverrideRequestViewportMeta || (Emulation2.SetDeviceMetricsOverrideRequestViewportMeta = {}));
+  let SetDeviceMetricsOverrideRequestTextLayoutMode;
+  ((SetDeviceMetricsOverrideRequestTextLayoutMode2) => {
+    SetDeviceMetricsOverrideRequestTextLayoutMode2["Mobile"] = "mobile";
+    SetDeviceMetricsOverrideRequestTextLayoutMode2["Default"] = "default";
+  })(SetDeviceMetricsOverrideRequestTextLayoutMode = Emulation2.SetDeviceMetricsOverrideRequestTextLayoutMode || (Emulation2.SetDeviceMetricsOverrideRequestTextLayoutMode = {}));
   let SetEmitTouchEventsForMouseRequestConfiguration;
   ((SetEmitTouchEventsForMouseRequestConfiguration2) => {
     SetEmitTouchEventsForMouseRequestConfiguration2["Mobile"] = "mobile";
@@ -9899,10 +9904,7 @@ var DebuggerPlugin = class extends Plugin {
     const callFrame = debuggableFrame.sdkFrame;
     const url = this.uiSourceCode.url();
     const uiPositionToEditorOffset = (lineNumber, columnNumber) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(lineNumber, columnNumber)) ?? null;
-    const scopeChain = await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(
-      callFrame,
-      Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-    );
+    const scopeChain = await SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance().resolveScopeChain(callFrame);
     const localOriginalScope = scopeChain.find((s) => s instanceof SDK8.SourceMapScopeChainEntry.SourceMapScopeChainEntry && s.type() === Debugger.ScopeType.Local)?.originalScope();
     const functionOffsetPromise = localOriginalScope ? Promise.resolve(uiPositionToEditorOffset(localOriginalScope.start.line, localOriginalScope.start.column)) : this.#rawLocationToEditorOffset(callFrame.functionLocation(), url);
     const executionOffsetPromise = this.#rawLocationToEditorOffset(callFrame.location(), url);
@@ -10956,10 +10958,7 @@ var ScopeMappingsCache = class {
 };
 async function computeScopeMappings(callFrame, rawLocationToEditorOffset, uiPositionToEditorOffset, resolvedScopeChain) {
   const scopeMappings = [];
-  const scopeChain = resolvedScopeChain ?? await SourceMapScopes.ScopeChainModel.ScopeChainModel.resolveScopeChain(
-    callFrame,
-    Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-  );
+  const scopeChain = resolvedScopeChain ?? await SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance().resolveScopeChain(callFrame);
   const activeScopes = new Set(scopeChain.filter((s) => s instanceof SDK8.SourceMapScopeChainEntry.SourceMapScopeChainEntry).map((s) => s.originalScope()));
   const addInactiveChildren = (children) => {
     for (const child of children) {
@@ -17251,7 +17250,6 @@ __export(ScopeChainSidebarPane_exports, {
   ScopeChainSidebarPane: () => ScopeChainSidebarPane
 });
 import * as i18n45 from "../../core/i18n/i18n.js";
-import * as Bindings11 from "../../models/bindings/bindings.js";
 import * as SourceMapScopes2 from "../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace7 from "../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "../../ui/legacy/components/object_ui/object_ui.js";
@@ -17445,7 +17443,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
     if (callFrame) {
       const scopeChainModel = new SourceMapScopes2.ScopeChainModel.ScopeChainModel(
         callFrame.sdkFrame,
-        Bindings11.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+        SourceMapScopes2.ScopeChainResolver.ScopeChainResolver.instance()
       );
       this.#scopeChainModel = scopeChainModel;
       this.#scopeChainModel.addEventListener(SourceMapScopes2.ScopeChainModel.Events.SCOPE_CHAIN_UPDATED, (event) => {
@@ -17556,7 +17554,7 @@ import * as i18n47 from "../../core/i18n/i18n.js";
 import * as Platform15 from "../../core/platform/platform.js";
 import * as SDK13 from "../../core/sdk/sdk.js";
 import * as TextUtils12 from "../../core/text_utils/text_utils.js";
-import * as Bindings12 from "../../models/bindings/bindings.js";
+import * as Bindings11 from "../../models/bindings/bindings.js";
 import * as Persistence16 from "../../models/persistence/persistence.js";
 import * as Workspace28 from "../../models/workspace/workspace.js";
 import * as uiI18n3 from "../../ui/i18n/i18n.js";
@@ -17698,7 +17696,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
   }
   acceptProject(project) {
     return project.type() === Workspace28.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(
-      Bindings12.NetworkProject.NetworkProject.getTargetForProject(project)
+      Bindings11.NetworkProject.NetworkProject.getTargetForProject(project)
     );
   }
   onScopeChange() {
@@ -18021,7 +18019,7 @@ import * as Host13 from "../../core/host/host.js";
 import * as i18n49 from "../../core/i18n/i18n.js";
 import * as Platform16 from "../../core/platform/platform.js";
 import * as SDK14 from "../../core/sdk/sdk.js";
-import * as Bindings13 from "../../models/bindings/bindings.js";
+import * as Bindings12 from "../../models/bindings/bindings.js";
 import * as Formatter3 from "../../models/formatter/formatter.js";
 import * as SourceMapScopes3 from "../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace9 from "../../models/stack_trace/stack_trace.js";
@@ -18845,7 +18843,7 @@ var WatchExpression = class _WatchExpression {
     if (callFrame?.script.isJavaScript()) {
       const nameMap = await SourceMapScopes3.NamesResolver.allVariablesInCallFrame(
         callFrame,
-        Bindings13.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+        Bindings12.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
       );
       try {
         expression = await Formatter3.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);

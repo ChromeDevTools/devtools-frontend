@@ -6941,6 +6941,10 @@ export declare namespace Emulation {
         Enable = "enable",
         Default = "default"
     }
+    const enum SetDeviceMetricsOverrideRequestTextLayoutMode {
+        Mobile = "mobile",
+        Default = "default"
+    }
     interface SetDeviceMetricsOverrideRequest {
         /**
          * Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
@@ -7023,6 +7027,11 @@ export declare namespace Emulation {
          * the viewport meta tag is always enabled.
          */
         viewportMeta?: SetDeviceMetricsOverrideRequestViewportMeta;
+        /**
+         * Text layout mode. Default: `default`. Note: if `mobile` is `true`,
+         * mobile text layout mode (text autosizing) is always enabled.
+         */
+        textLayoutMode?: SetDeviceMetricsOverrideRequestTextLayoutMode;
     }
     interface SetDevicePostureOverrideRequest {
         posture: DevicePosture;
@@ -16297,6 +16306,12 @@ export declare namespace Preload {
         key: PreloadingAttemptKey;
         pipelineId: PreloadPipelineId;
         status: PreloadingStatus;
+        /**
+         * The action currently performed by this attempt. This differs from
+         * `key.action` after a prerender-until-script attempt is upgraded in place
+         * to a full prerender.
+         */
+        effectiveAction?: SpeculationAction;
         prerenderStatus?: PrerenderFinalStatus;
         /**
          * This is used to give users more information about the name of Mojo interface

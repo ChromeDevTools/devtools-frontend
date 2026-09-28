@@ -140,7 +140,9 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
     this.axNodeSubPane.setAXNode(axNode);
   }
 
-  override async performUpdate(): Promise<void> {
+  override performUpdate(): void {
+    void this.#updateSubPanes(this.node());
+
     this.#view(
         {
           isToggled: this.toggleAction.toggled(),
@@ -150,8 +152,9 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
         {},
         this.contentElement,
     );
+  }
 
-    const node = this.node();
+  async #updateSubPanes(node: SDK.DOMModel.DOMNode|null): Promise<void> {
     this.axNodeSubPane.setNode(node);
     this.ariaSubPane.setNode(node);
     void this.sourceOrderSubPane.setNodeAsync(node);

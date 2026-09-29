@@ -46,6 +46,7 @@ devtools_entrypoint("bundle") {
     "../../ui/*",
 
     # TODO(crbug/452597733): remove these dependencies.
+    "../../../mcp/*",
     "../../core/common/*",
     "../../core/host/*",
     "../../core/sdk/*",

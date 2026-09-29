@@ -29,7 +29,7 @@ const argv = yargs(hideBin(process.argv))
                  })
                  .option('all', {
                    type: 'boolean',
-                   description: 'Check all targets in front_end',
+                   description: 'Check all targets in front_end, mcp, and inspector_overlay',
                    default: false,
                  })
                  .option('dry-run', {
@@ -52,8 +52,11 @@ let files: string[] = argv.files ?? [];
 logger(`Running GN-based dependency check on ${argv.root}`);
 
 if (argv.all) {
-  // TODO: extend to other folders as well.
-  files = [path.join(argv.root, 'front_end')];
+  files = [
+    path.join(argv.root, 'front_end'),
+    path.join(argv.root, 'mcp'),
+    path.join(argv.root, 'inspector_overlay'),
+  ];
 }
 
 if (files.length === 0) {

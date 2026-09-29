@@ -172,7 +172,11 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         <li role=treeitem
             @contextmenu=${copyValueContextmenu(
                 i18nString(UIStrings.copyValue),
-                () => decodeURIComponent(param.value),
+                () => {
+                  const {value, errorDecoding} =
+                      RequestPayloadView.decodeParameter(param.value, decodeParameters);
+                  return errorDecoding ? param.value : value;
+                },
                 'copy-value',
             )}>
           ${param.name !== '' ? html`
@@ -556,24 +560,28 @@ export class RequestPayloadView extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  static formatParameter(value: string, className: string, decodeParameters: boolean): LitTemplate {
-    let errorDecoding = false;
-
-    if (decodeParameters) {
-      value = value.replace(/\+/g, ' ');
-      if (value.indexOf('%') >= 0) {
-        try {
-          value = decodeURIComponent(value);
-        } catch {
-          errorDecoding = true;
-        }
+  static decodeParameter(value: string, decodeParameters: boolean): {value: string, errorDecoding: boolean} {
+    if (!decodeParameters) {
+      return {value, errorDecoding: false};
+    }
+    value = value.replace(/\+/g, ' ');
+    if (value.indexOf('%') >= 0) {
+      try {
+        return {value: decodeURIComponent(value), errorDecoding: false};
+      } catch {
+        return {value, errorDecoding: true};
       }
     }
-    const classes = classMap({[className]: !!className, 'empty-value': value === ''});
+    return {value, errorDecoding: false};
+  }
+
+  static formatParameter(value: string, className: string, decodeParameters: boolean): LitTemplate {
+    const {value: decoded, errorDecoding} = RequestPayloadView.decodeParameter(value, decodeParameters);
+    const classes = classMap({[className]: !!className, 'empty-value': decoded === ''});
     return html`<div class=${classes}>
       ${
         errorDecoding ? html`<span class=payload-decode-error>${i18nString(UIStrings.unableToDecodeValue)}</span>` :
-                        value}
+                        decoded}
     </div>`;
   }
 }

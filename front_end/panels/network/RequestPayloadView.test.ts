@@ -243,6 +243,75 @@ describeWithEnvironment('RequestPayloadView', () => {
     sinon.assert.calledOnceWithExactly(copyValue, text);
   });
 
+  async function copyValueFromParsedParam(value: string, decodeQueryParameters: boolean): Promise<string> {
+    const copyValue = sinon.spy();
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+
+    const input: Network.RequestPayloadView.ViewInput = {
+      decodeQueryParameters,
+      setDecodeQueryParameters: sinon.spy(),
+      decodeFormParameters: true,
+      setDecodeFormParameters: sinon.spy(),
+      viewQueryParamSource: false,
+      setViewQueryParamSource: sinon.spy(),
+      viewFormParamSource: false,
+      setViewFormParamSource: sinon.spy(),
+      viewJSONPayloadSource: true,
+      setViewJSONPayloadSource: sinon.spy(),
+      copyValue,
+      formData: undefined,
+      formParameters: undefined,
+      queryString: `p=${value}`,
+      queryParameters: [{name: 'p', value}],
+      objectTree: null,
+      onPayloadContextMenu: sinon.spy(),
+      onPayloadToggle: sinon.spy(),
+      binaryPayloadContentData: null,
+      requestUrl: urlString`https://example.com/api`,
+    };
+
+    Network.RequestPayloadView.DEFAULT_VIEW(input, {}, container);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const shadowRoot = container.querySelector<HTMLElement>('.request-payload-tree')?.shadowRoot;
+    assert.exists(shadowRoot);
+    const row =
+        Array.from(shadowRoot.querySelectorAll('li[role=treeitem]')).find(li => li.querySelector('.payload-name'));
+    assert.exists(row);
+
+    sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+    const appendItem = sinon.spy(UI.ContextMenu.Section.prototype, 'appendItem');
+    row.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, cancelable: true}));
+
+    const copyItem = appendItem.getCalls().find(call => String(call.args[0]) === 'Copy value');
+    assert.exists(copyItem);
+    (copyItem.args[1] as () => void)();
+
+    sinon.assert.calledOnce(copyValue);
+    return copyValue.firstCall.args[0];
+  }
+
+  it('copies a decoded parameter value', async () => {
+    assert.strictEqual(await copyValueFromParsedParam('hello%20world', true), 'hello world');
+  });
+
+  it('copies "+" as a space, like the parsed view displays it', async () => {
+    assert.strictEqual(await copyValueFromParsedParam('a+b', true), 'a b');
+  });
+
+  it('copies the raw value when a percent escape is truncated', async () => {
+    assert.strictEqual(await copyValueFromParsedParam('%E0%A4%A', true), '%E0%A4%A');
+  });
+
+  it('copies the raw value when the percent escapes are not valid UTF-8', async () => {
+    assert.strictEqual(await copyValueFromParsedParam('%FD', true), '%FD');
+  });
+
+  it('copies the encoded value when decoding is turned off', async () => {
+    assert.strictEqual(await copyValueFromParsedParam('a+b%20c', false), 'a+b%20c');
+  });
+
   it('displays JSON payload and toggles between parsed and source view', async () => {
     const request = createNetworkRequest({
       url: 'https://example.com/api',

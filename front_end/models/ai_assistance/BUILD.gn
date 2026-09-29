@@ -168,7 +168,6 @@ devtools_entrypoint("bundle") {
     "../../testing/*",
     "../../ui/components/text_editor/*",
     "../ai_code_completion",
-    "./data_formatters:*",
   ]
 
   visibility += devtools_models_visibility
@@ -215,6 +214,12 @@ devtools_foundation_module("foundation_unittests") {
     "contexts/FileContext.test.ts",
     "contexts/PerformanceTraceContext.test.ts",
     "contexts/RequestContext.test.ts",
+    "data_formatters/FileFormatter.test.ts",
+    "data_formatters/LighthouseFormatter.test.ts",
+    "data_formatters/NetworkRequestFormatter.test.ts",
+    "data_formatters/PerformanceInsightFormatter.test.ts",
+    "data_formatters/PerformanceTraceFormatter.test.ts",
+    "data_formatters/UnitFormatters.test.ts",
     "performance/AICallTree.test.ts",
     "performance/AIContext.test.ts",
     "performance/AIQueries.test.ts",
@@ -249,8 +254,6 @@ devtools_foundation_module("foundation_unittests") {
     "tools/ToolRegistry.test.ts",
   ]
 
-  public_deps = [ "./data_formatters:foundation_unittests" ]
-
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",
@@ -263,6 +266,7 @@ devtools_foundation_module("foundation_unittests") {
     "../../services/tracing:bundle",
     "../../testing",
     "../bindings:bundle",
+    "../crux-manager:bundle",
     "../formatter:bundle",
     "../lighthouse:bundle",
     "../logs:bundle",

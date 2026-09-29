@@ -284,4 +284,78 @@ describe('CSSModel', () => {
       assert.strictEqual(header2, header);
     });
   });
+
+  it('coalesces simultaneous getComputedStyle requests and fetches fresh styles after StyleSheetChanged', async () => {
+    const target = universe.createTarget();
+    const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+    sinon.stub(cssModel.agent, 'invoke_enable').resolves({getError: () => undefined});
+    await cssModel.resumeModel();
+
+    let colorValue = 'red';
+    const getComputedStyleStub = sinon.stub(cssModel.agent, 'invoke_getComputedStyleForNode')
+                                     .callsFake(async () => ({
+                                                  computedStyle: [{name: 'color', value: colorValue}],
+                                                  extraFields: {isAppearanceBase: false},
+                                                  getError: () => undefined,
+                                                }));
+
+    const nodeId = 1 as Protocol.DOM.NodeId;
+    const [style1, style2] = await Promise.all([
+      cssModel.getComputedStyle(nodeId),
+      cssModel.getComputedStyle(nodeId),
+    ]);
+    sinon.assert.calledOnce(getComputedStyleStub);
+    assert.strictEqual(style1?.get('color'), 'red');
+    assert.strictEqual(style2?.get('color'), 'red');
+
+    colorValue = 'green';
+    cssModel.fireStyleSheetChanged('sheet-1' as Protocol.DOM.StyleSheetId);
+
+    const updatedStyle = await cssModel.getComputedStyle(nodeId);
+    sinon.assert.calledTwice(getComputedStyleStub);
+    assert.strictEqual(updatedStyle?.get('color'), 'green');
+  });
+
+  it('updates stylesheet text via setStyleSheetText and dispatches StyleSheetChanged', async () => {
+    const target = universe.createTarget();
+    const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+    const styleSheetId = 'sheet-1' as Protocol.DOM.StyleSheetId;
+
+    cssModel.styleSheetAdded({
+      styleSheetId,
+      frameId: 'frame-1' as Protocol.Page.FrameId,
+      sourceURL: 'http://example.com/styles.css',
+      origin: Protocol.CSS.StyleSheetOrigin.Regular,
+      title: 'styles.css',
+      disabled: false,
+      isInline: false,
+      isMutable: true,
+      isConstructed: false,
+      startLine: 0,
+      startColumn: 0,
+      length: 0,
+      endLine: 0,
+      endColumn: 0,
+    });
+
+    let storedText = 'h1 { color: blue; }';
+    sinon.stub(cssModel.agent, 'invoke_getStyleSheetText').callsFake(async () => ({
+                                                                       text: storedText,
+                                                                       getError: () => undefined,
+                                                                     }));
+    sinon.stub(cssModel.agent, 'invoke_setStyleSheetText').callsFake(async ({text}) => {
+      storedText = text;
+      return {sourceMapURL: '', getError: () => undefined};
+    });
+
+    assert.strictEqual(await cssModel.getStyleSheetText(styleSheetId), 'h1 { color: blue; }');
+
+    const changedPromise = cssModel.once(SDK.CSSModel.Events.StyleSheetChanged);
+    const error = await cssModel.setStyleSheetText(styleSheetId, 'h1 { COLOR: Red; }', true);
+    assert.isNull(error);
+
+    const changedEvent = await changedPromise;
+    assert.strictEqual(changedEvent.styleSheetId, styleSheetId);
+    assert.strictEqual(await cssModel.getStyleSheetText(styleSheetId), 'h1 { COLOR: Red; }');
+  });
 });

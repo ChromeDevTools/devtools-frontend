@@ -1837,5 +1837,33 @@ describe('DOMModel', () => {
       // Should not call invoke_undo again because stack index is 0.
       sinon.assert.calledOnce(undoSpy);
     });
+
+    it('supports undo and subsequent perform/redo of mergeable actions', async () => {
+      const target = universe.createTarget();
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const undoSpy = sinon.stub(domModel.agent, 'invoke_undo').resolves({getError: () => undefined});
+      const redoSpy = sinon.stub(domModel.agent, 'invoke_redo').resolves({getError: () => undefined});
+      const undoStack = new SDK.DOMModel.DOMModelUndoStack();
+
+      // Coalesce two minor (mergeable) actions into a single undoable entry.
+      await undoStack.markUndoableState(domModel, true);
+      await undoStack.markUndoableState(domModel, true);
+
+      await undoStack.undo();
+      sinon.assert.calledOnce(undoSpy);
+
+      await undoStack.redo();
+      sinon.assert.calledOnce(redoSpy);
+
+      // Undo again and perform a new mergeable action; it should not coalesce with the undone entry.
+      await undoStack.undo();
+      sinon.assert.calledTwice(undoSpy);
+
+      await undoStack.markUndoableState(domModel, true);
+      await undoStack.undo();
+      sinon.assert.calledThrice(undoSpy);
+    });
   });
 });

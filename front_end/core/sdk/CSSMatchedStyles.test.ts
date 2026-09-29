@@ -1808,4 +1808,96 @@ describe('CSSMatchedStyles', () => {
       assert.isNull(parent);
     });
   });
+
+  it('reports property state and importance for CSSOM shorthands with !important longhands', async () => {
+    const cssomRule = ruleMatch('div', [
+      {name: 'padding-top', value: '10px', important: true},
+      {name: 'padding-right', value: '50px', important: true},
+      {name: 'padding-bottom', value: '10px', important: true},
+      {name: 'padding-left', value: '50px', important: true},
+    ]);
+    cssomRule.rule.style.shorthandEntries = [{name: 'padding', value: '10px 50px', important: true}];
+
+    const overridingRule = ruleMatch('#inspected', [
+      {name: 'padding-top', value: '0px'},
+      {name: 'padding', value: '0px'},
+    ]);
+
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      matchedPayload: [cssomRule, overridingRule],
+    });
+
+    const [overridingStyle, cssomStyle] = matchedStyles.nodeStyles();
+    const shorthandProp = cssomStyle.leadingProperties().find(p => p.name === 'padding');
+    assert.exists(shorthandProp);
+    assert.isTrue(shorthandProp.important);
+    assert.strictEqual(shorthandProp.propertyText, 'padding: 10px 50px !important;');
+    assert.strictEqual(matchedStyles.propertyState(shorthandProp), SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+
+    for (const prop of overridingStyle.allProperties()) {
+      assert.strictEqual(matchedStyles.propertyState(prop), SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+    }
+  });
+
+  it('parses and exposes @keyframes rules and keyframe declarations', async () => {
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      matchedPayload: [ruleMatch('div', [{name: 'animation-name', value: 'fadeSlide'}])],
+      animationsPayload: [{
+        animationName: {text: 'fadeSlide'},
+        keyframes: [
+          {
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            keyText: {text: '0%'},
+            style: {
+              cssProperties: [{name: 'opacity', value: '0'}],
+              shorthandEntries: [],
+            },
+          },
+          {
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            keyText: {text: '50%, 100%'},
+            style: {
+              cssProperties: [{name: 'opacity', value: '1'}],
+              shorthandEntries: [],
+            },
+          },
+        ],
+      }],
+    });
+
+    const keyframesRules = matchedStyles.keyframes();
+    assert.lengthOf(keyframesRules, 1);
+    assert.strictEqual(keyframesRules[0].name().text, 'fadeSlide');
+
+    const keyframes = keyframesRules[0].keyframes();
+    assert.lengthOf(keyframes, 2);
+    assert.isTrue(keyframes[0].isKeyframeRule());
+    assert.strictEqual(keyframes[0].parentRuleName(), 'fadeSlide');
+    assert.strictEqual(keyframes[0].key().text, '0%');
+    assert.strictEqual(keyframes[0].style.getPropertyValue('opacity'), '0');
+    assert.strictEqual(keyframes[1].key().text, '50%, 100%');
+    assert.strictEqual(keyframes[1].style.getPropertyValue('opacity'), '1');
+  });
+
+  it('marks CSSOM properties without source range that have important: true as active over non-important properties',
+     async () => {
+       const cssomRule = ruleMatch('div', [{name: 'color', value: 'red', important: true}]);
+       const regularRule = ruleMatch('#inspected', [{name: 'color', value: 'green'}]);
+
+       const matchedStyles = await getMatchedStyles({
+         connection,
+         matchedPayload: [cssomRule, regularRule],
+       });
+
+       const [regularStyle, cssomStyle] = matchedStyles.nodeStyles();
+       const regularColor = regularStyle.allProperties()[0];
+       const cssomColor = cssomStyle.allProperties()[0];
+
+       assert.isNull(cssomStyle.range);
+       assert.isTrue(cssomColor.important);
+       assert.strictEqual(matchedStyles.propertyState(cssomColor), SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+       assert.strictEqual(matchedStyles.propertyState(regularColor), SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+     });
 });

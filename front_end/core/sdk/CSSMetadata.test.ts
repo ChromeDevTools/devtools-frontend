@@ -41,4 +41,13 @@ describe('CSSMetadata', () => {
     assert.strictEqual(cssMetadata.canonicalPropertyName('-webkit-transition'), 'transition');
     assert.strictEqual(cssMetadata.canonicalPropertyName('color'), 'color');
   });
+
+  it('identifies mixed-case color-aware properties case-insensitively', () => {
+    const cssMetadata = SDK.CSSMetadata.cssMetadata();
+    assert.isTrue(cssMetadata.isColorAwareProperty('CoLoR'));
+    assert.isTrue(cssMetadata.isColorAwareProperty('bAckground-ColoR'));
+    assert.isTrue(cssMetadata.isColorAwareProperty('BOX-SHADOW'));
+    assert.isTrue(cssMetadata.isColorAwareProperty('Border-Top-Color'));
+    assert.isFalse(cssMetadata.isColorAwareProperty('WiDtH'));
+  });
 });

@@ -242,3 +242,98 @@ describe('CSSModel Styles and Inspector Stylesheets', () => {
     assert.strictEqual(addedRule.style.getPropertyValue('font-weight'), 'bold');
   });
 });
+
+describe('CSSModel Constructed Stylesheets, SourceMaps, and Shadow Host Lifecycle', () => {
+  async function setupPage(
+      inspectedPage: {goToHtml: (html: string) => Promise<void>},
+      universe: {targetManager: SDK.TargetManager.TargetManager},
+      html: string,
+      selector = '#inspected',
+      ): Promise<{
+    primaryTarget: SDK.Target.Target,
+    domModel: SDK.DOMModel.DOMModel,
+    cssModel: SDK.CSSModel.CSSModel,
+    documentNode: SDK.DOMModel.DOMDocument,
+    nodeId: SDK.DOMModel.DOMNode['id'],
+  }> {
+    const primaryTarget = universe.targetManager.primaryPageTarget();
+    assert.isNotNull(primaryTarget);
+    const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+    assert.isNotNull(domModel);
+    const cssModel = primaryTarget.model(SDK.CSSModel.CSSModel);
+    assert.isNotNull(cssModel);
+    await inspectedPage.goToHtml(html);
+    // Wait for any in-flight document request triggered by DocumentUpdated during navigation,
+    // then request a fresh document snapshot once the page load has completed.
+    await domModel.requestDocument();
+    domModel.setDocumentForTest(null);
+    const documentNode = await domModel.requestDocument();
+    assert.isNotNull(documentNode);
+    await documentNode.getSubtree(5, true);
+    const nodeId = await domModel.querySelector(documentNode.id, selector);
+    assert.isNotNull(nodeId);
+    assert.isNotNull(domModel.nodeForId(nodeId));
+    return {primaryTarget, domModel, cssModel, documentNode, nodeId};
+  }
+
+  function findRule(matchedResult: SDK.CSSMatchedStyles.CSSMatchedStyles, selector: string): SDK.CSSRule.CSSStyleRule {
+    const style = matchedResult.nodeStyles().find(s => s.parentRule instanceof SDK.CSSRule.CSSStyleRule &&
+                                                      s.parentRule.selectorText() === selector);
+    assert.isDefined(style);
+    return style.parentRule as SDK.CSSRule.CSSStyleRule;
+  }
+
+  it('includes constructed CSSStyleSheet instances from document.adoptedStyleSheets and supports rule edits',
+     async ({inspectedPage, universe}) => {
+       const {cssModel, nodeId} = await setupPage(
+           inspectedPage, universe,
+           '<div id="inspected">Constructed</div><script>const sheet = new CSSStyleSheet(); sheet.replaceSync("#inspected { color: magenta; }"); document.adoptedStyleSheets = [sheet];</script>');
+       const matchedResult = await cssModel.getMatchedStyles(nodeId);
+       assert.isNotNull(matchedResult);
+       const rule = findRule(matchedResult, '#inspected');
+       assert.strictEqual(rule.style.getPropertyValue('color'), 'magenta');
+       assert.isTrue(rule.header?.isConstructed);
+       assert.isTrue(rule.header?.isMutable);
+
+       assert.isTrue(await rule.style.setText('color: cyan;', true));
+       const updatedMatched = await cssModel.getMatchedStyles(nodeId);
+       assert.isNotNull(updatedMatched);
+       assert.strictEqual(findRule(updatedMatched, '#inspected').style.getPropertyValue('color'), 'cyan');
+     });
+
+  it('attaches source map in sourceMapManager for inline <style> with base64 sourceMappingURL',
+     async ({inspectedPage, universe}) => {
+       const sourceMapData = 'data:application/json;base64,' +
+           'eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImlubGluZS5zY3NzIl0sIm1hcHBpbmdzIjoiQUFBQSJ9';
+       const {cssModel, nodeId} = await setupPage(inspectedPage, universe,
+                                                  `<style>#inspected { color: red; }\n/*# sourceMappingURL=${
+                                                      sourceMapData} */</style><div id="inspected">Map</div>`);
+       const matchedResult = await cssModel.getMatchedStyles(nodeId);
+       assert.isNotNull(matchedResult);
+       const header = findRule(matchedResult, '#inspected').header;
+       assert.isNotNull(header);
+
+       const sourceMap = cssModel.sourceMapManager().sourceMapForClient(header) ??
+           (await cssModel.sourceMapManager().once(SDK.SourceMapManager.Events.SourceMapAttached)).sourceMap;
+       assert.isNotNull(sourceMap);
+       assert.isTrue(sourceMap.sourceURLs().some(url => url.endsWith('inline.scss')));
+       const entry = sourceMap.findEntry(0, 0);
+       assert.isNotNull(entry);
+       assert.include(entry.sourceURL ?? '', 'inline.scss');
+     });
+
+  it('fires StyleSheetRemoved and removes header from CSSModel when removing a shadow host with a <style> element',
+     async ({inspectedPage, universe}) => {
+       const {cssModel} = await setupPage(
+           inspectedPage, universe,
+           '<div id="inspected"></div><script>const sr = document.getElementById("inspected").attachShadow({mode: "open"}); sr.innerHTML = "<style>:host { color: red; }</style>";</script>');
+
+       const removedPromise = cssModel.once(SDK.CSSModel.Events.StyleSheetRemoved);
+       await inspectedPage.evaluate(() => {
+         document.getElementById('inspected')?.remove();
+       });
+       const removedHeader = await removedPromise;
+       assert.isNotNull(removedHeader);
+       assert.isNull(cssModel.styleSheetHeaderForId(removedHeader.id));
+     });
+});

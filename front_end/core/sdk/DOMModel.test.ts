@@ -182,6 +182,69 @@ describe('DOMModel', () => {
       const nodeSnapshot = await childNode.takeSnapshot(docSnapshot as SDK.DOMModel.DOMDocument);
       assert.isTrue(nodeSnapshot.securityOrigin()?.isSameOriginWith(documentNode.securityOrigin()));
     });
+
+    it('returns the frameId for DOMDocument when provided, and null when omitted', () => {
+      const target = universe.createTarget();
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const docWithFrame = new SDK.DOMModel.DOMDocument(
+          domModel,
+          {
+            nodeId: 1 as Protocol.DOM.NodeId,
+            backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+            nodeType: NodeType.DOCUMENT_NODE,
+            nodeName: '#document',
+            localName: '',
+            nodeValue: '',
+            documentURL: 'https://example.com/page.html',
+          },
+          'frame-1' as Protocol.Page.FrameId,
+      );
+      assert.strictEqual(docWithFrame.frameId(), 'frame-1');
+
+      const docWithoutFrame = new SDK.DOMModel.DOMDocument(
+          domModel,
+          {
+            nodeId: 2 as Protocol.DOM.NodeId,
+            backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+            nodeType: NodeType.DOCUMENT_NODE,
+            nodeName: '#document',
+            localName: '',
+            nodeValue: '',
+            documentURL: 'https://example.com/page.html',
+          },
+      );
+      assert.isNull(docWithoutFrame.frameId());
+    });
+
+    it('does not assign mainFrameId to detached root documents', () => {
+      const dataUrl = Platform.DevToolsPath.urlString`data:text/html,<h1>Hello</h1>`;
+      const target = universe.createTarget({url: dataUrl});
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(resourceTreeModel);
+      const mainFrame = resourceTreeModel.frameAttached('main' as Protocol.Page.FrameId, null);
+      assert.exists(mainFrame);
+
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      // Trigger setDetachedRoot by passing a parentId of 0.
+      domModel.setChildNodes(0 as Protocol.DOM.NodeId, [{
+                               nodeId: 10 as Protocol.DOM.NodeId,
+                               backendNodeId: 10 as Protocol.DOM.BackendNodeId,
+                               nodeType: NodeType.DOCUMENT_NODE,
+                               nodeName: '#document',
+                               localName: '',
+                               nodeValue: '',
+                               documentURL: 'about:blank',
+                             }]);
+
+      const detachedDoc = domModel.nodeForId(10 as Protocol.DOM.NodeId);
+      assert.exists(detachedDoc);
+      assert.instanceOf(detachedDoc, SDK.DOMModel.DOMDocument);
+      assert.isNull((detachedDoc as SDK.DOMModel.DOMDocument).frameId());
+    });
   });
 
   it('updates top layer elements correctly', async () => {
@@ -1704,6 +1767,47 @@ describe('DOMModel', () => {
     assert.strictEqual(iframeDocument.baseURL, iframeBaseURL);
     assert.strictEqual(iframeDocument.documentURL, iframeDocumentURL);
     assert.strictEqual(iframeDocument.parentNode, iframeNode);
+  });
+
+  it('resolves canonical SecurityOrigin from ResourceTreeModel mainFrame for opaque documents', () => {
+    const parentTarget = universe.createTarget();
+    const dataUrl = urlString`data:text/html,<h1>Hello</h1>`;
+    const target = universe.createTarget({parentTarget, url: dataUrl});
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    const mainFrame = resourceTreeModel.frameAttached('main' as Protocol.Page.FrameId, null);
+    assert.exists(mainFrame);
+    mainFrame.navigate({
+      id: 'main' as Protocol.Page.FrameId,
+      loaderId: 'loaderId' as Protocol.Network.LoaderId,
+      url: dataUrl,
+      domainAndRegistry: '',
+      securityOrigin: 'null',
+      mimeType: 'text/html',
+      secureContextType: ProtocolModule.Page.SecureContextType.Secure,
+      crossOriginIsolatedContextType: ProtocolModule.Page.CrossOriginIsolatedContextType.NotIsolated,
+      gatedAPIFeatures: [],
+    });
+
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+
+    domModel.setDocumentForTest({
+      nodeId: 1 as Protocol.DOM.NodeId,
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      nodeType: NodeType.DOCUMENT_NODE,
+      nodeName: '#document',
+      localName: '',
+      nodeValue: '',
+      baseURL: dataUrl,
+      documentURL: dataUrl,
+      childNodeCount: 0,
+      children: [],
+    } as Protocol.DOM.Node);
+
+    const document = domModel.existingDocument();
+    assert.exists(document);
+    assert.strictEqual(document.securityOrigin(), mainFrame.securityOrigin());
   });
 
   describe('DOMModelUndoStack', () => {

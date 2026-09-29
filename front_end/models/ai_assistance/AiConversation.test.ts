@@ -887,6 +887,8 @@ describe('AiConversation', () => {
       frame: {
         resourceTreeModel: () => resourceTreeModel,
         unreachableUrl: () => '',
+        url: navigationUrl,
+        securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create(navigationUrl),
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame,
       type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION,
     });
@@ -1050,6 +1052,12 @@ describe('AiConversation', () => {
   });
 
   describe('getOriginLock', () => {
+    function assertOriginIsEstablished(
+        state: AiAssistance.Tool.OriginLockState,
+        ): asserts state is {status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin} {
+      assert.strictEqual(state.status, 'ESTABLISHED_ORIGIN');
+    }
+
     it('returns uninitialized when no target or inspected URL exists', () => {
       sinon.stub(universe.targetManager, 'primaryPageTarget').returns(null);
       const conversation = new AiAssistance.AiConversation.AiConversation({
@@ -1070,11 +1078,8 @@ describe('AiConversation', () => {
       });
 
       const lockState = conversation.getOriginLock();
-      assert.strictEqual(lockState.status, 'ESTABLISHED_ORIGIN');
-      if (lockState.status === 'ESTABLISHED_ORIGIN') {
-        assert.isTrue(
-            lockState.origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
-      }
+      assertOriginIsEstablished(lockState);
+      assert.isTrue(lockState.origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
     });
 
     it('returns blocked when navigation occurred during a run', async () => {
@@ -1105,13 +1110,15 @@ describe('AiConversation', () => {
       const generator = conversation.run('test');
       await generator.next();
 
-      // Simulate cross-origin navigation during the run.
-      target.setInspectedURL(Platform.DevToolsPath.urlString`https://other.com/`);
+      const newOrigin = Platform.DevToolsPath.urlString`https://other.com/`;
+      target.setInspectedURL(newOrigin);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assert.exists(resourceTreeModel);
       const mockFrame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
       mockFrame.resourceTreeModel.returns(resourceTreeModel);
       mockFrame.unreachableUrl.returns(Platform.DevToolsPath.EmptyUrlString);
+      sinon.stub(mockFrame, 'url').value(newOrigin);
+      mockFrame.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(newOrigin));
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
         frame: mockFrame,
         type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION,
@@ -1122,6 +1129,87 @@ describe('AiConversation', () => {
 
       // Consume remaining generator items to complete cleanup.
       await Array.fromAsync(generator);
+    });
+
+    it('ignores PrimaryPageChanged events from non-primary page targets', async () => {
+      const origin = Platform.DevToolsPath.urlString`https://example.com`;
+      const primaryTarget = universe.createTarget({url: Platform.DevToolsPath.urlString`${origin}/`});
+      primaryTarget.setInspectedURL(Platform.DevToolsPath.urlString`${origin}/`);
+      sinon.stub(universe.targetManager, 'primaryPageTarget').returns(primaryTarget);
+
+      const auxiliaryTarget = universe.createTarget({url: Platform.DevToolsPath.urlString`https://auxiliary.com/`});
+
+      const aidaClient = mockAidaClient([
+        [{
+          functionCalls: [{
+            name: 'listNetworkRequests',
+            args: {},
+          }],
+          explanation: '',
+        }],
+        [{explanation: 'Done.'}],
+      ]);
+
+      const conversation = new AiAssistance.AiConversation.AiConversation({
+        type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+        data: [],
+        id: 'test-id',
+        isReadOnly: false,
+        aidaClient,
+      });
+
+      const generator = conversation.run('test');
+      await generator.next();
+
+      const auxOrigin = Platform.DevToolsPath.urlString`https://auxiliary-other.com/`;
+      const auxResourceTreeModel = auxiliaryTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(auxResourceTreeModel);
+      const mockAuxFrame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
+      mockAuxFrame.resourceTreeModel.returns(auxResourceTreeModel);
+      mockAuxFrame.unreachableUrl.returns(Platform.DevToolsPath.EmptyUrlString);
+      sinon.stub(mockAuxFrame, 'url').value(auxOrigin);
+      mockAuxFrame.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(auxOrigin));
+
+      // Dispatch PrimaryPageChanged on the auxiliary target's ResourceTreeModel.
+      auxResourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+        frame: mockAuxFrame,
+        type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION,
+      });
+
+      // Conversation must not be blocked because the navigation was on a non-primary target.
+      const lockState = conversation.getOriginLock();
+      assert.strictEqual(lockState.status, 'ESTABLISHED_ORIGIN');
+
+      await Array.fromAsync(generator);
+    });
+
+    it('locks to canonical SecurityOrigin from ResourceTreeModel mainFrame for opaque origins', () => {
+      const dataUrl = Platform.DevToolsPath.urlString`data:text/html,<h1>Hello</h1>`;
+      const target = universe.createTarget({url: dataUrl});
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(resourceTreeModel);
+      const mainFrame = resourceTreeModel.frameAttached('main' as Protocol.Page.FrameId, null);
+      assert.exists(mainFrame);
+      mainFrame.navigate({
+        id: 'main' as Protocol.Page.FrameId,
+        loaderId: 'loaderId' as Protocol.Network.LoaderId,
+        url: dataUrl,
+        domainAndRegistry: '',
+        securityOrigin: 'null',
+        mimeType: 'text/html',
+        secureContextType: 'Secure' as Protocol.Page.SecureContextType,
+        crossOriginIsolatedContextType: 'NotIsolated' as Protocol.Page.CrossOriginIsolatedContextType,
+        gatedAPIFeatures: [],
+      });
+      sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
+
+      const conversation = new AiAssistance.AiConversation.AiConversation({
+        type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      });
+
+      const lockState = conversation.getOriginLock();
+      assertOriginIsEstablished(lockState);
+      assert.strictEqual(lockState.origin, mainFrame.securityOrigin());
     });
   });
 });

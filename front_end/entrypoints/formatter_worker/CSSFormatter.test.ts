@@ -225,4 +225,84 @@ span {
 }
 `);
      });
+
+  it('parses CSS outline rules including @import, @media, @keyframes, @font-face, and style rules', () => {
+    const cssText = [
+      '@import url("theme.css") screen;',
+      '@font-face { font-family: "OpenSans"; src: url("OpenSans.woff2"); }',
+      'body, .main { color: red; /* display: none; */ }',
+      '@media (min-width: 768px) {',
+      '  .container { width: 750px; }',
+      '}',
+      '@keyframes fade {',
+      '  from { opacity: 0; }',
+      '  to { opacity: 1; }',
+      '}',
+    ].join('\n');
+
+    const parsedRules: Array<Record<string, unknown>> = [];
+    FormatterWorker.CSSRuleParser.parseCSS(cssText, chunk => {
+      parsedRules.push(...(chunk.chunk as unknown as Array<Record<string, unknown>>));
+    });
+
+    assert.deepEqual(
+        parsedRules.map(
+            rule => ({
+              selectorText: rule.selectorText,
+              atRule: rule.atRule,
+              properties: (rule.properties as Array<{name: string, value: string, disabled?: boolean}>| undefined)
+                              ?.map(p => ({name: p.name, value: p.value.trim(), disabled: Boolean(p.disabled)})),
+            })),
+        [
+          {
+            selectorText: undefined,
+            atRule: '@import url("theme.css") screen',
+            properties: undefined,
+          },
+          {
+            selectorText: undefined,
+            atRule: '@font-face',
+            properties: undefined,
+          },
+          {
+            selectorText: 'body, .main',
+            atRule: undefined,
+            properties: [
+              {name: 'color', value: 'red', disabled: false},
+              {name: 'display', value: 'none', disabled: true},
+            ],
+          },
+          {
+            selectorText: undefined,
+            atRule: '@media (min-width: 768px)',
+            properties: undefined,
+          },
+          {
+            selectorText: '.container',
+            atRule: undefined,
+            properties: [
+              {name: 'width', value: '750px', disabled: false},
+            ],
+          },
+          {
+            selectorText: undefined,
+            atRule: '@keyframes fade',
+            properties: undefined,
+          },
+          {
+            selectorText: 'from',
+            atRule: undefined,
+            properties: [
+              {name: 'opacity', value: '0', disabled: false},
+            ],
+          },
+          {
+            selectorText: 'to',
+            atRule: undefined,
+            properties: [
+              {name: 'opacity', value: '1', disabled: false},
+            ],
+          },
+        ]);
+  });
 });

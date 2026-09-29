@@ -150,6 +150,32 @@ describeWithEnvironment('PropertyRenderer', () => {
                          'http://example.com/styles/resources/iframed.png');
       assert.strictEqual(link.textContent, 'iframed.png');
     });
+
+    it('preserves multiple URLs inside -webkit-image-set without collapsing them into one', () => {
+      const mockRule = {
+        resourceURL() {
+          return urlString`http://example.com/styles/main.css`;
+        },
+      } as SDK.CSSRule.CSSRule;
+
+      const renderer = new Elements.PropertyRenderer.URLRenderer(mockRule, null);
+      const name = 'background-image';
+      const value = '-webkit-image-set(url("test-1x.png") 1x, url("test-2x.png") 2x)';
+      const matchers = [new SDK.CSSPropertyParserMatchers.URLMatcher()];
+      const matchedResult = SDK.CSSPropertyParser.matchDeclaration(name, value, matchers);
+      assert.exists(matchedResult);
+
+      const {valueElement} =
+          Elements.PropertyRenderer.Renderer.renderValueElement({name, value}, matchedResult, [renderer]);
+
+      const links = Array.from(valueElement.querySelectorAll('.devtools-link')) as Array<HTMLElement&{href?: string}>;
+      assert.lengthOf(links, 2);
+      assert.strictEqual(links[0].textContent, 'test-1x.png');
+      assert.strictEqual(links[0].href, 'http://example.com/styles/test-1x.png');
+      assert.strictEqual(links[1].textContent, 'test-2x.png');
+      assert.strictEqual(links[1].href, 'http://example.com/styles/test-2x.png');
+      assert.strictEqual(valueElement.textContent, '-webkit-image-set(url(test-1x.png) 1x, url(test-2x.png) 2x)');
+    });
   });
 });
 

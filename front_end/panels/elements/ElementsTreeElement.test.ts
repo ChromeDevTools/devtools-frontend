@@ -2677,4 +2677,36 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.lengthOf(threads, 1);
     assert.strictEqual(threads[0].comments[0].text, 'Removed node <span>');
   });
+
+  it('renders RTL and BiDi Arabic and Hebrew text in attributes and text nodes', () => {
+    const bidiNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 20 as Protocol.DOM.NodeId,
+      backendNodeId: 20 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'DIV',
+      localName: 'div',
+      nodeValue: '',
+      attributes: ['title', 'اختبار النص العربي'],
+      childNodeCount: 1,
+      children: [{
+        nodeId: 21 as Protocol.DOM.NodeId,
+        parentId: 20 as Protocol.DOM.NodeId,
+        backendNodeId: 21 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.TEXT_NODE,
+        nodeName: '#text',
+        localName: '',
+        nodeValue: 'טקסט בעברית',
+        childNodeCount: 0,
+      }],
+    });
+    const bidiTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(bidiNode, false);
+    outline.appendChild(bidiTreeElement);
+    bidiTreeElement.widget.performUpdate();
+
+    const attrVal = bidiTreeElement.widget.contentElement.querySelector('.webkit-html-attribute-value');
+    const textEl = bidiTreeElement.widget.contentElement.querySelector('.webkit-html-text-node');
+    assert.strictEqual(attrVal?.textContent?.replace(/\u200B/g, '').trim(), 'اختبار النص العربي');
+    assert.strictEqual(textEl?.textContent, 'טקסט בעברית');
+  });
+
 });

@@ -1382,4 +1382,207 @@ describeWithEnvironment('ElementsTreeOutline', () => {
       assert.strictEqual(moveToStub.firstCall.args[1], childNode2);
     });
   });
+
+  function makeNodePayload(nodeId: number, nodeName: string, opts: Partial<Protocol.DOM.Node> = {}): Protocol.DOM.Node {
+    return {
+      nodeId: nodeId as Protocol.DOM.NodeId,
+      backendNodeId: nodeId as Protocol.DOM.BackendNodeId,
+      nodeType: opts.nodeType ?? Node.ELEMENT_NODE,
+      nodeName,
+      localName: opts.localName ?? nodeName.toLowerCase(),
+      nodeValue: opts.nodeValue ?? '',
+      childNodeCount: opts.children?.length ?? opts.childNodeCount ?? 0,
+      children: opts.children ?? [],
+      attributes: opts.attributes ?? [],
+      ...opts,
+    };
+  }
+
+  it('removes doctype and document element from #document via ChildNodeRemoved without crashing', () => {
+    const doctypePayload = makeNodePayload(
+        2, 'html', {parentId: 1 as Protocol.DOM.NodeId, nodeType: Node.DOCUMENT_TYPE_NODE, publicId: '', systemId: ''});
+    const htmlPayload = makeNodePayload(3, 'HTML', {parentId: 1 as Protocol.DOM.NodeId});
+    const rootNode = SDK.DOMModel.DOMNode.create(
+        model, null, false,
+        makeNodePayload(1, '#document', {nodeType: Node.DOCUMENT_NODE, children: [doctypePayload, htmlPayload]}));
+    treeOutline.rootDOMNode = rootNode;
+
+    const doctypeNode = model.nodeForId(2 as Protocol.DOM.NodeId)!;
+    const htmlNode = model.nodeForId(3 as Protocol.DOM.NodeId)!;
+    assert.isNotNull(treeOutline.findTreeElement(doctypeNode));
+    assert.isNotNull(treeOutline.findTreeElement(htmlNode));
+
+    model.childNodeRemoved(1 as Protocol.DOM.NodeId, 2 as Protocol.DOM.NodeId);
+    treeOutline.runPendingUpdates();
+    assert.isNull(model.nodeForId(2 as Protocol.DOM.NodeId));
+    assert.isNotNull(treeOutline.findTreeElement(htmlNode));
+
+    model.childNodeRemoved(1 as Protocol.DOM.NodeId, 3 as Protocol.DOM.NodeId);
+    treeOutline.runPendingUpdates();
+    assert.isNull(model.nodeForId(3 as Protocol.DOM.NodeId));
+    assert.isEmpty(rootNode.children() ?? []);
+  });
+
+  it('updates isExpandable on a collapsed element when ChildNodeCountUpdated fires', () => {
+    const childPayload =
+        makeNodePayload(2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId, attributes: ['id', 'collapsed-target']});
+    const rootNode =
+        SDK.DOMModel.DOMNode.create(model, null, false, makeNodePayload(1, 'BODY', {children: [childPayload]}));
+    treeOutline.rootDOMNode = rootNode;
+
+    const childNode = model.nodeForId(2 as Protocol.DOM.NodeId)!;
+    const treeElement = treeOutline.findTreeElement(childNode)!;
+    assert.isFalse(treeElement.expanded);
+    assert.isFalse(treeElement.isExpandable());
+
+    model.childNodeCountUpdated(2 as Protocol.DOM.NodeId, 1);
+    treeOutline.runPendingUpdates();
+
+    assert.isTrue(treeElement.isExpandable());
+    assert.isFalse(treeElement.expanded);
+  });
+
+  it('updates tree element title when setting an attribute on a non-HTML SVG element', () => {
+    const rectPayload = makeNodePayload(2, 'rect', {parentId: 1 as Protocol.DOM.NodeId, attributes: ['width', '100']});
+    const rootNode =
+        SDK.DOMModel.DOMNode.create(model, null, false, makeNodePayload(1, 'svg', {children: [rectPayload]}));
+    treeOutline.rootDOMNode = rootNode;
+
+    const rectNode = model.nodeForId(2 as Protocol.DOM.NodeId)!;
+    const rectTreeElement = treeOutline.findTreeElement(rectNode)!;
+    model.attributeModified(2 as Protocol.DOM.NodeId, 'viewBox', '0 0 50 50');
+    treeOutline.runPendingUpdates();
+
+    assert.strictEqual(rectNode.getAttribute('viewBox'), '0 0 50 50');
+    assert.include(rectTreeElement.widget.contentElement.textContent, 'viewBox');
+    assert.include(rectTreeElement.widget.contentElement.textContent, '0 0 50 50');
+  });
+
+  it('creates open and closed #shadow-root tree elements when ShadowRootPushed fires', async () => {
+    const rootNode = SDK.DOMModel.DOMNode.create(model, null, false, makeNodePayload(1, 'BODY', {
+                                                   children: [
+                                                     makeNodePayload(2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId}),
+                                                     makeNodePayload(3, 'DIV', {parentId: 1 as Protocol.DOM.NodeId}),
+                                                   ],
+                                                 }));
+    treeOutline.rootDOMNode = rootNode;
+
+    model.shadowRootPushed(2 as Protocol.DOM.NodeId, makeNodePayload(4, '#shadow-root', {
+                             parentId: 2 as Protocol.DOM.NodeId,
+                             nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                             shadowRootType: Protocol.DOM.ShadowRootType.Open,
+                           }));
+    model.shadowRootPushed(3 as Protocol.DOM.NodeId, makeNodePayload(5, '#shadow-root', {
+                             parentId: 3 as Protocol.DOM.NodeId,
+                             nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                             shadowRootType: Protocol.DOM.ShadowRootType.Closed,
+                           }));
+    treeOutline.runPendingUpdates();
+
+    const openHostEl = treeOutline.findTreeElement(model.nodeForId(2 as Protocol.DOM.NodeId)!)!;
+    const closedHostEl = treeOutline.findTreeElement(model.nodeForId(3 as Protocol.DOM.NodeId)!)!;
+    await treeOutline.populateTreeElement(openHostEl);
+    await treeOutline.populateTreeElement(closedHostEl);
+
+    const openShadowEl = openHostEl.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+    const closedShadowEl = closedHostEl.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+    assert.strictEqual(openShadowEl.node().nodeNameInCorrectCase(), '#shadow-root (open)');
+    assert.strictEqual(closedShadowEl.node().nodeNameInCorrectCase(), '#shadow-root (closed)');
+  });
+
+  it('renders shadow host with <slot> and distributed nodes in tree children', async () => {
+    const slotPayload = makeNodePayload(5, 'SLOT', {
+      parentId: 4 as Protocol.DOM.NodeId,
+      distributedNodes:
+          [{nodeType: Node.ELEMENT_NODE, nodeName: 'SPAN', backendNodeId: 3 as Protocol.DOM.BackendNodeId}],
+    });
+    const shadowPayload = makeNodePayload(4, '#shadow-root', {
+      parentId: 2 as Protocol.DOM.NodeId,
+      nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+      shadowRootType: Protocol.DOM.ShadowRootType.Open,
+      children: [slotPayload],
+    });
+    const hostPayload = makeNodePayload(2, 'DIV', {
+      parentId: 1 as Protocol.DOM.NodeId,
+      children: [makeNodePayload(3, 'SPAN', {parentId: 2 as Protocol.DOM.NodeId})],
+      shadowRoots: [shadowPayload],
+    });
+    const rootNode = SDK.DOMModel.DOMNode.create(
+        model, null, false, makeNodePayload(1, '#document', {nodeType: Node.DOCUMENT_NODE, children: [hostPayload]}));
+    treeOutline.rootDOMNode = rootNode;
+
+    const hostEl = treeOutline.findTreeElement(model.nodeForId(2 as Protocol.DOM.NodeId)!)!;
+    await treeOutline.populateTreeElement(hostEl);
+    const shadowEl = hostEl.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+    await treeOutline.populateTreeElement(shadowEl);
+    const slotEl = shadowEl.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+    await treeOutline.populateTreeElement(slotEl);
+
+    assert.isTrue(slotEl.isExpandable());
+    assert.lengthOf(slotEl.node().distributedNodes(), 1);
+    assert.isAbove(slotEl.childCount(), 1);
+  });
+
+  it('refreshes slot links when slot attributes and DistributedNodesUpdated fire', async () => {
+    const slotPayload = makeNodePayload(4, 'SLOT', {
+      parentId: 3 as Protocol.DOM.NodeId,
+      attributes: ['name', 's1'],
+      distributedNodes: [],
+    });
+    const shadowPayload = makeNodePayload(3, '#shadow-root', {
+      parentId: 2 as Protocol.DOM.NodeId,
+      nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+      shadowRootType: Protocol.DOM.ShadowRootType.Open,
+      children: [slotPayload],
+    });
+    const hostPayload = makeNodePayload(2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId, shadowRoots: [shadowPayload]});
+    const rootNode = SDK.DOMModel.DOMNode.create(
+        model, null, false, makeNodePayload(1, '#document', {nodeType: Node.DOCUMENT_NODE, children: [hostPayload]}));
+    treeOutline.rootDOMNode = rootNode;
+
+    const hostEl = treeOutline.findTreeElement(model.nodeForId(2 as Protocol.DOM.NodeId)!)!;
+    await treeOutline.populateTreeElement(hostEl);
+    const shadowEl = hostEl.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+    await treeOutline.populateTreeElement(shadowEl);
+    const slotEl = shadowEl.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+    await treeOutline.populateTreeElement(slotEl);
+
+    model.attributeModified(4 as Protocol.DOM.NodeId, 'name', 's2');
+    model.distributedNodesUpdated(4 as Protocol.DOM.NodeId, [
+      {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', backendNodeId: 10 as Protocol.DOM.BackendNodeId},
+      {nodeType: Node.TEXT_NODE, nodeName: '#text', backendNodeId: 11 as Protocol.DOM.BackendNodeId},
+    ]);
+    treeOutline.runPendingUpdates();
+
+    assert.strictEqual(slotEl.node().getAttribute('name'), 's2');
+    assert.lengthOf(slotEl.node().distributedNodes(), 2);
+    assert.strictEqual(slotEl.childCount(), 3);
+  });
+
+  it('removes child tree element inside a shadow root when ChildNodeRemoved fires', async () => {
+    const shadowChild =
+        makeNodePayload(4, 'DIV', {parentId: 3 as Protocol.DOM.NodeId, attributes: ['id', 'shadow-child']});
+    const shadowPayload = makeNodePayload(3, '#shadow-root', {
+      parentId: 2 as Protocol.DOM.NodeId,
+      nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+      shadowRootType: Protocol.DOM.ShadowRootType.Open,
+      children: [shadowChild],
+    });
+    const hostPayload = makeNodePayload(2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId, shadowRoots: [shadowPayload]});
+    const rootNode = SDK.DOMModel.DOMNode.create(
+        model, null, false, makeNodePayload(1, '#document', {nodeType: Node.DOCUMENT_NODE, children: [hostPayload]}));
+    treeOutline.rootDOMNode = rootNode;
+
+    const hostEl = treeOutline.findTreeElement(model.nodeForId(2 as Protocol.DOM.NodeId)!)!;
+    await treeOutline.populateTreeElement(hostEl);
+    const shadowEl = hostEl.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+    await treeOutline.populateTreeElement(shadowEl);
+    assert.isNotNull(treeOutline.findTreeElement(model.nodeForId(4 as Protocol.DOM.NodeId)!));
+
+    model.childNodeRemoved(3 as Protocol.DOM.NodeId, 4 as Protocol.DOM.NodeId);
+    treeOutline.runPendingUpdates();
+
+    assert.isNull(model.nodeForId(4 as Protocol.DOM.NodeId));
+    assert.strictEqual(shadowEl.childCount(), 0);
+  });
 });

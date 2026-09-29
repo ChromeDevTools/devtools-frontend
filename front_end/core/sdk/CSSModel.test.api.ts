@@ -337,3 +337,147 @@ describe('CSSModel Constructed Stylesheets, SourceMaps, and Shadow Host Lifecycl
        assert.isNull(cssModel.styleSheetHeaderForId(removedHeader.id));
      });
 });
+
+describe('CSSModel Keyframes, Style Formatting, and Iframe Styles', () => {
+  async function setupPage(
+      inspectedPage: {goToHtml: (html: string) => Promise<void>},
+      universe: {targetManager: SDK.TargetManager.TargetManager},
+      html: string,
+      selector = '#inspected',
+      ): Promise<{
+    primaryTarget: SDK.Target.Target,
+    domModel: SDK.DOMModel.DOMModel,
+    cssModel: SDK.CSSModel.CSSModel,
+    documentNode: SDK.DOMModel.DOMDocument,
+    nodeId: SDK.DOMModel.DOMNode['id'],
+  }> {
+    const primaryTarget = universe.targetManager.primaryPageTarget();
+    assert.isNotNull(primaryTarget);
+    const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+    assert.isNotNull(domModel);
+    const cssModel = primaryTarget.model(SDK.CSSModel.CSSModel);
+    assert.isNotNull(cssModel);
+    await inspectedPage.goToHtml(html);
+    // Wait for any in-flight document request triggered by DocumentUpdated during navigation,
+    // then request a fresh document snapshot once the page load has completed.
+    await domModel.requestDocument();
+    domModel.setDocumentForTest(null);
+    const documentNode = await domModel.requestDocument();
+    assert.isNotNull(documentNode);
+    await documentNode.getSubtree(5, true);
+    const nodeId = await domModel.querySelector(documentNode.id, selector);
+    assert.isNotNull(nodeId);
+    assert.isNotNull(domModel.nodeForId(nodeId));
+    return {primaryTarget, domModel, cssModel, documentNode, nodeId};
+  }
+
+  function findRule(matchedResult: SDK.CSSMatchedStyles.CSSMatchedStyles, selector: string): SDK.CSSRule.CSSStyleRule {
+    const style = matchedResult.nodeStyles().find(s => s.parentRule instanceof SDK.CSSRule.CSSStyleRule &&
+                                                      s.parentRule.selectorText() === selector);
+    assert.isDefined(style);
+    return style.parentRule as SDK.CSSRule.CSSStyleRule;
+  }
+
+  it('returns keyframes() with accurate key/style ranges and updates key text via cssModel.setKeyframeKey', async ({
+                                                                                                              inspectedPage,
+                                                                                                              universe,
+                                                                                                            }) => {
+    const {cssModel, nodeId} = await setupPage(
+        inspectedPage, universe,
+        '<style>\n@keyframes slide {\n  0% { opacity: 0; }\n  100% { opacity: 1; }\n}\n#inspected { animation: slide 1s; }\n</style><div id="inspected">Anim</div>');
+    const matchedResult = await cssModel.getMatchedStyles(nodeId);
+    assert.isNotNull(matchedResult);
+    const keyframes = matchedResult.keyframes();
+    assert.lengthOf(keyframes, 1);
+    assert.strictEqual(keyframes[0].name().text, 'slide');
+    const firstStop = keyframes[0].keyframes()[0];
+    assert.strictEqual(firstStop.key().text, '0%');
+    assert.deepEqual(firstStop.key().range?.serializeToObject(), {
+      startLine: 2,
+      startColumn: 2,
+      endLine: 2,
+      endColumn: 4,
+    });
+    assert.deepEqual(firstStop.style.range?.serializeToObject(), {
+      startLine: 2,
+      startColumn: 6,
+      endLine: 2,
+      endColumn: 19,
+    });
+
+    const keyRange = firstStop.key().range;
+    assert.isDefined(firstStop.style.styleSheetId);
+    assert.isDefined(keyRange);
+    assert.isTrue(await cssModel.setKeyframeKey(firstStop.style.styleSheetId, keyRange, '50%'));
+    const updatedMatched = await cssModel.getMatchedStyles(nodeId);
+    assert.isNotNull(updatedMatched);
+    assert.strictEqual(updatedMatched.keyframes()[0].keyframes()[0].key().text, '50%');
+  });
+
+  it('formats properties cleanly on both formatted multiline and unformatted single-line rules via insertPropertyAt and setDisabled',
+     async ({inspectedPage, universe}) => {
+       const {domModel, cssModel, documentNode, nodeId: formattedId} = await setupPage(
+           inspectedPage, universe,
+           '<style>\n#formatted {\n  color: red;\n}\n#unformatted {color: red}\n</style><div id="formatted"></div><div id="unformatted"></div>',
+           '#formatted');
+       const unformattedId = await domModel.querySelector(documentNode.id, '#unformatted');
+       assert.isNotNull(unformattedId);
+
+       const formattedMatched = await cssModel.getMatchedStyles(formattedId);
+       assert.isNotNull(formattedMatched);
+       const formattedStyle = findRule(formattedMatched, '#formatted').style;
+
+       const unformattedMatched = await cssModel.getMatchedStyles(unformattedId);
+       assert.isNotNull(unformattedMatched);
+       const unformattedStyle = findRule(unformattedMatched, '#unformatted').style;
+
+       cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, event => {
+         if (event.data.edit) {
+           formattedStyle.rebase(event.data.edit);
+           unformattedStyle.rebase(event.data.edit);
+         }
+       });
+
+       await new Promise<void>(resolve => {
+         formattedStyle.insertPropertyAt(1, 'margin', '10px', success => {
+           assert.isTrue(success);
+           resolve();
+         });
+       });
+       assert.include(formattedStyle.cssText, '\n  color: red;\n  margin: 10px;\n');
+
+       await new Promise<void>(resolve => {
+         unformattedStyle.insertPropertyAt(1, 'padding', '4px', success => {
+           assert.isTrue(success);
+           resolve();
+         });
+       });
+       assert.strictEqual(unformattedStyle.cssText, 'color: red;padding: 4px;');
+       assert.isTrue(await unformattedStyle.allProperties()[0].setDisabled(true));
+       assert.strictEqual(unformattedStyle.cssText, '/* color: red; */padding: 4px;');
+       assert.isTrue(await unformattedStyle.allProperties()[0].setDisabled(false));
+       assert.strictEqual(unformattedStyle.cssText, 'color: red;padding: 4px;');
+     });
+
+  it('resolves matched styles and child frameId accurately for elements inside a child <iframe>', async ({
+                                                                                                    inspectedPage,
+                                                                                                    universe,
+                                                                                                  }) => {
+    const {domModel, cssModel, documentNode, nodeId: iframeNodeId} = await setupPage(
+        inspectedPage, universe,
+        '<style>body { margin: 0; }</style><iframe id="inspected" srcdoc="<style>#frame-el { color: coral; }</style><div id=\'frame-el\'>In frame</div>"></iframe>');
+    const iframeNode = domModel.nodeForId(iframeNodeId);
+    assert.isNotNull(iframeNode);
+    const contentDoc = iframeNode.contentDocument();
+    assert.isNotNull(contentDoc);
+    const frameElId = await domModel.querySelector(contentDoc.id, '#frame-el');
+    assert.isNotNull(frameElId);
+
+    const matchedResult = await cssModel.getMatchedStyles(frameElId);
+    assert.isNotNull(matchedResult);
+    const rule = findRule(matchedResult, '#frame-el');
+    assert.strictEqual(rule.style.getPropertyValue('color'), 'coral');
+    assert.notStrictEqual(rule.header?.frameId, documentNode.frameId());
+    assert.strictEqual(rule.header?.frameId, contentDoc.frameId());
+  });
+});

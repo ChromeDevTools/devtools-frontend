@@ -21,6 +21,7 @@ import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {
   getMatchedStyles,
   getMatchedStylesWithBlankRule,
+  getMatchedStylesWithStylesheet,
 } from '../../testing/StyleHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
@@ -3171,4 +3172,457 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     });
   });
 
+  describe('Autocompletion swatches, blank properties, commit/cancel, UA overrides, and undo add', () => {
+    function createRegularTreeElement(name: string, value: string) {
+      const property = addProperty(name, value);
+      const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+          stylesSidebarPane, matchedStyles, matchedStyles.nodeStyles()[0], 0, null, null, null);
+      return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+        stylesContainer: stylesSidebarPane,
+        section,
+        matchedStyles,
+        property,
+        isShorthand: false,
+        inherited: false,
+        overloaded: false,
+        newProperty: false,
+      });
+    }
+
+    it('provides CSSPropertyPrompt autocomplete suggestions for property names and keyword values', async () => {
+      const promptStub = sinon.stub(Elements.StylesSidebarPane.CSSPropertyPrompt.prototype, 'initialize').resolves();
+
+      const nameTreeElement = getTreeElement('color', 'red');
+      nameTreeElement.updateTitle();
+      nameTreeElement.startEditingName();
+      sinon.assert.calledOnce(promptStub);
+      const nameCompletions = await promptStub.args[0][0].call(null, '', 'background-', false);
+      assert.includeMembers(nameCompletions.map(item => item.text),
+                            ['background-color', 'background-image', 'background-size']);
+
+      promptStub.resetHistory();
+      const valueTreeElement = getTreeElement('display', 'block');
+      valueTreeElement.updateTitle();
+      valueTreeElement.startEditingValue();
+      sinon.assert.calledOnce(promptStub);
+      const valueCompletions = await promptStub.args[0][0].call(null, '', 'fl', false);
+      assert.includeMembers(valueCompletions.map(item => item.text), ['flex', 'flow-root', 'inline-flex']);
+
+      const importantCompletions = await promptStub.args[0][0].call(null, '', '!im', false);
+      assert.deepEqual(importantCompletions.map(item => item.text), ['!important']);
+    });
+
+    it('provides CSSPropertyPrompt autocomplete suggestions for CSS variables with color swatches and value subtitles',
+       async () => {
+         const promptStub = sinon.stub(Elements.StylesSidebarPane.CSSPropertyPrompt.prototype, 'initialize').resolves();
+         const treeElement = getTreeElement('color', 'var(--');
+         treeElement.updateTitle();
+         treeElement.startEditingValue();
+
+         sinon.assert.calledOnce(promptStub);
+         const completions = await promptStub.args[0][0].call(null, 'var(', '--', false);
+         const redVar = completions.find(item => item.title === '--a');
+         const customPropVar = completions.find(item => item.title === '--prop');
+
+         assert.exists(redVar);
+         assert.strictEqual(redVar.text, '--a)');
+         assert.exists(redVar.subtitleRenderer);
+         const swatchElement = redVar.subtitleRenderer();
+         assert.instanceOf(swatchElement, InlineEditor.ColorSwatch.ColorSwatch);
+
+         assert.exists(customPropVar);
+         assert.strictEqual(customPropVar.text, '--prop)');
+         assert.exists(customPropVar.subtitleRenderer);
+         const subtitleElement = customPropVar.subtitleRenderer();
+         assert.strictEqual(subtitleElement.textContent, 'customproperty');
+       });
+
+    it('adds and commits a new blank property in StylePropertyTreeElement', async () => {
+      const existingElement = getTreeElement('color', 'red');
+      const section = existingElement.section();
+      renderElementIntoDOM(section.element);
+
+      const blankTreeElement = section.addNewBlankProperty();
+      const applyStyleTextStub = sinon.stub(blankTreeElement, 'applyStyleText').resolves();
+
+      blankTreeElement.startEditingName();
+      assert.exists(blankTreeElement.nameElement);
+      blankTreeElement.nameElement.textContent = 'padding: 12px';
+      blankTreeElement.nameElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+
+      sinon.assert.calledOnceWithExactly(applyStyleTextStub, 'padding: 12px', true);
+    });
+
+    it('handles incremental preview followed by cancelling vs committing a property value edit', async () => {
+      const treeElement = createRegularTreeElement('color', 'red');
+      treeElement.property.text = 'color: red;';
+      const section = treeElement.section();
+      section.propertiesTreeOutline.appendChild(treeElement);
+      treeElement.updateTitle();
+      renderElementIntoDOM(section.element);
+
+      sinon.stub(treeElement.property, 'setText').resolves(true);
+      const applySpy = sinon.spy(treeElement, 'applyStyleText');
+
+      treeElement.startEditingValue();
+      assert.exists(treeElement.valueElement);
+      treeElement.valueElement.textContent = 'green';
+      await treeElement.kickFreeFlowStyleEditForTest();
+      sinon.assert.calledWith(applySpy, 'color: green', false);
+
+      treeElement.valueElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape', bubbles: true}));
+      sinon.assert.calledWith(applySpy, 'color: red;', false);
+
+      applySpy.resetHistory();
+      treeElement.startEditingValue();
+      treeElement.valueElement.textContent = 'blue';
+      treeElement.valueElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+      sinon.assert.calledWith(applySpy, 'color: blue', true);
+    });
+
+    it('disables and then re-enables a property when toggling disabled state twice', async () => {
+      const treeElement = createRegularTreeElement('color', 'red');
+      const section = treeElement.section();
+      section.propertiesTreeOutline.appendChild(treeElement);
+      const style = treeElement.property.ownerStyle;
+      treeElement.property.text = 'color: red;';
+      style.styleSheetId = '1' as Protocol.DOM.StyleSheetId;
+      style.cssText = 'color: red;';
+      style.range = new TextUtils.TextRange.TextRange(0, 0, 0, style.cssText.length);
+      treeElement.property.range = new TextUtils.TextRange.TextRange(0, 0, 0, style.cssText.length);
+      sinon.stub(style.cssModel(), 'cachedMatchedCascadeForNode').resolves(matchedStyles);
+      connection.setHandler('CSS.getStyleSheetText', null);
+      connection.setSuccessHandler('CSS.getStyleSheetText', () => ({text: style.cssText || ''}));
+      connection.setHandler('DOM.markUndoableState', null);
+      connection.setSuccessHandler('DOM.markUndoableState', () => ({}));
+
+      const setStyleTextsStub = sinon.stub().callsFake((params: Protocol.CSS.SetStyleTextsRequest) => {
+        const newText = params.edits[0].text;
+        const isDisabled = newText.startsWith('/*');
+        return {
+          styles: [{
+            styleSheetId: '1' as Protocol.DOM.StyleSheetId,
+            cssProperties: [{
+              name: 'color',
+              value: 'red',
+              disabled: isDisabled,
+              text: newText,
+              range: {startLine: 0, startColumn: 0, endLine: 0, endColumn: newText.length},
+            }],
+            shorthandEntries: [],
+            range: {startLine: 0, startColumn: 0, endLine: 0, endColumn: newText.length},
+            cssText: newText,
+          }],
+        };
+      });
+      connection.setHandler('CSS.setStyleTexts', null);
+      connection.setSuccessHandler('CSS.setStyleTexts', setStyleTextsStub);
+
+      treeElement.updateTitle();
+      renderElementIntoDOM(section.element);
+
+      await treeElement.property.setDisabled(true);
+      sinon.assert.calledOnce(setStyleTextsStub);
+      assert.strictEqual(setStyleTextsStub.firstCall.args[0].edits[0].text, '/* color: red; */');
+
+      const disabledPayload = setStyleTextsStub.firstCall.returnValue.styles[0];
+      style.rebase(
+          new SDK.CSSModel.Edit('1' as Protocol.DOM.StyleSheetId, style.range, '/* color: red; */', disabledPayload));
+      treeElement.property = style.allProperties()[0];
+      treeElement.updateTitle();
+      assert.isTrue(treeElement.property.disabled);
+
+      setStyleTextsStub.resetHistory();
+      await treeElement.property.setDisabled(false);
+      sinon.assert.calledOnce(setStyleTextsStub);
+      assert.strictEqual(setStyleTextsStub.firstCall.args[0].edits[0].text, 'color: red;');
+    });
+
+    it('updates overloaded state on an overridden user-agent property when toggling an author property', async () => {
+      await stylesSidebarPane.node()?.domModel().cssModel().resumeModel();
+      const paneCssModel = stylesSidebarPane.cssModel();
+      assert.exists(paneCssModel);
+      const matchedStylesForTest = await getMatchedStylesWithStylesheet({
+        cssModel: paneCssModel,
+        origin: Protocol.CSS.StyleSheetOrigin.Regular,
+        styleSheetId: '1' as Protocol.DOM.StyleSheetId,
+        node: stylesSidebarPane.node() ?? undefined,
+        connection,
+        matchedPayload: [
+          {
+            rule: {
+              selectorList: {selectors: [{text: 'div'}], text: 'div'},
+              origin: Protocol.CSS.StyleSheetOrigin.UserAgent,
+              style: {
+                cssProperties: [{name: 'display', value: 'block'}],
+                shorthandEntries: [],
+              },
+            },
+            matchingSelectors: [0],
+          },
+          {
+            rule: {
+              selectorList: {selectors: [{text: 'div'}], text: 'div'},
+              origin: Protocol.CSS.StyleSheetOrigin.Regular,
+              styleSheetId: '1' as Protocol.DOM.StyleSheetId,
+              style: {
+                styleSheetId: '1' as Protocol.DOM.StyleSheetId,
+                range: {startLine: 0, startColumn: 0, endLine: 0, endColumn: 14},
+                cssProperties: [{
+                  name: 'display',
+                  value: 'flex',
+                  disabled: false,
+                  text: 'display: flex;',
+                  range: {startLine: 0, startColumn: 0, endLine: 0, endColumn: 14},
+                }],
+                shorthandEntries: [],
+                cssText: 'display: flex;',
+              },
+            },
+            matchingSelectors: [0],
+          },
+        ],
+      });
+
+      sinon.stub(paneCssModel, 'cachedMatchedCascadeForNode').resolves(matchedStylesForTest);
+      connection.setHandler('CSS.getComputedStyleForNode', null);
+      connection.setSuccessHandler('CSS.getComputedStyleForNode',
+                                   () => ({computedStyle: [], extraFields: {isAppearanceBase: false}}));
+      connection.setHandler('CSS.getStyleSheetText', null);
+      connection.setSuccessHandler('CSS.getStyleSheetText', () => ({text: 'div { display: flex; }'}));
+      connection.setHandler('DOM.markUndoableState', null);
+      connection.setSuccessHandler('DOM.markUndoableState', () => ({}));
+      connection.setHandler('CSS.setStyleTexts', null);
+      connection.setSuccessHandler('CSS.setStyleTexts', (params: Protocol.CSS.SetStyleTextsRequest) => {
+        const newText = params.edits[0].text;
+        const isDisabled = newText.startsWith('/*');
+        return {
+          styles: [{
+            styleSheetId: '1' as Protocol.DOM.StyleSheetId,
+            cssProperties: [{
+              name: 'display',
+              value: 'flex',
+              disabled: isDisabled,
+              text: newText,
+              range: {startLine: 0, startColumn: 0, endLine: 0, endColumn: newText.length},
+            }],
+            shorthandEntries: [],
+            range: {startLine: 0, startColumn: 0, endLine: 0, endColumn: newText.length},
+            cssText: newText,
+          }],
+        };
+      });
+
+      const authorSection = new Elements.StylePropertiesSection.StylePropertiesSection(
+          stylesSidebarPane, matchedStylesForTest, matchedStylesForTest.nodeStyles()[0], 0, null, null, null);
+      const uaSection = new Elements.StylePropertiesSection.StylePropertiesSection(
+          stylesSidebarPane, matchedStylesForTest, matchedStylesForTest.nodeStyles()[1], 1, null, null, null);
+      sinon.stub(stylesSidebarPane, 'allSections').returns([authorSection, uaSection]);
+
+      const container = document.createElement('div');
+      container.append(authorSection.element, uaSection.element);
+      renderElementIntoDOM(container);
+
+      const authorTreeElement = authorSection.propertiesTreeOutline.firstChild() as
+          Elements.StylePropertyTreeElement.StylePropertyTreeElement;
+      const uaTreeElement =
+          uaSection.propertiesTreeOutline.firstChild() as Elements.StylePropertyTreeElement.StylePropertyTreeElement;
+      assert.exists(authorTreeElement);
+      assert.exists(uaTreeElement);
+      assert.isTrue(uaTreeElement.overloaded());
+      assert.isTrue(uaTreeElement.listItemElement.classList.contains('overloaded'));
+
+      const disableApplied = new Promise<void>(resolve => {
+        sinon.stub(authorTreeElement, 'styleTextAppliedForTest').callsFake(resolve);
+      });
+      const disableCheckbox = authorTreeElement.listItemElement.querySelector('.enabled-button') as HTMLInputElement;
+      assert.exists(disableCheckbox);
+      disableCheckbox.click();
+      await disableApplied;
+
+      assert.isFalse(uaTreeElement.overloaded());
+      assert.isFalse(uaTreeElement.listItemElement.classList.contains('overloaded'));
+
+      const disabledAuthorTreeElement = authorSection.propertiesTreeOutline.firstChild() as
+          Elements.StylePropertyTreeElement.StylePropertyTreeElement;
+      assert.exists(disabledAuthorTreeElement);
+      assert.isTrue(disabledAuthorTreeElement.listItemElement.classList.contains('disabled'));
+
+      (authorTreeElement.styleTextAppliedForTest as sinon.SinonStub).restore();
+      const enableApplied = new Promise<void>(resolve => {
+        sinon.stub(disabledAuthorTreeElement, 'styleTextAppliedForTest').callsFake(resolve);
+      });
+      const enableCheckbox =
+          disabledAuthorTreeElement.listItemElement.querySelector('.enabled-button') as HTMLInputElement;
+      assert.exists(enableCheckbox);
+      enableCheckbox.click();
+      await enableApplied;
+
+      assert.isTrue(uaTreeElement.overloaded());
+      assert.isTrue(uaTreeElement.listItemElement.classList.contains('overloaded'));
+    });
+
+    it('applies setStyleText when editing a property in a rule following an unparseable rule', async () => {
+      const treeElement = createRegularTreeElement('color', 'red');
+      const section = treeElement.section();
+      section.propertiesTreeOutline.appendChild(treeElement);
+      const style = treeElement.property.ownerStyle;
+      style.styleSheetId = '1' as Protocol.DOM.StyleSheetId;
+      style.cssText = 'color: red;';
+      style.range = new TextUtils.TextRange.TextRange(2, 0, 2, 11);
+      treeElement.property.text = 'color: red;';
+      treeElement.property.range = new TextUtils.TextRange.TextRange(2, 0, 2, 11);
+      sinon.stub(style.cssModel(), 'cachedMatchedCascadeForNode').resolves(matchedStyles);
+      connection.setHandler('CSS.getStyleSheetText', null);
+      connection.setSuccessHandler('CSS.getStyleSheetText',
+                                   () => ({text: '@invalid-rule {\n  ???\n}\ndiv {\ncolor: red;\n}'}));
+      connection.setHandler('DOM.markUndoableState', null);
+      connection.setSuccessHandler('DOM.markUndoableState', () => ({}));
+
+      const setStyleTextsStub = sinon.stub().callsFake((_params: Protocol.CSS.SetStyleTextsRequest) => ({
+                                                         styles: [{
+                                                           styleSheetId: '1' as Protocol.DOM.StyleSheetId,
+                                                           cssProperties: [{
+                                                             name: 'color',
+                                                             value: 'green',
+                                                             disabled: false,
+                                                             range: {
+                                                               startLine: 2,
+                                                               startColumn: 0,
+                                                               endLine: 2,
+                                                               endColumn: 13,
+                                                             },
+                                                           }],
+                                                           shorthandEntries: [],
+                                                           range: {
+                                                             startLine: 2,
+                                                             startColumn: 0,
+                                                             endLine: 2,
+                                                             endColumn: 13,
+                                                           },
+                                                           cssText: 'color: green;',
+                                                         }],
+                                                       }));
+      connection.setHandler('CSS.setStyleTexts', null);
+      connection.setSuccessHandler('CSS.setStyleTexts', setStyleTextsStub);
+
+      treeElement.updateTitle();
+      renderElementIntoDOM(section.element);
+      await treeElement.applyStyleText('color: green', true);
+
+      sinon.assert.calledOnce(setStyleTextsStub);
+      assert.deepEqual(setStyleTextsStub.firstCall.args[0].edits[0], {
+        styleSheetId: '1' as Protocol.DOM.StyleSheetId,
+        range: {startLine: 2, startColumn: 0, endLine: 2, endColumn: 11},
+        text: 'color: green;',
+      });
+    });
+
+    it('applies typed text cleanly when committing property value edit before slow completions resolve', async () => {
+      let resolveCompletions!: () => void;
+      const slowCompletionsPromise = new Promise<void>(resolve => {
+        resolveCompletions = resolve;
+      });
+      let completionsRequested!: () => void;
+      const completionsRequestedPromise = new Promise<void>(resolve => {
+        completionsRequested = resolve;
+      });
+      let completionsFinished!: () => void;
+      const completionsFinishedPromise = new Promise<void>(resolve => {
+        completionsFinished = resolve;
+      });
+
+      connection.setHandler('CSS.getComputedStyleForNode', null);
+      connection.setSuccessHandler('CSS.getComputedStyleForNode',
+                                   () => ({computedStyle: [], extraFields: {isAppearanceBase: false}}));
+
+      const originalInitialize = Elements.StylesSidebarPane.CSSPropertyPrompt.prototype.initialize;
+      sinon.stub(Elements.StylesSidebarPane.CSSPropertyPrompt.prototype, 'initialize')
+          .callsFake(function(this: Elements.StylesSidebarPane.CSSPropertyPrompt, completions, stopCharacters,
+                              usesSuggestionBuilder) {
+            const slowAutocompleteProvider = async (expression: string, filter: string, force: boolean) => {
+              const result = await completions.call(null, expression, filter, force);
+              completionsRequested();
+              await slowCompletionsPromise;
+              completionsFinished();
+              return result;
+            };
+            originalInitialize.call(this, slowAutocompleteProvider, stopCharacters, usesSuggestionBuilder);
+          });
+
+      const treeElement = createRegularTreeElement('display', 'block');
+      const section = treeElement.section();
+      section.propertiesTreeOutline.appendChild(treeElement);
+      const applyStyleTextStub = sinon.stub(treeElement, 'applyStyleText').resolves();
+      treeElement.updateTitle();
+      renderElementIntoDOM(section.element);
+
+      treeElement.startEditingValue();
+      assert.exists(treeElement.valueElement);
+      treeElement.valueElement.textContent = 'inline-block';
+      const selection = treeElement.valueElement.getComponentSelection();
+      assert.exists(selection);
+      const range = document.createRange();
+      range.setStart(treeElement.valueElement.firstChild!, treeElement.valueElement.textContent.length);
+      range.setEnd(treeElement.valueElement.firstChild!, treeElement.valueElement.textContent.length);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      treeElement.valueElement.dispatchEvent(new InputEvent('input', {data: 'inline-block', bubbles: true}));
+
+      await completionsRequestedPromise;
+      applyStyleTextStub.resetHistory();
+
+      treeElement.valueElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+      sinon.assert.calledOnceWithExactly(applyStyleTextStub, 'display: inline-block', true);
+
+      resolveCompletions();
+      await completionsFinishedPromise;
+      assert.strictEqual(treeElement.valueElement.textContent, 'inline-block');
+    });
+
+    it('removes an added property when calling DOMModelUndoStack.instance().undo()', async () => {
+      const existingElement = getTreeElement('color', 'red');
+      const section = existingElement.section();
+      const style = existingElement.property.ownerStyle;
+      style.styleSheetId = '1' as Protocol.DOM.StyleSheetId;
+      style.cssText = 'color: red;';
+      style.range = new TextUtils.TextRange.TextRange(0, 0, 0, style.cssText.length);
+      existingElement.property.range = new TextUtils.TextRange.TextRange(0, 0, 0, style.cssText.length);
+      sinon.stub(style.cssModel(), 'cachedMatchedCascadeForNode').resolves(matchedStyles);
+      connection.setHandler('CSS.getStyleSheetText', null);
+      connection.setSuccessHandler('CSS.getStyleSheetText', () => ({text: 'color: red;'}));
+      connection.setHandler('DOM.markUndoableState', null);
+      connection.setSuccessHandler('DOM.markUndoableState', () => ({}));
+
+      const undoStack = SDK.DOMModel.DOMModelUndoStack.instance({forceNew: true});
+      const undoSpy = sinon.spy(() => ({}));
+      connection.setHandler('DOM.undo', null);
+      connection.setSuccessHandler('DOM.undo', undoSpy);
+      connection.setHandler('CSS.setStyleTexts', null);
+      connection.setSuccessHandler('CSS.setStyleTexts', () => ({
+                                                          styles: [{
+                                                            styleSheetId: '1' as Protocol.DOM.StyleSheetId,
+                                                            cssProperties: [
+                                                              {name: 'color', value: 'red'},
+                                                              {name: 'margin', value: '10px'},
+                                                            ],
+                                                            shorthandEntries: [],
+                                                            range: {
+                                                              startLine: 0,
+                                                              startColumn: 0,
+                                                              endLine: 0,
+                                                              endColumn: 24,
+                                                            },
+                                                            cssText: 'color: red; margin: 10px;',
+                                                          }],
+                                                        }));
+
+      renderElementIntoDOM(section.element);
+      const blankTreeElement = section.addNewBlankProperty();
+      await blankTreeElement.applyStyleText('margin: 10px;', true);
+
+      await undoStack.undo();
+      sinon.assert.calledOnce(undoSpy);
+    });
+  });
 });

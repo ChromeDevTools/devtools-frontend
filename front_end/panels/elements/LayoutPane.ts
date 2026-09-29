@@ -366,15 +366,21 @@ const DEFAULT_VIEW: View = (input, output, target) => {
 
 type View = (input: ViewInput, output: object, element: HTMLElement) => void;
 export class LayoutPane extends UI.Widget.Widget {
-  readonly #settings: readonly Setting[] = [];
+  readonly #settings: ReadonlyArray<Common.Settings.Setting<string|boolean>>;
   readonly #uaShadowDOMSetting: Common.Settings.Setting<boolean>;
   #domModels: SDK.DOMModel.DOMModel[];
   readonly #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
-    this.#settings = this.#makeSettings();
-    this.#uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom');
+    const settings = Common.Settings.Settings.instance();
+    this.#settings = [
+      settings.resolve(SDK.SDKSettings.showGridLineLabelsSettingDescriptor),
+      settings.resolve(SDK.SDKSettings.showGridTrackSizesSettingDescriptor),
+      settings.resolve(SDK.SDKSettings.showGridAreasSettingDescriptor),
+      settings.resolve(SDK.SDKSettings.extendGridLinesSettingDescriptor),
+    ];
+    this.#uaShadowDOMSetting = settings.moduleSetting('show-ua-shadow-dom');
     this.#domModels = [];
     this.#view = view;
   }
@@ -445,10 +451,8 @@ export class LayoutPane extends UI.Widget.Widget {
   }
 
   #makeSettings(): Setting[] {
-    const settings = [];
-    for (const settingName
-             of ['show-grid-line-labels', 'show-grid-track-sizes', 'show-grid-areas', 'extend-grid-lines']) {
-      const setting = Common.Settings.Settings.instance().moduleSetting(settingName);
+    const settings: Setting[] = [];
+    for (const setting of this.#settings) {
       const settingValue = setting.get();
       const settingType = setting.type();
       if (!settingType) {
@@ -489,13 +493,13 @@ export class LayoutPane extends UI.Widget.Widget {
   }
 
   onSettingChanged(setting: string, value: string|boolean): void {
-    Common.Settings.Settings.instance().moduleSetting(setting).set(value);
+    this.#settings.find(s => s.name === setting)?.set(value);
   }
 
   override wasShown(): void {
     super.wasShown();
     for (const setting of this.#settings) {
-      Common.Settings.Settings.instance().moduleSetting(setting.name).addChangeListener(this.requestUpdate, this);
+      setting.addChangeListener(this.requestUpdate, this);
     }
     for (const domModel of this.#domModels) {
       this.modelRemoved(domModel);
@@ -510,7 +514,7 @@ export class LayoutPane extends UI.Widget.Widget {
   override willHide(): void {
     super.willHide();
     for (const setting of this.#settings) {
-      Common.Settings.Settings.instance().moduleSetting(setting.name).removeChangeListener(this.requestUpdate, this);
+      setting.removeChangeListener(this.requestUpdate, this);
     }
     SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.DOMModel.DOMModel, this);
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.requestUpdate, this);
@@ -537,6 +541,7 @@ export class LayoutPane extends UI.Widget.Widget {
   }
 
   override async performUpdate(): Promise<void> {
+    const settings = this.#makeSettings();
     const input: ViewInput = {
       gridElements: gridNodesToElements(await this.#fetchGridNodes()),
       flexContainerElements: flexContainerNodesToElements(await this.#fetchFlexContainerNodes()),
@@ -547,20 +552,12 @@ export class LayoutPane extends UI.Widget.Widget {
       onMouseEnter: this.#onElementMouseEnter.bind(this),
       onElementToggle: this.#onElementToggle.bind(this),
       onBooleanSettingChange: this.#onBooleanSettingChange.bind(this),
-      enumSettings: this.#getEnumSettings(),
-      booleanSettings: this.#getBooleanSettings(),
+      enumSettings: settings.filter(isEnumSetting),
+      booleanSettings: settings.filter(isBooleanSetting),
       onSummaryKeyDown: this.#onSummaryKeyDown.bind(this),
     };
 
     this.#view(input, {}, this.contentElement);
-  }
-
-  #getEnumSettings(): EnumSetting[] {
-    return this.#settings.filter(isEnumSetting);
-  }
-
-  #getBooleanSettings(): BooleanSetting[] {
-    return this.#settings.filter(isBooleanSetting);
   }
 
   #onBooleanSettingChange(setting: BooleanSetting, event: Event): void {

@@ -69,18 +69,37 @@ describeWithEnvironment('LayoutPane', () => {
     assert.deepEqual(checkboxesTitles, ['Boolean setting title', '', '']);
   });
 
-  it('stores a setting when changed', async () => {
-    const component = await renderComponent();
+  it('renders settings even when grid settings are not pre-registered in moduleSettings', async () => {
+    const settings = Common.Settings.Settings.instance();
+    for (const descriptor of [SDK.SDKSettings.showGridLineLabelsSettingDescriptor,
+                              SDK.SDKSettings.showGridTrackSizesSettingDescriptor,
+                              SDK.SDKSettings.showGridAreasSettingDescriptor,
+                              SDK.SDKSettings.extendGridLinesSettingDescriptor,
+    ]) {
+      settings.moduleSettings.delete(descriptor.name);
+      settings.settingNameSet.delete(descriptor.name);
+    }
 
-    assert.isTrue(
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showGridTrackSizesSettingDescriptor).get());
+    const component = await renderComponent();
+    assert.lengthOf(component.contentElement.querySelectorAll('[data-enum-setting]'), 1);
+    assert.lengthOf(component.contentElement.querySelectorAll('[data-boolean-setting]'), 3);
+  });
+
+  it('stores a setting when changed and updates UI when setting changes', async () => {
+    const component = await renderComponent();
+    const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showGridTrackSizesSettingDescriptor);
+
+    assert.isTrue(setting.get());
     const input = component.contentElement.querySelector('[data-boolean-setting]');
     assert.instanceOf(input, UI.UIUtils.CheckboxLabel);
+    assert.isTrue(input.checked);
 
+    const performUpdateSpy = spyCall(component, 'performUpdate');
     input.click();
+    await (await performUpdateSpy).result;
 
-    assert.isFalse(
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showGridTrackSizesSettingDescriptor).get());
+    assert.isFalse(setting.get());
+    assert.isFalse(input.checked);
   });
 
   function makeNode(id: Protocol.DOM.NodeId) {

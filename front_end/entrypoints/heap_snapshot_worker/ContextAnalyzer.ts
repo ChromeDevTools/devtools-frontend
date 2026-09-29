@@ -313,6 +313,25 @@ function processScriptScopeInfos(
     if (scopeInfo?.rawName() === 'system / ScopeInfo') {
       attributeScopeInfoChain(scopeInfoScriptNodeIndexes, scopeInfo.nodeIndex as ScopeInfoNodeIndex, stopAtNodeIndex,
                               scriptNodeIndex, scopeInfoNode);
+      continue;
+    }
+
+    // While a function is uncompiled it has no ScopeInfo of its own, so use the ScopeInfo of its
+    // enclosing scope instead. A script's root function is always compiled, but if it weren't, its
+    // enclosing scope would lie outside of this script, so skip it.
+    const scopeId = sharedFunctionInfo.findInternalEdgeTarget('scope_id')?.nodeValueAsInt();
+    if (scopeId === undefined || isScriptRootScopeId(scopeId)) {
+      continue;
+    }
+
+    // Except for the root function, the enclosing ScopeInfo belongs to this script. The exception
+    // is a function in eval'd code whose eval scope has no context: its enclosing ScopeInfo is then
+    // the scope around the `eval` call in the calling script (`eval_from_scope_info`), where
+    // `attributeScopeInfoChain` stops.
+    const outerScopeInfo = sharedFunctionInfo.findInternalEdgeTarget('raw_outer_scope_info_or_feedback_metadata');
+    if (outerScopeInfo?.rawName() === 'system / ScopeInfo') {
+      attributeScopeInfoChain(scopeInfoScriptNodeIndexes, outerScopeInfo.nodeIndex as ScopeInfoNodeIndex,
+                              stopAtNodeIndex, scriptNodeIndex, scopeInfoNode);
     }
   }
 }

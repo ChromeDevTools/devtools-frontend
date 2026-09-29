@@ -358,6 +358,16 @@ function checkInsideDirectEval({snapshot, analysis}: ContextFixture): void {
   assert.deepEqual(deadFieldNames(scope), [['insideEvalDead']]);
 }
 
+// Analyzes context fields of vars declared in a strict direct eval.
+function checkStrictEval({snapshot, analysis}: ContextFixture): void {
+  const scope = singleScopeForScript(analysis, 'strict-eval-code.js');
+
+  assert.deepEqual(allContextFields(snapshot, scope), ['strictEvalCaptured', 'strictEvalDead']);
+  assert.deepEqual(deadFieldNames(scope), [['strictEvalDead']]);
+  // The eval scope belongs to the eval'd code, not to the script calling `eval`.
+  assertNoScopes(analysis, 'strict-eval.js');
+}
+
 // Loads contexts retained by suspended generators.
 function checkGenerator({snapshot, analysis}: ContextFixture): void {
   const scope = singleScopeForScript(analysis, 'generator.js');
@@ -383,21 +393,12 @@ function checkModuleScopes({snapshot, analysis}: ContextFixture): void {
   assert.deepEqual(deadFieldNames(scope), [['moduleDead']]);
 }
 
-// Does not report script scopes holding top-level let and const yet.
-//
-// Top-level `let`/`const` of a classic script live in a script context, whose
-// ScopeInfo cannot be attributed to a script at the moment: no live
-// SharedFunctionInfo references a SCRIPT_SCOPE ScopeInfo through
-// `name_or_scope_info` (the top-level SharedFunctionInfo is gone once the
-// script finished running), and being outermost it has no `outer_scope_info`
-// to walk up either. Module scopes do not have that problem because the module
-// keeps its top-level SharedFunctionInfo alive.
-//
-// TODO: Once script contexts can be attributed to their script, this should
-// report a single scope for script.js with the context fields
-// ['scriptCaptured', 'scriptDead'], of which 'scriptDead' is dead.
-function checkScriptScopes({analysis}: ContextFixture): void {
-  assertNoScopes(analysis, 'script.js');
+// Analyzes script scopes holding top-level let and const.
+function checkScriptScopes({snapshot, analysis}: ContextFixture): void {
+  const scope = singleScopeForScript(analysis, 'script.js');
+
+  assert.deepEqual(allContextFields(snapshot, scope), ['scriptCaptured', 'scriptDead']);
+  assert.deepEqual(deadFieldNames(scope), [['scriptDead']]);
 }
 
 describe('HeapSnapshot analyze context fields API Test', () => {
@@ -429,6 +430,7 @@ describe('HeapSnapshot analyze context fields API Test', () => {
     checkCapturedThis(fixture);
     checkDirectEval(fixture);
     checkInsideDirectEval(fixture);
+    checkStrictEval(fixture);
     checkGenerator(fixture);
     checkAsyncFunction(fixture);
     checkModuleScopes(fixture);

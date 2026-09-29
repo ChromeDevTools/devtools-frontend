@@ -32,6 +32,7 @@ copy_to_gen("memory") {
     "context-analysis/parameter.js",
     "context-analysis/script.js",
     "context-analysis/shadowed.js",
+    "context-analysis/strict-eval.js",
     "context-analysis/uninstantiated-inner.js",
     "context-analysis/with.js",
     "default.html",

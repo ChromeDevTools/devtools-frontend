@@ -5068,4 +5068,195 @@ describeWithEnvironment('DOMTreeWidget', () => {
       domTree.detach();
     }
   });
+
+  it('copies matched CSS declarations for a DOMNode via copyStyles', async () => {
+    const {domTree, domModel} = setupDOMTreeWidget(target, Elements.DOMTreeWidget.DECLARATIVE_VIEW);
+    try {
+      const rootNode = createTestDOMTree(domModel, {nodeId: 1, nodeName: 'DIV'});
+      const mockStyle = {
+        leadingProperties: () =>
+            [{
+              name: 'display',
+              value: 'block',
+              parsedOk: true,
+              disabled: false,
+              implicit: false,
+              activeInStyle: () => true,
+            },
+             {name: 'color', value: 'red', parsedOk: true, disabled: false, implicit: false, activeInStyle: () => true},
+             {name: 'margin', value: '0px', parsedOk: true, disabled: true, implicit: false, activeInStyle: () => true},
+      ],
+        parentRule: {isUserAgent: () => false},
+      };
+      sinon.stub(domModel.cssModel(), 'cachedMatchedCascadeForNode').resolves({
+        nodeStyles: () => [mockStyle],
+        isInherited: () => false,
+        propertyState: () => SDK.CSSMatchedStyles.PropertyState.ACTIVE,
+      } as unknown as SDK.CSSMatchedStyles.CSSMatchedStyles);
+      const copySpy = sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
+
+      await domTree.copyStyles(rootNode);
+
+      sinon.assert.calledOnceWithExactly(copySpy, '    display: block;\n    color: red;');
+    } finally {
+      domTree.detach();
+    }
+  });
+
+  it('hides and shows HTML comment DOMNodes when toggling show-html-comments setting', async () => {
+    const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+    setting.set(true);
+    const {domTree, domModel} = setupDOMTreeWidget(target, Elements.DOMTreeWidget.DEFAULT_VIEW);
+    try {
+      const rootNode = createTestDOMTree(domModel, {
+        nodeId: 1,
+        nodeName: 'DIV',
+        children: [
+          {nodeId: 2, nodeName: '#comment', nodeType: Node.COMMENT_NODE, nodeValue: ' hidden comment '},
+          {nodeId: 3, nodeName: 'SPAN'},
+        ],
+      });
+      domTree.rootDOMNode = rootNode;
+      domTree.setNodeExpanded(rootNode, true);
+      domTree.performUpdate();
+
+      const treeOutline = Elements.DOMTreeWidget.ElementsTreeOutline.forDOMModel(domModel)!;
+      const rootTreeElement = treeOutline.findTreeElement(rootNode)!;
+      await treeOutline.populateTreeElement(rootTreeElement);
+      assert.strictEqual(rootTreeElement.childCount(), 3);
+
+      setting.set(false);
+      domTree.performUpdate();
+      await treeOutline.populateTreeElement(treeOutline.findTreeElement(rootNode)!);
+      assert.strictEqual(treeOutline.findTreeElement(rootNode)!.childCount(), 2);
+
+      setting.set(true);
+      domTree.performUpdate();
+      await treeOutline.populateTreeElement(treeOutline.findTreeElement(rootNode)!);
+      assert.strictEqual(treeOutline.findTreeElement(rootNode)!.childCount(), 3);
+    } finally {
+      setting.set(true);
+      domTree.detach();
+    }
+  });
+
+  it('paginates children via expandedChildrenLimit and expands all children via expandAllChildren', async () => {
+    const {domTree, domModel} = setupDOMTreeWidget(target, Elements.DOMTreeWidget.DEFAULT_VIEW);
+    try {
+      const children = Array.from({length: 8}, (_, i) => ({nodeId: i + 2, nodeName: 'SPAN'}));
+      const rootNode = createTestDOMTree(domModel, {nodeId: 1, nodeName: 'DIV', children});
+      domTree.rootDOMNode = rootNode;
+      domTree.setExpandedChildrenLimit(rootNode, 3);
+      domTree.setNodeExpanded(rootNode, true);
+      domTree.performUpdate();
+
+      const treeOutline = Elements.DOMTreeWidget.ElementsTreeOutline.forDOMModel(domModel)!;
+      const rootTreeElement = treeOutline.findTreeElement(rootNode)!;
+      await treeOutline.populateTreeElement(rootTreeElement);
+      assert.strictEqual(domTree.expandedChildrenLimit(rootNode), 3);
+      assert.exists(rootTreeElement.expandAllButtonElement);
+      assert.strictEqual(rootTreeElement.childCount(), 5);
+
+      domTree.expandAllChildren(rootNode);
+      assert.isAtLeast(domTree.expandedChildrenLimit(rootNode), 8);
+      assert.isNull(rootTreeElement.expandAllButtonElement);
+      assert.strictEqual(rootTreeElement.childCount(), 9);
+    } finally {
+      domTree.detach();
+    }
+  });
+
+  it('toggles hide-marker and injects visibility: hidden rule via toggleHideElement', async () => {
+    const {domTree, domModel} = setupDOMTreeWidget(target, Elements.DOMTreeWidget.DEFAULT_VIEW);
+    try {
+      const rootNode = createTestDOMTree(domModel, {
+        nodeId: 1,
+        nodeName: 'DIV',
+        children: [{nodeId: 2, nodeName: 'P'}],
+      });
+      domTree.rootDOMNode = rootNode;
+      const pNode = rootNode.children()![0];
+      const callFunctionStub = sinon.stub().resolves({});
+      sinon.stub(pNode, 'resolveToObject').resolves({
+        callFunction: callFunctionStub,
+        release: sinon.stub(),
+      } as unknown as SDK.RemoteObject.RemoteObject);
+
+      assert.isFalse(domTree.isToggledToHidden(pNode));
+      await domTree.toggleHideElement(pNode);
+
+      assert.isTrue(domTree.isToggledToHidden(pNode));
+      assert.isTrue(pNode.marker('hidden-marker'));
+      sinon.assert.calledOnce(callFunctionStub);
+      assert.include(callFunctionStub.firstCall.args[0].toString(), 'visibility: hidden');
+      assert.deepEqual(callFunctionStub.firstCall.args[1], [{value: null}, {value: true}]);
+
+      await domTree.toggleHideElement(pNode);
+      assert.isFalse(domTree.isToggledToHidden(pNode));
+    } finally {
+      domTree.detach();
+    }
+  });
+
+  it('updates text node ElementsTreeElement when CharacterDataModified event fires', async () => {
+    const {domTree, domModel} = setupDOMTreeWidget(target, Elements.DOMTreeWidget.DEFAULT_VIEW);
+    try {
+      const rootNode = createTestDOMTree(domModel, {
+        nodeId: 1,
+        nodeName: 'DIV',
+        children: [{nodeId: 2, nodeName: '#text', nodeValue: 'initial text'}],
+      });
+      domTree.rootDOMNode = rootNode;
+      domTree.setNodeExpanded(rootNode, true);
+      domTree.performUpdate();
+
+      const treeOutline = Elements.DOMTreeWidget.ElementsTreeOutline.forDOMModel(domModel)!;
+      const rootTreeElement = treeOutline.findTreeElement(rootNode)!;
+      await treeOutline.populateTreeElement(rootTreeElement);
+
+      domModel.characterDataModified(2 as Protocol.DOM.NodeId, 'updated text content');
+      domTree.runPendingUpdates();
+      rootTreeElement.widget.performUpdate();
+
+      assert.strictEqual(rootNode.children()![0].nodeValue(), 'updated text content');
+      const textEl = rootTreeElement.widget.contentElement.querySelector('.webkit-html-text-node');
+      assert.strictEqual(textEl?.textContent, 'updated text content');
+    } finally {
+      domTree.detach();
+    }
+  });
+
+  it('preserves current selectedDOMNode when ChildNodeInserted fires on an unselected sibling', () => {
+    const {domTree, domModel} = setupDOMTreeWidget(target, Elements.DOMTreeWidget.DEFAULT_VIEW);
+    try {
+      const rootNode = createTestDOMTree(domModel, {
+        nodeId: 1,
+        nodeName: 'BODY',
+        children: [
+          {nodeId: 2, nodeName: 'DIV'},
+          {nodeId: 3, nodeName: 'DIV', children: []},
+        ],
+      });
+      domTree.rootDOMNode = rootNode;
+      const firstDiv = rootNode.children()![0];
+      domTree.selectDOMNode(firstDiv);
+      assert.strictEqual(domTree.selectedDOMNode(), firstDiv);
+
+      domModel.childNodeInserted(3 as Protocol.DOM.NodeId, 0 as Protocol.DOM.NodeId, {
+        nodeId: 4 as Protocol.DOM.NodeId,
+        parentId: 3 as Protocol.DOM.NodeId,
+        backendNodeId: 4 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'SPAN',
+        localName: 'span',
+        nodeValue: '',
+        childNodeCount: 0,
+      });
+      domTree.runPendingUpdates();
+
+      assert.strictEqual(domTree.selectedDOMNode(), firstDiv);
+    } finally {
+      domTree.detach();
+    }
+  });
 });

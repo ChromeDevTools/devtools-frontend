@@ -2709,4 +2709,96 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.strictEqual(textEl?.textContent, 'טקסט בעברית');
   });
 
+  it('renders lowercase HTML tag names and camelCase SVG tag names via nodeNameInCorrectCase', () => {
+    const htmlNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 30 as Protocol.DOM.NodeId,
+      backendNodeId: 30 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'DIV',
+      localName: 'div',
+      nodeValue: '',
+      childNodeCount: 0,
+    });
+    const svgNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 31 as Protocol.DOM.NodeId,
+      backendNodeId: 31 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'feComposite',
+      localName: 'feComposite',
+      nodeValue: '',
+      childNodeCount: 0,
+    });
+    const htmlEl = new Elements.ElementsTreeElement.ElementsTreeElement(htmlNode, false);
+    const svgEl = new Elements.ElementsTreeElement.ElementsTreeElement(svgNode, false);
+    outline.appendChild(htmlEl);
+    outline.appendChild(svgEl);
+    htmlEl.widget.performUpdate();
+    svgEl.widget.performUpdate();
+
+    assert.strictEqual(htmlNode.nodeNameInCorrectCase(), 'div');
+    assert.strictEqual(svgNode.nodeNameInCorrectCase(), 'feComposite');
+    assert.strictEqual(htmlEl.widget.contentElement.querySelector('.webkit-html-tag-name')?.textContent, 'div');
+    assert.strictEqual(svgEl.widget.contentElement.querySelector('.webkit-html-tag-name')?.textContent, 'feComposite');
+  });
+
+  it('renders special whitespace and entities in ElementsTreeElement', () => {
+    const entityNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 40 as Protocol.DOM.NodeId,
+      backendNodeId: 40 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'SPAN',
+      localName: 'span',
+      nodeValue: '',
+      childNodeCount: 1,
+      children: [{
+        nodeId: 41 as Protocol.DOM.NodeId,
+        parentId: 40 as Protocol.DOM.NodeId,
+        backendNodeId: 41 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.TEXT_NODE,
+        nodeName: '#text',
+        localName: '',
+        nodeValue: 'a\u00A0b\u00ADc\uFEFFd\u200Be',
+        childNodeCount: 0,
+      }],
+    });
+    const entityEl = new Elements.ElementsTreeElement.ElementsTreeElement(entityNode, false);
+    outline.appendChild(entityEl);
+    entityEl.widget.performUpdate();
+
+    const entities = Array.from(entityEl.widget.contentElement.querySelectorAll('.webkit-html-entity-value'))
+                         .map(el => el.textContent);
+    assert.deepEqual(entities, ['&nbsp;', '&shy;', '&#xFEFF;', '&ZeroWidthSpace;']);
+  });
+
+  it('updates inline <style> ElementsTreeElement title when CharacterDataModified fires', () => {
+    outline.wireToDOMModel(testDomModel);
+    const styleNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 50 as Protocol.DOM.NodeId,
+      backendNodeId: 50 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'STYLE',
+      localName: 'style',
+      nodeValue: '',
+      childNodeCount: 1,
+      children: [{
+        nodeId: 51 as Protocol.DOM.NodeId,
+        parentId: 50 as Protocol.DOM.NodeId,
+        backendNodeId: 51 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.TEXT_NODE,
+        nodeName: '#text',
+        localName: '',
+        nodeValue: 'body { color: red; }',
+        childNodeCount: 0,
+      }],
+    });
+    outline.rootDOMNode = styleNode;
+    const styleEl = outline.findTreeElement(styleNode)!;
+    styleEl.widget.performUpdate();
+    assert.include(styleEl.widget.contentElement.textContent, 'body { color: red; }');
+
+    testDomModel.characterDataModified(51 as Protocol.DOM.NodeId, 'body { color: blue; }');
+    outline.runPendingUpdates();
+    styleEl.widget.performUpdate();
+    assert.include(styleEl.widget.contentElement.textContent, 'body { color: blue; }');
+  });
 });

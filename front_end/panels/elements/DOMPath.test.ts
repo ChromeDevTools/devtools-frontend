@@ -296,4 +296,193 @@ describeWithEnvironment('DOMPath', () => {
 
     assert.deepEqual(paths, expectedPaths);
   });
+
+  it('computes jsPath escaping quotes, special IDs, and class selectors', () => {
+    const rootNode = createDOMNode({
+      nodeType: Node.DOCUMENT_NODE,
+      nodeName: '#document',
+      children: [{
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'HTML',
+        children: [{
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'BODY',
+          children: [
+            {nodeType: Node.ELEMENT_NODE, nodeName: 'ARTICLE'},
+            {nodeType: Node.ELEMENT_NODE, nodeName: 'ARTICLE'},
+            {nodeType: Node.ELEMENT_NODE, nodeName: 'INPUT', attributes: {type: 'number'}},
+            {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {id: 'inner-id'}},
+            {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {id: '__proto__'}},
+            {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {id: '#"ridiculous".id'}},
+            {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {id: '\'quoted.value\''}},
+            {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {id: ':hover'}},
+            {
+              nodeType: Node.ELEMENT_NODE,
+              nodeName: 'DIV',
+              attributes: {id: 'classes'},
+              children: [
+                {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {class: 'foo bar'}},
+                {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {class: 'baz'}},
+              ],
+            },
+          ],
+        }],
+      }],
+    });
+
+    const jsPaths: string[] = [];
+    const collect = (node: SDK.DOMModel.DOMNode) => {
+      if (node.nodeType() === Node.ELEMENT_NODE) {
+        jsPaths.push(Elements.DOMPath.jsPath(node, true));
+      }
+      node.children()?.forEach(collect);
+    };
+    collect(rootNode);
+
+    assert.deepEqual(jsPaths, [
+      'document.querySelector("html")',
+      'document.querySelector("body")',
+      'document.querySelector("body > article:nth-child(1)")',
+      'document.querySelector("body > article:nth-child(2)")',
+      'document.querySelector("body > input[type=number]")',
+      'document.querySelector("#inner-id")',
+      'document.querySelector("#__proto__")',
+      'document.querySelector("#\\\\#\\\\\\"ridiculous\\\\\\"\\\\.id")',
+      'document.querySelector("#\\\\\'quoted\\\\.value\\\\\'")',
+      'document.querySelector("#\\\\:hover")',
+      'document.querySelector("#classes")',
+      'document.querySelector("#classes > div.foo.bar")',
+      'document.querySelector("#classes > div.baz")',
+    ]);
+  });
+
+  it('computes xPath with and without optimization for nested elements, sibling indices, and IDs', () => {
+    const docNode = createDOMNode({
+      nodeType: Node.DOCUMENT_NODE,
+      nodeName: '#document',
+      children: [{
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'HTML',
+        children: [{
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'BODY',
+          children: [
+            {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV'},
+            {
+              nodeType: Node.ELEMENT_NODE,
+              nodeName: 'DIV',
+              attributes: {id: 'anchor-id'},
+              children: [
+                {nodeType: Node.ELEMENT_NODE, nodeName: 'SPAN'},
+                {
+                  nodeType: Node.ELEMENT_NODE,
+                  nodeName: 'SPAN',
+                  children: [{nodeType: Node.TEXT_NODE, nodeName: '#text', nodeValue: 'hello'}],
+                },
+                {nodeType: Node.COMMENT_NODE, nodeName: '#comment', nodeValue: 'note'},
+              ],
+            },
+          ],
+        }],
+      }],
+    });
+
+    const bodyNode = docNode.children()![0].children()![0];
+    const [firstDiv, secondDiv] = bodyNode.children()!;
+    const [firstSpan, secondSpan, commentNode] = secondDiv.children()!;
+    const textNode = secondSpan.children()![0];
+
+    assert.strictEqual(Elements.DOMPath.xPath(docNode, true), '/');
+    assert.strictEqual(Elements.DOMPath.xPath(firstDiv, false), '/html/body/div[1]');
+    assert.strictEqual(Elements.DOMPath.xPath(firstDiv, true), '/html/body/div[1]');
+    assert.strictEqual(Elements.DOMPath.xPath(secondDiv, false), '/html/body/div[2]');
+    assert.strictEqual(Elements.DOMPath.xPath(secondDiv, true), '//*[@id="anchor-id"]');
+    assert.strictEqual(Elements.DOMPath.xPath(firstSpan, false), '/html/body/div[2]/span[1]');
+    assert.strictEqual(Elements.DOMPath.xPath(firstSpan, true), '//*[@id="anchor-id"]/span[1]');
+    assert.strictEqual(Elements.DOMPath.xPath(secondSpan, false), '/html/body/div[2]/span[2]');
+    assert.strictEqual(Elements.DOMPath.xPath(secondSpan, true), '//*[@id="anchor-id"]/span[2]');
+    assert.strictEqual(Elements.DOMPath.xPath(textNode, false), '/html/body/div[2]/span[2]/text()');
+    assert.strictEqual(Elements.DOMPath.xPath(textNode, true), '//*[@id="anchor-id"]/span[2]/text()');
+    assert.strictEqual(Elements.DOMPath.xPath(commentNode, true), '//*[@id="anchor-id"]/comment()');
+  });
+
+  it('computes jsPath and xPath for nodes inside nested shadow roots', () => {
+    const innerShadow = Object.assign(buildPayload({
+                                        nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                                        nodeName: '#document-fragment',
+                                        localName: '',
+                                        children: [{
+                                          nodeType: Node.ELEMENT_NODE,
+                                          nodeName: 'SPAN',
+                                          attributes: {id: 'deep-shadow-target'},
+                                          children: [{nodeType: Node.ELEMENT_NODE, nodeName: 'B'}],
+                                        }],
+                                      }),
+                                      {shadowRootType: 'open' as Protocol.DOM.ShadowRootType});
+    const innerHost =
+        Object.assign(buildPayload({nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {id: 'inner-host'}}),
+                      {shadowRoots: [innerShadow]});
+    const outerShadow = Object.assign(
+        buildPayload({nodeType: Node.DOCUMENT_FRAGMENT_NODE, nodeName: '#document-fragment', localName: ''}),
+        {shadowRootType: 'open' as Protocol.DOM.ShadowRootType, children: [innerHost]});
+    const outerHost =
+        Object.assign(buildPayload({nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {id: 'outer-host'}}),
+                      {shadowRoots: [outerShadow]});
+    const docPayload = buildPayload({
+      nodeType: Node.DOCUMENT_NODE,
+      nodeName: '#document',
+      children: [
+        {nodeType: Node.ELEMENT_NODE, nodeName: 'HTML', children: [{nodeType: Node.ELEMENT_NODE, nodeName: 'BODY'}]},
+      ],
+    });
+    docPayload.children![0].children![0].children = [outerHost];
+
+    const doc = SDK.DOMModel.DOMNode.create(domModel, null, false, docPayload);
+    const deepTarget = doc.children()![0]
+                           .children()![0]
+                           .children()![0]
+                           .shadowRoots()[0]
+                           .children()![0]
+                           .shadowRoots()[0]
+                           .children()![0];
+    const deepChild = deepTarget.children()![0];
+
+    assert.isTrue(Elements.DOMPath.canGetJSPath(deepTarget));
+    assert.strictEqual(
+        Elements.DOMPath.jsPath(deepTarget, true),
+        'document.querySelector("#outer-host").shadowRoot.querySelector("#inner-host").shadowRoot.querySelector("#deep-shadow-target")');
+    assert.strictEqual(
+        Elements.DOMPath.jsPath(deepChild, true),
+        'document.querySelector("#outer-host").shadowRoot.querySelector("#inner-host").shadowRoot.querySelector("#deep-shadow-target > b")');
+    assert.strictEqual(Elements.DOMPath.xPath(deepTarget, true), '//*[@id="deep-shadow-target"]');
+    assert.strictEqual(Elements.DOMPath.xPath(deepChild, true), '//*[@id="deep-shadow-target"]/b');
+  });
+
+  it('computes simpleSelector for tags, IDs, classes, and input types', () => {
+    const container = createDOMNode({
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'SECTION',
+      children: [
+        {nodeType: Node.ELEMENT_NODE, nodeName: 'SPAN'},
+        {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV'},
+        {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {id: 'header'}},
+        {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {class: 'class1 class2'}},
+        {nodeType: Node.ELEMENT_NODE, nodeName: 'SPAN', attributes: {class: 'class1 class2'}},
+        {nodeType: Node.ELEMENT_NODE, nodeName: 'INPUT', attributes: {type: 'text'}},
+        {nodeType: Node.ELEMENT_NODE, nodeName: 'INPUT', attributes: {type: 'checkbox', id: 'agree'}},
+        {nodeType: Node.ELEMENT_NODE, nodeName: 'INPUT', attributes: {type: 'submit', class: 'primary'}},
+      ],
+    });
+
+    assert.deepEqual(container.children()!.map(node => node.simpleSelector()), [
+      'span',
+      'div',
+      'div#header',
+      '.class1.class2',
+      'span.class1.class2',
+      'input[type="text"]',
+      'input#agree',
+      'input.primary',
+    ]);
+  });
 });

@@ -296,16 +296,30 @@ function processScriptScopeInfos(
   // Stopping at the root scope (see `attributeScopeInfoChain`) is not enough here: the eval scope
   // only gets a ScopeInfo if it needs a context. Without one, the ScopeInfo chains of this script's
   // functions skip it and lead straight to the call-site scope, without passing a root scope.
+  //
+  // The call-site scope itself is assigned by the calling script, which lists it in its `infos`.
   const evalFromScopeInfo = scriptNode.findInternalEdgeTarget('eval_from_scope_info');
   const stopAtNodeIndex = evalFromScopeInfo?.rawName() === 'system / ScopeInfo' ?
       evalFromScopeInfo.nodeIndex as ScopeInfoNodeIndex :
       undefined;
 
   for (let iter = infos.edges(); iter.hasNext(); iter.next()) {
-    const sharedFunctionInfo = iter.edge.node();
-    if (!sharedFunctionInfo.rawName().startsWith('system / SharedFunctionInfo')) {
+    const info = iter.edge.node();
+    const infoName = info.rawName();
+
+    // Besides SharedFunctionInfos, V8 lists the ScopeInfo of the innermost scope with a context
+    // around each direct `eval` call of this script. It belongs to this script, as do the scopes
+    // enclosing it up to the root scope of this script.
+    if (infoName === 'system / ScopeInfo') {
+      attributeScopeInfoChain(scopeInfoScriptNodeIndexes, info.nodeIndex as ScopeInfoNodeIndex, stopAtNodeIndex,
+                              scriptNodeIndex, scopeInfoNode);
       continue;
     }
+
+    if (!infoName.startsWith('system / SharedFunctionInfo')) {
+      continue;
+    }
+    const sharedFunctionInfo = info;
 
     // A compiled function has a ScopeInfo of its own in `name_or_scope_info`. It belongs to this
     // script, as do the scopes enclosing it up to the root scope of this script.

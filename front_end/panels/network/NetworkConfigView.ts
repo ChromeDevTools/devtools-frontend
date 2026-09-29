@@ -1,19 +1,19 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+
+import '../settings/emulation/components/components.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
-import * as EmulationComponents from '../settings/emulation/components/components.js';
+import type * as EmulationComponents from '../settings/emulation/components/components.js';
 
 import networkConfigViewStyles from './networkConfigView.css.js';
 
@@ -43,6 +43,10 @@ const UIStrings = {
    */
   networkThrottling: 'Network',
   /**
+   * @description Tooltip and accessible label for the save data override selector.
+   */
+  saveDataSettingTooltip: 'Override the value reported by navigator.connection.saveData on the page',
+  /**
    * @description Section header for user agent settings in network conditions view of the Network panel.
    */
   userAgent: 'User agent',
@@ -62,6 +66,145 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkConfigView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface NetworkConfigViewInput {
+  disableCache: boolean;
+  onDisableCacheChange: (checked: boolean) => void;
+  useCustomUA: boolean;
+  onAutoCheckboxChange: (checked: boolean) => void;
+  customSelectValue: string;
+  onUserAgentSelect: (value: string) => void;
+  customUserAgent: string;
+  onCustomUserAgentInput: (value: string) => void;
+  validationError: string;
+  clientHintsValue: EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsFormData;
+  clientHintsStatusText: string;
+  onClientHintsChange: (metaData?: Protocol.Emulation.UserAgentMetadata) => void;
+  onClientHintsSubmit: (metaData: Protocol.Emulation.UserAgentMetadata) => void;
+}
+
+export type View = (input: NetworkConfigViewInput, output: object, target: HTMLElement) => void;
+
+// clang-format off
+function renderUserAgentSelectAndInput(input: NetworkConfigViewInput, title: string): LitTemplate {
+  const customOverride = {title: i18nString(UIStrings.custom), value: 'custom'};
+  const {patchUserAgentWithChromeVersion} = SDK.NetworkManager.MultitargetNetworkManager;
+  const {toKebabCase} = Platform.StringUtilities;
+  return html`
+    <select
+        jslog=${VisualLogging.dropDown().track({change: true}).context('custom-user-agent')}
+        aria-label=${title}
+        ?disabled=${!input.useCustomUA}
+        @change=${(e: Event) => input.onUserAgentSelect((e.target as HTMLSelectElement).value)}>
+      <option
+          value=${customOverride.value}
+          .selected=${input.customSelectValue === customOverride.value}
+          jslog=${VisualLogging.item('custom').track({click: true})}>
+        ${customOverride.title}
+      </option>
+      ${userAgentGroups.map(group => html`
+        <optgroup label=${group.title}>
+          ${group.values.map(val => html`
+            <option
+                value=${patchUserAgentWithChromeVersion(val.value)}
+                .selected=${input.customSelectValue === patchUserAgentWithChromeVersion(val.value)}
+                jslog=${VisualLogging.item(toKebabCase(val.title)).track({click: true})}>
+              ${val.title}
+            </option>
+          `)}
+        </optgroup>
+      `)}
+    </select>
+    <input
+        class="harmony-input"
+        type="text"
+        spellcheck="false"
+        jslog=${VisualLogging.textField().track({change: true}).context('custom-user-agent')}
+        .value=${input.customUserAgent}
+        title=${input.customUserAgent}
+        placeholder=${i18nString(UIStrings.enterACustomUserAgent)}
+        required
+        aria-label=${i18nString(UIStrings.enterACustomUserAgent)}
+        ?disabled=${!input.useCustomUA}
+        @input=${(e: Event) => input.onCustomUserAgentInput((e.target as HTMLInputElement).value)}>
+    <div
+        class="network-config-input-validation-error"
+        role="alert"
+        aria-live="polite"
+        ?hidden=${!input.useCustomUA}>${input.validationError}</div>
+  `;
+}
+
+function renderSection(title: string, className: string, content: LitTemplate): LitTemplate {
+  return html`
+    <section class="network-config-group ${className}">
+      <div class="network-config-title">${title}</div>
+      <div class="network-config-fields">${content}</div>
+    </section>
+  `;
+}
+
+function renderCacheSection(input: NetworkConfigViewInput): LitTemplate {
+  return renderSection(i18nString(UIStrings.caching), 'network-config-disable-cache', html`
+    <devtools-checkbox
+        name=${i18nString(UIStrings.disableCache)}
+        .checked=${input.disableCache}
+        @change=${(e: Event) => input.onDisableCacheChange((e.target as UI.UIUtils.CheckboxLabel).checked)}
+        jslog=${VisualLogging.toggle().track({change: true}).context('cache-disabled')}>
+      ${i18nString(UIStrings.disableCache)}
+    </devtools-checkbox>
+  `);
+}
+
+function renderNetworkThrottlingSection(): LitTemplate {
+  const title = i18nString(UIStrings.networkThrottling);
+  return renderSection(title, 'network-config-throttling', html`
+    <select
+        ${UI.Widget.widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
+          title,
+          bindToGlobalConditions: true,
+        })}></select>
+    <select
+        class="chrome-select"
+        title=${i18nString(UIStrings.saveDataSettingTooltip)}
+        aria-label=${i18nString(UIStrings.saveDataSettingTooltip)}
+        ${UI.Widget.widget(MobileThrottling.ThrottlingManager.SaveDataOverrideSelect)}></select>
+  `);
+}
+
+function renderUserAgentSection(input: NetworkConfigViewInput): LitTemplate {
+  const title = i18nString(UIStrings.userAgent);
+  return renderSection(title, 'network-config-ua', html`
+    <devtools-checkbox
+        .checked=${!input.useCustomUA}
+        @change=${(e: Event) => input.onAutoCheckboxChange((e.target as UI.UIUtils.CheckboxLabel).checked)}
+        jslog=${VisualLogging.toggle().track({change: true}).context('custom-user-agent')}>
+      ${i18nString(UIStrings.selectAutomatically)}
+    </devtools-checkbox>
+    <div class=${Directives.classMap({'network-config-ua-custom': true, checked: input.useCustomUA})}>
+      ${renderUserAgentSelectAndInput(input, title)}
+      <devtools-user-agent-client-hints-form
+          .value=${input.clientHintsValue}
+          .disabled=${!input.useCustomUA}
+          @clienthintschange=${(e: Event) => input.onClientHintsChange(
+              (e.target as EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm).value.metaData)}
+          @clienthintssubmit=${(e: Event) => input.onClientHintsSubmit((e as CustomEvent).detail.value)}>
+      </devtools-user-agent-client-hints-form>
+    </div>
+    <span class="status-text">${input.clientHintsStatusText}</span>
+  `);
+}
+
+export const DEFAULT_VIEW: View = (input: NetworkConfigViewInput, _output: object, target: HTMLElement): void => {
+  render(html`
+    ${renderCacheSection(input)}
+    <div class="panel-section-separator"></div>
+    ${renderNetworkThrottlingSection()}
+    <div class="panel-section-separator"></div>
+    ${renderUserAgentSection(input)}
+  `, target, {container: {classes: ['network-config']}});
+};
+// clang-format on
+
 let networkConfigViewInstance: NetworkConfigView;
 
 export class NetworkConfigView extends UI.Widget.VBox {
@@ -72,26 +215,43 @@ export class NetworkConfigView extends UI.Widget.VBox {
       Common.Settings.Settings.instance().createSetting<Protocol.Emulation.UserAgentMetadata|null>(
           'custom-user-agent-metadata', null);
 
-  #autoCheckbox?: UI.UIUtils.CheckboxLabel;
-  #customUserAgentSelectBox?: HTMLElement;
-  #customSelectAndInput?: {select: HTMLSelectElement, input: HTMLInputElement, error: HTMLElement};
-  #clientHints?: EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm;
-  #userAgentUpdateButtonStatusText?: HTMLElement;
+  readonly #view: View;
+  #useCustomUA = false;
+  #customSelectValue = 'custom';
+  #validationError = '';
+  #clientHintsValue: EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsFormData;
+  #statusText = '';
 
-  constructor() {
+  constructor(view: View = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.panel('network-conditions').track({resize: true})}`,
       useShadowDom: true,
     });
     this.registerRequiredCSS(networkConfigViewStyles);
+    this.#view = view;
 
-    this.contentElement.classList.add('network-config');
+    this.#cacheDisabledSetting.addChangeListener(() => this.requestUpdate());
+    this.#customUserAgentSetting.addChangeListener(() => {
+      if (!this.#useCustomUA) {
+        return;
+      }
+      const customUA = this.#customUserAgentSetting.get();
+      const userAgentMetadata = getUserAgentMetadata(customUA);
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
+    });
 
-    this.createCacheSection();
-    this.contentElement.createChild('div', 'panel-section-separator');
-    this.createNetworkThrottlingSection();
-    this.contentElement.createChild('div', 'panel-section-separator');
-    this.createUserAgentSection();
+    this.#updateCustomSelectValue();
+    if (!this.#customUserAgentSetting.get()) {
+      this.#validationError = i18nString(UIStrings.customUserAgentFieldIsRequired);
+    }
+
+    const userAgentMetaDataSetting = this.#customUserAgentMetadataSetting.get();
+    const initialUserAgentMetaData = getUserAgentMetadata(this.#customSelectValue);
+    this.#clientHintsValue = {
+      showMobileCheckbox: true,
+      showSubmitButton: true,
+      metaData: userAgentMetaDataSetting || initialUserAgentMetaData || undefined,
+    };
   }
 
   static instance(opts: {
@@ -104,234 +264,105 @@ export class NetworkConfigView extends UI.Widget.VBox {
     return networkConfigViewInstance;
   }
 
-  private createUserAgentSelectAndInput(title: string): {
-    select: HTMLSelectElement,
-    input: HTMLInputElement,
-    error: HTMLElement,
-  } {
-    const userAgentSelectElement = document.createElement('select');
-    userAgentSelectElement.setAttribute(
-        'jslog', `${VisualLogging.dropDown().track({change: true}).context(this.#customUserAgentSetting.name)}`);
-    UI.ARIAUtils.setLabel(userAgentSelectElement, title);
-
-    const customOverride = {title: i18nString(UIStrings.custom), value: 'custom'};
-    const {patchUserAgentWithChromeVersion} = SDK.NetworkManager.MultitargetNetworkManager;
-    const {toKebabCase} = Platform.StringUtilities;
-    // clang-format off
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(html`
-      <option value=${customOverride.value} jslog=${VisualLogging.item('custom').track({click: true})}>
-        ${customOverride.title}
-      </option>
-      ${userAgentGroups.map(group => html`
-        <optgroup label=${group.title}>
-          ${group.values.map(val => html`
-            <option
-                value=${patchUserAgentWithChromeVersion(val.value)}
-                jslog=${VisualLogging.item(toKebabCase(val.title)).track({click: true})}>
-              ${val.title}
-            </option>
-          `)}
-        </optgroup>
-      `)}
-    `, userAgentSelectElement);
-    // clang-format on
-
-    userAgentSelectElement.selectedIndex = 0;
-
-    const otherUserAgentElement = UI.UIUtils.createInput('', 'text');
-    otherUserAgentElement.setAttribute(
-        'jslog', `${VisualLogging.textField().track({change: true}).context(this.#customUserAgentSetting.name)}`);
-    otherUserAgentElement.value = this.#customUserAgentSetting.get();
-    UI.Tooltip.Tooltip.install(otherUserAgentElement, this.#customUserAgentSetting.get());
-    otherUserAgentElement.placeholder = i18nString(UIStrings.enterACustomUserAgent);
-    otherUserAgentElement.required = true;
-    UI.ARIAUtils.setLabel(otherUserAgentElement, otherUserAgentElement.placeholder);
-
-    const errorElement = document.createElement('div');
-    errorElement.classList.add('network-config-input-validation-error');
-    UI.ARIAUtils.markAsAlert(errorElement);
-    if (!otherUserAgentElement.value) {
-      errorElement.textContent = i18nString(UIStrings.customUserAgentFieldIsRequired);
-    }
-
-    this.#settingChanged(userAgentSelectElement);
-    userAgentSelectElement.addEventListener('change', () => this.#onUserAgentSelect(userAgentSelectElement.value),
-                                            false);
-    otherUserAgentElement.addEventListener('input', () => this.#onCustomUserAgentInput(otherUserAgentElement.value),
-                                           false);
-
-    return {select: userAgentSelectElement, input: otherUserAgentElement, error: errorElement};
-  }
-
-  private createSection(title: string, className?: string): HTMLElement {
-    const section = this.contentElement.createChild('section', 'network-config-group');
-    if (className) {
-      section.classList.add(className);
-    }
-    section.createChild('div', 'network-config-title').textContent = title;
-    return section.createChild('div', 'network-config-fields');
-  }
-
-  private createCacheSection(): void {
-    const section = this.createSection(i18nString(UIStrings.caching), 'network-config-disable-cache');
-    section.appendChild(
-        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.disableCache), this.#cacheDisabledSetting));
-  }
-
-  private createNetworkThrottlingSection(): void {
-    const title = i18nString(UIStrings.networkThrottling);
-    const section = this.createSection(title, 'network-config-throttling');
-    MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(section, title);
-    const saveDataSelect =
-        MobileThrottling.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector('chrome-select');
-    section.appendChild(saveDataSelect);
-  }
-
-  private createUserAgentSection(): void {
-    const title = i18nString(UIStrings.userAgent);
-    const section = this.createSection(title, 'network-config-ua');
-    this.#autoCheckbox = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.selectAutomatically), true, undefined,
-                                                         this.#customUserAgentSetting.name);
-    section.appendChild(this.#autoCheckbox);
-
-    this.#customUserAgentSetting.addChangeListener(() => {
-      if (this.#autoCheckbox?.checked) {
-        return;
-      }
-      const customUA = this.#customUserAgentSetting.get();
-      const userAgentMetadata = getUserAgentMetadata(customUA);
-      SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
-    });
-    this.#customUserAgentSelectBox = section.createChild('div', 'network-config-ua-custom');
-    this.#autoCheckbox.addEventListener('change',
-                                        () => this.#onAutoCheckboxChange(this.#autoCheckbox?.checked ?? false));
-    this.#customSelectAndInput = this.createUserAgentSelectAndInput(title);
-    this.#customUserAgentSelectBox.appendChild(this.#customSelectAndInput.select);
-    this.#customUserAgentSelectBox.appendChild(this.#customSelectAndInput.input);
-    this.#customUserAgentSelectBox.appendChild(this.#customSelectAndInput.error);
-
-    this.#clientHints = new EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm();
-    const userAgentMetaDataSetting = this.#customUserAgentMetadataSetting.get();
-    const initialUserAgentMetaData = getUserAgentMetadata(this.#customSelectAndInput.select.value);
-    this.#clientHints.value = {
-      showMobileCheckbox: true,
-      showSubmitButton: true,
-      metaData: userAgentMetaDataSetting || initialUserAgentMetaData || undefined,
+  override performUpdate(): void {
+    const input: NetworkConfigViewInput = {
+      disableCache: this.#cacheDisabledSetting.get(),
+      onDisableCacheChange: (checked: boolean) => this.#onDisableCacheChange(checked),
+      useCustomUA: this.#useCustomUA,
+      onAutoCheckboxChange: (checked: boolean) => this.#onAutoCheckboxChange(checked),
+      customSelectValue: this.#customSelectValue,
+      onUserAgentSelect: (value: string) => this.#onUserAgentSelect(value),
+      customUserAgent: this.#customUserAgentSetting.get(),
+      onCustomUserAgentInput: (value: string) => this.#onCustomUserAgentInput(value),
+      validationError: this.#validationError,
+      clientHintsValue: this.#clientHintsValue,
+      clientHintsStatusText: this.#statusText,
+      onClientHintsChange: (metaData?: Protocol.Emulation.UserAgentMetadata) => this.#onClientHintsChange(metaData),
+      onClientHintsSubmit: (metaData: Protocol.Emulation.UserAgentMetadata) => this.#onClientHintsSubmit(metaData),
     };
-    this.#customUserAgentSelectBox.appendChild(this.#clientHints);
+    this.#view(input, {}, this.contentElement);
+  }
 
-    this.#clientHints.addEventListener('clienthintschange', () => this.#onClientHintsChange());
-    this.#clientHints.addEventListener('clienthintssubmit',
-                                       event => this.#onClientHintsSubmit((event as CustomEvent).detail.value as
-                                                                          Protocol.Emulation.UserAgentMetadata));
-
-    this.#userAgentUpdateButtonStatusText = section.createChild('span', 'status-text');
-    this.#userAgentUpdateButtonStatusText.textContent = '';
-
-    this.#onAutoCheckboxChange(this.#autoCheckbox.checked);
+  #onDisableCacheChange(checked: boolean): void {
+    this.#cacheDisabledSetting.set(checked);
+    this.requestUpdate();
   }
 
   #onAutoCheckboxChange(checked: boolean): void {
     const useCustomUA = !checked;
-    if (this.#customUserAgentSelectBox && this.#customSelectAndInput && this.#clientHints) {
-      this.#customUserAgentSelectBox.classList.toggle('checked', useCustomUA);
-      this.#customSelectAndInput.select.disabled = !useCustomUA;
-      this.#customSelectAndInput.input.disabled = !useCustomUA;
-      this.#customSelectAndInput.error.hidden = !useCustomUA;
-      this.#clientHints.disabled = !useCustomUA;
-    }
+    this.#useCustomUA = useCustomUA;
     const customUA = useCustomUA ? this.#customUserAgentSetting.get() : '';
     const userAgentMetadata = useCustomUA ? getUserAgentMetadata(customUA) : null;
     SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
+    this.requestUpdate();
   }
 
   #onUserAgentSelect(value: string): void {
-    if (!this.#customSelectAndInput || !this.#clientHints || !this.#userAgentUpdateButtonStatusText) {
-      return;
-    }
+    this.#customSelectValue = value;
     const customOverride = 'custom';
     if (value !== customOverride) {
       this.#customUserAgentSetting.set(value);
-      this.#customSelectAndInput.input.value = value;
-      UI.Tooltip.Tooltip.install(this.#customSelectAndInput.input, value);
       const userAgentMetadata = getUserAgentMetadata(value);
       this.#customUserAgentMetadataSetting.set(userAgentMetadata);
       SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(value, userAgentMetadata);
-      this.#clientHints.value = {
+      this.#clientHintsValue = {
         metaData: userAgentMetadata || undefined,
         showMobileCheckbox: true,
         showSubmitButton: true,
       };
     } else {
       this.#customUserAgentMetadataSetting.set(null);
-      this.#clientHints.value = {
+      this.#clientHintsValue = {
         showMobileCheckbox: true,
         showSubmitButton: true,
       };
-      this.#customSelectAndInput.input.select();
+      this.contentElement.querySelector<HTMLInputElement>('.network-config-ua-custom input')?.select();
     }
-    this.#customSelectAndInput.error.textContent = '';
-    this.#userAgentUpdateButtonStatusText.textContent = '';
+    this.#validationError = '';
+    this.#statusText = '';
+    this.requestUpdate();
   }
 
   #onCustomUserAgentInput(value: string): void {
-    if (!this.#customSelectAndInput) {
-      return;
-    }
     if (this.#customUserAgentSetting.get() !== value) {
       if (!value) {
-        this.#customSelectAndInput.error.textContent = i18nString(UIStrings.customUserAgentFieldIsRequired);
+        this.#validationError = i18nString(UIStrings.customUserAgentFieldIsRequired);
       } else {
-        this.#customSelectAndInput.error.textContent = '';
+        this.#validationError = '';
       }
       this.#customUserAgentSetting.set(value);
-      UI.Tooltip.Tooltip.install(this.#customSelectAndInput.input, value);
-      this.#settingChanged(this.#customSelectAndInput.select);
+      this.#updateCustomSelectValue();
+      this.requestUpdate();
     }
   }
 
-  #settingChanged(selectElement?: HTMLSelectElement): void {
-    const select = selectElement ?? this.#customSelectAndInput?.select;
-    if (!select) {
-      return;
-    }
+  #updateCustomSelectValue(): void {
     const value = this.#customUserAgentSetting.get();
-    const options = select.options;
-    let selectionRestored = false;
-    for (let i = 0; i < options.length; ++i) {
-      if (options[i].value === value) {
-        select.selectedIndex = i;
-        selectionRestored = true;
-        break;
-      }
-    }
-
-    if (!selectionRestored) {
-      select.selectedIndex = 0;
-    }
+    const {patchUserAgentWithChromeVersion} = SDK.NetworkManager.MultitargetNetworkManager;
+    const isPreset =
+        userAgentGroups.some(group => group.values.some(val => patchUserAgentWithChromeVersion(val.value) === value));
+    this.#customSelectValue = isPreset ? value : 'custom';
   }
 
-  #onClientHintsChange(): void {
-    if (!this.#customSelectAndInput || !this.#userAgentUpdateButtonStatusText) {
-      return;
-    }
-    this.#customSelectAndInput.select.value = 'custom';
-    this.#userAgentUpdateButtonStatusText.textContent = '';
+  #onClientHintsChange(metaData?: Protocol.Emulation.UserAgentMetadata): void {
+    // The view re-assigns the form value on every render, so keep it in sync with the user's edits.
+    this.#clientHintsValue = {...this.#clientHintsValue, metaData};
+    this.#customSelectValue = 'custom';
+    this.#statusText = '';
+    this.requestUpdate();
   }
 
   #onClientHintsSubmit(metaData: Protocol.Emulation.UserAgentMetadata): void {
-    if (!this.#userAgentUpdateButtonStatusText) {
-      return;
-    }
     const customUA = this.#customUserAgentSetting.get();
     this.#customUserAgentMetadataSetting.set(metaData);
     SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, metaData);
-    this.#userAgentUpdateButtonStatusText.textContent = i18nString(UIStrings.clientHintsStatusText);
+    this.#statusText = i18nString(UIStrings.clientHintsStatusText);
+    this.requestUpdate();
   }
 
   override wasShown(): void {
     super.wasShown();
+    this.requestUpdate();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.networkConditionsPanelShown));
   }
 }

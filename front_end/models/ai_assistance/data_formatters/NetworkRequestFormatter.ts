@@ -124,11 +124,10 @@ export class NetworkRequestFormatter {
 
   static formatInitiatorUrl(
       initiatorUrl: Platform.DevToolsPath.UrlString,
-      allowedOrigin: Platform.DevToolsPath.UrlString,
+      allowedOrigin: SDK.SecurityOrigin.SecurityOrigin,
       ): string {
     const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create(initiatorUrl);
-    const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(allowedOrigin);
-    if (initiatorOrigin.isSameOriginWith(targetOrigin)) {
+    if (initiatorOrigin.isSameOriginWith(allowedOrigin)) {
       return initiatorUrl;
     }
     return '<redacted cross-origin initiator URL>';
@@ -329,7 +328,7 @@ export function formatRequestInitiatorChain(
     request: SDK.NetworkRequest.NetworkRequest,
     networkLog: Logs.NetworkLog.NetworkLog,
     ): string {
-  const allowedOrigin = request.url();
+  const allowedOrigin = request.requestURLSecurityOrigin();
   let initiatorChain = '';
   let lineStart = '- URL: ';
   const graph = networkLog.initiatorGraphForRequest(request);
@@ -353,7 +352,7 @@ function formatRequestInitiated(
     parentRequest: SDK.NetworkRequest.NetworkRequest,
     initiatorChain: string,
     lineStart: string,
-    allowedOrigin: Platform.DevToolsPath.UrlString,
+    allowedOrigin: SDK.SecurityOrigin.SecurityOrigin,
     ): string {
   const visited = new Set<SDK.NetworkRequest.NetworkRequest>();
 

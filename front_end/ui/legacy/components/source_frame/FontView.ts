@@ -33,7 +33,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
-import {Directives, html, render} from '../../../lit/lit.js';
+import {Directives, html, render, type TemplateResult} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -100,7 +100,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 export class FontView extends UI.View.SimpleView {
   private readonly url: Platform.DevToolsPath.UrlString;
   private readonly contentProvider: TextUtils.ContentProvider.ContentProvider;
-  private readonly mimeTypeLabel: UI.Toolbar.ToolbarText;
+  readonly #mimeType: string;
   readonly #view: View;
   #fontFaceRule = '';
   #fontFamily = '';
@@ -117,11 +117,11 @@ export class FontView extends UI.View.SimpleView {
     this.#view = view;
     this.url = contentProvider.contentURL();
     this.contentProvider = contentProvider;
-    this.mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
+    this.#mimeType = mimeType;
   }
 
-  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    return [this.mimeTypeLabel];
+  override async toolbarItems(): Promise<TemplateResult> {
+    return html`<div class="toolbar-text">${this.#mimeType}</div>`;
   }
 
   #loadContentIfNeeded(): void {

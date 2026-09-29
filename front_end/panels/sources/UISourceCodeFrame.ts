@@ -15,11 +15,13 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import {Icon, type IconWithName} from '../../ui/kit/kit.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, type LitTemplate, nothing, type TemplateResult} from '../../ui/lit/lit.js';
 
 import {AiCodeCompletionPlugin} from './AiCodeCompletionPlugin.js';
 import {CoveragePlugin} from './CoveragePlugin.js';
@@ -470,32 +472,39 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
     }
   }
 
-  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    const leftToolbarItems = await super.toolbarItems();
+  override async toolbarItems(): Promise<TemplateResult> {
+    const leftToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate> = [await super.toolbarItems()];
 
     const isEditable = Persistence.Persistence.PersistenceImpl.instance().hasEditableContent(this.#uiSourceCode);
     const isJavaScript = Common.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
     const isInplaceFormattable = isEditable && isJavaScript;
 
     if (isInplaceFormattable) {
-      const formatButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.format), 'brackets');
-      formatButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-        void this.#formatSourceInPlace();
-      });
-      leftToolbarItems.unshift(formatButton);
+      leftToolbarItems.unshift(html`<devtools-button
+        class="toolbar-button"
+        title=${i18nString(UIStrings.format)}
+        aria-label=${i18nString(UIStrings.format)}
+        .iconName=${'brackets'}
+        .variant=${Buttons.Button.Variant.TOOLBAR}
+        @click=${() => void this.#formatSourceInPlace()}
+      ></devtools-button>`);
     }
 
-    const rightToolbarItems = [];
+    const rightToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate> = [];
     for (const plugin of this.plugins) {
       leftToolbarItems.push(...plugin.leftToolbarItems());
       rightToolbarItems.push(...plugin.rightToolbarItems());
     }
 
-    if (!rightToolbarItems.length) {
-      return leftToolbarItems;
-    }
-
-    return [...leftToolbarItems, new UI.Toolbar.ToolbarSeparator(true), ...rightToolbarItems];
+    return html`
+      ${leftToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+      ${
+        rightToolbarItems.length ? html`
+        <div class="toolbar-spacer"></div>
+        ${rightToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+      ` :
+                                   nothing}
+    `;
   }
 
   private getErrorPopoverContent(event: Event): UI.PopoverHelper.PopoverRequest|null {

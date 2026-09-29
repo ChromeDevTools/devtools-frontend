@@ -7,6 +7,7 @@ import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.n
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import type * as UI from '../../ui/legacy/legacy.js';
+import type {LitTemplate} from '../../ui/lit/lit.js';
 
 export class Plugin {
   constructor(
@@ -21,7 +22,7 @@ export class Plugin {
   willHide(): void {
   }
 
-  rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
+  rightToolbarItems(): Array<UI.Toolbar.ToolbarItem|LitTemplate> {
     return [];
   }
 
@@ -30,7 +31,7 @@ export class Plugin {
    * TODO(szuend): It is OK to asyncify this function (similar to {rightToolbarItems}),
    *               but it is currently not strictly necessary.
    */
-  leftToolbarItems(): UI.Toolbar.ToolbarItem[] {
+  leftToolbarItems(): Array<UI.Toolbar.ToolbarItem|LitTemplate> {
     return [];
   }
 

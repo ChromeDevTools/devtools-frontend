@@ -15,6 +15,7 @@ import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.
 import * as CodeHighlighter from '../../../components/code_highlighter/code_highlighter.js';
 import * as Dialogs from '../../../components/dialogs/dialogs.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
+import {html, type TemplateResult} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -497,8 +498,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     this.clearPositionToReveal();
   }
 
-  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    return [this.prettyToggle, this.sourcePosition, this.progressToolbarItem];
+  override async toolbarItems(): Promise<TemplateResult> {
+    return html`${this.prettyToggle.element}${this.sourcePosition.element}${this.progressToolbarItem.element}`;
   }
 
   get loaded(): boolean {

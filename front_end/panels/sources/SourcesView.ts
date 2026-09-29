@@ -74,7 +74,7 @@ const {widget, widgetRef} = UI.Widget;
 export interface ViewInput {
   searchProvider: UI.SearchableView.Searchable;
   replaceProvider: UI.SearchableView.Replaceable;
-  scriptViewToolbarItems: UI.Toolbar.ToolbarItem[]|LitTemplate;
+  scriptViewToolbarItems: LitTemplate;
   isNavigatorSidebarOpen: boolean;
   isDebuggerSidebarOpen: boolean;
   isDebuggerSidebarButtonEnabled: boolean;
@@ -169,9 +169,7 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging.toolbar('bottom')}>
       <devtools-toolbar class="script-view-toolbar">
-        ${Array.isArray(input.scriptViewToolbarItems)
-            ? input.scriptViewToolbarItems.map(item => item.element)
-            : input.scriptViewToolbarItems}
+        ${input.scriptViewToolbarItems}
       </devtools-toolbar>
       <devtools-toolbar class="bottom-toolbar">
         ${bottomToolbarContent}
@@ -197,7 +195,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   editorContainer?: TabbedEditorContainer;
   #uiSourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
   private readonly historyManager: EditingLocationHistoryManager;
-  #scriptViewToolbarItems: UI.Toolbar.ToolbarItem[]|LitTemplate = [];
+  #scriptViewToolbarItems: LitTemplate = nothing;
   private toolbarChangedListener: Common.EventTarget.EventDescriptor|null;
   private searchView?: UISourceCodeFrame;
   private searchConfig?: UI.SearchableView.SearchConfig;
@@ -503,11 +501,11 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     const view = this.visibleView();
     if (view instanceof UI.View.SimpleView) {
       void view.toolbarItems().then(items => {
-        this.#scriptViewToolbarItems = items;
+        this.#scriptViewToolbarItems = Array.isArray(items) ? html`${items.map(item => item.element)}` : items;
         this.requestUpdate();
       });
     } else {
-      this.#scriptViewToolbarItems = [];
+      this.#scriptViewToolbarItems = nothing;
       this.requestUpdate();
     }
   }

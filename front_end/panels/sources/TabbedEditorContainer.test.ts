@@ -161,8 +161,6 @@ describe('TabbedEditorContainer', () => {
 
       const setting = createFakeSetting<LocalSerializedHistoryItem[]>('previously-viewed-files', []);
       tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tabbedEditorContainer.historyManager = {trackSourceFrameCursorJumps: () => {}} as any;
       tabbedEditorContainer.previouslyViewedFilesSetting = setting;
       // Hook getOrCreateSourceView for tests replacing the view caching
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -193,8 +191,6 @@ describe('TabbedEditorContainer', () => {
 
       const setting = createFakeSetting<LocalSerializedHistoryItem[]>('previously-viewed-files', []);
       const container = new Sources.TabbedEditorContainer.TabbedEditorContainer();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      container.historyManager = {trackSourceFrameCursorJumps: () => {}} as any;
       container.previouslyViewedFilesSetting = setting;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sinon.stub(container as any, 'getOrCreateSourceView').returns(new UI.Widget.Widget());
@@ -416,8 +412,6 @@ describeWithEnvironment('TabbedEditorContainer', () => {
       const setting =
           createFakeSetting<Sources.TabbedEditorContainer.SerializedHistoryItem[]>('previouslyViewedFilesSetting', []);
       const tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tabbedEditorContainer.historyManager = {trackSourceFrameCursorJumps: () => {}} as any;
       tabbedEditorContainer.previouslyViewedFilesSetting = setting;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sinon.stub(tabbedEditorContainer as any, 'getOrCreateSourceView').returns(new UI.Widget.Widget());

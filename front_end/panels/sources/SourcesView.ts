@@ -19,11 +19,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
 import sourcesViewStyles from './sourcesView.css.js';
 import {
   type EditorSelectedEvent,
-  type SerializedHistoryItem,
   TabbedEditorContainer,
 } from './TabbedEditorContainer.js';
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
@@ -86,8 +84,6 @@ export interface ViewInput {
   onToggleDebuggerSidebar?: () => void;
   breakpointsActive: boolean;
   uiSourceCodes: ReadonlySet<Workspace.UISourceCode.UISourceCode>;
-  historyManager: EditingLocationHistoryManager;
-  previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
   onEditorSelected: (event: EditorSelectedEvent) => void;
   onEditorClosed: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
 }
@@ -156,8 +152,6 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
     >
       <devtools-widget class="vbox flex-auto ${input.breakpointsActive ? '' : 'breakpoints-deactivated'}"
         ${widget(TabbedEditorContainer, {
-          historyManager: input.historyManager,
-          previouslyViewedFilesSetting: input.previouslyViewedFilesSetting,
           leftToolbarItems,
           rightToolbarItems,
           uiSourceCodes: input.uiSourceCodes,
@@ -193,7 +187,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
                                                             UI.SearchableView.Replaceable {
   editorContainer?: TabbedEditorContainer;
   #uiSourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
-  private readonly historyManager: EditingLocationHistoryManager;
   #scriptViewToolbarItems: LitTemplate = nothing;
   #isSearchReplaceable = false;
   private toolbarChangedListener: Common.EventTarget.EventDescriptor|null;
@@ -213,7 +206,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   #breakpointsActive = true;
   #editorContainerPromise: Promise<TabbedEditorContainer>;
   #editorContainerResolve!: (container: TabbedEditorContainer) => void;
-  readonly previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {jslog: `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`});
@@ -225,12 +217,8 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
-    this.historyManager = new EditingLocationHistoryManager(this);
-
     this.toolbarChangedListener = null;
 
-    this.previouslyViewedFilesSetting =
-        Common.Settings.Settings.instance().createLocalSetting('previously-viewed-files', []);
     this.requestUpdate();
 
     UI.UIUtils.startBatchUpdate();
@@ -290,8 +278,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       onToggleDebuggerSidebar: this.#onToggleDebuggerSidebar,
       breakpointsActive: this.#breakpointsActive,
       uiSourceCodes: new Set(this.#uiSourceCodes),
-      historyManager: this.historyManager,
-      previouslyViewedFilesSetting: this.previouslyViewedFilesSetting,
       onEditorSelected: this.editorSelected.bind(this),
       onEditorClosed: this.editorClosed.bind(this),
     };
@@ -306,11 +292,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     this.#view(input, output, this.contentElement);
   }
 
-  override onDetach(): void {
-    super.onDetach();
-    this.editorContainer?.detachEditors();
-  }
-
   setEditorContainer(editorContainer: TabbedEditorContainer): void {
     if (this.editorContainer === editorContainer) {
       return;
@@ -319,19 +300,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     if (this.editorContainer) {
       this.#editorContainerResolve(editorContainer);
     }
-  }
-
-  static defaultUISourceCodeScores(): Map<Workspace.UISourceCode.UISourceCode, number> {
-    const defaultScores = new Map<Workspace.UISourceCode.UISourceCode, number>();
-    const sourcesView = UI.Context.Context.instance().flavor(SourcesView);
-    if (sourcesView) {
-      const uiSourceCodes = sourcesView.editorContainer?.historyUISourceCodes() ?? [];
-      for (let i = 1; i < uiSourceCodes.length; ++i)  // Skip current element
-      {
-        defaultScores.set(uiSourceCodes[i], uiSourceCodes.length - i);
-      }
-    }
-    return defaultScores;
   }
 
   set onToggleNavigatorSidebar(callback: () => void) {
@@ -423,11 +391,11 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   }
 
   onJumpToPreviousLocation(): void {
-    this.historyManager.rollback();
+    this.editorContainer?.rollback();
   }
 
   onJumpToNextLocation(): void {
-    this.historyManager.rollover();
+    this.editorContainer?.rollover();
   }
 
   #onScopeChange(): void {
@@ -480,9 +448,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
 
   private removeUISourceCodes(uiSourceCodes: Workspace.UISourceCode.UISourceCode[]): void {
     uiSourceCodes.forEach(ui => this.#uiSourceCodes.delete(ui));
-    for (let i = 0; i < uiSourceCodes.length; ++i) {
-      this.historyManager.removeHistoryForSourceCode(uiSourceCodes[i]);
-    }
     this.requestUpdate();
   }
 
@@ -511,20 +476,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     if (!this.editorContainer) {
       await this.#editorContainerPromise;
     }
-    const currentFrame = this.currentSourceFrame();
-    if (currentFrame) {
-      this.historyManager.updateCurrentState(currentFrame.uiSourceCode(),
-                                             currentFrame.textEditor.state.selection.main.head);
-    }
-    this.editorContainer?.showFile(uiSourceCode);
-    const currentSourceFrame = this.currentSourceFrame();
-    if (currentSourceFrame && location) {
-      currentSourceFrame.revealPosition(location, !omitHighlight);
-    }
-    const visibleView = this.visibleView();
-    if (!omitFocus && visibleView) {
-      visibleView.focus();
-    }
+    this.editorContainer?.showSourceLocation(uiSourceCode, location, omitFocus, omitHighlight);
   }
 
   viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget|undefined {
@@ -536,8 +488,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   }
 
   private editorClosed(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    this.historyManager.removeHistoryForSourceCode(uiSourceCode);
-
     let wasSelected = false;
     if (!this.editorContainer?.currentFile()) {
       wasSelected = true;

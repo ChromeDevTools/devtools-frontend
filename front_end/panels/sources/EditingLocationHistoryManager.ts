@@ -7,7 +7,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 
-import type {SourcesView} from './SourcesView.js';
+import type {TabbedEditorContainer} from './TabbedEditorContainer.js';
 import type {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 export const HistoryDepth = 20;
@@ -17,7 +17,7 @@ export class EditingLocationHistoryManager {
   private current = -1;
   private revealingCount = 0;
 
-  constructor(private readonly sourcesView: SourcesView) {
+  constructor(private readonly editorContainer: TabbedEditorContainer) {
   }
 
   trackSourceFrameCursorJumps(sourceFrame: UISourceCodeFrame): void {
@@ -66,12 +66,12 @@ export class EditingLocationHistoryManager {
     }
   }
 
-  private async reveal(entry: EditingLocationHistoryEntry): Promise<void> {
+  private reveal(entry: EditingLocationHistoryEntry): void {
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(entry.projectId, entry.url);
     if (uiSourceCode) {
       this.revealingCount++;
       try {
-        await this.sourcesView.showSourceLocation(uiSourceCode, entry.position, false, true);
+        this.editorContainer.showSourceLocation(uiSourceCode, entry.position, false, true);
       } finally {
         this.revealingCount--;
       }
@@ -81,14 +81,14 @@ export class EditingLocationHistoryManager {
   rollback(): void {
     if (this.current > 0) {
       this.current--;
-      void this.reveal(this.entries[this.current]);
+      this.reveal(this.entries[this.current]);
     }
   }
 
   rollover(): void {
     if (this.current < this.entries.length - 1) {
       this.current++;
-      void this.reveal(this.entries[this.current]);
+      this.reveal(this.entries[this.current]);
     }
   }
 

@@ -22,8 +22,7 @@ import * as PanelCommon from '../common/common.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import * as Components from './components/components.js';
-import type {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
-import {SourcesView} from './SourcesView.js';
+import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {
@@ -386,10 +385,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     };
     this.#view(input, undefined, this.contentElement);
   }
-  #historyManager!: EditingLocationHistoryManager;
-  set historyManager(historyManager: EditingLocationHistoryManager) {
-    this.#historyManager = historyManager;
-  }
+  #historyManager: EditingLocationHistoryManager;
 
   #leftToolbarItems: LitTemplate[] = [];
   set leftToolbarItems(items: LitTemplate[]) {
@@ -439,8 +435,8 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   private tabIds: Map<Workspace.UISourceCode.UISourceCode, string>;
   private files: Map<string, Workspace.UISourceCode.UISourceCode>;
   readonly #loadErrorFiles = new Set<Workspace.UISourceCode.UISourceCode>();
-  #previouslyViewedFilesSetting!: Common.Settings.Setting<SerializedHistoryItem[]>;
-  history!: History;
+  #previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
+  history: History;
   set previouslyViewedFilesSetting(setting: Common.Settings.Setting<SerializedHistoryItem[]>) {
     if (this.#previouslyViewedFilesSetting === setting) {
       return;
@@ -461,6 +457,10 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     super(element);
     this.#view = view;
     this.#tabDelegate = new EditorContainerTabDelegate(this);
+    this.#historyManager = new EditingLocationHistoryManager(this);
+    this.#previouslyViewedFilesSetting =
+        Common.Settings.Settings.instance().createLocalSetting('previously-viewed-files', []);
+    this.history = History.fromObject(this.#previouslyViewedFilesSetting.get());
 
     this.tabIds = new Map();
     this.files = new Map();
@@ -477,6 +477,33 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
         Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
         this.#onRequestsForHeaderOverridesFileChanged, this);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    UI.Context.Context.instance().setFlavor(TabbedEditorContainer, this);
+  }
+
+  override willHide(): void {
+    UI.Context.Context.instance().setFlavor(TabbedEditorContainer, null);
+    super.willHide();
+  }
+
+  override onDetach(): void {
+    super.onDetach();
+    this.detachEditors();
+  }
+
+  static defaultUISourceCodeScores(): Map<Workspace.UISourceCode.UISourceCode, number> {
+    const defaultScores = new Map<Workspace.UISourceCode.UISourceCode, number>();
+    const editorContainer = UI.Context.Context.instance().flavor(TabbedEditorContainer);
+    if (editorContainer) {
+      const uiSourceCodes = editorContainer.historyUISourceCodes();
+      for (let i = 1; i < uiSourceCodes.length; ++i) {  // Skip current element
+        defaultScores.set(uiSourceCodes[i], uiSourceCodes.length - i);
+      }
+    }
+    return defaultScores;
   }
   #tabsHistory: string[] = [];
   #appendHistory(tabId: string): void {
@@ -556,16 +583,41 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     return Array.from(this.files.values()).map(getViewByUISourceCode).filter(Boolean) as UI.Widget.Widget[];
   }
 
+  showSourceLocation(uiSourceCode: Workspace.UISourceCode.UISourceCode,
+                     location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean,
+                     omitHighlight?: boolean): void {
+    const currentFrame = this.currentView instanceof UISourceCodeFrame ? this.currentView : null;
+    if (currentFrame) {
+      this.#historyManager.updateCurrentState(currentFrame.uiSourceCode(),
+                                              currentFrame.textEditor.state.selection.main.head);
+    }
+    this.showFile(uiSourceCode);
+    const currentSourceFrame = this.currentView instanceof UISourceCodeFrame ? this.currentView : null;
+    if (currentSourceFrame && location) {
+      currentSourceFrame.revealPosition(location, !omitHighlight);
+    }
+    if (!omitFocus && this.visibleView) {
+      this.visibleView.focus();
+    }
+  }
+
+  rollback(): void {
+    this.#historyManager.rollback();
+  }
+
+  rollover(): void {
+    this.#historyManager.rollover();
+  }
+
   showFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
 
-    const frame = UI.Context.Context.instance().flavor(SourcesView);
     // If the content has already been set and the current frame is showing
     // the incoming uiSourceCode, then fire the event that the file has been loaded.
     // Otherwise, this event will fire as soon as the content has been set.
-    if (frame?.currentSourceFrame()?.contentSet && this.#currentFile === uiSourceCode &&
-        frame?.currentUISourceCode() === uiSourceCode) {
+    if (this.currentView instanceof UISourceCodeFrame && this.currentView.contentSet &&
+        this.#currentFile === uiSourceCode) {
       window.dispatchEvent(new CustomEvent('source-file-loaded',
                                            {bubbles: true, cancelable: true, detail: uiSourceCode.displayName(true)}));
     } else {
@@ -872,6 +924,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   removeUISourceCodes(uiSourceCodes: Workspace.UISourceCode.UISourceCode[]): void {
     const tabIds = [];
     for (const uiSourceCode of uiSourceCodes) {
+      this.#historyManager.removeHistoryForSourceCode(uiSourceCode);
       const tabId = this.tabIds.get(uiSourceCode);
       if (tabId) {
         tabIds.push(tabId);
@@ -995,6 +1048,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     this.files.delete(tabId);
 
     if (uiSourceCode) {
+      this.#historyManager.removeHistoryForSourceCode(uiSourceCode);
       this.removeUISourceCodeListeners(uiSourceCode);
       this.removeSourceFrame(uiSourceCode);
 

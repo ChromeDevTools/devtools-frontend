@@ -11,13 +11,13 @@ import {PanelUtils} from '../../panels/utils/utils.js';
 import {Directives, html, type TemplateResult} from '../../ui/lit/lit.js';
 
 import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvider.js';
-import {SourcesView} from './SourcesView.js';
+import {TabbedEditorContainer} from './TabbedEditorContainer.js';
 
 const {styleMap} = Directives;
 
 export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
   override attach(): void {
-    this.setDefaultScores(SourcesView.defaultUISourceCodeScores());
+    this.setDefaultScores(TabbedEditorContainer.defaultUISourceCodeScores());
     super.attach();
   }
 

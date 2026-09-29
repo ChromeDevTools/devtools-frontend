@@ -505,4 +505,15 @@ const theme = CodeMirror.EditorView.baseTheme({
     'background-color': 'var(--sys-color-base-container-elevated)',
     'border-radius': 'var(--sys-shape-corner-extra-small)',
   },
+  'devtools-icon.bezier-swatch-icon': {
+    position: 'relative',
+    transform: 'scale(0.7)',
+    margin: '-5px calc(-1 * var(--sys-size-2)) -3px calc(-1 * var(--sys-size-3))',
+    'user-select': 'none',
+    color: 'var(--icon-css)',
+    cursor: 'default',
+    '&:hover': {
+      color: 'var(--icon-css-hover)',
+    },
+  },
 });

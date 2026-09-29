@@ -10,8 +10,10 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
@@ -88,5 +90,38 @@ describeWithEnvironment('CSSPlugin', () => {
         {type: 'constant', label: CLASS_NAMES[2]},
       ],
     });
+  });
+
+  it('renders color and bezier swatches with consistent line heights', async () => {
+    const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
+    uiSourceCode.url.returns(urlString`http://example.com/styles.css`);
+    const plugin = new CSSPlugin(uiSourceCode);
+    const doc = `.example {
+  width: 200px;
+  background-color: #3b82f6;
+  border-radius: 8px;
+  transition:
+    transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 1.2s ease-in-out;
+  opacity: 0.7;
+}`;
+    const editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
+      doc,
+      extensions: [
+        TextEditor.Config.baseConfiguration(doc),
+        CodeMirror.lineNumbers(),
+        CodeMirror.css.css(),
+        plugin.editorExtension(),
+      ],
+    }));
+    renderElementIntoDOM(editor, {includeCommonStyles: true});
+    const lines = Array.from(editor.editor.dom.querySelectorAll('.cm-line'));
+    assert.isAbove(lines.length, 1);
+    const expectedHeight = lines[0].getBoundingClientRect().height;
+    for (const line of lines) {
+      assert.strictEqual(line.getBoundingClientRect().height, expectedHeight);
+    }
+    await assertScreenshot('sources/css-plugin-swatches.png');
+    editor.remove();
   });
 });

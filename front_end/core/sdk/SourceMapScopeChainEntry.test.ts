@@ -50,8 +50,10 @@ describe('SourceMapScopeRemoteObject', () => {
     assert.lengthOf(properties, 2);
     assert.strictEqual(properties[0].name, 'variable1');
     assert.isUndefined(properties[0].value);
+    assert.isTrue(properties[0].enumerable);
     assert.strictEqual(properties[1].name, 'variable2');
     assert.isUndefined(properties[1].value);
+    assert.isTrue(properties[1].enumerable);
   });
 
   it('resolves variable values using binding expressions and evaluateOnCallFrame', async () => {
@@ -88,6 +90,7 @@ describe('SourceMapScopeRemoteObject', () => {
     assert.lengthOf(properties, 1);
     assert.strictEqual(properties[0].name, 'variable1');
     assert.strictEqual(properties[0].value?.value, 42);
+    assert.isTrue(properties[0].enumerable);
   });
 
   it('uses the right binding expression when resolving variable values when ranges are split', async () => {

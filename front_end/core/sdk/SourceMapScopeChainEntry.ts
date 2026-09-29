@@ -183,7 +183,7 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
       if (value === null) {
         return SourceMapScopeRemoteObject.#unavailableProperty(variable);
       }
-      return new RemoteObjectProperty(variable, value, /* enumerable */ false, /* writable */ false, /* isOwn */ true,
+      return new RemoteObjectProperty(variable, value, /* enumerable */ true, /* writable */ false, /* isOwn */ true,
                                       /* wasThrown */ false);
     });
 
@@ -269,7 +269,7 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
   }
 
   static #unavailableProperty(name: string): RemoteObjectProperty {
-    return new RemoteObjectProperty(
-        name, null, /* enumerable */ false, /* writeable */ false, /* isOwn */ true, /* wasThrown */ false);
+    return new RemoteObjectProperty(name, null, /* enumerable */ true, /* writeable */ false, /* isOwn */ true,
+                                    /* wasThrown */ false);
   }
 }

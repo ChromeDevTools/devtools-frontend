@@ -163,7 +163,7 @@ describeWithEnvironment('Linkifier', () => {
 
     const info = Components.Linkifier.Linkifier.linkInfo(anchor);
     assert.exists(info);
-    assert.isNull(info.uiLocation);
+    assert.isUndefined(info.uiLocation);
   });
 
   it('resolves url and updates link as soon as debugger is enabled', done => {
@@ -243,7 +243,7 @@ describeWithEnvironment('Linkifier', () => {
     // the same url).
     const info = Components.Linkifier.Linkifier.linkInfo(anchor);
     assert.exists(info);
-    assert.isNull(info.uiLocation);
+    assert.isUndefined(info.uiLocation);
 
     const scriptParsedEvent2: Protocol.Debugger.ScriptParsedEvent = {
       scriptId: scriptId2,
@@ -511,17 +511,7 @@ describeWithEnvironment('Linkifier', () => {
 
     it('returns no actions when no link handlers are registered', () => {
       const url = urlString`foo-extension://node/1`;
-      const actions = Components.Linkifier.Linkifier.linkActions({
-        url,
-        icon: null,
-        enableDecorator: false,
-        uiLocation: null,
-        liveLocation: null,
-        lineNumber: null,
-        columnNumber: null,
-        revealable: null,
-        fallback: null,
-      });
+      const actions = Components.Linkifier.Linkifier.linkActions({url});
       const openUsingActions = actions.filter(action => action.title.startsWith('Open using'));
       assert.isEmpty(openUsingActions);
     });
@@ -539,17 +529,7 @@ describeWithEnvironment('Linkifier', () => {
       });
 
       const url = urlString`foo-extension://node/1`;
-      const actions = Components.Linkifier.Linkifier.linkActions({
-        url,
-        icon: null,
-        enableDecorator: false,
-        uiLocation: null,
-        liveLocation: null,
-        lineNumber: null,
-        columnNumber: null,
-        revealable: null,
-        fallback: null,
-      });
+      const actions = Components.Linkifier.Linkifier.linkActions({url});
       const openUsingAction = actions.find(action => action.title === 'Open using Handler for foo-extension');
       assert.exists(openUsingAction);
       await openUsingAction?.handler();
@@ -581,17 +561,7 @@ describeWithEnvironment('Linkifier', () => {
         // Ensure that the foo-extension is the main handler for foo-extension links, and that the
         // global handler doesn't take precedent.
         const url = urlString`foo-extension://node/1`;
-        const actions = Components.Linkifier.Linkifier.linkActions({
-          url,
-          icon: null,
-          enableDecorator: false,
-          uiLocation: null,
-          liveLocation: null,
-          lineNumber: null,
-          columnNumber: null,
-          revealable: null,
-          fallback: null,
-        });
+        const actions = Components.Linkifier.Linkifier.linkActions({url});
         assert.lengthOf(actions, 3);  // Two fallback actions are always added.
 
         const openUsingAction = actions.find(action => action.title === 'Open using Handler for foo-extension');
@@ -601,17 +571,7 @@ describeWithEnvironment('Linkifier', () => {
       {
         // Ensure that the Global handler handles its own links.
         const url = urlString`global://node/1`;
-        const actions = Components.Linkifier.Linkifier.linkActions({
-          url,
-          icon: null,
-          enableDecorator: false,
-          uiLocation: null,
-          liveLocation: null,
-          lineNumber: null,
-          columnNumber: null,
-          revealable: null,
-          fallback: null,
-        });
+        const actions = Components.Linkifier.Linkifier.linkActions({url});
         assert.lengthOf(actions, 3);  // One for our handler + 'Open in New Tab' and 'Copy link'.
 
         const openUsingAction = actions.find(action => action.title === 'Open using Global Handler');
@@ -621,17 +581,7 @@ describeWithEnvironment('Linkifier', () => {
       {
         // Ensure that the Global handler handles all other links.
         const url = urlString`http://www.example.com`;
-        const actions = Components.Linkifier.Linkifier.linkActions({
-          url,
-          icon: null,
-          enableDecorator: false,
-          uiLocation: null,
-          liveLocation: null,
-          lineNumber: null,
-          columnNumber: null,
-          revealable: null,
-          fallback: null,
-        });
+        const actions = Components.Linkifier.Linkifier.linkActions({url});
         assert.lengthOf(actions, 3);  // One for our handler + 'Open in New Tab' and 'Copy link'.
 
         const openUsingAction = actions.find(action => action.title === 'Open using Global Handler');

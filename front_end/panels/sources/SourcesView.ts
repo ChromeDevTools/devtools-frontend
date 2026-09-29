@@ -74,6 +74,7 @@ const {widget, widgetRef} = UI.Widget;
 export interface ViewInput {
   searchProvider: UI.SearchableView.Searchable;
   replaceProvider: UI.SearchableView.Replaceable;
+  isSearchReplaceable: boolean;
   scriptViewToolbarItems: LitTemplate;
   isNavigatorSidebarOpen: boolean;
   isDebuggerSidebarOpen: boolean;
@@ -93,7 +94,6 @@ export interface ViewInput {
 
 export interface ViewOutput {
   editorContainer?: TabbedEditorContainer;
-  searchableView?: UI.SearchableView.SearchableView;
 }
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
@@ -146,13 +146,13 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
   render(html`
     <style>${sourcesViewStyles}</style>
     <devtools-widget class="vbox flex-auto"
-      ${widget(element => {
-        const searchableView = new UI.SearchableView.SearchableView(
-            input.searchProvider, input.replaceProvider, 'sources-view-search-config', element);
-        searchableView.setMinimalSearchQuerySize(0);
-        return searchableView;
+      ${widget(UI.SearchableView.SearchableView, {
+        searchProvider: input.searchProvider,
+        replaceProvider: input.replaceProvider,
+        settingName: 'sources-view-search-config',
+        minimalSearchQuerySize: 0,
+        replaceable: input.isSearchReplaceable,
       })}
-      ${widgetRef(UI.SearchableView.SearchableView, e => { output.searchableView = e; })}
     >
       <devtools-widget class="vbox flex-auto ${input.breakpointsActive ? '' : 'breakpoints-deactivated'}"
         ${widget(TabbedEditorContainer, {
@@ -191,11 +191,11 @@ const SourcesViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Wid
 
 export class SourcesView extends SourcesViewBase implements UI.SearchableView.Searchable,
                                                             UI.SearchableView.Replaceable {
-  #searchableView!: UI.SearchableView.SearchableView;
   editorContainer?: TabbedEditorContainer;
   #uiSourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
   private readonly historyManager: EditingLocationHistoryManager;
   #scriptViewToolbarItems: LitTemplate = nothing;
+  #isSearchReplaceable = false;
   private toolbarChangedListener: Common.EventTarget.EventDescriptor|null;
   private searchView?: UISourceCodeFrame;
   private searchConfig?: UI.SearchableView.SearchConfig;
@@ -278,6 +278,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     const input: ViewInput = {
       searchProvider: this,
       replaceProvider: this,
+      isSearchReplaceable: this.#isSearchReplaceable,
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
       isNavigatorSidebarOpen: this.#isNavigatorSidebarOpen,
       isDebuggerSidebarOpen: this.#isDebuggerSidebarOpen,
@@ -299,9 +300,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     const output: ViewOutput = {
       set editorContainer(value: TabbedEditorContainer) {
         that.setEditorContainer(value);
-      },
-      set searchableView(value: UI.SearchableView.SearchableView) {
-        that.#searchableView = value;
       },
     };
 
@@ -395,11 +393,8 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     super.willHide();
   }
 
-  searchableView(): UI.SearchableView.SearchableView {
-    if (!this.#searchableView) {
-      this.performUpdate();
-    }
-    return this.#searchableView;
+  searchableView(): UI.SearchableView.SearchableView|null {
+    return UI.SearchableView.SearchableView.fromElement(this.contentElement.querySelector('devtools-widget'));
   }
 
   visibleView(): UI.Widget.Widget|null {
@@ -551,7 +546,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     // SourcesNavigator does not need to update on EditorClosed.
     this.removeToolbarChangedListener();
     this.updateScriptViewToolbarItems();
-    this.searchableView().resetSearch();
+    this.searchableView()?.resetSearch();
 
     const data = {
       uiSourceCode,
@@ -570,8 +565,9 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       currentSourceFrame.setSearchableView(this.searchableView());
     }
 
-    this.searchableView().setReplaceable(Boolean(currentSourceFrame?.canEditSource()));
-    this.searchableView().refreshSearch();
+    this.#isSearchReplaceable = Boolean(currentSourceFrame?.canEditSource());
+    this.requestUpdate();
+    this.searchableView()?.refreshSearch();
     this.updateToolbarChangedListener();
     this.updateScriptViewToolbarItems();
 

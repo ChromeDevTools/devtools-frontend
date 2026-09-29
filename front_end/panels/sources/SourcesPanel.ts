@@ -421,7 +421,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     }  // Do not force layout.
   }
 
-  override searchableView(): UI.SearchableView.SearchableView {
+  override searchableView(): UI.SearchableView.SearchableView|null {
     return this.#sourcesView.searchableView();
   }
 

@@ -17,7 +17,9 @@ import { Encoder } from "./encoder.js";
   if (inputSourceMap.sources.length !== scopesInfo.scopes.length) {
     throw new Error(`SourceMapJson.sources.length must match ScopesInfo.scopes! ${inputSourceMap.sources.length} vs ${scopesInfo.scopes.length}`);
   }
-  inputSourceMap.scopes = new Encoder(scopesInfo, inputSourceMap.names).encode();
+  const { scopes, ranges } = new Encoder(scopesInfo, inputSourceMap.names).encode();
+  inputSourceMap.scopes = scopes;
+  inputSourceMap.ranges = ranges;
   return inputSourceMap;
 }
 //# sourceMappingURL=encode.js.map

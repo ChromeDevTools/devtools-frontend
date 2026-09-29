@@ -9,7 +9,9 @@ import type { Binding, GeneratedRange, OriginalPosition, OriginalScope, ScopeInf
  * This class will also silently ignore calls that would fail otherwise. E.g. calling
  * `end*` without a matching `start*`.
  */ export declare class ScopeInfoBuilder {
-  addNullScope(): this;
+  addNullSource(): this;
+  startSource(): this;
+  endSource(): this;
   startScope(line: number, column: number, options?: {
     name?: string;
     kind?: string;
@@ -47,6 +49,7 @@ import type { Binding, GeneratedRange, OriginalPosition, OriginalScope, ScopeInf
   setRangeCallSite(callSite: OriginalPosition): this;
   endRange(line: number, column: number): this;
   build(): ScopeInfo;
+  protected get currentSourceScopes(): ReadonlyArray<OriginalScope> | null;
   protected get scopeStack(): ReadonlyArray<OriginalScope>;
   protected get rangeStack(): ReadonlyArray<GeneratedRange>;
   protected isKnownScope(scope: OriginalScope): boolean;

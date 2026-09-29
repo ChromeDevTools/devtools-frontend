@@ -669,11 +669,13 @@ function mulWithOffset(param1, param2, offset) {
     it('respects the hostConfig.devToolsSourceMapScopesInSourcesPanel flag gate', async () => {
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(0, 0,
                       {kind: 'function', name: 'authoredFn', isStackFrame: true, variables: ['mappedVar'], key: 'fn'})
           .endScope(0, 30)
-          .endScope(0, 30);
+          .endScope(0, 30)
+          .endSource();
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['o']})
           .endRange(0, 30)
@@ -707,10 +709,12 @@ function mulWithOffset(param1, param2, offset) {
       updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(0, 0, {kind: 'function', name: 'lazyFn', isStackFrame: true, variables: ['lazyVar'], key: 'fn'})
           .endScope(0, 30)
-          .endScope(0, 30);
+          .endScope(0, 30)
+          .endSource();
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['o']})
           .endRange(0, 30)
@@ -746,10 +750,12 @@ function mulWithOffset(param1, param2, offset) {
          updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
          const sourceMapUrl = 'file:///tmp/example.js.min.map';
          const builder = new ScopesCodec.ScopeInfoBuilder();
-         builder.startScope(0, 0, {kind: 'global', key: 'global'})
+         builder.startSource()
+             .startScope(0, 0, {kind: 'global', key: 'global'})
              .startScope(0, 0, {kind: 'function', name: 'onlyNameNoVars', isStackFrame: true, key: 'fn'})
              .endScope(0, 30)
-             .endScope(0, 30);
+             .endScope(0, 30)
+             .endSource();
          builder.startRange(0, 0, {scopeKey: 'global'})
              .startRange(0, 0, {scopeKey: 'fn', isStackFrame: true})
              .endRange(0, 30)
@@ -912,7 +918,8 @@ function mulWithOffset(param1, param2, offset) {
     it('uses source map scope binding expressions when devToolsSourceMapScopesInSourcesPanel is enabled', async () => {
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(0, 0, {
             kind: 'function',
             name: 'fn',
@@ -921,7 +928,8 @@ function mulWithOffset(param1, param2, offset) {
             key: 'fn',
           })
           .endScope(0, 40)
-          .endScope(0, 40);
+          .endScope(0, 40)
+          .endSource();
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['o', '_mod.imported', 'o + 1', '_this']})
           .endRange(0, 40)
@@ -964,10 +972,12 @@ function mulWithOffset(param1, param2, offset) {
       updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['x', 'fnVar'], key: 'fn'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['x', 'fnVar'], key: 'fn'})
           .startScope(0, 14, {kind: 'block', variables: ['x', 'blockVar'], key: 'block'})
           .endScope(0, 28)
-          .endScope(0, 30);
+          .endScope(0, 30)
+          .endSource();
       builder.startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['fn_x', 'fn_v']})
           .startRange(0, 14, {scopeKey: 'block', values: ['block_x', 'block_v']})
           .endRange(0, 28)
@@ -995,10 +1005,12 @@ function mulWithOffset(param1, param2, offset) {
       updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['lazyVar'], key: 'fn'})
           .endScope(0, 30)
-          .endScope(0, 30);
+          .endScope(0, 30)
+          .endSource();
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['_lazy.val']})
           .endRange(0, 30)
@@ -1035,10 +1047,12 @@ function mulWithOffset(param1, param2, offset) {
       updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(0, 0, {kind: 'function', name: 'onlyName', isStackFrame: true, key: 'fn'})
           .endScope(0, 30)
-          .endScope(0, 30);
+          .endScope(0, 30)
+          .endSource();
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 0, {scopeKey: 'fn', isStackFrame: true})
           .endRange(0, 30)
@@ -1067,14 +1081,16 @@ function mulWithOffset(param1, param2, offset) {
       updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', variables: ['globalVar'], key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', variables: ['globalVar'], key: 'global'})
           .startScope(1, 0, {kind: 'function', name: 'inner', isStackFrame: true, variables: ['x'], key: 'inner'})
           .endScope(3, 0)
           .startScope(5, 0, {kind: 'function', name: 'outer', isStackFrame: true, variables: ['x', 'y'], key: 'outer'})
           .startScope(6, 0, {kind: 'block', variables: ['blockVar'], key: 'block'})
           .endScope(8, 0)
           .endScope(9, 0)
-          .endScope(12, 0);
+          .endScope(12, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global', values: ['g']})
           .startRange(0, 0, {
@@ -1145,10 +1161,12 @@ function mulWithOffset(param1, param2, offset) {
       updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['origA', 'origB'], key: 'fn'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['origA', 'origB'], key: 'fn'})
           .startScope(1, 0, {kind: 'block', variables: ['innerA'], key: 'block'})
           .endScope(3, 0)
-          .endScope(5, 0);
+          .endScope(5, 0)
+          .endSource();
 
       // 0         1         2         3         4         5
       // 012345678901234567890123456789012345678901234567890123456
@@ -1210,14 +1228,16 @@ function mulWithOffset(param1, param2, offset) {
     it('resolves the scope chain and binding expressions from source map scopes', async () => {
       updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(
               0, 10,
               {kind: 'function', name: 'authoredFn', isStackFrame: true, variables: ['authoredParam'], key: 'fn'})
           .startScope(1, 2, {kind: 'block', variables: ['authoredLocal'], key: 'block'})
           .endScope(4, 3)
           .endScope(5, 1)
-          .endScope(7, 0);
+          .endScope(7, 0)
+          .endSource();
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 10, {scopeKey: 'fn', isStackFrame: true, values: ['o']})
           .startRange(1, 2, {

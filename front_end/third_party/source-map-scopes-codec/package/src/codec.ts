@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 export const enum Tag {
-  EMPTY = 0x0,
   ORIGINAL_SCOPE_START = 0x1,
   ORIGINAL_SCOPE_END = 0x2,
   ORIGINAL_SCOPE_VARIABLES = 0x3,
@@ -16,7 +15,6 @@ export const enum Tag {
 }
 
 export const enum EncodedTag {
-  EMPTY = "A", // 0x0
   ORIGINAL_SCOPE_START = "B", // 0x1
   ORIGINAL_SCOPE_END = "C", // 0x2
   ORIGINAL_SCOPE_VARIABLES = "D", // 0x3
@@ -53,5 +51,8 @@ export interface GeneratedRangeStartItem {
   flags: number;
   line?: number;
   column: number;
-  definitionIdx?: number;
+  definition?: {
+    sourceIdx: number;
+    scopeIdx: number;
+  };
 }

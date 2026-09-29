@@ -28,8 +28,10 @@ export function encode(
     );
   }
 
-  inputSourceMap.scopes = new Encoder(scopesInfo, inputSourceMap.names)
+  const { scopes, ranges } = new Encoder(scopesInfo, inputSourceMap.names)
     .encode();
+  inputSourceMap.scopes = scopes;
+  inputSourceMap.ranges = ranges;
 
   return inputSourceMap;
 }

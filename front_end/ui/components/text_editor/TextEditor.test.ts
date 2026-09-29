@@ -401,7 +401,8 @@ describeWithEnvironment('TextEditor autocompletion', () => {
 
        const sourceMapUrl = 'file:///tmp/example.js.min.map';
        const builder = new ScopesCodec.ScopeInfoBuilder();
-       builder.startScope(0, 0, {kind: 'global', key: 'global'})
+       builder.startSource()
+           .startScope(0, 0, {kind: 'global', key: 'global'})
            .startScope(0, 0, {
              kind: 'function',
              name: 'outerFn',
@@ -418,7 +419,8 @@ describeWithEnvironment('TextEditor autocompletion', () => {
            })
            .endScope(0, 20)
            .endScope(0, 20)
-           .endScope(0, 20);
+           .endScope(0, 20)
+           .endSource();
        builder.startRange(0, 0, {scopeKey: 'global'})
            .startRange(0, 0, {
              scopeKey: 'outer',
@@ -487,7 +489,8 @@ describeWithEnvironment('TextEditor autocompletion', () => {
 
        const sourceMapUrl = 'file:///tmp/example.js.min.map';
        const builder = new ScopesCodec.ScopeInfoBuilder();
-       builder.startScope(0, 0, {kind: 'global', key: 'global'})
+       builder.startSource()
+           .startScope(0, 0, {kind: 'global', key: 'global'})
            .startScope(0, 0, {
              kind: 'function',
              name: 'fn',
@@ -496,7 +499,8 @@ describeWithEnvironment('TextEditor autocompletion', () => {
              key: 'fn',
            })
            .endScope(0, 20)
-           .endScope(0, 20);
+           .endScope(0, 20)
+           .endSource();
        builder.startRange(0, 0, {scopeKey: 'global'})
            .startRange(0, 0, {
              scopeKey: 'fn',

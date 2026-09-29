@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 export var Tag = /*#__PURE__*/ function(Tag) {
-  Tag[Tag["EMPTY"] = 0] = "EMPTY";
   Tag[Tag["ORIGINAL_SCOPE_START"] = 1] = "ORIGINAL_SCOPE_START";
   Tag[Tag["ORIGINAL_SCOPE_END"] = 2] = "ORIGINAL_SCOPE_END";
   Tag[Tag["ORIGINAL_SCOPE_VARIABLES"] = 3] = "ORIGINAL_SCOPE_VARIABLES";
@@ -15,7 +14,6 @@ export var Tag = /*#__PURE__*/ function(Tag) {
   return Tag;
 }({});
 export var EncodedTag = /*#__PURE__*/ function(EncodedTag) {
-  EncodedTag["EMPTY"] = "A";
   EncodedTag["ORIGINAL_SCOPE_START"] = "B";
   EncodedTag["ORIGINAL_SCOPE_END"] = "C";
   EncodedTag["ORIGINAL_SCOPE_VARIABLES"] = "D";

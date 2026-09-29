@@ -47,10 +47,12 @@ export function encodeUnsigned(n: number): string {
 
 export class TokenIterator {
   readonly #string: string;
+  readonly #strict: boolean;
   #position: number;
 
-  constructor(string: string) {
+  constructor(string: string, strict = false) {
     this.#string = string;
+    this.#strict = strict;
     this.#position = 0;
   }
 
@@ -83,13 +85,25 @@ export class TokenIterator {
   nextUnsignedVLQ(): number {
     let result = 0;
     let shift = 0;
-    let digit = 0;
+    let continuation = 0;
     do {
       const charCode = this.nextCharCode();
-      digit = BASE64_CODES[charCode];
+      const digit = BASE64_CODES[charCode];
+      if (digit === undefined) {
+        // `charCode` is either `NaN` (we ran past the end of a truncated
+        // string) or points outside the base64 alphabet. Either way the
+        // previous digit's continuation bit promised another digit that isn't
+        // there, so the VLQ is truncated/malformed. In lax mode we stop and
+        // keep whatever we decoded so far; in strict mode this is an error.
+        if (this.#strict) {
+          throw new Error("Encountered truncated or malformed VLQ");
+        }
+        break;
+      }
       result += (digit & VLQ_BASE_MASK) << shift;
       shift += VLQ_BASE_SHIFT;
-    } while (digit & VLQ_CONTINUATION_MASK);
+      continuation = digit & VLQ_CONTINUATION_MASK;
+    } while (continuation);
     return result;
   }
 

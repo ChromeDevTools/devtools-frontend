@@ -31,3 +31,16 @@ All submissions, including submissions by project members, require review. We
 use GitHub pull requests for this purpose. Consult
 [GitHub Help](https://help.github.com/articles/about-pull-requests/) for more
 information on using pull requests.
+
+### Commit messages
+
+This repository uses [Conventional Commits](https://www.conventionalcommits.org/)
+and [Release Please](https://github.com/googleapis/release-please) for automated
+versioning and changelog generation.
+
+PR titles and commit messages should follow the format:
+
+* `feat: ...` for new features (triggers a `minor` version bump)
+* `fix: ...` for bug fixes (triggers a `patch` version bump)
+* `feat!: ...` or `fix!: ...` for breaking changes (triggers a `major` version bump)
+* `docs: ...`, `chore: ...`, `ci: ...`, `test: ...` for maintenance changes

@@ -13,19 +13,16 @@ export interface NamedFunctionRange {
 }
 
 /**
- * Turns a list of {@link NamedFunctionRange}s into a single {@link OriginalScope} tree nested
- * according to the start/end position. Each range is turned into a OriginalScope with the `isStackFrame`
+ * Turns a list of {@link NamedFunctionRange}s into a list of {@link OriginalScope} trees nested
+ * according to the start/end position. Each range is turned into an OriginalScope with the `isStackFrame`
  * bit set to denote it as a function and a generic "Function" label.
- *
- * We nest all these function scopes underneath a single global scope that always starts at (0, 0) and
- * reaches to the largest end position.
  *
  * `ranges` can be unsorted but will be sorted in-place.
  *
  * @throws if the ranges are not nested properly. Concretely: start < end for each range, and no
  * "straddling" (i.e. partially overlapping ranges).
  */
-export function buildOriginalScopes(ranges: NamedFunctionRange[]): ScopesCodec.OriginalScope {
+export function buildOriginalScopes(ranges: NamedFunctionRange[]): ScopesCodec.OriginalScope[] {
   validateStartBeforeEnd(ranges);
 
   // 1. Sort ranges by ascending start position.
@@ -33,27 +30,15 @@ export function buildOriginalScopes(ranges: NamedFunctionRange[]): ScopesCodec.O
   //    with the higher end position first, because it's the parent.
   ranges.sort((a, b) => comparePositions(a.start, b.start) || comparePositions(b.end, a.end));
 
-  const root: ScopesCodec.OriginalScope = {
-    start: {line: 0, column: 0},
-    end: {line: Number.POSITIVE_INFINITY, column: Number.POSITIVE_INFINITY},
-    kind: 'Global',
-    isStackFrame: false,
-    children: [],
-    variables: [],
-  };
-
-  // 2. Build the tree from the ranges.
-  const stack: ScopesCodec.OriginalScope[] = [root];
+  // 2. Build the trees from the ranges.
+  const roots: ScopesCodec.OriginalScope[] = [];
+  const stack: ScopesCodec.OriginalScope[] = [];
   for (const range of ranges) {
     // Pop all scopes that precede the current entry (to find the right parent).
-    let stackTop = stack.at(-1) as ScopesCodec.OriginalScope;
-    while (true) {
-      if (comparePositions(stackTop.end, range.start) <= 0) {
-        stack.pop();
-        stackTop = stack.at(-1) as ScopesCodec.OriginalScope;
-      } else {
-        break;
-      }
+    let stackTop = stack.at(-1);
+    while (stackTop && comparePositions(stackTop.end, range.start) <= 0) {
+      stack.pop();
+      stackTop = stack.at(-1);
     }
 
     /*
@@ -66,22 +51,21 @@ export function buildOriginalScopes(ranges: NamedFunctionRange[]): ScopesCodec.O
      *
      *i.e.: B.start < A.end < B.end
      */
-    if (comparePositions(range.start, stackTop.end) < 0 && comparePositions(stackTop.end, range.end) < 0) {
-      throw new Error(`Range ${JSON.stringify(range)} and ${JSON.stringify(stackTop)} partially overlap.`);
+    if (stackTop && comparePositions(range.start, stackTop.end) < 0 && comparePositions(stackTop.end, range.end) < 0) {
+      throw new Error(`Range ${JSON.stringify(range)} and ${
+          JSON.stringify(stackTop, (key, value) => key === 'parent' ? undefined : value)} partially overlap.`);
     }
 
-    const scope = createScopeFrom(range);
-    stackTop.children.push(scope);
+    const scope = createScopeFrom(range, stackTop);
+    if (stackTop) {
+      stackTop.children.push(scope);
+    } else {
+      roots.push(scope);
+    }
     stack.push(scope);
   }
 
-  // 3. Update root.end.
-  const lastChild = root.children.at(-1);
-  if (lastChild) {
-    root.end = lastChild.end;
-  }
-
-  return root;
+  return roots;
 }
 
 function validateStartBeforeEnd(ranges: NamedFunctionRange[]): void {
@@ -92,11 +76,12 @@ function validateStartBeforeEnd(ranges: NamedFunctionRange[]): void {
   }
 }
 
-function createScopeFrom(range: NamedFunctionRange): ScopesCodec.OriginalScope {
+function createScopeFrom(range: NamedFunctionRange, parent?: ScopesCodec.OriginalScope): ScopesCodec.OriginalScope {
   return {
     ...range,
     kind: 'Function',
     isStackFrame: true,
+    parent,
     children: [],
     variables: [],
   };

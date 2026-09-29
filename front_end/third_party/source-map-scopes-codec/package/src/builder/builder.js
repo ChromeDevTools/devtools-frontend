@@ -13,13 +13,25 @@
  */ export class ScopeInfoBuilder {
   #scopes = [];
   #ranges = [];
+  #currentSourceScopes = null;
   #scopeStack = [];
   #rangeStack = [];
   #knownScopes = new Set();
   #keyToScope = new Map();
   #lastScope = null;
-  addNullScope() {
+  addNullSource() {
     this.#scopes.push(null);
+    return this;
+  }
+  startSource() {
+    this.#currentSourceScopes = [];
+    return this;
+  }
+  endSource() {
+    if (this.#currentSourceScopes) {
+      this.#scopes.push(this.#currentSourceScopes);
+      this.#currentSourceScopes = null;
+    }
     return this;
   }
   startScope(line, column, options) {
@@ -74,7 +86,7 @@
       column
     };
     if (this.#scopeStack.length === 0) {
-      this.#scopes.push(scope);
+      this.#currentSourceScopes?.push(scope);
     } else {
       this.#scopeStack.at(-1).children.push(scope);
     }
@@ -174,10 +186,14 @@
     };
     this.#scopes = [];
     this.#ranges = [];
+    this.#currentSourceScopes = null;
     this.#knownScopes.clear();
     this.#keyToScope.clear();
     this.#lastScope = null;
     return info;
+  }
+  get currentSourceScopes() {
+    return this.#currentSourceScopes;
   }
   get scopeStack() {
     return this.#scopeStack;

@@ -11,12 +11,10 @@ import * as SDK from './sdk.js';
 const {buildOriginalScopes, decodePastaRanges} = SDK.SourceMapFunctionRanges;
 
 describe('buildOriginalScopes', () => {
-  it('returns an empty global scope for an empty ranges array', () => {
-    const scope = buildOriginalScopes([]);
+  it('returns an empty array for an empty ranges array', () => {
+    const scopes = buildOriginalScopes([]);
 
-    assert.isEmpty(scope.children);
-    assert.isFalse(scope.isStackFrame);
-    assert.deepEqual(scope.start, {line: 0, column: 0});
+    assert.isEmpty(scopes);
   });
 
   it('throws if a range has zero length (i.e. equal start and end positions)', () => {
@@ -51,15 +49,15 @@ describe('buildOriginalScopes', () => {
     const rangeA = {start: {line: 0, column: 0}, end: {line: 30, column: 0}, name: 'A'};
     const rangeB = {start: {line: 10, column: 0}, end: {line: 20, column: 0}, name: 'B'};
 
-    const root = buildOriginalScopes([rangeA, rangeB]);
+    const scopes = buildOriginalScopes([rangeA, rangeB]);
 
-    assert.lengthOf(root.children, 1);
-    assert.deepNestedInclude(root.children[0], rangeA);
+    assert.lengthOf(scopes, 1);
+    assert.deepNestedInclude(scopes[0], rangeA);
+    assert.isUndefined(scopes[0].parent);
 
-    assert.lengthOf(root.children[0].children, 1);
-    assert.deepNestedInclude(root.children[0].children[0], rangeB);
-
-    assert.deepEqual(root.end, rangeA.end);
+    assert.lengthOf(scopes[0].children, 1);
+    assert.deepNestedInclude(scopes[0].children[0], rangeB);
+    assert.strictEqual(scopes[0].children[0].parent, scopes[0]);
   });
 
   it('handles sibling scopes', () => {
@@ -74,13 +72,11 @@ describe('buildOriginalScopes', () => {
     const rangeA = {start: {line: 0, column: 0}, end: {line: 10, column: 0}, name: 'A'};
     const rangeB = {start: {line: 20, column: 0}, end: {line: 30, column: 0}, name: 'B'};
 
-    const root = buildOriginalScopes([rangeA, rangeB]);
+    const scopes = buildOriginalScopes([rangeA, rangeB]);
 
-    assert.lengthOf(root.children, 2);
-    assert.deepNestedInclude(root.children[0], rangeA);
-    assert.deepNestedInclude(root.children[1], rangeB);
-
-    assert.deepEqual(root.end, rangeB.end);
+    assert.lengthOf(scopes, 2);
+    assert.deepNestedInclude(scopes[0], rangeA);
+    assert.deepNestedInclude(scopes[1], rangeB);
   });
 
   it('handles siblings where first.end === second.start (because end is exclusive)', () => {
@@ -94,13 +90,11 @@ describe('buildOriginalScopes', () => {
     const rangeA = {start: {line: 0, column: 0}, end: {line: 10, column: 0}, name: 'A'};
     const rangeB = {start: {line: 10, column: 0}, end: {line: 20, column: 0}, name: 'B'};
 
-    const root = buildOriginalScopes([rangeA, rangeB]);
+    const scopes = buildOriginalScopes([rangeA, rangeB]);
 
-    assert.lengthOf(root.children, 2);
-    assert.deepNestedInclude(root.children[0], rangeA);
-    assert.deepNestedInclude(root.children[1], rangeB);
-
-    assert.deepEqual(root.end, rangeB.end);
+    assert.lengthOf(scopes, 2);
+    assert.deepNestedInclude(scopes[0], rangeA);
+    assert.deepNestedInclude(scopes[1], rangeB);
   });
 
   it('handles siblings that either have the same start, or the same end', () => {
@@ -120,19 +114,16 @@ describe('buildOriginalScopes', () => {
     const rangeC = {start: {line: 30, column: 0}, end: {line: 50, column: 0}, name: 'C'};
     const rangeD = {start: {line: 40, column: 0}, end: {line: 50, column: 0}, name: 'D'};
 
-    const root = buildOriginalScopes([rangeD, rangeB, rangeA, rangeC]);  // Shuffle to check sorting
+    const scopes = buildOriginalScopes([rangeD, rangeB, rangeA, rangeC]);  // Shuffle to check sorting
 
-    assert.lengthOf(root.children, 2);
-    assert.deepNestedInclude(root.children[0], rangeA);
-    assert.deepNestedInclude(root.children[1], rangeC);
+    assert.lengthOf(scopes, 2);
+    assert.deepNestedInclude(scopes[0], rangeA);
+    assert.deepNestedInclude(scopes[1], rangeC);
 
-    assert.lengthOf(root.children[0].children, 1);
-    assert.deepNestedInclude(root.children[0].children[0], rangeB);
-    assert.lengthOf(root.children[1].children, 1);
-    assert.deepNestedInclude(root.children[1].children[0], rangeD);
-
-    assert.deepEqual(root.end, rangeC.end);
-    assert.deepEqual(root.end, rangeD.end);
+    assert.lengthOf(scopes[0].children, 1);
+    assert.deepNestedInclude(scopes[0].children[0], rangeB);
+    assert.lengthOf(scopes[1].children, 1);
+    assert.deepNestedInclude(scopes[1].children[0], rangeD);
   });
 });
 

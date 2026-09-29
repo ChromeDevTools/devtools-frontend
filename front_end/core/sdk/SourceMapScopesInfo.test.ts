@@ -89,14 +89,16 @@ describe('SourceMapScopesInfo', () => {
                                                     new Common.Console.Console());
 
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(0, 14, {kind: 'function', key: 'inner', name: 'inner', isStackFrame: true})
           .endScope(2, 1)
           .startScope(4, 14, {kind: 'function', key: 'outer', name: 'outer', isStackFrame: true})
           .startScope(5, 12, {kind: 'block', key: 'block'})
           .endScope(7, 3)
           .endScope(8, 1)
-          .endScope(11, 0);
+          .endScope(11, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 10, {scopeKey: 'inner', isStackFrame: true})
@@ -157,14 +159,16 @@ describe('SourceMapScopesInfo', () => {
                                                     new Common.Console.Console());
 
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(0, 14, {kind: 'function', name: 'inner', key: 'inner', isStackFrame: true})
           .endScope(2, 1)
           .startScope(4, 14, {kind: 'function', name: 'outer', key: 'outer', isStackFrame: true})
           .startScope(5, 12, {kind: 'block', key: 'block'})
           .endScope(7, 3)
           .endScope(8, 1)
-          .endScope(11, 0);
+          .endScope(11, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 10, {scopeKey: 'outer', isStackFrame: true})
@@ -223,14 +227,16 @@ describe('SourceMapScopesInfo', () => {
                                                     new Common.Console.Console());
 
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(0, 14, {kind: 'function', name: 'inner', key: 'inner', isStackFrame: true})
           .endScope(2, 1)
           .startScope(4, 14, {kind: 'function', name: 'outer', key: 'outer', isStackFrame: true})
           .startScope(5, 12, {kind: 'block', key: 'block'})
           .endScope(7, 3)
           .endScope(8, 1)
-          .endScope(11, 0);
+          .endScope(11, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 0, {scopeKey: 'outer', callSite: {sourceIndex: 0, line: 10, column: 5}})
@@ -258,10 +264,12 @@ describe('SourceMapScopesInfo', () => {
   describe('hasVariablesAndBindings', () => {
     it('returns false for scope info without variables or bindings', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(10, 0, {kind: 'function', isStackFrame: true, name: 'foo', key: 'foo'})
           .endScope(20, 0)
-          .endScope(30, 0);
+          .endScope(30, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 10, {scopeKey: 'foo', isStackFrame: true})
@@ -275,12 +283,14 @@ describe('SourceMapScopesInfo', () => {
 
     it('returns false for scope info with variables but no bindings', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(
               10, 0,
               {kind: 'function', isStackFrame: true, name: 'foo', variables: ['variable1', 'variable2'], key: 'foo'})
           .endScope(20, 0)
-          .endScope(30, 0);
+          .endScope(30, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 10, {scopeKey: 'foo', isStackFrame: true})
@@ -294,12 +304,14 @@ describe('SourceMapScopesInfo', () => {
 
     it('returns true for scope info with variables and bindings', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(
               10, 0,
               {kind: 'function', isStackFrame: true, name: 'foo', variables: ['variable1', 'variable2'], key: 'foo'})
           .endScope(20, 0)
-          .endScope(30, 0);
+          .endScope(30, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 10, {scopeKey: 'foo', isStackFrame: true, values: ['a', 'b']})
@@ -547,7 +559,7 @@ describe('SourceMapScopesInfo', () => {
 
     it('returns null when the inner-most generated range doesn\'t have an original scope', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'}).endScope(20, 0);
+      builder.startSource().startScope(0, 0, {kind: 'global', key: 'global'}).endScope(20, 0).endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 10)  // Small range that doesn't map to anything.
@@ -572,14 +584,16 @@ describe('SourceMapScopesInfo', () => {
       // SM global:|---------------------------------------------------------------------------------------------------|
       //                                                             x (paused: col 50)
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(5, 0,
                       {kind: 'function', isStackFrame: true, name: 'outer', variables: ['outerVar'], key: 'outer'})
           .startScope(10, 0,
                       {kind: 'function', isStackFrame: true, name: 'inner', variables: ['innerVar'], key: 'inner'})
           .endScope(15, 0)
           .endScope(20, 0)
-          .endScope(30, 0);
+          .endScope(30, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 20, {scopeKey: 'outer', isStackFrame: true, values: ['o']})
@@ -619,7 +633,7 @@ describe('SourceMapScopesInfo', () => {
 
     it('returns the original global scope when paused in the global scope', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'}).endScope(20, 0);
+      builder.startSource().startScope(0, 0, {kind: 'global', key: 'global'}).endScope(20, 0).endSource();
       builder.startRange(0, 0, {scopeKey: 'global'}).endRange(0, 100);
 
       const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
@@ -638,10 +652,12 @@ describe('SourceMapScopesInfo', () => {
     it('returns the inner-most function scope as type "Local" and surrounding function scopes as type "Closure"',
        () => {
          const builder = new ScopeInfoBuilder();
-         builder.startScope(0, 0, {kind: 'function', isStackFrame: true, name: 'outer', key: 'outer'})
+         builder.startSource()
+             .startScope(0, 0, {kind: 'function', isStackFrame: true, name: 'outer', key: 'outer'})
              .startScope(5, 0, {kind: 'function', isStackFrame: true, name: 'inner', key: 'inner'})
              .endScope(15, 0)
-             .endScope(20, 0);
+             .endScope(20, 0)
+             .endSource();
 
          builder.startRange(0, 0, {scopeKey: 'outer'})
              .startRange(0, 25, {scopeKey: 'inner'})
@@ -666,10 +682,12 @@ describe('SourceMapScopesInfo', () => {
 
     it('drops inner block scopes if a return value is present to account for V8 oddity', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, name: 'someFn', key: 'func'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'function', isStackFrame: true, name: 'someFn', key: 'func'})
           .startScope(5, 0, {kind: 'block', key: 'block'})
           .endScope(15, 0)
-          .endScope(20, 0);
+          .endScope(20, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'func'})
           .startRange(0, 25, {scopeKey: 'block'})
@@ -694,12 +712,14 @@ describe('SourceMapScopesInfo', () => {
       // `kind` is a free-form UI label with no semantic significance, and the spec encourages
       // capitalized values. Only `isStackFrame` decides whether a scope is a function scope.
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'Global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'Global', key: 'global'})
           .startScope(5, 0, {kind: 'Function', isStackFrame: true, name: 'outer', key: 'outer'})
           .startScope(10, 0, {isStackFrame: true, name: 'inner', key: 'inner'})  // No `kind` at all.
           .endScope(15, 0)
           .endScope(18, 0)
-          .endScope(20, 0);
+          .endScope(20, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 20, {scopeKey: 'outer'})
@@ -730,10 +750,12 @@ describe('SourceMapScopesInfo', () => {
       // scope. When function scopes were identified by `kind === 'function'`, a capitalized 'Function'
       // produced no 'Local' scope and the loop shifted the entire chain off, leaving an empty view.
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'Function', isStackFrame: true, name: 'someFn', key: 'func'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'Function', isStackFrame: true, name: 'someFn', key: 'func'})
           .startScope(5, 0, {kind: 'Block', key: 'block'})
           .endScope(15, 0)
-          .endScope(20, 0);
+          .endScope(20, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'func'})
           .startRange(0, 25, {scopeKey: 'block'})
@@ -777,7 +799,8 @@ describe('SourceMapScopesInfo', () => {
       //         CDP scopes to work well.
 
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(10, 0, {
             kind: 'function',
             isStackFrame: true,
@@ -786,7 +809,8 @@ describe('SourceMapScopesInfo', () => {
             key: 'func',
           })
           .endScope(20, 0)
-          .endScope(30, 0);
+          .endScope(30, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 20, {scopeKey: 'func', values: [null, 'b']})
@@ -847,10 +871,12 @@ describe('SourceMapScopesInfo', () => {
       // Expectation: Report global scope and use bindings from the inner generated range for 'global'.
 
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', variables: ['fooConstant', 'barVariable'], key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', variables: ['fooConstant', 'barVariable'], key: 'global'})
           .startScope(10, 0, {kind: 'function', isStackFrame: true, name: 'someFn', key: 'func'})
           .endScope(20, 0)
-          .endScope(30, 0);
+          .endScope(30, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global', values: ['42', '"n"']})
           .startRange(0, 20, {scopeKey: 'func'})
@@ -911,14 +937,16 @@ describe('SourceMapScopesInfo', () => {
       //              In particular we also add a block scope that must be there.
 
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', variables: ['inner', 'outer'], key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', variables: ['inner', 'outer'], key: 'global'})
           .startScope(0, 14, {kind: 'function', isStackFrame: true, name: 'inner', variables: ['x'], key: 'inner'})
           .endScope(3, 1)
           .startScope(5, 14, {kind: 'function', isStackFrame: true, name: 'outer', variables: ['y'], key: 'outer'})
           .startScope(6, 9, {kind: 'block', key: 'block'})
           .endScope(8, 3)
           .endScope(9, 1)
-          .endScope(12, 0);
+          .endScope(12, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 0, {scopeKey: 'outer', callSite: {sourceIndex: 0, line: 11, column: 0}, values: ['42']})
@@ -968,10 +996,12 @@ describe('SourceMapScopesInfo', () => {
 
     it('retains both authored global scope and V8 global scope when V8 global scope is present', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', variables: ['authoredGlobal'], key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', variables: ['authoredGlobal'], key: 'global'})
           .startScope(5, 0, {kind: 'function', isStackFrame: true, name: 'fn', variables: ['localVar'], key: 'fn'})
           .endScope(15, 0)
-          .endScope(20, 0);
+          .endScope(20, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global', values: ['"authored"']})
           .startRange(0, 20, {scopeKey: 'fn', isStackFrame: true, values: ['"local"']})
@@ -1003,12 +1033,14 @@ describe('SourceMapScopesInfo', () => {
     it('builds scope chain for outlined functions (isHidden: true) if and only if they have an associated original scope',
        () => {
          const builder = new ScopeInfoBuilder();
-         builder.startScope(0, 0, {kind: 'global', key: 'global'})
+         builder.startSource()
+             .startScope(0, 0, {kind: 'global', key: 'global'})
              .startScope(
                  5, 0,
                  {kind: 'function', isStackFrame: true, name: 'outlinedWithScope', variables: ['v'], key: 'outlined'})
              .endScope(15, 0)
-             .endScope(20, 0);
+             .endScope(20, 0)
+             .endSource();
 
          builder.startRange(0, 0, {scopeKey: 'global'})
              .startRange(0, 20, {scopeKey: 'outlined', isStackFrame: true, isHidden: true, values: ['"val"']})
@@ -1041,10 +1073,12 @@ describe('SourceMapScopesInfo', () => {
     it('disallows resolveScopeChain for user-attached source maps while keeping other source map features working',
        () => {
          const builder = new ScopeInfoBuilder();
-         builder.startScope(0, 0, {kind: 'global', key: 'global'})
+         builder.startSource()
+             .startScope(0, 0, {kind: 'global', key: 'global'})
              .startScope(5, 0, {kind: 'function', isStackFrame: true, name: 'authoredFn', variables: ['x'], key: 'fn'})
              .endScope(15, 0)
-             .endScope(20, 0);
+             .endScope(20, 0)
+             .endSource();
          builder.startRange(0, 0, {scopeKey: 'global'})
              .startRange(0, 20, {scopeKey: 'fn', isStackFrame: true, values: ['"val"']})
              .endRange(0, 80)
@@ -1079,10 +1113,12 @@ describe('SourceMapScopesInfo', () => {
 
     it('returns null from SourceMap.resolveScopeChain when scopes do not contain variables or bindings', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(5, 0, {kind: 'function', isStackFrame: true, name: 'fnNoVars', key: 'fn'})
           .endScope(15, 0)
-          .endScope(20, 0);
+          .endScope(20, 0)
+          .endSource();
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 20, {scopeKey: 'fn', isStackFrame: true})
           .endRange(0, 80)
@@ -1128,19 +1164,27 @@ describe('SourceMapScopesInfo', () => {
                 /* sourceColumn */ 2);
           case 150:
             return null;
+          case 190:
+            return new SDK.SourceMap.SourceMapEntry(line, column, /* sourceIndex */ 0, /* sourceUrl */ undefined,
+                                                    /* sourceLine */ 85,
+                                                    /* sourceColumn */ 2);
         }
         return null;
       });
 
       const addScopes = (builder: ScopesCodec.ScopeInfoBuilder) => {
-        builder.startScope(0, 0, {kind: 'global', key: 'global'})
+        builder.startSource()
+            .startScope(0, 0, {kind: 'global', key: 'global'})
             .startScope(10, 10, {kind: 'function', name: 'myAuthoredFunction', isStackFrame: true, key: 'authored'})
             .startScope(20, 15, {kind: 'block', key: 'block'})
             .endScope(30, 3)
             .endScope(40, 1)
             .startScope(50, 10, {kind: 'function', isStackFrame: true, key: 'unnamed'})
             .endScope(60, 1)
-            .endScope(70, 0);
+            .endScope(70, 0)
+            .startScope(80, 0, {kind: 'function', name: 'secondRootFunction', isStackFrame: true, key: 'secondRoot'})
+            .endScope(90, 0)
+            .endSource();
       };
 
       const mappingsBuilder = new ScopeInfoBuilder();
@@ -1158,7 +1202,9 @@ describe('SourceMapScopesInfo', () => {
           .endRange(0, 120)
           .startRange(0, 140)
           .endRange(0, 160)
-          .endRange(0, 180);
+          .endRange(0, 180)
+          .startRange(0, 180, {scopeKey: 'secondRoot'})
+          .endRange(0, 200);
       const scopeInfoWithRanges = new SourceMapScopesInfo(sourceMap, rangesBuilder.build());
       return [scopeInfoWithRanges, scopeInfoWithMappings];
     })();
@@ -1185,6 +1231,10 @@ describe('SourceMapScopesInfo', () => {
 
         it('returns the empty string for an unnamed function (not null)', () => {
           assert.strictEqual(scopeInfo.findOriginalFunctionName({line: 0, column: 110}), '');
+        });
+
+        it('provides the original name for a function in a second root scope of the same source', () => {
+          assert.strictEqual(scopeInfo.findOriginalFunctionName({line: 0, column: 190}), 'secondRootFunction');
         });
       });
     });
@@ -1452,10 +1502,12 @@ describe('SourceMapScopesInfo', () => {
       const scopeInfo = new SourceMapScopesInfo(
           sourceMap,
           new ScopeInfoBuilder()
+              .startSource()
               .startScope(0, 0, {isStackFrame: true, key: 'fn-foo', name: 'foo'})
               .endScope(9, 0)
               .startScope(10, 0, {isStackFrame: true, key: 'fn-bar', name: 'bar'})
               .endScope(19, 0)
+              .endSource()
               .startRange(0, 0, {isStackFrame: true, scopeKey: 'fn-foo'})
               .startRange(0, 10, {scopeKey: 'fn-bar', callSite: {sourceIndex: 0, line: 5, column: 2}})
               .endRange(0, 20)
@@ -1471,12 +1523,14 @@ describe('SourceMapScopesInfo', () => {
       const scopeInfo = new SourceMapScopesInfo(
           sourceMap,
           new ScopeInfoBuilder()
+              .startSource()
               .startScope(0, 0, {isStackFrame: true, key: 'fn-foo', name: 'foo'})
               .endScope(9, 0)
               .startScope(10, 0, {isStackFrame: true, key: 'fn-bar', name: 'bar'})
               .startScope(15, 10, {key: 'block-bar'})
               .endScope(18, 4)
               .endScope(19, 0)
+              .endSource()
               .startRange(0, 0, {isStackFrame: true, scopeKey: 'fn-foo'})
               .startRange(0, 10, {scopeKey: 'fn-bar', callSite: {sourceIndex: 0, line: 5, column: 2}})
               .startRange(0, 15, {scopeKey: 'block-bar'})
@@ -1502,7 +1556,10 @@ describe('SourceMapScopesInfo', () => {
   describe('resolveMappedVariablesAtPosition', () => {
     it('returns null when the inner-most generated range has no original scope', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', variables: ['g'], key: 'global'}).endScope(20, 0);
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', variables: ['g'], key: 'global'})
+          .endScope(20, 0)
+          .endSource();
       builder.startRange(0, 0, {scopeKey: 'global', values: ['g_gen']})
           .startRange(0, 10)
           .endRange(0, 20)
@@ -1515,7 +1572,8 @@ describe('SourceMapScopesInfo', () => {
 
     it('resolves variables across nested original scopes from inner-most to outer-most', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', variables: ['globalVar'], key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', variables: ['globalVar'], key: 'global'})
           .startScope(2, 0, {
             kind: 'function',
             isStackFrame: true,
@@ -1526,7 +1584,8 @@ describe('SourceMapScopesInfo', () => {
           .startScope(4, 0, {kind: 'block', variables: ['blockVar', 'computedVar'], key: 'block'})
           .endScope(8, 0)
           .endScope(10, 0)
-          .endScope(12, 0);
+          .endScope(12, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global', values: ['_global']})
           .startRange(0, 10, {scopeKey: 'outer', isStackFrame: true, values: ['_this', 'n', '_module.prop']})
@@ -1556,7 +1615,7 @@ describe('SourceMapScopesInfo', () => {
 
     it('preserves per-scope entries when inner and outer original scopes declare the same variable name', () => {
       const builder = new ScopeInfoBuilder();
-      builder
+      builder.startSource()
           .startScope(0, 0, {
             kind: 'function',
             isStackFrame: true,
@@ -1569,7 +1628,8 @@ describe('SourceMapScopesInfo', () => {
             key: 'block',
           })
           .endScope(6, 0)
-          .endScope(10, 0);
+          .endScope(10, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['outer_a', 'outer_u', 'outer_o']})
           .startRange(0, 20, {scopeKey: 'block', values: ['inner_a', null]})
@@ -1594,7 +1654,10 @@ describe('SourceMapScopesInfo', () => {
 
     it('resolves sub-range bindings based on the position', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['x'], key: 'fn'}).endScope(10, 0);
+      builder.startSource()
+          .startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['x'], key: 'fn'})
+          .endScope(10, 0)
+          .endSource();
       builder
           .startRange(0, 0, {
             scopeKey: 'fn',
@@ -1621,12 +1684,14 @@ describe('SourceMapScopesInfo', () => {
 
     it('marks variables as null when an enclosing original scope has no generated range in the chain', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', variables: ['g'], key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', variables: ['g'], key: 'global'})
           .startScope(2, 0, {kind: 'function', isStackFrame: true, variables: ['outerVar'], key: 'outer'})
           .startScope(4, 0, {kind: 'function', isStackFrame: true, variables: ['innerVar'], key: 'inner'})
           .endScope(6, 0)
           .endScope(8, 0)
-          .endScope(10, 0);
+          .endScope(10, 0)
+          .endSource();
 
       // `inner` is outlined directly inside `global`, so `outer` has no range containing column 50.
       builder.startRange(0, 0, {scopeKey: 'global', values: ['g_val']})
@@ -1646,8 +1711,10 @@ describe('SourceMapScopesInfo', () => {
 
     it('prefers the inner-most generated range when multiple ranges map to the same original scope', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['a', 'b'], key: 'fn'})
-          .endScope(10, 0);
+      builder.startSource()
+          .startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['a', 'b'], key: 'fn'})
+          .endScope(10, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'fn', values: [null, 'outer_b']})
           .startRange(0, 20, {scopeKey: 'fn', values: ['inner_a', null]})
@@ -1664,10 +1731,12 @@ describe('SourceMapScopesInfo', () => {
 
     it('drops inner block scopes when ignoreInnerBlockScopes is true (e.g. paused on a return statement)', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['x', 'fnVar'], key: 'fn'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'function', isStackFrame: true, variables: ['x', 'fnVar'], key: 'fn'})
           .startScope(2, 0, {kind: 'block', variables: ['x', 'blockVar'], key: 'block'})
           .endScope(6, 0)
-          .endScope(10, 0);
+          .endScope(10, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'fn', isStackFrame: true, values: ['fn_x', 'fn_v']})
           .startRange(0, 20, {scopeKey: 'block', values: ['block_x', 'block_v']})
@@ -1684,7 +1753,8 @@ describe('SourceMapScopesInfo', () => {
 
     it('resolves lexical scopes for inlined function bodies both with and without inner scopes of their own', () => {
       const builder = new ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', variables: ['globalVar'], key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', variables: ['globalVar'], key: 'global'})
           .startScope(1, 0, {kind: 'function', isStackFrame: true, variables: ['inlinedParam'], key: 'inlinedFn'})
           .startScope(2, 0, {kind: 'block', variables: ['inlinedBlockVar'], key: 'inlinedBlock'})
           .endScope(4, 0)
@@ -1693,7 +1763,8 @@ describe('SourceMapScopesInfo', () => {
           .startScope(8, 0, {kind: 'block', variables: ['callerBlockVar'], key: 'callerBlock'})
           .endScope(10, 0)
           .endScope(11, 0)
-          .endScope(12, 0);
+          .endScope(12, 0)
+          .endSource();
 
       // Generated code range hierarchy:
       // global [0..100] -> callerFn [10..90] -> callerBlock [20..80] -> inlinedFn [30..70] -> inlinedBlock [45..65]

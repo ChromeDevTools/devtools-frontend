@@ -17,11 +17,30 @@ import { ScopeInfoBuilder, type ScopeKey } from "./builder.js";
  * nested and don't partially overlap.
  */
 export class SafeScopeInfoBuilder extends ScopeInfoBuilder {
-  override addNullScope(): this {
-    this.#verifyEmptyScopeStack("add null scope");
-    this.#verifyEmptyRangeStack("add null scope");
+  override addNullSource(): this {
+    this.#verifyNoOpenSource("add null source");
+    this.#verifyEmptyScopeStack("add null source");
+    this.#verifyEmptyRangeStack("add null source");
 
-    super.addNullScope();
+    super.addNullSource();
+    return this;
+  }
+
+  override startSource(): this {
+    this.#verifyNoOpenSource("start source");
+    this.#verifyEmptyScopeStack("start source");
+    this.#verifyEmptyRangeStack("start source");
+
+    super.startSource();
+    return this;
+  }
+
+  override endSource(): this {
+    this.#verifyOpenSource("end source");
+    this.#verifyEmptyScopeStack("end source");
+    this.#verifyEmptyRangeStack("end source");
+
+    super.endSource();
     return this;
   }
 
@@ -36,6 +55,7 @@ export class SafeScopeInfoBuilder extends ScopeInfoBuilder {
       key?: ScopeKey;
     },
   ): this {
+    this.#verifyOpenSource("start scope");
     this.#verifyEmptyRangeStack("start scope");
 
     const parent = this.scopeStack.at(-1);
@@ -46,7 +66,9 @@ export class SafeScopeInfoBuilder extends ScopeInfoBuilder {
       );
     }
 
-    const precedingSibling = parent?.children.at(-1);
+    const precedingSibling = parent
+      ? parent.children.at(-1)
+      : this.currentSourceScopes?.at(-1);
     if (
       precedingSibling &&
       comparePositions(precedingSibling.end, { line, column }) > 0
@@ -124,6 +146,7 @@ export class SafeScopeInfoBuilder extends ScopeInfoBuilder {
       callSite?: OriginalPosition;
     },
   ): this {
+    this.#verifyNoOpenSource("startRange");
     this.#verifyEmptyScopeStack("starRange");
 
     const parent = this.rangeStack.at(-1);
@@ -280,9 +303,22 @@ export class SafeScopeInfoBuilder extends ScopeInfoBuilder {
         "Can't build ScopeInfo while an OriginalScope is unclosed.",
       );
     }
+    this.#verifyNoOpenSource("build ScopeInfo");
     this.#verifyEmptyRangeStack("build ScopeInfo");
 
     return super.build();
+  }
+
+  #verifyNoOpenSource(op: string): void {
+    if (this.currentSourceScopes !== null) {
+      throw new Error(`Can't ${op} while a source is unclosed.`);
+    }
+  }
+
+  #verifyOpenSource(op: string): void {
+    if (this.currentSourceScopes === null) {
+      throw new Error(`Can't ${op} without an open source.`);
+    }
   }
 
   #verifyEmptyScopeStack(op: string): void {

@@ -21,9 +21,10 @@ import type {
  * `end*` without a matching `start*`.
  */
 export class ScopeInfoBuilder {
-  #scopes: (OriginalScope | null)[] = [];
+  #scopes: (OriginalScope[] | null)[] = [];
   #ranges: GeneratedRange[] = [];
 
+  #currentSourceScopes: OriginalScope[] | null = null;
   #scopeStack: OriginalScope[] = [];
   #rangeStack: GeneratedRange[] = [];
 
@@ -31,8 +32,21 @@ export class ScopeInfoBuilder {
   #keyToScope = new Map<ScopeKey, OriginalScope>();
   #lastScope: OriginalScope | null = null;
 
-  addNullScope(): this {
+  addNullSource(): this {
     this.#scopes.push(null);
+    return this;
+  }
+
+  startSource(): this {
+    this.#currentSourceScopes = [];
+    return this;
+  }
+
+  endSource(): this {
+    if (this.#currentSourceScopes) {
+      this.#scopes.push(this.#currentSourceScopes);
+      this.#currentSourceScopes = null;
+    }
     return this;
   }
 
@@ -100,7 +114,7 @@ export class ScopeInfoBuilder {
     scope.end = { line, column };
 
     if (this.#scopeStack.length === 0) {
-      this.#scopes.push(scope);
+      this.#currentSourceScopes?.push(scope);
     } else {
       this.#scopeStack.at(-1)!.children.push(scope);
     }
@@ -227,11 +241,16 @@ export class ScopeInfoBuilder {
 
     this.#scopes = [];
     this.#ranges = [];
+    this.#currentSourceScopes = null;
     this.#knownScopes.clear();
     this.#keyToScope.clear();
     this.#lastScope = null;
 
     return info;
+  }
+
+  protected get currentSourceScopes(): ReadonlyArray<OriginalScope> | null {
+    return this.#currentSourceScopes;
   }
 
   protected get scopeStack(): ReadonlyArray<OriginalScope> {

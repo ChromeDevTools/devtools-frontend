@@ -4,7 +4,9 @@ import { ScopeInfoBuilder, type ScopeKey } from "./builder.js";
  * Similar to `ScopeInfoBuilder`, but with checks that scopes/ranges are well
  * nested and don't partially overlap.
  */ export declare class SafeScopeInfoBuilder extends ScopeInfoBuilder {
-  override addNullScope(): this;
+  override addNullSource(): this;
+  override startSource(): this;
+  override endSource(): this;
   override startScope(line: number, column: number, options?: {
     name?: string;
     kind?: string;

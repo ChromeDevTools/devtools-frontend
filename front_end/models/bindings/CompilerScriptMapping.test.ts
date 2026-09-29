@@ -686,14 +686,15 @@ describe('CompilerScriptMapping', () => {
         '0:0 => index.ts:0:0',
         '0:21 => index.ts:2:11',
       ]);
-      ScopesCodec.encode(
-          new ScopesCodec.ScopeInfoBuilder()
-              .startScope(1, 0, {isStackFrame: true, name: 'foo', key: 'fn'})
-              .endScope(3, 1)
-              .startRange(0, 10, {isStackFrame: true, scopeKey: 'fn'})
-              .endRange(0, 23)
-              .build(),
-          sourceMap as ScopesCodec.SourceMapJson);
+      ScopesCodec.encode(new ScopesCodec.ScopeInfoBuilder()
+                             .startSource()
+                             .startScope(1, 0, {isStackFrame: true, name: 'foo', key: 'fn'})
+                             .endScope(3, 1)
+                             .endSource()
+                             .startRange(0, 10, {isStackFrame: true, scopeKey: 'fn'})
+                             .endRange(0, 23)
+                             .build(),
+                         sourceMap as ScopesCodec.SourceMapJson);
 
       const uiSourceCodePromise = waitForUISourceCodeAdded('http://example.com/index.ts', target);
       const script =
@@ -781,14 +782,16 @@ describe('CompilerScriptMapping', () => {
       // 10: outer();
 
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(0, 14, {kind: 'function', name: 'inner', key: 'inner', isStackFrame: true})
           .endScope(2, 1)
           .startScope(4, 14, {kind: 'function', name: 'outer', key: 'outer', isStackFrame: true})
           .startScope(5, 12, {kind: 'block', key: 'block'})
           .endScope(7, 3)
           .endScope(8, 1)
-          .endScope(11, 0);
+          .endScope(11, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 0, {scopeKey: 'outer', callSite: {sourceIndex: 0, line: 10, column: 5}})
@@ -833,12 +836,14 @@ describe('CompilerScriptMapping', () => {
       // Same as above, but the generated code is an inline <script> at line 4, column 10 of the document.
       // Raw V8 positions are relative to the document, while the source map is relative to the script.
       const builder = new ScopesCodec.ScopeInfoBuilder();
-      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
           .startScope(0, 14, {kind: 'function', name: 'inner', key: 'inner', isStackFrame: true})
           .endScope(2, 1)
           .startScope(4, 14, {kind: 'function', name: 'outer', key: 'outer', isStackFrame: true})
           .endScope(8, 1)
-          .endScope(11, 0);
+          .endScope(11, 0)
+          .endSource();
 
       builder.startRange(0, 0, {scopeKey: 'global'})
           .startRange(0, 0, {scopeKey: 'outer', callSite: {sourceIndex: 0, line: 10, column: 5}})

@@ -2,8 +2,8 @@
  * The scopes information found in a source map.
  */ export interface ScopeInfo {
   /**
-   * The length of {@linkcode scopes} must match the length of "sources" in the source map JSON. Each entry describes the scope tree of the corresponding source file.
-   */ scopes: (OriginalScope | null)[];
+   * The length of {@linkcode scopes} must match the length of "sources" in the source map JSON. Each entry describes the scope trees of the corresponding source file.
+   */ scopes: (OriginalScope[] | null)[];
   /**
    * The range tree of the generated bundle. Multiple top-level ranges are allowed but must not overlap source position wise.
    */ ranges: GeneratedRange[];
@@ -133,6 +133,7 @@ export interface SubRangeBinding {
   sources: (string | null)[];
   mappings: string;
   names?: string[];
-  scopes?: string;
+  scopes?: (string | null)[];
+  ranges?: string[];
 }
 //# sourceMappingURL=scopes.d.ts.map

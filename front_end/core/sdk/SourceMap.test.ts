@@ -1352,10 +1352,12 @@ describe('SourceMap', () => {
 
   it('combines "scopes" proposal scopes appropriately for index maps', () => {
     const info1 = new ScopesCodec.ScopeInfoBuilder()
+                      .startSource()
                       .startScope(0, 0, {kind: 'global', key: 'global'})
                       .startScope(10, 0, {name: 'foo', key: 'foo', kind: 'function', isStackFrame: true})
                       .endScope(20, 0)
                       .endScope(30, 0)
+                      .endSource()
                       .startRange(0, 0, {scopeKey: 'global'})
                       .startRange(0, 7, {scopeKey: 'foo', isStackFrame: true})
                       .endRange(0, 14)
@@ -1368,10 +1370,12 @@ describe('SourceMap', () => {
     });
 
     const info2 = new ScopesCodec.ScopeInfoBuilder()
+                      .startSource()
                       .startScope(0, 0, {kind: 'global', key: 'global'})
                       .startScope(10, 0, {name: 'bar', key: 'bar', kind: 'function', isStackFrame: true})
                       .endScope(20, 0)
                       .endScope(30, 0)
+                      .endSource()
                       .startRange(0, 0, {scopeKey: 'global'})
                       .startRange(0, 7, {scopeKey: 'bar', isStackFrame: true})
                       .endRange(0, 14)

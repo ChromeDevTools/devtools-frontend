@@ -47,12 +47,14 @@ The library also contains a builder that makes creating structured scope informa
 import { ScopeInfoBuilder } from "@chrome-devtools/source-map-scopes-codec";
 
 const scopeInformation = new ScopeInfoBuilder()
-    .startScope(0, 0, { kind: "Global" })
-        .startScope(5, 10)
-        .setScopeKind("Function")      // Same as passing 'kind' to 'startScope'.
-        .setScopeName("foo")           // Same as passing 'name' to 'startScope'.
-        .endScope(10, 5)
-    .endScope(11, 1)
+    .startSource()
+        .startScope(0, 0, { kind: "Global" })
+            .startScope(5, 10)
+            .setScopeKind("Function")      // Same as passing 'kind' to 'startScope'.
+            .setScopeName("foo")           // Same as passing 'name' to 'startScope'.
+            .endScope(10, 5)
+        .endScope(11, 1)
+    .endSource()
     .startRange(0, 0, { scope: 0 })
         .startRange(0, 10)
         .setRangeScopeDefinition(1)    // Same as passing 'scope' to 'startRange'.

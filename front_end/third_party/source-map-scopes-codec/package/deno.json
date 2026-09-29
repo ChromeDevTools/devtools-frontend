@@ -1,10 +1,14 @@
 {
   "name": "@chrome-devtools/source-map-scopes-codec",
-  "version": "0.8.1",
+  "version": "1.0.0",
   "exports": "./src/mod.ts",
   "license": "BSD-3-Clause",
   "fmt": {
-    "exclude": ["README.md", "CONTRIBUTING.md"]
+    "exclude": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "CHANGELOG.md"
+    ]
   },
   "publish": {
     "include": [

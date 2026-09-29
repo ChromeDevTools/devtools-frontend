@@ -19,6 +19,7 @@ import type {
   SourceMapJson,
   SubRangeBinding,
 } from "../scopes.ts";
+import { comparePositions } from "../util.js";
 import { TokenIterator } from "../vlq.js";
 
 /**
@@ -75,11 +76,16 @@ function decodeMap(
   sourceMap: SourceMapJson,
   options: DecodeOptions,
 ): DecodedScopeInfo {
-  if (!sourceMap.scopes || !sourceMap.names) {
+  if ((!sourceMap.scopes && !sourceMap.ranges) || !sourceMap.names) {
     return { scopes: [], ranges: [], hasVariableAndBindingInfo: false };
   }
 
-  return new Decoder(sourceMap.scopes, sourceMap.names, options).decode();
+  return new Decoder(
+    sourceMap.scopes ?? [],
+    sourceMap.ranges ?? [],
+    sourceMap.names,
+    options,
+  ).decode();
 }
 
 function decodeIndexMap(
@@ -116,15 +122,18 @@ const DEFAULT_SCOPE_STATE = {
 const DEFAULT_RANGE_STATE = {
   line: 0,
   column: 0,
+  defSourceIdx: 0,
   defScopeIdx: 0,
 };
 
 class Decoder {
-  readonly #encodedScopes: string;
+  readonly #encodedScopes: (string | null)[];
+  readonly #encodedRanges: string[];
   readonly #names: string[];
   readonly #mode: DecodeMode;
+  readonly #generatedOffset: Position;
 
-  #scopes: (OriginalScope | null)[] = [];
+  #scopes: (OriginalScope[] | null)[] = [];
   #ranges: GeneratedRange[] = [];
 
   readonly #scopeState = { ...DEFAULT_SCOPE_STATE };
@@ -133,7 +142,9 @@ class Decoder {
   readonly #scopeStack: OriginalScope[] = [];
   readonly #rangeStack: GeneratedRange[] = [];
 
-  #flatOriginalScopes: OriginalScope[] = [];
+  #currentRootScopes: OriginalScope[] = [];
+  #flatOriginalScopes: (OriginalScope[] | null)[] = [];
+  #currentFlatScopes: OriginalScope[] = [];
   #subRangeBindingsForRange = new Map<
     GeneratedRange,
     Map<number, [number, number, number][]>
@@ -142,24 +153,64 @@ class Decoder {
   #seenOriginalScopeVariables = false;
   #seenGeneratedRangeBindings = false;
 
-  constructor(scopes: string, names: string[], options: DecodeOptions) {
+  constructor(
+    scopes: (string | null)[],
+    ranges: string[],
+    names: string[],
+    options: DecodeOptions,
+  ) {
     this.#encodedScopes = scopes;
+    this.#encodedRanges = ranges;
     this.#names = names;
     this.#mode = options.mode;
-    this.#rangeState.line = options.generatedOffset.line;
-    this.#rangeState.column = options.generatedOffset.column;
+    this.#generatedOffset = options.generatedOffset;
   }
 
   decode(): DecodedScopeInfo {
-    const iter = new TokenIterator(this.#encodedScopes);
+    for (const encodedScope of this.#encodedScopes) {
+      if (encodedScope === null) {
+        this.#scopes.push(null);
+        this.#flatOriginalScopes.push(null);
+        continue;
+      }
+      this.#decodeScopes(encodedScope);
+    }
+
+    for (const encodedRange of this.#encodedRanges) {
+      this.#decodeRanges(encodedRange);
+    }
+
+    const info = {
+      scopes: this.#scopes,
+      ranges: this.#ranges,
+      hasVariableAndBindingInfo: this.#seenOriginalScopeVariables &&
+        this.#seenGeneratedRangeBindings,
+    };
+
+    this.#scopes = [];
+    this.#ranges = [];
+    this.#currentRootScopes = [];
+    this.#flatOriginalScopes = [];
+    this.#currentFlatScopes = [];
+    this.#seenOriginalScopeVariables = false;
+    this.#seenGeneratedRangeBindings = false;
+
+    return info;
+  }
+
+  #decodeScopes(encodedScope: string) {
+    Object.assign(this.#scopeState, DEFAULT_SCOPE_STATE);
+    this.#currentRootScopes = [];
+    this.#currentFlatScopes = [];
+
+    const iter = new TokenIterator(
+      encodedScope,
+      this.#mode === DecodeMode.STRICT,
+    );
 
     while (iter.hasNext()) {
       const tag = iter.nextUnsignedVLQ();
       switch (tag) {
-        case Tag.EMPTY: {
-          this.#scopes.push(null);
-          break;
-        }
         case Tag.ORIGINAL_SCOPE_START: {
           const item: OriginalScopeStartItem = {
             flags: iter.nextUnsignedVLQ(),
@@ -195,6 +246,47 @@ class Decoder {
           );
           break;
         }
+        case Tag.VENDOR_EXTENSION: {
+          const _extensionNameIdx = iter.nextUnsignedVLQ();
+          break;
+        }
+        default: {
+          this.#throwInStrictMode(`Encountered illegal item tag ${tag}`);
+          break;
+        }
+      }
+
+      // Consume any trailing VLQ and the ","
+      while (iter.hasNext() && iter.peek() !== ",") iter.nextUnsignedVLQ();
+      if (iter.hasNext()) iter.nextChar();
+    }
+
+    if (this.#scopeStack.length > 0) {
+      this.#throwInStrictMode(
+        "Encountered ORIGINAL_SCOPE_START without matching END!",
+      );
+      this.#scopeStack.length = 0;
+    }
+
+    this.#scopes.push(this.#currentRootScopes);
+    this.#flatOriginalScopes.push(this.#currentFlatScopes);
+  }
+
+  #decodeRanges(encodedRanges: string) {
+    Object.assign(this.#rangeState, DEFAULT_RANGE_STATE);
+    this.#rangeState.line = this.#generatedOffset.line;
+    this.#rangeState.column = this.#generatedOffset.column;
+    const prevLastRange = this.#ranges.at(-1);
+    const prevRangesLength = this.#ranges.length;
+
+    const iter = new TokenIterator(
+      encodedRanges,
+      this.#mode === DecodeMode.STRICT,
+    );
+
+    while (iter.hasNext()) {
+      const tag = iter.nextUnsignedVLQ();
+      switch (tag) {
         case Tag.GENERATED_RANGE_START: {
           const flags = iter.nextUnsignedVLQ();
           const line = flags & GeneratedRangeFlags.HAS_LINE
@@ -202,15 +294,20 @@ class Decoder {
             : undefined;
           const column = iter.nextUnsignedVLQ();
 
-          const definitionIdx = flags & GeneratedRangeFlags.HAS_DEFINITION
-            ? iter.nextSignedVLQ()
-            : undefined;
+          let definition: { sourceIdx: number; scopeIdx: number } | undefined;
+          if (flags & GeneratedRangeFlags.HAS_DEFINITION) {
+            const sourceIdx = iter.nextSignedVLQ();
+            const scopeIdx = sourceIdx === 0
+              ? iter.nextSignedVLQ()
+              : iter.nextUnsignedVLQ();
+            definition = { sourceIdx, scopeIdx };
+          }
 
           this.#handleGeneratedRangeStartItem({
             flags,
             line,
             column,
-            definitionIdx,
+            definition,
           });
           break;
         }
@@ -272,36 +369,31 @@ class Decoder {
         }
       }
 
-      // Consume any trailing VLQ and the the ","
+      // Consume any trailing VLQ and the ","
       while (iter.hasNext() && iter.peek() !== ",") iter.nextUnsignedVLQ();
       if (iter.hasNext()) iter.nextChar();
     }
 
-    if (this.#scopeStack.length > 0) {
-      this.#throwInStrictMode(
-        "Encountered ORIGINAL_SCOPE_START without matching END!",
-      );
-    }
     if (this.#rangeStack.length > 0) {
       this.#throwInStrictMode(
         "Encountered GENERATED_RANGE_START without matching END!",
       );
+      this.#rangeStack.length = 0;
     }
 
-    const info = {
-      scopes: this.#scopes,
-      ranges: this.#ranges,
-      hasVariableAndBindingInfo: this.#seenOriginalScopeVariables &&
-        this.#seenGeneratedRangeBindings,
-    };
-
-    this.#scopes = [];
-    this.#ranges = [];
-    this.#flatOriginalScopes = [];
-    this.#seenOriginalScopeVariables = false;
-    this.#seenGeneratedRangeBindings = false;
-
-    return info;
+    if (
+      prevLastRange &&
+      this.#ranges.length > prevRangesLength &&
+      comparePositions(
+          this.#ranges[prevRangesLength].start,
+          prevLastRange.end,
+        ) <
+        0
+    ) {
+      this.#throwInStrictMode(
+        "Range segment starts before the previous segment ended!",
+      );
+    }
   }
 
   #throwInStrictMode(message: string) {
@@ -337,7 +429,7 @@ class Decoder {
     );
 
     this.#scopeStack.push(scope);
-    this.#flatOriginalScopes.push(scope);
+    this.#currentFlatScopes.push(scope);
   }
 
   #handleOriginalScopeVariablesItem(variableIdxs: number[]) {
@@ -381,9 +473,7 @@ class Decoder {
       scope.parent = parent;
       parent.children.push(scope);
     } else {
-      this.#scopes.push(scope);
-      this.#scopeState.line = 0;
-      this.#scopeState.column = 0;
+      this.#currentRootScopes.push(scope);
     }
   }
 
@@ -412,16 +502,20 @@ class Decoder {
       children: [],
     };
 
-    if (item.definitionIdx !== undefined) {
-      this.#rangeState.defScopeIdx += item.definitionIdx;
-      if (
-        this.#rangeState.defScopeIdx < 0 ||
-        this.#rangeState.defScopeIdx >= this.#flatOriginalScopes.length
-      ) {
+    if (item.definition !== undefined) {
+      this.#rangeState.defSourceIdx += item.definition.sourceIdx;
+      if (item.definition.sourceIdx !== 0) {
+        this.#rangeState.defScopeIdx = 0;
+      }
+      this.#rangeState.defScopeIdx += item.definition.scopeIdx;
+
+      const originalScope = this
+        .#flatOriginalScopes[this.#rangeState.defSourceIdx]
+        ?.[this.#rangeState.defScopeIdx];
+      if (!originalScope) {
         this.#throwInStrictMode("Invalid definition scope index");
       } else {
-        range.originalScope =
-          this.#flatOriginalScopes[this.#rangeState.defScopeIdx];
+        range.originalScope = originalScope;
       }
     }
 

@@ -33,7 +33,8 @@ export interface SourceMapV3Object {
 
   names?: string[];
   ignoreList?: number[];
-  scopes?: string;
+  scopes?: Array<string|null>;
+  ranges?: string[];
   rangeMappings?: string;
   debugId?: string;
   x_google_linecount?: number;
@@ -609,11 +610,11 @@ export class SourceMap {
     if (!this.#scopesInfo) {
       this.#scopesInfo = new SourceMapScopesInfo(this, {scopes: [], ranges: []});
     }
-    if (map.scopes) {
+    if (map.scopes || map.ranges) {
       const {scopes, ranges} = ScopesCodec.decode(
           map as ScopesCodec.SourceMapJson,
           {mode: ScopesCodec.DecodeMode.LAX, generatedOffset: {line: baseLineNumber, column: baseColumnNumber}});
-      this.#scopesInfo.addOriginalScopes(scopes);
+      this.#scopesInfo.addOriginalScopes(scopes.length ? scopes : new Array(map.sources.length).fill(null));
       this.#scopesInfo.addGeneratedRanges(ranges);
     } else if (map.x_com_bloomberg_sourcesFunctionMappings) {
       const originalScopes = this.parseBloombergScopes(map);
@@ -662,7 +663,7 @@ export class SourceMap {
     }
   }
 
-  private parseBloombergScopes(map: SourceMapV3Object): Array<ScopesCodec.OriginalScope|null> {
+  private parseBloombergScopes(map: SourceMapV3Object): Array<ScopesCodec.OriginalScope[]|null> {
     const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
     if (!scopeList) {
       throw new Error('Cant decode pasta scopes without x_com_bloomberg_sourcesFunctionMappings field');

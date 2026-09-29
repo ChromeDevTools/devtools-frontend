@@ -1480,10 +1480,6 @@ export class Scope implements ScopeChainEntry {
     return undefined;
   }
 
-  empty(): boolean {
-    return Boolean(this.#payload.empty);
-  }
-
   extraProperties(): RemoteObjectProperty[] {
     if (this !== this.#callFrame.localScope() || this.#callFrame.script.isWasm()) {
       return [];

@@ -125,7 +125,6 @@ describe('ScopeChainModel', () => {
        const localScope = sinon.createStubInstance(SDK.DebuggerModel.Scope, {
          callFrame: fakeFrame,
          type: Protocol.Debugger.ScopeType.Local,
-         empty: false,
        });
        localScope.object.callsFake(() => new SDK.RemoteObject.LocalJSONObject({x: 42}));
        fakeFrame.scopeChain.returns([localScope]);

@@ -408,12 +408,11 @@ export const resolveScopeChain =
           }
 
           if (callFrame.script.isWasm()) {
-            return callFrame.scopeChain().filter(scope => !scope.empty());
+            return callFrame.scopeChain();
           }
           const thisObject = await resolveThisObject(callFrame, debuggerWorkspaceBinding);
-          const scopes = callFrame.scopeChain().filter(scope => !scope.empty() ||
-                                                           scope.type() === Protocol.Debugger.ScopeType.Local);
-          return scopes.map(scope => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
+          return callFrame.scopeChain().map(
+              scope => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
         };
 
 /**
@@ -472,7 +471,7 @@ export const allVariablesInCallFrame = async(
         }
       }
 
-      const scopeChain = callFrame.scopeChain().filter(scope => !scope.empty());
+      const scopeChain = callFrame.scopeChain();
       const resolvedScopes =
           await Promise.all(scopeChain.map(scope => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
       const result = resolvedScopes.map(toScopeVariableMapping);
@@ -529,13 +528,12 @@ export const resolveThisObject = async(
     callFrame: SDK.DebuggerModel.CallFrame,
     debuggerWorkspaceBinding:
         Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<SDK.RemoteObject.RemoteObject|null> => {
-  const innermostScope =
-      callFrame.scopeChain().find(scope => !scope.empty() || scope.type() === Protocol.Debugger.ScopeType.Local);
-  if (!innermostScope) {
+  const scopeChain = callFrame.scopeChain();
+  if (scopeChain.length === 0) {
     return callFrame.thisObject();
   }
 
-  const {thisMapping} = await resolveDebuggerScope(innermostScope, debuggerWorkspaceBinding);
+  const {thisMapping} = await resolveDebuggerScope(scopeChain[0], debuggerWorkspaceBinding);
   if (!thisMapping) {
     return callFrame.thisObject();
   }

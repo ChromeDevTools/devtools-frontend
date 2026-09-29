@@ -275,8 +275,7 @@ export class MockDebuggerBackend {
   // are relative to the start of the surrounding document.
   async createCallFrame(target: SDK.Target.Target, script: ScriptDescription, scopeDescriptor: string,
                         sourceMap: {url: string, content: string}|null,
-                        scopeObjects: Protocol.Runtime.RemoteObject[] = [],
-                        emptyScopes: boolean[] = []): Promise<SDK.DebuggerModel.CallFrame> {
+                        scopeObjects: Protocol.Runtime.RemoteObject[] = []): Promise<SDK.DebuggerModel.CallFrame> {
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
     const scriptObject = await this.addScript(target, script, sourceMap);
 
@@ -295,11 +294,6 @@ export class MockDebuggerBackend {
     console.assert(scopeObjects.length <= scopeChain.length);
     for (let i = 0; i < scopeObjects.length; ++i) {
       scopeChain[i].object = scopeObjects[i];
-    }
-    for (let i = 0; i < emptyScopes.length && i < scopeChain.length; ++i) {
-      if (emptyScopes[i]) {
-        scopeChain[i].empty = true;
-      }
     }
 
     const payload: Protocol.Debugger.CallFrame = {

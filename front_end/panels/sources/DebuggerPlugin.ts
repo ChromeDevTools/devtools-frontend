@@ -860,6 +860,15 @@ export class DebuggerPlugin extends Plugin {
     dialog.oldCondition = oldCondition,
     dialog.breakpointType = isLogpointForDialog ? SDK.DebuggerModel.BreakpointType.LOGPOINT :
                                                   SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT;
+    dialog.location = async () => {
+      const uiLocation = breakpoint ? (breakpoint.getClosestResolvedLocation() ??
+                                       {lineNumber: breakpoint.lineNumber(), columnNumber: breakpoint.columnNumber()}) :
+                                      (location ?? await this.defaultBreakpointLocation(line));
+      const rawLocations =
+          await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
+              this.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
+      return rawLocations[0] ?? null;
+    };
     dialog.onFinish = async result => {
       this.activeBreakpointDialog = null;
       this.#activeBreakpointEditRequest = undefined;

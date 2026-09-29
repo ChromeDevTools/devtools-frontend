@@ -161,6 +161,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   #breakpointType: SDK.DebuggerModel.BreakpointType.LOGPOINT|SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT =
       SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT;
   #onFinish: (result: BreakpointEditDialogResult) => void = () => {};
+  #location?: () => Promise<SDK.DebuggerModel.Location|null>;
   #editor?: TextEditor.TextEditor.TextEditor;
   #state?: CodeMirror.EditorState;
 
@@ -205,6 +206,13 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   }
   set onFinish(onFinish: (result: BreakpointEditDialogResult) => void) {
     this.#onFinish = onFinish;
+    this.requestUpdate();
+  }
+  get location(): (() => Promise<SDK.DebuggerModel.Location|null>)|undefined {
+    return this.#location;
+  }
+  set location(location: (() => Promise<SDK.DebuggerModel.Location|null>)|undefined) {
+    this.#location = location;
     this.requestUpdate();
   }
 
@@ -283,6 +291,9 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       },
     ];
 
+    const completionOptions: TextEditor.JavaScript.CompletionOptions = {
+      location: () => this.#location ? this.#location() : Promise.resolve(null),
+    };
     const editorConfig = [
       CodeMirror.javascript.javascriptLanguage,
       TextEditor.Config.baseConfiguration(this.oldCondition),
@@ -292,8 +303,9 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       TextEditor.Config.showCompletionHint,
       TextEditor.Config.conservativeCompletion,
       CodeMirror.javascript.javascriptLanguage.data.of({autocomplete}),
+      TextEditor.JavaScript.completion(completionOptions),
       CodeMirror.autocompletion(),
-      TextEditor.JavaScript.argumentHints(),
+      TextEditor.JavaScript.argumentHints(completionOptions),
     ];
 
     this.#state = CodeMirror.EditorState.create({

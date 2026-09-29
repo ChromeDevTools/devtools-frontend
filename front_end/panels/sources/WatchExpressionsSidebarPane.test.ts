@@ -538,8 +538,9 @@ describeWithEnvironment('WatchExpression', () => {
     executionContext.debuggerModel = debuggerModel;
     executionContext.runtimeModel = runtimeModel;
     executionContext.globalLexicalScopeNames.resolves([]);
-    executionContext.evaluateWithSelectedFrameFallback.resolves(
-        {object: SDK.RemoteObject.RemoteObject.fromLocalObject(123), exceptionDetails: undefined});
+    const result = {object: SDK.RemoteObject.RemoteObject.fromLocalObject(123), exceptionDetails: undefined};
+    executionContext.evaluate.resolves(result);
+    executionContext.evaluateWithSelectedFrameFallback.resolves(result);
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();

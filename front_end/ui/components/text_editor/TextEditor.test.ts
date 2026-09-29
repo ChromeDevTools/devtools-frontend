@@ -457,9 +457,6 @@ describeWithEnvironment('TextEditor autocompletion', () => {
        });
 
        const executionContext = new MockExecutionContext(target);
-       sinon.stub(executionContext, 'evaluateWithSelectedFrameFallback').resolves({
-         object: new SDK.RemoteObject.LocalJSONObject({}),
-       });
        sinon.stub(executionContext.debuggerModel, 'selectedCallFrame').returns(inlinedFrame);
        UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
 
@@ -528,13 +525,12 @@ describeWithEnvironment('TextEditor autocompletion', () => {
        UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
 
        let currentProps: Record<string, unknown> = {firstProp: 1, firstMethod: () => {}};
-       const evaluateSpy =
-           sinon.stub(executionContext, 'evaluateWithSelectedFrameFallback').callsFake(async options => {
-             if (options.expression === '_mod.genObj') {
-               return {object: new SDK.RemoteObject.LocalJSONObject(currentProps)};
-             }
-             return {object: new SDK.RemoteObject.LocalJSONObject({})};
-           });
+       const evaluateSpy = sinon.stub(callFrame, 'evaluate').callsFake(async options => {
+         if (options.expression === '_mod.genObj') {
+           return {object: new SDK.RemoteObject.LocalJSONObject(currentProps)};
+         }
+         return {object: new SDK.RemoteObject.LocalJSONObject({})};
+       });
 
        const state = makeState('origObj.', CodeMirror.javascript.javascriptLanguage);
        const result1 =
@@ -548,6 +544,12 @@ describeWithEnvironment('TextEditor autocompletion', () => {
        // Change properties and switch call frames to verify PropertyCache invalidation on CallFrameSelected.
        currentProps = {secondProp: 2};
        const otherFrame = callFrame.createVirtualCallFrame(0, 'other');
+       sinon.stub(otherFrame, 'evaluate').callsFake(async options => {
+         if (options.expression === '_mod.genObj') {
+           return {object: new SDK.RemoteObject.LocalJSONObject(currentProps)};
+         }
+         return {object: new SDK.RemoteObject.LocalJSONObject({})};
+       });
        executionContext.debuggerModel.setSelectedCallFrame(otherFrame);
 
        const result2 =
@@ -557,4 +559,113 @@ describeWithEnvironment('TextEditor autocompletion', () => {
        assert.strictEqual(labels2.get('secondProp'), 'property');
        assert.isFalse(labels2.has('firstProp'));
      });
+
+  it('completes variables and properties from a Location when not paused or paused elsewhere', async () => {
+    updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
+    const backend = new MockDebuggerBackend();
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
+    sinon.stub(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, 'instance')
+        .returns(backend.universe.scopeChainResolver);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
+    const target = backend.createTarget();
+
+    const sourceMapUrl = 'file:///tmp/example.js.min.map';
+    const builder = new ScopesCodec.ScopeInfoBuilder();
+    builder.startSource()
+        .startScope(0, 0, {kind: 'global', key: 'global'})
+        .startScope(0, 0, {
+          kind: 'function',
+          name: 'outerFn',
+          isStackFrame: true,
+          variables: ['outerVar', 'unavailableVar', 'origObj'],
+          key: 'outer',
+        })
+        .startScope(0, 10, {
+          kind: 'function',
+          name: 'inlinedFn',
+          isStackFrame: true,
+          variables: ['synthesizedConst'],
+          key: 'inlined',
+        })
+        .endScope(0, 20)
+        .endScope(0, 20)
+        .endScope(0, 20)
+        .endSource();
+    builder.startRange(0, 0, {scopeKey: 'global'})
+        .startRange(0, 0, {
+          scopeKey: 'outer',
+          isStackFrame: true,
+          values: ['a', null, '_mod.genObj'],
+        })
+        .startRange(0, 18, {
+          scopeKey: 'inlined',
+          values: ['42'],
+          callSite: {sourceIndex: 0, line: 0, column: 5},
+        })
+        .endRange(0, 35)
+        .endRange(0, 35)
+        .endRange(0, 35);
+
+    const baseMap = encodeSourceMap(['0:18 => index.js:0:12']);
+    const map = ScopesCodec.encode(builder.build(), baseMap as ScopesCodec.SourceMapJson);
+    const sourceMapContent = JSON.stringify(map);
+
+    const source = `function f(a){console.log(a,_mod.genObj)}\n//# sourceMappingURL=${sourceMapUrl}`;
+    const scopes = '             {                          }';
+    const unrelatedCallFrame = await backend.createCallFrame(target, {
+      url: urlString`file:///tmp/bundle.js`,
+      content: source,
+      scriptLanguage: Protocol.Debugger.ScriptLanguage.JavaScript,
+    },
+                                                             scopes, {url: sourceMapUrl, content: sourceMapContent});
+    const script = unrelatedCallFrame.script;
+    const location = new SDK.DebuggerModel.Location(script.debuggerModel, script.scriptId, 0, 20);
+
+    const executionContext = new MockExecutionContext(target);
+    assert.isNull(executionContext.debuggerModel.selectedCallFrame());
+    UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
+
+    const evaluateSpy = sinon.stub(executionContext, 'evaluate').callsFake(async options => {
+      if (options.expression === '_mod.genObj') {
+        return {object: new SDK.RemoteObject.LocalJSONObject({mappedProp: 123})};
+      }
+      return {object: new SDK.RemoteObject.LocalJSONObject({})};
+    });
+
+    const completionOptions: TextEditor.JavaScript.CompletionOptions = {
+      location: async () => location,
+    };
+
+    const scopeState = makeState('', CodeMirror.javascript.javascriptLanguage);
+    const scopeResult = await TextEditor.JavaScript.javascriptCompletionSource(
+        new CodeMirror.CompletionContext(scopeState, 0, true), completionOptions);
+    assert.isNotNull(scopeResult);
+
+    const byLabel = new Map(scopeResult.options.map(option => [option.label, option]));
+    assert.strictEqual(byLabel.get('synthesizedConst')?.type, 'variable');
+    assert.strictEqual(byLabel.get('outerVar')?.type, 'variable');
+    assert.strictEqual(byLabel.get('origObj')?.type, 'variable');
+    assert.isFalse(byLabel.has('unavailableVar'));
+
+    const propState = makeState('origObj.', CodeMirror.javascript.javascriptLanguage);
+    const propResult = await TextEditor.JavaScript.javascriptCompletionSource(
+        new CodeMirror.CompletionContext(propState, 8, false), completionOptions);
+    assert.isNotNull(propResult);
+    sinon.assert.calledWithMatch(evaluateSpy, {expression: '_mod.genObj'});
+    const propLabels = new Map(propResult.options.map(o => [o.label, o.type]));
+    assert.strictEqual(propLabels.get('mappedProp'), 'property');
+
+    // Also verify that when paused at an unrelated call frame (line 0, col 13 != col 20),
+    // property completion for `location` evaluates on `executionContext` rather than `unrelatedCallFrame`.
+    evaluateSpy.resetHistory();
+    const unrelatedFrameEvaluateSpy = sinon.spy(unrelatedCallFrame, 'evaluate');
+    executionContext.debuggerModel.setSelectedCallFrame(unrelatedCallFrame);
+
+    const propResultWhilePausedElsewhere = await TextEditor.JavaScript.javascriptCompletionSource(
+        new CodeMirror.CompletionContext(propState, 8, false), completionOptions);
+    assert.isNotNull(propResultWhilePausedElsewhere);
+    sinon.assert.notCalled(unrelatedFrameEvaluateSpy);
+    sinon.assert.calledWithMatch(evaluateSpy, {expression: '_mod.genObj'});
+  });
 });

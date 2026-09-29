@@ -274,6 +274,7 @@ devtools_api_test_module("api_tests") {
 
   ts_deps = [
     ":bundle",
+    "../../testing",
     "../common:bundle",
   ]
 }

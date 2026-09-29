@@ -29,7 +29,7 @@ import {cleanupSettings, setupSettings} from './SettingsHelpers.js';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 let UI: typeof UIModule;
 
-export {createTarget} from './TargetHelpers.js';
+export {createTarget, waitForTarget} from './TargetHelpers.js';
 export {stubNoopSettings} from './SettingsHelpers.js';
 
 export function registerActions(actions: UIModule.ActionRegistration.ActionRegistration[]): void {

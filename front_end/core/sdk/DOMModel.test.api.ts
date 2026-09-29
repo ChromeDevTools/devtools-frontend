@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {waitForTarget} from '../../testing/TargetHelpers.js';
 import type * as Common from '../common/common.js';
 
 import * as SDK from './sdk.js';
@@ -458,4 +459,362 @@ describe('DOMModel queries, search, frames, markers, and attributes', () => {
        assert.include(malformedErr ?? '', 'Could not parse value as attributes');
        assert.strictEqual(node.getAttribute('foo2'), 'baz2');
      });
+
+  it('retrieves event listeners on elements and ancestors inside an about:blank iframe',
+     async ({inspectedPage, universe}) => {
+       const primaryTarget = universe.targetManager.primaryPageTarget();
+       assert.isNotNull(primaryTarget);
+       const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+       assert.isNotNull(domModel);
+       const domDebuggerModel = primaryTarget.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+       assert.isNotNull(domDebuggerModel);
+       const runtimeModel = primaryTarget.model(SDK.RuntimeModel.RuntimeModel);
+       assert.isNotNull(runtimeModel);
+
+       await inspectedPage.goToHtml('<iframe id="myframe"></iframe>');
+       await inspectedPage.evaluate(() => {
+         function f(): void {
+         }
+         const frame = document.getElementById('myframe') as HTMLIFrameElement;
+         const body = frame.contentDocument?.body;
+         body?.addEventListener('click', f, true);
+         body?.insertAdjacentHTML('beforeend', '<div id="div-in-iframe"></div>');
+         body?.querySelector('#div-in-iframe')?.addEventListener('hover', f, {capture: true, once: true});
+         body?.addEventListener('wheel', f, {passive: true});
+       });
+
+       const doc = await domModel.requestDocument();
+       assert.isNotNull(doc);
+       await doc.getSubtree(10, true);
+
+       const divInIframe = findNode(doc, n => n.getAttribute('id') === 'div-in-iframe');
+       assert.isNotNull(divInIframe);
+       assert.isTrue(runtimeModel.executionContexts().some(ctx => ctx.frameId === divInIframe.frameId()));
+       const divObj = await divInIframe.resolveToObject('listeners');
+       assert.isNotNull(divObj);
+       const divListeners = await domDebuggerModel.eventListeners(divObj);
+       assert.deepEqual(
+           divListeners.map(l => ({type: l.type(), useCapture: l.useCapture(), passive: l.passive(), once: l.once()})),
+           [{type: 'hover', useCapture: true, passive: false, once: true}]);
+
+       const bodyNode = divInIframe.parentNode;
+       assert.isNotNull(bodyNode);
+       const bodyObj = await bodyNode.resolveToObject('listeners');
+       assert.isNotNull(bodyObj);
+       const bodyListeners = await domDebuggerModel.eventListeners(bodyObj);
+       assert.deepEqual(
+           bodyListeners.map(l => ({type: l.type(), useCapture: l.useCapture(), passive: l.passive(), once: l.once()})),
+           [
+             {type: 'click', useCapture: true, passive: false, once: false},
+             {type: 'wheel', useCapture: false, passive: true, once: false},
+           ]);
+     });
+
+  it('resolves DOM node remote object and execution contexts with service worker script',
+     async ({inspectedPage, universe}) => {
+       const primaryTarget = universe.targetManager.primaryPageTarget();
+       assert.isNotNull(primaryTarget);
+       new SDK.ChildTargetManager.ChildTargetManager(primaryTarget);
+       const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+       assert.isNotNull(domModel);
+       const runtimeModel = primaryTarget.model(SDK.RuntimeModel.RuntimeModel);
+       assert.isNotNull(runtimeModel);
+       const domDebuggerModel = primaryTarget.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+       assert.isNotNull(domDebuggerModel);
+
+       const swTargetPromise = waitForTarget(universe, t => t.type() === SDK.Target.Type.ServiceWorker);
+
+       await inspectedPage.goToResource('network/service-worker.html');
+       await inspectedPage.evaluate(async () => {
+         await navigator.serviceWorker.ready;
+         (window as unknown as {testFunction: () => void}).testFunction = function(): void {};
+         document.body.setAttribute('onload', 'testFunction()');
+         document.body.insertAdjacentHTML('beforeend', '<button id="btn">Click</button>');
+         document.getElementById('btn')?.addEventListener('click', function handler() {});
+       });
+
+       const swTarget = await swTargetPromise;
+       assert.strictEqual(swTarget.type(), SDK.Target.Type.ServiceWorker);
+       const swRuntimeModel = swTarget.model(SDK.RuntimeModel.RuntimeModel);
+       assert.isNotNull(swRuntimeModel);
+       let swContext = swRuntimeModel.defaultExecutionContext();
+       if (!swContext) {
+         swContext = await swRuntimeModel.once(SDK.RuntimeModel.Events.ExecutionContextCreated);
+       }
+       assert.strictEqual(swContext.target().type(), SDK.Target.Type.ServiceWorker);
+       const swSelfResult = await swContext.evaluate({
+         expression: 'self',
+         objectGroup: 'event-listeners-panel',
+         includeCommandLineAPI: false,
+         silent: true,
+         returnByValue: false,
+         generatePreview: false,
+       },
+                                                     false, false);
+       assert.isDefined(swSelfResult);
+       if (!('object' in swSelfResult)) {
+         assert.fail('Expected RemoteObject');
+       }
+       assert.isNull(swSelfResult.object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel));
+
+       const mainContext = runtimeModel.defaultExecutionContext();
+       assert.isNotNull(mainContext);
+       assert.notStrictEqual(mainContext.target().type(), SDK.Target.Type.ServiceWorker);
+       const windowResult = await mainContext.evaluate({
+         expression: 'self',
+         objectGroup: 'event-listeners-panel',
+         includeCommandLineAPI: false,
+         silent: true,
+         returnByValue: false,
+         generatePreview: false,
+       },
+                                                       false, false);
+       assert.isDefined(windowResult);
+       if (!('object' in windowResult)) {
+         assert.fail('Expected RemoteObject for window');
+       }
+       const windowListeners = await domDebuggerModel.eventListeners(windowResult.object);
+       assert.deepEqual(windowListeners.map(
+                            l => ({type: l.type(), useCapture: l.useCapture(), passive: l.passive(), once: l.once()})),
+                        [{type: 'load', useCapture: false, passive: false, once: false}]);
+
+       const doc = await domModel.requestDocument();
+       assert.isNotNull(doc);
+       await doc.getSubtree(5, true);
+
+       const btn = findNode(doc, n => n.getAttribute('id') === 'btn');
+       assert.isNotNull(btn);
+       const resolved = await btn.resolveToObject('event-listeners-panel');
+       assert.isNotNull(resolved);
+       assert.strictEqual(resolved.description, 'button#btn');
+       const btnListeners = await domDebuggerModel.eventListeners(resolved);
+       assert.deepEqual(
+           btnListeners.map(l => ({type: l.type(), useCapture: l.useCapture(), passive: l.passive(), once: l.once()})),
+           [{type: 'click', useCapture: false, passive: false, once: false}]);
+
+       await inspectedPage.evaluate(async () => {
+         const registrations = await navigator.serviceWorker.getRegistrations();
+         for (const reg of registrations) {
+           await reg.unregister();
+         }
+       });
+     });
+});
+
+describe('DOMModel setOuterHTML and undo/redo edits', () => {
+  function recordDOMModelEvents(domModel: SDK.DOMModel.DOMModel): string[] {
+    const events: string[] = [];
+    for (const key of Object.keys(SDK.DOMModel.Events) as Array<keyof typeof SDK.DOMModel.Events>) {
+      const eventName = SDK.DOMModel.Events[key];
+      if (eventName === SDK.DOMModel.Events.MarkersChanged || eventName === SDK.DOMModel.Events.DOMMutated) {
+        continue;
+      }
+      domModel.addEventListener(eventName, (event: {data: unknown}) => {
+        const data = event.data as SDK.DOMModel.DOMNode | {node: SDK.DOMModel.DOMNode};
+        const node = 'node' in data && data.node ? data.node : (data as SDK.DOMModel.DOMNode);
+        events.push(`Event ${String(eventName)}: ${node.nodeName()}`);
+      });
+    }
+    return events;
+  }
+
+  it('updates DOMModel tree, dispatches DOMModel events, and integrates with DOMModelUndoStack via setOuterHTML',
+     async ({inspectedPage, universe}) => {
+       const primaryTarget = universe.targetManager.primaryPageTarget();
+       assert.isNotNull(primaryTarget);
+       const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+       assert.isNotNull(domModel);
+       const undoStack = universe.domModelUndoStack;
+
+       await inspectedPage.goToHtml(`
+         <div id="container">
+           <p>WebKit is used by <a href="http://www.apple.com/safari/">Safari</a></p>
+           <h2>Getting involved</h2>
+           <p id="identity">There are many ways to get involved.</p>
+         </div>
+       `);
+       const doc = await domModel.requestDocument();
+       assert.isNotNull(doc);
+       await doc.getSubtree(10, true);
+       const container = findNode(doc, n => n.getAttribute('id') === 'container');
+       assert.isNotNull(container);
+       const containerText = await container.getOuterHTML();
+       assert.isNotNull(containerText);
+       const events = recordDOMModelEvents(domModel);
+
+       const cases: Array<{
+         oldStr: string,
+         newStr: string,
+         forwardEvents: string[],
+         undoEvents: string[],
+       }> =
+           [
+             {
+               oldStr: 'Getting involved',
+               newStr: 'Getting not involved',
+               forwardEvents: ['Event CharacterDataModified: #text'],
+               undoEvents: ['Event CharacterDataModified: #text'],
+             },
+             {
+               oldStr: '<a href',
+               newStr: '<a foo="bar" href',
+               forwardEvents: ['Event AttrModified: A', 'Event AttrModified: A', 'Event AttrRemoved: A'],
+               undoEvents: ['Event AttrModified: A', 'Event AttrRemoved: A', 'Event AttrRemoved: A'],
+             },
+             {
+               oldStr: '<h2>Getting involved</h2>',
+               newStr: '<h3>Getting involved</h3>',
+               forwardEvents: ['Event NodeInserted: H3', 'Event NodeRemoved: H2'],
+               undoEvents: ['Event NodeInserted: H2', 'Event NodeRemoved: H3'],
+             },
+           ];
+
+       for (const {oldStr, newStr, forwardEvents, undoEvents} of cases) {
+         const patched = containerText.replace(oldStr, newStr);
+         events.length = 0;
+         await new Promise<void>(resolve => container.setOuterHTML(patched, () => resolve()));
+         assert.deepEqual(events.splice(0).sort(), forwardEvents);
+         assert.strictEqual(await container.getOuterHTML(), patched);
+
+         await undoStack.undo();
+         assert.deepEqual(events.splice(0).sort(), undoEvents);
+         assert.strictEqual(await container.getOuterHTML(), containerText);
+       }
+     });
+
+  it('undoes and redoes removeNode, setNodeName, setNodeValue, and setOuterHTML edits',
+     async ({inspectedPage, universe}) => {
+       const primaryTarget = universe.targetManager.primaryPageTarget();
+       assert.isNotNull(primaryTarget);
+       const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+       assert.isNotNull(domModel);
+       const undoStack = universe.domModelUndoStack;
+
+       await inspectedPage.goToHtml(`
+         <div style="display:none">
+           <div id="testRemove"><div id="node-to-remove"></div></div>
+           <div id="testSetNodeName"><div id="node-to-set-name"></div></div>
+           <div id="testSetNodeValue"><div id="node-to-set-value">Text</div></div>
+           <div id="testEditAsHTML"><div id="node-to-edit-as-html"><span id="span">Text</span></div></div>
+         </div>
+       `);
+       const doc = await domModel.requestDocument();
+       assert.isNotNull(doc);
+       await doc.getSubtree(10, true);
+
+       // 1. testRemove
+       const testRemove = findNode(doc, n => n.getAttribute('id') === 'testRemove');
+       assert.isNotNull(testRemove);
+       assert.strictEqual(testRemove.children()?.length, 1);
+       const removeMe = findNode(testRemove, n => n.getAttribute('id') === 'node-to-remove');
+       assert.isNotNull(removeMe);
+       await removeMe.removeNode();
+       assert.strictEqual(testRemove.children()?.length, 0);
+       await undoStack.undo();
+       assert.strictEqual(testRemove.children()?.length, 1);
+       assert.strictEqual(testRemove.children()?.[0].getAttribute('id'), 'node-to-remove');
+       await undoStack.redo();
+       assert.strictEqual(testRemove.children()?.length, 0);
+
+       // 2. testSetNodeName
+       const testSetNodeName = findNode(doc, n => n.getAttribute('id') === 'testSetNodeName');
+       assert.isNotNull(testSetNodeName);
+       assert.strictEqual(testSetNodeName.children()?.[0].nodeName(), 'DIV');
+       const renameMe = findNode(testSetNodeName, n => n.getAttribute('id') === 'node-to-set-name');
+       assert.isNotNull(renameMe);
+       await new Promise<void>(resolve => renameMe.setNodeName('span', () => resolve()));
+       assert.strictEqual(testSetNodeName.children()?.[0].nodeName(), 'SPAN');
+       await undoStack.undo();
+       assert.strictEqual(testSetNodeName.children()?.[0].nodeName(), 'DIV');
+       await undoStack.redo();
+       assert.strictEqual(testSetNodeName.children()?.[0].nodeName(), 'SPAN');
+
+       // 3. testSetNodeValue
+       const setValueNode = findNode(doc, n => n.getAttribute('id') === 'node-to-set-value');
+       assert.isNotNull(setValueNode);
+       assert.strictEqual(setValueNode.firstChild?.nodeValue(), 'Text');
+       await new Promise<void>(resolve => setValueNode.firstChild?.setNodeValue('New Text', () => resolve()));
+       assert.strictEqual(setValueNode.firstChild?.nodeValue(), 'New Text');
+       await undoStack.undo();
+       assert.strictEqual(setValueNode.firstChild?.nodeValue(), 'Text');
+       await undoStack.redo();
+       assert.strictEqual(setValueNode.firstChild?.nodeValue(), 'New Text');
+
+       // 4. testEditAsHTML
+       const testEditAsHTML = findNode(doc, n => n.getAttribute('id') === 'testEditAsHTML');
+       assert.isNotNull(testEditAsHTML);
+       const editHtmlNode = findNode(testEditAsHTML, n => n.getAttribute('id') === 'node-to-edit-as-html');
+       assert.isNotNull(editHtmlNode);
+       assert.strictEqual(testEditAsHTML.children()?.length, 1);
+       await new Promise<void>(
+           resolve => editHtmlNode.setOuterHTML(
+               '<div id="node-to-edit-as-html"><div id="span2">Text2</div></div><span>Second node</span>',
+               () => resolve()));
+       await testEditAsHTML.getSubtree(5, true);
+       assert.deepEqual(testEditAsHTML.children()?.map(n => n.nodeName()), ['DIV', 'SPAN']);
+       assert.isNotNull(findNode(testEditAsHTML, n => n.getAttribute('id') === 'span2'));
+       await undoStack.undo();
+       await testEditAsHTML.getSubtree(5, true);
+       assert.deepEqual(testEditAsHTML.children()?.map(n => n.nodeName()), ['DIV']);
+       assert.isNotNull(findNode(testEditAsHTML, n => n.getAttribute('id') === 'span'));
+       await undoStack.redo();
+       await testEditAsHTML.getSubtree(5, true);
+       assert.deepEqual(testEditAsHTML.children()?.map(n => n.nodeName()), ['DIV', 'SPAN']);
+       assert.isNotNull(findNode(testEditAsHTML, n => n.getAttribute('id') === 'span2'));
+     });
+
+  it('undoes and redoes setAttribute, removeAttribute, and addAttribute edits', async ({inspectedPage, universe}) => {
+    const primaryTarget = universe.targetManager.primaryPageTarget();
+    assert.isNotNull(primaryTarget);
+    const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+    assert.isNotNull(domModel);
+    const undoStack = universe.domModelUndoStack;
+
+    await inspectedPage.goToHtml(`
+      <div style="display:none">
+        <div id="testSetAttribute"><div foo="attribute value" id="node-to-set-attribute"></div></div>
+        <div id="testRemoveAttribute"><div foo="attribute value" id="node-to-remove-attribute"></div></div>
+        <div id="testAddAttribute"><div id="node-to-add-attribute"></div></div>
+      </div>
+    `);
+    const doc = await domModel.requestDocument();
+    assert.isNotNull(doc);
+    await doc.getSubtree(5, true);
+
+    // 1. testSetAttribute
+    const setAttrNode = findNode(doc, n => n.getAttribute('id') === 'node-to-set-attribute');
+    assert.isNotNull(setAttrNode);
+    assert.strictEqual(setAttrNode.getAttribute('foo'), 'attribute value');
+    await new Promise<void>(resolve => setAttrNode.setAttribute('foo', 'bar="edited attribute"', () => resolve()));
+    assert.isUndefined(setAttrNode.getAttribute('foo'));
+    assert.strictEqual(setAttrNode.getAttribute('bar'), 'edited attribute');
+    await undoStack.undo();
+    assert.strictEqual(setAttrNode.getAttribute('foo'), 'attribute value');
+    assert.isUndefined(setAttrNode.getAttribute('bar'));
+    await undoStack.redo();
+    assert.isUndefined(setAttrNode.getAttribute('foo'));
+    assert.strictEqual(setAttrNode.getAttribute('bar'), 'edited attribute');
+
+    // 2. testRemoveAttribute
+    const removeAttrNode = findNode(doc, n => n.getAttribute('id') === 'node-to-remove-attribute');
+    assert.isNotNull(removeAttrNode);
+    assert.strictEqual(removeAttrNode.getAttribute('foo'), 'attribute value');
+    await removeAttrNode.removeAttribute('foo');
+    assert.isUndefined(removeAttrNode.getAttribute('foo'));
+    await undoStack.undo();
+    assert.strictEqual(removeAttrNode.getAttribute('foo'), 'attribute value');
+    await undoStack.redo();
+    assert.isUndefined(removeAttrNode.getAttribute('foo'));
+
+    // 3. testAddAttribute
+    const addAttrNode = findNode(doc, n => n.getAttribute('id') === 'node-to-add-attribute');
+    assert.isNotNull(addAttrNode);
+    assert.isUndefined(addAttrNode.getAttribute('newattr'));
+    await new Promise<void>(resolve => addAttrNode.setAttribute('', 'newattr="new-value"', () => resolve()));
+    assert.strictEqual(addAttrNode.getAttribute('newattr'), 'new-value');
+    await undoStack.undo();
+    assert.isUndefined(addAttrNode.getAttribute('newattr'));
+    await undoStack.redo();
+    assert.strictEqual(addAttrNode.getAttribute('newattr'), 'new-value');
+  });
 });

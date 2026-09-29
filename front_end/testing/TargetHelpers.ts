@@ -52,3 +52,24 @@ export function createTarget({
       id, name ?? id, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget ? id : undefined,
       /* suspended=*/ false, connection, {targetId: id, url, subtype} as Protocol.Target.TargetInfo);
 }
+
+export function waitForTarget(universe: {targetManager: SDK.TargetManager.TargetManager},
+                              predicate: (target: SDK.Target.Target) => boolean): Promise<SDK.Target.Target> {
+  return new Promise<SDK.Target.Target>(resolve => {
+    const existing = universe.targetManager.targets().find(predicate);
+    if (existing) {
+      resolve(existing);
+      return;
+    }
+    const observer: SDK.TargetManager.Observer = {
+      targetAdded(target: SDK.Target.Target) {
+        if (predicate(target)) {
+          universe.targetManager.unobserveTargets(observer);
+          resolve(target);
+        }
+      },
+      targetRemoved() {},
+    };
+    universe.targetManager.observeTargets(observer);
+  });
+}

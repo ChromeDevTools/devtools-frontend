@@ -1600,10 +1600,10 @@ export class DOMDocument extends DOMNode {
     this.#frameId = frameId ?? null;
 
     const resourceTreeModel = this.domModel().target().model(ResourceTreeModel);
-    const frame = this.#frameId ? resourceTreeModel?.frameForId(this.#frameId) : resourceTreeModel?.mainFrame;
-    // In production, DOMDocument should always resolve its security origin from an
-    // associated frame, but falls back to SecurityOrigin.create() as a last resort
-    // for test environments where no frame exists.
+    const frame = this.#frameId ? resourceTreeModel?.frameForId(this.#frameId) : null;
+    // In production, DOMDocument resolves its security origin from its associated frame.
+    // Detached documents without a frame or documents in test environments fall back
+    // to SecurityOrigin.create() using the document URL.
     this.#securityOrigin = frame?.securityOrigin() ?? SecurityOrigin.create(this.#documentURL);
   }
 

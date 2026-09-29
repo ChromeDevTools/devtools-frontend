@@ -66,5 +66,27 @@ for (const allowFileAccess of [true, false]) {
       await endpoint.addRawModule('', 'wasm.debug.wasm', {url: 'http://example.com'});
       assert.lengthOf(endpointProxyStub.getCalls(), allowFileAccess ? 5 : 3);
     });
+
+    it('validates all properties in getFunctionInfo results', async () => {
+      const endpointProxyStub = sinon.stub(Extensions.ExtensionEndpoint.ExtensionEndpoint.prototype, 'sendRequest');
+      endpointProxyStub.resolves({frames: []});
+      await endpoint.getFunctionInfo({rawModuleId: '', codeOffset: 0, inlineFrameIndex: 0});
+
+      const validator = endpointProxyStub.firstCall.args[2];
+      // Either result property is sufficient on its own, and both may be present.
+      assert.isTrue(validator({frames: []}));
+      assert.isTrue(validator({missingSymbolFiles: []}));
+      assert.isTrue(validator({frames: [], missingSymbolFiles: []}));
+
+      // Non-empty arrays validate function names and missing-file paths as strings.
+      assert.isTrue(validator({frames: [{name: 'functionName'}]}));
+      assert.isTrue(validator({missingSymbolFiles: ['missing.wasm']}));
+
+      // Reject invalid property containers and invalid array elements.
+      assert.isFalse(validator({frames: [], missingSymbolFiles: 123}));
+      assert.isFalse(validator({frames: [], missingSymbolFiles: [123]}));
+      assert.isFalse(validator({frames: 123, missingSymbolFiles: []}));
+      assert.isFalse(validator({frames: [{name: 123}]}));
+    });
   });
 }

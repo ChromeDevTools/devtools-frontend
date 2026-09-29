@@ -10,6 +10,76 @@ import type * as Bindings from '../bindings/bindings.js';
 import {PrivateAPI} from './ExtensionAPI.js';
 import {ExtensionEndpoint} from './ExtensionEndpoint.js';
 
+const isObject = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
+const isString = (value: unknown): value is string => typeof value === 'string';
+const isNumber = (value: unknown): value is number => typeof value === 'number';
+const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
+const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(isString);
+const isNumberArray = (value: unknown): value is number[] => Array.isArray(value) && value.every(isNumber);
+
+const isRawLocationRange = (value: unknown): value is Chrome.DevTools.RawLocationRange => {
+  return isObject(value) && isString(value.rawModuleId) && isNumber(value.startOffset) && isNumber(value.endOffset);
+};
+
+const isSourceLocation = (value: unknown): value is Chrome.DevTools.SourceLocation => {
+  return isObject(value) && isString(value.rawModuleId) && isString(value.sourceFileURL) &&
+      isNumber(value.lineNumber) && isNumber(value.columnNumber);
+};
+
+const isVariable = (value: unknown): value is Chrome.DevTools.Variable => {
+  return isObject(value) && isString(value.scope) && isString(value.name) && isString(value.type) &&
+      (value.nestedName === undefined || isStringArray(value.nestedName));
+};
+
+const isScopeInfo = (value: unknown): value is Chrome.DevTools.ScopeInfo => {
+  return isObject(value) && isString(value.type) && isString(value.typeName) &&
+      (value.icon === undefined || isString(value.icon));
+};
+
+const isFunctionInfo = (value: unknown): value is Chrome.DevTools.FunctionInfo => {
+  return isObject(value) && isString(value.name);
+};
+
+const isForeignObject = (value: unknown): value is Chrome.DevTools.ForeignObject => {
+  return isObject(value) && value.type === 'reftype' &&
+      (value.valueClass === 'local' || value.valueClass === 'global' || value.valueClass === 'operand') &&
+      isNumber(value.index);
+};
+
+const isRemoteObject = (value: unknown): value is Chrome.DevTools.RemoteObject => {
+  return isObject(value) &&
+      (value.type === 'object' || value.type === 'undefined' || value.type === 'string' || value.type === 'number' ||
+       value.type === 'boolean' || value.type === 'bigint' || value.type === 'array' || value.type === 'null') &&
+      isBoolean(value.hasChildren) && (value.className === undefined || isString(value.className)) &&
+      (value.description === undefined || isString(value.description)) &&
+      (value.objectId === undefined || isString(value.objectId)) &&
+      (value.linearMemoryAddress === undefined || isNumber(value.linearMemoryAddress)) &&
+      (value.linearMemorySize === undefined || isNumber(value.linearMemorySize));
+};
+
+const isPropertyDescriptor = (value: unknown): value is Chrome.DevTools.PropertyDescriptor => {
+  return isObject(value) && isString(value.name) && (isRemoteObject(value.value) || isForeignObject(value.value));
+};
+
+const isAddRawModuleResult = (value: unknown): value is string[]|{missingSymbolFiles: string[]} => {
+  return isStringArray(value) || (isObject(value) && isStringArray(value.missingSymbolFiles));
+};
+
+const isGetFunctionInfoResult =
+    (value: unknown): value is {frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: string[]}|
+    {missingSymbolFiles: string[]}|{frames: Chrome.DevTools.FunctionInfo[]} => {
+      if (!isObject(value)) {
+        return false;
+      }
+      if ('frames' in value && (!Array.isArray(value.frames) || !value.frames.every(isFunctionInfo))) {
+        return false;
+      }
+      if ('missingSymbolFiles' in value && !isStringArray(value.missingSymbolFiles)) {
+        return false;
+      }
+      return 'frames' in value || 'missingSymbolFiles' in value;
+    };
+
 class LanguageExtensionEndpointImpl extends ExtensionEndpoint {
   private plugin: LanguageExtensionEndpoint;
   #pluginManager: Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager;
@@ -90,12 +160,13 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   /**
    * Notify the plugin about a new script
    */
-  addRawModule(rawModuleId: string, symbolsURL: string, rawModule: Chrome.DevTools.RawModule): Promise<string[]> {
+  addRawModule(rawModuleId: string, symbolsURL: string,
+               rawModule: Chrome.DevTools.RawModule): Promise<string[]|{missingSymbolFiles: string[]}> {
     if (!this.canAccessURL(symbolsURL) || !this.canAccessURL(rawModule.url)) {
       return Promise.resolve([]);
     }
-    return this.endpoint.sendRequest(
-        PrivateAPI.LanguageExtensionPluginCommands.AddRawModule, {rawModuleId, symbolsURL, rawModule});
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.AddRawModule,
+                                     {rawModuleId, symbolsURL, rawModule}, isAddRawModuleResult);
   }
 
   /**
@@ -110,8 +181,10 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
    */
   sourceLocationToRawLocation(sourceLocation: Chrome.DevTools.SourceLocation):
       Promise<Chrome.DevTools.RawLocationRange[]> {
-    return this.endpoint.sendRequest(
-        PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation, {sourceLocation});
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation,
+                                     {sourceLocation},
+                                     (value): value is Chrome.DevTools.RawLocationRange[] =>
+                                         Array.isArray(value) && value.every(isRawLocationRange));
   }
 
   /**
@@ -119,27 +192,31 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
    */
   rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.SourceLocation[]> {
     return this.endpoint.sendRequest(
-        PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation, {rawLocation});
+        PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation, {rawLocation},
+        (value): value is Chrome.DevTools.SourceLocation[] => Array.isArray(value) && value.every(isSourceLocation));
   }
 
   getScopeInfo(type: string): Promise<Chrome.DevTools.ScopeInfo> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo, {type});
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo, {type}, isScopeInfo);
   }
 
   /**
    * List all variables in lexical scope at a given location in a raw module
    */
   listVariablesInScope(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.Variable[]> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope, {rawLocation});
+    return this.endpoint.sendRequest(
+        PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope, {rawLocation},
+        (value): value is Chrome.DevTools.Variable[] => Array.isArray(value) && value.every(isVariable));
   }
 
   /**
    * List all function names (including inlined frames) at location
    */
-  getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation): Promise<{
-    frames: Chrome.DevTools.FunctionInfo[],
-  }> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo, {rawLocation});
+  getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation):
+      Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: string[]}|{missingSymbolFiles: string[]}|
+              {frames: Chrome.DevTools.FunctionInfo[]}> {
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo, {rawLocation},
+                                     isGetFunctionInfoResult);
   }
 
   /**
@@ -147,8 +224,9 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
    *  that rawLocation is in.
    */
   getInlinedFunctionRanges(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.RawLocationRange[]> {
-    return this.endpoint.sendRequest(
-        PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges, {rawLocation});
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges, {rawLocation},
+                                     (value): value is Chrome.DevTools.RawLocationRange[] =>
+                                         Array.isArray(value) && value.every(isRawLocationRange));
   }
 
   /**
@@ -156,22 +234,29 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
    *  called by the function or inline frame that rawLocation is in.
    */
   getInlinedCalleesRanges(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.RawLocationRange[]> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges, {rawLocation});
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges, {rawLocation},
+                                     (value): value is Chrome.DevTools.RawLocationRange[] =>
+                                         Array.isArray(value) && value.every(isRawLocationRange));
   }
 
   async getMappedLines(rawModuleId: string, sourceFileURL: string): Promise<number[]|undefined> {
     return await this.endpoint.sendRequest(
-        PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines, {rawModuleId, sourceFileURL});
+        PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines, {rawModuleId, sourceFileURL},
+        (value): value is number[]|undefined => value === undefined || isNumberArray(value));
   }
 
-  async evaluate(expression: string, context: Chrome.DevTools.RawLocation, stopId: number):
-      Promise<Chrome.DevTools.RemoteObject> {
-    return await this.endpoint.sendRequest(
-        PrivateAPI.LanguageExtensionPluginCommands.FormatValue, {expression, context, stopId});
+  async evaluate(expression: string, context: Chrome.DevTools.RawLocation,
+                 stopId: number): Promise<Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|null> {
+    return await this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.FormatValue,
+                                           {expression, context, stopId},
+                                           (value): value is Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|
+                                           null => value === null || isRemoteObject(value) || isForeignObject(value));
   }
 
   getProperties(objectId: Chrome.DevTools.RemoteObjectId): Promise<Chrome.DevTools.PropertyDescriptor[]> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetProperties, {objectId});
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetProperties, {objectId},
+                                     (value): value is Chrome.DevTools.PropertyDescriptor[] =>
+                                         Array.isArray(value) && value.every(isPropertyDescriptor));
   }
 
   releaseObject(objectId: Chrome.DevTools.RemoteObjectId): Promise<void> {

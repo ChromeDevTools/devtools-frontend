@@ -477,3 +477,53 @@ describe('DebuggerLanguagePluginManager', () => {
     });
   });
 });
+
+describe('SourceScope', () => {
+  function createMockCallFrame(): SDK.DebuggerModel.CallFrame {
+    const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+    const runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel);
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    runtimeModel.target.returns(target);
+    const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+    debuggerModel.runtimeModel.returns(runtimeModel);
+    callFrame.debuggerModel = debuggerModel;
+
+    const script = sinon.createStubInstance(SDK.Script.Script);
+    script.codeOffset.returns(0);
+    Object.defineProperty(script, 'sourceURL', {value: 'test.wasm'});
+    Object.defineProperty(script, 'scriptId', {value: '1'});
+    Object.defineProperty(callFrame, 'script', {value: script});
+    callFrame.location.returns(new SDK.DebuggerModel.Location(debuggerModel, script.scriptId, 0));
+    Object.defineProperty(callFrame, 'inlineFrameIndex', {value: 0});
+    return callFrame;
+  }
+
+  it('handles Object.prototype property names in the root namespace', async () => {
+    const callFrame = createMockCallFrame();
+    const plugin = new TestPlugin('TestPlugin');
+    const scope = new Bindings.DebuggerLanguagePlugins.SourceScope(callFrame, 0n, 'LOCAL', 'Local', undefined, plugin);
+
+    scope.object().variables = [
+      {scope: 'LOCAL', name: 'v', nestedName: ['__proto__', 'polluted'], type: 'i32'},
+      {scope: 'LOCAL', name: 'w', nestedName: ['constructor', 'evil'], type: 'i32'},
+    ];
+
+    const result = await scope.object().getAllProperties(false, false);
+    assert.isNotNull(result.properties);
+    assert.sameMembers(result.properties!.map(property => property.name), ['__proto__', 'constructor']);
+  });
+
+  it('handles Object.prototype property names in a child namespace', async () => {
+    const callFrame = createMockCallFrame();
+    const plugin = new TestPlugin('TestPlugin');
+    const scope = new Bindings.DebuggerLanguagePlugins.SourceScope(callFrame, 0n, 'LOCAL', 'Local', undefined, plugin);
+
+    scope.object().variables = [
+      {scope: 'LOCAL', name: 'v', nestedName: ['safe', '__proto__', 'polluted'], type: 'i32'},
+    ];
+
+    const result = await scope.object().getAllProperties(false, false);
+    assert.isNotNull(result.properties);
+    assert.deepEqual(result.properties!.map(property => property.name), ['safe']);
+  });
+});

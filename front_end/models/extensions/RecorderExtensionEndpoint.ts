@@ -8,6 +8,8 @@ import {PrivateAPI} from './ExtensionAPI.js';
 import {ExtensionEndpoint} from './ExtensionEndpoint.js';
 import type {RecorderPluginManager} from './RecorderPluginManager.js';
 
+const isString = (value: unknown): value is string => typeof value === 'string';
+
 export class RecorderExtensionEndpoint extends ExtensionEndpoint {
   private readonly name: string;
   private readonly mediaType?: string;
@@ -63,7 +65,7 @@ export class RecorderExtensionEndpoint extends ExtensionEndpoint {
    * [1]: https://github.com/puppeteer/replay/blob/main/src/Schema.ts#L245
    */
   stringify(recording: Object): Promise<string> {
-    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.Stringify, {recording});
+    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.Stringify, {recording}, isString);
   }
 
   /**
@@ -74,7 +76,7 @@ export class RecorderExtensionEndpoint extends ExtensionEndpoint {
    * [1]: https://github.com/puppeteer/replay/blob/main/src/Schema.ts#L243
    */
   stringifyStep(step: Object): Promise<string> {
-    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.StringifyStep, {step});
+    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.StringifyStep, {step}, isString);
   }
 
   /**

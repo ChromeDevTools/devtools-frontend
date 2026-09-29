@@ -14,6 +14,13 @@ interface EventMessage {
   event: string;
 }
 
+interface Message {
+  data: Response|EventMessage;
+}
+type ResultValidator<T> = (result: unknown) => result is T;
+
+const isUndefined = (result: unknown): result is undefined => result === undefined;
+
 export class ExtensionEndpoint {
   private readonly port: Platform.HostRuntime.WorkerMessagePort;
   private nextRequestId = 0;
@@ -24,16 +31,30 @@ export class ExtensionEndpoint {
 
   constructor(port: Platform.HostRuntime.WorkerMessagePort) {
     this.port = port;
-    this.port.addEventListener('message', (event: unknown) => this.onResponse(event as MessageEvent));
+    this.port.addEventListener('message', (event: unknown) => this.onResponse(event as Message));
     (this.port as {start?: () => void}).start?.();
     (this.port as {unref?: () => void}).unref?.();
     this.pendingRequests = new Map();
   }
 
-  sendRequest<ReturnType>(method: string, parameters: unknown): Promise<ReturnType> {
-    return new Promise((resolve, reject) => {
+  sendRequest(method: string, parameters: unknown): Promise<void>;
+  sendRequest<ReturnType>(method: string, parameters: unknown,
+                          validate: ResultValidator<ReturnType>): Promise<ReturnType>;
+  sendRequest<ReturnType>(method: string, parameters: unknown,
+                          validate: ResultValidator<ReturnType>|
+                          ResultValidator<undefined> = isUndefined): Promise<ReturnType|void> {
+    return new Promise<ReturnType|void>((resolve, reject) => {
       const requestId = this.nextRequestId++;
-      this.pendingRequests.set(requestId, {resolve: resolve as (arg: unknown) => void, reject});
+      this.pendingRequests.set(requestId, {
+        resolve: (result: unknown) => {
+          if (!validate(result)) {
+            reject(new Error(`Extension returned malformed ${method} result`));
+            return;
+          }
+          resolve(result);
+        },
+        reject,
+      });
       this.port.postMessage({requestId, method, parameters});
     });
   }
@@ -46,8 +67,8 @@ export class ExtensionEndpoint {
     this.port.close();
   }
 
-  private onResponse(event: MessageEvent): void {
-    const data = event.data as Response | EventMessage;
+  private onResponse(event: Message): void {
+    const data = event.data;
     if ('event' in data) {
       this.handleEvent(data);
       return;

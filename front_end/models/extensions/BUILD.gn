@@ -68,6 +68,7 @@ devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [
+    "ExtensionEndpoint.test.ts",
     "HostUrlPattern.test.ts",
     "LanguageExtensionEndpoint.test.ts",
     "RecorderPluginManager.test.ts",
@@ -75,6 +76,7 @@ devtools_foundation_module("foundation_unittests") {
 
   ts_deps = [
     ":bundle",
+    "../../../extension-api",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",

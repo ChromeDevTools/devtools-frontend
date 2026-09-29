@@ -936,6 +936,53 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.strictEqual(requestsLink.getAttribute('role'), 'link');
   });
 
+  it('replaces the mixed content reload prompt with a request link when a request is recorded', () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
+    const securityModel = target.model(Security.SecurityModel.SecurityModel);
+    assert.exists(securityModel);
+    const pageVisibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']);
+    securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                           pageVisibleSecurityState);
+
+    function assertMixedContentExplanation() {
+      const explanations = securityPanel.mainView.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
+      assert.lengthOf(explanations, 1);
+      const explanation = explanations[0];
+      assert.isTrue(explanation.classList.contains('security-explanation-neutral'));
+
+      const title = querySelectorErrorOnMissing(explanation, '.security-explanation-title');
+      assert.strictEqual(title.textContent, 'Resources - mixed content');
+
+      const explanationText = querySelectorErrorOnMissing(explanation, '.security-explanation-text');
+      assert.include(explanationText.textContent, 'This page includes HTTP resources.');
+      return explanation;
+    }
+
+    const explanationBeforeReload = assertMixedContentExplanation();
+    const reloadPrompt = querySelectorErrorOnMissing(explanationBeforeReload, '.security-mixed-content');
+    assert.strictEqual(reloadPrompt.textContent, 'Reload the page to record requests for HTTP resources.');
+
+    // Now simulate a refresh.
+    securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                           pageVisibleSecurityState);
+    const request = createNetworkRequest({
+      url: 'http://foo.test',
+      documentURL: 'https://foo.test',
+      frameId: '0',
+      loaderId: '0',
+    });
+    request.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
+    const networkManager = securityModel.networkManager();
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+
+    const explanationAfterReload = assertMixedContentExplanation();
+    const requestsLink = querySelectorErrorOnMissing(explanationAfterReload, '.security-mixed-content');
+    assert.strictEqual(requestsLink.textContent, 'View 1 request in Network panel');
+    assert.strictEqual(requestsLink.getAttribute('role'), 'link');
+  });
+
   it('replaces active and passive mixed content reload prompts with request links when requests are recorded', () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
     renderElementIntoDOM(securityPanel);

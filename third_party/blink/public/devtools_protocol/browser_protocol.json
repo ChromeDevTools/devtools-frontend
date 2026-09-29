@@ -31374,7 +31374,7 @@
                         },
                         {
                             "name": "empty",
-                            "description": "True if the scope does not declare any variables or have a runtime context.\nOnly present if true.\nEmpty scopes are retained in the scope chain because\nthey can be targeted via `evaluateOnCallFrame` (using `scopeNumber`) or\nmatched against scopes in source maps.",
+                            "description": "True if the scope does not declare any variables.\nOnly present if true.\nEmpty scopes are retained in the scope chain because\nthey can be targeted via `evaluateOnCallFrame` (using `scopeNumber`) or\nmatched against scopes in source maps.",
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"

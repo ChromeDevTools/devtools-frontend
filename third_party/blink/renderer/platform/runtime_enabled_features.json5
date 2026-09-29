@@ -548,6 +548,13 @@
     },
     {
       name: "AISummarizationPerformancePreference",
+      status: {
+        "Win": "experimental",
+        "Mac": "experimental",
+        "Linux": "experimental",
+        "ChromeOS": "experimental",
+        "default": "",
+      },
     },
     {
       name: "AIWriterAPI",
@@ -1713,6 +1720,13 @@
       status: "experimental",
     },
     {
+      // Serialize 'flex-start' and 'flex-end' as 'flow-start' and 'flow-end'
+      // in computed styles.
+      // https://github.com/w3c/csswg-drafts/issues/14052
+      name: "CSSFlowStartAndEndSerialization",
+      depends_on: ["CSSFlowStartAndEnd"],
+    },
+    {
       // crbug.com/483689942
       // Serialize font-family names as space-separated idents when possible,
       // per CSSWG resolution. See https://github.com/w3c/csswg-drafts/issues/5846.
@@ -2624,6 +2638,12 @@
       // See https://crbug.com/443612843
       name: "EditContextAssignmentAsPerSpec",
       status: "test"
+    },
+    {
+      // Support code point-based deletion calculations in
+      // DeleteSurroundingTextInCodePoints() for EditContext.
+      name: "EditContextCodePointDeletion",
+      status: "stable",
     },
     {
       // See https://crbug.com/379170477
@@ -3916,6 +3936,13 @@
       // https://crbug.com/469111735
       name: "LazyLoadVideoAndAudio",
       status: "stable",
+    },
+    {
+      // Defers parsing of declaration blocks in inline <style> elements until
+      // a rule is first matched, the same treatment network-fetched
+      // stylesheets already get in StyleSheetContents::ParseAuthorStyleSheet.
+      // Rules that never match never pay for their declarations.
+      name: "LazyParseInlineStyleSheets",
     },
     {
       // Allow triggering the word suggestion from left click.
@@ -5778,6 +5805,13 @@
     {
       // V8 Code Cache for resource requests passing through Service Worker.
       name: "ServiceWorkerCodeCache",
+      status: "stable",
+    },
+    {
+      // Enforces SHA-256 source hash verification for V8 code caches on
+      // scripts fetched via Service Worker (crbug.com/547815507).
+      name: "ServiceWorkerCodeCacheHashing",
+      status: "stable",
     },
     {
       // Support for Service Worker APIs in Dedicated Workers.
@@ -6109,6 +6143,12 @@
     },
     {
       name: "SubApps",
+      status: "stable",
+    },
+    // Killswitch to guard capturing the subframe owner element instead of the
+    // inner element on mouse press.
+    {
+      name: "SubframeMouseCaptureOwner",
       status: "stable",
     },
     // 'pointercancel' and boundary leave ('pointerout' and 'pointerleave')

@@ -23,8 +23,8 @@ interface TabInfo {
 export interface TabbedEditorViewInput {
     openTabs: TabInfo[];
     activeTabId?: string;
-    leftToolbarItems: Array<UI.Toolbar.ToolbarItem | LitTemplate>;
-    rightToolbarItems: Array<UI.Toolbar.ToolbarItem | LitTemplate>;
+    leftToolbarItems: LitTemplate[];
+    rightToolbarItems: LitTemplate[];
     tabDelegate: UI.TabbedPane.TabbedPaneTabDelegate;
     shortcuts: Array<{
         description: Platform.UIString.LocalizedString;
@@ -45,8 +45,8 @@ export declare class TabbedEditorContainer extends TabbedEditorContainerBase {
     focus(): void;
     performUpdate(): void;
     set historyManager(historyManager: EditingLocationHistoryManager);
-    set leftToolbarItems(items: Array<UI.Toolbar.ToolbarItem | LitTemplate>);
-    set rightToolbarItems(items: Array<UI.Toolbar.ToolbarItem | LitTemplate>);
+    set leftToolbarItems(items: LitTemplate[]);
+    set rightToolbarItems(items: LitTemplate[]);
     set uiSourceCodes(uiSourceCodes: ReadonlySet<Workspace.UISourceCode.UISourceCode>);
     onEditorSelected?: (event: EditorSelectedEvent) => void;
     onEditorClosed?: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;

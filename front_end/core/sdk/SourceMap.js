@@ -675,7 +675,7 @@ export class SourceMap {
             return null;
         }
         const { line, column } = scriptRelativePosition(location);
-        return this.#scopesInfo.resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes);
+        return this.#scopesInfo.resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes, location.inlineFrameIndex);
     }
     findOriginalFunctionName(position) {
         this.#ensureSourceMapProcessed();

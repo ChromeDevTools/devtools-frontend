@@ -12,12 +12,14 @@ const UIStrings = {
      * @example {flex-wrap: nowrap} REASON_PROPERTY_DECLARATION_CODE
      * @example {align-content} AFFECTED_PROPERTY_DECLARATION_CODE
      */
+    // eslint-disable-next-line @devtools/l10n-uistrings-sentence-punctuation -- Two sentences displayed together in Styles pane
     ruleViolatedBySameElementRuleReason: 'The {REASON_PROPERTY_DECLARATION_CODE} property prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect.',
     /**
      * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to some other property.
      * @example {flex-wrap} PROPERTY_NAME
      * @example {nowrap} PROPERTY_VALUE
      */
+    // eslint-disable-next-line @devtools/l10n-uistrings-sentence-punctuation -- Two sentences displayed together in Styles pane
     ruleViolatedBySameElementRuleFix: 'Try setting {PROPERTY_NAME} to something other than {PROPERTY_VALUE}.',
     /**
      * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect due to not being a flex or grid container.
@@ -51,6 +53,7 @@ const UIStrings = {
      * @example {20} PH4
      * @example {Arial} PH5
      */
+    // eslint-disable-next-line @devtools/l10n-uistrings-sentence-punctuation -- Multiple warnings can be joined with a space in the UI to form a multi-sentence message
     fontVariationSettingsWarning: 'Value for setting "{PH1}" {PH2} is outside the supported range [{PH3}, {PH4}] for font-family "{PH5}".',
     /**
      * @description The message shown in the Styles tab when the user hovers over a property declaration that has no effect on flex or grid child items.

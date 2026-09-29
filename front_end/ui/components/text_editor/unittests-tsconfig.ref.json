@@ -61,6 +61,9 @@
       "path": "../../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../models/source_map_scopes/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../models/workspace/bundle-tsconfig.ref.json"
     },
     {
@@ -68,6 +71,9 @@
     },
     {
       "path": "../../../third_party/codemirror.next/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../third_party/source-map-scopes-codec/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../legacy/bundle-tsconfig.ref.json"

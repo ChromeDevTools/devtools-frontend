@@ -22520,9 +22520,10 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
   }
   /**
    * Given a generated position, this returns all the surrounding generated ranges from outer
-   * to inner.
+   * to inner. When `inlineFrameIndex > 0`, drops inner ranges up to the specified virtual
+   * call frame.
    */
-  #findGeneratedRangeChain(line, column) {
+  #findGeneratedRangeChain(line, column, inlineFrameIndex = 0) {
     const result = [];
     (function walkRanges(ranges) {
       for (const range of ranges) {
@@ -22533,6 +22534,15 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
         walkRanges(range.children);
       }
     })(this.#generatedRanges);
+    for (let inlineIndex = 0; inlineIndex < inlineFrameIndex; ) {
+      const range = result.pop();
+      if (!range) {
+        break;
+      }
+      if (range.callSite) {
+        ++inlineIndex;
+      }
+    }
     return result;
   }
   /**
@@ -22623,23 +22633,12 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     }
     return result;
   }
-  /** Similar to #findGeneratedRangeChain, but takes inlineFrameIndex of virtual call frames into account */
   #findGeneratedRangeChainForFrame(callFrame) {
     const { line, column } = scriptRelativePosition(callFrame.location());
-    const rangeChain = this.#findGeneratedRangeChain(line, column);
-    if (callFrame.inlineFrameIndex === 0) {
-      return rangeChain;
-    }
-    for (let inlineIndex = 0; inlineIndex < callFrame.inlineFrameIndex; ) {
-      const range = rangeChain.pop();
-      if (range?.callSite) {
-        ++inlineIndex;
-      }
-    }
-    return rangeChain;
+    return this.#findGeneratedRangeChain(line, column, callFrame.inlineFrameIndex);
   }
-  resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes = false) {
-    const rangeChain = this.#findGeneratedRangeChain(line, column);
+  resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes = false, inlineFrameIndex = 0) {
+    const rangeChain = this.#findGeneratedRangeChain(line, column, inlineFrameIndex);
     const startScope = rangeChain.at(-1)?.originalScope;
     const innerMostScope = startScope && ignoreInnerBlockScopes && this.#findFunctionScopeInOriginalScopeChain(startScope) || startScope;
     const result = [];
@@ -23470,7 +23469,12 @@ var SourceMap = class _SourceMap {
       return null;
     }
     const { line, column } = scriptRelativePosition(location);
-    return this.#scopesInfo.resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes);
+    return this.#scopesInfo.resolveMappedVariablesAtPosition(
+      line,
+      column,
+      ignoreInnerBlockScopes,
+      location.inlineFrameIndex
+    );
   }
   findOriginalFunctionName(position) {
     this.#ensureSourceMapProcessed();
@@ -24576,22 +24580,23 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     if (eligibleForLoadFromTarget) {
       const isHttp = parsedURL.scheme === "http" || parsedURL.scheme === "https";
       let mustEnforceCSP = isHttp;
-      if (isHttp && initiator.target) {
-        const networkManager = initiator.target.model(NetworkManager);
+      let frameTarget = initiator.target;
+      while (frameTarget && !frameTarget.model(ResourceTreeModel)) {
+        frameTarget = frameTarget.parentTarget();
+      }
+      const frameId = initiator.frameId ?? frameTarget?.model(ResourceTreeModel)?.mainFrame?.id ?? null;
+      if (isHttp && frameTarget) {
+        const networkManager = frameTarget.model(NetworkManager);
         if (networkManager) {
-          let status = await networkManager.getSecurityIsolationStatus(initiator.frameId);
-          if (!status && initiator.frameId) {
-            status = await networkManager.getSecurityIsolationStatus(null);
-          }
-          if (status) {
-            const csps = status.csp ?? [];
-            mustEnforceCSP = csps.some((csp) => csp.effectiveDirectives.includes("connect-src") || csp.effectiveDirectives.includes("default-src"));
+          const status = await networkManager.getSecurityIsolationStatus(frameId);
+          if (status?.csp) {
+            mustEnforceCSP = status.csp.some((csp) => csp.effectiveDirectives.includes("connect-src") || csp.effectiveDirectives.includes("default-src"));
           }
         }
       }
       try {
         Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
-        const result2 = await this.loadFromTarget(initiator.target, initiator.frameId, url, isBinary);
+        const result2 = await this.loadFromTarget(frameTarget ?? initiator.target, frameId, url, isBinary);
         return result2;
       } catch (e) {
         if (e instanceof Error) {

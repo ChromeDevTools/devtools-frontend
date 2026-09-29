@@ -10762,7 +10762,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       const setting = savedSettings[columnId];
       let columnConfig = this.columns.find((columnConfig2) => columnConfig2.id === columnId);
       if (!columnConfig && setting.title) {
-        columnConfig = this.addCustomHeader(setting.title, columnId) || void 0;
+        columnConfig = this.registerCustomHeader(setting.title, columnId) || void 0;
       }
       if (columnConfig) {
         if (columnConfig.hideable && typeof setting.visible === "boolean") {
@@ -10944,6 +10944,14 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     return true;
   }
   addCustomHeader(headerTitle, headerId, index) {
+    const columnConfig = this.registerCustomHeader(headerTitle, headerId, index);
+    if (columnConfig) {
+      this.saveColumnsSettings();
+      this.updateColumns();
+    }
+    return columnConfig;
+  }
+  registerCustomHeader(headerTitle, headerId, index) {
     if (!headerId) {
       headerId = headerTitle;
     }
@@ -10972,8 +10980,6 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     if (this.#dataGrid) {
       this.#dataGrid.addColumn(_NetworkLogViewColumns.convertToDataGridDescriptor(columnConfig), index);
     }
-    this.saveColumnsSettings();
-    this.updateColumns();
     return columnConfig;
   }
   changeCustomHeader(oldHeaderId, newHeaderTitle, newHeaderId) {

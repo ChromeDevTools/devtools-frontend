@@ -99,6 +99,9 @@
       "path": "../../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../models/formatter/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../models/javascript_metadata/bundle-tsconfig.ref.json"
     },
     {

@@ -3797,11 +3797,11 @@
   "panels/application/components/AdsView.ts | filterListRule": {
     "message": "Filter list rule"
   },
-  "panels/application/components/AdsView.ts | highlightAds": {
-    "message": "Highlight ads"
+  "panels/application/components/AdsView.ts | highlightAdRelatedResources": {
+    "message": "Highlight ad-related resources"
   },
-  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBe": {
-    "message": "Highlights elements (red) detected to be ads"
+  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBeAdRelated": {
+    "message": "Highlights elements (red) detected to be ad-related"
   },
   "panels/application/components/AdsView.ts | initialOrigin": {
     "message": "Initial origin"
@@ -4248,7 +4248,7 @@
     "message": "Frames"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
-    "message": "{n, plural, =1 {# issue found in {m} frames.} other {# issues found in {m} frames.}}"
+    "message": "{n, plural, =1 {# issue found in {m} frames} other {# issues found in {m} frames}}"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInSingleFrame": {
     "message": "{n, plural, =1 {# issue found in 1 frame} other {# issues found in 1 frame}}"

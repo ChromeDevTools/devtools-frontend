@@ -47,7 +47,7 @@ export declare class DebuggerPlugin extends Plugin {
     private workingCopyCommitted;
     private setMuted;
     private isIdentifier;
-    private getPopoverRequest;
+    getPopoverRequest(event: MouseEvent | KeyboardEvent): UI.PopoverHelper.PopoverRequest | null;
     private onEditorUpdate;
     private onWheel;
     private onKeyDown;

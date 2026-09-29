@@ -117,7 +117,7 @@ const UIStrings = {
      * 'm' is never less than 2.
      * @example {3} m
      */
-    issuesInMultipleFrames: '{n, plural, =1 {# issue found in {m} frames.} other {# issues found in {m} frames.}}',
+    issuesInMultipleFrames: '{n, plural, =1 {# issue found in {m} frames} other {# issues found in {m} frames}}',
     /**
      * @description Shows the number of frames with a particular issue.
      */

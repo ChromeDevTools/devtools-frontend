@@ -221,9 +221,10 @@ export class SourceMapScopesInfo {
     }
     /**
      * Given a generated position, this returns all the surrounding generated ranges from outer
-     * to inner.
+     * to inner. When `inlineFrameIndex > 0`, drops inner ranges up to the specified virtual
+     * call frame.
      */
-    #findGeneratedRangeChain(line, column) {
+    #findGeneratedRangeChain(line, column, inlineFrameIndex = 0) {
         const result = [];
         (function walkRanges(ranges) {
             for (const range of ranges) {
@@ -234,6 +235,16 @@ export class SourceMapScopesInfo {
                 walkRanges(range.children);
             }
         })(this.#generatedRanges);
+        // Drop ranges in the chain until we reach our desired inlined range.
+        for (let inlineIndex = 0; inlineIndex < inlineFrameIndex;) {
+            const range = result.pop();
+            if (!range) {
+                break;
+            }
+            if (range.callSite) {
+                ++inlineIndex;
+            }
+        }
         return result;
     }
     /**
@@ -329,24 +340,12 @@ export class SourceMapScopesInfo {
         }
         return result;
     }
-    /** Similar to #findGeneratedRangeChain, but takes inlineFrameIndex of virtual call frames into account */
     #findGeneratedRangeChainForFrame(callFrame) {
         const { line, column } = scriptRelativePosition(callFrame.location());
-        const rangeChain = this.#findGeneratedRangeChain(line, column);
-        if (callFrame.inlineFrameIndex === 0) {
-            return rangeChain;
-        }
-        // Drop ranges in the chain until we reach our desired inlined range.
-        for (let inlineIndex = 0; inlineIndex < callFrame.inlineFrameIndex;) {
-            const range = rangeChain.pop();
-            if (range?.callSite) {
-                ++inlineIndex;
-            }
-        }
-        return rangeChain;
+        return this.#findGeneratedRangeChain(line, column, callFrame.inlineFrameIndex);
     }
-    resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes = false) {
-        const rangeChain = this.#findGeneratedRangeChain(line, column);
+    resolveMappedVariablesAtPosition(line, column, ignoreInnerBlockScopes = false, inlineFrameIndex = 0) {
+        const rangeChain = this.#findGeneratedRangeChain(line, column, inlineFrameIndex);
         const startScope = rangeChain.at(-1)?.originalScope;
         const innerMostScope = (startScope && ignoreInnerBlockScopes && this.#findFunctionScopeInOriginalScopeChain(startScope)) || startScope;
         const result = [];

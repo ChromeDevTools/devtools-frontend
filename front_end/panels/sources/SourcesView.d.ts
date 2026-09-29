@@ -10,7 +10,6 @@ import { UISourceCodeFrame } from './UISourceCodeFrame.js';
 export interface ViewInput {
     searchProvider: UI.SearchableView.Searchable;
     replaceProvider: UI.SearchableView.Replaceable;
-    searchableViewId: string;
     scriptViewToolbarItems: UI.Toolbar.ToolbarItem[] | LitTemplate;
     isNavigatorSidebarOpen: boolean;
     isDebuggerSidebarOpen: boolean;

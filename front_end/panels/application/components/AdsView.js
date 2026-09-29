@@ -139,13 +139,13 @@ const UIStrings = {
     settings: 'Settings',
     /**
      * @description The name of a checkbox setting. This setting highlights the
-     * rendering elements for ads that are found on the page.
+     * rendering elements for ad-related resources that are found on the page.
      */
-    highlightAds: 'Highlight ads',
+    highlightAdRelatedResources: 'Highlight ad-related resources',
     /**
-     * @description Explanation text for the 'Highlight ads' setting.
+     * @description Explanation text for the 'Highlight ad-related resources' setting.
      */
-    highlightsElementsRedDetectedToBe: 'Highlights elements (red) detected to be ads',
+    highlightsElementsRedDetectedToBeAdRelated: 'Highlights elements (red) detected to be ad-related',
     /**
      * @description Text explaining that ad detection is not perfect.
      */
@@ -362,8 +362,8 @@ const DEFAULT_VIEW = (input, output, target) => {
       <devtools-checkbox class="setting-container small"
           ${bindToSetting(Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showAdHighlightsSettingDescriptor))}>
         <div class="setting-text-container">
-          <div class="setting-label">${i18nString(UIStrings.highlightAds)}</div>
-          <div class="setting-explanation">${i18nString(UIStrings.highlightsElementsRedDetectedToBe)}</div>
+          <div class="setting-label">${i18nString(UIStrings.highlightAdRelatedResources)}</div>
+          <div class="setting-explanation">${i18nString(UIStrings.highlightsElementsRedDetectedToBeAdRelated)}</div>
         </div>
       </devtools-checkbox>
       <hr class="divider">

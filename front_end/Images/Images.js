@@ -10,7 +10,6 @@ style.setProperty('--image-file-chromeLeft', 'url("' + new URL('./chromeLeft.avi
 style.setProperty('--image-file-chromeMiddle', 'url("' + new URL('./chromeMiddle.avif', import.meta.url).toString() + '")');
 style.setProperty('--image-file-chromeRight', 'url("' + new URL('./chromeRight.avif', import.meta.url).toString() + '")');
 style.setProperty('--image-file-cssoverview_icons_2x', 'url("' + new URL('./cssoverview_icons_2x.avif', import.meta.url).toString() + '")');
-style.setProperty('--image-file-nodeIcon', 'url("' + new URL('./nodeIcon.avif', import.meta.url).toString() + '")');
 style.setProperty('--image-file-touchCursor_2x', 'url("' + new URL('./touchCursor_2x.png', import.meta.url).toString() + '")');
 style.setProperty('--image-file-geminiInDevTools', 'url("' + new URL('./geminiInDevTools.png', import.meta.url).toString() + '")');
 style.setProperty('--image-file-geminiInDevTools_2x', 'url("' + new URL('./geminiInDevTools_2x.png', import.meta.url).toString() + '")');
@@ -230,6 +229,7 @@ style.setProperty('--image-file-mop', 'url("' + new URL('./mop.svg', import.meta
 style.setProperty('--image-file-mouse', 'url("' + new URL('./mouse.svg', import.meta.url).toString() + '")');
 style.setProperty('--image-file-network-settings', 'url("' + new URL('./network-settings.svg', import.meta.url).toString() + '")');
 style.setProperty('--image-file-node-stack-icon', 'url("' + new URL('./node-stack-icon.svg', import.meta.url).toString() + '")');
+style.setProperty('--image-file-nodejsHex', 'url("' + new URL('./nodejsHex.svg', import.meta.url).toString() + '")');
 style.setProperty('--image-file-open-externally', 'url("' + new URL('./open-externally.svg', import.meta.url).toString() + '")');
 style.setProperty('--image-file-override', 'url("' + new URL('./override.svg', import.meta.url).toString() + '")');
 style.setProperty('--image-file-palette', 'url("' + new URL('./palette.svg', import.meta.url).toString() + '")');

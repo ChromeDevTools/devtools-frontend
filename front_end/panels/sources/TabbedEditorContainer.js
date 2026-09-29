@@ -201,17 +201,17 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       @select=${input.onSelect}
     >
       <devtools-toolbar class="tabbed-pane-left-toolbar" slot="left">
-        ${input.leftToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+        ${input.leftToolbarItems}
       </devtools-toolbar>
       <devtools-toolbar class="tabbed-pane-right-toolbar" slot="right">
-        ${input.rightToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+        ${input.rightToolbarItems}
       </devtools-toolbar>
       ${repeat(input.openTabs, tab => tab.tabId, tab => html `
         <div id=${tab.tabId}
+             class="vbox flex-auto"
              title=${tab.title}
              ?closeable=${tab.isCloseable}
-             ?selected=${input.activeTabId === tab.tabId}
-             style="display: flex; flex: auto;">
+             ?selected=${input.activeTabId === tab.tabId}>
              ${renderTabIcon(tab)}
              ${renderTabSuffix(tab, input)}
              ${tab.widget ? html `${widget(UI.Widget.WrapperWidget, { widget: tab.widget })}` : nothing}

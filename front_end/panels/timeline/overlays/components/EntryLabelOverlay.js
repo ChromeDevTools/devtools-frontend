@@ -66,6 +66,7 @@ const UIStringsNotTranslate = {
     /**
      * @description The `Generate AI label button` tooltip disclaimer for when the feature is not available and the reason can be checked in settings.
      */
+    // eslint-disable-next-line @devtools/l10n-uistrings-sentence-punctuation -- Concatenated with learnMore in the UI to form a multi-sentence message.
     autoAnnotationNotAvailableDisclaimer: 'Auto annotations are not available.',
     /**
      * @description The `Generate AI label button` tooltip disclaimer for when the feature is not available because the user is offline.

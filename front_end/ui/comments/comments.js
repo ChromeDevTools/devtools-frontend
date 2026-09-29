@@ -670,20 +670,22 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     this.#updatePositions();
     return thread;
   }
-  #trackElementAncestors(element) {
+  #trackElementAncestors(element, activeScrollRoots) {
     if (!this.#devToolsResizeObserver || !this.#scrollListener) {
       return;
     }
     let current = element;
     while (current) {
-      if (this.#resizeObservedElements.has(current)) {
-        break;
+      if (!this.#resizeObservedElements.has(current)) {
+        this.#devToolsResizeObserver.observe(current);
+        this.#resizeObservedElements.add(current);
       }
-      this.#devToolsResizeObserver.observe(current);
-      this.#resizeObservedElements.add(current);
-      if (current.parentNode instanceof ShadowRoot && !this.#observedScrollRoots.has(current.parentNode)) {
-        current.parentNode.addEventListener("scroll", this.#scrollListener, { capture: true, passive: true });
-        this.#observedScrollRoots.add(current.parentNode);
+      if (current.parentNode instanceof ShadowRoot) {
+        activeScrollRoots?.add(current.parentNode);
+        if (!this.#observedScrollRoots.has(current.parentNode)) {
+          current.parentNode.addEventListener("scroll", this.#scrollListener, { capture: true, passive: true });
+          this.#observedScrollRoots.add(current.parentNode);
+        }
       }
       current = current.parentElementOrShadowHost();
     }
@@ -779,6 +781,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     const newHighlights = [];
     const elementPinCounts = /* @__PURE__ */ new Map();
     const rectCache = /* @__PURE__ */ new Map();
+    const activeScrollRoots = /* @__PURE__ */ new Set();
     for (const thread of this.#commentManager.getCommentThreads()) {
       if (thread.isGeneratedComment || !isDomTrackedAnchor(thread.anchor)) {
         continue;
@@ -798,7 +801,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
         observer.observe(el);
         this.#observedThreads.add(el);
       }
-      this.#trackElementAncestors(el);
+      this.#trackElementAncestors(el, activeScrollRoots);
       const visibleRect = computeVisibleRect(el, void 0, rectCache);
       if (!visibleRect) {
         continue;
@@ -821,6 +824,14 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
         height: visibleRect.height,
         visible: true
       });
+    }
+    if (this.#scrollListener) {
+      for (const root of this.#observedScrollRoots) {
+        if (!activeScrollRoots.has(root)) {
+          root.removeEventListener("scroll", this.#scrollListener, { capture: true });
+          this.#observedScrollRoots.delete(root);
+        }
+      }
     }
     this.#pinPositions = newPins;
     this.#highlightRects = newHighlights;
@@ -1109,6 +1120,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
    * Debounces rematching of comments across dynamic DOM updates.
    */
   #scheduleRematch(root = document) {
+    clearClippingAncestorsCache();
     if (this.#mutationRafId === void 0) {
       this.#mutationRafId = requestAnimationFrame(() => {
         this.#mutationRafId = void 0;

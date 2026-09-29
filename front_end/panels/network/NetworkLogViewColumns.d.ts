@@ -65,6 +65,7 @@ export declare class NetworkLogViewColumns {
     private manageResponseCustomHeaderDialog;
     private removeCustomHeader;
     private addCustomHeader;
+    private registerCustomHeader;
     private changeCustomHeader;
     private getPopoverRequest;
     addEventDividers(times: number[], className: string): void;

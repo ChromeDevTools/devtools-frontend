@@ -3503,6 +3503,7 @@ __export(javascript_exports, {
 });
 import * as SDK from "../../../core/sdk/sdk.js";
 import * as Bindings from "../../../models/bindings/bindings.js";
+import * as Formatter from "../../../models/formatter/formatter.js";
 import * as JavaScriptMetaData from "../../../models/javascript_metadata/javascript_metadata.js";
 import * as SourceMapScopes from "../../../models/source_map_scopes/source_map_scopes.js";
 import * as CodeMirror6 from "../../../third_party/codemirror.next/codemirror.next.js";
@@ -3801,7 +3802,18 @@ var SPAN_DOUBLE_QUOTE = /^"(\\.|[^\\"\n])*"?$/;
 function getExecutionContext() {
   return UI8.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
 }
-async function evaluateExpression(context, expression, group) {
+async function evaluateExpression(context, expression, group, substituteNames = true) {
+  const callFrame = context.debuggerModel.selectedCallFrame();
+  if (substituteNames && callFrame?.script.isJavaScript()) {
+    const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+      callFrame,
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+    );
+    try {
+      expression = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);
+    } catch {
+    }
+  }
   const result = await context.evaluateWithSelectedFrameFallback(
     {
       expression,
@@ -3830,27 +3842,16 @@ var primitivePrototypes = /* @__PURE__ */ new Map([
   ["bigint", "BigInt"]
 ]);
 var maxCacheAge = 3e4;
-var cacheInstance = null;
+var cacheByTargetManager = /* @__PURE__ */ new WeakMap();
 var PropertyCache = class _PropertyCache {
   #cache = /* @__PURE__ */ new Map();
-  constructor() {
+  constructor(targetManager) {
     const clear = () => this.#cache.clear();
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-      SDK.ConsoleModel.ConsoleModel,
-      SDK.ConsoleModel.Events.CommandEvaluated,
-      clear
-    );
+    targetManager.addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, clear);
     UI8.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, clear);
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-      SDK.DebuggerModel.DebuggerModel,
-      SDK.DebuggerModel.Events.DebuggerResumed,
-      clear
-    );
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-      SDK.DebuggerModel.DebuggerModel,
-      SDK.DebuggerModel.Events.DebuggerPaused,
-      clear
-    );
+    targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, clear);
+    targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, clear);
+    targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.CallFrameSelected, clear);
   }
   get(expression) {
     return this.#cache.get(expression);
@@ -3864,10 +3865,13 @@ var PropertyCache = class _PropertyCache {
     }, maxCacheAge);
   }
   static instance() {
-    if (!cacheInstance) {
-      cacheInstance = new _PropertyCache();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    let cache = cacheByTargetManager.get(targetManager);
+    if (!cache) {
+      cache = new _PropertyCache(targetManager);
+      cacheByTargetManager.set(targetManager, cache);
     }
-    return cacheInstance;
+    return cache;
   }
 };
 async function maybeCompleteKeysFromMap(objectVariable) {
@@ -3914,7 +3918,7 @@ async function completePropertiesInner(expression, context, quoted, hasBracket =
   if (!context) {
     return result;
   }
-  let object = await evaluateExpression(context, expression, "completion");
+  let object = await evaluateExpression(context, expression, "completion", expression !== "globalThis");
   if (!object) {
     return result;
   }
@@ -3928,7 +3932,13 @@ async function completePropertiesInner(expression, context, quoted, hasBracket =
   }
   const toPrototype = primitivePrototypes.get(object.type);
   if (toPrototype) {
-    object = await evaluateExpression(context, toPrototype + ".prototype", "completion");
+    object = await evaluateExpression(
+      context,
+      toPrototype + ".prototype",
+      "completion",
+      /* substituteNames */
+      false
+    );
   }
   const functionType = expression === "globalThis" ? "function" : "method";
   const otherType = expression === "globalThis" ? "variable" : "property";
@@ -3961,12 +3971,13 @@ async function completeExpressionInScope() {
   if (!selectedFrame) {
     return result;
   }
-  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-  const scopes = await Promise.all(selectedFrame.scopeChain().map(
-    (scope) => SourceMapScopes.NamesResolver.resolveScopeInObject(scope, debuggerWorkspaceBinding).getAllProperties(false, false)
-  ));
+  const scopeChain = await SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance().resolveScopeChain(selectedFrame);
+  const scopes = await Promise.all(scopeChain.map((scope) => scope.object().getAllProperties(false, false)));
   for (const scope of scopes) {
     for (const property of scope.properties || []) {
+      if (!property.value && !property.getter) {
+        continue;
+      }
       result.add({
         label: property.name,
         type: property.value?.type === "function" ? "function" : "variable"

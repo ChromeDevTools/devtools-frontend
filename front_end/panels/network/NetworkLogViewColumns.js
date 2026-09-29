@@ -545,7 +545,7 @@ export class NetworkLogViewColumns {
             const setting = savedSettings[columnId];
             let columnConfig = this.columns.find(columnConfig => columnConfig.id === columnId);
             if (!columnConfig && setting.title) {
-                columnConfig = this.addCustomHeader(setting.title, columnId) || undefined;
+                columnConfig = this.registerCustomHeader(setting.title, columnId) || undefined;
             }
             if (columnConfig) {
                 if (columnConfig.hideable && typeof setting.visible === 'boolean') {
@@ -674,6 +674,14 @@ export class NetworkLogViewColumns {
         return true;
     }
     addCustomHeader(headerTitle, headerId, index) {
+        const columnConfig = this.registerCustomHeader(headerTitle, headerId, index);
+        if (columnConfig) {
+            this.saveColumnsSettings();
+            this.updateColumns();
+        }
+        return columnConfig;
+    }
+    registerCustomHeader(headerTitle, headerId, index) {
         if (!headerId) {
             headerId = headerTitle;
         }
@@ -707,8 +715,6 @@ export class NetworkLogViewColumns {
         if (this.#dataGrid) {
             this.#dataGrid.addColumn(NetworkLogViewColumns.convertToDataGridDescriptor(columnConfig), index);
         }
-        this.saveColumnsSettings();
-        this.updateColumns();
         return columnConfig;
     }
     changeCustomHeader(oldHeaderId, newHeaderTitle, newHeaderId) {

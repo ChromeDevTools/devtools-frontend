@@ -57,7 +57,7 @@ export declare class SourceMapScopesInfo {
      *      values.
      */
     resolveMappedScopeChain(callFrame: CallFrame): ScopeChainEntry[] | null;
-    resolveMappedVariablesAtPosition(line: number, column: number, ignoreInnerBlockScopes?: boolean): Array<Map<string, string | null>> | null;
+    resolveMappedVariablesAtPosition(line: number, column: number, ignoreInnerBlockScopes?: boolean, inlineFrameIndex?: number): Array<Map<string, string | null>> | null;
     /**
      * Returns the authored function name of the function containing the provided generated position.
      */

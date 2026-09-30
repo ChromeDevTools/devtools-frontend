@@ -19,18 +19,29 @@ import {
   ParsedErrorStackFragmentImpl,
   StackTraceImpl,
 } from './StackTraceImpl.js';
-import {EvalOrigin, type FrameKind, type FrameNode, type RawFrame, Trie} from './Trie.js';
+import {EvalOrigin, FrameKind, type FrameNode, type FunctionKeys, type RawFrame, Trie} from './Trie.js';
 
 /** Named `TranslatedUIFrame` to avoid confusion with `SDK.SourceMapScopesInfo.TranslatedFrame`. */
 export type TranslatedUIFrame =
     Pick<StackTrace.StackTrace.Frame, 'url'|'uiSourceCode'|'name'|'line'|'column'|'missingDebugInfo'>;
 
-/** The translation of a single {@link RawFrame}. */
-export interface TranslatedRawFrame {
-  readonly kind: FrameKind;
-  /** [top, ...inlinedCallers] in top-to-bottom order. MUST be empty for HIDDEN and non-empty otherwise. */
-  readonly frames: TranslatedUIFrame[];
-}
+/**
+ * The translation of a single {@link RawFrame}. `frames` is [top, ...inlinedCallers] in top-to-bottom order. It MUST
+ * NOT be empty for VISIBLE and OUTLINED.
+ */
+export type TranslatedRawFrame = {
+  readonly kind: FrameKind.HIDDEN,
+  readonly frames: readonly [],
+}|{
+  readonly kind: FrameKind.VISIBLE,
+  readonly frames: TranslatedUIFrame[],
+  /** Makes the frame eligible to end an outlined chain. */
+  readonly functionKeys?: FunctionKeys,
+}|{
+  readonly kind: FrameKind.OUTLINED,
+  readonly frames: TranslatedUIFrame[],
+  readonly functionKeys: FunctionKeys,
+};
 
 /**
  * A stack trace translation function.
@@ -217,7 +228,9 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
 
     const rawFrames = fragment.node.getCallStack().map(node => node.rawFrame).toArray();
     const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
-    console.assert(rawFrames.length === uiFrames.length, 'Broken rawFramesToUIFrames implementation');
+    if (rawFrames.length !== uiFrames.length) {
+      throw new Error('Broken rawFramesToUIFrames implementation');
+    }
 
     const evalOriginPromises: Array<Promise<EvalOrigin|undefined>> = [];
     for (const node of fragment.node.getCallStack()) {
@@ -233,12 +246,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     let i = 0;
     let evalI = 0;
     for (const node of fragment.node.getCallStack()) {
-      const group = uiFrames[i++].frames;
-      node.frames =
-          group.map((frame, index) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column,
-                                                    frame.missingDebugInfo, node.rawFrame.functionName,
-                                                    node.rawFrame.isWasm, index < group.length - 1));
-
+      applyTranslation(node, uiFrames[i++]);
       if (node.parsedFrameInfo?.evalOrigin) {
         node.evalOrigin = evalOrigins[evalI++];
       }
@@ -272,14 +280,33 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
   }
 }
 
-async function translateEvalOrigin(
-    rawFrame: RawFrame, rawFramesToUIFrames: TranslateRawFrames,
-    target: SDK.Target.Target): Promise<EvalOrigin|undefined> {
-  const uiFrames = await rawFramesToUIFrames([rawFrame], target);
-  const group = uiFrames[0].frames;
-  const frames = group.map((frame, index) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line,
-                                                           frame.column, frame.missingDebugInfo, rawFrame.functionName,
-                                                           rawFrame.isWasm, index < group.length - 1));
+function toFrameImpls(rawFrame: RawFrame, frames: readonly TranslatedUIFrame[]): FrameImpl[] {
+  return frames.map((f, index) => new FrameImpl(f.url, f.uiSourceCode, f.name, f.line, f.column, f.missingDebugInfo,
+                                                rawFrame.functionName, rawFrame.isWasm, index < frames.length - 1));
+}
+
+/** Stores a context-free translation on `node`. A VISIBLE or OUTLINED translation without frames becomes HIDDEN. */
+function applyTranslation(node: FrameNode, translation: TranslatedRawFrame): void {
+  if (translation.kind === FrameKind.HIDDEN || translation.frames.length === 0) {
+    console.assert(translation.kind === FrameKind.HIDDEN, 'Non-HIDDEN translation without frames');
+    node.kind = FrameKind.HIDDEN;
+    node.frames = [];
+    node.functionKeys = undefined;
+    return;
+  }
+  node.kind = translation.kind;
+  node.frames = toFrameImpls(node.rawFrame, translation.frames);
+  node.functionKeys = translation.functionKeys;
+}
+
+async function translateEvalOrigin(rawFrame: RawFrame, rawFramesToUIFrames: TranslateRawFrames,
+                                   target: SDK.Target.Target): Promise<EvalOrigin> {
+  const [translation] = await rawFramesToUIFrames([rawFrame], target);
+  // A HIDDEN eval origin still shows where the eval happened, in generated coordinates.
+  const frames = translation.frames.length ?
+      toFrameImpls(rawFrame, translation.frames) :
+      [new FrameImpl(rawFrame.url, undefined, rawFrame.functionName, rawFrame.lineNumber, rawFrame.columnNumber,
+                     undefined, rawFrame.functionName, rawFrame.isWasm, false)];
 
   let parentEvalOrigin: EvalOrigin|undefined;
   if (rawFrame.parsedFrameInfo?.evalOrigin) {

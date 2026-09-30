@@ -51,6 +51,15 @@ export const enum FrameKind {
   HIDDEN = 'HIDDEN',
 }
 
+/**
+ * Opaque identities of authored functions, compared only for equality.
+ * `top` identifies the function of `frames[0]`, `bottom` the function of `frames.at(-1)`.
+ */
+export interface FunctionKeys {
+  readonly top: string;
+  readonly bottom: string;
+}
+
 export class EvalOrigin {
   readonly frames: FrameImpl[];
   readonly evalOrigin?: EvalOrigin;
@@ -74,7 +83,11 @@ export class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode> {
   readonly children: FrameNode[] = [];
 
   readonly rawFrame: RawFrame;
+  /** Context-free translation: [top, ...inlinedCallers]. Empty iff `kind === HIDDEN` (or not translated yet). */
   frames: FrameImpl[] = [];
+  kind: FrameKind = FrameKind.VISIBLE;
+  /** Set iff `kind` is OUTLINED, or VISIBLE and translated with scopes information. */
+  functionKeys?: FunctionKeys;
 
   fragment?: FragmentImpl;
   parsedFrameInfo?: ParsedFrameInfo;

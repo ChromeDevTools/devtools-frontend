@@ -232,15 +232,71 @@ describe('StackTraceModel', () => {
     it('throws if the translation function returns the wrong number of frames', async () => {
       const {model} = setup();
 
+      let error: unknown;
       try {
         await model.createFromProtocolRuntime(
             {
               callFrames: [protocolCallFrame('foo.js:1:foo:1:10')],
             },
             () => Promise.resolve([]));
-        assert.fail('Expected translateFragment to throw');
-      } catch {
+      } catch (e) {
+        error = e;
       }
+      assert.instanceOf(error, Error);
+    });
+
+    it('stores the kind and function keys of each translated frame on the trie nodes', async () => {
+      const {model} = setup();
+      const keys = {top: 'outer', bottom: 'outer'};
+      const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = frames =>
+          Promise.resolve(frames.map(({url, functionName: name, lineNumber: line, columnNumber: column}) => {
+            if (name === 'outlined') {
+              return {
+                kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+                frames: [{url, name, line, column}],
+                functionKeys: keys,
+              };
+            }
+            if (name === 'helper') {
+              return {kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []};
+            }
+            return {
+              kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+              frames: [{url, name, line, column}],
+              functionKeys: keys,
+            };
+          }));
+
+      const stackTrace = await model.createFromProtocolRuntime({
+        callFrames: ['foo.js:1:outlined:1:10', 'foo.js:1:helper:2:20', 'foo.js:1:outer:3:30'].map(protocolCallFrame),
+      },
+                                                               translateFn);
+
+      const nodes = [...(stackTrace.syncFragment as StackTraceImpl.StackTraceImpl.FragmentImpl).node!.getCallStack()];
+      assert.deepEqual(nodes.map(n => n.kind), [
+        StackTraceImpl.Trie.FrameKind.OUTLINED,
+        StackTraceImpl.Trie.FrameKind.HIDDEN,
+        StackTraceImpl.Trie.FrameKind.VISIBLE,
+      ]);
+      assert.deepEqual(nodes.map(n => n.functionKeys), [keys, undefined, keys]);
+      assert.deepEqual(nodes.map(n => n.frames.map(f => f.name)), [['outlined'], [], ['outer']]);
+    });
+
+    it('turns a VISIBLE translation without frames into a HIDDEN one', async () => {
+      const {model} = setup();
+      const assertStub = sinon.stub(console, 'assert');
+      const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = frames => Promise.resolve(frames.map(
+          () => ({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: [], functionKeys: {top: 'a', bottom: 'a'}})));
+
+      const stackTrace = await model.createFromProtocolRuntime({
+        callFrames: [protocolCallFrame('foo.js:1:visibleWithoutFrames:2:20')],
+      },
+                                                               translateFn);
+
+      const [node] = (stackTrace.syncFragment as StackTraceImpl.StackTraceImpl.FragmentImpl).node!.getCallStack();
+      assert.strictEqual(node.kind, StackTraceImpl.Trie.FrameKind.HIDDEN);
+      assert.isUndefined(node.functionKeys);
+      sinon.assert.calledOnceWithExactly(assertStub, false, 'Non-HIDDEN translation without frames');
     });
 
     it('forwards missing debug info', async () => {
@@ -660,6 +716,30 @@ describe('StackTraceModel', () => {
       // NOTE: Because evalOrigin only surfaces a single ParsedErrorStackFrame,
       // the remaining inlined frames ('outerEval' at 'foo.js:10:5') are technically dropped in the public API!
       // This is a known limitation of having evalOrigin as a single frame rather than an array.
+    });
+
+    it('shows the raw location of an evalOrigin frame that translates to a HIDDEN frame', async () => {
+      const {model} = setup();
+
+      const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = frames => Promise.resolve(frames.map(f => {
+        if (f.functionName === 'helper') {
+          return {kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []};
+        }
+        return visible([{url: f.url, name: f.functionName, line: f.lineNumber, column: f.columnNumber}]);
+      }));
+
+      const stackTrace = await model.createFromErrorStackLikeString(`Error: foo
+              at eval (eval at helper (foo.js:10:5), <anonymous>:1:1)`,
+                                                                    translateFn);
+
+      assert.exists(stackTrace);
+      const evalOrigin = stackTrace.syncFragment.frames[0].evalOrigin;
+      assert.exists(evalOrigin);
+      assert.strictEqual(evalOrigin.name, 'helper');
+      assert.strictEqual(evalOrigin.rawName, 'helper');
+      assert.isTrue(evalOrigin.url?.endsWith('foo.js'));
+      assert.strictEqual(evalOrigin.line, 9);
+      assert.strictEqual(evalOrigin.column, 4);
     });
 
     it('correctly translates complex recursive nested evalOrigin frames', async () => {

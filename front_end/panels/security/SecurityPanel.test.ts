@@ -76,6 +76,41 @@ describeWithEnvironment('SecurityOriginView', () => {
         row => [...row.cells].map(cell => cell.textContent ?? ''));
   }
 
+  describe('security state section', () => {
+    const cases = [
+      {
+        securityState: Protocol.Security.SecurityState.Secure,
+        title: 'Secure',
+        description: 'This origin is a non-HTTPS secure origin.',
+      },
+      {
+        securityState: Protocol.Security.SecurityState.Insecure,
+        title: 'Not secure',
+        description: 'Your connection to this origin isn’t secure.',
+      },
+      {
+        securityState: Protocol.Security.SecurityState.Unknown,
+        title: 'No security information',
+        description: 'No security details are available for this origin.',
+      },
+    ];
+    for (const {securityState, title, description} of cases) {
+      it(`renders when securityState is ${securityState} without security details`, () => {
+        const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, {
+          securityState,
+          securityDetails: null,
+          loadedFromCache: false,
+        });
+        const section = querySelectorErrorOnMissing(view.element, '.security-state-section');
+        const heading = querySelectorErrorOnMissing(section, '.origin-view-section-title');
+        assert.strictEqual(heading.textContent, title);
+        assert.strictEqual(heading.getAttribute('role'), 'heading');
+        assert.strictEqual(heading.getAttribute('aria-level'), '2');
+        assert.include(section.textContent, description);
+      });
+    }
+  });
+
   describe('connection section', () => {
     function getConnectionDetailsRows(securityDetails: Partial<Protocol.Network.SecurityDetails> = {}): string[][] {
       const view =

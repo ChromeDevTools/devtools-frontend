@@ -1456,11 +1456,11 @@ Node.prototype.removeChildren = function(): void {
 };
 
 export interface WrapperWidgetParams {
-  widget: Widget;
+  widget: AnyWidget;
 }
 
 export class WrapperWidget extends Widget {
-  #widget: Widget|null = null;
+  #widget: AnyWidget|null = null;
   constructor(element: HTMLElement, _deps: never[], params?: WrapperWidgetParams) {
     super(element);
     this.element.style.setProperty('display', 'contents');
@@ -1469,7 +1469,7 @@ export class WrapperWidget extends Widget {
     }
   }
 
-  set widget(widget: Widget|null) {
+  set widget(widget: AnyWidget|null) {
     if (this.#widget === widget) {
       return;
     }

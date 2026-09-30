@@ -106,4 +106,75 @@ describeWithEnvironment('SoftDropDown', () => {
     // Type 't' -> 'third'
     checkKeyDown('t', 'third');
   });
+
+  it('selects item on tap (mousedown and mouseup without mousemove movement)', () => {
+    const model = new UI.ListModel.ListModel<Item>();
+    const delegate = new Delegate();
+    const dropDown = new UI.SoftDropDown.SoftDropDown(model, delegate);
+    for (const item of items) {
+      model.insertWithComparator(item, (a, b) => a.index - b.index);
+    }
+
+    dropDown.selectItem(items[0]);  // Select 'first'
+    assert.strictEqual(dropDown.getSelectedItem()?.title, 'first');
+
+    const list = (dropDown as unknown as {list: UI.ListControl.ListControl<Item>}).list;
+    list.element.style.height = '200px';
+
+    // Open dropdown
+    dropDown.element.dispatchEvent(new MouseEvent('mousedown'));
+    assert.strictEqual(dropDown.element.getAttribute('aria-expanded'), 'true');
+
+    const itemElements = list.element.querySelectorAll('.item');
+    const thirdElement = Array.from(itemElements).find(el => el.textContent === 'third');
+    assert.exists(thirdElement);
+
+    // Simulate touch tap: mousemove with 0 movement, followed by mousedown and mouseup
+    thirdElement.dispatchEvent(new MouseEvent('mousemove', {bubbles: true, movementX: 0, movementY: 0}));
+    thirdElement.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+    thirdElement.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+
+    assert.strictEqual(dropDown.getSelectedItem()?.title, 'third');
+    assert.strictEqual(dropDown.element.getAttribute('aria-expanded'), 'false');
+  });
+
+  it('ignores clicks on disabled items and non-primary mouse buttons', () => {
+    const model = new UI.ListModel.ListModel<Item>();
+    const delegate = new Delegate();
+    const dropDown = new UI.SoftDropDown.SoftDropDown(model, delegate);
+    for (const item of items) {
+      model.insertWithComparator(item, (a, b) => a.index - b.index);
+    }
+
+    dropDown.selectItem(items[0]);  // Select 'first'
+    const list = (dropDown as unknown as {list: UI.ListControl.ListControl<Item>}).list;
+    list.element.style.height = '200px';
+
+    dropDown.element.dispatchEvent(new MouseEvent('mousedown'));
+    assert.strictEqual(dropDown.element.getAttribute('aria-expanded'), 'true');
+
+    const itemElements = Array.from(list.element.querySelectorAll('.item'));
+    const secondElement = itemElements.find(el => el.textContent === 'second');
+    const thirdElement = itemElements.find(el => el.textContent === 'third');
+    const disabledElement = itemElements.find(el => el.textContent === 'disabled 4.5');
+    assert.exists(secondElement);
+    assert.exists(thirdElement);
+    assert.exists(disabledElement);
+
+    // Highlight 'second' via hover, then click disabled item: should not select 'second' or close
+    secondElement.dispatchEvent(new MouseEvent('mousemove', {bubbles: true, movementX: 1, movementY: 0}));
+    assert.strictEqual(list.selectedItem()?.title, 'second');
+
+    disabledElement.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, button: 0}));
+    disabledElement.dispatchEvent(new MouseEvent('mouseup', {bubbles: true, button: 0}));
+    assert.strictEqual(dropDown.getSelectedItem()?.title, 'first');
+    assert.strictEqual(dropDown.element.getAttribute('aria-expanded'), 'true');
+
+    // Right-click (button: 2) on 'third' should not highlight, select, or close
+    thirdElement.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, button: 2}));
+    thirdElement.dispatchEvent(new MouseEvent('mouseup', {bubbles: true, button: 2}));
+    assert.strictEqual(list.selectedItem()?.title, 'second');
+    assert.strictEqual(dropDown.getSelectedItem()?.title, 'first');
+    assert.strictEqual(dropDown.element.getAttribute('aria-expanded'), 'true');
+  });
 });

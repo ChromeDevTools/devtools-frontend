@@ -90,14 +90,22 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     this.list.element.addEventListener('focusout', this.hide.bind(this), false);
     this.list.element.addEventListener('mousedown', event => event.consume(true), false);
     this.list.element.addEventListener('mouseup', event => {
-      if (event.target === this.list.element) {
+      if (event.button !== 0 || event.target === this.list.element) {
+        return;
+      }
+      const item = this.list.itemForNode(event.target as Node | null);
+      if (!item || !this.delegate.isItemSelectable(item)) {
         return;
       }
 
       this.selectHighlightedItem();
-      if (event.target instanceof Element && event.target?.parentElement) {
-        // hide() will consume the mouseup event and click won't be triggered
-        void VisualLogging.logClick(event.target.parentElement, event);
+      if (event.target instanceof Element) {
+        const loggable = event.target.closest('[jslog]') ?? event.target.closest('.item')?.querySelector('[jslog]') ??
+            event.target.parentElement;
+        if (loggable) {
+          // hide() will consume the mouseup event and click won't be triggered
+          void VisualLogging.logClick(loggable, event);
+        }
       }
       this.hide(event);
     }, false);
@@ -263,6 +271,11 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     element.classList.add('item');
     element.addEventListener('mousemove', e => {
       if ((e.movementX || e.movementY) && this.delegate.isItemSelectable(item)) {
+        this.list.selectItem(item, false, /* Don't scroll */ true);
+      }
+    });
+    element.addEventListener('mousedown', e => {
+      if (e.button === 0 && this.delegate.isItemSelectable(item)) {
         this.list.selectItem(item, false, /* Don't scroll */ true);
       }
     });

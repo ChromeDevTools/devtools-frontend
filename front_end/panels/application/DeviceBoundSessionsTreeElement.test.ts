@@ -73,8 +73,9 @@ describeWithEnvironment('DeviceBoundSessionsTreeElement', () => {
   });
 
   it('adds a tree element when a site becomes visible after data is already loaded', () => {
+    const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
-    root.onbind();
+    treeOutline.appendChild(root);
 
     const sessions = [
       makeSession('example1.com', 'session_1'),
@@ -93,11 +94,14 @@ describeWithEnvironment('DeviceBoundSessionsTreeElement', () => {
     assert.strictEqual(siteNode1.title, 'example1.com');
     assert.strictEqual(siteNode1.childCount(), 1);
     assert.strictEqual(siteNode1.children()[0].title, 'session_1');
+    assert.isNotNull(siteNode1.children()[0].listItemElement.querySelector('.selection'));
     const siteNode2 = root.children()[1];
     assert.strictEqual(siteNode2.title, 'example2.com');
     assert.strictEqual(siteNode2.childCount(), 2);
     assert.strictEqual(siteNode2.children()[0].title, 'session_1');
     assert.strictEqual(siteNode2.children()[1].title, 'session_2');
+    assert.isNotNull(siteNode2.children()[0].listItemElement.querySelector('.selection'));
+    assert.isNotNull(siteNode2.children()[1].listItemElement.querySelector('.selection'));
   });
 
   it('removes empty tree elements on CLEAR_EVENTS', () => {

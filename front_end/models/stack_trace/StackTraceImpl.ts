@@ -108,6 +108,8 @@ export interface LogicalFrame {
   readonly nodeIndex: number;
   /** Index of `frame` in `node.frames`. Equals `CallFrame.inlineFrameIndex`. */
   readonly inlineIndex: number;
+  /** Set only on the last frame of a group: the node that physically invoked this logical frame. */
+  readonly invocationNode?: FrameNode;
 }
 
 /**
@@ -124,7 +126,13 @@ export function consolidate(callStack: readonly FrameNode[]): LogicalFrame[] {
       continue;
     }
     if (node.kind === FrameKind.VISIBLE || !node.functionKeys) {
-      node.frames.forEach((frame, inlineIndex) => result.push({frame, node, nodeIndex: i, inlineIndex}));
+      node.frames.forEach((frame, inlineIndex) => result.push({
+        frame,
+        node,
+        nodeIndex: i,
+        inlineIndex,
+        invocationNode: inlineIndex === node.frames.length - 1 ? node : undefined,
+      }));
       continue;
     }
 
@@ -157,6 +165,7 @@ export function consolidate(callStack: readonly FrameNode[]): LogicalFrame[] {
       ...rest,
       frame: new FrameImpl(f.url, f.uiSourceCode, f.name, f.line, f.column, f.missingDebugInfo, rawName, f.isWasm,
                            idx < group.length - 1),
+      invocationNode: idx === group.length - 1 ? terminator : undefined,
     }));
   }
   return result;
@@ -179,9 +188,10 @@ function createParsedErrorStackFrameImplFromEvalOrigin(
     return undefined;
   }
   const frame = evalOrigin.frames[0];
-  const nestedOrigin = createParsedErrorStackFrameImplFromEvalOrigin(
-      evalOrigin.evalOrigin, parsedFrameInfo?.evalOrigin?.parsedFrameInfo);
-  return new ParsedErrorStackFrameImpl(frame, parsedFrameInfo?.evalOrigin?.parsedFrameInfo, nestedOrigin);
+  const info = parsedFrameInfo?.evalOrigin?.parsedFrameInfo;
+  const nestedOrigin = createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin.evalOrigin, info);
+  // An eval origin is a single location that is also its own invocation.
+  return new ParsedErrorStackFrameImpl(frame, info, info, nestedOrigin);
 }
 
 export class ParsedErrorStackFragmentImpl implements StackTrace.StackTrace.ParsedErrorStackFragment {
@@ -193,27 +203,33 @@ export class ParsedErrorStackFragmentImpl implements StackTrace.StackTrace.Parse
       return [];
     }
 
-    const frames: ParsedErrorStackFrameImpl[] = [];
-
-    for (const node of this.fragment.node.getCallStack()) {
-      const evalOrigin = createParsedErrorStackFrameImplFromEvalOrigin(node.evalOrigin, node.parsedFrameInfo);
-      for (const frame of node.frames) {
-        frames.push(new ParsedErrorStackFrameImpl(frame, node.parsedFrameInfo, evalOrigin));
+    const evalOrigins = new Map<FrameNode, ParsedErrorStackFrameImpl|undefined>();
+    return consolidate([...this.fragment.node.getCallStack()]).map(({frame, node, invocationNode}) => {
+      if (!evalOrigins.has(node)) {
+        evalOrigins.set(node, createParsedErrorStackFrameImplFromEvalOrigin(node.evalOrigin, node.parsedFrameInfo));
       }
-    }
-
-    return frames;
+      return new ParsedErrorStackFrameImpl(frame, node.parsedFrameInfo, invocationNode?.parsedFrameInfo,
+                                           evalOrigins.get(node));
+    });
   }
 }
 
+/**
+ * Location properties (e.g. `isAsync`) describe where execution is, and come from the node a frame was translated
+ * from. Invocation properties (e.g. `isConstructor`) describe how the physical function was called, and only exist
+ * on the last frame of a group of inlined or merged frames.
+ */
 export class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.ParsedErrorStackFrame {
   readonly #frame: FrameImpl;
-  readonly #parsedFrameInfo?: ParsedFrameInfo;
+  readonly #locationInfo?: ParsedFrameInfo;
+  readonly #invocationInfo?: ParsedFrameInfo;
   readonly #evalOrigin?: ParsedErrorStackFrameImpl;
 
-  constructor(frame: FrameImpl, parsedFrameInfo?: ParsedFrameInfo, evalOrigin?: ParsedErrorStackFrameImpl) {
+  constructor(frame: FrameImpl, locationInfo?: ParsedFrameInfo, invocationInfo?: ParsedFrameInfo,
+              evalOrigin?: ParsedErrorStackFrameImpl) {
     this.#frame = frame;
-    this.#parsedFrameInfo = parsedFrameInfo;
+    this.#locationInfo = locationInfo;
+    this.#invocationInfo = invocationInfo;
     this.#evalOrigin = evalOrigin;
   }
 
@@ -240,13 +256,13 @@ export class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.ParsedEr
   }
 
   get isAsync(): boolean|undefined {
-    return this.#parsedFrameInfo?.isAsync;
+    return this.#locationInfo?.isAsync;
   }
   get isConstructor(): boolean|undefined {
-    return this.#parsedFrameInfo?.isConstructor;
+    return this.#invocationInfo?.isConstructor;
   }
   get isEval(): boolean|undefined {
-    return this.#parsedFrameInfo?.isEval;
+    return this.#locationInfo?.isEval;
   }
   get evalOrigin(): ParsedErrorStackFrameImpl|undefined {
     return this.#evalOrigin;
@@ -258,19 +274,19 @@ export class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.ParsedEr
     return this.#frame.isInline;
   }
   get wasmModuleName(): string|undefined {
-    return this.#parsedFrameInfo?.wasmModuleName;
+    return this.#locationInfo?.wasmModuleName;
   }
   get wasmFunctionIndex(): number|undefined {
-    return this.#parsedFrameInfo?.wasmFunctionIndex;
+    return this.#locationInfo?.wasmFunctionIndex;
   }
   get typeName(): string|undefined {
-    return this.#parsedFrameInfo?.typeName;
+    return this.#invocationInfo?.typeName;
   }
   get methodName(): string|undefined {
-    return this.#parsedFrameInfo?.methodName;
+    return this.#invocationInfo?.methodName;
   }
   get promiseIndex(): number|undefined {
-    return this.#parsedFrameInfo?.promiseIndex;
+    return this.#locationInfo?.promiseIndex;
   }
 }
 
@@ -288,20 +304,12 @@ export class DebuggableFragmentImpl implements StackTrace.StackTrace.DebuggableF
       return [];
     }
 
-    const frames: DebuggableFrameImpl[] = [];
-
-    let index = 0;
-    for (const node of this.fragment.node.getCallStack()) {
-      for (const [inlineIdx, frame] of node.frames.entries()) {
-        // Create virtual frames for inlined frames.
-        const sdkFrame = inlineIdx === 0 ? this.callFrames[index] :
-                                           this.callFrames[index].createVirtualCallFrame(inlineIdx, frame.name ?? '');
-        frames.push(new DebuggableFrameImpl(frame, sdkFrame));
-      }
-      index++;
-    }
-
-    return frames;
+    return consolidate([...this.fragment.node.getCallStack()]).map(({frame, nodeIndex, inlineIndex}) => {
+      // Create virtual frames for inlined frames.
+      const physical = this.callFrames[nodeIndex];
+      const sdkFrame = inlineIndex === 0 ? physical : physical.createVirtualCallFrame(inlineIndex, frame.name ?? '');
+      return new DebuggableFrameImpl(frame, sdkFrame);
+    });
   }
 }
 

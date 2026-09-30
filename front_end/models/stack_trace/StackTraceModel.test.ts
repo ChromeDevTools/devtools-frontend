@@ -594,6 +594,58 @@ describe('StackTraceModel', () => {
       assert.strictEqual(stackTrace.syncFragment.frames[2].sdkFrame.functionName, 'baz');
     });
 
+    it('assigns the CallFrame of the terminator to inlined callers of a merged outlined frame', async () => {
+      const {model, debuggerModel} = setup();
+      sinon.stub(debuggerModel, 'scriptForId').returns({isWasm: () => false} as unknown as SDK.Script.Script);
+      const details = new SDK.DebuggerModel.DebuggerPausedDetails(
+          debuggerModel, ['bundle.js:id1:_o:1:10', 'bundle.js:id1:main:2:20'].map(debuggerCallFrame),
+          Protocol.Debugger.PausedEventReason.Other, undefined, []);
+
+      const stackTrace =
+          await model.createFromDebuggerPaused(details, frames => Promise.resolve(frames.map(({functionName}) => {
+            if (functionName === '_o') {
+              return {
+                kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+                frames: [{url: 'app.ts', name: 'outer', line: 2, column: 4}],
+                functionKeys: {top: 'outer', bottom: 'outer'},
+              };
+            }
+            return {
+              kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+              frames: [
+                {url: 'app.ts', name: 'outer', line: 5, column: 2},
+                {url: 'app.ts', name: 'main', line: 9, column: 2},
+              ],
+              functionKeys: {top: 'outer', bottom: 'main'},
+            };
+          })));
+
+      const {frames} = stackTrace.syncFragment;
+      assert.lengthOf(frames, 2);
+      assert.strictEqual(frames[0].sdkFrame, details.callFrames[0]);
+      assert.strictEqual(frames[1].sdkFrame.inlineFrameIndex, 1);
+      assert.strictEqual(frames[1].sdkFrame.payload, details.callFrames[1].payload);
+      assert.strictEqual(frames[1].sdkFrame.functionName, 'main');
+    });
+
+    it('assigns the CallFrame of the caller when the top frame is HIDDEN', async () => {
+      const {model, debuggerModel} = setup();
+      sinon.stub(debuggerModel, 'scriptForId').returns({isWasm: () => false} as unknown as SDK.Script.Script);
+      const details = new SDK.DebuggerModel.DebuggerPausedDetails(
+          debuggerModel, ['bundle.js:id1:helper:1:10', 'bundle.js:id1:main:2:20'].map(debuggerCallFrame),
+          Protocol.Debugger.PausedEventReason.Other, undefined, []);
+
+      const stackTrace = await model.createFromDebuggerPaused(
+          details,
+          frames => Promise.resolve(frames.map(({functionName}) => functionName === 'helper' ?
+                                                   {kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []} :
+                                                   visible([{url: 'app.ts', name: 'main', line: 9, column: 2}]))));
+
+      const {frames} = stackTrace.syncFragment;
+      assert.lengthOf(frames, 1);
+      assert.strictEqual(frames[0].sdkFrame, details.callFrames[1]);
+    });
+
     it('sets isWasm on StackTrace.Frame when paused in Wasm', async () => {
       const {model, debuggerModel} = setup();
       sinon.stub(debuggerModel, 'scriptForId').returns({isWasm: () => true} as unknown as SDK.Script.Script);

@@ -19,16 +19,18 @@ interface NodeSpec {
   kind: StackTraceImpl.Trie.FrameKind;
   frames: string[];
   keys?: StackTraceImpl.Trie.FunctionKeys;
+  info?: StackTraceImpl.Trie.ParsedFrameInfo;
 }
 
 /**
  * @param frames The translated frames as 'name@line:column', top first.
  * @param keys The function keys as 'top/bottom'.
+ * @param info The parsed `Error.stack` info of the raw frame.
  */
 function node(rawName: string, kind: StackTraceImpl.Trie.FrameKind, frames: string[] = [],
-              {keys}: {keys?: string} = {}): NodeSpec {
+              {keys, info}: {keys?: string, info?: StackTraceImpl.Trie.ParsedFrameInfo} = {}): NodeSpec {
   const [top, bottom] = keys?.split('/') ?? [];
-  return {rawName, kind, frames, keys: keys ? {top, bottom} : undefined};
+  return {rawName, kind, frames, keys: keys ? {top, bottom} : undefined, info};
 }
 
 /** Inserts one raw frame per spec (top first) into a trie and applies the specs to the resulting call stack. */
@@ -37,9 +39,10 @@ function callStack(...specs: NodeSpec[]): StackTraceImpl.Trie.FrameNode[] {
   const leaf = trie.insert(specs.map((spec, i) => protocolCallFrame(`bundle.js:1:${spec.rawName}:0:${i}`)));
   const stack = [...leaf.getCallStack()];
   stack.forEach((n, i) => {
-    const {rawName, kind, frames, keys} = specs[i];
+    const {rawName, kind, frames, keys, info} = specs[i];
     n.kind = kind;
     n.functionKeys = keys;
+    n.parsedFrameInfo = info;
     n.frames = frames.map((frame, k) => {
       const [, name, line, column] = /^(.*)@(\d+):(\d+)$/.exec(frame) ?? [];
       return new StackTraceImpl.StackTraceImpl.FrameImpl('src.ts', undefined, name, Number(line), Number(column),
@@ -148,6 +151,7 @@ describe('consolidate', () => {
       'b@3:0 (1,1) raw=b',
     ]);
     result.forEach(({frame, node, inlineIndex}) => assert.strictEqual(frame, node.frames[inlineIndex]));
+    assert.deepEqual(result.map(({invocationNode}) => invocationNode), [stack[0], undefined, stack[1]]);
   });
 
   it('drops HIDDEN nodes', () => {
@@ -173,6 +177,7 @@ describe('consolidate', () => {
 
     assert.deepEqual(summarize(result), ['outer@2:4 (0,0) raw=outer']);
     assert.strictEqual(result[0].node, stack[0]);
+    assert.strictEqual(result[0].invocationNode, stack[1]);
     assert.notStrictEqual(result[0].frame, stack[0].frames[0], 'merged frames are copies');
   });
 
@@ -192,10 +197,13 @@ describe('consolidate', () => {
         node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
     );
 
-    assert.deepEqual(summarize(consolidate(stack)), [
+    const result = consolidate(stack);
+
+    assert.deepEqual(summarize(result), [
       'f@1:0 (0,0) raw=f',
       'outer@2:4 (1,0) raw=undefined',
     ]);
+    assert.isUndefined(result[1].invocationNode);
   });
 
   it('does not merge an OUTLINED node with a caller of a different function', () => {
@@ -242,6 +250,7 @@ describe('consolidate', () => {
       'main@9:2 (2,1) raw=main',
     ]);
     assert.deepEqual(result.map(({node}) => node), [stack[0], stack[0], stack[2]]);
+    assert.deepEqual(result.map(({invocationNode}) => invocationNode), [undefined, undefined, stack[2]]);
   });
 
   it('handles two consecutive chains', () => {
@@ -374,5 +383,91 @@ describe('ParsedErrorStackFragmentImpl', () => {
 
     // Outermost level: undefined
     assert.isUndefined(origin2?.evalOrigin);
+  });
+
+  function parsedFrames(stack: StackTraceImpl.Trie.FrameNode[]):
+      StackTraceImpl.StackTraceImpl.ParsedErrorStackFrameImpl[] {
+    return new ParsedErrorStackFragmentImpl(FragmentImpl.getOrCreate(stack[0])).frames;
+  }
+
+  it('takes location properties from the frame\'s node and invocation properties from the terminator', () => {
+    const frames = parsedFrames(callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer', info: {isAsync: false}}),
+        node('outer', VISIBLE, ['outer@5:2', 'main@9:2'], {
+          keys: 'outer/main',
+          info: {isAsync: true, isConstructor: true, typeName: 'Foo', methodName: 'bar'},
+        }),
+        ));
+
+    assert.deepEqual(frames.map(f => f.name), ['outer', 'main']);
+    assert.deepEqual(frames.map(f => f.isAsync), [false, true]);
+    assert.deepEqual(frames.map(f => f.isConstructor), [undefined, true]);
+    assert.deepEqual(frames.map(f => f.typeName), [undefined, 'Foo']);
+    assert.deepEqual(frames.map(f => f.methodName), [undefined, 'bar']);
+  });
+
+  it('has no invocation properties for a chain without terminator', () => {
+    const frames = parsedFrames(callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer', info: {isAsync: true, isConstructor: true}}),
+        ));
+
+    assert.lengthOf(frames, 1);
+    assert.isTrue(frames[0].isAsync);
+    assert.isUndefined(frames[0].isConstructor);
+  });
+
+  it('only sets invocation properties on the last frame of an inlined group', () => {
+    const frames = parsedFrames(callStack(
+        node('b', VISIBLE, ['a@1:0', 'b@2:0'], {info: {isAsync: true, isConstructor: true, typeName: 'B'}}),
+        ));
+
+    assert.deepEqual(frames.map(f => f.isAsync), [true, true]);
+    assert.deepEqual(frames.map(f => f.isConstructor), [undefined, true]);
+    assert.deepEqual(frames.map(f => f.typeName), [undefined, 'B']);
+  });
+
+  it('takes the evalOrigin from the frame\'s node', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('outer', VISIBLE, ['outer@5:2', 'main@9:2'], {keys: 'outer/main'}),
+    );
+    stack[0].evalOrigin = new EvalOrigin([new FrameImpl('a.ts', undefined, 'evalA', 1, 0)]);
+    stack[1].evalOrigin = new EvalOrigin([new FrameImpl('b.ts', undefined, 'evalB', 2, 0)]);
+
+    const frames = parsedFrames(stack);
+
+    assert.deepEqual(frames.map(f => f.evalOrigin?.name), ['evalA', 'evalB']);
+  });
+
+  it('keeps the invocation properties of an evalOrigin', () => {
+    const stack = callStack(node('foo', VISIBLE, ['foo@1:0'], {
+      info: {
+        isEval: true,
+        evalOrigin: {
+          url: 'caller.js',
+          functionName: 'Foo',
+          lineNumber: 4,
+          columnNumber: 2,
+          parsedFrameInfo: {isConstructor: true},
+        },
+      },
+    }));
+    stack[0].evalOrigin = new EvalOrigin([new FrameImpl('caller.ts', undefined, 'Foo', 4, 2)]);
+
+    const frames = parsedFrames(stack);
+
+    assert.isTrue(frames[0].isEval);
+    assert.isTrue(frames[0].evalOrigin?.isConstructor);
+  });
+
+  it('takes location properties of frames contributed by a middle chain member from that member', () => {
+    const frames = parsedFrames(callStack(
+        node('_o2', OUTLINED, ['g@2:4'], {keys: 'g/g'}),
+        node('_o1', OUTLINED, ['g@3:0', 'outer@4:2'], {keys: 'g/outer', info: {isAsync: true}}),
+        node('main', VISIBLE, ['outer@5:2', 'main@9:2'], {keys: 'outer/main', info: {isAsync: false}}),
+        ));
+
+    assert.deepEqual(frames.map(f => f.name), ['g', 'outer', 'main']);
+    assert.deepEqual(frames.map(f => f.isAsync), [undefined, true, false]);
   });
 });

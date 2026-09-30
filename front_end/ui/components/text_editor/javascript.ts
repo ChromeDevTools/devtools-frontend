@@ -36,6 +36,17 @@ async function resolveEvaluationTarget(options?: CompletionOptions): Promise<Eva
   return {location};
 }
 
+/**
+ * Whether we can complete properties of expressions on behalf of `target`.
+ *
+ * If we are not paused at the target location, there is no call frame in which the local variables at that location
+ * exist. Evaluating in the global scope instead would silently resolve them to unrelated globals, so we only offer
+ * the (statically known) variable names in that case.
+ */
+function canCompleteProperties(target: EvaluationTarget): boolean {
+  return Boolean(target.callFrame) || !target.location;
+}
+
 export function completion(options?: CompletionOptions): CodeMirror.Extension {
   return CodeMirror.javascript.javascriptLanguage.data.of({
     autocomplete: (cx: CodeMirror.CompletionContext) => javascriptCompletionSource(cx, options),
@@ -223,6 +234,9 @@ export async function javascriptCompletionSource(
       result = global;
     }
   } else if (query.type === QueryType.PROPERTY_NAME || query.type === QueryType.PROPERTY_EXPRESSION) {
+    if (!canCompleteProperties(target)) {
+      return null;
+    }
     const objectExpr = (query.relatedNode as CodeMirror.SyntaxNode).getChild('Expression');
     if (query.type === QueryType.PROPERTY_EXPRESSION) {
       quote = query.from === undefined ? '\'' : cx.state.sliceDoc(query.from, query.from + 1);
@@ -234,7 +248,7 @@ export async function javascriptCompletionSource(
                                       cx.state.sliceDoc(cx.pos, cx.pos + 1) === ']', target);
   } else if (query.type === QueryType.POTENTIALLY_RETRIEVING_FROM_MAP) {
     const potentialMapObject = query.relatedNode;
-    if (!potentialMapObject) {
+    if (!potentialMapObject || !canCompleteProperties(target)) {
       return null;
     }
     result = await maybeCompleteKeysFromMap(cx.state.sliceDoc(potentialMapObject.from, potentialMapObject.to), target);
@@ -265,20 +279,12 @@ async function evaluateExpression(
     target?: EvaluationTarget,
     ): Promise<SDK.RemoteObject.RemoteObject|null> {
   const callFrame = target ? target.callFrame : context.debuggerModel.selectedCallFrame();
-  const location = target ? target.location : callFrame?.location();
-  const script = callFrame?.script ?? location?.script();
-  if (substituteNames && script?.isJavaScript()) {
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-    const nameMap = callFrame ?
-        await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame, debuggerWorkspaceBinding) :
-        location ? await SourceMapScopes.NamesResolver.allVariablesAtPosition(location, debuggerWorkspaceBinding) :
-                   [];
-    if (nameMap.length > 0) {
-      try {
-        expression =
-            await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);
-      } catch {
-      }
+  if (substituteNames && callFrame?.script.isJavaScript()) {
+    const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+        callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+    try {
+      expression = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);
+    } catch {
     }
   }
   const evaluationOptions = {
@@ -382,11 +388,8 @@ async function completeProperties(
     target?: EvaluationTarget,
     ): Promise<CompletionSet> {
   const cache = PropertyCache.instance();
-  const cacheKey = target?.location && !target.callFrame ?
-      `${target.location.scriptId}:${target.location.lineNumber}:${target.location.columnNumber}:${expression}` :
-      expression;
   if (!quoted) {
-    const cached = cache.get(cacheKey);
+    const cached = cache.get(expression);
     if (cached) {
       return await cached;
     }
@@ -397,7 +400,7 @@ async function completeProperties(
   }
   const result = completePropertiesInner(expression, context, quoted, hasBracket, target);
   if (!quoted) {
-    cache.set(cacheKey, result);
+    cache.set(expression, result);
   }
   return await result;
 }

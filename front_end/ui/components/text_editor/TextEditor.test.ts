@@ -560,7 +560,7 @@ describeWithEnvironment('TextEditor autocompletion', () => {
        assert.isFalse(labels2.has('firstProp'));
      });
 
-  it('completes variables and properties from a Location when not paused or paused elsewhere', async () => {
+  it('completes only variables, not properties, from a Location when not paused or paused elsewhere', async () => {
     updateHostConfig({devToolsSourceMapScopesInSourcesPanel: {enabled: true}});
     const backend = new MockDebuggerBackend();
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
@@ -626,11 +626,8 @@ describeWithEnvironment('TextEditor autocompletion', () => {
     assert.isNull(executionContext.debuggerModel.selectedCallFrame());
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
 
-    const evaluateSpy = sinon.stub(executionContext, 'evaluate').callsFake(async options => {
-      if (options.expression === '_mod.genObj') {
-        return {object: new SDK.RemoteObject.LocalJSONObject({mappedProp: 123})};
-      }
-      return {object: new SDK.RemoteObject.LocalJSONObject({})};
+    const evaluateSpy = sinon.stub(executionContext, 'evaluate').resolves({
+      object: new SDK.RemoteObject.LocalJSONObject({unrelatedGlobalProp: 1}),
     });
 
     const completionOptions: TextEditor.JavaScript.CompletionOptions = {
@@ -648,24 +645,23 @@ describeWithEnvironment('TextEditor autocompletion', () => {
     assert.strictEqual(byLabel.get('origObj')?.type, 'variable');
     assert.isFalse(byLabel.has('unavailableVar'));
 
-    const propState = makeState('origObj.', CodeMirror.javascript.javascriptLanguage);
-    const propResult = await TextEditor.JavaScript.javascriptCompletionSource(
-        new CodeMirror.CompletionContext(propState, 8, false), completionOptions);
-    assert.isNotNull(propResult);
-    sinon.assert.calledWithMatch(evaluateSpy, {expression: '_mod.genObj'});
-    const propLabels = new Map(propResult.options.map(o => [o.label, o.type]));
-    assert.strictEqual(propLabels.get('mappedProp'), 'property');
-
-    // Also verify that when paused at an unrelated call frame (line 0, col 13 != col 20),
-    // property completion for `location` evaluates on `executionContext` rather than `unrelatedCallFrame`.
+    // Without a call frame at `location`, the local variables don't exist anywhere we could evaluate in.
+    // Evaluating in the global scope would resolve e.g. `outerVar` (generated `a`) to an unrelated global.
     evaluateSpy.resetHistory();
+    const propState = makeState('outerVar.', CodeMirror.javascript.javascriptLanguage);
+    const propResult = await TextEditor.JavaScript.javascriptCompletionSource(
+        new CodeMirror.CompletionContext(propState, 9, false), completionOptions);
+    assert.isNull(propResult);
+    sinon.assert.notCalled(evaluateSpy);
+
+    // Same when paused at an unrelated call frame (line 0, col 13 != col 20).
     const unrelatedFrameEvaluateSpy = sinon.spy(unrelatedCallFrame, 'evaluate');
     executionContext.debuggerModel.setSelectedCallFrame(unrelatedCallFrame);
 
     const propResultWhilePausedElsewhere = await TextEditor.JavaScript.javascriptCompletionSource(
-        new CodeMirror.CompletionContext(propState, 8, false), completionOptions);
-    assert.isNotNull(propResultWhilePausedElsewhere);
+        new CodeMirror.CompletionContext(propState, 9, false), completionOptions);
+    assert.isNull(propResultWhilePausedElsewhere);
     sinon.assert.notCalled(unrelatedFrameEvaluateSpy);
-    sinon.assert.calledWithMatch(evaluateSpy, {expression: '_mod.genObj'});
+    sinon.assert.notCalled(evaluateSpy);
   });
 });

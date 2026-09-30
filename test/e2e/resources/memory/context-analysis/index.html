@@ -8,7 +8,7 @@
 <!--
   Each fixture is loaded as its own script so that it shows up under its own
   name in the heap snapshot. `with` and top-level `let`/`const` in a script
-  context require classic scripts, `module.js` requires a module.
+  context require classic scripts, the `module*.js` fixtures require modules.
 -->
 <script src="async.js"></script>
 <script src="block.js"></script>
@@ -36,3 +36,6 @@
 <script src="uninstantiated-inner.js"></script>
 <script src="with.js"></script>
 <script type="module" src="module.js"></script>
+<script type="module" src="module-top-level.js"></script>
+<script type="module" src="module-top-level-await.js"></script>
+<script type="module" src="module-top-level-await-finished.js"></script>

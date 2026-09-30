@@ -29,6 +29,11 @@ type ScopeInfoNodeIndex = Platform.Brand.Brand<number, 'ScopeInfoNodeIndex'>;
 type ContextNodeIndex = Platform.Brand.Brand<number, 'ContextNodeIndex'>;
 
 /**
+ * Index of a `system / Map` node within the heap snapshot's node array.
+ */
+type MapNodeIndex = Platform.Brand.Brand<number, 'MapNodeIndex'>;
+
+/**
  * Values addressed by scope. Since a `ScopeId` is only unique within its
  * script, scopes are keyed by script first.
  */
@@ -74,6 +79,8 @@ interface ScopeAccumulator {
 }
 
 interface LiveClosure {
+  // The JSFunction this entry was created for.
+  closureNodeIndex: number;
   contextNodeIndex: ContextNodeIndex;
   scriptNodeIndex: ScriptNodeIndex;
   scopeId: ScopeId;
@@ -99,6 +106,8 @@ interface HeapScan {
   scripts: Map<ScriptNodeIndex, ScriptInfo>;
   contextNodes: ContextNodeInfo[];
   liveClosures: LiveClosure[];
+  // Top-level functions of modules that finished evaluating.
+  finishedModuleFunctionNodeIndexes: Set<number>;
   // Maps a ScopeInfo to the script it belongs to. A stored `undefined` is a memoized
   // failed lookup. It is therefore not the same as an absent entry, which merely means
   // "not resolved yet".
@@ -114,7 +123,7 @@ export function analyzeContexts(snapshot: HeapSnapshot): HeapSnapshotModel.HeapS
   const scan = scanHeap(snapshot);
 
   // (3) Group live closures by function scope and record the context chains they can reach.
-  const liveFunctionsByScript = buildLiveFunctions(snapshot, scan.liveClosures);
+  const liveFunctionsByScript = buildLiveFunctions(snapshot, scan.liveClosures, scan.finishedModuleFunctionNodeIndexes);
 
   // (4) Correlate contexts and their field values with embedded scopes.
   const {scopes, scriptsWithoutScopes} = correlateContextsWithScopes(snapshot, scan, scopesByScript);
@@ -240,6 +249,9 @@ function scanHeap(snapshot: HeapSnapshot): HeapScan {
   const scripts = new Map<ScriptNodeIndex, ScriptInfo>();
   const contextNodes: ContextNodeInfo[] = [];
   const liveClosures: LiveClosure[] = [];
+  const finishedModuleFunctionNodeIndexes = new Set<number>();
+  // Caches for each map whether it belongs to a generator object. See `isGeneratorObject`.
+  const generatorMapNodeIndexes = new Map<MapNodeIndex, boolean>();
   const scopeInfoScriptNodeIndexes = new Map<ScopeInfoNodeIndex, ScriptNodeIndex|undefined>();
   const node = snapshot.createNode();
   const nodes = snapshot.nodes;
@@ -257,10 +269,12 @@ function scanHeap(snapshot: HeapSnapshot): HeapScan {
       processContext(contextNodes, node);
     } else if (node.rawType() === nodeClosureType) {
       processClosure(liveClosures, node);
+    } else if (isGeneratorObject(generatorMapNodeIndexes, node)) {
+      processGeneratorObject(finishedModuleFunctionNodeIndexes, node);
     }
   }
 
-  return {scripts, contextNodes, liveClosures, scopeInfoScriptNodeIndexes};
+  return {scripts, contextNodes, liveClosures, finishedModuleFunctionNodeIndexes, scopeInfoScriptNodeIndexes};
 }
 
 function processScript(scripts: Map<ScriptNodeIndex, ScriptInfo>, node: HeapSnapshotNode): void {
@@ -433,6 +447,7 @@ function processClosure(liveClosures: LiveClosure[], node: HeapSnapshotNode): vo
   const scopeId = sharedFunctionInfo.findInternalEdgeTarget('scope_id')?.nodeValueAsInt() as ScopeId | undefined;
   if (scopeId !== undefined) {
     liveClosures.push({
+      closureNodeIndex: node.nodeIndex,
       contextNodeIndex: closureContext.nodeIndex as ContextNodeIndex,
       scriptNodeIndex: script.nodeIndex as ScriptNodeIndex,
       scopeId,
@@ -440,11 +455,78 @@ function processClosure(liveClosures: LiveClosure[], node: HeapSnapshotNode): vo
   }
 }
 
-function buildLiveFunctions(snapshot: HeapSnapshot, liveClosures: LiveClosure[]): ByScope<LiveFunction> {
+// V8's `JSGeneratorObject::kGeneratorClosed`: the generator has finished and can't be resumed.
+const GENERATOR_CLOSED = -1;
+
+/**
+ * Records the top-level functions of modules that finished evaluating.
+ *
+ * V8 runs the top-level code of a module as a generator. The module record keeps that generator
+ * alive after evaluation, and with it the top-level function. Unlike other functions, the top-level
+ * function is bound to the context of its own scope, the module context. Every function of the
+ * module is nested inside it, so as a live closure it would keep all fields of the module context in
+ * use. Once the generator has finished, however, the top-level function can't run anymore, and user
+ * code can't call it.
+ *
+ * The functions of other finished generators can still be called, and are handled like any other
+ * closure.
+ */
+function processGeneratorObject(finishedModuleFunctionNodeIndexes: Set<number>, node: HeapSnapshotNode): void {
+  const continuation = node.findInternalEdgeTarget('continuation')?.nodeValueAsInt();
+  const generatorFunction = node.findInternalEdgeTarget('function');
+  if (continuation === undefined || generatorFunction?.rawType() !== node.snapshot.nodeClosureType) {
+    return;
+  }
+  if (continuation !== GENERATOR_CLOSED) {
+    return;
+  }
+  // Only the top-level code of a module is a generator with the root scope of a script.
+  const scopeId =
+      generatorFunction.findInternalEdgeTarget('shared')?.findInternalEdgeTarget('scope_id')?.nodeValueAsInt();
+  if (scopeId !== undefined && isScriptRootScopeId(scopeId)) {
+    finishedModuleFunctionNodeIndexes.add(generatorFunction.nodeIndex);
+  }
+}
+
+// V8's instance types of `JSGeneratorObject` and its subclasses.
+const GENERATOR_INSTANCE_TYPE_NAMES = new Set([
+  'JS_GENERATOR_OBJECT_TYPE',
+  'JS_ASYNC_FUNCTION_OBJECT_TYPE',
+  'JS_ASYNC_GENERATOR_OBJECT_TYPE',
+]);
+
+/**
+ * Checks the instance type of the object's map, so that other objects with fields of the same name
+ * aren't mistaken for generator objects. The result is cached for each map.
+ */
+function isGeneratorObject(generatorMapNodeIndexes: Map<MapNodeIndex, boolean>, node: HeapSnapshotNode): boolean {
+  if (node.rawType() !== node.snapshot.nodeObjectType) {
+    return false;
+  }
+  const map = node.findInternalEdgeTarget('map');
+  if (!map) {
+    return false;
+  }
+  const mapNodeIndex = map.nodeIndex as MapNodeIndex;
+  let isGenerator = generatorMapNodeIndexes.get(mapNodeIndex);
+  if (isGenerator === undefined) {
+    const instanceTypeName = map.findInternalEdgeTarget('instance_type_name')?.rawName();
+    isGenerator = instanceTypeName !== undefined && GENERATOR_INSTANCE_TYPE_NAMES.has(instanceTypeName);
+    generatorMapNodeIndexes.set(mapNodeIndex, isGenerator);
+  }
+  return isGenerator;
+}
+
+function buildLiveFunctions(snapshot: HeapSnapshot, liveClosures: LiveClosure[],
+                            finishedModuleFunctionNodeIndexes: Set<number>): ByScope<LiveFunction> {
   const liveFunctionsByScript: ByScope<LiveFunction> = new Map();
   const node = snapshot.createNode();
 
   for (const closure of liveClosures) {
+    if (finishedModuleFunctionNodeIndexes.has(closure.closureNodeIndex)) {
+      // The top-level code of this module has finished and can't run anymore.
+      continue;
+    }
     let scriptFunctions = liveFunctionsByScript.get(closure.scriptNodeIndex);
     if (!scriptFunctions) {
       scriptFunctions = new Map<ScopeId, LiveFunction>();

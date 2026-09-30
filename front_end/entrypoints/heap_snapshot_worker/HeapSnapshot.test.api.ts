@@ -393,6 +393,31 @@ function checkModuleScopes({snapshot, analysis}: ContextFixture): void {
   assert.deepEqual(deadFieldNames(scope), [['moduleDead']]);
 }
 
+// Analyzes the module context holding top-level let and const once the module
+// has finished evaluating. The exported binding lives in a cell of the module
+// instead of the context.
+function checkModuleTopLevelScopes({snapshot, analysis}: ContextFixture): void {
+  const scope = singleScopeForScript(analysis, 'module-top-level.js');
+
+  assert.deepEqual(allContextFields(snapshot, scope), ['moduleTopLevelCaptured', 'moduleTopLevelDead']);
+  assert.deepEqual(deadFieldNames(scope), [['moduleTopLevelDead']]);
+}
+
+// Doesn't report fields of a module paused at a top-level await that a
+// function nested in it reads. Unlike a finished module, the paused module can
+// still run.
+function checkModuleTopLevelAwait({analysis}: ContextFixture): void {
+  assertNoScopes(analysis, 'module-top-level-await.js');
+}
+
+// Doesn't report fields of a module that finished evaluating after a top-level
+// await. V8 doesn't close the generator of such a module once it has finished,
+// but leaves it in the executing state. The analysis therefore can't tell that
+// the module has finished and doesn't report `moduleAwaitFinishedDead`.
+function checkModuleTopLevelAwaitFinished({analysis}: ContextFixture): void {
+  assertNoScopes(analysis, 'module-top-level-await-finished.js');
+}
+
 // Analyzes script scopes holding top-level let and const.
 //
 // TODO: Currently disabled, since V8 is going to stop emitting context
@@ -440,5 +465,8 @@ describe('HeapSnapshot analyze context fields API Test', () => {
     checkGenerator(fixture);
     checkAsyncFunction(fixture);
     checkModuleScopes(fixture);
+    checkModuleTopLevelScopes(fixture);
+    checkModuleTopLevelAwait(fixture);
+    checkModuleTopLevelAwaitFinished(fixture);
   });
 });

@@ -12,7 +12,7 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
 // eslint-disable-next-line @devtools/es-modules-import
-import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
+import * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
@@ -758,7 +758,7 @@ export class DebuggerLanguagePluginManager implements
         return translatedFromUILocation(uiLocation, name, frame);
       });
 
-      translatedFrames.push(await Promise.all(framePromises));
+      translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: await Promise.all(framePromises)});
       return true;
     }
 
@@ -768,28 +768,20 @@ export class DebuggerLanguagePluginManager implements
         new SDK.DebuggerModel.Location(script.debuggerModel, script.scriptId, frame.lineNumber, frame.columnNumber));
     const mappedFrame = translatedFromUILocation(uiLocation, frame.functionName, frame);
 
-    if ('missingSymbolFiles' in functionInfo && functionInfo.missingSymbolFiles.length) {
-      translatedFrames.push([{
-        ...mappedFrame,
-        missingDebugInfo: {
+    const missingDebugInfo: StackTrace.StackTrace.MissingDebugInfo =
+        'missingSymbolFiles' in functionInfo && functionInfo.missingSymbolFiles.length ?
+        {
           type: StackTrace.StackTrace.MissingDebugInfoType.PARTIAL_INFO,
           missingDebugFiles: functionInfo.missingSymbolFiles,
-        },
-      }]);
-    } else {
-      translatedFrames.push([{
-        ...mappedFrame,
-        missingDebugInfo: {
-          type: StackTrace.StackTrace.MissingDebugInfoType.NO_INFO,
-        },
-      }]);
-    }
+        } :
+        {type: StackTrace.StackTrace.MissingDebugInfoType.NO_INFO};
+    translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: [{...mappedFrame, missingDebugInfo}]});
 
     return true;
 
     function translatedFromUILocation(
         uiLocation: Workspace.UISourceCode.UILocation|null, name: string|undefined,
-        fallback: StackTraceImpl.Trie.RawFrame): (typeof translatedFrames)[number][number] {
+        fallback: StackTraceImpl.Trie.RawFrame): StackTraceImpl.StackTraceModel.TranslatedUIFrame {
       if (uiLocation) {
         return {
           uiSourceCode: uiLocation.uiSourceCode,

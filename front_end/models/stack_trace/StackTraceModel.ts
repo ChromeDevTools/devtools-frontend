@@ -19,15 +19,26 @@ import {
   ParsedErrorStackFragmentImpl,
   StackTraceImpl,
 } from './StackTraceImpl.js';
-import {EvalOrigin, type FrameNode, type RawFrame, Trie} from './Trie.js';
+import {EvalOrigin, type FrameKind, type FrameNode, type RawFrame, Trie} from './Trie.js';
+
+/** Named `TranslatedUIFrame` to avoid confusion with `SDK.SourceMapScopesInfo.TranslatedFrame`. */
+export type TranslatedUIFrame =
+    Pick<StackTrace.StackTrace.Frame, 'url'|'uiSourceCode'|'name'|'line'|'column'|'missingDebugInfo'>;
+
+/** The translation of a single {@link RawFrame}. */
+export interface TranslatedRawFrame {
+  readonly kind: FrameKind;
+  /** [top, ...inlinedCallers] in top-to-bottom order. MUST be empty for HIDDEN and non-empty otherwise. */
+  readonly frames: TranslatedUIFrame[];
+}
 
 /**
  * A stack trace translation function.
  *
  * Any implementation must return an array with the same length as `frames`.
  */
-export type TranslateRawFrames = (frames: readonly RawFrame[], target: SDK.Target.Target) => Promise<
-    Array<Array<Pick<StackTrace.StackTrace.Frame, 'url'|'uiSourceCode'|'name'|'line'|'column'|'missingDebugInfo'>>>>;
+export type TranslateRawFrames = (frames: readonly RawFrame[], target: SDK.Target.Target) =>
+    Promise<TranslatedRawFrame[]>;
 
 /**
  * The {@link StackTraceModel} is a thin wrapper around a fragment trie.
@@ -222,7 +233,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     let i = 0;
     let evalI = 0;
     for (const node of fragment.node.getCallStack()) {
-      const group = uiFrames[i++];
+      const group = uiFrames[i++].frames;
       node.frames =
           group.map((frame, index) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column,
                                                     frame.missingDebugInfo, node.rawFrame.functionName,
@@ -265,7 +276,7 @@ async function translateEvalOrigin(
     rawFrame: RawFrame, rawFramesToUIFrames: TranslateRawFrames,
     target: SDK.Target.Target): Promise<EvalOrigin|undefined> {
   const uiFrames = await rawFramesToUIFrames([rawFrame], target);
-  const group = uiFrames[0];
+  const group = uiFrames[0].frames;
   const frames = group.map((frame, index) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line,
                                                            frame.column, frame.missingDebugInfo, rawFrame.functionName,
                                                            rawFrame.isWasm, index < group.length - 1));

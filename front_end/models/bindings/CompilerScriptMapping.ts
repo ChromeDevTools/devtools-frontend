@@ -357,8 +357,8 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       }
 
       rawFrames.shift();
-      const result: typeof translatedFrames[0] = [];
-      translatedFrames.push(result);
+      const result: StackTraceImpl.StackTraceModel.TranslatedUIFrame[] = [];
+      translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: result});
 
       const project = this.#sourceMapToProject.get(sourceMap);
       for (const frame of frames) {

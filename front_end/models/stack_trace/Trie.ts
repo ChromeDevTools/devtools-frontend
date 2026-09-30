@@ -41,6 +41,16 @@ export function isBuiltinFrame(rawFrame: RawFrame): boolean {
       !Boolean(rawFrame.url);
 }
 
+/** How a single raw frame participates in stack traces. Context-free: it only depends on the raw frame itself. */
+export const enum FrameKind {
+  /** Shown as is. */
+  VISIBLE = 'VISIBLE',
+  /** Code of an authored function that the compiler moved into a separate function. Merged with its caller(s). */
+  OUTLINED = 'OUTLINED',
+  /** Compiler helper without authored counterpart. Never shown. */
+  HIDDEN = 'HIDDEN',
+}
+
 export class EvalOrigin {
   readonly frames: FrameImpl[];
   readonly evalOrigin?: EvalOrigin;

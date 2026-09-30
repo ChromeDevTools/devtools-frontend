@@ -542,7 +542,10 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
 
     const frame = rawFrames.shift() as StackTraceImpl.Trie.RawFrame;
     const {url, lineNumber, columnNumber, functionName} = frame;
-    translatedFrames.push([{url, line: lineNumber, column: columnNumber, name: functionName}]);
+    translatedFrames.push({
+      kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+      frames: [{url, line: lineNumber, column: columnNumber, name: functionName}],
+    });
   }
 }
 
@@ -663,20 +666,16 @@ class ModelData {
     const rawLocation = scriptId ? this.#debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber) :
         url                      ? this.#debuggerModel.createRawLocationByURL(url, lineNumber, columnNumber) :
                                    null;
-    if (rawLocation) {
-      const uiLocation = this.rawLocationToUILocation(rawLocation);
-      if (uiLocation) {
-        translatedFrames.push([{
+    const uiLocation = rawLocation && this.rawLocationToUILocation(rawLocation);
+    const translatedFrame: StackTraceImpl.StackTraceModel.TranslatedUIFrame = uiLocation ?
+        {
           uiSourceCode: uiLocation.uiSourceCode,
           name: functionName,
           line: uiLocation.lineNumber,
           column: uiLocation.columnNumber ?? -1,
-        }]);
-        return;
-      }
-    }
-
-    translatedFrames.push([{url, line: lineNumber, column: columnNumber, name: functionName}]);
+        } :
+        {url, line: lineNumber, column: columnNumber, name: functionName};
+    translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: [translatedFrame]});
   }
 
   getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Set<number>|null {

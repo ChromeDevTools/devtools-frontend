@@ -19,7 +19,7 @@ import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
 // eslint-disable-next-line @devtools/es-modules-import
-import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
+import * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
@@ -203,9 +203,10 @@ describe('DebuggerLanguagePluginManager', () => {
 
       assert.lengthOf(rawFrames, 0);
       assert.lengthOf(translatedFrames, 1);
-      assert.strictEqual(translatedFrames[0].map(stringifyFrame).join('\n'), 'at foo (foo.js:1:10)');
-      assert.strictEqual(
-          translatedFrames[0][0].missingDebugInfo?.type, StackTrace.StackTrace.MissingDebugInfoType.NO_INFO);
+      assert.strictEqual(translatedFrames[0].kind, StackTraceImpl.Trie.FrameKind.VISIBLE);
+      assert.strictEqual(translatedFrames[0].frames.map(stringifyFrame).join('\n'), 'at foo (foo.js:1:10)');
+      assert.strictEqual(translatedFrames[0].frames[0].missingDebugInfo?.type,
+                         StackTrace.StackTrace.MissingDebugInfoType.NO_INFO);
     });
 
     it('identity maps the frame with a PARTIAL_INFO status when the plugin returns missing debug symbols', async () => {
@@ -229,8 +230,9 @@ describe('DebuggerLanguagePluginManager', () => {
 
       assert.lengthOf(rawFrames, 0);
       assert.lengthOf(translatedFrames, 1);
-      assert.strictEqual(translatedFrames[0].map(stringifyFrame).join('\n'), 'at foo (foo.js:1:10)');
-      assert.deepEqual(translatedFrames[0][0].missingDebugInfo, {
+      assert.strictEqual(translatedFrames[0].kind, StackTraceImpl.Trie.FrameKind.VISIBLE);
+      assert.strictEqual(translatedFrames[0].frames.map(stringifyFrame).join('\n'), 'at foo (foo.js:1:10)');
+      assert.deepEqual(translatedFrames[0].frames[0].missingDebugInfo, {
         type: StackTrace.StackTrace.MissingDebugInfoType.PARTIAL_INFO,
         missingDebugFiles: [{resourceUrl: urlString`foo.dwo`, initiator: plugin.createPageResourceLoadInitiator()}],
       });
@@ -276,13 +278,13 @@ describe('DebuggerLanguagePluginManager', () => {
 
       assert.lengthOf(rawFrames, 1);
       assert.lengthOf(translatedFrames, 1);
-      assert.strictEqual(translatedFrames[0].map(stringifyFrame).join('\n'), 'at foo (foo.cc:1:5)');
+      assert.strictEqual(translatedFrames[0].frames.map(stringifyFrame).join('\n'), 'at foo (foo.cc:1:5)');
 
       assert.isTrue(await pluginManager.translateRawFramesStep(rawFrames, translatedFrames, target));
 
       assert.lengthOf(rawFrames, 0);
       assert.lengthOf(translatedFrames, 2);
-      assert.strictEqual(translatedFrames[1].map(stringifyFrame).join('\n'), 'at bar (bar.cc:2:10)');
+      assert.strictEqual(translatedFrames[1].frames.map(stringifyFrame).join('\n'), 'at bar (bar.cc:2:10)');
     });
 
     it('translates inlined frames correctly', async () => {
@@ -321,7 +323,8 @@ describe('DebuggerLanguagePluginManager', () => {
 
       assert.lengthOf(rawFrames, 0);
       assert.lengthOf(translatedFrames, 1);
-      assert.deepEqual(translatedFrames[0].map(stringifyFrame), [
+      assert.strictEqual(translatedFrames[0].kind, StackTraceImpl.Trie.FrameKind.VISIBLE);
+      assert.deepEqual(translatedFrames[0].frames.map(stringifyFrame), [
         'at foo (foo.cc:2:5)',
         'at bar (bar.cc:4:10)',
       ]);
@@ -353,9 +356,9 @@ describe('DebuggerLanguagePluginManager', () => {
 
       assert.lengthOf(rawFrames, 0);
       assert.lengthOf(translatedFrames, 1);
-      assert.strictEqual(translatedFrames[0].map(stringifyFrame).join('\n'), 'at foo (foo.cc:10:5)');
-      assert.strictEqual(translatedFrames[0][0].uiSourceCode, uiSourceCode);
-      assert.deepEqual(translatedFrames[0][0].missingDebugInfo, {
+      assert.strictEqual(translatedFrames[0].frames.map(stringifyFrame).join('\n'), 'at foo (foo.cc:10:5)');
+      assert.strictEqual(translatedFrames[0].frames[0].uiSourceCode, uiSourceCode);
+      assert.deepEqual(translatedFrames[0].frames[0].missingDebugInfo, {
         type: StackTrace.StackTrace.MissingDebugInfoType.PARTIAL_INFO,
         missingDebugFiles: [{resourceUrl: urlString`foo.dwo`, initiator: plugin.createPageResourceLoadInitiator()}],
       });

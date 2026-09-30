@@ -25,13 +25,17 @@ describe('StackTraceModel', () => {
   setupSettingsHooks();
   setupRuntimeHooks();
 
+  const visible =
+      (frames: StackTraceImpl.StackTraceModel.TranslatedUIFrame[]): StackTraceImpl.StackTraceModel.TranslatedRawFrame =>
+          ({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames});
+
   const identityTranslateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) =>
-      Promise.resolve(frames.map(f => [{
+      Promise.resolve(frames.map(f => visible([{
                                    url: f.url || undefined,
                                    name: f.functionName || undefined,
                                    line: f.lineNumber,
                                    column: f.columnNumber,
-                                 }]));
+                                 }])));
 
   function setup() {
     const connection = new MockCDPConnection();
@@ -242,13 +246,13 @@ describe('StackTraceModel', () => {
     it('forwards missing debug info', async () => {
       const {model} = setup();
       const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) =>
-          Promise.resolve(frames.map(f => [{
+          Promise.resolve(frames.map(f => visible([{
                                        url: f.url,
                                        name: f.functionName,
                                        line: f.lineNumber,
                                        column: f.columnNumber,
                                        missingDebugInfo: {type: StackTrace.StackTrace.MissingDebugInfoType.NO_INFO},
-                                     }]));
+                                     }])));
 
       const stackTrace =
           await model.createFromProtocolRuntime({callFrames: [protocolCallFrame('foo.js:1:foo:1:10')]}, translateFn);
@@ -416,13 +420,13 @@ describe('StackTraceModel', () => {
     it('forwards missing debug info', async () => {
       const {model} = setup();
       const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) =>
-          Promise.resolve(frames.map(f => [{
+          Promise.resolve(frames.map(f => visible([{
                                        url: f.url,
                                        name: f.functionName,
                                        line: f.lineNumber,
                                        column: f.columnNumber,
                                        missingDebugInfo: {type: StackTrace.StackTrace.MissingDebugInfoType.NO_INFO},
-                                     }]));
+                                     }])));
       const stackTrace = await model.createFromProtocolRuntime(
           {callFrames: [protocolCallFrame('foo.js:1:foo:1:10')]}, identityTranslateFn);
       assert.isUndefined(stackTrace.syncFragment.frames[0].missingDebugInfo);
@@ -483,11 +487,11 @@ describe('StackTraceModel', () => {
           debuggerModel, [debuggerCallFrame('foo.js:id1:foo:1:10')], Protocol.Debugger.PausedEventReason.Other,
           undefined, []);
 
-      const stackTrace = await model.createFromDebuggerPaused(details, () => Promise.resolve([[
+      const stackTrace = await model.createFromDebuggerPaused(details, () => Promise.resolve([visible([
         {url: 'foo.ts', name: 'foo', line: 10, column: 20},
         {url: 'bar.ts', name: 'bar', line: 20, column: 30},
         {url: 'baz.ts', name: 'baz', line: 40, column: 50},
-      ]]));
+      ])]));
 
       assert.strictEqual(stackTrace.syncFragment.frames[0].sdkFrame, details.callFrames[0]);
 
@@ -528,11 +532,11 @@ describe('StackTraceModel', () => {
       const {model} = setup();
       const details = [protocolCallFrame('foo.js:id1:foo:1:10')];
 
-      const stackTrace = await model.createFromProtocolRuntime({callFrames: details}, () => Promise.resolve([[
+      const stackTrace = await model.createFromProtocolRuntime({callFrames: details}, () => Promise.resolve([visible([
         {url: 'foo.ts', name: 'foo', line: 10, column: 20},
         {url: 'bar.ts', name: 'bar', line: 20, column: 30},
         {url: 'baz.ts', name: 'baz', line: 40, column: 50},
-      ]]));
+      ])]));
 
       assert.strictEqual(stackTrace.syncFragment.frames[0].rawName, 'foo');
       assert.isTrue(stackTrace.syncFragment.frames[0].isInline);
@@ -622,17 +626,17 @@ describe('StackTraceModel', () => {
         // Expand the evalOrigin into 2 frames to simulate inlining.
         return Promise.resolve(frames.map(f => {
           if (f.functionName === 'outerEval') {  // the evalOrigin frame
-            return [
+            return visible([
               {url: 'inlined.js', name: 'inlinedFn', line: 5, column: 5},
               {url: f.url, name: f.functionName, line: f.lineNumber, column: f.columnNumber},
-            ];
+            ]);
           }
-          return [{
+          return visible([{
             url: f.url,
             name: f.functionName,
             line: f.lineNumber,
             column: f.columnNumber,
-          }];
+          }]);
         }));
       };
 
@@ -665,23 +669,23 @@ describe('StackTraceModel', () => {
         // Expand baseCaller into 2 frames to simulate inlining.
         return Promise.resolve(frames.map(f => {
           if (f.functionName === 'baseCaller') {
-            return [
+            return visible([
               {url: 'inlined_base.js', name: 'inlinedBaseFn', line: 12, column: 12},
               {url: f.url, name: f.functionName, line: f.lineNumber, column: f.columnNumber},
-            ];
+            ]);
           }
           if (f.functionName === 'intermediate1') {
-            return [{url: 'inter1.js', name: 'inter1Fn', line: 20, column: 20}];
+            return visible([{url: 'inter1.js', name: 'inter1Fn', line: 20, column: 20}]);
           }
           if (f.functionName === 'intermediate2') {
-            return [{url: 'inter2.js', name: 'inter2Fn', line: 30, column: 30}];
+            return visible([{url: 'inter2.js', name: 'inter2Fn', line: 30, column: 30}]);
           }
-          return [{
+          return visible([{
             url: f.url,
             name: f.functionName,
             line: f.lineNumber,
             column: f.columnNumber,
-          }];
+          }]);
         }));
       };
 

@@ -239,6 +239,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
   private userOperation = false;
   isEditingStyle = false;
   #filterRegex: RegExp|null = null;
+  #filterUpdateScheduled = false;
   #isRegex = false;
   #filterText = '';
   private isActivePropertyHighlighted = false;
@@ -300,6 +301,21 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
 
     this.#swatchPopoverHelper.addEventListener(InlineEditor.SwatchPopoverHelper.Events.WILL_SHOW_POPOVER,
                                                this.hideAllPopovers, this);
+    this.linkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, () => {
+      if (!this.filterRegex() || this.#filterUpdateScheduled) {
+        return;
+      }
+      this.#filterUpdateScheduled = true;
+      queueMicrotask(() => {
+        if (!this.#filterUpdateScheduled) {
+          return;
+        }
+        this.#filterUpdateScheduled = false;
+        if (this.filterRegex()) {
+          this.updateFilter();
+        }
+      });
+    });
     this.decorator = new StylePropertyHighlighter(this);
     this.contentElement.classList.add('styles-pane');
 
@@ -1596,6 +1612,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
   }
 
   private updateFilter(): void {
+    this.#filterUpdateScheduled = false;
     let hasAnyVisibleBlock = false;
     let visibleSections = 0;
     for (const block of this.sectionBlocks) {

@@ -47,7 +47,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import {createIcon, type Icon} from '../../ui/kit/kit.js';
-import type * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
@@ -1411,7 +1411,8 @@ export class StylePropertiesSection {
     }
 
     const regex = this.stylesContainer.filterRegex();
-    const hideRule = !hasMatchingChild && regex !== null && !regex.test(this.element.deepTextContent());
+    const hideRule = !hasMatchingChild && regex !== null &&
+        !regex.test(Components.Linkifier.Linkifier.untruncatedTextContent(this.element));
     this.#isHidden = hideRule;
     this.element.classList.toggle('hidden', hideRule);
     if (!hideRule && this.styleInternal.parentRule) {

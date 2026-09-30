@@ -30,6 +30,7 @@ describeWithEnvironment('StylesPropertySection', () => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const resourceMapping =
         new Bindings.ResourceMapping.ResourceMapping(SDK.TargetManager.TargetManager.instance(), workspace);
+    Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance(
         {forceNew: true, resourceMapping, targetManager: SDK.TargetManager.TargetManager.instance()});
     computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
@@ -37,6 +38,7 @@ describeWithEnvironment('StylesPropertySection', () => {
 
   afterEach(() => {
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
+    Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
     Workspace.Workspace.WorkspaceImpl.removeInstance();
     SDK.PageResourceLoader.PageResourceLoader.removeInstance();
   });
@@ -1973,5 +1975,60 @@ describeWithEnvironment('StylesPropertySection', () => {
       assert.strictEqual(section.headerText(), '1%');
       assert.strictEqual(selectorElement.textContent, '1%');
     });
+  });
+
+  it('matches untruncated stylesheet filename in updateFilter when Linkifier truncates link text', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
+    assert.exists(cssModel);
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
+    const header = {
+      sourceURL: 'https://example.com/very-long-stylesheet-filename-for-search.css',
+      isMutable: true,
+      hasSourceURL: true,
+      length: 10,
+      ...range,
+    };
+    const matchedPayload: Protocol.CSS.RuleMatch[] = [{
+      rule: {
+        selectorList: {selectors: [{text: 'div'}], text: 'div'},
+        origin,
+        styleSheetId,
+        style: {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: [], range},
+      },
+      matchingSelectors: [0],
+    }];
+
+    const matchedStyles =
+        await getMatchedStylesWithStylesheet({cssModel, origin, styleSheetId, ...header, matchedPayload, connection});
+    const declaration = matchedStyles.nodeStyles()[0];
+    assert.exists(declaration);
+
+    const section = new Elements.StylePropertiesSection.StylePropertiesSection(stylesSidebarPane, matchedStyles,
+                                                                               declaration, 0, null, null, null);
+    const block = new Elements.StylesSidebarPane.SectionBlock(null);
+    block.sections = [section];
+    stylesSidebarPane.sectionBlocks = [block];
+
+    // Apply the filter before LiveLocations resolve so the initial pass hides the section
+    // and the coalesced LIVE_LOCATION_UPDATED listener re-evaluates it once links settle.
+    const filterRegexStub = sinon.stub(stylesSidebarPane, 'filterRegex');
+    filterRegexStub.returns(/very-long-stylesheet-filename/i);
+    assert.isFalse(section.updateFilter());
+    assert.isTrue(section.isHidden());
+
+    const updateFilterSpy = sinon.spy(section, 'updateFilter');
+    await Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().pendingLiveLocationChangesPromise();
+
+    sinon.assert.calledOnce(updateFilterSpy);
+    assert.isNotNull(section.element.querySelector('.devtools-link-ellipsis'));
+    assert.notInclude(section.element.deepTextContent(), 'very-long-stylesheet-filename');
+    assert.isFalse(section.isHidden());
+
+    filterRegexStub.returns(/non-existent-stylesheet/i);
+    assert.isFalse(section.updateFilter());
+    assert.isTrue(section.isHidden());
   });
 });

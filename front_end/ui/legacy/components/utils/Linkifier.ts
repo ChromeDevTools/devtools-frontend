@@ -791,6 +791,10 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     return textByAnchor.get(node) || node.textContent || '';
   }
 
+  static untruncatedTextContent(node: Node): string {
+    return node.childTextNodes().map(Linkifier.untruncatedNodeText).join('');
+  }
+
   static linkInfo(link: Element|null): LinkInfo|null {
     return link ? infoByAnchor.get(link) || null : null as LinkInfo | null;
   }

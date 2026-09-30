@@ -323,18 +323,26 @@ export class FilteredListWidget extends FilteredListWidgetBase implements UI.Lis
     }
   }
 
+  private textForSelectedItem(): string {
+    const selectedElement = this.list.elementAtIndex(this.list.selectedIndex());
+    if (!selectedElement) {
+      return '';
+    }
+    const children = selectedElement.querySelectorAll('*');
+    return Array.from(children)
+        .filter(e => !e.children.length && e.localName !== 'style')
+        .map(e => e.classList.contains('new-badge') ? i18nString(UIStrings.newFeature) : e.textContent)
+        .filter(text => text?.trim())
+        .join(', ');
+  }
+
   private onMouseMove(event: Event): void {
     const item = this.list.itemForNode((event.target as Node | null));
     if (item === null) {
       return;
     }
     this.list.selectItem(item);
-    const selectedElement = this.list.elementAtIndex(this.list.selectedIndex());
-    const children = selectedElement.querySelectorAll('*');
-    const text = Array.from(children)
-                     .filter(e => !e.children.length)
-                     .map(e => e.classList.contains('new-badge') ? i18nString(UIStrings.newFeature) : e.textContent)
-                     .join();
+    const text = this.textForSelectedItem();
     if (text) {
       UI.ARIAUtils.LiveAnnouncer.alert(
           i18nString(UIStrings.sItemSOfS, {PH1: text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length}));
@@ -559,7 +567,7 @@ export class FilteredListWidget extends FilteredListWidgetBase implements UI.Lis
     }
     if (handled) {
       keyboardEvent.consume(true);
-      const text = this.list.elementAtIndex(this.list.selectedIndex())?.textContent;
+      const text = this.textForSelectedItem();
       if (text) {
         UI.ARIAUtils.LiveAnnouncer.alert(
             i18nString(UIStrings.sItemSOfS, {PH1: text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length}));

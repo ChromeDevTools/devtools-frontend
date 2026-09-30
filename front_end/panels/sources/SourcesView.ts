@@ -22,7 +22,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import sourcesViewStyles from './sourcesView.css.js';
 import {
   type EditorSelectedEvent,
-  type SourceLocation,
   TabbedEditorContainer,
 } from './TabbedEditorContainer.js';
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
@@ -68,7 +67,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {widget} = UI.Widget;
+const {widget, widgetRef} = UI.Widget;
 
 export interface ViewInput {
   searchProvider: UI.SearchableView.Searchable;
@@ -85,14 +84,17 @@ export interface ViewInput {
   onToggleDebuggerSidebar?: () => void;
   breakpointsActive: boolean;
   uiSourceCodes: ReadonlySet<Workspace.UISourceCode.UISourceCode>;
-  sourceLocation?: SourceLocation;
   onEditorSelected: (event: EditorSelectedEvent) => void;
   onEditorClosed: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
 }
 
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export interface ViewOutput {
+  editorContainer?: TabbedEditorContainer;
+}
 
-export const DEFAULT_VIEW: View = (input, _output, target): void => {
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target): void => {
   const renderNavigatorToggleButton = (): LitTemplate => {
     const navHidden = !input.isNavigatorSidebarOpen;
     const title = navHidden ? i18nString(UIStrings.showNavigator) : i18nString(UIStrings.hideNavigator);
@@ -150,15 +152,13 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
     >
       <devtools-widget class="vbox flex-auto ${input.breakpointsActive ? '' : 'breakpoints-deactivated'}"
         ${widget(TabbedEditorContainer, {
-          // Params are applied in order: set callbacks before `sourceLocation`
-          // so the initial selection is reported.
-          onEditorSelected: input.onEditorSelected,
-          onEditorClosed: input.onEditorClosed,
           leftToolbarItems,
           rightToolbarItems,
           uiSourceCodes: input.uiSourceCodes,
-          sourceLocation: input.sourceLocation,
-        })}>
+          onEditorSelected: input.onEditorSelected,
+          onEditorClosed: input.onEditorClosed,
+        })}
+        ${widgetRef(TabbedEditorContainer, e => { output.editorContainer = e; })}>
       </devtools-widget>
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging.toolbar('bottom')}>
@@ -185,10 +185,8 @@ const SourcesViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Wid
 
 export class SourcesView extends SourcesViewBase implements UI.SearchableView.Searchable,
                                                             UI.SearchableView.Replaceable {
+  editorContainer?: TabbedEditorContainer;
   #uiSourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
-  #sourceLocation?: SourceLocation;
-  #visibleView: UI.Widget.Widget|null = null;
-  #currentUISourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   #scriptViewToolbarItems: LitTemplate = nothing;
   #isSearchReplaceable = false;
   private toolbarChangedListener: Common.EventTarget.EventDescriptor|null;
@@ -206,10 +204,15 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   #isVertical = false;
   #isInWrapper = true;
   #breakpointsActive = true;
+  #editorContainerPromise: Promise<TabbedEditorContainer>;
+  #editorContainerResolve!: (container: TabbedEditorContainer) => void;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {jslog: `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`});
     this.#view = view;
+    this.#editorContainerPromise = new Promise(resolve => {
+      this.#editorContainerResolve = resolve;
+    });
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -275,12 +278,28 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       onToggleDebuggerSidebar: this.#onToggleDebuggerSidebar,
       breakpointsActive: this.#breakpointsActive,
       uiSourceCodes: new Set(this.#uiSourceCodes),
-      sourceLocation: this.#sourceLocation,
       onEditorSelected: this.editorSelected.bind(this),
       onEditorClosed: this.editorClosed.bind(this),
     };
 
-    this.#view(input, undefined, this.contentElement);
+    const that = this;
+    const output: ViewOutput = {
+      set editorContainer(value: TabbedEditorContainer) {
+        that.setEditorContainer(value);
+      },
+    };
+
+    this.#view(input, output, this.contentElement);
+  }
+
+  setEditorContainer(editorContainer: TabbedEditorContainer): void {
+    if (this.editorContainer === editorContainer) {
+      return;
+    }
+    this.editorContainer = editorContainer;
+    if (this.editorContainer) {
+      this.#editorContainerResolve(editorContainer);
+    }
   }
 
   set onToggleNavigatorSidebar(callback: () => void) {
@@ -347,7 +366,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   }
 
   visibleView(): UI.Widget.Widget|null {
-    return this.#visibleView;
+    return (this.editorContainer?.visibleView ?? null) as UI.Widget.Widget | null;
   }
 
   currentSourceFrame(): UISourceCodeFrame|null {
@@ -359,7 +378,24 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   }
 
   currentUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
-    return this.#currentUISourceCode;
+    return this.editorContainer?.currentFile() ?? null;
+  }
+
+  onCloseEditorTab(): boolean {
+    const uiSourceCode = this.editorContainer?.currentFile();
+    if (!uiSourceCode) {
+      return false;
+    }
+    this.editorContainer?.closeFile(uiSourceCode);
+    return true;
+  }
+
+  onJumpToPreviousLocation(): void {
+    this.editorContainer?.rollback();
+  }
+
+  onJumpToNextLocation(): void {
+    this.editorContainer?.rollover();
   }
 
   #onScopeChange(): void {
@@ -437,16 +473,24 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   async showSourceLocation(uiSourceCode: Workspace.UISourceCode.UISourceCode,
                            location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean,
                            omitHighlight?: boolean): Promise<void> {
-    this.#sourceLocation = {uiSourceCode, location, omitFocus, omitHighlight};
-    this.requestUpdate();
-    await this.updateComplete;
+    if (!this.editorContainer) {
+      await this.#editorContainerPromise;
+    }
+    this.editorContainer?.showSourceLocation(uiSourceCode, location, omitFocus, omitHighlight);
+  }
+
+  viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget|undefined {
+    return this.editorContainer?.viewForFile(uiSourceCode);
+  }
+
+  getSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget|undefined {
+    return this.editorContainer?.getCreatedSourceView(uiSourceCode);
   }
 
   private editorClosed(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const wasSelected = this.#currentUISourceCode === uiSourceCode;
-    if (wasSelected) {
-      this.#currentUISourceCode = null;
-      this.#visibleView = null;
+    let wasSelected = false;
+    if (!this.editorContainer?.currentFile()) {
+      wasSelected = true;
     }
 
     // SourcesNavigator does not need to update on EditorClosed.
@@ -471,17 +515,15 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       currentSourceFrame.setSearchableView(this.searchableView());
     }
 
-    this.#currentUISourceCode = event.currentFile;
-    this.#visibleView = event.currentView;
-
     this.#isSearchReplaceable = Boolean(currentSourceFrame?.canEditSource());
     this.requestUpdate();
     this.searchableView()?.refreshSearch();
     this.updateToolbarChangedListener();
     this.updateScriptViewToolbarItems();
 
-    if (this.#currentUISourceCode) {
-      this.dispatchEventToListeners(Events.EDITOR_SELECTED, this.#currentUISourceCode);
+    const currentFile = this.editorContainer?.currentFile();
+    if (currentFile) {
+      this.dispatchEventToListeners(Events.EDITOR_SELECTED, currentFile);
     }
   }
 
@@ -587,7 +629,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   }
 
   showGoToLineQuickOpen(): void {
-    if (this.#currentUISourceCode) {
+    if (this.editorContainer?.currentFile()) {
       QuickOpen.QuickOpen.QuickOpenImpl.show(':');
     }
   }
@@ -597,7 +639,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   }
 
   saveAll(): void {
-    const sourceFrames = UI.Context.Context.instance().flavor(TabbedEditorContainer)?.fileViews() ?? [];
+    const sourceFrames = this.editorContainer?.fileViews() ?? [];
     sourceFrames.forEach(this.saveSourceFrame.bind(this));
   }
 
@@ -684,26 +726,25 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     if (!sourcesView) {
       return false;
     }
-    const editorContainer = context.flavor(TabbedEditorContainer);
 
     switch (actionId) {
       case 'sources.close-all':
-        editorContainer?.closeAllFiles();
+        sourcesView.editorContainer?.closeAllFiles();
         return true;
       case 'sources.jump-to-previous-location':
-        editorContainer?.rollback();
+        sourcesView.onJumpToPreviousLocation();
         return true;
       case 'sources.jump-to-next-location':
-        editorContainer?.rollover();
+        sourcesView.onJumpToNextLocation();
         return true;
       case 'sources.next-editor-tab':
-        editorContainer?.selectNextTab();
+        sourcesView.editorContainer?.selectNextTab();
         return true;
       case 'sources.previous-editor-tab':
-        editorContainer?.selectPrevTab();
+        sourcesView.editorContainer?.selectPrevTab();
         return true;
       case 'sources.close-editor-tab':
-        return editorContainer?.closeActiveTab() ?? false;
+        return sourcesView.onCloseEditorTab();
       case 'sources.go-to-line':
         sourcesView.showGoToLineQuickOpen();
         return true;

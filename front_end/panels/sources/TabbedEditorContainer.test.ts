@@ -6,7 +6,6 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -20,10 +19,8 @@ import {createFakeSetting, describeWithEnvironment} from '../../testing/Environm
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import type {TestUniverse} from '../../testing/TestUniverse.js';
 import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
-import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import * as SourcesComponents from './components/components.js';
 import * as Sources from './sources.js';
 
 const {urlString} = Platform.DevToolsPath;
@@ -382,76 +379,6 @@ describe('TabbedEditorContainer', () => {
       assert.lengthOf(tabs, 1);
 
       assert.strictEqual(tabbedEditorContainer.currentFile(), fsSourceCode);
-    });
-
-    it('creates new source view of updated type when renamed file requires a different viewer', async () => {
-      const editorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
-      const {uiSourceCode, project} = createFileSystemUISourceCode({
-        url: urlString`file:///path/to/overrides/example.html`,
-        mimeType: 'text/html',
-        universe: testUniverse,
-      });
-      project.canSetFileContent = () => true;
-      project.rename = (_uiSourceCode: Workspace.UISourceCode.UISourceCode, newName: string,
-                        callback: (arg0: boolean, arg1?: string, arg2?: Platform.DevToolsPath.UrlString,
-                                   arg3?: Common.ResourceType.ResourceType) => void) => {
-        const newURL = urlString`${'file:///path/to/overrides/' + newName}`;
-        let newContentType = Common.ResourceType.resourceTypes.Document;
-        if (newName.endsWith('.jpg')) {
-          newContentType = Common.ResourceType.resourceTypes.Image;
-        } else if (newName.endsWith('.woff')) {
-          newContentType = Common.ResourceType.resourceTypes.Font;
-        }
-        callback(true, newName, newURL, newContentType);
-      };
-
-      editorContainer.viewForFile(uiSourceCode);
-      assert.instanceOf(editorContainer.getCreatedSourceView(uiSourceCode),
-                        Sources.UISourceCodeFrame.UISourceCodeFrame);
-
-      await uiSourceCode.rename('newName.html' as Platform.DevToolsPath.RawPathString);
-      assert.instanceOf(editorContainer.getCreatedSourceView(uiSourceCode),
-                        Sources.UISourceCodeFrame.UISourceCodeFrame);
-
-      await uiSourceCode.rename('image.jpg' as Platform.DevToolsPath.RawPathString);
-      assert.instanceOf(editorContainer.getCreatedSourceView(uiSourceCode), SourceFrame.ImageView.ImageView);
-
-      await uiSourceCode.rename('font.woff' as Platform.DevToolsPath.RawPathString);
-      assert.instanceOf(editorContainer.getCreatedSourceView(uiSourceCode), SourceFrame.FontView.FontView);
-      editorContainer.detach();
-    });
-
-    it('creates a HeadersView when the filename is \'.headers\'', () => {
-      const editorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
-      const uiSourceCode = new Workspace.UISourceCode.UISourceCode(
-          {} as Persistence.FileSystemWorkspaceBinding.FileSystem,
-          urlString`file:///path/to/overrides/www.example.com/.headers`, Common.ResourceType.resourceTypes.Document);
-      sinon.stub(uiSourceCode, 'mimeType').returns('text/plain');
-      editorContainer.viewForFile(uiSourceCode);
-      assert.instanceOf(editorContainer.getCreatedSourceView(uiSourceCode), SourcesComponents.HeadersView.HeadersView);
-      editorContainer.detach();
-    });
-
-    it('records the correct media type in the DevTools.SourcesPanelFileOpened metric', async () => {
-      const editorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
-      const {uiSourceCode} = createFileSystemUISourceCode({
-        url: urlString`file:///path/to/project/example.ts`,
-        mimeType: 'text/typescript',
-        content: 'export class Foo {}',
-        universe: testUniverse,
-      });
-      const sourcesPanelFileOpenedSpy = sinon.spy(Host.userMetrics, 'sourcesPanelFileOpened');
-      const contentLoadedPromise = new Promise(res => window.addEventListener('source-file-loaded', res));
-      const widget = editorContainer.viewForFile(uiSourceCode);
-      assert.instanceOf(widget, Sources.UISourceCodeFrame.UISourceCodeFrame);
-
-      sinon.stub(widget, 'loadPlugins' as keyof typeof widget);
-      widget.wasShown();
-
-      await contentLoadedPromise;
-
-      sinon.assert.calledWithExactly(sourcesPanelFileOpenedSpy, 'text/typescript');
-      editorContainer.detach();
     });
   });
 });

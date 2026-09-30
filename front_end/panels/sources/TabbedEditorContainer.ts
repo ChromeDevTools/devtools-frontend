@@ -278,13 +278,6 @@ const TabbedEditorContainerBase: Common.ObjectWrapper.EventMixin<EventTypes, typ
         UI.Widget.VBox,
     );
 
-export interface SourceLocation {
-  uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  location?: SourceFrame.SourceFrame.RevealPosition;
-  omitFocus?: boolean;
-  omitHighlight?: boolean;
-}
-
 export class TabbedEditorContainer extends TabbedEditorContainerBase {
   override focus(): void {
     if (this.visibleView) {
@@ -434,16 +427,6 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     UI.UIUtils.endBatchUpdate();
   }
 
-  #sourceLocation?: SourceLocation;
-  set sourceLocation(sourceLocation: SourceLocation|undefined) {
-    if (!sourceLocation || this.#sourceLocation === sourceLocation) {
-      return;
-    }
-    this.#sourceLocation = sourceLocation;
-    this.showSourceLocation(sourceLocation.uiSourceCode, sourceLocation.location, sourceLocation.omitFocus,
-                            sourceLocation.omitHighlight);
-  }
-
   onEditorSelected?: (event: EditorSelectedEvent) => void;
   onEditorClosed?: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
 
@@ -574,10 +557,8 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
 
     this.closeTabs([networkTabId], true);
     if (wasSelectedInNetwork) {
-      const fileSystemFile = this.files.get(fileSystemTabId);
-      if (fileSystemFile) {
-        this.#showFile(fileSystemFile, false);
-      }
+      this.#currentFile = this.files.get(fileSystemTabId) || null;
+      this.#scheduleUpdate();
     }
 
     this.updateHistory();
@@ -642,14 +623,6 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     } else {
       this.#showFile(uiSourceCode, true);
     }
-  }
-
-  closeActiveTab(): boolean {
-    if (!this.#currentFile) {
-      return false;
-    }
-    this.closeFile(this.#currentFile);
-    return true;
   }
 
   closeFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {

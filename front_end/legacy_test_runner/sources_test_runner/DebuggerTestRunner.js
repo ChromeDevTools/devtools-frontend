@@ -397,9 +397,9 @@ export const resumedScript = function() {
   }
 };
 
-export const showUISourceCode = async function(uiSourceCode, callback) {
+export const showUISourceCode = function(uiSourceCode, callback) {
   const panel = Sources.SourcesPanel.SourcesPanel.instance();
-  await panel.showUISourceCode(uiSourceCode);
+  panel.showUISourceCode(uiSourceCode);
   const sourceFrame = panel.visibleView;
 
   if (sourceFrame.loaded) {

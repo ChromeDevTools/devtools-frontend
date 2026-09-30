@@ -4171,3 +4171,299 @@ describeWithEnvironment('StylesSidebarPane Inactive Styles', () => {
                    'Parent block title should remain visible when child block has a matching section');
   });
 });
+
+describeWithEnvironment('StylesSidebarPane updates, completions, and media/keyframes rules', () => {
+  let connection: MockCDPConnection;
+  let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
+  let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
+  let cssModel: SDK.CSSModel.CSSModel;
+  let node: SDK.DOMModel.DOMNode;
+
+  beforeEach(() => {
+    Common.Settings.Settings.instance().moduleSetting('show-inactive-css-rules').set(false);
+    connection = new MockCDPConnection();
+    const target = createTarget({connection});
+    cssModel = target.model(SDK.CSSModel.CSSModel)!;
+    sinon.stub(ComputedStyle.ComputedStyleModel.ComputedStyleModel.prototype, 'cssModel').returns(cssModel);
+    sinon.stub(Host.AidaClient.HostConfigTracker, 'instance').returns({
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispose: () => {},
+    } as unknown as Host.AidaClient.HostConfigTracker);
+    computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
+    stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+    (node.nodeType as sinon.SinonStub).returns(Node.ELEMENT_NODE);
+    (node.nodeName as sinon.SinonStub).returns('DIV');
+    (node.domModel as sinon.SinonStub).returns(target.model(SDK.DOMModel.DOMModel)!);
+    stylesSidebarPane.setNodeForTest(node);
+  });
+
+  it('refreshes StylesSidebarPane cleanly when removing style attribute on selected node', async () => {
+    const matchedWithInline = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      inlinePayload: {
+        styleSheetId: 'inline-0' as Protocol.DOM.StyleSheetId,
+        cssProperties: [{name: 'color', value: 'red'}],
+        shorthandEntries: [],
+      },
+    });
+    const blocks1 = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedWithInline, new Map(),
+                                                                                       new Map(), null);
+    assert.lengthOf(blocks1[0].sections[0].style().leadingProperties(), 1);
+
+    const matchedWithoutInline = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      inlinePayload: {
+        styleSheetId: 'inline-0' as Protocol.DOM.StyleSheetId,
+        cssProperties: [],
+        shorthandEntries: [],
+      },
+    });
+    const blocks2 = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedWithoutInline, new Map(),
+                                                                                       new Map(), null);
+    assert.lengthOf(blocks2[0].sections[0].style().leadingProperties(), 0);
+  });
+
+  it('supports keyboard arrow navigation between sections in StylesSidebarPane', async () => {
+    renderElementIntoDOM(stylesSidebarPane);
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [
+        ruleMatch('.first', {color: 'red'}),
+        ruleMatch('.second', {color: 'blue'}),
+        ruleMatch('.third', {color: 'green'}),
+      ],
+    });
+    const blocks =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map(), null);
+    stylesSidebarPane.sectionBlocks = blocks;
+    const container = stylesSidebarPane.contentElement.querySelector('.vbox') as HTMLElement;
+    for (const section of blocks[0].sections) {
+      container.appendChild(section.element);
+    }
+    const [sec0, sec1, sec2] = blocks[0].sections;
+    sec0.element.focus();
+    container.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
+    assert.strictEqual(UI.DOMUtilities.deepActiveElement(document), sec1.element);
+    container.dispatchEvent(new KeyboardEvent('keydown', {key: 'End', bubbles: true}));
+    assert.strictEqual(UI.DOMUtilities.deepActiveElement(document), sec2.element);
+    container.dispatchEvent(new KeyboardEvent('keydown', {key: 'Home', bubbles: true}));
+    assert.strictEqual(UI.DOMUtilities.deepActiveElement(document), sec0.element);
+    stylesSidebarPane.detach();
+  });
+
+  it('coalesces StylesSidebarPane.update() rebuilds during rapid SelectedNodeChanged events', async () => {
+    const performUpdateSpy = sinon.stub(stylesSidebarPane, 'performUpdate').resolves();
+    const node2 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    const node3 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node2);
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node3);
+    await stylesSidebarPane.updateComplete;
+    sinon.assert.calledOnce(performUpdateSpy);
+  });
+
+  it('throttles StylesSidebarPane updates across consecutive style and node mutations', async () => {
+    const performUpdateSpy = sinon.stub(stylesSidebarPane, 'performUpdate').resolves();
+    const event = {data: null} as unknown as
+        Common.EventTarget.EventTargetEvent<ComputedStyle.ComputedStyleModel.CSSModelChangedEvent>;
+    stylesSidebarPane.onCSSModelChanged(event);
+    stylesSidebarPane.onCSSModelChanged(event);
+    stylesSidebarPane.onCSSModelChanged(event);
+    await stylesSidebarPane.updateComplete;
+    sinon.assert.calledOnce(performUpdateSpy);
+  });
+
+  it('preserves uppercase and lowercase user prefix casing in CSSPropertyPrompt completions', async () => {
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [ruleMatch('div', {'--customVar': '10px', color: 'red'})],
+    });
+    const blocks =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map(), null);
+    const section = blocks[0].sections[0];
+    const treeElement =
+        section.propertiesTreeOutline.firstChild() as Elements.StylePropertyTreeElement.StylePropertyTreeElement;
+    const prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(treeElement, true);
+    const buildCompletions = (prompt as unknown as {
+                               buildPropertyCompletions: (expr: string, query: string, force?: boolean) =>
+                                   Promise<UI.SuggestBox.Suggestions>,
+                             }).buildPropertyCompletions.bind(prompt);
+    const lowerResults = await buildCompletions('co', 'co', true);
+    assert.isTrue(lowerResults.some(item => item.text === 'color'));
+    const upperResults = await buildCompletions('CO', 'CO', true);
+    assert.isTrue(upperResults.some(item => item.text === 'COLOR'));
+    const varResults = await buildCompletions('--CU', '--CU', true);
+    assert.isTrue(varResults.some(item => item.text === '--customVar'));
+  });
+
+  it('updates StylesSidebarPane when editing inspector stylesheet UISourceCode working copy', async () => {
+    const styleSheetId = 'inspector-sheet' as Protocol.DOM.StyleSheetId;
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [{
+        rule: {
+          selectorList: {selectors: [{text: 'div'}], text: 'div'},
+          origin: Protocol.CSS.StyleSheetOrigin.Inspector,
+          styleSheetId,
+          style: {cssProperties: [{name: 'color', value: 'purple'}], shorthandEntries: [], styleSheetId},
+        },
+        matchingSelectors: [0],
+      }],
+    });
+    const requestUpdateSpy = sinon.spy(stylesSidebarPane, 'requestUpdate');
+    stylesSidebarPane.onCSSModelChanged({
+      data: {styleSheetId},
+    } as unknown as Common.EventTarget.EventTargetEvent<ComputedStyle.ComputedStyleModel.CSSModelChangedEvent>);
+    sinon.assert.calledOnce(requestUpdateSpy);
+    const blocks =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map(), null);
+    assert.strictEqual(blocks[0].sections[0].style().leadingProperties()[0].value, 'purple');
+  });
+
+  it('triggers StylesSidebarPane update when CSSModel dispatches MediaQueryResultChanged', () => {
+    const requestUpdateSpy = sinon.spy(stylesSidebarPane, 'requestUpdate');
+    stylesSidebarPane.onCSSModelChanged(
+        {data: undefined} as unknown as
+        Common.EventTarget.EventTargetEvent<ComputedStyle.ComputedStyleModel.CSSModelChangedEvent>);
+    sinon.assert.calledOnce(requestUpdateSpy);
+  });
+
+  it('renders @media queries accurately when multiple <style> tags share the document URL', async () => {
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.box'}], text: '.box'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            styleSheetId: 'inline-1' as Protocol.DOM.StyleSheetId,
+            media: [{
+              text: '(min-width: 500px)',
+              source: Protocol.CSS.CSSMediaSource.MediaRule,
+              sourceURL: 'http://example.com/index.html',
+            }],
+            ruleTypes: [Protocol.CSS.CSSRuleType.MediaRule],
+            style: {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: []},
+          },
+          matchingSelectors: [0],
+        },
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.box'}], text: '.box'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            styleSheetId: 'inline-2' as Protocol.DOM.StyleSheetId,
+            media: [{
+              text: '(max-width: 900px)',
+              source: Protocol.CSS.CSSMediaSource.MediaRule,
+              sourceURL: 'http://example.com/index.html',
+            }],
+            ruleTypes: [Protocol.CSS.CSSRuleType.MediaRule],
+            style: {cssProperties: [{name: 'color', value: 'blue'}], shorthandEntries: []},
+          },
+          matchingSelectors: [0],
+        },
+      ],
+    });
+    const blocks =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map(), null);
+    const q1 = blocks[0].sections[0].element.querySelector('devtools-css-query')?.shadowRoot?.querySelector('.query');
+    const q2 = blocks[0].sections[1].element.querySelector('devtools-css-query')?.shadowRoot?.querySelector('.query');
+    assert.include(q1?.textContent ?? '', '(max-width: 900px)');
+    assert.include(q2?.textContent ?? '', '(min-width: 500px)');
+  });
+
+  it('renders @keyframes sections in StylesSidebarPane for animated elements', async () => {
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      animationsPayload: [{
+        animationName: {text: 'fadeIn'},
+        keyframes: [
+          {
+            keyText: {text: '0%'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {cssProperties: [{name: 'opacity', value: '0'}], shorthandEntries: []},
+          },
+          {
+            keyText: {text: '100%'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {cssProperties: [{name: 'opacity', value: '1'}], shorthandEntries: []},
+          },
+        ],
+      }],
+    });
+    const blocks =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map(), null);
+    assert.lengthOf(blocks, 2);
+    assert.strictEqual(blocks[1].titleElement()?.textContent, '@keyframes fadeIn');
+    assert.lengthOf(blocks[1].sections, 2);
+    assert.strictEqual(blocks[1].sections[0].headerText(), '0%');
+    assert.strictEqual(blocks[1].sections[1].headerText(), '100%');
+  });
+
+  it('renders @keyframes sections even when target element has display: none', async () => {
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [ruleMatch('.hidden-anim', {display: 'none'})],
+      animationsPayload: [{
+        animationName: {text: 'slide'},
+        keyframes: [{
+          keyText: {text: '50%'},
+          origin: Protocol.CSS.StyleSheetOrigin.Regular,
+          style: {cssProperties: [{name: 'transform', value: 'translateX(10px)'}], shorthandEntries: []},
+        }],
+      }],
+    });
+    const blocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+        matchedStyles, new Map([['display', 'none']]), new Map(), null);
+    assert.lengthOf(blocks, 2);
+    assert.strictEqual(blocks[1].titleElement()?.textContent, '@keyframes slide');
+    assert.strictEqual(blocks[1].sections[0].headerText(), '50%');
+  });
+
+  it('marks earlier duplicate and shorthand properties within the same rule as OVERLOADED', async () => {
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [{
+        rule: {
+          selectorList: {selectors: [{text: 'div'}], text: 'div'},
+          origin: Protocol.CSS.StyleSheetOrigin.Regular,
+          style: {
+            cssProperties: [
+              {name: 'color', value: 'red'},
+              {name: 'color', value: 'green'},
+            ],
+            shorthandEntries: [],
+          },
+        },
+        matchingSelectors: [0],
+      }],
+    });
+    const blocks =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map(), null);
+    const props = blocks[0].sections[0].style().leadingProperties();
+    assert.lengthOf(props, 2);
+    assert.strictEqual(matchedStyles.propertyState(props[0]), SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+    assert.strictEqual(matchedStyles.propertyState(props[1]), SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+  });
+});

@@ -246,20 +246,21 @@ export declare class DOMDocument extends DOMNode {
     #private;
     body: DOMNode | null;
     documentElement: DOMNode | null;
-    constructor(domModel: DOMModel, payload: Protocol.DOM.Node);
+    constructor(domModel: DOMModel, payload: Protocol.DOM.Node, frameId?: Protocol.Page.FrameId | null);
     get documentURL(): Platform.DevToolsPath.UrlString;
     get baseURL(): Platform.DevToolsPath.UrlString;
+    frameId(): Protocol.Page.FrameId | null;
     /**
      * Returns the security origin of this document.
      *
-     * The security origin is derived from the document URL and is recomputed
+     * The security origin is resolved from the document's frame and is recomputed
      * when the document navigates to a new URL via `setDocumentURL`.
      */
     securityOrigin(): SecurityOrigin;
     /**
-     * Updates the document and base URLs, and recomputes the document's security origin.
+     * Updates the document and base URLs, and updates the document's security origin.
      */
-    setDocumentURL(url: Platform.DevToolsPath.UrlString): void;
+    setDocumentURL(url: Platform.DevToolsPath.UrlString, securityOrigin?: SecurityOrigin | null): void;
 }
 export declare class AdoptedStyleSheet {
     readonly id: Protocol.DOM.StyleSheetId;
@@ -412,6 +413,9 @@ export declare class DOMNodeSnapshot extends DOMNode {
     setAsInspectedNode(): Promise<void>;
 }
 export declare class DOMDocumentSnapshot extends DOMDocument {
+    #private;
+    constructor(domModel: DOMModel, payload: Protocol.DOM.Node, frameId: Protocol.Page.FrameId | null | undefined, securityOrigin: SecurityOrigin);
+    securityOrigin(): SecurityOrigin;
     init(_doc: DOMDocument | null, _isInShadowTree: boolean, _payload: Protocol.DOM.Node, _retainedNodes?: Set<Protocol.DOM.BackendNodeId> | undefined): void;
     setNodeName(_name: string, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
     setNodeValue(_value: string, _callback?: ((arg0: string | null) => void) | undefined): void;

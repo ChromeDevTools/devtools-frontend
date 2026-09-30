@@ -1,7 +1,7 @@
 import * as Common from '../core/common/common.js';
 import * as Root from '../core/root/root.js';
 import type * as UIModule from '../ui/legacy/legacy.js';
-export { createTarget } from './TargetHelpers.js';
+export { createTarget, waitForTarget } from './TargetHelpers.js';
 export { stubNoopSettings } from './SettingsHelpers.js';
 export declare function registerActions(actions: UIModule.ActionRegistration.ActionRegistration[]): void;
 export declare function registerNoopActions(actionIds: string[]): void;

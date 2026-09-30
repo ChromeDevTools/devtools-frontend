@@ -590,6 +590,7 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
   #breakpointType = SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT;
   #onFinish = () => {
   };
+  #location;
   #editor;
   #state;
   constructor(target, view = DEFAULT_VIEW2) {
@@ -629,6 +630,13 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
   }
   set onFinish(onFinish) {
     this.#onFinish = onFinish;
+    this.requestUpdate();
+  }
+  get location() {
+    return this.#location;
+  }
+  set location(location) {
+    this.#location = location;
     this.requestUpdate();
   }
   focus() {
@@ -698,6 +706,9 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
         }
       }
     ];
+    const completionOptions = {
+      location: () => this.#location ? this.#location() : Promise.resolve(null)
+    };
     const editorConfig = [
       CodeMirror.javascript.javascriptLanguage,
       TextEditor2.Config.baseConfiguration(this.oldCondition),
@@ -707,8 +718,9 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
       TextEditor2.Config.showCompletionHint,
       TextEditor2.Config.conservativeCompletion,
       CodeMirror.javascript.javascriptLanguage.data.of({ autocomplete }),
+      TextEditor2.JavaScript.completion(completionOptions),
       CodeMirror.autocompletion(),
-      TextEditor2.JavaScript.argumentHints()
+      TextEditor2.JavaScript.argumentHints(completionOptions)
     ];
     this.#state = CodeMirror.EditorState.create({
       doc: this.oldCondition,
@@ -2126,8 +2138,8 @@ import * as Persistence10 from "../../models/persistence/persistence.js";
 import * as StackTrace5 from "../../models/stack_trace/stack_trace.js";
 import * as Workspace23 from "../../models/workspace/workspace.js";
 import { Icon as Icon2 } from "../../ui/kit/kit.js";
-import * as UI18 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html8, render as render9 } from "../../ui/lit/lit.js";
+import * as UI17 from "../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html10, render as render9 } from "../../ui/lit/lit.js";
 import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/callStackSidebarPane.css.js
@@ -5129,7 +5141,7 @@ import * as Workspace21 from "../../models/workspace/workspace.js";
 import * as PanelCommon3 from "../common/common.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
-import * as UI17 from "../../ui/legacy/legacy.js";
+import * as UI16 from "../../ui/legacy/legacy.js";
 import * as Settings9 from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as Snippets4 from "../snippets/snippets.js";
@@ -8123,121 +8135,11 @@ import * as SDK9 from "../../core/sdk/sdk.js";
 import * as Bindings7 from "../../models/bindings/bindings.js";
 import * as Persistence9 from "../../models/persistence/persistence.js";
 import * as Workspace19 from "../../models/workspace/workspace.js";
-import * as Buttons4 from "../../ui/components/buttons/buttons.js";
+import * as Buttons5 from "../../ui/components/buttons/buttons.js";
 import * as QuickOpen from "../../ui/legacy/components/quick_open/quick_open.js";
-import * as UI15 from "../../ui/legacy/legacy.js";
-import { html as html6, nothing as nothing5, render as render7 } from "../../ui/lit/lit.js";
+import * as UI14 from "../../ui/legacy/legacy.js";
+import { html as html8, nothing as nothing7, render as render7 } from "../../ui/lit/lit.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
-
-// ../../front_end/panels/sources/EditingLocationHistoryManager.ts
-var EditingLocationHistoryManager_exports = {};
-__export(EditingLocationHistoryManager_exports, {
-  EditingLocationHistoryManager: () => EditingLocationHistoryManager,
-  HistoryDepth: () => HistoryDepth
-});
-import * as Workspace7 from "../../models/workspace/workspace.js";
-import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
-var HistoryDepth = 20;
-var EditingLocationHistoryManager = class {
-  constructor(sourcesView) {
-    this.sourcesView = sourcesView;
-  }
-  sourcesView;
-  entries = [];
-  current = -1;
-  revealingCount = 0;
-  trackSourceFrameCursorJumps(sourceFrame) {
-    sourceFrame.addEventListener(
-      SourceFrame3.SourceFrame.Events.EDITOR_UPDATE,
-      (event) => this.onEditorUpdate(event.data, sourceFrame)
-    );
-  }
-  onEditorUpdate(update, sourceFrame) {
-    if (update.docChanged) {
-      this.mapEntriesFor(sourceFrame.uiSourceCode(), update.changes);
-    }
-    const prevPos = update.startState.selection.main;
-    const newPos = update.state.selection.main;
-    const isJump = this.revealingCount === 0 && prevPos.anchor !== newPos.anchor && update.transactions.some((tr) => {
-      return Boolean(
-        tr.isUserEvent("select.pointer") || tr.isUserEvent("select.reveal") || tr.isUserEvent("select.search")
-      );
-    });
-    if (isJump) {
-      this.updateCurrentState(sourceFrame.uiSourceCode(), prevPos.head);
-      if (this.entries.length > this.current + 1) {
-        this.entries.length = this.current + 1;
-      }
-      this.entries.push(new EditingLocationHistoryEntry(sourceFrame.uiSourceCode(), newPos.head));
-      this.current++;
-      if (this.entries.length > HistoryDepth) {
-        this.entries.shift();
-        this.current--;
-      }
-    }
-  }
-  updateCurrentState(uiSourceCode, position) {
-    if (this.revealingCount === 0) {
-      const top = this.current >= 0 ? this.entries[this.current] : null;
-      if (top?.matches(uiSourceCode)) {
-        top.position = position;
-      }
-    }
-  }
-  mapEntriesFor(uiSourceCode, change) {
-    for (const entry of this.entries) {
-      if (entry.matches(uiSourceCode)) {
-        entry.position = change.mapPos(entry.position);
-      }
-    }
-  }
-  async reveal(entry) {
-    const uiSourceCode = Workspace7.Workspace.WorkspaceImpl.instance().uiSourceCode(entry.projectId, entry.url);
-    if (uiSourceCode) {
-      this.revealingCount++;
-      try {
-        await this.sourcesView.showSourceLocation(uiSourceCode, entry.position, false, true);
-      } finally {
-        this.revealingCount--;
-      }
-    }
-  }
-  rollback() {
-    if (this.current > 0) {
-      this.current--;
-      void this.reveal(this.entries[this.current]);
-    }
-  }
-  rollover() {
-    if (this.current < this.entries.length - 1) {
-      this.current++;
-      void this.reveal(this.entries[this.current]);
-    }
-  }
-  removeHistoryForSourceCode(uiSourceCode) {
-    for (let i = this.entries.length - 1; i >= 0; i--) {
-      if (this.entries[i].matches(uiSourceCode)) {
-        this.entries.splice(i, 1);
-        if (this.current >= i) {
-          this.current--;
-        }
-      }
-    }
-  }
-};
-var EditingLocationHistoryEntry = class {
-  projectId;
-  url;
-  position;
-  constructor(uiSourceCode, position) {
-    this.projectId = uiSourceCode.project().id();
-    this.url = uiSourceCode.url();
-    this.position = position;
-  }
-  matches(uiSourceCode) {
-    return this.url === uiSourceCode.url() && this.projectId === uiSourceCode.project().id();
-  }
-};
 
 // gen/front_end/panels/sources/sourcesView.css.js
 var sourcesView_css_default = `/*
@@ -8292,12 +8194,122 @@ import * as Persistence7 from "../../models/persistence/persistence.js";
 import * as Workspace17 from "../../models/workspace/workspace.js";
 import * as uiI18n2 from "../../ui/i18n/i18n.js";
 import * as SourceFrame9 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI14 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html5, nothing as nothing4, render as render6 } from "../../ui/lit/lit.js";
+import * as UI13 from "../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html7, nothing as nothing6, render as render6 } from "../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon2 from "../common/common.js";
 import * as Snippets3 from "../snippets/snippets.js";
 import * as Components2 from "./components/components.js";
+
+// ../../front_end/panels/sources/EditingLocationHistoryManager.ts
+var EditingLocationHistoryManager_exports = {};
+__export(EditingLocationHistoryManager_exports, {
+  EditingLocationHistoryManager: () => EditingLocationHistoryManager,
+  HistoryDepth: () => HistoryDepth
+});
+import * as Workspace7 from "../../models/workspace/workspace.js";
+import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
+var HistoryDepth = 20;
+var EditingLocationHistoryManager = class {
+  constructor(editorContainer) {
+    this.editorContainer = editorContainer;
+  }
+  editorContainer;
+  entries = [];
+  current = -1;
+  revealingCount = 0;
+  trackSourceFrameCursorJumps(sourceFrame) {
+    sourceFrame.addEventListener(
+      SourceFrame3.SourceFrame.Events.EDITOR_UPDATE,
+      (event) => this.onEditorUpdate(event.data, sourceFrame)
+    );
+  }
+  onEditorUpdate(update, sourceFrame) {
+    if (update.docChanged) {
+      this.mapEntriesFor(sourceFrame.uiSourceCode(), update.changes);
+    }
+    const prevPos = update.startState.selection.main;
+    const newPos = update.state.selection.main;
+    const isJump = this.revealingCount === 0 && prevPos.anchor !== newPos.anchor && update.transactions.some((tr) => {
+      return Boolean(
+        tr.isUserEvent("select.pointer") || tr.isUserEvent("select.reveal") || tr.isUserEvent("select.search")
+      );
+    });
+    if (isJump) {
+      this.updateCurrentState(sourceFrame.uiSourceCode(), prevPos.head);
+      if (this.entries.length > this.current + 1) {
+        this.entries.length = this.current + 1;
+      }
+      this.entries.push(new EditingLocationHistoryEntry(sourceFrame.uiSourceCode(), newPos.head));
+      this.current++;
+      if (this.entries.length > HistoryDepth) {
+        this.entries.shift();
+        this.current--;
+      }
+    }
+  }
+  updateCurrentState(uiSourceCode, position) {
+    if (this.revealingCount === 0) {
+      const top = this.current >= 0 ? this.entries[this.current] : null;
+      if (top?.matches(uiSourceCode)) {
+        top.position = position;
+      }
+    }
+  }
+  mapEntriesFor(uiSourceCode, change) {
+    for (const entry of this.entries) {
+      if (entry.matches(uiSourceCode)) {
+        entry.position = change.mapPos(entry.position);
+      }
+    }
+  }
+  reveal(entry) {
+    const uiSourceCode = Workspace7.Workspace.WorkspaceImpl.instance().uiSourceCode(entry.projectId, entry.url);
+    if (uiSourceCode) {
+      this.revealingCount++;
+      try {
+        this.editorContainer.showSourceLocation(uiSourceCode, entry.position, false, true);
+      } finally {
+        this.revealingCount--;
+      }
+    }
+  }
+  rollback() {
+    if (this.current > 0) {
+      this.current--;
+      this.reveal(this.entries[this.current]);
+    }
+  }
+  rollover() {
+    if (this.current < this.entries.length - 1) {
+      this.current++;
+      this.reveal(this.entries[this.current]);
+    }
+  }
+  removeHistoryForSourceCode(uiSourceCode) {
+    for (let i = this.entries.length - 1; i >= 0; i--) {
+      if (this.entries[i].matches(uiSourceCode)) {
+        this.entries.splice(i, 1);
+        if (this.current >= i) {
+          this.current--;
+        }
+      }
+    }
+  }
+};
+var EditingLocationHistoryEntry = class {
+  projectId;
+  url;
+  position;
+  constructor(uiSourceCode, position) {
+    this.projectId = uiSourceCode.project().id();
+    this.url = uiSourceCode.url();
+    this.position = position;
+  }
+  matches(uiSourceCode) {
+    return this.url === uiSourceCode.url() && this.projectId === uiSourceCode.project().id();
+  }
+};
 
 // ../../front_end/panels/sources/UISourceCodeFrame.ts
 var UISourceCodeFrame_exports = {};
@@ -8316,11 +8328,13 @@ import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
 import * as Persistence5 from "../../models/persistence/persistence.js";
 import * as Workspace15 from "../../models/workspace/workspace.js";
 import * as CodeMirror6 from "../../third_party/codemirror.next/codemirror.next.js";
+import * as Buttons4 from "../../ui/components/buttons/buttons.js";
 import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.js";
 import * as TextEditor5 from "../../ui/components/text_editor/text_editor.js";
 import { Icon } from "../../ui/kit/kit.js";
 import * as SourceFrame7 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI13 from "../../ui/legacy/legacy.js";
+import * as UI12 from "../../ui/legacy/legacy.js";
+import { html as html6, nothing as nothing5 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/sources/CoveragePlugin.ts
 var CoveragePlugin_exports = {};
@@ -9751,6 +9765,15 @@ var DebuggerPlugin = class extends Plugin {
     const dialog4 = new BreakpointEditDialog();
     dialog4.editorLineNumber = line.number - 1;
     dialog4.oldCondition = oldCondition, dialog4.breakpointType = isLogpointForDialog ? SDK8.DebuggerModel.BreakpointType.LOGPOINT : SDK8.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT;
+    dialog4.location = async () => {
+      const uiLocation = breakpoint ? breakpoint.getClosestResolvedLocation() ?? { lineNumber: breakpoint.lineNumber(), columnNumber: breakpoint.columnNumber() } : location ?? await this.defaultBreakpointLocation(line);
+      const rawLocations = await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
+        this.uiSourceCode,
+        uiLocation.lineNumber,
+        uiLocation.columnNumber
+      );
+      return rawLocations[0] ?? null;
+    };
     dialog4.onFinish = async (result) => {
       this.activeBreakpointDialog = null;
       this.#activeBreakpointEditRequest = void 0;
@@ -11441,7 +11464,7 @@ import * as i18n21 from "../../core/i18n/i18n.js";
 import * as Bindings6 from "../../models/bindings/bindings.js";
 import * as uiI18n from "../../ui/i18n/i18n.js";
 import * as Components from "../../ui/legacy/components/utils/utils.js";
-import * as UI11 from "../../ui/legacy/legacy.js";
+import { html as html5, nothing as nothing4 } from "../../ui/lit/lit.js";
 var UIStrings11 = {
   /**
    * @description Text in the bottom toolbar of the Sources panel that lists the source mapped origin scripts.
@@ -11486,27 +11509,23 @@ var ResourceOriginPlugin = class extends Plugin {
         links.push(link);
       }
       for (const originURL of Bindings6.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(this.uiSourceCode)) {
-        const link = Components.Linkifier.Linkifier.linkifyURL(originURL);
-        link.tabIndex = 0;
-        links.push(link);
+        links.push(Components.Linkifier.Linkifier.renderLinkifiedUrl(originURL, { tabStop: true }));
       }
       if (links.length === 0) {
         return [];
       }
-      const element = document.createElement("span");
-      links.forEach((link, index) => {
-        if (index > 0) {
-          element.append(", ");
-        }
-        element.append(link);
-      });
-      return [new UI11.Toolbar.ToolbarItem(uiI18n.getFormatLocalizedString(str_11, UIStrings11.fromS, { PH1: element }))];
+      const linksTemplate = html5`<span>${links.map((link, index) => html5`${index > 0 ? ", " : nothing4}${link}`)}</span>`;
+      return [
+        html5`<div class="toolbar-item">${uiI18n.getFormatLocalizedStringTemplate(str_11, UIStrings11.fromS, { PH1: linksTemplate })}</div>`
+      ];
     }
     for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(this.uiSourceCode)) {
       if (script.originStackTrace?.callFrames.length) {
         const link = this.#linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
         link.tabIndex = 0;
-        return [new UI11.Toolbar.ToolbarItem(uiI18n.getFormatLocalizedString(str_11, UIStrings11.fromS, { PH1: link }))];
+        return [
+          html5`<div class="toolbar-item">${uiI18n.getFormatLocalizedStringTemplate(str_11, UIStrings11.fromS, { PH1: link })}</div>`
+        ];
       }
     }
     return [];
@@ -11524,7 +11543,7 @@ __export(SnippetsPlugin_exports, {
 import * as Host5 from "../../core/host/host.js";
 import * as i18n23 from "../../core/i18n/i18n.js";
 import * as TextEditor4 from "../../ui/components/text_editor/text_editor.js";
-import * as UI12 from "../../ui/legacy/legacy.js";
+import * as UI11 from "../../ui/legacy/legacy.js";
 import * as Snippets2 from "../snippets/snippets.js";
 var UIStrings12 = {
   /**
@@ -11543,7 +11562,7 @@ var SnippetsPlugin = class extends Plugin {
     return Snippets2.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode);
   }
   rightToolbarItems() {
-    const runSnippet = UI12.Toolbar.Toolbar.createActionButton("debugger.run-snippet");
+    const runSnippet = UI11.Toolbar.Toolbar.createActionButton("debugger.run-snippet");
     runSnippet.setText(Host5.Platform.isMac() ? i18nString11(UIStrings12.enter) : i18nString11(UIStrings12.ctrlenter));
     runSnippet.setReducedFocusRing();
     return [runSnippet];
@@ -11584,7 +11603,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     this.#persistenceBinding = Persistence5.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     this.#boundOnBindingChanged = this.onBindingChanged.bind(this);
     Common9.Settings.Settings.instance().resolve(Persistence5.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).addChangeListener(this.onNetworkPersistenceChanged, this);
-    this.#errorPopoverHelper = new UI13.PopoverHelper.PopoverHelper(
+    this.#errorPopoverHelper = new UI12.PopoverHelper.PopoverHelper(
       this.textEditor.editor.contentDOM,
       this.getErrorPopoverContent.bind(this),
       "sources.error"
@@ -11609,11 +11628,11 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   }
   onFocus() {
     super.onFocus();
-    UI13.Context.Context.instance().setFlavor(_UISourceCodeFrame, this);
+    UI12.Context.Context.instance().setFlavor(_UISourceCodeFrame, this);
   }
   onBlur() {
     super.onBlur();
-    UI13.Context.Context.instance().setFlavor(_UISourceCodeFrame, null);
+    UI12.Context.Context.instance().setFlavor(_UISourceCodeFrame, null);
   }
   installMessageAndDecorationListeners() {
     if (this.#persistenceBinding) {
@@ -11713,7 +11732,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
       plugin.willHide();
     }
     super.willHide();
-    UI13.Context.Context.instance().setFlavor(_UISourceCodeFrame, null);
+    UI12.Context.Context.instance().setFlavor(_UISourceCodeFrame, null);
     this.#uiSourceCode.removeWorkingCopyGetter();
   }
   getContentType() {
@@ -11941,26 +11960,32 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     }
   }
   async toolbarItems() {
-    const leftToolbarItems = await super.toolbarItems();
+    const leftToolbarItems = [await super.toolbarItems()];
     const isEditable = Persistence5.Persistence.PersistenceImpl.instance().hasEditableContent(this.#uiSourceCode);
     const isJavaScript = Common9.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
     const isInplaceFormattable = isEditable && isJavaScript;
     if (isInplaceFormattable) {
-      const formatButton = new UI13.Toolbar.ToolbarButton(i18nString12(UIStrings13.format), "brackets");
-      formatButton.addEventListener(UI13.Toolbar.ToolbarButton.Events.CLICK, () => {
-        void this.#formatSourceInPlace();
-      });
-      leftToolbarItems.unshift(formatButton);
+      leftToolbarItems.unshift(html6`<devtools-button
+        class="toolbar-button"
+        title=${i18nString12(UIStrings13.format)}
+        aria-label=${i18nString12(UIStrings13.format)}
+        .iconName=${"brackets"}
+        .variant=${Buttons4.Button.Variant.TOOLBAR}
+        @click=${() => void this.#formatSourceInPlace()}
+      ></devtools-button>`);
     }
     const rightToolbarItems = [];
     for (const plugin of this.plugins) {
       leftToolbarItems.push(...plugin.leftToolbarItems());
       rightToolbarItems.push(...plugin.rightToolbarItems());
     }
-    if (!rightToolbarItems.length) {
-      return leftToolbarItems;
-    }
-    return [...leftToolbarItems, new UI13.Toolbar.ToolbarSeparator(true), ...rightToolbarItems];
+    return html6`
+      ${leftToolbarItems.map((item) => item instanceof UI12.Toolbar.ToolbarItem ? item.element : item)}
+      ${rightToolbarItems.length ? html6`
+        <div class="toolbar-spacer"></div>
+        ${rightToolbarItems.map((item) => item instanceof UI12.Toolbar.ToolbarItem ? item.element : item)}
+      ` : nothing5}
+    `;
   }
   getErrorPopoverContent(event) {
     const mouseEvent = event;
@@ -12354,7 +12379,7 @@ var UIStrings14 = {
 var str_14 = i18n27.i18n.registerUIStrings("panels/sources/TabbedEditorContainer.ts", UIStrings14);
 var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var { repeat: repeat2 } = Directives2;
-var { widget } = UI14.Widget;
+var { widget } = UI13.Widget;
 var HEADER_OVERRIDES_FILENAME = ".headers";
 var UI_SOURCE_CODE_WIDGET_MAP = /* @__PURE__ */ new WeakMap();
 function getOrCreateSourceView(uiSourceCode, onCreate) {
@@ -12393,7 +12418,7 @@ function removeSourceViewCache(uiSourceCode) {
   return view;
 }
 function renderPlaceholder(input) {
-  return html5`
+  return html7`
     <div class="sources-placeholder">
       <div class="tabbed-pane-placeholder-row workspace">
         <span class="icon-container">
@@ -12406,10 +12431,10 @@ function renderPlaceholder(input) {
       </div>
       <div class="shortcuts-list tabbed-pane-placeholder-row" role="list"
             aria-label=${i18nString13(UIStrings14.sourceViewActions)}>
-        ${input.shortcuts.map((shortcut) => !shortcut.keys.length ? html5`<div class="shortcut-line" role="listitem"></div>` : html5`<div class="shortcut-line" role="listitem">
+        ${input.shortcuts.map((shortcut) => !shortcut.keys.length ? html7`<div class="shortcut-line" role="listitem"></div>` : html7`<div class="shortcut-line" role="listitem">
               <button @click=${shortcut.onClick}>${shortcut.description}</button>
               <span class="shortcuts">
-                ${shortcut.keys.map((key) => html5`
+                ${shortcut.keys.map((key) => html7`
                   <span class="keybinds-key"><span>${key}</span></span>
                 `)}
               </span>
@@ -12419,7 +12444,7 @@ function renderPlaceholder(input) {
 }
 function renderTabIcon(tab) {
   if (tab.hasLoadError) {
-    return html5`
+    return html7`
       <span slot="icon">
         <devtools-icon class="small" name="cross-circle-filled"
                         title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
@@ -12427,16 +12452,16 @@ function renderTabIcon(tab) {
       </span>`;
   }
   if (tab.icon) {
-    return html5`<span slot="icon">${tab.icon}</span>`;
+    return html7`<span slot="icon">${tab.icon}</span>`;
   }
-  return nothing4;
+  return nothing6;
 }
 function renderTabSuffix(tab, input) {
   if (!tab.hasUnsavedCommittedChanges) {
-    return nothing4;
+    return nothing6;
   }
   const tooltipId = `tab-tooltip-${tab.tabId}`;
-  return html5`
+  return html7`
     <span slot="suffix">
       <div>
         <devtools-icon name="warning-filled" class="small" aria-describedby=${tooltipId}></devtools-icon>
@@ -12445,13 +12470,13 @@ function renderTabSuffix(tab, input) {
     str_14,
     UIStrings14.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace,
     {
-      PH1: html5`<devtools-link class="devtools-link" @click=${input.onConnectAutomaticFileSystem}>${tab.disconnectedAutomaticFileSystemRoot}</devtools-link>`
+      PH1: html7`<devtools-link class="devtools-link" @click=${input.onConnectAutomaticFileSystem}>${tab.disconnectedAutomaticFileSystemRoot}</devtools-link>`
     }
   ) : uiI18n2.getFormatLocalizedStringTemplate(
     str_14,
     UIStrings14.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace,
     {
-      PH1: html5`<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`
+      PH1: html7`<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`
     }
   )}
         </devtools-tooltip>
@@ -12459,7 +12484,7 @@ function renderTabSuffix(tab, input) {
     </span>`;
 }
 var DEFAULT_VIEW5 = (input, _output, target) => {
-  render6(html5`
+  render6(html7`
     <devtools-tabbed-pane
       class="flex-auto vbox"
       .closeableTabs=${true}
@@ -12478,7 +12503,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
       <devtools-toolbar class="tabbed-pane-right-toolbar" slot="right">
         ${input.rightToolbarItems}
       </devtools-toolbar>
-      ${repeat2(input.openTabs, (tab) => tab.tabId, (tab) => html5`
+      ${repeat2(input.openTabs, (tab) => tab.tabId, (tab) => html7`
         <div id=${tab.tabId}
              class="vbox flex-auto"
              title=${tab.title}
@@ -12486,15 +12511,15 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
              ?selected=${input.activeTabId === tab.tabId}>
              ${renderTabIcon(tab)}
              ${renderTabSuffix(tab, input)}
-             ${tab.widget ? html5`${widget(UI14.Widget.WrapperWidget, { widget: tab.widget })}` : nothing4}
+             ${tab.widget ? html7`${widget(UI13.Widget.WrapperWidget, { widget: tab.widget })}` : nothing6}
         </div>`)}
     </devtools-tabbed-pane>`, target);
 };
 var tabId = 0;
 var TabbedEditorContainerBase = Common10.ObjectWrapper.eventMixin(
-  UI14.Widget.VBox
+  UI13.Widget.VBox
 );
-var TabbedEditorContainer = class extends TabbedEditorContainerBase {
+var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorContainerBase {
   focus() {
     if (this.visibleView) {
       this.visibleView.focus();
@@ -12510,7 +12535,7 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     ];
     const separator = Host7.Platform.isMac() ? "\u2004" : "\u200A+\u200A";
     const shortcutElements = shortcuts.map((shortcut) => {
-      const shortcutKeys = UI14.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
+      const shortcutKeys = UI13.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
       if (!shortcutKeys?.[0]) {
         return {
           description: shortcut.description,
@@ -12519,7 +12544,7 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
           keys: []
         };
       }
-      const action3 = UI14.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
+      const action3 = UI13.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
       const keys = shortcutKeys[0].descriptors.flatMap((descriptor) => descriptor.name.split(separator));
       return {
         description: shortcut.description,
@@ -12564,7 +12589,7 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
       },
       onConnectAutomaticFileSystem: async (event) => {
         event.consume();
-        await UI14.ViewManager.ViewManager.instance().showView("navigator-files");
+        await UI13.ViewManager.ViewManager.instance().showView("navigator-files");
         await Persistence7.AutomaticFileSystemManager.AutomaticFileSystemManager.instance().connectAutomaticFileSystem(
           /* addIfMissing= */
           true
@@ -12602,9 +12627,6 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     this.#view(input, void 0, this.contentElement);
   }
   #historyManager;
-  set historyManager(historyManager) {
-    this.#historyManager = historyManager;
-  }
   #leftToolbarItems = [];
   set leftToolbarItems(items) {
     if (this.#leftToolbarItems === items) {
@@ -12633,14 +12655,14 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     if (removed.length > 0) {
       this.removeUISourceCodes(removed);
     }
-    UI14.UIUtils.startBatchUpdate();
+    UI13.UIUtils.startBatchUpdate();
     for (const uiSourceCode of uiSourceCodes) {
       if (!this.#syncedUISourceCodes.has(uiSourceCode)) {
         this.#syncedUISourceCodes.add(uiSourceCode);
         this.addUISourceCode(uiSourceCode);
       }
     }
-    UI14.UIUtils.endBatchUpdate();
+    UI13.UIUtils.endBatchUpdate();
   }
   onEditorSelected;
   onEditorClosed;
@@ -12671,6 +12693,9 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     super(element);
     this.#view = view;
     this.#tabDelegate = new EditorContainerTabDelegate(this);
+    this.#historyManager = new EditingLocationHistoryManager(this);
+    this.#previouslyViewedFilesSetting = Common10.Settings.Settings.instance().createLocalSetting("previously-viewed-files", []);
+    this.history = History.fromObject(this.#previouslyViewedFilesSetting.get());
     this.tabIds = /* @__PURE__ */ new Map();
     this.files = /* @__PURE__ */ new Map();
     this.uriToUISourceCode = /* @__PURE__ */ new Map();
@@ -12692,6 +12717,29 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
       this.#onRequestsForHeaderOverridesFileChanged,
       this
     );
+  }
+  wasShown() {
+    super.wasShown();
+    UI13.Context.Context.instance().setFlavor(_TabbedEditorContainer, this);
+  }
+  willHide() {
+    UI13.Context.Context.instance().setFlavor(_TabbedEditorContainer, null);
+    super.willHide();
+  }
+  onDetach() {
+    super.onDetach();
+    this.detachEditors();
+  }
+  static defaultUISourceCodeScores() {
+    const defaultScores = /* @__PURE__ */ new Map();
+    const editorContainer = UI13.Context.Context.instance().flavor(_TabbedEditorContainer);
+    if (editorContainer) {
+      const uiSourceCodes = editorContainer.historyUISourceCodes();
+      for (let i = 1; i < uiSourceCodes.length; ++i) {
+        defaultScores.set(uiSourceCodes[i], uiSourceCodes.length - i);
+      }
+    }
+    return defaultScores;
   }
   #tabsHistory = [];
   #appendHistory(tabId2) {
@@ -12753,11 +12801,33 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
   fileViews() {
     return Array.from(this.files.values()).map(getViewByUISourceCode).filter(Boolean);
   }
+  showSourceLocation(uiSourceCode, location, omitFocus, omitHighlight) {
+    const currentFrame = this.currentView instanceof UISourceCodeFrame ? this.currentView : null;
+    if (currentFrame) {
+      this.#historyManager.updateCurrentState(
+        currentFrame.uiSourceCode(),
+        currentFrame.textEditor.state.selection.main.head
+      );
+    }
+    this.showFile(uiSourceCode);
+    const currentSourceFrame = this.currentView instanceof UISourceCodeFrame ? this.currentView : null;
+    if (currentSourceFrame && location) {
+      currentSourceFrame.revealPosition(location, !omitHighlight);
+    }
+    if (!omitFocus && this.visibleView) {
+      this.visibleView.focus();
+    }
+  }
+  rollback() {
+    this.#historyManager.rollback();
+  }
+  rollover() {
+    this.#historyManager.rollover();
+  }
   showFile(uiSourceCode) {
     const binding = Persistence7.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
-    const frame = UI14.Context.Context.instance().flavor(SourcesView);
-    if (frame?.currentSourceFrame()?.contentSet && this.#currentFile === uiSourceCode && frame?.currentUISourceCode() === uiSourceCode) {
+    if (this.currentView instanceof UISourceCodeFrame && this.currentView.contentSet && this.#currentFile === uiSourceCode) {
       window.dispatchEvent(new CustomEvent(
         "source-file-loaded",
         { bubbles: true, cancelable: true, detail: uiSourceCode.displayName(true) }
@@ -13024,6 +13094,7 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
   removeUISourceCodes(uiSourceCodes) {
     const tabIds = [];
     for (const uiSourceCode of uiSourceCodes) {
+      this.#historyManager.removeHistoryForSourceCode(uiSourceCode);
       const tabId2 = this.tabIds.get(uiSourceCode);
       if (tabId2) {
         tabIds.push(tabId2);
@@ -13131,6 +13202,7 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     }
     this.files.delete(tabId2);
     if (uiSourceCode) {
+      this.#historyManager.removeHistoryForSourceCode(uiSourceCode);
       this.removeUISourceCodeListeners(uiSourceCode);
       this.removeSourceFrame(uiSourceCode);
       this.dispatchEventToListeners("EditorClosed" /* EDITOR_CLOSED */, uiSourceCode);
@@ -13222,7 +13294,7 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
       return;
     }
     Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.WorkspaceSelectFolder);
-    void UI14.ViewManager.ViewManager.instance().showView("navigator-files");
+    void UI13.ViewManager.ViewManager.instance().showView("navigator-files");
   }
   getCreatedSourceView(uiSourceCode) {
     return getViewByUISourceCode(uiSourceCode);
@@ -13476,18 +13548,18 @@ var UIStrings15 = {
 };
 var str_15 = i18n29.i18n.registerUIStrings("panels/sources/SourcesView.ts", UIStrings15);
 var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var { widget: widget2, widgetRef } = UI15.Widget;
+var { widget: widget2, widgetRef } = UI14.Widget;
 var DEFAULT_VIEW6 = (input, output, target) => {
   const renderNavigatorToggleButton = () => {
     const navHidden = !input.isNavigatorSidebarOpen;
     const title = navHidden ? i18nString14(UIStrings15.showNavigator) : i18nString14(UIStrings15.hideNavigator);
-    return html6`
+    return html8`
       <devtools-button
         class="toolbar-button"
         title=${title}
         aria-label=${title}
         .iconName=${navHidden ? "left-panel-open" : "left-panel-close"}
-        .variant=${Buttons4.Button.Variant.TOOLBAR}
+        .variant=${Buttons5.Button.Variant.TOOLBAR}
         jslog=${VisualLogging9.toggleSubpane().track({ click: true }).context("navigator")}
         @click=${() => input.onToggleNavigatorSidebar?.()}
       ></devtools-button>`;
@@ -13496,13 +13568,13 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     const debuggerHidden = !input.isDebuggerSidebarOpen;
     const title = debuggerHidden ? i18nString14(UIStrings15.showDebugger) : i18nString14(UIStrings15.hideDebugger);
     const glyph = debuggerHidden ? input.isVertical ? "right-panel-open" : "bottom-panel-open" : input.isVertical ? "right-panel-close" : "bottom-panel-close";
-    return html6`
+    return html8`
       <devtools-button
         class="toolbar-button"
         title=${title}
         aria-label=${title}
         .iconName=${glyph}
-        .variant=${Buttons4.Button.Variant.TOOLBAR}
+        .variant=${Buttons5.Button.Variant.TOOLBAR}
         ?disabled=${!input.isDebuggerSidebarButtonEnabled}
         jslog=${VisualLogging9.toggleSubpane().track({ click: true }).context("debugger")}
         @click=${() => input.onToggleDebuggerSidebar?.()}
@@ -13510,28 +13582,20 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   };
   const leftToolbarItems = !input.isInWrapper ? [renderNavigatorToggleButton()] : [];
   const rightToolbarItems = !input.isInWrapper && !input.isTraceApp && input.isVertical ? [renderDebuggerToggleButton()] : [];
-  const bottomToolbarContent = !input.isInWrapper && !input.isTraceApp && !input.isVertical ? renderDebuggerToggleButton() : nothing5;
-  render7(html6`
+  const bottomToolbarContent = !input.isInWrapper && !input.isTraceApp && !input.isVertical ? renderDebuggerToggleButton() : nothing7;
+  render7(html8`
     <style>${sourcesView_css_default}</style>
     <devtools-widget class="vbox flex-auto"
-      ${widget2((element) => {
-    const searchableView = new UI15.SearchableView.SearchableView(
-      input.searchProvider,
-      input.replaceProvider,
-      "sources-view-search-config",
-      element
-    );
-    searchableView.setMinimalSearchQuerySize(0);
-    return searchableView;
-  })}
-      ${widgetRef(UI15.SearchableView.SearchableView, (e) => {
-    output.searchableView = e;
+      ${widget2(UI14.SearchableView.SearchableView, {
+    searchProvider: input.searchProvider,
+    replaceProvider: input.replaceProvider,
+    settingName: "sources-view-search-config",
+    minimalSearchQuerySize: 0,
+    replaceable: input.isSearchReplaceable
   })}
     >
       <devtools-widget class="vbox flex-auto ${input.breakpointsActive ? "" : "breakpoints-deactivated"}"
         ${widget2(TabbedEditorContainer, {
-    historyManager: input.historyManager,
-    previouslyViewedFilesSetting: input.previouslyViewedFilesSetting,
     leftToolbarItems,
     rightToolbarItems,
     uiSourceCodes: input.uiSourceCodes,
@@ -13545,7 +13609,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging9.toolbar("bottom")}>
       <devtools-toolbar class="script-view-toolbar">
-        ${Array.isArray(input.scriptViewToolbarItems) ? input.scriptViewToolbarItems.map((item) => item.element) : input.scriptViewToolbarItems}
+        ${input.scriptViewToolbarItems}
       </devtools-toolbar>
       <devtools-toolbar class="bottom-toolbar">
         ${bottomToolbarContent}
@@ -13559,14 +13623,13 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   });
 };
 var SourcesViewBase = Common11.ObjectWrapper.eventMixin(
-  UI15.Widget.VBox
+  UI14.Widget.VBox
 );
 var SourcesView = class _SourcesView extends SourcesViewBase {
-  #searchableView;
   editorContainer;
   #uiSourceCodes = /* @__PURE__ */ new Set();
-  historyManager;
-  #scriptViewToolbarItems = [];
+  #scriptViewToolbarItems = nothing7;
+  #isSearchReplaceable = false;
   toolbarChangedListener;
   searchView;
   searchConfig;
@@ -13583,7 +13646,6 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
   #breakpointsActive = true;
   #editorContainerPromise;
   #editorContainerResolve;
-  previouslyViewedFilesSetting;
   constructor(element, view = DEFAULT_VIEW6) {
     super(element, { jslog: `${VisualLogging9.pane("editor").track({ keydown: "Escape" })}` });
     this.#view = view;
@@ -13592,13 +13654,11 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     });
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
     const workspace = Workspace19.Workspace.WorkspaceImpl.instance();
-    this.historyManager = new EditingLocationHistoryManager(this);
     this.toolbarChangedListener = null;
-    this.previouslyViewedFilesSetting = Common11.Settings.Settings.instance().createLocalSetting("previously-viewed-files", []);
     this.requestUpdate();
-    UI15.UIUtils.startBatchUpdate();
+    UI14.UIUtils.startBatchUpdate();
     workspace.uiSourceCodes().forEach((ui) => this.addUISourceCode(ui));
-    UI15.UIUtils.endBatchUpdate();
+    UI14.UIUtils.endBatchUpdate();
     workspace.addEventListener(Workspace19.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
     workspace.addEventListener(Workspace19.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemoved, this);
     workspace.addEventListener(Workspace19.Workspace.Events.ProjectRemoved, this.projectRemoved.bind(this), this);
@@ -13620,7 +13680,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
         return;
       }
       event.returnValue = true;
-      void UI15.ViewManager.ViewManager.instance().showView("sources");
+      void UI14.ViewManager.ViewManager.instance().showView("sources");
       for (const sourceCode of unsavedSourceCodes) {
         void Common11.Revealer.reveal(sourceCode);
       }
@@ -13633,6 +13693,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     const input = {
       searchProvider: this,
       replaceProvider: this,
+      isSearchReplaceable: this.#isSearchReplaceable,
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
       isNavigatorSidebarOpen: this.#isNavigatorSidebarOpen,
       isDebuggerSidebarOpen: this.#isDebuggerSidebarOpen,
@@ -13644,8 +13705,6 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
       onToggleDebuggerSidebar: this.#onToggleDebuggerSidebar,
       breakpointsActive: this.#breakpointsActive,
       uiSourceCodes: new Set(this.#uiSourceCodes),
-      historyManager: this.historyManager,
-      previouslyViewedFilesSetting: this.previouslyViewedFilesSetting,
       onEditorSelected: this.editorSelected.bind(this),
       onEditorClosed: this.editorClosed.bind(this)
     };
@@ -13653,16 +13712,9 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     const output = {
       set editorContainer(value2) {
         that.setEditorContainer(value2);
-      },
-      set searchableView(value2) {
-        that.#searchableView = value2;
       }
     };
     this.#view(input, output, this.contentElement);
-  }
-  onDetach() {
-    super.onDetach();
-    this.editorContainer?.detachEditors();
   }
   setEditorContainer(editorContainer) {
     if (this.editorContainer === editorContainer) {
@@ -13672,17 +13724,6 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     if (this.editorContainer) {
       this.#editorContainerResolve(editorContainer);
     }
-  }
-  static defaultUISourceCodeScores() {
-    const defaultScores = /* @__PURE__ */ new Map();
-    const sourcesView = UI15.Context.Context.instance().flavor(_SourcesView);
-    if (sourcesView) {
-      const uiSourceCodes = sourcesView.editorContainer?.historyUISourceCodes() ?? [];
-      for (let i = 1; i < uiSourceCodes.length; ++i) {
-        defaultScores.set(uiSourceCodes[i], uiSourceCodes.length - i);
-      }
-    }
-    return defaultScores;
   }
   set onToggleNavigatorSidebar(callback) {
     this.#onToggleNavigatorSidebar = callback;
@@ -13701,7 +13742,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     this.#isNavigatorSidebarOpen = isOpen;
     this.requestUpdate();
     if (isInitialized) {
-      UI15.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString14(UIStrings15.navigatorShown) : i18nString14(UIStrings15.navigatorHidden));
+      UI14.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString14(UIStrings15.navigatorShown) : i18nString14(UIStrings15.navigatorHidden));
     }
   }
   set isDebuggerSidebarOpen(isOpen) {
@@ -13713,7 +13754,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     this.#isDebuggerSidebarOpen = isOpen;
     this.requestUpdate();
     if (isInitialized) {
-      UI15.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString14(UIStrings15.debuggerShown) : i18nString14(UIStrings15.debuggerHidden));
+      UI14.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString14(UIStrings15.debuggerShown) : i18nString14(UIStrings15.debuggerHidden));
     }
   }
   toggleDebuggerSidebarButtonEnabled(enabled) {
@@ -13727,17 +13768,14 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
   }
   wasShown() {
     super.wasShown();
-    UI15.Context.Context.instance().setFlavor(_SourcesView, this);
+    UI14.Context.Context.instance().setFlavor(_SourcesView, this);
   }
   willHide() {
-    UI15.Context.Context.instance().setFlavor(_SourcesView, null);
+    UI14.Context.Context.instance().setFlavor(_SourcesView, null);
     super.willHide();
   }
   searchableView() {
-    if (!this.#searchableView) {
-      this.performUpdate();
-    }
-    return this.#searchableView;
+    return UI14.SearchableView.SearchableView.fromElement(this.contentElement.querySelector("devtools-widget"));
   }
   visibleView() {
     return this.editorContainer?.visibleView ?? null;
@@ -13761,10 +13799,10 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     return true;
   }
   onJumpToPreviousLocation() {
-    this.historyManager.rollback();
+    this.editorContainer?.rollback();
   }
   onJumpToNextLocation() {
-    this.historyManager.rollover();
+    this.editorContainer?.rollover();
   }
   #onScopeChange() {
     const workspace = Workspace19.Workspace.WorkspaceImpl.instance();
@@ -13812,9 +13850,6 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
   }
   removeUISourceCodes(uiSourceCodes) {
     uiSourceCodes.forEach((ui) => this.#uiSourceCodes.delete(ui));
-    for (let i = 0; i < uiSourceCodes.length; ++i) {
-      this.historyManager.removeHistoryForSourceCode(uiSourceCodes[i]);
-    }
     this.requestUpdate();
   }
   projectRemoved(event) {
@@ -13824,13 +13859,13 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
   }
   updateScriptViewToolbarItems() {
     const view = this.visibleView();
-    if (view instanceof UI15.View.SimpleView) {
+    if (view instanceof UI14.View.SimpleView) {
       void view.toolbarItems().then((items) => {
-        this.#scriptViewToolbarItems = items;
+        this.#scriptViewToolbarItems = Array.isArray(items) ? html8`${items.map((item) => item.element)}` : items;
         this.requestUpdate();
       });
     } else {
-      this.#scriptViewToolbarItems = [];
+      this.#scriptViewToolbarItems = nothing7;
       this.requestUpdate();
     }
   }
@@ -13838,22 +13873,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     if (!this.editorContainer) {
       await this.#editorContainerPromise;
     }
-    const currentFrame = this.currentSourceFrame();
-    if (currentFrame) {
-      this.historyManager.updateCurrentState(
-        currentFrame.uiSourceCode(),
-        currentFrame.textEditor.state.selection.main.head
-      );
-    }
-    this.editorContainer?.showFile(uiSourceCode);
-    const currentSourceFrame = this.currentSourceFrame();
-    if (currentSourceFrame && location) {
-      currentSourceFrame.revealPosition(location, !omitHighlight);
-    }
-    const visibleView = this.visibleView();
-    if (!omitFocus && visibleView) {
-      visibleView.focus();
-    }
+    this.editorContainer?.showSourceLocation(uiSourceCode, location, omitFocus, omitHighlight);
   }
   viewForFile(uiSourceCode) {
     return this.editorContainer?.viewForFile(uiSourceCode);
@@ -13862,14 +13882,13 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     return this.editorContainer?.getCreatedSourceView(uiSourceCode);
   }
   editorClosed(uiSourceCode) {
-    this.historyManager.removeHistoryForSourceCode(uiSourceCode);
     let wasSelected = false;
     if (!this.editorContainer?.currentFile()) {
       wasSelected = true;
     }
     this.removeToolbarChangedListener();
     this.updateScriptViewToolbarItems();
-    this.searchableView().resetSearch();
+    this.searchableView()?.resetSearch();
     const data = {
       uiSourceCode,
       wasSelected
@@ -13885,8 +13904,9 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     if (currentSourceFrame) {
       currentSourceFrame.setSearchableView(this.searchableView());
     }
-    this.searchableView().setReplaceable(Boolean(currentSourceFrame?.canEditSource()));
-    this.searchableView().refreshSearch();
+    this.#isSearchReplaceable = Boolean(currentSourceFrame?.canEditSource());
+    this.requestUpdate();
+    this.searchableView()?.refreshSearch();
     this.updateToolbarChangedListener();
     this.updateScriptViewToolbarItems();
     const currentFile = this.editorContainer?.currentFile();
@@ -14101,7 +14121,7 @@ __export(ThreadsSidebarPane_exports, {
 });
 import * as i18n31 from "../../core/i18n/i18n.js";
 import * as SDK10 from "../../core/sdk/sdk.js";
-import * as UI16 from "../../ui/legacy/legacy.js";
+import * as UI15 from "../../ui/legacy/legacy.js";
 import * as Lit3 from "../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
@@ -14174,7 +14194,7 @@ var threadsSidebarPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./threadsSidebarPane.css")} */`;
 
 // ../../front_end/panels/sources/ThreadsSidebarPane.ts
-var { html: html7, render: render8, nothing: nothing6 } = Lit3;
+var { html: html9, render: render8, nothing: nothing8 } = Lit3;
 var UIStrings16 = {
   /**
    * @description Text in Threads sidebar of the Sources panel.
@@ -14184,10 +14204,10 @@ var UIStrings16 = {
 var str_16 = i18n31.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var DEFAULT_VIEW7 = (input, _output, target) => {
-  render8(html7`
+  render8(html9`
     <style>${threadsSidebarPane_css_default}</style>
     <div role="listbox">
-    ${input.threads.map((thread) => html7`
+    ${input.threads.map((thread) => html9`
       <button
         class="thread-item"
         @click=${thread.onSelect}
@@ -14197,22 +14217,22 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       >
         <div class="thread-item-title">${thread.name}</div>
         <div class="thread-item-paused-state">${thread.paused ? i18nString15(UIStrings16.paused) : ""}</div>
-        ${thread.selected ? html7`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing6}
+        ${thread.selected ? html9`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing8}
       </button>
     `)}
     </div>
   `, target, { container: { attributes: { jslog: `${VisualLogging10.section("sources.threads")}` } } });
 };
-var ThreadsSidebarPane = class extends UI16.Widget.VBox {
+var ThreadsSidebarPane = class extends UI15.Widget.VBox {
   #debuggerModels = /* @__PURE__ */ new Set();
   #selectedModel;
   #view;
   constructor(element, view = DEFAULT_VIEW7) {
     super(element);
     this.#view = view;
-    const currentTarget = UI16.Context.Context.instance().flavor(SDK10.Target.Target);
+    const currentTarget = UI15.Context.Context.instance().flavor(SDK10.Target.Target);
     this.#selectedModel = currentTarget?.model(SDK10.DebuggerModel.DebuggerModel) ?? null;
-    UI16.Context.Context.instance().addFlavorChangeListener(SDK10.Target.Target, this.targetFlavorChanged, this);
+    UI15.Context.Context.instance().addFlavorChangeListener(SDK10.Target.Target, this.targetFlavorChanged, this);
     SDK10.TargetManager.TargetManager.instance().observeModels(SDK10.DebuggerModel.DebuggerModel, this);
   }
   static shouldBeShown() {
@@ -14227,7 +14247,7 @@ var ThreadsSidebarPane = class extends UI16.Widget.VBox {
     return executionContext?.label() || debuggerModel.target().name();
   }
   #handleThreadSelect(debuggerModel) {
-    UI16.Context.Context.instance().setFlavor(SDK10.Target.Target, debuggerModel.target());
+    UI15.Context.Context.instance().setFlavor(SDK10.Target.Target, debuggerModel.target());
   }
   #updatePausedState = () => {
     this.requestUpdate();
@@ -14382,7 +14402,7 @@ var str_17 = i18n33.i18n.registerUIStrings("panels/sources/SourcesPanel.ts", UIS
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var primitiveRemoteObjectTypes = /* @__PURE__ */ new Set(["number", "boolean", "bigint", "undefined"]);
 var sourcesPanelInstance;
-var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
+var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
   workspace;
   togglePauseAction;
   stepOverAction;
@@ -14413,24 +14433,24 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   constructor() {
     super("sources");
     this.registerRequiredCSS(sourcesPanel_css_default);
-    new UI17.DropTarget.DropTarget(
+    new UI16.DropTarget.DropTarget(
       this.element,
-      [UI17.DropTarget.Type.Folder],
+      [UI16.DropTarget.Type.Folder],
       i18nString16(UIStrings17.dropWorkspaceFolderHere),
       this.handleDrop.bind(this)
     );
     this.workspace = Workspace21.Workspace.WorkspaceImpl.instance();
-    this.togglePauseAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-pause");
-    this.stepOverAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-over");
-    this.stepIntoAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-into");
-    this.stepOutAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-out");
-    this.stepAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.step");
-    this.toggleBreakpointsActiveAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-breakpoints-active");
+    this.togglePauseAction = UI16.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-pause");
+    this.stepOverAction = UI16.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-over");
+    this.stepIntoAction = UI16.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-into");
+    this.stepOutAction = UI16.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-out");
+    this.stepAction = UI16.ActionRegistry.ActionRegistry.instance().getAction("debugger.step");
+    this.toggleBreakpointsActiveAction = UI16.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-breakpoints-active");
     this.debugToolbar = this.createDebugToolbar();
     this.debugToolbarDrawer = this.createDebugToolbarDrawer();
     this.debuggerPausedMessage = new DebuggerPausedMessage(void 0, [SDK11.EventBreakpointsModel.EventBreakpointsManager.instance()]);
     const initialDebugSidebarWidth = 225;
-    this.splitWidget = new UI17.SplitWidget.SplitWidget(true, true, "sources-panel-split-view-state", initialDebugSidebarWidth);
+    this.splitWidget = new UI16.SplitWidget.SplitWidget(true, true, "sources-panel-split-view-state", initialDebugSidebarWidth);
     this.splitWidget.show(this.element);
     if (Root2.Runtime.Runtime.isTraceApp()) {
       this.splitWidget.hideSidebar();
@@ -14438,10 +14458,10 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       this.splitWidget.enableShowModeSaving();
     }
     const initialNavigatorWidth = 225;
-    this.editorView = new UI17.SplitWidget.SplitWidget(true, false, "sources-panel-navigator-split-view-state", initialNavigatorWidth);
+    this.editorView = new UI16.SplitWidget.SplitWidget(true, false, "sources-panel-navigator-split-view-state", initialNavigatorWidth);
     this.editorView.enableShowModeSaving();
     this.splitWidget.setMainWidget(this.editorView);
-    this.navigatorTabbedLocation = UI17.ViewManager.ViewManager.instance().createTabbedLocation(
+    this.navigatorTabbedLocation = UI16.ViewManager.ViewManager.instance().createTabbedLocation(
       this.revealNavigatorSidebar.bind(this),
       "navigator-view",
       true,
@@ -14454,16 +14474,16 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       "jslog",
       `${VisualLogging11.toolbar("navigator").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`
     );
-    const navigatorMenuButton = new UI17.ContextMenu.MenuButton();
+    const navigatorMenuButton = new UI16.ContextMenu.MenuButton();
     navigatorMenuButton.populateMenuCall = this.populateNavigatorMenu.bind(this);
     navigatorMenuButton.jslogContext = "more-options";
     navigatorMenuButton.iconName = "dots-vertical";
     navigatorMenuButton.title = i18nString16(UIStrings17.moreOptions);
-    tabbedPane.rightToolbar().appendToolbarItem(new UI17.Toolbar.ToolbarItem(navigatorMenuButton));
-    if (UI17.ViewManager.ViewManager.instance().hasViewsForLocation("run-view-sidebar")) {
-      const navigatorSplitWidget = new UI17.SplitWidget.SplitWidget(false, true, "source-panel-navigator-sidebar-split-view-state");
+    tabbedPane.rightToolbar().appendToolbarItem(new UI16.Toolbar.ToolbarItem(navigatorMenuButton));
+    if (UI16.ViewManager.ViewManager.instance().hasViewsForLocation("run-view-sidebar")) {
+      const navigatorSplitWidget = new UI16.SplitWidget.SplitWidget(false, true, "source-panel-navigator-sidebar-split-view-state");
       navigatorSplitWidget.setMainWidget(tabbedPane);
-      const runViewTabbedPane = UI17.ViewManager.ViewManager.instance().createTabbedLocation(this.revealNavigatorSidebar.bind(this), "run-view-sidebar").tabbedPane();
+      const runViewTabbedPane = UI16.ViewManager.ViewManager.instance().createTabbedLocation(this.revealNavigatorSidebar.bind(this), "run-view-sidebar").tabbedPane();
       navigatorSplitWidget.setSidebarWidget(runViewTabbedPane);
       navigatorSplitWidget.installResizer(runViewTabbedPane.headerElement());
       this.editorView.setSidebarWidget(navigatorSplitWidget);
@@ -14476,23 +14496,23 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     this.#sourcesView.onToggleDebuggerSidebar = this.toggleDebuggerSidebar.bind(this);
     this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
     this.#sourcesView.isDebuggerSidebarOpen = this.splitWidget.sidebarIsShowing();
-    this.editorView.addEventListener(UI17.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
+    this.editorView.addEventListener(UI16.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
       this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
     });
-    this.splitWidget.addEventListener(UI17.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
+    this.splitWidget.addEventListener(UI16.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
       this.#sourcesView.isDebuggerSidebarOpen = this.splitWidget.sidebarIsShowing();
     });
     this.editorView.setMainWidget(this.#sourcesView);
     this.threadsSidebarPane = null;
-    this.watchSidebarPane = UI17.ViewManager.ViewManager.instance().view("sources.watch");
+    this.watchSidebarPane = UI16.ViewManager.ViewManager.instance().view("sources.watch");
     this.callstackPane = CallStackSidebarPane.instance();
     Common12.Settings.Settings.instance().resolve(Settings9.MainSettings.sidebarPositionSettingDescriptor).addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
     void this.updateDebuggerButtonsAndStatus();
-    this.setTarget(UI17.Context.Context.instance().flavor(SDK11.Target.Target));
+    this.setTarget(UI16.Context.Context.instance().flavor(SDK11.Target.Target));
     Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor).addChangeListener(this.breakpointsActiveStateChanged, this);
-    UI17.Context.Context.instance().addFlavorChangeListener(SDK11.Target.Target, this.onCurrentTargetChanged, this);
-    UI17.Context.Context.instance().addFlavorChangeListener(
+    UI16.Context.Context.instance().addFlavorChangeListener(SDK11.Target.Target, this.onCurrentTargetChanged, this);
+    UI16.Context.Context.instance().addFlavorChangeListener(
       StackTrace3.StackTrace.DebuggableFrameFlavor,
       this.callFrameChanged,
       this
@@ -14541,7 +14561,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     return sourcesPanelInstance;
   }
   static updateResizerAndSidebarButtons(panel2) {
-    const isInWrapper = Boolean(UI17.Context.Context.instance().flavor(QuickSourceView)) && !UI17.InspectorView.InspectorView.instance().isDrawerMinimized();
+    const isInWrapper = Boolean(UI16.Context.Context.instance().flavor(QuickSourceView)) && !UI16.InspectorView.InspectorView.instance().isDrawerMinimized();
     panel2.#sourcesView.setLayoutMode(panel2.splitWidget.isVertical(), isInWrapper);
   }
   targetAdded(_target) {
@@ -14551,7 +14571,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   showThreadsIfNeeded() {
     if (ThreadsSidebarPane.shouldBeShown() && !this.threadsSidebarPane) {
-      this.threadsSidebarPane = UI17.ViewManager.ViewManager.instance().view("sources.threads");
+      this.threadsSidebarPane = UI16.ViewManager.ViewManager.instance().view("sources.threads");
       if (this.sidebarPaneStack && this.threadsSidebarPane) {
         this.sidebarPaneStack.appendView(
           this.threadsSidebarPane,
@@ -14585,10 +14605,10 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     return this.#paused || false;
   }
   wasShown() {
-    UI17.Context.Context.instance().setFlavor(_SourcesPanel, this);
+    UI16.Context.Context.instance().setFlavor(_SourcesPanel, this);
     super.wasShown();
-    if (UI17.Context.Context.instance().flavor(QuickSourceView)) {
-      UI17.InspectorView.InspectorView.instance().setDrawerMinimized(true);
+    if (UI16.Context.Context.instance().flavor(QuickSourceView)) {
+      UI16.InspectorView.InspectorView.instance().setDrawerMinimized(true);
       _SourcesPanel.updateResizerAndSidebarButtons(this);
     }
     this.editorView.setMainWidget(this.#sourcesView);
@@ -14596,11 +14616,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   willHide() {
     super.willHide();
-    UI17.Context.Context.instance().setFlavor(_SourcesPanel, null);
-    const wrapperView = UI17.Context.Context.instance().flavor(QuickSourceView);
+    UI16.Context.Context.instance().setFlavor(_SourcesPanel, null);
+    const wrapperView = UI16.Context.Context.instance().flavor(QuickSourceView);
     if (wrapperView) {
       wrapperView.showViewInWrapper();
-      UI17.InspectorView.InspectorView.instance().setDrawerMinimized(false);
+      UI16.InspectorView.InspectorView.instance().setDrawerMinimized(false);
       _SourcesPanel.updateResizerAndSidebarButtons(this);
     }
   }
@@ -14611,13 +14631,13 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     return this.navigatorTabbedLocation;
   }
   ensureSourcesViewVisible() {
-    if (UI17.Context.Context.instance().flavor(QuickSourceView)) {
+    if (UI16.Context.Context.instance().flavor(QuickSourceView)) {
       return true;
     }
-    if (!UI17.InspectorView.InspectorView.instance().canSelectPanel("sources")) {
+    if (!UI16.InspectorView.InspectorView.instance().canSelectPanel("sources")) {
       return false;
     }
-    void UI17.ViewManager.ViewManager.instance().showView("sources");
+    void UI16.ViewManager.ViewManager.instance().showView("sources");
     return true;
   }
   onResize() {
@@ -14641,10 +14661,10 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     if (!this.#paused && Common12.Settings.Settings.instance().moduleSetting("auto-focus-on-debugger-paused-enabled").get()) {
       void this.setAsCurrentPanel();
     }
-    if (UI17.Context.Context.instance().flavor(SDK11.Target.Target) === debuggerModel.target()) {
+    if (UI16.Context.Context.instance().flavor(SDK11.Target.Target) === debuggerModel.target()) {
       this.showDebuggerPausedDetails(details);
     } else if (!this.#paused) {
-      UI17.Context.Context.instance().setFlavor(SDK11.Target.Target, debuggerModel.target());
+      UI16.Context.Context.instance().setFlavor(SDK11.Target.Target, debuggerModel.target());
     }
     Badges2.UserBadges.instance().recordAction(Badges2.BadgeAction.DEBUGGER_PAUSED);
     window.dispatchEvent(new CustomEvent("DevTools.DebuggerPaused", { bubbles: true, cancelable: true }));
@@ -14655,14 +14675,14 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       return;
     }
     const details = debuggerModel.debuggerPausedDetails();
-    if (details && UI17.Context.Context.instance().flavor(SDK11.Target.Target) === debuggerModel.target()) {
+    if (details && UI16.Context.Context.instance().flavor(SDK11.Target.Target) === debuggerModel.target()) {
       this.showDebuggerPausedDetails(details);
     }
   }
   showDebuggerPausedDetails(details) {
     this.#paused = true;
     void this.updateDebuggerButtonsAndStatus();
-    UI17.Context.Context.instance().setFlavor(SDK11.DebuggerModel.DebuggerPausedDetails, details);
+    UI16.Context.Context.instance().setFlavor(SDK11.DebuggerModel.DebuggerPausedDetails, details);
     this.#sourcesView.toggleDebuggerSidebarButtonEnabled(false);
     this.revealDebuggerSidebar();
     const pausedTarget = details.debuggerModel.target();
@@ -14671,7 +14691,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     }
     window.focus();
     Host8.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-    const withOverlay = UI17.Context.Context.instance().flavor(SDK11.Target.Target)?.model(SDK11.OverlayModel.OverlayModel) && !Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.disablePausedStateOverlaySettingDescriptor).get();
+    const withOverlay = UI16.Context.Context.instance().flavor(SDK11.Target.Target)?.model(SDK11.OverlayModel.OverlayModel) && !Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.disablePausedStateOverlaySettingDescriptor).get();
     if (withOverlay && !this.overlayLoggables) {
       this.overlayLoggables = { debuggerPausedMessage: {}, resumeButton: {}, stepOverButton: {} };
       VisualLogging11.registerLoggable(
@@ -14705,7 +14725,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
         return;
       }
       if (byOverlayButton) {
-        const details = UI17.Context.Context.instance().flavor(SDK11.DebuggerModel.DebuggerPausedDetails);
+        const details = UI16.Context.Context.instance().flavor(SDK11.DebuggerModel.DebuggerPausedDetails);
         VisualLogging11.logClick(
           this.#paused && details?.reason === Debugger.PausedEventReason.Step ? this.overlayLoggables.stepOverButton : this.overlayLoggables.resumeButton,
           new MouseEvent("click")
@@ -14720,7 +14740,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   debuggerResumed(debuggerModel) {
     this.maybeLogOverlayAction();
     const target = debuggerModel.target();
-    if (UI17.Context.Context.instance().flavor(SDK11.Target.Target) !== target) {
+    if (UI16.Context.Context.instance().flavor(SDK11.Target.Target) !== target) {
       return;
     }
     this.#paused = false;
@@ -14730,7 +14750,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   debuggerWasEnabled(event) {
     const debuggerModel = event.data;
-    if (UI17.Context.Context.instance().flavor(SDK11.Target.Target) !== debuggerModel.target()) {
+    if (UI16.Context.Context.instance().flavor(SDK11.Target.Target) !== debuggerModel.target()) {
       return;
     }
     void this.updateDebuggerButtonsAndStatus();
@@ -14740,7 +14760,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   async showUISourceCode(uiSourceCode, location, omitFocus) {
     if (omitFocus) {
-      if (!this.isShowing() && !UI17.Context.Context.instance().flavor(QuickSourceView)) {
+      if (!this.isShowing() && !UI16.Context.Context.instance().flavor(QuickSourceView)) {
         return;
       }
     } else {
@@ -14749,7 +14769,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     await this.#sourcesView.showSourceLocation(uiSourceCode, location, omitFocus);
   }
   showEditor() {
-    if (UI17.Context.Context.instance().flavor(QuickSourceView)) {
+    if (UI16.Context.Context.instance().flavor(QuickSourceView)) {
       return;
     }
     void this.setAsCurrentPanel();
@@ -14759,8 +14779,8 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     await this.showUISourceCode(uiSourceCode, { lineNumber, columnNumber }, omitFocus);
   }
   async revealInNavigator(uiSourceCode, skipReveal) {
-    const viewManager = UI17.ViewManager.ViewManager.instance();
-    for (const view of viewManager.viewsForLocation(UI17.ViewManager.ViewLocationValues.NAVIGATOR_VIEW)) {
+    const viewManager = UI16.ViewManager.ViewManager.instance();
+    for (const view of viewManager.viewsForLocation(UI16.ViewManager.ViewLocationValues.NAVIGATOR_VIEW)) {
       const navigatorView = await view.widget();
       if (navigatorView instanceof NavigatorView && navigatorView.acceptProject(uiSourceCode.project())) {
         navigatorView.revealUISourceCode(uiSourceCode, true);
@@ -14803,7 +14823,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     this.lastModificationTime = window.performance.now();
   }
   async callFrameChanged() {
-    const frameFlavor = UI17.Context.Context.instance().flavor(StackTrace3.StackTrace.DebuggableFrameFlavor);
+    const frameFlavor = UI16.Context.Context.instance().flavor(StackTrace3.StackTrace.DebuggableFrameFlavor);
     if (!frameFlavor?.frame.uiSourceCode) {
       return;
     }
@@ -14818,7 +14838,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     await this.#sourcesView.showSourceLocation(uiLocation.uiSourceCode, uiLocation, void 0, true);
   }
   async updateDebuggerButtonsAndStatus() {
-    const currentTarget = UI17.Context.Context.instance().flavor(SDK11.Target.Target);
+    const currentTarget = UI16.Context.Context.instance().flavor(SDK11.Target.Target);
     const currentDebuggerModel = currentTarget ? currentTarget.model(SDK11.DebuggerModel.DebuggerModel) : null;
     const paused = this.#paused;
     const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
@@ -14857,7 +14877,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   clearInterface() {
     void this.updateDebuggerButtonsAndStatus();
-    UI17.Context.Context.instance().setFlavor(SDK11.DebuggerModel.DebuggerPausedDetails, null);
+    UI16.Context.Context.instance().setFlavor(SDK11.DebuggerModel.DebuggerPausedDetails, null);
     if (this.switchToPausedTargetTimeout) {
       clearTimeout(this.switchToPausedTargetTimeout);
     }
@@ -14869,7 +14889,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     }
     for (const debuggerModel2 of SDK11.TargetManager.TargetManager.instance().models(SDK11.DebuggerModel.DebuggerModel)) {
       if (debuggerModel2.isPaused()) {
-        UI17.Context.Context.instance().setFlavor(SDK11.Target.Target, debuggerModel2.target());
+        UI16.Context.Context.instance().setFlavor(SDK11.Target.Target, debuggerModel2.target());
         break;
       }
     }
@@ -14882,13 +14902,13 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   editorSelected(event) {
     const uiSourceCode = event.data;
-    UI17.Context.Context.instance().setFlavor(Workspace21.UISourceCode.UISourceCode, uiSourceCode);
+    UI16.Context.Context.instance().setFlavor(Workspace21.UISourceCode.UISourceCode, uiSourceCode);
     if (this.editorView.mainWidget() && Common12.Settings.Settings.instance().moduleSetting("auto-reveal-in-navigator").get()) {
       void this.revealInNavigator(uiSourceCode, true);
     }
   }
   togglePause() {
-    const target = UI17.Context.Context.instance().flavor(SDK11.Target.Target);
+    const target = UI16.Context.Context.instance().flavor(SDK11.Target.Target);
     if (!target) {
       return true;
     }
@@ -14911,7 +14931,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     }
     this.#paused = false;
     this.clearInterface();
-    const target = UI17.Context.Context.instance().flavor(SDK11.Target.Target);
+    const target = UI16.Context.Context.instance().flavor(SDK11.Target.Target);
     return target ? target.model(SDK11.DebuggerModel.DebuggerModel) : null;
   }
   longResume() {
@@ -14957,7 +14977,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     return true;
   }
   async continueToLocation(uiLocation) {
-    const executionContext = UI17.Context.Context.instance().flavor(SDK11.RuntimeModel.ExecutionContext);
+    const executionContext = UI16.Context.Context.instance().flavor(SDK11.RuntimeModel.ExecutionContext);
     if (!executionContext) {
       return;
     }
@@ -14987,23 +15007,23 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       "jslog",
       `${VisualLogging11.toolbar("debug").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`
     );
-    const longResumeButton = new UI17.Toolbar.ToolbarButton(i18nString16(UIStrings17.resumeWithAllPausesBlockedForMs), "play");
-    longResumeButton.addEventListener(UI17.Toolbar.ToolbarButton.Events.CLICK, this.longResume, this);
-    const terminateExecutionButton = new UI17.Toolbar.ToolbarButton(i18nString16(UIStrings17.terminateCurrentJavascriptCall), "stop");
-    terminateExecutionButton.addEventListener(UI17.Toolbar.ToolbarButton.Events.CLICK, this.terminateExecution, this);
-    const pauseActionButton = UI17.Toolbar.Toolbar.createLongPressActionButton(
+    const longResumeButton = new UI16.Toolbar.ToolbarButton(i18nString16(UIStrings17.resumeWithAllPausesBlockedForMs), "play");
+    longResumeButton.addEventListener(UI16.Toolbar.ToolbarButton.Events.CLICK, this.longResume, this);
+    const terminateExecutionButton = new UI16.Toolbar.ToolbarButton(i18nString16(UIStrings17.terminateCurrentJavascriptCall), "stop");
+    terminateExecutionButton.addEventListener(UI16.Toolbar.ToolbarButton.Events.CLICK, this.terminateExecution, this);
+    const pauseActionButton = UI16.Toolbar.Toolbar.createLongPressActionButton(
       this.togglePauseAction,
       [terminateExecutionButton, longResumeButton],
       []
     );
     pauseActionButton.toggleOnClick(false);
     debugToolbar.appendToolbarItem(pauseActionButton);
-    debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.stepOverAction));
-    debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.stepIntoAction));
-    debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.stepOutAction));
-    debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.stepAction));
+    debugToolbar.appendToolbarItem(UI16.Toolbar.Toolbar.createActionButton(this.stepOverAction));
+    debugToolbar.appendToolbarItem(UI16.Toolbar.Toolbar.createActionButton(this.stepIntoAction));
+    debugToolbar.appendToolbarItem(UI16.Toolbar.Toolbar.createActionButton(this.stepOutAction));
+    debugToolbar.appendToolbarItem(UI16.Toolbar.Toolbar.createActionButton(this.stepAction));
     debugToolbar.appendSeparator();
-    debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.toggleBreakpointsActiveAction));
+    debugToolbar.appendToolbarItem(UI16.Toolbar.Toolbar.createActionButton(this.toggleBreakpointsActiveAction));
     return debugToolbar;
   }
   createDebugToolbarDrawer() {
@@ -15050,11 +15070,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       );
     }
     const openAiAssistanceId = "drjones.sources-panel-context";
-    if (UI17.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+    if (UI16.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
       const editorElement = this.element.querySelector("devtools-text-editor");
       if (!eventTarget.isSelfOrDescendant(editorElement) && uiSourceCode.contentType().isTextType()) {
-        UI17.Context.Context.instance().setFlavor(Workspace21.UISourceCode.UISourceCode, uiSourceCode);
-        const action3 = UI17.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        UI16.Context.Context.instance().setFlavor(Workspace21.UISourceCode.UISourceCode, uiSourceCode);
+        const action3 = UI16.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action3.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction("drjones.sources-panel-context", i18nString16(UIStrings17.startAChat));
         appendSubmenuPromptAction(
@@ -15104,7 +15124,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     }
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
-      const target = UI17.Context.Context.instance().flavor(SDK11.Target.Target);
+      const target = UI16.Context.Context.instance().flavor(SDK11.Target.Target);
       const debuggerModel = target ? target.model(SDK11.DebuggerModel.DebuggerModel) : null;
       if (debuggerModel?.isPaused()) {
         contextMenu.debugSection().appendItem(
@@ -15118,7 +15138,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   appendRemoteObjectItems(contextMenu, remoteObject) {
     const indent = Common12.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
-    const executionContext = UI17.Context.Context.instance().flavor(SDK11.RuntimeModel.ExecutionContext);
+    const executionContext = UI16.Context.Context.instance().flavor(SDK11.RuntimeModel.ExecutionContext);
     function getObjectTitle() {
       if (remoteObject.type === "wasm") {
         return remoteObject.subtype;
@@ -15265,11 +15285,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     if (Root2.Runtime.Runtime.isTraceApp()) {
       return;
     }
-    const vbox = new UI17.Widget.VBox();
+    const vbox = new UI16.Widget.VBox();
     vbox.element.appendChild(this.debugToolbar);
     vbox.element.appendChild(this.debugToolbarDrawer);
     vbox.setMinimumAndPreferredSizes(minToolbarWidth, 25, minToolbarWidth, 100);
-    this.sidebarPaneStack = UI17.ViewManager.ViewManager.instance().createStackLocation(
+    this.sidebarPaneStack = UI16.ViewManager.ViewManager.instance().createStackLocation(
       this.revealDebuggerSidebar.bind(this),
       void 0,
       "debug"
@@ -15281,8 +15301,8 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     if (this.threadsSidebarPane) {
       this.sidebarPaneStack.appendView(this.threadsSidebarPane);
     }
-    const jsBreakpoints = UI17.ViewManager.ViewManager.instance().view("sources.js-breakpoints");
-    const scopeChainView = UI17.ViewManager.ViewManager.instance().view("sources.scope-chain");
+    const jsBreakpoints = UI16.ViewManager.ViewManager.instance().view("sources.js-breakpoints");
+    const scopeChainView = UI16.ViewManager.ViewManager.instance().view("sources.scope-chain");
     if (this.tabbedLocationHeader) {
       this.splitWidget.uninstallResizer(this.tabbedLocationHeader);
       this.tabbedLocationHeader = null;
@@ -15296,11 +15316,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       this.sidebarPaneView = vbox;
       this.splitWidget.uninstallResizer(this.debugToolbar);
     } else {
-      const splitWidget = new UI17.SplitWidget.SplitWidget(true, true, "sources-panel-debugger-sidebar-split-view-state", 0.5);
+      const splitWidget = new UI16.SplitWidget.SplitWidget(true, true, "sources-panel-debugger-sidebar-split-view-state", 0.5);
       splitWidget.setMainWidget(vbox);
       void this.sidebarPaneStack.showView(jsBreakpoints);
       void this.sidebarPaneStack.showView(this.callstackPane);
-      const tabbedLocation = UI17.ViewManager.ViewManager.instance().createTabbedLocation(
+      const tabbedLocation = UI16.ViewManager.ViewManager.instance().createTabbedLocation(
         this.revealDebuggerSidebar.bind(this),
         "sources-panel-debugger-sidebar"
       );
@@ -15322,7 +15342,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     this.splitWidget.setSidebarWidget(this.sidebarPaneView);
   }
   setAsCurrentPanel() {
-    return UI17.ViewManager.ViewManager.instance().showView("sources");
+    return UI16.ViewManager.ViewManager.instance().showView("sources");
   }
   extensionSidebarPaneAdded(event) {
     this.addExtensionSidebarPane(event.data);
@@ -15344,7 +15364,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     if (entry?.isDirectory) {
       Host8.InspectorFrontendHost.InspectorFrontendHostInstance.upgradeDraggedFileSystemPermissions(entry.filesystem);
       Host8.userMetrics.actionTaken(Host8.UserMetrics.Action.WorkspaceDropFolder);
-      void UI17.ViewManager.ViewManager.instance().showView("navigator-files");
+      void UI16.ViewManager.ViewManager.instance().showView("navigator-files");
     }
   }
 };
@@ -15398,7 +15418,7 @@ var RevealingActionDelegate = class {
     }
     switch (actionId) {
       case "debugger.toggle-pause": {
-        const actionHandledInPausedOverlay = context.flavor(UI17.ShortcutRegistry.ForwardedShortcut) && !Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.disablePausedStateOverlaySettingDescriptor).get();
+        const actionHandledInPausedOverlay = context.flavor(UI16.ShortcutRegistry.ForwardedShortcut) && !Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.disablePausedStateOverlaySettingDescriptor).get();
         if (actionHandledInPausedOverlay) {
           return true;
         }
@@ -15483,7 +15503,7 @@ var ActionDelegate3 = class {
     return false;
   }
 };
-var QuickSourceView = class _QuickSourceView extends UI17.Widget.VBox {
+var QuickSourceView = class _QuickSourceView extends UI16.Widget.VBox {
   view;
   constructor() {
     super({ jslog: `${VisualLogging11.panel("sources.quick").track({ resize: true })}` });
@@ -15491,22 +15511,22 @@ var QuickSourceView = class _QuickSourceView extends UI17.Widget.VBox {
     this.view = SourcesPanel.instance().sourcesView();
   }
   wasShown() {
-    UI17.Context.Context.instance().setFlavor(_QuickSourceView, this);
+    UI16.Context.Context.instance().setFlavor(_QuickSourceView, this);
     super.wasShown();
     if (!SourcesPanel.instance().isShowing()) {
       this.showViewInWrapper();
     } else {
-      UI17.InspectorView.InspectorView.instance().setDrawerMinimized(true);
+      UI16.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
     SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance());
   }
   willHide() {
-    UI17.InspectorView.InspectorView.instance().setDrawerMinimized(false);
+    UI16.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     queueMicrotask(() => {
       SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance());
     });
     super.willHide();
-    UI17.Context.Context.instance().setFlavor(_QuickSourceView, null);
+    UI16.Context.Context.instance().setFlavor(_QuickSourceView, null);
   }
   showViewInWrapper() {
     this.view.show(this.element);
@@ -15569,7 +15589,7 @@ var str_18 = i18n35.i18n.registerUIStrings("panels/sources/CallStackSidebarPane.
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var { createRef, ref: ref2 } = Directives3;
 var callstackSidebarPaneInstance;
-var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleView {
+var CallStackSidebarPane = class _CallStackSidebarPane extends UI17.View.SimpleView {
   ignoreListMessageElement;
   ignoreListCheckboxElement;
   notPausedMessageElement;
@@ -15603,8 +15623,8 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
         this.refreshItem(item);
       }
     };
-    this.items = new UI18.ListModel.ListModel();
-    this.list = new UI18.ListControl.ListControl(this.items, this, UI18.ListControl.ListMode.NonViewport);
+    this.items = new UI17.ListModel.ListModel();
+    this.list = new UI17.ListControl.ListControl(this.items, this, UI17.ListControl.ListMode.NonViewport);
     this.list.element.addEventListener("contextmenu", this.onContextMenu.bind(this), false);
     self.onInvokeElement(this.list.element, (event) => {
       const item = this.list.itemForNode(event.target);
@@ -15617,7 +15637,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
       this.requestUpdate();
     };
-    render9(html8`
+    render9(html10`
       <style>${callStackSidebarPane_css_default}</style>
       <div class='ignore-listed-message' ${ref2(ignoreListMessageRef)}>
         <label class='ignore-listed-message-label'>
@@ -15674,7 +15694,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       this.ignoreListMessageElement.classList.add("hidden");
       this.showMoreMessageElement.classList.add("hidden");
       this.items.replaceAll([]);
-      UI18.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, null);
+      UI17.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, null);
       return;
     }
     this.notPausedMessageElement.classList.add("hidden");
@@ -15688,7 +15708,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     }
     if (uniqueWarnings.size) {
       this.callFrameWarningsElement.classList.remove("hidden");
-      UI18.Tooltip.Tooltip.install(this.callFrameWarningsElement, Array.from(uniqueWarnings).join("\n"));
+      UI17.Tooltip.Tooltip.install(this.callFrameWarningsElement, Array.from(uniqueWarnings).join("\n"));
     }
     let { maxAsyncStackChainDepth } = this;
     let hasMore = false;
@@ -15714,7 +15734,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
         /* center */
       );
       const selectedItem = this.list.selectedItem();
-      if (selectedItem && (UI18.Context.Context.instance().flavor(QuickSourceView) || UI18.Context.Context.instance().flavor(SourcesPanel))) {
+      if (selectedItem && (UI17.Context.Context.instance().flavor(QuickSourceView) || UI17.Context.Context.instance().flavor(SourcesPanel))) {
         this.activateItem(selectedItem);
       }
     }
@@ -15759,21 +15779,21 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     if (item.isAsyncHeader) {
       element.classList.add("async-header");
     } else {
-      UI18.Tooltip.Tooltip.install(titleElement, item.title);
+      UI17.Tooltip.Tooltip.install(titleElement, item.title);
       const linkElement = element.createChild("div", "call-frame-location");
       linkElement.textContent = Platform13.StringUtilities.trimMiddle(item.linkText, 30);
-      UI18.Tooltip.Tooltip.install(linkElement, item.linkText);
+      UI17.Tooltip.Tooltip.install(linkElement, item.linkText);
       element.classList.toggle("ignore-listed-call-frame", item.isIgnoreListed);
       if (item.isIgnoreListed) {
-        UI18.ARIAUtils.setDescription(element, i18nString17(UIStrings18.onIgnoreList));
+        UI17.ARIAUtils.setDescription(element, i18nString17(UIStrings18.onIgnoreList));
       }
       if (!item.frame) {
-        UI18.ARIAUtils.setDisabled(element, true);
+        UI17.ARIAUtils.setDisabled(element, true);
       }
     }
-    const isSelected = item.frame === UI18.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor)?.frame;
+    const isSelected = item.frame === UI17.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor)?.frame;
     element.classList.toggle("selected", isSelected);
-    UI18.ARIAUtils.setSelected(element, isSelected);
+    UI17.ARIAUtils.setSelected(element, isSelected);
     element.classList.toggle("hidden", !this.showIgnoreListed && item.isIgnoreListed);
     const icon = new Icon2();
     icon.name = "large-arrow-right-filled";
@@ -15788,7 +15808,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       const messages = resources.map(
         (r) => i18nString17(UIStrings18.debugFileNotFound, { PH1: Common13.ParsedURL.ParsedURL.extractName(r.resourceUrl) })
       );
-      UI18.Tooltip.Tooltip.install(icon2, [details, ...messages].join("\n"));
+      UI17.Tooltip.Tooltip.install(icon2, [details, ...messages].join("\n"));
       element.appendChild(icon2);
     }
     return element;
@@ -15820,7 +15840,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     if (!item) {
       return;
     }
-    const contextMenu = new UI18.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI17.ContextMenu.ContextMenu(event);
     const debuggerCallFrame = item.frame?.sdkFrame;
     if (debuggerCallFrame) {
       contextMenu.defaultSection().appendItem(i18nString17(UIStrings18.restartFrame), () => {
@@ -15848,7 +15868,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     const oldItem = this.activeCallFrameItem();
     if (debuggerCallFrame) {
       debuggerCallFrame.sdkFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame.sdkFrame);
-      UI18.Context.Context.instance().setFlavor(
+      UI17.Context.Context.instance().setFlavor(
         StackTrace5.StackTrace.DebuggableFrameFlavor,
         StackTrace5.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame)
       );
@@ -15863,7 +15883,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     }
   }
   activeCallFrameItem() {
-    const frameFlavor = UI18.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor);
+    const frameFlavor = UI17.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor);
     if (frameFlavor) {
       return this.items.find((callFrameItem) => callFrameItem.frame === frameFlavor.frame) || null;
     }
@@ -15948,7 +15968,7 @@ var Item = class _Item {
     return item;
   }
   static createForFrame(frame) {
-    const item = new _Item(UI18.UIUtils.beautifyFunctionName(frame.name ?? ""));
+    const item = new _Item(UI17.UIUtils.beautifyFunctionName(frame.name ?? ""));
     const uiSourceCode = frame.uiSourceCode;
     if (uiSourceCode) {
       item.isIgnoreListed = uiSourceCode.isIgnoreListed() ?? false;
@@ -15958,7 +15978,7 @@ var Item = class _Item {
     return item;
   }
   static createForAsyncHeader(stackTrace, fragment) {
-    const description = UI18.UIUtils.asyncFragmentLabel(stackTrace, fragment);
+    const description = UI17.UIUtils.asyncFragmentLabel(stackTrace, fragment);
     const item = new _Item(description);
     item.isAsyncHeader = true;
     return item;
@@ -16141,7 +16161,7 @@ import * as i18n37 from "../../core/i18n/i18n.js";
 import * as Persistence12 from "../../models/persistence/persistence.js";
 import * as Workspace24 from "../../models/workspace/workspace.js";
 import * as QuickOpen3 from "../../ui/legacy/components/quick_open/quick_open.js";
-import { Directives as Directives4, html as html9, nothing as nothing7 } from "../../ui/lit/lit.js";
+import { Directives as Directives4, html as html11, nothing as nothing9 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
 var filteredUISourceCodeListProvider_css_default = `/*
@@ -16352,7 +16372,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
       }
     }
     const isFileSystem = this.isFileSystemFile(uiSourceCode);
-    return html9`
+    return html11`
       <style>${filteredUISourceCodeListProvider_css_default}</style>
       <div class="filtered-ui-source-code-list-item
                   ${classMap2({ "is-ignore-listed": isIgnoreListed })}">
@@ -16368,7 +16388,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
             class="filtered-ui-source-code-subtitle" title=${tooltipText}>
           ${this.renderSubtitleElement(fullDisplayName.substring(0, fileNameIndex + 1))}
         </devtools-highlight>
-        ${isFileSystem ? html9`<span class="tag">${i18nString18(UIStrings19.workspace)}</span>` : nothing7}
+        ${isFileSystem ? html11`<span class="tag">${i18nString18(UIStrings19.workspace)}</span>` : nothing9}
       </div>`;
   }
   renderSubtitleElement(text) {
@@ -16377,7 +16397,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (text.length > maxTextLength) {
       splitPosition = text.length - maxTextLength;
     }
-    return html9`
+    return html11`
       <div class="first-part">${text.substring(0, splitPosition)}</div>
       <div class="second-part">${text.substring(splitPosition)}</div>`;
   }
@@ -16455,8 +16475,8 @@ __export(GoToLineQuickOpen_exports, {
 import "../../ui/kit/kit.js";
 import * as i18n39 from "../../core/i18n/i18n.js";
 import * as QuickOpen4 from "../../ui/legacy/components/quick_open/quick_open.js";
-import * as UI19 from "../../ui/legacy/legacy.js";
-import { html as html10 } from "../../ui/lit/lit.js";
+import * as UI18 from "../../ui/legacy/legacy.js";
+import { html as html12 } from "../../ui/lit/lit.js";
 var UIStrings20 = {
   /**
    * @description Text in the go to line quick open menu of the Sources panel.
@@ -16517,7 +16537,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     return this.#goToLineStrings.length;
   }
   renderItem(itemIndex, _query) {
-    return html10`
+    return html12`
       <devtools-icon name="colon"></devtools-icon>
       <div>
         <div>${this.#goToLineStrings[itemIndex]}</div>
@@ -16591,7 +16611,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     return { line: Math.max(line | 0, 1), column: Math.max(column | 0, 1) };
   }
   currentSourceFrame() {
-    const sourcesView = UI19.Context.Context.instance().flavor(SourcesView);
+    const sourcesView = UI18.Context.Context.instance().flavor(SourcesView);
     if (!sourcesView) {
       return null;
     }
@@ -16608,11 +16628,11 @@ import "../../ui/kit/kit.js";
 import * as Common15 from "../../core/common/common.js";
 import * as Host10 from "../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "../utils/utils.js";
-import { Directives as Directives5, html as html11 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html13 } from "../../ui/lit/lit.js";
 var { styleMap } = Directives5;
 var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   attach() {
-    this.setDefaultScores(SourcesView.defaultUISourceCodeScores());
+    this.setDefaultScores(TabbedEditorContainer.defaultUISourceCodeScores());
     super.attach();
   }
   uiSourceCodeSelected(uiSourceCode, lineNumber, columnNumber) {
@@ -16631,7 +16651,7 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   }
   renderItem(itemIndex, query) {
     const { iconName, color } = PanelUtils2.iconDataForResourceType(this.itemContentTypeAt(itemIndex));
-    return html11`
+    return html13`
       <devtools-icon class="large" name=${iconName} style=${styleMap({ color })}></devtools-icon>
       ${super.renderItem(itemIndex, query)}`;
   }
@@ -16648,8 +16668,8 @@ import "../../ui/components/highlighting/highlighting.js";
 import * as i18n41 from "../../core/i18n/i18n.js";
 import * as CodeMirror7 from "../../third_party/codemirror.next/codemirror.next.js";
 import * as QuickOpen5 from "../../ui/legacy/components/quick_open/quick_open.js";
-import * as UI20 from "../../ui/legacy/legacy.js";
-import { html as html12, nothing as nothing8 } from "../../ui/lit/lit.js";
+import * as UI19 from "../../ui/legacy/legacy.js";
+import { html as html14, nothing as nothing10 } from "../../ui/lit/lit.js";
 var UIStrings21 = {
   /**
    * @description Text in Go to line Quick Open of the Sources panel.
@@ -16966,10 +16986,10 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     }
     const title = item.title + (item.subtitle ? item.subtitle : "");
     const highlightRanges = QuickOpen5.FilteredListWidget.FilteredListWidget.getHighlightRanges(title, query, true);
-    return html12`
+    return html14`
       <devtools-icon name="deployed"></devtools-icon>
       <div><devtools-highlight type="markup" ranges=${highlightRanges}>${title}</devtools-highlight></div>
-      ${location ? html12`<span class="tag">${location}</span>` : nothing8}`;
+      ${location ? html14`<span class="tag">${location}</span>` : nothing10}`;
   }
   selectItem(itemIndex, _promptValue) {
     if (itemIndex === null) {
@@ -16983,7 +17003,7 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     sourceFrame.revealPosition({ lineNumber: item.lineNumber, columnNumber: item.columnNumber }, true);
   }
   currentSourceFrame() {
-    const sourcesView = UI20.Context.Context.instance().flavor(SourcesView);
+    const sourcesView = UI19.Context.Context.instance().flavor(SourcesView);
     return sourcesView?.currentSourceFrame() ?? null;
   }
   notFoundText() {
@@ -17010,7 +17030,7 @@ import * as TextUtils11 from "../../core/text_utils/text_utils.js";
 import * as Bindings10 from "../../models/bindings/bindings.js";
 import * as Persistence14 from "../../models/persistence/persistence.js";
 import * as Workspace26 from "../../models/workspace/workspace.js";
-import * as UI21 from "../../ui/legacy/legacy.js";
+import * as UI20 from "../../ui/legacy/legacy.js";
 var UIStrings22 = {
   /**
    * @description Text to save content as a specific file type.
@@ -17157,7 +17177,7 @@ var ContextMenuProvider = class {
     );
     if (contentProvider instanceof SDK12.NetworkRequest.NetworkRequest) {
       contextMenu.overrideSection().appendItem(i18nString21(UIStrings22.showOverrides), async () => {
-        await UI21.ViewManager.ViewManager.instance().showView("navigator-overrides");
+        await UI20.ViewManager.ViewManager.instance().showView("navigator-overrides");
         Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.ShowAllOverridesFromNetworkContextMenu);
       }, { jslogContext: "show-overrides" });
     }
@@ -17193,7 +17213,7 @@ var ContextMenuProvider = class {
     const deployedName = Bindings10.ResourceUtils.displayNameForURL(deployedUrl);
     const originalUrl = originalUiSourceCode.url();
     const originalName = Bindings10.ResourceUtils.displayNameForURL(originalUrl);
-    const shouldJumpToDeployedFile = await UI21.UIUtils.ConfirmDialog.show(
+    const shouldJumpToDeployedFile = await UI20.UIUtils.ConfirmDialog.show(
       i18nString21(UIStrings22.overrideSourceMappedFileExplanation, { PH1: originalName }),
       i18nString21(UIStrings22.overrideSourceMappedFileWarning, { PH1: deployedName }),
       void 0,
@@ -17250,8 +17270,8 @@ import * as SourceMapScopes2 from "../../models/source_map_scopes/source_map_sco
 import * as StackTrace7 from "../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
-import * as UI22 from "../../ui/legacy/legacy.js";
-import { html as html13, nothing as nothing9, render as render10 } from "../../ui/lit/lit.js";
+import * as UI21 from "../../ui/legacy/legacy.js";
+import { html as html15, nothing as nothing11, render as render10 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/scopeChainSidebarPane.css.js
@@ -17330,11 +17350,11 @@ var DEFAULT_VIEW8 = (input, output, target) => {
   const createScopeSection = ({ scope, objectTree }) => {
     let emptyPlaceholder;
     if (scope.type() === Debugger.ScopeType.Local || scope.type() === Debugger.ScopeType.Closure) {
-      emptyPlaceholder = html13`${i18nString22(UIStrings23.noVariables)}`;
+      emptyPlaceholder = html15`${i18nString22(UIStrings23.noVariables)}`;
     }
     const icon = scope.icon();
     const { title, subtitle } = scopeTitle(scope);
-    return html13`
+    return html15`
           <li role="treeitem"
               class="scope-chain-sidebar-pane-section"
               aria-label=${title}
@@ -17344,7 +17364,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       input.onToggle(objectTree, customEvent.detail.expanded);
     }}
               @contextmenu=${(e) => {
-      const contextMenu = new UI22.ContextMenu.ContextMenu(e);
+      const contextMenu = new UI21.ContextMenu.ContextMenu(e);
       input.onContextMenu(objectTree, contextMenu);
       void contextMenu.show();
     }}>
@@ -17352,26 +17372,26 @@ var DEFAULT_VIEW8 = (input, output, target) => {
                  @click=${() => {
       input.onToggle(objectTree, !objectTree.expanded);
     }}>
-              ${icon ? html13`<img class="scope-chain-sidebar-pane-section-icon" src=${icon}>` : nothing9}
+              ${icon ? html15`<img class="scope-chain-sidebar-pane-section-icon" src=${icon}>` : nothing11}
               <div class="scope-chain-sidebar-pane-section-title">${title}</div>
               <div class="scope-chain-sidebar-pane-section-subtitle">${subtitle}</div>
             </div>
 
-            ${objectTree.expanded ? ObjectUI3.ObjectPropertiesSection.renderObjectTree(objectTree, input.linkifier, emptyPlaceholder) : html13`<ul role="group"></ul>`}
+            ${objectTree.expanded ? ObjectUI3.ObjectPropertiesSection.renderObjectTree(objectTree, input.linkifier, emptyPlaceholder) : html15`<ul role="group"></ul>`}
           </li>`;
   };
   render10(
     // clang-format off
-    html13`
+    html15`
     <style>${scopeChainSidebarPane_css_default}</style>
-    ${input.scopeChain ? html13`
-      <devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus .template=${html13`<ul role=tree class="source-code object-properties-section">
+    ${input.scopeChain ? html15`
+      <devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus .template=${html15`<ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI3.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI3.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <style>${scopeChainSidebarPane_css_default}</style>
-          ${input.scopeChain?.map((item) => createScopeSection(item)) ?? nothing9}
+          ${input.scopeChain?.map((item) => createScopeSection(item)) ?? nothing11}
         </ul>`}>
-      </devtools-tree>` : html13`
+      </devtools-tree>` : html15`
       <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString22(UIStrings23.loading) : i18nString22(UIStrings23.notPaused)}</div>`}
     `,
     // clang-format on
@@ -17383,7 +17403,7 @@ function scopeTitle(scope) {
   if (scope.type() === Debugger.ScopeType.Closure) {
     const scopeName = scope.name();
     if (scopeName) {
-      title = i18nString22(UIStrings23.closureS, { PH1: UI22.UIUtils.beautifyFunctionName(scopeName) });
+      title = i18nString22(UIStrings23.closureS, { PH1: UI21.UIUtils.beautifyFunctionName(scopeName) });
     } else {
       title = i18nString22(UIStrings23.closure);
     }
@@ -17399,7 +17419,7 @@ function scopeKey(scope) {
   if (scope.type() === Debugger.ScopeType.Closure) {
     const scopeName = scope.name();
     if (scopeName) {
-      title = `Closure: ${UI22.UIUtils.beautifyFunctionName(scopeName)}`;
+      title = `Closure: ${UI21.UIUtils.beautifyFunctionName(scopeName)}`;
     } else {
       title = "Closure";
     }
@@ -17410,7 +17430,7 @@ function scopeKey(scope) {
   }
   return title + (subtitle ? ":" + subtitle : "");
 }
-var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBox {
+var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI21.Widget.VBox {
   #linkifier;
   #expansionTrackers = /* @__PURE__ */ new Map();
   #scopeChainModel = null;
@@ -17422,7 +17442,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
       useShadowDom: true
     });
     this.#linkifier = new Components3.Linkifier.Linkifier();
-    this.flavorChanged(UI22.Context.Context.instance().flavor(StackTrace7.StackTrace.DebuggableFrameFlavor));
+    this.flavorChanged(UI21.Context.Context.instance().flavor(StackTrace7.StackTrace.DebuggableFrameFlavor));
     this.#view = view;
   }
   static instance() {
@@ -17555,7 +17575,7 @@ import * as Persistence16 from "../../models/persistence/persistence.js";
 import * as Workspace28 from "../../models/workspace/workspace.js";
 import * as uiI18n3 from "../../ui/i18n/i18n.js";
 import { Link } from "../../ui/kit/kit.js";
-import * as UI23 from "../../ui/legacy/legacy.js";
+import * as UI22 from "../../ui/legacy/legacy.js";
 import * as Snippets5 from "../snippets/snippets.js";
 
 // gen/front_end/panels/sources/sourcesNavigator.css.js
@@ -17680,7 +17700,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
       this.inspectedURLChanged,
       this
     );
-    UI23.UIUserMetrics.UIUserMetrics.instance().panelLoaded("sources", "DevTools.Launch.Sources");
+    UI22.UIUserMetrics.UIUserMetrics.instance().panelLoaded("sources", "DevTools.Launch.Sources");
     SDK13.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
   }
   static instance(opts) {
@@ -17737,7 +17757,7 @@ var FilesNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-files", networkProjectManager);
     this.registerRequiredCSS(sourcesNavigator_css_default);
-    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noWorkspace), i18nString23(UIStrings24.explainWorkspace));
+    const placeholder2 = new UI22.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noWorkspace), i18nString23(UIStrings24.explainWorkspace));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/workspaces/";
     const link = Link.create("https://goo.gle/devtools-automatic-workspace-folders", "com.chrome.devtools.json");
@@ -17784,7 +17804,7 @@ var FilesNavigatorView = class extends NavigatorView {
     return project.type() === Workspace28.Workspace.projectTypes.FileSystem && Persistence16.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== "overrides" && !Snippets5.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
   handleContextMenu(event) {
-    const contextMenu = new UI23.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI22.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendAction("sources.add-folder-to-workspace", void 0, true);
     void contextMenu.show();
   }
@@ -17802,7 +17822,7 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
   toolbar;
   constructor(networkProjectManager) {
     super("navigator-overrides", networkProjectManager);
-    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(
+    const placeholder2 = new UI22.EmptyWidget.EmptyWidget(
       i18nString23(UIStrings24.noLocalOverrides),
       i18nString23(UIStrings24.explainLocalOverrides)
     );
@@ -17851,13 +17871,13 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     this.toolbar.removeToolbarItems();
     const project = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
     if (project) {
-      const enableCheckbox = new UI23.Toolbar.ToolbarSettingCheckbox(Common17.Settings.Settings.instance().resolve(
+      const enableCheckbox = new UI22.Toolbar.ToolbarSettingCheckbox(Common17.Settings.Settings.instance().resolve(
         Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor
       ));
       this.toolbar.appendToolbarItem(enableCheckbox);
-      this.toolbar.appendToolbarItem(new UI23.Toolbar.ToolbarSeparator(true));
-      const clearButton = new UI23.Toolbar.ToolbarButton(i18nString23(UIStrings24.clearConfiguration), "clear");
-      clearButton.addEventListener(UI23.Toolbar.ToolbarButton.Events.CLICK, () => {
+      this.toolbar.appendToolbarItem(new UI22.Toolbar.ToolbarSeparator(true));
+      const clearButton = new UI22.Toolbar.ToolbarButton(i18nString23(UIStrings24.clearConfiguration), "clear");
+      clearButton.addEventListener(UI22.Toolbar.ToolbarButton.Events.CLICK, () => {
         Common17.Settings.Settings.instance().resolve(Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).set(false);
         project.remove();
       });
@@ -17865,8 +17885,8 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
       return;
     }
     const title = i18nString23(UIStrings24.selectFolderForOverrides);
-    const setupButton = new UI23.Toolbar.ToolbarButton(title, "plus", title);
-    setupButton.addEventListener(UI23.Toolbar.ToolbarButton.Events.CLICK, (_event) => {
+    const setupButton = new UI22.Toolbar.ToolbarButton(title, "plus", title);
+    setupButton.addEventListener(UI22.Toolbar.ToolbarButton.Events.CLICK, (_event) => {
       void _OverridesNavigatorView.setupNewWorkspace();
     }, this);
     this.toolbar.appendToolbarItem(setupButton);
@@ -17889,7 +17909,7 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
 var ContentScriptsNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-content-scripts", networkProjectManager);
-    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(
+    const placeholder2 = new UI22.EmptyWidget.EmptyWidget(
       i18nString23(UIStrings24.noContentScripts),
       i18nString23(UIStrings24.explainContentScripts)
     );
@@ -17903,18 +17923,18 @@ var ContentScriptsNavigatorView = class extends NavigatorView {
 var SnippetsNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-snippets", networkProjectManager);
-    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noSnippets), i18nString23(UIStrings24.explainSnippets));
+    const placeholder2 = new UI22.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noSnippets), i18nString23(UIStrings24.explainSnippets));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/javascript/snippets/";
     const toolbar4 = document.createElement("devtools-toolbar");
     toolbar4.classList.add("navigator-toolbar");
-    const newButton = new UI23.Toolbar.ToolbarButton(
+    const newButton = new UI22.Toolbar.ToolbarButton(
       i18nString23(UIStrings24.newSnippet),
       "plus",
       i18nString23(UIStrings24.newSnippet),
       "sources.new-snippet"
     );
-    newButton.addEventListener(UI23.Toolbar.ToolbarButton.Events.CLICK, (_event) => {
+    newButton.addEventListener(UI22.Toolbar.ToolbarButton.Events.CLICK, (_event) => {
       void this.create(
         Snippets5.ScriptSnippetFileSystem.findSnippetsProject(),
         ""
@@ -17927,7 +17947,7 @@ var SnippetsNavigatorView = class extends NavigatorView {
     return Snippets5.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
   handleContextMenu(event) {
-    const contextMenu = new UI23.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI22.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
       i18nString23(UIStrings24.createNewSnippet),
       () => this.create(
@@ -17940,7 +17960,7 @@ var SnippetsNavigatorView = class extends NavigatorView {
   }
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
-    const contextMenu = new UI23.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI22.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
       i18nString23(UIStrings24.run),
       () => Snippets5.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode),
@@ -18019,7 +18039,7 @@ import * as Bindings12 from "../../models/bindings/bindings.js";
 import * as Formatter3 from "../../models/formatter/formatter.js";
 import * as SourceMapScopes3 from "../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace9 from "../../models/stack_trace/stack_trace.js";
-import * as Buttons5 from "../../ui/components/buttons/buttons.js";
+import * as Buttons6 from "../../ui/components/buttons/buttons.js";
 import * as TextEditor6 from "../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI4 from "../../ui/legacy/components/object_ui/object_ui.js";
 
@@ -18134,8 +18154,8 @@ var objectValue_css_default = `/*
 
 // ../../front_end/panels/sources/WatchExpressionsSidebarPane.ts
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
-import * as UI24 from "../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html14, nothing as nothing10, render as render11 } from "../../ui/lit/lit.js";
+import * as UI23 from "../../ui/legacy/legacy.js";
+import { Directives as Directives6, html as html16, nothing as nothing12, render as render11 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
@@ -18349,11 +18369,11 @@ var str_25 = i18n49.i18n.registerUIStrings("panels/sources/WatchExpressionsSideb
 var i18nString24 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
 var watchExpressionsSidebarPaneInstance;
 var { classMap: classMap3, ifDefined: ifDefined3 } = Directives6;
-var { widget: widget3 } = UI24.Widget;
+var { widget: widget3 } = UI23.Widget;
 var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
   const e = input.expression;
   if (!e) {
-    render11(nothing10, target);
+    render11(nothing12, target);
     return;
   }
   const stopPropagationIfEditing = (event) => {
@@ -18368,7 +18388,7 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
     e.expression ?? void 0
   );
   render11(
-    html14`
+    html16`
         <devtools-prompt
             class=${classMap3({
       monospace: true,
@@ -18397,9 +18417,9 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
     })}>
               <devtools-button
                 .data=${{
-      variant: Buttons5.Button.Variant.ICON,
+      variant: Buttons6.Button.Variant.ICON,
       iconName: "bin",
-      size: Buttons5.Button.Size.SMALL,
+      size: Buttons6.Button.Size.SMALL,
       jslogContext: "delete-watch-expression"
     }}
                 class=watch-expression-delete-button
@@ -18407,7 +18427,7 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
                 @click=${input.onDelete}></devtools-button>
               ${renderNameElement()}
               <span class=watch-expressions-separator>: </span>
-              ${e.exceptionDetails || !e.result ? html14`<span
+              ${e.exceptionDetails || !e.result ? html16`<span
                     class="watch-expression-error value"
                     title=${ifDefined3(e.exceptionDetails?.exception?.description)}
                     >${i18nString24(UIStrings25.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.renderPropertyValue(
@@ -18423,17 +18443,17 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
     )}
             </div>
           </div>
-          ${e.editing ? html14`
+          ${e.editing ? html16`
             <datalist id=${input.completionsId}>
-              ${input.completions.map((c) => html14`<option>${c}</option>`)}
+              ${input.completions.map((c) => html16`<option>${c}</option>`)}
             </datalist>
-          ` : nothing10}
+          ` : nothing12}
         </devtools-prompt>
       `,
     target
   );
 };
-var WatchExpressionPromptWidget = class extends UI24.Widget.Widget {
+var WatchExpressionPromptWidget = class extends UI23.Widget.Widget {
   #expression;
   #linkifier;
   #completions = [];
@@ -18522,7 +18542,7 @@ var WatchExpressionPromptWidget = class extends UI24.Widget.Widget {
 };
 var DEFAULT_VIEW9 = (input, output, target) => {
   const onContextMenu = (watchExpression, event) => {
-    const contextMenu = new UI24.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI23.ContextMenu.ContextMenu(event);
     const isEditing = input.watchExpressions.some((e) => e.editing);
     if (!isEditing) {
       contextMenu.debugSection().appendItem(
@@ -18569,7 +18589,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
   };
   const renderTreeElement = (e) => {
     const completionsId = `watch-expression-completions-${input.watchExpressions.indexOf(e)}`;
-    return html14`<li
+    return html16`<li
           class=${classMap3({ "watch-expression-tree-item": true, "watch-expression-editing": e.editing })}
           ?open=${Boolean(e.result?.expanded)}
           @keydown=${onExpressionKeydown.bind(void 0, e)}
@@ -18585,15 +18605,15 @@ var DEFAULT_VIEW9 = (input, output, target) => {
       onDelete: () => input.onDelete(e),
       onContextMenu: (event) => onContextMenu(e, event)
     })}></devtools-widget>
-        ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing10 : ObjectUI4.ObjectPropertiesSection.renderObjectTree(e.result, input.linkifier)}
+        ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing12 : ObjectUI4.ObjectPropertiesSection.renderObjectTree(e.result, input.linkifier)}
       </li>`;
   };
   render11(
     // clang-format off
-    html14`
-      ${input.watchExpressions.length === 0 ? html14`<div class=gray-info-message tabindex=-1 >
+    html16`
+      ${input.watchExpressions.length === 0 ? html16`<div class=gray-info-message tabindex=-1 >
         ${i18nString24(UIStrings25.noWatchExpressions)}
-        </div>` : html14`<devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus toggle-on-click .template=${html14`
+        </div>` : html16`<devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus toggle-on-click .template=${html16`
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI4.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI4.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
@@ -18615,7 +18635,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
     }
   );
 };
-var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI24.Widget.VBox {
+var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI23.Widget.VBox {
   #watchExpressions;
   #watchExpressionsSetting;
   linkifier;
@@ -18626,12 +18646,12 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     this.registerRequiredCSS(watchExpressionsSidebarPane_css_default, objectValue_css_default);
     this.#watchExpressions = [];
     this.#watchExpressionsSetting = Common18.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
-    UI24.Context.Context.instance().addFlavorChangeListener(
+    UI23.Context.Context.instance().addFlavorChangeListener(
       SDK14.RuntimeModel.ExecutionContext,
       this.#refreshExpressions,
       this
     );
-    UI24.Context.Context.instance().addFlavorChangeListener(
+    UI23.Context.Context.instance().addFlavorChangeListener(
       StackTrace9.StackTrace.DebuggableFrameFlavor,
       this.#refreshExpressions,
       this
@@ -18650,19 +18670,19 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     return this.#watchExpressions;
   }
   toolbarItems() {
-    return html14`
+    return html16`
       <devtools-button .data=${{
-      variant: Buttons5.Button.Variant.TOOLBAR,
+      variant: Buttons6.Button.Variant.TOOLBAR,
       iconName: "plus",
-      size: Buttons5.Button.Size.SMALL,
+      size: Buttons6.Button.Size.SMALL,
       title: i18nString24(UIStrings25.addWatchExpression),
       jslogContext: "add-watch-expression"
     }}
         @click=${(e) => this.addButtonClicked(e)}></devtools-button>
       <devtools-button .data=${{
-      variant: Buttons5.Button.Variant.TOOLBAR,
+      variant: Buttons6.Button.Variant.TOOLBAR,
       iconName: "refresh",
-      size: Buttons5.Button.Size.SMALL,
+      size: Buttons6.Button.Size.SMALL,
       title: i18nString24(UIStrings25.refreshWatchExpressions),
       jslogContext: "refresh-watch-expressions"
     }}
@@ -18681,7 +18701,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
   }
   async addButtonClicked(event) {
     event?.consume(true);
-    await UI24.ViewManager.ViewManager.instance().showView("sources.watch");
+    await UI23.ViewManager.ViewManager.instance().showView("sources.watch");
     const watchExpression = new WatchExpression();
     this.#watchExpressions.push(watchExpression);
     watchExpression.editing = true;
@@ -18780,7 +18800,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     void this.#refreshExpressions();
   }
   async #focusAndAddExpressionToWatch(expression) {
-    await UI24.ViewManager.ViewManager.instance().showView("sources.watch");
+    await UI23.ViewManager.ViewManager.instance().showView("sources.watch");
     const watchExpression = new WatchExpression();
     await watchExpression.setExpression(expression, this.#getExpansionTracker(expression));
     this.watchExpressions.push(watchExpression);
@@ -18788,7 +18808,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     await this.#refreshExpressions();
   }
   handleAction(_context, _actionId) {
-    const frame = UI24.Context.Context.instance().flavor(UISourceCodeFrame);
+    const frame = UI23.Context.Context.instance().flavor(UISourceCodeFrame);
     if (!frame) {
       return false;
     }
@@ -18831,7 +18851,7 @@ var WatchExpression = class _WatchExpression {
   async setExpression(expression, expandController) {
     this.#exceptionDetails = this.#result = void 0;
     this.#expression = expression;
-    const executionContext = UI24.Context.Context.instance().flavor(SDK14.RuntimeModel.ExecutionContext);
+    const executionContext = UI23.Context.Context.instance().flavor(SDK14.RuntimeModel.ExecutionContext);
     if (!expression || !executionContext) {
       return;
     }

@@ -5,12 +5,12 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 export const HistoryDepth = 20;
 export class EditingLocationHistoryManager {
-    sourcesView;
+    editorContainer;
     entries = [];
     current = -1;
     revealingCount = 0;
-    constructor(sourcesView) {
-        this.sourcesView = sourcesView;
+    constructor(editorContainer) {
+        this.editorContainer = editorContainer;
     }
     trackSourceFrameCursorJumps(sourceFrame) {
         sourceFrame.addEventListener("EditorUpdate" /* SourceFrame.SourceFrame.Events.EDITOR_UPDATE */, event => this.onEditorUpdate(event.data, sourceFrame));
@@ -52,12 +52,12 @@ export class EditingLocationHistoryManager {
             }
         }
     }
-    async reveal(entry) {
+    reveal(entry) {
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(entry.projectId, entry.url);
         if (uiSourceCode) {
             this.revealingCount++;
             try {
-                await this.sourcesView.showSourceLocation(uiSourceCode, entry.position, false, true);
+                this.editorContainer.showSourceLocation(uiSourceCode, entry.position, false, true);
             }
             finally {
                 this.revealingCount--;
@@ -67,13 +67,13 @@ export class EditingLocationHistoryManager {
     rollback() {
         if (this.current > 0) {
             this.current--;
-            void this.reveal(this.entries[this.current]);
+            this.reveal(this.entries[this.current]);
         }
     }
     rollover() {
         if (this.current < this.entries.length - 1) {
             this.current++;
-            void this.reveal(this.entries[this.current]);
+            this.reveal(this.entries[this.current]);
         }
     }
     removeHistoryForSourceCode(uiSourceCode) {

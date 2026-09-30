@@ -1,10 +1,9 @@
 import './Toolbar.js';
 import { VBox } from './Widget.js';
 export declare class SearchableView extends VBox {
-    protected searchProvider: Searchable;
-    private replaceProvider;
+    #private;
+    replaceProvider: Replaceable | null;
     private setting;
-    private replaceable;
     private readonly footerElementContainer;
     private readonly footerElement;
     private replaceToggleButton;
@@ -19,11 +18,17 @@ export declare class SearchableView extends VBox {
     private regexButton;
     private replaceButtonElement;
     private replaceAllButtonElement;
-    private minimalSearchQuerySize;
+    minimalSearchQuerySize: number;
     private searchIsVisible?;
     private currentQuery?;
     private valueChangedTimeoutId?;
+    constructor(element?: HTMLElement);
     constructor(searchable: Searchable, replaceable: Replaceable | null, settingName?: string, element?: HTMLElement);
+    get searchProvider(): Searchable;
+    set searchProvider(searchable: Searchable);
+    set settingName(settingName: string | undefined);
+    get replaceable(): boolean;
+    set replaceable(replaceable: boolean);
     static fromElement(element: Element | null): SearchableView | null;
     private toggleReplace;
     private saveSetting;

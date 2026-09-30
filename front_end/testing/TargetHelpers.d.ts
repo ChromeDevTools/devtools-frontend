@@ -11,3 +11,6 @@ export declare function createTarget({ id, name, type, parentTarget, subtype, ur
     connection?: ProtocolClient.CDPConnection.CDPConnection;
     targetManager?: SDK.TargetManager.TargetManager;
 }): SDK.Target.Target;
+export declare function waitForTarget(universe: {
+    targetManager: SDK.TargetManager.TargetManager;
+}, predicate: (target: SDK.Target.Target) => boolean): Promise<SDK.Target.Target>;

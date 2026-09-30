@@ -8,19 +8,37 @@ import { ScopeInfoBuilder } from "./builder.js";
  * nested and don't partially overlap.
  */
 export class SafeScopeInfoBuilder extends ScopeInfoBuilder {
-    addNullScope() {
-        this.#verifyEmptyScopeStack("add null scope");
-        this.#verifyEmptyRangeStack("add null scope");
-        super.addNullScope();
+    addNullSource() {
+        this.#verifyNoOpenSource("add null source");
+        this.#verifyEmptyScopeStack("add null source");
+        this.#verifyEmptyRangeStack("add null source");
+        super.addNullSource();
+        return this;
+    }
+    startSource() {
+        this.#verifyNoOpenSource("start source");
+        this.#verifyEmptyScopeStack("start source");
+        this.#verifyEmptyRangeStack("start source");
+        super.startSource();
+        return this;
+    }
+    endSource() {
+        this.#verifyOpenSource("end source");
+        this.#verifyEmptyScopeStack("end source");
+        this.#verifyEmptyRangeStack("end source");
+        super.endSource();
         return this;
     }
     startScope(line, column, options) {
+        this.#verifyOpenSource("start scope");
         this.#verifyEmptyRangeStack("start scope");
         const parent = this.scopeStack.at(-1);
         if (parent && comparePositions(parent.start, { line, column }) > 0) {
             throw new Error(`Scope start (${line}, ${column}) must not precede parent start (${parent.start.line}, ${parent.start.column})`);
         }
-        const precedingSibling = parent?.children.at(-1);
+        const precedingSibling = parent
+            ? parent.children.at(-1)
+            : this.currentSourceScopes?.at(-1);
         if (precedingSibling &&
             comparePositions(precedingSibling.end, { line, column }) > 0) {
             throw new Error(`Scope start (${line}, ${column}) must not precede preceding siblings' end (${precedingSibling
@@ -67,6 +85,7 @@ export class SafeScopeInfoBuilder extends ScopeInfoBuilder {
         return this;
     }
     startRange(line, column, options) {
+        this.#verifyNoOpenSource("startRange");
         this.#verifyEmptyScopeStack("starRange");
         const parent = this.rangeStack.at(-1);
         if (parent && comparePositions(parent.start, { line, column }) > 0) {
@@ -169,8 +188,19 @@ export class SafeScopeInfoBuilder extends ScopeInfoBuilder {
         if (this.scopeStack.length > 0) {
             throw new Error("Can't build ScopeInfo while an OriginalScope is unclosed.");
         }
+        this.#verifyNoOpenSource("build ScopeInfo");
         this.#verifyEmptyRangeStack("build ScopeInfo");
         return super.build();
+    }
+    #verifyNoOpenSource(op) {
+        if (this.currentSourceScopes !== null) {
+            throw new Error(`Can't ${op} while a source is unclosed.`);
+        }
+    }
+    #verifyOpenSource(op) {
+        if (this.currentSourceScopes === null) {
+            throw new Error(`Can't ${op} without an open source.`);
+        }
     }
     #verifyEmptyScopeStack(op) {
         if (this.scopeStack.length > 0) {

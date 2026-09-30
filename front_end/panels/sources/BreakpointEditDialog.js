@@ -131,6 +131,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     #oldCondition = '';
     #breakpointType = "CONDITIONAL_BREAKPOINT" /* SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT */;
     #onFinish = () => { };
+    #location;
     #editor;
     #state;
     constructor(target, view = DEFAULT_VIEW) {
@@ -170,6 +171,13 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     }
     set onFinish(onFinish) {
         this.#onFinish = onFinish;
+        this.requestUpdate();
+    }
+    get location() {
+        return this.#location;
+    }
+    set location(location) {
+        this.#location = location;
         this.requestUpdate();
     }
     focus() {
@@ -240,6 +248,9 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
                 },
             },
         ];
+        const completionOptions = {
+            location: () => this.#location ? this.#location() : Promise.resolve(null),
+        };
         const editorConfig = [
             CodeMirror.javascript.javascriptLanguage,
             TextEditor.Config.baseConfiguration(this.oldCondition),
@@ -249,8 +260,9 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
             TextEditor.Config.showCompletionHint,
             TextEditor.Config.conservativeCompletion,
             CodeMirror.javascript.javascriptLanguage.data.of({ autocomplete }),
+            TextEditor.JavaScript.completion(completionOptions),
             CodeMirror.autocompletion(),
-            TextEditor.JavaScript.argumentHints(),
+            TextEditor.JavaScript.argumentHints(completionOptions),
         ];
         this.#state = CodeMirror.EditorState.create({
             doc: this.oldCondition,

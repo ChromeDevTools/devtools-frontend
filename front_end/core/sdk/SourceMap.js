@@ -462,9 +462,9 @@ export class SourceMap {
         if (!this.#scopesInfo) {
             this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
         }
-        if (map.scopes) {
+        if (map.scopes || map.ranges) {
             const { scopes, ranges } = ScopesCodec.decode(map, { mode: 2 /* ScopesCodec.DecodeMode.LAX */, generatedOffset: { line: baseLineNumber, column: baseColumnNumber } });
-            this.#scopesInfo.addOriginalScopes(scopes);
+            this.#scopesInfo.addOriginalScopes(scopes.length ? scopes : new Array(map.sources.length).fill(null));
             this.#scopesInfo.addGeneratedRanges(ranges);
         }
         else if (map.x_com_bloomberg_sourcesFunctionMappings) {

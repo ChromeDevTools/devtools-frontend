@@ -48,7 +48,7 @@ export declare class MockDebuggerBackend {
     createCallFrame(target: SDK.Target.Target, script: ScriptDescription, scopeDescriptor: string, sourceMap: {
         url: string;
         content: string;
-    } | null, scopeObjects?: Protocol.Runtime.RemoteObject[], emptyScopes?: boolean[]): Promise<SDK.DebuggerModel.CallFrame>;
+    } | null, scopeObjects?: Protocol.Runtime.RemoteObject[]): Promise<SDK.DebuggerModel.CallFrame>;
     responderToBreakpointByUrlRequest(url: string, lineNumber: number): (response: CommandHandlerResponse<'Debugger.setBreakpointByUrl'> | ProtocolClient.CDPConnection.CommandResult<'Debugger.setBreakpointByUrl'>) => Promise<void>;
     setBreakpointByUrlToFail(url: string, lineNumber: number): void;
     breakpointRemovedPromise(breakpointId: Protocol.Debugger.BreakpointId): Promise<void>;

@@ -3,6 +3,7 @@ import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
+import { type TemplateResult } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 export interface SourceFrameOptions {
     lineNumbers?: boolean;
@@ -83,7 +84,7 @@ export declare class SourceFrameImpl extends SourceFrameImplBase implements UI.S
     hasLoadError(): boolean;
     wasShown(): void;
     willHide(): void;
-    toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]>;
+    toolbarItems(): Promise<TemplateResult>;
     get loaded(): boolean;
     get textEditor(): TextEditor.TextEditor.TextEditor;
     get pretty(): boolean;

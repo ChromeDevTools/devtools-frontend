@@ -3,12 +3,9 @@
 // found in the LICENSE file.
 import { TokenIterator } from './SourceMap.js';
 /**
- * Turns a list of {@link NamedFunctionRange}s into a single {@link OriginalScope} tree nested
- * according to the start/end position. Each range is turned into a OriginalScope with the `isStackFrame`
+ * Turns a list of {@link NamedFunctionRange}s into a list of {@link OriginalScope} trees nested
+ * according to the start/end position. Each range is turned into an OriginalScope with the `isStackFrame`
  * bit set to denote it as a function and a generic "Function" label.
- *
- * We nest all these function scopes underneath a single global scope that always starts at (0, 0) and
- * reaches to the largest end position.
  *
  * `ranges` can be unsorted but will be sorted in-place.
  *
@@ -21,27 +18,15 @@ export function buildOriginalScopes(ranges) {
     //    If two ranges have the same start position, we sort the one
     //    with the higher end position first, because it's the parent.
     ranges.sort((a, b) => comparePositions(a.start, b.start) || comparePositions(b.end, a.end));
-    const root = {
-        start: { line: 0, column: 0 },
-        end: { line: Number.POSITIVE_INFINITY, column: Number.POSITIVE_INFINITY },
-        kind: 'Global',
-        isStackFrame: false,
-        children: [],
-        variables: [],
-    };
-    // 2. Build the tree from the ranges.
-    const stack = [root];
+    // 2. Build the trees from the ranges.
+    const roots = [];
+    const stack = [];
     for (const range of ranges) {
         // Pop all scopes that precede the current entry (to find the right parent).
         let stackTop = stack.at(-1);
-        while (true) {
-            if (comparePositions(stackTop.end, range.start) <= 0) {
-                stack.pop();
-                stackTop = stack.at(-1);
-            }
-            else {
-                break;
-            }
+        while (stackTop && comparePositions(stackTop.end, range.start) <= 0) {
+            stack.pop();
+            stackTop = stack.at(-1);
         }
         /*
          * Check for partially overlapping ranges:
@@ -53,19 +38,19 @@ export function buildOriginalScopes(ranges) {
          *
          *i.e.: B.start < A.end < B.end
          */
-        if (comparePositions(range.start, stackTop.end) < 0 && comparePositions(stackTop.end, range.end) < 0) {
-            throw new Error(`Range ${JSON.stringify(range)} and ${JSON.stringify(stackTop)} partially overlap.`);
+        if (stackTop && comparePositions(range.start, stackTop.end) < 0 && comparePositions(stackTop.end, range.end) < 0) {
+            throw new Error(`Range ${JSON.stringify(range)} and ${JSON.stringify(stackTop, (key, value) => key === 'parent' ? undefined : value)} partially overlap.`);
         }
-        const scope = createScopeFrom(range);
-        stackTop.children.push(scope);
+        const scope = createScopeFrom(range, stackTop);
+        if (stackTop) {
+            stackTop.children.push(scope);
+        }
+        else {
+            roots.push(scope);
+        }
         stack.push(scope);
     }
-    // 3. Update root.end.
-    const lastChild = root.children.at(-1);
-    if (lastChild) {
-        root.end = lastChild.end;
-    }
-    return root;
+    return roots;
 }
 function validateStartBeforeEnd(ranges) {
     for (const range of ranges) {
@@ -74,11 +59,12 @@ function validateStartBeforeEnd(ranges) {
         }
     }
 }
-function createScopeFrom(range) {
+function createScopeFrom(range, parent) {
     return {
         ...range,
         kind: 'Function',
         isStackFrame: true,
+        parent,
         children: [],
         variables: [],
     };

@@ -36,6 +36,12 @@
     "../../../../../../front_end/models/ai_assistance/contexts/FileContext.test.ts",
     "../../../../../../front_end/models/ai_assistance/contexts/PerformanceTraceContext.test.ts",
     "../../../../../../front_end/models/ai_assistance/contexts/RequestContext.test.ts",
+    "../../../../../../front_end/models/ai_assistance/data_formatters/FileFormatter.test.ts",
+    "../../../../../../front_end/models/ai_assistance/data_formatters/LighthouseFormatter.test.ts",
+    "../../../../../../front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.test.ts",
+    "../../../../../../front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.ts",
+    "../../../../../../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.ts",
+    "../../../../../../front_end/models/ai_assistance/data_formatters/UnitFormatters.test.ts",
     "../../../../../../front_end/models/ai_assistance/performance/AICallTree.test.ts",
     "../../../../../../front_end/models/ai_assistance/performance/AIContext.test.ts",
     "../../../../../../front_end/models/ai_assistance/performance/AIQueries.test.ts",
@@ -106,6 +112,9 @@
     },
     {
       "path": "../bindings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../crux-manager/bundle-tsconfig.ref.json"
     },
     {
       "path": "../formatter/bundle-tsconfig.ref.json"

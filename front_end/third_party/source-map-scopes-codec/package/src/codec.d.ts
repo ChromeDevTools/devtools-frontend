@@ -1,5 +1,4 @@
 export declare const enum Tag {
-    EMPTY = 0,
     ORIGINAL_SCOPE_START = 1,
     ORIGINAL_SCOPE_END = 2,
     ORIGINAL_SCOPE_VARIABLES = 3,
@@ -11,7 +10,6 @@ export declare const enum Tag {
     VENDOR_EXTENSION = 99
 }
 export declare const enum EncodedTag {
-    EMPTY = "A",// 0x0
     ORIGINAL_SCOPE_START = "B",// 0x1
     ORIGINAL_SCOPE_END = "C",// 0x2
     ORIGINAL_SCOPE_VARIABLES = "D",// 0x3
@@ -44,5 +42,8 @@ export interface GeneratedRangeStartItem {
     flags: number;
     line?: number;
     column: number;
-    definitionIdx?: number;
+    definition?: {
+        sourceIdx: number;
+        scopeIdx: number;
+    };
 }

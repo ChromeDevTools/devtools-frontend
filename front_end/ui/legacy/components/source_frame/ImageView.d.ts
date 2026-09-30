@@ -1,6 +1,7 @@
 import '../../../kit/kit.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
+import { type TemplateResult } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 export interface ViewInput {
     url: Platform.DevToolsPath.UrlString;
@@ -20,11 +21,10 @@ export declare class ImageView extends UI.View.SimpleView {
     private readonly sizeLabel;
     private readonly dimensionsLabel;
     private readonly aspectRatioLabel;
-    private readonly mimeTypeLabel;
     private cachedContent?;
     constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, view?: View);
     performUpdate(): void;
-    toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]>;
+    toolbarItems(): Promise<TemplateResult>;
     wasShown(): void;
     disposeView(): void;
     private workingCopyCommitted;

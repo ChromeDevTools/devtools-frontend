@@ -3,6 +3,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type TemplateResult } from '../../ui/lit/lit.js';
 import type { Plugin } from './Plugin.js';
 declare const UISourceCodeFrameBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof SourceFrame.SourceFrame.SourceFrameImpl>;
 export declare class UISourceCodeFrame extends UISourceCodeFrameBase {
@@ -44,7 +45,7 @@ export declare class UISourceCodeFrame extends UISourceCodeFrameBase {
     private onMessageAdded;
     private onMessageRemoved;
     private onDecorationChanged;
-    toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]>;
+    toolbarItems(): Promise<TemplateResult>;
     private getErrorPopoverContent;
 }
 export declare const enum Events {

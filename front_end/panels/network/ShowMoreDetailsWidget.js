@@ -25,7 +25,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         if (input.copy) {
             contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copy), input.copy, { jslogContext: 'copy' });
         }
-        if (!input.showMore) {
+        if (!input.showMore && input.text.length > MAX_LENGTH) {
             contextMenu.newSection().appendItem(i18nString(UIStrings.showMore), input.onToggle, { jslogContext: 'show-more' });
         }
         void contextMenu.show();

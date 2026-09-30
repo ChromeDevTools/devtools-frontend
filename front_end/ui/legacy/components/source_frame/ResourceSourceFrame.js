@@ -100,13 +100,8 @@ export class SearchableContainer extends UI.Widget.VBox {
         searchableView.show(this.contentElement);
         const toolbar = this.contentElement.createChild('devtools-toolbar', 'toolbar');
         void sourceFrame.toolbarItems().then(items => {
-            if (Array.isArray(items)) {
-                items.map(item => toolbar.appendToolbarItem(item));
-            }
-            else {
-                // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-                render(items, toolbar);
-            }
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(items, toolbar);
         });
     }
     async revealPosition(position) {

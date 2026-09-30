@@ -33,6 +33,8 @@ export declare class BreakpointEditDialog extends UI.Widget.Widget {
     set breakpointType(breakpointType: SDK.DebuggerModel.BreakpointType.LOGPOINT | SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT);
     get onFinish(): (result: BreakpointEditDialogResult) => void;
     set onFinish(onFinish: (result: BreakpointEditDialogResult) => void);
+    get location(): (() => Promise<SDK.DebuggerModel.Location | null>) | undefined;
+    set location(location: (() => Promise<SDK.DebuggerModel.Location | null>) | undefined);
     focus(): void;
     performUpdate(): void;
     finishEditing(committed: boolean, condition: string): void;

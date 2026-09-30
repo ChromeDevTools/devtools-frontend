@@ -48,7 +48,7 @@ export declare class SourcesPanel extends UI.Panel.Panel implements UI.ContextMe
     resolveLocation(locationName: string): UI.View.ViewLocation | null;
     ensureSourcesViewVisible(): boolean;
     onResize(): void;
-    searchableView(): UI.SearchableView.SearchableView;
+    searchableView(): UI.SearchableView.SearchableView | null;
     toggleNavigatorSidebar(): void;
     toggleDebuggerSidebar(): void;
     private debuggerPaused;

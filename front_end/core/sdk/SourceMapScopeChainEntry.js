@@ -154,7 +154,7 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
             if (value === null) {
                 return _a.#unavailableProperty(variable);
             }
-            return new RemoteObjectProperty(variable, value, /* enumerable */ false, /* writable */ false, /* isOwn */ true, 
+            return new RemoteObjectProperty(variable, value, /* enumerable */ true, /* writable */ false, /* isOwn */ true, 
             /* wasThrown */ false);
         });
         return { properties, internalProperties: [] };
@@ -230,7 +230,8 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
         return findExpression(this.#range, index, pausedPosition?.line, pausedPosition?.column);
     }
     static #unavailableProperty(name) {
-        return new RemoteObjectProperty(name, null, /* enumerable */ false, /* writeable */ false, /* isOwn */ true, /* wasThrown */ false);
+        return new RemoteObjectProperty(name, null, /* enumerable */ true, /* writeable */ false, /* isOwn */ true, 
+        /* wasThrown */ false);
     }
 }
 _a = SourceMapScopeRemoteObject;

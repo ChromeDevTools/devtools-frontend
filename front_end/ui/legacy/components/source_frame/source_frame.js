@@ -66,6 +66,7 @@ import * as CodeMirror from "../../../../third_party/codemirror.next/codemirror.
 import * as CodeHighlighter from "../../../components/code_highlighter/code_highlighter.js";
 import * as Dialogs from "../../../components/dialogs/dialogs.js";
 import * as TextEditor from "../../../components/text_editor/text_editor.js";
+import { html } from "../../../lit/lit.js";
 import * as VisualLogging from "../../../visual_logging/visual_logging.js";
 import * as UI from "../../legacy.js";
 var UIStrings = {
@@ -465,7 +466,7 @@ var SourceFrameImpl = class extends SourceFrameImplBase {
     this.clearPositionToReveal();
   }
   async toolbarItems() {
-    return [this.prettyToggle, this.sourcePosition, this.progressToolbarItem];
+    return html`${this.prettyToggle.element}${this.sourcePosition.element}${this.progressToolbarItem.element}`;
   }
   get loaded() {
     return this.loadedInternal;
@@ -1192,11 +1193,7 @@ var SearchableContainer = class extends UI2.Widget.VBox {
     searchableView.show(this.contentElement);
     const toolbar = this.contentElement.createChild("devtools-toolbar", "toolbar");
     void sourceFrame.toolbarItems().then((items) => {
-      if (Array.isArray(items)) {
-        items.map((item) => toolbar.appendToolbarItem(item));
-      } else {
-        render(items, toolbar);
-      }
+      render(items, toolbar);
     });
   }
   async revealPosition(position) {
@@ -1420,7 +1417,7 @@ __export(FontView_exports, {
 });
 import * as i18n5 from "../../../../core/i18n/i18n.js";
 import * as TextUtils6 from "../../../../core/text_utils/text_utils.js";
-import { Directives, html, render as render2 } from "../../../lit/lit.js";
+import { Directives, html as html2, render as render2 } from "../../../lit/lit.js";
 import * as VisualLogging2 from "../../../visual_logging/visual_logging.js";
 import * as UI4 from "../../legacy.js";
 
@@ -1459,7 +1456,7 @@ var FONT_PREVIEW_LINES = ["ABCDEFGHIJKLM", "NOPQRSTUVWXYZ", "abcdefghijklm", "no
 var MEASURE_FONT_SIZE = 50;
 var DEFAULT_VIEW = (input, output, target) => {
   let dummyEl;
-  render2(html`
+  render2(html2`
     <style>${fontView_css_default}</style>
     <style>${input.fontFaceRule}</style>
     <div class="font-view"
@@ -1467,12 +1464,12 @@ var DEFAULT_VIEW = (input, output, target) => {
       style="font-family: ${input.fontFamily}; font-size: ${input.previewFontSize}"
       aria-hidden="true"
       ?hidden=${!input.previewVisible}
-    >${FONT_PREVIEW_LINES.map((line, i) => html`${i > 0 ? html`<br>` : ""}${line}`)}</div>
+    >${FONT_PREVIEW_LINES.map((line, i) => html2`${i > 0 ? html2`<br>` : ""}${line}`)}</div>
     <div ${Directives.ref((el) => {
     dummyEl = el;
   })}
       style="visibility: hidden; z-index: -1; display: inline; position: absolute; font-family: ${input.fontFamily}; font-size: ${MEASURE_FONT_SIZE}px"
-    >${FONT_PREVIEW_LINES.map((line, i) => html`${i > 0 ? html`<br>` : ""}${line}`)}</div>
+    >${FONT_PREVIEW_LINES.map((line, i) => html2`${i > 0 ? html2`<br>` : ""}${line}`)}</div>
   `, target);
   output.measureDimensions = () => {
     if (!dummyEl) {
@@ -1484,7 +1481,7 @@ var DEFAULT_VIEW = (input, output, target) => {
 var FontView = class extends UI4.View.SimpleView {
   url;
   contentProvider;
-  mimeTypeLabel;
+  #mimeType;
   #view;
   #fontFaceRule = "";
   #fontFamily = "";
@@ -1500,10 +1497,10 @@ var FontView = class extends UI4.View.SimpleView {
     this.#view = view;
     this.url = contentProvider.contentURL();
     this.contentProvider = contentProvider;
-    this.mimeTypeLabel = new UI4.Toolbar.ToolbarText(mimeType);
+    this.#mimeType = mimeType;
   }
   async toolbarItems() {
-    return [this.mimeTypeLabel];
+    return html2`<div class="toolbar-text">${this.#mimeType}</div>`;
   }
   #loadContentIfNeeded() {
     if (this.#contentLoaded) {
@@ -1590,7 +1587,7 @@ import * as i18n7 from "../../../../core/i18n/i18n.js";
 import * as Platform2 from "../../../../core/platform/platform.js";
 import * as TextUtils7 from "../../../../core/text_utils/text_utils.js";
 import * as Workspace from "../../../../models/workspace/workspace.js";
-import { html as html2, render as render3 } from "../../../lit/lit.js";
+import { html as html3, render as render3 } from "../../../lit/lit.js";
 import * as VisualLogging3 from "../../../visual_logging/visual_logging.js";
 import * as UI5 from "../../legacy.js";
 
@@ -1683,17 +1680,17 @@ var UIStrings4 = {
 var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/components/source_frame/ImageView.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render3(html2`
+  render3(html3`
     <style>${imageView_css_default}</style>
     <div class="image">
-      ${input.imageSrc ? html2`
+      ${input.imageSrc ? html3`
         <img
           class="resource-image-view"
           src=${input.imageSrc}
           alt=${i18nString4(UIStrings4.imageFromS, { PH1: input.url })}
           @load=${input.onImageLoad}
           @contextmenu=${{ handleEvent: input.onContextMenu, capture: true }}
-        >` : html2`
+        >` : html3`
         <img
           class="resource-image-view"
           alt=${i18nString4(UIStrings4.imageFromS, { PH1: input.url })}
@@ -1724,7 +1721,7 @@ var ImageView = class extends UI5.View.SimpleView {
   sizeLabel;
   dimensionsLabel;
   aspectRatioLabel;
-  mimeTypeLabel;
+  #mimeType;
   cachedContent;
   #view;
   #imageSrc = null;
@@ -1757,7 +1754,7 @@ var ImageView = class extends UI5.View.SimpleView {
     this.sizeLabel = new UI5.Toolbar.ToolbarText();
     this.dimensionsLabel = new UI5.Toolbar.ToolbarText();
     this.aspectRatioLabel = new UI5.Toolbar.ToolbarText();
-    this.mimeTypeLabel = new UI5.Toolbar.ToolbarText(mimeType);
+    this.#mimeType = mimeType;
     this.performUpdate();
   }
   performUpdate() {
@@ -1782,15 +1779,15 @@ var ImageView = class extends UI5.View.SimpleView {
   };
   async toolbarItems() {
     await this.updateContentIfNeeded();
-    return [
-      this.sizeLabel,
-      new UI5.Toolbar.ToolbarSeparator(),
-      this.dimensionsLabel,
-      new UI5.Toolbar.ToolbarSeparator(),
-      this.aspectRatioLabel,
-      new UI5.Toolbar.ToolbarSeparator(),
-      this.mimeTypeLabel
-    ];
+    return html3`
+      ${this.sizeLabel.element}
+      <div class="toolbar-divider"></div>
+      ${this.dimensionsLabel.element}
+      <div class="toolbar-divider"></div>
+      ${this.aspectRatioLabel.element}
+      <div class="toolbar-divider"></div>
+      <div class="toolbar-text">${this.#mimeType}</div>
+    `;
   }
   wasShown() {
     super.wasShown();
@@ -1940,7 +1937,7 @@ __export(JSONView_exports, {
 });
 import * as i18n9 from "../../../../core/i18n/i18n.js";
 import * as SDK2 from "../../../../core/sdk/sdk.js";
-import { html as html3, render as render4 } from "../../../lit/lit.js";
+import { html as html4, render as render4 } from "../../../lit/lit.js";
 import * as VisualLogging4 from "../../../visual_logging/visual_logging.js";
 import * as UI6 from "../../legacy.js";
 import * as ObjectUI from "../object_ui/object_ui.js";
@@ -1975,9 +1972,9 @@ var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var DEFAULT_VIEW3 = (input, _output, target) => {
   const obj = SDK2.RemoteObject.RemoteObject.fromLocalObject(input.parsedJSON.data);
   const titleText = input.parsedJSON.prefix + obj.description + input.parsedJSON.suffix;
-  const title = html3`<span>${titleText}</span>`;
+  const title = html4`<span>${titleText}</span>`;
   render4(
-    html3`
+    html4`
     <style>${jsonView_css_default}</style>
     ${UI6.Widget.widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
       objectTree: input.objectTree,
@@ -2330,7 +2327,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/source_frame/XMLView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var { render: render5, html: html4 } = Lit;
+var { render: render5, html: html5 } = Lit;
 var { ifExpanded } = UI7.TreeOutline;
 function* attributes(element) {
   for (let i = 0; i < element.attributes.length; ++i) {
@@ -2369,29 +2366,29 @@ function htmlView(treeNode) {
     case Node.ELEMENT_NODE:
       if (node instanceof Element) {
         const tag = node.tagName;
-        return html4`<span part='shadow-xml-view-tag'>${"<" + tag}</span>${attributes(node).map((attributeNode) => html4`<span part='shadow-xml-view-tag'>${"\xA0"}</span>
+        return html5`<span part='shadow-xml-view-tag'>${"<" + tag}</span>${attributes(node).map((attributeNode) => html5`<span part='shadow-xml-view-tag'>${"\xA0"}</span>
                 <span part='shadow-xml-view-attribute-name'>${attributeNode.name}</span>
                 <span part='shadow-xml-view-tag'>${'="'}</span>
                 <span part='shadow-xml-view-attribute-value'>${attributeNode.value}</span>
                 <span part='shadow-xml-view-tag'>${'"'}</span>`)}
-                <span ?hidden=${treeNode.expanded}>${hasNonTextChildren(node) ? html4`<span part='shadow-xml-view-tag'>${">"}</span>
+                <span ?hidden=${treeNode.expanded}>${hasNonTextChildren(node) ? html5`<span part='shadow-xml-view-tag'>${">"}</span>
                   <span part='shadow-xml-view-comment'>${"\u2026"}</span>
-                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : node.textContent ? html4`<span part='shadow-xml-view-tag'>${">"}</span>
+                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : node.textContent ? html5`<span part='shadow-xml-view-tag'>${">"}</span>
                   <span part='shadow-xml-view-text'>${node.textContent}</span>
-                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : html4`<span part='shadow-xml-view-tag'>${" /"}</span>`}</span>
+                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : html5`<span part='shadow-xml-view-tag'>${" /"}</span>`}</span>
                 <span part='shadow-xml-view-tag'>${">"}</span>`;
       }
       return Lit.nothing;
     case Node.TEXT_NODE:
-      return node.nodeValue ? html4`<span part='shadow-xml-view-text'>${node.nodeValue}</span>` : Lit.nothing;
+      return node.nodeValue ? html5`<span part='shadow-xml-view-text'>${node.nodeValue}</span>` : Lit.nothing;
     case Node.CDATA_SECTION_NODE:
-      return node.nodeValue ? html4`<span part='shadow-xml-view-cdata'>${"<![CDATA["}</span>
+      return node.nodeValue ? html5`<span part='shadow-xml-view-cdata'>${"<![CDATA["}</span>
           <span part='shadow-xml-view-text'>${node.nodeValue}</span>
           <span part='shadow-xml-view-cdata'>${"]]>"}</span>` : Lit.nothing;
     case Node.PROCESSING_INSTRUCTION_NODE:
-      return node.nodeValue ? html4`<span part='shadow-xml-view-processing-instruction'>${"<?" + node.nodeName + " " + node.nodeValue + "?>"}</span>` : Lit.nothing;
+      return node.nodeValue ? html5`<span part='shadow-xml-view-processing-instruction'>${"<?" + node.nodeName + " " + node.nodeValue + "?>"}</span>` : Lit.nothing;
     case Node.COMMENT_NODE:
-      return html4`<span part='shadow-xml-view-comment'>${"<!--" + node.nodeValue + "-->"}</span>`;
+      return html5`<span part='shadow-xml-view-comment'>${"<!--" + node.nodeValue + "-->"}</span>`;
   }
   return Lit.nothing;
 }
@@ -2433,7 +2430,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
       }
       return false;
     };
-    return html4`
+    return html5`
       <li role="treeitem"
           ?selected=${input.jumpToNextSearchResult?.node === node}
           @expand=${onExpand}
@@ -2441,7 +2438,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
         <devtools-highlight ranges=${highlights} current-range=${selected}>
           ${htmlView(node)}
         </devtools-highlight>
-        ${node.children().length ? html4`
+        ${node.children().length ? html5`
           <ul role="group">
             ${ifExpanded(subtree(node))}
           </ul>` : Lit.nothing}
@@ -2457,21 +2454,21 @@ var DEFAULT_VIEW4 = (input, output, target) => {
       /* closeTag=*/
       true
     );
-    return html4`
+    return html5`
       ${children2.map((child) => layOutNode(child))}
-      ${treeNode.node instanceof Element ? html4`
+      ${treeNode.node instanceof Element ? html5`
         <li role="treeitem">
           <devtools-highlight ranges=${highlights} current-range=${selected}>
             <span part='shadow-xml-view-close-tag'>${"</" + treeNode.node.tagName + ">"}</span>
           </devtools-highlight>
         </li>` : Lit.nothing}`;
   }
-  render5(html4`
+  render5(html5`
     <style>${xmlView_css_default}</style>
     <style>${xmlTree_css_default}</style>
     <devtools-tree
       class="shadow-xml-view source-code"
-      .template=${html4`
+      .template=${html5`
         <ul role="tree">
             ${input.xml.children().map((node) => layOutNode(node))}
         </ul>`}

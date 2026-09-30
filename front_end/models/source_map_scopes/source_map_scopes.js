@@ -3323,11 +3323,12 @@ var resolveScopeChain = async function(callFrame, debuggerWorkspaceBinding) {
     }
   }
   if (callFrame.script.isWasm()) {
-    return callFrame.scopeChain().filter((scope) => !scope.empty());
+    return callFrame.scopeChain();
   }
   const thisObject = await resolveThisObject(callFrame, debuggerWorkspaceBinding);
-  const scopes = callFrame.scopeChain().filter((scope) => !scope.empty() || scope.type() === Debugger.ScopeType.Local);
-  return scopes.map((scope) => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
+  return callFrame.scopeChain().map(
+    (scope) => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding)
+  );
 };
 function toScopeVariableMapping({ variableMapping, generatedNames }) {
   const bindings = /* @__PURE__ */ new Map();
@@ -3358,7 +3359,7 @@ var allVariablesInCallFrame = async (callFrame, debuggerWorkspaceBinding) => {
       return result2;
     }
   }
-  const scopeChain = callFrame.scopeChain().filter((scope) => !scope.empty());
+  const scopeChain = callFrame.scopeChain();
   const resolvedScopes = await Promise.all(scopeChain.map((scope) => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
   const result = resolvedScopes.map(toScopeVariableMapping);
   cachedMapByCallFrame.set(callFrame, result);
@@ -3395,11 +3396,11 @@ var allVariablesAtPosition = async (location, debuggerWorkspaceBinding) => {
   return result;
 };
 var resolveThisObject = async (callFrame, debuggerWorkspaceBinding) => {
-  const innermostScope = callFrame.scopeChain().find((scope) => !scope.empty() || scope.type() === Debugger.ScopeType.Local);
-  if (!innermostScope) {
+  const scopeChain = callFrame.scopeChain();
+  if (scopeChain.length === 0) {
     return callFrame.thisObject();
   }
-  const { thisMapping } = await resolveDebuggerScope(innermostScope, debuggerWorkspaceBinding);
+  const { thisMapping } = await resolveDebuggerScope(scopeChain[0], debuggerWorkspaceBinding);
   if (!thisMapping) {
     return callFrame.thisObject();
   }

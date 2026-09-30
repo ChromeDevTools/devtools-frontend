@@ -28,4 +28,23 @@ export function createTarget({ id, name, type = SDK.Target.Type.FRAME, parentTar
     return targetManager.createTarget(id, name ?? id, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget ? id : undefined, 
     /* suspended=*/ false, connection, { targetId: id, url, subtype });
 }
+export function waitForTarget(universe, predicate) {
+    return new Promise(resolve => {
+        const existing = universe.targetManager.targets().find(predicate);
+        if (existing) {
+            resolve(existing);
+            return;
+        }
+        const observer = {
+            targetAdded(target) {
+                if (predicate(target)) {
+                    universe.targetManager.unobserveTargets(observer);
+                    resolve(target);
+                }
+            },
+            targetRemoved() { },
+        };
+        universe.targetManager.observeTargets(observer);
+    });
+}
 //# sourceMappingURL=TargetHelpers.js.map

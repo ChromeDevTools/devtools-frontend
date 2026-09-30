@@ -130,7 +130,12 @@ var FormatterWorkerPool = class _FormatterWorkerPool {
     if (mapping.every((scope) => scope.bindings.size === 0)) {
       return Promise.resolve(expression);
     }
-    return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE, { content: expression, mapping }).then((result) => result || "");
+    return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE, { content: expression, mapping }).then((result) => {
+      if (result && typeof result === "object") {
+        throw new Error(result.error);
+      }
+      return result || "";
+    });
   }
   javaScriptScopeTree(expression, sourceType = "script") {
     return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SCOPE_TREE, { content: expression, sourceType }).then((result) => result || null);

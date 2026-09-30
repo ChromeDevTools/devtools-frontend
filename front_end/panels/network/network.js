@@ -15324,7 +15324,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     if (input.copy) {
       contextMenu.clipboardSection().appendItem(i18nString15(UIStrings16.copy), input.copy, { jslogContext: "copy" });
     }
-    if (!input.showMore) {
+    if (!input.showMore && input.text.length > MAX_LENGTH) {
       contextMenu.newSection().appendItem(i18nString15(UIStrings16.showMore), input.onToggle, { jslogContext: "show-more" });
     }
     void contextMenu.show();

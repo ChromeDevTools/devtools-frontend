@@ -76,7 +76,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
 export class FontView extends UI.View.SimpleView {
     url;
     contentProvider;
-    mimeTypeLabel;
+    #mimeType;
     #view;
     #fontFaceRule = '';
     #fontFamily = '';
@@ -92,10 +92,10 @@ export class FontView extends UI.View.SimpleView {
         this.#view = view;
         this.url = contentProvider.contentURL();
         this.contentProvider = contentProvider;
-        this.mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
+        this.#mimeType = mimeType;
     }
     async toolbarItems() {
-        return [this.mimeTypeLabel];
+        return html `<div class="toolbar-text">${this.#mimeType}</div>`;
     }
     #loadContentIfNeeded() {
         if (this.#contentLoaded) {

@@ -129,12 +129,6 @@ entrypoints/formatter_worker/Substitute.test.js
 entrypoints/heap_snapshot_worker/HeapSnapshot.test.js
 entrypoints/heap_snapshot_worker/heap_snapshot_worker.test.js
 foundation/Universe.test.js
-models/ai_assistance/data_formatters/FileFormatter.test.js
-models/ai_assistance/data_formatters/LighthouseFormatter.test.js
-models/ai_assistance/data_formatters/NetworkRequestFormatter.test.js
-models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
-models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
-models/ai_assistance/data_formatters/UnitFormatters.test.js
 models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
@@ -158,6 +152,12 @@ models/ai_assistance/contexts/DOMNodeContext.test.js
 models/ai_assistance/contexts/FileContext.test.js
 models/ai_assistance/contexts/PerformanceTraceContext.test.js
 models/ai_assistance/contexts/RequestContext.test.js
+models/ai_assistance/data_formatters/FileFormatter.test.js
+models/ai_assistance/data_formatters/LighthouseFormatter.test.js
+models/ai_assistance/data_formatters/NetworkRequestFormatter.test.js
+models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
+models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
+models/ai_assistance/data_formatters/UnitFormatters.test.js
 models/ai_assistance/performance/AICallTree.test.js
 models/ai_assistance/performance/AIContext.test.js
 models/ai_assistance/performance/AIQueries.test.js

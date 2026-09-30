@@ -13,6 +13,7 @@ const DEFAULT_SCOPE_STATE = {
 const DEFAULT_RANGE_STATE = {
     line: 0,
     column: 0,
+    defSourceIdx: 0,
     defScopeIdx: 0,
 };
 export class Encoder {
@@ -25,7 +26,8 @@ export class Encoder {
     #rangeState = { ...DEFAULT_RANGE_STATE };
     #encodedItems = [];
     #currentItem = "";
-    #scopeToCount = new Map();
+    #scopeToLocation = new Map();
+    #currentSourceIdx = 0;
     #scopeCounter = 0;
     constructor(info, names) {
         this.#info = info;
@@ -35,22 +37,29 @@ export class Encoder {
         }
     }
     encode() {
-        this.#encodedItems = [];
-        this.#info.scopes.forEach((scope) => {
-            this.#scopeState.line = 0;
-            this.#scopeState.column = 0;
-            this.#encodeOriginalScope(scope);
+        const encodedScopes = this.#info.scopes.map((scopes, sourceIdx) => {
+            if (scopes === null) {
+                return null;
+            }
+            this.#encodedItems = [];
+            this.#currentSourceIdx = sourceIdx;
+            this.#scopeCounter = 0;
+            Object.assign(this.#scopeState, DEFAULT_SCOPE_STATE);
+            scopes.forEach((scope) => this.#encodeOriginalScope(scope));
+            return this.#encodedItems.join(",");
         });
+        this.#encodedItems = [];
         this.#info.ranges.forEach((range) => {
             this.#encodeGeneratedRange(range);
         });
-        return this.#encodedItems.join(",");
+        return {
+            scopes: encodedScopes,
+            ranges: this.#encodedItems.length > 0
+                ? [this.#encodedItems.join(",")]
+                : [],
+        };
     }
     #encodeOriginalScope(scope) {
-        if (scope === null) {
-            this.#encodedItems.push("A" /* EncodedTag.EMPTY */);
-            return;
-        }
         this.#encodeOriginalScopeStart(scope);
         this.#encodeOriginalScopeVariables(scope);
         scope.children.forEach((child) => this.#encodeOriginalScope(child));
@@ -89,7 +98,10 @@ export class Encoder {
         if (encodedKind !== undefined)
             this.#encodeSigned(encodedKind);
         this.#finishItem();
-        this.#scopeToCount.set(scope, this.#scopeCounter++);
+        this.#scopeToLocation.set(scope, {
+            sourceIdx: this.#currentSourceIdx,
+            scopeIdx: this.#scopeCounter++,
+        });
     }
     #encodeOriginalScopeVariables(scope) {
         if (scope.variables.length === 0)
@@ -134,15 +146,20 @@ export class Encoder {
         }
         this.#rangeState.line = line;
         this.#rangeState.column = column;
-        let encodedDefinition;
+        let encodedDefSourceIdx;
+        let encodedDefScopeIdx;
         if (range.originalScope) {
-            const definitionIdx = this.#scopeToCount.get(range.originalScope);
-            if (definitionIdx === undefined) {
+            const location = this.#scopeToLocation.get(range.originalScope);
+            if (location === undefined) {
                 throw new Error("Unknown OriginalScope for definition!");
             }
             flags |= 2 /* GeneratedRangeFlags.HAS_DEFINITION */;
-            encodedDefinition = definitionIdx - this.#rangeState.defScopeIdx;
-            this.#rangeState.defScopeIdx = definitionIdx;
+            encodedDefSourceIdx = location.sourceIdx - this.#rangeState.defSourceIdx;
+            this.#rangeState.defSourceIdx = location.sourceIdx;
+            encodedDefScopeIdx = encodedDefSourceIdx === 0
+                ? location.scopeIdx - this.#rangeState.defScopeIdx
+                : location.scopeIdx;
+            this.#rangeState.defScopeIdx = location.scopeIdx;
         }
         if (range.isStackFrame)
             flags |= 4 /* GeneratedRangeFlags.IS_STACK_FRAME */;
@@ -152,8 +169,15 @@ export class Encoder {
         if (encodedLine > 0)
             this.#encodeUnsigned(encodedLine);
         this.#encodeUnsigned(encodedColumn);
-        if (encodedDefinition !== undefined)
-            this.#encodeSigned(encodedDefinition);
+        if (encodedDefSourceIdx !== undefined && encodedDefScopeIdx !== undefined) {
+            this.#encodeSigned(encodedDefSourceIdx);
+            if (encodedDefSourceIdx === 0) {
+                this.#encodeSigned(encodedDefScopeIdx);
+            }
+            else {
+                this.#encodeUnsigned(encodedDefScopeIdx);
+            }
+        }
         this.#finishItem();
     }
     #encodeGeneratedRangeSubRangeBindings(range) {

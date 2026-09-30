@@ -11,7 +11,9 @@ import type { Binding, GeneratedRange, OriginalPosition, OriginalScope, ScopeInf
  */
 export declare class ScopeInfoBuilder {
     #private;
-    addNullScope(): this;
+    addNullSource(): this;
+    startSource(): this;
+    endSource(): this;
     startScope(line: number, column: number, options?: {
         name?: string;
         kind?: string;
@@ -52,6 +54,7 @@ export declare class ScopeInfoBuilder {
     setRangeCallSite(callSite: OriginalPosition): this;
     endRange(line: number, column: number): this;
     build(): ScopeInfo;
+    protected get currentSourceScopes(): ReadonlyArray<OriginalScope> | null;
     protected get scopeStack(): ReadonlyArray<OriginalScope>;
     protected get rangeStack(): ReadonlyArray<GeneratedRange>;
     protected isKnownScope(scope: OriginalScope): boolean;

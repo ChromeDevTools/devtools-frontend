@@ -21,19 +21,9 @@ export class SourceMapScopesInfo {
      */
     static createFromAst(sourceMap, scopeTree, text) {
         const numSourceUrls = sourceMap.sourceURLs().length;
-        const scopeBySourceUrl = [];
-        for (let i = 0; i < numSourceUrls; i++) {
-            const scope = {
-                start: { line: 0, column: 0 },
-                end: { line: Number.POSITIVE_INFINITY, column: Number.POSITIVE_INFINITY },
-                isStackFrame: false,
-                variables: [],
-                children: [],
-            };
-            scopeBySourceUrl.push(scope);
-        }
+        const scopesBySourceUrl = Array.from({ length: numSourceUrls }, () => []);
         // Convert the entire scopeTree. Returns a root range that encompasses everything,
-        // and inserts scopes by sourceIndex into the above scopeBySourceUrl.
+        // and inserts scopes by sourceIndex into the above scopesBySourceUrl.
         const stack = [{ node: scopeTree }];
         let rootRange = undefined;
         while (stack.length > 0) {
@@ -88,28 +78,27 @@ export class SourceMapScopesInfo {
             parentRange?.children.push(range);
             let nextParentScopeHint = parentScopeHint;
             if (canMapOriginalPosition && scope) {
-                const rootScope = scopeBySourceUrl[sourceIndex];
-                const startSearchFrom = (parentScopeHint && containsOriginal(parentScopeHint, scope)) ? parentScopeHint : rootScope;
-                insertInScope(startSearchFrom, scope);
+                const startParent = (parentScopeHint && containsOriginal(parentScopeHint, scope)) ? parentScopeHint : undefined;
+                insertInScope(sourceIndex, startParent, scope);
                 nextParentScopeHint = scope;
             }
             for (let i = node.children.length - 1; i >= 0; --i) {
                 stack.push({ node: node.children[i], parentRange: range, parentScopeHint: nextParentScopeHint });
             }
         }
-        return new SourceMapScopesInfo(sourceMap, { scopes: scopeBySourceUrl, ranges: rootRange ? [rootRange] : [] });
+        return new SourceMapScopesInfo(sourceMap, { scopes: scopesBySourceUrl, ranges: rootRange ? [rootRange] : [] });
         /**
          * Finds the correct place in the tree to insert the new scope.
          * Maintains the invariant that children are sorted and contained by their parent.
          */
-        function insertInScope(rootScope, newScope) {
-            let parent = rootScope;
+        function insertInScope(sourceIndex, parent, newScope) {
+            let children = parent ? parent.children : scopesBySourceUrl[sourceIndex];
             // Check if the newScope fits strictly inside any of the existing children.
             // We iterate to find the deepest parent to avoid Maximum Call Stack Size Exceeded
             // errors on highly nested scripts.
             while (true) {
                 let deeperParent = null;
-                for (const child of parent.children) {
+                for (const child of children) {
                     if (containsOriginal(child, newScope)) {
                         deeperParent = child;
                         break;
@@ -117,17 +106,18 @@ export class SourceMapScopesInfo {
                 }
                 if (deeperParent) {
                     parent = deeperParent;
+                    children = deeperParent.children;
                 }
                 else {
                     break;
                 }
             }
-            // When here, newScope belongs directly in parent.
-            // However, newScope might encompass some of parent's existing children (due
+            // When here, newScope belongs directly in parent (or at the root of the source file).
+            // However, newScope might encompass some of the existing children (due
             // to compiler transform quirks or arbitrary insertion order). We must move
             // those children inside newScope.
             const childrenToKeep = [];
-            for (const child of parent.children) {
+            for (const child of children) {
                 if (containsOriginal(newScope, child)) {
                     // child is actually inside newScope, so re-parent it.
                     newScope.children.push(child);
@@ -147,8 +137,13 @@ export class SourceMapScopesInfo {
             else {
                 childrenToKeep.splice(insertIndex, 0, newScope);
             }
-            // Update parent's children to only be the ones that don't belong to newScope.
-            parent.children = childrenToKeep;
+            // Update parent's children (or root scopes) to only be the ones that don't belong to newScope.
+            if (parent) {
+                parent.children = childrenToKeep;
+            }
+            else {
+                scopesBySourceUrl[sourceIndex] = childrenToKeep;
+            }
             newScope.parent = parent;
         }
         function containsOriginal(outer, inner) {
@@ -173,15 +168,15 @@ export class SourceMapScopesInfo {
         }
     }
     hasOriginalScopes(sourceIdx) {
-        return Boolean(this.#originalScopes[sourceIdx]);
+        return Boolean(this.#originalScopes[sourceIdx]?.length);
     }
     isEmpty() {
-        const noScopes = this.#originalScopes.every(scope => scope === null);
+        const noScopes = this.#originalScopes.every(scopes => scopes === null || scopes.length === 0);
         return noScopes && !this.#generatedRanges.length;
     }
-    addOriginalScopesAtIndex(sourceIdx, scope) {
-        if (!this.#originalScopes[sourceIdx]) {
-            this.#originalScopes[sourceIdx] = scope;
+    addOriginalScopesAtIndex(sourceIdx, scopes) {
+        if (!this.#originalScopes[sourceIdx]?.length) {
+            this.#originalScopes[sourceIdx] = scopes;
         }
         else {
             throw new Error(`Trying to re-augment existing scopes for source at index: ${sourceIdx}`);
@@ -262,9 +257,6 @@ export class SourceMapScopesInfo {
         // generated ranges with a non-empty binding list.
         function walkTree(nodes) {
             for (const node of nodes) {
-                if (!node) {
-                    continue;
-                }
                 if ('variables' in node && node.variables.length > 0) {
                     return true;
                 }
@@ -277,7 +269,7 @@ export class SourceMapScopesInfo {
             }
             return false;
         }
-        return walkTree(this.#originalScopes) && walkTree(this.#generatedRanges);
+        return this.#originalScopes.some(scopes => scopes !== null && walkTree(scopes)) && walkTree(this.#generatedRanges);
     }
     /**
      * Constructs a scope chain based on the CallFrame's paused position.
@@ -403,7 +395,7 @@ export class SourceMapScopesInfo {
         while (rootScope.parent) {
             rootScope = rootScope.parent;
         }
-        const sourceIndex = this.#originalScopes.indexOf(rootScope);
+        const sourceIndex = this.#originalScopes.findIndex(scopes => scopes?.includes(rootScope));
         const url = sourceIndex !== -1 ? this.#sourceMap.sourceURLForSourceIndex(sourceIndex) : undefined;
         return functionScope ? { scope: functionScope, url } : null;
     }
@@ -412,8 +404,8 @@ export class SourceMapScopesInfo {
      * to inner.
      */
     #findOriginalScopeChain({ sourceIndex, line, column }) {
-        const scope = this.#originalScopes[sourceIndex];
-        if (!scope) {
+        const scopes = this.#originalScopes[sourceIndex];
+        if (!scopes) {
             return [];
         }
         const result = [];
@@ -425,7 +417,7 @@ export class SourceMapScopesInfo {
                 result.push(scope);
                 walkScopes(scope.children);
             }
-        })([scope]);
+        })(scopes);
         return result;
     }
     #findFunctionScopeInOriginalScopeChain(innerOriginalScope) {

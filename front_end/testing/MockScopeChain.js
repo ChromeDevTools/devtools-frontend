@@ -189,7 +189,7 @@ export class MockDebuggerBackend {
     // Positions in |scopeDescriptor| are relative to the script content. For inline scripts (i.e. scripts with
     // a `startLine` or `startColumn` but without a sourceURL), they are shifted into raw V8 positions, which
     // are relative to the start of the surrounding document.
-    async createCallFrame(target, script, scopeDescriptor, sourceMap, scopeObjects = [], emptyScopes = []) {
+    async createCallFrame(target, script, scopeDescriptor, sourceMap, scopeObjects = []) {
         const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
         const scriptObject = await this.addScript(target, script, sourceMap);
         const lineOffset = script.hasSourceURL ? 0 : script.startLine ?? 0;
@@ -202,11 +202,6 @@ export class MockDebuggerBackend {
         console.assert(scopeObjects.length <= scopeChain.length);
         for (let i = 0; i < scopeObjects.length; ++i) {
             scopeChain[i].object = scopeObjects[i];
-        }
-        for (let i = 0; i < emptyScopes.length && i < scopeChain.length; ++i) {
-            if (emptyScopes[i]) {
-                scopeChain[i].empty = true;
-            }
         }
         const payload = {
             callFrameId: '0',

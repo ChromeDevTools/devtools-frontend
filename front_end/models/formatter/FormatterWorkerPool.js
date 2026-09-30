@@ -114,7 +114,12 @@ export class FormatterWorkerPool {
             return Promise.resolve(expression);
         }
         return this.runTask("javaScriptSubstitute" /* FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE */, { content: expression, mapping })
-            .then(result => result || '');
+            .then((result) => {
+            if (result && typeof result === 'object') {
+                throw new Error(result.error);
+            }
+            return result || '';
+        });
     }
     javaScriptScopeTree(expression, sourceType = 'script') {
         return this.runTask("javaScriptScopeTree" /* FormatterActions.FormatterActions.JAVASCRIPT_SCOPE_TREE */, { content: expression, sourceType })

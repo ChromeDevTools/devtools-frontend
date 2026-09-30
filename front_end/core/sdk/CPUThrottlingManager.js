@@ -156,18 +156,21 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
             void this.updateHostDefaultCPUPerformanceTier();
         }
     }
-    #isCPUPerformanceOverrideActive() {
-        return this.#manualCPUPerformanceOverride !== undefined || this.#cpuThrottlingRate !== 1;
+    #activeCPUPerformanceOverride() {
+        // If neither a manual override nor CPU throttling is enabled, no override is active.
+        if (this.#manualCPUPerformanceOverride === undefined && this.#cpuThrottlingRate === 1) {
+            return undefined;
+        }
+        return this.effectiveCPUPerformanceTier();
     }
     #syncCPUPerformanceTier() {
-        const effectiveTier = this.effectiveCPUPerformanceTier();
         // Synchronize with Chromium backend, via CDP.
-        const activeOverride = this.#isCPUPerformanceOverrideActive() ? effectiveTier : undefined;
+        const activeOverride = this.#activeCPUPerformanceOverride();
         for (const emulationModel of this.#targetManager.models(EmulationModel)) {
             void emulationModel.setCPUPerformanceOverride(activeOverride);
         }
         // Notify UI and other listeners.
-        this.dispatchEventToListeners("CpuPerformanceTierChanged" /* Events.CPU_PERFORMANCE_TIER_CHANGED */, effectiveTier);
+        this.dispatchEventToListeners("CpuPerformanceTierChanged" /* Events.CPU_PERFORMANCE_TIER_CHANGED */, this.effectiveCPUPerformanceTier());
     }
     setCPUThrottlingRate(rate) {
         if (rate === this.#cpuThrottlingRate) {
@@ -236,9 +239,9 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         return result.value;
     }
     async updateHostDefaultCPUPerformanceTier() {
-        if (this.#isCPUPerformanceOverrideActive()) {
-            // We do not want to update the host default tier when it is overridden
-            // (in which case, `navigator.cpuPerformance` would return the override).
+        if (this.#activeCPUPerformanceOverride() !== undefined) {
+            // We do not want to update the host default tier if an override has already been sent
+            // to the backend (in which case, `navigator.cpuPerformance` would return the override).
             return;
         }
         const target = this.#targetManager.primaryPageTarget();
@@ -266,8 +269,9 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         if (this.#hardwareConcurrency !== undefined) {
             void emulationModel.setHardwareConcurrency(this.#hardwareConcurrency);
         }
-        if (this.#isCPUPerformanceOverrideActive()) {
-            void emulationModel.setCPUPerformanceOverride(this.effectiveCPUPerformanceTier());
+        const activeOverride = this.#activeCPUPerformanceOverride();
+        if (activeOverride !== undefined) {
+            void emulationModel.setCPUPerformanceOverride(activeOverride);
         }
         // If there are any callers blocked on a getHardwareConcurrency call, let's wake them now.
         if (this.#pendingMainTargetPromise) {

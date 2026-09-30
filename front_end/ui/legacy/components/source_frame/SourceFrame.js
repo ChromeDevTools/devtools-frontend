@@ -14,6 +14,7 @@ import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.
 import * as CodeHighlighter from '../../../components/code_highlighter/code_highlighter.js';
 import * as Dialogs from '../../../components/dialogs/dialogs.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
+import { html } from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 const UIStrings = {
@@ -415,7 +416,7 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         this.clearPositionToReveal();
     }
     async toolbarItems() {
-        return [this.prettyToggle, this.sourcePosition, this.progressToolbarItem];
+        return html `${this.prettyToggle.element}${this.sourcePosition.element}${this.progressToolbarItem.element}`;
     }
     get loaded() {
         return this.loadedInternal;

@@ -130,7 +130,7 @@ export class ImageView extends UI.View.SimpleView {
     sizeLabel;
     dimensionsLabel;
     aspectRatioLabel;
-    mimeTypeLabel;
+    #mimeType;
     cachedContent;
     #view;
     #imageSrc = null;
@@ -154,7 +154,7 @@ export class ImageView extends UI.View.SimpleView {
         this.sizeLabel = new UI.Toolbar.ToolbarText();
         this.dimensionsLabel = new UI.Toolbar.ToolbarText();
         this.aspectRatioLabel = new UI.Toolbar.ToolbarText();
-        this.mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
+        this.#mimeType = mimeType;
         this.performUpdate();
     }
     performUpdate() {
@@ -175,15 +175,15 @@ export class ImageView extends UI.View.SimpleView {
     };
     async toolbarItems() {
         await this.updateContentIfNeeded();
-        return [
-            this.sizeLabel,
-            new UI.Toolbar.ToolbarSeparator(),
-            this.dimensionsLabel,
-            new UI.Toolbar.ToolbarSeparator(),
-            this.aspectRatioLabel,
-            new UI.Toolbar.ToolbarSeparator(),
-            this.mimeTypeLabel,
-        ];
+        return html `
+      ${this.sizeLabel.element}
+      <div class="toolbar-divider"></div>
+      ${this.dimensionsLabel.element}
+      <div class="toolbar-divider"></div>
+      ${this.aspectRatioLabel.element}
+      <div class="toolbar-divider"></div>
+      <div class="toolbar-text">${this.#mimeType}</div>
+    `;
     }
     wasShown() {
         super.wasShown();

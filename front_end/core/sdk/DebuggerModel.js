@@ -1151,9 +1151,6 @@ export class Scope {
     icon() {
         return undefined;
     }
-    empty() {
-        return Boolean(this.#payload.empty);
-    }
     extraProperties() {
         if (this !== this.#callFrame.localScope() || this.#callFrame.script.isWasm()) {
             return [];

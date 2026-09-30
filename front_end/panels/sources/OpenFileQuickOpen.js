@@ -7,11 +7,11 @@ import * as Host from '../../core/host/host.js';
 import { PanelUtils } from '../../panels/utils/utils.js';
 import { Directives, html } from '../../ui/lit/lit.js';
 import { FilteredUISourceCodeListProvider } from './FilteredUISourceCodeListProvider.js';
-import { SourcesView } from './SourcesView.js';
+import { TabbedEditorContainer } from './TabbedEditorContainer.js';
 const { styleMap } = Directives;
 export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
     attach() {
-        this.setDefaultScores(SourcesView.defaultUISourceCodeScores());
+        this.setDefaultScores(TabbedEditorContainer.defaultUISourceCodeScores());
         super.attach();
     }
     uiSourceCodeSelected(uiSourceCode, lineNumber, columnNumber) {

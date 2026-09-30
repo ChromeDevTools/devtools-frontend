@@ -15147,9 +15147,13 @@ ${item.text.trim()}`);
   async *run(initialQuery, options = {}) {
     this.#navigationOccurredDuringRun = false;
     const originAtRunStart = this.#origin ?? getPrimaryPageSecurityOrigin(this.#targetManager);
-    const listener = () => {
-      const newInspectedURL = this.#targetManager.primaryPageTarget()?.inspectedURL();
-      const newOrigin = newInspectedURL ? SDK29.SecurityOrigin.SecurityOrigin.create(newInspectedURL) : void 0;
+    const listener = (event) => {
+      const frame = event.data.frame;
+      if (frame.resourceTreeModel().target() !== this.#targetManager.primaryPageTarget()) {
+        return;
+      }
+      const newOrigin = frame.securityOrigin();
+      const newInspectedURL = frame.url;
       const isSameOrigin = Boolean(originAtRunStart && newOrigin && originAtRunStart.isSameOriginWith(newOrigin));
       const isAllowedNavigation = Boolean(newInspectedURL && ALLOWED_PAGE_NAVIGATIONS.some((allowed) => newInspectedURL.startsWith(allowed)));
       if (!isSameOrigin && !isAllowedNavigation) {
@@ -15286,6 +15290,10 @@ function isAiAssistanceServerSideLoggingAllowed() {
 }
 function getPrimaryPageSecurityOrigin(targetManager) {
   const target = targetManager.primaryPageTarget();
+  const frameOrigin = target?.model(SDK29.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.securityOrigin();
+  if (frameOrigin) {
+    return frameOrigin;
+  }
   const inspectedURL = target?.inspectedURL();
   return inspectedURL ? SDK29.SecurityOrigin.SecurityOrigin.create(inspectedURL) : void 0;
 }

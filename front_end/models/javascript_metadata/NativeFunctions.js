@@ -8963,11 +8963,15 @@ export const NativeFunctions = [
         signatures: [["type", "?eventInitDict"]]
     },
     {
-        name: "TouchEvent",
+        name: "ToolActivatedEvent",
         signatures: [["type", "?eventInitDict"]]
     },
     {
-        name: "WebMCPEvent",
+        name: "ToolCancelEvent",
+        signatures: [["type", "?eventInitDict"]]
+    },
+    {
+        name: "TouchEvent",
         signatures: [["type", "?eventInitDict"]]
     },
     {

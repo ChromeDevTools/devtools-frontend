@@ -1,6 +1,3 @@
-// Copyright 2024 The Chromium Authors
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
@@ -351,11 +348,15 @@ export class AiConversation {
     async *run(initialQuery, options = {}) {
         this.#navigationOccurredDuringRun = false;
         const originAtRunStart = this.#origin ?? getPrimaryPageSecurityOrigin(this.#targetManager);
-        const listener = () => {
+        const listener = (event) => {
             // Prevent the agent from executing tools or reading data from an untrusted origin
             // if the page navigates unexpectedly during execution.
-            const newInspectedURL = this.#targetManager.primaryPageTarget()?.inspectedURL();
-            const newOrigin = newInspectedURL ? SDK.SecurityOrigin.SecurityOrigin.create(newInspectedURL) : undefined;
+            const frame = event.data.frame;
+            if (frame.resourceTreeModel().target() !== this.#targetManager.primaryPageTarget()) {
+                return;
+            }
+            const newOrigin = frame.securityOrigin();
+            const newInspectedURL = frame.url;
             const isSameOrigin = Boolean(originAtRunStart && newOrigin && originAtRunStart.isSameOriginWith(newOrigin));
             const isAllowedNavigation = Boolean(newInspectedURL && ALLOWED_PAGE_NAVIGATIONS.some(allowed => newInspectedURL.startsWith(allowed)));
             if (!isSameOrigin && !isAllowedNavigation) {
@@ -489,11 +490,18 @@ function isAiAssistanceServerSideLoggingAllowed() {
 /**
  * Returns the security origin of the primary page target.
  *
+ * Resolves the canonical SecurityOrigin from the main frame, falling back to
+ * the inspected URL as a last resort in test environments where no frame exists.
+ *
  * @param targetManager Target manager used to locate the primary page target.
  * @returns The parsed SecurityOrigin, or undefined if no target or inspected URL exists.
  */
 function getPrimaryPageSecurityOrigin(targetManager) {
     const target = targetManager.primaryPageTarget();
+    const frameOrigin = target?.model(SDK.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.securityOrigin();
+    if (frameOrigin) {
+        return frameOrigin;
+    }
     const inspectedURL = target?.inspectedURL();
     return inspectedURL ? SDK.SecurityOrigin.SecurityOrigin.create(inspectedURL) : undefined;
 }

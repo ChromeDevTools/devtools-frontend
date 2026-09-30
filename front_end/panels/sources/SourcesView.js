@@ -15,7 +15,6 @@ import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js'
 import * as UI from '../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import { EditingLocationHistoryManager } from './EditingLocationHistoryManager.js';
 import sourcesViewStyles from './sourcesView.css.js';
 import { TabbedEditorContainer, } from './TabbedEditorContainer.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
@@ -103,17 +102,16 @@ export const DEFAULT_VIEW = (input, output, target) => {
     render(html `
     <style>${sourcesViewStyles}</style>
     <devtools-widget class="vbox flex-auto"
-      ${widget(element => {
-        const searchableView = new UI.SearchableView.SearchableView(input.searchProvider, input.replaceProvider, 'sources-view-search-config', element);
-        searchableView.setMinimalSearchQuerySize(0);
-        return searchableView;
+      ${widget(UI.SearchableView.SearchableView, {
+        searchProvider: input.searchProvider,
+        replaceProvider: input.replaceProvider,
+        settingName: 'sources-view-search-config',
+        minimalSearchQuerySize: 0,
+        replaceable: input.isSearchReplaceable,
     })}
-      ${widgetRef(UI.SearchableView.SearchableView, e => { output.searchableView = e; })}
     >
       <devtools-widget class="vbox flex-auto ${input.breakpointsActive ? '' : 'breakpoints-deactivated'}"
         ${widget(TabbedEditorContainer, {
-        historyManager: input.historyManager,
-        previouslyViewedFilesSetting: input.previouslyViewedFilesSetting,
         leftToolbarItems,
         rightToolbarItems,
         uiSourceCodes: input.uiSourceCodes,
@@ -125,9 +123,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging.toolbar('bottom')}>
       <devtools-toolbar class="script-view-toolbar">
-        ${Array.isArray(input.scriptViewToolbarItems)
-        ? input.scriptViewToolbarItems.map(item => item.element)
-        : input.scriptViewToolbarItems}
+        ${input.scriptViewToolbarItems}
       </devtools-toolbar>
       <devtools-toolbar class="bottom-toolbar">
         ${bottomToolbarContent}
@@ -143,11 +139,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
 };
 const SourcesViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class SourcesView extends SourcesViewBase {
-    #searchableView;
     editorContainer;
     #uiSourceCodes = new Set();
-    historyManager;
-    #scriptViewToolbarItems = [];
+    #scriptViewToolbarItems = nothing;
+    #isSearchReplaceable = false;
     toolbarChangedListener;
     searchView;
     searchConfig;
@@ -164,7 +159,6 @@ export class SourcesView extends SourcesViewBase {
     #breakpointsActive = true;
     #editorContainerPromise;
     #editorContainerResolve;
-    previouslyViewedFilesSetting;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { jslog: `${VisualLogging.pane('editor').track({ keydown: 'Escape' })}` });
         this.#view = view;
@@ -173,10 +167,7 @@ export class SourcesView extends SourcesViewBase {
         });
         this.setMinimumAndPreferredSizes(88, 52, 150, 100);
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-        this.historyManager = new EditingLocationHistoryManager(this);
         this.toolbarChangedListener = null;
-        this.previouslyViewedFilesSetting =
-            Common.Settings.Settings.instance().createLocalSetting('previously-viewed-files', []);
         this.requestUpdate();
         UI.UIUtils.startBatchUpdate();
         workspace.uiSourceCodes().forEach(ui => this.addUISourceCode(ui));
@@ -215,6 +206,7 @@ export class SourcesView extends SourcesViewBase {
         const input = {
             searchProvider: this,
             replaceProvider: this,
+            isSearchReplaceable: this.#isSearchReplaceable,
             scriptViewToolbarItems: this.#scriptViewToolbarItems,
             isNavigatorSidebarOpen: this.#isNavigatorSidebarOpen,
             isDebuggerSidebarOpen: this.#isDebuggerSidebarOpen,
@@ -226,8 +218,6 @@ export class SourcesView extends SourcesViewBase {
             onToggleDebuggerSidebar: this.#onToggleDebuggerSidebar,
             breakpointsActive: this.#breakpointsActive,
             uiSourceCodes: new Set(this.#uiSourceCodes),
-            historyManager: this.historyManager,
-            previouslyViewedFilesSetting: this.previouslyViewedFilesSetting,
             onEditorSelected: this.editorSelected.bind(this),
             onEditorClosed: this.editorClosed.bind(this),
         };
@@ -236,15 +226,8 @@ export class SourcesView extends SourcesViewBase {
             set editorContainer(value) {
                 that.setEditorContainer(value);
             },
-            set searchableView(value) {
-                that.#searchableView = value;
-            },
         };
         this.#view(input, output, this.contentElement);
-    }
-    onDetach() {
-        super.onDetach();
-        this.editorContainer?.detachEditors();
     }
     setEditorContainer(editorContainer) {
         if (this.editorContainer === editorContainer) {
@@ -254,18 +237,6 @@ export class SourcesView extends SourcesViewBase {
         if (this.editorContainer) {
             this.#editorContainerResolve(editorContainer);
         }
-    }
-    static defaultUISourceCodeScores() {
-        const defaultScores = new Map();
-        const sourcesView = UI.Context.Context.instance().flavor(SourcesView);
-        if (sourcesView) {
-            const uiSourceCodes = sourcesView.editorContainer?.historyUISourceCodes() ?? [];
-            for (let i = 1; i < uiSourceCodes.length; ++i) // Skip current element
-             {
-                defaultScores.set(uiSourceCodes[i], uiSourceCodes.length - i);
-            }
-        }
-        return defaultScores;
     }
     set onToggleNavigatorSidebar(callback) {
         this.#onToggleNavigatorSidebar = callback;
@@ -319,10 +290,7 @@ export class SourcesView extends SourcesViewBase {
         super.willHide();
     }
     searchableView() {
-        if (!this.#searchableView) {
-            this.performUpdate();
-        }
-        return this.#searchableView;
+        return UI.SearchableView.SearchableView.fromElement(this.contentElement.querySelector('devtools-widget'));
     }
     visibleView() {
         return (this.editorContainer?.visibleView ?? null);
@@ -346,10 +314,10 @@ export class SourcesView extends SourcesViewBase {
         return true;
     }
     onJumpToPreviousLocation() {
-        this.historyManager.rollback();
+        this.editorContainer?.rollback();
     }
     onJumpToNextLocation() {
-        this.historyManager.rollover();
+        this.editorContainer?.rollover();
     }
     #onScopeChange() {
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -398,9 +366,6 @@ export class SourcesView extends SourcesViewBase {
     }
     removeUISourceCodes(uiSourceCodes) {
         uiSourceCodes.forEach(ui => this.#uiSourceCodes.delete(ui));
-        for (let i = 0; i < uiSourceCodes.length; ++i) {
-            this.historyManager.removeHistoryForSourceCode(uiSourceCodes[i]);
-        }
         this.requestUpdate();
     }
     projectRemoved(event) {
@@ -412,12 +377,12 @@ export class SourcesView extends SourcesViewBase {
         const view = this.visibleView();
         if (view instanceof UI.View.SimpleView) {
             void view.toolbarItems().then(items => {
-                this.#scriptViewToolbarItems = items;
+                this.#scriptViewToolbarItems = Array.isArray(items) ? html `${items.map(item => item.element)}` : items;
                 this.requestUpdate();
             });
         }
         else {
-            this.#scriptViewToolbarItems = [];
+            this.#scriptViewToolbarItems = nothing;
             this.requestUpdate();
         }
     }
@@ -425,19 +390,7 @@ export class SourcesView extends SourcesViewBase {
         if (!this.editorContainer) {
             await this.#editorContainerPromise;
         }
-        const currentFrame = this.currentSourceFrame();
-        if (currentFrame) {
-            this.historyManager.updateCurrentState(currentFrame.uiSourceCode(), currentFrame.textEditor.state.selection.main.head);
-        }
-        this.editorContainer?.showFile(uiSourceCode);
-        const currentSourceFrame = this.currentSourceFrame();
-        if (currentSourceFrame && location) {
-            currentSourceFrame.revealPosition(location, !omitHighlight);
-        }
-        const visibleView = this.visibleView();
-        if (!omitFocus && visibleView) {
-            visibleView.focus();
-        }
+        this.editorContainer?.showSourceLocation(uiSourceCode, location, omitFocus, omitHighlight);
     }
     viewForFile(uiSourceCode) {
         return this.editorContainer?.viewForFile(uiSourceCode);
@@ -446,7 +399,6 @@ export class SourcesView extends SourcesViewBase {
         return this.editorContainer?.getCreatedSourceView(uiSourceCode);
     }
     editorClosed(uiSourceCode) {
-        this.historyManager.removeHistoryForSourceCode(uiSourceCode);
         let wasSelected = false;
         if (!this.editorContainer?.currentFile()) {
             wasSelected = true;
@@ -454,7 +406,7 @@ export class SourcesView extends SourcesViewBase {
         // SourcesNavigator does not need to update on EditorClosed.
         this.removeToolbarChangedListener();
         this.updateScriptViewToolbarItems();
-        this.searchableView().resetSearch();
+        this.searchableView()?.resetSearch();
         const data = {
             uiSourceCode,
             wasSelected,
@@ -470,8 +422,9 @@ export class SourcesView extends SourcesViewBase {
         if (currentSourceFrame) {
             currentSourceFrame.setSearchableView(this.searchableView());
         }
-        this.searchableView().setReplaceable(Boolean(currentSourceFrame?.canEditSource()));
-        this.searchableView().refreshSearch();
+        this.#isSearchReplaceable = Boolean(currentSourceFrame?.canEditSource());
+        this.requestUpdate();
+        this.searchableView()?.refreshSearch();
         this.updateToolbarChangedListener();
         this.updateScriptViewToolbarItems();
         const currentFile = this.editorContainer?.currentFile();

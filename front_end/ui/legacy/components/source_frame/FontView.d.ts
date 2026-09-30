@@ -1,5 +1,6 @@
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
+import { type TemplateResult } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 export interface ViewInput {
     url: Platform.DevToolsPath.UrlString;
@@ -20,9 +21,8 @@ export declare class FontView extends UI.View.SimpleView {
     #private;
     private readonly url;
     private readonly contentProvider;
-    private readonly mimeTypeLabel;
     constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, view?: View);
-    toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]>;
+    toolbarItems(): Promise<TemplateResult>;
     wasShown(): void;
     onResize(): void;
     performUpdate(): void;

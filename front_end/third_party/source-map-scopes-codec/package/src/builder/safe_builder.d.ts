@@ -6,7 +6,9 @@ import { ScopeInfoBuilder, type ScopeKey } from "./builder.js";
  */
 export declare class SafeScopeInfoBuilder extends ScopeInfoBuilder {
     #private;
-    addNullScope(): this;
+    addNullSource(): this;
+    startSource(): this;
+    endSource(): this;
     startScope(line: number, column: number, options?: {
         name?: string;
         kind?: string;

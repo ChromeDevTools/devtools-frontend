@@ -22,7 +22,8 @@ export interface SourceMapV3Object {
     sourcesContent?: Array<string | null>;
     names?: string[];
     ignoreList?: number[];
-    scopes?: string;
+    scopes?: Array<string | null>;
+    ranges?: string[];
     rangeMappings?: string;
     debugId?: string;
     x_google_linecount?: number;

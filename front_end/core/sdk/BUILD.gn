@@ -276,5 +276,6 @@ devtools_api_test_module("api_tests") {
     ":bundle",
     "../../testing",
     "../common:bundle",
+    "../text_utils:bundle",
   ]
 }

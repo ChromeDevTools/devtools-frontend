@@ -3822,7 +3822,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         moveTo = this.findSibling(moveDirection);
         const sectionToEdit = (moveTo || moveDirection === 'backward') ? section : section.nextEditableSibling();
         if (sectionToEdit) {
-          if (sectionToEdit.style().parentRule) {
+          if (sectionToEdit.isHeaderEditable()) {
             sectionToEdit.startEditingSelector();
           } else {
             sectionToEdit.moveEditorFromSelector(moveDirection);
@@ -3832,7 +3832,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
 
       if (moveToSelector) {
-        if (section.style().parentRule) {
+        if (section.isHeaderEditable()) {
           section.startEditingSelector();
         } else {
           section.moveEditorFromSelector(moveDirection);

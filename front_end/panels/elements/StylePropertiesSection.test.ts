@@ -1071,6 +1071,11 @@ describeWithEnvironment('StylesPropertySection', () => {
       undoCalled = true;
       return {};
     });
+    let redoCalled = false;
+    connection.setSuccessHandler('DOM.redo', () => {
+      redoCalled = true;
+      return {};
+    });
     const section = new Elements.StylePropertiesSection.StylePropertiesSection(
         new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
         matchedStyles.nodeStyles()[0], 0, null, null, null);
@@ -1084,6 +1089,8 @@ describeWithEnvironment('StylesPropertySection', () => {
     assert.strictEqual(rule.selectorText(), '.updated');
     await SDK.DOMModel.DOMModelUndoStack.instance().undo();
     assert.isTrue(undoCalled);
+    await SDK.DOMModel.DOMModelUndoStack.instance().redo();
+    assert.isTrue(redoCalled);
   });
 
   it('updates rule header media element when editing @media query text', async () => {
@@ -1812,5 +1819,159 @@ describeWithEnvironment('StylesPropertySection', () => {
 
     assert.strictEqual(svgRuleSection.headerText(), 'rect');
     assert.strictEqual(attrSection.headerText(), 'svg:rect[Attributes Style]');
+  });
+
+  describe('KeyframePropertiesSection', () => {
+    const styleSheetId = 'keyframes-sheet' as Protocol.DOM.StyleSheetId;
+    const keyRange = {startLine: 1, startColumn: 4, endLine: 1, endColumn: 6};
+
+    async function createKeyframeSection() {
+      const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
+      assert.exists(cssModel);
+      const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+      const matchedStyles = await getMatchedStylesWithStylesheet({
+        cssModel,
+        origin,
+        styleSheetId,
+        isMutable: true,
+        connection,
+        animationsPayload: [{
+          animationName: {text: 'animName'},
+          keyframes: [{
+            origin,
+            styleSheetId,
+            keyText: {text: '0%', range: keyRange},
+            style: {
+              styleSheetId,
+              range: {startLine: 1, startColumn: 9, endLine: 1, endColumn: 21},
+              cssProperties: [{name: 'color', value: 'red'}],
+              shorthandEntries: [],
+            },
+          }],
+        }],
+      });
+      connection.setSuccessHandler('CSS.getStyleSheetText',
+                                   () => ({text: '@keyframes animName {\n    0% { color: red; }\n}'}));
+      const markUndoableStateStub = sinon.stub().returns({});
+      connection.setSuccessHandler('DOM.markUndoableState', markUndoableStateStub);
+      const undoStub = sinon.stub().returns({});
+      connection.setSuccessHandler('DOM.undo', undoStub);
+      const redoStub = sinon.stub().returns({});
+      connection.setSuccessHandler('DOM.redo', redoStub);
+      const setKeyframeKeyStub = sinon.stub().callsFake((params: Protocol.CSS.SetKeyframeKeyRequest) => {
+        if (params.keyText.includes('/*')) {
+          return {error: {message: 'Selector or media text is not valid.', code: -32000}};
+        }
+        return {
+          result: {
+            keyText: {
+              text: params.keyText,
+              range: {
+                startLine: params.range.startLine,
+                startColumn: params.range.startColumn,
+                endLine: params.range.startLine,
+                endColumn: params.range.startColumn + params.keyText.length,
+              },
+            },
+          },
+        };
+      });
+      connection.setHandler('CSS.setKeyframeKey', setKeyframeKeyStub);
+      SDK.DOMModel.DOMModelUndoStack.instance({forceNew: true});
+
+      const keyframesRule = matchedStyles.keyframes()[0];
+      assert.exists(keyframesRule);
+      const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+      const section = new Elements.StylePropertiesSection.KeyframePropertiesSection(
+          stylesSidebarPane, matchedStyles, keyframesRule.keyframes()[0].style, 0);
+      // The Styles pane forwards style sheet edits to its sections.
+      cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, event => {
+        if (event.data.edit) {
+          section.styleSheetEdited(event.data.edit);
+        }
+      });
+      const refreshUpdateSpy = sinon.spy(stylesSidebarPane, 'refreshUpdate');
+      let commitHandler: ((element: Element, newText: string, oldText: string, context: unknown,
+                           moveDirection: string) => void)|undefined;
+      sinon.stub(UI.InplaceEditor.InplaceEditor, 'startEditing').callsFake((_element, config) => {
+        commitHandler = config.commitHandler as typeof commitHandler;
+        return {cancel: () => {}, commit: () => {}};
+      });
+      const selectorElement = section.element.querySelector('.keyframe-key');
+      assert.instanceOf(selectorElement, HTMLElement);
+
+      // Starts editing the key in the section header and commits `newText` like the in-place editor does on Enter.
+      async function editKey(newText: string): Promise<void> {
+        assert.instanceOf(selectorElement, HTMLElement);
+        section.startEditingSelector();
+        assert.exists(commitHandler);
+        const oldText = selectorElement.textContent ?? '';
+        selectorElement.textContent = newText;
+        const callCount = setKeyframeKeyStub.callCount;
+        commitHandler(selectorElement, newText, oldText, undefined, '');
+        while (setKeyframeKeyStub.callCount === callCount) {
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
+        // Let the commit callbacks settle.
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+
+      return {
+        section,
+        selectorElement,
+        editKey,
+        setKeyframeKeyStub,
+        markUndoableStateStub,
+        undoStub,
+        redoStub,
+        refreshUpdateSpy,
+      };
+    }
+
+    it('commits a new keyframe key through CSS.setKeyframeKey and renders it in the header', async () => {
+      const {section, selectorElement, editKey, setKeyframeKeyStub, markUndoableStateStub, refreshUpdateSpy} =
+          await createKeyframeSection();
+      assert.strictEqual(selectorElement.textContent, '0%');
+
+      await editKey('1%');
+
+      sinon.assert.calledOnce(setKeyframeKeyStub);
+      assert.deepEqual(setKeyframeKeyStub.firstCall.args[0], {styleSheetId, range: keyRange, keyText: '1%'});
+      sinon.assert.calledOnce(markUndoableStateStub);
+      sinon.assert.calledOnceWithExactly(refreshUpdateSpy, section);
+      assert.strictEqual(section.headerText(), '1%');
+      assert.strictEqual(selectorElement.textContent, '1%');
+    });
+
+    it('supports undo and redo of a keyframe key edit', async () => {
+      const {editKey, markUndoableStateStub, undoStub, redoStub} = await createKeyframeSection();
+
+      await editKey('1%');
+      sinon.assert.calledOnce(markUndoableStateStub);
+
+      const undoStack = SDK.DOMModel.DOMModelUndoStack.instance();
+      await undoStack.undo();
+      sinon.assert.calledOnce(undoStub);
+      await undoStack.redo();
+      sinon.assert.calledOnce(redoStub);
+    });
+
+    it('restores the previous key in the header when the new key is invalid', async () => {
+      const {section, selectorElement, editKey, setKeyframeKeyStub, markUndoableStateStub, refreshUpdateSpy} =
+          await createKeyframeSection();
+
+      await editKey('1%');
+      refreshUpdateSpy.resetHistory();
+      markUndoableStateStub.resetHistory();
+
+      await editKey('1% /*');
+
+      sinon.assert.calledTwice(setKeyframeKeyStub);
+      assert.strictEqual(setKeyframeKeyStub.secondCall.args[0].keyText, '1% /*');
+      sinon.assert.notCalled(markUndoableStateStub);
+      sinon.assert.notCalled(refreshUpdateSpy);
+      assert.strictEqual(section.headerText(), '1%');
+      assert.strictEqual(selectorElement.textContent, '1%');
+    });
   });
 });

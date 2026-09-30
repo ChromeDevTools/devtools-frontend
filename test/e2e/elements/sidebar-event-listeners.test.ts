@@ -7,6 +7,8 @@ import {assert} from 'chai';
 import {
   waitForContentOfSelectedElementsNode,
   waitForElementsStyleSection,
+  waitForElementWithPartialText,
+  waitForPartialContentOfSelectedElementsNode,
   waitForSelectedNodeToBeExpanded,
 } from '../helpers/elements-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
@@ -187,8 +189,108 @@ describe('Event listeners in the elements sidebar', () => {
 
     await devToolsPage.click(removeButtonSelector);
 
-    // now we can check that the 'click' event is gone
+    // Removing a listener is asynchronous, so wait for the 'click' event to disappear.
+    await devToolsPage.waitForFunction(async () => {
+      const eventListenerNames = await getDisplayedEventListenerNames(devToolsPage);
+      return !eventListenerNames.includes('click');
+    });
     const eventListenerNames = await getDisplayedEventListenerNames(devToolsPage);
     assert.deepEqual(eventListenerNames, ['custom event', 'hover']);
   });
+
+  it('displays custom framework event listeners defined via devtoolsFrameworkEventListeners',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToHtml(`
+        <button id="framework-btn">Framework Button</button>
+        <script>
+          const btn = document.getElementById('framework-btn');
+          function internalHandler() {}
+          function customFrameworkHandler() {}
+          btn.addEventListener('click', internalHandler);
+          window.devtoolsFrameworkEventListeners = [
+            node => {
+              if (node === btn) {
+                return {
+                  eventListeners: [{
+                    type: 'framework-click',
+                    useCapture: false,
+                    passive: false,
+                    once: false,
+                    handler: customFrameworkHandler,
+                  }],
+                  internalHandlers: [internalHandler],
+                };
+              }
+              return {eventListeners: []};
+            },
+          ];
+        </script>
+      `);
+       await waitForElementsStyleSection(devToolsPage, undefined);
+       const buttonNode = await waitForElementWithPartialText(devToolsPage, 'framework-btn');
+       await buttonNode.click();
+       await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'framework-btn');
+       await openEventListenersPaneAndWaitForListeners(devToolsPage);
+       const names = await getDisplayedEventListenerNames(devToolsPage);
+       assert.include(names, 'framework-click');
+     });
+
+  it('unwraps jQuery-style wrapped event listeners via frameworkEventListeners',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToHtml(`
+        <button id="jq-btn">jQuery Button</button>
+        <script>
+          const btn = document.getElementById('jq-btn');
+          function userJQueryHandler() {}
+          function jQueryDispatcher(e) { return userJQueryHandler(e); }
+          btn.addEventListener('mousedown', jQueryDispatcher);
+          const jqFunc = node => [node];
+          jqFunc.fn = {};
+          jqFunc._data = (node, key) => {
+            if (node !== btn) {
+              return undefined;
+            }
+            const store = {
+              events: {
+                'jquery-mousedown': [{handler: userJQueryHandler, selector: ''}],
+              },
+              handle: jQueryDispatcher,
+            };
+            return key ? store[key] : store;
+          };
+          window.jQuery = jqFunc;
+        </script>
+      `);
+       await waitForElementsStyleSection(devToolsPage, undefined);
+       const buttonNode = await waitForElementWithPartialText(devToolsPage, 'jq-btn');
+       await buttonNode.click();
+       await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'jq-btn');
+       await openEventListenersPaneAndWaitForListeners(devToolsPage);
+       const names = await getDisplayedEventListenerNames(devToolsPage);
+       assert.include(names, 'jquery-mousedown');
+     });
+
+  it('resolves event listeners registered on elements inside an about:blank iframe',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToHtml(`
+        <iframe id="blank-frame" src="about:blank" style="width:200px;height:200px;border:0"></iframe>
+        <script>
+          const frame = document.getElementById('blank-frame');
+          frame.contentDocument.body.style.margin = '0';
+          frame.contentDocument.body.innerHTML =
+              '<button id="blank-btn" style="width:100%;height:100%">Blank</button>';
+          const btn = frame.contentDocument.getElementById('blank-btn');
+          btn.addEventListener('hover', () => {}, {capture: true, once: true});
+          frame.contentDocument.body.addEventListener('wheel', () => {}, {passive: true});
+        </script>
+      `);
+       await waitForElementsStyleSection(devToolsPage, undefined);
+       await devToolsPage.click('[aria-label="Select an element in the page to inspect it"]');
+       await inspectedPage.click('#blank-frame');
+       await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'blank-btn');
+       await openEventListenersPaneAndWaitForListeners(devToolsPage);
+       const names = await getDisplayedEventListenerNames(devToolsPage);
+       assert.include(names, 'hover');
+       assert.include(names, 'wheel');
+     });
 });

@@ -100,4 +100,64 @@ describe('The Elements tab', function() {
 
     await nodeToPasteIn.$('span#node-to-copy');
   });
+
+  it('preserves standard DOM node selection across page reload', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToHtml('<div id="first-node">First</div><div id="persisted-node">Second</div>');
+    await waitForElementsStyleSection(devToolsPage, undefined);
+    const targetNode = await waitForElementWithPartialText(devToolsPage, 'persisted-node');
+    await targetNode.click();
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'persisted-node');
+    await inspectedPage.reload();
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'persisted-node');
+  });
+
+  it('preserves closed shadow root and child selection across reload', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToHtml(`
+      <div id="closed-host"></div>
+      <script>
+        const root = document.getElementById('closed-host').attachShadow({mode: 'closed'});
+        root.innerHTML = '<span id="closed-child">Inside Closed</span>';
+      </script>
+    `);
+    await expandSelectedNodeRecursively(devToolsPage);
+
+    const closedRootSelector = '#shadow-root (closed)';
+    await devToolsPage.click(`pierceShadowText/${closedRootSelector}`);
+    await waitForContentOfSelectedElementsNode(devToolsPage, closedRootSelector);
+
+    await inspectedPage.reload();
+    await waitForContentOfSelectedElementsNode(devToolsPage, closedRootSelector);
+
+    await clickNthChildOfSelectedElementNode(devToolsPage, 1);
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'closed-child');
+
+    await inspectedPage.reload();
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'closed-child');
+  });
+
+  it('moves focus from the Elements tree to the next tab stop and back using Tab and Shift+Tab',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToHtml('<span id="tab-node">Content</span>');
+       await waitForElementsStyleSection(devToolsPage, undefined);
+       const nodeElement = await waitForElementWithPartialText(devToolsPage, 'tab-node');
+       await nodeElement.click();
+       await waitForPartialContentOfSelectedElementsNode(devToolsPage, 'tab-node');
+
+       const isTreeItemFocused = async () => await devToolsPage.evaluate(() => {
+         let active: Element|null = document.activeElement;
+         while (active?.shadowRoot?.activeElement) {
+           active = active.shadowRoot.activeElement;
+         }
+         return active?.tagName === 'LI' && active.classList.contains('selected');
+       });
+
+       await devToolsPage.waitForFunction(isTreeItemFocused);
+       await devToolsPage.pressKey('Tab');
+       await devToolsPage.waitForFunction(async () => !(await isTreeItemFocused()));
+
+       await devToolsPage.page.keyboard.down('Shift');
+       await devToolsPage.pressKey('Tab');
+       await devToolsPage.page.keyboard.up('Shift');
+       await devToolsPage.waitForFunction(isTreeItemFocused);
+     });
 });

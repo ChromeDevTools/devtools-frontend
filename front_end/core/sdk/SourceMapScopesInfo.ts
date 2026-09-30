@@ -16,13 +16,16 @@ export class SourceMapScopesInfo {
   readonly #sourceMap: SourceMap;
   readonly #originalScopes: Array<ScopesCodec.OriginalScope[]|null>;
   readonly #generatedRanges: ScopesCodec.GeneratedRange[];
+  /** Whether the scope information was derived from the AST and mappings (see {@link createFromAst}). */
+  readonly #isFromAst: boolean;
 
   #cachedVariablesAndBindingsPresent: boolean|null = null;
 
-  constructor(sourceMap: SourceMap, scopeInfo: ScopesCodec.ScopeInfo) {
+  constructor(sourceMap: SourceMap, scopeInfo: ScopesCodec.ScopeInfo, {isFromAst = false}: {isFromAst?: boolean} = {}) {
     this.#sourceMap = sourceMap;
     this.#originalScopes = scopeInfo.scopes;
     this.#generatedRanges = scopeInfo.ranges;
+    this.#isFromAst = isFromAst;
   }
 
   /**
@@ -114,7 +117,8 @@ export class SourceMapScopesInfo {
       }
     }
 
-    return new SourceMapScopesInfo(sourceMap, {scopes: scopesBySourceUrl, ranges: rootRange ? [rootRange] : []});
+    return new SourceMapScopesInfo(sourceMap, {scopes: scopesBySourceUrl, ranges: rootRange ? [rootRange] : []},
+                                   {isFromAst: true});
 
     /**
      * Finds the correct place in the tree to insert the new scope.
@@ -234,6 +238,19 @@ export class SourceMapScopesInfo {
       }
     }
     return false;
+  }
+
+  #generatedFrameKind(rangeChain: ScopesCodec.GeneratedRange[]): GeneratedFrameKind {
+    const functionRange = rangeChain.findLast(range => range.isStackFrame);
+    if (!functionRange) {
+      // Top-level code.
+      return GeneratedFrameKind.VISIBLE;
+    }
+    if (!functionRange.originalScope) {
+      // For scope information derived from the AST, we merely failed to map the function.
+      return this.#isFromAst ? GeneratedFrameKind.VISIBLE : GeneratedFrameKind.HIDDEN;
+    }
+    return functionRange.isHidden ? GeneratedFrameKind.OUTLINED : GeneratedFrameKind.VISIBLE;
   }
 
   /**
@@ -536,7 +553,10 @@ export class SourceMapScopesInfo {
    */
   translateRawFrame(generatedLine: number, generatedColumn: number): RawFrameTranslation {
     const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
-    const kind = this.#isOutlinedFrame(rangeChain) ? GeneratedFrameKind.OUTLINED : GeneratedFrameKind.VISIBLE;
+    const kind = this.#generatedFrameKind(rangeChain);
+    if (kind === GeneratedFrameKind.HIDDEN) {
+      return {kind, frames: []};
+    }
     const frame = this.#translateTopFrame(generatedLine, generatedColumn);
     return {kind, frames: frame ? [frame, ...this.#translateInlinedCallers(rangeChain)] : []};
   }
@@ -586,23 +606,33 @@ export class SourceMapScopesInfo {
 /**
  * Describes how the generated function surrounding a generated position shows up in stack traces.
  *
- * Compilers can move authored code into a separate generated function, e.g. a block scope that was turned into a
- * function. The generated range of such a function is marked "hidden". We can pause in such a function, but the frame
- * is merged with its caller(s) in stack traces: The outlined code logically belongs to the (authored) function that
- * transitively calls it.
+ * Compilers tend to introduce functions (and calls to them) that don't exist in the authored code. The scopes
+ * proposal distinguishes two cases:
+ *
+ *   1) The generated function contains authored code, e.g. a block scope that was turned into a function. The
+ *      generated range is marked "hidden", but links to the original scope via its definition. We can pause
+ *      in such a function, but the frame is merged with its caller(s) in stack traces: The outlined code
+ *      logically belongs to the (authored) function that transitively calls it.
+ *
+ *   2) The generated function doesn't represent any authored code, e.g. a compiler helper. The generated range
+ *      has no definition. The scopes spec is being updated to say that such a range can be ignored in stack
+ *      traces, so we drop these frames.
  */
 export const enum GeneratedFrameKind {
   /** A regular (possibly with inlined functions) generated function, or top-level code. */
   VISIBLE = 'VISIBLE',
-  /** A generated function marked as "hidden" that contains outlined authored code. */
+  /** A generated function marked as "hidden" that has a definition (case 1). */
   OUTLINED = 'OUTLINED',
+  /** A generated function without a definition (case 2). */
+  HIDDEN = 'HIDDEN',
 }
 
 /** See {@link SourceMapScopesInfo.translateRawFrame}. */
 export interface RawFrameTranslation {
   kind: GeneratedFrameKind;
   /**
-   * [top, ...inlinedCallers] in top-to-bottom order. Empty if the generated position is not mapped.
+   * [top, ...inlinedCallers] in top-to-bottom order. Empty for {@link GeneratedFrameKind.HIDDEN} frames, or if the
+   * generated position is not mapped.
    *
    * For {@link GeneratedFrameKind.OUTLINED} frames, the top frame is named after the authored function the outlined
    * code belongs to.

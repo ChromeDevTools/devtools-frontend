@@ -331,6 +331,43 @@ describe('SourceMapScopesInfo', () => {
       });
     });
 
+    it('translates a function without a definition as HIDDEN without frames, even if it\'s not marked hidden', () => {
+      const info = createOutliningScopesInfo();
+
+      assert.deepEqual(stringify(info.translateRawFrame(2, 18)), {
+        kind: SDK.SourceMapScopesInfo.GeneratedFrameKind.HIDDEN,
+        frames: [],
+      });
+    });
+
+    it('translates a function marked hidden without a definition as HIDDEN without frames', () => {
+      const info = createOutliningScopesInfo();
+
+      assert.deepEqual(stringify(info.translateRawFrame(3, 18)), {
+        kind: SDK.SourceMapScopesInfo.GeneratedFrameKind.HIDDEN,
+        frames: [],
+      });
+    });
+
+    it('classifies a position by its inner-most generated function', () => {
+      const scopeInfo = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap),
+                                                new ScopeInfoBuilder()
+                                                    .startSource()
+                                                    .startScope(0, 0, {isStackFrame: true, key: 'fn'})
+                                                    .endScope(10, 0)
+                                                    .endSource()
+                                                    .startRange(0, 0)
+                                                    .startRange(0, 10, {isStackFrame: true, isHidden: true})
+                                                    .startRange(0, 20, {isStackFrame: true, scopeKey: 'fn'})
+                                                    .endRange(0, 30)
+                                                    .endRange(0, 40)
+                                                    .endRange(0, 50)
+                                                    .build());
+
+      assert.strictEqual(scopeInfo.translateRawFrame(0, 25).kind, SDK.SourceMapScopesInfo.GeneratedFrameKind.VISIBLE);
+      assert.strictEqual(scopeInfo.translateRawFrame(0, 35).kind, SDK.SourceMapScopesInfo.GeneratedFrameKind.HIDDEN);
+    });
+
     //
     //    orig. code                         gen. code
     //             10        20                       10        20
@@ -1487,6 +1524,22 @@ describe('SourceMapScopesInfo', () => {
         const result = info.findOriginalFunctionScope({line: 0, column: i});
         assert.isNull(result, 'Should not return a scope when source files mismatch');
       }
+    });
+
+    it('does not treat functions it can\'t map as hidden compiler helpers', () => {
+      const generatedCode = `function bad() { }`;
+      const ast = Formatter.ScopeParser.parseScopes(generatedCode)?.export();
+
+      const sourceMapJSON = encodeSourceMap([
+        '0:12 => fileA.js:0:12@bad',
+        '0:18 => fileB.js:0:0',
+      ]);
+
+      const sourceMap = new SDK.SourceMap.SourceMap(urlString`compiled.js`, urlString`compiled.js.map`, sourceMapJSON,
+                                                    new Common.Console.Console());
+      const info = SourceMapScopesInfo.createFromAst(sourceMap, ast!, new TextUtils.Text.Text(generatedCode));
+
+      assert.strictEqual(info.translateRawFrame(0, 15).kind, SDK.SourceMapScopesInfo.GeneratedFrameKind.VISIBLE);
     });
 
     it('inserts scopes correctly when an inner AST node maps to a larger scope than its parent', () => {

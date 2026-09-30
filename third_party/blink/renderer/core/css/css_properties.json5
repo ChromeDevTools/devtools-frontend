@@ -5097,16 +5097,6 @@
       runtime_flag: "OverscrollGestures",
     },
     {
-      name: "-internal-overscroll-position",
-      property_methods: ["CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "keyword",
-      keywords: ["none", "auto"],
-      typedom_types: ["Keyword"],
-      default_value: "none",
-      runtime_flag: "OverscrollGestures",
-    },
-    {
       name: "-internal-unbounded",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_group: "*",
@@ -5398,13 +5388,17 @@
       field_group: "*",
       field_size: 3,
       field_template: "primitive",
-      default_value: "PositionVisibility::kAnchorsVisible",
+      default_value: "PositionVisibility::kAnchorVisible",
       getter: "GetPositionVisibility",
       type_name: "PositionVisibility",
       converter: "ConvertPositionVisibility",
-      // TODO(crbug.com/332933527): Support anchors-valid.
-      keywords: ["always", "anchors-visible", "no-overflow"],
+      keywords: ["always", "anchor-valid", "anchor-visible", "anchors-visible", "no-overflow"],
       typedom_types: ["Keyword"],
+      // TODO(crbug.com/526682332): When PositionVisibilitySingularValues is enabled:
+      // - remove typedom_keywords (typedom will fall back to keywords)
+      // - update devtools_keywords to ["always", "anchor-valid", "anchor-visible", "no-overflow"]
+      typedom_keywords: ["always", "anchor-valid", "anchors-visible", "no-overflow"],
+      devtools_keywords: ["always", "anchor-valid", "anchors-visible", "no-overflow"],
       invalidate: ["layout", "paint"],
     },
     {
@@ -5431,6 +5425,7 @@
       converter: "ConvertQuotes",
       keywords: ["auto", "none"],
       typedom_types: ["Keyword"],
+      valid_for_marker: true,
       valid_for_page_context: true,
       invalidate: ["layout", "paint"],
     },

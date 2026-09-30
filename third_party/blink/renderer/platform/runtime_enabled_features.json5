@@ -1724,6 +1724,7 @@
       // in computed styles.
       // https://github.com/w3c/csswg-drafts/issues/14052
       name: "CSSFlowStartAndEndSerialization",
+      status: "experimental",
       depends_on: ["CSSFlowStartAndEnd"],
     },
     {
@@ -1910,6 +1911,12 @@
     {
       name: "CSSPositionStickyStaticScrollPosition",
       status: "test",
+    },
+    {
+      // Support for `position-visibility: anchor-valid`.
+      // See crbug.com/333421963.
+      name: "CSSPositionVisibilityAnchorValid",
+      status: "experimental",
     },
     {
       // The @private rule declares lexically-scoped custom properties that are
@@ -2129,7 +2136,7 @@
     {
       // crbug.com/468928416, crbug.com/498974811
       name: "CSSTextDecorationInset",
-      status: "experimental",
+      status: "stable",
     },
     {
       // https://issues.chromium.org/40675832: CSS `text-decoration-skip-ink: all` value
@@ -2190,10 +2197,6 @@
       // CSSWG resolution on tree-scoped references.
       name: "CSSTreeScopedScrollTimeline",
       status: "experimental",
-    },
-    {
-      name: "CSSTypedArithmetic",
-      status: "stable",
     },
     {
       // CSS URL request modifiers: cross-origin(), integrity(),
@@ -3915,6 +3918,10 @@
       status: "stable",
     },
     {
+      name: "LayoutContainingBlockReturnsBox",
+      status: "stable",
+    },
+    {
       name: "LayoutIgnoreMarginsForSticky",
     },
     {
@@ -4905,6 +4912,13 @@
       status: "stable",
     },
     {
+      // Enables the "singular" versions of two values for the CSS
+      // `position-visibility` property: `anchor-valid` and `anchor-visible`.
+      // See crbug.com/526682332.
+      name: "PositionVisibilitySingularValues",
+      status: "experimental",
+    },
+    {
       name: "PotentialPermissionsPolicyReporting",
       status: "stable",
     },
@@ -5439,6 +5453,12 @@
       status: "stable",
     },
     {
+      // Places ruby annotations clear of the base's underline or overline.
+      // https://drafts.csswg.org/css-ruby-1/#ruby-text-decoration
+      name: "RubyTextDecorationSpacing",
+      status: "test",
+    },
+    {
       // Runs a microtask checkpoint before prepare script in
       // XML Parser. This was added in M148 and can be removed
       // after M150.
@@ -5771,6 +5791,14 @@
       // https://crbug.com/40894694
       name: "SeparateDeferModuleScriptTasks",
       status: "stable",
+    },
+    {
+      // Exposes the Focusable interface, DocumentOrShadowRoot.activeFocusable,
+      // CSSPseudoElement.focus(), and sequential focus navigation primitives.
+      // https://crbug.com/565786176
+      name: "SequentialFocusPrimitives",
+      depends_on: ["CSSPseudoElementInterface"],
+      status: "test",
     },
     {
       name: "Serial",
@@ -6456,8 +6484,9 @@
     },
     {
       // https://crbug.com/41492459
+      // ChromeStatus: https://chromestatus.com/feature/6294595288825856
       name: "TextOverflowString",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "TextScaleMetaTag",
@@ -6489,6 +6518,12 @@
     {
       // https://drafts.csswg.org/web-animations-2/#triggers
       name: "TimelineTrigger",
+      status: "stable",
+    },
+    {
+      // Killswitch for the time picker offering only the values that the step
+      // attribute allows.
+      name: "TimePickerHonorsStep",
       status: "stable",
     },
     {

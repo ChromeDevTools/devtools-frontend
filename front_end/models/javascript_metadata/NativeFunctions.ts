@@ -3220,7 +3220,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   {
     name: "focus",
     signatures: [["?options"]],
-    receivers: ["HTMLOrSVGElement","SVGElement","MathMLElement","HTMLElement"]
+    receivers: ["HTMLOrSVGElement","SVGElement","MathMLElement","HTMLElement","CSSPseudoElement","Focusable"]
   },
   {
     name: "assign",
@@ -9166,6 +9166,10 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   {
     name: "scrollIntoViewIfNeeded",
     signatures: [["?centerIfNeeded"]]
+  },
+  {
+    name: "Focusable",
+    signatures: [["target"]]
   },
   {
     name: "getBoxQuads",

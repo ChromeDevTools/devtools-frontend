@@ -13362,6 +13362,35 @@
             ]
         },
         {
+            "domain": "FindInPage",
+            "description": "This domain provides commands to trigger the \"Find in page\" feature.",
+            "experimental": true,
+            "commands": [
+                {
+                    "name": "findFirst",
+                    "description": "Forwards `query` to the find-in-page facility, starting a new find session.\nWhere exactly the search starts from is implementation-specific.",
+                    "parameters": [
+                        {
+                            "name": "query",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "findNext",
+                    "description": "Moves to the next match for the query passed to the most recent\nfindFirst() call."
+                },
+                {
+                    "name": "findPrev",
+                    "description": "Moves to the previous match for the query passed to the most recent\nfindFirst() call."
+                },
+                {
+                    "name": "stop",
+                    "description": "Ends the current find session, if any, and clears its highlighting."
+                }
+            ]
+        },
+        {
             "domain": "HeadlessExperimental",
             "description": "This domain provides experimental commands only supported in headless mode.",
             "experimental": true,
@@ -22086,6 +22115,7 @@
                         "private-state-token-redemption",
                         "publickey-credentials-create",
                         "publickey-credentials-get",
+                        "publickey-credentials-remote-client-data-json",
                         "rewriter",
                         "screen-wake-lock",
                         "serial",

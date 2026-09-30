@@ -78,6 +78,7 @@ devtools_ui_module("unittests") {
   sources = [
     "CategorizedBreakpointsSidebarPane.test.ts",
     "DOMBreakpointsSidebarPane.test.ts",
+    "ObjectEventListenersSidebarPane.test.ts",
     "XHRBreakpointsSidebarPane.test.ts",
     "browser_debugger.test.ts",
   ]

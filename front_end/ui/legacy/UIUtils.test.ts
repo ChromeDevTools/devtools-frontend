@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createFakeSetting} from '../../testing/EnvironmentHelpers.js';
@@ -1033,5 +1034,120 @@ describe('bindCheckbox', () => {
          assert.strictEqual(inputElement.value, '');
          sinon.assert.notCalled(inputEventSpy);
        });
+  });
+});
+
+describe('element value modifications', () => {
+  function keyEvent(key: string,
+                    modifiers: {ctrlEquivalent?: boolean, shift?: boolean, alt?: boolean} = {}): KeyboardEvent {
+    const isMac = Host.Platform.isMac();
+    return new KeyboardEvent('keydown', {
+      key,
+      ctrlKey: Boolean(modifiers.ctrlEquivalent) && !isMac,
+      metaKey: Boolean(modifiers.ctrlEquivalent) && isMac,
+      shiftKey: Boolean(modifiers.shift),
+      altKey: Boolean(modifiers.alt),
+      bubbles: true,
+      cancelable: true,
+    });
+  }
+
+  describe('getValueModificationDirection', () => {
+    it('maps arrow and page keys to a direction', () => {
+      assert.strictEqual(UI.UIUtils.getValueModificationDirection(keyEvent('ArrowUp')), 'Up');
+      assert.strictEqual(UI.UIUtils.getValueModificationDirection(keyEvent('PageUp')), 'Up');
+      assert.strictEqual(UI.UIUtils.getValueModificationDirection(keyEvent('ArrowDown')), 'Down');
+      assert.strictEqual(UI.UIUtils.getValueModificationDirection(keyEvent('PageDown')), 'Down');
+      assert.isNull(UI.UIUtils.getValueModificationDirection(keyEvent('Enter')));
+    });
+  });
+
+  describe('createReplacementString', () => {
+    it('increments and decrements hex colors per channel with modifier keys', () => {
+      assert.strictEqual(UI.UIUtils.createReplacementString('#FF2', keyEvent('PageUp')), '#FF3');
+      // Ctrl/Cmd adds 1 to the red channel and Shift adds 1 to the green channel.
+      assert.strictEqual(
+          UI.UIUtils.createReplacementString('#FF3', keyEvent('ArrowDown', {ctrlEquivalent: true, shift: true})),
+          '#EE3');
+      assert.strictEqual(UI.UIUtils.createReplacementString('#FF3', keyEvent('ArrowDown', {alt: true})), '#FF2');
+      assert.strictEqual(UI.UIUtils.createReplacementString('#001100', keyEvent('PageUp', {shift: true})), '#001200');
+      // The result is clamped and keeps the original length.
+      assert.strictEqual(UI.UIUtils.createReplacementString('#FFF', keyEvent('ArrowUp')), '#FFF');
+      assert.strictEqual(UI.UIUtils.createReplacementString('#001', keyEvent('ArrowDown', {alt: true})), '#000');
+      // Hex values that are neither rgb nor rrggbb are left alone.
+      assert.isNull(UI.UIUtils.createReplacementString('#FFFF', keyEvent('ArrowUp')));
+    });
+
+    it('increments numbers by 0.1 with Alt, 1 without modifiers, 10 with Shift and 100 with Ctrl/Cmd', () => {
+      assert.strictEqual(UI.UIUtils.createReplacementString('.5', keyEvent('ArrowUp', {alt: true})), '0.6');
+      assert.strictEqual(UI.UIUtils.createReplacementString('0.6', keyEvent('ArrowUp')), '1.6');
+      assert.strictEqual(UI.UIUtils.createReplacementString('1.6', keyEvent('PageUp', {shift: true})), '11.6');
+      assert.strictEqual(UI.UIUtils.createReplacementString('11.6px', keyEvent('PageDown', {ctrlEquivalent: true})),
+                         '-88.4px');
+    });
+
+    it('leaves numbers that cannot be represented without an exponent unchanged', () => {
+      assert.isNull(UI.UIUtils.createReplacementString('1000000000000000065537deg', keyEvent('ArrowUp')));
+      assert.isNull(UI.UIUtils.createReplacementString('1000000000000000065537deg', keyEvent('PageUp')));
+    });
+  });
+
+  describe('modifiedFloatNumber', () => {
+    it('applies modifier deltas, multipliers and ranges', () => {
+      assert.strictEqual(UI.UIUtils.modifiedFloatNumber(0.5, keyEvent('ArrowUp', {alt: true})), 0.6);
+      assert.strictEqual(UI.UIUtils.modifiedFloatNumber(0.6, keyEvent('ArrowUp')), 1.6);
+      assert.strictEqual(UI.UIUtils.modifiedFloatNumber(1.6, keyEvent('PageUp', {shift: true})), 11.6);
+      assert.strictEqual(UI.UIUtils.modifiedFloatNumber(1, keyEvent('ArrowDown'), 0.5), 0.5);
+      assert.strictEqual(UI.UIUtils.modifiedFloatNumber(0.5, keyEvent('ArrowDown'), undefined, {min: 0}), 0);
+      assert.isNull(UI.UIUtils.modifiedFloatNumber(1e21, keyEvent('ArrowUp')));
+      assert.isNull(UI.UIUtils.modifiedFloatNumber(1, keyEvent('Enter')));
+    });
+  });
+
+  describe('handleElementValueModifications', () => {
+    function setup(text: string, caretOffset: number): {element: HTMLElement, press: (event: KeyboardEvent) => void} {
+      const element = document.createElement('span');
+      element.textContent = text;
+      renderElementIntoDOM(element);
+      const range = document.createRange();
+      range.setStart(element.firstChild as Text, caretOffset);
+      range.setEnd(element.firstChild as Text, caretOffset);
+      const selection = element.getComponentSelection();
+      assert.exists(selection);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      element.addEventListener('keydown', event => {
+        UI.UIUtils.handleElementValueModifications(event, element);
+      });
+      return {element, press: event => element.dispatchEvent(event)};
+    }
+
+    it('modifies a hex color in place', () => {
+      const {element, press} = setup('#FF2', 1);
+      press(keyEvent('PageUp'));
+      assert.strictEqual(element.textContent, '#FF3');
+      press(keyEvent('ArrowDown', {ctrlEquivalent: true, shift: true}));
+      assert.strictEqual(element.textContent, '#EE3');
+    });
+
+    it('modifies a number in place', () => {
+      const {element, press} = setup('.5', 1);
+      press(keyEvent('ArrowUp', {alt: true}));
+      assert.strictEqual(element.textContent, '0.6');
+      press(keyEvent('ArrowUp'));
+      assert.strictEqual(element.textContent, '1.6');
+      press(keyEvent('PageUp', {shift: true}));
+      assert.strictEqual(element.textContent, '11.6');
+    });
+
+    it('does not modify a huge number', () => {
+      const text = 'rotate(1000000000000000065537deg)';
+      const {element, press} = setup(text, 10);
+      const upEvent = keyEvent('ArrowUp');
+      press(upEvent);
+      press(keyEvent('PageUp'));
+      assert.strictEqual(element.textContent, text);
+      assert.isFalse(upEvent.defaultPrevented);
+    });
   });
 });

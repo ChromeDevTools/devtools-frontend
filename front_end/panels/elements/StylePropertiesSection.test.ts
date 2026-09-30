@@ -1332,4 +1332,485 @@ describeWithEnvironment('StylesPropertySection', () => {
     sinon.assert.calledOnce(setStyleTextsStub);
   });
 
+  it('keeps CSSStyleSheetHeader sourceMap attached when editing rule or property', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const selRange = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 7};
+    const styleRange = {startLine: 0, startColumn: 9, endLine: 1, endColumn: 1};
+    sinon.stub(SDK.PageResourceLoader.PageResourceLoader.instance(), 'loadResource').resolves({
+      content: '{"version":3,"sources":["app.scss"],"mappings":"AAAA"}',
+    });
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      sourceURL: 'http://example.com/app.css',
+      sourceMapURL: 'http://example.com/app.css.map',
+      isMutable: true,
+      matchedPayload: [{
+        rule: {
+          selectorList: {selectors: [{text: '.mapped', range: selRange}], text: '.mapped'},
+          origin,
+          styleSheetId,
+          style:
+              {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: [], styleSheetId, range: styleRange},
+        },
+        matchingSelectors: [0],
+      }],
+      connection,
+    });
+    const header = cssModel.styleSheetHeaderForId(styleSheetId)!;
+    const sourceMap = await cssModel.sourceMapManager().sourceMapForClientPromise(header);
+    assert.exists(sourceMap);
+    const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+        new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
+        matchedStyles.nodeStyles()[0], 0, null, null, null);
+    section.styleSheetEdited(
+        new SDK.CSSModel.Edit(styleSheetId, TextUtils.TextRange.TextRange.fromObject(selRange), '.mapped2',
+                              {selectors: [{text: '.mapped2', range: selRange}], text: '.mapped2'}));
+    assert.strictEqual(cssModel.sourceMapManager().sourceMapForClient(header), sourceMap);
+  });
+
+  it('displays exact source line numbers for multi-line rules in section header', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const range1 = {startLine: 2, startColumn: 0, endLine: 6, endColumn: 1};
+    const range2 = {startLine: 8, startColumn: 2, endLine: 12, endColumn: 1};
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      sourceURL: 'http://example.com/multiline.css',
+      matchedPayload: [
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.first', range: range1}], text: '.first'},
+            origin,
+            styleSheetId,
+            style: {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: [], range: range1},
+          },
+          matchingSelectors: [0],
+        },
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.second', range: range2}], text: '.second'},
+            origin,
+            styleSheetId,
+            style: {cssProperties: [{name: 'color', value: 'blue'}], shorthandEntries: [], range: range2},
+          },
+          matchingSelectors: [0],
+        },
+      ],
+      connection,
+    });
+    const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
+    Elements.StylePropertiesSection.StylePropertiesSection.createRuleOriginNode(
+        matchedStyles, linkifier, matchedStyles.nodeStyles()[0].parentRule);
+    Elements.StylePropertiesSection.StylePropertiesSection.createRuleOriginNode(
+        matchedStyles, linkifier, matchedStyles.nodeStyles()[1].parentRule);
+    assert.strictEqual(linkifier.linkifyCSSLocation.firstCall.args[0].lineNumber, 8);
+    assert.strictEqual(linkifier.linkifyCSSLocation.secondCall.args[0].lineNumber, 2);
+  });
+
+  it('displays <style> tag line offsets for inline stylesheet rules', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const range = {startLine: 3, startColumn: 4, endLine: 5, endColumn: 1};
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      sourceURL: 'http://example.com/inline.html',
+      isInline: true,
+      startLine: 10,
+      startColumn: 2,
+      matchedPayload: [{
+        rule: {
+          selectorList: {selectors: [{text: '.inline-rule', range}], text: '.inline-rule'},
+          origin,
+          styleSheetId,
+          style: {cssProperties: [{name: 'display', value: 'block'}], shorthandEntries: [], range},
+        },
+        matchingSelectors: [0],
+      }],
+      connection,
+    });
+    const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
+    Elements.StylePropertiesSection.StylePropertiesSection.createRuleOriginNode(
+        matchedStyles, linkifier, matchedStyles.nodeStyles()[0].parentRule);
+    sinon.assert.calledOnce(linkifier.linkifyCSSLocation);
+    assert.strictEqual(linkifier.linkifyCSSLocation.firstCall.args[0].lineNumber, 13);
+    assert.strictEqual(linkifier.linkifyCSSLocation.firstCall.args[0].columnNumber, 4);
+  });
+
+  it('recovers accurate line numbers for valid rules following malformed CSS rules', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const validRange = {startLine: 15, startColumn: 0, endLine: 17, endColumn: 1};
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      sourceURL: 'http://example.com/malformed.css',
+      matchedPayload: [{
+        rule: {
+          selectorList: {selectors: [{text: '.recovered', range: validRange}], text: '.recovered'},
+          origin,
+          styleSheetId,
+          style: {cssProperties: [{name: 'opacity', value: '1'}], shorthandEntries: [], range: validRange},
+        },
+        matchingSelectors: [0],
+      }],
+      connection,
+    });
+    const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
+    Elements.StylePropertiesSection.StylePropertiesSection.createRuleOriginNode(
+        matchedStyles, linkifier, matchedStyles.nodeStyles()[0].parentRule);
+    assert.strictEqual(linkifier.linkifyCSSLocation.firstCall.args[0].lineNumber, 15);
+  });
+
+  it('updates header source location link of subsequent rules when inserting a new property', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const range1 = {startLine: 0, startColumn: 6, endLine: 2, endColumn: 0};
+    const range2 = {startLine: 4, startColumn: 6, endLine: 6, endColumn: 0};
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      sourceURL: 'http://example.com/update1.css',
+      matchedPayload: [
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.r1', range: range1}], text: '.r1'},
+            origin,
+            styleSheetId,
+            style: {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: [], styleSheetId, range: range1},
+          },
+          matchingSelectors: [0],
+        },
+        {
+          rule: {
+            selectorList: {selectors: [{text: '.r2', range: range2}], text: '.r2'},
+            origin,
+            styleSheetId,
+            style: {cssProperties: [{name: 'color', value: 'blue'}], shorthandEntries: [], styleSheetId, range: range2},
+          },
+          matchingSelectors: [0],
+        },
+      ],
+      connection,
+    });
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    const section2 = new Elements.StylePropertiesSection.StylePropertiesSection(
+        stylesSidebarPane, matchedStyles, matchedStyles.nodeStyles()[0], 0, null, null, null);
+    const insertEdit = new SDK.CSSModel.Edit(
+        styleSheetId,
+        TextUtils.TextRange.TextRange.fromObject({startLine: 1, startColumn: 12, endLine: 1, endColumn: 12}),
+        '\n  margin: 0;', null);
+    section2.styleSheetEdited(insertEdit);
+    assert.strictEqual(section2.style().range!.startLine, 5);
+  });
+
+  it('updates header source location links of subsequent rules when editing a multiline selector', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const range2 = {startLine: 4, startColumn: 6, endLine: 6, endColumn: 0};
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      sourceURL: 'http://example.com/update2.css',
+      matchedPayload: [{
+        rule: {
+          selectorList: {selectors: [{text: '.r2', range: range2}], text: '.r2'},
+          origin,
+          styleSheetId,
+          style: {cssProperties: [{name: 'color', value: 'blue'}], shorthandEntries: [], styleSheetId, range: range2},
+        },
+        matchingSelectors: [0],
+      }],
+      connection,
+    });
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    const section2 = new Elements.StylePropertiesSection.StylePropertiesSection(
+        stylesSidebarPane, matchedStyles, matchedStyles.nodeStyles()[0], 0, null, null, null);
+    const selectorEdit = new SDK.CSSModel.Edit(
+        styleSheetId,
+        TextUtils.TextRange.TextRange.fromObject({startLine: 0, startColumn: 0, endLine: 0, endColumn: 3}),
+        '.a,\n.b,\n.c', null);
+    section2.styleSheetEdited(selectorEdit);
+    assert.strictEqual(section2.style().range!.startLine, 6);
+  });
+
+  it('updates rule ranges and header links of subsequent rules when disabling a property', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const range2 = {startLine: 5, startColumn: 8, endLine: 7, endColumn: 0};
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      sourceURL: 'http://example.com/update3.css',
+      matchedPayload: [{
+        rule: {
+          selectorList: {selectors: [{text: '.r2', range: range2}], text: '.r2'},
+          origin,
+          styleSheetId,
+          style: {cssProperties: [{name: 'color', value: 'blue'}], shorthandEntries: [], styleSheetId, range: range2},
+        },
+        matchingSelectors: [0],
+      }],
+      connection,
+    });
+    const section2 = new Elements.StylePropertiesSection.StylePropertiesSection(
+        new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
+        matchedStyles.nodeStyles()[0], 0, null, null, null);
+    const disableEdit = new SDK.CSSModel.Edit(
+        styleSheetId,
+        TextUtils.TextRange.TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 1, endColumn: 14}),
+        '/* color: red; */\n/* padding: 0; */', null);
+    section2.styleSheetEdited(disableEdit);
+    assert.strictEqual(section2.style().range!.startLine, 6);
+  });
+
+  it('updates header links of subsequent rules when editing a pseudo-element rule', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const rangeAfter = {startLine: 8, startColumn: 4, endLine: 10, endColumn: 0};
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      sourceURL: 'http://example.com/update4.css',
+      matchedPayload: [{
+        rule: {
+          selectorList: {selectors: [{text: '.after-pseudo', range: rangeAfter}], text: '.after-pseudo'},
+          origin,
+          styleSheetId,
+          style: {cssProperties: [{name: 'top', value: '0'}], shorthandEntries: [], styleSheetId, range: rangeAfter},
+        },
+        matchingSelectors: [0],
+      }],
+      connection,
+    });
+    const sectionAfter = new Elements.StylePropertiesSection.StylePropertiesSection(
+        new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
+        matchedStyles.nodeStyles()[0], 0, null, null, null);
+    const pseudoEdit = new SDK.CSSModel.Edit(
+        styleSheetId,
+        TextUtils.TextRange.TextRange.fromObject({startLine: 2, startColumn: 0, endLine: 2, endColumn: 12}),
+        'div::before {\n  content: "";\n}', null);
+    sectionAfter.styleSheetEdited(pseudoEdit);
+    assert.strictEqual(sectionAfter.style().range!.startLine, 10);
+  });
+
+  it('removes the added rule section when undoing addNewRule via DOMModelUndoStack', async () => {
+    const target = createTarget({connection});
+    const domModel = target.model(SDK.DOMModel.DOMModel)!;
+    const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+    await cssModel.resumeModel();
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
+    const baseRule: Protocol.CSS.RuleMatch = {
+      rule: {
+        selectorList: {selectors: [{text: 'div', range}], text: 'div'},
+        origin,
+        styleSheetId,
+        style: {cssProperties: [], shorthandEntries: [], styleSheetId, range},
+      },
+      matchingSelectors: [0],
+    };
+    const addedRuleMatch: Protocol.CSS.RuleMatch = {
+      rule: {
+        selectorList: {selectors: [{text: '.undo-rule', range}], text: '.undo-rule'},
+        origin,
+        styleSheetId,
+        style: {cssProperties: [], shorthandEntries: [], styleSheetId, range},
+      },
+      matchingSelectors: [0],
+    };
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      isMutable: true,
+      matchedPayload: [baseRule],
+      connection,
+    });
+    const node = matchedStyles.node();
+    (node.domModel as sinon.SinonStub).returns(domModel);
+    sinon.stub(domModel, 'nodeForId').returns(node);
+    computedStyleModel.node = node;
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+
+    let ruleAdded = false;
+    connection.setSuccessHandler('CSS.getComputedStyleForNode',
+                                 () => ({computedStyle: [], extraFields: {isAppearanceBase: false}}));
+    connection.setSuccessHandler('CSS.getBackgroundColors', () => ({}));
+    connection.setSuccessHandler('CSS.getMatchedStylesForNode',
+                                 () => ({
+                                   matchedCSSRules: ruleAdded ? [baseRule, addedRuleMatch] : [baseRule],
+                                 }));
+    connection.setSuccessHandler('CSS.addRule', () => {
+      ruleAdded = true;
+      return {rule: addedRuleMatch.rule};
+    });
+    connection.setSuccessHandler('DOM.undo', () => {
+      ruleAdded = false;
+      cssModel.fireStyleSheetChanged(styleSheetId);
+      return {};
+    });
+    connection.setSuccessHandler('DOM.redo', () => {
+      ruleAdded = true;
+      cssModel.fireStyleSheetChanged(styleSheetId);
+      return {};
+    });
+
+    stylesSidebarPane.requestUpdate();
+    await stylesSidebarPane.updateComplete;
+    assert.lengthOf(stylesSidebarPane.allSections(), 1);
+
+    const header = cssModel.styleSheetHeaderForId(styleSheetId)!;
+    const blankSection = new Elements.StylePropertiesSection.BlankStylePropertiesSection(
+        stylesSidebarPane, matchedStyles, 'div', header, matchedStyles.nodeStyles()[0].range!,
+        matchedStyles.nodeStyles()[0], 1);
+    stylesSidebarPane.sectionBlocks[0].sections.push(blankSection);
+    blankSection.editingSelectorCommitted(blankSection.element, '.undo-rule', 'div', undefined, '');
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.lengthOf(stylesSidebarPane.allSections(), 2);
+
+    await SDK.DOMModel.DOMModelUndoStack.instance().undo();
+    await stylesSidebarPane.updateComplete;
+    assert.lengthOf(stylesSidebarPane.allSections(), 1);
+    assert.strictEqual(stylesSidebarPane.allSections()[0].headerText(), 'div');
+
+    await SDK.DOMModel.DOMModelUndoStack.instance().redo();
+    await stylesSidebarPane.updateComplete;
+    assert.lengthOf(stylesSidebarPane.allSections(), 2);
+    assert.strictEqual(stylesSidebarPane.allSections()[0].headerText(), '.undo-rule');
+    assert.strictEqual(stylesSidebarPane.allSections()[1].headerText(), 'div');
+  });
+
+  it('does not throw or crash when undoing addNewRule after node refresh', async () => {
+    const target = createTarget({connection});
+    const domModel = target.model(SDK.DOMModel.DOMModel)!;
+    const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+    await cssModel.resumeModel();
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
+    const baseRule: Protocol.CSS.RuleMatch = {
+      rule: {
+        selectorList: {selectors: [{text: 'div', range}], text: 'div'},
+        origin,
+        styleSheetId,
+        style: {cssProperties: [], shorthandEntries: [], styleSheetId, range},
+      },
+      matchingSelectors: [0],
+    };
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      isMutable: true,
+      matchedPayload: [baseRule],
+      connection,
+    });
+    const node = matchedStyles.node();
+    (node.domModel as sinon.SinonStub).returns(domModel);
+    sinon.stub(domModel, 'nodeForId').returns(node);
+    computedStyleModel.node = node;
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    connection.setSuccessHandler('CSS.getComputedStyleForNode',
+                                 () => ({computedStyle: [], extraFields: {isAppearanceBase: false}}));
+    connection.setSuccessHandler('CSS.getBackgroundColors', () => ({}));
+    connection.setSuccessHandler('CSS.getMatchedStylesForNode', () => ({matchedCSSRules: [baseRule]}));
+    connection.setSuccessHandler('CSS.addRule',
+                                 () => ({
+                                   rule: {
+                                     selectorList: {selectors: [{text: '.no-crash', range}], text: '.no-crash'},
+                                     origin,
+                                     styleSheetId,
+                                     style: {cssProperties: [], shorthandEntries: [], styleSheetId, range},
+                                   },
+                                 }));
+    connection.setSuccessHandler('DOM.undo', () => {
+      cssModel.fireStyleSheetChanged(styleSheetId);
+      return {};
+    });
+
+    stylesSidebarPane.requestUpdate();
+    await stylesSidebarPane.updateComplete;
+    assert.lengthOf(stylesSidebarPane.allSections(), 1);
+
+    const header = cssModel.styleSheetHeaderForId(styleSheetId)!;
+    const blankSection = new Elements.StylePropertiesSection.BlankStylePropertiesSection(
+        stylesSidebarPane, matchedStyles, 'div', header, matchedStyles.nodeStyles()[0].range!,
+        matchedStyles.nodeStyles()[0], 1);
+    blankSection.editingSelectorCommitted(blankSection.element, '.no-crash', 'div', undefined, '');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    sinon.stub(stylesSidebarPane, 'node').returns(null);
+    await SDK.DOMModel.DOMModelUndoStack.instance().undo();
+    await stylesSidebarPane.updateComplete;
+    assert.lengthOf(stylesSidebarPane.allSections(), 0);
+  });
+
+  it('renders SVG <style> rule and Attributes Style sections for an SVG element without crashing', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = 'svg-sheet' as Protocol.DOM.StyleSheetId;
+    const range = {startLine: 5, startColumn: 0, endLine: 5, endColumn: 16};
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      sourceURL: 'http://example.com/svg-style.xhtml',
+      attributesPayload: {
+        cssProperties: [{name: 'width', value: '100px'}],
+        shorthandEntries: [],
+      },
+      matchedPayload: [{
+        rule: {
+          selectorList: {selectors: [{text: 'rect', range}], text: 'rect'},
+          origin,
+          styleSheetId,
+          style: {
+            cssProperties: [{name: 'fill', value: 'red', text: 'fill: red;', range}],
+            shorthandEntries: [],
+            styleSheetId,
+            range,
+          },
+        },
+        matchingSelectors: [0],
+      }],
+      connection,
+    });
+    (matchedStyles.node().nodeNameInCorrectCase as sinon.SinonStub).returns('svg:rect');
+    const styles = matchedStyles.nodeStyles();
+    const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
+    Elements.StylePropertiesSection.StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier,
+                                                                                styles[0].parentRule);
+    sinon.assert.calledOnce(linkifier.linkifyCSSLocation);
+    assert.strictEqual(linkifier.linkifyCSSLocation.firstCall.args[0].lineNumber, 5);
+
+    const svgRuleSection = new Elements.StylePropertiesSection.StylePropertiesSection(stylesSidebarPane, matchedStyles,
+                                                                                      styles[0], 0, null, null, null);
+    const attrSection = new Elements.StylePropertiesSection.StylePropertiesSection(stylesSidebarPane, matchedStyles,
+                                                                                   styles[1], 1, null, null, null);
+
+    assert.strictEqual(svgRuleSection.headerText(), 'rect');
+    assert.strictEqual(attrSection.headerText(), 'svg:rect[Attributes Style]');
+  });
 });

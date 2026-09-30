@@ -38,12 +38,13 @@ export interface ViewInput {
   node: SDK.DOMModel.DOMNode|null;
   axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   showAriaSubPane: boolean;
-  sourceOrderSubPane: UI.View.View;
+  announcementsRecordingSubPane?: UI.View.View;
 }
 
 export interface ViewOutput {
   ariaSubPane?: ARIAAttributesPane;
   axNodeSubPane?: AXNodeSubPane;
+  sourceOrderSubPane?: SourceOrderPane;
 }
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
@@ -68,9 +69,13 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       </div>
       <devtools-widget
         ${widget(() => {
+          if (!output.sourceOrderSubPane) {
+            output.sourceOrderSubPane = new SourceOrderPane();
+            void input.sidebarPaneStack.showView(output.sourceOrderSubPane, input.announcementsRecordingSubPane);
+          }
           if (!output.axNodeSubPane) {
             output.axNodeSubPane = new AXNodeSubPane();
-            void input.sidebarPaneStack.showView(output.axNodeSubPane, input.sourceOrderSubPane);
+            void input.sidebarPaneStack.showView(output.axNodeSubPane, output.sourceOrderSubPane);
           }
           if (!output.ariaSubPane) {
             output.ariaSubPane = new ARIAAttributesPane();
@@ -79,7 +84,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           return input.sidebarPaneStack.widget();
         })}
         ${widgetRef(UI.Widget.Widget, () => {
-          if (!output.ariaSubPane || !output.axNodeSubPane) {
+          if (!output.ariaSubPane || !output.axNodeSubPane || !output.sourceOrderSubPane) {
             return;
           }
           output.ariaSubPane.setNode(input.node);
@@ -90,6 +95,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           }
           output.axNodeSubPane.setNode(input.node);
           output.axNodeSubPane.setAXNode(input.axNode);
+          void output.sourceOrderSubPane.setNodeAsync(input.node);
         })}></devtools-widget>
     `,
       target,
@@ -108,7 +114,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   private skipNextPullNode: boolean;
   private readonly sidebarPaneStack: UI.ViewManager.StackLocation;
   readonly #viewOutput: ViewOutput = {};
-  private readonly sourceOrderSubPane: SourceOrderPane;
   private readonly announcementsRecordingSubPane?: AccessibilityAnnouncementRecordingView;
   private readonly toggleAction: UI.ActionRegistration.Action;
 
@@ -123,8 +128,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
     this.toggleAction = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
     this.toggleAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.updateToggle, this);
 
-    this.sourceOrderSubPane = new SourceOrderPane();
-    void this.sidebarPaneStack.showView(this.sourceOrderSubPane);
     if (Boolean(Root.Runtime.hostConfig.devToolsAriaLiveRecording?.enabled)) {
       this.announcementsRecordingSubPane = new AccessibilityAnnouncementRecordingView();
       void this.sidebarPaneStack.showView(this.announcementsRecordingSubPane);
@@ -178,7 +181,7 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
           node: this.node(),
           axNode: this.#axNode,
           showAriaSubPane: this.#showAriaSubPane,
-          sourceOrderSubPane: this.sourceOrderSubPane,
+          announcementsRecordingSubPane: this.announcementsRecordingSubPane,
         },
         this.#viewOutput,
         this.contentElement,
@@ -186,7 +189,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   }
 
   async #updateSubPanes(node: SDK.DOMModel.DOMNode|null): Promise<void> {
-    void this.sourceOrderSubPane.setNodeAsync(node);
     if (!node) {
       return;
     }

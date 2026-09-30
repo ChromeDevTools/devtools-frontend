@@ -357,22 +357,22 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       }
 
       rawFrames.shift();
-      const result: StackTraceImpl.StackTraceModel.TranslatedUIFrame[] = [];
-      translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: result});
-
-      const project = this.#sourceMapToProject.get(sourceMap);
-      for (const frame of frames) {
-        const {line, column, name, url} = frame;
-        // Switch out url for UISourceCode where we have it.
-        const uiSourceCode = url ? project?.uiSourceCodeForURL(url) : undefined;
-        result.push({line, column, name, url: uiSourceCode ? undefined : url, uiSourceCode: uiSourceCode ?? undefined});
-      }
-
+      translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: this.#toUIFrames(sourceMap, frames)});
       return true;
     }
 
     // TODO(crbug.com/433162438): Consolidate outlined frames.
     return false;
+  }
+
+  /** Switch out url for UISourceCode where we have it. */
+  #toUIFrames(sourceMap: SDK.SourceMap.SourceMap,
+              frames: SDK.SourceMapScopesInfo.TranslatedFrame[]): StackTraceImpl.StackTraceModel.TranslatedUIFrame[] {
+    const project = this.#sourceMapToProject.get(sourceMap);
+    return frames.map(({line, column, name, url}) => {
+      const uiSourceCode = url ? project?.uiSourceCodeForURL(url) : undefined;
+      return {line, column, name, url: uiSourceCode ? undefined : url, uiSourceCode: uiSourceCode ?? undefined};
+    });
   }
 
   /**

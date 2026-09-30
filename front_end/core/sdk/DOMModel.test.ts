@@ -718,6 +718,19 @@ describe('DOMModel', () => {
         });
         assert.isFalse(domNode.isCustomElement());
       });
+
+      it('should return false for pseudo-elements with hyphens', () => {
+        const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+          nodeId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: NodeType.ELEMENT_NODE,
+          nodeName: '::interest-button',
+          localName: '::interest-button',
+          pseudoType: ProtocolModule.DOM.PseudoType.InterestButton,
+          nodeValue: '',
+        });
+        assert.isFalse(domNode.isCustomElement());
+      });
     });
 
     describe('duplicate', () => {

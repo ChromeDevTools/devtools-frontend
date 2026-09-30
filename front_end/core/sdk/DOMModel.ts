@@ -1139,7 +1139,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
   }
 
   isCustomElement(): boolean {
-    if (this.nodeType() !== NodeType.ELEMENT_NODE || this.isXMLNode()) {
+    if (this.nodeType() !== NodeType.ELEMENT_NODE || this.isXMLNode() || Boolean(this.pseudoType())) {
       return false;
     }
     const localName = this.localName() || this.nodeName().toLowerCase();

@@ -299,6 +299,42 @@ describe('StackTraceModel', () => {
       sinon.assert.calledOnceWithExactly(assertStub, false, 'Non-HIDDEN translation without frames');
     });
 
+    it('does not change the frames of a stack trace that shares its caller with an outlined frame', async () => {
+      const {model} = setup();
+      const translations: Record<string, StackTraceImpl.StackTraceModel.TranslatedRawFrame> = {
+        '_loop@1:17': {
+          kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+          frames: [{url: 'index.ts', name: 'outer', line: 2, column: 4}],
+          functionKeys: {top: 'outer', bottom: 'outer'},
+        },
+        'outer@0:17': {
+          kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+          frames: [{url: 'index.ts', name: 'outer', line: 1, column: 2}],
+          functionKeys: {top: 'outer', bottom: 'outer'},
+        },
+        'main@2:16': {
+          kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+          frames: [{url: 'index.ts', name: 'main', line: 6, column: 2}],
+          functionKeys: {top: 'main', bottom: 'main'},
+        },
+      };
+      const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = frames =>
+          Promise.resolve(frames.map(f => translations[`${f.functionName}@${f.lineNumber}:${f.columnNumber}`]));
+      const callFramesX = ['index.js:1:outer:0:17', 'index.js:1:main:2:16'].map(protocolCallFrame);
+      const callFramesY = [protocolCallFrame('index.js:1:_loop:1:17'), ...callFramesX];
+      const expectedX = ['at outer (index.ts:1:2)', 'at main (index.ts:6:2)'].join('\n');
+
+      const stackTraceX = await model.createFromProtocolRuntime({callFrames: callFramesX}, translateFn);
+      const stackTraceY = await model.createFromProtocolRuntime({callFrames: callFramesY}, translateFn);
+
+      assert.strictEqual(stringifyStackTrace(stackTraceX), expectedX);
+      assert.strictEqual(stringifyStackTrace(stackTraceY),
+                         ['at outer (index.ts:2:4)', 'at main (index.ts:6:2)'].join('\n'));
+      assert.strictEqual(
+          stringifyStackTrace(await model.createFromProtocolRuntime({callFrames: callFramesX}, translateFn)),
+          expectedX);
+    });
+
     it('forwards missing debug info', async () => {
       const {model} = setup();
       const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) =>

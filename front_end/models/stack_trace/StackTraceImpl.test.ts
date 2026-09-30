@@ -10,6 +10,45 @@ import {protocolCallFrame, stringifyFragment} from '../../testing/StackTraceHelp
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from './stack_trace_impl.js';
 
+const VISIBLE = StackTraceImpl.Trie.FrameKind.VISIBLE;
+const OUTLINED = StackTraceImpl.Trie.FrameKind.OUTLINED;
+const HIDDEN = StackTraceImpl.Trie.FrameKind.HIDDEN;
+
+interface NodeSpec {
+  rawName: string;
+  kind: StackTraceImpl.Trie.FrameKind;
+  frames: string[];
+  keys?: StackTraceImpl.Trie.FunctionKeys;
+}
+
+/**
+ * @param frames The translated frames as 'name@line:column', top first.
+ * @param keys The function keys as 'top/bottom'.
+ */
+function node(rawName: string, kind: StackTraceImpl.Trie.FrameKind, frames: string[] = [],
+              {keys}: {keys?: string} = {}): NodeSpec {
+  const [top, bottom] = keys?.split('/') ?? [];
+  return {rawName, kind, frames, keys: keys ? {top, bottom} : undefined};
+}
+
+/** Inserts one raw frame per spec (top first) into a trie and applies the specs to the resulting call stack. */
+function callStack(...specs: NodeSpec[]): StackTraceImpl.Trie.FrameNode[] {
+  const trie = new StackTraceImpl.Trie.Trie();
+  const leaf = trie.insert(specs.map((spec, i) => protocolCallFrame(`bundle.js:1:${spec.rawName}:0:${i}`)));
+  const stack = [...leaf.getCallStack()];
+  stack.forEach((n, i) => {
+    const {rawName, kind, frames, keys} = specs[i];
+    n.kind = kind;
+    n.functionKeys = keys;
+    n.frames = frames.map((frame, k) => {
+      const [, name, line, column] = /^(.*)@(\d+):(\d+)$/.exec(frame) ?? [];
+      return new StackTraceImpl.StackTraceImpl.FrameImpl('src.ts', undefined, name, Number(line), Number(column),
+                                                         undefined, rawName, undefined, k < frames.length - 1);
+    });
+  });
+  return stack;
+}
+
 describe('FragmentImpl', () => {
   const {FragmentImpl, FrameImpl} = StackTraceImpl.StackTraceImpl;
 
@@ -69,7 +108,13 @@ describe('FragmentImpl', () => {
       const trie = new StackTraceImpl.Trie.Trie();
       const node =
           trie.insert(['bundle.js:1:foo:1:10', 'bundle.js:1:bar:2:20', 'bundle.js:1:baz:3:30'].map(protocolCallFrame));
-      node.frames = [new FrameImpl('foo.ts', undefined, 'foo', 1, 0)];
+      const [outlined, helper, caller] = node.getCallStack();
+      outlined.kind = StackTraceImpl.Trie.FrameKind.OUTLINED;
+      outlined.functionKeys = {top: 'foo', bottom: 'foo'};
+      outlined.frames = [new FrameImpl('foo.ts', undefined, 'foo', 1, 0)];
+      helper.kind = StackTraceImpl.Trie.FrameKind.HIDDEN;
+      caller.functionKeys = {top: 'foo', bottom: 'foo'};
+      caller.frames = [new FrameImpl('foo.ts', undefined, 'foo', 2, 0)];
       const fragment = FragmentImpl.getOrCreate(node);
 
       assert.strictEqual(stringifyFragment(fragment), 'at foo (foo.ts:1:0)');
@@ -78,6 +123,207 @@ describe('FragmentImpl', () => {
     it('handles empty fragments correctly', () => {
       assert.lengthOf(FragmentImpl.EMPTY_FRAGMENT.frames, 0);
     });
+  });
+});
+
+describe('consolidate', () => {
+  const {consolidate} = StackTraceImpl.StackTraceImpl;
+
+  function summarize(logicalFrames: StackTraceImpl.StackTraceImpl.LogicalFrame[]): string[] {
+    return logicalFrames.map(({frame, nodeIndex, inlineIndex}) => `${frame.name}@${frame.line}:${frame.column} (${
+                                 nodeIndex},${inlineIndex})${frame.isInline ? ' inline' : ''} raw=${frame.rawName}`);
+  }
+
+  it('returns the frames of VISIBLE nodes as is', () => {
+    const stack = callStack(
+        node('a', VISIBLE, ['a@1:0']),
+        node('b', VISIBLE, ['inlined@2:0', 'b@3:0']),
+    );
+
+    const result = consolidate(stack);
+
+    assert.deepEqual(summarize(result), [
+      'a@1:0 (0,0) raw=a',
+      'inlined@2:0 (1,0) inline raw=b',
+      'b@3:0 (1,1) raw=b',
+    ]);
+    result.forEach(({frame, node, inlineIndex}) => assert.strictEqual(frame, node.frames[inlineIndex]));
+  });
+
+  it('drops HIDDEN nodes', () => {
+    const stack = callStack(
+        node('a', VISIBLE, ['a@1:0']),
+        node('helper', HIDDEN),
+        node('b', VISIBLE, ['b@3:0']),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'a@1:0 (0,0) raw=a',
+      'b@3:0 (2,0) raw=b',
+    ]);
+  });
+
+  it('merges an OUTLINED node with its VISIBLE caller of the same function', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('outer', VISIBLE, ['outer@5:2'], {keys: 'outer/outer'}),
+    );
+
+    const result = consolidate(stack);
+
+    assert.deepEqual(summarize(result), ['outer@2:4 (0,0) raw=outer']);
+    assert.strictEqual(result[0].node, stack[0]);
+    assert.notStrictEqual(result[0].frame, stack[0].frames[0], 'merged frames are copies');
+  });
+
+  it('merges an OUTLINED node with its caller across HIDDEN nodes', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('helper', HIDDEN),
+        node('outer', VISIBLE, ['outer@5:2'], {keys: 'outer/outer'}),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), ['outer@2:4 (0,0) raw=outer']);
+  });
+
+  it('shows an OUTLINED node at the stack bottom without a raw name', () => {
+    const stack = callStack(
+        node('f', VISIBLE, ['f@1:0'], {keys: 'f/f'}),
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'f@1:0 (0,0) raw=f',
+      'outer@2:4 (1,0) raw=undefined',
+    ]);
+  });
+
+  it('does not merge an OUTLINED node with a caller of a different function', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('main', VISIBLE, ['main@9:2'], {keys: 'main/main'}),
+    );
+
+    const result = consolidate(stack);
+
+    assert.deepEqual(summarize(result), [
+      'outer@2:4 (0,0) raw=undefined',
+      'main@9:2 (1,0) raw=main',
+    ]);
+    assert.strictEqual(result[1].frame, stack[1].frames[0]);
+  });
+
+  it('does not merge an OUTLINED node with a caller without function keys', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('main', VISIBLE, ['main@9:2']),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'outer@2:4 (0,0) raw=undefined',
+      'main@9:2 (1,0) raw=main',
+    ]);
+  });
+
+  it('merges nested outlined functions with inlined frames at both ends', () => {
+    // `main` calls `outer`, which is inlined into `main`. Block B1 of `outer` is outlined into `_o1`, B1's inner
+    // block B2 into `_o2`. B2 calls `g`, which is inlined into `_o2`.
+    const stack = callStack(
+        node('_o2', OUTLINED, ['g@2:4', 'outer@3:6'], {keys: 'g/outer'}),
+        node('_o1', OUTLINED, ['outer@4:2'], {keys: 'outer/outer'}),
+        node('main', VISIBLE, ['outer@5:2', 'main@9:2'], {keys: 'outer/main'}),
+    );
+
+    const result = consolidate(stack);
+
+    assert.deepEqual(summarize(result), [
+      'g@2:4 (0,0) inline raw=main',
+      'outer@3:6 (0,1) inline raw=main',
+      'main@9:2 (2,1) raw=main',
+    ]);
+    assert.deepEqual(result.map(({node}) => node), [stack[0], stack[0], stack[2]]);
+  });
+
+  it('handles two consecutive chains', () => {
+    const stack = callStack(
+        node('_o1', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('outer', VISIBLE, ['outer@3:0'], {keys: 'outer/outer'}),
+        node('_o2', OUTLINED, ['main@7:2'], {keys: 'main/main'}),
+        node('main', VISIBLE, ['main@8:0'], {keys: 'main/main'}),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'outer@2:4 (0,0) raw=outer',
+      'main@7:2 (2,0) raw=main',
+    ]);
+  });
+
+  it('starts a new chain at an OUTLINED node of a different function', () => {
+    const stack = callStack(
+        node('_o1', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('_o2', OUTLINED, ['main@7:2'], {keys: 'main/main'}),
+        node('main', VISIBLE, ['main@8:0'], {keys: 'main/main'}),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'outer@2:4 (0,0) raw=undefined',
+      'main@7:2 (1,0) raw=main',
+    ]);
+  });
+
+  it('returns nothing for an empty call stack', () => {
+    assert.deepEqual(consolidate([]), []);
+  });
+
+  it('drops a HIDDEN top node above inlined frames', () => {
+    const stack = callStack(
+        node('helper', HIDDEN),
+        node('b', VISIBLE, ['a@1:0', 'b@2:0']),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'a@1:0 (1,0) inline raw=b',
+      'b@2:0 (1,1) raw=b',
+    ]);
+  });
+
+  it('drops HIDDEN nodes after a chain that reaches the stack bottom', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('helper', HIDDEN),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), ['outer@2:4 (0,0) raw=undefined']);
+  });
+
+  it('drops HIDDEN nodes between two chains', () => {
+    const stack = callStack(
+        node('_o1', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('outer', VISIBLE, ['outer@3:0'], {keys: 'outer/outer'}),
+        node('helper', HIDDEN),
+        node('_o2', OUTLINED, ['main@7:2'], {keys: 'main/main'}),
+        node('main', VISIBLE, ['main@8:0'], {keys: 'main/main'}),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'outer@2:4 (0,0) raw=outer',
+      'main@7:2 (3,0) raw=main',
+    ]);
+  });
+
+  it('handles an OUTLINED node without function keys like a VISIBLE node', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4']),
+        node('outer', VISIBLE, ['outer@5:2'], {keys: 'outer/outer'}),
+    );
+
+    const result = consolidate(stack);
+
+    assert.deepEqual(summarize(result), [
+      'outer@2:4 (0,0) raw=_o',
+      'outer@5:2 (1,0) raw=outer',
+    ]);
+    assert.strictEqual(result[0].frame, stack[0].frames[0]);
   });
 });
 

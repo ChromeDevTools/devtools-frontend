@@ -8,7 +8,7 @@ import type * as Workspace from '../workspace/workspace.js';
 
 // eslint-disable-next-line @devtools/es-modules-import
 import type * as StackTrace from './stack_trace.js';
-import type {EvalOrigin, FrameNode, ParsedFrameInfo} from './Trie.js';
+import {type EvalOrigin, FrameKind, type FrameNode, type ParsedFrameInfo} from './Trie.js';
 
 export type AnyStackTraceImpl = StackTraceImpl<FragmentImpl|DebuggableFragmentImpl|ParsedErrorStackFragmentImpl>;
 
@@ -57,17 +57,7 @@ export class FragmentImpl implements StackTrace.StackTrace.Fragment {
   }
 
   get frames(): FrameImpl[] {
-    if (!this.node) {
-      return [];
-    }
-
-    const frames: FrameImpl[] = [];
-
-    for (const node of this.node.getCallStack()) {
-      frames.push(...node.frames);
-    }
-
-    return frames;
+    return this.node ? consolidate([...this.node.getCallStack()]).map(({frame}) => frame) : [];
   }
 }
 
@@ -106,6 +96,70 @@ export class FrameImpl implements StackTrace.StackTrace.Frame {
     this.isWasm = isWasm;
     this.isInline = isInline;
   }
+}
+
+/** A frame of a fragment after outlined frames were merged with their callers. */
+export interface LogicalFrame {
+  /** Node frame for non-merged groups (same identity as `node.frames[inlineIndex]`), a fresh copy for merged groups. */
+  readonly frame: FrameImpl;
+  /** The node this frame was translated from. */
+  readonly node: FrameNode;
+  /** Index of `node` in the call stack (0 = top). Equals the index into `DebuggerPausedDetails.callFrames`. */
+  readonly nodeIndex: number;
+  /** Index of `frame` in `node.frames`. Equals `CallFrame.inlineFrameIndex`. */
+  readonly inlineIndex: number;
+}
+
+/**
+ * Drops HIDDEN nodes and merges each OUTLINED node with its callers into one group of logical frames.
+ *
+ * The chain continues with callers whose `functionKeys.top` equals the previous member's `functionKeys.bottom`,
+ * skipping HIDDEN nodes. It ends with the first VISIBLE member (the terminator), or before a non-matching caller.
+ */
+export function consolidate(callStack: readonly FrameNode[]): LogicalFrame[] {
+  const result: LogicalFrame[] = [];
+  for (let i = 0; i < callStack.length; ++i) {
+    const node = callStack[i];
+    if (node.kind === FrameKind.HIDDEN) {
+      continue;
+    }
+    if (node.kind === FrameKind.VISIBLE || !node.functionKeys) {
+      node.frames.forEach((frame, inlineIndex) => result.push({frame, node, nodeIndex: i, inlineIndex}));
+      continue;
+    }
+
+    // `node` is OUTLINED: start a chain.
+    const group = node.frames.map((frame, inlineIndex) => ({frame, node, nodeIndex: i, inlineIndex}));
+    let bottom = node.functionKeys.bottom;
+    let terminator: FrameNode|undefined;
+    let lastConsumed = i;
+    for (let j = i + 1; j < callStack.length && !terminator; ++j) {
+      const caller = callStack[j];
+      if (caller.kind === FrameKind.HIDDEN) {
+        continue;
+      }
+      if (!caller.functionKeys || caller.functionKeys.top !== bottom) {
+        break;
+      }
+      // Skip `caller.frames[0]`: it's the same logical frame as the previous member's bottom frame.
+      for (let k = 1; k < caller.frames.length; ++k) {
+        group.push({frame: caller.frames[k], node: caller, nodeIndex: j, inlineIndex: k});
+      }
+      bottom = caller.functionKeys.bottom;
+      terminator = caller.kind === FrameKind.VISIBLE ? caller : undefined;
+      lastConsumed = j;
+    }
+    // HIDDEN nodes after the last chain member are processed (and dropped) by the outer loop.
+    i = lastConsumed;
+
+    const rawName = terminator?.rawFrame.functionName;
+    group.forEach(({frame: f, ...rest}, idx) => result.push({
+      ...rest,
+      frame: new FrameImpl(f.url, f.uiSourceCode, f.name, f.line, f.column, f.missingDebugInfo, rawName, f.isWasm,
+                           idx < group.length - 1),
+    }));
+  }
+  return result;
 }
 
 /**

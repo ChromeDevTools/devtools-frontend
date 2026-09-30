@@ -186,7 +186,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
       html`
         <style>${navigatorViewStyles}</style>
         ${input.placeholder ? html`
-          <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder}>
+          <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
             ${input.placeholder.element}
           </devtools-widget>
         ` : Lit.nothing}

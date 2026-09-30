@@ -733,6 +733,9 @@ describe('FilesNavigatorView', () => {
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
 
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+
     const automaticFileSystemManager =
         sinon.createStubInstance(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
     sinon.stub(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager, 'instance')
@@ -744,6 +747,20 @@ describe('FilesNavigatorView', () => {
   afterEach(async () => {
     sinon.restore();
     await deinitializeGlobalVars();
+  });
+
+  it('shows context menu on placeholder', () => {
+    const navigatorView = new Sources.SourcesNavigator.FilesNavigatorView(networkProjectManager);
+    const contextMenuSpy = sinon.spy(navigatorView, 'handleContextMenu');
+    navigatorView.performUpdate();
+
+    const placeholderContainer = navigatorView.contentElement.querySelector('devtools-widget');
+    assert.exists(placeholderContainer);
+
+    const event = new MouseEvent('contextmenu', {bubbles: true});
+    placeholderContainer.dispatchEvent(event);
+
+    sinon.assert.calledOnce(contextMenuSpy);
   });
 
   it('shows unique names for file system UISourceCodes', async () => {

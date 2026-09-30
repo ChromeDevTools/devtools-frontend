@@ -526,20 +526,33 @@ export class SourceMapScopesInfo {
       throw new Error('SourceMapScopesInfo is unable to translate an outlined function by itself');
     }
 
+    const frame = this.#translateTopFrame(generatedLine, generatedColumn);
+    return frame ? [frame, ...this.#translateInlinedCallers(rangeChain)] : [];
+  }
+
+  /**
+   * The top-most frame is translated the same, regardless of whether we have inlined functions: The name is the
+   * original function surrounding the generated position, and the location is the mapped generated position.
+   */
+  #translateTopFrame(generatedLine: number, generatedColumn: number): TranslatedFrame|null {
     const mapping = this.#sourceMap.findEntry(generatedLine, generatedColumn);
     if (mapping?.sourceIndex === undefined) {
-      return [];
+      return null;
     }
 
-    // The top-most frame is translated the same even if we have inlined functions.
-    const result: TranslatedFrame[] = [{
+    return {
       line: mapping.sourceLineNumber,
       column: mapping.sourceColumnNumber,
       name: this.findOriginalFunctionName({line: generatedLine, column: generatedColumn}) ?? undefined,
       url: mapping.sourceURL,
-    }];
+    };
+  }
 
-    // Walk the range chain inside out until we find a generated function and for each inlined function add a frame.
+  /**
+   * Walk the range chain inside out until we find a generated function and for each inlined function add a frame.
+   */
+  #translateInlinedCallers(rangeChain: ScopesCodec.GeneratedRange[]): TranslatedFrame[] {
+    const result: TranslatedFrame[] = [];
     for (let i = rangeChain.length - 1; i >= 0 && !rangeChain[i].isStackFrame; --i) {
       const range = rangeChain[i];
       if (!range.callSite) {

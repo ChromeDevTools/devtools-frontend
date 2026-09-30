@@ -458,6 +458,165 @@ describeWithEnvironment('DOMPath', () => {
     assert.strictEqual(Elements.DOMPath.xPath(deepChild, true), '//*[@id="deep-shadow-target"]/b');
   });
 
+  it('computes xPath text()[n] across mixed text/CDATA siblings and document-level comment()[n]', () => {
+    // Mirrors legacy elements/node-xpath (resources/node-xpath.xhtml).
+    const doc = createDOMNode({
+      nodeType: Node.DOCUMENT_NODE,
+      nodeName: '#document',
+      children: [
+        {nodeType: Node.COMMENT_NODE, nodeName: '#comment', nodeValue: ' Pre-comment '},
+        {
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'html',
+          children: [
+            {
+              nodeType: Node.ELEMENT_NODE,
+              nodeName: 'head',
+              children: [{
+                nodeType: Node.ELEMENT_NODE,
+                nodeName: 'script',
+                children: [
+                  {nodeType: Node.TEXT_NODE, nodeName: '#text', nodeValue: '\n// Comment\n//'},
+                  {nodeType: Node.CDATA_SECTION_NODE, nodeName: '#cdata-section', nodeValue: '\nfunction f() {}\n//'},
+                ],
+              }],
+            },
+            {
+              nodeType: Node.ELEMENT_NODE,
+              nodeName: 'body',
+              children: [
+                {nodeType: Node.ELEMENT_NODE, nodeName: 'div', attributes: {id: 'id1'}},
+                {nodeType: Node.ELEMENT_NODE, nodeName: 'div', attributes: {id: 'id2'}},
+                {
+                  nodeType: Node.ELEMENT_NODE,
+                  nodeName: 'div',
+                  attributes: {id: 'container'},
+                  children: [
+                    {
+                      nodeType: Node.ELEMENT_NODE,
+                      nodeName: 'div',
+                      attributes: {id: 'id3'},
+                      children: [
+                        {nodeType: Node.TEXT_NODE, nodeName: '#text', nodeValue: '3 Prefix '},
+                        {
+                          nodeType: Node.CDATA_SECTION_NODE,
+                          nodeName: '#cdata-section',
+                          nodeValue: '<greeting>Hello, world!</greeting>',
+                        },
+                        {nodeType: Node.TEXT_NODE, nodeName: '#text', nodeValue: ' Suffix'},
+                      ],
+                    },
+                    {
+                      nodeType: Node.ELEMENT_NODE,
+                      nodeName: 'div',
+                      attributes: {id: 'id4'},
+                      children: [{nodeType: Node.TEXT_NODE, nodeName: '#text', nodeValue: '4'}],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {nodeType: Node.COMMENT_NODE, nodeName: '#comment', nodeValue: ' Post-comment '},
+      ],
+    });
+
+    const lines: string[] = [];
+    const dump = (node: SDK.DOMModel.DOMNode) => {
+      lines.push(`${node.nodeName()} - ${Elements.DOMPath.xPath(node, true)} - ${Elements.DOMPath.xPath(node, false)}`);
+      node.children()?.forEach(dump);
+    };
+    dump(doc);
+
+    assert.deepEqual(lines, [
+      '#document - / - /',
+      '#comment - /comment()[1] - /comment()[1]',
+      'html - /html - /html',
+      'head - /html/head - /html/head',
+      'script - /html/head/script - /html/head/script',
+      '#text - /html/head/script/text()[1] - /html/head/script/text()[1]',
+      '#cdata-section - /html/head/script/text()[2] - /html/head/script/text()[2]',
+      'body - /html/body - /html/body',
+      'div - //*[@id="id1"] - /html/body/div[1]',
+      'div - //*[@id="id2"] - /html/body/div[2]',
+      'div - //*[@id="container"] - /html/body/div[3]',
+      'div - //*[@id="id3"] - /html/body/div[3]/div[1]',
+      '#text - //*[@id="id3"]/text()[1] - /html/body/div[3]/div[1]/text()[1]',
+      '#cdata-section - //*[@id="id3"]/text()[2] - /html/body/div[3]/div[1]/text()[2]',
+      '#text - //*[@id="id3"]/text()[3] - /html/body/div[3]/div[1]/text()[3]',
+      'div - //*[@id="id4"] - /html/body/div[3]/div[2]',
+      '#text - //*[@id="id4"]/text() - /html/body/div[3]/div[2]/text()',
+      '#comment - /comment()[2] - /comment()[2]',
+    ]);
+  });
+
+  it('computes non-optimized xPath and jsPath across shadow boundaries', () => {
+    // Mirrors legacy elements/shadow/inspect-deep-shadow-element.
+    function shadowTree(targetTag: string, targetId: string): Protocol.DOM.Node {
+      return Object.assign(buildPayload({
+                             nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                             nodeName: '#document-fragment',
+                             localName: '',
+                             children: [{
+                               nodeType: Node.ELEMENT_NODE,
+                               nodeName: 'DIV',
+                               children: [{
+                                 nodeType: Node.ELEMENT_NODE,
+                                 nodeName: 'DIV',
+                                 children: [{
+                                   nodeType: Node.ELEMENT_NODE,
+                                   nodeName: targetTag,
+                                   attributes: {id: targetId},
+                                   children: [{nodeType: Node.TEXT_NODE, nodeName: '#text', nodeValue: 'Shadow'}],
+                                 }],
+                               }],
+                             }],
+                           }),
+                           {shadowRootType: 'open' as Protocol.DOM.ShadowRootType});
+    }
+    const host = Object.assign(buildPayload({nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', attributes: {id: 'host'}}),
+                               {shadowRoots: [shadowTree('SPAN', 'shadow')]});
+    const hostOpen =
+        Object.assign(buildPayload({nodeType: Node.ELEMENT_NODE, nodeName: 'SPAN', attributes: {id: 'hostOpen'}}),
+                      {shadowRoots: [shadowTree('SPAN', 'shadow-open')]});
+    const docPayload = buildPayload({
+      nodeType: Node.DOCUMENT_NODE,
+      nodeName: '#document',
+      children: [{
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'HTML',
+        children: [{
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'BODY',
+          children: [{
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'DIV',
+            children: [{nodeType: Node.ELEMENT_NODE, nodeName: 'DIV'}],
+          }],
+        }],
+      }],
+    });
+    const innerDivPayload = docPayload.children![0].children![0].children![0].children![0];
+    innerDivPayload.children = [host, hostOpen];
+    innerDivPayload.childNodeCount = 2;
+
+    const doc = SDK.DOMModel.DOMNode.create(domModel, null, false, docPayload);
+    const innerDiv = doc.children()![0].children()![0].children()![0].children()![0];
+    const [hostNode, hostOpenNode] = innerDiv.children()!;
+    const target = hostNode.shadowRoots()[0].children()![0].children()![0].children()![0];
+    const targetOpen = hostOpenNode.shadowRoots()[0].children()![0].children()![0].children()![0];
+    assert.strictEqual(target.getAttribute('id'), 'shadow');
+    assert.strictEqual(targetOpen.getAttribute('id'), 'shadow-open');
+
+    assert.strictEqual(Elements.DOMPath.xPath(target, false), '/html/body/div/div/div//div/div/span');
+    assert.strictEqual(Elements.DOMPath.jsPath(target, false),
+                       'document.querySelector("div#host").shadowRoot.querySelector("span#shadow")');
+    assert.strictEqual(Elements.DOMPath.xPath(targetOpen, false), '/html/body/div/div/span//div/div/span');
+    assert.strictEqual(Elements.DOMPath.jsPath(targetOpen, false),
+                       'document.querySelector("span#hostOpen").shadowRoot.querySelector("span#shadow-open")');
+  });
+
   it('computes simpleSelector for tags, IDs, classes, and input types', () => {
     const container = createDOMNode({
       nodeType: Node.ELEMENT_NODE,

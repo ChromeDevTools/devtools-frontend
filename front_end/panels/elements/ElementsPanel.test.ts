@@ -764,6 +764,129 @@ describeWithEnvironment('ElementsPanel', () => {
     panel.detach();
   });
 
+  it('maps iframe owner elements to the parent frame context and content documents to the child frame context',
+     async () => {
+       // Mirrors legacy elements/selected-element-changes-execution-context, without stubbing frameId().
+       const mainFrameId = 'main-frame' as Protocol.Page.FrameId;
+       const childFrameId = 'child-frame' as Protocol.Page.FrameId;
+       for (const [id, frameId] of [[101, mainFrameId], [102, childFrameId]] as const) {
+         dispatchEvent(target, 'Runtime.executionContextCreated', {
+           context: {
+             id: id as Protocol.Runtime.ExecutionContextId,
+             origin: 'http://example.com',
+             name: String(frameId),
+             uniqueId: `ctx-${id}`,
+             auxData: {frameId, isDefault: true},
+           },
+         });
+       }
+
+       const contentDocument = {
+         nodeId: 20 as Protocol.DOM.NodeId,
+         backendNodeId: 120 as Protocol.DOM.BackendNodeId,
+         nodeType: Node.DOCUMENT_NODE,
+         nodeName: '#document',
+         childNodeCount: 1,
+         children: [makeElementNode(21, 'HTML', {
+           parentId: 20 as Protocol.DOM.NodeId,
+           children: [makeElementNode(22, 'HEAD', {parentId: 21 as Protocol.DOM.NodeId, attributes: ['id', 'head']})],
+         })],
+       } as Protocol.DOM.Node;
+       connection.setHandler('DOM.getDocument', null);
+       connection.setSuccessHandler(
+           'DOM.getDocument',
+           () => createDocumentResponse(
+               [
+                 makeElementNode(8, 'IFRAME',
+                                 {attributes: ['id', 'iframe-per-se'], frameId: childFrameId, contentDocument}),
+                 makeElementNode(9, 'DIV', {attributes: ['id', 'element']}),
+               ],
+               mainFrameId));
+
+       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+       const panel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
+       panel.markAsRoot();
+       renderElementIntoDOM(panel);
+
+       const model = target.model(SDK.DOMModel.DOMModel)!;
+       await model.requestDocument();
+
+       const iframeNode = model.nodeForId(8 as Protocol.DOM.NodeId)!;
+       const mainDiv = model.nodeForId(9 as Protocol.DOM.NodeId)!;
+       const iframeDocument = iframeNode.contentDocument()!;
+       const iframeHead = model.nodeForId(22 as Protocol.DOM.NodeId)!;
+       assert.strictEqual(iframeDocument.id, 20);
+
+       const selectAndGetContextFrameId = (node: SDK.DOMModel.DOMNode) => {
+         panel.selectDOMNode(node, true);
+         const context = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+         assert.exists(context);
+         // The selected context always matches the selected node's frame.
+         assert.strictEqual(context.frameId, node.frameId());
+         return context.frameId;
+       };
+
+       assert.strictEqual(selectAndGetContextFrameId(iframeHead), childFrameId);
+       assert.strictEqual(selectAndGetContextFrameId(mainDiv), mainFrameId);
+       // The <iframe> owner element itself lives in the main frame...
+       assert.strictEqual(selectAndGetContextFrameId(iframeNode), mainFrameId);
+       // ...while its content document belongs to the child frame.
+       assert.strictEqual(selectAndGetContextFrameId(iframeDocument), childFrameId);
+
+       panel.detach();
+     });
+
+  it('selects body after all restoration retries fail and restores the node on a later document update', async () => {
+    // Mirrors legacy elements/elements-panel-restore-selection-when-node-comes-later.
+    const clock = sinon.useFakeTimers();
+    try {
+      let nodeInDOM = true;
+      const requestedPaths: string[] = [];
+      const spanNode = makeElementNode(9, 'SPAN', {attributes: ['id', 'inspected']});
+
+      connection.setHandler('DOM.getDocument', null);
+      connection.setSuccessHandler('DOM.getDocument', () => createDocumentResponse(nodeInDOM ? [spanNode] : []));
+      connection.setSuccessHandler('DOM.pushNodeByPathToFrontend', params => {
+        requestedPaths.push(params.path);
+        return {nodeId: (nodeInDOM ? 9 : 0) as Protocol.DOM.NodeId};
+      });
+
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const model = target.model(SDK.DOMModel.DOMModel)!;
+      const panel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
+      panel.markAsRoot();
+      renderElementIntoDOM(panel);
+
+      await model.requestDocument();
+      panel.selectDOMNode(model.existingDocument()!.body!.children()![0], true);
+      assert.strictEqual(panel.selectedDOMNode()?.getAttribute('id'), 'inspected');
+
+      // First reload: the node never shows up, so every retry fails.
+      nodeInDOM = false;
+      dispatchEvent(target, 'DOM.documentUpdated');
+      await model.requestDocument();
+      await clock.tickAsync(0);
+      assert.strictEqual(panel.selectedDOMNode()?.nodeName(), 'BODY');
+      await clock.tickAsync(5000);
+      assert.strictEqual(panel.selectedDOMNode()?.nodeName(), 'BODY');
+      assert.deepEqual(requestedPaths, Array(5).fill('0,HTML,0,BODY,0,SPAN'));
+
+      // Second reload: the node is present and gets restored.
+      requestedPaths.length = 0;
+      nodeInDOM = true;
+      dispatchEvent(target, 'DOM.documentUpdated');
+      await model.requestDocument();
+      await clock.tickAsync(0);
+      assert.strictEqual(panel.selectedDOMNode()?.getAttribute('id'), 'inspected');
+      assert.deepEqual(requestedPaths, ['0,HTML,0,BODY,0,SPAN']);
+
+      panel.detach();
+      await clock.runAllAsync();
+    } finally {
+      clock.restore();
+    }
+  });
+
   it('reveals host or user-agent shadow node depending on show-ua-shadow-dom setting', async () => {
     connection.setHandler('DOM.getDocument', null);
     connection.setSuccessHandler(

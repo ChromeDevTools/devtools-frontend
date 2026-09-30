@@ -15,6 +15,8 @@ import type * as ChangeTracker from '../../models/change_tracker/change_tracker.
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {assertScreenshot, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {createCSSStyle, getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
@@ -5098,6 +5100,96 @@ describeWithEnvironment('DOMTreeWidget', () => {
       await domTree.copyStyles(rootNode);
 
       sinon.assert.calledOnceWithExactly(copySpy, '    display: block;\n    color: red;');
+    } finally {
+      domTree.detach();
+    }
+  });
+
+  it('copies only active, non-UA, inheritable styles from a real matched styles cascade', async () => {
+    // Mirrors legacy elements/copy-styles.
+    const connection = new MockCDPConnection();
+    const cdpTarget = createTarget({connection});
+    const {domTree, domModel} = setupDOMTreeWidget(cdpTarget, Elements.DOMTreeWidget.DEFAULT_VIEW);
+    try {
+      const cssModel = domModel.cssModel();
+      const bodyNode = createTestDOMTree(domModel, {
+        nodeId: 1,
+        nodeName: 'BODY',
+        children: [
+          {nodeId: 2, nodeName: 'DIV', attributes: ['style', 'padding: 5px']},
+          {nodeId: 3, nodeName: 'BUTTON'},
+          {nodeId: 4, nodeName: 'BUTTON', attributes: ['style', 'color: green']},
+        ],
+      });
+      const [divNode, redButtonNode, greenButtonNode] = bodyNode.children()!;
+      const UA = Protocol.CSS.StyleSheetOrigin.UserAgent;
+      const uaBody = ruleMatch('body', {display: 'block', margin: '8px'}, {origin: UA});
+      const authorBody = ruleMatch('body', {border: '1px solid black', 'font-weight': 'bold'});
+      const uaDiv = ruleMatch('div', {display: 'block'}, {origin: UA});
+      const uaButton =
+          ruleMatch('button', {display: 'inline-block', 'font-weight': '400', color: 'buttontext'}, {origin: UA});
+      const authorButton = ruleMatch('button', {color: 'red'});
+      const inheritedFromBody = () => [{matchedCSSRules: [uaBody, authorBody]}];
+
+      const cascades = new Map<SDK.DOMModel.DOMNode, SDK.CSSMatchedStyles.CSSMatchedStyles>([
+        [
+          bodyNode,
+          await getMatchedStyles({connection, cssModel, node: bodyNode, matchedPayload: [uaBody, authorBody]}),
+        ],
+        [
+          divNode,
+          await getMatchedStyles({
+            connection,
+            cssModel,
+            node: divNode,
+            inlinePayload: createCSSStyle([{name: 'padding', value: '5px'}]),
+            matchedPayload: [uaDiv],
+            inheritedPayload: inheritedFromBody(),
+          }),
+        ],
+        [
+          redButtonNode,
+          await getMatchedStyles({
+            connection,
+            cssModel,
+            node: redButtonNode,
+            matchedPayload: [uaButton, authorButton],
+            inheritedPayload: inheritedFromBody(),
+          }),
+        ],
+        [
+          greenButtonNode,
+          await getMatchedStyles({
+            connection,
+            cssModel,
+            node: greenButtonNode,
+            inlinePayload: createCSSStyle([{name: 'color', value: 'green'}]),
+            matchedPayload: [uaButton, authorButton],
+            inheritedPayload: inheritedFromBody(),
+          }),
+        ],
+      ]);
+      sinon.stub(cssModel, 'cachedMatchedCascadeForNode').callsFake(async node => cascades.get(node) ?? null);
+      const copyStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
+
+      const copied: string[] = [];
+      for (const node of [bodyNode, divNode, redButtonNode, greenButtonNode]) {
+        copyStub.resetHistory();
+        await domTree.copyStyles(node);
+        sinon.assert.calledOnce(copyStub);
+        copied.push(copyStub.firstCall.args[0] as string);
+      }
+
+      assert.deepEqual(copied, [
+        // UA display/margin are dropped.
+        '    border: 1px solid black;\n    font-weight: bold;',
+        // Inherited non-inheritable border is dropped; inherited font-weight is kept before own styles.
+        '    font-weight: bold;\n    padding: 5px;',
+        // Inherited font-weight is overloaded by the UA button rule, UA properties are dropped.
+        '    color: red;',
+        // The author rule color is overloaded by the inline style.
+        '    color: green;',
+      ]);
     } finally {
       domTree.detach();
     }

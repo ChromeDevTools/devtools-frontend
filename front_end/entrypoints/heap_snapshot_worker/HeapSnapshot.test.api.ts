@@ -394,6 +394,12 @@ function checkModuleScopes({snapshot, analysis}: ContextFixture): void {
 }
 
 // Analyzes script scopes holding top-level let and const.
+//
+// TODO: Currently disabled, since V8 is going to stop emitting context
+// variables for script scopes: other scripts may read top-level let and
+// const by name, and V8 does not record those uses. Afterwards, no scopes
+// should be reported for 'script.js'.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function checkScriptScopes({snapshot, analysis}: ContextFixture): void {
   const scope = singleScopeForScript(analysis, 'script.js');
 
@@ -434,6 +440,5 @@ describe('HeapSnapshot analyze context fields API Test', () => {
     checkGenerator(fixture);
     checkAsyncFunction(fixture);
     checkModuleScopes(fixture);
-    checkScriptScopes(fixture);
   });
 });

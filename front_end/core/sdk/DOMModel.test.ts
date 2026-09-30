@@ -783,6 +783,61 @@ describe('DOMModel', () => {
         await domNode.toggleHideElement();
         assert.isFalse(domNode.isToggledToHidden());
       });
+
+      for (const [pseudoType, pseudoName] of [[ProtocolModule.DOM.PseudoType.Before, '::before'],
+                                              [ProtocolModule.DOM.PseudoType.After, '::after'],
+      ] as const) {
+        it(`hides the ${pseudoName} pseudo element through its parent element`, async () => {
+          // Mirrors legacy elements/hide-shortcut (testToggleHide{Before,After}PseudoShortcut{On,Off}).
+          const target = universe.createTarget();
+          const model = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+          const parentNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+            nodeId: 1 as Protocol.DOM.NodeId,
+            backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+            nodeType: NodeType.ELEMENT_NODE,
+            nodeName: 'DIV',
+            localName: 'div',
+            nodeValue: '',
+            attributes: ['id', 'parent-node'],
+            pseudoElements: [{
+              nodeId: 2 as Protocol.DOM.NodeId,
+              backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+              nodeType: NodeType.ELEMENT_NODE,
+              nodeName: pseudoName,
+              localName: '',
+              nodeValue: '',
+              pseudoType,
+            }],
+          });
+          const pseudoNode = pseudoType === ProtocolModule.DOM.PseudoType.Before ? parentNode.beforePseudoElement() :
+                                                                                   parentNode.afterPseudoElement();
+          assert.exists(pseudoNode);
+          assert.strictEqual(pseudoNode.parentNode, parentNode);
+
+          const callFunction = sinon.stub().resolves({});
+          const release = sinon.stub();
+          const parentResolve =
+              sinon.stub(parentNode, 'resolveToObject').resolves({callFunction,
+                                                                  release} as unknown as SDK.RemoteObject.RemoteObject);
+          const pseudoResolve = sinon.stub(pseudoNode, 'resolveToObject');
+
+          await pseudoNode.toggleHideElement();
+
+          // The pseudo element cannot be resolved to a JS object, so its parent element is used instead.
+          sinon.assert.calledOnce(parentResolve);
+          sinon.assert.notCalled(pseudoResolve);
+          sinon.assert.calledOnce(callFunction);
+          assert.deepEqual(callFunction.firstCall.args[1], [{value: pseudoName}, {value: true}]);
+          sinon.assert.calledOnce(release);
+          assert.isTrue(pseudoNode.isToggledToHidden());
+          assert.isFalse(parentNode.isToggledToHidden());
+
+          await pseudoNode.toggleHideElement();
+          sinon.assert.calledTwice(callFunction);
+          assert.deepEqual(callFunction.secondCall.args[1], [{value: pseudoName}, {value: false}]);
+          assert.isFalse(pseudoNode.isToggledToHidden());
+        });
+      }
     });
   });
 

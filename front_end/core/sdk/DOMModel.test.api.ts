@@ -662,6 +662,18 @@ describe('DOMModel setOuterHTML and undo/redo edits', () => {
                undoEvents: ['Event AttrModified: A', 'Event AttrRemoved: A', 'Event AttrRemoved: A'],
              },
              {
+               oldStr: 'Getting involved',
+               newStr: '',
+               forwardEvents: ['Event NodeRemoved: #text'],
+               undoEvents: ['Event NodeInserted: #text'],
+             },
+             {
+               oldStr: 'Getting involved',
+               newStr: 'Getting</h2><h2>involved',
+               forwardEvents: ['Event NodeInserted: H2', 'Event NodeInserted: H2', 'Event NodeRemoved: H2'],
+               undoEvents: ['Event NodeInserted: H2', 'Event NodeRemoved: H2', 'Event NodeRemoved: H2'],
+             },
+             {
                oldStr: '<h2>Getting involved</h2>',
                newStr: '<h3>Getting involved</h3>',
                forwardEvents: ['Event NodeInserted: H3', 'Event NodeRemoved: H2'],
@@ -681,6 +693,271 @@ describe('DOMModel setOuterHTML and undo/redo edits', () => {
          assert.strictEqual(await container.getOuterHTML(), containerText);
        }
      });
+
+  /**
+   * Returns a signature of the direct children of `node` as seen by the frontend DOMModel.
+   * Whitespace-only text nodes are skipped because the backend does not report them.
+   */
+  function modelChildSignature(node: SDK.DOMModel.DOMNode|null): string[] {
+    assert.isNotNull(node);
+    const children = node.children();
+    assert.isNotNull(children, `children of ${node.nodeName()} are not loaded in the DOMModel`);
+    const isText = (child: SDK.DOMModel.DOMNode): boolean => child.nodeType() === SDK.DOMModel.NodeType.TEXT_NODE;
+    return children.filter(child => !isText(child) || child.nodeValue().trim())
+        .map(child => isText(child) ? `#text:${child.nodeValue()}` : child.nodeName());
+  }
+
+  /**
+   * Returns the same signature as `modelChildSignature`, but computed from the live DOM of the inspected page.
+   */
+  async function pageChildSignature(inspectedPage: API.InspectedPage, selector: string): Promise<string[]> {
+    return await inspectedPage.evaluate((selector: string) => {
+      const element = document.querySelector(selector);
+      if (!element) {
+        throw new Error(`No element for ${selector}`);
+      }
+      return [...element.childNodes]
+          .filter(child => child.nodeType !== Node.TEXT_NODE || child.nodeValue?.trim())
+          .map(child => child.nodeType === Node.TEXT_NODE ? `#text:${child.nodeValue}` : child.nodeName);
+    }, selector);
+  }
+
+  function findById(root: SDK.DOMModel.DOMNode, id: string): SDK.DOMModel.DOMNode|null {
+    return findNode(root, n => n.getAttribute('id') === id);
+  }
+
+  it('keeps the DOMModel tree consistent when applying and undoing multi-node setOuterHTML edits',
+     async ({inspectedPage, universe}) => {
+       const primaryTarget = universe.targetManager.primaryPageTarget();
+       assert.isNotNull(primaryTarget);
+       const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+       assert.isNotNull(domModel);
+       const undoStack = universe.domModelUndoStack;
+
+       await inspectedPage.goToHtml(`
+         <div id="container" style="display:none">
+         <p>WebKit is used by <a href="http://www.apple.com/safari/">Safari</a>, Dashboard, etc..</p>
+         <h2>Getting involved</h2>
+         <p id="identity">There are many ways to get involved. You can:</p>
+         <ul>
+            <li></li>
+         </ul>
+         <ul>
+            <li></li>
+         </ul>
+         </div>
+       `);
+       const doc = await domModel.requestDocument();
+       assert.isNotNull(doc);
+       await doc.getSubtree(10, true);
+       const container = findById(doc, 'container');
+       assert.isNotNull(container);
+       const body = container.parentNode;
+       assert.isNotNull(body);
+       const identity = findById(doc, 'identity');
+       assert.isNotNull(identity);
+       const containerText = await container.getOuterHTML();
+       assert.isNotNull(containerText);
+       const events = recordDOMModelEvents(domModel);
+
+       async function assertModelMatchesPage(): Promise<void> {
+         assert.deepEqual(modelChildSignature(body), await pageChildSignature(inspectedPage, 'body'));
+         assert.deepEqual(modelChildSignature(container), await pageChildSignature(inspectedPage, '#container'));
+         // The node that was not touched by the edit must keep its DOMModel identity.
+         assert.strictEqual(findById(container as SDK.DOMModel.DOMNode, 'identity'), identity);
+       }
+
+       const cases: Array<{
+         name: string,
+         patch: (text: string) => string,
+         forwardEvents: string[],
+         // Omitted where the exact undo mutation sequence differs between Chrome versions; the backend
+         // sequence is covered by inspector-protocol/dom/undo-set-outer-html-2.js in Chromium.
+         undoEvents?: string[],
+       }> =
+           [
+             {
+               name: 'change multiple things',
+               patch: text => text.replace(/<li>.*<\/li>/, '').replace('<h2>', '<h2 foo="bar" bar="baz">'),
+               forwardEvents: [
+                 'Event AttrModified: H2',
+                 'Event AttrModified: H2',
+                 'Event NodeInserted: UL',
+                 'Event NodeRemoved: UL',
+               ],
+               undoEvents: [
+                 'Event AttrRemoved: H2',
+                 'Event AttrRemoved: H2',
+                 'Event NodeInserted: UL',
+                 'Event NodeRemoved: UL',
+               ],
+             },
+             {
+               name: 'change nesting level',
+               patch: text => text.replace('<ul>', '<div><ul>').replace('</ul>', '</ul></div>'),
+               forwardEvents: ['Event NodeInserted: DIV', 'Event NodeRemoved: UL'],
+               undoEvents: ['Event NodeInserted: UL', 'Event NodeRemoved: DIV'],
+             },
+             {
+               name: 'swap nodes',
+               patch: text =>
+                   text.replace('<h2>Getting involved</h2>', '').replace('</div>', '<h2>Getting involved</h2></div>'),
+               forwardEvents: ['Event NodeInserted: H2', 'Event NodeRemoved: H2'],
+               undoEvents: ['Event NodeInserted: H2', 'Event NodeRemoved: H2'],
+             },
+             {
+               name: 'edit two roots',
+               patch: text => text + '<div>Additional node</div>',
+               forwardEvents: ['Event NodeInserted: DIV'],
+               undoEvents: ['Event NodeRemoved: DIV'],
+             },
+             {
+               name: 'duplicate node',
+               patch: text =>
+                   text.replace('<h2>Getting involved</h2>', '<h2>Getting involved</h2><h2>Getting involved</h2>'),
+               forwardEvents: ['Event NodeInserted: H2', 'Event NodeInserted: H2', 'Event NodeRemoved: H2'],
+             },
+           ];
+
+       for (const {name, patch, forwardEvents, undoEvents} of cases) {
+         events.length = 0;
+         await new Promise<void>(resolve => container.setOuterHTML(patch(containerText), () => resolve()));
+         assert.deepEqual(events.splice(0).sort(), forwardEvents, `forward events for "${name}"`);
+         await assertModelMatchesPage();
+
+         await undoStack.undo();
+         const actualUndoEvents = events.splice(0).sort();
+         if (undoEvents) {
+           assert.deepEqual(actualUndoEvents, undoEvents, `undo events for "${name}"`);
+         }
+         assert.strictEqual(await container.getOuterHTML(), containerText, `undo result for "${name}"`);
+         await assertModelMatchesPage();
+       }
+     });
+
+  it('handles whitespace-only text nodes in setOuterHTML edits', async ({inspectedPage, universe}) => {
+    const primaryTarget = universe.targetManager.primaryPageTarget();
+    assert.isNotNull(primaryTarget);
+    const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+    assert.isNotNull(domModel);
+
+    await inspectedPage.goToHtml(`
+      <div id="container" style="display:none">
+        <child id="identity"></child>
+      </div>
+    `);
+    const doc = await domModel.requestDocument();
+    assert.isNotNull(doc);
+    await doc.getSubtree(10, true);
+    const container = findById(doc, 'container');
+    assert.isNotNull(container);
+    const identity = findById(doc, 'identity');
+    assert.isNotNull(identity);
+    const containerText = await container.getOuterHTML();
+    assert.isNotNull(containerText);
+    const events = recordDOMModelEvents(domModel);
+
+    const steps: Array<{textContent: string, expectedEvents: string[]}> = [
+      {textContent: ' ', expectedEvents: []},
+      {textContent: 'NOT_WHITESPACE', expectedEvents: ['Event NodeInserted: #text']},
+      {textContent: 'OTHER_NOT_WHITESPACE', expectedEvents: ['Event CharacterDataModified: #text']},
+      {textContent: '   ', expectedEvents: ['Event NodeRemoved: #text']},
+      {textContent: '', expectedEvents: []},
+    ];
+    for (const {textContent, expectedEvents} of steps) {
+      events.length = 0;
+      const text =
+          containerText.replace(/<child id="identity">.*<\/child>/, `<child id="identity">${textContent}</child>`);
+      await new Promise<void>(resolve => container.setOuterHTML(text, () => resolve()));
+      assert.deepEqual(events.splice(0).sort(), expectedEvents, `events for textContent "${textContent}"`);
+      assert.strictEqual(findById(container, 'identity'), identity);
+      assert.deepEqual(modelChildSignature(identity), await pageChildSignature(inspectedPage, '#identity'));
+    }
+  });
+
+  it('applies setOuterHTML edits in an XHTML document', async ({inspectedPage, universe}) => {
+    const primaryTarget = universe.targetManager.primaryPageTarget();
+    assert.isNotNull(primaryTarget);
+    const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+    assert.isNotNull(domModel);
+
+    const xhtml = `<html id="html" xmlns="http://www.w3.org/1999/xhtml">
+<body>
+<div id="container" style="display:none">
+<p>WebKit is used by <a href="http://www.apple.com/safari/">Safari</a>, Dashboard, etc.</p>
+<h2>Getting involved</h2>
+<p id="identity">There are many ways to get involved. You can:</p>
+</div>
+</body>
+</html>`;
+    await inspectedPage.goTo(`data:application/xhtml+xml;charset=utf-8,${encodeURIComponent(xhtml)}`);
+    const doc = await domModel.requestDocument();
+    assert.isNotNull(doc);
+    await doc.getSubtree(10, true);
+    const container = findById(doc, 'container');
+    assert.isNotNull(container);
+    assert.isTrue(container.isXMLNode());
+    assert.strictEqual(container.nodeName(), 'div');
+    const identity = findById(doc, 'identity');
+    assert.isNotNull(identity);
+    const containerText = await container.getOuterHTML();
+    assert.isNotNull(containerText);
+    const events = recordDOMModelEvents(domModel);
+
+    const cases: Array<{oldStr: string, newStr: string, forwardEvents: string[], restoreEvents: string[]}> = [
+      {
+        oldStr: 'Getting involved',
+        newStr: 'Getting not involved',
+        forwardEvents: [
+          'Event AttrModified: div',
+          'Event AttrModified: div',
+          'Event AttrModified: div',
+          'Event AttrRemoved: div',
+          'Event AttrRemoved: div',
+          'Event CharacterDataModified: #text',
+        ],
+        restoreEvents: ['Event CharacterDataModified: #text'],
+      },
+      {
+        oldStr: '<a href',
+        newStr: '<a foo="bar" href',
+        forwardEvents: ['Event AttrModified: a', 'Event AttrModified: a', 'Event AttrRemoved: a'],
+        restoreEvents: ['Event AttrModified: a', 'Event AttrRemoved: a', 'Event AttrRemoved: a'],
+      },
+      {
+        oldStr: 'Getting involved',
+        newStr: '',
+        forwardEvents: ['Event NodeRemoved: #text'],
+        restoreEvents: ['Event NodeInserted: #text'],
+      },
+      {
+        oldStr: 'Getting involved',
+        newStr: 'Getting</h2><h2>involved',
+        forwardEvents: ['Event NodeInserted: h2', 'Event NodeInserted: h2', 'Event NodeRemoved: h2'],
+        restoreEvents: ['Event NodeInserted: h2', 'Event NodeRemoved: h2', 'Event NodeRemoved: h2'],
+      },
+      {
+        oldStr: '<h2>Getting involved</h2>',
+        newStr: '<h3>Getting involved</h3>',
+        forwardEvents: ['Event NodeInserted: h3', 'Event NodeRemoved: h2'],
+        restoreEvents: ['Event NodeInserted: h2', 'Event NodeRemoved: h3'],
+      },
+    ];
+
+    for (const {oldStr, newStr, forwardEvents, restoreEvents} of cases) {
+      events.length = 0;
+      await new Promise<void>(resolve =>
+                                  container.setOuterHTML(containerText.replace(oldStr, newStr), () => resolve()));
+      assert.deepEqual(events.splice(0).sort(), forwardEvents, `forward events for "${newStr}"`);
+      assert.deepEqual(modelChildSignature(container), await pageChildSignature(inspectedPage, '#container'));
+      assert.strictEqual(findById(container, 'identity'), identity);
+
+      await new Promise<void>(resolve => container.setOuterHTML(containerText, () => resolve()));
+      assert.deepEqual(events.splice(0).sort(), restoreEvents, `restore events for "${newStr}"`);
+      assert.deepEqual(modelChildSignature(container), await pageChildSignature(inspectedPage, '#container'));
+      assert.strictEqual(findById(container, 'identity'), identity);
+    }
+  });
 
   it('undoes and redoes removeNode, setNodeName, setNodeValue, and setOuterHTML edits',
      async ({inspectedPage, universe}) => {

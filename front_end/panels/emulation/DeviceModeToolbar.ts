@@ -1077,14 +1077,6 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
     }
   }
 
-  private getPrettyFitZoomPercentage(): string {
-    return !this.model ? '' : `${(this.model.fitScale() * 100).toFixed(0)}`;
-  }
-
-  private getPrettyZoomPercentage(): string {
-    return !this.model ? '' : `${(this.model.scale() * 100).toFixed(0)}`;
-  }
-
   private restore(): void {
     if (!this.model) {
       return;

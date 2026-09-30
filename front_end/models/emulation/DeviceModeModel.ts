@@ -778,25 +778,10 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private calculateFitScale(screenWidth: number, screenHeight: number): number {
-    let scale = Math.min(screenWidth ? this.#preferredSize.width / screenWidth : 1,
-                         screenHeight ? this.#preferredSize.height / screenHeight : 1);
-    scale = Math.max(Math.min(Math.floor(scale * 100), 100), 1);
-
-    let sharpScale = scale;
-    while (sharpScale > scale * 0.7) {
-      let sharp = true;
-      if (screenWidth) {
-        sharp = sharp && Number.isInteger(screenWidth * sharpScale / 100);
-      }
-      if (screenHeight) {
-        sharp = sharp && Number.isInteger(screenHeight * sharpScale / 100);
-      }
-      if (sharp) {
-        return sharpScale / 100;
-      }
-      sharpScale -= 1;
-    }
-    return scale / 100;
+    const scaleW = screenWidth ? Math.floor(this.#preferredSize.width * 100 / screenWidth) : 100;
+    const scaleH = screenHeight ? Math.floor(this.#preferredSize.height * 100 / screenHeight) : 100;
+    const scale = Math.min(scaleW, scaleH, 100);
+    return Math.max(scale, 1) / 100;
   }
 
   setSizeAndScaleToFit(width: number, height: number): void {

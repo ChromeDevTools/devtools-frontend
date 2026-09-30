@@ -283,7 +283,110 @@ describe('CSSModel', () => {
       const header2 = await cssModel.requestViaInspectorStylesheet(frameId);
       assert.strictEqual(header2, header);
     });
+
+    it('keeps per-URL bookkeeping consistent when several stylesheets in one frame share a URL', () => {
+      const connection = new MockCDPConnection();
+      const target = universe.createTarget({connection});
+      const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+      const frameId = 'frame' as Protocol.Page.FrameId;
+      const sharedURL = urlString`http://example.com/imported-1.css`;
+      const otherURL = urlString`http://example.com/imported-2.css`;
+
+      function addHeader(styleSheetId: string, sourceURL: string): void {
+        connection.dispatchEvent('CSS.styleSheetAdded', {
+          header: {
+            styleSheetId: styleSheetId as Protocol.DOM.StyleSheetId,
+            frameId,
+            sourceURL,
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            title: '',
+            disabled: false,
+            isInline: false,
+            isMutable: false,
+            isConstructed: false,
+            startLine: 0,
+            startColumn: 0,
+            length: 0,
+            endLine: 0,
+            endColumn: 0,
+          },
+        },
+                                 undefined);
+      }
+
+      // The same stylesheet imported twice (e.g. two identical @import rules) yields two headers with one URL.
+      addHeader('import-1a', sharedURL);
+      addHeader('import-2', otherURL);
+      addHeader('import-1b', sharedURL);
+
+      assert.sameMembers(cssModel.getStyleSheetIdsForURL(sharedURL), ['import-1a', 'import-1b']);
+      assert.deepEqual(cssModel.getStyleSheetIdsForURL(otherURL), ['import-2']);
+
+      connection.dispatchEvent('CSS.styleSheetRemoved', {styleSheetId: 'import-1a' as Protocol.DOM.StyleSheetId},
+                               undefined);
+      assert.deepEqual(cssModel.getStyleSheetIdsForURL(sharedURL), ['import-1b']);
+      assert.deepEqual(cssModel.getStyleSheetIdsForURL(otherURL), ['import-2']);
+      assert.isNotNull(cssModel.styleSheetHeaderForId('import-1b' as Protocol.DOM.StyleSheetId));
+
+      connection.dispatchEvent('CSS.styleSheetRemoved', {styleSheetId: 'import-1b' as Protocol.DOM.StyleSheetId},
+                               undefined);
+      assert.deepEqual(cssModel.getStyleSheetIdsForURL(sharedURL), []);
+      assert.deepEqual(cssModel.styleSheetHeaders().map(header => header.id), ['import-2']);
+
+      // Re-adding a sheet with the previously emptied URL works again.
+      addHeader('import-1c', sharedURL);
+      assert.deepEqual(cssModel.getStyleSheetIdsForURL(sharedURL), ['import-1c']);
+    });
   });
+
+  it('resolves a relative sourceURL and an absolute-path sourceMappingURL of an inline stylesheet against the page URL',
+     async () => {
+       const sourceMapContent = JSON.stringify({version: 3, sources: ['y.scss'], mappings: 'AAAA'});
+       const loadOverride = sinon.spy(async (_url: string) => ({
+                                        success: true,
+                                        content: sourceMapContent,
+                                        errorDescription: {
+                                          message: '',
+                                          statusCode: 0,
+                                          netError: 0,
+                                          netErrorName: '',
+                                          urlValid: true,
+                                        },
+                                      }));
+       const universeWithLoader = new TestUniverse({pageResourceLoaderOptions: {loadOverride}});
+       const target = universeWithLoader.createTarget();
+       target.setInspectedURL(urlString`http://h/page.html`);
+       const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+
+       const addedPromise = cssModel.once(SDK.CSSModel.Events.StyleSheetAdded);
+       cssModel.styleSheetAdded({
+         styleSheetId: 'inline' as Protocol.DOM.StyleSheetId,
+         frameId: 'frame' as Protocol.Page.FrameId,
+         sourceURL: 'style.css',
+         hasSourceURL: true,
+         sourceMapURL: '/x/y.css.map',
+         origin: Protocol.CSS.StyleSheetOrigin.Regular,
+         title: '',
+         disabled: false,
+         isInline: true,
+         isMutable: false,
+         isConstructed: false,
+         startLine: 1,
+         startColumn: 7,
+         length: 20,
+         endLine: 3,
+         endColumn: 0,
+       });
+       const header = await addedPromise;
+
+       const sourceMap = await cssModel.sourceMapManager().sourceMapForClientPromise(header);
+       assert.exists(sourceMap);
+       sinon.assert.calledOnceWithExactly(loadOverride, 'http://h/x/y.css.map');
+       assert.strictEqual(sourceMap.url(), urlString`http://h/x/y.css.map`);
+       assert.strictEqual(sourceMap.compiledURL(), urlString`http://h/style.css`);
+       assert.deepEqual(sourceMap.sourceURLs(), [urlString`http://h/x/y.scss`]);
+       assert.strictEqual(cssModel.sourceMapManager().sourceMapForClient(header), sourceMap);
+     });
 
   it('coalesces simultaneous getComputedStyle requests and fetches fresh styles after StyleSheetChanged', async () => {
     const target = universe.createTarget();

@@ -286,15 +286,19 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
     await assertScreenshot('accessibility/accessibility_sidebar_view_toggled.png');
   });
 
-  it('shows announcement recording subpane when enabled in hostConfig', () => {
+  it('shows announcement recording subpane when enabled in hostConfig', async () => {
     updateHostConfig({devToolsAriaLiveRecording: {enabled: true}});
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    renderElementIntoDOM(view);
+    await view.updateComplete;
     assert.isTrue(UI.ViewManager.ViewManager.instance().hasView('aria-live-recording'));
   });
 
-  it('does not show announcement recording subpane when disabled in hostConfig', () => {
+  it('does not show announcement recording subpane when disabled in hostConfig', async () => {
     updateHostConfig({devToolsAriaLiveRecording: {enabled: false}});
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    renderElementIntoDOM(view);
+    await view.updateComplete;
     assert.isFalse(UI.ViewManager.ViewManager.instance().hasView('aria-live-recording'));
   });
 });

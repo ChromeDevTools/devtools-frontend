@@ -5,6 +5,8 @@
 import {join} from 'node:path';
 import stylelint from 'stylelint';
 
+import {devtoolsRootPath} from '../devtools_paths.js';
+
 export async function runStylelint(files, {fix, lintOnly, debug}) {
   if (files.length === 0) {
     return {status: true, output: ''};
@@ -18,9 +20,11 @@ export async function runStylelint(files, {fix, lintOnly, debug}) {
     messages.push('[lint]: Running StyleLint...');
   }
 
+  const rootDir = devtoolsRootPath();
   const {report, errored} = await stylelint.lint({
-    configFile: join(import.meta.dirname, '..', '..', '.stylelintrc.json'),
-    ignorePath: join(import.meta.dirname, '..', '..', '.stylelintignore'),
+    cwd: rootDir,
+    configFile: join(rootDir, '.stylelintrc.json'),
+    ignorePath: join(rootDir, '.stylelintignore'),
     fix: linterFixer,
     files,
     formatter: 'string',

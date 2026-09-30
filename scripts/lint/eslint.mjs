@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import {ESLint} from 'eslint';
-import {join} from 'node:path';
+
+import {devtoolsRootPath} from '../devtools_paths.js';
 
 export async function runESLint(files, {fix, lintOnly, forceFix, debug}) {
   if (files.length === 0) {
@@ -19,7 +20,7 @@ export async function runESLint(files, {fix, lintOnly, forceFix, debug}) {
   }
 
   const cli = new ESLint({
-    cwd: join(import.meta.dirname, '..', '..'),
+    cwd: devtoolsRootPath(),
     fix: linterFixer,
     cache: cacheLinters,
     allowInlineConfig: !forceFix,

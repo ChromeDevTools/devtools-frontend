@@ -3,9 +3,11 @@
 // found in the LICENSE file.
 
 import {globby} from 'globby';
-import {extname, resolve} from 'node:path';
+import {extname, isAbsolute, relative, resolve} from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
+
+import {devtoolsRootPath} from '../devtools_paths.js';
 
 import {runESLint} from './eslint.mjs';
 import {runLitAnalyzer} from './litanalyzer.mjs';
@@ -70,7 +72,7 @@ const LIT_ANALYZER_EXCLUDED_FOLDERS = [
   'front_end/testing',
   'front_end/third_party',
 ];
-const DEVTOOLS_ROOT_DIR = resolve(import.meta.dirname, '..', '..');
+
 function getFilesToLint() {
   if (flags.lintOnly) {
     return ['.'];
@@ -88,8 +90,21 @@ function getFilesToLint() {
  * @param {string[]} targets Array of file paths or directory paths.
  * @param {string} rootDir Base directory.
  */
-export async function expandMixedTargetsOptimized(targets, rootDir) {
-  return await globby(targets, {
+export async function findRelavantFiles(targets, rootDir) {
+  const relativeTargets = [];
+  for (const target of targets) {
+    const resolvedPath = resolve(target);
+    const relativePath = relative(rootDir, resolvedPath);
+    if (!relativePath.startsWith('..') && !isAbsolute(relativePath)) {
+      relativeTargets.push((relativePath || '.').replaceAll('\\', '/'));
+    }
+  }
+
+  if (relativeTargets.length === 0) {
+    return [];
+  }
+
+  return await globby(relativeTargets, {
     cwd: rootDir,
     expandDirectories: {
       extensions: ['css', 'mjs', 'js', 'ts'],
@@ -110,10 +125,7 @@ async function run() {
   const files = getFilesToLint();
   const scripts = [];
   const styles = [];
-  const matchedPaths = await expandMixedTargetsOptimized(
-    files,
-    DEVTOOLS_ROOT_DIR,
-  );
+  const matchedPaths = await findRelavantFiles(files, devtoolsRootPath());
 
   for (const path of matchedPaths) {
     if (extname(path) === '.css') {

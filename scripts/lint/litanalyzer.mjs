@@ -4,7 +4,7 @@
 
 import {spawn} from 'node:child_process';
 import {readFile, stat, writeFile} from 'node:fs/promises';
-import {join} from 'node:path';
+import {join, resolve} from 'node:path';
 
 import {
   devtoolsRootPath,
@@ -53,10 +53,11 @@ class LitAnalyzerCache {
     if (!this.#enabled) {
       return files;
     }
+    const rootDir = devtoolsRootPath();
     const results = await Promise.all(
       files.map(async file => {
         try {
-          const fileStat = await stat(file);
+          const fileStat = await stat(resolve(rootDir, file));
           if (this.#cache.files[file] !== fileStat.mtimeMs) {
             return file;
           }
@@ -73,11 +74,12 @@ class LitAnalyzerCache {
     if (!this.#enabled) {
       return;
     }
+    const rootDir = devtoolsRootPath();
     const filesToUpdate = new Set(files);
     await Promise.all(
       files.map(async file => {
         try {
-          const fileStat = await stat(file);
+          const fileStat = await stat(resolve(rootDir, file));
           this.#cache.files[file] = fileStat.mtimeMs;
         } catch {
           delete this.#cache.files[file];
@@ -91,7 +93,7 @@ class LitAnalyzerCache {
           return;
         }
         try {
-          await stat(file);
+          await stat(resolve(rootDir, file));
         } catch {
           delete this.#cache.files[file];
         }

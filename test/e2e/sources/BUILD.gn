@@ -53,6 +53,8 @@ ts_e2e_library("sources") {
 
   ts_deps = [
     "../../../front_end/ui/components/text_editor:bundle",
+    "../../conductor:implementation",
+    "../../shared",
     "../helpers",
     "../shared",
   ]

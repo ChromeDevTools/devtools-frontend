@@ -10,7 +10,6 @@ ts_e2e_library("ai_assistance") {
   ts_deps = [
     "../../../front_end/core/host:bundle",
     "../../../front_end/core/root:bundle",
-    "../../conductor:implementation",
-    "../../shared",
+    "../shared",
   ]
 }

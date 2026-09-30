@@ -12,7 +12,6 @@ ts_e2e_library("cross_tool_integration") {
   ]
 
   ts_deps = [
-    "../../shared",
     "../helpers",
     "../shared",
   ]

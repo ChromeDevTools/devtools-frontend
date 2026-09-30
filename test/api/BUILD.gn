@@ -41,7 +41,6 @@ node_ts_library("api") {
   ts_deps = [
     "../../front_end/core/common:bundle",
     "../../front_end/core/host:bundle",
-    "../../front_end/core/protocol_client:bundle",
     "../../front_end/core/protocol_client:puppeteer_devtools_connection",
     "../../front_end/core/root:bundle",
     "../../front_end/core/sdk:bundle",
@@ -49,6 +48,7 @@ node_ts_library("api") {
     "../../front_end/testing",
     "../conductor:implementation",
     "../e2e/conductor:implementation",
+    "../e2e/shared",
     "../shared",
   ]
 }

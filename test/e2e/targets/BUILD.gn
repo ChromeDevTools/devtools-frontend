@@ -7,8 +7,5 @@ import("../../../scripts/build/typescript/typescript.gni")
 ts_e2e_library("targets") {
   sources = [ "worklet.test.ts" ]
 
-  ts_deps = [
-    "../helpers",
-    "../shared",
-  ]
+  ts_deps = [ "../helpers" ]
 }

@@ -42,6 +42,7 @@ node_ts_library("helpers") {
     "../../../front_end/panels/recorder:bundle",
     "../../../front_end/panels/recorder/models:recorder",
     "../../../front_end/panels/timeline:bundle",
+    "../../../front_end/ui/legacy/components/data_grid",
     "../../conductor:implementation",
     "../../shared",
     "../shared",

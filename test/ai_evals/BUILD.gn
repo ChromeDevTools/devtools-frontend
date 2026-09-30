@@ -16,7 +16,12 @@ group("ai_evals") {
 
 ts_e2e_library("eval_tests") {
   sources = [ "ai_smoke.test.ts" ]
-  ts_deps = [ ":harness_library" ]
+  ts_deps = [
+    "../../front_end/core/sdk:bundle",
+    "../../front_end/panels/ai_assistance:bundle",
+    "../e2e/helpers",
+    "helpers",
+  ]
 }
 
 ts_e2e_library("harness_library") {
@@ -27,13 +32,10 @@ ts_e2e_library("harness_library") {
     "run-mocha.ts",
   ]
   ts_deps = [
-    "../../front_end/core/sdk:bundle",
-    "../../front_end/panels/ai_assistance:bundle",
+    "../conductor:implementation",
     "../e2e/conductor:implementation",
-    "../e2e/helpers",
+    "../e2e/shared",
     "../shared",
-    "helpers",
-    "report",
   ]
 }
 

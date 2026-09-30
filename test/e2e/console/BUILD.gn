@@ -39,7 +39,10 @@ ts_e2e_library("console") {
   ]
 
   ts_deps = [
+    "../../../front_end/core/root:bundle",
     "../../../front_end/panels/console:bundle",
+    "../../conductor:implementation",
+    "../../shared",
     "../helpers",
     "../shared",
   ]

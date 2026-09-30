@@ -22,7 +22,6 @@ ts_library("mocha-adapter-browser") {
   testonly = true
   sources = [ "mocha-adapter-browser.ts" ]
   ts_deps = [
-    ":browser-globals",
     ":mocha-interface",
     "../../front_end/testing:mocha_helpers",
   ]

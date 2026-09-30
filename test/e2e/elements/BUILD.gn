@@ -44,6 +44,8 @@ ts_e2e_library("elements") {
     "violating-element-and-attributes.test.ts",
   ]
   ts_deps = [
+    "../../conductor:implementation",
+    "../../shared",
     "../helpers",
     "../shared",
   ]

@@ -17,6 +17,8 @@ import type * as EmulationComponents from '../settings/emulation/components/comp
 
 import networkConfigViewStyles from './networkConfigView.css.js';
 
+const {ref} = Directives;
+
 const UIStrings = {
   /**
    * @description Option in network conditions view of the Network panel shown in user agent dropdown.
@@ -82,10 +84,15 @@ export interface NetworkConfigViewInput {
   onClientHintsSubmit: (metaData: Protocol.Emulation.UserAgentMetadata) => void;
 }
 
-export type View = (input: NetworkConfigViewInput, output: object, target: HTMLElement) => void;
+export interface NetworkConfigViewOutput {
+  selectCustomUserAgentInput?: () => void;
+}
+
+export type View = (input: NetworkConfigViewInput, output: NetworkConfigViewOutput, target: HTMLElement) => void;
 
 // clang-format off
-function renderUserAgentSelectAndInput(input: NetworkConfigViewInput, title: string): LitTemplate {
+function renderUserAgentSelectAndInput(
+    input: NetworkConfigViewInput, output: NetworkConfigViewOutput, title: string): LitTemplate {
   const customOverride = {title: i18nString(UIStrings.custom), value: 'custom'};
   const {patchUserAgentWithChromeVersion} = SDK.NetworkManager.MultitargetNetworkManager;
   const {toKebabCase} = Platform.StringUtilities;
@@ -125,7 +132,12 @@ function renderUserAgentSelectAndInput(input: NetworkConfigViewInput, title: str
         required
         aria-label=${i18nString(UIStrings.enterACustomUserAgent)}
         ?disabled=${!input.useCustomUA}
-        @input=${(e: Event) => input.onCustomUserAgentInput((e.target as HTMLInputElement).value)}>
+        @input=${(e: Event) => input.onCustomUserAgentInput((e.target as HTMLInputElement).value)}
+        ${ref(el => {
+          if (el instanceof HTMLInputElement) {
+            output.selectCustomUserAgentInput = () => el.select();
+          }
+        })}>
     <div
         class="network-config-input-validation-error"
         role="alert"
@@ -171,7 +183,7 @@ function renderNetworkThrottlingSection(): LitTemplate {
   `);
 }
 
-function renderUserAgentSection(input: NetworkConfigViewInput): LitTemplate {
+function renderUserAgentSection(input: NetworkConfigViewInput, output: NetworkConfigViewOutput): LitTemplate {
   const title = i18nString(UIStrings.userAgent);
   return renderSection(title, 'network-config-ua', html`
     <devtools-checkbox
@@ -181,7 +193,7 @@ function renderUserAgentSection(input: NetworkConfigViewInput): LitTemplate {
       ${i18nString(UIStrings.selectAutomatically)}
     </devtools-checkbox>
     <div class=${Directives.classMap({'network-config-ua-custom': true, checked: input.useCustomUA})}>
-      ${renderUserAgentSelectAndInput(input, title)}
+      ${renderUserAgentSelectAndInput(input, output, title)}
       <devtools-user-agent-client-hints-form
           .value=${input.clientHintsValue}
           .disabled=${!input.useCustomUA}
@@ -194,13 +206,13 @@ function renderUserAgentSection(input: NetworkConfigViewInput): LitTemplate {
   `);
 }
 
-export const DEFAULT_VIEW: View = (input: NetworkConfigViewInput, _output: object, target: HTMLElement): void => {
+export const DEFAULT_VIEW: View = (input, output, target) => {
   render(html`
     ${renderCacheSection(input)}
     <div class="panel-section-separator"></div>
     ${renderNetworkThrottlingSection()}
     <div class="panel-section-separator"></div>
-    ${renderUserAgentSection(input)}
+    ${renderUserAgentSection(input, output)}
   `, target, {container: {classes: ['network-config']}});
 };
 // clang-format on
@@ -216,6 +228,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
           'custom-user-agent-metadata', null);
 
   readonly #view: View;
+  readonly #viewOutput: NetworkConfigViewOutput = {};
   #useCustomUA = false;
   #customSelectValue = 'custom';
   #validationError = '';
@@ -280,7 +293,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
       onClientHintsChange: (metaData?: Protocol.Emulation.UserAgentMetadata) => this.#onClientHintsChange(metaData),
       onClientHintsSubmit: (metaData: Protocol.Emulation.UserAgentMetadata) => this.#onClientHintsSubmit(metaData),
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, this.#viewOutput, this.contentElement);
   }
 
   #onDisableCacheChange(checked: boolean): void {
@@ -316,7 +329,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
         showMobileCheckbox: true,
         showSubmitButton: true,
       };
-      this.contentElement.querySelector<HTMLInputElement>('.network-config-ua-custom input')?.select();
+      this.#viewOutput.selectCustomUserAgentInput?.();
     }
     this.#validationError = '';
     this.#statusText = '';

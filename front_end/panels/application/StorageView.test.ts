@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {dispatchFocusOutEvent} from '../../testing/DOMHelpers.js';
+import {dispatchFocusOutEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {SECURITY_ORIGIN} from '../../testing/ResourceTreeHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
@@ -141,6 +141,59 @@ describeWithEnvironment('StorageView', () => {
     assert.isTrue(cookiesSetting.get());
     assert.isFalse(includeThirdPartyCookiesCheckboxInput.disabled);
   });
+
+  for (const checked of [true, false]) {
+    it(`${checked ? 'includes' : 'excludes'} file systems when the checkbox is ${checked ? 'checked' : 'unchecked'}`,
+        async () => {
+          assert.exists(storageKeyManager);
+          const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
+          assert.exists(securityOriginManager);
+
+          sinon.stub(securityOriginManager, 'mainSecurityOrigin').returns(SECURITY_ORIGIN);
+          sinon.stub(storageKeyManager, 'mainStorageKey').returns(testKey);
+
+          const clearDataStub = sinon.stub(target.storageAgent(), 'invoke_clearDataForStorageKey');
+
+          const view = new Resources.StorageView.StorageView();
+          renderElementIntoDOM(view);
+          try {
+            await RenderCoordinator.done();
+
+            const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
+            assert.instanceOf(container, HTMLDivElement);
+
+            const checkbox = container.shadowRoot!.querySelector('.file-systems-checkbox');
+            assert.instanceOf(checkbox, HTMLElement);
+
+            const input = checkbox.shadowRoot!.querySelector('input');
+            assert.instanceOf(input, HTMLInputElement);
+            assert.isTrue(input.checked);
+
+            if (!checked) {
+              checkbox.click();
+              await RenderCoordinator.done();
+            }
+            assert.strictEqual(input.checked, checked);
+
+            const clearButton = container.shadowRoot!.querySelector('#storage-view-clear-button');
+            assert.instanceOf(clearButton, HTMLElement);
+            clearButton.click();
+
+            sinon.assert.calledOnce(clearDataStub);
+            const request = clearDataStub.firstCall.args[0];
+            assert.strictEqual(request.storageKey, testKey);
+
+            const storageTypes = request.storageTypes.split(',');
+            if (checked) {
+              assert.include(storageTypes, Protocol.Storage.StorageType.File_systems);
+            } else {
+              assert.notInclude(storageTypes, Protocol.Storage.StorageType.File_systems);
+            }
+          } finally {
+            view.detach();
+          }
+        });
+  }
 
   it('shows a warning message when entering a too big custom quota', async () => {
     assert.exists(domStorageModel);

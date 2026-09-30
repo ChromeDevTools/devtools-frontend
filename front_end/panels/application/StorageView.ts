@@ -224,6 +224,8 @@ export class StorageView extends UI.Widget.VBox {
     const leftColumn = clearSiteDataCheckboxesRow.createChild('div', 'clear-site-data-checkbox-column');
     this.appendSettingCheckbox(leftColumn, i18nString(UIStrings.cacheStorage),
                                Protocol.Storage.StorageType.Cache_storage, 'cache-storage-checkbox');
+    this.appendSettingCheckbox(leftColumn, i18nString(UIStrings.fileSystem), Protocol.Storage.StorageType.File_systems,
+                               'file-systems-checkbox');
     this.appendSettingCheckbox(leftColumn, i18nString(UIStrings.indexDB), Protocol.Storage.StorageType.Indexeddb,
                                'indexeddb-checkbox');
     this.appendSettingCheckbox(leftColumn, i18nString(UIStrings.localAndSessionStorage),
@@ -707,6 +709,7 @@ export class StorageView extends UI.Widget.VBox {
 export const AllStorageTypes: Protocol.Storage.StorageType[] = [
   Protocol.Storage.StorageType.Cache_storage,
   Protocol.Storage.StorageType.Cookies,
+  Protocol.Storage.StorageType.File_systems,
   Protocol.Storage.StorageType.Indexeddb,
   Protocol.Storage.StorageType.Local_storage,
   Protocol.Storage.StorageType.Service_workers,

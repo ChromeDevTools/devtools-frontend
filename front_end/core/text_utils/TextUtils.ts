@@ -9,7 +9,7 @@ import {SearchMatch} from './ContentProvider.js';
 import type {Text} from './Text.js';
 
 const KEY_VALUE_FILTER_REGEXP = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
-const REGEXP_FILTER_REGEXP = /(?:^|\s)(\-)?\/([^\/\\]+(\\.[^\/]*)*)\//;
+const REGEXP_FILTER_REGEXP = /(?:^|\s)(\-)?\/((?:[^\/\\]|\\.)+)\//;
 const TEXT_FILTER_REGEXP = /(?:^|\s)(\-)?([^\s]+)/;
 const SPACE_CHAR_REGEXP = /\s/;
 

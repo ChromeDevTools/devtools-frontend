@@ -274,6 +274,21 @@ describe('TextUtils', () => {
         result = parse(String.raw`/regex\//`);
         assert.deepEqual(result[0], {regex: /regex\//im, negative: false}, 'result was incorrect');
 
+        result = parse(String.raw`/\//`);
+        assert.deepEqual(result, [{regex: /\//im, negative: false}], 'result was incorrect');
+
+        result = parse(String.raw`/\/foo\//`);
+        assert.deepEqual(result, [{regex: /\/foo\//im, negative: false}], 'result was incorrect');
+
+        result = parse(String.raw`/^\/bff\/.*/`);
+        assert.deepEqual(result, [{regex: /^\/bff\/.*/im, negative: false}], 'result was incorrect');
+
+        result = parse(String.raw`/https:\/\/example\.com\/path/`);
+        assert.deepEqual(result, [{regex: /https:\/\/example\.com\/path/im, negative: false}], 'result was incorrect');
+
+        result = parse(String.raw`/\.js\/foo/`);
+        assert.deepEqual(result, [{regex: /\.js\/foo/im, negative: false}], 'result was incorrect');
+
         result = parse(String.raw`/regex\?/ text`);
         assert.deepEqual(result[0], {regex: /regex\?/im, negative: false}, 'result was incorrect');
         assert.deepEqual(result[1], {text: 'text', negative: false}, 'result was incorrect');

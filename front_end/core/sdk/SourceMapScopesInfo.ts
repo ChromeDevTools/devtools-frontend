@@ -531,6 +531,17 @@ export class SourceMapScopesInfo {
   }
 
   /**
+   * Translates a single "raw frame" or call-site, including outlined functions. It's the caller's responsibility to
+   * merge outlined frames with their caller(s) (see {@link GeneratedFrameKind}).
+   */
+  translateRawFrame(generatedLine: number, generatedColumn: number): RawFrameTranslation {
+    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+    const kind = this.#isOutlinedFrame(rangeChain) ? GeneratedFrameKind.OUTLINED : GeneratedFrameKind.VISIBLE;
+    const frame = this.#translateTopFrame(generatedLine, generatedColumn);
+    return {kind, frames: frame ? [frame, ...this.#translateInlinedCallers(rangeChain)] : []};
+  }
+
+  /**
    * The top-most frame is translated the same, regardless of whether we have inlined functions: The name is the
    * original function surrounding the generated position, and the location is the mapped generated position.
    */
@@ -570,6 +581,33 @@ export class SourceMapScopesInfo {
 
     return result;
   }
+}
+
+/**
+ * Describes how the generated function surrounding a generated position shows up in stack traces.
+ *
+ * Compilers can move authored code into a separate generated function, e.g. a block scope that was turned into a
+ * function. The generated range of such a function is marked "hidden". We can pause in such a function, but the frame
+ * is merged with its caller(s) in stack traces: The outlined code logically belongs to the (authored) function that
+ * transitively calls it.
+ */
+export const enum GeneratedFrameKind {
+  /** A regular (possibly with inlined functions) generated function, or top-level code. */
+  VISIBLE = 'VISIBLE',
+  /** A generated function marked as "hidden" that contains outlined authored code. */
+  OUTLINED = 'OUTLINED',
+}
+
+/** See {@link SourceMapScopesInfo.translateRawFrame}. */
+export interface RawFrameTranslation {
+  kind: GeneratedFrameKind;
+  /**
+   * [top, ...inlinedCallers] in top-to-bottom order. Empty if the generated position is not mapped.
+   *
+   * For {@link GeneratedFrameKind.OUTLINED} frames, the top frame is named after the authored function the outlined
+   * code belongs to.
+   */
+  frames: TranslatedFrame[];
 }
 
 /**

@@ -1401,6 +1401,34 @@ describe('SourceMap', () => {
     assert.strictEqual(sourceMap.findOriginalFunctionName({line: 1, column: 110}), 'bar');
   });
 
+  it('translates raw frames using "scopes" proposal information', () => {
+    const info = new ScopesCodec.ScopeInfoBuilder()
+                     .startSource()
+                     .startScope(0, 0, {kind: 'global', key: 'global'})
+                     .startScope(10, 0, {name: 'foo', key: 'foo', kind: 'function', isStackFrame: true})
+                     .endScope(20, 0)
+                     .endScope(30, 0)
+                     .endSource()
+                     .startRange(0, 0, {scopeKey: 'global'})
+                     .startRange(0, 7, {scopeKey: 'foo', isStackFrame: true, isHidden: true})
+                     .endRange(0, 14)
+                     .endRange(0, 21)
+                     .build();
+    const map = ScopesCodec.encode(info, {version: 3, sources: ['foo.ts'], mappings: ''});
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, map as SDK.SourceMap.SourceMapV3Object,
+                                                  new Common.Console.Console());
+
+    assert.strictEqual(sourceMap.translateRawFrame(0, 10)?.kind, SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED);
+    assert.strictEqual(sourceMap.translateRawFrame(0, 17)?.kind, SDK.SourceMapScopesInfo.GeneratedFrameKind.VISIBLE);
+  });
+
+  it('translates raw frames of source maps without "scopes" proposal information as VISIBLE', () => {
+    const sourceMap = new SDK.SourceMap.SourceMap(
+        compiledUrl, sourceMapJsonUrl, encodeSourceMap(['0:0 => example.js:0:0']), new Common.Console.Console());
+
+    assert.strictEqual(sourceMap.translateRawFrame(0, 0)?.kind, SDK.SourceMapScopesInfo.GeneratedFrameKind.VISIBLE);
+  });
+
   it('handles source maps with empty sources list (https://crbug.com/395822775)', () => {
     const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, {
       version: 3,

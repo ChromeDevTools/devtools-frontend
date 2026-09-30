@@ -261,6 +261,138 @@ describe('SourceMapScopesInfo', () => {
     });
   });
 
+  describe('translateRawFrame', () => {
+    function stringify(translation: SDK.SourceMapScopesInfo.RawFrameTranslation):
+        {kind: SDK.SourceMapScopesInfo.GeneratedFrameKind, frames: string[]} {
+      return {kind: translation.kind, frames: translation.frames.map(stringifyFrame)};
+    }
+
+    //
+    //    orig. code                         gen. code
+    //             10        20                       10        20
+    //    012345678901234567890              012345678901234567890123456
+    //
+    // 0: function outer() {                 function outer(){_loop();}
+    // 1:   {                                function _loop(){log(x)}
+    // 2:     log(x);                        function _helper(){}
+    // 3:   }                                function _hidden(){}
+    // 4: }
+    //
+    // `_loop` is the outlined block scope, `_helper` has no definition, and `_hidden`
+    // is marked hidden but has no definition either.
+    function createOutliningScopesInfo(): SDK.SourceMapScopesInfo.SourceMapScopesInfo {
+      const sourceMap = new SDK.SourceMap.SourceMap(urlString`index.js`, urlString`index.js.map`, encodeSourceMap([
+                                                      '0:17 => index.ts:1:2',
+                                                      '1:17 => index.ts:2:4',
+                                                      '2:18 => index.ts:4:0',
+                                                      '3:18 => index.ts:4:0',
+                                                    ]),
+                                                    new Common.Console.Console());
+
+      const builder = new ScopeInfoBuilder();
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 14, {kind: 'function', key: 'outer', name: 'outer', isStackFrame: true})
+          .startScope(1, 2, {kind: 'block', key: 'block'})
+          .endScope(3, 3)
+          .endScope(4, 1)
+          .endScope(5, 0)
+          .endSource();
+
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 14, {scopeKey: 'outer', isStackFrame: true})
+          .endRange(0, 26)
+          .startRange(1, 14, {scopeKey: 'block', isStackFrame: true, isHidden: true})
+          .endRange(1, 24)
+          .startRange(2, 16, {isStackFrame: true})
+          .endRange(2, 20)
+          .startRange(3, 16, {isStackFrame: true, isHidden: true})
+          .endRange(3, 20)
+          .endRange(4, 0);
+
+      return new SourceMapScopesInfo(sourceMap, builder.build());
+    }
+
+    it('translates a regular function as VISIBLE', () => {
+      const info = createOutliningScopesInfo();
+
+      assert.deepEqual(stringify(info.translateRawFrame(0, 17)), {
+        kind: SDK.SourceMapScopesInfo.GeneratedFrameKind.VISIBLE,
+        frames: ['at outer (index.ts:1:2)'],
+      });
+    });
+
+    it('translates a hidden function with a definition as OUTLINED using the authored function name', () => {
+      const info = createOutliningScopesInfo();
+
+      assert.deepEqual(stringify(info.translateRawFrame(1, 17)), {
+        kind: SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED,
+        frames: ['at outer (index.ts:2:4)'],
+      });
+    });
+
+    //
+    //    orig. code                         gen. code
+    //             10        20                       10        20
+    //    012345678901234567890              012345678901234567890123456
+    //
+    // 0: function inner() {                 function outer(){_loop();}
+    // 1:   log();                           function _loop(){log()}
+    // 2: }
+    // 3: function outer() {
+    // 4:   {
+    // 5:     inner();
+    // 6:   }
+    // 7: }
+    //
+    // The block in `outer` is outlined into `_loop` and `inner` is inlined into `_loop`.
+    function createInlinedIntoOutlinedScopesInfo(mappings: string[]): SDK.SourceMapScopesInfo.SourceMapScopesInfo {
+      const sourceMap = new SDK.SourceMap.SourceMap(urlString`index.js`, urlString`index.js.map`,
+                                                    encodeSourceMap(mappings), new Common.Console.Console());
+
+      const builder = new ScopeInfoBuilder();
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 14, {kind: 'function', key: 'inner', name: 'inner', isStackFrame: true})
+          .endScope(2, 1)
+          .startScope(3, 14, {kind: 'function', key: 'outer', name: 'outer', isStackFrame: true})
+          .startScope(4, 2, {kind: 'block', key: 'block'})
+          .endScope(6, 3)
+          .endScope(7, 1)
+          .endScope(8, 0)
+          .endSource();
+
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 14, {scopeKey: 'outer', isStackFrame: true})
+          .endRange(0, 26)
+          .startRange(1, 14, {scopeKey: 'block', isStackFrame: true, isHidden: true})
+          .startRange(1, 17, {scopeKey: 'inner', callSite: {sourceIndex: 0, line: 5, column: 4}})
+          .endRange(1, 22)
+          .endRange(1, 23)
+          .endRange(2, 0);
+
+      return new SourceMapScopesInfo(sourceMap, builder.build());
+    }
+
+    it('expands inlined functions inside an OUTLINED function', () => {
+      const info = createInlinedIntoOutlinedScopesInfo(['0:17 => index.ts:4:2', '1:17 => index.ts:1:2']);
+
+      assert.deepEqual(stringify(info.translateRawFrame(1, 17)), {
+        kind: SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED,
+        frames: ['at inner (index.ts:1:2)', 'at outer (index.ts:5:4)'],
+      });
+    });
+
+    it('returns no frames if the generated position is not mapped', () => {
+      const info = createInlinedIntoOutlinedScopesInfo(['0:17 => index.ts:4:2', '1:14']);
+
+      assert.deepEqual(stringify(info.translateRawFrame(1, 17)), {
+        kind: SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED,
+        frames: [],
+      });
+    });
+  });
+
   describe('hasVariablesAndBindings', () => {
     it('returns false for scope info without variables or bindings', () => {
       const builder = new ScopeInfoBuilder();

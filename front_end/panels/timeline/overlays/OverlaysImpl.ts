@@ -949,13 +949,17 @@ export class Overlays extends EventTarget {
         overlay.entry && (overlay.renderLocation === 'BELOW_EVENT' || overlay.renderLocation === 'ABOVE_EVENT');
     element.classList.toggle('positioned-by-event', Boolean(isPositionedByEvent));
 
-    const component = element.querySelector('.devtools-timespan-breakdown-overlay');
+    const component = element.querySelector('devtools-widget');
 
     if (!component) {
       return;
     }
 
-    const widget = UI.Widget.Widget.get(component) as Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay;
+    const widget =
+        UI.Widget.Widget.get(component) as Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay | undefined;
+    if (!widget) {
+      return;
+    }
 
     // Handle horizontal positioning.
     const leftEdgePixel = this.#xPixelForMicroSeconds('main', overlay.sections[0].bounds.min);
@@ -1761,7 +1765,7 @@ export class Overlays extends EventTarget {
         break;
       }
       case 'TIMESPAN_BREAKDOWN': {
-        const component = element.querySelector('.devtools-timespan-breakdown-overlay');
+        const component = element.querySelector('devtools-widget');
         if (!component) {
           return;
         }
@@ -1834,7 +1838,7 @@ export class Overlays extends EventTarget {
       case 'ENTRIES_LINK':
         break;
       case 'TIMESPAN_BREAKDOWN': {
-        const component = element.querySelector('.devtools-timespan-breakdown-overlay');
+        const component = element.querySelector('devtools-widget');
 
         if (!component) {
           return;

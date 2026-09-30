@@ -1528,4 +1528,83 @@ describeWithEnvironment('Overlays', () => {
       assert.strictEqual(dispatchedEvent.overlay.commentThreadId, 'thread-test-pin-1');
     });
   });
+
+  describe('Timespan Breakdown Overlay', () => {
+    it('positions a newly added timespan breakdown overlay and resets stale label styles on update', async () => {
+      const charts = createCharts();
+
+      const flameChartsContainer = document.createElement('div');
+      const mainFlameChartsContainer = flameChartsContainer.createChild('div');
+      const networkFlameChartsContainer = flameChartsContainer.createChild('div');
+      const container = flameChartsContainer.createChild('div');
+      renderElementIntoDOM(flameChartsContainer, {allowMultipleChildren: true});
+
+      sinon.stub(charts.mainChart, 'canvasBoundingClientRect').returns(new DOMRect(0, 0, 1000, 500));
+
+      const overlays = new Overlays.Overlays.Overlays({
+        container,
+        flameChartsContainers: {
+          main: mainFlameChartsContainer,
+          network: networkFlameChartsContainer,
+        },
+        charts,
+        entryQueries: FAKE_OVERLAY_ENTRY_QUERIES,
+      });
+
+      overlays.updateChartDimensions('main', {
+        widthPixels: 1000,
+        heightPixels: 500,
+        scrollOffsetPixels: 0,
+        allGroupsCollapsed: false,
+      });
+      overlays.updateChartDimensions('network', {
+        widthPixels: 1000,
+        heightPixels: 200,
+        scrollOffsetPixels: 0,
+        allGroupsCollapsed: false,
+      });
+
+      overlays.updateVisibleWindow(microsecondsTraceWindow(0, 1_000));
+
+      const breakdownOverlay = overlays.add({
+        type: 'TIMESPAN_BREAKDOWN',
+        sections: [{
+          bounds: microsecondsTraceWindow(250, 750),
+          label: 'Resource load duration',
+          showDuration: true,
+        }],
+      });
+      await overlays.update();
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIMESPAN_BREAKDOWN');
+      assert.isOk(overlayDOM);
+      const segmentContainer = overlayDOM.querySelector<HTMLElement>('.timeline-segment-container');
+      assert.isOk(segmentContainer);
+      assert.strictEqual(segmentContainer.style.left, '250px');
+      assert.strictEqual(segmentContainer.style.width, '500px');
+
+      const sectionEl = overlayDOM.querySelector<HTMLElement>('.timespan-breakdown-overlay-section');
+      const labelEl = overlayDOM.querySelector<HTMLElement>('.timespan-breakdown-overlay-label');
+      assert.isOk(sectionEl);
+      assert.isOk(labelEl);
+      assert.strictEqual(sectionEl.style.width, '500px');
+      assert.isFalse(labelEl.classList.contains('labelTruncated'));
+      assert.isNotEmpty(labelEl.style.marginLeft);
+
+      // Update to a narrow section where the label is truncated; stale marginLeft must be cleared.
+      overlays.updateExisting(breakdownOverlay, {
+        sections: [{
+          bounds: microsecondsTraceWindow(250, 290),
+          label: 'Resource load delay',
+          showDuration: true,
+        }],
+      });
+      await overlays.update();
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      assert.isTrue(labelEl.classList.contains('labelTruncated'));
+      assert.strictEqual(labelEl.style.marginLeft, '');
+    });
+  });
 });

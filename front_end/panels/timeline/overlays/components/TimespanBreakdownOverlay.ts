@@ -161,6 +161,15 @@ export class TimespanBreakdownOverlay extends UI.Widget.Widget {
     // consistent on both edges of the UI.
     const paddingForScrollbar = 9;
 
+    for (const section of sections) {
+      const label = section.querySelector<HTMLElement>('.timespan-breakdown-overlay-label');
+      if (!label) {
+        continue;
+      }
+      label.classList.remove('labelHidden', 'labelTruncated', 'offScreenLeft', 'offScreenRight');
+      label.style.marginLeft = '';
+    }
+
     // Fetch the rects for each section and label now, rather than in the loop,
     // to avoid causing a bunch of recalcStyles
     const sectionLayoutData = new Map<HTMLElement, {sectionRect: DOMRect, labelRect: DOMRect, label: HTMLElement}>();

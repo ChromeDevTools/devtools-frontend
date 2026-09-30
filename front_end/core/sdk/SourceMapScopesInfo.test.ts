@@ -428,6 +428,32 @@ describe('SourceMapScopesInfo', () => {
         frames: [],
       });
     });
+
+    it('returns the start of the original function for the top frame and each inlined caller', () => {
+      const info = createInlinedIntoOutlinedScopesInfo(['0:17 => index.ts:4:2', '1:17 => index.ts:1:2']);
+
+      const {frames} = info.translateRawFrame(1, 17);
+
+      assert.deepEqual(frames.map(f => f.functionStart), [{line: 0, column: 14}, {line: 3, column: 14}]);
+      assert.deepEqual(info.translateRawFrame(0, 17).frames[0]?.functionStart, {line: 3, column: 14});
+    });
+
+    it('returns no function start for top-level code', () => {
+      const sourceMap =
+          new SDK.SourceMap.SourceMap(urlString`index.js`, urlString`index.js.map`,
+                                      encodeSourceMap(['0:0 => index.ts:0:0']), new Common.Console.Console());
+      const builder = new ScopeInfoBuilder();
+      builder.startSource().startScope(0, 0, {kind: 'global', key: 'global'}).endScope(1, 0).endSource();
+      builder.startRange(0, 0, {scopeKey: 'global'}).endRange(1, 0);
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
+
+      const {kind, frames: [frame]} = info.translateRawFrame(0, 0);
+
+      assert.strictEqual(kind, SDK.SourceMapScopesInfo.GeneratedFrameKind.VISIBLE);
+      assert.exists(frame);
+      assert.isUndefined(frame.name);
+      assert.isUndefined(frame.functionStart);
+    });
   });
 
   describe('hasVariablesAndBindings', () => {

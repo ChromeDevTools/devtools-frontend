@@ -362,13 +362,10 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
 
       const project = this.#sourceMapToProject.get(sourceMap);
       for (const frame of frames) {
+        const {line, column, name, url} = frame;
         // Switch out url for UISourceCode where we have it.
-        const uiSourceCode = frame.url ? project?.uiSourceCodeForURL(frame.url) : undefined;
-        result.push({
-          ...frame,
-          url: uiSourceCode ? undefined : frame.url,
-          uiSourceCode: uiSourceCode ?? undefined,
-        });
+        const uiSourceCode = url ? project?.uiSourceCodeForURL(url) : undefined;
+        result.push({line, column, name, url: uiSourceCode ? undefined : url, uiSourceCode: uiSourceCode ?? undefined});
       }
 
       return true;

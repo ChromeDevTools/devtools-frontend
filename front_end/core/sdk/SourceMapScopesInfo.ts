@@ -571,11 +571,13 @@ export class SourceMapScopesInfo {
       return null;
     }
 
+    const functionScope = this.findOriginalFunctionScope({line: generatedLine, column: generatedColumn})?.scope;
     return {
       line: mapping.sourceLineNumber,
       column: mapping.sourceColumnNumber,
-      name: this.findOriginalFunctionName({line: generatedLine, column: generatedColumn}) ?? undefined,
+      name: functionScope ? (functionScope.name ?? '') : undefined,
       url: mapping.sourceURL,
+      functionStart: functionScope?.start,
     };
   }
 
@@ -591,11 +593,13 @@ export class SourceMapScopesInfo {
       }
 
       const originalScopeChain = this.#findOriginalScopeChain(range.callSite);
+      const functionScope = this.#findFunctionScopeInOriginalScopeChain(originalScopeChain.at(-1));
       result.push({
         line: range.callSite.line,
         column: range.callSite.column,
-        name: this.#findFunctionNameInOriginalScopeChain(originalScopeChain.at(-1)) ?? undefined,
+        name: functionScope ? (functionScope.name ?? '') : undefined,
         url: this.#sourceMap.sourceURLForSourceIndex(range.callSite.sourceIndex),
+        functionStart: functionScope?.start,
       });
     }
 
@@ -651,6 +655,8 @@ export interface TranslatedFrame {
   column: number;
   name?: string;
   url?: Platform.DevToolsPath.UrlString;
+  /** Start of the original function scope containing this frame's position. Undefined for top-level code. */
+  functionStart?: ScopesCodec.Position;
 }
 
 export function findExpression(range: ScopesCodec.GeneratedRange|undefined, index: number, line = 0,

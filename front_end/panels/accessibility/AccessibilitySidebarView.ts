@@ -40,14 +40,7 @@ export interface ViewInput {
   showAnnouncementsRecordingSubPane: boolean;
 }
 
-export interface ViewOutput {
-  ariaSubPane?: ARIAAttributesPane;
-  axNodeSubPane?: AXNodeSubPane;
-  sourceOrderSubPane?: SourceOrderPane;
-  announcementsRecordingSubPane?: AccessibilityAnnouncementRecordingView;
-}
-
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
@@ -94,7 +87,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   #axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   #showAriaSubPane = true;
   private skipNextPullNode: boolean;
-  readonly #viewOutput: ViewOutput = {};
   private readonly toggleAction: UI.ActionRegistration.Action;
 
   constructor(view: View = DEFAULT_VIEW) {
@@ -105,9 +97,8 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
     this.skipNextPullNode = false;
 
     this.toggleAction = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
-    this.toggleAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.updateToggle, this);
+    this.toggleAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.requestUpdate, this);
 
-    this.updateToggle();
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.pullNode, this);
     this.pullNode();
   }
@@ -157,7 +148,7 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
           showAriaSubPane: this.#showAriaSubPane,
           showAnnouncementsRecordingSubPane: Boolean(Root.Runtime.hostConfig.devToolsAriaLiveRecording?.enabled),
         },
-        this.#viewOutput,
+        undefined,
         this.contentElement,
     );
   }
@@ -208,10 +199,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
       return;
     }
     this.setNode(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
-  }
-
-  private updateToggle(): void {
-    this.requestUpdate();
   }
 
   private onToggleChange = (_event: Event): void => {

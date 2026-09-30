@@ -29,8 +29,13 @@ Platform.HostRuntime.HOST_RUNTIME.workerScope.onmessage = function(event): void 
       FormatterWorker.CSSRuleParser.parseCSS(params.content, self.postMessage);
       break;
     case FormatterActions.JAVASCRIPT_SUBSTITUTE: {
-      Platform.HostRuntime.HOST_RUNTIME.workerScope.postMessage(
-          FormatterWorker.Substitute.substituteExpression(params.content, params.mapping));
+      let result: string|{error: string};
+      try {
+        result = FormatterWorker.Substitute.substituteExpression(params.content, params.mapping);
+      } catch (error) {
+        result = {error: error instanceof Error ? error.message : String(error)};
+      }
+      Platform.HostRuntime.HOST_RUNTIME.workerScope.postMessage(result);
       break;
     }
     case FormatterActions.JAVASCRIPT_SCOPE_TREE: {

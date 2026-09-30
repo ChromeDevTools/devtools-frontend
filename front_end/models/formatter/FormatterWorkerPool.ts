@@ -144,7 +144,12 @@ export class FormatterWorkerPool {
       return Promise.resolve(expression);
     }
     return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE, {content: expression, mapping})
-        .then(result => result || '');
+        .then((result: string|{error: string}|null) => {
+          if (result && typeof result === 'object') {
+            throw new Error(result.error);
+          }
+          return result || '';
+        });
   }
 
   javaScriptScopeTree(expression: string, sourceType: 'module'|'script' = 'script'):

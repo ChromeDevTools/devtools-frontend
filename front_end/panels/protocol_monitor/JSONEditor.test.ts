@@ -1072,6 +1072,41 @@ describeWithEnvironment('JSONEditor', () => {
 
       assert.deepEqual(jsonEditor.getParameters(), expectedParameters);
     });
+
+    it('should preserve false when a boolean parameter is edited or blurred with "false"', async () => {
+      const jsonEditor = renderJSONEditor();
+      await populateMetadata(jsonEditor);
+      jsonEditor.command = 'Test.test4';
+      jsonEditor.populateParametersForCommandWithDefaultValues();
+      await jsonEditor.updateComplete;
+
+      const inputs = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input');
+      const booleanInput = inputs[1];
+      booleanInput.value = 'false';
+      await booleanInput.updateComplete;
+      booleanInput.focus();
+      booleanInput.blur();
+      await jsonEditor.updateComplete;
+
+      assert.deepEqual(jsonEditor.getParameters(), {test: false});
+
+      booleanInput.value = 'true';
+      await booleanInput.updateComplete;
+      booleanInput.focus();
+      booleanInput.blur();
+      await jsonEditor.updateComplete;
+
+      assert.deepEqual(jsonEditor.getParameters(), {test: true});
+
+      booleanInput.value = '  FALSE\n';
+      await booleanInput.updateComplete;
+      booleanInput.focus();
+      booleanInput.blur();
+      await jsonEditor.updateComplete;
+
+      assert.deepEqual(jsonEditor.getParameters(), {test: false});
+      assert.isNull(jsonEditor.contentElement.querySelector('devtools-icon'));
+    });
   });
 
   describe('Verify the type of the entered value', () => {

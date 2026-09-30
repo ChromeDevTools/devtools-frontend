@@ -61,10 +61,12 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
 
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
     action.setToggled(true);
+    await view.updateComplete;
 
     sinon.assert.calledWith(visibilitySpy, sinon.match({data: sinon.match({revealedViewId: 'aria-attributes'})}));
 
     action.setToggled(false);
+    await view.updateComplete;
 
     sinon.assert.calledWith(visibilitySpy, sinon.match({data: sinon.match({hiddenViewId: 'aria-attributes'})}));
   });

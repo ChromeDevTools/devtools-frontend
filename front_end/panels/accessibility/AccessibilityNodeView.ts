@@ -123,20 +123,17 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNodeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXNodeSubPane extends AccessibilitySubPane {
-  override axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   private readonly noNodeInfo: UI.Widget.Widget;
   private readonly ignoredInfo: UI.Widget.Widget;
   private readonly treeOutline: UI.TreeOutline.TreeOutline;
   private readonly ignoredReasonsTree: UI.TreeOutline.TreeOutline;
-  constructor() {
-    super({
+  constructor(element?: HTMLElement) {
+    super(element, {
       title: i18nString(UIStrings.computedProperties),
       viewId: 'computed-properties',
       jslog: `${VisualLogging.section('computed-properties')}`,
     });
     this.registerRequiredCSS(accessibilityNodeStyles);
-
-    this.axNode = null;
 
     this.contentElement.classList.add('ax-subpane');
 
@@ -151,11 +148,11 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this.treeOutline.setFocusable(true);
   }
 
-  override setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
+  protected override setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
     if (this.axNode === axNode) {
       return;
     }
-    this.axNode = axNode;
+    super.setAXNode(axNode);
 
     const treeOutline = this.treeOutline;
     treeOutline.removeChildren();
@@ -228,9 +225,9 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     }
   }
 
-  override setNode(node: SDK.DOMModel.DOMNode|null): void {
+  protected override setNode(node: SDK.DOMModel.DOMNode|null): void {
     super.setNode(node);
-    this.axNode = null;
+    this.setAXNode(null);
   }
 }
 

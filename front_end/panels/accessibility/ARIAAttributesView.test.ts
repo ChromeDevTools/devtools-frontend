@@ -30,7 +30,7 @@ describeWithEnvironment('ARIAAttributesView', () => {
 
   it('can modify an ARIA attribute value', async () => {
     const viewFunction = createViewFunctionStub(Accessibility.ARIAAttributesView.ARIAAttributesPane);
-    const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane(viewFunction);
+    const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane(undefined, viewFunction);
     view.setNode(node);
 
     const input = await viewFunction.nextInput;
@@ -44,7 +44,7 @@ describeWithEnvironment('ARIAAttributesView', () => {
 
   it('can modify an ARIA role', async () => {
     const viewFunction = createViewFunctionStub(Accessibility.ARIAAttributesView.ARIAAttributesPane);
-    const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane(viewFunction);
+    const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane(undefined, viewFunction);
     view.setNode(node);
 
     const input = await viewFunction.nextInput;
@@ -58,7 +58,7 @@ describeWithEnvironment('ARIAAttributesView', () => {
 
   it('autocompletes attributes', async () => {
     const viewFunction = createViewFunctionStub(Accessibility.ARIAAttributesView.ARIAAttributesPane);
-    const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane(viewFunction);
+    const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane(undefined, viewFunction);
     view.setNode(node);
 
     const input = await viewFunction.nextInput;
@@ -143,7 +143,7 @@ describeWithEnvironment('ARIAAttributesView', () => {
   it('passes backendNodeId and targetId from node to view input', async () => {
     sinon.stub(node, 'backendNodeId').returns(55 as Protocol.DOM.BackendNodeId);
     const viewFunction = createViewFunctionStub(Accessibility.ARIAAttributesView.ARIAAttributesPane);
-    const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane(viewFunction);
+    const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane(undefined, viewFunction);
     view.setNode(node);
 
     const input = await viewFunction.nextInput;

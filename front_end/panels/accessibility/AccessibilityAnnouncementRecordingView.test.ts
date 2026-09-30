@@ -560,7 +560,8 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     it('initializes with default toolbar state and propagates to view input', async () => {
       const viewStub = createViewFunctionStub(
           Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
-      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(viewStub);
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(undefined,
+                                                                                                             viewStub);
       renderElementIntoDOM(view);
 
       const input = await viewStub.nextInput;
@@ -574,7 +575,8 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     it('toggles recording on and off via onToggleRecording', async () => {
       const viewStub = createViewFunctionStub(
           Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
-      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(viewStub);
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(undefined,
+                                                                                                             viewStub);
       renderElementIntoDOM(view);
 
       let input = await viewStub.nextInput;
@@ -594,7 +596,8 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     it('clears announcements list on onClear', async () => {
       const viewStub = createViewFunctionStub(
           Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
-      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(viewStub);
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(undefined,
+                                                                                                             viewStub);
       renderElementIntoDOM(view);
 
       let input = await viewStub.nextInput;
@@ -620,7 +623,8 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     it('filters announcements by record type (Record both, Aria-Live Only, Announcements Only)', async () => {
       const viewStub = createViewFunctionStub(
           Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
-      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(viewStub);
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(undefined,
+                                                                                                             viewStub);
       renderElementIntoDOM(view);
 
       let input = await viewStub.nextInput;
@@ -672,7 +676,8 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     it('strictly isolates regex text filter to message and ignores element HTML', async () => {
       const viewStub = createViewFunctionStub(
           Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
-      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(viewStub);
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(undefined,
+                                                                                                             viewStub);
       renderElementIntoDOM(view);
 
       let input = await viewStub.nextInput;
@@ -725,7 +730,8 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     it('safely handles invalid regex syntax without throwing and produces zero matches', async () => {
       const viewStub = createViewFunctionStub(
           Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
-      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(viewStub);
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(undefined,
+                                                                                                             viewStub);
       renderElementIntoDOM(view);
 
       let input = await viewStub.nextInput;
@@ -759,7 +765,8 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     it('shows blocked banner articulating target name and failure reason and updates on target removal', async () => {
       const viewStub = createViewFunctionStub(
           Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
-      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(viewStub);
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(undefined,
+                                                                                                             viewStub);
       renderElementIntoDOM(view);
 
       let input = await viewStub.nextInput;
@@ -985,7 +992,7 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
            const viewStub = createViewFunctionStub(
                Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
            view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(
-               viewStub);
+               undefined, viewStub);
            renderElementIntoDOM(view);
 
            let input = await viewStub.nextInput;
@@ -1013,8 +1020,8 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
       it('exports only announcements matching active UI filters and updates canExport accordingly', async () => {
         const viewStub = createViewFunctionStub(
             Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
-        view =
-            new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(viewStub);
+        view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(
+            undefined, viewStub);
         renderElementIntoDOM(view);
 
         await view.startRecording();
@@ -1059,8 +1066,8 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
       it('triggers download with UTF-8 BOM, timestamped filename, and revokes object URL on export', async () => {
         const viewStub = createViewFunctionStub(
             Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
-        view =
-            new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(viewStub);
+        view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(
+            undefined, viewStub);
         renderElementIntoDOM(view);
 
         await view.startRecording();

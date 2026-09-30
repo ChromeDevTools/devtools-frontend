@@ -110,8 +110,8 @@ export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
   readonly #view: View;
   #attributeBeingEdited: SDK.DOMModel.Attribute|null = null;
 
-  constructor(view: View = DEFAULT_VIEW) {
-    super({
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {
       title: i18nString(UIStrings.ariaAttributes),
       viewId: 'aria-attributes',
       useShadowDom: 'pure',
@@ -139,7 +139,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
 
     const onCommitEditing = (attribute: SDK.DOMModel.Attribute, result: string): void => {
       // Make the changes to the attribute
-      const node = this.node();
+      const node = this.node;
       if (node && attribute.value !== result) {
         node.setAttributeValue(attribute.name, result);
       }
@@ -149,7 +149,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
       this.requestUpdate();
     };
 
-    const attributes = this.node()?.attributes()?.filter(attribute => this.isARIAAttribute(attribute)) ?? [];
+    const attributes = this.node?.attributes()?.filter(attribute => this.isARIAAttribute(attribute)) ?? [];
     const propertyCompletions =
         new Map(attributes.map(attribute => [attribute, ariaMetadata().valuesForProperty(attribute.name)]));
 
@@ -160,8 +160,8 @@ export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
       onCommitEditing,
       onCancelEditing,
       propertyCompletions,
-      backendNodeId: this.node()?.backendNodeId(),
-      targetId: this.node()?.domModel().target().id(),
+      backendNodeId: this.node?.backendNodeId(),
+      targetId: this.node?.domModel().target().id(),
     };
     this.#view(input, {}, this.contentElement);
   }

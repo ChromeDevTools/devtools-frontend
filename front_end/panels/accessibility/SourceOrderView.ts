@@ -87,8 +87,8 @@ export class SourceOrderPane extends AccessibilitySubPane<ShadowRoot> {
   #showSourceOrder: boolean|undefined = undefined;
   readonly #view: View;
 
-  constructor(view: View = DEFAULT_VIEW) {
-    super({
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {
       title: i18nString(UIStrings.sourceOrderViewer),
       viewId: 'source-order-viewer',
       useShadowDom: 'pure',
@@ -96,11 +96,15 @@ export class SourceOrderPane extends AccessibilitySubPane<ShadowRoot> {
     this.#view = view;
   }
 
-  async setNodeAsync(node: SDK.DOMModel.DOMNode|null): Promise<void> {
+  protected override setNode(node: SDK.DOMModel.DOMNode|null): void {
     if (this.nodeInternal && this.#showSourceOrder) {
       this.nodeInternal.domModel().overlayModel().hideSourceOrderInOverlay();
     }
     super.setNode(node);
+    void this.#updateNodeAsync();
+  }
+
+  async #updateNodeAsync(): Promise<void> {
     this.#childCount = this.nodeInternal?.childNodeCount() ?? 0;
     if (!this.nodeInternal || !this.#childCount) {
       this.#showSourceOrder = undefined;

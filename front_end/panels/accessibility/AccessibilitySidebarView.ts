@@ -19,8 +19,8 @@ import accessibilitySidebarViewStyles from './accessibilitySidebarView.css.js';
 import {ARIAAttributesPane} from './ARIAAttributesView.js';
 import {SourceOrderPane} from './SourceOrderView.js';
 
-const {html, render} = Lit;
-const {widget, widgetRef} = UI.Widget;
+const {html, nothing, render} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -34,7 +34,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface ViewInput {
   isToggled: boolean;
   onToggleChange: (event: Event) => void;
-  sidebarPaneStack: UI.ViewManager.StackLocation;
   node: SDK.DOMModel.DOMNode|null;
   axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   showAriaSubPane: boolean;
@@ -50,7 +49,7 @@ export interface ViewOutput {
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-export const DEFAULT_VIEW: View = (input, output, target) => {
+export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(
       html`
@@ -68,40 +67,18 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           <span style="color: var(--sys-color-on-surface);">${i18nString(UIStrings.showAccessibilityTree)}</span>
         </div>
       </div>
-      <devtools-widget
-        ${widget(() => {
-          if (!output.ariaSubPane) {
-            output.ariaSubPane = new ARIAAttributesPane();
-            void input.sidebarPaneStack.showView(output.ariaSubPane);
-          }
-          if (!output.axNodeSubPane) {
-            output.axNodeSubPane = new AXNodeSubPane();
-            void input.sidebarPaneStack.showView(output.axNodeSubPane);
-          }
-          if (!output.sourceOrderSubPane) {
-            output.sourceOrderSubPane = new SourceOrderPane();
-            void input.sidebarPaneStack.showView(output.sourceOrderSubPane);
-          }
-          if (input.showAnnouncementsRecordingSubPane && !output.announcementsRecordingSubPane) {
-            output.announcementsRecordingSubPane = new AccessibilityAnnouncementRecordingView();
-            void input.sidebarPaneStack.showView(output.announcementsRecordingSubPane);
-          }
-          return input.sidebarPaneStack.widget();
-        })}
-        ${widgetRef(UI.Widget.Widget, () => {
-          if (!output.ariaSubPane || !output.axNodeSubPane || !output.sourceOrderSubPane) {
-            return;
-          }
-          output.ariaSubPane.setNode(input.node);
-          if (input.showAriaSubPane) {
-            void input.sidebarPaneStack.showView(output.ariaSubPane, output.axNodeSubPane);
-          } else {
-            input.sidebarPaneStack.removeView(output.ariaSubPane);
-          }
-          output.axNodeSubPane.setNode(input.node);
-          output.axNodeSubPane.setAXNode(input.axNode);
-          void output.sourceOrderSubPane.setNodeAsync(input.node);
-        })}></devtools-widget>
+      <devtools-stack-pane .isVisible=${input.isToggled}>
+        ${input.showAriaSubPane ? html`
+          <devtools-widget
+            ${widget(ARIAAttributesPane, {node: input.node})}></devtools-widget>` : nothing}
+        <devtools-widget
+          ${widget(AXNodeSubPane, {node: input.node, axNode: input.axNode})}></devtools-widget>
+        <devtools-widget
+          ${widget(SourceOrderPane, {node: input.node})}></devtools-widget>
+        ${input.showAnnouncementsRecordingSubPane
+          ? html`<devtools-widget ${widget(AccessibilityAnnouncementRecordingView)}></devtools-widget>`
+          : nothing}
+      </devtools-stack-pane>
     `,
       target,
       {container: {classes: ['accessibility-sidebar-view']}},
@@ -117,7 +94,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   #axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   #showAriaSubPane = true;
   private skipNextPullNode: boolean;
-  private readonly sidebarPaneStack: UI.ViewManager.StackLocation;
   readonly #viewOutput: ViewOutput = {};
   private readonly toggleAction: UI.ActionRegistration.Action;
 
@@ -127,7 +103,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
     this.#node = null;
     this.#axNode = null;
     this.skipNextPullNode = false;
-    this.sidebarPaneStack = UI.ViewManager.ViewManager.instance().createStackLocation();
 
     this.toggleAction = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
     this.toggleAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.updateToggle, this);
@@ -177,7 +152,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
         {
           isToggled: this.toggleAction.toggled(),
           onToggleChange: this.onToggleChange,
-          sidebarPaneStack: this.sidebarPaneStack,
           node: this.node(),
           axNode: this.#axNode,
           showAriaSubPane: this.#showAriaSubPane,
@@ -237,8 +211,6 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   }
 
   private updateToggle(): void {
-    const isToggled = this.toggleAction.toggled();
-    this.sidebarPaneStack.notifyVisibilityChanged(isToggled);
     this.requestUpdate();
   }
 

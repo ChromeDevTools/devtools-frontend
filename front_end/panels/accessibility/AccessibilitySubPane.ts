@@ -12,24 +12,39 @@ import accessibilityPropertiesStyles from './accessibilityProperties.css.js';
 
 export class AccessibilitySubPane<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElement> extends
     UI.View.SimpleView<ContentTypeT> {
-  axNode: SDK.AccessibilityModel.AccessibilityNode|null;
-  protected nodeInternal?: SDK.DOMModel.DOMNode|null;
+  protected axNodeInternal: SDK.AccessibilityModel.AccessibilityNode|null = null;
+  protected nodeInternal: SDK.DOMModel.DOMNode|null = null;
 
-  constructor(options: UI.View.SimpleViewOptions<ContentTypeT>) {
-    super(options);
+  constructor(element: HTMLElement|undefined, options: UI.View.SimpleViewOptions<ContentTypeT>) {
+    if (element) {
+      super(element, options);
+    } else {
+      super(options);
+    }
     this.registerRequiredCSS(accessibilityPropertiesStyles);
-
-    this.axNode = null;
   }
 
-  setAXNode(_axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
+  get axNode(): SDK.AccessibilityModel.AccessibilityNode|null {
+    return this.axNodeInternal;
   }
 
-  node(): SDK.DOMModel.DOMNode|null {
-    return this.nodeInternal || null;
+  set axNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null) {
+    this.setAXNode(axNode);
   }
 
-  setNode(node: SDK.DOMModel.DOMNode|null): void {
+  protected setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
+    this.axNodeInternal = axNode;
+  }
+
+  get node(): SDK.DOMModel.DOMNode|null {
+    return this.nodeInternal;
+  }
+
+  set node(node: SDK.DOMModel.DOMNode|null) {
+    this.setNode(node);
+  }
+
+  protected setNode(node: SDK.DOMModel.DOMNode|null): void {
     this.nodeInternal = node;
   }
 

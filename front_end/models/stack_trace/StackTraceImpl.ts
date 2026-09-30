@@ -8,7 +8,7 @@ import type * as Workspace from '../workspace/workspace.js';
 
 // eslint-disable-next-line @devtools/es-modules-import
 import type * as StackTrace from './stack_trace.js';
-import {type EvalOrigin, FrameKind, type FrameNode, type ParsedFrameInfo} from './Trie.js';
+import {type EvalOrigin, FrameKind, type FrameNode, isBuiltinFrame, type ParsedFrameInfo} from './Trie.js';
 
 export type AnyStackTraceImpl = StackTraceImpl<FragmentImpl|DebuggableFragmentImpl|ParsedErrorStackFragmentImpl>;
 
@@ -116,7 +116,8 @@ export interface LogicalFrame {
  * Drops HIDDEN nodes and merges each OUTLINED node with its callers into one group of logical frames.
  *
  * The chain continues with callers whose `functionKeys.top` equals the previous member's `functionKeys.bottom`,
- * skipping HIDDEN nodes. It ends with the first VISIBLE member (the terminator), or before a non-matching caller.
+ * skipping HIDDEN and not-authored nodes. It ends with the first VISIBLE member (the terminator), or before a
+ * non-matching caller.
  */
 export function consolidate(callStack: readonly FrameNode[]): LogicalFrame[] {
   const result: LogicalFrame[] = [];
@@ -143,7 +144,7 @@ export function consolidate(callStack: readonly FrameNode[]): LogicalFrame[] {
     let lastConsumed = i;
     for (let j = i + 1; j < callStack.length && !terminator; ++j) {
       const caller = callStack[j];
-      if (caller.kind === FrameKind.HIDDEN) {
+      if (caller.kind === FrameKind.HIDDEN || isNotAuthored(caller)) {
         continue;
       }
       if (!caller.functionKeys || caller.functionKeys.top !== bottom) {
@@ -157,7 +158,7 @@ export function consolidate(callStack: readonly FrameNode[]): LogicalFrame[] {
       terminator = caller.kind === FrameKind.VISIBLE ? caller : undefined;
       lastConsumed = j;
     }
-    // HIDDEN nodes after the last chain member are processed (and dropped) by the outer loop.
+    // HIDDEN and not-authored nodes after the last chain member are processed by the outer loop.
     i = lastConsumed;
 
     const rawName = terminator?.rawFrame.functionName;
@@ -169,6 +170,14 @@ export function consolidate(callStack: readonly FrameNode[]): LogicalFrame[] {
     }));
   }
   return result;
+}
+
+/**
+ * Frames that the authored function can't have called directly (e.g. `Array.prototype.forEach` calling an outlined
+ * callback). A chain looks past them.
+ */
+function isNotAuthored(node: FrameNode): boolean {
+  return node.kind === FrameKind.VISIBLE && !node.functionKeys && isBuiltinFrame(node.rawFrame);
 }
 
 /**

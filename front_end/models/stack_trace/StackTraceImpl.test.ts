@@ -20,23 +20,27 @@ interface NodeSpec {
   frames: string[];
   keys?: StackTraceImpl.Trie.FunctionKeys;
   info?: StackTraceImpl.Trie.ParsedFrameInfo;
+  builtin?: boolean;
 }
 
 /**
  * @param frames The translated frames as 'name@line:column', top first.
  * @param keys The function keys as 'top/bottom'.
  * @param info The parsed `Error.stack` info of the raw frame.
+ * @param builtin Whether the raw frame is a builtin frame (no URL, script or position).
  */
 function node(rawName: string, kind: StackTraceImpl.Trie.FrameKind, frames: string[] = [],
-              {keys, info}: {keys?: string, info?: StackTraceImpl.Trie.ParsedFrameInfo} = {}): NodeSpec {
+              {keys, info, builtin}:
+                  {keys?: string, info?: StackTraceImpl.Trie.ParsedFrameInfo, builtin?: boolean} = {}): NodeSpec {
   const [top, bottom] = keys?.split('/') ?? [];
-  return {rawName, kind, frames, keys: keys ? {top, bottom} : undefined, info};
+  return {rawName, kind, frames, keys: keys ? {top, bottom} : undefined, info, builtin};
 }
 
 /** Inserts one raw frame per spec (top first) into a trie and applies the specs to the resulting call stack. */
 function callStack(...specs: NodeSpec[]): StackTraceImpl.Trie.FrameNode[] {
   const trie = new StackTraceImpl.Trie.Trie();
-  const leaf = trie.insert(specs.map((spec, i) => protocolCallFrame(`bundle.js:1:${spec.rawName}:0:${i}`)));
+  const leaf = trie.insert(specs.map(
+      (spec, i) => protocolCallFrame(spec.builtin ? `::${spec.rawName}::` : `bundle.js:1:${spec.rawName}:0:${i}`)));
   const stack = [...leaf.getCallStack()];
   stack.forEach((n, i) => {
     const {rawName, kind, frames, keys, info} = specs[i];
@@ -333,6 +337,46 @@ describe('consolidate', () => {
       'outer@5:2 (1,0) raw=outer',
     ]);
     assert.strictEqual(result[0].frame, stack[0].frames[0]);
+  });
+
+  it('merges a chain across builtin frames', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('forEach', VISIBLE, ['forEach@0:0'], {builtin: true}),
+        node('outer', VISIBLE, ['outer@5:2'], {keys: 'outer/outer'}),
+    );
+
+    const result = consolidate(stack);
+
+    assert.deepEqual(summarize(result), ['outer@2:4 (0,0) raw=outer']);
+    assert.strictEqual(result[0].invocationNode, stack[2]);
+  });
+
+  it('shows builtin frames if the chain does not continue after them', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('forEach', VISIBLE, ['forEach@0:0'], {builtin: true}),
+        node('other', VISIBLE, ['other@7:0'], {keys: 'other/other'}),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'outer@2:4 (0,0) raw=undefined',
+      'forEach@0:0 (1,0) raw=forEach',
+      'other@7:0 (2,0) raw=other',
+    ]);
+  });
+
+  it('does not merge builtin frames above an OUTLINED node', () => {
+    const stack = callStack(
+        node('map', VISIBLE, ['map@0:0'], {builtin: true}),
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('outer', VISIBLE, ['outer@5:2'], {keys: 'outer/outer'}),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'map@0:0 (0,0) raw=map',
+      'outer@2:4 (1,0) raw=outer',
+    ]);
   });
 });
 

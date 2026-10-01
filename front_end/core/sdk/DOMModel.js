@@ -939,7 +939,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         return Boolean(this.#xmlVersion);
     }
     isCustomElement() {
-        if (this.nodeType() !== 1 /* NodeType.ELEMENT_NODE */ || this.isXMLNode()) {
+        if (this.nodeType() !== 1 /* NodeType.ELEMENT_NODE */ || this.isXMLNode() || Boolean(this.pseudoType())) {
             return false;
         }
         const localName = this.localName() || this.nodeName().toLowerCase();

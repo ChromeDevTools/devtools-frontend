@@ -22,10 +22,10 @@
   ],
   "references": [
     {
-      "path": "../../../e2e/conductor/implementation-tsconfig.ref.json"
+      "path": "../../../e2e/helpers/helpers-tsconfig.ref.json"
     },
     {
-      "path": "../../../e2e/helpers/helpers-tsconfig.ref.json"
+      "path": "../../../e2e/shared/shared-tsconfig.ref.json"
     },
     {
       "path": "../../report/report-tsconfig.ref.json"

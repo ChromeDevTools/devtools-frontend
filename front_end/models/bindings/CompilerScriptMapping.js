@@ -58,6 +58,11 @@ export class CompilerScriptMapping {
     setFunctionRanges(uiSourceCode, ranges) {
         for (const sourceMap of this.#uiSourceCodeToSourceMaps.get(uiSourceCode)) {
             sourceMap.augmentWithScopes(uiSourceCode.url(), ranges);
+            // The scopes information changed, so stack traces of the script need to be re-translated.
+            const script = this.#sourceMapManager.clientForSourceMap(sourceMap);
+            if (script) {
+                void this.#debuggerWorkspaceBinding.updateLocations(script);
+            }
         }
     }
     addStubUISourceCode(script) {
@@ -70,6 +75,10 @@ export class CompilerScriptMapping {
         if (uiSourceCode) {
             this.#stubProject.removeUISourceCode(uiSourceCode.url());
         }
+    }
+    /** @returns whether `uiSourceCode` is a placeholder for a script whose source map is still loading. */
+    isStubUISourceCode(uiSourceCode) {
+        return uiSourceCode.project() === this.#stubProject;
     }
     getLocationRangesForSameSourceLocation(rawLocation) {
         const debuggerModel = rawLocation.debuggerModel;
@@ -262,49 +271,72 @@ export class CompilerScriptMapping {
         const range = new TextUtils.TextRange.TextRange(scope.start.line, scope.start.column, scope.end.line, scope.end.column);
         return new Workspace.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
     }
+    /**
+     * Translates the first raw frame of `rawFrames` using the "scopes" information of its script's source map.
+     * The translation only depends on the raw frame itself. A consumed raw frame is removed from `rawFrames`,
+     * and its translation is pushed onto `translatedFrames`. Frames of compiler helpers are dropped
+     * (see {@link SDK.SourceMapScopesInfo.GeneratedFrameKind}).
+     *
+     * Outlined frames are merged at read time by the stack_trace model (see `consolidate`). The function keys
+     * tell it which authored function the top and bottom frames of a translation belong to.
+     *
+     * @returns true, iff the raw frame was translated.
+     */
     async translateRawFramesStep(rawFrames, translatedFrames) {
-        const frame = rawFrames[0];
-        if (StackTraceImpl.Trie.isBuiltinFrame(frame)) {
+        const translation = await this.#translateRawFrame(rawFrames[0]);
+        if (!translation) {
             return false;
         }
-        const sourceMapWithScopeInfoForFrame = async (rawFrame) => {
-            const script = this.#debuggerModel.scriptForId(rawFrame.scriptId ?? '');
-            if (!script || this.#stubUISourceCodes.has(script)) {
-                // Use fallback while source map is being loaded.
-                return null;
-            }
-            const sourceMap = script.sourceMap();
-            await sourceMap?.waitForScopeInfo();
-            return sourceMap?.hasScopeInfo() ? { sourceMap, script } : null;
-        };
-        const sourceMapAndScript = await sourceMapWithScopeInfoForFrame(frame);
-        if (!sourceMapAndScript) {
-            return false;
-        }
-        const { sourceMap, script } = sourceMapAndScript;
-        const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(frame);
-        if (!sourceMap.isOutlinedFrame(lineNumber, columnNumber)) {
-            const frames = sourceMap.translateCallSite(lineNumber, columnNumber);
-            if (!frames.length) {
-                return false;
-            }
+        if (translation.kind === "HIDDEN" /* SDK.SourceMapScopesInfo.GeneratedFrameKind.HIDDEN */) {
+            // Compiler helpers don't represent any authored code.
             rawFrames.shift();
-            const result = [];
-            translatedFrames.push(result);
-            const project = this.#sourceMapToProject.get(sourceMap);
-            for (const frame of frames) {
-                // Switch out url for UISourceCode where we have it.
-                const uiSourceCode = frame.url ? project?.uiSourceCodeForURL(frame.url) : undefined;
-                result.push({
-                    ...frame,
-                    url: uiSourceCode ? undefined : frame.url,
-                    uiSourceCode: uiSourceCode ?? undefined,
-                });
-            }
+            translatedFrames.push({ kind: "HIDDEN" /* StackTraceImpl.Trie.FrameKind.HIDDEN */, frames: [] });
             return true;
         }
-        // TODO(crbug.com/433162438): Consolidate outlined frames.
-        return false;
+        const { frames } = translation;
+        if (!frames.length) {
+            // Unmapped position: Leave it to the default mapping.
+            return false;
+        }
+        rawFrames.shift();
+        translatedFrames.push({
+            kind: translation.kind === "OUTLINED" /* SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED */ ? "OUTLINED" /* StackTraceImpl.Trie.FrameKind.OUTLINED */ : "VISIBLE" /* StackTraceImpl.Trie.FrameKind.VISIBLE */,
+            frames: this.#toUIFrames(translation.sourceMap, frames),
+            functionKeys: { top: functionKey(frames[0]), bottom: functionKey(frames[frames.length - 1]) },
+        });
+        return true;
+    }
+    /**
+     * Translates a single raw frame via the "scopes" information of its script's source map.
+     *
+     * @returns null if the raw frame can't be translated via "scopes" information, e.g. because
+     * the script doesn't have a source map (with scopes information), or the source map is still loading.
+     */
+    async #translateRawFrame(rawFrame) {
+        if (StackTraceImpl.Trie.isBuiltinFrame(rawFrame)) {
+            return null;
+        }
+        const script = this.#debuggerModel.scriptForId(rawFrame.scriptId ?? '');
+        if (!script || this.#stubUISourceCodes.has(script)) {
+            // Use fallback while source map is being loaded.
+            return null;
+        }
+        const sourceMap = script.sourceMap();
+        await sourceMap?.waitForScopeInfo();
+        if (!sourceMap?.hasScopeInfo()) {
+            return null;
+        }
+        const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(rawFrame);
+        const translation = sourceMap.translateRawFrame(lineNumber, columnNumber);
+        return translation ? { ...translation, sourceMap } : null;
+    }
+    /** Switch out url for UISourceCode where we have it. */
+    #toUIFrames(sourceMap, frames) {
+        const project = this.#sourceMapToProject.get(sourceMap);
+        return frames.map(({ line, column, name, url }) => {
+            const uiSourceCode = url ? project?.uiSourceCodeForURL(url) : undefined;
+            return { line, column, name, url: uiSourceCode ? undefined : url, uiSourceCode: uiSourceCode ?? undefined };
+        });
     }
     /**
      * Computes the set of line numbers which are source-mapped to a script within the
@@ -498,5 +530,14 @@ export class CompilerScriptMapping {
         }
         this.#stubProject.dispose();
     }
+}
+/**
+ * Identifies the authored function of a translated frame. The frames can originate from different source maps
+ * (bundles), so we can't compare original scopes directly. The start position tells apart anonymous and
+ * same-named functions in one file. All top-level code of a file shares a key.
+ */
+function functionKey(frame) {
+    const start = frame.functionStart ? `${frame.functionStart.line}:${frame.functionStart.column}` : '';
+    return `${frame.url ?? ''}\n${frame.name ?? ''}\n${start}`;
 }
 //# sourceMappingURL=CompilerScriptMapping.js.map

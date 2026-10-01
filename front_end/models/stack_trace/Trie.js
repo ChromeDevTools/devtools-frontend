@@ -9,6 +9,16 @@ export function isBuiltinFrame(rawFrame) {
     return rawFrame.lineNumber === -1 && rawFrame.columnNumber === -1 && !Boolean(rawFrame.scriptId) &&
         !Boolean(rawFrame.url);
 }
+/** How a single raw frame participates in stack traces. Context-free: it only depends on the raw frame itself. */
+export var FrameKind;
+(function (FrameKind) {
+    /** Shown as is. */
+    FrameKind["VISIBLE"] = "VISIBLE";
+    /** Code of an authored function that the compiler moved into a separate function. Merged with its caller(s). */
+    FrameKind["OUTLINED"] = "OUTLINED";
+    /** Compiler helper without authored counterpart. Never shown. */
+    FrameKind["HIDDEN"] = "HIDDEN";
+})(FrameKind || (FrameKind = {}));
 export class EvalOrigin {
     frames;
     evalOrigin;
@@ -21,7 +31,15 @@ export class FrameNode {
     parent;
     children = [];
     rawFrame;
+    /** Context-free translation: [top, ...inlinedCallers]. Empty iff `kind === HIDDEN` (or not translated yet). */
     frames = [];
+    kind = "VISIBLE" /* FrameKind.VISIBLE */;
+    /** Set iff `kind` is OUTLINED, or VISIBLE and translated with scopes information. */
+    functionKeys;
+    /** True iff the translation shows generated code, i.e. no source map or plugin could map it (incl. builtins). */
+    isUnmapped = false;
+    /** False until a translation was stored. Stays false if translation threw, so it will be retried. */
+    isTranslated = false;
     fragment;
     parsedFrameInfo;
     evalOrigin;

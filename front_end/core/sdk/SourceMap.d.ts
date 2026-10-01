@@ -5,7 +5,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import type { CallFrame, Location, ScopeChainEntry } from './DebuggerModel.js';
 import type { Script } from './Script.js';
 import { type NamedFunctionRange } from './SourceMapFunctionRanges.js';
-import { type TranslatedFrame } from './SourceMapScopesInfo.js';
+import { type RawFrameTranslation } from './SourceMapScopesInfo.js';
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
  * some additional fields.
@@ -169,9 +169,9 @@ export declare class SourceMap {
         scope: ScopesCodec.OriginalScope;
         url?: Platform.DevToolsPath.UrlString;
     } | null;
-    isOutlinedFrame(generatedLine: number, generatedColumn: number): boolean;
     hasInlinedFrames(generatedLine: number, generatedColumn: number): boolean;
-    translateCallSite(generatedLine: number, generatedColumn: number): TranslatedFrame[];
+    /** See {@link SourceMapScopesInfo.translateRawFrame}. `null` if no scopes information is available. */
+    translateRawFrame(generatedLine: number, generatedColumn: number): RawFrameTranslation | null;
 }
 export declare class TokenIterator {
     #private;

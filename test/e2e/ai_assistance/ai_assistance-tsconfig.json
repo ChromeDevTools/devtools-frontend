@@ -63,10 +63,7 @@
       "path": "../../../front_end/core/root/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../conductor/implementation-tsconfig.ref.json"
-    },
-    {
-      "path": "../../shared/shared-tsconfig.ref.json"
+      "path": "../shared/shared-tsconfig.ref.json"
     }
   ]
 }

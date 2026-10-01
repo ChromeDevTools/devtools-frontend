@@ -59,9 +59,6 @@
   ],
   "references": [
     {
-      "path": "../../shared/shared-tsconfig.ref.json"
-    },
-    {
       "path": "../helpers/helpers-tsconfig.ref.json"
     },
     {

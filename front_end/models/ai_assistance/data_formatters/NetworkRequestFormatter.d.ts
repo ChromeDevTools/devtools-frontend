@@ -59,7 +59,7 @@ export declare class NetworkRequestFormatter {
         value: string;
     }>, addListPrefixToEachLine?: boolean): string;
     static formatBody(title: string, request: SDK.NetworkRequest.NetworkRequest, maxBodySize: number): Promise<string>;
-    static formatInitiatorUrl(initiatorUrl: Platform.DevToolsPath.UrlString, allowedOrigin: Platform.DevToolsPath.UrlString): string;
+    static formatInitiatorUrl(initiatorUrl: Platform.DevToolsPath.UrlString, allowedOrigin: SDK.SecurityOrigin.SecurityOrigin): string;
     static formatStatus(status: {
         statusCode: number;
         statusText: string;

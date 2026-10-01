@@ -21,9 +21,6 @@
   ],
   "references": [
     {
-      "path": "browser-globals-tsconfig.ref.json"
-    },
-    {
       "path": "mocha-interface-tsconfig.ref.json"
     },
     {

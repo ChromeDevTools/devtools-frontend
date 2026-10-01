@@ -59,6 +59,9 @@
       "path": "../../../front_end/panels/timeline/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../front_end/ui/legacy/components/data_grid/data_grid-tsconfig.ref.json"
+    },
+    {
       "path": "../../conductor/implementation-tsconfig.ref.json"
     },
     {

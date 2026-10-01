@@ -74,8 +74,7 @@ export class NetworkRequestFormatter {
     }
     static formatInitiatorUrl(initiatorUrl, allowedOrigin) {
         const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create(initiatorUrl);
-        const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(allowedOrigin);
-        if (initiatorOrigin.isSameOriginWith(targetOrigin)) {
+        if (initiatorOrigin.isSameOriginWith(allowedOrigin)) {
             return initiatorUrl;
         }
         return '<redacted cross-origin initiator URL>';
@@ -247,7 +246,7 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
  * @returns Formatted initiator chain.
  */
 export function formatRequestInitiatorChain(request, networkLog) {
-    const allowedOrigin = request.url();
+    const allowedOrigin = request.requestURLSecurityOrigin();
     let initiatorChain = '';
     let lineStart = '- URL: ';
     const graph = networkLog.initiatorGraphForRequest(request);

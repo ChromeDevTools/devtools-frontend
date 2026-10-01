@@ -54,4 +54,10 @@ export const consoleTraceExpandSettingDescriptor = {
     defaultValue: true,
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
 };
+export const consoleInsightTeasersEnabledSettingDescriptor = {
+    name: 'console-insight-teasers-enabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: true,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
 //# sourceMappingURL=ConsoleSettings.js.map

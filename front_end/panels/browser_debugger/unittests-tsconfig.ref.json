@@ -15,6 +15,7 @@
   "files": [
     "../../../../../../front_end/panels/browser_debugger/CategorizedBreakpointsSidebarPane.test.ts",
     "../../../../../../front_end/panels/browser_debugger/DOMBreakpointsSidebarPane.test.ts",
+    "../../../../../../front_end/panels/browser_debugger/ObjectEventListenersSidebarPane.test.ts",
     "../../../../../../front_end/panels/browser_debugger/XHRBreakpointsSidebarPane.test.ts",
     "../../../../../../front_end/panels/browser_debugger/browser_debugger.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",

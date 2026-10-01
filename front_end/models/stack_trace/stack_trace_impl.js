@@ -196,252 +196,16 @@ __export(StackTraceImpl_exports, {
   FrameImpl: () => FrameImpl,
   ParsedErrorStackFragmentImpl: () => ParsedErrorStackFragmentImpl,
   ParsedErrorStackFrameImpl: () => ParsedErrorStackFrameImpl,
-  StackTraceImpl: () => StackTraceImpl
+  StackTraceImpl: () => StackTraceImpl,
+  consolidate: () => consolidate
 });
 import * as Common2 from "../../core/common/common.js";
-var StackTraceImpl = class extends Common2.ObjectWrapper.ObjectWrapper {
-  syncFragment;
-  asyncFragments;
-  constructor(syncFragment, asyncFragments) {
-    super();
-    this.syncFragment = syncFragment;
-    this.asyncFragments = asyncFragments;
-    const fragment = syncFragment instanceof DebuggableFragmentImpl || syncFragment instanceof ParsedErrorStackFragmentImpl ? syncFragment.fragment : syncFragment;
-    fragment.stackTraces.add(this);
-    this.asyncFragments.forEach((asyncFragment) => asyncFragment.fragment.stackTraces.add(this));
-  }
-};
-var FragmentImpl = class _FragmentImpl {
-  static EMPTY_FRAGMENT = new _FragmentImpl();
-  node;
-  stackTraces = /* @__PURE__ */ new Set();
-  /**
-   * Fragments are deduplicated based on the node.
-   *
-   * In turn, each fragment can be part of multiple stack traces.
-   */
-  static getOrCreate(node) {
-    if (!node.fragment) {
-      node.fragment = new _FragmentImpl(node);
-    }
-    return node.fragment;
-  }
-  constructor(node) {
-    this.node = node;
-  }
-  get frames() {
-    if (!this.node) {
-      return [];
-    }
-    const frames = [];
-    for (const node of this.node.getCallStack()) {
-      frames.push(...node.frames);
-    }
-    return frames;
-  }
-};
-var AsyncFragmentImpl = class {
-  constructor(description, fragment) {
-    this.description = description;
-    this.fragment = fragment;
-  }
-  description;
-  fragment;
-  get frames() {
-    return this.fragment.frames;
-  }
-};
-var FrameImpl = class {
-  url;
-  uiSourceCode;
-  name;
-  line;
-  column;
-  missingDebugInfo;
-  rawName;
-  isWasm;
-  isInline;
-  constructor(url, uiSourceCode, name, line, column, missingDebugInfo, rawName, isWasm, isInline) {
-    this.url = url;
-    this.uiSourceCode = uiSourceCode;
-    this.name = name;
-    this.line = line;
-    this.column = column;
-    this.missingDebugInfo = missingDebugInfo;
-    this.rawName = rawName;
-    this.isWasm = isWasm;
-    this.isInline = isInline;
-  }
-};
-function createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin, parsedFrameInfo) {
-  if (!evalOrigin || evalOrigin.frames.length === 0) {
-    return void 0;
-  }
-  const frame = evalOrigin.frames[0];
-  const nestedOrigin = createParsedErrorStackFrameImplFromEvalOrigin(
-    evalOrigin.evalOrigin,
-    parsedFrameInfo?.evalOrigin?.parsedFrameInfo
-  );
-  return new ParsedErrorStackFrameImpl(frame, parsedFrameInfo?.evalOrigin?.parsedFrameInfo, nestedOrigin);
-}
-var ParsedErrorStackFragmentImpl = class {
-  constructor(fragment) {
-    this.fragment = fragment;
-  }
-  fragment;
-  get frames() {
-    if (!this.fragment.node) {
-      return [];
-    }
-    const frames = [];
-    for (const node of this.fragment.node.getCallStack()) {
-      const evalOrigin = createParsedErrorStackFrameImplFromEvalOrigin(node.evalOrigin, node.parsedFrameInfo);
-      for (const frame of node.frames) {
-        frames.push(new ParsedErrorStackFrameImpl(frame, node.parsedFrameInfo, evalOrigin));
-      }
-    }
-    return frames;
-  }
-};
-var ParsedErrorStackFrameImpl = class {
-  #frame;
-  #parsedFrameInfo;
-  #evalOrigin;
-  constructor(frame, parsedFrameInfo, evalOrigin) {
-    this.#frame = frame;
-    this.#parsedFrameInfo = parsedFrameInfo;
-    this.#evalOrigin = evalOrigin;
-  }
-  get url() {
-    return this.#frame.url;
-  }
-  get uiSourceCode() {
-    return this.#frame.uiSourceCode;
-  }
-  get name() {
-    return this.#frame.name;
-  }
-  get line() {
-    return this.#frame.line;
-  }
-  get column() {
-    return this.#frame.column;
-  }
-  get missingDebugInfo() {
-    return this.#frame.missingDebugInfo;
-  }
-  get rawName() {
-    return this.#frame.rawName;
-  }
-  get isAsync() {
-    return this.#parsedFrameInfo?.isAsync;
-  }
-  get isConstructor() {
-    return this.#parsedFrameInfo?.isConstructor;
-  }
-  get isEval() {
-    return this.#parsedFrameInfo?.isEval;
-  }
-  get evalOrigin() {
-    return this.#evalOrigin;
-  }
-  get isWasm() {
-    return this.#frame.isWasm;
-  }
-  get isInline() {
-    return this.#frame.isInline;
-  }
-  get wasmModuleName() {
-    return this.#parsedFrameInfo?.wasmModuleName;
-  }
-  get wasmFunctionIndex() {
-    return this.#parsedFrameInfo?.wasmFunctionIndex;
-  }
-  get typeName() {
-    return this.#parsedFrameInfo?.typeName;
-  }
-  get methodName() {
-    return this.#parsedFrameInfo?.methodName;
-  }
-  get promiseIndex() {
-    return this.#parsedFrameInfo?.promiseIndex;
-  }
-};
-var DebuggableFragmentImpl = class {
-  constructor(fragment, callFrames) {
-    this.fragment = fragment;
-    this.callFrames = callFrames;
-  }
-  fragment;
-  callFrames;
-  get frames() {
-    if (!this.fragment.node) {
-      return [];
-    }
-    const frames = [];
-    let index = 0;
-    for (const node of this.fragment.node.getCallStack()) {
-      for (const [inlineIdx, frame] of node.frames.entries()) {
-        const sdkFrame = inlineIdx === 0 ? this.callFrames[index] : this.callFrames[index].createVirtualCallFrame(inlineIdx, frame.name ?? "");
-        frames.push(new DebuggableFrameImpl(frame, sdkFrame));
-      }
-      index++;
-    }
-    return frames;
-  }
-};
-var DebuggableFrameImpl = class {
-  #frame;
-  #sdkFrame;
-  constructor(frame, sdkFrame) {
-    this.#frame = frame;
-    this.#sdkFrame = sdkFrame;
-  }
-  get url() {
-    return this.#frame.url;
-  }
-  get uiSourceCode() {
-    return this.#frame.uiSourceCode;
-  }
-  get name() {
-    return this.#frame.name;
-  }
-  get line() {
-    return this.#frame.line;
-  }
-  get column() {
-    return this.#frame.column;
-  }
-  get missingDebugInfo() {
-    return this.#frame.missingDebugInfo;
-  }
-  get rawName() {
-    return this.#frame.rawName;
-  }
-  get isWasm() {
-    return this.#frame.isWasm;
-  }
-  get isInline() {
-    return this.#frame.isInline;
-  }
-  get sdkFrame() {
-    return this.#sdkFrame;
-  }
-};
-
-// ../../front_end/models/stack_trace/StackTraceModel.ts
-var StackTraceModel_exports = {};
-__export(StackTraceModel_exports, {
-  StackTraceModel: () => StackTraceModel
-});
-import * as Common3 from "../../core/common/common.js";
-import * as SDK from "../../core/sdk/sdk.js";
-import * as StackTrace from "./stack_trace.js";
 
 // ../../front_end/models/stack_trace/Trie.ts
 var Trie_exports = {};
 __export(Trie_exports, {
   EvalOrigin: () => EvalOrigin,
+  FrameKind: () => FrameKind,
   FrameNode: () => FrameNode,
   Trie: () => Trie,
   compareRawFrames: () => compareRawFrames,
@@ -450,6 +214,12 @@ __export(Trie_exports, {
 function isBuiltinFrame(rawFrame) {
   return rawFrame.lineNumber === -1 && rawFrame.columnNumber === -1 && !Boolean(rawFrame.scriptId) && !Boolean(rawFrame.url);
 }
+var FrameKind = /* @__PURE__ */ ((FrameKind2) => {
+  FrameKind2["VISIBLE"] = "VISIBLE";
+  FrameKind2["OUTLINED"] = "OUTLINED";
+  FrameKind2["HIDDEN"] = "HIDDEN";
+  return FrameKind2;
+})(FrameKind || {});
 var EvalOrigin = class {
   frames;
   evalOrigin;
@@ -462,7 +232,15 @@ var FrameNode = class {
   parent;
   children = [];
   rawFrame;
+  /** Context-free translation: [top, ...inlinedCallers]. Empty iff `kind === HIDDEN` (or not translated yet). */
   frames = [];
+  kind = "VISIBLE" /* VISIBLE */;
+  /** Set iff `kind` is OUTLINED, or VISIBLE and translated with scopes information. */
+  functionKeys;
+  /** True iff the translation shows generated code, i.e. no source map or plugin could map it (incl. builtins). */
+  isUnmapped = false;
+  /** False until a translation was stored. Stays false if translation threw, so it will be retried. */
+  isTranslated = false;
   fragment;
   parsedFrameInfo;
   evalOrigin;
@@ -566,7 +344,312 @@ function compareRawFrames(a, b) {
   return a.columnNumber - b.columnNumber;
 }
 
+// ../../front_end/models/stack_trace/StackTraceImpl.ts
+var StackTraceImpl = class extends Common2.ObjectWrapper.ObjectWrapper {
+  syncFragment;
+  asyncFragments;
+  constructor(syncFragment, asyncFragments) {
+    super();
+    this.syncFragment = syncFragment;
+    this.asyncFragments = asyncFragments;
+    const fragment = syncFragment instanceof DebuggableFragmentImpl || syncFragment instanceof ParsedErrorStackFragmentImpl ? syncFragment.fragment : syncFragment;
+    fragment.stackTraces.add(this);
+    this.asyncFragments.forEach((asyncFragment) => asyncFragment.fragment.stackTraces.add(this));
+  }
+};
+var FragmentImpl = class _FragmentImpl {
+  static EMPTY_FRAGMENT = new _FragmentImpl();
+  node;
+  stackTraces = /* @__PURE__ */ new Set();
+  /**
+   * Fragments are deduplicated based on the node.
+   *
+   * In turn, each fragment can be part of multiple stack traces.
+   */
+  static getOrCreate(node) {
+    if (!node.fragment) {
+      node.fragment = new _FragmentImpl(node);
+    }
+    return node.fragment;
+  }
+  constructor(node) {
+    this.node = node;
+  }
+  get frames() {
+    return this.node ? consolidate([...this.node.getCallStack()]).map(({ frame }) => frame) : [];
+  }
+};
+var AsyncFragmentImpl = class {
+  constructor(description, fragment) {
+    this.description = description;
+    this.fragment = fragment;
+  }
+  description;
+  fragment;
+  get frames() {
+    return this.fragment.frames;
+  }
+};
+var FrameImpl = class {
+  url;
+  uiSourceCode;
+  name;
+  line;
+  column;
+  missingDebugInfo;
+  rawName;
+  isWasm;
+  isInline;
+  constructor(url, uiSourceCode, name, line, column, missingDebugInfo, rawName, isWasm, isInline) {
+    this.url = url;
+    this.uiSourceCode = uiSourceCode;
+    this.name = name;
+    this.line = line;
+    this.column = column;
+    this.missingDebugInfo = missingDebugInfo;
+    this.rawName = rawName;
+    this.isWasm = isWasm;
+    this.isInline = isInline;
+  }
+};
+function consolidate(callStack) {
+  const result = [];
+  for (let i = 0; i < callStack.length; ++i) {
+    const node = callStack[i];
+    if (node.kind === "HIDDEN" /* HIDDEN */) {
+      continue;
+    }
+    if (node.kind === "VISIBLE" /* VISIBLE */ || !node.functionKeys) {
+      node.frames.forEach((frame, inlineIndex) => result.push({
+        frame,
+        node,
+        nodeIndex: i,
+        inlineIndex,
+        invocationNode: inlineIndex === node.frames.length - 1 ? node : void 0
+      }));
+      continue;
+    }
+    const group = node.frames.map((frame, inlineIndex) => ({ frame, node, nodeIndex: i, inlineIndex }));
+    let bottom = node.functionKeys.bottom;
+    let terminator;
+    let lastConsumed = i;
+    for (let j = i + 1; j < callStack.length && !terminator; ++j) {
+      const caller = callStack[j];
+      if (caller.kind === "HIDDEN" /* HIDDEN */ || isNotAuthored(caller)) {
+        continue;
+      }
+      if (!caller.functionKeys || caller.functionKeys.top !== bottom) {
+        break;
+      }
+      for (let k = 1; k < caller.frames.length; ++k) {
+        group.push({ frame: caller.frames[k], node: caller, nodeIndex: j, inlineIndex: k });
+      }
+      bottom = caller.functionKeys.bottom;
+      terminator = caller.kind === "VISIBLE" /* VISIBLE */ ? caller : void 0;
+      lastConsumed = j;
+    }
+    i = lastConsumed;
+    const rawName = terminator?.rawFrame.functionName;
+    group.forEach(({ frame: f, ...rest }, idx) => result.push({
+      ...rest,
+      frame: new FrameImpl(
+        f.url,
+        f.uiSourceCode,
+        f.name,
+        f.line,
+        f.column,
+        f.missingDebugInfo,
+        rawName,
+        f.isWasm,
+        idx < group.length - 1
+      ),
+      invocationNode: idx === group.length - 1 ? terminator : void 0
+    }));
+  }
+  return result;
+}
+function isNotAuthored(node) {
+  return node.kind === "VISIBLE" /* VISIBLE */ && !node.functionKeys && (node.isUnmapped || isBuiltinFrame(node.rawFrame));
+}
+function createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin, parsedFrameInfo) {
+  if (!evalOrigin || evalOrigin.frames.length === 0) {
+    return void 0;
+  }
+  const frame = evalOrigin.frames[0];
+  const info = parsedFrameInfo?.evalOrigin?.parsedFrameInfo;
+  const nestedOrigin = createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin.evalOrigin, info);
+  return new ParsedErrorStackFrameImpl(frame, info, info, nestedOrigin);
+}
+var ParsedErrorStackFragmentImpl = class {
+  constructor(fragment) {
+    this.fragment = fragment;
+  }
+  fragment;
+  get frames() {
+    if (!this.fragment.node) {
+      return [];
+    }
+    const evalOrigins = /* @__PURE__ */ new Map();
+    return consolidate([...this.fragment.node.getCallStack()]).map(({ frame, node, invocationNode }) => {
+      if (!evalOrigins.has(node)) {
+        evalOrigins.set(node, createParsedErrorStackFrameImplFromEvalOrigin(node.evalOrigin, node.parsedFrameInfo));
+      }
+      return new ParsedErrorStackFrameImpl(
+        frame,
+        node.parsedFrameInfo,
+        invocationNode?.parsedFrameInfo,
+        evalOrigins.get(node)
+      );
+    });
+  }
+};
+var ParsedErrorStackFrameImpl = class {
+  #frame;
+  #locationInfo;
+  #invocationInfo;
+  #evalOrigin;
+  constructor(frame, locationInfo, invocationInfo, evalOrigin) {
+    this.#frame = frame;
+    this.#locationInfo = locationInfo;
+    this.#invocationInfo = invocationInfo;
+    this.#evalOrigin = evalOrigin;
+  }
+  get url() {
+    return this.#frame.url;
+  }
+  get uiSourceCode() {
+    return this.#frame.uiSourceCode;
+  }
+  get name() {
+    return this.#frame.name;
+  }
+  get line() {
+    return this.#frame.line;
+  }
+  get column() {
+    return this.#frame.column;
+  }
+  get missingDebugInfo() {
+    return this.#frame.missingDebugInfo;
+  }
+  get rawName() {
+    return this.#frame.rawName;
+  }
+  get isAsync() {
+    return this.#locationInfo?.isAsync;
+  }
+  get isConstructor() {
+    return this.#invocationInfo?.isConstructor;
+  }
+  get isEval() {
+    return this.#locationInfo?.isEval;
+  }
+  get evalOrigin() {
+    return this.#evalOrigin;
+  }
+  get isWasm() {
+    return this.#frame.isWasm;
+  }
+  get isInline() {
+    return this.#frame.isInline;
+  }
+  get wasmModuleName() {
+    return this.#locationInfo?.wasmModuleName;
+  }
+  get wasmFunctionIndex() {
+    return this.#locationInfo?.wasmFunctionIndex;
+  }
+  get typeName() {
+    return this.#invocationInfo?.typeName;
+  }
+  get methodName() {
+    return this.#invocationInfo?.methodName;
+  }
+  get promiseIndex() {
+    return this.#locationInfo?.promiseIndex;
+  }
+};
+var DebuggableFragmentImpl = class {
+  constructor(fragment, callFrames) {
+    this.fragment = fragment;
+    this.callFrames = callFrames;
+  }
+  fragment;
+  callFrames;
+  /**
+   * Virtual call frames for inlined frames, so that reading `frames` repeatedly (e.g. after `UPDATED`) yields
+   * identical `sdkFrame`s. A new DebuggableFragmentImpl is created per pause, so this lives as long as `callFrames`.
+   */
+  #virtualCallFrames = /* @__PURE__ */ new Map();
+  get frames() {
+    if (!this.fragment.node) {
+      return [];
+    }
+    return consolidate([...this.fragment.node.getCallStack()]).map(({ frame, nodeIndex, inlineIndex }) => {
+      return new DebuggableFrameImpl(frame, this.#sdkFrameFor(nodeIndex, inlineIndex, frame.name ?? ""));
+    });
+  }
+  #sdkFrameFor(nodeIndex, inlineIndex, name) {
+    const physical = this.callFrames[nodeIndex];
+    if (inlineIndex === 0) {
+      return physical;
+    }
+    const key = `${nodeIndex}:${inlineIndex}:${name}`;
+    let frame = this.#virtualCallFrames.get(key);
+    if (!frame) {
+      frame = physical.createVirtualCallFrame(inlineIndex, name);
+      this.#virtualCallFrames.set(key, frame);
+    }
+    return frame;
+  }
+};
+var DebuggableFrameImpl = class {
+  #frame;
+  #sdkFrame;
+  constructor(frame, sdkFrame) {
+    this.#frame = frame;
+    this.#sdkFrame = sdkFrame;
+  }
+  get url() {
+    return this.#frame.url;
+  }
+  get uiSourceCode() {
+    return this.#frame.uiSourceCode;
+  }
+  get name() {
+    return this.#frame.name;
+  }
+  get line() {
+    return this.#frame.line;
+  }
+  get column() {
+    return this.#frame.column;
+  }
+  get missingDebugInfo() {
+    return this.#frame.missingDebugInfo;
+  }
+  get rawName() {
+    return this.#frame.rawName;
+  }
+  get isWasm() {
+    return this.#frame.isWasm;
+  }
+  get isInline() {
+    return this.#frame.isInline;
+  }
+  get sdkFrame() {
+    return this.#sdkFrame;
+  }
+};
+
 // ../../front_end/models/stack_trace/StackTraceModel.ts
+var StackTraceModel_exports = {};
+__export(StackTraceModel_exports, {
+  StackTraceModel: () => StackTraceModel
+});
+import * as Common3 from "../../core/common/common.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as StackTrace from "./stack_trace.js";
 var StackTraceModel = class _StackTraceModel extends SDK.SDKModel.SDKModel {
   #trie = new Trie();
   #mutex = new Common3.Mutex.Mutex();
@@ -620,19 +703,41 @@ var StackTraceModel = class _StackTraceModel extends SDK.SDKModel.SDKModel {
     ]);
     return new StackTraceImpl(syncFragment, asyncFragments);
   }
-  /** Trigger re-translation of all fragments with the provide script in their call stack */
+  /**
+   * Re-translates all trie nodes whose raw frame or eval origin chain is in `script`, and notifies all stack traces
+   * that contain such a node.
+   */
   async scriptInfoChanged(script, translateRawFrames) {
+    const matches = (raw) => raw.scriptId === script.scriptId || !raw.scriptId && raw.url === script.sourceURL;
+    const evalMatches = (raw) => Boolean(raw) && (matches(raw) || evalMatches(raw?.parsedFrameInfo?.evalOrigin));
     const release = await this.#mutex.acquire();
     try {
-      const translatePromises = [];
-      let stackTracesToUpdate = /* @__PURE__ */ new Set();
-      for (const fragment of this.#affectedFragments(script)) {
-        if (fragment.node?.children.length === 0) {
-          translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
+      const affected = [];
+      this.#trie.walk(null, (node) => {
+        if (matches(node.rawFrame) || evalMatches(node.parsedFrameInfo?.evalOrigin)) {
+          affected.push(node);
         }
-        stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
+        return true;
+      });
+      await this.#translateNodes(
+        affected.filter((n) => matches(n.rawFrame)),
+        affected.filter((n) => evalMatches(n.parsedFrameInfo?.evalOrigin)),
+        translateRawFrames
+      );
+      const visited = /* @__PURE__ */ new Set();
+      let stackTracesToUpdate = /* @__PURE__ */ new Set();
+      for (const root of affected) {
+        this.#trie.walk(root, (node) => {
+          if (visited.has(node)) {
+            return false;
+          }
+          visited.add(node);
+          if (node.fragment) {
+            stackTracesToUpdate = stackTracesToUpdate.union(node.fragment.stackTraces);
+          }
+          return true;
+        });
       }
-      await Promise.all(translatePromises);
       for (const stackTrace of stackTracesToUpdate) {
         stackTrace.dispatchEventToListeners(StackTrace.StackTrace.Events.UPDATED);
       }
@@ -681,87 +786,79 @@ var StackTraceModel = class _StackTraceModel extends SDK.SDKModel.SDKModel {
     const release = await this.#mutex.acquire();
     try {
       const node = this.#trie.insert(frames);
-      const requiresTranslation = !Boolean(node.fragment);
       const fragment = FragmentImpl.getOrCreate(node);
-      if (requiresTranslation) {
-        await this.#translateFragment(fragment, rawFramesToUIFrames);
-      }
+      const callStack = [...node.getCallStack()];
+      await this.#translateNodes(
+        callStack.filter((n) => !n.isTranslated),
+        callStack.filter((n) => n.parsedFrameInfo?.evalOrigin && !n.evalOrigin),
+        rawFramesToUIFrames
+      );
       return fragment;
     } finally {
       release();
     }
   }
-  async #translateFragment(fragment, rawFramesToUIFrames) {
-    if (!fragment.node) {
+  /** Translates `nodes` and the eval origins of `evalNodes`. Writes nothing if any translation throws. */
+  async #translateNodes(nodes, evalNodes, rawFramesToUIFrames) {
+    if (nodes.length === 0 && evalNodes.length === 0) {
       return;
     }
-    const rawFrames = fragment.node.getCallStack().map((node) => node.rawFrame).toArray();
-    const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
-    console.assert(rawFrames.length === uiFrames.length, "Broken rawFramesToUIFrames implementation");
-    const evalOriginPromises = [];
-    for (const node of fragment.node.getCallStack()) {
-      if (node.parsedFrameInfo?.evalOrigin) {
-        evalOriginPromises.push(
-          translateEvalOrigin(node.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, this.target())
-        );
-      }
+    const [translations, evalOrigins] = await Promise.all([
+      nodes.length ? rawFramesToUIFrames(nodes.map((n) => n.rawFrame), this.target()) : Promise.resolve([]),
+      Promise.all(evalNodes.map(
+        (n) => translateEvalOrigin(n.parsedFrameInfo?.evalOrigin, rawFramesToUIFrames, this.target())
+      ))
+    ]);
+    if (translations.length !== nodes.length) {
+      throw new Error("Broken rawFramesToUIFrames implementation");
     }
-    const evalOrigins = await Promise.all(evalOriginPromises);
-    let i = 0;
-    let evalI = 0;
-    for (const node of fragment.node.getCallStack()) {
-      const group = uiFrames[i++];
-      node.frames = group.map((frame, index) => new FrameImpl(
-        frame.url,
-        frame.uiSourceCode,
-        frame.name,
-        frame.line,
-        frame.column,
-        frame.missingDebugInfo,
-        node.rawFrame.functionName,
-        node.rawFrame.isWasm,
-        index < group.length - 1
-      ));
-      if (node.parsedFrameInfo?.evalOrigin) {
-        node.evalOrigin = evalOrigins[evalI++];
-      }
-    }
-  }
-  #affectedFragments(script) {
-    const affectedBranches = /* @__PURE__ */ new Set();
-    this.#trie.walk(null, (node) => {
-      if (node.rawFrame.scriptId === script.scriptId || !node.rawFrame.scriptId && node.rawFrame.url === script.sourceURL) {
-        affectedBranches.add(node);
-        return false;
-      }
-      return true;
+    nodes.forEach((node, i) => applyTranslation(node, translations[i]));
+    evalNodes.forEach((node, i) => {
+      node.evalOrigin = evalOrigins[i];
     });
-    const fragments = /* @__PURE__ */ new Set();
-    for (const branch of affectedBranches) {
-      this.#trie.walk(branch, (node) => {
-        if (node.fragment) {
-          fragments.add(node.fragment);
-        }
-        return true;
-      });
-    }
-    return fragments;
   }
 };
-async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
-  const uiFrames = await rawFramesToUIFrames([rawFrame], target);
-  const group = uiFrames[0];
-  const frames = group.map((frame, index) => new FrameImpl(
-    frame.url,
-    frame.uiSourceCode,
-    frame.name,
-    frame.line,
-    frame.column,
-    frame.missingDebugInfo,
+function toFrameImpls(rawFrame, frames) {
+  return frames.map((f, index) => new FrameImpl(
+    f.url,
+    f.uiSourceCode,
+    f.name,
+    f.line,
+    f.column,
+    f.missingDebugInfo,
     rawFrame.functionName,
     rawFrame.isWasm,
-    index < group.length - 1
+    index < frames.length - 1
   ));
+}
+function applyTranslation(node, translation) {
+  node.isTranslated = true;
+  if (translation.kind === "HIDDEN" /* HIDDEN */ || translation.frames.length === 0) {
+    console.assert(translation.kind === "HIDDEN" /* HIDDEN */, "Non-HIDDEN translation without frames");
+    node.kind = "HIDDEN" /* HIDDEN */;
+    node.frames = [];
+    node.functionKeys = void 0;
+    node.isUnmapped = false;
+    return;
+  }
+  node.kind = translation.kind;
+  node.frames = toFrameImpls(node.rawFrame, translation.frames);
+  node.functionKeys = translation.functionKeys;
+  node.isUnmapped = translation.kind === "VISIBLE" /* VISIBLE */ && Boolean(translation.unmapped);
+}
+async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
+  const [translation] = await rawFramesToUIFrames([rawFrame], target);
+  const frames = translation.frames.length ? toFrameImpls(rawFrame, translation.frames) : [new FrameImpl(
+    rawFrame.url,
+    void 0,
+    rawFrame.functionName,
+    rawFrame.lineNumber,
+    rawFrame.columnNumber,
+    void 0,
+    rawFrame.functionName,
+    rawFrame.isWasm,
+    false
+  )];
   let parentEvalOrigin;
   if (rawFrame.parsedFrameInfo?.evalOrigin) {
     parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);

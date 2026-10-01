@@ -57,9 +57,6 @@
   ],
   "references": [
     {
-      "path": "../../shared/shared-tsconfig.ref.json"
-    },
-    {
       "path": "../report/report-tsconfig.ref.json"
     }
   ]

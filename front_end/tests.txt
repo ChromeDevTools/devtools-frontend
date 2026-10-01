@@ -446,6 +446,7 @@ panels/application/preloading/components/UsedPreloadingView.test.js
 panels/autofill/AutofillView.test.js
 panels/browser_debugger/CategorizedBreakpointsSidebarPane.test.js
 panels/browser_debugger/DOMBreakpointsSidebarPane.test.js
+panels/browser_debugger/ObjectEventListenersSidebarPane.test.js
 panels/browser_debugger/XHRBreakpointsSidebarPane.test.js
 panels/browser_debugger/browser_debugger.test.js
 panels/changes/ChangesSidebar.test.js
@@ -813,6 +814,7 @@ ui/legacy/SoftContextMenu.test.js
 ui/legacy/SoftDropDown.test.js
 ui/legacy/SplitWidget.test.js
 ui/legacy/StackLocation.test.js
+ui/legacy/StackPane.test.js
 ui/legacy/StackedPane.test.js
 ui/legacy/StatusBar.test.js
 ui/legacy/SuggestBox.test.js

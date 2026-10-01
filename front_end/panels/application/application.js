@@ -11344,7 +11344,7 @@ var serviceWorkersView_css_default = `/*
 }
 
 .devtools-link {
-  line-height: 14px;
+  line-height: var(--sys-typescale-body4-line-height);
   align-self: center;
   padding: var(--sys-size-1);
 }

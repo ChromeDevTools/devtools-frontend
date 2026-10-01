@@ -6,7 +6,9 @@ import type { CallFrame, Location, ScopeChainEntry } from './DebuggerModel.js';
 import type { SourceMap } from './SourceMap.js';
 export declare class SourceMapScopesInfo {
     #private;
-    constructor(sourceMap: SourceMap, scopeInfo: ScopesCodec.ScopeInfo);
+    constructor(sourceMap: SourceMap, scopeInfo: ScopesCodec.ScopeInfo, { isFromAst }?: {
+        isFromAst?: boolean;
+    });
     /**
      * If the source map does not contain any scopes information, this factory function attempts to create scope information
      * via the script's AST combined with the mappings.
@@ -19,10 +21,6 @@ export declare class SourceMapScopesInfo {
     hasOriginalScopes(sourceIdx: number): boolean;
     isEmpty(): boolean;
     addOriginalScopesAtIndex(sourceIdx: number, scopes: ScopesCodec.OriginalScope[]): void;
-    /**
-     * @returns true, iff the function surrounding the provided position is marked as "hidden".
-     */
-    isOutlinedFrame(generatedLine: number, generatedColumn: number): boolean;
     /**
      * @returns true, iff the range surrounding the provided position contains multiple
      * inlined original functions.
@@ -70,14 +68,45 @@ export declare class SourceMapScopesInfo {
         url?: Platform.DevToolsPath.UrlString;
     } | null;
     /**
-     * Returns one or more original stack frames for this single "raw frame" or call-site.
-     *
-     * @returns An empty array if no mapping at the call-site was found, or the resulting frames
-     * in top-to-bottom order in case of inlining.
-     * @throws If this range is marked "hidden". Outlining needs to be handled externally as
-     * outlined function segments in stack traces can span across bundles.
+     * Translates a single "raw frame" or call-site, including outlined functions. It's the caller's responsibility to
+     * merge outlined frames with their caller(s) (see {@link GeneratedFrameKind}).
      */
-    translateCallSite(generatedLine: number, generatedColumn: number): TranslatedFrame[];
+    translateRawFrame(generatedLine: number, generatedColumn: number): RawFrameTranslation;
+}
+/**
+ * Describes how the generated function surrounding a generated position shows up in stack traces.
+ *
+ * Compilers tend to introduce functions (and calls to them) that don't exist in the authored code. The scopes
+ * proposal distinguishes two cases:
+ *
+ *   1) The generated function contains authored code, e.g. a block scope that was turned into a function. The
+ *      generated range is marked "hidden", but links to the original scope via its definition. We can pause
+ *      in such a function, but the frame is merged with its caller(s) in stack traces: The outlined code
+ *      logically belongs to the (authored) function that transitively calls it.
+ *
+ *   2) The generated function doesn't represent any authored code, e.g. a compiler helper. The generated range
+ *      has no definition. The scopes spec is being updated to say that such a range can be ignored in stack
+ *      traces, so we drop these frames.
+ */
+export declare const enum GeneratedFrameKind {
+    /** A regular (possibly with inlined functions) generated function, or top-level code. */
+    VISIBLE = "VISIBLE",
+    /** A generated function marked as "hidden" that has a definition (case 1). */
+    OUTLINED = "OUTLINED",
+    /** A generated function without a definition (case 2). */
+    HIDDEN = "HIDDEN"
+}
+/** See {@link SourceMapScopesInfo.translateRawFrame}. */
+export interface RawFrameTranslation {
+    kind: GeneratedFrameKind;
+    /**
+     * [top, ...inlinedCallers] in top-to-bottom order. Empty for {@link GeneratedFrameKind.HIDDEN} frames, or if the
+     * generated position is not mapped.
+     *
+     * For {@link GeneratedFrameKind.OUTLINED} frames, the top frame is named after the authored function the outlined
+     * code belongs to.
+     */
+    frames: TranslatedFrame[];
 }
 /**
  * Represents a stack frame in original terms. It closely aligns with StackTrace.StackTrace.Frame,
@@ -90,6 +119,8 @@ export interface TranslatedFrame {
     column: number;
     name?: string;
     url?: Platform.DevToolsPath.UrlString;
+    /** Start of the original function scope containing this frame's position. Undefined for top-level code. */
+    functionStart?: ScopesCodec.Position;
 }
 export declare function findExpression(range: ScopesCodec.GeneratedRange | undefined, index: number, line?: number, column?: number): string | null;
 export declare function contains(range: Pick<ScopesCodec.GeneratedRange, 'start' | 'end'>, line: number, column: number): boolean;

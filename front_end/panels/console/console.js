@@ -3552,6 +3552,7 @@ import * as Buttons from "../../ui/components/buttons/buttons.js";
 import * as Dialogs from "../../ui/components/dialogs/dialogs.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
 import * as Lit3 from "../../ui/lit/lit.js";
+import * as Settings4 from "../../ui/settings/settings.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/consoleInsightTeaser.css.js
@@ -6107,7 +6108,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (!this.shouldShowInsights()) {
       return false;
     }
-    if (!Common2.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").get() || !AiAssistanceModel.BuiltInAi.BuiltInAi.instance().isEventuallyAvailable()) {
+    if (!Common2.Settings.Settings.instance().resolve(Settings2.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor).get() || !AiAssistanceModel.BuiltInAi.BuiltInAi.instance().isEventuallyAvailable()) {
       return false;
     }
     const devtoolsLocale = i18n3.DevToolsLocale.DevToolsLocale.instance();
@@ -7435,7 +7436,7 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
   }
   maybeGenerateTeaser() {
     const startGeneratingTeaser = () => {
-      if (!this.#isInactive && Common3.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").get()) {
+      if (!this.#isInactive && Common3.Settings.Settings.instance().resolve(Settings4.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor).get()) {
         void this.#generateTeaserText();
       }
     };
@@ -7575,7 +7576,7 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
   }
   #dontShowChanged(e) {
     const showTeasers = !e.target.checked;
-    Common3.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").set(showTeasers);
+    Common3.Settings.Settings.instance().resolve(Settings4.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor).set(showTeasers);
   }
   #hasTellMeMoreButton() {
     if (!UI5.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_TEASER_ACTION_ID)) {
@@ -7597,7 +7598,7 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
         uuid: this.#uuid,
         headerText: this.#headerText,
         mainText: this.#mainText,
-        isInactive: this.#isInactive || !Common3.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").get(),
+        isInactive: this.#isInactive || !Common3.Settings.Settings.instance().resolve(Settings4.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor).get(),
         dontShowChanged: this.#dontShowChanged.bind(this),
         hasTellMeMoreButton: this.#hasTellMeMoreButton(),
         isSlowGeneration: this.#isSlow,
@@ -9195,7 +9196,7 @@ import * as TextEditor2 from "../../ui/components/text_editor/text_editor.js";
 import { Icon as Icon2 } from "../../ui/kit/kit.js";
 import * as ObjectUI4 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
-import * as Settings9 from "../../ui/settings/settings.js";
+import * as Settings10 from "../../ui/settings/settings.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/console/ConsolePanel.ts
@@ -9236,7 +9237,7 @@ import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
 import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as Components5 from "../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
-import * as Settings7 from "../../ui/settings/settings.js";
+import * as Settings8 from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import { AiCodeCompletionSummaryToolbar } from "../common/common.js";
 
@@ -9633,9 +9634,9 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       `${VisualLogging5.toggleSubpane("console-settings").track({ click: true })}`
     );
     this.progressToolbarItem = new UI9.Toolbar.ToolbarItem(document.createElement("div"));
-    this.groupSimilarSetting = Common6.Settings.Settings.instance().resolve(Settings7.ConsoleSettings.consoleGroupSimilarSettingDescriptor);
+    this.groupSimilarSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleGroupSimilarSettingDescriptor);
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
-    this.showCorsErrorsSetting = Common6.Settings.Settings.instance().resolve(Settings7.ConsoleSettings.consoleShowsCorsErrorsSettingDescriptor);
+    this.showCorsErrorsSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleShowsCorsErrorsSettingDescriptor);
     this.showCorsErrorsSetting.addChangeListener(() => this.updateMessageList());
     const toolbar2 = this.consoleToolbarContainer.createChild("devtools-toolbar", "console-main-toolbar");
     toolbar2.setAttribute("jslog", `${VisualLogging5.toolbar()}`);
@@ -9681,9 +9682,9 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     toolbar2.appendToolbarItem(this.filterStatusText);
     toolbar2.appendToolbarItem(this.showSettingsPaneButton);
     const monitoringXHREnabledSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.monitoringXHREnabledSettingDescriptor);
-    this.timestampsSetting = Common6.Settings.Settings.instance().resolve(Settings7.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor);
+    this.timestampsSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor);
     this.consoleHistoryAutocompleteSetting = Common6.Settings.Settings.instance().resolve(
-      Settings7.ConsoleSettings.consoleHistoryAutocompleteSettingDescriptor
+      Settings8.ConsoleSettings.consoleHistoryAutocompleteSettingDescriptor
     );
     this.selfXssWarningDisabledSetting = Common6.Settings.Settings.instance().createSetting(
       "disable-self-xss-warning",
@@ -9693,14 +9694,14 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     const settingsPane = this.contentsElement.createChild("div", "console-settings-pane");
     UI9.ARIAUtils.setLabel(settingsPane, i18nString5(UIStrings5.consoleSettings));
     UI9.ARIAUtils.markAsGroup(settingsPane);
-    const consoleEagerEvalSetting = Common6.Settings.Settings.instance().resolve(Settings7.ConsoleSettings.consoleEagerEvalSettingDescriptor);
+    const consoleEagerEvalSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleEagerEvalSettingDescriptor);
     const preserveConsoleLogSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.preserveConsoleLogSettingDescriptor);
     const userActivationEvalSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.consoleUserActivationEvalSettingDescriptor);
     settingsPane.append(
       SettingsUI.SettingsUI.createSettingCheckbox(
         i18nString5(UIStrings5.networkMessages),
         this.filter.networkMessagesSetting,
-        Settings7.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title
+        Settings8.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title
       ),
       SettingsUI.SettingsUI.createSettingCheckbox(
         i18nString5(UIStrings5.logXMLHttpRequests),
@@ -9712,7 +9713,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
         i18nString5(UIStrings5.doNotClearLogOnPageReload)
       ),
       SettingsUI.SettingsUI.createSettingCheckbox(
-        Settings7.SettingUIRegistration.resolve(consoleEagerEvalSetting.descriptor()).title,
+        Settings8.SettingUIRegistration.resolve(consoleEagerEvalSetting.descriptor()).title,
         consoleEagerEvalSetting,
         i18nString5(UIStrings5.eagerlyEvaluateTextInThePrompt)
       ),
@@ -9722,22 +9723,22 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
         i18nString5(UIStrings5.onlyShowMessagesFromTheCurrentContext)
       ),
       SettingsUI.SettingsUI.createSettingCheckbox(
-        Settings7.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor()).title,
+        Settings8.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor()).title,
         this.consoleHistoryAutocompleteSetting,
         i18nString5(UIStrings5.autocompleteFromHistory)
       ),
       SettingsUI.SettingsUI.createSettingCheckbox(
-        Settings7.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title,
+        Settings8.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title,
         this.groupSimilarSetting,
         i18nString5(UIStrings5.groupSimilarMessagesInConsole)
       ),
       SettingsUI.SettingsUI.createSettingCheckbox(
-        Settings7.SettingUIRegistration.resolve(userActivationEvalSetting.descriptor()).title,
+        Settings8.SettingUIRegistration.resolve(userActivationEvalSetting.descriptor()).title,
         userActivationEvalSetting,
         i18nString5(UIStrings5.treatEvaluationAsUserActivation)
       ),
       SettingsUI.SettingsUI.createSettingCheckbox(
-        Settings7.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title,
+        Settings8.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title,
         this.showCorsErrorsSetting,
         i18nString5(UIStrings5.showCorsErrorsInConsole)
       )
@@ -10968,9 +10969,9 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
   constructor(filterChangedCallback) {
     this.filterChanged = filterChangedCallback;
     this.messageLevelFiltersSetting = _ConsoleViewFilter.levelFilterSetting();
-    this.networkMessagesSetting = Common6.Settings.Settings.instance().resolve(Settings7.ConsoleSettings.networkMessagesSettingDescriptor);
+    this.networkMessagesSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.networkMessagesSettingDescriptor);
     this.filterByExecutionContextSetting = Common6.Settings.Settings.instance().resolve(
-      Settings7.ConsoleSettings.selectedContextFilterEnabledSettingDescriptor
+      Settings8.ConsoleSettings.selectedContextFilterEnabledSettingDescriptor
     );
     this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.networkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
@@ -11426,7 +11427,7 @@ var ConsolePrompt = class extends ConsolePromptBase {
     this.promptIcon.classList.add("console-prompt-icon", "medium");
     this.element.appendChild(this.promptIcon);
     this.iconThrottler = new Common7.Throttler.Throttler(0);
-    this.eagerEvalSetting = Common7.Settings.Settings.instance().resolve(Settings9.ConsoleSettings.consoleEagerEvalSettingDescriptor);
+    this.eagerEvalSetting = Common7.Settings.Settings.instance().resolve(Settings10.ConsoleSettings.consoleEagerEvalSettingDescriptor);
     this.eagerEvalSetting.addChangeListener(this.eagerSettingChanged.bind(this));
     this.eagerPreviewElement.classList.toggle("hidden", !this.eagerEvalSetting.get());
     this.element.tabIndex = 0;
@@ -11435,7 +11436,7 @@ var ConsolePrompt = class extends ConsolePromptBase {
     const argumentHints = TextEditor2.JavaScript.argumentHints();
     this.#argumentHintsState = argumentHints[0];
     const autocompleteOnEnter = TextEditor2.Config.DynamicSetting.bool(
-      Settings9.ConsoleSettings.consoleAutocompleteOnEnterSettingDescriptor,
+      Settings10.ConsoleSettings.consoleAutocompleteOnEnterSettingDescriptor,
       [],
       TextEditor2.Config.conservativeCompletion
     );

@@ -8,3 +8,4 @@ export declare const consoleGroupSimilarSettingDescriptor: Common.Settings.Setti
 export declare const consoleShowsCorsErrorsSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const consoleEagerEvalSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const consoleTraceExpandSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const consoleInsightTeasersEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;

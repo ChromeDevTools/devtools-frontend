@@ -550,7 +550,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       return;
     }
     const uiSourceCode = info.uiLocation.uiSourceCode;
-    info.uiLocation = null;
+    info.uiLocation = void 0;
     const sourceCodeAnchors = anchorsByUISourceCode.get(uiSourceCode);
     if (sourceCodeAnchors) {
       sourceCodeAnchors.delete(anchor);
@@ -577,7 +577,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
   static unbindBreakpoint(anchor) {
     const info = _Linkifier.linkInfo(anchor);
     if (info?.revealable) {
-      info.revealable = null;
+      info.revealable = void 0;
     }
   }
   targetAdded(target) {
@@ -601,7 +601,6 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       if (!info) {
         continue;
       }
-      info.liveLocation = null;
       _Linkifier.unbindUILocation(anchor);
       const fallback = info.fallback;
       if (fallback) {
@@ -648,7 +647,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       createLinkOptions
     );
     linkInfo.enableDecorator = this.useLinkDecorator;
-    linkInfo.fallback = fallbackAnchor;
+    linkInfo.fallback = fallbackAnchor ?? void 0;
     linkInfo.userMetric = options?.userMetric;
     const pool = this.locationPoolByTarget.get(rawLocation.debuggerModel.target());
     if (!pool) {
@@ -663,11 +662,11 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       await this.updateAnchor(link3, linkDisplayOptions, liveLocation);
       this.dispatchEventToListeners("liveLocationUpdated" /* LIVE_LOCATION_UPDATED */, liveLocation);
     };
-    void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(rawLocation, updateDelegate.bind(this), pool).then((liveLocation) => {
-      if (liveLocation) {
-        linkInfo.liveLocation = liveLocation;
-      }
-    });
+    void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(
+      rawLocation,
+      updateDelegate.bind(this),
+      pool
+    );
     const anchors = this.anchorsByTarget.get(rawLocation.debuggerModel.target());
     anchors.push(link3);
     return link3;
@@ -805,9 +804,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       debuggerModel.createRawLocationsByStackTrace(stackTrace),
       updateDelegate.bind(this),
       pool
-    ).then((liveLocation) => {
-      linkInfo.liveLocation = liveLocation;
-    });
+    );
     const anchors = this.anchorsByTarget.get(target);
     anchors.push(link3);
     return link3;
@@ -828,9 +825,11 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       await this.updateAnchor(link3, linkDisplayOptions, liveLocation);
       this.dispatchEventToListeners("liveLocationUpdated" /* LIVE_LOCATION_UPDATED */, liveLocation);
     };
-    void Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().createLiveLocation(rawLocation, updateDelegate.bind(this), pool).then((liveLocation) => {
-      linkInfo.liveLocation = liveLocation;
-    });
+    void Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().createLiveLocation(
+      rawLocation,
+      updateDelegate.bind(this),
+      pool
+    );
     const anchors = this.anchorsByTarget.get(rawLocation.cssModel().target());
     anchors.push(link3);
     return link3;
@@ -916,7 +915,6 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       anchor.firstElementChild?.style.setProperty("margin-left", "2px");
       render(icon, anchor, { renderBefore: anchor.firstElementChild });
     }
-    info.icon = icon;
   }
   static renderLinkifiedUrl(url, options) {
     options = options || {
@@ -1031,15 +1029,9 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
           _Linkifier.setTrimmedText(link3, text, maxLength);
         }
         const linkInfo = {
-          icon: null,
-          enableDecorator: false,
-          uiLocation: null,
-          liveLocation: null,
-          url: options.href || null,
-          lineNumber: options.lineNumber ?? null,
-          columnNumber: options.columnNumber ?? null,
-          revealable: null,
-          fallback: null,
+          url: options.href,
+          lineNumber: options.lineNumber,
+          columnNumber: options.columnNumber,
           userMetric: options.userMetric
         };
         infoByAnchor.set(link3, linkInfo);
@@ -1186,8 +1178,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     return !otherSchemeRegistrations.has(scheme);
   }
   static uiLocation(link3) {
-    const info = _Linkifier.linkInfo(link3);
-    return info ? info.uiLocation : null;
+    return _Linkifier.linkInfo(link3)?.uiLocation ?? null;
   }
   static linkActions(info) {
     const result = [];

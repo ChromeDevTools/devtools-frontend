@@ -28,6 +28,23 @@ export interface RawFrame {
  * have neither source position nor script or URL. They only have a name.
  */
 export declare function isBuiltinFrame(rawFrame: RawFrame): boolean;
+/** How a single raw frame participates in stack traces. Context-free: it only depends on the raw frame itself. */
+export declare const enum FrameKind {
+    /** Shown as is. */
+    VISIBLE = "VISIBLE",
+    /** Code of an authored function that the compiler moved into a separate function. Merged with its caller(s). */
+    OUTLINED = "OUTLINED",
+    /** Compiler helper without authored counterpart. Never shown. */
+    HIDDEN = "HIDDEN"
+}
+/**
+ * Opaque identities of authored functions, compared only for equality.
+ * `top` identifies the function of `frames[0]`, `bottom` the function of `frames.at(-1)`.
+ */
+export interface FunctionKeys {
+    readonly top: string;
+    readonly bottom: string;
+}
 export declare class EvalOrigin {
     readonly frames: FrameImpl[];
     readonly evalOrigin?: EvalOrigin;
@@ -43,7 +60,15 @@ export declare class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode>
     readonly parent: AnyFrameNode;
     readonly children: FrameNode[];
     readonly rawFrame: RawFrame;
+    /** Context-free translation: [top, ...inlinedCallers]. Empty iff `kind === HIDDEN` (or not translated yet). */
     frames: FrameImpl[];
+    kind: FrameKind;
+    /** Set iff `kind` is OUTLINED, or VISIBLE and translated with scopes information. */
+    functionKeys?: FunctionKeys;
+    /** True iff the translation shows generated code, i.e. no source map or plugin could map it (incl. builtins). */
+    isUnmapped: boolean;
+    /** False until a translation was stored. Stays false if translation threw, so it will be retried. */
+    isTranslated: boolean;
     fragment?: FragmentImpl;
     parsedFrameInfo?: ParsedFrameInfo;
     evalOrigin?: EvalOrigin;

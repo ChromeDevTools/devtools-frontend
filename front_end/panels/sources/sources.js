@@ -2139,7 +2139,7 @@ import * as StackTrace5 from "../../models/stack_trace/stack_trace.js";
 import * as Workspace23 from "../../models/workspace/workspace.js";
 import { Icon as Icon2 } from "../../ui/kit/kit.js";
 import * as UI17 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html10, render as render9 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html11, render as render10 } from "../../ui/lit/lit.js";
 import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/callStackSidebarPane.css.js
@@ -5635,6 +5635,7 @@ var BreakpointTypeNouns = /* @__PURE__ */ new Map([
 // ../../front_end/panels/sources/NavigatorView.ts
 var NavigatorView_exports = {};
 __export(NavigatorView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   NavigatorFolderTreeElement: () => NavigatorFolderTreeElement,
   NavigatorFolderTreeNode: () => NavigatorFolderTreeNode,
   NavigatorGroupTreeNode: () => NavigatorGroupTreeNode,
@@ -5645,6 +5646,7 @@ __export(NavigatorView_exports, {
   NavigatorView: () => NavigatorView,
   Types: () => Types
 });
+import "../../ui/components/spinners/spinners.js";
 import * as Common6 from "../../core/common/common.js";
 import * as Host3 from "../../core/host/host.js";
 import * as i18n11 from "../../core/i18n/i18n.js";
@@ -5656,9 +5658,9 @@ import * as Bindings3 from "../../models/bindings/bindings.js";
 import * as Persistence3 from "../../models/persistence/persistence.js";
 import * as Workspace5 from "../../models/workspace/workspace.js";
 import * as Buttons2 from "../../ui/components/buttons/buttons.js";
-import * as Spinners from "../../ui/components/spinners/spinners.js";
 import { createIcon } from "../../ui/kit/kit.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
+import * as Lit3 from "../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as Snippets from "../snippets/snippets.js";
 import { PanelUtils } from "../utils/utils.js";
@@ -5773,8 +5775,8 @@ var navigatorTree_css_default = `/*
 }
 
 .navigator-automatic-fs-tree-item {
-  & > devtools-button,
-  & > devtools-spinner {
+  & devtools-button,
+  & devtools-spinner {
     margin-left: var(--sys-size-4);
   }
 }
@@ -6172,6 +6174,7 @@ var Revealer3 = class {
 };
 
 // ../../front_end/panels/sources/NavigatorView.ts
+var { html: html5, render: render5 } = Lit3;
 var UIStrings6 = {
   /**
    * @description Text in Navigator view of the Sources panel.
@@ -6311,6 +6314,23 @@ var TYPE_ORDERS = /* @__PURE__ */ new Map([
   [Types.AutomaticFileSystem, 99],
   [Types.FileSystem, 100]
 ]);
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  const showPlaceholder = Boolean(input.placeholder && !input.showTree);
+  render5(
+    html5`
+        <style>${navigatorView_css_default}</style>
+        ${input.placeholder ? html5`
+          <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
+            ${input.placeholder.element}
+          </devtools-widget>
+        ` : Lit3.nothing}
+        <div class="vbox flex-auto" ?hidden=${showPlaceholder} @contextmenu=${input.onContextMenu}>
+          ${input.treeElement}
+        </div>
+      `,
+    target
+  );
+};
 var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
   placeholder;
   scriptsTree;
@@ -6328,26 +6348,26 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
   groupByAuthored;
   groupByDomain;
   groupByFolder;
-  constructor(jslogContext, networkProjectManager, enableAuthoredGrouping) {
+  #view;
+  constructor(jslogContext, networkProjectManager, enableAuthoredGrouping, view = DEFAULT_VIEW5) {
     super({
       jslog: `${VisualLogging5.pane(jslogContext).track({ resize: true })}`,
       useShadowDom: true
     });
-    this.registerRequiredCSS(navigatorView_css_default);
+    this.#view = view;
     this.placeholder = null;
     this.scriptsTree = new UI7.TreeOutline.TreeOutlineInShadow(UI7.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.scriptsTree.registerRequiredCSS(navigatorTree_css_default);
     this.scriptsTree.setHideOverflow(true);
     this.scriptsTree.setComparator(_NavigatorView.treeElementsCompare);
     this.scriptsTree.setFocusable(false);
-    this.contentElement.appendChild(this.scriptsTree.element);
     this.setDefaultFocusedElement(this.scriptsTree.element);
+    this.performUpdate();
     this.uiSourceCodeNodes = new Platform5.MapUtilities.Multimap();
     this.subfolderNodes = /* @__PURE__ */ new Map();
     this.rootNode = new NavigatorRootTreeNode(this);
     this.rootNode.populate();
     this.frameNodes = /* @__PURE__ */ new Map();
-    this.contentElement.addEventListener("contextmenu", this.handleContextMenu.bind(this), false);
     UI7.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(
       this.contentElement,
       { "sources.rename": this.renameShortcut.bind(this) }
@@ -6439,19 +6459,21 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
   setPlaceholder(placeholder2) {
     console.assert(!this.placeholder, "A placeholder widget was already set");
     this.placeholder = placeholder2;
-    placeholder2.show(this.contentElement, this.contentElement.firstChild);
-    updateVisibility.call(this);
-    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementAttached, updateVisibility.bind(this));
-    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementsDetached, updateVisibility.bind(this));
-    function updateVisibility() {
-      const showTree = this.scriptsTree.firstChild();
-      if (showTree) {
-        placeholder2.hideWidget();
-      } else {
-        placeholder2.showWidget();
-      }
-      this.scriptsTree.element.classList.toggle("hidden", !showTree);
-    }
+    this.performUpdate();
+    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementAttached, () => this.performUpdate());
+    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementsDetached, () => this.performUpdate());
+  }
+  performUpdate() {
+    this.#view(
+      {
+        treeElement: this.scriptsTree.element,
+        placeholder: this.placeholder,
+        showTree: Boolean(this.scriptsTree.firstChild()),
+        onContextMenu: this.handleContextMenu.bind(this)
+      },
+      void 0,
+      this.contentElement
+    );
   }
   onBindingChanged(event) {
     const binding = event.data;
@@ -7410,7 +7432,6 @@ var NavigatorSourceTreeElement = class extends UI7.TreeOutline.TreeElement {
   node;
   navigatorView;
   #uiSourceCode;
-  aiButtonContainer;
   constructor(navigatorView, uiSourceCode, title, node) {
     super("", false, uiSourceCode.contentType().name());
     this.nodeType = Types.File;
@@ -7446,20 +7467,30 @@ var NavigatorSourceTreeElement = class extends UI7.TreeOutline.TreeElement {
       return;
     }
     const action3 = UI7.ActionRegistry.ActionRegistry.instance().getAction("drjones.sources-floating-button");
-    if (!this.aiButtonContainer) {
-      this.aiButtonContainer = this.listItemElement.createChild("span", "ai-button-container");
-      const icon = AiAssistance.AiUtils.getIconName();
-      const floatingButton = Buttons2.FloatingButton.create(icon, action3.title(), "ask-ai");
-      floatingButton.addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        this.navigatorView.sourceSelected(this.uiSourceCode, false);
-        void action3.execute();
-      }, { capture: true });
-      floatingButton.addEventListener("mousedown", (ev) => {
-        ev.stopPropagation();
-      }, { capture: true });
-      this.aiButtonContainer.appendChild(floatingButton);
-    }
+    const icon = AiAssistance.AiUtils.getIconName();
+    this.setTrailingIcons([
+      html5`<span class="ai-button-container">
+        <devtools-floating-button
+          .iconName=${icon}
+          .title=${action3.title()}
+          .jslogContext=${"ask-ai"}
+          @click=${{
+        handleEvent: (ev) => {
+          ev.stopPropagation();
+          this.navigatorView.sourceSelected(this.uiSourceCode, false);
+          void action3.execute();
+        },
+        capture: true
+      }}
+          @mousedown=${{
+        handleEvent: (ev) => {
+          ev.stopPropagation();
+        },
+        capture: true
+      }}
+        ></devtools-floating-button>
+      </span>`
+    ]);
   }
   get uiSourceCode() {
     return this.#uiSourceCode;
@@ -7972,27 +8003,29 @@ var NavigatorGroupTreeNode = class extends NavigatorTreeNode {
       const { automaticFileSystem, automaticFileSystemManager } = this.project;
       switch (automaticFileSystem?.state) {
         case "connecting": {
-          const spinner = new Spinners.Spinner.Spinner();
-          this.treeElement.listItemElement.append(spinner);
+          this.treeElement.setTrailingIcons([
+            html5`<devtools-spinner></devtools-spinner>`
+          ]);
           break;
         }
         case "disconnected": {
-          const button = new Buttons2.Button.Button();
-          button.data = {
-            variant: Buttons2.Button.Variant.OUTLINED,
-            size: Buttons2.Button.Size.MICRO,
-            title: i18nString5(UIStrings6.connectFolderToWorkspace),
-            jslogContext: "automatic-workspace-folders.connect"
-          };
-          button.textContent = i18nString5(UIStrings6.connect);
-          button.addEventListener("click", async (event) => {
-            event.consume();
-            await automaticFileSystemManager.connectAutomaticFileSystem(
-              /* addIfMissing= */
-              true
-            );
-          });
-          this.treeElement.listItemElement.append(button);
+          this.treeElement.setTrailingIcons([
+            html5`<devtools-button
+              .data=${{
+              variant: Buttons2.Button.Variant.OUTLINED,
+              size: Buttons2.Button.Size.MICRO,
+              title: i18nString5(UIStrings6.connectFolderToWorkspace),
+              jslogContext: "automatic-workspace-folders.connect"
+            }}
+              @click=${async (event) => {
+              event.consume();
+              await automaticFileSystemManager.connectAutomaticFileSystem(
+                /* addIfMissing= */
+                true
+              );
+            }}
+            >${i18nString5(UIStrings6.connect)}</devtools-button>`
+          ]);
           break;
         }
       }
@@ -8121,7 +8154,7 @@ var sourcesPanel_css_default = `/*
 var SourcesView_exports = {};
 __export(SourcesView_exports, {
   ActionDelegate: () => ActionDelegate2,
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   Events: () => Events3,
   SourcesView: () => SourcesView,
   SwitchFileActionDelegate: () => SwitchFileActionDelegate
@@ -8138,7 +8171,7 @@ import * as Workspace19 from "../../models/workspace/workspace.js";
 import * as Buttons5 from "../../ui/components/buttons/buttons.js";
 import * as QuickOpen from "../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
-import { html as html8, nothing as nothing7, render as render7 } from "../../ui/lit/lit.js";
+import { html as html9, nothing as nothing8, render as render8 } from "../../ui/lit/lit.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/sourcesView.css.js
@@ -8176,7 +8209,7 @@ var sourcesView_css_default = `/*
 // ../../front_end/panels/sources/TabbedEditorContainer.ts
 var TabbedEditorContainer_exports = {};
 __export(TabbedEditorContainer_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   EditorContainerTabDelegate: () => EditorContainerTabDelegate,
   Events: () => Events2,
   History: () => History,
@@ -8195,7 +8228,7 @@ import * as Workspace17 from "../../models/workspace/workspace.js";
 import * as uiI18n2 from "../../ui/i18n/i18n.js";
 import * as SourceFrame9 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI13 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html7, nothing as nothing6, render as render6 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html8, nothing as nothing7, render as render7 } from "../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon2 from "../common/common.js";
 import * as Snippets3 from "../snippets/snippets.js";
@@ -8334,7 +8367,7 @@ import * as TextEditor5 from "../../ui/components/text_editor/text_editor.js";
 import { Icon } from "../../ui/kit/kit.js";
 import * as SourceFrame7 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI12 from "../../ui/legacy/legacy.js";
-import { html as html6, nothing as nothing5 } from "../../ui/lit/lit.js";
+import { html as html7, nothing as nothing6 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/sources/CoveragePlugin.ts
 var CoveragePlugin_exports = {};
@@ -9022,7 +9055,7 @@ import * as Tooltips from "../../ui/components/tooltips/tooltips.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as SourceFrame5 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
-import { render as render5 } from "../../ui/lit/lit.js";
+import { render as render6 } from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 var { EMPTY_BREAKPOINT_CONDITION, NEVER_PAUSE_HERE_CONDITION } = Breakpoints2.BreakpointManager;
 var UIStrings9 = {
@@ -10842,7 +10875,7 @@ var ValueDecoration = class extends CodeMirror4.WidgetType {
       const propertyCount = value2.preview ? value2.preview.properties.length : 0;
       const entryCount = value2.preview?.entries ? value2.preview.entries.length : 0;
       if (value2.preview && propertyCount + entryCount < 10) {
-        render5(formatter.renderObjectPreview(value2.preview), nameValuePair.createChild("span"));
+        render6(formatter.renderObjectPreview(value2.preview), nameValuePair.createChild("span"));
       } else {
         const propertyValue = ObjectUI.ObjectPropertiesSection.renderPropertyValue(
           value2,
@@ -10852,7 +10885,7 @@ var ValueDecoration = class extends CodeMirror4.WidgetType {
           false
         );
         const fragment = document.createDocumentFragment();
-        render5(propertyValue, fragment);
+        render6(propertyValue, fragment);
         nameValuePair.appendChild(fragment);
       }
     }
@@ -11464,7 +11497,7 @@ import * as i18n21 from "../../core/i18n/i18n.js";
 import * as Bindings6 from "../../models/bindings/bindings.js";
 import * as uiI18n from "../../ui/i18n/i18n.js";
 import * as Components from "../../ui/legacy/components/utils/utils.js";
-import { html as html5, nothing as nothing4 } from "../../ui/lit/lit.js";
+import { html as html6, nothing as nothing5 } from "../../ui/lit/lit.js";
 var UIStrings11 = {
   /**
    * @description Text in the bottom toolbar of the Sources panel that lists the source mapped origin scripts.
@@ -11514,9 +11547,9 @@ var ResourceOriginPlugin = class extends Plugin {
       if (links.length === 0) {
         return [];
       }
-      const linksTemplate = html5`<span>${links.map((link, index) => html5`${index > 0 ? ", " : nothing4}${link}`)}</span>`;
+      const linksTemplate = html6`<span>${links.map((link, index) => html6`${index > 0 ? ", " : nothing5}${link}`)}</span>`;
       return [
-        html5`<div class="toolbar-item">${uiI18n.getFormatLocalizedStringTemplate(str_11, UIStrings11.fromS, { PH1: linksTemplate })}</div>`
+        html6`<div class="toolbar-item">${uiI18n.getFormatLocalizedStringTemplate(str_11, UIStrings11.fromS, { PH1: linksTemplate })}</div>`
       ];
     }
     for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(this.uiSourceCode)) {
@@ -11524,7 +11557,7 @@ var ResourceOriginPlugin = class extends Plugin {
         const link = this.#linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
         link.tabIndex = 0;
         return [
-          html5`<div class="toolbar-item">${uiI18n.getFormatLocalizedStringTemplate(str_11, UIStrings11.fromS, { PH1: link })}</div>`
+          html6`<div class="toolbar-item">${uiI18n.getFormatLocalizedStringTemplate(str_11, UIStrings11.fromS, { PH1: link })}</div>`
         ];
       }
     }
@@ -11965,7 +11998,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     const isJavaScript = Common9.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
     const isInplaceFormattable = isEditable && isJavaScript;
     if (isInplaceFormattable) {
-      leftToolbarItems.unshift(html6`<devtools-button
+      leftToolbarItems.unshift(html7`<devtools-button
         class="toolbar-button"
         title=${i18nString12(UIStrings13.format)}
         aria-label=${i18nString12(UIStrings13.format)}
@@ -11979,12 +12012,12 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
       leftToolbarItems.push(...plugin.leftToolbarItems());
       rightToolbarItems.push(...plugin.rightToolbarItems());
     }
-    return html6`
+    return html7`
       ${leftToolbarItems.map((item) => item instanceof UI12.Toolbar.ToolbarItem ? item.element : item)}
-      ${rightToolbarItems.length ? html6`
+      ${rightToolbarItems.length ? html7`
         <div class="toolbar-spacer"></div>
         ${rightToolbarItems.map((item) => item instanceof UI12.Toolbar.ToolbarItem ? item.element : item)}
-      ` : nothing5}
+      ` : nothing6}
     `;
   }
   getErrorPopoverContent(event) {
@@ -12418,7 +12451,7 @@ function removeSourceViewCache(uiSourceCode) {
   return view;
 }
 function renderPlaceholder(input) {
-  return html7`
+  return html8`
     <div class="sources-placeholder">
       <div class="tabbed-pane-placeholder-row workspace">
         <span class="icon-container">
@@ -12431,10 +12464,10 @@ function renderPlaceholder(input) {
       </div>
       <div class="shortcuts-list tabbed-pane-placeholder-row" role="list"
             aria-label=${i18nString13(UIStrings14.sourceViewActions)}>
-        ${input.shortcuts.map((shortcut) => !shortcut.keys.length ? html7`<div class="shortcut-line" role="listitem"></div>` : html7`<div class="shortcut-line" role="listitem">
+        ${input.shortcuts.map((shortcut) => !shortcut.keys.length ? html8`<div class="shortcut-line" role="listitem"></div>` : html8`<div class="shortcut-line" role="listitem">
               <button @click=${shortcut.onClick}>${shortcut.description}</button>
               <span class="shortcuts">
-                ${shortcut.keys.map((key) => html7`
+                ${shortcut.keys.map((key) => html8`
                   <span class="keybinds-key"><span>${key}</span></span>
                 `)}
               </span>
@@ -12444,7 +12477,7 @@ function renderPlaceholder(input) {
 }
 function renderTabIcon(tab) {
   if (tab.hasLoadError) {
-    return html7`
+    return html8`
       <span slot="icon">
         <devtools-icon class="small" name="cross-circle-filled"
                         title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
@@ -12452,16 +12485,16 @@ function renderTabIcon(tab) {
       </span>`;
   }
   if (tab.icon) {
-    return html7`<span slot="icon">${tab.icon}</span>`;
+    return html8`<span slot="icon">${tab.icon}</span>`;
   }
-  return nothing6;
+  return nothing7;
 }
 function renderTabSuffix(tab, input) {
   if (!tab.hasUnsavedCommittedChanges) {
-    return nothing6;
+    return nothing7;
   }
   const tooltipId = `tab-tooltip-${tab.tabId}`;
-  return html7`
+  return html8`
     <span slot="suffix">
       <div>
         <devtools-icon name="warning-filled" class="small" aria-describedby=${tooltipId}></devtools-icon>
@@ -12470,21 +12503,21 @@ function renderTabSuffix(tab, input) {
     str_14,
     UIStrings14.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace,
     {
-      PH1: html7`<devtools-link class="devtools-link" @click=${input.onConnectAutomaticFileSystem}>${tab.disconnectedAutomaticFileSystemRoot}</devtools-link>`
+      PH1: html8`<devtools-link class="devtools-link" @click=${input.onConnectAutomaticFileSystem}>${tab.disconnectedAutomaticFileSystemRoot}</devtools-link>`
     }
   ) : uiI18n2.getFormatLocalizedStringTemplate(
     str_14,
     UIStrings14.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace,
     {
-      PH1: html7`<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`
+      PH1: html8`<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`
     }
   )}
         </devtools-tooltip>
       </div>
     </span>`;
 }
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  render6(html7`
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  render7(html8`
     <devtools-tabbed-pane
       class="flex-auto vbox"
       .closeableTabs=${true}
@@ -12503,7 +12536,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
       <devtools-toolbar class="tabbed-pane-right-toolbar" slot="right">
         ${input.rightToolbarItems}
       </devtools-toolbar>
-      ${repeat2(input.openTabs, (tab) => tab.tabId, (tab) => html7`
+      ${repeat2(input.openTabs, (tab) => tab.tabId, (tab) => html8`
         <div id=${tab.tabId}
              class="vbox flex-auto"
              title=${tab.title}
@@ -12511,7 +12544,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
              ?selected=${input.activeTabId === tab.tabId}>
              ${renderTabIcon(tab)}
              ${renderTabSuffix(tab, input)}
-             ${tab.widget ? html7`${widget(UI13.Widget.WrapperWidget, { widget: tab.widget })}` : nothing6}
+             ${tab.widget ? html8`${widget(UI13.Widget.WrapperWidget, { widget: tab.widget })}` : nothing7}
         </div>`)}
     </devtools-tabbed-pane>`, target);
 };
@@ -12689,7 +12722,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
   currentView;
   scrollTimer;
   reentrantShow;
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
     this.#tabDelegate = new EditorContainerTabDelegate(this);
@@ -13549,11 +13582,11 @@ var UIStrings15 = {
 var str_15 = i18n29.i18n.registerUIStrings("panels/sources/SourcesView.ts", UIStrings15);
 var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var { widget: widget2, widgetRef } = UI14.Widget;
-var DEFAULT_VIEW6 = (input, output, target) => {
+var DEFAULT_VIEW7 = (input, output, target) => {
   const renderNavigatorToggleButton = () => {
     const navHidden = !input.isNavigatorSidebarOpen;
     const title = navHidden ? i18nString14(UIStrings15.showNavigator) : i18nString14(UIStrings15.hideNavigator);
-    return html8`
+    return html9`
       <devtools-button
         class="toolbar-button"
         title=${title}
@@ -13568,7 +13601,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     const debuggerHidden = !input.isDebuggerSidebarOpen;
     const title = debuggerHidden ? i18nString14(UIStrings15.showDebugger) : i18nString14(UIStrings15.hideDebugger);
     const glyph = debuggerHidden ? input.isVertical ? "right-panel-open" : "bottom-panel-open" : input.isVertical ? "right-panel-close" : "bottom-panel-close";
-    return html8`
+    return html9`
       <devtools-button
         class="toolbar-button"
         title=${title}
@@ -13582,8 +13615,8 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   };
   const leftToolbarItems = !input.isInWrapper ? [renderNavigatorToggleButton()] : [];
   const rightToolbarItems = !input.isInWrapper && !input.isTraceApp && input.isVertical ? [renderDebuggerToggleButton()] : [];
-  const bottomToolbarContent = !input.isInWrapper && !input.isTraceApp && !input.isVertical ? renderDebuggerToggleButton() : nothing7;
-  render7(html8`
+  const bottomToolbarContent = !input.isInWrapper && !input.isTraceApp && !input.isVertical ? renderDebuggerToggleButton() : nothing8;
+  render8(html9`
     <style>${sourcesView_css_default}</style>
     <devtools-widget class="vbox flex-auto"
       ${widget2(UI14.SearchableView.SearchableView, {
@@ -13628,7 +13661,7 @@ var SourcesViewBase = Common11.ObjectWrapper.eventMixin(
 var SourcesView = class _SourcesView extends SourcesViewBase {
   editorContainer;
   #uiSourceCodes = /* @__PURE__ */ new Set();
-  #scriptViewToolbarItems = nothing7;
+  #scriptViewToolbarItems = nothing8;
   #isSearchReplaceable = false;
   toolbarChangedListener;
   searchView;
@@ -13646,7 +13679,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
   #breakpointsActive = true;
   #editorContainerPromise;
   #editorContainerResolve;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element, { jslog: `${VisualLogging9.pane("editor").track({ keydown: "Escape" })}` });
     this.#view = view;
     this.#editorContainerPromise = new Promise((resolve) => {
@@ -13861,11 +13894,11 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     const view = this.visibleView();
     if (view instanceof UI14.View.SimpleView) {
       void view.toolbarItems().then((items) => {
-        this.#scriptViewToolbarItems = Array.isArray(items) ? html8`${items.map((item) => item.element)}` : items;
+        this.#scriptViewToolbarItems = Array.isArray(items) ? html9`${items.map((item) => item.element)}` : items;
         this.requestUpdate();
       });
     } else {
-      this.#scriptViewToolbarItems = nothing7;
+      this.#scriptViewToolbarItems = nothing8;
       this.requestUpdate();
     }
   }
@@ -14122,7 +14155,7 @@ __export(ThreadsSidebarPane_exports, {
 import * as i18n31 from "../../core/i18n/i18n.js";
 import * as SDK10 from "../../core/sdk/sdk.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
-import * as Lit3 from "../../ui/lit/lit.js";
+import * as Lit4 from "../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/threadsSidebarPane.css.js
@@ -14194,7 +14227,7 @@ var threadsSidebarPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./threadsSidebarPane.css")} */`;
 
 // ../../front_end/panels/sources/ThreadsSidebarPane.ts
-var { html: html9, render: render8, nothing: nothing8 } = Lit3;
+var { html: html10, render: render9, nothing: nothing9 } = Lit4;
 var UIStrings16 = {
   /**
    * @description Text in Threads sidebar of the Sources panel.
@@ -14203,11 +14236,11 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var DEFAULT_VIEW7 = (input, _output, target) => {
-  render8(html9`
+var DEFAULT_VIEW8 = (input, _output, target) => {
+  render9(html10`
     <style>${threadsSidebarPane_css_default}</style>
     <div role="listbox">
-    ${input.threads.map((thread) => html9`
+    ${input.threads.map((thread) => html10`
       <button
         class="thread-item"
         @click=${thread.onSelect}
@@ -14217,7 +14250,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       >
         <div class="thread-item-title">${thread.name}</div>
         <div class="thread-item-paused-state">${thread.paused ? i18nString15(UIStrings16.paused) : ""}</div>
-        ${thread.selected ? html9`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing8}
+        ${thread.selected ? html10`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing9}
       </button>
     `)}
     </div>
@@ -14227,7 +14260,7 @@ var ThreadsSidebarPane = class extends UI15.Widget.VBox {
   #debuggerModels = /* @__PURE__ */ new Set();
   #selectedModel;
   #view;
-  constructor(element, view = DEFAULT_VIEW7) {
+  constructor(element, view = DEFAULT_VIEW8) {
     super(element);
     this.#view = view;
     const currentTarget = UI15.Context.Context.instance().flavor(SDK10.Target.Target);
@@ -15637,7 +15670,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI17.View.SimpleV
       this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
       this.requestUpdate();
     };
-    render9(html10`
+    render10(html11`
       <style>${callStackSidebarPane_css_default}</style>
       <div class='ignore-listed-message' ${ref2(ignoreListMessageRef)}>
         <label class='ignore-listed-message-label'>
@@ -16161,7 +16194,7 @@ import * as i18n37 from "../../core/i18n/i18n.js";
 import * as Persistence12 from "../../models/persistence/persistence.js";
 import * as Workspace24 from "../../models/workspace/workspace.js";
 import * as QuickOpen3 from "../../ui/legacy/components/quick_open/quick_open.js";
-import { Directives as Directives4, html as html11, nothing as nothing9 } from "../../ui/lit/lit.js";
+import { Directives as Directives4, html as html12, nothing as nothing10 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
 var filteredUISourceCodeListProvider_css_default = `/*
@@ -16372,7 +16405,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
       }
     }
     const isFileSystem = this.isFileSystemFile(uiSourceCode);
-    return html11`
+    return html12`
       <style>${filteredUISourceCodeListProvider_css_default}</style>
       <div class="filtered-ui-source-code-list-item
                   ${classMap2({ "is-ignore-listed": isIgnoreListed })}">
@@ -16388,7 +16421,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
             class="filtered-ui-source-code-subtitle" title=${tooltipText}>
           ${this.renderSubtitleElement(fullDisplayName.substring(0, fileNameIndex + 1))}
         </devtools-highlight>
-        ${isFileSystem ? html11`<span class="tag">${i18nString18(UIStrings19.workspace)}</span>` : nothing9}
+        ${isFileSystem ? html12`<span class="tag">${i18nString18(UIStrings19.workspace)}</span>` : nothing10}
       </div>`;
   }
   renderSubtitleElement(text) {
@@ -16397,7 +16430,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (text.length > maxTextLength) {
       splitPosition = text.length - maxTextLength;
     }
-    return html11`
+    return html12`
       <div class="first-part">${text.substring(0, splitPosition)}</div>
       <div class="second-part">${text.substring(splitPosition)}</div>`;
   }
@@ -16476,7 +16509,7 @@ import "../../ui/kit/kit.js";
 import * as i18n39 from "../../core/i18n/i18n.js";
 import * as QuickOpen4 from "../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI18 from "../../ui/legacy/legacy.js";
-import { html as html12 } from "../../ui/lit/lit.js";
+import { html as html13 } from "../../ui/lit/lit.js";
 var UIStrings20 = {
   /**
    * @description Text in the go to line quick open menu of the Sources panel.
@@ -16537,7 +16570,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     return this.#goToLineStrings.length;
   }
   renderItem(itemIndex, _query) {
-    return html12`
+    return html13`
       <devtools-icon name="colon"></devtools-icon>
       <div>
         <div>${this.#goToLineStrings[itemIndex]}</div>
@@ -16628,7 +16661,7 @@ import "../../ui/kit/kit.js";
 import * as Common15 from "../../core/common/common.js";
 import * as Host10 from "../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "../utils/utils.js";
-import { Directives as Directives5, html as html13 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html14 } from "../../ui/lit/lit.js";
 var { styleMap } = Directives5;
 var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   attach() {
@@ -16651,7 +16684,7 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   }
   renderItem(itemIndex, query) {
     const { iconName, color } = PanelUtils2.iconDataForResourceType(this.itemContentTypeAt(itemIndex));
-    return html13`
+    return html14`
       <devtools-icon class="large" name=${iconName} style=${styleMap({ color })}></devtools-icon>
       ${super.renderItem(itemIndex, query)}`;
   }
@@ -16669,7 +16702,7 @@ import * as i18n41 from "../../core/i18n/i18n.js";
 import * as CodeMirror7 from "../../third_party/codemirror.next/codemirror.next.js";
 import * as QuickOpen5 from "../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI19 from "../../ui/legacy/legacy.js";
-import { html as html14, nothing as nothing10 } from "../../ui/lit/lit.js";
+import { html as html15, nothing as nothing11 } from "../../ui/lit/lit.js";
 var UIStrings21 = {
   /**
    * @description Text in Go to line Quick Open of the Sources panel.
@@ -16986,10 +17019,10 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     }
     const title = item.title + (item.subtitle ? item.subtitle : "");
     const highlightRanges = QuickOpen5.FilteredListWidget.FilteredListWidget.getHighlightRanges(title, query, true);
-    return html14`
+    return html15`
       <devtools-icon name="deployed"></devtools-icon>
       <div><devtools-highlight type="markup" ranges=${highlightRanges}>${title}</devtools-highlight></div>
-      ${location ? html14`<span class="tag">${location}</span>` : nothing10}`;
+      ${location ? html15`<span class="tag">${location}</span>` : nothing11}`;
   }
   selectItem(itemIndex, _promptValue) {
     if (itemIndex === null) {
@@ -17262,7 +17295,7 @@ function getScript(contentProvider) {
 // ../../front_end/panels/sources/ScopeChainSidebarPane.ts
 var ScopeChainSidebarPane_exports = {};
 __export(ScopeChainSidebarPane_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   ScopeChainSidebarPane: () => ScopeChainSidebarPane
 });
 import * as i18n45 from "../../core/i18n/i18n.js";
@@ -17271,7 +17304,7 @@ import * as StackTrace7 from "../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI21 from "../../ui/legacy/legacy.js";
-import { html as html15, nothing as nothing11, render as render10 } from "../../ui/lit/lit.js";
+import { html as html16, nothing as nothing12, render as render11 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/scopeChainSidebarPane.css.js
@@ -17346,15 +17379,15 @@ var UIStrings23 = {
 var str_23 = i18n45.i18n.registerUIStrings("panels/sources/ScopeChainSidebarPane.ts", UIStrings23);
 var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var scopeChainSidebarPaneInstance;
-var DEFAULT_VIEW8 = (input, output, target) => {
+var DEFAULT_VIEW9 = (input, output, target) => {
   const createScopeSection = ({ scope, objectTree }) => {
     let emptyPlaceholder;
     if (scope.type() === Debugger.ScopeType.Local || scope.type() === Debugger.ScopeType.Closure) {
-      emptyPlaceholder = html15`${i18nString22(UIStrings23.noVariables)}`;
+      emptyPlaceholder = html16`${i18nString22(UIStrings23.noVariables)}`;
     }
     const icon = scope.icon();
     const { title, subtitle } = scopeTitle(scope);
-    return html15`
+    return html16`
           <li role="treeitem"
               class="scope-chain-sidebar-pane-section"
               aria-label=${title}
@@ -17372,26 +17405,26 @@ var DEFAULT_VIEW8 = (input, output, target) => {
                  @click=${() => {
       input.onToggle(objectTree, !objectTree.expanded);
     }}>
-              ${icon ? html15`<img class="scope-chain-sidebar-pane-section-icon" src=${icon}>` : nothing11}
+              ${icon ? html16`<img class="scope-chain-sidebar-pane-section-icon" src=${icon}>` : nothing12}
               <div class="scope-chain-sidebar-pane-section-title">${title}</div>
               <div class="scope-chain-sidebar-pane-section-subtitle">${subtitle}</div>
             </div>
 
-            ${objectTree.expanded ? ObjectUI3.ObjectPropertiesSection.renderObjectTree(objectTree, input.linkifier, emptyPlaceholder) : html15`<ul role="group"></ul>`}
+            ${objectTree.expanded ? ObjectUI3.ObjectPropertiesSection.renderObjectTree(objectTree, input.linkifier, emptyPlaceholder) : html16`<ul role="group"></ul>`}
           </li>`;
   };
-  render10(
+  render11(
     // clang-format off
-    html15`
+    html16`
     <style>${scopeChainSidebarPane_css_default}</style>
-    ${input.scopeChain ? html15`
-      <devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus .template=${html15`<ul role=tree class="source-code object-properties-section">
+    ${input.scopeChain ? html16`
+      <devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus .template=${html16`<ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI3.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI3.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <style>${scopeChainSidebarPane_css_default}</style>
-          ${input.scopeChain?.map((item) => createScopeSection(item)) ?? nothing11}
+          ${input.scopeChain?.map((item) => createScopeSection(item)) ?? nothing12}
         </ul>`}>
-      </devtools-tree>` : html15`
+      </devtools-tree>` : html16`
       <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString22(UIStrings23.loading) : i18nString22(UIStrings23.notPaused)}</div>`}
     `,
     // clang-format on
@@ -17436,7 +17469,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI21.Widget.VBo
   #scopeChainModel = null;
   #scopeChain = null;
   #view;
-  constructor(target, view = DEFAULT_VIEW8) {
+  constructor(target, view = DEFAULT_VIEW9) {
     super(target, {
       jslog: `${VisualLogging13.section("sources.scope-chain")}`,
       useShadowDom: true
@@ -18025,7 +18058,7 @@ var ActionDelegate5 = class {
 var WatchExpressionsSidebarPane_exports = {};
 __export(WatchExpressionsSidebarPane_exports, {
   DEFAULT_PROMPT_VIEW: () => DEFAULT_PROMPT_VIEW,
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   WatchExpression: () => WatchExpression,
   WatchExpressionPromptWidget: () => WatchExpressionPromptWidget,
   WatchExpressionsSidebarPane: () => WatchExpressionsSidebarPane
@@ -18155,7 +18188,7 @@ var objectValue_css_default = `/*
 // ../../front_end/panels/sources/WatchExpressionsSidebarPane.ts
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI23 from "../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html16, nothing as nothing12, render as render11 } from "../../ui/lit/lit.js";
+import { Directives as Directives6, html as html17, nothing as nothing13, render as render12 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
@@ -18373,7 +18406,7 @@ var { widget: widget3 } = UI23.Widget;
 var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
   const e = input.expression;
   if (!e) {
-    render11(nothing12, target);
+    render12(nothing13, target);
     return;
   }
   const stopPropagationIfEditing = (event) => {
@@ -18387,8 +18420,8 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
     false,
     e.expression ?? void 0
   );
-  render11(
-    html16`
+  render12(
+    html17`
         <devtools-prompt
             class=${classMap3({
       monospace: true,
@@ -18427,7 +18460,7 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
                 @click=${input.onDelete}></devtools-button>
               ${renderNameElement()}
               <span class=watch-expressions-separator>: </span>
-              ${e.exceptionDetails || !e.result ? html16`<span
+              ${e.exceptionDetails || !e.result ? html17`<span
                     class="watch-expression-error value"
                     title=${ifDefined3(e.exceptionDetails?.exception?.description)}
                     >${i18nString24(UIStrings25.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.renderPropertyValue(
@@ -18443,11 +18476,11 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
     )}
             </div>
           </div>
-          ${e.editing ? html16`
+          ${e.editing ? html17`
             <datalist id=${input.completionsId}>
-              ${input.completions.map((c) => html16`<option>${c}</option>`)}
+              ${input.completions.map((c) => html17`<option>${c}</option>`)}
             </datalist>
-          ` : nothing12}
+          ` : nothing13}
         </devtools-prompt>
       `,
     target
@@ -18540,7 +18573,7 @@ var WatchExpressionPromptWidget = class extends UI23.Widget.Widget {
     this.#view(viewInput, void 0, this.contentElement);
   }
 };
-var DEFAULT_VIEW9 = (input, output, target) => {
+var DEFAULT_VIEW10 = (input, output, target) => {
   const onContextMenu = (watchExpression, event) => {
     const contextMenu = new UI23.ContextMenu.ContextMenu(event);
     const isEditing = input.watchExpressions.some((e) => e.editing);
@@ -18589,7 +18622,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
   };
   const renderTreeElement = (e) => {
     const completionsId = `watch-expression-completions-${input.watchExpressions.indexOf(e)}`;
-    return html16`<li
+    return html17`<li
           class=${classMap3({ "watch-expression-tree-item": true, "watch-expression-editing": e.editing })}
           ?open=${Boolean(e.result?.expanded)}
           @keydown=${onExpressionKeydown.bind(void 0, e)}
@@ -18605,15 +18638,15 @@ var DEFAULT_VIEW9 = (input, output, target) => {
       onDelete: () => input.onDelete(e),
       onContextMenu: (event) => onContextMenu(e, event)
     })}></devtools-widget>
-        ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing12 : ObjectUI4.ObjectPropertiesSection.renderObjectTree(e.result, input.linkifier)}
+        ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing13 : ObjectUI4.ObjectPropertiesSection.renderObjectTree(e.result, input.linkifier)}
       </li>`;
   };
-  render11(
+  render12(
     // clang-format off
-    html16`
-      ${input.watchExpressions.length === 0 ? html16`<div class=gray-info-message tabindex=-1 >
+    html17`
+      ${input.watchExpressions.length === 0 ? html17`<div class=gray-info-message tabindex=-1 >
         ${i18nString24(UIStrings25.noWatchExpressions)}
-        </div>` : html16`<devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus toggle-on-click .template=${html16`
+        </div>` : html17`<devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus toggle-on-click .template=${html17`
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI4.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI4.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
@@ -18657,7 +18690,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
       this
     );
     this.linkifier = new Components4.Linkifier.Linkifier();
-    this.#view = DEFAULT_VIEW9;
+    this.#view = DEFAULT_VIEW10;
     void this.#refreshExpressions();
   }
   static instance() {
@@ -18670,7 +18703,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     return this.#watchExpressions;
   }
   toolbarItems() {
-    return html16`
+    return html17`
       <devtools-button .data=${{
       variant: Buttons6.Button.Variant.TOOLBAR,
       iconName: "plus",

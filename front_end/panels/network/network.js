@@ -586,7 +586,7 @@ function renderItem({
   lookUpRequestCount
 }) {
   const { enabled, originalOrUpgradedURLPattern, constructorStringOrWildcardURL, wildcardURL } = condition;
-  const toggle3 = (e) => {
+  const toggle4 = (e) => {
     e.consume(true);
     onToggle(condition);
   };
@@ -617,7 +617,7 @@ function renderItem({
   };
   return html2`
     <input class=blocked-url-checkbox
-      @change=${toggle3}
+      @change=${toggle4}
       type=checkbox
       title=${i18nString2(UIStrings2.enableThrottlingToggleLabel, { PH1: constructorStringOrWildcardURL })}
       .checked=${live(enabled)}
@@ -4214,19 +4214,19 @@ var clearMessageOffsets = /* @__PURE__ */ new WeakMap();
 // ../../front_end/panels/network/NetworkConfigView.ts
 var NetworkConfigView_exports = {};
 __export(NetworkConfigView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   NetworkConfigView: () => NetworkConfigView,
   userAgentGroups: () => userAgentGroups
 });
+import "../settings/emulation/components/components.js";
 import * as Common4 from "../../core/common/common.js";
 import * as i18n9 from "../../core/i18n/i18n.js";
 import * as Platform2 from "../../core/platform/platform.js";
 import * as SDK4 from "../../core/sdk/sdk.js";
-import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
-import { html as html5, render as render5 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html5, render as render5 } from "../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "../mobile_throttling/mobile_throttling.js";
-import * as EmulationComponents from "../settings/emulation/components/components.js";
 
 // gen/front_end/panels/network/networkConfigView.css.js
 var networkConfigView_css_default = `/*
@@ -4350,6 +4350,7 @@ devtools-user-agent-client-hints-form {
 /*# sourceURL=${import.meta.resolve("./networkConfigView.css")} */`;
 
 // ../../front_end/panels/network/NetworkConfigView.ts
+var { ref: ref2 } = Directives3;
 var UIStrings5 = {
   /**
    * @description Option in network conditions view of the Network panel shown in user agent dropdown.
@@ -4376,6 +4377,10 @@ var UIStrings5 = {
    */
   networkThrottling: "Network",
   /**
+   * @description Tooltip and accessible label for the save data override selector.
+   */
+  saveDataSettingTooltip: "Override the value reported by navigator.connection.saveData on the page",
+  /**
    * @description Section header for user agent settings in network conditions view of the Network panel.
    */
   userAgent: "User agent",
@@ -4394,6 +4399,125 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/network/NetworkConfigView.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+function renderUserAgentSelectAndInput(input, output, title) {
+  const customOverride = { title: i18nString5(UIStrings5.custom), value: "custom" };
+  const { patchUserAgentWithChromeVersion } = SDK4.NetworkManager.MultitargetNetworkManager;
+  const { toKebabCase } = Platform2.StringUtilities;
+  return html5`
+    <select
+        jslog=${VisualLogging5.dropDown().track({ change: true }).context("custom-user-agent")}
+        aria-label=${title}
+        ?disabled=${!input.useCustomUA}
+        @change=${(e) => input.onUserAgentSelect(e.target.value)}>
+      <option
+          value=${customOverride.value}
+          .selected=${input.customSelectValue === customOverride.value}
+          jslog=${VisualLogging5.item("custom").track({ click: true })}>
+        ${customOverride.title}
+      </option>
+      ${userAgentGroups.map((group) => html5`
+        <optgroup label=${group.title}>
+          ${group.values.map((val) => html5`
+            <option
+                value=${patchUserAgentWithChromeVersion(val.value)}
+                .selected=${input.customSelectValue === patchUserAgentWithChromeVersion(val.value)}
+                jslog=${VisualLogging5.item(toKebabCase(val.title)).track({ click: true })}>
+              ${val.title}
+            </option>
+          `)}
+        </optgroup>
+      `)}
+    </select>
+    <input
+        class="harmony-input"
+        type="text"
+        spellcheck="false"
+        jslog=${VisualLogging5.textField().track({ change: true }).context("custom-user-agent")}
+        .value=${input.customUserAgent}
+        title=${input.customUserAgent}
+        placeholder=${i18nString5(UIStrings5.enterACustomUserAgent)}
+        required
+        aria-label=${i18nString5(UIStrings5.enterACustomUserAgent)}
+        ?disabled=${!input.useCustomUA}
+        @input=${(e) => input.onCustomUserAgentInput(e.target.value)}
+        ${ref2((el) => {
+    if (el instanceof HTMLInputElement) {
+      output.selectCustomUserAgentInput = () => el.select();
+    }
+  })}>
+    <div
+        class="network-config-input-validation-error"
+        role="alert"
+        aria-live="polite"
+        ?hidden=${!input.useCustomUA}>${input.validationError}</div>
+  `;
+}
+function renderSection(title, className, content) {
+  return html5`
+    <section class="network-config-group ${className}">
+      <div class="network-config-title">${title}</div>
+      <div class="network-config-fields">${content}</div>
+    </section>
+  `;
+}
+function renderCacheSection(input) {
+  return renderSection(i18nString5(UIStrings5.caching), "network-config-disable-cache", html5`
+    <devtools-checkbox
+        name=${i18nString5(UIStrings5.disableCache)}
+        .checked=${input.disableCache}
+        @change=${(e) => input.onDisableCacheChange(e.target.checked)}
+        jslog=${VisualLogging5.toggle().track({ change: true }).context("cache-disabled")}>
+      ${i18nString5(UIStrings5.disableCache)}
+    </devtools-checkbox>
+  `);
+}
+function renderNetworkThrottlingSection() {
+  const title = i18nString5(UIStrings5.networkThrottling);
+  return renderSection(title, "network-config-throttling", html5`
+    <select
+        ${UI5.Widget.widget(MobileThrottling2.NetworkThrottlingSelector.NetworkThrottlingSelect, {
+    title,
+    bindToGlobalConditions: true
+  })}></select>
+    <select
+        class="chrome-select"
+        title=${i18nString5(UIStrings5.saveDataSettingTooltip)}
+        aria-label=${i18nString5(UIStrings5.saveDataSettingTooltip)}
+        ${UI5.Widget.widget(MobileThrottling2.ThrottlingManager.SaveDataOverrideSelect)}></select>
+  `);
+}
+function renderUserAgentSection(input, output) {
+  const title = i18nString5(UIStrings5.userAgent);
+  return renderSection(title, "network-config-ua", html5`
+    <devtools-checkbox
+        .checked=${!input.useCustomUA}
+        @change=${(e) => input.onAutoCheckboxChange(e.target.checked)}
+        jslog=${VisualLogging5.toggle().track({ change: true }).context("custom-user-agent")}>
+      ${i18nString5(UIStrings5.selectAutomatically)}
+    </devtools-checkbox>
+    <div class=${Directives3.classMap({ "network-config-ua-custom": true, checked: input.useCustomUA })}>
+      ${renderUserAgentSelectAndInput(input, output, title)}
+      <devtools-user-agent-client-hints-form
+          .value=${input.clientHintsValue}
+          .disabled=${!input.useCustomUA}
+          @clienthintschange=${(e) => input.onClientHintsChange(
+    e.target.value.metaData
+  )}
+          @clienthintssubmit=${(e) => input.onClientHintsSubmit(e.detail.value)}>
+      </devtools-user-agent-client-hints-form>
+    </div>
+    <span class="status-text">${input.clientHintsStatusText}</span>
+  `);
+}
+var DEFAULT_VIEW4 = (input, output, target) => {
+  render5(html5`
+    ${renderCacheSection(input)}
+    <div class="panel-section-separator"></div>
+    ${renderNetworkThrottlingSection()}
+    <div class="panel-section-separator"></div>
+    ${renderUserAgentSection(input, output)}
+  `, target, { container: { classes: ["network-config"] } });
+};
 var networkConfigViewInstance;
 var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
   #cacheDisabledSetting = Common4.Settings.Settings.instance().resolve(SDK4.SDKSettings.cacheDisabledSettingDescriptor);
@@ -4402,23 +4526,40 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     "custom-user-agent-metadata",
     null
   );
-  #autoCheckbox;
-  #customUserAgentSelectBox;
-  #customSelectAndInput;
-  #clientHints;
-  #userAgentUpdateButtonStatusText;
-  constructor() {
+  #view;
+  #viewOutput = {};
+  #useCustomUA = false;
+  #customSelectValue = "custom";
+  #validationError = "";
+  #clientHintsValue;
+  #statusText = "";
+  constructor(view = DEFAULT_VIEW4) {
     super({
       jslog: `${VisualLogging5.panel("network-conditions").track({ resize: true })}`,
       useShadowDom: true
     });
     this.registerRequiredCSS(networkConfigView_css_default);
-    this.contentElement.classList.add("network-config");
-    this.createCacheSection();
-    this.contentElement.createChild("div", "panel-section-separator");
-    this.createNetworkThrottlingSection();
-    this.contentElement.createChild("div", "panel-section-separator");
-    this.createUserAgentSection();
+    this.#view = view;
+    this.#cacheDisabledSetting.addChangeListener(() => this.requestUpdate());
+    this.#customUserAgentSetting.addChangeListener(() => {
+      if (!this.#useCustomUA) {
+        return;
+      }
+      const customUA = this.#customUserAgentSetting.get();
+      const userAgentMetadata = getUserAgentMetadata(customUA);
+      SDK4.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
+    });
+    this.#updateCustomSelectValue();
+    if (!this.#customUserAgentSetting.get()) {
+      this.#validationError = i18nString5(UIStrings5.customUserAgentFieldIsRequired);
+    }
+    const userAgentMetaDataSetting = this.#customUserAgentMetadataSetting.get();
+    const initialUserAgentMetaData = getUserAgentMetadata(this.#customSelectValue);
+    this.#clientHintsValue = {
+      showMobileCheckbox: true,
+      showSubmitButton: true,
+      metaData: userAgentMetaDataSetting || initialUserAgentMetaData || void 0
+    };
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
@@ -4427,221 +4568,95 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     }
     return networkConfigViewInstance;
   }
-  createUserAgentSelectAndInput(title) {
-    const userAgentSelectElement = document.createElement("select");
-    userAgentSelectElement.setAttribute(
-      "jslog",
-      `${VisualLogging5.dropDown().track({ change: true }).context(this.#customUserAgentSetting.name)}`
-    );
-    UI5.ARIAUtils.setLabel(userAgentSelectElement, title);
-    const customOverride = { title: i18nString5(UIStrings5.custom), value: "custom" };
-    const { patchUserAgentWithChromeVersion } = SDK4.NetworkManager.MultitargetNetworkManager;
-    const { toKebabCase } = Platform2.StringUtilities;
-    render5(html5`
-      <option value=${customOverride.value} jslog=${VisualLogging5.item("custom").track({ click: true })}>
-        ${customOverride.title}
-      </option>
-      ${userAgentGroups.map((group) => html5`
-        <optgroup label=${group.title}>
-          ${group.values.map((val) => html5`
-            <option
-                value=${patchUserAgentWithChromeVersion(val.value)}
-                jslog=${VisualLogging5.item(toKebabCase(val.title)).track({ click: true })}>
-              ${val.title}
-            </option>
-          `)}
-        </optgroup>
-      `)}
-    `, userAgentSelectElement);
-    userAgentSelectElement.selectedIndex = 0;
-    const otherUserAgentElement = UI5.UIUtils.createInput("", "text");
-    otherUserAgentElement.setAttribute(
-      "jslog",
-      `${VisualLogging5.textField().track({ change: true }).context(this.#customUserAgentSetting.name)}`
-    );
-    otherUserAgentElement.value = this.#customUserAgentSetting.get();
-    UI5.Tooltip.Tooltip.install(otherUserAgentElement, this.#customUserAgentSetting.get());
-    otherUserAgentElement.placeholder = i18nString5(UIStrings5.enterACustomUserAgent);
-    otherUserAgentElement.required = true;
-    UI5.ARIAUtils.setLabel(otherUserAgentElement, otherUserAgentElement.placeholder);
-    const errorElement = document.createElement("div");
-    errorElement.classList.add("network-config-input-validation-error");
-    UI5.ARIAUtils.markAsAlert(errorElement);
-    if (!otherUserAgentElement.value) {
-      errorElement.textContent = i18nString5(UIStrings5.customUserAgentFieldIsRequired);
-    }
-    this.#settingChanged(userAgentSelectElement);
-    userAgentSelectElement.addEventListener(
-      "change",
-      () => this.#onUserAgentSelect(userAgentSelectElement.value),
-      false
-    );
-    otherUserAgentElement.addEventListener(
-      "input",
-      () => this.#onCustomUserAgentInput(otherUserAgentElement.value),
-      false
-    );
-    return { select: userAgentSelectElement, input: otherUserAgentElement, error: errorElement };
-  }
-  createSection(title, className) {
-    const section4 = this.contentElement.createChild("section", "network-config-group");
-    if (className) {
-      section4.classList.add(className);
-    }
-    section4.createChild("div", "network-config-title").textContent = title;
-    return section4.createChild("div", "network-config-fields");
-  }
-  createCacheSection() {
-    const section4 = this.createSection(i18nString5(UIStrings5.caching), "network-config-disable-cache");
-    section4.appendChild(
-      SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.disableCache), this.#cacheDisabledSetting)
-    );
-  }
-  createNetworkThrottlingSection() {
-    const title = i18nString5(UIStrings5.networkThrottling);
-    const section4 = this.createSection(title, "network-config-throttling");
-    MobileThrottling2.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(section4, title);
-    const saveDataSelect = MobileThrottling2.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector("chrome-select");
-    section4.appendChild(saveDataSelect);
-  }
-  createUserAgentSection() {
-    const title = i18nString5(UIStrings5.userAgent);
-    const section4 = this.createSection(title, "network-config-ua");
-    this.#autoCheckbox = UI5.UIUtils.CheckboxLabel.create(
-      i18nString5(UIStrings5.selectAutomatically),
-      true,
-      void 0,
-      this.#customUserAgentSetting.name
-    );
-    section4.appendChild(this.#autoCheckbox);
-    this.#customUserAgentSetting.addChangeListener(() => {
-      if (this.#autoCheckbox?.checked) {
-        return;
-      }
-      const customUA = this.#customUserAgentSetting.get();
-      const userAgentMetadata = getUserAgentMetadata(customUA);
-      SDK4.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
-    });
-    this.#customUserAgentSelectBox = section4.createChild("div", "network-config-ua-custom");
-    this.#autoCheckbox.addEventListener(
-      "change",
-      () => this.#onAutoCheckboxChange(this.#autoCheckbox?.checked ?? false)
-    );
-    this.#customSelectAndInput = this.createUserAgentSelectAndInput(title);
-    this.#customUserAgentSelectBox.appendChild(this.#customSelectAndInput.select);
-    this.#customUserAgentSelectBox.appendChild(this.#customSelectAndInput.input);
-    this.#customUserAgentSelectBox.appendChild(this.#customSelectAndInput.error);
-    this.#clientHints = new EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm();
-    const userAgentMetaDataSetting = this.#customUserAgentMetadataSetting.get();
-    const initialUserAgentMetaData = getUserAgentMetadata(this.#customSelectAndInput.select.value);
-    this.#clientHints.value = {
-      showMobileCheckbox: true,
-      showSubmitButton: true,
-      metaData: userAgentMetaDataSetting || initialUserAgentMetaData || void 0
+  performUpdate() {
+    const input = {
+      disableCache: this.#cacheDisabledSetting.get(),
+      onDisableCacheChange: (checked) => this.#onDisableCacheChange(checked),
+      useCustomUA: this.#useCustomUA,
+      onAutoCheckboxChange: (checked) => this.#onAutoCheckboxChange(checked),
+      customSelectValue: this.#customSelectValue,
+      onUserAgentSelect: (value) => this.#onUserAgentSelect(value),
+      customUserAgent: this.#customUserAgentSetting.get(),
+      onCustomUserAgentInput: (value) => this.#onCustomUserAgentInput(value),
+      validationError: this.#validationError,
+      clientHintsValue: this.#clientHintsValue,
+      clientHintsStatusText: this.#statusText,
+      onClientHintsChange: (metaData) => this.#onClientHintsChange(metaData),
+      onClientHintsSubmit: (metaData) => this.#onClientHintsSubmit(metaData)
     };
-    this.#customUserAgentSelectBox.appendChild(this.#clientHints);
-    this.#clientHints.addEventListener("clienthintschange", () => this.#onClientHintsChange());
-    this.#clientHints.addEventListener(
-      "clienthintssubmit",
-      (event) => this.#onClientHintsSubmit(event.detail.value)
-    );
-    this.#userAgentUpdateButtonStatusText = section4.createChild("span", "status-text");
-    this.#userAgentUpdateButtonStatusText.textContent = "";
-    this.#onAutoCheckboxChange(this.#autoCheckbox.checked);
+    this.#view(input, this.#viewOutput, this.contentElement);
+  }
+  #onDisableCacheChange(checked) {
+    this.#cacheDisabledSetting.set(checked);
+    this.requestUpdate();
   }
   #onAutoCheckboxChange(checked) {
     const useCustomUA = !checked;
-    if (this.#customUserAgentSelectBox && this.#customSelectAndInput && this.#clientHints) {
-      this.#customUserAgentSelectBox.classList.toggle("checked", useCustomUA);
-      this.#customSelectAndInput.select.disabled = !useCustomUA;
-      this.#customSelectAndInput.input.disabled = !useCustomUA;
-      this.#customSelectAndInput.error.hidden = !useCustomUA;
-      this.#clientHints.disabled = !useCustomUA;
-    }
+    this.#useCustomUA = useCustomUA;
     const customUA = useCustomUA ? this.#customUserAgentSetting.get() : "";
     const userAgentMetadata = useCustomUA ? getUserAgentMetadata(customUA) : null;
     SDK4.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, userAgentMetadata);
+    this.requestUpdate();
   }
   #onUserAgentSelect(value) {
-    if (!this.#customSelectAndInput || !this.#clientHints || !this.#userAgentUpdateButtonStatusText) {
-      return;
-    }
+    this.#customSelectValue = value;
     const customOverride = "custom";
     if (value !== customOverride) {
       this.#customUserAgentSetting.set(value);
-      this.#customSelectAndInput.input.value = value;
-      UI5.Tooltip.Tooltip.install(this.#customSelectAndInput.input, value);
       const userAgentMetadata = getUserAgentMetadata(value);
       this.#customUserAgentMetadataSetting.set(userAgentMetadata);
       SDK4.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(value, userAgentMetadata);
-      this.#clientHints.value = {
+      this.#clientHintsValue = {
         metaData: userAgentMetadata || void 0,
         showMobileCheckbox: true,
         showSubmitButton: true
       };
     } else {
       this.#customUserAgentMetadataSetting.set(null);
-      this.#clientHints.value = {
+      this.#clientHintsValue = {
         showMobileCheckbox: true,
         showSubmitButton: true
       };
-      this.#customSelectAndInput.input.select();
+      this.#viewOutput.selectCustomUserAgentInput?.();
     }
-    this.#customSelectAndInput.error.textContent = "";
-    this.#userAgentUpdateButtonStatusText.textContent = "";
+    this.#validationError = "";
+    this.#statusText = "";
+    this.requestUpdate();
   }
   #onCustomUserAgentInput(value) {
-    if (!this.#customSelectAndInput) {
-      return;
-    }
     if (this.#customUserAgentSetting.get() !== value) {
       if (!value) {
-        this.#customSelectAndInput.error.textContent = i18nString5(UIStrings5.customUserAgentFieldIsRequired);
+        this.#validationError = i18nString5(UIStrings5.customUserAgentFieldIsRequired);
       } else {
-        this.#customSelectAndInput.error.textContent = "";
+        this.#validationError = "";
       }
       this.#customUserAgentSetting.set(value);
-      UI5.Tooltip.Tooltip.install(this.#customSelectAndInput.input, value);
-      this.#settingChanged(this.#customSelectAndInput.select);
+      this.#updateCustomSelectValue();
+      this.requestUpdate();
     }
   }
-  #settingChanged(selectElement) {
-    const select = selectElement ?? this.#customSelectAndInput?.select;
-    if (!select) {
-      return;
-    }
+  #updateCustomSelectValue() {
     const value = this.#customUserAgentSetting.get();
-    const options = select.options;
-    let selectionRestored = false;
-    for (let i = 0; i < options.length; ++i) {
-      if (options[i].value === value) {
-        select.selectedIndex = i;
-        selectionRestored = true;
-        break;
-      }
-    }
-    if (!selectionRestored) {
-      select.selectedIndex = 0;
-    }
+    const { patchUserAgentWithChromeVersion } = SDK4.NetworkManager.MultitargetNetworkManager;
+    const isPreset = userAgentGroups.some((group) => group.values.some((val) => patchUserAgentWithChromeVersion(val.value) === value));
+    this.#customSelectValue = isPreset ? value : "custom";
   }
-  #onClientHintsChange() {
-    if (!this.#customSelectAndInput || !this.#userAgentUpdateButtonStatusText) {
-      return;
-    }
-    this.#customSelectAndInput.select.value = "custom";
-    this.#userAgentUpdateButtonStatusText.textContent = "";
+  #onClientHintsChange(metaData) {
+    this.#clientHintsValue = { ...this.#clientHintsValue, metaData };
+    this.#customSelectValue = "custom";
+    this.#statusText = "";
+    this.requestUpdate();
   }
   #onClientHintsSubmit(metaData) {
-    if (!this.#userAgentUpdateButtonStatusText) {
-      return;
-    }
     const customUA = this.#customUserAgentSetting.get();
     this.#customUserAgentMetadataSetting.set(metaData);
     SDK4.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, metaData);
-    this.#userAgentUpdateButtonStatusText.textContent = i18nString5(UIStrings5.clientHintsStatusText);
+    this.#statusText = i18nString5(UIStrings5.clientHintsStatusText);
+    this.requestUpdate();
   }
   wasShown() {
     super.wasShown();
+    this.requestUpdate();
     UI5.ARIAUtils.LiveAnnouncer.alert(i18nString5(UIStrings5.networkConditionsPanelShown));
   }
 };
@@ -6732,7 +6747,7 @@ import * as NetworkComponents2 from "./components/components.js";
 // ../../front_end/panels/network/RequestCookiesView.ts
 var RequestCookiesView_exports = {};
 __export(RequestCookiesView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   RequestCookiesView: () => RequestCookiesView
 });
 import * as Common6 from "../../core/common/common.js";
@@ -6836,7 +6851,7 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/network/RequestCookiesView.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   render7(
     html6`
     <style>${requestCookiesView_css_default}</style>
@@ -6916,7 +6931,7 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
   request;
   showFilteredOutCookiesSetting;
   view;
-  constructor(request, view = DEFAULT_VIEW4) {
+  constructor(request, view = DEFAULT_VIEW5) {
     super();
     this.request = request;
     this.showFilteredOutCookiesSetting = Common6.Settings.Settings.instance().createSetting(
@@ -7035,7 +7050,7 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
 // ../../front_end/panels/network/RequestHeadersView.ts
 var RequestHeadersView_exports = {};
 __export(RequestHeadersView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   GENERAL_HEADERS_ONLY_VIEW: () => GENERAL_HEADERS_ONLY_VIEW,
   RequestHeadersView: () => RequestHeadersView,
   renderCategory: () => renderCategory,
@@ -7087,7 +7102,7 @@ import * as Workspace2 from "../../models/workspace/workspace.js";
 import * as NetworkForward4 from "./forward/forward.js";
 import * as Tracing2 from "../../services/tracing/tracing.js";
 import * as PerfUI5 from "../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI3 from "../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling3 from "../mobile_throttling/mobile_throttling.js";
@@ -8506,7 +8521,7 @@ var networkWaterfallColumn_css_default = `/*
 // ../../front_end/panels/network/RequestTimingView.ts
 var RequestTimingView_exports = {};
 __export(RequestTimingView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   RequestTimingView: () => RequestTimingView
 });
 import "../../ui/kit/kit.js";
@@ -8520,7 +8535,7 @@ import * as NetworkTimeCalculator2 from "../../models/network_time_calculator/ne
 import * as uiI18n3 from "../../ui/i18n/i18n.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html7, nothing as nothing5, render as render8 } from "../../ui/lit/lit.js";
+import { Directives as Directives4, html as html7, nothing as nothing5, render as render8 } from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/networkTimingTable.css.js
@@ -8795,7 +8810,7 @@ tr.synthetic {
 /*# sourceURL=${import.meta.resolve("./networkTimingTable.css")} */`;
 
 // ../../front_end/panels/network/RequestTimingView.ts
-var { repeat: repeat2, classMap, ifDefined: ifDefined2 } = Directives3;
+var { repeat: repeat2, classMap, ifDefined: ifDefined2 } = Directives4;
 var UIStrings10 = {
   /**
    * @description Text used to label the time taken to receive an HTTP/2 Push message.
@@ -9064,7 +9079,7 @@ function getLocalizedResponseSourceForCode(swResponseSource) {
       return i18nString9(UIStrings10.fallbackCode);
   }
 }
-var DEFAULT_VIEW5 = (input, output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   const serverTimings = input.request.serverTimings ?? [];
   const requestStartTime = input.request.startTime;
   const requestIssueTime = input.request.issueTime();
@@ -9336,7 +9351,7 @@ var RequestTimingView = class _RequestTimingView extends UI10.Widget.VBox {
   #calculator;
   #lastMinimumBoundary = -1;
   #view;
-  constructor(target, view = DEFAULT_VIEW5) {
+  constructor(target, view = DEFAULT_VIEW6) {
     super(target);
     this.#view = view;
   }
@@ -9964,7 +9979,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI11.Widget.V
 // ../../front_end/panels/network/RequestInitiatorView.ts
 var RequestInitiatorView_exports = {};
 __export(RequestInitiatorView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   RequestInitiatorView: () => RequestInitiatorView
 });
 import * as i18n21 from "../../core/i18n/i18n.js";
@@ -9973,7 +9988,7 @@ import * as Bindings2 from "../../models/bindings/bindings.js";
 import * as Logs4 from "../../models/logs/logs.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
 import * as UI12 from "../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html8, nothing as nothing6, render as render9 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html8, nothing as nothing6, render as render9 } from "../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestInitiatorView.css.js
@@ -10061,7 +10076,7 @@ function trimUrl(url) {
   const halfMaxLength = Math.floor(MAX_URL_LENGTH / 2);
   return url.substring(0, halfMaxLength) + "\u2026" + url.substring(url.length - halfMaxLength);
 }
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW7 = (input, _output, target) => {
   const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
   if (!hasInitiatorData) {
     render9(
@@ -10109,7 +10124,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     const title = url.length < 2e3 ? url : void 0;
     return html8`
           <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true" open>
-            <span style=${isCurrentRequest ? "font-weight: bold" : ""} title=${Directives4.ifDefined(title)}>
+            <span style=${isCurrentRequest ? "font-weight: bold" : ""} title=${Directives5.ifDefined(title)}>
               ${trimUrl(url)}
             </span>
             ${hasFurtherInitiatedNodes || renderedChildren !== nothing6 ? html8`
@@ -10140,7 +10155,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       const title = url.length < 2e3 ? url : void 0;
       return html8`
         <li role="treeitem" aria-expanded="true" open>
-          <span title=${Directives4.ifDefined(title)}>
+          <span title=${Directives5.ifDefined(title)}>
             ${trimUrl(url)}
           </span>
           ${renderedChildren !== nothing6 ? html8`<ul role="group">${renderedChildren}</ul>` : nothing6}
@@ -10186,7 +10201,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
 var RequestInitiatorView = class extends UI12.Widget.VBox {
   request;
   #view;
-  constructor(request, view = DEFAULT_VIEW6) {
+  constructor(request, view = DEFAULT_VIEW7) {
     super({ jslog: `${VisualLogging8.pane("initiator").track({ resize: true })}` });
     this.element.classList.add("request-initiator-view");
     this.request = request;
@@ -14553,22 +14568,22 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     this.filterBar.addEventListener(UI15.FilterBar.FilterBarEvents.CHANGED, this.handleFilterChanged.bind(this));
     const settingsPane = panel3.contentElement.createChild("div", "network-settings-pane");
     settingsPane.append(
-      SettingsUI3.SettingsUI.createSettingCheckbox(
+      SettingsUI.SettingsUI.createSettingCheckbox(
         i18nString14(UIStrings15.useLargeRequestRows),
         this.networkLogLargeRowsSetting,
         i18nString14(UIStrings15.showMoreInformationInRequestRows)
       ),
-      SettingsUI3.SettingsUI.createSettingCheckbox(
+      SettingsUI.SettingsUI.createSettingCheckbox(
         i18nString14(UIStrings15.groupByFrame),
         Common13.Settings.Settings.instance().moduleSetting("network.group-by-frame"),
         i18nString14(UIStrings15.groupRequestsByTopLevelRequest)
       ),
-      SettingsUI3.SettingsUI.createSettingCheckbox(
+      SettingsUI.SettingsUI.createSettingCheckbox(
         i18nString14(UIStrings15.showOverview),
         this.networkLogShowOverviewSetting,
         i18nString14(UIStrings15.showOverviewOfNetworkRequests)
       ),
-      SettingsUI3.SettingsUI.createSettingCheckbox(
+      SettingsUI.SettingsUI.createSettingCheckbox(
         i18nString14(UIStrings15.captureScreenshots),
         this.networkRecordFilmStripSetting,
         i18nString14(UIStrings15.captureScreenshotsWhenLoadingA)
@@ -15297,7 +15312,7 @@ var SearchNetworkView = class _SearchNetworkView extends Search.SearchView.Searc
 // ../../front_end/panels/network/ShowMoreDetailsWidget.ts
 var ShowMoreDetailsWidget_exports = {};
 __export(ShowMoreDetailsWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   ShowMoreDetailsWidget: () => ShowMoreDetailsWidget
 });
 import * as i18n31 from "../../core/i18n/i18n.js";
@@ -15318,7 +15333,7 @@ var str_16 = i18n31.i18n.registerUIStrings("panels/network/ShowMoreDetailsWidget
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var { render: render10, html: html9 } = Lit2;
 var MAX_LENGTH = 3e3;
-var DEFAULT_VIEW7 = (input, output, target) => {
+var DEFAULT_VIEW8 = (input, output, target) => {
   const onContextMenuShowMore = (event) => {
     const contextMenu = new UI16.ContextMenu.ContextMenu(event);
     if (input.copy) {
@@ -15347,7 +15362,7 @@ var ShowMoreDetailsWidget = class extends UI16.Widget.Widget {
   #text = "";
   #showMore = false;
   #copy = null;
-  constructor(target, view = DEFAULT_VIEW7) {
+  constructor(target, view = DEFAULT_VIEW8) {
     super(target);
     this.#view = view;
   }
@@ -15510,7 +15525,7 @@ function renderGeneralSection(input, forceOpen) {
     contents: renderGeneralRows(input)
   });
 }
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var DEFAULT_VIEW9 = (input, _output, target) => {
   const requestHeadersText = input.request.requestHeadersText();
   render11(
     html10`
@@ -15598,7 +15613,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI17.Widget.Widget {
     this.#request = val;
     this.#addEventListeners();
   }
-  constructor(target, view = DEFAULT_VIEW8) {
+  constructor(target, view = DEFAULT_VIEW9) {
     super();
     this.#view = view;
   }
@@ -15873,7 +15888,7 @@ function renderCategory(data) {
 // ../../front_end/panels/network/RequestPayloadView.ts
 var RequestPayloadView_exports = {};
 __export(RequestPayloadView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   RequestPayloadView: () => RequestPayloadView
 });
 import * as Common15 from "../../core/common/common.js";
@@ -16108,7 +16123,7 @@ var objectValue_css_default = `/*
 
 // ../../front_end/panels/network/RequestPayloadView.ts
 import * as UI18 from "../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html11, nothing as nothing9, render as render12 } from "../../ui/lit/lit.js";
+import { Directives as Directives6, html as html11, nothing as nothing9, render as render12 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestPayloadTree.css.js
@@ -16267,7 +16282,7 @@ var requestPayloadView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestPayloadView.css")} */`;
 
 // ../../front_end/panels/network/RequestPayloadView.ts
-var { classMap: classMap2 } = Directives5;
+var { classMap: classMap2 } = Directives6;
 var { widget: widget6 } = UI18.Widget;
 var { ifExpanded } = UI18.TreeOutline;
 var UIStrings18 = {
@@ -16321,7 +16336,7 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/network/RequestPayloadView.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var DEFAULT_VIEW9 = (input, output, target) => {
+var DEFAULT_VIEW10 = (input, output, target) => {
   const createViewSourceToggle = (viewSource, callback) => html11`<devtools-button
       class="payload-toggle"
       jslog=${VisualLogging13.action().track({ click: true }).context("source-parse")}
@@ -16537,7 +16552,7 @@ var RequestPayloadView = class extends UI18.Widget.VBox {
   #viewFormParamSource = false;
   #viewQueryParamSource = false;
   #refreshFormDataPromiseForTest = Promise.resolve();
-  constructor(target, view = DEFAULT_VIEW9) {
+  constructor(target, view = DEFAULT_VIEW10) {
     super();
     this.#view = view;
   }
@@ -16749,7 +16764,7 @@ import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 // ../../front_end/panels/network/RequestHTMLView.ts
 var RequestHTMLView_exports = {};
 __export(RequestHTMLView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW10,
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   RequestHTMLView: () => RequestHTMLView
 });
 import * as UI19 from "../../ui/legacy/legacy.js";
@@ -16775,7 +16790,7 @@ var requestHTMLView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestHTMLView.css")} */`;
 
 // ../../front_end/panels/network/RequestHTMLView.ts
-var DEFAULT_VIEW10 = (input, _output, target) => {
+var DEFAULT_VIEW11 = (input, _output, target) => {
   render13(
     html12`
     <style>${requestHTMLView_css_default}</style>
@@ -16792,7 +16807,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
 var RequestHTMLView = class _RequestHTMLView extends UI19.Widget.VBox {
   #dataURL;
   #view;
-  constructor(dataURL, view = DEFAULT_VIEW10) {
+  constructor(dataURL, view = DEFAULT_VIEW11) {
     super({ useShadowDom: true });
     this.#dataURL = dataURL;
     this.#view = view;
@@ -17307,7 +17322,7 @@ var RequestPreviewView = class extends UI21.Widget.VBox {
 // ../../front_end/panels/network/RequestResponseView.ts
 var RequestResponseView_exports = {};
 __export(RequestResponseView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW11,
+  DEFAULT_VIEW: () => DEFAULT_VIEW12,
   RequestResponseView: () => RequestResponseView
 });
 import * as Common16 from "../../core/common/common.js";
@@ -17335,7 +17350,7 @@ var UIStrings21 = {
 var str_21 = i18n41.i18n.registerUIStrings("panels/network/RequestResponseView.ts", UIStrings21);
 var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var { widgetRef, widget: widget7 } = UI22.Widget;
-var DEFAULT_VIEW11 = (input, output, target) => {
+var DEFAULT_VIEW12 = (input, output, target) => {
   let widgetTemplate;
   if (TextUtils6.StreamingContentData.isError(input.contentData)) {
     widgetTemplate = html13`${widget7((element) => new UI22.EmptyWidget.EmptyWidget(
@@ -17372,7 +17387,7 @@ var RequestResponseView = class extends UI22.Widget.VBox {
   request;
   #view;
   #revealPosition;
-  constructor(request, view = DEFAULT_VIEW11) {
+  constructor(request, view = DEFAULT_VIEW12) {
     super();
     this.request = request;
     this.#view = view;
@@ -17568,7 +17583,7 @@ function defaultHeaderTemplate() {
       <th id="time" sortable sort="ascending" weight="7">${i18nString21(UIStrings22.time)}</th>
     </tr>`;
 }
-var DEFAULT_VIEW12 = (input, _output, target) => {
+var DEFAULT_VIEW13 = (input, _output, target) => {
   render16(
     html14`
       <style>${resourceChunkView_css_default}</style>
@@ -17674,7 +17689,7 @@ var ResourceChunkView = class extends UI23.Widget.VBox {
   get headerTemplate() {
     return defaultHeaderTemplate();
   }
-  constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW12) {
+  constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW13) {
     super(opts);
     this.#view = view;
     this.messageFilterSetting = Common17.Settings.Settings.instance().createSetting(messageFilterSettingKey, "");

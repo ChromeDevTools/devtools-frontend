@@ -10646,6 +10646,9 @@
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Network"
   },
+  "panels/network/NetworkConfigView.ts | saveDataSettingTooltip": {
+    "message": "Override the value reported by navigator.connection.saveData on the page"
+  },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
     "message": "Use browser default"
   },

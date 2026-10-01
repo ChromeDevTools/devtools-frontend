@@ -12,6 +12,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import consoleInsightTeaserStyles from './consoleInsightTeaser.css.js';
 import { ConsoleViewMessage } from './ConsoleViewMessage.js';
@@ -474,7 +475,9 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     maybeGenerateTeaser() {
         const startGeneratingTeaser = () => {
             if (!this.#isInactive &&
-                Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get()) {
+                Common.Settings.Settings.instance()
+                    .resolve(Settings.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor)
+                    .get()) {
                 void this.#generateTeaserText();
             }
         };
@@ -614,7 +617,9 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
     }
     #dontShowChanged(e) {
         const showTeasers = !e.target.checked;
-        Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').set(showTeasers);
+        Common.Settings.Settings.instance()
+            .resolve(Settings.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor)
+            .set(showTeasers);
     }
     #hasTellMeMoreButton() {
         if (!UI.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_TEASER_ACTION_ID)) {
@@ -636,7 +641,9 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
             headerText: this.#headerText,
             mainText: this.#mainText,
             isInactive: this.#isInactive ||
-                !Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get(),
+                !Common.Settings.Settings.instance()
+                    .resolve(Settings.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor)
+                    .get(),
             dontShowChanged: this.#dontShowChanged.bind(this),
             hasTellMeMoreButton: this.#hasTellMeMoreButton(),
             isSlowGeneration: this.#isSlow,

@@ -108,17 +108,14 @@ export declare class ContentProviderContextMenuProvider implements UI.ContextMen
     appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, contentProvider: Workspace.UISourceCode.UISourceCode | SDK.Resource.Resource | SDK.NetworkRequest.NetworkRequest): void;
 }
 interface LinkInfo {
-    icon: LitTemplate | null;
-    enableDecorator: boolean;
-    uiLocation: Workspace.UISourceCode.UILocation | null;
-    liveLocation: Bindings.LiveLocation.LiveLocation | null;
-    url: Platform.DevToolsPath.UrlString | null;
-    lineNumber: number | null;
-    columnNumber: number | null;
-    revealable: Object | null;
-    fallback: Element | null;
+    enableDecorator?: boolean;
+    uiLocation?: Workspace.UISourceCode.UILocation;
+    url?: Platform.DevToolsPath.UrlString;
+    lineNumber?: number;
+    columnNumber?: number;
+    revealable?: Object;
+    fallback?: Element;
     userMetric?: Host.UserMetrics.Action;
-    jslogContext?: string;
 }
 export interface LinkifyURLOptions {
     allowPrivileged?: boolean;

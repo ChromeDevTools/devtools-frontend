@@ -22031,6 +22031,7 @@ function decodeRangeMappings(encodedRangeMappings) {
 // ../../front_end/core/sdk/SourceMapScopesInfo.ts
 var SourceMapScopesInfo_exports = {};
 __export(SourceMapScopesInfo_exports, {
+  GeneratedFrameKind: () => GeneratedFrameKind,
   SourceMapScopesInfo: () => SourceMapScopesInfo,
   comparePositions: () => comparePositions2,
   contains: () => contains,
@@ -22323,11 +22324,14 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
   #sourceMap;
   #originalScopes;
   #generatedRanges;
+  /** Whether the scope information was derived from the AST and mappings (see {@link createFromAst}). */
+  #isFromAst;
   #cachedVariablesAndBindingsPresent = null;
-  constructor(sourceMap, scopeInfo) {
+  constructor(sourceMap, scopeInfo, { isFromAst = false } = {}) {
     this.#sourceMap = sourceMap;
     this.#originalScopes = scopeInfo.scopes;
     this.#generatedRanges = scopeInfo.ranges;
+    this.#isFromAst = isFromAst;
   }
   /**
    * If the source map does not contain any scopes information, this factory function attempts to create scope information
@@ -22396,7 +22400,11 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
         stack.push({ node: node.children[i], parentRange: range, parentScopeHint: nextParentScopeHint });
       }
     }
-    return new _SourceMapScopesInfo(sourceMap, { scopes: scopesBySourceUrl, ranges: rootRange ? [rootRange] : [] });
+    return new _SourceMapScopesInfo(
+      sourceMap,
+      { scopes: scopesBySourceUrl, ranges: rootRange ? [rootRange] : [] },
+      { isFromAst: true }
+    );
     function insertInScope(sourceIndex, parent, newScope) {
       let children = parent ? parent.children : scopesBySourceUrl[sourceIndex];
       while (true) {
@@ -22471,20 +22479,15 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
       throw new Error(`Trying to re-augment existing scopes for source at index: ${sourceIdx}`);
     }
   }
-  /**
-   * @returns true, iff the function surrounding the provided position is marked as "hidden".
-   */
-  isOutlinedFrame(generatedLine, generatedColumn) {
-    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
-    return this.#isOutlinedFrame(rangeChain);
-  }
-  #isOutlinedFrame(rangeChain) {
-    for (let i = rangeChain.length - 1; i >= 0; --i) {
-      if (rangeChain[i].isStackFrame) {
-        return rangeChain[i].isHidden;
-      }
+  #generatedFrameKind(rangeChain) {
+    const functionRange = rangeChain.findLast((range) => range.isStackFrame);
+    if (!functionRange) {
+      return "VISIBLE" /* VISIBLE */;
     }
-    return false;
+    if (!functionRange.originalScope) {
+      return this.#isFromAst ? "VISIBLE" /* VISIBLE */ : "HIDDEN" /* HIDDEN */;
+    }
+    return functionRange.isHidden ? "OUTLINED" /* OUTLINED */ : "VISIBLE" /* VISIBLE */;
   }
   /**
    * @returns true, iff the range surrounding the provided position contains multiple
@@ -22705,44 +22708,65 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     return functionScope.name ?? "";
   }
   /**
-   * Returns one or more original stack frames for this single "raw frame" or call-site.
-   *
-   * @returns An empty array if no mapping at the call-site was found, or the resulting frames
-   * in top-to-bottom order in case of inlining.
-   * @throws If this range is marked "hidden". Outlining needs to be handled externally as
-   * outlined function segments in stack traces can span across bundles.
+   * Translates a single "raw frame" or call-site, including outlined functions. It's the caller's responsibility to
+   * merge outlined frames with their caller(s) (see {@link GeneratedFrameKind}).
    */
-  translateCallSite(generatedLine, generatedColumn) {
+  translateRawFrame(generatedLine, generatedColumn) {
     const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
-    if (this.#isOutlinedFrame(rangeChain)) {
-      throw new Error("SourceMapScopesInfo is unable to translate an outlined function by itself");
+    const kind = this.#generatedFrameKind(rangeChain);
+    if (kind === "HIDDEN" /* HIDDEN */) {
+      return { kind, frames: [] };
     }
+    const frame = this.#translateTopFrame(generatedLine, generatedColumn);
+    return { kind, frames: frame ? [frame, ...this.#translateInlinedCallers(rangeChain)] : [] };
+  }
+  /**
+   * The top-most frame is translated the same, regardless of whether we have inlined functions: The name is the
+   * original function surrounding the generated position, and the location is the mapped generated position.
+   */
+  #translateTopFrame(generatedLine, generatedColumn) {
     const mapping = this.#sourceMap.findEntry(generatedLine, generatedColumn);
     if (mapping?.sourceIndex === void 0) {
-      return [];
+      return null;
     }
-    const result = [{
+    const functionScope = this.findOriginalFunctionScope({ line: generatedLine, column: generatedColumn })?.scope;
+    return {
       line: mapping.sourceLineNumber,
       column: mapping.sourceColumnNumber,
-      name: this.findOriginalFunctionName({ line: generatedLine, column: generatedColumn }) ?? void 0,
-      url: mapping.sourceURL
-    }];
+      name: functionScope ? functionScope.name ?? "" : void 0,
+      url: mapping.sourceURL,
+      functionStart: functionScope?.start
+    };
+  }
+  /**
+   * Walk the range chain inside out until we find a generated function and for each inlined function add a frame.
+   */
+  #translateInlinedCallers(rangeChain) {
+    const result = [];
     for (let i = rangeChain.length - 1; i >= 0 && !rangeChain[i].isStackFrame; --i) {
       const range = rangeChain[i];
       if (!range.callSite) {
         continue;
       }
       const originalScopeChain = this.#findOriginalScopeChain(range.callSite);
+      const functionScope = this.#findFunctionScopeInOriginalScopeChain(originalScopeChain.at(-1));
       result.push({
         line: range.callSite.line,
         column: range.callSite.column,
-        name: this.#findFunctionNameInOriginalScopeChain(originalScopeChain.at(-1)) ?? void 0,
-        url: this.#sourceMap.sourceURLForSourceIndex(range.callSite.sourceIndex)
+        name: functionScope ? functionScope.name ?? "" : void 0,
+        url: this.#sourceMap.sourceURLForSourceIndex(range.callSite.sourceIndex),
+        functionStart: functionScope?.start
       });
     }
     return result;
   }
 };
+var GeneratedFrameKind = /* @__PURE__ */ ((GeneratedFrameKind2) => {
+  GeneratedFrameKind2["VISIBLE"] = "VISIBLE";
+  GeneratedFrameKind2["OUTLINED"] = "OUTLINED";
+  GeneratedFrameKind2["HIDDEN"] = "HIDDEN";
+  return GeneratedFrameKind2;
+})(GeneratedFrameKind || {});
 function findExpression(range, index, line = 0, column = 0) {
   const val = range?.values[index];
   return (typeof val === "string" ? val : val?.find((r) => contains({ start: r.from, end: r.to }, line, column))?.value) ?? null;
@@ -23465,17 +23489,14 @@ var SourceMap = class _SourceMap {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.findOriginalFunctionScope(position) ?? null;
   }
-  isOutlinedFrame(generatedLine, generatedColumn) {
-    this.#ensureSourceMapProcessed();
-    return this.#scopesInfo?.isOutlinedFrame(generatedLine, generatedColumn) ?? false;
-  }
   hasInlinedFrames(generatedLine, generatedColumn) {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.hasInlinedFrames(generatedLine, generatedColumn) ?? false;
   }
-  translateCallSite(generatedLine, generatedColumn) {
+  /** See {@link SourceMapScopesInfo.translateRawFrame}. `null` if no scopes information is available. */
+  translateRawFrame(generatedLine, generatedColumn) {
     this.#ensureSourceMapProcessed();
-    return this.#scopesInfo?.translateCallSite(generatedLine, generatedColumn) ?? [];
+    return this.#scopesInfo?.translateRawFrame(generatedLine, generatedColumn) ?? null;
   }
 };
 function asRangeMapping(entry) {
@@ -29587,7 +29608,7 @@ var DOMNode = class _DOMNode extends Common20.ObjectWrapper.ObjectWrapper {
     return Boolean(this.#xmlVersion);
   }
   isCustomElement() {
-    if (this.nodeType() !== 1 /* ELEMENT_NODE */ || this.isXMLNode()) {
+    if (this.nodeType() !== 1 /* ELEMENT_NODE */ || this.isXMLNode() || Boolean(this.pseudoType())) {
       return false;
     }
     const localName = this.localName() || this.nodeName().toLowerCase();

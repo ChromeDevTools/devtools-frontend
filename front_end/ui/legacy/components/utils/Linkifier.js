@@ -131,7 +131,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             return;
         }
         const uiSourceCode = info.uiLocation.uiSourceCode;
-        info.uiLocation = null;
+        info.uiLocation = undefined;
         const sourceCodeAnchors = anchorsByUISourceCode.get(uiSourceCode);
         if (sourceCodeAnchors) {
             sourceCodeAnchors.delete(anchor);
@@ -158,7 +158,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
     static unbindBreakpoint(anchor) {
         const info = Linkifier.linkInfo(anchor);
         if (info?.revealable) {
-            info.revealable = null;
+            info.revealable = undefined;
         }
     }
     targetAdded(target) {
@@ -182,7 +182,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             if (!info) {
                 continue;
             }
-            info.liveLocation = null;
             Linkifier.unbindUILocation(anchor);
             const fallback = info.fallback;
             if (fallback) {
@@ -229,7 +228,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         };
         const { link, linkInfo } = Linkifier.createLink(fallbackAnchor?.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
         linkInfo.enableDecorator = this.useLinkDecorator;
-        linkInfo.fallback = fallbackAnchor;
+        linkInfo.fallback = fallbackAnchor ?? undefined;
         linkInfo.userMetric = options?.userMetric;
         const pool = this.locationPoolByTarget.get(rawLocation.debuggerModel.target());
         if (!pool) {
@@ -244,13 +243,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             await this.updateAnchor(link, linkDisplayOptions, liveLocation);
             this.dispatchEventToListeners("liveLocationUpdated" /* Events.LIVE_LOCATION_UPDATED */, liveLocation);
         };
-        void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-            .createLiveLocation(rawLocation, updateDelegate.bind(this), pool)
-            .then(liveLocation => {
-            if (liveLocation) {
-                linkInfo.liveLocation = liveLocation;
-            }
-        });
+        void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(rawLocation, updateDelegate.bind(this), pool);
         const anchors = this.anchorsByTarget.get(rawLocation.debuggerModel.target());
         anchors.push(link);
         return link;
@@ -375,11 +368,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             await this.updateAnchor(link, linkDisplayOptions, liveLocation);
             this.dispatchEventToListeners("liveLocationUpdated" /* Events.LIVE_LOCATION_UPDATED */, liveLocation);
         };
-        void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-            .createStackTraceTopFrameLiveLocation(debuggerModel.createRawLocationsByStackTrace(stackTrace), updateDelegate.bind(this), pool)
-            .then(liveLocation => {
-            linkInfo.liveLocation = liveLocation;
-        });
+        void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceTopFrameLiveLocation(debuggerModel.createRawLocationsByStackTrace(stackTrace), updateDelegate.bind(this), pool);
         const anchors = this.anchorsByTarget.get(target);
         anchors.push(link);
         return link;
@@ -400,11 +389,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             await this.updateAnchor(link, linkDisplayOptions, liveLocation);
             this.dispatchEventToListeners("liveLocationUpdated" /* Events.LIVE_LOCATION_UPDATED */, liveLocation);
         };
-        void Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()
-            .createLiveLocation(rawLocation, updateDelegate.bind(this), pool)
-            .then(liveLocation => {
-            linkInfo.liveLocation = liveLocation;
-        });
+        void Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().createLiveLocation(rawLocation, updateDelegate.bind(this), pool);
         const anchors = this.anchorsByTarget.get(rawLocation.cssModel().target());
         anchors.push(link);
         return link;
@@ -487,7 +472,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             anchor.firstElementChild?.style.setProperty('margin-left', '2px');
             render(icon, anchor, { renderBefore: anchor.firstElementChild });
         }
-        info.icon = icon;
     }
     static renderLinkifiedUrl(url, options) {
         options = options || {
@@ -609,15 +593,9 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
                     Linkifier.setTrimmedText(link, text, maxLength);
                 }
                 const linkInfo = {
-                    icon: null,
-                    enableDecorator: false,
-                    uiLocation: null,
-                    liveLocation: null,
-                    url: options.href || null,
-                    lineNumber: options.lineNumber ?? null,
-                    columnNumber: options.columnNumber ?? null,
-                    revealable: null,
-                    fallback: null,
+                    url: options.href,
+                    lineNumber: options.lineNumber,
+                    columnNumber: options.columnNumber,
                     userMetric: options.userMetric,
                 };
                 infoByAnchor.set(link, linkInfo);
@@ -772,8 +750,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         return !otherSchemeRegistrations.has(scheme);
     }
     static uiLocation(link) {
-        const info = Linkifier.linkInfo(link);
-        return info ? info.uiLocation : null;
+        return Linkifier.linkInfo(link)?.uiLocation ?? null;
     }
     static linkActions(info) {
         const result = [];

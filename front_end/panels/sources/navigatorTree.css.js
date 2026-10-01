@@ -112,8 +112,8 @@ export default `/*
 }
 
 .navigator-automatic-fs-tree-item {
-  & > devtools-button,
-  & > devtools-spinner {
+  & devtools-button,
+  & devtools-spinner {
     margin-left: var(--sys-size-4);
   }
 }

@@ -32,9 +32,6 @@
       "path": "../../front_end/core/host/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../front_end/core/protocol_client/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../front_end/core/protocol_client/puppeteer_devtools_connection-tsconfig.ref.json"
     },
     {
@@ -54,6 +51,9 @@
     },
     {
       "path": "../e2e/conductor/implementation-tsconfig.ref.json"
+    },
+    {
+      "path": "../e2e/shared/shared-tsconfig.ref.json"
     },
     {
       "path": "../shared/shared-tsconfig.ref.json"

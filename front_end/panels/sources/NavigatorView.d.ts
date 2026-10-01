@@ -1,3 +1,4 @@
+import '../../ui/components/spinners/spinners.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -16,6 +17,14 @@ export declare const Types: {
     Root: string;
     Worker: string;
 };
+export interface ViewInput {
+    treeElement: HTMLElement;
+    placeholder: UI.Widget.Widget | null;
+    showTree: boolean;
+    onContextMenu: (event: Event) => void;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.Observer {
     #private;
     private placeholder;
@@ -33,11 +42,12 @@ export declare class NavigatorView extends UI.Widget.VBox implements SDK.TargetM
     private groupByAuthored?;
     private groupByDomain?;
     private groupByFolder?;
-    constructor(jslogContext: string, networkProjectManager: Bindings.NetworkProject.NetworkProjectManager, enableAuthoredGrouping?: boolean);
+    constructor(jslogContext: string, networkProjectManager: Bindings.NetworkProject.NetworkProjectManager, enableAuthoredGrouping?: boolean, view?: View);
     private static treeElementOrder;
     static appendSearchItem(contextMenu: UI.ContextMenu.ContextMenu, path: string): void;
     private static treeElementsCompare;
     setPlaceholder(placeholder: UI.Widget.Widget): void;
+    performUpdate(): void;
     private onBindingChanged;
     focus(): void;
     /**
@@ -127,7 +137,6 @@ export declare class NavigatorSourceTreeElement extends UI.TreeOutline.TreeEleme
     readonly nodeType: string;
     readonly node: NavigatorUISourceCodeTreeNode;
     private readonly navigatorView;
-    private aiButtonContainer?;
     constructor(navigatorView: NavigatorView, uiSourceCode: Workspace.UISourceCode.UISourceCode, title: string, node: NavigatorUISourceCodeTreeNode);
     updateIcon(): void;
     updateAccessibleName(): void;

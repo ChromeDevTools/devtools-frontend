@@ -11,6 +11,7 @@ __export(ConsoleSettings_exports, {
   consoleEagerEvalSettingDescriptor: () => consoleEagerEvalSettingDescriptor,
   consoleGroupSimilarSettingDescriptor: () => consoleGroupSimilarSettingDescriptor,
   consoleHistoryAutocompleteSettingDescriptor: () => consoleHistoryAutocompleteSettingDescriptor,
+  consoleInsightTeasersEnabledSettingDescriptor: () => consoleInsightTeasersEnabledSettingDescriptor,
   consoleShowsCorsErrorsSettingDescriptor: () => consoleShowsCorsErrorsSettingDescriptor,
   consoleTimestampsEnabledSettingDescriptor: () => consoleTimestampsEnabledSettingDescriptor,
   consoleTraceExpandSettingDescriptor: () => consoleTraceExpandSettingDescriptor,
@@ -66,6 +67,12 @@ var consoleEagerEvalSettingDescriptor = {
 };
 var consoleTraceExpandSettingDescriptor = {
   name: "console-trace-expand",
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED
+};
+var consoleInsightTeasersEnabledSettingDescriptor = {
+  name: "console-insight-teasers-enabled",
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED

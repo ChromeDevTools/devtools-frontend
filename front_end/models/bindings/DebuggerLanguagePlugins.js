@@ -7,6 +7,8 @@ import { assertNotNullOrUndefined } from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
+// eslint-disable-next-line @devtools/es-modules-import
+import * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import * as Workspace from '../workspace/workspace.js';
 import { ContentProviderBasedProject } from './ContentProviderBasedProject.js';
 import { NetworkProject } from './NetworkProject.js';
@@ -609,30 +611,20 @@ export class DebuggerLanguagePluginManager {
                 const uiLocation = await this.rawLocationToUILocation(rawLocation);
                 return translatedFromUILocation(uiLocation, name, frame);
             });
-            translatedFrames.push(await Promise.all(framePromises));
+            translatedFrames.push({ kind: "VISIBLE" /* StackTraceImpl.Trie.FrameKind.VISIBLE */, frames: await Promise.all(framePromises), unmapped: false });
             return true;
         }
         // Translate the location only. We go through via "DebuggerWorkspaceBinding". It'll still try the plugin
         // first, but this way, we'll get a UISourceCode for the raw script if the plugin fails to translate.
         const uiLocation = await this.#debuggerWorkspaceBinding.rawLocationToUILocation(new SDK.DebuggerModel.Location(script.debuggerModel, script.scriptId, frame.lineNumber, frame.columnNumber));
         const mappedFrame = translatedFromUILocation(uiLocation, frame.functionName, frame);
-        if ('missingSymbolFiles' in functionInfo && functionInfo.missingSymbolFiles.length) {
-            translatedFrames.push([{
-                    ...mappedFrame,
-                    missingDebugInfo: {
-                        type: "PARTIAL_INFO" /* StackTrace.StackTrace.MissingDebugInfoType.PARTIAL_INFO */,
-                        missingDebugFiles: functionInfo.missingSymbolFiles,
-                    },
-                }]);
-        }
-        else {
-            translatedFrames.push([{
-                    ...mappedFrame,
-                    missingDebugInfo: {
-                        type: "NO_INFO" /* StackTrace.StackTrace.MissingDebugInfoType.NO_INFO */,
-                    },
-                }]);
-        }
+        const missingDebugInfo = 'missingSymbolFiles' in functionInfo && functionInfo.missingSymbolFiles.length ?
+            {
+                type: "PARTIAL_INFO" /* StackTrace.StackTrace.MissingDebugInfoType.PARTIAL_INFO */,
+                missingDebugFiles: functionInfo.missingSymbolFiles,
+            } :
+            { type: "NO_INFO" /* StackTrace.StackTrace.MissingDebugInfoType.NO_INFO */ };
+        translatedFrames.push({ kind: "VISIBLE" /* StackTraceImpl.Trie.FrameKind.VISIBLE */, frames: [{ ...mappedFrame, missingDebugInfo }], unmapped: true });
         return true;
         function translatedFromUILocation(uiLocation, name, fallback) {
             if (uiLocation) {

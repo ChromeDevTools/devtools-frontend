@@ -60,25 +60,16 @@
   ],
   "references": [
     {
-      "path": "../../front_end/core/sdk/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../front_end/panels/ai_assistance/bundle-tsconfig.ref.json"
+      "path": "../conductor/implementation-tsconfig.ref.json"
     },
     {
       "path": "../e2e/conductor/implementation-tsconfig.ref.json"
     },
     {
-      "path": "../e2e/helpers/helpers-tsconfig.ref.json"
+      "path": "../e2e/shared/shared-tsconfig.ref.json"
     },
     {
       "path": "../shared/shared-tsconfig.ref.json"
-    },
-    {
-      "path": "helpers/helpers-tsconfig.ref.json"
-    },
-    {
-      "path": "report/report-tsconfig.ref.json"
     }
   ]
 }

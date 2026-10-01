@@ -68,23 +68,40 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         ]);
         return new StackTraceImpl(syncFragment, asyncFragments);
     }
-    /** Trigger re-translation of all fragments with the provide script in their call stack */
+    /**
+     * Re-translates all trie nodes whose raw frame or eval origin chain is in `script`, and notifies all stack traces
+     * that contain such a node.
+     */
     async scriptInfoChanged(script, translateRawFrames) {
+        // scriptId has precedence, but if the frame does not have one, check the URL.
+        const matches = (raw) => raw.scriptId === script.scriptId || (!raw.scriptId && raw.url === script.sourceURL);
+        const evalMatches = (raw) => Boolean(raw) && (matches(raw) || evalMatches(raw?.parsedFrameInfo?.evalOrigin));
         const release = await this.#mutex.acquire();
         try {
-            const translatePromises = [];
-            let stackTracesToUpdate = new Set();
-            for (const fragment of this.#affectedFragments(script)) {
-                // We trigger re-translation only for fragments of leaf-nodes. Any fragment along the ancestor-chain
-                // is re-translated as a side-effect.
-                // We just need to remember the stack traces of the skipped over fragments, so we can send the
-                // UPDATED event also to them.
-                if (fragment.node?.children.length === 0) {
-                    translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
+            // Walk the whole trie: the same script can appear multiple times in a call stack.
+            const affected = [];
+            this.#trie.walk(null, node => {
+                if (matches(node.rawFrame) || evalMatches(node.parsedFrameInfo?.evalOrigin)) {
+                    affected.push(node);
                 }
-                stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
+                return true;
+            });
+            await this.#translateNodes(affected.filter(n => matches(n.rawFrame)), affected.filter(n => evalMatches(n.parsedFrameInfo?.evalOrigin)), translateRawFrames);
+            // Every fragment in the sub-tree of an affected node contains the affected node in its call stack.
+            const visited = new Set();
+            let stackTracesToUpdate = new Set();
+            for (const root of affected) {
+                this.#trie.walk(root, node => {
+                    if (visited.has(node)) {
+                        return false;
+                    }
+                    visited.add(node);
+                    if (node.fragment) {
+                        stackTracesToUpdate = stackTracesToUpdate.union(node.fragment.stackTraces);
+                    }
+                    return true;
+                });
             }
-            await Promise.all(translatePromises);
             for (const stackTrace of stackTracesToUpdate) {
                 stackTrace.dispatchEventToListeners("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */);
             }
@@ -133,73 +150,62 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         const release = await this.#mutex.acquire();
         try {
             const node = this.#trie.insert(frames);
-            const requiresTranslation = !Boolean(node.fragment);
             const fragment = FragmentImpl.getOrCreate(node);
-            if (requiresTranslation) {
-                await this.#translateFragment(fragment, rawFramesToUIFrames);
-            }
+            const callStack = [...node.getCallStack()];
+            // Translations are context-free, so shared prefixes of other fragments don't need re-translation. A node that was
+            // first seen in a CDP trace may later get an `evalOrigin` from an `Error.stack` trace.
+            await this.#translateNodes(callStack.filter(n => !n.isTranslated), callStack.filter(n => n.parsedFrameInfo?.evalOrigin && !n.evalOrigin), rawFramesToUIFrames);
             return fragment;
         }
         finally {
             release();
         }
     }
-    async #translateFragment(fragment, rawFramesToUIFrames) {
-        if (!fragment.node) {
+    /** Translates `nodes` and the eval origins of `evalNodes`. Writes nothing if any translation throws. */
+    async #translateNodes(nodes, evalNodes, rawFramesToUIFrames) {
+        if (nodes.length === 0 && evalNodes.length === 0) {
             return;
         }
-        const rawFrames = fragment.node.getCallStack().map(node => node.rawFrame).toArray();
-        const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
-        console.assert(rawFrames.length === uiFrames.length, 'Broken rawFramesToUIFrames implementation');
-        const evalOriginPromises = [];
-        for (const node of fragment.node.getCallStack()) {
-            if (node.parsedFrameInfo?.evalOrigin) {
-                // Evaluate each eval origin individually, as they are not a contiguous stack trace.
-                evalOriginPromises.push(translateEvalOrigin(node.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, this.target()));
-            }
+        const [translations, evalOrigins] = await Promise.all([
+            nodes.length ? rawFramesToUIFrames(nodes.map(n => n.rawFrame), this.target()) : Promise.resolve([]),
+            Promise.all(evalNodes.map(n => translateEvalOrigin(n.parsedFrameInfo?.evalOrigin, rawFramesToUIFrames, this.target()))),
+        ]);
+        if (translations.length !== nodes.length) {
+            throw new Error('Broken rawFramesToUIFrames implementation');
         }
-        const evalOrigins = await Promise.all(evalOriginPromises);
-        let i = 0;
-        let evalI = 0;
-        for (const node of fragment.node.getCallStack()) {
-            const group = uiFrames[i++];
-            node.frames =
-                group.map((frame, index) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName, node.rawFrame.isWasm, index < group.length - 1));
-            if (node.parsedFrameInfo?.evalOrigin) {
-                node.evalOrigin = evalOrigins[evalI++];
-            }
-        }
-    }
-    #affectedFragments(script) {
-        // 1. Collect branches with the matching script.
-        const affectedBranches = new Set();
-        this.#trie.walk(null, node => {
-            // scriptId has precedence, but if the frame does not have one, check the URL.
-            if (node.rawFrame.scriptId === script.scriptId ||
-                (!node.rawFrame.scriptId && node.rawFrame.url === script.sourceURL)) {
-                affectedBranches.add(node);
-                return false;
-            }
-            return true;
+        // No `await` below: readers never see a partially updated trie.
+        nodes.forEach((node, i) => applyTranslation(node, translations[i]));
+        evalNodes.forEach((node, i) => {
+            node.evalOrigin = evalOrigins[i];
         });
-        // 2. For each branch collect all the fragments.
-        const fragments = new Set();
-        for (const branch of affectedBranches) {
-            this.#trie.walk(branch, node => {
-                if (node.fragment) {
-                    fragments.add(node.fragment);
-                }
-                return true;
-            });
-        }
-        return fragments;
     }
 }
 _a = StackTraceModel;
+function toFrameImpls(rawFrame, frames) {
+    return frames.map((f, index) => new FrameImpl(f.url, f.uiSourceCode, f.name, f.line, f.column, f.missingDebugInfo, rawFrame.functionName, rawFrame.isWasm, index < frames.length - 1));
+}
+/** Stores a context-free translation on `node`. A VISIBLE or OUTLINED translation without frames becomes HIDDEN. */
+function applyTranslation(node, translation) {
+    node.isTranslated = true;
+    if (translation.kind === "HIDDEN" /* FrameKind.HIDDEN */ || translation.frames.length === 0) {
+        console.assert(translation.kind === "HIDDEN" /* FrameKind.HIDDEN */, 'Non-HIDDEN translation without frames');
+        node.kind = "HIDDEN" /* FrameKind.HIDDEN */;
+        node.frames = [];
+        node.functionKeys = undefined;
+        node.isUnmapped = false;
+        return;
+    }
+    node.kind = translation.kind;
+    node.frames = toFrameImpls(node.rawFrame, translation.frames);
+    node.functionKeys = translation.functionKeys;
+    node.isUnmapped = translation.kind === "VISIBLE" /* FrameKind.VISIBLE */ && Boolean(translation.unmapped);
+}
 async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
-    const uiFrames = await rawFramesToUIFrames([rawFrame], target);
-    const group = uiFrames[0];
-    const frames = group.map((frame, index) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, rawFrame.functionName, rawFrame.isWasm, index < group.length - 1));
+    const [translation] = await rawFramesToUIFrames([rawFrame], target);
+    // A HIDDEN eval origin still shows where the eval happened, in generated coordinates.
+    const frames = translation.frames.length ?
+        toFrameImpls(rawFrame, translation.frames) :
+        [new FrameImpl(rawFrame.url, undefined, rawFrame.functionName, rawFrame.lineNumber, rawFrame.columnNumber, undefined, rawFrame.functionName, rawFrame.isWasm, false)];
     let parentEvalOrigin;
     if (rawFrame.parsedFrameInfo?.evalOrigin) {
         parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);

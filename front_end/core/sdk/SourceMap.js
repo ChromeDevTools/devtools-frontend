@@ -685,17 +685,14 @@ export class SourceMap {
         this.#ensureSourceMapProcessed();
         return this.#scopesInfo?.findOriginalFunctionScope(position) ?? null;
     }
-    isOutlinedFrame(generatedLine, generatedColumn) {
-        this.#ensureSourceMapProcessed();
-        return this.#scopesInfo?.isOutlinedFrame(generatedLine, generatedColumn) ?? false;
-    }
     hasInlinedFrames(generatedLine, generatedColumn) {
         this.#ensureSourceMapProcessed();
         return this.#scopesInfo?.hasInlinedFrames(generatedLine, generatedColumn) ?? false;
     }
-    translateCallSite(generatedLine, generatedColumn) {
+    /** See {@link SourceMapScopesInfo.translateRawFrame}. `null` if no scopes information is available. */
+    translateRawFrame(generatedLine, generatedColumn) {
         this.#ensureSourceMapProcessed();
-        return this.#scopesInfo?.translateCallSite(generatedLine, generatedColumn) ?? [];
+        return this.#scopesInfo?.translateRawFrame(generatedLine, generatedColumn) ?? null;
     }
 }
 _a = SourceMap;

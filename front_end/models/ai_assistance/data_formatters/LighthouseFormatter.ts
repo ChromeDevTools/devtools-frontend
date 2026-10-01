@@ -7,6 +7,12 @@ import type * as LHModel from '../../lighthouse/lighthouse.js';
 import {bytes, millis} from './UnitFormatters.js';
 
 /**
+ * Category argument for Lighthouse tools, accepting a specific category ID or `'all'`
+ * to target a full report across all standard categories.
+ */
+export type LighthouseCategoryArg = 'all'|LHModel.RunTypes.CategoryId;
+
+/**
  * A formatter that takes a raw Lighthouse report JSON and creates a markdown
  * summary for an AI Agent.
  */
@@ -30,13 +36,30 @@ export class LighthouseFormatter {
   }
 
   /**
+   * Formats a Lighthouse report for an AI Agent. If categoryId is 'all', includes
+   * the overall summary followed by each category's audits. Otherwise, returns audits
+   * for the specified category.
+   */
+  formatReport(report: LHModel.ReporterTypes.ReportJSON, categoryId: LighthouseCategoryArg): string {
+    if (categoryId === 'all') {
+      const sections: string[] = [this.summary(report)];
+      for (const category of Object.values(report.categories)) {
+        sections.push(this.audits(report, category));
+      }
+      return sections.join('\n\n');
+    }
+    return this.audits(report, categoryId);
+  }
+
+  /**
    * Returns a markdown list of all audits in a given category.
    * Highlight failing audits (score < 90).
    */
-  audits(report: LHModel.ReporterTypes.ReportJSON, categoryId: LHModel.RunTypes.CategoryId): string {
-    const category = report.categories[categoryId];
+  audits(report: LHModel.ReporterTypes.ReportJSON,
+         categoryOrId: LHModel.RunTypes.CategoryId|LHModel.ReporterTypes.CategoryJSON): string {
+    const category = typeof categoryOrId === 'string' ? report.categories[categoryOrId] : categoryOrId;
     if (!category) {
-      return `Category "${categoryId}" not found.`;
+      return `Category "${categoryOrId}" not found.`;
     }
 
     const lines: string[] = [];

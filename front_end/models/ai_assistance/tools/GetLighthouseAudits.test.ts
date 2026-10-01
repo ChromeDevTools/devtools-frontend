@@ -57,4 +57,49 @@ describe('GetLighthouseAuditsTool', () => {
     assertIsResult(result);
     assert.strictEqual(result.result.audits, 'Category "performance" not found.');
   });
+
+  it('returns summary and audits for all categories when categoryId is "all"', async () => {
+    const multiCategoryReport = {
+      finalDisplayedUrl: 'https://example.com',
+      categories: {
+        accessibility: {
+          title: 'Accessibility',
+          score: 0.8,
+          auditRefs: [{id: 'color-contrast', weight: 1}],
+        },
+        performance: {
+          title: 'Performance',
+          score: 0.9,
+          auditRefs: [{id: 'first-contentful-paint', weight: 1}],
+        },
+      },
+      audits: {
+        'color-contrast': {
+          id: 'color-contrast',
+          score: 0,
+          title: 'Low contrast',
+          description: 'Fix color contrast.',
+          details: {type: 'opportunity', items: []},
+        },
+        'first-contentful-paint': {
+          id: 'first-contentful-paint',
+          score: 0.5,
+          title: 'First Contentful Paint',
+          description: 'Keep FCP fast.',
+          details: {type: 'opportunity', items: []},
+        },
+      },
+    } as unknown as LHModel.ReporterTypes.ReportJSON;
+    const multiCategoryContext: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseReportCapability = {
+      getLighthouseReport: () => multiCategoryReport,
+    };
+
+    const result = await tool.handler({categoryId: 'all'}, multiCategoryContext);
+    assertIsResult(result);
+    assert.include(result.result.audits, '# Lighthouse Report Summary');
+    assert.include(result.result.audits, '## Category Scores');
+    assert.include(result.result.audits, '# Audits for Accessibility');
+    assert.include(result.result.audits, '# Audits for Performance');
+    assert.deepEqual(result.widgets, [{name: 'LIGHTHOUSE_REPORT', data: {report: multiCategoryReport}}]);
+  });
 });

@@ -41,6 +41,7 @@ const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
   performance: 'Performance',
   storage: 'Storage',
   sources: 'Sources',
+  lighthouse: 'Lighthouse',
 };
 
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.

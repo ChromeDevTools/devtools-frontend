@@ -80,6 +80,26 @@ describe('RunLighthouseTool', () => {
       });
     });
 
+    it('runs audits across all categories when categoryId is "all"', async () => {
+      const recordingStub = sinon.stub().resolves(mockReport);
+      const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
+        runLighthouse: recordingStub,
+      };
+
+      const result = await tool.handler({explanation: 'full audit', categoryId: 'all', mode: 'navigation'}, context);
+      assertIsResult(result);
+      assert.include(result.result.audits, '# Lighthouse Report Summary');
+      assert.include(result.result.audits, '## Category Scores');
+      assert.include(result.result.audits, '# Audits for Accessibility');
+      assert.deepEqual(result.widgets,
+                       [{name: 'LIGHTHOUSE_REPORT', data: {report: mockReport, snapshotReport: false}}]);
+      sinon.assert.calledOnceWithExactly(recordingStub, {
+        mode: 'navigation',
+        categoryIds: undefined,
+        isAIControlled: true,
+      });
+    });
+
     it('defaults to snapshot mode when mode is omitted', async () => {
       const recordingStub = sinon.stub().resolves(mockReport);
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {

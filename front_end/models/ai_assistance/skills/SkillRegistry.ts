@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {skill as accessibilitySkill} from './accessibility.skill.js';
+import {skill as lighthouseSkill} from './lighthouse.skill.js';
 import {skill as networkSkill} from './network.skill.js';
 import {skill as performanceSkill} from './performance.skill.js';
 import type {Skill, SkillName} from './Skill.js';
@@ -17,4 +18,5 @@ export const SKILLS: Record<SkillName, Skill> = {
   performance: performanceSkill,
   storage: storageSkill,
   sources: sourcesSkill,
+  lighthouse: lighthouseSkill,
 };

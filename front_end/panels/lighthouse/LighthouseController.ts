@@ -577,15 +577,19 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     };
   }
 
-  getCategoryIDs(): LighthouseModel.RunTypes.CategoryId[] {
-    const {mode} = this.getFlags();
+  getCategoryIDs(options?: {isAIControlled?: boolean, mode?: string}): LighthouseModel.RunTypes.CategoryId[] {
+    const mode = options?.mode ?? this.getFlags().mode;
     const categoryIDs: LighthouseModel.RunTypes.CategoryId[] = [];
     for (const preset of getPresets()) {
       if (mode && !preset.supportedModes.includes(mode)) {
         continue;
       }
 
-      if (preset.setting.get()) {
+      if (options?.isAIControlled) {
+        if (preset.configID !== 'agentic-browsing') {
+          categoryIDs.push(preset.configID);
+        }
+      } else if (preset.setting.get()) {
         categoryIDs.push(preset.configID);
       }
     }
@@ -666,11 +670,12 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       }
 
       const inspectedURL = await this.getInspectedURL({force: true});
-      const categoryIDs = overrides?.categoryIds ?? this.getCategoryIDs();
       const flags = this.getFlags();
       if (overrides?.mode) {
         flags.mode = overrides.mode;
       }
+      const categoryIDs =
+          overrides?.categoryIds ?? this.getCategoryIDs({isAIControlled: overrides?.isAIControlled, mode: flags.mode});
 
       this.recordMetrics(flags, categoryIDs);
 

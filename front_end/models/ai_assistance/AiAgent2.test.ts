@@ -72,7 +72,7 @@ describe('AiAgent2', () => {
   });
   it('registers all expected skills', () => {
     assert.deepEqual(Object.keys(SKILLS).sort(),
-                     ['styling', 'network', 'accessibility', 'performance', 'storage', 'sources'].sort());
+                     ['styling', 'network', 'accessibility', 'performance', 'storage', 'sources', 'lighthouse'].sort());
   });
 
   it('accepts changeManager in options and passes it to tools', async () => {
@@ -955,6 +955,52 @@ describe('AiAgent2', () => {
     assert.lengthOf(actionResponses, 2);
     assert.strictEqual(actionResponses[0].code, 'learnSkills(\'accessibility\')');
     assert.strictEqual(actionResponses[1].code, 'runLighthouse(\'accessibility\', \'snapshot\')');
+  });
+
+  it('learns lighthouse skill and invokes runLighthouse with categoryId "all"', async () => {
+    const mockReport = {
+      finalDisplayedUrl: 'https://example.com',
+      categories: {},
+      audits: {},
+    } as unknown as LHModel.ReporterTypes.ReportJSON;
+    const runLighthouseStub = sinon.stub().resolves(mockReport);
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
+      }],
+      [{
+        explanation: 'Running all lighthouse audits',
+        functionCalls:
+            [{name: 'runLighthouse', args: {explanation: 'Full audit of page', categoryId: 'all', mode: 'navigation'}}],
+      }],
+      [{
+        explanation: 'Audits complete.',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({
+      aidaClient,
+      lighthouseRecording: runLighthouseStub,
+      originLock: defaultOriginLock,
+    });
+
+    const runLighthouseTool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.RUN_LIGHTHOUSE);
+    assert.exists(runLighthouseTool);
+    const handlerStub = sinon.stub(runLighthouseTool, 'handler').callsFake(async (_args, context) => {
+      await context.runLighthouse();
+      return {result: {audits: 'mock all audits'}};
+    });
+
+    const responses = await Array.fromAsync(agent.run('run a full lighthouse audit of this page', {selected: null}));
+
+    sinon.assert.calledOnce(handlerStub);
+    sinon.assert.calledWith(handlerStub, sinon.match({categoryId: 'all', mode: 'navigation'}));
+    sinon.assert.calledOnce(runLighthouseStub);
+    const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.lengthOf(actionResponses, 2);
+    assert.strictEqual(actionResponses[0].code, 'learnSkills(\'lighthouse\')');
+    assert.strictEqual(actionResponses[1].code, 'runLighthouse(\'all\', \'navigation\')');
+    assert.isTrue(agent.activeSkills.has('lighthouse'));
   });
 
   it('provides getPerformanceTraceContext capability to performance tools', async () => {

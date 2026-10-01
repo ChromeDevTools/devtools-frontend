@@ -88,6 +88,8 @@ export class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode> {
   kind: FrameKind = FrameKind.VISIBLE;
   /** Set iff `kind` is OUTLINED, or VISIBLE and translated with scopes information. */
   functionKeys?: FunctionKeys;
+  /** True iff the translation shows generated code, i.e. no source map or plugin could map it (incl. builtins). */
+  isUnmapped = false;
 
   fragment?: FragmentImpl;
   parsedFrameInfo?: ParsedFrameInfo;

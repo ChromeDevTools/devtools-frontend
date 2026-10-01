@@ -37,6 +37,12 @@ export type TranslatedRawFrame = {
   readonly frames: TranslatedUIFrame[],
   /** Makes the frame eligible to end an outlined chain. */
   readonly functionKeys?: FunctionKeys,
+  /**
+   * True iff `frames` show generated code because nothing could map the raw frame to authored code: builtins, scripts
+   * without source map, scripts whose source map is still loading, language plugins reporting `missingDebugInfo`.
+   * Unmapped frames are treated as "not authored" and may be merged away inside outlined chains.
+   */
+  readonly unmapped?: boolean,
 }|{
   readonly kind: FrameKind.OUTLINED,
   readonly frames: TranslatedUIFrame[],
@@ -292,11 +298,13 @@ function applyTranslation(node: FrameNode, translation: TranslatedRawFrame): voi
     node.kind = FrameKind.HIDDEN;
     node.frames = [];
     node.functionKeys = undefined;
+    node.isUnmapped = false;
     return;
   }
   node.kind = translation.kind;
   node.frames = toFrameImpls(node.rawFrame, translation.frames);
   node.functionKeys = translation.functionKeys;
+  node.isUnmapped = translation.kind === FrameKind.VISIBLE && Boolean(translation.unmapped);
 }
 
 async function translateEvalOrigin(rawFrame: RawFrame, rawFramesToUIFrames: TranslateRawFrames,

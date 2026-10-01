@@ -1106,6 +1106,18 @@ describe('CompilerScriptMapping', () => {
           ]);
         });
 
+        it('merges away frames of scripts without source map when the chain continues', async () => {
+          const plainScript = await backend.addScript(
+              target, {url: 'http://example.com/plain.js', content: 'function plain(cb){cb()}'}, null);
+          const rawFrames = [
+            rawFrame(script, '_loop', 1, 17),
+            rawFrame(plainScript, 'plain', 0, 19),
+            rawFrame(script, 'outer', 0, 17),
+          ];
+
+          assert.deepEqual(await translateStackTrace(rawFrames), ['at outer (index.ts:2:4)']);
+        });
+
         it('does not consolidate across frames of scripts with a plain source map', async () => {
           // The scope information of `plain.js` is derived from the AST, so its function keys never match.
           const plainScript = await backend.addScript(

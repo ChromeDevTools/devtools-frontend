@@ -335,6 +335,29 @@ describe('StackTraceModel', () => {
           expectedX);
     });
 
+    it('stores whether a translation is unmapped on the trie nodes', async () => {
+      const {model} = setup();
+      const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = frames =>
+          Promise.resolve(frames.map(({url, functionName: name, lineNumber: line, columnNumber: column}) => {
+            if (name === 'helper') {
+              return {kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []};
+            }
+            return {
+              kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+              frames: [{url, name, line, column}],
+              unmapped: name === 'generated',
+            };
+          }));
+
+      const stackTrace = await model.createFromProtocolRuntime({
+        callFrames: ['foo.js:1:generated:1:10', 'foo.js:1:helper:2:20', 'foo.js:1:mapped:3:30'].map(protocolCallFrame),
+      },
+                                                               translateFn);
+
+      const nodes = [...(stackTrace.syncFragment as StackTraceImpl.StackTraceImpl.FragmentImpl).node!.getCallStack()];
+      assert.deepEqual(nodes.map(n => n.isUnmapped), [true, false, false]);
+    });
+
     it('forwards missing debug info', async () => {
       const {model} = setup();
       const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) =>

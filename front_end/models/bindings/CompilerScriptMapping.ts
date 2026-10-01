@@ -96,6 +96,11 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     }
   }
 
+  /** @returns whether `uiSourceCode` is a placeholder for a script whose source map is still loading. */
+  isStubUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    return uiSourceCode.project() === this.#stubProject;
+  }
+
   getLocationRangesForSameSourceLocation(rawLocation: SDK.DebuggerModel.Location): SDK.DebuggerModel.LocationRange[] {
     const debuggerModel = rawLocation.debuggerModel;
     const script = rawLocation.script();

@@ -14,26 +14,29 @@ const VISIBLE = StackTraceImpl.Trie.FrameKind.VISIBLE;
 const OUTLINED = StackTraceImpl.Trie.FrameKind.OUTLINED;
 const HIDDEN = StackTraceImpl.Trie.FrameKind.HIDDEN;
 
-interface NodeSpec {
+interface NodeOptions {
+  /** The function keys as 'top/bottom'. */
+  keys?: string;
+  /** The parsed `Error.stack` info of the raw frame. */
+  info?: StackTraceImpl.Trie.ParsedFrameInfo;
+  /** Whether the raw frame is a builtin frame (no URL, script or position). */
+  builtin?: boolean;
+  /** Whether the translation shows generated code. */
+  unmapped?: boolean;
+}
+
+interface NodeSpec extends Omit<NodeOptions, 'keys'> {
   rawName: string;
   kind: StackTraceImpl.Trie.FrameKind;
   frames: string[];
   keys?: StackTraceImpl.Trie.FunctionKeys;
-  info?: StackTraceImpl.Trie.ParsedFrameInfo;
-  builtin?: boolean;
 }
 
-/**
- * @param frames The translated frames as 'name@line:column', top first.
- * @param keys The function keys as 'top/bottom'.
- * @param info The parsed `Error.stack` info of the raw frame.
- * @param builtin Whether the raw frame is a builtin frame (no URL, script or position).
- */
+/** @param frames The translated frames as 'name@line:column', top first. */
 function node(rawName: string, kind: StackTraceImpl.Trie.FrameKind, frames: string[] = [],
-              {keys, info, builtin}:
-                  {keys?: string, info?: StackTraceImpl.Trie.ParsedFrameInfo, builtin?: boolean} = {}): NodeSpec {
+              {keys, ...options}: NodeOptions = {}): NodeSpec {
   const [top, bottom] = keys?.split('/') ?? [];
-  return {rawName, kind, frames, keys: keys ? {top, bottom} : undefined, info, builtin};
+  return {rawName, kind, frames, keys: keys ? {top, bottom} : undefined, ...options};
 }
 
 /** Inserts one raw frame per spec (top first) into a trie and applies the specs to the resulting call stack. */
@@ -43,10 +46,11 @@ function callStack(...specs: NodeSpec[]): StackTraceImpl.Trie.FrameNode[] {
       (spec, i) => protocolCallFrame(spec.builtin ? `::${spec.rawName}::` : `bundle.js:1:${spec.rawName}:0:${i}`)));
   const stack = [...leaf.getCallStack()];
   stack.forEach((n, i) => {
-    const {rawName, kind, frames, keys, info} = specs[i];
+    const {rawName, kind, frames, keys, info, unmapped} = specs[i];
     n.kind = kind;
     n.functionKeys = keys;
     n.parsedFrameInfo = info;
+    n.isUnmapped = Boolean(unmapped);
     n.frames = frames.map((frame, k) => {
       const [, name, line, column] = /^(.*)@(\d+):(\d+)$/.exec(frame) ?? [];
       return new StackTraceImpl.StackTraceImpl.FrameImpl('src.ts', undefined, name, Number(line), Number(column),
@@ -376,6 +380,34 @@ describe('consolidate', () => {
     assert.deepEqual(summarize(consolidate(stack)), [
       'map@0:0 (0,0) raw=map',
       'outer@2:4 (1,0) raw=outer',
+    ]);
+  });
+
+  it('merges a chain across unmapped and HIDDEN frames', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('runtime', VISIBLE, ['runtime@3:0'], {unmapped: true}),
+        node('helper', HIDDEN),
+        node('outer', VISIBLE, ['outer@5:2'], {keys: 'outer/outer'}),
+    );
+
+    const result = consolidate(stack);
+
+    assert.deepEqual(summarize(result), ['outer@2:4 (0,0) raw=outer']);
+    assert.strictEqual(result[0].invocationNode, stack[3]);
+  });
+
+  it('shows unmapped frames if the chain reaches the stack bottom', () => {
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('runtime1', VISIBLE, ['runtime1@3:0'], {unmapped: true}),
+        node('runtime2', VISIBLE, ['runtime2@4:0'], {unmapped: true}),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'outer@2:4 (0,0) raw=undefined',
+      'runtime1@3:0 (1,0) raw=runtime1',
+      'runtime2@4:0 (2,0) raw=runtime2',
     ]);
   });
 });

@@ -203,7 +203,7 @@ describe('DebuggerLanguagePluginManager', () => {
 
       assert.lengthOf(rawFrames, 0);
       assert.lengthOf(translatedFrames, 1);
-      assert.strictEqual(translatedFrames[0].kind, StackTraceImpl.Trie.FrameKind.VISIBLE);
+      assert.deepInclude(translatedFrames[0], {kind: StackTraceImpl.Trie.FrameKind.VISIBLE, unmapped: true});
       assert.strictEqual(translatedFrames[0].frames.map(stringifyFrame).join('\n'), 'at foo (foo.js:1:10)');
       assert.strictEqual(translatedFrames[0].frames[0].missingDebugInfo?.type,
                          StackTrace.StackTrace.MissingDebugInfoType.NO_INFO);
@@ -230,7 +230,7 @@ describe('DebuggerLanguagePluginManager', () => {
 
       assert.lengthOf(rawFrames, 0);
       assert.lengthOf(translatedFrames, 1);
-      assert.strictEqual(translatedFrames[0].kind, StackTraceImpl.Trie.FrameKind.VISIBLE);
+      assert.deepInclude(translatedFrames[0], {kind: StackTraceImpl.Trie.FrameKind.VISIBLE, unmapped: true});
       assert.strictEqual(translatedFrames[0].frames.map(stringifyFrame).join('\n'), 'at foo (foo.js:1:10)');
       assert.deepEqual(translatedFrames[0].frames[0].missingDebugInfo, {
         type: StackTrace.StackTrace.MissingDebugInfoType.PARTIAL_INFO,
@@ -323,7 +323,7 @@ describe('DebuggerLanguagePluginManager', () => {
 
       assert.lengthOf(rawFrames, 0);
       assert.lengthOf(translatedFrames, 1);
-      assert.strictEqual(translatedFrames[0].kind, StackTraceImpl.Trie.FrameKind.VISIBLE);
+      assert.deepInclude(translatedFrames[0], {kind: StackTraceImpl.Trie.FrameKind.VISIBLE, unmapped: false});
       assert.deepEqual(translatedFrames[0].frames.map(stringifyFrame), [
         'at foo (foo.cc:2:5)',
         'at bar (bar.cc:4:10)',

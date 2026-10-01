@@ -758,7 +758,8 @@ export class DebuggerLanguagePluginManager implements
         return translatedFromUILocation(uiLocation, name, frame);
       });
 
-      translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: await Promise.all(framePromises)});
+      translatedFrames.push(
+          {kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: await Promise.all(framePromises), unmapped: false});
       return true;
     }
 
@@ -775,7 +776,8 @@ export class DebuggerLanguagePluginManager implements
           missingDebugFiles: functionInfo.missingSymbolFiles,
         } :
         {type: StackTrace.StackTrace.MissingDebugInfoType.NO_INFO};
-    translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: [{...mappedFrame, missingDebugInfo}]});
+    translatedFrames.push(
+        {kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: [{...mappedFrame, missingDebugInfo}], unmapped: true});
 
     return true;
 

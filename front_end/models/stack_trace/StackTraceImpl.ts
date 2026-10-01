@@ -174,10 +174,12 @@ export function consolidate(callStack: readonly FrameNode[]): LogicalFrame[] {
 
 /**
  * Frames that the authored function can't have called directly (e.g. `Array.prototype.forEach` calling an outlined
- * callback). A chain looks past them.
+ * callback, or an unmapped runtime helper). A chain looks past them.
+ *
+ * `isBuiltinFrame` is redundant with `isUnmapped` in production, but keeps custom translate functions consistent.
  */
 function isNotAuthored(node: FrameNode): boolean {
-  return node.kind === FrameKind.VISIBLE && !node.functionKeys && isBuiltinFrame(node.rawFrame);
+  return node.kind === FrameKind.VISIBLE && !node.functionKeys && (node.isUnmapped || isBuiltinFrame(node.rawFrame));
 }
 
 /**

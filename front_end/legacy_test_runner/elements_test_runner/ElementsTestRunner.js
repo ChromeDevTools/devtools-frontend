@@ -419,10 +419,6 @@ const treeOutlineShimByWidget = new WeakMap();
 
 ElementsTestRunner.firstElementsTreeOutline = function() {
   const panel = Elements.ElementsPanel.ElementsPanel.instance();
-  const legacyOutline = panel.getTreeOutlineForTesting();
-  if (legacyOutline) {
-    return legacyOutline;
-  }
   const domTreeWidget = panel.getDOMTreeWidgetForTesting();
   let shim = treeOutlineShimByWidget.get(domTreeWidget);
   if (shim) {

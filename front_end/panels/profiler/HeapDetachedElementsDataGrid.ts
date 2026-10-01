@@ -70,7 +70,6 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|
                   hideGutter: true,
                   rootDOMNode: parsed.node,
                   showSelectionOnKeyboardFocus: true,
-                  preventTabOrder: true,
                   deindentSingleNode: true,
                 })}
               ></devtools-widget>

@@ -51,7 +51,7 @@ import {AccessibilityTreeView} from './AccessibilityTreeView.js';
 import {ColorSwatchPopoverIcon} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
-import {DOMTreeWidget, type ElementsTreeOutline} from './DOMTreeWidget.js';
+import {DOMTreeWidget} from './DOMTreeWidget.js';
 import elementsPanelStyles from './elementsPanel.css.js';
 import {LayoutPane} from './LayoutPane.js';
 import type {MarkerDecorator} from './MarkerDecorator.js';
@@ -222,10 +222,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
   get targetManager(): SDK.TargetManager.TargetManager {
     return this.#targetManager;
-  }
-
-  getTreeOutlineForTesting(): ElementsTreeOutline|undefined {
-    return this.#domTreeWidget.getTreeOutlineForTesting();
   }
 
   getDOMTreeWidgetForTesting(): DOMTreeWidget {

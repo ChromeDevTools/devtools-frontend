@@ -325,11 +325,6 @@ describeWithEnvironment('ElementsPanel', () => {
     selectedNode.resolveToObject = mockResolveToObject;
 
     // Mock out a few things in the UI that's not necessary for this test.
-    const treeOutline = domTree.getTreeOutlineForTesting();
-    if (treeOutline) {
-      const insertChildElement = sinon.mock().atLeast(1).returns(undefined);
-      treeOutline.insertChildElement = insertChildElement;
-    }
     const animateOnDOMUpdate = sinon.mock().atLeast(1).returns(undefined);
     Elements.ElementsTreeElement.ElementsTreeElement.animateOnDOMUpdate = animateOnDOMUpdate;
     const stylesSidebarPaneUpdate = sinon.mock().atLeast(1).returns(undefined);
@@ -346,7 +341,7 @@ describeWithEnvironment('ElementsPanel', () => {
     assert.strictEqual(copiedNode.nodeName(), 'BODY');
     assert.isTrue(copiedNode !== null && domTree.isToggledToHidden(copiedNode));
 
-    treeOutline?.runPendingUpdates();
+    domTree.runPendingUpdates();
 
     panel.detach();
   });

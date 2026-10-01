@@ -4606,7 +4606,7 @@ export const generatedProperties: CSSProperty[] = [
   "devtools_keywords": [
    "always",
    "anchor-valid",
-   "anchors-visible",
+   "anchor-visible",
    "no-overflow"
   ],
   "keywords": [
@@ -8493,7 +8493,7 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
   "values": [
    "always",
    "anchor-valid",
-   "anchors-visible",
+   "anchor-visible",
    "no-overflow"
   ]
  },

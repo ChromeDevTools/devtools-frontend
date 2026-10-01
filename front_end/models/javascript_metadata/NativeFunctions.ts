@@ -2035,7 +2035,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "read",
-    signatures: [["?options"]],
+    signatures: [["?formats"]],
     receivers: ["Clipboard"]
   },
   {

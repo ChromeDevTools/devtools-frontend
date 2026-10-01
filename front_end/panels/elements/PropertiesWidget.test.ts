@@ -10,7 +10,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
@@ -25,7 +25,6 @@ describeWithEnvironment('PropertiesWidget', () => {
   let connection: MockCDPConnection;
 
   beforeEach(() => {
-    stubNoopSettings();
     connection = new MockCDPConnection();
     target = createTarget({connection});
     connection.setSuccessHandler('DOM.getDocument',
@@ -256,10 +255,6 @@ describeWithEnvironment('PropertiesWidget', () => {
 });
 
 describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
-  beforeEach(() => {
-    stubNoopSettings();
-  });
-
   async function setUpView(filter?: string) {
     const container = document.createElement('div');
     renderElementIntoDOM(container, {includeCommonStyles: true});

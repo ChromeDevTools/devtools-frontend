@@ -14,7 +14,6 @@ import {raf, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testin
 import {
   createTarget,
   describeWithEnvironment,
-  stubNoopSettings,
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall, expectCalled} from '../../testing/ExpectStubCall.js';
@@ -36,7 +35,6 @@ describeWithEnvironment('ElementsPanel', () => {
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(universe.debuggerWorkspaceBinding);
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);
-    stubNoopSettings();
     connection = new MockCDPConnection();
     target = createTarget({connection});
     connection.setSuccessHandler('DOM.requestChildNodes', () => ({}));

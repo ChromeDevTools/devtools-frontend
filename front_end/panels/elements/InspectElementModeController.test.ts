@@ -11,7 +11,6 @@ import {
   createTarget,
   describeWithEnvironment,
   registerNoopActions,
-  stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -42,7 +41,6 @@ describeWithEnvironment('InspectElementModeController', () => {
   }
 
   beforeEach(() => {
-    stubNoopSettings();
     registerNoopActions(['elements.toggle-element-search']);
     connection = new MockCDPConnection();
     tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
@@ -96,7 +94,6 @@ describeWithEnvironment('InspectElementModeController panel interactions', () =>
   let connection: MockCDPConnection;
 
   beforeEach(() => {
-    stubNoopSettings();
     registerNoopActions(['elements.toggle-element-search']);
     connection = new MockCDPConnection();
     createTarget({connection});

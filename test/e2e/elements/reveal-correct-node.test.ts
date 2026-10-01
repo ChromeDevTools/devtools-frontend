@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {step} from '../../shared/helper.js';
+import {navigateToConsoleTab, typeIntoConsole} from '../helpers/console-helpers.js';
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   expandSelectedNodeRecursively,
@@ -65,5 +66,15 @@ describe('The Elements panel', () => {
                           ]));
     await devToolsPage.click('[aria-label="slot"]');
     await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<slot>');
+  });
+
+  it('reveals a slot element that is not in a shadow tree when inspected from the console', async ({
+                                                                                              devToolsPage,
+                                                                                              inspectedPage,
+                                                                                            }) => {
+    await inspectedPage.goToHtml('<slot id="test1"><span>test</span></slot>');
+    await navigateToConsoleTab(devToolsPage);
+    await typeIntoConsole(devToolsPage, 'inspect(test1)');
+    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<slot id=\u200B"test1">');
   });
 });

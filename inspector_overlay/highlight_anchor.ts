@@ -129,7 +129,7 @@ export function drawAnchorHighlight(highlight: AnchorHighlight, context: CanvasR
     const width = Math.round((imcbBounds.maxX - imcbBounds.minX) / emulationScaleFactor);
     const height = Math.round((imcbBounds.maxY - imcbBounds.minY) / emulationScaleFactor);
     if (width > 0 && height > 0) {
-      drawBadge(context, `IMCB: ${width} \xD7 ${height}px`, imcbBounds.minX, imcbBounds.minY, canvasWidth, canvasHeight,
+      drawBadge(context, `${width} \xD7 ${height}px`, imcbBounds.minX, imcbBounds.minY, canvasWidth, canvasHeight,
                 'rgba(127, 32, 210, 0.9)', '#ffffff');
     }
   }

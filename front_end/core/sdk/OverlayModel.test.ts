@@ -209,4 +209,31 @@ describe('OverlayModel', () => {
       clock.restore();
     }
   });
+  it('sends imcbHighlightConfig in Overlay.highlightNode for mode all', () => {
+    assert.exists(overlayModel);
+    let highlightParams: Protocol.Overlay.HighlightNodeRequest|undefined;
+    connection.setSuccessHandler('Overlay.highlightNode', params => {
+      highlightParams = params;
+      return {};
+    });
+
+    const deferredNode = {
+      backendNodeId: () => 1 as Protocol.DOM.BackendNodeId,
+    } as unknown as SDK.DOMModel.DeferredDOMNode;
+
+    overlayModel.highlightInOverlay({deferredNode}, 'all');
+
+    assert.exists(highlightParams);
+    const imcbConfig = highlightParams.highlightConfig.imcbHighlightConfig;
+    assert.isDefined(imcbConfig);
+    assert.isTrue(imcbConfig.showPositionAreaGrid);
+    assert.isDefined(imcbConfig.imcbBorderColor);
+    assert.isDefined(imcbConfig.imcbBackgroundColor);
+    assert.isDefined(imcbConfig.insetsBackgroundColor);
+    assert.isDefined(imcbConfig.insetsHatchColor);
+    assert.isDefined(imcbConfig.anchorBorderColor);
+    assert.isDefined(imcbConfig.anchorBackgroundColor);
+    assert.isDefined(imcbConfig.positionAreaGridLineColor);
+    assert.isDefined(imcbConfig.positionAreaActiveRegionColor);
+  });
 });

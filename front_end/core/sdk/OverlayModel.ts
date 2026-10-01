@@ -583,6 +583,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
+      imcbHighlightConfig: {},
       contrastAlgorithm: settings.resolve(apcaSettingDescriptor).get() ? Protocol.Overlay.ContrastAlgorithm.Apca :
                                                                          Protocol.Overlay.ContrastAlgorithm.Aa,
     };
@@ -661,6 +662,18 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
         flexibilityArrow: {
           color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
         },
+      };
+
+      highlightConfig.imcbHighlightConfig = {
+        imcbBorderColor: Common.Color.PageHighlight.AnchorIMCB.toProtocolRGBA(),
+        imcbBackgroundColor: Common.Color.PageHighlight.AnchorIMCBBackground.toProtocolRGBA(),
+        insetsBackgroundColor: Common.Color.PageHighlight.AnchorInsetsBackground.toProtocolRGBA(),
+        insetsHatchColor: Common.Color.PageHighlight.AnchorInsetsHatch.toProtocolRGBA(),
+        anchorBorderColor: Common.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+        anchorBackgroundColor: Common.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
+        showPositionAreaGrid: true,
+        positionAreaGridLineColor: Common.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+        positionAreaActiveRegionColor: Common.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
       };
     }
 

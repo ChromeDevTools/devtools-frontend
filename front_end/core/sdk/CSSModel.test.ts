@@ -148,6 +148,100 @@ describe('CSSModel', () => {
       assert.isNotNull(layoutProperties);
       assert.isTrue(layoutProperties?.isContents);
     });
+
+    it('correctly identifies anchor-positioned elements with position-anchor', async () => {
+      const target = universe.createTarget();
+      const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+      sinon.stub(cssModel, 'getComputedStyle').resolves(new Map([
+        ['position', 'absolute'],
+        ['position-anchor', '--test-anchor'],
+      ]));
+
+      const layoutProperties = await cssModel.getLayoutPropertiesFromComputedStyle(1 as Protocol.DOM.NodeId);
+      assert.isNotNull(layoutProperties);
+      assert.isTrue(layoutProperties?.isAnchorPositioned);
+    });
+
+    it('correctly identifies anchor-positioned elements with position-area', async () => {
+      const target = universe.createTarget();
+      const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+      sinon.stub(cssModel, 'getComputedStyle').resolves(new Map([
+        ['position', 'absolute'],
+        ['position-area', 'top left'],
+      ]));
+
+      const layoutProperties = await cssModel.getLayoutPropertiesFromComputedStyle(1 as Protocol.DOM.NodeId);
+      assert.isNotNull(layoutProperties);
+      assert.isTrue(layoutProperties?.isAnchorPositioned);
+    });
+
+    it('correctly identifies anchor-positioned elements with anchor() function in insets', async () => {
+      const target = universe.createTarget();
+      const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+      sinon.stub(cssModel, 'getComputedStyle').resolves(new Map([
+        ['position', 'absolute'],
+        ['top', 'anchor(--test-anchor top)'],
+      ]));
+
+      const layoutProperties = await cssModel.getLayoutPropertiesFromComputedStyle(1 as Protocol.DOM.NodeId);
+      assert.isNotNull(layoutProperties);
+      assert.isTrue(layoutProperties?.isAnchorPositioned);
+    });
+
+    it('correctly identifies anchor-positioned elements with anchor-size() function in sizing', async () => {
+      const target = universe.createTarget();
+      const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+      sinon.stub(cssModel, 'getComputedStyle').resolves(new Map([
+        ['position', 'fixed'],
+        ['width', 'anchor-size(width)'],
+      ]));
+
+      const layoutProperties = await cssModel.getLayoutPropertiesFromComputedStyle(1 as Protocol.DOM.NodeId);
+      assert.isNotNull(layoutProperties);
+      assert.isTrue(layoutProperties?.isAnchorPositioned);
+    });
+
+    it('returns false for in-flow elements even with anchor properties', async () => {
+      const target = universe.createTarget();
+      const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+      sinon.stub(cssModel, 'getComputedStyle').resolves(new Map([
+        ['position', 'static'],
+        ['position-anchor', '--test-anchor'],
+        ['position-area', 'top left'],
+      ]));
+
+      const layoutProperties = await cssModel.getLayoutPropertiesFromComputedStyle(1 as Protocol.DOM.NodeId);
+      assert.isNotNull(layoutProperties);
+      assert.isFalse(layoutProperties?.isAnchorPositioned);
+    });
+
+    it('returns false for standard out-of-flow elements without anchor features', async () => {
+      const target = universe.createTarget();
+      const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+      sinon.stub(cssModel, 'getComputedStyle').resolves(new Map([
+        ['position', 'absolute'],
+        ['top', '10px'],
+        ['left', '20px'],
+      ]));
+
+      const layoutProperties = await cssModel.getLayoutPropertiesFromComputedStyle(1 as Protocol.DOM.NodeId);
+      assert.isNotNull(layoutProperties);
+      assert.isFalse(layoutProperties?.isAnchorPositioned);
+    });
+
+    it('returns false when position-anchor and position-area are explicitly none', async () => {
+      const target = universe.createTarget();
+      const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+      sinon.stub(cssModel, 'getComputedStyle').resolves(new Map([
+        ['position', 'absolute'],
+        ['position-anchor', 'none'],
+        ['position-area', 'none'],
+      ]));
+
+      const layoutProperties = await cssModel.getLayoutPropertiesFromComputedStyle(1 as Protocol.DOM.NodeId);
+      assert.isNotNull(layoutProperties);
+      assert.isFalse(layoutProperties?.isAnchorPositioned);
+    });
   });
 
   describe('stylesheet tracking', () => {

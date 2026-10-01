@@ -44,6 +44,60 @@ export interface LayoutProperties {
   isContents?: boolean;
   containerType?: string;
   hasScroll: boolean;
+  isAnchorPositioned?: boolean;
+}
+
+function isAnchorPositioned(computedStyle: Map<string, string>, matchedStyles?: CSSMatchedStyles|null): boolean {
+  const position = computedStyle.get('position');
+  if (position !== 'absolute' && position !== 'fixed') {
+    return false;
+  }
+  const positionAnchor = computedStyle.get('position-anchor');
+  if (positionAnchor && positionAnchor !== 'none') {
+    return true;
+  }
+  const positionArea = computedStyle.get('position-area');
+  if (positionArea && positionArea !== 'none') {
+    return true;
+  }
+  const anchorProperties = [
+    'top',
+    'right',
+    'bottom',
+    'left',
+    'inset',
+    'inset-block',
+    'inset-inline',
+    'inset-block-start',
+    'inset-block-end',
+    'inset-inline-start',
+    'inset-inline-end',
+    'width',
+    'height',
+    'min-width',
+    'min-height',
+    'max-width',
+    'max-height',
+  ];
+  if (anchorProperties.some(prop => {
+        const val = computedStyle.get(prop);
+        return Boolean(val && (val.includes('anchor(') || val.includes('anchor-size(')));
+      })) {
+    return true;
+  }
+  if (matchedStyles) {
+    for (const style of matchedStyles.nodeStyles()) {
+      for (const property of style.allProperties()) {
+        if (!property.activeInStyle() || !matchedStyles.propertyState(property)) {
+          continue;
+        }
+        if (property.value.includes('anchor(') || property.value.includes('anchor-size(')) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 export class CSSModel extends SDKModel<EventTypes> {
@@ -408,6 +462,8 @@ export class CSSModel extends SDKModel<EventTypes> {
     const isContainer = Boolean(containerType) && containerType !== '' && containerType !== 'normal';
     const hasScroll = Boolean(styles.get('scroll-snap-type')) && styles.get('scroll-snap-type') !== 'none';
 
+    const isAnchored = isAnchorPositioned(styles);
+
     return {
       isFlex,
       isGrid,
@@ -416,6 +472,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       isContents,
       containerType: isContainer ? containerType : undefined,
       hasScroll,
+      isAnchorPositioned: isAnchored,
     };
   }
 

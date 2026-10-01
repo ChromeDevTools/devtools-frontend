@@ -2458,6 +2458,12 @@ export const PageHighlight: Record<string, Legacy> = {
   GapBackground: Legacy.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .3]),
   GapHatch: Legacy.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .8]),
   GridAreaBorder: Legacy.fromRGBA([26, 115, 232, 1]),
+  AnchorIMCB: Legacy.fromRGBA([127, 32, 210, 1]),
+  AnchorIMCBBackground: Legacy.fromRGBA([127, 32, 210, 0.15]),
+  AnchorInsetsBackground: Legacy.fromRGBA([246, 178, 107, 0.25]),
+  AnchorInsetsHatch: Legacy.fromRGBA([246, 178, 107, 0.8]),
+  AnchorTarget: Legacy.fromRGBA([26, 115, 232, 1]),
+  AnchorTargetBackground: Legacy.fromRGBA([26, 115, 232, 0.15]),
 };
 
 export const SourceOrderHighlight: Record<string, Legacy> = {

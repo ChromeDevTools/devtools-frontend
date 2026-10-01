@@ -8,7 +8,7 @@ import type * as Workspace from '../workspace/workspace.js';
 
 // eslint-disable-next-line @devtools/es-modules-import
 import type * as StackTrace from './stack_trace.js';
-import {type EvalOrigin, FrameKind, type FrameNode, isBuiltinFrame, type ParsedFrameInfo} from './Trie.js';
+import {type EvalOrigin, FrameKind, type FrameNode, type ParsedFrameInfo} from './Trie.js';
 
 export type AnyStackTraceImpl = StackTraceImpl<FragmentImpl|DebuggableFragmentImpl|ParsedErrorStackFragmentImpl>;
 
@@ -176,10 +176,10 @@ export function consolidate(callStack: readonly FrameNode[]): LogicalFrame[] {
  * Frames that the authored function can't have called directly (e.g. `Array.prototype.forEach` calling an outlined
  * callback, or an unmapped runtime helper). A chain looks past them.
  *
- * `isBuiltinFrame` is redundant with `isUnmapped` in production, but keeps custom translate functions consistent.
+ * Builtins are unmapped like any other frame without authored code, see `TranslatedRawFrame.unmapped`.
  */
 function isNotAuthored(node: FrameNode): boolean {
-  return node.kind === FrameKind.VISIBLE && !node.functionKeys && (node.isUnmapped || isBuiltinFrame(node.rawFrame));
+  return node.kind === FrameKind.VISIBLE && !node.functionKeys && node.isUnmapped;
 }
 
 /**

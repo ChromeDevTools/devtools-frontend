@@ -343,10 +343,10 @@ describe('consolidate', () => {
     assert.strictEqual(result[0].frame, stack[0].frames[0]);
   });
 
-  it('merges a chain across builtin frames', () => {
+  it('merges a chain across unmapped builtin frames', () => {
     const stack = callStack(
         node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
-        node('forEach', VISIBLE, ['forEach@0:0'], {builtin: true}),
+        node('forEach', VISIBLE, ['forEach@0:0'], {builtin: true, unmapped: true}),
         node('outer', VISIBLE, ['outer@5:2'], {keys: 'outer/outer'}),
     );
 
@@ -359,7 +359,7 @@ describe('consolidate', () => {
   it('shows builtin frames if the chain does not continue after them', () => {
     const stack = callStack(
         node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
-        node('forEach', VISIBLE, ['forEach@0:0'], {builtin: true}),
+        node('forEach', VISIBLE, ['forEach@0:0'], {builtin: true, unmapped: true}),
         node('other', VISIBLE, ['other@7:0'], {keys: 'other/other'}),
     );
 
@@ -370,9 +370,24 @@ describe('consolidate', () => {
     ]);
   });
 
+  it('does not look past builtin frames that a translation did not mark as unmapped', () => {
+    // In production, builtins are always unmapped. Custom translations decide for themselves.
+    const stack = callStack(
+        node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
+        node('forEach', VISIBLE, ['forEach@0:0'], {builtin: true}),
+        node('outer', VISIBLE, ['outer@5:2'], {keys: 'outer/outer'}),
+    );
+
+    assert.deepEqual(summarize(consolidate(stack)), [
+      'outer@2:4 (0,0) raw=undefined',
+      'forEach@0:0 (1,0) raw=forEach',
+      'outer@5:2 (2,0) raw=outer',
+    ]);
+  });
+
   it('does not merge builtin frames above an OUTLINED node', () => {
     const stack = callStack(
-        node('map', VISIBLE, ['map@0:0'], {builtin: true}),
+        node('map', VISIBLE, ['map@0:0'], {builtin: true, unmapped: true}),
         node('_o', OUTLINED, ['outer@2:4'], {keys: 'outer/outer'}),
         node('outer', VISIBLE, ['outer@5:2'], {keys: 'outer/outer'}),
     );

@@ -55,14 +55,7 @@ describe('SourceMapScopesInfo', () => {
     universe = new TestUniverse();
   });
 
-  describe('translateCallSite', () => {
-    it('throws for an outlined frame', () => {
-      const builder = new ScopeInfoBuilder().startRange(0, 0, {isStackFrame: true, isHidden: true}).endRange(0, 10);
-      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
-
-      assert.throws(() => info.translateCallSite(0, 5));
-    });
-
+  describe('translateRawFrame', () => {
     it('does nothing for frames that don\'t contain inlined code', () => {
       //
       //    orig. code                         gen. code
@@ -112,21 +105,21 @@ describe('SourceMapScopesInfo', () => {
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       {
-        const translatedFrames = info.translateCallSite(0, 18);  // Pause on 'print'.
+        const translatedFrames = info.translateRawFrame(0, 18).frames;  // Pause on 'print'.
 
         assert.lengthOf(translatedFrames, 1);
         assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at inner (index.ts:1:7)');
       }
 
       {
-        const translatedFrames = info.translateCallSite(1, 23);  // Pause on 'n()'.
+        const translatedFrames = info.translateRawFrame(1, 23).frames;  // Pause on 'n()'.
 
         assert.lengthOf(translatedFrames, 1);
         assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at outer (index.ts:6:9)');
       }
 
       {
-        const translatedFrames = info.translateCallSite(2, 1);  // Pause on 'm()'.
+        const translatedFrames = info.translateRawFrame(2, 1).frames;  // Pause on 'm()'.
 
         assert.lengthOf(translatedFrames, 1);
         assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at <anonymous> (index.ts:10:5)');
@@ -182,21 +175,21 @@ describe('SourceMapScopesInfo', () => {
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       {
-        const translatedFrames = info.translateCallSite(0, 26);  // Pause on 'print'.
+        const translatedFrames = info.translateRawFrame(0, 26).frames;  // Pause on 'print'.
 
         assert.lengthOf(translatedFrames, 2);
         assert.deepEqual(translatedFrames.map(stringifyFrame), ['at inner (index.ts:1:7)', 'at outer (index.ts:6:8)']);
       }
 
       {
-        const translatedFrames = info.translateCallSite(0, 14);  // Pause on 'if'.
+        const translatedFrames = info.translateRawFrame(0, 14).frames;  // Pause on 'if'.
 
         assert.lengthOf(translatedFrames, 1);
         assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at outer (index.ts:5:5)');
       }
 
       {
-        const translatedFrames = info.translateCallSite(1, 1);  // Pause on 'm'.
+        const translatedFrames = info.translateRawFrame(1, 1).frames;  // Pause on 'm'.
 
         assert.lengthOf(translatedFrames, 1);
         assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at <anonymous> (index.ts:10:5)');
@@ -250,7 +243,7 @@ describe('SourceMapScopesInfo', () => {
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       {
-        const translatedFrames = info.translateCallSite(0, 5);  // Pause on 'print'.
+        const translatedFrames = info.translateRawFrame(0, 5).frames;  // Pause on 'print'.
 
         assert.deepEqual(translatedFrames.map(stringifyFrame), [
           'at inner (index.ts:1:7)',
@@ -259,9 +252,7 @@ describe('SourceMapScopesInfo', () => {
         ]);
       }
     });
-  });
 
-  describe('translateRawFrame', () => {
     function stringify(translation: SDK.SourceMapScopesInfo.RawFrameTranslation):
         {kind: SDK.SourceMapScopesInfo.GeneratedFrameKind, frames: string[]} {
       return {kind: translation.kind, frames: translation.frames.map(stringifyFrame)};
@@ -1638,57 +1629,33 @@ describe('SourceMapScopesInfo', () => {
     });
   });
 
-  describe('isOutlinedFrame', () => {
-    it('returns false for a global scope', () => {
+  describe('translateRawFrame kind', () => {
+    it('is VISIBLE for top-level code', () => {
       const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
       const scopeInfo =
           new SourceMapScopesInfo(sourceMap, new ScopeInfoBuilder().startRange(0, 0).endRange(0, 20).build());
 
-      assert.isFalse(scopeInfo.isOutlinedFrame(0, 10));
+      assert.strictEqual(scopeInfo.translateRawFrame(0, 10).kind, SDK.SourceMapScopesInfo.GeneratedFrameKind.VISIBLE);
     });
 
-    it('returns false for a non-hidden function', () => {
+    it('is OUTLINED for a block scope in a hidden function with a definition', () => {
       const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
-      const scopeInfo = new SourceMapScopesInfo(
-          sourceMap,
-          new ScopeInfoBuilder()
-              .startRange(0, 0)
-              .startRange(0, 10, {isStackFrame: true})
-              .endRange(0, 20)
-              .endRange(0, 30)
-              .build());
+      const scopeInfo =
+          new SourceMapScopesInfo(sourceMap,
+                                  new ScopeInfoBuilder()
+                                      .startSource()
+                                      .startScope(0, 0, {isStackFrame: true, key: 'fn'})
+                                      .endScope(10, 0)
+                                      .endSource()
+                                      .startRange(0, 0)
+                                      .startRange(0, 10, {isStackFrame: true, isHidden: true, scopeKey: 'fn'})
+                                      .startRange(0, 20)
+                                      .endRange(0, 30)
+                                      .endRange(0, 40)
+                                      .endRange(0, 50)
+                                      .build());
 
-      assert.isFalse(scopeInfo.isOutlinedFrame(0, 15));
-    });
-
-    it('returns true for a hidden function', () => {
-      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
-      const scopeInfo = new SourceMapScopesInfo(
-          sourceMap,
-          new ScopeInfoBuilder()
-              .startRange(0, 0)
-              .startRange(0, 10, {isStackFrame: true, isHidden: true})
-              .endRange(0, 20)
-              .endRange(0, 30)
-              .build());
-
-      assert.isTrue(scopeInfo.isOutlinedFrame(0, 15));
-    });
-
-    it('returns true for a block scope in a hidden function', () => {
-      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
-      const scopeInfo = new SourceMapScopesInfo(
-          sourceMap,
-          new ScopeInfoBuilder()
-              .startRange(0, 0)
-              .startRange(0, 10, {isStackFrame: true, isHidden: true})
-              .startRange(0, 20)
-              .endRange(0, 30)
-              .endRange(0, 40)
-              .endRange(0, 50)
-              .build());
-
-      assert.isTrue(scopeInfo.isOutlinedFrame(0, 25));
+      assert.strictEqual(scopeInfo.translateRawFrame(0, 25).kind, SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED);
     });
   });
 

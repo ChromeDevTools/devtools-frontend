@@ -223,23 +223,6 @@ export class SourceMapScopesInfo {
     }
   }
 
-  /**
-   * @returns true, iff the function surrounding the provided position is marked as "hidden".
-   */
-  isOutlinedFrame(generatedLine: number, generatedColumn: number): boolean {
-    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
-    return this.#isOutlinedFrame(rangeChain);
-  }
-
-  #isOutlinedFrame(rangeChain: ScopesCodec.GeneratedRange[]): boolean {
-    for (let i = rangeChain.length - 1; i >= 0; --i) {
-      if (rangeChain[i].isStackFrame) {
-        return rangeChain[i].isHidden;
-      }
-    }
-    return false;
-  }
-
   #generatedFrameKind(rangeChain: ScopesCodec.GeneratedRange[]): GeneratedFrameKind {
     const functionRange = rangeChain.findLast(range => range.isStackFrame);
     if (!functionRange) {
@@ -527,24 +510,6 @@ export class SourceMapScopesInfo {
     }
 
     return functionScope.name ?? '';
-  }
-
-  /**
-   * Returns one or more original stack frames for this single "raw frame" or call-site.
-   *
-   * @returns An empty array if no mapping at the call-site was found, or the resulting frames
-   * in top-to-bottom order in case of inlining.
-   * @throws If this range is marked "hidden". Outlining needs to be handled externally as
-   * outlined function segments in stack traces can span across bundles.
-   */
-  translateCallSite(generatedLine: number, generatedColumn: number): TranslatedFrame[] {
-    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
-    if (this.#isOutlinedFrame(rangeChain)) {
-      throw new Error('SourceMapScopesInfo is unable to translate an outlined function by itself');
-    }
-
-    const frame = this.#translateTopFrame(generatedLine, generatedColumn);
-    return frame ? [frame, ...this.#translateInlinedCallers(rangeChain)] : [];
   }
 
   /**

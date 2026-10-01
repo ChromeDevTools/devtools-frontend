@@ -322,47 +322,65 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     return new Workspace.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
 
+  /**
+   * Translates the first raw frame of `rawFrames` using the "scopes" information of its script's source map.
+   * The translation only depends on the raw frame itself. A consumed raw frame is removed from `rawFrames`,
+   * and its translation is pushed onto `translatedFrames`. Frames of compiler helpers are dropped
+   * (see {@link SDK.SourceMapScopesInfo.GeneratedFrameKind}).
+   *
+   * @returns true, iff the raw frame was translated.
+   */
   async translateRawFramesStep(
       rawFrames: StackTraceImpl.Trie.RawFrame[],
       translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): Promise<boolean> {
-    const frame = rawFrames[0];
-    if (StackTraceImpl.Trie.isBuiltinFrame(frame)) {
+    const translation = await this.#translateRawFrame(rawFrames[0]);
+    if (!translation) {
       return false;
     }
-
-    const sourceMapWithScopeInfoForFrame = async(rawFrame: StackTraceImpl.Trie.RawFrame):
-        Promise<{sourceMap: SDK.SourceMap.SourceMap, script: SDK.Script.Script}|null> => {
-          const script = this.#debuggerModel.scriptForId(rawFrame.scriptId ?? '');
-          if (!script || this.#stubUISourceCodes.has(script)) {
-            // Use fallback while source map is being loaded.
-            return null;
-          }
-
-          const sourceMap = script.sourceMap();
-          await sourceMap?.waitForScopeInfo();
-          return sourceMap?.hasScopeInfo() ? {sourceMap, script} : null;
-        };
-
-    const sourceMapAndScript = await sourceMapWithScopeInfoForFrame(frame);
-    if (!sourceMapAndScript) {
-      return false;
-    }
-    const {sourceMap, script} = sourceMapAndScript;
-    const {lineNumber, columnNumber} = script.rawLocationToRelativeLocation(frame);
-
-    if (!sourceMap.isOutlinedFrame(lineNumber, columnNumber)) {
-      const frames = sourceMap.translateCallSite(lineNumber, columnNumber);
-      if (!frames.length) {
-        return false;
-      }
-
+    if (translation.kind === SDK.SourceMapScopesInfo.GeneratedFrameKind.HIDDEN) {
+      // Compiler helpers don't represent any authored code.
       rawFrames.shift();
-      translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: this.#toUIFrames(sourceMap, frames)});
+      translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []});
       return true;
     }
+    if (translation.kind === SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED || !translation.frames.length) {
+      // TODO(crbug.com/433162438): Consolidate outlined frames.
+      return false;
+    }
+    rawFrames.shift();
+    translatedFrames.push({
+      kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+      frames: this.#toUIFrames(translation.sourceMap, translation.frames),
+    });
+    return true;
+  }
 
-    // TODO(crbug.com/433162438): Consolidate outlined frames.
-    return false;
+  /**
+   * Translates a single raw frame via the "scopes" information of its script's source map.
+   *
+   * @returns null if the raw frame can't be translated via "scopes" information, e.g. because
+   * the script doesn't have a source map (with scopes information), or the source map is still loading.
+   */
+  async #translateRawFrame(rawFrame: StackTraceImpl.Trie.RawFrame): Promise<ScopesTranslation|null> {
+    if (StackTraceImpl.Trie.isBuiltinFrame(rawFrame)) {
+      return null;
+    }
+
+    const script = this.#debuggerModel.scriptForId(rawFrame.scriptId ?? '');
+    if (!script || this.#stubUISourceCodes.has(script)) {
+      // Use fallback while source map is being loaded.
+      return null;
+    }
+
+    const sourceMap = script.sourceMap();
+    await sourceMap?.waitForScopeInfo();
+    if (!sourceMap?.hasScopeInfo()) {
+      return null;
+    }
+
+    const {lineNumber, columnNumber} = script.rawLocationToRelativeLocation(rawFrame);
+    const translation = sourceMap.translateRawFrame(lineNumber, columnNumber);
+    return translation ? {...translation, sourceMap} : null;
   }
 
   /** Switch out url for UISourceCode where we have it. */
@@ -591,3 +609,5 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     this.#stubProject.dispose();
   }
 }
+
+type ScopesTranslation = SDK.SourceMapScopesInfo.RawFrameTranslation&{sourceMap: SDK.SourceMap.SourceMap};

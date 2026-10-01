@@ -12,12 +12,7 @@ import {scopeTreeForScript} from './ScopeTreeCache.js';
 import type {Script} from './Script.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
 import {decodeRangeMappings} from './SourceMapRangeMappings.js';
-import {
-  type RawFrameTranslation,
-  scriptRelativePosition,
-  SourceMapScopesInfo,
-  type TranslatedFrame,
-} from './SourceMapScopesInfo.js';
+import {type RawFrameTranslation, scriptRelativePosition, SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
@@ -872,22 +867,12 @@ export class SourceMap {
     return this.#scopesInfo?.findOriginalFunctionScope(position) ?? null;
   }
 
-  isOutlinedFrame(generatedLine: number, generatedColumn: number): boolean {
-    this.#ensureSourceMapProcessed();
-    return this.#scopesInfo?.isOutlinedFrame(generatedLine, generatedColumn) ?? false;
-  }
-
   hasInlinedFrames(generatedLine: number, generatedColumn: number): boolean {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.hasInlinedFrames(generatedLine, generatedColumn) ?? false;
   }
 
-  translateCallSite(generatedLine: number, generatedColumn: number): TranslatedFrame[] {
-    this.#ensureSourceMapProcessed();
-    return this.#scopesInfo?.translateCallSite(generatedLine, generatedColumn) ?? [];
-  }
-
-  /** See {@link SourceMapScopesInfo.translateRawFrame}. `null` only if the source map failed to parse. */
+  /** See {@link SourceMapScopesInfo.translateRawFrame}. `null` if no scopes information is available. */
   translateRawFrame(generatedLine: number, generatedColumn: number): RawFrameTranslation|null {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.translateRawFrame(generatedLine, generatedColumn) ?? null;

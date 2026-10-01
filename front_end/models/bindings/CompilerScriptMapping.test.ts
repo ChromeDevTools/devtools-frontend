@@ -879,5 +879,143 @@ describe('CompilerScriptMapping', () => {
         'at <anonymous> (index.ts:10:5)',
       ]);
     });
+
+    describe('outlining', () => {
+      let target: SDK.Target.Target;
+      let compilerScriptMapping: Bindings.CompilerScriptMapping.CompilerScriptMapping;
+
+      beforeEach(() => {
+        target = backend.createTarget();
+        compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
+            target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
+      });
+
+      async function addScriptWithScopes(url: string, content: string, builder: ScopesCodec.ScopeInfoBuilder,
+                                         mappings: string[]): Promise<SDK.Script.Script> {
+        const sourceMap = ScopesCodec.encode(builder.build(), encodeSourceMap(mappings) as ScopesCodec.SourceMapJson);
+        return await backend.addScript(target, {url, content},
+                                       {url: `${url}.map`, content: sourceMap as SDK.SourceMap.SourceMapV3});
+      }
+
+      function rawFrame(script: SDK.Script.Script, name: string, line: number,
+                        column: number): Protocol.Runtime.CallFrame {
+        return protocolCallFrame(`${script.sourceURL}:${script.scriptId}:${name}:${line}:${column}`);
+      }
+
+      /** Runs a single translation step with the `compilerScriptMapping` under test. */
+      async function translateStep(rawFrames: Protocol.Runtime.CallFrame[]):
+          Promise<{translated: boolean, remainingFrames: number, groups: string[][]}> {
+        const frames = [...rawFrames];
+        const translatedFrames:
+            Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1] = [];
+        const translated = await compilerScriptMapping.translateRawFramesStep(frames, translatedFrames);
+        return {
+          translated,
+          remainingFrames: frames.length,
+          groups: translatedFrames.map(g => g.frames.map(stringifyFrame)),
+        };
+      }
+
+      /** Translates the whole stack trace end-to-end via the {@link Bindings.DebuggerWorkspaceBinding}. */
+      async function translateStackTrace(rawFrames: Protocol.Runtime.CallFrame[]): Promise<string[]> {
+        const stackTrace =
+            await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime({callFrames: rawFrames}, target);
+        return stackTrace.syncFragment.frames.map(stringifyFrame);
+      }
+
+      describe('with a block scope outlined into a function', () => {
+        //
+        //    orig. code                         gen. code
+        //             10        20                       10        20        30
+        //    012345678901234567890              0123456789012345678901234567890123456789
+        //
+        // 0: function outer() {                 function outer(){_loop();_call(_loop)}
+        // 1:   {                                function _loop(){log(x)}
+        // 2:     log(x);                        function main(){outer()}
+        // 3:   }                                function _call(f){f()}
+        // 4: }                                  function other(){_loop()}
+        // 5: function main() {
+        // 6:   outer();
+        // 7: }
+        // 8: function other() {
+        // 9:   log(y);
+        // 10: }
+        //
+        // The block in `outer` is outlined into `_loop` (hidden, with definition). `_call` is a compiler helper
+        // (no definition). `other` calling `_loop` is inconsistent: The block belongs to `outer`.
+        const content = [
+          'function outer(){_loop();_call(_loop)}',
+          'function _loop(){log(x)}',
+          'function main(){outer()}',
+          'function _call(f){f()}',
+          'function other(){_loop()}',
+        ].join('\n');
+
+        let script: SDK.Script.Script;
+
+        beforeEach(async () => {
+          const builder = new ScopesCodec.ScopeInfoBuilder();
+          builder.startSource()
+              .startScope(0, 0, {kind: 'global', key: 'global'})
+              .startScope(0, 14, {kind: 'function', name: 'outer', key: 'outer', isStackFrame: true})
+              .startScope(1, 2, {kind: 'block', key: 'block'})
+              .endScope(3, 3)
+              .endScope(4, 1)
+              .startScope(5, 13, {kind: 'function', name: 'main', key: 'main', isStackFrame: true})
+              .endScope(7, 1)
+              .startScope(8, 14, {kind: 'function', name: 'other', key: 'other', isStackFrame: true})
+              .endScope(10, 1)
+              .endScope(11, 0)
+              .endSource();
+
+          builder.startRange(0, 0, {scopeKey: 'global'})
+              .startRange(0, 14, {scopeKey: 'outer', isStackFrame: true})
+              .endRange(0, 38)
+              .startRange(1, 14, {scopeKey: 'block', isStackFrame: true, isHidden: true})
+              .endRange(1, 24)
+              .startRange(2, 13, {scopeKey: 'main', isStackFrame: true})
+              .endRange(2, 24)
+              .startRange(3, 14, {isStackFrame: true})
+              .endRange(3, 22)
+              .startRange(4, 14, {scopeKey: 'other', isStackFrame: true})
+              .endRange(4, 25)
+              .endRange(5, 0);
+
+          script = await addScriptWithScopes('http://example.com/index.js', content, builder, [
+            '0:17 => index.ts:1:2',  // _loop()
+            '0:25 => index.ts:1:2',  // _call(_loop)
+            '1:17 => index.ts:2:4',  // log(x)
+            '1:20',                  // (x) is unmapped
+            '2:16 => index.ts:6:2',  // outer()
+            '3:18 => index.ts:0:0',  // f() in the helper. Mapped, but must not be used.
+            '4:17 => index.ts:9:2',  // _loop() in other
+          ]);
+        });
+
+        it('drops frames of compiler helpers', async () => {
+          const rawFrames = [
+            rawFrame(script, '_call', 3, 18),
+            rawFrame(script, 'outer', 0, 25),
+            rawFrame(script, 'main', 2, 16),
+          ];
+
+          assert.deepEqual(await translateStep(rawFrames), {translated: true, remainingFrames: 2, groups: [[]]});
+          assert.deepEqual(await translateStackTrace(rawFrames), [
+            'at outer (index.ts:1:2)',
+            'at main (index.ts:6:2)',
+          ]);
+        });
+
+        it('leaves outlined frames without mapping to the fallback', async () => {
+          const rawFrames = [
+            rawFrame(script, '_loop', 1, 21),
+            rawFrame(script, 'outer', 0, 17),
+            rawFrame(script, 'main', 2, 16),
+          ];
+
+          assert.deepEqual(await translateStep(rawFrames), {translated: false, remainingFrames: 3, groups: []});
+        });
+      });
+    });
   });
 });

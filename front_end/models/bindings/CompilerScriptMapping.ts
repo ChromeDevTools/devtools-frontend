@@ -328,6 +328,9 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
    * and its translation is pushed onto `translatedFrames`. Frames of compiler helpers are dropped
    * (see {@link SDK.SourceMapScopesInfo.GeneratedFrameKind}).
    *
+   * Outlined frames are merged at read time by the stack_trace model (see `consolidate`). The function keys
+   * tell it which authored function the top and bottom frames of a translation belong to.
+   *
    * @returns true, iff the raw frame was translated.
    */
   async translateRawFramesStep(
@@ -343,14 +346,18 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []});
       return true;
     }
-    if (translation.kind === SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED || !translation.frames.length) {
-      // TODO(crbug.com/433162438): Consolidate outlined frames.
+    const {frames} = translation;
+    if (!frames.length) {
+      // Unmapped position: Leave it to the default mapping.
       return false;
     }
     rawFrames.shift();
     translatedFrames.push({
-      kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
-      frames: this.#toUIFrames(translation.sourceMap, translation.frames),
+      kind: translation.kind === SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED ?
+          StackTraceImpl.Trie.FrameKind.OUTLINED :
+          StackTraceImpl.Trie.FrameKind.VISIBLE,
+      frames: this.#toUIFrames(translation.sourceMap, frames),
+      functionKeys: {top: functionKey(frames[0]), bottom: functionKey(frames[frames.length - 1])},
     });
     return true;
   }
@@ -611,3 +618,13 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
 }
 
 type ScopesTranslation = SDK.SourceMapScopesInfo.RawFrameTranslation&{sourceMap: SDK.SourceMap.SourceMap};
+
+/**
+ * Identifies the authored function of a translated frame. The frames can originate from different source maps
+ * (bundles), so we can't compare original scopes directly. The start position tells apart anonymous and
+ * same-named functions in one file. All top-level code of a file shares a key.
+ */
+function functionKey(frame: SDK.SourceMapScopesInfo.TranslatedFrame): string {
+  const start = frame.functionStart ? `${frame.functionStart.line}:${frame.functionStart.column}` : '';
+  return `${frame.url ?? ''}\n${frame.name ?? ''}\n${start}`;
+}

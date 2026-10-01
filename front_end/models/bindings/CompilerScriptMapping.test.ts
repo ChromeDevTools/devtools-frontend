@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -15,6 +16,7 @@ import {encodeSourceMap, waitForAllSourceMapsProcessed} from '../../testing/Sour
 import {protocolCallFrame, stringifyFrame} from '../../testing/StackTraceHelpers.js';
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Formatter from '../formatter/formatter.js';
+import type * as StackTrace from '../stack_trace/stack_trace.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -725,6 +727,10 @@ describe('CompilerScriptMapping', () => {
                            uiSourceCode: await uiSourceCodePromise,
                            url: undefined,
                          }],
+                         functionKeys: {
+                           top: 'http://example.com/index.ts\nfoo\n1:0',
+                           bottom: 'http://example.com/index.ts\nfoo\n1:0',
+                         },
                        }]);
     });
 
@@ -765,6 +771,10 @@ describe('CompilerScriptMapping', () => {
                            uiSourceCode: await uiSourceCodePromise,
                            url: undefined,
                          }],
+                         functionKeys: {
+                           top: 'http://example.com/index.ts\nfoo\n1:10',
+                           bottom: 'http://example.com/index.ts\nfoo\n1:10',
+                         },
                        }]);
     });
 
@@ -902,17 +912,31 @@ describe('CompilerScriptMapping', () => {
         return protocolCallFrame(`${script.sourceURL}:${script.scriptId}:${name}:${line}:${column}`);
       }
 
+      const builtinFrame = (name: string): Protocol.Runtime.CallFrame => protocolCallFrame(`::${name}::`);
+
+      /** The function key of an authored function in `index.ts`, starting at `start`. */
+      const key = (name: string, start: string): string => `http://example.com/index.ts\n${name}\n${start}`;
+
+      type TranslatedFrames =
+          Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1];
+
       /** Runs a single translation step with the `compilerScriptMapping` under test. */
-      async function translateStep(rawFrames: Protocol.Runtime.CallFrame[]):
-          Promise<{translated: boolean, remainingFrames: number, groups: string[][]}> {
+      async function translateStep(rawFrames: Protocol.Runtime.CallFrame[]): Promise<{
+        translated: boolean,
+        remainingFrames: number,
+        translations: Array<{
+          kind: StackTraceImpl.Trie.FrameKind,
+          frames: string[],
+          functionKeys?: StackTraceImpl.Trie.FunctionKeys,
+        }>,
+      }> {
         const frames = [...rawFrames];
-        const translatedFrames:
-            Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1] = [];
+        const translatedFrames: TranslatedFrames = [];
         const translated = await compilerScriptMapping.translateRawFramesStep(frames, translatedFrames);
         return {
           translated,
           remainingFrames: frames.length,
-          groups: translatedFrames.map(g => g.frames.map(stringifyFrame)),
+          translations: translatedFrames.map(t => ({...t, frames: t.frames.map(stringifyFrame)})),
         };
       }
 
@@ -921,6 +945,22 @@ describe('CompilerScriptMapping', () => {
         const stackTrace =
             await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime({callFrames: rawFrames}, target);
         return stackTrace.syncFragment.frames.map(stringifyFrame);
+      }
+
+      /**
+       * Like {@link translateStackTrace}, but via an `Error.stack` string. The exception details provide the
+       * script IDs, which `Error.stack` lacks.
+       */
+      async function translateErrorStack(rawFrames: Protocol.Runtime.CallFrame[]):
+          Promise<StackTrace.StackTrace.ParsedErrorStackTrace> {
+        const lines =
+            rawFrames.map(f => f.url ? `    at ${f.functionName} (${f.url}:${f.lineNumber + 1}:${f.columnNumber + 1})` :
+                                       `    at ${f.functionName} (<anonymous>)`);
+        const stackTrace = await debuggerWorkspaceBinding.createStackTraceFromErrorStackLikeString(
+            target, ['Error', ...lines].join('\n'),
+            {exceptionId: 1, text: 'Error', lineNumber: 0, columnNumber: 0, stackTrace: {callFrames: rawFrames}});
+        assert.exists(stackTrace);
+        return stackTrace;
       }
 
       describe('with a block scope outlined into a function', () => {
@@ -953,7 +993,7 @@ describe('CompilerScriptMapping', () => {
 
         let script: SDK.Script.Script;
 
-        beforeEach(async () => {
+        function buildScopes(): ScopesCodec.ScopeInfoBuilder {
           const builder = new ScopesCodec.ScopeInfoBuilder();
           builder.startSource()
               .startScope(0, 0, {kind: 'global', key: 'global'})
@@ -980,16 +1020,59 @@ describe('CompilerScriptMapping', () => {
               .startRange(4, 14, {scopeKey: 'other', isStackFrame: true})
               .endRange(4, 25)
               .endRange(5, 0);
+          return builder;
+        }
 
-          script = await addScriptWithScopes('http://example.com/index.js', content, builder, [
-            '0:17 => index.ts:1:2',  // _loop()
-            '0:25 => index.ts:1:2',  // _call(_loop)
-            '1:17 => index.ts:2:4',  // log(x)
-            '1:20',                  // (x) is unmapped
-            '2:16 => index.ts:6:2',  // outer()
-            '3:18 => index.ts:0:0',  // f() in the helper. Mapped, but must not be used.
-            '4:17 => index.ts:9:2',  // _loop() in other
-          ]);
+        const mappings = [
+          '0:17 => index.ts:1:2',  // _loop()
+          '0:25 => index.ts:1:2',  // _call(_loop)
+          '1:17 => index.ts:2:4',  // log(x)
+          '1:20',                  // (x) is unmapped
+          '2:16 => index.ts:6:2',  // outer()
+          '3:18 => index.ts:0:0',  // f() in the helper. Mapped, but must not be used.
+          '4:17 => index.ts:9:2',  // _loop() in other
+        ];
+
+        beforeEach(async () => {
+          script = await addScriptWithScopes('http://example.com/index.js', content, buildScopes(), mappings);
+        });
+
+        it('translates each raw frame on its own, with its kind and function keys', async () => {
+          const next = builtinFrame('next');
+          const outerKeys = {top: key('outer', '0:14'), bottom: key('outer', '0:14')};
+
+          assert.deepEqual(await translateStep([rawFrame(script, '_loop', 1, 17), next]), {
+            translated: true,
+            remainingFrames: 1,
+            translations: [{
+              kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+              frames: ['at outer (index.ts:2:4)'],
+              functionKeys: outerKeys,
+            }],
+          });
+          assert.deepEqual(await translateStep([rawFrame(script, 'outer', 0, 17), next]), {
+            translated: true,
+            remainingFrames: 1,
+            translations: [{
+              kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+              frames: ['at outer (index.ts:1:2)'],
+              functionKeys: outerKeys,
+            }],
+          });
+          assert.deepEqual(await translateStep([rawFrame(script, 'f', 3, 18), next]), {
+            translated: true,
+            remainingFrames: 1,
+            translations: [{kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []}],
+          });
+          assert.deepEqual(await translateStep([rawFrame(script, 'other', 4, 17), next]), {
+            translated: true,
+            remainingFrames: 1,
+            translations: [{
+              kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+              frames: ['at other (index.ts:9:2)'],
+              functionKeys: {top: key('other', '8:14'), bottom: key('other', '8:14')},
+            }],
+          });
         });
 
         it('drops frames of compiler helpers', async () => {
@@ -999,9 +1082,89 @@ describe('CompilerScriptMapping', () => {
             rawFrame(script, 'main', 2, 16),
           ];
 
-          assert.deepEqual(await translateStep(rawFrames), {translated: true, remainingFrames: 2, groups: [[]]});
+          assert.deepEqual(await translateStep(rawFrames), {
+            translated: true,
+            remainingFrames: 2,
+            translations: [{kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []}],
+          });
           assert.deepEqual(await translateStackTrace(rawFrames), [
             'at outer (index.ts:1:2)',
+            'at main (index.ts:6:2)',
+          ]);
+        });
+
+        it('consolidates an outlined frame with its caller', async () => {
+          const rawFrames = [
+            rawFrame(script, '_loop', 1, 17),
+            rawFrame(script, 'outer', 0, 17),
+            rawFrame(script, 'main', 2, 16),
+          ];
+
+          assert.deepEqual(await translateStackTrace(rawFrames), [
+            'at outer (index.ts:2:4)',
+            'at main (index.ts:6:2)',
+          ]);
+        });
+
+        it('does not consolidate across frames of scripts with a plain source map', async () => {
+          // The scope information of `plain.js` is derived from the AST, so its function keys never match.
+          const plainScript = await backend.addScript(
+              target, {url: 'http://example.com/plain.js', content: 'function f(){debugger;}'}, {
+                url: 'http://example.com/plain.js.map',
+                content: encodeSourceMap(['0:0 => plain.ts:0:0', '0:10 => plain.ts:1:10@foo', '0:21 => plain.ts:2:11']),
+              });
+          const rawFrames = [
+            rawFrame(script, '_loop', 1, 17),
+            rawFrame(plainScript, 'f', 0, 21),
+            rawFrame(script, 'outer', 0, 17),
+          ];
+
+          assert.deepEqual(await translateStackTrace(rawFrames), [
+            'at outer (index.ts:2:4)',
+            'at foo (plain.ts:2:11)',
+            'at outer (index.ts:1:2)',
+          ]);
+        });
+
+        it('consolidates across compiler helpers from a different script', async () => {
+          // vendor.js: function _run(f){f()}
+          const builder = new ScopesCodec.ScopeInfoBuilder();
+          builder.startSource()
+              .startScope(0, 0, {kind: 'global', key: 'global'})
+              .endScope(1, 0)
+              .endSource()
+              .startRange(0, 0, {scopeKey: 'global'})
+              .startRange(0, 13, {isStackFrame: true, isHidden: true})
+              .endRange(0, 21)
+              .endRange(1, 0);
+          const vendorScript = await addScriptWithScopes('http://example.com/vendor.js', 'function _run(f){f()}',
+                                                         builder, ['0:17 => runtime.ts:0:0']);
+
+          const rawFrames = [
+            rawFrame(script, '_loop', 1, 17),
+            rawFrame(vendorScript, '_run', 0, 17),
+            rawFrame(script, 'outer', 0, 25),
+            rawFrame(script, 'main', 2, 16),
+          ];
+
+          assert.deepEqual(await translateStackTrace(rawFrames), [
+            'at outer (index.ts:2:4)',
+            'at main (index.ts:6:2)',
+          ]);
+        });
+
+        it('consolidates an outlined frame with its caller in a different script', async () => {
+          // A second bundle (e.g. a chunk) of the same authored code.
+          const chunkScript =
+              await addScriptWithScopes('http://example.com/chunk.js', content, buildScopes(), mappings);
+          const rawFrames = [
+            rawFrame(chunkScript, '_loop', 1, 17),
+            rawFrame(script, 'outer', 0, 17),
+            rawFrame(script, 'main', 2, 16),
+          ];
+
+          assert.deepEqual(await translateStackTrace(rawFrames), [
+            'at outer (index.ts:2:4)',
             'at main (index.ts:6:2)',
           ]);
         });
@@ -1013,8 +1176,356 @@ describe('CompilerScriptMapping', () => {
             rawFrame(script, 'main', 2, 16),
           ];
 
-          assert.deepEqual(await translateStep(rawFrames), {translated: false, remainingFrames: 3, groups: []});
+          assert.deepEqual(await translateStep(rawFrames), {translated: false, remainingFrames: 3, translations: []});
         });
+
+        it('populates the UISourceCode of outlined frames', async () => {
+          const uiSourceCode = compilerScriptMapping.uiSourceCodeForURL(urlString`http://example.com/index.ts`, false);
+          assert.exists(uiSourceCode);
+
+          const translatedFrames: TranslatedFrames = [];
+          assert.isTrue(await compilerScriptMapping.translateRawFramesStep(
+              [rawFrame(script, '_loop', 1, 17), rawFrame(script, 'outer', 0, 17)], translatedFrames));
+
+          assert.lengthOf(translatedFrames, 1);
+          assert.lengthOf(translatedFrames[0].frames, 1);
+          assert.strictEqual(translatedFrames[0].frames[0].uiSourceCode, uiSourceCode);
+          assert.isUndefined(translatedFrames[0].frames[0].url);
+        });
+
+        it('consolidates outlined frames once the source map is loaded', async () => {
+          const {promise: sourceMapRequested, resolve: loadSourceMap} = Promise.withResolvers<void>();
+          const loadResource =
+              sinon.stub(backend.universe.pageResourceLoader, 'loadResource').callsFake(async (...args) => {
+                await sourceMapRequested;
+                return await loadResource.wrappedMethod.apply(backend.universe.pageResourceLoader, args);
+              });
+          const lateScriptPromise = addScriptWithScopes('http://example.com/late.js', content, buildScopes(), mappings);
+          const lateScript = target.model(SDK.DebuggerModel.DebuggerModel)!.scripts().find(
+              s => s.sourceURL === 'http://example.com/late.js');
+          assert.exists(lateScript);
+
+          const stackTrace = await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(
+              {callFrames: [rawFrame(lateScript, '_loop', 1, 17), rawFrame(lateScript, 'outer', 0, 17)]}, target);
+          // While the source map loads, the frames point to the stub `UISourceCode` of the script.
+          assert.deepEqual(stackTrace.syncFragment.frames.map(stringifyFrame), [
+            'at _loop (late.js:sourcemap:1:17)',
+            'at outer (late.js:sourcemap:0:17)',
+          ]);
+
+          loadSourceMap();
+          await lateScriptPromise;
+          await debuggerWorkspaceBinding.pendingLiveLocationChangesPromise();
+
+          assert.deepEqual(stackTrace.syncFragment.frames.map(stringifyFrame), ['at outer (index.ts:2:4)']);
+        });
+
+        it('consolidates the frames of Error.stack traces', async () => {
+          const stackTrace = await translateErrorStack([
+            rawFrame(script, '_loop', 1, 17),
+            rawFrame(script, 'outer', 0, 17),
+            rawFrame(script, 'main', 2, 16),
+          ]);
+
+          assert.deepEqual(stackTrace.syncFragment.frames.map(stringifyFrame), [
+            'at outer (index.ts:2:4)',
+            'at main (index.ts:6:2)',
+          ]);
+          // The raw name of a merged frame is the one of the caller, that the outlined code was merged into.
+          assert.strictEqual(stackTrace.syncFragment.frames[0].rawName, 'outer');
+        });
+
+        it('merges away builtin frames of Error.stack traces only when the chain continues', async () => {
+          const merged = await translateErrorStack([
+            rawFrame(script, '_loop', 1, 17),
+            builtinFrame('Array.forEach'),
+            rawFrame(script, 'outer', 0, 17),
+          ]);
+          const notMerged = await translateErrorStack([
+            rawFrame(script, '_loop', 1, 17),
+            builtinFrame('Array.forEach'),
+            rawFrame(script, 'other', 4, 17),
+          ]);
+
+          assert.deepEqual(merged.syncFragment.frames.map(stringifyFrame), ['at outer (index.ts:2:4)']);
+          assert.deepEqual(notMerged.syncFragment.frames.map(stringifyFrame), [
+            'at outer (index.ts:2:4)',
+            'at Array.forEach',
+            'at other (index.ts:9:2)',
+          ]);
+        });
+      });
+
+      it('does not consolidate an outlined frame with a caller in a different function of the same name', async () => {
+        //
+        //    orig. code                         gen. code
+        //             10        20                       10        20
+        //    012345678901234567890              012345678901234567890123456
+        //
+        // 0: function outer() {                 function outer(){_loop()}
+        // 1:   {                                function _loop(){log(x)}
+        // 2:     log(x);                        function outer2(){_loop()}
+        // 3:   }
+        // 4: }
+        // 5: function outer() {
+        // 6:   f();
+        // 7: }
+        //
+        // The block of the first `outer` is outlined into `_loop`. The second `outer` calling `_loop` is
+        // inconsistent, but it must not be mistaken for the first `outer`.
+        const builder = new ScopesCodec.ScopeInfoBuilder();
+        builder.startSource()
+            .startScope(0, 0, {kind: 'global', key: 'global'})
+            .startScope(0, 14, {kind: 'function', name: 'outer', key: 'outer1', isStackFrame: true})
+            .startScope(1, 2, {kind: 'block', key: 'block'})
+            .endScope(3, 3)
+            .endScope(4, 1)
+            .startScope(5, 14, {kind: 'function', name: 'outer', key: 'outer2', isStackFrame: true})
+            .endScope(7, 1)
+            .endScope(8, 0)
+            .endSource();
+
+        builder.startRange(0, 0, {scopeKey: 'global'})
+            .startRange(0, 14, {scopeKey: 'outer1', isStackFrame: true})
+            .endRange(0, 25)
+            .startRange(1, 14, {scopeKey: 'block', isStackFrame: true, isHidden: true})
+            .endRange(1, 24)
+            .startRange(2, 15, {scopeKey: 'outer2', isStackFrame: true})
+            .endRange(2, 26)
+            .endRange(3, 0);
+
+        const script = await addScriptWithScopes(
+            'http://example.com/index.js',
+            ['function outer(){_loop()}', 'function _loop(){log(x)}', 'function outer2(){_loop()}'].join('\n'), builder,
+            [
+              '1:17 => index.ts:2:4',  // log(x)
+              '2:18 => index.ts:6:2',  // _loop() in the second `outer`
+            ]);
+
+        const rawFrames = [
+          rawFrame(script, '_loop', 1, 17),
+          rawFrame(script, 'outer2', 2, 18),
+        ];
+
+        assert.deepEqual((await translateStep(rawFrames)).translations[0].functionKeys,
+                         {top: key('outer', '0:14'), bottom: key('outer', '0:14')});
+        assert.deepEqual((await translateStep(rawFrames.slice(1))).translations[0].functionKeys,
+                         {top: key('outer', '5:14'), bottom: key('outer', '5:14')});
+        assert.deepEqual(await translateStackTrace(rawFrames), [
+          'at outer (index.ts:2:4)',
+          'at outer (index.ts:6:2)',
+        ]);
+      });
+
+      it('consolidates nested outlined frames and expands inlined frames on both ends', async () => {
+        //
+        //    orig. code                         gen. code
+        //             10        20                       10        20
+        //    012345678901234567890              012345678901234567890123456
+        //
+        // 0: function inner() {                 function entry(){_loop1()}
+        // 1:   log();                           function _loop1(){_loop2()}
+        // 2: }                                  function _loop2(){log()}
+        // 3: function outer() {
+        // 4:   {
+        // 5:     {
+        // 6:       inner();
+        // 7:     }
+        // 8:   }
+        // 9: }
+        // 10: function main() {
+        // 11:   outer();
+        // 12: }
+        // 13: function entry() {
+        // 14:   main();
+        // 15: }
+        //
+        // `main` and `outer` are inlined into `entry`. The outer block of `outer` is outlined
+        // into `_loop1`, the inner block of `outer` is outlined into `_loop2`. `inner` is
+        // inlined into `_loop2`.
+        const builder = new ScopesCodec.ScopeInfoBuilder();
+        builder.startSource()
+            .startScope(0, 0, {kind: 'global', key: 'global'})
+            .startScope(0, 14, {kind: 'function', name: 'inner', key: 'inner', isStackFrame: true})
+            .endScope(2, 1)
+            .startScope(3, 14, {kind: 'function', name: 'outer', key: 'outer', isStackFrame: true})
+            .startScope(4, 2, {kind: 'block', key: 'block1'})
+            .startScope(5, 4, {kind: 'block', key: 'block2'})
+            .endScope(7, 5)
+            .endScope(8, 3)
+            .endScope(9, 1)
+            .startScope(10, 13, {kind: 'function', name: 'main', key: 'main', isStackFrame: true})
+            .endScope(12, 1)
+            .startScope(13, 14, {kind: 'function', name: 'entry', key: 'entry', isStackFrame: true})
+            .endScope(15, 1)
+            .endScope(16, 0)
+            .endSource();
+
+        builder.startRange(0, 0, {scopeKey: 'global'})
+            .startRange(0, 14, {scopeKey: 'entry', isStackFrame: true})
+            .startRange(0, 17, {scopeKey: 'main', callSite: {sourceIndex: 0, line: 14, column: 2}})
+            .startRange(0, 17, {scopeKey: 'outer', callSite: {sourceIndex: 0, line: 11, column: 2}})
+            .endRange(0, 25)
+            .endRange(0, 25)
+            .endRange(0, 26)
+            .startRange(1, 15, {scopeKey: 'block1', isStackFrame: true, isHidden: true})
+            .endRange(1, 27)
+            .startRange(2, 15, {scopeKey: 'block2', isStackFrame: true, isHidden: true})
+            .startRange(2, 18, {scopeKey: 'inner', callSite: {sourceIndex: 0, line: 6, column: 6}})
+            .endRange(2, 23)
+            .endRange(2, 24)
+            .endRange(3, 0);
+
+        const script = await addScriptWithScopes(
+            'http://example.com/index.js',
+            ['function entry(){_loop1()}', 'function _loop1(){_loop2()}', 'function _loop2(){log()}'].join('\n'),
+            builder, [
+              '0:17 => index.ts:4:2',  // _loop1()
+              '1:18 => index.ts:5:4',  // _loop2()
+              '2:18 => index.ts:1:2',  // log()
+            ]);
+
+        const rawFrames = [
+          rawFrame(script, '_loop2', 2, 18),
+          rawFrame(script, '_loop1', 1, 18),
+          rawFrame(script, 'entry', 0, 17),
+        ];
+
+        assert.deepEqual(await translateStep(rawFrames), {
+          translated: true,
+          remainingFrames: 2,
+          translations: [{
+            kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+            frames: ['at inner (index.ts:1:2)', 'at outer (index.ts:6:6)'],
+            functionKeys: {top: key('inner', '0:14'), bottom: key('outer', '3:14')},
+          }],
+        });
+        assert.deepEqual(await translateStackTrace(rawFrames), [
+          'at inner (index.ts:1:2)',
+          'at outer (index.ts:6:6)',
+          'at main (index.ts:11:2)',
+          'at entry (index.ts:14:2)',
+        ]);
+      });
+
+      it('includes inlined frames of outlined callers', async () => {
+        //
+        //    orig. code                         gen. code
+        //             10        20                       10        20
+        //    012345678901234567890              012345678901234567890123456
+        //
+        // 0: function inl() {                   function main(){outer()}
+        // 1:   {                                function outer(){_loop1()}
+        // 2:     log();                         function _loop1(){_loop2()}
+        // 3:   }                                function _loop2(){log()}
+        // 4: }
+        // 5: function outer() {
+        // 6:   {
+        // 7:     inl();
+        // 8:   }
+        // 9: }
+        // 10: function main() {
+        // 11:   outer();
+        // 12: }
+        //
+        // The block of `outer` is outlined into `_loop1`, `inl` is inlined into `_loop1`, and
+        // the block of the inlined `inl` is outlined into `_loop2`.
+        const builder = new ScopesCodec.ScopeInfoBuilder();
+        builder.startSource()
+            .startScope(0, 0, {kind: 'global', key: 'global'})
+            .startScope(0, 12, {kind: 'function', name: 'inl', key: 'inl', isStackFrame: true})
+            .startScope(1, 2, {kind: 'block', key: 'inlBlock'})
+            .endScope(3, 3)
+            .endScope(4, 1)
+            .startScope(5, 14, {kind: 'function', name: 'outer', key: 'outer', isStackFrame: true})
+            .startScope(6, 2, {kind: 'block', key: 'outerBlock'})
+            .endScope(8, 3)
+            .endScope(9, 1)
+            .startScope(10, 13, {kind: 'function', name: 'main', key: 'main', isStackFrame: true})
+            .endScope(12, 1)
+            .endScope(13, 0)
+            .endSource();
+
+        builder.startRange(0, 0, {scopeKey: 'global'})
+            .startRange(0, 13, {scopeKey: 'main', isStackFrame: true})
+            .endRange(0, 24)
+            .startRange(1, 14, {scopeKey: 'outer', isStackFrame: true})
+            .endRange(1, 26)
+            .startRange(2, 15, {scopeKey: 'outerBlock', isStackFrame: true, isHidden: true})
+            .startRange(2, 18, {scopeKey: 'inl', callSite: {sourceIndex: 0, line: 7, column: 4}})
+            .endRange(2, 26)
+            .endRange(2, 27)
+            .startRange(3, 15, {scopeKey: 'inlBlock', isStackFrame: true, isHidden: true})
+            .endRange(3, 24)
+            .endRange(4, 0);
+
+        const script = await addScriptWithScopes('http://example.com/index.js',
+                                                 [
+                                                   'function main(){outer()}',
+                                                   'function outer(){_loop1()}',
+                                                   'function _loop1(){_loop2()}',
+                                                   'function _loop2(){log()}',
+                                                 ].join('\n'),
+                                                 builder, [
+                                                   '0:16 => index.ts:11:2',  // outer()
+                                                   '1:17 => index.ts:6:2',   // _loop1()
+                                                   '2:18 => index.ts:1:2',   // _loop2()
+                                                   '3:18 => index.ts:2:4',   // log()
+                                                 ]);
+
+        const rawFrames = [
+          rawFrame(script, '_loop2', 3, 18),
+          rawFrame(script, '_loop1', 2, 18),
+          rawFrame(script, 'outer', 1, 17),
+          rawFrame(script, 'main', 0, 16),
+        ];
+
+        assert.deepEqual((await translateStep(rawFrames.slice(1))).translations, [{
+                           kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+                           frames: ['at inl (index.ts:1:2)', 'at outer (index.ts:7:4)'],
+                           functionKeys: {top: key('inl', '0:12'), bottom: key('outer', '5:14')},
+                         }]);
+        assert.deepEqual(await translateStackTrace(rawFrames), [
+          'at inl (index.ts:2:4)',
+          'at outer (index.ts:7:4)',
+          'at main (index.ts:11:2)',
+        ]);
+      });
+
+      it('consolidates an outlined top-level block with the top-level code calling it', async () => {
+        //
+        //    orig. code                         gen. code
+        //             10                                 10        20
+        //    0123456789                         0123456789012345678901
+        //
+        // 0: {                                  (function(){log()})();
+        // 1:   log();
+        // 2: }
+        const builder = new ScopesCodec.ScopeInfoBuilder();
+        builder.startSource()
+            .startScope(0, 0, {kind: 'global', key: 'global'})
+            .startScope(0, 0, {kind: 'block', key: 'block'})
+            .endScope(2, 1)
+            .endScope(3, 0)
+            .endSource();
+
+        builder.startRange(0, 0, {scopeKey: 'global'})
+            .startRange(0, 9, {scopeKey: 'block', isStackFrame: true, isHidden: true})
+            .endRange(0, 18)
+            .endRange(1, 0);
+
+        const script = await addScriptWithScopes('http://example.com/index.js', '(function(){log()})();', builder, [
+          '0:0 => index.ts:0:0',
+          '0:12 => index.ts:1:2',  // log()
+          '0:18 => index.ts:0:0',  // Call of the IIFE
+        ]);
+
+        const rawFrames = [
+          rawFrame(script, '', 0, 12),
+          rawFrame(script, '', 0, 19),
+        ];
+
+        assert.deepEqual(await translateStackTrace(rawFrames), ['at <anonymous> (index.ts:1:2)']);
       });
     });
   });

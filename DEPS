@@ -66,6 +66,9 @@ vars = {
 
   # siso CIPD package version
   'siso_version': 'git_revision:c574896b272b40aac6e44c228ee0b471ea7e3d7d',
+
+  # Fetches the AI Evals testing data.
+  'checkout_devtools_ai_evals': False,
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.
@@ -422,6 +425,12 @@ hooks = [
     'pattern': '.',
     'condition': 'build_with_chromium == False',
     'action': [ 'vpython3', 'scripts/deps/fix_cft_permissions.py'],
+  },
+  {
+    'name': 'setup_devtools_ai_evals',
+    'pattern': '.',
+    'condition': 'checkout_devtools_ai_evals == True',
+    'action': ['vpython3', 'scripts/deps/setup_devtools_ai_evals.py'],
   },
 ]
 

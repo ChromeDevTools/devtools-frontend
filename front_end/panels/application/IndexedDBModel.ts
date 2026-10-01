@@ -34,9 +34,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     this.throttler = new Common.Throttler.Throttler(1000);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static keyFromIDBKey(idbKey: any): Protocol.IndexedDB.Key|undefined {
+  static keyFromIDBKey(idbKey: IDBValidKey|null|undefined): Protocol.IndexedDB.Key|undefined {
     if (typeof (idbKey) === 'undefined' || idbKey === null) {
       return undefined;
     }
@@ -507,38 +505,28 @@ export class Database {
 
 export class ObjectStore {
   name: string;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  keyPath: any;
+  keyPath: string|string[]|null|undefined;
   autoIncrement: boolean;
   indexes: Map<string, Index>;
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(name: string, keyPath: any, autoIncrement: boolean) {
+  constructor(name: string, keyPath: string|string[]|null|undefined, autoIncrement: boolean) {
     this.name = name;
     this.keyPath = keyPath;
     this.autoIncrement = autoIncrement;
     this.indexes = new Map();
   }
 
-  get keyPathString(): string {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // @ts-expect-error
-    return IndexedDBModel.keyPathStringFromIDBKeyPath((this.keyPath as string));
+  get keyPathString(): string|null {
+    return IndexedDBModel.keyPathStringFromIDBKeyPath(this.keyPath);
   }
 }
 
 export class Index {
   name: string;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  keyPath: any;
+  keyPath: string|string[]|null|undefined;
   unique: boolean;
   multiEntry: boolean;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(name: string, keyPath: any, unique: boolean, multiEntry: boolean) {
+  constructor(name: string, keyPath: string|string[]|null|undefined, unique: boolean, multiEntry: boolean) {
     this.name = name;
     this.keyPath = keyPath;
     this.unique = unique;
@@ -546,7 +534,7 @@ export class Index {
   }
 
   get keyPathString(): string {
-    return IndexedDBModel.keyPathStringFromIDBKeyPath((this.keyPath as string)) as string;
+    return IndexedDBModel.keyPathStringFromIDBKeyPath(this.keyPath) as string;
   }
 }
 export interface ObjectStoreMetadata {

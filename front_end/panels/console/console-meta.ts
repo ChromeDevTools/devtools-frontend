@@ -420,13 +420,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleTrac
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor, {
   category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.consoleInsightTeasers),
-  settingName: 'console-insight-teasers-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.preserveConsoleLogSettingDescriptor, {

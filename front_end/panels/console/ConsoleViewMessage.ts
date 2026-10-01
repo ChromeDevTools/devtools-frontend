@@ -1608,7 +1608,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     if (!this.shouldShowInsights()) {
       return false;
     }
-    if (!Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get() ||
+    if (!Common.Settings.Settings.instance()
+             .resolve(Settings.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor)
+             .get() ||
         !AiAssistanceModel.BuiltInAi.BuiltInAi.instance().isEventuallyAvailable()) {
       return false;
     }

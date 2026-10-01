@@ -16,6 +16,7 @@ import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import type * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import consoleInsightTeaserStyles from './consoleInsightTeaser.css.js';
@@ -540,7 +541,9 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
   maybeGenerateTeaser(): void {
     const startGeneratingTeaser = (): void => {
       if (!this.#isInactive &&
-          Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get()) {
+          Common.Settings.Settings.instance()
+              .resolve(Settings.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor)
+              .get()) {
         void this.#generateTeaserText();
       }
     };
@@ -686,7 +689,9 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
 
   #dontShowChanged(e: Event): void {
     const showTeasers = !(e.target as HTMLInputElement).checked;
-    Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').set(showTeasers);
+    Common.Settings.Settings.instance()
+        .resolve(Settings.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor)
+        .set(showTeasers);
   }
 
   #hasTellMeMoreButton(): boolean {
@@ -704,23 +709,24 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
 
   override performUpdate(): Promise<void>|void {
     const output: ViewOutput = {};
-    this.#view(
-        {
-          onTellMeMoreClick: this.#onTellMeMoreClick.bind(this),
-          uuid: this.#uuid,
-          headerText: this.#headerText,
-          mainText: this.#mainText,
-          isInactive: this.#isInactive ||
-              !Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get(),
-          dontShowChanged: this.#dontShowChanged.bind(this),
-          hasTellMeMoreButton: this.#hasTellMeMoreButton(),
-          isSlowGeneration: this.#isSlow,
-          onDownloadModelClick: this.#onDownloadModelClick.bind(this),
-          downloadProgress: this.#downloadProgress,
-          state: this.#state,
-          isForWarning: this.#isForWarning,
-        },
-        output, this.contentElement);
+    this.#view({
+      onTellMeMoreClick: this.#onTellMeMoreClick.bind(this),
+      uuid: this.#uuid,
+      headerText: this.#headerText,
+      mainText: this.#mainText,
+      isInactive: this.#isInactive ||
+          !Common.Settings.Settings.instance()
+               .resolve(Settings.ConsoleSettings.consoleInsightTeasersEnabledSettingDescriptor)
+               .get(),
+      dontShowChanged: this.#dontShowChanged.bind(this),
+      hasTellMeMoreButton: this.#hasTellMeMoreButton(),
+      isSlowGeneration: this.#isSlow,
+      onDownloadModelClick: this.#onDownloadModelClick.bind(this),
+      downloadProgress: this.#downloadProgress,
+      state: this.#state,
+      isForWarning: this.#isForWarning,
+    },
+               output, this.contentElement);
     if (this.#callShowTooltip && output.tooltip?.hasAttribute('popover')) {
       // The ConsoleInsightTeaser is created on hover, which means the tooltip's
       // event listener is created after the hover event is received. We therefore

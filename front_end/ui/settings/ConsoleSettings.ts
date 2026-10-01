@@ -64,3 +64,10 @@ export const consoleTraceExpandSettingDescriptor: Common.Settings.SettingDescrip
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const consoleInsightTeasersEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'console-insight-teasers-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

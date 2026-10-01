@@ -16,6 +16,7 @@ import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Settings from '../../ui/settings/settings.js';
 
 import * as Console from './console.js';
 
@@ -199,10 +200,16 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
         checked: true,
       } as unknown as EventTarget,
     } as Event;
-    assert.isTrue(Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get());
+    const {
+      consoleInsightTeasersEnabledSettingDescriptor,
+    } = Settings.ConsoleSettings;
+    const teasersEnabledSetting = Common.Settings.Settings.instance().resolve(
+        consoleInsightTeasersEnabledSettingDescriptor,
+    );
+    assert.isTrue(teasersEnabledSetting.get());
     input.dontShowChanged(event);
-    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('console-insight-teasers-enabled').get());
-    Common.Settings.Settings.instance().settingForTest('console-insight-teasers-enabled').set(true);
+    assert.isFalse(teasersEnabledSetting.get());
+    teasersEnabledSetting.set(true);
   });
 
   it('updates its view if teaser generation is slow', async () => {

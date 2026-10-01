@@ -339,14 +339,17 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
    * (see {@link SDK.SourceMapScopesInfo.GeneratedFrameKind}).
    *
    * Outlined frames are merged at read time by the stack_trace model (see `consolidate`). The function keys
-   * tell it which authored function the top and bottom frames of a translation belong to.
+   * tell it which authored function the top and bottom frames of a translation belong to. A frame at an
+   * unmapped position still gets its keys from the generated ranges; it shows the generated location, named
+   * after the authored function.
    *
    * @returns true, iff the raw frame was translated.
    */
   async translateRawFramesStep(
       rawFrames: StackTraceImpl.Trie.RawFrame[],
       translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): Promise<boolean> {
-    const translation = await this.#translateRawFrame(rawFrames[0]);
+    const rawFrame = rawFrames[0];
+    const translation = await this.#translateRawFrame(rawFrame);
     if (!translation) {
       return false;
     }
@@ -358,7 +361,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     }
     const {frames} = translation;
     if (!frames.length) {
-      // Unmapped position: Leave it to the default mapping.
+      // Neither mappings nor generated ranges know this position: Leave it to the default mapping.
       return false;
     }
     rawFrames.shift();
@@ -366,7 +369,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       kind: translation.kind === SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED ?
           StackTraceImpl.Trie.FrameKind.OUTLINED :
           StackTraceImpl.Trie.FrameKind.VISIBLE,
-      frames: this.#toUIFrames(translation.sourceMap, frames),
+      frames: await this.#toUIFrames(translation, rawFrame),
       functionKeys: {top: functionKey(frames[0]), bottom: functionKey(frames[frames.length - 1])},
     });
     return true;
@@ -397,17 +400,36 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
 
     const {lineNumber, columnNumber} = script.rawLocationToRelativeLocation(rawFrame);
     const translation = sourceMap.translateRawFrame(lineNumber, columnNumber);
-    return translation ? {...translation, sourceMap} : null;
+    return translation ? {...translation, sourceMap, script} : null;
   }
 
-  /** Switch out url for UISourceCode where we have it. */
-  #toUIFrames(sourceMap: SDK.SourceMap.SourceMap,
-              frames: SDK.SourceMapScopesInfo.TranslatedFrame[]): StackTraceImpl.StackTraceModel.TranslatedUIFrame[] {
+  /**
+   * Switch out url for UISourceCode where we have it. A top frame without position (unmapped generated position)
+   * gets the generated location of `rawFrame`.
+   */
+  async #toUIFrames({sourceMap, script, frames}: ScopesTranslation, rawFrame: StackTraceImpl.Trie.RawFrame):
+      Promise<StackTraceImpl.StackTraceModel.TranslatedUIFrame[]> {
     const project = this.#sourceMapToProject.get(sourceMap);
-    return frames.map(({line, column, name, url}) => {
+    return await Promise.all(frames.map(async ({line, column, name, url}) => {
+      if (line === undefined || column === undefined) {
+        return {...await this.#generatedUIFrame(script, rawFrame), name};
+      }
       const uiSourceCode = url ? project?.uiSourceCodeForURL(url) : undefined;
       return {line, column, name, url: uiSourceCode ? undefined : url, uiSourceCode: uiSourceCode ?? undefined};
-    });
+    }));
+  }
+
+  /** The location of `rawFrame` in terms of the generated `script`, as the non-compiler mappings would show it. */
+  async #generatedUIFrame(script: SDK.Script.Script, rawFrame: StackTraceImpl.Trie.RawFrame):
+      Promise<StackTraceImpl.StackTraceModel.TranslatedUIFrame> {
+    const rawLocation = this.#debuggerModel.createRawLocation(script, rawFrame.lineNumber, rawFrame.columnNumber);
+    // Goes through the DebuggerWorkspaceBinding so that e.g. inline scripts resolve to their document.
+    const uiLocation = await this.#debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    if (uiLocation) {
+      const {uiSourceCode, lineNumber: line, columnNumber} = uiLocation;
+      return {uiSourceCode, line, column: columnNumber ?? -1};
+    }
+    return {url: rawFrame.url, line: rawFrame.lineNumber, column: rawFrame.columnNumber};
   }
 
   /**
@@ -627,7 +649,10 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
   }
 }
 
-type ScopesTranslation = SDK.SourceMapScopesInfo.RawFrameTranslation&{sourceMap: SDK.SourceMap.SourceMap};
+type ScopesTranslation = SDK.SourceMapScopesInfo.RawFrameTranslation&{
+  sourceMap: SDK.SourceMap.SourceMap,
+  script: SDK.Script.Script,
+};
 
 /**
  * Identifies the authored function of a translated frame. The frames can originate from different source maps

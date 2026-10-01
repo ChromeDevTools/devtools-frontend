@@ -528,24 +528,31 @@ export class SourceMapScopesInfo {
   /**
    * The top-most frame is translated the same, regardless of whether we have inlined functions: The name is the
    * original function surrounding the generated position, and the location is the mapped generated position.
+   *
+   * If the generated position has no mapping, the generated ranges may still tell which authored function (or
+   * which file, for top-level code) the position belongs to. The frame then has no position.
    */
   #translateTopFrame(generatedLine: number, generatedColumn: number,
                      rangeChain: ScopesCodec.GeneratedRange[]): TranslatedFrame|null {
+    const position = {line: generatedLine, column: generatedColumn};
+    const innerMostScope = this.#innerMostOriginalScope(rangeChain, position);
+    const functionScope = this.#findFunctionScopeInOriginalScopeChain(innerMostScope);
+    const name = functionScope ? (functionScope.name ?? '') : undefined;
+
     const mapping = this.#sourceMap.findEntry(generatedLine, generatedColumn);
-    if (mapping?.sourceIndex === undefined) {
+    if (mapping?.sourceIndex !== undefined) {
+      return {
+        line: mapping.sourceLineNumber,
+        column: mapping.sourceColumnNumber,
+        name,
+        url: mapping.sourceURL,
+        functionStart: functionScope?.start,
+      };
+    }
+    if (!innerMostScope) {
       return null;
     }
-
-    const position = {line: generatedLine, column: generatedColumn};
-    const functionScope =
-        this.#findFunctionScopeInOriginalScopeChain(this.#innerMostOriginalScope(rangeChain, position));
-    return {
-      line: mapping.sourceLineNumber,
-      column: mapping.sourceColumnNumber,
-      name: functionScope ? (functionScope.name ?? '') : undefined,
-      url: mapping.sourceURL,
-      functionStart: functionScope?.start,
-    };
+    return {name, url: this.#sourceURLOfScope(functionScope ?? innerMostScope), functionStart: functionScope?.start};
   }
 
   /**
@@ -602,8 +609,8 @@ export const enum GeneratedFrameKind {
 export interface RawFrameTranslation {
   kind: GeneratedFrameKind;
   /**
-   * [top, ...inlinedCallers] in top-to-bottom order. Empty for {@link GeneratedFrameKind.HIDDEN} frames, or if the
-   * generated position is not mapped.
+   * [top, ...inlinedCallers] in top-to-bottom order. Empty for {@link GeneratedFrameKind.HIDDEN} frames, or if
+   * neither the mappings nor the generated ranges know anything about the generated position.
    *
    * For {@link GeneratedFrameKind.OUTLINED} frames, the top frame is named after the authored function the outlined
    * code belongs to.
@@ -615,11 +622,16 @@ export interface RawFrameTranslation {
  * Represents a stack frame in original terms. It closely aligns with StackTrace.StackTrace.Frame,
  * but since we can't import that type here we mirror it here somewhat.
  *
- * Equivalent to Pick<StackTrace.StackTrace.Frame, 'line'|'column'|'name'|'url'>.
+ * Equivalent to Pick<StackTrace.StackTrace.Frame, 'line'|'column'|'name'|'url'>, except that the position is
+ * optional.
  */
 export interface TranslatedFrame {
-  line: number;
-  column: number;
+  /**
+   * `line` and `column` are undefined iff the generated position has no mapping. The frame then only identifies
+   * the authored function: `name`, `functionStart` and the `url` of the function's source.
+   */
+  line?: number;
+  column?: number;
   name?: string;
   url?: Platform.DevToolsPath.UrlString;
   /** Start of the original function scope containing this frame's position. Undefined for top-level code. */

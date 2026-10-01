@@ -1025,6 +1025,7 @@ describe('CompilerScriptMapping', () => {
 
         const mappings = [
           '0:17 => index.ts:1:2',  // _loop()
+          '0:24',                  // ; is unmapped
           '0:25 => index.ts:1:2',  // _call(_loop)
           '1:17 => index.ts:2:4',  // log(x)
           '1:20',                  // (x) is unmapped
@@ -1181,14 +1182,58 @@ describe('CompilerScriptMapping', () => {
           ]);
         });
 
-        it('leaves outlined frames without mapping to the fallback', async () => {
-          const rawFrames = [
-            rawFrame(script, '_loop', 1, 21),
-            rawFrame(script, 'outer', 0, 17),
-            rawFrame(script, 'main', 2, 16),
-          ];
+        describe('at an unmapped position', () => {
+          const outerKeys = {top: key('outer', '0:14'), bottom: key('outer', '0:14')};
 
-          assert.deepEqual(await translateStep(rawFrames), {translated: false, remainingFrames: 3, translations: []});
+          it('shows the generated location, named after the authored function', async () => {
+            assert.deepEqual(await translateStep([rawFrame(script, 'outer', 0, 24), builtinFrame('next')]), {
+              translated: true,
+              remainingFrames: 1,
+              translations: [{
+                kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+                frames: ['at outer (index.js:0:24)'],
+                functionKeys: outerKeys,
+              }],
+            });
+          });
+
+          it('attributes outlined frames to the authored function', async () => {
+            assert.deepEqual(await translateStep([rawFrame(script, '_loop', 1, 21), builtinFrame('next')]), {
+              translated: true,
+              remainingFrames: 1,
+              translations: [{
+                kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+                frames: ['at outer (index.js:1:21)'],
+                functionKeys: outerKeys,
+              }],
+            });
+          });
+
+          it('consolidates an outlined frame with its unmapped caller', async () => {
+            assert.deepEqual(await translateStackTrace([
+                               rawFrame(script, '_loop', 1, 17),
+                               rawFrame(script, 'outer', 0, 24),
+                               rawFrame(script, 'main', 2, 16),
+                             ]),
+                             [
+                               'at outer (index.ts:2:4)',
+                               'at main (index.ts:6:2)',
+                             ]);
+          });
+
+          it('does not merge away a recursive unmapped caller', async () => {
+            // Without the function keys, the unmapped `outer` frame would count as "not authored" and be merged
+            // into the chain ending at the second `outer` frame, dropping a frame from the recursion.
+            assert.deepEqual(await translateStackTrace([
+                               rawFrame(script, '_loop', 1, 17),
+                               rawFrame(script, 'outer', 0, 24),
+                               rawFrame(script, 'outer', 0, 17),
+                             ]),
+                             [
+                               'at outer (index.ts:2:4)',
+                               'at outer (index.ts:1:2)',
+                             ]);
+          });
         });
 
         it('populates the UISourceCode of outlined frames', async () => {

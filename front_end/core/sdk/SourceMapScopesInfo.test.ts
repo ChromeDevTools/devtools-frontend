@@ -44,6 +44,14 @@ function stubScopeChain(callFrame: sinon.SinonStubbedInstance<SDK.DebuggerModel.
   callFrame.scopeChain.returns(payloads.map((_, ordinal) => new SDK.DebuggerModel.Scope(callFrame, ordinal)));
 }
 
+/** Like {@link stringifyFrame}, but renders frames at unmapped generated positions as `url:unmapped`. */
+function stringifyTranslatedFrame(frame: SDK.SourceMapScopesInfo.TranslatedFrame): string {
+  if (frame.line === undefined || frame.column === undefined) {
+    return `at ${frame.name ?? '<anonymous>'} (${frame.url}:unmapped)`;
+  }
+  return stringifyFrame({...frame, line: frame.line, column: frame.column});
+}
+
 describe('SourceMapScopesInfo', () => {
   setupLocaleHooks();
   setupSettingsHooks();
@@ -108,21 +116,21 @@ describe('SourceMapScopesInfo', () => {
         const translatedFrames = info.translateRawFrame(0, 18).frames;  // Pause on 'print'.
 
         assert.lengthOf(translatedFrames, 1);
-        assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at inner (index.ts:1:7)');
+        assert.strictEqual(stringifyTranslatedFrame(translatedFrames[0]), 'at inner (index.ts:1:7)');
       }
 
       {
         const translatedFrames = info.translateRawFrame(1, 23).frames;  // Pause on 'n()'.
 
         assert.lengthOf(translatedFrames, 1);
-        assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at outer (index.ts:6:9)');
+        assert.strictEqual(stringifyTranslatedFrame(translatedFrames[0]), 'at outer (index.ts:6:9)');
       }
 
       {
         const translatedFrames = info.translateRawFrame(2, 1).frames;  // Pause on 'm()'.
 
         assert.lengthOf(translatedFrames, 1);
-        assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at <anonymous> (index.ts:10:5)');
+        assert.strictEqual(stringifyTranslatedFrame(translatedFrames[0]), 'at <anonymous> (index.ts:10:5)');
       }
     });
 
@@ -178,21 +186,22 @@ describe('SourceMapScopesInfo', () => {
         const translatedFrames = info.translateRawFrame(0, 26).frames;  // Pause on 'print'.
 
         assert.lengthOf(translatedFrames, 2);
-        assert.deepEqual(translatedFrames.map(stringifyFrame), ['at inner (index.ts:1:7)', 'at outer (index.ts:6:8)']);
+        assert.deepEqual(translatedFrames.map(stringifyTranslatedFrame),
+                         ['at inner (index.ts:1:7)', 'at outer (index.ts:6:8)']);
       }
 
       {
         const translatedFrames = info.translateRawFrame(0, 14).frames;  // Pause on 'if'.
 
         assert.lengthOf(translatedFrames, 1);
-        assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at outer (index.ts:5:5)');
+        assert.strictEqual(stringifyTranslatedFrame(translatedFrames[0]), 'at outer (index.ts:5:5)');
       }
 
       {
         const translatedFrames = info.translateRawFrame(1, 1).frames;  // Pause on 'm'.
 
         assert.lengthOf(translatedFrames, 1);
-        assert.strictEqual(stringifyFrame(translatedFrames[0]), 'at <anonymous> (index.ts:10:5)');
+        assert.strictEqual(stringifyTranslatedFrame(translatedFrames[0]), 'at <anonymous> (index.ts:10:5)');
       }
     });
 
@@ -245,7 +254,7 @@ describe('SourceMapScopesInfo', () => {
       {
         const translatedFrames = info.translateRawFrame(0, 5).frames;  // Pause on 'print'.
 
-        assert.deepEqual(translatedFrames.map(stringifyFrame), [
+        assert.deepEqual(translatedFrames.map(stringifyTranslatedFrame), [
           'at inner (index.ts:1:7)',
           'at outer (index.ts:6:9)',
           'at <anonymous> (index.ts:10:5)',
@@ -255,7 +264,7 @@ describe('SourceMapScopesInfo', () => {
 
     function stringify(translation: SDK.SourceMapScopesInfo.RawFrameTranslation):
         {kind: SDK.SourceMapScopesInfo.GeneratedFrameKind, frames: string[]} {
-      return {kind: translation.kind, frames: translation.frames.map(stringifyFrame)};
+      return {kind: translation.kind, frames: translation.frames.map(stringifyTranslatedFrame)};
     }
 
     //
@@ -411,13 +420,51 @@ describe('SourceMapScopesInfo', () => {
       });
     });
 
-    it('returns no frames if the generated position is not mapped', () => {
+    it('identifies the authored function of an unmapped position via the generated ranges', () => {
       const info = createInlinedIntoOutlinedScopesInfo(['0:17 => index.ts:4:2', '1:14']);
 
-      assert.deepEqual(stringify(info.translateRawFrame(1, 17)), {
+      const translation = info.translateRawFrame(1, 17);
+
+      assert.deepEqual(stringify(translation), {
         kind: SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED,
-        frames: [],
+        frames: ['at inner (index.ts:unmapped)', 'at outer (index.ts:5:4)'],
       });
+      assert.deepEqual(translation.frames[0].functionStart, {line: 0, column: 14});
+    });
+
+    it('identifies the file of unmapped top-level code via the generated ranges', () => {
+      // `index.ts` is only known through the first mapping. The position under test is covered by the second one.
+      const sourceMap =
+          new SDK.SourceMap.SourceMap(urlString`index.js`, urlString`index.js.map`,
+                                      encodeSourceMap(['0:0 => index.ts:0:0', '0:5']), new Common.Console.Console());
+      const builder = new ScopeInfoBuilder();
+      builder.startSource().startScope(0, 0, {kind: 'global', key: 'global'}).endScope(1, 0).endSource();
+      builder.startRange(0, 0, {scopeKey: 'global'}).endRange(1, 0);
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
+
+      const {kind, frames} = info.translateRawFrame(0, 7);
+
+      assert.strictEqual(kind, SDK.SourceMapScopesInfo.GeneratedFrameKind.VISIBLE);
+      assert.deepEqual(frames, [{name: undefined, url: urlString`index.ts`, functionStart: undefined}]);
+    });
+
+    it('returns no frames for an unmapped position without an original scope', () => {
+      const scopeInfo = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap),
+                                                new ScopeInfoBuilder()
+                                                    .startSource()
+                                                    .startScope(0, 0, {isStackFrame: true, key: 'fn'})
+                                                    .endScope(10, 0)
+                                                    .endSource()
+                                                    .startRange(0, 0)
+                                                    .startRange(0, 20, {isStackFrame: true, scopeKey: 'fn'})
+                                                    .endRange(0, 30)
+                                                    .endRange(0, 50)
+                                                    .build());
+
+      // Inside `fn` the function is known, outside of it nothing is.
+      assert.deepEqual(scopeInfo.translateRawFrame(0, 25).frames,
+                       [{name: '', url: undefined, functionStart: {line: 0, column: 0}}]);
+      assert.deepEqual(scopeInfo.translateRawFrame(0, 5).frames, []);
     });
 
     it('returns the start of the original function for the top frame and each inlined caller', () => {

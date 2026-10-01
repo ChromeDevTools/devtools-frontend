@@ -2088,6 +2088,13 @@ const PositionAreaRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Posit
 // clang-format off
 export class PositionAreaRenderer extends PositionAreaRendererBase {
   // clang-format on
+  static #active?: {
+    editor: InlineEditor.PositionAreaEditor.PositionAreaEditor,
+    treeElement: StylePropertyTreeElement,
+    valueElement: HTMLElement,
+    key?: string,
+  };
+
   readonly #treeElement: StylePropertyTreeElement|null;
   readonly #stylesContainer: StylesContainer;
   constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null) {
@@ -2096,11 +2103,40 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
+  #findTreeElementForProperty(propertyName: string): StylePropertyTreeElement|undefined {
+    const activeTreeElement = PositionAreaRenderer.#active?.treeElement;
+    if (!activeTreeElement) {
+      return undefined;
+    }
+    const matchedStyles = activeTreeElement.matchedStyles();
+    const resolvedProperty = matchedStyles.resolveProperty(propertyName, activeTreeElement.property.ownerStyle);
+    const activeSection = activeTreeElement.section();
+    if (resolvedProperty) {
+      const allSections = this.#stylesContainer.allSections();
+      const sections =
+          activeSection && !allSections.includes(activeSection) ? [activeSection, ...allSections] : allSections;
+      for (const section of sections) {
+        for (const child of section.propertiesTreeOutline?.rootElement().children() ?? []) {
+          if (child instanceof StylePropertyTreeElement && child.property === resolvedProperty) {
+            return child;
+          }
+        }
+      }
+    }
+
+    return activeSection?.propertiesTreeOutline?.rootElement().children().find(
+        (child): child is StylePropertyTreeElement =>
+            child instanceof StylePropertyTreeElement && child.property.name === propertyName);
+  }
+
   override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): Node[] {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     if (!this.#treeElement?.editable() || !InlineEditor.PositionAreaEditor.parsePositionArea(match.text)) {
       return children;
     }
+
+    const section = this.#treeElement.section();
+    const key = section ? `${section.getSectionIdx()}_${section.nextEditorTriggerButtonIdx++}` : undefined;
 
     const valueElement = document.createElement('span');
     valueElement.append(...children);
@@ -2112,22 +2148,77 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
     button.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({click: true}).context('position-area')}`);
 
     const treeElement = this.#treeElement;
+    const popoverHelper = this.#stylesContainer.swatchPopoverHelper();
+    if (PositionAreaRenderer.#active && popoverHelper.isShowing(PositionAreaRenderer.#active.editor) &&
+        key !== undefined && PositionAreaRenderer.#active.key === key) {
+      PositionAreaRenderer.#active.treeElement = treeElement;
+      PositionAreaRenderer.#active.valueElement = valueElement;
+      popoverHelper.setAnchorElement(button);
+    }
+
     button.onclick = event => {
       event.consume(true);
-      const popoverHelper = this.#stylesContainer.swatchPopoverHelper();
       if (popoverHelper.isShowing()) {
         popoverHelper.hide(true);
         return;
       }
       const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor();
+      const active = {editor, key, treeElement, valueElement};
+      PositionAreaRenderer.#active = active;
       editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueElement.textContent ?? '') ?? undefined;
+
+      const updateProperty = (propertyName: string, computedStyle: Map<string, string>|null): void => {
+        const matchedStyles = active.treeElement.matchedStyles();
+        const resolved = matchedStyles.resolveProperty(propertyName, active.treeElement.property.ownerStyle);
+        const authored = resolved && !resolved.ownerStyle.parentRule?.isUserAgent() ? resolved.value : undefined;
+        const computed = computedStyle?.get(propertyName);
+        editor.setProperty(propertyName, authored, computed);
+      };
+
+      const updateEditorProperties = async(): Promise<void> => {
+        active.treeElement.matchedStyles().resetActiveProperties();
+        updateProperty('align-self', active.treeElement.getComputedStyles());
+        updateProperty('justify-self', active.treeElement.getComputedStyles());
+        const computedStyle = await this.#stylesContainer.computedStyleModel().fetchComputedStyle();
+        updateProperty('align-self', computedStyle?.computedStyle ?? null);
+        updateProperty('justify-self', computedStyle?.computedStyle ?? null);
+      };
+      void updateEditorProperties();
 
       const onPositionAreaChanged =
           (changeEvent: Common.EventTarget.EventTargetEvent<InlineEditor.PositionAreaEditor.Area>): void => {
-            valueElement.textContent = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
-            void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
+            active.valueElement.textContent = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
+            void active.treeElement.applyStyleText(active.treeElement.renderedPropertyText(), false);
           };
+      const onPropertyChanged =
+          async(changeEvent: Common.EventTarget.EventTargetEvent<InlineEditor.PositionAreaEditor.PropertyChangeEvent>):
+              Promise<void> => {
+                const activeSection = active.treeElement.section();
+                if (!activeSection) {
+                  return;
+                }
+                const {propertyName, value} = changeEvent.data;
+                let target = this.#findTreeElementForProperty(propertyName);
+                this.#stylesContainer.setEditingStyle(false);
+                try {
+                  if (value) {
+                    if (!target) {
+                      target = activeSection.addNewBlankProperty();
+                      target.property.name = propertyName;
+                    }
+                    target.property.value = value;
+                    target.updateTitle();
+                    await target.applyStyleText(target.renderedPropertyText(), false);
+                  } else if (target) {
+                    await target.applyStyleText('', false);
+                  }
+                } finally {
+                  this.#stylesContainer.setEditingStyle(true);
+                }
+                void updateEditorProperties();
+              };
       editor.addEventListener(InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED, onPositionAreaChanged);
+      editor.addEventListener(InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED, onPropertyChanged);
 
       const scrollerElement = button.enclosingNodeOrSelfWithClass('style-panes-wrapper');
       const onScroll = (): void => {
@@ -2145,8 +2236,12 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
           scrollerElement.removeEventListener('scroll', onScroll, false);
         }
         editor.removeEventListener(InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED, onPositionAreaChanged);
-        const propertyText = commitEdit ? treeElement.renderedPropertyText() : originalPropertyText || '';
-        void treeElement.applyStyleText(propertyText, true);
+        editor.removeEventListener(InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED, onPropertyChanged);
+        const propertyText = commitEdit ? active.treeElement.renderedPropertyText() : originalPropertyText || '';
+        void active.treeElement.applyStyleText(propertyText, true);
+        if (PositionAreaRenderer.#active === active) {
+          PositionAreaRenderer.#active = undefined;
+        }
         this.#stylesContainer.setEditingStyle(false);
       });
     };

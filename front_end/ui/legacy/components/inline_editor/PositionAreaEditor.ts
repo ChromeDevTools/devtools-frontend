@@ -1,6 +1,8 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../../kit/kit.js';
+
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -39,6 +41,18 @@ const UIStrings = {
    * @description Label for auto mode radio button in the position-area editor.
    */
   auto: 'Auto',
+  /**
+   * @description Title of the button that selects an alignment property value in the position-area editor.
+   * @example {align-self} propertyName
+   * @example {center} propertyValue
+   */
+  selectButton: 'Add {propertyName}: {propertyValue}',
+  /**
+   * @description Title of the button that deselects an alignment property value in the position-area editor.
+   * @example {align-self} propertyName
+   * @example {center} propertyValue
+   */
+  deselectButton: 'Remove {propertyName}: {propertyValue}',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/PositionAreaEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -282,14 +296,28 @@ export function stringifyPositionArea(area: Area): string {
   return `${firstKw} ${secondKw}`;
 }
 
+export interface PropertyChangeEvent {
+  propertyName: string;
+  value: string|undefined;
+}
+
+const ALIGNMENT_VALUES = [
+  {value: 'center', iconName: 'align-self-center'},
+  {value: 'start', iconName: 'align-self-start'},
+  {value: 'end', iconName: 'align-self-end'},
+  {value: 'stretch', iconName: 'align-self-stretch'},
+  {value: 'anchor-center', iconName: 'center-focus-weak'},
+] as const;
 export interface ViewInput {
   area: Area|undefined;
+  properties?: ReadonlyMap<string, {authored?: string, computed?: string}>;
   readonly isSelecting?: boolean;
   onSelectStart: (x: number, y: number) => void;
   onSelect: (x: number, y: number) => void;
   onSelectEnd: (x?: number, y?: number) => void;
   onModeChange: (mode: Mode) => void;
   onSelfChange: (self: boolean) => void;
+  onPropertyChange?: (propertyName: string, value: string|undefined) => void;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
@@ -514,6 +542,45 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     // clang-format on
   }
 
+  function renderAlignmentSection(propertyName: string): Lit.TemplateResult {
+    const property = input.properties?.get(propertyName);
+    const authoredValue = property?.authored;
+    const notAuthored = !authoredValue;
+    const shownValue = authoredValue || property?.computed;
+    const valueClasses = Directives.classMap({
+      'property-value': true,
+      'not-authored': notAuthored,
+    });
+    // clang-format off
+    return html`
+      <div class=axis-section>
+        <div class=axis-header>
+          <div class=property>
+            <span class=property-name>${propertyName}:</span>
+            ${shownValue ? html`<span class=${valueClasses}><span class=property-keyword>${shownValue}</span></span>` : nothing}
+          </div>
+        </div>
+        <div class=${Directives.classMap({'alignment-buttons': true, 'justify-self': propertyName === 'justify-self'})}>
+          ${ALIGNMENT_VALUES.map(({value, iconName}) => {
+            const selected = authoredValue === value;
+            const title = selected ? i18nString(UIStrings.deselectButton, {propertyName, propertyValue: value}) :
+                                     i18nString(UIStrings.selectButton, {propertyName, propertyValue: value});
+            return html`
+              <button
+                type="button"
+                title=${title}
+                class=${Directives.classMap({'alignment-button': true, selected})}
+                aria-pressed=${selected}
+                jslog=${VisualLogging.item(`${propertyName}-${value}`).track({click: true})}
+                @click=${() => input.onPropertyChange?.(propertyName, selected ? undefined : value)}>
+                <devtools-icon name=${iconName}></devtools-icon>
+              </button>
+            `;
+          })}
+        </div>
+      </div>`;
+    // clang-format on
+  }
   // clang-format off
   render(html`
     <style>${positionAreaEditorStyles}</style>
@@ -568,6 +635,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         </div>
         ${renderModeRadioGroup(currentMode)}
       </div>
+      ${renderAlignmentSection('align-self')}
+      ${renderAlignmentSection('justify-self')}
     </div>
     `,
          // clang-format on
@@ -576,10 +645,12 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
 export const enum Events {
   POSITION_AREA_CHANGED = 'positionAreaChanged',
+  PROPERTY_CHANGED = 'propertyChanged',
 }
 
 export interface EventTypes {
   [Events.POSITION_AREA_CHANGED]: Area;
+  [Events.PROPERTY_CHANGED]: PropertyChangeEvent;
 }
 
 const PositionAreaEditorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
@@ -590,6 +661,7 @@ const PositionAreaEditorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof
 export class PositionAreaEditor extends PositionAreaEditorBase {
   #view: View;
   #area?: Area;
+  #properties = new Map<string, {authored?: string, computed?: string}>();
   #inProgressSelection?: {
     start: {x: number, y: number},
     end: {x: number, y: number},
@@ -757,10 +829,22 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
     this.#notifyChange();
   }
 
+  setProperty(name: string, authored?: string, computed?: string): void {
+    this.#properties.set(name, {authored, computed});
+    this.requestUpdate();
+  }
+
+  #updateProperty(propertyName: string, value: string|undefined): void {
+    const current = this.#properties.get(propertyName);
+    this.#properties.set(propertyName, {...current, authored: value});
+    this.requestUpdate();
+    this.dispatchEventToListeners(Events.PROPERTY_CHANGED, {propertyName, value});
+  }
   override performUpdate(): void {
     const isSelecting = (): boolean => this.#inProgressSelection !== undefined;
     this.#view({
       area: this.#area,
+      properties: this.#properties,
       get isSelecting(): boolean {
         return isSelecting();
       },
@@ -775,6 +859,7 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
         this.#setAxisSelf(Axis.BLOCK, self);
         this.#setAxisSelf(Axis.INLINE, self);
       },
+      onPropertyChange: this.#updateProperty.bind(this),
     },
                undefined, this.contentElement);
   }

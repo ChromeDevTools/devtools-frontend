@@ -38,7 +38,7 @@ export const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 export const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
 const CLS_PANE_SELECTOR = '.styles-sidebar-toolbar-pane';
 const CLS_BUTTON_SELECTOR = '[aria-label="Element classes"]';
-const CLS_INPUT_SELECTOR = '[aria-placeholder="Add new class"]';
+const CLS_INPUT_SELECTOR = '[aria-label="Add new class"]';
 const LAYOUT_PANE_TAB_SELECTOR = '[aria-label="Layout"]';
 const LAYOUT_PANE_TABPANEL_SELECTOR = '[aria-label="Layout panel"]';
 const ADORNER_SELECTOR = 'devtools-adorner';

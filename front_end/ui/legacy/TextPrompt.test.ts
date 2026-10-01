@@ -375,4 +375,47 @@ describe('TextPrompt', () => {
     await prompt.complete();
     assert.strictEqual(prompt.textWithCurrentSuggestion(), 'something_before testTextPrompt');
   });
+
+  it('uses textbox role when completions are not initialized', () => {
+    prompt.attachAndStartEditing(div);
+    prompt.setPlaceholder('Filter');
+
+    assert.strictEqual(div.getAttribute('role'), 'textbox');
+    assert.strictEqual(div.getAttribute('aria-placeholder'), 'Filter');
+    assert.isFalse(div.hasAttribute('aria-autocomplete'));
+    assert.isFalse(div.hasAttribute('aria-haspopup'));
+    assert.isFalse(div.hasAttribute('aria-expanded'));
+
+    prompt.initialize(async () => suggestions);
+    assert.strictEqual(div.getAttribute('role'), 'combobox');
+    assert.isFalse(div.hasAttribute('aria-placeholder'));
+    assert.strictEqual(div.getAttribute('aria-label'), 'Filter');
+    assert.strictEqual(div.getAttribute('aria-autocomplete'), 'both');
+    assert.strictEqual(div.getAttribute('aria-haspopup'), 'listbox');
+    assert.strictEqual(div.getAttribute('aria-expanded'), 'false');
+  });
+
+  it('sets and cleans up combobox ARIA attributes for autocomplete', async () => {
+    prompt.initialize(async () => suggestions);
+    prompt.attachAndStartEditing(div);
+
+    assert.strictEqual(div.getAttribute('role'), 'combobox');
+    assert.strictEqual(div.getAttribute('aria-autocomplete'), 'both');
+    assert.strictEqual(div.getAttribute('aria-haspopup'), 'listbox');
+    assert.strictEqual(div.getAttribute('aria-expanded'), 'false');
+
+    prompt.setText('hey');
+    await prompt.complete();
+    assert.strictEqual(div.getAttribute('aria-expanded'), 'true');
+    assert.isTrue(div.hasAttribute('aria-controls'));
+
+    prompt.clearAutocomplete();
+    assert.strictEqual(div.getAttribute('aria-expanded'), 'false');
+
+    prompt.detach();
+    assert.isFalse(div.hasAttribute('role'));
+    assert.isFalse(div.hasAttribute('aria-autocomplete'));
+    assert.isFalse(div.hasAttribute('aria-haspopup'));
+    assert.isFalse(div.hasAttribute('aria-expanded'));
+  });
 });

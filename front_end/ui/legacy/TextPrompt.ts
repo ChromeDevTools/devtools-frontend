@@ -350,7 +350,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   private completionRequestId: number;
   private ghostTextElement: HTMLSpanElement;
   private leftParenthesesIndices: number[];
-  private loadCompletions!: (
+  private loadCompletions?: (
       this: null,
       arg1: string,
       arg2: string,
@@ -359,6 +359,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   private completionStopCharacters!: string;
   private usesSuggestionBuilder!: boolean;
   #element?: Element;
+  #ariaPlaceholder: string|null = null;
+  #ariaLabelFromPlaceholder = false;
   private boundOnKeyDown?: ((ev: KeyboardEvent) => void);
   private boundOnInput?: ((ev: Event) => void);
   private boundOnMouseWheel?: ((event: Event) => void);
@@ -396,6 +398,30 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.loadCompletions = completions;
     this.completionStopCharacters = stopCharacters || ' =:[({;,!+-*/&|^<>.';
     this.usesSuggestionBuilder = usesSuggestionBuilder || false;
+    this.#updateAriaRole();
+  }
+
+  #updateAriaRole(): void {
+    if (!this.#element) {
+      return;
+    }
+    if (this.loadCompletions) {
+      ARIAUtils.markAsCombobox(this.#element);
+      ARIAUtils.setAutocomplete(this.#element, ARIAUtils.AutocompleteInteractionModel.BOTH);
+      ARIAUtils.setHasPopup(this.#element, ARIAUtils.PopupRole.LIST_BOX);
+      ARIAUtils.setExpanded(this.#element, this.isSuggestBoxVisible());
+      ARIAUtils.setPlaceholder(this.#element, null);
+      if (this.#ariaPlaceholder && (!this.#element.hasAttribute('aria-label') || this.#ariaLabelFromPlaceholder)) {
+        ARIAUtils.setLabel(this.#element, this.#ariaPlaceholder);
+        this.#ariaLabelFromPlaceholder = true;
+      }
+    } else {
+      ARIAUtils.markAsTextBox(this.#element);
+      ARIAUtils.clearAutocomplete(this.#element);
+      ARIAUtils.setHasPopup(this.#element, ARIAUtils.PopupRole.FALSE);
+      ARIAUtils.unsetExpandable(this.#element);
+      ARIAUtils.setPlaceholder(this.#element, this.#ariaPlaceholder);
+    }
   }
 
   setAutocompletionTimeout(timeout: number): void {
@@ -467,9 +493,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       this.#element.setAttribute('jslog', `${jslog}`);
     }
     this.#element.classList.add('text-prompt');
-    ARIAUtils.markAsTextBox(this.#element);
-    ARIAUtils.setAutocomplete(this.#element, ARIAUtils.AutocompleteInteractionModel.BOTH);
-    ARIAUtils.setHasPopup(this.#element, ARIAUtils.PopupRole.LIST_BOX);
+    this.#updateAriaRole();
     this.#element.setAttribute('contenteditable', 'plaintext-only');
     this.element().addEventListener('keydown', this.boundOnKeyDown, false);
     this.#element.addEventListener('input', this.boundOnInput, false);
@@ -508,6 +532,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.element().removeAttribute('role');
     ARIAUtils.clearAutocomplete(this.element());
     ARIAUtils.setHasPopup(this.element(), ARIAUtils.PopupRole.FALSE);
+    ARIAUtils.unsetExpandable(this.element());
   }
 
   textWithCurrentSuggestion(): string {
@@ -582,11 +607,16 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       this.element().setAttribute('data-placeholder', placeholder);
       // TODO(https://github.com/nvaccess/nvda/issues/10164): Remove ariaPlaceholder once the NVDA bug is fixed
       // ariaPlaceholder and placeholder may differ, like in case the placeholder contains a '?'
-      ARIAUtils.setPlaceholder(this.element(), ariaPlaceholder || placeholder);
+      this.#ariaPlaceholder = ariaPlaceholder || placeholder;
     } else {
       this.element().removeAttribute('data-placeholder');
-      ARIAUtils.setPlaceholder(this.element(), null);
+      this.#ariaPlaceholder = null;
+      if (this.#ariaLabelFromPlaceholder) {
+        this.element().removeAttribute('aria-label');
+        this.#ariaLabelFromPlaceholder = false;
+      }
     }
+    this.#updateAriaRole();
   }
 
   setEnabled(enabled: boolean): void {
@@ -822,7 +852,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
 
   async complete(force?: boolean): Promise<void> {
     this.clearAutocompleteTimeout();
-    if (!this.element().isConnected) {
+    if (!this.loadCompletions || !this.element().isConnected) {
       return;
     }
 

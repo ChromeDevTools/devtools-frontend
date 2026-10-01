@@ -744,11 +744,13 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     this.proxyElement = this.prompt.attach(internalPromptElement);
     this.proxyElement.classList.add('toolbar-prompt-proxy');
     this.proxyElement.addEventListener('keydown', (event: Event) => this.onKeydownCallback(event as KeyboardEvent));
-    this.prompt.initialize(
-        completions || (() => Promise.resolve([])),
-        ' ',
-        dynamicCompletions,
-    );
+    if (completions) {
+      this.prompt.initialize(
+          completions,
+          ' ',
+          dynamicCompletions,
+      );
+    }
     if (tooltip) {
       this.prompt.setTitle(tooltip);
     }

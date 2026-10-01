@@ -1793,6 +1793,29 @@ describeWithEnvironment('CommentAnchorResolver', () => {
     });
   });
 
+  describe('extractPanelId', () => {
+    it('extracts panel ID from valid VE paths', () => {
+      assert.strictEqual(
+          Comments.CommentAnchorResolver.extractPanelId('Panel: timeline > FlameChart: main'),
+          'timeline',
+      );
+      assert.strictEqual(
+          Comments.CommentAnchorResolver.extractPanelId('Panel: elements > Pane: styles'),
+          'elements',
+      );
+      assert.strictEqual(
+          Comments.CommentAnchorResolver.extractPanelId('Panel: console-view'),
+          'console-view',
+      );
+    });
+
+    it('returns undefined if no Panel component is present', () => {
+      assert.isUndefined(Comments.CommentAnchorResolver.extractPanelId('TreeItem: foo'));
+      assert.isUndefined(Comments.CommentAnchorResolver.extractPanelId(undefined));
+      assert.isUndefined(Comments.CommentAnchorResolver.extractPanelId(''));
+    });
+  });
+
   describe('isDomTrackedAnchor', () => {
     it('returns true for standard DOM anchors', () => {
       const domAnchor: Comments.CommentAnchorResolver.CommentAnchorSignature = {

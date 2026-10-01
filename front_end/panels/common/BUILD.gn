@@ -98,8 +98,10 @@ devtools_entrypoint("meta") {
 
   ts_deps = [
     ":bundle",
+    "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/root:bundle",
+    "../../models/comment_manager:bundle",
     "../../ui/legacy:bundle",
   ]
 

@@ -5,7 +5,8 @@
 import '../../ui/components/tooltips/tooltips.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
@@ -235,4 +236,32 @@ export class CommentThreadWidget extends UI.Widget.Widget {
     };
     this.#view(viewInput, undefined, this.contentElement);
   }
+}
+
+export async function computeCommentTitle(
+    anchor: CommentManager.CommentManager.CommentAnchorSignature,
+    ): Promise<Title> {
+  if (anchor.node) {
+    const target = SDK.TargetManager.TargetManager.instance().targetById(anchor.node.targetId);
+    if (target) {
+      const deferredNode = new SDK.DOMModel.DeferredDOMNode(
+          target,
+          anchor.node.backendNodeId as Protocol.DOM.BackendNodeId,
+      );
+      const node = await deferredNode.resolvePromise();
+      if (node) {
+        return {node};
+      }
+    }
+  }
+
+  if (anchor.networkRequestId) {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const request = target?.model(SDK.NetworkManager.NetworkManager)?.requestForId(anchor.networkRequestId);
+    if (request) {
+      return {text: request.name()};
+    }
+  }
+
+  return {text: anchor.textSignature || ''};
 }

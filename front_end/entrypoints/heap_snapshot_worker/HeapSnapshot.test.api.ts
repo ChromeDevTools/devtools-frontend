@@ -368,20 +368,37 @@ function checkStrictEval({snapshot, analysis}: ContextFixture): void {
   assertNoScopes(analysis, 'strict-eval.js');
 }
 
-// Loads contexts retained by suspended generators.
-function checkGenerator({snapshot, analysis}: ContextFixture): void {
-  const scope = singleScopeForScript(analysis, 'generator.js');
-
-  assert.deepEqual(allContextFields(snapshot, scope), ['generatorDead', 'neededAfterYield']);
-  assert.deepEqual(deadFieldNames(scope), [['generatorDead']]);
+// Doesn't report fields of a paused generator that a function nested in it
+// reads, even if the generator has already passed that function. A paused
+// generator counts as a closure that can still create any of its nested
+// functions.
+function checkGenerator({analysis}: ContextFixture): void {
+  assertNoScopes(analysis, 'generator.js');
 }
 
-// Loads contexts retained by suspended async functions.
-function checkAsyncFunction({snapshot, analysis}: ContextFixture): void {
-  const scope = singleScopeForScript(analysis, 'async.js');
+// Doesn't report fields of a paused async function that a function nested in
+// it reads, like for paused generators.
+function checkAsyncFunction({analysis}: ContextFixture): void {
+  assertNoScopes(analysis, 'async.js');
+}
 
-  assert.deepEqual(allContextFields(snapshot, scope), ['asyncDead', 'neededAfterAwait']);
-  assert.deepEqual(deadFieldNames(scope), [['asyncDead']]);
+// Keeps fields in use that the body of a paused generator reads once resumed.
+function checkGeneratorBody({analysis}: ContextFixture): void {
+  assertNoScopes(analysis, 'generator-body.js');
+}
+
+// Keeps fields in use that the body of a paused async function reads once
+// resumed.
+function checkAsyncFunctionBody({analysis}: ContextFixture): void {
+  assertNoScopes(analysis, 'async-body.js');
+}
+
+// Reports fields of a finished generator, which can't run anymore.
+function checkFinishedGenerator({snapshot, analysis}: ContextFixture): void {
+  const scope = singleScopeForScript(analysis, 'finished-generator.js');
+
+  assert.deepEqual(allContextFields(snapshot, scope), ['finishedGeneratorDead']);
+  assert.deepEqual(deadFieldNames(scope), [['finishedGeneratorDead']]);
 }
 
 // Parses module scopes and reports their script metadata.
@@ -464,6 +481,9 @@ describe('HeapSnapshot analyze context fields API Test', () => {
     checkStrictEval(fixture);
     checkGenerator(fixture);
     checkAsyncFunction(fixture);
+    checkGeneratorBody(fixture);
+    checkAsyncFunctionBody(fixture);
+    checkFinishedGenerator(fixture);
     checkModuleScopes(fixture);
     checkModuleTopLevelScopes(fixture);
     checkModuleTopLevelAwait(fixture);

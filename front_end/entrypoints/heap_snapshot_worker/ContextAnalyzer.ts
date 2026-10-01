@@ -79,8 +79,8 @@ interface ScopeAccumulator {
 }
 
 interface LiveClosure {
-  // The JSFunction this entry was created for.
-  closureNodeIndex: number;
+  // The JSFunction or generator object this entry was created for.
+  ownerNodeIndex: number;
   contextNodeIndex: ContextNodeIndex;
   scriptNodeIndex: ScriptNodeIndex;
   scopeId: ScopeId;
@@ -270,7 +270,7 @@ function scanHeap(snapshot: HeapSnapshot): HeapScan {
     } else if (node.rawType() === nodeClosureType) {
       processClosure(liveClosures, node);
     } else if (isGeneratorObject(generatorMapNodeIndexes, node)) {
-      processGeneratorObject(finishedModuleFunctionNodeIndexes, node);
+      processGeneratorObject(liveClosures, finishedModuleFunctionNodeIndexes, node);
     }
   }
 
@@ -440,6 +440,11 @@ function processClosure(liveClosures: LiveClosure[], node: HeapSnapshotNode): vo
   if (!sharedFunctionInfo || !closureContext) {
     return;
   }
+  addLiveClosure(liveClosures, node, sharedFunctionInfo, closureContext);
+}
+
+function addLiveClosure(liveClosures: LiveClosure[], ownerNode: HeapSnapshotNode, sharedFunctionInfo: HeapSnapshotNode,
+                        contextNode: HeapSnapshotNode): void {
   const script = sharedFunctionInfo.findInternalEdgeTarget('script');
   if (!script) {
     return;
@@ -447,8 +452,8 @@ function processClosure(liveClosures: LiveClosure[], node: HeapSnapshotNode): vo
   const scopeId = sharedFunctionInfo.findInternalEdgeTarget('scope_id')?.nodeValueAsInt() as ScopeId | undefined;
   if (scopeId !== undefined) {
     liveClosures.push({
-      closureNodeIndex: node.nodeIndex,
-      contextNodeIndex: closureContext.nodeIndex as ContextNodeIndex,
+      ownerNodeIndex: ownerNode.nodeIndex,
+      contextNodeIndex: contextNode.nodeIndex as ContextNodeIndex,
       scriptNodeIndex: script.nodeIndex as ScriptNodeIndex,
       scopeId,
     });
@@ -459,32 +464,43 @@ function processClosure(liveClosures: LiveClosure[], node: HeapSnapshotNode): vo
 const GENERATOR_CLOSED = -1;
 
 /**
- * Records the top-level functions of modules that finished evaluating.
- *
- * V8 runs the top-level code of a module as a generator. The module record keeps that generator
- * alive after evaluation, and with it the top-level function. Unlike other functions, the top-level
- * function is bound to the context of its own scope, the module context. Every function of the
- * module is nested inside it, so as a live closure it would keep all fields of the module context in
- * use. Once the generator has finished, however, the top-level function can't run anymore, and user
- * code can't call it.
- *
- * The functions of other finished generators can still be called, and are handled like any other
- * closure.
+ * Handles generator objects, which V8 uses for generators, async functions, async generators and
+ * the top-level code of modules.
  */
-function processGeneratorObject(finishedModuleFunctionNodeIndexes: Set<number>, node: HeapSnapshotNode): void {
+function processGeneratorObject(liveClosures: LiveClosure[], finishedModuleFunctionNodeIndexes: Set<number>,
+                                node: HeapSnapshotNode): void {
   const continuation = node.findInternalEdgeTarget('continuation')?.nodeValueAsInt();
   const generatorFunction = node.findInternalEdgeTarget('function');
   if (continuation === undefined || generatorFunction?.rawType() !== node.snapshot.nodeClosureType) {
     return;
   }
-  if (continuation !== GENERATOR_CLOSED) {
+  const sharedFunctionInfo = generatorFunction.findInternalEdgeTarget('shared');
+  if (!sharedFunctionInfo) {
     return;
   }
-  // Only the top-level code of a module is a generator with the root scope of a script.
-  const scopeId =
-      generatorFunction.findInternalEdgeTarget('shared')?.findInternalEdgeTarget('scope_id')?.nodeValueAsInt();
-  if (scopeId !== undefined && isScriptRootScopeId(scopeId)) {
-    finishedModuleFunctionNodeIndexes.add(generatorFunction.nodeIndex);
+  if (continuation === GENERATOR_CLOSED) {
+    const scopeId = sharedFunctionInfo.findInternalEdgeTarget('scope_id')?.nodeValueAsInt();
+
+    // Only the top-level code of a module is both a generator and a root scope.
+    if (scopeId !== undefined && isScriptRootScopeId(scopeId)) {
+      // A module stores a reference to its generator object. The generator object then
+      // references the top-level JSFunction. Once the generator object is finished its
+      // JSFunction can't run anymore and user code can't call it. Here we record such closures
+      // in order to skip them later in buildLiveFunctions().
+      finishedModuleFunctionNodeIndexes.add(generatorFunction.nodeIndex);
+    }
+
+    // A finished generator can't run again, so it doesn't get a LiveClosure. That way the fields
+    // of its context can be reported as dead.
+    return;
+  }
+  const generatorContext = node.findInternalEdgeTarget('context');
+  if (generatorContext) {
+    // The context of the generator's function is the one the function was created in. The body
+    // of the generator, however, runs in a context of its own, which only the generator object
+    // refers to. A generator therefore counts as a closure of its function with the context
+    // it resumes in.
+    addLiveClosure(liveClosures, node, sharedFunctionInfo, generatorContext);
   }
 }
 
@@ -523,7 +539,7 @@ function buildLiveFunctions(snapshot: HeapSnapshot, liveClosures: LiveClosure[],
   const node = snapshot.createNode();
 
   for (const closure of liveClosures) {
-    if (finishedModuleFunctionNodeIndexes.has(closure.closureNodeIndex)) {
+    if (finishedModuleFunctionNodeIndexes.has(closure.ownerNodeIndex)) {
       // The top-level code of this module has finished and can't run anymore.
       continue;
     }

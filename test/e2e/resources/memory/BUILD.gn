@@ -8,6 +8,7 @@ copy_to_gen("memory") {
   sources = [
     "allocations.html",
     "attached-iframe.html",
+    "context-analysis/async-body.js",
     "context-analysis/async.js",
     "context-analysis/block-variable-inner.js",
     "context-analysis/block-variable.js",
@@ -23,7 +24,9 @@ copy_to_gen("memory") {
     "context-analysis/context.js",
     "context-analysis/dead-closure.js",
     "context-analysis/direct-eval.js",
+    "context-analysis/finished-generator.js",
     "context-analysis/for-of.js",
+    "context-analysis/generator-body.js",
     "context-analysis/generator.js",
     "context-analysis/index.html",
     "context-analysis/inside-direct-eval.js",

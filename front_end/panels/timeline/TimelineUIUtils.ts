@@ -973,8 +973,7 @@ export class TimelineUIUtils {
     let entityAppended = false;
 
     if (maybeTarget) {
-      // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-      if (typeof event[previewElementSymbol] === 'undefined') {
+      if (!previewElementCache.has(event)) {
         let previewElement: (Element|null)|null = null;
         const url = Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
         if (url) {
@@ -985,8 +984,7 @@ export class TimelineUIUtils {
         } else if (Trace.Types.Events.isPaint(event)) {
           previewElement = await TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
         }
-        // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-        event[previewElementSymbol] = previewElement;
+        previewElementCache.set(event, previewElement);
       }
     }
 
@@ -1551,11 +1549,10 @@ export class TimelineUIUtils {
       }
     }
 
-    // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-    if (event[previewElementSymbol]) {
+    const previewElement = previewElementCache.get(event);
+    if (previewElement) {
       contentHelper.addSection(i18nString(UIStrings.preview));
-      // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-      contentHelper.appendElementRow('', event[previewElementSymbol]);
+      contentHelper.appendElementRow('', previewElement);
     }
 
     if (!entityAppended) {
@@ -2212,9 +2209,7 @@ export class TimelineUIUtils {
   }
 }
 
-export const aggregatedStatsKey: unique symbol = Symbol('aggregatedStats');
-
-export const previewElementSymbol: unique symbol = Symbol('previewElement');
+const previewElementCache = new WeakMap<Trace.Types.Events.Event, Element|null>();
 
 export class EventDispatchTypeDescriptor {
   priority: number;
@@ -2442,7 +2437,6 @@ export class TimelineDetailsContentHelper {
   }
 }
 
-export const categoryBreakdownCacheSymbol: unique symbol = Symbol('categoryBreakdownCache');
 export interface TimelineMarkerStyle {
   title: string;
   color: string;

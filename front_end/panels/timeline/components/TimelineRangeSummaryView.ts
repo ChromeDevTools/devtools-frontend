@@ -13,7 +13,8 @@ import * as TimelineSummary from './TimelineSummary.js';
 const {render, html} = Lit;
 const {widget} = UI.Widget;
 
-const categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');
+const categoryBreakdownCache =
+    new WeakMap<Trace.Types.Events.Event[], Record<string, {time: number[], value: number[]}>>();
 
 export interface TimelineRangeSummaryViewData {
   events: Trace.Types.Events.Event[];
@@ -117,8 +118,7 @@ export function statsForTimeRange(
 
   function aggregatedStatsAtTime(time: number): TimeRangeCategoryStats {
     const stats: TimeRangeCategoryStats = {};
-    // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-    const cache = events[categoryBreakdownCacheSymbol];
+    const cache = categoryBreakdownCache.get(events) ?? {};
     for (const category in cache) {
       const categoryCache = cache[category];
       const index =
@@ -149,8 +149,7 @@ export function statsForTimeRange(
   }
 
   function buildRangeStatsCacheIfNeeded(events: Trace.Types.Events.Event[]): void {
-    // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-    if (events[categoryBreakdownCacheSymbol]) {
+    if (categoryBreakdownCache.has(events)) {
       return;
     }
 
@@ -214,8 +213,6 @@ export function statsForTimeRange(
       }
     }
 
-    const obj = (events as Object);
-    // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-    obj[categoryBreakdownCacheSymbol] = aggregatedStats;
+    categoryBreakdownCache.set(events, aggregatedStats);
   }
 }

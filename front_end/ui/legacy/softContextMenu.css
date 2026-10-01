@@ -24,6 +24,8 @@
 }
 
 .dockside-title + devtools-toolbar {
+  /* Keep the title aligned with the other menu items when the menu is wider than the dock side row. */
+  margin-left: auto;
   margin-right: calc(-1 * var(--sys-size-5));
 }
 

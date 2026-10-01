@@ -77,8 +77,6 @@ export interface TabInfo {
   jslogContext?: string;
   enabled?: boolean;
   selected?: boolean;
-  icon?: Element|null;
-  suffix?: Element|null;
 }
 
 const TabbedPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof VBox> = Common.ObjectWrapper.eventMixin(
@@ -1224,6 +1222,12 @@ export class TabbedPaneTab {
   #tabElement!: HTMLElement|undefined;
   private icon: Icon|null = null;
   private suffixElement: HTMLElement|LitTemplate|null = null;
+  // The containers of the `icon-<id>` and `suffix-<id>` slots of the tab header.
+  readonly #slotContainers: {icon?: HTMLElement, suffix?: HTMLElement} = {};
+  // Whether elements are assigned to these slots.
+  readonly #hasSlottedContent = {icon: false, suffix: false};
+  // Last known width of these containers.
+  readonly #slotContainerWidths = {icon: 0, suffix: 0};
 
   #width?: number;
   private delegate?: TabbedPaneTabDelegate;
@@ -1384,6 +1388,50 @@ export class TabbedPaneTab {
     tabSuffixElements.set(tabElement, suffixElementContainer);
   }
 
+  /**
+   * Adds a slot for the `slot="icon-<id>"` or `slot="suffix-<id>"` children
+   * of the TabbedPaneElement to the tab header. The container is hidden
+   * while nothing is assigned to the slot.
+   */
+  #createSlotContainer(titleElement: Element, kind: 'icon'|'suffix', measuring: boolean): void {
+    if (measuring && !this.#hasSlottedContent[kind]) {
+      return;
+    }
+    const container = document.createElement('span');
+    container.classList.add(kind === 'icon' ? 'tabbed-pane-header-tab-icon' : 'tabbed-pane-header-tab-suffix-element',
+                            'tabbed-pane-header-tab-slot-container');
+    titleElement.insertAdjacentElement(kind === 'icon' ? 'beforebegin' : 'afterend', container);
+    if (measuring) {
+      // Slotted content can't be cloned, so like `createMeasureClone`, give
+      // the container the size of the real one instead.
+      const width = this.#measureSlotContainer(kind);
+      if (width > 0) {
+        container.style.boxSizing = 'border-box';
+        container.style.width = `${width}px`;
+      }
+      return;
+    }
+    const slot = container.createChild('slot');
+    slot.name = `${kind}-${this.#id}`;
+    this.#slotContainers[kind] = container;
+    container.style.display = 'none';
+    slot.addEventListener('slotchange', () => {
+      this.#hasSlottedContent[kind] = slot.assignedElements().length > 0;
+      container.style.display = this.#hasSlottedContent[kind] ? '' : 'none';
+      delete this.measuredWidth;
+      this.tabbedPane.requestUpdate();
+    });
+  }
+
+  #measureSlotContainer(kind: 'icon'|'suffix'): number {
+    // The container isn't rendered while the tab header isn't shown.
+    const width = this.#slotContainers[kind]?.getBoundingClientRect().width ?? 0;
+    if (width > 0) {
+      this.#slotContainerWidths[kind] = width;
+    }
+    return this.#slotContainerWidths[kind];
+  }
+
   private createMeasureClone(original: Icon): Element {
     // Cloning doesn't work for the icon component because the shadow
     // root isn't copied, but it is sufficient to create a div styled
@@ -1407,6 +1455,8 @@ export class TabbedPaneTab {
     Tooltip.install(titleElement, this.tooltip || '');
     this.createIconElement(tabElement, titleElement, measuring);
     this.createSuffixElement(tabElement, titleElement, measuring);
+    this.#createSlotContainer(titleElement, 'icon', measuring);
+    this.#createSlotContainer(titleElement, 'suffix', measuring);
     if (!measuring) {
       this.titleElement = titleElement;
     }
@@ -1643,6 +1693,21 @@ export interface TabbedPaneTabDelegate {
   onContextMenu(tabId: string, contextMenu: ContextMenu): void;
 }
 
+/**
+ * Declarative version of the TabbedPane. Each child element with an `id` is a
+ * tab, e.g.
+ *
+ * ```html
+ * <devtools-tabbed-pane>
+ *   <div id="tab1" title="Tab 1">Content 1</div>
+ *   <devtools-icon slot="icon-tab1" name="warning"></devtools-icon>
+ *   <span slot="suffix-tab1">*</span>
+ * </devtools-tabbed-pane>
+ * ```
+ *
+ * Children with `slot="icon-<tab id>"` and `slot="suffix-<tab id>"` are shown
+ * before and after the title in the header of that tab.
+ */
 export class TabbedPaneElement extends WidgetElement<TabbedPane> {
   #closeableTabs = false;
   #allowTabReorder = false;
@@ -1783,8 +1848,6 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
       const enabled = !child.hasAttribute('disabled');
       const isCloseable =
           child.hasAttribute('closeable') ? true : (child.hasAttribute('uncloseable') ? false : undefined);
-      const icon = child.querySelector('[slot="icon"]') ?? undefined;
-      const suffix = child.querySelector('[slot="suffix"]') ?? undefined;
       const view = Widget.getOrCreateWidget(child as HTMLElement);
       view.setHideOnDetach();
       if (widget.selectedTabId !== id) {
@@ -1798,8 +1861,6 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
         selected,
         enabled,
         isCloseable,
-        icon,
-        suffix,
       });
     }
 
@@ -1832,12 +1893,6 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
       } else {
         widget.appendTab(tab.id, tab.title, tab.view, tab.tabTooltip, /* userGesture=*/ false, tab.isCloseable,
                          tab.previewFeature, index, tab.jslogContext);
-      }
-      if (tab.icon !== undefined) {
-        widget.setTabIcon(tab.id, tab.icon as unknown as Icon);
-      }
-      if (tab.suffix !== undefined) {
-        widget.setSuffixElement(tab.id, tab.suffix as unknown as HTMLElement);
       }
       if (tab.enabled !== undefined) {
         widget.setTabEnabled(tab.id, tab.enabled);

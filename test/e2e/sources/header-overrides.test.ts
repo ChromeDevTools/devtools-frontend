@@ -56,8 +56,15 @@ async function openHeadersTab(devToolsPage: DevToolsPage) {
 }
 
 async function editorTabHasPurpleDot(devToolsPage: DevToolsPage): Promise<boolean> {
-  const tabHeaderIcon = await devToolsPage.waitFor('[aria-label=".headers"] devtools-icon');
-  return await tabHeaderIcon?.evaluate(node => node.classList.contains('dot') && node.classList.contains('purple'));
+  const tabHeader = await devToolsPage.waitFor('[aria-label=".headers"]');
+  // The icon is slotted into the tab header, so it isn't a descendant of it.
+  const {hasPurpleDot} = await devToolsPage.waitForFunction(() => tabHeader.evaluate(node => {
+    const slot = node.querySelector<HTMLSlotElement>('slot[name^="icon-"]');
+    const slotted = slot?.assignedElements()[0];
+    const icon = slotted?.matches('devtools-icon') ? slotted : slotted?.querySelector('devtools-icon');
+    return icon ? {hasPurpleDot: icon.classList.contains('dot') && icon.classList.contains('purple')} : undefined;
+  }));
+  return hasPurpleDot;
 }
 
 async function fileTreeEntryIsSelectedAndHasPurpleDot(devToolsPage: DevToolsPage): Promise<boolean> {

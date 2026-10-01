@@ -197,15 +197,14 @@ function renderTabIcon(tab: TabInfo): LitTemplate {
   if (tab.hasLoadError) {
     // clang-format off
     return html`
-      <span slot="icon">
-        <devtools-icon class="small" name="cross-circle-filled"
-                        title=${i18nString(UIStrings.unableToLoadThisContent)}>
-        </devtools-icon>
-      </span>`;
+      <devtools-icon slot=${`icon-${tab.tabId}`} class="small" name="cross-circle-filled"
+                     title=${i18nString(UIStrings.unableToLoadThisContent)}>
+      </devtools-icon>`;
     // clang-format on
   }
   if (tab.icon) {
-    return html`<span slot="icon">${tab.icon}</span>`;
+    // `tab.icon` is a template rather than an element, so it needs a wrapper to put the slot on.
+    return html`<span slot=${`icon-${tab.tabId}`}>${tab.icon}</span>`;
   }
   return nothing;
 }
@@ -217,23 +216,21 @@ function renderTabSuffix(tab: TabInfo, input: TabbedEditorViewInput): LitTemplat
   const tooltipId = `tab-tooltip-${tab.tabId}`;
   // clang-format off
   return html`
-    <span slot="suffix">
-      <div>
-        <devtools-icon name="warning-filled" class="small" aria-describedby=${tooltipId}></devtools-icon>
-        <devtools-tooltip id=${tooltipId} variant="rich">
-          ${tab.disconnectedAutomaticFileSystemRoot !== undefined
-              ? uiI18n.getFormatLocalizedStringTemplate(
-                    str_, UIStrings.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, {
-                      PH1: html`<devtools-link class="devtools-link" @click=${input.onConnectAutomaticFileSystem}>${
-                          tab.disconnectedAutomaticFileSystemRoot}</devtools-link>`,
-                    })
-              : uiI18n.getFormatLocalizedStringTemplate(
-                    str_, UIStrings.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, {
-                      PH1: html`<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`,
-                    })}
-        </devtools-tooltip>
-      </div>
-    </span>`;
+    <div slot=${`suffix-${tab.tabId}`}>
+      <devtools-icon name="warning-filled" class="small" aria-describedby=${tooltipId}></devtools-icon>
+      <devtools-tooltip id=${tooltipId} variant="rich">
+        ${tab.disconnectedAutomaticFileSystemRoot !== undefined
+            ? uiI18n.getFormatLocalizedStringTemplate(
+                  str_, UIStrings.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, {
+                    PH1: html`<devtools-link class="devtools-link" @click=${input.onConnectAutomaticFileSystem}>${
+                        tab.disconnectedAutomaticFileSystemRoot}</devtools-link>`,
+                  })
+            : uiI18n.getFormatLocalizedStringTemplate(
+                  str_, UIStrings.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, {
+                    PH1: html`<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`,
+                  })}
+      </devtools-tooltip>
+    </div>`;
   // clang-format on
 }
 
@@ -264,10 +261,10 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
              title=${tab.title}
              ?closeable=${tab.isCloseable}
              ?selected=${input.activeTabId === tab.tabId}>
-             ${renderTabIcon(tab)}
-             ${renderTabSuffix(tab, input)}
              ${tab.widget ? html`${widget(UI.Widget.WrapperWidget, {widget: tab.widget})}` : nothing}
-        </div>`)}
+        </div>
+        ${renderTabIcon(tab)}
+        ${renderTabSuffix(tab, input)}`)}
     </devtools-tabbed-pane>`, target);
   // clang-format on
 };

@@ -32,6 +32,7 @@ devtools_ui_module("screencast") {
     "../../ui/components/buttons:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
+    "../../ui/settings:bundle",
   ]
 }
 

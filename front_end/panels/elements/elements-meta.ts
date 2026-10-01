@@ -547,14 +547,10 @@ UI.ActionRegistration.registerActionExtension({
   },
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor, {
   category: Common.Settings.SettingCategory.ELEMENTS,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   order: 1,
   title: i18nLazyString(UIStrings.userAgentShadowDOM),
-  settingName: 'show-ua-shadow-dom',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 Common.Settings.registerSettingExtension({

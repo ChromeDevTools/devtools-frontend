@@ -11,7 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
-import * as SettingUIRegistration from '../../ui/settings/settings.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import layoutPaneStyles from './layoutPane.css.js';
@@ -380,7 +380,7 @@ export class LayoutPane extends UI.Widget.Widget {
       settings.resolve(SDK.SDKSettings.showGridAreasSettingDescriptor),
       settings.resolve(SDK.SDKSettings.extendGridLinesSettingDescriptor),
     ];
-    this.#uaShadowDOMSetting = settings.moduleSetting('show-ua-shadow-dom');
+    this.#uaShadowDOMSetting = settings.resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor);
     this.#domModels = [];
     this.#view = view;
   }
@@ -461,7 +461,7 @@ export class LayoutPane extends UI.Widget.Widget {
       if (settingType !== Common.Settings.SettingType.BOOLEAN && settingType !== Common.Settings.SettingType.ENUM) {
         throw new Error('A setting provided to LayoutSidebarPane does not have a supported setting type');
       }
-      const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
+      const uiDescriptor = SettingsUI.SettingUIRegistration.maybeResolve(setting.descriptor());
       const mappedSetting = {
         type: settingType,
         name: setting.name,

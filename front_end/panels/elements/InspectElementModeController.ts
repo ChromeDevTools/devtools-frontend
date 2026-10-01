@@ -7,6 +7,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
@@ -77,7 +78,9 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
     if (this.isInInspectElementMode()) {
       mode = Protocol.Overlay.InspectMode.None;
     } else {
-      mode = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get() ?
+      mode = Common.Settings.Settings.instance()
+                 .resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor)
+                 .get() ?
           Protocol.Overlay.InspectMode.SearchForUAShadowDOM :
           Protocol.Overlay.InspectMode.SearchForNode;
     }

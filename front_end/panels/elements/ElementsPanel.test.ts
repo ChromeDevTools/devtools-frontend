@@ -21,6 +21,7 @@ import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Elements from './elements.js';
 
@@ -908,7 +909,9 @@ describeWithEnvironment('ElementsPanel', () => {
     const uaShadowRoot = hostInput.shadowRoots()[0];
     const uaInnerDiv = uaShadowRoot.children()![0];
     sinon.stub(uaInnerDiv, 'ancestorUserAgentShadowRoot').returns(uaShadowRoot);
-    const showUASetting = universe.settings.moduleSetting('show-ua-shadow-dom');
+    const showUASetting = universe.settings.resolve(
+        SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor,
+    );
     const selectStub = sinon.stub(panel, 'selectDOMNode');
 
     showUASetting.set(false);

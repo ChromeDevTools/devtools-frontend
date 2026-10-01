@@ -323,7 +323,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel,
                                          SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged,
                                          this, {scoped: true});
-    this.#settings.moduleSetting('show-ua-shadow-dom').addChangeListener(this.showUAShadowDOMChanged.bind(this));
+    this.#settings.resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor)
+        .addChangeListener(this.showUAShadowDOMChanged.bind(this));
     PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener(
         PanelCommon.ExtensionServer.Events.SidebarPaneAdded, this.extensionSidebarPaneAdded, this);
   }
@@ -772,7 +773,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     this.searchConfig = searchConfig;
 
-    const showUAShadowDOM = this.#settings.moduleSetting('show-ua-shadow-dom').get();
+    const showUAShadowDOM = this.#settings.resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor).get();
     const domModels = this.#targetManager.models(SDK.DOMModel.DOMModel, {scoped: true});
     const promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     void Promise.all(promises).then(resultCounts => {
@@ -971,8 +972,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     const {showPanel = true, focusNode = false, highlightInOverlay = true} = opts ?? {};
     this.omitDefaultSelection = true;
 
-    const node = this.#settings.moduleSetting('show-ua-shadow-dom').get() ? nodeToReveal :
-                                                                            this.leaveUserAgentShadowDOM(nodeToReveal);
+    const node = this.#settings.resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor).get() ?
+        nodeToReveal :
+        this.leaveUserAgentShadowDOM(nodeToReveal);
     if (highlightInOverlay) {
       node.highlightForTwoSeconds();
     }

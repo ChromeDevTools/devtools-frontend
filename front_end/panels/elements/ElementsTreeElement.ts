@@ -61,6 +61,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import type {DirectiveResult} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 import * as Media from '../media/media.js';
@@ -1452,7 +1453,10 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
   static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[] {
     let roots = node.shadowRoots();
-    if (roots.length && !Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get()) {
+    if (roots.length &&
+        !Common.Settings.Settings.instance()
+             .resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor)
+             .get()) {
       roots = roots.filter(filter);
     }
 

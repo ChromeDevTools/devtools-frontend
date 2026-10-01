@@ -31,6 +31,7 @@ import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import type * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Elements from '../elements/elements.js';
 
 import * as Console from './console.js';
 // The css files aren't exported by the bundle, so we need to import it directly.
@@ -243,6 +244,157 @@ describeWithEnvironment('ConsoleViewMessage', () => {
 
       assert.exists(section.objectTree);
       assert.isFalse(section.objectTree.readOnly);
+    });
+
+    function createDOMNodeMessage() {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(runtimeModel);
+      assert.exists(domModel);
+
+      const node = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'DIV',
+        localName: 'div',
+        nodeValue: '',
+        attributes: ['id', 'logged'],
+        childNodeCount: 1,
+        children: [{
+          nodeId: 2 as Protocol.DOM.NodeId,
+          parentId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'SPAN',
+          localName: 'span',
+          nodeValue: '',
+          childNodeCount: 0,
+        }],
+      });
+      const pushObjectAsNodeToFrontend = sinon.stub(domModel, 'pushObjectAsNodeToFrontend').resolves(node);
+
+      const remoteObject = runtimeModel.createRemoteObject({
+        type: Protocol.Runtime.RemoteObjectType.Object,
+        subtype: Protocol.Runtime.RemoteObjectSubtype.Node,
+        className: 'HTMLDivElement',
+        description: 'div#logged',
+        objectId: '1' as Protocol.Runtime.RemoteObjectId,
+      });
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Info,
+          '',
+          {parameters: [remoteObject]},
+      );
+      const onResize = sinon.stub();
+      const message = new Console.ConsoleViewMessage.ConsoleViewMessage(
+          rawMessage, sinon.createStubInstance(Components.Linkifier.Linkifier),
+          sinon.createStubInstance(Logs.RequestResolver.RequestResolver),
+          sinon.createStubInstance(IssuesManager.IssueResolver.IssueResolver), onResize);
+      return {node, message, onResize, pushObjectAsNodeToFrontend};
+    }
+
+    function getDOMTreeWidgetFor(tree: Element): Elements.DOMTreeWidget.DOMTreeWidget {
+      let domTree: UI.Widget.Widget|undefined;
+      for (let el = tree.parentElement; el && !domTree; el = el.parentElement) {
+        domTree = UI.Widget.Widget.get(el);
+      }
+      assert.instanceOf(domTree, Elements.DOMTreeWidget.DOMTreeWidget);
+      return domTree;
+    }
+
+    it('renders DOM node parameters with a DOMTreeWidget and reports resizes', async () => {
+      const {node, message, onResize} = createDOMNodeMessage();
+      const messageElement = message.toMessageElement();
+      renderElementIntoDOM(messageElement);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+
+      const tree = messageElement.querySelector('devtools-tree');
+      assert.exists(tree?.shadowRoot);
+      // Long lines wrap with the message instead of overflowing horizontally.
+      assert.isFalse(tree.classList.contains('elements-tree-nowrap'));
+      const widgetElement = tree.shadowRoot.querySelector('devtools-widget');
+      assert.exists(widgetElement);
+      const treeWidget = UI.Widget.Widget.get(widgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
+      assert.instanceOf(treeWidget, Elements.ElementsTreeElement.ElementsTreeWidget);
+      assert.strictEqual(treeWidget.node, node);
+      assert.include(tree.shadowRoot.textContent, 'logged');
+      sinon.assert.called(onResize);
+
+      // Expanding the node must notify the viewport about the size change.
+      const domTree = getDOMTreeWidgetFor(tree);
+      assert.strictEqual(domTree.rootDOMNode, node);
+      onResize.resetHistory();
+      domTree.setNodeExpanded(node, true);
+      await UI.Widget.Widget.allUpdatesComplete;
+      sinon.assert.called(onResize);
+      assert.include(tree.shadowRoot.textContent, 'span');
+    });
+
+    it('renders DOM node parameters that resolved while the message was detached once attached', async () => {
+      // The Console viewport builds message elements before attaching them,
+      // and the Console panel may be hidden while the node is pushed to the
+      // frontend. The tree is rendered as soon as the message element is
+      // attached to the document.
+      const {node, message, pushObjectAsNodeToFrontend} = createDOMNodeMessage();
+      const messageElement = message.toMessageElement();
+      sinon.assert.calledOnce(pushObjectAsNodeToFrontend);
+      await pushObjectAsNodeToFrontend.firstCall.returnValue;
+      await raf();
+
+      const tree = messageElement.querySelector('devtools-tree');
+      assert.exists(tree);
+      assert.isFalse(messageElement.isConnected);
+      assert.strictEqual(getDOMTreeWidgetFor(tree).rootDOMNode, node);
+
+      renderElementIntoDOM(messageElement);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+
+      assert.exists(tree.shadowRoot);
+      const widgetElement = tree.shadowRoot.querySelector('devtools-widget');
+      assert.exists(widgetElement);
+      const treeWidget = UI.Widget.Widget.get(widgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
+      assert.instanceOf(treeWidget, Elements.ElementsTreeElement.ElementsTreeWidget);
+      assert.strictEqual(treeWidget.node, node);
+      assert.include(tree.shadowRoot.textContent, 'logged');
+    });
+
+    it('holds DOM tree listeners only while the message is visible', async () => {
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const addModelListener = sinon.spy(targetManager, 'addModelListener');
+      const removeModelListener = sinon.spy(targetManager, 'removeModelListener');
+      const {message, pushObjectAsNodeToFrontend} = createDOMNodeMessage();
+      const messageElement = message.toMessageElement();
+      await pushObjectAsNodeToFrontend.firstCall.returnValue;
+      const tree = messageElement.querySelector('devtools-tree');
+      assert.exists(tree);
+      const domTree = getDOMTreeWidgetFor(tree);
+      const activeHighlightListeners = (): number => {
+        const matches = (call: sinon.SinonSpyCall): boolean => call.args[0] === SDK.OverlayModel.OverlayModel &&
+            call.args[1] === SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED && call.args[3] === domTree;
+        return addModelListener.getCalls().filter(matches).length -
+            removeModelListener.getCalls().filter(matches).length;
+      };
+
+      // The message element was built while not visible (e.g. for filtering),
+      // so the tree must not hold on to global listeners.
+      assert.strictEqual(activeHighlightListeners(), 0);
+
+      renderElementIntoDOM(messageElement);
+      message.wasShown();
+      assert.strictEqual(activeHighlightListeners(), 1);
+
+      message.willHide();
+      assert.strictEqual(activeHighlightListeners(), 0);
+
+      message.wasShown();
+      assert.strictEqual(activeHighlightListeners(), 1);
+      message.willHide();
     });
 
     it('formats console.dir(document.__proto__) without exception', async () => {

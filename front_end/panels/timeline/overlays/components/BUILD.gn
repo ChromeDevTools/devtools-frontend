@@ -63,7 +63,10 @@ devtools_entrypoint("bundle") {
 devtools_ui_module("unittests") {
   testonly = true
 
-  sources = [ "TimespanBreakdownOverlay.test.ts" ]
+  sources = [
+    "TimeRangeOverlay.test.ts",
+    "TimespanBreakdownOverlay.test.ts",
+  ]
 
   ts_deps = [
     ":bundle",

@@ -150,13 +150,103 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type SubpartTable = Array<[string, Trace.Types.Timing.Milli, Trace.Types.Timing.Milli?]>;
 
+type Metric = 'LCP'|'CLS'|'INP';
+
 export interface MetricCardData {
-  metric: 'LCP'|'CLS'|'INP';
+  metric: Metric;
   localValue?: number;
   fieldValue?: number|string;
   histogram?: CrUXManager.MetricResponse['histogram'];
   subparts?: SubpartTable;
   warnings?: string[];
+}
+
+function getTitle(metric: Metric): string {
+  switch (metric) {
+    case 'LCP':
+      return i18n.i18n.lockedString('Largest Contentful Paint (LCP)');
+    case 'CLS':
+      return i18n.i18n.lockedString('Cumulative Layout Shift (CLS)');
+    case 'INP':
+      return i18n.i18n.lockedString('Interaction to Next Paint (INP)');
+  }
+}
+
+function getThresholds(metric: Metric): MetricThresholds {
+  switch (metric) {
+    case 'LCP':
+      return LCP_THRESHOLDS;
+    case 'CLS':
+      return CLS_THRESHOLDS;
+    case 'INP':
+      return INP_THRESHOLDS;
+  }
+}
+
+function getFormatFn(metric: Metric): (value: number) => string {
+  switch (metric) {
+    case 'LCP':
+      return v => {
+        const micro = (v * 1000) as Platform.Timing.MicroSeconds;
+        return i18n.TimeUtilities.formatMicroSecondsAsSeconds(micro);
+      };
+    case 'CLS':
+      return v => v === 0 ? '0' : v.toFixed(2);
+    case 'INP':
+      return v => i18n.TimeUtilities.preciseMillisToString(v);
+  }
+}
+
+function getHelpLink(metric: Metric): Platform.DevToolsPath.UrlString {
+  switch (metric) {
+    case 'LCP':
+      return 'https://web.dev/articles/lcp' as Platform.DevToolsPath.UrlString;
+    case 'CLS':
+      return 'https://web.dev/articles/cls' as Platform.DevToolsPath.UrlString;
+    case 'INP':
+      return 'https://web.dev/articles/inp' as Platform.DevToolsPath.UrlString;
+  }
+}
+
+function getHelpTooltip(metric: Metric): string {
+  switch (metric) {
+    case 'LCP':
+      return i18nString(UIStrings.lcpHelpTooltip);
+    case 'CLS':
+      return i18nString(UIStrings.clsHelpTooltip);
+    case 'INP':
+      return i18nString(UIStrings.inpHelpTooltip);
+  }
+}
+
+function bucketIndexForRating(rating: MetricRating): number {
+  switch (rating) {
+    case 'good':
+      return 0;
+    case 'needs-improvement':
+      return 1;
+    case 'poor':
+      return 2;
+  }
+}
+
+function getBarWidthForRating(histogram: CrUXManager.MetricResponse['histogram']|undefined,
+                              rating: MetricRating): string {
+  const density = histogram?.[bucketIndexForRating(rating)].density || 0;
+  const percent = Math.round(density * 100);
+  return `${percent}%`;
+}
+
+function getPercentLabelForRating(histogram: CrUXManager.MetricResponse['histogram']|undefined,
+                                  rating: MetricRating): string {
+  if (histogram === undefined) {
+    return '-';
+  }
+
+  // A missing density value should be interpreted as 0%
+  const density = histogram[bucketIndexForRating(rating)].density || 0;
+  const percent = Math.round(density * 100);
+  return i18nString(UIStrings.percentage, {PH1: percent});
 }
 
 export class MetricCard extends HTMLElement {
@@ -181,73 +271,6 @@ export class MetricCard extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
-  #getTitle(): string {
-    switch (this.#data.metric) {
-      case 'LCP':
-        return i18n.i18n.lockedString('Largest Contentful Paint (LCP)');
-      case 'CLS':
-        return i18n.i18n.lockedString('Cumulative Layout Shift (CLS)');
-      case 'INP':
-        return i18n.i18n.lockedString('Interaction to Next Paint (INP)');
-    }
-  }
-
-  #getThresholds(): MetricThresholds {
-    switch (this.#data.metric) {
-      case 'LCP':
-        return LCP_THRESHOLDS;
-      case 'CLS':
-        return CLS_THRESHOLDS;
-      case 'INP':
-        return INP_THRESHOLDS;
-    }
-  }
-
-  #getFormatFn(): (value: number) => string {
-    switch (this.#data.metric) {
-      case 'LCP':
-        return v => {
-          const micro = (v * 1000) as Platform.Timing.MicroSeconds;
-          return i18n.TimeUtilities.formatMicroSecondsAsSeconds(micro);
-        };
-      case 'CLS':
-        return v => v === 0 ? '0' : v.toFixed(2);
-      case 'INP':
-        return v => i18n.TimeUtilities.preciseMillisToString(v);
-    }
-  }
-
-  #getHelpLink(): Platform.DevToolsPath.UrlString {
-    switch (this.#data.metric) {
-      case 'LCP':
-        return 'https://web.dev/articles/lcp' as Platform.DevToolsPath.UrlString;
-      case 'CLS':
-        return 'https://web.dev/articles/cls' as Platform.DevToolsPath.UrlString;
-      case 'INP':
-        return 'https://web.dev/articles/inp' as Platform.DevToolsPath.UrlString;
-    }
-  }
-
-  #getHelpTooltip(): string {
-    switch (this.#data.metric) {
-      case 'LCP':
-        return i18nString(UIStrings.lcpHelpTooltip);
-      case 'CLS':
-        return i18nString(UIStrings.clsHelpTooltip);
-      case 'INP':
-        return i18nString(UIStrings.inpHelpTooltip);
-    }
-  }
-
-  #getLocalValue(): number|undefined {
-    const {localValue} = this.#data;
-    if (localValue === undefined) {
-      return;
-    }
-
-    return localValue;
-  }
-
   #getFieldValue(): number|undefined {
     let {fieldValue} = this.#data;
     if (fieldValue === undefined) {
@@ -269,7 +292,7 @@ export class MetricCard extends HTMLElement {
    * Returns if the local value is better/worse/similar compared to field.
    */
   #getCompareRating(): CompareRating|undefined {
-    const localValue = this.#getLocalValue();
+    const localValue = this.#data.localValue;
     const fieldValue = this.#getFieldValue();
     if (localValue === undefined || fieldValue === undefined) {
       return;
@@ -279,7 +302,7 @@ export class MetricCard extends HTMLElement {
   }
 
   #renderCompareString(): Lit.LitTemplate {
-    const localValue = this.#getLocalValue();
+    const localValue = this.#data.localValue;
     if (localValue === undefined) {
       if (this.#data.metric === 'INP') {
         return html`
@@ -290,10 +313,10 @@ export class MetricCard extends HTMLElement {
     }
 
     const compare = this.#getCompareRating();
-    const rating = rateMetric(localValue, this.#getThresholds());
+    const rating = rateMetric(localValue, getThresholds(this.#data.metric));
 
-    const valueEl = renderMetricValue(
-        this.#getMetricValueLogContext(true), localValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
+    const valueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue,
+                                      getThresholds(this.#data.metric), getFormatFn(this.#data.metric), {dim: true});
 
     // clang-format off
     return html`
@@ -363,7 +386,7 @@ export class MetricCard extends HTMLElement {
   }
 
   #renderDetailedCompareString(): Lit.LitTemplate {
-    const localValue = this.#getLocalValue();
+    const localValue = this.#data.localValue;
     if (localValue === undefined) {
       if (this.#data.metric === 'INP') {
         return html`
@@ -373,15 +396,17 @@ export class MetricCard extends HTMLElement {
       return Lit.nothing;
     }
 
-    const localRating = rateMetric(localValue, this.#getThresholds());
+    const localRating = rateMetric(localValue, getThresholds(this.#data.metric));
 
     const fieldValue = this.#getFieldValue();
-    const fieldRating = fieldValue !== undefined ? rateMetric(fieldValue, this.#getThresholds()) : undefined;
+    const fieldRating = fieldValue !== undefined ? rateMetric(fieldValue, getThresholds(this.#data.metric)) : undefined;
 
-    const localValueEl = renderMetricValue(
-        this.#getMetricValueLogContext(true), localValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
-    const fieldValueEl = renderMetricValue(
-        this.#getMetricValueLogContext(false), fieldValue, this.#getThresholds(), this.#getFormatFn(), {dim: true});
+    const localValueEl =
+        renderMetricValue(this.#getMetricValueLogContext(true), localValue, getThresholds(this.#data.metric),
+                          getFormatFn(this.#data.metric), {dim: true});
+    const fieldValueEl =
+        renderMetricValue(this.#getMetricValueLogContext(false), fieldValue, getThresholds(this.#data.metric),
+                          getFormatFn(this.#data.metric), {dim: true});
 
     // clang-format off
     return html`
@@ -391,47 +416,17 @@ export class MetricCard extends HTMLElement {
         fieldRating,
         localValue: localValueEl,
         fieldValue: fieldValueEl,
-        percent: this.#getPercentLabelForRating(localRating),
+        percent: getPercentLabelForRating(this.#data.histogram, localRating),
       })}</div>
     `;
     // clang-format on
   }
 
-  #bucketIndexForRating(rating: MetricRating): number {
-    switch (rating) {
-      case 'good':
-        return 0;
-      case 'needs-improvement':
-        return 1;
-      case 'poor':
-        return 2;
-    }
-  }
-
-  #getBarWidthForRating(rating: MetricRating): string {
-    const histogram = this.#data.histogram;
-    const density = histogram?.[this.#bucketIndexForRating(rating)].density || 0;
-    const percent = Math.round(density * 100);
-    return `${percent}%`;
-  }
-
-  #getPercentLabelForRating(rating: MetricRating): string {
-    const histogram = this.#data.histogram;
-    if (histogram === undefined) {
-      return '-';
-    }
-
-    // A missing density value should be interpreted as 0%
-    const density = histogram[this.#bucketIndexForRating(rating)].density || 0;
-    const percent = Math.round(density * 100);
-    return i18nString(UIStrings.percentage, {PH1: percent});
-  }
-
   #renderFieldHistogram(): Lit.LitTemplate {
     const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
 
-    const format = this.#getFormatFn();
-    const thresholds = this.#getThresholds();
+    const format = getFormatFn(this.#data.metric);
+    const thresholds = getThresholds(this.#data.metric);
 
     // clang-format off
     const goodLabel = html`
@@ -470,14 +465,14 @@ export class MetricCard extends HTMLElement {
     return html`
       <div class="bucket-summaries histogram" jslog=${VisualLogging.canvas('metric-histogram')}>
         ${goodLabel}
-        <div class="histogram-bar good-bg" style="width: ${this.#getBarWidthForRating('good')}"></div>
-        <div class="histogram-percent">${this.#getPercentLabelForRating('good')}</div>
+        <div class="histogram-bar good-bg" style="width: ${getBarWidthForRating(this.#data.histogram, 'good')}"></div>
+        <div class="histogram-percent">${getPercentLabelForRating(this.#data.histogram, 'good')}</div>
         ${needsImprovementLabel}
-        <div class="histogram-bar needs-improvement-bg" style="width: ${this.#getBarWidthForRating('needs-improvement')}"></div>
-        <div class="histogram-percent">${this.#getPercentLabelForRating('needs-improvement')}</div>
+        <div class="histogram-bar needs-improvement-bg" style="width: ${getBarWidthForRating(this.#data.histogram, 'needs-improvement')}"></div>
+        <div class="histogram-percent">${getPercentLabelForRating(this.#data.histogram, 'needs-improvement')}</div>
         ${poorLabel}
-        <div class="histogram-bar poor-bg" style="width: ${this.#getBarWidthForRating('poor')}"></div>
-        <div class="histogram-percent">${this.#getPercentLabelForRating('poor')}</div>
+        <div class="histogram-bar poor-bg" style="width: ${getBarWidthForRating(this.#data.histogram, 'poor')}"></div>
+        <div class="histogram-percent">${getPercentLabelForRating(this.#data.histogram, 'poor')}</div>
       </div>
     `;
     // clang-format on
@@ -517,12 +512,12 @@ export class MetricCard extends HTMLElement {
 
   #render = (): void => {
     const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
-    const helpLink = this.#getHelpLink();
+    const helpLink = getHelpLink(this.#data.metric);
 
-    const localValue = this.#getLocalValue();
+    const localValue = this.#data.localValue;
     const fieldValue = this.#getFieldValue();
-    const thresholds = this.#getThresholds();
-    const formatFn = this.#getFormatFn();
+    const thresholds = getThresholds(this.#data.metric);
+    const formatFn = getFormatFn(this.#data.metric);
 
     const localValueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue, thresholds, formatFn);
     const fieldValueEl = renderMetricValue(this.#getMetricValueLogContext(false), fieldValue, thresholds, formatFn);
@@ -533,10 +528,10 @@ export class MetricCard extends HTMLElement {
       <style>${metricValueStyles}</style>
       <div class="metric-card" jslog=${VisualLogging.section(Platform.StringUtilities.toKebabCase(this.#data.metric))}>
         <h3 class="title">
-          ${this.#getTitle()}
+          ${getTitle(this.#data.metric)}
           <devtools-button
             class="title-help"
-            title=${this.#getHelpTooltip()}
+            title=${getHelpTooltip(this.#data.metric)}
             .iconName=${'help'}
             .variant=${Buttons.Button.Variant.ICON}
             @click=${() => UIHelpers.openInNewTab(helpLink)}

@@ -419,54 +419,53 @@ export class SourceMapScopesInfo {
   /**
    * Returns the authored function scope of the function containing the provided generated position.
    */
-  findOriginalFunctionScope({line, column}: ScopesCodec.Position):
+  findOriginalFunctionScope(position: ScopesCodec.Position):
       {scope: ScopesCodec.OriginalScope, url?: Platform.DevToolsPath.UrlString}|null {
+    const rangeChain = this.#findGeneratedRangeChain(position.line, position.column);
+    const functionScope =
+        this.#findFunctionScopeInOriginalScopeChain(this.#innerMostOriginalScope(rangeChain, position));
+    return functionScope ? {scope: functionScope, url: this.#sourceURLOfScope(functionScope)} : null;
+  }
+
+  /**
+   * Returns the inner-most original scope containing the generated `position`. `rangeChain` must be the generated
+   * range chain of `position`.
+   */
+  #innerMostOriginalScope(rangeChain: ScopesCodec.GeneratedRange[],
+                          position: ScopesCodec.Position): ScopesCodec.OriginalScope|undefined {
     // There are 2 approaches:
     //   1) Find the inner-most generated range containing the provided generated position
-    //      and use it's OriginalScope (then walk it outwards until we hit a function).
+    //      and use its OriginalScope.
     //   2) Use the mappings to turn the generated position into an original position.
     //      Then find the inner-most original scope containing that original position.
-    //      Then walk it outwards until we hit a function.
     //
     // Both approaches should yield the same result (assuming the mappings are spec compliant
     // w.r.t. generated ranges). But in the case of "pasta" scopes and extension provided
     // scope info, we only have the OriginalScope parts and mappings without GeneratedRanges.
-
-    let originalInnerMostScope: ScopesCodec.OriginalScope|undefined;
-
     if (this.#generatedRanges.length > 0) {
-      const rangeChain = this.#findGeneratedRangeChain(line, column);
-      originalInnerMostScope = rangeChain.at(-1)?.originalScope;
-    } else {
-      // No GeneratedRanges. Try to use mappings.
-      const entry = this.#sourceMap.findEntry(line, column);
-      if (entry?.sourceIndex === undefined) {
-        return null;
-      }
-      originalInnerMostScope =
-          this.#findOriginalScopeChain(
-                  {sourceIndex: entry.sourceIndex, line: entry.sourceLineNumber, column: entry.sourceColumnNumber})
-              .at(-1);
+      return rangeChain.at(-1)?.originalScope;
     }
 
-    if (!originalInnerMostScope) {
-      return null;
+    // No GeneratedRanges. Try to use mappings.
+    const entry = this.#sourceMap.findEntry(position.line, position.column);
+    if (entry?.sourceIndex === undefined) {
+      return undefined;
     }
+    return this
+        .#findOriginalScopeChain(
+            {sourceIndex: entry.sourceIndex, line: entry.sourceLineNumber, column: entry.sourceColumnNumber})
+        .at(-1);
+  }
 
-    const functionScope = this.#findFunctionScopeInOriginalScopeChain(originalInnerMostScope);
-    if (!functionScope) {
-      return null;
-    }
-
+  /** @returns the URL of the original source that `scope` belongs to. */
+  #sourceURLOfScope(scope: ScopesCodec.OriginalScope): Platform.DevToolsPath.UrlString|undefined {
     // Find the root scope for some given original source, to get the source url.
-    let rootScope: ScopesCodec.OriginalScope = functionScope;
+    let rootScope: ScopesCodec.OriginalScope = scope;
     while (rootScope.parent) {
       rootScope = rootScope.parent;
     }
     const sourceIndex = this.#originalScopes.findIndex(scopes => scopes?.includes(rootScope));
-    const url = sourceIndex !== -1 ? this.#sourceMap.sourceURLForSourceIndex(sourceIndex) : undefined;
-
-    return functionScope ? {scope: functionScope, url} : null;
+    return sourceIndex !== -1 ? this.#sourceMap.sourceURLForSourceIndex(sourceIndex) : undefined;
   }
 
   /**
@@ -522,7 +521,7 @@ export class SourceMapScopesInfo {
     if (kind === GeneratedFrameKind.HIDDEN) {
       return {kind, frames: []};
     }
-    const frame = this.#translateTopFrame(generatedLine, generatedColumn);
+    const frame = this.#translateTopFrame(generatedLine, generatedColumn, rangeChain);
     return {kind, frames: frame ? [frame, ...this.#translateInlinedCallers(rangeChain)] : []};
   }
 
@@ -530,13 +529,16 @@ export class SourceMapScopesInfo {
    * The top-most frame is translated the same, regardless of whether we have inlined functions: The name is the
    * original function surrounding the generated position, and the location is the mapped generated position.
    */
-  #translateTopFrame(generatedLine: number, generatedColumn: number): TranslatedFrame|null {
+  #translateTopFrame(generatedLine: number, generatedColumn: number,
+                     rangeChain: ScopesCodec.GeneratedRange[]): TranslatedFrame|null {
     const mapping = this.#sourceMap.findEntry(generatedLine, generatedColumn);
     if (mapping?.sourceIndex === undefined) {
       return null;
     }
 
-    const functionScope = this.findOriginalFunctionScope({line: generatedLine, column: generatedColumn})?.scope;
+    const position = {line: generatedLine, column: generatedColumn};
+    const functionScope =
+        this.#findFunctionScopeInOriginalScopeChain(this.#innerMostOriginalScope(rangeChain, position));
     return {
       line: mapping.sourceLineNumber,
       column: mapping.sourceColumnNumber,

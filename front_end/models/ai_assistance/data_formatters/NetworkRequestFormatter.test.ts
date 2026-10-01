@@ -30,81 +30,117 @@ describe('NetworkRequestFormatter', () => {
   });
 
   describe('formatInitiatorUrl', () => {
-    it('returns target resource when allowed resource is same-origin', () => {
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.test');
-      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
-          urlString`https://example.test`, allowedOrigin);
+    const REDACTED = '<redacted cross-origin initiator URL>';
+
+    it('returns the initiator URL when it is same-origin with the request', () => {
+      const initiator = createNetworkRequest({url: 'https://example.test'});
+      const request = createNetworkRequest({url: 'https://example.test/data'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
       assert.strictEqual(formatted, 'https://example.test');
     });
 
-    it('redacts target resource when allowed resource is cross-origin', () => {
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.test');
-      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
-          urlString`https://another-example.test`, allowedOrigin);
-      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    it('redacts the initiator URL when it is cross-origin with the request', () => {
+      const initiator = createNetworkRequest({url: 'https://another-example.test'});
+      const request = createNetworkRequest({url: 'https://example.test'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
     });
 
-    it('redacts target resource when allowed resource is file URL', () => {
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('file://test');
-      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
-          urlString`https://another-example.test`, allowedOrigin);
-      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    it('redacts an https initiator when the request is a file URL', () => {
+      const initiator = createNetworkRequest({url: 'https://another-example.test'});
+      const request = createNetworkRequest({url: 'file://test'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
     });
 
-    it('redacts target resource when target resource is file URL and allowed is https', () => {
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://another-example.test');
-      const formatted =
-          NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(urlString`file://test`, allowedOrigin);
-      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    it('redacts a file URL initiator when the request is https', () => {
+      const initiator = createNetworkRequest({url: 'file://test'});
+      const request = createNetworkRequest({url: 'https://another-example.test'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
     });
 
-    it('redacts initiator URL when file:// paths differ', () => {
-      const initiatorUrl = urlString`file:///home/user/sensitive.txt`;
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('file:///tmp/app.html');
-      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiatorUrl, allowedOrigin);
-      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    it('redacts the initiator URL when file:// paths differ', () => {
+      const initiator = createNetworkRequest({url: 'file:///home/user/sensitive.txt'});
+      const request = createNetworkRequest({url: 'file:///tmp/app.html'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
     });
 
-    it('preserves initiator URL when file:// paths match', () => {
-      const initiatorUrl = urlString`file:///tmp/app.html`;
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('file:///tmp/app.html');
-      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiatorUrl, allowedOrigin);
+    it('returns the initiator URL when file:// paths match', () => {
+      const initiator = createNetworkRequest({url: 'file:///tmp/app.html'});
+      const request = createNetworkRequest({url: 'file:///tmp/app.html'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
       assert.strictEqual(formatted, 'file:///tmp/app.html');
     });
 
-    it('redacts target resource when subdomain differs', () => {
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://test.example.test');
-      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
-          urlString`https://example.test`, allowedOrigin);
-      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    it('redacts the initiator URL when the subdomain differs', () => {
+      const initiator = createNetworkRequest({url: 'https://example.test'});
+      const request = createNetworkRequest({url: 'https://test.example.test'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
     });
 
-    it('redacts target resource when port differs', () => {
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://test.example.test:9900');
-      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
-          urlString`https://test.example.test:9901`, allowedOrigin);
-      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    it('redacts the initiator URL when the port differs', () => {
+      const initiator = createNetworkRequest({url: 'https://test.example.test:9901'});
+      const request = createNetworkRequest({url: 'https://test.example.test:9900'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
     });
 
-    it('redacts target resource when both URLs are invalid', () => {
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('invalid-url');
-      const formatted =
-          NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(urlString`invalid-url`, allowedOrigin);
-      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    it('redacts the initiator URL when two different requests both have invalid URLs', () => {
+      const initiator = createNetworkRequest({url: 'invalid-url'});
+      const request = createNetworkRequest({url: 'invalid-url'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
     });
 
-    it('redacts target resource when target is invalid URL', () => {
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.test');
-      const formatted =
-          NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(urlString`invalid-url`, allowedOrigin);
-      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    it('redacts the initiator URL when it is invalid', () => {
+      const initiator = createNetworkRequest({url: 'invalid-url'});
+      const request = createNetworkRequest({url: 'https://example.test'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
     });
 
-    it('redacts target resource when allowed is invalid URL', () => {
-      const allowedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('invalid-url');
-      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
-          urlString`https://example.test`, allowedOrigin);
-      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    it('redacts the initiator URL when the request URL is invalid', () => {
+      const initiator = createNetworkRequest({url: 'https://example.test'});
+      const request = createNetworkRequest({url: 'invalid-url'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
+    });
+
+    it('returns the URL when a request with an opaque URL is compared with itself', () => {
+      const request = createNetworkRequest({url: 'data:text/html,<h1>Hello</h1>'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(request, request);
+      assert.strictEqual(formatted, 'data:text/html,<h1>Hello</h1>');
+    });
+
+    it('redacts the initiator URL when two different requests have the same data: URL', () => {
+      const initiator = createNetworkRequest({url: 'data:text/html,<h1>Hello</h1>'});
+      const request = createNetworkRequest({url: 'data:text/html,<h1>Hello</h1>'});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
+    });
+
+    it('returns the initiator URL when imported HAR requests share an authority', () => {
+      const initiator = createNetworkRequest({url: 'https://example.test/index.html', isImportedHar: true});
+      const request = createNetworkRequest({url: 'https://example.test/data', isImportedHar: true});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, 'https://example.test/index.html');
+    });
+
+    it('redacts the initiator URL when imported HAR requests have different authorities', () => {
+      const initiator = createNetworkRequest({url: 'https://other.test/index.html', isImportedHar: true});
+      const request = createNetworkRequest({url: 'https://example.test/data', isImportedHar: true});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
+    });
+
+    it('redacts a live initiator when the request is an imported HAR request on the same host', () => {
+      const initiator = createNetworkRequest({url: 'https://example.test/index.html'});
+      const request = createNetworkRequest({url: 'https://example.test/data', isImportedHar: true});
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(initiator, request);
+      assert.strictEqual(formatted, REDACTED);
     });
   });
 
@@ -701,6 +737,60 @@ describe('NetworkRequestFormatter', () => {
       assert.strictEqual(
           formatted,
           '- URL: file:///tmp/app.html\n\t- URL: file:///tmp/app.html',
+      );
+    });
+
+    it('does not redact same-origin URLs for imported HAR requests', () => {
+      const parentRequest =
+          createNetworkRequest({requestId: 'parent', url: 'https://example.com/index.html', isImportedHar: true});
+      const request =
+          createNetworkRequest({requestId: 'request', url: 'https://example.com/api/data', isImportedHar: true});
+      const childRequest =
+          createNetworkRequest({requestId: 'child', url: 'https://example.com/api/more', isImportedHar: true});
+      const networkLog = sinon.createStubInstance(Logs.NetworkLog.NetworkLog);
+      networkLog.initiatorGraphForRequest.withArgs(request).returns({
+        initiators: new Set([request, parentRequest]),
+        initiated: new Map([[childRequest, request]]),
+      });
+
+      const formatted = NetworkRequestFormatter.formatRequestInitiatorChain(request, networkLog);
+      assert.strictEqual(
+          formatted,
+          '- URL: https://example.com/index.html\n\t- URL: https://example.com/api/data\n\t\t- URL: https://example.com/api/more',
+      );
+    });
+
+    it('redacts cross-origin URLs for imported HAR requests', () => {
+      const parentRequest =
+          createNetworkRequest({requestId: 'parent', url: 'https://third-party.com/embed.js', isImportedHar: true});
+      const request =
+          createNetworkRequest({requestId: 'request', url: 'https://example.com/api/data', isImportedHar: true});
+      const networkLog = sinon.createStubInstance(Logs.NetworkLog.NetworkLog);
+      networkLog.initiatorGraphForRequest.withArgs(request).returns({
+        initiators: new Set([request, parentRequest]),
+        initiated: new Map(),
+      });
+
+      const formatted = NetworkRequestFormatter.formatRequestInitiatorChain(request, networkLog);
+      assert.strictEqual(
+          formatted,
+          '- URL: <redacted cross-origin initiator URL>\n\t- URL: https://example.com/api/data',
+      );
+    });
+
+    it('does not redact the selected request when its URL has an opaque origin', () => {
+      const parentRequest = createNetworkRequest({requestId: 'parent', url: 'https://example.com/index.html'});
+      const request = createNetworkRequest({requestId: 'request', url: 'data:image/png;base64,iVBOR'});
+      const networkLog = sinon.createStubInstance(Logs.NetworkLog.NetworkLog);
+      networkLog.initiatorGraphForRequest.withArgs(request).returns({
+        initiators: new Set([request, parentRequest]),
+        initiated: new Map(),
+      });
+
+      const formatted = NetworkRequestFormatter.formatRequestInitiatorChain(request, networkLog);
+      assert.strictEqual(
+          formatted,
+          '- URL: <redacted cross-origin initiator URL>\n\t- URL: data:image/png;base64,iVBOR',
       );
     });
   });

@@ -75,6 +75,11 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       ranges: SDK.SourceMapFunctionRanges.NamedFunctionRange[]): void {
     for (const sourceMap of this.#uiSourceCodeToSourceMaps.get(uiSourceCode)) {
       sourceMap.augmentWithScopes(uiSourceCode.url(), ranges);
+      // The scopes information changed, so stack traces of the script need to be re-translated.
+      const script = this.#sourceMapManager.clientForSourceMap(sourceMap);
+      if (script) {
+        void this.#debuggerWorkspaceBinding.updateLocations(script);
+      }
     }
   }
 

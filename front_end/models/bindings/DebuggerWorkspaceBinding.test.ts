@@ -11,10 +11,11 @@ import type * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Formatter from '../formatter/formatter.js';
-import type * as StackTrace from '../stack_trace/stack_trace.js';
+import * as StackTrace from '../stack_trace/stack_trace.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 
@@ -102,6 +103,41 @@ describe('DebuggerWorkspaceBinding', () => {
 
     assert.isTrue(sourceMap.hasScopeInfo());
     assert.strictEqual(sourceMap.findOriginalFunctionName({line: 0, column: 110}), 'foo');
+  });
+
+  it('re-translates existing stack traces after DebuggerWorkspaceBindings.setFunctionRanges', async () => {
+    const backend = new MockDebuggerBackend();
+    const {debuggerWorkspaceBinding} = backend.universe;
+    const target =
+        backend.createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assert.exists(debuggerModel);
+
+    //                                                   10        20        30        40
+    //                                         0123456789012345678901234567890123456789012345678
+    const script = await backend.addScript(
+        target, {url: urlString`file://main.js`, content: 'function n(){o("hi")}function o(n){debugger}n();'}, {
+          url: 'file://gen.js.map/',
+          content: encodeSourceMap(['0:0 => main.js:0:0', '0:35 => main.js:5:2']),
+        });
+    const sourceMap = await debuggerModel.sourceMapManager().sourceMapForClientPromise(script);
+    assert.exists(sourceMap);
+    const uiSourceCodeForSourceMap = backend.universe.workspace.uiSourceCodeForURL(sourceMap.sourceURLs()[0]);
+    assert.exists(uiSourceCodeForSourceMap);
+
+    // Translated before the extension provides function ranges: the name comes from the AST-derived scopes.
+    const stackTrace = await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(
+        {callFrames: [protocolCallFrame(`${script.sourceURL}:${script.scriptId}:o:0:35`)]}, target);
+    assert.strictEqual(stackTrace.syncFragment.frames[0].name, 'o');
+    const updatedSpy = sinon.spy();
+    stackTrace.addEventListener(StackTrace.StackTrace.Events.UPDATED, updatedSpy);
+
+    debuggerWorkspaceBinding.setFunctionRanges(
+        uiSourceCodeForSourceMap, [{start: {line: 0, column: 0}, end: {line: 10, column: 1}, name: 'foo'}]);
+    await debuggerWorkspaceBinding.pendingLiveLocationChangesPromise();
+
+    sinon.assert.calledOnce(updatedSpy);
+    assert.strictEqual(stackTrace.syncFragment.frames[0].name, 'foo');
   });
 
   describe('createStackTraceFromProtocolRuntime', () => {

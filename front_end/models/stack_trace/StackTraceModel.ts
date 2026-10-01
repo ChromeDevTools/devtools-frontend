@@ -214,13 +214,13 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     const release = await this.#mutex.acquire();
     try {
       const node = this.#trie.insert(frames);
-      const requiresTranslation = !Boolean(node.fragment);
       const fragment = FragmentImpl.getOrCreate(node);
-
-      if (requiresTranslation) {
-        await this.#translateFragment(fragment, rawFramesToUIFrames);
-      }
-
+      const callStack = [...node.getCallStack()];
+      // Translations are context-free, so shared prefixes of other fragments don't need re-translation. A node that was
+      // first seen in a CDP trace may later get an `evalOrigin` from an `Error.stack` trace.
+      await this.#translateNodes(callStack.filter(n => !n.isTranslated),
+                                 callStack.filter(n => n.parsedFrameInfo?.evalOrigin && !n.evalOrigin),
+                                 rawFramesToUIFrames);
       return fragment;
     } finally {
       release();
@@ -231,32 +231,29 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     if (!fragment.node) {
       return;
     }
+    const callStack = [...fragment.node.getCallStack()];
+    await this.#translateNodes(callStack, callStack.filter(n => n.parsedFrameInfo?.evalOrigin), rawFramesToUIFrames);
+  }
 
-    const rawFrames = fragment.node.getCallStack().map(node => node.rawFrame).toArray();
-    const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
-    if (rawFrames.length !== uiFrames.length) {
+  /** Translates `nodes` and the eval origins of `evalNodes`. Writes nothing if any translation throws. */
+  async #translateNodes(nodes: FrameNode[], evalNodes: FrameNode[],
+                        rawFramesToUIFrames: TranslateRawFrames): Promise<void> {
+    if (nodes.length === 0 && evalNodes.length === 0) {
+      return;
+    }
+    const [translations, evalOrigins] = await Promise.all([
+      nodes.length ? rawFramesToUIFrames(nodes.map(n => n.rawFrame), this.target()) : Promise.resolve([]),
+      Promise.all(evalNodes.map(
+          n => translateEvalOrigin(n.parsedFrameInfo?.evalOrigin as RawFrame, rawFramesToUIFrames, this.target()))),
+    ]);
+    if (translations.length !== nodes.length) {
       throw new Error('Broken rawFramesToUIFrames implementation');
     }
-
-    const evalOriginPromises: Array<Promise<EvalOrigin|undefined>> = [];
-    for (const node of fragment.node.getCallStack()) {
-      if (node.parsedFrameInfo?.evalOrigin) {
-        // Evaluate each eval origin individually, as they are not a contiguous stack trace.
-        evalOriginPromises.push(
-            translateEvalOrigin(node.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, this.target()));
-      }
-    }
-
-    const evalOrigins = await Promise.all(evalOriginPromises);
-
-    let i = 0;
-    let evalI = 0;
-    for (const node of fragment.node.getCallStack()) {
-      applyTranslation(node, uiFrames[i++]);
-      if (node.parsedFrameInfo?.evalOrigin) {
-        node.evalOrigin = evalOrigins[evalI++];
-      }
-    }
+    // No `await` below: readers never see a partially updated trie.
+    nodes.forEach((node, i) => applyTranslation(node, translations[i]));
+    evalNodes.forEach((node, i) => {
+      node.evalOrigin = evalOrigins[i];
+    });
   }
 
   #affectedFragments(script: SDK.Script.Script): Set<FragmentImpl> {
@@ -293,6 +290,7 @@ function toFrameImpls(rawFrame: RawFrame, frames: readonly TranslatedUIFrame[]):
 
 /** Stores a context-free translation on `node`. A VISIBLE or OUTLINED translation without frames becomes HIDDEN. */
 function applyTranslation(node: FrameNode, translation: TranslatedRawFrame): void {
+  node.isTranslated = true;
   if (translation.kind === FrameKind.HIDDEN || translation.frames.length === 0) {
     console.assert(translation.kind === FrameKind.HIDDEN, 'Non-HIDDEN translation without frames');
     node.kind = FrameKind.HIDDEN;

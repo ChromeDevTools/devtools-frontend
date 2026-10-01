@@ -229,6 +229,63 @@ describe('StackTraceModel', () => {
       sinon.assert.calledOnce(translateSpy);
     });
 
+    it('only translates the new frames of a stack trace that shares frames with a previous one', async () => {
+      const {model, translateSpy} = setup();
+      const base = ['bar.js:2:bar:2:20', 'baz.js:3:baz:3:30'];
+
+      await model.createFromProtocolRuntime({callFrames: ['foo.js:1:foo:1:10', ...base].map(protocolCallFrame)},
+                                            translateSpy);
+      const stackTrace = await model.createFromProtocolRuntime(
+          {callFrames: ['qux.js:4:qux:4:40', ...base].map(protocolCallFrame)}, translateSpy);
+
+      sinon.assert.calledTwice(translateSpy);
+      sinon.assert.calledWithMatch(translateSpy.secondCall,
+                                   [{...protocolCallFrame('qux.js:4:qux:4:40'), isWasm: false}], model.target());
+      assert.strictEqual(stringifyStackTrace(stackTrace), [
+        'at qux (qux.js:4:40)',
+        'at bar (bar.js:2:20)',
+        'at baz (baz.js:3:30)',
+      ].join('\n'));
+    });
+
+    it('retries the translation of frames whose translation threw', async () => {
+      const {model} = setup();
+      const callFrames = ['foo.js:1:foo:1:10', 'bar.js:2:bar:2:20'].map(protocolCallFrame);
+      type TranslateRawFrames = StackTraceImpl.StackTraceModel.TranslateRawFrames;
+      const translateFn = sinon.stub<Parameters<TranslateRawFrames>, ReturnType<TranslateRawFrames>>();
+      translateFn.onFirstCall().rejects(new Error('translation failed'));
+      translateFn.callsFake(identityTranslateFn);
+
+      let error: unknown;
+      try {
+        await model.createFromProtocolRuntime({callFrames}, translateFn);
+      } catch (e) {
+        error = e;
+      }
+      const stackTrace = await model.createFromProtocolRuntime({callFrames}, translateFn);
+
+      assert.instanceOf(error, Error);
+      sinon.assert.calledTwice(translateFn);
+      assert.strictEqual(stringifyStackTrace(stackTrace), [
+        'at foo (foo.js:1:10)',
+        'at bar (bar.js:2:20)',
+      ].join('\n'));
+    });
+
+    it('translates the evalOrigin of a frame that was first seen without one', async () => {
+      const {model, translateSpy} = setup();
+      await model.createFromProtocolRuntime({callFrames: [protocolCallFrame('<anonymous>::eval:0:0')]}, translateSpy);
+
+      const stackTrace = await model.createFromErrorStackLikeString(`Error: foo
+              at eval (eval at outerEval (foo.js:10:5), <anonymous>:1:1)`,
+                                                                    translateSpy);
+
+      assert.exists(stackTrace);
+      sinon.assert.calledTwice(translateSpy);
+      sinon.assert.calledWithMatch(translateSpy.secondCall, [sinon.match({functionName: 'outerEval'})]);
+      assert.strictEqual(stackTrace.syncFragment.frames[0].evalOrigin?.name, 'outerEval');
+    });
+
     it('throws if the translation function returns the wrong number of frames', async () => {
       const {model} = setup();
 

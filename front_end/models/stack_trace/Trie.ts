@@ -90,6 +90,8 @@ export class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode> {
   functionKeys?: FunctionKeys;
   /** True iff the translation shows generated code, i.e. no source map or plugin could map it (incl. builtins). */
   isUnmapped = false;
+  /** False until a translation was stored. Stays false if translation threw, so it will be retried. */
+  isTranslated = false;
 
   fragment?: FragmentImpl;
   parsedFrameInfo?: ParsedFrameInfo;

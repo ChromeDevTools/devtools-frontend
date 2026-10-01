@@ -333,55 +333,43 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
   }
 
   /**
-   * Translates the first raw frame of `rawFrames` using the "scopes" information of its script's source map.
-   * The translation only depends on the raw frame itself. A consumed raw frame is removed from `rawFrames`,
-   * and its translation is pushed onto `translatedFrames`. Frames of compiler helpers are dropped
-   * (see {@link SDK.SourceMapScopesInfo.GeneratedFrameKind}).
+   * Translates a raw frame using the "scopes" information of its script's source map. Frames of compiler helpers
+   * are dropped (see {@link SDK.SourceMapScopesInfo.GeneratedFrameKind}).
    *
    * Outlined frames are merged at read time by the stack_trace model (see `consolidate`). The function keys
    * tell it which authored function the top and bottom frames of a translation belong to. A frame at an
    * unmapped position still gets its keys from the generated ranges; it shows the generated location, named
    * after the authored function.
    *
-   * @returns true, iff the raw frame was translated.
+   * @returns null if the raw frame can't be translated via "scopes" information, e.g. because the script doesn't
+   * have a source map (with scopes information), the source map is still loading, or neither mappings nor
+   * generated ranges know the position. It's then left to the default mapping.
    */
-  async translateRawFramesStep(
-      rawFrames: StackTraceImpl.Trie.RawFrame[],
-      translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>): Promise<boolean> {
-    const rawFrame = rawFrames[0];
-    const translation = await this.#translateRawFrame(rawFrame);
+  async translateRawFrame(rawFrame: StackTraceImpl.Trie.RawFrame):
+      Promise<StackTraceImpl.StackTraceModel.TranslatedRawFrame|null> {
+    const translation = await this.#scopesTranslation(rawFrame);
     if (!translation) {
-      return false;
+      return null;
     }
     if (translation.kind === SDK.SourceMapScopesInfo.GeneratedFrameKind.HIDDEN) {
       // Compiler helpers don't represent any authored code.
-      rawFrames.shift();
-      translatedFrames.push({kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []});
-      return true;
+      return {kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []};
     }
     const {frames} = translation;
     if (!frames.length) {
-      // Neither mappings nor generated ranges know this position: Leave it to the default mapping.
-      return false;
+      return null;
     }
-    rawFrames.shift();
-    translatedFrames.push({
+    return {
       kind: translation.kind === SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED ?
           StackTraceImpl.Trie.FrameKind.OUTLINED :
           StackTraceImpl.Trie.FrameKind.VISIBLE,
       frames: await this.#toUIFrames(translation, rawFrame),
       functionKeys: {top: functionKey(frames[0]), bottom: functionKey(frames[frames.length - 1])},
-    });
-    return true;
+    };
   }
 
-  /**
-   * Translates a single raw frame via the "scopes" information of its script's source map.
-   *
-   * @returns null if the raw frame can't be translated via "scopes" information, e.g. because
-   * the script doesn't have a source map (with scopes information), or the source map is still loading.
-   */
-  async #translateRawFrame(rawFrame: StackTraceImpl.Trie.RawFrame): Promise<ScopesTranslation|null> {
+  /** The raw translation of `rawFrame` by the "scopes" information of its script's source map, if any. */
+  async #scopesTranslation(rawFrame: StackTraceImpl.Trie.RawFrame): Promise<ScopesTranslation|null> {
     if (StackTraceImpl.Trie.isBuiltinFrame(rawFrame)) {
       return null;
     }

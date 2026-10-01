@@ -731,24 +731,23 @@ export class DebuggerLanguagePluginManager implements
     return ranges;
   }
 
-  async translateRawFramesStep(
-      rawFrames: StackTraceImpl.Trie.RawFrame[],
-      translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>,
-      target: SDK.Target.Target): Promise<boolean> {
-    const frame = rawFrames[0];
+  /**
+   * Translates a raw frame via the language plugin responsible for its script.
+   *
+   * @returns null if no plugin is responsible for the frame. Otherwise the frame is translated, either
+   * successfully, or identity mapped with the "missing debug info details" attached.
+   */
+  async translateRawFrame(frame: StackTraceImpl.Trie.RawFrame,
+                          target: SDK.Target.Target): Promise<StackTraceImpl.StackTraceModel.TranslatedRawFrame|null> {
     const script = target.model(SDK.DebuggerModel.DebuggerModel)?.scriptForId(frame.scriptId ?? '');
     if (!script) {
-      return false;
+      return null;
     }
 
     const functionInfo = await this.getFunctionInfo(script, frame);
     if (!functionInfo) {
-      return false;
+      return null;
     }
-
-    // The plugin is responsible for translating this frame. The only question is whether it was successful,
-    // or if we identity map the raw frame and attach the "missing debug info details".
-    rawFrames.shift();
 
     if ('frames' in functionInfo && functionInfo.frames.length) {
       const framePromises = functionInfo.frames.map(async ({name}, index) => {
@@ -758,9 +757,7 @@ export class DebuggerLanguagePluginManager implements
         return translatedFromUILocation(uiLocation, name, frame);
       });
 
-      translatedFrames.push(
-          {kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: await Promise.all(framePromises), unmapped: false});
-      return true;
+      return {kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: await Promise.all(framePromises), unmapped: false};
     }
 
     // Translate the location only. We go through via "DebuggerWorkspaceBinding". It'll still try the plugin
@@ -776,10 +773,7 @@ export class DebuggerLanguagePluginManager implements
           missingDebugFiles: functionInfo.missingSymbolFiles,
         } :
         {type: StackTrace.StackTrace.MissingDebugInfoType.NO_INFO};
-    translatedFrames.push(
-        {kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: [{...mappedFrame, missingDebugInfo}], unmapped: true});
-
-    return true;
+    return {kind: StackTraceImpl.Trie.FrameKind.VISIBLE, frames: [{...mappedFrame, missingDebugInfo}], unmapped: true};
 
     function translatedFromUILocation(
         uiLocation: Workspace.UISourceCode.UILocation|null, name: string|undefined,

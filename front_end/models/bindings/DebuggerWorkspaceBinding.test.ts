@@ -186,7 +186,7 @@ describe('DebuggerWorkspaceBinding', () => {
       const universe = new TestUniverse();
       const target =
           universe.createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
-      const spy = sinon.spy(universe.debuggerWorkspaceBinding.pluginManager, 'translateRawFramesStep');
+      const spy = sinon.spy(universe.debuggerWorkspaceBinding.pluginManager, 'translateRawFrame');
 
       await universe.debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime({
         callFrames: [
@@ -278,8 +278,7 @@ describe('DebuggerWorkspaceBinding', () => {
 
       it('is false for source-mapped frames that fall back to the default translation', async () => {
         const {backend, target, debuggerWorkspaceBinding} = setup();
-        sinon.stub(Bindings.CompilerScriptMapping.CompilerScriptMapping.prototype, 'translateRawFramesStep')
-            .resolves(false);
+        sinon.stub(Bindings.CompilerScriptMapping.CompilerScriptMapping.prototype, 'translateRawFrame').resolves(null);
         const script = await backend.addScript(target, {url: urlString`http://example.com/foo.js`, content: 'foo'}, {
           url: 'http://example.com/foo.js.map',
           content: {version: 3, sources: ['foo.ts'], mappings: 'AAAA', names: []},

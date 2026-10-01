@@ -672,14 +672,14 @@ describe('CompilerScriptMapping', () => {
     assert.strictEqual(metadata?.contentSize, sourceUTF8.length);
   });
 
-  describe('translateRawFramesStep', () => {
-    it('returns false for builtin frames', async () => {
+  describe('translateRawFrame', () => {
+    it('returns null for builtin frames', async () => {
       const target = backend.createTarget();
       const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
           target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
 
-      assert.isFalse(await compilerScriptMapping.translateRawFramesStep(
-          [{lineNumber: -1, columnNumber: -1, functionName: 'Array.map'}], []));
+      assert.isNull(
+          await compilerScriptMapping.translateRawFrame({lineNumber: -1, columnNumber: -1, functionName: 'Array.map'}));
     });
 
     it('translates a single frame using "proposal scopes" information', async () => {
@@ -707,31 +707,27 @@ describe('CompilerScriptMapping', () => {
             content: sourceMap,
           });
 
-      const translatedFrames:
-          Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1] = [];
-      assert.isTrue(await compilerScriptMapping.translateRawFramesStep(
-          [{
-            scriptId: script.scriptId,
-            url: script.sourceURL,
-            lineNumber: 0,
-            columnNumber: 21,
-            functionName: 'f',
-          }],
-          translatedFrames));
-      assert.deepEqual(translatedFrames, [{
-                         kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
-                         frames: [{
-                           line: 2,
-                           column: 11,
-                           name: 'foo',
-                           uiSourceCode: await uiSourceCodePromise,
-                           url: undefined,
-                         }],
-                         functionKeys: {
-                           top: 'http://example.com/index.ts\nfoo\n1:0',
-                           bottom: 'http://example.com/index.ts\nfoo\n1:0',
-                         },
-                       }]);
+      const translatedFrame = await compilerScriptMapping.translateRawFrame({
+        scriptId: script.scriptId,
+        url: script.sourceURL,
+        lineNumber: 0,
+        columnNumber: 21,
+        functionName: 'f',
+      });
+      assert.deepEqual(translatedFrame, {
+        kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+        frames: [{
+          line: 2,
+          column: 11,
+          name: 'foo',
+          uiSourceCode: await uiSourceCodePromise,
+          url: undefined,
+        }],
+        functionKeys: {
+          top: 'http://example.com/index.ts\nfoo\n1:0',
+          bottom: 'http://example.com/index.ts\nfoo\n1:0',
+        },
+      });
     });
 
     it('translates a single frame using "fallback" scope information (created from AST and mappigns)', async () => {
@@ -751,31 +747,27 @@ describe('CompilerScriptMapping', () => {
             content: sourceMap,
           });
 
-      const translatedFrames:
-          Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1] = [];
-      assert.isTrue(await compilerScriptMapping.translateRawFramesStep(
-          [{
-            scriptId: script.scriptId,
-            url: script.sourceURL,
-            lineNumber: 0,
-            columnNumber: 21,
-            functionName: 'f',
-          }],
-          translatedFrames));
-      assert.deepEqual(translatedFrames, [{
-                         kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
-                         frames: [{
-                           line: 2,
-                           column: 11,
-                           name: 'foo',
-                           uiSourceCode: await uiSourceCodePromise,
-                           url: undefined,
-                         }],
-                         functionKeys: {
-                           top: 'http://example.com/index.ts\nfoo\n1:10',
-                           bottom: 'http://example.com/index.ts\nfoo\n1:10',
-                         },
-                       }]);
+      const translatedFrame = await compilerScriptMapping.translateRawFrame({
+        scriptId: script.scriptId,
+        url: script.sourceURL,
+        lineNumber: 0,
+        columnNumber: 21,
+        functionName: 'f',
+      });
+      assert.deepEqual(translatedFrame, {
+        kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+        frames: [{
+          line: 2,
+          column: 11,
+          name: 'foo',
+          uiSourceCode: await uiSourceCodePromise,
+          url: undefined,
+        }],
+        functionKeys: {
+          top: 'http://example.com/index.ts\nfoo\n1:10',
+          bottom: 'http://example.com/index.ts\nfoo\n1:10',
+        },
+      });
     });
 
     it('expands inlined frames and populates UISourceCode', async () => {
@@ -828,12 +820,11 @@ describe('CompilerScriptMapping', () => {
             content: sourceMap as SDK.SourceMap.SourceMapV3,
           });
 
-      const translatedFrames:
-          Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1] = [];
-      assert.isTrue(await compilerScriptMapping.translateRawFramesStep(
-          [protocolCallFrame(`${script.sourceURL}:${script.scriptId}::0:5`)], translatedFrames));
+      const translatedFrame = await compilerScriptMapping.translateRawFrame(
+          protocolCallFrame(`${script.sourceURL}:${script.scriptId}::0:5`));
 
-      assert.deepEqual(translatedFrames[0].frames.map(stringifyFrame), [
+      assert.exists(translatedFrame);
+      assert.deepEqual(translatedFrame.frames.map(stringifyFrame), [
         'at inner (index.ts:1:7)',
         'at outer (index.ts:6:9)',
         'at <anonymous> (index.ts:10:5)',
@@ -841,9 +832,9 @@ describe('CompilerScriptMapping', () => {
 
       const uiSourceCode = compilerScriptMapping.uiSourceCodeForURL(urlString`http://example.com/index.ts`, false);
       assert.exists(uiSourceCode);
-      assert.strictEqual(translatedFrames[0].frames[0].uiSourceCode, uiSourceCode);
-      assert.strictEqual(translatedFrames[0].frames[1].uiSourceCode, uiSourceCode);
-      assert.strictEqual(translatedFrames[0].frames[2].uiSourceCode, uiSourceCode);
+      assert.strictEqual(translatedFrame.frames[0].uiSourceCode, uiSourceCode);
+      assert.strictEqual(translatedFrame.frames[1].uiSourceCode, uiSourceCode);
+      assert.strictEqual(translatedFrame.frames[2].uiSourceCode, uiSourceCode);
     });
 
     it('expands inlined frames for inline scripts with line and column offsets', async () => {
@@ -878,12 +869,10 @@ describe('CompilerScriptMapping', () => {
             content: sourceMap as SDK.SourceMap.SourceMapV3,
           });
 
-      const translatedFrames:
-          Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1] = [];
-      assert.isTrue(await compilerScriptMapping.translateRawFramesStep(
-          [protocolCallFrame(`${script.sourceURL}:${script.scriptId}::4:15`)], translatedFrames));
+      const translatedFrame = await compilerScriptMapping.translateRawFrame(
+          protocolCallFrame(`${script.sourceURL}:${script.scriptId}::4:15`));
 
-      assert.deepEqual(translatedFrames[0].frames.map(stringifyFrame), [
+      assert.deepEqual(translatedFrame?.frames.map(stringifyFrame), [
         'at inner (index.ts:1:7)',
         'at outer (index.ts:6:9)',
         'at <anonymous> (index.ts:10:5)',
@@ -917,27 +906,17 @@ describe('CompilerScriptMapping', () => {
       /** The function key of an authored function in `index.ts`, starting at `start`. */
       const key = (name: string, start: string): string => `http://example.com/index.ts\n${name}\n${start}`;
 
-      type TranslatedFrames =
-          Parameters<Bindings.CompilerScriptMapping.CompilerScriptMapping['translateRawFramesStep']>[1];
+      interface Translation {
+        kind: StackTraceImpl.Trie.FrameKind;
+        frames: string[];
+        functionKeys?: StackTraceImpl.Trie.FunctionKeys;
+        unmapped?: boolean;
+      }
 
-      /** Runs a single translation step with the `compilerScriptMapping` under test. */
-      async function translateStep(rawFrames: Protocol.Runtime.CallFrame[]): Promise<{
-        translated: boolean,
-        remainingFrames: number,
-        translations: Array<{
-          kind: StackTraceImpl.Trie.FrameKind,
-          frames: string[],
-          functionKeys?: StackTraceImpl.Trie.FunctionKeys,
-        }>,
-      }> {
-        const frames = [...rawFrames];
-        const translatedFrames: TranslatedFrames = [];
-        const translated = await compilerScriptMapping.translateRawFramesStep(frames, translatedFrames);
-        return {
-          translated,
-          remainingFrames: frames.length,
-          translations: translatedFrames.map(t => ({...t, frames: t.frames.map(stringifyFrame)})),
-        };
+      /** Translates a single raw frame with the `compilerScriptMapping` under test, with stringified frames. */
+      async function translateFrame(rawFrame: Protocol.Runtime.CallFrame): Promise<Translation|null> {
+        const translation = await compilerScriptMapping.translateRawFrame(rawFrame);
+        return translation && {...translation, frames: translation.frames.map(stringifyFrame)};
       }
 
       /** Translates the whole stack trace end-to-end via the {@link Bindings.DebuggerWorkspaceBinding}. */
@@ -1038,41 +1017,25 @@ describe('CompilerScriptMapping', () => {
           script = await addScriptWithScopes('http://example.com/index.js', content, buildScopes(), mappings);
         });
 
-        it('translates each raw frame on its own, with its kind and function keys', async () => {
-          const next = builtinFrame('next');
+        it('translates a raw frame with its kind and function keys', async () => {
           const outerKeys = {top: key('outer', '0:14'), bottom: key('outer', '0:14')};
 
-          assert.deepEqual(await translateStep([rawFrame(script, '_loop', 1, 17), next]), {
-            translated: true,
-            remainingFrames: 1,
-            translations: [{
-              kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
-              frames: ['at outer (index.ts:2:4)'],
-              functionKeys: outerKeys,
-            }],
+          assert.deepEqual(await translateFrame(rawFrame(script, '_loop', 1, 17)), {
+            kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+            frames: ['at outer (index.ts:2:4)'],
+            functionKeys: outerKeys,
           });
-          assert.deepEqual(await translateStep([rawFrame(script, 'outer', 0, 17), next]), {
-            translated: true,
-            remainingFrames: 1,
-            translations: [{
-              kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
-              frames: ['at outer (index.ts:1:2)'],
-              functionKeys: outerKeys,
-            }],
+          assert.deepEqual(await translateFrame(rawFrame(script, 'outer', 0, 17)), {
+            kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+            frames: ['at outer (index.ts:1:2)'],
+            functionKeys: outerKeys,
           });
-          assert.deepEqual(await translateStep([rawFrame(script, 'f', 3, 18), next]), {
-            translated: true,
-            remainingFrames: 1,
-            translations: [{kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []}],
-          });
-          assert.deepEqual(await translateStep([rawFrame(script, 'other', 4, 17), next]), {
-            translated: true,
-            remainingFrames: 1,
-            translations: [{
-              kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
-              frames: ['at other (index.ts:9:2)'],
-              functionKeys: {top: key('other', '8:14'), bottom: key('other', '8:14')},
-            }],
+          assert.deepEqual(await translateFrame(rawFrame(script, 'f', 3, 18)),
+                           {kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []});
+          assert.deepEqual(await translateFrame(rawFrame(script, 'other', 4, 17)), {
+            kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+            frames: ['at other (index.ts:9:2)'],
+            functionKeys: {top: key('other', '8:14'), bottom: key('other', '8:14')},
           });
         });
 
@@ -1083,11 +1046,8 @@ describe('CompilerScriptMapping', () => {
             rawFrame(script, 'main', 2, 16),
           ];
 
-          assert.deepEqual(await translateStep(rawFrames), {
-            translated: true,
-            remainingFrames: 2,
-            translations: [{kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []}],
-          });
+          assert.deepEqual(await translateFrame(rawFrames[0]),
+                           {kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: []});
           assert.deepEqual(await translateStackTrace(rawFrames), [
             'at outer (index.ts:1:2)',
             'at main (index.ts:6:2)',
@@ -1186,26 +1146,18 @@ describe('CompilerScriptMapping', () => {
           const outerKeys = {top: key('outer', '0:14'), bottom: key('outer', '0:14')};
 
           it('shows the generated location, named after the authored function', async () => {
-            assert.deepEqual(await translateStep([rawFrame(script, 'outer', 0, 24), builtinFrame('next')]), {
-              translated: true,
-              remainingFrames: 1,
-              translations: [{
-                kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
-                frames: ['at outer (index.js:0:24)'],
-                functionKeys: outerKeys,
-              }],
+            assert.deepEqual(await translateFrame(rawFrame(script, 'outer', 0, 24)), {
+              kind: StackTraceImpl.Trie.FrameKind.VISIBLE,
+              frames: ['at outer (index.js:0:24)'],
+              functionKeys: outerKeys,
             });
           });
 
           it('attributes outlined frames to the authored function', async () => {
-            assert.deepEqual(await translateStep([rawFrame(script, '_loop', 1, 21), builtinFrame('next')]), {
-              translated: true,
-              remainingFrames: 1,
-              translations: [{
-                kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
-                frames: ['at outer (index.js:1:21)'],
-                functionKeys: outerKeys,
-              }],
+            assert.deepEqual(await translateFrame(rawFrame(script, '_loop', 1, 21)), {
+              kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+              frames: ['at outer (index.js:1:21)'],
+              functionKeys: outerKeys,
             });
           });
 
@@ -1240,14 +1192,12 @@ describe('CompilerScriptMapping', () => {
           const uiSourceCode = compilerScriptMapping.uiSourceCodeForURL(urlString`http://example.com/index.ts`, false);
           assert.exists(uiSourceCode);
 
-          const translatedFrames: TranslatedFrames = [];
-          assert.isTrue(await compilerScriptMapping.translateRawFramesStep(
-              [rawFrame(script, '_loop', 1, 17), rawFrame(script, 'outer', 0, 17)], translatedFrames));
+          const translatedFrame = await compilerScriptMapping.translateRawFrame(rawFrame(script, '_loop', 1, 17));
 
-          assert.lengthOf(translatedFrames, 1);
-          assert.lengthOf(translatedFrames[0].frames, 1);
-          assert.strictEqual(translatedFrames[0].frames[0].uiSourceCode, uiSourceCode);
-          assert.isUndefined(translatedFrames[0].frames[0].url);
+          assert.exists(translatedFrame);
+          assert.lengthOf(translatedFrame.frames, 1);
+          assert.strictEqual(translatedFrame.frames[0].uiSourceCode, uiSourceCode);
+          assert.isUndefined(translatedFrame.frames[0].url);
         });
 
         it('consolidates outlined frames once the source map is loaded', async () => {
@@ -1364,9 +1314,9 @@ describe('CompilerScriptMapping', () => {
           rawFrame(script, 'outer2', 2, 18),
         ];
 
-        assert.deepEqual((await translateStep(rawFrames)).translations[0].functionKeys,
+        assert.deepEqual((await translateFrame(rawFrames[0]))?.functionKeys,
                          {top: key('outer', '0:14'), bottom: key('outer', '0:14')});
-        assert.deepEqual((await translateStep(rawFrames.slice(1))).translations[0].functionKeys,
+        assert.deepEqual((await translateFrame(rawFrames[1]))?.functionKeys,
                          {top: key('outer', '5:14'), bottom: key('outer', '5:14')});
         assert.deepEqual(await translateStackTrace(rawFrames), [
           'at outer (index.ts:2:4)',
@@ -1448,14 +1398,10 @@ describe('CompilerScriptMapping', () => {
           rawFrame(script, 'entry', 0, 17),
         ];
 
-        assert.deepEqual(await translateStep(rawFrames), {
-          translated: true,
-          remainingFrames: 2,
-          translations: [{
-            kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
-            frames: ['at inner (index.ts:1:2)', 'at outer (index.ts:6:6)'],
-            functionKeys: {top: key('inner', '0:14'), bottom: key('outer', '3:14')},
-          }],
+        assert.deepEqual(await translateFrame(rawFrames[0]), {
+          kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+          frames: ['at inner (index.ts:1:2)', 'at outer (index.ts:6:6)'],
+          functionKeys: {top: key('inner', '0:14'), bottom: key('outer', '3:14')},
         });
         assert.deepEqual(await translateStackTrace(rawFrames), [
           'at inner (index.ts:1:2)',
@@ -1537,11 +1483,11 @@ describe('CompilerScriptMapping', () => {
           rawFrame(script, 'main', 0, 16),
         ];
 
-        assert.deepEqual((await translateStep(rawFrames.slice(1))).translations, [{
-                           kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
-                           frames: ['at inl (index.ts:1:2)', 'at outer (index.ts:7:4)'],
-                           functionKeys: {top: key('inl', '0:12'), bottom: key('outer', '5:14')},
-                         }]);
+        assert.deepEqual(await translateFrame(rawFrames[1]), {
+          kind: StackTraceImpl.Trie.FrameKind.OUTLINED,
+          frames: ['at inl (index.ts:1:2)', 'at outer (index.ts:7:4)'],
+          functionKeys: {top: key('inl', '0:12'), bottom: key('outer', '5:14')},
+        });
         assert.deepEqual(await translateStackTrace(rawFrames), [
           'at inl (index.ts:2:4)',
           'at outer (index.ts:7:4)',

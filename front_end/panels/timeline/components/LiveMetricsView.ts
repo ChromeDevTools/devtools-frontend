@@ -477,18 +477,6 @@ function getCollectionPeriodRange(cruxManager: CrUXManager.CrUXManager): string|
   });
 }
 
-function createMetricCardRef(cardData: Omit<MetricCardData, 'tooltipContainer'>):
-    ReturnType<typeof Lit.Directives.ref> {
-  return Lit.Directives.ref(el => {
-    if (el instanceof HTMLElement) {
-      (el as HTMLElement & {data: MetricCardData}).data = {
-        ...cardData,
-        tooltipContainer: (el.closest('.metric-cards') as HTMLElement) || undefined,
-      };
-    }
-  });
-}
-
 function renderLcpCard(input: ViewInput): Lit.LitTemplate {
   const fieldData = input.cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
   const nodeLink =
@@ -499,7 +487,7 @@ function renderLcpCard(input: ViewInput): Lit.LitTemplate {
 
   // clang-format off
   return html`
-    <devtools-metric-card ${createMetricCardRef({
+    <devtools-metric-card .data=${{
       metric: 'LCP',
       localValue: input.lcpValue?.value,
       fieldValue: fieldData?.percentiles?.p75,
@@ -511,7 +499,7 @@ function renderLcpCard(input: ViewInput): Lit.LitTemplate {
         [i18nString(UIStrings.resourceLoadDuration), subparts.resourceLoadTime, fieldSubparts?.resourceLoadTime],
         [i18nString(UIStrings.elementRenderDelay), subparts.elementRenderDelay, fieldSubparts?.elementRenderDelay],
       ],
-    })}>
+    } as MetricCardData}>
       ${nodeLink ? html`
           <div class="related-info" slot="extra-info">
             <span class="related-info-label">${i18nString(UIStrings.lcpElement)}</span>
@@ -535,13 +523,13 @@ function renderClsCard(input: ViewInput): Lit.LitTemplate {
 
   // clang-format off
   return html`
-    <devtools-metric-card ${createMetricCardRef({
+    <devtools-metric-card .data=${{
       metric: 'CLS',
       localValue: input.clsValue?.value,
       fieldValue: fieldData?.percentiles?.p75,
       histogram: fieldData?.histogram,
       warnings: input.clsValue?.warnings,
-    })}>
+    } as MetricCardData}>
       ${clusterIsVisible ? html`
         <div class="related-info" slot="extra-info">
           <span class="related-info-label">${i18nString(UIStrings.worstCluster)}</span>
@@ -565,7 +553,7 @@ function renderInpCard(input: ViewInput): Lit.LitTemplate {
 
   // clang-format off
   return html`
-    <devtools-metric-card ${createMetricCardRef({
+    <devtools-metric-card .data=${{
       metric: 'INP',
       localValue: input.inpValue?.value,
       fieldValue: fieldData?.percentiles?.p75,
@@ -576,7 +564,7 @@ function renderInpCard(input: ViewInput): Lit.LitTemplate {
         [i18nString(UIStrings.processingDuration), subparts.processingDuration],
         [i18nString(UIStrings.presentationDelay), subparts.presentationDelay],
       ],
-    })}>
+    } as MetricCardData}>
       ${interaction ? html`
         <div class="related-info" slot="extra-info">
           <span class="related-info-label">${i18nString(UIStrings.inpInteractionLink)}</span>

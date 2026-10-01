@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
+import '../../../ui/components/tooltips/tooltips.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
@@ -153,7 +155,6 @@ export interface MetricCardData {
   localValue?: number;
   fieldValue?: number|string;
   histogram?: CrUXManager.MetricResponse['histogram'];
-  tooltipContainer?: HTMLElement;
   subparts?: SubpartTable;
   warnings?: string[];
 }
@@ -167,8 +168,6 @@ export class MetricCard extends HTMLElement {
     this.#render();
   }
 
-  #tooltipEl?: HTMLElement;
-
   #data: MetricCardData = {
     metric: 'LCP',
   };
@@ -180,89 +179,6 @@ export class MetricCard extends HTMLElement {
 
   connectedCallback(): void {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-
-  #hideTooltipOnEsc = (event: KeyboardEvent): void => {
-    if (Platform.KeyboardUtilities.isEscKey(event)) {
-      event.stopPropagation();
-      this.#hideTooltip();
-    }
-  };
-
-  #hideTooltipOnMouseLeave(event: Event): void {
-    const target = event.target as HTMLElement;
-    if (target?.hasFocus()) {
-      return;
-    }
-
-    this.#hideTooltip();
-  }
-
-  #hideTooltipOnFocusOut(event: FocusEvent): void {
-    const target = event.target as HTMLElement;
-    if (target?.hasFocus()) {
-      return;
-    }
-
-    const relatedTarget = event.relatedTarget;
-    if (relatedTarget instanceof Node && target.contains(relatedTarget)) {
-      // `focusout` bubbles so we should get another event once focus leaves `relatedTarget`
-      return;
-    }
-
-    this.#hideTooltip();
-  }
-
-  #hideTooltip(): void {
-    const tooltipEl = this.#tooltipEl;
-    if (!tooltipEl) {
-      return;
-    }
-
-    document.body.removeEventListener('keydown', this.#hideTooltipOnEsc);
-
-    tooltipEl.style.removeProperty('left');
-    tooltipEl.style.removeProperty('visibility');
-    tooltipEl.style.removeProperty('display');
-    tooltipEl.style.removeProperty('transition-delay');
-  }
-
-  #showTooltip(delayMs = 0): void {
-    const tooltipEl = this.#tooltipEl;
-    if (!tooltipEl || tooltipEl.style.visibility || tooltipEl.style.display) {
-      return;
-    }
-
-    document.body.addEventListener('keydown', this.#hideTooltipOnEsc);
-
-    tooltipEl.style.display = 'block';
-    tooltipEl.style.transitionDelay = `${Math.round(delayMs)}ms`;
-
-    const container = this.#data.tooltipContainer;
-    if (!container) {
-      return;
-    }
-
-    const containerBox = container.getBoundingClientRect();
-    tooltipEl.style.setProperty('--tooltip-container-width', `${Math.round(containerBox.width)}px`);
-
-    requestAnimationFrame(() => {
-      let offset = 0;
-
-      const tooltipBox = tooltipEl.getBoundingClientRect();
-
-      const rightDiff = tooltipBox.right - containerBox.right;
-      const leftDiff = tooltipBox.left - containerBox.left;
-
-      if (leftDiff < 0) {
-        offset = Math.round(leftDiff);
-      } else if (rightDiff > 0) {
-        offset = Math.round(rightDiff);
-      }
-
-      tooltipEl.style.left = `calc(50% - ${offset}px)`;
-      tooltipEl.style.visibility = 'visible';
-    });
   }
 
   #getTitle(): string {
@@ -626,13 +542,7 @@ export class MetricCard extends HTMLElement {
             @click=${() => UIHelpers.openInNewTab(helpLink)}
           ></devtools-button>
         </h3>
-        <div tabindex="0" class="metric-values-section"
-          @mouseenter=${() => this.#showTooltip(500)}
-          @mouseleave=${this.#hideTooltipOnMouseLeave}
-          @focusin=${this.#showTooltip}
-          @focusout=${this.#hideTooltipOnFocusOut}
-          aria-describedby="tooltip"
-        >
+        <div tabindex="0" class="metric-values-section" aria-details="tooltip">
           <div class="metric-source-block">
             <div class="metric-source-value" id="local-value">${localValueEl}</div>
             ${fieldEnabled ? html`<div class="metric-source-label">${i18nString(UIStrings.localValue)}</div>` : nothing}
@@ -643,29 +553,20 @@ export class MetricCard extends HTMLElement {
               <div class="metric-source-label">${i18nString(UIStrings.field75thPercentile)}</div>
             </div>
           `: nothing}
-          <div
-            id="tooltip"
-            class="tooltip"
-            role="tooltip"
-            aria-label=${i18nString(UIStrings.viewCardDetails)}
-            ${Lit.Directives.ref(el => {
-              if (el instanceof HTMLElement) {
-                this.#tooltipEl = el as HTMLElement;
-              }
-            })}
-          >
-            <div class="tooltip-scroll">
-              <div class="tooltip-contents">
-                <div>
-                  ${this.#renderDetailedCompareString()}
-                  <hr class="divider">
-                  ${this.#renderFieldHistogram()}
-                  ${localValue && this.#data.subparts ? this.#renderSubpartTable(this.#data.subparts) : nothing}
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
+        <devtools-tooltip
+          id="tooltip"
+          variant="rich"
+          hover-delay="500"
+          aria-label=${i18nString(UIStrings.viewCardDetails)}
+        >
+          <div class="tooltip-contents">
+            ${this.#renderDetailedCompareString()}
+            <hr class="divider">
+            ${this.#renderFieldHistogram()}
+            ${localValue && this.#data.subparts ? this.#renderSubpartTable(this.#data.subparts) : nothing}
+          </div>
+        </devtools-tooltip>
         ${fieldEnabled ? html`<hr class="divider">` : nothing}
         ${this.#renderCompareString()}
         ${this.#data.warnings?.map(warning => html`

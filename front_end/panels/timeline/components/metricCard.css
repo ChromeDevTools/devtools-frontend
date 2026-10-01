@@ -28,7 +28,6 @@
 }
 
 .metric-values-section {
-  position: relative;
   display: flex;
   column-gap: var(--sys-size-5);
   margin-bottom: var(--sys-size-5);
@@ -170,30 +169,9 @@ details.environment-recs[open] > summary::before {
   font-weight: var(--ref-typeface-weight-medium);
 }
 
-.tooltip {
-  display: none;
-  visibility: hidden;
-  transition-property: visibility;
-  width: min(var(--tooltip-container-width, 350px), 350px);
+.tooltip-contents {
+  width: 350px;
   max-width: max-content;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
-  box-sizing: border-box;
-  padding: var(--sys-size-5) var(--sys-size-6);
-  border-radius: var(--sys-shape-corner-small);
-  background-color: var(--sys-color-cdt-base-container);
-  box-shadow: var(--drop-shadow-depth-3);
-
-  .tooltip-scroll {
-    overflow-x: auto;
-
-    .tooltip-contents {
-      min-width: min-content;
-    }
-  }
 }
 
 .subpart-table {

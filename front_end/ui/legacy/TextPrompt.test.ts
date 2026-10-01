@@ -418,4 +418,125 @@ describe('TextPrompt', () => {
     assert.isFalse(div.hasAttribute('aria-haspopup'));
     assert.isFalse(div.hasAttribute('aria-expanded'));
   });
+
+  it('maintains cursor position when refocused after tab switch', async () => {
+    prompt.initialize(async () => []);
+    const proxy = prompt.attachAndStartEditing(div);
+    prompt.setText('filter-text');
+    prompt.focus();
+
+    const textNode = div.firstChild!;
+    const selection = div.getComponentSelection()!;
+    const selectionChanged =
+        new Promise<Event>(resolve => div.ownerDocument.addEventListener('selectionchange', resolve, {once: true}));
+    selection.setBaseAndExtent(textNode, 6, textNode, 6);
+    await selectionChanged;
+
+    const parent = proxy.parentElement!;
+    proxy.remove();
+    parent.appendChild(proxy);
+
+    assert.isFalse(div.hasFocus());
+    prompt.focus();
+
+    assert.strictEqual(selection.rangeCount, 1);
+    assert.strictEqual(selection.getRangeAt(0).startOffset, 6);
+    assert.strictEqual(selection.getRangeAt(0).endOffset, 6);
+  });
+
+  it('maintains forward and backward selection when refocused after tab switch', async () => {
+    prompt.initialize(async () => []);
+    const proxy = prompt.attachAndStartEditing(div);
+    prompt.setText('filter-text');
+    prompt.focus();
+
+    const textNode = div.firstChild!;
+    const selection = div.getComponentSelection()!;
+    const parent = proxy.parentElement!;
+
+    let selectionChanged =
+        new Promise<Event>(resolve => div.ownerDocument.addEventListener('selectionchange', resolve, {once: true}));
+    selection.setBaseAndExtent(textNode, 2, textNode, 8);
+    await selectionChanged;
+
+    proxy.remove();
+    parent.appendChild(proxy);
+    assert.isFalse(div.hasFocus());
+    prompt.focus();
+
+    assert.strictEqual(selection.anchorOffset, 2);
+    assert.strictEqual(selection.focusOffset, 8);
+    assert.strictEqual(selection.getRangeAt(0).startOffset, 2);
+    assert.strictEqual(selection.getRangeAt(0).endOffset, 8);
+
+    selectionChanged =
+        new Promise<Event>(resolve => div.ownerDocument.addEventListener('selectionchange', resolve, {once: true}));
+    selection.setBaseAndExtent(textNode, 8, textNode, 2);
+    await selectionChanged;
+
+    proxy.remove();
+    parent.appendChild(proxy);
+    assert.isFalse(div.hasFocus());
+    prompt.focus();
+
+    assert.strictEqual(selection.anchorOffset, 8);
+    assert.strictEqual(selection.focusOffset, 2);
+    assert.strictEqual(selection.getRangeAt(0).startOffset, 2);
+    assert.strictEqual(selection.getRangeAt(0).endOffset, 8);
+  });
+
+  it('places caret at offset 0 when cleared and refocused', () => {
+    prompt.initialize(async () => []);
+    const proxy = prompt.attachAndStartEditing(div);
+    const selection = div.getComponentSelection()!;
+    const parent = proxy.parentElement!;
+
+    prompt.setText('filter-text');
+    prompt.focus();
+    prompt.setText('');
+
+    proxy.remove();
+    parent.appendChild(proxy);
+    assert.isFalse(div.hasFocus());
+    prompt.focus();
+
+    assert.strictEqual(selection.getRangeAt(0).startOffset, 0);
+    assert.strictEqual(selection.getRangeAt(0).endOffset, 0);
+  });
+
+  it('clears saved selection on detach and defaults to end of prompt', () => {
+    prompt.initialize(async () => []);
+    prompt.attachAndStartEditing(div);
+    const selection = div.getComponentSelection()!;
+
+    prompt.setText('new-text');
+    prompt.setDOMSelection(3, 3);
+    prompt.detach();
+    prompt.attachAndStartEditing(div);
+    div.blur();
+    assert.isFalse(div.hasFocus());
+    prompt.focus();
+
+    assert.strictEqual(selection.getRangeAt(0).startOffset, 8);
+    assert.strictEqual(selection.getRangeAt(0).endOffset, 8);
+  });
+
+  it('preserves full selection from selectAll when refocused', () => {
+    prompt.initialize(async () => []);
+    const proxy = prompt.attachAndStartEditing(div);
+    const selection = div.getComponentSelection()!;
+    const parent = proxy.parentElement!;
+
+    prompt.setText('new-text');
+    prompt.setDOMSelection(3, 3);
+    prompt.selectAll();
+
+    proxy.remove();
+    parent.appendChild(proxy);
+    assert.isFalse(div.hasFocus());
+    prompt.focus();
+
+    assert.strictEqual(selection.getRangeAt(0).startOffset, 0);
+    assert.strictEqual(selection.getRangeAt(0).endOffset, 8);
+  });
 });

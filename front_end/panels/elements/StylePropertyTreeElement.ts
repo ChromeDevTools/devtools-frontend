@@ -3462,7 +3462,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       proxyElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this, context), false);
     }
 
-    selectedElement.getComponentSelection()?.selectAllChildren(selectedElement);
+    this.prompt.selectAll();
   }
 
   private editingNameValueKeyDown(context: Context, event: Event): void {

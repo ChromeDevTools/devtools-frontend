@@ -234,7 +234,7 @@ export class TextPromptElement extends HTMLElement {
     const proxy =
         this.#textPrompt.attachAndStartEditing(placeholder, e => this.#done(e, /* commit=*/ !this.#cancelOnBlur));
     proxy.addEventListener('keydown', this.#editingValueKeyDown.bind(this));
-    placeholder.getComponentSelection()?.selectAllChildren(placeholder);
+    this.#textPrompt.selectAll();
     this.#textPrompt.focus();
   }
 
@@ -362,6 +362,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   #ariaPlaceholder: string|null = null;
   #ariaLabelFromPlaceholder = false;
   private boundOnKeyDown?: ((ev: KeyboardEvent) => void);
+  #boundSaveSelection?: (() => void);
+  #boundOnFocusIn?: (() => void);
   private boundOnInput?: ((ev: Event) => void);
   private boundOnMouseWheel?: ((event: Event) => void);
   private boundClearAutocomplete?: (() => void);
@@ -374,6 +376,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   private oldTabIndex?: number;
   private completeTimeout?: number;
   #disableDefaultSuggestionForEmptyInput?: boolean;
+  #savedSelection: {anchorColumn: number, focusColumn: number}|null = null;
   jslogContext: string|undefined = undefined;
 
   constructor() {
@@ -469,6 +472,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.#element = element;
 
     this.boundOnKeyDown = this.onKeyDown.bind(this);
+    this.#boundSaveSelection = this.#saveSelection.bind(this);
+    this.#boundOnFocusIn = this.#onFocusIn.bind(this);
     this.boundOnInput = this.onInput.bind(this);
     this.boundOnMouseWheel = this.onMouseWheel.bind(this);
     this.boundClearAutocomplete = this.clearAutocomplete.bind(this);
@@ -496,6 +501,10 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.#updateAriaRole();
     this.#element.setAttribute('contenteditable', 'plaintext-only');
     this.element().addEventListener('keydown', this.boundOnKeyDown, false);
+    this.#element.addEventListener('focusin', this.#boundOnFocusIn, false);
+    if (this.element().hasFocus()) {
+      this.#onFocusIn();
+    }
     this.#element.addEventListener('input', this.boundOnInput, false);
     this.#element.addEventListener('wheel', this.boundOnMouseWheel, false);
     this.#element.addEventListener('selectstart', this.boundClearAutocomplete, false);
@@ -557,6 +566,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.clearAutocomplete();
     this.element().textContent = text;
     this.previousText = this.text();
+    this.#savedSelection = {anchorColumn: text.length, focusColumn: text.length};
     if (this.element().hasFocus()) {
       this.moveCaretToEndOfPrompt();
       this.element().scrollIntoView();
@@ -576,18 +586,24 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       endIndex = startIndex;
     }
 
-    const textNode = (this.element().childNodes[0] as Node);
-    const range = new Range();
-    range.setStart(textNode, startIndex);
-    range.setEnd(textNode, endIndex);
-    const selection = window.getSelection();
-    if (selection) {
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
+    this.setDOMSelection(startIndex, endIndex);
+  }
+
+  selectAll(): void {
+    this.setSelectedRange(0, this.text().length);
   }
 
   focus(): void {
+    if (!this.element().hasFocus()) {
+      if (this.#savedSelection) {
+        const textLength = this.text().length;
+        const anchorColumn = Platform.NumberUtilities.clamp(this.#savedSelection.anchorColumn, 0, textLength);
+        const focusColumn = Platform.NumberUtilities.clamp(this.#savedSelection.focusColumn, 0, textLength);
+        this.setDOMSelection(anchorColumn, focusColumn);
+      } else {
+        this.moveCaretToEndOfPrompt();
+      }
+    }
     this.element().focus();
   }
 
@@ -630,8 +646,14 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
 
   private removeFromElement(): void {
     this.clearAutocomplete();
+    this.#savedSelection = null;
     this.element().removeEventListener(
         'keydown', (this.boundOnKeyDown as (this: HTMLElement, arg1: Event) => void), false);
+    this.element().removeEventListener('focusin', (this.#boundOnFocusIn as (this: HTMLElement, arg1: Event) => void),
+                                       false);
+    if (this.#boundSaveSelection) {
+      this.element().ownerDocument.removeEventListener('selectionchange', this.#boundSaveSelection, false);
+    }
     this.element().removeEventListener('input', (this.boundOnInput as (this: HTMLElement, arg1: Event) => void), false);
     this.element().removeEventListener(
         'selectstart', (this.boundClearAutocomplete as (this: HTMLElement, arg1: Event) => void), false);
@@ -784,6 +806,35 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.autoCompleteSoon();
   }
 
+  #getOffsetInElement(container: Node, offset: number): number {
+    const textLength = this.text().length;
+    const beforeRange = document.createRange();
+    beforeRange.setStart(this.element(), 0);
+    beforeRange.setEnd(container, offset);
+    return Platform.NumberUtilities.clamp(beforeRange.toString().length, 0, textLength);
+  }
+
+  #saveSelection(): void {
+    if (!this.#element || !this.element().isConnected || !this.element().hasFocus()) {
+      return;
+    }
+    const selection = this.element().getComponentSelection();
+    if (!selection || selection.rangeCount === 0 || !selection.anchorNode || !selection.focusNode) {
+      return;
+    }
+    if (!selection.anchorNode.isSelfOrDescendant(this.element()) ||
+        !selection.focusNode.isSelfOrDescendant(this.element())) {
+      return;
+    }
+    const anchorColumn = this.#getOffsetInElement(selection.anchorNode, selection.anchorOffset);
+    const focusColumn = this.#getOffsetInElement(selection.focusNode, selection.focusOffset);
+
+    this.#savedSelection = {
+      anchorColumn,
+      focusColumn,
+    };
+  }
+
   acceptAutoComplete(): boolean {
     let result = false;
     if (this.isSuggestBoxVisible() && this.suggestBox) {
@@ -815,7 +866,16 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.#currentSuggestion = null;
   }
 
+  #onFocusIn(): void {
+    if (this.#boundSaveSelection) {
+      this.element().ownerDocument.addEventListener('selectionchange', this.#boundSaveSelection, false);
+    }
+  }
+
   private onBlur(): void {
+    if (this.#boundSaveSelection) {
+      this.element().ownerDocument.removeEventListener('selectionchange', this.#boundSaveSelection, false);
+    }
     this.clearAutocomplete();
   }
 
@@ -996,17 +1056,16 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   setDOMSelection(startColumn: number, endColumn: number): void {
     this.element().normalize();
     const node = this.element().childNodes[0];
-    if (!node || node === this.ghostTextElement) {
+    if (!node || node === this.ghostTextElement || node.nodeType !== Node.TEXT_NODE) {
+      this.#savedSelection = {anchorColumn: 0, focusColumn: 0};
+      this.element().getComponentSelection()?.setBaseAndExtent(this.element(), 0, this.element(), 0);
       return;
     }
-    const range = document.createRange();
-    range.setStart(node, startColumn);
-    range.setEnd(node, endColumn);
-    const selection = this.element().getComponentSelection();
-    if (selection) {
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
+    const length = (node as Text).length;
+    const anchorOffset = Platform.NumberUtilities.clamp(startColumn, 0, length);
+    const focusOffset = Platform.NumberUtilities.clamp(endColumn, 0, length);
+    this.#savedSelection = {anchorColumn: anchorOffset, focusColumn: focusOffset};
+    this.element().getComponentSelection()?.setBaseAndExtent(node, anchorOffset, node, focusOffset);
   }
 
   isSuggestBoxVisible(): boolean {
@@ -1061,6 +1120,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       const textNode = (container as Text);
       offset = (textNode.textContent || '').length;
     }
+    const textLength = this.text().length;
+    this.#savedSelection = {anchorColumn: textLength, focusColumn: textLength};
     selectionRange.setStart(container, offset);
     selectionRange.setEnd(container, offset);
 

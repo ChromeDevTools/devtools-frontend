@@ -1601,10 +1601,17 @@ export class DOMDocument extends DOMNode {
 
     const resourceTreeModel = this.domModel().target().model(ResourceTreeModel);
     const frame = this.#frameId ? resourceTreeModel?.frameForId(this.#frameId) : null;
-    // In production, DOMDocument resolves its security origin from its associated frame.
-    // Detached documents without a frame or documents in test environments fall back
-    // to SecurityOrigin.create() using the document URL.
-    this.#securityOrigin = frame?.securityOrigin() ?? SecurityOrigin.create(this.#documentURL);
+    if (frame) {
+      this.#securityOrigin = frame.securityOrigin();
+    } else if (resourceTreeModel?.mainFrame) {
+      // If the target has an active frame tree, a DOMDocument without a matching
+      // frame is a detached document and must be isolated with an opaque origin.
+      this.#securityOrigin = SecurityOrigin.createUniqueOpaque();
+    } else {
+      // TODO(b/567434846): Migrate synthetic unit tests to attach frames so this
+      // fallback to parsing documentURL can be removed.
+      this.#securityOrigin = SecurityOrigin.create(this.#documentURL);
+    }
   }
 
   get documentURL(): Platform.DevToolsPath.UrlString {

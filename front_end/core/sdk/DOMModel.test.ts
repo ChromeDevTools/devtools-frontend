@@ -246,51 +246,52 @@ describe('DOMModel', () => {
       assert.isNull((detachedDoc as SDK.DOMModel.DOMDocument).frameId());
     });
 
-    it('detached root documents do not inherit main frame security origin', () => {
-      const dataUrl = Platform.DevToolsPath.urlString`https://example.com`;
-      const target = universe.createTarget({url: dataUrl});
-      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assert.exists(resourceTreeModel);
+    it('detached root documents receive an opaque security origin and do not use documentURL or mainFrame origin',
+       () => {
+         const mainFrameUrl = Platform.DevToolsPath.urlString`https://example.com`;
+         const target = universe.createTarget({url: mainFrameUrl});
+         const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+         assert.exists(resourceTreeModel);
 
-      const mainFrame = resourceTreeModel.frameAttached('main' as Protocol.Page.FrameId, null);
-      assert.exists(mainFrame);
-      mainFrame.navigate({
-        id: 'main' as Protocol.Page.FrameId,
-        loaderId: 'loaderId' as Protocol.Network.LoaderId,
-        url: dataUrl,
-        domainAndRegistry: 'example.com',
-        securityOrigin: 'https://example.com',
-        mimeType: 'text/html',
-        secureContextType: ProtocolModule.Page.SecureContextType.Secure,
-        crossOriginIsolatedContextType: ProtocolModule.Page.CrossOriginIsolatedContextType.NotIsolated,
-        gatedAPIFeatures: [],
-      });
+         const mainFrame = resourceTreeModel.frameAttached('main' as Protocol.Page.FrameId, null);
+         assert.exists(mainFrame);
+         mainFrame.navigate({
+           id: 'main' as Protocol.Page.FrameId,
+           loaderId: 'loaderId' as Protocol.Network.LoaderId,
+           url: mainFrameUrl,
+           domainAndRegistry: 'example.com',
+           securityOrigin: 'https://example.com',
+           mimeType: 'text/html',
+           secureContextType: ProtocolModule.Page.SecureContextType.Secure,
+           crossOriginIsolatedContextType: ProtocolModule.Page.CrossOriginIsolatedContextType.NotIsolated,
+           gatedAPIFeatures: [],
+         });
 
-      const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
+         const domModel = target.model(SDK.DOMModel.DOMModel);
+         assert.exists(domModel);
 
-      // Trigger setDetachedRoot by passing a parentId of 0.
-      domModel.setChildNodes(0 as Protocol.DOM.NodeId, [{
-                               nodeId: 10 as Protocol.DOM.NodeId,
-                               backendNodeId: 10 as Protocol.DOM.BackendNodeId,
-                               nodeType: NodeType.DOCUMENT_NODE,
-                               nodeName: '#document',
-                               localName: '',
-                               nodeValue: '',
-                               documentURL: 'about:blank',
-                             }]);
+         // Trigger setDetachedRoot by passing a parentId of 0 with a cross-origin documentURL.
+         domModel.setChildNodes(0 as Protocol.DOM.NodeId, [{
+                                  nodeId: 10 as Protocol.DOM.NodeId,
+                                  backendNodeId: 10 as Protocol.DOM.BackendNodeId,
+                                  nodeType: NodeType.DOCUMENT_NODE,
+                                  nodeName: '#document',
+                                  localName: '',
+                                  nodeValue: '',
+                                  documentURL: 'https://victim.example/page.html',
+                                }]);
 
-      const detachedDoc = domModel.nodeForId(10 as Protocol.DOM.NodeId);
-      assert.exists(detachedDoc);
-      assert.instanceOf(detachedDoc, SDK.DOMModel.DOMDocument);
-      assert.isNull((detachedDoc as SDK.DOMModel.DOMDocument).frameId());
+         const detachedDoc = domModel.nodeForId(10 as Protocol.DOM.NodeId);
+         assert.instanceOf(detachedDoc, SDK.DOMModel.DOMDocument);
 
-      const mainOrigin = mainFrame.securityOrigin();
-      const detachedOrigin = (detachedDoc as SDK.DOMModel.DOMDocument).securityOrigin();
+         const mainOrigin = mainFrame.securityOrigin();
+         const detachedOrigin = detachedDoc.securityOrigin();
 
-      assert.isFalse(detachedOrigin.isSameOriginWith(mainOrigin));
-      assert.isTrue(detachedOrigin.isOpaque());
-    });
+         assert.isFalse(detachedOrigin.isSameOriginWith(mainOrigin));
+         assert.isFalse(
+             detachedOrigin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://victim.example')));
+         assert.isTrue(detachedOrigin.isOpaque());
+       });
   });
 
   it('updates top layer elements correctly', async () => {

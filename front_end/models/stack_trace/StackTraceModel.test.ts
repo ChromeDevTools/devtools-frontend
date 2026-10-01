@@ -472,6 +472,10 @@ describe('StackTraceModel', () => {
       return updatedSpy;
     };
 
+    /** @returns the function names of the raw frames passed to each call of `spy`. */
+    const translatedNames = (spy: sinon.SinonSpy<Parameters<StackTraceImpl.StackTraceModel.TranslateRawFrames>>) =>
+        spy.getCalls().map(call => call.args[0].map(f => f.functionName));
+
     it('re-translates and notifies a single stack trace', async () => {
       const {model, translateSpy} = setup();
       const callFrames = [
@@ -485,10 +489,10 @@ describe('StackTraceModel', () => {
       await model.scriptInfoChanged(script, translateSpy);
 
       sinon.assert.calledOnce(updatedSpy);
-      sinon.assert.calledOnceWithMatch(translateSpy, callFrames.map(f => ({...f, isWasm: false})), model.target());
+      assert.deepEqual(translatedNames(translateSpy), [['foo']]);
     });
 
-    it('only re-translates affected fragments and notifies affected stack traces', async () => {
+    it('only re-translates affected frames and notifies affected stack traces', async () => {
       const {model, translateSpy} = setup();
       const callFrames1 = [
         'foo.js:id1:foo:1:10',
@@ -505,7 +509,7 @@ describe('StackTraceModel', () => {
 
       await model.scriptInfoChanged(script, translateSpy);
 
-      sinon.assert.calledOnceWithMatch(translateSpy, callFrames1.map(f => ({...f, isWasm: false})), model.target());
+      assert.deepEqual(translatedNames(translateSpy), [['bar']]);
       sinon.assert.calledOnce(updatedSpy1);
       sinon.assert.notCalled(updatedSpy2);
     });
@@ -531,7 +535,44 @@ describe('StackTraceModel', () => {
 
       await model.scriptInfoChanged(script, translateSpy);
 
-      sinon.assert.calledTwice(translateSpy);
+      sinon.assert.calledOnce(translateSpy);
+      assert.sameMembers(translatedNames(translateSpy)[0], ['foo', 'someFn']);
+      sinon.assert.calledOnce(updatedSpy);
+    });
+
+    it('re-translates all frames of a script that appears multiple times in a stack trace', async () => {
+      const {model, translateSpy} = setup();
+      const stackTrace = await model.createFromProtocolRuntime({
+        callFrames: [
+          'foo.js:id1:foo:1:10',
+          'bar.js:id2:bar:2:20',
+          'foo.js:id1:baz:3:30',
+        ].map(protocolCallFrame),
+      },
+                                                               identityTranslateFn);
+      const updatedSpy = createUpdatedSpy(stackTrace);
+      const script = {scriptId: 'id1', sourceURL: 'foo.js'} as SDK.Script.Script;
+
+      await model.scriptInfoChanged(script, translateSpy);
+
+      sinon.assert.calledOnce(translateSpy);
+      assert.sameMembers(translatedNames(translateSpy)[0], ['foo', 'baz']);
+      sinon.assert.calledOnce(updatedSpy);
+    });
+
+    it('re-translates eval origins whose chain references the script', async () => {
+      const {model, translateSpy} = setup();
+      const stackTrace = await model.createFromErrorStackLikeString(`Error: foo
+              at end (eval at inner (eval at outer (foo.js:10:5)), <anonymous>:1:1)`,
+                                                                    identityTranslateFn);
+      assert.exists(stackTrace);
+      const updatedSpy = createUpdatedSpy(stackTrace);
+      const script = {scriptId: 'id1', sourceURL: 'http://example.com/foo.js'} as SDK.Script.Script;
+
+      await model.scriptInfoChanged(script, translateSpy);
+
+      // Only the eval origin chain is re-translated, not the raw frame of `end` itself.
+      assert.deepEqual(translatedNames(translateSpy), [['inner'], ['outer']]);
       sinon.assert.calledOnce(updatedSpy);
     });
 
@@ -583,8 +624,7 @@ describe('StackTraceModel', () => {
 
          await model.scriptInfoChanged(script, translateSpy);
 
-         sinon.assert.calledOnceWithMatch(
-             translateSpy, fullCallFrames.map(f => ({...f, isWasm: false})), model.target());
+         assert.deepEqual(translatedNames(translateSpy), [['bar']]);
          sinon.assert.calledOnce(updatedSpyFull);
          sinon.assert.calledOnce(updatedSpySubSet);
        });

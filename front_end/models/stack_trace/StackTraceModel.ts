@@ -133,25 +133,45 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     return new StackTraceImpl(syncFragment, asyncFragments);
   }
 
-  /** Trigger re-translation of all fragments with the provide script in their call stack */
+  /**
+   * Re-translates all trie nodes whose raw frame or eval origin chain is in `script`, and notifies all stack traces
+   * that contain such a node.
+   */
   async scriptInfoChanged(script: SDK.Script.Script, translateRawFrames: TranslateRawFrames): Promise<void> {
+    // scriptId has precedence, but if the frame does not have one, check the URL.
+    const matches = (raw: RawFrame): boolean =>
+        raw.scriptId === script.scriptId || (!raw.scriptId && raw.url === script.sourceURL);
+    const evalMatches = (raw: RawFrame|undefined): boolean =>
+        Boolean(raw) && (matches(raw as RawFrame) || evalMatches(raw?.parsedFrameInfo?.evalOrigin));
+
     const release = await this.#mutex.acquire();
     try {
-      const translatePromises: Array<Promise<unknown>> = [];
-      let stackTracesToUpdate = new Set<AnyStackTraceImpl>();
-
-      for (const fragment of this.#affectedFragments(script)) {
-        // We trigger re-translation only for fragments of leaf-nodes. Any fragment along the ancestor-chain
-        // is re-translated as a side-effect.
-        // We just need to remember the stack traces of the skipped over fragments, so we can send the
-        // UPDATED event also to them.
-        if (fragment.node?.children.length === 0) {
-          translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
+      // Walk the whole trie: the same script can appear multiple times in a call stack.
+      const affected: FrameNode[] = [];
+      this.#trie.walk(null, node => {
+        if (matches(node.rawFrame) || evalMatches(node.parsedFrameInfo?.evalOrigin)) {
+          affected.push(node);
         }
-        stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
-      }
+        return true;
+      });
+      await this.#translateNodes(affected.filter(n => matches(n.rawFrame)),
+                                 affected.filter(n => evalMatches(n.parsedFrameInfo?.evalOrigin)), translateRawFrames);
 
-      await Promise.all(translatePromises);
+      // Every fragment in the sub-tree of an affected node contains the affected node in its call stack.
+      const visited = new Set<FrameNode>();
+      let stackTracesToUpdate = new Set<AnyStackTraceImpl>();
+      for (const root of affected) {
+        this.#trie.walk(root, node => {
+          if (visited.has(node)) {
+            return false;
+          }
+          visited.add(node);
+          if (node.fragment) {
+            stackTracesToUpdate = stackTracesToUpdate.union(node.fragment.stackTraces);
+          }
+          return true;
+        });
+      }
 
       for (const stackTrace of stackTracesToUpdate) {
         stackTrace.dispatchEventToListeners(StackTrace.StackTrace.Events.UPDATED);
@@ -227,14 +247,6 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     }
   }
 
-  async #translateFragment(fragment: FragmentImpl, rawFramesToUIFrames: TranslateRawFrames): Promise<void> {
-    if (!fragment.node) {
-      return;
-    }
-    const callStack = [...fragment.node.getCallStack()];
-    await this.#translateNodes(callStack, callStack.filter(n => n.parsedFrameInfo?.evalOrigin), rawFramesToUIFrames);
-  }
-
   /** Translates `nodes` and the eval origins of `evalNodes`. Writes nothing if any translation throws. */
   async #translateNodes(nodes: FrameNode[], evalNodes: FrameNode[],
                         rawFramesToUIFrames: TranslateRawFrames): Promise<void> {
@@ -254,32 +266,6 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     evalNodes.forEach((node, i) => {
       node.evalOrigin = evalOrigins[i];
     });
-  }
-
-  #affectedFragments(script: SDK.Script.Script): Set<FragmentImpl> {
-    // 1. Collect branches with the matching script.
-    const affectedBranches = new Set<FrameNode>();
-    this.#trie.walk(null, node => {
-      // scriptId has precedence, but if the frame does not have one, check the URL.
-      if (node.rawFrame.scriptId === script.scriptId ||
-          (!node.rawFrame.scriptId && node.rawFrame.url === script.sourceURL)) {
-        affectedBranches.add(node);
-        return false;
-      }
-      return true;
-    });
-
-    // 2. For each branch collect all the fragments.
-    const fragments = new Set<FragmentImpl>();
-    for (const branch of affectedBranches) {
-      this.#trie.walk(branch, node => {
-        if (node.fragment) {
-          fragments.add(node.fragment);
-        }
-        return true;
-      });
-    }
-    return fragments;
   }
 }
 

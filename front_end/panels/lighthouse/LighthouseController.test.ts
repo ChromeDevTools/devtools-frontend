@@ -5,8 +5,9 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
@@ -19,8 +20,8 @@ describeWithEnvironment('LighthouseController', () => {
     if (this.timeout() > 0) {
       this.timeout(45_000);
     }
-    stubNoopSettings();
     Lighthouse = await import('./lighthouse.js');
+    Lighthouse.LighthouseController.clearSettingsCacheForTest();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
@@ -51,16 +52,9 @@ describeWithEnvironment('LighthouseController', () => {
     it('returns categories matching user settings when isAIControlled is not set', () => {
       const protocolService = sinon.createStubInstance(Lighthouse.LighthouseProtocolService.ProtocolService);
       const controller = new Lighthouse.LighthouseController.LighthouseController(protocolService);
-      sinon.stub(controller, 'getFlags').returns({formFactor: 'desktop', mode: 'navigation'});
 
-      const presets = Lighthouse.LighthouseController.getPresets();
-      const seoPreset = presets.find(p => p.configID === 'seo');
-      assert.exists(seoPreset);
-      sinon.stub(seoPreset.setting, 'get').returns(false);
-
-      const perfPreset = presets.find(p => p.configID === 'performance');
-      assert.exists(perfPreset);
-      sinon.stub(perfPreset.setting, 'get').returns(true);
+      Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-seo').set(false);
+      Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-perf').set(true);
 
       const categories = controller.getCategoryIDs();
       assert.isFalse(categories.includes('seo'));
@@ -72,19 +66,11 @@ describeWithEnvironment('LighthouseController', () => {
          const protocolService = sinon.createStubInstance(Lighthouse.LighthouseProtocolService.ProtocolService);
          const controller = new Lighthouse.LighthouseController.LighthouseController(protocolService);
 
-         const presets = Lighthouse.LighthouseController.getPresets();
-         const seoPreset = presets.find(p => p.configID === 'seo');
-         assert.exists(seoPreset);
-         sinon.stub(seoPreset.setting, 'get').returns(false);
+         Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-seo').set(false);
+         Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-perf').set(false);
 
-         const perfPreset = presets.find(p => p.configID === 'performance');
-         assert.exists(perfPreset);
-         sinon.stub(perfPreset.setting, 'get').returns(false);
-
-         // Because stubNoopSettings() returns a truthy [] from get() by default, unstubbed presets
-         // (including 'agentic-browsing') are enabled when isAIControlled is false.
          const categoriesNoAI = controller.getCategoryIDs({isAIControlled: false, mode: 'navigation'});
-         assert.deepEqual(categoriesNoAI, ['accessibility', 'best-practices', 'agentic-browsing']);
+         assert.deepEqual(categoriesNoAI, ['accessibility', 'best-practices']);
 
          // AI-controlled runs intentionally exclude the experimental 'agentic-browsing' category.
          const categoriesWithAi = controller.getCategoryIDs({isAIControlled: true, mode: 'navigation'});

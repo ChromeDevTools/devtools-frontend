@@ -9,7 +9,7 @@ import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
-import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as LighthouseModule from './lighthouse.js';
@@ -38,8 +38,8 @@ describeWithEnvironment('LighthousePanel', () => {
   } as unknown as LighthouseModel.ReporterTypes.RunnerResult;
 
   beforeEach(async () => {
-    stubNoopSettings();
     Lighthouse = await import('./lighthouse.js');
+    Lighthouse.LighthouseController.clearSettingsCacheForTest();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});

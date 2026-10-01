@@ -15,6 +15,7 @@ devtools_entrypoint("entrypoint") {
     "../../panels/application:meta",
     "../../panels/autofill:meta",
     "../../panels/browser_debugger:meta",
+    "../../panels/comments:meta",
     "../../panels/css_overview:meta",
     "../../panels/developer_resources:meta",
     "../../panels/elements:meta",

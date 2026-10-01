@@ -1,0 +1,111 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  .comments-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .comments-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--sys-size-13);
+    padding: 0 var(--sys-size-5);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    background-color: var(--sys-color-surface1);
+    flex-shrink: 0;
+  }
+
+  .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-3);
+  }
+
+  .toolbar-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--sys-size-11);
+    height: var(--sys-size-11);
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: var(--sys-shape-corner-extra-small);
+    cursor: pointer;
+    color: var(--sys-color-on-surface-subtle);
+  }
+
+  .toolbar-button:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+    color: var(--sys-color-on-surface);
+  }
+
+  .toolbar-button:active {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
+
+  .comments-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--sys-color-on-surface-subtle);
+    font-size: var(--sys-typescale-body3-size);
+    padding: var(--sys-size-13);
+    text-align: center;
+  }
+
+  .comments-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--sys-size-5);
+    padding: var(--sys-size-5) var(--sys-size-8);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    flex-shrink: 0;
+  }
+
+  .info-icon {
+    color: var(--sys-color-on-surface-subtle);
+    cursor: pointer;
+  }
+
+  .info-tooltip-container {
+    max-width: var(--sys-size-28);
+    padding: var(--sys-size-4) var(--sys-size-5);
+  }
+
+  .send-agent-button {
+    background-color: var(--sys-color-primary);
+    color: var(--sys-color-on-primary);
+    border: none;
+    border-radius: var(--sys-shape-corner-full);
+    padding: var(--sys-size-4) var(--sys-size-8);
+    font-size: var(--sys-typescale-body4-size);
+    font-weight: var(--ref-typeface-weight-medium);
+    cursor: pointer;
+    transition: background-color var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized), box-shadow var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
+  }
+
+  .send-agent-button:hover {
+    background-color: var(--sys-color-primary-bright);
+    box-shadow: var(--sys-elevation-level1);
+  }
+
+  .send-agent-button:disabled {
+    background-color: var(--sys-color-state-disabled-container);
+    color: var(--sys-color-state-disabled);
+    cursor: default;
+    box-shadow: none;
+  }
+}

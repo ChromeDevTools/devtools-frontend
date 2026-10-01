@@ -714,6 +714,34 @@ describe('StackTraceModel', () => {
       assert.strictEqual(stackTrace.syncFragment.frames[2].sdkFrame.functionName, 'baz');
     });
 
+    it('returns the same virtual DebuggerModel.CallFrame for inlined frames on repeated reads', async () => {
+      const {model, debuggerModel} = setup();
+      const script = {scriptId: 'id1', sourceURL: 'foo.js', isWasm: () => false} as unknown as SDK.Script.Script;
+      sinon.stub(debuggerModel, 'scriptForId').returns(script);
+      const details =
+          new SDK.DebuggerModel.DebuggerPausedDetails(debuggerModel, [debuggerCallFrame('foo.js:id1:foo:1:10')],
+                                                      Protocol.Debugger.PausedEventReason.Other, undefined, []);
+      const translateFn = (inlinedName: string): StackTraceImpl.StackTraceModel.TranslateRawFrames => () =>
+          Promise.resolve([visible([
+            {url: 'foo.ts', name: 'foo', line: 10, column: 20},
+            {url: 'bar.ts', name: inlinedName, line: 20, column: 30},
+          ])]);
+
+      const stackTrace = await model.createFromDebuggerPaused(details, translateFn('bar'));
+      const [, inlined] = stackTrace.syncFragment.frames;
+
+      assert.strictEqual(stackTrace.syncFragment.frames[1].sdkFrame, inlined.sdkFrame);
+      assert.strictEqual(StackTrace.StackTrace.DebuggableFrameFlavor.for(stackTrace.syncFragment.frames[1]),
+                         StackTrace.StackTrace.DebuggableFrameFlavor.for(inlined));
+
+      // A re-translation that changes the name of the inlined frame gets a new virtual CallFrame.
+      await model.scriptInfoChanged(script, translateFn('renamed'));
+      const renamed = stackTrace.syncFragment.frames[1].sdkFrame;
+      assert.notStrictEqual(renamed, inlined.sdkFrame);
+      assert.strictEqual(renamed.functionName, 'renamed');
+      assert.strictEqual(stackTrace.syncFragment.frames[1].sdkFrame, renamed);
+    });
+
     it('assigns the CallFrame of the terminator to inlined callers of a merged outlined frame', async () => {
       const {model, debuggerModel} = setup();
       sinon.stub(debuggerModel, 'scriptForId').returns({isWasm: () => false} as unknown as SDK.Script.Script);

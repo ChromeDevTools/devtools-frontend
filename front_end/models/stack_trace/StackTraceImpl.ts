@@ -307,6 +307,12 @@ export class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.ParsedEr
  * FragmentImpl will stay the same.
  */
 export class DebuggableFragmentImpl implements StackTrace.StackTrace.DebuggableFragment {
+  /**
+   * Virtual call frames for inlined frames, so that reading `frames` repeatedly (e.g. after `UPDATED`) yields
+   * identical `sdkFrame`s. A new DebuggableFragmentImpl is created per pause, so this lives as long as `callFrames`.
+   */
+  readonly #virtualCallFrames = new Map<string, SDK.DebuggerModel.CallFrame>();
+
   constructor(readonly fragment: FragmentImpl, private readonly callFrames: SDK.DebuggerModel.CallFrame[]) {
   }
 
@@ -316,11 +322,23 @@ export class DebuggableFragmentImpl implements StackTrace.StackTrace.DebuggableF
     }
 
     return consolidate([...this.fragment.node.getCallStack()]).map(({frame, nodeIndex, inlineIndex}) => {
-      // Create virtual frames for inlined frames.
-      const physical = this.callFrames[nodeIndex];
-      const sdkFrame = inlineIndex === 0 ? physical : physical.createVirtualCallFrame(inlineIndex, frame.name ?? '');
-      return new DebuggableFrameImpl(frame, sdkFrame);
+      return new DebuggableFrameImpl(frame, this.#sdkFrameFor(nodeIndex, inlineIndex, frame.name ?? ''));
     });
+  }
+
+  #sdkFrameFor(nodeIndex: number, inlineIndex: number, name: string): SDK.DebuggerModel.CallFrame {
+    const physical = this.callFrames[nodeIndex];
+    if (inlineIndex === 0) {
+      return physical;
+    }
+    // The name is part of the key, as a re-translation can change the name at the same indices.
+    const key = `${nodeIndex}:${inlineIndex}:${name}`;
+    let frame = this.#virtualCallFrames.get(key);
+    if (!frame) {
+      frame = physical.createVirtualCallFrame(inlineIndex, name);
+      this.#virtualCallFrames.set(key, frame);
+    }
+    return frame;
   }
 }
 

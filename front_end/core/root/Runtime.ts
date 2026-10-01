@@ -175,7 +175,6 @@ export interface Option {
 export class ExperimentsSupport {
   #experiments = new Map<ExperimentName, Experiment>();
   readonly #enabledForTests = new Set<ExperimentName>();
-  readonly #storage = new ExperimentStorage();
 
   allConfigurableExperiments(): Experiment[] {
     return [...this.#experiments.values()];
@@ -203,10 +202,6 @@ export class ExperimentsSupport {
       return this.#enabledForTests.has(experimentName) || (this.#experiments.get(experimentName)?.isEnabled() ?? false);
     }
     throw new Error(`Unknown experiment '${experimentName}'`);
-  }
-
-  getValueFromStorage(experimentName: ExperimentName): boolean|undefined {
-    return this.#storage.get(experimentName);
   }
 
   setEnabled(experimentName: ExperimentName, enabled: boolean): void {
@@ -240,44 +235,8 @@ export class ExperimentsSupport {
     this.#enabledForTests.clear();
   }
 
-  // TODO(crbug.com/464173054) remove after M156
-  removeAllExperimentsFromLocalStorage(): void {
-    this.#storage.removeAllExperimentsFromLocalStorage();
-  }
-
   #isExperiment(experimentName: ExperimentName): boolean {
     return this.#experiments.has(experimentName);
-  }
-}
-
-// TODO(crbug.com/464173054) remove after M156
-/** Manages the 'experiments' dictionary in globalThis.localStorage */
-class ExperimentStorage {
-  readonly #experiments: Record<string, boolean|undefined> = {};
-
-  constructor() {
-    try {
-      const storedExperiments = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem('experiments');
-      if (storedExperiments) {
-        this.#experiments = JSON.parse(storedExperiments);
-      }
-    } catch (err) {
-      console.error('Failed to parse localStorage[\'experiments\']: ' + err.message);
-    }
-  }
-
-  /**
-   * Experiments are stored with a tri-state:
-   *   - true: Explicitly enabled.
-   *   - false: Explicitly disabled.
-   *   - undefined: Disabled.
-   */
-  get(experimentName: ExperimentName): boolean|undefined {
-    return this.#experiments[experimentName];
-  }
-
-  removeAllExperimentsFromLocalStorage(): void {
-    Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.removeItem('experiments');
   }
 }
 

@@ -86,12 +86,6 @@ describe('Runtime', () => {
   });
 
   describe('ExperimentsSupport', () => {
-    beforeEach(() => {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem('experiments');
-      }
-    });
-
     it('throws for unknown experiment', () => {
       const support = new Root.Runtime.ExperimentsSupport();
       assert.throws(() => support.isEnabled('test-experiment' as Root.ExperimentNames.ExperimentName));

@@ -223,8 +223,6 @@ export class MainImpl {
       this.#universe.settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).setRequiresUserAction(true);
     }
 
-    Root.Runtime.experiments.removeAllExperimentsFromLocalStorage();
-
     await this.requestAndRegisterLocaleData();
 
     Host.userMetrics.syncSetting(
@@ -352,23 +350,10 @@ export class MainImpl {
     return {syncedStorage, globalStorage, localStorage};
   }
 
-  // TODO(crbug.com/464173054) remove after M156
-  #migrateValueFromLegacyExperiment(legacyExperimentName: Root.ExperimentNames.ExperimentName,
-                                    experiment: Root.Runtime.Experiment): void {
-    const value = Root.Runtime.experiments.getValueFromStorage(legacyExperimentName);
-    if (value !== undefined && experiment.aboutFlag) {
-      // Set the experiment to the same value as the legacy experiment.
-      experiment.setEnabled(value);
-      // Set the chrome flag to the same value as the legacy experiment.
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.setChromeFlag(experiment.aboutFlag, value);
-      // The legacy experiment will be cleaned up by `removeAllExperimentsFromLocalStorage`.
-    }
-  }
-
   #initializeExperiments(): void {
     const enableProtocolMonitor = (Root.Runtime.hostConfig.devToolsProtocolMonitor?.enabled ?? false) ||
         Boolean(Root.Runtime.Runtime.queryParam('isChromeForTesting'));
-    const protocolMonitorExperiment = Root.Runtime.experiments.register({
+    Root.Runtime.experiments.register({
       name: Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
       title: 'Protocol Monitor',
       aboutFlag: 'devtools-protocol-monitor',
@@ -377,19 +362,15 @@ export class MainImpl {
       docLink: 'https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor' as
           Platform.DevToolsPath.UrlString,
     });
-    this.#migrateValueFromLegacyExperiment(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
-                                           protocolMonitorExperiment);
 
     // Debugging
-    const instrumentationBreakpointsExperiment = Root.Runtime.experiments.register({
+    Root.Runtime.experiments.register({
       name: Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
       title: 'Instrumentation breakpoints',
       aboutFlag: 'devtools-instrumentation-breakpoints',
       isEnabled: Root.Runtime.hostConfig.devToolsInstrumentationBreakpoints?.enabled ?? false,
       requiresChromeRestart: false,
     });
-    this.#migrateValueFromLegacyExperiment(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
-                                           instrumentationBreakpointsExperiment);
 
     Root.Runtime.experiments.register({
       name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,

@@ -179,6 +179,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #blockedReason: Protocol.Network.BlockedReason|undefined = undefined;
   #renderBlockingBehavior?: Protocol.Network.RenderBlockingBehavior;
   #initiatorSecurityOrigin?: SecurityOrigin;
+  #requestURLSecurityOrigin?: SecurityOrigin;
   #corsErrorStatus: Protocol.Network.CorsErrorStatus|undefined = undefined;
   statusCode = 0;
   statusText = '';
@@ -402,10 +403,17 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
    * (`imported-har://${authority}`) to ensure recorded network traffic never collides with
    * live web origins.
    *
+   * The result is cached, so repeated calls return the same instance until the URL or the
+   * imported HAR flag changes. This keeps opaque origins (such as `data:` URLs) same-origin
+   * with themselves.
+   *
    * @see {@link initiatorSecurityOrigin} to obtain the origin of the document that initiated the request.
    */
   requestURLSecurityOrigin(): SecurityOrigin {
-    return this.#resolveSecurityOrigin(this.#url);
+    if (!this.#requestURLSecurityOrigin) {
+      this.#requestURLSecurityOrigin = this.#resolveSecurityOrigin(this.#url);
+    }
+    return this.#requestURLSecurityOrigin;
   }
 
   /**
@@ -421,6 +429,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
    *
    * For imported HAR files, the origin is mapped to an isolated virtual domain
    * (`imported-har://${authority}`) matching the imported initiating document.
+   *
+   * The result is cached, so repeated calls return the same instance until the imported HAR
+   * flag changes. This keeps opaque origins same-origin with themselves.
    *
    * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
    */
@@ -462,6 +473,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#parsedQueryParameters = undefined;
     this.#name = undefined;
     this.#path = undefined;
+    this.#requestURLSecurityOrigin = undefined;
   }
 
   get documentURL(): Platform.DevToolsPath.UrlString {
@@ -1207,7 +1219,12 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   setIsImportedHar(isImportedHar: boolean): void {
+    if (this.#isImportedHar === isImportedHar) {
+      return;
+    }
     this.#isImportedHar = isImportedHar;
+    this.#requestURLSecurityOrigin = undefined;
+    this.#initiatorSecurityOrigin = undefined;
   }
 
   setEarlyHintsHeaders(headers: NameValue[]): void {

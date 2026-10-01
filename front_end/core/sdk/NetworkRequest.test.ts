@@ -666,7 +666,7 @@ describe('requestStreamingContent', () => {
       assert.strictEqual(origin.siteId(), 'file:///home/user/app.js');
     });
 
-    it('returns unique opaque origin for data: URLs', () => {
+    it('returns a stable opaque origin for data: URLs', () => {
       const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
           'req1',
           urlString`data:text/html,<h1>Hello</h1>`,
@@ -677,8 +677,70 @@ describe('requestStreamingContent', () => {
       const anotherOrigin = request.requestURLSecurityOrigin();
 
       assert.isTrue(origin.isOpaque());
-      assert.isTrue(anotherOrigin.isOpaque());
-      assert.isFalse(origin.isSameOriginWith(anotherOrigin));
+      assert.strictEqual(origin, anotherOrigin);
+      assert.isTrue(origin.isSameOriginWith(anotherOrigin));
+    });
+
+    it('does not treat different data: requests as same-origin', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`data:text/html,<h1>Hello</h1>`,
+          urlString`https://example.com/`,
+          null,
+      );
+      const otherRequest = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req2',
+          urlString`data:text/html,<h1>Hello</h1>`,
+          urlString`https://example.com/`,
+          null,
+      );
+
+      assert.isFalse(request.requestURLSecurityOrigin().isSameOriginWith(otherRequest.requestURLSecurityOrigin()));
+    });
+
+    it('recomputes the origin after setUrl() changes the URL', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`https://a.example.com/data`,
+          urlString`https://example.com/index.html`,
+          null,
+      );
+      const originBefore = request.requestURLSecurityOrigin();
+      request.setUrl(urlString`https://b.example.com/data`);
+      const originAfter = request.requestURLSecurityOrigin();
+
+      assert.isTrue(originBefore.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://a.example.com')));
+      assert.isTrue(originAfter.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://b.example.com')));
+      assert.isFalse(originAfter.isSameOriginWith(originBefore));
+    });
+
+    it('recomputes the origin after setIsImportedHar()', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`https://api.example.com/data`,
+          urlString`https://example.com/index.html`,
+          null,
+      );
+      const liveOrigin = request.requestURLSecurityOrigin();
+      request.setIsImportedHar(true);
+      const harOrigin = request.requestURLSecurityOrigin();
+
+      assert.strictEqual(liveOrigin.siteId(), 'https://api.example.com');
+      assert.strictEqual(harOrigin.siteId(), 'imported-har://api.example.com');
+    });
+
+    it('keeps the cached origin when setIsImportedHar() does not change the flag', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`data:text/html,<h1>Hello</h1>`,
+          urlString`https://example.com/`,
+          null,
+      );
+      const originBefore = request.requestURLSecurityOrigin();
+      request.setIsImportedHar(false);
+      const originAfter = request.requestURLSecurityOrigin();
+
+      assert.strictEqual(originBefore, originAfter);
     });
 
     it('returns virtual imported-har origin for imported HAR requests', () => {
@@ -756,6 +818,21 @@ describe('requestStreamingContent', () => {
 
       assert.strictEqual(origin1, origin2);
       assert.isTrue(origin1.isSameOriginWith(origin2));
+    });
+
+    it('recomputes the origin after setIsImportedHar()', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`https://api.example.com/data`,
+          urlString`https://example.com/index.html`,
+          null,
+      );
+      const liveOrigin = request.initiatorSecurityOrigin();
+      request.setIsImportedHar(true);
+      const harOrigin = request.initiatorSecurityOrigin();
+
+      assert.strictEqual(liveOrigin.siteId(), 'https://example.com');
+      assert.strictEqual(harOrigin.siteId(), 'imported-har://example.com');
     });
   });
 });

@@ -194,6 +194,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #resourceType: Common.ResourceType.ResourceType = Common.ResourceType.resourceTypes.Other;
   #contentData: Promise<TextUtils.ContentData.ContentDataOrError>|null = null;
   #streamingContentData: Promise<TextUtils.StreamingContentData.StreamingContentDataOrError>|null = null;
+  #resolvedStreamingContentData: TextUtils.StreamingContentData.StreamingContentData|null = null;
   readonly #frames: WebSocketFrame[] = [];
   #responseHeaderValues: Record<string, string|undefined> = {};
   #responseHeadersText = '';
@@ -1505,9 +1506,11 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       }
       // Note that this is save: "streamResponseBody()" always creates base64-based ContentData and
       // for "contentData()" we'll never call "addChunk".
-      return TextUtils.StreamingContentData.StreamingContentData.from(
+      const streamingContentData = TextUtils.StreamingContentData.StreamingContentData.from(
           contentData,
       );
+      this.#resolvedStreamingContentData = streamingContentData;
+      return streamingContentData;
     });
 
     return this.#streamingContentData;
@@ -1527,6 +1530,18 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       isRegex: boolean,
       ): Promise<TextUtils.ContentProvider.SearchMatch[]> {
     if (!this.#contentDataProvider) {
+      const cachedContentData = this.finished && !this.failed ?
+          (await this.#contentData ?? this.#resolvedStreamingContentData?.content()) :
+          undefined;
+      if (cachedContentData && !TextUtils.ContentData.ContentData.isError(cachedContentData) &&
+          cachedContentData.isTextContent) {
+        return TextUtils.TextUtils.performSearchInContentData(
+            cachedContentData,
+            query,
+            caseSensitive,
+            isRegex,
+        );
+      }
       return await NetworkManager.searchInRequest(
           this,
           query,
@@ -1957,11 +1972,15 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     }
     this.endTime = timestamp;
     if (data) {
-      void this.#streamingContentData?.then(contentData => {
-        if (!TextUtils.StreamingContentData.isError(contentData)) {
-          contentData.addChunk(data);
-        }
-      });
+      if (this.#resolvedStreamingContentData) {
+        this.#resolvedStreamingContentData.addChunk(data);
+      } else {
+        void this.#streamingContentData?.then(contentData => {
+          if (!TextUtils.StreamingContentData.isError(contentData)) {
+            contentData.addChunk(data);
+          }
+        });
+      }
     }
   }
 

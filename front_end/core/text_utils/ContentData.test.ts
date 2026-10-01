@@ -41,6 +41,15 @@ describe('ContentData', () => {
     assert.strictEqual(contentData.text, '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>\n');
   });
 
+  it('treats a charset unsupported by TextDecoder as utf-8', () => {
+    const contentData =
+        new ContentData('PCFET0NUWVBFIGh0bWw+CjxwPknDsXTDq3Juw6J0acO0bsOgbGl6w6Z0acO4buKYg/CdjIY8L3A+Cg==', true,
+                        MimeType.HTML, 'not-a-charset');
+
+    assert.strictEqual(contentData.charset, 'utf-8');
+    assert.strictEqual(contentData.text, '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>\n');
+  });
+
   it('falls back to default mime types if none is provided', () => {
     const textData = new ContentData('foo', false, '');
     assert.strictEqual(textData.mimeType, 'text/plain');

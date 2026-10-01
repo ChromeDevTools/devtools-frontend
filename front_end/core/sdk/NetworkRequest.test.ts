@@ -331,6 +331,153 @@ describe('NetworkRequest (MockConnection)', () => {
     assert.isTrue(removeBlockedCookieSpy.calledOnceWith(cookie));
     assert.isEmpty(await cookieModel.getCookiesForDomain(''));
   });
+
+  it('searches cached contentData locally without calling Network.searchInResponseBody', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        urlString`https://www.google.com/`,
+        urlString`https://www.google.com/`,
+        null,
+        null,
+        null,
+    );
+    request.mimeType = 'text/html';
+    request.finished = true;
+
+    connection.setSuccessHandler('Network.getResponseBody', () => ({
+                                                              body: '<div>Google offered in: English</div>',
+                                                              base64Encoded: false,
+                                                            }));
+    const searchSpy = sinon.spy(target.networkAgent(), 'invoke_searchInResponseBody');
+
+    const contentData = await request.requestContentData();
+    assert.isFalse(TextUtils.ContentData.ContentData.isError(contentData));
+
+    const matches = await request.searchInContent('Google offered', false, false);
+    sinon.assert.notCalled(searchSpy);
+    assert.deepEqual(matches, [
+      new TextUtils.ContentProvider.SearchMatch(0, '<div>Google offered in: English</div>', 5, 14),
+    ]);
+  });
+
+  it('falls back to Network.searchInResponseBody when cached contentData is an error', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        urlString`https://www.google.com/`,
+        urlString`https://www.google.com/`,
+        null,
+        null,
+        null,
+    );
+    request.mimeType = 'text/html';
+    request.finished = true;
+
+    sinon.stub(target.networkAgent(), 'invoke_getResponseBody').resolves({
+      body: '',
+      base64Encoded: false,
+      getError: () => 'No resource with given identifier found',
+    });
+    const searchStub = sinon.stub(target.networkAgent(), 'invoke_searchInResponseBody').resolves({
+      result: [{lineNumber: 0, lineContent: '<div>Google offered in: English</div>'}],
+      getError: () => undefined,
+    });
+
+    const contentData = await request.requestContentData();
+    assert.isTrue(TextUtils.ContentData.ContentData.isError(contentData));
+
+    const matches = await request.searchInContent('Google offered', false, false);
+    sinon.assert.calledOnce(searchStub);
+    assert.lengthOf(matches, 1);
+    assert.strictEqual(matches[0].lineContent, '<div>Google offered in: English</div>');
+  });
+
+  it('falls back to Network.searchInResponseBody when cached base64 contentData has non-text MIME type', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        urlString`https://www.google.com/data.bin`,
+        urlString`https://www.google.com/`,
+        null,
+        null,
+        null,
+    );
+    request.mimeType = 'application/octet-stream';
+    request.finished = true;
+
+    connection.setSuccessHandler('Network.getResponseBody',
+                                 () => ({
+                                   body: 'PGRpdj5Hb29nbGUgb2ZmZXJlZCBpbjogRW5nbGlzaDwvZGl2Pg==',
+                                   base64Encoded: true,
+                                 }));
+    const searchStub = sinon.stub(target.networkAgent(), 'invoke_searchInResponseBody').resolves({
+      result: [{lineNumber: 0, lineContent: '<div>Google offered in: English</div>'}],
+      getError: () => undefined,
+    });
+
+    const contentData = await request.requestContentData();
+    if (TextUtils.ContentData.ContentData.isError(contentData)) {
+      assert.fail(contentData.error);
+    }
+    assert.isFalse(contentData.isTextContent);
+
+    const matches = await request.searchInContent('Google offered', false, false);
+    sinon.assert.calledOnce(searchStub);
+    assert.lengthOf(matches, 1);
+  });
+
+  it('searches cached base64 text contentData locally even with an unsupported charset', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        urlString`https://www.google.com/`,
+        urlString`https://www.google.com/`,
+        null,
+        null,
+        null,
+    );
+    request.mimeType = 'text/html';
+    request.setCharset('not-a-charset');
+    request.finished = true;
+
+    connection.setSuccessHandler('Network.getResponseBody',
+                                 () => ({
+                                   body: 'PGRpdj5Hb29nbGUgb2ZmZXJlZCBpbjogRW5nbGlzaDwvZGl2Pg==',
+                                   base64Encoded: true,
+                                 }));
+    const searchSpy = sinon.spy(target.networkAgent(), 'invoke_searchInResponseBody');
+
+    const contentData = await request.requestContentData();
+    assert.isFalse(TextUtils.ContentData.ContentData.isError(contentData));
+
+    const matches = await request.searchInContent('Google offered', false, false);
+    sinon.assert.notCalled(searchSpy);
+    assert.deepEqual(matches, [
+      new TextUtils.ContentProvider.SearchMatch(0, '<div>Google offered in: English</div>', 5, 14),
+    ]);
+  });
+
+  it('does not hang on unresolved streamingContentData when request has not received headers', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        urlString`https://www.google.com/`,
+        urlString`https://www.google.com/`,
+        null,
+        null,
+        null,
+    );
+    request.mimeType = 'text/plain';
+    request.finished = false;
+
+    void request.requestStreamingContent();
+    request.failed = true;
+
+    const searchStub = sinon.stub(target.networkAgent(), 'invoke_searchInResponseBody').resolves({
+      result: [],
+      getError: () => undefined,
+    });
+
+    const matches = await request.searchInContent('test', false, false);
+    sinon.assert.calledOnce(searchStub);
+    assert.isEmpty(matches);
+  });
 });
 
 describe('ServerSentEvents', () => {

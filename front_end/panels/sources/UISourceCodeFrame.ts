@@ -27,7 +27,7 @@ import {AiCodeCompletionPlugin} from './AiCodeCompletionPlugin.js';
 import {CoveragePlugin} from './CoveragePlugin.js';
 import {CSSPlugin} from './CSSPlugin.js';
 import {DebuggerPlugin} from './DebuggerPlugin.js';
-import type {Plugin} from './Plugin.js';
+import {Events as PluginEvents, type Plugin} from './Plugin.js';
 import {PerformanceProfilePlugin} from './ProfilePlugin.js';
 import {ResourceOriginPlugin} from './ResourceOriginPlugin.js';
 import {SnippetsPlugin} from './SnippetsPlugin.js';
@@ -59,6 +59,7 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
   // recreated when the binding changes
   // Used in web tests
   private plugins: Plugin[] = [];
+  #pluginEventListeners: Common.EventTarget.EventDescriptor[] = [];
   readonly #errorPopoverHelper: UI.PopoverHelper.PopoverHelper;
   #sourcesPanelOpenedMetricsRecorded = false;
 
@@ -378,7 +379,10 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
 
     for (const pluginType of UISourceCodeFrame.sourceFramePlugins()) {
       if (pluginType.accepts(pluginUISourceCode)) {
-        this.plugins.push(new pluginType(pluginUISourceCode, this));
+        const plugin = new pluginType(pluginUISourceCode, this);
+        this.#pluginEventListeners.push(
+            plugin.addEventListener(PluginEvents.TOOLBAR_ITEMS_CHANGED, this.#onPluginToolbarItemsChanged, this));
+        this.plugins.push(plugin);
       }
     }
 
@@ -386,10 +390,15 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
   }
 
   private disposePlugins(): void {
+    Common.EventTarget.removeEventListeners(this.#pluginEventListeners);
     for (const plugin of this.plugins) {
       plugin.dispose();
     }
     this.plugins = [];
+  }
+
+  #onPluginToolbarItemsChanged(): void {
+    this.dispatchEventToListeners(Events.TOOLBAR_ITEMS_CHANGED);
   }
 
   private onBindingChanged(): void {

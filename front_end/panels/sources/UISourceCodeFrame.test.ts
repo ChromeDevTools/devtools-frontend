@@ -140,4 +140,52 @@ describe('UISourceCodeFrame', () => {
       assert.isNull(frame.textEditor.getAttribute('data-file-path'));
     });
   });
+
+  describe('plugin toolbar items', () => {
+    async function createFrameWithTestPlugin() {
+      setup();
+      const plugins: Sources.Plugin.Plugin[] = [];
+      class TestPlugin extends Sources.Plugin.Plugin {
+        constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
+          super(uiSourceCode);
+          plugins.push(this);
+        }
+
+        static override accepts(): boolean {
+          return true;
+        }
+      }
+      sinon.stub(UISourceCodeFrame, 'sourceFramePlugins').returns([TestPlugin]);
+      const {uiSourceCode} = createFileSystemUISourceCode({
+        url: urlString`file:///path/to/file.js`,
+        mimeType: 'text/javascript',
+        content: 'const a = 1;',
+      });
+      const frame = new UISourceCodeFrame(uiSourceCode);
+      await frame.setContent('const a = 1;');
+      assert.lengthOf(plugins, 1);
+
+      const frameListener = sinon.spy();
+      frame.addEventListener(Sources.UISourceCodeFrame.Events.TOOLBAR_ITEMS_CHANGED, frameListener);
+      return {frame, plugin: plugins[0], frameListener};
+    }
+
+    it('forwards a plugin\'s TOOLBAR_ITEMS_CHANGED event', async () => {
+      const {frame, plugin, frameListener} = await createFrameWithTestPlugin();
+
+      plugin.dispatchEventToListeners(Sources.Plugin.Events.TOOLBAR_ITEMS_CHANGED);
+
+      sinon.assert.calledOnce(frameListener);
+      frame.dispose();
+    });
+
+    it('stops forwarding once the plugins are disposed', async () => {
+      const {frame, plugin, frameListener} = await createFrameWithTestPlugin();
+
+      frame.dispose();
+      plugin.dispatchEventToListeners(Sources.Plugin.Events.TOOLBAR_ITEMS_CHANGED);
+
+      sinon.assert.notCalled(frameListener);
+    });
+  });
 });

@@ -181,6 +181,42 @@ describeWithEnvironment('StepView', () => {
     });
   });
 
+  describe('Step disclosure', () => {
+    it('exposes and updates the expanded state', async () => {
+      const viewFunction = createViewFunctionStub(StepView.StepView);
+      await createStepView(viewFunction, {step});
+      const container = document.createElement('div');
+
+      StepView.DEFAULT_VIEW(viewFunction.input, {}, container);
+      let disclosure = container.querySelector<HTMLElement>('.title-container');
+      assert.exists(disclosure);
+      assert.strictEqual(disclosure.getAttribute('role'), 'button');
+      assert.strictEqual(disclosure.getAttribute('aria-expanded'), 'false');
+      assert.strictEqual(disclosure.tabIndex, 0);
+
+      viewFunction.input.onToggleShowDetailsKeydown(new KeyboardEvent('keydown', {key: 'Enter'}));
+      const input = await viewFunction.nextInput;
+      StepView.DEFAULT_VIEW(input, {}, container);
+
+      disclosure = container.querySelector<HTMLElement>('.title-container');
+      assert.exists(disclosure);
+      assert.strictEqual(disclosure.getAttribute('aria-expanded'), 'true');
+    });
+
+    it('does not expose a section title as a disclosure', async () => {
+      const viewFunction = createViewFunctionStub(StepView.StepView);
+      await createStepView(viewFunction, {section});
+      const container = document.createElement('div');
+
+      StepView.DEFAULT_VIEW(viewFunction.input, {}, container);
+      const title = container.querySelector<HTMLElement>('.title-container');
+      assert.exists(title);
+      assert.strictEqual(title.getAttribute('role'), 'presentation');
+      assert.isNull(title.getAttribute('aria-expanded'));
+      assert.strictEqual(title.tabIndex, -1);
+    });
+  });
+
   describe('Breakpoint events', () => {
     describe('controller', () => {
       it('adds a breakpoint when the breakpoint callback is invoked', async () => {

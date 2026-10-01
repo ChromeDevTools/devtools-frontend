@@ -307,6 +307,8 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
     'has-breakpoint': input.hasBreakpoint,
   };
   const isExpandable = Boolean(input.step);
+  const disclosureRole = isExpandable ? 'button' : 'presentation';
+  const ariaExpanded = !isExpandable ? undefined : input.showDetails ? 'true' : 'false';
   const mainTitle = getStepTypeTitle({
     step: input.step,
     section: input.section,
@@ -376,10 +378,10 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             @keydown=${
               isExpandable ? input.onToggleShowDetailsKeydown : undefined
             }
-            tabindex="0"
+            tabindex=${isExpandable ? 0 : -1}
             jslog=${VisualLogging.sectionHeader().track({click: true})}
-            aria-role=${isExpandable ? 'button' : ''}
-            aria-label=${isExpandable ? 'Show details for step' : ''}
+            role=${disclosureRole}
+            aria-expanded=${ifDefined(ariaExpanded)}
           >
             ${
               isExpandable

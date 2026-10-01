@@ -69,8 +69,13 @@ export async function createWorkspaceProject(
   await networkPersistenceManager.setProject(mockProject as Workspace.Workspace.Project);
 
   for (const file of files) {
-    const url = urlString`${file.path.concat(file.name)}`;
-    const fileUrl = networkPersistenceManager.fileUrlFromNetworkUrl(url, true);
+    const initialEncodedPath = file.path.concat(file.name) as Platform.DevToolsPath.EncodedPathString;
+    const encodedPathParts =
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.encodeEncodedPathToLocalPathParts(
+            initialEncodedPath);
+    const rawPath = Common.ParsedURL.ParsedURL.join(encodedPathParts as Platform.DevToolsPath.RawPathString[], '/');
+    const encodedPath = Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(rawPath);
+    const fileUrl = Common.ParsedURL.ParsedURL.concatenate(baseUrl, '/', encodedPath);
 
     uiSourceCodes.set(fileUrl, {
       requestContentData: () =>

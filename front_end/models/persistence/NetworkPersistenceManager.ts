@@ -579,13 +579,14 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
   static isForbiddenNetworkUrl(urlString: Platform.DevToolsPath.UrlString): boolean {
     const trimmedUrl = urlString.trim().toLowerCase();
-    if (trimmedUrl.startsWith('data:') || trimmedUrl.startsWith('blob:') || trimmedUrl.startsWith('javascript:') ||
-        trimmedUrl.startsWith('about:') || trimmedUrl.startsWith('mailto:') || trimmedUrl.startsWith('vbscript:')) {
+    if (trimmedUrl.startsWith('chrome:') || trimmedUrl.startsWith('data:') || trimmedUrl.startsWith('blob:') ||
+        trimmedUrl.startsWith('javascript:') || trimmedUrl.startsWith('about:') || trimmedUrl.startsWith('mailto:') ||
+        trimmedUrl.startsWith('vbscript:')) {
       return true;
     }
     const url = Common.ParsedURL.ParsedURL.fromString(urlString);
     if (!url) {
-      return false;
+      return true;
     }
     if ((url.scheme === 'http' || url.scheme === 'https') && (!url.host || url.host === '.' || url.host === '..')) {
       return true;

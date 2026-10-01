@@ -147,6 +147,54 @@ describe('StylesSourceMapping', () => {
     project.dispose();
   });
 
+  it('marks UISourceCode as having synthesized sourceURL if header hasSourceURL', async () => {
+    const connection = new MockCDPConnection();
+    const target = universe.createTarget({connection});
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
+    assert.exists(cssModel);
+    void universe.cssWorkspaceBinding;
+
+    const styleSheetId = 'stylesheet-source-url' as Protocol.DOM.StyleSheetId;
+    const frameId = 'frame' as Protocol.Page.FrameId;
+    const sourceURL = urlString`http://example.com/custom-style.css`;
+
+    const headerPayload: Protocol.CSS.CSSStyleSheetHeader = {
+      styleSheetId,
+      frameId,
+      sourceURL,
+      hasSourceURL: true,
+      origin: Protocol.CSS.StyleSheetOrigin.Regular,
+      title: 'custom-style.css',
+      disabled: false,
+      isInline: false,
+      isMutable: false,
+      isConstructed: false,
+      loadingFailed: false,
+      startLine: 0,
+      startColumn: 0,
+      length: 0,
+      endLine: 0,
+      endColumn: 0,
+    };
+
+    const networkUISourceCodePromise = new Promise<Workspace.UISourceCode.UISourceCode>(resolve => {
+      const listener = (event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>) => {
+        if (event.data.project().type() === Workspace.Workspace.projectTypes.Network &&
+            event.data.url() === sourceURL) {
+          universe.workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener);
+          resolve(event.data);
+        }
+      };
+      universe.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener);
+    });
+
+    cssModel.styleSheetAdded(headerPayload);
+    const networkUISourceCode = await networkUISourceCodePromise;
+
+    assert.isTrue(Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(networkUISourceCode));
+    assert.isFalse(universe.networkPersistenceManager.isUISourceCodeOverridable(networkUISourceCode));
+  });
+
   function waitForNetworkUISourceCode(predicate: (uiSourceCode: Workspace.UISourceCode.UISourceCode) =>
                                           boolean): Promise<Workspace.UISourceCode.UISourceCode> {
     return new Promise<Workspace.UISourceCode.UISourceCode>(resolve => {

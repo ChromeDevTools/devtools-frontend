@@ -272,6 +272,14 @@ describe('NetworkPersistenceManager', () => {
         urlString`https:///.headers`));
     assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
         urlString`http:///victim.com/script.js`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`../../escape-attempt/app.js`));
+    assert.isTrue(
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(urlString`./script.js`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`/path/script.js`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`www.example.com/script.js`));
     assert.isFalse(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
         urlString`https://www.example.com/script.js`));
     assert.isFalse(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
@@ -564,53 +572,53 @@ describe('NetworkPersistenceManager', () => {
     let toTest = [
       // Simple tests.
       {
-        url: 'www.example.com/',
+        url: 'http://www.example.com/',
         raw: 'www.example.com/index.html',
         encoded: 'www.example.com/index.html',
       },
       {
-        url: 'www.example.com/simple',
+        url: 'http://www.example.com/simple',
         raw: 'www.example.com/simple',
         encoded: 'www.example.com/simple',
       },
       {
-        url: 'www.example.com/hello/foo/bar',
+        url: 'http://www.example.com/hello/foo/bar',
         raw: 'www.example.com/hello/foo/bar',
         encoded: 'www.example.com/hello/foo/bar',
       },
       {
-        url: 'www.example.com/.',
+        url: 'http://www.example.com/.',
         raw: 'www.example.com/%2E',
         encoded: 'www.example.com/%252E',
       },
       {
-        url: 'localhost:8090/endswith.',
+        url: 'http://localhost:8090/endswith.',
         raw: 'localhost:8090/endswith.',
         encoded: 'localhost:8090/endswith.',
       },
       // Query parameters.
       {
-        url: 'example.com/fo?o/bar',
+        url: 'http://example.com/fo?o/bar',
         raw: 'example.com/fo?o%2Fbar',
         encoded: 'example.com/fo%3Fo%252Fbar',
       },
       {
-        url: 'example.com/foo?/bar',
+        url: 'http://example.com/foo?/bar',
         raw: 'example.com/foo?%2Fbar',
         encoded: 'example.com/foo%3F%252Fbar',
       },
       {
-        url: 'example.com/foo/?bar',
+        url: 'http://example.com/foo/?bar',
         raw: 'example.com/foo/?bar',
         encoded: 'example.com/foo/%3Fbar',
       },
       {
-        url: 'example.com/?foo/bar/3',
+        url: 'http://example.com/?foo/bar/3',
         raw: 'example.com/?foo%2Fbar%2F3',
         encoded: 'example.com/%3Ffoo%252Fbar%252F3',
       },
       {
-        url: 'example.com/foo/bar/?3hello/bar',
+        url: 'http://example.com/foo/bar/?3hello/bar',
         raw: 'example.com/foo/bar/?3hello%2Fbar',
         encoded: 'example.com/foo/bar/%3F3hello%252Fbar',
       },
@@ -627,22 +635,22 @@ describe('NetworkPersistenceManager', () => {
       },
       // Hash parameters.
       {
-        url: 'example.com/?foo/bar/3#hello/bar',
+        url: 'http://example.com/?foo/bar/3#hello/bar',
         raw: 'example.com/?foo%2Fbar%2F3',
         encoded: 'example.com/%3Ffoo%252Fbar%252F3',
       },
       {
-        url: 'example.com/#foo/bar/3hello/bar',
+        url: 'http://example.com/#foo/bar/3hello/bar',
         raw: 'example.com/index.html',
         encoded: 'example.com/index.html',
       },
       {
-        url: 'example.com/foo/bar/#?3hello/bar',
+        url: 'http://example.com/foo/bar/#?3hello/bar',
         raw: 'example.com/foo/bar/index.html',
         encoded: 'example.com/foo/bar/index.html',
       },
       {
-        url: 'example.com/foo.js#',
+        url: 'http://example.com/foo.js#',
         raw: 'example.com/foo.js',
         encoded: 'example.com/foo.js',
       },
@@ -657,35 +665,35 @@ describe('NetworkPersistenceManager', () => {
         encoded: 'www.example.com/file&$%252A%3F.html',
       },
       {
-        url: 'localhost:8090/',
+        url: 'http://localhost:8090/',
         raw: 'localhost:8090/index.html',
         encoded: 'localhost:8090/index.html',
       },
-      {url: 'localhost:8090/lpt1', raw: 'localhost:8090/lpt1', encoded: 'localhost:8090/lpt1'},
+      {url: 'http://localhost:8090/lpt1', raw: 'localhost:8090/lpt1', encoded: 'localhost:8090/lpt1'},
       {
-        url: 'example.com/foo .js',
+        url: 'http://example.com/foo .js',
         raw: 'example.com/foo%20.js',
         encoded: 'example.com/foo%2520.js',
       },
       {
-        url: 'example.com///foo.js',
+        url: 'http://example.com///foo.js',
         raw: 'example.com/foo.js',
         encoded: 'example.com/foo.js',
       },
       {
-        url: 'example.com///',
+        url: 'http://example.com///',
         raw: 'example.com/index.html',
         encoded: 'example.com/index.html',
       },
       // Very long file names.
       {
-        url: 'example.com' +
+        url: 'http://example.com' +
             '/THIS/PATH/IS_MORE_THAN/200/Chars'.repeat(8),
         raw: 'example.com/longurls/Chars-141a715a',
         encoded: 'example.com/longurls/Chars-141a715a',
       },
       {
-        url: ('example.com' +
+        url: ('http://example.com' +
               '/THIS/PATH/IS_LESS_THAN/200/Chars'.repeat(5))
                  .slice(0, -1),
         raw:
@@ -722,149 +730,149 @@ describe('NetworkPersistenceManager', () => {
           encoded: 'www.example.com/file&$%252A%253F.html',
         },
         {
-          url: 'localhost:8090/',
+          url: 'http://localhost:8090/',
           raw: 'localhost%3A8090/index.html',
           encoded: 'localhost%253A8090/index.html',
         },
         // Windows cannot end with . (period) and space.
         {
-          url: 'example.com/foo.js.',
+          url: 'http://example.com/foo.js.',
           raw: 'example.com/foo.js%2E',
           encoded: 'example.com/foo.js%252E',
         },
         {
-          url: 'localhost:8090/endswith.',
+          url: 'http://localhost:8090/endswith.',
           raw: 'localhost%3A8090/endswith%2E',
           encoded: 'localhost%253A8090/endswith%252E',
         },
         {
-          url: 'example.com/foo.js ',
+          url: 'http://example.com/foo.js ',
           raw: 'example.com/foo.js%20',
           encoded: 'example.com/foo.js%2520',
         },
         // Reserved filenames on Windows.
         {
-          url: 'example.com/CON',
+          url: 'http://example.com/CON',
           raw: 'example.com/%43%4F%4E',
           encoded: 'example.com/%2543%254F%254E',
         },
         {
-          url: 'example.com/cOn',
+          url: 'http://example.com/cOn',
           raw: 'example.com/%63%4F%6E',
           encoded: 'example.com/%2563%254F%256E',
         },
         {
-          url: 'example.com/cOn/hello',
+          url: 'http://example.com/cOn/hello',
           raw: 'example.com/%63%4F%6E/hello',
           encoded: 'example.com/%2563%254F%256E/hello',
         },
         {
-          url: 'example.com/PRN',
+          url: 'http://example.com/PRN',
           raw: 'example.com/%50%52%4E',
           encoded: 'example.com/%2550%2552%254E',
         },
         {
-          url: 'example.com/AUX',
+          url: 'http://example.com/AUX',
           raw: 'example.com/%41%55%58',
           encoded: 'example.com/%2541%2555%2558',
         },
         {
-          url: 'example.com/NUL',
+          url: 'http://example.com/NUL',
           raw: 'example.com/%4E%55%4C',
           encoded: 'example.com/%254E%2555%254C',
         },
         {
-          url: 'example.com/COM1',
+          url: 'http://example.com/COM1',
           raw: 'example.com/%43%4F%4D%31',
           encoded: 'example.com/%2543%254F%254D%2531',
         },
         {
-          url: 'example.com/COM2',
+          url: 'http://example.com/COM2',
           raw: 'example.com/%43%4F%4D%32',
           encoded: 'example.com/%2543%254F%254D%2532',
         },
         {
-          url: 'example.com/COM3',
+          url: 'http://example.com/COM3',
           raw: 'example.com/%43%4F%4D%33',
           encoded: 'example.com/%2543%254F%254D%2533',
         },
         {
-          url: 'example.com/COM4',
+          url: 'http://example.com/COM4',
           raw: 'example.com/%43%4F%4D%34',
           encoded: 'example.com/%2543%254F%254D%2534',
         },
         {
-          url: 'example.com/COM5',
+          url: 'http://example.com/COM5',
           raw: 'example.com/%43%4F%4D%35',
           encoded: 'example.com/%2543%254F%254D%2535',
         },
         {
-          url: 'example.com/COM6',
+          url: 'http://example.com/COM6',
           raw: 'example.com/%43%4F%4D%36',
           encoded: 'example.com/%2543%254F%254D%2536',
         },
         {
-          url: 'example.com/COM7',
+          url: 'http://example.com/COM7',
           raw: 'example.com/%43%4F%4D%37',
           encoded: 'example.com/%2543%254F%254D%2537',
         },
         {
-          url: 'example.com/COM8',
+          url: 'http://example.com/COM8',
           raw: 'example.com/%43%4F%4D%38',
           encoded: 'example.com/%2543%254F%254D%2538',
         },
         {
-          url: 'example.com/COM9',
+          url: 'http://example.com/COM9',
           raw: 'example.com/%43%4F%4D%39',
           encoded: 'example.com/%2543%254F%254D%2539',
         },
         {
-          url: 'localhost:8090/lpt1',
+          url: 'http://localhost:8090/lpt1',
           raw: 'localhost%3A8090/%6C%70%74%31',
           encoded: 'localhost%253A8090/%256C%2570%2574%2531',
         },
         {
-          url: 'example.com/LPT1',
+          url: 'http://example.com/LPT1',
           raw: 'example.com/%4C%50%54%31',
           encoded: 'example.com/%254C%2550%2554%2531',
         },
         {
-          url: 'example.com/LPT2',
+          url: 'http://example.com/LPT2',
           raw: 'example.com/%4C%50%54%32',
           encoded: 'example.com/%254C%2550%2554%2532',
         },
         {
-          url: 'example.com/LPT3',
+          url: 'http://example.com/LPT3',
           raw: 'example.com/%4C%50%54%33',
           encoded: 'example.com/%254C%2550%2554%2533',
         },
         {
-          url: 'example.com/LPT4',
+          url: 'http://example.com/LPT4',
           raw: 'example.com/%4C%50%54%34',
           encoded: 'example.com/%254C%2550%2554%2534',
         },
         {
-          url: 'example.com/LPT5',
+          url: 'http://example.com/LPT5',
           raw: 'example.com/%4C%50%54%35',
           encoded: 'example.com/%254C%2550%2554%2535',
         },
         {
-          url: 'example.com/LPT6',
+          url: 'http://example.com/LPT6',
           raw: 'example.com/%4C%50%54%36',
           encoded: 'example.com/%254C%2550%2554%2536',
         },
         {
-          url: 'example.com/LPT7',
+          url: 'http://example.com/LPT7',
           raw: 'example.com/%4C%50%54%37',
           encoded: 'example.com/%254C%2550%2554%2537',
         },
         {
-          url: 'example.com/LPT8',
+          url: 'http://example.com/LPT8',
           raw: 'example.com/%4C%50%54%38',
           encoded: 'example.com/%254C%2550%2554%2538',
         },
         {
-          url: 'example.com/LPT9',
+          url: 'http://example.com/LPT9',
           raw: 'example.com/%4C%50%54%39',
           encoded: 'example.com/%254C%2550%2554%2539',
         },

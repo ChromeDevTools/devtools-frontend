@@ -18,6 +18,25 @@ import type {ContextHandlerResult, DataHandlerResult} from '../tools/Tool.js';
 type UrlString = Platform.DevToolsPath.UrlString;
 const MAX_SUGGESTION_LENGTH = 200;
 
+/**
+ * Matches a follow-up suggestions directive emitted by the model at the end of a line.
+ *
+ * Supported formats:
+ * - Standard uppercase and case variations: `SUGGESTIONS: ["a", "b"]`, `Suggestions: ["a", "b"]`
+ * - Markdown emphasis (`*`, `**`, `***`, `_`, `__`, `___`, `` ` ``) around the keyword, colon, or entire line
+ * - Optional bullet list (`-`, `*`, `+`), numbered list (`1.`), or heading (`###`) prefixes
+ * - Inline placement at the end of an answer line: `Summary text. SUGGESTIONS: [...]`
+ * - Nested square brackets inside suggestion strings: `SUGGESTIONS: ["check [disabled] attribute"]`
+ * - Trailing streaming state where the line ends right after `SUGGESTIONS:` or mid-array `SUGGESTIONS: ["a`
+ *
+ * Unsupported formats:
+ * - Multi-line JSON arrays or multi-line Markdown lists (suggestions must be a JSON array on the same line)
+ * - Spaces before the colon (e.g. `SUGGESTIONS : [...]`)
+ * - Non-array prose after the colon (e.g. `Suggestions: check the padding` is preserved as answer text)
+ */
+const SUGGESTIONS_REGEX =
+    /^(?:(?:[-*+]|\d+\.|#{1,6})\s+|(.*\s))?(?:\*{1,3}|_{1,3}|`)?SUGGESTIONS(?:\*{1,3}|_{1,3}|`)?:(?:\*{1,3}|_{1,3}|`)?\s*`?(\[.*)?$/i;
+
 export const enum ResponseType {
   CONTEXT = 'context',
   TITLE = 'title',
@@ -712,26 +731,19 @@ export abstract class AiAgent<T> {
     let suggestions: [string, ...string[]]|undefined;
 
     for (const line of lines) {
-      const trimmed = line.trim();
-      if (trimmed.startsWith('SUGGESTIONS:')) {
-        try {
-          suggestions = sanitizeSuggestions(trimmed.substring('SUGGESTIONS:'.length).trim());
-        } catch {
+      const extracted = extractSuggestionsFromLine(line);
+      if (extracted) {
+        if (extracted.suggestions) {
+          suggestions = extracted.suggestions;
+        }
+        // Keep any preceding text on this line as part of the answer.
+        if (extracted.remainingAnswerText) {
+          answerLines.push(extracted.remainingAnswerText);
         }
       } else {
+        // Not a suggestions line. Keep as answer text.
         answerLines.push(line);
       }
-    }
-
-    // Sometimes the model fails to put the SUGGESTIONS text on its own line. Handle
-    // the case where the suggestions are part of the last line of the answer.
-    if (!suggestions && answerLines.at(-1)?.includes('SUGGESTIONS:')) {
-      const [answer, suggestionsText] = answerLines[answerLines.length - 1].split('SUGGESTIONS:', 2);
-      try {
-        suggestions = sanitizeSuggestions(suggestionsText.trim());
-      } catch {
-      }
-      answerLines[answerLines.length - 1] = answer;
     }
 
     const response: ParsedResponse = {
@@ -1214,6 +1226,51 @@ function sanitizeSuggestions(suggestions: string): [string, ...string[]]|undefin
     return undefined;
   }
   return sanitized as [string, ...string[]];
+}
+
+interface ExtractedLineSuggestions {
+  suggestions?: [string, ...string[]];
+  /**
+   * Preceding answer text on the same line before the suggestions token.
+   * Defined only when suggestions were appended inline to an answer line.
+   */
+  remainingAnswerText?: string;
+}
+
+/**
+ * Attempts to extract suggestions from a single line of model output:
+ * 1. Match the suggestions directive at the end of the line. If absent (including
+ *    when `Suggestions:` is followed by non-array prose), returns null so the
+ *    caller keeps the entire line as answer text.
+ * 2. If matched, preserve any text preceding the directive as `remainingAnswerText`,
+ *    and attempt to parse the bracketed JSON array. If the JSON array is incomplete
+ *    (e.g. still streaming) or invalid, the directive is stripped so incomplete
+ *    suggestion syntax never flashes in the chat UI.
+ */
+function extractSuggestionsFromLine(line: string): ExtractedLineSuggestions|null {
+  const match = line.match(SUGGESTIONS_REGEX);
+  if (!match) {
+    return null;
+  }
+
+  const textBefore = (match[1] ?? '').trimEnd();
+  const remainingAnswerText = textBefore.length > 0 ? textBefore : undefined;
+
+  let parsed: [string, ...string[]]|undefined;
+  const rawArray = match[2];
+  const lastBracketIndex = rawArray?.lastIndexOf(']') ?? -1;
+  if (rawArray && lastBracketIndex !== -1) {
+    try {
+      parsed = sanitizeSuggestions(rawArray.slice(0, lastBracketIndex + 1));
+    } catch {
+      // Incomplete or malformed JSON array; suppress the trailing suggestion syntax.
+    }
+  }
+
+  return {
+    suggestions: parsed,
+    remainingAnswerText,
+  };
 }
 
 /**

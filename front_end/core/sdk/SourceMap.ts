@@ -867,11 +867,6 @@ export class SourceMap {
     return this.#scopesInfo?.findOriginalFunctionScope(position) ?? null;
   }
 
-  hasInlinedFrames(generatedLine: number, generatedColumn: number): boolean {
-    this.#ensureSourceMapProcessed();
-    return this.#scopesInfo?.hasInlinedFrames(generatedLine, generatedColumn) ?? false;
-  }
-
   /** See {@link SourceMapScopesInfo.translateRawFrame}. `null` if no scopes information is available. */
   translateRawFrame(generatedLine: number, generatedColumn: number): RawFrameTranslation|null {
     this.#ensureSourceMapProcessed();

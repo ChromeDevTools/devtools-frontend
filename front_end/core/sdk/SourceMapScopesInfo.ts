@@ -237,24 +237,6 @@ export class SourceMapScopesInfo {
   }
 
   /**
-   * @returns true, iff the range surrounding the provided position contains multiple
-   * inlined original functions.
-   */
-  hasInlinedFrames(generatedLine: number, generatedColumn: number): boolean {
-    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
-    for (let i = rangeChain.length - 1; i >= 0; --i) {
-      if (rangeChain[i].isStackFrame) {
-        // We stop looking for inlined original functions once we reach the current frame.
-        return false;
-      }
-      if (rangeChain[i].callSite) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
    * Given a generated position, this returns all the surrounding generated ranges from outer
    * to inner. When `inlineFrameIndex > 0`, drops inner ranges up to the specified virtual
    * call frame.

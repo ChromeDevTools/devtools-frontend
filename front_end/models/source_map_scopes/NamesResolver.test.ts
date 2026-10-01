@@ -43,6 +43,14 @@ describe('NameResolver', () => {
     sinon.restore();
   });
 
+  /** Resolves the function name at the start of `callFrame`'s local scope, i.e. where V8 reports a function's location. */
+  async function resolveFunctionNameAtScopeStart(callFrame: SDK.DebuggerModel.CallFrame): Promise<string|null> {
+    const scopeStart = callFrame.localScope()?.range()?.start;
+    assert.exists(scopeStart);
+    return await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(
+        scopeStart, target, backend.universe.debuggerWorkspaceBinding);
+  }
+
   // Given a function scope <fn-start>,<fn-end> and a nested scope <start>,<end>,
   // we expect the scope parser to return a list of identifiers of the form [{name, offset}]
   // for the nested scope. (The nested scope may be the same as the function scope.)
@@ -413,9 +421,8 @@ describe('NameResolver', () => {
           target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
     });
 
-    it('resolves function names at scope start for a debugger frame', async () => {
-      const functionName = await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(callFrame);
-      assert.strictEqual(functionName, 'unminified');
+    it('resolves function names at scope start', async () => {
+      assert.strictEqual(await resolveFunctionNameAtScopeStart(callFrame), 'unminified');
     });
 
     it('resolves function names at scope start for a profiler frame', async () => {
@@ -463,8 +470,7 @@ describe('NameResolver', () => {
           target, {url: URL, content: source + `//# sourceMappingURL=${sourceMapUrl}`}, scopes,
           {url: sourceMapUrl, content: sourceMapContent});
 
-      const functionName = await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(callFrame);
-      assert.strictEqual(functionName, 'main');
+      assert.strictEqual(await resolveFunctionNameAtScopeStart(callFrame), 'main');
     });
   });
 
@@ -486,7 +492,7 @@ describe('NameResolver', () => {
     const callFrame = await backend.createCallFrame(
         target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
 
-    assert.isNull(await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(callFrame));
+    assert.isNull(await resolveFunctionNameAtScopeStart(callFrame));
   });
 
   describe('allVariablesAtPosition', () => {
@@ -1157,7 +1163,7 @@ function mulWithOffset(param1, param2, offset) {
       assert.strictEqual(mapping[0].bindings.get('par2'), 'n');
     });
 
-    it('resolves function names at scope start for debugger and profiler frames', async () => {
+    it('resolves function names at scope start and at the paused location', async () => {
       // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
       const sourceMapContent = JSON.stringify({
         version: 3,
@@ -1173,7 +1179,7 @@ function mulWithOffset(param1, param2, offset) {
       const callFrame = await backend.createCallFrame(target, {...INLINE_SCRIPT, content: source}, scopes,
                                                       {url: sourceMapUrl, content: sourceMapContent});
 
-      assert.strictEqual(await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(callFrame), 'unminified');
+      assert.strictEqual(await resolveFunctionNameAtScopeStart(callFrame), 'unminified');
 
       const {scriptId, lineNumber, columnNumber} = callFrame.location();
       assert.strictEqual(await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(

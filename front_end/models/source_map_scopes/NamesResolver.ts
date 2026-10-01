@@ -820,14 +820,6 @@ async function getFunctionNameFromScopeStart(script: SDK.Script.Script, rawLineN
   return name;
 }
 
-export async function resolveDebuggerFrameFunctionName(frame: SDK.DebuggerModel.CallFrame): Promise<string|null> {
-  const startLocation = frame.localScope()?.range()?.start;
-  if (!startLocation) {
-    return null;
-  }
-  return await getFunctionNameFromScopeStart(frame.script, startLocation.lineNumber, startLocation.columnNumber);
-}
-
 export async function resolveProfileFrameFunctionName(
     {scriptId, lineNumber, columnNumber}: Partial<Protocol.Runtime.CallFrame>, target: SDK.Target.Target|null,
     debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<string|null> {

@@ -14,7 +14,7 @@ import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
-import {protocolCallFrame, stringifyFrame} from '../../testing/StackTraceHelpers.js';
+import {protocolCallFrame, stringifyFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
@@ -347,6 +347,55 @@ describe('DebuggerLanguagePluginManager', () => {
         missingDebugFiles: [{resourceUrl: urlString`foo.dwo`, initiator: plugin.createPageResourceLoadInitiator()}],
       });
     });
+  });
+
+  describe('removePlugin', () => {
+    it('updates existing stack traces and invalidates cached translations when no other plugin takes over',
+       async () => {
+         const backend = new MockDebuggerBackend();
+         const target = backend.createTarget();
+         const {debuggerWorkspaceBinding} = backend.universe;
+         const {pluginManager} = debuggerWorkspaceBinding;
+
+         const script = await backend.addScript(target, {url: urlString`http://example.com/foo.js`, content: ''}, null);
+         const callFrames = [protocolCallFrame(`${script.sourceURL}:${script.scriptId}:foo:1:10`)];
+
+         const plugin = new (class extends TestPlugin {
+           override handleScript(_: SDK.Script.Script) {
+             return true;
+           }
+           override addRawModule(): Promise<string[]> {
+             return Promise.resolve(['http://example.com/foo.cc']);
+           }
+           override getFunctionInfo(): Promise<{frames: Chrome.DevTools.FunctionInfo[]}> {
+             return Promise.resolve({frames: [{name: 'plugin_func'}]});
+           }
+           override rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation):
+               Promise<Chrome.DevTools.SourceLocation[]> {
+             return Promise.resolve([{
+               rawModuleId: rawLocation.rawModuleId,
+               sourceFileURL: 'http://example.com/foo.cc',
+               lineNumber: 2,
+               columnNumber: 5,
+             }]);
+           }
+         })('TestPlugin');
+         pluginManager.addPlugin(plugin);
+         await pluginManager.getSourcesForScript(script);
+
+         const existingStackTrace =
+             await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime({callFrames}, target);
+         assert.strictEqual(stringifyStackTrace(existingStackTrace), 'at plugin_func (foo.cc:2:5)');
+
+         const updatedPromise = existingStackTrace.once(StackTrace.StackTrace.Events.UPDATED);
+         pluginManager.removePlugin(plugin);
+
+         const newStackTrace = await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime({callFrames}, target);
+         assert.strictEqual(stringifyStackTrace(newStackTrace), 'at foo (foo.js:1:10)');
+
+         await updatedPromise;
+         assert.strictEqual(stringifyStackTrace(existingStackTrace), 'at foo (foo.js:1:10)');
+       });
   });
 
   describe('project securityOrigin partitioning', () => {

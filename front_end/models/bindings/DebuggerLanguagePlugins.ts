@@ -561,6 +561,9 @@ export class DebuggerLanguagePluginManager implements
       // new instance of the #plugin added before we remove
       // the previous instance.
       this.parsedScriptSource({data: script});
+      if (!this.hasPluginForScript(script)) {
+        void this.#debuggerWorkspaceBinding.updateLocations(script);
+      }
     }
   }
 

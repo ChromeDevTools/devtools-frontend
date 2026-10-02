@@ -320,7 +320,8 @@ function getIndentUnit(indent: string): CM.Extension {
 
 export const indentUnit: DynamicSetting<string> = new DynamicSetting<string>('text-editor-indent', getIndentUnit);
 
-export const domWordWrap: DynamicSetting<boolean> = DynamicSetting.bool('dom-word-wrap', CM.EditorView.lineWrapping);
+export const domWordWrap: DynamicSetting<boolean> =
+    DynamicSetting.bool(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor, CM.EditorView.lineWrapping);
 
 export const sourcesWordWrap: DynamicSetting<boolean> =
     DynamicSetting.bool('sources.word-wrap', CM.EditorView.lineWrapping);

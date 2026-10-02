@@ -553,14 +553,10 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.showUAShad
   title: i18nLazyString(UIStrings.userAgentShadowDOM),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor, {
   category: Common.Settings.SettingCategory.ELEMENTS,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   order: 2,
   title: i18nLazyString(UIStrings.wordWrap),
-  settingName: 'dom-word-wrap',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 UI.ActionRegistration.registerActionExtension({

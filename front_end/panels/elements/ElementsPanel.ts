@@ -264,11 +264,11 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.mainContainer.id = 'main-content';
     this.domTreeContainer.id = 'elements-content';
     this.domTreeContainer.tabIndex = -1;
-    // FIXME: crbug.com/425984
-    if (this.#settings.moduleSetting('dom-word-wrap').get()) {
+    const domWordWrapSetting = this.#settings.resolve(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor);
+    if (domWordWrapSetting.get()) {
       this.domTreeContainer.classList.add('elements-wrap');
     }
-    this.#settings.moduleSetting('dom-word-wrap').addChangeListener(this.domWordWrapSettingChanged.bind(this));
+    domWordWrapSetting.addChangeListener(this.domWordWrapSettingChanged.bind(this));
 
     crumbsContainer.id = 'elements-crumbs';
     this.accessibilityTreeView = new AccessibilityTreeView();
@@ -317,7 +317,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.#domTreeWidget.onSelectedNodeChanged = this.selectedNodeChanged.bind(this);
     this.#domTreeWidget.onElementsTreeUpdated = this.updateBreadcrumbIfNeeded.bind(this);
     this.#domTreeWidget.onDocumentUpdated = this.documentUpdated.bind(this);
-    this.#domTreeWidget.setWordWrap(this.#settings.moduleSetting('dom-word-wrap').get());
+    this.#domTreeWidget.setWordWrap(domWordWrapSetting.get());
 
     this.#targetManager.observeModels(SDK.DOMModel.DOMModel, this, {scoped: true});
     this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel,
@@ -1528,7 +1528,8 @@ export class ElementsActionDelegate implements UI.ActionRegistration.ActionDeleg
         ElementsPanel.instance().toggleAccessibilityTree();
         return true;
       case 'elements.toggle-word-wrap': {
-        const setting = ElementsPanel.instance().settings.moduleSetting<boolean>('dom-word-wrap');
+        const setting =
+            ElementsPanel.instance().settings.resolve(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor);
         setting.set(!setting.get());
         return true;
       }

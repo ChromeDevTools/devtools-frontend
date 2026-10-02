@@ -10,3 +10,10 @@ export const showUAShadowDOMSettingDescriptor: Common.Settings.SettingDescriptor
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const domWordWrapSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'dom-word-wrap',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

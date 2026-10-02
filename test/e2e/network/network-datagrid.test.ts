@@ -345,4 +345,80 @@ describe('The Network Tab', function() {
     await inspectedPage.page.waitForSelector('xpath///div[@id="content" and text()="pong"]');
     await Promise.all(promises);
   });
+
+  it('renders privileged HAR initiator URLs as inert spans and omits Open in new tab for privileged requests',
+     async ({devToolsPage, inspectedPage}) => {
+       await loadNetworkTab(devToolsPage, inspectedPage);
+
+       const har = {
+         log: {
+           version: '1.2',
+           creator: {name: 'WebInspector', version: '537.36'},
+           pages: [],
+           entries: [
+             {
+               _initiator: {
+                 type: 'parser',
+                 url: 'chrome-extension://nnkmpipfcdgmkgepigmhifcgbddoohgk/initiator.html',
+                 lineNumber: 1,
+               },
+               request: {
+                 method: 'GET',
+                 url: 'chrome-extension://nnkmpipfcdgmkgepigmhifcgbddoohgk/secret.html',
+                 httpVersion: 'HTTP/1.1',
+                 headers: [],
+                 queryString: [],
+                 cookies: [],
+                 headersSize: -1,
+                 bodySize: 0,
+               },
+               response: {
+                 status: 200,
+                 statusText: 'OK',
+                 httpVersion: 'HTTP/1.1',
+                 headers: [],
+                 cookies: [],
+                 content: {size: 0, mimeType: 'text/html'},
+                 redirectURL: '',
+                 headersSize: -1,
+                 bodySize: -1,
+               },
+               cache: {},
+               startedDateTime: '2020-12-14T20:35:53.241Z',
+               time: 10,
+               timings: {blocked: 0, dns: -1, ssl: -1, connect: -1, send: 1, wait: 5, receive: 4},
+             },
+           ],
+         },
+       };
+
+       await devToolsPage.evaluate(harContent => {
+         const input = document.querySelector('.panel.network input[type="file"]') as HTMLInputElement;
+         const dataTransfer = new DataTransfer();
+         dataTransfer.items.add(new File([harContent], 'evil.har', {type: 'application/json'}));
+         input.files = dataTransfer.files;
+         input.dispatchEvent(new Event('change'));
+       }, JSON.stringify(har));
+
+       await waitForSomeRequestsToAppear(devToolsPage, 1);
+
+       const initiatorInfo = await devToolsPage.evaluate(() => {
+         const cell = document.querySelector('.network-log-grid tbody .initiator-column');
+         const button = cell?.querySelector('button.devtools-link');
+         const span = cell?.querySelector('span');
+         return {
+           hasButton: Boolean(button),
+           spanText: span?.textContent ?? null,
+         };
+       });
+
+       assert.isFalse(initiatorInfo.hasButton);
+       assert.strictEqual(initiatorInfo.spanText,
+                          'chrome-extension://nnkmpipfcdgmkgepigmhifcgbddoohgk/initiator.html:2');
+
+       await devToolsPage.click('.network-log-grid tbody .name-column', {clickOptions: {button: 'right'}});
+       const contextMenu = await devToolsPage.waitFor('.soft-context-menu');
+       const openInNewTabItem = await devToolsPage.$('[aria-label="Open in new tab"]', contextMenu);
+       assert.isNull(openInNewTabItem);
+     });
 });

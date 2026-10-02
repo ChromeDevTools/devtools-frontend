@@ -601,11 +601,8 @@ export class NetworkLogView extends NetworkLogViewBase implements
   private readonly textFilterSetting: Common.Settings.Setting<string>;
   private networkRequestToNode: WeakMap<SDK.NetworkRequest.NetworkRequest, NetworkRequestNode>;
 
-  static #allowedSchemes = new Set(['http:', 'https:', 'ws:', 'wss:', 'data:']);
-
-  constructor(
-      filterBar: UI.FilterBar.FilterBar, progressBarContainer: Element,
-      networkLogLargeRowsSetting: Common.Settings.Setting<boolean>) {
+  constructor(filterBar: UI.FilterBar.FilterBar, progressBarContainer: Element,
+              networkLogLargeRowsSetting: Common.Settings.Setting<boolean>) {
     super();
     this.registerRequiredCSS(networkLogViewStyles);
     this.registerRequiredCSS(dataGridAiButtonStyles);
@@ -2479,16 +2476,14 @@ export class NetworkLogView extends NetworkLogViewBase implements
     return requests.filter(request => !request.isBlobRequest());
   }
 
-  static #getValidClipboardUrl(url: string): Platform.DevToolsPath.UrlString|null {
-    try {
-      const parsedUrl = new URL(url);
-      if (!NetworkLogView.#allowedSchemes.has(parsedUrl.protocol)) {
-        return null;
-      }
-      return url as Platform.DevToolsPath.UrlString;
-    } catch {
+  static #getValidClipboardUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString|null {
+    // `hasWebSafeScheme` unwraps `blob:` and `filesystem:` URLs to check their inner origin,
+    // but standalone CLI tools (cURL, PowerShell, fetch) cannot request browser-internal URLs.
+    if (Common.ParsedURL.schemeIs(url, 'blob:') || Common.ParsedURL.schemeIs(url, 'filesystem:') ||
+        !Common.ParsedURL.hasWebSafeScheme(url)) {
       return null;
     }
+    return url;
   }
 
   private async generateFetchCall(request: SDK.NetworkRequest.NetworkRequest, style: FetchStyle,

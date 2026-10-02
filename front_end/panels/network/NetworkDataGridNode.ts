@@ -1367,6 +1367,9 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   private openInNewTab(): void {
+    if (Common.ParsedURL.isPrivilegedScheme(this.requestInternal.url())) {
+      return;
+    }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
   }
 

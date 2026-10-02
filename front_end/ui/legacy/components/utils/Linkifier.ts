@@ -263,9 +263,10 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     const createLinkOptions: CreateLinkOptions = {
       tabStop: options?.tabStop,
       jslogContext: 'script-location',
+      allowPrivileged: options?.allowPrivileged,
     };
-    const {link, linkInfo} = Linkifier.createLink(
-        fallbackAnchor?.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
+    const {link, linkInfo} = Linkifier.createLink(fallbackAnchor?.textContent ? fallbackAnchor.textContent : '',
+                                                  className, createLinkOptions);
     linkInfo.enableDecorator = this.useLinkDecorator;
     linkInfo.fallback = fallbackAnchor ?? undefined;
     linkInfo.userMetric = options?.userMetric;
@@ -356,9 +357,10 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     const createLinkOptions: CreateLinkOptions = {
       tabStop: options?.tabStop,
       jslogContext: 'script-location',
+      allowPrivileged: options?.allowPrivileged,
     };
-    const {link, linkInfo} = Linkifier.createLink(
-        fallbackAnchor?.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
+    const {link, linkInfo} = Linkifier.createLink(fallbackAnchor?.textContent ? fallbackAnchor.textContent : '',
+                                                  className, createLinkOptions);
     linkInfo.fallback = fallbackAnchor;
     linkInfo.userMetric = options?.userMetric;
 
@@ -633,6 +635,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       columnNumber,
       userMetric: options?.userMetric,
       onRef: options.onRef,
+      allowPrivileged: options?.allowPrivileged,
     };
     return Linkifier.renderLink(linkText, className, linkOptions);
   }
@@ -703,6 +706,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
           lineNumber: options.lineNumber,
           columnNumber: options.columnNumber,
           userMetric: options.userMetric,
+          allowPrivileged: options.allowPrivileged,
         };
         infoByAnchor.set(link, linkInfo);
       });
@@ -817,8 +821,11 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 
   static invokeFirstAction(linkInfo: LinkInfo): boolean {
     const actions = Linkifier.linkActions(linkInfo);
-    if (actions.length) {
-      void actions[0].handler.call(null);
+    // Only invoke a 'reveal' action on click so links without a reveal handler
+    // do not fall back to 'clipboard' actions (such as copying the URL).
+    const action = actions.find(a => a.section === 'reveal');
+    if (action) {
+      void action.handler.call(null);
       if (linkInfo.userMetric) {
         Host.userMetrics.actionTaken(linkInfo.userMetric);
       }
@@ -960,12 +967,15 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       }
     }
     if (resource || info.url) {
-      result.push({
-        section: 'reveal',
-        title: UI.UIUtils.openLinkExternallyLabel(),
-        jslogContext: 'open-in-new-tab',
-        handler: () => UIHelpers.openInNewTab(url),
-      });
+      // Only allow opening privileged URLs in a new tab when explicitly permitted via `allowPrivileged`.
+      if (!Common.ParsedURL.isPrivilegedScheme(url) || info.allowPrivileged) {
+        result.push({
+          section: 'reveal',
+          title: UI.UIUtils.openLinkExternallyLabel(),
+          jslogContext: 'open-in-new-tab',
+          handler: () => UIHelpers.openInNewTab(url, info.allowPrivileged),
+        });
+      }
       result.push({
         section: 'clipboard',
         title: UI.UIUtils.copyLinkAddressLabel(),
@@ -1111,13 +1121,13 @@ export class ContentProviderContextMenuProvider implements
       return;
     }
 
-    if (!Common.ParsedURL.schemeIs(contentUrl, 'file:')) {
+    if (!Common.ParsedURL.isPrivilegedScheme(contentUrl)) {
       contextMenu.revealSection().appendItem(
           UI.UIUtils.openLinkExternallyLabel(),
-          () => UIHelpers.openInNewTab(
-              contentUrl.endsWith(':formatted') ?
-                  Common.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(':')) :
-                  contentUrl),
+          () =>
+              UIHelpers.openInNewTab(contentUrl.endsWith(':formatted') ?
+                                         Common.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(':')) :
+                                         contentUrl),
           {jslogContext: 'open-in-new-tab'});
     }
     for (const origin of linkHandlers.keys()) {
@@ -1163,6 +1173,7 @@ interface LinkInfo {
   revealable?: Object;
   fallback?: Element;
   userMetric?: Host.UserMetrics.Action;
+  allowPrivileged?: boolean;
 }
 
 export interface LinkifyURLOptions {
@@ -1213,6 +1224,7 @@ interface CreateLinkOptions {
   columnNumber?: number;
   userMetric?: Host.UserMetrics.Action;
   onRef?: (el: HTMLElement) => void;
+  allowPrivileged?: boolean;
 }
 
 interface LinkDisplayOptions {

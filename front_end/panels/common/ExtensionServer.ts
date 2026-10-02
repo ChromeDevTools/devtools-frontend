@@ -28,14 +28,6 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './ExtensionPanel.js';
 
 const extensionOrigins = new WeakMap<MessagePort, Platform.DevToolsPath.UrlString>();
-const kForbiddenSchemes = [
-  'chrome:',
-  'chrome-untrusted:',
-  'chrome-error:',
-  'chrome-search:',
-  'devtools:',
-  'isolated-app:',
-];
 
 declare global {
   interface Window {
@@ -895,13 +887,14 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     let validScheme = message.urlScheme;
     if (validScheme) {
+      let urlToParse: string;
       try {
-        const urlToParse = validScheme.replace(/:?(\/\/)?$/, '') + '://test';
+        urlToParse = validScheme.replace(/:?(\/\/)?$/, '') + '://test';
         validScheme = new URL(urlToParse).protocol;
       } catch {
         return this.status.E_BADARG('urlScheme', 'Invalid scheme');
       }
-      if (kForbiddenSchemes.includes(validScheme) || validScheme === 'file:') {
+      if (Common.ParsedURL.isPrivilegedScheme(urlToParse)) {
         return this.status.E_BADARG('urlScheme', 'Scheme is forbidden');
       }
     }
@@ -1852,7 +1845,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return false;
     }
 
-    if (kForbiddenSchemes.includes(parsedURL.protocol)) {
+    // Extensions are allowed to inspect `chrome-extension:` (when permitted by policy/flag)
+    // and `file:` pages, but must be blocked from inspecting other privileged schemes.
+    if (!Common.ParsedURL.schemeIs(parsedURL, 'chrome-extension:') && !Common.ParsedURL.schemeIs(parsedURL, 'file:') &&
+        Common.ParsedURL.isPrivilegedScheme(parsedURL)) {
       return false;
     }
 

@@ -296,6 +296,7 @@ describe('Extensions', () => {
     error: [
       'Extension server error: Invalid argument urlScheme: Scheme is forbidden',
       'Extension server error: Invalid argument urlScheme: Scheme is forbidden',
+      'Extension server error: Invalid argument urlScheme: Scheme is forbidden',
     ],
   });
   beforeEach(() => {
@@ -306,6 +307,7 @@ describe('Extensions', () => {
     const registerLinkHandlerSpy = sinon.spy(Components.Linkifier.Linkifier, 'registerLinkHandler');
 
     context.chrome.devtools?.panels.setOpenResourceHandler(() => {}, 'chrome:');
+    context.chrome.devtools?.panels.setOpenResourceHandler(() => {}, 'chrome-extension:');
     context.chrome.devtools?.panels.setOpenResourceHandler(() => {}, 'file:');
 
     // Wait for the messages to be processed by sending a dummy eval request

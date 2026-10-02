@@ -788,6 +788,8 @@ describe('Parsed URL', () => {
         urlString`data:text/javascript,console.log(1)`,
         urlString`blob:https://example.com/550e8400-e29b-41d4-a716-446655440000`,
         urlString`blob:http://example.com/550e8400-e29b-41d4-a716-446655440000`,
+        urlString`filesystem:https://example.com/persistent/file.txt`,
+        urlString`blob:filesystem:https://example.com/persistent/file.txt`,
       ];
       for (const url of safeUrls) {
         assert.isTrue(Common.ParsedURL.hasWebSafeScheme(url), `Expected ${url} to have a web-safe scheme`);
@@ -797,6 +799,7 @@ describe('Parsed URL', () => {
     it('returns false for privileged, internal, or non-web schemes and blob URLs wrapping them', () => {
       const unsafeUrls = [
         urlString`chrome://settings`,
+        urlString`chrome-error://crash`,
         urlString`chrome-extension://abcdefghijklmnop/page.html`,
         urlString`chrome-search://local-ntp/local-ntp.html`,
         urlString`chrome-untrusted://terminal/html/terminal.html`,
@@ -805,6 +808,8 @@ describe('Parsed URL', () => {
         urlString`javascript:alert(1)`,
         urlString`isolated-app://abcdefghijklmnop/index.html`,
         urlString`blob:chrome-extension://abcdefghijklmnop/550e8400-e29b-41d4-a716-446655440000`,
+        urlString`filesystem:chrome-extension://abcdefghijklmnop/persistent/file.txt`,
+        urlString`blob:filesystem:chrome-extension://abcdefghijklmnop/persistent/file.txt`,
         urlString``,
       ];
       for (const url of unsafeUrls) {
@@ -817,6 +822,7 @@ describe('Parsed URL', () => {
     it('returns true for privileged browser and local schemes and blob URLs wrapping them', () => {
       const privilegedUrls = [
         urlString`chrome://settings`,
+        urlString`chrome-error://crash`,
         urlString`chrome-extension://abcdefghijklmnop/page.html`,
         urlString`chrome-search://local-ntp/local-ntp.html`,
         urlString`chrome-untrusted://terminal/html/terminal.html`,
@@ -824,6 +830,8 @@ describe('Parsed URL', () => {
         urlString`file:///etc/passwd`,
         urlString`isolated-app://abcdefghijklmnop/index.html`,
         urlString`blob:chrome-extension://abcdefghijklmnop/550e8400-e29b-41d4-a716-446655440000`,
+        urlString`filesystem:chrome-extension://abcdefghijklmnop/persistent/file.txt`,
+        urlString`blob:filesystem:chrome-extension://abcdefghijklmnop/persistent/file.txt`,
       ];
       for (const url of privilegedUrls) {
         assert.isTrue(Common.ParsedURL.isPrivilegedScheme(url));
@@ -834,6 +842,7 @@ describe('Parsed URL', () => {
       const unprivilegedUrls = [
         urlString`https://example.com/script.js`,
         urlString`blob:https://example.com/550e8400-e29b-41d4-a716-446655440000`,
+        urlString`filesystem:https://example.com/persistent/file.txt`,
         urlString`bar.js`,
         urlString`<anonymous>`,
         urlString`unknown-scheme://foo`,

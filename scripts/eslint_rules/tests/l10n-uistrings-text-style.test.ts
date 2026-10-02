@@ -48,6 +48,18 @@ new RuleTester().run('l10n-uistrings-text-style', rule, {
       name: 'allows mixed case Url in non-UIStrings object',
       code: 'const variableNotNamedUIStrings = { foo: \'Enter a Url\' } as const;',
     },
+    {
+      name: 'allows Unicode ellipsis',
+      code: 'const UIStrings = { foo: \'Loading…\' } as const;',
+    },
+    {
+      name: 'allows three dots inside locked backtick code span',
+      code: 'const UIStrings = { foo: \'Call `foo(...)` to start\' } as const;',
+    },
+    {
+      name: 'allows three dots in non-UIStrings object',
+      code: 'const variableNotNamedUIStrings = { foo: \'Loading...\' } as const;',
+    },
   ],
   invalid: [
     {
@@ -126,6 +138,32 @@ new RuleTester().run('l10n-uistrings-text-style', rule, {
           messageId: 'useStraightDoubleQuote',
           data: {
             PH1: 'Click “Add”',
+          },
+        },
+      ],
+    },
+    {
+      name: 'disallows three dots and auto-fixes to Unicode ellipsis',
+      code: 'const UIStrings = { foo: \'Loading...\' } as const;',
+      output: 'const UIStrings = { foo: \'Loading…\' } as const;',
+      errors: [
+        {
+          messageId: 'useUnicodeEllipsis',
+          data: {
+            PH1: 'Loading...',
+          },
+        },
+      ],
+    },
+    {
+      name: 'preserves three dots inside backticks when auto-fixing unquoted three dots',
+      code: 'const UIStrings = { foo: \'Calling `foo(...)`...\' } as const;',
+      output: 'const UIStrings = { foo: \'Calling `foo(...)`…\' } as const;',
+      errors: [
+        {
+          messageId: 'useUnicodeEllipsis',
+          data: {
+            PH1: 'Calling `foo(...)`...',
           },
         },
       ],

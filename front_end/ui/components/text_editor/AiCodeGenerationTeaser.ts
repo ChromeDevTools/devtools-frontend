@@ -43,7 +43,7 @@ const UIStringsNotTranslate = {
   /**
    * @description Text for teaser when generating suggestion.
    */
-  generating: 'Generating... (',
+  generating: 'Generating… (',
   /**
    * @description Text for teaser when generating suggestion.
    */

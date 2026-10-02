@@ -53,6 +53,101 @@
     background-color: var(--sys-color-state-ripple-neutral-on-subtle);
   }
 
+  .comments-list {
+    flex: 1;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .comment-thread-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-5);
+    padding: var(--sys-size-5) var(--sys-size-8);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    cursor: pointer;
+    transition: background-color var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
+  }
+
+  .comment-thread-item:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  .comment-pin-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
+    margin-right: var(--sys-size-2);
+    border-radius: var(--sys-shape-corner-full) var(--sys-shape-corner-full) var(--sys-shape-corner-full) var(--sys-shape-corner-extra-small);
+    background-color: var(--sys-color-primary);
+    color: var(--sys-color-on-primary);
+    font-size: var(--sys-typescale-body5-size);
+    font-weight: var(--ref-typeface-weight-bold);
+    flex-shrink: 0;
+  }
+
+  .anchor-chip {
+    display: flex;
+    height: calc(var(--sys-size-8) + var(--sys-size-2));
+    padding: var(--sys-size-2) var(--sys-size-4) var(--sys-size-2) var(--sys-size-3);
+    align-items: center;
+    border-radius: var(--sys-shape-corner-extra-small);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+    background: var(--sys-color-surface2);
+    font-family: var(--source-code-font-family);
+    font-size: var(--monospace-font-size);
+    color: var(--sys-color-token-tag);
+    overflow: hidden;
+    max-width: var(--sys-size-24);
+    min-width: 0;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  .anchor-chip devtools-widget,
+  .anchor-chip-text {
+    display: block;
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .comment-text {
+    flex: 1;
+    font-size: var(--sys-typescale-body4-size);
+    line-height: var(--sys-typescale-body4-line-height);
+    color: var(--sys-color-on-surface);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .delete-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--sys-size-11);
+    height: var(--sys-size-11);
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: var(--sys-shape-corner-extra-small);
+    cursor: pointer;
+    color: var(--sys-color-on-surface-subtle);
+    flex-shrink: 0;
+  }
+
+  .delete-button:hover {
+    color: var(--sys-color-error);
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
   .comments-empty-state {
     display: flex;
     flex-direction: column;

@@ -1070,7 +1070,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   describe('initiator cell', () => {
     it('renders privileged initiator URLs as inert spans rather than clickable links', () => {
-      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+      const request = SDK.NetworkRequest.NetworkRequest.createForImportedHar(
           'har-0',
           urlString`https://www.example.com/asset.js`,
           urlString`https://www.example.com/`,
@@ -1080,7 +1080,6 @@ describeWithEnvironment('NetworkLogView', () => {
             lineNumber: 0,
           },
       );
-      request.setIsImportedHar(true);
 
       const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
           {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);

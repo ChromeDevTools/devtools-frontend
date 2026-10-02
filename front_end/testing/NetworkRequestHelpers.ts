@@ -45,7 +45,10 @@ export interface CreateNetworkRequestOptions {
    * to simulate content retrieval failures.
    */
   contentData?: TextUtils.ContentData.ContentData|(() => Promise<TextUtils.ContentData.ContentDataOrError>);
-  /** Flags the request as imported from a HAR archive via `setIsImportedHar()`. */
+  /**
+   * If true, creates a request via `createForImportedHar`, marking it as imported
+   * from a HAR archive and leaving `backendRequestId()` undefined.
+   */
   isImportedHar?: boolean;
   mimeType?: string;
   resourceType?: Common.ResourceType.ResourceType;
@@ -79,20 +82,12 @@ export function createNetworkRequest(options: CreateNetworkRequestOptions = {}):
       options.loaderId as Protocol.Network.LoaderId :
       null;
 
-  const request = options.withoutBackend ? SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
-                                               reqId,
-                                               reqUrl,
-                                               docUrl,
-                                               options.initiator ?? null,
-                                               ) :
-                                           SDK.NetworkRequest.NetworkRequest.create(
-                                               reqId,
-                                               reqUrl,
-                                               docUrl,
-                                               frameId,
-                                               loaderId,
-                                               options.initiator ?? null,
-                                           );
+  const initiator = options.initiator ?? null;
+  const request = options.isImportedHar ?
+      SDK.NetworkRequest.NetworkRequest.createForImportedHar(reqId, reqUrl, docUrl, initiator) :
+      options.withoutBackend ?
+      SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(reqId, reqUrl, docUrl, initiator) :
+      SDK.NetworkRequest.NetworkRequest.create(reqId, reqUrl, docUrl, frameId, loaderId, initiator);
 
   if (options.statusCode !== undefined) {
     request.statusCode = options.statusCode;
@@ -142,9 +137,6 @@ export function createNetworkRequest(options: CreateNetworkRequestOptions = {}):
   if (options.contentData) {
     const dataOrFn = options.contentData;
     request.setContentDataProvider(typeof dataOrFn === 'function' ? dataOrFn : () => Promise.resolve(dataOrFn));
-  }
-  if (options.isImportedHar !== undefined) {
-    request.setIsImportedHar(options.isImportedHar);
   }
 
   return request;

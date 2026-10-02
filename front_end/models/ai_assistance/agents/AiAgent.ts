@@ -923,6 +923,18 @@ export abstract class AiAgent<T> {
           }
 
           if ('context' in result) {
+            // Pair the functionCall with a functionResponse so history stays valid
+            // if this agent instance is re-run after the context change (AiAgent2).
+            // The new context reaches the model through the next USER query.
+            this.#history.push({
+              parts: [{
+                functionResponse: {
+                  name: functionCall.name,
+                  response: {result: result.description},
+                },
+              }],
+              role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+            });
             yield {
               type: ResponseType.CONTEXT_CHANGE,
               description: result.description,

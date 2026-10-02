@@ -1156,6 +1156,75 @@ describeWithEnvironment('DOMTreeWidget', () => {
          }
        });
 
+    it('does not start dragging a DOM node while inline editing is active', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target);
+      let pWidget: Elements.ElementsTreeElement.ElementsTreeWidget|null = null;
+
+      try {
+        window.getSelection()?.removeAllRanges();
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P', attributes: ['class', 'intro']},
+            {nodeId: 3, nodeName: 'SPAN'},
+          ],
+        });
+        const pNode = rootNode.children()![0];
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const treeElement = tree.getInternalTreeOutlineForTest().rootElement().children()[0].children()[0];
+        assert.exists(treeElement);
+        pWidget = findElementsTreeWidget(domTree, pNode);
+        assert.exists(pWidget);
+
+        domTree.startEditing(pNode, 'class');
+        await waitForTreeUpdates();
+        assert.isTrue(pWidget.isEditing);
+
+        const editingElement = treeElement.listItemElement.querySelector('.being-edited');
+        assert.exists(editingElement);
+
+        const selection = editingElement.getComponentSelection();
+        assert.exists(selection);
+        selection.collapseToStart();
+
+        treeElement.listItemElement.dispatchEvent(
+            new MouseEvent('mousedown', {bubbles: true, composed: true, cancelable: true}));
+        const dataTransfer = new DataTransfer();
+        const dragStartEvent =
+            new DragEvent('dragstart', {bubbles: true, composed: true, cancelable: true, dataTransfer});
+        treeElement.listItemElement.dispatchEvent(dragStartEvent);
+        assert.isTrue(dragStartEvent.defaultPrevented);
+        assert.isNull(domTree.nodeBeingDragged());
+
+        // Dragging an active non-collapsed text selection inside the editor should not call preventDefault().
+        const range = document.createRange();
+        range.selectNodeContents(editingElement);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        const selectionDragEvent =
+            new DragEvent('dragstart', {bubbles: true, composed: true, cancelable: true, dataTransfer});
+        editingElement.dispatchEvent(selectionDragEvent);
+        assert.isFalse(selectionDragEvent.defaultPrevented);
+        assert.isNull(domTree.nodeBeingDragged());
+      } finally {
+        window.getSelection()?.removeAllRanges();
+        pWidget?.editing?.cancel();
+        domTree.detach();
+      }
+    });
+
     it('handles clipboard operations (cut, copy, paste, .in-clipboard styling, and events)',
        async () => {
          SDK.TargetManager.TargetManager.instance().setScopeTarget(target);

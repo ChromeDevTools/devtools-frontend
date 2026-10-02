@@ -869,6 +869,67 @@ describe('AiAgent', () => {
       });
     });
 
+    it('should keep an incomplete suggestions directive that is not the last line', () => {
+      assertSuggestions('Here are some suggestions:\n- Bullet 1', {
+        answer: 'Here are some suggestions:\n- Bullet 1',
+      });
+      assertSuggestions('**Suggestions**:\n- Fix A\nSUGGESTIONS: ["a"]', {
+        answer: '**Suggestions**:\n- Fix A',
+        suggestions: ['a'],
+      });
+      assertSuggestions('**Suggestions**: [1] Fix contrast.\nMore text.', {
+        answer: '**Suggestions**: [1] Fix contrast.\nMore text.',
+      });
+    });
+
+    it('should remove a complete but empty suggestions array that is not the last line', () => {
+      assertSuggestions('Answer.\nSUGGESTIONS: []\nMore.', {
+        answer: 'Answer.\nMore.',
+      });
+    });
+
+    it('should keep a line where non-markdown text follows the closing bracket', () => {
+      assertSuggestions('A few suggestions: [see docs](https://example.com)', {
+        answer: 'A few suggestions: [see docs](https://example.com)',
+      });
+      assertSuggestions('suggestions: ["a", "b"],', {
+        answer: 'suggestions: ["a", "b"],',
+      });
+    });
+
+    it('should not remove code block lines that contain a suggestions key', () => {
+      const openArray = ['```js', 'const config = {', '  suggestions: [', '    \'a\',', '  ],', '};', '```'].join('\n');
+      assertSuggestions(openArray, {answer: openArray});
+
+      const singleQuoted = ['```js', 'const config = {', '  suggestions: [\'a\', \'b\'],', '};', '```'].join('\n');
+      assertSuggestions(singleQuoted, {answer: singleQuoted});
+
+      const doubleQuoted = ['```js', 'const config = {', '  suggestions: ["a", "b"],', '};', '```'].join('\n');
+      assertSuggestions(doubleQuoted, {answer: doubleQuoted});
+    });
+
+    it('should not extract suggestions from inside a code fence', () => {
+      assertSuggestions('`````css\nsuggestions: ["a"]\n`````', {
+        answer: '`````css\nsuggestions: ["a"]\n`````',
+      });
+      assertSuggestions('```js\n  suggestions: [', {
+        answer: '```js\n  suggestions: [',
+      });
+      const nested = ['`````md', '```', 'SUGGESTIONS: ["a"]', '```', 'SUGGESTIONS: ["b"]', '`````'].join('\n');
+      assertSuggestions(nested, {answer: nested});
+    });
+
+    it('should extract suggestions after a closed code fence', () => {
+      assertSuggestions('```js\nconst x = 1;\n```\nSUGGESTIONS: ["a"]', {
+        answer: '```js\nconst x = 1;\n```',
+        suggestions: ['a'],
+      });
+      assertSuggestions('```x``` inline span\nSUGGESTIONS: ["a"]', {
+        answer: '```x``` inline span',
+        suggestions: ['a'],
+      });
+    });
+
     it('should remove empty suggestions after sanitization', () => {
       assertSuggestions('SUGGESTIONS: []');
       assertSuggestions('SUGGESTIONS: [""]');

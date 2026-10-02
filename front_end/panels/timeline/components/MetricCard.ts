@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/tooltips/tooltips.js';
 
@@ -12,7 +11,7 @@ import type * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UIHelpers from '../../../ui/helpers/helpers.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import metricCardStyles from './metricCard.css.js';
@@ -28,8 +27,6 @@ import {
   rateMetric,
   renderMetricValue,
 } from './Utils.js';
-
-const {html, nothing} = Lit;
 
 const UIStrings = {
   /**
@@ -249,6 +246,288 @@ function getPercentLabelForRating(histogram: CrUXManager.MetricResponse['histogr
   return i18nString(UIStrings.percentage, {PH1: percent});
 }
 
+interface ViewInput extends MetricCardData {
+  fieldValue?: number;
+}
+
+type View = (input: ViewInput, output: object, target: HTMLElement|ShadowRoot) => void;
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const {metric, localValue, fieldValue} = input;
+
+  /**
+   * Returns if the local value is better/worse/similar compared to field.
+   */
+  function getCompareRating(): CompareRating|undefined {
+    if (localValue === undefined || fieldValue === undefined) {
+      return;
+    }
+
+    return determineCompareRating(metric, localValue, fieldValue);
+  }
+
+  function renderCompareString(): LitTemplate {
+    if (localValue === undefined) {
+      if (metric === 'INP') {
+        return html`
+          <div class="compare-text">${i18nString(UIStrings.interactToMeasure)}</div>
+        `;
+      }
+      return nothing;
+    }
+
+    const compare = getCompareRating();
+    const rating = rateMetric(localValue, getThresholds(metric));
+
+    const valueEl = renderMetricValue(getMetricValueLogContext(true), localValue, getThresholds(metric),
+                                      getFormatFn(metric), {dim: true});
+
+    // clang-format off
+    return html`
+      <div class="compare-text">
+        ${renderCompareText({
+          metric: i18n.i18n.lockedString(metric),
+          rating,
+          compare,
+          localValue: valueEl,
+        })}
+      </div>
+    `;
+    // clang-format on
+  }
+
+  function renderEnvironmentRecommendations(): LitTemplate {
+    const compare = getCompareRating();
+    if (!compare || compare === 'similar') {
+      return nothing;
+    }
+
+    const recs: string[] = [];
+
+    // Recommend using throttling
+    if (metric === 'LCP' && compare === 'better') {
+      recs.push(i18nString(UIStrings.recThrottlingLCP));
+    } else if (metric === 'INP' && compare === 'better') {
+      recs.push(i18nString(UIStrings.recThrottlingINP));
+    }
+
+    // Recommend trying new viewport sizes
+    if (metric === 'LCP') {
+      recs.push(i18nString(UIStrings.recViewportLCP));
+    } else if (metric === 'CLS') {
+      recs.push(i18nString(UIStrings.recViewportCLS));
+    }
+
+    // Recommend trying new user journeys
+    if (metric === 'CLS') {
+      recs.push(i18nString(UIStrings.recJourneyCLS));
+    } else if (metric === 'INP') {
+      recs.push(i18nString(UIStrings.recJourneyINP));
+    }
+
+    // Recommend accounting for dynamic content
+    if (metric === 'LCP') {
+      recs.push(i18nString(UIStrings.recDynamicContentLCP));
+    } else if (metric === 'CLS') {
+      recs.push(i18nString(UIStrings.recDynamicContentCLS));
+    }
+
+    if (!recs.length) {
+      return nothing;
+    }
+
+    return html`
+      <details class="environment-recs">
+        <summary>${i18nString(UIStrings.considerTesting)}</summary>
+        <ul class="environment-recs-list">${recs.map(rec => html`<li>${rec}</li>`)}</ul>
+      </details>
+    `;
+  }
+
+  function getMetricValueLogContext(isLocal: boolean): string {
+    return `timeline.landing.${isLocal ? 'local' : 'field'}-${input.metric.toLowerCase()}`;
+  }
+
+  function renderDetailedCompareString(): LitTemplate {
+    if (localValue === undefined) {
+      if (metric === 'INP') {
+        return html`
+          <div class="detailed-compare-text">${i18nString(UIStrings.interactToMeasure)}</div>
+        `;
+      }
+      return nothing;
+    }
+
+    const localRating = rateMetric(localValue, getThresholds(metric));
+
+    const fieldRating = fieldValue !== undefined ? rateMetric(fieldValue, getThresholds(metric)) : undefined;
+
+    const localValueEl = renderMetricValue(getMetricValueLogContext(true), localValue, getThresholds(metric),
+                                           getFormatFn(metric), {dim: true});
+    const fieldValueEl = renderMetricValue(getMetricValueLogContext(false), fieldValue, getThresholds(metric),
+                                           getFormatFn(metric), {dim: true});
+
+    // clang-format off
+    return html`
+      <div class="detailed-compare-text">${renderDetailedCompareText({
+        metric: i18n.i18n.lockedString(metric),
+        localRating,
+        fieldRating,
+        localValue: localValueEl,
+        fieldValue: fieldValueEl,
+        percent: getPercentLabelForRating(input.histogram, localRating),
+      })}</div>
+    `;
+    // clang-format on
+  }
+
+  function renderFieldHistogram(): LitTemplate {
+    const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
+
+    const format = getFormatFn(metric);
+    const thresholds = getThresholds(metric);
+
+    // clang-format off
+    const goodLabel = html`
+      <div class="bucket-label">
+        <span>${i18nString(UIStrings.good)}</span>
+        <span class="bucket-range"> ${i18nString(UIStrings.leqRange, {PH1: format(thresholds[0])})}</span>
+      </div>
+    `;
+
+    const needsImprovementLabel = html`
+      <div class="bucket-label">
+        <span>${i18nString(UIStrings.needsImprovement)}</span>
+        <span class="bucket-range"> ${i18nString(UIStrings.betweenRange, {PH1: format(thresholds[0]), PH2: format(thresholds[1])})}</span>
+      </div>
+    `;
+
+    const poorLabel = html`
+      <div class="bucket-label">
+        <span>${i18nString(UIStrings.poor)}</span>
+        <span class="bucket-range"> ${i18nString(UIStrings.gtRange, {PH1: format(thresholds[1])})}</span>
+      </div>
+    `;
+    // clang-format on
+
+    if (!fieldEnabled) {
+      return html`
+        <div class="bucket-summaries">
+          ${goodLabel}
+          ${needsImprovementLabel}
+          ${poorLabel}
+        </div>
+      `;
+    }
+
+    // clang-format off
+    return html`
+      <div class="bucket-summaries histogram" jslog=${VisualLogging.canvas('metric-histogram')}>
+        ${goodLabel}
+        <div class="histogram-bar good-bg" style="width: ${getBarWidthForRating(input.histogram, 'good')}"></div>
+        <div class="histogram-percent">${getPercentLabelForRating(input.histogram, 'good')}</div>
+        ${needsImprovementLabel}
+        <div class="histogram-bar needs-improvement-bg" style="width: ${getBarWidthForRating(input.histogram, 'needs-improvement')}"></div>
+        <div class="histogram-percent">${getPercentLabelForRating(input.histogram, 'needs-improvement')}</div>
+        ${poorLabel}
+        <div class="histogram-bar poor-bg" style="width: ${getBarWidthForRating(input.histogram, 'poor')}"></div>
+        <div class="histogram-percent">${getPercentLabelForRating(input.histogram, 'poor')}</div>
+      </div>
+    `;
+    // clang-format on
+  }
+
+  function renderSubpartTable(subparts: SubpartTable): LitTemplate {
+    const hasFieldData = subparts.every(subpart => subpart[2] !== undefined);
+
+    // clang-format off
+    return html`
+      <hr class="divider">
+      <div class="subpart-table" role="table">
+        <div class="subpart-table-row subpart-table-header-row" role="row">
+          <div role="columnheader" style="grid-column: 1">${i18nString(UIStrings.subpart)}</div>
+          <div role="columnheader" class="subpart-table-value" style="grid-column: 2">${i18nString(UIStrings.localValue)}</div>
+          ${hasFieldData ? html`
+            <div
+              role="columnheader"
+              class="subpart-table-value"
+              style="grid-column: 3"
+              title=${i18nString(UIStrings.field75thPercentile)}>${i18nString(UIStrings.fieldP75)}</div>
+          ` : nothing}
+        </div>
+        ${subparts.map(subpart => html`
+          <div class="subpart-table-row" role="row" jslog=${VisualLogging.tableRow('metric-subpart')}>
+            <div role="cell">${subpart[0]}</div>
+            <div role="cell" class="subpart-table-value">${i18n.TimeUtilities.preciseMillisToString(subpart[1])}</div>
+            ${subpart[2] !== undefined ? html`
+              <div role="cell" class="subpart-table-value">${i18n.TimeUtilities.preciseMillisToString(subpart[2])}</div>
+            ` : nothing}
+          </div>
+        `)}
+      </div>
+    `;
+    // clang-format on
+  }
+
+  const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
+  const helpLink = getHelpLink(metric);
+  const thresholds = getThresholds(metric);
+  const formatFn = getFormatFn(metric);
+
+  const localValueEl = renderMetricValue(getMetricValueLogContext(true), localValue, thresholds, formatFn);
+  const fieldValueEl = renderMetricValue(getMetricValueLogContext(false), fieldValue, thresholds, formatFn);
+
+  // clang-format off
+  render(html`
+      <style>${metricCardStyles}</style>
+      <style>${metricValueStyles}</style>
+      <div class="metric-card" jslog=${VisualLogging.section(Platform.StringUtilities.toKebabCase(metric))}>
+        <h3 class="title">
+          ${getTitle(metric)}
+          <devtools-button
+            class="title-help"
+            title=${getHelpTooltip(metric)}
+            .iconName=${'help'}
+            .variant=${Buttons.Button.Variant.ICON}
+            @click=${() => UIHelpers.openInNewTab(helpLink)}
+          ></devtools-button>
+        </h3>
+        <div tabindex="0" class="metric-values-section" aria-details="tooltip">
+          <div class="metric-source-block">
+            <div class="metric-source-value" id="local-value">${localValueEl}</div>
+            ${fieldEnabled ? html`<div class="metric-source-label">${i18nString(UIStrings.localValue)}</div>` : nothing}
+          </div>
+          ${fieldEnabled ? html`
+            <div class="metric-source-block">
+              <div class="metric-source-value" id="field-value">${fieldValueEl}</div>
+              <div class="metric-source-label">${i18nString(UIStrings.field75thPercentile)}</div>
+            </div>
+          `: nothing}
+        </div>
+        <devtools-tooltip
+          id="tooltip"
+          variant="rich"
+          hover-delay="500"
+          aria-label=${i18nString(UIStrings.viewCardDetails)}
+        >
+          <div class="tooltip-contents">
+            ${renderDetailedCompareString()}
+            <hr class="divider">
+            ${renderFieldHistogram()}
+            ${localValue && input.subparts ? renderSubpartTable(input.subparts) : nothing}
+          </div>
+        </devtools-tooltip>
+        ${fieldEnabled ? html`<hr class="divider">` : nothing}
+        ${renderCompareString()}
+        ${input.warnings?.map(warning => html`
+          <div class="warning">${warning}</div>
+        `)}
+        ${renderEnvironmentRecommendations()}
+        <slot name="extra-info"></slot>
+      </div>
+    `, target);
+  // clang-format on
+};
+
 export class MetricCard extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
@@ -288,292 +567,11 @@ export class MetricCard extends HTMLElement {
     return fieldValue;
   }
 
-  /**
-   * Returns if the local value is better/worse/similar compared to field.
-   */
-  #getCompareRating(): CompareRating|undefined {
-    const localValue = this.#data.localValue;
+  #render(): void {
+    const {metric, localValue, histogram, subparts, warnings} = this.#data;
     const fieldValue = this.#getFieldValue();
-    if (localValue === undefined || fieldValue === undefined) {
-      return;
-    }
-
-    return determineCompareRating(this.#data.metric, localValue, fieldValue);
+    DEFAULT_VIEW({metric, localValue, fieldValue, histogram, subparts, warnings}, {}, this.#shadow);
   }
-
-  #renderCompareString(): Lit.LitTemplate {
-    const localValue = this.#data.localValue;
-    if (localValue === undefined) {
-      if (this.#data.metric === 'INP') {
-        return html`
-          <div class="compare-text">${i18nString(UIStrings.interactToMeasure)}</div>
-        `;
-      }
-      return Lit.nothing;
-    }
-
-    const compare = this.#getCompareRating();
-    const rating = rateMetric(localValue, getThresholds(this.#data.metric));
-
-    const valueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue,
-                                      getThresholds(this.#data.metric), getFormatFn(this.#data.metric), {dim: true});
-
-    // clang-format off
-    return html`
-      <div class="compare-text">
-        ${renderCompareText({
-          metric: i18n.i18n.lockedString(this.#data.metric),
-          rating,
-          compare,
-          localValue: valueEl,
-        })}
-      </div>
-    `;
-    // clang-format on
-  }
-
-  #renderEnvironmentRecommendations(): Lit.LitTemplate {
-    const compare = this.#getCompareRating();
-    if (!compare || compare === 'similar') {
-      return Lit.nothing;
-    }
-
-    const recs: string[] = [];
-    const metric = this.#data.metric;
-
-    // Recommend using throttling
-    if (metric === 'LCP' && compare === 'better') {
-      recs.push(i18nString(UIStrings.recThrottlingLCP));
-    } else if (metric === 'INP' && compare === 'better') {
-      recs.push(i18nString(UIStrings.recThrottlingINP));
-    }
-
-    // Recommend trying new viewport sizes
-    if (metric === 'LCP') {
-      recs.push(i18nString(UIStrings.recViewportLCP));
-    } else if (metric === 'CLS') {
-      recs.push(i18nString(UIStrings.recViewportCLS));
-    }
-
-    // Recommend trying new user journeys
-    if (metric === 'CLS') {
-      recs.push(i18nString(UIStrings.recJourneyCLS));
-    } else if (metric === 'INP') {
-      recs.push(i18nString(UIStrings.recJourneyINP));
-    }
-
-    // Recommend accounting for dynamic content
-    if (metric === 'LCP') {
-      recs.push(i18nString(UIStrings.recDynamicContentLCP));
-    } else if (metric === 'CLS') {
-      recs.push(i18nString(UIStrings.recDynamicContentCLS));
-    }
-
-    if (!recs.length) {
-      return Lit.nothing;
-    }
-
-    return html`
-      <details class="environment-recs">
-        <summary>${i18nString(UIStrings.considerTesting)}</summary>
-        <ul class="environment-recs-list">${recs.map(rec => html`<li>${rec}</li>`)}</ul>
-      </details>
-    `;
-  }
-
-  #getMetricValueLogContext(isLocal: boolean): string {
-    return `timeline.landing.${isLocal ? 'local' : 'field'}-${this.#data.metric.toLowerCase()}`;
-  }
-
-  #renderDetailedCompareString(): Lit.LitTemplate {
-    const localValue = this.#data.localValue;
-    if (localValue === undefined) {
-      if (this.#data.metric === 'INP') {
-        return html`
-          <div class="detailed-compare-text">${i18nString(UIStrings.interactToMeasure)}</div>
-        `;
-      }
-      return Lit.nothing;
-    }
-
-    const localRating = rateMetric(localValue, getThresholds(this.#data.metric));
-
-    const fieldValue = this.#getFieldValue();
-    const fieldRating = fieldValue !== undefined ? rateMetric(fieldValue, getThresholds(this.#data.metric)) : undefined;
-
-    const localValueEl =
-        renderMetricValue(this.#getMetricValueLogContext(true), localValue, getThresholds(this.#data.metric),
-                          getFormatFn(this.#data.metric), {dim: true});
-    const fieldValueEl =
-        renderMetricValue(this.#getMetricValueLogContext(false), fieldValue, getThresholds(this.#data.metric),
-                          getFormatFn(this.#data.metric), {dim: true});
-
-    // clang-format off
-    return html`
-      <div class="detailed-compare-text">${renderDetailedCompareText({
-        metric: i18n.i18n.lockedString(this.#data.metric),
-        localRating,
-        fieldRating,
-        localValue: localValueEl,
-        fieldValue: fieldValueEl,
-        percent: getPercentLabelForRating(this.#data.histogram, localRating),
-      })}</div>
-    `;
-    // clang-format on
-  }
-
-  #renderFieldHistogram(): Lit.LitTemplate {
-    const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
-
-    const format = getFormatFn(this.#data.metric);
-    const thresholds = getThresholds(this.#data.metric);
-
-    // clang-format off
-    const goodLabel = html`
-      <div class="bucket-label">
-        <span>${i18nString(UIStrings.good)}</span>
-        <span class="bucket-range"> ${i18nString(UIStrings.leqRange, {PH1: format(thresholds[0])})}</span>
-      </div>
-    `;
-
-    const needsImprovementLabel = html`
-      <div class="bucket-label">
-        <span>${i18nString(UIStrings.needsImprovement)}</span>
-        <span class="bucket-range"> ${i18nString(UIStrings.betweenRange, {PH1: format(thresholds[0]), PH2: format(thresholds[1])})}</span>
-      </div>
-    `;
-
-    const poorLabel = html`
-      <div class="bucket-label">
-        <span>${i18nString(UIStrings.poor)}</span>
-        <span class="bucket-range"> ${i18nString(UIStrings.gtRange, {PH1: format(thresholds[1])})}</span>
-      </div>
-    `;
-    // clang-format on
-
-    if (!fieldEnabled) {
-      return html`
-        <div class="bucket-summaries">
-          ${goodLabel}
-          ${needsImprovementLabel}
-          ${poorLabel}
-        </div>
-      `;
-    }
-
-    // clang-format off
-    return html`
-      <div class="bucket-summaries histogram" jslog=${VisualLogging.canvas('metric-histogram')}>
-        ${goodLabel}
-        <div class="histogram-bar good-bg" style="width: ${getBarWidthForRating(this.#data.histogram, 'good')}"></div>
-        <div class="histogram-percent">${getPercentLabelForRating(this.#data.histogram, 'good')}</div>
-        ${needsImprovementLabel}
-        <div class="histogram-bar needs-improvement-bg" style="width: ${getBarWidthForRating(this.#data.histogram, 'needs-improvement')}"></div>
-        <div class="histogram-percent">${getPercentLabelForRating(this.#data.histogram, 'needs-improvement')}</div>
-        ${poorLabel}
-        <div class="histogram-bar poor-bg" style="width: ${getBarWidthForRating(this.#data.histogram, 'poor')}"></div>
-        <div class="histogram-percent">${getPercentLabelForRating(this.#data.histogram, 'poor')}</div>
-      </div>
-    `;
-    // clang-format on
-  }
-
-  #renderSubpartTable(subparts: SubpartTable): Lit.LitTemplate {
-    const hasFieldData = subparts.every(subpart => subpart[2] !== undefined);
-
-    // clang-format off
-    return html`
-      <hr class="divider">
-      <div class="subpart-table" role="table">
-        <div class="subpart-table-row subpart-table-header-row" role="row">
-          <div role="columnheader" style="grid-column: 1">${i18nString(UIStrings.subpart)}</div>
-          <div role="columnheader" class="subpart-table-value" style="grid-column: 2">${i18nString(UIStrings.localValue)}</div>
-          ${hasFieldData ? html`
-            <div
-              role="columnheader"
-              class="subpart-table-value"
-              style="grid-column: 3"
-              title=${i18nString(UIStrings.field75thPercentile)}>${i18nString(UIStrings.fieldP75)}</div>
-          ` : nothing}
-        </div>
-        ${subparts.map(subpart => html`
-          <div class="subpart-table-row" role="row" jslog=${VisualLogging.tableRow('metric-subpart')}>
-            <div role="cell">${subpart[0]}</div>
-            <div role="cell" class="subpart-table-value">${i18n.TimeUtilities.preciseMillisToString(subpart[1])}</div>
-            ${subpart[2] !== undefined ? html`
-              <div role="cell" class="subpart-table-value">${i18n.TimeUtilities.preciseMillisToString(subpart[2])}</div>
-            ` : nothing}
-          </div>
-        `)}
-      </div>
-    `;
-    // clang-format on
-  }
-
-  #render = (): void => {
-    const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
-    const helpLink = getHelpLink(this.#data.metric);
-
-    const localValue = this.#data.localValue;
-    const fieldValue = this.#getFieldValue();
-    const thresholds = getThresholds(this.#data.metric);
-    const formatFn = getFormatFn(this.#data.metric);
-
-    const localValueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue, thresholds, formatFn);
-    const fieldValueEl = renderMetricValue(this.#getMetricValueLogContext(false), fieldValue, thresholds, formatFn);
-
-    // clang-format off
-    const output = html`
-      <style>${metricCardStyles}</style>
-      <style>${metricValueStyles}</style>
-      <div class="metric-card" jslog=${VisualLogging.section(Platform.StringUtilities.toKebabCase(this.#data.metric))}>
-        <h3 class="title">
-          ${getTitle(this.#data.metric)}
-          <devtools-button
-            class="title-help"
-            title=${getHelpTooltip(this.#data.metric)}
-            .iconName=${'help'}
-            .variant=${Buttons.Button.Variant.ICON}
-            @click=${() => UIHelpers.openInNewTab(helpLink)}
-          ></devtools-button>
-        </h3>
-        <div tabindex="0" class="metric-values-section" aria-details="tooltip">
-          <div class="metric-source-block">
-            <div class="metric-source-value" id="local-value">${localValueEl}</div>
-            ${fieldEnabled ? html`<div class="metric-source-label">${i18nString(UIStrings.localValue)}</div>` : nothing}
-          </div>
-          ${fieldEnabled ? html`
-            <div class="metric-source-block">
-              <div class="metric-source-value" id="field-value">${fieldValueEl}</div>
-              <div class="metric-source-label">${i18nString(UIStrings.field75thPercentile)}</div>
-            </div>
-          `: nothing}
-        </div>
-        <devtools-tooltip
-          id="tooltip"
-          variant="rich"
-          hover-delay="500"
-          aria-label=${i18nString(UIStrings.viewCardDetails)}
-        >
-          <div class="tooltip-contents">
-            ${this.#renderDetailedCompareString()}
-            <hr class="divider">
-            ${this.#renderFieldHistogram()}
-            ${localValue && this.#data.subparts ? this.#renderSubpartTable(this.#data.subparts) : nothing}
-          </div>
-        </devtools-tooltip>
-        ${fieldEnabled ? html`<hr class="divider">` : nothing}
-        ${this.#renderCompareString()}
-        ${this.#data.warnings?.map(warning => html`
-          <div class="warning">${warning}</div>
-        `)}
-        ${this.#renderEnvironmentRecommendations()}
-        <slot name="extra-info"></slot>
-      </div>
-    `;
-    Lit.render(output, this.#shadow, {host: this});
-  };
-  // clang-format on
 }
 
 customElements.define('devtools-metric-card', MetricCard);

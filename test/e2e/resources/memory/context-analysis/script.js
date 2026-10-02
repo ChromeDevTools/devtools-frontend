@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 // Top-level `let`/`const` of a classic script are allocated in the script's
-// own context, which lives as long as the script itself.
+// own context, which lives as long as the script itself. Because other scripts
+// may read them by name through the script context table, V8 omits variables of
+// script scopes.
 const scriptCaptured = {
   kind: 'script'
 };

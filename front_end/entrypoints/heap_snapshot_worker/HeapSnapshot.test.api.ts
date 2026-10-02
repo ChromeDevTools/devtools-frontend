@@ -435,18 +435,37 @@ function checkModuleTopLevelAwaitFinished({analysis}: ContextFixture): void {
   assertNoScopes(analysis, 'module-top-level-await-finished.js');
 }
 
-// Analyzes script scopes holding top-level let and const.
-//
-// TODO: Currently disabled, since V8 is going to stop emitting context
-// variables for script scopes: other scripts may read top-level let and
-// const by name, and V8 does not record those uses. Afterwards, no scopes
-// should be reported for 'script.js'.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function checkScriptScopes({snapshot, analysis}: ContextFixture): void {
-  const scope = singleScopeForScript(analysis, 'script.js');
+// Does not report script scopes holding top-level let and const. Other scripts
+// may read them by name, and V8 does not record those uses.
+function checkScriptScopes({analysis}: ContextFixture): void {
+  assertNoScopes(analysis, 'script.js');
+}
 
-  assert.deepEqual(allContextFields(snapshot, scope), ['scriptCaptured', 'scriptDead']);
-  assert.deepEqual(deadFieldNames(scope), [['scriptDead']]);
+// Does not report class scopes holding private members, but still analyzes the
+// enclosing function scope.
+function checkClassPrivateMembers({snapshot, analysis}: ContextFixture): void {
+  const scope = singleScopeForScript(analysis, 'class-private.js');
+
+  assert.deepEqual(allContextFields(snapshot, scope), ['privateOuterCaptured', 'privateOuterDead']);
+  assert.deepEqual(deadFieldNames(scope), [['privateOuterDead']]);
+}
+
+// Keeps a field alive as long as any of its reader closures is live.
+function checkMultipleReaders({snapshot, analysis}: ContextFixture): void {
+  const scope = singleScopeForScript(analysis, 'multiple-readers.js');
+
+  assert.deepEqual(allContextFields(snapshot, scope), ['multipleReadersDead', 'sharedByReaders']);
+  assert.deepEqual(deadFieldNames(scope), [['multipleReadersDead']]);
+}
+
+// Analyzes context fields of lets declared in a sloppy direct eval.
+function checkSloppyEvalLet({snapshot, analysis}: ContextFixture): void {
+  const scope = singleScopeForScript(analysis, 'sloppy-eval-let-code.js');
+
+  assert.deepEqual(allContextFields(snapshot, scope), ['sloppyEvalCaptured', 'sloppyEvalDead']);
+  assert.deepEqual(deadFieldNames(scope), [['sloppyEvalDead']]);
+  // The calling function calls eval, so its variables are not analyzed.
+  assertNoScopes(analysis, 'sloppy-eval-let.js');
 }
 
 describe('HeapSnapshot analyze context fields API Test', () => {
@@ -488,5 +507,9 @@ describe('HeapSnapshot analyze context fields API Test', () => {
     checkModuleTopLevelScopes(fixture);
     checkModuleTopLevelAwait(fixture);
     checkModuleTopLevelAwaitFinished(fixture);
+    checkScriptScopes(fixture);
+    checkClassPrivateMembers(fixture);
+    checkMultipleReaders(fixture);
+    checkSloppyEvalLet(fixture);
   });
 });

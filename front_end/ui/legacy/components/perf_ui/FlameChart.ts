@@ -345,11 +345,15 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
    */
   #entryTitleCache = new Map<number, {width: number, text: string|null}>();
   /**
-   * Tracks the previous window device pixel ratio.
-   * When the ratio changes (e.g. browser zoom changes), subpixel font metrics can shift,
-   * requiring #entryTitleCache to be invalidated.
+   * Tracks the previous canvas backing store and style layout properties.
+   * Backing store dimensions and CSS layout properties are updated independently to avoid reallocating
+   * GPU buffers during panning while keeping CSS dimensions in sync when browser zoom changes.
    */
-  #lastDpr = 0;
+  #lastCanvasDimensions = {
+    dpr: 0,
+    styleWidth: 0,
+    styleHeight: 0,
+  };
   readonly #boundOnThemeChanged = this.#onThemeChanged.bind(this);
 
   constructor(
@@ -675,18 +679,36 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     return ctx.createPattern(candyStripeCanvas, 'repeat') as CanvasPattern;
   }
 
+  /**
+   * Synchronizes canvas backing store resolution and CSS layout dimensions with the current container size and device pixel ratio.
+   * Backing store dimensions and CSS layout properties are updated independently to avoid reallocating GPU buffers during panning
+   * while keeping CSS dimensions in sync when browser zoom changes.
+   */
   private resetCanvas(): void {
     const ratio = window.devicePixelRatio;
-    if (this.#lastDpr !== ratio) {
+    if (this.#lastCanvasDimensions.dpr !== ratio) {
       this.#entryTitleCache.clear();
-      this.#lastDpr = ratio;
+      this.#urlTruncations.names.clear();
+      this.#lastCanvasDimensions.dpr = ratio;
     }
     const width = Math.round(this.offsetWidth * ratio);
     const height = Math.round(this.offsetHeight * ratio);
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.canvas.style.width = `${width / ratio}px`;
-    this.canvas.style.height = `${height / ratio}px`;
+    if (this.canvas.width !== width) {
+      this.canvas.width = width;
+    }
+    if (this.canvas.height !== height) {
+      this.canvas.height = height;
+    }
+    const styleWidth = width / ratio;
+    if (this.#lastCanvasDimensions.styleWidth !== styleWidth) {
+      this.canvas.style.width = `${styleWidth}px`;
+      this.#lastCanvasDimensions.styleWidth = styleWidth;
+    }
+    const styleHeight = height / ratio;
+    if (this.#lastCanvasDimensions.styleHeight !== styleHeight) {
+      this.canvas.style.height = `${styleHeight}px`;
+      this.#lastCanvasDimensions.styleHeight = styleHeight;
+    }
   }
 
   windowChanged(startTime: number, endTime: number, animate: boolean): void {
@@ -2274,13 +2296,14 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     const canvasHeight = this.offsetHeight;
     const context = this.context;
 
+    // Clear the backing canvas using raw device pixels before applying devicePixelRatio
+    // scaling. This prevents fractional scaling rounding artifacts (e.g. 1.25x or 1.5x)
+    // from leaving uncleared 1px slivers along the right/bottom canvas edges.
+    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     context.save();
     const ratio = window.devicePixelRatio;
     const top = this.chartViewport.scrollOffset();
     context.scale(ratio, ratio);
-    // Clear the canvas area by drawing a white square first
-    context.fillStyle = 'rgba(0, 0, 0, 0)';
-    context.fillRect(0, 0, canvasWidth, canvasHeight);
     context.translate(0, -top);
     context.font = this.#font;
 
@@ -2566,8 +2589,7 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     const barXStart = this.timeToPositionClipped(entryStartTime);
     const barXEnd = this.timeToPositionClipped(entryStartTime + duration);
     // Ensure that the width of the bar is at least one pixel.
-    const barWidth = Math.max(barXEnd - barXStart, 1);
-    return barWidth;
+    return Math.max(barXEnd - barXStart, 1);
   }
 
   /**
@@ -2685,6 +2707,12 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
 
         if (this.entryColorsCache) {
           const color = this.getColorForEntry(entryIndex);
+          // Entries without a color (e.g. screenshots) are custom-painted in
+          // drawEventTitles/decorateEntry rather than filled with a generic background
+          // rectangle in drawBatches.
+          if (!color) {
+            continue;
+          }
           const outline = this.#shouldOutlineEvent(entryIndex);
           const key = getOrMakeKey(color, outline);
           let batch = drawBatches.get(key);
@@ -4425,6 +4453,10 @@ export interface FlameChartDataProvider {
 
   entryFont(entryIndex: number): string|null;
 
+  /**
+   * Return empty string '' if the entry has no generic background fill and
+   * should be skipped during batch drawing (e.g. for custom-decorated entries).
+   */
   entryColor(entryIndex: number): string;
 
   decorateEntry(

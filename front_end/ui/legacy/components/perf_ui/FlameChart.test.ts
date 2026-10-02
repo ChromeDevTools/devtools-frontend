@@ -116,6 +116,47 @@ describeWithEnvironment('FlameChart', () => {
     sinon.assert.calledWith(updateRangeSpy, 0, 5);
   });
 
+  it('updates canvas CSS dimensions when zoom changes devicePixelRatio inversely to offset size', () => {
+    const provider = new FakeProvider();
+    const delegate = new MockFlameChartDelegate();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+
+    let mockOffsetWidth = 100;
+    let mockOffsetHeight = 100;
+    const vScrollElement = chartInstance.contentElement.querySelector<HTMLElement>('.chart-viewport-v-scroll');
+    assert.isNotNull(vScrollElement);
+    const viewportElement = vScrollElement.parentElement;
+    assert.instanceOf(viewportElement, HTMLElement);
+
+    sinon.stub(viewportElement, 'offsetWidth').get(() => mockOffsetWidth);
+    sinon.stub(viewportElement, 'offsetHeight').get(() => mockOffsetHeight);
+    sinon.stub(vScrollElement, 'offsetLeft').get(() => mockOffsetWidth);
+
+    let mockDpr = 1;
+    sinon.stub(window, 'devicePixelRatio').get(() => mockDpr);
+
+    chartInstance.update();
+
+    const canvas = chartInstance.contentElement.querySelector('canvas');
+    assert.strictEqual(canvas?.style.width, '100px');
+    assert.strictEqual(canvas?.style.height, '100px');
+    assert.strictEqual(canvas?.width, 100);
+    assert.strictEqual(canvas?.height, 100);
+
+    // Simulate 200% zoom: DPR doubles, offset dimensions halve, backing store remains 100x100.
+    mockDpr = 2;
+    mockOffsetWidth = 50;
+    mockOffsetHeight = 50;
+
+    chartInstance.onResize();
+    chartInstance.update();
+
+    assert.strictEqual(canvas?.style.width, '50px');
+    assert.strictEqual(canvas?.style.height, '50px');
+    assert.strictEqual(canvas?.width, 100);
+    assert.strictEqual(canvas?.height, 100);
+  });
+
   describe('setSelectedEntry', () => {
     class SetSelectedEntryTestProvider extends FakeFlameChartProvider {
       override entryColor(_entryIndex: number): string {
@@ -2048,5 +2089,150 @@ describeWithEnvironment('FlameChart', () => {
 
     // The event is too narrow for text (maxBarWidth <= 0), entryTitle should not be called.
     sinon.assert.callCount(entryTitleSpy, 0);
+  });
+
+  it('does not reassign canvas dimensions or styles when dimensions have not changed', () => {
+    const provider = new FakeProvider();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
+    renderWidgetInVbox(chartInstance, {width: 1000, height: 400});
+
+    sinon.stub(window, 'devicePixelRatio').value(1.25);
+    chartInstance.update();
+
+    const canvas = chartInstance.contentElement.querySelector('canvas')!;
+    const widthSetterSpy = sinon.spy(HTMLCanvasElement.prototype, 'width', ['set']);
+    const heightSetterSpy = sinon.spy(HTMLCanvasElement.prototype, 'height', ['set']);
+
+    let styleWidthSetCount = 0;
+    let styleHeightSetCount = 0;
+    let currentWidth = canvas.style.width;
+    let currentHeight = canvas.style.height;
+    Object.defineProperty(canvas.style, 'width', {
+      get: () => currentWidth,
+      set: (val: string) => {
+        styleWidthSetCount++;
+        currentWidth = val;
+      },
+      configurable: true,
+    });
+    Object.defineProperty(canvas.style, 'height', {
+      get: () => currentHeight,
+      set: (val: string) => {
+        styleHeightSetCount++;
+        currentHeight = val;
+      },
+      configurable: true,
+    });
+
+    chartInstance.update();
+
+    sinon.assert.callCount(widthSetterSpy.set, 0);
+    sinon.assert.callCount(heightSetterSpy.set, 0);
+    assert.strictEqual(styleWidthSetCount, 0);
+    assert.strictEqual(styleHeightSetCount, 0);
+
+    const container = chartInstance.element.parentElement!;
+    container.style.width = '1200px';
+    container.style.height = '500px';
+    chartInstance.onResize();
+    chartInstance.update();
+
+    sinon.assert.callCount(widthSetterSpy.set, 1);
+    sinon.assert.callCount(heightSetterSpy.set, 1);
+    assert.strictEqual(styleWidthSetCount, 1);
+    assert.strictEqual(styleHeightSetCount, 1);
+  });
+
+  it('caches truncated track header names and invalidates on resize or devicePixelRatio change', () => {
+    let nameAccessCount = 0;
+    class HeaderCacheProvider extends FakeFlameChartProvider {
+      #timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
+        entryLevels: [0],
+        entryStartTimes: [10.0],
+        entryTotalTimes: [50.0],
+        groups: [{
+          get name() {
+            nameAccessCount++;
+            return 'Very Long Header Track Name That Will Be Middle Truncated' as Platform.UIString.LocalizedString;
+          },
+          startLevel: 0,
+          style: defaultGroupStyle,
+          expanded: true,
+        }],
+      });
+
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+        return this.#timelineData;
+      }
+    }
+
+    const provider = new HeaderCacheProvider();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
+    renderWidgetInVbox(chartInstance, {width: 200, height: 400});
+    chartInstance.setWindowTimes(0, 100);
+    chartInstance.update();
+
+    // Initial draw evaluated group.name once to truncate and cache it.
+    assert.strictEqual(nameAccessCount, 1);
+
+    // Redraw with identical container width: uses cached header name without re-accessing group.name.
+    chartInstance.update();
+    assert.strictEqual(nameAccessCount, 1);
+
+    // Resizing container width invalidates #urlTruncations cache: re-evaluates group.name.
+    const container = chartInstance.element.parentElement!;
+    container.style.width = '300px';
+    chartInstance.onResize();
+    chartInstance.update();
+    assert.strictEqual(nameAccessCount, 2);
+
+    // DPR change with an unchanged container width invalidates #urlTruncations cache: re-evaluates group.name.
+    // Increment the existing devicePixelRatio to guarantee a change on high-DPI displays.
+    sinon.stub(window, 'devicePixelRatio').value((window.devicePixelRatio || 1) + 1);
+    chartInstance.update();
+    assert.strictEqual(nameAccessCount, 3);
+  });
+
+  it('does not batch or fill generic rectangles for entries with an empty color', () => {
+    class UncoloredEntryProvider extends FakeFlameChartProvider {
+      #timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
+        entryLevels: [0, 0],
+        entryStartTimes: [10.0, 60.0],
+        entryTotalTimes: [40.0, 40.0],
+        groups: [{
+          name: 'Test Group' as Platform.UIString.LocalizedString,
+          startLevel: 0,
+          style: defaultGroupStyle,
+          expanded: true,
+        }],
+      });
+
+      override entryColor(entryIndex: number): string {
+        // Entry 0 has a valid color, Entry 1 has no background color (like a screenshot).
+        return entryIndex === 0 ? '#ff0000' : '';
+      }
+
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+        return this.#timelineData;
+      }
+    }
+
+    const provider = new UncoloredEntryProvider();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
+    renderWidgetInVbox(chartInstance, {width: 1000, height: 400});
+    chartInstance.setWindowTimes(0, 100);
+
+    const fillStyleSetter = sinon.spy(CanvasRenderingContext2D.prototype, 'fillStyle', ['set']);
+    const fillSpy = sinon.spy(CanvasRenderingContext2D.prototype, 'fill');
+
+    chartInstance.update();
+
+    // Exactly one batch of events (the colored entry) should be filled.
+    sinon.assert.calledOnce(fillSpy);
+
+    const calls = fillStyleSetter.set.getCalls();
+    const assignedColors = calls.map(c => c.args[0]);
+    assert.isTrue(assignedColors.includes('#ff0000'));
+    assert.isFalse(assignedColors.includes(''));
   });
 });

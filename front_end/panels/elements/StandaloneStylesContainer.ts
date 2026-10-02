@@ -206,14 +206,15 @@ export class StandaloneStylesContainer extends StandaloneStylesContainerBase imp
   setActiveProperty(_treeElement: StylePropertyTreeElement|null): void {
   }
 
-  refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement): void {
+  refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement,
+                force = false): void {
     if (editedTreeElement) {
       for (const section of this.#sections) {
         section.updateVarFunctions(editedTreeElement);
       }
     }
 
-    if (this.isEditingStyle) {
+    if (this.isEditingStyle && !force) {
       this.#onUpdateFinished();
       return;
     }

@@ -2203,21 +2203,18 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
                 }
                 const {propertyName, value} = changeEvent.data;
                 let target = this.#findTreeElementForProperty(propertyName);
-                this.#stylesContainer.setEditingStyle(false);
-                try {
-                  if (value) {
-                    if (!target) {
-                      target = activeSection.addNewBlankProperty();
-                      target.property.name = propertyName;
-                    }
-                    target.property.value = value;
-                    target.updateTitle();
-                    await target.applyStyleText(target.renderedPropertyText(), false);
-                  } else if (target) {
-                    await target.applyStyleText('', false);
+                if (value) {
+                  if (!target) {
+                    target = activeSection.addNewBlankProperty();
+                    target.property.name = propertyName;
                   }
-                } finally {
-                  this.#stylesContainer.setEditingStyle(true);
+                  target.property.value = value;
+                  target.updateTitle();
+                  await target.applyStyleText(target.renderedPropertyText(), false);
+                  this.#stylesContainer.refreshUpdate(activeSection, target, true);
+                } else if (target) {
+                  await target.applyStyleText('', false);
+                  this.#stylesContainer.refreshUpdate(activeSection, target, true);
                 }
                 void updateEditorProperties();
               };

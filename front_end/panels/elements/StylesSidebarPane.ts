@@ -592,7 +592,8 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     }, FILTER_IDLE_PERIOD);
   }
 
-  refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement): void {
+  refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement,
+                force = false): void {
     if (editedTreeElement) {
       for (const section of this.allSections()) {
         if (section instanceof BlankStylePropertiesSection && section.isBlank) {
@@ -602,7 +603,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
       }
     }
 
-    if (this.isEditingStyle) {
+    if (this.isEditingStyle && !force) {
       return;
     }
     const node = this.node();

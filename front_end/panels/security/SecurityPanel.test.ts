@@ -899,7 +899,7 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.strictEqual(unknownOriginElement.textContent, 'https://does-not-resolve.test');
   });
 
-  it('shows an explanation for blocked mixed content', () => {
+  it('shows an explanation for blocked mixed content and clears it on navigation', () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
     renderElementIntoDOM(securityPanel);
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
@@ -934,6 +934,11 @@ describeWithEnvironment('SecurityPanel', () => {
     const requestsLink = querySelectorErrorOnMissing(explanation, 'button.security-mixed-content');
     assert.strictEqual(requestsLink.textContent, 'View 1 request in Network panel');
     assert.strictEqual(requestsLink.getAttribute('role'), 'link');
+
+    // Test that the explanations are cleared on navigation. Regression test for https://crbug.com/601944.
+    navigate(getMainFrame(target));
+
+    assert.isEmpty(securityPanel.mainView.contentElement.querySelectorAll('.security-explanation'));
   });
 
   it('replaces the mixed content reload prompt with a request link when a request is recorded', () => {

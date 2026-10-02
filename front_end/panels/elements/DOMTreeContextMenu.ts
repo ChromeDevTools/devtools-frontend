@@ -508,6 +508,21 @@ export async function showContextMenu(
   } else if (commentNode) {
     await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
   } else if (isPseudoElement) {
+    const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString(UIStrings.copy), false, 'copy');
+    const section = copyMenu.section();
+    section.appendItem(i18nString(UIStrings.copySelector), () => domTreeWidget.copyCSSPath(domNode),
+                       {jslogContext: 'copy-selector'});
+    section.appendItem(i18nString(UIStrings.copyStyles), () => void domTreeWidget.copyStyles(domNode),
+                       {jslogContext: 'elements.copy-styles'});
+
+    const hideItem = contextMenu.debugSection().appendCheckboxItem(
+        i18nString(UIStrings.hideElement), () => domTreeWidget.toggleHideElement(domNode), {
+          checked: Boolean(domTreeWidget.isToggledToHidden(domNode)),
+          jslogContext: 'elements.hide-element',
+        });
+    hideItem.setShortcut(
+        UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('elements.hide-element') || '');
+
     if (domNode.childNodeCount() !== 0 || domNode.hasPseudoElements()) {
       contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively),
                                            () => void domTreeWidget.expandRecursively(domNode),

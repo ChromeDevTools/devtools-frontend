@@ -31,7 +31,12 @@ export const cssPath = function(node: SDK.DOMModel.DOMNode, optimized?: boolean)
   }
 
   steps.reverse();
-  return steps.join(' > ');
+  return steps.reduce((acc, step) => {
+    if (!acc) {
+      return step.value;
+    }
+    return step.value.startsWith('::') ? acc + step.value : acc + ' > ' + step.value;
+  }, '');
 };
 
 export const canGetJSPath = function(node: SDK.DOMModel.DOMNode): boolean {
@@ -73,6 +78,11 @@ export const jsPath = function(node: SDK.DOMModel.DOMNode, optimized?: boolean):
 const cssPathStep = function(node: SDK.DOMModel.DOMNode, optimized: boolean, isTargetNode: boolean): Step|null {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return null;
+  }
+
+  if (node.pseudoType()) {
+    const pseudoIdentifier = node.pseudoIdentifier();
+    return new Step(node.nodeNameInCorrectCase() + (pseudoIdentifier ? `(${pseudoIdentifier})` : ''), false);
   }
 
   const id = node.getAttribute('id');

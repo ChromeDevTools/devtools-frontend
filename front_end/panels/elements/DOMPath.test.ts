@@ -644,4 +644,44 @@ describeWithEnvironment('DOMPath', () => {
       'input.primary',
     ]);
   });
+
+  it('computes valid CSS selectors for pseudo-elements', () => {
+    const divNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+      nodeId: 100 as Protocol.DOM.NodeId,
+      backendNodeId: 100 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'DIV',
+      localName: 'div',
+      nodeValue: '',
+      attributes: ['id', 'target'],
+      pseudoElements: [
+        {
+          nodeId: 101 as Protocol.DOM.NodeId,
+          backendNodeId: 101 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: '::before',
+          localName: '::before',
+          nodeValue: '',
+          pseudoType: 'before' as Protocol.DOM.PseudoType,
+        },
+        {
+          nodeId: 102 as Protocol.DOM.NodeId,
+          backendNodeId: 102 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: '::after',
+          localName: '::after',
+          nodeValue: '',
+          pseudoType: 'after' as Protocol.DOM.PseudoType,
+        },
+      ],
+    });
+
+    const beforeNode = divNode.beforePseudoElement();
+    assert.exists(beforeNode);
+    assert.strictEqual(Elements.DOMPath.cssPath(beforeNode, true), '#target::before');
+
+    const afterNode = divNode.afterPseudoElement();
+    assert.exists(afterNode);
+    assert.strictEqual(Elements.DOMPath.cssPath(afterNode, true), '#target::after');
+  });
 });

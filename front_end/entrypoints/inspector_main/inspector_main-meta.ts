@@ -39,7 +39,7 @@ const UIStrings = {
   /**
    * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
    */
-  doNotHighlightAdFrames: 'Do not highlight ad frames',
+  doNotHighlightAdFrames: 'Don’t highlight ad frames',
   /**
    * @description Title of an option under the Rendering category that can be invoked through the Command Menu.
    */
@@ -71,11 +71,11 @@ const UIStrings = {
   /**
    * @description Title of a Rendering setting that can be invoked through the Command Menu.
    */
-  doNotEmulateAFocusedPage: 'Do not emulate a focused page',
+  doNotEmulateAFocusedPage: 'Don’t emulate a focused page',
   /**
    * @description Title of a setting under the Rendering category that can be invoked through the Command Menu.
    */
-  doNotEmulateCssMediaType: 'Do not emulate CSS media type',
+  doNotEmulateCssMediaType: 'Don’t emulate CSS media type',
   /**
    * @description A drop-down menu option to do not emulate css media type.
    */
@@ -108,7 +108,7 @@ const UIStrings = {
    * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
    * @example {prefers-color-scheme} PH1
    */
-  doNotEmulateCss: 'Do not emulate CSS {PH1}',
+  doNotEmulateCss: 'Don’t emulate CSS {PH1}',
   /**
    * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
    * @example {prefers-color-scheme: light} PH1
@@ -172,7 +172,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
    */
-  doNotEmulateAnyVisionDeficiency: 'Do not emulate any vision deficiency',
+  doNotEmulateAnyVisionDeficiency: 'Don’t emulate any vision deficiency',
   /**
    * @description Title of a setting under the Rendering drawer that can be invoked through the Command Menu.
    */
@@ -232,7 +232,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Rendering category that can be invoked through the Command Menu.
    */
-  doNotEmulateOsTextScale: 'Do not emulate OS text scale',
+  doNotEmulateOsTextScale: 'Don’t emulate OS text scale',
   /**
    * @description A drop-down menu option to not emulate OS text scale.
    */
@@ -340,7 +340,7 @@ const UIStrings = {
    * @description A command available in the command menu to stop automatically opening DevTools when
    * webpages create new popup windows.
    */
-  doNotAutoOpen: 'Do not auto-open DevTools for popups',
+  doNotAutoOpen: 'Don’t auto-open DevTools for popups',
   /**
    * @description Title of an action that toggles the "forces CSS prefers-color-scheme" media feature.
    */

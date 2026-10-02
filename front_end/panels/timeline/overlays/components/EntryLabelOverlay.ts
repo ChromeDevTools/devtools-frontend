@@ -70,16 +70,16 @@ const UIStringsNotTranslate = {
    * @description Enterprise users with logging off - Security disclaimer text displayed when the information icon on a button that generates an AI label is hovered.
    */
   generateLabelSecurityDisclaimerLoggingOff:
-      'The selected call stack is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time. This is an experimental AI feature and won’t always get it right.',
+      'The selected call stack is sent to Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time. This is an experimental AI feature and won’t always get it right.',
   /**
    * @description The `Generate AI label button` tooltip disclaimer for when the feature is not available and the reason can be checked in settings.
    */
   // eslint-disable-next-line @devtools/l10n-uistrings-sentence-punctuation -- Concatenated with learnMore in the UI to form a multi-sentence message.
-  autoAnnotationNotAvailableDisclaimer: 'Auto annotations are not available.',
+  autoAnnotationNotAvailableDisclaimer: 'Auto annotations aren’t available.',
   /**
    * @description The `Generate AI label button` tooltip disclaimer for when the feature is not available because the user is offline.
    */
-  autoAnnotationNotAvailableOfflineDisclaimer: 'Auto annotations are not available because you are offline',
+  autoAnnotationNotAvailableOfflineDisclaimer: 'Auto annotations aren’t available because you are offline',
   /**
    * @description Header text for the AI-powered annotations suggestions disclaimer dialog.
    */
@@ -105,7 +105,7 @@ const UIStringsNotTranslate = {
    * @description Second disclaimer item text for the fre dialog - trace data is sent to Google.
    */
   freDisclaimerPrivacyDataSentToGoogleNoLogging:
-      'To generate annotation suggestions, your performance trace is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'To generate annotation suggestions, your performance trace is sent to Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
    * @description Text for the 'learn more' button displayed in fre.
    */

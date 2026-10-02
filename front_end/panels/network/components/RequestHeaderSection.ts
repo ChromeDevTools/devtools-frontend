@@ -33,7 +33,7 @@ const UIStrings = {
    * @description Tooltip to explain lack of raw headers for a particular network request
    */
   onlyProvisionalHeadersAre:
-      'Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers.',
+      'Only provisional headers are available because this request wasn’t sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers.',
   /**
    * @description Message to explain lack of raw headers for a particular network request
    */

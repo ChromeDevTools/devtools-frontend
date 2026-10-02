@@ -27,7 +27,7 @@ const UIStrings = {
   /**
    * @description A description for a kind of issue we display in the Issues tab.
    */
-  pageErrorIssue: 'A page error issue: the page is not working correctly',
+  pageErrorIssue: 'A page error issue: the page isn’t working correctly',
   /**
    * @description A description for a kind of issue we display in the Issues tab.
    */

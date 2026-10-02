@@ -95,8 +95,8 @@ describeWithEnvironment('BackForwardCacheView', () => {
       'Not served from back/forward cache: to trigger back/forward cache, use Chrome’s back/forward buttons, or use the test button below to automatically navigate away and back',
       'Test back/forward cache',
       'ServiceWorker was unregistered while a page was in back/forward cache',
-      'Pages that use WebLocks are not currently eligible for back/forward cache',
-      'Pages whose main resource has cache-control:no-store cannot enter back/forward cache',
+      'Pages that use WebLocks aren’t currently eligible for back/forward cache',
+      'Pages whose main resource has cache-control:no-store can’t enter back/forward cache',
       'Learn more: back/forward cache eligibility',
     ];
     assert.deepEqual(sectionsText, expected);
@@ -195,7 +195,7 @@ describeWithEnvironment('BackForwardCacheView', () => {
     const expected = [
       'Not served from back/forward cache: to trigger back/forward cache, use Chrome’s back/forward buttons, or use the test button below to automatically navigate away and back',
       'Test back/forward cache',
-      'Pages that use WebLocks are not currently eligible for back/forward cache',
+      'Pages that use WebLocks aren’t currently eligible for back/forward cache',
       'Learn more: back/forward cache eligibility',
     ];
     assert.deepEqual(sectionsText, expected);

@@ -65,7 +65,7 @@ const UIStrings = {
   /**
    * @description Text in a dialog which appears when users click on 'Exclude from workspace' menu item.
    */
-  folderWillNotBeShown: 'This folder and its contents will not be shown in workspace',
+  folderWillNotBeShown: 'This folder and its contents won’t be shown in workspace',
   /**
    * @description Text in Navigator view of the Sources panel.
    */
@@ -93,7 +93,7 @@ const UIStrings = {
   /**
    * @description Text in Navigator view of the Sources panel. A confirmation message on action to delete a folder or file.
    */
-  actionCannotBeUndone: 'This action cannot be undone',
+  actionCannotBeUndone: 'This action can’t be undone',
   /**
    * @description A context menu item in the Navigator view of the Sources panel.
    */

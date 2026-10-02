@@ -142,7 +142,7 @@ const UIStrings = {
    *             defined and cannot be linked to.
    * @example {--my-linkable-name} PH1
    */
-  sIsNotDefined: '{PH1} is not defined',
+  sIsNotDefined: '{PH1} isn’t defined',
   /**
    * @description Text in the Styles tab of the Elements panel.
    */

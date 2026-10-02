@@ -111,7 +111,7 @@ const UIStrings = {
   /**
    * @description Text in Debugger plugin of the Sources panel.
    */
-  theDebuggerWillSkipStepping: 'The debugger will skip stepping through this script, and will not stop on exceptions',
+  theDebuggerWillSkipStepping: 'The debugger will skip stepping through this script, and won’t stop on exceptions',
   /**
    * @description Text in Debugger plugin of the Sources panel.
    */

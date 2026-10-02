@@ -96,13 +96,13 @@ const UIStrings = {
    * @example {1000} PH1
    * @example {12.34%} PH2
    */
-  sBytesSBelongToFunctionsThatHave: '{PH1} bytes ({PH2}) belong to functions that have not (yet) been executed',
+  sBytesSBelongToFunctionsThatHave: '{PH1} bytes ({PH2}) belong to functions that haven’t (yet) been executed',
   /**
    * @description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
    * @example {1000} PH1
    * @example {12.34%} PH2
    */
-  sBytesSBelongToBlocksOf: '{PH1} bytes ({PH2}) belong to blocks of JavaScript that have not (yet) been executed',
+  sBytesSBelongToBlocksOf: '{PH1} bytes ({PH2}) belong to blocks of JavaScript that haven’t (yet) been executed',
   /**
    * @description Message in Coverage View of the Coverage tab.
    * @example {1000} PH1

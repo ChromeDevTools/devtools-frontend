@@ -89,7 +89,7 @@ const UIStringsNotTranslate = {
    * @description Privacy disclaimer item text for the fre dialog when enterprise logging is off.
    */
   freDisclaimerTextPrivacyNoLogging:
-      'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
    * @description Last disclaimer item text for the fre dialog.
    */

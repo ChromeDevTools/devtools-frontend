@@ -106,7 +106,7 @@ const UIStringsNotTranslate = {
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
    */
   tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole:
-      'To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'To generate code suggestions, your console input and the history of your current console session are shared with Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
    */
@@ -116,7 +116,7 @@ const UIStringsNotTranslate = {
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
    */
   tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources:
-      'To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'To generate code suggestions, the contents of the currently open file are shared with Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
    * @description Text for tooltip button which redirects to AI settings
    */

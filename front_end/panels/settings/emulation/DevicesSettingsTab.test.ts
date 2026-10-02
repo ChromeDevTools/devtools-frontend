@@ -495,7 +495,7 @@ describeWithEnvironment('DevicesSettingsTab', () => {
       assert.strictEqual(error?.getAttribute('role'), 'alert');
       assert.strictEqual(error?.getAttribute('aria-live'), 'polite');
       assert.include(error?.textContent || '',
-                     'Portrait safe area: Left and right insets must not exceed the device width');
+                     'Portrait safe area: Left and right insets mustn’t exceed the device width');
     });
 
     it('validates portrait and landscape safe areas against their orientation dimensions', () => {
@@ -503,7 +503,7 @@ describeWithEnvironment('DevicesSettingsTab', () => {
       fillFields(portraitEditor, {'safe-area-left': '300', 'safe-area-right': '300'});
       requestValidation(portraitEditor);
       assert.include(portraitEditor.element.textContent || '',
-                     'Portrait safe area: Left and right insets must not exceed the device width');
+                     'Portrait safe area: Left and right insets mustn’t exceed the device width');
       assert.strictEqual(validationErrorCount(portraitEditor), 1);
       assert.strictEqual(input(portraitEditor, 'safe-area-right').getAttribute('aria-invalid'), 'true');
       for (const controlName of ['safe-area-left', 'safe-area-top', 'safe-area-bottom']) {
@@ -514,7 +514,7 @@ describeWithEnvironment('DevicesSettingsTab', () => {
       fillFields(landscapeEditor, {'landscape-safe-area-top': '300', 'landscape-safe-area-bottom': '300'});
       requestValidation(landscapeEditor);
       assert.include(landscapeEditor.element.textContent || '',
-                     'Landscape safe area: Top and bottom insets must not exceed the device height');
+                     'Landscape safe area: Top and bottom insets mustn’t exceed the device height');
       assert.strictEqual(validationErrorCount(landscapeEditor), 1);
       assert.strictEqual(input(landscapeEditor, 'landscape-safe-area-bottom').getAttribute('aria-invalid'), 'true');
       for (const controlName of ['landscape-safe-area-left', 'landscape-safe-area-top', 'landscape-safe-area-right']) {
@@ -530,7 +530,7 @@ describeWithEnvironment('DevicesSettingsTab', () => {
       assert.strictEqual(input(horizontalEditor, 'safe-area-top').getAttribute('aria-invalid'), 'true');
       assert.strictEqual(input(horizontalEditor, 'safe-area-right').getAttribute('aria-invalid'), 'true');
       assert.include(horizontalEditor.element.textContent || '',
-                     'Portrait safe area: Left and right insets must not exceed the device width');
+                     'Portrait safe area: Left and right insets mustn’t exceed the device width');
 
       const verticalEditor = new DevicesSettingsTab().beginEdit(createCustomDevice());
       fillFields(verticalEditor, {'safe-area-left': '-1', 'safe-area-top': '500', 'safe-area-bottom': '500'});
@@ -539,7 +539,7 @@ describeWithEnvironment('DevicesSettingsTab', () => {
       assert.strictEqual(input(verticalEditor, 'safe-area-left').getAttribute('aria-invalid'), 'true');
       assert.strictEqual(input(verticalEditor, 'safe-area-bottom').getAttribute('aria-invalid'), 'true');
       assert.include(verticalEditor.element.textContent || '',
-                     'Portrait safe area: Top and bottom insets must not exceed the device height');
+                     'Portrait safe area: Top and bottom insets mustn’t exceed the device height');
     });
 
     it('distinguishes simultaneous portrait and landscape safe-area errors', () => {
@@ -553,8 +553,8 @@ describeWithEnvironment('DevicesSettingsTab', () => {
       requestValidation(editor);
 
       const errorText = editor.element.querySelector('.list-widget-input-validation-error')?.textContent || '';
-      assert.include(errorText, 'Portrait safe area: Left and right insets must not exceed the device width');
-      assert.include(errorText, 'Landscape safe area: Top and bottom insets must not exceed the device height');
+      assert.include(errorText, 'Portrait safe area: Left and right insets mustn’t exceed the device width');
+      assert.include(errorText, 'Landscape safe area: Top and bottom insets mustn’t exceed the device height');
       assert.strictEqual(validationErrorCount(editor), 2);
       assert.strictEqual(input(editor, 'safe-area-right').getAttribute('aria-invalid'), 'true');
       assert.strictEqual(input(editor, 'landscape-safe-area-bottom').getAttribute('aria-invalid'), 'true');
@@ -711,7 +711,7 @@ describeWithEnvironment('DevicesSettingsTab', () => {
       fillCutoutRect(deviceEditor, {x: '300'});
       fillFields(deviceEditor, {'cutout-upper-radius': '5', 'cutout-lower-radius': '22'});
       requestValidation(deviceEditor);
-      assert.include(deviceEditor.element.textContent || '', 'Cutout x plus width must not exceed the device width');
+      assert.include(deviceEditor.element.textContent || '', 'Cutout x plus width mustn’t exceed the device width');
       assert.strictEqual(validationErrorCount(deviceEditor), 1);
       assert.strictEqual(input(deviceEditor, 'cutout-width').getAttribute('aria-invalid'), 'true');
       assert.isNull(select(deviceEditor, 'cutout-shape').getAttribute('aria-invalid'));
@@ -726,7 +726,7 @@ describeWithEnvironment('DevicesSettingsTab', () => {
       fillFields(verticalOverflowEditor, {'cutout-upper-radius': '5', 'cutout-lower-radius': '22'});
       requestValidation(verticalOverflowEditor);
       assert.include(verticalOverflowEditor.element.textContent || '',
-                     'Cutout y plus height must not exceed the device height');
+                     'Cutout y plus height mustn’t exceed the device height');
       assert.strictEqual(validationErrorCount(verticalOverflowEditor), 1);
       assert.strictEqual(input(verticalOverflowEditor, 'cutout-height').getAttribute('aria-invalid'), 'true');
       assert.isNull(input(verticalOverflowEditor, 'cutout-width').getAttribute('aria-invalid'));
@@ -744,9 +744,9 @@ describeWithEnvironment('DevicesSettingsTab', () => {
         requestValidation(circleEditor);
         assert.include(circleEditor.element.textContent || '', 'Circle must fit within the cutout bounds');
         assert.notInclude(circleEditor.element.textContent || '',
-                          'Cutout x plus width must not exceed the device width');
+                          'Cutout x plus width mustn’t exceed the device width');
         assert.notInclude(circleEditor.element.textContent || '',
-                          'Cutout y plus height must not exceed the device height');
+                          'Cutout y plus height mustn’t exceed the device height');
         assert.strictEqual(validationErrorCount(circleEditor), 1);
         assert.strictEqual(input(circleEditor, 'cutout-radius').getAttribute('aria-invalid'), 'true');
         assert.isNull(select(circleEditor, 'cutout-shape').getAttribute('aria-invalid'));
@@ -764,8 +764,8 @@ describeWithEnvironment('DevicesSettingsTab', () => {
           requestValidation(editor);
           const expectedInvalidControl = 'cutout-width' in oversizedDimension ? 'cutout-width' : 'cutout-height';
           const expectedError = 'cutout-width' in oversizedDimension ?
-              'Cutout x plus width must not exceed the device width' :
-              'Cutout y plus height must not exceed the device height';
+              'Cutout x plus width mustn’t exceed the device width' :
+              'Cutout y plus height mustn’t exceed the device height';
           assert.include(editor.element.textContent || '', expectedError);
           assert.strictEqual(validationErrorCount(editor), 1);
           assert.strictEqual(input(editor, expectedInvalidControl).getAttribute('aria-invalid'), 'true');
@@ -777,9 +777,8 @@ describeWithEnvironment('DevicesSettingsTab', () => {
       select(bothAxesEditor, 'cutout-shape').value = EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE;
       fillCutoutRect(bothAxesEditor, {x: '300', y: '800', width: '125', height: '100'});
       requestValidation(bothAxesEditor);
-      assert.include(bothAxesEditor.element.textContent || '', 'Cutout x plus width must not exceed the device width');
-      assert.include(bothAxesEditor.element.textContent || '',
-                     'Cutout y plus height must not exceed the device height');
+      assert.include(bothAxesEditor.element.textContent || '', 'Cutout x plus width mustn’t exceed the device width');
+      assert.include(bothAxesEditor.element.textContent || '', 'Cutout y plus height mustn’t exceed the device height');
       assert.strictEqual(validationErrorCount(bothAxesEditor), 2);
       assert.strictEqual(input(bothAxesEditor, 'cutout-width').getAttribute('aria-invalid'), 'true');
       assert.strictEqual(input(bothAxesEditor, 'cutout-height').getAttribute('aria-invalid'), 'true');

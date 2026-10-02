@@ -48,7 +48,7 @@ const UIStrings = {
    * indicate that bounce tracking mitigations are disabled or third-party cookies aren't being blocked.
    */
   noPotentialBounceTrackersIdentified:
-      'State was not cleared for any potential bounce tracking sites. Either none were identified or third-party cookies are not blocked.',
+      'State wasn’t cleared for any potential bounce tracking sites. Either none were identified or third-party cookies aren’t blocked.',
   /**
    * @description Text shown when bounce tracking mitigations are disabled.
    */

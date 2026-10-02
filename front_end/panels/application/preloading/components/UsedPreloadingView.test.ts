@@ -342,7 +342,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
     assert.include(headers[1]?.textContent, 'Failure reason');
     assert.include(
         sections[1]?.textContent,
-        'The prerender was not used because during activation time, different navigation parameters (e.g., HTTP headers) were calculated than during the original prerendering navigation request');
+        'The prerender wasn’t used because during activation time, different navigation parameters (e.g., HTTP headers) were calculated than during the original prerendering navigation request');
 
     assert.include(headers[2]?.textContent, 'Mismatched HTTP request headers');
     const grid = sections[2].querySelector('devtools-data-grid');

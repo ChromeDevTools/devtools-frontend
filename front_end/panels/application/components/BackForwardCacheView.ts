@@ -82,7 +82,7 @@ const UIStrings = {
    * for back/forward cache.
    */
   circumstantialExplanation:
-      'These reasons are not actionable i.e. caching was prevented by something outside of the direct control of the page',
+      'These reasons aren’t actionable i.e. caching was prevented by something outside of the direct control of the page',
   /**
    * @description Label for a list of reasons which prevent the page from being eligible for
    * back/forward cache. These reasons are pending support by chrome i.e. in a future version
@@ -110,7 +110,7 @@ const UIStrings = {
    * for back/forward cache.
    */
   supportPendingExplanation:
-      'Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for back/forward cache in a future version of Chrome',
+      'Chrome support for these reasons is pending i.e. they won’t prevent the page from being eligible for back/forward cache in a future version of Chrome',
   /**
    * @description Text that precedes displaying a link to the extension which blocked the page from being eligible for back/forward cache.
    */

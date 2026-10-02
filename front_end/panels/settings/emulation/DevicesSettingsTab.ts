@@ -110,12 +110,12 @@ const UIStrings = {
    * @description Error message shown when custom device safe-area left and right insets are too large.
    * @example {Portrait safe area} PH1
    */
-  safeAreaHorizontalInsetsExceedWidth: '{PH1}: Left and right insets must not exceed the device width',
+  safeAreaHorizontalInsetsExceedWidth: '{PH1}: Left and right insets mustn’t exceed the device width',
   /**
    * @description Error message shown when custom device safe-area top and bottom insets are too large.
    * @example {Landscape safe area} PH1
    */
-  safeAreaVerticalInsetsExceedHeight: '{PH1}: Top and bottom insets must not exceed the device height',
+  safeAreaVerticalInsetsExceedHeight: '{PH1}: Top and bottom insets mustn’t exceed the device height',
   /**
    * @description Label for display cutout values on a custom device.
    */
@@ -199,11 +199,11 @@ const UIStrings = {
   /**
    * @description Error message shown when a custom display cutout's x coordinate plus its width exceeds the device width.
    */
-  cutoutXAndWidthExceedDeviceWidth: 'Cutout x plus width must not exceed the device width',
+  cutoutXAndWidthExceedDeviceWidth: 'Cutout x plus width mustn’t exceed the device width',
   /**
    * @description Error message shown when a custom display cutout's y coordinate plus its height exceeds the device height.
    */
-  cutoutYAndHeightExceedDeviceHeight: 'Cutout y plus height must not exceed the device height',
+  cutoutYAndHeightExceedDeviceHeight: 'Cutout y plus height mustn’t exceed the device height',
   /**
    * @description Error message shown when a circular display cutout is outside its cutout bounds.
    */

@@ -39,7 +39,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Grid category that turns CSS Grid Area highlighting off.
    */
-  doNotShowGridNamedAreas: 'Do not show grid named areas',
+  doNotShowGridNamedAreas: 'Don’t show grid named areas',
   /**
    * @description Title of a setting that turns on grid track size labels.
    */
@@ -51,7 +51,7 @@ const UIStrings = {
   /**
    * @description Title for CSS Grid tooling option.
    */
-  doNotShowGridTrackSizes: 'Do not show grid track sizes',
+  doNotShowGridTrackSizes: 'Don’t show grid track sizes',
   /**
    * @description Title of a setting that turns on grid extension lines.
    */
@@ -59,7 +59,7 @@ const UIStrings = {
   /**
    * @description Title of a setting that turns off the grid extension lines.
    */
-  doNotExtendGridLines: 'Do not extend grid lines',
+  doNotExtendGridLines: 'Don’t extend grid lines',
   /**
    * @description Title of a setting that turns on grid line labels.
    */

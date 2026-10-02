@@ -1643,7 +1643,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         sinon.assert.calledWith(linkSwatchDataStub.set, {
           text: data.identifier,
           isDefined: false,
-          tooltip: {title: '--identifier is not defined'},
+          tooltip: {title: '--identifier isn’t defined'},
           jslogContext: 'anchor-link',
           onLinkActivate: sinon.match.func,
         });

@@ -108,7 +108,7 @@ const UIStrings = {
   /**
    * @description Reason why a request was blocked shown in the Network panel
    */
-  coopSandboxedIframeCannotNavigateToCoopPage: 'Sandboxed iframe’s popup cannot navigate to COOP page',
+  coopSandboxedIframeCannotNavigateToCoopPage: 'Sandboxed iframe’s popup can’t navigate to COOP page',
   /**
    * @description Reason why a request was blocked shown in the Network panel
    */
@@ -164,7 +164,7 @@ const UIStrings = {
    * @description Tooltip providing details on why the request has unknown status.
    */
   unknownExplanation:
-      'The request status cannot be shown here because the page that issued it unloaded while the request was in flight. You can use chrome://net-export to capture a network log and see all request details.',
+      'The request status can’t be shown here because the page that issued it unloaded while the request was in flight. You can use chrome://net-export to capture a network log and see all request details.',
   /**
    * @description Text in Network Data Grid Node of the Network panel. Noun, short for a 'HTTP server
    * push'.

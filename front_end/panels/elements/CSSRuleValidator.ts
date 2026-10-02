@@ -95,7 +95,7 @@ const UIStrings = {
    * @example {relative} POSITION
    */
   invalidAnchorPositioning:
-      'An anchor was defined but the element was not anchor-positioned but positioned "{POSITION}"',
+      'An anchor was defined but the element wasn’t anchor-positioned but positioned "{POSITION}"',
   /**
    * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a non-anchor-positioned element.
    */

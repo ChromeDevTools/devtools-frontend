@@ -61,7 +61,7 @@ describe('The Sources panel', () => {
            await devToolsPage.waitFor(
                '.navigator-file-tree-item[aria-label="minified-errors.html, file"][aria-selected="true"]');
            // Disable the automatic reveal feature.
-           await runCommandWithQuickOpen(devToolsPage, 'Do not automatically reveal files in sidebar');
+           await runCommandWithQuickOpen(devToolsPage, 'Don’t automatically reveal files in sidebar');
 
            // Open another file via the command menu.
            await openFileWithQuickOpen(devToolsPage, 'minified-errors.js', 0);

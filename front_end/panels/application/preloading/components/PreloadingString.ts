@@ -22,7 +22,7 @@ const UIStrings = {
   /**
    * @description Description text for prefetch status PrefetchFailedMIMENotSupported.
    */
-  PrefetchFailedMIMENotSupported: 'The prefetch failed because the response’s Content-Type header was not supported',
+  PrefetchFailedMIMENotSupported: 'The prefetch failed because the response’s Content-Type header wasn’t supported',
   /**
    * @description Description text for prefetch status PrefetchFailedNetError.
    */
@@ -45,7 +45,7 @@ const UIStrings = {
    * @description Description text for prefetch status PrefetchIsPrivacyDecoy.
    */
   PrefetchIsPrivacyDecoy:
-      'The URL was not eligible to be prefetched because there was a registered service worker or cross-site cookies for that origin, but the prefetch was put on the network anyways and not used, to disguise that the user had some kind of previous relationship with the origin',
+      'The URL wasn’t eligible to be prefetched because there was a registered service worker or cross-site cookies for that origin, but the prefetch was put on the network anyways and not used, to disguise that the user had some kind of previous relationship with the origin',
   /**
    * @description Description text for prefetch status PrefetchIsStale.
    */
@@ -54,12 +54,12 @@ const UIStrings = {
    * @description Description text for prefetch status PrefetchNotEligibleBrowserContextOffTheRecord.
    */
   PrefetchNotEligibleBrowserContextOffTheRecord:
-      'The prefetch was not performed because the browser is in Incognito or Guest mode',
+      'The prefetch wasn’t performed because the browser is in Incognito or Guest mode',
   /**
    * @description Description text for prefetch status PrefetchNotEligibleDataSaverEnabled.
    */
   PrefetchNotEligibleDataSaverEnabled:
-      'The prefetch was not performed because the operating system is in Data Saver mode',
+      'The prefetch wasn’t performed because the operating system is in Data Saver mode',
   /**
    * @description Description text for prefetch status PrefetchNotEligibleExistingProxy.
    */
@@ -69,36 +69,36 @@ const UIStrings = {
    * @description Description text for prefetch status PrefetchNotEligibleHostIsNonUnique.
    */
   PrefetchNotEligibleHostIsNonUnique:
-      'The URL was not eligible to be prefetched because its host was not unique (e.g., a non publicly routable IP address or a hostname which isn’t registry-controlled), but the prefetch was required to be proxied',
+      'The URL wasn’t eligible to be prefetched because its host wasn’t unique (e.g., a non publicly routable IP address or a hostname which isn’t registry-controlled), but the prefetch was required to be proxied',
   /**
    * @description Description text for prefetch status PrefetchNotEligibleNonDefaultStoragePartition.
    */
   PrefetchNotEligibleNonDefaultStoragePartition:
-      'The URL was not eligible to be prefetched because it uses a non-default storage partition',
+      'The URL wasn’t eligible to be prefetched because it uses a non-default storage partition',
   /**
    * @description Description text for prefetch status PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy.
    */
   PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy:
-      'The URL was not eligible to be prefetched because the default network context can’t be configured to use the prefetch proxy for a same-site cross-origin prefetch request',
+      'The URL wasn’t eligible to be prefetched because the default network context can’t be configured to use the prefetch proxy for a same-site cross-origin prefetch request',
   /**
    * @description Description text for prefetch status PrefetchNotEligibleSchemeIsNotHttps.
    */
-  PrefetchNotEligibleSchemeIsNotHttps: 'The URL was not eligible to be prefetched because its scheme was not https:',
+  PrefetchNotEligibleSchemeIsNotHttps: 'The URL wasn’t eligible to be prefetched because its scheme wasn’t https:',
   /**
    * @description Description text for prefetch status PrefetchNotEligibleUserHasCookies.
    */
   PrefetchNotEligibleUserHasCookies:
-      'The URL was not eligible to be prefetched because it was cross-site, but the user had cookies for that origin',
+      'The URL wasn’t eligible to be prefetched because it was cross-site, but the user had cookies for that origin',
   /**
    * @description Description text for prefetch status PrefetchNotEligibleUserHasServiceWorker.
    */
   PrefetchNotEligibleUserHasServiceWorker:
-      'The URL was not eligible to be prefetched because there was a registered service worker for that origin, which isn’t currently supported',
+      'The URL wasn’t eligible to be prefetched because there was a registered service worker for that origin, which isn’t currently supported',
   /**
    * @description Description text for prefetch status PrefetchNotUsedCookiesChanged.
    */
   PrefetchNotUsedCookiesChanged:
-      'The prefetch was not used because it was a cross-site prefetch, and cookies were added for that URL while the prefetch was ongoing, so the prefetched response is now out-of-date',
+      'The prefetch wasn’t used because it was a cross-site prefetch, and cookies were added for that URL while the prefetch was ongoing, so the prefetched response is now out-of-date',
   /**
    * @description Description text for prefetch status PrefetchProxyNotAvailable.
    */
@@ -121,12 +121,11 @@ const UIStrings = {
   /**
    * @description Description text for prefetch status PrefetchNotEligibleBatterySaverEnabled.
    */
-  PrefetchNotEligibleBatterySaverEnabled:
-      'The prefetch was not performed because the Battery Saver setting was enabled',
+  PrefetchNotEligibleBatterySaverEnabled: 'The prefetch wasn’t performed because the Battery Saver setting was enabled',
   /**
    * @description Description text for prefetch status PrefetchNotEligiblePreloadingDisabled.
    */
-  PrefetchNotEligiblePreloadingDisabled: 'The prefetch was not performed because speculative loading was disabled',
+  PrefetchNotEligiblePreloadingDisabled: 'The prefetch wasn’t performed because speculative loading was disabled',
   /**
    * @description Description text for prefetch status PrefetchEvictedAfterBrowsingDataRemoved.
    */
@@ -136,17 +135,17 @@ const UIStrings = {
    * @description Description text for prerender status LowEndDevice.
    */
   prerenderFinalStatusLowEndDevice:
-      'The prerender was not performed because this device doesn’t have enough total system memory to support prerendering',
+      'The prerender wasn’t performed because this device doesn’t have enough total system memory to support prerendering',
   /**
    * @description Description text for prerender status InvalidSchemeRedirect.
    */
   prerenderFinalStatusInvalidSchemeRedirect:
-      'The prerendering navigation failed because it redirected to a URL whose scheme was not http: or https:',
+      'The prerendering navigation failed because it redirected to a URL whose scheme wasn’t http: or https:',
   /**
    * @description Description text for prerender status InvalidSchemeNavigation.
    */
   prerenderFinalStatusInvalidSchemeNavigation:
-      'The URL was not eligible to be prerendered because its scheme was not http: or https:',
+      'The URL wasn’t eligible to be prerendered because its scheme wasn’t http: or https:',
   /**
    * @description Description text for prerender status NavigationRequestBlockedByCsp.
    */
@@ -225,12 +224,12 @@ const UIStrings = {
    * @description Description text for prerender status MemoryLimitExceeded.
    */
   prerenderFinalStatusMemoryLimitExceeded:
-      'The prerender was not performed because the browser exceeded the prerendering memory limit',
+      'The prerender wasn’t performed because the browser exceeded the prerendering memory limit',
   /**
    * @description Description text for prerender status DataSaverEnabled.
    */
   prerenderFinalStatusDataSaverEnabled:
-      'The prerender was not performed because the user requested that the browser use less data',
+      'The prerender wasn’t performed because the user requested that the browser use less data',
   /**
    * @description Description text for prerender status TriggerUrlHasEffectiveUrl.
    */
@@ -265,7 +264,7 @@ const UIStrings = {
    * @description Description text for prerender status ActivationNavigationParameterMismatch.
    */
   prerenderFinalStatusActivationNavigationParameterMismatch:
-      'The prerender was not used because during activation time, different navigation parameters (e.g., HTTP headers) were calculated than during the original prerendering navigation request',
+      'The prerender wasn’t used because during activation time, different navigation parameters (e.g., HTTP headers) were calculated than during the original prerendering navigation request',
   /**
    * @description Description text for prerender status PrimaryMainFrameRendererProcessCrashed.
    */
@@ -278,17 +277,17 @@ const UIStrings = {
    * @description Description text for prerender status ActivationFramePolicyNotCompatible.
    */
   prerenderFinalStatusActivationFramePolicyNotCompatible:
-      'The prerender was not used because the sandboxing flags or permissions policy of the initiating page was not compatible with those of the prerendering page',
+      'The prerender wasn’t used because the sandboxing flags or permissions policy of the initiating page wasn’t compatible with those of the prerendering page',
   /**
    * @description Description text for prerender status PreloadingDisabled.
    */
   prerenderFinalStatusPreloadingDisabled:
-      'The prerender was not performed because the user disabled preloading in their browser settings',
+      'The prerender wasn’t performed because the user disabled preloading in their browser settings',
   /**
    * @description Description text for prerender status BatterySaverEnabled.
    */
   prerenderFinalStatusBatterySaverEnabled:
-      'The prerender was not performed because the user requested that the browser use less battery',
+      'The prerender wasn’t performed because the user requested that the browser use less battery',
   /**
    * @description Description text for prerender status ActivatedDuringMainFrameNavigation.
    */
@@ -317,7 +316,7 @@ const UIStrings = {
    * @description Description text for prerender status MemoryPressureOnTrigger.
    */
   prerenderFinalStatusMemoryPressureOnTrigger:
-      'The prerender was not performed because the browser was under critical memory pressure',
+      'The prerender wasn’t performed because the browser was under critical memory pressure',
   /**
    * @description Description text for prerender status MemoryPressureAfterTriggered.
    */
@@ -327,7 +326,7 @@ const UIStrings = {
    * @description Description text for prerender status PrerenderingDisabledByDevTools.
    */
   prerenderFinalStatusPrerenderingDisabledByDevTools:
-      'The prerender was not performed because DevTools has been used to disable prerendering',
+      'The prerender wasn’t performed because DevTools has been used to disable prerendering',
   /**
    * @description Description text for prerender status SpeculationRuleRemoved.
    */
@@ -337,17 +336,17 @@ const UIStrings = {
    * @description Description text for prerender status ActivatedWithAuxiliaryBrowsingContexts.
    */
   prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts:
-      'The prerender was not used because during activation time, there were other windows with an active opener reference to the initiating page, which isn’t currently supported',
+      'The prerender wasn’t used because during activation time, there were other windows with an active opener reference to the initiating page, which isn’t currently supported',
   /**
    * @description Description text for prerender status MaxNumOfRunningEagerPrerendersExceeded.
    */
   prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded:
-      'The prerender whose eagerness is "`eager`" was not performed because the initiating page already has too many prerenders ongoing. Remove other speculation rules with "`eager`" to enable further prerendering.',
+      'The prerender whose eagerness is "`eager`" wasn’t performed because the initiating page already has too many prerenders ongoing. Remove other speculation rules with "`eager`" to enable further prerendering.',
   /**
    * @description Description text for prerender status MaxNumOfRunningEmbedderPrerendersExceeded.
    */
   prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded:
-      'The browser-triggered prerender was not performed because the initiating page already has too many prerenders ongoing',
+      'The browser-triggered prerender wasn’t performed because the initiating page already has too many prerenders ongoing',
   /**
    * @description Description text for prerender status MaxNumOfRunningNonEagerPrerendersExceeded.
    */
@@ -367,7 +366,7 @@ const UIStrings = {
    * @description Description text for prerender status ActivationUrlHasEffectiveUrl.
    */
   prerenderFinalStatusActivationUrlHasEffectiveUrl:
-      'The prerender was not used because during activation time, navigation has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
+      'The prerender wasn’t used because during activation time, navigation has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
   /**
    * @description Description text for prerender status JavaScriptInterfaceAdded.
    */

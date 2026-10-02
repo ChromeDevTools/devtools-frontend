@@ -65,7 +65,7 @@ const UIStrings = {
    *
    */
   siteHasCookieInOtherPartition:
-      'This site has cookies in another partition, that were not sent with this request. {PH1}',
+      'This site has cookies in another partition, that weren’t sent with this request. {PH1}',
   /**
    * @description Title of a link to the developer documentation.
    */

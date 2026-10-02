@@ -30,11 +30,11 @@ const UIStrings = {
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  secureOnly: 'This cookie was blocked because it had the "`Secure`" attribute and the connection was not secure',
+  secureOnly: 'This cookie was blocked because it had the "`Secure`" attribute and the connection wasn’t secure',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  notOnPath: 'This cookie was blocked because its path was not an exact match for or a superdirectory of the request URL’s path',
+  notOnPath: 'This cookie was blocked because its path wasn’t an exact match for or a superdirectory of the request URL’s path',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
@@ -46,15 +46,15 @@ const UIStrings = {
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  sameSiteLax: 'This cookie was blocked because it had the "`SameSite=Lax`" attribute and the request was made from a different site and was not initiated by a top-level navigation',
+  sameSiteLax: 'This cookie was blocked because it had the "`SameSite=Lax`" attribute and the request was made from a different site and wasn’t initiated by a top-level navigation',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  sameSiteUnspecifiedTreatedAsLax: 'This cookie didn’t specify a "`SameSite`" attribute when it was stored and was defaulted to "`SameSite=Lax`", and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with "`SameSite=None`" to enable cross-site usage.',
+  sameSiteUnspecifiedTreatedAsLax: 'This cookie didn’t specify a "`SameSite`" attribute when it was stored and was defaulted to "`SameSite=Lax`", and was blocked because the request was made from a different site and wasn’t initiated by a top-level navigation. The cookie had to have been set with "`SameSite=None`" to enable cross-site usage.',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  sameSiteNoneInsecure: 'This cookie was blocked because it had the "`SameSite=None`" attribute but was not marked "`Secure`". Cookies without SameSite restrictions must be marked "`Secure`" and sent over a secure connection.',
+  sameSiteNoneInsecure: 'This cookie was blocked because it had the "`SameSite=None`" attribute but wasn’t marked "`Secure`". Cookies without SameSite restrictions must be marked "`Secure`" and sent over a secure connection.',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
@@ -90,7 +90,7 @@ const UIStrings = {
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  theSchemeOfThisConnectionIsNot: 'The scheme of this connection is not allowed to store cookies',
+  theSchemeOfThisConnectionIsNot: 'The scheme of this connection isn’t allowed to store cookies',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
@@ -98,24 +98,24 @@ const UIStrings = {
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonSecureOnly: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`Secure`" attribute but was not received over a secure connection',
+  blockedReasonSecureOnly: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`Secure`" attribute but wasn’t received over a secure connection',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    * @example {SameSite=Strict} PH1
    */
-  blockedReasonSameSiteStrictLax: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "{PH1}" attribute but came from a cross-site response which was not the response to a top-level navigation',
+  blockedReasonSameSiteStrictLax: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "{PH1}" attribute but came from a cross-site response which wasn’t the response to a top-level navigation',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonSameSiteUnspecifiedTreatedAsLax: 'This "`Set-Cookie`" header didn’t specify a "`SameSite`" attribute and was defaulted to "`SameSite=Lax`", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The "`Set-Cookie`" header had to have been set with "`SameSite=None`" to enable cross-site usage.',
+  blockedReasonSameSiteUnspecifiedTreatedAsLax: 'This "`Set-Cookie`" header didn’t specify a "`SameSite`" attribute and was defaulted to "`SameSite=Lax`", and was blocked because it came from a cross-site response which wasn’t the response to a top-level navigation. The "`Set-Cookie`" header had to have been set with "`SameSite=None`" to enable cross-site usage.',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonSameSiteNoneInsecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`SameSite=None`" attribute but did not have the "`Secure`" attribute, which is required in order to use "`SameSite=None`"',
+  blockedReasonSameSiteNoneInsecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`SameSite=None`" attribute but didn’t have the "`Secure`" attribute, which is required in order to use "`SameSite=None`"',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonOverwriteSecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it was not sent over a secure connection and would have overwritten a cookie with the "`Secure`" attribute',
+  blockedReasonOverwriteSecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it wasn’t sent over a secure connection and would have overwritten a cookie with the "`Secure`" attribute',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */

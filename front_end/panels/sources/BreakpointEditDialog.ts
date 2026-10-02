@@ -64,7 +64,7 @@ const UIStrings = {
   /**
    * @description Type selector element title in Breakpoint edit dialog of the Sources panel.
    */
-  logAMessageToConsoleDoNotBreak: 'Log a message to Console, do not break',
+  logAMessageToConsoleDoNotBreak: 'Log a message to Console, don’t break',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/BreakpointEditDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

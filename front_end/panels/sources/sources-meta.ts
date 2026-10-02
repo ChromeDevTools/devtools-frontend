@@ -33,7 +33,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Debugger category that can be invoked through the Command Menu.
    */
-  doNotCaptureAsyncStackTraces: 'Do not capture async stack traces',
+  doNotCaptureAsyncStackTraces: 'Don’t capture async stack traces',
   /**
    * @description Title of a setting under the Debugger category that can be invoked through the Command Menu.
    */
@@ -53,7 +53,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Debugger category that can be invoked through the Command Menu.
    */
-  doNotPauseOnExceptions: 'Do not pause on exceptions',
+  doNotPauseOnExceptions: 'Don’t pause on exceptions',
   /**
    * @description Command for showing the 'Sources' tool
    */
@@ -261,7 +261,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Sources category that can be invoked through the command menu.
    */
-  doNotSearchInAnonymousAndContent: 'Do not search in anonymous and content scripts',
+  doNotSearchInAnonymousAndContent: 'Don’t search in anonymous and content scripts',
   /**
    * @description Title of a setting under the Sources category that can be invoked through the command menu.
    */
@@ -269,7 +269,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Sources category that can be invoked through the command menu.
    */
-  doNotAutomaticallyRevealFilesIn: 'Do not automatically reveal files in sidebar',
+  doNotAutomaticallyRevealFilesIn: 'Don’t automatically reveal files in sidebar',
   /**
    * @description Title of a setting under the Sources category.
    *'tab moves focus' is the name of the setting, which means that when the user
@@ -301,7 +301,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Sources category that can be invoked through the command menu.
    */
-  doNotDetectIndentation: 'Do not detect indentation',
+  doNotDetectIndentation: 'Don’t detect indentation',
   /**
    * @description Title of a setting under Sources category that can be invoked through the command menu.
    *This setting turns on the automatic formatting of source files in the Sources panel that are detected
@@ -313,7 +313,7 @@ const UIStrings = {
    *This setting turns off the automatic formatting of source files in the Sources panel that are detected
    *to be minified.
    */
-  doNotAutomaticallyPrettyPrintMinifiedSources: 'Do not automatically pretty print minified sources',
+  doNotAutomaticallyPrettyPrintMinifiedSources: 'Don’t automatically pretty print minified sources',
   /**
    * @description Text for autocompletion.
    */
@@ -369,7 +369,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Sources category that can be invoked through the command menu.
    */
-  doNotShowWhitespaceCharacters: 'Do not show whitespace characters',
+  doNotShowWhitespaceCharacters: 'Don’t show whitespace characters',
   /**
    * @description One value of an option that can be set to 'none', 'all', or 'trailing'. The setting
    * controls how whitespace characters are shown in a text editor.
@@ -461,7 +461,7 @@ const UIStrings = {
    * the sources panel will not be automatically be focused whenever the application hits a breakpoint
    * and comes to a halt.
    */
-  disableAutoFocusOnDebuggerPaused: 'Do not focus Sources panel when triggering a breakpoint',
+  disableAutoFocusOnDebuggerPaused: 'Don’t focus Sources panel when triggering a breakpoint',
   /**
    * @description  Title of a setting under the Sources category in Settings. If this option is on,
    * the sources panel will be automatically shown whenever the application hits a breakpoint and

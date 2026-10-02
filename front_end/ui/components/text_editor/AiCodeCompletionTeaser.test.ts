@@ -84,7 +84,7 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
     sinon.assert.called(showFreDialogStub);
     assert.exists(showFreDialogStub.lastCall.args[0].reminderItems.find(
         reminderItem =>
-            reminderItem.content.toString().includes('This data will not be used to improve Google’s AI models.')));
+            reminderItem.content.toString().includes('This data won’t be used to improve Google’s AI models.')));
     widget.detach();
   });
 
@@ -97,7 +97,7 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
     sinon.assert.called(showFreDialogStub);
     assert.notExists(showFreDialogStub.lastCall.args[0].reminderItems.find(
         reminderItem =>
-            reminderItem.content.toString().includes('This data will not be used to improve Google’s AI models.')));
+            reminderItem.content.toString().includes('This data won’t be used to improve Google’s AI models.')));
     widget.detach();
   });
 

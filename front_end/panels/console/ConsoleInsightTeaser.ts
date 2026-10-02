@@ -53,7 +53,7 @@ const UIStringsNotTranslate = {
    * @description Explainer for which data is being sent by the console insights feature
    */
   consoleInsightsSendsDataNoLogging:
-      'To generate explanations, the console message, associated stack trace, related source code, and the associated network headers are sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'To generate explanations, the console message, associated stack trace, related source code, and the associated network headers are sent to Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
    * @description Third item in the first-run experience dialog
    */

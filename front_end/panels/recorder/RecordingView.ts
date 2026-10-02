@@ -117,7 +117,7 @@ const UIStrings = {
    * @description The text in a tooltip for the timeout input that explains what timeout settings do.
    */
   timeoutExplanation:
-      'The timeout setting (in milliseconds) applies to every action when replaying the recording. For example, if a DOM element identified by a CSS selector does not appear on the page within the specified timeout, the replay fails with an error.',
+      'The timeout setting (in milliseconds) applies to every action when replaying the recording. For example, if a DOM element identified by a CSS selector doesn’t appear on the page within the specified timeout, the replay fails with an error.',
   /**
    * @description The label for the button that cancels replaying.
    */

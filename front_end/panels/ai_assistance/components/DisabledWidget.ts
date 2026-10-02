@@ -51,7 +51,7 @@ const UIStrings = {
   /**
    * @description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
    */
-  notAvailableInIncognitoMode: 'AI assistance is not available in Incognito mode or Guest mode',
+  notAvailableInIncognitoMode: 'AI assistance isn’t available in Incognito mode or Guest mode',
 
 } as const;
 

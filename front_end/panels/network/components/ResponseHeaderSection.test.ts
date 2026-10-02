@@ -217,7 +217,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
         getCleanTextContentFromElements(row.shadowRoot, '.call-to-action')[0],
         `To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:
 Cross-Origin-Resource-Policy: same-site Choose this option if the resource and the document are served from the same site
-Cross-Origin-Resource-Policy: cross-origin Only choose this option if an arbitrary website including this resource does not impose a security risk
+Cross-Origin-Resource-Policy: cross-origin Only choose this option if an arbitrary website including this resource doesn’t impose a security risk
 Learn more`,
     );
   });
@@ -252,8 +252,8 @@ Learn more`,
     assert.instanceOf(icon, HTMLElement);
     assert.strictEqual(icon.title,
                        'This attempt to set a cookie via a "Set-Cookie" header was blocked because it had the ' +
-                           '"Secure" attribute but was not received over a secure connection\nThis attempt to ' +
-                           'set a cookie via a "Set-Cookie" header was blocked because it was not sent over a ' +
+                           '"Secure" attribute but wasn’t received over a secure connection\nThis attempt to ' +
+                           'set a cookie via a "Set-Cookie" header was blocked because it wasn’t sent over a ' +
                            'secure connection and would have overwritten a cookie with the "Secure" attribute');
   });
 

@@ -361,7 +361,7 @@ const UIStrings = {
    * @description Reason why an animation wasn't composited because a transform-related property cannot be accelerated on the target.
    */
   compositingFailedTransformRelatedPropertyCannotBeAcceleratedOnTarget:
-      'Transform-related property cannot be accelerated on target',
+      'Transform-related property can’t be accelerated on target',
   /**
    * @description Reason why an animation wasn't composited because a transform-related property depends on box size.
    */

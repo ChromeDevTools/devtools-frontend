@@ -33,12 +33,12 @@ const UIStrings = {
   /**
    * @description Description text for not restored reason Loading.
    */
-  loading: 'The page did not finish loading before navigating away',
+  loading: 'The page didn’t finish loading before navigating away',
   /**
    * @description Description text for not restored reason WasGrantedMediaAccess.
    */
   wasGrantedMediaAccess:
-      'Pages that have granted access to record video or audio are not currently eligible for back/forward cache',
+      'Pages that have granted access to record video or audio aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason HTTPMethodNotGET.
    */
@@ -46,7 +46,7 @@ const UIStrings = {
   /**
    * @description Description text for not restored reason SubframeIsNavigating.
    */
-  subframeIsNavigating: 'An iframe on the page started a navigation that did not complete',
+  subframeIsNavigating: 'An iframe on the page started a navigation that didn’t complete',
   /**
    * @description Description text for not restored reason Timeout.
    */
@@ -71,7 +71,7 @@ const UIStrings = {
    * @description Description text for not restored reason GrantedMediaStreamAccess.
    */
   grantedMediaStreamAccess:
-      'Pages that have granted media stream access are not currently eligible for back/forward cache',
+      'Pages that have granted media stream access aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason CacheFlushed.
    */
@@ -102,7 +102,7 @@ const UIStrings = {
    * @description Description text for not restored reason HaveInnerContents.
    */
   haveInnerContents:
-      'Pages that have certain kinds of embedded content (e.g. PDFs) are not currently eligible for back/forward cache',
+      'Pages that have certain kinds of embedded content (e.g. PDFs) aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason TimeoutPuttingInCache.
    */
@@ -120,7 +120,7 @@ const UIStrings = {
    * @description Description text for not restored reason NetworkRequestDatapipeDrainedAsBytesConsumer.
    */
   networkRequestDatapipeDrainedAsBytesConsumer:
-      'Pages that have inflight fetch() or XHR are not currently eligible for back/forward cache',
+      'Pages that have inflight fetch() or XHR aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason NetworkRequestRedirected.
    */
@@ -156,7 +156,7 @@ const UIStrings = {
   /**
    * @description Description text for not restored reason BackForwardCacheDisabledForDelegate.
    */
-  backForwardCacheDisabledForDelegate: 'Back/forward cache is not supported by delegate',
+  backForwardCacheDisabledForDelegate: 'Back/forward cache isn’t supported by delegate',
   /**
    * @description Description text for not restored reason UnloadHandlerExistsInMainFrame.
    */
@@ -172,11 +172,11 @@ const UIStrings = {
   /**
    * @description Description text for not restored reason NoResponseHead.
    */
-  noResponseHead: 'Pages that do not have a valid response head cannot enter back/forward cache',
+  noResponseHead: 'Pages that don’t have a valid response head can’t enter back/forward cache',
   /**
    * @description Description text for not restored reason CacheControlNoStore.
    */
-  cacheControlNoStore: 'Pages with cache-control:no-store header cannot enter back/forward cache',
+  cacheControlNoStore: 'Pages with cache-control:no-store header can’t enter back/forward cache',
   /**
    * @description Description text for not restored reason IneligibleAPI.
    */
@@ -188,104 +188,104 @@ const UIStrings = {
   /**
    * @description Description text for not restored reason WebSocket.
    */
-  webSocket: 'Pages with WebSocket cannot enter back/forward cache',
+  webSocket: 'Pages with WebSocket can’t enter back/forward cache',
   /**
    * @description Description text for not restored reason WebTransport.
    */
-  webTransport: 'Pages with WebTransport cannot enter back/forward cache',
+  webTransport: 'Pages with WebTransport can’t enter back/forward cache',
   /**
    * @description Description text for not restored reason WebRTC.
    */
-  webRTC: 'Pages with WebRTC cannot enter back/forward cache',
+  webRTC: 'Pages with WebRTC can’t enter back/forward cache',
   /**
    * @description Description text for not restored reason MainResourceHasCacheControlNoStore.
    */
   mainResourceHasCacheControlNoStore:
-      'Pages whose main resource has cache-control:no-store cannot enter back/forward cache',
+      'Pages whose main resource has cache-control:no-store can’t enter back/forward cache',
   /**
    * @description Description text for not restored reason MainResourceHasCacheControlNoCache.
    */
   mainResourceHasCacheControlNoCache:
-      'Pages whose main resource has cache-control:no-cache cannot enter back/forward cache',
+      'Pages whose main resource has cache-control:no-cache can’t enter back/forward cache',
   /**
    * @description Description text for not restored reason SubresourceHasCacheControlNoStore.
    */
   subresourceHasCacheControlNoStore:
-      'Pages whose subresource has cache-control:no-store cannot enter back/forward cache',
+      'Pages whose subresource has cache-control:no-store can’t enter back/forward cache',
   /**
    * @description Description text for not restored reason SubresourceHasCacheControlNoCache.
    */
   subresourceHasCacheControlNoCache:
-      'Pages whose subresource has cache-control:no-cache cannot enter back/forward cache',
+      'Pages whose subresource has cache-control:no-cache can’t enter back/forward cache',
   /**
    * @description Description text for not restored reason ContainsPlugins.
    */
-  containsPlugins: 'Pages containing plugins are not currently eligible for back/forward cache',
+  containsPlugins: 'Pages containing plugins aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason DocumentLoaded.
    */
-  documentLoaded: 'The document did not finish loading before navigating away',
+  documentLoaded: 'The document didn’t finish loading before navigating away',
   /**
    * @description Description text for not restored reason DedicatedWorkerOrWorklet.
    */
   dedicatedWorkerOrWorklet:
-      'Pages that use a dedicated worker or worklet are not currently eligible for back/forward cache',
+      'Pages that use a dedicated worker or worklet aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason OutstandingNetworkRequestOthers.
    */
   outstandingNetworkRequestOthers:
-      'Pages with an in-flight network request are not currently eligible for back/forward cache',
+      'Pages with an in-flight network request aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason OutstandingIndexedDBTransaction.
    */
   outstandingIndexedDBTransaction:
-      'Page with ongoing indexed DB transactions are not currently eligible for back/forward cache',
+      'Page with ongoing indexed DB transactions aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason RequestedNotificationsPermission.
    */
   requestedNotificationsPermission:
-      'Pages that have requested notifications permissions are not currently eligible for back/forward cache',
+      'Pages that have requested notifications permissions aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason RequestedMIDIPermission.
    */
   requestedMIDIPermission:
-      'Pages that have requested MIDI permissions are not currently eligible for back/forward cache',
+      'Pages that have requested MIDI permissions aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason RequestedAudioCapturePermission.
    */
   requestedAudioCapturePermission:
-      'Pages that have requested audio capture permissions are not currently eligible for back/forward cache',
+      'Pages that have requested audio capture permissions aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason RequestedVideoCapturePermission.
    */
   requestedVideoCapturePermission:
-      'Pages that have requested video capture permissions are not currently eligible for back/forward cache',
+      'Pages that have requested video capture permissions aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason RequestedBackForwardCacheBlockedSensors.
    */
   requestedBackForwardCacheBlockedSensors:
-      'Pages that have requested sensor permissions are not currently eligible for back/forward cache',
+      'Pages that have requested sensor permissions aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason RequestedBackgroundWorkPermission.
    */
   requestedBackgroundWorkPermission:
-      'Pages that have requested background sync or fetch permissions are not currently eligible for back/forward cache',
+      'Pages that have requested background sync or fetch permissions aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason BroadcastChannel.
    */
-  broadcastChannel: 'The page cannot be cached because it has a BroadcastChannel instance with registered listeners',
+  broadcastChannel: 'The page can’t be cached because it has a BroadcastChannel instance with registered listeners',
   /**
    * @description Description text for not restored reason IndexedDBConnection.
    */
-  indexedDBConnection: 'Pages that have an open IndexedDB connection are not currently eligible for back/forward cache',
+  indexedDBConnection: 'Pages that have an open IndexedDB connection aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason WebXR.
    */
-  webXR: 'Pages that use WebXR are not currently eligible for back/forward cache',
+  webXR: 'Pages that use WebXR aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason SharedWorker.
    */
-  sharedWorker: 'Pages that use SharedWorker are not currently eligible for back/forward cache',
+  sharedWorker: 'Pages that use SharedWorker aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason SharedWorkerMessage.
    */
@@ -293,89 +293,89 @@ const UIStrings = {
   /**
    * @description Description text for not restored reason WebLocks.
    */
-  webLocks: 'Pages that use WebLocks are not currently eligible for back/forward cache',
+  webLocks: 'Pages that use WebLocks aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason WebHID.
    */
-  webHID: 'Pages that use WebHID are not currently eligible for back/forward cache',
+  webHID: 'Pages that use WebHID aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason WebShare.
    */
-  webShare: 'Pages that use WebShare are not currently eligible for back/forwad cache',
+  webShare: 'Pages that use WebShare aren’t currently eligible for back/forwad cache',
   /**
    * @description Description text for not restored reason RequestedStorageAccessGrant.
    */
   requestedStorageAccessGrant:
-      'Pages that have requested storage access are not currently eligible for back/forward cache',
+      'Pages that have requested storage access aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason WebNfc.
    */
-  webNfc: 'Pages that use WebNfc are not currently eligible for back/forwad cache',
+  webNfc: 'Pages that use WebNfc aren’t currently eligible for back/forwad cache',
   /**
    * @description Description text for not restored reason OutstandingNetworkRequestFetch.
    */
   outstandingNetworkRequestFetch:
-      'Pages with an in-flight fetch network request are not currently eligible for back/forward cache',
+      'Pages with an in-flight fetch network request aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason OutstandingNetworkRequestXHR.
    */
   outstandingNetworkRequestXHR:
-      'Pages with an in-flight XHR network request are not currently eligible for back/forward cache',
+      'Pages with an in-flight XHR network request aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason AppBanner.
    */
-  appBanner: 'Pages that requested an AppBanner are not currently eligible for back/forward cache',
+  appBanner: 'Pages that requested an AppBanner aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason Printing.
    */
-  printing: 'Pages that show Printing UI are not currently eligible for back/forward cache',
+  printing: 'Pages that show Printing UI aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason WebDatabase.
    */
-  webDatabase: 'Pages that use WebDatabase are not currently eligible for back/forward cache',
+  webDatabase: 'Pages that use WebDatabase aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason PictureInPicture.
    */
-  pictureInPicture: 'Pages that use Picture-in-Picture are not currently eligible for back/forward cache',
+  pictureInPicture: 'Pages that use Picture-in-Picture aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason SpeechRecognizer.
    */
-  speechRecognizer: 'Pages that use SpeechRecognizer are not currently eligible for back/forward cache',
+  speechRecognizer: 'Pages that use SpeechRecognizer aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason IdleManager.
    */
-  idleManager: 'Pages that use IdleManager are not currently eligible for back/forward cache',
+  idleManager: 'Pages that use IdleManager aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason PaymentManager.
    */
-  paymentManager: 'Pages that use PaymentManager are not currently eligible for back/forward cache',
+  paymentManager: 'Pages that use PaymentManager aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason SpeechSynthesis.
    */
-  speechSynthesis: 'Pages that use SpeechSynthesis are not currently eligible for back/forward cache',
+  speechSynthesis: 'Pages that use SpeechSynthesis aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason KeyboardLock.
    */
-  keyboardLock: 'Pages that use Keyboard lock are not currently eligible for back/forward cache',
+  keyboardLock: 'Pages that use Keyboard lock aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason WebOTPService.
    */
-  webOTPService: 'Pages that use WebOTPService are not currently eligible for bfcache',
+  webOTPService: 'Pages that use WebOTPService aren’t currently eligible for bfcache',
   /**
    * @description Description text for not restored reason OutstandingNetworkRequestDirectSocket.
    */
   outstandingNetworkRequestDirectSocket:
-      'Pages with an in-flight network request are not currently eligible for back/forward cache',
+      'Pages with an in-flight network request aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason InjectedJavascript.
    */
   injectedJavascript:
-      'Pages that `JavaScript` is injected into by extensions are not currently eligible for back/forward cache',
+      'Pages that `JavaScript` is injected into by extensions aren’t currently eligible for back/forward cache',
   /**
    * @description Description text for not restored reason InjectedStyleSheet.
    */
   injectedStyleSheet:
-      'Pages that a `StyleSheet` is injected into by extensions are not currently eligible for back/forward cache',
+      'Pages that a `StyleSheet` is injected into by extensions aren’t currently eligible for back/forward cache',
   // TODO(tluk): Please provide meaningful description.
   /**
    * @description Description text for not restored reason ContentDiscarded.
@@ -384,45 +384,45 @@ const UIStrings = {
   /**
    * @description Description text for not restored reason ContentSecurityHandler.
    */
-  contentSecurityHandler: 'Pages that use SecurityHandler are not eligible for back/forward cache',
+  contentSecurityHandler: 'Pages that use SecurityHandler aren’t eligible for back/forward cache',
   /**
    * @description Description text for not restored reason NotMainFrame.
    */
-  contentWebAuthenticationAPI: 'Pages that use WebAuthetication API are not eligible for back/forward cache',
+  contentWebAuthenticationAPI: 'Pages that use WebAuthetication API aren’t eligible for back/forward cache',
   /**
    * @description Description text for not restored reason NotMainFrame.
    */
-  contentFileChooser: 'Pages that use FileChooser API are not eligible for back/forward cache',
+  contentFileChooser: 'Pages that use FileChooser API aren’t eligible for back/forward cache',
   /**
    * @description Description text for not restored reason NotMainFrame.
    */
-  contentSerial: 'Pages that use Serial API are not eligible for back/forward cache',
+  contentSerial: 'Pages that use Serial API aren’t eligible for back/forward cache',
   /**
    * @description Description text for not restored reason NotMainFrame.
    */
-  contentFileSystemAccess: 'Pages that use File System Access API are not eligible for back/forward cache',
+  contentFileSystemAccess: 'Pages that use File System Access API aren’t eligible for back/forward cache',
   /**
    * @description Description text for not restored reason NotMainFrame.
    */
-  contentMediaDevicesDispatcherHost: 'Pages that use Media Device Dispatcher are not eligible for back/forward cache',
+  contentMediaDevicesDispatcherHost: 'Pages that use Media Device Dispatcher aren’t eligible for back/forward cache',
   /**
    * @description Description text for not restored reason NotMainFrame.
    */
-  contentWebBluetooth: 'Pages that use WebBluetooth API are not eligible for back/forward cache',
+  contentWebBluetooth: 'Pages that use WebBluetooth API aren’t eligible for back/forward cache',
   /**
    * @description Description text for not restored reason ContentWebUSB.
    */
-  contentWebUSB: 'Pages that use WebUSB API are not eligible for back/forward cache',
+  contentWebUSB: 'Pages that use WebUSB API aren’t eligible for back/forward cache',
   /**
    * @description Description text for not restored reason ContentMediaSession.
    */
   contentMediaSession:
-      'Pages that use MediaSession API and set a playback state are not eligible for back/forward cache',
+      'Pages that use MediaSession API and set a playback state aren’t eligible for back/forward cache',
   /**
    * @description Description text for not restored reason ContentMediaSessionService.
    */
   contentMediaSessionService:
-      'Pages that use MediaSession API and set action handlers are not eligible for back/forward cache',
+      'Pages that use MediaSession API and set action handlers aren’t eligible for back/forward cache',
   /**
    * @description Description text for not restored reason ContentMediaPlay.
    */
@@ -516,7 +516,7 @@ const UIStrings = {
   /**
    *  @description Description text for not restored reason FencedFramesEmbedder.
    */
-  fencedFramesEmbedder: 'Pages using FencedFrames cannot be stored in bfcache',
+  fencedFramesEmbedder: 'Pages using FencedFrames can’t be stored in bfcache',
   /**
    *  @description Description text for not restored reason KeepaliveRequest.
    */

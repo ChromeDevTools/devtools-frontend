@@ -24,6 +24,6 @@ describe('CPU Calibration', () => {
     // Verify that at least the low-tier device was able to be calibrated (CI may be to slow for mid-tier calibration).
     const results = await devToolsPage.getAllTextContents('.cpu-preset-result');
     assert.include(results[0], 'slowdown');
-    assert.match(results[1] ?? '', /slowdown|not powerful enough/);
+    assert.match(results[1] ?? '', /slowdown|isn’t powerful enough/);
   });
 });

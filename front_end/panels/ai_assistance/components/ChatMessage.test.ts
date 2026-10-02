@@ -1953,7 +1953,7 @@ describeWithEnvironment('ChatMessage', () => {
                             ) as HTMLElement;
 
       const revealError = new Error(
-          'Node cannot be found in the current page',
+          'Node can’t be found in the current page',
       );
       const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').rejects(revealError);
       const snackbarShowStub = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
@@ -1964,7 +1964,7 @@ describeWithEnvironment('ChatMessage', () => {
       await new Promise(resolve => setTimeout(resolve, 0));
 
       sinon.assert.calledOnceWithExactly(snackbarShowStub, {
-        message: 'Node cannot be found in the current page',
+        message: 'Node can’t be found in the current page',
       });
 
       revealStub.restore();

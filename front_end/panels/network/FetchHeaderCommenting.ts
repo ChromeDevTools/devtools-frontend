@@ -16,7 +16,7 @@ const UIStrings = {
   /**
    * @description Comment in a generated fetch command explaining why the Accept-Charset header is commented out.
    */
-  deprecatedBrowserDoesNotSend: 'Deprecated; browser does not send this',
+  deprecatedBrowserDoesNotSend: 'Deprecated; browser doesn’t send this',
   /**
    * @description Comment in a generated fetch command explaining why the Accept-Encoding header is commented out.
    */

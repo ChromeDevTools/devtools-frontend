@@ -41,7 +41,7 @@ const UIStringsNotTranslate = {
    * @description Third item in the description.
    */
   disclaimerTextPrivacyNoLogging:
-      'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+      'To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time.',
   /**
    * @description Text for the manage in settings button in the upgrade notice dialog.
    */

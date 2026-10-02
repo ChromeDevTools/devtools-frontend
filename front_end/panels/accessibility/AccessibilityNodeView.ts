@@ -97,11 +97,11 @@ const UIStrings = {
   /**
    * @description Reason in the Accessibility tab in the Elements panel.
    */
-  elementIsNotRendered: 'Element is not rendered',
+  elementIsNotRendered: 'Element isn’t rendered',
   /**
    * @description Reason in the Accessibility tab in the Elements panel.
    */
-  elementIsNotVisible: 'Element is not visible',
+  elementIsNotVisible: 'Element isn’t visible',
   /**
    * @description Reason in the Accessibility tab in the Elements panel. Indicates the
    * ARIA role for this element, which will always have the format 'role=', but with different roles

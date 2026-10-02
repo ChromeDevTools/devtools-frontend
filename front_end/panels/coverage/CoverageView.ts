@@ -96,11 +96,11 @@ const UIStrings = {
   /**
    * @description Message in the Coverage View explaining that DevTools could not capture coverage.
    */
-  bfcacheNoCapture: 'Could not capture coverage info because the page was served from the back/forward cache',
+  bfcacheNoCapture: 'Couldn’t capture coverage info because the page was served from the back/forward cache',
   /**
    * @description Message in the Coverage View explaining that DevTools could not capture coverage.
    */
-  activationNoCapture: 'Could not capture coverage info because the page was prerendered in the background',
+  activationNoCapture: 'Couldn’t capture coverage info because the page was prerendered in the background',
   /**
    * @description Message in the Coverage View prompting the user to reload the page.
    * @example {reload button icon} PH1

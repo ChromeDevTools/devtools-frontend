@@ -629,7 +629,7 @@ function renderLinkifiedValue(value: string, node: SDK.DOMModel.DOMNode): Lit.Te
       if (el) {
         setValueWithEntities(el, value);
       }
-    })}}></span>`;
+    })}></span>`;
   }
   value = value.replace(closingPunctuationRegex, '$&\u200B');
   if (value.startsWith('data:')) {
@@ -752,12 +752,20 @@ function renderAttribute(attr: {name: string, value?: string},
     valueType = ValueType.SRCSET;
   }
 
-  const withEntitiesRef = (valueType === ValueType.UNKNOWN && !isRelation) ? ref(el => {
-    if (el) {
-      setValueWithEntities(el, value);
-    }
-  }) :
-                                                                             nothing;
+  let valueContent: Lit.LitTemplate|DirectiveResult = nothing;
+  if (valueType === ValueType.SRC) {
+    valueContent = renderLinkifiedValue(value, node);
+  } else if (valueType === ValueType.SRCSET) {
+    valueContent = renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node);
+  } else if (linkifyValue && relationPromise) {
+    valueContent = until(relationPromise, value);
+  } else if (valueType === ValueType.UNKNOWN && !isRelation) {
+    valueContent = html`<span ${ref(el => {
+      if (el) {
+        setValueWithEntities(el, value);
+      }
+    })}></span>`;
+  }
 
   const jslog = VisualLogging.value(name === 'style' ? 'style-attribute' : 'attribute').track({
     change: true,
@@ -773,16 +781,10 @@ function renderAttribute(attr: {name: string, value?: string},
   return html`<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap(attributeNameClasses)}
       ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${
       linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${
-      hasText ?
-          html`=\u200B"<span class="webkit-html-attribute-value" ${
-              animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText),
-                        DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
-                        ${valueType === ValueType.SRC ? renderLinkifiedValue(value, node) : nothing}
-                        ${
-              valueType === ValueType.SRCSET ? renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node) : nothing}
-                        ${linkifyValue && relationPromise ? until(relationPromise, value) : nothing}
-                </span>"` :
-          nothing}</span>`;
+      hasText ? html`=\u200B"<span class="webkit-html-attribute-value" ${
+                    animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText),
+                              DOM_UPDATE_ANIMATION_CLASS_NAME)}>${valueContent}</span>"` :
+                nothing}</span>`;
 }
 
 function renderTag(node: SDK.DOMModel.DOMNode, tagName: string, isClosingTag: boolean, expanded: boolean,

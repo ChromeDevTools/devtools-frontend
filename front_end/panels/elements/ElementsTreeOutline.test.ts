@@ -1974,4 +1974,29 @@ describeWithEnvironment('ElementsTreeOutline', () => {
     assert.strictEqual(treeOutline.selectedTreeElement, firstEl);
     assert.isTrue(firstEl.selected);
   });
+
+  it('unhides the tree outline and clears updateRecords when updateModifiedNodes throws with >10 modified nodes',
+     () => {
+       const children =
+           Array.from({length: 12},
+                      (_, i) => makeNodePayload(i + 2, 'DIV',
+                                                {parentId: 1 as Protocol.DOM.NodeId, attributes: ['id', `item-${i}`]}));
+       const rootNode = SDK.DOMModel.DOMNode.create(model, null, false, makeNodePayload(1, 'BODY', {children}));
+       treeOutline.rootDOMNode = rootNode;
+
+       const firstChild = model.nodeForId(2 as Protocol.DOM.NodeId)!;
+       const firstChildEl = treeOutline.findTreeElement(firstChild)!;
+       sinon.stub(firstChildEl, 'updateTitle').throws(new Error('Simulated updateTitle failure'));
+
+       for (let i = 0; i < 12; i++) {
+         model.attributeModified((i + 2) as Protocol.DOM.NodeId, 'class', 'updated');
+       }
+
+       assert.throws(() => treeOutline.runPendingUpdates(), 'Simulated updateTitle failure');
+       assert.isFalse(treeOutline.element.classList.contains('hidden'));
+
+       // Subsequent updates should not re-process the failed batch.
+       (firstChildEl.updateTitle as sinon.SinonStub).restore();
+       assert.doesNotThrow(() => treeOutline.runPendingUpdates());
+     });
 });

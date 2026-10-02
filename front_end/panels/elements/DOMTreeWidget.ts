@@ -47,6 +47,7 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import * as UIComponentUtils from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
@@ -961,7 +962,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   #maxTreeDepth?: number;
   #enableContextMenu = true;
-  #showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+  #showHTMLCommentsSetting =
+      Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showHTMLCommentsSettingDescriptor);
   #showComments = this.#showHTMLCommentsSetting.get();
   #showAIButton = true;
   #disableEdits = false;

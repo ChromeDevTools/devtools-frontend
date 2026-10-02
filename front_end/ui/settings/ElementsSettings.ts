@@ -17,3 +17,10 @@ export const domWordWrapSettingDescriptor: Common.Settings.SettingDescriptor<boo
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const showHTMLCommentsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-html-comments',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

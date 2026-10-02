@@ -22,6 +22,7 @@ import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Elements from './elements.js';
 
@@ -109,7 +110,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
       assert.isTrue(domTree.showComments);
       assert.isTrue(view.input.showComments);
 
-      const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+      const setting =
+          Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showHTMLCommentsSettingDescriptor);
       setting.set(false);
 
       assert.isFalse(domTree.showComments);
@@ -122,7 +124,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
       renderElementIntoDOM(domTree);
 
       domTree.detach();
-      const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+      const setting =
+          Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showHTMLCommentsSettingDescriptor);
       const viewCallCount = view.callCount;
       setting.set(false);
 
@@ -4679,7 +4682,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
   });
 
   it('hides and shows HTML comment DOMNodes when toggling show-html-comments setting', async () => {
-    const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+    const setting =
+        Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showHTMLCommentsSettingDescriptor);
     setting.set(true);
     const {domTree, domModel} = setupDOMTreeWidget(target);
     try {

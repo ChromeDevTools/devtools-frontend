@@ -578,14 +578,10 @@ UI.ActionRegistration.registerActionExtension({
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.showHTMLCommentsSettingDescriptor, {
   category: Common.Settings.SettingCategory.ELEMENTS,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   order: 3,
   title: i18nLazyString(UIStrings.htmlComments),
-  settingName: 'show-html-comments',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

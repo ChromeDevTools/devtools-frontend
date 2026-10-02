@@ -2222,4 +2222,54 @@ describeWithEnvironment('StylesPropertySection', () => {
       cancelEditing(newProperty);
     });
   });
+
+  it('only renders the insert style rule below button for style rule sections', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
+    assert.exists(cssModel);
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      matchedPayload: [{
+        rule: {
+          selectorList: {selectors: [{text: 'div'}], text: 'div'},
+          origin,
+          styleSheetId,
+          style: {cssProperties: [{name: 'color', value: 'red'}], shorthandEntries: [], range},
+        },
+        matchingSelectors: [0],
+      }],
+      functionRules: [{
+        name: {text: '--my-fn', range},
+        origin,
+        styleSheetId,
+        parameters: [],
+        children: [{
+          style: {
+            styleSheetId,
+            range,
+            cssProperties: [{name: 'result', value: '1px', range}],
+            shorthandEntries: [],
+            cssText: 'result: 1px;',
+          },
+        }],
+      }],
+      connection,
+    });
+
+    const styleSection = new Elements.StylePropertiesSection.StylePropertiesSection(
+        stylesSidebarPane, matchedStyles, matchedStyles.nodeStyles()[0], 0, null, null, null);
+    assert.exists(styleSection.element.querySelector('.new-rule-toolbar'));
+
+    const functionRule = matchedStyles.functionRules()[0];
+    assert.exists(functionRule);
+    const functionSection = new Elements.StylePropertiesSection.FunctionRuleSection(
+        stylesSidebarPane, matchedStyles, functionRule.style, functionRule.children(), 0,
+        functionRule.nameWithParameters(), true);
+    assert.isNull(functionSection.element.querySelector('.new-rule-toolbar'));
+  });
 });

@@ -308,7 +308,7 @@ export class StylePropertiesSection {
       this.updateAncestorRuleList();
     }
 
-    if (rule) {
+    if (rule instanceof SDK.CSSRule.CSSStyleRule) {
       const newRuleButton = new UI.Toolbar.ToolbarButton(
           i18nString(UIStrings.insertStyleRuleBelow), 'plus', undefined, 'elements.new-style-rule');
       newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.onNewRuleClick, this);

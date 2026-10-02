@@ -648,13 +648,6 @@ async function getFunctionNameFromScopeStart(script, rawLineNumber, rawColumnNum
     }
     return name;
 }
-export async function resolveDebuggerFrameFunctionName(frame) {
-    const startLocation = frame.localScope()?.range()?.start;
-    if (!startLocation) {
-        return null;
-    }
-    return await getFunctionNameFromScopeStart(frame.script, startLocation.lineNumber, startLocation.columnNumber);
-}
 export async function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }, target, debuggerWorkspaceBinding) {
     if (!target || lineNumber === undefined || columnNumber === undefined || scriptId === undefined) {
         return null;

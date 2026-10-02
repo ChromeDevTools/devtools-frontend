@@ -189,6 +189,7 @@ var SuggestionBox = class extends Lit.LitElement {
     options: jsonPropertyOptions,
     expression: { type: String },
     suggestionFilter: { attribute: false },
+    hideExactMatch: { type: Boolean },
     cursor: { state: true }
   };
   #suggestions = [];
@@ -196,6 +197,7 @@ var SuggestionBox = class extends Lit.LitElement {
     super();
     this.options = [];
     this.expression = "";
+    this.hideExactMatch = false;
     this.cursor = 0;
   }
   #handleKeyDownEvent = (event) => {
@@ -247,7 +249,7 @@ var SuggestionBox = class extends Lit.LitElement {
     }
   }
   render() {
-    if (this.#suggestions.length === 0) {
+    if (this.#suggestions.length === 0 || this.hideExactMatch && this.#suggestions.length === 1 && this.#suggestions[0].toLowerCase() === this.expression.toLowerCase()) {
       return;
     }
     return html`<style>${suggestionInput_css_default}</style><ul class="suggestions">
@@ -269,6 +271,7 @@ var SuggestionInput = class extends Lit.LitElement {
     options: jsonPropertyOptions,
     autocomplete: { type: Boolean },
     suggestionFilter: { attribute: false },
+    hideExactMatch: { type: Boolean },
     expression: { state: true },
     placeholder: { type: String },
     value: { type: String },
@@ -287,6 +290,7 @@ var SuggestionInput = class extends Lit.LitElement {
     this.strikethrough = true;
     this.mimeType = "";
     this.autocomplete = true;
+    this.hideExactMatch = false;
     this.addEventListener("blur", this.#handleBlurEvent);
     let jslog = VisualLogging.value().track({ keydown: "ArrowUp|ArrowDown|Enter", change: true, click: true });
     if (this.jslogContext) {
@@ -365,6 +369,7 @@ var SuggestionInput = class extends Lit.LitElement {
         @suggest=${this.#handleSuggestEvent}
         .options=${this.options}
         .suggestionFilter=${this.suggestionFilter}
+        .hideExactMatch=${this.hideExactMatch}
         .expression=${this.autocomplete ? this.expression : ""}
       ></devtools-suggestion-box>`;
   }

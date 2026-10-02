@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { skill as accessibilitySkill } from './accessibility.skill.js';
+import { skill as lighthouseSkill } from './lighthouse.skill.js';
 import { skill as networkSkill } from './network.skill.js';
 import { skill as performanceSkill } from './performance.skill.js';
 import { skill as sourcesSkill } from './sources.skill.js';
@@ -14,5 +15,6 @@ export const SKILLS = {
     performance: performanceSkill,
     storage: storageSkill,
     sources: sourcesSkill,
+    lighthouse: lighthouseSkill,
 };
 //# sourceMappingURL=SkillRegistry.js.map

@@ -57,7 +57,6 @@ export declare class RemoteObject extends SDK.RemoteObject.RemoteObject {
     runtimeModel(): SDK.RuntimeModel.RuntimeModel;
     isNode(): boolean;
 }
-export declare function resolveDebuggerFrameFunctionName(frame: SDK.DebuggerModel.CallFrame): Promise<string | null>;
 export declare function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }: Partial<Protocol.Runtime.CallFrame>, target: SDK.Target.Target | null, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<string | null>;
 export declare const getScopeResolvedForTest: () => (...arg0: unknown[]) => void;
 export declare const setScopeResolvedForTest: (scope: (...arg0: unknown[]) => void) => void;

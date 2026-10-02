@@ -1,4 +1,3 @@
-import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Logs from '../../logs/logs.js';
@@ -59,7 +58,14 @@ export declare class NetworkRequestFormatter {
         value: string;
     }>, addListPrefixToEachLine?: boolean): string;
     static formatBody(title: string, request: SDK.NetworkRequest.NetworkRequest, maxBodySize: number): Promise<string>;
-    static formatInitiatorUrl(initiatorUrl: Platform.DevToolsPath.UrlString, allowedOrigin: SDK.SecurityOrigin.SecurityOrigin): string;
+    /**
+     * Returns the URL of `initiator` if it is same-origin with `request`, or a redaction
+     * placeholder otherwise.
+     *
+     * Both sides use `requestURLSecurityOrigin()`, so imported HAR requests are compared
+     * using their `imported-har://` origins.
+     */
+    static formatInitiatorUrl(initiator: SDK.NetworkRequest.NetworkRequest, request: SDK.NetworkRequest.NetworkRequest): string;
     static formatStatus(status: {
         statusCode: number;
         statusText: string;

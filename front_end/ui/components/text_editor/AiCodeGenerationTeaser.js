@@ -175,7 +175,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             // clang-format off
             teaserLabel = html `<div class="ai-code-generation-teaser-trigger">
         <span aria-hidden="true">${teaserText}</span>
-        <span class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
+        <span class="screen-reader-only" aria-atomic="true" aria-live="assertive">
           ${lockedString(screenReaderText)}
         </span>
         &nbsp;<devtools-button
@@ -237,7 +237,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             const teaserAriaLabel = lockedString(UIStringsNotTranslate.generatingAriaLabel);
             // clang-format off
             teaserLabel = html `
-        <div class="ai-code-generation-teaser-screen-reader-only">${teaserAriaLabel}</div>
+        <div class="screen-reader-only">${teaserAriaLabel}</div>
         <span class="ai-code-generation-spinner" aria-hidden="true">
           &nbsp;${lockedString(UIStringsNotTranslate.generating)}
           <span class="ai-code-generation-keyboard-action"><span>${lockedString(UIStringsNotTranslate.esc)}</span></span>

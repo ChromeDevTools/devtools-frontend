@@ -22,11 +22,6 @@ export declare class SourceMapScopesInfo {
     isEmpty(): boolean;
     addOriginalScopesAtIndex(sourceIdx: number, scopes: ScopesCodec.OriginalScope[]): void;
     /**
-     * @returns true, iff the range surrounding the provided position contains multiple
-     * inlined original functions.
-     */
-    hasInlinedFrames(generatedLine: number, generatedColumn: number): boolean;
-    /**
      * @returns true if we have enough info (i.e. variable and binding expressions) to build
      * a scope view.
      */
@@ -63,7 +58,7 @@ export declare class SourceMapScopesInfo {
     /**
      * Returns the authored function scope of the function containing the provided generated position.
      */
-    findOriginalFunctionScope({ line, column }: ScopesCodec.Position): {
+    findOriginalFunctionScope(position: ScopesCodec.Position): {
         scope: ScopesCodec.OriginalScope;
         url?: Platform.DevToolsPath.UrlString;
     } | null;
@@ -100,8 +95,8 @@ export declare const enum GeneratedFrameKind {
 export interface RawFrameTranslation {
     kind: GeneratedFrameKind;
     /**
-     * [top, ...inlinedCallers] in top-to-bottom order. Empty for {@link GeneratedFrameKind.HIDDEN} frames, or if the
-     * generated position is not mapped.
+     * [top, ...inlinedCallers] in top-to-bottom order. Empty for {@link GeneratedFrameKind.HIDDEN} frames, or if
+     * neither the mappings nor the generated ranges know anything about the generated position.
      *
      * For {@link GeneratedFrameKind.OUTLINED} frames, the top frame is named after the authored function the outlined
      * code belongs to.
@@ -112,11 +107,16 @@ export interface RawFrameTranslation {
  * Represents a stack frame in original terms. It closely aligns with StackTrace.StackTrace.Frame,
  * but since we can't import that type here we mirror it here somewhat.
  *
- * Equivalent to Pick<StackTrace.StackTrace.Frame, 'line'|'column'|'name'|'url'>.
+ * Equivalent to Pick<StackTrace.StackTrace.Frame, 'line'|'column'|'name'|'url'>, except that the position is
+ * optional.
  */
 export interface TranslatedFrame {
-    line: number;
-    column: number;
+    /**
+     * `line` and `column` are undefined iff the generated position has no mapping. The frame then only identifies
+     * the authored function: `name`, `functionStart` and the `url` of the function's source.
+     */
+    line?: number;
+    column?: number;
     name?: string;
     url?: Platform.DevToolsPath.UrlString;
     /** Start of the original function scope containing this frame's position. Undefined for top-level code. */

@@ -72,10 +72,16 @@ export class NetworkRequestFormatter {
         }
         return `${title}\n<binary data>`;
     }
-    static formatInitiatorUrl(initiatorUrl, allowedOrigin) {
-        const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create(initiatorUrl);
-        if (initiatorOrigin.isSameOriginWith(allowedOrigin)) {
-            return initiatorUrl;
+    /**
+     * Returns the URL of `initiator` if it is same-origin with `request`, or a redaction
+     * placeholder otherwise.
+     *
+     * Both sides use `requestURLSecurityOrigin()`, so imported HAR requests are compared
+     * using their `imported-har://` origins.
+     */
+    static formatInitiatorUrl(initiator, request) {
+        if (initiator.requestURLSecurityOrigin().isSameOriginWith(request.requestURLSecurityOrigin())) {
+            return initiator.url();
         }
         return '<redacted cross-origin initiator URL>';
     }
@@ -246,22 +252,19 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
  * @returns Formatted initiator chain.
  */
 export function formatRequestInitiatorChain(request, networkLog) {
-    const allowedOrigin = request.requestURLSecurityOrigin();
     let initiatorChain = '';
     let lineStart = '- URL: ';
     const graph = networkLog.initiatorGraphForRequest(request);
     for (const initiator of Array.from(graph.initiators).reverse()) {
-        initiatorChain =
-            initiatorChain + lineStart + NetworkRequestFormatter.formatInitiatorUrl(initiator.url(), allowedOrigin) + '\n';
+        initiatorChain = initiatorChain + lineStart + NetworkRequestFormatter.formatInitiatorUrl(initiator, request) + '\n';
         lineStart = '\t' + lineStart;
         if (initiator === request) {
-            initiatorChain =
-                formatRequestInitiated(graph.initiated, request, request, initiatorChain, lineStart, allowedOrigin);
+            initiatorChain = formatRequestInitiated(graph.initiated, request, request, initiatorChain, lineStart);
         }
     }
     return initiatorChain.trim();
 }
-function formatRequestInitiated(initiated, rootRequest, parentRequest, initiatorChain, lineStart, allowedOrigin) {
+function formatRequestInitiated(initiated, rootRequest, parentRequest, initiatorChain, lineStart) {
     const visited = new Set();
     // rootRequest should be already in the tree when building initiator part
     visited.add(rootRequest);
@@ -269,10 +272,9 @@ function formatRequestInitiated(initiated, rootRequest, parentRequest, initiator
         if (initiatedRequest === parentRequest) {
             if (!visited.has(keyRequest)) {
                 visited.add(keyRequest);
-                initiatorChain = initiatorChain + lineStart +
-                    NetworkRequestFormatter.formatInitiatorUrl(keyRequest.url(), allowedOrigin) + '\n';
                 initiatorChain =
-                    formatRequestInitiated(initiated, rootRequest, keyRequest, initiatorChain, '\t' + lineStart, allowedOrigin);
+                    initiatorChain + lineStart + NetworkRequestFormatter.formatInitiatorUrl(keyRequest, rootRequest) + '\n';
+                initiatorChain = formatRequestInitiated(initiated, rootRequest, keyRequest, initiatorChain, '\t' + lineStart);
             }
         }
     }

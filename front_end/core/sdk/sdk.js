@@ -1861,6 +1861,7 @@ var Page;
     PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
     PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
     PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
@@ -7478,8 +7479,16 @@ var generatedProperties = [
     "name": "position-try-order"
   },
   {
+    "devtools_keywords": [
+      "always",
+      "anchor-valid",
+      "anchor-visible",
+      "no-overflow"
+    ],
     "keywords": [
       "always",
+      "anchor-valid",
+      "anchor-visible",
       "anchors-visible",
       "no-overflow"
     ],
@@ -8357,7 +8366,7 @@ var generatedProperties = [
     ],
     "name": "text-decoration-inset",
     "runtime_flag": "CSSTextDecorationInset",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "keywords": [
@@ -11359,7 +11368,8 @@ var generatedPropertyValues = {
   "position-visibility": {
     "values": [
       "always",
-      "anchors-visible",
+      "anchor-valid",
+      "anchor-visible",
       "no-overflow"
     ]
   },
@@ -22490,22 +22500,6 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     return functionRange.isHidden ? "OUTLINED" /* OUTLINED */ : "VISIBLE" /* VISIBLE */;
   }
   /**
-   * @returns true, iff the range surrounding the provided position contains multiple
-   * inlined original functions.
-   */
-  hasInlinedFrames(generatedLine, generatedColumn) {
-    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
-    for (let i = rangeChain.length - 1; i >= 0; --i) {
-      if (rangeChain[i].isStackFrame) {
-        return false;
-      }
-      if (rangeChain[i].callSite) {
-        return true;
-      }
-    }
-    return false;
-  }
-  /**
    * Given a generated position, this returns all the surrounding generated ranges from outer
    * to inner. When `inlineFrameIndex > 0`, drops inner ranges up to the specified virtual
    * call frame.
@@ -22642,34 +22636,35 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
   /**
    * Returns the authored function scope of the function containing the provided generated position.
    */
-  findOriginalFunctionScope({ line, column }) {
-    let originalInnerMostScope;
+  findOriginalFunctionScope(position) {
+    const rangeChain = this.#findGeneratedRangeChain(position.line, position.column);
+    const functionScope = this.#findFunctionScopeInOriginalScopeChain(this.#innerMostOriginalScope(rangeChain, position));
+    return functionScope ? { scope: functionScope, url: this.#sourceURLOfScope(functionScope) } : null;
+  }
+  /**
+   * Returns the inner-most original scope containing the generated `position`. `rangeChain` must be the generated
+   * range chain of `position`.
+   */
+  #innerMostOriginalScope(rangeChain, position) {
     if (this.#generatedRanges.length > 0) {
-      const rangeChain = this.#findGeneratedRangeChain(line, column);
-      originalInnerMostScope = rangeChain.at(-1)?.originalScope;
-    } else {
-      const entry = this.#sourceMap.findEntry(line, column);
-      if (entry?.sourceIndex === void 0) {
-        return null;
-      }
-      originalInnerMostScope = this.#findOriginalScopeChain(
-        { sourceIndex: entry.sourceIndex, line: entry.sourceLineNumber, column: entry.sourceColumnNumber }
-      ).at(-1);
+      return rangeChain.at(-1)?.originalScope;
     }
-    if (!originalInnerMostScope) {
-      return null;
+    const entry = this.#sourceMap.findEntry(position.line, position.column);
+    if (entry?.sourceIndex === void 0) {
+      return void 0;
     }
-    const functionScope = this.#findFunctionScopeInOriginalScopeChain(originalInnerMostScope);
-    if (!functionScope) {
-      return null;
-    }
-    let rootScope = functionScope;
+    return this.#findOriginalScopeChain(
+      { sourceIndex: entry.sourceIndex, line: entry.sourceLineNumber, column: entry.sourceColumnNumber }
+    ).at(-1);
+  }
+  /** @returns the URL of the original source that `scope` belongs to. */
+  #sourceURLOfScope(scope) {
+    let rootScope = scope;
     while (rootScope.parent) {
       rootScope = rootScope.parent;
     }
     const sourceIndex = this.#originalScopes.findIndex((scopes) => scopes?.includes(rootScope));
-    const url = sourceIndex !== -1 ? this.#sourceMap.sourceURLForSourceIndex(sourceIndex) : void 0;
-    return functionScope ? { scope: functionScope, url } : null;
+    return sourceIndex !== -1 ? this.#sourceMap.sourceURLForSourceIndex(sourceIndex) : void 0;
   }
   /**
    * Given an original position, this returns all the surrounding original scopes from outer
@@ -22717,26 +22712,35 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     if (kind === "HIDDEN" /* HIDDEN */) {
       return { kind, frames: [] };
     }
-    const frame = this.#translateTopFrame(generatedLine, generatedColumn);
+    const frame = this.#translateTopFrame(generatedLine, generatedColumn, rangeChain);
     return { kind, frames: frame ? [frame, ...this.#translateInlinedCallers(rangeChain)] : [] };
   }
   /**
    * The top-most frame is translated the same, regardless of whether we have inlined functions: The name is the
    * original function surrounding the generated position, and the location is the mapped generated position.
+   *
+   * If the generated position has no mapping, the generated ranges may still tell which authored function (or
+   * which file, for top-level code) the position belongs to. The frame then has no position.
    */
-  #translateTopFrame(generatedLine, generatedColumn) {
+  #translateTopFrame(generatedLine, generatedColumn, rangeChain) {
+    const position = { line: generatedLine, column: generatedColumn };
+    const innerMostScope = this.#innerMostOriginalScope(rangeChain, position);
+    const functionScope = this.#findFunctionScopeInOriginalScopeChain(innerMostScope);
+    const name = functionScope ? functionScope.name ?? "" : void 0;
     const mapping = this.#sourceMap.findEntry(generatedLine, generatedColumn);
-    if (mapping?.sourceIndex === void 0) {
+    if (mapping?.sourceIndex !== void 0) {
+      return {
+        line: mapping.sourceLineNumber,
+        column: mapping.sourceColumnNumber,
+        name,
+        url: mapping.sourceURL,
+        functionStart: functionScope?.start
+      };
+    }
+    if (!innerMostScope) {
       return null;
     }
-    const functionScope = this.findOriginalFunctionScope({ line: generatedLine, column: generatedColumn })?.scope;
-    return {
-      line: mapping.sourceLineNumber,
-      column: mapping.sourceColumnNumber,
-      name: functionScope ? functionScope.name ?? "" : void 0,
-      url: mapping.sourceURL,
-      functionStart: functionScope?.start
-    };
+    return { name, url: this.#sourceURLOfScope(functionScope ?? innerMostScope), functionStart: functionScope?.start };
   }
   /**
    * Walk the range chain inside out until we find a generated function and for each inlined function add a frame.
@@ -23488,10 +23492,6 @@ var SourceMap = class _SourceMap {
   findOriginalFunctionScope(position) {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.findOriginalFunctionScope(position) ?? null;
-  }
-  hasInlinedFrames(generatedLine, generatedColumn) {
-    this.#ensureSourceMapProcessed();
-    return this.#scopesInfo?.hasInlinedFrames(generatedLine, generatedColumn) ?? false;
   }
   /** See {@link SourceMapScopesInfo.translateRawFrame}. `null` if no scopes information is available. */
   translateRawFrame(generatedLine, generatedColumn) {
@@ -29996,8 +29996,14 @@ var DOMDocument = class extends DOMNode {
     this.#baseURL = payload.baseURL || "";
     this.#frameId = frameId ?? null;
     const resourceTreeModel = this.domModel().target().model(ResourceTreeModel);
-    const frame = this.#frameId ? resourceTreeModel?.frameForId(this.#frameId) : resourceTreeModel?.mainFrame;
-    this.#securityOrigin = frame?.securityOrigin() ?? SecurityOrigin.create(this.#documentURL);
+    const frame = this.#frameId ? resourceTreeModel?.frameForId(this.#frameId) : null;
+    if (frame) {
+      this.#securityOrigin = frame.securityOrigin();
+    } else if (resourceTreeModel?.mainFrame) {
+      this.#securityOrigin = SecurityOrigin.createUniqueOpaque();
+    } else {
+      this.#securityOrigin = SecurityOrigin.create(this.#documentURL);
+    }
   }
   get documentURL() {
     return this.#documentURL;
@@ -37839,6 +37845,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
   #blockedReason = void 0;
   #renderBlockingBehavior;
   #initiatorSecurityOrigin;
+  #requestURLSecurityOrigin;
   #corsErrorStatus = void 0;
   statusCode = 0;
   statusText = "";
@@ -37853,6 +37860,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
   #resourceType = Common30.ResourceType.resourceTypes.Other;
   #contentData = null;
   #streamingContentData = null;
+  #resolvedStreamingContentData = null;
   #frames = [];
   #responseHeaderValues = {};
   #responseHeadersText = "";
@@ -38020,10 +38028,17 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
    * (`imported-har://${authority}`) to ensure recorded network traffic never collides with
    * live web origins.
    *
+   * The result is cached, so repeated calls return the same instance until the URL or the
+   * imported HAR flag changes. This keeps opaque origins (such as `data:` URLs) same-origin
+   * with themselves.
+   *
    * @see {@link initiatorSecurityOrigin} to obtain the origin of the document that initiated the request.
    */
   requestURLSecurityOrigin() {
-    return this.#resolveSecurityOrigin(this.#url);
+    if (!this.#requestURLSecurityOrigin) {
+      this.#requestURLSecurityOrigin = this.#resolveSecurityOrigin(this.#url);
+    }
+    return this.#requestURLSecurityOrigin;
   }
   /**
    * Returns the security origin of the document or context (`request.documentURL`) that initiated
@@ -38038,6 +38053,9 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
    *
    * For imported HAR files, the origin is mapped to an isolated virtual domain
    * (`imported-har://${authority}`) matching the imported initiating document.
+   *
+   * The result is cached, so repeated calls return the same instance until the imported HAR
+   * flag changes. This keeps opaque origins same-origin with themselves.
    *
    * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
    */
@@ -38074,6 +38092,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
     this.#parsedQueryParameters = void 0;
     this.#name = void 0;
     this.#path = void 0;
+    this.#requestURLSecurityOrigin = void 0;
   }
   get documentURL() {
     return this.#documentURL;
@@ -38661,7 +38680,12 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
     return this.#isImportedHar;
   }
   setIsImportedHar(isImportedHar) {
+    if (this.#isImportedHar === isImportedHar) {
+      return;
+    }
     this.#isImportedHar = isImportedHar;
+    this.#requestURLSecurityOrigin = void 0;
+    this.#initiatorSecurityOrigin = void 0;
   }
   setEarlyHintsHeaders(headers) {
     this.earlyHintsHeaders = headers;
@@ -38883,9 +38907,11 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
       if (TextUtils24.ContentData.ContentData.isError(contentData)) {
         return contentData;
       }
-      return TextUtils24.StreamingContentData.StreamingContentData.from(
+      const streamingContentData = TextUtils24.StreamingContentData.StreamingContentData.from(
         contentData
       );
+      this.#resolvedStreamingContentData = streamingContentData;
+      return streamingContentData;
     });
     return this.#streamingContentData;
   }
@@ -38897,6 +38923,15 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
   }
   async searchInContent(query, caseSensitive, isRegex) {
     if (!this.#contentDataProvider) {
+      const cachedContentData = this.finished && !this.failed ? await this.#contentData ?? this.#resolvedStreamingContentData?.content() : void 0;
+      if (cachedContentData && !TextUtils24.ContentData.ContentData.isError(cachedContentData) && cachedContentData.isTextContent) {
+        return TextUtils24.TextUtils.performSearchInContentData(
+          cachedContentData,
+          query,
+          caseSensitive,
+          isRegex
+        );
+      }
       return await NetworkManager.searchInRequest(
         this,
         query,
@@ -39233,11 +39268,15 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
     }
     this.endTime = timestamp;
     if (data) {
-      void this.#streamingContentData?.then((contentData) => {
-        if (!TextUtils24.StreamingContentData.isError(contentData)) {
-          contentData.addChunk(data);
-        }
-      });
+      if (this.#resolvedStreamingContentData) {
+        this.#resolvedStreamingContentData.addChunk(data);
+      } else {
+        void this.#streamingContentData?.then((contentData) => {
+          if (!TextUtils24.StreamingContentData.isError(contentData)) {
+            contentData.addChunk(data);
+          }
+        });
+      }
     }
   }
   waitForResponseReceived() {

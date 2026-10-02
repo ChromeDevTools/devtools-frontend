@@ -1,5 +1,5 @@
 import '../../ui/components/tooltips/tooltips.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -34,4 +34,5 @@ export declare class CommentThreadWidget extends UI.Widget.Widget {
     set comments(comments: CommentManager.CommentManager.Comment[]);
     performUpdate(): void;
 }
+export declare function computeCommentTitle(anchor: CommentManager.CommentManager.CommentAnchorSignature): Promise<Title>;
 export {};

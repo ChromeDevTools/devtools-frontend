@@ -3856,10 +3856,12 @@ var Linkifier3 = class _Linkifier {
 var CommentThreadWidget_exports = {};
 __export(CommentThreadWidget_exports, {
   CommentThreadWidget: () => CommentThreadWidget,
-  DEFAULT_VIEW: () => DEFAULT_VIEW6
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  computeCommentTitle: () => computeCommentTitle
 });
 import "../../ui/components/tooltips/tooltips.js";
 import * as i18n17 from "../../core/i18n/i18n.js";
+import * as SDK5 from "../../core/sdk/sdk.js";
 import * as Buttons4 from "../../ui/components/buttons/buttons.js";
 import * as Input from "../../ui/components/input/input.js";
 import * as MarkdownView from "../../ui/components/markdown_view/markdown_view.js";
@@ -4242,16 +4244,39 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
     this.#view(viewInput, void 0, this.contentElement);
   }
 };
+async function computeCommentTitle(anchor) {
+  if (anchor.node) {
+    const target = SDK5.TargetManager.TargetManager.instance().targetById(anchor.node.targetId);
+    if (target) {
+      const deferredNode = new SDK5.DOMModel.DeferredDOMNode(
+        target,
+        anchor.node.backendNodeId
+      );
+      const node = await deferredNode.resolvePromise();
+      if (node) {
+        return { node };
+      }
+    }
+  }
+  if (anchor.networkRequestId) {
+    const target = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
+    const request = target?.model(SDK5.NetworkManager.NetworkManager)?.requestForId(anchor.networkRequestId);
+    if (request) {
+      return { text: request.name() };
+    }
+  }
+  return { text: anchor.textSignature || "" };
+}
 
 // ../../front_end/panels/common/CommentsOverlayWidget.ts
 var CommentsOverlayWidget_exports = {};
 __export(CommentsOverlayWidget_exports, {
   ActionDelegate: () => ActionDelegate,
   ButtonProvider: () => ButtonProvider,
-  CommentsOverlayWidget: () => CommentsOverlayWidget
+  CommentsOverlayWidget: () => CommentsOverlayWidget,
+  ThreadRevealer: () => ThreadRevealer
 });
 import * as Root3 from "../../core/root/root.js";
-import * as SDK5 from "../../core/sdk/sdk.js";
 import * as CommentManager from "../../models/comment_manager/comment_manager.js";
 import * as Comments from "../../ui/comments/comments.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
@@ -4600,33 +4625,10 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     if (anchor === this.#cachedTitleAnchor) {
       return this.#cachedTitle;
     }
-    const title = anchor ? await this.#computeTitle(anchor) : { text: "" };
+    const title = anchor ? await computeCommentTitle(anchor) : { text: "" };
     this.#cachedTitleAnchor = anchor;
     this.#cachedTitle = title;
     return title;
-  }
-  async #computeTitle(anchor) {
-    if (anchor.node) {
-      const target = SDK5.TargetManager.TargetManager.instance().targetById(anchor.node.targetId);
-      if (target) {
-        const deferredNode = new SDK5.DOMModel.DeferredDOMNode(
-          target,
-          anchor.node.backendNodeId
-        );
-        const node = await deferredNode.resolvePromise();
-        if (node) {
-          return { node };
-        }
-      }
-    }
-    if (anchor.networkRequestId) {
-      const target = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
-      const request = target?.model(SDK5.NetworkManager.NetworkManager)?.requestForId(anchor.networkRequestId);
-      if (request) {
-        return { text: request.name() };
-      }
-    }
-    return { text: anchor.textSignature || "" };
   }
   #handlePinClick = (threadId) => {
     if (this.#activeThreadId === threadId) {
@@ -4725,8 +4727,39 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     }
     this.#renderWithTitle(activeThread, title);
   }
+  openThread(threadId) {
+    this.#clearCloseTimeout();
+    this.#commentOverlayManager.clearDraftThreads();
+    this.#setActiveThreadId(threadId);
+    this.requestUpdate();
+  }
 };
 var widgetInstance = null;
+function getOrCreateOverlayWidget(commentManager) {
+  if (!widgetInstance) {
+    const cm = commentManager ?? Root3.DevToolsContext.globalInstance().get(
+      CommentManager.CommentManager.CommentManager
+    );
+    widgetInstance = new CommentsOverlayWidget(void 0, [cm]);
+    widgetInstance.markAsRoot();
+    widgetInstance.show(document.body);
+  }
+  return widgetInstance;
+}
+var ThreadRevealer = class {
+  async reveal(thread) {
+    const panelId = Comments.CommentAnchorResolver.extractPanelId(thread.anchor.vePath);
+    if (panelId && UI10.InspectorView.InspectorView.instance().hasPanel(panelId)) {
+      await UI10.InspectorView.InspectorView.instance().showPanel(panelId);
+    }
+    const element = Comments.CommentAnchorResolver.rematchCommentAnchor(thread);
+    if (element) {
+      element.scrollIntoView({ block: "center", inline: "nearest", behavior: "smooth" });
+    }
+    const overlay = getOrCreateOverlayWidget();
+    overlay.openThread(thread.id);
+  }
+};
 var ActionDelegate = class {
   #commentManager;
   constructor(commentManager) {
@@ -4739,14 +4772,7 @@ var ActionDelegate = class {
       if (!this.#commentManager.isAgentAttached()) {
         return false;
       }
-      if (!widgetInstance) {
-        widgetInstance = new CommentsOverlayWidget(
-          void 0,
-          [this.#commentManager]
-        );
-        widgetInstance.markAsRoot();
-        widgetInstance.show(document.body);
-      }
+      getOrCreateOverlayWidget(this.#commentManager);
       this.#commentManager.setCommentMode(
         !this.#commentManager.isCommentMode()
       );

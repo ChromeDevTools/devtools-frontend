@@ -361,6 +361,12 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         }
         UI.UIUtils.endBatchUpdate();
     }
+    set sourceLocation(sourceLocation) {
+        if (!sourceLocation) {
+            return;
+        }
+        this.showSourceLocation(sourceLocation.uiSourceCode, sourceLocation.location, sourceLocation.omitFocus, sourceLocation.omitHighlight);
+    }
     onEditorSelected;
     onEditorClosed;
     #view;
@@ -470,8 +476,10 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         }
         this.closeTabs([networkTabId], true);
         if (wasSelectedInNetwork) {
-            this.#currentFile = this.files.get(fileSystemTabId) || null;
-            this.#scheduleUpdate();
+            const fileSystemFile = this.files.get(fileSystemTabId);
+            if (fileSystemFile) {
+                this.#showFile(fileSystemFile, false);
+            }
         }
         this.updateHistory();
     }
@@ -521,6 +529,13 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         else {
             this.#showFile(uiSourceCode, true);
         }
+    }
+    closeActiveTab() {
+        if (!this.#currentFile) {
+            return false;
+        }
+        this.closeFile(this.#currentFile);
+        return true;
     }
     closeFile(uiSourceCode) {
         const tabId = this.tabIds.get(uiSourceCode);

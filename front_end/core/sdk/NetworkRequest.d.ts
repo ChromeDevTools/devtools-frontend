@@ -39,6 +39,10 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
      * (`imported-har://${authority}`) to ensure recorded network traffic never collides with
      * live web origins.
      *
+     * The result is cached, so repeated calls return the same instance until the URL or the
+     * imported HAR flag changes. This keeps opaque origins (such as `data:` URLs) same-origin
+     * with themselves.
+     *
      * @see {@link initiatorSecurityOrigin} to obtain the origin of the document that initiated the request.
      */
     requestURLSecurityOrigin(): SecurityOrigin;
@@ -55,6 +59,9 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
      *
      * For imported HAR files, the origin is mapped to an isolated virtual domain
      * (`imported-har://${authority}`) matching the imported initiating document.
+     *
+     * The result is cached, so repeated calls return the same instance until the imported HAR
+     * flag changes. This keeps opaque origins same-origin with themselves.
      *
      * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
      */

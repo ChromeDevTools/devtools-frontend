@@ -237,7 +237,7 @@ var FrameNode = class {
   kind = "VISIBLE" /* VISIBLE */;
   /** Set iff `kind` is OUTLINED, or VISIBLE and translated with scopes information. */
   functionKeys;
-  /** True iff the translation shows generated code, i.e. no source map or plugin could map it (incl. builtins). */
+  /** True iff the translation shows generated code because no authored code is known for the frame (incl. builtins). */
   isUnmapped = false;
   /** False until a translation was stored. Stays false if translation threw, so it will be retried. */
   isTranslated = false;
@@ -469,7 +469,7 @@ function consolidate(callStack) {
   return result;
 }
 function isNotAuthored(node) {
-  return node.kind === "VISIBLE" /* VISIBLE */ && !node.functionKeys && (node.isUnmapped || isBuiltinFrame(node.rawFrame));
+  return node.kind === "VISIBLE" /* VISIBLE */ && !node.functionKeys && node.isUnmapped;
 }
 function createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin, parsedFrameInfo) {
   if (!evalOrigin || evalOrigin.frames.length === 0) {

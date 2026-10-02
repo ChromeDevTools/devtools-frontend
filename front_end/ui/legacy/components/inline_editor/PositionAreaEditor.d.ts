@@ -1,3 +1,4 @@
+import '../../../kit/kit.js';
 import * as Common from '../../../../core/common/common.js';
 import * as UI from '../../legacy.js';
 /**
@@ -96,22 +97,33 @@ export interface Area {
 }
 export declare function parsePositionArea(text: string): Area | null;
 export declare function stringifyPositionArea(area: Area): string;
+export interface PropertyChangeEvent {
+    propertyName: string;
+    value: string | undefined;
+}
 export interface ViewInput {
     area: Area | undefined;
+    properties?: ReadonlyMap<string, {
+        authored?: string;
+        computed?: string;
+    }>;
     readonly isSelecting?: boolean;
     onSelectStart: (x: number, y: number) => void;
     onSelect: (x: number, y: number) => void;
     onSelectEnd: (x?: number, y?: number) => void;
     onModeChange: (mode: Mode) => void;
     onSelfChange: (self: boolean) => void;
+    onPropertyChange?: (propertyName: string, value: string | undefined) => void;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare const enum Events {
-    POSITION_AREA_CHANGED = "positionAreaChanged"
+    POSITION_AREA_CHANGED = "positionAreaChanged",
+    PROPERTY_CHANGED = "propertyChanged"
 }
 export interface EventTypes {
     [Events.POSITION_AREA_CHANGED]: Area;
+    [Events.PROPERTY_CHANGED]: PropertyChangeEvent;
 }
 declare const PositionAreaEditorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class PositionAreaEditor extends PositionAreaEditorBase {
@@ -120,6 +132,7 @@ export declare class PositionAreaEditor extends PositionAreaEditorBase {
     wasShown(): void;
     get area(): Area | undefined;
     set area(val: Area | undefined);
+    setProperty(name: string, authored?: string, computed?: string): void;
     performUpdate(): void;
 }
 export {};

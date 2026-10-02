@@ -12848,6 +12848,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "Cancel replay"
   },
+  "panels/recorder/RecordingView.ts | code": {
+    "message": "Code"
+  },
   "panels/recorder/RecordingView.ts | codeFormat": {
     "message": "Code format"
   },
@@ -12910,6 +12913,9 @@
   },
   "panels/recorder/RecordingView.ts | showCode": {
     "message": "Show code"
+  },
+  "panels/recorder/RecordingView.ts | steps": {
+    "message": "Steps"
   },
   "panels/recorder/RecordingView.ts | timeout": {
     "message": "Timeout: {value} ms"
@@ -18059,6 +18065,9 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "Coordinate"
   },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | deselectButton": {
+    "message": "Remove {propertyName}: {propertyValue}"
+  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "Logical"
   },
@@ -18073,6 +18082,9 @@
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | positionAreaGridDescription": {
     "message": "Use arrow keys to navigate, Space or Enter to select, and Shift + arrow keys to select a range"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | selectButton": {
+    "message": "Add {propertyName}: {propertyValue}"
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Show as JavaScript object"

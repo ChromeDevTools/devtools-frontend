@@ -8026,6 +8026,14 @@ export declare namespace FileSystem {
     }
 }
 /**
+ * This domain provides commands to trigger the "Find in page" feature.
+ */
+export declare namespace FindInPage {
+    interface FindFirstRequest {
+        query: string;
+    }
+}
+/**
  * This domain provides experimental commands only supported in headless mode.
  */
 export declare namespace HeadlessExperimental {
@@ -13738,6 +13746,7 @@ export declare namespace Page {
         PrivateStateTokenRedemption = "private-state-token-redemption",
         PublickeyCredentialsCreate = "publickey-credentials-create",
         PublickeyCredentialsGet = "publickey-credentials-get",
+        PublickeyCredentialsRemoteClientDataJson = "publickey-credentials-remote-client-data-json",
         Rewriter = "rewriter",
         ScreenWakeLock = "screen-wake-lock",
         Serial = "serial",

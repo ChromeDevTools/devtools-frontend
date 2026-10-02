@@ -272,47 +272,39 @@ export class CompilerScriptMapping {
         return new Workspace.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
     }
     /**
-     * Translates the first raw frame of `rawFrames` using the "scopes" information of its script's source map.
-     * The translation only depends on the raw frame itself. A consumed raw frame is removed from `rawFrames`,
-     * and its translation is pushed onto `translatedFrames`. Frames of compiler helpers are dropped
-     * (see {@link SDK.SourceMapScopesInfo.GeneratedFrameKind}).
+     * Translates a raw frame using the "scopes" information of its script's source map. Frames of compiler helpers
+     * are dropped (see {@link SDK.SourceMapScopesInfo.GeneratedFrameKind}).
      *
      * Outlined frames are merged at read time by the stack_trace model (see `consolidate`). The function keys
-     * tell it which authored function the top and bottom frames of a translation belong to.
+     * tell it which authored function the top and bottom frames of a translation belong to. A frame at an
+     * unmapped position still gets its keys from the generated ranges; it shows the generated location, named
+     * after the authored function.
      *
-     * @returns true, iff the raw frame was translated.
+     * @returns null if the raw frame can't be translated via "scopes" information, e.g. because the script doesn't
+     * have a source map (with scopes information), the source map is still loading, or neither mappings nor
+     * generated ranges know the position. It's then left to the default mapping.
      */
-    async translateRawFramesStep(rawFrames, translatedFrames) {
-        const translation = await this.#translateRawFrame(rawFrames[0]);
+    async translateRawFrame(rawFrame) {
+        const translation = await this.#scopesTranslation(rawFrame);
         if (!translation) {
-            return false;
+            return null;
         }
         if (translation.kind === "HIDDEN" /* SDK.SourceMapScopesInfo.GeneratedFrameKind.HIDDEN */) {
             // Compiler helpers don't represent any authored code.
-            rawFrames.shift();
-            translatedFrames.push({ kind: "HIDDEN" /* StackTraceImpl.Trie.FrameKind.HIDDEN */, frames: [] });
-            return true;
+            return { kind: "HIDDEN" /* StackTraceImpl.Trie.FrameKind.HIDDEN */, frames: [] };
         }
         const { frames } = translation;
         if (!frames.length) {
-            // Unmapped position: Leave it to the default mapping.
-            return false;
+            return null;
         }
-        rawFrames.shift();
-        translatedFrames.push({
+        return {
             kind: translation.kind === "OUTLINED" /* SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED */ ? "OUTLINED" /* StackTraceImpl.Trie.FrameKind.OUTLINED */ : "VISIBLE" /* StackTraceImpl.Trie.FrameKind.VISIBLE */,
-            frames: this.#toUIFrames(translation.sourceMap, frames),
+            frames: await this.#toUIFrames(translation, rawFrame),
             functionKeys: { top: functionKey(frames[0]), bottom: functionKey(frames[frames.length - 1]) },
-        });
-        return true;
+        };
     }
-    /**
-     * Translates a single raw frame via the "scopes" information of its script's source map.
-     *
-     * @returns null if the raw frame can't be translated via "scopes" information, e.g. because
-     * the script doesn't have a source map (with scopes information), or the source map is still loading.
-     */
-    async #translateRawFrame(rawFrame) {
+    /** The raw translation of `rawFrame` by the "scopes" information of its script's source map, if any. */
+    async #scopesTranslation(rawFrame) {
         if (StackTraceImpl.Trie.isBuiltinFrame(rawFrame)) {
             return null;
         }
@@ -328,15 +320,32 @@ export class CompilerScriptMapping {
         }
         const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(rawFrame);
         const translation = sourceMap.translateRawFrame(lineNumber, columnNumber);
-        return translation ? { ...translation, sourceMap } : null;
+        return translation ? { ...translation, sourceMap, script } : null;
     }
-    /** Switch out url for UISourceCode where we have it. */
-    #toUIFrames(sourceMap, frames) {
+    /**
+     * Switch out url for UISourceCode where we have it. A top frame without position (unmapped generated position)
+     * gets the generated location of `rawFrame`.
+     */
+    async #toUIFrames({ sourceMap, script, frames }, rawFrame) {
         const project = this.#sourceMapToProject.get(sourceMap);
-        return frames.map(({ line, column, name, url }) => {
+        return await Promise.all(frames.map(async ({ line, column, name, url }) => {
+            if (line === undefined || column === undefined) {
+                return { ...await this.#generatedUIFrame(script, rawFrame), name };
+            }
             const uiSourceCode = url ? project?.uiSourceCodeForURL(url) : undefined;
             return { line, column, name, url: uiSourceCode ? undefined : url, uiSourceCode: uiSourceCode ?? undefined };
-        });
+        }));
+    }
+    /** The location of `rawFrame` in terms of the generated `script`, as the non-compiler mappings would show it. */
+    async #generatedUIFrame(script, rawFrame) {
+        const rawLocation = this.#debuggerModel.createRawLocation(script, rawFrame.lineNumber, rawFrame.columnNumber);
+        // Goes through the DebuggerWorkspaceBinding so that e.g. inline scripts resolve to their document.
+        const uiLocation = await this.#debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+        if (uiLocation) {
+            const { uiSourceCode, lineNumber: line, columnNumber } = uiLocation;
+            return { uiSourceCode, line, column: columnNumber ?? -1 };
+        }
+        return { url: rawFrame.url, line: rawFrame.lineNumber, column: rawFrame.columnNumber };
     }
     /**
      * Computes the set of line numbers which are source-mapped to a script within the

@@ -1,10 +1,21 @@
+import * as Common from '../../core/common/common.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 import type { LitTemplate } from '../../ui/lit/lit.js';
-export declare class Plugin {
+export declare const enum Events {
+    /**
+     * Fired when the items returned by `leftToolbarItems()` or `rightToolbarItems()`
+     * have changed and the toolbar needs to query them again.
+     */
+    TOOLBAR_ITEMS_CHANGED = "ToolbarItemsChanged"
+}
+export interface EventTypes {
+    [Events.TOOLBAR_ITEMS_CHANGED]: void;
+}
+export declare class Plugin extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     protected readonly uiSourceCode: Workspace.UISourceCode.UISourceCode;
     constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode, _transformer?: SourceFrame.SourceFrame.Transformer);
     static accepts(_uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean;

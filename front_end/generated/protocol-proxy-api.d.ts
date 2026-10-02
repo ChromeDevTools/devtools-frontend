@@ -68,6 +68,8 @@ declare namespace ProtocolProxyApi {
 
     FileSystem: FileSystemApi;
 
+    FindInPage: FindInPageApi;
+
     HeadlessExperimental: HeadlessExperimentalApi;
 
     IO: IOApi;
@@ -184,6 +186,8 @@ declare namespace ProtocolProxyApi {
     Fetch: FetchDispatcher;
 
     FileSystem: FileSystemDispatcher;
+
+    FindInPage: FindInPageDispatcher;
 
     HeadlessExperimental: HeadlessExperimentalDispatcher;
 
@@ -2179,6 +2183,34 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface FileSystemDispatcher {
+  }
+
+  export interface FindInPageApi {
+    /**
+     * Forwards `query` to the find-in-page facility, starting a new find session.
+     * Where exactly the search starts from is implementation-specific.
+     */
+    invoke_findFirst(params: Protocol.FindInPage.FindFirstRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Moves to the next match for the query passed to the most recent
+     * findFirst() call.
+     */
+    invoke_findNext(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Moves to the previous match for the query passed to the most recent
+     * findFirst() call.
+     */
+    invoke_findPrev(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Ends the current find session, if any, and clears its highlighting.
+     */
+    invoke_stop(): Promise<Protocol.ProtocolResponseWithError>;
+
+  }
+  export interface FindInPageDispatcher {
   }
 
   export interface HeadlessExperimentalApi {

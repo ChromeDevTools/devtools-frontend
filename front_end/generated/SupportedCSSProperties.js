@@ -4584,8 +4584,16 @@ export const generatedProperties = [
         "name": "position-try-order"
     },
     {
+        "devtools_keywords": [
+            "always",
+            "anchor-valid",
+            "anchor-visible",
+            "no-overflow"
+        ],
         "keywords": [
             "always",
+            "anchor-valid",
+            "anchor-visible",
             "anchors-visible",
             "no-overflow"
         ],
@@ -5463,7 +5471,7 @@ export const generatedProperties = [
         ],
         "name": "text-decoration-inset",
         "runtime_flag": "CSSTextDecorationInset",
-        "runtime_flag_status": "experimental"
+        "runtime_flag_status": "stable"
     },
     {
         "keywords": [
@@ -8465,7 +8473,8 @@ export const generatedPropertyValues = {
     "position-visibility": {
         "values": [
             "always",
-            "anchors-visible",
+            "anchor-valid",
+            "anchor-visible",
             "no-overflow"
         ]
     },

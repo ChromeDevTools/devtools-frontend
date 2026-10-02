@@ -1,8 +1,8 @@
 import * as Host from '../../../core/host/host.js';
-import type * as LHModel from '../../lighthouse/lighthouse.js';
+import { type LighthouseCategoryArg } from '../data_formatters/LighthouseFormatter.js';
 import { type BaseToolCapability, type DataHandlerResult, type DataTool, type LighthouseReportCapability, type ToolArgs, ToolName } from './Tool.js';
 export interface GetLighthouseAuditsArgs extends ToolArgs {
-    categoryId: LHModel.RunTypes.CategoryId;
+    categoryId: LighthouseCategoryArg;
 }
 export declare class GetLighthouseAuditsTool implements DataTool<GetLighthouseAuditsArgs, {
     audits: string;

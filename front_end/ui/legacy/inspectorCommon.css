@@ -141,6 +141,17 @@ iframe.widget {
   display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
+.screen-reader-only {
+  position: absolute;
+  overflow: hidden;
+  clip-path: rect(0 0 0 0);
+  width: var(--sys-size-1);
+  height: var(--sys-size-1);
+  margin: calc(-1 * var(--sys-size-1));
+  padding: 0;
+  border: 0;
+}
+
 .highlighted-search-result,
 :host::highlight(highlighted-search-result) {
   border-radius: var(--sys-size-1);

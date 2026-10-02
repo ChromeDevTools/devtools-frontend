@@ -2,12 +2,11 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import { Plugin } from './Plugin.js';
 export declare class CoveragePlugin extends Plugin {
     #private;
     private originalSourceCode;
-    private infoInToolbar;
     private model;
     private coverage;
     constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode, transformer: SourceFrame.SourceFrame.Transformer);
@@ -16,7 +15,7 @@ export declare class CoveragePlugin extends Plugin {
     private handleReset;
     private handleCoverageSizesChanged;
     private updateStats;
-    rightToolbarItems(): UI.Toolbar.ToolbarItem[];
+    rightToolbarItems(): LitTemplate[];
     editorExtension(): CodeMirror.Extension;
     private getCoverageManager;
     editorInitialized(editor: TextEditor.TextEditor.TextEditor): void;

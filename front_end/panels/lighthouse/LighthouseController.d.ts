@@ -24,7 +24,10 @@ export declare class LighthouseController extends Common.ObjectWrapper.ObjectWra
         formFactor: (string | undefined);
         mode: string;
     };
-    getCategoryIDs(): LighthouseModel.RunTypes.CategoryId[];
+    getCategoryIDs(options?: {
+        isAIControlled?: boolean;
+        mode?: string;
+    }): LighthouseModel.RunTypes.CategoryId[];
     getInspectedURL(options?: {
         force: boolean;
     }): Promise<Platform.DevToolsPath.UrlString>;

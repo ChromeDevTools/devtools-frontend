@@ -15,6 +15,23 @@ const objectUrlRegistry = new FinalizationRegistry(url => {
  */
 const MAX_BLOB_SIZE_BYTES = 10 * 1024 * 1024;
 /**
+ * Returns `charset` if `TextDecoder` supports it, and 'utf-8' otherwise.
+ * The charset usually comes straight from a `Content-Type` header, and
+ * `TextDecoder` has no non-throwing way to check a label.
+ */
+function supportedCharsetOrUtf8(charset) {
+    if (!charset) {
+        return 'utf-8';
+    }
+    try {
+        new TextDecoder(charset);
+        return charset;
+    }
+    catch {
+        return 'utf-8';
+    }
+}
+/**
  * This class is a small wrapper around either raw binary or text data.
  * As the binary data can actually contain textual data, we also store the
  * MIME type and if applicable, the charset.
@@ -38,7 +55,7 @@ export class ContentData {
     #contentAsTextObj;
     #imagePreviewUrl;
     constructor(data, isBase64, mimeType, charset) {
-        this.charset = charset || 'utf-8';
+        this.charset = supportedCharsetOrUtf8(charset);
         if (isBase64) {
             this.#contentAsBase64 = data;
         }

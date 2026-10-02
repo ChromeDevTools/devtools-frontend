@@ -479,14 +479,19 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
         }
         return flags;
     }
-    getCategoryIDs() {
-        const { mode } = this.getFlags();
+    getCategoryIDs(options) {
+        const mode = options?.mode ?? this.getFlags().mode;
         const categoryIDs = [];
         for (const preset of getPresets()) {
             if (mode && !preset.supportedModes.includes(mode)) {
                 continue;
             }
-            if (preset.setting.get()) {
+            if (options?.isAIControlled) {
+                if (preset.configID !== 'agentic-browsing') {
+                    categoryIDs.push(preset.configID);
+                }
+            }
+            else if (preset.setting.get()) {
                 categoryIDs.push(preset.configID);
             }
         }
@@ -559,11 +564,11 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
                 this.currentLighthouseRun = undefined;
             }
             const inspectedURL = await this.getInspectedURL({ force: true });
-            const categoryIDs = overrides?.categoryIds ?? this.getCategoryIDs();
             const flags = this.getFlags();
             if (overrides?.mode) {
                 flags.mode = overrides.mode;
             }
+            const categoryIDs = overrides?.categoryIds ?? this.getCategoryIDs({ isAIControlled: overrides?.isAIControlled, mode: flags.mode });
             this.recordMetrics(flags, categoryIDs);
             this.currentLighthouseRun = new LighthouseRun(this, this.protocolService, inspectedURL, categoryIDs, flags, Boolean(overrides?.isAIControlled));
             await this.currentLighthouseRun.start();

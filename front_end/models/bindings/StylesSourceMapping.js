@@ -152,6 +152,9 @@ export class StyleFile {
         this.uiSourceCode = this.#project.createUISourceCode(url, header.contentType());
         uiSourceCodeToStyleMap.set(this.uiSourceCode, this);
         NetworkProject.setInitialFrameAttribution(this.uiSourceCode, header.frameId);
+        if (header.hasSourceURL) {
+            NetworkProject.setSourceURLSynthesized(this.uiSourceCode);
+        }
         this.#project.addUISourceCodeWithProvider(this.uiSourceCode, this, metadata, 'text/css');
         this.#eventListeners = [
             this.uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this),

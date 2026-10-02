@@ -150,6 +150,16 @@ export declare function resolveCommentAnchorElement(element: Element, options?: 
  */
 export declare function extractVeName(vePath: string): string;
 /**
+ * Extracts the top-level panel ID from a visual logging path if present.
+ * For example:
+ * - "Panel: timeline > FlameChart: main" -> "timeline"
+ * - "Panel: elements > Pane: styles" -> "elements"
+ *
+ * @param vePath The visual logging path string.
+ * @returns The panel ID string, or undefined if no Panel component is found.
+ */
+export declare function extractPanelId(vePath?: string): string | undefined;
+/**
  * Checks if an element matches the given visual logging path.
  *
  * @param element The DOM element to test.

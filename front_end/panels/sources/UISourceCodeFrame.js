@@ -48,6 +48,7 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
     // recreated when the binding changes
     // Used in web tests
     plugins = [];
+    #pluginEventListeners = [];
     #errorPopoverHelper;
     #sourcesPanelOpenedMetricsRecorded = false;
     constructor(uiSourceCode) {
@@ -320,16 +321,22 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
         const pluginUISourceCode = binding ? binding.network : this.#uiSourceCode;
         for (const pluginType of UISourceCodeFrame.sourceFramePlugins()) {
             if (pluginType.accepts(pluginUISourceCode)) {
-                this.plugins.push(new pluginType(pluginUISourceCode, this));
+                const plugin = new pluginType(pluginUISourceCode, this);
+                this.#pluginEventListeners.push(plugin.addEventListener("ToolbarItemsChanged" /* PluginEvents.TOOLBAR_ITEMS_CHANGED */, this.#onPluginToolbarItemsChanged, this));
+                this.plugins.push(plugin);
             }
         }
         this.dispatchEventToListeners("ToolbarItemsChanged" /* Events.TOOLBAR_ITEMS_CHANGED */);
     }
     disposePlugins() {
+        Common.EventTarget.removeEventListeners(this.#pluginEventListeners);
         for (const plugin of this.plugins) {
             plugin.dispose();
         }
         this.plugins = [];
+    }
+    #onPluginToolbarItemsChanged() {
+        this.dispatchEventToListeners("ToolbarItemsChanged" /* Events.TOOLBAR_ITEMS_CHANGED */);
     }
     onBindingChanged() {
         const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this.#uiSourceCode);

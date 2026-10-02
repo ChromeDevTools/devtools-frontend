@@ -199,7 +199,6 @@ __export(NamesResolver_exports, {
   findScopeChainForDebuggerScope: () => findScopeChainForDebuggerScope,
   getScopeResolvedForTest: () => getScopeResolvedForTest,
   getTextFor: () => getTextFor,
-  resolveDebuggerFrameFunctionName: () => resolveDebuggerFrameFunctionName,
   resolveProfileFrameFunctionName: () => resolveProfileFrameFunctionName,
   resolveScopeChain: () => resolveScopeChain,
   resolveScopeInObject: () => resolveScopeInObject,
@@ -2006,6 +2005,7 @@ var Page;
     PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
     PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
     PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
@@ -3614,13 +3614,6 @@ async function getFunctionNameFromScopeStart(script, rawLineNumber, rawColumnNum
     return null;
   }
   return name;
-}
-async function resolveDebuggerFrameFunctionName(frame) {
-  const startLocation = frame.localScope()?.range()?.start;
-  if (!startLocation) {
-    return null;
-  }
-  return await getFunctionNameFromScopeStart(frame.script, startLocation.lineNumber, startLocation.columnNumber);
 }
 async function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }, target, debuggerWorkspaceBinding) {
   if (!target || lineNumber === void 0 || columnNumber === void 0 || scriptId === void 0) {

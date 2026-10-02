@@ -17,8 +17,11 @@ export type TranslatedRawFrame = {
     /** Makes the frame eligible to end an outlined chain. */
     readonly functionKeys?: FunctionKeys;
     /**
-     * True iff `frames` show generated code because nothing could map the raw frame to authored code: builtins, scripts
+     * True iff `frames` show generated code because no authored code is known for the raw frame: builtins, scripts
      * without source map, scripts whose source map is still loading, language plugins reporting `missingDebugInfo`.
+     * A frame at an unmapped position of a script with scopes information is not unmapped: its generated ranges still
+     * identify the authored function.
+     *
      * Unmapped frames are treated as "not authored" and may be merged away inside outlined chains.
      */
     readonly unmapped?: boolean;

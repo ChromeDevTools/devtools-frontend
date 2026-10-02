@@ -186,9 +186,6 @@ export class ElementsPanel extends UI.Panel.Panel {
     get targetManager() {
         return this.#targetManager;
     }
-    getTreeOutlineForTesting() {
-        return this.#domTreeWidget.getTreeOutlineForTesting();
-    }
     getDOMTreeWidgetForTesting() {
         return this.#domTreeWidget;
     }

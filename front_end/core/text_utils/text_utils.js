@@ -426,6 +426,17 @@ var objectUrlRegistry = new FinalizationRegistry((url) => {
   URL.revokeObjectURL(url);
 });
 var MAX_BLOB_SIZE_BYTES = 10 * 1024 * 1024;
+function supportedCharsetOrUtf8(charset) {
+  if (!charset) {
+    return "utf-8";
+  }
+  try {
+    new TextDecoder(charset);
+    return charset;
+  } catch {
+    return "utf-8";
+  }
+}
 var ContentData = class _ContentData {
   mimeType;
   charset;
@@ -434,7 +445,7 @@ var ContentData = class _ContentData {
   #contentAsTextObj;
   #imagePreviewUrl;
   constructor(data, isBase64, mimeType, charset) {
-    this.charset = charset || "utf-8";
+    this.charset = supportedCharsetOrUtf8(charset);
     if (isBase64) {
       this.#contentAsBase64 = data;
     } else {

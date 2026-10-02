@@ -25,8 +25,6 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
         this.updatedStorageBuckets = new Set();
         this.throttler = new Common.Throttler.Throttler(1000);
     }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static keyFromIDBKey(idbKey) {
         if (typeof (idbKey) === 'undefined' || idbKey === null) {
             return undefined;
@@ -419,13 +417,9 @@ export class Database {
 }
 export class ObjectStore {
     name;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     keyPath;
     autoIncrement;
     indexes;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(name, keyPath, autoIncrement) {
         this.name = name;
         this.keyPath = keyPath;
@@ -433,20 +427,14 @@ export class ObjectStore {
         this.indexes = new Map();
     }
     get keyPathString() {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-        // @ts-expect-error
         return IndexedDBModel.keyPathStringFromIDBKeyPath(this.keyPath);
     }
 }
 export class Index {
     name;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     keyPath;
     unique;
     multiEntry;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(name, keyPath, unique, multiEntry) {
         this.name = name;
         this.keyPath = keyPath;

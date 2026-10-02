@@ -1,9 +1,19 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-export class Plugin {
+import * as Common from '../../core/common/common.js';
+export var Events;
+(function (Events) {
+    /**
+     * Fired when the items returned by `leftToolbarItems()` or `rightToolbarItems()`
+     * have changed and the toolbar needs to query them again.
+     */
+    Events["TOOLBAR_ITEMS_CHANGED"] = "ToolbarItemsChanged";
+})(Events || (Events = {}));
+export class Plugin extends Common.ObjectWrapper.ObjectWrapper {
     uiSourceCode;
     constructor(uiSourceCode, _transformer) {
+        super();
         this.uiSourceCode = uiSourceCode;
     }
     static accepts(_uiSourceCode) {

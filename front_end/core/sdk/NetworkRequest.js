@@ -168,6 +168,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     #blockedReason = undefined;
     #renderBlockingBehavior;
     #initiatorSecurityOrigin;
+    #requestURLSecurityOrigin;
     #corsErrorStatus = undefined;
     statusCode = 0;
     statusText = '';
@@ -182,6 +183,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     #resourceType = Common.ResourceType.resourceTypes.Other;
     #contentData = null;
     #streamingContentData = null;
+    #resolvedStreamingContentData = null;
     #frames = [];
     #responseHeaderValues = {};
     #responseHeadersText = '';
@@ -321,10 +323,17 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
      * (`imported-har://${authority}`) to ensure recorded network traffic never collides with
      * live web origins.
      *
+     * The result is cached, so repeated calls return the same instance until the URL or the
+     * imported HAR flag changes. This keeps opaque origins (such as `data:` URLs) same-origin
+     * with themselves.
+     *
      * @see {@link initiatorSecurityOrigin} to obtain the origin of the document that initiated the request.
      */
     requestURLSecurityOrigin() {
-        return this.#resolveSecurityOrigin(this.#url);
+        if (!this.#requestURLSecurityOrigin) {
+            this.#requestURLSecurityOrigin = this.#resolveSecurityOrigin(this.#url);
+        }
+        return this.#requestURLSecurityOrigin;
     }
     /**
      * Returns the security origin of the document or context (`request.documentURL`) that initiated
@@ -339,6 +348,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
      *
      * For imported HAR files, the origin is mapped to an isolated virtual domain
      * (`imported-har://${authority}`) matching the imported initiating document.
+     *
+     * The result is cached, so repeated calls return the same instance until the imported HAR
+     * flag changes. This keeps opaque origins same-origin with themselves.
      *
      * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
      */
@@ -375,6 +387,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         this.#parsedQueryParameters = undefined;
         this.#name = undefined;
         this.#path = undefined;
+        this.#requestURLSecurityOrigin = undefined;
     }
     get documentURL() {
         return this.#documentURL;
@@ -950,7 +963,12 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         return this.#isImportedHar;
     }
     setIsImportedHar(isImportedHar) {
+        if (this.#isImportedHar === isImportedHar) {
+            return;
+        }
         this.#isImportedHar = isImportedHar;
+        this.#requestURLSecurityOrigin = undefined;
+        this.#initiatorSecurityOrigin = undefined;
     }
     setEarlyHintsHeaders(headers) {
         this.earlyHintsHeaders = headers;
@@ -1166,7 +1184,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
             }
             // Note that this is save: "streamResponseBody()" always creates base64-based ContentData and
             // for "contentData()" we'll never call "addChunk".
-            return TextUtils.StreamingContentData.StreamingContentData.from(contentData);
+            const streamingContentData = TextUtils.StreamingContentData.StreamingContentData.from(contentData);
+            this.#resolvedStreamingContentData = streamingContentData;
+            return streamingContentData;
         });
         return this.#streamingContentData;
     }
@@ -1178,6 +1198,13 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     }
     async searchInContent(query, caseSensitive, isRegex) {
         if (!this.#contentDataProvider) {
+            const cachedContentData = this.finished && !this.failed ?
+                (await this.#contentData ?? this.#resolvedStreamingContentData?.content()) :
+                undefined;
+            if (cachedContentData && !TextUtils.ContentData.ContentData.isError(cachedContentData) &&
+                cachedContentData.isTextContent) {
+                return TextUtils.TextUtils.performSearchInContentData(cachedContentData, query, caseSensitive, isRegex);
+            }
             return await NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
         }
         const contentData = await this.requestContentData();
@@ -1482,11 +1509,16 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         }
         this.endTime = timestamp;
         if (data) {
-            void this.#streamingContentData?.then(contentData => {
-                if (!TextUtils.StreamingContentData.isError(contentData)) {
-                    contentData.addChunk(data);
-                }
-            });
+            if (this.#resolvedStreamingContentData) {
+                this.#resolvedStreamingContentData.addChunk(data);
+            }
+            else {
+                void this.#streamingContentData?.then(contentData => {
+                    if (!TextUtils.StreamingContentData.isError(contentData)) {
+                        contentData.addChunk(data);
+                    }
+                });
+            }
         }
     }
     waitForResponseReceived() {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import '../../ui/components/tooltips/tooltips.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
@@ -191,5 +192,25 @@ export class CommentThreadWidget extends UI.Widget.Widget {
         };
         this.#view(viewInput, undefined, this.contentElement);
     }
+}
+export async function computeCommentTitle(anchor) {
+    if (anchor.node) {
+        const target = SDK.TargetManager.TargetManager.instance().targetById(anchor.node.targetId);
+        if (target) {
+            const deferredNode = new SDK.DOMModel.DeferredDOMNode(target, anchor.node.backendNodeId);
+            const node = await deferredNode.resolvePromise();
+            if (node) {
+                return { node };
+            }
+        }
+    }
+    if (anchor.networkRequestId) {
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const request = target?.model(SDK.NetworkManager.NetworkManager)?.requestForId(anchor.networkRequestId);
+        if (request) {
+            return { text: request.name() };
+        }
+    }
+    return { text: anchor.textSignature || '' };
 }
 //# sourceMappingURL=CommentThreadWidget.js.map

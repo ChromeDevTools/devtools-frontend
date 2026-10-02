@@ -1,9 +1,10 @@
 import * as Host from '../../../core/host/host.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
+import { type LighthouseCategoryArg } from '../data_formatters/LighthouseFormatter.js';
 import { type BaseToolCapability, type DataHandlerResult, type DataTool, type LighthouseRecordingCapability, type ToolArgs, ToolName } from './Tool.js';
 export interface RunLighthouseArgs extends ToolArgs {
     explanation: string;
-    categoryId: LHModel.RunTypes.CategoryId;
+    categoryId: LighthouseCategoryArg;
     mode?: LHModel.RunTypes.RunMode;
 }
 export declare class RunLighthouseTool implements DataTool<RunLighthouseArgs, {

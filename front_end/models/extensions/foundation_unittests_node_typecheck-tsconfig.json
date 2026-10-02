@@ -47,6 +47,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/models/extensions/ExtensionEndpoint.test.ts",
     "../../../../../../front_end/models/extensions/HostUrlPattern.test.ts",
     "../../../../../../front_end/models/extensions/LanguageExtensionEndpoint.test.ts",
     "../../../../../../front_end/models/extensions/RecorderPluginManager.test.ts"
@@ -54,6 +55,9 @@
   "references": [
     {
       "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../extension-api/extension-api-tsconfig.ref.json"
     },
     {
       "path": "../../core/platform/bundle-tsconfig.ref.json"

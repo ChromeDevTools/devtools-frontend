@@ -7,7 +7,7 @@ import { ElementsTreeElement, type InitialEditState } from './ElementsTreeElemen
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import { TopLayerContainer } from './TopLayerContainer.js';
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export { elementsTreeOutlineStyles };
 interface ViewInput {
     domTreeWidget?: DOMTreeWidget;
@@ -16,17 +16,13 @@ interface ViewInput {
     selectEnabled: boolean;
     hideGutter: boolean;
     maxTreeDepth?: number;
-    enableContextMenu?: boolean;
     showComments?: boolean;
     showAIButton?: boolean;
     disableEdits?: boolean;
     expandRoot?: boolean;
-    visibleWidth?: number;
-    visible?: boolean;
     maxRowsShown?: number;
     wrap: boolean;
     showSelectionOnKeyboardFocus: boolean;
-    preventTabOrder: boolean;
     deindentSingleNode: boolean;
     currentHighlightedNode: SDK.DOMModel.DOMNode | null;
     hoveredNode?: SDK.DOMModel.DOMNode | null;
@@ -35,13 +31,6 @@ interface ViewInput {
     searchMatchQuery?: string | null;
     selectedNode: SDK.DOMModel.DOMNode | null;
     selectedClosingTag?: boolean;
-    onSelectedNodeChanged: (event: Common.EventTarget.EventTargetEvent<{
-        node: SDK.DOMModel.DOMNode | null;
-        focus: boolean;
-    }>) => void;
-    onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
-    onElementCollapsed: () => void;
-    onElementExpanded: () => void;
     onSelect?: (node: SDK.DOMModel.DOMNode, isClosingTag?: boolean, selectedByUser?: boolean) => void;
     onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
     onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
@@ -51,7 +40,6 @@ interface ViewInput {
     onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
     onKeyDown?: (event: KeyboardEvent) => void;
     isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
-    onDuplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
     isNodeExpanded?: (node: SDK.DOMModel.DOMNode) => boolean;
     isNodeInClipboard?: (node: SDK.DOMModel.DOMNode) => boolean;
     onCopyOrCut?: (isCut: boolean, event: Event) => void;
@@ -104,22 +92,10 @@ interface ViewInput {
     onExpandAllChildren?: (node: SDK.DOMModel.DOMNode) => void;
     updateRecordForNode?: (node: SDK.DOMModel.DOMNode) => Elements.ElementUpdateRecord.ElementUpdateRecord | null;
 }
-interface ViewOutput {
-    elementsTreeOutline?: ElementsTreeOutline;
-    highlightedTreeElement: ElementsTreeElement | null;
-    searchMatchTreeElement?: ElementsTreeElement | null;
-    searchMatchQuery?: string;
-    isUpdatingHighlights: boolean;
-    alreadyExpandedParentTreeElement: ElementsTreeElement | null;
-}
-export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
-export declare const DECLARATIVE_VIEW: View;
+export declare const DEFAULT_VIEW: View;
 /**
- * The main goal of this presenter is to wrap ElementsTreeOutline until
- * ElementsTreeOutline can be fully integrated into DOMTreeWidget.
- *
- * FIXME: once TreeOutline is declarative, this file needs to be renamed
- * to DOMTreeWidget.ts.
+ * Presenter for the DOM tree shown in the Elements panel. Renders the tree
+ * declaratively via `<devtools-tree>` and `ElementsTreeWidget`.
  */
 export declare class DOMTreeWidget extends UI.Widget.Widget {
     #private;
@@ -128,7 +104,6 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     selectEnabled: boolean;
     hideGutter: boolean;
     showSelectionOnKeyboardFocus: boolean;
-    preventTabOrder: boolean;
     deindentSingleNode: boolean;
     onSelectedNodeChanged: (event: Common.EventTarget.EventTargetEvent<{
         node: SDK.DOMModel.DOMNode | null;
@@ -175,16 +150,12 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     collapseChildren(node: SDK.DOMModel.DOMNode): void;
     showContextMenu(node: SDK.DOMModel.DOMNode, event: MouseEvent): Promise<UI.ContextMenu.ContextMenu | undefined>;
     /**
-     * FIXME: this is called to re-render everything from scratch, for
-     * example, if global settings changed. Instead, the setting values
-     * should be the input for the view function.
+     * Re-renders the tree from scratch, for example, when a global setting
+     * such as `show-ua-shadow-dom` changes.
+     *
+     * FIXME: the setting values should be part of the view input instead.
      */
     reload(): void;
-    /**
-     * Used by layout tests.
-     */
-    getTreeOutlineForTesting(): ElementsTreeOutline | undefined;
-    treeElementForNode(node: SDK.DOMModel.DOMNode): ElementsTreeElement | null;
     hoveredDOMNode(): SDK.DOMModel.DOMNode | null;
     hoveredClosingTag(): boolean;
     selectedClosingTag(): boolean;

@@ -1,3 +1,4 @@
+import type * as Common from '../../core/common/common.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Comments from '../../ui/comments/comments.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -23,6 +24,10 @@ export declare class CommentsOverlayWidget extends UI.Widget.Widget {
     wasShown(): void;
     willHide(): void;
     performUpdate(signal?: AbortSignal): Promise<void>;
+    openThread(threadId: string): void;
+}
+export declare class ThreadRevealer implements Common.Revealer.Revealer<CommentManager.CommentManager.CommentThread> {
+    reveal(thread: CommentManager.CommentManager.CommentThread): Promise<void>;
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     #private;

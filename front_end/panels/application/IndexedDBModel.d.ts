@@ -11,7 +11,7 @@ export declare class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> im
     private readonly throttler;
     private enabled?;
     constructor(target: SDK.Target.Target);
-    static keyFromIDBKey(idbKey: any): Protocol.IndexedDB.Key | undefined;
+    static keyFromIDBKey(idbKey: IDBValidKey | null | undefined): Protocol.IndexedDB.Key | undefined;
     private static keyRangeFromIDBKeyRange;
     static idbKeyPathFromKeyPath(keyPath: Protocol.IndexedDB.KeyPath): string | string[] | null | undefined;
     static keyPathStringFromIDBKeyPath(idbKeyPath: string | string[] | null | undefined): string | null;
@@ -95,18 +95,18 @@ export declare class Database {
 }
 export declare class ObjectStore {
     name: string;
-    keyPath: any;
+    keyPath: string | string[] | null | undefined;
     autoIncrement: boolean;
     indexes: Map<string, Index>;
-    constructor(name: string, keyPath: any, autoIncrement: boolean);
-    get keyPathString(): string;
+    constructor(name: string, keyPath: string | string[] | null | undefined, autoIncrement: boolean);
+    get keyPathString(): string | null;
 }
 export declare class Index {
     name: string;
-    keyPath: any;
+    keyPath: string | string[] | null | undefined;
     unique: boolean;
     multiEntry: boolean;
-    constructor(name: string, keyPath: any, unique: boolean, multiEntry: boolean);
+    constructor(name: string, keyPath: string | string[] | null | undefined, unique: boolean, multiEntry: boolean);
     get keyPathString(): string;
 }
 export interface ObjectStoreMetadata {

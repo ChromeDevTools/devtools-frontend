@@ -2769,6 +2769,7 @@ __export(PositionAreaEditor_exports, {
   parsePositionArea: () => parsePositionArea,
   stringifyPositionArea: () => stringifyPositionArea
 });
+import "../../../kit/kit.js";
 import * as Common5 from "../../../../core/common/common.js";
 import * as i18n7 from "../../../../core/i18n/i18n.js";
 import * as Lit7 from "../../../lit/lit.js";
@@ -2810,6 +2811,10 @@ var positionAreaEditor_css_default = `/*
 
   .property-value {
     color: var(--sys-color-on-surface);
+
+    &.not-authored {
+      color: var(--sys-color-state-disabled);
+    }
   }
 
   .position-area-builder {
@@ -2879,6 +2884,11 @@ var positionAreaEditor_css_default = `/*
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    & .property {
+      height: auto;
+      padding-bottom: 0;
+    }
   }
 
   .self-checkbox-label {
@@ -2935,6 +2945,58 @@ var positionAreaEditor_css_default = `/*
       outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
     }
   }
+
+  & .alignment-buttons {
+    display: flex;
+    flex-direction: row;
+
+    & > :first-child {
+      border-radius: 3px 0 0 3px;
+    }
+
+    & > :last-child {
+      border-radius: 0 3px 3px 0;
+    }
+
+    &.justify-self devtools-icon {
+      transform: rotate(-90deg);
+    }
+  }
+
+  & .alignment-button {
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    background-color: var(--sys-color-cdt-base-container);
+    width: var(--sys-size-11);
+    height: var(--sys-size-11);
+    min-width: var(--sys-size-11);
+    min-height: var(--sys-size-11);
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    }
+
+    & devtools-icon {
+      color: var(--icon-default);
+    }
+
+    &:hover devtools-icon {
+      color: var(--icon-default-hover);
+    }
+
+    &.selected {
+      background-color: var(--sys-color-tonal-container);
+
+      & devtools-icon {
+        color: var(--icon-toggled);
+      }
+    }
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./positionAreaEditor.css")} */`;
@@ -2968,7 +3030,19 @@ var UIStrings4 = {
   /**
    * @description Label for auto mode radio button in the position-area editor.
    */
-  auto: "Auto"
+  auto: "Auto",
+  /**
+   * @description Title of the button that selects an alignment property value in the position-area editor.
+   * @example {align-self} propertyName
+   * @example {center} propertyValue
+   */
+  selectButton: "Add {propertyName}: {propertyValue}",
+  /**
+   * @description Title of the button that deselects an alignment property value in the position-area editor.
+   * @example {align-self} propertyName
+   * @example {center} propertyValue
+   */
+  deselectButton: "Remove {propertyName}: {propertyValue}"
 };
 var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/components/inline_editor/PositionAreaEditor.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
@@ -3158,6 +3232,13 @@ function stringifyPositionArea(area) {
   }
   return `${firstKw} ${secondKw}`;
 }
+var ALIGNMENT_VALUES = [
+  { value: "center", iconName: "align-self-center" },
+  { value: "start", iconName: "align-self-start" },
+  { value: "end", iconName: "align-self-end" },
+  { value: "stretch", iconName: "align-self-stretch" },
+  { value: "anchor-center", iconName: "center-focus-weak" }
+];
 var DEFAULT_VIEW = (input, output, target) => {
   const container = {
     attributes: {
@@ -3351,6 +3432,42 @@ var DEFAULT_VIEW = (input, output, target) => {
     })}
       </fieldset>`;
   }
+  function renderAlignmentSection(propertyName) {
+    const property = input.properties?.get(propertyName);
+    const authoredValue = property?.authored;
+    const notAuthored = !authoredValue;
+    const shownValue = authoredValue || property?.computed;
+    const valueClasses = Directives5.classMap({
+      "property-value": true,
+      "not-authored": notAuthored
+    });
+    return html7`
+      <div class=axis-section>
+        <div class=axis-header>
+          <div class=property>
+            <span class=property-name>${propertyName}:</span>
+            ${shownValue ? html7`<span class=${valueClasses}><span class=property-keyword>${shownValue}</span></span>` : nothing2}
+          </div>
+        </div>
+        <div class=${Directives5.classMap({ "alignment-buttons": true, "justify-self": propertyName === "justify-self" })}>
+          ${ALIGNMENT_VALUES.map(({ value: value2, iconName }) => {
+      const selected = authoredValue === value2;
+      const title = selected ? i18nString4(UIStrings4.deselectButton, { propertyName, propertyValue: value2 }) : i18nString4(UIStrings4.selectButton, { propertyName, propertyValue: value2 });
+      return html7`
+              <button
+                type="button"
+                title=${title}
+                class=${Directives5.classMap({ "alignment-button": true, selected })}
+                aria-pressed=${selected}
+                jslog=${VisualLogging9.item(`${propertyName}-${value2}`).track({ click: true })}
+                @click=${() => input.onPropertyChange?.(propertyName, selected ? void 0 : value2)}>
+                <devtools-icon name=${iconName}></devtools-icon>
+              </button>
+            `;
+    })}
+        </div>
+      </div>`;
+  }
   render7(
     html7`
     <style>${positionAreaEditor_css_default}</style>
@@ -3405,6 +3522,8 @@ var DEFAULT_VIEW = (input, output, target) => {
         </div>
         ${renderModeRadioGroup(currentMode)}
       </div>
+      ${renderAlignmentSection("align-self")}
+      ${renderAlignmentSection("justify-self")}
     </div>
     `,
     // clang-format on
@@ -3414,6 +3533,7 @@ var DEFAULT_VIEW = (input, output, target) => {
 };
 var Events3 = /* @__PURE__ */ ((Events5) => {
   Events5["POSITION_AREA_CHANGED"] = "positionAreaChanged";
+  Events5["PROPERTY_CHANGED"] = "propertyChanged";
   return Events5;
 })(Events3 || {});
 var PositionAreaEditorBase = Common5.ObjectWrapper.eventMixin(
@@ -3422,6 +3542,7 @@ var PositionAreaEditorBase = Common5.ObjectWrapper.eventMixin(
 var PositionAreaEditor = class extends PositionAreaEditorBase {
   #view;
   #area;
+  #properties = /* @__PURE__ */ new Map();
   #inProgressSelection;
   constructor(element, view = DEFAULT_VIEW) {
     super(element);
@@ -3555,11 +3676,22 @@ var PositionAreaEditor = class extends PositionAreaEditorBase {
     this.requestUpdate();
     this.#notifyChange();
   }
+  setProperty(name, authored, computed) {
+    this.#properties.set(name, { authored, computed });
+    this.requestUpdate();
+  }
+  #updateProperty(propertyName, value2) {
+    const current = this.#properties.get(propertyName);
+    this.#properties.set(propertyName, { ...current, authored: value2 });
+    this.requestUpdate();
+    this.dispatchEventToListeners("propertyChanged" /* PROPERTY_CHANGED */, { propertyName, value: value2 });
+  }
   performUpdate() {
     const isSelecting = () => this.#inProgressSelection !== void 0;
     this.#view(
       {
         area: this.#area,
+        properties: this.#properties,
         get isSelecting() {
           return isSelecting();
         },
@@ -3573,7 +3705,8 @@ var PositionAreaEditor = class extends PositionAreaEditorBase {
         onSelfChange: (self) => {
           this.#setAxisSelf("block" /* BLOCK */, self);
           this.#setAxisSelf("inline" /* INLINE */, self);
-        }
+        },
+        onPropertyChange: this.#updateProperty.bind(this)
       },
       void 0,
       this.contentElement

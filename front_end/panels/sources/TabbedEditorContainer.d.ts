@@ -40,6 +40,12 @@ export interface TabbedEditorViewInput {
 export type View = (input: TabbedEditorViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 declare const TabbedEditorContainerBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
+export interface SourceLocation {
+    uiSourceCode: Workspace.UISourceCode.UISourceCode;
+    location?: SourceFrame.SourceFrame.RevealPosition;
+    omitFocus?: boolean;
+    omitHighlight?: boolean;
+}
 export declare class TabbedEditorContainer extends TabbedEditorContainerBase {
     #private;
     focus(): void;
@@ -47,6 +53,7 @@ export declare class TabbedEditorContainer extends TabbedEditorContainerBase {
     set leftToolbarItems(items: LitTemplate[]);
     set rightToolbarItems(items: LitTemplate[]);
     set uiSourceCodes(uiSourceCodes: ReadonlySet<Workspace.UISourceCode.UISourceCode>);
+    set sourceLocation(sourceLocation: SourceLocation | undefined);
     onEditorSelected?: (event: EditorSelectedEvent) => void;
     onEditorClosed?: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
     private tabIds;
@@ -74,6 +81,7 @@ export declare class TabbedEditorContainer extends TabbedEditorContainerBase {
     rollback(): void;
     rollover(): void;
     showFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
+    closeActiveTab(): boolean;
     closeFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
     closeAllFiles(): void;
     detachEditors(): void;

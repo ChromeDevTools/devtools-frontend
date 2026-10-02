@@ -14,6 +14,7 @@ __export(CommentAnchorResolver_exports, {
   computeVisibleRect: () => computeVisibleRect,
   deepQuerySelector: () => deepQuerySelector,
   deepQuerySelectorAll: () => deepQuerySelectorAll,
+  extractPanelId: () => extractPanelId,
   extractVeName: () => extractVeName,
   getCustomAnchorResolverForElement: () => getCustomAnchorResolverForElement,
   getEditorFilePath: () => getEditorFilePath,
@@ -196,6 +197,13 @@ function resolveCommentAnchorElement(element, options) {
 }
 function extractVeName(vePath) {
   return vePath.split(" > ").pop()?.split(":")[0]?.trim() || "";
+}
+function extractPanelId(vePath) {
+  if (!vePath) {
+    return void 0;
+  }
+  const match = vePath.match(/^Panel:\s*([a-zA-Z0-9_-]+)/);
+  return match ? match[1] : void 0;
 }
 function matchesVePath(element, vePath, targetVeName = extractVeName(vePath)) {
   if (!VisualLogging.needsLogging(element)) {

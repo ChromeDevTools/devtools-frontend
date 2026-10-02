@@ -9414,6 +9414,8 @@ var softContextMenu_css_default = `/*
 }
 
 .dockside-title + devtools-toolbar {
+  /* Keep the title aligned with the other menu items when the menu is wider than the dock side row. */
+  margin-left: auto;
   margin-right: calc(-1 * var(--sys-size-5));
 }
 
@@ -12527,6 +12529,8 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   completionStopCharacters;
   usesSuggestionBuilder;
   #element;
+  #ariaPlaceholder = null;
+  #ariaLabelFromPlaceholder = false;
   boundOnKeyDown;
   boundOnInput;
   boundOnMouseWheel;
@@ -12560,6 +12564,29 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     this.loadCompletions = completions;
     this.completionStopCharacters = stopCharacters || " =:[({;,!+-*/&|^<>.";
     this.usesSuggestionBuilder = usesSuggestionBuilder || false;
+    this.#updateAriaRole();
+  }
+  #updateAriaRole() {
+    if (!this.#element) {
+      return;
+    }
+    if (this.loadCompletions) {
+      markAsCombobox(this.#element);
+      setAutocomplete(this.#element, "both" /* BOTH */);
+      setHasPopup(this.#element, "listbox" /* LIST_BOX */);
+      setExpanded(this.#element, this.isSuggestBoxVisible());
+      setPlaceholder(this.#element, null);
+      if (this.#ariaPlaceholder && (!this.#element.hasAttribute("aria-label") || this.#ariaLabelFromPlaceholder)) {
+        setLabel(this.#element, this.#ariaPlaceholder);
+        this.#ariaLabelFromPlaceholder = true;
+      }
+    } else {
+      markAsTextBox(this.#element);
+      clearAutocomplete(this.#element);
+      setHasPopup(this.#element, "false" /* FALSE */);
+      unsetExpandable(this.#element);
+      setPlaceholder(this.#element, this.#ariaPlaceholder);
+    }
   }
   setAutocompletionTimeout(timeout) {
     this.autocompletionTimeout = timeout;
@@ -12623,9 +12650,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
       this.#element.setAttribute("jslog", `${jslog}`);
     }
     this.#element.classList.add("text-prompt");
-    markAsTextBox(this.#element);
-    setAutocomplete(this.#element, "both" /* BOTH */);
-    setHasPopup(this.#element, "listbox" /* LIST_BOX */);
+    this.#updateAriaRole();
     this.#element.setAttribute("contenteditable", "plaintext-only");
     this.element().addEventListener("keydown", this.boundOnKeyDown, false);
     this.#element.addEventListener("input", this.boundOnInput, false);
@@ -12659,6 +12684,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     this.element().removeAttribute("role");
     clearAutocomplete(this.element());
     setHasPopup(this.element(), "false" /* FALSE */);
+    unsetExpandable(this.element());
   }
   textWithCurrentSuggestion() {
     const text = this.text();
@@ -12722,11 +12748,16 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   setPlaceholder(placeholder, ariaPlaceholder) {
     if (placeholder) {
       this.element().setAttribute("data-placeholder", placeholder);
-      setPlaceholder(this.element(), ariaPlaceholder || placeholder);
+      this.#ariaPlaceholder = ariaPlaceholder || placeholder;
     } else {
       this.element().removeAttribute("data-placeholder");
-      setPlaceholder(this.element(), null);
+      this.#ariaPlaceholder = null;
+      if (this.#ariaLabelFromPlaceholder) {
+        this.element().removeAttribute("aria-label");
+        this.#ariaLabelFromPlaceholder = false;
+      }
     }
+    this.#updateAriaRole();
   }
   setEnabled(enabled) {
     if (enabled) {
@@ -12929,7 +12960,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   }
   async complete(force) {
     this.clearAutocompleteTimeout();
-    if (!this.element().isConnected) {
+    if (!this.loadCompletions || !this.element().isConnected) {
       return;
     }
     const selection = this.element().getComponentSelection();
@@ -13814,11 +13845,13 @@ var ToolbarInput = class _ToolbarInput extends ToolbarItem {
     this.proxyElement = this.prompt.attach(internalPromptElement);
     this.proxyElement.classList.add("toolbar-prompt-proxy");
     this.proxyElement.addEventListener("keydown", (event) => this.onKeydownCallback(event));
-    this.prompt.initialize(
-      completions || (() => Promise.resolve([])),
-      " ",
-      dynamicCompletions
-    );
+    if (completions) {
+      this.prompt.initialize(
+        completions,
+        " ",
+        dynamicCompletions
+      );
+    }
     if (tooltip) {
       this.prompt.setTitle(tooltip);
     }
@@ -14731,6 +14764,17 @@ iframe.widget {
 [hidden],
 .hidden { /* TODO(crbug.com/458299714): remove the class */
   display: none !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.screen-reader-only {
+  position: absolute;
+  overflow: hidden;
+  clip-path: rect(0 0 0 0);
+  width: var(--sys-size-1);
+  height: var(--sys-size-1);
+  margin: calc(-1 * var(--sys-size-1));
+  padding: 0;
+  border: 0;
 }
 
 .highlighted-search-result,
@@ -22509,12 +22553,19 @@ var SoftDropDown = class {
     this.list.element.addEventListener("focusout", this.hide.bind(this), false);
     this.list.element.addEventListener("mousedown", (event) => event.consume(true), false);
     this.list.element.addEventListener("mouseup", (event) => {
-      if (event.target === this.list.element) {
+      if (event.button !== 0 || event.target === this.list.element) {
+        return;
+      }
+      const item8 = this.list.itemForNode(event.target);
+      if (!item8 || !this.delegate.isItemSelectable(item8)) {
         return;
       }
       this.selectHighlightedItem();
-      if (event.target instanceof Element && event.target?.parentElement) {
-        void VisualLogging25.logClick(event.target.parentElement, event);
+      if (event.target instanceof Element) {
+        const loggable = event.target.closest("[jslog]") ?? event.target.closest(".item")?.querySelector("[jslog]") ?? event.target.parentElement;
+        if (loggable) {
+          void VisualLogging25.logClick(loggable, event);
+        }
       }
       this.hide(event);
     }, false);
@@ -22666,6 +22717,16 @@ var SoftDropDown = class {
     element.classList.add("item");
     element.addEventListener("mousemove", (e) => {
       if ((e.movementX || e.movementY) && this.delegate.isItemSelectable(item8)) {
+        this.list.selectItem(
+          item8,
+          false,
+          /* Don't scroll */
+          true
+        );
+      }
+    });
+    element.addEventListener("mousedown", (e) => {
+      if (e.button === 0 && this.delegate.isItemSelectable(item8)) {
         this.list.selectItem(
           item8,
           false,

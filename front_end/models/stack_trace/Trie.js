@@ -36,7 +36,7 @@ export class FrameNode {
     kind = "VISIBLE" /* FrameKind.VISIBLE */;
     /** Set iff `kind` is OUTLINED, or VISIBLE and translated with scopes information. */
     functionKeys;
-    /** True iff the translation shows generated code, i.e. no source map or plugin could map it (incl. builtins). */
+    /** True iff the translation shows generated code because no authored code is known for the frame (incl. builtins). */
     isUnmapped = false;
     /** False until a translation was stored. Stays false if translation threw, so it will be retried. */
     isTranslated = false;

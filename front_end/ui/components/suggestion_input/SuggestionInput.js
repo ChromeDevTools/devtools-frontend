@@ -101,6 +101,7 @@ class SuggestionBox extends Lit.LitElement {
         options: jsonPropertyOptions,
         expression: { type: String },
         suggestionFilter: { attribute: false },
+        hideExactMatch: { type: Boolean },
         cursor: { state: true },
     };
     #suggestions = [];
@@ -108,6 +109,7 @@ class SuggestionBox extends Lit.LitElement {
         super();
         this.options = [];
         this.expression = '';
+        this.hideExactMatch = false;
         this.cursor = 0;
     }
     #handleKeyDownEvent = (event) => {
@@ -155,7 +157,9 @@ class SuggestionBox extends Lit.LitElement {
         }
     }
     render() {
-        if (this.#suggestions.length === 0) {
+        if (this.#suggestions.length === 0 ||
+            (this.hideExactMatch && this.#suggestions.length === 1 &&
+                this.#suggestions[0].toLowerCase() === this.expression.toLowerCase())) {
             return;
         }
         // clang-format off
@@ -179,6 +183,7 @@ export class SuggestionInput extends Lit.LitElement {
         options: jsonPropertyOptions,
         autocomplete: { type: Boolean },
         suggestionFilter: { attribute: false },
+        hideExactMatch: { type: Boolean },
         expression: { state: true },
         placeholder: { type: String },
         value: { type: String },
@@ -197,6 +202,7 @@ export class SuggestionInput extends Lit.LitElement {
         this.strikethrough = true;
         this.mimeType = '';
         this.autocomplete = true;
+        this.hideExactMatch = false;
         this.addEventListener('blur', this.#handleBlurEvent);
         let jslog = VisualLogging.value().track({ keydown: 'ArrowUp|ArrowDown|Enter', change: true, click: true });
         if (this.jslogContext) {
@@ -278,6 +284,7 @@ export class SuggestionInput extends Lit.LitElement {
         @suggest=${this.#handleSuggestEvent}
         .options=${this.options}
         .suggestionFilter=${this.suggestionFilter}
+        .hideExactMatch=${this.hideExactMatch}
         .expression=${this.autocomplete ? this.expression : ''}
       ></devtools-suggestion-box>`;
         // clang-format on

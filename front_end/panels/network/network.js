@@ -2814,6 +2814,7 @@ var Page;
     PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
     PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
     PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
@@ -16367,7 +16368,10 @@ var DEFAULT_VIEW10 = (input, output, target) => {
         <li role=treeitem
             @contextmenu=${copyValueContextmenu(
       i18nString17(UIStrings18.copyValue),
-      () => decodeURIComponent(param.value),
+      () => {
+        const { value, errorDecoding } = RequestPayloadView.decodeParameter(param.value, decodeParameters);
+        return errorDecoding ? param.value : value;
+      },
       "copy-value"
     )}>
           ${param.name !== "" ? html11`
@@ -16539,7 +16543,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
     }
   });
 };
-var RequestPayloadView = class extends UI18.Widget.VBox {
+var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
   #request;
   #decodeQueryParameters = true;
   #decodeFormParameters = true;
@@ -16729,21 +16733,25 @@ var RequestPayloadView = class extends UI18.Widget.VBox {
     }
     this.requestUpdate();
   }
-  static formatParameter(value, className, decodeParameters) {
-    let errorDecoding = false;
-    if (decodeParameters) {
-      value = value.replace(/\+/g, " ");
-      if (value.indexOf("%") >= 0) {
-        try {
-          value = decodeURIComponent(value);
-        } catch {
-          errorDecoding = true;
-        }
+  static decodeParameter(value, decodeParameters) {
+    if (!decodeParameters) {
+      return { value, errorDecoding: false };
+    }
+    value = value.replace(/\+/g, " ");
+    if (value.indexOf("%") >= 0) {
+      try {
+        return { value: decodeURIComponent(value), errorDecoding: false };
+      } catch {
+        return { value, errorDecoding: true };
       }
     }
-    const classes = classMap2({ [className]: !!className, "empty-value": value === "" });
+    return { value, errorDecoding: false };
+  }
+  static formatParameter(value, className, decodeParameters) {
+    const { value: decoded, errorDecoding } = _RequestPayloadView.decodeParameter(value, decodeParameters);
+    const classes = classMap2({ [className]: !!className, "empty-value": decoded === "" });
     return html11`<div class=${classes}>
-      ${errorDecoding ? html11`<span class=payload-decode-error>${i18nString17(UIStrings18.unableToDecodeValue)}</span>` : value}
+      ${errorDecoding ? html11`<span class=payload-decode-error>${i18nString17(UIStrings18.unableToDecodeValue)}</span>` : decoded}
     </div>`;
   }
 };

@@ -314,13 +314,28 @@ var LighthouseFormatter = class {
     return lines.join("\n");
   }
   /**
+   * Formats a Lighthouse report for an AI Agent. If categoryId is 'all', includes
+   * the overall summary followed by each category's audits. Otherwise, returns audits
+   * for the specified category.
+   */
+  formatReport(report, categoryId) {
+    if (categoryId === "all") {
+      const sections = [this.summary(report)];
+      for (const category of Object.values(report.categories)) {
+        sections.push(this.audits(report, category));
+      }
+      return sections.join("\n\n");
+    }
+    return this.audits(report, categoryId);
+  }
+  /**
    * Returns a markdown list of all audits in a given category.
    * Highlight failing audits (score < 90).
    */
-  audits(report, categoryId) {
-    const category = report.categories[categoryId];
+  audits(report, categoryOrId) {
+    const category = typeof categoryOrId === "string" ? report.categories[categoryOrId] : categoryOrId;
     if (!category) {
-      return `Category "${categoryId}" not found.`;
+      return `Category "${categoryOrId}" not found.`;
     }
     const lines = [];
     lines.push(`# Audits for ${category.title}`);
@@ -2337,6 +2352,7 @@ var Page;
     PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
     PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
     PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
@@ -5287,10 +5303,16 @@ ${dataAsText}`;
     return `${title}
 <binary data>`;
   }
-  static formatInitiatorUrl(initiatorUrl, allowedOrigin) {
-    const initiatorOrigin = SDK9.SecurityOrigin.SecurityOrigin.create(initiatorUrl);
-    if (initiatorOrigin.isSameOriginWith(allowedOrigin)) {
-      return initiatorUrl;
+  /**
+   * Returns the URL of `initiator` if it is same-origin with `request`, or a redaction
+   * placeholder otherwise.
+   *
+   * Both sides use `requestURLSecurityOrigin()`, so imported HAR requests are compared
+   * using their `imported-har://` origins.
+   */
+  static formatInitiatorUrl(initiator, request) {
+    if (initiator.requestURLSecurityOrigin().isSameOriginWith(request.requestURLSecurityOrigin())) {
+      return initiator.url();
     }
     return "<redacted cross-origin initiator URL>";
   }
@@ -5458,28 +5480,27 @@ ${this.formatRequestInitiatorChain()}`;
   }
 };
 function formatRequestInitiatorChain(request, networkLog) {
-  const allowedOrigin = request.requestURLSecurityOrigin();
   let initiatorChain = "";
   let lineStart = "- URL: ";
   const graph = networkLog.initiatorGraphForRequest(request);
   for (const initiator of Array.from(graph.initiators).reverse()) {
-    initiatorChain = initiatorChain + lineStart + NetworkRequestFormatter.formatInitiatorUrl(initiator.url(), allowedOrigin) + "\n";
+    initiatorChain = initiatorChain + lineStart + NetworkRequestFormatter.formatInitiatorUrl(initiator, request) + "\n";
     lineStart = "	" + lineStart;
     if (initiator === request) {
-      initiatorChain = formatRequestInitiated(graph.initiated, request, request, initiatorChain, lineStart, allowedOrigin);
+      initiatorChain = formatRequestInitiated(graph.initiated, request, request, initiatorChain, lineStart);
     }
   }
   return initiatorChain.trim();
 }
-function formatRequestInitiated(initiated, rootRequest, parentRequest, initiatorChain, lineStart, allowedOrigin) {
+function formatRequestInitiated(initiated, rootRequest, parentRequest, initiatorChain, lineStart) {
   const visited = /* @__PURE__ */ new Set();
   visited.add(rootRequest);
   for (const [keyRequest, initiatedRequest] of initiated.entries()) {
     if (initiatedRequest === parentRequest) {
       if (!visited.has(keyRequest)) {
         visited.add(keyRequest);
-        initiatorChain = initiatorChain + lineStart + NetworkRequestFormatter.formatInitiatorUrl(keyRequest.url(), allowedOrigin) + "\n";
-        initiatorChain = formatRequestInitiated(initiated, rootRequest, keyRequest, initiatorChain, "	" + lineStart, allowedOrigin);
+        initiatorChain = initiatorChain + lineStart + NetworkRequestFormatter.formatInitiatorUrl(keyRequest, rootRequest) + "\n";
+        initiatorChain = formatRequestInitiated(initiated, rootRequest, keyRequest, initiatorChain, "	" + lineStart);
       }
     }
   }
@@ -7709,7 +7730,7 @@ __export(GetLighthouseAudits_exports, {
 import * as Host7 from "../../core/host/host.js";
 var GetLighthouseAuditsTool = class {
   name = "getLighthouseAudits" /* GET_LIGHTHOUSE_AUDITS */;
-  description = "Retrieves audit results and diagnostic details from the active Lighthouse report for a specific category (e.g., 'accessibility').";
+  description = `Retrieves audit results and diagnostic details from the active Lighthouse report for all categories (using categoryId: "all") or a specific category (e.g., 'accessibility').`;
   parameters = {
     type: Host7.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for retrieving Lighthouse category audits.",
@@ -7717,7 +7738,7 @@ var GetLighthouseAuditsTool = class {
     properties: {
       categoryId: {
         type: Host7.AidaClient.ParametersTypes.STRING,
-        description: 'The category of audits to retrieve. E.g. "accessibility".',
+        description: 'The category of audits to retrieve. Use "all" to retrieve the full report and all categories, or specify a category: "accessibility", "performance", "best-practices", "seo".',
         nullable: false
       }
     },
@@ -7734,7 +7755,7 @@ var GetLighthouseAuditsTool = class {
     if (!report) {
       return { error: "Error: Active context is not a Lighthouse report." };
     }
-    const audits = new LighthouseFormatter().audits(report, params.categoryId);
+    const audits = new LighthouseFormatter().formatReport(report, params.categoryId);
     return {
       result: { audits },
       widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report } }]
@@ -10453,7 +10474,8 @@ var RunLighthouseTool = class {
       },
       categoryId: {
         type: Host26.AidaClient.ParametersTypes.STRING,
-        description: 'Lighthouse category. E.g. "accessibility", "performance".',
+        // The experimental 'agentic-browsing' category is intentionally omitted from the prompt description so the agent does not invoke it unprompted. It is also excluded when 'all' is provided.
+        description: 'Lighthouse category. Use "all" to run all categories, or specify a category: "accessibility", "performance", "best-practices", "seo".',
         nullable: false
       },
       mode: {
@@ -10476,13 +10498,13 @@ var RunLighthouseTool = class {
     try {
       const report = await context.runLighthouse({
         mode,
-        categoryIds: [params.categoryId],
+        categoryIds: params.categoryId === "all" ? void 0 : [params.categoryId],
         isAIControlled: true
       });
       if (!report) {
         return { error: "Error: Failed to record new audits." };
       }
-      const audits = new LighthouseFormatter().audits(report, params.categoryId);
+      const audits = new LighthouseFormatter().formatReport(report, params.categoryId);
       const isSnapshot = mode === "snapshot";
       return {
         result: { audits },
@@ -14045,8 +14067,20 @@ var skill = {
   "instructions": 'You are an expert accessibility debugging assistant.\n\n# Tools & Workflow\n\n1. **Direct Element Accessibility Inspection (`getElementAccessibilityDetails`)**:\n   - For inspecting an element, ALWAYS call `getElementAccessibilityDetails` on its backend node ID.\n   - It retrieves the computed role, accessible name, name source, ARIA attributes, ignored state, and accessibility properties directly from the accessibility tree.\n   - Use `getStyles` on the backend node ID to inspect layout, color contrast, or font properties.\n\n2. **Lighthouse Accessibility Audits (`getLighthouseAudits` & `runLighthouse`)**:\n   - If the user asks for a Lighthouse audit or report (such as recording a report or checking accessibility scores), or if audits are needed:\n     - If an active Lighthouse report context already exists and no fresh audit is requested, query it via `getLighthouseAudits` with `categoryId: \'accessibility\'`.\n     - If no active report exists or a fresh audit is requested, use `runLighthouse` with `categoryId: \'accessibility\'`:\n       - Use `"navigation"` mode for full page-load audits.\n       - Use `"snapshot"` mode to re-evaluate live in-page DOM/CSS modifications without reloading.\n       - Use `"timespan"` mode for user interaction flows.\n       - Always honor explicit mode requests from the user.\n   - When an audit references failing elements by DevTools node path (e.g. `"1,HTML,1,BODY,2,BUTTON"`), use `resolveDevtoolsNodePath` to resolve the path to a `backendNodeId`, then call `getElementAccessibilityDetails` or `getStyles`.\n\n3. **Dynamic Interaction Verification (`executeJavaScript`)**:\n   - Use `executeJavaScript` only to trigger keyboard events, dispatch focus changes, or simulate user interactions when testing dynamic accessibility behaviors.'
 };
 
-// gen/front_end/models/ai_assistance/skills/network.skill.js
+// gen/front_end/models/ai_assistance/skills/lighthouse.skill.js
 var skill2 = {
+  "name": "lighthouse",
+  "description": "Running Lighthouse reports and audits, full-page audits (performance, accessibility, best practices, Search Engine Optimization (SEO)), and inspecting Lighthouse scores.",
+  "allowedTools": [
+    "runLighthouse",
+    "getLighthouseAudits",
+    "resolveDevtoolsNodePath"
+  ],
+  "instructions": "You are an expert web quality and audit assistant integrated into Chrome DevTools.\nYour role is to evaluate websites using Lighthouse audits across performance, accessibility, best practices, and SEO.\n\n# Tools & Workflow\n\n1. **Lighthouse Audits (`runLighthouse` & `getLighthouseAudits`)**:\n   - If an active Lighthouse report context already exists and no fresh audit is requested:\n     - To inspect the entire report or multiple categories, call `getLighthouseAudits` with `categoryId: 'all'`.\n     - For a specific category, call `getLighthouseAudits` with the corresponding category ID (e.g. `'performance'`, `'accessibility'`, `'best-practices'`, `'seo'`).\n   - If no active report exists or a fresh audit is requested, call `runLighthouse`:\n     - If the user asks for a general report or multiple categories, use `categoryId: 'all'`.\n     - For a single category, pass that category ID.\n     - Execution mode:\n       - Use `\"navigation\"` mode for full page-load audits (default for full site reviews).\n       - Use `\"snapshot\"` mode to re-evaluate live in-page DOM/CSS modifications without reloading.\n       - Use `\"timespan\"` mode for user interaction flows.\n       - Always honor explicit mode requests from the user.\n\n2. **Resolving Node References (`resolveDevtoolsNodePath`)**:\n   - When an audit references failing elements by DevTools node path (e.g. `\"1,HTML,1,BODY,2,BUTTON\"`), use `resolveDevtoolsNodePath` to resolve the path to a `backendNodeId` to identify the failing element (or inspect it using tools from other skills if active).\n\n# Considerations\n\n- Base all analysis on empirical Lighthouse audit data. Never fabricate audit scores or results.\n- When summarizing a full Lighthouse run, highlight overall category scores first, then detail failing audits (score < 90)."
+};
+
+// gen/front_end/models/ai_assistance/skills/network.skill.js
+var skill3 = {
   "name": "network",
   "description": "Analyzing network traffic, network requests, HTTP/HTTPS headers, status codes, payload details, timing/performance, and request sizes.",
   "allowedTools": [
@@ -14057,7 +14091,7 @@ var skill2 = {
 };
 
 // gen/front_end/models/ai_assistance/skills/performance.skill.js
-var skill3 = {
+var skill4 = {
   "name": "performance",
   "description": "Web performance analysis, Core Web Vitals (LCP, INP, CLS), trace inspection, and trace recording.",
   "allowedTools": [
@@ -14075,7 +14109,7 @@ var skill3 = {
 };
 
 // gen/front_end/models/ai_assistance/skills/sources.skill.js
-var skill4 = {
+var skill5 = {
   "name": "sources",
   "description": "Analyzing workspace sources, inspecting code files, reading script contents, and viewing files in the workspace.",
   "allowedTools": [
@@ -14086,7 +14120,7 @@ var skill4 = {
 };
 
 // gen/front_end/models/ai_assistance/skills/storage.skill.js
-var skill5 = {
+var skill6 = {
   "name": "storage",
   "description": "Inspect, understand, and audit the state stored in browser storage (LocalStorage, SessionStorage) and cookies.",
   "allowedTools": [
@@ -14101,7 +14135,7 @@ var skill5 = {
 };
 
 // gen/front_end/models/ai_assistance/skills/styling.skill.js
-var skill6 = {
+var skill7 = {
   "name": "styling",
   "description": "CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.",
   "allowedTools": [
@@ -14113,12 +14147,13 @@ var skill6 = {
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts
 var SKILLS = {
-  styling: skill6,
-  network: skill2,
+  styling: skill7,
+  network: skill3,
   accessibility: skill,
-  performance: skill3,
-  storage: skill5,
-  sources: skill4
+  performance: skill4,
+  storage: skill6,
+  sources: skill5,
+  lighthouse: skill2
 };
 
 // ../../front_end/models/ai_assistance/AiAgent2.ts
@@ -14128,7 +14163,8 @@ var SKILL_DISPLAY_NAMES = {
   accessibility: "Accessibility",
   performance: "Performance",
   storage: "Storage",
-  sources: "Sources"
+  sources: "Sources",
+  lighthouse: "Lighthouse"
 };
 var preamble8 = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
 Your role is to help web developers debug, analyze, and optimize web applications by learning specialized skills and utilizing tools.
@@ -14274,7 +14310,7 @@ QUERY: ${query}`;
     if (unloadedSkills.length === 0) {
       return enhancedQuery;
     }
-    const skillsManifest = unloadedSkills.map(([name, skill7]) => `- ${name}: ${skill7.description}`).join("\n");
+    const skillsManifest = unloadedSkills.map(([name, skill8]) => `- ${name}: ${skill8.description}`).join("\n");
     return `Available skills that are not yet loaded:
 ${skillsManifest}
 

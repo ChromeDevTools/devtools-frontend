@@ -1,6 +1,7 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../../kit/kit.js';
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -36,6 +37,18 @@ const UIStrings = {
      * @description Label for auto mode radio button in the position-area editor.
      */
     auto: 'Auto',
+    /**
+     * @description Title of the button that selects an alignment property value in the position-area editor.
+     * @example {align-self} propertyName
+     * @example {center} propertyValue
+     */
+    selectButton: 'Add {propertyName}: {propertyValue}',
+    /**
+     * @description Title of the button that deselects an alignment property value in the position-area editor.
+     * @example {align-self} propertyName
+     * @example {center} propertyValue
+     */
+    deselectButton: 'Remove {propertyName}: {propertyValue}',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/PositionAreaEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -247,6 +260,13 @@ export function stringifyPositionArea(area) {
     }
     return `${firstKw} ${secondKw}`;
 }
+const ALIGNMENT_VALUES = [
+    { value: 'center', iconName: 'align-self-center' },
+    { value: 'start', iconName: 'align-self-start' },
+    { value: 'end', iconName: 'align-self-end' },
+    { value: 'stretch', iconName: 'align-self-stretch' },
+    { value: 'anchor-center', iconName: 'center-focus-weak' },
+];
 export const DEFAULT_VIEW = (input, output, target) => {
     const container = {
         attributes: {
@@ -449,6 +469,45 @@ export const DEFAULT_VIEW = (input, output, target) => {
       </fieldset>`;
         // clang-format on
     }
+    function renderAlignmentSection(propertyName) {
+        const property = input.properties?.get(propertyName);
+        const authoredValue = property?.authored;
+        const notAuthored = !authoredValue;
+        const shownValue = authoredValue || property?.computed;
+        const valueClasses = Directives.classMap({
+            'property-value': true,
+            'not-authored': notAuthored,
+        });
+        // clang-format off
+        return html `
+      <div class=axis-section>
+        <div class=axis-header>
+          <div class=property>
+            <span class=property-name>${propertyName}:</span>
+            ${shownValue ? html `<span class=${valueClasses}><span class=property-keyword>${shownValue}</span></span>` : nothing}
+          </div>
+        </div>
+        <div class=${Directives.classMap({ 'alignment-buttons': true, 'justify-self': propertyName === 'justify-self' })}>
+          ${ALIGNMENT_VALUES.map(({ value, iconName }) => {
+            const selected = authoredValue === value;
+            const title = selected ? i18nString(UIStrings.deselectButton, { propertyName, propertyValue: value }) :
+                i18nString(UIStrings.selectButton, { propertyName, propertyValue: value });
+            return html `
+              <button
+                type="button"
+                title=${title}
+                class=${Directives.classMap({ 'alignment-button': true, selected })}
+                aria-pressed=${selected}
+                jslog=${VisualLogging.item(`${propertyName}-${value}`).track({ click: true })}
+                @click=${() => input.onPropertyChange?.(propertyName, selected ? undefined : value)}>
+                <devtools-icon name=${iconName}></devtools-icon>
+              </button>
+            `;
+        })}
+        </div>
+      </div>`;
+        // clang-format on
+    }
     // clang-format off
     render(html `
     <style>${positionAreaEditorStyles}</style>
@@ -501,6 +560,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
         </div>
         ${renderModeRadioGroup(currentMode)}
       </div>
+      ${renderAlignmentSection('align-self')}
+      ${renderAlignmentSection('justify-self')}
     </div>
     `, 
     // clang-format on
@@ -509,11 +570,13 @@ export const DEFAULT_VIEW = (input, output, target) => {
 export var Events;
 (function (Events) {
     Events["POSITION_AREA_CHANGED"] = "positionAreaChanged";
+    Events["PROPERTY_CHANGED"] = "propertyChanged";
 })(Events || (Events = {}));
 const PositionAreaEditorBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class PositionAreaEditor extends PositionAreaEditorBase {
     #view;
     #area;
+    #properties = new Map();
     #inProgressSelection;
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
@@ -652,10 +715,21 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
         this.requestUpdate();
         this.#notifyChange();
     }
+    setProperty(name, authored, computed) {
+        this.#properties.set(name, { authored, computed });
+        this.requestUpdate();
+    }
+    #updateProperty(propertyName, value) {
+        const current = this.#properties.get(propertyName);
+        this.#properties.set(propertyName, { ...current, authored: value });
+        this.requestUpdate();
+        this.dispatchEventToListeners("propertyChanged" /* Events.PROPERTY_CHANGED */, { propertyName, value });
+    }
     performUpdate() {
         const isSelecting = () => this.#inProgressSelection !== undefined;
         this.#view({
             area: this.#area,
+            properties: this.#properties,
             get isSelecting() {
                 return isSelecting();
             },
@@ -670,6 +744,7 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
                 this.#setAxisSelf("block" /* Axis.BLOCK */, self);
                 this.#setAxisSelf("inline" /* Axis.INLINE */, self);
             },
+            onPropertyChange: this.#updateProperty.bind(this),
         }, undefined, this.contentElement);
     }
 }

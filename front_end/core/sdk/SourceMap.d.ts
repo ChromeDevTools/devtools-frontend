@@ -169,7 +169,6 @@ export declare class SourceMap {
         scope: ScopesCodec.OriginalScope;
         url?: Platform.DevToolsPath.UrlString;
     } | null;
-    hasInlinedFrames(generatedLine: number, generatedColumn: number): boolean;
     /** See {@link SourceMapScopesInfo.translateRawFrame}. `null` if no scopes information is available. */
     translateRawFrame(generatedLine: number, generatedColumn: number): RawFrameTranslation | null;
 }

@@ -29,6 +29,7 @@ declare class SuggestionBox extends Lit.LitElement {
     options: readonly string[];
     expression: string;
     suggestionFilter?: SuggestionFilter;
+    hideExactMatch: boolean;
     private cursor;
     constructor();
     connectedCallback(): void;
@@ -45,6 +46,7 @@ export declare class SuggestionInput extends Lit.LitElement {
     options: readonly string[];
     autocomplete?: boolean;
     suggestionFilter?: SuggestionFilter;
+    hideExactMatch: boolean;
     expression: string;
     /**
      * State passed to devtools-editable-content.

@@ -22,6 +22,7 @@ const SKILL_DISPLAY_NAMES = {
     performance: 'Performance',
     storage: 'Storage',
     sources: 'Sources',
+    lighthouse: 'Lighthouse',
 };
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
 Your role is to help web developers debug, analyze, and optimize web applications by learning specialized skills and utilizing tools.

@@ -1827,6 +1827,7 @@ var Page;
     PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
     PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
     PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
@@ -7308,8 +7309,6 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
     this.updatedStorageBuckets = /* @__PURE__ */ new Set();
     this.throttler = new Common6.Throttler.Throttler(1e3);
   }
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static keyFromIDBKey(idbKey) {
     if (typeof idbKey === "undefined" || idbKey === null) {
       return void 0;
@@ -7729,13 +7728,9 @@ var Database = class {
 };
 var ObjectStore = class {
   name;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   keyPath;
   autoIncrement;
   indexes;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(name, keyPath, autoIncrement) {
     this.name = name;
     this.keyPath = keyPath;
@@ -7748,13 +7743,9 @@ var ObjectStore = class {
 };
 var Index = class {
   name;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   keyPath;
   unique;
   multiEntry;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(name, keyPath, unique, multiEntry) {
     this.name = name;
     this.keyPath = keyPath;

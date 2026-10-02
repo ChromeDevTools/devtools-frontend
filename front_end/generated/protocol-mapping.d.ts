@@ -3083,6 +3083,37 @@ export namespace ProtocolMapping {
       returnType: Protocol.FileSystem.GetDirectoryResponse;
     };
     /**
+     * Forwards `query` to the find-in-page facility, starting a new find session.
+     * Where exactly the search starts from is implementation-specific.
+     */
+    'FindInPage.findFirst': {
+      paramsType: [Protocol.FindInPage.FindFirstRequest];
+      returnType: void;
+    };
+    /**
+     * Moves to the next match for the query passed to the most recent
+     * findFirst() call.
+     */
+    'FindInPage.findNext': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
+     * Moves to the previous match for the query passed to the most recent
+     * findFirst() call.
+     */
+    'FindInPage.findPrev': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
+     * Ends the current find session, if any, and clears its highlighting.
+     */
+    'FindInPage.stop': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
      * Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
      * screenshot from the resulting frame. Requires that the target was created with enabled
      * BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also

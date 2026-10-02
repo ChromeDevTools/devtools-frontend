@@ -134,6 +134,9 @@
     },
     {
       "path": "../common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../elements/bundle-tsconfig.ref.json"
     }
   ]
 }

@@ -76,7 +76,7 @@ export declare class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<Event
     private completionRequestId;
     private ghostTextElement;
     private leftParenthesesIndices;
-    private loadCompletions;
+    private loadCompletions?;
     private completionStopCharacters;
     private usesSuggestionBuilder;
     private boundOnKeyDown?;

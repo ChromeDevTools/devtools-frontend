@@ -567,45 +567,38 @@ var CompilerScriptMapping = class {
     return new Workspace3.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
   /**
-   * Translates the first raw frame of `rawFrames` using the "scopes" information of its script's source map.
-   * The translation only depends on the raw frame itself. A consumed raw frame is removed from `rawFrames`,
-   * and its translation is pushed onto `translatedFrames`. Frames of compiler helpers are dropped
-   * (see {@link SDK.SourceMapScopesInfo.GeneratedFrameKind}).
+   * Translates a raw frame using the "scopes" information of its script's source map. Frames of compiler helpers
+   * are dropped (see {@link SDK.SourceMapScopesInfo.GeneratedFrameKind}).
    *
    * Outlined frames are merged at read time by the stack_trace model (see `consolidate`). The function keys
-   * tell it which authored function the top and bottom frames of a translation belong to.
+   * tell it which authored function the top and bottom frames of a translation belong to. A frame at an
+   * unmapped position still gets its keys from the generated ranges; it shows the generated location, named
+   * after the authored function.
    *
-   * @returns true, iff the raw frame was translated.
+   * @returns null if the raw frame can't be translated via "scopes" information, e.g. because the script doesn't
+   * have a source map (with scopes information), the source map is still loading, or neither mappings nor
+   * generated ranges know the position. It's then left to the default mapping.
    */
-  async translateRawFramesStep(rawFrames, translatedFrames) {
-    const translation = await this.#translateRawFrame(rawFrames[0]);
+  async translateRawFrame(rawFrame) {
+    const translation = await this.#scopesTranslation(rawFrame);
     if (!translation) {
-      return false;
+      return null;
     }
     if (translation.kind === SDK2.SourceMapScopesInfo.GeneratedFrameKind.HIDDEN) {
-      rawFrames.shift();
-      translatedFrames.push({ kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: [] });
-      return true;
+      return { kind: StackTraceImpl.Trie.FrameKind.HIDDEN, frames: [] };
     }
     const { frames } = translation;
     if (!frames.length) {
-      return false;
+      return null;
     }
-    rawFrames.shift();
-    translatedFrames.push({
+    return {
       kind: translation.kind === SDK2.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED ? StackTraceImpl.Trie.FrameKind.OUTLINED : StackTraceImpl.Trie.FrameKind.VISIBLE,
-      frames: this.#toUIFrames(translation.sourceMap, frames),
+      frames: await this.#toUIFrames(translation, rawFrame),
       functionKeys: { top: functionKey(frames[0]), bottom: functionKey(frames[frames.length - 1]) }
-    });
-    return true;
+    };
   }
-  /**
-   * Translates a single raw frame via the "scopes" information of its script's source map.
-   *
-   * @returns null if the raw frame can't be translated via "scopes" information, e.g. because
-   * the script doesn't have a source map (with scopes information), or the source map is still loading.
-   */
-  async #translateRawFrame(rawFrame) {
+  /** The raw translation of `rawFrame` by the "scopes" information of its script's source map, if any. */
+  async #scopesTranslation(rawFrame) {
     if (StackTraceImpl.Trie.isBuiltinFrame(rawFrame)) {
       return null;
     }
@@ -620,15 +613,31 @@ var CompilerScriptMapping = class {
     }
     const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(rawFrame);
     const translation = sourceMap.translateRawFrame(lineNumber, columnNumber);
-    return translation ? { ...translation, sourceMap } : null;
+    return translation ? { ...translation, sourceMap, script } : null;
   }
-  /** Switch out url for UISourceCode where we have it. */
-  #toUIFrames(sourceMap, frames) {
+  /**
+   * Switch out url for UISourceCode where we have it. A top frame without position (unmapped generated position)
+   * gets the generated location of `rawFrame`.
+   */
+  async #toUIFrames({ sourceMap, script, frames }, rawFrame) {
     const project = this.#sourceMapToProject.get(sourceMap);
-    return frames.map(({ line, column, name, url }) => {
+    return await Promise.all(frames.map(async ({ line, column, name, url }) => {
+      if (line === void 0 || column === void 0) {
+        return { ...await this.#generatedUIFrame(script, rawFrame), name };
+      }
       const uiSourceCode = url ? project?.uiSourceCodeForURL(url) : void 0;
       return { line, column, name, url: uiSourceCode ? void 0 : url, uiSourceCode: uiSourceCode ?? void 0 };
-    });
+    }));
+  }
+  /** The location of `rawFrame` in terms of the generated `script`, as the non-compiler mappings would show it. */
+  async #generatedUIFrame(script, rawFrame) {
+    const rawLocation = this.#debuggerModel.createRawLocation(script, rawFrame.lineNumber, rawFrame.columnNumber);
+    const uiLocation = await this.#debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    if (uiLocation) {
+      const { uiSourceCode, lineNumber: line, columnNumber } = uiLocation;
+      return { uiSourceCode, line, column: columnNumber ?? -1 };
+    }
+    return { url: rawFrame.url, line: rawFrame.lineNumber, column: rawFrame.columnNumber };
   }
   /**
    * Computes the set of line numbers which are source-mapped to a script within the
@@ -1322,6 +1331,9 @@ var StyleFile = class {
     this.uiSourceCode = this.#project.createUISourceCode(url, header.contentType());
     uiSourceCodeToStyleMap.set(this.uiSourceCode, this);
     NetworkProject.setInitialFrameAttribution(this.uiSourceCode, header.frameId);
+    if (header.hasSourceURL) {
+      NetworkProject.setSourceURLSynthesized(this.uiSourceCode);
+    }
     this.#project.addUISourceCodeWithProvider(this.uiSourceCode, this, metadata, "text/css");
     this.#eventListeners = [
       this.uiSourceCode.addEventListener(
@@ -3522,6 +3534,7 @@ var Page;
     PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
     PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
     PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
@@ -4682,7 +4695,7 @@ var SourceScopeRemoteObject = class extends SDK7.RemoteObject.RemoteObjectImpl {
       return { properties: [], internalProperties: [] };
     }
     const properties = [];
-    const namespaces = {};
+    const namespaces = /* @__PURE__ */ Object.create(null);
     function makeProperty(name, obj) {
       return new SDK7.RemoteObject.RemoteObjectProperty(
         name,
@@ -4712,7 +4725,7 @@ var SourceScopeRemoteObject = class extends SDK7.RemoteObject.RemoteObjectImpl {
           const nestedName = variable.nestedName[index];
           let child = parent[nestedName];
           if (!child) {
-            child = new NamespaceObject({});
+            child = new NamespaceObject(/* @__PURE__ */ Object.create(null));
             parent[nestedName] = child;
           }
           parent = child.value;
@@ -5009,6 +5022,9 @@ var DebuggerLanguagePluginManager = class {
       const modelData = this.#debuggerModelToData.get(script.debuggerModel);
       modelData.removeScript(script);
       this.parsedScriptSource({ data: script });
+      if (!this.hasPluginForScript(script)) {
+        void this.#debuggerWorkspaceBinding.updateLocations(script);
+      }
     }
   }
   hasPluginForScript(script) {
@@ -5167,17 +5183,21 @@ var DebuggerLanguagePluginManager = class {
     }
     return ranges;
   }
-  async translateRawFramesStep(rawFrames, translatedFrames, target) {
-    const frame = rawFrames[0];
+  /**
+   * Translates a raw frame via the language plugin responsible for its script.
+   *
+   * @returns null if no plugin is responsible for the frame. Otherwise the frame is translated, either
+   * successfully, or identity mapped with the "missing debug info details" attached.
+   */
+  async translateRawFrame(frame, target) {
     const script = target.model(SDK7.DebuggerModel.DebuggerModel)?.scriptForId(frame.scriptId ?? "");
     if (!script) {
-      return false;
+      return null;
     }
     const functionInfo = await this.getFunctionInfo(script, frame);
     if (!functionInfo) {
-      return false;
+      return null;
     }
-    rawFrames.shift();
     if ("frames" in functionInfo && functionInfo.frames.length) {
       const framePromises = functionInfo.frames.map(async ({ name }, index) => {
         const rawLocation = new SDK7.DebuggerModel.Location(
@@ -5190,10 +5210,7 @@ var DebuggerLanguagePluginManager = class {
         const uiLocation2 = await this.rawLocationToUILocation(rawLocation);
         return translatedFromUILocation(uiLocation2, name, frame);
       });
-      translatedFrames.push(
-        { kind: StackTraceImpl2.Trie.FrameKind.VISIBLE, frames: await Promise.all(framePromises), unmapped: false }
-      );
-      return true;
+      return { kind: StackTraceImpl2.Trie.FrameKind.VISIBLE, frames: await Promise.all(framePromises), unmapped: false };
     }
     const uiLocation = await this.#debuggerWorkspaceBinding.rawLocationToUILocation(
       new SDK7.DebuggerModel.Location(script.debuggerModel, script.scriptId, frame.lineNumber, frame.columnNumber)
@@ -5203,10 +5220,7 @@ var DebuggerLanguagePluginManager = class {
       type: StackTrace.StackTrace.MissingDebugInfoType.PARTIAL_INFO,
       missingDebugFiles: functionInfo.missingSymbolFiles
     } : { type: StackTrace.StackTrace.MissingDebugInfoType.NO_INFO };
-    translatedFrames.push(
-      { kind: StackTraceImpl2.Trie.FrameKind.VISIBLE, frames: [{ ...mappedFrame, missingDebugInfo }], unmapped: true }
-    );
-    return true;
+    return { kind: StackTraceImpl2.Trie.FrameKind.VISIBLE, frames: [{ ...mappedFrame, missingDebugInfo }], unmapped: true };
     function translatedFromUILocation(uiLocation2, name, fallback) {
       if (uiLocation2) {
         return {
@@ -6545,29 +6559,24 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     return autoSteppingContext.script() !== functionLocation.script() || autoSteppingContext.columnNumber !== functionLocation.columnNumber || autoSteppingContext.lineNumber !== functionLocation.lineNumber;
   }
   async #translateRawFrames(frames, target) {
-    const rawFrames = frames.slice(0);
-    const translatedFrames = [];
-    while (rawFrames.length) {
-      await this.#translateRawFramesStep(rawFrames, translatedFrames, target);
-    }
-    return translatedFrames;
+    return await Promise.all(frames.map((frame) => this.#translateRawFrame(frame, target)));
   }
-  async #translateRawFramesStep(rawFrames, translatedFrames, target) {
-    if (await this.pluginManager.translateRawFramesStep(rawFrames, translatedFrames, target)) {
-      return;
+  /** Translates a single raw frame: language plugins first, then the script mappings of the frame's debugger model. */
+  async #translateRawFrame(frame, target) {
+    const pluginTranslation = await this.pluginManager.translateRawFrame(frame, target);
+    if (pluginTranslation) {
+      return pluginTranslation;
     }
     const modelData = this.#debuggerModelToData.get(target.model(SDK11.DebuggerModel.DebuggerModel));
     if (modelData) {
-      await modelData.translateRawFramesStep(rawFrames, translatedFrames);
-      return;
+      return await modelData.translateRawFrame(frame);
     }
-    const frame = rawFrames.shift();
     const { url, lineNumber, columnNumber, functionName } = frame;
-    translatedFrames.push({
+    return {
       kind: StackTraceImpl3.Trie.FrameKind.VISIBLE,
       frames: [{ url, line: lineNumber, column: columnNumber, name: functionName }],
       unmapped: true
-    });
+    };
   }
 };
 var ModelData2 = class {
@@ -6643,14 +6652,11 @@ var ModelData2 = class {
     scope = scope || await this.#resourceMapping.functionBoundsAtRawLocation(rawLocation);
     return scope;
   }
-  async translateRawFramesStep(rawFrames, translatedFrames) {
-    if (!await this.compilerMapping.translateRawFramesStep(rawFrames, translatedFrames)) {
-      this.#defaultTranslateRawFramesStep(rawFrames, translatedFrames);
-    }
+  async translateRawFrame(frame) {
+    return await this.compilerMapping.translateRawFrame(frame) ?? this.#defaultTranslateRawFrame(frame);
   }
-  /** The default implementation translates one frame at a time and only translates the location, but not the function name. */
-  #defaultTranslateRawFramesStep(rawFrames, translatedFrames) {
-    const frame = rawFrames.shift();
+  /** The default translation only translates the location, but not the function name. */
+  #defaultTranslateRawFrame(frame) {
     const { scriptId, url, lineNumber, columnNumber, functionName } = frame;
     const rawLocation = scriptId ? this.#debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber) : url ? this.#debuggerModel.createRawLocationByURL(url, lineNumber, columnNumber) : null;
     const mapped = rawLocation && this.compilerMapping.rawLocationToUILocation(rawLocation);
@@ -6662,7 +6668,7 @@ var ModelData2 = class {
       line: uiLocation.lineNumber,
       column: uiLocation.columnNumber ?? -1
     } : { url, line: lineNumber, column: columnNumber, name: functionName };
-    translatedFrames.push({ kind: StackTraceImpl3.Trie.FrameKind.VISIBLE, frames: [translatedFrame], unmapped });
+    return { kind: StackTraceImpl3.Trie.FrameKind.VISIBLE, frames: [translatedFrame], unmapped };
   }
   getMappedLines(uiSourceCode) {
     const mappedLines = this.compilerMapping.getMappedLines(uiSourceCode);

@@ -5,7 +5,7 @@ import * as Host from '../../../core/host/host.js';
 import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
 export class GetLighthouseAuditsTool {
     name = "getLighthouseAudits" /* ToolName.GET_LIGHTHOUSE_AUDITS */;
-    description = 'Retrieves audit results and diagnostic details from the active Lighthouse report for a specific category (e.g., \'accessibility\').';
+    description = 'Retrieves audit results and diagnostic details from the active Lighthouse report for all categories (using categoryId: "all") or a specific category (e.g., \'accessibility\').';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Arguments for retrieving Lighthouse category audits.',
@@ -13,7 +13,7 @@ export class GetLighthouseAuditsTool {
         properties: {
             categoryId: {
                 type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                description: 'The category of audits to retrieve. E.g. "accessibility".',
+                description: 'The category of audits to retrieve. Use "all" to retrieve the full report and all categories, or specify a category: "accessibility", "performance", "best-practices", "seo".',
                 nullable: false,
             },
         },
@@ -30,7 +30,7 @@ export class GetLighthouseAuditsTool {
         if (!report) {
             return { error: 'Error: Active context is not a Lighthouse report.' };
         }
-        const audits = new LighthouseFormatter().audits(report, params.categoryId);
+        const audits = new LighthouseFormatter().formatReport(report, params.categoryId);
         return {
             result: { audits },
             widgets: [{ name: 'LIGHTHOUSE_REPORT', data: { report } }],

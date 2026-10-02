@@ -2105,6 +2105,7 @@ export var Page;
         PermissionsPolicyFeature["PrivateStateTokenRedemption"] = "private-state-token-redemption";
         PermissionsPolicyFeature["PublickeyCredentialsCreate"] = "publickey-credentials-create";
         PermissionsPolicyFeature["PublickeyCredentialsGet"] = "publickey-credentials-get";
+        PermissionsPolicyFeature["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
         PermissionsPolicyFeature["Rewriter"] = "rewriter";
         PermissionsPolicyFeature["ScreenWakeLock"] = "screen-wake-lock";
         PermissionsPolicyFeature["Serial"] = "serial";

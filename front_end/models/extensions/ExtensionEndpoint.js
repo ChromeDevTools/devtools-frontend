@@ -1,6 +1,7 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+const isUndefined = (result) => result === undefined;
 export class ExtensionEndpoint {
     port;
     nextRequestId = 0;
@@ -12,10 +13,19 @@ export class ExtensionEndpoint {
         this.port.unref?.();
         this.pendingRequests = new Map();
     }
-    sendRequest(method, parameters) {
+    sendRequest(method, parameters, validate = isUndefined) {
         return new Promise((resolve, reject) => {
             const requestId = this.nextRequestId++;
-            this.pendingRequests.set(requestId, { resolve: resolve, reject });
+            this.pendingRequests.set(requestId, {
+                resolve: (result) => {
+                    if (!validate(result)) {
+                        reject(new Error(`Extension returned malformed ${method} result`));
+                        return;
+                    }
+                    resolve(result);
+                },
+                reject,
+            });
             this.port.postMessage({ requestId, method, parameters });
         });
     }

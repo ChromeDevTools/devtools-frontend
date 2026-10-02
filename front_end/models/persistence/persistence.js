@@ -4428,6 +4428,7 @@ var Page;
     PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
     PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
     PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
@@ -5941,12 +5942,12 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   }
   static isForbiddenNetworkUrl(urlString) {
     const trimmedUrl = urlString.trim().toLowerCase();
-    if (trimmedUrl.startsWith("data:") || trimmedUrl.startsWith("blob:") || trimmedUrl.startsWith("javascript:") || trimmedUrl.startsWith("about:") || trimmedUrl.startsWith("mailto:") || trimmedUrl.startsWith("vbscript:")) {
+    if (trimmedUrl.startsWith("chrome:") || trimmedUrl.startsWith("data:") || trimmedUrl.startsWith("blob:") || trimmedUrl.startsWith("javascript:") || trimmedUrl.startsWith("about:") || trimmedUrl.startsWith("mailto:") || trimmedUrl.startsWith("vbscript:")) {
       return true;
     }
     const url = Common9.ParsedURL.ParsedURL.fromString(urlString);
     if (!url) {
-      return false;
+      return true;
     }
     if ((url.scheme === "http" || url.scheme === "https") && (!url.host || url.host === "." || url.host === "..")) {
       return true;

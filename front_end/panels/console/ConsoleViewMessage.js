@@ -287,6 +287,8 @@ export class ConsoleViewMessage {
     closeGroupDecorationCount;
     consoleGroupInternal;
     selectableChildren;
+    // Trees rendering logged DOM nodes; they follow the message visibility.
+    domTreeWidgets = [];
     messageResized;
     // The wrapper that contains consoleRowWrapper and other elements in a column.
     elementInternal;
@@ -370,12 +372,18 @@ export class ConsoleViewMessage {
     }
     wasShown() {
         this.isVisibleInternal = true;
+        for (const domTree of this.domTreeWidgets) {
+            domTree.wasShown();
+        }
     }
     onResize() {
     }
     willHide() {
         this.isVisibleInternal = false;
         this.cachedHeight = this.element().offsetHeight;
+        for (const domTree of this.domTreeWidgets) {
+            domTree.willHide();
+        }
     }
     isVisible() {
         return this.isVisibleInternal;
@@ -915,32 +923,52 @@ export class ConsoleViewMessage {
         if (!domModel) {
             return result;
         }
+        // Show the widget into the still detached container right away (like the
+        // object properties section) so that widget bookkeeping does not spill
+        // into the message element, which is rebuilt with plain DOM methods.
+        const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
+        domTree.omitRootDOMNode = false;
+        domTree.selectEnabled = true;
+        domTree.hideGutter = true;
+        domTree.deindentSingleNode = true;
+        domTree.showSelectionOnKeyboardFocus = true;
+        // Long lines wrap like the rest of the message (the legacy outline wrapped
+        // by default; DOMTreeWidget does not).
+        domTree.wrap = true;
+        // FIXME: this should not be needed once ConsoleViewMessage is rendering
+        // declaratively and the tree auto-resizes itself.
+        const dispatchDimensionChange = () => {
+            this.messageResized({ data: domTree.element });
+        };
+        domTree.onElementsTreeUpdated = dispatchDimensionChange;
+        domTree.onElementExpanded = dispatchDimensionChange;
+        domTree.onElementCollapsed = dispatchDimensionChange;
+        domTree.markAsRoot();
+        domTree.show(result);
+        // The tree is a root widget, so it does not learn about the message
+        // visibility from the widget hierarchy. Follow the message instead (see
+        // wasShown/willHide) so that the tree does not stay alive through the
+        // global listeners it registers while showing.
+        this.domTreeWidgets.push(domTree);
+        if (!this.isVisibleInternal) {
+            domTree.willHide();
+        }
+        // @ts-expect-error used in console_test_runner
+        result.domTreeWidgetForTest = domTree;
         void domModel.pushObjectAsNodeToFrontend(remoteObject).then((node) => {
             if (!node) {
+                this.domTreeWidgets.splice(this.domTreeWidgets.indexOf(domTree), 1);
+                domTree.detach();
                 result.appendChild(this.formatParameterAsObject(remoteObject, false));
                 return;
             }
-            const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline(
-            /* omitRootDOMNode: */ false, /* selectEnabled: */ true, /* hideGutter: */ true);
-            treeOutline.rootDOMNode = node;
-            treeOutline.deindentSingleNode();
-            treeOutline.setVisible(true);
-            // @ts-expect-error used in console_test_runner
-            treeOutline.element.treeElementForTest = treeOutline.firstChild();
-            treeOutline.setShowSelectionOnKeyboardFocus(/* show: */ true, /* preventTabOrder: */ true);
+            domTree.rootDOMNode = node;
             this.selectableChildren.push({
-                element: treeOutline.element,
-                forceSelect: treeOutline.forceSelect.bind(treeOutline),
+                element: domTree.element,
+                forceSelect: () => domTree.selectDOMNode(node, /* focus= */ true),
             });
-            // FIXME: this should not be needed once ConsoleViewMessage is rendering
-            // declaratively and the tree outline auto-resizes itself.
-            const dispatchDimensionChange = () => {
-                this.messageResized({ data: treeOutline.element });
-            };
-            treeOutline.addEventListener(UI.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
-            treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
-            treeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
-            result.appendChild(treeOutline.element);
+            // The node arrives asynchronously, after the message was measured.
+            dispatchDimensionChange();
             this.formattedParameterAsNodeForTest();
         });
         return result;

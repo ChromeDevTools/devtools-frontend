@@ -39,5 +39,9 @@ export declare class RequestPayloadView extends UI.Widget.VBox {
     willHide(): void;
     private addEntryContextMenuHandler;
     performUpdate(): void;
+    static decodeParameter(value: string, decodeParameters: boolean): {
+        value: string;
+        errorDecoding: boolean;
+    };
     static formatParameter(value: string, className: string, decodeParameters: boolean): LitTemplate;
 }

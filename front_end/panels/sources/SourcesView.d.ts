@@ -4,7 +4,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
-import { type EditorSelectedEvent, TabbedEditorContainer } from './TabbedEditorContainer.js';
+import { type EditorSelectedEvent, type SourceLocation } from './TabbedEditorContainer.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
 export interface ViewInput {
     searchProvider: UI.SearchableView.Searchable;
@@ -21,24 +21,20 @@ export interface ViewInput {
     onToggleDebuggerSidebar?: () => void;
     breakpointsActive: boolean;
     uiSourceCodes: ReadonlySet<Workspace.UISourceCode.UISourceCode>;
+    sourceLocation?: SourceLocation;
     onEditorSelected: (event: EditorSelectedEvent) => void;
     onEditorClosed: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
 }
-export interface ViewOutput {
-    editorContainer?: TabbedEditorContainer;
-}
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 declare const SourcesViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class SourcesView extends SourcesViewBase implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
     #private;
-    editorContainer?: TabbedEditorContainer;
     private toolbarChangedListener;
     private searchView?;
     private searchConfig?;
     constructor(element?: HTMLElement, view?: View);
     performUpdate(): void;
-    setEditorContainer(editorContainer: TabbedEditorContainer): void;
     set onToggleNavigatorSidebar(callback: () => void);
     set onToggleDebuggerSidebar(callback: () => void);
     set isNavigatorSidebarOpen(isOpen: boolean);
@@ -51,9 +47,6 @@ export declare class SourcesView extends SourcesViewBase implements UI.Searchabl
     visibleView(): UI.Widget.Widget | null;
     currentSourceFrame(): UISourceCodeFrame | null;
     currentUISourceCode(): Workspace.UISourceCode.UISourceCode | null;
-    onCloseEditorTab(): boolean;
-    onJumpToPreviousLocation(): void;
-    onJumpToNextLocation(): void;
     private uiSourceCodeAdded;
     private addUISourceCode;
     private uiSourceCodeRemoved;
@@ -61,8 +54,6 @@ export declare class SourcesView extends SourcesViewBase implements UI.Searchabl
     private projectRemoved;
     private updateScriptViewToolbarItems;
     showSourceLocation(uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean, omitHighlight?: boolean): Promise<void>;
-    viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget | undefined;
-    getSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget | undefined;
     private editorClosed;
     private editorSelected;
     private removeToolbarChangedListener;

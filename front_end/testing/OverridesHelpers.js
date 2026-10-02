@@ -60,8 +60,11 @@ export async function createWorkspaceProject(baseUrl, files) {
     };
     await networkPersistenceManager.setProject(mockProject);
     for (const file of files) {
-        const url = urlString `${file.path.concat(file.name)}`;
-        const fileUrl = networkPersistenceManager.fileUrlFromNetworkUrl(url, true);
+        const initialEncodedPath = file.path.concat(file.name);
+        const encodedPathParts = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.encodeEncodedPathToLocalPathParts(initialEncodedPath);
+        const rawPath = Common.ParsedURL.ParsedURL.join(encodedPathParts, '/');
+        const encodedPath = Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(rawPath);
+        const fileUrl = Common.ParsedURL.ParsedURL.concatenate(baseUrl, '/', encodedPath);
         uiSourceCodes.set(fileUrl, {
             requestContentData: () => Promise.resolve(new TextUtils.ContentData.ContentData(file.content, /* isBase64=*/ false, 'text/plain')),
             url: () => fileUrl,

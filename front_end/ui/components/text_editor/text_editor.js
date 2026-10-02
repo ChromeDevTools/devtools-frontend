@@ -431,17 +431,6 @@ var aiCodeCompletionTeaser_css_default = `/*
  */
 
 @scope to (devtools-widget > *) {
-    .ai-code-completion-teaser-screen-reader-only {
-        position: absolute;
-        overflow: hidden;
-        clip-path: rect(0 0 0 0);
-        height: var(--sys-size-1);
-        width: var(--sys-size-1);
-        margin: -1 * var(--sys-size-1);;
-        padding: 0;
-        border: 0;
-    }
-
     .ai-code-completion-teaser {
         padding-left: var(--sys-size-3);
         line-height: var(--sys-size-7);
@@ -576,7 +565,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
     html2`
           <style>${aiCodeCompletionTeaser_css_default}</style>
           <style>@scope to (devtools-widget > *) { ${UI2.inspectorCommonStyles} }</style>
-          <div class="ai-code-completion-teaser-screen-reader-only">${teaserAriaLabel}</div>
+          <div class="screen-reader-only">${teaserAriaLabel}</div>
           <div class="ai-code-completion-teaser" aria-hidden="true">
             <span class="ai-code-completion-teaser-action">
               <span>${cmdOrCtrl}</span>
@@ -893,17 +882,6 @@ var aiCodeGenerationTeaser_css_default = `/*
  */
 
 @scope to (devtools-widget > *) {
-    .ai-code-generation-teaser-screen-reader-only {
-        position: absolute;
-        overflow: hidden;
-        clip-path: rect(0 0 0 0);
-        height: var(--sys-size-1);
-        width: var(--sys-size-1);
-        margin: -1 * var(--sys-size-1);;
-        padding: 0;
-        border: 0;
-    }
-
     .ai-code-generation-teaser {
         pointer-events: all;
         font-style: italic;
@@ -1146,7 +1124,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       const tooltipDisclaimerText = getTooltipDisclaimerText2(input.noLogging, input.disclaimerTextVariant);
       teaserLabel = html3`<div class="ai-code-generation-teaser-trigger">
         <span aria-hidden="true">${teaserText}</span>
-        <span class="ai-code-generation-teaser-screen-reader-only" aria-atomic="true" aria-live="assertive">
+        <span class="screen-reader-only" aria-atomic="true" aria-live="assertive">
           ${lockedString3(screenReaderText)}
         </span>
         &nbsp;<devtools-button
@@ -1203,7 +1181,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     case "loading" /* LOADING */: {
       const teaserAriaLabel = lockedString3(UIStringsNotTranslate3.generatingAriaLabel);
       teaserLabel = html3`
-        <div class="ai-code-generation-teaser-screen-reader-only">${teaserAriaLabel}</div>
+        <div class="screen-reader-only">${teaserAriaLabel}</div>
         <span class="ai-code-generation-spinner" aria-hidden="true">
           &nbsp;${lockedString3(UIStringsNotTranslate3.generating)}
           <span class="ai-code-generation-keyboard-action"><span>${lockedString3(UIStringsNotTranslate3.esc)}</span></span>

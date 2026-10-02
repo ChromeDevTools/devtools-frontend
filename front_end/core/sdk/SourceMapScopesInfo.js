@@ -198,23 +198,6 @@ export class SourceMapScopesInfo {
         return functionRange.isHidden ? "OUTLINED" /* GeneratedFrameKind.OUTLINED */ : "VISIBLE" /* GeneratedFrameKind.VISIBLE */;
     }
     /**
-     * @returns true, iff the range surrounding the provided position contains multiple
-     * inlined original functions.
-     */
-    hasInlinedFrames(generatedLine, generatedColumn) {
-        const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
-        for (let i = rangeChain.length - 1; i >= 0; --i) {
-            if (rangeChain[i].isStackFrame) {
-                // We stop looking for inlined original functions once we reach the current frame.
-                return false;
-            }
-            if (rangeChain[i].callSite) {
-                return true;
-            }
-        }
-        return false;
-    }
-    /**
      * Given a generated position, this returns all the surrounding generated ranges from outer
      * to inner. When `inlineFrameIndex > 0`, drops inner ranges up to the specified virtual
      * call frame.
@@ -357,47 +340,46 @@ export class SourceMapScopesInfo {
     /**
      * Returns the authored function scope of the function containing the provided generated position.
      */
-    findOriginalFunctionScope({ line, column }) {
+    findOriginalFunctionScope(position) {
+        const rangeChain = this.#findGeneratedRangeChain(position.line, position.column);
+        const functionScope = this.#findFunctionScopeInOriginalScopeChain(this.#innerMostOriginalScope(rangeChain, position));
+        return functionScope ? { scope: functionScope, url: this.#sourceURLOfScope(functionScope) } : null;
+    }
+    /**
+     * Returns the inner-most original scope containing the generated `position`. `rangeChain` must be the generated
+     * range chain of `position`.
+     */
+    #innerMostOriginalScope(rangeChain, position) {
         // There are 2 approaches:
         //   1) Find the inner-most generated range containing the provided generated position
-        //      and use it's OriginalScope (then walk it outwards until we hit a function).
+        //      and use its OriginalScope.
         //   2) Use the mappings to turn the generated position into an original position.
         //      Then find the inner-most original scope containing that original position.
-        //      Then walk it outwards until we hit a function.
         //
         // Both approaches should yield the same result (assuming the mappings are spec compliant
         // w.r.t. generated ranges). But in the case of "pasta" scopes and extension provided
         // scope info, we only have the OriginalScope parts and mappings without GeneratedRanges.
-        let originalInnerMostScope;
         if (this.#generatedRanges.length > 0) {
-            const rangeChain = this.#findGeneratedRangeChain(line, column);
-            originalInnerMostScope = rangeChain.at(-1)?.originalScope;
+            return rangeChain.at(-1)?.originalScope;
         }
-        else {
-            // No GeneratedRanges. Try to use mappings.
-            const entry = this.#sourceMap.findEntry(line, column);
-            if (entry?.sourceIndex === undefined) {
-                return null;
-            }
-            originalInnerMostScope =
-                this.#findOriginalScopeChain({ sourceIndex: entry.sourceIndex, line: entry.sourceLineNumber, column: entry.sourceColumnNumber })
-                    .at(-1);
+        // No GeneratedRanges. Try to use mappings.
+        const entry = this.#sourceMap.findEntry(position.line, position.column);
+        if (entry?.sourceIndex === undefined) {
+            return undefined;
         }
-        if (!originalInnerMostScope) {
-            return null;
-        }
-        const functionScope = this.#findFunctionScopeInOriginalScopeChain(originalInnerMostScope);
-        if (!functionScope) {
-            return null;
-        }
+        return this
+            .#findOriginalScopeChain({ sourceIndex: entry.sourceIndex, line: entry.sourceLineNumber, column: entry.sourceColumnNumber })
+            .at(-1);
+    }
+    /** @returns the URL of the original source that `scope` belongs to. */
+    #sourceURLOfScope(scope) {
         // Find the root scope for some given original source, to get the source url.
-        let rootScope = functionScope;
+        let rootScope = scope;
         while (rootScope.parent) {
             rootScope = rootScope.parent;
         }
         const sourceIndex = this.#originalScopes.findIndex(scopes => scopes?.includes(rootScope));
-        const url = sourceIndex !== -1 ? this.#sourceMap.sourceURLForSourceIndex(sourceIndex) : undefined;
-        return functionScope ? { scope: functionScope, url } : null;
+        return sourceIndex !== -1 ? this.#sourceMap.sourceURLForSourceIndex(sourceIndex) : undefined;
     }
     /**
      * Given an original position, this returns all the surrounding original scopes from outer
@@ -445,26 +427,35 @@ export class SourceMapScopesInfo {
         if (kind === "HIDDEN" /* GeneratedFrameKind.HIDDEN */) {
             return { kind, frames: [] };
         }
-        const frame = this.#translateTopFrame(generatedLine, generatedColumn);
+        const frame = this.#translateTopFrame(generatedLine, generatedColumn, rangeChain);
         return { kind, frames: frame ? [frame, ...this.#translateInlinedCallers(rangeChain)] : [] };
     }
     /**
      * The top-most frame is translated the same, regardless of whether we have inlined functions: The name is the
      * original function surrounding the generated position, and the location is the mapped generated position.
+     *
+     * If the generated position has no mapping, the generated ranges may still tell which authored function (or
+     * which file, for top-level code) the position belongs to. The frame then has no position.
      */
-    #translateTopFrame(generatedLine, generatedColumn) {
+    #translateTopFrame(generatedLine, generatedColumn, rangeChain) {
+        const position = { line: generatedLine, column: generatedColumn };
+        const innerMostScope = this.#innerMostOriginalScope(rangeChain, position);
+        const functionScope = this.#findFunctionScopeInOriginalScopeChain(innerMostScope);
+        const name = functionScope ? (functionScope.name ?? '') : undefined;
         const mapping = this.#sourceMap.findEntry(generatedLine, generatedColumn);
-        if (mapping?.sourceIndex === undefined) {
+        if (mapping?.sourceIndex !== undefined) {
+            return {
+                line: mapping.sourceLineNumber,
+                column: mapping.sourceColumnNumber,
+                name,
+                url: mapping.sourceURL,
+                functionStart: functionScope?.start,
+            };
+        }
+        if (!innerMostScope) {
             return null;
         }
-        const functionScope = this.findOriginalFunctionScope({ line: generatedLine, column: generatedColumn })?.scope;
-        return {
-            line: mapping.sourceLineNumber,
-            column: mapping.sourceColumnNumber,
-            name: functionScope ? (functionScope.name ?? '') : undefined,
-            url: mapping.sourceURL,
-            functionStart: functionScope?.start,
-        };
+        return { name, url: this.#sourceURLOfScope(functionScope ?? innerMostScope), functionStart: functionScope?.start };
     }
     /**
      * Walk the range chain inside out until we find a generated function and for each inlined function add a frame.

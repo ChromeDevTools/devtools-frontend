@@ -1074,6 +1074,7 @@ var ExtensionEndpoint_exports = {};
 __export(ExtensionEndpoint_exports, {
   ExtensionEndpoint: () => ExtensionEndpoint
 });
+var isUndefined = (result) => result === void 0;
 var ExtensionEndpoint = class {
   port;
   nextRequestId = 0;
@@ -1085,10 +1086,19 @@ var ExtensionEndpoint = class {
     this.port.unref?.();
     this.pendingRequests = /* @__PURE__ */ new Map();
   }
-  sendRequest(method, parameters) {
+  sendRequest(method, parameters, validate = isUndefined) {
     return new Promise((resolve, reject) => {
       const requestId = this.nextRequestId++;
-      this.pendingRequests.set(requestId, { resolve, reject });
+      this.pendingRequests.set(requestId, {
+        resolve: (result) => {
+          if (!validate(result)) {
+            reject(new Error(`Extension returned malformed ${method} result`));
+            return;
+          }
+          resolve(result);
+        },
+        reject
+      });
       this.port.postMessage({ requestId, method, parameters });
     });
   }
@@ -1296,6 +1306,51 @@ var LanguageExtensionEndpoint_exports = {};
 __export(LanguageExtensionEndpoint_exports, {
   LanguageExtensionEndpoint: () => LanguageExtensionEndpoint
 });
+var isObject = (value) => typeof value === "object" && value !== null;
+var isString = (value) => typeof value === "string";
+var isNumber = (value) => typeof value === "number";
+var isBoolean = (value) => typeof value === "boolean";
+var isStringArray = (value) => Array.isArray(value) && value.every(isString);
+var isNumberArray = (value) => Array.isArray(value) && value.every(isNumber);
+var isRawLocationRange = (value) => {
+  return isObject(value) && isString(value.rawModuleId) && isNumber(value.startOffset) && isNumber(value.endOffset);
+};
+var isSourceLocation = (value) => {
+  return isObject(value) && isString(value.rawModuleId) && isString(value.sourceFileURL) && isNumber(value.lineNumber) && isNumber(value.columnNumber);
+};
+var isVariable = (value) => {
+  return isObject(value) && isString(value.scope) && isString(value.name) && isString(value.type) && (value.nestedName === void 0 || isStringArray(value.nestedName));
+};
+var isScopeInfo = (value) => {
+  return isObject(value) && isString(value.type) && isString(value.typeName) && (value.icon === void 0 || isString(value.icon));
+};
+var isFunctionInfo = (value) => {
+  return isObject(value) && isString(value.name);
+};
+var isForeignObject = (value) => {
+  return isObject(value) && value.type === "reftype" && (value.valueClass === "local" || value.valueClass === "global" || value.valueClass === "operand") && isNumber(value.index);
+};
+var isRemoteObject = (value) => {
+  return isObject(value) && (value.type === "object" || value.type === "undefined" || value.type === "string" || value.type === "number" || value.type === "boolean" || value.type === "bigint" || value.type === "array" || value.type === "null") && isBoolean(value.hasChildren) && (value.className === void 0 || isString(value.className)) && (value.description === void 0 || isString(value.description)) && (value.objectId === void 0 || isString(value.objectId)) && (value.linearMemoryAddress === void 0 || isNumber(value.linearMemoryAddress)) && (value.linearMemorySize === void 0 || isNumber(value.linearMemorySize));
+};
+var isPropertyDescriptor = (value) => {
+  return isObject(value) && isString(value.name) && (isRemoteObject(value.value) || isForeignObject(value.value));
+};
+var isAddRawModuleResult = (value) => {
+  return isStringArray(value) || isObject(value) && isStringArray(value.missingSymbolFiles);
+};
+var isGetFunctionInfoResult = (value) => {
+  if (!isObject(value)) {
+    return false;
+  }
+  if ("frames" in value && (!Array.isArray(value.frames) || !value.frames.every(isFunctionInfo))) {
+    return false;
+  }
+  if ("missingSymbolFiles" in value && !isStringArray(value.missingSymbolFiles)) {
+    return false;
+  }
+  return "frames" in value || "missingSymbolFiles" in value;
+};
 var LanguageExtensionEndpointImpl = class extends ExtensionEndpoint {
   plugin;
   #pluginManager;
@@ -1362,7 +1417,8 @@ var LanguageExtensionEndpoint = class {
     }
     return this.endpoint.sendRequest(
       PrivateAPI.LanguageExtensionPluginCommands.AddRawModule,
-      { rawModuleId, symbolsURL, rawModule }
+      { rawModuleId, symbolsURL, rawModule },
+      isAddRawModuleResult
     );
   }
   /**
@@ -1377,7 +1433,8 @@ var LanguageExtensionEndpoint = class {
   sourceLocationToRawLocation(sourceLocation) {
     return this.endpoint.sendRequest(
       PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation,
-      { sourceLocation }
+      { sourceLocation },
+      (value) => Array.isArray(value) && value.every(isRawLocationRange)
     );
   }
   /**
@@ -1386,23 +1443,32 @@ var LanguageExtensionEndpoint = class {
   rawLocationToSourceLocation(rawLocation) {
     return this.endpoint.sendRequest(
       PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation,
-      { rawLocation }
+      { rawLocation },
+      (value) => Array.isArray(value) && value.every(isSourceLocation)
     );
   }
   getScopeInfo(type) {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo, { type });
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo, { type }, isScopeInfo);
   }
   /**
    * List all variables in lexical scope at a given location in a raw module
    */
   listVariablesInScope(rawLocation) {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope, { rawLocation });
+    return this.endpoint.sendRequest(
+      PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope,
+      { rawLocation },
+      (value) => Array.isArray(value) && value.every(isVariable)
+    );
   }
   /**
    * List all function names (including inlined frames) at location
    */
   getFunctionInfo(rawLocation) {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo, { rawLocation });
+    return this.endpoint.sendRequest(
+      PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo,
+      { rawLocation },
+      isGetFunctionInfoResult
+    );
   }
   /**
    * Find locations in raw modules corresponding to the inline function
@@ -1411,7 +1477,8 @@ var LanguageExtensionEndpoint = class {
   getInlinedFunctionRanges(rawLocation) {
     return this.endpoint.sendRequest(
       PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges,
-      { rawLocation }
+      { rawLocation },
+      (value) => Array.isArray(value) && value.every(isRawLocationRange)
     );
   }
   /**
@@ -1419,22 +1486,32 @@ var LanguageExtensionEndpoint = class {
    *  called by the function or inline frame that rawLocation is in.
    */
   getInlinedCalleesRanges(rawLocation) {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges, { rawLocation });
+    return this.endpoint.sendRequest(
+      PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges,
+      { rawLocation },
+      (value) => Array.isArray(value) && value.every(isRawLocationRange)
+    );
   }
   async getMappedLines(rawModuleId, sourceFileURL) {
     return await this.endpoint.sendRequest(
       PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines,
-      { rawModuleId, sourceFileURL }
+      { rawModuleId, sourceFileURL },
+      (value) => value === void 0 || isNumberArray(value)
     );
   }
   async evaluate(expression, context, stopId) {
     return await this.endpoint.sendRequest(
       PrivateAPI.LanguageExtensionPluginCommands.FormatValue,
-      { expression, context, stopId }
+      { expression, context, stopId },
+      (value) => value === null || isRemoteObject(value) || isForeignObject(value)
     );
   }
   getProperties(objectId) {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetProperties, { objectId });
+    return this.endpoint.sendRequest(
+      PrivateAPI.LanguageExtensionPluginCommands.GetProperties,
+      { objectId },
+      (value) => Array.isArray(value) && value.every(isPropertyDescriptor)
+    );
   }
   releaseObject(objectId) {
     return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.ReleaseObject, { objectId });
@@ -1446,6 +1523,7 @@ var RecorderExtensionEndpoint_exports = {};
 __export(RecorderExtensionEndpoint_exports, {
   RecorderExtensionEndpoint: () => RecorderExtensionEndpoint
 });
+var isString2 = (value) => typeof value === "string";
 var RecorderExtensionEndpoint = class extends ExtensionEndpoint {
   name;
   mediaType;
@@ -1491,7 +1569,7 @@ var RecorderExtensionEndpoint = class extends ExtensionEndpoint {
    * [1]: https://github.com/puppeteer/replay/blob/main/src/Schema.ts#L245
    */
   stringify(recording) {
-    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.Stringify, { recording });
+    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.Stringify, { recording }, isString2);
   }
   /**
    * In practice, `step` is a Step[1], but we avoid defining this type on the
@@ -1501,7 +1579,7 @@ var RecorderExtensionEndpoint = class extends ExtensionEndpoint {
    * [1]: https://github.com/puppeteer/replay/blob/main/src/Schema.ts#L243
    */
   stringifyStep(step) {
-    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.StringifyStep, { step });
+    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.StringifyStep, { step }, isString2);
   }
   /**
    * In practice, `recording` is a UserFlow[1], but we avoid defining this type on the

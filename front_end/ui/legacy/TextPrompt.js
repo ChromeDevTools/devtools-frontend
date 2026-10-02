@@ -324,6 +324,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     completionStopCharacters;
     usesSuggestionBuilder;
     #element;
+    #ariaPlaceholder = null;
+    #ariaLabelFromPlaceholder = false;
     boundOnKeyDown;
     boundOnInput;
     boundOnMouseWheel;
@@ -357,6 +359,30 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
         this.loadCompletions = completions;
         this.completionStopCharacters = stopCharacters || ' =:[({;,!+-*/&|^<>.';
         this.usesSuggestionBuilder = usesSuggestionBuilder || false;
+        this.#updateAriaRole();
+    }
+    #updateAriaRole() {
+        if (!this.#element) {
+            return;
+        }
+        if (this.loadCompletions) {
+            ARIAUtils.markAsCombobox(this.#element);
+            ARIAUtils.setAutocomplete(this.#element, "both" /* ARIAUtils.AutocompleteInteractionModel.BOTH */);
+            ARIAUtils.setHasPopup(this.#element, "listbox" /* ARIAUtils.PopupRole.LIST_BOX */);
+            ARIAUtils.setExpanded(this.#element, this.isSuggestBoxVisible());
+            ARIAUtils.setPlaceholder(this.#element, null);
+            if (this.#ariaPlaceholder && (!this.#element.hasAttribute('aria-label') || this.#ariaLabelFromPlaceholder)) {
+                ARIAUtils.setLabel(this.#element, this.#ariaPlaceholder);
+                this.#ariaLabelFromPlaceholder = true;
+            }
+        }
+        else {
+            ARIAUtils.markAsTextBox(this.#element);
+            ARIAUtils.clearAutocomplete(this.#element);
+            ARIAUtils.setHasPopup(this.#element, "false" /* ARIAUtils.PopupRole.FALSE */);
+            ARIAUtils.unsetExpandable(this.#element);
+            ARIAUtils.setPlaceholder(this.#element, this.#ariaPlaceholder);
+        }
     }
     setAutocompletionTimeout(timeout) {
         this.autocompletionTimeout = timeout;
@@ -420,9 +446,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
             this.#element.setAttribute('jslog', `${jslog}`);
         }
         this.#element.classList.add('text-prompt');
-        ARIAUtils.markAsTextBox(this.#element);
-        ARIAUtils.setAutocomplete(this.#element, "both" /* ARIAUtils.AutocompleteInteractionModel.BOTH */);
-        ARIAUtils.setHasPopup(this.#element, "listbox" /* ARIAUtils.PopupRole.LIST_BOX */);
+        this.#updateAriaRole();
         this.#element.setAttribute('contenteditable', 'plaintext-only');
         this.element().addEventListener('keydown', this.boundOnKeyDown, false);
         this.#element.addEventListener('input', this.boundOnInput, false);
@@ -456,6 +480,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
         this.element().removeAttribute('role');
         ARIAUtils.clearAutocomplete(this.element());
         ARIAUtils.setHasPopup(this.element(), "false" /* ARIAUtils.PopupRole.FALSE */);
+        ARIAUtils.unsetExpandable(this.element());
     }
     textWithCurrentSuggestion() {
         const text = this.text();
@@ -521,12 +546,17 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
             this.element().setAttribute('data-placeholder', placeholder);
             // TODO(https://github.com/nvaccess/nvda/issues/10164): Remove ariaPlaceholder once the NVDA bug is fixed
             // ariaPlaceholder and placeholder may differ, like in case the placeholder contains a '?'
-            ARIAUtils.setPlaceholder(this.element(), ariaPlaceholder || placeholder);
+            this.#ariaPlaceholder = ariaPlaceholder || placeholder;
         }
         else {
             this.element().removeAttribute('data-placeholder');
-            ARIAUtils.setPlaceholder(this.element(), null);
+            this.#ariaPlaceholder = null;
+            if (this.#ariaLabelFromPlaceholder) {
+                this.element().removeAttribute('aria-label');
+                this.#ariaLabelFromPlaceholder = false;
+            }
         }
+        this.#updateAriaRole();
     }
     setEnabled(enabled) {
         if (enabled) {
@@ -738,7 +768,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     }
     async complete(force) {
         this.clearAutocompleteTimeout();
-        if (!this.element().isConnected) {
+        if (!this.loadCompletions || !this.element().isConnected) {
             return;
         }
         const selection = this.element().getComponentSelection();

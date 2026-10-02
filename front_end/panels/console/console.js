@@ -2193,6 +2193,7 @@ var Page;
     PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
     PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
     PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
@@ -4927,6 +4928,8 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   closeGroupDecorationCount;
   consoleGroupInternal;
   selectableChildren;
+  // Trees rendering logged DOM nodes; they follow the message visibility.
+  domTreeWidgets = [];
   messageResized;
   // The wrapper that contains consoleRowWrapper and other elements in a column.
   elementInternal;
@@ -5010,12 +5013,18 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   wasShown() {
     this.isVisibleInternal = true;
+    for (const domTree of this.domTreeWidgets) {
+      domTree.wasShown();
+    }
   }
   onResize() {
   }
   willHide() {
     this.isVisibleInternal = false;
     this.cachedHeight = this.element().offsetHeight;
+    for (const domTree of this.domTreeWidgets) {
+      domTree.willHide();
+    }
   }
   isVisible() {
     return this.isVisibleInternal;
@@ -5584,40 +5593,43 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (!domModel) {
       return result;
     }
+    const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
+    domTree.omitRootDOMNode = false;
+    domTree.selectEnabled = true;
+    domTree.hideGutter = true;
+    domTree.deindentSingleNode = true;
+    domTree.showSelectionOnKeyboardFocus = true;
+    domTree.wrap = true;
+    const dispatchDimensionChange = () => {
+      this.messageResized({ data: domTree.element });
+    };
+    domTree.onElementsTreeUpdated = dispatchDimensionChange;
+    domTree.onElementExpanded = dispatchDimensionChange;
+    domTree.onElementCollapsed = dispatchDimensionChange;
+    domTree.markAsRoot();
+    domTree.show(result);
+    this.domTreeWidgets.push(domTree);
+    if (!this.isVisibleInternal) {
+      domTree.willHide();
+    }
+    result.domTreeWidgetForTest = domTree;
     void domModel.pushObjectAsNodeToFrontend(remoteObject).then((node) => {
       if (!node) {
+        this.domTreeWidgets.splice(this.domTreeWidgets.indexOf(domTree), 1);
+        domTree.detach();
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
         return;
       }
-      const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline(
-        /* omitRootDOMNode: */
-        false,
-        /* selectEnabled: */
-        true,
-        /* hideGutter: */
-        true
-      );
-      treeOutline.rootDOMNode = node;
-      treeOutline.deindentSingleNode();
-      treeOutline.setVisible(true);
-      treeOutline.element.treeElementForTest = treeOutline.firstChild();
-      treeOutline.setShowSelectionOnKeyboardFocus(
-        /* show: */
-        true,
-        /* preventTabOrder: */
-        true
-      );
+      domTree.rootDOMNode = node;
       this.selectableChildren.push({
-        element: treeOutline.element,
-        forceSelect: treeOutline.forceSelect.bind(treeOutline)
+        element: domTree.element,
+        forceSelect: () => domTree.selectDOMNode(
+          node,
+          /* focus= */
+          true
+        )
       });
-      const dispatchDimensionChange = () => {
-        this.messageResized({ data: treeOutline.element });
-      };
-      treeOutline.addEventListener(UI3.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
-      treeOutline.addEventListener(UI3.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
-      treeOutline.addEventListener(UI3.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
-      result.appendChild(treeOutline.element);
+      dispatchDimensionChange();
       this.formattedParameterAsNodeForTest();
     });
     return result;

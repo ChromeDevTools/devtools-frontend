@@ -58,8 +58,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const { widget, widgetRef } = UI.Widget;
-export const DEFAULT_VIEW = (input, output, target) => {
+const { widget } = UI.Widget;
+export const DEFAULT_VIEW = (input, _output, target) => {
     const renderNavigatorToggleButton = () => {
         const navHidden = !input.isNavigatorSidebarOpen;
         const title = navHidden ? i18nString(UIStrings.showNavigator) : i18nString(UIStrings.hideNavigator);
@@ -112,13 +112,15 @@ export const DEFAULT_VIEW = (input, output, target) => {
     >
       <devtools-widget class="vbox flex-auto ${input.breakpointsActive ? '' : 'breakpoints-deactivated'}"
         ${widget(TabbedEditorContainer, {
+        // Params are applied in order: set callbacks before `sourceLocation`
+        // so the initial selection is reported.
+        onEditorSelected: input.onEditorSelected,
+        onEditorClosed: input.onEditorClosed,
         leftToolbarItems,
         rightToolbarItems,
         uiSourceCodes: input.uiSourceCodes,
-        onEditorSelected: input.onEditorSelected,
-        onEditorClosed: input.onEditorClosed,
-    })}
-        ${widgetRef(TabbedEditorContainer, e => { output.editorContainer = e; })}>
+        sourceLocation: input.sourceLocation,
+    })}>
       </devtools-widget>
     </devtools-widget>
     <div class="sources-toolbar" jslog=${VisualLogging.toolbar('bottom')}>
@@ -139,8 +141,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
 };
 const SourcesViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class SourcesView extends SourcesViewBase {
-    editorContainer;
     #uiSourceCodes = new Set();
+    #sourceLocation;
+    #visibleView = null;
+    #currentUISourceCode = null;
     #scriptViewToolbarItems = nothing;
     #isSearchReplaceable = false;
     toolbarChangedListener;
@@ -157,14 +161,9 @@ export class SourcesView extends SourcesViewBase {
     #isVertical = false;
     #isInWrapper = true;
     #breakpointsActive = true;
-    #editorContainerPromise;
-    #editorContainerResolve;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { jslog: `${VisualLogging.pane('editor').track({ keydown: 'Escape' })}` });
         this.#view = view;
-        this.#editorContainerPromise = new Promise(resolve => {
-            this.#editorContainerResolve = resolve;
-        });
         this.setMinimumAndPreferredSizes(88, 52, 150, 100);
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();
         this.toolbarChangedListener = null;
@@ -218,25 +217,11 @@ export class SourcesView extends SourcesViewBase {
             onToggleDebuggerSidebar: this.#onToggleDebuggerSidebar,
             breakpointsActive: this.#breakpointsActive,
             uiSourceCodes: new Set(this.#uiSourceCodes),
+            sourceLocation: this.#sourceLocation,
             onEditorSelected: this.editorSelected.bind(this),
             onEditorClosed: this.editorClosed.bind(this),
         };
-        const that = this;
-        const output = {
-            set editorContainer(value) {
-                that.setEditorContainer(value);
-            },
-        };
-        this.#view(input, output, this.contentElement);
-    }
-    setEditorContainer(editorContainer) {
-        if (this.editorContainer === editorContainer) {
-            return;
-        }
-        this.editorContainer = editorContainer;
-        if (this.editorContainer) {
-            this.#editorContainerResolve(editorContainer);
-        }
+        this.#view(input, undefined, this.contentElement);
     }
     set onToggleNavigatorSidebar(callback) {
         this.#onToggleNavigatorSidebar = callback;
@@ -293,7 +278,7 @@ export class SourcesView extends SourcesViewBase {
         return UI.SearchableView.SearchableView.fromElement(this.contentElement.querySelector('devtools-widget'));
     }
     visibleView() {
-        return (this.editorContainer?.visibleView ?? null);
+        return this.#visibleView;
     }
     currentSourceFrame() {
         const view = this.visibleView();
@@ -303,21 +288,7 @@ export class SourcesView extends SourcesViewBase {
         return (view);
     }
     currentUISourceCode() {
-        return this.editorContainer?.currentFile() ?? null;
-    }
-    onCloseEditorTab() {
-        const uiSourceCode = this.editorContainer?.currentFile();
-        if (!uiSourceCode) {
-            return false;
-        }
-        this.editorContainer?.closeFile(uiSourceCode);
-        return true;
-    }
-    onJumpToPreviousLocation() {
-        this.editorContainer?.rollback();
-    }
-    onJumpToNextLocation() {
-        this.editorContainer?.rollover();
+        return this.#currentUISourceCode;
     }
     #onScopeChange() {
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -366,6 +337,10 @@ export class SourcesView extends SourcesViewBase {
     }
     removeUISourceCodes(uiSourceCodes) {
         uiSourceCodes.forEach(ui => this.#uiSourceCodes.delete(ui));
+        // Don't keep a removed file alive through the last revealed location.
+        if (this.#sourceLocation && uiSourceCodes.includes(this.#sourceLocation.uiSourceCode)) {
+            this.#sourceLocation = undefined;
+        }
         this.requestUpdate();
     }
     projectRemoved(event) {
@@ -387,21 +362,19 @@ export class SourcesView extends SourcesViewBase {
         }
     }
     async showSourceLocation(uiSourceCode, location, omitFocus, omitHighlight) {
-        if (!this.editorContainer) {
-            await this.#editorContainerPromise;
-        }
-        this.editorContainer?.showSourceLocation(uiSourceCode, location, omitFocus, omitHighlight);
-    }
-    viewForFile(uiSourceCode) {
-        return this.editorContainer?.viewForFile(uiSourceCode);
-    }
-    getSourceView(uiSourceCode) {
-        return this.editorContainer?.getCreatedSourceView(uiSourceCode);
+        this.#sourceLocation = { uiSourceCode, location, omitFocus, omitHighlight };
+        // Render synchronously rather than on the next animation frame, so that the
+        // editor is revealed and focused within the current task. Otherwise, input
+        // that follows immediately (e.g. typing after committing a new snippet
+        // name) goes to the previously focused element.
+        this.performUpdate();
+        await this.updateComplete;
     }
     editorClosed(uiSourceCode) {
-        let wasSelected = false;
-        if (!this.editorContainer?.currentFile()) {
-            wasSelected = true;
+        const wasSelected = this.#currentUISourceCode === uiSourceCode;
+        if (wasSelected) {
+            this.#currentUISourceCode = null;
+            this.#visibleView = null;
         }
         // SourcesNavigator does not need to update on EditorClosed.
         this.removeToolbarChangedListener();
@@ -422,14 +395,15 @@ export class SourcesView extends SourcesViewBase {
         if (currentSourceFrame) {
             currentSourceFrame.setSearchableView(this.searchableView());
         }
+        this.#currentUISourceCode = event.currentFile;
+        this.#visibleView = event.currentView;
         this.#isSearchReplaceable = Boolean(currentSourceFrame?.canEditSource());
         this.requestUpdate();
         this.searchableView()?.refreshSearch();
         this.updateToolbarChangedListener();
         this.updateScriptViewToolbarItems();
-        const currentFile = this.editorContainer?.currentFile();
-        if (currentFile) {
-            this.dispatchEventToListeners("EditorSelected" /* Events.EDITOR_SELECTED */, currentFile);
+        if (this.#currentUISourceCode) {
+            this.dispatchEventToListeners("EditorSelected" /* Events.EDITOR_SELECTED */, this.#currentUISourceCode);
         }
     }
     removeToolbarChangedListener() {
@@ -514,7 +488,7 @@ export class SourcesView extends SourcesViewBase {
         QuickOpen.QuickOpen.QuickOpenImpl.show('@');
     }
     showGoToLineQuickOpen() {
-        if (this.editorContainer?.currentFile()) {
+        if (this.#currentUISourceCode) {
             QuickOpen.QuickOpen.QuickOpenImpl.show(':');
         }
     }
@@ -522,7 +496,7 @@ export class SourcesView extends SourcesViewBase {
         this.saveSourceFrame(this.currentSourceFrame());
     }
     saveAll() {
-        const sourceFrames = this.editorContainer?.fileViews() ?? [];
+        const sourceFrames = UI.Context.Context.instance().flavor(TabbedEditorContainer)?.fileViews() ?? [];
         sourceFrames.forEach(this.saveSourceFrame.bind(this));
     }
     saveSourceFrame(sourceFrame) {
@@ -590,24 +564,25 @@ export class ActionDelegate {
         if (!sourcesView) {
             return false;
         }
+        const editorContainer = context.flavor(TabbedEditorContainer);
         switch (actionId) {
             case 'sources.close-all':
-                sourcesView.editorContainer?.closeAllFiles();
+                editorContainer?.closeAllFiles();
                 return true;
             case 'sources.jump-to-previous-location':
-                sourcesView.onJumpToPreviousLocation();
+                editorContainer?.rollback();
                 return true;
             case 'sources.jump-to-next-location':
-                sourcesView.onJumpToNextLocation();
+                editorContainer?.rollover();
                 return true;
             case 'sources.next-editor-tab':
-                sourcesView.editorContainer?.selectNextTab();
+                editorContainer?.selectNextTab();
                 return true;
             case 'sources.previous-editor-tab':
-                sourcesView.editorContainer?.selectPrevTab();
+                editorContainer?.selectPrevTab();
                 return true;
             case 'sources.close-editor-tab':
-                return sourcesView.onCloseEditorTab();
+                return editorContainer?.closeActiveTab() ?? false;
             case 'sources.go-to-line':
                 sourcesView.showGoToLineQuickOpen();
                 return true;

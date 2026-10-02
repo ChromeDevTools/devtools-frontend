@@ -87,7 +87,13 @@ export declare class DebuggerLanguagePluginManager implements SDK.TargetManager.
     }> | null>;
     uiLocationToRawLocations(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber?: number): Promise<SDK.DebuggerModel.Location[] | null>;
     uiLocationRangeToRawLocationRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, textRange: TextUtils.TextRange.TextRange): Promise<SDK.DebuggerModel.LocationRange[] | null>;
-    translateRawFramesStep(rawFrames: StackTraceImpl.Trie.RawFrame[], translatedFrames: Awaited<ReturnType<StackTraceImpl.StackTraceModel.TranslateRawFrames>>, target: SDK.Target.Target): Promise<boolean>;
+    /**
+     * Translates a raw frame via the language plugin responsible for its script.
+     *
+     * @returns null if no plugin is responsible for the frame. Otherwise the frame is translated, either
+     * successfully, or identity mapped with the "missing debug info details" attached.
+     */
+    translateRawFrame(frame: StackTraceImpl.Trie.RawFrame, target: SDK.Target.Target): Promise<StackTraceImpl.StackTraceModel.TranslatedRawFrame | null>;
     scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[];
     setDebugInfoURL(script: SDK.Script.Script, externalURL: Platform.DevToolsPath.UrlString): void;
     private parsedScriptSource;

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
-import { isBuiltinFrame } from './Trie.js';
 export class StackTraceImpl extends Common.ObjectWrapper.ObjectWrapper {
     syncFragment;
     asyncFragments;
@@ -132,10 +131,10 @@ export function consolidate(callStack) {
  * Frames that the authored function can't have called directly (e.g. `Array.prototype.forEach` calling an outlined
  * callback, or an unmapped runtime helper). A chain looks past them.
  *
- * `isBuiltinFrame` is redundant with `isUnmapped` in production, but keeps custom translate functions consistent.
+ * Builtins are unmapped like any other frame without authored code, see `TranslatedRawFrame.unmapped`.
  */
 function isNotAuthored(node) {
-    return node.kind === "VISIBLE" /* FrameKind.VISIBLE */ && !node.functionKeys && (node.isUnmapped || isBuiltinFrame(node.rawFrame));
+    return node.kind === "VISIBLE" /* FrameKind.VISIBLE */ && !node.functionKeys && node.isUnmapped;
 }
 /**
  * Converts the internal recursive `EvalOrigin` trie representation into the public-facing

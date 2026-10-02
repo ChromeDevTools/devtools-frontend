@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { ExtensionEndpoint } from './ExtensionEndpoint.js';
+const isString = (value) => typeof value === 'string';
 export class RecorderExtensionEndpoint extends ExtensionEndpoint {
     name;
     mediaType;
@@ -47,7 +48,7 @@ export class RecorderExtensionEndpoint extends ExtensionEndpoint {
      * [1]: https://github.com/puppeteer/replay/blob/main/src/Schema.ts#L245
      */
     stringify(recording) {
-        return this.sendRequest("stringify" /* PrivateAPI.RecorderExtensionPluginCommands.Stringify */, { recording });
+        return this.sendRequest("stringify" /* PrivateAPI.RecorderExtensionPluginCommands.Stringify */, { recording }, isString);
     }
     /**
      * In practice, `step` is a Step[1], but we avoid defining this type on the
@@ -57,7 +58,7 @@ export class RecorderExtensionEndpoint extends ExtensionEndpoint {
      * [1]: https://github.com/puppeteer/replay/blob/main/src/Schema.ts#L243
      */
     stringifyStep(step) {
-        return this.sendRequest("stringifyStep" /* PrivateAPI.RecorderExtensionPluginCommands.StringifyStep */, { step });
+        return this.sendRequest("stringifyStep" /* PrivateAPI.RecorderExtensionPluginCommands.StringifyStep */, { step }, isString);
     }
     /**
      * In practice, `recording` is a UserFlow[1], but we avoid defining this type on the

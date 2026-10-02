@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Root from '../../core/root/root.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Comments from '../../ui/comments/comments.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import commentsOverlayStyles from './commentsOverlay.css.js';
-import { CommentThreadWidget } from './CommentThreadWidget.js';
+import { CommentThreadWidget, computeCommentTitle } from './CommentThreadWidget.js';
 const { html, render, nothing, Directives: { repeat, styleMap }, } = Lit;
 const POPUP_MARGIN = 8;
 const PIN_HEIGHT = 30;
@@ -197,30 +196,10 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         if (anchor === this.#cachedTitleAnchor) {
             return this.#cachedTitle;
         }
-        const title = anchor ? await this.#computeTitle(anchor) : { text: '' };
+        const title = anchor ? await computeCommentTitle(anchor) : { text: '' };
         this.#cachedTitleAnchor = anchor;
         this.#cachedTitle = title;
         return title;
-    }
-    async #computeTitle(anchor) {
-        if (anchor.node) {
-            const target = SDK.TargetManager.TargetManager.instance().targetById(anchor.node.targetId);
-            if (target) {
-                const deferredNode = new SDK.DOMModel.DeferredDOMNode(target, anchor.node.backendNodeId);
-                const node = await deferredNode.resolvePromise();
-                if (node) {
-                    return { node };
-                }
-            }
-        }
-        if (anchor.networkRequestId) {
-            const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-            const request = target?.model(SDK.NetworkManager.NetworkManager)?.requestForId(anchor.networkRequestId);
-            if (request) {
-                return { text: request.name() };
-            }
-        }
-        return { text: anchor.textSignature || '' };
     }
     #handlePinClick = (threadId) => {
         if (this.#activeThreadId === threadId) {
@@ -316,8 +295,38 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         }
         this.#renderWithTitle(activeThread, title);
     }
+    openThread(threadId) {
+        this.#clearCloseTimeout();
+        this.#commentOverlayManager.clearDraftThreads();
+        this.#setActiveThreadId(threadId);
+        this.requestUpdate();
+    }
 }
 let widgetInstance = null;
+function getOrCreateOverlayWidget(commentManager) {
+    if (!widgetInstance) {
+        const cm = commentManager ??
+            Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
+        widgetInstance = new CommentsOverlayWidget(undefined, [cm]);
+        widgetInstance.markAsRoot();
+        widgetInstance.show(document.body);
+    }
+    return widgetInstance;
+}
+export class ThreadRevealer {
+    async reveal(thread) {
+        const panelId = Comments.CommentAnchorResolver.extractPanelId(thread.anchor.vePath);
+        if (panelId && UI.InspectorView.InspectorView.instance().hasPanel(panelId)) {
+            await UI.InspectorView.InspectorView.instance().showPanel(panelId);
+        }
+        const element = Comments.CommentAnchorResolver.rematchCommentAnchor(thread);
+        if (element) {
+            element.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' });
+        }
+        const overlay = getOrCreateOverlayWidget();
+        overlay.openThread(thread.id);
+    }
+}
 export class ActionDelegate {
     #commentManager;
     constructor(commentManager) {
@@ -329,11 +338,7 @@ export class ActionDelegate {
             if (!this.#commentManager.isAgentAttached()) {
                 return false;
             }
-            if (!widgetInstance) {
-                widgetInstance = new CommentsOverlayWidget(undefined, [this.#commentManager]);
-                widgetInstance.markAsRoot();
-                widgetInstance.show(document.body);
-            }
+            getOrCreateOverlayWidget(this.#commentManager);
             this.#commentManager.setCommentMode(!this.#commentManager.isCommentMode());
             return true;
         }

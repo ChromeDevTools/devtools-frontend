@@ -18,7 +18,9 @@ export declare class LanguageExtensionEndpoint implements Bindings.DebuggerLangu
     /**
      * Notify the plugin about a new script
      */
-    addRawModule(rawModuleId: string, symbolsURL: string, rawModule: Chrome.DevTools.RawModule): Promise<string[]>;
+    addRawModule(rawModuleId: string, symbolsURL: string, rawModule: Chrome.DevTools.RawModule): Promise<string[] | {
+        missingSymbolFiles: string[];
+    }>;
     /**
      * Notifies the plugin that a script is removed.
      */
@@ -41,6 +43,11 @@ export declare class LanguageExtensionEndpoint implements Bindings.DebuggerLangu
      */
     getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation): Promise<{
         frames: Chrome.DevTools.FunctionInfo[];
+        missingSymbolFiles: string[];
+    } | {
+        missingSymbolFiles: string[];
+    } | {
+        frames: Chrome.DevTools.FunctionInfo[];
     }>;
     /**
      * Find locations in raw modules corresponding to the inline function
@@ -53,7 +60,7 @@ export declare class LanguageExtensionEndpoint implements Bindings.DebuggerLangu
      */
     getInlinedCalleesRanges(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.RawLocationRange[]>;
     getMappedLines(rawModuleId: string, sourceFileURL: string): Promise<number[] | undefined>;
-    evaluate(expression: string, context: Chrome.DevTools.RawLocation, stopId: number): Promise<Chrome.DevTools.RemoteObject>;
+    evaluate(expression: string, context: Chrome.DevTools.RawLocation, stopId: number): Promise<Chrome.DevTools.RemoteObject | Chrome.DevTools.ForeignObject | null>;
     getProperties(objectId: Chrome.DevTools.RemoteObjectId): Promise<Chrome.DevTools.PropertyDescriptor[]>;
     releaseObject(objectId: Chrome.DevTools.RemoteObjectId): Promise<void>;
 }

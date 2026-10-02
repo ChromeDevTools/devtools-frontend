@@ -235,6 +235,24 @@ describe('StepEditor', () => {
     await suggestionBox.updateComplete;
     assert.isNull(suggestionBox.shadowRoot?.querySelector('.suggestions'));
 
+    const arrowDownEvent = new KeyboardEvent('keydown', {
+      key: 'ArrowDown',
+      bubbles: true,
+      composed: true,
+      cancelable: true,
+    });
+    input.dispatchEvent(arrowDownEvent);
+    assert.isFalse(arrowDownEvent.defaultPrevented);
+
+    const arrowUpEvent = new KeyboardEvent('keydown', {
+      key: 'ArrowUp',
+      bubbles: true,
+      composed: true,
+      cancelable: true,
+    });
+    input.dispatchEvent(arrowUpEvent);
+    assert.isFalse(arrowUpEvent.defaultPrevented);
+
     input.value = 'nav';
     await input.updateComplete;
     await suggestionBox.updateComplete;

@@ -162,10 +162,16 @@ class SuggestionBox extends Lit.LitElement {
     this.cursor = 0;
   }
 
+  #hasVisibleSuggestions(): boolean {
+    return this.#suggestions.length > 0 &&
+        !(this.hideExactMatch && this.#suggestions.length === 1 &&
+          this.#suggestions[0].toLowerCase() === this.expression.toLowerCase());
+  }
+
   #handleKeyDownEvent = (event: Event): void => {
     assert(event instanceof KeyboardEvent, 'Bound to the wrong event.');
 
-    if (this.#suggestions.length > 0) {
+    if (this.#hasVisibleSuggestions()) {
       switch (event.key) {
         case 'ArrowDown':
           event.stopPropagation();
@@ -182,7 +188,7 @@ class SuggestionBox extends Lit.LitElement {
 
     switch (event.key) {
       case 'Enter':
-        if (this.#suggestions[this.cursor]) {
+        if (this.#hasVisibleSuggestions() && this.#suggestions[this.cursor]) {
           this.#dispatchSuggestEvent(this.#suggestions[this.cursor]);
         }
         event.preventDefault();
@@ -219,9 +225,7 @@ class SuggestionBox extends Lit.LitElement {
   }
 
   protected override render(): Lit.TemplateResult|undefined {
-    if (this.#suggestions.length === 0 ||
-        (this.hideExactMatch && this.#suggestions.length === 1 &&
-         this.#suggestions[0].toLowerCase() === this.expression.toLowerCase())) {
+    if (!this.#hasVisibleSuggestions()) {
       return;
     }
 

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import sinon from 'sinon';
-
 import * as Common from '../core/common/common.js';
 
 function createSettingValue(category: Common.Settings.SettingCategory, settingName: string, defaultValue: unknown,
@@ -27,36 +25,6 @@ const rawOption = (value: string, title: string) => ({
   text: title,
   raw: true as const,
 });
-
-export function stubNoopSettings(): void {
-  const createDummySetting = (name: string|{name: string}) => {
-    const settingName = typeof name === 'string' ? name : name.name;
-    return {
-      name: settingName,
-      get: () => [],
-      set: () => {},
-      addChangeListener: () => {},
-      removeChangeListener: () => {},
-      title: () => {},
-      asRegExp: () => {},
-      type: () => Common.Settings.SettingType.BOOLEAN,
-      getAsArray: () => [],
-      descriptor: () => ({
-        name: settingName,
-        settingType: Common.Settings.SettingType.BOOLEAN,
-        defaultValue: false,
-      }),
-    };
-  };
-
-  sinon.stub(Common.Settings.Settings, 'instance').returns({
-    createSetting: createDummySetting,
-    moduleSetting: createDummySetting,
-    createLocalSetting: createDummySetting,
-    resolve: createDummySetting,
-    maybeResolve: createDummySetting,
-  } as unknown as Common.Settings.Settings);
-}
 
 export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST: ReadonlyArray<ReturnType<typeof createSettingValue>> = [
   createSettingValue(Common.Settings.SettingCategory.ADORNER, 'adorner-settings', [],

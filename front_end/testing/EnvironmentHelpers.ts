@@ -30,7 +30,6 @@ import {cleanupSettings, setupSettings} from './SettingsHelpers.js';
 let UI: typeof UIModule;
 
 export {createTarget, waitForTarget} from './TargetHelpers.js';
-export {stubNoopSettings} from './SettingsHelpers.js';
 
 export function registerActions(actions: UIModule.ActionRegistration.ActionRegistration[]): void {
   for (const action of actions) {

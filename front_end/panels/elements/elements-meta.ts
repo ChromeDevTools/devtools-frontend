@@ -606,15 +606,12 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.showDetail
   title: i18nLazyString(UIStrings.detailedInspectTooltip),
 });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.ELEMENTS,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  order: 6,
-  title: i18nLazyString(UIStrings.cssAnimationsOnlyWhenAnimationsTabOpen),
-  settingName: 'css-animations-only-when-animations-tab-open',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-});
+SettingsUI.SettingUIRegistration.register(
+    SettingsUI.ElementsSettings.cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor, {
+      category: Common.Settings.SettingCategory.ELEMENTS,
+      order: 6,
+      title: i18nLazyString(UIStrings.cssAnimationsOnlyWhenAnimationsTabOpen),
+    });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,

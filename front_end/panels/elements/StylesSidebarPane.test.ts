@@ -29,6 +29,7 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as PanelsCommon from '../common/common.js';
 
 import type * as ElementsComponents from './components/components.js';
@@ -1831,7 +1832,9 @@ describe('StylesSidebarPane', () => {
 
       it('should render transition & animation styles when the animations panel is not visible but the css-animations-only-when-animations-tab-open setting is disabled',
          async () => {
-           Common.Settings.Settings.instance().moduleSetting('css-animations-only-when-animations-tab-open').set(false);
+           Common.Settings.Settings.instance()
+               .resolve(SettingsUI.ElementsSettings.cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor)
+               .set(false);
            const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
                new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
            const matchedStyles = await getMatchedStyles({

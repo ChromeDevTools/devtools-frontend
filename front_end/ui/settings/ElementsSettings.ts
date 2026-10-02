@@ -38,3 +38,10 @@ export const showDetailedInspectTooltipSettingDescriptor: Common.Settings.Settin
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'css-animations-only-when-animations-tab-open',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

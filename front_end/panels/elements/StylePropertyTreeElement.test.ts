@@ -28,6 +28,7 @@ import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import {Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as LegacyUI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as ElementsComponents from './components/components.js';
 import * as Elements from './elements.js';
@@ -634,7 +635,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
     it('should not create a hint when property is overridden by animation but the css-animations-only-when-animations-tab-open setting is disabled',
        () => {
-         Common.Settings.Settings.instance().moduleSetting('css-animations-only-when-animations-tab-open').set(false);
+         Common.Settings.Settings.instance()
+             .resolve(SettingsUI.ElementsSettings.cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor)
+             .set(false);
          const stylePropertyTreeElement = getTreeElement('opacity', '0.5');
          sinon.stub(matchedStyles, 'isPropertyOverriddenByAnimation').returns(true);
 

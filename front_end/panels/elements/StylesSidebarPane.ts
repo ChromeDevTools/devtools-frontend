@@ -54,6 +54,7 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -1243,7 +1244,9 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     LayersWidget.ButtonProvider.instance().item().setVisible(false);
     const animationsPanelVisible = UI.ViewManager.ViewManager.instance().isViewVisible('animations');
     const cssAnimationsOnlyWhenAnimationsTabOpen =
-        Common.Settings.Settings.instance().moduleSetting('css-animations-only-when-animations-tab-open').get();
+        Common.Settings.Settings.instance()
+            .resolve(SettingsUI.ElementsSettings.cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor)
+            .get();
 
     let totalProperties = 0;
     for (const style of matchedStyles.nodeStyles()) {

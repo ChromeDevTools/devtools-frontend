@@ -2229,6 +2229,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
       }
 
       const originalPropertyText = treeElement.property.propertyText;
+      this.#stylesContainer.setActiveProperty(treeElement);
       this.#stylesContainer.setEditingStyle(true);
 
       popoverHelper.show(editor, button, commitEdit => {

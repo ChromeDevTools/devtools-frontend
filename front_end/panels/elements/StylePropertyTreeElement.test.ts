@@ -4112,4 +4112,23 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       sinon.assert.calledOnce(undoStub);
     });
   });
+  describe('PositionAreaRenderer', () => {
+    it('sets the property as active before entering style editing mode when opening the position-area editor', () => {
+      const stylePropertyTreeElement = getTreeElement('position-area', 'top left');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+
+      const setActivePropertySpy = sinon.spy(stylesSidebarPane, 'setActiveProperty');
+      const setEditingStyleSpy = sinon.spy(stylesSidebarPane, 'setEditingStyle');
+      sinon.stub(stylesSidebarPane.swatchPopoverHelper(), 'show');
+
+      const button = stylePropertyTreeElement.valueElement.querySelector<HTMLElement>('.position-area-swatch-icon');
+      assert.exists(button);
+      button.click();
+
+      sinon.assert.calledOnceWithExactly(setActivePropertySpy, stylePropertyTreeElement);
+      sinon.assert.calledOnceWithExactly(setEditingStyleSpy, true);
+      sinon.assert.callOrder(setActivePropertySpy, setEditingStyleSpy);
+    });
+  });
 });

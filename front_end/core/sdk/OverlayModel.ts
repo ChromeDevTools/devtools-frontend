@@ -583,7 +583,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      imcbHighlightConfig: {},
       contrastAlgorithm: settings.resolve(apcaSettingDescriptor).get() ? Protocol.Overlay.ContrastAlgorithm.Apca :
                                                                          Protocol.Overlay.ContrastAlgorithm.Aa,
     };
@@ -803,6 +802,41 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
           color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: Protocol.Overlay.LineStylePattern.Dashed,
         },
+      };
+    }
+
+    const baseImcbHighlightConfig = {
+      imcbBorderColor: Common.Color.PageHighlight.AnchorIMCB.toProtocolRGBA(),
+      imcbBackgroundColor: Common.Color.PageHighlight.AnchorIMCBBackground.toProtocolRGBA(),
+      anchorBorderColor: Common.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+      anchorBackgroundColor: Common.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
+    };
+
+    if (mode === 'anchor-positioning') {
+      highlightConfig.imcbHighlightConfig = {
+        ...baseImcbHighlightConfig,
+        insetsBackgroundColor: Common.Color.PageHighlight.AnchorInsetsBackground.toProtocolRGBA(),
+        insetsHatchColor: Common.Color.PageHighlight.AnchorInsetsHatch.toProtocolRGBA(),
+        showPositionAreaGrid: true,
+        positionAreaGridLineColor: Common.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+        positionAreaActiveRegionColor: Common.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
+      };
+    }
+
+    if (mode === 'position-area') {
+      highlightConfig.imcbHighlightConfig = {
+        ...baseImcbHighlightConfig,
+        showPositionAreaGrid: true,
+        positionAreaGridLineColor: Common.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+        positionAreaActiveRegionColor: Common.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
+      };
+    }
+
+    if (mode === 'insets') {
+      highlightConfig.imcbHighlightConfig = {
+        ...baseImcbHighlightConfig,
+        insetsBackgroundColor: Common.Color.PageHighlight.AnchorInsetsBackground.toProtocolRGBA(),
+        insetsHatchColor: Common.Color.PageHighlight.AnchorInsetsHatch.toProtocolRGBA(),
       };
     }
 

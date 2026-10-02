@@ -95,7 +95,6 @@ describe('StylesSidebarPane', () => {
           item.inactive = true;
         }
       };
-
       it('preserves the relative ordering of inactive items when some items become inactive', () => {
         const oldItems: TestItem[] = [{id: 'a'}, {id: 'b'}, {id: 'c'}];
         const newItems: TestItem[] = [{id: 'a'}, {id: 'c'}];
@@ -320,7 +319,6 @@ describe('StylesSidebarPane', () => {
 
         stylesSidebarPane.detach();
       });
-
       it('uses the selected node classes as the default selector of the new rule', async () => {
         (node.frameId as sinon.SinonStub).returns('frame-id' as Protocol.Page.FrameId);
         (node.nodeType as sinon.SinonStub).returns(Node.ELEMENT_NODE);
@@ -3542,7 +3540,6 @@ color: pink !important;`;
              linkifyStub.getCalls().map(call => `${call.args[0].lineNumber}:${call.args[0].columnNumber}`);
          assert.includeMembers(locations, ['0:5', '1:20', '2:12']);
        });
-
     describe('Mouse interaction', () => {
       let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
       let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -4856,5 +4853,88 @@ describeWithEnvironment('StylesSidebarPane updates, completions, and media/keyfr
     const treeElements = main.propertiesTreeOutline.rootElement().children() as
         Elements.StylePropertyTreeElement.StylePropertyTreeElement[];
     assert.deepEqual(treeElements.map(treeElement => treeElement.overloaded()), [false, true, false]);
+  });
+
+  describe('setActiveProperty', () => {
+    let overlayModel: sinon.SinonStubbedInstance<SDK.OverlayModel.OverlayModel>;
+    let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+
+    beforeEach(async () => {
+      const stubbed = createStubbedDomNodeWithModels({nodeId: 1});
+      node = stubbed.node;
+      overlayModel = sinon.createStubInstance(SDK.OverlayModel.OverlayModel);
+      stubbed.domModel.overlayModel.returns(overlayModel);
+      computedStyleModel.node = node;
+      stylesSidebarPane.setNodeForTest(node);
+      matchedStyles = await getMatchedStyles({
+        connection,
+        cssModel,
+        node,
+        matchedPayload: [ruleMatch('div', {})],
+      });
+    });
+
+    function createTreeElement(name: string,
+                               value: string): Elements.StylePropertyTreeElement.StylePropertyTreeElement {
+      const style = matchedStyles.nodeStyles()[0];
+      const property = new SDK.CSSProperty.CSSProperty(style, style.pastLastSourcePropertyIndex(), name, value, true,
+                                                       false, true, false, '', undefined, []);
+      const section = sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection);
+      return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+        stylesContainer: stylesSidebarPane,
+        section,
+        matchedStyles,
+        property,
+        isShorthand: false,
+        inherited: false,
+        overloaded: false,
+        newProperty: false,
+      });
+    }
+
+    it('highlights position-area, anchor-positioning, and insets properties with their respective modes', () => {
+      stylesSidebarPane.setActiveProperty(createTreeElement('position-area', 'top left'));
+      sinon.assert.calledOnceWithExactly(overlayModel.highlightInOverlay, {node, selectorList: 'div'}, 'position-area');
+
+      overlayModel.highlightInOverlay.resetHistory();
+      stylesSidebarPane.setActiveProperty(createTreeElement('position-anchor', '--my-anchor'));
+      sinon.assert.calledOnceWithExactly(overlayModel.highlightInOverlay, {node, selectorList: 'div'},
+                                         'anchor-positioning');
+
+      overlayModel.highlightInOverlay.resetHistory();
+      stylesSidebarPane.setActiveProperty(createTreeElement('inset-block-start', '10px'));
+      sinon.assert.calledOnceWithExactly(overlayModel.highlightInOverlay, {node, selectorList: 'div'}, 'insets');
+    });
+
+    it('highlights properties whose values use anchor() or anchor-size() in anchor-positioning mode', () => {
+      stylesSidebarPane.setActiveProperty(createTreeElement('width', 'anchor-size(width)'));
+      sinon.assert.calledOnceWithExactly(overlayModel.highlightInOverlay, {node, selectorList: 'div'},
+                                         'anchor-positioning');
+
+      overlayModel.highlightInOverlay.resetHistory();
+      stylesSidebarPane.setActiveProperty(createTreeElement('margin-top', 'calc(anchor(bottom) + 4px)'));
+      sinon.assert.calledOnceWithExactly(overlayModel.highlightInOverlay, {node, selectorList: 'div'},
+                                         'anchor-positioning');
+    });
+
+    it('preserves active property highlight while editing style and clears it when editing finishes', () => {
+      const hideHighlightSpy = sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+
+      stylesSidebarPane.setActiveProperty(createTreeElement('position-area', 'top left'));
+      sinon.assert.calledOnce(overlayModel.highlightInOverlay);
+      sinon.assert.notCalled(hideHighlightSpy);
+
+      stylesSidebarPane.setEditingStyle(true);
+      sinon.assert.notCalled(hideHighlightSpy);
+
+      stylesSidebarPane.setActiveProperty(null);
+      sinon.assert.notCalled(hideHighlightSpy);
+
+      stylesSidebarPane.setActiveProperty(createTreeElement('top', '10px'));
+      sinon.assert.calledOnce(overlayModel.highlightInOverlay);
+
+      stylesSidebarPane.setEditingStyle(false);
+      sinon.assert.calledOnce(hideHighlightSpy);
+    });
   });
 });

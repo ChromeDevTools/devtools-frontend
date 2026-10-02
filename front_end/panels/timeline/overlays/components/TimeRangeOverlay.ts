@@ -26,27 +26,40 @@ export interface ViewInput {
   isLabelEditable: boolean;
   onLabelFocusOut: () => void;
   onLabelDblClick: () => void;
-  onLabelKeyDown: (event: KeyboardEvent) => void;
-  onLabelInput: () => void;
+  onLabelEditComplete: () => void;
+  onLabelInput: (label: string) => void;
 }
 
 /**
- * Elements the view fills in through refs. The widget measures them to
- * position the label, and focuses the label box. They are undefined until the
- * first render.
+ * Callbacks and elements the view fills in through refs.
  *
- * TODO(crbug.com/407941310): Replace these temporary raw element references
- * with view callbacks and declarative state in a follow-up CL.
+ * TODO(crbug.com/407941310): Replace the remaining temporary raw element
+ * references with view callbacks and declarative state in a follow-up CL.
  */
 export interface ViewOutput {
   rangeContainer?: HTMLElement;
-  labelBox?: HTMLElement;
   durationBox?: HTMLElement;
+  focusLabel: () => void;
 }
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
+  const handleKeyDown = (event: KeyboardEvent): void => {
+    // If the new key is `Enter` or `Escape` key, treat it
+    // as the end of the label input and blur the input field.
+    if (event.key === Platform.KeyboardUtilities.ENTER_KEY || event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
+      // In DevTools, the `Escape` button will by default toggle the console
+      // drawer, which we don't want here, so we need to call
+      // `stopPropagation()`.
+      event.stopPropagation();
+      input.onLabelEditComplete();
+      if (event.target instanceof HTMLElement) {
+        event.target.blur();
+      }
+    }
+  };
+
   // The label text is bound with `live` because the user edits it directly
   // in the DOM. `live` compares against the current DOM text rather than the
   // last rendered value. The input handler keeps the widget's label in sync,
@@ -66,13 +79,17 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
            role="textbox"
            @focusout=${input.onLabelFocusOut}
            @dblclick=${input.onLabelDblClick}
-           @keydown=${input.onLabelKeyDown}
-           @input=${input.onLabelInput}
+           @keydown=${handleKeyDown}
+           @input=${(event: Event) => input.onLabelInput(event.target instanceof HTMLElement ? event.target.textContent ?? '' : '')}
            contenteditable=${input.isLabelEditable ? 'plaintext-only' : false}
            aria-label=${input.label}
            .textContent=${Directives.live(input.label)}
            jslog=${VisualLogging.textField('timeline.annotations.time-range-label-input').track({keydown: true, click: true})}
-           ${Directives.ref(el => { output.labelBox = el instanceof HTMLElement ? el : undefined; })}
+           ${Directives.ref(el => {
+             if (el instanceof HTMLElement) {
+               output.focusLabel = () => el.focus();
+             }
+           })}
           ></span>
           <span
             class="duration"
@@ -107,7 +124,9 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
   onRemove: () => void = () => {};
 
   readonly #view: View;
-  readonly #viewOutput: ViewOutput = {};
+  readonly #viewOutput: ViewOutput = {
+    focusLabel: () => {},
+  };
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
@@ -180,8 +199,8 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
    * `Overlays` can reposition the label in the same frame as the range.
    */
   updateLabelPositioning(): void {
-    const {rangeContainer, labelBox, durationBox} = this.#viewOutput;
-    if (!rangeContainer || !labelBox || !this.#canvasRect) {
+    const {rangeContainer, durationBox} = this.#viewOutput;
+    if (!rangeContainer || !this.#canvasRect) {
       return;
     }
 
@@ -191,7 +210,6 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
     // consistent on both edges of the UI.
     const paddingForScrollbar = 9;
     const overlayRect = this.element.getBoundingClientRect();
-    const labelFocused = UI.DOMUtilities.deepActiveElement(this.element.ownerDocument) === labelBox;
 
     const labelRect = rangeContainer.getBoundingClientRect();
     const visibleOverlayWidth = this.#visibleOverlayWidth(overlayRect) - paddingForScrollbar;
@@ -201,11 +219,15 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
       return;
     }
     const overlayTooNarrow = visibleOverlayWidth <= durationBoxLength;
-    // We do not hide the label if:
-    // 1. it is focused (user is typing into it)
-    // 2. it is empty - this means it's a new label and we need to let the user type into it!
-    // 3. it is too narrow - narrower than the duration length
-    const hideLabel = overlayTooNarrow && !labelFocused && this.#label.length > 0;
+    // Do not hide the label when:
+    // 1. It is empty (a new range that the user needs to type into).
+    // 2. It is currently being edited (`#isLabelEditable` is true). For a
+    //    non-empty label, `#isLabelEditable` is true only while the user has
+    //    double-clicked to edit the label (or is still typing into an initially
+    //    empty label) and has not yet blurred it (`@focusout` resets
+    //    `#isLabelEditable` to false).
+    // 3. The visible range is wider than the duration text.
+    const hideLabel = overlayTooNarrow && !this.#isLabelEditable && this.#label.length > 0;
     rangeContainer.classList.toggle('labelHidden', hideLabel);
 
     if (hideLabel) {
@@ -255,20 +277,11 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
     }
   }
 
-  #focusInputBox(): void {
-    const labelBox = this.#viewOutput.labelBox;
-    if (!labelBox) {
-      console.error('`labelBox` element is missing.');
-      return;
-    }
-    labelBox.focus();
-  }
-
   #setLabelEditability(editable: boolean): void {
     // Always keep focus on the label input field if the label is empty.
     // TODO: Do not remove a range that is being navigated away from if the label is not empty
     if (this.#label === '') {
-      this.#focusInputBox();
+      this.#viewOutput.focusLabel();
       return;
     }
     this.#isLabelEditable = editable;
@@ -277,32 +290,22 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #handleLabelInput(): void {
+  #handleLabelInput(label: string): void {
     // Sync on every input (typing, paste, cut, drag and drop) so that
     // `#label` always matches the text in the DOM.
-    const labelBoxTextContent = this.#viewOutput.labelBox?.textContent ?? '';
-    if (labelBoxTextContent !== this.#label) {
-      this.#label = labelBoxTextContent;
+    if (label !== this.#label) {
+      this.#label = label;
       this.onLabelChange(this.#label);
       // Update so the aria-label binding picks up the new label.
       this.requestUpdate();
     }
   }
 
-  #handleLabelInputKeyDown(event: KeyboardEvent): void {
-    // If the new key is `Enter` or `Escape` key, treat it
-    // as the end of the label input and blur the input field.
+  #handleLabelEditComplete(): void {
     // If the text field is empty when `Enter` or `Escape` are pressed,
     // remove the time range.
-    if (event.key === Platform.KeyboardUtilities.ENTER_KEY || event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
-      // In DevTools, the `Escape` button will by default toggle the console
-      // drawer, which we don't want here, so we need to call
-      // `stopPropagation()`.
-      event.stopPropagation();
-      if (this.#label === '') {
-        this.onRemove();
-      }
-      this.#viewOutput.labelBox?.blur();
+    if (this.#label === '') {
+      this.onRemove();
     }
   }
 
@@ -314,7 +317,7 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
           isLabelEditable: this.#isLabelEditable,
           onLabelFocusOut: () => this.#setLabelEditability(false),
           onLabelDblClick: () => this.#setLabelEditability(true),
-          onLabelKeyDown: this.#handleLabelInputKeyDown.bind(this),
+          onLabelEditComplete: this.#handleLabelEditComplete.bind(this),
           onLabelInput: this.#handleLabelInput.bind(this),
         },
         this.#viewOutput,
@@ -328,7 +331,7 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
       // The label may have been set, which makes it non-editable, since the
       // focus was requested.
       if (this.#isLabelEditable) {
-        this.#focusInputBox();
+        this.#viewOutput.focusLabel();
       }
     }
   }

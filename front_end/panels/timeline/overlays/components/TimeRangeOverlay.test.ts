@@ -250,6 +250,21 @@ describe('TimeRangeOverlay', () => {
     assert.isTrue(rangeContainer.classList.contains('labelHidden'));
   });
 
+  it('keeps a non-empty label visible while it is being edited even when the visible range is narrower than the duration',
+     async () => {
+       const {component} = await renderPositionedOverlay({left: 100, width: 20});
+       const {rangeContainer, labelBox} = getRenderedElements(component);
+       assert.isTrue(rangeContainer.classList.contains('labelHidden'));
+
+       labelBox.dispatchEvent(new MouseEvent('dblclick'));
+       await component.updateComplete;
+       assert.isFalse(rangeContainer.classList.contains('labelHidden'));
+
+       labelBox.blur();
+       await component.updateComplete;
+       assert.isTrue(rangeContainer.classList.contains('labelHidden'));
+     });
+
   it('keeps the label centered when the range is fully inside the canvas', async () => {
     const {component} = await renderPositionedOverlay({left: 200, width: 400});
     const {rangeContainer} = getRenderedElements(component);

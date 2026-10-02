@@ -12,7 +12,6 @@ import {
   createTarget,
   describeWithEnvironment,
   expectConsoleLogs,
-  stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -94,7 +93,6 @@ describeWithEnvironment('StorageBucketsTreeElement', function() {
   };
 
   beforeEach(async () => {
-    stubNoopSettings();
     SDK.ChildTargetManager.ChildTargetManager.install();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});

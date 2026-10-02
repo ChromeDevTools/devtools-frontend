@@ -12,7 +12,6 @@ import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.j
 import {
   createTarget,
   describeWithEnvironment,
-  stubNoopSettings,
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
@@ -28,7 +27,6 @@ describeWithEnvironment('AccessibilitySidebarView', () => {
   let view: Accessibility.AccessibilitySidebarView.AccessibilitySidebarView|undefined;
 
   beforeEach(() => {
-    stubNoopSettings();
     UI.ActionRegistration.maybeRemoveActionExtension('elements.toggle-a11y-tree');
     UI.ActionRegistration.registerActionExtension({
       actionId: 'elements.toggle-a11y-tree',

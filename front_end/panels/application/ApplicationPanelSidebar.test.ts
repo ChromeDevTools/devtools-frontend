@@ -15,7 +15,6 @@ import {
   createTarget,
   describeWithEnvironment,
   expectConsoleLogs,
-  stubNoopSettings,
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -35,7 +34,6 @@ describeWithEnvironment('ApplicationPanelSidebar', () => {
   const TEST_EXTENSION_NAME = 'Test Extension';
 
   beforeEach(() => {
-    stubNoopSettings();
     SDK.ChildTargetManager.ChildTargetManager.install();
     const connection = new MockCDPConnection();
     mockResourceTree(connection);
@@ -305,7 +303,6 @@ describeWithEnvironment('ApplicationPanelSidebar', () => {
 describeWithEnvironment('IDBDatabaseTreeElement', () => {
   let target: SDK.Target.Target;
   beforeEach(() => {
-    stubNoopSettings();
     const connection = new MockCDPConnection();
     mockResourceTree(connection);
     target = createTarget({connection});
@@ -332,7 +329,6 @@ describeWithEnvironment('ResourcesSection', () => {
   const tests = (inScope: boolean) => () => {
     let target: SDK.Target.Target;
     beforeEach(() => {
-      stubNoopSettings();
       SDK.FrameManager.FrameManager.instance({forceNew: true});
       const connection = new MockCDPConnection();
       mockResourceTree(connection);
@@ -389,7 +385,6 @@ describeWithEnvironment('IndexedDBTreeElement live update', () => {
   let indexedDBTreeElement: Application.ApplicationPanelSidebar.IndexedDBTreeElement;
 
   beforeEach(async () => {
-    stubNoopSettings();
     const connection = new MockCDPConnection();
     mockResourceTree(connection);
     target = createTarget({connection});

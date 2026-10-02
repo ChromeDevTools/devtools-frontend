@@ -15,7 +15,6 @@ import {
   createTarget,
   describeWithEnvironment,
   registerNoopActions,
-  stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
@@ -30,7 +29,6 @@ const {urlString} = Platform.DevToolsPath;
 describeWithEnvironment(`RequestConditionsDrawer with individual request throttling enabled`, () => {
   let connection: MockCDPConnection;
   beforeEach(() => {
-    stubNoopSettings();
     connection = new MockCDPConnection();
     connection.setSuccessHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
     connection.setSuccessHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
@@ -135,13 +133,15 @@ describeWithEnvironment(`RequestConditionsDrawer with individual request throttl
       Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(
           Logs.NetworkLog.Events.Reset, {clearIfPreserved: true});
       await viewFunction.nextInput;
+      widget.detach();
     });
   });
 });
 
 describeWithEnvironment('RequestConditionsDrawer', () => {
+  let requestConditionsDrawer: Network.RequestConditionsDrawer.RequestConditionsDrawer|undefined;
+
   beforeEach(() => {
-    stubNoopSettings();
     registerNoopActions([
       'network.add-network-request-blocking-pattern',
       'network.remove-all-network-request-blocking-patterns',
@@ -150,12 +150,13 @@ describeWithEnvironment('RequestConditionsDrawer', () => {
   });
 
   afterEach(() => {
+    requestConditionsDrawer?.detach();
     SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.clear();
   });
 
   describe('shows information for upgrading wildcard patterns to URLPatterns', () => {
     it('shows the URLPattern breakdown', async () => {
-      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+      requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       renderElementIntoDOM(requestConditionsDrawer, {includeCommonStyles: true});
       const index = 0;
       const condition = SDK.NetworkManager.RequestCondition.createFromSetting({
@@ -181,7 +182,7 @@ describeWithEnvironment('RequestConditionsDrawer', () => {
     });
 
     it('shows a warning icon when a pattern was upgraded', async () => {
-      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+      requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       renderElementIntoDOM(requestConditionsDrawer, {includeCommonStyles: true});
       const index = 0;
       const condition = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'example.com/*bar', enabled: true},
@@ -201,7 +202,7 @@ describeWithEnvironment('RequestConditionsDrawer', () => {
     });
 
     it('shows an error icon when a pattern is invalid', async () => {
-      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+      requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       renderElementIntoDOM(requestConditionsDrawer, {includeCommonStyles: true});
       const index = 0;
       const condition = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'ht tp://*', enabled: true},
@@ -219,7 +220,7 @@ describeWithEnvironment('RequestConditionsDrawer', () => {
     });
 
     it('shows an error icon when a pattern contains regexp groups', async () => {
-      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+      requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       renderElementIntoDOM(requestConditionsDrawer, {includeCommonStyles: true});
       const index = 0;
       const condition = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'http://*/(\\d+)', enabled: true},
@@ -237,7 +238,7 @@ describeWithEnvironment('RequestConditionsDrawer', () => {
     });
 
     it('shows an error message in the editor when the pattern is invalid or has regexp groups', async () => {
-      const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+      requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
       renderElementIntoDOM(requestConditionsDrawer, {includeCommonStyles: true});
       await requestConditionsDrawer.updateComplete;
 
@@ -260,7 +261,7 @@ describeWithEnvironment('RequestConditionsDrawer', () => {
         sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions, 'decreasePriority');
     SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.conditionsEnabled = true;
 
-    const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+    requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
     renderElementIntoDOM(requestConditionsDrawer, {includeCommonStyles: true});
     const condition = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'example.com/*bar', enabled: true},
                                                                             Common.Settings.Settings.instance());
@@ -281,7 +282,7 @@ describeWithEnvironment('RequestConditionsDrawer', () => {
   });
 
   it('highlights conditions', async () => {
-    const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+    requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
     renderElementIntoDOM(requestConditionsDrawer, {includeCommonStyles: true});
     UI.Context.Context.instance().setFlavor(
         Network.RequestConditionsDrawer.RequestConditionsDrawer, requestConditionsDrawer);

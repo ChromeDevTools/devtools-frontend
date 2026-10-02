@@ -9,7 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -28,7 +28,6 @@ describeWithEnvironment('AppManifestView', () => {
   let viewFunction: ViewFunctionStub<typeof Application.AppManifestView.AppManifestView>;
 
   beforeEach(() => {
-    stubNoopSettings();
     const connection = new MockCDPConnection([]);
     mockResourceTree(connection);
     const tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});

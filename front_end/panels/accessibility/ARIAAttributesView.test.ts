@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
@@ -18,7 +18,6 @@ describeWithEnvironment('ARIAAttributesView', () => {
   let node: SDK.DOMModel.DOMNode;
 
   beforeEach(() => {
-    stubNoopSettings();
     const connection = new MockCDPConnection();
     connection.setSuccessHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
     connection.setSuccessHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));

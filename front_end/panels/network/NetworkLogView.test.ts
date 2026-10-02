@@ -24,7 +24,6 @@ import {
   describeWithEnvironment,
   registerActions,
   registerNoopActions,
-  stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
@@ -1751,8 +1750,6 @@ describeWithEnvironment('NetworkLogView placeholder', () => {
   const RELOAD_ID = 'inspector-main.reload';
 
   beforeEach(() => {
-    stubNoopSettings();
-
     registerActions([
       {
         actionId: START_RECORDING_ID,
@@ -1794,7 +1791,6 @@ describeWithEnvironment('NetworkLogView placeholder', () => {
 
 describeWithEnvironment('NetworkLogView', () => {
   it('renders when actions aren\'t registered', async () => {
-    stubNoopSettings();
     sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({
       shortcutTitleForAction: () => 'Ctrl',
       shortcutsForAction: () => [new UI.KeyboardShortcut.KeyboardShortcut(
@@ -1808,7 +1804,6 @@ describeWithEnvironment('NetworkLogView', () => {
   });
 
   it('shows Debug with AI menu and submenu items when the flag is on', () => {
-    stubNoopSettings();
     registerActions([{
       actionId: 'drjones.network-panel-context',
       title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
@@ -1835,7 +1830,6 @@ describeWithEnvironment('NetworkLogView', () => {
   });
 
   it('configures visual logging for preloaded column in header context menu', () => {
-    stubNoopSettings();
     SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
     const networkLogView = createNetworkLogView(new UI.FilterBar.FilterBar('network-test'));
     renderElementIntoDOM(networkLogView);
@@ -1848,7 +1842,6 @@ describeWithEnvironment('NetworkLogView', () => {
   });
 
   it('dispatches RequestSelected with null when reset', () => {
-    stubNoopSettings();
     const networkLogView = createNetworkLogView();
     const dispatchEventSpy = sinon.spy(networkLogView, 'dispatchEventToListeners');
 

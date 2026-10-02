@@ -37,8 +37,9 @@ function renderLiveMetrics(): Components.LiveMetricsView.LiveMetricsView {
 }
 
 function getFieldMetricValue(view: Components.LiveMetricsView.LiveMetricsView, metric: string): HTMLElement|null {
-  const card = view.contentElement.querySelector(`#${metric} devtools-metric-card`);
-  return card!.shadowRoot!.querySelector('#field-value .metric-value');
+  const card = view.contentElement.querySelector(`#${metric} devtools-widget`);
+  assert.exists(card?.shadowRoot);
+  return card.shadowRoot.querySelector<HTMLElement>('#field-value .metric-value');
 }
 
 function getEnvironmentRecs(view: Components.LiveMetricsView.LiveMetricsView): HTMLElement[] {

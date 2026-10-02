@@ -5,7 +5,6 @@
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/kit/kit.js';
 import './FieldSettingsDialog.js';
-import './MetricCard.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -28,7 +27,7 @@ import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js'
 
 import * as Insights from './insights/insights.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
-import type {MetricCardData} from './MetricCard.js';
+import {MetricCard} from './MetricCard.js';
 import metricValueStyles from './metricValueStyles.css.js';
 import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 
@@ -487,7 +486,7 @@ function renderLcpCard(input: ViewInput): Lit.LitTemplate {
 
   // clang-format off
   return html`
-    <devtools-metric-card .data=${{
+    <devtools-widget ${widget(MetricCard, {
       metric: 'LCP',
       localValue: input.lcpValue?.value,
       fieldValue: fieldData?.percentiles?.p75,
@@ -499,7 +498,7 @@ function renderLcpCard(input: ViewInput): Lit.LitTemplate {
         [i18nString(UIStrings.resourceLoadDuration), subparts.resourceLoadTime, fieldSubparts?.resourceLoadTime],
         [i18nString(UIStrings.elementRenderDelay), subparts.elementRenderDelay, fieldSubparts?.elementRenderDelay],
       ],
-    } as MetricCardData}>
+    })}>
       ${nodeLink ? html`
           <div class="related-info" slot="extra-info">
             <span class="related-info-label">${i18nString(UIStrings.lcpElement)}</span>
@@ -509,7 +508,7 @@ function renderLcpCard(input: ViewInput): Lit.LitTemplate {
           </div>
         `
         : nothing}
-    </devtools-metric-card>
+    </devtools-widget>
   `;
   // clang-format on
 }
@@ -523,13 +522,13 @@ function renderClsCard(input: ViewInput): Lit.LitTemplate {
 
   // clang-format off
   return html`
-    <devtools-metric-card .data=${{
+    <devtools-widget ${widget(MetricCard, {
       metric: 'CLS',
       localValue: input.clsValue?.value,
       fieldValue: fieldData?.percentiles?.p75,
       histogram: fieldData?.histogram,
       warnings: input.clsValue?.warnings,
-    } as MetricCardData}>
+    })}>
       ${clusterIsVisible ? html`
         <div class="related-info" slot="extra-info">
           <span class="related-info-label">${i18nString(UIStrings.worstCluster)}</span>
@@ -541,7 +540,7 @@ function renderClsCard(input: ViewInput): Lit.LitTemplate {
           >${i18nString(UIStrings.numShifts, {shiftCount: clusterIds.size})}</button>
         </div>
       ` : nothing}
-    </devtools-metric-card>
+    </devtools-widget>
   `;
   // clang-format on
 }
@@ -553,7 +552,7 @@ function renderInpCard(input: ViewInput): Lit.LitTemplate {
 
   // clang-format off
   return html`
-    <devtools-metric-card .data=${{
+    <devtools-widget ${widget(MetricCard, {
       metric: 'INP',
       localValue: input.inpValue?.value,
       fieldValue: fieldData?.percentiles?.p75,
@@ -564,7 +563,7 @@ function renderInpCard(input: ViewInput): Lit.LitTemplate {
         [i18nString(UIStrings.processingDuration), subparts.processingDuration],
         [i18nString(UIStrings.presentationDelay), subparts.presentationDelay],
       ],
-    } as MetricCardData}>
+    })}>
       ${interaction ? html`
         <div class="related-info" slot="extra-info">
           <span class="related-info-label">${i18nString(UIStrings.inpInteractionLink)}</span>
@@ -576,7 +575,7 @@ function renderInpCard(input: ViewInput): Lit.LitTemplate {
           >${interaction.interactionType}</button>
         </div>
       ` : nothing}
-    </devtools-metric-card>
+    </devtools-widget>
   `;
   // clang-format on
 }

@@ -9,55 +9,59 @@ import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
 
-function getLocalMetricValue(view: Element): HTMLElement {
-  return view.shadowRoot!.querySelector('#local-value .metric-value')!;
+function getLocalMetricValue(view: Components.MetricCard.MetricCard): HTMLElement {
+  const localValueEl = view.contentElement.querySelector<HTMLElement>('#local-value .metric-value');
+  assert.exists(localValueEl);
+  return localValueEl;
 }
 
-function getFieldMetricValue(view: Element): HTMLElement|null {
-  return view.shadowRoot!.querySelector('#field-value .metric-value');
+function getFieldMetricValue(view: Components.MetricCard.MetricCard): HTMLElement|null {
+  return view.contentElement.querySelector<HTMLElement>('#field-value .metric-value');
 }
 
-function getFieldHistogramPercents(view: Element): string[] {
-  const histogram = view.shadowRoot!.querySelector('.bucket-summaries')!;
+function getFieldHistogramPercents(view: Components.MetricCard.MetricCard): string[] {
+  const histogram = view.contentElement.querySelector('.bucket-summaries');
+  assert.exists(histogram);
   const percents = Array.from(histogram.querySelectorAll('.histogram-percent'));
   return percents.map(p => p.textContent || '');
 }
 
-function getFieldHistogramLabels(view: Element): string[] {
-  const histogram = view.shadowRoot!.querySelector('.bucket-summaries') as HTMLElement;
+function getFieldHistogramLabels(view: Components.MetricCard.MetricCard): string[] {
+  const histogram = view.contentElement.querySelector<HTMLElement>('.bucket-summaries');
+  assert.exists(histogram);
   const percents = Array.from(histogram.querySelectorAll('.bucket-label'));
   return percents.map(p => p.textContent || '');
 }
 
-function getCompareText(view: Element): HTMLElement|null {
-  return view.shadowRoot!.querySelector('.compare-text');
+function getCompareText(view: Components.MetricCard.MetricCard): HTMLElement|null {
+  return view.contentElement.querySelector<HTMLElement>('.compare-text');
 }
 
-function getDetailedCompareText(view: Element): HTMLElement|null {
-  return view.shadowRoot!.querySelector('.detailed-compare-text');
+function getDetailedCompareText(view: Components.MetricCard.MetricCard): HTMLElement|null {
+  return view.contentElement.querySelector<HTMLElement>('.detailed-compare-text');
 }
 
-function getWarnings(view: Element): string[] {
-  return Array.from(view.shadowRoot!.querySelectorAll('.warning')).map(w => w.textContent!);
+function getWarnings(view: Components.MetricCard.MetricCard): string[] {
+  return Array.from(view.contentElement.querySelectorAll('.warning')).map(w => w.textContent || '');
 }
 
-function getEnvironmentRecs(view: Element): string[] {
-  const recs = Array.from(view.shadowRoot!.querySelectorAll('.environment-recs li'));
-  return recs.map(rec => rec.textContent!);
+function getEnvironmentRecs(view: Components.MetricCard.MetricCard): string[] {
+  const recs = Array.from(view.contentElement.querySelectorAll('.environment-recs li'));
+  return recs.map(rec => rec.textContent || '');
 }
 
-function getSubpartTable(view: Element): string[][]|null {
-  const subpartTable = view.shadowRoot!.querySelector('.subpart-table');
+function getSubpartTable(view: Components.MetricCard.MetricCard): string[][]|null {
+  const subpartTable = view.contentElement.querySelector('.subpart-table');
   if (!subpartTable) {
     return null;
   }
 
   const rowEls = Array.from(subpartTable.querySelectorAll('.subpart-table-row:not(.subpart-table-header-row)'));
-  return rowEls.map(rowEl => Array.from(rowEl.querySelectorAll('[role="cell"]')).map(cellEl => cellEl.textContent!));
+  return rowEls.map(rowEl =>
+                        Array.from(rowEl.querySelectorAll('[role="cell"]')).map(cellEl => cellEl.textContent || ''));
 }
 
 function createMockHistogram() {
@@ -88,23 +92,22 @@ describeWithEnvironment('MetricCard', () => {
 
   it('should show LCP value', async () => {
     const view = new Components.MetricCard.MetricCard();
-    view.data = {
-      metric: 'LCP',
-      localValue: 100,
-      fieldValue: 5000,
-      histogram: createMockHistogram(),
-    };
+    view.metric = 'LCP';
+    view.localValue = 100;
+    view.fieldValue = 5000;
+    view.histogram = createMockHistogram();
 
     renderElementIntoDOM(view);
-    await RenderCoordinator.done();
+    await view.updateComplete;
 
     const localValueEl = getLocalMetricValue(view);
     assert.strictEqual(localValueEl.className, 'metric-value good');
     assert.strictEqual(localValueEl.innerText, '0.10 s');
 
     const fieldValueEl = getFieldMetricValue(view);
-    assert.strictEqual(fieldValueEl!.className, 'metric-value poor');
-    assert.strictEqual(fieldValueEl!.innerText, '5.00 s');
+    assert.exists(fieldValueEl);
+    assert.strictEqual(fieldValueEl.className, 'metric-value poor');
+    assert.strictEqual(fieldValueEl.innerText, '5.00 s');
 
     const histogramLabels = getFieldHistogramLabels(view);
     assert.match(histogramLabels[0], /Good\s+\(≤2.50 s\)/);
@@ -114,23 +117,22 @@ describeWithEnvironment('MetricCard', () => {
 
   it('should show CLS value', async () => {
     const view = new Components.MetricCard.MetricCard();
-    view.data = {
-      metric: 'CLS',
-      localValue: 0.14294789234,
-      fieldValue: 0,
-      histogram: createMockHistogram(),
-    };
+    view.metric = 'CLS';
+    view.localValue = 0.14294789234;
+    view.fieldValue = 0;
+    view.histogram = createMockHistogram();
 
     renderElementIntoDOM(view);
-    await RenderCoordinator.done();
+    await view.updateComplete;
 
     const localValueEl = getLocalMetricValue(view);
     assert.strictEqual(localValueEl.className, 'metric-value needs-improvement');
     assert.strictEqual(localValueEl.innerText, '0.14');
 
     const fieldValueEl = getFieldMetricValue(view);
-    assert.strictEqual(fieldValueEl!.className, 'metric-value good');
-    assert.strictEqual(fieldValueEl!.innerText, '0');
+    assert.exists(fieldValueEl);
+    assert.strictEqual(fieldValueEl.className, 'metric-value good');
+    assert.strictEqual(fieldValueEl.innerText, '0');
 
     const histogramLabels = getFieldHistogramLabels(view);
     assert.match(histogramLabels[0], /Good\s+\(≤0.10\)/);
@@ -140,23 +142,22 @@ describeWithEnvironment('MetricCard', () => {
 
   it('should show INP value', async () => {
     const view = new Components.MetricCard.MetricCard();
-    view.data = {
-      metric: 'INP',
-      localValue: 2000,
-      fieldValue: 1,
-      histogram: createMockHistogram(),
-    };
+    view.metric = 'INP';
+    view.localValue = 2000;
+    view.fieldValue = 1;
+    view.histogram = createMockHistogram();
 
     renderElementIntoDOM(view);
-    await RenderCoordinator.done();
+    await view.updateComplete;
 
     const localValueEl = getLocalMetricValue(view);
     assert.strictEqual(localValueEl.className, 'metric-value poor');
     assert.strictEqual(localValueEl.innerText, '2,000 ms');
 
     const fieldValueEl = getFieldMetricValue(view);
-    assert.strictEqual(fieldValueEl!.className, 'metric-value good');
-    assert.strictEqual(fieldValueEl!.innerText, '1 ms');
+    assert.exists(fieldValueEl);
+    assert.strictEqual(fieldValueEl.className, 'metric-value good');
+    assert.strictEqual(fieldValueEl.innerText, '1 ms');
 
     const histogramLabels = getFieldHistogramLabels(view);
     assert.match(histogramLabels[0], /Good\s+\(≤200 ms\)/);
@@ -168,15 +169,16 @@ describeWithEnvironment('MetricCard', () => {
     const view = new Components.MetricCard.MetricCard();
 
     renderElementIntoDOM(view);
-    await RenderCoordinator.done();
+    await view.updateComplete;
 
     const metricValueEl = getLocalMetricValue(view);
     assert.strictEqual(metricValueEl.className.trim(), 'metric-value waiting');
     assert.strictEqual(metricValueEl.innerText, '-');
 
     const fieldValueEl = getFieldMetricValue(view);
-    assert.strictEqual(fieldValueEl!.className, 'metric-value waiting');
-    assert.strictEqual(fieldValueEl!.innerText, '-');
+    assert.exists(fieldValueEl);
+    assert.strictEqual(fieldValueEl.className, 'metric-value waiting');
+    assert.strictEqual(fieldValueEl.innerText, '-');
 
     const histogramLabels = getFieldHistogramLabels(view);
     assert.match(histogramLabels[0], /Good\s+\(≤2.50 s\)/);
@@ -186,16 +188,14 @@ describeWithEnvironment('MetricCard', () => {
 
   it('should show warnings', async () => {
     const view = new Components.MetricCard.MetricCard();
-    view.data = {
-      metric: 'LCP',
-      localValue: 2000,
-      fieldValue: 1,
-      histogram: createMockHistogram(),
-      warnings: ['LCP warning'],
-    };
+    view.metric = 'LCP';
+    view.localValue = 2000;
+    view.fieldValue = 1;
+    view.histogram = createMockHistogram();
+    view.warnings = ['LCP warning'];
 
     renderElementIntoDOM(view);
-    await RenderCoordinator.done();
+    await view.updateComplete;
 
     const warnings = getWarnings(view);
     assert.deepEqual(warnings, [
@@ -206,15 +206,13 @@ describeWithEnvironment('MetricCard', () => {
   describe('subpart table', () => {
     it('should not show if there is no subpart data', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 100,
-        fieldValue: 200,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 100;
+      view.fieldValue = 200;
+      view.histogram = createMockHistogram();
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const subpartTable = getSubpartTable(view);
       assert.isNull(subpartTable);
@@ -222,20 +220,18 @@ describeWithEnvironment('MetricCard', () => {
 
     it('should display subparts in a table format', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 100,
-        fieldValue: 200,
-        histogram: createMockHistogram(),
-        subparts: [
-          ['TTFB', 500 as Trace.Types.Timing.Milli],
-          ['Subpart 1', 0 as Trace.Types.Timing.Milli],
-          ['Subpart 2', 123.783458345 as Trace.Types.Timing.Milli],
-        ],
-      };
+      view.metric = 'LCP';
+      view.localValue = 100;
+      view.fieldValue = 200;
+      view.histogram = createMockHistogram();
+      view.subparts = [
+        ['TTFB', 500 as Trace.Types.Timing.Milli],
+        ['Subpart 1', 0 as Trace.Types.Timing.Milli],
+        ['Subpart 2', 123.783458345 as Trace.Types.Timing.Milli],
+      ];
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const subpartTable = getSubpartTable(view);
       assert.deepEqual(subpartTable, [
@@ -247,20 +243,18 @@ describeWithEnvironment('MetricCard', () => {
 
     it('should display field data subparts in a table format', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 100,
-        fieldValue: 200,
-        histogram: createMockHistogram(),
-        subparts: [
-          ['TTFB', 500 as Trace.Types.Timing.Milli, 400 as Trace.Types.Timing.Milli],
-          ['Subpart 1', 0 as Trace.Types.Timing.Milli, 10 as Trace.Types.Timing.Milli],
-          ['Subpart 2', 123.783458345 as Trace.Types.Timing.Milli, 100 as Trace.Types.Timing.Milli],
-        ],
-      };
+      view.metric = 'LCP';
+      view.localValue = 100;
+      view.fieldValue = 200;
+      view.histogram = createMockHistogram();
+      view.subparts = [
+        ['TTFB', 500 as Trace.Types.Timing.Milli, 400 as Trace.Types.Timing.Milli],
+        ['Subpart 1', 0 as Trace.Types.Timing.Milli, 10 as Trace.Types.Timing.Milli],
+        ['Subpart 2', 123.783458345 as Trace.Types.Timing.Milli, 100 as Trace.Types.Timing.Milli],
+      ];
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const subpartTable = getSubpartTable(view);
       assert.deepEqual(subpartTable, [
@@ -276,15 +270,13 @@ describeWithEnvironment('MetricCard', () => {
       CrUXManager.CrUXManager.instance().getConfigSetting().set({enabled: false, override: ''});
 
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 100,
-        fieldValue: 200,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 100;
+      view.fieldValue = 200;
+      view.histogram = createMockHistogram();
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const histogramLabels = getFieldHistogramLabels(view);
       assert.match(histogramLabels[0], /Good\s+\(≤2.50 s\)/);
@@ -300,15 +292,13 @@ describeWithEnvironment('MetricCard', () => {
 
     it('should show when crux is enabled', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 100,
-        fieldValue: 200,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 100;
+      view.fieldValue = 200;
+      view.histogram = createMockHistogram();
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const histogramLabels = getFieldHistogramLabels(view);
       assert.match(histogramLabels[0], /Good\s+\(≤2.50 s\)/);
@@ -319,18 +309,17 @@ describeWithEnvironment('MetricCard', () => {
       assert.deepEqual(histogramPercents, ['50%', '30%', '20%']);
 
       const fieldValueEl = getFieldMetricValue(view);
-      assert.strictEqual(fieldValueEl!.textContent, '0.20 s');
+      assert.exists(fieldValueEl);
+      assert.strictEqual(fieldValueEl.textContent, '0.20 s');
     });
 
     it('should show empty values when crux is enabled but there is no field data', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 100,
-      };
+      view.metric = 'LCP';
+      view.localValue = 100;
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const histogramLabels = getFieldHistogramLabels(view);
       assert.match(histogramLabels[0], /Good\s+\(≤2.50 s\)/);
@@ -341,186 +330,175 @@ describeWithEnvironment('MetricCard', () => {
       assert.deepEqual(histogramPercents, ['-', '-', '-']);
 
       const fieldValueEl = getFieldMetricValue(view);
-      assert.strictEqual(fieldValueEl!.textContent, '-');
+      assert.exists(fieldValueEl);
+      assert.strictEqual(fieldValueEl.textContent, '-');
     });
   });
 
   describe('local/field comparison', () => {
     it('should show message when values are similar', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 100,
-        fieldValue: 200,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 100;
+      view.fieldValue = 200;
+      view.histogram = createMockHistogram();
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const compareText = getCompareText(view);
-      assert.strictEqual(compareText!.innerText,
+      assert.exists(compareText);
+      assert.strictEqual(compareText.innerText,
                          'Your local LCP value of 0.10 s is good, and is similar to your users’ experience');
     });
 
     it('should show message when local is better', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 100,
-        fieldValue: 5000,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 100;
+      view.fieldValue = 5000;
+      view.histogram = createMockHistogram();
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const compareText = getCompareText(view);
+      assert.exists(compareText);
       assert.strictEqual(
-          compareText!.innerText,
+          compareText.innerText,
           'Your local LCP value of 0.10 s is good, but is significantly better than your users’ experience');
     });
 
     it('should show message when local is worse', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 5000,
-        fieldValue: 100,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 5000;
+      view.fieldValue = 100;
+      view.histogram = createMockHistogram();
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const compareText = getCompareText(view);
+      assert.exists(compareText);
       assert.strictEqual(
-          compareText!.innerText,
+          compareText.innerText,
           'Your local LCP value of 5.00 s is poor, but is significantly worse than your users’ experience');
     });
 
     it('should always be similar if local and field are rated "good"', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 10,
-        fieldValue: 2490,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 10;
+      view.fieldValue = 2490;
+      view.histogram = createMockHistogram();
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const compareText = getCompareText(view);
-      assert.strictEqual(compareText!.innerText,
+      assert.exists(compareText);
+      assert.strictEqual(compareText.innerText,
                          'Your local LCP value of 0.01 s is good, and is similar to your users’ experience');
     });
 
     it('should show generic summary if field is missing', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 3000,
-      };
+      view.metric = 'LCP';
+      view.localValue = 3000;
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const compareText = getCompareText(view);
-      assert.strictEqual(compareText!.innerText, 'Your local LCP value of 3.00 s needs improvement');
+      assert.exists(compareText);
+      assert.strictEqual(compareText.innerText, 'Your local LCP value of 3.00 s needs improvement');
     });
 
     it('should suggest interaction if local INP is missing', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'INP',
-      };
+      view.metric = 'INP';
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const compareText = getCompareText(view);
-      assert.strictEqual(compareText!.innerText, 'Interact with the page to measure INP');
+      assert.exists(compareText);
+      assert.strictEqual(compareText.innerText, 'Interact with the page to measure INP');
     });
   });
 
   describe('detailed local/field comparison', () => {
     it('should show message when values are rated the same', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 100,
-        fieldValue: 1000,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 100;
+      view.fieldValue = 1000;
+      view.histogram = createMockHistogram();
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const compareText = getDetailedCompareText(view);
+      assert.exists(compareText);
       assert.strictEqual(
-          compareText!.textContent,
+          compareText.textContent,
           'Your local LCP value of 0.10 s is good and is rated the same as 50% of real-user LCP experiences. Additionally, the field metrics 75th percentile LCP value of 1.00 s is good.',
       );
     });
 
     it('should show message when values are rated differently', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 100,
-        fieldValue: 5000,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 100;
+      view.fieldValue = 5000;
+      view.histogram = createMockHistogram();
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const compareText = getDetailedCompareText(view);
+      assert.exists(compareText);
       assert.strictEqual(
-          compareText!.textContent,
+          compareText.textContent,
           'Your local LCP value of 0.10 s is good and is rated the same as 50% of real-user LCP experiences. However, the field metrics 75th percentile LCP value of 5.00 s is poor.',
       );
     });
 
     it('should show generic summary if field is missing', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 3000,
-      };
+      view.metric = 'LCP';
+      view.localValue = 3000;
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const compareText = getDetailedCompareText(view);
-      assert.strictEqual(compareText!.textContent, 'Your local LCP value of 3.00 s needs improvement');
+      assert.exists(compareText);
+      assert.strictEqual(compareText.textContent, 'Your local LCP value of 3.00 s needs improvement');
     });
 
     it('should suggest interaction if local INP is missing', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'INP',
-      };
+      view.metric = 'INP';
       renderElementIntoDOM(view);
 
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const compareText = getDetailedCompareText(view);
-      assert.strictEqual(compareText!.textContent, 'Interact with the page to measure INP');
+      assert.exists(compareText);
+      assert.strictEqual(compareText.textContent, 'Interact with the page to measure INP');
     });
   });
 
   describe('environment recommendations', () => {
     it('should show nothing if field is missing', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 5000,
-      };
+      view.metric = 'LCP';
+      view.localValue = 5000;
 
       renderElementIntoDOM(view);
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const recs = getEnvironmentRecs(view);
       assert.lengthOf(recs, 0);
@@ -528,15 +506,13 @@ describeWithEnvironment('MetricCard', () => {
 
     it('should show nothing if local/field are similar', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 5000,
-        fieldValue: 5500,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 5000;
+      view.fieldValue = 5500;
+      view.histogram = createMockHistogram();
 
       renderElementIntoDOM(view);
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const recs = getEnvironmentRecs(view);
       assert.lengthOf(recs, 0);
@@ -544,15 +520,13 @@ describeWithEnvironment('MetricCard', () => {
 
     it('should show LCP recs', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 50,
-        fieldValue: 5500,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 50;
+      view.fieldValue = 5500;
+      view.histogram = createMockHistogram();
 
       renderElementIntoDOM(view);
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const recs = getEnvironmentRecs(view);
       assert.deepEqual(recs, [
@@ -564,15 +538,13 @@ describeWithEnvironment('MetricCard', () => {
 
     it('should hide LCP throttling rec if local is bigger', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'LCP',
-        localValue: 5000,
-        fieldValue: 50,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'LCP';
+      view.localValue = 5000;
+      view.fieldValue = 50;
+      view.histogram = createMockHistogram();
 
       renderElementIntoDOM(view);
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const recs = getEnvironmentRecs(view);
       assert.deepEqual(recs, [
@@ -583,15 +555,13 @@ describeWithEnvironment('MetricCard', () => {
 
     it('should show CLS recs', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'CLS',
-        localValue: 0,
-        fieldValue: 0.2,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'CLS';
+      view.localValue = 0;
+      view.fieldValue = 0.2;
+      view.histogram = createMockHistogram();
 
       renderElementIntoDOM(view);
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const recs = getEnvironmentRecs(view);
       assert.deepEqual(recs, [
@@ -603,15 +573,13 @@ describeWithEnvironment('MetricCard', () => {
 
     it('should show INP recs', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'INP',
-        localValue: 100,
-        fieldValue: 500,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'INP';
+      view.localValue = 100;
+      view.fieldValue = 500;
+      view.histogram = createMockHistogram();
 
       renderElementIntoDOM(view);
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const recs = getEnvironmentRecs(view);
       assert.deepEqual(recs, [
@@ -622,15 +590,13 @@ describeWithEnvironment('MetricCard', () => {
 
     it('should hide INP throttling rec if local is bigger', async () => {
       const view = new Components.MetricCard.MetricCard();
-      view.data = {
-        metric: 'INP',
-        localValue: 500,
-        fieldValue: 100,
-        histogram: createMockHistogram(),
-      };
+      view.metric = 'INP';
+      view.localValue = 500;
+      view.fieldValue = 100;
+      view.histogram = createMockHistogram();
 
       renderElementIntoDOM(view);
-      await RenderCoordinator.done();
+      await view.updateComplete;
 
       const recs = getEnvironmentRecs(view);
       assert.deepEqual(recs, [

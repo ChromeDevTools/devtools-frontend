@@ -9,8 +9,8 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UIHelpers from '../../../ui/helpers/helpers.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -149,15 +149,6 @@ export type SubpartTable = Array<[string, Trace.Types.Timing.Milli, Trace.Types.
 
 type Metric = 'LCP'|'CLS'|'INP';
 
-export interface MetricCardData {
-  metric: Metric;
-  localValue?: number;
-  fieldValue?: number|string;
-  histogram?: CrUXManager.MetricResponse['histogram'];
-  subparts?: SubpartTable;
-  warnings?: string[];
-}
-
 function getTitle(metric: Metric): string {
   switch (metric) {
     case 'LCP':
@@ -246,11 +237,16 @@ function getPercentLabelForRating(histogram: CrUXManager.MetricResponse['histogr
   return i18nString(UIStrings.percentage, {PH1: percent});
 }
 
-interface ViewInput extends MetricCardData {
+interface ViewInput {
+  metric: 'LCP'|'CLS'|'INP';
+  localValue?: number;
   fieldValue?: number;
+  histogram?: CrUXManager.MetricResponse['histogram'];
+  subparts?: SubpartTable;
+  warnings?: string[];
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement|ShadowRoot) => void;
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const {metric, localValue, fieldValue} = input;
 
@@ -528,56 +524,113 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format on
 };
 
-export class MetricCard extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export class MetricCard extends UI.Widget.VBox {
+  readonly #view: View;
+  #metric: Metric = 'LCP';
+  #localValue?: number;
+  #fieldValue?: number|string;
+  #histogram?: CrUXManager.MetricResponse['histogram'];
+  #subparts?: SubpartTable;
+  #warnings?: string[];
 
-  constructor() {
-    super();
-
-    this.#render();
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(target, {useShadowDom: true});
+    this.#view = view;
   }
 
-  #data: MetricCardData = {
-    metric: 'LCP',
-  };
-
-  set data(data: MetricCardData) {
-    this.#data = data;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  get metric(): Metric {
+    return this.#metric;
   }
 
-  connectedCallback(): void {
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-
-  #getFieldValue(): number|undefined {
-    let {fieldValue} = this.#data;
-    if (fieldValue === undefined) {
+  set metric(metric: Metric) {
+    if (this.#metric === metric) {
       return;
     }
+    this.#metric = metric;
+    this.requestUpdate();
+  }
 
-    if (typeof fieldValue === 'string') {
-      fieldValue = Number(fieldValue);
-    }
+  get localValue(): number|undefined {
+    return this.#localValue;
+  }
 
-    if (!Number.isFinite(fieldValue)) {
+  set localValue(localValue: number|undefined) {
+    if (this.#localValue === localValue) {
       return;
     }
-
-    return fieldValue;
+    this.#localValue = localValue;
+    this.requestUpdate();
   }
 
-  #render(): void {
-    const {metric, localValue, histogram, subparts, warnings} = this.#data;
-    const fieldValue = this.#getFieldValue();
-    DEFAULT_VIEW({metric, localValue, fieldValue, histogram, subparts, warnings}, {}, this.#shadow);
+  get fieldValue(): number|string|undefined {
+    return this.#fieldValue;
   }
-}
 
-customElements.define('devtools-metric-card', MetricCard);
+  set fieldValue(fieldValue: number|string|undefined) {
+    if (this.#fieldValue === fieldValue) {
+      return;
+    }
+    this.#fieldValue = fieldValue;
+    this.requestUpdate();
+  }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-metric-card': MetricCard;
+  get histogram(): CrUXManager.MetricResponse['histogram']|undefined {
+    return this.#histogram;
+  }
+
+  set histogram(histogram: CrUXManager.MetricResponse['histogram']|undefined) {
+    if (this.#histogram === histogram) {
+      return;
+    }
+    this.#histogram = histogram;
+    this.requestUpdate();
+  }
+
+  get subparts(): SubpartTable|undefined {
+    return this.#subparts;
+  }
+
+  set subparts(subparts: SubpartTable|undefined) {
+    if (this.#subparts === subparts) {
+      return;
+    }
+    this.#subparts = subparts;
+    this.requestUpdate();
+  }
+
+  get warnings(): string[]|undefined {
+    return this.#warnings;
+  }
+
+  set warnings(warnings: string[]|undefined) {
+    if (this.#warnings === warnings) {
+      return;
+    }
+    this.#warnings = warnings;
+    this.requestUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    CrUXManager.CrUXManager.instance().getConfigSetting().addChangeListener(this.requestUpdate, this);
+    this.requestUpdate();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    CrUXManager.CrUXManager.instance().getConfigSetting().removeChangeListener(this.requestUpdate, this);
+  }
+
+  override performUpdate(): void {
+    const fieldValue = typeof this.#fieldValue === 'string' ? Number(this.#fieldValue) : this.#fieldValue;
+    this.#view({
+      metric: this.#metric,
+      localValue: this.#localValue,
+      fieldValue: fieldValue !== undefined && Number.isFinite(fieldValue) ? fieldValue : undefined,
+      histogram: this.#histogram,
+      subparts: this.#subparts,
+      warnings: this.#warnings,
+    },
+               {}, this.contentElement);
   }
 }

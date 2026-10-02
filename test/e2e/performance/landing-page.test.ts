@@ -202,7 +202,7 @@ describe('The Performance panel landing page', function() {
       await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 2);
 
       // INP and interactions should be reset
-      const inpCard = await devToolsPage.waitFor('#inp devtools-metric-card');
+      const inpCard = await devToolsPage.waitFor('#inp devtools-widget');
       await devToolsPage.waitFor(WAITING_LOCAL_METRIC_SELECTOR, inpCard);
 
       const interactions3 = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);

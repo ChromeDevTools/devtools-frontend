@@ -1,11 +1,11 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Trace from '../../../../models/trace/trace.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
@@ -20,46 +20,114 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/TimeRangeOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class TimeRangeLabelChangeEvent extends Event {
-  static readonly eventName = 'timerangelabelchange';
-
-  constructor(public newLabel: string) {
-    super(TimeRangeLabelChangeEvent.eventName);
-  }
+export interface ViewInput {
+  label: string;
+  durationText: string;
+  isLabelEditable: boolean;
+  onLabelFocusOut: () => void;
+  onLabelDblClick: () => void;
+  onLabelKeyDown: (event: KeyboardEvent) => void;
+  onLabelInput: () => void;
 }
 
-export class TimeRangeRemoveEvent extends Event {
-  static readonly eventName = 'timerangeremoveevent';
-
-  constructor() {
-    super(TimeRangeRemoveEvent.eventName);
-  }
+/**
+ * Elements the view fills in through refs. The widget measures them to
+ * position the label, and focuses the label box. They are undefined until the
+ * first render.
+ *
+ * TODO(crbug.com/407941310): Replace these temporary raw element references
+ * with view callbacks and declarative state in a follow-up CL.
+ */
+export interface ViewOutput {
+  rangeContainer?: HTMLElement;
+  labelBox?: HTMLElement;
+  durationBox?: HTMLElement;
 }
 
-export class TimeRangeOverlay extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  // The label text is bound with `live` because the user edits it directly
+  // in the DOM. `live` compares against the current DOM text rather than the
+  // last rendered value. The input handler keeps the widget's label in sync,
+  // so re-rendering leaves the user's text and caret untouched.
+  // clang-format off
+  render(
+      html`
+        <style>${timeRangeOverlayStyles}</style>
+        <span
+          class="range-container"
+          role="region"
+          aria-label=${i18nString(UIStrings.timeRange)}
+          ${Directives.ref(el => { output.rangeContainer = el instanceof HTMLElement ? el : undefined; })}
+        >
+          <span
+           class="label-text"
+           role="textbox"
+           @focusout=${input.onLabelFocusOut}
+           @dblclick=${input.onLabelDblClick}
+           @keydown=${input.onLabelKeyDown}
+           @input=${input.onLabelInput}
+           contenteditable=${input.isLabelEditable ? 'plaintext-only' : false}
+           aria-label=${input.label}
+           .textContent=${Directives.live(input.label)}
+           jslog=${VisualLogging.textField('timeline.annotations.time-range-label-input').track({keydown: true, click: true})}
+           ${Directives.ref(el => { output.labelBox = el instanceof HTMLElement ? el : undefined; })}
+          ></span>
+          <span
+            class="duration"
+            ${Directives.ref(el => { output.durationBox = el instanceof HTMLElement ? el : undefined; })}
+          >${input.durationText}</span>
+        </span>
+      `,
+      target);
+  // clang-format on
+};
+
+export class TimeRangeOverlay extends UI.Widget.Widget {
   #duration: Trace.Types.Timing.Micro|null = null;
   #canvasRect: DOMRect|null = null;
-  #label: string;
+  #label = '';
 
   // The label is set to editable and in focus anytime the label is empty and when the label it is double clicked.
   // If the user clicks away from the selected range element and the label is not empty, the label is set to not editable until it is double clicked.
   #isLabelEditable = true;
+  // Focus can only move to the label once the view has made it editable, so
+  // the focus waits for the next update.
+  #focusLabelOnUpdate = false;
 
-  #rangeContainerRef: Directives.Ref<HTMLElement> = Directives.createRef();
-  #labelBoxRef: Directives.Ref<HTMLElement> = Directives.createRef();
-  #durationBoxRef: Directives.Ref<HTMLElement> = Directives.createRef();
+  /**
+   * Called with the new label whenever the user edits it.
+   */
+  onLabelChange: (label: string) => void = () => {};
+  /**
+   * Called when the user presses Enter or Escape while the label is empty,
+   * which removes the time range.
+   */
+  onRemove: () => void = () => {};
 
-  constructor(initialLabel: string) {
-    super();
-    this.#label = initialLabel;
-    this.#render();
-    if (initialLabel) {
-      // To construct a time range with a predefined label, it must have been
-      // loaded from the trace file. In this case we do not want it to default
-      // to editable.
-      this.#setLabelEditability(false);
+  readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+    this.requestUpdate();
+  }
+
+  /**
+   * Sets the label text. A non-empty label makes the label non-editable until
+   * the user double clicks it. An empty label makes it editable.
+   */
+  set label(label: string) {
+    if (label === this.#label) {
+      return;
     }
+    this.#label = label;
+    // A non-empty label set from outside must have been loaded from the
+    // trace file. In this case we do not want it to default to editable.
+    this.#isLabelEditable = label === '';
+    this.requestUpdate();
   }
 
   set canvasRect(rect: DOMRect|null) {
@@ -70,8 +138,7 @@ export class TimeRangeOverlay extends HTMLElement {
       return;
     }
     this.#canvasRect = rect;
-    this.#render();
-    this.updateLabelPositioning();
+    this.requestUpdate();
   }
 
   set duration(duration: Trace.Types.Timing.Micro|null) {
@@ -79,8 +146,7 @@ export class TimeRangeOverlay extends HTMLElement {
       return;
     }
     this.#duration = duration;
-    this.#render();
-    this.updateLabelPositioning();
+    this.requestUpdate();
   }
 
   /**
@@ -109,10 +175,12 @@ export class TimeRangeOverlay extends HTMLElement {
    * the label as required to keep it on screen.
    * If the label is off to the left or right, we fix it to that corner and
    * align the text so the label is visible as long as possible.
+   *
+   * This runs synchronously, rather than through `requestUpdate()`, so that
+   * `Overlays` can reposition the label in the same frame as the range.
    */
   updateLabelPositioning(): void {
-    const rangeContainer = this.#rangeContainerRef.value;
-    const labelBox = this.#labelBoxRef.value;
+    const {rangeContainer, labelBox, durationBox} = this.#viewOutput;
     if (!rangeContainer || !labelBox || !this.#canvasRect) {
       return;
     }
@@ -122,13 +190,13 @@ export class TimeRangeOverlay extends HTMLElement {
     // values and label positioning from the left hand side in order to be
     // consistent on both edges of the UI.
     const paddingForScrollbar = 9;
-    const overlayRect = this.getBoundingClientRect();
-    const labelFocused = this.#shadow.activeElement === labelBox;
+    const overlayRect = this.element.getBoundingClientRect();
+    const labelFocused = UI.DOMUtilities.deepActiveElement(this.element.ownerDocument) === labelBox;
 
     const labelRect = rangeContainer.getBoundingClientRect();
     const visibleOverlayWidth = this.#visibleOverlayWidth(overlayRect) - paddingForScrollbar;
 
-    const durationBoxLength = this.#durationBoxRef.value?.getBoundingClientRect().width;
+    const durationBoxLength = durationBox?.getBoundingClientRect().width;
     if (!durationBoxLength) {
       return;
     }
@@ -188,7 +256,7 @@ export class TimeRangeOverlay extends HTMLElement {
   }
 
   #focusInputBox(): void {
-    const labelBox = this.#labelBoxRef.value;
+    const labelBox = this.#viewOutput.labelBox;
     if (!labelBox) {
       console.error('`labelBox` element is missing.');
       return;
@@ -204,84 +272,64 @@ export class TimeRangeOverlay extends HTMLElement {
       return;
     }
     this.#isLabelEditable = editable;
-    this.#render();
-    // Editability changes the width of the label, so it needs repositioning.
-    this.updateLabelPositioning();
-    // If the label is editable, focus cursor on it
-    if (editable) {
-      this.#focusInputBox();
-    }
+    // If the label is editable, focus cursor on it once it has rendered.
+    this.#focusLabelOnUpdate = editable;
+    this.requestUpdate();
   }
 
   #handleLabelInput(): void {
     // Sync on every input (typing, paste, cut, drag and drop) so that
     // `#label` always matches the text in the DOM.
-    const labelBoxTextContent = this.#labelBoxRef.value?.textContent ?? '';
+    const labelBoxTextContent = this.#viewOutput.labelBox?.textContent ?? '';
     if (labelBoxTextContent !== this.#label) {
       this.#label = labelBoxTextContent;
-      this.dispatchEvent(new TimeRangeLabelChangeEvent(this.#label));
-      // Re-render so the aria-label binding picks up the new label. The label
-      // is repositioned on the next `Overlays` update, not on every keystroke.
-      this.#render();
+      this.onLabelChange(this.#label);
+      // Update so the aria-label binding picks up the new label.
+      this.requestUpdate();
     }
   }
 
-  #handleLabelInputKeyDown(event: KeyboardEvent): boolean {
+  #handleLabelInputKeyDown(event: KeyboardEvent): void {
     // If the new key is `Enter` or `Escape` key, treat it
     // as the end of the label input and blur the input field.
     // If the text field is empty when `Enter` or `Escape` are pressed,
-    // dispatch an event to remove the time range.
+    // remove the time range.
     if (event.key === Platform.KeyboardUtilities.ENTER_KEY || event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
       // In DevTools, the `Escape` button will by default toggle the console
       // drawer, which we don't want here, so we need to call
       // `stopPropagation()`.
       event.stopPropagation();
       if (this.#label === '') {
-        this.dispatchEvent(new TimeRangeRemoveEvent());
+        this.onRemove();
       }
-      this.#labelBoxRef.value?.blur();
-      return false;
+      this.#viewOutput.labelBox?.blur();
     }
-
-    return true;
   }
 
-  #render(): void {
-    const durationText = this.#duration ? i18n.TimeUtilities.formatMicroSecondsTime(this.#duration) : '';
-    // The label text is bound with `live` because the user edits it directly
-    // in the DOM. `live` compares against the current DOM text rather than the
-    // last rendered value. The input handler keeps `#label` in sync, so
-    // re-rendering leaves the user's text and caret untouched.
-    // clang-format off
-    render(
-        html`
-          <style>${timeRangeOverlayStyles}</style>
-          <span class="range-container" role="region" aria-label=${i18nString(UIStrings.timeRange)} ${Directives.ref(this.#rangeContainerRef)}>
-            <span
-             class="label-text"
-             role="textbox"
-             @focusout=${() => this.#setLabelEditability(false)}
-             @dblclick=${() => this.#setLabelEditability(true)}
-             @keydown=${this.#handleLabelInputKeyDown}
-             @input=${this.#handleLabelInput}
-             contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}
-             aria-label=${this.#label}
-             .textContent=${Directives.live(this.#label)}
-             jslog=${VisualLogging.textField('timeline.annotations.time-range-label-input').track({keydown: true, click: true})}
-             ${Directives.ref(this.#labelBoxRef)}
-            ></span>
-            <span class="duration" ${Directives.ref(this.#durationBoxRef)}>${durationText}</span>
-          </span>
-          `,
-        this.#shadow, {host: this});
-    // clang-format on
-  }
-}
-
-customElements.define('devtools-time-range-overlay', TimeRangeOverlay);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-time-range-overlay': TimeRangeOverlay;
+  override performUpdate(): void {
+    this.#view(
+        {
+          label: this.#label,
+          durationText: this.#duration ? i18n.TimeUtilities.formatMicroSecondsTime(this.#duration) : '',
+          isLabelEditable: this.#isLabelEditable,
+          onLabelFocusOut: () => this.#setLabelEditability(false),
+          onLabelDblClick: () => this.#setLabelEditability(true),
+          onLabelKeyDown: this.#handleLabelInputKeyDown.bind(this),
+          onLabelInput: this.#handleLabelInput.bind(this),
+        },
+        this.#viewOutput,
+        this.contentElement,
+    );
+    // The duration text and editability both change the label's width, so
+    // reposition it after every render.
+    this.updateLabelPositioning();
+    if (this.#focusLabelOnUpdate) {
+      this.#focusLabelOnUpdate = false;
+      // The label may have been set, which makes it non-editable, since the
+      // focus was requested.
+      if (this.#isLabelEditable) {
+        this.#focusInputBox();
+      }
+    }
   }
 }

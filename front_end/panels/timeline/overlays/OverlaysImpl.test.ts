@@ -847,6 +847,8 @@ describeWithEnvironment('Overlays', () => {
     it('Inputting `Enter` into time range label field when the label is empty removes the overlay', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+      // The time range widget is only created once its element is connected.
+      renderElementIntoDOM(container, {allowMultipleChildren: true});
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
 
@@ -864,19 +866,20 @@ describeWithEnvironment('Overlays', () => {
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
       assert.isOk(overlayDOM);
 
-      const component = overlayDOM?.querySelector('devtools-time-range-overlay');
-      assert.isOk(component?.shadowRoot);
-      const rangeContainer = component.shadowRoot.querySelector<HTMLElement>('.range-container');
+      await UI.Widget.Widget.allUpdatesComplete;
+      const rangeContainer = overlayDOM.querySelector<HTMLElement>('.range-container');
       assert.isOk(rangeContainer);
 
       const labelBox = rangeContainer.querySelector<HTMLElement>('.label-text');
       assert.isOk(labelBox);
 
       // Double click on the label box to make it editable and focus on it
-      labelBox.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+      labelBox.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+      await UI.Widget.Widget.allUpdatesComplete;
 
       // Press `Enter` on the label field
       labelBox.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', cancelable: true, bubbles: true}));
+      await UI.Widget.Widget.allUpdatesComplete;
 
       // Ensure that the entry overlay has been removed because it was saved empty
       assert.lengthOf(overlays.overlaysOfType('TIME_RANGE'), 0);
@@ -886,6 +889,8 @@ describeWithEnvironment('Overlays', () => {
        async function() {
          const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
          const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+         // The time range widget is only created once its element is connected.
+         renderElementIntoDOM(container, {allowMultipleChildren: true});
          const event = charts.mainProvider.eventByIndex?.(50);
          assert.isOk(event);
 
@@ -903,19 +908,22 @@ describeWithEnvironment('Overlays', () => {
          const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
          assert.isOk(overlayDOM);
 
-         const component = overlayDOM?.querySelector('devtools-time-range-overlay');
-         assert.isOk(component?.shadowRoot);
-         const rangeContainer = component.shadowRoot.querySelector<HTMLElement>('.range-container');
+         await UI.Widget.Widget.allUpdatesComplete;
+         const rangeContainer = overlayDOM.querySelector<HTMLElement>('.range-container');
          assert.isOk(rangeContainer);
 
          const labelBox = rangeContainer.querySelector<HTMLElement>('.label-text');
          assert.isOk(labelBox);
 
          // Double click on the label box to make it editable and focus on it
-         labelBox.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+         labelBox.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+         await UI.Widget.Widget.allUpdatesComplete;
+         assert.strictEqual(labelBox.getAttribute('contenteditable'), 'plaintext-only');
 
          // Press `Enter` on the label field
          labelBox.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', cancelable: true, bubbles: true}));
+         await UI.Widget.Widget.allUpdatesComplete;
+         assert.strictEqual(labelBox.getAttribute('contenteditable'), 'false');
 
          // Ensure that the entry overlay has not been because it was has a non-empty label
          assert.lengthOf(overlays.overlaysOfType('TIME_RANGE'), 1);
@@ -1079,6 +1087,8 @@ describeWithEnvironment('Overlays', () => {
     it('renders the duration and label for a time range overlay', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+      // The time range widget is only created once its element is connected.
+      renderElementIntoDOM(container, {allowMultipleChildren: true});
       overlays.add({
         type: 'TIME_RANGE',
         label: '',
@@ -1088,10 +1098,10 @@ describeWithEnvironment('Overlays', () => {
       });
       await overlays.update();
       await RenderCoordinator.done();
+      await UI.Widget.Widget.allUpdatesComplete;
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
-      const component = overlayDOM?.querySelector('devtools-time-range-overlay');
-      assert.isOk(component?.shadowRoot);
-      const rangeContainer = component.shadowRoot.querySelector<HTMLElement>('.range-container');
+      assert.isOk(overlayDOM);
+      const rangeContainer = overlayDOM.querySelector<HTMLElement>('.range-container');
       assert.isOk(rangeContainer);
       const duration = rangeContainer.querySelector<HTMLElement>('.duration');
       assert.isOk(duration);

@@ -11,7 +11,7 @@ import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 
 import * as Components from './components.js';
 
-const {TimeRangeOverlay, TimeRangeLabelChangeEvent, TimeRangeRemoveEvent} = Components.TimeRangeOverlay;
+const {TimeRangeOverlay} = Components.TimeRangeOverlay;
 
 interface RenderedElements {
   rangeContainer: HTMLElement;
@@ -20,8 +20,7 @@ interface RenderedElements {
 }
 
 function getRenderedElements(component: Components.TimeRangeOverlay.TimeRangeOverlay): RenderedElements {
-  assert.isOk(component.shadowRoot);
-  const rangeContainer = component.shadowRoot.querySelector<HTMLElement>('.range-container');
+  const rangeContainer = component.contentElement.querySelector<HTMLElement>('.range-container');
   assert.isOk(rangeContainer);
   const labelBox = rangeContainer.querySelector<HTMLElement>('.label-text');
   assert.isOk(labelBox);
@@ -30,20 +29,27 @@ function getRenderedElements(component: Components.TimeRangeOverlay.TimeRangeOve
   return {rangeContainer, labelBox, duration};
 }
 
-function renderOverlay(label: string): Components.TimeRangeOverlay.TimeRangeOverlay {
-  const component = new TimeRangeOverlay(label);
+async function renderOverlay(label: string): Promise<Components.TimeRangeOverlay.TimeRangeOverlay> {
+  const component = new TimeRangeOverlay();
+  component.label = label;
   renderElementIntoDOM(component);
+  await component.updateComplete;
   return component;
 }
 
 const CANVAS_WIDTH_PX = 1000;
+
+interface PositionedOverlay {
+  component: Components.TimeRangeOverlay.TimeRangeOverlay;
+  overlayElement: HTMLElement;
+}
 
 /**
  * Renders the overlay the same way `Overlays` does: inside an absolutely
  * positioned wrapper element whose left and width match the time range. The
  * wrapper sits inside a container that acts as the canvas.
  */
-function renderPositionedOverlay(options: {left: number, width: number}): Components.TimeRangeOverlay.TimeRangeOverlay {
+async function renderPositionedOverlay(options: {left: number, width: number}): Promise<PositionedOverlay> {
   const canvas = document.createElement('div');
   canvas.style.position = 'relative';
   canvas.style.width = `${CANVAS_WIDTH_PX}px`;
@@ -56,96 +62,110 @@ function renderPositionedOverlay(options: {left: number, width: number}): Compon
   overlayElement.style.left = `${options.left}px`;
   overlayElement.style.width = `${options.width}px`;
   canvas.appendChild(overlayElement);
-
-  const component = new TimeRangeOverlay('label');
-  component.duration = Trace.Types.Timing.Micro(1_260_000);
-  overlayElement.appendChild(component);
   renderElementIntoDOM(canvas);
 
+  const component = new TimeRangeOverlay();
+  component.label = 'label';
+  component.duration = Trace.Types.Timing.Micro(1_260_000);
   component.canvasRect = canvas.getBoundingClientRect();
-  component.updateLabelPositioning();
-  return component;
+  component.markAsRoot();
+  component.show(overlayElement);
+  // The update renders the view and then positions the label.
+  await component.updateComplete;
+  return {component, overlayElement};
 }
 
 describe('TimeRangeOverlay', () => {
   setupLocaleHooks();
 
-  it('renders the formatted duration', () => {
-    const component = renderOverlay('');
+  it('applies the overlay styles to the widget element', async () => {
+    const component = await renderOverlay('my label');
+    assert.strictEqual(getComputedStyle(component.element).display, 'flex');
+  });
+
+  it('renders the formatted duration', async () => {
+    const component = await renderOverlay('');
     component.duration = Trace.Types.Timing.Micro(1_260_000);
+    await component.updateComplete;
     const {duration} = getRenderedElements(component);
     assert.strictEqual(duration.textContent, '1.26\xA0s');
   });
 
-  it('clears the duration when it is set back to null', () => {
-    const component = renderOverlay('');
+  it('clears the duration when it is set back to null', async () => {
+    const component = await renderOverlay('');
     component.duration = Trace.Types.Timing.Micro(1_260_000);
+    await component.updateComplete;
     component.duration = null;
+    await component.updateComplete;
     const {duration} = getRenderedElements(component);
     assert.strictEqual(duration.textContent, '');
   });
 
-  it('renders a non-empty initial label as text and aria-label, and makes it non-editable', () => {
-    const component = renderOverlay('my label');
+  it('renders a non-empty initial label as text and aria-label, and makes it non-editable', async () => {
+    const component = await renderOverlay('my label');
     const {labelBox} = getRenderedElements(component);
     assert.strictEqual(labelBox.textContent, 'my label');
     assert.strictEqual(labelBox.getAttribute('aria-label'), 'my label');
     assert.strictEqual(labelBox.getAttribute('contenteditable'), 'false');
   });
 
-  it('makes an empty initial label editable', () => {
-    const component = renderOverlay('');
+  it('makes an empty initial label editable', async () => {
+    const component = await renderOverlay('');
     const {labelBox} = getRenderedElements(component);
     assert.strictEqual(labelBox.getAttribute('contenteditable'), 'plaintext-only');
   });
 
-  it('makes a non-editable label editable on double click', () => {
-    const component = renderOverlay('my label');
+  it('makes a non-editable label editable and focuses it on double click', async () => {
+    const component = await renderOverlay('my label');
     const {labelBox} = getRenderedElements(component);
     labelBox.dispatchEvent(new MouseEvent('dblclick'));
+    await component.updateComplete;
     assert.strictEqual(labelBox.getAttribute('contenteditable'), 'plaintext-only');
-    // Making the label editable focuses it. Blur it now: otherwise the test
-    // DOM cleanup fires focusout, which re-renders after the locale is gone.
+    assert.strictEqual(document.activeElement, labelBox);
+    // Blur the label and wait for the resulting update, so that it does not
+    // run after the test has removed the locale.
     labelBox.blur();
+    await component.updateComplete;
   });
 
-  it('makes a non-empty label non-editable when it loses focus', () => {
-    const component = renderOverlay('my label');
+  it('makes a non-empty label non-editable when it loses focus', async () => {
+    const component = await renderOverlay('my label');
     const {labelBox} = getRenderedElements(component);
     labelBox.dispatchEvent(new MouseEvent('dblclick'));
+    await component.updateComplete;
     labelBox.blur();
+    await component.updateComplete;
     assert.strictEqual(labelBox.getAttribute('contenteditable'), 'false');
   });
 
-  it('keeps an empty label editable and focused when it loses focus', () => {
-    const component = renderOverlay('');
+  it('keeps an empty label editable and focused when it loses focus', async () => {
+    const component = await renderOverlay('');
     const {labelBox} = getRenderedElements(component);
     labelBox.focus();
+    // An empty label is refocused synchronously, without an update.
     labelBox.blur();
     assert.strictEqual(labelBox.getAttribute('contenteditable'), 'plaintext-only');
-    assert.strictEqual(component.shadowRoot?.activeElement, labelBox);
+    assert.strictEqual(document.activeElement, labelBox);
   });
 
-  it('dispatches a label change event and updates the aria-label when the text changes on input', () => {
-    const component = renderOverlay('');
+  it('calls onLabelChange and updates the aria-label when the text changes on input', async () => {
+    const component = await renderOverlay('');
     const onLabelChange = sinon.spy();
-    component.addEventListener(TimeRangeLabelChangeEvent.eventName, onLabelChange);
+    component.onLabelChange = onLabelChange;
     const {labelBox} = getRenderedElements(component);
 
     labelBox.textContent = 'new label';
     dispatchInputEvent(labelBox);
+    await component.updateComplete;
 
-    sinon.assert.calledOnce(onLabelChange);
-    const event = onLabelChange.firstCall.args[0];
-    assert.instanceOf(event, TimeRangeLabelChangeEvent);
-    assert.strictEqual(event.newLabel, 'new label');
+    sinon.assert.calledOnceWithExactly(onLabelChange, 'new label');
     assert.strictEqual(labelBox.getAttribute('aria-label'), 'new label');
   });
 
-  it('does not dispatch a label change event when the text is unchanged on input', () => {
-    const component = renderOverlay('my label');
+  it('does not call onLabelChange when the text is unchanged on input', async () => {
+    const component = await renderOverlay('my label');
     const onLabelChange = sinon.spy();
-    component.addEventListener(TimeRangeLabelChangeEvent.eventName, onLabelChange);
+    component.onLabelChange = onLabelChange;
     const {labelBox} = getRenderedElements(component);
 
     dispatchInputEvent(labelBox);
@@ -153,24 +173,25 @@ describe('TimeRangeOverlay', () => {
     sinon.assert.notCalled(onLabelChange);
   });
 
-  it('keeps the typed text when the overlay re-renders after input', () => {
-    const component = renderOverlay('');
+  it('keeps the typed text when the overlay re-renders after input', async () => {
+    const component = await renderOverlay('');
     const {labelBox} = getRenderedElements(component);
 
     labelBox.textContent = 'typed label';
     dispatchInputEvent(labelBox);
     // Changing the duration re-renders the overlay.
     component.duration = Trace.Types.Timing.Micro(1_260_000);
+    await component.updateComplete;
 
     assert.strictEqual(labelBox.textContent, 'typed label');
   });
 
-  it('dispatches a remove event and stops propagation when Enter is pressed and the label is empty', () => {
-    const component = renderOverlay('');
+  it('calls onRemove and stops propagation when Enter is pressed and the label is empty', async () => {
+    const component = await renderOverlay('');
     const onRemove = sinon.spy();
-    component.addEventListener(TimeRangeRemoveEvent.eventName, onRemove);
+    component.onRemove = onRemove;
     const onKeyDownOutside = sinon.spy();
-    component.addEventListener('keydown', onKeyDownOutside);
+    component.element.addEventListener('keydown', onKeyDownOutside);
     const {labelBox} = getRenderedElements(component);
 
     dispatchKeyDownEvent(labelBox, {key: 'Enter', bubbles: true, composed: true});
@@ -179,13 +200,13 @@ describe('TimeRangeOverlay', () => {
     sinon.assert.notCalled(onKeyDownOutside);
   });
 
-  it('dispatches a remove event and stops propagation when Escape is pressed and the label is empty', () => {
-    const component = renderOverlay('');
+  it('calls onRemove and stops propagation when Escape is pressed and the label is empty', async () => {
+    const component = await renderOverlay('');
     const onRemove = sinon.spy();
-    component.addEventListener(TimeRangeRemoveEvent.eventName, onRemove);
+    component.onRemove = onRemove;
     // Escape must not reach DevTools, where it would toggle the console drawer.
     const onKeyDownOutside = sinon.spy();
-    component.addEventListener('keydown', onKeyDownOutside);
+    component.element.addEventListener('keydown', onKeyDownOutside);
     const {labelBox} = getRenderedElements(component);
 
     dispatchKeyDownEvent(labelBox, {key: 'Escape', bubbles: true, composed: true});
@@ -194,25 +215,43 @@ describe('TimeRangeOverlay', () => {
     sinon.assert.notCalled(onKeyDownOutside);
   });
 
-  it('does not dispatch a remove event when Enter is pressed and the label is not empty', () => {
-    const component = renderOverlay('my label');
+  it('does not call onRemove and ends editing when Enter is pressed and the label is not empty', async () => {
+    const component = await renderOverlay('my label');
     const onRemove = sinon.spy();
-    component.addEventListener(TimeRangeRemoveEvent.eventName, onRemove);
+    component.onRemove = onRemove;
     const {labelBox} = getRenderedElements(component);
+    labelBox.dispatchEvent(new MouseEvent('dblclick'));
+    await component.updateComplete;
+    assert.strictEqual(labelBox.getAttribute('contenteditable'), 'plaintext-only');
 
     dispatchKeyDownEvent(labelBox, {key: 'Enter'});
+    await component.updateComplete;
 
     sinon.assert.notCalled(onRemove);
+    assert.strictEqual(labelBox.getAttribute('contenteditable'), 'false');
   });
 
-  it('hides a non-empty, unfocused label when the visible range is narrower than the duration', () => {
-    const component = renderPositionedOverlay({left: 100, width: 20});
+  it('updates the text and makes the label non-editable when a new label is set', async () => {
+    const component = await renderOverlay('');
+    const {labelBox} = getRenderedElements(component);
+    assert.strictEqual(labelBox.getAttribute('contenteditable'), 'plaintext-only');
+
+    component.label = 'saved label';
+    await component.updateComplete;
+
+    assert.strictEqual(labelBox.textContent, 'saved label');
+    assert.strictEqual(labelBox.getAttribute('aria-label'), 'saved label');
+    assert.strictEqual(labelBox.getAttribute('contenteditable'), 'false');
+  });
+
+  it('hides a non-empty, unfocused label when the visible range is narrower than the duration', async () => {
+    const {component} = await renderPositionedOverlay({left: 100, width: 20});
     const {rangeContainer} = getRenderedElements(component);
     assert.isTrue(rangeContainer.classList.contains('labelHidden'));
   });
 
-  it('keeps the label centered when the range is fully inside the canvas', () => {
-    const component = renderPositionedOverlay({left: 200, width: 400});
+  it('keeps the label centered when the range is fully inside the canvas', async () => {
+    const {component} = await renderPositionedOverlay({left: 200, width: 400});
     const {rangeContainer} = getRenderedElements(component);
     assert.isFalse(rangeContainer.classList.contains('labelHidden'));
     assert.isFalse(rangeContainer.classList.contains('offScreenLeft'));
@@ -220,8 +259,8 @@ describe('TimeRangeOverlay', () => {
     assert.strictEqual(rangeContainer.style.margin, '0px');
   });
 
-  it('pins the label to the left edge of the canvas when the range starts off the left of the canvas', () => {
-    const component = renderPositionedOverlay({left: -200, width: 400});
+  it('pins the label to the left edge of the canvas when the range starts off the left of the canvas', async () => {
+    const {component} = await renderPositionedOverlay({left: -200, width: 400});
     const {rangeContainer} = getRenderedElements(component);
     assert.isTrue(rangeContainer.classList.contains('offScreenLeft'));
     assert.isFalse(rangeContainer.classList.contains('offScreenRight'));
@@ -229,12 +268,26 @@ describe('TimeRangeOverlay', () => {
     assert.strictEqual(rangeContainer.style.marginLeft, '209px');
   });
 
-  it('pins the label to the right edge of the canvas when the range ends off the right of the canvas', () => {
-    const component = renderPositionedOverlay({left: CANVAS_WIDTH_PX - 200, width: 400});
+  it('pins the label to the right edge of the canvas when the range ends off the right of the canvas', async () => {
+    const {component} = await renderPositionedOverlay({left: CANVAS_WIDTH_PX - 200, width: 400});
     const {rangeContainer} = getRenderedElements(component);
     assert.isTrue(rangeContainer.classList.contains('offScreenRight'));
     assert.isFalse(rangeContainer.classList.contains('offScreenLeft'));
     // The margin is the 200px the range extends past the canvas, plus 9px of scrollbar padding.
     assert.strictEqual(rangeContainer.style.marginRight, '209px');
+  });
+
+  it('repositions the label synchronously when updateLabelPositioning() is called', async () => {
+    const {component, overlayElement} = await renderPositionedOverlay({left: 200, width: 400});
+    const {rangeContainer} = getRenderedElements(component);
+    assert.isFalse(rangeContainer.classList.contains('offScreenLeft'));
+
+    // This is what `Overlays` does when the user pans: move the wrapper, then
+    // reposition the label in the same frame.
+    overlayElement.style.left = '-200px';
+    component.updateLabelPositioning();
+
+    assert.isTrue(rangeContainer.classList.contains('offScreenLeft'));
+    assert.strictEqual(rangeContainer.style.marginLeft, '209px');
   });
 });

@@ -33,9 +33,9 @@ import {AiAgent2} from './AiAgent2.js';
 import {AiHistoryStorage, ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
 import {isContextSelectionEnabled} from './AiUtils.js';
 import type {ChangeManager} from './ChangeManager.js';
-import {AccessibilityContext} from './contexts/AccessibilityContext.js';
 import {DOMNodeContext} from './contexts/DOMNodeContext.js';
 import {FileContext} from './contexts/FileContext.js';
+import {LighthouseContext} from './contexts/LighthouseContext.js';
 import {PerformanceTraceContext} from './contexts/PerformanceTraceContext.js';
 import {RequestContext} from './contexts/RequestContext.js';
 import {StorageContext} from './contexts/StorageContext.js';
@@ -207,7 +207,7 @@ export class AiConversation {
         this.#updateAgent(ConversationType.NETWORK);
       } else if (updateContext instanceof PerformanceTraceContext) {
         this.#updateAgent(ConversationType.PERFORMANCE);
-      } else if (updateContext instanceof AccessibilityContext) {
+      } else if (updateContext instanceof LighthouseContext) {
         this.#updateAgent(ConversationType.ACCESSIBILITY);
       } else if (updateContext instanceof StorageContext) {
         this.#updateAgent(ConversationType.STORAGE);

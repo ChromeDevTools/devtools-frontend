@@ -1093,8 +1093,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
       const fileContext = new AiAssistanceModel.FileContext.FileContext(file);
       const trace = sinon.createStubInstance(AiAssistanceModel.AIContext.AgentFocus);
       const traceContext = new AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext(trace);
-      const accessibilityContext =
-          new AiAssistanceModel.AccessibilityContext.AccessibilityContext(sinon.stub() as never);
+      const lighthouseContext = new AiAssistanceModel.LighthouseContext.LighthouseContext(sinon.stub() as never);
       const storageContext = new AiAssistanceModel.StorageContext.StorageContext(sinon.stub() as never);
 
       assert.strictEqual(AiAssistancePanel.getContextTypeString(null), 'ai-context-none');
@@ -1103,7 +1102,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
       assert.strictEqual(AiAssistancePanel.getContextTypeString(requestContext), 'ai-context-network-request');
       assert.strictEqual(AiAssistancePanel.getContextTypeString(fileContext), 'ai-context-file');
       assert.strictEqual(AiAssistancePanel.getContextTypeString(traceContext), 'ai-context-performance-trace');
-      assert.strictEqual(AiAssistancePanel.getContextTypeString(accessibilityContext), 'ai-context-accessibility');
+      assert.strictEqual(AiAssistancePanel.getContextTypeString(lighthouseContext), 'ai-context-accessibility');
       assert.strictEqual(AiAssistancePanel.getContextTypeString(storageContext), 'ai-context-storage');
       assert.strictEqual(
           AiAssistancePanel.getContextTypeString({} as unknown as

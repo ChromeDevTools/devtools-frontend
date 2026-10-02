@@ -4,7 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
-import {AccessibilityContext} from '../contexts/AccessibilityContext.js';
+import {LighthouseContext} from '../contexts/LighthouseContext.js';
 import type {LighthouseCategoryArg} from '../data_formatters/LighthouseFormatter.js';
 
 import {
@@ -81,9 +81,8 @@ export class RunLighthouseTool implements
       }
 
       return {
-        // AccessibilityContext serves as the conversation context container for all Lighthouse report artifacts.
-        // No widgets are returned here; AccessibilityContext.getWidgets() provides the report widget.
-        context: new AccessibilityContext(report),
+        // No widgets are returned here; LighthouseContext.getWidgets() provides the report widget.
+        context: new LighthouseContext(report),
         description: 'Lighthouse audit completed',
       };
     } catch (err) {

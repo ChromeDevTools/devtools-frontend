@@ -847,13 +847,13 @@ describe('AiAgent2', () => {
       }],
     ]);
     const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
-    const accessibilityContext = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+    const lighthouseContext = new AiAssistance.LighthouseContext.LighthouseContext(mockReport);
 
     const getLighthouseAuditsTool = AiAssistance.ToolRegistry.ToolRegistry.get('getLighthouseAudits');
     assert.exists(getLighthouseAuditsTool);
     const handlerStub = sinon.stub(getLighthouseAuditsTool, 'handler').resolves({result: {audits: 'mock audits'}});
 
-    await Array.fromAsync(agent.run('query', {selected: accessibilityContext}));
+    await Array.fromAsync(agent.run('query', {selected: lighthouseContext}));
 
     sinon.assert.calledOnce(handlerStub);
     const [, context] = handlerStub.getCall(0).args;
@@ -890,12 +890,12 @@ describe('AiAgent2', () => {
     sinon.assert.calledOnce(runLighthouseStub);
     const contextChange = getContextChangeResponse(responses);
     assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
-    assert.instanceOf(contextChange.context, AiAssistance.AccessibilityContext.AccessibilityContext);
+    assert.instanceOf(contextChange.context, AiAssistance.LighthouseContext.LighthouseContext);
     assert.strictEqual(contextChange.context.getItem(), mockReport);
     assert.isUndefined(contextChange.widgets);
   });
 
-  it('returns null for getLighthouseReport when context is not AccessibilityContext', async () => {
+  it('returns null for getLighthouseReport when context is not LighthouseContext', async () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
@@ -960,7 +960,7 @@ describe('AiAgent2', () => {
     assert.strictEqual(actionResponses[0].code, 'learnSkills(\'accessibility\')');
     const contextChange = getContextChangeResponse(responses);
     assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
-    assert.instanceOf(contextChange.context, AiAssistance.AccessibilityContext.AccessibilityContext);
+    assert.instanceOf(contextChange.context, AiAssistance.LighthouseContext.LighthouseContext);
     assert.strictEqual(contextChange.context.getItem(), mockReport);
     assert.isUndefined(contextChange.widgets);
   });
@@ -1004,7 +1004,7 @@ describe('AiAgent2', () => {
     assert.isTrue(agent.activeSkills.has('lighthouse'));
     const contextChange = getContextChangeResponse(responses);
     assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
-    assert.instanceOf(contextChange.context, AiAssistance.AccessibilityContext.AccessibilityContext);
+    assert.instanceOf(contextChange.context, AiAssistance.LighthouseContext.LighthouseContext);
     assert.strictEqual(contextChange.context.getItem(), mockReport);
     assert.isUndefined(contextChange.widgets);
   });

@@ -516,12 +516,12 @@ function createFileContext(file: Workspace.UISourceCode.UISourceCode|null): AiAs
   return new AiAssistanceModel.FileContext.FileContext(file);
 }
 
-function createAccessibilityContext(report: LighthousePanel.LighthousePanel.ActiveLighthouseReport|
-                                    null): AiAssistanceModel.AccessibilityContext.AccessibilityContext|null {
+function createLighthouseContext(report: LighthousePanel.LighthousePanel.ActiveLighthouseReport|
+                                 null): AiAssistanceModel.LighthouseContext.LighthouseContext|null {
   if (!report) {
     return null;
   }
-  return new AiAssistanceModel.AccessibilityContext.AccessibilityContext(report.report);
+  return new AiAssistanceModel.LighthouseContext.LighthouseContext(report.report);
 }
 
 function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|
@@ -603,7 +603,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #selectedPerformanceTrace: AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext|null = null;
   #selectedRequest: AiAssistanceModel.RequestContext.RequestContext|null = null;
 
-  #selectedAccessibility: AiAssistanceModel.AccessibilityContext.AccessibilityContext|null = null;
+  #selectedLighthouse: AiAssistanceModel.LighthouseContext.LighthouseContext|null = null;
   #selectedStorage: AiAssistanceModel.StorageContext.StorageContext|null = null;
 
   // Messages displayed in the `ChatView` component.
@@ -1063,7 +1063,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         createPerformanceTraceContext(UI.Context.Context.instance().flavor(AiAssistanceModel.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
 
-    this.#selectedAccessibility = createAccessibilityContext(
+    this.#selectedLighthouse = createLighthouseContext(
         UI.Context.Context.instance().flavor(LighthousePanel.LighthousePanel.ActiveLighthouseReport));
     this.#selectedStorage =
         createStorageContext(UI.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem));
@@ -1243,10 +1243,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       (ev: Common.EventTarget.EventTargetEvent<LighthousePanel.LighthousePanel.ActiveLighthouseReport>): void => {
         const newReport = ev.data;
 
-        if (this.#selectedAccessibility?.getItem() === newReport?.report) {
+        if (this.#selectedLighthouse?.getItem() === newReport?.report) {
           return;
         }
-        this.#selectedAccessibility = createAccessibilityContext(newReport);
+        this.#selectedLighthouse = createLighthouseContext(newReport);
         this.#updateConversationState(this.#conversation);
       };
   override async performUpdate(): Promise<void> {
@@ -1645,7 +1645,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         return this.#selectedPerformanceTrace;
 
       case AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY:
-        return this.#selectedAccessibility;
+        return this.#selectedLighthouse;
       case AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE:
         return this.#selectedStorage;
 
@@ -1665,8 +1665,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#selectedRequest = data;
     } else if (data instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
-    } else if (data instanceof AiAssistanceModel.AccessibilityContext.AccessibilityContext) {
-      this.#selectedAccessibility = data;
+    } else if (data instanceof AiAssistanceModel.LighthouseContext.LighthouseContext) {
+      this.#selectedLighthouse = data;
     } else if (data instanceof AiAssistanceModel.StorageContext.StorageContext) {
       this.#selectedStorage = data;
     }

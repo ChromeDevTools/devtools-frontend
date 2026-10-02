@@ -11,7 +11,7 @@ import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-describe('AccessibilityContext', function() {
+describe('LighthouseContext', function() {
   setupRuntimeHooks();
 
   const snapshotTester = new SnapshotTester(this, import.meta);
@@ -95,7 +95,7 @@ describe('AccessibilityContext', function() {
       '**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.';
 
   it('should return origin, item, and title correctly', () => {
-    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+    const context = new AiAssistance.LighthouseContext.LighthouseContext(mockReport);
 
     assert.isTrue(
         context.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
@@ -104,7 +104,7 @@ describe('AccessibilityContext', function() {
   });
 
   it('should return prompt details correctly', async function() {
-    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+    const context = new AiAssistance.LighthouseContext.LighthouseContext(mockReport);
 
     const promptDetails = await context.getPromptDetails();
     assert.exists(promptDetails);
@@ -112,7 +112,7 @@ describe('AccessibilityContext', function() {
   });
 
   it('should return user facing details correctly', async function() {
-    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+    const context = new AiAssistance.LighthouseContext.LighthouseContext(mockReport);
 
     const details = await context.getUserFacingDetails();
     assert.exists(details);
@@ -120,7 +120,7 @@ describe('AccessibilityContext', function() {
   });
 
   it('should return LIGHTHOUSE_REPORT widget in getWidgets', async () => {
-    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+    const context = new AiAssistance.LighthouseContext.LighthouseContext(mockReport);
 
     const widgets = await context.getWidgets();
     assert.deepEqual(widgets, [
@@ -135,7 +135,7 @@ describe('AccessibilityContext', function() {
 
   it('does not add snapshotReport to the LIGHTHOUSE_REPORT widget for snapshot mode reports', async () => {
     const snapshotReport = {...mockReport, gatherMode: 'snapshot'} satisfies LHModel.ReporterTypes.ReportJSON;
-    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(snapshotReport);
+    const context = new AiAssistance.LighthouseContext.LighthouseContext(snapshotReport);
 
     const widgets = await context.getWidgets();
     assert.deepEqual(widgets, [
@@ -149,7 +149,7 @@ describe('AccessibilityContext', function() {
   });
 
   it('includes only the accessibility audits when the report has multiple categories', async () => {
-    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(multiCategoryReport);
+    const context = new AiAssistance.LighthouseContext.LighthouseContext(multiCategoryReport);
 
     const details = await context.getPromptDetails();
     assert.exists(details);
@@ -161,7 +161,7 @@ describe('AccessibilityContext', function() {
   });
 
   it('returns critical error payload when all category scores are null', async () => {
-    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(failedReport);
+    const context = new AiAssistance.LighthouseContext.LighthouseContext(failedReport);
 
     const details = await context.getPromptDetails();
     assert.strictEqual(details, criticalPayload);
@@ -173,7 +173,7 @@ describe('AccessibilityContext', function() {
     });
 
     it('returns only the report summary as prompt details', async function() {
-      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+      const context = new AiAssistance.LighthouseContext.LighthouseContext(mockReport);
 
       const promptDetails = await context.getPromptDetails();
       assert.exists(promptDetails);
@@ -181,7 +181,7 @@ describe('AccessibilityContext', function() {
     });
 
     it('returns the report summary as user facing details', async function() {
-      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+      const context = new AiAssistance.LighthouseContext.LighthouseContext(mockReport);
 
       const details = await context.getUserFacingDetails();
       assert.exists(details);
@@ -189,7 +189,7 @@ describe('AccessibilityContext', function() {
     });
 
     it('includes every category score but no audits when the report has multiple categories', async () => {
-      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(multiCategoryReport);
+      const context = new AiAssistance.LighthouseContext.LighthouseContext(multiCategoryReport);
 
       const details = await context.getPromptDetails();
       assert.exists(details);
@@ -199,7 +199,7 @@ describe('AccessibilityContext', function() {
     });
 
     it('returns critical error payload when all category scores are null', async () => {
-      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(failedReport);
+      const context = new AiAssistance.LighthouseContext.LighthouseContext(failedReport);
 
       const details = await context.getPromptDetails();
       assert.strictEqual(details, criticalPayload);
@@ -207,7 +207,7 @@ describe('AccessibilityContext', function() {
 
     it('marks the LIGHTHOUSE_REPORT widget as a snapshot report for snapshot mode reports', async () => {
       const snapshotReport = {...mockReport, gatherMode: 'snapshot'} satisfies LHModel.ReporterTypes.ReportJSON;
-      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(snapshotReport);
+      const context = new AiAssistance.LighthouseContext.LighthouseContext(snapshotReport);
 
       const widgets = await context.getWidgets();
       assert.deepEqual(widgets, [
@@ -223,7 +223,7 @@ describe('AccessibilityContext', function() {
 
     it('does not mark the LIGHTHOUSE_REPORT widget as a snapshot report for navigation mode reports', async () => {
       const navigationReport = {...mockReport, gatherMode: 'navigation'} satisfies LHModel.ReporterTypes.ReportJSON;
-      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(navigationReport);
+      const context = new AiAssistance.LighthouseContext.LighthouseContext(navigationReport);
 
       const widgets = await context.getWidgets();
       assert.deepEqual(widgets, [

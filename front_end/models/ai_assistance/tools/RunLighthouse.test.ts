@@ -69,7 +69,7 @@ describe('RunLighthouseTool', () => {
       const result =
           await tool.handler({explanation: 're-audit', categoryId: 'accessibility', mode: 'snapshot'}, context);
       assertIsContext(result);
-      assert.instanceOf(result.context, AiAssistance.AccessibilityContext.AccessibilityContext);
+      assert.instanceOf(result.context, AiAssistance.LighthouseContext.LighthouseContext);
       assert.strictEqual(result.context.getItem(), mockReport);
       assert.strictEqual(result.description, 'Lighthouse audit completed');
       assert.isUndefined(result.widgets);
@@ -88,7 +88,7 @@ describe('RunLighthouseTool', () => {
 
       const result = await tool.handler({explanation: 'full audit', categoryId: 'all', mode: 'navigation'}, context);
       assertIsContext(result);
-      assert.instanceOf(result.context, AiAssistance.AccessibilityContext.AccessibilityContext);
+      assert.instanceOf(result.context, AiAssistance.LighthouseContext.LighthouseContext);
       assert.strictEqual(result.context.getItem(), mockReport);
       assert.strictEqual(result.description, 'Lighthouse audit completed');
       assert.isUndefined(result.widgets);
@@ -107,7 +107,7 @@ describe('RunLighthouseTool', () => {
 
       const result = await tool.handler({explanation: 're-audit', categoryId: 'accessibility'}, context);
       assertIsContext(result);
-      assert.instanceOf(result.context, AiAssistance.AccessibilityContext.AccessibilityContext);
+      assert.instanceOf(result.context, AiAssistance.LighthouseContext.LighthouseContext);
       assert.strictEqual(result.context.getItem(), mockReport);
       assert.strictEqual(result.description, 'Lighthouse audit completed');
       assert.isUndefined(result.widgets);

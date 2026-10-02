@@ -1,4 +1,4 @@
-Title: AccessibilityContext should return prompt details correctly
+Title: LighthouseContext should return prompt details correctly
 Content:
 # Lighthouse Report:
 # Lighthouse Report Summary
@@ -15,7 +15,7 @@ The following audits in this category have a score below 90 and may need attenti
   * Description of accessibility audit
 === end content
 
-Title: AccessibilityContext should return user facing details correctly
+Title: LighthouseContext should return user facing details correctly
 Content:
 [
   {
@@ -25,7 +25,7 @@ Content:
 ]
 === end content
 
-Title: AccessibilityContext with AI V2 architecture enabled returns only the report summary as prompt details
+Title: LighthouseContext with AI V2 architecture enabled returns only the report summary as prompt details
 Content:
 # Lighthouse Report Summary
 URL: https://example.com
@@ -36,7 +36,7 @@ Lighthouse Version: 1.0.0
 - Accessibility: 50
 === end content
 
-Title: AccessibilityContext with AI V2 architecture enabled returns the report summary as user facing details
+Title: LighthouseContext with AI V2 architecture enabled returns the report summary as user facing details
 Content:
 [
   {

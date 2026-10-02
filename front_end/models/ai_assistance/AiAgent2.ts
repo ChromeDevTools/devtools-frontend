@@ -18,8 +18,8 @@ import {
 } from './agents/AiAgent.js';
 import {type ExecuteJsAgentOptions, executeJsCode} from './agents/ExecuteJavascript.js';
 import {ChangeManager} from './ChangeManager.js';
-import {AccessibilityContext} from './contexts/AccessibilityContext.js';
 import {DOMNodeContext} from './contexts/DOMNodeContext.js';
+import {LighthouseContext} from './contexts/LighthouseContext.js';
 import {PerformanceTraceContext} from './contexts/PerformanceTraceContext.js';
 import {debugLog} from './debug.js';
 import {ExtensionScope} from './ExtensionScope.js';
@@ -319,7 +319,7 @@ User query: ${enhancedQuery}`;
           getExecutionContextNode: () => this.#getExecutionContextNode(),
           getTarget: () => this.#getTarget(),
           getOriginLock: () => this.#originLock(),
-          getLighthouseReport: () => (this.context instanceof AccessibilityContext ? this.context.getItem() : null),
+          getLighthouseReport: () => (this.context instanceof LighthouseContext ? this.context.getItem() : null),
           runLighthouse: async overrides => await (this.#lighthouseRecording?.(overrides) ?? null),
           getPerformanceTraceContext: () => (this.context instanceof PerformanceTraceContext ? this.context : null),
           performanceRecordAndReload: this.#performanceRecordAndReload,

@@ -16,9 +16,9 @@ import * as AiSetting from './AiSetting.js';
 import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
-import * as AccessibilityContext from './contexts/AccessibilityContext.js';
 import * as DOMNodeContext from './contexts/DOMNodeContext.js';
 import * as FileContext from './contexts/FileContext.js';
+import * as LighthouseContext from './contexts/LighthouseContext.js';
 import * as PerformanceTraceContext from './contexts/PerformanceTraceContext.js';
 import * as RequestContext from './contexts/RequestContext.js';
 import * as StorageContext from './contexts/StorageContext.js';
@@ -73,7 +73,6 @@ import * as ToolRegistry from './tools/ToolRegistry.js';
 
 export {
   AccessibilityAgent,
-  AccessibilityContext,
   AiAgent,
   AiAgent2,
   AICallTree,
@@ -114,6 +113,7 @@ export {
   GetTraceNetworkSummary,
   GetTraceResourceContent,
   Injected,
+  LighthouseContext,
   LighthouseFormatter,
   ListCookies,
   ListNetworkRequests,

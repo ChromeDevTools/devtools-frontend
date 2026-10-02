@@ -12,7 +12,9 @@ import {
 } from '../agents/AiAgent.js';
 import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
 
-export class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
+export class LighthouseContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
+  // This context was previously named AccessibilityContext. The VE context
+  // keeps its original value so that logged metrics stay comparable.
   override readonly jslogContext = 'ai-context-accessibility' as const;
   readonly #lh: LHModel.ReporterTypes.ReportJSON;
   #cachedPayload: string|null = null;

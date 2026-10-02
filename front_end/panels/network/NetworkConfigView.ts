@@ -9,6 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -385,11 +386,13 @@ function getUserAgentMetadata(userAgent: string): Protocol.Emulation.UserAgentMe
     for (const userAgentVersion of userAgentDescriptor.values) {
       if (userAgent ===
           SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(userAgentVersion.value)) {
-        if (!userAgentVersion.metadata) {
+        // Read once: a preset can compute its metadata in a getter, so each read is a new object.
+        const {metadata} = userAgentVersion;
+        if (!metadata) {
           return null;
         }
-        SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentMetadataWithChromeVersion(userAgentVersion.metadata);
-        return userAgentVersion.metadata;
+        SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentMetadataWithChromeVersion(metadata);
+        return metadata;
       }
     }
   }
@@ -555,6 +558,30 @@ export const userAgentGroups: UserAgentGroup[] = [
           architecture: 'x86',
           model: '',
           mobile: false,
+        },
+      },
+      {
+        // Desktop Android with the AndroidDesktopUASpoofAsChromeOS and AndroidDesktopUAPlatform
+        // features: the UA string is spoofed as Chrome OS, while UA-CH reports the real Android
+        // platform and version.
+        title: 'Chrome \u2014 Googlebook',
+        value:
+            'Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36',
+        get metadata() {
+          return {
+            brands: [
+              {brand: 'Not A;Brand', version: '99'},
+              {brand: 'Chromium', version: '%s'},
+              {brand: 'Google Chrome', version: '%s'},
+            ],
+            fullVersion: '%s',
+            platform: 'Android',
+            platformVersion: `${EmulationModel.DeviceModeModel.DeviceModeModel.getDynamicAndroidVersion()}.0.0`,
+            architecture: 'x86',
+            bitness: '64',
+            model: '',
+            mobile: false,
+          };
         },
       },
       {

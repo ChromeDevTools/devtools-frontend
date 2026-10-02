@@ -78,6 +78,7 @@ devtools_ui_module("network") {
     "../../generated",
     "../../models/ai_assistance:bundle",
     "../../models/bindings:bundle",
+    "../../models/emulation:bundle",
     "../../models/har:bundle",
     "../../models/logs:bundle",
     "../../models/network_time_calculator:bundle",

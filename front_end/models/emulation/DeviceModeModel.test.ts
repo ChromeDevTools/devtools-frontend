@@ -805,11 +805,13 @@ describe('DeviceModeModel', () => {
       clock.tick(new Date(2026, 8, 1).getTime() - new Date(2026, 0, 1).getTime());
       const septUA = EmulationModel.DeviceModeModel.DeviceModeModel.getDynamicMobileUA();
       assert.strictEqual(septUA.metadata.platformVersion, '15');
+      assert.strictEqual(EmulationModel.DeviceModeModel.DeviceModeModel.getDynamicAndroidVersion(), 15);
 
       // October 2026: Bump to Android 16
       clock.tick(new Date(2026, 9, 1).getTime() - new Date(2026, 8, 1).getTime());
       const octUA = EmulationModel.DeviceModeModel.DeviceModeModel.getDynamicMobileUA();
       assert.strictEqual(octUA.metadata.platformVersion, '16');
+      assert.strictEqual(EmulationModel.DeviceModeModel.DeviceModeModel.getDynamicAndroidVersion(), 16);
       assert.strictEqual(octUA.metadata.model, 'Pixel 10');
 
       // January 2030: Future proof check

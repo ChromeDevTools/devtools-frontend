@@ -1096,13 +1096,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
    * - iOS adoption typically reaches majority within ~3-6 months.
    */
   static getDynamicMobileUA(): {userAgent: string, metadata: Protocol.Emulation.UserAgentMetadata} {
-    const now = new Date();
-    const year = now.getFullYear();
-    const isLateInYear = now.getMonth() >= 9;  // Oct, Nov, Dec
-
-    // Android: Released in late summer/fall. plurality is usually Year - 2011 (e.g. Android 15 in early 2026).
-    const androidVersion = isLateInYear ? (year - 2010) : (year - 2011);
-    const pixelModel = isLateInYear ? (year - 2016) : (year - 2017);
+    const androidVersion = DeviceModeModel.getDynamicAndroidVersion();
+    const pixelModel = androidVersion - 6;
 
     const ua = `Mozilla/5.0 (Linux; Android ${androidVersion}; Pixel ${
         pixelModel}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36`;
@@ -1114,6 +1109,15 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       mobile: true,
     };
     return {userAgent: ua, metadata};
+  }
+
+  static getDynamicAndroidVersion(): number {
+    const now = new Date();
+    const year = now.getFullYear();
+    const isLateInYear = now.getMonth() >= 9;  // Oct, Nov, Dec
+
+    // Android: Released in late summer/fall. plurality is usually Year - 2011 (e.g. Android 15 in early 2026).
+    return isLateInYear ? (year - 2010) : (year - 2011);
   }
 
   static defaultMobileUserAgent(): string {

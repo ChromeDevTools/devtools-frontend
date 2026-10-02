@@ -35,6 +35,7 @@ devtools_entrypoint("bundle") {
     "../../foundation/*",
     "../../panels/emulation/*",
     "../../panels/lighthouse/*",
+    "../../panels/network/*",
     "../../panels/recorder/*",
     "../../panels/settings/emulation/*",
     "../../panels/timeline/*",

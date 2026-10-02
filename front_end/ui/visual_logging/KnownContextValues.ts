@@ -810,6 +810,7 @@ export const knownContextValues: Set<string> = new Set([
   'chrome-flags-bounce-tracking-mitigations',
   'chrome-flags-tpcd-heuristics-grants',
   'chrome-flags-tpcd-metadata-grants',
+  'chrome-googlebook',
   'chrome-i-pad',
   'chrome-i-phone',
   'chrome-mac',

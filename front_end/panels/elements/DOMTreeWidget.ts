@@ -1143,7 +1143,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     this.#globalListenersRegistered = true;
     this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
-    if (Common.Settings.Settings.instance().moduleSetting('highlight-node-on-hover-in-overlay').get()) {
+    if (Common.Settings.Settings.instance()
+            .resolve(SettingsUI.ElementsSettings.highlightNodeOnHoverInOverlaySettingDescriptor)
+            .get()) {
       SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel,
                                                                   SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED,
                                                                   this.#highlightNode, this, {scoped: true});

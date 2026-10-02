@@ -24,3 +24,10 @@ export const showHTMLCommentsSettingDescriptor: Common.Settings.SettingDescripto
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const highlightNodeOnHoverInOverlaySettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'highlight-node-on-hover-in-overlay',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

@@ -150,6 +150,22 @@ Caused by: Error: cause error
     ]);
   });
 
+  it('renders a long UnparsableError as expandable text', async () => {
+    const description = '\nat \n.'.padEnd(10001);
+    const error = new Bindings.SymbolizedError.UnparsableError(description, null);
+
+    const widget = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+    widget.ignoreListManager = universe.ignoreListManager;
+    widget.error = error;
+    renderElementIntoDOM(widget,
+                         {includeCommonStyles: true, extraStyles: [consoleViewStyles, symbolizedErrorWidgetStyles]});
+    await widget.updateComplete;
+
+    assert.notInclude(widget.contentElement.textContent, '[object Object]');
+    assert.exists(widget.contentElement.querySelector('.expandable-text-property-value'));
+    assert.exists(widget.contentElement.querySelector('.expandable-inline-button'));
+  });
+
   it('renders a SymbolizedErrorObject for a SyntaxError', async () => {
     const uiLocation = {
       uiSourceCode: {

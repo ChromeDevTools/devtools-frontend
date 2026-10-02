@@ -6,13 +6,15 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
-import {ConsoleViewMessage} from './ConsoleViewMessage.js';
+import {ConsoleViewMessage, getLongStringVisibleLength, getMaxTokenizableStringLength} from './ConsoleViewMessage.js';
 
 const {html, render} = Lit;
+const {widget} = UI.Widget;
 
 export interface ViewInput {
   error: Bindings.SymbolizedError.SymbolizedError;
@@ -107,14 +109,21 @@ function renderFrameSuffix(frame: StackTrace.StackTrace.ParsedErrorStackFrame): 
 const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): void => {
   const renderError = (error: Bindings.SymbolizedError.SymbolizedError, isCause: boolean): Lit.LitTemplate => {
     if (error instanceof Bindings.SymbolizedError.UnparsableError) {
-      const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(
-          error.errorStack,
-          (text: string, url: Platform.DevToolsPath.UrlString, lineNumber?: number, columnNumber?: number) => {
-            const options = {text, lineNumber, columnNumber, ignoreListManager: input.ignoreListManager};
-            const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
-            linkElement.tabIndex = -1;
-            return linkElement;
-          });
+      // linkifyWithCustomLinkifier() returns a Widget for long strings, which Lit
+      // can't render directly, so use the widget directive instead.
+      const fragment = error.errorStack.length > getMaxTokenizableStringLength() ?
+          html`${widget(ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue, {
+            text: error.errorStack,
+            maxLength: getLongStringVisibleLength(),
+          })}` :
+          ConsoleViewMessage.linkifyWithCustomLinkifier(
+              error.errorStack,
+              (text: string, url: Platform.DevToolsPath.UrlString, lineNumber?: number, columnNumber?: number) => {
+                const options = {text, lineNumber, columnNumber, ignoreListManager: input.ignoreListManager};
+                const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
+                linkElement.tabIndex = -1;
+                return linkElement;
+              });
       const header = renderHeader(fragment, isCause);
       return html`
         <span class=${isCause ? 'console-message-stack-trace-wrapper' : ''}>${header}</span>

@@ -15,13 +15,48 @@ const PLACEHOLDER_REGEX = /\{[^{}]+\}/g;
 const BACKTICK_CODE_REGEX = /`[^`]+`/g;
 const URL_REGEX = /\burl\b/gi;
 
+const CONTRACTIONS_MAP: Record<string, string> = {
+  'does not': 'doesn’t',
+  'has not': 'hasn’t',
+  'is not': 'isn’t',
+  'are not': 'aren’t',
+  'can not': 'can’t',
+  // eslint-disable-next-line @stylistic/quote-props
+  'cannot': 'can’t',
+  'will not': 'won’t',
+  'do not': 'don’t',
+  'should not': 'shouldn’t',
+  'would not': 'wouldn’t',
+  'could not': 'couldn’t',
+  'did not': 'didn’t',
+  'was not': 'wasn’t',
+  'were not': 'weren’t',
+  'have not': 'haven’t',
+  'had not': 'hadn’t',
+  'must not': 'mustn’t',
+};
+const CONTRACTION_PATTERN = Object.keys(CONTRACTIONS_MAP).join('|');
+const CONTRACTION_REGEX = new RegExp(`\\b(${CONTRACTION_PATTERN})\\b`, 'i');
+const CONTRACTION_OUTSIDE_BACKTICKS_REGEX = new RegExp(`(\`[^\`]*\`)|\\b(${CONTRACTION_PATTERN})\\b`, 'gi');
+
+function getContractionReplacement(match: string): string {
+  const replacement = CONTRACTIONS_MAP[match.toLowerCase()];
+  if (!replacement) {
+    return match;
+  }
+  if (match[0] === match[0].toUpperCase()) {
+    return replacement[0].toUpperCase() + replacement.slice(1);
+  }
+  return replacement;
+}
+
 export default createRule({
   name: 'l10n-uistrings-text-style',
   meta: {
     type: 'problem',
     docs: {
       description:
-          'Enforces text style guidelines for UIStrings object literals (no fully locked phrases, no single placeholder phrases, use curly apostrophes, use straight double quotes, use Unicode ellipsis, use all-uppercase URL).',
+          'Enforces text style guidelines for UIStrings object literals (no fully locked phrases, no single placeholder phrases, use curly apostrophes, use straight double quotes, use Unicode ellipsis, use all-uppercase URL, use contractions).',
       category: 'Possible Errors',
     },
     fixable: 'code',
@@ -33,6 +68,7 @@ export default createRule({
       useStraightDoubleQuote: 'Use straight double quote (") instead of curly double quote in "{{PH1}}".',
       useUnicodeEllipsis: 'Use Unicode ellipsis (…) instead of three dots (...) in "{{PH1}}".',
       useUppercaseUrl: 'Use all-uppercase "URL" instead of "{{PH1}}" in "{{PH2}}".',
+      useContraction: 'Use contraction "{{PH1}}" instead of "{{PH2}}" in "{{PH3}}".',
     },
   },
   defaultOptions: [],
@@ -96,8 +132,8 @@ export default createRule({
           }
 
           // Strip placeholders like {url} or {PH1} and code spans in backticks like `url:a.com`
-          const textWithoutCodeAndPlaceholders =
-              propertyValue.replace(PLACEHOLDER_REGEX, '').replace(BACKTICK_CODE_REGEX, '');
+          const textWithoutCode = propertyValue.replace(BACKTICK_CODE_REGEX, '');
+          const textWithoutCodeAndPlaceholders = textWithoutCode.replace(PLACEHOLDER_REGEX, '');
           if (THREE_DOTS_REGEX.test(textWithoutCodeAndPlaceholders)) {
             context.report({
               node: valueNode,
@@ -134,6 +170,34 @@ export default createRule({
                 },
               });
             }
+          }
+
+          const contractionMatch = textWithoutCode.match(CONTRACTION_REGEX);
+          if (contractionMatch) {
+            const uncontracted = contractionMatch[0];
+            const contracted = getContractionReplacement(uncontracted);
+            context.report({
+              node: valueNode,
+              messageId: 'useContraction',
+              data: {
+                PH1: contracted,
+                PH2: uncontracted,
+                PH3: propertyValue,
+              },
+              fix: function(fixer) {
+                const rawText = context.sourceCode.getText(valueNode);
+                const fixedText = rawText.replace(
+                    CONTRACTION_OUTSIDE_BACKTICKS_REGEX,
+                    function(match, backtickGroup: string|undefined) {
+                      if (backtickGroup) {
+                        return backtickGroup;
+                      }
+                      return getContractionReplacement(match);
+                    },
+                );
+                return fixer.replaceText(valueNode, fixedText);
+              },
+            });
           }
         }
       },

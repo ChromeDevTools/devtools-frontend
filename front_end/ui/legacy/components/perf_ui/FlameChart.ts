@@ -339,6 +339,17 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     names: new Map<number, string>(),
     lastWidth: 0,
   };
+  /**
+   * Caches middle-truncated entry titles keyed by entry index.
+   * Stores the `width` (maximum available text width in pixels) and `text` (trimmed string or null).
+   */
+  #entryTitleCache = new Map<number, {width: number, text: string|null}>();
+  /**
+   * Tracks the previous window device pixel ratio.
+   * When the ratio changes (e.g. browser zoom changes), subpixel font metrics can shift,
+   * requiring #entryTitleCache to be invalidated.
+   */
+  #lastDpr = 0;
   readonly #boundOnThemeChanged = this.#onThemeChanged.bind(this);
 
   constructor(
@@ -442,6 +453,9 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
   }
 
   #onThemeChanged(): void {
+    // Clear title cache because theme changes can alter font families and metrics,
+    // invalidating previously measured middle-truncated text.
+    this.#entryTitleCache.clear();
     this.scheduleUpdate();
   }
 
@@ -663,6 +677,10 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
 
   private resetCanvas(): void {
     const ratio = window.devicePixelRatio;
+    if (this.#lastDpr !== ratio) {
+      this.#entryTitleCache.clear();
+      this.#lastDpr = ratio;
+    }
     const width = Math.round(this.offsetWidth * ratio);
     const height = Math.round(this.offsetHeight * ratio);
     this.canvas.width = width;
@@ -2279,7 +2297,7 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
       this.drawMarkers(context, timelineData, markerIndices);
     }
 
-    this.drawEventTitles(context, timelineData, titleIndices, canvasWidth);
+    this.drawEventTitles(context, timelineData, titleIndices);
 
     // If there is a `forceDecoration` function, it will be called in `drawEventTitles`, which will overwrite the
     // default decorations, so we need to call this function after the `drawEventTitles`.
@@ -2975,58 +2993,90 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
    * Draws the titles of trace events in the timeline. Also calls `decorateEntry` on the data
    * provider, which can do any custom drawing on the corresponding entry's area (e.g. draw screenshots
    * in the Performance Panel timeline).
-   *
-   * Takes in the width of the entire canvas so that we know if an event does
-   * not fit into the viewport entirely, the max width we can draw is that
-   * width, not the width of the event itself.
    */
   private drawEventTitles(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData,
-                          titleIndices: number[], canvasWidth: number): void {
+                          titleIndices: number[]): void {
     const timeToPixel = this.chartViewport.timeToPixel();
     const textPadding = this.textPadding;
     context.save();
     context.beginPath();
-    const {entryStartTimes, entryLevels} = timelineData;
+    const {entryStartTimes, entryLevels, entryTotalTimes} = timelineData;
     for (let i = 0; i < titleIndices.length; ++i) {
       const entryIndex = titleIndices[i];
       const entryStartTime = entryStartTimes[entryIndex];
-      const barX = this.timeToPositionClipped(entryStartTime);
-      // Ensure that the title does not go off screen, if the width of the
-      // event is wider than the width of the canvas, use the canvas width as
-      // our maximum width.
-      const barWidth = Math.min(this.#eventBarWidth(timelineData, entryIndex), canvasWidth);
+      const duration = entryTotalTimes[entryIndex];
+      const unclippedStartX = this.chartViewport.timeToPosition(entryStartTime);
+      const barX = this.#clampX(unclippedStartX);
+      const unclippedEndX = this.chartViewport.timeToPosition(entryStartTime + duration);
+      const barWidth = Math.min(this.#eventBarWidth(timelineData, entryIndex), this.offsetWidth);
+      // For unclipped events, compute text width directly from duration and timeToPixel.
+      // Because chartViewport.timeToPosition uses Math.floor, coordinate subtraction fluctuates
+      // by +/-1px across subpixel pan offsets. Calculating width directly from duration keeps
+      // maxBarWidth stable during horizontal panning, ensuring hits in #entryTitleCache and
+      // avoiding expensive trimTextMiddle / measureText recomputations.
+      const isUnclipped = unclippedStartX >= 0 && unclippedEndX <= this.offsetWidth;
+      const textBarWidth = isUnclipped ? Math.max(1, Math.round(duration * timeToPixel)) : barWidth;
       const barLevel = entryLevels[entryIndex];
       const barY = this.levelToOffset(barLevel);
-      let text = this.dataProvider.entryTitle(entryIndex);
       const barHeight = this.#eventBarHeight(timelineData, entryIndex);
-      if (text?.length) {
-        context.font = this.#font;
-        const hasArrowDecoration =
-            this.entryHasDecoration(entryIndex, FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW);
-        // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration and
-        // the bar is wide enough for the larger version of the decoration that is a square button, also subtract
-        // the width of the decoration. Because the decoration is square, its width is equal to this.barHeight.
-        const maxBarWidth = (hasArrowDecoration && barWidth > barHeight * 2) ? barWidth - textPadding - this.barHeight :
-                                                                               barWidth - 2 * textPadding;
-        text = UI.UIUtils.trimTextMiddle(
-            context,
-            text,
-            maxBarWidth,
-        );
-      }
-      const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
-      if (this.dataProvider.decorateEntry(entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX,
+      const hasArrowDecoration = this.entryHasDecoration(entryIndex, FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW);
+      // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration and
+      // the bar is wide enough for the larger version of the decoration that is a square button, also subtract
+      // the width of the decoration. Because the decoration is square, its width is equal to this.barHeight.
+      const maxBarWidth = (hasArrowDecoration && textBarWidth > barHeight * 2) ?
+          textBarWidth - textPadding - this.barHeight :
+          textBarWidth - 2 * textPadding;
+      // Re-assert this.#font on every iteration. dataProvider.decorateEntry() on a previous iteration
+      // may have modified context.font on the shared 2D context. Even on cache hits, context.font must
+      // be restored before context.fillText() so titles are rendered in the correct font.
+      context.font = this.#font;
+
+      const text = this.#getEntryTitle(entryIndex, maxBarWidth, context);
+      if (this.dataProvider.decorateEntry(entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedStartX,
                                           timeToPixel, color => this.#transformColor(entryIndex, color))) {
         continue;
       }
       if (!text?.length) {
         continue;
       }
+      context.font = this.#font;
       context.fillStyle = this.#transformColor(entryIndex, this.dataProvider.textColor(entryIndex));
       context.fillText(text, barX + textPadding, barY + barHeight - this.textBaseline);
     }
 
     context.restore();
+  }
+
+  /**
+   * Returns the middle-trimmed title for an entry at the specified width, utilizing the
+   * entry title cache to avoid repeated text measurements and trimming during animation frames.
+   */
+  #getEntryTitle(entryIndex: number, maxBarWidth: number, context: CanvasRenderingContext2D): string|null {
+    if (maxBarWidth <= 0) {
+      return null;
+    }
+    const cached = this.#entryTitleCache.get(entryIndex);
+    if (cached && cached.width === maxBarWidth) {
+      return cached.text;
+    }
+    let text: string|null = null;
+    const rawText = this.dataProvider.entryTitle(entryIndex);
+    if (rawText?.length) {
+      text = UI.UIUtils.trimTextMiddle(
+          context,
+          rawText,
+          maxBarWidth,
+      );
+    }
+    // Mutate existing cache record in place if present to avoid object allocation churn
+    // on every animation frame during continuous zooming.
+    if (cached) {
+      cached.width = maxBarWidth;
+      cached.text = text;
+    } else {
+      this.#entryTitleCache.set(entryIndex, {width: maxBarWidth, text});
+    }
+    return text;
   }
 
   /**
@@ -3430,6 +3480,7 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
 
   private processTimelineData(timelineData: FlameChartTimelineData|null): void {
     this.#urlTruncations.names.clear();
+    this.#entryTitleCache.clear();
     if (!timelineData) {
       this.timelineLevels = null;
       this.visibleLevelOffsets = null;
@@ -4027,8 +4078,18 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     this.updateElementPosition(this.revealDescendantsArrowHighlightElement, entryIndex, true);
   }
 
+  /**
+   * Clamps a horizontal pixel position to the visible bounds of the flame chart canvas.
+   */
+  #clampX(x: number): number {
+    return Platform.NumberUtilities.clamp(x, 0, this.offsetWidth);
+  }
+
+  /**
+   * Converts a timeline timestamp to a horizontal pixel position clamped to the visible canvas bounds.
+   */
   private timeToPositionClipped(time: number): number {
-    return Platform.NumberUtilities.clamp(this.chartViewport.timeToPosition(time), 0, this.offsetWidth);
+    return this.#clampX(this.chartViewport.timeToPosition(time));
   }
 
   /**
@@ -4136,6 +4197,7 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     }
     this.#urlTruncations.names.clear();
     this.#urlTruncations.lastWidth = 0;
+    this.#entryTitleCache.clear();
 
     this.chartViewport.reset();
     this.rawTimelineData = null;

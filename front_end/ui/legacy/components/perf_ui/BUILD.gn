@@ -131,5 +131,6 @@ devtools_ui_module("unittests") {
     "../../../../panels/timeline/extensions:bundle",
     "../../../../testing",
     "../../../visual_logging:bundle",
+    "../../theme_support:bundle",
   ]
 }

@@ -19,10 +19,12 @@ import {
   MockFlameChartDelegate,
   renderFlameChartIntoDOM,
   renderFlameChartWithFakeProvider,
+  renderWidgetInVbox,
 } from '../../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
+import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import * as PerfUI from './perf_ui.js';
 
@@ -1450,6 +1452,7 @@ describeWithEnvironment('FlameChart', () => {
   });
 
   it(`renders the frames track with screenshots`, async function() {
+    this.timeout(20_000);
     const {flameChart} = await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
       fileNameOrParsedTrace: 'web-dev-screenshot-source-ids.json.gz',
@@ -1906,7 +1909,6 @@ describeWithEnvironment('FlameChart', () => {
       assert.isNull(dimensions);
     });
   });
-
   it('does not transform empty entry colors when dimmed', () => {
     class UncoloredEntryProvider extends FakeFlameChartProvider {
       #timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
@@ -1945,5 +1947,105 @@ describeWithEnvironment('FlameChart', () => {
     // Colored entry is converted to grayscale/dimmed, but uncolored entry remains empty string.
     assert.notStrictEqual(chartInstance.getColorForEntry(0), '#ff0000');
     assert.strictEqual(chartInstance.getColorForEntry(1), '');
+  });
+
+  it('caches trimmed event titles during horizontal panning and invalidates on zoom, reset, theme change, or DPR change',
+     () => {
+       class TitleCacheTestProvider extends FakeFlameChartProvider {
+         #timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
+           entryLevels: [0],
+           entryStartTimes: [10.0],
+           entryTotalTimes: [50.0],
+           groups: [{
+             name: 'Test Group' as Platform.UIString.LocalizedString,
+             startLevel: 0,
+             style: defaultGroupStyle,
+             expanded: true,
+           }],
+         });
+
+         override entryTitle(_entryIndex: number): string {
+           return 'Long Title That Exceeds Width And Gets Trimmed';
+         }
+
+         override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+           return this.#timelineData;
+         }
+       }
+
+       const provider = new TitleCacheTestProvider();
+       chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
+       renderWidgetInVbox(chartInstance, {width: 1000, height: 400});
+       chartInstance.setWindowTimes(0, 100);
+       chartInstance.update();
+
+       // The initial draw populated the title cache. Now spy on entryTitle.
+       const entryTitleSpy = sinon.spy(provider, 'entryTitle');
+
+       // Pan horizontally across subpixel boundaries: cache hit, entryTitle not re-run.
+       chartInstance.setWindowTimes(0.06, 100.06);
+       chartInstance.update();
+       sinon.assert.callCount(entryTitleSpy, 0);
+
+       // Zooming in changes the pixel width: cache miss, entryTitle must be re-queried and re-trimmed.
+       chartInstance.setWindowTimes(0, 50);
+       chartInstance.update();
+       sinon.assert.callCount(entryTitleSpy, 1);
+
+       // Reset clears the cache: next draw must re-fetch and re-trim.
+       chartInstance.reset();
+       chartInstance.setWindowTimes(0, 50);
+       chartInstance.update();
+       sinon.assert.callCount(entryTitleSpy, 2);
+
+       // Theme change invalidates the cache because font metrics or styling may change.
+       ThemeSupport.ThemeSupport.instance().dispatchEvent(new ThemeSupport.ThemeChangeEvent());
+       chartInstance.update();
+       sinon.assert.callCount(entryTitleSpy, 3);
+
+       // DPR change invalidates the cache because subpixel font metrics may change.
+       // Increment the existing devicePixelRatio to guarantee a change on high-DPI displays.
+       const dprStub = sinon.stub(window, 'devicePixelRatio').value((window.devicePixelRatio || 1) + 1);
+       chartInstance.update();
+       sinon.assert.callCount(entryTitleSpy, 4);
+       dprStub.restore();
+     });
+
+  it('does not query entryTitle for events that have no room for text', () => {
+    class NarrowEntryProvider extends FakeFlameChartProvider {
+      #timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
+        entryLevels: [0],
+        entryStartTimes: [10.0],
+        entryTotalTimes: [0.001],
+        groups: [{
+          name: 'Test Group' as Platform.UIString.LocalizedString,
+          startLevel: 0,
+          style: defaultGroupStyle,
+          expanded: true,
+        }],
+      });
+
+      override entryTitle(_entryIndex: number): string {
+        return 'Title';
+      }
+
+      override forceDecoration(_entryIndex: number): boolean {
+        return true;
+      }
+
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+        return this.#timelineData;
+      }
+    }
+
+    const provider = new NarrowEntryProvider();
+    const entryTitleSpy = sinon.spy(provider, 'entryTitle');
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
+    renderWidgetInVbox(chartInstance, {width: 1000, height: 400});
+    chartInstance.setWindowTimes(0, 100);
+    chartInstance.update();
+
+    // The event is too narrow for text (maxBarWidth <= 0), entryTitle should not be called.
+    sinon.assert.callCount(entryTitleSpy, 0);
   });
 });

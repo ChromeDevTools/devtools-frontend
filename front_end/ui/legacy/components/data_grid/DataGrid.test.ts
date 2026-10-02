@@ -166,4 +166,35 @@ describeWithEnvironment('DataGrid', () => {
     headerElement.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, button: 2}));
     sinon.assert.calledOnce(tableContextMenuCallback);
   });
+
+  it('keeps focus on data grid when removing a selected node with a focused editable cell', () => {
+    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
+      {id: 'key', title: i18n.i18n.lockedString('Key'), editable: true, sortable: false},
+    ];
+    const dataGrid = new DataGrid.DataGrid.DataGridImpl({
+      displayName: 'Test',
+      columns,
+      deleteCallback: (node: DataGrid.DataGrid.DataGridNode<{key: string}>) => {
+        node.remove();
+      },
+    });
+    const token = {token: 'DataGridInternalToken'} as Parameters<typeof dataGrid.setEditCallback>[1];
+    dataGrid.setEditCallback(sinon.stub(), token);
+    container.appendChild(dataGrid.element);
+
+    const node1 = new DataGrid.DataGrid.DataGridNode({key: 'item1'});
+    const node2 = new DataGrid.DataGrid.DataGridNode({key: 'item2'});
+    dataGrid.rootNode().appendChild(node1);
+    dataGrid.rootNode().appendChild(node2);
+
+    node1.select();
+    const cell1 = node1.existingElement()?.querySelector('td');
+    assert.exists(cell1);
+    cell1.focus();
+    assert.strictEqual(document.activeElement, cell1);
+
+    node1.remove();
+    assert.strictEqual(dataGrid.selectedNode, node2);
+    assert.strictEqual(document.activeElement, dataGrid.element);
+  });
 });

@@ -30,8 +30,8 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
     SDK.OverlayModel.OverlayModel.setInspectNodeHandler(this.inspectNode.bind(this));
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.OverlayModel.OverlayModel, this, {scoped: true});
 
-    this.showDetailedInspectTooltipSetting =
-        Common.Settings.Settings.instance().moduleSetting('show-detailed-inspect-tooltip');
+    this.showDetailedInspectTooltipSetting = Common.Settings.Settings.instance().resolve(
+        SettingsUI.ElementsSettings.showDetailedInspectTooltipSettingDescriptor);
     this.showDetailedInspectTooltipSetting.addChangeListener(this.showDetailedInspectTooltipChanged.bind(this));
 
     document.addEventListener('keydown', event => {

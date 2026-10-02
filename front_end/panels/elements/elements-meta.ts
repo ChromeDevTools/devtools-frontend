@@ -600,14 +600,10 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.highlightN
   title: i18nLazyString(UIStrings.revealDomNodeOnHover),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.showDetailedInspectTooltipSettingDescriptor, {
   category: Common.Settings.SettingCategory.ELEMENTS,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   order: 5,
   title: i18nLazyString(UIStrings.detailedInspectTooltip),
-  settingName: 'show-detailed-inspect-tooltip',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

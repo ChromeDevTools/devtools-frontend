@@ -31,3 +31,10 @@ export const highlightNodeOnHoverInOverlaySettingDescriptor: Common.Settings.Set
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const showDetailedInspectTooltipSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-detailed-inspect-tooltip',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

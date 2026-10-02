@@ -60,6 +60,19 @@ describe('buildOriginalScopes', () => {
     assert.strictEqual(scopes[0].children[0].parent, scopes[0]);
   });
 
+  it('coerces non-string names to strings', () => {
+    const range = {
+      start: {line: 0, column: 0},
+      end: {line: 10, column: 0},
+      name: 42,
+    } as unknown as SDK.SourceMapFunctionRanges.NamedFunctionRange;
+
+    const scopes = buildOriginalScopes([range]);
+
+    assert.lengthOf(scopes, 1);
+    assert.strictEqual(scopes[0].name, '42');
+  });
+
   it('handles sibling scopes', () => {
     /*
      * --- A

@@ -36,6 +36,17 @@ function getFunctionDeclarations(
   return callArgs.function_declarations ?? [];
 }
 
+function getContextChangeResponse(
+    responses: AiAssistance.AiAgent.ResponseData[],
+    ): AiAssistance.AiAgent.ContextChangeResponse {
+  const contextChange = responses.find(
+      (r): r is AiAssistance.AiAgent.ContextChangeResponse =>
+          r.type === AiAssistance.AiAgent.ResponseType.CONTEXT_CHANGE,
+  );
+  assert.exists(contextChange, 'Expected a CONTEXT_CHANGE response');
+  return contextChange;
+}
+
 /**
  * Helper to mock the skills registry for an agent.
  * Since the agent expects a full `Record<SkillName, Skill>`, but individual tests only
@@ -863,10 +874,7 @@ describe('AiAgent2', () => {
       }],
       [{
         explanation: '',
-        functionCalls: [{name: 'runLighthouse', args: {explanation: 'run', category: 'accessibility'}}],
-      }],
-      [{
-        explanation: 'Audits run.',
+        functionCalls: [{name: 'runLighthouse', args: {explanation: 'run', categoryId: 'accessibility'}}],
       }],
     ]);
     const agent = new AiAssistance.AiAgent2.AiAgent2(
@@ -874,15 +882,17 @@ describe('AiAgent2', () => {
 
     const runLighthouseTool = AiAssistance.ToolRegistry.ToolRegistry.get('runLighthouse');
     assert.exists(runLighthouseTool);
-    const handlerStub = sinon.stub(runLighthouseTool, 'handler').resolves({result: {audits: 'mock audits'}});
+    const handlerSpy = sinon.spy(runLighthouseTool, 'handler');
 
-    await Array.fromAsync(agent.run('query', {selected: null}));
+    const responses = await Array.fromAsync(agent.run('query', {selected: null}));
 
-    sinon.assert.calledOnce(handlerStub);
-    const [, context] = handlerStub.getCall(0).args;
-    const runResult = await context.runLighthouse();
-    assert.strictEqual(runResult, mockReport);
+    sinon.assert.calledOnce(handlerSpy);
     sinon.assert.calledOnce(runLighthouseStub);
+    const contextChange = getContextChangeResponse(responses);
+    assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
+    assert.instanceOf(contextChange.context, AiAssistance.AccessibilityContext.AccessibilityContext);
+    assert.strictEqual(contextChange.context.getItem(), mockReport);
+    assert.isUndefined(contextChange.widgets);
   });
 
   it('returns null for getLighthouseReport when context is not AccessibilityContext', async () => {
@@ -928,9 +938,6 @@ describe('AiAgent2', () => {
         explanation: 'Running lighthouse audits',
         functionCalls: [{name: 'runLighthouse', args: {explanation: 'Auditing page', categoryId: 'accessibility'}}],
       }],
-      [{
-        explanation: 'Audits complete.',
-      }],
     ]);
     const agent = new AiAssistance.AiAgent2.AiAgent2({
       aidaClient,
@@ -941,20 +948,21 @@ describe('AiAgent2', () => {
 
     const runLighthouseTool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.RUN_LIGHTHOUSE);
     assert.exists(runLighthouseTool);
-    const handlerStub = sinon.stub(runLighthouseTool, 'handler').callsFake(async (_args, context) => {
-      await context.runLighthouse();
-      return {result: {audits: 'mock audits'}};
-    });
+    const handlerSpy = sinon.spy(runLighthouseTool, 'handler');
 
     const responses = await Array.fromAsync(
         agent.run('record a lighthouse report and check accessibility score', {selected: traceContext}));
 
-    sinon.assert.calledOnce(handlerStub);
+    sinon.assert.calledOnce(handlerSpy);
     sinon.assert.calledOnce(runLighthouseStub);
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
-    assert.lengthOf(actionResponses, 2);
+    assert.lengthOf(actionResponses, 1);
     assert.strictEqual(actionResponses[0].code, 'learnSkills(\'accessibility\')');
-    assert.strictEqual(actionResponses[1].code, 'runLighthouse(\'accessibility\', \'snapshot\')');
+    const contextChange = getContextChangeResponse(responses);
+    assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
+    assert.instanceOf(contextChange.context, AiAssistance.AccessibilityContext.AccessibilityContext);
+    assert.strictEqual(contextChange.context.getItem(), mockReport);
+    assert.isUndefined(contextChange.widgets);
   });
 
   it('learns lighthouse skill and invokes runLighthouse with categoryId "all"', async () => {
@@ -974,9 +982,6 @@ describe('AiAgent2', () => {
         functionCalls:
             [{name: 'runLighthouse', args: {explanation: 'Full audit of page', categoryId: 'all', mode: 'navigation'}}],
       }],
-      [{
-        explanation: 'Audits complete.',
-      }],
     ]);
     const agent = new AiAssistance.AiAgent2.AiAgent2({
       aidaClient,
@@ -986,21 +991,22 @@ describe('AiAgent2', () => {
 
     const runLighthouseTool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.RUN_LIGHTHOUSE);
     assert.exists(runLighthouseTool);
-    const handlerStub = sinon.stub(runLighthouseTool, 'handler').callsFake(async (_args, context) => {
-      await context.runLighthouse();
-      return {result: {audits: 'mock all audits'}};
-    });
+    const handlerSpy = sinon.spy(runLighthouseTool, 'handler');
 
     const responses = await Array.fromAsync(agent.run('run a full lighthouse audit of this page', {selected: null}));
 
-    sinon.assert.calledOnce(handlerStub);
-    sinon.assert.calledWith(handlerStub, sinon.match({categoryId: 'all', mode: 'navigation'}));
+    sinon.assert.calledOnce(handlerSpy);
+    sinon.assert.calledWith(handlerSpy, sinon.match({categoryId: 'all', mode: 'navigation'}));
     sinon.assert.calledOnce(runLighthouseStub);
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
-    assert.lengthOf(actionResponses, 2);
+    assert.lengthOf(actionResponses, 1);
     assert.strictEqual(actionResponses[0].code, 'learnSkills(\'lighthouse\')');
-    assert.strictEqual(actionResponses[1].code, 'runLighthouse(\'all\', \'navigation\')');
     assert.isTrue(agent.activeSkills.has('lighthouse'));
+    const contextChange = getContextChangeResponse(responses);
+    assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
+    assert.instanceOf(contextChange.context, AiAssistance.AccessibilityContext.AccessibilityContext);
+    assert.strictEqual(contextChange.context.getItem(), mockReport);
+    assert.isUndefined(contextChange.widgets);
   });
 
   it('provides getPerformanceTraceContext capability to performance tools', async () => {

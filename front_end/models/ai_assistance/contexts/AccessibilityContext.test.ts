@@ -5,11 +5,15 @@
 import {assert} from 'chai';
 
 import * as SDK from '../../../core/sdk/sdk.js';
+import {updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describe('AccessibilityContext', function() {
+  setupRuntimeHooks();
+
   const snapshotTester = new SnapshotTester(this, import.meta);
 
   const mockReport = {
@@ -37,6 +41,58 @@ describe('AccessibilityContext', function() {
     },
     categoryGroups: {},
   } as unknown as LHModel.ReporterTypes.ReportJSON;
+
+  const multiCategoryReport = {
+    finalDisplayedUrl: 'https://example.com',
+    categories: {
+      accessibility: {
+        title: 'Accessibility',
+        score: 0.8,
+        auditRefs: [{id: 'color-contrast', weight: 1}],
+      },
+      performance: {
+        title: 'Performance',
+        score: 0.9,
+        auditRefs: [{id: 'first-contentful-paint', weight: 1}],
+      },
+    },
+    audits: {
+      'color-contrast': {
+        id: 'color-contrast',
+        score: 0,
+        title: 'Low contrast',
+        description: 'Fix color contrast.',
+        details: {type: 'opportunity', items: []},
+      },
+      'first-contentful-paint': {
+        id: 'first-contentful-paint',
+        score: 0.5,
+        title: 'First Contentful Paint',
+        description: 'Keep FCP fast.',
+        details: {type: 'opportunity', items: []},
+      },
+    },
+  } as unknown as LHModel.ReporterTypes.ReportJSON;
+
+  const failedReport = {
+    finalDisplayedUrl: 'https://example.com',
+    categories: {
+      accessibility: {
+        title: 'Accessibility',
+        score: null,
+        auditRefs: [],
+      },
+      performance: {
+        title: 'Performance',
+        score: null,
+        auditRefs: [],
+      },
+    },
+    audits: {},
+  } as unknown as LHModel.ReporterTypes.ReportJSON;
+
+  const criticalPayload =
+      '**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.';
 
   it('should return origin, item, and title correctly', () => {
     const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
@@ -75,5 +131,110 @@ describe('AccessibilityContext', function() {
         },
       },
     ]);
+  });
+
+  it('does not add snapshotReport to the LIGHTHOUSE_REPORT widget for snapshot mode reports', async () => {
+    const snapshotReport = {...mockReport, gatherMode: 'snapshot'} satisfies LHModel.ReporterTypes.ReportJSON;
+    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(snapshotReport);
+
+    const widgets = await context.getWidgets();
+    assert.deepEqual(widgets, [
+      {
+        name: 'LIGHTHOUSE_REPORT',
+        data: {
+          report: snapshotReport,
+        },
+      },
+    ]);
+  });
+
+  it('includes only the accessibility audits when the report has multiple categories', async () => {
+    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(multiCategoryReport);
+
+    const details = await context.getPromptDetails();
+    assert.exists(details);
+    assert.include(details, '- Performance: 90');
+    assert.include(details, 'Audits for Accessibility');
+    assert.include(details, 'Low contrast');
+    assert.notInclude(details, 'Audits for Performance');
+    assert.notInclude(details, 'First Contentful Paint');
+  });
+
+  it('returns critical error payload when all category scores are null', async () => {
+    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(failedReport);
+
+    const details = await context.getPromptDetails();
+    assert.strictEqual(details, criticalPayload);
+  });
+
+  describe('with AI V2 architecture enabled', () => {
+    beforeEach(() => {
+      updateHostConfig({devToolsAiV2Architecture: {enabled: true}});
+    });
+
+    it('returns only the report summary as prompt details', async function() {
+      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+
+      const promptDetails = await context.getPromptDetails();
+      assert.exists(promptDetails);
+      snapshotTester.assert(this, promptDetails);
+    });
+
+    it('returns the report summary as user facing details', async function() {
+      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+
+      const details = await context.getUserFacingDetails();
+      assert.exists(details);
+      snapshotTester.assert(this, JSON.stringify(details, null, 2));
+    });
+
+    it('includes every category score but no audits when the report has multiple categories', async () => {
+      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(multiCategoryReport);
+
+      const details = await context.getPromptDetails();
+      assert.exists(details);
+      assert.include(details, '- Accessibility: 80');
+      assert.include(details, '- Performance: 90');
+      assert.notInclude(details, 'Audits for');
+    });
+
+    it('returns critical error payload when all category scores are null', async () => {
+      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(failedReport);
+
+      const details = await context.getPromptDetails();
+      assert.strictEqual(details, criticalPayload);
+    });
+
+    it('marks the LIGHTHOUSE_REPORT widget as a snapshot report for snapshot mode reports', async () => {
+      const snapshotReport = {...mockReport, gatherMode: 'snapshot'} satisfies LHModel.ReporterTypes.ReportJSON;
+      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(snapshotReport);
+
+      const widgets = await context.getWidgets();
+      assert.deepEqual(widgets, [
+        {
+          name: 'LIGHTHOUSE_REPORT',
+          data: {
+            report: snapshotReport,
+            snapshotReport: true,
+          },
+        },
+      ]);
+    });
+
+    it('does not mark the LIGHTHOUSE_REPORT widget as a snapshot report for navigation mode reports', async () => {
+      const navigationReport = {...mockReport, gatherMode: 'navigation'} satisfies LHModel.ReporterTypes.ReportJSON;
+      const context = new AiAssistance.AccessibilityContext.AccessibilityContext(navigationReport);
+
+      const widgets = await context.getWidgets();
+      assert.deepEqual(widgets, [
+        {
+          name: 'LIGHTHOUSE_REPORT',
+          data: {
+            report: navigationReport,
+            snapshotReport: false,
+          },
+        },
+      ]);
+    });
   });
 });

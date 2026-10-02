@@ -4,12 +4,13 @@
 
 import * as Host from '../../../core/host/host.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
-import {type LighthouseCategoryArg, LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
+import {AccessibilityContext} from '../contexts/AccessibilityContext.js';
+import type {LighthouseCategoryArg} from '../data_formatters/LighthouseFormatter.js';
 
 import {
   type BaseToolCapability,
-  type DataHandlerResult,
-  type DataTool,
+  type ContextHandlerResult,
+  type ContextTool,
   type LighthouseRecordingCapability,
   type ToolArgs,
   ToolName,
@@ -21,8 +22,11 @@ export interface RunLighthouseArgs extends ToolArgs {
   mode?: LHModel.RunTypes.RunMode;
 }
 
+/**
+ * Runs Lighthouse audits on the inspected page and sets the resulting report as the active conversation context.
+ */
 export class RunLighthouseTool implements
-    DataTool<RunLighthouseArgs, {audits: string}, BaseToolCapability&LighthouseRecordingCapability> {
+    ContextTool<RunLighthouseArgs, LHModel.ReporterTypes.ReportJSON, BaseToolCapability&LighthouseRecordingCapability> {
   readonly name: ToolName = ToolName.RUN_LIGHTHOUSE;
   readonly description: string =
       'Runs Lighthouse audits on the active page. Supports "navigation" (for full initial page load audits), "snapshot" (for inspecting live in-page modifications without reload), and "timespan" (for interactions).';
@@ -63,7 +67,7 @@ export class RunLighthouseTool implements
   }
 
   async handler(params: RunLighthouseArgs, context: BaseToolCapability&LighthouseRecordingCapability):
-      Promise<DataHandlerResult<{audits: string}>> {
+      Promise<ContextHandlerResult<LHModel.ReporterTypes.ReportJSON>> {
     const mode = params.mode ?? 'snapshot';
     try {
       // Passing undefined for categoryIds instructs the Lighthouse runner to audit all categories supported by the mode when isAIControlled is true.
@@ -76,11 +80,11 @@ export class RunLighthouseTool implements
         return {error: 'Error: Failed to record new audits.'};
       }
 
-      const audits = new LighthouseFormatter().formatReport(report, params.categoryId);
-      const isSnapshot = mode === 'snapshot';
       return {
-        result: {audits},
-        widgets: [{name: 'LIGHTHOUSE_REPORT', data: {report, snapshotReport: isSnapshot}}],
+        // AccessibilityContext serves as the conversation context container for all Lighthouse report artifacts.
+        // No widgets are returned here; AccessibilityContext.getWidgets() provides the report widget.
+        context: new AccessibilityContext(report),
+        description: 'Lighthouse audit completed',
       };
     } catch (err) {
       return {error: `Error: Failed to record new audits: ${err instanceof Error ? err.message : String(err)}`};

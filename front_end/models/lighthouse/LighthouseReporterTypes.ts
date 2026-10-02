@@ -5,7 +5,7 @@
 import type * as Platform from '../../core/platform/platform.js';
 import type * as Trace from '../../models/trace/trace.js';
 
-import type {CategoryId} from './RunTypes.js';
+import type {CategoryId, RunMode} from './RunTypes.js';
 
 export class LighthouseReportGenerator {
   generateReportHtml(_lhr: ReportJSON): string {
@@ -77,6 +77,10 @@ export interface ReportJSON {
   audits: Record<string, AuditResultJSON>;
   categories: Record<CategoryId, CategoryJSON>;
   categoryGroups: Record<string, GroupJSON>;
+  /**
+   * The mode Lighthouse ran in. Absent in reports from Lighthouse versions before 9.
+   */
+  gatherMode?: RunMode;
   /**
    * Identifies if the report was imported from a file (untrusted).
    * Used to disable page-touching AI assistance tools for security.

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import {
@@ -49,15 +50,18 @@ export class AccessibilityContext extends ConversationContext<LHModel.ReporterTy
     if (this.#cachedPayload !== null) {
       return this.#cachedPayload;
     }
-    const formatter = new LighthouseFormatter();
-    const summary = formatter.summary(this.#lh);
-    const audits = formatter.audits(this.#lh, 'accessibility');
     const allFailed = Object.values(this.#lh.categories).every(category => category.score === null);
+    const formatter = new LighthouseFormatter();
     if (allFailed) {
       this.#cachedPayload =
           '**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.';
+    } else if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
+      // AI V2 sends only the summary; the agent fetches category audits on demand via `getLighthouseAudits`.
+      this.#cachedPayload = formatter.summary(this.#lh);
     } else {
-      this.#cachedPayload = `# Lighthouse Report:\n${summary}\n${audits}`;
+      // The V1 `AccessibilityAgent` expects the accessibility audits up front. Remove this branch with V1.
+      this.#cachedPayload =
+          `# Lighthouse Report:\n${formatter.summary(this.#lh)}\n${formatter.audits(this.#lh, 'accessibility')}`;
     }
     return this.#cachedPayload;
   }
@@ -76,11 +80,24 @@ export class AccessibilityContext extends ConversationContext<LHModel.ReporterTy
   }
 
   override async getWidgets(): Promise<AiWidget[]> {
+    if (!Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
+      // V1 widget data is kept unchanged. Remove this branch with V1.
+      return [
+        {
+          name: 'LIGHTHOUSE_REPORT',
+          data: {
+            report: this.#lh,
+          },
+        },
+      ];
+    }
+    // In AI V2 this is the only source of the report widget, so it derives the snapshot logging flag from the report.
     return [
       {
         name: 'LIGHTHOUSE_REPORT',
         data: {
           report: this.#lh,
+          snapshotReport: this.#lh.gatherMode === 'snapshot',
         },
       },
     ];

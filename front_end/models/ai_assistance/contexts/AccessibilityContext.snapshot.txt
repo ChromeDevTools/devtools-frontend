@@ -24,3 +24,24 @@ Content:
   }
 ]
 === end content
+
+Title: AccessibilityContext with AI V2 architecture enabled returns only the report summary as prompt details
+Content:
+# Lighthouse Report Summary
+URL: https://example.com
+Fetch Time: 2026-03-12
+Lighthouse Version: 1.0.0
+
+## Category Scores
+- Accessibility: 50
+=== end content
+
+Title: AccessibilityContext with AI V2 architecture enabled returns the report summary as user facing details
+Content:
+[
+  {
+    "title": "Lighthouse report",
+    "text": "# Lighthouse Report Summary\nURL: https://example.com\nFetch Time: 2026-03-12\nLighthouse Version: 1.0.0\n\n## Category Scores\n- Accessibility: 50"
+  }
+]
+=== end content

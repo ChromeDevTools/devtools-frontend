@@ -45,3 +45,10 @@ export const cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor: Common.Set
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const collapseNonContributingCSSRulesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'collapse-non-contributing-css-rules',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

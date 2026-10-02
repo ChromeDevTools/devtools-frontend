@@ -718,7 +718,9 @@ describe('StylesSidebarPane', () => {
 
     describe('collapsing non-contributing sections', () => {
       const enableCollapse = () =>
-          Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules').set(true);
+          Common.Settings.Settings.instance()
+              .resolve(SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor)
+              .set(true);
 
       it('collapses a section where all properties are overloaded', async () => {
         enableCollapse();
@@ -844,7 +846,9 @@ describe('StylesSidebarPane', () => {
       });
 
       it('does not collapse non-contributing sections when the setting is disabled', async () => {
-        Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules').set(false);
+        Common.Settings.Settings.instance()
+            .resolve(SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor)
+            .set(false);
         const stylesSidebarPane =
             new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
         const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
@@ -1178,8 +1182,8 @@ describe('StylesSidebarPane', () => {
 
       it('reacts to toggling the collapse-non-contributing-css-rules setting at runtime', async () => {
         enableCollapse();
-        const collapseSetting =
-            Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules');
+        const collapseSetting = Common.Settings.Settings.instance().resolve(
+            SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor);
         const stylesSidebarPane =
             new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
         const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
@@ -4063,7 +4067,9 @@ describeWithEnvironment('StylesSidebarPane Inactive Styles', () => {
   });
 
   it('collapses inactive sections when collapse-non-contributing-css-rules is enabled', async () => {
-    Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules').set(true);
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor)
+        .set(true);
 
     const styleSheetIdA = '0' as Protocol.DOM.StyleSheetId;
     const styleSheetIdB = '1' as Protocol.DOM.StyleSheetId;
@@ -4123,7 +4129,9 @@ describeWithEnvironment('StylesSidebarPane Inactive Styles', () => {
   });
 
   it('does not collapse inactive sections when collapse-non-contributing-css-rules is disabled', async () => {
-    Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules').set(false);
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor)
+        .set(false);
 
     const styleSheetIdA = '0' as Protocol.DOM.StyleSheetId;
     const styleSheetIdB = '1' as Protocol.DOM.StyleSheetId;

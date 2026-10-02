@@ -281,7 +281,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     this.registerRequiredCSS(stylesSidebarPaneStyles);
     Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.requestUpdate, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('collapse-non-contributing-css-rules')
+        .resolve(SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor)
         .addChangeListener(this.updateCollapsedSectionsSetting, this);
     Common.Settings.Settings.instance()
         .moduleSetting('show-inactive-css-rules')

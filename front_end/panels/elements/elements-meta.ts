@@ -613,15 +613,12 @@ SettingsUI.SettingUIRegistration.register(
       title: i18nLazyString(UIStrings.cssAnimationsOnlyWhenAnimationsTabOpen),
     });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.ELEMENTS,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  order: 7,
-  title: i18nLazyString(UIStrings.collapseNonContributingCSSRules),
-  settingName: 'collapse-non-contributing-css-rules',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-});
+SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor,
+                                          {
+                                            category: Common.Settings.SettingCategory.ELEMENTS,
+                                            order: 7,
+                                            title: i18nLazyString(UIStrings.collapseNonContributingCSSRules),
+                                          });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,

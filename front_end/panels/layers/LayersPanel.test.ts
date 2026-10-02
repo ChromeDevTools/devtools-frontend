@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
-import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Layers from './layers.js';
@@ -18,7 +18,6 @@ describeWithEnvironment('LayersPanel', () => {
   beforeEach(async () => {
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
-    stubNoopSettings();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});

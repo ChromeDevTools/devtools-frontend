@@ -93,6 +93,7 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST: ReadonlyArray<ReturnType<ty
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-frameowkr-listeners', true),
   createSettingValue(Common.Settings.SettingCategory.RENDERING, 'frame-viewer-show-paints', false),
   createSettingValue(Common.Settings.SettingCategory.RENDERING, 'frame-viewer-show-slow-scroll-rects', true),
+  createSettingValue(Common.Settings.SettingCategory.PERFORMANCE, 'frame-viewer-chrome-window', true),
   createSettingValue(Common.Settings.SettingCategory.NONE, 'lighthouse.cat-perf', true,
                      Common.Settings.SettingType.BOOLEAN, 'Performance'),
   createSettingValue(Common.Settings.SettingCategory.NONE, 'lighthouse.cat-a11y', true,

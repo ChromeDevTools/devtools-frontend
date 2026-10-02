@@ -8,7 +8,7 @@ import * as Root from '../../../core/root/root.js';
 import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {createFakeSetting, stubNoopSettings} from '../../../testing/EnvironmentHelpers.js';
+import {createFakeSetting} from '../../../testing/EnvironmentHelpers.js';
 
 import * as Settings from './settings.js';
 
@@ -93,7 +93,6 @@ describe('SettingCheckbox', () => {
   });
 
   it('disables checkbox when disabled property is true', () => {
-    stubNoopSettings();
     const setting = createFakeSetting<boolean>('setting', false);
 
     const {checkbox} = renderSettingCheckbox({setting, disabled: true});

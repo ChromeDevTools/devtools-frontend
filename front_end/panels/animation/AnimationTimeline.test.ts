@@ -9,7 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {cleanTestDOM} from '../../testing/DOMHooks.js';
-import {createTarget, describeWithEnvironment, stubNoopSettings, waitFor} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, waitFor} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
@@ -128,7 +128,6 @@ describeWithEnvironment('AnimationTimeline', () => {
   let view: Animation.AnimationTimeline.AnimationTimeline;
 
   beforeEach(() => {
-    stubNoopSettings();
     target = createTarget();
 
     const runtimeAgent = target.model(SDK.RuntimeModel.RuntimeModel)?.agent!;

@@ -33,6 +33,8 @@ npm-debug.log
 /scripts/ai_assistance/agent_preambles.md
 # This folder is populated from the GCP bucket and managed by gclient sync.
 /scripts/ai_assistance/suite/outputs
+# This folder is populated from CIPD and managed by gclient sync.
+/test/ai_evals/test_sites
 
 /build
 /buildtools

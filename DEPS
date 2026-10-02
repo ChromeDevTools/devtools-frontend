@@ -82,6 +82,16 @@ allowed_hosts = [
 ]
 
 deps = {
+  'test/ai_evals/test_sites': {
+    'packages': [
+      {
+        'package': 'experimental/finnur/chrome-devtools-evals',
+        'version': 'latest',
+      },
+    ],
+    'dep_type': 'cipd',
+    'condition': 'checkout_devtools_ai_evals == True',
+  },
   'third_party/clang-format/script': {
     'url': Var('clang_format_url') + '@' + Var('clang_format_revision'),
     'condition': 'build_with_chromium == False',

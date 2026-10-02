@@ -11,7 +11,9 @@ import sys
 
 
 def main():
-    print('||| Hello DevTools AI Evals! |||')
+    print(
+        'Syncing AI Evals tests... (Turn off with `"checkout_devtools_ai_evals": False` in .gclient)'
+    )
     return 0
 
 

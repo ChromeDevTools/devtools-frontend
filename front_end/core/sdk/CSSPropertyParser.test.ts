@@ -137,8 +137,7 @@ describe('CSSPropertyParser', () => {
 
   describe('PropertyParser', () => {
     it('correctly identifies spacing', () => {
-      const requiresSpace = (a: string, b: string) =>
-          SDK.CSSPropertyParser.requiresSpace([{textContent: a}], [{textContent: b}]);
+      const requiresSpace = (a: string, b: string) => SDK.CSSPropertyParser.requiresSpace(a, b);
 
       assert.isTrue(requiresSpace('a', 'b'));
       assert.isFalse(requiresSpace('', 'text'));
@@ -170,19 +169,6 @@ describe('CSSPropertyParser', () => {
       assert.isFalse(requiresSpace('text', '* text'));
       assert.isFalse(requiresSpace('text', '{ text'));
       assert.isFalse(requiresSpace('text', '; text'));
-
-      assert.isTrue(
-          SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}, {textContent: null}], [{textContent: 'text'}]));
-      assert.isTrue(
-          SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}], [{textContent: null}, {textContent: 'text'}]));
-      assert.isTrue(SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}, {textContent: null}],
-                                                        [{textContent: null}, {textContent: 'text'}]));
-      assert.isFalse(
-          SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}, {textContent: null}], [{textContent: ' text'}]));
-      assert.isFalse(
-          SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}], [{textContent: null}, {textContent: ' text'}]));
-      assert.isFalse(SDK.CSSPropertyParser.requiresSpace([{textContent: 'text'}, {textContent: null}],
-                                                         [{textContent: null}, {textContent: ' text'}]));
     });
 
     it('parses comments', () => {

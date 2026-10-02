@@ -30,13 +30,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PropertyRenderer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-function mergeWithSpacing(nodes: Node[], merge: Node[]): Node[] {
-  const result = [...nodes];
-  if (SDK.CSSPropertyParser.requiresSpace(nodes, merge)) {
-    result.push(document.createTextNode(' '));
+export function precedingSpace(node: CodeMirror.SyntaxNode, ast: SDK.CSSPropertyParser.SyntaxTree): string {
+  let cur: CodeMirror.SyntaxNode|null = node;
+  while (cur && !cur.prevSibling) {
+    cur = cur.parent;
   }
-  result.push(...merge);
-  return result;
+  const prev = cur?.prevSibling;
+  return prev ? ast.rule.substring(prev.to, node.from) : '';
 }
 
 export type RendererBase<MatchT extends SDK.CSSPropertyParser.Match> = abstract new () => MatchRenderer<MatchT>;
@@ -183,14 +183,13 @@ export class TracingContext {
   #asyncEvalCallbacks: Array<(() => Promise<boolean>)|undefined> = [];
   readonly expandPercentagesInShorthands: boolean;
 
-  constructor(
-      highlighting: Highlighting, expandPercentagesInShorthands: boolean, initialLonghandOffset = 0,
-      matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching) {
+  constructor(highlighting: Highlighting, expandPercentagesInShorthands: boolean, initialLonghandOffset = 0,
+              matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching) {
     this.#highlighting = highlighting;
-    this.#hasMoreSubstitutions =
-        matchedResult?.hasMatches(
-            SDK.CSSPropertyParserMatchers.VariableMatch, SDK.CSSPropertyParserMatchers.BaseVariableMatch,
-            SDK.CSSPropertyParserMatchers.AttributeMatch, SDK.CSSPropertyParserMatchers.EnvFunctionMatch) ??
+    this.#hasMoreSubstitutions = matchedResult?.hasMatches(SDK.CSSPropertyParserMatchers.VariableMatch,
+                                                           SDK.CSSPropertyParserMatchers.BaseVariableMatch,
+                                                           SDK.CSSPropertyParserMatchers.AttributeMatch,
+                                                           SDK.CSSPropertyParserMatchers.EnvFunctionMatch) ??
         false;
     this.#propertyName = matchedResult?.ast.propertyName ?? null;
     this.#longhandOffset = initialLonghandOffset;
@@ -214,9 +213,8 @@ export class TracingContext {
   }
 
   renderingContext(context: RenderingContext): RenderingContext {
-    return new RenderingContext(
-        context.ast, context.property, context.renderers, context.matchedResult, context.cssControls, context.options,
-        this);
+    return new RenderingContext(context.ast, context.property, context.renderers, context.matchedResult,
+                                context.cssControls, context.options, this);
   }
 
   nextSubstitution(): boolean {
@@ -253,8 +251,8 @@ export class TracingContext {
   // Evaluations are applied bottom up, i.e., innermost sub-expressions are evaluated first before evaluating any
   // function call. This function produces TracingContexts for each of the arguments of the function call which should
   // be passed to the Renderer calls for the respective subtrees.
-  evaluation(args: unknown[], root: {match: SDK.CSSPropertyParser.Match, context: RenderingContext}|null = null):
-      TracingContext[]|null {
+  evaluation(args: unknown[],
+             root: {match: SDK.CSSPropertyParser.Match, context: RenderingContext}|null = null): TracingContext[]|null {
     const childContexts = args.map(() => {
       const child = new TracingContext(this.#highlighting, this.expandPercentagesInShorthands);
       child.#parent = this;
@@ -281,16 +279,15 @@ export class TracingContext {
   // evaluation callback is run. The callback should return synchronously an array of Nodes as placeholder to be
   // rendered immediately and optionally a callback for asynchronous updates of the placeholder nodes. The callback
   // returns a boolean indicating whether the update was successful or not.
-  applyEvaluation(
-      children: TracingContext[],
-      evaluation: () => ({placeholder: Node[], asyncEvalCallback?: () => Promise<boolean>})): Node[]|null {
+  applyEvaluation(children: TracingContext[],
+                  evaluation: () => ({placeholder: Node[], asyncEvalCallback?: () => Promise<boolean>})): Node[]|null {
     if (this.#evaluationCount === 0 || children.some(child => child.#appliedEvaluations >= this.#evaluationCount)) {
       this.#setHasMoreEvaluations(true);
       children.forEach(child => this.#asyncEvalCallbacks.push(...child.#asyncEvalCallbacks));
       return null;
     }
-    this.#setAppliedEvaluations(
-        children.map(child => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) + 1);
+    this.#setAppliedEvaluations(children.map(child => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) +
+                                1);
     const {placeholder, asyncEvalCallback} = evaluation();
     this.#asyncEvalCallbacks.push(asyncEvalCallback);
     return placeholder;
@@ -328,10 +325,9 @@ export class TracingContext {
     return child;
   }
 
-  cachedParsedValue(
-      declaration: SDK.CSSProperty.CSSProperty|SDK.CSSMatchedStyles.CSSRegisteredProperty,
-      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      computedStyles: Map<string, string>): SDK.CSSPropertyParser.BottomUpTreeMatching|null {
+  cachedParsedValue(declaration: SDK.CSSProperty.CSSProperty|SDK.CSSMatchedStyles.CSSRegisteredProperty,
+                    matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+                    computedStyles: Map<string, string>): SDK.CSSPropertyParser.BottomUpTreeMatching|null {
     const cachedValue = this.#parsedValueCache.get(declaration);
     if (cachedValue?.matchedStyles === matchedStyles && cachedValue?.computedStyles === computedStyles) {
       return cachedValue.parsedValue;
@@ -384,8 +380,9 @@ export class RenderingContext {
     return longhands[index + (this.tracing?.longhandOffset ?? 0)] ?? null;
   }
 
-  findParent<MatchT extends SDK.CSSPropertyParser.Match>(
-      node: CodeMirror.SyntaxNode|null, matchType: Platform.Constructor.Constructor<MatchT>): MatchT|null {
+  findParent<MatchT extends SDK.CSSPropertyParser.Match>(node: CodeMirror.SyntaxNode|null,
+                                                         matchType: Platform.Constructor.Constructor<MatchT>): MatchT
+      |null {
     while (node) {
       const match = this.matchedResult.getMatch(node);
       if (match instanceof matchType) {
@@ -430,19 +427,29 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
       return this.render([nodeOrNodes], context);
     }
     const cssControls = new CSSControlMap();
-    const renderers = nodeOrNodes.map(
-        node => this.walkExcludingSuccessors(
-            context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls,
-            context.options, context.tracing, context.signal));
-    const nodes = renderers.map(node => node.#output).reduce(mergeWithSpacing, []);
+    const renderers =
+        nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property,
+                                                             context.renderers, context.matchedResult, cssControls,
+                                                             context.options, context.tracing, context.signal));
+    const nodes = renderers.reduce((nodes: Node[], renderer) => {
+      if (renderer !== renderers[0]) {
+        const spacing = precedingSpace(renderer.ast.tree, context.ast);
+        if (spacing) {
+          nodes.push(document.createTextNode(spacing));
+        }
+      }
+      nodes.push(...renderer.#output);
+      return nodes;
+    }, []);
     return {nodes, cssControls};
   }
 
   static renderInto(nodeOrNodes: CodeMirror.SyntaxNode|CodeMirror.SyntaxNode[], context: RenderingContext,
                     parent: Node): {nodes: Node[], cssControls: CSSControlMap} {
     const {nodes, cssControls} = this.render(nodeOrNodes, context);
-    if (parent.lastChild && SDK.CSSPropertyParser.requiresSpace([parent.lastChild], nodes)) {
-      parent.appendChild(document.createTextNode(' '));
+    const spacing = precedingSpace(Array.isArray(nodeOrNodes) ? nodeOrNodes[0] : nodeOrNodes, context.ast);
+    if (parent.lastChild && spacing) {
+      parent.appendChild(document.createTextNode(spacing));
     }
     nodes.map(n => parent.appendChild(n));
     return {nodes, cssControls};
@@ -466,7 +473,14 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
       }
       this.#context.tracing?.highlighting.addMatch(match, output);
       this.renderedMatchForTest(output, match);
-      this.#output = mergeWithSpacing(this.#output, output);
+      if (this.#output.length > 0) {
+        const spacing = precedingSpace(node, this.#context.ast);
+        if (spacing) {
+          this.#output.push(document.createTextNode(spacing));
+        }
+      }
+      this.#output.push(...output);
+
       return false;
     }
 
@@ -522,15 +536,15 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     if (!matchedResult) {
       return {nodes: [document.createTextNode(property.value)], cssControls: new Map()};
     }
-    const rendererMap = new Map<
-        Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>, MatchRenderer<SDK.CSSPropertyParser.Match>>();
+    const rendererMap = new Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>,
+                                MatchRenderer<SDK.CSSPropertyParser.Match>>();
     for (const renderer of renderers) {
       rendererMap.set(renderer.matchType, renderer);
     }
 
-    const context = new RenderingContext(
-        matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null, rendererMap,
-        matchedResult, undefined, {}, tracing, signal);
+    const context =
+        new RenderingContext(matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null,
+                             rendererMap, matchedResult, undefined, {}, tracing, signal);
     return Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
   }
 }
@@ -553,18 +567,17 @@ export class URLRenderer extends URLRendererBase {
     } else if (this.node) {
       hrefUrl = this.node.resolveURL(url);
     }
-    const link = ImagePreviewPopover.setImageUrl(
-        Components.Linkifier.Linkifier.linkifyURL(hrefUrl || url, {
-          text: url,
-          preventClick: false,
-          // crbug.com/1027168
-          // We rely on CSS text-overflow: ellipsis to hide long URLs in the Style panel,
-          // so that we don't have to keep two versions (original vs. trimmed) of URL
-          // at the same time, which complicates both StylesSidebarPane and StylePropertyTreeElement.
-          bypassURLTrimming: true,
-          showColumnNumber: false,
-        }),
-        hrefUrl || url);
+    const link = ImagePreviewPopover.setImageUrl(Components.Linkifier.Linkifier.linkifyURL(hrefUrl || url, {
+      text: url,
+      preventClick: false,
+      // crbug.com/1027168
+      // We rely on CSS text-overflow: ellipsis to hide long URLs in the Style panel,
+      // so that we don't have to keep two versions (original vs. trimmed) of URL
+      // at the same time, which complicates both StylesSidebarPane and StylePropertyTreeElement.
+      bypassURLTrimming: true,
+      showColumnNumber: false,
+    }),
+                                                 hrefUrl || url);
     container.appendChild(link);
     UI.UIUtils.createTextChild(container, ')');
     return [container];

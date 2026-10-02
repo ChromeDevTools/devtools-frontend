@@ -93,12 +93,63 @@ describeWithEnvironment('PropertyRenderer', () => {
       const property = '/* color: red */ blue /* color: red */';
       assert.strictEqual(
           textFragments(Array.from(renderValueElement('--p', property).valueElement.childNodes)).join(''), property);
+
+      const withoutSpaces = '/* color: red */blue/* color: red */';
+      assert.strictEqual(
+          textFragments(Array.from(renderValueElement('--p', withoutSpaces).valueElement.childNodes)).join(''),
+          withoutSpaces);
     });
 
     it('renders malformed comments', () => {
       const property = 'red /* foo: bar';
       assert.strictEqual(
           textFragments(Array.from(renderValueElement('--p', property).valueElement.childNodes)).join(''), property);
+    });
+
+    it('computes preceding space from the AST', () => {
+      const property = '/* c1 */1px  /* c2 */ solid\tvar( --v , 2px )/* c3 */';
+      const ast = SDK.CSSPropertyParser.tokenizeDeclaration('--p', property);
+      assert.exists(ast);
+      const nodes: Array<[string, string]> = [];
+      SDK.CSSPropertyParser.TreeSearch.findAll(ast, node => {
+        if ((!node.firstChild && node.parent?.name !== 'NumberLiteral') || node.name === 'NumberLiteral') {
+          nodes.push([ast.text(node), Elements.PropertyRenderer.precedingSpace(node, ast)]);
+        }
+        return false;
+      });
+      for (const trailing of ast.trailingNodes) {
+        nodes.push([ast.text(trailing), Elements.PropertyRenderer.precedingSpace(trailing, ast)]);
+      }
+      assert.strictEqual(Elements.PropertyRenderer.precedingSpace(ast.tree, ast), '');
+      assert.deepEqual(nodes, [
+        ['/* c1 */', ' '],
+        ['1px', ''],
+        ['/* c2 */', '  '],
+        ['solid', ' '],
+        ['var', '\t'],
+        ['(', ''],
+        ['--v', ' '],
+        [',', ' '],
+        ['2px', ' '],
+        [')', ' '],
+        ['/* c3 */', ''],
+      ]);
+    });
+
+    it('inserts preceding space in renderInto when parent is non-empty', () => {
+      const ast = SDK.CSSPropertyParser.tokenizeDeclaration('--p', '1px  solid');
+      assert.exists(ast);
+      const matchedResult = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, []);
+      const context = new Elements.PropertyRenderer.RenderingContext(ast, null, new Map(), matchedResult);
+      const [first, second] =
+          SDK.CSSPropertyParser.ASTUtils.siblings(SDK.CSSPropertyParser.ASTUtils.declValue(ast.tree));
+      assert.exists(first);
+      assert.exists(second);
+
+      const parent = document.createElement('span');
+      Elements.PropertyRenderer.Renderer.renderInto(first, context, parent);
+      Elements.PropertyRenderer.Renderer.renderInto(second, context, parent);
+      assert.deepEqual(textFragments(Array.from(parent.childNodes)), ['1px', '  ', 'solid']);
     });
   });
 

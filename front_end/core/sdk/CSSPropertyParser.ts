@@ -87,9 +87,8 @@ export class SyntaxTree {
   readonly tree: CodeMirror.SyntaxNode;
   readonly trailingNodes: CodeMirror.SyntaxNode[];
   readonly propertyName: string|undefined;
-  constructor(
-      propertyValue: string, rule: string, tree: CodeMirror.SyntaxNode, propertyName?: string,
-      trailingNodes: CodeMirror.SyntaxNode[] = []) {
+  constructor(propertyValue: string, rule: string, tree: CodeMirror.SyntaxNode, propertyName?: string,
+              trailingNodes: CodeMirror.SyntaxNode[] = []) {
     this.propertyName = propertyName;
     this.propertyValue = propertyValue;
     this.rule = rule;
@@ -135,8 +134,8 @@ export abstract class TreeWalker {
     }
     return instance;
   }
-  static walk<T extends TreeWalker, ArgTs extends unknown[]>(
-      this: {new(ast: SyntaxTree, ...args: ArgTs): T}, propertyValue: SyntaxTree, ...args: ArgTs): T {
+  static walk<T extends TreeWalker, ArgTs extends unknown[]>(this: {new(ast: SyntaxTree, ...args: ArgTs): T},
+                                                             propertyValue: SyntaxTree, ...args: ArgTs): T {
     const instance = new this(propertyValue, ...args);
     if (propertyValue.tree.name === 'Declaration') {
       instance.iterateDeclaration(propertyValue.tree);
@@ -279,9 +278,8 @@ export class BottomUpTreeMatching extends TreeWalker {
     return this.getComputedTextRange(from ?? this.ast.tree, to ?? this.ast.tree, substitutionHook);
   }
 
-  getComputedTextRange(
-      from: CodeMirror.SyntaxNode|undefined, to: CodeMirror.SyntaxNode|undefined,
-      substitutionHook?: (match: Match) => string | null): string {
+  getComputedTextRange(from: CodeMirror.SyntaxNode|undefined, to: CodeMirror.SyntaxNode|undefined,
+                       substitutionHook?: (match: Match) => string | null): string {
     if (!from || !to) {
       return '';
     }
@@ -481,10 +479,9 @@ export class ComputedText {
 
   countTopLevelValues(begin: number, end: number): number {
     const pieces = Array.from(this.#getPieces(begin, end));
-    const counts = pieces.map(
-        chunk =>
-            (chunk instanceof ComputedTextChunk ? chunk.topLevelValueCount :
-                                                  this.#countTopLevelValuesInStringPiece(chunk)));
+    const counts =
+        pieces.map(chunk => (chunk instanceof ComputedTextChunk ? chunk.topLevelValueCount :
+                                                                  this.#countTopLevelValuesInStringPiece(chunk)));
     const count = counts.reduce((sum, v) => sum + v, 0);
     return count;
   }
@@ -496,11 +493,7 @@ export class ComputedText {
  * sequences that make up the pieces of text may contain non-text nodes/trees. Any such element in between the texts is
  * ignored for the spacing requirement.
  **/
-export function requiresSpace(a: string, b: string): boolean;
-export function requiresSpace(a: Array<{textContent?: string | null}>,
-                              b: Array<{textContent?: string | null}>): boolean;
-export function requiresSpace(a: Array<{textContent?: string | null}>|string|undefined,
-                              b: Array<{textContent?: string | null}>|string|undefined): boolean {
+export function requiresSpace(a: string, b: string): boolean {
   const tail = Array.isArray(a) ? a.findLast(node => node.textContent)?.textContent : a;
   const head = Array.isArray(b) ? b.find(node => node.textContent)?.textContent : b;
   const trailingChar = tail ? tail[tail.length - 1] : '';

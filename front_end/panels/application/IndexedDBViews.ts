@@ -444,9 +444,7 @@ export class IDBDataView extends UI.View.SimpleView {
   private index!: Index|null;
   private lastPageSize!: number;
   private lastSkipCount!: number;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private lastKey?: any;
+  private lastKey?: IDBValidKey;
   readonly #view: IDBDataViewView;
 
   constructor(model: IndexedDBModel, databaseId: DatabaseId, objectStore: ObjectStore, index: Index|null,
@@ -502,9 +500,7 @@ export class IDBDataView extends UI.View.SimpleView {
     this.performUpdate();
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private parseKey(keyString: string): any {
+  private parseKey(keyString: string): IDBValidKey {
     let result;
     try {
       result = JSON.parse(keyString);

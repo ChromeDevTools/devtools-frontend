@@ -86,7 +86,9 @@ export class CommentsStatusBarPill extends UI.Widget.Widget {
         };
         this.#view(viewInput, undefined, this.contentElement);
     }
-    #handlePillClick = () => { };
+    #handlePillClick = () => {
+        void UI.ViewManager.ViewManager.instance().showView('comments');
+    };
     #handleSendToAgentClick = () => {
         for (const thread of this.#commentManager.getCommentThreads()) {
             if (thread.status === 'ACTIVE') {

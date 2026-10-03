@@ -336,10 +336,6 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
      * Draws the titles of trace events in the timeline. Also calls `decorateEntry` on the data
      * provider, which can do any custom drawing on the corresponding entry's area (e.g. draw screenshots
      * in the Performance Panel timeline).
-     *
-     * Takes in the width of the entire canvas so that we know if an event does
-     * not fit into the viewport entirely, the max width we can draw is that
-     * width, not the width of the event itself.
      */
     private drawEventTitles;
     /**
@@ -425,6 +421,9 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
      */
     private updateElementPosition;
     private updateHiddenChildrenArrowHighlighPosition;
+    /**
+     * Converts a timeline timestamp to a horizontal pixel position clamped to the visible canvas bounds.
+     */
     private timeToPositionClipped;
     /**
      * Returns the amount of pixels a group is vertically offset in the flame chart.

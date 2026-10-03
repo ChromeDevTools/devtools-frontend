@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 /* eslint @devtools/enforce-version-controller-methods: "error" */
 import { Settings } from './Settings.js';
 // The VersionController does a lot of mapping and restructuring which often need
@@ -722,64 +721,12 @@ export class VersionController {
         recordingsSetting.set(recordings);
     }
     updateVersionFrom42To43() {
-        const timelineShowAllEventsExperimentEnabled = Root.Runtime.experiments.getValueFromStorage('timeline-show-all-events');
-        if (timelineShowAllEventsExperimentEnabled !== undefined) {
-            if (this.#settings.syncedStorage.has('timeline-show-all-events')) {
-                return; // Already migrated
-            }
-            try {
-                const timelineShowAllEventsSetting = this.#settings.moduleSetting('timeline-show-all-events');
-                timelineShowAllEventsSetting.set(timelineShowAllEventsExperimentEnabled);
-            }
-            catch {
-                // If the setting is not registered yet (e.g. in tests), skip.
-            }
-        }
     }
     updateVersionFrom43To44() {
-        const apcaExperimentEnabled = Root.Runtime.experiments.getValueFromStorage('apca');
-        if (apcaExperimentEnabled !== undefined) {
-            if (this.#settings.syncedStorage.has('apca')) {
-                return; // Already migrated
-            }
-            try {
-                const apcaSetting = this.#settings.moduleSetting('apca');
-                apcaSetting.set(apcaExperimentEnabled);
-            }
-            catch {
-                // If the setting is not registered yet (e.g. in tests), skip.
-            }
-        }
     }
     updateVersionFrom44To45() {
-        const timelineDebugModeExperimentEnabled = Root.Runtime.experiments.getValueFromStorage('timeline-debug-mode');
-        if (timelineDebugModeExperimentEnabled !== undefined) {
-            if (this.#settings.syncedStorage.has('timeline-debug-mode')) {
-                return; // Already migrated
-            }
-            try {
-                const timelineDebugModeSetting = this.#settings.moduleSetting('timeline-debug-mode');
-                timelineDebugModeSetting.set(timelineDebugModeExperimentEnabled);
-            }
-            catch {
-                // If the setting is not registered yet (e.g. in tests), skip.
-            }
-        }
     }
     updateVersionFrom45To46() {
-        const timelineInvalidationTrackingExperimentEnabled = Root.Runtime.experiments.getValueFromStorage('timeline-invalidation-tracking');
-        if (timelineInvalidationTrackingExperimentEnabled !== undefined) {
-            if (this.#settings.syncedStorage.has('timeline-invalidation-tracking')) {
-                return; // Already migrated
-            }
-            try {
-                const timelineInvalidationTrackingSetting = this.#settings.moduleSetting('timeline-invalidation-tracking');
-                timelineInvalidationTrackingSetting.set(timelineInvalidationTrackingExperimentEnabled);
-            }
-            catch {
-                // If the setting is not registered yet (e.g. in tests), skip.
-            }
-        }
     }
     updateVersionFrom46To47() {
         this.#settings.syncedStorage.remove('network.backend-linking-rules');

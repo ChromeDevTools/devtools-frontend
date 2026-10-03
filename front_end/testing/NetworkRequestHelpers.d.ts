@@ -37,7 +37,10 @@ export interface CreateNetworkRequestOptions {
      * to simulate content retrieval failures.
      */
     contentData?: TextUtils.ContentData.ContentData | (() => Promise<TextUtils.ContentData.ContentDataOrError>);
-    /** Flags the request as imported from a HAR archive via `setIsImportedHar()`. */
+    /**
+     * If true, creates a request via `createForImportedHar`, marking it as imported
+     * from a HAR archive and leaving `backendRequestId()` undefined.
+     */
     isImportedHar?: boolean;
     mimeType?: string;
     resourceType?: Common.ResourceType.ResourceType;

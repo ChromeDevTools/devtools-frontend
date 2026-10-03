@@ -2616,6 +2616,11 @@ var Debugger;
     ScopeType2["Module"] = "module";
     ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
   })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let ScopeEmptyReason;
+  ((ScopeEmptyReason2) => {
+    ScopeEmptyReason2["NoVariables"] = "no-variables";
+    ScopeEmptyReason2["AllUnavailable"] = "all-unavailable";
+  })(ScopeEmptyReason = Debugger2.ScopeEmptyReason || (Debugger2.ScopeEmptyReason = {}));
   let BreakLocationType;
   ((BreakLocationType2) => {
     BreakLocationType2["DebuggerStatement"] = "debuggerStatement";
@@ -2845,6 +2850,7 @@ var Runtime;
 
 // ../../front_end/panels/elements/InspectElementModeController.ts
 import * as UI24 from "../../ui/legacy/legacy.js";
+import * as SettingsUI5 from "../../ui/settings/settings.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/elements/ElementsPanel.ts
@@ -2869,7 +2875,7 @@ import * as SDK19 from "../../core/sdk/sdk.js";
 import * as ComputedStyle3 from "../../models/computed_style/computed_style.js";
 import * as PanelCommon from "../common/common.js";
 import * as UI23 from "../../ui/legacy/legacy.js";
-import * as SettingsUI from "../../ui/settings/settings.js";
+import * as SettingsUI4 from "../../ui/settings/settings.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/elements/AccessibilityTreeView.ts
@@ -7426,6 +7432,7 @@ var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRende
         scrollerElement.addEventListener("scroll", onScroll, false);
       }
       const originalPropertyText = treeElement.property.propertyText;
+      this.#stylesContainer.setActiveProperty(treeElement);
       this.#stylesContainer.setEditingStyle(true);
       popoverHelper.show(editor, button, (commitEdit) => {
         if (scrollerElement) {
@@ -11957,7 +11964,35 @@ var HIGHLIGHTABLE_PROPERTIES = [
   { mode: "justify-content", properties: ["justify-content"] },
   { mode: "align-content", properties: ["align-content"] },
   { mode: "align-items", properties: ["align-items"] },
-  { mode: "flexibility", properties: ["flex", "flex-basis", "flex-grow", "flex-shrink"] }
+  { mode: "flexibility", properties: ["flex", "flex-basis", "flex-grow", "flex-shrink"] },
+  { mode: "position-area", properties: ["position-area"] },
+  {
+    mode: "anchor-positioning",
+    properties: [
+      "position",
+      "position-anchor",
+      "position-try",
+      "position-try-fallbacks",
+      "position-try-order",
+      "position-visibility"
+    ]
+  },
+  {
+    mode: "insets",
+    properties: [
+      "inset",
+      "inset-block",
+      "inset-block-start",
+      "inset-block-end",
+      "inset-inline",
+      "inset-inline-start",
+      "inset-inline-end",
+      "top",
+      "right",
+      "bottom",
+      "left"
+    ]
+  }
 ];
 var DISCLAIMER_TOOLTIP_ID = "styles-ai-code-completion-disclaimer-tooltip";
 var SPINNER_TOOLTIP_ID = "styles-ai-code-completion-spinner-tooltip";
@@ -12440,14 +12475,20 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     }
     this.contentElement.classList.toggle("is-editing-style", editing);
     this.isEditingStyle = editing;
-    this.setActiveProperty(null);
+    if (!editing) {
+      this.setActiveProperty(null);
+    }
   }
   setActiveProperty(treeElement) {
+    if (this.isEditingStyle) {
+      return;
+    }
     if (this.isActivePropertyHighlighted) {
       SDK7.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK7.TargetManager.TargetManager.instance());
     }
     this.isActivePropertyHighlighted = false;
-    if (!this.node()) {
+    const node = this.node();
+    if (!node) {
       return;
     }
     if (!treeElement || treeElement.overloaded() || treeElement.inherited()) {
@@ -12459,16 +12500,13 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       if (!properties.includes(treeElement.name)) {
         continue;
       }
-      const node = this.node();
-      if (!node) {
-        continue;
-      }
-      node.domModel().overlayModel().highlightInOverlay(
-        { node: this.node(), selectorList },
-        mode
-      );
+      node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, mode);
       this.isActivePropertyHighlighted = true;
-      break;
+      return;
+    }
+    if (treeElement.value.includes("anchor(") || treeElement.value.includes("anchor-size(")) {
+      node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, "anchor-positioning");
+      this.isActivePropertyHighlighted = true;
     }
   }
   onCSSModelChanged(event) {
@@ -15407,6 +15445,7 @@ import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.j
 import * as UIComponentUtils from "../../ui/legacy/components/utils/utils.js";
 import * as UI19 from "../../ui/legacy/legacy.js";
 import * as Lit10 from "../../ui/lit/lit.js";
+import * as SettingsUI2 from "../../ui/settings/settings.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/elements/AdoptedStyleSheetTreeElement.ts
@@ -16039,6 +16078,7 @@ import * as TextEditor3 from "../../ui/components/text_editor/text_editor.js";
 import * as Components6 from "../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
 import * as Lit8 from "../../ui/lit/lit.js";
+import * as SettingsUI from "../../ui/settings/settings.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon3 from "../common/common.js";
 import * as Media2 from "../media/media.js";
@@ -17793,7 +17833,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   }
   static visibleShadowRoots(node) {
     let roots = node.shadowRoots();
-    if (roots.length && !Common9.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get()) {
+    if (roots.length && !Common9.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor).get()) {
       roots = roots.filter(filter);
     }
     function filter(root) {
@@ -21794,7 +21834,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   };
   #maxTreeDepth;
   #enableContextMenu = true;
-  #showHTMLCommentsSetting = Common12.Settings.Settings.instance().moduleSetting("show-html-comments");
+  #showHTMLCommentsSetting = Common12.Settings.Settings.instance().resolve(SettingsUI2.ElementsSettings.showHTMLCommentsSettingDescriptor);
   #showComments = this.#showHTMLCommentsSetting.get();
   #showAIButton = true;
   #disableEdits = false;
@@ -21937,7 +21977,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     }
     this.#globalListenersRegistered = true;
     this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
-    if (Common12.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
+    if (Common12.Settings.Settings.instance().resolve(SettingsUI2.ElementsSettings.highlightNodeOnHoverInOverlaySettingDescriptor).get()) {
       SDK16.TargetManager.TargetManager.instance().addModelListener(
         SDK16.OverlayModel.OverlayModel,
         SDK16.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED,
@@ -24584,7 +24624,7 @@ import * as SDK17 from "../../core/sdk/sdk.js";
 import * as Buttons4 from "../../ui/components/buttons/buttons.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
 import * as Lit11 from "../../ui/lit/lit.js";
-import * as SettingUIRegistration from "../../ui/settings/settings.js";
+import * as SettingsUI3 from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/layoutPane.css.js
@@ -25003,7 +25043,7 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
       settings.resolve(SDK17.SDKSettings.showGridAreasSettingDescriptor),
       settings.resolve(SDK17.SDKSettings.extendGridLinesSettingDescriptor)
     ];
-    this.#uaShadowDOMSetting = settings.moduleSetting("show-ua-shadow-dom");
+    this.#uaShadowDOMSetting = settings.resolve(SettingsUI3.ElementsSettings.showUAShadowDOMSettingDescriptor);
     this.#domModels = [];
     this.#view = view;
   }
@@ -25085,7 +25125,7 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
       if (settingType !== Common13.Settings.SettingType.BOOLEAN && settingType !== Common13.Settings.SettingType.ENUM) {
         throw new Error("A setting provided to LayoutSidebarPane does not have a supported setting type");
       }
-      const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
+      const uiDescriptor = SettingsUI3.SettingUIRegistration.maybeResolve(setting.descriptor());
       const mappedSetting = {
         type: settingType,
         name: setting.name,
@@ -26152,10 +26192,11 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
     this.mainContainer.id = "main-content";
     this.domTreeContainer.id = "elements-content";
     this.domTreeContainer.tabIndex = -1;
-    if (this.#settings.moduleSetting("dom-word-wrap").get()) {
+    const domWordWrapSetting = this.#settings.resolve(SettingsUI4.ElementsSettings.domWordWrapSettingDescriptor);
+    if (domWordWrapSetting.get()) {
       this.domTreeContainer.classList.add("elements-wrap");
     }
-    this.#settings.moduleSetting("dom-word-wrap").addChangeListener(this.domWordWrapSettingChanged.bind(this));
+    domWordWrapSetting.addChangeListener(this.domWordWrapSettingChanged.bind(this));
     crumbsContainer.id = "elements-crumbs";
     this.accessibilityTreeView = new AccessibilityTreeView();
     this.breadcrumbs = new ElementsComponents8.ElementsBreadcrumbs.ElementsBreadcrumbs();
@@ -26188,7 +26229,7 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
       this
     );
     this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
-    this.#settings.resolve(SettingsUI.MainSettings.sidebarPositionSettingDescriptor).addChangeListener(this.updateSidebarPosition.bind(this));
+    this.#settings.resolve(SettingsUI4.MainSettings.sidebarPositionSettingDescriptor).addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
     this.cssStyleTrackerByCSSModel = /* @__PURE__ */ new Map();
     this.currentSearchResultIndex = -1;
@@ -26201,7 +26242,7 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
     this.#domTreeWidget.onSelectedNodeChanged = this.selectedNodeChanged.bind(this);
     this.#domTreeWidget.onElementsTreeUpdated = this.updateBreadcrumbIfNeeded.bind(this);
     this.#domTreeWidget.onDocumentUpdated = this.documentUpdated.bind(this);
-    this.#domTreeWidget.setWordWrap(this.#settings.moduleSetting("dom-word-wrap").get());
+    this.#domTreeWidget.setWordWrap(domWordWrapSetting.get());
     this.#targetManager.observeModels(SDK19.DOMModel.DOMModel, this, { scoped: true });
     this.#targetManager.addModelListener(
       SDK19.ResourceTreeModel.ResourceTreeModel,
@@ -26210,7 +26251,7 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
       this,
       { scoped: true }
     );
-    this.#settings.moduleSetting("show-ua-shadow-dom").addChangeListener(this.showUAShadowDOMChanged.bind(this));
+    this.#settings.resolve(SettingsUI4.ElementsSettings.showUAShadowDOMSettingDescriptor).addChangeListener(this.showUAShadowDOMChanged.bind(this));
     PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener(
       PanelCommon.ExtensionServer.Events.SidebarPaneAdded,
       this.extensionSidebarPaneAdded,
@@ -26555,7 +26596,7 @@ ${node.simpleSelector()} {}`, false);
       this.hideSearchHighlights();
     }
     this.searchConfig = searchConfig;
-    const showUAShadowDOM = this.#settings.moduleSetting("show-ua-shadow-dom").get();
+    const showUAShadowDOM = this.#settings.resolve(SettingsUI4.ElementsSettings.showUAShadowDOMSettingDescriptor).get();
     const domModels = this.#targetManager.models(SDK19.DOMModel.DOMModel, { scoped: true });
     const promises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     void Promise.all(promises).then((resultCounts) => {
@@ -26707,7 +26748,7 @@ ${node.simpleSelector()} {}`, false);
   async revealAndSelectNode(nodeToReveal, opts) {
     const { showPanel = true, focusNode = false, highlightInOverlay = true } = opts ?? {};
     this.omitDefaultSelection = true;
-    const node = this.#settings.moduleSetting("show-ua-shadow-dom").get() ? nodeToReveal : this.leaveUserAgentShadowDOM(nodeToReveal);
+    const node = this.#settings.resolve(SettingsUI4.ElementsSettings.showUAShadowDOMSettingDescriptor).get() ? nodeToReveal : this.leaveUserAgentShadowDOM(nodeToReveal);
     if (highlightInOverlay) {
       node.highlightForTwoSeconds();
     }
@@ -26902,7 +26943,7 @@ ${node.simpleSelector()} {}`, false);
     if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
       return;
     }
-    const position = this.#settings.resolve(SettingsUI.MainSettings.sidebarPositionSettingDescriptor).get();
+    const position = this.#settings.resolve(SettingsUI4.MainSettings.sidebarPositionSettingDescriptor).get();
     let splitMode = "Horizontal" /* HORIZONTAL */;
     if (position === "right" || position === "auto" && this.splitWidget.element.offsetWidth > 680) {
       splitMode = "Vertical" /* VERTICAL */;
@@ -27192,7 +27233,7 @@ var ElementsActionDelegate = class {
         ElementsPanel.instance().toggleAccessibilityTree();
         return true;
       case "elements.toggle-word-wrap": {
-        const setting = ElementsPanel.instance().settings.moduleSetting("dom-word-wrap");
+        const setting = ElementsPanel.instance().settings.resolve(SettingsUI4.ElementsSettings.domWordWrapSettingDescriptor);
         setting.set(!setting.get());
         return true;
       }
@@ -27293,7 +27334,7 @@ var InspectElementModeController = class _InspectElementModeController {
     if (this.isInInspectElementMode()) {
       mode = Overlay.InspectMode.None;
     } else {
-      mode = Common16.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? Overlay.InspectMode.SearchForUAShadowDOM : Overlay.InspectMode.SearchForNode;
+      mode = Common16.Settings.Settings.instance().resolve(SettingsUI5.ElementsSettings.showUAShadowDOMSettingDescriptor).get() ? Overlay.InspectMode.SearchForUAShadowDOM : Overlay.InspectMode.SearchForNode;
     }
     this.setMode(mode);
   }

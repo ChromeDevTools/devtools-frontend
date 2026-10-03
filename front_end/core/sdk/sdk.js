@@ -2668,6 +2668,11 @@ var Debugger;
     ScopeType2["Module"] = "module";
     ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
   })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let ScopeEmptyReason;
+  ((ScopeEmptyReason2) => {
+    ScopeEmptyReason2["NoVariables"] = "no-variables";
+    ScopeEmptyReason2["AllUnavailable"] = "all-unavailable";
+  })(ScopeEmptyReason = Debugger2.ScopeEmptyReason || (Debugger2.ScopeEmptyReason = {}));
   let BreakLocationType;
   ((BreakLocationType2) => {
     BreakLocationType2["DebuggerStatement"] = "debuggerStatement";
@@ -24568,6 +24573,24 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       this.dispatchEventToListeners("Update" /* UPDATE */);
     }
   }
+  #resolveFrameTarget(initiator) {
+    let frameTarget = initiator.target;
+    let parentFrameId = null;
+    while (frameTarget && !frameTarget.model(ResourceTreeModel)) {
+      parentFrameId = parentFrameId ?? frameTarget.targetInfo()?.parentFrameId ?? null;
+      frameTarget = frameTarget.parentTarget();
+    }
+    const frameId = initiator.frameId ?? parentFrameId ?? frameTarget?.model(ResourceTreeModel)?.mainFrame?.id ?? null;
+    return { frameTarget, frameId };
+  }
+  #isSameOriginWithPrimaryPage(frameTarget, frameId) {
+    const primaryFrame = this.#targetManager.primaryPageTarget()?.model(ResourceTreeModel)?.mainFrame;
+    const initiatorFrame = frameId ? frameTarget?.model(ResourceTreeModel)?.frameForId(frameId) : null;
+    if (!primaryFrame || !initiatorFrame) {
+      return false;
+    }
+    return initiatorFrame.securityOrigin().isSameOriginWith(primaryFrame.securityOrigin());
+  }
   async dispatchLoad(url, initiator, isBinary) {
     if (isExtensionInitiator(initiator)) {
       throw new Error("Invalid initiator");
@@ -24582,11 +24605,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     if (eligibleForLoadFromTarget) {
       const isHttp = parsedURL.scheme === "http" || parsedURL.scheme === "https";
       let mustEnforceCSP = isHttp;
-      let frameTarget = initiator.target;
-      while (frameTarget && !frameTarget.model(ResourceTreeModel)) {
-        frameTarget = frameTarget.parentTarget();
-      }
-      const frameId = initiator.frameId ?? frameTarget?.model(ResourceTreeModel)?.mainFrame?.id ?? null;
+      const { frameTarget, frameId } = this.#resolveFrameTarget(initiator);
       if (isHttp && frameTarget) {
         const networkManager = frameTarget.model(NetworkManager);
         if (networkManager) {
@@ -24603,7 +24622,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       } catch (e) {
         if (e instanceof Error) {
           Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
-          if (mustEnforceCSP || e.message.includes("CSP violation")) {
+          if (mustEnforceCSP || !this.#isSameOriginWithPrimaryPage(frameTarget, frameId) || e.message.includes("CSP violation")) {
             return {
               success: false,
               content: "",
@@ -24992,6 +25011,58 @@ var ColorScheme = /* @__PURE__ */ ((ColorScheme2) => {
   ColorScheme2["DARK"] = "dark";
   return ColorScheme2;
 })(ColorScheme || {});
+function isAnchorPositioned(computedStyle, matchedStyles) {
+  const position = computedStyle.get("position");
+  if (position !== "absolute" && position !== "fixed") {
+    return false;
+  }
+  const positionAnchor = computedStyle.get("position-anchor");
+  if (positionAnchor && positionAnchor !== "none") {
+    return true;
+  }
+  const positionArea = computedStyle.get("position-area");
+  if (positionArea && positionArea !== "none") {
+    return true;
+  }
+  const anchorProperties = [
+    "top",
+    "right",
+    "bottom",
+    "left",
+    "inset",
+    "inset-block",
+    "inset-inline",
+    "inset-block-start",
+    "inset-block-end",
+    "inset-inline-start",
+    "inset-inline-end",
+    "width",
+    "height",
+    "min-width",
+    "min-height",
+    "max-width",
+    "max-height"
+  ];
+  if (anchorProperties.some((prop) => {
+    const val = computedStyle.get(prop);
+    return Boolean(val && (val.includes("anchor(") || val.includes("anchor-size(")));
+  })) {
+    return true;
+  }
+  if (matchedStyles) {
+    for (const style of matchedStyles.nodeStyles()) {
+      for (const property of style.allProperties()) {
+        if (!property.activeInStyle() || !matchedStyles.propertyState(property)) {
+          continue;
+        }
+        if (property.value.includes("anchor(") || property.value.includes("anchor-size(")) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
 var CSSModel = class _CSSModel extends SDKModel {
   agent;
   #domModel;
@@ -25296,6 +25367,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     const containerType = styles.get("container-type");
     const isContainer = Boolean(containerType) && containerType !== "" && containerType !== "normal";
     const hasScroll = Boolean(styles.get("scroll-snap-type")) && styles.get("scroll-snap-type") !== "none";
+    const isAnchored = isAnchorPositioned(styles);
     return {
       isFlex,
       isGrid,
@@ -25303,7 +25375,8 @@ var CSSModel = class _CSSModel extends SDKModel {
       isGridLanes,
       isContents,
       containerType: isContainer ? containerType : void 0,
-      hasScroll
+      hasScroll,
+      isAnchorPositioned: isAnchored
     };
   }
   async getEnvironmentVariables() {
@@ -26883,6 +26956,17 @@ var OverlayModel = class _OverlayModel extends SDKModel {
           color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA()
         }
       };
+      highlightConfig.imcbHighlightConfig = {
+        imcbBorderColor: Common17.Color.PageHighlight.AnchorIMCB.toProtocolRGBA(),
+        imcbBackgroundColor: Common17.Color.PageHighlight.AnchorIMCBBackground.toProtocolRGBA(),
+        insetsBackgroundColor: Common17.Color.PageHighlight.AnchorInsetsBackground.toProtocolRGBA(),
+        insetsHatchColor: Common17.Color.PageHighlight.AnchorInsetsHatch.toProtocolRGBA(),
+        anchorBorderColor: Common17.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+        anchorBackgroundColor: Common17.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
+        showPositionAreaGrid: true,
+        positionAreaGridLineColor: Common17.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+        positionAreaActiveRegionColor: Common17.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA()
+      };
     }
     if (mode.endsWith("gap")) {
       highlightConfig.gridHighlightConfig = {
@@ -26999,6 +27083,37 @@ var OverlayModel = class _OverlayModel extends SDKModel {
           color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: Overlay.LineStylePattern.Dashed
         }
+      };
+    }
+    const baseImcbHighlightConfig = {
+      imcbBorderColor: Common17.Color.PageHighlight.AnchorIMCB.toProtocolRGBA(),
+      imcbBackgroundColor: Common17.Color.PageHighlight.AnchorIMCBBackground.toProtocolRGBA(),
+      anchorBorderColor: Common17.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+      anchorBackgroundColor: Common17.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA()
+    };
+    if (mode === "anchor-positioning") {
+      highlightConfig.imcbHighlightConfig = {
+        ...baseImcbHighlightConfig,
+        insetsBackgroundColor: Common17.Color.PageHighlight.AnchorInsetsBackground.toProtocolRGBA(),
+        insetsHatchColor: Common17.Color.PageHighlight.AnchorInsetsHatch.toProtocolRGBA(),
+        showPositionAreaGrid: true,
+        positionAreaGridLineColor: Common17.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+        positionAreaActiveRegionColor: Common17.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA()
+      };
+    }
+    if (mode === "position-area") {
+      highlightConfig.imcbHighlightConfig = {
+        ...baseImcbHighlightConfig,
+        showPositionAreaGrid: true,
+        positionAreaGridLineColor: Common17.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+        positionAreaActiveRegionColor: Common17.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA()
+      };
+    }
+    if (mode === "insets") {
+      highlightConfig.imcbHighlightConfig = {
+        ...baseImcbHighlightConfig,
+        insetsBackgroundColor: Common17.Color.PageHighlight.AnchorInsetsBackground.toProtocolRGBA(),
+        insetsHatchColor: Common17.Color.PageHighlight.AnchorInsetsHatch.toProtocolRGBA()
       };
     }
     return highlightConfig;
@@ -37934,7 +38049,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
   /**
    * Whether this request was imported from a HAR file.
    */
-  #isImportedHar = false;
+  #isImportedHar;
   #associatedData = /* @__PURE__ */ new Map();
   #hasOverriddenContent = false;
   #hasThirdPartyCookiePhaseoutIssue = false;
@@ -37947,7 +38062,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
   #isLinkPreload;
   #appliedNetworkConditionsId;
   #console;
-  constructor(requestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console2 = Common30.Console.Console.instance()) {
+  constructor(requestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console2 = Common30.Console.Console.instance(), isImportedHar = false) {
     super();
     this.#requestId = requestId;
     this.#backendRequestId = backendRequestId;
@@ -37960,6 +38075,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
     this.#isAdRelated = false;
     this.#isLinkPreload = false;
     this.#console = console2;
+    this.#isImportedHar = isImportedHar;
   }
   static create(backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console2) {
     return new _NetworkRequest(
@@ -38000,6 +38116,29 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
       console2
     );
   }
+  /**
+   * Creates a network request representing an entry imported from a HAR file.
+   *
+   * Use this instead of {@link createWithoutBackendRequest} when importing HAR logs
+   * (or testing HAR-imported traffic) so that the request is marked as HAR-imported
+   * at construction time and its security origins ({@link requestURLSecurityOrigin}
+   * and {@link initiatorSecurityOrigin}) resolve to isolated `imported-har://`
+   * virtual origins rather than colliding with live web origins.
+   */
+  static createForImportedHar(requestId, url, documentURL, initiator, console2) {
+    return new _NetworkRequest(
+      requestId,
+      void 0,
+      url,
+      documentURL,
+      null,
+      null,
+      initiator,
+      void 0,
+      console2,
+      true
+    );
+  }
   identityCompare(other) {
     const thisId = this.requestId();
     const thatId = other.requestId();
@@ -38028,9 +38167,8 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
    * (`imported-har://${authority}`) to ensure recorded network traffic never collides with
    * live web origins.
    *
-   * The result is cached, so repeated calls return the same instance until the URL or the
-   * imported HAR flag changes. This keeps opaque origins (such as `data:` URLs) same-origin
-   * with themselves.
+   * The result is cached, so repeated calls return the same instance until the URL changes.
+   * This keeps opaque origins (such as `data:` URLs) same-origin with themselves.
    *
    * @see {@link initiatorSecurityOrigin} to obtain the origin of the document that initiated the request.
    */
@@ -38054,8 +38192,8 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
    * For imported HAR files, the origin is mapped to an isolated virtual domain
    * (`imported-har://${authority}`) matching the imported initiating document.
    *
-   * The result is cached, so repeated calls return the same instance until the imported HAR
-   * flag changes. This keeps opaque origins same-origin with themselves.
+   * The result is cached, so repeated calls return the same instance. This keeps opaque
+   * origins same-origin with themselves.
    *
    * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
    */
@@ -38678,14 +38816,6 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
   }
   isImportedHar() {
     return this.#isImportedHar;
-  }
-  setIsImportedHar(isImportedHar) {
-    if (this.#isImportedHar === isImportedHar) {
-      return;
-    }
-    this.#isImportedHar = isImportedHar;
-    this.#requestURLSecurityOrigin = void 0;
-    this.#initiatorSecurityOrigin = void 0;
   }
   setEarlyHintsHeaders(headers) {
     this.earlyHintsHeaders = headers;

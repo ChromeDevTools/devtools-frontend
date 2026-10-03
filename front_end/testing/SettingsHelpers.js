@@ -1,7 +1,6 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
 function createSettingValue(category, settingName, defaultValue, settingType = "boolean" /* Common.Settings.SettingType.BOOLEAN */, title, options) {
     return {
@@ -19,34 +18,6 @@ const rawOption = (value, title) => ({
     text: title,
     raw: true,
 });
-export function stubNoopSettings() {
-    const createDummySetting = (name) => {
-        const settingName = typeof name === 'string' ? name : name.name;
-        return {
-            name: settingName,
-            get: () => [],
-            set: () => { },
-            addChangeListener: () => { },
-            removeChangeListener: () => { },
-            title: () => { },
-            asRegExp: () => { },
-            type: () => "boolean" /* Common.Settings.SettingType.BOOLEAN */,
-            getAsArray: () => [],
-            descriptor: () => ({
-                name: settingName,
-                settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
-                defaultValue: false,
-            }),
-        };
-    };
-    sinon.stub(Common.Settings.Settings, 'instance').returns({
-        createSetting: createDummySetting,
-        moduleSetting: createDummySetting,
-        createLocalSetting: createDummySetting,
-        resolve: createDummySetting,
-        maybeResolve: createDummySetting,
-    });
-}
 export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("ADORNER" /* Common.Settings.SettingCategory.ADORNER */, 'adorner-settings', [], "array" /* Common.Settings.SettingType.ARRAY */),
     createSettingValue("APPEARANCE" /* Common.Settings.SettingCategory.APPEARANCE */, 'disable-paused-state-overlay', false),
@@ -78,6 +49,7 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'show-frameowkr-listeners', true),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'frame-viewer-show-paints', false),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'frame-viewer-show-slow-scroll-rects', true),
+    createSettingValue("PERFORMANCE" /* Common.Settings.SettingCategory.PERFORMANCE */, 'frame-viewer-chrome-window', true),
     createSettingValue("" /* Common.Settings.SettingCategory.NONE */, 'lighthouse.cat-perf', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */, 'Performance'),
     createSettingValue("" /* Common.Settings.SettingCategory.NONE */, 'lighthouse.cat-a11y', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */, 'Accessibility'),
     createSettingValue("" /* Common.Settings.SettingCategory.NONE */, 'lighthouse.cat-best-practices', true, "boolean" /* Common.Settings.SettingType.BOOLEAN */, 'Best practices'),

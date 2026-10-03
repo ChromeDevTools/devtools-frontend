@@ -1240,13 +1240,13 @@ customElements.define("devtools-entry-label-overlay", EntryLabelOverlay);
 // ../../front_end/panels/timeline/overlays/components/TimeRangeOverlay.ts
 var TimeRangeOverlay_exports = {};
 __export(TimeRangeOverlay_exports, {
-  TimeRangeLabelChangeEvent: () => TimeRangeLabelChangeEvent,
-  TimeRangeOverlay: () => TimeRangeOverlay,
-  TimeRangeRemoveEvent: () => TimeRangeRemoveEvent
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  TimeRangeOverlay: () => TimeRangeOverlay
 });
 import * as i18n5 from "../../../../core/i18n/i18n.js";
 import * as Platform2 from "../../../../core/platform/platform.js";
-import { html as html3, render as render3 } from "../../../../ui/lit/lit.js";
+import * as UI2 from "../../../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html3, render as render3 } from "../../../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/overlays/components/timeRangeOverlay.css.js
@@ -1256,89 +1256,91 @@ var timeRangeOverlay_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
-  display: flex;
-  overflow: hidden;
-  flex-direction: column;
-  justify-content: flex-end;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  padding-bottom: 5px;
-  /* stylelint-disable-next-line plugin/use_theme_colors */
-  background: linear-gradient(
-    180deg,
-    rgb(255 125 210 / 0%) 0%,
-    rgb(255 125 210 / 15%) 85%
-  );
-  border-color: var(--ref-palette-pink55);
-  border-width: 0 var(--sys-size-1) 5px;
-  border-style: solid;
-  pointer-events: none;
-}
-
-.range-container {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-  box-sizing: border-box;
-  pointer-events: all;
-  user-select: none;
-  color: var(--sys-color-pink);
-
-  &.labelHidden {
-    /* Have to use this not display: none so it maintains its width */
-    user-select: none;
+@scope to (devtools-widget > *) {
+  :scope {
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding-bottom: 5px;
+    /* stylelint-disable-next-line plugin/use_theme_colors */
+    background: linear-gradient(
+      180deg,
+      rgb(255 125 210 / 0%) 0%,
+      rgb(255 125 210 / 15%) 85%
+    );
+    border-color: var(--ref-palette-pink55);
+    border-width: 0 var(--sys-size-1) 5px;
+    border-style: solid;
     pointer-events: none;
-    visibility: hidden;
   }
 
-  &.offScreenLeft {
-    align-items: flex-start;
-    text-align: left;
+  .range-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    box-sizing: border-box;
+    pointer-events: all;
+    user-select: none;
+    color: var(--sys-color-pink);
+
+    &.labelHidden {
+      /* Have to use this not display: none so it maintains its width */
+      user-select: none;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    &.offScreenLeft {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    &.offScreenRight {
+      align-items: flex-end;
+      text-align: right;
+    }
   }
 
-  &.offScreenRight {
-    align-items: flex-end;
-    text-align: right;
+  .label-text {
+    /*
+    * The width priority is min-width > max-width > width
+    * When the range itself is smaller that 70px, expand 100% to fill the whole width.
+    * When the range is wider, only expand the textfield to over 70px
+    * if it's needed to fit the label text.
+    */
+    width: 100%;
+    max-width: 70px;
+    min-width: fit-content;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-break: normal;
+    overflow-wrap: anywhere;
+    margin-bottom: 3px;
+    display: -webkit-box;
+    white-space: break-spaces;
+    background: var(--sys-color-cdt-base-container);
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
-}
 
-.label-text {
-  /*
-  * The width priority is min-width > max-width > width
-  * When the range itself is smaller that 70px, expand 100% to fill the whole width.
-  * When the range is wider, only expand the textfield to over 70px
-  * if it's needed to fit the label text.
-  */
-  width: 100%;
-  max-width: 70px;
-  min-width: fit-content;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  word-break: normal;
-  overflow-wrap: anywhere;
-  margin-bottom: 3px;
-  display: -webkit-box;
-  white-space: break-spaces;
-  background: var(--sys-color-cdt-base-container);
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
+  .duration {
+    background: var(--sys-color-cdt-base-container);
+  }
 
-.duration {
-  background: var(--sys-color-cdt-base-container);
-}
+  .label-text[contenteditable='true'] {
+    outline: none;
+    box-shadow: 0 0 0 var(--sys-size-1) var(--ref-palette-pink55);
+  }
 
-.label-text[contenteditable='true'] {
-  outline: none;
-  box-shadow: 0 0 0 var(--sys-size-1) var(--ref-palette-pink55);
-}
-
-.label-text[contenteditable='false'] {
-  width: auto;
+  .label-text[contenteditable='false'] {
+    width: auto;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./timeRangeOverlay.css")} */`;
@@ -1352,45 +1354,83 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/timeline/overlays/components/TimeRangeOverlay.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var TimeRangeLabelChangeEvent = class _TimeRangeLabelChangeEvent extends Event {
-  constructor(newLabel) {
-    super(_TimeRangeLabelChangeEvent.eventName);
-    this.newLabel = newLabel;
-  }
-  newLabel;
-  static eventName = "timerangelabelchange";
+var DEFAULT_VIEW = (input, output, target) => {
+  render3(
+    html3`
+        <style>${timeRangeOverlay_css_default}</style>
+        <span
+          class="range-container"
+          role="region"
+          aria-label=${i18nString3(UIStrings3.timeRange)}
+          ${Directives3.ref((el) => {
+      output.rangeContainer = el instanceof HTMLElement ? el : void 0;
+    })}
+        >
+          <span
+           class="label-text"
+           role="textbox"
+           @focusout=${input.onLabelFocusOut}
+           @dblclick=${input.onLabelDblClick}
+           @keydown=${input.onLabelKeyDown}
+           @input=${input.onLabelInput}
+           contenteditable=${input.isLabelEditable ? "plaintext-only" : false}
+           aria-label=${input.label}
+           .textContent=${Directives3.live(input.label)}
+           jslog=${VisualLogging3.textField("timeline.annotations.time-range-label-input").track({ keydown: true, click: true })}
+           ${Directives3.ref((el) => {
+      output.labelBox = el instanceof HTMLElement ? el : void 0;
+    })}
+          ></span>
+          <span
+            class="duration"
+            ${Directives3.ref((el) => {
+      output.durationBox = el instanceof HTMLElement ? el : void 0;
+    })}
+          >${input.durationText}</span>
+        </span>
+      `,
+    target
+  );
 };
-var TimeRangeRemoveEvent = class _TimeRangeRemoveEvent extends Event {
-  static eventName = "timerangeremoveevent";
-  constructor() {
-    super(_TimeRangeRemoveEvent.eventName);
-  }
-};
-var TimeRangeOverlay = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var TimeRangeOverlay = class extends UI2.Widget.Widget {
   #duration = null;
   #canvasRect = null;
-  #label;
+  #label = "";
   // The label is set to editable and in focus anytime the label is empty and when the label it is double clicked.
   // If the user clicks away from the selected range element and the label is not empty, the label is set to not editable until it is double clicked.
   #isLabelEditable = true;
-  #rangeContainer = null;
-  #labelBox = null;
-  constructor(initialLabel) {
-    super();
-    this.#render();
-    this.#rangeContainer = this.#shadow.querySelector(".range-container");
-    this.#labelBox = this.#rangeContainer?.querySelector(".label-text") ?? null;
-    this.#label = initialLabel;
-    if (!this.#labelBox) {
-      console.error("`labelBox` element is missing.");
+  // Focus can only move to the label once the view has made it editable, so
+  // the focus waits for the next update.
+  #focusLabelOnUpdate = false;
+  /**
+   * Called with the new label whenever the user edits it.
+   */
+  onLabelChange = () => {
+  };
+  /**
+   * Called when the user presses Enter or Escape while the label is empty,
+   * which removes the time range.
+   */
+  onRemove = () => {
+  };
+  #view;
+  #viewOutput = {};
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+    this.requestUpdate();
+  }
+  /**
+   * Sets the label text. A non-empty label makes the label non-editable until
+   * the user double clicks it. An empty label makes it editable.
+   */
+  set label(label) {
+    if (label === this.#label) {
       return;
     }
-    this.#labelBox.innerText = initialLabel;
-    if (initialLabel) {
-      this.#labelBox?.setAttribute("aria-label", initialLabel);
-      this.#setLabelEditability(false);
-    }
+    this.#label = label;
+    this.#isLabelEditable = label === "";
+    this.requestUpdate();
   }
   set canvasRect(rect) {
     if (rect === null) {
@@ -1400,14 +1440,14 @@ var TimeRangeOverlay = class extends HTMLElement {
       return;
     }
     this.#canvasRect = rect;
-    this.#render();
+    this.requestUpdate();
   }
   set duration(duration) {
     if (duration === this.#duration) {
       return;
     }
     this.#duration = duration;
-    this.#render();
+    this.requestUpdate();
   }
   /**
    * This calculates how much of the time range is in the user's view. This is
@@ -1431,122 +1471,116 @@ var TimeRangeOverlay = class extends HTMLElement {
    * the label as required to keep it on screen.
    * If the label is off to the left or right, we fix it to that corner and
    * align the text so the label is visible as long as possible.
+   *
+   * This runs synchronously, rather than through `requestUpdate()`, so that
+   * `Overlays` can reposition the label in the same frame as the range.
    */
   updateLabelPositioning() {
-    if (!this.#rangeContainer) {
-      return;
-    }
-    if (!this.#canvasRect || !this.#labelBox) {
+    const { rangeContainer, labelBox, durationBox } = this.#viewOutput;
+    if (!rangeContainer || !labelBox || !this.#canvasRect) {
       return;
     }
     const paddingForScrollbar = 9;
-    const overlayRect = this.getBoundingClientRect();
-    const labelFocused = this.#shadow.activeElement === this.#labelBox;
-    const labelRect = this.#rangeContainer.getBoundingClientRect();
+    const overlayRect = this.element.getBoundingClientRect();
+    const labelFocused = UI2.DOMUtilities.deepActiveElement(this.element.ownerDocument) === labelBox;
+    const labelRect = rangeContainer.getBoundingClientRect();
     const visibleOverlayWidth = this.#visibleOverlayWidth(overlayRect) - paddingForScrollbar;
-    const durationBox = this.#rangeContainer.querySelector(".duration") ?? null;
     const durationBoxLength = durationBox?.getBoundingClientRect().width;
     if (!durationBoxLength) {
       return;
     }
     const overlayTooNarrow = visibleOverlayWidth <= durationBoxLength;
     const hideLabel = overlayTooNarrow && !labelFocused && this.#label.length > 0;
-    this.#rangeContainer.classList.toggle("labelHidden", hideLabel);
+    rangeContainer.classList.toggle("labelHidden", hideLabel);
     if (hideLabel) {
       return;
     }
     const labelLeftMarginToCenter = (overlayRect.width - labelRect.width) / 2;
     const newLabelX = overlayRect.x + labelLeftMarginToCenter;
     const labelOffLeftOfScreen = newLabelX < this.#canvasRect.x;
-    this.#rangeContainer.classList.toggle("offScreenLeft", labelOffLeftOfScreen);
+    rangeContainer.classList.toggle("offScreenLeft", labelOffLeftOfScreen);
     const rightBound = this.#canvasRect.x + this.#canvasRect.width;
     const labelRightEdge = overlayRect.x + labelLeftMarginToCenter + labelRect.width;
     const labelOffRightOfScreen = labelRightEdge > rightBound;
-    this.#rangeContainer.classList.toggle("offScreenRight", labelOffRightOfScreen);
+    rangeContainer.classList.toggle("offScreenRight", labelOffRightOfScreen);
     if (labelOffLeftOfScreen) {
-      this.#rangeContainer.style.marginLeft = `${Math.abs(this.#canvasRect.x - overlayRect.x) + paddingForScrollbar}px`;
+      rangeContainer.style.marginLeft = `${Math.abs(this.#canvasRect.x - overlayRect.x) + paddingForScrollbar}px`;
     } else if (labelOffRightOfScreen) {
-      this.#rangeContainer.style.marginRight = `${overlayRect.right - this.#canvasRect.right + paddingForScrollbar}px`;
+      rangeContainer.style.marginRight = `${overlayRect.right - this.#canvasRect.right + paddingForScrollbar}px`;
     } else {
-      this.#rangeContainer.style.margin = "0px";
+      rangeContainer.style.margin = "0px";
     }
-    if (this.#labelBox?.innerText === "") {
+    if (this.#label === "") {
       this.#setLabelEditability(true);
     }
   }
   #focusInputBox() {
-    if (!this.#labelBox) {
+    const labelBox = this.#viewOutput.labelBox;
+    if (!labelBox) {
       console.error("`labelBox` element is missing.");
       return;
     }
-    this.#labelBox.focus();
+    labelBox.focus();
   }
   #setLabelEditability(editable) {
-    if (this.#labelBox?.innerText === "") {
+    if (this.#label === "") {
       this.#focusInputBox();
       return;
     }
     this.#isLabelEditable = editable;
-    this.#render();
-    if (editable) {
-      this.#focusInputBox();
-    }
+    this.#focusLabelOnUpdate = editable;
+    this.requestUpdate();
   }
-  #handleLabelInputKeyUp() {
-    const labelBoxTextContent = this.#labelBox?.textContent ?? "";
+  #handleLabelInput() {
+    const labelBoxTextContent = this.#viewOutput.labelBox?.textContent ?? "";
     if (labelBoxTextContent !== this.#label) {
       this.#label = labelBoxTextContent;
-      this.dispatchEvent(new TimeRangeLabelChangeEvent(this.#label));
-      this.#labelBox?.setAttribute("aria-label", labelBoxTextContent);
+      this.onLabelChange(this.#label);
+      this.requestUpdate();
     }
   }
   #handleLabelInputKeyDown(event) {
     if (event.key === Platform2.KeyboardUtilities.ENTER_KEY || event.key === Platform2.KeyboardUtilities.ESCAPE_KEY) {
       event.stopPropagation();
       if (this.#label === "") {
-        this.dispatchEvent(new TimeRangeRemoveEvent());
+        this.onRemove();
       }
-      this.#labelBox?.blur();
-      return false;
+      this.#viewOutput.labelBox?.blur();
     }
-    return true;
   }
-  #render() {
-    const durationText = this.#duration ? i18n5.TimeUtilities.formatMicroSecondsTime(this.#duration) : "";
-    render3(
-      html3`
-          <style>${timeRangeOverlay_css_default}</style>
-          <span class="range-container" role="region" aria-label=${i18nString3(UIStrings3.timeRange)}>
-            <span
-             class="label-text"
-             role="textbox"
-             @focusout=${() => this.#setLabelEditability(false)}
-             @dblclick=${() => this.#setLabelEditability(true)}
-             @keydown=${this.#handleLabelInputKeyDown}
-             @keyup=${this.#handleLabelInputKeyUp}
-             contenteditable=${this.#isLabelEditable ? "plaintext-only" : false}
-             jslog=${VisualLogging3.textField("timeline.annotations.time-range-label-input").track({ keydown: true, click: true })}
-            ></span>
-            <span class="duration">${durationText}</span>
-          </span>
-          `,
-      this.#shadow,
-      { host: this }
+  performUpdate() {
+    this.#view(
+      {
+        label: this.#label,
+        durationText: this.#duration ? i18n5.TimeUtilities.formatMicroSecondsTime(this.#duration) : "",
+        isLabelEditable: this.#isLabelEditable,
+        onLabelFocusOut: () => this.#setLabelEditability(false),
+        onLabelDblClick: () => this.#setLabelEditability(true),
+        onLabelKeyDown: this.#handleLabelInputKeyDown.bind(this),
+        onLabelInput: this.#handleLabelInput.bind(this)
+      },
+      this.#viewOutput,
+      this.contentElement
     );
     this.updateLabelPositioning();
+    if (this.#focusLabelOnUpdate) {
+      this.#focusLabelOnUpdate = false;
+      if (this.#isLabelEditable) {
+        this.#focusInputBox();
+      }
+    }
   }
 };
-customElements.define("devtools-time-range-overlay", TimeRangeOverlay);
 
 // ../../front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.ts
 var TimespanBreakdownOverlay_exports = {};
 __export(TimespanBreakdownOverlay_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   TimespanBreakdownOverlay: () => TimespanBreakdownOverlay
 });
 import * as i18n7 from "../../../../core/i18n/i18n.js";
-import * as UI2 from "../../../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html4, nothing as nothing2, render as render4 } from "../../../../ui/lit/lit.js";
+import * as UI3 from "../../../../ui/legacy/legacy.js";
+import { Directives as Directives4, html as html4, nothing as nothing2, render as render4 } from "../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/overlays/components/timespanBreakdownOverlay.css.js
 var timespanBreakdownOverlay_css_default = `/*
@@ -1693,7 +1727,7 @@ var timespanBreakdownOverlay_css_default = `/*
 
 // ../../front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.ts
 var renderSection = (section, position) => {
-  const style = Directives3.styleMap(
+  const style = Directives4.styleMap(
     { left: position ? `${position.left}px` : void 0, width: position ? `${position.width}px` : void 0 }
   );
   const durationText = section.showDuration ? i18n7.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range) : "";
@@ -1707,8 +1741,8 @@ var renderSection = (section, position) => {
         </div>
       </div>`;
 };
-var DEFAULT_VIEW = (input, _output, target) => {
-  const style = Directives3.styleMap({
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  const style = Directives4.styleMap({
     left: input.left !== null ? `${input.left}px` : void 0,
     width: input.width !== null ? `${input.width}px` : void 0,
     top: input.top !== null ? `${input.top}px` : void 0,
@@ -1727,7 +1761,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
     { container: { classes: ["devtools-timespan-breakdown-overlay"] } }
   );
 };
-var TimespanBreakdownOverlay = class extends UI2.Widget.Widget {
+var TimespanBreakdownOverlay = class extends UI3.Widget.Widget {
   #canvasRect = null;
   #sections = null;
   #sectionsPositions = [];
@@ -1736,7 +1770,7 @@ var TimespanBreakdownOverlay = class extends UI2.Widget.Widget {
   #maxHeight = null;
   #top = null;
   #view;
-  constructor(element, view = DEFAULT_VIEW) {
+  constructor(element, view = DEFAULT_VIEW2) {
     super(element);
     this.#view = view;
     this.requestUpdate();

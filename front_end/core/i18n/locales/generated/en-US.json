@@ -6599,6 +6599,24 @@
   "panels/changes/CombinedDiffView.ts | copyFile": {
     "message": "Copy file {PH1} to clipboard"
   },
+  "panels/comments/comments-meta.ts | comments": {
+    "message": "Comments"
+  },
+  "panels/comments/comments-meta.ts | showComments": {
+    "message": "Show Comments"
+  },
+  "panels/comments/CommentsPane.ts | clearComments": {
+    "message": "Clear all comments"
+  },
+  "panels/comments/CommentsPane.ts | deleteComment": {
+    "message": "Delete comment"
+  },
+  "panels/comments/CommentsPane.ts | noComments": {
+    "message": "No active comments. Add comments on elements in DevTools to send to your AI coding agent."
+  },
+  "panels/comments/CommentsPane.ts | sendToAgent": {
+    "message": "Send to Agent"
+  },
   "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
     "message": "You earned the {PH1} badge! It’s been added to your Developer Profile."
   },

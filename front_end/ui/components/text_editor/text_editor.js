@@ -1998,7 +1998,7 @@ function getIndentUnit(indent) {
   return value;
 }
 var indentUnit2 = new DynamicSetting("text-editor-indent", getIndentUnit);
-var domWordWrap = DynamicSetting.bool("dom-word-wrap", CM3.EditorView.lineWrapping);
+var domWordWrap = DynamicSetting.bool(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor, CM3.EditorView.lineWrapping);
 var sourcesWordWrap = DynamicSetting.bool("sources.word-wrap", CM3.EditorView.lineWrapping);
 function detectLineSeparator(text) {
   if (/\r\n/.test(text) && !/(^|[^\r])\n/.test(text)) {

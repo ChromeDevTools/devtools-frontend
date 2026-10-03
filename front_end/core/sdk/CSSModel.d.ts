@@ -26,6 +26,7 @@ export interface LayoutProperties {
     isContents?: boolean;
     containerType?: string;
     hasScroll: boolean;
+    isAnchorPositioned?: boolean;
 }
 export declare class CSSModel extends SDKModel<EventTypes> {
     #private;

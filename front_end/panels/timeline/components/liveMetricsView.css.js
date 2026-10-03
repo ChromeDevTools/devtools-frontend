@@ -188,6 +188,10 @@ export default `/*
     align-items: center;
     padding: 7px var(--sys-size-3);
 
+    &:focus-visible {
+      background-color: var(--sys-color-tonal-container);
+    }
+
     &::before {
       content: " ";
       height: var(--sys-size-7);

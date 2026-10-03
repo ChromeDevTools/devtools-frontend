@@ -200,6 +200,24 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             this.dispatchEventToListeners("Update" /* Events.UPDATE */);
         }
     }
+    #resolveFrameTarget(initiator) {
+        let frameTarget = initiator.target;
+        let parentFrameId = null;
+        while (frameTarget && !frameTarget.model(ResourceTreeModel)) {
+            parentFrameId = parentFrameId ?? frameTarget.targetInfo()?.parentFrameId ?? null;
+            frameTarget = frameTarget.parentTarget();
+        }
+        const frameId = initiator.frameId ?? parentFrameId ?? frameTarget?.model(ResourceTreeModel)?.mainFrame?.id ?? null;
+        return { frameTarget, frameId };
+    }
+    #isSameOriginWithPrimaryPage(frameTarget, frameId) {
+        const primaryFrame = this.#targetManager.primaryPageTarget()?.model(ResourceTreeModel)?.mainFrame;
+        const initiatorFrame = frameId ? frameTarget?.model(ResourceTreeModel)?.frameForId(frameId) : null;
+        if (!primaryFrame || !initiatorFrame) {
+            return false;
+        }
+        return initiatorFrame.securityOrigin().isSameOriginWith(primaryFrame.securityOrigin());
+    }
     async dispatchLoad(url, initiator, isBinary) {
         if (isExtensionInitiator(initiator)) {
             throw new Error('Invalid initiator');
@@ -220,11 +238,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             // directive is present. A null/error response keeps the guard armed so that a
             // detached-frame or protocol-error path cannot fall through to loadFromHostBindings.
             let mustEnforceCSP = isHttp;
-            let frameTarget = initiator.target;
-            while (frameTarget && !frameTarget.model(ResourceTreeModel)) {
-                frameTarget = frameTarget.parentTarget();
-            }
-            const frameId = initiator.frameId ?? frameTarget?.model(ResourceTreeModel)?.mainFrame?.id ?? null;
+            const { frameTarget, frameId } = this.#resolveFrameTarget(initiator);
             if (isHttp && frameTarget) {
                 const networkManager = frameTarget.model(NetworkManager);
                 if (networkManager) {
@@ -243,7 +257,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             catch (e) {
                 if (e instanceof Error) {
                     Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
-                    if (mustEnforceCSP || e.message.includes('CSP violation')) {
+                    if (mustEnforceCSP || !this.#isSameOriginWithPrimaryPage(frameTarget, frameId) ||
+                        e.message.includes('CSP violation')) {
                         return {
                             success: false,
                             content: '',

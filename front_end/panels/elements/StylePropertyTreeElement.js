@@ -1841,6 +1841,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
                 scrollerElement.addEventListener('scroll', onScroll, false);
             }
             const originalPropertyText = treeElement.property.propertyText;
+            this.#stylesContainer.setActiveProperty(treeElement);
             this.#stylesContainer.setEditingStyle(true);
             popoverHelper.show(editor, button, commitEdit => {
                 if (scrollerElement) {

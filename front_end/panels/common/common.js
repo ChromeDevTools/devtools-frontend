@@ -4933,6 +4933,7 @@ var CommentsStatusBarPill = class extends UI11.Widget.Widget {
     this.#view(viewInput, void 0, this.contentElement);
   }
   #handlePillClick = () => {
+    void UI11.ViewManager.ViewManager.instance().showView("comments");
   };
   #handleSendToAgentClick = () => {
     for (const thread of this.#commentManager.getCommentThreads()) {

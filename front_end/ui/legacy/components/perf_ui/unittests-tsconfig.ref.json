@@ -64,6 +64,9 @@
     },
     {
       "path": "../../../visual_logging/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../theme_support/bundle-tsconfig.ref.json"
     }
   ]
 }

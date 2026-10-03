@@ -3090,6 +3090,11 @@ var Debugger;
     ScopeType2["Module"] = "module";
     ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
   })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let ScopeEmptyReason;
+  ((ScopeEmptyReason2) => {
+    ScopeEmptyReason2["NoVariables"] = "no-variables";
+    ScopeEmptyReason2["AllUnavailable"] = "all-unavailable";
+  })(ScopeEmptyReason = Debugger2.ScopeEmptyReason || (Debugger2.ScopeEmptyReason = {}));
   let BreakLocationType;
   ((BreakLocationType2) => {
     BreakLocationType2["DebuggerStatement"] = "debuggerStatement";
@@ -3342,13 +3347,12 @@ var Importer = class _Importer {
           stack: initiatorEntry.stack
         };
       }
-      const request = SDK2.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+      const request = SDK2.NetworkRequest.NetworkRequest.createForImportedHar(
         "har-" + requests.length,
         entry.request.url,
         documentURL,
         initiator
       );
-      request.setIsImportedHar(true);
       const page = pageref ? pages.get(pageref) : void 0;
       if (!pageLoad && pageref && page) {
         pageLoad = _Importer.buildPageLoad(page, request);

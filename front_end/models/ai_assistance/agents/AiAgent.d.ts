@@ -454,7 +454,8 @@ export declare abstract class AiAgent<T> {
     get sessionId(): string;
     /**
      * The AI has instructions to emit structured suggestions in their response. This
-     * function parses for that.
+     * function parses for that. Lines inside fenced code blocks are kept as answer text
+     * and never parsed, so code that contains a `suggestions` key is left intact.
      *
      * Note: currently only StylingAgent and PerformanceAgent utilize this, but
      * eventually all agents should support this.

@@ -5,7 +5,7 @@ import * as Platform from '../../core/platform/platform.js';
 import { ContentData } from './ContentData.js';
 import { SearchMatch } from './ContentProvider.js';
 const KEY_VALUE_FILTER_REGEXP = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
-const REGEXP_FILTER_REGEXP = /(?:^|\s)(\-)?\/([^\/\\]+(\\.[^\/]*)*)\//;
+const REGEXP_FILTER_REGEXP = /(?:^|\s)(\-)?\/((?:[^\/\\]|\\.)+)\//;
 const TEXT_FILTER_REGEXP = /(?:^|\s)(\-)?([^\s]+)/;
 const SPACE_CHAR_REGEXP = /\s/;
 export const Utils = {

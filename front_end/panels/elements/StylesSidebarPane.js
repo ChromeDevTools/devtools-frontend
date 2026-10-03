@@ -152,6 +152,34 @@ const HIGHLIGHTABLE_PROPERTIES = [
     { mode: 'align-content', properties: ['align-content'] },
     { mode: 'align-items', properties: ['align-items'] },
     { mode: 'flexibility', properties: ['flex', 'flex-basis', 'flex-grow', 'flex-shrink'] },
+    { mode: 'position-area', properties: ['position-area'] },
+    {
+        mode: 'anchor-positioning',
+        properties: [
+            'position',
+            'position-anchor',
+            'position-try',
+            'position-try-fallbacks',
+            'position-try-order',
+            'position-visibility',
+        ],
+    },
+    {
+        mode: 'insets',
+        properties: [
+            'inset',
+            'inset-block',
+            'inset-block-start',
+            'inset-block-end',
+            'inset-inline',
+            'inset-inline-start',
+            'inset-inline-end',
+            'top',
+            'right',
+            'bottom',
+            'left',
+        ],
+    },
 ];
 const DISCLAIMER_TOOLTIP_ID = 'styles-ai-code-completion-disclaimer-tooltip';
 const SPINNER_TOOLTIP_ID = 'styles-ai-code-completion-spinner-tooltip';
@@ -610,14 +638,20 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
         }
         this.contentElement.classList.toggle('is-editing-style', editing);
         this.isEditingStyle = editing;
-        this.setActiveProperty(null);
+        if (!editing) {
+            this.setActiveProperty(null);
+        }
     }
     setActiveProperty(treeElement) {
+        if (this.isEditingStyle) {
+            return;
+        }
         if (this.isActivePropertyHighlighted) {
             SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         }
         this.isActivePropertyHighlighted = false;
-        if (!this.node()) {
+        const node = this.node();
+        if (!node) {
             return;
         }
         if (!treeElement || treeElement.overloaded() || treeElement.inherited()) {
@@ -629,13 +663,13 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             if (!properties.includes(treeElement.name)) {
                 continue;
             }
-            const node = this.node();
-            if (!node) {
-                continue;
-            }
-            node.domModel().overlayModel().highlightInOverlay({ node: this.node(), selectorList }, mode);
+            node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, mode);
             this.isActivePropertyHighlighted = true;
-            break;
+            return;
+        }
+        if (treeElement.value.includes('anchor(') || treeElement.value.includes('anchor-size(')) {
+            node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, 'anchor-positioning');
+            this.isActivePropertyHighlighted = true;
         }
     }
     onCSSModelChanged(event) {

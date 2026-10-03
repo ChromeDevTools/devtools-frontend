@@ -215,11 +215,11 @@ export class ElementsPanel extends UI.Panel.Panel {
         this.mainContainer.id = 'main-content';
         this.domTreeContainer.id = 'elements-content';
         this.domTreeContainer.tabIndex = -1;
-        // FIXME: crbug.com/425984
-        if (this.#settings.moduleSetting('dom-word-wrap').get()) {
+        const domWordWrapSetting = this.#settings.resolve(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor);
+        if (domWordWrapSetting.get()) {
             this.domTreeContainer.classList.add('elements-wrap');
         }
-        this.#settings.moduleSetting('dom-word-wrap').addChangeListener(this.domWordWrapSettingChanged.bind(this));
+        domWordWrapSetting.addChangeListener(this.domWordWrapSettingChanged.bind(this));
         crumbsContainer.id = 'elements-crumbs';
         this.accessibilityTreeView = new AccessibilityTreeView();
         this.breadcrumbs = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
@@ -253,10 +253,11 @@ export class ElementsPanel extends UI.Panel.Panel {
         this.#domTreeWidget.onSelectedNodeChanged = this.selectedNodeChanged.bind(this);
         this.#domTreeWidget.onElementsTreeUpdated = this.updateBreadcrumbIfNeeded.bind(this);
         this.#domTreeWidget.onDocumentUpdated = this.documentUpdated.bind(this);
-        this.#domTreeWidget.setWordWrap(this.#settings.moduleSetting('dom-word-wrap').get());
+        this.#domTreeWidget.setWordWrap(domWordWrapSetting.get());
         this.#targetManager.observeModels(SDK.DOMModel.DOMModel, this, { scoped: true });
         this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this, { scoped: true });
-        this.#settings.moduleSetting('show-ua-shadow-dom').addChangeListener(this.showUAShadowDOMChanged.bind(this));
+        this.#settings.resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor)
+            .addChangeListener(this.showUAShadowDOMChanged.bind(this));
         PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener("SidebarPaneAdded" /* PanelCommon.ExtensionServer.Events.SidebarPaneAdded */, this.extensionSidebarPaneAdded, this);
     }
     // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
@@ -628,7 +629,7 @@ export class ElementsPanel extends UI.Panel.Panel {
             this.hideSearchHighlights();
         }
         this.searchConfig = searchConfig;
-        const showUAShadowDOM = this.#settings.moduleSetting('show-ua-shadow-dom').get();
+        const showUAShadowDOM = this.#settings.resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor).get();
         const domModels = this.#targetManager.models(SDK.DOMModel.DOMModel, { scoped: true });
         const promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
         void Promise.all(promises).then(resultCounts => {
@@ -795,7 +796,8 @@ export class ElementsPanel extends UI.Panel.Panel {
     async revealAndSelectNode(nodeToReveal, opts) {
         const { showPanel = true, focusNode = false, highlightInOverlay = true } = opts ?? {};
         this.omitDefaultSelection = true;
-        const node = this.#settings.moduleSetting('show-ua-shadow-dom').get() ? nodeToReveal :
+        const node = this.#settings.resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor).get() ?
+            nodeToReveal :
             this.leaveUserAgentShadowDOM(nodeToReveal);
         if (highlightInOverlay) {
             node.highlightForTwoSeconds();
@@ -1267,7 +1269,7 @@ export class ElementsActionDelegate {
                 ElementsPanel.instance().toggleAccessibilityTree();
                 return true;
             case 'elements.toggle-word-wrap': {
-                const setting = ElementsPanel.instance().settings.moduleSetting('dom-word-wrap');
+                const setting = ElementsPanel.instance().settings.resolve(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor);
                 setting.set(!setting.get());
                 return true;
             }

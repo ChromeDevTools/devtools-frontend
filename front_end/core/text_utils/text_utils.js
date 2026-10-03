@@ -733,7 +733,7 @@ __export(TextUtils_exports, {
 });
 import * as Platform5 from "../platform/platform.js";
 var KEY_VALUE_FILTER_REGEXP = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
-var REGEXP_FILTER_REGEXP = /(?:^|\s)(\-)?\/([^\/\\]+(\\.[^\/]*)*)\//;
+var REGEXP_FILTER_REGEXP = /(?:^|\s)(\-)?\/((?:[^\/\\]|\\.)+)\//;
 var TEXT_FILTER_REGEXP = /(?:^|\s)(\-)?([^\s]+)/;
 var SPACE_CHAR_REGEXP = /\s/;
 var Utils = {

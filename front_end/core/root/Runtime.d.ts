@@ -54,13 +54,11 @@ export declare class ExperimentsSupport {
         readonly feedbackLink?: Platform.DevToolsPath.UrlString;
     }): Experiment;
     isEnabled(experimentName: ExperimentName): boolean;
-    getValueFromStorage(experimentName: ExperimentName): boolean | undefined;
     setEnabled(experimentName: ExperimentName, enabled: boolean): void;
     enableForTest(experimentName: ExperimentName): void;
     disableForTest(experimentName: ExperimentName): void;
     isEnabledForTest(experimentName: ExperimentName): boolean;
     clearForTest(): void;
-    removeAllExperimentsFromLocalStorage(): void;
 }
 export declare class Experiment {
     #private;

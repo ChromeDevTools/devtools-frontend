@@ -7,6 +7,31 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import { debugLog, isStructuredLogEnabled } from '../debug.js';
 import { dispatchAiAssistanceDoneEvent } from '../DOMHelpers.js';
 const MAX_SUGGESTION_LENGTH = 200;
+/**
+ * Matches a follow-up suggestions directive emitted by the model at the end of a line.
+ *
+ * Supported formats:
+ * - Standard uppercase and case variations: `SUGGESTIONS: ["a", "b"]`, `Suggestions: ["a", "b"]`
+ * - Markdown emphasis (`*`, `**`, `***`, `_`, `__`, `___`, `` ` ``) around the keyword, colon, or entire line
+ * - Optional bullet list (`-`, `*`, `+`), numbered list (`1.`), or heading (`###`) prefixes
+ * - Inline placement at the end of an answer line: `Summary text. SUGGESTIONS: [...]`
+ * - Nested square brackets inside suggestion strings: `SUGGESTIONS: ["check [disabled] attribute"]`
+ * - Trailing streaming state where the line ends right after `SUGGESTIONS:` or mid-array `SUGGESTIONS: ["a`
+ *
+ * Unsupported formats:
+ * - Multi-line JSON arrays or multi-line Markdown lists (suggestions must be a JSON array on the same line)
+ * - Spaces before the colon (e.g. `SUGGESTIONS : [...]`)
+ * - Non-array prose after the colon (e.g. `Suggestions: check the padding` is preserved as answer text)
+ */
+const SUGGESTIONS_REGEX = /^(?:(?:[-*+]|\d+\.|#{1,6})\s+|(.*\s))?(?:\*{1,3}|_{1,3}|`)?SUGGESTIONS(?:\*{1,3}|_{1,3}|`)?:(?:\*{1,3}|_{1,3}|`)?\s*`?(\[.*)?$/i;
+/**
+ * Matches a line that opens or closes a fenced code block: three or more backticks
+ * (group 1), optionally followed by an info string such as a language name (group 2).
+ * This covers the five-backtick fences that `AidaClient` emits for code chunks. A line
+ * with an inline span such as ```` ```x``` text ```` does not match, because backticks
+ * follow the opening run.
+ */
+const CODE_FENCE_REGEX = /^\s*(`{3,})([^`]*)$/;
 export var ResponseType;
 (function (ResponseType) {
     ResponseType["CONTEXT"] = "context";
@@ -265,7 +290,8 @@ export class AiAgent {
     }
     /**
      * The AI has instructions to emit structured suggestions in their response. This
-     * function parses for that.
+     * function parses for that. Lines inside fenced code blocks are kept as answer text
+     * and never parsed, so code that contains a `suggestions` key is left intact.
      *
      * Note: currently only StylingAgent and PerformanceAgent utilize this, but
      * eventually all agents should support this.
@@ -277,29 +303,38 @@ export class AiAgent {
         const lines = text.split('\n');
         const answerLines = [];
         let suggestions;
-        for (const line of lines) {
-            const trimmed = line.trim();
-            if (trimmed.startsWith('SUGGESTIONS:')) {
-                try {
-                    suggestions = sanitizeSuggestions(trimmed.substring('SUGGESTIONS:'.length).trim());
+        // Length of the backtick run that opened the current code block, or 0 outside a block.
+        let openFenceLength = 0;
+        for (const [index, line] of lines.entries()) {
+            const fence = line.match(CODE_FENCE_REGEX);
+            if (fence && openFenceLength === 0) {
+                openFenceLength = fence[1].length;
+                answerLines.push(line);
+                continue;
+            }
+            if (openFenceLength > 0) {
+                // Per CommonMark, only a fence with no info string and at least as many
+                // backticks as the opening fence closes the block.
+                if (fence && fence[1].length >= openFenceLength && fence[2].trim() === '') {
+                    openFenceLength = 0;
                 }
-                catch {
+                answerLines.push(line);
+                continue;
+            }
+            const extracted = extractSuggestionsFromLine(line, index === lines.length - 1);
+            if (extracted) {
+                if (extracted.suggestions) {
+                    suggestions = extracted.suggestions;
+                }
+                // Keep any preceding text on this line as part of the answer.
+                if (extracted.remainingAnswerText) {
+                    answerLines.push(extracted.remainingAnswerText);
                 }
             }
             else {
+                // Not a suggestions line. Keep as answer text.
                 answerLines.push(line);
             }
-        }
-        // Sometimes the model fails to put the SUGGESTIONS text on its own line. Handle
-        // the case where the suggestions are part of the last line of the answer.
-        if (!suggestions && answerLines.at(-1)?.includes('SUGGESTIONS:')) {
-            const [answer, suggestionsText] = answerLines[answerLines.length - 1].split('SUGGESTIONS:', 2);
-            try {
-                suggestions = sanitizeSuggestions(suggestionsText.trim());
-            }
-            catch {
-            }
-            answerLines[answerLines.length - 1] = answer;
         }
         const response = {
             // If we could not parse the parts, consider the response to be an
@@ -701,6 +736,52 @@ function sanitizeSuggestions(suggestions) {
         return undefined;
     }
     return sanitized;
+}
+/**
+ * Attempts to extract suggestions from a single line of model output:
+ * 1. Match the suggestions directive at the end of the line. If absent (including
+ *    when `Suggestions:` is followed by non-array prose), returns null so the
+ *    caller keeps the entire line as answer text.
+ * 2. If anything other than markdown closers (`*`, `_`, `` ` ``) or whitespace
+ *    follows the last `]`, returns null. This keeps lines such as
+ *    `suggestions: ["a"],` or `suggestions: [docs](url)` as answer text.
+ * 3. Attempt to parse the bracketed JSON array. If the array is incomplete or
+ *    invalid and this is not the last line, returns null: only the last line can
+ *    be a partially streamed directive, so earlier lines are ordinary text.
+ * 4. Otherwise, preserve any text preceding the directive as `remainingAnswerText`
+ *    and strip the directive, so incomplete suggestion syntax on the last line
+ *    never flashes in the chat UI while streaming.
+ */
+function extractSuggestionsFromLine(line, isLastLine) {
+    const match = line.match(SUGGESTIONS_REGEX);
+    if (!match) {
+        return null;
+    }
+    let parsed;
+    let isCompleteArray = false;
+    const rawArray = match[2];
+    const lastBracketIndex = rawArray?.lastIndexOf(']') ?? -1;
+    if (rawArray && lastBracketIndex !== -1) {
+        if (!/^[*_`\s]*$/.test(rawArray.slice(lastBracketIndex + 1))) {
+            return null;
+        }
+        try {
+            parsed = sanitizeSuggestions(rawArray.slice(0, lastBracketIndex + 1));
+            isCompleteArray = true;
+        }
+        catch {
+            // Leave `isCompleteArray` false: the array is still streaming or malformed.
+        }
+    }
+    if (!isCompleteArray && !isLastLine) {
+        return null;
+    }
+    const textBefore = (match[1] ?? '').trimEnd();
+    const remainingAnswerText = textBefore.length > 0 ? textBefore : undefined;
+    return {
+        suggestions: parsed,
+        remainingAnswerText,
+    };
 }
 /**
  * Maps AIDA-specific client error instances to user-facing ErrorType enums.

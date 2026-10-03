@@ -3060,6 +3060,11 @@ export var Debugger;
         ScopeType["Module"] = "module";
         ScopeType["WasmExpressionStack"] = "wasm-expression-stack";
     })(ScopeType = Debugger.ScopeType || (Debugger.ScopeType = {}));
+    let ScopeEmptyReason;
+    (function (ScopeEmptyReason) {
+        ScopeEmptyReason["NoVariables"] = "no-variables";
+        ScopeEmptyReason["AllUnavailable"] = "all-unavailable";
+    })(ScopeEmptyReason = Debugger.ScopeEmptyReason || (Debugger.ScopeEmptyReason = {}));
     let BreakLocationType;
     (function (BreakLocationType) {
         BreakLocationType["DebuggerStatement"] = "debuggerStatement";

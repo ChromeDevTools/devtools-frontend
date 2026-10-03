@@ -257,7 +257,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     /**
      * Whether this request was imported from a HAR file.
      */
-    #isImportedHar = false;
+    #isImportedHar;
     #associatedData = new Map();
     #hasOverriddenContent = false;
     #hasThirdPartyCookiePhaseoutIssue = false;
@@ -272,7 +272,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     #console;
     constructor(requestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    console = Common.Console.Console.instance()) {
+    console = Common.Console.Console.instance(), isImportedHar = false) {
         super();
         this.#requestId = requestId;
         this.#backendRequestId = backendRequestId;
@@ -285,6 +285,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         this.#isAdRelated = false;
         this.#isLinkPreload = false;
         this.#console = console;
+        this.#isImportedHar = isImportedHar;
     }
     static create(backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console) {
         return new NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console);
@@ -294,6 +295,18 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     }
     static createWithoutBackendRequest(requestId, url, documentURL, initiator, console) {
         return new NetworkRequest(requestId, undefined, url, documentURL, null, null, initiator, undefined, console);
+    }
+    /**
+     * Creates a network request representing an entry imported from a HAR file.
+     *
+     * Use this instead of {@link createWithoutBackendRequest} when importing HAR logs
+     * (or testing HAR-imported traffic) so that the request is marked as HAR-imported
+     * at construction time and its security origins ({@link requestURLSecurityOrigin}
+     * and {@link initiatorSecurityOrigin}) resolve to isolated `imported-har://`
+     * virtual origins rather than colliding with live web origins.
+     */
+    static createForImportedHar(requestId, url, documentURL, initiator, console) {
+        return new NetworkRequest(requestId, undefined, url, documentURL, null, null, initiator, undefined, console, true);
     }
     identityCompare(other) {
         const thisId = this.requestId();
@@ -323,9 +336,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
      * (`imported-har://${authority}`) to ensure recorded network traffic never collides with
      * live web origins.
      *
-     * The result is cached, so repeated calls return the same instance until the URL or the
-     * imported HAR flag changes. This keeps opaque origins (such as `data:` URLs) same-origin
-     * with themselves.
+     * The result is cached, so repeated calls return the same instance until the URL changes.
+     * This keeps opaque origins (such as `data:` URLs) same-origin with themselves.
      *
      * @see {@link initiatorSecurityOrigin} to obtain the origin of the document that initiated the request.
      */
@@ -349,8 +361,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
      * For imported HAR files, the origin is mapped to an isolated virtual domain
      * (`imported-har://${authority}`) matching the imported initiating document.
      *
-     * The result is cached, so repeated calls return the same instance until the imported HAR
-     * flag changes. This keeps opaque origins same-origin with themselves.
+     * The result is cached, so repeated calls return the same instance. This keeps opaque
+     * origins same-origin with themselves.
      *
      * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
      */
@@ -961,14 +973,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     }
     isImportedHar() {
         return this.#isImportedHar;
-    }
-    setIsImportedHar(isImportedHar) {
-        if (this.#isImportedHar === isImportedHar) {
-            return;
-        }
-        this.#isImportedHar = isImportedHar;
-        this.#requestURLSecurityOrigin = undefined;
-        this.#initiatorSecurityOrigin = undefined;
     }
     setEarlyHintsHeaders(headers) {
         this.earlyHintsHeaders = headers;

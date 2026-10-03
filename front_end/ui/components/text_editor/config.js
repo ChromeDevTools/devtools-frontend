@@ -260,7 +260,7 @@ function getIndentUnit(indent) {
     return value;
 }
 export const indentUnit = new DynamicSetting('text-editor-indent', getIndentUnit);
-export const domWordWrap = DynamicSetting.bool('dom-word-wrap', CM.EditorView.lineWrapping);
+export const domWordWrap = DynamicSetting.bool(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor, CM.EditorView.lineWrapping);
 export const sourcesWordWrap = DynamicSetting.bool('sources.word-wrap', CM.EditorView.lineWrapping);
 function detectLineSeparator(text) {
     if (/\r\n/.test(text) && !/(^|[^\r])\n/.test(text)) {

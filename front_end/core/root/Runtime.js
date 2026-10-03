@@ -122,7 +122,6 @@ export class Runtime {
 export class ExperimentsSupport {
     #experiments = new Map();
     #enabledForTests = new Set();
-    #storage = new ExperimentStorage();
     allConfigurableExperiments() {
         return [...this.#experiments.values()];
     }
@@ -139,9 +138,6 @@ export class ExperimentsSupport {
             return this.#enabledForTests.has(experimentName) || (this.#experiments.get(experimentName)?.isEnabled() ?? false);
         }
         throw new Error(`Unknown experiment '${experimentName}'`);
-    }
-    getValueFromStorage(experimentName) {
-        return this.#storage.get(experimentName);
     }
     setEnabled(experimentName, enabled) {
         if (this.#isExperiment(experimentName)) {
@@ -169,40 +165,8 @@ export class ExperimentsSupport {
         this.#experiments.clear();
         this.#enabledForTests.clear();
     }
-    // TODO(crbug.com/464173054) remove after M156
-    removeAllExperimentsFromLocalStorage() {
-        this.#storage.removeAllExperimentsFromLocalStorage();
-    }
     #isExperiment(experimentName) {
         return this.#experiments.has(experimentName);
-    }
-}
-// TODO(crbug.com/464173054) remove after M156
-/** Manages the 'experiments' dictionary in globalThis.localStorage */
-class ExperimentStorage {
-    #experiments = {};
-    constructor() {
-        try {
-            const storedExperiments = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem('experiments');
-            if (storedExperiments) {
-                this.#experiments = JSON.parse(storedExperiments);
-            }
-        }
-        catch (err) {
-            console.error('Failed to parse localStorage[\'experiments\']: ' + err.message);
-        }
-    }
-    /**
-     * Experiments are stored with a tri-state:
-     *   - true: Explicitly enabled.
-     *   - false: Explicitly disabled.
-     *   - undefined: Disabled.
-     */
-    get(experimentName) {
-        return this.#experiments[experimentName];
-    }
-    removeAllExperimentsFromLocalStorage() {
-        Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.removeItem('experiments');
     }
 }
 export class Experiment {

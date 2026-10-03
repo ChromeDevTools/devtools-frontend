@@ -757,6 +757,8 @@
   "front_end/panels/autofill/autofill-meta.js",
   "front_end/panels/browser_debugger/browser_debugger.js",
   "front_end/panels/browser_debugger/browser_debugger-meta.js",
+  "front_end/panels/comments/comments.js",
+  "front_end/panels/comments/comments-meta.js",
   "front_end/ui/components/panel_feedback/panel_feedback.js",
   "front_end/ui/components/panel_introduction_steps/panel_introduction_steps.js",
   "front_end/panels/css_overview/css_overview.js",

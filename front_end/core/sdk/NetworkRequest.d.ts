@@ -21,10 +21,20 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     responseReceivedPromise?: Promise<void>;
     responseReceivedPromiseResolve?: () => void;
     directSocketInfo?: DirectSocketInfo;
-    constructor(requestId: string, backendRequestId: Protocol.Network.RequestId | undefined, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId | null, loaderId: Protocol.Network.LoaderId | null, initiator: Protocol.Network.Initiator | null, hasUserGesture?: boolean, console?: Common.Console.Console);
+    constructor(requestId: string, backendRequestId: Protocol.Network.RequestId | undefined, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId | null, loaderId: Protocol.Network.LoaderId | null, initiator: Protocol.Network.Initiator | null, hasUserGesture?: boolean, console?: Common.Console.Console, isImportedHar?: boolean);
     static create(backendRequestId: Protocol.Network.RequestId, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId | null, loaderId: Protocol.Network.LoaderId | null, initiator: Protocol.Network.Initiator | null, hasUserGesture?: boolean, console?: Common.Console.Console): NetworkRequest;
     static createForSocket(backendRequestId: Protocol.Network.RequestId, requestURL: Platform.DevToolsPath.UrlString, initiator?: Protocol.Network.Initiator, console?: Common.Console.Console): NetworkRequest;
     static createWithoutBackendRequest(requestId: string, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, initiator: Protocol.Network.Initiator | null, console?: Common.Console.Console): NetworkRequest;
+    /**
+     * Creates a network request representing an entry imported from a HAR file.
+     *
+     * Use this instead of {@link createWithoutBackendRequest} when importing HAR logs
+     * (or testing HAR-imported traffic) so that the request is marked as HAR-imported
+     * at construction time and its security origins ({@link requestURLSecurityOrigin}
+     * and {@link initiatorSecurityOrigin}) resolve to isolated `imported-har://`
+     * virtual origins rather than colliding with live web origins.
+     */
+    static createForImportedHar(requestId: string, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, initiator: Protocol.Network.Initiator | null, console?: Common.Console.Console): NetworkRequest;
     identityCompare(other: NetworkRequest): number;
     requestId(): string;
     backendRequestId(): Protocol.Network.RequestId | undefined;
@@ -39,9 +49,8 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
      * (`imported-har://${authority}`) to ensure recorded network traffic never collides with
      * live web origins.
      *
-     * The result is cached, so repeated calls return the same instance until the URL or the
-     * imported HAR flag changes. This keeps opaque origins (such as `data:` URLs) same-origin
-     * with themselves.
+     * The result is cached, so repeated calls return the same instance until the URL changes.
+     * This keeps opaque origins (such as `data:` URLs) same-origin with themselves.
      *
      * @see {@link initiatorSecurityOrigin} to obtain the origin of the document that initiated the request.
      */
@@ -60,8 +69,8 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
      * For imported HAR files, the origin is mapped to an isolated virtual domain
      * (`imported-har://${authority}`) matching the imported initiating document.
      *
-     * The result is cached, so repeated calls return the same instance until the imported HAR
-     * flag changes. This keeps opaque origins same-origin with themselves.
+     * The result is cached, so repeated calls return the same instance. This keeps opaque
+     * origins same-origin with themselves.
      *
      * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
      */
@@ -216,7 +225,6 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     wasIntercepted(): boolean;
     setWasIntercepted(wasIntercepted: boolean): void;
     isImportedHar(): boolean;
-    setIsImportedHar(isImportedHar: boolean): void;
     setEarlyHintsHeaders(headers: NameValue[]): void;
     get responseCookies(): Cookie[];
     set responseCookies(responseCookies: Cookie[]);

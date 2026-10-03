@@ -697,6 +697,17 @@ var FlameChart = class extends FlameChartBase {
     names: /* @__PURE__ */ new Map(),
     lastWidth: 0
   };
+  /**
+   * Caches middle-truncated entry titles keyed by entry index.
+   * Stores the `width` (maximum available text width in pixels) and `text` (trimmed string or null).
+   */
+  #entryTitleCache = /* @__PURE__ */ new Map();
+  /**
+   * Tracks the previous window device pixel ratio.
+   * When the ratio changes (e.g. browser zoom changes), subpixel font metrics can shift,
+   * requiring #entryTitleCache to be invalidated.
+   */
+  #lastDpr = 0;
   #boundOnThemeChanged = this.#onThemeChanged.bind(this);
   constructor(dataProvider, flameChartDelegate, optionalConfig = {}) {
     super({ useShadowDom: true });
@@ -782,6 +793,7 @@ var FlameChart = class extends FlameChartBase {
     this.keyboardFocusedGroup = -1;
   }
   #onThemeChanged() {
+    this.#entryTitleCache.clear();
     this.scheduleUpdate();
   }
   wasShown() {
@@ -959,6 +971,10 @@ var FlameChart = class extends FlameChartBase {
   }
   resetCanvas() {
     const ratio = window.devicePixelRatio;
+    if (this.#lastDpr !== ratio) {
+      this.#entryTitleCache.clear();
+      this.#lastDpr = ratio;
+    }
     const width = Math.round(this.offsetWidth * ratio);
     const height = Math.round(this.offsetHeight * ratio);
     this.canvas.width = width;
@@ -2261,7 +2277,7 @@ var FlameChart = class extends FlameChartBase {
       this.#drawCustomSymbols(context, timelineData);
       this.drawMarkers(context, timelineData, markerIndices);
     }
-    this.drawEventTitles(context, timelineData, titleIndices, canvasWidth);
+    this.drawEventTitles(context, timelineData, titleIndices);
     const allIndexes = Array.from(drawBatches.values()).map((x) => x.indexes).flat();
     this.#drawDecorations(context, timelineData, allIndexes);
     context.restore();
@@ -2805,37 +2821,30 @@ var FlameChart = class extends FlameChartBase {
    * Draws the titles of trace events in the timeline. Also calls `decorateEntry` on the data
    * provider, which can do any custom drawing on the corresponding entry's area (e.g. draw screenshots
    * in the Performance Panel timeline).
-   *
-   * Takes in the width of the entire canvas so that we know if an event does
-   * not fit into the viewport entirely, the max width we can draw is that
-   * width, not the width of the event itself.
    */
-  drawEventTitles(context, timelineData, titleIndices, canvasWidth) {
+  drawEventTitles(context, timelineData, titleIndices) {
     const timeToPixel = this.chartViewport.timeToPixel();
     const textPadding = this.textPadding;
     context.save();
     context.beginPath();
-    const { entryStartTimes, entryLevels } = timelineData;
+    const { entryStartTimes, entryLevels, entryTotalTimes } = timelineData;
     for (let i = 0; i < titleIndices.length; ++i) {
       const entryIndex = titleIndices[i];
       const entryStartTime = entryStartTimes[entryIndex];
-      const barX = this.timeToPositionClipped(entryStartTime);
-      const barWidth = Math.min(this.#eventBarWidth(timelineData, entryIndex), canvasWidth);
+      const duration = entryTotalTimes[entryIndex];
+      const unclippedStartX = this.chartViewport.timeToPosition(entryStartTime);
+      const barX = this.#clampX(unclippedStartX);
+      const unclippedEndX = this.chartViewport.timeToPosition(entryStartTime + duration);
+      const barWidth = Math.min(this.#eventBarWidth(timelineData, entryIndex), this.offsetWidth);
+      const isUnclipped = unclippedStartX >= 0 && unclippedEndX <= this.offsetWidth;
+      const textBarWidth = isUnclipped ? Math.max(1, Math.round(duration * timeToPixel)) : barWidth;
       const barLevel = entryLevels[entryIndex];
       const barY = this.levelToOffset(barLevel);
-      let text = this.dataProvider.entryTitle(entryIndex);
       const barHeight = this.#eventBarHeight(timelineData, entryIndex);
-      if (text?.length) {
-        context.font = this.#font;
-        const hasArrowDecoration = this.entryHasDecoration(entryIndex, "HIDDEN_DESCENDANTS_ARROW" /* HIDDEN_DESCENDANTS_ARROW */);
-        const maxBarWidth = hasArrowDecoration && barWidth > barHeight * 2 ? barWidth - textPadding - this.barHeight : barWidth - 2 * textPadding;
-        text = UI2.UIUtils.trimTextMiddle(
-          context,
-          text,
-          maxBarWidth
-        );
-      }
-      const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
+      const hasArrowDecoration = this.entryHasDecoration(entryIndex, "HIDDEN_DESCENDANTS_ARROW" /* HIDDEN_DESCENDANTS_ARROW */);
+      const maxBarWidth = hasArrowDecoration && textBarWidth > barHeight * 2 ? textBarWidth - textPadding - this.barHeight : textBarWidth - 2 * textPadding;
+      context.font = this.#font;
+      const text = this.#getEntryTitle(entryIndex, maxBarWidth, context);
       if (this.dataProvider.decorateEntry(
         entryIndex,
         context,
@@ -2844,7 +2853,7 @@ var FlameChart = class extends FlameChartBase {
         barY,
         barWidth,
         barHeight,
-        unclippedBarX,
+        unclippedStartX,
         timeToPixel,
         (color) => this.#transformColor(entryIndex, color)
       )) {
@@ -2853,10 +2862,40 @@ var FlameChart = class extends FlameChartBase {
       if (!text?.length) {
         continue;
       }
+      context.font = this.#font;
       context.fillStyle = this.#transformColor(entryIndex, this.dataProvider.textColor(entryIndex));
       context.fillText(text, barX + textPadding, barY + barHeight - this.textBaseline);
     }
     context.restore();
+  }
+  /**
+   * Returns the middle-trimmed title for an entry at the specified width, utilizing the
+   * entry title cache to avoid repeated text measurements and trimming during animation frames.
+   */
+  #getEntryTitle(entryIndex, maxBarWidth, context) {
+    if (maxBarWidth <= 0) {
+      return null;
+    }
+    const cached = this.#entryTitleCache.get(entryIndex);
+    if (cached && cached.width === maxBarWidth) {
+      return cached.text;
+    }
+    let text = null;
+    const rawText = this.dataProvider.entryTitle(entryIndex);
+    if (rawText?.length) {
+      text = UI2.UIUtils.trimTextMiddle(
+        context,
+        rawText,
+        maxBarWidth
+      );
+    }
+    if (cached) {
+      cached.width = maxBarWidth;
+      cached.text = text;
+    } else {
+      this.#entryTitleCache.set(entryIndex, { width: maxBarWidth, text });
+    }
+    return text;
   }
   /**
    * @callback GroupCallback
@@ -3188,6 +3227,7 @@ var FlameChart = class extends FlameChartBase {
   }
   processTimelineData(timelineData) {
     this.#urlTruncations.names.clear();
+    this.#entryTitleCache.clear();
     if (!timelineData) {
       this.timelineLevels = null;
       this.visibleLevelOffsets = null;
@@ -3643,8 +3683,17 @@ var FlameChart = class extends FlameChartBase {
     }
     this.updateElementPosition(this.revealDescendantsArrowHighlightElement, entryIndex, true);
   }
+  /**
+   * Clamps a horizontal pixel position to the visible bounds of the flame chart canvas.
+   */
+  #clampX(x) {
+    return Platform2.NumberUtilities.clamp(x, 0, this.offsetWidth);
+  }
+  /**
+   * Converts a timeline timestamp to a horizontal pixel position clamped to the visible canvas bounds.
+   */
   timeToPositionClipped(time) {
-    return Platform2.NumberUtilities.clamp(this.chartViewport.timeToPosition(time), 0, this.offsetWidth);
+    return this.#clampX(this.chartViewport.timeToPosition(time));
   }
   /**
    * Returns the amount of pixels a group is vertically offset in the flame chart.
@@ -3738,6 +3787,7 @@ var FlameChart = class extends FlameChartBase {
     }
     this.#urlTruncations.names.clear();
     this.#urlTruncations.lastWidth = 0;
+    this.#entryTitleCache.clear();
     this.chartViewport.reset();
     this.rawTimelineData = null;
     this.rawTimelineDataLength = 0;
@@ -7575,6 +7625,11 @@ var Debugger;
     ScopeType2["Module"] = "module";
     ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
   })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let ScopeEmptyReason;
+  ((ScopeEmptyReason2) => {
+    ScopeEmptyReason2["NoVariables"] = "no-variables";
+    ScopeEmptyReason2["AllUnavailable"] = "all-unavailable";
+  })(ScopeEmptyReason = Debugger2.ScopeEmptyReason || (Debugger2.ScopeEmptyReason = {}));
   let BreakLocationType;
   ((BreakLocationType2) => {
     BreakLocationType2["DebuggerStatement"] = "debuggerStatement";

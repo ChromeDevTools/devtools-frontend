@@ -5,6 +5,7 @@ import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { ElementsPanel } from './ElementsPanel.js';
 let inspectElementModeController;
@@ -59,7 +60,9 @@ export class InspectElementModeController {
             mode = "none" /* Protocol.Overlay.InspectMode.None */;
         }
         else {
-            mode = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get() ? "searchForUAShadowDOM" /* Protocol.Overlay.InspectMode.SearchForUAShadowDOM */ : "searchForNode" /* Protocol.Overlay.InspectMode.SearchForNode */;
+            mode = Common.Settings.Settings.instance()
+                .resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor)
+                .get() ? "searchForUAShadowDOM" /* Protocol.Overlay.InspectMode.SearchForUAShadowDOM */ : "searchForNode" /* Protocol.Overlay.InspectMode.SearchForNode */;
         }
         this.setMode(mode);
     }

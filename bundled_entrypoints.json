@@ -99,6 +99,8 @@
   "front_end/panels/browser_debugger/browser_debugger.js",
   "front_end/panels/changes/changes-meta.js",
   "front_end/panels/changes/changes.js",
+  "front_end/panels/comments/comments-meta.js",
+  "front_end/panels/comments/comments.js",
   "front_end/panels/common/common-meta.js",
   "front_end/panels/common/common.js",
   "front_end/panels/console/console-meta.js",

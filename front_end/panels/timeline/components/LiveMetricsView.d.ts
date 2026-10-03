@@ -1,7 +1,6 @@
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/kit/kit.js';
 import './FieldSettingsDialog.js';
-import './MetricCard.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import type * as Spec from '../../../models/live-metrics/web-vitals-injected/spec/spec.js';

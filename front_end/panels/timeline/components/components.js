@@ -3046,6 +3046,11 @@ var Debugger;
     ScopeType2["Module"] = "module";
     ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
   })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let ScopeEmptyReason;
+  ((ScopeEmptyReason2) => {
+    ScopeEmptyReason2["NoVariables"] = "no-variables";
+    ScopeEmptyReason2["AllUnavailable"] = "all-unavailable";
+  })(ScopeEmptyReason = Debugger2.ScopeEmptyReason || (Debugger2.ScopeEmptyReason = {}));
   let BreakLocationType;
   ((BreakLocationType2) => {
     BreakLocationType2["DebuggerStatement"] = "debuggerStatement";
@@ -6000,24 +6005,466 @@ function renderIframe(iframeRootCause) {
 // ../../front_end/panels/timeline/components/LiveMetricsView.ts
 var LiveMetricsView_exports = {};
 __export(LiveMetricsView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   LiveMetricsView: () => LiveMetricsView
 });
 import "../../../ui/components/settings/settings.js";
 import "../../../ui/kit/kit.js";
+import * as Common3 from "../../../core/common/common.js";
+import * as i18n25 from "../../../core/i18n/i18n.js";
+import * as Platform6 from "../../../core/platform/platform.js";
+import * as Root from "../../../core/root/root.js";
+import * as SDK3 from "../../../core/sdk/sdk.js";
+import * as CrUXManager9 from "../../../models/crux-manager/crux-manager.js";
+import * as EmulationModel from "../../../models/emulation/emulation.js";
+import * as LiveMetrics from "../../../models/live-metrics/live-metrics.js";
+import * as Trace5 from "../../../models/trace/trace.js";
+import * as Buttons7 from "../../../ui/components/buttons/buttons.js";
+import * as uiI18n4 from "../../../ui/i18n/i18n.js";
+import * as UI10 from "../../../ui/legacy/legacy.js";
+import * as Lit9 from "../../../ui/lit/lit.js";
+import * as VisualLogging7 from "../../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon from "../../common/common.js";
+import * as MobileThrottling from "../../mobile_throttling/mobile_throttling.js";
+import * as Insights4 from "./insights/insights.js";
+
+// gen/front_end/panels/timeline/components/liveMetricsView.css.js
+var liveMetricsView_css_default = `/*
+ * Copyright 2024 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.container {
+  container-type: inline-size;
+  height: 100%;
+  font-size: var(--sys-typescale-body4-size);
+  line-height: var(--sys-typescale-body4-line-height);
+  font-weight: var(--ref-typeface-weight-regular);
+  user-select: text;
+}
+
+.live-metrics-view {
+  --min-main-area-size: 60%;
+
+  background-color: var(--sys-color-cdt-base-container);
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+.live-metrics,
+.next-steps {
+  padding: var(--sys-size-8);
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.live-metrics {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.live-metrics > * {
+  flex-shrink: 0;
+}
+
+.next-steps {
+  flex: 0 0 336px;
+  box-sizing: border-box;
+  border: none;
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+@container (max-width: 650px) {
+  .live-metrics-view {
+    flex-direction: column;
+  }
+
+  .next-steps {
+    flex-basis: 40%;
+    border: none;
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  }
+}
+
+.metric-cards {
+  display: grid;
+  gap: var(--sys-size-8);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  width: 100%;
+}
+
+.section-title {
+  font-size: var(--sys-typescale-headline4-size);
+  line-height: var(--sys-typescale-headline4-line-height);
+  font-weight: var(--ref-typeface-weight-medium);
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.settings-card {
+  border-radius: var(--sys-shape-corner-small);
+  padding: var(--sys-size-7) var(--sys-size-8) var(--sys-size-8);
+  background-color: var(--sys-color-surface3);
+  margin-bottom: var(--sys-size-8);
+}
+
+.record-action-card {
+  border-radius: var(--sys-shape-corner-small);
+  padding: var(--sys-size-6) var(--sys-size-8) var(--sys-size-6) var(--sys-size-6);
+  background-color: var(--sys-color-surface3);
+  margin-bottom: var(--sys-size-8);
+}
+
+.card-title {
+  font-size: var(--sys-typescale-headline5-size);
+  line-height: var(--sys-typescale-headline5-line-height);
+  font-weight: var(--ref-typeface-weight-medium);
+  margin: 0;
+}
+
+.settings-card .card-title {
+  margin-bottom: var(--sys-size-3);
+}
+
+.device-toolbar-description {
+  margin-bottom: var(--sys-size-6);
+  display: flex;
+}
+
+.network-cache-setting {
+  display: inline-block;
+  max-width: max-content;
+}
+
+.throttling-recommendation-value {
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+.related-info {
+  text-wrap: nowrap;
+  margin-top: var(--sys-size-5);
+  display: flex;
+}
+
+.related-info-label {
+  font-weight: var(--ref-typeface-weight-medium);
+  margin-right: var(--sys-size-3);
+}
+
+.related-info-link {
+  background-color: var(--sys-color-cdt-base-container);
+  border-radius: var(--sys-size-2);
+  padding: 0 var(--sys-size-2);
+  min-width: 0;
+}
+
+.local-field-link {
+  display: inline-block;
+  width: fit-content;
+  margin-top: var(--sys-size-5);
+}
+
+.logs-section {
+  margin-top: var(--sys-size-11);
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 300px;
+  overflow: hidden;
+  max-height: max-content;
+
+  --app-color-toolbar-background: transparent;
+}
+
+.logs-section-header {
+  display: flex;
+  align-items: center;
+}
+
+.interactions-clear {
+  margin-left: var(--sys-size-3);
+  vertical-align: sub;
+}
+
+.log {
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+}
+
+.log-item {
+  border: none;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+
+  &.highlight {
+    animation: highlight-fadeout 2s;
+  }
+}
+
+.interaction {
+  --subpart-table-margin: 120px;
+  --details-indicator-width: 18px;
+
+  summary {
+    display: flex;
+    align-items: center;
+    padding: 7px var(--sys-size-3);
+
+    &:focus-visible {
+      background-color: var(--sys-color-tonal-container);
+    }
+
+    &::before {
+      content: " ";
+      height: var(--sys-size-7);
+      width: var(--details-indicator-width);
+      mask-image: var(--image-file-triangle-right);
+      background-color: var(--icon-default);
+      flex-shrink: 0;
+    }
+  }
+
+  details[open] summary::before {
+    mask-image: var(--image-file-triangle-down);
+  }
+}
+
+.interaction-type {
+  font-weight: var(--ref-typeface-weight-medium);
+  width: calc(var(--subpart-table-margin) - var(--details-indicator-width));
+  flex-shrink: 0;
+}
+
+.interaction-inp-chip {
+  background-color: var(--sys-color-yellow-container);
+  color: var(--sys-color-on-yellow-container);
+  padding: 0 var(--sys-size-2);
+}
+
+.interaction-node {
+  flex-grow: 1;
+  margin-right: var(--sys-size-13);
+  min-width: 0;
+}
+
+.interaction-info {
+  width: var(--sys-typescale-body4-line-height);
+  height: var(--sys-typescale-body4-line-height);
+  margin-right: var(--sys-size-4);
+}
+
+.interaction-duration {
+  text-align: end;
+  width: max-content;
+  flex-shrink: 0;
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+.layout-shift {
+  display: flex;
+  align-items: flex-start;
+}
+
+.layout-shift-score {
+  margin-right: var(--sys-size-8);
+  padding: 7px 0;
+  width: 150px;
+  box-sizing: border-box;
+}
+
+.layout-shift-nodes {
+  flex: 1;
+  min-width: 0;
+}
+
+.layout-shift-node {
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: 7px 0;
+
+  &:last-child {
+    border: none;
+  }
+}
+
+.record-action {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sys-size-5);
+}
+
+.shortcut-label {
+  width: max-content;
+  flex-shrink: 0;
+}
+
+.field-data-option {
+  display: block;
+  margin: var(--sys-size-5) 0;
+  max-width: 100%;
+}
+
+.field-setup-buttons {
+  margin-top: var(--sys-size-7);
+}
+
+.field-data-message {
+  margin-bottom: var(--sys-size-6);
+}
+
+.field-data-warning {
+  margin-top: var(--sys-size-3);
+  color: var(--sys-color-error);
+  font-size: var(--sys-typescale-body4-size);
+  line-height: var(--sys-typescale-body4-line-height);
+  display: flex;
+
+  &::before {
+    content: " ";
+    width: var(--sys-typescale-body4-line-height);
+    height: var(--sys-typescale-body4-line-height);
+    mask-size: var(--sys-typescale-body4-line-height);
+    mask-image: var(--image-file-warning);
+    background-color: var(--sys-color-error);
+    margin-right: var(--sys-size-3);
+    flex-shrink: 0;
+  }
+}
+
+.collection-period-range {
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+devtools-link {
+  color: var(--sys-color-primary);
+  text-decoration-line: underline;
+}
+
+.environment-option {
+  display: flex;
+  align-items: center;
+  margin-top: var(--sys-size-5);
+  gap: var(--sys-size-2);
+}
+
+.environment-option-label {
+  display: flex;
+  align-items: center;
+  gap: var(--sys-size-2);
+}
+
+.environment-recs-list {
+  margin: 0;
+  padding-left: var(--sys-size-9);
+}
+
+.environment-rec {
+  font-weight: var(--ref-typeface-weight-medium);
+}
+
+.link-to-log {
+  padding: unset;
+  background: unset;
+  border: unset;
+  font: inherit;
+  color: var(--sys-color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@keyframes highlight-fadeout {
+  from {
+    background-color: var(--sys-color-yellow-container);
+  }
+
+  to {
+    background-color: transparent;
+  }
+}
+
+.subpart-table {
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: 7px var(--sys-size-3);
+  margin-left: var(--subpart-table-margin);
+}
+
+.subpart-table-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.subpart-table-header-row {
+  font-weight: var(--ref-typeface-weight-medium);
+  margin-bottom: var(--sys-size-3);
+}
+
+.log-extra-details-button {
+  padding: unset;
+  background: unset;
+  border: unset;
+  font: inherit;
+  color: var(--sys-color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.node-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: var(--sys-typescale-body4-size);
+  line-height: var(--sys-typescale-body4-line-height);
+  font-weight: var(--ref-typeface-weight-regular);
+  user-select: text;
+
+  main {
+    width: 300px;
+    max-width: 100%;
+    text-align: center;
+
+    .section-title {
+      margin-bottom: var(--sys-size-3);
+    }
+  }
+}
+
+.node-description {
+  margin-bottom: var(--sys-size-6);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sys-size-5);
+  margin-bottom: 10px;
+}
+
+.section-header .section-title {
+  margin-bottom: 0;
+}
+
+/*# sourceURL=${import.meta.resolve("./liveMetricsView.css")} */`;
 
 // ../../front_end/panels/timeline/components/MetricCard.ts
 var MetricCard_exports = {};
 __export(MetricCard_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   MetricCard: () => MetricCard
 });
+import "../../../ui/components/tooltips/tooltips.js";
 import * as i18n23 from "../../../core/i18n/i18n.js";
 import * as Platform5 from "../../../core/platform/platform.js";
 import * as CrUXManager7 from "../../../models/crux-manager/crux-manager.js";
 import * as Buttons6 from "../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers4 from "../../../ui/components/helpers/helpers.js";
 import * as UIHelpers from "../../../ui/helpers/helpers.js";
-import * as Lit9 from "../../../ui/lit/lit.js";
+import * as UI9 from "../../../ui/legacy/legacy.js";
+import { html as html9, nothing as nothing7, render as render9 } from "../../../ui/lit/lit.js";
 import * as VisualLogging6 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/metricCard.css.js
@@ -6051,7 +6498,6 @@ var metricCard_css_default = `/*
 }
 
 .metric-values-section {
-  position: relative;
   display: flex;
   column-gap: var(--sys-size-5);
   margin-bottom: var(--sys-size-5);
@@ -6193,30 +6639,9 @@ details.environment-recs[open] > summary::before {
   font-weight: var(--ref-typeface-weight-medium);
 }
 
-.tooltip {
-  display: none;
-  visibility: hidden;
-  transition-property: visibility;
-  width: min(var(--tooltip-container-width, 350px), 350px);
+.tooltip-contents {
+  width: 350px;
   max-width: max-content;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
-  box-sizing: border-box;
-  padding: var(--sys-size-5) var(--sys-size-6);
-  border-radius: var(--sys-shape-corner-small);
-  background-color: var(--sys-color-cdt-base-container);
-  box-shadow: var(--drop-shadow-depth-3);
-
-  .tooltip-scroll {
-    overflow-x: auto;
-
-    .tooltip-contents {
-      min-width: min-content;
-    }
-  }
 }
 
 .subpart-table {
@@ -6481,7 +6906,6 @@ function renderDetailedCompareText(options) {
 }
 
 // ../../front_end/panels/timeline/components/MetricCard.ts
-var { html: html9, nothing: nothing8 } = Lit9;
 var UIStrings12 = {
   /**
    * @description Label for a metric value measured in the local environment in the live metrics view of the Performance panel.
@@ -6591,193 +7015,112 @@ var UIStrings12 = {
 };
 var str_12 = i18n23.i18n.registerUIStrings("panels/timeline/components/MetricCard.ts", UIStrings12);
 var i18nString11 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
-var MetricCard = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  constructor() {
-    super();
-    this.#render();
+function getTitle(metric) {
+  switch (metric) {
+    case "LCP":
+      return i18n23.i18n.lockedString("Largest Contentful Paint (LCP)");
+    case "CLS":
+      return i18n23.i18n.lockedString("Cumulative Layout Shift (CLS)");
+    case "INP":
+      return i18n23.i18n.lockedString("Interaction to Next Paint (INP)");
   }
-  #tooltipEl;
-  #data = {
-    metric: "LCP"
-  };
-  set data(data) {
-    this.#data = data;
-    void ComponentHelpers4.ScheduledRender.scheduleRender(this, this.#render);
+}
+function getThresholds(metric) {
+  switch (metric) {
+    case "LCP":
+      return LCP_THRESHOLDS;
+    case "CLS":
+      return CLS_THRESHOLDS;
+    case "INP":
+      return INP_THRESHOLDS;
   }
-  connectedCallback() {
-    void ComponentHelpers4.ScheduledRender.scheduleRender(this, this.#render);
+}
+function getFormatFn(metric) {
+  switch (metric) {
+    case "LCP":
+      return (v) => {
+        const micro = v * 1e3;
+        return i18n23.TimeUtilities.formatMicroSecondsAsSeconds(micro);
+      };
+    case "CLS":
+      return (v) => v === 0 ? "0" : v.toFixed(2);
+    case "INP":
+      return (v) => i18n23.TimeUtilities.preciseMillisToString(v);
   }
-  #hideTooltipOnEsc = (event) => {
-    if (Platform5.KeyboardUtilities.isEscKey(event)) {
-      event.stopPropagation();
-      this.#hideTooltip();
-    }
-  };
-  #hideTooltipOnMouseLeave(event) {
-    const target = event.target;
-    if (target?.hasFocus()) {
-      return;
-    }
-    this.#hideTooltip();
+}
+function getHelpLink(metric) {
+  switch (metric) {
+    case "LCP":
+      return "https://web.dev/articles/lcp";
+    case "CLS":
+      return "https://web.dev/articles/cls";
+    case "INP":
+      return "https://web.dev/articles/inp";
   }
-  #hideTooltipOnFocusOut(event) {
-    const target = event.target;
-    if (target?.hasFocus()) {
-      return;
-    }
-    const relatedTarget = event.relatedTarget;
-    if (relatedTarget instanceof Node && target.contains(relatedTarget)) {
-      return;
-    }
-    this.#hideTooltip();
+}
+function getHelpTooltip(metric) {
+  switch (metric) {
+    case "LCP":
+      return i18nString11(UIStrings12.lcpHelpTooltip);
+    case "CLS":
+      return i18nString11(UIStrings12.clsHelpTooltip);
+    case "INP":
+      return i18nString11(UIStrings12.inpHelpTooltip);
   }
-  #hideTooltip() {
-    const tooltipEl = this.#tooltipEl;
-    if (!tooltipEl) {
-      return;
-    }
-    document.body.removeEventListener("keydown", this.#hideTooltipOnEsc);
-    tooltipEl.style.removeProperty("left");
-    tooltipEl.style.removeProperty("visibility");
-    tooltipEl.style.removeProperty("display");
-    tooltipEl.style.removeProperty("transition-delay");
+}
+function bucketIndexForRating(rating) {
+  switch (rating) {
+    case "good":
+      return 0;
+    case "needs-improvement":
+      return 1;
+    case "poor":
+      return 2;
   }
-  #showTooltip(delayMs = 0) {
-    const tooltipEl = this.#tooltipEl;
-    if (!tooltipEl || tooltipEl.style.visibility || tooltipEl.style.display) {
-      return;
-    }
-    document.body.addEventListener("keydown", this.#hideTooltipOnEsc);
-    tooltipEl.style.display = "block";
-    tooltipEl.style.transitionDelay = `${Math.round(delayMs)}ms`;
-    const container = this.#data.tooltipContainer;
-    if (!container) {
-      return;
-    }
-    const containerBox = container.getBoundingClientRect();
-    tooltipEl.style.setProperty("--tooltip-container-width", `${Math.round(containerBox.width)}px`);
-    requestAnimationFrame(() => {
-      let offset = 0;
-      const tooltipBox = tooltipEl.getBoundingClientRect();
-      const rightDiff = tooltipBox.right - containerBox.right;
-      const leftDiff = tooltipBox.left - containerBox.left;
-      if (leftDiff < 0) {
-        offset = Math.round(leftDiff);
-      } else if (rightDiff > 0) {
-        offset = Math.round(rightDiff);
-      }
-      tooltipEl.style.left = `calc(50% - ${offset}px)`;
-      tooltipEl.style.visibility = "visible";
-    });
+}
+function getBarWidthForRating(histogram, rating) {
+  const density = histogram?.[bucketIndexForRating(rating)].density || 0;
+  const percent = Math.round(density * 100);
+  return `${percent}%`;
+}
+function getPercentLabelForRating(histogram, rating) {
+  if (histogram === void 0) {
+    return "-";
   }
-  #getTitle() {
-    switch (this.#data.metric) {
-      case "LCP":
-        return i18n23.i18n.lockedString("Largest Contentful Paint (LCP)");
-      case "CLS":
-        return i18n23.i18n.lockedString("Cumulative Layout Shift (CLS)");
-      case "INP":
-        return i18n23.i18n.lockedString("Interaction to Next Paint (INP)");
-    }
-  }
-  #getThresholds() {
-    switch (this.#data.metric) {
-      case "LCP":
-        return LCP_THRESHOLDS;
-      case "CLS":
-        return CLS_THRESHOLDS;
-      case "INP":
-        return INP_THRESHOLDS;
-    }
-  }
-  #getFormatFn() {
-    switch (this.#data.metric) {
-      case "LCP":
-        return (v) => {
-          const micro = v * 1e3;
-          return i18n23.TimeUtilities.formatMicroSecondsAsSeconds(micro);
-        };
-      case "CLS":
-        return (v) => v === 0 ? "0" : v.toFixed(2);
-      case "INP":
-        return (v) => i18n23.TimeUtilities.preciseMillisToString(v);
-    }
-  }
-  #getHelpLink() {
-    switch (this.#data.metric) {
-      case "LCP":
-        return "https://web.dev/articles/lcp";
-      case "CLS":
-        return "https://web.dev/articles/cls";
-      case "INP":
-        return "https://web.dev/articles/inp";
-    }
-  }
-  #getHelpTooltip() {
-    switch (this.#data.metric) {
-      case "LCP":
-        return i18nString11(UIStrings12.lcpHelpTooltip);
-      case "CLS":
-        return i18nString11(UIStrings12.clsHelpTooltip);
-      case "INP":
-        return i18nString11(UIStrings12.inpHelpTooltip);
-    }
-  }
-  #getLocalValue() {
-    const { localValue } = this.#data;
-    if (localValue === void 0) {
-      return;
-    }
-    return localValue;
-  }
-  #getFieldValue() {
-    let { fieldValue } = this.#data;
-    if (fieldValue === void 0) {
-      return;
-    }
-    if (typeof fieldValue === "string") {
-      fieldValue = Number(fieldValue);
-    }
-    if (!Number.isFinite(fieldValue)) {
-      return;
-    }
-    return fieldValue;
-  }
-  /**
-   * Returns if the local value is better/worse/similar compared to field.
-   */
-  #getCompareRating() {
-    const localValue = this.#getLocalValue();
-    const fieldValue = this.#getFieldValue();
+  const density = histogram[bucketIndexForRating(rating)].density || 0;
+  const percent = Math.round(density * 100);
+  return i18nString11(UIStrings12.percentage, { PH1: percent });
+}
+var DEFAULT_VIEW5 = (input, output, target) => {
+  const { metric, localValue, fieldValue } = input;
+  function getCompareRating() {
     if (localValue === void 0 || fieldValue === void 0) {
       return;
     }
-    return determineCompareRating(this.#data.metric, localValue, fieldValue);
+    return determineCompareRating(metric, localValue, fieldValue);
   }
-  #renderCompareString() {
-    const localValue = this.#getLocalValue();
+  function renderCompareString() {
     if (localValue === void 0) {
-      if (this.#data.metric === "INP") {
+      if (metric === "INP") {
         return html9`
           <div class="compare-text">${i18nString11(UIStrings12.interactToMeasure)}</div>
         `;
       }
-      return Lit9.nothing;
+      return nothing7;
     }
-    const compare = this.#getCompareRating();
-    const rating = rateMetric(localValue, this.#getThresholds());
+    const compare = getCompareRating();
+    const rating = rateMetric(localValue, getThresholds(metric));
     const valueEl = renderMetricValue(
-      this.#getMetricValueLogContext(true),
+      getMetricValueLogContext(true),
       localValue,
-      this.#getThresholds(),
-      this.#getFormatFn(),
+      getThresholds(metric),
+      getFormatFn(metric),
       { dim: true }
     );
     return html9`
       <div class="compare-text">
         ${renderCompareText({
-      metric: i18n23.i18n.lockedString(this.#data.metric),
+      metric: i18n23.i18n.lockedString(metric),
       rating,
       compare,
       localValue: valueEl
@@ -6785,13 +7128,12 @@ var MetricCard = class extends HTMLElement {
       </div>
     `;
   }
-  #renderEnvironmentRecommendations() {
-    const compare = this.#getCompareRating();
+  function renderEnvironmentRecommendations() {
+    const compare = getCompareRating();
     if (!compare || compare === "similar") {
-      return Lit9.nothing;
+      return nothing7;
     }
     const recs = [];
-    const metric = this.#data.metric;
     if (metric === "LCP" && compare === "better") {
       recs.push(i18nString11(UIStrings12.recThrottlingLCP));
     } else if (metric === "INP" && compare === "better") {
@@ -6813,7 +7155,7 @@ var MetricCard = class extends HTMLElement {
       recs.push(i18nString11(UIStrings12.recDynamicContentCLS));
     }
     if (!recs.length) {
-      return Lit9.nothing;
+      return nothing7;
     }
     return html9`
       <details class="environment-recs">
@@ -6822,95 +7164,68 @@ var MetricCard = class extends HTMLElement {
       </details>
     `;
   }
-  #getMetricValueLogContext(isLocal) {
-    return `timeline.landing.${isLocal ? "local" : "field"}-${this.#data.metric.toLowerCase()}`;
+  function getMetricValueLogContext(isLocal) {
+    return `timeline.landing.${isLocal ? "local" : "field"}-${input.metric.toLowerCase()}`;
   }
-  #renderDetailedCompareString() {
-    const localValue = this.#getLocalValue();
+  function renderDetailedCompareString() {
     if (localValue === void 0) {
-      if (this.#data.metric === "INP") {
+      if (metric === "INP") {
         return html9`
           <div class="detailed-compare-text">${i18nString11(UIStrings12.interactToMeasure)}</div>
         `;
       }
-      return Lit9.nothing;
+      return nothing7;
     }
-    const localRating = rateMetric(localValue, this.#getThresholds());
-    const fieldValue = this.#getFieldValue();
-    const fieldRating = fieldValue !== void 0 ? rateMetric(fieldValue, this.#getThresholds()) : void 0;
-    const localValueEl = renderMetricValue(
-      this.#getMetricValueLogContext(true),
+    const localRating = rateMetric(localValue, getThresholds(metric));
+    const fieldRating = fieldValue !== void 0 ? rateMetric(fieldValue, getThresholds(metric)) : void 0;
+    const localValueEl2 = renderMetricValue(
+      getMetricValueLogContext(true),
       localValue,
-      this.#getThresholds(),
-      this.#getFormatFn(),
+      getThresholds(metric),
+      getFormatFn(metric),
       { dim: true }
     );
-    const fieldValueEl = renderMetricValue(
-      this.#getMetricValueLogContext(false),
+    const fieldValueEl2 = renderMetricValue(
+      getMetricValueLogContext(false),
       fieldValue,
-      this.#getThresholds(),
-      this.#getFormatFn(),
+      getThresholds(metric),
+      getFormatFn(metric),
       { dim: true }
     );
     return html9`
       <div class="detailed-compare-text">${renderDetailedCompareText({
-      metric: i18n23.i18n.lockedString(this.#data.metric),
+      metric: i18n23.i18n.lockedString(metric),
       localRating,
       fieldRating,
-      localValue: localValueEl,
-      fieldValue: fieldValueEl,
-      percent: this.#getPercentLabelForRating(localRating)
+      localValue: localValueEl2,
+      fieldValue: fieldValueEl2,
+      percent: getPercentLabelForRating(input.histogram, localRating)
     })}</div>
     `;
   }
-  #bucketIndexForRating(rating) {
-    switch (rating) {
-      case "good":
-        return 0;
-      case "needs-improvement":
-        return 1;
-      case "poor":
-        return 2;
-    }
-  }
-  #getBarWidthForRating(rating) {
-    const histogram = this.#data.histogram;
-    const density = histogram?.[this.#bucketIndexForRating(rating)].density || 0;
-    const percent = Math.round(density * 100);
-    return `${percent}%`;
-  }
-  #getPercentLabelForRating(rating) {
-    const histogram = this.#data.histogram;
-    if (histogram === void 0) {
-      return "-";
-    }
-    const density = histogram[this.#bucketIndexForRating(rating)].density || 0;
-    const percent = Math.round(density * 100);
-    return i18nString11(UIStrings12.percentage, { PH1: percent });
-  }
-  #renderFieldHistogram() {
-    const fieldEnabled = CrUXManager7.CrUXManager.instance().getConfigSetting().get().enabled;
-    const format = this.#getFormatFn();
-    const thresholds = this.#getThresholds();
+  function renderFieldHistogram() {
+    const fieldEnabled2 = CrUXManager7.CrUXManager.instance().getConfigSetting().get().enabled;
+    const format = getFormatFn(metric);
+    const thresholds2 = getThresholds(metric);
     const goodLabel = html9`
       <div class="bucket-label">
         <span>${i18nString11(UIStrings12.good)}</span>
-        <span class="bucket-range"> ${i18nString11(UIStrings12.leqRange, { PH1: format(thresholds[0]) })}</span>
+        <span class="bucket-range"> ${i18nString11(UIStrings12.leqRange, { PH1: format(thresholds2[0]) })}</span>
       </div>
     `;
     const needsImprovementLabel = html9`
       <div class="bucket-label">
         <span>${i18nString11(UIStrings12.needsImprovement)}</span>
-        <span class="bucket-range"> ${i18nString11(UIStrings12.betweenRange, { PH1: format(thresholds[0]), PH2: format(thresholds[1]) })}</span>
+        <span class="bucket-range"> ${i18nString11(UIStrings12.betweenRange, { PH1: format(thresholds2[0]), PH2: format(thresholds2[1]) })}</span>
       </div>
     `;
     const poorLabel = html9`
       <div class="bucket-label">
         <span>${i18nString11(UIStrings12.poor)}</span>
-        <span class="bucket-range"> ${i18nString11(UIStrings12.gtRange, { PH1: format(thresholds[1]) })}</span>
+        <span class="bucket-range"> ${i18nString11(UIStrings12.gtRange, { PH1: format(thresholds2[1]) })}</span>
       </div>
     `;
-    if (!fieldEnabled) {
+    if (!fieldEnabled2) {
       return html9`
         <div class="bucket-summaries">
           ${goodLabel}
@@ -6922,18 +7237,18 @@ var MetricCard = class extends HTMLElement {
     return html9`
       <div class="bucket-summaries histogram" jslog=${VisualLogging6.canvas("metric-histogram")}>
         ${goodLabel}
-        <div class="histogram-bar good-bg" style="width: ${this.#getBarWidthForRating("good")}"></div>
-        <div class="histogram-percent">${this.#getPercentLabelForRating("good")}</div>
+        <div class="histogram-bar good-bg" style="width: ${getBarWidthForRating(input.histogram, "good")}"></div>
+        <div class="histogram-percent">${getPercentLabelForRating(input.histogram, "good")}</div>
         ${needsImprovementLabel}
-        <div class="histogram-bar needs-improvement-bg" style="width: ${this.#getBarWidthForRating("needs-improvement")}"></div>
-        <div class="histogram-percent">${this.#getPercentLabelForRating("needs-improvement")}</div>
+        <div class="histogram-bar needs-improvement-bg" style="width: ${getBarWidthForRating(input.histogram, "needs-improvement")}"></div>
+        <div class="histogram-percent">${getPercentLabelForRating(input.histogram, "needs-improvement")}</div>
         ${poorLabel}
-        <div class="histogram-bar poor-bg" style="width: ${this.#getBarWidthForRating("poor")}"></div>
-        <div class="histogram-percent">${this.#getPercentLabelForRating("poor")}</div>
+        <div class="histogram-bar poor-bg" style="width: ${getBarWidthForRating(input.histogram, "poor")}"></div>
+        <div class="histogram-percent">${getPercentLabelForRating(input.histogram, "poor")}</div>
       </div>
     `;
   }
-  #renderSubpartTable(subparts) {
+  function renderSubpartTable(subparts) {
     const hasFieldData = subparts.every((subpart) => subpart[2] !== void 0);
     return html9`
       <hr class="divider">
@@ -6947,7 +7262,7 @@ var MetricCard = class extends HTMLElement {
               class="subpart-table-value"
               style="grid-column: 3"
               title=${i18nString11(UIStrings12.field75thPercentile)}>${i18nString11(UIStrings12.fieldP75)}</div>
-          ` : nothing8}
+          ` : nothing7}
         </div>
         ${subparts.map((subpart) => html9`
           <div class="subpart-table-row" role="row" jslog=${VisualLogging6.tableRow("metric-subpart")}>
@@ -6955,531 +7270,168 @@ var MetricCard = class extends HTMLElement {
             <div role="cell" class="subpart-table-value">${i18n23.TimeUtilities.preciseMillisToString(subpart[1])}</div>
             ${subpart[2] !== void 0 ? html9`
               <div role="cell" class="subpart-table-value">${i18n23.TimeUtilities.preciseMillisToString(subpart[2])}</div>
-            ` : nothing8}
+            ` : nothing7}
           </div>
         `)}
       </div>
     `;
   }
-  #render = () => {
-    const fieldEnabled = CrUXManager7.CrUXManager.instance().getConfigSetting().get().enabled;
-    const helpLink = this.#getHelpLink();
-    const localValue = this.#getLocalValue();
-    const fieldValue = this.#getFieldValue();
-    const thresholds = this.#getThresholds();
-    const formatFn = this.#getFormatFn();
-    const localValueEl = renderMetricValue(this.#getMetricValueLogContext(true), localValue, thresholds, formatFn);
-    const fieldValueEl = renderMetricValue(this.#getMetricValueLogContext(false), fieldValue, thresholds, formatFn);
-    const output = html9`
+  const fieldEnabled = CrUXManager7.CrUXManager.instance().getConfigSetting().get().enabled;
+  const helpLink = getHelpLink(metric);
+  const thresholds = getThresholds(metric);
+  const formatFn = getFormatFn(metric);
+  const localValueEl = renderMetricValue(getMetricValueLogContext(true), localValue, thresholds, formatFn);
+  const fieldValueEl = renderMetricValue(getMetricValueLogContext(false), fieldValue, thresholds, formatFn);
+  render9(html9`
       <style>${metricCard_css_default}</style>
       <style>${metricValueStyles_css_default}</style>
-      <div class="metric-card" jslog=${VisualLogging6.section(Platform5.StringUtilities.toKebabCase(this.#data.metric))}>
+      <div class="metric-card" jslog=${VisualLogging6.section(Platform5.StringUtilities.toKebabCase(metric))}>
         <h3 class="title">
-          ${this.#getTitle()}
+          ${getTitle(metric)}
           <devtools-button
             class="title-help"
-            title=${this.#getHelpTooltip()}
+            title=${getHelpTooltip(metric)}
             .iconName=${"help"}
             .variant=${Buttons6.Button.Variant.ICON}
             @click=${() => UIHelpers.openInNewTab(helpLink)}
           ></devtools-button>
         </h3>
-        <div tabindex="0" class="metric-values-section"
-          @mouseenter=${() => this.#showTooltip(500)}
-          @mouseleave=${this.#hideTooltipOnMouseLeave}
-          @focusin=${this.#showTooltip}
-          @focusout=${this.#hideTooltipOnFocusOut}
-          aria-describedby="tooltip"
-        >
+        <div tabindex="0" class="metric-values-section" aria-details="tooltip">
           <div class="metric-source-block">
             <div class="metric-source-value" id="local-value">${localValueEl}</div>
-            ${fieldEnabled ? html9`<div class="metric-source-label">${i18nString11(UIStrings12.localValue)}</div>` : nothing8}
+            ${fieldEnabled ? html9`<div class="metric-source-label">${i18nString11(UIStrings12.localValue)}</div>` : nothing7}
           </div>
           ${fieldEnabled ? html9`
             <div class="metric-source-block">
               <div class="metric-source-value" id="field-value">${fieldValueEl}</div>
               <div class="metric-source-label">${i18nString11(UIStrings12.field75thPercentile)}</div>
             </div>
-          ` : nothing8}
-          <div
-            id="tooltip"
-            class="tooltip"
-            role="tooltip"
-            aria-label=${i18nString11(UIStrings12.viewCardDetails)}
-            ${Lit9.Directives.ref((el) => {
-      if (el instanceof HTMLElement) {
-        this.#tooltipEl = el;
-      }
-    })}
-          >
-            <div class="tooltip-scroll">
-              <div class="tooltip-contents">
-                <div>
-                  ${this.#renderDetailedCompareString()}
-                  <hr class="divider">
-                  ${this.#renderFieldHistogram()}
-                  ${localValue && this.#data.subparts ? this.#renderSubpartTable(this.#data.subparts) : nothing8}
-                </div>
-              </div>
-            </div>
-          </div>
+          ` : nothing7}
         </div>
-        ${fieldEnabled ? html9`<hr class="divider">` : nothing8}
-        ${this.#renderCompareString()}
-        ${this.#data.warnings?.map((warning) => html9`
+        <devtools-tooltip
+          id="tooltip"
+          variant="rich"
+          hover-delay="500"
+          aria-label=${i18nString11(UIStrings12.viewCardDetails)}
+        >
+          <div class="tooltip-contents">
+            ${renderDetailedCompareString()}
+            <hr class="divider">
+            ${renderFieldHistogram()}
+            ${localValue && input.subparts ? renderSubpartTable(input.subparts) : nothing7}
+          </div>
+        </devtools-tooltip>
+        ${fieldEnabled ? html9`<hr class="divider">` : nothing7}
+        ${renderCompareString()}
+        ${input.warnings?.map((warning) => html9`
           <div class="warning">${warning}</div>
         `)}
-        ${this.#renderEnvironmentRecommendations()}
+        ${renderEnvironmentRecommendations()}
         <slot name="extra-info"></slot>
       </div>
-    `;
-    Lit9.render(output, this.#shadow, { host: this });
-  };
-  // clang-format on
+    `, target);
 };
-customElements.define("devtools-metric-card", MetricCard);
+var MetricCard = class extends UI9.Widget.VBox {
+  #view;
+  #metric = "LCP";
+  #localValue;
+  #fieldValue;
+  #histogram;
+  #subparts;
+  #warnings;
+  constructor(target, view = DEFAULT_VIEW5) {
+    super(target, { useShadowDom: true });
+    this.#view = view;
+  }
+  get metric() {
+    return this.#metric;
+  }
+  set metric(metric) {
+    if (this.#metric === metric) {
+      return;
+    }
+    this.#metric = metric;
+    this.requestUpdate();
+  }
+  get localValue() {
+    return this.#localValue;
+  }
+  set localValue(localValue) {
+    if (this.#localValue === localValue) {
+      return;
+    }
+    this.#localValue = localValue;
+    this.requestUpdate();
+  }
+  get fieldValue() {
+    return this.#fieldValue;
+  }
+  set fieldValue(fieldValue) {
+    if (this.#fieldValue === fieldValue) {
+      return;
+    }
+    this.#fieldValue = fieldValue;
+    this.requestUpdate();
+  }
+  get histogram() {
+    return this.#histogram;
+  }
+  set histogram(histogram) {
+    if (this.#histogram === histogram) {
+      return;
+    }
+    this.#histogram = histogram;
+    this.requestUpdate();
+  }
+  get subparts() {
+    return this.#subparts;
+  }
+  set subparts(subparts) {
+    if (this.#subparts === subparts) {
+      return;
+    }
+    this.#subparts = subparts;
+    this.requestUpdate();
+  }
+  get warnings() {
+    return this.#warnings;
+  }
+  set warnings(warnings) {
+    if (this.#warnings === warnings) {
+      return;
+    }
+    this.#warnings = warnings;
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    CrUXManager7.CrUXManager.instance().getConfigSetting().addChangeListener(this.requestUpdate, this);
+    this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    CrUXManager7.CrUXManager.instance().getConfigSetting().removeChangeListener(this.requestUpdate, this);
+  }
+  performUpdate() {
+    const fieldValue = typeof this.#fieldValue === "string" ? Number(this.#fieldValue) : this.#fieldValue;
+    this.#view(
+      {
+        metric: this.#metric,
+        localValue: this.#localValue,
+        fieldValue: fieldValue !== void 0 && Number.isFinite(fieldValue) ? fieldValue : void 0,
+        histogram: this.#histogram,
+        subparts: this.#subparts,
+        warnings: this.#warnings
+      },
+      {},
+      this.contentElement
+    );
+  }
+};
 
 // ../../front_end/panels/timeline/components/LiveMetricsView.ts
-import * as Common3 from "../../../core/common/common.js";
-import * as i18n25 from "../../../core/i18n/i18n.js";
-import * as Platform6 from "../../../core/platform/platform.js";
-import * as Root from "../../../core/root/root.js";
-import * as SDK3 from "../../../core/sdk/sdk.js";
-import * as CrUXManager9 from "../../../models/crux-manager/crux-manager.js";
-import * as EmulationModel from "../../../models/emulation/emulation.js";
-import * as LiveMetrics from "../../../models/live-metrics/live-metrics.js";
-import * as Trace5 from "../../../models/trace/trace.js";
-import * as Buttons7 from "../../../ui/components/buttons/buttons.js";
-import * as uiI18n4 from "../../../ui/i18n/i18n.js";
-import * as UI9 from "../../../ui/legacy/legacy.js";
-import * as Lit10 from "../../../ui/lit/lit.js";
-import * as VisualLogging7 from "../../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon from "../../common/common.js";
-import * as MobileThrottling from "../../mobile_throttling/mobile_throttling.js";
-import * as Insights4 from "./insights/insights.js";
-
-// gen/front_end/panels/timeline/components/liveMetricsView.css.js
-var liveMetricsView_css_default = `/*
- * Copyright 2024 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.container {
-  container-type: inline-size;
-  height: 100%;
-  font-size: var(--sys-typescale-body4-size);
-  line-height: var(--sys-typescale-body4-line-height);
-  font-weight: var(--ref-typeface-weight-regular);
-  user-select: text;
-}
-
-.live-metrics-view {
-  --min-main-area-size: 60%;
-
-  background-color: var(--sys-color-cdt-base-container);
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-}
-
-.live-metrics,
-.next-steps {
-  padding: var(--sys-size-8);
-  height: 100%;
-  overflow-y: auto;
-  box-sizing: border-box;
-}
-
-.live-metrics {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.live-metrics > * {
-  flex-shrink: 0;
-}
-
-.next-steps {
-  flex: 0 0 336px;
-  box-sizing: border-box;
-  border: none;
-  border-left: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-@container (max-width: 650px) {
-  .live-metrics-view {
-    flex-direction: column;
-  }
-
-  .next-steps {
-    flex-basis: 40%;
-    border: none;
-    border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  }
-}
-
-.metric-cards {
-  display: grid;
-  gap: var(--sys-size-8);
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  width: 100%;
-}
-
-.section-title {
-  font-size: var(--sys-typescale-headline4-size);
-  line-height: var(--sys-typescale-headline4-line-height);
-  font-weight: var(--ref-typeface-weight-medium);
-  margin: 0;
-  margin-bottom: 10px;
-}
-
-.settings-card {
-  border-radius: var(--sys-shape-corner-small);
-  padding: var(--sys-size-7) var(--sys-size-8) var(--sys-size-8);
-  background-color: var(--sys-color-surface3);
-  margin-bottom: var(--sys-size-8);
-}
-
-.record-action-card {
-  border-radius: var(--sys-shape-corner-small);
-  padding: var(--sys-size-6) var(--sys-size-8) var(--sys-size-6) var(--sys-size-6);
-  background-color: var(--sys-color-surface3);
-  margin-bottom: var(--sys-size-8);
-}
-
-.card-title {
-  font-size: var(--sys-typescale-headline5-size);
-  line-height: var(--sys-typescale-headline5-line-height);
-  font-weight: var(--ref-typeface-weight-medium);
-  margin: 0;
-}
-
-.settings-card .card-title {
-  margin-bottom: var(--sys-size-3);
-}
-
-.device-toolbar-description {
-  margin-bottom: var(--sys-size-6);
-  display: flex;
-}
-
-.network-cache-setting {
-  display: inline-block;
-  max-width: max-content;
-}
-
-.throttling-recommendation-value {
-  font-weight: var(--ref-typeface-weight-medium);
-}
-
-.related-info {
-  text-wrap: nowrap;
-  margin-top: var(--sys-size-5);
-  display: flex;
-}
-
-.related-info-label {
-  font-weight: var(--ref-typeface-weight-medium);
-  margin-right: var(--sys-size-3);
-}
-
-.related-info-link {
-  background-color: var(--sys-color-cdt-base-container);
-  border-radius: var(--sys-size-2);
-  padding: 0 var(--sys-size-2);
-  min-width: 0;
-}
-
-.local-field-link {
-  display: inline-block;
-  width: fit-content;
-  margin-top: var(--sys-size-5);
-}
-
-.logs-section {
-  margin-top: var(--sys-size-11);
-  display: flex;
-  flex-direction: column;
-  flex: 1 0 300px;
-  overflow: hidden;
-  max-height: max-content;
-
-  --app-color-toolbar-background: transparent;
-}
-
-.logs-section-header {
-  display: flex;
-  align-items: center;
-}
-
-.interactions-clear {
-  margin-left: var(--sys-size-3);
-  vertical-align: sub;
-}
-
-.log {
-  padding: 0;
-  margin: 0;
-  overflow: auto;
-}
-
-.log-item {
-  border: none;
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-
-  &.highlight {
-    animation: highlight-fadeout 2s;
-  }
-}
-
-.interaction {
-  --subpart-table-margin: 120px;
-  --details-indicator-width: 18px;
-
-  summary {
-    display: flex;
-    align-items: center;
-    padding: 7px var(--sys-size-3);
-
-    &::before {
-      content: " ";
-      height: var(--sys-size-7);
-      width: var(--details-indicator-width);
-      mask-image: var(--image-file-triangle-right);
-      background-color: var(--icon-default);
-      flex-shrink: 0;
-    }
-  }
-
-  details[open] summary::before {
-    mask-image: var(--image-file-triangle-down);
-  }
-}
-
-.interaction-type {
-  font-weight: var(--ref-typeface-weight-medium);
-  width: calc(var(--subpart-table-margin) - var(--details-indicator-width));
-  flex-shrink: 0;
-}
-
-.interaction-inp-chip {
-  background-color: var(--sys-color-yellow-container);
-  color: var(--sys-color-on-yellow-container);
-  padding: 0 var(--sys-size-2);
-}
-
-.interaction-node {
-  flex-grow: 1;
-  margin-right: var(--sys-size-13);
-  min-width: 0;
-}
-
-.interaction-info {
-  width: var(--sys-typescale-body4-line-height);
-  height: var(--sys-typescale-body4-line-height);
-  margin-right: var(--sys-size-4);
-}
-
-.interaction-duration {
-  text-align: end;
-  width: max-content;
-  flex-shrink: 0;
-  font-weight: var(--ref-typeface-weight-medium);
-}
-
-.layout-shift {
-  display: flex;
-  align-items: flex-start;
-}
-
-.layout-shift-score {
-  margin-right: var(--sys-size-8);
-  padding: 7px 0;
-  width: 150px;
-  box-sizing: border-box;
-}
-
-.layout-shift-nodes {
-  flex: 1;
-  min-width: 0;
-}
-
-.layout-shift-node {
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  padding: 7px 0;
-
-  &:last-child {
-    border: none;
-  }
-}
-
-.record-action {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sys-size-5);
-}
-
-.shortcut-label {
-  width: max-content;
-  flex-shrink: 0;
-}
-
-.field-data-option {
-  display: block;
-  margin: var(--sys-size-5) 0;
-  max-width: 100%;
-}
-
-.field-setup-buttons {
-  margin-top: var(--sys-size-7);
-}
-
-.field-data-message {
-  margin-bottom: var(--sys-size-6);
-}
-
-.field-data-warning {
-  margin-top: var(--sys-size-3);
-  color: var(--sys-color-error);
-  font-size: var(--sys-typescale-body4-size);
-  line-height: var(--sys-typescale-body4-line-height);
-  display: flex;
-
-  &::before {
-    content: " ";
-    width: var(--sys-typescale-body4-line-height);
-    height: var(--sys-typescale-body4-line-height);
-    mask-size: var(--sys-typescale-body4-line-height);
-    mask-image: var(--image-file-warning);
-    background-color: var(--sys-color-error);
-    margin-right: var(--sys-size-3);
-    flex-shrink: 0;
-  }
-}
-
-.collection-period-range {
-  font-weight: var(--ref-typeface-weight-medium);
-}
-
-devtools-link {
-  color: var(--sys-color-primary);
-  text-decoration-line: underline;
-}
-
-.environment-option {
-  display: flex;
-  align-items: center;
-  margin-top: var(--sys-size-5);
-  gap: var(--sys-size-2);
-}
-
-.environment-option-label {
-  display: flex;
-  align-items: center;
-  gap: var(--sys-size-2);
-}
-
-.environment-recs-list {
-  margin: 0;
-  padding-left: var(--sys-size-9);
-}
-
-.environment-rec {
-  font-weight: var(--ref-typeface-weight-medium);
-}
-
-.link-to-log {
-  padding: unset;
-  background: unset;
-  border: unset;
-  font: inherit;
-  color: var(--sys-color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-@keyframes highlight-fadeout {
-  from {
-    background-color: var(--sys-color-yellow-container);
-  }
-
-  to {
-    background-color: transparent;
-  }
-}
-
-.subpart-table {
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  padding: 7px var(--sys-size-3);
-  margin-left: var(--subpart-table-margin);
-}
-
-.subpart-table-row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.subpart-table-header-row {
-  font-weight: var(--ref-typeface-weight-medium);
-  margin-bottom: var(--sys-size-3);
-}
-
-.log-extra-details-button {
-  padding: unset;
-  background: unset;
-  border: unset;
-  font: inherit;
-  color: var(--sys-color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.node-view {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  font-size: var(--sys-typescale-body4-size);
-  line-height: var(--sys-typescale-body4-line-height);
-  font-weight: var(--ref-typeface-weight-regular);
-  user-select: text;
-
-  main {
-    width: 300px;
-    max-width: 100%;
-    text-align: center;
-
-    .section-title {
-      margin-bottom: var(--sys-size-3);
-    }
-  }
-}
-
-.node-description {
-  margin-bottom: var(--sys-size-6);
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: var(--sys-size-5);
-  margin-bottom: 10px;
-}
-
-.section-header .section-title {
-  margin-bottom: 0;
-}
-
-/*# sourceURL=${import.meta.resolve("./liveMetricsView.css")} */`;
-
-// ../../front_end/panels/timeline/components/LiveMetricsView.ts
-var { html: html10, nothing: nothing10, Directives: { live: live2 } } = Lit10;
-var { widget: widget2 } = UI9.Widget;
+var { html: html10, nothing: nothing9, Directives: { live: live2 } } = Lit9;
+var { widget: widget2 } = UI10.Widget;
 var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
 var UIStrings13 = {
@@ -7854,23 +7806,13 @@ function getCollectionPeriodRange(cruxManager) {
     PH2: formattedLastDate.toLocaleDateString(void 0, options)
   });
 }
-function createMetricCardRef(cardData) {
-  return Lit10.Directives.ref((el) => {
-    if (el instanceof HTMLElement) {
-      el.data = {
-        ...cardData,
-        tooltipContainer: el.closest(".metric-cards") || void 0
-      };
-    }
-  });
-}
 function renderLcpCard(input) {
   const fieldData = input.cruxManager.getSelectedFieldMetricData("largest_contentful_paint");
   const nodeLink = input.lcpValue?.nodeRef && PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(input.lcpValue?.nodeRef);
   const subparts = input.lcpValue?.subparts;
   const fieldSubparts = getLcpFieldSubparts(input.cruxManager);
   return html10`
-    <devtools-metric-card ${createMetricCardRef({
+    <devtools-widget ${widget2(MetricCard, {
     metric: "LCP",
     localValue: input.lcpValue?.value,
     fieldValue: fieldData?.percentiles?.p75,
@@ -7890,8 +7832,8 @@ function renderLcpCard(input) {
              ${widget2(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: input.lcpValue?.nodeRef })}
             </span>
           </div>
-        ` : nothing10}
-    </devtools-metric-card>
+        ` : nothing9}
+    </devtools-widget>
   `;
 }
 function renderClsCard(input) {
@@ -7899,7 +7841,7 @@ function renderClsCard(input) {
   const clusterIds = new Set(input.clsValue?.clusterShiftIds || []);
   const clusterIsVisible = clusterIds.size > 0 && input.layoutShifts.some((layoutShift) => clusterIds.has(layoutShift.uniqueLayoutShiftId));
   return html10`
-    <devtools-metric-card ${createMetricCardRef({
+    <devtools-widget ${widget2(MetricCard, {
     metric: "CLS",
     localValue: input.clsValue?.value,
     fieldValue: fieldData?.percentiles?.p75,
@@ -7916,8 +7858,8 @@ function renderClsCard(input) {
             jslog=${VisualLogging7.action("timeline.landing.show-cls-cluster").track({ click: true })}
           >${i18nString12(UIStrings13.numShifts, { shiftCount: clusterIds.size })}</button>
         </div>
-      ` : nothing10}
-    </devtools-metric-card>
+      ` : nothing9}
+    </devtools-widget>
   `;
 }
 function renderInpCard(input) {
@@ -7925,7 +7867,7 @@ function renderInpCard(input) {
   const subparts = input.inpValue?.subparts;
   const interaction = input.inpValue?.interactionId ? input.interactions.get(input.inpValue.interactionId) : void 0;
   return html10`
-    <devtools-metric-card ${createMetricCardRef({
+    <devtools-widget ${widget2(MetricCard, {
     metric: "INP",
     localValue: input.inpValue?.value,
     fieldValue: fieldData?.percentiles?.p75,
@@ -7947,8 +7889,8 @@ function renderInpCard(input) {
             jslog=${VisualLogging7.action("timeline.landing.show-inp-interaction").track({ click: true })}
           >${interaction.interactionType}</button>
         </div>
-      ` : nothing10}
-    </devtools-metric-card>
+      ` : nothing9}
+    </devtools-widget>
   `;
 }
 function renderRecordAction(action4) {
@@ -7966,7 +7908,7 @@ function renderRecordAction(action4) {
   }}>
         ${action4.title()}
       </devtools-button>
-      <span class="shortcut-label">${UI9.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action4.id())}</span>
+      <span class="shortcut-label">${UI10.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action4.id())}</span>
     </div>
   `;
 }
@@ -7982,7 +7924,7 @@ function renderRecordingSettings(input) {
         <li>${i18nString12(UIStrings13.device)} <span class="environment-rec">${deviceRec}</span></li>
         <li>${i18nString12(UIStrings13.network)} <span class="environment-rec">${networkRec}</span></li>
       </ul>
-    ` : nothing10}
+    ` : nothing9}
     <div class="environment-option">
       <label class="environment-option-label">
         ${i18nString12(UIStrings13.cpuThrottling)}
@@ -8014,7 +7956,7 @@ function renderRecordingSettings(input) {
 }
 function renderPageScopeSetting(input) {
   if (!input.cruxManager.getConfigSetting().get().enabled) {
-    return Lit10.nothing;
+    return Lit9.nothing;
   }
   const urlLabel = getPageScopeLabel(input.cruxManager, "url");
   const originLabel = getPageScopeLabel(input.cruxManager, "origin");
@@ -8055,7 +7997,7 @@ function renderPageScopeSetting(input) {
 }
 function renderDeviceScopeSetting(input) {
   if (!input.cruxManager.getConfigSetting().get().enabled) {
-    return Lit10.nothing;
+    return Lit9.nothing;
   }
   const shouldDisable = !input.cruxManager.getFieldResponse(input.cruxManager.fieldPageScope, "ALL");
   const currentDeviceLabel = getLabelForDeviceOption(input.cruxManager, input.cruxManager.fieldDeviceOption);
@@ -8089,11 +8031,11 @@ function renderDeviceScopeSetting(input) {
 }
 function renderFieldDataHistoryLink(cruxManager) {
   if (!cruxManager.getConfigSetting().get().enabled) {
-    return Lit10.nothing;
+    return Lit9.nothing;
   }
   const normalizedUrl = cruxManager.pageResult?.normalizedUrl;
   if (!normalizedUrl) {
-    return Lit10.nothing;
+    return Lit9.nothing;
   }
   const tmp = new URL("https://cruxvis.withgoogle.com/");
   tmp.searchParams.set("view", "cwvsummary");
@@ -8113,7 +8055,7 @@ function renderFieldDataHistoryLink(cruxManager) {
 function renderCollectionPeriod(cruxManager) {
   const range = getCollectionPeriodRange(cruxManager);
   const dateText = range || i18nString12(UIStrings13.notEnoughData);
-  const fieldDataHistoryLink = range ? renderFieldDataHistoryLink(cruxManager) : Lit10.nothing;
+  const fieldDataHistoryLink = range ? renderFieldDataHistoryLink(cruxManager) : Lit9.nothing;
   const warnings = cruxManager.pageResult?.warnings || [];
   return html10`
     <div class="field-data-message">
@@ -8159,12 +8101,12 @@ function keepScrolledToBottom(listEl) {
 }
 function renderInteractionsLog(input, output) {
   if (!input.interactions.size) {
-    return Lit10.nothing;
+    return Lit9.nothing;
   }
   return html10`
     <ol class="log"
       slot="interactions-log-content"
-      ${Lit10.Directives.ref((el) => {
+      ${Lit9.Directives.ref((el) => {
     if (el instanceof HTMLElement) {
       output.shouldKeepInteractionsScrolledToBottom = () => {
         return shouldKeepScrolledToBottom(el);
@@ -8190,7 +8132,7 @@ function renderInteractionsLog(input, output) {
             <details>
               <summary>
                 <span class="interaction-type">
-                  ${interaction.interactionType} ${isInp ? html10`<span class="interaction-inp-chip" title=${i18nString12(UIStrings13.inpInteraction)}>INP</span>` : nothing10}
+                  ${interaction.interactionType} ${isInp ? html10`<span class="interaction-inp-chip" title=${i18nString12(UIStrings13.inpInteraction)}>INP</span>` : nothing9}
                 </span>
                 <span class="interaction-node">
                   ${widget2(PanelsCommon.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}
@@ -8199,7 +8141,7 @@ function renderInteractionsLog(input, output) {
                   class="interaction-info"
                   name="info"
                   title=${i18nString12(UIStrings13.interactionExcluded)}
-                ></devtools-icon>` : nothing10}
+                ></devtools-icon>` : nothing9}
                 <span class="interaction-duration">${metricValue}</span>
               </summary>
               <div class="subpart-table" role="table">
@@ -8237,12 +8179,12 @@ function renderInteractionsLog(input, output) {
 }
 function renderLayoutShiftsLog(input, output) {
   if (!input.layoutShifts.length) {
-    return Lit10.nothing;
+    return Lit9.nothing;
   }
   return html10`
     <ol class="log"
       slot="layout-shifts-log-content"
-      ${Lit10.Directives.ref((el) => {
+      ${Lit9.Directives.ref((el) => {
     if (el instanceof HTMLElement) {
       output.shouldKeepLayoutShiftsScrolledToBottom = () => {
         return shouldKeepScrolledToBottom(el);
@@ -8307,9 +8249,9 @@ function renderNodeView(input) {
     </div>
   `;
 }
-var DEFAULT_VIEW5 = (input, output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   if (input.isNode) {
-    Lit10.render(renderNodeView(input), target);
+    Lit9.render(renderNodeView(input), target);
     return;
   }
   const fieldEnabled = input.cruxManager.getConfigSetting().get().enabled;
@@ -8323,7 +8265,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
         <main class="live-metrics">
           <div class="section-header">
             <h2 class="section-title">${liveMetricsTitle}</h2>
-            ${input.navigationType === "soft-navigation" ? html10`<span class="badge">${i18nString12(UIStrings13.softNavigationPillText)}</span>` : nothing10}
+            ${input.navigationType === "soft-navigation" ? html10`<span class="badge">${i18nString12(UIStrings13.softNavigationPillText)}</span>` : nothing9}
           </div>
           <div class="metric-cards">
             <div id="lcp">
@@ -8367,7 +8309,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       </div>
     </div>
   `;
-  Lit10.render(outputTemplate, target);
+  Lit9.render(outputTemplate, target);
   if (input.highlightedInteractionId) {
     const interactionEl = target.querySelector("#" + CSS.escape(input.highlightedInteractionId));
     if (interactionEl) {
@@ -8376,7 +8318,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           block: "center"
         });
         interactionEl.focus();
-        UI9.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
+        UI10.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
       });
     }
   }
@@ -8395,13 +8337,13 @@ var DEFAULT_VIEW5 = (input, output, target) => {
         });
         layoutShiftEls[0].focus();
         for (const layoutShiftEl of layoutShiftEls) {
-          UI9.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
+          UI10.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
         }
       });
     }
   }
 };
-var LiveMetricsView = class extends UI9.Widget.Widget {
+var LiveMetricsView = class extends UI10.Widget.Widget {
   isNode = Root.Runtime.Runtime.isNode();
   #lcpValue;
   #clsValue;
@@ -8417,11 +8359,11 @@ var LiveMetricsView = class extends UI9.Widget.Widget {
   #view;
   #viewOutput = {};
   #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element, { useShadowDom: true });
     this.#view = view;
-    this.#toggleRecordAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
-    this.#recordReloadAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
+    this.#toggleRecordAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
+    this.#recordReloadAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
   }
   async #onMetricStatus(event) {
     this.#lcpValue = event.data.lcp;
@@ -8542,7 +8484,7 @@ var LiveMetricsView = class extends UI9.Widget.Widget {
   }
 };
 var LIVE_METRICS_LOGS_VIEW = (input, output, target) => {
-  Lit10.render(html10`
+  Lit9.render(html10`
     <style>
       /* Any children of the root element will be matched to the slots defined within the container
          widget's shadow DOM. */
@@ -8569,7 +8511,7 @@ var LIVE_METRICS_LOGS_VIEW = (input, output, target) => {
     </devtools-tabbed-pane>
   `, target);
 };
-var LiveMetricsLogs = class extends UI9.Widget.Widget {
+var LiveMetricsLogs = class extends UI10.Widget.Widget {
   #view;
   #selectedTab = "interactions";
   set selectedTab(tabId) {
@@ -8610,7 +8552,7 @@ var LiveMetricsLogs = class extends UI9.Widget.Widget {
 // ../../front_end/panels/timeline/components/NetworkRequestDetails.ts
 var NetworkRequestDetails_exports = {};
 __export(NetworkRequestDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   NetworkRequestDetails: () => NetworkRequestDetails
 });
 import "../../../ui/components/request_link_icon/request_link_icon.js";
@@ -8620,8 +8562,8 @@ import * as SDK5 from "../../../core/sdk/sdk.js";
 import * as Helpers9 from "../../../models/trace/helpers/helpers.js";
 import * as Trace7 from "../../../models/trace/trace.js";
 import * as LegacyComponents2 from "../../../ui/legacy/components/utils/utils.js";
-import * as UI11 from "../../../ui/legacy/legacy.js";
-import * as Lit12 from "../../../ui/lit/lit.js";
+import * as UI12 from "../../../ui/legacy/legacy.js";
+import * as Lit11 from "../../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/networkRequestDetails.css.js
@@ -8911,7 +8853,7 @@ var networkRequestTooltip_css_default = `/*
 // ../../front_end/panels/timeline/components/NetworkRequestTooltip.ts
 var NetworkRequestTooltip_exports = {};
 __export(NetworkRequestTooltip_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   NetworkRequestTooltip: () => NetworkRequestTooltip
 });
 import "../../../ui/kit/kit.js";
@@ -8920,11 +8862,11 @@ import * as Platform7 from "../../../core/platform/platform.js";
 import * as SDK4 from "../../../core/sdk/sdk.js";
 import * as Trace6 from "../../../models/trace/trace.js";
 import * as PerfUI from "../../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as UI10 from "../../../ui/legacy/legacy.js";
-import * as Lit11 from "../../../ui/lit/lit.js";
+import * as UI11 from "../../../ui/legacy/legacy.js";
+import * as Lit10 from "../../../ui/lit/lit.js";
 import * as TimelineUtils from "../utils/utils.js";
-var { html: html11, nothing: nothing12, Directives: { classMap, ifDefined: ifDefined2 } } = Lit11;
-var { widget: widget3 } = UI10.Widget;
+var { html: html11, nothing: nothing11, Directives: { classMap, ifDefined: ifDefined2 } } = Lit10;
+var { widget: widget3 } = UI11.Widget;
 var MAX_URL_LENGTH2 = 60;
 var UIStrings14 = {
   /**
@@ -8967,7 +8909,7 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("panels/timeline/components/NetworkRequestTooltip.ts", UIStrings14);
 var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var DEFAULT_VIEW6 = (input, output, target) => {
+var DEFAULT_VIEW7 = (input, output, target) => {
   const {
     networkRequest,
     entityMapper,
@@ -8980,7 +8922,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   const entity = entityMapper ? entityMapper.entityForEvent(networkRequest) : null;
   const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity, true);
   const redirectsHtml = NetworkRequestTooltip.renderRedirects(networkRequest);
-  Lit11.render(html11`
+  Lit10.render(html11`
     <style>${networkRequestTooltip_css_default}</style>
     <div class="performance-card">
       <div class="url">${Platform7.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_URL_LENGTH2)}</div>
@@ -8988,15 +8930,15 @@ var DEFAULT_VIEW6 = (input, output, target) => {
 
       <div class="divider"></div>
       <div class="network-category">
-        <span class="network-category-chip" style=${Lit11.Directives.styleMap(chipStyle)}>
+        <span class="network-category-chip" style=${Lit10.Directives.styleMap(chipStyle)}>
         </span>${networkResourceCategory(networkRequest)}
       </div>
       <div class="priority-row">${i18nString13(UIStrings14.priority)}: ${NetworkRequestTooltip.renderPriorityValue(networkRequest)}</div>
       ${throttlingTitle ? html11`
         <div class="throttled-row">
           ${i18nString13(UIStrings14.wasThrottled, { PH1: throttlingTitle })}
-        </div>` : nothing12}
-      ${Trace6.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkRequest) ? html11`<div class="render-blocking"> ${i18nString13(UIStrings14.renderBlocking)} </div>` : Lit11.nothing}
+        </div>` : nothing11}
+      ${Trace6.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkRequest) ? html11`<div class="render-blocking"> ${i18nString13(UIStrings14.renderBlocking)} </div>` : Lit10.nothing}
       <div class="divider"></div>
 
       ${NetworkRequestTooltip.renderTimings(networkRequest)}
@@ -9004,18 +8946,18 @@ var DEFAULT_VIEW6 = (input, output, target) => {
       ${redirectsHtml ? html11`
         <div class="divider"></div>
         ${redirectsHtml}
-      ` : Lit11.nothing}
+      ` : Lit10.nothing}
     </div>
   `, target);
 };
-var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI10.Widget.Widget {
+var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Widget {
   static createWidgetElement(request, entityMapper) {
     return html11`${widget3(_NetworkRequestTooltip, { networkRequest: request, entityMapper })}`;
   }
   #view;
   #networkRequest;
   #entityMapper;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -9078,12 +9020,12 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI10.Widget.Wid
         <span class="time"> ${i18n27.TimeUtilities.formatMicroSecondsTime(queueing)} </span>
       </div>
       <div class="timings-row">
-        <span class="indicator" style=${Lit11.Directives.styleMap(styleForWaiting)}></span>
+        <span class="indicator" style=${Lit10.Directives.styleMap(styleForWaiting)}></span>
         ${i18nString13(UIStrings14.requestSentAndWaiting)}
         <span class="time"> ${i18n27.TimeUtilities.formatMicroSecondsTime(requestPlusWaiting)} </span>
       </div>
       <div class="timings-row">
-        <span class="indicator" style=${Lit11.Directives.styleMap(styleForDownloading)}></span>
+        <span class="indicator" style=${Lit10.Directives.styleMap(styleForDownloading)}></span>
         ${i18nString13(UIStrings14.contentDownloading)}
         <span class="time"> ${i18n27.TimeUtilities.formatMicroSecondsTime(download)} </span>
       </div>
@@ -9134,7 +9076,7 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI10.Widget.Wid
 };
 
 // ../../front_end/panels/timeline/components/NetworkRequestDetails.ts
-var { html: html12, render: render12 } = Lit12;
+var { html: html12, render: render12 } = Lit11;
 var MAX_URL_LENGTH3 = 100;
 var UIStrings15 = {
   /**
@@ -9228,7 +9170,7 @@ var UIStrings15 = {
 };
 var str_15 = i18n29.i18n.registerUIStrings("panels/timeline/components/NetworkRequestDetails.ts", UIStrings15);
 var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var NetworkRequestDetails = class extends UI11.Widget.Widget {
+var NetworkRequestDetails = class extends UI12.Widget.Widget {
   #view;
   #request = null;
   #requestPreviewElements = /* @__PURE__ */ new WeakMap();
@@ -9237,7 +9179,7 @@ var NetworkRequestDetails = class extends UI11.Widget.Widget {
   #linkifier = null;
   #serverTimings = null;
   #parsedTrace = null;
-  constructor(element, view = DEFAULT_VIEW7) {
+  constructor(element, view = DEFAULT_VIEW8) {
     super(element);
     this.#view = view;
     this.requestUpdate();
@@ -9286,9 +9228,9 @@ var NetworkRequestDetails = class extends UI11.Widget.Widget {
     );
   }
 };
-var DEFAULT_VIEW7 = (input, _output, target) => {
+var DEFAULT_VIEW8 = (input, _output, target) => {
   if (!input.request) {
-    render12(Lit12.nothing, target);
+    render12(Lit11.nothing, target);
     return;
   }
   const { request } = input;
@@ -9304,7 +9246,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           ${renderTitle(input.request)}
           ${renderURL(input.request)}
           <div class="network-request-details-cols">
-            ${Lit12.Directives.until(renderPreviewElement(
+            ${Lit11.Directives.until(renderPreviewElement(
     input.request,
     input.target,
     input.previewElementsCache
@@ -9332,7 +9274,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
               <div class="network-request-details-col redirect-details">
                 ${redirectsHtml}
               </div>
-            ` : Lit12.nothing}
+            ` : Lit11.nothing}
             </div>
             ${renderInitiatedBy(request, input.parsedTrace, input.target, input.linkifier)}
           </div>
@@ -9345,7 +9287,7 @@ function renderTitle(request) {
   };
   return html12`
     <div class="network-request-details-title">
-      <div style=${Lit12.Directives.styleMap(style)}></div>
+      <div style=${Lit11.Directives.styleMap(style)}></div>
       ${i18nString14(UIStrings15.networkRequest)}
     </div>
   `;
@@ -9363,7 +9305,7 @@ function renderURL(request) {
   const networkRequest = SDK5.TraceObject.RevealableNetworkRequest.create(SDK5.TargetManager.TargetManager.instance(), request);
   if (networkRequest) {
     linkifiedURL.addEventListener("contextmenu", (event) => {
-      const contextMenu = new UI11.ContextMenu.ContextMenu(event);
+      const contextMenu = new UI12.ContextMenu.ContextMenu(event);
       contextMenu.appendApplicableItems(networkRequest);
       void contextMenu.show();
     });
@@ -9378,7 +9320,7 @@ function renderURL(request) {
 }
 async function renderPreviewElement(request, target, previewElementsCache) {
   if (!request.args.data.url || !target) {
-    return Lit12.nothing;
+    return Lit11.nothing;
   }
   const url = request.args.data.url;
   if (!previewElementsCache.get(request)) {
@@ -9402,11 +9344,11 @@ async function renderPreviewElement(request, target, previewElementsCache) {
       <div class="network-request-details-col">${requestPreviewElement}</div>
       <div class="column-divider"></div>`;
   }
-  return Lit12.nothing;
+  return Lit11.nothing;
 }
 function renderRow(title, value2) {
   if (!value2) {
-    return Lit12.nothing;
+    return Lit11.nothing;
   }
   return html12`
       <div class="network-request-details-row" jslog=${VisualLogging8.item("detail-row")}>
@@ -9433,7 +9375,7 @@ function renderEncodedDataLength(request) {
 }
 function renderBlockingRow(request) {
   if (!Helpers9.Network.isSyntheticNetworkRequestEventRenderBlocking(request)) {
-    return Lit12.nothing;
+    return Lit11.nothing;
   }
   let renderBlockingText;
   switch (request.args.data.renderBlocking) {
@@ -9444,7 +9386,7 @@ function renderBlockingRow(request) {
       renderBlockingText = UIStrings15.inBodyParserBlocking;
       break;
     default:
-      return Lit12.nothing;
+      return Lit11.nothing;
   }
   return renderRow(i18nString14(UIStrings15.blocking), renderBlockingText);
 }
@@ -9454,17 +9396,17 @@ function renderFromCache(request) {
 }
 function renderThirdPartyEntity(request, entityMapper) {
   if (!entityMapper) {
-    return Lit12.nothing;
+    return Lit11.nothing;
   }
   const entity = entityMapper.entityForEvent(request);
   if (!entity) {
-    return Lit12.nothing;
+    return Lit11.nothing;
   }
   return renderRow(i18nString14(UIStrings15.entity), entity.name);
 }
 function renderServerTimings(timings) {
   if (!timings || timings.length === 0) {
-    return Lit12.nothing;
+    return Lit11.nothing;
   }
   return html12`
     <div class="column-divider"></div>
@@ -9484,7 +9426,7 @@ function renderServerTimings(timings) {
 }
 function renderInitiatedBy(request, parsedTrace, target, linkifier) {
   if (!linkifier) {
-    return Lit12.nothing;
+    return Lit11.nothing;
   }
   const hasStackTrace = Trace7.Helpers.Trace.stackTraceInEvent(request) !== null;
   let link = null;
@@ -9511,7 +9453,7 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
     );
   }
   if (!link) {
-    return Lit12.nothing;
+    return Lit11.nothing;
   }
   return html12`
       <div class="network-request-details-item">
@@ -9527,7 +9469,7 @@ __export(NetworkTrackWidget_exports, {
 });
 import * as Trace8 from "../../../models/trace/trace.js";
 import * as PerfUI2 from "../../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as Lit13 from "../../../ui/lit/lit.js";
+import * as Lit12 from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/networkTrackWidget.css.js
 var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
@@ -9565,7 +9507,7 @@ var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
 /*# sourceURL=${import.meta.resolve("./networkTrackWidget.css")} */`;
 
 // ../../front_end/panels/timeline/components/NetworkTrackWidget.ts
-var { html: html13 } = Lit13;
+var { html: html13 } = Lit12;
 var NetworkTrackWidget = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #flameChartContainer = document.createElement("div");
@@ -9613,7 +9555,7 @@ var NetworkTrackWidget = class extends HTMLElement {
         <style>${networkTrackWidget_css_default}</style>
         ${this.#flameChartContainer}
       `;
-    Lit13.render(output, this.#shadow, { host: this });
+    Lit12.render(output, this.#shadow, { host: this });
     if (this.#flameChart) {
       this.#flameChart.update();
     }
@@ -9632,12 +9574,12 @@ if (!customElements.get("devtools-performance-agent-network-track")) {
 // ../../front_end/panels/timeline/components/RelatedInsightChips.ts
 var RelatedInsightChips_exports = {};
 __export(RelatedInsightChips_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   RelatedInsightChips: () => RelatedInsightChips
 });
 import * as i18n31 from "../../../core/i18n/i18n.js";
-import * as UI12 from "../../../ui/legacy/legacy.js";
-import * as Lit14 from "../../../ui/lit/lit.js";
+import * as UI13 from "../../../ui/legacy/legacy.js";
+import * as Lit13 from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/relatedInsightChips.css.js
 var relatedInsightChips_css_default = `/*
@@ -9722,7 +9664,7 @@ var relatedInsightChips_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./relatedInsightChips.css")} */`;
 
 // ../../front_end/panels/timeline/components/RelatedInsightChips.ts
-var { html: html14, render: render14 } = Lit14;
+var { html: html14, render: render14 } = Lit13;
 var UIStrings16 = {
   /**
    * @description Prefix shown next to related insight chips in the Performance panel.
@@ -9736,11 +9678,11 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/timeline/components/RelatedInsightChips.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var RelatedInsightChips = class extends UI12.Widget.Widget {
+var RelatedInsightChips = class extends UI13.Widget.Widget {
   #view;
   #activeEvent = null;
   #eventToInsightsMap = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW8) {
+  constructor(element, view = DEFAULT_VIEW9) {
     super(element);
     this.#view = view;
   }
@@ -9766,11 +9708,11 @@ var RelatedInsightChips = class extends UI12.Widget.Widget {
     this.#view(input, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var DEFAULT_VIEW9 = (input, _output, target) => {
   const { activeEvent, eventToInsightsMap } = input;
   const relatedInsights = activeEvent ? eventToInsightsMap.get(activeEvent) ?? [] : [];
   if (!activeEvent || eventToInsightsMap.size === 0 || relatedInsights.length === 0) {
-    render14(Lit14.nothing, target);
+    render14(Lit13.nothing, target);
     return;
   }
   const insightMessages = relatedInsights.flatMap((insight) => {
@@ -9822,13 +9764,13 @@ __export(Sidebar_exports, {
   SidebarWidget: () => SidebarWidget
 });
 import * as Common6 from "../../../core/common/common.js";
-import * as UI16 from "../../../ui/legacy/legacy.js";
+import * as UI17 from "../../../ui/legacy/legacy.js";
 import * as Insights9 from "./insights/insights.js";
 
 // ../../front_end/panels/timeline/components/SidebarAnnotationsTab.ts
 var SidebarAnnotationsTab_exports = {};
 __export(SidebarAnnotationsTab_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   SidebarAnnotationsTab: () => SidebarAnnotationsTab
 });
 import "../../../ui/components/settings/settings.js";
@@ -9837,9 +9779,9 @@ import * as i18n33 from "../../../core/i18n/i18n.js";
 import * as Platform8 from "../../../core/platform/platform.js";
 import * as Trace9 from "../../../models/trace/trace.js";
 import * as TraceBounds3 from "../../../services/trace_bounds/trace_bounds.js";
-import * as UI13 from "../../../ui/legacy/legacy.js";
+import * as UI14 from "../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "../../../ui/legacy/theme_support/theme_support.js";
-import * as Lit15 from "../../../ui/lit/lit.js";
+import * as Lit14 from "../../../ui/lit/lit.js";
 import * as VisualLogging9 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/sidebarAnnotationsTab.css.js
@@ -9954,7 +9896,7 @@ var sidebarAnnotationsTab_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./sidebarAnnotationsTab.css")} */`;
 
 // ../../front_end/panels/timeline/components/SidebarAnnotationsTab.ts
-var { html: html15, render: render15 } = Lit15;
+var { html: html15, render: render15 } = Lit14;
 var diagramImageUrl = new URL("../../../Images/performance-panel-diagram.svg", import.meta.url).toString();
 var entryLabelImageUrl = new URL("../../../Images/performance-panel-entry-label.svg", import.meta.url).toString();
 var timeRangeImageUrl = new URL("../../../Images/performance-panel-time-range.svg", import.meta.url).toString();
@@ -10022,14 +9964,14 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/timeline/components/SidebarAnnotationsTab.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var SidebarAnnotationsTab = class extends UI13.Widget.Widget {
+var SidebarAnnotationsTab = class extends UI14.Widget.Widget {
   #annotations = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
   #annotationEntryToColorMap = /* @__PURE__ */ new Map();
   #annotationsHiddenSetting;
   #view;
-  constructor(view = DEFAULT_VIEW9) {
+  constructor(view = DEFAULT_VIEW10) {
     super();
     this.#view = view;
     this.#annotationsHiddenSetting = Common5.Settings.Settings.instance().moduleSetting("annotations-hidden");
@@ -10165,7 +10107,7 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
         color
       };
       return html15`
-            <span class="annotation-identifier" style=${Lit15.Directives.styleMap(styleForAnnotationIdentifier)}>
+            <span class="annotation-identifier" style=${Lit14.Directives.styleMap(styleForAnnotationIdentifier)}>
               ${entryName}
             </span>
       `;
@@ -10190,7 +10132,7 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
       };
       return html15`
         <div class="entries-link">
-          <span class="annotation-identifier" style=${Lit15.Directives.styleMap(styleForFromAnnotationIdentifier)}>
+          <span class="annotation-identifier" style=${Lit14.Directives.styleMap(styleForFromAnnotationIdentifier)}>
             ${entryFromName}
           </span>
           <devtools-icon name="arrow-forward" class="inline-icon large">
@@ -10213,11 +10155,11 @@ function renderEntryToIdentifier(annotation, annotationEntryToColorMap) {
       color: toTextColor
     };
     return html15`
-      <span class="annotation-identifier" style=${Lit15.Directives.styleMap(styleForToAnnotationIdentifier)}>
+      <span class="annotation-identifier" style=${Lit14.Directives.styleMap(styleForToAnnotationIdentifier)}>
         ${entryToName}
       </span>`;
   }
-  return Lit15.nothing;
+  return Lit14.nothing;
 }
 function jslogForAnnotation(annotation) {
   switch (annotation.type) {
@@ -10256,7 +10198,7 @@ function renderTutorial() {
       </div>
     </div>`;
 }
-var DEFAULT_VIEW9 = (input, _output, target) => {
+var DEFAULT_VIEW10 = (input, _output, target) => {
   render15(
     html15`
       <style>${sidebarAnnotationsTab_css_default}</style>
@@ -10300,13 +10242,13 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
 // ../../front_end/panels/timeline/components/SidebarInsightsTab.ts
 var SidebarInsightsTab_exports = {};
 __export(SidebarInsightsTab_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW11,
+  DEFAULT_VIEW: () => DEFAULT_VIEW12,
   SidebarInsightsTab: () => SidebarInsightsTab
 });
 import * as Trace11 from "../../../models/trace/trace.js";
 import * as Buttons8 from "../../../ui/components/buttons/buttons.js";
-import * as UI15 from "../../../ui/legacy/legacy.js";
-import * as Lit17 from "../../../ui/lit/lit.js";
+import * as UI16 from "../../../ui/legacy/legacy.js";
+import * as Lit16 from "../../../ui/lit/lit.js";
 import * as Utils from "../utils/utils.js";
 import * as Insights8 from "./insights/insights.js";
 
@@ -10397,8 +10339,8 @@ __export(SidebarSingleInsightSet_exports, {
 import * as i18n35 from "../../../core/i18n/i18n.js";
 import * as AIAssistance from "../../../models/ai_assistance/ai_assistance.js";
 import * as Trace10 from "../../../models/trace/trace.js";
-import * as UI14 from "../../../ui/legacy/legacy.js";
-import * as Lit16 from "../../../ui/lit/lit.js";
+import * as UI15 from "../../../ui/legacy/legacy.js";
+import * as Lit15 from "../../../ui/lit/lit.js";
 import * as Insights6 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/sidebarSingleInsightSet.css.js
@@ -10424,7 +10366,7 @@ var sidebarSingleInsightSet_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./sidebarSingleInsightSet.css")} */`;
 
 // ../../front_end/panels/timeline/components/SidebarSingleInsightSet.ts
-var { html: html16 } = Lit16.StaticHtml;
+var { html: html16 } = Lit15.StaticHtml;
 var INSIGHT_NAME_TO_COMPONENT = {
   Cache: Insights6.Cache.Cache,
   CharacterSet: Insights6.CharacterSet.CharacterSet,
@@ -10455,8 +10397,8 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/components/SidebarSingleInsightSet.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var { widget: widget4 } = UI14.Widget;
-var DEFAULT_VIEW10 = (input, output, target) => {
+var { widget: widget4 } = UI15.Widget;
+var DEFAULT_VIEW11 = (input, output, target) => {
   const {
     shownInsights,
     passedInsights,
@@ -10466,7 +10408,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
   } = input;
   function renderMetrics() {
     if (!insightSetKey || !parsedTrace) {
-      return Lit16.nothing;
+      return Lit15.nothing;
     }
     return html16`${widget4(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
   }
@@ -10482,10 +10424,10 @@ var DEFAULT_VIEW10 = (input, output, target) => {
     })}</summary>
           ${passedInsightsTemplates}
         </details>
-      ` : Lit16.nothing}
+      ` : Lit15.nothing}
     `;
   }
-  Lit16.render(html16`
+  Lit15.render(html16`
     <style>${sidebarSingleInsightSet_css_default}</style>
     <div class="navigation">
       ${renderMetrics()}
@@ -10493,7 +10435,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
     </div>
   `, target);
 };
-var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI14.Widget.Widget {
+var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget.Widget {
   #view;
   #isActiveInsightHighlighted = false;
   #activeHighlightTimeout = -1;
@@ -10503,7 +10445,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI14.Widget
     activeInsight: null,
     parsedTrace: null
   };
-  constructor(element, view = DEFAULT_VIEW10) {
+  constructor(element, view = DEFAULT_VIEW11) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -10551,7 +10493,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI14.Widget
   }
   #renderInsightComponent(insightSet, insightData, fieldMetrics) {
     if (!this.#data.parsedTrace) {
-      return Lit16.nothing;
+      return Lit15.nothing;
     }
     const { insightName, model } = insightData;
     const activeInsight = this.#data.activeInsight;
@@ -10572,7 +10514,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI14.Widget
       fieldMetrics
     };
     const items = [{ componentClass, widgetConfig }];
-    const output = Lit16.Directives.repeat(items, (data) => data.widgetConfig.model, (data) => {
+    const output = Lit15.Directives.repeat(items, (data) => data.widgetConfig.model, (data) => {
       return html16`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
         ${widget4(data.componentClass, data.widgetConfig)}
       ></devtools-widget>`;
@@ -10609,9 +10551,9 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI14.Widget
 };
 
 // ../../front_end/panels/timeline/components/SidebarInsightsTab.ts
-var { html: html17 } = Lit17;
-var { widget: widget5 } = UI15.Widget;
-var DEFAULT_VIEW11 = (input, output, target) => {
+var { html: html17 } = Lit16;
+var { widget: widget5 } = UI16.Widget;
+var DEFAULT_VIEW12 = (input, output, target) => {
   const {
     parsedTrace,
     labels,
@@ -10628,7 +10570,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     return;
   }
   const hasMultipleInsightSets = insights.size > 1;
-  Lit17.render(html17`
+  Lit16.render(html17`
     <style>${sidebarInsightsTab_css_default}</style>
     <div class="insight-sets-wrapper">
       ${[...insights.values()].map((insightSet, index) => {
@@ -10673,7 +10615,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
   `, target);
 };
 function renderZoomButton(insightSetToggled) {
-  const classes = Lit17.Directives.classMap({
+  const classes = Lit16.Directives.classMap({
     "zoom-icon": true,
     active: insightSetToggled
   });
@@ -10687,7 +10629,7 @@ function renderZoomButton(insightSetToggled) {
     ></devtools-button></div>`;
 }
 function renderDropdownIcon(insightSetToggled) {
-  const containerClasses = Lit17.Directives.classMap({
+  const containerClasses = Lit16.Directives.classMap({
     "dropdown-icon": true,
     active: insightSetToggled
   });
@@ -10701,7 +10643,7 @@ function renderDropdownIcon(insightSetToggled) {
     ></devtools-button></div>
   `;
 }
-var SidebarInsightsTab = class _SidebarInsightsTab extends UI15.Widget.Widget {
+var SidebarInsightsTab = class _SidebarInsightsTab extends UI16.Widget.Widget {
   static createWidgetElement() {
     const widgetElement = document.createElement("devtools-widget");
     new _SidebarInsightsTab(widgetElement);
@@ -10718,7 +10660,7 @@ var SidebarInsightsTab = class _SidebarInsightsTab extends UI15.Widget.Widget {
    * You can only have one of these open at any time.
    */
   #selectedInsightSet = null;
-  constructor(element, view = DEFAULT_VIEW11) {
+  constructor(element, view = DEFAULT_VIEW12) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -10840,8 +10782,8 @@ var SidebarTabs = /* @__PURE__ */ ((SidebarTabs2) => {
 var DEFAULT_SIDEBAR_TAB = "insights" /* INSIGHTS */;
 var DEFAULT_SIDEBAR_WIDTH_PX = 240;
 var MIN_SIDEBAR_WIDTH_PX = 170;
-var SidebarWidget = class extends UI16.Widget.VBox {
-  #tabbedPane = new UI16.TabbedPane.TabbedPane();
+var SidebarWidget = class extends UI17.Widget.VBox {
+  #tabbedPane = new UI17.TabbedPane.TabbedPane();
   #insightsView = new InsightsView();
   #annotationsView = new AnnotationsView();
   /**
@@ -10947,7 +10889,7 @@ var SidebarWidget = class extends UI16.Widget.VBox {
     return this.#hasOpenedOnce.get();
   }
 };
-var InsightsView = class extends UI16.Widget.VBox {
+var InsightsView = class extends UI17.Widget.VBox {
   #component = SidebarInsightsTab.createWidgetElement();
   constructor() {
     super();
@@ -10955,7 +10897,7 @@ var InsightsView = class extends UI16.Widget.VBox {
     this.#getWidget().show(this.element);
   }
   #getWidget() {
-    return UI16.Widget.Widget.get(this.#component);
+    return UI17.Widget.Widget.get(this.#component);
   }
   setParsedTrace(parsedTrace) {
     const widget7 = this.#getWidget();
@@ -10977,7 +10919,7 @@ var InsightsView = class extends UI16.Widget.VBox {
     this.#getWidget().setActiveInsightSet(insightSetKey);
   }
 };
-var AnnotationsView = class extends UI16.Widget.VBox {
+var AnnotationsView = class extends UI17.Widget.VBox {
   #component = new SidebarAnnotationsTab();
   constructor() {
     super();
@@ -11007,8 +10949,8 @@ __export(TimelineRangeSummaryView_exports, {
 });
 import * as Platform10 from "../../../core/platform/platform.js";
 import * as Trace12 from "../../../models/trace/trace.js";
-import * as UI18 from "../../../ui/legacy/legacy.js";
-import * as Lit19 from "../../../ui/lit/lit.js";
+import * as UI19 from "../../../ui/legacy/legacy.js";
+import * as Lit18 from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/timelineRangeSummaryView.css.js
 var timelineRangeSummaryView_css_default = `/*
@@ -11065,8 +11007,8 @@ __export(TimelineSummary_exports, {
 import * as i18n37 from "../../../core/i18n/i18n.js";
 import * as Platform9 from "../../../core/platform/platform.js";
 import * as Buttons9 from "../../../ui/components/buttons/buttons.js";
-import * as UI17 from "../../../ui/legacy/legacy.js";
-import * as Lit18 from "../../../ui/lit/lit.js";
+import * as UI18 from "../../../ui/legacy/legacy.js";
+import * as Lit17 from "../../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/timelineSummary.css.js
@@ -11150,7 +11092,7 @@ var timelineSummary_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelineSummary.css")} */`;
 
 // ../../front_end/panels/timeline/components/TimelineSummary.ts
-var { render: render18, html: html18 } = Lit18;
+var { render: render18, html: html18 } = Lit17;
 var UIStrings19 = {
   /**
    * @description Label for total duration in the summary view of the Performance panel.
@@ -11166,13 +11108,13 @@ var UIStrings19 = {
 var str_19 = i18n37.i18n.registerUIStrings("panels/timeline/components/TimelineSummary.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
-  const summaryClasses = Lit18.Directives.classMap({
+  const summaryClasses = Lit17.Directives.classMap({
     "timeline-summary": true,
     "is-in-ai-widget": Boolean(input.isInAIWidget)
   });
   render18(html18`
         <style>${timelineSummary_css_default}</style>
-        <style>@scope to (devtools-widget > *) { ${UI17.inspectorCommonStyles} }</style>
+        <style>@scope to (devtools-widget > *) { ${UI18.inspectorCommonStyles} }</style>
         <style>@scope to (devtools-widget > *) { ${Buttons9.textButtonStyles} }</style>
         <div class=${summaryClasses} jslog=${VisualLogging10.section("timeline-summary")}>
             <div class="summary-range">${i18nString18(UIStrings19.rangeSS, { PH1: i18n37.TimeUtilities.millisToString(input.rangeStart), PH2: i18n37.TimeUtilities.millisToString(input.rangeEnd) })}</div>
@@ -11206,7 +11148,7 @@ var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
 
       </div>`, target);
 };
-var CategorySummary = class extends UI17.Widget.Widget {
+var CategorySummary = class extends UI18.Widget.Widget {
   #view;
   #rangeStart = 0;
   #rangeEnd = 0;
@@ -11239,8 +11181,8 @@ var CategorySummary = class extends UI17.Widget.Widget {
 };
 
 // ../../front_end/panels/timeline/components/TimelineRangeSummaryView.ts
-var { render: render19, html: html19 } = Lit19;
-var { widget: widget6 } = UI18.Widget;
+var { render: render19, html: html19 } = Lit18;
+var { widget: widget6 } = UI19.Widget;
 var categoryBreakdownCacheSymbol = /* @__PURE__ */ Symbol("categoryBreakdownCache");
 var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
   const { parsedTrace, events, startTime, endTime } = input;
@@ -11283,11 +11225,11 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     }
   })}
       ></devtools-widget>
-      ${input.thirdPartyTreeTemplate ?? Lit19.nothing}
+      ${input.thirdPartyTreeTemplate ?? Lit18.nothing}
     </div>
   `, target);
 };
-var TimelineRangeSummaryView = class extends UI18.Widget.Widget {
+var TimelineRangeSummaryView = class extends UI19.Widget.Widget {
   #view;
   #summaryData;
   constructor(element, view = TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW) {

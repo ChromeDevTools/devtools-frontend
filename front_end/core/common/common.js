@@ -2779,7 +2779,13 @@ var PageHighlight = {
   GridBorder: Legacy.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 1]),
   GapBackground: Legacy.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 0.3]),
   GapHatch: Legacy.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 0.8]),
-  GridAreaBorder: Legacy.fromRGBA([26, 115, 232, 1])
+  GridAreaBorder: Legacy.fromRGBA([26, 115, 232, 1]),
+  AnchorIMCB: Legacy.fromRGBA([127, 32, 210, 1]),
+  AnchorIMCBBackground: Legacy.fromRGBA([127, 32, 210, 0.15]),
+  AnchorInsetsBackground: Legacy.fromRGBA([246, 178, 107, 0.25]),
+  AnchorInsetsHatch: Legacy.fromRGBA([246, 178, 107, 0.8]),
+  AnchorTarget: Legacy.fromRGBA([26, 115, 232, 1]),
+  AnchorTargetBackground: Legacy.fromRGBA([26, 115, 232, 0.15])
 };
 var SourceOrderHighlight = {
   ParentOutline: Legacy.fromRGBA([224, 90, 183, 1]),
@@ -4935,7 +4941,7 @@ __export(Settings_exports, {
   resetSettings: () => resetSettings
 });
 import * as Platform5 from "../platform/platform.js";
-import * as Root3 from "../root/root.js";
+import * as Root2 from "../root/root.js";
 
 // ../../front_end/core/common/VersionController.ts
 var VersionController_exports = {};
@@ -4943,7 +4949,6 @@ __export(VersionController_exports, {
   VersionController: () => VersionController
 });
 import * as Platform4 from "../platform/platform.js";
-import * as Root2 from "../root/root.js";
 var VersionController = class _VersionController {
   static GLOBAL_VERSION_SETTING_NAME = "inspectorVersion";
   static SYNCED_VERSION_SETTING_NAME = "syncedInspectorVersion";
@@ -5587,58 +5592,12 @@ var VersionController = class _VersionController {
     recordingsSetting.set(recordings);
   }
   updateVersionFrom42To43() {
-    const timelineShowAllEventsExperimentEnabled = Root2.Runtime.experiments.getValueFromStorage("timeline-show-all-events");
-    if (timelineShowAllEventsExperimentEnabled !== void 0) {
-      if (this.#settings.syncedStorage.has("timeline-show-all-events")) {
-        return;
-      }
-      try {
-        const timelineShowAllEventsSetting = this.#settings.moduleSetting("timeline-show-all-events");
-        timelineShowAllEventsSetting.set(timelineShowAllEventsExperimentEnabled);
-      } catch {
-      }
-    }
   }
   updateVersionFrom43To44() {
-    const apcaExperimentEnabled = Root2.Runtime.experiments.getValueFromStorage("apca");
-    if (apcaExperimentEnabled !== void 0) {
-      if (this.#settings.syncedStorage.has("apca")) {
-        return;
-      }
-      try {
-        const apcaSetting = this.#settings.moduleSetting("apca");
-        apcaSetting.set(apcaExperimentEnabled);
-      } catch {
-      }
-    }
   }
   updateVersionFrom44To45() {
-    const timelineDebugModeExperimentEnabled = Root2.Runtime.experiments.getValueFromStorage("timeline-debug-mode");
-    if (timelineDebugModeExperimentEnabled !== void 0) {
-      if (this.#settings.syncedStorage.has("timeline-debug-mode")) {
-        return;
-      }
-      try {
-        const timelineDebugModeSetting = this.#settings.moduleSetting("timeline-debug-mode");
-        timelineDebugModeSetting.set(timelineDebugModeExperimentEnabled);
-      } catch {
-      }
-    }
   }
   updateVersionFrom45To46() {
-    const timelineInvalidationTrackingExperimentEnabled = Root2.Runtime.experiments.getValueFromStorage(
-      "timeline-invalidation-tracking"
-    );
-    if (timelineInvalidationTrackingExperimentEnabled !== void 0) {
-      if (this.#settings.syncedStorage.has("timeline-invalidation-tracking")) {
-        return;
-      }
-      try {
-        const timelineInvalidationTrackingSetting = this.#settings.moduleSetting("timeline-invalidation-tracking");
-        timelineInvalidationTrackingSetting.set(timelineInvalidationTrackingExperimentEnabled);
-      } catch {
-      }
-    }
   }
   updateVersionFrom46To47() {
     this.#settings.syncedStorage.remove("network.backend-linking-rules");
@@ -5722,7 +5681,7 @@ var Settings = class _Settings {
     for (const registration of this.#settingRegistrations) {
       const { settingName, defaultValue, storageType } = registration;
       const isRegex = registration.settingType === "regex" /* REGEX */;
-      const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root3.Runtime.hostConfig) : defaultValue;
+      const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root2.Runtime.hostConfig) : defaultValue;
       const setting = isRegex && typeof evaluatedDefaultValue === "string" ? this.createRegExpSetting(settingName, evaluatedDefaultValue, void 0, storageType) : this.createSetting(settingName, evaluatedDefaultValue, storageType);
       setting.setRegistration(registration);
       this.registerModuleSetting(setting);
@@ -5735,7 +5694,7 @@ var Settings = class _Settings {
     return this.#settingRegistrations;
   }
   static hasInstance() {
-    return Root3.DevToolsContext.globalInstance().has(_Settings);
+    return Root2.DevToolsContext.globalInstance().has(_Settings);
   }
   static instance(opts = {
     forceNew: null,
@@ -5755,11 +5714,11 @@ var Settings = class _Settings {
       runSettingsMigration,
       console: console2
     } = opts;
-    if (!Root3.DevToolsContext.globalInstance().has(_Settings) || forceNew) {
+    if (!Root2.DevToolsContext.globalInstance().has(_Settings) || forceNew) {
       if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations || !console2) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
-      Root3.DevToolsContext.globalInstance().set(_Settings, new _Settings({
+      Root2.DevToolsContext.globalInstance().set(_Settings, new _Settings({
         syncedStorage,
         globalStorage,
         localStorage,
@@ -5769,10 +5728,10 @@ var Settings = class _Settings {
         console: console2
       }));
     }
-    return Root3.DevToolsContext.globalInstance().get(_Settings);
+    return Root2.DevToolsContext.globalInstance().get(_Settings);
   }
   static removeInstance() {
-    Root3.DevToolsContext.globalInstance().delete(_Settings);
+    Root2.DevToolsContext.globalInstance().delete(_Settings);
   }
   registerModuleSetting(setting) {
     const settingName = setting.name;
@@ -5898,7 +5857,7 @@ var Settings = class _Settings {
     const { name, type, defaultValue, storageType } = descriptor;
     const isRegex = type === "regex" /* REGEX */;
     const isGetter = (value) => typeof value === "function";
-    const evaluatedDefaultValue = isGetter(defaultValue) ? defaultValue(Root3.Runtime.hostConfig) : defaultValue;
+    const evaluatedDefaultValue = isGetter(defaultValue) ? defaultValue(Root2.Runtime.hostConfig) : defaultValue;
     setting = isRegex && typeof evaluatedDefaultValue === "string" ? this.createRegExpSetting(name, evaluatedDefaultValue, void 0, storageType) : this.createSetting(name, evaluatedDefaultValue, storageType);
     setting.setSettingType(type);
     this.registerModuleSetting(setting);
@@ -5916,7 +5875,7 @@ var Settings = class _Settings {
    * @returns An object with either the resolved `setting` or the availability `status` and `reason`.
    */
   maybeResolve(descriptor) {
-    const available = descriptor.isAvailable(Root3.Runtime.hostConfig);
+    const available = descriptor.isAvailable(Root2.Runtime.hostConfig);
     if (available.status === 1 /* AVAILABLE */) {
       return { setting: this.#resolve(descriptor) };
     }

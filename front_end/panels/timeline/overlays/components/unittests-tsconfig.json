@@ -46,6 +46,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../../../front_end/panels/timeline/overlays/components/TimeRangeOverlay.test.ts",
     "../../../../../../../../front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.test.ts",
     "../../../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../../../front_end/global_typings/global_defs.d.ts",

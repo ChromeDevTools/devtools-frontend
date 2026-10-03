@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
-import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
+import { LighthouseContext } from '../contexts/LighthouseContext.js';
+/**
+ * Runs Lighthouse audits on the inspected page and sets the resulting report as the active conversation context.
+ */
 export class RunLighthouseTool {
     name = "runLighthouse" /* ToolName.RUN_LIGHTHOUSE */;
     description = 'Runs Lighthouse audits on the active page. Supports "navigation" (for full initial page load audits), "snapshot" (for inspecting live in-page modifications without reload), and "timespan" (for interactions).';
@@ -49,11 +52,10 @@ export class RunLighthouseTool {
             if (!report) {
                 return { error: 'Error: Failed to record new audits.' };
             }
-            const audits = new LighthouseFormatter().formatReport(report, params.categoryId);
-            const isSnapshot = mode === 'snapshot';
             return {
-                result: { audits },
-                widgets: [{ name: 'LIGHTHOUSE_REPORT', data: { report, snapshotReport: isSnapshot } }],
+                // No widgets are returned here; LighthouseContext.getWidgets() provides the report widget.
+                context: new LighthouseContext(report),
+                description: 'Lighthouse audit completed',
             };
         }
         catch (err) {

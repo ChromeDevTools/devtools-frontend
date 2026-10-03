@@ -23,8 +23,12 @@ export function createNetworkRequest(options = {}) {
     const loaderId = (options.loaderId !== undefined && options.loaderId !== null) ?
         options.loaderId :
         null;
-    const request = options.withoutBackend ? SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(reqId, reqUrl, docUrl, options.initiator ?? null) :
-        SDK.NetworkRequest.NetworkRequest.create(reqId, reqUrl, docUrl, frameId, loaderId, options.initiator ?? null);
+    const initiator = options.initiator ?? null;
+    const request = options.isImportedHar ?
+        SDK.NetworkRequest.NetworkRequest.createForImportedHar(reqId, reqUrl, docUrl, initiator) :
+        options.withoutBackend ?
+            SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(reqId, reqUrl, docUrl, initiator) :
+            SDK.NetworkRequest.NetworkRequest.create(reqId, reqUrl, docUrl, frameId, loaderId, initiator);
     if (options.statusCode !== undefined) {
         request.statusCode = options.statusCode;
     }
@@ -73,9 +77,6 @@ export function createNetworkRequest(options = {}) {
     if (options.contentData) {
         const dataOrFn = options.contentData;
         request.setContentDataProvider(typeof dataOrFn === 'function' ? dataOrFn : () => Promise.resolve(dataOrFn));
-    }
-    if (options.isImportedHar !== undefined) {
-        request.setIsImportedHar(options.isImportedHar);
     }
     return request;
 }

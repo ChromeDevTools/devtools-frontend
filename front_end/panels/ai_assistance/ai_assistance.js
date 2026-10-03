@@ -6215,6 +6215,11 @@ var Debugger;
     ScopeType2["Module"] = "module";
     ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
   })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let ScopeEmptyReason;
+  ((ScopeEmptyReason2) => {
+    ScopeEmptyReason2["NoVariables"] = "no-variables";
+    ScopeEmptyReason2["AllUnavailable"] = "all-unavailable";
+  })(ScopeEmptyReason = Debugger2.ScopeEmptyReason || (Debugger2.ScopeEmptyReason = {}));
   let BreakLocationType;
   ((BreakLocationType2) => {
     BreakLocationType2["DebuggerStatement"] = "debuggerStatement";
@@ -7184,7 +7189,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
     }
   })}
                               ></devtools-widget>` : html6`
-                          ${input.context instanceof AiAssistanceModel5.RequestContext.RequestContext ? PanelUtils2.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel5.FileContext.FileContext ? PanelUtils2.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel5.AccessibilityContext.AccessibilityContext ? html6`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel5.PerformanceTraceContext.PerformanceTraceContext ? html6`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : input.context instanceof AiAssistanceModel5.StorageContext.StorageContext ? html6`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` : Lit6.nothing}
+                          ${input.context instanceof AiAssistanceModel5.RequestContext.RequestContext ? PanelUtils2.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel5.FileContext.FileContext ? PanelUtils2.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel5.LighthouseContext.LighthouseContext ? html6`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel5.PerformanceTraceContext.PerformanceTraceContext ? html6`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : input.context instanceof AiAssistanceModel5.StorageContext.StorageContext ? html6`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` : Lit6.nothing}
                             <span
                               role="button"
                               class="title"
@@ -9818,11 +9823,11 @@ function createFileContext(file) {
   }
   return new AiAssistanceModel7.FileContext.FileContext(file);
 }
-function createAccessibilityContext(report) {
+function createLighthouseContext(report) {
   if (!report) {
     return null;
   }
-  return new AiAssistanceModel7.AccessibilityContext.AccessibilityContext(report.report);
+  return new AiAssistanceModel7.LighthouseContext.LighthouseContext(report.report);
 }
 function createRequestContext(request) {
   if (!request) {
@@ -9860,7 +9865,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   #selectedElement = null;
   #selectedPerformanceTrace = null;
   #selectedRequest = null;
-  #selectedAccessibility = null;
+  #selectedLighthouse = null;
   #selectedStorage = null;
   // Messages displayed in the `ChatView` component.
   #messages = [];
@@ -10230,7 +10235,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.#selectedRequest = createRequestContext(UI9.Context.Context.instance().flavor(SDK6.NetworkRequest.NetworkRequest));
     this.#selectedPerformanceTrace = createPerformanceTraceContext(UI9.Context.Context.instance().flavor(AiAssistanceModel7.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI9.Context.Context.instance().flavor(Workspace4.UISourceCode.UISourceCode));
-    this.#selectedAccessibility = createAccessibilityContext(
+    this.#selectedLighthouse = createLighthouseContext(
       UI9.Context.Context.instance().flavor(LighthousePanel2.LighthousePanel.ActiveLighthouseReport)
     );
     this.#selectedStorage = createStorageContext(UI9.Context.Context.instance().flavor(AiAssistanceModel7.StorageItem.StorageItem));
@@ -10433,10 +10438,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   };
   #handleLighthouseReportFlavorChange = (ev) => {
     const newReport = ev.data;
-    if (this.#selectedAccessibility?.getItem() === newReport?.report) {
+    if (this.#selectedLighthouse?.getItem() === newReport?.report) {
       return;
     }
-    this.#selectedAccessibility = createAccessibilityContext(newReport);
+    this.#selectedLighthouse = createLighthouseContext(newReport);
     this.#updateConversationState(this.#conversation);
   };
   async performUpdate() {
@@ -10764,7 +10769,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       case AiAssistanceModel7.AiHistoryStorage.ConversationType.PERFORMANCE:
         return this.#selectedPerformanceTrace;
       case AiAssistanceModel7.AiHistoryStorage.ConversationType.ACCESSIBILITY:
-        return this.#selectedAccessibility;
+        return this.#selectedLighthouse;
       case AiAssistanceModel7.AiHistoryStorage.ConversationType.STORAGE:
         return this.#selectedStorage;
       case AiAssistanceModel7.AiHistoryStorage.ConversationType.NONE:
@@ -10781,8 +10786,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       this.#selectedRequest = data;
     } else if (data instanceof AiAssistanceModel7.PerformanceTraceContext.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
-    } else if (data instanceof AiAssistanceModel7.AccessibilityContext.AccessibilityContext) {
-      this.#selectedAccessibility = data;
+    } else if (data instanceof AiAssistanceModel7.LighthouseContext.LighthouseContext) {
+      this.#selectedLighthouse = data;
     } else if (data instanceof AiAssistanceModel7.StorageContext.StorageContext) {
       this.#selectedStorage = data;
     }

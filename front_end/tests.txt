@@ -147,9 +147,9 @@ models/ai_assistance/agents/NetworkAgent.test.js
 models/ai_assistance/agents/PerformanceAgent.test.js
 models/ai_assistance/agents/StorageAgent.test.js
 models/ai_assistance/agents/StylingAgent.test.js
-models/ai_assistance/contexts/AccessibilityContext.test.js
 models/ai_assistance/contexts/DOMNodeContext.test.js
 models/ai_assistance/contexts/FileContext.test.js
+models/ai_assistance/contexts/LighthouseContext.test.js
 models/ai_assistance/contexts/PerformanceTraceContext.test.js
 models/ai_assistance/contexts/RequestContext.test.js
 models/ai_assistance/data_formatters/FileFormatter.test.js
@@ -453,6 +453,7 @@ panels/browser_debugger/browser_debugger.test.js
 panels/changes/ChangesSidebar.test.js
 panels/changes/CombinedDiffView.test.js
 panels/changes/changes.test.js
+panels/comments/CommentsPane.test.js
 panels/common/AiCodeCompletionSummaryToolbar.test.js
 panels/common/BadgeNotification.test.js
 panels/common/CommentThreadWidget.test.js
@@ -702,6 +703,7 @@ panels/timeline/components/insights/NetworkDependencyTree.test.js
 panels/timeline/components/insights/NodeLink.test.js
 panels/timeline/components/insights/Table.test.js
 panels/timeline/overlays/OverlaysImpl.test.js
+panels/timeline/overlays/components/TimeRangeOverlay.test.js
 panels/timeline/overlays/components/TimespanBreakdownOverlay.test.js
 panels/timeline/track_appenders/AnimationsTrackAppender.test.js
 panels/timeline/track_appenders/AppenderUtils.test.js

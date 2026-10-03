@@ -75,6 +75,9 @@
       "path": "../../panels/browser_debugger/meta-tsconfig.ref.json"
     },
     {
+      "path": "../../panels/comments/meta-tsconfig.ref.json"
+    },
+    {
       "path": "../../panels/css_overview/meta-tsconfig.ref.json"
     },
     {

@@ -45,6 +45,7 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import * as UIComponentUtils from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AdoptedStyleSheetContentsWidget, AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement, } from './AdoptedStyleSheetTreeElement.js';
 import * as ElementsComponents from './components/components.js';
@@ -790,7 +791,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     onDocumentUpdated = () => { };
     #maxTreeDepth;
     #enableContextMenu = true;
-    #showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+    #showHTMLCommentsSetting = Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showHTMLCommentsSettingDescriptor);
     #showComments = this.#showHTMLCommentsSetting.get();
     #showAIButton = true;
     #disableEdits = false;
@@ -940,7 +941,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         }
         this.#globalListenersRegistered = true;
         this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
-        if (Common.Settings.Settings.instance().moduleSetting('highlight-node-on-hover-in-overlay').get()) {
+        if (Common.Settings.Settings.instance()
+            .resolve(SettingsUI.ElementsSettings.highlightNodeOnHoverInOverlaySettingDescriptor)
+            .get()) {
             SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel, "HighlightNodeRequested" /* SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED */, this.#highlightNode, this, { scoped: true });
             SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel, "InspectModeWillBeToggled" /* SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED */, this.#clearHighlightedNode, this, { scoped: true });
         }

@@ -4,7 +4,6 @@
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/kit/kit.js';
 import './FieldSettingsDialog.js';
-import './MetricCard.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
@@ -23,6 +22,7 @@ import * as PanelsCommon from '../../common/common.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 import * as Insights from './insights/insights.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
+import { MetricCard } from './MetricCard.js';
 import metricValueStyles from './metricValueStyles.css.js';
 import { CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue } from './Utils.js';
 const { html, nothing, Directives: { live } } = Lit;
@@ -399,16 +399,6 @@ function getCollectionPeriodRange(cruxManager) {
         PH2: formattedLastDate.toLocaleDateString(undefined, options),
     });
 }
-function createMetricCardRef(cardData) {
-    return Lit.Directives.ref(el => {
-        if (el instanceof HTMLElement) {
-            el.data = {
-                ...cardData,
-                tooltipContainer: el.closest('.metric-cards') || undefined,
-            };
-        }
-    });
-}
 function renderLcpCard(input) {
     const fieldData = input.cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
     const nodeLink = input.lcpValue?.nodeRef && PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(input.lcpValue?.nodeRef);
@@ -416,7 +406,7 @@ function renderLcpCard(input) {
     const fieldSubparts = getLcpFieldSubparts(input.cruxManager);
     // clang-format off
     return html `
-    <devtools-metric-card ${createMetricCardRef({
+    <devtools-widget ${widget(MetricCard, {
         metric: 'LCP',
         localValue: input.lcpValue?.value,
         fieldValue: fieldData?.percentiles?.p75,
@@ -438,7 +428,7 @@ function renderLcpCard(input) {
           </div>
         `
         : nothing}
-    </devtools-metric-card>
+    </devtools-widget>
   `;
     // clang-format on
 }
@@ -448,7 +438,7 @@ function renderClsCard(input) {
     const clusterIsVisible = clusterIds.size > 0 && input.layoutShifts.some(layoutShift => clusterIds.has(layoutShift.uniqueLayoutShiftId));
     // clang-format off
     return html `
-    <devtools-metric-card ${createMetricCardRef({
+    <devtools-widget ${widget(MetricCard, {
         metric: 'CLS',
         localValue: input.clsValue?.value,
         fieldValue: fieldData?.percentiles?.p75,
@@ -466,7 +456,7 @@ function renderClsCard(input) {
           >${i18nString(UIStrings.numShifts, { shiftCount: clusterIds.size })}</button>
         </div>
       ` : nothing}
-    </devtools-metric-card>
+    </devtools-widget>
   `;
     // clang-format on
 }
@@ -476,7 +466,7 @@ function renderInpCard(input) {
     const interaction = input.inpValue?.interactionId ? input.interactions.get(input.inpValue.interactionId) : undefined;
     // clang-format off
     return html `
-    <devtools-metric-card ${createMetricCardRef({
+    <devtools-widget ${widget(MetricCard, {
         metric: 'INP',
         localValue: input.inpValue?.value,
         fieldValue: fieldData?.percentiles?.p75,
@@ -499,7 +489,7 @@ function renderInpCard(input) {
           >${interaction.interactionType}</button>
         </div>
       ` : nothing}
-    </devtools-metric-card>
+    </devtools-widget>
   `;
     // clang-format on
 }

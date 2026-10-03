@@ -505,6 +505,17 @@ export class OverlayModel extends SDKModel {
                     color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
                 },
             };
+            highlightConfig.imcbHighlightConfig = {
+                imcbBorderColor: Common.Color.PageHighlight.AnchorIMCB.toProtocolRGBA(),
+                imcbBackgroundColor: Common.Color.PageHighlight.AnchorIMCBBackground.toProtocolRGBA(),
+                insetsBackgroundColor: Common.Color.PageHighlight.AnchorInsetsBackground.toProtocolRGBA(),
+                insetsHatchColor: Common.Color.PageHighlight.AnchorInsetsHatch.toProtocolRGBA(),
+                anchorBorderColor: Common.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+                anchorBackgroundColor: Common.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
+                showPositionAreaGrid: true,
+                positionAreaGridLineColor: Common.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+                positionAreaActiveRegionColor: Common.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
+            };
         }
         if (mode.endsWith('gap')) {
             highlightConfig.gridHighlightConfig = {
@@ -621,6 +632,37 @@ export class OverlayModel extends SDKModel {
                     color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
                     pattern: "dashed" /* Protocol.Overlay.LineStylePattern.Dashed */,
                 },
+            };
+        }
+        const baseImcbHighlightConfig = {
+            imcbBorderColor: Common.Color.PageHighlight.AnchorIMCB.toProtocolRGBA(),
+            imcbBackgroundColor: Common.Color.PageHighlight.AnchorIMCBBackground.toProtocolRGBA(),
+            anchorBorderColor: Common.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+            anchorBackgroundColor: Common.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
+        };
+        if (mode === 'anchor-positioning') {
+            highlightConfig.imcbHighlightConfig = {
+                ...baseImcbHighlightConfig,
+                insetsBackgroundColor: Common.Color.PageHighlight.AnchorInsetsBackground.toProtocolRGBA(),
+                insetsHatchColor: Common.Color.PageHighlight.AnchorInsetsHatch.toProtocolRGBA(),
+                showPositionAreaGrid: true,
+                positionAreaGridLineColor: Common.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+                positionAreaActiveRegionColor: Common.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
+            };
+        }
+        if (mode === 'position-area') {
+            highlightConfig.imcbHighlightConfig = {
+                ...baseImcbHighlightConfig,
+                showPositionAreaGrid: true,
+                positionAreaGridLineColor: Common.Color.PageHighlight.AnchorTarget.toProtocolRGBA(),
+                positionAreaActiveRegionColor: Common.Color.PageHighlight.AnchorTargetBackground.toProtocolRGBA(),
+            };
+        }
+        if (mode === 'insets') {
+            highlightConfig.imcbHighlightConfig = {
+                ...baseImcbHighlightConfig,
+                insetsBackgroundColor: Common.Color.PageHighlight.AnchorInsetsBackground.toProtocolRGBA(),
+                insetsHatchColor: Common.Color.PageHighlight.AnchorInsetsHatch.toProtocolRGBA(),
             };
         }
         return highlightConfig;

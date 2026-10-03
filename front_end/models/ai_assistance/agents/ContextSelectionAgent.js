@@ -7,9 +7,9 @@ import * as Root from '../../../core/root/root.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as Workspace from '../../workspace/workspace.js';
-import { AccessibilityContext } from '../contexts/AccessibilityContext.js';
 import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
 import { FileContext } from '../contexts/FileContext.js';
+import { LighthouseContext } from '../contexts/LighthouseContext.js';
 import { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
 import { RequestContext } from '../contexts/RequestContext.js';
 import { StorageContext } from '../contexts/StorageContext.js';
@@ -390,7 +390,7 @@ export class ContextSelectionAgent extends AiAgent {
                     return { error: 'Failed to generate Lighthouse report.' };
                 }
                 return {
-                    context: new AccessibilityContext(result),
+                    context: new LighthouseContext(result),
                     description: 'User has selected a Lighthouse report',
                     widgets: [{ name: 'LIGHTHOUSE_REPORT', data: { report: result } }],
                 };

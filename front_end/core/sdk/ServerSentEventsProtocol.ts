@@ -95,8 +95,10 @@ export class ServerSentEventsParser {
       this.#data += '\n';
     }
     if (fieldName === 'id') {
-      // We should do a check here whether the id field contains "\0" and ignore it.
-      this.#id = this.#line.substring(fieldValueStart);
+      const id = this.#line.substring(fieldValueStart);
+      if (!id.includes('\0')) {
+        this.#id = id;
+      }
     }
     // Ignore all other fields. Also ignore "retry", we won't forward that to the backend.
   }

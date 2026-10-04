@@ -127,6 +127,17 @@ describe('ServerSentEventsParser', () => {
     assert.strictEqual(events[1].data, 'bye');
   });
 
+  it('ignores id fields containing a null character', async () => {
+    await enqueue('id:42\ndata:first\n\nid:bad\0id\ndata:second\n\n');
+
+    assert.lengthOf(events, 2);
+    assert.strictEqual(events[0].eventId, '42');
+    assert.strictEqual(events[0].data, 'first');
+
+    assert.strictEqual(events[1].eventId, '42');
+    assert.strictEqual(events[1].data, 'second');
+  });
+
   it('ignores the retry field', async () => {
     await enqueue('retry:9999\n\n');
 

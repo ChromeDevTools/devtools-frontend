@@ -1,10 +1,10 @@
 Name: Web Vitals
 Short Name: Web Vitals
 URL: https://github.com/GoogleChrome/web-vitals
-Version: 6.2.2
+Version: 6.2.3
 License: Apache-2.0
 License File: package/LICENSE
-Revision: 01e8b5d444810e2b81afd2b1b0194399185499a7
+Revision: 400d01968abffcd91a6f0307c9aaac97c5f7a76a
 Update Mechanism: Manual
 Security Critical: no
 Shipped: yes

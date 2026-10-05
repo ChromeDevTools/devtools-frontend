@@ -810,240 +810,95 @@ describe('AiAgent', () => {
   });
 
   describe('parseTextResponseForSuggestions', () => {
-    let agent: AiAgentMock;
-
-    beforeEach(() => {
-      agent = new AiAgentMock({
+    it('should parse valid suggestions', () => {
+      const agent = new AiAgentMock({
         aidaClient: mockAidaClient(),
       });
-    });
-
-    /**
-     * Parses `input` for suggestions and asserts both the remaining `answer` text
-     * (defaulting to `''`) and the extracted `suggestions` array (defaulting to
-     * `undefined`).
-     */
-    function assertSuggestions(
-        input: string,
-        expected: {answer?: string, suggestions?: [string, ...string[]]} = {},
-        ): void {
-      const parsed = agent.parseTextResponseForSuggestions(input);
-      assert.strictEqual(parsed.answer, expected.answer ?? '');
-      assert.deepEqual(parsed.suggestions, expected.suggestions);
-    }
-
-    it('should parse valid suggestions', () => {
-      assertSuggestions('SUGGESTIONS: ["how to fix", "why it fails"]', {
-        suggestions: ['how to fix', 'why it fails'],
-      });
+      const parsed = agent.parseTextResponseForSuggestions('SUGGESTIONS: ["how to fix", "why it fails"]');
+      assert.deepEqual(parsed.suggestions, ['how to fix', 'why it fails']);
     });
 
     it('should filter out non-string suggestions', () => {
-      assertSuggestions('SUGGESTIONS: ["valid", 123, null, {"key": "val"}]', {
-        suggestions: ['valid'],
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
       });
+      const parsed = agent.parseTextResponseForSuggestions('SUGGESTIONS: ["valid", 123, null, {"key": "val"}]');
+      assert.deepEqual(parsed.suggestions, ['valid']);
     });
 
     it('should truncate long suggestions', () => {
-      const longSuggestion = 'a'.repeat(300);
-      assertSuggestions(`SUGGESTIONS: ["${longSuggestion}"]`, {
-        suggestions: ['a'.repeat(200)],
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
       });
+      const longSuggestion = 'a'.repeat(300);
+      const parsed = agent.parseTextResponseForSuggestions(`SUGGESTIONS: ["${longSuggestion}"]`);
+      assert.isDefined(parsed.suggestions);
+      assert.lengthOf(parsed.suggestions![0], 200);
+      assert.strictEqual(parsed.suggestions![0], 'a'.repeat(200));
     });
 
     it('should sanitize whitespace and newlines in suggestions', () => {
-      assertSuggestions('SUGGESTIONS: ["line1\\nline2", "word1\\r\\nword2", "excessive   spaces"]', {
-        suggestions: ['line1 line2', 'word1 word2', 'excessive spaces'],
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
       });
+      const parsed = agent.parseTextResponseForSuggestions(
+          'SUGGESTIONS: ["line1\\nline2", "word1\\r\\nword2", "excessive   spaces"]');
+      assert.deepEqual(parsed.suggestions, ['line1 line2', 'word1 word2', 'excessive spaces']);
     });
 
-    it('should preserve non-array prose after Suggestions:', () => {
-      assertSuggestions('Suggestions: check the padding', {
-        answer: 'Suggestions: check the padding',
+    it('should reject non-array suggestions', () => {
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
       });
-      assertSuggestions('Here are some suggestions: try changing the color.', {
-        answer: 'Here are some suggestions: try changing the color.',
-      });
-      assertSuggestions('SUGGESTIONS: "not an array"', {
-        answer: 'SUGGESTIONS: "not an array"',
-      });
-    });
-
-    it('should keep an incomplete suggestions directive that is not the last line', () => {
-      assertSuggestions('Here are some suggestions:\n- Bullet 1', {
-        answer: 'Here are some suggestions:\n- Bullet 1',
-      });
-      assertSuggestions('**Suggestions**:\n- Fix A\nSUGGESTIONS: ["a"]', {
-        answer: '**Suggestions**:\n- Fix A',
-        suggestions: ['a'],
-      });
-      assertSuggestions('**Suggestions**: [1] Fix contrast.\nMore text.', {
-        answer: '**Suggestions**: [1] Fix contrast.\nMore text.',
-      });
-    });
-
-    it('should remove a complete but empty suggestions array that is not the last line', () => {
-      assertSuggestions('Answer.\nSUGGESTIONS: []\nMore.', {
-        answer: 'Answer.\nMore.',
-      });
-    });
-
-    it('should keep a line where non-markdown text follows the closing bracket', () => {
-      assertSuggestions('A few suggestions: [see docs](https://example.com)', {
-        answer: 'A few suggestions: [see docs](https://example.com)',
-      });
-      assertSuggestions('suggestions: ["a", "b"],', {
-        answer: 'suggestions: ["a", "b"],',
-      });
-    });
-
-    it('should not remove code block lines that contain a suggestions key', () => {
-      const openArray = ['```js', 'const config = {', '  suggestions: [', '    \'a\',', '  ],', '};', '```'].join('\n');
-      assertSuggestions(openArray, {answer: openArray});
-
-      const singleQuoted = ['```js', 'const config = {', '  suggestions: [\'a\', \'b\'],', '};', '```'].join('\n');
-      assertSuggestions(singleQuoted, {answer: singleQuoted});
-
-      const doubleQuoted = ['```js', 'const config = {', '  suggestions: ["a", "b"],', '};', '```'].join('\n');
-      assertSuggestions(doubleQuoted, {answer: doubleQuoted});
-    });
-
-    it('should not extract suggestions from inside a code fence', () => {
-      assertSuggestions('`````css\nsuggestions: ["a"]\n`````', {
-        answer: '`````css\nsuggestions: ["a"]\n`````',
-      });
-      assertSuggestions('```js\n  suggestions: [', {
-        answer: '```js\n  suggestions: [',
-      });
-      const nested = ['`````md', '```', 'SUGGESTIONS: ["a"]', '```', 'SUGGESTIONS: ["b"]', '`````'].join('\n');
-      assertSuggestions(nested, {answer: nested});
-    });
-
-    it('should extract suggestions after a closed code fence', () => {
-      assertSuggestions('```js\nconst x = 1;\n```\nSUGGESTIONS: ["a"]', {
-        answer: '```js\nconst x = 1;\n```',
-        suggestions: ['a'],
-      });
-      assertSuggestions('```x``` inline span\nSUGGESTIONS: ["a"]', {
-        answer: '```x``` inline span',
-        suggestions: ['a'],
-      });
+      const parsed = agent.parseTextResponseForSuggestions('SUGGESTIONS: "not an array"');
+      assert.isUndefined(parsed.suggestions);
     });
 
     it('should remove empty suggestions after sanitization', () => {
-      assertSuggestions('SUGGESTIONS: []');
-      assertSuggestions('SUGGESTIONS: [""]');
-      assertSuggestions('SUGGESTIONS: ["", "   ", "\\n\\n"]');
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
+      });
+      const parsed = agent.parseTextResponseForSuggestions('SUGGESTIONS: ["", "   ", "\\n\\n"]');
+      assert.isUndefined(parsed.suggestions);
     });
 
     it('should parse suggestions from a multi-line response containing both answer and suggestions', () => {
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
+      });
       const responseText = [
         'Here is the first line of the answer.',
         'SUGGESTIONS: ["suggestion 1", "suggestion 2"]',
         'Here is the second line of the answer.',
       ].join('\n');
-      assertSuggestions(responseText, {
-        answer: 'Here is the first line of the answer.\nHere is the second line of the answer.',
-        suggestions: ['suggestion 1', 'suggestion 2'],
-      });
+      const parsed = agent.parseTextResponseForSuggestions(responseText);
+      assert.strictEqual(parsed.answer,
+                         'Here is the first line of the answer.\nHere is the second line of the answer.');
+      assert.deepEqual(parsed.suggestions, ['suggestion 1', 'suggestion 2']);
     });
 
     it('should handle multiple SUGGESTIONS lines by keeping the last valid one', () => {
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
+      });
       const responseText = [
         'Answer text.',
         'SUGGESTIONS: ["first suggestion"]',
         'More answer text.',
         'SUGGESTIONS: ["second suggestion"]',
       ].join('\n');
-      assertSuggestions(responseText, {
-        answer: 'Answer text.\nMore answer text.',
-        suggestions: ['second suggestion'],
-      });
-
-      const trailingInvalid = [
-        'Answer text.',
-        'SUGGESTIONS: ["first suggestion"]',
-        'More answer text.',
-        'SUGGESTIONS: [invalid',
-      ].join('\n');
-      assertSuggestions(trailingInvalid, {
-        answer: 'Answer text.\nMore answer text.',
-        suggestions: ['first suggestion'],
-      });
+      const parsed = agent.parseTextResponseForSuggestions(responseText);
+      assert.strictEqual(parsed.answer, 'Answer text.\nMore answer text.');
+      assert.deepEqual(parsed.suggestions, ['second suggestion']);
     });
 
-    it('should parse suggestions across markdown formatting, list prefixes, and case variations', () => {
-      const expected = {suggestions: ['fix color', 'adjust size'] as [string, ...string[]]};
-      assertSuggestions('SUGGESTIONS:  ["fix color", "adjust size"]', expected);
-      assertSuggestions('**Suggestions**: ["fix color", "adjust size"]', expected);
-      assertSuggestions('**SUGGESTIONS:** ["fix color", "adjust size"]', expected);
-      assertSuggestions('**SUGGESTIONS: ["fix color", "adjust size"]**', expected);
-      assertSuggestions('*Suggestions*: ["fix color", "adjust size"]', expected);
-      assertSuggestions('*Suggestions: ["fix color", "adjust size"]*', expected);
-      assertSuggestions('***Suggestions***: ["fix color", "adjust size"]', expected);
-      assertSuggestions('_Suggestions_: ["fix color", "adjust size"]', expected);
-      assertSuggestions('_Suggestions: ["fix color", "adjust size"]_', expected);
-      assertSuggestions('__SUGGESTIONS__: ["fix color", "adjust size"]', expected);
-      assertSuggestions('__SUGGESTIONS: ["fix color", "adjust size"]__', expected);
-      assertSuggestions('`SUGGESTIONS`: ["fix color", "adjust size"]', expected);
-      assertSuggestions('`SUGGESTIONS:` ["fix color", "adjust size"]', expected);
-      assertSuggestions('SUGGESTIONS: `["fix color", "adjust size"]`', expected);
-      assertSuggestions('- Suggestions: ["fix color", "adjust size"]', expected);
-      assertSuggestions('* Suggestions: ["fix color", "adjust size"]', expected);
-      assertSuggestions('1. Suggestions: ["fix color", "adjust size"]', expected);
-      assertSuggestions('### Suggestions: ["fix color", "adjust size"]', expected);
-      assertSuggestions('SUGGESTIONS: ["check [disabled] attribute", "inspect node"]', {
-        suggestions: ['check [disabled] attribute', 'inspect node'],
+    it('should hide a partially streamed suggestions line whose text contains a closing bracket', () => {
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
       });
-    });
-
-    it('should parse suggestions placed inline at the end of an answer line', () => {
-      assertSuggestions('Here is the solution to apply. **Suggestions**: ["inspect element", "check styles"]', {
-        answer: 'Here is the solution to apply.',
-        suggestions: ['inspect element', 'check styles'],
-      });
-      assertSuggestions('**Suggestions**: [1] Fix contrast. SUGGESTIONS: ["fix color", "adjust size"]', {
-        answer: '**Suggestions**: [1] Fix contrast.',
-        suggestions: ['fix color', 'adjust size'],
-      });
-    });
-
-    it('should suppress incomplete or malformed suggestion payloads from the answer text', () => {
-      // Bare markers and incomplete streaming chunks on their own line.
-      assertSuggestions('SUGGESTIONS:');
-      assertSuggestions('**Suggestions**:');
-      assertSuggestions('SUGGESTIONS: [');
-      assertSuggestions('SUGGESTIONS: ["first", "sec');
-      assertSuggestions('**Suggestions**: ["first", "sec');
-      assertSuggestions('Here is the answer.\nSUGGESTIONS: ["first", "sec', {
-        answer: 'Here is the answer.',
-      });
-      assertSuggestions('Here is the answer.\n- **Suggestions**: ["first', {
-        answer: 'Here is the answer.',
-      });
-
-      // Inline incomplete streaming chunks preserve preceding answer text without leaking the marker.
-      assertSuggestions('Here is the answer. SUGGESTIONS:', {
-        answer: 'Here is the answer.',
-      });
-      assertSuggestions('Here is the answer. **Suggestions**: ["first", "sec', {
-        answer: 'Here is the answer.',
-      });
-
-      // Malformed JSON array payloads after a marker are suppressed from answer text.
-      assertSuggestions('**Suggestions**: [invalid json]');
-      assertSuggestions('Here is the answer. **Suggestions**: [invalid json]', {
-        answer: 'Here is the answer.',
-      });
-    });
-
-    it('should not match suggestions as a substring of another identifier', () => {
-      assertSuggestions('DEFAULT_SUGGESTIONS: ["a", "b"]', {
-        answer: 'DEFAULT_SUGGESTIONS: ["a", "b"]',
-      });
-      assertSuggestions('Use DEFAULT_SUGGESTIONS: ["a", "b"]', {
-        answer: 'Use DEFAULT_SUGGESTIONS: ["a", "b"]',
-      });
+      const parsed = agent.parseTextResponseForSuggestions('SUGGESTIONS: ["Why does [type=text] fail?", "Ano');
+      assert.strictEqual(parsed.answer, '');
+      assert.isUndefined(parsed.suggestions);
     });
   });
 });

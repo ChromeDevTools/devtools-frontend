@@ -371,6 +371,14 @@ describe('PerformanceAgent', function() {
       assert.deepEqual(response, {answer: 'hello ````` world'});
     });
 
+    it('extracts suggestions when the response is wrapped in 5 backticks', async () => {
+      const agent = createAgentForConversation();
+      const response = agent.parseTextResponse('`````\nhello world\nSUGGESTIONS: ["suggestion"]\n`````');
+      // Only the fences are stripped, so the newlines after the opening fence and
+      // before the closing fence remain in the answer.
+      assert.deepEqual(response, {answer: '\nhello world\n', suggestions: ['suggestion']});
+    });
+
     it('does not strip out inline code backticks', async () => {
       const agent = createAgentForConversation();
       const response = agent.parseTextResponse('This is code `console.log("hello")`');

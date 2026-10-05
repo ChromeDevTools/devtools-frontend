@@ -307,8 +307,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     this.pendingNodeReveal = false;
 
-    this.adornerManager =
-        new ElementsComponents.AdornerManager.AdornerManager(this.#settings.moduleSetting('adorner-settings'));
+    this.adornerManager = new ElementsComponents.AdornerManager.AdornerManager(
+        this.#settings.resolve(SettingsUI.ElementsSettings.adornerSettingsSettingDescriptor));
     this.adornersByName = new Map();
 
     this.#domTreeWidget = new DOMTreeWidget();

@@ -627,14 +627,6 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.showInacti
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.ADORNER,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  settingName: 'adorner-settings',
-  settingType: Common.Settings.SettingType.ARRAY,
-  defaultValue: [],
-});
-
-Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
   storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.CSSDocumentationTooltip),

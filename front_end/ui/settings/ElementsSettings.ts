@@ -65,3 +65,15 @@ export const showEventListenersForAncestorsSettingDescriptor: Common.Settings.Se
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 };
+
+export interface AdornerSetting {
+  adorner: string;
+  isEnabled: boolean;
+}
+
+export const adornerSettingsSettingDescriptor: Common.Settings.SettingDescriptor<AdornerSetting[]> = {
+  name: 'adorner-settings',
+  type: Common.Settings.SettingType.ARRAY,
+  defaultValue: [],
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

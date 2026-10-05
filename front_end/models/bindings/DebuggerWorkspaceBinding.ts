@@ -501,17 +501,26 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     }
   }
 
+  /** @returns false if the debugger should continue stepping instead of presenting the pause. */
   private async shouldPause(
       debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
       autoSteppingContext: SDK.DebuggerModel.Location|null): Promise<boolean> {
-    // This function returns false if the debugger should continue stepping
     const {callFrames: [frame]} = debuggerPausedDetails;
     if (!frame) {
       return false;
     }
+    if (frame.script.isWasm()) {
+      return await this.#shouldPauseInWasm(debuggerPausedDetails, autoSteppingContext);
+    }
+    return true;
+  }
+
+  async #shouldPauseInWasm(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
+                           autoSteppingContext: SDK.DebuggerModel.Location|null): Promise<boolean> {
+    const {callFrames: [frame]} = debuggerPausedDetails;
     const functionLocation = frame.functionLocation();
     if (!autoSteppingContext || debuggerPausedDetails.reason !== Protocol.Debugger.PausedEventReason.Step ||
-        !functionLocation || !frame.script.isWasm() || !this.#settings.moduleSetting('wasm-auto-stepping').get() ||
+        !functionLocation || !this.#settings.moduleSetting('wasm-auto-stepping').get() ||
         !this.pluginManager.hasPluginForScript(frame.script)) {
       return true;
     }

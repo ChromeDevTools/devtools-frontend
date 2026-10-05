@@ -450,29 +450,42 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   async stepInto(): Promise<void> {
-    const skipList = await this.computeAutoStepSkipList(StepMode.STEP_INTO);
-    void this.agent.invoke_stepInto({breakOnAsyncCall: false, skipList});
+    await this.#userStep(StepMode.STEP_INTO);
   }
 
   async stepOver(): Promise<void> {
-    this.#autoSteppingContext = this.#debuggerPausedDetails?.callFrames[0]?.functionLocation() ?? null;
-    const skipList = await this.computeAutoStepSkipList(StepMode.STEP_OVER);
-    void this.agent.invoke_stepOver({skipList});
+    await this.#userStep(StepMode.STEP_OVER);
   }
 
   async stepOut(): Promise<void> {
-    const skipList = await this.computeAutoStepSkipList(StepMode.STEP_OUT);
-    if (skipList.length !== 0) {
-      void this.agent.invoke_stepOver({skipList});
-    } else {
-      void this.agent.invoke_stepOut();
-    }
+    await this.#userStep(StepMode.STEP_OUT);
   }
 
   scheduleStepIntoAsync(): void {
-    void this.computeAutoStepSkipList(StepMode.STEP_INTO).then(skipList => {
-      void this.agent.invoke_stepInto({breakOnAsyncCall: true, skipList});
-    });
+    void this.#userStep(StepMode.STEP_INTO, /* breakOnAsyncCall */ true);
+  }
+
+  async #userStep(mode: StepMode, breakOnAsyncCall = false): Promise<void> {
+    if (mode === StepMode.STEP_OVER) {
+      this.#autoSteppingContext = this.#debuggerPausedDetails?.callFrames[0]?.functionLocation() ?? null;
+    }
+    const skipList = await this.computeAutoStepSkipList(mode);
+    switch (mode) {
+      case StepMode.STEP_INTO:
+        void this.agent.invoke_stepInto({breakOnAsyncCall, skipList});
+        break;
+      case StepMode.STEP_OVER:
+        void this.agent.invoke_stepOver({skipList});
+        break;
+      case StepMode.STEP_OUT:
+        if (skipList.length !== 0) {
+          // Step out of an inlined function by stepping over its body.
+          void this.agent.invoke_stepOver({skipList});
+        } else {
+          void this.agent.invoke_stepOut();
+        }
+        break;
+    }
   }
 
   resume(): void {

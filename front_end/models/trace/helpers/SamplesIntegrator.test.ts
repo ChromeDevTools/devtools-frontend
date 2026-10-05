@@ -447,5 +447,94 @@ describe('SamplesIntegrator', function() {
       assert.isDefined(sampleAt300);
       assert.strictEqual(sampleAt300.dur, 100);
     });
+
+    it('places garbage collection samples on top of the stack of the previous sample', () => {
+      // Profile samples:
+      // ts: 100   200   300   400
+      //     |a|   |a|   |a|   |a|
+      //           |b|   |b|   |b|
+      //                 |GC|
+      //
+      // Expected integrated calls, where the GC sample extends the
+      // frames below it instead of ending them:
+      // ts: 100   200         400
+      //     |--------- a -------|
+      //           |---- b ------|
+      const cdpProfile: Protocol.Profiler.Profile = {
+        startTime: 0,
+        endTime: 3000,
+        nodes: [
+          {
+            id: 1,
+            hitCount: 0,
+            callFrame: {functionName: '(root)', scriptId, url, lineNumber, columnNumber},
+            children: [2, 4],
+          },
+          {id: 2, callFrame: {functionName: 'a', scriptId, url, lineNumber, columnNumber}, children: [3]},
+          {id: 3, callFrame: {functionName: 'b', scriptId, url, lineNumber, columnNumber}},
+          {id: 4, callFrame: {functionName: '(garbage collector)', scriptId, url, lineNumber, columnNumber}},
+        ],
+        samples: [2, 3, 4, 3],
+        timeDeltas: new Array(4).fill(100),
+      };
+      const parsedProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(cdpProfile);
+      const integrator = new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
+      const constructedCalls = integrator.buildProfileCalls([]);
+
+      assert.lengthOf(constructedCalls, 2);
+      assert.strictEqual(constructedCalls[0].callFrame.functionName, 'a');
+      assert.strictEqual(constructedCalls[0].ts, 100);
+      assert.strictEqual(constructedCalls[0].dur, 300);
+      assert.strictEqual(constructedCalls[1].callFrame.functionName, 'b');
+      assert.strictEqual(constructedCalls[1].ts, 200);
+      assert.strictEqual(constructedCalls[1].dur, 200);
+    });
+
+    it('filters native V8Runtime frames from sampled stacks', () => {
+      // Profile samples, where `native` is a V8Runtime frame:
+      // ts: 100      200
+      //     |a|      |a|
+      //     |native| |native|
+      //     |b|      |b|
+      //
+      // Expected integrated calls inside the FunctionCall event:
+      // ts: 0  100                500
+      //     |------FunctionCall-----|
+      //        |--------- a --------|
+      //        |--------- b --------|
+      const cdpProfile: Protocol.Profiler.Profile = {
+        startTime: 0,
+        endTime: 3000,
+        nodes: [
+          {
+            id: 1,
+            hitCount: 0,
+            callFrame: {functionName: '(root)', scriptId, url, lineNumber, columnNumber},
+            children: [2],
+          },
+          {id: 2, callFrame: {functionName: 'a', scriptId, url, lineNumber, columnNumber}, children: [3]},
+          {
+            id: 3,
+            callFrame: {functionName: 'native', scriptId, url: 'native V8Runtime', lineNumber, columnNumber},
+            children: [4],
+          },
+          {id: 4, callFrame: {functionName: 'b', scriptId, url, lineNumber, columnNumber}},
+        ],
+        samples: [4, 4],
+        timeDeltas: new Array(2).fill(100),
+      };
+      const parsedProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(cdpProfile);
+      const integrator = new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
+      const callEvent = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 0, 500);
+      const constructedCalls = integrator.buildProfileCalls([callEvent]);
+
+      assert.lengthOf(constructedCalls, 2);
+      assert.strictEqual(constructedCalls[0].callFrame.functionName, 'a');
+      assert.strictEqual(constructedCalls[0].ts, 100);
+      assert.strictEqual(constructedCalls[0].dur, 400);
+      assert.strictEqual(constructedCalls[1].callFrame.functionName, 'b');
+      assert.strictEqual(constructedCalls[1].ts, 100);
+      assert.strictEqual(constructedCalls[1].dur, 400);
+    });
   });
 });

@@ -32,13 +32,23 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PropertyRenderer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function precedingSpace(node: CodeMirror.SyntaxNode, ast: SDK.CSSPropertyParser.SyntaxTree): string {
+export function precedingSpace(node: CodeMirror.SyntaxNode, ast: SDK.CSSPropertyParser.SyntaxTree,
+                               matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching): string {
   let cur: CodeMirror.SyntaxNode|null = node;
   while (cur && !cur.prevSibling) {
     cur = cur.parent;
   }
   const prev = cur?.prevSibling;
-  return prev ? ast.rule.substring(prev.to, node.from) : '';
+  if (!prev) {
+    return '';
+  }
+  const space = ast.rule.substring(prev.to, node.from);
+  if (space || !matchedResult) {
+    return space;
+  }
+  return SDK.CSSPropertyParser.requiresSpace(matchedResult.getComputedText(prev), matchedResult.getComputedText(node)) ?
+      ' ' :
+      '';
 }
 
 export type RendererBase<MatchT extends SDK.CSSPropertyParser.Match> = abstract new () => MatchRenderer<MatchT>;
@@ -468,7 +478,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
                                                              context.options, context.tracing, context.signal));
     const nodes = renderers.reduce((nodes: LitTemplate[], renderer) => {
       if (renderer !== renderers[0]) {
-        const spacing = precedingSpace(renderer.ast.tree, context.ast);
+        const spacing = precedingSpace(renderer.ast.tree, context.ast, context.matchedResult);
         if (spacing) {
           nodes.push(html`${spacing}`);
         }
@@ -499,7 +509,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
           highlight(this.#context.tracing?.highlighting, match, Array.isArray(rendered) ? html`${rendered}` : rendered);
       this.renderedMatchForTest(output, match);
       if (this.#output.some(t => t !== nothing)) {
-        const spacing = precedingSpace(node, this.#context.ast);
+        const spacing = precedingSpace(node, this.#context.ast, this.#matchedResult);
         if (spacing) {
           this.#output.push(html`${spacing}`);
         }

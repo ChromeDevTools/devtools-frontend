@@ -180,6 +180,17 @@ describeWithEnvironment('CSSValueTraceView', () => {
     assert.deepEqual(evaluations, []);
   });
 
+  it('preserves spaces between back-to-back var() calls', async () => {
+    const {matchedStyles, stylesPane} = await setUpStyles(connection);
+    const {property, treeElement} = await getTreeElement(matchedStyles, stylesPane, 'margin', 'var(--a)var(--b)',
+                                                         {'--a': {value: '2px'}, '--b': {value: '3px'}});
+    const input = await showTrace(property, matchedStyles, treeElement);
+    const substitutions = getLineText(input.substitutions);
+    const evaluations = getLineText(input.evaluations);
+    assert.deepEqual(substitutions, ['2px 3px']);
+    assert.deepEqual(evaluations, []);
+  });
+
   it('shows intermediate evaluation steps', async () => {
     const {matchedStyles, stylesPane} = await setUpStyles(connection);
     const {property, treeElement} = await getTreeElement(matchedStyles, stylesPane, 'font-size',

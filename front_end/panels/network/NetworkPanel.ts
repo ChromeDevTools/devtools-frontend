@@ -51,6 +51,7 @@ import * as Tracing from '../../services/tracing/tracing.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Search from '../search/search.js';
@@ -607,8 +608,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     exportHarMenuButton.setTitle(i18nString(UIStrings.exportHar));
     this.panelToolbar.appendToolbarItem(exportHarMenuButton);
 
-    const networkShowOptionsToGenerateHarWithSensitiveData = Common.Settings.Settings.instance().createSetting(
-        'network.show-options-to-generate-har-with-sensitive-data', false);
+    const networkShowOptionsToGenerateHarWithSensitiveData = Common.Settings.Settings.instance().resolve(
+        Settings.NetworkSettings.showOptionsToGenerateHarWithSensitiveDataSettingDescriptor);
     const updateShowOptionsToGenerateHarWithSensitiveData = (): void => {
       const showOptionsToGenerateHarWithSensitiveData = networkShowOptionsToGenerateHarWithSensitiveData.get();
       exportHarButton.setVisible(!showOptionsToGenerateHarWithSensitiveData);

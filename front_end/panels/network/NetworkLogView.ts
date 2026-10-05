@@ -58,6 +58,7 @@ import dataGridAiButtonStyles from '../../ui/legacy/components/data_grid/dataGri
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {commentForbiddenHeaders, isForbiddenHeader} from './FetchHeaderCommenting.js';
@@ -627,8 +628,8 @@ export class NetworkLogView extends NetworkLogViewBase implements
         Common.Settings.Settings.instance().createSetting('network-only-third-party-setting', false);
     this.networkResourceTypeFiltersSetting =
         Common.Settings.Settings.instance().createSetting('network-resource-type-filters', {});
-    this.networkShowOptionsToGenerateHarWithSensitiveData = Common.Settings.Settings.instance().createSetting(
-        'network.show-options-to-generate-har-with-sensitive-data', false);
+    this.networkShowOptionsToGenerateHarWithSensitiveData = Common.Settings.Settings.instance().resolve(
+        Settings.NetworkSettings.showOptionsToGenerateHarWithSensitiveDataSettingDescriptor);
 
     this.progressBarContainer = progressBarContainer;
     this.networkLogLargeRowsSetting = networkLogLargeRowsSetting;

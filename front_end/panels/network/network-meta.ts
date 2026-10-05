@@ -418,31 +418,28 @@ UI.ActionRegistration.registerActionExtension({
   },
 });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.NETWORK,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.allowToGenerateHarWithSensitiveData),
-  settingName: 'network.show-options-to-generate-har-with-sensitive-data',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-  tags: [
-    i18n.i18n.lockedLazyString('HAR'),
-  ],
-  options: [
-    {
-      value: true,
+SettingsUI.SettingUIRegistration.register(
+    SettingsUI.NetworkSettings.showOptionsToGenerateHarWithSensitiveDataSettingDescriptor, {
+      category: Common.Settings.SettingCategory.NETWORK,
       title: i18nLazyString(UIStrings.allowToGenerateHarWithSensitiveData),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.dontAllowToGenerateHarWithSensitiveData),
-    },
-  ],
-  learnMore: {
-    url: 'https://goo.gle/devtools-export-hars' as Platform.DevToolsPath.UrlString,
-    tooltip: i18nLazyString(UIStrings.allowToGenerateHarWithSensitiveDataDocumentation),
-  },
-});
+      tags: [
+        i18n.i18n.lockedLazyString('HAR'),
+      ],
+      options: [
+        {
+          value: true,
+          title: i18nLazyString(UIStrings.allowToGenerateHarWithSensitiveData),
+        },
+        {
+          value: false,
+          title: i18nLazyString(UIStrings.dontAllowToGenerateHarWithSensitiveData),
+        },
+      ],
+      learnMore: {
+        url: 'https://goo.gle/devtools-export-hars' as Platform.DevToolsPath.UrlString,
+        tooltip: i18nLazyString(UIStrings.allowToGenerateHarWithSensitiveDataDocumentation),
+      },
+    });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,

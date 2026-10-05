@@ -2844,6 +2844,7 @@ grd_files_unbundled_sources = [
   "front_end/ui/settings/EmulationSettings.js",
   "front_end/ui/settings/InspectorMainSettings.js",
   "front_end/ui/settings/MainSettings.js",
+  "front_end/ui/settings/NetworkSettings.js",
   "front_end/ui/settings/SettingUIRegistration.js",
   "front_end/ui/settings/WhatsNewSettings.js",
   "front_end/ui/visual_logging/Debugging.js",

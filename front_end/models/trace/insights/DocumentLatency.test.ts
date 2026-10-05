@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {expectConsoleLogs} from '../../../testing/EnvironmentHelpers.js';
 import {
   createContextForNavigation,
   getFirstOrError,
@@ -18,9 +17,6 @@ import * as Types from '../types/types.js';
 
 describe('DocumentLatency', function() {
   setupLocaleHooks();
-  expectConsoleLogs({
-    error: ['Error: missing metric scores for specified navigation'],
-  });
 
   it('reports savings for main document with redirects', async function() {
     const {data, insights} = await processTrace(this, 'lantern/redirect/trace.json.gz');

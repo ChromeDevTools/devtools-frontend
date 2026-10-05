@@ -385,6 +385,31 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
       }
     };
 
+/**
+ * Mirrors V8's `ScopeIterator::ShouldIgnore()` for the legacy scope chain, i.e. when we don't
+ * have scope information from a source map.
+ *
+ * V8 reports every scope (including ones without any variable values) so that they can be
+ * addressed via `scopeNumber` and matched against source map scopes. In the legacy view we
+ * hide scopes that have nothing to show, except for the frame's own function/module scope.
+ */
+function shouldIgnoreScope(scope: SDK.DebuggerModel.Scope): boolean {
+  const type = scope.type();
+  if (type === Protocol.Debugger.ScopeType.Local) {
+    return false;
+  }
+  // When paused at the top-level of a module there is no `Local` scope and the `Module`
+  // scope is the frame's own scope (V8's `InInnerScope()`).
+  if (type === Protocol.Debugger.ScopeType.Module && scope.callFrame().localScope() === null) {
+    return false;
+  }
+  return scope.emptyReason() !== undefined;
+}
+
+function visibleScopeChain(callFrame: SDK.DebuggerModel.CallFrame): SDK.DebuggerModel.Scope[] {
+  return callFrame.scopeChain().filter(scope => !shouldIgnoreScope(scope));
+}
+
 export const resolveScopeChain =
     async function(callFrame: SDK.DebuggerModel.CallFrame,
                    debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding):
@@ -411,7 +436,7 @@ export const resolveScopeChain =
             return callFrame.scopeChain();
           }
           const thisObject = await resolveThisObject(callFrame, debuggerWorkspaceBinding);
-          return callFrame.scopeChain().map(
+          return visibleScopeChain(callFrame).map(
               scope => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
         };
 
@@ -471,7 +496,7 @@ export const allVariablesInCallFrame = async(
         }
       }
 
-      const scopeChain = callFrame.scopeChain();
+      const scopeChain = visibleScopeChain(callFrame);
       const resolvedScopes =
           await Promise.all(scopeChain.map(scope => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
       const result = resolvedScopes.map(toScopeVariableMapping);
@@ -528,12 +553,12 @@ export const resolveThisObject = async(
     callFrame: SDK.DebuggerModel.CallFrame,
     debuggerWorkspaceBinding:
         Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<SDK.RemoteObject.RemoteObject|null> => {
-  const scopeChain = callFrame.scopeChain();
-  if (scopeChain.length === 0) {
+  const innermostScope = callFrame.scopeChain().find(scope => !shouldIgnoreScope(scope));
+  if (!innermostScope) {
     return callFrame.thisObject();
   }
 
-  const {thisMapping} = await resolveDebuggerScope(scopeChain[0], debuggerWorkspaceBinding);
+  const {thisMapping} = await resolveDebuggerScope(innermostScope, debuggerWorkspaceBinding);
   if (!thisMapping) {
     return callFrame.thisObject();
   }

@@ -1480,6 +1480,17 @@ export class Scope implements ScopeChainEntry {
     return undefined;
   }
 
+  /**
+   * Present iff V8 has no variable values to show for this scope, either because the scope
+   * declares no variables or because all of them are unavailable (e.g. optimized out).
+   *
+   * Such scopes are retained in {@link CallFrame.scopeChain} so they can be addressed via
+   * `scopeNumber` in `Debugger.evaluateOnCallFrame` and matched against source map scopes.
+   */
+  emptyReason(): Protocol.Debugger.ScopeEmptyReason|undefined {
+    return this.#payload.emptyReason;
+  }
+
   extraProperties(): RemoteObjectProperty[] {
     if (this !== this.#callFrame.localScope() || this.#callFrame.script.isWasm()) {
       return [];

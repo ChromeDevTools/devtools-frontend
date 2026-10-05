@@ -215,6 +215,10 @@ export class SourceMapScopesInfo {
     return noScopes && !this.#generatedRanges.length;
   }
 
+  hasGeneratedRanges(): boolean {
+    return this.#generatedRanges.length > 0;
+  }
+
   addOriginalScopesAtIndex(sourceIdx: number, scopes: ScopesCodec.OriginalScope[]): void {
     if (!this.#originalScopes[sourceIdx]?.length) {
       this.#originalScopes[sourceIdx] = scopes;

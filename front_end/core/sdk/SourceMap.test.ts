@@ -1475,7 +1475,33 @@ describe('SourceMap', () => {
     await sourceMap.waitForScopeInfo();
 
     assert.isTrue(sourceMap.hasScopeInfo());
+    assert.isFalse(sourceMap.hasEncodedScopeInfo());
     sinon.assert.calledOnceWithExactly(scopeTreeStub, 'function f() { console.log("hello"); }', 'script');
+  });
+
+  describe('hasEncodedScopeInfo', () => {
+    it('is true for source maps with "scopes" proposal information', () => {
+      const info = new ScopesCodec.ScopeInfoBuilder()
+                       .startSource()
+                       .startScope(0, 0, {kind: 'global', key: 'global'})
+                       .endScope(30, 0)
+                       .endSource()
+                       .startRange(0, 0, {scopeKey: 'global'})
+                       .endRange(0, 21)
+                       .build();
+      const map = ScopesCodec.encode(info, {version: 3, sources: ['foo.ts'], mappings: ''});
+      const sourceMap = new SDK.SourceMap.SourceMap(
+          compiledUrl, sourceMapJsonUrl, map as SDK.SourceMap.SourceMapV3Object, new Common.Console.Console());
+
+      assert.isTrue(sourceMap.hasEncodedScopeInfo());
+    });
+
+    it('is false for source maps without "scopes" proposal information', () => {
+      const sourceMap = new SDK.SourceMap.SourceMap(
+          compiledUrl, sourceMapJsonUrl, encodeSourceMap(['0:0 => example.js:0:0']), new Common.Console.Console());
+
+      assert.isFalse(sourceMap.hasEncodedScopeInfo());
+    });
   });
 
   describe('rangeMappings', () => {

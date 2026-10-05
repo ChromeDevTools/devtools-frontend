@@ -100,10 +100,10 @@ function matchProperty(name: string, value: string): SDK.CSSPropertyParser.Botto
   ]);
 }
 
-function renderPropertyContents(
-    node: SDK.DOMModel.DOMNode, cache: Map<string, {name: Element, value: Element}>, propertyName: string,
-    propertyValue: string): {name: Element, value: Element} {
-  const cacheKey = propertyName + ':' + propertyValue;
+function renderPropertyContents(node: SDK.DOMModel.DOMNode, cache: Map<string, {name: Element, value: Element}>,
+                                propertyName: string, propertyValue: string,
+                                category?: Category): {name: Element, value: Element} {
+  const cacheKey = category ? `${category}:${propertyName}:${propertyValue}` : `${propertyName}:${propertyValue}`;
   const valueFromCache = cache.get(cacheKey);
   if (valueFromCache) {
     return valueFromCache;
@@ -127,9 +127,9 @@ function renderPropertyContents(
 const createPropertyElement =
     (node: SDK.DOMModel.DOMNode, cache: Map<string, {name: Element, value: Element}>, propertyName: string,
      propertyValue: string, traceable: boolean, inherited: boolean,
-     activeProperty: SDK.CSSProperty.CSSProperty|undefined,
-     onContextMenu: ((event: Event) => void)): Lit.TemplateResult => {
-      const {name, value} = renderPropertyContents(node, cache, propertyName, propertyValue);
+     activeProperty: SDK.CSSProperty.CSSProperty|undefined, onContextMenu: ((event: Event) => void),
+     category?: Category): Lit.TemplateResult => {
+      const {name, value} = renderPropertyContents(node, cache, propertyName, propertyValue, category);
       // clang-format off
       return html`<devtools-computed-style-property
         .traceable=${traceable}
@@ -239,6 +239,7 @@ type ComputedStyleData = {
   propertyName: string,
   propertyValue: string,
   inherited: boolean,
+  category?: Category,
 }|{
   tag: 'traceElement',
   property: SDK.CSSProperty.CSSProperty,
@@ -589,7 +590,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
           const propertyValue = nodeStyle.computedStyle.get(propertyName) || '';
           const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
           const isInherited = !nonInheritedProperties.has(canonicalName);
-          propertyNodes.push(this.buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited));
+          propertyNodes.push(this.buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited, category));
         }
         tree.push({id: category, treeNodeData: {tag: 'category', name: category}, children: async () => propertyNodes});
       }
@@ -603,16 +604,17 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     return await this.filterGroupLists();
   }
 
-  private buildTraceNode(property: SDK.CSSProperty.CSSProperty):
-      TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData> {
+  private buildTraceNode(property: SDK.CSSProperty.CSSProperty,
+                         category?: Category): TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData> {
     const rule = property.ownerStyle.parentRule;
+    const id = (rule?.origin || '') + ': ' + property.ownerStyle.styleSheetId + (property.range || property.name);
     return {
       treeNodeData: {
         tag: 'traceElement',
         property,
         rule,
       },
-      id: (rule?.origin || '') + ': ' + property.ownerStyle.styleSheetId + (property.range || property.name),
+      id: category ? `${category}:${id}` : id,
     };
   }
 
@@ -629,13 +631,13 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         const trace = propertyTraces.get(data.propertyName);
         const activeProperty = trace?.find(
             property => matchedStyles.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.ACTIVE);
-        const propertyElement = createPropertyElement(
-            domNode, this.#propertyElementsCache, data.propertyName, data.propertyValue,
-            propertyTraces.has(data.propertyName), data.inherited, activeProperty, event => {
-              if (activeProperty) {
-                this.handleContextMenuEvent(matchedStyles, activeProperty, event);
-              }
-            });
+        const propertyElement =
+            createPropertyElement(domNode, this.#propertyElementsCache, data.propertyName, data.propertyValue,
+                                  propertyTraces.has(data.propertyName), data.inherited, activeProperty, event => {
+                                    if (activeProperty) {
+                                      this.handleContextMenuEvent(matchedStyles, activeProperty, event);
+                                    }
+                                  }, data.category);
         return propertyElement;
       }
       if (data.tag === 'traceElement') {
@@ -651,29 +653,31 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     };
   }
 
-  private buildTreeNode(
-      propertyTraces: Map<string, SDK.CSSProperty.CSSProperty[]>, propertyName: string, propertyValue: string,
-      isInherited: boolean): TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData> {
+  private buildTreeNode(propertyTraces: Map<string, SDK.CSSProperty.CSSProperty[]>, propertyName: string,
+                        propertyValue: string, isInherited: boolean,
+                        category?: Category): TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData> {
     const treeNodeData: ComputedStyleData = {
       tag: 'property',
       propertyName,
       propertyValue,
       inherited: isInherited,
+      category,
     };
     const trace = propertyTraces.get(propertyName);
     const jslogContext = propertyName.startsWith('--') ? 'custom-property' : propertyName;
+    const id = category ? `${category}:${propertyName}` : propertyName;
     if (!trace) {
       return {
         treeNodeData,
         jslogContext,
-        id: propertyName,
+        id,
       };
     }
     return {
       treeNodeData,
       jslogContext,
-      id: propertyName,
-      children: async () => trace.map(this.buildTraceNode),
+      id,
+      children: async () => trace.map(t => this.buildTraceNode(t, category)),
     };
   }
 

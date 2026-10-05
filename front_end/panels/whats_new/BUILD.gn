@@ -30,6 +30,7 @@ devtools_ui_module("whats_new") {
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
+    "../../ui/settings:bundle",
     "../../ui/visual_logging:bundle",
   ]
 
@@ -53,6 +54,7 @@ devtools_entrypoint("meta") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/settings:bundle",
   ]
 
   visibility = [
@@ -72,10 +74,8 @@ devtools_ui_module("unittests") {
 
   ts_deps = [
     ":bundle",
-    "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/platform:bundle",
-    "../../core/root:bundle",
     "../../testing",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",

@@ -7,6 +7,7 @@ import * as ElementsSettings from './ElementsSettings.js';
 import * as InspectorMainSettings from './InspectorMainSettings.js';
 import * as MainSettings from './MainSettings.js';
 import * as SettingUIRegistration from './SettingUIRegistration.js';
+import * as WhatsNewSettings from './WhatsNewSettings.js';
 
 export {
   ConsoleSettings,
@@ -14,4 +15,5 @@ export {
   InspectorMainSettings,
   MainSettings,
   SettingUIRegistration,
+  WhatsNewSettings,
 };

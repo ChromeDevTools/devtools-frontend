@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import type * as WhatsNew from './whats_new.js';
 
@@ -54,7 +55,6 @@ async function loadWhatsNewModule(): Promise<typeof WhatsNew> {
 UI.ViewManager.maybeRemoveViewExtension('release-note');
 UI.ActionRegistration.maybeRemoveActionExtension('help.release-notes');
 UI.ActionRegistration.maybeRemoveActionExtension('help.report-issue');
-Common.Settings.maybeRemoveSettingExtension('help.show-release-note');
 UI.ContextMenu.maybeRemoveItem({
   location: UI.ContextMenu.ItemLocation.MAIN_MENU_HELP_DEFAULT,
   actionId: 'help.release-notes',
@@ -100,12 +100,9 @@ UI.ActionRegistration.registerActionExtension({
   tags: [i18nLazyString(UIStrings.bug)],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.WhatsNewSettings.showReleaseNoteSettingDescriptor, {
   category: Common.Settings.SettingCategory.APPEARANCE,
   title: i18nLazyString(UIStrings.showWhatsNewAfterEachUpdate),
-  settingName: 'help.show-release-note',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

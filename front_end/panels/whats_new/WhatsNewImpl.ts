@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import {getReleaseNote} from './ReleaseNoteText.js';
 
@@ -21,7 +22,7 @@ export function showReleaseNoteIfNeeded(): boolean {
   const releaseNote = getReleaseNote();
   return innerShowReleaseNoteIfNeeded(
       releaseNoteVersionSettingValue, releaseNote.version,
-      Common.Settings.Settings.instance().moduleSetting('help.show-release-note').get());
+      Common.Settings.Settings.instance().resolve(SettingsUI.WhatsNewSettings.showReleaseNoteSettingDescriptor).get());
 }
 
 export function getReleaseNoteVersionSetting(): Common.Settings.Setting<number> {

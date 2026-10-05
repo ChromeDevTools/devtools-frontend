@@ -84,3 +84,10 @@ export const showCSSPropertyDocumentationOnHoverSettingDescriptor: Common.Settin
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const showFrameworkListenersSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-frameowkr-listeners',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.GLOBAL,
+};

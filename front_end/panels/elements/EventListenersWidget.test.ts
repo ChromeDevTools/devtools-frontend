@@ -56,8 +56,8 @@ describeWithEnvironment('EventListenersWidget', () => {
 
   it('updates on framework listeners setting change', async () => {
     const view = await setup();
-    const showFrameworkListenersSetting =
-        Common.Settings.Settings.instance().settingForTest('show-frameowkr-listeners');
+    const showFrameworkListenersSetting = Common.Settings.Settings.instance().resolve(
+        SettingsUI.ElementsSettings.showFrameworkListenersSettingDescriptor);
     showFrameworkListenersSetting.set(false);
     let input = await view.nextInput;
     assert.isFalse(input.filter.showFramework);

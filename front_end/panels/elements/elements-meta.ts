@@ -728,13 +728,9 @@ UI.Toolbar.registerToolbarItem({
   order: 0,
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.showFrameworkListenersSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.GLOBAL,
   title: i18nLazyString(UIStrings.frameworkListeners),
-  settingName: 'show-frameowkr-listeners',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.showMetricsRulersSettingDescriptor, {

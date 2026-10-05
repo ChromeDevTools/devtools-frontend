@@ -368,7 +368,9 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
 
   get webCustomData(): WebCustomData|undefined {
     if (!this.#webCustomData &&
-        Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').get()) {
+        Common.Settings.Settings.instance()
+            .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
+            .get()) {
       // WebCustomData.create() fetches the property docs, so this must happen lazily.
       this.#webCustomData = WebCustomData.create();
     }

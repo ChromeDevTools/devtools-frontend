@@ -77,3 +77,10 @@ export const adornerSettingsSettingDescriptor: Common.Settings.SettingDescriptor
   defaultValue: [],
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const showCSSPropertyDocumentationOnHoverSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-css-property-documentation-on-hover',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

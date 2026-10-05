@@ -2815,7 +2815,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
       };
       this.listItemElement.appendChild(tooltip);
-    } else if (Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').get()) {
+    } else if (Common.Settings.Settings.instance()
+                   .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
+                   .get()) {
       const tooltipId = this.getTooltipId('property-doc');
       this.nameElement.setAttribute('aria-details', tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip({
@@ -2829,7 +2831,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         if ((event as ToggleEvent).newState !== 'open') {
           return;
         }
-        if (!Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').get()) {
+        if (!Common.Settings.Settings.instance()
+                 .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
+                 .get()) {
           event.consume(true);
           return;
         }

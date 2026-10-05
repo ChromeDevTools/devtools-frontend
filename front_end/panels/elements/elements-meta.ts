@@ -626,14 +626,11 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.showInacti
   title: i18nLazyString(UIStrings.showInactiveCSSRules),
 });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.ELEMENTS,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.CSSDocumentationTooltip),
-  settingName: 'show-css-property-documentation-on-hover',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-});
+SettingsUI.SettingUIRegistration.register(
+    SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor, {
+      category: Common.Settings.SettingCategory.ELEMENTS,
+      title: i18nLazyString(UIStrings.CSSDocumentationTooltip),
+    });
 
 UI.ContextMenu.registerProvider({
   contextTypes() {

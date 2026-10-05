@@ -2575,14 +2575,18 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     const webCustomDataStub = sinon.createStubInstance(Elements.WebCustomData.WebCustomData);
     webCustomDataStub.findCssProperty.returns({name: 'color', description: 'test color'});
     sinon.stub(stylesSidebarPane, 'webCustomData').get(() => webCustomDataStub);
-    Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').set(false);
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
+        .set(false);
     const treeElementWithoutTooltip = getTreeElement('color', 'blue');
     treeElementWithoutTooltip.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
     treeElementWithoutTooltip.updateTitle();
     assert.notExists(treeElementWithoutTooltip.listItemElement.querySelector(
         'devtools-tooltip[jslogcontext="elements.css-property-doc"]'));
 
-    Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').set(true);
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
+        .set(true);
     const treeElementWithTooltip = getTreeElement('color', 'blue');
     treeElementWithTooltip.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
     treeElementWithTooltip.updateTitle();
@@ -2596,7 +2600,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     tooltip.hidePopover();
     assert.isFalse(tooltip.open);
 
-    Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').set(false);
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
+        .set(false);
     tooltip.showPopover();
     assert.isFalse(tooltip.open);
   });

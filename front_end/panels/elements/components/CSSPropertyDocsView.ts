@@ -10,6 +10,7 @@ import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import {html, nothing, render} from '../../../ui/lit/lit.js';
+import * as SettingsUI from '../../../ui/settings/settings.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import CSSPropertyDocsViewStyles from './cssPropertyDocsView.css.js';
@@ -219,7 +220,7 @@ export class CSSPropertyDocsView extends HTMLElement {
   #dontShowChanged(e: Event): void {
     const showDocumentation = !(e.target as HTMLInputElement).checked;
     Common.Settings.Settings.instance()
-        .moduleSetting('show-css-property-documentation-on-hover')
+        .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
         .set(showDocumentation);
   }
 

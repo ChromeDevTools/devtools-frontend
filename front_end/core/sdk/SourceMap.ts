@@ -12,7 +12,12 @@ import {scopeTreeForScript} from './ScopeTreeCache.js';
 import type {Script} from './Script.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
 import {decodeRangeMappings} from './SourceMapRangeMappings.js';
-import {type RawFrameTranslation, scriptRelativePosition, SourceMapScopesInfo} from './SourceMapScopesInfo.js';
+import {
+  type PositionRange,
+  type RawFrameTranslation,
+  scriptRelativePosition,
+  SourceMapScopesInfo,
+} from './SourceMapScopesInfo.js';
 
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
@@ -881,6 +886,12 @@ export class SourceMap {
   translateRawFrame(generatedLine: number, generatedColumn: number): RawFrameTranslation|null {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.translateRawFrame(generatedLine, generatedColumn) ?? null;
+  }
+
+  /** See {@link SourceMapScopesInfo.inlinedFunctionRange}. `null` without encoded scopes. */
+  inlinedFunctionRange(generatedLine: number, generatedColumn: number): PositionRange|null {
+    return this.hasEncodedScopeInfo() ? this.#scopesInfo?.inlinedFunctionRange(generatedLine, generatedColumn) ?? null :
+                                        null;
   }
 }
 

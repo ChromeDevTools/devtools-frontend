@@ -494,6 +494,65 @@ describe('SourceMapScopesInfo', () => {
     });
   });
 
+  describe('stepping queries', () => {
+    //  0: function F(){         F, with inlined callees:
+    //  1:   ...                   I (1:0-3:0), which itself inlines J (2:0-2:5)
+    //  4:   ...                   K (4:0-4:5)
+    //  5:   function n(){...}     nested function n (5:2-5:16), with an inlined callee (5:5-5:8)
+    //  6: }
+    //  7: function o(){}        outlined part of F (hidden)
+    //  8: function h(){}        helper without original scope
+    function createInfo({outlined = true}: {outlined?: boolean} = {}): SDK.SourceMapScopesInfo.SourceMapScopesInfo {
+      const builder = new ScopeInfoBuilder();
+      builder.startSource()
+          .startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 10, {kind: 'function', name: 'F', key: 'F', isStackFrame: true})
+          .startScope(2, 2, {kind: 'block', key: 'block'})
+          .endScope(3, 3)
+          .endScope(10, 1)
+          .endScope(20, 0)
+          .endSource();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'F', isStackFrame: true})
+          .startRange(1, 0, {callSite: {sourceIndex: 0, line: 1, column: 2}})
+          .startRange(2, 0, {callSite: {sourceIndex: 0, line: 5, column: 2}})
+          .endRange(2, 5)
+          .endRange(3, 0)
+          .startRange(4, 0, {callSite: {sourceIndex: 0, line: 2, column: 2}})
+          .endRange(4, 5)
+          .startRange(5, 2, {isStackFrame: true})
+          .startRange(5, 5, {callSite: {sourceIndex: 0, line: 7, column: 2}})
+          .endRange(5, 8)
+          .endRange(5, 16)
+          .endRange(6, 1)
+          .startRange(7, 0, {scopeKey: 'block', isStackFrame: true, isHidden: outlined})
+          .endRange(7, 14)
+          .startRange(8, 0, {isStackFrame: true})
+          .endRange(8, 14)
+          .endRange(9, 0);
+      return new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
+    }
+
+    function range(startLine: number, startColumn: number, endLine: number,
+                   endColumn: number): SDK.SourceMapScopesInfo.PositionRange {
+      return {start: {line: startLine, column: startColumn}, end: {line: endLine, column: endColumn}};
+    }
+
+    it('inlinedFunctionRange returns the innermost inlined function body', () => {
+      const info = createInfo();
+      assert.deepEqual(info.inlinedFunctionRange(1, 1), range(1, 0, 3, 0));
+      assert.deepEqual(info.inlinedFunctionRange(2, 1), range(2, 0, 2, 5));
+      assert.deepEqual(info.inlinedFunctionRange(5, 6), range(5, 5, 5, 8));
+    });
+
+    it('inlinedFunctionRange returns null outside of inlined functions', () => {
+      const info = createInfo();
+      assert.isNull(info.inlinedFunctionRange(0, 5));
+      assert.isNull(info.inlinedFunctionRange(5, 3));
+      assert.isNull(info.inlinedFunctionRange(7, 3));
+    });
+  });
+
   describe('hasVariablesAndBindings', () => {
     it('returns false for scope info without variables or bindings', () => {
       const builder = new ScopeInfoBuilder();

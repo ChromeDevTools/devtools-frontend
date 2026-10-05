@@ -565,6 +565,30 @@ export class SourceMapScopesInfo {
 
     return result;
   }
+
+  /**
+   * @returns the body of the innermost inlined function at the position (the innermost range with a `callSite`
+   *          within the generated function), or null if the position is not inside an inlined function.
+   *
+   * The innermost inlined function is the logical frame the position belongs to, i.e. the analogue of the top frame
+   * of a real call stack. Stepping over its body therefore goes up exactly one logical frame: into the caller, which
+   * may itself be inlined. An outer range would leave several logical frames at once.
+   */
+  inlinedFunctionRange(generatedLine: number, generatedColumn: number): PositionRange|null {
+    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+    for (let i = rangeChain.length - 1; i >= 0 && !rangeChain[i].isStackFrame; --i) {
+      if (rangeChain[i].callSite) {
+        return {start: rangeChain[i].start, end: rangeChain[i].end};
+      }
+    }
+    return null;
+  }
+}
+
+/** A range of generated positions, relative to the start of the script. `end` is exclusive. */
+export interface PositionRange {
+  readonly start: ScopesCodec.Position;
+  readonly end: ScopesCodec.Position;
 }
 
 /**

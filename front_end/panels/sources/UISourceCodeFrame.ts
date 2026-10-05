@@ -457,7 +457,6 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
     Common.Settings.Settings.instance()
         .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
         .removeChangeListener(this.onNetworkPersistenceChanged, this);
-    this.disposeView();
   }
 
   private onMessageAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.Message>): void {

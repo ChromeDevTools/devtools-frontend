@@ -176,15 +176,6 @@ describeWithEnvironment('TabbedPane', () => {
     const domOrder = Array.from(tabbedPane.tabsElement.children).map(el => el.id.replace(/^tab-/, ''));
     assert.deepEqual(domOrder, ['0', '7', '1', '2', '3', '4', '5', '6', '8', '9']);
   });
-
-  it('does not keep a reference to the last selected tab after it is closed', () => {
-    tabbedPane.selectTab('9');
-    assert.exists((tabbedPane as unknown as {lastSelectedOverflowTab?: unknown}).lastSelectedOverflowTab);
-
-    tabbedPane.closeTabs(tabbedPane.tabIds());
-
-    assert.isUndefined((tabbedPane as unknown as {lastSelectedOverflowTab?: unknown}).lastSelectedOverflowTab);
-  });
 });
 
 describeWithEnvironment('TabbedPaneElement', () => {

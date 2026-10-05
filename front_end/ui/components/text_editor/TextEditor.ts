@@ -37,19 +37,6 @@ export class TextEditor extends HTMLElement {
     }
   };
   #devtoolsResizeObserver = new ResizeObserver(this.#resizeListener);
-  #themeListener = (): void => {
-    const editor = this.#activeEditor;
-    if (!editor) {
-      return;
-    }
-    const isDark = ThemeSupport.ThemeSupport.instance().themeName() === 'dark';
-    const currentTheme = themeSelection.get(editor.state);
-    // Skip if the compartment isn't part of this editor's configuration or already matches.
-    if (currentTheme === undefined || (currentTheme === dummyDarkTheme) === isDark) {
-      return;
-    }
-    editor.dispatch({effects: themeSelection.reconfigure(isDark ? dummyDarkTheme : [])});
-  };
 
   static get observedAttributes(): string[] {
     return ['data-file-path'];
@@ -105,9 +92,12 @@ export class TextEditor extends HTMLElement {
 
     this.#ensureSettingListeners();
     this.#startObservingResize();
-    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#themeListener);
-    // The theme may have changed while this editor was disconnected.
-    this.#themeListener();
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
+      const currentTheme = ThemeSupport.ThemeSupport.instance().themeName() === 'dark' ? dummyDarkTheme : [];
+      this.editor.dispatch({
+        effects: themeSelection.reconfigure(currentTheme),
+      });
+    });
     return this.#activeEditor;
   }
 
@@ -159,8 +149,6 @@ export class TextEditor extends HTMLElement {
       this.#pendingState = this.#activeEditor.state;
       this.#devtoolsResizeObserver.disconnect();
       window.removeEventListener('resize', this.#resizeListener);
-      ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName,
-                                                               this.#themeListener);
       this.#activeEditor.destroy();
       this.#activeEditor = undefined;
       this.#ensureSettingListeners();

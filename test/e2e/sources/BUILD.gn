@@ -32,7 +32,6 @@ ts_e2e_library("sources") {
     "inline-scripts.test.ts",
     "inline-variable.test.ts",
     "link-to-correct-source-line.test.ts",
-    "memory-leak.test.ts",
     "navigator-view.test.ts",
     "overrides.test.ts",
     "pause-button.test.ts",

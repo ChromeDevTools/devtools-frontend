@@ -329,9 +329,6 @@ export class TabbedPane extends TabbedPaneBase {
 
     this.tabsHistory.splice(this.tabsHistory.indexOf(tab), 1);
     this.#tabs.splice(this.#tabs.indexOf(tab), 1);
-    if (this.lastSelectedOverflowTab === tab) {
-      delete this.lastSelectedOverflowTab;
-    }
     if (tab.shown) {
       this.hideTabElement(tab);
     }

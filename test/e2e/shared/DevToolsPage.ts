@@ -416,15 +416,6 @@ export class DevToolsPage extends PageWrapper {
   }
 
   /**
-   * Forces a garbage collection in the DevTools page, e.g. before checking
-   * that objects that are no longer needed are not retained.
-   */
-  async collectGarbage(): Promise<void> {
-    const session = await this.#getCDPSession();
-    await session.send('HeapProfiler.collectGarbage');
-  }
-
-  /**
    * A helper that takes heap snapshots of the DevTools page that can be used to
    * detect memory leaks. The snapshots are stored in out/<OutDir>.
    *
@@ -442,9 +433,9 @@ export class DevToolsPage extends PageWrapper {
    * compared in the Memory panel of DevTools.
    */
   async captureHeapSnapshot(snapshotName = 'heap-snapshot'): Promise<void> {
-    await this.collectGarbage();
     const session = await this.page.createCDPSession();
     await session.send('HeapProfiler.enable');
+    await session.send('HeapProfiler.collectGarbage');
 
     const snapshotId = heapSnapshotCounter++;
     const fileName = `${snapshotName}-${snapshotId}.heapsnapshot`;

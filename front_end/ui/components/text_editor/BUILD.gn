@@ -116,7 +116,6 @@ devtools_ui_module("unittests") {
     "../../../third_party/codemirror.next:bundle",
     "../../../third_party/source-map-scopes-codec:bundle",
     "../../legacy:bundle",
-    "../../legacy/theme_support:bundle",
     "../dialogs:bundle",
     "../snackbars:bundle",
   ]

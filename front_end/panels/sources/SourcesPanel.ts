@@ -56,7 +56,7 @@ import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
 import {NavigatorView} from './NavigatorView.js';
 import sourcesPanelStyles from './sourcesPanel.css.js';
-import {type EditorClosedEvent, Events, SourcesView} from './SourcesView.js';
+import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
@@ -262,7 +262,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     this.#sourcesView = new SourcesView();
     this.#sourcesView.addEventListener(Events.EDITOR_SELECTED, this.editorSelected.bind(this));
-    this.#sourcesView.addEventListener(Events.EDITOR_CLOSED, this.editorClosed.bind(this));
 
     this.#sourcesView.onToggleNavigatorSidebar = this.toggleNavigatorSidebar.bind(this);
     this.#sourcesView.onToggleDebuggerSidebar = this.toggleDebuggerSidebar.bind(this);
@@ -704,13 +703,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
     if (this.editorView.mainWidget() &&
         Common.Settings.Settings.instance().moduleSetting('auto-reveal-in-navigator').get()) {
       void this.revealInNavigator(uiSourceCode, true);
-    }
-  }
-
-  private editorClosed({data: {uiSourceCode}}: Common.EventTarget.EventTargetEvent<EditorClosedEvent>): void {
-    const context = UI.Context.Context.instance();
-    if (context.flavor(Workspace.UISourceCode.UISourceCode) === uiSourceCode) {
-      context.setFlavor(Workspace.UISourceCode.UISourceCode, null);
     }
   }
 

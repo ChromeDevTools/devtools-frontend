@@ -369,6 +369,39 @@ describe('AiAgent', () => {
           },
         ]);
       });
+
+      it('parses partial answers with the same suggestions parsing as completed answers', async () => {
+        const agent = new AiAgentMock({
+          aidaClient: mockAidaClient([[
+            {
+              explanation: 'Answer. SUGGESTIONS: ["a',
+            },
+            {
+              explanation: 'Answer. SUGGESTIONS: ["a"]',
+            },
+          ]]),
+        });
+
+        const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+        assert.deepEqual(responses, [
+          {
+            type: AiAssistance.AiAgent.ResponseType.QUERYING,
+          },
+          {
+            type: AiAssistance.AiAgent.ResponseType.ANSWER,
+            complete: false,
+            text: 'Answer. ',
+          },
+          {
+            type: AiAssistance.AiAgent.ResponseType.ANSWER,
+            text: 'Answer. ',
+            complete: true,
+            rpcId: undefined,
+            suggestions: ['a'],
+          },
+        ]);
+      });
     });
 
     it('should yield unknown error when aida doConversation does not return anything', async () => {

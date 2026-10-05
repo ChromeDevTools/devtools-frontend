@@ -755,6 +755,21 @@ export abstract class AiAgent<T> {
     return this.parseTextResponseForSuggestions(response.trim());
   }
 
+  /**
+   * Parses the text of a response that is still streaming. Only the `answer`
+   * of the result is shown, as a partial answer. By default, partial answers
+   * use the same parsing as completed answers.
+   *
+   * This hook exists so that `AiAgent2` (AI V2) can parse follow-up
+   * suggestions differently without changing the V1 agents. Remove it once
+   * AI V2 ships and the V1 agents are removed. b/568697679 explores getting
+   * suggestions from a function call instead of parsing them from text,
+   * which would remove the need for this parsing.
+   */
+  protected parsePartialTextResponse(response: string): ParsedResponse {
+    return this.parseTextResponse(response);
+  }
+
   protected async finalizeAnswer(answer: AnswerResponse): Promise<AnswerResponse> {
     return answer;
   }
@@ -846,7 +861,7 @@ export abstract class AiAgent<T> {
           functionCall = fetchResult.functionCall;
 
           if (!functionCall && !fetchResult.completed) {
-            const parsed = this.parseTextResponse(textResponse);
+            const parsed = this.parsePartialTextResponse(textResponse);
             const partialAnswer = 'answer' in parsed ? parsed.answer : '';
             if (!partialAnswer) {
               continue;
@@ -1205,7 +1220,13 @@ export abstract class AiAgent<T> {
   }
 }
 
-function sanitizeSuggestions(suggestions: string): [string, ...string[]]|undefined {
+/**
+ * Parses `suggestions` as a JSON array and returns its non-empty string items,
+ * with whitespace collapsed and each item truncated to `MAX_SUGGESTION_LENGTH`.
+ * Returns `undefined` if the value is not an array or no items remain.
+ * Throws if `suggestions` is not valid JSON.
+ */
+export function sanitizeSuggestions(suggestions: string): [string, ...string[]]|undefined {
   const parsed = JSON.parse(suggestions);
   if (!Array.isArray(parsed)) {
     return undefined;

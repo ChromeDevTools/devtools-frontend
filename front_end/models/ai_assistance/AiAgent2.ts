@@ -13,8 +13,10 @@ import {
   type ContextResponse,
   type ConversationContext,
   type MultimodalInputType,
+  type ParsedResponse,
   type RequestOptions,
   ResponseType,
+  sanitizeSuggestions,
 } from './agents/AiAgent.js';
 import {type ExecuteJsAgentOptions, executeJsCode} from './agents/ExecuteJavascript.js';
 import {ChangeManager} from './ChangeManager.js';
@@ -83,6 +85,110 @@ export interface AiAgent2Options extends ExecuteJsAgentOptions {
   originLock: () => OriginLockState;
   lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
   performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
+}
+
+/**
+ * Matches the follow-up suggestions directive in plain uppercase, at the start
+ * of the line or after whitespace: `SUGGESTIONS: ["a"]`, `Done. SUGGESTIONS: ["a"]`.
+ * It is case-sensitive, so `Suggestions:` and `DEFAULT_SUGGESTIONS:` do not match.
+ * - Group 1: the text before the directive.
+ */
+const PLAIN_SUGGESTIONS_REGEX = /^(.*?)(?:^|\s)SUGGESTIONS:/;
+
+/**
+ * Matches any spelling of the follow-up suggestions directive that is followed
+ * by an array ending the line, for example `**Suggestions**: ["a"]`,
+ * `- suggestions: ["a"]` or `` `SUGGESTIONS`: ["a"] ``. The keyword is
+ * case-insensitive, must be at the start of the line or after whitespace, and
+ * can have up to three markdown characters (`*`, `_` or `` ` ``) on each side
+ * of it and of the colon. Only markdown characters or whitespace can follow the
+ * closing `]`, so `A few suggestions: [see docs](url)` does not match.
+ * - Group 1: the text before the directive. It is greedy, so the last keyword
+ *   on the line is used: `**Suggestions**: [1] Fix. SUGGESTIONS: ["a"]` keeps
+ *   `**Suggestions**: [1] Fix.` as answer text.
+ * - Group 2: the array, from the first `[` after the keyword to the last `]`.
+ */
+const FORMATTED_SUGGESTIONS_REGEX = /^(.*)(?:^|\s)[*_`]{0,3}suggestions[*_`]{0,3}:[*_`]{0,3}\s*`?(\[.*\])[*_`\s]*$/i;
+
+/**
+ * Matches the start of any spelling of the follow-up suggestions directive
+ * while it is streaming: the keyword in any case, at the start of the line or
+ * after whitespace, with optional markdown characters, followed by `:`. Nothing
+ * after the colon is checked, because the array may still be arriving.
+ * - Group 1: the text before the directive.
+ */
+const STREAMING_SUGGESTIONS_REGEX = /^(.*?)(?:^|\s)[*_`]{0,3}suggestions[*_`]{0,3}:/i;
+
+/**
+ * Matches a markdown list or heading marker on its own, such as `-`, `1.` or
+ * `###`. The marker is dropped when the directive was the only thing after it.
+ */
+const LIST_OR_HEADING_MARKER_REGEX = /^(?:[-*+]|\d+\.|#{1,6})$/;
+
+/**
+ * Returns the answer text with the directive removed from the last line.
+ * `textBeforeDirective` is what the last line contained before the directive.
+ */
+function removeDirectiveFromLastLine(lines: string[], textBeforeDirective: string): string {
+  const keptText = textBeforeDirective.trimEnd();
+  const lastLine = LIST_OR_HEADING_MARKER_REGEX.test(keptText.trim()) ? '' : keptText;
+  return [...lines.slice(0, -1), lastLine].join('\n').trimEnd();
+}
+
+/**
+ * Parses the JSON array of a suggestions directive. Returns `null` if `array`
+ * is not valid JSON, and `{suggestions: undefined}` if it is valid but holds no
+ * usable suggestions.
+ */
+function parseSuggestionsArray(array: string): {suggestions: [string, ...string[]]|undefined}|null {
+  try {
+    return {suggestions: sanitizeSuggestions(array)};
+  } catch {
+    // Invalid JSON: the caller decides whether the line is still a directive.
+    return null;
+  }
+}
+
+/**
+ * Parses a completed response. Only the last line can be the follow-up
+ * suggestions directive; every other line is always kept as answer text.
+ * 1. If any spelling of the directive is followed by a valid JSON array that
+ *    ends the line, it is removed and the array becomes the suggestions.
+ * 2. Otherwise, if the line contains `SUGGESTIONS:` in plain uppercase, it is
+ *    removed from the keyword onward even though the array is missing or not
+ *    valid JSON, and no suggestions are returned.
+ * 3. Otherwise, the line is kept unchanged.
+ * Text before the directive on the same line is kept.
+ */
+function parseCompletedSuggestions(text: string): ParsedResponse {
+  const lines = text.split('\n');
+  const lastLine = lines[lines.length - 1];
+
+  const formatted = lastLine.match(FORMATTED_SUGGESTIONS_REGEX);
+  const parsedArray = formatted ? parseSuggestionsArray(formatted[2]) : null;
+  if (formatted && parsedArray) {
+    const answer = removeDirectiveFromLastLine(lines, formatted[1]);
+    return parsedArray.suggestions ? {answer, suggestions: parsedArray.suggestions} : {answer};
+  }
+
+  const plain = lastLine.match(PLAIN_SUGGESTIONS_REGEX);
+  if (plain) {
+    return {answer: removeDirectiveFromLastLine(lines, plain[1])};
+  }
+
+  return {answer: text};
+}
+
+/**
+ * Hides a follow-up suggestions directive that is still streaming on the last
+ * line, from the keyword onward, without looking at its array. Hiding text by
+ * mistake is temporary: the completed response is parsed again by
+ * `parseCompletedSuggestions()`.
+ */
+function hideStreamingSuggestions(text: string): string {
+  const lines = text.split('\n');
+  const match = lines[lines.length - 1].match(STREAMING_SUGGESTIONS_REGEX);
+  return match ? removeDirectiveFromLastLine(lines, match[1]) : text;
 }
 
 export class AiAgent2 extends AiAgent<unknown> {
@@ -234,6 +340,22 @@ If the user's request requires a skill that is not currently loaded, you MUST ca
 Do NOT call \`learnSkills\` for skills that are already loaded.
 
 User query: ${enhancedQuery}`;
+  }
+
+  /**
+   * Parses a completed response. Only the last line can be the follow-up
+   * suggestions directive. See `parseCompletedSuggestions()`.
+   */
+  override parseTextResponse(response: string): ParsedResponse {
+    return parseCompletedSuggestions(response.trim());
+  }
+
+  /**
+   * Parses a response that is still streaming, hiding a suggestions directive
+   * on the last line. See `hideStreamingSuggestions()`.
+   */
+  protected override parsePartialTextResponse(response: string): ParsedResponse {
+    return {answer: hideStreamingSuggestions(response.trim())};
   }
 
   override async *

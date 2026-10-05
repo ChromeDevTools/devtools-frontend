@@ -551,6 +551,14 @@ describe('SourceMapScopesInfo', () => {
       assert.isNull(info.inlinedFunctionRange(5, 3));
       assert.isNull(info.inlinedFunctionRange(7, 3));
     });
+
+    it('inlinedCalleeRanges returns the callees inlined directly into the current logical function', () => {
+      const info = createInfo();
+      assert.deepEqual(info.inlinedCalleeRanges(0, 5), [range(1, 0, 3, 0), range(4, 0, 4, 5)]);
+      assert.deepEqual(info.inlinedCalleeRanges(1, 1), [range(2, 0, 2, 5)]);
+      assert.deepEqual(info.inlinedCalleeRanges(5, 3), [range(5, 5, 5, 8)]);
+      assert.deepEqual(info.inlinedCalleeRanges(7, 3), []);
+    });
   });
 
   describe('hasVariablesAndBindings', () => {

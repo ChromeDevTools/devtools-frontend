@@ -893,6 +893,12 @@ export class SourceMap {
     return this.hasEncodedScopeInfo() ? this.#scopesInfo?.inlinedFunctionRange(generatedLine, generatedColumn) ?? null :
                                         null;
   }
+
+  /** See {@link SourceMapScopesInfo.inlinedCalleeRanges}. Empty without encoded scopes. */
+  inlinedCalleeRanges(generatedLine: number, generatedColumn: number): PositionRange[] {
+    return this.hasEncodedScopeInfo() ? this.#scopesInfo?.inlinedCalleeRanges(generatedLine, generatedColumn) ?? [] :
+                                        [];
+  }
 }
 
 /** @returns a copy of the {@link entry} that is marked as a range mapping. */

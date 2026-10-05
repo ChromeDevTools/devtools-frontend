@@ -583,6 +583,35 @@ export class SourceMapScopesInfo {
     }
     return null;
   }
+
+  /**
+   * @returns the bodies of all functions that were inlined directly into the logical function at the position
+   *          (the innermost inlined function, or else the generated function). Doesn't descend into inlined
+   *          functions or nested generated functions.
+   */
+  inlinedCalleeRanges(generatedLine: number, generatedColumn: number): PositionRange[] {
+    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+    let body: ScopesCodec.GeneratedRange|undefined;
+    for (let i = rangeChain.length - 1; i >= 0 && !body; --i) {
+      if (rangeChain[i].callSite || rangeChain[i].isStackFrame) {
+        body = rangeChain[i];
+      }
+    }
+    const result: PositionRange[] = [];
+    (function walk(range: ScopesCodec.GeneratedRange) {
+      for (const child of range.children) {
+        if (child.isStackFrame) {
+          continue;
+        }
+        if (child.callSite) {
+          result.push({start: child.start, end: child.end});
+        } else {
+          walk(child);
+        }
+      }
+    })(body ?? {children: this.#generatedRanges} as ScopesCodec.GeneratedRange);
+    return result;
+  }
 }
 
 /** A range of generated positions, relative to the start of the script. `end` is exclusive. */

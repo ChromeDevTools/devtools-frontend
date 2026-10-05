@@ -860,13 +860,14 @@ describe('AiAgent2', () => {
     assert.strictEqual(canceled.output, 'Error: User denied code execution with side effects.');
   });
 
-  it('includes the tool permissionPrompt in the SIDE_EFFECT response', async () => {
+  it('includes the tool permissionPrompt and permissionTitle in the SIDE_EFFECT response', async () => {
     const {responses} = await runGetCookieValuesApprovalFlow();
 
     const sideEffectResponse = responses.find((r): r is AiAssistance.AiAgent.SideEffectResponse =>
                                                   r.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT);
     assert.exists(sideEffectResponse);
     assert.strictEqual(sideEffectResponse.permissionPrompt, AiAssistance.Tool.PermissionPrompt.ALLOW_ONCE);
+    assert.strictEqual(sideEffectResponse.permissionTitle, 'Allow reading cookie values?');
   });
 
   it('provides getLighthouseReport capability to GetLighthouseAuditsTool', async () => {

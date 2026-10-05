@@ -107,6 +107,7 @@ export interface SideEffectResponse {
   code?: string;
   confirm: (decision: PermissionDecision) => void;
   permissionPrompt?: PermissionPrompt;
+  permissionTitle?: string;
 }
 export interface ContextChangeResponse {
   type: ResponseType.CONTEXT_CHANGE;
@@ -487,6 +488,10 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
    * `requiresApproval`. Behaves as `ALLOW_ONCE` when unset.
    */
   permissionPrompt?: PermissionPrompt;
+  /**
+   * Title of the permission prompt, e.g. "Allow reading cookie values?".
+   */
+  permissionTitle?: string;
   /**
    * Function implementation that the LLM will try to execute,
    */
@@ -1099,6 +1104,7 @@ export abstract class AiAgent<T> {
         confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
         description: result.description,
         permissionPrompt: call.permissionPrompt,
+        permissionTitle: call.permissionTitle,
       };
 
       let decision = PermissionDecision.REJECT;

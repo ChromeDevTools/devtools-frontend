@@ -322,6 +322,11 @@ export interface BaseTool<ArgsType extends ToolArgs = ToolArgs> {
    */
   readonly permissionPrompt: PermissionPrompt;
   /**
+   * Title of the permission prompt, e.g. "Allow reading cookie values?".
+   * Required for tools that require user permission to run.
+   */
+  readonly permissionTitle?: string;
+  /**
    * JSON schema representing the parameters this tool accepts.
    */
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ArgsType>;

@@ -122,4 +122,17 @@ describe('ToolRegistry', () => {
       assert.deepEqual(toolNames, expectedToolNames);
     });
   });
+
+  it('sets permissionTitle on tools that ask for approval', () => {
+    const toolsThatAlwaysAsk: string[] = [
+      AiAssistance.Tool.ToolName.EXECUTE_JAVASCRIPT,
+      AiAssistance.Tool.ToolName.GET_COOKIE_VALUES,
+      AiAssistance.Tool.ToolName.GET_STORAGE_VALUES,
+    ];
+    for (const toolName of toolsThatAlwaysAsk) {
+      const tool = AiAssistance.ToolRegistry.ToolRegistry.get(toolName);
+      assert.exists(tool, `Tool "${toolName}" does not exist in ToolRegistry`);
+      assert.isNotEmpty(tool.permissionTitle, `Tool "${toolName}" has no permissionTitle`);
+    }
+  });
 });

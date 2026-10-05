@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as Formatter from '../../formatter/formatter.js';
 import type {FunctionHandlerOptions} from '../agents/AiAgent.js';
@@ -22,6 +23,8 @@ import {
   ToolName,
 } from './Tool.js';
 
+const lockedString = i18n.i18n.lockedString;
+
 const MAX_FORMATTED_LINES = 40;
 const MAX_LINE_LENGTH = 120;
 const MAX_TOTAL_CHARACTERS = 2500;
@@ -37,6 +40,7 @@ export class ExecuteJavaScriptTool implements
              BaseToolCapability&PageExecutionCapability&StyleMutationCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.EXECUTE_JAVASCRIPT;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.ALLOW_ONCE;
+  readonly permissionTitle: string = lockedString('Allow running JavaScript on the page?');
 
   readonly description: string =
       'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.';

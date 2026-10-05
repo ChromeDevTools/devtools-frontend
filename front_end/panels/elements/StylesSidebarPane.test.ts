@@ -3799,7 +3799,9 @@ describeWithEnvironment('StylesSidebarPane Inactive Styles', () => {
   let node: SDK.DOMModel.DOMNode;
 
   beforeEach(() => {
-    Common.Settings.Settings.instance().moduleSetting('show-inactive-css-rules').set(true);
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.ElementsSettings.showInactiveCSSRulesSettingDescriptor)
+        .set(true);
     connection = new MockCDPConnection();
     const target = createTarget({connection});
     cssModel = target.model(SDK.CSSModel.CSSModel)!;
@@ -3811,7 +3813,9 @@ describeWithEnvironment('StylesSidebarPane Inactive Styles', () => {
   });
 
   it('does not preserve inactive rules when setting is disabled', async () => {
-    Common.Settings.Settings.instance().moduleSetting('show-inactive-css-rules').set(false);
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.ElementsSettings.showInactiveCSSRulesSettingDescriptor)
+        .set(false);
 
     const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const rangeA = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
@@ -4463,7 +4467,9 @@ describeWithEnvironment('StylesSidebarPane updates, completions, and media/keyfr
   let node: SDK.DOMModel.DOMNode;
 
   beforeEach(() => {
-    Common.Settings.Settings.instance().moduleSetting('show-inactive-css-rules').set(false);
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.ElementsSettings.showInactiveCSSRulesSettingDescriptor)
+        .set(false);
     connection = new MockCDPConnection();
     const target = createTarget({connection});
     cssModel = target.model(SDK.CSSModel.CSSModel)!;

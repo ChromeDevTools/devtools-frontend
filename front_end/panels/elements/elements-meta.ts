@@ -620,14 +620,10 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.collapseNo
                                             title: i18nLazyString(UIStrings.collapseNonContributingCSSRules),
                                           });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.showInactiveCSSRulesSettingDescriptor, {
   category: Common.Settings.SettingCategory.ELEMENTS,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   order: 8,
   title: i18nLazyString(UIStrings.showInactiveCSSRules),
-  settingName: 'show-inactive-css-rules',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 Common.Settings.registerSettingExtension({

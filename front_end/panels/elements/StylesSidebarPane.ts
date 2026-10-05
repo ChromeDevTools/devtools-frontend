@@ -285,7 +285,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
         .resolve(SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor)
         .addChangeListener(this.updateCollapsedSectionsSetting, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('show-inactive-css-rules')
+        .resolve(SettingsUI.ElementsSettings.showInactiveCSSRulesSettingDescriptor)
         .addChangeListener(this.requestUpdate, this);
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
@@ -1470,7 +1470,9 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
 
     await this.idleCallbackManager.awaitDone();
 
-    const showInactiveCSSRules = Common.Settings.Settings.instance().moduleSetting('show-inactive-css-rules').get();
+    const showInactiveCSSRules = Common.Settings.Settings.instance()
+                                     .resolve(SettingsUI.ElementsSettings.showInactiveCSSRulesSettingDescriptor)
+                                     .get();
     if (!showInactiveCSSRules) {
       return blocks;
     }

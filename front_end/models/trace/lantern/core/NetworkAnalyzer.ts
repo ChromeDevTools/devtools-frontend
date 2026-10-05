@@ -6,27 +6,9 @@ import type * as Lantern from '../types/types.js';
 
 class UrlUtils {
   /**
-   * There is fancy URL rewriting logic for the chrome://settings page that we need to work around.
-   * Why? Special handling was added by Chrome team to allow a pushState transition between chrome:// pages.
-   * As a result, the network URL (chrome://chrome/settings/) doesn't match the final document URL (chrome://settings/).
-   */
-  static rewriteChromeInternalUrl(url: string): string {
-    if (!url?.startsWith('chrome://')) {
-      return url;
-    }
-    // Chrome adds a trailing slash to `chrome://` URLs, but the spec does not.
-    //   https://github.com/GoogleChrome/lighthouse/pull/3941#discussion_r154026009
-    if (url.endsWith('/')) {
-      url = url.replace(/\/$/, '');
-    }
-    return url.replace(/^chrome:\/\/chrome\//, 'chrome://');
-  }
-
-  /**
    * Determine if url1 equals url2, ignoring URL fragments.
    */
   static equalWithExcludedFragments(url1: string, url2: string): boolean {
-    [url1, url2] = [url1, url2].map(this.rewriteChromeInternalUrl);
     try {
       const urla = new URL(url1);
       urla.hash = '';
@@ -506,8 +488,9 @@ class NetworkAnalyzer {
                                      const scheme = request.parsedURL?.scheme;
                                      // Requests whose bodies didn't come over the network or didn't completely finish will mess
                                      // with the computation, just skip over them.
-                                     if (scheme === 'data' || request.failed || !request.finished ||
-                                         request.statusCode > 300 || !request.transferSize) {
+                                     if (scheme === 'data' || request.fromDiskCache || request.fromMemoryCache ||
+                                         request.failed || !request.finished || request.statusCode > 300 ||
+                                         !request.transferSize) {
                                        return boundaries;
                                      }
 
@@ -544,6 +527,10 @@ class NetworkAnalyzer {
       }
     });
 
+    if (!totalDuration) {
+      return null;
+    }
+
     return totalBytes * 8 / totalDuration;
   }
 
@@ -567,6 +554,11 @@ class NetworkAnalyzer {
       const rttForOrigin = rttByOrigin.get(origin) || minimumRtt;
       additionalRttByOrigin.set(origin, rttForOrigin - minimumRtt);
       serverResponseTimeByOrigin.set(origin, summary.median);
+    }
+    for (const [origin, rttForOrigin] of rttByOrigin.entries()) {
+      if (!additionalRttByOrigin.has(origin)) {
+        additionalRttByOrigin.set(origin, rttForOrigin - minimumRtt);
+      }
     }
 
     return {

@@ -425,8 +425,14 @@ describe('NetworkAnalyzer', () => {
       const result = estimateThroughput([
         createThroughputRecord(0, 2),
         createThroughputRecord(3, 4, {statusCode: 304}),
+        createThroughputRecord(4, 5, {fromDiskCache: true}),
+        createThroughputRecord(5, 6, {fromMemoryCache: true}),
       ]);
       assert.strictEqual(result, 500 * 8);
+    });
+
+    it('should return null when total duration is 0', () => {
+      assert.isNull(estimateThroughput([createThroughputRecord(1, 1)]));
     });
 
     it('should exclude unfinished records', () => {
@@ -489,6 +495,22 @@ describe('NetworkAnalyzer', () => {
           0,
         ],
       ]);
+    });
+
+    it('should include additionalRttByOrigin for origins without server response time estimates', () => {
+      const records = [
+        createRecord({
+          url: 'https://fast.com/app.js',
+          timing: {connectStart: 0, connectEnd: 10, sendStart: 10, receiveHeadersEnd: 30},
+        }),
+        createRecord({
+          url: 'https://slow-no-headers.com/app.js',
+          timing: {connectStart: 0, connectEnd: 50, sendStart: -1, receiveHeadersEnd: -1},
+        }),
+      ];
+      const result = NetworkAnalyzer.computeRTTAndServerResponseTime(records);
+      assert.strictEqual(result.rtt, 10);
+      assert.strictEqual(result.additionalRttByOrigin.get('https://slow-no-headers.com'), 40);
     });
   });
 

@@ -434,9 +434,9 @@ export interface ConfirmSideEffectDialog {
    */
   description: string|null;
   /**
-   * Callback invoked when the user resolves the dialog (true to confirm, false to decline).
+   * Callback invoked when the user resolves the dialog with their decision.
    */
-  onAnswer: (result: boolean) => void;
+  onAnswer: (decision: AiAssistanceModel.Tool.PermissionDecision) => void;
 }
 
 /**
@@ -1869,7 +1869,7 @@ function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
             jslogContext: 'decline-execute-code',
           } as Buttons.Button.ButtonData
         }
-        @click=${() => dialog.onAnswer(false)}
+        @click=${() => dialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.REJECT)}
       >${lockedString(
         UIStringsNotTranslate.declineActionRequestApproval,
       )}</devtools-button>
@@ -1881,7 +1881,7 @@ function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
             iconName: 'play',
           } as Buttons.Button.ButtonData
         }
-        @click=${() => dialog.onAnswer(true)}
+        @click=${() => dialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE)}
       >${
           lockedString(UIStringsNotTranslate.confirmActionRequestApproval)
       }</devtools-button>

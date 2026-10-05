@@ -181,7 +181,7 @@ describe('StylingAgent', function() {
   describe('run', () => {
     describe('side effect handling', () => {
       it('calls confirmSideEffect when the code execution contains a side effect', async () => {
-        const promise = Promise.withResolvers();
+        const promise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
         const stub = sinon.stub().returns(promise);
         const execJs = sinon.mock().throws(
             new AiAssistance.EvaluateAction.SideEffectError('EvalError: Possible side-effect in debug-evaluate'));
@@ -201,14 +201,14 @@ describe('StylingAgent', function() {
 
         });
 
-        promise.resolve(true);
+        promise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
         await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
 
         sinon.assert.match(execJs.getCall(0).args[1], sinon.match({throwOnSideEffect: true}));
       });
 
       it('calls execJs with allowing side effects when confirmSideEffect resolves to true', async () => {
-        const promise = Promise.withResolvers();
+        const promise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
         const stub = sinon.stub().returns(promise);
         const execJs = sinon.mock().twice();
         execJs.onCall(0).throws(
@@ -229,7 +229,7 @@ describe('StylingAgent', function() {
           execJs,
 
         });
-        promise.resolve(true);
+        promise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
         await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
 
         assert.lengthOf(execJs.getCalls(), 2);
@@ -237,7 +237,7 @@ describe('StylingAgent', function() {
       });
 
       it('returns side effect error when confirmSideEffect resolves to false', async () => {
-        const promise = Promise.withResolvers();
+        const promise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
         const stub = sinon.stub().returns(promise);
         const execJs = sinon.mock().once();
         execJs.onCall(0).throws(
@@ -257,7 +257,7 @@ describe('StylingAgent', function() {
           execJs,
 
         });
-        promise.resolve(false);
+        promise.resolve(AiAssistance.Tool.PermissionDecision.REJECT);
         const responses = await Array.fromAsync(
             agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
         const actionStep = responses.findLast(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION)!;
@@ -270,7 +270,7 @@ describe('StylingAgent', function() {
         const selected = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
         const execJs = sinon.mock().once().throws(
             new AiAssistance.EvaluateAction.SideEffectError('EvalError: Possible side-effect in debug-evaluate'));
-        const sideEffectConfirmationPromise = Promise.withResolvers();
+        const sideEffectConfirmationPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
         const agent = new StylingAgent.StylingAgent({
           aidaClient: mockAidaClient([[{
             functionCalls: [{name: 'executeJavaScript', args: {code: '$0.style.backgroundColor = \'red\''}}],
@@ -297,7 +297,7 @@ describe('StylingAgent', function() {
         const errorStep = responses.at(-1) as AiAssistance.AiAgent.ErrorResponse;
         assert.exists(errorStep);
         assert.strictEqual(errorStep.error, AiAgent.ErrorType.ABORT);
-        assert.isFalse(await sideEffectConfirmationPromise.promise);
+        assert.strictEqual(await sideEffectConfirmationPromise.promise, AiAssistance.Tool.PermissionDecision.REJECT);
       });
     });
 

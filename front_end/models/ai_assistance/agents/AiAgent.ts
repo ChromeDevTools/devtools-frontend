@@ -13,7 +13,12 @@ import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 import {dispatchAiAssistanceDoneEvent} from '../DOMHelpers.js';
-import type {ContextHandlerResult, DataHandlerResult, PermissionPrompt} from '../tools/Tool.js';
+import {
+  type ContextHandlerResult,
+  type DataHandlerResult,
+  PermissionDecision,
+  type PermissionPrompt,
+} from '../tools/Tool.js';
 
 type UrlString = Platform.DevToolsPath.UrlString;
 const MAX_SUGGESTION_LENGTH = 200;
@@ -100,7 +105,7 @@ export interface SideEffectResponse {
   type: ResponseType.SIDE_EFFECT;
   description: string|null;
   code?: string;
-  confirm: (confirm: boolean) => void;
+  confirm: (decision: PermissionDecision) => void;
   permissionPrompt?: PermissionPrompt;
 }
 export interface ContextChangeResponse {
@@ -1070,21 +1075,21 @@ export abstract class AiAgent<T> {
         };
       }
 
-      const sideEffectConfirmationPromiseWithResolvers = this.confirmSideEffect<boolean>();
+      const sideEffectConfirmationPromiseWithResolvers = this.confirmSideEffect<PermissionDecision>();
 
-      void sideEffectConfirmationPromiseWithResolvers.promise.then(result => {
+      void sideEffectConfirmationPromiseWithResolvers.promise.then(decision => {
         Host.userMetrics.actionTaken(
-            result ? Host.UserMetrics.Action.AiAssistanceSideEffectConfirmed :
-                     Host.UserMetrics.Action.AiAssistanceSideEffectRejected,
+            decision === PermissionDecision.REJECT ? Host.UserMetrics.Action.AiAssistanceSideEffectRejected :
+                                                     Host.UserMetrics.Action.AiAssistanceSideEffectConfirmed,
         );
       });
 
       if (options?.signal?.aborted) {
-        sideEffectConfirmationPromiseWithResolvers.resolve(false);
+        sideEffectConfirmationPromiseWithResolvers.resolve(PermissionDecision.REJECT);
       }
 
       const onAbort = (): void => {
-        sideEffectConfirmationPromiseWithResolvers.resolve(false);
+        sideEffectConfirmationPromiseWithResolvers.resolve(PermissionDecision.REJECT);
       };
 
       options?.signal?.addEventListener('abort', onAbort, {once: true});
@@ -1096,13 +1101,13 @@ export abstract class AiAgent<T> {
         permissionPrompt: call.permissionPrompt,
       };
 
-      let approvedRun = false;
+      let decision = PermissionDecision.REJECT;
       try {
-        approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
+        decision = await sideEffectConfirmationPromiseWithResolvers.promise;
       } finally {
         options?.signal?.removeEventListener('abort', onAbort);
       }
-      if (!approvedRun) {
+      if (decision === PermissionDecision.REJECT) {
         yield {
           type: ResponseType.ACTION,
           code,

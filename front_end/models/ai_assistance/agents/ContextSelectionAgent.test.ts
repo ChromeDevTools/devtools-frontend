@@ -34,6 +34,7 @@ import {
   RequestContext,
   StorageContext,
   StorageItem,
+  Tool,
 } from '../ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
@@ -719,8 +720,8 @@ describe('ContextSelectionAgent', function() {
     it('inspects DOM node', async () => {
       const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
       const onInspectElement = sinon.stub().resolves(node);
-      const sideEffectConfirmationPromise = Promise.withResolvers();
-      sideEffectConfirmationPromise.resolve(true);
+      const sideEffectConfirmationPromise = Promise.withResolvers<Tool.PermissionDecision>();
+      sideEffectConfirmationPromise.resolve(Tool.PermissionDecision.ALLOW_ONCE);
       const agent = new ContextSelectionAgent.ContextSelectionAgent({
         aidaClient: mockAidaClient([
           [{

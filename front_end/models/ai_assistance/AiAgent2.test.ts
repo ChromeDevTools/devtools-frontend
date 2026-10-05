@@ -502,7 +502,7 @@ describe('AiAgent2', () => {
       responses.push(response);
       if (response.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT) {
         // Simulate user confirming the side effect
-        response.confirm(true);
+        response.confirm(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
       }
       next = await runGenerator.next();
     }
@@ -776,7 +776,9 @@ describe('AiAgent2', () => {
     assert.isTrue(thirdCallArgs.metadata?.disable_user_content_logging);
   });
 
-  async function runGetCookieValuesApprovalFlow(): Promise<{
+  async function runGetCookieValuesApprovalFlow(
+      decision = AiAssistance.Tool.PermissionDecision.ALLOW_ONCE,
+      ): Promise<{
     responses: AiAssistance.AiAgent.ResponseData[],
     handlerStub: sinon.SinonStub,
   }> {
@@ -797,7 +799,7 @@ describe('AiAgent2', () => {
       }],
     ]);
 
-    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const sideEffectPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
     const agent = new AiAssistance.AiAgent2.AiAgent2({
       aidaClient,
       confirmSideEffectForTest: sinon.stub().returns(sideEffectPromise),
@@ -817,7 +819,7 @@ describe('AiAgent2', () => {
       return {result: {cookiesByOrigin: {'https://example.com': {cookies: []}}}};
     });
 
-    sideEffectPromise.resolve(true);
+    sideEffectPromise.resolve(decision);
     const responses = await Array.fromAsync(agent.run('get cookie session', {selected: null}));
     return {responses, handlerStub};
   }
@@ -833,6 +835,29 @@ describe('AiAgent2', () => {
     assert.isUndefined(actionResponses[1].output);
     assert.strictEqual(actionResponses[2].code, 'getCookieValues(["session"], ["https://example.com"])');
     assert.exists(actionResponses[2].output);
+  });
+
+  it('runs the tool with approved: true when the user picks ALLOW_ALWAYS', async () => {
+    const {handlerStub} = await runGetCookieValuesApprovalFlow(AiAssistance.Tool.PermissionDecision.ALLOW_ALWAYS);
+
+    sinon.assert.calledTwice(handlerStub);
+    assert.propertyVal(handlerStub.getCall(1).args[2], 'approved', true);
+  });
+
+  it('runs the tool with approved: true when the user picks ALLOW_ONCE', async () => {
+    const {handlerStub} = await runGetCookieValuesApprovalFlow(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
+
+    sinon.assert.calledTwice(handlerStub);
+    assert.propertyVal(handlerStub.getCall(1).args[2], 'approved', true);
+  });
+
+  it('does not run the tool when the user picks SKIP', async () => {
+    const {responses, handlerStub} = await runGetCookieValuesApprovalFlow(AiAssistance.Tool.PermissionDecision.REJECT);
+
+    sinon.assert.calledOnce(handlerStub);
+    const canceled = responses.find((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action' && r.canceled);
+    assert.exists(canceled);
+    assert.strictEqual(canceled.output, 'Error: User denied code execution with side effects.');
   });
 
   it('includes the tool permissionPrompt in the SIDE_EFFECT response', async () => {

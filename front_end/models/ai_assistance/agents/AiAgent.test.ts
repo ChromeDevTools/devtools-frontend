@@ -713,7 +713,7 @@ describe('AiAgent', () => {
         confirmSideEffectForTest: <T>() => {
           const resolvers = Promise.withResolvers<T>();
           // 1. Simulate the user clicking "Continue" (approving the run).
-          resolvers.resolve(true as unknown as T);
+          resolvers.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE as unknown as T);
           // 2. Simulate that while the user was deciding, the page navigated cross-origin.
           // This flips the flag so that the next call to allowedOrigin() will return {blocked: true}.
           originBlocked = true;
@@ -808,7 +808,7 @@ describe('AiAgent', () => {
         ]),
         confirmSideEffectForTest: <T>() => {
           const resolvers = Promise.withResolvers<T>();
-          resolvers.resolve(true as unknown as T);
+          resolvers.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE as unknown as T);
           return resolvers;
         },
       });

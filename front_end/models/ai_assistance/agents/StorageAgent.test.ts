@@ -83,7 +83,7 @@ describe('StorageAgent', function() {
       [{explanation: 'Here is the value.'}],
     ]);
 
-    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const sideEffectPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
     const agent = new AiAssistance.StorageAgent.StorageAgent({
       aidaClient,
       confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
@@ -93,7 +93,7 @@ describe('StorageAgent', function() {
     const context = new AiAssistance.StorageContext.StorageContext(new AiAssistance.StorageItem.DOMStorageItem(
         'https://example.com', 'https://example.com', 'https://example.com/', 'localStorage'));
 
-    sideEffectPromise.resolve(true);
+    sideEffectPromise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
     const responses = await Array.fromAsync(agent.run('get key1', {selected: context}));
 
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
@@ -115,7 +115,7 @@ describe('StorageAgent', function() {
       explanation: '',
     }]]);
 
-    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const sideEffectPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
     const agent = new AiAssistance.StorageAgent.StorageAgent({
       aidaClient,
       confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
@@ -125,7 +125,7 @@ describe('StorageAgent', function() {
     const context = new AiAssistance.StorageContext.StorageContext(new AiAssistance.StorageItem.DOMStorageItem(
         'https://example.com', 'https://example.com', 'https://example.com/', 'localStorage'));
 
-    sideEffectPromise.resolve(false);
+    sideEffectPromise.resolve(AiAssistance.Tool.PermissionDecision.REJECT);
     const responses = await Array.fromAsync(agent.run('get key1', {selected: context}));
 
     const finalAction = responses.findLast((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
@@ -273,7 +273,7 @@ describe('StorageAgent', function() {
       [{explanation: 'Here is the value.'}],
     ]);
 
-    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const sideEffectPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
     const agent = new AiAssistance.StorageAgent.StorageAgent({
       aidaClient,
       confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
@@ -294,7 +294,7 @@ describe('StorageAgent', function() {
     const getCookiesStub =
         sinon.stub(cookieModel, 'getCookiesForDomain').withArgs('https://example.com').resolves([mockCookie]);
 
-    sideEffectPromise.resolve(true);
+    sideEffectPromise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
     const responses = await Array.fromAsync(agent.run('get value of session-cookie', {selected: context}));
 
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
@@ -321,7 +321,7 @@ describe('StorageAgent', function() {
       [{explanation: 'Here are the values.'}],
     ]);
 
-    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const sideEffectPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
     const agent = new AiAssistance.StorageAgent.StorageAgent({
       aidaClient,
       confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
@@ -347,7 +347,7 @@ describe('StorageAgent', function() {
 
     sinon.stub(cookieModel, 'getCookiesForDomain').withArgs('https://example.com').resolves([cookie1, cookie2]);
 
-    sideEffectPromise.resolve(true);
+    sideEffectPromise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
     const responses = await Array.fromAsync(agent.run('get value of session-cookie', {selected: context}));
 
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
@@ -373,7 +373,7 @@ describe('StorageAgent', function() {
       [{explanation: 'Here is the value.'}],
     ]);
 
-    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const sideEffectPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
     const agent = new AiAssistance.StorageAgent.StorageAgent({
       aidaClient,
       confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
@@ -404,7 +404,7 @@ describe('StorageAgent', function() {
       secretCookie,
     ]);
 
-    sideEffectPromise.resolve(true);
+    sideEffectPromise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
     const responses = await Array.fromAsync(agent.run('get cookies', {selected: context}));
 
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
@@ -499,7 +499,7 @@ describe('StorageAgent', function() {
     cookie2.addAttribute(SDK.Cookie.Attribute.PATH, '/');
     sinon.stub(cookieModel2, 'getCookiesForDomain').withArgs('https://other.com').resolves([cookie2]);
 
-    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const sideEffectPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
     const agent = new AiAssistance.StorageAgent.StorageAgent({
       aidaClient,
       confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
@@ -510,7 +510,7 @@ describe('StorageAgent', function() {
 
     assert.isTrue(AiAssistance.StorageAgent.isSamePageOrigin(target2.outermostTarget(), context));
 
-    sideEffectPromise.resolve(true);
+    sideEffectPromise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
     const responses = await Array.fromAsync(agent.run('get cookie values', {selected: context}));
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.lengthOf(actionResponses, 2, 'Expected exactly two action responses for approval flow');
@@ -535,7 +535,7 @@ describe('StorageAgent', function() {
       [{explanation: 'Done getting storage values.'}],
     ]);
 
-    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const sideEffectPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
     const agent = new AiAssistance.StorageAgent.StorageAgent({
       aidaClient,
       confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
@@ -559,7 +559,7 @@ describe('StorageAgent', function() {
 
     activeStorages = [mockStorageA, mockStorageB];
 
-    sideEffectPromise.resolve(true);
+    sideEffectPromise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
     const responses = await Array.fromAsync(agent.run('get storage values across origins', {selected: context}));
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.lengthOf(actionResponses, 2, 'Expected exactly two action responses for approval flow');
@@ -595,7 +595,7 @@ describe('StorageAgent', function() {
       [{explanation: 'Here is the value.'}],
     ]);
 
-    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const sideEffectPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
     const agent = new AiAssistance.StorageAgent.StorageAgent({
       aidaClient,
       confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
@@ -619,7 +619,7 @@ describe('StorageAgent', function() {
 
     activeStorages = [mockStorage];
 
-    sideEffectPromise.resolve(true);
+    sideEffectPromise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
     const responses = await Array.fromAsync(agent.run('get hugeKey', {selected: context}));
 
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
@@ -984,8 +984,8 @@ describe('StorageAgent', function() {
         item: AiAssistance.StorageItem.StorageItem,
         prompt = 'test',
         ): Promise<boolean> {
-      const sideEffectPromise = Promise.withResolvers<boolean>();
-      sideEffectPromise.resolve(true);
+      const sideEffectPromise = Promise.withResolvers<AiAssistance.Tool.PermissionDecision>();
+      sideEffectPromise.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE);
       const agent = new AiAssistance.StorageAgent.StorageAgent({
         aidaClient,
         serverSideLoggingAllowed: true,

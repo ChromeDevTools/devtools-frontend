@@ -290,6 +290,25 @@ export const enum PermissionPrompt {
 }
 
 /**
+ * The user's answer to a permission prompt.
+ */
+export const enum PermissionDecision {
+  /**
+   * Don't call the tool.
+   */
+  REJECT = 'reject',
+  /**
+   * Allow to call the tool.
+   */
+  ALLOW_ONCE = 'allow-once',
+  /**
+   * Allow to call the tool, and the tool is added to the allowed tools list so
+   * future calls do not prompt. Only offered for `PermissionPrompt.ALLOW_ONCE_OR_ALWAYS`.
+   */
+  ALLOW_ALWAYS = 'allow-always',
+}
+
+/**
  * Base metadata interface for a Tool.
  * Provides parameter schema and display info formatting for tool argument types.
  *

@@ -933,7 +933,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
       view.input.props.onTextSubmit('inspect element');
 
       const sideEffectDialog = await waitForSideEffectDialog(view);
-      sideEffectDialog.onAnswer(true);
+      sideEffectDialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
 
       // Allow microtasks to run so handleInspectElement registers its listeners.
       await new Promise(resolve => setTimeout(resolve, 10));
@@ -1323,7 +1323,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
       view.input.props.onTextSubmit('inspect element');
 
       const sideEffectDialog = await waitForSideEffectDialog(view);
-      sideEffectDialog.onAnswer(true);
+      sideEffectDialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
 
       // Allow microtasks to run so handleInspectElement registers its listeners.
       await new Promise(resolve => setTimeout(resolve, 10));

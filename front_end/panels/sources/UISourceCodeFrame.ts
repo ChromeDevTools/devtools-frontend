@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -18,10 +18,10 @@ import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.j
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import {Icon, type IconWithName} from '../../ui/kit/kit.js';
+import type {IconWithName} from '../../ui/kit/kit.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, type LitTemplate, nothing, type TemplateResult} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 
 import {AiCodeCompletionPlugin} from './AiCodeCompletionPlugin.js';
 import {CoveragePlugin} from './CoveragePlugin.js';
@@ -33,6 +33,7 @@ import {ResourceOriginPlugin} from './ResourceOriginPlugin.js';
 import {SnippetsPlugin} from './SnippetsPlugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
 
+const {styleMap} = Directives;
 const UIStrings = {
   /**
    * @description Title of the format button
@@ -550,19 +551,11 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
     const anchor =
         anchorElement ? anchorElement.boxInWindow() : new AnchorBox(mouseEvent.clientX, mouseEvent.clientY, 1, 1);
 
-    const counts = countDuplicates(messages);
-    const element = document.createElement('div');
-    element.classList.add('text-editor-messages-description-container');
-    for (let i = 0; i < messages.length; i++) {
-      if (counts[i]) {
-        element.appendChild(renderMessage(messages[i], counts[i]));
-      }
-    }
     return {
       box: anchor,
       hide(): void{},
       show: async (popover: UI.GlassPane.GlassPane) => {
-        popover.contentElement.append(element);
+        DEFAULT_POPOVER_VIEW({messages}, undefined, popover.contentElement);
         return true;
       },
     };
@@ -643,7 +636,7 @@ const pluginCompartment = new CodeMirror.Compartment();
 // of the line, with icons indicating the message severity and content
 // at the end of the line.
 
-class RowMessage {
+export class RowMessage {
   readonly origin: Workspace.UISourceCode.Message;
   readonly #lineNumber: number;
   readonly #columnNumber: number;
@@ -738,7 +731,7 @@ const setRowMessages = CodeMirror.StateEffect.define<RowMessages>();
 const underlineMark = CodeMirror.Decoration.mark({class: 'cm-waveUnderline'});
 
 /** The widget shown at the end of a message annotation. **/
-class MessageWidget extends CodeMirror.WidgetType {
+export class MessageWidget extends CodeMirror.WidgetType {
   constructor(readonly messages: RowMessage[]) {
     super();
   }
@@ -748,25 +741,30 @@ class MessageWidget extends CodeMirror.WidgetType {
   }
 
   toDOM(): HTMLElement {
-    const wrap = document.createElement('span');
-    wrap.classList.add('cm-messageIcon');
+    const wrap = document.createDocumentFragment();
     const nonIssues = this.messages.filter(msg => msg.level() !== Workspace.UISourceCode.Message.Level.ISSUE);
-    if (nonIssues.length) {
-      const maxIssue = nonIssues.sort(messageLevelComparator)[nonIssues.length - 1];
-      const iconData = getIconDataForLevel(maxIssue.level());
-      const errorIcon = createIconFromIconData(iconData);
-      wrap.appendChild(errorIcon);
-      errorIcon.classList.add('cm-messageIcon-error');
-    }
+    const maxIssue = nonIssues.sort(messageLevelComparator).at(-1);
+    const maxIssueIconData = maxIssue && getIconDataForLevel(maxIssue.level());
     const issue = this.messages.find(m => m.level() === Workspace.UISourceCode.Message.Level.ISSUE);
-    if (issue) {
-      const iconData = getIconDataForMessage(issue);
-      const issueIcon = createIconFromIconData(iconData);
-      wrap.appendChild(issueIcon);
-      issueIcon.classList.add('cm-messageIcon-issue', 'extra-small');
-      issueIcon.addEventListener('click', () => (issue.clickHandler() || Math.min)());
-    }
-    return wrap;
+    const issueIconData = issue && getIconDataForMessage(issue);
+    // clang-format off
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+    render(html`<span class="cm-messageIcon">${
+      maxIssueIconData ?
+        html`<devtools-icon
+          class="cm-messageIcon-error"
+          name=${maxIssueIconData.iconName}
+          style=${styleMap({height: maxIssueIconData.height, width: maxIssueIconData.width})}></devtools-icon>`
+        : nothing}${
+      issueIconData ?
+        html`<devtools-icon
+          class="cm-messageIcon-issue extra-small"
+          @click=${() => (issue.clickHandler() || Math.min)()}
+          name=${issueIconData.iconName}
+          style=${styleMap({height: issueIconData.height, width: issueIconData.width})}></devtools-icon>`
+        : nothing}</span>`, wrap);
+    // clang-format on
+    return wrap.firstElementChild as HTMLElement;
   }
 }
 
@@ -801,18 +799,6 @@ class RowMessageDecorations {
   }
 }
 
-function createIconFromIconData(data: IconWithName): Icon {
-  const icon = new Icon();
-  icon.name = data.iconName;
-  if (data.width) {
-    icon.style.width = data.width;
-  }
-  if (data.height) {
-    icon.style.height = data.height;
-  }
-  return icon;
-}
-
 const showRowMessages = CodeMirror.StateField.define<RowMessageDecorations>({
   create(state): RowMessageDecorations {
     return RowMessageDecorations.create(new RowMessages([]), state.doc);
@@ -837,32 +823,50 @@ function countDuplicates(messages: RowMessage[]): number[] {
   return counts;
 }
 
-function renderMessage(message: RowMessage, count: number): HTMLElement {
-  const element = document.createElement('div');
-  element.classList.add('text-editor-row-message');
-  element.style.display = 'flex';
-  element.style.alignItems = 'center';
-  element.style.gap = '4px';
+function renderMessage(message: RowMessage, count: number): LitTemplate {
+  let iconOrCounter;
 
   if (count === 1) {
     const data = getIconDataForMessage(message);
-    const icon = createIconFromIconData(data);
-    element.appendChild(icon);
-    icon.classList.add('text-editor-row-message-icon', 'extra-small');
-    icon.addEventListener('click', () => (message.clickHandler() || Math.min)());
+    iconOrCounter = html`<devtools-icon
+      name=${data.iconName}
+      style=${styleMap({
+      height: data.height,
+      width: data.width,
+    })}
+      class="text-editor-row-message-icon extra-small"
+      @click=${() => (message.clickHandler() || Math.min)()}></devtools-icon>`;
   } else {
-    const repeatCountElement = element.createChild('dt-small-bubble', 'text-editor-row-message-repeat-count');
-    repeatCountElement.textContent = String(count);
-    repeatCountElement.style.flexShrink = '0';
-    repeatCountElement.type = getBubbleTypePerLevel(message.level());
-  }
-  const linesContainer = element.createChild('div');
-  for (const line of message.text().split('\n')) {
-    linesContainer.createChild('div').textContent = line;
+    iconOrCounter = html`<dt-small-bubble
+          class="text-editor-row-message-repeat-count"
+          .type=${getBubbleTypePerLevel(message.level())}
+        >${String(count)}</dt-small-bubble>`;
   }
 
-  return element;
+  return html`<div class="text-editor-row-message">
+    ${iconOrCounter}
+    <div>
+      ${message.text().split('\n').map(line => html`<div>${line}</div>`)}
+    </div>
+  </div>`;
 }
+
+export const DEFAULT_POPOVER_VIEW =
+    (input: {messages: RowMessage[]}, _output: undefined, target: HTMLElement): void => {
+      const counts = countDuplicates(input.messages);
+      render(html`<style>
+        .text-editor-row-message {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+        .text-editor-row-message-repeat-count {
+          flex-shrink: 0;
+        }
+      </style><div class="text-editor-messages-description-container">${
+                 input.messages.map((message, i) => counts[i] ? renderMessage(message, counts[i]) : nothing)}</div>`,
+             target);
+    };
 
 const rowMessageTheme = CodeMirror.EditorView.baseTheme({
   '.cm-line::selection': {

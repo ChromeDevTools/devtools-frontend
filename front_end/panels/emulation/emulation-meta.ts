@@ -137,11 +137,8 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.EmulationSettings.showMedia
   tags: [i18nLazyString(UIStrings.device)],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.EmulationSettings.showRulersSettingDescriptor, {
   category: Common.Settings.SettingCategory.MOBILE,
-  settingName: 'emulation.show-rulers',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
   options: [
     {
       value: true,

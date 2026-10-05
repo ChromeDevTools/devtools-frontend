@@ -455,7 +455,8 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
     this.showMediaInspectorSetting = Common.Settings.Settings.instance().resolve(
         SettingsUI.EmulationSettings.showMediaQueryInspectorSettingDescriptor);
     this.showMediaInspectorSetting.addChangeListener(this.requestUpdate, this);
-    this.showRulersSetting = Common.Settings.Settings.instance().moduleSetting('emulation.show-rulers');
+    this.showRulersSetting =
+        Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.showRulersSettingDescriptor);
     this.showRulersSetting.addChangeListener(this.requestUpdate, this);
     this.showDeviceScaleFactorSetting =
         Common.Settings.Settings.instance().createSetting('emulation.show-device-scale-factor', false);

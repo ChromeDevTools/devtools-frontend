@@ -9,3 +9,9 @@ export const showMediaQueryInspectorSettingDescriptor: Common.Settings.SettingDe
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 };
+
+export const showRulersSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'emulation.show-rulers',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};

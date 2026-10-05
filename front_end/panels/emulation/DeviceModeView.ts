@@ -281,7 +281,8 @@ export class DeviceModeView extends UI.Widget.VBox {
     this.showMediaInspectorSetting = Common.Settings.Settings.instance().resolve(
         SettingsUI.EmulationSettings.showMediaQueryInspectorSettingDescriptor);
     this.showMediaInspectorSetting.addChangeListener(this.updateUI, this);
-    this.showRulersSetting = Common.Settings.Settings.instance().moduleSetting('emulation.show-rulers');
+    this.showRulersSetting =
+        Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.showRulersSettingDescriptor);
     this.showRulersSetting.addChangeListener(this.updateUI, this);
 
     this.#toggleDeviceModeAction =

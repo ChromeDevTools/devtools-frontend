@@ -124,6 +124,13 @@ function createView(profiler: ProfileHeader, dataDisplayDelegate: DataDisplayDel
   throw new Error('Not implemented.');
 }
 
+/**
+ * Some profile views expose a searchable view and some, such as the launcher, do not.
+ */
+interface MaybeSearchableView {
+  searchableView?(): UI.SearchableView.SearchableView|null;
+}
+
 export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisplayDelegate {
   profilesItemTreeElement: ProfilesSidebarTreeElement;
   sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
@@ -252,9 +259,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   }
 
   override searchableView(): UI.SearchableView.SearchableView|null {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const visibleView = (this.visibleView as any);
+    const visibleView = this.visibleView as MaybeSearchableView | undefined;
     return visibleView?.searchableView ? visibleView.searchableView() : null;
   }
 

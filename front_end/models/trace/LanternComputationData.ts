@@ -310,8 +310,8 @@ function createNetworkRequests(trace: Lantern.Types.Trace, data: Handlers.Types.
 
       redirectedRequest.timing = {
         requestTime: redirectedRequest.networkRequestTime / 1000,
-        receiveHeadersStart: redirectedRequest.responseHeadersEndTime,
-        receiveHeadersEnd: redirectedRequest.responseHeadersEndTime,
+        receiveHeadersStart: redirectedRequest.responseHeadersEndTime - redirectedRequest.networkRequestTime,
+        receiveHeadersEnd: redirectedRequest.responseHeadersEndTime - redirectedRequest.networkRequestTime,
         proxyStart: -1,
         proxyEnd: -1,
         dnsStart: -1,
@@ -339,6 +339,9 @@ function createNetworkRequests(trace: Lantern.Types.Trace, data: Handlers.Types.
       redirectedRequest.transferSize = 400;
       requestChain.push(redirectedRequest);
       lanternRequests.push(redirectedRequest);
+    }
+    if (requestChain.length) {
+      request.rendererStartTime = requestChain[requestChain.length - 1].networkEndTime;
     }
     requestChain.push(request);
     lanternRequests.push(request);

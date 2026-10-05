@@ -9,11 +9,12 @@ import * as Protocol from '../../../generated/protocol.js';
 import {getFirstOrError, getInsightSetOrError, processTrace} from '../../../testing/InsightHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {microsecondsTraceWindow} from '../../../testing/TraceHelpersCore.js';
+import * as Trace from '../trace.js';
 import type * as Types from '../types/types.js';
 
 import * as Insights from './insights.js';
 
-const {calculateMetricWeightsForSorting, estimateCompressedContentSize} = Insights.Common;
+const {calculateMetricWeightsForSorting, estimateCompressedContentSize, metricSavingsForWastedBytes} = Insights.Common;
 
 describe('Common', function() {
   setupLocaleHooks();
@@ -172,6 +173,63 @@ describe('Common', function() {
       } as unknown as Insights.Types.InsightModel;
       const bounds = Insights.Common.insightBounds(fakeInsight, INSIGHT_SET_BOUNDS);
       assert.deepEqual(bounds, INSIGHT_SET_BOUNDS);
+    });
+  });
+
+  describe('#metricSavingsForWastedBytes', () => {
+    it('applies byte savings to the final response of a redirected request', () => {
+      const rawRequest = {args: {data: {requestId: 'req-1'}}} as unknown as Types.Events.SyntheticNetworkRequest;
+      const finalRequest = {
+        requestId: 'req-1:redirect',
+        url: 'https://example.com/final.js',
+        protocol: 'http/1.1',
+        parsedURL: {scheme: 'https', host: 'example.com', securityOrigin: 'https://example.com'},
+        transferSize: 100_000,
+        rendererStartTime: 10,
+        networkEndTime: 100,
+        connectionId: 1,
+        rawRequest,
+      } as unknown as Trace.Lantern.Types.NetworkRequest;
+      const redirectStub = {
+        requestId: 'req-1',
+        url: 'https://example.com/redirect.js',
+        protocol: 'http/1.1',
+        parsedURL: {scheme: 'https', host: 'example.com', securityOrigin: 'https://example.com'},
+        transferSize: 400,
+        rendererStartTime: 0,
+        networkEndTime: 10,
+        connectionId: 1,
+        redirectDestination: finalRequest,
+        rawRequest,
+      } as unknown as Trace.Lantern.Types.NetworkRequest;
+      finalRequest.redirectSource = redirectStub;
+      finalRequest.redirects = [redirectStub];
+
+      const redirectNode = new Trace.Lantern.Graph.NetworkNode(redirectStub);
+      const finalNode = new Trace.Lantern.Graph.NetworkNode(finalRequest);
+      redirectNode.addDependent(finalNode);
+
+      const simulator = new Trace.Lantern.Simulation.Simulator({
+        rtt: 100,
+        throughput: 1_000_000,
+        observedThroughput: 1_000_000,
+      });
+
+      const context = {
+        navigation: {} as Types.Events.NavigationStart,
+        lantern: {
+          simulator,
+          metrics: {
+            firstContentfulPaint: {optimisticGraph: redirectNode},
+            largestContentfulPaint: {optimisticGraph: redirectNode},
+          },
+        },
+      } as unknown as Insights.Types.InsightSetContext;
+
+      const savings = metricSavingsForWastedBytes(new Map([['req-1', 90_000]]), context);
+      assert.isAbove(savings?.FCP ?? 0, 500);
+      assert.isAbove(savings?.LCP ?? 0, 500);
+      assert.strictEqual(finalRequest.transferSize, 100_000);
     });
   });
 });

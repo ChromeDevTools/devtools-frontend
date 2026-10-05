@@ -6,7 +6,8 @@ import {assert} from 'chai';
 
 import {getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
-import type * as Trace from '../../trace/trace.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
+import * as Trace from '../../trace/trace.js';
 
 describe('RenderBlocking', function() {
   setupLocaleHooks();
@@ -132,5 +133,101 @@ describe('RenderBlocking', function() {
       return [url, wastedMs];
     });
     assert.deepEqual(urlToWastedMs, []);
+  });
+
+  it('estimates savings with Lantern for redirected render-blocking request', async function() {
+    const baseEvents = [...await TraceLoader.rawEvents(this, 'lantern/render-blocking/trace.json.gz')];
+    const baseProcessor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+    await baseProcessor.parse(baseEvents, {
+      isCPUProfile: false,
+      isFreshRecording: true,
+      lanternSettings: {throttlingMethod: 'simulate'},
+    });
+    assert.isOk(baseProcessor.data);
+    assert.isOk(baseProcessor.insights);
+    const baseInsight = getInsightOrError('RenderBlocking', baseProcessor.insights,
+                                          baseProcessor.data.Meta.navigationsByNavigationId.values().next().value);
+
+    const traceEvents = [...baseEvents];
+    const sendRequestIndex = traceEvents.findIndex(
+        e => Trace.Types.Events.isResourceSendRequest(e) && e.args.data.url.endsWith('style.css'),
+    );
+    const sendRequest = structuredClone(traceEvents[sendRequestIndex]) as Trace.Types.Events.ResourceSendRequest;
+    const requestId = sendRequest.args.data.requestId;
+
+    // Insert an initial redirect hop for style.css at the original start time, and shift the final hop slightly later.
+    const redirectSendRequest = structuredClone(sendRequest);
+    redirectSendRequest.args.data.url = 'http://localhost:8080/redirect-style.css';
+    sendRequest.ts = Trace.Types.Timing.Micro(sendRequest.ts + 100);
+    traceEvents[sendRequestIndex] = sendRequest;
+    traceEvents.splice(sendRequestIndex, 0, redirectSendRequest);
+
+    const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+    await processor.parse(traceEvents, {
+      isCPUProfile: false,
+      isFreshRecording: true,
+      lanternSettings: {throttlingMethod: 'simulate'},
+    });
+    assert.isOk(processor.data);
+    assert.isOk(processor.insights);
+
+    const insight = getInsightOrError('RenderBlocking', processor.insights,
+                                      processor.data.Meta.navigationsByNavigationId.values().next().value);
+    assert.exists(baseInsight.requestIdToWastedMs);
+    assert.exists(insight.requestIdToWastedMs);
+    const baseWastedMs = baseInsight.requestIdToWastedMs.get(requestId) ?? 0;
+    const redirectedWastedMs = insight.requestIdToWastedMs.get(requestId) ?? 0;
+    assert.strictEqual(baseWastedMs, 2254);
+    assert.strictEqual(redirectedWastedMs, 2434);
+    assert.isAbove(insight.metricSavings?.FCP ?? 0, baseInsight.metricSavings?.FCP ?? 0);
+    assert.isAbove(insight.metricSavings?.FCP ?? 0, baseWastedMs);
+  });
+
+  it('includes redirect duration in wastedMs when individual hops are below minimum threshold', async function() {
+    const traceEvents = [...await TraceLoader.rawEvents(this, 'lantern/render-blocking/trace.json.gz')];
+    const sendRequestIndex = traceEvents.findIndex(
+        e => Trace.Types.Events.isResourceSendRequest(e) && e.args.data.url.endsWith('style.css'),
+    );
+    const sendRequest = structuredClone(traceEvents[sendRequestIndex]) as Trace.Types.Events.ResourceSendRequest;
+    const requestId = sendRequest.args.data.requestId;
+
+    // Insert an initial redirect hop for style.css at the original start time, and shift the final hop slightly later.
+    const redirectSendRequest = structuredClone(sendRequest);
+    redirectSendRequest.args.data.url = 'http://localhost:8080/redirect-style.css';
+    sendRequest.ts = Trace.Types.Timing.Micro(sendRequest.ts + 100);
+    traceEvents[sendRequestIndex] = sendRequest;
+    traceEvents.splice(sendRequestIndex, 0, redirectSendRequest);
+
+    // Make the final response tiny so neither hop alone reaches MINIMUM_WASTED_MS (50ms) at 30ms RTT,
+    // but their combined duration (~60ms) does.
+    const finishIndex =
+        traceEvents.findIndex(e => Trace.Types.Events.isResourceFinish(e) && e.args.data.requestId === requestId);
+    const finishEvent = structuredClone(traceEvents[finishIndex]) as Trace.Types.Events.ResourceFinish;
+    finishEvent.args.data.encodedDataLength = 100;
+    traceEvents[finishIndex] = finishEvent;
+
+    const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+    await processor.parse(traceEvents, {
+      isCPUProfile: false,
+      isFreshRecording: true,
+      lanternSettings: {
+        throttlingMethod: 'simulate',
+        throttling: {
+          rttMs: 30,
+          throughputKbps: 100_000,
+          cpuSlowdownMultiplier: 1,
+          requestLatencyMs: 30,
+          downloadThroughputKbps: 100_000,
+          uploadThroughputKbps: 100_000,
+        },
+      },
+    });
+    assert.isOk(processor.data);
+    assert.isOk(processor.insights);
+
+    const insight = getInsightOrError('RenderBlocking', processor.insights,
+                                      processor.data.Meta.navigationsByNavigationId.values().next().value);
+    assert.exists(insight.requestIdToWastedMs);
+    assert.isAtLeast(insight.requestIdToWastedMs.get(requestId) ?? 0, 60);
   });
 });

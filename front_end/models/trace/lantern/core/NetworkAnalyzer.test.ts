@@ -544,5 +544,18 @@ describe('NetworkAnalyzer', () => {
       assert.notEqual(mainDocument.url, finalDocument.url);
       assert.strictEqual(finalDocument.url, 'https://m.vk.com/');
     });
+
+    it('should set relative receiveHeadersEnd and monotonically increasing rendererStartTime on redirects', () => {
+      const r0 = requestsWithRedirect[0];
+      const r1 = requestsWithRedirect[1];
+      const r2 = requestsWithRedirect[2];
+      const finalDoc = requestsWithRedirect[3];
+
+      assert.strictEqual(r0.timing?.receiveHeadersEnd, r0.responseHeadersEndTime - r0.networkRequestTime);
+      assert.isBelow(r0.rendererStartTime, r1.rendererStartTime);
+      assert.isBelow(r1.rendererStartTime, r2.rendererStartTime);
+      assert.strictEqual(finalDoc.rendererStartTime, r2.networkEndTime);
+      assert.isAbove(finalDoc.rendererStartTime, r2.rendererStartTime);
+    });
   });
 });

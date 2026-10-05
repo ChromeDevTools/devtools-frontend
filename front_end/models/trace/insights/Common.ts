@@ -247,10 +247,11 @@ function estimateSavingsWithGraphs(
 
   const originalTransferSizes = new Map<string, number>();
   graph.traverse(node => {
-    if (node.type !== 'network') {
+    if (node.type !== 'network' || node.request.redirectDestination) {
       return;
     }
-    const wastedBytes = wastedBytesByRequestId.get(node.request.requestId);
+    const backendRequestId = node.request.rawRequest?.args.data.requestId ?? node.request.requestId;
+    const wastedBytes = wastedBytesByRequestId.get(backendRequestId);
     if (!wastedBytes) {
       return;
     }

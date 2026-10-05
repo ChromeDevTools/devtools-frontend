@@ -19,8 +19,8 @@ import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.j
 const {html, render, Directives: {classMap, ifDefined}} = Lit;
 
 export interface ViewInput {
-  substitutions: Node[][];
-  evaluations: Node[][];
+  substitutions: Lit.LitTemplate[];
+  evaluations: Lit.LitTemplate[];
   onToggle: () => void;
 }
 
@@ -105,8 +105,8 @@ function defaultView(input: ViewInput, output: object, target: HTMLElement): voi
 export class CSSValueTraceView extends UI.Widget.VBox {
   #highlighting: Highlighting|undefined;
   readonly #view: View;
-  #evaluations: Node[][] = [];
-  #substitutions: Node[][] = [];
+  #evaluations: Lit.LitTemplate[] = [];
+  #substitutions: Lit.LitTemplate[] = [];
   #pendingFocus = false;
 
   constructor(element?: HTMLElement, view: View = defaultView) {

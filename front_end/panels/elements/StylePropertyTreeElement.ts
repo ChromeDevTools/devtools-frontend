@@ -189,7 +189,8 @@ export class EnvFunctionRenderer extends EnvFunctionRendererBase {
       readonly computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null) {
     super();
   }
-  override render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch,
+                  context: RenderingContext): Node[]|Lit.LitTemplate {
     const [, fallbackNodes] = ASTUtils.callArgs(match.node);
     if (match.value) {
       const substitution = context.tracing?.substitution();
@@ -230,7 +231,8 @@ export class FlexGridRenderer extends FlexGridRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch,
+                  context: RenderingContext): Lit.LitTemplate {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     if (!this.#treeElement?.editable()) {
       return children;
@@ -285,7 +287,7 @@ export class FlexGridRenderer extends FlexGridRendererBase {
     if (helper.isShowing(StyleEditorWidget.instance()) && StyleEditorWidget.instance().getTriggerKey() === key) {
       helper.setAnchorElement(button);
     }
-    return [...children, button];
+    return html`${children}${button}`;
   }
 }
 
@@ -366,7 +368,8 @@ export class VariableRenderer extends VariableRendererBase {
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.VariableMatch,
+                  context: RenderingContext): Node[]|Lit.LitTemplate {
     if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
       return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
@@ -528,7 +531,8 @@ export class AttributeRenderer extends AttributeRendererBase {
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.AttributeMatch,
+                  context: RenderingContext): Node[]|Lit.LitTemplate {
     if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
       return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
@@ -630,7 +634,8 @@ const LinearGradientRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Lin
 // clang-format off
 export class LinearGradientRenderer extends LinearGradientRendererBase {
   // clang-format on
-  override render(match: SDK.CSSPropertyParserMatchers.LinearGradientMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.LinearGradientMatch,
+                  context: RenderingContext): Lit.LitTemplate {
     const children = ASTUtils.children(match.node);
     const {nodes, cssControls} = Renderer.render(children, context);
     const angles = cssControls.get('angle');
@@ -741,7 +746,7 @@ export class ColorRenderer extends ColorRendererBase {
     return {valueChild, cssControls, childTracingContexts};
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[]|Lit.LitTemplate {
     const {valueChild, cssControls, childTracingContexts} = this.#getValueChild(match, context);
     let colorText = context.matchedResult.getComputedText(match.node);
 
@@ -1336,7 +1341,7 @@ export class BezierRenderer extends BezierRendererBase {
     super();
     this.#treeElement = treeElement;
   }
-  override render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): Node[]|Lit.LitTemplate {
     const nodes = match.node.name === 'CallExpression' ? Renderer.render(ASTUtils.children(match.node), context).nodes :
                                                          [document.createTextNode(match.text)];
     if (!this.#treeElement?.editable() ||
@@ -1352,7 +1357,7 @@ export class BezierRenderer extends BezierRendererBase {
       Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANIMATION_TIMING);
     });
     const bezierText = document.createElement('span');
-    bezierText.append(...nodes);
+    render(html`${nodes}`, bezierText);
     new BezierPopoverIcon({treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, bezierText});
     const iconAndTextContainer = document.createElement('span');
     iconAndTextContainer.classList.add('bezier-icon-and-text');
@@ -1545,24 +1550,25 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
   }
 
   renderContents(span: HTMLSpanElement): void {
-    span.removeChildren();
+    const parts: Array<string|Lit.LitTemplate> = [];
     let previousSource = null;
     for (const property of this.#properties) {
       if (!property.source || property.source !== previousSource) {
         if (property !== this.#properties[0]) {
-          span.append(' ');
+          parts.push(' ');
         }
         // If `source` is present on the property that means it came from a var() and we'll use that to render.
         if (property.source) {
-          span.append(...Renderer.render(property.source, this.#context).nodes);
+          parts.push(Renderer.render(property.source, this.#context).nodes);
         } else if (typeof property.value === 'string') {
-          span.append(property.value);
+          parts.push(property.value);
         } else {
-          span.append(...Renderer.render(property.value, property.expansionContext ?? this.#context).nodes);
+          parts.push(Renderer.render(property.value, property.expansionContext ?? this.#context).nodes);
         }
       }
       previousSource = property.source;
     }
+    render(html`${parts}`, span);
   }
 }
 
@@ -1665,9 +1671,9 @@ export class ShadowRenderer extends ShadowRendererBase {
     return new ShadowModel(shadowType, properties, context);
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.ShadowMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.ShadowMatch, context: RenderingContext): Lit.LitTemplate {
     const shadows = ASTUtils.split(ASTUtils.siblings(ASTUtils.declValue(match.node)));
-    const result: Node[] = [];
+    const result: Array<Node|Lit.LitTemplate> = [];
 
     for (const shadow of shadows) {
       const model = this.shadowModel(shadow, match.shadowType, context);
@@ -1679,7 +1685,7 @@ export class ShadowRenderer extends ShadowRendererBase {
 
       if (!model || !this.#treeElement?.editable()) {
         const {nodes} = Renderer.render(shadow, context);
-        result.push(...nodes);
+        result.push(nodes);
         continue;
       }
 
@@ -1701,11 +1707,11 @@ export class ShadowRenderer extends ShadowRendererBase {
       result.push(swatch, contents);
 
       if (isImportant) {
-        result.push(...[document.createTextNode(' '), ...Renderer.render(isImportant, context).nodes]);
+        result.push(document.createTextNode(' '), Renderer.render(isImportant, context).nodes);
       }
     }
 
-    return result;
+    return html`${result}`;
   }
 }
 
@@ -1714,7 +1720,8 @@ const GridTemplateRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.GridT
 // clang-format off
 export class GridTemplateRenderer extends GridTemplateRendererBase {
   // clang-format on
-  override render(match: SDK.CSSPropertyParserMatchers.GridTemplateMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.GridTemplateMatch,
+                  context: RenderingContext): Node[]|Lit.LitTemplate {
     if (match.lines.length <= 1) {
       return Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     }
@@ -2095,7 +2102,6 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
     valueElement: HTMLElement,
     key?: string,
   };
-
   readonly #treeElement: StylePropertyTreeElement|null;
   readonly #stylesContainer: StylesContainer;
   constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null) {
@@ -2129,8 +2135,8 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         (child): child is StylePropertyTreeElement =>
             child instanceof StylePropertyTreeElement && child.property.name === propertyName);
   }
-
-  override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch,
+                  context: RenderingContext): Node[]|Lit.LitTemplate {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     if (!this.#treeElement?.editable() || !InlineEditor.PositionAreaEditor.parsePositionArea(match.text)) {
       return children;
@@ -2138,9 +2144,8 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
 
     const section = this.#treeElement.section();
     const key = section ? `${section.getSectionIdx()}_${section.nextEditorTriggerButtonIdx++}` : undefined;
-
     const valueElement = document.createElement('span');
-    valueElement.append(...children);
+    render(children, valueElement);
 
     const button = createIcon('grid-on', 'position-area-swatch-icon');
     button.title = i18nString(UIStrings.positionAreaEditorButton);
@@ -2156,7 +2161,6 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
       PositionAreaRenderer.#active.valueElement = valueElement;
       popoverHelper.setAnchorElement(button);
     }
-
     button.onclick = event => {
       event.consume(true);
       if (popoverHelper.isShowing()) {
@@ -2185,7 +2189,6 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         updateProperty('justify-self', computedStyle?.computedStyle ?? null);
       };
       void updateEditorProperties();
-
       const onPositionAreaChanged =
           (changeEvent: Common.EventTarget.EventTargetEvent<InlineEditor.PositionAreaEditor.Area>): void => {
             active.valueElement.textContent = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
@@ -2270,11 +2273,11 @@ export class PositionTryRenderer extends PositionTryRendererBase {
     this.#matchedStyles = matchedStyles;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): Node[] {
-    const content = [];
+  override render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): Lit.LitTemplate {
+    const content: Array<Node|Lit.LitTemplate> = [];
     if (match.preamble.length > 0) {
       const {nodes} = Renderer.render(match.preamble, context);
-      content.push(...nodes);
+      content.push(nodes);
     }
     for (const [i, fallback] of match.fallbacks.entries()) {
       const fallbackContent = document.createElement('span');
@@ -2288,7 +2291,7 @@ export class PositionTryRenderer extends PositionTryRendererBase {
 
       content.push(fallbackContent);
     }
-    return content;
+    return html`${content}`;
   }
 }
 

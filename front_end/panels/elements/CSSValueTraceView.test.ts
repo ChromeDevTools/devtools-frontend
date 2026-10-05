@@ -14,6 +14,7 @@ import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {getMatchedStylesWithBlankRule} from '../../testing/StyleHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {type LitTemplate, render} from '../../ui/lit/lit.js';
 
 import * as Elements from './elements.js';
 
@@ -35,12 +36,12 @@ async function setUpStyles(connection: MockCDPConnection) {
   return {matchedStyles, stylesPane};
 }
 
-async function getTreeElement(
-    matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, stylesPane: Elements.StylesSidebarPane.StylesSidebarPane,
-    name: string, value: string, variables?: Record<string, {value: string, computedValue?: string}>) {
-  const property = new SDK.CSSProperty.CSSProperty(
-      matchedStyles.nodeStyles()[0], matchedStyles.nodeStyles()[0].pastLastSourcePropertyIndex(), name, value, true,
-      false, true, false, '', undefined, []);
+async function getTreeElement(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+                              stylesPane: Elements.StylesSidebarPane.StylesSidebarPane, name: string, value: string,
+                              variables?: Record<string, {value: string, computedValue?: string}>) {
+  const property = new SDK.CSSProperty.CSSProperty(matchedStyles.nodeStyles()[0],
+                                                   matchedStyles.nodeStyles()[0].pastLastSourcePropertyIndex(), name,
+                                                   value, true, false, true, false, '', undefined, []);
   const treeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
     stylesContainer: stylesPane,
     section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
@@ -55,10 +56,9 @@ async function getTreeElement(
   if (variables) {
     const varMap =
         new Map(Object.getOwnPropertyNames(variables)
-                    .map(
-                        name => new SDK.CSSProperty.CSSProperty(
-                            matchedStyles.nodeStyles()[0], matchedStyles.nodeStyles()[0].pastLastSourcePropertyIndex(),
-                            name, variables[name].value, true, false, true, false, '', undefined, []))
+                    .map(name => new SDK.CSSProperty.CSSProperty(
+                             matchedStyles.nodeStyles()[0], matchedStyles.nodeStyles()[0].pastLastSourcePropertyIndex(),
+                             name, variables[name].value, true, false, true, false, '', undefined, []))
                     .map(property => [property.name, {
                            value: variables[property.name].computedValue ?? variables[property.name].value,
                            declaration: new SDK.CSSMatchedStyles.CSSValueSource(property),
@@ -69,40 +69,29 @@ async function getTreeElement(
   return {matchedStyles, property, treeElement};
 }
 
-async function showTrace(
-    property: SDK.CSSProperty.CSSProperty, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-    treeElement: Elements.StylePropertyTreeElement.StylePropertyTreeElement):
+async function showTrace(property: SDK.CSSProperty.CSSProperty, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+                         treeElement: Elements.StylePropertyTreeElement.StylePropertyTreeElement):
     Promise<Elements.CSSValueTraceView.ViewInput> {
   const viewFunction = createViewFunctionStub(Elements.CSSValueTraceView.CSSValueTraceView);
   const view = new Elements.CSSValueTraceView.CSSValueTraceView(undefined, viewFunction);
   await viewFunction.nextInput;
-  void view.showTrace(
-      property, null, matchedStyles, new Map(),
-      Elements.StylePropertyTreeElement.getPropertyRenderers(
-          property.name, property.ownerStyle, treeElement.stylesContainer(), matchedStyles, treeElement,
-          treeElement.getComputedStyles() ?? new Map(), treeElement.getComputedStyleExtraFields()),
-      false, 0, false);
+  void view.showTrace(property, null, matchedStyles, new Map(),
+                      Elements.StylePropertyTreeElement.getPropertyRenderers(
+                          property.name, property.ownerStyle, treeElement.stylesContainer(), matchedStyles, treeElement,
+                          treeElement.getComputedStyles() ?? new Map(), treeElement.getComputedStyleExtraFields()),
+                      false, 0, false);
   return await viewFunction.nextInput;
 }
 
-function getLineText(line: Node[][]) {
-  for (const node of line.flat()) {
-    if (node instanceof HTMLElement) {
-      renderElementIntoDOM(node, {allowMultipleChildren: true});
-    }
+function getLineText(lines: LitTemplate[]) {
+  const div = document.createElement('div');
+  renderElementIntoDOM(div, {allowMultipleChildren: true});
+  const text = [];
+  for (const line of lines) {
+    render(line, div);
+    text.push(div.deepInnerText());
   }
-  const text = line.map(
-      nodes => nodes
-                   .map(
-                       node =>
-                           (node instanceof HTMLElement ? node.innerText :
-                                                          (node.nodeType === Node.TEXT_NODE ? node.textContent : '')))
-                   .join());
-  for (const node of line.flat()) {
-    if (node instanceof HTMLElement) {
-      node.remove();
-    }
-  }
+  div.remove();
   return text;
 }
 
@@ -182,8 +171,8 @@ describeWithEnvironment('CSSValueTraceView', () => {
 
   it('shows chains of substitutions', async () => {
     const {matchedStyles, stylesPane} = await setUpStyles(connection);
-    const {property, treeElement} = await getTreeElement(
-        matchedStyles, stylesPane, 'width', 'var(--v)', {'--w': {value: '40px'}, '--v': {value: 'var(--w)'}});
+    const {property, treeElement} = await getTreeElement(matchedStyles, stylesPane, 'width', 'var(--v)',
+                                                         {'--w': {value: '40px'}, '--v': {value: 'var(--w)'}});
     const input = await showTrace(property, matchedStyles, treeElement);
     const substitutions = getLineText(input.substitutions);
     const evaluations = getLineText(input.evaluations);
@@ -193,8 +182,8 @@ describeWithEnvironment('CSSValueTraceView', () => {
 
   it('shows intermediate evaluation steps', async () => {
     const {matchedStyles, stylesPane} = await setUpStyles(connection);
-    const {property, treeElement} = await getTreeElement(
-        matchedStyles, stylesPane, 'font-size', 'calc(clamp(16px, calc(1vw + 1em), 24px) + 3.2px)');
+    const {property, treeElement} = await getTreeElement(matchedStyles, stylesPane, 'font-size',
+                                                         'calc(clamp(16px, calc(1vw + 1em), 24px) + 3.2px)');
     const resolveValuesSpy = sinon.spy(treeElement.stylesContainer().cssModel()!.resolveValues);
     const input = await showTrace(property, matchedStyles, treeElement);
     const substitutions = getLineText(input.substitutions);

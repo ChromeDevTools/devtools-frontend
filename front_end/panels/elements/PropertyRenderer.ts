@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -10,6 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directive, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
@@ -43,7 +45,7 @@ export type RendererBase<MatchT extends SDK.CSSPropertyParser.Match> = abstract 
 
 export interface MatchRenderer<MatchT extends SDK.CSSPropertyParser.Match> {
   readonly matchType: Platform.Constructor.Constructor<MatchT>;
-  render(match: MatchT, context: RenderingContext): Node[];
+  render(match: MatchT, context: RenderingContext): Node[]|LitTemplate;
 }
 
 // A mixin to automatically expose the match type on specific renrerers
@@ -52,8 +54,8 @@ export function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>(
     matchT: Platform.Constructor.Constructor<MatchT>): RendererBase<MatchT> {
   abstract class RendererBaseClass implements MatchRenderer<MatchT> {
     readonly matchType = matchT;
-    render(_match: MatchT, _context: RenderingContext): Node[] {
-      return [];
+    render(_match: MatchT, _context: RenderingContext): Node[]|LitTemplate {
+      return nothing;
     }
   }
   return RendererBaseClass;
@@ -147,6 +149,39 @@ export class Highlighting {
       this.#activeHighlights[this.#activeHighlights.length - 1].forEach(range => this.#registry.add(range));
     }
   }
+}
+
+class HighlightDirective extends Directive.Directive {
+  #startNode: Node|null = null;
+
+  override update(part: Directive.Part, [highlighting, match]: [Highlighting, SDK.CSSPropertyParser.Match]): unknown {
+    if (part.type !== Directive.PartType.CHILD) {
+      return nothing;
+    }
+    this.#startNode ??= part.startNode?.parentNode?.firstChild ?? null;
+    const nodes: Node[] = [];
+    for (let node = this.#startNode?.nextSibling; node && node !== part.startNode; node = node.nextSibling) {
+      if (!(node instanceof Comment)) {
+        nodes.push(node);
+      }
+    }
+    highlighting.addMatch(match, nodes);
+    return nothing;
+  }
+
+  render(_highlighting: Highlighting, _match: SDK.CSSPropertyParser.Match): typeof nothing {
+    return nothing;
+  }
+}
+
+const highlightDirective = Directive.directive(HighlightDirective);
+
+function highlight(highlighting: Highlighting|undefined, match: SDK.CSSPropertyParser.Match,
+                   template: LitTemplate): LitTemplate {
+  if (!highlighting) {
+    return template;
+  }
+  return html`${template}${highlightDirective(highlighting, match)}`;
 }
 
 /**
@@ -399,7 +434,7 @@ export class RenderingContext {
 
 export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   readonly #matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching;
-  #output: Node[] = [];
+  #output: LitTemplate[] = [];
   readonly #context: RenderingContext;
 
   constructor(
@@ -422,7 +457,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   }
 
   static render(nodeOrNodes: CodeMirror.SyntaxNode|CodeMirror.SyntaxNode[],
-                context: RenderingContext): {nodes: Node[], cssControls: CSSControlMap} {
+                context: RenderingContext): {nodes: LitTemplate, cssControls: CSSControlMap} {
     if (!Array.isArray(nodeOrNodes)) {
       return this.render([nodeOrNodes], context);
     }
@@ -431,31 +466,27 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property,
                                                              context.renderers, context.matchedResult, cssControls,
                                                              context.options, context.tracing, context.signal));
-    const nodes = renderers.reduce((nodes: Node[], renderer) => {
+    const nodes = renderers.reduce((nodes: LitTemplate[], renderer) => {
       if (renderer !== renderers[0]) {
         const spacing = precedingSpace(renderer.ast.tree, context.ast);
         if (spacing) {
-          nodes.push(document.createTextNode(spacing));
+          nodes.push(html`${spacing}`);
         }
       }
       nodes.push(...renderer.#output);
       return nodes;
     }, []);
-    return {nodes, cssControls};
+    return {nodes: html`${nodes}`, cssControls};
   }
 
   static renderInto(nodeOrNodes: CodeMirror.SyntaxNode|CodeMirror.SyntaxNode[], context: RenderingContext,
-                    parent: Node): {nodes: Node[], cssControls: CSSControlMap} {
+                    parent: HTMLElement|DocumentFragment): {nodes: LitTemplate, cssControls: CSSControlMap} {
     const {nodes, cssControls} = this.render(nodeOrNodes, context);
-    const spacing = precedingSpace(Array.isArray(nodeOrNodes) ? nodeOrNodes[0] : nodeOrNodes, context.ast);
-    if (parent.lastChild && spacing) {
-      parent.appendChild(document.createTextNode(spacing));
-    }
-    nodes.map(n => parent.appendChild(n));
+    render(nodes, parent);
     return {nodes, cssControls};
   }
 
-  renderedMatchForTest(_nodes: Node[], _match: SDK.CSSPropertyParser.Match): void {
+  renderedMatchForTest(_nodes: LitTemplate, _match: SDK.CSSPropertyParser.Match): void {
   }
 
   protected override enter({node}: SDK.CSSPropertyParser.SyntaxNodeRef): boolean {
@@ -463,23 +494,17 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     const renderer = match &&
         this.#context.renderers.get(match.constructor as Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>);
     if (renderer || match instanceof SDK.CSSPropertyParserMatchers.TextMatch) {
-      let output: Node[];
-      if (renderer) {
-        output = renderer.render(match, this.#context);
-      } else {
-        const span = document.createElement('span');
-        span.appendChild(document.createTextNode(match.text));
-        output = [span];
-      }
-      this.#context.tracing?.highlighting.addMatch(match, output);
+      const rendered = renderer?.render(match, this.#context) ?? html`<span>${match.text}</span>`;
+      const output =
+          highlight(this.#context.tracing?.highlighting, match, Array.isArray(rendered) ? html`${rendered}` : rendered);
       this.renderedMatchForTest(output, match);
-      if (this.#output.length > 0) {
+      if (this.#output.some(t => t !== nothing)) {
         const spacing = precedingSpace(node, this.#context.ast);
         if (spacing) {
-          this.#output.push(document.createTextNode(spacing));
+          this.#output.push(html`${spacing}`);
         }
       }
-      this.#output.push(...output);
+      this.#output.push(output);
 
       return false;
     }
@@ -524,7 +549,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     valueElement.className = 'value';
     valueElement.tabIndex = -1;
     const {nodes, cssControls} = this.renderValueNodes(property, matchedResult, renderers, tracing, signal);
-    nodes.forEach(node => valueElement.appendChild(node));
+    render(nodes, valueElement);
     valueElement.normalize();
     return {valueElement, cssControls};
   }
@@ -532,9 +557,9 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   static renderValueNodes(property: SDK.CSSProperty.CSSProperty|{name: string, value: string},
                           matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
                           renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext,
-                          signal?: AbortSignal): {nodes: Node[], cssControls: CSSControlMap} {
+                          signal?: AbortSignal): {nodes: LitTemplate, cssControls: CSSControlMap} {
     if (!matchedResult) {
-      return {nodes: [document.createTextNode(property.value)], cssControls: new Map()};
+      return {nodes: html`${property.value}`, cssControls: new Map()};
     }
     const rendererMap = new Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>,
                                 MatchRenderer<SDK.CSSPropertyParser.Match>>();
@@ -557,7 +582,7 @@ export class URLRenderer extends URLRendererBase {
   constructor(private readonly rule: SDK.CSSRule.CSSRule|null, private readonly node: SDK.DOMModel.DOMNode|null) {
     super();
   }
-  override render(match: SDK.CSSPropertyParserMatchers.URLMatch): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.URLMatch): LitTemplate {
     const url = unescapeCssString(match.url) as Platform.DevToolsPath.UrlString;
     const container = document.createDocumentFragment();
     UI.UIUtils.createTextChild(container, 'url(');
@@ -580,7 +605,7 @@ export class URLRenderer extends URLRendererBase {
                                                  hrefUrl || url);
     container.appendChild(link);
     UI.UIUtils.createTextChild(container, ')');
-    return [container];
+    return html`${[container]}`;
   }
 }
 
@@ -589,11 +614,11 @@ const StringRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.StringMatch
 // clang-format off
 export class StringRenderer extends StringRendererBase {
   // clang-format on
-  override render(match: SDK.CSSPropertyParserMatchers.StringMatch): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.StringMatch): LitTemplate {
     const element = document.createElement('span');
     element.innerText = match.text;
     UI.Tooltip.Tooltip.install(element, unescapeCssString(match.text));
-    return [element];
+    return html`${[element]}`;
   }
 }
 
@@ -602,13 +627,10 @@ const BinOpRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.BinOpMatch> 
 // clang-format off
 export class BinOpRenderer extends BinOpRendererBase {
   // clang-format on
-  override render(match: SDK.CSSPropertyParserMatchers.BinOpMatch, context: RenderingContext): Node[] {
-    const [lhs, binop, rhs] = SDK.CSSPropertyParser.ASTUtils.children(match.node).map(child => {
-      const span = document.createElement('span');
-      Renderer.renderInto(child, context, span);
-      return span;
-    });
+  override render(match: SDK.CSSPropertyParserMatchers.BinOpMatch, context: RenderingContext): LitTemplate {
+    const [lhs, binop, rhs] = SDK.CSSPropertyParser.ASTUtils.children(match.node)
+                                  .map(child => html`<span>${Renderer.render(child, context).nodes}</span>`);
 
-    return [lhs, document.createTextNode(' '), binop, document.createTextNode(' '), rhs];
+    return html`${[lhs, document.createTextNode(' '), binop, document.createTextNode(' '), rhs]}`;
   }
 }

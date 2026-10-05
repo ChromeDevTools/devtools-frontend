@@ -28,11 +28,13 @@ import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import {Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as LegacyUI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as ElementsComponents from './components/components.js';
 import * as Elements from './elements.js';
 
+const {html} = Lit;
 describeWithEnvironment('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
   let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
@@ -1080,14 +1082,16 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
       const {evaluations} = view.args[0][0];
 
-      assert.deepEqual(evaluations.flat().map(args => args?.textContent).flat(), [
-        '',
-        'rgb(from #ff0c0c calc(1.000 / 2) 0.047 0.047)',
-        '',
-        'rgb(from #ff0c0c 0.5 0.047 0.047)',
-        '',
-        '#800c0c',
-      ]);
+      assert.deepEqual(evaluations.flat().map(line => {
+        const div = document.createElement('div');
+        Lit.render(line, div);
+        return div.textContent;
+      }),
+                       [
+                         'rgb(from #ff0c0c calc(1.000 / 2) 0.047 0.047)',
+                         'rgb(from #ff0c0c 0.5 0.047 0.047)',
+                         '#800c0c',
+                       ]);
     });
   });
 
@@ -1095,7 +1099,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     it('renders the easing function swatch', () => {
       const stylePropertyTreeElement = getTreeElement('animation-timing-function', 'ease-out');
       stylePropertyTreeElement.updateTitle();
-      assert.instanceOf(stylePropertyTreeElement.valueElement?.firstChild?.firstChild, Icon);
+      assert.instanceOf(stylePropertyTreeElement.valueElement?.firstElementChild?.firstChild, Icon);
     });
   });
 
@@ -1468,8 +1472,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
                           })
                           .filter(b => !!b);
         return {
-          nodes,
-          nodeGroups: [nodes],
+          nodes: html`${nodes}`,
           cssControls: new Map(),
         };
       });

@@ -153,6 +153,13 @@ export interface StepContext {
 /** Computes the CDP step command for a user-requested step. */
 export type ComputeAutoStepCallback = (mode: StepMode, callFrames: readonly CallFrame[]) => Promise<AutoStep>;
 
+/**
+ * Invoked for every pause before it's presented. Returns null to present the pause, or the step to issue instead.
+ * `autoSteppingContext` is the function location of the frame in which a step over started, if any.
+ */
+export type BeforePausedCallback = (details: DebuggerPausedDetails, autoSteppingContext: Location|null) =>
+    Promise<AutoStep|null>;
+
 export const WASM_SYMBOLS_PRIORITY: Protocol.Debugger.DebugSymbolsType[] = [
   Protocol.Debugger.DebugSymbolsType.ExternalDWARF,
   Protocol.Debugger.DebugSymbolsType.EmbeddedDWARF,
@@ -185,7 +192,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   readonly #jsSourceMapsEnabledSetting: Common.Settings.Setting<boolean>;
   readonly #skipAllPausesSetting: Common.Settings.Setting<boolean>;
   #skipAllPausesTimeout?: ReturnType<typeof setTimeout>;
-  #beforePausedCallback: ((arg0: DebuggerPausedDetails, stepOver: Location|null) => Promise<boolean>)|null = null;
+  #beforePausedCallback: BeforePausedCallback|null = null;
   #computeAutoStepCallback: ComputeAutoStepCallback|null = null;
   evaluateOnCallFrameCallback:
       ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null = null;
@@ -630,7 +637,10 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     return this.#debuggerPausedDetails;
   }
 
-  private async setDebuggerPausedDetails(debuggerPausedDetails: DebuggerPausedDetails): Promise<boolean> {
+  /**
+   * @returns null if the pause was presented, or the step to issue instead, as decided by the before-paused callback.
+   */
+  private async setDebuggerPausedDetails(debuggerPausedDetails: DebuggerPausedDetails): Promise<AutoStep|null> {
     this.#isPausing = false;
     this.#debuggerPausedDetails = debuggerPausedDetails;
     if (this.#beforePausedCallback) {
@@ -639,14 +649,15 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       const autoSteppingContext = this.#stepContext?.mode === StepMode.STEP_OVER ?
           this.#stepContext.callFrames[0]?.functionLocation() ?? null :
           null;
-      if (!await this.#beforePausedCallback.call(null, debuggerPausedDetails, autoSteppingContext)) {
-        return false;
+      const autoStep = await this.#beforePausedCallback(debuggerPausedDetails, autoSteppingContext);
+      if (autoStep) {
+        return autoStep;
       }
     }
     this.#stepContext = null;
     this.dispatchEventToListeners(Events.DebuggerPaused, this);
     this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
-    return true;
+    return null;
   }
 
   private resetDebuggerPausedDetails(): void {
@@ -655,8 +666,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.setSelectedCallFrame(null);
   }
 
-  setBeforePausedCallback(
-      callback: ((arg0: DebuggerPausedDetails, autoSteppingContext: Location|null) => Promise<boolean>)|null): void {
+  setBeforePausedCallback(callback: BeforePausedCallback|null): void {
     this.#beforePausedCallback = callback;
   }
 
@@ -698,12 +708,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       }
     }
 
-    if (!await this.setDebuggerPausedDetails(pausedDetails)) {
-      if (this.#stepContext?.mode === StepMode.STEP_OVER) {
-        void this.stepOver();
-      } else {
-        void this.stepInto();
-      }
+    const autoStep = await this.setDebuggerPausedDetails(pausedDetails);
+    if (autoStep) {
+      this.#issueStep(autoStep);
     }
   }
 

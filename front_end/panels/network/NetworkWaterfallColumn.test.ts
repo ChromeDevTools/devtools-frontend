@@ -39,12 +39,6 @@ const ALL_RANGE_NAMES = Object.keys(ALL_REQUEST_TIME_RANGE_NAMES) as NetworkTime
 describeWithEnvironment('NetworkWaterfallColumn', () => {
   beforeEach(() => {
     const dummyStorage = new Common.Settings.SettingsStorage({});
-    Common.Settings.maybeRemoveSettingExtension('network-color-code-resource-types');
-    Common.Settings.registerSettingExtension({
-      settingName: 'network-color-code-resource-types',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-    });
     Common.Settings.Settings.instance({
       forceNew: true,
       syncedStorage: dummyStorage,

@@ -10,3 +10,10 @@ export const showOptionsToGenerateHarWithSensitiveDataSettingDescriptor: Common.
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const colorCodeResourceTypesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'network-color-code-resource-types',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

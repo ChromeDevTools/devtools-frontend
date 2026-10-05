@@ -720,7 +720,7 @@ export class NetworkLogView extends NetworkLogViewBase implements
         this.element, [UI.DropTarget.Type.File], i18nString(UIStrings.dropHarFilesHere), this.handleDrop.bind(this));
 
     Common.Settings.Settings.instance()
-        .moduleSetting('network-color-code-resource-types')
+        .resolve(Settings.NetworkSettings.colorCodeResourceTypesSettingDescriptor)
         .addChangeListener(this.invalidateAllItems.bind(this, false), this);
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this, {scoped: true});

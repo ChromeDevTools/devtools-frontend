@@ -10,6 +10,7 @@ import * as RenderCoordinator from '../../ui/components/render_coordinator/rende
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as Settings from '../../ui/settings/settings.js';
 
 import type {NetworkNode} from './NetworkDataGridNode.js';
 import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
@@ -249,8 +250,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     if (!request) {
       return null;
     }
-    const useTimingBars =
-        !Common.Settings.Settings.instance().moduleSetting('network-color-code-resource-types').get() &&
+    const useTimingBars = !Common.Settings.Settings.instance()
+                               .resolve(Settings.NetworkSettings.colorCodeResourceTypesSettingDescriptor)
+                               .get() &&
         !this.calculator.startAtZero;
     let range;
     let start;
@@ -400,8 +402,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   }
 
   private draw(): void {
-    const useTimingBars =
-        !Common.Settings.Settings.instance().moduleSetting('network-color-code-resource-types').get() &&
+    const useTimingBars = !Common.Settings.Settings.instance()
+                               .resolve(Settings.NetworkSettings.colorCodeResourceTypesSettingDescriptor)
+                               .get() &&
         !this.calculator.startAtZero;
     const nodes = this.nodes;
     const context = (this.canvas.getContext('2d'));

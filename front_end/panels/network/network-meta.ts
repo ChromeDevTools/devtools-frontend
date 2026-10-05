@@ -441,13 +441,9 @@ SettingsUI.SettingUIRegistration.register(
       },
     });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.NetworkSettings.colorCodeResourceTypesSettingDescriptor, {
   category: Common.Settings.SettingCategory.NETWORK,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.colorcodeResourceTypes),
-  settingName: 'network-color-code-resource-types',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
   tags: [
     i18nLazyString(UIStrings.colorCode),
     i18nLazyString(UIStrings.resourceType),

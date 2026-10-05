@@ -358,7 +358,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
                                                     i18nString(UIStrings.showMoreInformationInRequestRows)),
         SettingsUI.SettingsUI.createSettingCheckbox(
             i18nString(UIStrings.groupByFrame),
-            Common.Settings.Settings.instance().moduleSetting('network.group-by-frame'),
+            Common.Settings.Settings.instance().resolve(Settings.NetworkSettings.groupByFrameSettingDescriptor),
             i18nString(UIStrings.groupRequestsByTopLevelRequest)),
         SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.showOverview),
                                                     this.networkLogShowOverviewSetting,

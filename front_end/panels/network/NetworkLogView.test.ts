@@ -53,14 +53,6 @@ describeWithEnvironment('NetworkLogView', () => {
     connection.setSuccessHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
     const dummyStorage = new Common.Settings.SettingsStorage({});
 
-    for (const settingName of ['network.group-by-frame']) {
-      Common.Settings.maybeRemoveSettingExtension(settingName);
-      Common.Settings.registerSettingExtension({
-        settingName,
-        settingType: Common.Settings.SettingType.BOOLEAN,
-        defaultValue: false,
-      });
-    }
     Common.Settings.Settings.instance({
       forceNew: true,
       syncedStorage: dummyStorage,
@@ -1539,14 +1531,6 @@ describeWithEnvironment('Edit and resend as fetch', () => {
     connection.setSuccessHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
     const dummyStorage = new Common.Settings.SettingsStorage({});
 
-    for (const settingName of ['network.group-by-frame']) {
-      Common.Settings.maybeRemoveSettingExtension(settingName);
-      Common.Settings.registerSettingExtension({
-        settingName,
-        settingType: Common.Settings.SettingType.BOOLEAN,
-        defaultValue: false,
-      });
-    }
     Common.Settings.Settings.instance({
       forceNew: true,
       syncedStorage: dummyStorage,

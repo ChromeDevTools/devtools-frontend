@@ -734,7 +734,7 @@ export class NetworkLogView extends NetworkLogViewBase implements
 
     this.updateGroupByFrame();
     Common.Settings.Settings.instance()
-        .moduleSetting('network.group-by-frame')
+        .resolve(Settings.NetworkSettings.groupByFrameSettingDescriptor)
         .addChangeListener(() => this.updateGroupByFrame());
 
     this.filterBar = filterBar;
@@ -746,7 +746,8 @@ export class NetworkLogView extends NetworkLogViewBase implements
   }
 
   private updateGroupByFrame(): void {
-    const value = Common.Settings.Settings.instance().moduleSetting('network.group-by-frame').get();
+    const value =
+        Common.Settings.Settings.instance().resolve(Settings.NetworkSettings.groupByFrameSettingDescriptor).get();
     this.setGrouping(value ? 'Frame' : null);
   }
 

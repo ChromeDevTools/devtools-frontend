@@ -460,13 +460,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.NetworkSettings.colorCodeRe
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.NetworkSettings.groupByFrameSettingDescriptor, {
   category: Common.Settings.SettingCategory.NETWORK,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.groupNetworkLogByFrame),
-  settingName: 'network.group-by-frame',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
   tags: [
     i18nLazyString(UIStrings.netWork),
     i18nLazyString(UIStrings.frame),

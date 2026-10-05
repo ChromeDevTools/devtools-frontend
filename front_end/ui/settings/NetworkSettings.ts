@@ -17,3 +17,10 @@ export const colorCodeResourceTypesSettingDescriptor: Common.Settings.SettingDes
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const groupByFrameSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'network.group-by-frame',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

@@ -201,14 +201,18 @@ class Simulator<T = Lantern.AnyNetworkObject> {
 
     this.nodes[NodeState.InProgress].add(node);
     this.nodes[NodeState.ReadyToStart].delete(node);
-    this.numberInProgressByType.set(node.type, this.numberInProgress(node.type) + 1);
+    if (!(node.type === Graph.BaseNode.types.NETWORK && node.isConnectionless)) {
+      this.numberInProgressByType.set(node.type, this.numberInProgress(node.type) + 1);
+    }
     this.nodeTimings.setInProgress(node, {startTime});
   }
 
   markNodeAsComplete(node: Graph.Node, endTime: number, connectionTiming?: ConnectionTiming): void {
     this.nodes[NodeState.Complete].add(node);
     this.nodes[NodeState.InProgress].delete(node);
-    this.numberInProgressByType.set(node.type, this.numberInProgress(node.type) - 1);
+    if (!(node.type === Graph.BaseNode.types.NETWORK && node.isConnectionless)) {
+      this.numberInProgressByType.set(node.type, this.numberInProgress(node.type) - 1);
+    }
     this.nodeTimings.setCompleted(node, {endTime, connectionTiming});
 
     // Try to add all its dependents to the queue

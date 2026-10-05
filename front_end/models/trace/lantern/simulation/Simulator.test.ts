@@ -425,6 +425,23 @@ describe('DependencyGraph/Simulator', () => {
         }
       });
     });
+
+    it('should not count connectionless (fromDiskCache) requests toward active network requests', () => {
+      const rootNode = new NetworkNode(request({startTime: 0, endTime: 1, fromDiskCache: true}));
+      const nodeCached = new NetworkNode(request({startTime: 1, endTime: 2, fromDiskCache: true}));
+      const nodeReal = new NetworkNode(request({startTime: 2, endTime: 3, fromDiskCache: false}));
+
+      rootNode.addDependent(nodeCached);
+      rootNode.addDependent(nodeReal);
+
+      const simulator =
+          new Simulator({serverResponseTimeByOrigin, maximumConcurrentRequests: 1, observedThroughput: 1});
+      const result = simulator.simulate(rootNode);
+
+      // Both nodeCached and nodeReal should start immediately after rootNode finishes at 8ms.
+      assertNodeTiming(result, nodeCached, {startTime: 8, endTime: 16});
+      assertNodeTiming(result, nodeReal, {startTime: 8, endTime: 958});
+    });
   });
 
   describe('.simulateTimespan', () => {

@@ -501,7 +501,7 @@ describe('SourceMapScopesInfo', () => {
     //  5:   function n(){...}     nested function n (5:2-5:16), with an inlined callee (5:5-5:8)
     //  6: }
     //  7: function o(){}        outlined part of F (hidden)
-    //  8: function h(){}        helper without original scope
+    //  8: function h(){}        helper without original scope (hidden)
     function createInfo({outlined = true}: {outlined?: boolean} = {}): SDK.SourceMapScopesInfo.SourceMapScopesInfo {
       const builder = new ScopeInfoBuilder();
       builder.startSource()
@@ -527,7 +527,7 @@ describe('SourceMapScopesInfo', () => {
           .endRange(6, 1)
           .startRange(7, 0, {scopeKey: 'block', isStackFrame: true, isHidden: outlined})
           .endRange(7, 14)
-          .startRange(8, 0, {isStackFrame: true})
+          .startRange(8, 0, {isStackFrame: true, isHidden: true})
           .endRange(8, 14)
           .endRange(9, 0);
       return new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
@@ -558,6 +558,11 @@ describe('SourceMapScopesInfo', () => {
       assert.deepEqual(info.inlinedCalleeRanges(1, 1), [range(2, 0, 2, 5)]);
       assert.deepEqual(info.inlinedCalleeRanges(5, 3), [range(5, 5, 5, 8)]);
       assert.deepEqual(info.inlinedCalleeRanges(7, 3), []);
+    });
+
+    it('hasOutlinedFunctions detects hidden generated functions with a definition', () => {
+      assert.isTrue(createInfo().hasOutlinedFunctions());
+      assert.isFalse(createInfo({outlined: false}).hasOutlinedFunctions());
     });
   });
 

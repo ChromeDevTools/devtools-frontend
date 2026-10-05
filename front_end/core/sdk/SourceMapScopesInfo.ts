@@ -612,6 +612,17 @@ export class SourceMapScopesInfo {
     })(body ?? {children: this.#generatedRanges} as ScopesCodec.GeneratedRange);
     return result;
   }
+
+  /**
+   * @returns true, iff any generated function is outlined, i.e. marked as "hidden" but with a definition (see
+   *          {@link GeneratedFrameKind.OUTLINED}). Hidden functions without a definition are compiler helpers.
+   */
+  hasOutlinedFunctions(): boolean {
+    const hasOutlined = (ranges: ScopesCodec.GeneratedRange[]): boolean =>
+        ranges.some(range => (range.isStackFrame && range.isHidden && range.originalScope !== undefined) ||
+                        hasOutlined(range.children));
+    return hasOutlined(this.#generatedRanges);
+  }
 }
 
 /** A range of generated positions, relative to the start of the script. `end` is exclusive. */

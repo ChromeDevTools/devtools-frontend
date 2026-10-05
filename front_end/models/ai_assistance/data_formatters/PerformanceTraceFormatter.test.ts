@@ -285,6 +285,126 @@ describe('PerformanceTraceFormatter', function() {
       const output = formatter.formatNetworkRequests(request);
       snapshotTester.assert(this, output);
     });
+
+    it('restricts cross-origin requests to CORS-safelisted headers and redacts redirect chains', () => {
+      Trace.Helpers.SyntheticEvents.SyntheticEventsManager.createAndActivate([]);
+      const parsedTrace = getBaseTraceHandlerData();
+      parsedTrace.insights = new Map();
+      (parsedTrace.data.Meta as {mainFrameURL: string}).mainFrameURL = 'https://attacker.example/index.html';
+      const makeSyntheticRequest = (overrides: Partial<Trace.Types.Events.SyntheticNetworkRequest['args']['data']>):
+                                       Trace.Types.Events.SyntheticNetworkRequest => ({
+        name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
+        ph: Trace.Types.Events.Phase.COMPLETE,
+        cat: 'loading',
+        ts: Trace.Types.Timing.Micro(1000),
+        dur: Trace.Types.Timing.Micro(500),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        rawSourceEvent: {
+          cat: 'loading',
+          name: 'ResourceSendRequest',
+          args: {data: {}},
+        },
+        args: {
+          data: {
+            url: 'https://app.victim.example/cb?code=SECRET_OAUTH_CODE',
+            requestId: 'req-1',
+            frame: 'frame-1',
+            requestingFrameUrl: 'https://attacker.example/index.html',
+            statusCode: 200,
+            mimeType: 'text/css',
+            protocol: 'h2',
+            priority: 'VeryHigh' as unknown as Trace.Types.Events.SyntheticNetworkRequest['args']['data']['priority'],
+            initialPriority: 'VeryHigh' as unknown as
+                Trace.Types.Events.SyntheticNetworkRequest['args']['data']['initialPriority'],
+            renderBlocking: 'blocking',
+            fromServiceWorker: false,
+            redirects: [
+              {
+                url: 'https://idp.victim.example/oauth/authorize',
+                priority: 'VeryHigh',
+                ts: Trace.Types.Timing.Micro(1000),
+                dur: Trace.Types.Timing.Micro(200),
+              },
+              {
+                url: 'https://app.victim.example/cb?code=SECRET_OAUTH_CODE',
+                priority: 'VeryHigh',
+                ts: Trace.Types.Timing.Micro(1200),
+                dur: Trace.Types.Timing.Micro(100),
+              },
+            ],
+            responseHeaders: [
+              {name: 'content-type', value: 'text/css'},
+              {name: 'cache-control', value: 'no-store'},
+              {name: 'link', value: '<https://internal.victim.example/?token=SECRET_LINK>; rel="preload"'},
+              {name: 'content-security-policy', value: 'default-src \'self\' internal.victim.example'},
+              {name: 'x-forwarded-host', value: 'internal-lb.victim.example'},
+            ],
+            syntheticData: {
+              sendStartTime: Trace.Types.Timing.Micro(1300),
+              downloadStart: Trace.Types.Timing.Micro(1400),
+              finishTime: Trace.Types.Timing.Micro(1450),
+            } as unknown as Trace.Types.Events.SyntheticNetworkRequest['args']['data']['syntheticData'],
+            ...overrides,
+          } as unknown as Trace.Types.Events.SyntheticNetworkRequest['args']['data'],
+        },
+      } as unknown as Trace.Types.Events.SyntheticNetworkRequest);
+
+      const crossOriginRequest = makeSyntheticRequest({});
+      const crossOriginInitiatedRequest = makeSyntheticRequest({
+        requestId: 'req-2',
+        url: 'https://app.victim.example/imported.css?secret=SUBRESOURCE_SECRET',
+        redirects: [],
+        initiator: {
+          type: 'parser' as unknown as
+              NonNullable<Trace.Types.Events.SyntheticNetworkRequest['args']['data']['initiator']>['type'],
+          fetchType: 'link',
+          url: 'https://app.victim.example/parent.css',
+        },
+      });
+      const crossOriginBounceRequest = makeSyntheticRequest({
+        requestId: 'req-3',
+        url: 'https://attacker.example/done?ticket=SECRET_BOUNCE_TICKET',
+        redirects: [
+          {
+            url: 'https://attacker.example/start',
+            priority: 'VeryHigh',
+            ts: Trace.Types.Timing.Micro(1000),
+            dur: Trace.Types.Timing.Micro(100),
+          },
+          {
+            url: 'https://idp.victim.example/sso?ticket=SECRET_BOUNCE_TICKET',
+            priority: 'VeryHigh',
+            ts: Trace.Types.Timing.Micro(1100),
+            dur: Trace.Types.Timing.Micro(100),
+          },
+        ],
+      });
+
+      const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
+      const formatter = new PerformanceTraceFormatter.PerformanceTraceFormatter(focus);
+
+      const verboseOutput = formatter.formatNetworkRequests([crossOriginRequest], {verbose: true});
+      assert.include(verboseOutput, '## Network request: https://idp.victim.example/oauth/authorize');
+      assert.include(verboseOutput, 'Redirects: no redirects');
+      assert.include(verboseOutput, '- content-type: text/css');
+      assert.include(verboseOutput, '- cache-control: no-store');
+      assert.notInclude(verboseOutput, 'SECRET_OAUTH_CODE');
+      assert.notInclude(verboseOutput, 'SECRET_LINK');
+      assert.notInclude(verboseOutput, 'internal.victim.example');
+      assert.notInclude(verboseOutput, 'internal-lb.victim.example');
+
+      const compressedOutput = formatter.formatNetworkRequests(
+          [crossOriginRequest, crossOriginInitiatedRequest, crossOriginBounceRequest], {verbose: false});
+      assert.include(compressedOutput, 'https://idp.victim.example/oauth/authorize');
+      assert.include(compressedOutput, 'https://attacker.example/start');
+      assert.include(compressedOutput, '[content-type: text/css|cache-control: no-store]');
+      assert.notInclude(compressedOutput, 'SECRET_OAUTH_CODE');
+      assert.notInclude(compressedOutput, 'SECRET_BOUNCE_TICKET');
+      assert.notInclude(compressedOutput, 'SECRET_LINK');
+      assert.notInclude(compressedOutput, 'internal.victim.example');
+      assert.notInclude(compressedOutput, 'internal-lb.victim.example');
+    });
   });
 
   describe('custom tracks', () => {
@@ -384,45 +504,200 @@ describe('PerformanceTraceFormatter', function() {
   });
 
   describe('formatEventForAI', () => {
-    it('sanitizes headers for network requests', () => {
+    it('sanitizes headers for same-origin network requests', () => {
+      const parsedTrace = getBaseTraceHandlerData();
+      (parsedTrace.data.Meta as {mainFrameURL: string}).mainFrameURL = 'https://example.com/index.html';
+
       const mockNetworkEvent = {
         name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
         args: {
           data: {
+            url: 'https://example.com/api',
+            redirects: [],
             responseHeaders: [
               {name: 'x-csrf-token', value: 'secret'},
               {name: 'content-type', value: 'text/html'},
+              {name: 'server', value: 'custom-server'},
             ],
           },
         },
       } as unknown as Trace.Types.Events.Event;
 
-      const output = PerformanceTraceFormatter.formatEventForAI(mockNetworkEvent);
+      const output = PerformanceTraceFormatter.formatEventForAI(mockNetworkEvent, parsedTrace);
       const parsed = JSON.parse(output);
       assert.deepEqual(parsed.args.data.responseHeaders, [
         {name: 'x-csrf-token', value: '<redacted>'},
         {name: 'content-type', value: 'text/html'},
+        {name: 'server', value: 'custom-server'},
       ]);
     });
+
+    it('restricts cross-origin network requests to CORS-safelisted headers and redacts redirect URLs', () => {
+      const parsedTrace = getBaseTraceHandlerData();
+      (parsedTrace.data.Meta as {mainFrameURL: string}).mainFrameURL = 'https://attacker.example/index.html';
+
+      const mockNetworkEvent = {
+        name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
+        rawSourceEvent: {
+          name: 'ResourceSendRequest',
+          args: {
+            data: {
+              requestId: 'req-1',
+              url: 'https://app.victim.example/cb?code=SECRET_OAUTH_CODE',
+            },
+          },
+        },
+        args: {
+          data: {
+            requestId: 'req-1',
+            url: 'https://app.victim.example/cb?code=SECRET_OAUTH_CODE',
+            requestingFrameUrl: 'https://attacker.example/index.html',
+            redirects: [
+              {
+                url: 'https://idp.victim.example/oauth/authorize',
+                priority: 'VeryHigh',
+                ts: 1000,
+                dur: 200,
+              },
+            ],
+            responseHeaders: [
+              {name: 'x-csrf-token', value: 'secret'},
+              {name: 'link', value: '<https://internal.victim.example/?token=SECRET>; rel="preload"'},
+              {name: 'content-type', value: 'text/html'},
+              {name: 'cache-control', value: 'no-store'},
+            ],
+          },
+        },
+      } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
+
+      const output = PerformanceTraceFormatter.formatEventForAI(mockNetworkEvent, parsedTrace);
+      assert.notInclude(output, 'SECRET_OAUTH_CODE');
+      assert.notInclude(output, 'internal.victim.example');
+      const parsed = JSON.parse(output);
+      assert.strictEqual(parsed.args.data.url, 'https://idp.victim.example/oauth/authorize');
+      assert.strictEqual(parsed.rawSourceEvent.args.data.url, 'https://idp.victim.example/oauth/authorize');
+      assert.deepEqual(parsed.args.data.redirects, []);
+      assert.deepEqual(parsed.args.data.responseHeaders, [
+        {name: 'content-type', value: 'text/html'},
+        {name: 'cache-control', value: 'no-store'},
+      ]);
+    });
+
+    it('redacts post-redirect URLs on cross-origin ResourceSendRequest events while preserving same-origin hop URLs',
+       () => {
+         const parsedTrace = getBaseTraceHandlerData();
+         (parsedTrace.data.Meta as {mainFrameURL: string}).mainFrameURL = 'https://attacker.example/index.html';
+         (parsedTrace.data.NetworkRequests as {byTime: Trace.Types.Events.SyntheticNetworkRequest[]}).byTime = [
+           {
+             name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
+             args: {
+               data: {
+                 requestId: 'req-redirect',
+                 url: 'https://app.victim.example/cb?code=SECRET_OAUTH_CODE',
+                 redirects: [
+                   {
+                     url: 'https://idp.victim.example/oauth/authorize',
+                     priority: 'VeryHigh',
+                     ts: 1000,
+                     dur: 200,
+                   },
+                 ],
+               },
+             },
+           } as unknown as Trace.Types.Events.SyntheticNetworkRequest,
+           {
+             name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
+             args: {
+               data: {
+                 requestId: 'req-same-origin-redirect',
+                 url: 'https://attacker.example/final',
+                 redirects: [
+                   {
+                     url: 'https://attacker.example/start',
+                     priority: 'VeryHigh',
+                     ts: 1000,
+                     dur: 200,
+                   },
+                 ],
+               },
+             },
+           } as unknown as Trace.Types.Events.SyntheticNetworkRequest,
+         ];
+
+         const rawSendRequestEvent = {
+           name: 'ResourceSendRequest',
+           args: {
+             data: {
+               requestId: 'req-redirect',
+               url: 'https://app.victim.example/cb?code=SECRET_OAUTH_CODE',
+             },
+           },
+         } as unknown as Trace.Types.Events.Event;
+
+         const output = PerformanceTraceFormatter.formatEventForAI(rawSendRequestEvent, parsedTrace);
+         assert.notInclude(output, 'SECRET_OAUTH_CODE');
+         const parsed = JSON.parse(output);
+         assert.strictEqual(parsed.args.data.url, 'https://idp.victim.example/oauth/authorize');
+
+         const sameOriginInitialHopEvent = {
+           name: 'ResourceSendRequest',
+           args: {
+             data: {
+               requestId: 'req-same-origin-redirect',
+               url: 'https://attacker.example/start',
+             },
+           },
+         } as unknown as Trace.Types.Events.Event;
+
+         const sameOriginOutput = PerformanceTraceFormatter.formatEventForAI(sameOriginInitialHopEvent, parsedTrace);
+         const sameOriginParsed = JSON.parse(sameOriginOutput);
+         assert.strictEqual(sameOriginParsed.args.data.url, 'https://attacker.example/start');
+       });
 
     it('sanitizes headers for ResourceReceiveResponse events', () => {
       const mockReceiveResponseEvent = {
         name: Trace.Types.Events.Name.RESOURCE_RECEIVE_RESPONSE,
         args: {
           data: {
+            requestId: 'req-1',
             headers: [
               {name: 'cookie', value: 'secret'},
-              {name: 'accept', value: '*/*'},
+              {name: 'link', value: '<https://internal.example>; rel="preload"'},
+              {name: 'content-type', value: 'text/html'},
+              {name: 'cache-control', value: 'max-age=60'},
             ],
           },
         },
       } as unknown as Trace.Types.Events.Event;
 
-      const output = PerformanceTraceFormatter.formatEventForAI(mockReceiveResponseEvent);
-      const parsed = JSON.parse(output);
-      assert.deepEqual(parsed.args.data.headers, [
+      const parsedTrace = getBaseTraceHandlerData();
+      const crossOriginOutput = PerformanceTraceFormatter.formatEventForAI(mockReceiveResponseEvent, parsedTrace);
+      const crossOriginParsed = JSON.parse(crossOriginOutput);
+      assert.deepEqual(crossOriginParsed.args.data.headers, [
+        {name: 'content-type', value: 'text/html'},
+        {name: 'cache-control', value: 'max-age=60'},
+      ]);
+
+      (parsedTrace.data.Meta as {mainFrameURL: string}).mainFrameURL = 'https://example.com/index.html';
+      (parsedTrace.data.NetworkRequests as {byTime: Trace.Types.Events.SyntheticNetworkRequest[]}).byTime = [
+        {
+          name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
+          args: {
+            data: {
+              requestId: 'req-1',
+              url: 'https://example.com/page',
+              redirects: [],
+            },
+          },
+        } as unknown as Trace.Types.Events.SyntheticNetworkRequest,
+      ];
+      const sameOriginOutput = PerformanceTraceFormatter.formatEventForAI(mockReceiveResponseEvent, parsedTrace);
+      const sameOriginParsed = JSON.parse(sameOriginOutput);
+      assert.deepEqual(sameOriginParsed.args.data.headers, [
         {name: 'cookie', value: '<redacted>'},
-        {name: 'accept', value: '*/*'},
+        {name: 'link', value: '<https://internal.example>; rel="preload"'},
+        {name: 'content-type', value: 'text/html'},
+        {name: 'cache-control', value: 'max-age=60'},
       ]);
     });
 
@@ -440,7 +715,7 @@ describe('PerformanceTraceFormatter', function() {
         },
       } as unknown as Trace.Types.Events.Event;
 
-      const output = PerformanceTraceFormatter.formatEventForAI(mockRundownEvent);
+      const output = PerformanceTraceFormatter.formatEventForAI(mockRundownEvent, getBaseTraceHandlerData());
       const parsed = JSON.parse(output);
       assert.isUndefined(parsed.args.data.sourceText);
       assert.deepEqual(parsed.args.data, {
@@ -465,7 +740,7 @@ describe('PerformanceTraceFormatter', function() {
         },
       } as unknown as Trace.Types.Events.Event;
 
-      const output = PerformanceTraceFormatter.formatEventForAI(mockRundownLargeEvent);
+      const output = PerformanceTraceFormatter.formatEventForAI(mockRundownLargeEvent, getBaseTraceHandlerData());
       const parsed = JSON.parse(output);
       assert.isUndefined(parsed.args.data.sourceText);
       assert.deepEqual(parsed.args.data, {
@@ -488,7 +763,7 @@ describe('PerformanceTraceFormatter', function() {
         },
       } as unknown as Trace.Types.Events.Event;
 
-      const output = PerformanceTraceFormatter.formatEventForAI(mockScreenshotEvent);
+      const output = PerformanceTraceFormatter.formatEventForAI(mockScreenshotEvent, getBaseTraceHandlerData());
       const parsed = JSON.parse(output);
       assert.strictEqual(parsed.args.snapshot, '<redacted base64 image data>');
       assert.strictEqual(parsed.args.source_id, 1);
@@ -506,7 +781,7 @@ describe('PerformanceTraceFormatter', function() {
         },
       } as unknown as Trace.Types.Events.Event;
 
-      const output = PerformanceTraceFormatter.formatEventForAI(mockLegacyScreenshotEvent);
+      const output = PerformanceTraceFormatter.formatEventForAI(mockLegacyScreenshotEvent, getBaseTraceHandlerData());
       const parsed = JSON.parse(output);
       assert.strictEqual(parsed.args.snapshot, '<redacted base64 image data>');
       assert.strictEqual(parsed.id, '0x1');
@@ -521,7 +796,8 @@ describe('PerformanceTraceFormatter', function() {
         },
       } as unknown as Trace.Types.Events.Event;
 
-      const output = PerformanceTraceFormatter.formatEventForAI(mockLegacySyntheticScreenshotEvent);
+      const output =
+          PerformanceTraceFormatter.formatEventForAI(mockLegacySyntheticScreenshotEvent, getBaseTraceHandlerData());
       const parsed = JSON.parse(output);
       assert.strictEqual(parsed.args.dataUri, '<redacted base64 image data>');
     });
@@ -537,7 +813,7 @@ describe('PerformanceTraceFormatter', function() {
         },
       } as unknown as Trace.Types.Events.Event;
 
-      const output = PerformanceTraceFormatter.formatEventForAI(mockGenericEvent);
+      const output = PerformanceTraceFormatter.formatEventForAI(mockGenericEvent, getBaseTraceHandlerData());
       const parsed = JSON.parse(output);
       assert.deepEqual(parsed, mockGenericEvent);
     });

@@ -30,20 +30,10 @@ From a service worker: No
 Initiators (root request to the request that directly loaded this one): file:///Users/cjamcl/surge/misc/display-dpr/index.html
 Response headers
 - cache-control: max-age=31536000, public
-- x-via: <redacted>
-- etag: <redacted>
-- x-guest-hostname: <redacted>
-- access-control-allow-methods: *
 - expires: Wed, 08 Jul 2026 17:27:17 GMT
-- x-cdn-cache-status: <redacted>
-- accept-ranges: bytes
-- x-static-config: <redacted>
 - content-length: <redacted>
-- date: Tue, 08 Jul 2025 17:27:29 GMT
 - content-type: image/webp
 - last-modified: Mon, 27 Jan 2025 17:50:34 GMT
-- server: Apache
-- access-control-allow-headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
 
 We can break this time down into the 4 subparts that combine to make the LCP time:
 
@@ -165,7 +155,7 @@ Network requests data:
 
 allUrls = [0: https://code.jquery.com/jquery-3.7.1.js, 1: http://localhost:8000/, 2: http://localhost:8000/render-blocking-stylesheet.css, 3: http://localhost:8000/render-blocking-script.js]
 
-0;s-1920;581 ms;585 ms;1,943 ms;1,944 ms;1,363 ms;776 ms;1 ms;200;application/javascript;High;High;High;t;h2;f;1;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]
+0;s-1920;581 ms;585 ms;1,943 ms;1,944 ms;1,363 ms;776 ms;1 ms;200;application/javascript;High;High;High;t;h2;f;1;[];[content-type: application/javascript; charset=utf-8|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|cache-control: public, max-age=31536000, stale-while-revalidate=604800|content-length: <redacted>]
 2;s-1924;582 ms;583 ms;1,193 ms;1,193 ms;612 ms;0.2 ms;0.2 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
 3;s-1922;582 ms;583 ms;1,177 ms;1,178 ms;596 ms;0.4 ms;1 ms;200;text/javascript;High;High;High;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]
 
@@ -632,13 +622,13 @@ Network requests data:
 
 allUrls = [0: https://ads.jetpackdigital.com/sites/_uploads/1742278386bg_opt_640x350-avif.avif, 1: http://localhost/old-http.html, 2: https://ads.jetpackdigital.com/sites/_uploads/1583540859Play.png, 3: https://ads.jetpackdigital.com/sites/_uploads/1583540859Muted.png, 4: https://ads.jetpackdigital.com/h5media/sites/_uploads/1742363510mm_allthefeels_20_mob.mp4, 5: https://ads.jetpackdigital.com/sites/_uploads/1583540860Pause.png, 6: https://ads.jetpackdigital.com/tracking_pixel.gif?8852762616, 7: https://ads.jetpackdigital.com/tracking_pixel.gif?7753243273]
 
-0;s-1285;8 ms;12 ms;26 ms;26 ms;18 ms;2 ms;93 μs;200;image/avif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 18 Mar 2025 06:13:07 GMT|Content-Type: image/avif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-2;s-1298;8 ms;13 ms;24 ms;24 ms;16 ms;0.6 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-3;s-1312;8 ms;13 ms;25 ms;25 ms;17 ms;1 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-4;s-1329;8 ms;13 ms;24 ms;24 ms;16 ms;0.4 ms;11 μs;200;video/mp4;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Wed, 19 Mar 2025 05:51:52 GMT|Content-Type: video/mp4|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-5;s-1336;8 ms;13 ms;25 ms;25 ms;17 ms;1 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|ETag: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:05:18 GMT|Content-Type: image/png|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-6;s-1338;8 ms;24 ms;39 ms;39 ms;30 ms;0.1 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
-7;s-1341;8 ms;25 ms;38 ms;38 ms;30 ms;0.2 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[x-amz-id-2: <redacted>|x-amz-meta-jets3t-original-file-date-iso8601: <redacted>|ETag: <redacted>|x-amz-meta-md5-hash: <redacted>|Connection: keep-alive|Access-Control-Allow-Methods: GET,HEAD,POST|x-amz-request-id: <redacted>|Accept-Ranges: bytes|Access-Control-Allow-Origin: *|Content-Length: <redacted>|Date: Thu, 20 Mar 2025 19:45:22 GMT|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif|Server: AmazonS3|x-amz-server-side-encryption: <redacted>]
+0;s-1285;8 ms;12 ms;26 ms;26 ms;18 ms;2 ms;93 μs;200;image/avif;Low;Low;Low;f;http/1.1;f;1;[];[Content-Length: <redacted>|Last-Modified: Tue, 18 Mar 2025 06:13:07 GMT|Content-Type: image/avif]
+2;s-1298;8 ms;13 ms;24 ms;24 ms;16 ms;0.6 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[Content-Length: <redacted>|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png]
+3;s-1312;8 ms;13 ms;25 ms;25 ms;17 ms;1 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[Content-Length: <redacted>|Last-Modified: Tue, 24 Jan 2023 19:05:17 GMT|Content-Type: image/png]
+4;s-1329;8 ms;13 ms;24 ms;24 ms;16 ms;0.4 ms;11 μs;200;video/mp4;Low;Low;Low;f;http/1.1;f;1;[];[Content-Length: <redacted>|Last-Modified: Wed, 19 Mar 2025 05:51:52 GMT|Content-Type: video/mp4]
+5;s-1336;8 ms;13 ms;25 ms;25 ms;17 ms;1 ms;0.3 ms;200;image/png;Low;Low;Low;f;http/1.1;f;1;[];[Content-Length: <redacted>|Last-Modified: Tue, 24 Jan 2023 19:05:18 GMT|Content-Type: image/png]
+6;s-1338;8 ms;24 ms;39 ms;39 ms;30 ms;0.1 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[Content-Length: <redacted>|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif]
+7;s-1341;8 ms;25 ms;38 ms;38 ms;30 ms;0.2 ms;0.2 ms;200;image/gif;Low;Low;Low;f;http/1.1;f;1;[];[Content-Length: <redacted>|Last-Modified: Tue, 24 Jan 2023 19:54:47 GMT|Content-Type: image/gif]
 
 ## Estimated savings: FCP 0 ms, LCP 0 ms
 

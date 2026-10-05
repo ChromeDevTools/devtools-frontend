@@ -2078,6 +2078,7 @@ code
         name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
         args: {
           data: {
+            url: 'https://example.com/api',
             responseHeaders: [
               {name: 'x-csrf-token', value: 'secret'},
               {name: 'content-type', value: 'text/html'},
@@ -2175,7 +2176,6 @@ code
       const headers = details.args.data.headers;
 
       assert.deepEqual(headers, [
-        {name: 'x-csrf-token', value: '<redacted>'},
         {name: 'content-type', value: 'text/html'},
       ]);
     });

@@ -195,6 +195,72 @@ describe('StylesSourceMapping', () => {
     assert.isFalse(universe.networkPersistenceManager.isUISourceCodeOverridable(networkUISourceCode));
   });
 
+  it('marks UISourceCode as having synthesized sourceURL when a header with hasSourceURL is added to an existing StyleFile',
+     async () => {
+       const connection = new MockCDPConnection();
+       const target = universe.createTarget({connection});
+       const cssModel = target.model(SDK.CSSModel.CSSModel);
+       assert.exists(cssModel);
+       void universe.cssWorkspaceBinding;
+
+       const styleSheetId1 = 'stylesheet1' as Protocol.DOM.StyleSheetId;
+       const styleSheetId2 = 'stylesheet2' as Protocol.DOM.StyleSheetId;
+       const frameId = 'frame' as Protocol.Page.FrameId;
+       const sourceURL = urlString`http://example.com/spoofed.css`;
+
+       const headerPayload1: Protocol.CSS.CSSStyleSheetHeader = {
+         styleSheetId: styleSheetId1,
+         frameId,
+         sourceURL,
+         hasSourceURL: false,
+         origin: Protocol.CSS.StyleSheetOrigin.Regular,
+         title: 'spoofed.css',
+         disabled: false,
+         isInline: false,
+         isMutable: false,
+         isConstructed: false,
+         loadingFailed: false,
+         startLine: 0,
+         startColumn: 0,
+         length: 0,
+         endLine: 0,
+         endColumn: 0,
+       };
+
+       const headerPayload2: Protocol.CSS.CSSStyleSheetHeader = {
+         styleSheetId: styleSheetId2,
+         frameId,
+         sourceURL,
+         hasSourceURL: true,
+         origin: Protocol.CSS.StyleSheetOrigin.Regular,
+         title: 'spoofed.css',
+         disabled: false,
+         isInline: false,
+         isMutable: false,
+         isConstructed: false,
+         loadingFailed: false,
+         startLine: 0,
+         startColumn: 0,
+         length: 0,
+         endLine: 0,
+         endColumn: 0,
+       };
+
+       const networkUISourceCodePromise = waitForNetworkUISourceCode(uiSourceCode => uiSourceCode.url() === sourceURL);
+
+       cssModel.styleSheetAdded(headerPayload1);
+       const networkUISourceCode = await networkUISourceCodePromise;
+
+       assert.isFalse(Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(networkUISourceCode));
+       assert.isTrue(universe.networkPersistenceManager.isUISourceCodeOverridable(networkUISourceCode));
+
+       cssModel.styleSheetAdded(headerPayload2);
+       cssModel.styleSheetRemoved(styleSheetId1);
+
+       assert.isTrue(Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(networkUISourceCode));
+       assert.isFalse(universe.networkPersistenceManager.isUISourceCodeOverridable(networkUISourceCode));
+     });
+
   function waitForNetworkUISourceCode(predicate: (uiSourceCode: Workspace.UISourceCode.UISourceCode) =>
                                           boolean): Promise<Workspace.UISourceCode.UISourceCode> {
     return new Promise<Workspace.UISourceCode.UISourceCode>(resolve => {

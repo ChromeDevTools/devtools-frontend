@@ -63,4 +63,33 @@ describe('Metrics: Lantern FCP', function() {
     });
     assert.deepEqual(pessimisticNodes.map(node => node.request.url), ['https://squoosh.app/']);
   });
+
+  it('should respect renderBlocking alongside priority for scripts', () => {
+    const makeNode = (overrides: Partial<Lantern.Types.NetworkRequest>): Lantern.Graph.NetworkNode => {
+      return new Lantern.Graph.NetworkNode({
+        requestId: '1',
+        resourceType: 'Script',
+        priority: 'High',
+        ...overrides,
+      } as Lantern.Types.NetworkRequest);
+    };
+
+    // High-priority module script marked non_blocking is not render-blocking.
+    assert.isFalse(makeNode({priority: 'High', renderBlocking: 'non_blocking'}).hasRenderBlockingPriority());
+    // Dynamically injected non-blocking script is not render-blocking.
+    assert.isFalse(
+        makeNode({priority: 'High', renderBlocking: 'dynamically_injected_non_blocking'}).hasRenderBlockingPriority());
+    // Early in-body parser-blocking script (High priority) is render-blocking.
+    assert.isTrue(makeNode({priority: 'High', renderBlocking: 'in_body_parser_blocking'}).hasRenderBlockingPriority());
+    // Late in-body parser-blocking script after an image (Medium priority) is not render-blocking.
+    assert.isFalse(
+        makeNode({priority: 'Medium', renderBlocking: 'in_body_parser_blocking'}).hasRenderBlockingPriority());
+    // Explicitly blocking script is render-blocking even if priority is Low.
+    assert.isTrue(makeNode({priority: 'Low', renderBlocking: 'blocking'}).hasRenderBlockingPriority());
+    // Legacy trace without renderBlocking falls back to priority check.
+    assert.isTrue(makeNode({priority: 'High', renderBlocking: undefined}).hasRenderBlockingPriority());
+    // VeryHigh priority Font marked non_blocking is not treated as render-blocking.
+    assert.isFalse(makeNode({resourceType: 'Font', priority: 'VeryHigh', renderBlocking: 'non_blocking'})
+                       .hasRenderBlockingPriority());
+  });
 });

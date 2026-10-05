@@ -83,6 +83,20 @@ class NetworkNode<T = Lantern.AnyNetworkObject> extends BaseNode<T> {
   }
 
   hasRenderBlockingPriority(): boolean {
+    const renderBlocking = this._request.renderBlocking;
+    if (renderBlocking === 'non_blocking' || renderBlocking === 'dynamically_injected_non_blocking' ||
+        renderBlocking === 'potentially_blocking') {
+      return false;
+    }
+
+    if (renderBlocking === 'blocking') {
+      return true;
+    }
+
+    // Used when `renderBlocking === 'in_body_parser_blocking'` (where only
+    // early, High-priority in-body scripts should be considered blocking; see
+    // RenderBlocking.ts) or when `renderBlocking` is undefined (Documents,
+    // legacy trace fixtures, or CDP logs prior to M145).
     const priority = this._request.priority;
     const isScript = this._request.resourceType === 'Script';
     const isDocument = this._request.resourceType === 'Document';

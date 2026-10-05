@@ -49,6 +49,8 @@ export interface Trace {
   traceEvents: TraceEvent[];
 }
 export type ResourcePriority = ('VeryLow'|'Low'|'Medium'|'High'|'VeryHigh');
+export type RenderBlocking =
+    ('blocking'|'non_blocking'|'in_body_parser_blocking'|'potentially_blocking'|'dynamically_injected_non_blocking');
 export type ResourceType = keyof typeof NetworkRequestTypes;
 type InitiatorType = ('parser'|'script'|'preload'|'SignedExchange'|'preflight'|'FedCM'|'other');
 export type ResourceTiming = Protocol.Network.ResourceTiming;
@@ -131,6 +133,12 @@ export interface NetworkRequest<T = AnyNetworkObject> {
   resourceType?: ResourceType;
   mimeType: string;
   priority: ResourcePriority;
+  /**
+   * Whether the request is render blocking. Optional because it is not set on
+   * Document requests, older traces, or NetworkRequests created from CDP data
+   * prior to M145.
+   */
+  renderBlocking?: RenderBlocking;
   frameId: string|undefined;
   fromWorker: boolean;
   /**

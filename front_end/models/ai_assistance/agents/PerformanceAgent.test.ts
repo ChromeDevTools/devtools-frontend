@@ -54,6 +54,29 @@ function deleteAllWidgetData(responses: AiAgent.ResponseData[]): void {
   }
 }
 
+/**
+ * Formats responses for snapshot testing.
+ *
+ * - Strips huge widget data to prevent crashes and bloated snapshots.
+ * - Splits multiline string text in context details into arrays of lines so that
+ *   diffs in snapshots are readable and git diff only highlights the changing line(s).
+ */
+function formatResponsesForSnapshot(responses: AiAgent.ResponseData[]): unknown {
+  deleteAllWidgetData(responses);
+  return responses.map(response => {
+    if ('details' in response && response.details) {
+      return {
+        ...response,
+        details: response.details.map(detail => ({
+                                        ...detail,
+                                        text: detail.text.includes('\n') ? detail.text.split('\n') : detail.text,
+                                      })),
+      };
+    }
+    return response;
+  });
+}
+
 async function loadTrace(context: Mocha.Context|Mocha.Suite|null, name: string,
                          config?: Trace.Types.Configuration.Configuration): Promise<Trace.TraceModel.ParsedTrace> {
   return await TraceLoader.traceEngine(context, name, config ? {config} : undefined);
@@ -186,8 +209,7 @@ describe('PerformanceAgent', function() {
 
         const context = PerformanceTraceContext.PerformanceTraceContext.fromCallTree(aiCallTree);
         const responses = await Array.fromAsync(agent.run('test', {selected: context}));
-        deleteAllWidgetData(responses);
-        snapshotTester.assert(this, JSON.stringify(responses, null, 2));
+        snapshotTester.assert(this, JSON.stringify(formatResponsesForSnapshot(responses), null, 2));
 
         assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
           {
@@ -464,8 +486,7 @@ code
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
-      deleteAllWidgetData(responses);
-      snapshotTester.assert(this, JSON.stringify(responses, null, 2));
+      snapshotTester.assert(this, JSON.stringify(formatResponsesForSnapshot(responses), null, 2));
     });
   });
 

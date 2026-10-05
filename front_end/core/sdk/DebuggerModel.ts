@@ -140,6 +140,16 @@ export interface AutoStep {
   readonly ranges: readonly LocationRange[];
 }
 
+/**
+ * The step the user requested. It lives until a pause is presented to the user, or the user resumes or pauses, and
+ * allows the before-paused callback to continue the step automatically.
+ */
+export interface StepContext {
+  readonly mode: StepMode;
+  /** The call frames of the pause in which the user requested the step. */
+  readonly callFrames: readonly CallFrame[];
+}
+
 /** Computes the CDP step command for a user-requested step. */
 export type ComputeAutoStepCallback = (mode: StepMode, callFrames: readonly CallFrame[]) => Promise<AutoStep>;
 
@@ -183,9 +193,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   // We need to be able to register listeners for individual breakpoints. As such, we dispatch
   // on breakpoint ids, which are not statically known. The event #payload will always be a `Location`.
   readonly #breakpointResolvedEventTarget = new Common.ObjectWrapper.ObjectWrapper<Record<string, Location>>();
-  // When stepping over with autostepping enabled, the context denotes the function to which autostepping is restricted
-  // to by way of its functionLocation (as per Debugger.CallFrame).
-  #autoSteppingContext: Location|null = null;
+  #stepContext: StepContext|null = null;
   #isPausing = false;
 
   constructor(target: Target) {
@@ -457,9 +465,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
   async #userStep(mode: StepMode, breakOnAsyncCall = false): Promise<void> {
     const callFrames = this.#debuggerPausedDetails?.callFrames ?? [];
-    if (mode === StepMode.STEP_OVER) {
-      this.#autoSteppingContext = callFrames[0]?.functionLocation() ?? null;
-    }
+    this.#stepContext = {mode, callFrames};
     const step = this.#computeAutoStepCallback && callFrames.length > 0 ?
         await this.#computeAutoStepCallback(mode, callFrames) :
         {command: mode, ranges: []};
@@ -487,11 +493,13 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   resume(): void {
+    this.#stepContext = null;
     void this.agent.invoke_resume({terminateOnResume: false});
     this.#isPausing = false;
   }
 
   pause(): void {
+    this.#stepContext = null;
     this.#isPausing = true;
     this.skipAllPauses(false);
     void this.agent.invoke_pause();
@@ -580,7 +588,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#scripts.clear();
     this.#scriptsBySourceURL.clear();
     this.#discardableScripts = [];
-    this.#autoSteppingContext = null;
+    this.#stepContext = null;
   }
 
   scripts(): Script[] {
@@ -626,13 +634,16 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#isPausing = false;
     this.#debuggerPausedDetails = debuggerPausedDetails;
     if (this.#beforePausedCallback) {
-      if (!await this.#beforePausedCallback.call(null, debuggerPausedDetails, this.#autoSteppingContext)) {
+      // When stepping over with autostepping enabled, the context denotes the function to which autostepping is
+      // restricted to by way of its functionLocation (as per Debugger.CallFrame).
+      const autoSteppingContext = this.#stepContext?.mode === StepMode.STEP_OVER ?
+          this.#stepContext.callFrames[0]?.functionLocation() ?? null :
+          null;
+      if (!await this.#beforePausedCallback.call(null, debuggerPausedDetails, autoSteppingContext)) {
         return false;
       }
     }
-    // If we resolved a location in auto-stepping callback, reset the
-    // auto-step-over context.
-    this.#autoSteppingContext = null;
+    this.#stepContext = null;
     this.dispatchEventToListeners(Events.DebuggerPaused, this);
     this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
     return true;
@@ -688,7 +699,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     }
 
     if (!await this.setDebuggerPausedDetails(pausedDetails)) {
-      if (this.#autoSteppingContext) {
+      if (this.#stepContext?.mode === StepMode.STEP_OVER) {
         void this.stepOver();
       } else {
         void this.stepInto();

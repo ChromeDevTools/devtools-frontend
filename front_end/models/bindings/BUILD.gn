@@ -23,6 +23,7 @@ devtools_foundation_module("bindings") {
     "ResourceScriptMapping.ts",
     "ResourceUtils.ts",
     "SASSSourceMapping.ts",
+    "SourceMapStepping.ts",
     "StylesSourceMapping.ts",
     "SymbolizedError.ts",
     "TempFile.ts",
@@ -119,6 +120,7 @@ devtools_foundation_module("foundation_unittests") {
     "ResourceMapping.test.ts",
     "ResourceScriptMapping.test.ts",
     "ResourceUtils.test.ts",
+    "SourceMapStepping.test.ts",
     "StylesSourceMapping.test.ts",
     "SymbolizedError.test.ts",
   ]
@@ -129,6 +131,7 @@ devtools_foundation_module("foundation_unittests") {
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/protocol_client:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
     "../../generated",

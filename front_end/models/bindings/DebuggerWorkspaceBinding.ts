@@ -20,6 +20,7 @@ import {type LiveLocation, type LiveLocationPool, LiveLocationWithPool} from './
 import {NetworkProject} from './NetworkProject.js';
 import type {DebuggerLocationUpdater, ResourceMapping} from './ResourceMapping.js';
 import {type ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping.js';
+import * as SourceMapStepping from './SourceMapStepping.js';
 import {
   isErrorLike,
   type SymbolizedError,
@@ -120,7 +121,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     let ranges: SDK.DebuggerModel.LocationRange[] = [];
     if (mode === SDK.DebuggerModel.StepMode.STEP_OUT) {
       // Step out of inline function.
-      return await pluginManager.getInlinedFunctionRanges(rawLocation);
+      ranges = await pluginManager.getInlinedFunctionRanges(rawLocation);
+      return ranges.length > 0 ? ranges : SourceMapStepping.inlinedFunctionRanges(callFrame);
     }
     const uiLocation = await pluginManager.rawLocationToUILocation(rawLocation);
     if (uiLocation) {

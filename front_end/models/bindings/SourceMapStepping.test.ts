@@ -163,6 +163,17 @@ describe('SourceMapStepping', () => {
     return await request;
   }
 
+  it('steps over functions inlined into the current function', async () => {
+    const script = await addScript({outlined: false});
+    await pauseAndWait([frame(script, 3, 0)]);
+
+    const {method, skipList} = await step(() => debuggerModel.stepOver());
+
+    assert.strictEqual(method, 'Debugger.stepOver');
+    // The inlined `I`, and the rest of the current line.
+    assert.deepEqual(skipList, [range(script, 2, 0, 2, 4), range(script, 3, 0, 4, 0)]);
+  });
+
   it('steps out of an inlined function by stepping over its body', async () => {
     const script = await addScript({outlined: false});
     await pauseAndWait([frame(script, 2, 0)]);

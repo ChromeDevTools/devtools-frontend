@@ -48,3 +48,10 @@ export function inlinedFunctionRanges(frame: SDK.DebuggerModel.CallFrame): SDK.D
   const range = position?.sourceMap.inlinedFunctionRange(position.line, position.column);
   return position && range ? toLocationRanges(position, [range]) : [];
 }
+
+/** @returns the bodies of the functions inlined into the logical function that {@link frame} is paused in. */
+export function inlinedCalleeRanges(frame: SDK.DebuggerModel.CallFrame): SDK.DebuggerModel.LocationRange[] {
+  const position = scopedPosition(frame);
+  return position ? toLocationRanges(position, position.sourceMap.inlinedCalleeRanges(position.line, position.column)) :
+                    [];
+}

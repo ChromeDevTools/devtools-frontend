@@ -144,6 +144,10 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     }
     ranges = compilerMapping.getLocationRangesForSameSourceLocation(rawLocation);
     ranges = ranges.filter(range => contained(rawLocation, range));
+    if (mode === SDK.DebuggerModel.StepMode.STEP_OVER) {
+      // Step over functions inlined by the compiler (from encoded source map scopes).
+      ranges = ranges.concat(SourceMapStepping.inlinedCalleeRanges(callFrame));
+    }
     return ranges;
   }
 

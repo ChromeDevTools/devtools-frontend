@@ -664,6 +664,19 @@ describe('DOMModel', () => {
         });
         assert.strictEqual(domNode.simpleSelector(), '::view-transition-new(root)');
       });
+
+      it('should escape pseudo identifier in simpleSelector', () => {
+        const domNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+          nodeId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: NodeType.ELEMENT_NODE,
+          pseudoIdentifier: '123.foo',
+          nodeName: '::view-transition-new',
+          localName: '::view-transition-new',
+          nodeValue: '',
+        });
+        assert.strictEqual(domNode.simpleSelector(), '::view-transition-new(\\31 23\\.foo)');
+      });
     });
 
     describe('isCustomElement', () => {
@@ -885,6 +898,44 @@ describe('DOMModel', () => {
           assert.isFalse(pseudoNode.isToggledToHidden());
         });
       }
+
+      it('escapes pseudo-element identifiers when hiding a pseudo element', async () => {
+        const target = universe.createTarget();
+        const model = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+        const parentNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+          nodeId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+          nodeType: NodeType.ELEMENT_NODE,
+          nodeName: 'DIV',
+          localName: 'div',
+          nodeValue: '',
+          pseudoElements: [{
+            nodeId: 2 as Protocol.DOM.NodeId,
+            backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+            nodeType: NodeType.ELEMENT_NODE,
+            nodeName: '::view-transition-group',
+            localName: '::view-transition-group',
+            nodeValue: '',
+            pseudoType: ProtocolModule.DOM.PseudoType.ViewTransitionGroup,
+            pseudoIdentifier: '123.foo',
+          }],
+        });
+        const vtNodes = parentNode.pseudoElements().get(ProtocolModule.DOM.PseudoType.ViewTransitionGroup);
+        assert.exists(vtNodes);
+        assert.lengthOf(vtNodes, 1);
+        const pseudoNode = vtNodes[0];
+
+        const callFunction = sinon.stub().resolves({});
+        const release = sinon.stub();
+        sinon.stub(parentNode, 'resolveToObject').resolves({callFunction,
+                                                            release} as unknown as SDK.RemoteObject.RemoteObject);
+
+        await pseudoNode.toggleHideElement();
+
+        sinon.assert.calledOnce(callFunction);
+        assert.deepEqual(callFunction.firstCall.args[1],
+                         [{value: '::view-transition-group(\\31 23\\.foo)'}, {value: true}]);
+      });
     });
   });
 

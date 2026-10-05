@@ -7,6 +7,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
@@ -1161,5 +1162,208 @@ describe('Automapping', () => {
     const scssBinding = bindings.find(b => b.network === networkSCSS);
     assert.exists(scssBinding);
     assert.strictEqual(scssBinding?.fileSystem, fileSystemSCSS);
+  });
+
+  it('does not bind file:// source-map UISourceCode with mismatched content on non-Node target', async () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+    try {
+      const target = backend.universe.createTarget({type: SDK.Target.Type.FRAME});
+      const fileUrl = urlString`file:///var/www/package.json`;
+
+      createFileSystemUISourceCode({
+        url: fileUrl,
+        content: '{"name": "legit"}',
+        fileSystemPath: 'file:///var/www',
+        mimeType: 'application/json',
+        autoMapping: true,
+        universe: backend.universe,
+      });
+
+      const {
+        uiSourceCodes: [networkSource],
+      } = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: fileUrl,
+            mimeType: 'application/json',
+            content: '{"name": "evil!"}',
+            resourceType: Common.ResourceType.resourceTypes.SourceMapScript,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        projectId: 'sourcemap-project',
+        target,
+        universe: backend.universe,
+      });
+
+      await clock.tickAsync(200);
+
+      assert.isNull(backend.universe.persistence.binding(networkSource));
+    } finally {
+      clock.restore();
+    }
+  });
+
+  it('does not bind http:// source-map UISourceCode with matching byte size but mismatched content on non-Node target',
+     async () => {
+       const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+       try {
+         const target = backend.universe.createTarget({type: SDK.Target.Type.FRAME});
+         const diskContent = '{"name": "legit"}';
+         const attackerContent = '{"name": "evil!"}';
+         assert.strictEqual(diskContent.length, attackerContent.length);
+
+         createFileSystemUISourceCode({
+           url: urlString`file:///var/www/package.json`,
+           content: diskContent,
+           fileSystemPath: 'file:///var/www',
+           mimeType: 'application/json',
+           metadata: new Workspace.UISourceCode.UISourceCodeMetadata(
+               new Date('December 1, 1989'),
+               diskContent.length,
+               ),
+           autoMapping: true,
+           universe: backend.universe,
+         });
+
+         const {
+           uiSourceCodes: [networkSource],
+         } = createContentProviderUISourceCodes({
+           items: [
+             {
+               url: urlString`http://evil.example/x/package.json`,
+               mimeType: 'application/json',
+               content: attackerContent,
+               resourceType: Common.ResourceType.resourceTypes.SourceMapScript,
+               metadata: new Workspace.UISourceCode.UISourceCodeMetadata(
+                   null,
+                   attackerContent.length,
+                   ),
+             },
+           ],
+           projectType: Workspace.Workspace.projectTypes.Network,
+           projectId: 'sourcemap-project',
+           target,
+           universe: backend.universe,
+         });
+
+         await clock.tickAsync(200);
+
+         assert.isNull(backend.universe.persistence.binding(networkSource));
+       } finally {
+         clock.restore();
+       }
+     });
+
+  it('binds source-map UISourceCode with matching content on non-Node target', async () => {
+    const target = backend.universe.createTarget({type: SDK.Target.Type.FRAME});
+    const fileUrl = urlString`file:///var/www/app.ts`;
+    const content = 'export const x: number = 42;\n';
+
+    const {uiSourceCode: fileSystemSource} = createFileSystemUISourceCode({
+      url: fileUrl,
+      content,
+      fileSystemPath: 'file:///var/www',
+      mimeType: 'text/typescript',
+      autoMapping: true,
+      universe: backend.universe,
+    });
+
+    const persistence = backend.universe.persistence;
+    const bindingCreatedPromise = persistence.once(Persistence.Persistence.Events.BindingCreated);
+
+    const {
+      uiSourceCodes: [networkSource],
+    } = createContentProviderUISourceCodes({
+      items: [
+        {
+          url: fileUrl,
+          mimeType: 'text/typescript',
+          content,
+          resourceType: Common.ResourceType.resourceTypes.SourceMapScript,
+        },
+      ],
+      projectType: Workspace.Workspace.projectTypes.Network,
+      projectId: 'sourcemap-project',
+      target,
+      universe: backend.universe,
+    });
+
+    const binding = await bindingCreatedPromise;
+    assert.strictEqual(binding.network, networkSource);
+    assert.strictEqual(binding.fileSystem, fileSystemSource);
+  });
+
+  it('binds file:// source-map UISourceCode without content validation on Node target', async () => {
+    const target = backend.universe.createTarget({type: SDK.Target.Type.NODE});
+    const fileUrl = urlString`file:///var/www/app.ts`;
+
+    const {uiSourceCode: fileSystemSource} = createFileSystemUISourceCode({
+      url: fileUrl,
+      content: 'export const x: number = 42;',
+      fileSystemPath: 'file:///var/www',
+      mimeType: 'text/typescript',
+      autoMapping: true,
+      universe: backend.universe,
+    });
+
+    const requestContentSpy = sinon.spy(fileSystemSource, 'requestContentData');
+    const persistence = backend.universe.persistence;
+    const bindingCreatedPromise = persistence.once(Persistence.Persistence.Events.BindingCreated);
+
+    const {
+      uiSourceCodes: [networkSource],
+    } = createContentProviderUISourceCodes({
+      items: [
+        {
+          url: fileUrl,
+          mimeType: 'text/typescript',
+          content: 'stale or missing sourcesContent',
+          resourceType: Common.ResourceType.resourceTypes.SourceMapScript,
+        },
+      ],
+      projectType: Workspace.Workspace.projectTypes.Network,
+      projectId: 'sourcemap-project',
+      target,
+      universe: backend.universe,
+    });
+
+    const binding = await bindingCreatedPromise;
+    assert.strictEqual(binding.network, networkSource);
+    assert.strictEqual(binding.fileSystem, fileSystemSource);
+    sinon.assert.notCalled(requestContentSpy);
+  });
+
+  it('does not bind file:// script UISourceCode with mismatched content on non-Node target', async () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+    try {
+      const target = backend.universe.createTarget({type: SDK.Target.Type.FRAME});
+      const fileUrl = urlString`file:///var/www/app.js`;
+
+      createFileSystemUISourceCode({
+        url: fileUrl,
+        content: 'console.log("legit");',
+        fileSystemPath: 'file:///var/www',
+        mimeType: 'text/javascript',
+        autoMapping: true,
+        universe: backend.universe,
+      });
+
+      const {uiSourceCode: networkScript} = createContentProviderUISourceCode({
+        url: fileUrl,
+        mimeType: 'text/javascript',
+        content: 'console.log("different");',
+        projectType: Workspace.Workspace.projectTypes.Network,
+        projectId: 'network-script-project',
+        target,
+        universe: backend.universe,
+      });
+
+      await clock.tickAsync(200);
+
+      assert.isNull(backend.universe.persistence.binding(networkScript));
+    } finally {
+      clock.restore();
+    }
   });
 });

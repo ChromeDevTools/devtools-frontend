@@ -210,6 +210,16 @@ describe('PageDependencyGraph', () => {
       assert.lengthOf(node2.childEvents, 1);
       assert.strictEqual(node2.childEvents[0].name, 'OverlappingEvent');
     });
+
+    it('should not produce negative duration when two tasks have the same start timestamp', () => {
+      addTaskEvents(100, 50, []);
+      addTaskEvents(100, 50, []);
+
+      const nodes = PageDependencyGraph.getCPUNodes(traceEvents);
+      assert.lengthOf(nodes, 2);
+      assert.strictEqual(nodes[0].duration, 0);
+      assert.strictEqual(nodes[1].duration, 50_000);
+    });
   });
 
   describe('#createGraph', () => {

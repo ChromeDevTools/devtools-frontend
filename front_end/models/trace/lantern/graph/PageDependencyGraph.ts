@@ -149,7 +149,7 @@ class PageDependencyGraph {
         // https://github.com/GoogleChrome/lighthouse/issues/15896
         // https://issues.chromium.org/issues/329678173
         if (PageDependencyGraph.isScheduleableTask(event) && event.dur) {
-          correctedEndTs = event.ts - 1;
+          correctedEndTs = Math.max(event.ts - 1, evt.ts);
           break;
         }
 

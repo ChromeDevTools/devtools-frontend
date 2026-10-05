@@ -59,3 +59,9 @@ export const showInactiveCSSRulesSettingDescriptor: Common.Settings.SettingDescr
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const showEventListenersForAncestorsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'show-event-listeners-for-ancestors',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+};

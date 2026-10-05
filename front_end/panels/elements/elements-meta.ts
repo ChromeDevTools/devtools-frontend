@@ -627,12 +627,6 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.ElementsSettings.showInacti
 });
 
 Common.Settings.registerSettingExtension({
-  settingName: 'show-event-listeners-for-ancestors',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-});
-
-Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ADORNER,
   storageType: Common.Settings.SettingStorageType.SYNCED,
   settingName: 'adorner-settings',

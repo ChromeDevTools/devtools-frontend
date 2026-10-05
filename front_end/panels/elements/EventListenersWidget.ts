@@ -36,6 +36,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as EventListeners from '../event_listeners/event_listeners.js';
 
@@ -142,8 +143,8 @@ export class EventListenersWidget extends UI.Widget.VBox {
   constructor(view: View = DEFAULT_VIEW) {
     super();
     this.#view = view;
-    this.showForAncestorsSetting =
-        Common.Settings.Settings.instance().moduleSetting('show-event-listeners-for-ancestors');
+    this.showForAncestorsSetting = Common.Settings.Settings.instance().resolve(
+        SettingsUI.ElementsSettings.showEventListenersForAncestorsSettingDescriptor);
     this.showForAncestorsSetting.addChangeListener(this.requestUpdate.bind(this));
 
     this.dispatchFilterBySetting =

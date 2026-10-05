@@ -12,6 +12,7 @@ import {
   type DataTool,
   MAX_FUNCTION_RESULT_BYTE_LENGTH,
   type PerformanceTraceCapability,
+  PermissionPrompt,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -29,6 +30,7 @@ export interface GetTraceMainThreadSummaryArgs extends ToolArgs {
 export class GetTraceMainThreadSummaryTool implements
     DataTool<GetTraceMainThreadSummaryArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_TRACE_MAIN_THREAD_SUMMARY;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves a focused, bottom-up summary of main thread activity for a predefined labeled period (e.g. \'nav-to-lcp\', \'lcp-ttfb\', \'lcp-render-delay\', \'trace-bounds\', or insight names).';
 

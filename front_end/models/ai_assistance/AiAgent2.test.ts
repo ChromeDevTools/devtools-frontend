@@ -776,7 +776,10 @@ describe('AiAgent2', () => {
     assert.isTrue(thirdCallArgs.metadata?.disable_user_content_logging);
   });
 
-  it('handles getCookieValues approval flow in AiAgent2', async () => {
+  async function runGetCookieValuesApprovalFlow(): Promise<{
+    responses: AiAssistance.AiAgent.ResponseData[],
+    handlerStub: sinon.SinonStub,
+  }> {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
@@ -816,6 +819,11 @@ describe('AiAgent2', () => {
 
     sideEffectPromise.resolve(true);
     const responses = await Array.fromAsync(agent.run('get cookie session', {selected: null}));
+    return {responses, handlerStub};
+  }
+
+  it('handles getCookieValues approval flow in AiAgent2', async () => {
+    const {responses, handlerStub} = await runGetCookieValuesApprovalFlow();
 
     sinon.assert.calledTwice(handlerStub);
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
@@ -825,6 +833,15 @@ describe('AiAgent2', () => {
     assert.isUndefined(actionResponses[1].output);
     assert.strictEqual(actionResponses[2].code, 'getCookieValues(["session"], ["https://example.com"])');
     assert.exists(actionResponses[2].output);
+  });
+
+  it('includes the tool permissionPrompt in the SIDE_EFFECT response', async () => {
+    const {responses} = await runGetCookieValuesApprovalFlow();
+
+    const sideEffectResponse = responses.find((r): r is AiAssistance.AiAgent.SideEffectResponse =>
+                                                  r.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT);
+    assert.exists(sideEffectResponse);
+    assert.strictEqual(sideEffectResponse.permissionPrompt, AiAssistance.Tool.PermissionPrompt.ALLOW_ONCE);
   });
 
   it('provides getLighthouseReport capability to GetLighthouseAuditsTool', async () => {

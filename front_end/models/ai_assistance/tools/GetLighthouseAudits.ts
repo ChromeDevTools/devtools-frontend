@@ -10,6 +10,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type LighthouseReportCapability,
+  PermissionPrompt,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -21,6 +22,7 @@ export interface GetLighthouseAuditsArgs extends ToolArgs {
 export class GetLighthouseAuditsTool implements
     DataTool<GetLighthouseAuditsArgs, {audits: string}, BaseToolCapability&LighthouseReportCapability> {
   readonly name: ToolName = ToolName.GET_LIGHTHOUSE_AUDITS;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves audit results and diagnostic details from the active Lighthouse report for all categories (using categoryId: "all") or a specific category (e.g., \'accessibility\').';
 

@@ -14,6 +14,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type OriginLockCapability,
+  PermissionPrompt,
   ToolName,
 } from './Tool.js';
 
@@ -31,6 +32,7 @@ export interface GetStorageBreakdownResult {
 export class GetStorageBreakdownTool implements
     DataTool<Record<string, never>, GetStorageBreakdownResult, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_STORAGE_BREAKDOWN;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves total storage usage and quota breakdown across all storage types (IndexedDB, CacheStorage, LocalStorage, SessionStorage, cookies) for the top-level page origin.';
 

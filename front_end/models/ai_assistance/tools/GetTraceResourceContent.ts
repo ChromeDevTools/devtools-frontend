@@ -14,6 +14,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type PerformanceTraceCapability,
+  PermissionPrompt,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -47,6 +48,7 @@ export interface GetTraceResourceContentArgs extends ToolArgs {
 export class GetTraceResourceContentTool implements DataTool<
     GetTraceResourceContentArgs, {content: string}, BaseToolCapability&TargetCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_TRACE_RESOURCE_CONTENT;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves the text content of a script or resource captured within the recorded performance trace by URL. Only use this for text resource types. Do not call this tool on imported traces or for general workspace files (use listSources and getSourceContent instead).';
 

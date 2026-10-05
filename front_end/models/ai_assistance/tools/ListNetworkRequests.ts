@@ -14,6 +14,7 @@ import {
   type DataTool,
   isOriginAllowedByLock,
   type OriginLockCapability,
+  PermissionPrompt,
   resolveOriginFromLock,
   ToolName,
 } from './Tool.js';
@@ -39,6 +40,7 @@ interface NetworkRequestSummary {
 export class ListNetworkRequestsTool implements
     DataTool<Record<string, never>, unknown, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.LIST_NETWORK_REQUESTS;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Lists recorded network requests for the active origin, including request ID, URL, HTTP status code, duration, and transfer size.';
 

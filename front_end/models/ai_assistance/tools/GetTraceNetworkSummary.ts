@@ -11,6 +11,7 @@ import {
   type DataTool,
   MAX_FUNCTION_RESULT_BYTE_LENGTH,
   type PerformanceTraceCapability,
+  PermissionPrompt,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -29,6 +30,7 @@ export interface GetTraceNetworkSummaryArgs extends ToolArgs {
 export class GetTraceNetworkSummaryTool implements
     DataTool<GetTraceNetworkSummaryArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_TRACE_NETWORK_SUMMARY;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves a summary of network requests recorded in the trace within the given time bounds.';
 

@@ -14,6 +14,7 @@ import {
   type DataTool,
   isOriginAllowedByLock,
   type OriginLockCapability,
+  PermissionPrompt,
   resolveOriginFromLock,
   type ToolArgs,
   ToolName,
@@ -35,6 +36,7 @@ export interface GetNetworkRequestDetailsArgs extends ToolArgs {
 export class GetNetworkRequestDetailsTool implements
     DataTool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_NETWORK_REQUEST_DETAILS;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves the full headers, timing, status, and body details of a specific network request by ID.';
 

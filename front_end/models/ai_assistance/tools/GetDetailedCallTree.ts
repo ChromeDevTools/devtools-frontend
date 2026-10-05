@@ -12,6 +12,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type PerformanceTraceCapability,
+  PermissionPrompt,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -29,6 +30,7 @@ export interface GetDetailedCallTreeArgs extends ToolArgs {
 export class GetDetailedCallTreeTool implements
     DataTool<GetDetailedCallTreeArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_DETAILED_CALL_TREE;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves a bottom-up call tree and execution breakdown for a specific main thread event by its eventKey.';
 

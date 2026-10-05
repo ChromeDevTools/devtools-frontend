@@ -433,6 +433,7 @@ User query: ${enhancedQuery}`;
       description: tool.description,
       parameters: tool.parameters,
       displayInfoFromArgs: tool.displayInfoFromArgs,
+      permissionPrompt: tool.permissionPrompt,
       handler: (args, options) => {
         const context: AllToolsCapabilities = {
           changeManager: this.#changes,

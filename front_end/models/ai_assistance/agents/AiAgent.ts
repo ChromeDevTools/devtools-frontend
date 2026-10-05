@@ -13,7 +13,7 @@ import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 import {dispatchAiAssistanceDoneEvent} from '../DOMHelpers.js';
-import type {ContextHandlerResult, DataHandlerResult} from '../tools/Tool.js';
+import type {ContextHandlerResult, DataHandlerResult, PermissionPrompt} from '../tools/Tool.js';
 
 type UrlString = Platform.DevToolsPath.UrlString;
 const MAX_SUGGESTION_LENGTH = 200;
@@ -101,6 +101,7 @@ export interface SideEffectResponse {
   description: string|null;
   code?: string;
   confirm: (confirm: boolean) => void;
+  permissionPrompt?: PermissionPrompt;
 }
 export interface ContextChangeResponse {
   type: ResponseType.CONTEXT_CHANGE;
@@ -476,6 +477,11 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
       ) => {
     title?: string, thought?: string, action?: string, suggestions?: [string, ...string[]],
   };
+  /**
+   * Choices the permission prompt offers when the handler returns
+   * `requiresApproval`. Behaves as `ALLOW_ONCE` when unset.
+   */
+  permissionPrompt?: PermissionPrompt;
   /**
    * Function implementation that the LLM will try to execute,
    */
@@ -1087,6 +1093,7 @@ export abstract class AiAgent<T> {
         type: ResponseType.SIDE_EFFECT,
         confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
         description: result.description,
+        permissionPrompt: call.permissionPrompt,
       };
 
       let approvedRun = false;

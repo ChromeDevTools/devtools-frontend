@@ -13,6 +13,7 @@ import {
   isOriginAllowedByLock,
   type OriginLockCapability,
   type OriginLockState,
+  PermissionPrompt,
   resolveOriginFromLock,
   ToolName,
 } from './Tool.js';
@@ -35,6 +36,7 @@ interface SourceSummary {
 export class ListSourcesTool implements
     DataTool<Record<string, never>, {files: SourceSummary[]}, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.LIST_SOURCES;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Lists deployed and authored source files in the workspace (including source-mapped files) with their display name and unique numeric ID.';
 

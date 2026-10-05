@@ -12,6 +12,7 @@ import {
   type DataTool,
   isOriginAllowedByLock,
   type OriginLockCapability,
+  PermissionPrompt,
   resolveOriginFromLock,
   ToolName,
 } from './Tool.js';
@@ -21,6 +22,7 @@ const lockedString = i18n.i18n.lockedString;
 export class ListPageOriginsTool implements
     DataTool<Record<string, never>, {origins: string[]}, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.LIST_PAGE_ORIGINS;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Lists all active, non-empty frame origins loaded by the page. Call this first to discover all page origins before calling listCookies or listStorageKeys, unless the user\'s explicit request focuses only on the primary page.';
 

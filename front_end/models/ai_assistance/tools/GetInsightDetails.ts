@@ -18,6 +18,7 @@ import {
   type DataTool,
   MAX_FUNCTION_RESULT_BYTE_LENGTH,
   type PerformanceTraceCapability,
+  PermissionPrompt,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -56,6 +57,7 @@ export interface GetInsightDetailsArgs extends ToolArgs {
 export class GetInsightDetailsTool implements
     DataTool<GetInsightDetailsArgs, string, BaseToolCapability&TargetCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_INSIGHT_DETAILS;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves detailed metrics, subpart timing breakdowns, related DOM elements, and diagnostic data for a performance insight (e.g., \'LCPBreakdown\', \'LCPDiscovery\', \'RenderBlocking\', \'CLSCulprits\', \'INPBreakdown\', \'ThirdParties\'). Use this before commenting on any specific performance issue.';
 

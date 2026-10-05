@@ -13,6 +13,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type OriginLockCapability,
+  PermissionPrompt,
   resolveOriginFromLock,
   type ToolArgs,
   ToolName,
@@ -35,6 +36,7 @@ export interface GetSourceContentArgs extends ToolArgs {
 export class GetSourceContentTool implements
     DataTool<GetSourceContentArgs, {content: string}, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_SOURCE_CONTENT;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves the formatted content and metadata of a source file by its numeric ID obtained from listSources.';
 

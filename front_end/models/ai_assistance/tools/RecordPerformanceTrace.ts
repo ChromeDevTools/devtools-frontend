@@ -12,6 +12,7 @@ import {
   type ContextHandlerResult,
   type ContextTool,
   type PerformanceRecordingCapability,
+  PermissionPrompt,
   ToolName,
 } from './Tool.js';
 
@@ -24,6 +25,7 @@ const lockedString = i18n.i18n.lockedString;
 export class RecordPerformanceTraceTool implements
     ContextTool<Record<string, never>, AgentFocus, BaseToolCapability&PerformanceRecordingCapability> {
   readonly name: ToolName = ToolName.RECORD_PERFORMANCE_TRACE;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Reloads the page and records a new performance trace to measure, analyze, and debug page performance.';
 

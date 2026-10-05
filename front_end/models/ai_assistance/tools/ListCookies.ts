@@ -12,6 +12,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type OriginLockCapability,
+  PermissionPrompt,
   type ServerLoggingCapability,
   ToolAnnotation,
   type ToolArgs,
@@ -31,6 +32,7 @@ export interface ListCookiesResult {
 export class ListCookiesTool implements
     DataTool<ListCookiesArgs, ListCookiesResult, BaseToolCapability&OriginLockCapability&ServerLoggingCapability> {
   readonly name: ToolName = ToolName.LIST_COOKIES;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Lists all cookie names for requested origins (or the current page origin if omitted), strictly excluding their values.';
 

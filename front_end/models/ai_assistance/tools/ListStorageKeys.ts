@@ -14,6 +14,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type OriginLockCapability,
+  PermissionPrompt,
   type ServerLoggingCapability,
   ToolAnnotation,
   type ToolArgs,
@@ -40,6 +41,7 @@ export interface ListStorageKeysResult {
 export class ListStorageKeysTool implements DataTool<ListStorageKeysArgs, ListStorageKeysResult,
                                                      BaseToolCapability&OriginLockCapability&ServerLoggingCapability> {
   readonly name: ToolName = ToolName.LIST_STORAGE_KEYS;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Lists all keys for a given storage type for requested origins. Returns keys grouped by storage partition under their origin.';
 

@@ -12,6 +12,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type PerformanceTraceCapability,
+  PermissionPrompt,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -29,6 +30,7 @@ export interface SelectTraceEventByKeyArgs extends ToolArgs {
 export class SelectTraceEventByKeyTool implements
     DataTool<SelectTraceEventByKeyArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.SELECT_TRACE_EVENT_BY_KEY;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string = 'Selects and reveals a specific event by its key in the Performance panel Flamechart.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof SelectTraceEventByKeyArgs> = {

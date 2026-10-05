@@ -11,6 +11,7 @@ import {
   type DataTool,
   isOriginAllowedByLock,
   type OriginLockCapability,
+  PermissionPrompt,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -39,6 +40,7 @@ export interface ResolveDevtoolsNodePathArgs extends ToolArgs {
 export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNodePathArgs, {backendNodeId: number},
                                                              BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.RESOLVE_DEVTOOLS_NODE_PATH;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Resolves a DevTools node path (e.g. from a Lighthouse audit snippet) to an element backend node ID for further DOM, style, or accessibility inspection.';
 

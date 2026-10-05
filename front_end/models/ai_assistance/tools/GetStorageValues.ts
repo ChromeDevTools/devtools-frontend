@@ -15,6 +15,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type OriginLockCapability,
+  PermissionPrompt,
   type ServerLoggingCapability,
   ToolAnnotation,
   type ToolArgs,
@@ -46,6 +47,7 @@ export interface GetStorageValuesResult {
 export class GetStorageValuesTool implements DataTool<GetStorageValuesArgs, GetStorageValuesResult,
                                                       BaseToolCapability&OriginLockCapability&ServerLoggingCapability> {
   readonly name: ToolName = ToolName.GET_STORAGE_VALUES;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.ALLOW_ONCE;
   readonly description: string =
       'Retrieve specific string values from storage partitions for requested keys across origins.';
 

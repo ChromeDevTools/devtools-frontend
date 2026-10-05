@@ -11,6 +11,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type PerformanceTraceCapability,
+  PermissionPrompt,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -43,6 +44,7 @@ export interface GetTraceFunctionCodeArgs extends ToolArgs {
 export class GetTraceFunctionCodeTool implements
     DataTool<GetTraceFunctionCodeArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_TRACE_FUNCTION_CODE;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves the code for a function recorded in the performance trace at the specified location, annotated with line-by-line CPU runtime profiling execution costs. Do not call this tool unless a performance trace recording is actively loaded.';
 

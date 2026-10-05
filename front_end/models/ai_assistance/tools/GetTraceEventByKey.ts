@@ -11,6 +11,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type PerformanceTraceCapability,
+  PermissionPrompt,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -28,6 +29,7 @@ export interface GetTraceEventByKeyArgs extends ToolArgs {
 export class GetTraceEventByKeyTool implements
     DataTool<GetTraceEventByKeyArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_TRACE_EVENT_BY_KEY;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string = 'Retrieves details for a specific trace event by its event key.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetTraceEventByKeyArgs> = {

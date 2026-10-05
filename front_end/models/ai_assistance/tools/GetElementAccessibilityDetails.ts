@@ -13,6 +13,7 @@ import {
   type DataTool,
   isOriginAllowedByLock,
   type OriginLockCapability,
+  PermissionPrompt,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -36,6 +37,7 @@ export interface GetElementAccessibilityDetailsArgs extends ToolArgs {
 export class GetElementAccessibilityDetailsTool implements
     DataTool<GetElementAccessibilityDetailsArgs, string, BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       'Retrieves detailed accessibility properties (computed role, accessible name, name source, ARIA attributes, ignored state) and a DOM tree snapshot for an element by backend node ID.';
 

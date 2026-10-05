@@ -13,6 +13,7 @@ import {
   type DataTool,
   isOriginAllowedByLock,
   type OriginLockCapability,
+  PermissionPrompt,
   type TargetCapability,
   type ToolArgs,
   ToolName,
@@ -27,6 +28,7 @@ export interface GetStylesArgs extends ToolArgs {
 export class GetStylesTool implements
     DataTool<GetStylesArgs, unknown, BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_STYLES;
+  readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
       `Retrieves computed and authored CSS styles for one or more elements by their backend node IDs (uids).
 

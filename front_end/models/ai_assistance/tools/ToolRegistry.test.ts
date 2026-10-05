@@ -62,4 +62,64 @@ describe('ToolRegistry', () => {
       }
     }
   });
+
+  describe('permissionPrompt', () => {
+    function filterToolNames(permissionPrompt: AiAssistance.Tool.PermissionPrompt): string[] {
+      return Object.entries(AiAssistance.ToolRegistry.TOOLS)
+          .filter(([, tool]) => tool.permissionPrompt === permissionPrompt)
+          .map(([toolName]) => toolName)
+          .sort();
+    }
+
+    it('uses ALLOW_ONCE for correct tools', () => {
+      const expectedToolNames: string[] = [
+        AiAssistance.Tool.ToolName.EXECUTE_JAVASCRIPT,
+        AiAssistance.Tool.ToolName.GET_COOKIE_VALUES,
+        AiAssistance.Tool.ToolName.GET_STORAGE_VALUES,
+      ].sort();
+
+      const permissionPrompt = AiAssistance.Tool.PermissionPrompt.ALLOW_ONCE;
+      const toolNames = filterToolNames(permissionPrompt);
+      assert.deepEqual(toolNames, expectedToolNames);
+    });
+
+    it('uses ALLOW_ONCE_OR_ALWAYS for correct tools', () => {
+      const expectedToolNames: string[] = [].sort();
+
+      const permissionPrompt = AiAssistance.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS;
+      const toolNames = filterToolNames(permissionPrompt);
+      assert.deepEqual(toolNames.sort(), expectedToolNames);
+    });
+
+    it('uses NEVER for correct tools', () => {
+      const expectedToolNames: string[] = [
+        AiAssistance.Tool.ToolName.GET_DETAILED_CALL_TREE,
+        AiAssistance.Tool.ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS,
+        AiAssistance.Tool.ToolName.GET_INSIGHT_DETAILS,
+        AiAssistance.Tool.ToolName.GET_LIGHTHOUSE_AUDITS,
+        AiAssistance.Tool.ToolName.GET_NETWORK_REQUEST_DETAILS,
+        AiAssistance.Tool.ToolName.GET_SOURCE_CONTENT,
+        AiAssistance.Tool.ToolName.GET_STORAGE_BREAKDOWN,
+        AiAssistance.Tool.ToolName.GET_STYLES,
+        AiAssistance.Tool.ToolName.GET_TRACE_EVENT_BY_KEY,
+        AiAssistance.Tool.ToolName.GET_TRACE_FUNCTION_CODE,
+        AiAssistance.Tool.ToolName.GET_TRACE_MAIN_THREAD_SUMMARY,
+        AiAssistance.Tool.ToolName.GET_TRACE_NETWORK_SUMMARY,
+        AiAssistance.Tool.ToolName.GET_TRACE_RESOURCE_CONTENT,
+        AiAssistance.Tool.ToolName.LIST_COOKIES,
+        AiAssistance.Tool.ToolName.LIST_NETWORK_REQUESTS,
+        AiAssistance.Tool.ToolName.LIST_PAGE_ORIGINS,
+        AiAssistance.Tool.ToolName.LIST_SOURCES,
+        AiAssistance.Tool.ToolName.LIST_STORAGE_KEYS,
+        AiAssistance.Tool.ToolName.RECORD_PERFORMANCE_TRACE,
+        AiAssistance.Tool.ToolName.RESOLVE_DEVTOOLS_NODE_PATH,
+        AiAssistance.Tool.ToolName.RUN_LIGHTHOUSE,
+        AiAssistance.Tool.ToolName.SELECT_TRACE_EVENT_BY_KEY,
+      ].sort();
+
+      const permissionPrompt = AiAssistance.Tool.PermissionPrompt.NEVER;
+      const toolNames = filterToolNames(permissionPrompt);
+      assert.deepEqual(toolNames, expectedToolNames);
+    });
+  });
 });

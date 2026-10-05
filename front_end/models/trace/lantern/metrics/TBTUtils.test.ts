@@ -137,4 +137,13 @@ describe('TotalBlockingTime utils', () => {
         0,
     );
   });
+
+  it('throws when interactiveResult is missing in TotalBlockingTime.compute', () => {
+    const fakeData = {} as Metrics.MetricComputationDataInput;
+    const fakeFcp = {} as Metrics.MetricResult;
+    assert.throws(
+        () => Metrics.TotalBlockingTime.compute(fakeData, {fcpResult: fakeFcp}),
+        'Interactive is required to calculate the TBT metric',
+    );
+  });
 });

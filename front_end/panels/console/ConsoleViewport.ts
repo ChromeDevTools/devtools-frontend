@@ -423,8 +423,8 @@ export class ConsoleViewport {
     const end = this.selectionIsBackward ? this.anchorSelection.item : this.headSelection.item;
 
     for (let i = start; i <= end; i++) {
-      const element = (this.providerElement(i) as ConsoleViewMessage);
-      if (element?.consoleMessage().type === 'table') {
+      const element = this.providerElement(i) as ConsoleViewMessage | null;
+      if (element?.consoleMessage?.().type === 'table') {
         return true;
       }
     }
@@ -576,7 +576,8 @@ export class ConsoleViewport {
         continue;
       }
       const element = providerElement.element();
-      const lineContent = Components.Linkifier.Linkifier.untruncatedTextContent(element);
+      const lineContent =
+          this.visibleChildTextNodes(element).map(Components.Linkifier.Linkifier.untruncatedNodeText).join('');
       textLines.push(lineContent);
     }
 
@@ -599,6 +600,35 @@ export class ConsoleViewport {
     return textLines.join('\n');
   }
 
+  private isNodeVisible(node: Node): boolean {
+    const element = node instanceof Element ? node : node.parentElement;
+    if (!element) {
+      return false;
+    }
+    // Check known hidden classes (like collapsed stack traces) first.
+    if (element.closest('.hidden-stack-trace, .hidden')) {
+      return false;
+    }
+    if (element.isConnected) {
+      return element.checkVisibility();
+    }
+    // For virtualized items currently outside the viewport (disconnected from DOM),
+    // checkVisibility() returns false. Fall back to checking inline styles.
+    let current: Element|null = element;
+    while (current) {
+      if (current instanceof HTMLElement &&
+          (current.style.display === 'none' || current.style.visibility === 'hidden')) {
+        return false;
+      }
+      current = current.parentElement;
+    }
+    return true;
+  }
+
+  private visibleChildTextNodes(element: Element): Node[] {
+    return element.childTextNodes().filter(node => this.isNodeVisible(node));
+  }
+
   private textOffsetInNode(itemElement: Element, selectionNode: Node, offset: number): number {
     // If the selectionNode is not a TextNode, we may need to convert a child offset into a character offset.
     const textContentLength = selectionNode.textContent ? selectionNode.textContent.length : 0;
@@ -617,7 +647,8 @@ export class ConsoleViewport {
       if (node.nodeType !== Node.TEXT_NODE ||
           (node.parentNode &&
            (node.parentNode.nodeName === 'STYLE' || node.parentNode.nodeName === 'SCRIPT' ||
-            node.parentNode.nodeName === '#document-fragment'))) {
+            node.parentNode.nodeName === '#document-fragment')) ||
+          !this.isNodeVisible(node)) {
         continue;
       }
       chars += Components.Linkifier.Linkifier.untruncatedNodeText(node).length;

@@ -57,13 +57,13 @@ export class ConnectionPool {
         }
 
         const isTLS = TLS_SCHEMES.includes(request.parsedURL.scheme);
-        const isH2 = request.protocol === 'h2';
+        const isMultiplexed = Core.NetworkAnalyzer.isMultiplexedProtocol(request.protocol);
         const connection = new TCPConnection(
             this.options.rtt + additionalRtt,
             this.options.throughput,
             responseTime,
             isTLS,
-            isH2,
+            isMultiplexed,
         );
 
         connections.push(connection);
@@ -74,8 +74,8 @@ export class ConnectionPool {
       }
 
       // Make sure each origin has minimum number of connections available for max throughput.
-      // But only if it's not over H2 which maximizes throughput already.
-      const minConnections = connections[0].isH2() ? 1 : CONNECTIONS_PER_ORIGIN;
+      // But only if it's not over a multiplexed protocol which maximizes throughput already.
+      const minConnections = connections[0].isMultiplexed() ? 1 : CONNECTIONS_PER_ORIGIN;
       while (connections.length < minConnections) {
         connections.push(connections[0].clone());
       }

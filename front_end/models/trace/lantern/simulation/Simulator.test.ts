@@ -373,27 +373,29 @@ describe('DependencyGraph/Simulator', () => {
       assert.strictEqual(resultB.timeInMs, 950 + 800);
     });
 
-    it('should maximize throughput with H2', () => {
+    it('should maximize throughput with H2 and H3', () => {
       const simulator = new Simulator({serverResponseTimeByOrigin, observedThroughput});
-      const connectionDefaults = {protocol: 'h2', connectionId: 1};
-      const nodeA = new NetworkNode(request({startTime: 0, endTime: 1, ...connectionDefaults}));
-      const nodeB = new NetworkNode(request({startTime: 1, endTime: 2, ...connectionDefaults}));
-      const nodeC = new NetworkNode(request({startTime: 2, endTime: 3, ...connectionDefaults}));
-      const nodeD = new NetworkNode(request({startTime: 3, endTime: 4, ...connectionDefaults}));
+      for (const protocol of ['h2', 'h3']) {
+        const connectionDefaults = {protocol, connectionId: 1};
+        const nodeA = new NetworkNode(request({startTime: 0, endTime: 1, ...connectionDefaults}));
+        const nodeB = new NetworkNode(request({startTime: 1, endTime: 2, ...connectionDefaults}));
+        const nodeC = new NetworkNode(request({startTime: 2, endTime: 3, ...connectionDefaults}));
+        const nodeD = new NetworkNode(request({startTime: 3, endTime: 4, ...connectionDefaults}));
 
-      nodeA.addDependent(nodeB);
-      nodeB.addDependent(nodeC);
-      nodeB.addDependent(nodeD);
+        nodeA.addDependent(nodeB);
+        nodeB.addDependent(nodeC);
+        nodeB.addDependent(nodeD);
 
-      // Run two simulations:
-      //  - The first with C & D in parallel.
-      //  - The second with C & D in series.
-      // Under HTTP/2 simulation these should be equivalent, but definitely parallel
-      // shouldn't be slower.
-      const resultA = simulator.simulate(nodeA);
-      nodeC.addDependent(nodeD);
-      const resultB = simulator.simulate(nodeA);
-      assert.isAtMost(resultA.timeInMs, resultB.timeInMs);
+        // Run two simulations:
+        //  - The first with C & D in parallel.
+        //  - The second with C & D in series.
+        // Under HTTP/2 and HTTP/3 simulation these should be equivalent, but definitely parallel
+        // shouldn't be slower.
+        const resultA = simulator.simulate(nodeA);
+        nodeC.addDependent(nodeD);
+        const resultB = simulator.simulate(nodeA);
+        assert.isAtMost(resultA.timeInMs, resultB.timeInMs, `expected parallel <= series for ${protocol}`);
+      }
     });
 
     it('should throw (not hang) on graphs with cycles', () => {

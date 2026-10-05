@@ -76,10 +76,24 @@ describe('ConnectionPool', () => {
 
     it('should set H2 properly', () => {
       const recordA = request({protocol: 'h2'});
-      const pool = new ConnectionPool([recordA], simulationOptions({rtt, throughput}));
+      const recordB = request({protocol: 'h2'});
+      const pool = new ConnectionPool([recordA, recordB], simulationOptions({rtt, throughput}));
       const connection = pool.connectionsByOrigin.get('http://example.com')?.[0];
-      assert.isOk(connection?.isH2(), 'should have set HTTP/2');
+      assert.isOk(connection?.isMultiplexed(), 'should have set HTTP/2');
       assert.lengthOf(pool.connectionsByOrigin.get('http://example.com') ?? [], 1);
+      assert.isFalse(pool.connectionReusedByRequestId.get(recordA.requestId));
+      assert.isTrue(pool.connectionReusedByRequestId.get(recordB.requestId));
+    });
+
+    it('should treat H3 as multiplexed like H2', () => {
+      const recordA = request({protocol: 'h3'});
+      const recordB = request({protocol: 'h3-Q050'});
+      const pool = new ConnectionPool([recordA, recordB], simulationOptions({rtt, throughput}));
+      const connection = pool.connectionsByOrigin.get('http://example.com')?.[0];
+      assert.isOk(connection?.isMultiplexed(), 'should have set multiplexed mode for HTTP/3');
+      assert.lengthOf(pool.connectionsByOrigin.get('http://example.com') ?? [], 1);
+      assert.isFalse(pool.connectionReusedByRequestId.get(recordA.requestId));
+      assert.isTrue(pool.connectionReusedByRequestId.get(recordB.requestId));
     });
 
     it('should set origin-specific RTT properly', () => {

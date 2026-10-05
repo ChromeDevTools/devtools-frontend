@@ -25,17 +25,17 @@ const TCP_SEGMENT_SIZE = 1460;
 class TCPConnection {
   warmed: boolean;
   ssl: boolean;
-  h2: boolean;
+  multiplexed: boolean;
   rtt: number;
   throughput: number;
   serverLatency: number;
   _congestionWindow: number;
   h2OverflowBytesDownloaded: number;
 
-  constructor(rtt: number, throughput: number, serverLatency = 0, ssl = true, h2 = false) {
+  constructor(rtt: number, throughput: number, serverLatency = 0, ssl = true, multiplexed = false) {
     this.warmed = false;
     this.ssl = ssl;
-    this.h2 = h2;
+    this.multiplexed = multiplexed;
     this.rtt = rtt;
     this.throughput = throughput;
     this.serverLatency = serverLatency;
@@ -70,8 +70,8 @@ class TCPConnection {
     this.warmed = warmed;
   }
 
-  isH2(): boolean {
-    return this.h2;
+  isMultiplexed(): boolean {
+    return this.multiplexed;
   }
 
   get congestionWindow(): number {
@@ -80,10 +80,10 @@ class TCPConnection {
 
   /**
    * Sets the number of excess bytes that are available to this connection on future downloads, only
-   * applies to H2 connections.
+   * applies to multiplexed (H2/H3) connections.
    */
   setH2OverflowBytesDownloaded(bytes: number): void {
-    if (!this.h2) {
+    if (!this.multiplexed) {
       return;
     }
     this.h2OverflowBytesDownloaded = bytes;
@@ -103,7 +103,7 @@ class TCPConnection {
   simulateDownloadUntil(bytesToDownload: number, options?: DownloadOptions): DownloadResults {
     const {timeAlreadyElapsed = 0, maximumTimeToElapse = Infinity, dnsResolutionTime = 0} = options || {};
 
-    if (this.warmed && this.h2) {
+    if (this.warmed && this.multiplexed) {
       bytesToDownload -= this.h2OverflowBytesDownloaded;
     }
     const twoWayLatency = this.rtt;
@@ -127,7 +127,7 @@ class TCPConnection {
 
     let roundTrips = Math.ceil(handshakeAndRequest / twoWayLatency);
     let timeToFirstByte = handshakeAndRequest + this.serverLatency + oneWayLatency;
-    if (this.warmed && this.h2) {
+    if (this.warmed && this.multiplexed) {
       timeToFirstByte = 0;
     }
 
@@ -155,7 +155,7 @@ class TCPConnection {
     }
 
     const timeElapsed = timeElapsedForTTFB + downloadTimeElapsed;
-    const extraBytesDownloaded = this.h2 ? Math.max(totalBytesDownloaded - bytesToDownload, 0) : 0;
+    const extraBytesDownloaded = this.multiplexed ? Math.max(totalBytesDownloaded - bytesToDownload, 0) : 0;
     const bytesDownloaded = Math.max(Math.min(totalBytesDownloaded, bytesToDownload), 0);
 
     let connectionTiming: ConnectionTiming;
@@ -166,8 +166,8 @@ class TCPConnection {
         sslTime: this.ssl ? twoWayLatency : undefined,
         timeToFirstByte,
       };
-    } else if (this.h2) {
-      // TODO: timing information currently difficult to model for warm h2 connections.
+    } else if (this.multiplexed) {
+      // TODO: timing information currently difficult to model for warm h2/h3 connections.
       connectionTiming = {
         timeToFirstByte,
       };

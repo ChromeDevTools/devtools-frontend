@@ -536,7 +536,7 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
   }
 
   private onMouseMove(event: Event): void {
-    const node = (event.target as HTMLElement).enclosingNodeOrSelfWithClass('preview-item');
+    const node = (event.target as Node).enclosingNodeOrSelfWithClass('preview-item');
     const listItem = node && this.listControl.itemForNode(node);
     if (listItem === null) {
       return;
@@ -545,9 +545,7 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
   }
 
   private onClick(event: Event): void {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // @ts-expect-error
-    if (!(event.target).enclosingNodeOrSelfWithClass('preview-item')) {
+    if (!(event.target as Node).enclosingNodeOrSelfWithClass('preview-item')) {
       return;
     }
     this.close(this.listControl.selectedItem());

@@ -264,7 +264,7 @@ class PageDependencyGraph {
         // Explicitly ignore all requests that started after this CPU node
         // A network request that started after this task started cannot possibly be a dependency
         if (cpuNode.startTime <= candidate.startTime) {
-          return;
+          continue;
         }
 
         const distance = cpuNode.startTime - candidate.endTime;

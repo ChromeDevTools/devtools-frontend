@@ -679,5 +679,27 @@ describe('PageDependencyGraph', () => {
       assert.deepEqual(nodes[0].getDependencies(), []);
       assert.deepEqual(nodes[0].getDependents(), []);
     });
+
+    it('should link CPU node to earlier request even when the same URL is requested again after the CPU task', () => {
+      const request1 = createRequest(1, 'https://example.com/', 0);
+      const earlyScript = createRequest(2, 'https://example.com/app.js', 10);
+      const lateRepeatScript = createRequest(3, 'https://example.com/app.js', 500);
+      const networkRequests = [request1, earlyScript, lateRepeatScript];
+
+      addTaskEvents(50, 20, [
+        {name: 'EvaluateScript', data: {url: 'https://example.com/app.js'}},
+      ]);
+
+      const graph = PageDependencyGraph.createGraph(traceEvents, networkRequests, url);
+      const cpuNodes: Lantern.Graph.CPUNode[] = [];
+      graph.traverse(node => {
+        if (node.type === 'cpu') {
+          cpuNodes.push(node);
+        }
+      });
+
+      assert.lengthOf(cpuNodes, 1);
+      assert.deepEqual(cpuNodes[0].getDependencies().map(n => n.id), ['2']);
+    });
   });
 });

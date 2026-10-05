@@ -255,7 +255,8 @@ interface ComputedStyleWidgetInput {
   groupComputedStylesSetting: Common.Settings.Setting<boolean>;
   onFilterChanged: (event: CustomEvent<string>) => void;
   filterText: string;
-  onRegexToggled: () => void;
+  filterIsRegex: boolean;
+  onRegexToggled: (event: CustomEvent<boolean>) => void;
   includeToolbar: boolean;
 }
 
@@ -272,6 +273,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             type="filter"
             autofocus
             ?regex=${true}
+            ?regex-toggled=${input.filterIsRegex}
             value=${input.filterText}
             @change=${input.onFilterChanged}
             @regextoggle=${input.onRegexToggled}
@@ -336,9 +338,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
 
   /**
    * TODO(b/407751272): the state here is confusing (3 instance variables relating to filtering).
-   * There is also a bug where the Toolbar Input's regex flag cannot be
-   * controlled, so if you set a regex filter here, the toolbar might not
-   * reflect it.
    */
   #filterText = '';
   #filterIsRegex = false;
@@ -428,18 +427,18 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
    * @param input.hasMatches Whether any properties matched the current filter (or if any properties exist at all).
    */
   #updateView({hasMatches}: {hasMatches: boolean}): void {
-    this.#view(
-        {
-          computedStylesTree: this.#computedStylesTree,
-          includeToolbar: this.#allowUserControl,
-          hasMatches,
-          showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
-          groupComputedStylesSetting: this.groupComputedStylesSetting,
-          onFilterChanged: this.onFilterChanged.bind(this),
-          filterText: this.#filterText,
-          onRegexToggled: this.onRegexToggled.bind(this),
-        },
-        null, this.contentElement);
+    this.#view({
+      computedStylesTree: this.#computedStylesTree,
+      includeToolbar: this.#allowUserControl,
+      hasMatches,
+      showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
+      groupComputedStylesSetting: this.groupComputedStylesSetting,
+      onFilterChanged: this.onFilterChanged.bind(this),
+      filterText: this.#filterText,
+      filterIsRegex: this.#filterIsRegex,
+      onRegexToggled: this.onRegexToggled.bind(this),
+    },
+               null, this.contentElement);
   }
 
   get nodeStyle(): ComputedStyleModule.ComputedStyleModel.ComputedStyle|null {
@@ -725,8 +724,9 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     return new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i');
   }
 
-  private async onRegexToggled(): Promise<void> {
-    this.#filterIsRegex = !this.#filterIsRegex;
+  private async onRegexToggled(event: CustomEvent<boolean>): Promise<void> {
+    this.#filterIsRegex = event.detail;
+    this.requestUpdate();
     await this.filterComputedStyles(this.#buildFilterRegex(this.#filterText));
   }
 

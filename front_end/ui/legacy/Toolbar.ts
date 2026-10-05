@@ -851,11 +851,12 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
 }
 
 export class ToolbarFilter extends ToolbarInput {
-  constructor(
-      filterBy?: Common.UIString.LocalizedString, growFactor?: number, shrinkFactor?: number, tooltip?: string,
-      completions?: ((arg0: string, arg1: string, arg2?: boolean|undefined) => Promise<Suggestion[]>),
-      dynamicCompletions?: boolean, jslogContext?: string, element?: HTMLElement, showRegexToggle?: boolean,
-      onRegexToggle?: () => void) {
+  #regexButton?: Buttons.Button.Button;
+
+  constructor(filterBy?: Common.UIString.LocalizedString, growFactor?: number, shrinkFactor?: number, tooltip?: string,
+              completions?: ((arg0: string, arg1: string, arg2?: boolean|undefined) => Promise<Suggestion[]>),
+              dynamicCompletions?: boolean, jslogContext?: string, element?: HTMLElement, showRegexToggle?: boolean,
+              onRegexToggle?: (toggled: boolean) => void) {
     const filterPlaceholder = filterBy ? filterBy : i18nString(UIStrings.filter);
     super(
         filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions,
@@ -884,20 +885,30 @@ export class ToolbarFilter extends ToolbarInput {
       ARIAUtils.setLabel(regexButton, i18nString(UIStrings.useRegularExpression));
       regexButton.addEventListener('click', () => {
         regexButton.checked = regexButton.toggled;
-        onRegexToggle?.();
+        onRegexToggle?.(regexButton.toggled);
       });
       this.insertTrailingElement(regexButton);
+      this.#regexButton = regexButton;
     }
+  }
+
+  setRegexToggled(toggled: boolean): void {
+    if (!this.#regexButton || this.#regexButton.toggled === toggled) {
+      return;
+    }
+    this.#regexButton.toggled = toggled;
+    this.#regexButton.checked = toggled;
   }
 }
 
 export class ToolbarInputElement extends HTMLElement {
-  static observedAttributes: string[] = ['value', 'disabled', 'regex'];
+  static observedAttributes: string[] = ['value', 'disabled', 'regex', 'regex-toggled'];
 
   item?: ToolbarInput;
   datalist: HTMLDataListElement|null = null;
   #value: string|undefined = undefined;
   #disabled = false;
+  #regexToggled = false;
   connectedCallback(): void {
     if (this.item) {
       return;
@@ -929,6 +940,9 @@ export class ToolbarInputElement extends HTMLElement {
     if (this.#disabled) {
       this.item.setEnabled(false);
     }
+    if (this.#regexToggled && this.item instanceof ToolbarFilter) {
+      this.item.setRegexToggled(true);
+    }
     this.item.addEventListener(ToolbarInput.Event.TEXT_CHANGED, event => {
       this.dispatchEvent(new CustomEvent('change', {detail: event.data}));
     });
@@ -941,8 +955,9 @@ export class ToolbarInputElement extends HTMLElement {
     this.item?.focus();
   }
 
-  #onRegexToggle(): void {
-    this.dispatchEvent(new CustomEvent('regextoggle'));
+  #onRegexToggle(toggled: boolean): void {
+    this.#regexToggled = toggled;
+    this.dispatchEvent(new CustomEvent('regextoggle', {detail: toggled}));
   }
 
   async #onAutocomplete(expression: string, prefix: string, force?: boolean): Promise<Suggestion[]> {
@@ -965,6 +980,11 @@ export class ToolbarInputElement extends HTMLElement {
       this.#disabled = typeof newValue === 'string';
       if (this.item) {
         this.item.setEnabled(!this.#disabled);
+      }
+    } else if (name === 'regex-toggled') {
+      this.#regexToggled = typeof newValue === 'string';
+      if (this.item instanceof ToolbarFilter) {
+        this.item.setRegexToggled(this.#regexToggled);
       }
     }
   }

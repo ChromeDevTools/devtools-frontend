@@ -10,6 +10,7 @@ import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import * as Buttons from '../components/buttons/buttons.js';
 import * as RenderCoordinator from '../components/render_coordinator/render_coordinator.js';
 
 import * as UI from './legacy.js';
@@ -129,6 +130,106 @@ describe('Toolbar', () => {
       input.setValue('test value');
       dispatchClickEvent(clearButton);
       assert.strictEqual(input.value(), '');
+    });
+  });
+
+  describe('ToolbarFilter', () => {
+    function findRegexButton(filter: UI.Toolbar.ToolbarFilter): Buttons.Button.Button|undefined {
+      // The clear button is also a devtools-button, so match on the jslog context.
+      const buttons = [...filter.element.querySelectorAll('devtools-button')];
+      return buttons.find(button => button.jslogContext === 'regular-expression');
+    }
+
+    function createFilterWithRegexToggle(): UI.Toolbar.ToolbarFilter {
+      const unused = undefined;
+      return new UI.Toolbar.ToolbarFilter(unused, unused, unused, unused, unused, unused, unused, unused,
+                                          /* showRegexToggle=*/ true);
+    }
+
+    function regexButtonOf(filter: UI.Toolbar.ToolbarFilter): Buttons.Button.Button {
+      const button = findRegexButton(filter);
+      assert.instanceOf(button, Buttons.Button.Button);
+      return button;
+    }
+
+    it('does not toggle the regex button by default', () => {
+      const filter = createFilterWithRegexToggle();
+      renderElementIntoDOM(filter.element);
+
+      assert.isFalse(regexButtonOf(filter).toggled);
+    });
+
+    it('reflects the regex state set via setRegexToggled', () => {
+      const filter = createFilterWithRegexToggle();
+      renderElementIntoDOM(filter.element);
+
+      filter.setRegexToggled(true);
+
+      assert.isTrue(regexButtonOf(filter).toggled);
+    });
+
+    it('does nothing when the regex toggle is not shown', () => {
+      const filter = new UI.Toolbar.ToolbarFilter();
+      renderElementIntoDOM(filter.element);
+
+      filter.setRegexToggled(true);
+
+      assert.isUndefined(findRegexButton(filter));
+    });
+
+    describe('the regex-toggled attribute', () => {
+      function createToolbarInput(...attributes: string[]): HTMLElementTagNameMap['devtools-toolbar-input'] {
+        const input = document.createElement('devtools-toolbar-input');
+        input.setAttribute('type', 'filter');
+        for (const attribute of attributes) {
+          input.setAttribute(attribute, '');
+        }
+        return input;
+      }
+
+      function regexButtonIn(input: HTMLElement): Buttons.Button.Button|undefined {
+        const buttons = [...input.querySelectorAll('devtools-button')];
+        return buttons.find(button => button.jslogContext === 'regular-expression');
+      }
+
+      it('toggles the button when set before the element is connected', () => {
+        const input = createToolbarInput('regex', 'regex-toggled');
+
+        renderElementIntoDOM(input);
+
+        assert.isTrue(regexButtonIn(input)?.toggled);
+      });
+
+      it('toggles the button when set after the element is connected', () => {
+        const input = renderElementIntoDOM(createToolbarInput('regex'));
+
+        input.setAttribute('regex-toggled', '');
+
+        assert.isTrue(regexButtonIn(input)?.toggled);
+      });
+
+      it('untoggles the button when removed', () => {
+        const input = renderElementIntoDOM(createToolbarInput('regex', 'regex-toggled'));
+
+        input.removeAttribute('regex-toggled');
+
+        assert.isFalse(regexButtonIn(input)?.toggled);
+      });
+
+      it('dispatches regextoggle with the state the button moved to', () => {
+        const input = renderElementIntoDOM(createToolbarInput('regex'));
+        const button = regexButtonIn(input);
+        assert.instanceOf(button, Buttons.Button.Button);
+        const states: boolean[] = [];
+        input.addEventListener('regextoggle', event => {
+          states.push((event as CustomEvent<boolean>).detail);
+        });
+
+        dispatchClickEvent(button);
+        dispatchClickEvent(button);
+
+        assert.deepEqual(states, [true, false]);
+      });
     });
   });
 

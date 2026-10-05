@@ -11,6 +11,7 @@ import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createStubbedDomNodeWithModels} from '../../testing/StyleHelpers.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -263,6 +264,36 @@ describeWithEnvironment('ComputedStyleWidget', () => {
       const matchedPropertyNames = await getDisplayedProperties(computedStyleWidget);
       assert.sameMembers(matchedPropertyNames, ['display', 'height']);
       assert.isTrue(computedStyleWidget.filterIsRegex);
+    });
+
+    function regexButtonOf(widget: Elements.ComputedStyleWidget.ComputedStyleWidget): Buttons.Button.Button {
+      // The clear button is also a devtools-button, so match on the jslog context.
+      const buttons = [...widget.contentElement.querySelectorAll('devtools-button')];
+      const button = buttons.find(candidate => candidate.jslogContext === 'regular-expression');
+      assert.instanceOf(button, Buttons.Button.Button);
+      return button;
+    }
+
+    it('turns the regex toggle off when a plain-text filter is assigned', async () => {
+      // This is the path 'View computed value' takes: it applies a regex filter and then
+      // assigns a plain string to filterText, which switches filtering back to plain text.
+      const properties = new Map([
+        ['display', 'block'],
+        ['height', '100px'],
+      ]);
+      computedStyleWidget = createWidgetWithMultipleProperties(properties);
+      computedStyleWidget.filterText = new RegExp('display|height');
+      computedStyleWidget.requestUpdate();
+      await computedStyleWidget.updateComplete;
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isTrue(regexButtonOf(computedStyleWidget).toggled);
+
+      computedStyleWidget.filterText = 'display';
+      await computedStyleWidget.updateComplete;
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      assert.isFalse(computedStyleWidget.filterIsRegex);
+      assert.isFalse(regexButtonOf(computedStyleWidget).toggled);
     });
 
     it('renders a regex toggle button that is off by default', async () => {

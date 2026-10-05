@@ -77,6 +77,7 @@ describeWithEnvironment('DeviceModeToolbar', () => {
         return createFakeSetting(false as T);
       },
       createLocalSetting: <T>(_name: string, defaultValue: T) => createFakeSetting(defaultValue),
+      resolve: <T>(_descriptor: unknown) => createFakeSetting(false as T),
     } as unknown as Common.Settings.Settings);
 
     tabTarget = createTarget({type: SDK.Target.Type.TAB});

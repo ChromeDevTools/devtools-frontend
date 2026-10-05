@@ -11,6 +11,7 @@ devtools_ui_module("settings") {
   sources = [
     "ConsoleSettings.ts",
     "ElementsSettings.ts",
+    "EmulationSettings.ts",
     "InspectorMainSettings.ts",
     "MainSettings.ts",
     "SettingUIRegistration.ts",

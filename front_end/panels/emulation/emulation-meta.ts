@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import type * as Emulation from './emulation.js';
 
@@ -121,11 +122,8 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.captureNodeScreenshot),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.EmulationSettings.showMediaQueryInspectorSettingDescriptor, {
   category: Common.Settings.SettingCategory.MOBILE,
-  settingName: 'show-media-query-inspector',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
   options: [
     {
       value: true,

@@ -10,6 +10,7 @@ ts_e2e_library("performance") {
   ts_deps = [
     "../../../e2e/helpers",
     "../../../e2e/shared",
+    "../../helpers",
     "../../report",
   ]
 }

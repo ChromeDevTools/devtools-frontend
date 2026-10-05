@@ -17,6 +17,7 @@ import * as ColorPicker from '../../ui/legacy/components/color_picker/color_pick
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper, } from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
@@ -2587,7 +2588,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             existingElement?.remove();
         }
         if (!this.overriddenByAnimation() || UI.ViewManager.ViewManager.instance().isViewVisible('animations') ||
-            !Common.Settings.Settings.instance().moduleSetting('css-animations-only-when-animations-tab-open').get()) {
+            !Common.Settings.Settings.instance()
+                .resolve(SettingsUI.ElementsSettings.cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor)
+                .get()) {
             return;
         }
         const wrapper = document.createElement('span');

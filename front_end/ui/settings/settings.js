@@ -81,8 +81,11 @@ var consoleInsightTeasersEnabledSettingDescriptor = {
 // ../../front_end/ui/settings/ElementsSettings.ts
 var ElementsSettings_exports = {};
 __export(ElementsSettings_exports, {
+  collapseNonContributingCSSRulesSettingDescriptor: () => collapseNonContributingCSSRulesSettingDescriptor,
+  cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor: () => cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor,
   domWordWrapSettingDescriptor: () => domWordWrapSettingDescriptor,
   highlightNodeOnHoverInOverlaySettingDescriptor: () => highlightNodeOnHoverInOverlaySettingDescriptor,
+  showDetailedInspectTooltipSettingDescriptor: () => showDetailedInspectTooltipSettingDescriptor,
   showHTMLCommentsSettingDescriptor: () => showHTMLCommentsSettingDescriptor,
   showUAShadowDOMSettingDescriptor: () => showUAShadowDOMSettingDescriptor
 });
@@ -109,6 +112,24 @@ var highlightNodeOnHoverInOverlaySettingDescriptor = {
   name: "highlight-node-on-hover-in-overlay",
   type: Common2.Settings.SettingType.BOOLEAN,
   defaultValue: true,
+  storageType: Common2.Settings.SettingStorageType.SYNCED
+};
+var showDetailedInspectTooltipSettingDescriptor = {
+  name: "show-detailed-inspect-tooltip",
+  type: Common2.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common2.Settings.SettingStorageType.SYNCED
+};
+var cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor = {
+  name: "css-animations-only-when-animations-tab-open",
+  type: Common2.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common2.Settings.SettingStorageType.SYNCED
+};
+var collapseNonContributingCSSRulesSettingDescriptor = {
+  name: "collapse-non-contributing-css-rules",
+  type: Common2.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
   storageType: Common2.Settings.SettingStorageType.SYNCED
 };
 

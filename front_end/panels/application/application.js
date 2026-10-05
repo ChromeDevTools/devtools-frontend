@@ -8240,8 +8240,6 @@ var IDBDataView = class extends UI9.View.SimpleView {
   index;
   lastPageSize;
   lastSkipCount;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lastKey;
   #view;
   constructor(model, databaseId, objectStore, index, refreshObjectStoreCallback, view = IDB_DATA_VIEW_DEFAULT_VIEW) {
@@ -8285,8 +8283,6 @@ var IDBDataView = class extends UI9.View.SimpleView {
     this.updateData(true);
     this.performUpdate();
   }
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   parseKey(keyString) {
     let result;
     try {

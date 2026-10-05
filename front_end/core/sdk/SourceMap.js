@@ -158,6 +158,15 @@ export class SourceMap {
         this.#ensureSourceMapProcessed();
         return this.#scopesInfo !== null && !this.#scopesInfo.isEmpty();
     }
+    /**
+     * True iff the scopes come from the source map itself (encoded `scopes`), not from the AST fallback or from an
+     * extension.
+     */
+    hasEncodedScopeInfo() {
+        this.#ensureSourceMapProcessed();
+        return this.#scopesInfo !== null && this.#scopesFallbackPromise === undefined &&
+            this.#scopesInfo.hasGeneratedRanges();
+    }
     waitForScopeInfo() {
         this.#ensureSourceMapProcessed();
         return this.#scopesFallbackPromise ?? Promise.resolve();

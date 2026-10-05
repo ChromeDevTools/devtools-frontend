@@ -177,6 +177,9 @@ export class SourceMapScopesInfo {
         const noScopes = this.#originalScopes.every(scopes => scopes === null || scopes.length === 0);
         return noScopes && !this.#generatedRanges.length;
     }
+    hasGeneratedRanges() {
+        return this.#generatedRanges.length > 0;
+    }
     addOriginalScopesAtIndex(sourceIdx, scopes) {
         if (!this.#originalScopes[sourceIdx]?.length) {
             this.#originalScopes[sourceIdx] = scopes;

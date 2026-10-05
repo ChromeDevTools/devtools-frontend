@@ -26,4 +26,22 @@ export const highlightNodeOnHoverInOverlaySettingDescriptor = {
     defaultValue: true,
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
 };
+export const showDetailedInspectTooltipSettingDescriptor = {
+    name: 'show-detailed-inspect-tooltip',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: true,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor = {
+    name: 'css-animations-only-when-animations-tab-open',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: true,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const collapseNonContributingCSSRulesSettingDescriptor = {
+    name: 'collapse-non-contributing-css-rules',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
 //# sourceMappingURL=ElementsSettings.js.map

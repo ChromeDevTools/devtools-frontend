@@ -45,6 +45,7 @@ import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 import * as ElementsComponents from './components/components.js';
@@ -1225,7 +1226,9 @@ export class StylePropertiesSection {
      * since the user intentionally toggled them off and they should remain visible.
      */
     #shouldCollapse() {
-        if (!Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules').get()) {
+        if (!Common.Settings.Settings.instance()
+            .resolve(SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor)
+            .get()) {
             return false;
         }
         if (this.#isInactive) {

@@ -1908,6 +1908,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             target.hasSelection()) {
             return false;
         }
+        if (UI.UIUtils.isEditing() || this.#multilineEditing) {
+            event.preventDefault();
+            return false;
+        }
         if (target.nodeName === 'A') {
             return false;
         }

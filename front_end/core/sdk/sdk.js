@@ -22487,6 +22487,9 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     const noScopes = this.#originalScopes.every((scopes) => scopes === null || scopes.length === 0);
     return noScopes && !this.#generatedRanges.length;
   }
+  hasGeneratedRanges() {
+    return this.#generatedRanges.length > 0;
+  }
   addOriginalScopesAtIndex(sourceIdx, scopes) {
     if (!this.#originalScopes[sourceIdx]?.length) {
       this.#originalScopes[sourceIdx] = scopes;
@@ -22982,6 +22985,14 @@ var SourceMap = class _SourceMap {
   hasScopeInfo() {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo !== null && !this.#scopesInfo.isEmpty();
+  }
+  /**
+   * True iff the scopes come from the source map itself (encoded `scopes`), not from the AST fallback or from an
+   * extension.
+   */
+  hasEncodedScopeInfo() {
+    this.#ensureSourceMapProcessed();
+    return this.#scopesInfo !== null && this.#scopesFallbackPromise === void 0 && this.#scopesInfo.hasGeneratedRanges();
   }
   waitForScopeInfo() {
     this.#ensureSourceMapProcessed();

@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
-import { ConsoleViewMessage } from './ConsoleViewMessage.js';
+import { ConsoleViewMessage, getLongStringVisibleLength, getMaxTokenizableStringLength } from './ConsoleViewMessage.js';
 const { html, render } = Lit;
+const { widget } = UI.Widget;
 function renderHeader(content, isCause) {
     if (isCause) {
         return html `<div class="symbolized-error-header"><span>Caused by: </span><span class="error-message-text">${content}</span></div>`;
@@ -81,12 +83,19 @@ function renderFrameSuffix(frame) {
 const DEFAULT_VIEW = (input, _output, target) => {
     const renderError = (error, isCause) => {
         if (error instanceof Bindings.SymbolizedError.UnparsableError) {
-            const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(error.errorStack, (text, url, lineNumber, columnNumber) => {
-                const options = { text, lineNumber, columnNumber, ignoreListManager: input.ignoreListManager };
-                const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
-                linkElement.tabIndex = -1;
-                return linkElement;
-            });
+            // linkifyWithCustomLinkifier() returns a Widget for long strings, which Lit
+            // can't render directly, so use the widget directive instead.
+            const fragment = error.errorStack.length > getMaxTokenizableStringLength() ?
+                html `${widget(ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue, {
+                    text: error.errorStack,
+                    maxLength: getLongStringVisibleLength(),
+                })}` :
+                ConsoleViewMessage.linkifyWithCustomLinkifier(error.errorStack, (text, url, lineNumber, columnNumber) => {
+                    const options = { text, lineNumber, columnNumber, ignoreListManager: input.ignoreListManager };
+                    const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
+                    linkElement.tabIndex = -1;
+                    return linkElement;
+                });
             const header = renderHeader(fragment, isCause);
             return html `
         <span class=${isCause ? 'console-message-stack-trace-wrapper' : ''}>${header}</span>

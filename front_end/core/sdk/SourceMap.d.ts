@@ -107,6 +107,11 @@ export declare class SourceMap {
     sourceURLs(): Platform.DevToolsPath.UrlString[];
     embeddedContentByURL(sourceURL: Platform.DevToolsPath.UrlString): string | null;
     hasScopeInfo(): boolean;
+    /**
+     * True iff the scopes come from the source map itself (encoded `scopes`), not from the AST fallback or from an
+     * extension.
+     */
+    hasEncodedScopeInfo(): boolean;
     waitForScopeInfo(): Promise<void>;
     findEntry(lineNumber: number, columnNumber: number): SourceMapEntry | null;
     /** Returns the entry at the given position but only if an entry exists for that exact position */

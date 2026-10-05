@@ -20,6 +20,7 @@ export declare class SourceMapScopesInfo {
     addGeneratedRanges(ranges: ScopesCodec.GeneratedRange[]): void;
     hasOriginalScopes(sourceIdx: number): boolean;
     isEmpty(): boolean;
+    hasGeneratedRanges(): boolean;
     addOriginalScopesAtIndex(sourceIdx: number, scopes: ScopesCodec.OriginalScope[]): void;
     /**
      * @returns true if we have enough info (i.e. variable and binding expressions) to build

@@ -2850,7 +2850,7 @@ var Runtime;
 
 // ../../front_end/panels/elements/InspectElementModeController.ts
 import * as UI24 from "../../ui/legacy/legacy.js";
-import * as SettingsUI5 from "../../ui/settings/settings.js";
+import * as SettingsUI8 from "../../ui/settings/settings.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/elements/ElementsPanel.ts
@@ -2875,7 +2875,7 @@ import * as SDK19 from "../../core/sdk/sdk.js";
 import * as ComputedStyle3 from "../../models/computed_style/computed_style.js";
 import * as PanelCommon from "../common/common.js";
 import * as UI23 from "../../ui/legacy/legacy.js";
-import * as SettingsUI4 from "../../ui/settings/settings.js";
+import * as SettingsUI7 from "../../ui/settings/settings.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/elements/AccessibilityTreeView.ts
@@ -3932,6 +3932,7 @@ import * as InlineEditor3 from "../../ui/legacy/components/inline_editor/inline_
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
 import { render as render6 } from "../../ui/lit/lit.js";
+import * as SettingsUI3 from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon2 from "../common/common.js";
 import * as ElementsComponents3 from "./components/components.js";
@@ -4223,6 +4224,7 @@ import * as ColorPicker2 from "../../ui/legacy/components/color_picker/color_pic
 import * as InlineEditor2 from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
 import * as Lit5 from "../../ui/lit/lit.js";
+import * as SettingsUI from "../../ui/settings/settings.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents from "./components/components.js";
 
@@ -8213,7 +8215,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (existingElement) {
       existingElement?.remove();
     }
-    if (!this.overriddenByAnimation() || UI7.ViewManager.ViewManager.instance().isViewVisible("animations") || !Common2.Settings.Settings.instance().moduleSetting("css-animations-only-when-animations-tab-open").get()) {
+    if (!this.overriddenByAnimation() || UI7.ViewManager.ViewManager.instance().isViewVisible("animations") || !Common2.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor).get()) {
       return;
     }
     const wrapper = document.createElement("span");
@@ -9149,6 +9151,7 @@ import * as Tooltips2 from "../../ui/components/tooltips/tooltips.js";
 import { createIcon as createIcon3 } from "../../ui/kit/kit.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
 import { html as html8, nothing as nothing2, render as render5 } from "../../ui/lit/lit.js";
+import * as SettingsUI2 from "../../ui/settings/settings.js";
 import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "../common/common.js";
 import * as ElementsComponents2 from "./components/components.js";
@@ -10414,7 +10417,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
    * since the user intentionally toggled them off and they should remain visible.
    */
   #shouldCollapse() {
-    if (!Common3.Settings.Settings.instance().moduleSetting("collapse-non-contributing-css-rules").get()) {
+    if (!Common3.Settings.Settings.instance().resolve(SettingsUI2.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor).get()) {
       return false;
     }
     if (this.#isInactive) {
@@ -12060,7 +12063,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPane_css_default);
     Common5.Settings.Settings.instance().moduleSetting("text-editor-indent").addChangeListener(this.requestUpdate, this);
-    Common5.Settings.Settings.instance().moduleSetting("collapse-non-contributing-css-rules").addChangeListener(this.updateCollapsedSectionsSetting, this);
+    Common5.Settings.Settings.instance().resolve(SettingsUI3.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor).addChangeListener(this.updateCollapsedSectionsSetting, this);
     Common5.Settings.Settings.instance().moduleSetting("show-inactive-css-rules").addChangeListener(this.requestUpdate, this);
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.noMatchesElement = this.contentElement.createChild("div", "gray-info-message hidden");
@@ -12838,7 +12841,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     };
     ButtonProvider.instance().item().setVisible(false);
     const animationsPanelVisible = UI10.ViewManager.ViewManager.instance().isViewVisible("animations");
-    const cssAnimationsOnlyWhenAnimationsTabOpen = Common5.Settings.Settings.instance().moduleSetting("css-animations-only-when-animations-tab-open").get();
+    const cssAnimationsOnlyWhenAnimationsTabOpen = Common5.Settings.Settings.instance().resolve(SettingsUI3.ElementsSettings.cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor).get();
     let totalProperties = 0;
     for (const style of matchedStyles.nodeStyles()) {
       totalProperties += style.leadingProperties().length;
@@ -15445,7 +15448,7 @@ import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.j
 import * as UIComponentUtils from "../../ui/legacy/components/utils/utils.js";
 import * as UI19 from "../../ui/legacy/legacy.js";
 import * as Lit10 from "../../ui/lit/lit.js";
-import * as SettingsUI2 from "../../ui/settings/settings.js";
+import * as SettingsUI5 from "../../ui/settings/settings.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/elements/AdoptedStyleSheetTreeElement.ts
@@ -16078,7 +16081,7 @@ import * as TextEditor3 from "../../ui/components/text_editor/text_editor.js";
 import * as Components6 from "../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
 import * as Lit8 from "../../ui/lit/lit.js";
-import * as SettingsUI from "../../ui/settings/settings.js";
+import * as SettingsUI4 from "../../ui/settings/settings.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon3 from "../common/common.js";
 import * as Media2 from "../media/media.js";
@@ -17833,7 +17836,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   }
   static visibleShadowRoots(node) {
     let roots = node.shadowRoots();
-    if (roots.length && !Common9.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor).get()) {
+    if (roots.length && !Common9.Settings.Settings.instance().resolve(SettingsUI4.ElementsSettings.showUAShadowDOMSettingDescriptor).get()) {
       roots = roots.filter(filter);
     }
     function filter(root) {
@@ -21834,7 +21837,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   };
   #maxTreeDepth;
   #enableContextMenu = true;
-  #showHTMLCommentsSetting = Common12.Settings.Settings.instance().resolve(SettingsUI2.ElementsSettings.showHTMLCommentsSettingDescriptor);
+  #showHTMLCommentsSetting = Common12.Settings.Settings.instance().resolve(SettingsUI5.ElementsSettings.showHTMLCommentsSettingDescriptor);
   #showComments = this.#showHTMLCommentsSetting.get();
   #showAIButton = true;
   #disableEdits = false;
@@ -21977,7 +21980,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     }
     this.#globalListenersRegistered = true;
     this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
-    if (Common12.Settings.Settings.instance().resolve(SettingsUI2.ElementsSettings.highlightNodeOnHoverInOverlaySettingDescriptor).get()) {
+    if (Common12.Settings.Settings.instance().resolve(SettingsUI5.ElementsSettings.highlightNodeOnHoverInOverlaySettingDescriptor).get()) {
       SDK16.TargetManager.TargetManager.instance().addModelListener(
         SDK16.OverlayModel.OverlayModel,
         SDK16.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED,
@@ -22973,6 +22976,10 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     }
     const selection = target.getComponentSelection();
     if (selection && selection.type === "Range" && !selection.isCollapsed && selection.toString().length > 0 && target.hasSelection()) {
+      return false;
+    }
+    if (UI19.UIUtils.isEditing() || this.#multilineEditing) {
+      event.preventDefault();
       return false;
     }
     if (target.nodeName === "A") {
@@ -24624,7 +24631,7 @@ import * as SDK17 from "../../core/sdk/sdk.js";
 import * as Buttons4 from "../../ui/components/buttons/buttons.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
 import * as Lit11 from "../../ui/lit/lit.js";
-import * as SettingsUI3 from "../../ui/settings/settings.js";
+import * as SettingsUI6 from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/layoutPane.css.js
@@ -25043,7 +25050,7 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
       settings.resolve(SDK17.SDKSettings.showGridAreasSettingDescriptor),
       settings.resolve(SDK17.SDKSettings.extendGridLinesSettingDescriptor)
     ];
-    this.#uaShadowDOMSetting = settings.resolve(SettingsUI3.ElementsSettings.showUAShadowDOMSettingDescriptor);
+    this.#uaShadowDOMSetting = settings.resolve(SettingsUI6.ElementsSettings.showUAShadowDOMSettingDescriptor);
     this.#domModels = [];
     this.#view = view;
   }
@@ -25125,7 +25132,7 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
       if (settingType !== Common13.Settings.SettingType.BOOLEAN && settingType !== Common13.Settings.SettingType.ENUM) {
         throw new Error("A setting provided to LayoutSidebarPane does not have a supported setting type");
       }
-      const uiDescriptor = SettingsUI3.SettingUIRegistration.maybeResolve(setting.descriptor());
+      const uiDescriptor = SettingsUI6.SettingUIRegistration.maybeResolve(setting.descriptor());
       const mappedSetting = {
         type: settingType,
         name: setting.name,
@@ -26192,7 +26199,7 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
     this.mainContainer.id = "main-content";
     this.domTreeContainer.id = "elements-content";
     this.domTreeContainer.tabIndex = -1;
-    const domWordWrapSetting = this.#settings.resolve(SettingsUI4.ElementsSettings.domWordWrapSettingDescriptor);
+    const domWordWrapSetting = this.#settings.resolve(SettingsUI7.ElementsSettings.domWordWrapSettingDescriptor);
     if (domWordWrapSetting.get()) {
       this.domTreeContainer.classList.add("elements-wrap");
     }
@@ -26229,7 +26236,7 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
       this
     );
     this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
-    this.#settings.resolve(SettingsUI4.MainSettings.sidebarPositionSettingDescriptor).addChangeListener(this.updateSidebarPosition.bind(this));
+    this.#settings.resolve(SettingsUI7.MainSettings.sidebarPositionSettingDescriptor).addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
     this.cssStyleTrackerByCSSModel = /* @__PURE__ */ new Map();
     this.currentSearchResultIndex = -1;
@@ -26251,7 +26258,7 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
       this,
       { scoped: true }
     );
-    this.#settings.resolve(SettingsUI4.ElementsSettings.showUAShadowDOMSettingDescriptor).addChangeListener(this.showUAShadowDOMChanged.bind(this));
+    this.#settings.resolve(SettingsUI7.ElementsSettings.showUAShadowDOMSettingDescriptor).addChangeListener(this.showUAShadowDOMChanged.bind(this));
     PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener(
       PanelCommon.ExtensionServer.Events.SidebarPaneAdded,
       this.extensionSidebarPaneAdded,
@@ -26596,7 +26603,7 @@ ${node.simpleSelector()} {}`, false);
       this.hideSearchHighlights();
     }
     this.searchConfig = searchConfig;
-    const showUAShadowDOM = this.#settings.resolve(SettingsUI4.ElementsSettings.showUAShadowDOMSettingDescriptor).get();
+    const showUAShadowDOM = this.#settings.resolve(SettingsUI7.ElementsSettings.showUAShadowDOMSettingDescriptor).get();
     const domModels = this.#targetManager.models(SDK19.DOMModel.DOMModel, { scoped: true });
     const promises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     void Promise.all(promises).then((resultCounts) => {
@@ -26748,7 +26755,7 @@ ${node.simpleSelector()} {}`, false);
   async revealAndSelectNode(nodeToReveal, opts) {
     const { showPanel = true, focusNode = false, highlightInOverlay = true } = opts ?? {};
     this.omitDefaultSelection = true;
-    const node = this.#settings.resolve(SettingsUI4.ElementsSettings.showUAShadowDOMSettingDescriptor).get() ? nodeToReveal : this.leaveUserAgentShadowDOM(nodeToReveal);
+    const node = this.#settings.resolve(SettingsUI7.ElementsSettings.showUAShadowDOMSettingDescriptor).get() ? nodeToReveal : this.leaveUserAgentShadowDOM(nodeToReveal);
     if (highlightInOverlay) {
       node.highlightForTwoSeconds();
     }
@@ -26943,7 +26950,7 @@ ${node.simpleSelector()} {}`, false);
     if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
       return;
     }
-    const position = this.#settings.resolve(SettingsUI4.MainSettings.sidebarPositionSettingDescriptor).get();
+    const position = this.#settings.resolve(SettingsUI7.MainSettings.sidebarPositionSettingDescriptor).get();
     let splitMode = "Horizontal" /* HORIZONTAL */;
     if (position === "right" || position === "auto" && this.splitWidget.element.offsetWidth > 680) {
       splitMode = "Vertical" /* VERTICAL */;
@@ -27233,7 +27240,7 @@ var ElementsActionDelegate = class {
         ElementsPanel.instance().toggleAccessibilityTree();
         return true;
       case "elements.toggle-word-wrap": {
-        const setting = ElementsPanel.instance().settings.resolve(SettingsUI4.ElementsSettings.domWordWrapSettingDescriptor);
+        const setting = ElementsPanel.instance().settings.resolve(SettingsUI7.ElementsSettings.domWordWrapSettingDescriptor);
         setting.set(!setting.get());
         return true;
       }
@@ -27298,7 +27305,9 @@ var InspectElementModeController = class _InspectElementModeController {
     );
     SDK20.OverlayModel.OverlayModel.setInspectNodeHandler(this.inspectNode.bind(this));
     SDK20.TargetManager.TargetManager.instance().observeModels(SDK20.OverlayModel.OverlayModel, this, { scoped: true });
-    this.showDetailedInspectTooltipSetting = Common16.Settings.Settings.instance().moduleSetting("show-detailed-inspect-tooltip");
+    this.showDetailedInspectTooltipSetting = Common16.Settings.Settings.instance().resolve(
+      SettingsUI8.ElementsSettings.showDetailedInspectTooltipSettingDescriptor
+    );
     this.showDetailedInspectTooltipSetting.addChangeListener(this.showDetailedInspectTooltipChanged.bind(this));
     document.addEventListener("keydown", (event) => {
       if (event.keyCode !== UI24.KeyboardShortcut.Keys.Esc.code) {
@@ -27334,7 +27343,7 @@ var InspectElementModeController = class _InspectElementModeController {
     if (this.isInInspectElementMode()) {
       mode = Overlay.InspectMode.None;
     } else {
-      mode = Common16.Settings.Settings.instance().resolve(SettingsUI5.ElementsSettings.showUAShadowDOMSettingDescriptor).get() ? Overlay.InspectMode.SearchForUAShadowDOM : Overlay.InspectMode.SearchForNode;
+      mode = Common16.Settings.Settings.instance().resolve(SettingsUI8.ElementsSettings.showUAShadowDOMSettingDescriptor).get() ? Overlay.InspectMode.SearchForUAShadowDOM : Overlay.InspectMode.SearchForNode;
     }
     this.setMode(mode);
   }

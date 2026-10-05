@@ -2042,7 +2042,7 @@ describeWithEnvironment('ChatMessage', () => {
       );
     });
 
-    it('renders LIGHTHOUSE_REPORT widget as revealer-only for snapshot reports without score gauges', async () => {
+    it('renders LIGHTHOUSE_REPORT widget as revealer-only when score gauges cannot be rendered', async () => {
       const mockReport = {
         lighthouseVersion: '12.0.0',
         fetchTime: '2026-08-13T09:00:00.000Z',

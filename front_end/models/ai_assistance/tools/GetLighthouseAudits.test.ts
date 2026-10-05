@@ -40,7 +40,7 @@ describe('GetLighthouseAuditsTool', () => {
     assert.include(result.result.audits, '# Audits for Accessibility');
     assert.include(result.result.audits, 'Low contrast');
     assert.include(result.result.audits, '- **Low contrast**: 0');
-    assert.deepEqual(result.widgets, [{name: 'LIGHTHOUSE_REPORT', data: {report: mockReport}}]);
+    assert.isUndefined(result.widgets);
   });
 
   it('returns error when Lighthouse report is not available', async () => {
@@ -100,6 +100,6 @@ describe('GetLighthouseAuditsTool', () => {
     assert.include(result.result.audits, '## Category Scores');
     assert.include(result.result.audits, '# Audits for Accessibility');
     assert.include(result.result.audits, '# Audits for Performance');
-    assert.deepEqual(result.widgets, [{name: 'LIGHTHOUSE_REPORT', data: {report: multiCategoryReport}}]);
+    assert.isUndefined(result.widgets);
   });
 });

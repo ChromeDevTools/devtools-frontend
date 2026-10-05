@@ -57,7 +57,6 @@ export class GetLighthouseAuditsTool implements
     const audits = new LighthouseFormatter().formatReport(report, params.categoryId);
     return {
       result: {audits},
-      widgets: [{name: 'LIGHTHOUSE_REPORT', data: {report}}],
     };
   }
 }

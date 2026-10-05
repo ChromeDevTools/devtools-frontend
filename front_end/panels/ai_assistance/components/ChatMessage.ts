@@ -2500,8 +2500,6 @@ async function makeLighthouseReportWidget(widgetData: AiAssistanceModel.AiAgent.
     Promise<WidgetMakerResponse|null> {
   let reportEl: HTMLElement|null = null;
   try {
-    // Snapshot mode audits only collect individual audit results and do not generate
-    // top-level category score gauges.
     reportEl =
         Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.renderLighthouseScores(widgetData.data.report);
   } catch {
@@ -2511,8 +2509,8 @@ async function makeLighthouseReportWidget(widgetData: AiAssistanceModel.AiAgent.
   const revealLighthouseLabel = lockedString(UIStringsNotTranslate.revealLighthouse);
 
   // When score gauges are rendered, the widget header displays the title "Lighthouse report"
-  // and the header button defaults to "Reveal". When score gauges are absent (snapshot mode),
-  // no header is rendered, so customRevealTitle labels the standalone button ("Reveal Lighthouse report").
+  // and the header button defaults to "Reveal". When score gauges are absent, no header is
+  // rendered, so customRevealTitle labels the standalone button ("Reveal Lighthouse report").
   const title = reportEl ? lockedString(UIStringsNotTranslate.lighthouseReport) : null;
   const customRevealTitle = reportEl ? undefined : revealLighthouseLabel;
 

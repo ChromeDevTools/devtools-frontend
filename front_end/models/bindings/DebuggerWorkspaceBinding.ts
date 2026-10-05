@@ -145,14 +145,24 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return ranges;
   }
 
+  private async computeAutoStep(mode: SDK.DebuggerModel.StepMode, callFrames: readonly SDK.DebuggerModel.CallFrame[]):
+      Promise<SDK.DebuggerModel.AutoStep> {
+    const ranges = await this.computeAutoStepRanges(mode, callFrames[0]);
+    if (mode === SDK.DebuggerModel.StepMode.STEP_OUT && ranges.length > 0) {
+      // Step out of an inlined function by stepping over its body.
+      return {command: SDK.DebuggerModel.StepMode.STEP_OVER, ranges};
+    }
+    return {command: mode, ranges};
+  }
+
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     debuggerModel.setBeforePausedCallback(this.shouldPause.bind(this));
     this.#debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this));
-    debuggerModel.setComputeAutoStepRangesCallback(this.computeAutoStepRanges.bind(this));
+    debuggerModel.setComputeAutoStepCallback(this.computeAutoStep.bind(this));
   }
 
   modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    debuggerModel.setComputeAutoStepRangesCallback(null);
+    debuggerModel.setComputeAutoStepCallback(null);
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
       modelData.dispose();

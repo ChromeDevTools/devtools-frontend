@@ -140,6 +140,9 @@ export interface AutoStep {
   readonly ranges: readonly LocationRange[];
 }
 
+/** Computes the CDP step command for a user-requested step. */
+export type ComputeAutoStepCallback = (mode: StepMode, callFrames: readonly CallFrame[]) => Promise<AutoStep>;
+
 export const WASM_SYMBOLS_PRIORITY: Protocol.Debugger.DebugSymbolsType[] = [
   Protocol.Debugger.DebugSymbolsType.ExternalDWARF,
   Protocol.Debugger.DebugSymbolsType.EmbeddedDWARF,
@@ -173,10 +176,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   readonly #skipAllPausesSetting: Common.Settings.Setting<boolean>;
   #skipAllPausesTimeout?: ReturnType<typeof setTimeout>;
   #beforePausedCallback: ((arg0: DebuggerPausedDetails, stepOver: Location|null) => Promise<boolean>)|null = null;
-  #computeAutoStepRangesCallback: ((arg0: StepMode, arg1: CallFrame) => Promise<Array<{
-                                     start: Location,
-                                     end: Location,
-                                   }>>)|null = null;
+  #computeAutoStepCallback: ComputeAutoStepCallback|null = null;
   evaluateOnCallFrameCallback:
       ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null = null;
   #synchronizeBreakpointsCallback: ((script: Script) => Promise<void>)|null = null;
@@ -435,18 +435,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     void this.agent.invoke_setBreakpointsActive({active: this.#breakpointsActiveSetting.get()});
   }
 
-  setComputeAutoStepRangesCallback(callback: ((arg0: StepMode, arg1: CallFrame) => Promise<LocationRange[]>)|null):
-      void {
-    this.#computeAutoStepRangesCallback = callback;
-  }
-
-  private async computeAutoStepRanges(mode: StepMode): Promise<LocationRange[]> {
-    if (this.#computeAutoStepRangesCallback && this.#debuggerPausedDetails &&
-        this.#debuggerPausedDetails.callFrames.length > 0) {
-      const [callFrame] = this.#debuggerPausedDetails.callFrames;
-      return await this.#computeAutoStepRangesCallback.call(null, mode, callFrame);
-    }
-    return [];
+  setComputeAutoStepCallback(callback: ComputeAutoStepCallback|null): void {
+    this.#computeAutoStepCallback = callback;
   }
 
   async stepInto(): Promise<void> {
@@ -466,13 +456,14 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   async #userStep(mode: StepMode, breakOnAsyncCall = false): Promise<void> {
+    const callFrames = this.#debuggerPausedDetails?.callFrames ?? [];
     if (mode === StepMode.STEP_OVER) {
-      this.#autoSteppingContext = this.#debuggerPausedDetails?.callFrames[0]?.functionLocation() ?? null;
+      this.#autoSteppingContext = callFrames[0]?.functionLocation() ?? null;
     }
-    const ranges = await this.computeAutoStepRanges(mode);
-    // Step out of an inlined function by stepping over its body.
-    const command = mode === StepMode.STEP_OUT && ranges.length > 0 ? StepMode.STEP_OVER : mode;
-    this.#issueStep({command, ranges}, breakOnAsyncCall);
+    const step = this.#computeAutoStepCallback && callFrames.length > 0 ?
+        await this.#computeAutoStepCallback(mode, callFrames) :
+        {command: mode, ranges: []};
+    this.#issueStep(step, breakOnAsyncCall);
   }
 
   #issueStep({command, ranges}: AutoStep, breakOnAsyncCall = false): void {

@@ -108,4 +108,30 @@ describeWithEnvironment('SourcesPanel', () => {
     sinon.assert.calledWith(
         visibilitySpy, sinon.match({data: sinon.match({location: sinon.match.string, hiddenViewId: sinon.match.any})}));
   });
+
+  it('clears the UISourceCode flavor when the editor for it is closed', () => {
+    setUpEnvironment();
+    const sources = new Sources.SourcesPanel.SourcesPanel();
+    const context = UI.Context.Context.instance();
+    const uiSourceCode = createStubUISourceCode();
+    context.setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
+
+    sources.sourcesView().dispatchEventToListeners(Sources.SourcesView.Events.EDITOR_CLOSED,
+                                                   {uiSourceCode, wasSelected: true});
+
+    assert.isNull(context.flavor(Workspace.UISourceCode.UISourceCode));
+  });
+
+  it('keeps the UISourceCode flavor when the editor for another file is closed', () => {
+    setUpEnvironment();
+    const sources = new Sources.SourcesPanel.SourcesPanel();
+    const context = UI.Context.Context.instance();
+    const uiSourceCode = createStubUISourceCode();
+    context.setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
+
+    sources.sourcesView().dispatchEventToListeners(Sources.SourcesView.Events.EDITOR_CLOSED,
+                                                   {uiSourceCode: createStubUISourceCode(), wasSelected: false});
+
+    assert.strictEqual(context.flavor(Workspace.UISourceCode.UISourceCode), uiSourceCode);
+  });
 });

@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import * as sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
@@ -1097,6 +1098,39 @@ globalThis.foo = bar + baz;
       propRequest.hide?.();
       assert.isNull(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression'));
       plugin.dispose();
+    });
+  });
+
+  describeWithEnvironment('dispose', () => {
+    it('removes all event listeners it added', () => {
+      const backend = new MockDebuggerBackend();
+      backend.createTarget();
+      sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+          .returns(backend.universe.debuggerWorkspaceBinding);
+      sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
+      sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
+      sinon.stub(Sources.SourcesPanel.SourcesPanel, 'instance')
+          .returns(sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
+      sinon.stub(Breakpoints.BreakpointManager.BreakpointManager, 'instance')
+          .returns(sinon.createStubInstance(Breakpoints.BreakpointManager.BreakpointManager));
+      const {uiSourceCode} = createContentProviderUISourceCode(
+          {url: urlString`http://example.com/script.js`, mimeType: 'text/javascript', content: ''});
+      const addSpy = sinon.spy(Common.ObjectWrapper.ObjectWrapper.prototype, 'addEventListener');
+      const removeSpy = sinon.spy(Common.ObjectWrapper.ObjectWrapper.prototype, 'removeEventListener');
+
+      const plugin = new Sources.DebuggerPlugin.DebuggerPlugin(uiSourceCode, {
+        editorLocationToUILocation: (lineNumber: number, columnNumber?: number) =>
+            ({lineNumber, columnNumber: columnNumber ?? 0}),
+        uiLocationToEditorLocation: (lineNumber: number, columnNumber?: number) =>
+            ({lineNumber, columnNumber: columnNumber ?? 0}),
+      });
+      plugin.dispose();
+
+      const listenersOf = (spy: typeof addSpy|typeof removeSpy) =>
+          spy.getCalls().filter(call => call.args[2] === plugin).map(call => [call.thisValue, ...call.args]);
+      const added = listenersOf(addSpy);
+      assert.isTrue(added.some(([target]) => target === backend.universe.pageResourceLoader));
+      assert.sameDeepMembers(listenersOf(removeSpy), added);
     });
   });
 });

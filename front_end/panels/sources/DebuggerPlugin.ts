@@ -244,8 +244,7 @@ export class DebuggerPlugin extends Plugin {
     this.scriptFileForDebuggerModel = new Map();
 
     this.loader = SDK.PageResourceLoader.PageResourceLoader.instance();
-    this.loader.addEventListener(
-        SDK.PageResourceLoader.Events.UPDATE, this.showSourceMapInfobarIfNeeded.bind(this), this);
+    this.loader.addEventListener(SDK.PageResourceLoader.Events.UPDATE, this.showSourceMapInfobarIfNeeded, this);
 
     this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
     Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
@@ -1730,6 +1729,7 @@ export class DebuggerPlugin extends Plugin {
         Workspace.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
     this.uiSourceCode.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
+    this.loader.removeEventListener(SDK.PageResourceLoader.Events.UPDATE, this.showSourceMapInfobarIfNeeded, this);
 
     Workspace.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.ignoreListCallback);
 

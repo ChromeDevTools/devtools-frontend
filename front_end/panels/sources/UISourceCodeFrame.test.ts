@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -139,6 +140,26 @@ describe('UISourceCodeFrame', () => {
       frame.dispose();
       assert.isNull(frame.textEditor.getAttribute('data-file-path'));
     });
+  });
+
+  it('removes all setting change listeners it added on dispose', () => {
+    setup();
+    const {uiSourceCode} = createFileSystemUISourceCode({
+      url: Platform.DevToolsPath.urlString`file:///path/to/file.ts`,
+      mimeType: 'text/typescript',
+      content: 'const a = 1;',
+    });
+    const addSpy = sinon.spy(Common.Settings.Setting.prototype, 'addChangeListener');
+    const removeSpy = sinon.spy(Common.Settings.Setting.prototype, 'removeChangeListener');
+
+    const frame = new UISourceCodeFrame(uiSourceCode);
+    frame.dispose();
+
+    const listenersOf = (spy: typeof addSpy|typeof removeSpy) =>
+        spy.getCalls().filter(call => call.args[1] === frame).map(call => [call.thisValue.name, call.args[0]]);
+    const added = listenersOf(addSpy);
+    assert.isNotEmpty(added);
+    assert.sameDeepMembers(listenersOf(removeSpy), added);
   });
 
   describe('plugin toolbar items', () => {

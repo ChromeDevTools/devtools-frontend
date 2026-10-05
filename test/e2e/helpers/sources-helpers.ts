@@ -55,12 +55,16 @@ export async function getLineNumberElement(devToolsPage: DevToolsPage,
 }
 
 export async function doubleClickSourceTreeItem(devToolsPage: DevToolsPage, selector: string): Promise<void> {
-  await devToolsPage.click(selector, {clickOptions: {count: 2, offset: {x: 40, y: 10}}});
+  const element = await devToolsPage.click(selector, {clickOptions: {count: 2, offset: {x: 40, y: 10}}});
+  // Puppeteer holds a strong CDP remote-object reference to the DOM node until disposed,
+  // which would otherwise keep the NavigatorSourceTreeElement and its UISourceCode alive across GC.
+  await element.dispose();
 }
 
 export async function waitForSourcesPanel(devToolsPage: DevToolsPage): Promise<void> {
   // Wait for the navigation panel to show up
-  await devToolsPage.waitFor('.navigator-file-tree-item, .empty-state');
+  const element = await devToolsPage.waitFor('.navigator-file-tree-item, .empty-state');
+  await element.dispose();
 }
 
 export async function openSourcesPanel(devToolsPage: DevToolsPage): Promise<puppeteer.ElementHandle<Element>> {

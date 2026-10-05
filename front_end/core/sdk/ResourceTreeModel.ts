@@ -529,6 +529,22 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     return await this.agent.invoke_getAppId();
   }
 
+  async getSubApps(): Promise<Protocol.Page.SubApp[]> {
+    const response = await this.agent.invoke_getSubApps();
+    if (response.getError()) {
+      return [];
+    }
+    return response.subApps ?? [];
+  }
+
+  async getSiblingSubApps(): Promise<Protocol.Page.SubApp[]> {
+    const response = await this.agent.invoke_getSiblingSubApps();
+    if (response.getError()) {
+      return [];
+    }
+    return response.subApps ?? [];
+  }
+
   private executionContextComparator(a: ExecutionContext, b: ExecutionContext): number {
     function framePath(frame: ResourceTreeFrame|null): ResourceTreeFrame[] {
       let currentFrame: (ResourceTreeFrame|null) = frame;

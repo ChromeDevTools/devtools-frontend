@@ -347,11 +347,12 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
           hasUnsavedCommittedChanges,
           disconnectedAutomaticFileSystemRoot,
           icon,
-          widget: (this.#currentFile === uiSourceCode) ? this.getOrCreateSourceView(uiSourceCode) :
-                                                         this.getCreatedSourceView(uiSourceCode),
+          widget: (this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId()) ?
+              this.getOrCreateSourceView(this.#currentFile) :
+              this.getCreatedSourceView(uiSourceCode),
         };
       }),
-      activeTabId: this.#currentFile ? this.tabIds.get(this.#currentFile) : undefined,
+      activeTabId: this.#currentFile ? this.#tabIdForUISourceCode(this.#currentFile) : undefined,
       leftToolbarItems: this.#leftToolbarItems,
       rightToolbarItems: this.#rightToolbarItems,
       tabDelegate: this.#tabDelegate,
@@ -650,8 +651,13 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     return true;
   }
 
+  #tabIdForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): string|undefined {
+    const canonical = this.idToUISourceCode.get(uiSourceCode.canonicalScriptId());
+    return this.tabIds.get(uiSourceCode) ?? (canonical ? this.tabIds.get(canonical) : undefined);
+  }
+
   closeFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const tabId = this.tabIds.get(uiSourceCode);
+    const tabId = this.#tabIdForUISourceCode(uiSourceCode);
     if (!tabId) {
       return;
     }
@@ -684,7 +690,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     if (tabIds.length === 0 || !this.#currentFile) {
       return;
     }
-    const currentTabId = this.tabIds.get(this.#currentFile);
+    const currentTabId = this.#tabIdForUISourceCode(this.#currentFile);
     if (!currentTabId) {
       return;
     }
@@ -701,7 +707,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     if (tabIds.length === 0 || !this.#currentFile) {
       return;
     }
-    const currentTabId = this.tabIds.get(this.#currentFile);
+    const currentTabId = this.#tabIdForUISourceCode(this.#currentFile);
     if (!currentTabId) {
       return;
     }
@@ -1062,6 +1068,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   private tabClosed(tabId: string, isUserGesture?: boolean): void {
     const uiSourceCode = this.files.get(tabId);
     if (this.#currentFile && this.#currentFile.canonicalScriptId() === uiSourceCode?.canonicalScriptId()) {
+      this.removeSourceFrame(this.#currentFile);
       this.removeViewListeners();
       this.currentView = null;
       this.#currentFile = null;

@@ -451,7 +451,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   }
 
   private editorClosed(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const wasSelected = this.#currentUISourceCode === uiSourceCode;
+    const wasSelected = this.#currentUISourceCode?.canonicalScriptId() === uiSourceCode.canonicalScriptId();
     if (wasSelected) {
       this.#currentUISourceCode = null;
       this.#visibleView = null;

@@ -175,4 +175,59 @@ describeWithEnvironment('SourcesView', () => {
     await revealed;
     sourcesView.detach();
   });
+
+  it('clears current UISourceCode and visibleView when closed tab has a duplicate script selected', async () => {
+    createContentProviderUISourceCodes({
+      items: [
+        {url: urlString`http://example.com/a.js`, mimeType: 'application/javascript'},
+      ],
+      projectId: 'projectId1',
+      projectType: Workspace.Workspace.projectTypes.Network,
+      target: target1,
+    });
+
+    createContentProviderUISourceCodes({
+      items: [
+        {url: urlString`http://example.com/a.js`, mimeType: 'application/javascript'},
+      ],
+      projectId: 'projectId2',
+      projectType: Workspace.Workspace.projectTypes.Network,
+      target: target2,
+    });
+
+    const sourcesView = new Sources.SourcesView.SourcesView();
+    renderElementIntoDOM(sourcesView);
+    await sourcesView.updateComplete;
+
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const uiSourceCodeA = workspace.uiSourceCodes().find(code => code.url() === urlString`http://example.com/a.js` &&
+                                                             code.project().id() === 'projectId1')!;
+    const uiSourceCodeB = workspace.uiSourceCodes().find(code => code.url() === urlString`http://example.com/a.js` &&
+                                                             code.project().id() === 'projectId2')!;
+    assert.isDefined(uiSourceCodeA);
+    assert.isDefined(uiSourceCodeB);
+    assert.notStrictEqual(uiSourceCodeA, uiSourceCodeB);
+
+    await sourcesView.showSourceLocation(uiSourceCodeA);
+    await sourcesView.showSourceLocation(uiSourceCodeB);
+    assert.strictEqual(sourcesView.currentUISourceCode(), uiSourceCodeB);
+    const sourceFrameB = sourcesView.currentSourceFrame();
+    assert.isNotNull(sourceFrameB);
+    assert.isTrue(sourceFrameB.isShowing());
+    const disposeSpy = sinon.spy(sourceFrameB, 'dispose');
+    const editorClosedSpy = sinon.spy();
+    sourcesView.addEventListener(Sources.SourcesView.Events.EDITOR_CLOSED, editorClosedSpy);
+
+    const tabbedEditorContainer =
+        UI.Context.Context.instance().flavor(Sources.TabbedEditorContainer.TabbedEditorContainer);
+    assert.isNotNull(tabbedEditorContainer);
+    tabbedEditorContainer.closeFile(uiSourceCodeA);
+
+    assert.isNull(sourcesView.currentUISourceCode());
+    assert.isNull(sourcesView.visibleView());
+    sinon.assert.calledOnce(disposeSpy);
+    sinon.assert.calledOnce(editorClosedSpy);
+    assert.isTrue(editorClosedSpy.firstCall.args[0].data.wasSelected);
+    sourcesView.detach();
+  });
 });

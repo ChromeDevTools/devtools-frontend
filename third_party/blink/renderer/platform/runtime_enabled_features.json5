@@ -319,7 +319,6 @@
     {
       // Interest Group JS API/runtimeflag.
       name: "AdInterestGroupAPI",
-      status: "stable",
       origin_trial_feature_name: "AdInterestGroupAPI",
       implied_by: ["Fledge", "Parakeet"],
       public: true,
@@ -1921,7 +1920,7 @@
       // Support for `position-visibility: anchor-valid`.
       // See crbug.com/333421963.
       name: "CSSPositionVisibilityAnchorValid",
-      status: "experimental",
+      status: "stable",
     },
     {
       // The @private rule declares lexically-scoped custom properties that are
@@ -1954,6 +1953,13 @@
     },
     {
       name: "CSSPseudoElementScrollButton",
+      depends_on: ["CSSPseudoElementInterface"],
+      status: "experimental",
+    },
+    {
+      // CSSPseudoElement.selectorText.
+      // https://drafts.csswg.org/css-pseudo-4/#dom-csspseudoelement-selectortext
+      name: "CSSPseudoElementSelectorText",
       depends_on: ["CSSPseudoElementInterface"],
       status: "experimental",
     },
@@ -3124,6 +3130,11 @@
       status: "stable",
     },
     {
+      // https://github.com/w3c/csswg-drafts/issues/13926
+      name: "FirstLineAndLetterExcludeInputTextarea",
+      status: "stable",
+    },
+    {
       // It turned out that this fix was wrong. The plan is to turn it off, and
       // remove if that goes well. crbug.com/41362700
       name: "FirstLineTextMetrics",
@@ -3163,7 +3174,6 @@
     },
     {
       name: "Fledge",
-      status: "stable",
       public: true,
     },
     {
@@ -3651,6 +3661,12 @@
       // attributes are processed but their value doesn't change. See
       // https://crbug.com/41436016.
       name: "HTMLLinkElementAttributeValueChanges",
+      status: "stable",
+    },
+    {
+      // Kill switch for ignoring head start tags in the "in head noscript"
+      // insertion mode. https://crbug.com/40775952
+      name: "HTMLParserIgnoreHeadInNoscript",
       status: "stable",
     },
     {
@@ -4769,8 +4785,9 @@
     },
     {
       // https://chromestatus.com/feature/5261280285949952
-      name: "OverscrollGestures",
+      name: "OverscrollAreas",
       status: "experimental",
+      origin_trial_feature_name: "OverscrollAreas",
       depends_on: ["CSSScrollSnapTypePair"],
     },
     {
@@ -5412,9 +5429,7 @@
     {
       name: "RTCDiagnosticLogging",
       origin_trial_feature_name: "RTCDiagnosticLogging",
-      status: "experimental",
-      base_feature_status: "enabled",
-      copied_from_base_feature_if: "overridden",
+      status: "stable",
     },
     {
       name: "RTCEncodedAudioFrameConstructor",
@@ -5459,6 +5474,11 @@
       origin_trial_feature_name: "RTCLegacyCallbackBasedGetStats",
       status: "experimental",
       base_feature: "none",
+    },
+    {
+      name: "RTCLegacyDiagnosticLogging",
+      origin_trial_feature_name: "RTCDiagnosticLogging",
+      status: "experimental",
     },
     // Enables the use of |RTCRtpEncodingParameters.codec|
     {
@@ -5995,6 +6015,13 @@
       // Improves performance of event dispatching by skipping the capture
       // phase if there are no capture listeners registered on the page.
       name: "SkipEventCapture",
+      status: "stable",
+    },
+    {
+      // Kill switch for crbug.com/41254682: skips paint invalidation for
+      // paint-only style changes (e.g. animation frames) on objects that were
+      // and stay visibility:hidden.
+      name: "SkipPaintInvalidationWhileStayingInvisible",
       status: "stable",
     },
     {

@@ -29,18 +29,16 @@ export class TraceParseProgressEvent extends Event {
 
 /**
  * Parsing a trace can take time. On large traces we see a breakdown of time like so:
- *   - handleEvent() loop:  ~20%
- *   - finalize() loop:     ~60%
- *   - shallowClone calls:  ~20%
+ *   - handleEvent() loop:  ~25%
+ *   - finalize() loop:     ~75%
  * The numbers below are set so we can report a progress percentage of [0...1]
  */
 const enum ProgressPhase {
-  HANDLE_EVENT = 0.2,
-  FINALIZE = 0.8,
-  CLONE = 1.0,
+  HANDLE_EVENT = 0.25,
+  FINALIZE = 1.0,
 }
 function calculateProgress(value: number, phase: ProgressPhase): number {
-  // Finalize values should be [0.2...0.8]
+  // Finalize values should be [0.25...1].
   if (phase === ProgressPhase.FINALIZE) {
     return (value * (ProgressPhase.FINALIZE - ProgressPhase.HANDLE_EVENT)) + ProgressPhase.HANDLE_EVENT;
   }
@@ -255,7 +253,7 @@ export class TraceProcessor extends EventTarget {
     }
     options.logger?.end('parse:handler.data()');
 
-    this.dispatchEvent(new TraceParseProgressEvent({percent: ProgressPhase.CLONE}));
+    this.dispatchEvent(new TraceParseProgressEvent({percent: ProgressPhase.FINALIZE}));
 
     this.#data = parsedTrace as Handlers.Types.HandlerData;
   }

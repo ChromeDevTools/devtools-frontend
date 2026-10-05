@@ -155,9 +155,8 @@ export type ComputeAutoStepCallback = (mode: StepMode, callFrames: readonly Call
 
 /**
  * Invoked for every pause before it's presented. Returns null to present the pause, or the step to issue instead.
- * `autoSteppingContext` is the function location of the frame in which a step over started, if any.
  */
-export type BeforePausedCallback = (details: DebuggerPausedDetails, autoSteppingContext: Location|null) =>
+export type BeforePausedCallback = (details: DebuggerPausedDetails, context: StepContext|null) =>
     Promise<AutoStep|null>;
 
 export const WASM_SYMBOLS_PRIORITY: Protocol.Debugger.DebugSymbolsType[] = [
@@ -644,12 +643,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#isPausing = false;
     this.#debuggerPausedDetails = debuggerPausedDetails;
     if (this.#beforePausedCallback) {
-      // When stepping over with autostepping enabled, the context denotes the function to which autostepping is
-      // restricted to by way of its functionLocation (as per Debugger.CallFrame).
-      const autoSteppingContext = this.#stepContext?.mode === StepMode.STEP_OVER ?
-          this.#stepContext.callFrames[0]?.functionLocation() ?? null :
-          null;
-      const autoStep = await this.#beforePausedCallback(debuggerPausedDetails, autoSteppingContext);
+      const autoStep = await this.#beforePausedCallback(debuggerPausedDetails, this.#stepContext);
       if (autoStep) {
         return autoStep;
       }

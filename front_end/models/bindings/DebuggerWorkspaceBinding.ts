@@ -503,15 +503,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
 
   /** @returns null to present the pause, or the step to issue instead. */
   private async shouldPause(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
-                            autoSteppingContext: SDK.DebuggerModel.Location|
-                            null): Promise<SDK.DebuggerModel.AutoStep|null> {
+                            context: SDK.DebuggerModel.StepContext|null): Promise<SDK.DebuggerModel.AutoStep|null> {
     const {callFrames} = debuggerPausedDetails;
     const [frame] = callFrames;
     if (!frame) {
       return {command: SDK.DebuggerModel.StepMode.STEP_INTO, ranges: []};
     }
     if (frame.script.isWasm()) {
-      return await this.#shouldPauseInWasm(debuggerPausedDetails, autoSteppingContext) ?
+      return await this.#shouldPauseInWasm(debuggerPausedDetails, context) ?
           null :
           await this.computeAutoStep(SDK.DebuggerModel.StepMode.STEP_OVER, callFrames);
     }
@@ -519,7 +518,11 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   async #shouldPauseInWasm(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
-                           autoSteppingContext: SDK.DebuggerModel.Location|null): Promise<boolean> {
+                           context: SDK.DebuggerModel.StepContext|null): Promise<boolean> {
+    // When stepping over with autostepping enabled, the context denotes the function to which autostepping is restricted
+    // to by way of its functionLocation (as per Debugger.CallFrame).
+    const autoSteppingContext =
+        context?.mode === SDK.DebuggerModel.StepMode.STEP_OVER ? context.callFrames[0]?.functionLocation() : null;
     const {callFrames: [frame]} = debuggerPausedDetails;
     const functionLocation = frame.functionLocation();
     if (!autoSteppingContext || debuggerPausedDetails.reason !== Protocol.Debugger.PausedEventReason.Step ||

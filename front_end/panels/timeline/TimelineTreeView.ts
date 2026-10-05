@@ -181,9 +181,6 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   splitWidget!: UI.SplitWidget.SplitWidget;
   detailsView!: UI.Widget.Widget;
   private searchableView!: UI.SearchableView.SearchableView;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private currentThreadSetting?: Common.Settings.Setting<any>;
   private lastSelectedNodeInternal?: Trace.Extras.TraceTree.Node|null;
   private root?: Trace.Extras.TraceTree.Node;
   private currentResult?: number;
@@ -350,9 +347,6 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
       Trace.Types.Events.Name.RUN_TASK,
     ]);
     this.textFilterInternal = new TimelineRegExp();
-
-    this.currentThreadSetting = Common.Settings.Settings.instance().createSetting('timeline-tree-current-thread', 0);
-    this.currentThreadSetting.addChangeListener(() => this.refreshTree());
 
     const columns: DataGrid.DataGrid.ColumnDescriptor[] = [];
     this.populateColumns(columns);

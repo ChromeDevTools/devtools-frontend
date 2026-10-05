@@ -417,7 +417,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
       if (!image?.naturalWidth || !image.naturalHeight) {
         return;
       }
-      const imageHeight = this.height() - 2 * TimelineFilmStripOverview.Padding;
+      const imageHeight = this.height() - 2 * TimelineFilmStripOverview.PADDING;
       const imageWidth = Math.ceil(imageHeight * image.naturalWidth / image.naturalHeight);
       const popoverScale = Math.min(200 / image.naturalWidth, 1);
       this.emptyImage = new Image(image.naturalWidth * popoverScale, image.naturalHeight * popoverScale);
@@ -445,7 +445,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     if (!this.#filmStrip || this.#filmStrip.frames.length < 1) {
       return;
     }
-    const padding = TimelineFilmStripOverview.Padding;
+    const padding = TimelineFilmStripOverview.PADDING;
     const width = this.width();
 
     const zeroTime = customStartTime ?? Trace.Helpers.Timing.microToMilli(this.#filmStrip.zeroTime);
@@ -511,9 +511,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     this.frameToImagePromise = new Map();
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly Padding = 2;
+  static readonly PADDING = 2;
 }
 
 export class TimelineEventOverviewMemory extends TimelineEventOverview {

@@ -102,7 +102,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
    */
   private searchResults: PerfUI.FlameChart.DataProviderSearchResult[]|undefined = undefined;
   private eventListeners: Common.EventTarget.EventDescriptor[];
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   private readonly networkSplitWidget: UI.SplitWidget.SplitWidget;
   private mainDataProvider: TimelineFlameChartDataProvider;
   private readonly mainFlameChart: PerfUI.FlameChart.FlameChart;
@@ -131,9 +130,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   readonly #boundRefreshAfterIgnoreList: () => void;
   /** This is sorted by ts. */
   #selectedEvents: Trace.Types.Events.Event[]|null;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly groupBySetting: Common.Settings.Setting<any>;
+  private readonly groupBySetting: Common.Settings.Setting<AggregatedTimelineTreeView.GroupBy>;
   private searchableView!: UI.SearchableView.SearchableView;
   private needsResizeToPreferredHeights?: boolean;
   private selectedSearchResult?: PerfUI.FlameChart.DataProviderSearchResult;

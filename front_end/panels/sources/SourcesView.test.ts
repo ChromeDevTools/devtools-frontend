@@ -18,6 +18,7 @@ import {
   createContentProviderUISourceCodes,
   createFileSystemUISourceCode,
 } from '../../testing/UISourceCodeHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
@@ -94,11 +95,6 @@ describeWithEnvironment('SourcesView', () => {
   });
 
   it('creates editor tabs only for in-scope uiSourceCodes', async () => {
-    const addUISourceCodeSpy =
-        sinon.spy(Sources.TabbedEditorContainer.TabbedEditorContainer.prototype, 'addUISourceCode');
-    const removeUISourceCodesSpy =
-        sinon.spy(Sources.TabbedEditorContainer.TabbedEditorContainer.prototype, 'removeUISourceCodes');
-
     createContentProviderUISourceCodes({
       items: [
         {url: urlString`http://example.com/a.js`, mimeType: 'application/javascript'},
@@ -118,20 +114,17 @@ describeWithEnvironment('SourcesView', () => {
       target: target2,
     });
 
-    const sourcesView = new Sources.SourcesView.SourcesView();
+    const view = createViewFunctionStub(Sources.SourcesView.SourcesView);
+    const sourcesView = new Sources.SourcesView.SourcesView(undefined, view);
     renderElementIntoDOM(sourcesView);
     await sourcesView.updateComplete;
-    let addedURLs = addUISourceCodeSpy.args.map(args => args[0].url());
-    assert.deepEqual(addedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
-    sinon.assert.notCalled(removeUISourceCodesSpy);
+    let urls = [...view.input.uiSourceCodes].map(c => c.url());
+    assert.deepEqual(urls, ['http://example.com/a.js', 'http://example.com/b.js']);
 
-    addUISourceCodeSpy.resetHistory();
     target2.targetManager().setScopeTarget(target2);
     await sourcesView.updateComplete;
-    addedURLs = addUISourceCodeSpy.args.map(args => args[0].url());
-    assert.deepEqual(addedURLs, ['http://foo.com/script.js']);
-    const removedURLs = removeUISourceCodesSpy.args.flatMap(args => args[0].map(c => c.url()));
-    assert.deepEqual(removedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
+    urls = [...view.input.uiSourceCodes].map(c => c.url());
+    assert.deepEqual(urls, ['http://foo.com/script.js']);
     sourcesView.detach();
   });
 
@@ -142,14 +135,73 @@ describeWithEnvironment('SourcesView', () => {
       type: Persistence.PlatformFileSystem.PlatformFileSystemType.SNIPPETS,
     });
 
-    const sourcesView = new Sources.SourcesView.SourcesView();
+    const view = createViewFunctionStub(Sources.SourcesView.SourcesView);
+    const sourcesView = new Sources.SourcesView.SourcesView(undefined, view);
     renderElementIntoDOM(sourcesView);
     await sourcesView.updateComplete;
-    const removeUISourceCodesSpy =
-        sinon.spy(Sources.TabbedEditorContainer.TabbedEditorContainer.prototype, 'removeUISourceCodes');
     target2.targetManager().setScopeTarget(target2);
     await sourcesView.updateComplete;
-    sinon.assert.notCalled(removeUISourceCodesSpy);
+    const urls = [...view.input.uiSourceCodes].map(c => c.url());
+    assert.deepEqual(urls, ['snippet:///foo.js']);
+    sourcesView.detach();
+  });
+
+  it('passes sourceLocation and updates active editor state via view input callbacks', async () => {
+    const {uiSourceCode} = createFileSystemUISourceCode({
+      url: urlString`file:///path/to/file.js`,
+      mimeType: 'application/javascript',
+    });
+
+    const view = createViewFunctionStub(Sources.SourcesView.SourcesView);
+    const sourcesView = new Sources.SourcesView.SourcesView(undefined, view);
+    renderElementIntoDOM(sourcesView);
+    await sourcesView.updateComplete;
+
+    await sourcesView.showSourceLocation(uiSourceCode, {lineNumber: 5, columnNumber: 2}, true, false);
+    assert.deepEqual(view.input.sourceLocation, {
+      uiSourceCode,
+      location: {lineNumber: 5, columnNumber: 2},
+      omitFocus: true,
+      omitHighlight: false,
+    });
+
+    const sourceFrame = new Sources.UISourceCodeFrame.UISourceCodeFrame(uiSourceCode);
+    sinon.stub(sourceFrame, 'canEditSource').returns(true);
+    view.input.onEditorSelected({
+      currentFile: uiSourceCode,
+      currentView: sourceFrame,
+      previousView: null,
+      userGesture: true,
+    });
+    await sourcesView.updateComplete;
+    assert.strictEqual(sourcesView.currentUISourceCode(), uiSourceCode);
+    assert.strictEqual(sourcesView.currentSourceFrame(), sourceFrame);
+    assert.isTrue(view.input.isSearchReplaceable);
+
+    view.input.onEditorClosed(uiSourceCode);
+    await sourcesView.updateComplete;
+    assert.isNull(sourcesView.currentUISourceCode());
+    assert.isNull(sourcesView.visibleView());
+    sourcesView.detach();
+  });
+
+  it('updates layout mode and breakpoints active state in view input', async () => {
+    const view = createViewFunctionStub(Sources.SourcesView.SourcesView);
+    const sourcesView = new Sources.SourcesView.SourcesView(undefined, view);
+    renderElementIntoDOM(sourcesView);
+    await sourcesView.updateComplete;
+
+    assert.isTrue(view.input.breakpointsActive);
+    assert.isFalse(view.input.isVertical);
+    assert.isTrue(view.input.isInWrapper);
+
+    sourcesView.setLayoutMode(true, false);
+    sourcesView.toggleBreakpointsActiveState(false);
+    await sourcesView.updateComplete;
+
+    assert.isFalse(view.input.breakpointsActive);
+    assert.isTrue(view.input.isVertical);
+    assert.isFalse(view.input.isInWrapper);
     sourcesView.detach();
   });
 

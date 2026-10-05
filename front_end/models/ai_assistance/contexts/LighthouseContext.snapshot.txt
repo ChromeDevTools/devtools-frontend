@@ -34,6 +34,11 @@ Lighthouse Version: 1.0.0
 
 ## Category Scores
 - Accessibility: 50
+
+## Failing audits
+
+### Accessibility (categoryId: "accessibility")
+- Accessibility Audit: 50
 === end content
 
 Title: LighthouseContext with AI V2 architecture enabled returns the report summary as user facing details
@@ -41,7 +46,7 @@ Content:
 [
   {
     "title": "Lighthouse report",
-    "text": "# Lighthouse Report Summary\nURL: https://example.com\nFetch Time: 2026-03-12\nLighthouse Version: 1.0.0\n\n## Category Scores\n- Accessibility: 50"
+    "text": "# Lighthouse Report Summary\nURL: https://example.com\nFetch Time: 2026-03-12\nLighthouse Version: 1.0.0\n\n## Category Scores\n- Accessibility: 50\n\n## Failing audits\n\n### Accessibility (categoryId: \"accessibility\")\n- Accessibility Audit: 50"
   }
 ]
 === end content

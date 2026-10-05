@@ -133,3 +133,14 @@ The following audits in this category have a score below 90 and may need attenti
       * **Resource Size**: 22.2 kB
       * **Est Savings**: 16.9 kB
 === end content
+
+Title: LighthouseFormatter lists failing audits grouped by category with the category ID
+Content:
+## Failing audits
+
+### Performance (categoryId: "performance")
+- First Audit: 80
+
+### Accessibility (categoryId: "accessibility")
+- No failing audits.
+=== end content

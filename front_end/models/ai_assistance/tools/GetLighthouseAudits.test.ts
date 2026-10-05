@@ -58,7 +58,7 @@ describe('GetLighthouseAuditsTool', () => {
     assert.strictEqual(result.result.audits, 'Category "performance" not found.');
   });
 
-  it('returns summary and audits for all categories when categoryId is "all"', async () => {
+  it('returns audits for all categories without the summary when categoryId is "all"', async () => {
     const multiCategoryReport = {
       finalDisplayedUrl: 'https://example.com',
       categories: {
@@ -96,8 +96,8 @@ describe('GetLighthouseAuditsTool', () => {
 
     const result = await tool.handler({categoryId: 'all'}, multiCategoryContext);
     assertIsResult(result);
-    assert.include(result.result.audits, '# Lighthouse Report Summary');
-    assert.include(result.result.audits, '## Category Scores');
+    assert.notInclude(result.result.audits, '# Lighthouse Report Summary');
+    assert.notInclude(result.result.audits, '## Category Scores');
     assert.include(result.result.audits, '# Audits for Accessibility');
     assert.include(result.result.audits, '# Audits for Performance');
     assert.isUndefined(result.widgets);

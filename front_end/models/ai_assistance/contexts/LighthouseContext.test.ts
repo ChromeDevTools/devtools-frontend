@@ -188,15 +188,19 @@ describe('LighthouseContext', function() {
       snapshotTester.assert(this, JSON.stringify(details, null, 2));
     });
 
-    it('includes every category score but no audits when the report has multiple categories', async () => {
-      const context = new AiAssistance.LighthouseContext.LighthouseContext(multiCategoryReport);
+    it('includes every category score and failing audit title but no audit details for multiple categories',
+       async () => {
+         const context = new AiAssistance.LighthouseContext.LighthouseContext(multiCategoryReport);
 
-      const details = await context.getPromptDetails();
-      assert.exists(details);
-      assert.include(details, '- Accessibility: 80');
-      assert.include(details, '- Performance: 90');
-      assert.notInclude(details, 'Audits for');
-    });
+         const details = await context.getPromptDetails();
+         assert.exists(details);
+         assert.include(details, '- Accessibility: 80');
+         assert.include(details, '- Performance: 90');
+         assert.include(details, '### Accessibility (categoryId: "accessibility")\n- Low contrast: 0');
+         assert.include(details, '### Performance (categoryId: "performance")\n- First Contentful Paint: 50');
+         assert.notInclude(details, 'Audits for');
+         assert.notInclude(details, 'Fix color contrast.');
+       });
 
     it('returns critical error payload when all category scores are null', async () => {
       const context = new AiAssistance.LighthouseContext.LighthouseContext(failedReport);

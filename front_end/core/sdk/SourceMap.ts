@@ -904,6 +904,11 @@ export class SourceMap {
   hasOutlinedFunctions(): boolean {
     return this.hasEncodedScopeInfo() && (this.#scopesInfo?.hasOutlinedFunctions() ?? false);
   }
+
+  /** See {@link SourceMapScopesInfo.artificialFunctionRanges}. Empty without encoded scopes. */
+  artificialFunctionRanges(): PositionRange[] {
+    return this.hasEncodedScopeInfo() ? this.#scopesInfo?.artificialFunctionRanges() ?? [] : [];
+  }
 }
 
 /** @returns a copy of the {@link entry} that is marked as a range mapping. */

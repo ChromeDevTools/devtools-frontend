@@ -623,6 +623,27 @@ export class SourceMapScopesInfo {
                         hasOutlined(range.children));
     return hasOutlined(this.#generatedRanges);
   }
+
+  /**
+   * @returns the "artificial" generated functions (in the DWARF sense): functions that contain no authored code at all
+   *          (no original scope anywhere in their subtree), e.g. compiler helpers. Sorted by start position,
+   *          non-overlapping.
+   */
+  artificialFunctionRanges(): PositionRange[] {
+    const hasOriginalScope = (range: ScopesCodec.GeneratedRange): boolean =>
+        range.originalScope !== undefined || range.children.some(hasOriginalScope);
+    const result: PositionRange[] = [];
+    (function walk(ranges: ScopesCodec.GeneratedRange[]) {
+      for (const range of ranges) {
+        if (range.isStackFrame && !hasOriginalScope(range)) {
+          result.push({start: range.start, end: range.end});
+        } else {
+          walk(range.children);
+        }
+      }
+    })(this.#generatedRanges);
+    return result;
+  }
 }
 
 /** A range of generated positions, relative to the start of the script. `end` is exclusive. */

@@ -564,6 +564,10 @@ describe('SourceMapScopesInfo', () => {
       assert.isTrue(createInfo().hasOutlinedFunctions());
       assert.isFalse(createInfo({outlined: false}).hasOutlinedFunctions());
     });
+
+    it('artificialFunctionRanges returns generated functions without any original scope', () => {
+      assert.deepEqual(createInfo().artificialFunctionRanges(), [range(5, 2, 5, 16), range(8, 0, 8, 14)]);
+    });
   });
 
   describe('hasVariablesAndBindings', () => {

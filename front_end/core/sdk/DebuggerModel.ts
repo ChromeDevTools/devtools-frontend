@@ -134,6 +134,12 @@ export const enum StepMode {
   STEP_OVER = 'StepOver',
 }
 
+/** A CDP step command. `ranges` is passed as `skipList` to stepInto/stepOver, and ignored for stepOut. */
+export interface AutoStep {
+  readonly command: StepMode;
+  readonly ranges: readonly LocationRange[];
+}
+
 export const WASM_SYMBOLS_PRIORITY: Protocol.Debugger.DebugSymbolsType[] = [
   Protocol.Debugger.DebugSymbolsType.ExternalDWARF,
   Protocol.Debugger.DebugSymbolsType.EmbeddedDWARF,
@@ -434,19 +440,13 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#computeAutoStepRangesCallback = callback;
   }
 
-  private async computeAutoStepSkipList(mode: StepMode): Promise<Protocol.Debugger.LocationRange[]> {
-    let ranges: LocationRange[] = [];
+  private async computeAutoStepRanges(mode: StepMode): Promise<LocationRange[]> {
     if (this.#computeAutoStepRangesCallback && this.#debuggerPausedDetails &&
         this.#debuggerPausedDetails.callFrames.length > 0) {
       const [callFrame] = this.#debuggerPausedDetails.callFrames;
-      ranges = await this.#computeAutoStepRangesCallback.call(null, mode, callFrame);
+      return await this.#computeAutoStepRangesCallback.call(null, mode, callFrame);
     }
-    const skipList = ranges.map(({start, end}) => ({
-                                  scriptId: start.scriptId,
-                                  start: {lineNumber: start.lineNumber, columnNumber: start.columnNumber},
-                                  end: {lineNumber: end.lineNumber, columnNumber: end.columnNumber},
-                                }));
-    return sortAndMergeRanges(skipList);
+    return [];
   }
 
   async stepInto(): Promise<void> {
@@ -469,8 +469,20 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     if (mode === StepMode.STEP_OVER) {
       this.#autoSteppingContext = this.#debuggerPausedDetails?.callFrames[0]?.functionLocation() ?? null;
     }
-    const skipList = await this.computeAutoStepSkipList(mode);
-    switch (mode) {
+    const ranges = await this.computeAutoStepRanges(mode);
+    // Step out of an inlined function by stepping over its body.
+    const command = mode === StepMode.STEP_OUT && ranges.length > 0 ? StepMode.STEP_OVER : mode;
+    this.#issueStep({command, ranges}, breakOnAsyncCall);
+  }
+
+  #issueStep({command, ranges}: AutoStep, breakOnAsyncCall = false): void {
+    const skipList =
+        sortAndMergeRanges(ranges.map(({start, end}) => ({
+                                        scriptId: start.scriptId,
+                                        start: {lineNumber: start.lineNumber, columnNumber: start.columnNumber},
+                                        end: {lineNumber: end.lineNumber, columnNumber: end.columnNumber},
+                                      })));
+    switch (command) {
       case StepMode.STEP_INTO:
         void this.agent.invoke_stepInto({breakOnAsyncCall, skipList});
         break;
@@ -478,12 +490,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
         void this.agent.invoke_stepOver({skipList});
         break;
       case StepMode.STEP_OUT:
-        if (skipList.length !== 0) {
-          // Step out of an inlined function by stepping over its body.
-          void this.agent.invoke_stepOver({skipList});
-        } else {
-          void this.agent.invoke_stepOut();
-        }
+        void this.agent.invoke_stepOut();
         break;
     }
   }

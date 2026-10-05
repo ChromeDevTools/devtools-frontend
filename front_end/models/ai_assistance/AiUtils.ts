@@ -122,6 +122,10 @@ export function isGeminiBranding(): boolean {
   return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }
 
+export function isNaturalLanguageInterfaceEnabled(): boolean {
+  return Boolean(Root.Runtime.hostConfig.devToolsAiNaturalLanguageInterface?.enabled);
+}
+
 /**
  * Returns true if context selection / dynamic context switching is enabled.
  *

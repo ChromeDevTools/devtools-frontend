@@ -1886,6 +1886,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
               type: 'needs_approval',
               sideEffectDialog: {
                 description: data.description,
+                permissionPrompt: data.permissionPrompt,
+                permissionTitle: data.permissionTitle,
                 onAnswer: (decision: AiAssistanceModel.Tool.PermissionDecision) => {
                   data.confirm(decision);
                   step.state = {type: 'completed'};

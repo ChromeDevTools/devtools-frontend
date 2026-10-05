@@ -484,6 +484,7 @@ export const knownContextValues: Set<string> = new Set([
   'alt-pagedown',
   'alt-pageup',
   'alt-tab',
+  'always-allow-execute-code',
   'am',
   'anchor-link',
   'anchor-name',

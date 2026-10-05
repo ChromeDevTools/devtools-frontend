@@ -132,6 +132,26 @@ const UIStringsNotTranslate = {
    */
   declineActionRequestApproval: 'Cancel',
   /**
+   * @description Button text in the permission prompt that skips the tool call.
+   */
+  skipToolCall: 'Skip',
+  /**
+   * @description Button text in the permission prompt that allows the tool call once.
+   */
+  allowThisTime: 'Yes, allow this time',
+  /**
+   * @description Button text in the permission prompt that allows the tool call now and in the future.
+   */
+  allowAlways: 'Yes, always allow',
+  /**
+   * @description Fallback title of the permission prompt when the tool has no title.
+   */
+  allowThisAction: 'Allow this action?',
+  /**
+   * @description Footer of the permission prompt.
+   */
+  relevantDataIsSentToGoogle: 'Relevant data is sent to Google. Change permissions in settings at any time.',
+  /**
    * @description The fallback text when a step has no title yet
    */
   investigating: 'Investigating',
@@ -437,6 +457,14 @@ export interface ConfirmSideEffectDialog {
    * Callback invoked when the user resolves the dialog with their decision.
    */
   onAnswer: (decision: AiAssistanceModel.Tool.PermissionDecision) => void;
+  /**
+   * Which choices the permission prompt offers. Behaves as `ALLOW_ONCE` when unset.
+   */
+  permissionPrompt?: AiAssistanceModel.Tool.PermissionPrompt;
+  /**
+   * Title of the permission prompt, e.g. "Allow reading cookie values?".
+   */
+  permissionTitle?: string;
 }
 
 /**
@@ -871,17 +899,99 @@ function renderSideEffectStepsUI(input: ChatMessageViewInput, steps: Step[]): Li
   if (sideEffectSteps.length === 0) {
     return Lit.nothing;
   }
+  // With the natural language interface the approval is rendered as a
+  // dedicated permission prompt instead of the side-effect confirmation UI.
+  const showPermissionPrompt = (step: Step): boolean =>
+      AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() && step.state.type === 'needs_approval';
   // clang-format off
   return html`
     ${sideEffectSteps.map(step => html`
       <div class="side-effect-container">
-        ${renderStep({
-           step,
-           markdownRenderer: input.markdownRenderer,
-           isLast: true,
-        })}
+        ${showPermissionPrompt(step) ?
+          renderPermissionPrompt(step) :
+          renderStep({
+            step,
+            markdownRenderer: input.markdownRenderer,
+            isLast: true,
+          })}
       </div> `)}
   `;
+  // clang-format on
+}
+
+/**
+ * Renders the permission prompt for a step that needs approval. Used when
+ * `AiUtils.isNaturalLanguageInterfaceEnabled()` is on; otherwise
+ * `renderSideEffectStepsUI` falls back to `renderStep`, which shows the
+ * legacy Allow / Deny buttons inside the `renderSideEffectConfirmationUi`.
+ *
+ * A separate UI is needed because the natural language interface runs tools
+ * that need richer consent than "run this code?": a tool-specific title and
+ * description, and an "Allow always" option (`sideEffectDialog.permissionPrompt`).
+ * It is a standalone card rather than a collapsible step so the user sees the
+ * question without expanding anything.
+ *
+ * TODO(b/516828269): Remove `renderSideEffectConfirmationUi` once the natural
+ * language interface launches.
+ */
+function renderPermissionPrompt(step: Step): Lit.LitTemplate {
+  if (step.state.type !== 'needs_approval') {
+    return Lit.nothing;
+  }
+  const dialog = step.state.sideEffectDialog;
+  const title = dialog.permissionTitle ?? lockedString(UIStringsNotTranslate.allowThisAction);
+
+  const description =
+      dialog.description ? html`<p class="permission-prompt-description">${dialog.description}</p>` : Lit.nothing;
+
+  const code = step.code ? html`<devtools-code-block
+      class="permission-prompt-code"
+      .code=${step.code.trim()}
+      .codeLang=${'js'}
+      .displayNotice=${true}
+      .header=${lockedString(UIStringsNotTranslate.codeToExecute)}
+    ></devtools-code-block>` :
+                           Lit.nothing;
+
+  const allowAlwaysButton = dialog.permissionPrompt === AiAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS ?
+      html`<devtools-button
+      .data=${{
+        variant: Buttons.Button.Variant.OUTLINED,
+        jslogContext: 'always-allow-execute-code',
+      } as Buttons.Button.ButtonData}
+      @click=${() => dialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS)}
+    >${lockedString(UIStringsNotTranslate.allowAlways)}</devtools-button>` :
+      Lit.nothing;
+
+  // clang-format off
+  return html`
+  <div class="permission-prompt"
+    jslog=${VisualLogging.section('side-effect-confirmation')}>
+    <div class="permission-prompt-header">
+      <devtools-icon name="lock"></devtools-icon>
+      <h3 class="permission-prompt-title">${title}</h3>
+    </div>
+    ${description}
+    ${code}
+    <p class="permission-prompt-footer">${lockedString(UIStringsNotTranslate.relevantDataIsSentToGoogle)}</p>
+    <div class="permission-prompt-buttons">
+      <devtools-button
+        .data=${{
+          variant: Buttons.Button.Variant.TEXT,
+          jslogContext: 'decline-execute-code',
+        } as Buttons.Button.ButtonData}
+        @click=${() => dialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.REJECT)}
+      >${lockedString(UIStringsNotTranslate.skipToolCall)}</devtools-button>
+      ${allowAlwaysButton}
+      <devtools-button
+        .data=${{
+          variant: Buttons.Button.Variant.PRIMARY,
+          jslogContext: 'accept-execute-code',
+        } as Buttons.Button.ButtonData}
+        @click=${() => dialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE)}
+      >${lockedString(UIStringsNotTranslate.allowThisTime)}</devtools-button>
+    </div>
+  </div>`;
   // clang-format on
 }
 

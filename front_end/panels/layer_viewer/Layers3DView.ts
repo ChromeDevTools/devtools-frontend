@@ -199,7 +199,7 @@ export class Layers3DView extends Layers3DViewBase
         SettingsUI.LayerViewerSettings.showSlowScrollRectsSettingDescriptor, this.panelToolbar);
     this.showPaintsSetting.addChangeListener(this.updatePaints, this);
     Common.Settings.Settings.instance()
-      .moduleSetting('frame-viewer-chrome-window')
+        .resolve(SettingsUI.LayerViewerSettings.chromeWindowSettingDescriptor)
         .addChangeListener(this.updateData, this);
 
     this.performUpdate();
@@ -731,7 +731,8 @@ export class Layers3DView extends Layers3DViewBase
       return;
     }
 
-    const drawChrome = Common.Settings.Settings.instance().moduleSetting('frame-viewer-chrome-window').get() &&
+    const drawChrome =
+        Common.Settings.Settings.instance().resolve(SettingsUI.LayerViewerSettings.chromeWindowSettingDescriptor).get() &&
         this.chromeTextures.length >= 3 && this.chromeTextures.indexOf(undefined) < 0;
     const z = (this.maxDepth + 1) * LayerSpacing;
     const borderWidth = Math.ceil(ViewportBorderWidth * this.scale);

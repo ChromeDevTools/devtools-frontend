@@ -17,3 +17,10 @@ export const showSlowScrollRectsSettingDescriptor: Common.Settings.SettingDescri
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.GLOBAL,
 };
+
+export const chromeWindowSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'frame-viewer-chrome-window',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

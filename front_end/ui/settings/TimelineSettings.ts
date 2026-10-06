@@ -59,3 +59,10 @@ export const timelineScreenshotCaptureModeSettingDescriptor: Common.Settings.Set
   defaultValue: 'auto',
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const timelineShowScreenshotsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-show-screenshots',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.GLOBAL,
+};

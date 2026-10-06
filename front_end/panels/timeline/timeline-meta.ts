@@ -524,13 +524,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineSc
   title: i18nLazyString(UIStrings.screenshotCapture),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineShowScreenshotsSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.GLOBAL,
   title: i18nLazyString(UIStrings.screenshots),
-  settingName: 'timeline-show-screenshots',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

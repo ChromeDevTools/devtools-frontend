@@ -40,4 +40,29 @@ describeWithEnvironment('StylePropertyUtils', () => {
             {name: 'background-image', value: 'url("paper.gif")'} as SDK.CSSProperty.CSSProperty),
         'backgroundImage: \'url("paper.gif")\'');
   });
+
+  it('escapes single quotes in values', () => {
+    assert.strictEqual(Elements.StylePropertyUtils.getCssDeclarationAsJavascriptProperty(
+                           {name: 'font-family', value: '\'Open Sans\''} as SDK.CSSProperty.CSSProperty),
+                       String.raw`fontFamily: '\'Open Sans\''`);
+  });
+
+  it('escapes backslashes in values', () => {
+    assert.strictEqual(Elements.StylePropertyUtils.getCssDeclarationAsJavascriptProperty(
+                           {name: 'content', value: String.raw`'\201C'`} as SDK.CSSProperty.CSSProperty),
+                       String.raw`content: '\'\\201C\''`);
+  });
+
+  it('escapes backslashes and single quotes in value', () => {
+    assert.strictEqual(
+        Elements.StylePropertyUtils.getCssDeclarationAsJavascriptProperty(
+            {name: '--pwn', value: String.raw`\',x:globalThis.PWNED=1,y:1//`} as SDK.CSSProperty.CSSProperty),
+        String.raw`'--pwn': '\\\',x:globalThis.PWNED=1,y:1//'`);
+  });
+
+  it('escapes backslashes and single quotes in custom property names', () => {
+    assert.strictEqual(Elements.StylePropertyUtils.getCssDeclarationAsJavascriptProperty(
+                           {name: String.raw`--a\'b`, value: '1px'} as SDK.CSSProperty.CSSProperty),
+                       String.raw`'--a\\\'b': '1px'`);
+  });
 });

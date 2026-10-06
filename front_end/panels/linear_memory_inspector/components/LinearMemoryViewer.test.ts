@@ -12,6 +12,7 @@ import {
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
+import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
@@ -389,6 +390,33 @@ describe('LinearMemoryViewer', () => {
     const {component} = await setUpComponentWithHighlightInfo();
     const byteCells = getElementsWithinComponent(component, '.byte-cell.focused-area', HTMLSpanElement);
     assert.isEmpty(byteCells);
+  });
+
+  it('computes rows and bytes per row from the layout measured by the view', async () => {
+    const view = createViewFunctionStub(LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer, {
+      measureLayout: () => ({
+        byteCellWidth: 20,
+        textCellWidth: 10,
+        dividerWidth: 10,
+        addressTextAndDividerWidth: 80,
+        rowHeight: 20,
+      }),
+    });
+    const component = new LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer(view);
+    // The stubbed view renders nothing, so size the host explicitly.
+    component.style.display = 'block';
+    component.style.width = '500px';
+    component.style.height = '500px';
+    renderElementIntoDOM(component);
+
+    const numBytesPerPage = await setDataAndWaitForResize(component, createComponentData());
+
+    // Each unsplittable group of 4 bytes needs 4 * (20 + 10) + 8 (margin) = 128px, and
+    // 500 - 1 - 80 - 10 = 409px are available for groups, so 3 groups (12 bytes) fit
+    // per row. 500 / 20 = 25 rows fit vertically.
+    assert.strictEqual(view.input.numBytesInRow, 12);
+    assert.strictEqual(view.input.numRows, 25);
+    assert.strictEqual(numBytesPerPage, 12 * 25);
   });
 });
 

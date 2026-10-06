@@ -2168,11 +2168,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   duplicateNode(node: SDK.DOMModel.DOMNode): void {
     void node.duplicate().then(({error, node: newNode}) => {
-      if (!error) {
-        const duplicatedNode = newNode ?? node;
+      if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements.DOMChanges.trackNodeDuplication(changeTracker, duplicatedNode,
-                                                 buildChangeSelector(changeTracker, duplicatedNode));
+        Elements.DOMChanges.trackNodeDuplication(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
       }
     });
   }
@@ -2309,10 +2307,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     const wasExpanded = this.#draggedNodeWasExpanded;
     draggedNode.moveTo(parentNode, anchorNode, (error, newNode) => {
-      if (!error) {
-        const movedNode = newNode ?? draggedNode;
+      if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements.DOMChanges.trackNodeDrop(changeTracker, movedNode, buildChangeSelector(changeTracker, movedNode));
+        Elements.DOMChanges.trackNodeDrop(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
       }
       this.selectNodeAfterEdit(wasExpanded, error, newNode);
     });
@@ -2491,10 +2488,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       const wasExpanded = this.isNodeExpanded(node);
       if (event.key === 'ArrowUp' && node.previousSibling) {
         node.moveTo(node.parentNode, node.previousSibling, (error, newNode) => {
-          if (!error) {
-            const movedNode = newNode ?? node;
+          if (!error && newNode) {
             const changeTracker = this.changeTracker;
-            Elements.DOMChanges.trackNodeMove(changeTracker, movedNode, buildChangeSelector(changeTracker, movedNode),
+            Elements.DOMChanges.trackNodeMove(changeTracker, newNode, buildChangeSelector(changeTracker, newNode),
                                               /* directionUp= */ true);
           }
           this.selectNodeAfterEdit(wasExpanded, error, newNode);
@@ -2504,10 +2500,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       }
       if (event.key === 'ArrowDown' && node.nextSibling) {
         node.moveTo(node.parentNode, node.nextSibling.nextSibling, (error, newNode) => {
-          if (!error) {
-            const movedNode = newNode ?? node;
+          if (!error && newNode) {
             const changeTracker = this.changeTracker;
-            Elements.DOMChanges.trackNodeMove(changeTracker, movedNode, buildChangeSelector(changeTracker, movedNode),
+            Elements.DOMChanges.trackNodeMove(changeTracker, newNode, buildChangeSelector(changeTracker, newNode),
                                               /* directionUp= */ false);
           }
           this.selectNodeAfterEdit(wasExpanded, error, newNode);
@@ -2657,10 +2652,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     const clipboardNode = this.#clipboardData.node;
     if (this.#clipboardData.isCut) {
       clipboardNode.moveTo(targetNode, null, (error, newNode) => {
-        if (!error) {
-          const movedNode = newNode ?? clipboardNode;
+        if (!error && newNode) {
           const changeTracker = this.changeTracker;
-          Elements.DOMChanges.trackNodePaste(changeTracker, movedNode, buildChangeSelector(changeTracker, movedNode),
+          Elements.DOMChanges.trackNodePaste(changeTracker, newNode, buildChangeSelector(changeTracker, newNode),
                                              /* isCut= */ true);
         }
         this.selectNodeAfterEdit(wasExpanded, error, newNode);
@@ -2668,10 +2662,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       this.setClipboardData(null);
     } else {
       clipboardNode.copyTo(targetNode, null, (error, newNode) => {
-        if (!error) {
-          const addedNode = newNode ?? clipboardNode;
+        if (!error && newNode) {
           const changeTracker = this.changeTracker;
-          Elements.DOMChanges.trackNodePaste(changeTracker, addedNode, buildChangeSelector(changeTracker, addedNode),
+          Elements.DOMChanges.trackNodePaste(changeTracker, newNode, buildChangeSelector(changeTracker, newNode),
                                              /* isCut= */ false);
         }
         this.selectNodeAfterEdit(wasExpanded, error, newNode);

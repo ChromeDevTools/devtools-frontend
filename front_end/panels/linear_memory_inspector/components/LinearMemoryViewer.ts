@@ -19,26 +19,8 @@ export interface LinearMemoryViewerData {
   focus: boolean;
   highlightInfo?: HighlightInfo;
   focusedMemoryHighlight?: HighlightInfo;
-}
-
-export class ByteSelectedEvent extends Event {
-  static readonly eventName = 'byteselected';
-  data: number;
-
-  constructor(address: number) {
-    super(ByteSelectedEvent.eventName);
-    this.data = address;
-  }
-}
-
-export class ResizeEvent extends Event {
-  static readonly eventName = 'resize';
-  data: number;
-
-  constructor(numBytesPerPage: number) {
-    super(ResizeEvent.eventName);
-    this.data = numBytesPerPage;
-  }
+  onByteSelected?: (address: number) => void;
+  onNumBytesPerPageChanged?: (numBytesPerPage: number) => void;
 }
 
 const BYTE_GROUP_MARGIN = 8;
@@ -55,6 +37,8 @@ export class LinearMemoryViewer extends HTMLElement {
   #memoryOffset = 0;
   #highlightInfo?: HighlightInfo;
   #focusedMemoryHighlight?: HighlightInfo;
+  #onByteSelected?: (address: number) => void;
+  #onNumBytesPerPageChanged?: (numBytesPerPage: number) => void;
 
   #numRows = 1;
   #numBytesInRow = BYTE_GROUP_SIZE;
@@ -78,6 +62,8 @@ export class LinearMemoryViewer extends HTMLElement {
     this.#focusedMemoryHighlight = data.focusedMemoryHighlight;
     this.#memoryOffset = data.memoryOffset;
     this.#focusOnByte = data.focus;
+    this.#onByteSelected = data.onByteSelected;
+    this.#onNumBytesPerPageChanged = data.onNumBytesPerPageChanged;
     this.#update();
   }
 
@@ -108,7 +94,7 @@ export class LinearMemoryViewer extends HTMLElement {
 
   #resize(): void {
     this.#update();
-    this.dispatchEvent(new ResizeEvent(this.#numBytesInRow * this.#numRows));
+    this.#onNumBytesPerPageChanged?.(this.#numBytesInRow * this.#numRows);
   }
 
   /** Recomputes the number of rows and (byte) columns that fit into the current view. */
@@ -207,7 +193,7 @@ export class LinearMemoryViewer extends HTMLElement {
 
     if (newAddress !== undefined && newAddress !== this.#lastKeyUpdateSent) {
       this.#lastKeyUpdateSent = newAddress;
-      this.dispatchEvent(new ByteSelectedEvent(newAddress));
+      this.#onByteSelected?.(newAddress);
     }
   }
 
@@ -293,7 +279,7 @@ export class LinearMemoryViewer extends HTMLElement {
   }
 
   #onSelectedByte(index: number): void {
-    this.dispatchEvent(new ByteSelectedEvent(index));
+    this.#onByteSelected?.(index);
   }
 
   #shouldBeHighlighted(index: number): boolean {

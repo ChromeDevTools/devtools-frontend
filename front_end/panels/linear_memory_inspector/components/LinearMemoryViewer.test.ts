@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import {
   assertElements,
   assertScreenshot,
   getElementsWithinComponent,
   getElementWithinComponent,
-  getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 
@@ -21,18 +21,28 @@ export const VIEWER_TEXT_CELL_SELECTOR = '.text-cell';
 export const VIEWER_ROW_SELECTOR = '.row';
 export const VIEWER_ADDRESS_SELECTOR = '.address';
 
+/**
+ * Sets the data on the viewer and resolves with the number of bytes per page
+ * once the viewer has completed its initial layout pass.
+ */
+function setDataAndWaitForResize(
+    component: LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer,
+    data: LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewerData): Promise<number> {
+  return new Promise<number>(resolve => {
+    component.data = {...data, onNumBytesPerPageChanged: resolve};
+  });
+}
+
 describe('LinearMemoryViewer', () => {
   async function setUpComponent() {
     const component = createComponent();
     const data = createComponentData();
-    component.data = data;
+    const onByteSelected = sinon.spy();
 
-    const event =
-        await getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ResizeEvent>(component, 'resize');
-    const numBytesPerPage = event.data;
+    const numBytesPerPage = await setDataAndWaitForResize(component, {...data, onByteSelected});
     assert.isAbove(numBytesPerPage, 4);
 
-    return {component, data};
+    return {component, data, onByteSelected};
   }
 
   async function setUpComponentWithHighlightInfo() {
@@ -48,11 +58,7 @@ describe('LinearMemoryViewer', () => {
       highlightInfo,
     };
 
-    const eventPromise =
-        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ResizeEvent>(component, 'resize');
-    component.data = dataWithHighlightInfo;
-    const event = await eventPromise;
-    const numBytesPerPage = event.data;
+    const numBytesPerPage = await setDataAndWaitForResize(component, dataWithHighlightInfo);
     assert.isAbove(numBytesPerPage, 4);
 
     return {component, dataWithHighlightInfo};
@@ -112,15 +118,11 @@ describe('LinearMemoryViewer', () => {
     assert.strictEqual(selectedCell, cellAtAddress);
   }
 
-  async function assertEventTriggeredOnArrowNavigation(
-      component: LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer, code: string,
-      expectedAddress: number) {
-    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent>(
-        component, 'byteselected');
+  function assertByteSelectedOnKeyDown(component: LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer,
+                                       onByteSelected: sinon.SinonSpy, code: string, expectedAddress: number) {
     const view = getElementWithinComponent(component, '.view', HTMLDivElement);
     view.dispatchEvent(new KeyboardEvent('keydown', {code}));
-    const event = await eventPromise;
-    assert.strictEqual(event.data, expectedAddress);
+    sinon.assert.calledOnceWithExactly(onByteSelected, expectedAddress);
   }
 
   it('correctly renders bytes given a memory offset greater than zero', () => {
@@ -136,10 +138,8 @@ describe('LinearMemoryViewer', () => {
     assert.strictEqual(selectedValue, data.memory[data.address - data.memoryOffset]);
   });
 
-  it('triggers an event on resize', async () => {
-    const data = createComponentData();
+  it('calls onNumBytesPerPageChanged on resize', async () => {
     const component = new LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer();
-    component.data = data;
 
     const thinWrapper = document.createElement('div');
     thinWrapper.style.width = '100px';
@@ -148,11 +148,14 @@ describe('LinearMemoryViewer', () => {
     thinWrapper.appendChild(component);
     renderElementIntoDOM(thinWrapper);
 
-    const eventPromise =
-        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ResizeEvent>(component, 'resize');
-    thinWrapper.style.width = '800px';
+    const numBytesPerPageBefore = await setDataAndWaitForResize(component, createComponentData());
 
-    assert.isNotNull(await eventPromise);
+    const numBytesPerPageAfter = await new Promise<number>(resolve => {
+      component.data = {...createComponentData(), onNumBytesPerPageChanged: resolve};
+      thinWrapper.style.width = '800px';
+    });
+
+    assert.isAbove(numBytesPerPageAfter, numBytesPerPageBefore);
   });
 
   it('renders one address per row', async () => {
@@ -210,18 +213,15 @@ describe('LinearMemoryViewer', () => {
     }
   });
 
-  it('triggers an event on selecting a byte value', async () => {
-    const {component, data} = await setUpComponent();
+  it('calls onByteSelected on selecting a byte value', async () => {
+    const {component, data, onByteSelected} = await setUpComponent();
     assert.isNotNull(component.shadowRoot);
 
     const byte = component.shadowRoot.querySelector(VIEWER_BYTE_CELL_SELECTOR);
     assert.instanceOf(byte, HTMLSpanElement);
 
-    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent>(
-        component, 'byteselected');
     byte.click();
-    const {data: address} = await eventPromise;
-    assert.strictEqual(address, data.memoryOffset);
+    sinon.assert.calledOnceWithExactly(onByteSelected, data.memoryOffset);
   });
 
   it('renders as many ascii values as byte values in a row', async () => {
@@ -256,18 +256,15 @@ describe('LinearMemoryViewer', () => {
     }
   });
 
-  it('triggers an event on selecting an ascii value', async () => {
-    const {component, data} = await setUpComponent();
+  it('calls onByteSelected on selecting an ascii value', async () => {
+    const {component, data, onByteSelected} = await setUpComponent();
     assert.isNotNull(component.shadowRoot);
 
     const asciiCell = component.shadowRoot.querySelector(VIEWER_TEXT_CELL_SELECTOR);
     assert.instanceOf(asciiCell, HTMLSpanElement);
 
-    const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent>(
-        component, 'byteselected');
     asciiCell.click();
-    const {data: address} = await eventPromise;
-    assert.strictEqual(address, data.memoryOffset);
+    sinon.assert.calledOnceWithExactly(onByteSelected, data.memoryOffset);
   });
 
   it('highlights selected byte value on setting an address', () => {
@@ -288,58 +285,58 @@ describe('LinearMemoryViewer', () => {
     assertSelectedCellIsHighlighted(component, VIEWER_ADDRESS_SELECTOR, 0);
   });
 
-  it('triggers an event on arrow left', async () => {
-    const {component, data} = await setUpComponent();
+  it('calls onByteSelected on arrow left', async () => {
+    const {component, data, onByteSelected} = await setUpComponent();
     const addressBefore = data.address;
     const expectedAddress = addressBefore - 1;
-    await assertEventTriggeredOnArrowNavigation(component, 'ArrowLeft', expectedAddress);
+    assertByteSelectedOnKeyDown(component, onByteSelected, 'ArrowLeft', expectedAddress);
   });
 
-  it('triggers an event on arrow right', async () => {
-    const {component, data} = await setUpComponent();
+  it('calls onByteSelected on arrow right', async () => {
+    const {component, data, onByteSelected} = await setUpComponent();
     const addressBefore = data.address;
     const expectedAddress = addressBefore + 1;
-    await assertEventTriggeredOnArrowNavigation(component, 'ArrowRight', expectedAddress);
+    assertByteSelectedOnKeyDown(component, onByteSelected, 'ArrowRight', expectedAddress);
   });
 
-  it('triggers an event on arrow down', async () => {
-    const {component, data} = await setUpComponent();
+  it('calls onByteSelected on arrow down', async () => {
+    const {component, data, onByteSelected} = await setUpComponent();
     const addressBefore = data.address;
 
     const bytesPerRow = getCellsPerRow(component, VIEWER_BYTE_CELL_SELECTOR);
     const numBytesPerRow = bytesPerRow.length;
     const expectedAddress = addressBefore + numBytesPerRow;
-    await assertEventTriggeredOnArrowNavigation(component, 'ArrowDown', expectedAddress);
+    assertByteSelectedOnKeyDown(component, onByteSelected, 'ArrowDown', expectedAddress);
   });
 
-  it('triggers an event on arrow up', async () => {
-    const {component, data} = await setUpComponent();
+  it('calls onByteSelected on arrow up', async () => {
+    const {component, data, onByteSelected} = await setUpComponent();
     const addressBefore = data.address;
 
     const bytesPerRow = getCellsPerRow(component, VIEWER_BYTE_CELL_SELECTOR);
     const numBytesPerRow = bytesPerRow.length;
     const expectedAddress = addressBefore - numBytesPerRow;
-    await assertEventTriggeredOnArrowNavigation(component, 'ArrowUp', expectedAddress);
+    assertByteSelectedOnKeyDown(component, onByteSelected, 'ArrowUp', expectedAddress);
   });
 
-  it('triggers an event on page down', async () => {
-    const {component, data} = await setUpComponent();
+  it('calls onByteSelected on page down', async () => {
+    const {component, data, onByteSelected} = await setUpComponent();
     const addressBefore = data.address;
 
     const bytes = getElementsWithinComponent(component, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
     const numBytesPerPage = bytes.length;
     const expectedAddress = addressBefore + numBytesPerPage;
-    await assertEventTriggeredOnArrowNavigation(component, 'PageDown', expectedAddress);
+    assertByteSelectedOnKeyDown(component, onByteSelected, 'PageDown', expectedAddress);
   });
 
-  it('triggers an event on page up', async () => {
-    const {component, data} = await setUpComponent();
+  it('calls onByteSelected on page up', async () => {
+    const {component, data, onByteSelected} = await setUpComponent();
     const addressBefore = data.address;
 
     const bytes = getElementsWithinComponent(component, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
     const numBytesPerPage = bytes.length;
     const expectedAddress = addressBefore - numBytesPerPage;
-    await assertEventTriggeredOnArrowNavigation(component, 'PageUp', expectedAddress);
+    assertByteSelectedOnKeyDown(component, onByteSelected, 'PageUp', expectedAddress);
   });
 
   it('does not highlight any bytes when no highlight info set', async () => {
@@ -413,17 +410,14 @@ describe('LinearMemoryViewer Screenshots', () => {
     // The viewer measures its cells to compute the layout, so make sure the
     // fonts are available before it does so.
     await document.fonts.ready;
-    const resizePromise =
-        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ResizeEvent>(component, 'resize');
-    component.data = {
+    await setDataAndWaitForResize(component, {
       memory: Uint8Array.from({length: 1000}, (_, i) => i),
       address: 10,
       memoryOffset: 0,
       focus: true,
       highlightInfo: {startAddress: 2, size: 21, type: 'bool[]'},
       focusedMemoryHighlight: {startAddress: 8, size: 6, type: 'int32'},
-    };
-    await resizePromise;
+    });
 
     await assertScreenshot('linear_memory_inspector/viewer.png');
   });

@@ -126,7 +126,7 @@ describe('LinearMemoryInspector', () => {
     const expectedHistory = [2, 1, 2];
 
     for (const index of byteIndices) {
-      view.input.onByteSelected(new LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent(index));
+      view.input.onByteSelected(index);
       await view.nextInput;
     }
 
@@ -142,7 +142,7 @@ describe('LinearMemoryInspector', () => {
     const historyLength = 10;
 
     for (let i = 1; i < historyLength; ++i) {
-      view.input.onByteSelected(new LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent(i));
+      view.input.onByteSelected(i);
       const newAddress = (await view.nextInput).address;
       visitedByteValue.push(newAddress);
     }
@@ -251,8 +251,7 @@ describe('LinearMemoryInspector', () => {
     const numBytesPerPage = view.input.memorySlice.length;
     const pageNumber = view.input.address / numBytesPerPage;
     const addressOfFirstByte = pageNumber * numBytesPerPage + 1;
-    view.input.onByteSelected(
-        new LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent(addressOfFirstByte));
+    view.input.onByteSelected(addressOfFirstByte);
     const address = await addressPromise;
     assert.strictEqual(address, addressOfFirstByte);
   });

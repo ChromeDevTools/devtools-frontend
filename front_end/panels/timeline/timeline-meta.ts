@@ -519,13 +519,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineCa
   title: i18nLazyString(UIStrings.enableSelectorStats),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineScreenshotCaptureModeSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SESSION,
   title: i18nLazyString(UIStrings.screenshotCapture),
-  settingName: 'timeline-screenshot-capture-mode',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'auto',
 });
 
 Common.Settings.registerSettingExtension({

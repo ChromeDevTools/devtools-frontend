@@ -514,8 +514,8 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
         SettingUIRegistration.TimelineSettings.timelineCaptureLayersAndPicturesSettingDescriptor);
     this.captureSelectorStatsSetting = Common.Settings.Settings.instance().resolve(
         SettingUIRegistration.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor);
-    this.screenshotCaptureModeSetting =
-        Common.Settings.Settings.instance().moduleSetting('timeline-screenshot-capture-mode');
+    this.screenshotCaptureModeSetting = Common.Settings.Settings.instance().resolve(
+        SettingUIRegistration.TimelineSettings.timelineScreenshotCaptureModeSettingDescriptor);
 
     this.showScreenshotsSetting = Common.Settings.Settings.instance().moduleSetting('timeline-show-screenshots');
     this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);

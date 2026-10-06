@@ -52,3 +52,10 @@ export const timelineCaptureSelectorStatsSettingDescriptor: Common.Settings.Sett
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const timelineScreenshotCaptureModeSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'timeline-screenshot-capture-mode',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'auto',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

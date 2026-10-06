@@ -176,6 +176,15 @@ describeWithEnvironment('TabbedPane', () => {
     const domOrder = Array.from(tabbedPane.tabsElement.children).map(el => el.id.replace(/^tab-/, ''));
     assert.deepEqual(domOrder, ['0', '7', '1', '2', '3', '4', '5', '6', '8', '9']);
   });
+
+  it('does not keep a reference to the last selected tab after it is closed', () => {
+    tabbedPane.selectTab('9');
+    assert.exists((tabbedPane as unknown as {lastSelectedOverflowTab?: unknown}).lastSelectedOverflowTab);
+
+    tabbedPane.closeTabs(tabbedPane.tabIds());
+
+    assert.isUndefined((tabbedPane as unknown as {lastSelectedOverflowTab?: unknown}).lastSelectedOverflowTab);
+  });
 });
 
 describeWithEnvironment('TabbedPaneElement', () => {
@@ -734,6 +743,20 @@ describeWithEnvironment('TabbedPaneElement', () => {
       const tab2 = widget.tabsById.get('tab2')!;
       assert.isAtLeast(tab1.width() - tab2.width(), 100);
       assert.strictEqual(tab1.tabElement.style.width, `${tab1.width()}px`);
+    });
+
+    it('detaches slots from the tab header when the tab is closed', async () => {
+      const widget = renderTabbedPane(html`<div id="tab1" title="Tab 1">Content 1</div>`);
+      await doubleRaf();
+      const tabElement = widget.tabsById.get('tab1')!.tabElement;
+      const slots = tabElement.querySelectorAll('slot');
+      assert.lengthOf(slots, 2);
+
+      widget.closeTab('tab1');
+
+      for (const slot of slots) {
+        assert.isNull(slot.parentElement);
+      }
     });
   });
 });

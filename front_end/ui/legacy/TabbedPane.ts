@@ -329,9 +329,13 @@ export class TabbedPane extends TabbedPaneBase {
 
     this.tabsHistory.splice(this.tabsHistory.indexOf(tab), 1);
     this.#tabs.splice(this.#tabs.indexOf(tab), 1);
+    if (this.lastSelectedOverflowTab === tab) {
+      delete this.lastSelectedOverflowTab;
+    }
     if (tab.shown) {
       this.hideTabElement(tab);
     }
+    tab.clearSlots();
 
     const eventData: EventData = {tabId: id, view: tab.view, isUserGesture: userGesture};
     this.dispatchEventToListeners(Events.TabClosed, eventData);
@@ -1412,12 +1416,24 @@ export class TabbedPaneTab {
     slot.name = `${kind}-${this.#id}`;
     this.#slotContainers[kind] = container;
     container.style.display = 'none';
-    slot.addEventListener('slotchange', () => {
+    // Listen on the container (slotchange bubbles) rather than the slot itself:
+    // Blink's SlotAssignment caches <slot> elements in its ShadowRoot until the
+    // next slot assignment recalc, so anything retained by the <slot> stays
+    // alive after the tab is closed if no recalc follows.
+    container.addEventListener('slotchange', () => {
       this.#hasSlottedContent[kind] = slot.assignedElements().length > 0;
       container.style.display = this.#hasSlottedContent[kind] ? '' : 'none';
       delete this.measuredWidth;
       this.tabbedPane.requestUpdate();
     });
+  }
+
+  clearSlots(): void {
+    // Detach the <slot> elements from the tab header so that Blink's
+    // SlotAssignment cache cannot retain the tab element (and through its
+    // listeners, this TabbedPaneTab and its view) via parent pointers.
+    this.#slotContainers.icon?.removeChildren();
+    this.#slotContainers.suffix?.removeChildren();
   }
 
   #measureSlotContainer(kind: 'icon'|'suffix'): number {

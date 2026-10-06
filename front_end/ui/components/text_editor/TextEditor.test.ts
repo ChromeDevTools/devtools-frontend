@@ -22,6 +22,7 @@ import {encodeSourceMap} from '../../../testing/SourceMapEncoder.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as ScopesCodec from '../../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as UI from '../../legacy/legacy.js';
+import * as ThemeSupport from '../../legacy/theme_support/theme_support.js';
 
 import * as TextEditor from './text_editor.js';
 
@@ -118,6 +119,24 @@ describeWithEnvironment('TextEditor', () => {
       const scrollLeftAfterReconnect = editor.editor.scrollDOM.scrollLeft;
       assert.strictEqual(scrollTopBeforeRemove, scrollTopAfterReconnect);
       assert.strictEqual(scrollLeftBeforeRemove, scrollLeftAfterReconnect);
+    });
+
+    it('removes its theme change listener when disconnected', () => {
+      const themeSupport = ThemeSupport.ThemeSupport.instance();
+      const addSpy = sinon.spy(themeSupport, 'addEventListener');
+      const removeSpy = sinon.spy(themeSupport, 'removeEventListener');
+      const editor = new TextEditor.TextEditor.TextEditor(makeState(''));
+
+      renderElementIntoDOM(editor);
+      editor.remove();
+
+      const themeListenersOf = (spy: typeof addSpy|typeof removeSpy) =>
+          spy.getCalls()
+              .filter(call => call.args[0] === ThemeSupport.ThemeChangeEvent.eventName)
+              .map(call => call.args[1]);
+      const added = themeListenersOf(addSpy);
+      assert.isNotEmpty(added);
+      assert.sameMembers(themeListenersOf(removeSpy), added);
     });
   });
 

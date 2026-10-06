@@ -2,3 +2,39 @@ team_email: "devtools-dev@chromium.org"
 buganizer_public: {
   component_id: 1457055
 }
+agentic_review: {
+  capability_groups: {
+    name: "core-review"
+    review_capability_skills: [".agents/skills/code-review/SKILL.md"]
+  }
+  capability_groups: {
+    name: "typescript-and-models"
+    path_expression: ["front_end/.*\\.ts", ".*BUILD\\.gn", ".*\\.gni"]
+    path_expression_exclusion: [".*\\.test\\.ts"]
+    review_capability_skills: [
+      ".agents/skills/devtools-imports/SKILL.md",
+      ".agents/skills/devtools-model-management/SKILL.md",
+      ".agents/skills/devtools-setting-migration/SKILL.md",
+      ".agents/skills/devtools-unicode-escaping/SKILL.md",
+      ".agents/skills/devtools-ux-writing-refactor/SKILL.md"
+    ]
+  }
+  capability_groups: {
+    name: "ui-and-widgets"
+    path_expression: ["front_end/(panels|ui)/.*\\.(ts|css)"]
+    path_expression_exclusion: [".*\\.test\\.ts"]
+    review_capability_skills: [
+      ".agents/skills/ui-widgets/SKILL.md",
+      ".agents/skills/ui-eng-vision-orchestrator/SKILL.md"
+    ]
+  }
+  capability_groups: {
+    name: "tests"
+    path_expression: [".*\\.test\\.ts", "test/.*\\.ts"]
+    review_capability_skills: [
+      ".agents/skills/devtools-testing-guidance/SKILL.md",
+      ".agents/skills/foundation-test-migration/SKILL.md",
+      ".agents/skills/fix-tests/SKILL.md"
+    ]
+  }
+}

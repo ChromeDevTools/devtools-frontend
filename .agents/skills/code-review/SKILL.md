@@ -10,17 +10,21 @@ Use it for self-review before upload and for reviewing other people's CLs.
 
 ## 1. Gather context
 
-- **Local change:** `git diff origin/main...HEAD` (or `git show HEAD` for a
-  single-commit branch). To learn about the branch and upload workflow, see the
-  `devtools-version-control` skill.
-- **Gerrit CL:** strip the leading `)]}'` line from each response to get JSON:
-  - Diff: `git cl diff` (for the current branch), or fetch the patch set.
-  - Inline comments:
-    `curl -s https://chromium-review.googlesource.com/changes/devtools%2Fdevtools-frontend~<CL_NUMBER>/comments | tail -n +2`
-  - Messages:
-    `.../changes/devtools%2Fdevtools-frontend~<CL_NUMBER>/messages`
-- Read the CL description first. Then check that the diff does what the
-  description says, and nothing else.
+- **Automated Review Agent (diff already in prompt):** Do not run shell
+  commands. Use `read_file` to inspect enclosing classes/functions/tests and
+  `search_files` to verify callers or conventions across the repository.
+- **Local CLI / Interactive session (no diff in prompt):**
+  - **Local change:** `git diff origin/main...HEAD` (or `git show HEAD` for a
+    single-commit branch). To learn about the branch and upload workflow, see the
+    `devtools-version-control` skill.
+  - **Gerrit CL:** strip the leading `)]}'` line from each response to get JSON:
+    - Diff: `git cl diff` (for the current branch), or fetch the patch set.
+    - Inline comments:
+      `curl -s https://chromium-review.googlesource.com/changes/devtools%2Fdevtools-frontend~<CL_NUMBER>/comments | tail -n +2`
+    - Messages:
+      `.../changes/devtools%2Fdevtools-frontend~<CL_NUMBER>/messages`
+  - Read the CL description first. Then check that the diff does what the
+    description says, and nothing else.
 
 ## 2. Consult the specialized skills
 
@@ -29,7 +33,7 @@ Load the skill that matches what the diff touches, and apply its rules:
 | If the diff touches… | Use skill |
 | :--- | :--- |
 | Any `import` statement, or a new cross-module dependency | `devtools-imports` |
-| `UI.Widget`, lit-html views, components, CSS | `devtools-ui-widgets` |
+| `UI.Widget`, lit-html views, components, CSS | `ui-widgets` |
 | Migration of legacy imperative DOM to widgets or Lit | `ui-eng-vision-orchestrator` (and its sub-skills) |
 | New or changed tests: choosing unit, API, or E2E | `devtools-testing-guidance` |
 | Tests that use `describeWithEnvironment` or `describeWithMockConnection`, or foundation modules | `foundation-test-migration` |

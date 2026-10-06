@@ -4,6 +4,7 @@
 
 import '../../ui/legacy/components/data_grid/data_grid.js';
 
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -54,6 +55,14 @@ const UIStrings = {
    * @description Context menu item for copying the announcement element HTML snippet to the clipboard.
    */
   copyElementHtml: 'Copy element HTML',
+  /**
+   * @description Context menu item to reveal the announcement source element in the Elements panel DOM tree.
+   */
+  revealInElements: 'Reveal in Elements panel',
+  /**
+   * @description Context menu item to reveal the announcement source element in the full Accessibility tree.
+   */
+  revealInA11yTree: 'Reveal in Accessibility tree',
 } as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityAnnouncementRecordingListView.ts', UIStrings);
@@ -124,10 +133,13 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format on
 };
 
-export class AccessibilityAnnouncementRecordingListView extends UI.Widget.VBox {
+const AccessibilityAnnouncementRecordingListViewBase:
+    Common.ObjectWrapper.EventMixin<AccessibilityAnnouncementRecordingListView.EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+
+export class AccessibilityAnnouncementRecordingListView extends AccessibilityAnnouncementRecordingListViewBase {
   #items: readonly A11yAnnouncement[] = [];
   #selectedItem: A11yAnnouncement|null = null;
-  #onSelect: ((item: A11yAnnouncement|null) => void)|null = null;
   readonly #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
@@ -164,10 +176,6 @@ export class AccessibilityAnnouncementRecordingListView extends UI.Widget.VBox {
     return this.#selectedItem;
   }
 
-  set onSelect(onSelect: (item: A11yAnnouncement|null) => void) {
-    this.#onSelect = onSelect;
-  }
-
   reset(): void {
     this.#items = [];
     this.#selectedItem = null;
@@ -175,6 +183,16 @@ export class AccessibilityAnnouncementRecordingListView extends UI.Widget.VBox {
   }
 
   #populateContextMenu(contextMenu: UI.ContextMenu.ContextMenu, item: A11yAnnouncement): void {
+    if (item.element) {
+      const revealSection = contextMenu.revealSection();
+      revealSection.appendItem(i18nString(UIStrings.revealInElements), () => {
+        this.dispatchEventToListeners(AccessibilityAnnouncementRecordingListView.Events.REVEAL_IN_ELEMENTS, item);
+      }, {jslogContext: 'reveal-in-elements'});
+      revealSection.appendItem(i18nString(UIStrings.revealInA11yTree), () => {
+        this.dispatchEventToListeners(AccessibilityAnnouncementRecordingListView.Events.REVEAL_IN_A11Y_TREE, item);
+      }, {jslogContext: 'reveal-in-a11y-tree'});
+    }
+
     if (item.message) {
       contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyMessage), () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.message);
@@ -197,13 +215,27 @@ export class AccessibilityAnnouncementRecordingListView extends UI.Widget.VBox {
       },
       onSelect: (item: A11yAnnouncement) => {
         this.selectedItem = item;
-        this.#onSelect?.(item);
+        this.dispatchEventToListeners(AccessibilityAnnouncementRecordingListView.Events.ANNOUNCEMENT_SELECTED, item);
       },
       onDeselect: () => {
         this.selectedItem = null;
-        this.#onSelect?.(null);
+        this.dispatchEventToListeners(AccessibilityAnnouncementRecordingListView.Events.ANNOUNCEMENT_SELECTED, null);
       },
     };
     this.#view(input, undefined, this.contentElement);
+  }
+}
+
+export namespace AccessibilityAnnouncementRecordingListView {
+  export const enum Events {
+    ANNOUNCEMENT_SELECTED = 'announcement-selected',
+    REVEAL_IN_ELEMENTS = 'reveal-in-elements',
+    REVEAL_IN_A11Y_TREE = 'reveal-in-a11y-tree',
+  }
+
+  export interface EventTypes {
+    [Events.ANNOUNCEMENT_SELECTED]: A11yAnnouncement|null;
+    [Events.REVEAL_IN_ELEMENTS]: A11yAnnouncement;
+    [Events.REVEAL_IN_A11Y_TREE]: A11yAnnouncement;
   }
 }

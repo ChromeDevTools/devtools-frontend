@@ -76,30 +76,36 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingListView', () => {
     sinon.assert.callCount(view, callCount);
   });
 
-  it('handles onSelect callback and updates selectedItem', async () => {
+  it('dispatches Events.ANNOUNCEMENT_SELECTED and updates selectedItem on onSelect', async () => {
     const {view, listView} = await createListView();
-    const onSelectSpy = sinon.spy();
-    listView.onSelect = onSelectSpy;
+    const selectSpy = sinon.spy();
+    listView.addEventListener(Accessibility.AccessibilityAnnouncementRecordingListView
+                                  .AccessibilityAnnouncementRecordingListView.Events.ANNOUNCEMENT_SELECTED,
+                              selectSpy);
 
     view.input.onSelect(mockAnnouncement);
 
-    sinon.assert.calledOnceWithExactly(onSelectSpy, mockAnnouncement);
+    sinon.assert.calledOnce(selectSpy);
+    assert.strictEqual(selectSpy.firstCall.firstArg.data, mockAnnouncement);
     assert.strictEqual(listView.selectedItem, mockAnnouncement);
     const input = await view.nextInput;
     assert.strictEqual(input.selectedItem, mockAnnouncement);
   });
 
-  it('handles onDeselect callback and resets selectedItem', async () => {
+  it('dispatches Events.ANNOUNCEMENT_SELECTED with null on onDeselect', async () => {
     const {view, listView} = await createListView();
     listView.selectedItem = mockAnnouncement;
     await view.nextInput;
 
-    const onSelectSpy = sinon.spy();
-    listView.onSelect = onSelectSpy;
+    const selectSpy = sinon.spy();
+    listView.addEventListener(Accessibility.AccessibilityAnnouncementRecordingListView
+                                  .AccessibilityAnnouncementRecordingListView.Events.ANNOUNCEMENT_SELECTED,
+                              selectSpy);
 
     view.input.onDeselect();
 
-    sinon.assert.calledOnceWithExactly(onSelectSpy, null);
+    sinon.assert.calledOnce(selectSpy);
+    assert.isNull(selectSpy.firstCall.firstArg.data);
     assert.isNull(listView.selectedItem);
     const input = await view.nextInput;
     assert.isNull(input.selectedItem);
@@ -144,7 +150,64 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingListView', () => {
       sinon.assert.calledOnceWithExactly(copyTextStub, mockAnnouncement.element);
     });
 
-    it('omits clipboard actions when message or element is empty', async () => {
+    it('populates reveal in elements and reveal in accessibility tree actions and dispatches events', async () => {
+      const {view, listView} = await createListView([mockAnnouncement]);
+      const revealElementsSpy = sinon.spy();
+      const revealA11yTreeSpy = sinon.spy();
+      listView.addEventListener(Accessibility.AccessibilityAnnouncementRecordingListView
+                                    .AccessibilityAnnouncementRecordingListView.Events.REVEAL_IN_ELEMENTS,
+                                revealElementsSpy);
+      listView.addEventListener(Accessibility.AccessibilityAnnouncementRecordingListView
+                                    .AccessibilityAnnouncementRecordingListView.Events.REVEAL_IN_A11Y_TREE,
+                                revealA11yTreeSpy);
+
+      const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('contextmenu'));
+      view.input.onContextMenu(contextMenu, mockAnnouncement);
+
+      const revealItems = contextMenu.revealSection().items;
+      assert.lengthOf(revealItems, 2);
+
+      const revealElementsItem = revealItems.find(item => item.buildDescriptor().label === 'Reveal in Elements panel');
+      assert.exists(revealElementsItem);
+      assert.strictEqual(revealElementsItem.buildDescriptor().jslogContext, 'reveal-in-elements');
+
+      const revealA11yItem = revealItems.find(item => item.buildDescriptor().label === 'Reveal in Accessibility tree');
+      assert.exists(revealA11yItem);
+      assert.strictEqual(revealA11yItem.buildDescriptor().jslogContext, 'reveal-in-a11y-tree');
+
+      contextMenu.invokeHandler(revealElementsItem.id());
+      sinon.assert.calledOnce(revealElementsSpy);
+      assert.strictEqual(revealElementsSpy.firstCall.firstArg.data, mockAnnouncement);
+
+      contextMenu.invokeHandler(revealA11yItem.id());
+      sinon.assert.calledOnce(revealA11yTreeSpy);
+      assert.strictEqual(revealA11yTreeSpy.firstCall.firstArg.data, mockAnnouncement);
+    });
+
+    it('dispatches DOM CustomEvents through eventMixin when rows are selected or revealed', async () => {
+      const {view, listView} = await createListView([mockAnnouncement]);
+      const domSelectedSpy = sinon.spy();
+      const domRevealSpy = sinon.spy();
+
+      listView.element.addEventListener('announcement-selected', domSelectedSpy);
+      listView.element.addEventListener('reveal-in-elements', domRevealSpy);
+
+      view.input.onSelect(mockAnnouncement);
+      sinon.assert.calledOnce(domSelectedSpy);
+      assert.strictEqual((domSelectedSpy.firstCall.firstArg as CustomEvent).detail, mockAnnouncement);
+
+      const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('contextmenu'));
+      view.input.onContextMenu(contextMenu, mockAnnouncement);
+      const revealElementsItem =
+          contextMenu.revealSection().items.find(item => item.buildDescriptor().label === 'Reveal in Elements panel');
+      assert.exists(revealElementsItem);
+      contextMenu.invokeHandler(revealElementsItem.id());
+
+      sinon.assert.calledOnce(domRevealSpy);
+      assert.strictEqual((domRevealSpy.firstCall.firstArg as CustomEvent).detail, mockAnnouncement);
+    });
+
+    it('omits clipboard and reveal actions when message and element are empty', async () => {
       const emptyAnnouncement: A11yAnnouncement = {
         api: AnnouncementApi.ARIA_LIVE,
         message: '',
@@ -158,6 +221,7 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingListView', () => {
       view.input.onContextMenu(contextMenu, emptyAnnouncement);
 
       assert.isEmpty(contextMenu.clipboardSection().items);
+      assert.isEmpty(contextMenu.revealSection().items);
     });
 
     it('forwards CustomEvent<ContextMenu> from DEFAULT_VIEW row to onContextMenu', async () => {

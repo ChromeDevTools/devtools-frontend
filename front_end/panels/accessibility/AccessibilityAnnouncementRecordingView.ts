@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -109,6 +109,8 @@ export interface BlockedTargetInfo {
   reason: string;
 }
 
+export type RevealTargetPanel = 'elements'|'accessibility';
+
 export interface ViewInput {
   isRecording: boolean;
   onToggleRecording: () => void;
@@ -121,6 +123,10 @@ export interface ViewInput {
   onTextFilterChange: (text: string) => void;
   blockedTargets: BlockedTargetInfo[];
   announcements: readonly A11yAnnouncement[];
+  selectedAnnouncement: A11yAnnouncement|null;
+  onSelectAnnouncement: (item: A11yAnnouncement|null) => void;
+  onRevealInElements: (item: A11yAnnouncement) => void;
+  onRevealInA11yTree: (item: A11yAnnouncement) => void;
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -200,7 +206,15 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         </div>
       ` : Lit.nothing}
       <div class="announcements-main-pane">
-        ${widget(AccessibilityAnnouncementRecordingListView, {items: input.announcements})}
+        <devtools-widget
+          ${widget(AccessibilityAnnouncementRecordingListView, {
+            items: input.announcements,
+            selectedItem: input.selectedAnnouncement,
+          })}
+          @announcement-selected=${(e: CustomEvent<A11yAnnouncement|null>) => input.onSelectAnnouncement(e.detail)}
+          @reveal-in-elements=${(e: CustomEvent<A11yAnnouncement>) => input.onRevealInElements(e.detail)}
+          @reveal-in-a11y-tree=${(e: CustomEvent<A11yAnnouncement>) => input.onRevealInA11yTree(e.detail)}>
+        </devtools-widget>
       </div>
     </div>`,
     target);
@@ -215,6 +229,8 @@ declare global {
     __announcementsRecorderBinding_loaded?: boolean;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __announcementsRecorderBinding_cleanup?: () => void;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __announcementsRecorderGetElement?: (id: string) => Element | undefined;
   }
 }
 
@@ -237,6 +253,12 @@ export function injectedScript(ariaLiveApi: string, jsTriggeredApi: string): voi
 
   // Assigns a unique tracking identifier using an in-memory WeakMap (does not mutate DOM elements).
   const elementIdMap = new WeakMap<Element, string>();
+  const elementRegistry = new Map<string, WeakRef<Element>>();
+  const registryCleanup = typeof FinalizationRegistry !== 'undefined' ?
+      new FinalizationRegistry<string>((id: string) => {
+        elementRegistry.delete(id);
+      }) :
+      null;
   let recordIdCounter = 0;
   function getOrCreateRecordId(element: Element|null|undefined): string {
     if (!element || element.nodeType !== Node.ELEMENT_NODE) {
@@ -247,9 +269,15 @@ export function injectedScript(ariaLiveApi: string, jsTriggeredApi: string): voi
       recordIdCounter++;
       id = String(recordIdCounter);
       elementIdMap.set(element, id);
+      elementRegistry.set(id, new WeakRef(element));
+      registryCleanup?.register(element, id);
     }
     return id;
   }
+
+  window.__announcementsRecorderGetElement = function(id: string): Element|undefined {
+    return elementRegistry.get(id)?.deref();
+  };
 
   // Traverses to parent element or across shadow root boundary to host element.
   function getParentOrHost(node: Node|null|undefined): Element|null {
@@ -642,6 +670,8 @@ export function injectedScript(ariaLiveApi: string, jsTriggeredApi: string): voi
     }
     delete window.__announcementsRecorderBinding_loaded;
     delete window.__announcementsRecorderBinding_cleanup;
+    elementRegistry.clear();
+    delete window.__announcementsRecorderGetElement;
   };
 }
 
@@ -765,6 +795,7 @@ export function buildCsvContent(announcements: readonly A11yAnnouncement[]): str
 export class AccessibilityAnnouncementRecordingView extends AccessibilitySubPane implements SDK.TargetManager.Observer {
   #announcements: A11yAnnouncement[] = [];
   #filteredAnnouncements: readonly A11yAnnouncement[]|null = null;
+  #selectedAnnouncement: A11yAnnouncement|null = null;
   #isRecording = false;
   #blockedTargets = new Map<SDK.Target.Target, string>();
   #scriptIdentifiers = new Map<SDK.Target.Target, Protocol.Page.ScriptIdentifier>();
@@ -951,6 +982,7 @@ export class AccessibilityAnnouncementRecordingView extends AccessibilitySubPane
   clearAnnouncements(): void {
     this.#announcements = [];
     this.#filteredAnnouncements = [];
+    this.#selectedAnnouncement = null;
     this.requestUpdate();
   }
 
@@ -1040,6 +1072,72 @@ export class AccessibilityAnnouncementRecordingView extends AccessibilitySubPane
     return this.#buildCsvContent();
   }
 
+  #onSelectAnnouncement = (item: A11yAnnouncement|null): void => {
+    this.#selectedAnnouncement = item;
+    this.requestUpdate();
+  };
+
+  async #revealElement(item: A11yAnnouncement, targetPanel: RevealTargetPanel): Promise<void> {
+    const target = item.target ?? SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+      return;
+    }
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    if (!runtimeModel || !domModel) {
+      return;
+    }
+
+    // Live DOM elements cannot cross the CDP binding string boundary directly,
+    // so elementId acts as an in-memory registry lookup key to fetch the node on
+    // demand. An announcement may lack a valid elementId in several scenarios:
+    // - Document-level announcements: When Document.prototype.ariaNotify is called
+    //   directly without a specific element node.
+    // - Detached or non-element nodes: If an announcement was recorded on a node
+    //   that lacked an element context when getOrCreateRecordId evaluated.
+    // - Older or synthetic payloads: Payloads constructed in unit tests or external
+    //   fixtures where elementId was omitted or passed as "".
+    if (!item.elementId) {
+      return;
+    }
+
+    try {
+      const response = await target.runtimeAgent().invoke_evaluate({
+        expression: `window.__announcementsRecorderGetElement?.(${JSON.stringify(item.elementId)})`,
+        objectGroup: 'reveal-node',
+      });
+      if (response.result && response.result.type === 'object' && response.result.subtype !== 'null') {
+        const remoteObject = runtimeModel.createRemoteObject(response.result);
+        const domNode = await domModel.pushObjectAsNodeToFrontend(remoteObject);
+        if (domNode) {
+          const toggleAction = UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-a11y-tree') ?
+              UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree') :
+              null;
+          if (targetPanel === 'accessibility') {
+            if (toggleAction && !toggleAction.toggled()) {
+              await toggleAction.execute();
+            }
+          } else if (targetPanel === 'elements') {
+            if (toggleAction && toggleAction.toggled()) {
+              await toggleAction.execute();
+            }
+          }
+          await Common.Revealer.reveal(domNode);
+        }
+      }
+    } finally {
+      runtimeModel.releaseObjectGroup('reveal-node');
+    }
+  }
+
+  revealElementForTest(item: A11yAnnouncement, targetPanel: RevealTargetPanel): Promise<void> {
+    return this.#revealElement(item, targetPanel);
+  }
+
+  selectedAnnouncementForTest(): A11yAnnouncement|null {
+    return this.#selectedAnnouncement;
+  }
+
   override performUpdate(): void {
     const blockedTargets: BlockedTargetInfo[] = [];
     for (const [target, reason] of this.#blockedTargets) {
@@ -1074,6 +1172,14 @@ export class AccessibilityAnnouncementRecordingView extends AccessibilitySubPane
       },
       blockedTargets,
       announcements: filteredAnnouncements,
+      selectedAnnouncement: this.#selectedAnnouncement,
+      onSelectAnnouncement: this.#onSelectAnnouncement,
+      onRevealInElements: (item: A11yAnnouncement) => {
+        void this.#revealElement(item, 'elements');
+      },
+      onRevealInA11yTree: (item: A11yAnnouncement) => {
+        void this.#revealElement(item, 'accessibility');
+      },
     };
     this.#view(input, undefined, this.contentElement);
   }

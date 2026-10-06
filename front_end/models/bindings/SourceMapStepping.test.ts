@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -29,8 +30,22 @@ import * as Formatter from '../formatter/formatter.js';
 // 10:   b();                    }
 // 11: }                         function h(){x();}  <- helper without original scope
 const GENERATED = 'function F(){\na();\nb();\nc();\no();\nx();\ne();\n}\nfunction o(){\nd();\n}\nfunction h(){x();}\n';
+const MAPPINGS = [
+  '0:0 => index.ts:0:0',
+  '1:0 => index.ts:1:2',
+  '2:0 => index.ts:10:2',
+  '3:0 => index.ts:3:2',
+  '4:0 => index.ts:4:2',
+  '5:0',
+  '6:0 => index.ts:7:2',
+  '7:0 => index.ts:8:0',
+  '8:0 => index.ts:4:2',
+  '9:0 => index.ts:5:4',
+  '10:0 => index.ts:6:2',
+  '11:0',
+];
 
-function createSourceMap(outlined: boolean): SDK.SourceMap.SourceMapV3 {
+function createSourceMap(outlined: boolean, mapped = true): SDK.SourceMap.SourceMapV3 {
   const builder = new ScopesCodec.ScopeInfoBuilder();
   builder.startSource()
       .startScope(0, 0, {kind: 'global', key: 'global'})
@@ -52,20 +67,7 @@ function createSourceMap(outlined: boolean): SDK.SourceMap.SourceMapV3 {
       .startRange(11, 0, {isStackFrame: true})
       .endRange(11, 18)
       .endRange(12, 0);
-  const mappings = encodeSourceMap([
-    '0:0 => index.ts:0:0',
-    '1:0 => index.ts:1:2',
-    '2:0 => index.ts:10:2',
-    '3:0 => index.ts:3:2',
-    '4:0 => index.ts:4:2',
-    '5:0',
-    '6:0 => index.ts:7:2',
-    '7:0 => index.ts:8:0',
-    '8:0 => index.ts:4:2',
-    '9:0 => index.ts:5:4',
-    '10:0 => index.ts:6:2',
-    '11:0',
-  ]);
+  const mappings = mapped ? encodeSourceMap(MAPPINGS) : {version: 3, sources: ['index.ts'], mappings: ''};
   return ScopesCodec.encode(builder.build(), mappings as ScopesCodec.SourceMapJson) as SDK.SourceMap.SourceMapV3;
 }
 
@@ -111,10 +113,11 @@ describe('SourceMapStepping', () => {
     Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
   });
 
-  async function addScript({outlined}: {outlined: boolean}): Promise<SDK.Script.Script> {
+  async function addScript({outlined, mapped = true}: {outlined: boolean, mapped?: boolean}):
+      Promise<SDK.Script.Script> {
     return await backend.addScript(target, {url: 'http://example.com/index.js', content: GENERATED}, {
       url: 'http://example.com/index.js.map',
-      content: createSourceMap(outlined),
+      content: createSourceMap(outlined, mapped),
     });
   }
 
@@ -157,6 +160,20 @@ describe('SourceMapStepping', () => {
     await paused;
   }
 
+  /** Pauses after a step and waits until the next step command, asserting that the pause is not presented. */
+  async function pauseAndExpectAutoStep(callFrames: Protocol.Debugger.CallFrame[]): Promise<StepRequest> {
+    const presented = sinon.spy();
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerPaused, presented);
+    const request = nextRequest();
+    backend.cdpConnection.dispatchEvent('Debugger.resumed', undefined, target.sessionId);
+    backend.cdpConnection.dispatchEvent(
+        'Debugger.paused', {callFrames, reason: Protocol.Debugger.PausedEventReason.Step}, target.sessionId);
+    const result = await request;
+    debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerPaused, presented);
+    sinon.assert.notCalled(presented);
+    return result;
+  }
+
   async function step(method: () => Promise<void>): Promise<StepRequest> {
     const request = nextRequest();
     void method();
@@ -182,5 +199,64 @@ describe('SourceMapStepping', () => {
 
     assert.strictEqual(method, 'Debugger.stepOver');
     assert.deepEqual(skipList, [range(script, 2, 0, 2, 4)]);
+  });
+
+  it('keeps stepping over unmapped code', async () => {
+    const script = await addScript({outlined: false});
+    await pauseAndWait([frame(script, 4, 0)]);
+    assert.strictEqual((await step(() => debuggerModel.stepOver())).method, 'Debugger.stepOver');
+
+    assert.strictEqual((await pauseAndExpectAutoStep([frame(script, 5, 0)])).method, 'Debugger.stepOver');
+    await pauseAndWait([frame(script, 6, 0)], Protocol.Debugger.PausedEventReason.Step);
+    assert.lengthOf(requests, 2);
+  });
+
+  it('keeps stepping into unmapped code', async () => {
+    const script = await addScript({outlined: false});
+    await pauseAndWait([frame(script, 4, 0)]);
+    assert.strictEqual((await step(() => debuggerModel.stepInto())).method, 'Debugger.stepInto');
+
+    assert.strictEqual((await pauseAndExpectAutoStep([frame(script, 5, 0)])).method, 'Debugger.stepInto');
+  });
+
+  it('steps over unmapped code after stepping out', async () => {
+    const script = await addScript({outlined: false});
+    await pauseAndWait([frame(script, 3, 0), frame(script, 1, 0, '1')]);
+    assert.strictEqual((await step(() => debuggerModel.stepOut())).method, 'Debugger.stepOut');
+
+    // Stepping into calls of the unmapped code would present a pause inside the callee.
+    assert.strictEqual((await pauseAndExpectAutoStep([frame(script, 5, 0, '1')])).method, 'Debugger.stepOver');
+  });
+
+  it('presents pauses that are not caused by the step', async () => {
+    const script = await addScript({outlined: false});
+    await pauseAndWait([frame(script, 4, 0)]);
+    await step(() => debuggerModel.stepOver());
+
+    await pauseAndWait([frame(script, 5, 0)], Protocol.Debugger.PausedEventReason.Other);
+    assert.lengthOf(requests, 1);
+  });
+
+  it('presents pauses in scripts with scopes but without any mappings', async () => {
+    // Otherwise every position would count as unmapped and the step would run to completion.
+    const script = await addScript({outlined: false, mapped: false});
+    await pauseAndWait([frame(script, 4, 0)]);
+    await step(() => debuggerModel.stepOver());
+
+    await pauseAndWait([frame(script, 5, 0)], Protocol.Debugger.PausedEventReason.Step);
+    assert.lengthOf(requests, 1);
+  });
+
+  it('keeps the legacy behavior when the feature is disabled', async () => {
+    Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel = {enabled: false};
+    const script = await addScript({outlined: true});
+    await pauseAndWait([frame(script, 4, 0)]);
+
+    const {method, skipList} = await step(() => debuggerModel.stepOver());
+    assert.strictEqual(method, 'Debugger.stepOver');
+    assert.notDeepInclude(skipList ?? [], range(script, 2, 0, 2, 4));
+
+    await pauseAndWait([frame(script, 5, 0)], Protocol.Debugger.PausedEventReason.Step);
+    assert.lengthOf(requests, 1);
   });
 });

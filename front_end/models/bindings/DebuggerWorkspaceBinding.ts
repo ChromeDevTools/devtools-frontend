@@ -520,7 +520,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
           null :
           await this.computeAutoStep(SDK.DebuggerModel.StepMode.STEP_OVER, callFrames);
     }
-    return null;
+    return await SourceMapStepping.nextAutoStep(debuggerPausedDetails, context, this.computeAutoStep.bind(this));
   }
 
   async #shouldPauseInWasm(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,

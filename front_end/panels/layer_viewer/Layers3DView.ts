@@ -195,8 +195,8 @@ export class Layers3DView extends Layers3DViewBase
     this.panelToolbar = this.transformController.toolbar();
     this.showPaintsSetting = this.createVisibilitySetting(
         SettingsUI.LayerViewerSettings.showPaintsSettingDescriptor, this.panelToolbar);
-    this.showSlowScrollRectsSetting =
-        this.createVisibilitySetting('frame-viewer-show-slow-scroll-rects', this.panelToolbar);
+    this.showSlowScrollRectsSetting = this.createVisibilitySetting(
+        SettingsUI.LayerViewerSettings.showSlowScrollRectsSettingDescriptor, this.panelToolbar);
     this.showPaintsSetting.addChangeListener(this.updatePaints, this);
     Common.Settings.Settings.instance()
       .moduleSetting('frame-viewer-chrome-window')
@@ -874,11 +874,9 @@ export class Layers3DView extends Layers3DViewBase
   }
 
   private createVisibilitySetting(
-      settingOrDescriptor: Common.Settings.SettingDescriptor<boolean>|string,
+      descriptor: Common.Settings.SettingDescriptor<boolean>,
       toolbar: UI.Toolbar.Toolbar): Common.Settings.Setting<boolean> {
-    const setting = typeof settingOrDescriptor === 'string' ?
-        Common.Settings.Settings.instance().moduleSetting<boolean>(settingOrDescriptor) :
-        Common.Settings.Settings.instance().resolve(settingOrDescriptor);
+    const setting = Common.Settings.Settings.instance().resolve(descriptor);
     setting.addChangeListener(this.updateData, this);
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(setting));
     return setting;

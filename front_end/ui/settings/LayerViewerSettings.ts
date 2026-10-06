@@ -10,3 +10,10 @@ export const showPaintsSettingDescriptor: Common.Settings.SettingDescriptor<bool
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.GLOBAL,
 };
+
+export const showSlowScrollRectsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'frame-viewer-show-slow-scroll-rects',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.GLOBAL,
+};

@@ -178,11 +178,7 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LayerViewerSettings.showPai
   title: i18nLazyString(UIStrings.paints),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LayerViewerSettings.showSlowScrollRectsSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.GLOBAL,
   title: i18nLazyString(UIStrings.slowScrollRects),
-  settingName: 'frame-viewer-show-slow-scroll-rects',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });

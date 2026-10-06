@@ -405,14 +405,6 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineDe
   title: i18nLazyString(UIStrings.timelineDebugMode),
 });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.PERFORMANCE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  settingName: 'annotations-hidden',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-});
-
 UI.ContextMenu.registerItem({
   location: UI.ContextMenu.ItemLocation.TIMELINE_MENU_OPEN,
   actionId: 'timeline.load-from-file',

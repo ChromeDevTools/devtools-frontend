@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TimelineComponents from '../../panels/timeline/components/components.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as AnnotationHelpers from './AnnotationHelpers.js';
 import {EntriesFilter} from './EntriesFilter.js';
@@ -107,7 +108,8 @@ export class ModificationsManager extends EventTarget {
     this.#eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
     // This method is also called in SidebarAnnotationsTab, but calling this multiple times doesn't recreate the setting.
     // Instead, after the second call, the cached setting is returned.
-    this.#annotationsHiddenSetting = Common.Settings.Settings.instance().moduleSetting('annotations-hidden');
+    this.#annotationsHiddenSetting =
+        Common.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.annotationsHiddenSettingDescriptor);
     // TODO: Assign annotations loaded from the trace file
     this.#overlayForAnnotation = new Map();
   }

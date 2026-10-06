@@ -94,6 +94,7 @@ devtools_ui_module("components") {
     "../../../ui/legacy/components/utils:bundle",
     "../../../ui/legacy/theme_support:bundle",
     "../../../ui/lit:bundle",
+    "../../../ui/settings:bundle",
     "../../../ui/visual_logging:bundle",
     "../../common:bundle",
     "../../mobile_throttling:bundle",

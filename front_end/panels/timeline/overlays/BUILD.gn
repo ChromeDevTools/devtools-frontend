@@ -18,6 +18,7 @@ devtools_ui_module("overlays") {
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/perf_ui:bundle",
     "../../../ui/lit:bundle",
+    "../../../ui/settings:bundle",
     "../../../ui/visual_logging:bundle",
     "./components:bundle",
   ]

@@ -17,3 +17,10 @@ export const timelineDebugModeSettingDescriptor: Common.Settings.SettingDescript
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const annotationsHiddenSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'annotations-hidden',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

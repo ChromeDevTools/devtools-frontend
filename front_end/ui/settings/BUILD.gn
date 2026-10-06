@@ -13,6 +13,7 @@ devtools_ui_module("settings") {
     "ElementsSettings.ts",
     "EmulationSettings.ts",
     "InspectorMainSettings.ts",
+    "LayerViewerSettings.ts",
     "MainSettings.ts",
     "NetworkSettings.ts",
     "SettingUIRegistration.ts",

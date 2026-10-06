@@ -39,6 +39,7 @@ devtools_ui_module("layer_viewer") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/lit:bundle",
+    "../../ui/settings:bundle",
     "../../ui/visual_logging:bundle",
   ]
   deps = [ ":css_files" ]
@@ -66,6 +67,7 @@ devtools_entrypoint("meta") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/settings:bundle",
   ]
 
   visibility = [ "../../entrypoints/*" ]

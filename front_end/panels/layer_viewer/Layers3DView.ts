@@ -12,6 +12,7 @@ import * as uiI18n from '../../ui/i18n/i18n.js';
 import {Link} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import layers3DViewStyles from './layers3DView.css.js';
@@ -192,7 +193,8 @@ export class Layers3DView extends Layers3DViewBase
 
     this.transformController.addEventListener(TransformControllerEvents.TRANSFORM_CHANGED, this.updateData, this);
     this.panelToolbar = this.transformController.toolbar();
-    this.showPaintsSetting = this.createVisibilitySetting('frame-viewer-show-paints', this.panelToolbar);
+    this.showPaintsSetting = this.createVisibilitySetting(
+        SettingsUI.LayerViewerSettings.showPaintsSettingDescriptor, this.panelToolbar);
     this.showSlowScrollRectsSetting =
         this.createVisibilitySetting('frame-viewer-show-slow-scroll-rects', this.panelToolbar);
     this.showPaintsSetting.addChangeListener(this.updatePaints, this);
@@ -872,8 +874,11 @@ export class Layers3DView extends Layers3DViewBase
   }
 
   private createVisibilitySetting(
-      name: string, toolbar: UI.Toolbar.Toolbar): Common.Settings.Setting<boolean> {
-    const setting = Common.Settings.Settings.instance().moduleSetting<boolean>(name);
+      settingOrDescriptor: Common.Settings.SettingDescriptor<boolean>|string,
+      toolbar: UI.Toolbar.Toolbar): Common.Settings.Setting<boolean> {
+    const setting = typeof settingOrDescriptor === 'string' ?
+        Common.Settings.Settings.instance().moduleSetting<boolean>(settingOrDescriptor) :
+        Common.Settings.Settings.instance().resolve(settingOrDescriptor);
     setting.addChangeListener(this.updateData, this);
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(setting));
     return setting;

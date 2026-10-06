@@ -24,3 +24,10 @@ export const annotationsHiddenSettingDescriptor: Common.Settings.SettingDescript
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const timelineInvalidationTrackingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-invalidation-tracking',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

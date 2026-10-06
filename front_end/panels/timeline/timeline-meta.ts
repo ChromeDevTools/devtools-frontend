@@ -381,13 +381,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LayerViewerSettings.chromeW
   title: i18nLazyString(UIStrings.chromeFrameInLayersView),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineInvalidationTrackingSettingDescriptor, {
   category: Common.Settings.SettingCategory.PERFORMANCE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.timelineInvalidationTracking),
-  settingName: 'timeline-invalidation-tracking',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor, {

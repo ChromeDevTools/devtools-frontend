@@ -435,7 +435,9 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
     if (options.enableJSSampling) {
       categoriesArray.push(...Trace.Types.Events.OptionalCategories.JsSampling);
     }
-    if (Common.Settings.Settings.instance().moduleSetting('timeline-invalidation-tracking').get() as boolean) {
+    if (Common.Settings.Settings.instance()
+            .resolve(SettingsUI.TimelineSettings.timelineInvalidationTrackingSettingDescriptor)
+            .get()) {
       categoriesArray.push(...Trace.Types.Events.OptionalCategories.InvalidationTracking);
     }
     if (options.capturePictures) {

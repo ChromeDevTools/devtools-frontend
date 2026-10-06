@@ -9,6 +9,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import {
   addDecorationToEvent,
@@ -107,7 +108,9 @@ export class ThreadAppender implements TrackAppender {
   #headerAppended = false;
   readonly threadType: Trace.Handlers.Threads.ThreadType = Trace.Handlers.Threads.ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
-  #showAllEventsEnabled = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
+  #showAllEventsEnabled = Common.Settings.Settings.instance()
+                              .resolve(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor)
+                              .get();
   #url = '';
   #headerNestingLevel: number|null = null;
   constructor(

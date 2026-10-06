@@ -390,13 +390,9 @@ Common.Settings.registerSettingExtension({
   defaultValue: false,
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor, {
   category: Common.Settings.SettingCategory.PERFORMANCE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.timelineShowAllEvents),
-  settingName: 'timeline-show-all-events',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 SettingsUI.SettingUIRegistration.register(LiveMetrics.timelineEnableSoftNavigationsSettingDescriptor, {

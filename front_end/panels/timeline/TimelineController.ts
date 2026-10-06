@@ -13,6 +13,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as MobileThrottling from '../../panels/mobile_throttling/mobile_throttling.js';
 import * as Tracing from '../../services/tracing/tracing.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as RecordingMetadata from './RecordingMetadata.js';
 
@@ -423,7 +424,11 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
 
   #categoriesForRecording(options: RecordingOptions): string[] {
     const categoriesArray = [
-      Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get() ? '*' : '-*',
+      Common.Settings.Settings.instance()
+              .resolve(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor)
+              .get() ?
+          '*' :
+          '-*',
       ...Trace.Types.Events.DefaultCategories,
     ];
 

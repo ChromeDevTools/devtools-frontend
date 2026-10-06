@@ -18,6 +18,7 @@ import {
 } from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as SettingsUI from '../../../ui/settings/settings.js';
 import * as Timeline from '../timeline.js';
 
 const {urlString} = Platform.DevToolsPath;
@@ -483,7 +484,9 @@ describeWithEnvironment('ThreadAppender', function() {
       Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     });
     afterEach(() => {
-      Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').set(false);
+      Common.Settings.Settings.instance()
+          .resolve(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor)
+          .set(false);
       SDK.TargetManager.TargetManager.removeInstance();
       Workspace.Workspace.WorkspaceImpl.removeInstance();
       Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
@@ -500,7 +503,9 @@ describeWithEnvironment('ThreadAppender', function() {
       assert.strictEqual(unknownEventIndex, -1);
 
       // Now enable the experiment and make sure the event is appended to the timeline data this time
-      Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').set(true);
+      Common.Settings.Settings.instance()
+          .resolve(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor)
+          .set(true);
       const finalTimelineData = await renderThreadAppendersFromTrace(this, fileName);
       const finalFlamechartData = finalTimelineData.flameChartData;
       unknownEventIndex = finalTimelineData.entryData.findIndex(entry => {

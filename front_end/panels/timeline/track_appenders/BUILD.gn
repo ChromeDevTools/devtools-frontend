@@ -31,6 +31,7 @@ devtools_ui_module("unittests") {
     "../../../testing",
     "../../../ui/legacy/components/perf_ui:bundle",
     "../../../ui/legacy/theme_support:bundle",
+    "../../../ui/settings:bundle",
     "../components:bundle",
   ]
 }

@@ -29,7 +29,6 @@ export interface ViewInput {
   activePin: Comments.CommentOverlayManager.PinPositionData|null;
   title: Title;
   onAddComment: (text: string) => void;
-  onCloseCommentThread: () => void;
 }
 
 export type View = (
@@ -109,7 +108,6 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
                 title: input.title,
                 comments: [...item.thread.comments],
                 onAddComment: input.onAddComment,
-                onClose: input.onCloseCommentThread,
               })}
             </div>
           `;
@@ -369,7 +367,6 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
           activePin: null,
           title: {text: ''},
           onAddComment: () => {},
-          onCloseCommentThread: this.#handleCloseCommentThread,
         },
         undefined,
         this.contentElement,
@@ -408,7 +405,6 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
           }
         }, AUTO_CLOSE_DELAY_MS);
       },
-      onCloseCommentThread: this.#handleCloseCommentThread,
     };
     this.#view(viewInput, undefined, this.contentElement);
   }

@@ -512,8 +512,8 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
         SettingUIRegistration.TimelineSettings.timelineDisableJsSamplingSettingDescriptor);
     this.captureLayersAndPicturesSetting = Common.Settings.Settings.instance().resolve(
         SettingUIRegistration.TimelineSettings.timelineCaptureLayersAndPicturesSettingDescriptor);
-    this.captureSelectorStatsSetting =
-        Common.Settings.Settings.instance().moduleSetting('timeline-capture-selector-stats');
+    this.captureSelectorStatsSetting = Common.Settings.Settings.instance().resolve(
+        SettingUIRegistration.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor);
     this.screenshotCaptureModeSetting =
         Common.Settings.Settings.instance().moduleSetting('timeline-screenshot-capture-mode');
 

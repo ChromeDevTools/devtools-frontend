@@ -45,3 +45,10 @@ export const timelineCaptureLayersAndPicturesSettingDescriptor: Common.Settings.
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const timelineCaptureSelectorStatsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-capture-selector-stats',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

@@ -13,6 +13,7 @@ import * as Tracing from '../../services/tracing/tracing.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as TimelineComponents from './components/components.js';
@@ -580,7 +581,9 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
 
     // Find all recalculate style events data from range
     const isSelectorStatsEnabled =
-        Common.Settings.Settings.instance().createSetting('timeline-capture-selector-stats', false).get();
+        Common.Settings.Settings.instance()
+            .resolve(SettingsUI.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor)
+            .get();
     if (this.#selectedEvents && isSelectorStatsEnabled) {
       const eventsInRange = Trace.Helpers.Trace.findRecalcStyleEvents(
           this.#selectedEvents,

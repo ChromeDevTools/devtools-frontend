@@ -514,13 +514,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineCa
                                             title: i18nLazyString(UIStrings.enableAdvancedPaint),
                                           });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SESSION,
   title: i18nLazyString(UIStrings.enableSelectorStats),
-  settingName: 'timeline-capture-selector-stats',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 Common.Settings.registerSettingExtension({

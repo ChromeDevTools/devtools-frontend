@@ -1305,8 +1305,8 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.RECALC_STYLE: {
         contentHelper.appendTextRow(i18nString(UIStrings.elementsAffected), unsafeEventArgs['elementCount']);
 
-        const selectorStatsSetting =
-            Common.Settings.Settings.instance().moduleSetting('timeline-capture-selector-stats');
+        const selectorStatsSetting = Common.Settings.Settings.instance().resolve(
+            SettingUIRegistration.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor);
         if (!selectorStatsSetting.get()) {
           const note = document.createElement('span');
           note.textContent = i18nString(UIStrings.sSelectorStatsInfo, {

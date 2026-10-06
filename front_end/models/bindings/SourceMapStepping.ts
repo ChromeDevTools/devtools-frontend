@@ -57,6 +57,18 @@ export function isUnmapped(frame: SDK.DebuggerModel.CallFrame): boolean {
   return position !== null && position.sourceMap.findEntry(position.line, position.column)?.sourceURL === undefined;
 }
 
+/** @returns true iff both frames have encoded scopes and are mapped to the same original location. */
+export function isSameOriginalLocation(a: SDK.DebuggerModel.CallFrame, b: SDK.DebuggerModel.CallFrame): boolean {
+  const entry = (frame: SDK.DebuggerModel.CallFrame): SDK.SourceMap.SourceMapEntry|null => {
+    const position = scopedPosition(frame);
+    return position?.sourceMap.findEntry(position.line, position.column) ?? null;
+  };
+  const entryA = entry(a);
+  const entryB = entry(b);
+  return entryA?.sourceURL !== undefined && entryA.sourceURL === entryB?.sourceURL &&
+      entryA.sourceLineNumber === entryB.sourceLineNumber && entryA.sourceColumnNumber === entryB.sourceColumnNumber;
+}
+
 /** @returns the body of the innermost inlined function that {@link frame} is paused in (empty if none). */
 export function inlinedFunctionRanges(frame: SDK.DebuggerModel.CallFrame): SDK.DebuggerModel.LocationRange[] {
   const position = scopedPosition(frame);
@@ -87,12 +99,24 @@ export async function nextAutoStep(
   if (frames.length === 0 || start.length === 0 || (!isScopedFrame(frames[0]) && !isScopedFrame(start[0]))) {
     return null;
   }
-  if (isUnmapped(frames[0])) {
-    // Keep stepping through unmapped code. Stepping into calls of the unmapped code would present a pause inside the
-    // callee, so a step out continues as step over.
-    const mode = context.mode === SDK.DebuggerModel.StepMode.STEP_INTO ? SDK.DebuggerModel.StepMode.STEP_INTO :
-                                                                         SDK.DebuggerModel.StepMode.STEP_OVER;
-    return await computeAutoStep(mode, frames);
+
+  switch (context.mode) {
+    case SDK.DebuggerModel.StepMode.STEP_INTO:
+      return isUnmapped(frames[0]) ? await computeAutoStep(SDK.DebuggerModel.StepMode.STEP_INTO, frames) : null;
+
+    case SDK.DebuggerModel.StepMode.STEP_OVER: {
+      const startDepth = start.length;
+      const depth = frames.length;
+      if (isUnmapped(frames[0]) || (depth === startDepth && isSameOriginalLocation(frames[0], start[0]))) {
+        // Unmapped code, or still on the same original location (the skip list only covers the generated ranges that
+        // contain the start position): keep stepping over.
+        return await computeAutoStep(SDK.DebuggerModel.StepMode.STEP_OVER, frames);
+      }
+      return null;
+    }
+
+    case SDK.DebuggerModel.StepMode.STEP_OUT:
+      // Stepping into calls of the unmapped code would present a pause inside the callee, so continue as step over.
+      return isUnmapped(frames[0]) ? await computeAutoStep(SDK.DebuggerModel.StepMode.STEP_OVER, frames) : null;
   }
-  return null;
 }

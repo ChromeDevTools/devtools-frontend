@@ -247,6 +247,24 @@ describe('SourceMapStepping', () => {
     assert.lengthOf(requests, 1);
   });
 
+  it('keeps stepping over code mapped to the same original location', async () => {
+    const script = await addScript({outlined: false});
+    await pauseAndWait([frame(script, 4, 0)]);
+    await step(() => debuggerModel.stepOver());
+
+    // 8:0 maps to the same original location as 4:0.
+    assert.strictEqual((await pauseAndExpectAutoStep([frame(script, 8, 0)])).method, 'Debugger.stepOver');
+  });
+
+  it('presents pauses on the same original location in a callee', async () => {
+    const script = await addScript({outlined: false});
+    await pauseAndWait([frame(script, 4, 0)]);
+    await step(() => debuggerModel.stepOver());
+
+    await pauseAndWait([frame(script, 8, 0), frame(script, 4, 3, '1')], Protocol.Debugger.PausedEventReason.Step);
+    assert.lengthOf(requests, 1);
+  });
+
   it('keeps the legacy behavior when the feature is disabled', async () => {
     Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel = {enabled: false};
     const script = await addScript({outlined: true});

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -10,17 +11,6 @@ import linearMemoryViewerStyles from './linearMemoryViewer.css.js';
 import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 const {render, html, nothing} = Lit;
-
-export interface LinearMemoryViewerData {
-  memory: Uint8Array<ArrayBuffer>;
-  address: number;
-  memoryOffset: number;
-  focus: boolean;
-  highlightInfo?: HighlightInfo;
-  focusedMemoryHighlight?: HighlightInfo;
-  onByteSelected?: (address: number) => void;
-  onNumBytesPerPageChanged?: (numBytesPerPage: number) => void;
-}
 
 const BYTE_GROUP_MARGIN = 8;
 const BYTE_GROUP_SIZE = 4;
@@ -51,15 +41,13 @@ export interface ViewOutput {
   measureLayout?: () => LayoutMetrics | undefined;
 }
 
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement|ShadowRoot) => void;
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-export class LinearMemoryViewer extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export class LinearMemoryViewer extends UI.Widget.Widget {
   readonly #view: View;
   readonly #output: ViewOutput = {};
 
-  readonly #resizeObserver = new ResizeObserver(() => requestAnimationFrame(this.#resize.bind(this)));
-  #isObservingResize = false;
+  readonly #resizeObserver = new ResizeObserver(() => this.#resize());
 
   #memory = new Uint8Array();
   #address = 0;
@@ -76,41 +64,76 @@ export class LinearMemoryViewer extends HTMLElement {
 
   #lastKeyUpdateSent: number|undefined = undefined;
 
-  constructor(view: View = DEFAULT_VIEW) {
-    super();
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
     this.#view = view;
   }
 
-  set data(data: LinearMemoryViewerData) {
-    if (data.address < data.memoryOffset || data.address > data.memoryOffset + data.memory.length || data.address < 0) {
+  set memory(memory: Uint8Array<ArrayBuffer>) {
+    this.#memory = memory;
+    this.requestUpdate();
+  }
+
+  set address(address: number) {
+    this.#address = address;
+    this.requestUpdate();
+  }
+
+  set memoryOffset(memoryOffset: number) {
+    this.#memoryOffset = memoryOffset;
+    this.requestUpdate();
+  }
+
+  /** Whether the viewer takes keyboard focus whenever it is updated. */
+  set focusOnByte(focusOnByte: boolean) {
+    this.#focusOnByte = focusOnByte;
+    this.requestUpdate();
+  }
+
+  set highlightInfo(highlightInfo: HighlightInfo|undefined) {
+    this.#highlightInfo = highlightInfo;
+    this.requestUpdate();
+  }
+
+  set focusedMemoryHighlight(focusedMemoryHighlight: HighlightInfo|undefined) {
+    this.#focusedMemoryHighlight = focusedMemoryHighlight;
+    this.requestUpdate();
+  }
+
+  set onByteSelected(onByteSelected: ((address: number) => void)|undefined) {
+    this.#onByteSelected = onByteSelected;
+    this.requestUpdate();
+  }
+
+  set onNumBytesPerPageChanged(onNumBytesPerPageChanged: ((numBytesPerPage: number) => void)|undefined) {
+    this.#onNumBytesPerPageChanged = onNumBytesPerPageChanged;
+    this.requestUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.#resizeObserver.observe(this.element);
+    this.requestUpdate();
+  }
+
+  override willHide(): void {
+    this.#resizeObserver.disconnect();
+    super.willHide();
+  }
+
+  override performUpdate(): void {
+    if (this.#address < this.#memoryOffset || this.#address > this.#memoryOffset + this.#memory.length ||
+        this.#address < 0) {
       throw new Error('Address is out of bounds.');
     }
 
-    if (data.memoryOffset < 0) {
+    if (this.#memoryOffset < 0) {
       throw new Error('Memory offset has to be greater or equal to zero.');
     }
 
-    this.#memory = data.memory;
-    this.#address = data.address;
-    this.#highlightInfo = data.highlightInfo;
-    this.#focusedMemoryHighlight = data.focusedMemoryHighlight;
-    this.#memoryOffset = data.memoryOffset;
-    this.#focusOnByte = data.focus;
-    this.#onByteSelected = data.onByteSelected;
-    this.#onNumBytesPerPageChanged = data.onNumBytesPerPageChanged;
-    this.#update();
-  }
-
-  disconnectedCallback(): void {
-    this.#isObservingResize = false;
-    this.#resizeObserver.disconnect();
-  }
-
-  #update(): void {
     this.#updateDimensions();
     this.#render();
     this.#focusOnView();
-    this.#engageResizeObserver();
   }
 
   #focusOnView(): void {
@@ -120,13 +143,15 @@ export class LinearMemoryViewer extends HTMLElement {
   }
 
   #resize(): void {
-    this.#update();
-    this.#onNumBytesPerPageChanged?.(this.#numBytesInRow * this.#numRows);
+    this.requestUpdate();
+    void this.updateComplete.then(() => {
+      this.#onNumBytesPerPageChanged?.(this.#numBytesInRow * this.#numRows);
+    });
   }
 
   /** Recomputes the number of rows and (byte) columns that fit into the current view. */
   #updateDimensions(): void {
-    if (this.clientWidth === 0 || this.clientHeight === 0) {
+    if (this.element.clientWidth === 0 || this.element.clientHeight === 0) {
       this.#numBytesInRow = BYTE_GROUP_SIZE;
       this.#numRows = 1;
       return;
@@ -154,9 +179,9 @@ export class LinearMemoryViewer extends HTMLElement {
     const groupWidth = BYTE_GROUP_SIZE * (layout.byteCellWidth + layout.textCellWidth) + BYTE_GROUP_MARGIN;
 
     // Calculate the width to fill.
-    // this.clientWidth is rounded, while the other values are not. Subtract 1 to make
+    // this.element.clientWidth is rounded, while the other values are not. Subtract 1 to make
     // sure that we correctly calculate the widths.
-    const widthToFill = this.clientWidth - 1 - layout.addressTextAndDividerWidth - layout.dividerWidth;
+    const widthToFill = this.element.clientWidth - 1 - layout.addressTextAndDividerWidth - layout.dividerWidth;
 
     if (widthToFill < groupWidth) {
       this.#numBytesInRow = BYTE_GROUP_SIZE;
@@ -164,16 +189,7 @@ export class LinearMemoryViewer extends HTMLElement {
       return;
     }
     this.#numBytesInRow = Math.floor(widthToFill / groupWidth) * BYTE_GROUP_SIZE;
-    this.#numRows = Math.floor(this.clientHeight / layout.rowHeight);
-  }
-
-  #engageResizeObserver(): void {
-    if (!this.#resizeObserver || this.#isObservingResize) {
-      return;
-    }
-
-    this.#resizeObserver.observe(this);
-    this.#isObservingResize = true;
+    this.#numRows = Math.floor(this.element.clientHeight / layout.rowHeight);
   }
 
   #render(): void {
@@ -188,7 +204,7 @@ export class LinearMemoryViewer extends HTMLElement {
       onByteSelected: this.#onByteSelected,
       onKeyDown: this.#onKeyDown.bind(this),
     };
-    this.#view(input, this.#output, this.#shadow);
+    this.#view(input, this.#output, this.contentElement);
   }
 
   #onKeyDown(event: Event): void {
@@ -338,7 +354,7 @@ function isFocusedArea(input: ViewInput, index: number): boolean {
 }
 
 /** Measures the first rendered row, or returns undefined if nothing has been rendered yet. */
-function measureLayout(target: HTMLElement|ShadowRoot): LayoutMetrics|undefined {
+function measureLayout(target: HTMLElement): LayoutMetrics|undefined {
   const firstByteCell = target.querySelector('.byte-cell');
   const textCell = target.querySelector('.text-cell');
   const divider = target.querySelector('.divider');
@@ -356,13 +372,4 @@ function measureLayout(target: HTMLElement|ShadowRoot): LayoutMetrics|undefined 
     addressTextAndDividerWidth: firstByteCell.getBoundingClientRect().left - addressText.getBoundingClientRect().left,
     rowHeight: rowElement.clientHeight,
   };
-}
-
-customElements.define('devtools-linear-memory-inspector-viewer', LinearMemoryViewer);
-
-declare global {
-
-interface HTMLElementTagNameMap {
-    'devtools-linear-memory-inspector-viewer': LinearMemoryViewer;
-  }
 }

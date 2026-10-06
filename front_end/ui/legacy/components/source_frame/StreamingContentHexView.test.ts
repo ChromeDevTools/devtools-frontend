@@ -5,34 +5,28 @@
 import {assert} from 'chai';
 
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
-import * as LinearMemoryInspectorComponents from '../../../../panels/linear_memory_inspector/components/components.js';
 import {raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as SourceFrame from './source_frame.js';
 
 describeWithEnvironment('StreamingContentHexView', () => {
-  function getMemoryViewer(view: SourceFrame.StreamingContentHexView.StreamingContentHexView):
-      LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer {
+  function getMemoryViewer(view: SourceFrame.StreamingContentHexView.StreamingContentHexView): HTMLElement {
     const inspector = view.contentElement.firstChild as HTMLElement;
-    const viewer = inspector.querySelector('devtools-linear-memory-inspector-viewer');
-    assert.instanceOf(viewer, LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer);
+    const viewer = inspector.querySelector('.viewer-widget');
+    assert.instanceOf(viewer, HTMLElement);
     return viewer;
   }
 
   function getAllByteCells(view: SourceFrame.StreamingContentHexView.StreamingContentHexView): string {
     const viewer = getMemoryViewer(view);
-    assert.isNotNull(viewer.shadowRoot);
-
-    const byteCells = [...viewer.shadowRoot.querySelectorAll('.byte-cell')];
+    const byteCells = [...viewer.querySelectorAll('.byte-cell')];
     return byteCells.map(c => c.textContent).join('');
   }
 
   function getAllTextCells(view: SourceFrame.StreamingContentHexView.StreamingContentHexView): string {
     const viewer = getMemoryViewer(view);
-    assert.isNotNull(viewer.shadowRoot);
-
-    const textCells = [...viewer.shadowRoot.querySelectorAll('.text-cell')];
+    const textCells = [...viewer.querySelectorAll('.text-cell')];
     return textCells.map(c => c.textContent).join('');
   }
 

@@ -77,7 +77,7 @@ describe('LinearMemoryInspector', () => {
         {},
         target,
     );
-    const viewer = target.querySelector('devtools-linear-memory-inspector-viewer');
+    const viewer = target.querySelector('.viewer-widget');
     assert.exists(viewer);
     let prevHeight = -1;
     while (viewer.clientHeight !== prevHeight) {

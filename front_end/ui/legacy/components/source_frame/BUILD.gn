@@ -112,7 +112,6 @@ devtools_ui_module("unittests") {
     "../../../../core/platform:bundle",
     "../../../../core/root:bundle",
     "../../../../core/text_utils:bundle",
-    "../../../../panels/linear_memory_inspector/components:bundle",
     "../../../../testing",
     "../../../../third_party/codemirror.next:bundle",
     "../../../../ui/legacy:bundle",

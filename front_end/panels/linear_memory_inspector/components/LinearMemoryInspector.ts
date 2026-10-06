@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './LinearMemoryViewer.js';
-
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -18,6 +16,7 @@ import {
   Navigation,
 } from './LinearMemoryNavigator.js';
 import {LinearMemoryValueInterpreter} from './LinearMemoryValueInterpreter.js';
+import {LinearMemoryViewer} from './LinearMemoryViewer.js';
 import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 import {
   Endianness,
@@ -164,19 +163,17 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
         jumpToAddress: (address: number) => input.onJumpToAddress(address),
         deleteHighlight: input.onDeleteMemoryHighlight,
       })}
-      <devtools-linear-memory-inspector-viewer
-        .data=${
-      {
+      <devtools-widget class="viewer-widget"
+        ${widget(LinearMemoryViewer, {
         memory: input.memorySlice,
         address: input.address,
         memoryOffset: input.viewerStart,
-        focus: input.currentNavigatorMode === Mode.SUBMITTED,
+        focusOnByte: input.currentNavigatorMode === Mode.SUBMITTED,
         highlightInfo: input.highlightInfo,
         focusedMemoryHighlight,
         onByteSelected: input.onByteSelected,
         onNumBytesPerPageChanged: input.onResize,
-      }}>
-      </devtools-linear-memory-inspector-viewer>
+      })}></devtools-widget>
     </div>
     ${
       input.hideValueInspector ? nothing : html`

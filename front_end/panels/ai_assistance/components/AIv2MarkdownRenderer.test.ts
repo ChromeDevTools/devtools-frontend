@@ -104,6 +104,7 @@ color: red;
                                                              Common.ResourceType.resourceTypes.Script);
         sinon.stub(workspace, 'projects').returns([project]);
         AiAssistanceModel.ListSources.ListSourcesTool.uiSourceCodeId.set(file, 1);
+        AiAssistanceModel.ListSources.ListSourcesTool.idToUiSourceCode.set(1, file);
 
         const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
         const originLock: AiAssistanceModel.Tool.OriginLockState = {status: 'ESTABLISHED_ORIGIN', origin};
@@ -127,6 +128,7 @@ color: red;
                                                              Common.ResourceType.resourceTypes.Script);
         sinon.stub(workspace, 'projects').returns([project]);
         AiAssistanceModel.ListSources.ListSourcesTool.uiSourceCodeId.set(file, 1);
+        AiAssistanceModel.ListSources.ListSourcesTool.idToUiSourceCode.set(1, file);
 
         const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
         const crossOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');

@@ -1104,6 +1104,181 @@ describe('Runtime hosts policy', () => {
     assert.deepEqual(resources.map(resource => resource.url), []);
   });
 
+  it('blocks JS source map sources originating from a blocked script with an inline data: source map', async () => {
+    const backend = getBackend(context);
+    mockResourceTree(backend.cdpConnection);
+    const target = backend.createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(allowedUrl);
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
+
+    const makeInlineSourceMap = (sources: string[], sourcesContent: string[]): {
+      url: string,
+      content: SDK.SourceMap.SourceMapV3,
+    } => {
+      const content: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources,
+        sourcesContent,
+        mappings: 'AAAA',
+      };
+      return {
+        url: `data:application/json;base64,${btoa(JSON.stringify(content))}`,
+        content,
+      };
+    };
+
+    const secretSourceUrl = 'webpack://app/src/secret.ts';
+    await backend.addScript(target, {url: `${blockedUrl}/bundle.min.js`, content: 'console.log(42);'},
+                            makeInlineSourceMap([secretSourceUrl], ['const SECRET = 42;']));
+
+    const secretWithSourceUrl = 'webpack://app/src/secret-with-sourceurl.ts';
+    await backend.addScript(target, {
+      url: 'webpack://app/spoofed-bundle.js',
+      hasSourceURL: true,
+      embedderName: `${blockedUrl}/bundle2.min.js`,
+      content: 'console.log(99);',
+    },
+                            makeInlineSourceMap([secretWithSourceUrl], ['const SECRET2 = 99;']));
+
+    const allowedSourceUrl = 'webpack://app/src/allowed.ts';
+    const blockedSourceInAllowedMap = `${blockedUrl}/src/blocked-source.ts`;
+    await backend.addScript(
+        target, {url: `${allowedUrl}bundle.min.js`, content: 'console.log(1);'},
+        makeInlineSourceMap([allowedSourceUrl, blockedSourceInAllowedMap], ['const ALLOWED = 1;', 'blocked']));
+
+    const resources = await context.chrome.devtools!.inspectedWindow.getResources();
+    assert.sameMembers(resources.map(r => r.url), [allowedUrl, `${allowedUrl}bundle.min.js`, allowedSourceUrl]);
+  });
+
+  it('blocks CSS source map sources originating from a blocked stylesheet with an inline data: source map',
+     async () => {
+       const backend = getBackend(context);
+       mockResourceTree(backend.cdpConnection);
+       const target = backend.createTarget({type: SDK.Target.Type.FRAME});
+       target.setInspectedURL(allowedUrl);
+       sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+           .returns(backend.universe.debuggerWorkspaceBinding);
+       // Ensure CSSWorkspaceBinding (and SASSSourceMapping) is initialized in the test universe.
+       void backend.universe.cssWorkspaceBinding;
+
+       const cssModel = target.model(SDK.CSSModel.CSSModel);
+       assert.exists(cssModel);
+
+       const makeInlineSourceMap = (sourceUrl: string): {url: string, content: string} => {
+         const payload: SDK.SourceMap.SourceMapV3 = {
+           version: 3,
+           sources: [sourceUrl],
+           sourcesContent: ['.rule { color: red; }'],
+           mappings: 'AAAA',
+         };
+         const content = JSON.stringify(payload);
+         return {
+           url: `data:application/json;base64,${btoa(content)}`,
+           content,
+         };
+       };
+
+       const secretScssUrl = 'webpack://app/src/secret.scss';
+       const secretMap = makeInlineSourceMap(secretScssUrl);
+       const allowedScssUrl = 'webpack://app/src/allowed.scss';
+       const allowedMap = makeInlineSourceMap(allowedScssUrl);
+
+       sinon.stub(backend.universe.pageResourceLoader, 'loadResource').callsFake(async url => {
+         const content = url === secretMap.url ? secretMap.content : allowedMap.content;
+         return {content};
+       });
+
+       const addStyleSheet = async (id: string, sourceURL: string, sourceMapURL: string) => {
+         const styleSheetId = id as Protocol.DOM.StyleSheetId;
+         cssModel.styleSheetAdded({
+           styleSheetId,
+           frameId: 'main' as Protocol.Page.FrameId,
+           sourceURL,
+           sourceMapURL,
+           origin: Protocol.CSS.StyleSheetOrigin.Regular,
+           title: '',
+           disabled: false,
+           isInline: false,
+           isMutable: false,
+           isConstructed: false,
+           startLine: 0,
+           startColumn: 0,
+           length: 20,
+           endLine: 0,
+           endColumn: 20,
+         });
+         const header = cssModel.styleSheetHeaderForId(styleSheetId);
+         assert.exists(header);
+         const loadedMap = await cssModel.sourceMapManager().sourceMapForClientPromise(header);
+         assert.exists(loadedMap);
+       };
+
+       await addStyleSheet('stylesheet-blocked', `${blockedUrl}/styles.css`, secretMap.url);
+       await addStyleSheet('stylesheet-allowed', `${allowedUrl}/styles.css`, allowedMap.url);
+
+       const resources = await context.chrome.devtools!.inspectedWindow.getResources();
+       assert.include(resources.map(r => r.url), allowedScssUrl);
+       assert.notInclude(resources.map(r => r.url), secretScssUrl);
+     });
+
+  it('does not notify onResourceAdded or onResourceContentCommitted for blocked source map resources', async () => {
+    const backend = getBackend(context);
+    mockResourceTree(backend.cdpConnection);
+    const target = backend.createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(allowedUrl);
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
+
+    const addedUrls: string[] = [];
+    const committedUrls: string[] = [];
+    context.chrome.devtools?.inspectedWindow.onResourceAdded.addListener(r => addedUrls.push(r.url));
+    context.chrome.devtools?.inspectedWindow.onResourceContentCommitted.addListener(r => committedUrls.push(r.url));
+    await waitForFunction(() => PanelCommon.ExtensionServer.ExtensionServer.instance().hasSubscribers(
+                                    Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded) &&
+                              PanelCommon.ExtensionServer.ExtensionServer.instance().hasSubscribers(
+                                  Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted));
+
+    const makeInlineSourceMap = (source: string): {url: string, content: SDK.SourceMap.SourceMapV3} => {
+      const content: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: [source],
+        sourcesContent: ['content'],
+        mappings: 'AAAA',
+      };
+      return {
+        url: `data:application/json;base64,${btoa(JSON.stringify(content))}`,
+        content,
+      };
+    };
+
+    const secretSourceUrl = urlString`webpack://app/src/secret-added.ts`;
+    await backend.addScript(target, {url: `${blockedUrl}/bundle.min.js`, content: 'console.log(1);'},
+                            makeInlineSourceMap(secretSourceUrl));
+
+    const allowedSourceUrl = urlString`webpack://app/src/allowed-added.ts`;
+    await backend.addScript(target, {url: `${allowedUrl}/bundle.min.js`, content: 'console.log(2);'},
+                            makeInlineSourceMap(allowedSourceUrl));
+
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const secretUISourceCode = workspace.uiSourceCodeForURL(secretSourceUrl);
+    const allowedUISourceCode = workspace.uiSourceCodeForURL(allowedSourceUrl);
+    assert.exists(secretUISourceCode);
+    assert.exists(allowedUISourceCode);
+
+    secretUISourceCode.setWorkingCopy('modified secret');
+    secretUISourceCode.commitWorkingCopy();
+    allowedUISourceCode.setWorkingCopy('modified allowed');
+    allowedUISourceCode.commitWorkingCopy();
+
+    await waitForFunction(() => committedUrls.includes(allowedSourceUrl));
+
+    assert.include(addedUrls, allowedSourceUrl);
+    assert.notInclude(addedUrls, secretSourceUrl);
+    assert.notInclude(addedUrls, `${blockedUrl}/bundle.min.js`);
+    assert.deepEqual(committedUrls, [allowedSourceUrl]);
+  });
+
   it('allows scripts with sourceURL comments if the embedderName is not a URL', async () => {
     const target = getBackend(context).createTarget({id: 'target' as Protocol.Target.TargetID});
     target.setInspectedURL(allowedUrl);

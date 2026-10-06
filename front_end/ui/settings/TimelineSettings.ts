@@ -80,3 +80,10 @@ export const timelineDimThirdPartiesSettingDescriptor: Common.Settings.SettingDe
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const timelineShowExtensionDataSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-show-extension-data',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.GLOBAL,
+};

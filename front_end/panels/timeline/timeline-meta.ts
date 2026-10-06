@@ -539,13 +539,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineDi
   title: i18nLazyString(UIStrings.dimThirdParties),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineShowExtensionDataSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.GLOBAL,
   title: i18nLazyString(UIStrings.showCustomtracks),
-  settingName: 'timeline-show-extension-data',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

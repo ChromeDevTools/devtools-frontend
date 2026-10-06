@@ -786,7 +786,8 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
   static extensionDataVisibilitySetting(): Common.Settings.Setting<boolean> {
     // Calling this multiple times doesn't recreate the setting.
     // Instead, after the second call, the cached setting is returned.
-    return Common.Settings.Settings.instance().moduleSetting('timeline-show-extension-data');
+    return Common.Settings.Settings.instance().resolve(
+        SettingUIRegistration.TimelineSettings.timelineShowExtensionDataSettingDescriptor);
   }
   override searchableView(): UI.SearchableView.SearchableView|null {
     return this.#searchableView;

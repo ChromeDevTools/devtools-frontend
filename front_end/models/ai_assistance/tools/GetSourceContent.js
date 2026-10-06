@@ -17,6 +17,7 @@ const lockedString = i18n.i18n.lockedString;
  */
 export class GetSourceContentTool {
     name = "getSourceContent" /* ToolName.GET_SOURCE_CONTENT */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Retrieves the formatted content and metadata of a source file by its numeric ID obtained from listSources.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,

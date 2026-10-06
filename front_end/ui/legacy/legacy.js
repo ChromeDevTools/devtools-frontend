@@ -4812,6 +4812,11 @@ var tabbedPane_css_default = `/*
   margin-right: var(--sys-size-2);
 }
 
+.tabbed-pane-header-tab-slot-container {
+  /* Always take the size of the slotted content, which is what gets measured. */
+  flex: none;
+}
+
 .tabbed-pane-header-tab-suffix-element {
   height: var(--sys-size-8);
   width: var(--sys-size-8);
@@ -4864,6 +4869,9 @@ var tabbedPane_css_default = `/*
 }
 
 .tabbed-pane-header-tab {
+  /* For the outline of dot icons. Custom properties are inherited by slotted icons as well. */
+  --icon-gap-default: var(--icon-gap-toolbar);
+
   font: var(--sys-typescale-body4-medium);
   color: var(--sys-color-on-surface-subtle);
   height: var(--sys-size-12);
@@ -4873,18 +4881,14 @@ var tabbedPane_css_default = `/*
   cursor: default;
   display: flex;
   align-items: center;
+
+  &:hover {
+    --icon-gap-default: var(--icon-gap-toolbar-hover);
+  }
 }
 
 .tabbed-pane-header-tab.closeable {
   padding-right: var(--sys-size-3);
-}
-
-.tabbed-pane-header-tab devtools-icon.dot::before {
-  outline-color: var(--icon-gap-toolbar);
-}
-
-.tabbed-pane-header-tab:hover devtools-icon.dot::before {
-  outline-color: var(--icon-gap-toolbar-hover);
 }
 
 .tabbed-pane-header-tab:not(.vertical-tab-layout):hover,
@@ -6178,6 +6182,12 @@ var TabbedPaneTab = class {
   #tabElement;
   icon = null;
   suffixElement = null;
+  // The containers of the `icon-<id>` and `suffix-<id>` slots of the tab header.
+  #slotContainers = {};
+  // Whether elements are assigned to these slots.
+  #hasSlottedContent = { icon: false, suffix: false };
+  // Last known width of these containers.
+  #slotContainerWidths = { icon: 0, suffix: 0 };
   #width;
   delegate;
   titleElement;
@@ -6313,6 +6323,47 @@ var TabbedPaneTab = class {
     titleElement.insertAdjacentElement("afterend", suffixElementContainer);
     tabSuffixElements.set(tabElement, suffixElementContainer);
   }
+  /**
+   * Adds a slot for the `slot="icon-<id>"` or `slot="suffix-<id>"` children
+   * of the TabbedPaneElement to the tab header. The container is hidden
+   * while nothing is assigned to the slot.
+   */
+  #createSlotContainer(titleElement, kind, measuring) {
+    if (measuring && !this.#hasSlottedContent[kind]) {
+      return;
+    }
+    const container = document.createElement("span");
+    container.classList.add(
+      kind === "icon" ? "tabbed-pane-header-tab-icon" : "tabbed-pane-header-tab-suffix-element",
+      "tabbed-pane-header-tab-slot-container"
+    );
+    titleElement.insertAdjacentElement(kind === "icon" ? "beforebegin" : "afterend", container);
+    if (measuring) {
+      const width = this.#measureSlotContainer(kind);
+      if (width > 0) {
+        container.style.boxSizing = "border-box";
+        container.style.width = `${width}px`;
+      }
+      return;
+    }
+    const slot = container.createChild("slot");
+    slot.name = `${kind}-${this.#id}`;
+    this.#slotContainers[kind] = container;
+    container.style.display = "none";
+    slot.addEventListener("slotchange", () => {
+      this.#hasSlottedContent[kind] = slot.assignedElements().length > 0;
+      container.style.display = this.#hasSlottedContent[kind] ? "" : "none";
+      delete this.measuredWidth;
+      this.tabbedPane.requestUpdate();
+    });
+  }
+  #measureSlotContainer(kind) {
+    const width = this.#slotContainers[kind]?.getBoundingClientRect().width ?? 0;
+    if (width > 0) {
+      this.#slotContainerWidths[kind] = width;
+    }
+    return this.#slotContainerWidths[kind];
+  }
   createMeasureClone(original) {
     const fakeClone = document.createElement("div");
     fakeClone.style.width = original.style.width;
@@ -6331,6 +6382,8 @@ var TabbedPaneTab = class {
     Tooltip.install(titleElement, this.tooltip || "");
     this.createIconElement(tabElement, titleElement, measuring);
     this.createSuffixElement(tabElement, titleElement, measuring);
+    this.#createSlotContainer(titleElement, "icon", measuring);
+    this.#createSlotContainer(titleElement, "suffix", measuring);
     if (!measuring) {
       this.titleElement = titleElement;
     }
@@ -6677,8 +6730,6 @@ var TabbedPaneElement = class extends WidgetElement {
       const selected = child.hasAttribute("selected");
       const enabled = !child.hasAttribute("disabled");
       const isCloseable = child.hasAttribute("closeable") ? true : child.hasAttribute("uncloseable") ? false : void 0;
-      const icon = child.querySelector('[slot="icon"]') ?? void 0;
-      const suffix = child.querySelector('[slot="suffix"]') ?? void 0;
       const view = Widget.getOrCreateWidget(child);
       view.setHideOnDetach();
       if (widget2.selectedTabId !== id2) {
@@ -6691,9 +6742,7 @@ var TabbedPaneElement = class extends WidgetElement {
         jslogContext,
         selected,
         enabled,
-        isCloseable,
-        icon,
-        suffix
+        isCloseable
       });
     }
     const newIds = new Set(tabs.map((tab) => tab.id));
@@ -6735,12 +6784,6 @@ var TabbedPaneElement = class extends WidgetElement {
           index,
           tab.jslogContext
         );
-      }
-      if (tab.icon !== void 0) {
-        widget2.setTabIcon(tab.id, tab.icon);
-      }
-      if (tab.suffix !== void 0) {
-        widget2.setSuffixElement(tab.id, tab.suffix);
       }
       if (tab.enabled !== void 0) {
         widget2.setTabEnabled(tab.id, tab.enabled);
@@ -13936,6 +13979,7 @@ var ToolbarInput = class _ToolbarInput extends ToolbarItem {
   }
 };
 var ToolbarFilter = class extends ToolbarInput {
+  #regexButton;
   constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element, showRegexToggle, onRegexToggle) {
     const filterPlaceholder = filterBy ? filterBy : i18nString12(UIStrings12.filter);
     super(
@@ -13971,18 +14015,27 @@ var ToolbarFilter = class extends ToolbarInput {
       setLabel(regexButton, i18nString12(UIStrings12.useRegularExpression));
       regexButton.addEventListener("click", () => {
         regexButton.checked = regexButton.toggled;
-        onRegexToggle?.();
+        onRegexToggle?.(regexButton.toggled);
       });
       this.insertTrailingElement(regexButton);
+      this.#regexButton = regexButton;
     }
+  }
+  setRegexToggled(toggled) {
+    if (!this.#regexButton || this.#regexButton.toggled === toggled) {
+      return;
+    }
+    this.#regexButton.toggled = toggled;
+    this.#regexButton.checked = toggled;
   }
 };
 var ToolbarInputElement = class extends HTMLElement {
-  static observedAttributes = ["value", "disabled", "regex"];
+  static observedAttributes = ["value", "disabled", "regex", "regex-toggled"];
   item;
   datalist = null;
   #value = void 0;
   #disabled = false;
+  #regexToggled = false;
   connectedCallback() {
     if (this.item) {
       return;
@@ -14034,6 +14087,9 @@ var ToolbarInputElement = class extends HTMLElement {
     if (this.#disabled) {
       this.item.setEnabled(false);
     }
+    if (this.#regexToggled && this.item instanceof ToolbarFilter) {
+      this.item.setRegexToggled(true);
+    }
     this.item.addEventListener(ToolbarInput.Event.TEXT_CHANGED, (event) => {
       this.dispatchEvent(new CustomEvent("change", { detail: event.data }));
     });
@@ -14044,8 +14100,9 @@ var ToolbarInputElement = class extends HTMLElement {
   focus() {
     this.item?.focus();
   }
-  #onRegexToggle() {
-    this.dispatchEvent(new CustomEvent("regextoggle"));
+  #onRegexToggle(toggled) {
+    this.#regexToggled = toggled;
+    this.dispatchEvent(new CustomEvent("regextoggle", { detail: toggled }));
   }
   async #onAutocomplete(expression, prefix, force) {
     if (!prefix && !force && expression || !this.datalist) {
@@ -14065,6 +14122,11 @@ var ToolbarInputElement = class extends HTMLElement {
       this.#disabled = typeof newValue === "string";
       if (this.item) {
         this.item.setEnabled(!this.#disabled);
+      }
+    } else if (name === "regex-toggled") {
+      this.#regexToggled = typeof newValue === "string";
+      if (this.item instanceof ToolbarFilter) {
+        this.item.setRegexToggled(this.#regexToggled);
       }
     }
   }

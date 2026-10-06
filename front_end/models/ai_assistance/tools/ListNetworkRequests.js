@@ -16,6 +16,7 @@ const lockedString = i18n.i18n.lockedString;
  */
 export class ListNetworkRequestsTool {
     name = "listNetworkRequests" /* ToolName.LIST_NETWORK_REQUESTS */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Lists recorded network requests for the active origin, including request ID, URL, HTTP status code, duration, and transfer size.';
     #networkLog;
     constructor(networkLog) {

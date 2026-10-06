@@ -6296,8 +6296,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   toExportString() {
     const lines = [];
-    const nodes = this.contentElement().childTextNodes();
-    const messageContent = nodes.map(Components2.Linkifier.Linkifier.untruncatedNodeText).join("");
+    const messageContent = Components2.Linkifier.Linkifier.untruncatedTextContent(this.contentElement());
     for (let i = 0; i < this.repeatCount(); ++i) {
       lines.push(messageContent);
     }
@@ -9064,7 +9063,7 @@ var ConsoleViewport = class {
         continue;
       }
       const element = providerElement.element();
-      const lineContent = element.childTextNodes().map(Components4.Linkifier.Linkifier.untruncatedNodeText).join("");
+      const lineContent = Components4.Linkifier.Linkifier.untruncatedTextContent(element);
       textLines.push(lineContent);
     }
     const endProviderElement = this.providerElement(endSelection.item);

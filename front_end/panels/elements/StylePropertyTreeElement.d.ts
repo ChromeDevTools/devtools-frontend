@@ -26,13 +26,13 @@ export declare class EnvFunctionRenderer extends EnvFunctionRendererBase {
     readonly computedStyles: Map<string, string>;
     readonly computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null;
     constructor(treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
-    render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
 }
 declare const FlexGridRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch>;
 export declare class FlexGridRenderer extends FlexGridRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const CSSWideKeywordRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch>;
 export declare class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
@@ -45,7 +45,7 @@ declare const VariableRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.V
 export declare class VariableRenderer extends VariableRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
-    render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
 }
 declare const VariableNameRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.VariableNameMatch>;
 export declare class VariableNameRenderer extends VariableNameRendererBase {
@@ -57,11 +57,11 @@ declare const AttributeRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.
 export declare class AttributeRenderer extends AttributeRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
-    render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
 }
 declare const LinearGradientRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LinearGradientMatch>;
 export declare class LinearGradientRenderer extends LinearGradientRendererBase {
-    render(match: SDK.CSSPropertyParserMatchers.LinearGradientMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.LinearGradientMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const RelativeColorChannelRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch>;
 export declare class RelativeColorChannelRenderer extends RelativeColorChannelRendererBase {
@@ -73,7 +73,7 @@ declare const ColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Colo
 export declare class ColorRenderer extends ColorRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
     renderColorSwatch(color: Common.Color.Color | undefined, valueChild: Node): InlineEditor.ColorSwatch.ColorSwatch;
 }
 declare const LightDarkColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LightDarkColorMatch>;
@@ -111,7 +111,7 @@ declare const BezierRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Bez
 export declare class BezierRenderer extends BezierRendererBase {
     #private;
     constructor(treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
 }
 declare const AutoBaseRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.AutoBaseMatch>;
 export declare class AutoBaseRenderer extends AutoBaseRendererBase {
@@ -160,11 +160,11 @@ export declare class ShadowRenderer extends ShadowRendererBase {
     #private;
     constructor(treeElement: StylePropertyTreeElement | null);
     shadowModel(shadow: CodeMirror.SyntaxNode[], shadowType: SDK.CSSPropertyParserMatchers.ShadowType, context: RenderingContext): null | ShadowModel;
-    render(match: SDK.CSSPropertyParserMatchers.ShadowMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.ShadowMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const GridTemplateRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.GridTemplateMatch>;
 export declare class GridTemplateRenderer extends GridTemplateRendererBase {
-    render(match: SDK.CSSPropertyParserMatchers.GridTemplateMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.GridTemplateMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
 }
 export declare const SHORTHANDS_FOR_PERCENTAGES: Set<string>;
 declare const LengthRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LengthMatch>;
@@ -208,13 +208,13 @@ declare const PositionAreaRendererBase: RendererBase<SDK.CSSPropertyParserMatche
 export declare class PositionAreaRenderer extends PositionAreaRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
 }
 declare const PositionTryRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.PositionTryMatch>;
 export declare class PositionTryRenderer extends PositionTryRendererBase {
     #private;
     constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles);
-    render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): Lit.LitTemplate;
 }
 export declare function getPropertyRenderers(propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): Array<MatchRenderer<SDK.CSSPropertyParser.Match>>;
 export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {

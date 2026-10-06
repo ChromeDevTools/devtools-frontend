@@ -23,6 +23,7 @@ const lockedString = i18n.i18n.lockedString;
  */
 export class GetTraceResourceContentTool {
     name = "getTraceResourceContent" /* ToolName.GET_TRACE_RESOURCE_CONTENT */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Retrieves the text content of a script or resource captured within the recorded performance trace by URL. Only use this for text resource types. Do not call this tool on imported traces or for general workspace files (use listSources and getSourceContent instead).';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,

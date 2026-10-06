@@ -9,6 +9,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import { addDecorationToEvent, buildGroupStyle, buildTrackHeader, getDurationString, } from './AppenderUtils.js';
 import { entryIsVisibleInTimeline, } from './CompatibilityTracksAppender.js';
 import * as ModificationsManager from './ModificationsManager.js';
@@ -88,7 +89,9 @@ export class ThreadAppender {
     #headerAppended = false;
     threadType = "MAIN_THREAD" /* Trace.Handlers.Threads.ThreadType.MAIN_THREAD */;
     isOnMainFrame;
-    #showAllEventsEnabled = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
+    #showAllEventsEnabled = Common.Settings.Settings.instance()
+        .resolve(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor)
+        .get();
     #url = '';
     #headerNestingLevel = null;
     constructor(compatibilityBuilder, parsedTrace, processId, threadId, threadName, type, entries, tree) {

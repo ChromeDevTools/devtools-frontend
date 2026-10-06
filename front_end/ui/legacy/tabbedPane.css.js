@@ -178,6 +178,11 @@ export default `/*
   margin-right: var(--sys-size-2);
 }
 
+.tabbed-pane-header-tab-slot-container {
+  /* Always take the size of the slotted content, which is what gets measured. */
+  flex: none;
+}
+
 .tabbed-pane-header-tab-suffix-element {
   height: var(--sys-size-8);
   width: var(--sys-size-8);
@@ -230,6 +235,9 @@ export default `/*
 }
 
 .tabbed-pane-header-tab {
+  /* For the outline of dot icons. Custom properties are inherited by slotted icons as well. */
+  --icon-gap-default: var(--icon-gap-toolbar);
+
   font: var(--sys-typescale-body4-medium);
   color: var(--sys-color-on-surface-subtle);
   height: var(--sys-size-12);
@@ -239,18 +247,14 @@ export default `/*
   cursor: default;
   display: flex;
   align-items: center;
+
+  &:hover {
+    --icon-gap-default: var(--icon-gap-toolbar-hover);
+  }
 }
 
 .tabbed-pane-header-tab.closeable {
   padding-right: var(--sys-size-3);
-}
-
-.tabbed-pane-header-tab devtools-icon.dot::before {
-  outline-color: var(--icon-gap-toolbar);
-}
-
-.tabbed-pane-header-tab:hover devtools-icon.dot::before {
-  outline-color: var(--icon-gap-toolbar-hover);
 }
 
 .tabbed-pane-header-tab:not(.vertical-tab-layout):hover,

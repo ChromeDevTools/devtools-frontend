@@ -1355,6 +1355,15 @@ var UIStrings3 = {
 var str_3 = i18n5.i18n.registerUIStrings("panels/timeline/overlays/components/TimeRangeOverlay.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var DEFAULT_VIEW = (input, output, target) => {
+  const handleKeyDown = (event) => {
+    if (event.key === Platform2.KeyboardUtilities.ENTER_KEY || event.key === Platform2.KeyboardUtilities.ESCAPE_KEY) {
+      event.stopPropagation();
+      input.onLabelEditComplete();
+      if (event.target instanceof HTMLElement) {
+        event.target.blur();
+      }
+    }
+  };
   render3(
     html3`
         <style>${timeRangeOverlay_css_default}</style>
@@ -1371,14 +1380,16 @@ var DEFAULT_VIEW = (input, output, target) => {
            role="textbox"
            @focusout=${input.onLabelFocusOut}
            @dblclick=${input.onLabelDblClick}
-           @keydown=${input.onLabelKeyDown}
-           @input=${input.onLabelInput}
+           @keydown=${handleKeyDown}
+           @input=${(event) => input.onLabelInput(event.target instanceof HTMLElement ? event.target.textContent ?? "" : "")}
            contenteditable=${input.isLabelEditable ? "plaintext-only" : false}
            aria-label=${input.label}
            .textContent=${Directives3.live(input.label)}
            jslog=${VisualLogging3.textField("timeline.annotations.time-range-label-input").track({ keydown: true, click: true })}
            ${Directives3.ref((el) => {
-      output.labelBox = el instanceof HTMLElement ? el : void 0;
+      if (el instanceof HTMLElement) {
+        output.focusLabel = () => el.focus();
+      }
     })}
           ></span>
           <span
@@ -1414,7 +1425,10 @@ var TimeRangeOverlay = class extends UI2.Widget.Widget {
   onRemove = () => {
   };
   #view;
-  #viewOutput = {};
+  #viewOutput = {
+    focusLabel: () => {
+    }
+  };
   constructor(element, view = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
@@ -1476,13 +1490,12 @@ var TimeRangeOverlay = class extends UI2.Widget.Widget {
    * `Overlays` can reposition the label in the same frame as the range.
    */
   updateLabelPositioning() {
-    const { rangeContainer, labelBox, durationBox } = this.#viewOutput;
-    if (!rangeContainer || !labelBox || !this.#canvasRect) {
+    const { rangeContainer, durationBox } = this.#viewOutput;
+    if (!rangeContainer || !this.#canvasRect) {
       return;
     }
     const paddingForScrollbar = 9;
     const overlayRect = this.element.getBoundingClientRect();
-    const labelFocused = UI2.DOMUtilities.deepActiveElement(this.element.ownerDocument) === labelBox;
     const labelRect = rangeContainer.getBoundingClientRect();
     const visibleOverlayWidth = this.#visibleOverlayWidth(overlayRect) - paddingForScrollbar;
     const durationBoxLength = durationBox?.getBoundingClientRect().width;
@@ -1490,7 +1503,7 @@ var TimeRangeOverlay = class extends UI2.Widget.Widget {
       return;
     }
     const overlayTooNarrow = visibleOverlayWidth <= durationBoxLength;
-    const hideLabel = overlayTooNarrow && !labelFocused && this.#label.length > 0;
+    const hideLabel = overlayTooNarrow && !this.#isLabelEditable && this.#label.length > 0;
     rangeContainer.classList.toggle("labelHidden", hideLabel);
     if (hideLabel) {
       return;
@@ -1514,38 +1527,25 @@ var TimeRangeOverlay = class extends UI2.Widget.Widget {
       this.#setLabelEditability(true);
     }
   }
-  #focusInputBox() {
-    const labelBox = this.#viewOutput.labelBox;
-    if (!labelBox) {
-      console.error("`labelBox` element is missing.");
-      return;
-    }
-    labelBox.focus();
-  }
   #setLabelEditability(editable) {
     if (this.#label === "") {
-      this.#focusInputBox();
+      this.#viewOutput.focusLabel();
       return;
     }
     this.#isLabelEditable = editable;
     this.#focusLabelOnUpdate = editable;
     this.requestUpdate();
   }
-  #handleLabelInput() {
-    const labelBoxTextContent = this.#viewOutput.labelBox?.textContent ?? "";
-    if (labelBoxTextContent !== this.#label) {
-      this.#label = labelBoxTextContent;
+  #handleLabelInput(label) {
+    if (label !== this.#label) {
+      this.#label = label;
       this.onLabelChange(this.#label);
       this.requestUpdate();
     }
   }
-  #handleLabelInputKeyDown(event) {
-    if (event.key === Platform2.KeyboardUtilities.ENTER_KEY || event.key === Platform2.KeyboardUtilities.ESCAPE_KEY) {
-      event.stopPropagation();
-      if (this.#label === "") {
-        this.onRemove();
-      }
-      this.#viewOutput.labelBox?.blur();
+  #handleLabelEditComplete() {
+    if (this.#label === "") {
+      this.onRemove();
     }
   }
   performUpdate() {
@@ -1556,7 +1556,7 @@ var TimeRangeOverlay = class extends UI2.Widget.Widget {
         isLabelEditable: this.#isLabelEditable,
         onLabelFocusOut: () => this.#setLabelEditability(false),
         onLabelDblClick: () => this.#setLabelEditability(true),
-        onLabelKeyDown: this.#handleLabelInputKeyDown.bind(this),
+        onLabelEditComplete: this.#handleLabelEditComplete.bind(this),
         onLabelInput: this.#handleLabelInput.bind(this)
       },
       this.#viewOutput,
@@ -1566,7 +1566,7 @@ var TimeRangeOverlay = class extends UI2.Widget.Widget {
     if (this.#focusLabelOnUpdate) {
       this.#focusLabelOnUpdate = false;
       if (this.#isLabelEditable) {
-        this.#focusInputBox();
+        this.#viewOutput.focusLabel();
       }
     }
   }

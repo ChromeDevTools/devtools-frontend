@@ -67,7 +67,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
      */
     searchResults = undefined;
     eventListeners;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     networkSplitWidget;
     mainDataProvider;
     mainFlameChart;
@@ -88,8 +87,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     #boundRefreshAfterIgnoreList;
     /** This is sorted by ts. */
     #selectedEvents;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     groupBySetting;
     searchableView;
     needsResizeToPreferredHeights;

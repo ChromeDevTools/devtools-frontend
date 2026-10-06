@@ -13,6 +13,8 @@ const lockedString = i18n.i18n.lockedString;
 export const MAX_NUM_CHAR_LENGTH = 10000;
 export class GetStorageValuesTool {
     name = "getStorageValues" /* ToolName.GET_STORAGE_VALUES */;
+    permissionPrompt = "allow-once" /* PermissionPrompt.ALLOW_ONCE */;
+    permissionTitle = lockedString('Allow reading storage values?');
     description = 'Retrieve specific string values from storage partitions for requested keys across origins.';
     annotations = ["redact-from-history" /* ToolAnnotation.REDACT_FROM_HISTORY */];
     parameters = {

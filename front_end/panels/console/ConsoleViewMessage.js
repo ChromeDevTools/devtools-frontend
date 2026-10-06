@@ -1642,8 +1642,7 @@ export class ConsoleViewMessage {
     }
     toExportString() {
         const lines = [];
-        const nodes = this.contentElement().childTextNodes();
-        const messageContent = nodes.map(Components.Linkifier.Linkifier.untruncatedNodeText).join('');
+        const messageContent = Components.Linkifier.Linkifier.untruncatedTextContent(this.contentElement());
         for (let i = 0; i < this.repeatCount(); ++i) {
             lines.push(messageContent);
         }

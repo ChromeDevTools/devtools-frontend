@@ -16,6 +16,7 @@ const lockedString = i18n.i18n.lockedString;
  */
 export class GetTraceFunctionCodeTool {
     name = "getTraceFunctionCode" /* ToolName.GET_TRACE_FUNCTION_CODE */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Retrieves the code for a function recorded in the performance trace at the specified location, annotated with line-by-line CPU runtime profiling execution costs. Do not call this tool unless a performance trace recording is actively loaded.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,

@@ -506,7 +506,7 @@ export class ConsoleViewport {
                 continue;
             }
             const element = providerElement.element();
-            const lineContent = element.childTextNodes().map(Components.Linkifier.Linkifier.untruncatedNodeText).join('');
+            const lineContent = Components.Linkifier.Linkifier.untruncatedTextContent(element);
             textLines.push(lineContent);
         }
         const endProviderElement = this.providerElement(endSelection.item);

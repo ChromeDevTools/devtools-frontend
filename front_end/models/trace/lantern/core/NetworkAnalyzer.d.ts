@@ -69,6 +69,7 @@ declare class NetworkAnalyzer {
      */
     static estimateResponseTimeByOrigin(records: Lantern.NetworkRequest[], rttByOrigin: Map<string, number>): Map<string, number[]>;
     static canTrustConnectionInformation(requests: Lantern.NetworkRequest[]): boolean;
+    static isMultiplexedProtocol(protocol?: string): boolean;
     /**
      * Returns a map of requestId -> connectionReused, estimating the information if the information
      * available in the records themselves appears untrustworthy.

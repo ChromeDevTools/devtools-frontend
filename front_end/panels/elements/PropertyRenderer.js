@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { Directive, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import { unescapeCssString } from './StylesSidebarPane.js';
@@ -24,20 +26,29 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PropertyRenderer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-function mergeWithSpacing(nodes, merge) {
-    const result = [...nodes];
-    if (SDK.CSSPropertyParser.requiresSpace(nodes, merge)) {
-        result.push(document.createTextNode(' '));
+export function precedingSpace(node, ast, matchedResult) {
+    let cur = node;
+    while (cur && !cur.prevSibling) {
+        cur = cur.parent;
     }
-    result.push(...merge);
-    return result;
+    const prev = cur?.prevSibling;
+    if (!prev) {
+        return '';
+    }
+    const space = ast.rule.substring(prev.to, node.from);
+    if (space || !matchedResult) {
+        return space;
+    }
+    return SDK.CSSPropertyParser.requiresSpace(matchedResult.getComputedText(prev), matchedResult.getComputedText(node)) ?
+        ' ' :
+        '';
 }
 // A mixin to automatically expose the match type on specific renrerers
 export function rendererBase(matchT) {
     class RendererBaseClass {
         matchType = matchT;
         render(_match, _context) {
-            return [];
+            return nothing;
         }
     }
     return RendererBaseClass;
@@ -128,6 +139,33 @@ export class Highlighting {
         }
     }
 }
+class HighlightDirective extends Directive.Directive {
+    #startNode = null;
+    update(part, [highlighting, match]) {
+        if (part.type !== Directive.PartType.CHILD) {
+            return nothing;
+        }
+        this.#startNode ??= part.startNode?.parentNode?.firstChild ?? null;
+        const nodes = [];
+        for (let node = this.#startNode?.nextSibling; node && node !== part.startNode; node = node.nextSibling) {
+            if (!(node instanceof Comment)) {
+                nodes.push(node);
+            }
+        }
+        highlighting.addMatch(match, nodes);
+        return nothing;
+    }
+    render(_highlighting, _match) {
+        return nothing;
+    }
+}
+const highlightDirective = Directive.directive(HighlightDirective);
+function highlight(highlighting, match, template) {
+    if (!highlighting) {
+        return template;
+    }
+    return html `${template}${highlightDirective(highlighting, match)}`;
+}
 /**
  * This class is used to guide value tracing when passed to the Renderer. Tracing has two phases. First, substitutions
  * such as var() are applied step by step. In each step, all vars in the value are replaced by their definition until no
@@ -159,9 +197,8 @@ export class TracingContext {
     expandPercentagesInShorthands;
     constructor(highlighting, expandPercentagesInShorthands, initialLonghandOffset = 0, matchedResult) {
         this.#highlighting = highlighting;
-        this.#hasMoreSubstitutions =
-            matchedResult?.hasMatches(SDK.CSSPropertyParserMatchers.VariableMatch, SDK.CSSPropertyParserMatchers.BaseVariableMatch, SDK.CSSPropertyParserMatchers.AttributeMatch, SDK.CSSPropertyParserMatchers.EnvFunctionMatch) ??
-                false;
+        this.#hasMoreSubstitutions = matchedResult?.hasMatches(SDK.CSSPropertyParserMatchers.VariableMatch, SDK.CSSPropertyParserMatchers.BaseVariableMatch, SDK.CSSPropertyParserMatchers.AttributeMatch, SDK.CSSPropertyParserMatchers.EnvFunctionMatch) ??
+            false;
         this.#propertyName = matchedResult?.ast.propertyName ?? null;
         this.#longhandOffset = initialLonghandOffset;
         this.expandPercentagesInShorthands = expandPercentagesInShorthands;
@@ -243,7 +280,8 @@ export class TracingContext {
             children.forEach(child => this.#asyncEvalCallbacks.push(...child.#asyncEvalCallbacks));
             return null;
         }
-        this.#setAppliedEvaluations(children.map(child => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) + 1);
+        this.#setAppliedEvaluations(children.map(child => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) +
+            1);
         const { placeholder, asyncEvalCallback } = evaluation();
         this.#asyncEvalCallbacks.push(asyncEvalCallback);
         return placeholder;
@@ -365,15 +403,21 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         }
         const cssControls = new CSSControlMap();
         const renderers = nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal));
-        const nodes = renderers.map(node => node.#output).reduce(mergeWithSpacing, []);
-        return { nodes, cssControls };
+        const nodes = renderers.reduce((nodes, renderer) => {
+            if (renderer !== renderers[0]) {
+                const spacing = precedingSpace(renderer.ast.tree, context.ast, context.matchedResult);
+                if (spacing) {
+                    nodes.push(html `${spacing}`);
+                }
+            }
+            nodes.push(...renderer.#output);
+            return nodes;
+        }, []);
+        return { nodes: html `${nodes}`, cssControls };
     }
     static renderInto(nodeOrNodes, context, parent) {
         const { nodes, cssControls } = this.render(nodeOrNodes, context);
-        if (parent.lastChild && SDK.CSSPropertyParser.requiresSpace([parent.lastChild], nodes)) {
-            parent.appendChild(document.createTextNode(' '));
-        }
-        nodes.map(n => parent.appendChild(n));
+        render(nodes, parent);
         return { nodes, cssControls };
     }
     renderedMatchForTest(_nodes, _match) {
@@ -383,18 +427,16 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         const renderer = match &&
             this.#context.renderers.get(match.constructor);
         if (renderer || match instanceof SDK.CSSPropertyParserMatchers.TextMatch) {
-            let output;
-            if (renderer) {
-                output = renderer.render(match, this.#context);
-            }
-            else {
-                const span = document.createElement('span');
-                span.appendChild(document.createTextNode(match.text));
-                output = [span];
-            }
-            this.#context.tracing?.highlighting.addMatch(match, output);
+            const rendered = renderer?.render(match, this.#context) ?? html `<span>${match.text}</span>`;
+            const output = highlight(this.#context.tracing?.highlighting, match, Array.isArray(rendered) ? html `${rendered}` : rendered);
             this.renderedMatchForTest(output, match);
-            this.#output = mergeWithSpacing(this.#output, output);
+            if (this.#output.some(t => t !== nothing)) {
+                const spacing = precedingSpace(node, this.#context.ast, this.#matchedResult);
+                if (spacing) {
+                    this.#output.push(html `${spacing}`);
+                }
+            }
+            this.#output.push(output);
             return false;
         }
         return true;
@@ -430,13 +472,13 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         valueElement.className = 'value';
         valueElement.tabIndex = -1;
         const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal);
-        nodes.forEach(node => valueElement.appendChild(node));
+        render(nodes, valueElement);
         valueElement.normalize();
         return { valueElement, cssControls };
     }
     static renderValueNodes(property, matchedResult, renderers, tracing, signal) {
         if (!matchedResult) {
-            return { nodes: [document.createTextNode(property.value)], cssControls: new Map() };
+            return { nodes: html `${property.value}`, cssControls: new Map() };
         }
         const rendererMap = new Map();
         for (const renderer of renderers) {
@@ -480,7 +522,7 @@ export class URLRenderer extends URLRendererBase {
         }), hrefUrl || url);
         container.appendChild(link);
         UI.UIUtils.createTextChild(container, ')');
-        return [container];
+        return html `${[container]}`;
     }
 }
 const StringRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.StringMatch);
@@ -491,7 +533,7 @@ export class StringRenderer extends StringRendererBase {
         const element = document.createElement('span');
         element.innerText = match.text;
         UI.Tooltip.Tooltip.install(element, unescapeCssString(match.text));
-        return [element];
+        return html `${[element]}`;
     }
 }
 const BinOpRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.BinOpMatch);
@@ -499,12 +541,9 @@ const BinOpRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.BinOpMatch)
 export class BinOpRenderer extends BinOpRendererBase {
     // clang-format on
     render(match, context) {
-        const [lhs, binop, rhs] = SDK.CSSPropertyParser.ASTUtils.children(match.node).map(child => {
-            const span = document.createElement('span');
-            Renderer.renderInto(child, context, span);
-            return span;
-        });
-        return [lhs, document.createTextNode(' '), binop, document.createTextNode(' '), rhs];
+        const [lhs, binop, rhs] = SDK.CSSPropertyParser.ASTUtils.children(match.node)
+            .map(child => html `<span>${Renderer.render(child, context).nodes}</span>`);
+        return html `${[lhs, document.createTextNode(' '), binop, document.createTextNode(' '), rhs]}`;
     }
 }
 //# sourceMappingURL=PropertyRenderer.js.map

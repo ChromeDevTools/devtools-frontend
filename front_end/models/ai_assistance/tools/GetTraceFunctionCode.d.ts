@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import { type BaseToolCapability, type DataHandlerResult, type DataTool, type PerformanceTraceCapability, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type PerformanceTraceCapability, PermissionPrompt, type ToolArgs, ToolName } from './Tool.js';
 /**
  * Arguments for {@link GetTraceFunctionCodeTool}.
  */
@@ -20,6 +20,7 @@ export interface GetTraceFunctionCodeArgs extends ToolArgs {
  */
 export declare class GetTraceFunctionCodeTool implements DataTool<GetTraceFunctionCodeArgs, string, BaseToolCapability & PerformanceTraceCapability> {
     readonly name: ToolName;
+    readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetTraceFunctionCodeArgs>;
     displayInfoFromArgs(params: GetTraceFunctionCodeArgs): {

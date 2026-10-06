@@ -9,6 +9,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import { AnimationsTrackAppender } from './AnimationsTrackAppender.js';
 import { getDurationString, getEventLevel } from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
@@ -206,7 +207,9 @@ export class CompatibilityTracksAppender {
             }
         };
         const threads = Trace.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
-        const showAllEvents = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
+        const showAllEvents = Common.Settings.Settings.instance()
+            .resolve(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor)
+            .get();
         for (const { pid, tid, name, type, entries, tree } of threads) {
             if (this.#parsedTrace.data.Meta.traceIsGeneric) {
                 // If the trace is generic, we just push all of the threads with no effort to differentiate them, hence

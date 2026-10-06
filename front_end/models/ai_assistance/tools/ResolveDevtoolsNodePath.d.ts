@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, type TargetCapability, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, PermissionPrompt, type TargetCapability, type ToolArgs, ToolName } from './Tool.js';
 /**
  * Arguments for resolving a DevTools node path to a backend node ID.
  */
@@ -23,6 +23,7 @@ export declare class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevt
     backendNodeId: number;
 }, BaseToolCapability & TargetCapability & OriginLockCapability> {
     readonly name: ToolName;
+    readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ResolveDevtoolsNodePathArgs>;
     displayInfoFromArgs(params: ResolveDevtoolsNodePathArgs): {

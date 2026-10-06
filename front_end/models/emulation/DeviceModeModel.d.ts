@@ -109,6 +109,7 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
         userAgent: string;
         metadata: Protocol.Emulation.UserAgentMetadata;
     };
+    static getDynamicAndroidVersion(): number;
     static defaultMobileUserAgent(): string;
     static defaultMobileUserAgentMetadata(): Protocol.Emulation.UserAgentMetadata;
 }

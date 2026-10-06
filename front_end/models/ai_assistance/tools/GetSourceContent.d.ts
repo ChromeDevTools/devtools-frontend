@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, PermissionPrompt, type ToolArgs, ToolName } from './Tool.js';
 export interface GetSourceContentArgs extends ToolArgs {
     id: number;
 }
@@ -11,6 +11,7 @@ export declare class GetSourceContentTool implements DataTool<GetSourceContentAr
     content: string;
 }, BaseToolCapability & OriginLockCapability> {
     readonly name: ToolName;
+    readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetSourceContentArgs>;
     displayInfoFromArgs(args: GetSourceContentArgs): {

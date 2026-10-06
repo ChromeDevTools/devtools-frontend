@@ -954,8 +954,8 @@ var onINP2 = (onReport, opts = {}) => {
   };
   const queueCleanup = () => {
     if (!cleanupPending) {
-      whenIdleOrHidden(cleanupEntries);
       cleanupPending = true;
+      whenIdleOrHidden(cleanupEntries);
     }
   };
   const cleanupEntries = () => {
@@ -1158,7 +1158,8 @@ var onLCP2 = (onReport, opts = {}) => {
     };
     if (metric.entries.length) {
       const lcpEntry = metric.entries.at(-1);
-      const lcpResourceEntry = lcpEntry.url && (resourceBuffer.findLast((e) => e.name === lcpEntry.url) || performance.getEntriesByType("resource").findLast((e) => e.name === lcpEntry.url));
+      const isLCPResource = (e) => e.name === lcpEntry.url && (e.requestStart || e.startTime) <= lcpEntry.startTime;
+      const lcpResourceEntry = lcpEntry.url && (resourceBuffer.findLast(isLCPResource) || performance.getEntriesByType("resource").findLast(isLCPResource));
       attribution.target = lcpTargetMap.get(lcpEntry);
       attribution.lcpEntry = lcpEntry;
       if (lcpEntry.url) {

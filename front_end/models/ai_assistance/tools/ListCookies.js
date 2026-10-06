@@ -8,6 +8,7 @@ import { getCookiesForOrigin, resolveAllowedTargetOrigins } from './CookieUtils.
 const lockedString = i18n.i18n.lockedString;
 export class ListCookiesTool {
     name = "listCookies" /* ToolName.LIST_COOKIES */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Lists all cookie names for requested origins (or the current page origin if omitted), strictly excluding their values.';
     annotations = ["redact-from-history" /* ToolAnnotation.REDACT_FROM_HISTORY */];
     parameters = {

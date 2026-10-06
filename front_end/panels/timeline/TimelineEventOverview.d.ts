@@ -34,7 +34,7 @@ export declare class TimelineFilmStripOverview extends TimelineEventOverview {
     private drawFrames;
     overviewInfoPromise(x: number): Promise<Element | null>;
     reset(): void;
-    static readonly Padding = 2;
+    static readonly PADDING = 2;
 }
 export declare class TimelineEventOverviewMemory extends TimelineEventOverview {
     #private;

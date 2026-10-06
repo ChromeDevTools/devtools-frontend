@@ -1,7 +1,7 @@
 import * as Host from '../../../core/host/host.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type { LighthouseCategoryArg } from '../data_formatters/LighthouseFormatter.js';
-import { type BaseToolCapability, type ContextHandlerResult, type ContextTool, type LighthouseRecordingCapability, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type ContextHandlerResult, type ContextTool, type LighthouseRecordingCapability, PermissionPrompt, type ToolArgs, ToolName } from './Tool.js';
 export interface RunLighthouseArgs extends ToolArgs {
     explanation: string;
     categoryId: LighthouseCategoryArg;
@@ -12,6 +12,7 @@ export interface RunLighthouseArgs extends ToolArgs {
  */
 export declare class RunLighthouseTool implements ContextTool<RunLighthouseArgs, LHModel.ReporterTypes.ReportJSON, BaseToolCapability & LighthouseRecordingCapability> {
     readonly name: ToolName;
+    readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof RunLighthouseArgs>;
     displayInfoFromArgs(params: RunLighthouseArgs): {

@@ -1,6 +1,6 @@
 import * as Host from '../../../core/host/host.js';
 import * as Logs from '../../logs/logs.js';
-import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, PermissionPrompt, type ToolArgs, ToolName } from './Tool.js';
 export interface GetNetworkRequestDetailsArgs extends ToolArgs {
     id: string;
 }
@@ -11,6 +11,7 @@ export interface GetNetworkRequestDetailsArgs extends ToolArgs {
 export declare class GetNetworkRequestDetailsTool implements DataTool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability & OriginLockCapability> {
     #private;
     readonly name: ToolName;
+    readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
     constructor(networkLog?: Logs.NetworkLog.NetworkLog);
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetNetworkRequestDetailsArgs>;

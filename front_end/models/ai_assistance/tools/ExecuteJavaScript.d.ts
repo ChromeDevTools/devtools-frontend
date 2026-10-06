@@ -1,6 +1,6 @@
 import * as Host from '../../../core/host/host.js';
 import type { FunctionHandlerOptions } from '../agents/AiAgent.js';
-import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, type PageExecutionCapability, type StyleMutationCapability, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, type PageExecutionCapability, PermissionPrompt, type StyleMutationCapability, type ToolArgs, ToolName } from './Tool.js';
 export interface ExecuteJavaScriptArgs extends ToolArgs {
     code: string;
     explanation: string;
@@ -8,6 +8,8 @@ export interface ExecuteJavaScriptArgs extends ToolArgs {
 }
 export declare class ExecuteJavaScriptTool implements DataTool<ExecuteJavaScriptArgs, unknown, BaseToolCapability & PageExecutionCapability & StyleMutationCapability & OriginLockCapability> {
     readonly name: ToolName;
+    readonly permissionPrompt: PermissionPrompt;
+    readonly permissionTitle: string;
     readonly description: string;
     static validateAndFormatCode(code: string): Promise<{
         formattedCode?: string;

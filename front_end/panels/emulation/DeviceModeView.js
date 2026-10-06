@@ -10,6 +10,7 @@ import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Geometry from '../../ui/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { DeviceModeToolbar } from './DeviceModeToolbar.js';
 import deviceModeViewStyles from './deviceModeView.css.js';
@@ -225,9 +226,10 @@ export class DeviceModeView extends UI.Widget.VBox {
         this.registerRequiredCSS(deviceModeViewStyles);
         this.model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
         this.model.addEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.updateUI, this);
-        this.showMediaInspectorSetting = Common.Settings.Settings.instance().moduleSetting('show-media-query-inspector');
+        this.showMediaInspectorSetting = Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.showMediaQueryInspectorSettingDescriptor);
         this.showMediaInspectorSetting.addChangeListener(this.updateUI, this);
-        this.showRulersSetting = Common.Settings.Settings.instance().moduleSetting('emulation.show-rulers');
+        this.showRulersSetting =
+            Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.showRulersSettingDescriptor);
         this.showRulersSetting.addChangeListener(this.updateUI, this);
         this.#toggleDeviceModeAction =
             UI.ActionRegistry.ActionRegistry.instance().getAction('emulation.toggle-device-mode');

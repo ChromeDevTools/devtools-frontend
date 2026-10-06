@@ -4772,118 +4772,116 @@ var backgroundServiceView_css_default = `/*
 // ../../front_end/panels/application/BackgroundServiceView.ts
 var UIStrings3 = {
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Name of the background fetch service in the background service view of the Application panel.
    */
   backgroundFetch: "Background fetch",
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Name of the background sync service in the background service view of the Application panel.
    */
   backgroundSync: "Background sync",
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Name of the push messaging service in the background service view of the Application panel.
    */
   pushMessaging: "Push messaging",
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Name of the notifications service in the background service view of the Application panel.
    */
   notifications: "Notifications",
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Name of the payment handler service in the background service view of the Application panel.
    */
   paymentHandler: "Payment handler",
   /**
-   * @description Text in the Periodic Background Service View of the Application panel
+   * @description Name of the periodic background sync service in the background service view of the Application panel.
    */
   periodicBackgroundSync: "Periodic background sync",
   /**
-   * @description Text to clear content
+   * @description Tooltip text for the clear button in the toolbar of the background service view in the Application panel.
    */
   clear: "Clear",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon download button in the Background Service View of the Application panel
+   * @description Tooltip text for the save button in the toolbar of the background service view in the Application panel.
    */
   saveEvents: "Save events",
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Label text for the checkbox to show events from other domains in the background service view of the Application panel.
    */
   showEventsFromOtherDomains: "Show events from other domains",
   /**
-   * @description Text of a checkbox to show events for other storage keys
+   * @description Label text for the checkbox to show events from other storage partitions in the background service view of the Application panel.
    */
   showEventsForOtherStorageKeys: "Show events from other storage partitions",
   /**
-   * @description Title of an action under the Background Services category that can be invoked through the Command Menu
+   * @description Tooltip and action title to stop recording events in the background service view of the Application panel.
    */
   stopRecordingEvents: "Stop recording events",
   /**
-   * @description Title of an action under the Background Services category that can be invoked through the Command Menu
+   * @description Tooltip, button label, and action title to start recording events in the background service view of the Application panel.
    */
   startRecordingEvents: "Start recording events",
   /**
-   * @description Text for timestamps of items
+   * @description Table column header for event timestamps in the background service view of the Application panel.
    */
   timestamp: "Timestamp",
   /**
-   * @description Text that refers to some events
+   * @description Table column header for event names in the background service view of the Application panel.
    */
   event: "Event",
   /**
-   * @description Text for the origin of something
+   * @description Table column header for event origins in the background service view of the Application panel.
    */
   origin: "Origin",
   /**
-   * @description Text for the storage key of something
+   * @description Table column header for storage keys in the background service view of the Application panel.
    */
-  storageKey: "Storage Key",
+  storageKey: "Storage key",
   /**
-   * @description Text in Background Service View of the Application panel. The Scope is a URL associated with the Service Worker, which limits which pages/sites the Service Worker operates on.
+   * @description Table column header for Service Worker scopes in the background service view of the Application panel.
    */
-  swScope: "Service Worker Scope",
+  swScope: "Service Worker scope",
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Table column header for instance IDs in the background service view of the Application panel.
    */
   instanceId: "Instance ID",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Accessible name for the background services datagrid in the Application panel.
    */
   backgroundServices: "Background services",
   /**
-   * @description Text in Background Service View of the Application panel.
-   *             An event here refers to a background service event that is an entry in a table.
+   * @description Header text in the preview sidebar of the background service view when no event is selected.
    */
   noEventSelected: "No event selected",
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Text in the preview sidebar of the background service view instructing the user to select an event to view its metadata.
    */
   selectAnEventToViewMetadata: "Select an event to view its metadata",
   /**
-   * @description Text in Background Service View of the Application panel
-   * @example {Background Fetch} PH1
+   * @description Header text in the background service view when recording service activity.
+   * @example {background fetch} PH1
    */
   recordingSActivity: "Recording {PH1} activity\u2026",
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Header text in the background service view when no recording has been started yet.
    */
   noRecording: "No recording yet",
   /**
-   * @description Inform users that DevTools are recording/waiting for events in the Periodic Background Sync tool of the Application panel
-   * @example {Background Fetch} PH1
+   * @description Informational text in the background service view explaining that DevTools records service activity for up to 3 days.
+   * @example {background fetch} PH1
    */
   // eslint-disable-next-line @devtools/l10n-uistrings-sentence-punctuation -- Concatenated with recordingSActivity in UI to form a multi-sentence message.
   devtoolsWillRecordAllSActivity: "DevTools will record all {PH1} activity for up to 3 days, even when closed.",
   /**
-   * @description Text in Background Service View of the Application panel to instruct the user on how to start a recording for
-   * background services.
+   * @description Informational text in the background service view explaining how to start recording background service events.
    * @example {Start recording events} PH1
    * @example {Ctrl + E} PH2
    */
   startRecordingToDebug: 'Start to debug background services by using the "{PH1}" button or by pressing {PH2}',
   /**
-   * @description Text to show an item is empty
+   * @description Text indicating that a metadata value is empty in the background service view of the Application panel.
    */
   empty: "empty",
   /**
-   * @description Text in Background Service View of the Application panel
+   * @description Text shown in the preview sidebar when the selected event has no metadata in the background service view of the Application panel.
    */
   noMetadataForThisEvent: "No metadata for this event"
 };
@@ -11532,25 +11530,25 @@ var serviceWorkerUpdateCycleView_css_default = `/*
 // ../../front_end/panels/application/ServiceWorkerUpdateCycleView.ts
 var UIStrings17 = {
   /**
-   * @description Text in Indexed DBViews of the Application panel
+   * @description Table column header for the version column in the Service Worker update cycle table of the Application panel.
    */
   version: "Version",
   /**
-   * @description Table heading for Service Workers update information. Update is a noun.
+   * @description Table column header for the update activity column in the Service Worker update cycle table of the Application panel. Update is a noun.
    */
-  updateActivity: "Update Activity",
+  updateActivity: "Update activity",
   /**
-   * @description Title for the timeline tab.
+   * @description Table column header for the timeline column in the Service Worker update cycle table of the Application panel.
    */
   timeline: "Timeline",
   /**
-   * @description Text in Service Workers Update Life Cycle
-   * @example {2} PH1
+   * @description Details row text displaying the start time of a phase in the Service Worker update cycle table of the Application panel.
+   * @example {2026-09-14T15:30:00.000Z} PH1
    */
   startTimeS: "Start time: {PH1}",
   /**
-   * @description Text for end time of an event
-   * @example {2} PH1
+   * @description Details row text displaying the end time of a phase in the Service Worker update cycle table of the Application panel.
+   * @example {2026-09-14T15:30:00.000Z} PH1
    */
   endTimeS: "End time: {PH1}"
 };
@@ -11842,157 +11840,149 @@ var ServiceWorkerUpdateNames = /* @__PURE__ */ ((ServiceWorkerUpdateNames2) => {
 // ../../front_end/panels/application/ServiceWorkersView.ts
 var UIStrings18 = {
   /**
-   * @description Text for linking to other Service Worker registrations
+   * @description Section header for Service Worker registrations from other origins in the Service Workers view of the Application panel.
    */
-  serviceWorkersFromOtherOrigins: "Service workers from other origins",
+  serviceWorkersFromOtherOrigins: "Service Workers from other origins",
   /**
-   * @description Title of update on reload setting in service workers view of the application panel
+   * @description Label text for the update on reload checkbox in the Service Workers view of the Application panel.
    */
   updateOnReload: "Update on reload",
   /**
-   * @description Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel
+   * @description Tooltip text for the update on reload setting in the Service Workers view of the Application panel.
    */
-  onPageReloadForceTheService: "On page reload, force the `service worker` to update, and activate it",
+  onPageReloadForceTheService: "On page reload, force the `Service Worker` to update, and activate it",
   /**
-   * @description Title of bypass service worker setting in service workers view of the application panel
+   * @description Label text for the bypass for network checkbox in the Service Workers view of the Application panel.
    */
   bypassForNetwork: "Bypass for network",
   /**
-   * @description Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel
+   * @description Tooltip text for the bypass for network setting in the Service Workers view of the Application panel.
    */
-  bypassTheServiceWorkerAndLoad: "Bypass the `service worker` and load resources from the network",
+  bypassTheServiceWorkerAndLoad: "Bypass the `Service Worker` and load resources from the network",
   /**
-   * @description Screen reader title for a section of the Service Workers view of the Application panel
+   * @description Aria label for a Service Worker registration section in the Service Workers view of the Application panel.
    * @example {https://example.com} PH1
    */
-  serviceWorkerForS: "`Service worker` for {PH1}",
+  serviceWorkerForS: "`Service Worker` for {PH1}",
   /**
-   * @description Text in Service Workers View of the Application panel
+   * @description Default text for the test push message input in the Service Workers view of the Application panel.
    */
   testPushMessageFromDevtools: "Test push message from DevTools",
   /**
-   * @description Button label for service worker network requests
+   * @description Button label and tooltip to view Service Worker network requests in the Network panel.
    */
   networkRequests: "Network requests",
   /**
-   * @description Label for a button in the Service Workers View of the Application panel.
-   * Imperative noun. Clicking the button will refresh the list of service worker registrations.
+   * @description Button label and tooltip to update a Service Worker registration in the Service Workers view of the Application panel.
    */
   update: "Update",
   /**
-   * @description Text in Service Workers View of the Application panel
+   * @description Tooltip text for the unregister button in the Service Workers view of the Application panel.
    */
-  unregisterServiceWorker: "Unregister service worker",
+  unregisterServiceWorker: "Unregister Service Worker",
   /**
-   * @description Text in Service Workers View of the Application panel
+   * @description Button label to unregister a Service Worker in the Service Workers view of the Application panel.
    */
   unregister: "Unregister",
   /**
-   * @description Text for the source of something
+   * @description Field label for the Service Worker script source in the Service Workers view of the Application panel.
    */
   source: "Source",
   /**
-   * @description Text for the status of something
+   * @description Field label for the Service Worker status in the Service Workers view of the Application panel.
    */
   status: "Status",
   /**
-   * @description Text in Service Workers View of the Application panel
+   * @description Field label for the controlled clients of a Service Worker in the Service Workers view of the Application panel.
    */
   clients: "Clients",
   /**
-   * @description Text in Service Workers View of the Application panel. Label for a section of the
-   * tool which allows the developer to send a test push message to the service worker.
+   * @description Field label and button text for sending a test push message in the Service Workers view of the Application panel.
    */
   pushString: "Push",
   /**
-   * @description Text in Service Workers View of the Application panel. Placeholder text for where
-   * the user can type in the data they want to push to the service worker i.e. the 'push data'. Noun
-   * phrase.
+   * @description Placeholder text and aria label for the push data input field in the Service Workers view of the Application panel.
    */
   pushData: "Push data",
   /**
-   * @description Text in Service Workers View of the Application panel
+   * @description Field label and button text for dispatching a sync event in the Service Workers view of the Application panel.
    */
   syncString: "Sync",
   /**
-   * @description Placeholder text for the input box where a user is asked for a test tag to sync. This is used as a compound noun, not as a verb.
+   * @description Placeholder text and aria label for the sync tag input field in the Service Workers view of the Application panel.
    */
   syncTag: "Sync tag",
   /**
-   * @description Text for button in Service Workers View of the Application panel that dispatches a periodicsync event
+   * @description Field label and button text for dispatching a periodic sync event in the Service Workers view of the Application panel.
    */
   periodicSync: "Periodic sync",
   /**
-   * @description Default tag for a periodicsync event in Service Workers View of the Application panel
+   * @description Placeholder text and aria label for the periodic sync tag input field in the Service Workers view of the Application panel.
    */
   periodicSyncTag: "Periodic sync tag",
   /**
-   * @description Aria accessible name in Service Workers View of the Application panel
+   * @description Aria label for the link to show registration errors in the Console panel.
    * @example {3} PH1
    */
   sRegistrationErrors: "{PH1} registration errors",
   /**
-   * @description Text in Service Workers View of the Application panel. The Date/time that a service
-   * worker version update was received by the webpage.
+   * @description Date and time when a Service Worker version update was received in the Service Workers view of the Application panel.
    * @example {7/3/2019, 3:38:37 PM} PH1
    */
   receivedS: "Received {PH1}",
   /**
-   **@description Text in Service Workers View of the Application panel.
+   * @description Field label for Service Worker router rules in the Service Workers view of the Application panel.
    */
   routers: "Routers",
   /**
-   * @description Text in Service Workers View of the Application panel
-   * @example {example.com} PH1
+   * @description Title for a deleted Service Worker registration in the Service Workers view of the Application panel.
+   * @example {https://example.com} PH1
    */
   sDeleted: "{PH1} - deleted",
   /**
-   * @description Text in Service Workers View of the Application panel
+   * @description Status text for an activated Service Worker version in the Service Workers view of the Application panel.
    * @example {1} PH1
-   * @example {stopped} PH2
+   * @example {running} PH2
    */
   sActivatedAndIsS: "#{PH1} activated and is {PH2}",
   /**
-   * @description Text in Service Workers View of the Application panel
+   * @description Button label to stop a running Service Worker in the Service Workers view of the Application panel.
    */
   stopString: "Stop",
   /**
-   * @description Text in Service Workers View of the Application panel
+   * @description Button label to start a stopped Service Worker in the Service Workers view of the Application panel.
    */
   startString: "Start",
   /**
-   * @description Text in Service Workers View of the Application panel. Service workers have
-   * different versions, which are labelled with numbers e.g. version #2. This text indicates that a
-   * particular version is now redundant (it was replaced by a newer version). # means 'number' here.
+   * @description Status text indicating that a Service Worker version is redundant in the Service Workers view of the Application panel.
    * @example {2} PH1
    */
   sIsRedundant: "#{PH1} is redundant",
   /**
-   * @description Text in Service Workers View of the Application panel
+   * @description Status text indicating that a Service Worker version is waiting to activate in the Service Workers view of the Application panel.
    * @example {2} PH1
    */
   sWaitingToActivate: "#{PH1} waiting to activate",
   /**
-   * @description Text in Service Workers View of the Application panel
+   * @description Status text indicating that a Service Worker version is trying to install in the Service Workers view of the Application panel.
    * @example {2} PH1
    */
   sTryingToInstall: "#{PH1} trying to install",
   /**
-   * @description Text in Service Workers Update Timeline. Update is a noun.
+   * @description Field label for the update cycle timeline in the Service Workers view of the Application panel. Update is a noun.
    */
-  updateCycle: "Update Cycle",
+  updateCycle: "Update cycle",
   /**
-   * @description Text of a DOM element in Service Workers View of the Application panel
-   * @example {example.com} PH1
+   * @description Text displaying the worker client URL in the Service Workers view of the Application panel.
+   * @example {https://example.com} PH1
    */
   workerS: "Worker: {PH1}",
   /**
-   * @description Link text in Service Workers View of the Application panel. When the link is clicked,
-   * the focus is moved to the service worker's client page.
+   * @description Tooltip text for the button to focus a client page in the Service Workers view of the Application panel.
    */
-  focus: "focus",
+  focus: "Focus",
   /**
-   * @description Link to view all the Service Workers that have been registered.
+   * @description Link text to view all Service Worker registrations on chrome://serviceworker-internals in the Application panel.
    */
   seeAllRegistrations: "See all registrations"
 };
@@ -16941,167 +16931,167 @@ var webMCPView_css_default = `/*
 // ../../front_end/panels/application/WebMCPView.ts
 var UIStrings28 = {
   /**
-   * @description Text for the header of the tool registry section
+   * @description Section header for the available tools list in the WebMCP view of the Application panel.
    */
-  toolRegistry: "Available Tools",
+  toolRegistry: "Available tools",
   /**
-   * @description Title of text to display when no tools are registered
+   * @description Header text displayed when no tools are registered in the WebMCP view of the Application panel.
    */
-  noToolsPlaceholderTitle: "Available `WebMCP` Tools",
+  noToolsPlaceholderTitle: "Available `WebMCP` tools",
   /**
-   * @description Text to display when no tools are registered
+   * @description Informational text displayed when no tools are registered in the WebMCP view of the Application panel.
    */
   noToolsPlaceholder: "Registered `WebMCP` tools for this page will appear here. No tools have been registered or detected yet.",
   /**
-   * @description Title of text to display when no calls have been made
+   * @description Header text displayed when no tool calls have been made in the WebMCP view of the Application panel.
    */
-  noCallsPlaceholderTitle: "Tool Activity",
+  noCallsPlaceholderTitle: "Tool activity",
   /**
-   * @description Text to display when no calls have been made
+   * @description Informational text displayed when no tool calls have been made in the WebMCP view of the Application panel.
    */
   noCallsPlaceholder: "Start interacting with your `WebMCP` agent to see real-time tool calls and executions here",
   /**
-   * @description Text for the header of the tool details section
+   * @description Tab title and section header for the tool details in the WebMCP view of the Application panel.
    */
   toolDetails: "Details",
   /**
-   * @description Text for the link to reveal the tool's DOM node in the Elements panel
+   * @description Tooltip and aria label for the button to reveal the tool's DOM node in the Elements panel.
    */
   viewInElementsPanel: "View in Elements panel",
   /**
-   * @description Text for the frame of a tool
+   * @description Label for the frame where a tool is registered in the WebMCP view of the Application panel.
    */
   frame: "Frame",
   /**
-   * @description Text for the name of a tool call
+   * @description Table column header and details label for the tool name in the WebMCP view of the Application panel.
    */
   name: "Name",
   /**
-   * @description Text for the status of a tool call
+   * @description Table column header for the tool call status in the WebMCP view of the Application panel.
    */
   status: "Status",
   /**
-   * @description Text for the input of a tool call
+   * @description Table column header and tab title for the tool call input in the WebMCP view of the Application panel.
    */
   input: "Input",
   /**
-   * @description Text for the output of a tool call
+   * @description Table column header and tab title for the tool call output in the WebMCP view of the Application panel.
    */
   output: "Output",
   /**
-   * @description Text for the status of a tool call that is in progress
+   * @description Status text for a tool call that is in progress in the WebMCP view of the Application panel.
    */
-  inProgress: "In Progress",
+  inProgress: "In progress",
   /**
-   * @description Tooltip for the clear log button
+   * @description Tooltip text for the clear log button in the toolbar of the WebMCP view in the Application panel.
    */
   clearLog: "Clear log",
   /**
-   * @description Text to close something
+   * @description Tooltip text for the close button in the sidebar of the WebMCP view in the Application panel.
    */
   close: "Close",
   /**
-   * @description Placeholder for the filter input
+   * @description Placeholder text for the filter input in the toolbar of the WebMCP view in the Application panel.
    */
   filter: "Filter",
   /**
-   * @description Tooltip for the tool types dropdown
+   * @description Tooltip text and button label for the tool types filter dropdown in the WebMCP view of the Application panel.
    */
   toolTypes: "Tool types",
   /**
-   * @description Tooltip for the status types dropdown
+   * @description Tooltip text and button label for the status types filter dropdown in the WebMCP view of the Application panel.
    */
   statusTypes: "Status types",
   /**
-   * @description Tooltip for the clear filters button
+   * @description Tooltip text for the clear filters button in the toolbar of the WebMCP view in the Application panel.
    */
   clearFilters: "Clear filters",
   /**
-   * @description Filter option for imperative tools
+   * @description Filter option label for imperative tools in the WebMCP view of the Application panel.
    */
   imperative: "Imperative",
   /**
-   * @description Filter option for declarative tools
+   * @description Filter option label for declarative tools in the WebMCP view of the Application panel.
    */
   declarative: "Declarative",
   /**
-   * @description Text for the status of a tool call that has failed
+   * @description Status text and filter option for a tool call that ended in an error in the WebMCP view of the Application panel.
    */
   error: "Error",
   /**
-   * @description Text for the status of a tool call that was canceled
+   * @description Status text and filter option for a tool call that was canceled in the WebMCP view of the Application panel.
    */
   canceled: "Canceled",
   /**
-   * @description Text for the status of a tool call that succeeded
+   * @description Status text and filter option for a tool call that completed successfully in the WebMCP view of the Application panel.
    */
   completed: "Completed",
   /**
-   * @description Text for the status of a tool call that has failed
+   * @description Filter option for a tool call that is in progress in the WebMCP view of the Application panel.
    */
-  pending: "In Progress",
+  pending: "In progress",
   /**
-   * @description Text for the total number of tool calls
+   * @description Summary text displaying the total number of tool calls in the WebMCP view of the Application panel.
    * @example {2} PH1
    */
-  totalCalls: "{PH1} Total calls",
+  totalCalls: "{PH1} total calls",
   /**
-   * @description Text for the number of failed tool calls
+   * @description Summary text displaying the number of failed tool calls in the WebMCP view of the Application panel.
    * @example {1} PH1
    */
-  failed: "{PH1} Failed",
+  failed: "{PH1} failed",
   /**
-   * @description Text for the number of canceled tool calls
+   * @description Summary text displaying the number of canceled tool calls in the WebMCP view of the Application panel.
    * @example {1} PH1
    */
-  canceledCount: "{PH1} Canceled",
+  canceledCount: "{PH1} canceled",
   /**
-   * @description Text for the number of in progress tool calls
+   * @description Summary text displaying the number of in-progress tool calls in the WebMCP view of the Application panel.
    * @example {1} PH1
    */
-  inProgressCount: "{PH1} In Progress",
+  inProgressCount: "{PH1} in progress",
   /**
-   * @description Context menu action to copy the name of a tool
+   * @description Context menu action to copy the name of a tool in the WebMCP view of the Application panel.
    */
   copyName: "Copy name",
   /**
-   * @description Context menu action to copy the description of a tool
+   * @description Context menu action to copy the description of a tool in the WebMCP view of the Application panel.
    */
   copyDescription: "Copy description",
   /**
-   * @description Context menu action to cancel an in-progress tool call
+   * @description Context menu action to cancel an in-progress tool call in the WebMCP view of the Application panel.
    */
   cancelCall: "Cancel",
   /**
-   * @description Text for the header of the tool run section
+   * @description Section header and button label to run a tool in the WebMCP view of the Application panel.
    */
-  runTool: "Run Tool",
+  runTool: "Run tool",
   /**
-   * @description Context menu action to reveal the tool in the tool list
+   * @description Context menu action to reveal a tool in the tool list in the WebMCP view of the Application panel.
    */
   revealTool: "Reveal tool",
   /**
-   * @description Context menu action to edit and run the tool
+   * @description Context menu action, button title, and aria label to edit and run a tool in the WebMCP view of the Application panel.
    */
   editAndRun: "Edit and run",
   /**
-   * @description Tooltip for the paste button
+   * @description Tooltip text and button label for the paste button in the WebMCP view of the Application panel.
    */
   paste: "Paste",
   /**
-   * @description Notice to display when a tool has been unregistered
+   * @description Notice displayed when a tool has been unregistered in the WebMCP view of the Application panel.
    */
   toolUnregisteredNotice: "This tool has been unregistered",
   /**
-   * @description Label for a list of tool flags or attributes
+   * @description Label for tool flags in the tool details section of the WebMCP view in the Application panel.
    */
   flags: "Flags",
   /**
-   * @description Text for the label of the tool description
+   * @description Label for the tool description in the tool details section of the WebMCP view in the Application panel.
    */
   description: "Description",
   /**
-   * @description Text for the label of the tool origin
+   * @description Label for the tool origin in the tool details section of the WebMCP view in the Application panel.
    */
   origin: "Origin"
 };

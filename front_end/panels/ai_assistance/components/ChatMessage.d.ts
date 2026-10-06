@@ -14,9 +14,17 @@ export interface ConfirmSideEffectDialog {
      */
     description: string | null;
     /**
-     * Callback invoked when the user resolves the dialog (true to confirm, false to decline).
+     * Callback invoked when the user resolves the dialog with their decision.
      */
-    onAnswer: (result: boolean) => void;
+    onAnswer: (decision: AiAssistanceModel.Tool.PermissionDecision) => void;
+    /**
+     * Which choices the permission prompt offers. Behaves as `ALLOW_ONCE` when unset.
+     */
+    permissionPrompt?: AiAssistanceModel.Tool.PermissionPrompt;
+    /**
+     * Title of the permission prompt, e.g. "Allow reading cookie values?".
+     */
+    permissionTitle?: string;
 }
 /**
  * Represents the execution state of an individual agent action step:

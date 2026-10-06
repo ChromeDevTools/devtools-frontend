@@ -206,6 +206,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
     userOperation = false;
     isEditingStyle = false;
     #filterRegex = null;
+    #filterUpdateScheduled = false;
     #isRegex = false;
     #filterText = '';
     isActivePropertyHighlighted = false;
@@ -246,7 +247,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             .resolve(SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor)
             .addChangeListener(this.updateCollapsedSectionsSetting, this);
         Common.Settings.Settings.instance()
-            .moduleSetting('show-inactive-css-rules')
+            .resolve(SettingsUI.ElementsSettings.showInactiveCSSRulesSettingDescriptor)
             .addChangeListener(this.requestUpdate, this);
         this.toolbarPaneElement = this.createStylesSidebarToolbar();
         this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
@@ -258,6 +259,21 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
         this.sectionsContainer.contentElement.addEventListener('focusin', this.sectionsContainerFocusChanged.bind(this), false);
         this.sectionsContainer.contentElement.addEventListener('focusout', this.sectionsContainerFocusChanged.bind(this), false);
         this.#swatchPopoverHelper.addEventListener("WillShowPopover" /* InlineEditor.SwatchPopoverHelper.Events.WILL_SHOW_POPOVER */, this.hideAllPopovers, this);
+        this.linkifier.addEventListener("liveLocationUpdated" /* Components.Linkifier.Events.LIVE_LOCATION_UPDATED */, () => {
+            if (!this.filterRegex() || this.#filterUpdateScheduled) {
+                return;
+            }
+            this.#filterUpdateScheduled = true;
+            queueMicrotask(() => {
+                if (!this.#filterUpdateScheduled) {
+                    return;
+                }
+                this.#filterUpdateScheduled = false;
+                if (this.filterRegex()) {
+                    this.updateFilter();
+                }
+            });
+        });
         this.decorator = new StylePropertyHighlighter(this);
         this.contentElement.classList.add('styles-pane');
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
@@ -303,7 +319,9 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
     }
     get webCustomData() {
         if (!this.#webCustomData &&
-            Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').get()) {
+            Common.Settings.Settings.instance()
+                .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
+                .get()) {
             // WebCustomData.create() fetches the property docs, so this must happen lazily.
             this.#webCustomData = WebCustomData.create();
         }
@@ -487,7 +505,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             }
         }, FILTER_IDLE_PERIOD);
     }
-    refreshUpdate(editedSection, editedTreeElement) {
+    refreshUpdate(editedSection, editedTreeElement, force = false) {
         if (editedTreeElement) {
             for (const section of this.allSections()) {
                 if (section instanceof BlankStylePropertiesSection && section.isBlank) {
@@ -496,7 +514,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
                 section.updateVarFunctions(editedTreeElement);
             }
         }
-        if (this.isEditingStyle) {
+        if (this.isEditingStyle && !force) {
             return;
         }
         const node = this.node();
@@ -1201,7 +1219,9 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             ElementsPanel.instance().showToolbarPane(null, LayersWidget.ButtonProvider.instance().item());
         }
         await this.idleCallbackManager.awaitDone();
-        const showInactiveCSSRules = Common.Settings.Settings.instance().moduleSetting('show-inactive-css-rules').get();
+        const showInactiveCSSRules = Common.Settings.Settings.instance()
+            .resolve(SettingsUI.ElementsSettings.showInactiveCSSRulesSettingDescriptor)
+            .get();
         if (!showInactiveCSSRules) {
             return blocks;
         }
@@ -1301,6 +1321,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
         return this.#filterRegex;
     }
     updateFilter() {
+        this.#filterUpdateScheduled = false;
         let hasAnyVisibleBlock = false;
         let visibleSections = 0;
         for (const block of this.sectionBlocks) {

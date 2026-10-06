@@ -123,6 +123,26 @@ const UIStringsNotTranslate = {
      */
     declineActionRequestApproval: 'Cancel',
     /**
+     * @description Button text in the permission prompt that skips the tool call.
+     */
+    skipToolCall: 'Skip',
+    /**
+     * @description Button text in the permission prompt that allows the tool call once.
+     */
+    allowThisTime: 'Yes, allow this time',
+    /**
+     * @description Button text in the permission prompt that allows the tool call now and in the future.
+     */
+    allowAlways: 'Yes, always allow',
+    /**
+     * @description Fallback title of the permission prompt when the tool has no title.
+     */
+    allowThisAction: 'Allow this action?',
+    /**
+     * @description Footer of the permission prompt.
+     */
+    relevantDataIsSentToGoogle: 'Relevant data is sent to Google. Change permissions in settings at any time.',
+    /**
      * @description The fallback text when a step has no title yet
      */
     investigating: 'Investigating',
@@ -654,17 +674,92 @@ function renderSideEffectStepsUI(input, steps) {
     if (sideEffectSteps.length === 0) {
         return Lit.nothing;
     }
+    // With the natural language interface the approval is rendered as a
+    // dedicated permission prompt instead of the side-effect confirmation UI.
+    const showPermissionPrompt = (step) => AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() && step.state.type === 'needs_approval';
     // clang-format off
     return html `
     ${sideEffectSteps.map(step => html `
       <div class="side-effect-container">
-        ${renderStep({
-        step,
-        markdownRenderer: input.markdownRenderer,
-        isLast: true,
-    })}
+        ${showPermissionPrompt(step) ?
+        renderPermissionPrompt(step) :
+        renderStep({
+            step,
+            markdownRenderer: input.markdownRenderer,
+            isLast: true,
+        })}
       </div> `)}
   `;
+    // clang-format on
+}
+/**
+ * Renders the permission prompt for a step that needs approval. Used when
+ * `AiUtils.isNaturalLanguageInterfaceEnabled()` is on; otherwise
+ * `renderSideEffectStepsUI` falls back to `renderStep`, which shows the
+ * legacy Allow / Deny buttons inside the `renderSideEffectConfirmationUi`.
+ *
+ * A separate UI is needed because the natural language interface runs tools
+ * that need richer consent than "run this code?": a tool-specific title and
+ * description, and an "Allow always" option (`sideEffectDialog.permissionPrompt`).
+ * It is a standalone card rather than a collapsible step so the user sees the
+ * question without expanding anything.
+ *
+ * TODO(b/516828269): Remove `renderSideEffectConfirmationUi` once the natural
+ * language interface launches.
+ */
+function renderPermissionPrompt(step) {
+    if (step.state.type !== 'needs_approval') {
+        return Lit.nothing;
+    }
+    const dialog = step.state.sideEffectDialog;
+    const title = dialog.permissionTitle ?? lockedString(UIStringsNotTranslate.allowThisAction);
+    const description = dialog.description ? html `<p class="permission-prompt-description">${dialog.description}</p>` : Lit.nothing;
+    const code = step.code ? html `<devtools-code-block
+      class="permission-prompt-code"
+      .code=${step.code.trim()}
+      .codeLang=${'js'}
+      .displayNotice=${true}
+      .header=${lockedString(UIStringsNotTranslate.codeToExecute)}
+    ></devtools-code-block>` :
+        Lit.nothing;
+    const allowAlwaysButton = dialog.permissionPrompt === "allow-once-or-always" /* AiAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS */ ?
+        html `<devtools-button
+      .data=${{
+            variant: "outlined" /* Buttons.Button.Variant.OUTLINED */,
+            jslogContext: 'always-allow-execute-code',
+        }}
+      @click=${() => dialog.onAnswer("allow-always" /* AiAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS */)}
+    >${lockedString(UIStringsNotTranslate.allowAlways)}</devtools-button>` :
+        Lit.nothing;
+    // clang-format off
+    return html `
+  <div class="permission-prompt"
+    jslog=${VisualLogging.section('side-effect-confirmation')}>
+    <div class="permission-prompt-header">
+      <devtools-icon name="lock"></devtools-icon>
+      <h3 class="permission-prompt-title">${title}</h3>
+    </div>
+    ${description}
+    ${code}
+    <p class="permission-prompt-footer">${lockedString(UIStringsNotTranslate.relevantDataIsSentToGoogle)}</p>
+    <div class="permission-prompt-buttons">
+      <devtools-button
+        .data=${{
+        variant: "text" /* Buttons.Button.Variant.TEXT */,
+        jslogContext: 'decline-execute-code',
+    }}
+        @click=${() => dialog.onAnswer("reject" /* AiAssistanceModel.Tool.PermissionDecision.REJECT */)}
+      >${lockedString(UIStringsNotTranslate.skipToolCall)}</devtools-button>
+      ${allowAlwaysButton}
+      <devtools-button
+        .data=${{
+        variant: "primary" /* Buttons.Button.Variant.PRIMARY */,
+        jslogContext: 'accept-execute-code',
+    }}
+        @click=${() => dialog.onAnswer("allow-once" /* AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE */)}
+      >${lockedString(UIStringsNotTranslate.allowThisTime)}</devtools-button>
+    </div>
+  </div>`;
     // clang-format on
 }
 function renderStepBadge({ step, isLast }) {
@@ -1521,7 +1616,7 @@ function renderSideEffectConfirmationUi(step) {
         variant: "outlined" /* Buttons.Button.Variant.OUTLINED */,
         jslogContext: 'decline-execute-code',
     }}
-        @click=${() => dialog.onAnswer(false)}
+        @click=${() => dialog.onAnswer("reject" /* AiAssistanceModel.Tool.PermissionDecision.REJECT */)}
       >${lockedString(UIStringsNotTranslate.declineActionRequestApproval)}</devtools-button>
       <devtools-button
         .data=${{
@@ -1529,7 +1624,7 @@ function renderSideEffectConfirmationUi(step) {
         jslogContext: 'accept-execute-code',
         iconName: 'play',
     }}
-        @click=${() => dialog.onAnswer(true)}
+        @click=${() => dialog.onAnswer("allow-once" /* AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE */)}
       >${lockedString(UIStringsNotTranslate.confirmActionRequestApproval)}</devtools-button>
     </div>
   </div>`;
@@ -1976,8 +2071,6 @@ async function makeNetworkTrackWidget(widgetData) {
 async function makeLighthouseReportWidget(widgetData) {
     let reportEl = null;
     try {
-        // Snapshot mode audits only collect individual audit results and do not generate
-        // top-level category score gauges.
         reportEl =
             Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.renderLighthouseScores(widgetData.data.report);
     }
@@ -1987,8 +2080,8 @@ async function makeLighthouseReportWidget(widgetData) {
     const snapshotReport = widgetData.data.snapshotReport;
     const revealLighthouseLabel = lockedString(UIStringsNotTranslate.revealLighthouse);
     // When score gauges are rendered, the widget header displays the title "Lighthouse report"
-    // and the header button defaults to "Reveal". When score gauges are absent (snapshot mode),
-    // no header is rendered, so customRevealTitle labels the standalone button ("Reveal Lighthouse report").
+    // and the header button defaults to "Reveal". When score gauges are absent, no header is
+    // rendered, so customRevealTitle labels the standalone button ("Reveal Lighthouse report").
     const title = reportEl ? lockedString(UIStringsNotTranslate.lighthouseReport) : null;
     const customRevealTitle = reportEl ? undefined : revealLighthouseLabel;
     return {

@@ -139,6 +139,12 @@ function createLanternRequest(parsedTrace, workerThreads, request) {
             resourceSize = url.pathname.length - commaIndex - 1;
         }
     }
+    // NetworkRequestsHandler defaults missing `renderBlocking` to 'non_blocking',
+    // so only populate `renderBlocking` when it was explicitly set on the raw
+    // ResourceSendRequest event or updated via PreloadRenderBlockingStatusChange.
+    const hasExplicitRenderBlocking = request.rawSourceEvent.args.data.renderBlocking !== undefined ||
+        request.args.data.renderBlocking !== 'non_blocking';
+    const renderBlocking = hasExplicitRenderBlocking ? request.args.data.renderBlocking : undefined;
     return {
         rawRequest: request,
         requestId: request.args.data.requestId,
@@ -165,6 +171,7 @@ function createLanternRequest(parsedTrace, workerThreads, request) {
         resourceType,
         mimeType: request.args.data.mimeType,
         priority: request.args.data.priority,
+        renderBlocking,
         frameId: request.args.data.frame,
         fromWorker,
         serverResponseTime: request.args.data.lrServerResponseTime,

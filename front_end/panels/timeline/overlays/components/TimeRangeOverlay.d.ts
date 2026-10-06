@@ -6,21 +6,19 @@ export interface ViewInput {
     isLabelEditable: boolean;
     onLabelFocusOut: () => void;
     onLabelDblClick: () => void;
-    onLabelKeyDown: (event: KeyboardEvent) => void;
-    onLabelInput: () => void;
+    onLabelEditComplete: () => void;
+    onLabelInput: (label: string) => void;
 }
 /**
- * Elements the view fills in through refs. The widget measures them to
- * position the label, and focuses the label box. They are undefined until the
- * first render.
+ * Callbacks and elements the view fills in through refs.
  *
- * TODO(crbug.com/407941310): Replace these temporary raw element references
- * with view callbacks and declarative state in a follow-up CL.
+ * TODO(crbug.com/407941310): Replace the remaining temporary raw element
+ * references with view callbacks and declarative state in a follow-up CL.
  */
 export interface ViewOutput {
     rangeContainer?: HTMLElement;
-    labelBox?: HTMLElement;
     durationBox?: HTMLElement;
+    focusLabel: () => void;
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;

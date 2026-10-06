@@ -16,6 +16,26 @@ export declare const enum StepMode {
     STEP_OUT = "StepOut",
     STEP_OVER = "StepOver"
 }
+/** A CDP step command. `ranges` is passed as `skipList` to stepInto/stepOver, and ignored for stepOut. */
+export interface AutoStep {
+    readonly command: StepMode;
+    readonly ranges: readonly LocationRange[];
+}
+/**
+ * The step the user requested. It lives until a pause is presented to the user, or the user resumes or pauses, and
+ * allows the before-paused callback to continue the step automatically.
+ */
+export interface StepContext {
+    readonly mode: StepMode;
+    /** The call frames of the pause in which the user requested the step. */
+    readonly callFrames: readonly CallFrame[];
+}
+/** Computes the CDP step command for a user-requested step. */
+export type ComputeAutoStepCallback = (mode: StepMode, callFrames: readonly CallFrame[]) => Promise<AutoStep>;
+/**
+ * Invoked for every pause before it's presented. Returns null to present the pause, or the step to issue instead.
+ */
+export type BeforePausedCallback = (details: DebuggerPausedDetails, context: StepContext | null) => Promise<AutoStep | null>;
 export declare const WASM_SYMBOLS_PRIORITY: Protocol.Debugger.DebugSymbolsType[];
 export declare const skipAllPausesSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare class DebuggerModel extends SDKModel<EventTypes> {
@@ -44,8 +64,7 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     private pauseOnExceptionStateChanged;
     private asyncStackTracesStateChanged;
     private breakpointsActiveChanged;
-    setComputeAutoStepRangesCallback(callback: ((arg0: StepMode, arg1: CallFrame) => Promise<LocationRange[]>) | null): void;
-    private computeAutoStepSkipList;
+    setComputeAutoStepCallback(callback: ComputeAutoStepCallback | null): void;
     stepInto(): Promise<void>;
     stepOver(): Promise<void>;
     stepOut(): Promise<void>;
@@ -71,9 +90,12 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     scriptsForExecutionContext(executionContext: ExecutionContext): Script[];
     get callFrames(): CallFrame[] | null;
     debuggerPausedDetails(): DebuggerPausedDetails | null;
+    /**
+     * @returns null if the pause was presented, or the step to issue instead, as decided by the before-paused callback.
+     */
     private setDebuggerPausedDetails;
     private resetDebuggerPausedDetails;
-    setBeforePausedCallback(callback: ((arg0: DebuggerPausedDetails, autoSteppingContext: Location | null) => Promise<boolean>) | null): void;
+    setBeforePausedCallback(callback: BeforePausedCallback | null): void;
     setEvaluateOnCallFrameCallback(callback: ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult | null>) | null): void;
     setSynchronizeBreakpointsCallback(callback: ((script: Script) => Promise<void>) | null): void;
     pausedScript(callFrames: Protocol.Debugger.CallFrame[], reason: Protocol.Debugger.PausedEventReason, auxData: Object | undefined, breakpointIds: string[], asyncStackTrace?: Protocol.Runtime.StackTrace, asyncStackTraceId?: Protocol.Runtime.StackTraceId): Promise<void>;
@@ -229,6 +251,14 @@ export declare class Scope implements ScopeChainEntry {
     object(): RemoteObject;
     description(): string;
     icon(): undefined;
+    /**
+     * Present iff V8 has no variable values to show for this scope, either because the scope
+     * declares no variables or because all of them are unavailable (e.g. optimized out).
+     *
+     * Such scopes are retained in {@link CallFrame.scopeChain} so they can be addressed via
+     * `scopeNumber` in `Debugger.evaluateOnCallFrame` and matched against source map scopes.
+     */
+    emptyReason(): Protocol.Debugger.ScopeEmptyReason | undefined;
     extraProperties(): RemoteObjectProperty[];
 }
 export declare class DebuggerPausedDetails {

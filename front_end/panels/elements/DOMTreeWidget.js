@@ -3082,28 +3082,32 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
             originalScrollTop = treeOutlineContainerElement ? treeOutlineContainerElement.scrollTop : 0;
             this.elementInternal.classList.add('hidden');
         }
-        const rootNodeUpdateRecords = this.rootDOMNodeInternal && this.updateRecords.get(this.rootDOMNodeInternal);
-        if (rootNodeUpdateRecords?.hasChangedChildren()) {
-            // Document's children have changed, perform total update.
-            this.update();
-        }
-        else {
-            for (const [node, record] of this.updateRecords) {
-                if (record.hasChangedChildren()) {
-                    this.updateModifiedParentNode((node));
-                }
-                else {
-                    this.updateModifiedNode((node));
+        try {
+            const rootNodeUpdateRecords = this.rootDOMNodeInternal && this.updateRecords.get(this.rootDOMNodeInternal);
+            if (rootNodeUpdateRecords?.hasChangedChildren()) {
+                // Document's children have changed, perform total update.
+                this.update();
+            }
+            else {
+                for (const [node, record] of this.updateRecords) {
+                    if (record.hasChangedChildren()) {
+                        this.updateModifiedParentNode((node));
+                    }
+                    else {
+                        this.updateModifiedNode((node));
+                    }
                 }
             }
         }
-        if (hidePanelWhileUpdating) {
-            this.elementInternal.classList.remove('hidden');
-            if (treeOutlineContainerElement && originalScrollTop) {
-                treeOutlineContainerElement.scrollTop = originalScrollTop;
+        finally {
+            if (hidePanelWhileUpdating) {
+                this.elementInternal.classList.remove('hidden');
+                if (treeOutlineContainerElement && originalScrollTop) {
+                    treeOutlineContainerElement.scrollTop = originalScrollTop;
+                }
             }
+            this.updateRecords.clear();
         }
-        this.updateRecords.clear();
         this.fireElementsTreeUpdated(updatedNodes);
     }
     updateModifiedNode(node) {

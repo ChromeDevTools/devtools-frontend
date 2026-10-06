@@ -15,6 +15,7 @@ const lockedString = i18n.i18n.lockedString;
  */
 export class ListSourcesTool {
     name = "listSources" /* ToolName.LIST_SOURCES */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Lists deployed and authored source files in the workspace (including source-mapped files) with their display name and unique numeric ID.';
     static lastSourceId = 0;
     static uiSourceCodeId = new WeakMap();

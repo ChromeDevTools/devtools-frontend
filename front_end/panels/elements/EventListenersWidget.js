@@ -34,6 +34,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { html, render } from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as EventListeners from '../event_listeners/event_listeners.js';
 const { bindToAction, bindToSetting } = UI.UIUtils;
@@ -116,13 +117,12 @@ export class EventListenersWidget extends UI.Widget.VBox {
     constructor(view = DEFAULT_VIEW) {
         super();
         this.#view = view;
-        this.showForAncestorsSetting =
-            Common.Settings.Settings.instance().moduleSetting('show-event-listeners-for-ancestors');
+        this.showForAncestorsSetting = Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showEventListenersForAncestorsSettingDescriptor);
         this.showForAncestorsSetting.addChangeListener(this.requestUpdate.bind(this));
         this.dispatchFilterBySetting =
             Common.Settings.Settings.instance().createSetting('event-listener-dispatch-filter-type', DispatchFilterBy.All);
         this.dispatchFilterBySetting.addChangeListener(this.requestUpdate.bind(this));
-        this.showFrameworkListenersSetting = Common.Settings.Settings.instance().moduleSetting('show-frameowkr-listeners');
+        this.showFrameworkListenersSetting = Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showFrameworkListenersSettingDescriptor);
         this.showFrameworkListenersSetting.addChangeListener(this.requestUpdate.bind(this));
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.requestUpdate.bind(this));
         this.requestUpdate();

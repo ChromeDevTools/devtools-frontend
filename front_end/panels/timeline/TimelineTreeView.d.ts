@@ -23,7 +23,6 @@ export declare class TimelineTreeView extends TimelineTreeViewBase implements UI
     splitWidget: UI.SplitWidget.SplitWidget;
     detailsView: UI.Widget.Widget;
     private searchableView;
-    private currentThreadSetting?;
     private lastSelectedNodeInternal?;
     private root?;
     private currentResult?;

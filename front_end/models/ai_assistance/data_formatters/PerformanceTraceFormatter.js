@@ -1,12 +1,93 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../crux-manager/crux-manager.js';
 import * as Trace from '../../trace/trace.js';
 import { AIQueries } from '../performance/AIQueries.js';
 import { NetworkRequestFormatter, sanitizeHeaders } from './NetworkRequestFormatter.js';
 import { PerformanceInsightFormatter } from './PerformanceInsightFormatter.js';
 import { bytes, micros, millis } from './UnitFormatters.js';
+/**
+ * Filters response headers to the 7 standard CORS-safelisted headers for
+ * opaque cross-origin requests.
+ *
+ * Note: `NetworkRequestFormatter` (`allowHeader` / `sanitizeHeaders`) applies
+ * a second, broader allowlist to redact sensitive header values (like
+ * `set-cookie`) even on same-origin requests, but that list permits headers
+ * such as `location`, `link`, `content-security-policy`, and `x-forwarded-host`
+ * that must not be exposed for cross-origin requests.
+ */
+function filterToCorsSafelistedHeaders(headers) {
+    return headers.filter(header => SDK.NetworkRequestAccess.CORS_SAFELISTED_RESPONSE_HEADERS.has(header.name.toLowerCase().trim()));
+}
+/**
+ * Evaluates whether a traced network request is same-origin with the trace's
+ * main frame origin across its entire redirect chain.
+ *
+ * Trace events record raw network activity from the renderer (including full
+ * redirect chains, final post-redirect URLs, and all response headers), even
+ * for cross-origin requests where the browser's Same-Origin Policy would hide
+ * those details from the page.
+ *
+ * Unlike live `SDK.NetworkRequest.NetworkRequest` objects evaluated via
+ * `SDK.NetworkRequestAccess.evaluateResponseAccessMode`, traced network
+ * requests do not record request headers/cookies (needed to determine if a
+ * request is credentialed when evaluating `Access-Control-Allow-Origin: *`),
+ * Fetch request mode (`cors` vs `no-cors`), `corsErrorStatus`, or intermediate
+ * redirect response headers. Consequently, all cross-origin traced requests
+ * are treated as opaque (restricting headers to the CORS safelist and omitting
+ * redirect chains).
+ */
+function isSameOriginTraceRequest(request, parsedTrace) {
+    const traceUrl = parsedTrace.data?.Meta?.mainFrameURL;
+    const targetUrl = request.args.data.url;
+    if (!traceUrl || !targetUrl) {
+        return false;
+    }
+    const traceOrigin = SDK.SecurityOrigin.SecurityOrigin.create(traceUrl);
+    if (traceOrigin.isOpaque()) {
+        return false;
+    }
+    const redirects = request.args.data.redirects ?? [];
+    for (const redirect of redirects) {
+        if (!redirect.url || !traceOrigin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create(redirect.url))) {
+            return false;
+        }
+    }
+    return traceOrigin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create(targetUrl));
+}
+function filteredResponseHeaders(request, parsedTrace) {
+    const headers = request.args.data.responseHeaders;
+    if (!headers) {
+        return headers;
+    }
+    if (isSameOriginTraceRequest(request, parsedTrace)) {
+        return headers;
+    }
+    return filterToCorsSafelistedHeaders(headers);
+}
+function filteredRedirects(request, parsedTrace) {
+    if (isSameOriginTraceRequest(request, parsedTrace)) {
+        return request.args.data.redirects ?? [];
+    }
+    return [];
+}
+/**
+ * Returns the URL safe to expose for a traced network request.
+ *
+ * `request.args.data.url` is the final post-redirect URL. For cross-origin
+ * requests that redirected, the final URL (and any intermediate redirect hops)
+ * is hidden from the page by the Same-Origin Policy, whereas `redirects[0].url`
+ * is the initial pre-redirect URL that the page itself requested.
+ */
+function filteredUrl(request, parsedTrace) {
+    const redirects = request.args.data.redirects ?? [];
+    if (redirects.length === 0 || isSameOriginTraceRequest(request, parsedTrace)) {
+        return request.args.data.url;
+    }
+    return redirects[0].url || '<redacted cross-origin redirect destination>';
+}
 export class PerformanceTraceFormatter {
     #focus;
     #parsedTrace;
@@ -387,10 +468,33 @@ export class PerformanceTraceFormatter {
             // Limit to 5, because some insights (namely ThirdParties) can have a huge
             // number of related events. Mostly, insights probably don't have more than
             // 5.
-            const eventsString = events.slice(0, 5).map(e => Trace.Name.forEntry(e) + ' ' + this.serializeEvent(e)).join(', ');
+            const eventsString = events.slice(0, 5).map(e => this.#safeNameForEntry(e) + ' ' + this.serializeEvent(e)).join(', ');
             results.push(`- ${insightKey}: ${eventsString}`);
         }
         return results.join('\n');
+    }
+    /**
+     * Returns the display name for a trace event, replacing the final
+     * post-redirect URL on cross-origin network requests with the initial
+     * pre-redirect URL (`filteredUrl`) before delegating to `Trace.Name.forEntry`.
+     */
+    #safeNameForEntry(event) {
+        if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+            const safeUrl = filteredUrl(event, this.#parsedTrace);
+            if (safeUrl !== event.args.data.url) {
+                return Trace.Name.forEntry({
+                    ...event,
+                    args: {
+                        ...event.args,
+                        data: {
+                            ...event.args.data,
+                            url: safeUrl,
+                        },
+                    },
+                });
+            }
+        }
+        return Trace.Name.forEntry(event);
     }
     async formatMainThreadTrackSummary(bounds) {
         if (!this.#parsedTrace.insights) {
@@ -498,6 +602,9 @@ export class PerformanceTraceFormatter {
         result += await this.#serializeRelevantFunctions(relevantCallFrames);
         return result;
     }
+    formatRequestUrl(request) {
+        return filteredUrl(request, this.#parsedTrace);
+    }
     formatNetworkRequests(requests, options) {
         if (requests.length === 0) {
             return '';
@@ -550,11 +657,11 @@ export class PerformanceTraceFormatter {
      * talk to jacktfranklin@.
      */
     #networkRequestVerbosely(request, options) {
-        const { url, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData, protocol, } = request.args.data;
+        const { statusCode, initialPriority, priority, fromServiceWorker, mimeType, syntheticData, protocol, } = request.args.data;
         const parsedTrace = this.#parsedTrace;
+        const url = filteredUrl(request, parsedTrace);
+        const responseHeaders = filteredResponseHeaders(request, parsedTrace);
         const titlePrefix = `## ${options?.customTitle ?? 'Network request'}`;
-        // Note: unlike other agents, we do have the ability to include
-        // cross-origins, hence why we do not sanitize the URLs here.
         const navigationForEvent = Trace.Helpers.Trace.getNavigationForTraceEvent(request, request.args.data.frame, parsedTrace.data.Meta.navigationsByFrameId);
         const baseTime = navigationForEvent?.ts ?? parsedTrace.data.Meta.traceBounds.min;
         // Gets all the timings for this request, relative to the base time.
@@ -578,14 +685,14 @@ export class PerformanceTraceFormatter {
             priorityLines.push(`Initial priority: ${initialPriority}`);
             priorityLines.push(`Final priority: ${priority}`);
         }
-        const redirects = request.args.data.redirects.map((redirect, index) => {
+        const redirects = filteredRedirects(request, parsedTrace).map((redirect, index) => {
             const startTime = redirect.ts - baseTime;
             return `#### Redirect ${index + 1}: ${redirect.url}
 - Start time: ${micros(startTime)}
 - Duration: ${micros(redirect.dur)}`;
         });
         const initiators = this.#getInitiatorChain(parsedTrace, request);
-        const initiatorUrls = initiators.map(initiator => initiator.args.data.url);
+        const initiatorUrls = initiators.map(initiator => filteredUrl(initiator, parsedTrace));
         const eventKey = this.#eventsSerializer.keyForEvent(request);
         const eventKeyLine = eventKey ? `eventKey: ${eventKey}\n` : '';
         return `${titlePrefix}: ${url}
@@ -597,7 +704,7 @@ ${eventKeyLine}Timings:
 Durations:
 - Download time: ${micros(downloadTime)}
 - Main thread processing time: ${micros(mainThreadProcessingDuration)}
-- Total duration: ${micros(request.dur)}${initiator ? `\nInitiator: ${initiator.args.data.url}` : ''}
+- Total duration: ${micros(request.dur)}${initiator ? `\nInitiator: ${filteredUrl(initiator, parsedTrace)}` : ''}
 Redirects:${redirects.length ? '\n' + redirects.join('\n') : ' no redirects'}
 Status code: ${statusCode}
 MIME Type: ${mimeType}
@@ -623,7 +730,7 @@ Network requests data:
         const urlIdToIndex = new Map();
         const allRequestsText = requests
             .map(request => {
-            const urlIndex = this.#getOrAssignUrlIndex(urlIdToIndex, request.args.data.url);
+            const urlIndex = this.#getOrAssignUrlIndex(urlIdToIndex, filteredUrl(request, this.#parsedTrace));
             return this.#networkRequestCompressedFormat(urlIndex, request, urlIdToIndex);
         })
             .join('\n');
@@ -700,8 +807,9 @@ The order of headers corresponds to an internal fixed list. If a header is not p
      * See `networkDataFormatDescription` above for specifics.
      */
     #networkRequestCompressedFormat(urlIndex, request, urlIdToIndex) {
-        const { statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData, protocol, } = request.args.data;
+        const { statusCode, initialPriority, priority, fromServiceWorker, mimeType, syntheticData, protocol, } = request.args.data;
         const parsedTrace = this.#parsedTrace;
+        const responseHeaders = filteredResponseHeaders(request, parsedTrace);
         const navigationForEvent = Trace.Helpers.Trace.getNavigationForTraceEvent(request, request.args.data.frame, parsedTrace.data.Meta.navigationsByFrameId);
         const baseTime = navigationForEvent?.ts ?? parsedTrace.data.Meta.traceBounds.min;
         const queuedTime = micros(request.ts - baseTime);
@@ -719,7 +827,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
             return `${header.name}: ${value}`;
         })
             .join('|');
-        const redirects = request.args.data.redirects
+        const redirects = filteredRedirects(request, parsedTrace)
             .map(redirect => {
             const urlIndex = this.#getOrAssignUrlIndex(urlIdToIndex, redirect.url);
             const redirectStartTime = micros(redirect.ts - baseTime);
@@ -728,7 +836,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
         })
             .join(',');
         const initiators = this.#getInitiatorChain(parsedTrace, request);
-        const initiatorUrlIndices = initiators.map(initiator => this.#getOrAssignUrlIndex(urlIdToIndex, initiator.args.data.url));
+        const initiatorUrlIndices = initiators.map(initiator => this.#getOrAssignUrlIndex(urlIdToIndex, filteredUrl(initiator, parsedTrace)));
         const parts = [
             urlIndex,
             this.#eventsSerializer.keyForEvent(request) ?? '',
@@ -829,32 +937,83 @@ The order of headers corresponds to an internal fixed list. If a header is not p
         ].join('\n\n');
     }
 }
+function sanitizeSyntheticNetworkRequestEvent(event, parsedTrace) {
+    const safeUrl = filteredUrl(event, parsedTrace);
+    const headers = filteredResponseHeaders(event, parsedTrace);
+    const sanitizedEvent = {
+        ...event,
+        args: {
+            ...event.args,
+            data: {
+                ...event.args.data,
+                url: safeUrl,
+                redirects: filteredRedirects(event, parsedTrace),
+                responseHeaders: headers ? sanitizeHeaders(headers) : null,
+            },
+        },
+    };
+    if (event.rawSourceEvent?.args?.data) {
+        sanitizedEvent.rawSourceEvent = {
+            ...event.rawSourceEvent,
+            args: {
+                ...event.rawSourceEvent.args,
+                data: {
+                    ...event.rawSourceEvent.args.data,
+                    url: safeUrl,
+                },
+            },
+        };
+    }
+    return sanitizedEvent;
+}
 /**
  * Serializes a trace event to a JSON string for AI consumption,
  * ensuring sensitive data (like headers and raw script source code)
  * is sanitized or redacted.
  */
-export function formatEventForAI(event) {
+export function formatEventForAI(event, parsedTrace) {
     if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+        return JSON.stringify(sanitizeSyntheticNetworkRequestEvent(event, parsedTrace));
+    }
+    if (Trace.Types.Events.isResourceSendRequest(event)) {
+        const syntheticRequest = parsedTrace.data?.NetworkRequests?.byTime?.find(r => r.args.data.requestId === event.args.data.requestId);
+        let safeUrl = '<redacted cross-origin redirect destination>';
+        if (syntheticRequest) {
+            safeUrl = isSameOriginTraceRequest(syntheticRequest, parsedTrace) ? event.args.data.url :
+                filteredUrl(syntheticRequest, parsedTrace);
+        }
+        else {
+            const traceUrl = parsedTrace.data?.Meta?.mainFrameURL;
+            const traceOrigin = traceUrl ? SDK.SecurityOrigin.SecurityOrigin.create(traceUrl) : null;
+            if (traceOrigin && !traceOrigin.isOpaque() &&
+                traceOrigin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create(event.args.data.url))) {
+                safeUrl = event.args.data.url;
+            }
+        }
         return JSON.stringify({
             ...event,
             args: {
                 ...event.args,
                 data: {
                     ...event.args.data,
-                    responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) : null,
+                    url: safeUrl,
                 },
             },
         });
     }
     if (Trace.Types.Events.isResourceReceiveResponse(event)) {
+        const syntheticRequest = parsedTrace.data?.NetworkRequests?.byTime?.find(r => r.args.data.requestId === event.args.data.requestId);
+        const isSameOrigin = Boolean(syntheticRequest && isSameOriginTraceRequest(syntheticRequest, parsedTrace));
+        const filteredHeaders = event.args.data.headers ?
+            (isSameOrigin ? event.args.data.headers : filterToCorsSafelistedHeaders(event.args.data.headers)) :
+            undefined;
         return JSON.stringify({
             ...event,
             args: {
                 ...event.args,
                 data: {
                     ...event.args.data,
-                    headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : undefined,
+                    headers: filteredHeaders ? sanitizeHeaders(filteredHeaders) : undefined,
                 },
             },
         });

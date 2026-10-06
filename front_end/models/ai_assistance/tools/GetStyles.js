@@ -6,6 +6,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import { isOriginAllowedByLock, } from './Tool.js';
 export class GetStylesTool {
     name = "getStyles" /* ToolName.GET_STYLES */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = `Retrieves computed and authored CSS styles for one or more elements by their backend node IDs (uids).
 
 **CRITICAL** An element uid is a number, not a selector.

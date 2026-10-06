@@ -867,6 +867,53 @@ var chatMessage_css_default = `/*
     gap: var(--sys-size-4);
   }
 
+  .permission-prompt {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-5);
+    padding: var(--sys-size-6);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    border-radius: var(--sys-shape-corner-medium-small);
+    background-color: var(--sys-color-cdt-base-container);
+
+    .permission-prompt-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sys-size-4);
+
+      devtools-icon {
+        width: var(--sys-size-8);
+        height: var(--sys-size-8);
+        color: var(--sys-color-on-surface);
+      }
+    }
+
+    .permission-prompt-title {
+      font: var(--sys-typescale-body4-medium);
+      margin: 0;
+    }
+
+    .permission-prompt-description {
+      margin: 0;
+    }
+
+    .permission-prompt-code {
+      --code-block-background-color: var(--sys-color-surface1);
+    }
+
+    .permission-prompt-footer {
+      font: var(--sys-typescale-body4-regular);
+      color: var(--sys-color-on-surface-subtle);
+      margin: 0;
+    }
+
+    .permission-prompt-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--sys-size-4);
+    }
+  }
+
   .walkthrough-toggle-container {
     display: flex;
     gap: var(--sys-size-2);
@@ -1777,6 +1824,26 @@ var UIStringsNotTranslate = {
    */
   declineActionRequestApproval: "Cancel",
   /**
+   * @description Button text in the permission prompt that skips the tool call.
+   */
+  skipToolCall: "Skip",
+  /**
+   * @description Button text in the permission prompt that allows the tool call once.
+   */
+  allowThisTime: "Yes, allow this time",
+  /**
+   * @description Button text in the permission prompt that allows the tool call now and in the future.
+   */
+  allowAlways: "Yes, always allow",
+  /**
+   * @description Fallback title of the permission prompt when the tool has no title.
+   */
+  allowThisAction: "Allow this action?",
+  /**
+   * @description Footer of the permission prompt.
+   */
+  relevantDataIsSentToGoogle: "Relevant data is sent to Google. Change permissions in settings at any time.",
+  /**
    * @description The fallback text when a step has no title yet
    */
   investigating: "Investigating",
@@ -2269,16 +2336,67 @@ function renderSideEffectStepsUI(input, steps) {
   if (sideEffectSteps.length === 0) {
     return Lit5.nothing;
   }
+  const showPermissionPrompt = (step) => AiAssistanceModel4.AiUtils.isNaturalLanguageInterfaceEnabled() && step.state.type === "needs_approval";
   return html5`
     ${sideEffectSteps.map((step) => html5`
       <div class="side-effect-container">
-        ${renderStep({
+        ${showPermissionPrompt(step) ? renderPermissionPrompt(step) : renderStep({
     step,
     markdownRenderer: input.markdownRenderer,
     isLast: true
   })}
       </div> `)}
   `;
+}
+function renderPermissionPrompt(step) {
+  if (step.state.type !== "needs_approval") {
+    return Lit5.nothing;
+  }
+  const dialog3 = step.state.sideEffectDialog;
+  const title = dialog3.permissionTitle ?? lockedString2(UIStringsNotTranslate.allowThisAction);
+  const description = dialog3.description ? html5`<p class="permission-prompt-description">${dialog3.description}</p>` : Lit5.nothing;
+  const code = step.code ? html5`<devtools-code-block
+      class="permission-prompt-code"
+      .code=${step.code.trim()}
+      .codeLang=${"js"}
+      .displayNotice=${true}
+      .header=${lockedString2(UIStringsNotTranslate.codeToExecute)}
+    ></devtools-code-block>` : Lit5.nothing;
+  const allowAlwaysButton = dialog3.permissionPrompt === AiAssistanceModel4.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS ? html5`<devtools-button
+      .data=${{
+    variant: Buttons2.Button.Variant.OUTLINED,
+    jslogContext: "always-allow-execute-code"
+  }}
+      @click=${() => dialog3.onAnswer(AiAssistanceModel4.Tool.PermissionDecision.ALLOW_ALWAYS)}
+    >${lockedString2(UIStringsNotTranslate.allowAlways)}</devtools-button>` : Lit5.nothing;
+  return html5`
+  <div class="permission-prompt"
+    jslog=${VisualLogging2.section("side-effect-confirmation")}>
+    <div class="permission-prompt-header">
+      <devtools-icon name="lock"></devtools-icon>
+      <h3 class="permission-prompt-title">${title}</h3>
+    </div>
+    ${description}
+    ${code}
+    <p class="permission-prompt-footer">${lockedString2(UIStringsNotTranslate.relevantDataIsSentToGoogle)}</p>
+    <div class="permission-prompt-buttons">
+      <devtools-button
+        .data=${{
+    variant: Buttons2.Button.Variant.TEXT,
+    jslogContext: "decline-execute-code"
+  }}
+        @click=${() => dialog3.onAnswer(AiAssistanceModel4.Tool.PermissionDecision.REJECT)}
+      >${lockedString2(UIStringsNotTranslate.skipToolCall)}</devtools-button>
+      ${allowAlwaysButton}
+      <devtools-button
+        .data=${{
+    variant: Buttons2.Button.Variant.PRIMARY,
+    jslogContext: "accept-execute-code"
+  }}
+        @click=${() => dialog3.onAnswer(AiAssistanceModel4.Tool.PermissionDecision.ALLOW_ONCE)}
+      >${lockedString2(UIStringsNotTranslate.allowThisTime)}</devtools-button>
+    </div>
+  </div>`;
 }
 function renderStepBadge({ step, isLast }) {
   if (isLast && step.state.type === "in_progress") {
@@ -3083,7 +3201,7 @@ function renderSideEffectConfirmationUi(step) {
     variant: Buttons2.Button.Variant.OUTLINED,
     jslogContext: "decline-execute-code"
   }}
-        @click=${() => dialog3.onAnswer(false)}
+        @click=${() => dialog3.onAnswer(AiAssistanceModel4.Tool.PermissionDecision.REJECT)}
       >${lockedString2(
     UIStringsNotTranslate.declineActionRequestApproval
   )}</devtools-button>
@@ -3093,7 +3211,7 @@ function renderSideEffectConfirmationUi(step) {
     jslogContext: "accept-execute-code",
     iconName: "play"
   }}
-        @click=${() => dialog3.onAnswer(true)}
+        @click=${() => dialog3.onAnswer(AiAssistanceModel4.Tool.PermissionDecision.ALLOW_ONCE)}
       >${lockedString2(UIStringsNotTranslate.confirmActionRequestApproval)}</devtools-button>
     </div>
   </div>`;
@@ -10967,8 +11085,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
               type: "needs_approval",
               sideEffectDialog: {
                 description: data.description,
-                onAnswer: (result) => {
-                  data.confirm(result);
+                permissionPrompt: data.permissionPrompt,
+                permissionTitle: data.permissionTitle,
+                onAnswer: (decision) => {
+                  data.confirm(decision);
                   step.state = { type: "completed" };
                   this.requestUpdate();
                 }

@@ -244,8 +244,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         this.cssStyleTrackerByCSSModel = new Map();
         this.currentSearchResultIndex = -1; // -1 represents the initial invalid state
         this.pendingNodeReveal = false;
-        this.adornerManager =
-            new ElementsComponents.AdornerManager.AdornerManager(this.#settings.moduleSetting('adorner-settings'));
+        this.adornerManager = new ElementsComponents.AdornerManager.AdornerManager(this.#settings.resolve(SettingsUI.ElementsSettings.adornerSettingsSettingDescriptor));
         this.adornersByName = new Map();
         this.#domTreeWidget = new DOMTreeWidget();
         this.#domTreeWidget.omitRootDOMNode = true;

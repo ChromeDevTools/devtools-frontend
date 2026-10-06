@@ -15,23 +15,23 @@ interface DownloadResults {
 declare class TCPConnection {
     warmed: boolean;
     ssl: boolean;
-    h2: boolean;
+    multiplexed: boolean;
     rtt: number;
     throughput: number;
     serverLatency: number;
     _congestionWindow: number;
     h2OverflowBytesDownloaded: number;
-    constructor(rtt: number, throughput: number, serverLatency?: number, ssl?: boolean, h2?: boolean);
+    constructor(rtt: number, throughput: number, serverLatency?: number, ssl?: boolean, multiplexed?: boolean);
     static maximumSaturatedConnections(rtt: number, availableThroughput: number): number;
     computeMaximumCongestionWindowInSegments(): number;
     setThroughput(throughput: number): void;
     setCongestionWindow(congestion: number): void;
     setWarmed(warmed: boolean): void;
-    isH2(): boolean;
+    isMultiplexed(): boolean;
     get congestionWindow(): number;
     /**
      * Sets the number of excess bytes that are available to this connection on future downloads, only
-     * applies to H2 connections.
+     * applies to multiplexed (H2/H3) connections.
      */
     setH2OverflowBytesDownloaded(bytes: number): void;
     clone(): TCPConnection;

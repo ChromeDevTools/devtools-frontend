@@ -141,6 +141,9 @@
       "path": "../../ui/components/adorners/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/components/highlighting/bundle-tsconfig.ref.json"
     },
     {

@@ -11,6 +11,7 @@ import { isOriginAllowedByLock, } from './Tool.js';
  */
 export class GetElementAccessibilityDetailsTool {
     name = "getElementAccessibilityDetails" /* ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Retrieves detailed accessibility properties (computed role, accessible name, name source, ARIA attributes, ignored state) and a DOM tree snapshot for an element by backend node ID.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,

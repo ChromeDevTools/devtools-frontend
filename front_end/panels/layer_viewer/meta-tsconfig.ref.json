@@ -28,6 +28,9 @@
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/settings/bundle-tsconfig.ref.json"
     }
   ]
 }

@@ -172,9 +172,6 @@ export class TimelineTreeView extends TimelineTreeViewBase {
     splitWidget;
     detailsView;
     searchableView;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    currentThreadSetting;
     lastSelectedNodeInternal;
     root;
     currentResult;
@@ -310,8 +307,6 @@ export class TimelineTreeView extends TimelineTreeViewBase {
             "RunTask" /* Trace.Types.Events.Name.RUN_TASK */,
         ]);
         this.textFilterInternal = new TimelineRegExp();
-        this.currentThreadSetting = Common.Settings.Settings.instance().createSetting('timeline-tree-current-thread', 0);
-        this.currentThreadSetting.addChangeListener(() => this.refreshTree());
         const columns = [];
         this.populateColumns(columns);
         this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({

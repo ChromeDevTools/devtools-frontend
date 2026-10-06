@@ -421,9 +421,7 @@ export class DropDown {
         this.listControl.selectItem(listItem);
     }
     onClick(event) {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // @ts-expect-error
-        if (!(event.target).enclosingNodeOrSelfWithClass('preview-item')) {
+        if (!event.target.enclosingNodeOrSelfWithClass('preview-item')) {
             return;
         }
         this.close(this.listControl.selectedItem());

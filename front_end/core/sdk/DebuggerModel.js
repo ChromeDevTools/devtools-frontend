@@ -147,15 +147,13 @@ export class DebuggerModel extends SDKModel {
     #skipAllPausesSetting;
     #skipAllPausesTimeout;
     #beforePausedCallback = null;
-    #computeAutoStepRangesCallback = null;
+    #computeAutoStepCallback = null;
     evaluateOnCallFrameCallback = null;
     #synchronizeBreakpointsCallback = null;
     // We need to be able to register listeners for individual breakpoints. As such, we dispatch
     // on breakpoint ids, which are not statically known. The event #payload will always be a `Location`.
     #breakpointResolvedEventTarget = new Common.ObjectWrapper.ObjectWrapper();
-    // When stepping over with autostepping enabled, the context denotes the function to which autostepping is restricted
-    // to by way of its functionLocation (as per Debugger.CallFrame).
-    #autoSteppingContext = null;
+    #stepContext = null;
     #isPausing = false;
     constructor(target) {
         super(target);
@@ -361,51 +359,54 @@ export class DebuggerModel extends SDKModel {
     breakpointsActiveChanged() {
         void this.agent.invoke_setBreakpointsActive({ active: this.#breakpointsActiveSetting.get() });
     }
-    setComputeAutoStepRangesCallback(callback) {
-        this.#computeAutoStepRangesCallback = callback;
+    setComputeAutoStepCallback(callback) {
+        this.#computeAutoStepCallback = callback;
     }
-    async computeAutoStepSkipList(mode) {
-        let ranges = [];
-        if (this.#computeAutoStepRangesCallback && this.#debuggerPausedDetails &&
-            this.#debuggerPausedDetails.callFrames.length > 0) {
-            const [callFrame] = this.#debuggerPausedDetails.callFrames;
-            ranges = await this.#computeAutoStepRangesCallback.call(null, mode, callFrame);
-        }
-        const skipList = ranges.map(({ start, end }) => ({
+    async stepInto() {
+        await this.#userStep("StepInto" /* StepMode.STEP_INTO */);
+    }
+    async stepOver() {
+        await this.#userStep("StepOver" /* StepMode.STEP_OVER */);
+    }
+    async stepOut() {
+        await this.#userStep("StepOut" /* StepMode.STEP_OUT */);
+    }
+    scheduleStepIntoAsync() {
+        void this.#userStep("StepInto" /* StepMode.STEP_INTO */, /* breakOnAsyncCall */ true);
+    }
+    async #userStep(mode, breakOnAsyncCall = false) {
+        const callFrames = this.#debuggerPausedDetails?.callFrames ?? [];
+        this.#stepContext = { mode, callFrames };
+        const step = this.#computeAutoStepCallback && callFrames.length > 0 ?
+            await this.#computeAutoStepCallback(mode, callFrames) :
+            { command: mode, ranges: [] };
+        this.#issueStep(step, breakOnAsyncCall);
+    }
+    #issueStep({ command, ranges }, breakOnAsyncCall = false) {
+        const skipList = sortAndMergeRanges(ranges.map(({ start, end }) => ({
             scriptId: start.scriptId,
             start: { lineNumber: start.lineNumber, columnNumber: start.columnNumber },
             end: { lineNumber: end.lineNumber, columnNumber: end.columnNumber },
-        }));
-        return sortAndMergeRanges(skipList);
-    }
-    async stepInto() {
-        const skipList = await this.computeAutoStepSkipList("StepInto" /* StepMode.STEP_INTO */);
-        void this.agent.invoke_stepInto({ breakOnAsyncCall: false, skipList });
-    }
-    async stepOver() {
-        this.#autoSteppingContext = this.#debuggerPausedDetails?.callFrames[0]?.functionLocation() ?? null;
-        const skipList = await this.computeAutoStepSkipList("StepOver" /* StepMode.STEP_OVER */);
-        void this.agent.invoke_stepOver({ skipList });
-    }
-    async stepOut() {
-        const skipList = await this.computeAutoStepSkipList("StepOut" /* StepMode.STEP_OUT */);
-        if (skipList.length !== 0) {
-            void this.agent.invoke_stepOver({ skipList });
+        })));
+        switch (command) {
+            case "StepInto" /* StepMode.STEP_INTO */:
+                void this.agent.invoke_stepInto({ breakOnAsyncCall, skipList });
+                break;
+            case "StepOver" /* StepMode.STEP_OVER */:
+                void this.agent.invoke_stepOver({ skipList });
+                break;
+            case "StepOut" /* StepMode.STEP_OUT */:
+                void this.agent.invoke_stepOut();
+                break;
         }
-        else {
-            void this.agent.invoke_stepOut();
-        }
-    }
-    scheduleStepIntoAsync() {
-        void this.computeAutoStepSkipList("StepInto" /* StepMode.STEP_INTO */).then(skipList => {
-            void this.agent.invoke_stepInto({ breakOnAsyncCall: true, skipList });
-        });
     }
     resume() {
+        this.#stepContext = null;
         void this.agent.invoke_resume({ terminateOnResume: false });
         this.#isPausing = false;
     }
     pause() {
+        this.#stepContext = null;
         this.#isPausing = true;
         this.skipAllPauses(false);
         void this.agent.invoke_pause();
@@ -481,7 +482,7 @@ export class DebuggerModel extends SDKModel {
         this.#scripts.clear();
         this.#scriptsBySourceURL.clear();
         this.#discardableScripts = [];
-        this.#autoSteppingContext = null;
+        this.#stepContext = null;
     }
     scripts() {
         return Array.from(this.#scripts.values());
@@ -515,20 +516,22 @@ export class DebuggerModel extends SDKModel {
     debuggerPausedDetails() {
         return this.#debuggerPausedDetails;
     }
+    /**
+     * @returns null if the pause was presented, or the step to issue instead, as decided by the before-paused callback.
+     */
     async setDebuggerPausedDetails(debuggerPausedDetails) {
         this.#isPausing = false;
         this.#debuggerPausedDetails = debuggerPausedDetails;
         if (this.#beforePausedCallback) {
-            if (!await this.#beforePausedCallback.call(null, debuggerPausedDetails, this.#autoSteppingContext)) {
-                return false;
+            const autoStep = await this.#beforePausedCallback(debuggerPausedDetails, this.#stepContext);
+            if (autoStep) {
+                return autoStep;
             }
         }
-        // If we resolved a location in auto-stepping callback, reset the
-        // auto-step-over context.
-        this.#autoSteppingContext = null;
+        this.#stepContext = null;
         this.dispatchEventToListeners(Events.DebuggerPaused, this);
         this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
-        return true;
+        return null;
     }
     resetDebuggerPausedDetails() {
         this.#isPausing = false;
@@ -565,13 +568,9 @@ export class DebuggerModel extends SDKModel {
                 return;
             }
         }
-        if (!await this.setDebuggerPausedDetails(pausedDetails)) {
-            if (this.#autoSteppingContext) {
-                void this.stepOver();
-            }
-            else {
-                void this.stepInto();
-            }
+        const autoStep = await this.setDebuggerPausedDetails(pausedDetails);
+        if (autoStep) {
+            this.#issueStep(autoStep);
         }
     }
     resumedScript() {
@@ -1150,6 +1149,16 @@ export class Scope {
     }
     icon() {
         return undefined;
+    }
+    /**
+     * Present iff V8 has no variable values to show for this scope, either because the scope
+     * declares no variables or because all of them are unavailable (e.g. optimized out).
+     *
+     * Such scopes are retained in {@link CallFrame.scopeChain} so they can be addressed via
+     * `scopeNumber` in `Debugger.evaluateOnCallFrame` and matched against source map scopes.
+     */
+    emptyReason() {
+        return this.#payload.emptyReason;
     }
     extraProperties() {
         if (this !== this.#callFrame.localScope() || this.#callFrame.script.isWasm()) {

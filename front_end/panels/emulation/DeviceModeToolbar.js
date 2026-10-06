@@ -10,6 +10,7 @@ import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directive, Directives, html, i18nTemplate, noChange, render } from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 class AutoWidthSelectDirective extends Directive.Directive {
@@ -374,9 +375,10 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.view = view;
-        this.showMediaInspectorSetting = Common.Settings.Settings.instance().moduleSetting('show-media-query-inspector');
+        this.showMediaInspectorSetting = Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.showMediaQueryInspectorSettingDescriptor);
         this.showMediaInspectorSetting.addChangeListener(this.requestUpdate, this);
-        this.showRulersSetting = Common.Settings.Settings.instance().moduleSetting('emulation.show-rulers');
+        this.showRulersSetting =
+            Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.showRulersSettingDescriptor);
         this.showRulersSetting.addChangeListener(this.requestUpdate, this);
         this.showDeviceScaleFactorSetting =
             Common.Settings.Settings.instance().createSetting('emulation.show-device-scale-factor', false);

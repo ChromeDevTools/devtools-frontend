@@ -109,6 +109,9 @@ export const aiAssistanceV2OptInChangeDialogSeenSettingDescriptor = {
 export function isGeminiBranding() {
     return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }
+export function isNaturalLanguageInterfaceEnabled() {
+    return Boolean(Root.Runtime.hostConfig.devToolsAiNaturalLanguageInterface?.enabled);
+}
 /**
  * Returns true if context selection / dynamic context switching is enabled.
  *

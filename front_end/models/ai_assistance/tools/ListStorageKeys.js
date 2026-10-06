@@ -10,6 +10,7 @@ import { resolveDOMStorages } from './DOMStorageUtils.js';
 const lockedString = i18n.i18n.lockedString;
 export class ListStorageKeysTool {
     name = "listStorageKeys" /* ToolName.LIST_STORAGE_KEYS */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Lists all keys for a given storage type for requested origins. Returns keys grouped by storage partition under their origin.';
     annotations = ["redact-from-history" /* ToolAnnotation.REDACT_FROM_HISTORY */];
     parameters = {

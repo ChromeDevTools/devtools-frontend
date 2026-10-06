@@ -11,6 +11,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 export class SelectTraceEventByKeyTool {
     name = "selectTraceEventByKey" /* ToolName.SELECT_TRACE_EVENT_BY_KEY */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Selects and reveals a specific event by its key in the Performance panel Flamechart.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,

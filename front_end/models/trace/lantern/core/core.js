@@ -245,6 +245,9 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
     }
     return Array.from(connectionIdWasStarted.values()).every((started) => started);
   }
+  static isMultiplexedProtocol(protocol) {
+    return protocol === "h2" || Boolean(protocol?.startsWith("h3"));
+  }
   /**
    * Returns a map of requestId -> connectionReused, estimating the information if the information
    * available in the records themselves appears untrustworthy.
@@ -261,7 +264,7 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
       for (const request of originRecords) {
         connectionWasReused.set(
           request.requestId,
-          request.networkRequestTime >= earliestReusePossible || request.protocol === "h2"
+          request.networkRequestTime >= earliestReusePossible || _NetworkAnalyzer.isMultiplexedProtocol(request.protocol)
         );
       }
       const firstRecord = originRecords.reduce((a, b) => {

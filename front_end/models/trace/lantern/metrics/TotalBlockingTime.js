@@ -50,7 +50,7 @@ class TotalBlockingTime extends Metric {
         if (!fcpResult) {
             throw new Core.LanternError('FCP is required to calculate the TBT metric');
         }
-        const interactiveResult = extras?.fcpResult;
+        const interactiveResult = extras?.interactiveResult;
         if (!interactiveResult) {
             throw new Core.LanternError('Interactive is required to calculate the TBT metric');
         }

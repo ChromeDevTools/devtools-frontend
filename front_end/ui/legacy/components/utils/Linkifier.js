@@ -678,6 +678,9 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
     static untruncatedNodeText(node) {
         return textByAnchor.get(node) || node.textContent || '';
     }
+    static untruncatedTextContent(node) {
+        return node.childTextNodes().map(Linkifier.untruncatedNodeText).join('');
+    }
     static linkInfo(link) {
         return link ? infoByAnchor.get(link) || null : null;
     }

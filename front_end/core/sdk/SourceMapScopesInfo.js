@@ -482,6 +482,81 @@ export class SourceMapScopesInfo {
         }
         return result;
     }
+    /**
+     * @returns the body of the innermost inlined function at the position (the innermost range with a `callSite`
+     *          within the generated function), or null if the position is not inside an inlined function.
+     *
+     * The innermost inlined function is the logical frame the position belongs to, i.e. the analogue of the top frame
+     * of a real call stack. Stepping over its body therefore goes up exactly one logical frame: into the caller, which
+     * may itself be inlined. An outer range would leave several logical frames at once.
+     */
+    inlinedFunctionRange(generatedLine, generatedColumn) {
+        const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+        for (let i = rangeChain.length - 1; i >= 0 && !rangeChain[i].isStackFrame; --i) {
+            if (rangeChain[i].callSite) {
+                return { start: rangeChain[i].start, end: rangeChain[i].end };
+            }
+        }
+        return null;
+    }
+    /**
+     * @returns the bodies of all functions that were inlined directly into the logical function at the position
+     *          (the innermost inlined function, or else the generated function). Doesn't descend into inlined
+     *          functions or nested generated functions.
+     */
+    inlinedCalleeRanges(generatedLine, generatedColumn) {
+        const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+        let body;
+        for (let i = rangeChain.length - 1; i >= 0 && !body; --i) {
+            if (rangeChain[i].callSite || rangeChain[i].isStackFrame) {
+                body = rangeChain[i];
+            }
+        }
+        const result = [];
+        (function walk(range) {
+            for (const child of range.children) {
+                if (child.isStackFrame) {
+                    continue;
+                }
+                if (child.callSite) {
+                    result.push({ start: child.start, end: child.end });
+                }
+                else {
+                    walk(child);
+                }
+            }
+        })(body ?? { children: this.#generatedRanges });
+        return result;
+    }
+    /**
+     * @returns true, iff any generated function is outlined, i.e. marked as "hidden" but with a definition (see
+     *          {@link GeneratedFrameKind.OUTLINED}). Hidden functions without a definition are compiler helpers.
+     */
+    hasOutlinedFunctions() {
+        const hasOutlined = (ranges) => ranges.some(range => (range.isStackFrame && range.isHidden && range.originalScope !== undefined) ||
+            hasOutlined(range.children));
+        return hasOutlined(this.#generatedRanges);
+    }
+    /**
+     * @returns the "artificial" generated functions (in the DWARF sense): functions that contain no authored code at all
+     *          (no original scope anywhere in their subtree), e.g. compiler helpers. Sorted by start position,
+     *          non-overlapping.
+     */
+    artificialFunctionRanges() {
+        const hasOriginalScope = (range) => range.originalScope !== undefined || range.children.some(hasOriginalScope);
+        const result = [];
+        (function walk(ranges) {
+            for (const range of ranges) {
+                if (range.isStackFrame && !hasOriginalScope(range)) {
+                    result.push({ start: range.start, end: range.end });
+                }
+                else {
+                    walk(range.children);
+                }
+            }
+        })(this.#generatedRanges);
+        return result;
+    }
 }
 /**
  * Describes how the generated function surrounding a generated position shows up in stack traces.

@@ -1,10 +1,12 @@
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
+export declare function precedingSpace(node: CodeMirror.SyntaxNode, ast: SDK.CSSPropertyParser.SyntaxTree, matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching): string;
 export type RendererBase<MatchT extends SDK.CSSPropertyParser.Match> = abstract new () => MatchRenderer<MatchT>;
 export interface MatchRenderer<MatchT extends SDK.CSSPropertyParser.Match> {
     readonly matchType: Platform.Constructor.Constructor<MatchT>;
-    render(match: MatchT, context: RenderingContext): Node[];
+    render(match: MatchT, context: RenderingContext): Node[] | LitTemplate;
 }
 export declare function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>(matchT: Platform.Constructor.Constructor<MatchT>): RendererBase<MatchT>;
 /**
@@ -87,14 +89,14 @@ export declare class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         readonly?: boolean;
     }, tracing: TracingContext | undefined, signal: AbortSignal | undefined);
     static render(nodeOrNodes: CodeMirror.SyntaxNode | CodeMirror.SyntaxNode[], context: RenderingContext): {
-        nodes: Node[];
+        nodes: LitTemplate;
         cssControls: CSSControlMap;
     };
-    static renderInto(nodeOrNodes: CodeMirror.SyntaxNode | CodeMirror.SyntaxNode[], context: RenderingContext, parent: Node): {
-        nodes: Node[];
+    static renderInto(nodeOrNodes: CodeMirror.SyntaxNode | CodeMirror.SyntaxNode[], context: RenderingContext, parent: HTMLElement | DocumentFragment): {
+        nodes: LitTemplate;
         cssControls: CSSControlMap;
     };
-    renderedMatchForTest(_nodes: Node[], _match: SDK.CSSPropertyParser.Match): void;
+    renderedMatchForTest(_nodes: LitTemplate, _match: SDK.CSSPropertyParser.Match): void;
     protected enter({ node }: SDK.CSSPropertyParser.SyntaxNodeRef): boolean;
     static renderNameElement(name: string): HTMLElement;
     static renderValueElement(property: SDK.CSSProperty.CSSProperty | {
@@ -108,7 +110,7 @@ export declare class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         name: string;
         value: string;
     }, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching | null, renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext, signal?: AbortSignal): {
-        nodes: Node[];
+        nodes: LitTemplate;
         cssControls: CSSControlMap;
     };
 }
@@ -117,14 +119,14 @@ export declare class URLRenderer extends URLRendererBase {
     private readonly rule;
     private readonly node;
     constructor(rule: SDK.CSSRule.CSSRule | null, node: SDK.DOMModel.DOMNode | null);
-    render(match: SDK.CSSPropertyParserMatchers.URLMatch): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.URLMatch): LitTemplate;
 }
 declare const StringRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.StringMatch>;
 export declare class StringRenderer extends StringRendererBase {
-    render(match: SDK.CSSPropertyParserMatchers.StringMatch): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.StringMatch): LitTemplate;
 }
 declare const BinOpRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.BinOpMatch>;
 export declare class BinOpRenderer extends BinOpRendererBase {
-    render(match: SDK.CSSPropertyParserMatchers.BinOpMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.BinOpMatch, context: RenderingContext): LitTemplate;
 }
 export {};

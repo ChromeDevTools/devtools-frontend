@@ -6,3 +6,12 @@ export declare const highlightNodeOnHoverInOverlaySettingDescriptor: Common.Sett
 export declare const showDetailedInspectTooltipSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const cssAnimationsOnlyWhenAnimationsTabOpenSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const collapseNonContributingCSSRulesSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const showInactiveCSSRulesSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const showEventListenersForAncestorsSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export interface AdornerSetting {
+    adorner: string;
+    isEnabled: boolean;
+}
+export declare const adornerSettingsSettingDescriptor: Common.Settings.SettingDescriptor<AdornerSetting[]>;
+export declare const showCSSPropertyDocumentationOnHoverSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const showFrameworkListenersSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;

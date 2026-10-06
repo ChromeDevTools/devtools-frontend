@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, type TargetCapability, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, PermissionPrompt, type TargetCapability, type ToolArgs, ToolName } from './Tool.js';
 /**
  * Arguments for getting accessibility details of an element.
  */
@@ -16,6 +16,7 @@ export interface GetElementAccessibilityDetailsArgs extends ToolArgs {
  */
 export declare class GetElementAccessibilityDetailsTool implements DataTool<GetElementAccessibilityDetailsArgs, string, BaseToolCapability & TargetCapability & OriginLockCapability> {
     readonly name: ToolName;
+    readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetElementAccessibilityDetailsArgs>;
     displayInfoFromArgs(params: GetElementAccessibilityDetailsArgs): {

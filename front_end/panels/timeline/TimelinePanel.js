@@ -625,7 +625,9 @@ export class TimelinePanel extends TimelinePanelBase {
     }
     #getModelConfig() {
         const config = Trace.Types.Configuration.defaults();
-        config.showAllEvents = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
+        config.showAllEvents = Common.Settings.Settings.instance()
+            .resolve(SettingUIRegistration.TimelineSettings.timelineShowAllEventsSettingDescriptor)
+            .get();
         config.debugMode = Common.Settings.Settings.instance().moduleSetting('timeline-debug-mode').get();
         config.enableSoftNavigation =
             Common.Settings.Settings.instance().moduleSetting('timeline-enable-soft-navigations').get();
@@ -1784,7 +1786,10 @@ export class TimelinePanel extends TimelinePanelBase {
         return this.#viewMode.mode === 'VIEWING_TRACE';
     }
     #applyActiveFilters(traceIsGeneric, exclusiveFilter = null) {
-        if (traceIsGeneric || Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get()) {
+        if (traceIsGeneric ||
+            Common.Settings.Settings.instance()
+                .resolve(SettingUIRegistration.TimelineSettings.timelineShowAllEventsSettingDescriptor)
+                .get()) {
             return;
         }
         const newActiveFilters = exclusiveFilter ? [exclusiveFilter] : [

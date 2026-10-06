@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import { isNaturalLanguageInterfaceEnabled } from '../AiUtils.js';
 import { EvaluateAction, formatError, SideEffectError } from '../EvaluateAction.js';
 import { FREESTYLER_WORLD_CSP, FREESTYLER_WORLD_NAME } from '../injected.js';
 const lockedString = i18n.i18n.lockedString;
@@ -106,7 +107,9 @@ export class JavascriptExecutor {
                 }
                 return {
                     requiresApproval: true,
-                    description: lockedString('This code may modify page content. Continue?'),
+                    description: isNaturalLanguageInterfaceEnabled() ?
+                        lockedString('AI assistance wants to execute JavaScript code. This code may modify page content.') :
+                        lockedString('This code may modify page content. Continue?'),
                 };
             }
             if (result.canceled) {

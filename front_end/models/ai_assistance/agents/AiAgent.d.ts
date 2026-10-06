@@ -6,7 +6,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
-import type { ContextHandlerResult, DataHandlerResult } from '../tools/Tool.js';
+import { type ContextHandlerResult, type DataHandlerResult, PermissionDecision, type PermissionPrompt } from '../tools/Tool.js';
 type UrlString = Platform.DevToolsPath.UrlString;
 export declare const enum ResponseType {
     CONTEXT = "context",
@@ -79,7 +79,9 @@ export interface SideEffectResponse {
     type: ResponseType.SIDE_EFFECT;
     description: string | null;
     code?: string;
-    confirm: (confirm: boolean) => void;
+    confirm: (decision: PermissionDecision) => void;
+    permissionPrompt?: PermissionPrompt;
+    permissionTitle?: string;
 }
 export interface ContextChangeResponse {
     type: ResponseType.CONTEXT_CHANGE;
@@ -380,6 +382,15 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
         suggestions?: [string, ...string[]];
     };
     /**
+     * Choices the permission prompt offers when the handler returns
+     * `requiresApproval`. Behaves as `ALLOW_ONCE` when unset.
+     */
+    permissionPrompt?: PermissionPrompt;
+    /**
+     * Title of the permission prompt, e.g. "Allow reading cookie values?".
+     */
+    permissionTitle?: string;
+    /**
      * Function implementation that the LLM will try to execute,
      */
     handler(args: Args, options?: FunctionHandlerOptions): Promise<ToolResult<ReturnType>>;
@@ -454,8 +465,7 @@ export declare abstract class AiAgent<T> {
     get sessionId(): string;
     /**
      * The AI has instructions to emit structured suggestions in their response. This
-     * function parses for that. Lines inside fenced code blocks are kept as answer text
-     * and never parsed, so code that contains a `suggestions` key is left intact.
+     * function parses for that.
      *
      * Note: currently only StylingAgent and PerformanceAgent utilize this, but
      * eventually all agents should support this.
@@ -466,6 +476,18 @@ export declare abstract class AiAgent<T> {
      * though/action/title/answer/suggestions component.
      */
     parseTextResponse(response: string): ParsedResponse;
+    /**
+     * Parses the text of a response that is still streaming. Only the `answer`
+     * of the result is shown, as a partial answer. By default, partial answers
+     * use the same parsing as completed answers.
+     *
+     * This hook exists so that `AiAgent2` (AI V2) can parse follow-up
+     * suggestions differently without changing the V1 agents. Remove it once
+     * AI V2 ships and the V1 agents are removed. b/568697679 explores getting
+     * suggestions from a function call instead of parsing them from text,
+     * which would remove the need for this parsing.
+     */
+    protected parsePartialTextResponse(response: string): ParsedResponse;
     protected finalizeAnswer(answer: AnswerResponse): Promise<AnswerResponse>;
     /**
      * Declare a function that the AI model can call.
@@ -490,6 +512,13 @@ export declare abstract class AiAgent<T> {
         signal?: AbortSignal;
     }, multimodalInput?: MultimodalInput): AsyncGenerator<ResponseData, void, void>;
 }
+/**
+ * Parses `suggestions` as a JSON array and returns its non-empty string items,
+ * with whitespace collapsed and each item truncated to `MAX_SUGGESTION_LENGTH`.
+ * Returns `undefined` if the value is not an array or no items remain.
+ * Throws if `suggestions` is not valid JSON.
+ */
+export declare function sanitizeSuggestions(suggestions: string): [string, ...string[]] | undefined;
 /**
  * Maps AIDA-specific client error instances to user-facing ErrorType enums.
  * This handles AIDA API failure modes such as quota exhaustion or blockages.

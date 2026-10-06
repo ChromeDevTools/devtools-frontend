@@ -13,6 +13,7 @@ import { isOriginAllowedByLock, } from './Tool.js';
  */
 export class ResolveDevtoolsNodePathTool {
     name = "resolveDevtoolsNodePath" /* ToolName.RESOLVE_DEVTOOLS_NODE_PATH */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Resolves a DevTools node path (e.g. from a Lighthouse audit snippet) to an element backend node ID for further DOM, style, or accessibility inspection.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,

@@ -5,7 +5,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import type { CallFrame, Location, ScopeChainEntry } from './DebuggerModel.js';
 import type { Script } from './Script.js';
 import { type NamedFunctionRange } from './SourceMapFunctionRanges.js';
-import { type RawFrameTranslation } from './SourceMapScopesInfo.js';
+import { type PositionRange, type RawFrameTranslation } from './SourceMapScopesInfo.js';
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
  * some additional fields.
@@ -176,6 +176,14 @@ export declare class SourceMap {
     } | null;
     /** See {@link SourceMapScopesInfo.translateRawFrame}. `null` if no scopes information is available. */
     translateRawFrame(generatedLine: number, generatedColumn: number): RawFrameTranslation | null;
+    /** See {@link SourceMapScopesInfo.inlinedFunctionRange}. `null` without encoded scopes. */
+    inlinedFunctionRange(generatedLine: number, generatedColumn: number): PositionRange | null;
+    /** See {@link SourceMapScopesInfo.inlinedCalleeRanges}. Empty without encoded scopes. */
+    inlinedCalleeRanges(generatedLine: number, generatedColumn: number): PositionRange[];
+    /** See {@link SourceMapScopesInfo.hasOutlinedFunctions}. False without encoded scopes. */
+    hasOutlinedFunctions(): boolean;
+    /** See {@link SourceMapScopesInfo.artificialFunctionRanges}. Empty without encoded scopes. */
+    artificialFunctionRanges(): PositionRange[];
 }
 export declare class TokenIterator {
     #private;

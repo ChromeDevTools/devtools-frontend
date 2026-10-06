@@ -16,8 +16,6 @@ export interface TabInfo {
     jslogContext?: string;
     enabled?: boolean;
     selected?: boolean;
-    icon?: Element | null;
-    suffix?: Element | null;
 }
 declare const TabbedPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof VBox>;
 export declare class TabbedPane extends TabbedPaneBase {
@@ -220,6 +218,21 @@ export interface TabbedPaneTabDelegate {
     closeTabs(tabbedPane: TabbedPane, ids: string[]): void;
     onContextMenu(tabId: string, contextMenu: ContextMenu): void;
 }
+/**
+ * Declarative version of the TabbedPane. Each child element with an `id` is a
+ * tab, e.g.
+ *
+ * ```html
+ * <devtools-tabbed-pane>
+ *   <div id="tab1" title="Tab 1">Content 1</div>
+ *   <devtools-icon slot="icon-tab1" name="warning"></devtools-icon>
+ *   <span slot="suffix-tab1">*</span>
+ * </devtools-tabbed-pane>
+ * ```
+ *
+ * Children with `slot="icon-<tab id>"` and `slot="suffix-<tab id>"` are shown
+ * before and after the title in the header of that tab.
+ */
 export declare class TabbedPaneElement extends WidgetElement<TabbedPane> {
     #private;
     set closeableTabs(closeable: boolean);

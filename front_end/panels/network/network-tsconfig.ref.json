@@ -80,6 +80,9 @@
       "path": "../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/emulation/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/har/bundle-tsconfig.ref.json"
     },
     {
@@ -171,6 +174,9 @@
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/settings/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/visual_logging/bundle-tsconfig.ref.json"

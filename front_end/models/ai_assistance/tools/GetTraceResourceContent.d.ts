@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import { type BaseToolCapability, type DataHandlerResult, type DataTool, type PerformanceTraceCapability, type TargetCapability, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type PerformanceTraceCapability, PermissionPrompt, type TargetCapability, type ToolArgs, ToolName } from './Tool.js';
 /**
  * Arguments for {@link GetTraceResourceContentTool}.
  */
@@ -22,6 +22,7 @@ export declare class GetTraceResourceContentTool implements DataTool<GetTraceRes
     content: string;
 }, BaseToolCapability & TargetCapability & PerformanceTraceCapability> {
     readonly name: ToolName;
+    readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetTraceResourceContentArgs>;
     displayInfoFromArgs(params: GetTraceResourceContentArgs): {

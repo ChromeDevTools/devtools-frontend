@@ -3753,10 +3753,10 @@
     "message": "Stop recording events"
   },
   "panels/application/BackgroundServiceView.ts | storageKey": {
-    "message": "Storage Key"
+    "message": "Storage key"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
-    "message": "Service Worker Scope"
+    "message": "Service Worker scope"
   },
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "Timestamp"
@@ -5961,19 +5961,19 @@
     "message": "Bypass for network"
   },
   "panels/application/ServiceWorkersView.ts | bypassTheServiceWorkerAndLoad": {
-    "message": "Bypass the service worker and load resources from the network"
+    "message": "Bypass the Service Worker and load resources from the network"
   },
   "panels/application/ServiceWorkersView.ts | clients": {
     "message": "Clients"
   },
   "panels/application/ServiceWorkersView.ts | focus": {
-    "message": "focus"
+    "message": "Focus"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Network requests"
   },
   "panels/application/ServiceWorkersView.ts | onPageReloadForceTheService": {
-    "message": "On page reload, force the service worker to update, and activate it"
+    "message": "On page reload, force the Service Worker to update, and activate it"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
     "message": "Periodic sync"
@@ -6003,10 +6003,10 @@
     "message": "See all registrations"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
-    "message": "Service worker for {PH1}"
+    "message": "Service Worker for {PH1}"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
-    "message": "Service workers from other origins"
+    "message": "Service Workers from other origins"
   },
   "panels/application/ServiceWorkersView.ts | sIsRedundant": {
     "message": "#{PH1} is redundant"
@@ -6045,13 +6045,13 @@
     "message": "Unregister"
   },
   "panels/application/ServiceWorkersView.ts | unregisterServiceWorker": {
-    "message": "Unregister service worker"
+    "message": "Unregister Service Worker"
   },
   "panels/application/ServiceWorkersView.ts | update": {
     "message": "Update"
   },
   "panels/application/ServiceWorkersView.ts | updateCycle": {
-    "message": "Update Cycle"
+    "message": "Update cycle"
   },
   "panels/application/ServiceWorkersView.ts | updateOnReload": {
     "message": "Update on reload"
@@ -6069,7 +6069,7 @@
     "message": "Timeline"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | updateActivity": {
-    "message": "Update Activity"
+    "message": "Update activity"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | version": {
     "message": "Version"
@@ -6195,7 +6195,7 @@
     "message": "Canceled"
   },
   "panels/application/WebMCPView.ts | canceledCount": {
-    "message": "{PH1} Canceled"
+    "message": "{PH1} canceled"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Clear filters"
@@ -6228,7 +6228,7 @@
     "message": "Error"
   },
   "panels/application/WebMCPView.ts | failed": {
-    "message": "{PH1} Failed"
+    "message": "{PH1} failed"
   },
   "panels/application/WebMCPView.ts | filter": {
     "message": "Filter"
@@ -6243,10 +6243,10 @@
     "message": "Imperative"
   },
   "panels/application/WebMCPView.ts | inProgress": {
-    "message": "In Progress"
+    "message": "In progress"
   },
   "panels/application/WebMCPView.ts | inProgressCount": {
-    "message": "{PH1} In Progress"
+    "message": "{PH1} in progress"
   },
   "panels/application/WebMCPView.ts | input": {
     "message": "Input"
@@ -6258,13 +6258,13 @@
     "message": "Start interacting with your WebMCP agent to see real-time tool calls and executions here"
   },
   "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
-    "message": "Tool Activity"
+    "message": "Tool activity"
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholder": {
     "message": "Registered WebMCP tools for this page will appear here. No tools have been registered or detected yet."
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
-    "message": "Available WebMCP Tools"
+    "message": "Available WebMCP tools"
   },
   "panels/application/WebMCPView.ts | origin": {
     "message": "Origin"
@@ -6276,13 +6276,13 @@
     "message": "Paste"
   },
   "panels/application/WebMCPView.ts | pending": {
-    "message": "In Progress"
+    "message": "In progress"
   },
   "panels/application/WebMCPView.ts | revealTool": {
     "message": "Reveal tool"
   },
   "panels/application/WebMCPView.ts | runTool": {
-    "message": "Run Tool"
+    "message": "Run tool"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Status"
@@ -6294,7 +6294,7 @@
     "message": "Details"
   },
   "panels/application/WebMCPView.ts | toolRegistry": {
-    "message": "Available Tools"
+    "message": "Available tools"
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Tool types"
@@ -6303,7 +6303,7 @@
     "message": "This tool has been unregistered"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
-    "message": "{PH1} Total calls"
+    "message": "{PH1} total calls"
   },
   "panels/application/WebMCPView.ts | viewInElementsPanel": {
     "message": "View in Elements panel"

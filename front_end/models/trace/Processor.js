@@ -525,7 +525,8 @@ export class TraceProcessor extends EventTarget {
             // Otherwise tests using old fixtures become way too noisy.
             const expectedErrors = [
                 'mainDocumentRequest not found',
-                'missing metric scores for main frame',
+                'missing metric scores for frame',
+                'missing metric scores for specified navigation',
                 'missing metric: FCP',
                 'missing metric: LCP',
                 'NO_LCP',

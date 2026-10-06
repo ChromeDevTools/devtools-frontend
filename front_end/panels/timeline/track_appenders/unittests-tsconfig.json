@@ -90,6 +90,9 @@
       "path": "../../../ui/legacy/theme_support/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../ui/settings/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../components/bundle-tsconfig.ref.json"
     }
   ]

@@ -118,6 +118,7 @@ import * as Trace35 from "../../models/trace/trace.js";
 import * as SourceMapsResolver7 from "../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as Workspace8 from "../../models/workspace/workspace.js";
 import * as ThemeSupport25 from "../../ui/legacy/theme_support/theme_support.js";
+import * as SettingsUI5 from "../../ui/settings/settings.js";
 import * as TimelineComponents7 from "./components/components.js";
 
 // ../../front_end/panels/timeline/ExtensionTrackAppender.ts
@@ -698,6 +699,7 @@ import * as Bindings from "../../models/bindings/bindings.js";
 import * as Trace9 from "../../models/trace/trace.js";
 import * as PerfUI7 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as ThemeSupport9 from "../../ui/legacy/theme_support/theme_support.js";
+import * as SettingsUI from "../../ui/settings/settings.js";
 
 // ../../front_end/panels/timeline/ModificationsManager.ts
 var ModificationsManager_exports = {};
@@ -1627,7 +1629,7 @@ var ThreadAppender = class {
   #headerAppended = false;
   threadType = Trace9.Handlers.Threads.ThreadType.MAIN_THREAD;
   isOnMainFrame;
-  #showAllEventsEnabled = Common3.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get();
+  #showAllEventsEnabled = Common3.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
   #url = "";
   #headerNestingLevel = null;
   constructor(compatibilityBuilder, parsedTrace, processId, threadId, threadName, type, entries, tree) {
@@ -5752,7 +5754,7 @@ import * as Tracing3 from "../../services/tracing/tracing.js";
 import * as Dialogs from "../../ui/components/dialogs/dialogs.js";
 import { Link } from "../../ui/kit/kit.js";
 import * as PerfUI11 from "../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as SettingsUI3 from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport13 from "../../ui/legacy/theme_support/theme_support.js";
 import * as SettingUIRegistration from "../../ui/settings/settings.js";
@@ -6296,6 +6298,7 @@ import * as Trace13 from "../../models/trace/trace.js";
 import * as PanelCommon from "../common/common.js";
 import * as MobileThrottling from "../mobile_throttling/mobile_throttling.js";
 import * as Tracing2 from "../../services/tracing/tracing.js";
+import * as SettingsUI2 from "../../ui/settings/settings.js";
 
 // ../../front_end/panels/timeline/RecordingMetadata.ts
 var RecordingMetadata_exports = {};
@@ -6678,7 +6681,7 @@ var TimelineController = class {
   }
   #categoriesForRecording(options) {
     const categoriesArray = [
-      Common6.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get() ? "*" : "-*",
+      Common6.Settings.Settings.instance().resolve(SettingsUI2.TimelineSettings.timelineShowAllEventsSettingDescriptor).get() ? "*" : "-*",
       ...Trace13.Types.Events.DefaultCategories
     ];
     if (options.enableJSSampling) {
@@ -7069,7 +7072,7 @@ var TimelineFilmStripOverview = class _TimelineFilmStripOverview extends Timelin
       if (!image?.naturalWidth || !image.naturalHeight) {
         return;
       }
-      const imageHeight = this.height() - 2 * _TimelineFilmStripOverview.Padding;
+      const imageHeight = this.height() - 2 * _TimelineFilmStripOverview.PADDING;
       const imageWidth = Math.ceil(imageHeight * image.naturalWidth / image.naturalHeight);
       const popoverScale = Math.min(200 / image.naturalWidth, 1);
       this.emptyImage = new Image(image.naturalWidth * popoverScale, image.naturalHeight * popoverScale);
@@ -7092,7 +7095,7 @@ var TimelineFilmStripOverview = class _TimelineFilmStripOverview extends Timelin
     if (!this.#filmStrip || this.#filmStrip.frames.length < 1) {
       return;
     }
-    const padding = _TimelineFilmStripOverview.Padding;
+    const padding = _TimelineFilmStripOverview.PADDING;
     const width = this.width();
     const zeroTime = customStartTime ?? Trace14.Helpers.Timing.microToMilli(this.#filmStrip.zeroTime);
     const spanTime = customEndTime ? customEndTime - zeroTime : Trace14.Helpers.Timing.microToMilli(this.#filmStrip.spanTime);
@@ -7149,9 +7152,7 @@ var TimelineFilmStripOverview = class _TimelineFilmStripOverview extends Timelin
     this.lastElement = null;
     this.frameToImagePromise = /* @__PURE__ */ new Map();
   }
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static Padding = 2;
+  static PADDING = 2;
 };
 var TimelineEventOverviewMemory = class extends TimelineEventOverview {
   heapSizeLabel;
@@ -9665,7 +9666,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
   }
   #getModelConfig() {
     const config = Trace21.Types.Configuration.defaults();
-    config.showAllEvents = Common10.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get();
+    config.showAllEvents = Common10.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
     config.debugMode = Common10.Settings.Settings.instance().moduleSetting("timeline-debug-mode").get();
     config.enableSoftNavigation = Common10.Settings.Settings.instance().moduleSetting("timeline-enable-soft-navigations").get();
     return config;
@@ -10120,7 +10121,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     const cpuThrottlingPane = this.settingsPane.createChild("div");
     cpuThrottlingPane.append(i18nString17(UIStrings17.cpu));
     this.cpuThrottlingSelect = MobileThrottling2.CPUThrottlingSelector.CPUThrottlingSelector.createForGlobalConditions(cpuThrottlingPane);
-    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
+    this.settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(
       SettingUIRegistration.SettingUIRegistration.resolve(this.captureSelectorStatsSetting.descriptor()).title,
       this.captureSelectorStatsSetting,
       i18nString17(UIStrings17.capturesSelectorStats)
@@ -10131,12 +10132,12 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       networkThrottlingPane,
       i18nString17(UIStrings17.network)
     );
-    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
+    this.settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(
       SettingUIRegistration.SettingUIRegistration.resolve(this.captureLayersAndPicturesSetting.descriptor()).title,
       this.captureLayersAndPicturesSetting,
       i18nString17(UIStrings17.capturesAdvancedPaint)
     ));
-    this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(
+    this.settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(
       SettingUIRegistration.SettingUIRegistration.resolve(this.disableCaptureJSProfileSetting.descriptor()).title,
       this.disableCaptureJSProfileSetting,
       i18nString17(UIStrings17.disablesJavascriptSampling)
@@ -10789,7 +10790,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     return this.#viewMode.mode === "VIEWING_TRACE";
   }
   #applyActiveFilters(traceIsGeneric, exclusiveFilter = null) {
-    if (traceIsGeneric || Common10.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get()) {
+    if (traceIsGeneric || Common10.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineShowAllEventsSettingDescriptor).get()) {
       return;
     }
     const newActiveFilters = exclusiveFilter ? [exclusiveFilter] : [
@@ -14269,9 +14270,6 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
   splitWidget;
   detailsView;
   searchableView;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  currentThreadSetting;
   lastSelectedNodeInternal;
   root;
   currentResult;
@@ -14407,8 +14405,6 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
       Trace24.Types.Events.Name.RUN_TASK
     ]);
     this.textFilterInternal = new TimelineRegExp();
-    this.currentThreadSetting = Common12.Settings.Settings.instance().createSetting("timeline-tree-current-thread", 0);
-    this.currentThreadSetting.addChangeListener(() => this.refreshTree());
     const columns = [];
     this.populateColumns(columns);
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
@@ -18883,7 +18879,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
    */
   searchResults = void 0;
   eventListeners;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   networkSplitWidget;
   mainDataProvider;
   mainFlameChart;
@@ -18904,8 +18899,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
   #boundRefreshAfterIgnoreList;
   /** This is sorted by ts. */
   #selectedEvents;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   groupBySetting;
   searchableView;
   needsResizeToPreferredHeights;
@@ -21977,7 +21970,7 @@ var CompatibilityTracksAppender = class {
       }
     };
     const threads = Trace35.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
-    const showAllEvents = Common18.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get();
+    const showAllEvents = Common18.Settings.Settings.instance().resolve(SettingsUI5.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
     for (const { pid, tid, name, type, entries, tree } of threads) {
       if (this.#parsedTrace.data.Meta.traceIsGeneric) {
         this.#threadAppenders.push(new ThreadAppender(

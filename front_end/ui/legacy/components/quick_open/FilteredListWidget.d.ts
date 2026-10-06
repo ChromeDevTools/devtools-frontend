@@ -44,6 +44,7 @@ export declare class FilteredListWidget extends FilteredListWidgetBase implement
     isItemSelectable(_item: number): boolean;
     selectedItemChanged(_from: number | null, _to: number | null, fromElement: Element | null, toElement: Element | null): void;
     private onClick;
+    private textForSelectedItem;
     private onMouseMove;
     setQuery(query: string): void;
     private tabKeyPressed;

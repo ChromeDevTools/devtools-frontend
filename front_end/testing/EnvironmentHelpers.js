@@ -196,7 +196,9 @@ export function expectConsoleLogs(expectedLogs) {
 }
 let userAgentStub;
 export function setUserAgentForTesting() {
-    userAgentStub = sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'getUserAgent').returns('Chrome/unit_test');
+    if (Platform.HostRuntime.HOST_RUNTIME.getUserAgent() !== 'Chrome/unit_test') {
+        userAgentStub = sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'getUserAgent').returns('Chrome/unit_test');
+    }
 }
 export function restoreUserAgentForTesting() {
     userAgentStub?.restore();

@@ -5,6 +5,7 @@ import * as Host from '../../../core/host/host.js';
 import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
 export class GetLighthouseAuditsTool {
     name = "getLighthouseAudits" /* ToolName.GET_LIGHTHOUSE_AUDITS */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Retrieves audit results and diagnostic details from the active Lighthouse report for all categories (using categoryId: "all") or a specific category (e.g., \'accessibility\').';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
@@ -33,7 +34,6 @@ export class GetLighthouseAuditsTool {
         const audits = new LighthouseFormatter().formatReport(report, params.categoryId);
         return {
             result: { audits },
-            widgets: [{ name: 'LIGHTHOUSE_REPORT', data: { report } }],
         };
     }
 }

@@ -408,6 +408,12 @@ export class ComputedText {
         return count;
     }
 }
+/**
+ * This function determines whether concatenating two pieces of text requires any spacing in between. For example, there
+ * shouldn't be any space between 'var' and '(', but there should be a space between '1px' and 'solid'. The node
+ * sequences that make up the pieces of text may contain non-text nodes/trees. Any such element in between the texts is
+ * ignored for the spacing requirement.
+ **/
 export function requiresSpace(a, b) {
     const tail = Array.isArray(a) ? a.findLast(node => node.textContent)?.textContent : a;
     const head = Array.isArray(b) ? b.find(node => node.textContent)?.textContent : b;

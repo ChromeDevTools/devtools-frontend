@@ -26,6 +26,7 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
     }): DebuggerWorkspaceBinding;
     static removeInstance(): void;
     private computeAutoStepRanges;
+    private computeAutoStep;
     modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
     modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
     /**
@@ -88,6 +89,7 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
     supportsConditionalBreakpoints(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean;
     resetForTest(target: SDK.Target.Target): void;
     removeLiveLocation(location: Location): void;
+    /** @returns null to present the pause, or the step to issue instead. */
     private shouldPause;
 }
 export declare class Location extends LiveLocationWithPool {

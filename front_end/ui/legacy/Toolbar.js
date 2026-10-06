@@ -729,6 +729,7 @@ export class ToolbarInput extends ToolbarItem {
     }
 }
 export class ToolbarFilter extends ToolbarInput {
+    #regexButton;
     constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element, showRegexToggle, onRegexToggle) {
         const filterPlaceholder = filterBy ? filterBy : i18nString(UIStrings.filter);
         super(filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext || 'filter', element);
@@ -754,18 +755,27 @@ export class ToolbarFilter extends ToolbarInput {
             ARIAUtils.setLabel(regexButton, i18nString(UIStrings.useRegularExpression));
             regexButton.addEventListener('click', () => {
                 regexButton.checked = regexButton.toggled;
-                onRegexToggle?.();
+                onRegexToggle?.(regexButton.toggled);
             });
             this.insertTrailingElement(regexButton);
+            this.#regexButton = regexButton;
         }
+    }
+    setRegexToggled(toggled) {
+        if (!this.#regexButton || this.#regexButton.toggled === toggled) {
+            return;
+        }
+        this.#regexButton.toggled = toggled;
+        this.#regexButton.checked = toggled;
     }
 }
 export class ToolbarInputElement extends HTMLElement {
-    static observedAttributes = ['value', 'disabled', 'regex'];
+    static observedAttributes = ['value', 'disabled', 'regex', 'regex-toggled'];
     item;
     datalist = null;
     #value = undefined;
     #disabled = false;
+    #regexToggled = false;
     connectedCallback() {
         if (this.item) {
             return;
@@ -795,6 +805,9 @@ export class ToolbarInputElement extends HTMLElement {
         if (this.#disabled) {
             this.item.setEnabled(false);
         }
+        if (this.#regexToggled && this.item instanceof ToolbarFilter) {
+            this.item.setRegexToggled(true);
+        }
         this.item.addEventListener("TextChanged" /* ToolbarInput.Event.TEXT_CHANGED */, event => {
             this.dispatchEvent(new CustomEvent('change', { detail: event.data }));
         });
@@ -805,8 +818,9 @@ export class ToolbarInputElement extends HTMLElement {
     focus() {
         this.item?.focus();
     }
-    #onRegexToggle() {
-        this.dispatchEvent(new CustomEvent('regextoggle'));
+    #onRegexToggle(toggled) {
+        this.#regexToggled = toggled;
+        this.dispatchEvent(new CustomEvent('regextoggle', { detail: toggled }));
     }
     async #onAutocomplete(expression, prefix, force) {
         if (!prefix && !force && expression || !this.datalist) {
@@ -828,6 +842,12 @@ export class ToolbarInputElement extends HTMLElement {
             this.#disabled = typeof newValue === 'string';
             if (this.item) {
                 this.item.setEnabled(!this.#disabled);
+            }
+        }
+        else if (name === 'regex-toggled') {
+            this.#regexToggled = typeof newValue === 'string';
+            if (this.item instanceof ToolbarFilter) {
+                this.item.setRegexToggled(this.#regexToggled);
             }
         }
     }

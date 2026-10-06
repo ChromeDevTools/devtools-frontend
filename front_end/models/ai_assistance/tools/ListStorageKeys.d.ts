@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, type ServerLoggingCapability, ToolAnnotation, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, PermissionPrompt, type ServerLoggingCapability, ToolAnnotation, type ToolArgs, ToolName } from './Tool.js';
 export interface ListStorageKeysArgs extends ToolArgs {
     type: 'localStorage' | 'sessionStorage';
     origins: string[];
@@ -15,6 +15,7 @@ export interface ListStorageKeysResult {
 }
 export declare class ListStorageKeysTool implements DataTool<ListStorageKeysArgs, ListStorageKeysResult, BaseToolCapability & OriginLockCapability & ServerLoggingCapability> {
     readonly name: ToolName;
+    readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
     readonly annotations: ToolAnnotation[];
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ListStorageKeysArgs>;

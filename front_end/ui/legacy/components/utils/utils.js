@@ -1109,6 +1109,9 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
   static untruncatedNodeText(node) {
     return textByAnchor.get(node) || node.textContent || "";
   }
+  static untruncatedTextContent(node) {
+    return node.childTextNodes().map(_Linkifier.untruncatedNodeText).join("");
+  }
   static linkInfo(link3) {
     return link3 ? infoByAnchor.get(link3) || null : null;
   }

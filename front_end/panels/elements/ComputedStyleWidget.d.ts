@@ -4,11 +4,13 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as ComputedStyleModule from '../../models/computed_style/computed_style.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type Category } from './PropertyNameCategories.js';
 type ComputedStyleData = {
     tag: 'property';
     propertyName: string;
     propertyValue: string;
     inherited: boolean;
+    category?: Category;
 } | {
     tag: 'traceElement';
     property: SDK.CSSProperty.CSSProperty;
@@ -24,7 +26,8 @@ interface ComputedStyleWidgetInput {
     groupComputedStylesSetting: Common.Settings.Setting<boolean>;
     onFilterChanged: (event: CustomEvent<string>) => void;
     filterText: string;
-    onRegexToggled: () => void;
+    filterIsRegex: boolean;
+    onRegexToggled: (event: CustomEvent<boolean>) => void;
     includeToolbar: boolean;
 }
 type View = (input: ComputedStyleWidgetInput, output: null, target: HTMLElement) => void;

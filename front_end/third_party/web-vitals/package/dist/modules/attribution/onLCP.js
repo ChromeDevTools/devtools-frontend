@@ -89,12 +89,15 @@ export const onLCP = (onReport, opts = {}) => {
             const lcpEntry = metric.entries.at(-1);
             // Get the Resource Timing entry checking the local buffer first
             // Use findLast to get the latest entry in case a resource is requested
-            // multiple times (can particularly affect soft nav page views).
+            // multiple times (can particularly affect soft nav page views), but
+            // ignore requests that started after the LCP render since those cannot
+            // be what painted the element. `responseEnd` is deliberately not
+            // checked, so media that keeps downloading past LCP still matches.
+            const isLCPResource = (e) => e.name === lcpEntry.url &&
+                (e.requestStart || e.startTime) <= lcpEntry.startTime;
             const lcpResourceEntry = lcpEntry.url &&
-                (resourceBuffer.findLast((e) => e.name === lcpEntry.url) ||
-                    performance
-                        .getEntriesByType('resource')
-                        .findLast((e) => e.name === lcpEntry.url));
+                (resourceBuffer.findLast(isLCPResource) ||
+                    performance.getEntriesByType('resource').findLast(isLCPResource));
             attribution.target = lcpTargetMap.get(lcpEntry);
             attribution.lcpEntry = lcpEntry;
             // Only attribute the URL and resource entry if they exist.

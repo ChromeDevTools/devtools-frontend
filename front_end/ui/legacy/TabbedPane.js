@@ -1058,6 +1058,12 @@ export class TabbedPaneTab {
     #tabElement;
     icon = null;
     suffixElement = null;
+    // The containers of the `icon-<id>` and `suffix-<id>` slots of the tab header.
+    #slotContainers = {};
+    // Whether elements are assigned to these slots.
+    #hasSlottedContent = { icon: false, suffix: false };
+    // Last known width of these containers.
+    #slotContainerWidths = { icon: 0, suffix: 0 };
     #width;
     delegate;
     titleElement;
@@ -1194,6 +1200,47 @@ export class TabbedPaneTab {
         titleElement.insertAdjacentElement('afterend', suffixElementContainer);
         tabSuffixElements.set(tabElement, suffixElementContainer);
     }
+    /**
+     * Adds a slot for the `slot="icon-<id>"` or `slot="suffix-<id>"` children
+     * of the TabbedPaneElement to the tab header. The container is hidden
+     * while nothing is assigned to the slot.
+     */
+    #createSlotContainer(titleElement, kind, measuring) {
+        if (measuring && !this.#hasSlottedContent[kind]) {
+            return;
+        }
+        const container = document.createElement('span');
+        container.classList.add(kind === 'icon' ? 'tabbed-pane-header-tab-icon' : 'tabbed-pane-header-tab-suffix-element', 'tabbed-pane-header-tab-slot-container');
+        titleElement.insertAdjacentElement(kind === 'icon' ? 'beforebegin' : 'afterend', container);
+        if (measuring) {
+            // Slotted content can't be cloned, so like `createMeasureClone`, give
+            // the container the size of the real one instead.
+            const width = this.#measureSlotContainer(kind);
+            if (width > 0) {
+                container.style.boxSizing = 'border-box';
+                container.style.width = `${width}px`;
+            }
+            return;
+        }
+        const slot = container.createChild('slot');
+        slot.name = `${kind}-${this.#id}`;
+        this.#slotContainers[kind] = container;
+        container.style.display = 'none';
+        slot.addEventListener('slotchange', () => {
+            this.#hasSlottedContent[kind] = slot.assignedElements().length > 0;
+            container.style.display = this.#hasSlottedContent[kind] ? '' : 'none';
+            delete this.measuredWidth;
+            this.tabbedPane.requestUpdate();
+        });
+    }
+    #measureSlotContainer(kind) {
+        // The container isn't rendered while the tab header isn't shown.
+        const width = this.#slotContainers[kind]?.getBoundingClientRect().width ?? 0;
+        if (width > 0) {
+            this.#slotContainerWidths[kind] = width;
+        }
+        return this.#slotContainerWidths[kind];
+    }
     createMeasureClone(original) {
         // Cloning doesn't work for the icon component because the shadow
         // root isn't copied, but it is sufficient to create a div styled
@@ -1215,6 +1262,8 @@ export class TabbedPaneTab {
         Tooltip.install(titleElement, this.tooltip || '');
         this.createIconElement(tabElement, titleElement, measuring);
         this.createSuffixElement(tabElement, titleElement, measuring);
+        this.#createSlotContainer(titleElement, 'icon', measuring);
+        this.#createSlotContainer(titleElement, 'suffix', measuring);
         if (!measuring) {
             this.titleElement = titleElement;
         }
@@ -1409,6 +1458,21 @@ export class TabbedPaneTab {
 }
 const tabIcons = new WeakMap();
 const tabSuffixElements = new WeakMap();
+/**
+ * Declarative version of the TabbedPane. Each child element with an `id` is a
+ * tab, e.g.
+ *
+ * ```html
+ * <devtools-tabbed-pane>
+ *   <div id="tab1" title="Tab 1">Content 1</div>
+ *   <devtools-icon slot="icon-tab1" name="warning"></devtools-icon>
+ *   <span slot="suffix-tab1">*</span>
+ * </devtools-tabbed-pane>
+ * ```
+ *
+ * Children with `slot="icon-<tab id>"` and `slot="suffix-<tab id>"` are shown
+ * before and after the title in the header of that tab.
+ */
 export class TabbedPaneElement extends WidgetElement {
     #closeableTabs = false;
     #allowTabReorder = false;
@@ -1530,8 +1594,6 @@ export class TabbedPaneElement extends WidgetElement {
             const selected = child.hasAttribute('selected');
             const enabled = !child.hasAttribute('disabled');
             const isCloseable = child.hasAttribute('closeable') ? true : (child.hasAttribute('uncloseable') ? false : undefined);
-            const icon = child.querySelector('[slot="icon"]') ?? undefined;
-            const suffix = child.querySelector('[slot="suffix"]') ?? undefined;
             const view = Widget.getOrCreateWidget(child);
             view.setHideOnDetach();
             if (widget.selectedTabId !== id) {
@@ -1545,8 +1607,6 @@ export class TabbedPaneElement extends WidgetElement {
                 selected,
                 enabled,
                 isCloseable,
-                icon,
-                suffix,
             });
         }
         const newIds = new Set(tabs.map(tab => tab.id));
@@ -1578,12 +1638,6 @@ export class TabbedPaneElement extends WidgetElement {
             }
             else {
                 widget.appendTab(tab.id, tab.title, tab.view, tab.tabTooltip, /* userGesture=*/ false, tab.isCloseable, tab.previewFeature, index, tab.jslogContext);
-            }
-            if (tab.icon !== undefined) {
-                widget.setTabIcon(tab.id, tab.icon);
-            }
-            if (tab.suffix !== undefined) {
-                widget.setSuffixElement(tab.id, tab.suffix);
             }
             if (tab.enabled !== undefined) {
                 widget.setTabEnabled(tab.id, tab.enabled);

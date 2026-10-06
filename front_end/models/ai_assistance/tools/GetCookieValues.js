@@ -11,6 +11,8 @@ const lockedString = i18n.i18n.lockedString;
 export const MAX_NUM_CHAR_LENGTH = 10000;
 export class GetCookieValuesTool {
     name = "getCookieValues" /* ToolName.GET_COOKIE_VALUES */;
+    permissionPrompt = "allow-once" /* PermissionPrompt.ALLOW_ONCE */;
+    permissionTitle = lockedString('Allow reading cookie values?');
     description = 'Retrieve the values and detailed metadata of specific cookies by their names across origins.';
     annotations = ["redact-from-history" /* ToolAnnotation.REDACT_FROM_HISTORY */];
     parameters = {

@@ -46,8 +46,9 @@ export class LighthouseContext extends ConversationContext {
                 '**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.';
         }
         else if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
-            // AI V2 sends only the summary; the agent fetches category audits on demand via `getLighthouseAudits`.
-            this.#cachedPayload = formatter.summary(this.#lh);
+            // AI V2 sends failing audit titles without their details to keep the prompt small. The agent
+            // uses the category IDs in the list to fetch full details with `getLighthouseAudits`.
+            this.#cachedPayload = `${formatter.summary(this.#lh)}\n\n${formatter.failingAuditsSummary(this.#lh)}`;
         }
         else {
             // The V1 `AccessibilityAgent` expects the accessibility audits up front. Remove this branch with V1.

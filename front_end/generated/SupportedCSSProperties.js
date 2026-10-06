@@ -4294,7 +4294,7 @@ export const generatedProperties = [
             "overlay"
         ],
         "name": "overscroll-container-type",
-        "runtime_flag": "OverscrollGestures",
+        "runtime_flag": "OverscrollAreas",
         "runtime_flag_status": "experimental"
     },
     {

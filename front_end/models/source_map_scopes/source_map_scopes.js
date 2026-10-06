@@ -3311,6 +3311,19 @@ var resolveScope = async (script, scopeChain, debuggerWorkspaceBinding) => {
     }
   }
 };
+function shouldIgnoreScope(scope) {
+  const type = scope.type();
+  if (type === Debugger.ScopeType.Local) {
+    return false;
+  }
+  if (type === Debugger.ScopeType.Module && scope.callFrame().localScope() === null) {
+    return false;
+  }
+  return scope.emptyReason() !== void 0;
+}
+function visibleScopeChain(callFrame) {
+  return callFrame.scopeChain().filter((scope) => !shouldIgnoreScope(scope));
+}
 var resolveScopeChain = async function(callFrame, debuggerWorkspaceBinding) {
   const { pluginManager } = debuggerWorkspaceBinding;
   const scopeChain = await pluginManager.resolveScopeChain(callFrame);
@@ -3331,7 +3344,7 @@ var resolveScopeChain = async function(callFrame, debuggerWorkspaceBinding) {
     return callFrame.scopeChain();
   }
   const thisObject = await resolveThisObject(callFrame, debuggerWorkspaceBinding);
-  return callFrame.scopeChain().map(
+  return visibleScopeChain(callFrame).map(
     (scope) => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding)
   );
 };
@@ -3364,7 +3377,7 @@ var allVariablesInCallFrame = async (callFrame, debuggerWorkspaceBinding) => {
       return result2;
     }
   }
-  const scopeChain = callFrame.scopeChain();
+  const scopeChain = visibleScopeChain(callFrame);
   const resolvedScopes = await Promise.all(scopeChain.map((scope) => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
   const result = resolvedScopes.map(toScopeVariableMapping);
   cachedMapByCallFrame.set(callFrame, result);
@@ -3401,11 +3414,11 @@ var allVariablesAtPosition = async (location, debuggerWorkspaceBinding) => {
   return result;
 };
 var resolveThisObject = async (callFrame, debuggerWorkspaceBinding) => {
-  const scopeChain = callFrame.scopeChain();
-  if (scopeChain.length === 0) {
+  const innermostScope = callFrame.scopeChain().find((scope) => !shouldIgnoreScope(scope));
+  if (!innermostScope) {
     return callFrame.thisObject();
   }
-  const { thisMapping } = await resolveDebuggerScope(scopeChain[0], debuggerWorkspaceBinding);
+  const { thisMapping } = await resolveDebuggerScope(innermostScope, debuggerWorkspaceBinding);
   if (!thisMapping) {
     return callFrame.thisObject();
   }

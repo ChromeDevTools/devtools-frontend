@@ -17,6 +17,7 @@ const lockedString = i18n.i18n.lockedString;
  */
 export class GetNetworkRequestDetailsTool {
     name = "getNetworkRequestDetails" /* ToolName.GET_NETWORK_REQUEST_DETAILS */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Retrieves the full headers, timing, status, and body details of a specific network request by ID.';
     #networkLog;
     constructor(networkLog) {

@@ -101,11 +101,6 @@ export declare class ComputedText {
  * ignored for the spacing requirement.
  **/
 export declare function requiresSpace(a: string, b: string): boolean;
-export declare function requiresSpace(a: Array<{
-    textContent?: string | null;
-}>, b: Array<{
-    textContent?: string | null;
-}>): boolean;
 export declare namespace ASTUtils {
     function siblings(node: CodeMirror.SyntaxNode | null): CodeMirror.SyntaxNode[];
     function children(node: CodeMirror.SyntaxNode | null): CodeMirror.SyntaxNode[];

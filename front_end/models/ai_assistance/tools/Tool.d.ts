@@ -204,6 +204,48 @@ export declare const enum ToolName {
     GET_STORAGE_BREAKDOWN = "getStorageBreakdown"
 }
 /**
+ * Choices the permission prompt offers when a tool asks for approval.
+ *
+ * The tool still decides whether a given call needs approval by returning a
+ * `ToolApprovalResult`. This enum decides what the user can choose and whether
+ * a stored "always allow" decision can skip the prompt.
+ */
+export declare const enum PermissionPrompt {
+    /**
+     * No permission prompt is shown. Should be used for tools which don't require
+     * user permission to run.
+     */
+    NEVER = "never",
+    /**
+     * The prompt offers: Skip / Allow Once.
+     * A stored "always allow" decision is ignored, so the user is asked on every call.
+     */
+    ALLOW_ONCE = "allow-once",
+    /**
+     * The prompt offers: Skip / Always Allow / Allow Once.
+     * If the user previously chose "always allow" for this tool, the prompt is skipped.
+     */
+    ALLOW_ONCE_OR_ALWAYS = "allow-once-or-always"
+}
+/**
+ * The user's answer to a permission prompt.
+ */
+export declare const enum PermissionDecision {
+    /**
+     * Don't call the tool.
+     */
+    REJECT = "reject",
+    /**
+     * Allow to call the tool.
+     */
+    ALLOW_ONCE = "allow-once",
+    /**
+     * Allow to call the tool, and the tool is added to the allowed tools list so
+     * future calls do not prompt. Only offered for `PermissionPrompt.ALLOW_ONCE_OR_ALWAYS`.
+     */
+    ALLOW_ALWAYS = "allow-always"
+}
+/**
  * Base metadata interface for a Tool.
  * Provides parameter schema and display info formatting for tool argument types.
  *
@@ -212,6 +254,15 @@ export declare const enum ToolName {
 export interface BaseTool<ArgsType extends ToolArgs = ToolArgs> {
     readonly name: ToolName;
     readonly description: string;
+    /**
+     * The permission prompt shown when this tool returns a `ToolApprovalResult`.
+     */
+    readonly permissionPrompt: PermissionPrompt;
+    /**
+     * Title of the permission prompt, e.g. "Allow reading cookie values?".
+     * Required for tools that require user permission to run.
+     */
+    readonly permissionTitle?: string;
     /**
      * JSON schema representing the parameters this tool accepts.
      */

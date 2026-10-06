@@ -7,6 +7,7 @@ import '../../../ui/legacy/legacy.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import { html, nothing, render } from '../../../ui/lit/lit.js';
+import * as SettingsUI from '../../../ui/settings/settings.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import CSSPropertyDocsViewStyles from './cssPropertyDocsView.css.js';
 const UIStrings = {
@@ -160,7 +161,7 @@ export class CSSPropertyDocsView extends HTMLElement {
     #dontShowChanged(e) {
         const showDocumentation = !e.target.checked;
         Common.Settings.Settings.instance()
-            .moduleSetting('show-css-property-documentation-on-hover')
+            .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
             .set(showDocumentation);
     }
     #render() {

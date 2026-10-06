@@ -2,7 +2,7 @@ import '../../ui/legacy/legacy.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
-import type * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
 import * as ElementsComponents from './components/components.js';
@@ -155,6 +155,7 @@ export declare class StylePropertiesSection {
     };
     private navigateToSelectorSource;
     private static revealSelectorSource;
+    isHeaderEditable(): boolean;
     private startEditingAtFirstPosition;
     startEditingSelector(): void;
     moveEditorFromSelector(moveDirection: string): void;
@@ -191,15 +192,19 @@ export declare class RegisteredPropertiesSection extends StylePropertiesSection 
 }
 export declare class FunctionRuleSection extends StylePropertiesSection {
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, children: SDK.CSSRule.CSSNestedStyle[], sectionIdx: number, functionName: string, expandedByDefault: boolean);
+    isHeaderEditable(): boolean;
+    moveEditorFromSelector(moveDirection: string): void;
     createConditionElement(condition: SDK.CSSRule.CSSNestedStyleCondition): HTMLElement | undefined;
     positionNestingElement(element: HTMLElement): HTMLElement;
     addChildren(children: SDK.CSSRule.CSSNestedStyle[], parent: TreeElementParent): void;
 }
 export declare class AtRuleSection extends StylePropertiesSection {
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, expandedByDefault: boolean);
+    isHeaderEditable(): boolean;
 }
 export declare class PositionTryRuleSection extends StylePropertiesSection {
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, active: boolean);
+    isHeaderEditable(): boolean;
 }
 export declare class KeyframePropertiesSection extends StylePropertiesSection {
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number);

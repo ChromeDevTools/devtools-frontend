@@ -12515,14 +12515,12 @@ function renderPlaceholder(input) {
 function renderTabIcon(tab) {
   if (tab.hasLoadError) {
     return html9`
-      <span slot="icon">
-        <devtools-icon class="small" name="cross-circle-filled"
-                        title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
-        </devtools-icon>
-      </span>`;
+      <devtools-icon slot=${`icon-${tab.tabId}`} class="small" name="cross-circle-filled"
+                     title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
+      </devtools-icon>`;
   }
   if (tab.icon) {
-    return html9`<span slot="icon">${tab.icon}</span>`;
+    return html9`<span slot=${`icon-${tab.tabId}`}>${tab.icon}</span>`;
   }
   return nothing7;
 }
@@ -12532,11 +12530,10 @@ function renderTabSuffix(tab, input) {
   }
   const tooltipId = `tab-tooltip-${tab.tabId}`;
   return html9`
-    <span slot="suffix">
-      <div>
-        <devtools-icon name="warning-filled" class="small" aria-describedby=${tooltipId}></devtools-icon>
-        <devtools-tooltip id=${tooltipId} variant="rich">
-          ${tab.disconnectedAutomaticFileSystemRoot !== void 0 ? uiI18n2.getFormatLocalizedStringTemplate(
+    <div slot=${`suffix-${tab.tabId}`}>
+      <devtools-icon name="warning-filled" class="small" aria-describedby=${tooltipId}></devtools-icon>
+      <devtools-tooltip id=${tooltipId} variant="rich">
+        ${tab.disconnectedAutomaticFileSystemRoot !== void 0 ? uiI18n2.getFormatLocalizedStringTemplate(
     str_14,
     UIStrings14.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace,
     {
@@ -12549,9 +12546,8 @@ function renderTabSuffix(tab, input) {
       PH1: html9`<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`
     }
   )}
-        </devtools-tooltip>
-      </div>
-    </span>`;
+      </devtools-tooltip>
+    </div>`;
 }
 var DEFAULT_VIEW6 = (input, _output, target) => {
   render7(html9`
@@ -12579,10 +12575,10 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
              title=${tab.title}
              ?closeable=${tab.isCloseable}
              ?selected=${input.activeTabId === tab.tabId}>
-             ${renderTabIcon(tab)}
-             ${renderTabSuffix(tab, input)}
              ${tab.widget ? html9`${widget(UI13.Widget.WrapperWidget, { widget: tab.widget })}` : nothing7}
-        </div>`)}
+        </div>
+        ${renderTabIcon(tab)}
+        ${renderTabSuffix(tab, input)}`)}
     </devtools-tabbed-pane>`, target);
 };
 var tabId = 0;
@@ -12646,10 +12642,10 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
           hasUnsavedCommittedChanges,
           disconnectedAutomaticFileSystemRoot,
           icon,
-          widget: this.#currentFile === uiSourceCode ? this.getOrCreateSourceView(uiSourceCode) : this.getCreatedSourceView(uiSourceCode)
+          widget: this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId() ? this.getOrCreateSourceView(this.#currentFile) : this.getCreatedSourceView(uiSourceCode)
         };
       }),
-      activeTabId: this.#currentFile ? this.tabIds.get(this.#currentFile) : void 0,
+      activeTabId: this.#currentFile ? this.#tabIdForUISourceCode(this.#currentFile) : void 0,
       leftToolbarItems: this.#leftToolbarItems,
       rightToolbarItems: this.#rightToolbarItems,
       tabDelegate: this.#tabDelegate,
@@ -12926,8 +12922,12 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     this.closeFile(this.#currentFile);
     return true;
   }
+  #tabIdForUISourceCode(uiSourceCode) {
+    const canonical = this.idToUISourceCode.get(uiSourceCode.canonicalScriptId());
+    return this.tabIds.get(uiSourceCode) ?? (canonical ? this.tabIds.get(canonical) : void 0);
+  }
   closeFile(uiSourceCode) {
-    const tabId2 = this.tabIds.get(uiSourceCode);
+    const tabId2 = this.#tabIdForUISourceCode(uiSourceCode);
     if (!tabId2) {
       return;
     }
@@ -12956,7 +12956,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     if (tabIds.length === 0 || !this.#currentFile) {
       return;
     }
-    const currentTabId = this.tabIds.get(this.#currentFile);
+    const currentTabId = this.#tabIdForUISourceCode(this.#currentFile);
     if (!currentTabId) {
       return;
     }
@@ -12972,7 +12972,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     if (tabIds.length === 0 || !this.#currentFile) {
       return;
     }
-    const currentTabId = this.tabIds.get(this.#currentFile);
+    const currentTabId = this.#tabIdForUISourceCode(this.#currentFile);
     if (!currentTabId) {
       return;
     }
@@ -13282,6 +13282,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
   tabClosed(tabId2, isUserGesture) {
     const uiSourceCode = this.files.get(tabId2);
     if (this.#currentFile && this.#currentFile.canonicalScriptId() === uiSourceCode?.canonicalScriptId()) {
+      this.removeSourceFrame(this.#currentFile);
       this.removeViewListeners();
       this.currentView = null;
       this.#currentFile = null;
@@ -13937,7 +13938,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     await this.updateComplete;
   }
   editorClosed(uiSourceCode) {
-    const wasSelected = this.#currentUISourceCode === uiSourceCode;
+    const wasSelected = this.#currentUISourceCode?.canonicalScriptId() === uiSourceCode.canonicalScriptId();
     if (wasSelected) {
       this.#currentUISourceCode = null;
       this.#visibleView = null;

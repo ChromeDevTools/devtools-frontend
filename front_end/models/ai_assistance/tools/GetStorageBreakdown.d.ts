@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, ToolName } from './Tool.js';
+import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, PermissionPrompt, ToolName } from './Tool.js';
 export interface StorageBreakdownEntry {
     storageType: string;
     usage: string;
@@ -9,6 +9,7 @@ export interface GetStorageBreakdownResult {
 }
 export declare class GetStorageBreakdownTool implements DataTool<Record<string, never>, GetStorageBreakdownResult, BaseToolCapability & OriginLockCapability> {
     readonly name: ToolName;
+    readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
     readonly parameters: Host.AidaClient.FunctionObjectParam<never>;
     displayInfoFromArgs(): {

@@ -270,6 +270,9 @@ class NetworkAnalyzer {
         // Or if there were connections that were always reused (a connection had to have started at some point)
         return Array.from(connectionIdWasStarted.values()).every(started => started);
     }
+    static isMultiplexedProtocol(protocol) {
+        return protocol === 'h2' || Boolean(protocol?.startsWith('h3'));
+    }
     /**
      * Returns a map of requestId -> connectionReused, estimating the information if the information
      * available in the records themselves appears untrustworthy.
@@ -282,14 +285,15 @@ class NetworkAnalyzer {
         }
         // Otherwise we're on our own, a request may not have needed a fresh connection if...
         //   - It was not the first request to the domain
-        //   - It was H2
+        //   - It was multiplexed (H2 or H3)
         //   - It was after the first request to the domain ended
         const connectionWasReused = new Map();
         const groupedByOrigin = NetworkAnalyzer.groupByOrigin(records);
         for (const originRecords of groupedByOrigin.values()) {
             const earliestReusePossible = originRecords.map(request => request.networkEndTime).reduce((a, b) => Math.min(a, b), Infinity);
             for (const request of originRecords) {
-                connectionWasReused.set(request.requestId, request.networkRequestTime >= earliestReusePossible || request.protocol === 'h2');
+                connectionWasReused.set(request.requestId, request.networkRequestTime >= earliestReusePossible ||
+                    NetworkAnalyzer.isMultiplexedProtocol(request.protocol));
             }
             const firstRecord = originRecords.reduce((a, b) => {
                 return a.networkRequestTime > b.networkRequestTime ? b : a;

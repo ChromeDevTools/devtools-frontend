@@ -599,6 +599,7 @@ import "../../../ui/legacy/legacy.js";
 import * as Common from "../../../core/common/common.js";
 import * as i18n5 from "../../../core/i18n/i18n.js";
 import { html as html5, nothing as nothing2, render as render5 } from "../../../ui/lit/lit.js";
+import * as SettingsUI from "../../../ui/settings/settings.js";
 import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/cssPropertyDocsView.css.js
@@ -784,7 +785,7 @@ var CSSPropertyDocsView = class extends HTMLElement {
   }
   #dontShowChanged(e) {
     const showDocumentation = !e.target.checked;
-    Common.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").set(showDocumentation);
+    Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor).set(showDocumentation);
   }
   #render() {
     const { description, references, baseline, browsers } = this.#cssProperty;

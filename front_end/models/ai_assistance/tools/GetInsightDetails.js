@@ -30,6 +30,7 @@ networkLog = Logs.NetworkLog.NetworkLog.instance()) {
 }
 export class GetInsightDetailsTool {
     name = "getInsightDetails" /* ToolName.GET_INSIGHT_DETAILS */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Retrieves detailed metrics, subpart timing breakdowns, related DOM elements, and diagnostic data for a performance insight (e.g., \'LCPBreakdown\', \'LCPDiscovery\', \'RenderBlocking\', \'CLSCulprits\', \'INPBreakdown\', \'ThirdParties\'). Use this before commenting on any specific performance issue.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,

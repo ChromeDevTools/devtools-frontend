@@ -10,6 +10,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 export class GetTraceEventByKeyTool {
     name = "getTraceEventByKey" /* ToolName.GET_TRACE_EVENT_BY_KEY */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Retrieves details for a specific trace event by its event key.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
@@ -40,7 +41,7 @@ export class GetTraceEventByKeyTool {
         if (!event) {
             return { error: `Could not find event with key "${params.eventKey}".` };
         }
-        const details = formatEventForAI(event);
+        const details = formatEventForAI(event, focus.parsedTrace);
         return {
             result: details,
             widgets: [{

@@ -7194,7 +7194,7 @@ var generatedProperties = [
       "overlay"
     ],
     "name": "overscroll-container-type",
-    "runtime_flag": "OverscrollGestures",
+    "runtime_flag": "OverscrollAreas",
     "runtime_flag_status": "experimental"
   },
   {
@@ -18571,9 +18571,7 @@ var ComputedText = class {
   }
   countTopLevelValues(begin, end) {
     const pieces = Array.from(this.#getPieces(begin, end));
-    const counts = pieces.map(
-      (chunk) => chunk instanceof ComputedTextChunk ? chunk.topLevelValueCount : this.#countTopLevelValuesInStringPiece(chunk)
-    );
+    const counts = pieces.map((chunk) => chunk instanceof ComputedTextChunk ? chunk.topLevelValueCount : this.#countTopLevelValuesInStringPiece(chunk));
     const count = counts.reduce((sum, v) => sum + v, 0);
     return count;
   }
@@ -22772,6 +22770,78 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     }
     return result;
   }
+  /**
+   * @returns the body of the innermost inlined function at the position (the innermost range with a `callSite`
+   *          within the generated function), or null if the position is not inside an inlined function.
+   *
+   * The innermost inlined function is the logical frame the position belongs to, i.e. the analogue of the top frame
+   * of a real call stack. Stepping over its body therefore goes up exactly one logical frame: into the caller, which
+   * may itself be inlined. An outer range would leave several logical frames at once.
+   */
+  inlinedFunctionRange(generatedLine, generatedColumn) {
+    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+    for (let i = rangeChain.length - 1; i >= 0 && !rangeChain[i].isStackFrame; --i) {
+      if (rangeChain[i].callSite) {
+        return { start: rangeChain[i].start, end: rangeChain[i].end };
+      }
+    }
+    return null;
+  }
+  /**
+   * @returns the bodies of all functions that were inlined directly into the logical function at the position
+   *          (the innermost inlined function, or else the generated function). Doesn't descend into inlined
+   *          functions or nested generated functions.
+   */
+  inlinedCalleeRanges(generatedLine, generatedColumn) {
+    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+    let body;
+    for (let i = rangeChain.length - 1; i >= 0 && !body; --i) {
+      if (rangeChain[i].callSite || rangeChain[i].isStackFrame) {
+        body = rangeChain[i];
+      }
+    }
+    const result = [];
+    (function walk(range) {
+      for (const child of range.children) {
+        if (child.isStackFrame) {
+          continue;
+        }
+        if (child.callSite) {
+          result.push({ start: child.start, end: child.end });
+        } else {
+          walk(child);
+        }
+      }
+    })(body ?? { children: this.#generatedRanges });
+    return result;
+  }
+  /**
+   * @returns true, iff any generated function is outlined, i.e. marked as "hidden" but with a definition (see
+   *          {@link GeneratedFrameKind.OUTLINED}). Hidden functions without a definition are compiler helpers.
+   */
+  hasOutlinedFunctions() {
+    const hasOutlined = (ranges) => ranges.some((range) => range.isStackFrame && range.isHidden && range.originalScope !== void 0 || hasOutlined(range.children));
+    return hasOutlined(this.#generatedRanges);
+  }
+  /**
+   * @returns the "artificial" generated functions (in the DWARF sense): functions that contain no authored code at all
+   *          (no original scope anywhere in their subtree), e.g. compiler helpers. Sorted by start position,
+   *          non-overlapping.
+   */
+  artificialFunctionRanges() {
+    const hasOriginalScope = (range) => range.originalScope !== void 0 || range.children.some(hasOriginalScope);
+    const result = [];
+    (function walk(ranges) {
+      for (const range of ranges) {
+        if (range.isStackFrame && !hasOriginalScope(range)) {
+          result.push({ start: range.start, end: range.end });
+        } else {
+          walk(range.children);
+        }
+      }
+    })(this.#generatedRanges);
+    return result;
+  }
 };
 var GeneratedFrameKind = /* @__PURE__ */ ((GeneratedFrameKind2) => {
   GeneratedFrameKind2["VISIBLE"] = "VISIBLE";
@@ -23513,6 +23583,22 @@ var SourceMap = class _SourceMap {
   translateRawFrame(generatedLine, generatedColumn) {
     this.#ensureSourceMapProcessed();
     return this.#scopesInfo?.translateRawFrame(generatedLine, generatedColumn) ?? null;
+  }
+  /** See {@link SourceMapScopesInfo.inlinedFunctionRange}. `null` without encoded scopes. */
+  inlinedFunctionRange(generatedLine, generatedColumn) {
+    return this.hasEncodedScopeInfo() ? this.#scopesInfo?.inlinedFunctionRange(generatedLine, generatedColumn) ?? null : null;
+  }
+  /** See {@link SourceMapScopesInfo.inlinedCalleeRanges}. Empty without encoded scopes. */
+  inlinedCalleeRanges(generatedLine, generatedColumn) {
+    return this.hasEncodedScopeInfo() ? this.#scopesInfo?.inlinedCalleeRanges(generatedLine, generatedColumn) ?? [] : [];
+  }
+  /** See {@link SourceMapScopesInfo.hasOutlinedFunctions}. False without encoded scopes. */
+  hasOutlinedFunctions() {
+    return this.hasEncodedScopeInfo() && (this.#scopesInfo?.hasOutlinedFunctions() ?? false);
+  }
+  /** See {@link SourceMapScopesInfo.artificialFunctionRanges}. Empty without encoded scopes. */
+  artificialFunctionRanges() {
+    return this.hasEncodedScopeInfo() ? this.#scopesInfo?.artificialFunctionRanges() ?? [] : [];
   }
 };
 function asRangeMapping(entry) {
@@ -32785,15 +32871,13 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
   #skipAllPausesSetting;
   #skipAllPausesTimeout;
   #beforePausedCallback = null;
-  #computeAutoStepRangesCallback = null;
+  #computeAutoStepCallback = null;
   evaluateOnCallFrameCallback = null;
   #synchronizeBreakpointsCallback = null;
   // We need to be able to register listeners for individual breakpoints. As such, we dispatch
   // on breakpoint ids, which are not statically known. The event #payload will always be a `Location`.
   #breakpointResolvedEventTarget = new Common25.ObjectWrapper.ObjectWrapper();
-  // When stepping over with autostepping enabled, the context denotes the function to which autostepping is restricted
-  // to by way of its functionLocation (as per Debugger.CallFrame).
-  #autoSteppingContext = null;
+  #stepContext = null;
   #isPausing = false;
   constructor(target) {
     super(target);
@@ -33007,49 +33091,56 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
   breakpointsActiveChanged() {
     void this.agent.invoke_setBreakpointsActive({ active: this.#breakpointsActiveSetting.get() });
   }
-  setComputeAutoStepRangesCallback(callback) {
-    this.#computeAutoStepRangesCallback = callback;
+  setComputeAutoStepCallback(callback) {
+    this.#computeAutoStepCallback = callback;
   }
-  async computeAutoStepSkipList(mode) {
-    let ranges = [];
-    if (this.#computeAutoStepRangesCallback && this.#debuggerPausedDetails && this.#debuggerPausedDetails.callFrames.length > 0) {
-      const [callFrame] = this.#debuggerPausedDetails.callFrames;
-      ranges = await this.#computeAutoStepRangesCallback.call(null, mode, callFrame);
-    }
-    const skipList = ranges.map(({ start, end }) => ({
+  async stepInto() {
+    await this.#userStep("StepInto" /* STEP_INTO */);
+  }
+  async stepOver() {
+    await this.#userStep("StepOver" /* STEP_OVER */);
+  }
+  async stepOut() {
+    await this.#userStep("StepOut" /* STEP_OUT */);
+  }
+  scheduleStepIntoAsync() {
+    void this.#userStep(
+      "StepInto" /* STEP_INTO */,
+      /* breakOnAsyncCall */
+      true
+    );
+  }
+  async #userStep(mode, breakOnAsyncCall = false) {
+    const callFrames = this.#debuggerPausedDetails?.callFrames ?? [];
+    this.#stepContext = { mode, callFrames };
+    const step = this.#computeAutoStepCallback && callFrames.length > 0 ? await this.#computeAutoStepCallback(mode, callFrames) : { command: mode, ranges: [] };
+    this.#issueStep(step, breakOnAsyncCall);
+  }
+  #issueStep({ command, ranges }, breakOnAsyncCall = false) {
+    const skipList = sortAndMergeRanges(ranges.map(({ start, end }) => ({
       scriptId: start.scriptId,
       start: { lineNumber: start.lineNumber, columnNumber: start.columnNumber },
       end: { lineNumber: end.lineNumber, columnNumber: end.columnNumber }
-    }));
-    return sortAndMergeRanges(skipList);
-  }
-  async stepInto() {
-    const skipList = await this.computeAutoStepSkipList("StepInto" /* STEP_INTO */);
-    void this.agent.invoke_stepInto({ breakOnAsyncCall: false, skipList });
-  }
-  async stepOver() {
-    this.#autoSteppingContext = this.#debuggerPausedDetails?.callFrames[0]?.functionLocation() ?? null;
-    const skipList = await this.computeAutoStepSkipList("StepOver" /* STEP_OVER */);
-    void this.agent.invoke_stepOver({ skipList });
-  }
-  async stepOut() {
-    const skipList = await this.computeAutoStepSkipList("StepOut" /* STEP_OUT */);
-    if (skipList.length !== 0) {
-      void this.agent.invoke_stepOver({ skipList });
-    } else {
-      void this.agent.invoke_stepOut();
+    })));
+    switch (command) {
+      case "StepInto" /* STEP_INTO */:
+        void this.agent.invoke_stepInto({ breakOnAsyncCall, skipList });
+        break;
+      case "StepOver" /* STEP_OVER */:
+        void this.agent.invoke_stepOver({ skipList });
+        break;
+      case "StepOut" /* STEP_OUT */:
+        void this.agent.invoke_stepOut();
+        break;
     }
   }
-  scheduleStepIntoAsync() {
-    void this.computeAutoStepSkipList("StepInto" /* STEP_INTO */).then((skipList) => {
-      void this.agent.invoke_stepInto({ breakOnAsyncCall: true, skipList });
-    });
-  }
   resume() {
+    this.#stepContext = null;
     void this.agent.invoke_resume({ terminateOnResume: false });
     this.#isPausing = false;
   }
   pause() {
+    this.#stepContext = null;
     this.#isPausing = true;
     this.skipAllPauses(false);
     void this.agent.invoke_pause();
@@ -33123,7 +33214,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     this.#scripts.clear();
     this.#scriptsBySourceURL.clear();
     this.#discardableScripts = [];
-    this.#autoSteppingContext = null;
+    this.#stepContext = null;
   }
   scripts() {
     return Array.from(this.#scripts.values());
@@ -33157,18 +33248,22 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
   debuggerPausedDetails() {
     return this.#debuggerPausedDetails;
   }
+  /**
+   * @returns null if the pause was presented, or the step to issue instead, as decided by the before-paused callback.
+   */
   async setDebuggerPausedDetails(debuggerPausedDetails) {
     this.#isPausing = false;
     this.#debuggerPausedDetails = debuggerPausedDetails;
     if (this.#beforePausedCallback) {
-      if (!await this.#beforePausedCallback.call(null, debuggerPausedDetails, this.#autoSteppingContext)) {
-        return false;
+      const autoStep = await this.#beforePausedCallback(debuggerPausedDetails, this.#stepContext);
+      if (autoStep) {
+        return autoStep;
       }
     }
-    this.#autoSteppingContext = null;
+    this.#stepContext = null;
     this.dispatchEventToListeners("DebuggerPaused" /* DebuggerPaused */, this);
     this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
-    return true;
+    return null;
   }
   resetDebuggerPausedDetails() {
     this.#isPausing = false;
@@ -33205,12 +33300,9 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
         return;
       }
     }
-    if (!await this.setDebuggerPausedDetails(pausedDetails)) {
-      if (this.#autoSteppingContext) {
-        void this.stepOver();
-      } else {
-        void this.stepInto();
-      }
+    const autoStep = await this.setDebuggerPausedDetails(pausedDetails);
+    if (autoStep) {
+      this.#issueStep(autoStep);
     }
   }
   resumedScript() {
@@ -33877,6 +33969,16 @@ var Scope = class {
   }
   icon() {
     return void 0;
+  }
+  /**
+   * Present iff V8 has no variable values to show for this scope, either because the scope
+   * declares no variables or because all of them are unavailable (e.g. optimized out).
+   *
+   * Such scopes are retained in {@link CallFrame.scopeChain} so they can be addressed via
+   * `scopeNumber` in `Debugger.evaluateOnCallFrame` and matched against source map scopes.
+   */
+  emptyReason() {
+    return this.#payload.emptyReason;
   }
   extraProperties() {
     if (this !== this.#callFrame.localScope() || this.#callFrame.script.isWasm()) {

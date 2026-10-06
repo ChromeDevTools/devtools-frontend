@@ -236,7 +236,7 @@ export class FlexGridRenderer extends FlexGridRendererBase {
         if (helper.isShowing(StyleEditorWidget.instance()) && StyleEditorWidget.instance().getTriggerKey() === key) {
             helper.setAnchorElement(button);
         }
-        return [...children, button];
+        return html `${children}${button}`;
     }
 }
 const CSSWideKeywordRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch);
@@ -1114,7 +1114,7 @@ export class BezierRenderer extends BezierRendererBase {
             Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANIMATION_TIMING);
         });
         const bezierText = document.createElement('span');
-        bezierText.append(...nodes);
+        render(html `${nodes}`, bezierText);
         new BezierPopoverIcon({ treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, bezierText });
         const iconAndTextContainer = document.createElement('span');
         iconAndTextContainer.classList.add('bezier-icon-and-text');
@@ -1272,26 +1272,27 @@ export class ShadowModel {
         }
     }
     renderContents(span) {
-        span.removeChildren();
+        const parts = [];
         let previousSource = null;
         for (const property of this.#properties) {
             if (!property.source || property.source !== previousSource) {
                 if (property !== this.#properties[0]) {
-                    span.append(' ');
+                    parts.push(' ');
                 }
                 // If `source` is present on the property that means it came from a var() and we'll use that to render.
                 if (property.source) {
-                    span.append(...Renderer.render(property.source, this.#context).nodes);
+                    parts.push(Renderer.render(property.source, this.#context).nodes);
                 }
                 else if (typeof property.value === 'string') {
-                    span.append(property.value);
+                    parts.push(property.value);
                 }
                 else {
-                    span.append(...Renderer.render(property.value, property.expansionContext ?? this.#context).nodes);
+                    parts.push(Renderer.render(property.value, property.expansionContext ?? this.#context).nodes);
                 }
             }
             previousSource = property.source;
         }
+        render(html `${parts}`, span);
     }
 }
 const ShadowRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.ShadowMatch);
@@ -1390,7 +1391,7 @@ export class ShadowRenderer extends ShadowRendererBase {
             }
             if (!model || !this.#treeElement?.editable()) {
                 const { nodes } = Renderer.render(shadow, context);
-                result.push(...nodes);
+                result.push(nodes);
                 continue;
             }
             const swatch = new InlineEditor.Swatches.CSSShadowSwatch(model);
@@ -1408,10 +1409,10 @@ export class ShadowRenderer extends ShadowRendererBase {
             });
             result.push(swatch, contents);
             if (isImportant) {
-                result.push(...[document.createTextNode(' '), ...Renderer.render(isImportant, context).nodes]);
+                result.push(document.createTextNode(' '), Renderer.render(isImportant, context).nodes);
             }
         }
-        return result;
+        return html `${result}`;
     }
 }
 const GridTemplateRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.GridTemplateMatch);
@@ -1761,7 +1762,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         const section = this.#treeElement.section();
         const key = section ? `${section.getSectionIdx()}_${section.nextEditorTriggerButtonIdx++}` : undefined;
         const valueElement = document.createElement('span');
-        valueElement.append(...children);
+        render(children, valueElement);
         const button = createIcon('grid-on', 'position-area-swatch-icon');
         button.title = i18nString(UIStrings.positionAreaEditorButton);
         button.role = 'button';
@@ -1812,23 +1813,19 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
                 }
                 const { propertyName, value } = changeEvent.data;
                 let target = this.#findTreeElementForProperty(propertyName);
-                this.#stylesContainer.setEditingStyle(false);
-                try {
-                    if (value) {
-                        if (!target) {
-                            target = activeSection.addNewBlankProperty();
-                            target.property.name = propertyName;
-                        }
-                        target.property.value = value;
-                        target.updateTitle();
-                        await target.applyStyleText(target.renderedPropertyText(), false);
+                if (value) {
+                    if (!target) {
+                        target = activeSection.addNewBlankProperty();
+                        target.property.name = propertyName;
                     }
-                    else if (target) {
-                        await target.applyStyleText('', false);
-                    }
+                    target.property.value = value;
+                    target.updateTitle();
+                    await target.applyStyleText(target.renderedPropertyText(), false);
+                    this.#stylesContainer.refreshUpdate(activeSection, target, true);
                 }
-                finally {
-                    this.#stylesContainer.setEditingStyle(true);
+                else if (target) {
+                    await target.applyStyleText('', false);
+                    this.#stylesContainer.refreshUpdate(activeSection, target, true);
                 }
                 void updateEditorProperties();
             };
@@ -1880,7 +1877,7 @@ export class PositionTryRenderer extends PositionTryRendererBase {
         const content = [];
         if (match.preamble.length > 0) {
             const { nodes } = Renderer.render(match.preamble, context);
-            content.push(...nodes);
+            content.push(nodes);
         }
         for (const [i, fallback] of match.fallbacks.entries()) {
             const fallbackContent = document.createElement('span');
@@ -1893,7 +1890,7 @@ export class PositionTryRenderer extends PositionTryRendererBase {
             Renderer.renderInto(fallback, context, fallbackContent);
             content.push(fallbackContent);
         }
-        return content;
+        return html `${content}`;
     }
 }
 export function getPropertyRenderers(propertyName, style, stylesContainer, matchedStyles, treeElement, computedStyles, computedStyleExtraFields) {
@@ -2337,7 +2334,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             };
             this.listItemElement.appendChild(tooltip);
         }
-        else if (Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').get()) {
+        else if (Common.Settings.Settings.instance()
+            .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
+            .get()) {
             const tooltipId = this.getTooltipId('property-doc');
             this.nameElement.setAttribute('aria-details', tooltipId);
             const tooltip = new Tooltips.Tooltip.Tooltip({
@@ -2351,7 +2350,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                 if (event.newState !== 'open') {
                     return;
                 }
-                if (!Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').get()) {
+                if (!Common.Settings.Settings.instance()
+                    .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
+                    .get()) {
                     event.consume(true);
                     return;
                 }
@@ -3213,7 +3214,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                 moveTo = this.findSibling(moveDirection);
                 const sectionToEdit = (moveTo || moveDirection === 'backward') ? section : section.nextEditableSibling();
                 if (sectionToEdit) {
-                    if (sectionToEdit.style().parentRule) {
+                    if (sectionToEdit.isHeaderEditable()) {
                         sectionToEdit.startEditingSelector();
                     }
                     else {
@@ -3223,7 +3224,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                 return;
             }
             if (moveToSelector) {
-                if (section.style().parentRule) {
+                if (section.isHeaderEditable()) {
                     section.startEditingSelector();
                 }
                 else {

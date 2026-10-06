@@ -150,15 +150,14 @@ function renderTabIcon(tab) {
     if (tab.hasLoadError) {
         // clang-format off
         return html `
-      <span slot="icon">
-        <devtools-icon class="small" name="cross-circle-filled"
-                        title=${i18nString(UIStrings.unableToLoadThisContent)}>
-        </devtools-icon>
-      </span>`;
+      <devtools-icon slot=${`icon-${tab.tabId}`} class="small" name="cross-circle-filled"
+                     title=${i18nString(UIStrings.unableToLoadThisContent)}>
+      </devtools-icon>`;
         // clang-format on
     }
     if (tab.icon) {
-        return html `<span slot="icon">${tab.icon}</span>`;
+        // `tab.icon` is a template rather than an element, so it needs a wrapper to put the slot on.
+        return html `<span slot=${`icon-${tab.tabId}`}>${tab.icon}</span>`;
     }
     return nothing;
 }
@@ -169,20 +168,18 @@ function renderTabSuffix(tab, input) {
     const tooltipId = `tab-tooltip-${tab.tabId}`;
     // clang-format off
     return html `
-    <span slot="suffix">
-      <div>
-        <devtools-icon name="warning-filled" class="small" aria-describedby=${tooltipId}></devtools-icon>
-        <devtools-tooltip id=${tooltipId} variant="rich">
-          ${tab.disconnectedAutomaticFileSystemRoot !== undefined
+    <div slot=${`suffix-${tab.tabId}`}>
+      <devtools-icon name="warning-filled" class="small" aria-describedby=${tooltipId}></devtools-icon>
+      <devtools-tooltip id=${tooltipId} variant="rich">
+        ${tab.disconnectedAutomaticFileSystemRoot !== undefined
         ? uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, {
             PH1: html `<devtools-link class="devtools-link" @click=${input.onConnectAutomaticFileSystem}>${tab.disconnectedAutomaticFileSystemRoot}</devtools-link>`,
         })
         : uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, {
             PH1: html `<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`,
         })}
-        </devtools-tooltip>
-      </div>
-    </span>`;
+      </devtools-tooltip>
+    </div>`;
     // clang-format on
 }
 export const DEFAULT_VIEW = (input, _output, target) => {
@@ -212,10 +209,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
              title=${tab.title}
              ?closeable=${tab.isCloseable}
              ?selected=${input.activeTabId === tab.tabId}>
-             ${renderTabIcon(tab)}
-             ${renderTabSuffix(tab, input)}
              ${tab.widget ? html `${widget(UI.Widget.WrapperWidget, { widget: tab.widget })}` : nothing}
-        </div>`)}
+        </div>
+        ${renderTabIcon(tab)}
+        ${renderTabSuffix(tab, input)}`)}
     </devtools-tabbed-pane>`, target);
     // clang-format on
 };
@@ -280,11 +277,12 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
                     hasUnsavedCommittedChanges,
                     disconnectedAutomaticFileSystemRoot,
                     icon,
-                    widget: (this.#currentFile === uiSourceCode) ? this.getOrCreateSourceView(uiSourceCode) :
+                    widget: (this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId()) ?
+                        this.getOrCreateSourceView(this.#currentFile) :
                         this.getCreatedSourceView(uiSourceCode),
                 };
             }),
-            activeTabId: this.#currentFile ? this.tabIds.get(this.#currentFile) : undefined,
+            activeTabId: this.#currentFile ? this.#tabIdForUISourceCode(this.#currentFile) : undefined,
             leftToolbarItems: this.#leftToolbarItems,
             rightToolbarItems: this.#rightToolbarItems,
             tabDelegate: this.#tabDelegate,
@@ -537,8 +535,12 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         this.closeFile(this.#currentFile);
         return true;
     }
+    #tabIdForUISourceCode(uiSourceCode) {
+        const canonical = this.idToUISourceCode.get(uiSourceCode.canonicalScriptId());
+        return this.tabIds.get(uiSourceCode) ?? (canonical ? this.tabIds.get(canonical) : undefined);
+    }
     closeFile(uiSourceCode) {
-        const tabId = this.tabIds.get(uiSourceCode);
+        const tabId = this.#tabIdForUISourceCode(uiSourceCode);
         if (!tabId) {
             return;
         }
@@ -567,7 +569,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         if (tabIds.length === 0 || !this.#currentFile) {
             return;
         }
-        const currentTabId = this.tabIds.get(this.#currentFile);
+        const currentTabId = this.#tabIdForUISourceCode(this.#currentFile);
         if (!currentTabId) {
             return;
         }
@@ -583,7 +585,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         if (tabIds.length === 0 || !this.#currentFile) {
             return;
         }
-        const currentTabId = this.tabIds.get(this.#currentFile);
+        const currentTabId = this.#tabIdForUISourceCode(this.#currentFile);
         if (!currentTabId) {
             return;
         }
@@ -904,6 +906,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     tabClosed(tabId, isUserGesture) {
         const uiSourceCode = this.files.get(tabId);
         if (this.#currentFile && this.#currentFile.canonicalScriptId() === uiSourceCode?.canonicalScriptId()) {
+            this.removeSourceFrame(this.#currentFile);
             this.removeViewListeners();
             this.currentView = null;
             this.#currentFile = null;

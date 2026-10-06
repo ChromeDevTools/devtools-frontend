@@ -474,7 +474,7 @@ function renderLinkifiedValue(value, node) {
             if (el) {
                 setValueWithEntities(el, value);
             }
-        })}}></span>`;
+        })}></span>`;
     }
     value = value.replace(closingPunctuationRegex, '$&\u200B');
     if (value.startsWith('data:')) {
@@ -590,12 +590,23 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
     else if (nodeName === 'image' && (name === 'xlink:href' || name === 'href')) {
         valueType = 2 /* ValueType.SRCSET */;
     }
-    const withEntitiesRef = (valueType === 0 /* ValueType.UNKNOWN */ && !isRelation) ? ref(el => {
-        if (el) {
-            setValueWithEntities(el, value);
-        }
-    }) :
-        nothing;
+    let valueContent = nothing;
+    if (valueType === 1 /* ValueType.SRC */) {
+        valueContent = renderLinkifiedValue(value, node);
+    }
+    else if (valueType === 2 /* ValueType.SRCSET */) {
+        valueContent = renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node);
+    }
+    else if (linkifyValue && relationPromise) {
+        valueContent = until(relationPromise, value);
+    }
+    else if (valueType === 0 /* ValueType.UNKNOWN */ && !isRelation) {
+        valueContent = html `<span ${ref(el => {
+            if (el) {
+                setValueWithEntities(el, value);
+            }
+        })}></span>`;
+    }
     const jslog = VisualLogging.value(name === 'style' ? 'style-attribute' : 'attribute').track({
         change: true,
         dblclick: true,
@@ -606,12 +617,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
         'violating-element': hasAttributeIssues,
     };
     return html `<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap(attributeNameClasses)}
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${hasText ?
-        html `=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
-                        ${valueType === 1 /* ValueType.SRC */ ? renderLinkifiedValue(value, node) : nothing}
-                        ${valueType === 2 /* ValueType.SRCSET */ ? renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node) : nothing}
-                        ${linkifyValue && relationPromise ? until(relationPromise, value) : nothing}
-                </span>"` :
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${hasText ? html `=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${valueContent}</span>"` :
         nothing}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord, issues) {

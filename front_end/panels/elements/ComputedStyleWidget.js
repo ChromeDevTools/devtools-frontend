@@ -91,8 +91,8 @@ function matchProperty(name, value) {
         new SDK.CSSPropertyParserMatchers.StringMatcher(),
     ]);
 }
-function renderPropertyContents(node, cache, propertyName, propertyValue) {
-    const cacheKey = propertyName + ':' + propertyValue;
+function renderPropertyContents(node, cache, propertyName, propertyValue, category) {
+    const cacheKey = category ? `${category}:${propertyName}:${propertyValue}` : `${propertyName}:${propertyValue}`;
     const valueFromCache = cache.get(cacheKey);
     if (valueFromCache) {
         return valueFromCache;
@@ -110,8 +110,8 @@ function renderPropertyContents(node, cache, propertyName, propertyValue) {
  * Note: this function is called for each tree node on each render, so we need
  * to ensure nothing expensive runs here, or if it does it is safely cached.
  **/
-const createPropertyElement = (node, cache, propertyName, propertyValue, traceable, inherited, activeProperty, onContextMenu) => {
-    const { name, value } = renderPropertyContents(node, cache, propertyName, propertyValue);
+const createPropertyElement = (node, cache, propertyName, propertyValue, traceable, inherited, activeProperty, onContextMenu, category) => {
+    const { name, value } = renderPropertyContents(node, cache, propertyName, propertyValue, category);
     // clang-format off
     return html `<devtools-computed-style-property
         .traceable=${traceable}
@@ -209,6 +209,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             type="filter"
             autofocus
             ?regex=${true}
+            ?regex-toggled=${input.filterIsRegex}
             value=${input.filterText}
             @change=${input.onFilterChanged}
             @regextoggle=${input.onRegexToggled}
@@ -270,9 +271,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     #view;
     /**
      * TODO(b/407751272): the state here is confusing (3 instance variables relating to filtering).
-     * There is also a bug where the Toolbar Input's regex flag cannot be
-     * controlled, so if you set a regex filter here, the toolbar might not
-     * reflect it.
      */
     #filterText = '';
     #filterIsRegex = false;
@@ -353,6 +351,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             groupComputedStylesSetting: this.groupComputedStylesSetting,
             onFilterChanged: this.onFilterChanged.bind(this),
             filterText: this.#filterText,
+            filterIsRegex: this.#filterIsRegex,
             onRegexToggled: this.onRegexToggled.bind(this),
         }, null, this.contentElement);
     }
@@ -485,7 +484,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
                     const propertyValue = nodeStyle.computedStyle.get(propertyName) || '';
                     const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
                     const isInherited = !nonInheritedProperties.has(canonicalName);
-                    propertyNodes.push(this.buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited));
+                    propertyNodes.push(this.buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited, category));
                 }
                 tree.push({ id: category, treeNodeData: { tag: 'category', name: category }, children: async () => propertyNodes });
             }
@@ -498,15 +497,16 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         };
         return await this.filterGroupLists();
     }
-    buildTraceNode(property) {
+    buildTraceNode(property, category) {
         const rule = property.ownerStyle.parentRule;
+        const id = (rule?.origin || '') + ': ' + property.ownerStyle.styleSheetId + (property.range || property.name);
         return {
             treeNodeData: {
                 tag: 'traceElement',
                 property,
                 rule,
             },
-            id: (rule?.origin || '') + ': ' + property.ownerStyle.styleSheetId + (property.range || property.name),
+            id: category ? `${category}:${id}` : id,
         };
     }
     createTreeNodeRenderer(propertyTraces, domNode, matchedStyles) {
@@ -519,7 +519,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
                     if (activeProperty) {
                         this.handleContextMenuEvent(matchedStyles, activeProperty, event);
                     }
-                });
+                }, data.category);
                 return propertyElement;
             }
             if (data.tag === 'traceElement') {
@@ -531,27 +531,29 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             return html `<span style="cursor: text; color: var(--sys-color-on-surface-subtle);">${data.name}</span>`;
         };
     }
-    buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited) {
+    buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited, category) {
         const treeNodeData = {
             tag: 'property',
             propertyName,
             propertyValue,
             inherited: isInherited,
+            category,
         };
         const trace = propertyTraces.get(propertyName);
         const jslogContext = propertyName.startsWith('--') ? 'custom-property' : propertyName;
+        const id = category ? `${category}:${propertyName}` : propertyName;
         if (!trace) {
             return {
                 treeNodeData,
                 jslogContext,
-                id: propertyName,
+                id,
             };
         }
         return {
             treeNodeData,
             jslogContext,
-            id: propertyName,
-            children: async () => trace.map(this.buildTraceNode),
+            id,
+            children: async () => trace.map(t => this.buildTraceNode(t, category)),
         };
     }
     handleContextMenuEvent(matchedStyles, property, event) {
@@ -594,8 +596,9 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         }
         return new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i');
     }
-    async onRegexToggled() {
-        this.#filterIsRegex = !this.#filterIsRegex;
+    async onRegexToggled(event) {
+        this.#filterIsRegex = event.detail;
+        this.requestUpdate();
         await this.filterComputedStyles(this.#buildFilterRegex(this.#filterText));
     }
     async onFilterChanged(event) {

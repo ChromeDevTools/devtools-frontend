@@ -4410,13 +4410,13 @@ var Debugger;
   })(PausedEventReason = Debugger2.PausedEventReason || (Debugger2.PausedEventReason = {}));
 })(Debugger || (Debugger = {}));
 var Runtime;
-((Runtime2) => {
+((Runtime3) => {
   let SerializationOptionsSerialization;
   ((SerializationOptionsSerialization2) => {
     SerializationOptionsSerialization2["Deep"] = "deep";
     SerializationOptionsSerialization2["Json"] = "json";
     SerializationOptionsSerialization2["IdOnly"] = "idOnly";
-  })(SerializationOptionsSerialization = Runtime2.SerializationOptionsSerialization || (Runtime2.SerializationOptionsSerialization = {}));
+  })(SerializationOptionsSerialization = Runtime3.SerializationOptionsSerialization || (Runtime3.SerializationOptionsSerialization = {}));
   let DeepSerializedValueType;
   ((DeepSerializedValueType2) => {
     DeepSerializedValueType2["Undefined"] = "undefined";
@@ -4443,7 +4443,7 @@ var Runtime;
     DeepSerializedValueType2["Node"] = "node";
     DeepSerializedValueType2["Window"] = "window";
     DeepSerializedValueType2["Generator"] = "generator";
-  })(DeepSerializedValueType = Runtime2.DeepSerializedValueType || (Runtime2.DeepSerializedValueType = {}));
+  })(DeepSerializedValueType = Runtime3.DeepSerializedValueType || (Runtime3.DeepSerializedValueType = {}));
   let RemoteObjectType;
   ((RemoteObjectType2) => {
     RemoteObjectType2["Object"] = "object";
@@ -4454,7 +4454,7 @@ var Runtime;
     RemoteObjectType2["Boolean"] = "boolean";
     RemoteObjectType2["Symbol"] = "symbol";
     RemoteObjectType2["Bigint"] = "bigint";
-  })(RemoteObjectType = Runtime2.RemoteObjectType || (Runtime2.RemoteObjectType = {}));
+  })(RemoteObjectType = Runtime3.RemoteObjectType || (Runtime3.RemoteObjectType = {}));
   let RemoteObjectSubtype;
   ((RemoteObjectSubtype2) => {
     RemoteObjectSubtype2["Array"] = "array";
@@ -4478,7 +4478,7 @@ var Runtime;
     RemoteObjectSubtype2["Wasmvalue"] = "wasmvalue";
     RemoteObjectSubtype2["Deferredmodule"] = "deferredmodule";
     RemoteObjectSubtype2["Trustedtype"] = "trustedtype";
-  })(RemoteObjectSubtype = Runtime2.RemoteObjectSubtype || (Runtime2.RemoteObjectSubtype = {}));
+  })(RemoteObjectSubtype = Runtime3.RemoteObjectSubtype || (Runtime3.RemoteObjectSubtype = {}));
   let ObjectPreviewType;
   ((ObjectPreviewType2) => {
     ObjectPreviewType2["Object"] = "object";
@@ -4489,7 +4489,7 @@ var Runtime;
     ObjectPreviewType2["Boolean"] = "boolean";
     ObjectPreviewType2["Symbol"] = "symbol";
     ObjectPreviewType2["Bigint"] = "bigint";
-  })(ObjectPreviewType = Runtime2.ObjectPreviewType || (Runtime2.ObjectPreviewType = {}));
+  })(ObjectPreviewType = Runtime3.ObjectPreviewType || (Runtime3.ObjectPreviewType = {}));
   let ObjectPreviewSubtype;
   ((ObjectPreviewSubtype2) => {
     ObjectPreviewSubtype2["Array"] = "array";
@@ -4513,7 +4513,7 @@ var Runtime;
     ObjectPreviewSubtype2["Wasmvalue"] = "wasmvalue";
     ObjectPreviewSubtype2["Deferredmodule"] = "deferredmodule";
     ObjectPreviewSubtype2["Trustedtype"] = "trustedtype";
-  })(ObjectPreviewSubtype = Runtime2.ObjectPreviewSubtype || (Runtime2.ObjectPreviewSubtype = {}));
+  })(ObjectPreviewSubtype = Runtime3.ObjectPreviewSubtype || (Runtime3.ObjectPreviewSubtype = {}));
   let PropertyPreviewType;
   ((PropertyPreviewType2) => {
     PropertyPreviewType2["Object"] = "object";
@@ -4525,7 +4525,7 @@ var Runtime;
     PropertyPreviewType2["Symbol"] = "symbol";
     PropertyPreviewType2["Accessor"] = "accessor";
     PropertyPreviewType2["Bigint"] = "bigint";
-  })(PropertyPreviewType = Runtime2.PropertyPreviewType || (Runtime2.PropertyPreviewType = {}));
+  })(PropertyPreviewType = Runtime3.PropertyPreviewType || (Runtime3.PropertyPreviewType = {}));
   let PropertyPreviewSubtype;
   ((PropertyPreviewSubtype2) => {
     PropertyPreviewSubtype2["Array"] = "array";
@@ -4549,7 +4549,7 @@ var Runtime;
     PropertyPreviewSubtype2["Wasmvalue"] = "wasmvalue";
     PropertyPreviewSubtype2["Deferredmodule"] = "deferredmodule";
     PropertyPreviewSubtype2["Trustedtype"] = "trustedtype";
-  })(PropertyPreviewSubtype = Runtime2.PropertyPreviewSubtype || (Runtime2.PropertyPreviewSubtype = {}));
+  })(PropertyPreviewSubtype = Runtime3.PropertyPreviewSubtype || (Runtime3.PropertyPreviewSubtype = {}));
   let ConsoleAPICalledEventType;
   ((ConsoleAPICalledEventType2) => {
     ConsoleAPICalledEventType2["Log"] = "log";
@@ -4570,7 +4570,7 @@ var Runtime;
     ConsoleAPICalledEventType2["ProfileEnd"] = "profileEnd";
     ConsoleAPICalledEventType2["Count"] = "count";
     ConsoleAPICalledEventType2["TimeEnd"] = "timeEnd";
-  })(ConsoleAPICalledEventType = Runtime2.ConsoleAPICalledEventType || (Runtime2.ConsoleAPICalledEventType = {}));
+  })(ConsoleAPICalledEventType = Runtime3.ConsoleAPICalledEventType || (Runtime3.ConsoleAPICalledEventType = {}));
 })(Runtime || (Runtime = {}));
 
 // ../../front_end/models/bindings/DebuggerLanguagePlugins.ts
@@ -5604,7 +5604,7 @@ __export(DebuggerWorkspaceBinding_exports, {
   Location: () => Location
 });
 import * as Platform6 from "../../core/platform/platform.js";
-import * as Root3 from "../../core/root/root.js";
+import * as Root4 from "../../core/root/root.js";
 import * as SDK11 from "../../core/sdk/sdk.js";
 import * as StackTraceImpl3 from "../stack_trace/stack_trace_impl.js";
 import * as Workspace17 from "../workspace/workspace.js";
@@ -6066,6 +6066,37 @@ var ResourceScriptFile = class {
   }
 };
 
+// ../../front_end/models/bindings/SourceMapStepping.ts
+var SourceMapStepping_exports = {};
+__export(SourceMapStepping_exports, {
+  inlinedFunctionRanges: () => inlinedFunctionRanges
+});
+import * as Root3 from "../../core/root/root.js";
+function scopedPosition(frame) {
+  if (!Root3.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel?.enabled) {
+    return null;
+  }
+  const script = frame.script;
+  const sourceMap = script.sourceMap();
+  if (!sourceMap?.hasEncodedScopeInfo()) {
+    return null;
+  }
+  const { lineNumber, columnNumber } = script.rawLocationToRelativeLocation(frame.location());
+  return { sourceMap, script, line: lineNumber, column: columnNumber };
+}
+function toLocationRanges({ script }, ranges) {
+  const toLocation = ({ line, column }) => {
+    const { lineNumber, columnNumber } = script.relativeLocationToRawLocation({ lineNumber: line, columnNumber: column });
+    return script.debuggerModel.createRawLocation(script, lineNumber, columnNumber);
+  };
+  return ranges.map(({ start, end }) => ({ start: toLocation(start), end: toLocation(end) }));
+}
+function inlinedFunctionRanges(frame) {
+  const position = scopedPosition(frame);
+  const range = position?.sourceMap.inlinedFunctionRange(position.line, position.column);
+  return position && range ? toLocationRanges(position, [range]) : [];
+}
+
 // ../../front_end/models/bindings/SymbolizedError.ts
 var SymbolizedError_exports = {};
 __export(SymbolizedError_exports, {
@@ -6209,15 +6240,15 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
           `Unable to create DebuggerWorkspaceBinding: resourceMapping, targetManager and IgnoreLIstManager must be provided: ${new Error().stack}`
         );
       }
-      Root3.DevToolsContext.globalInstance().set(
+      Root4.DevToolsContext.globalInstance().set(
         _DebuggerWorkspaceBinding,
         new _DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace)
       );
     }
-    return Root3.DevToolsContext.globalInstance().get(_DebuggerWorkspaceBinding);
+    return Root4.DevToolsContext.globalInstance().get(_DebuggerWorkspaceBinding);
   }
   static removeInstance() {
-    Root3.DevToolsContext.globalInstance().delete(_DebuggerWorkspaceBinding);
+    Root4.DevToolsContext.globalInstance().delete(_DebuggerWorkspaceBinding);
   }
   async computeAutoStepRanges(mode, callFrame) {
     function contained(location, range) {
@@ -6243,7 +6274,8 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     const pluginManager = this.pluginManager;
     let ranges = [];
     if (mode === SDK11.DebuggerModel.StepMode.STEP_OUT) {
-      return await pluginManager.getInlinedFunctionRanges(rawLocation);
+      ranges = await pluginManager.getInlinedFunctionRanges(rawLocation);
+      return ranges.length > 0 ? ranges : inlinedFunctionRanges(callFrame);
     }
     const uiLocation = await pluginManager.rawLocationToUILocation(rawLocation);
     if (uiLocation) {
@@ -6266,13 +6298,20 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     ranges = ranges.filter((range) => contained(rawLocation, range));
     return ranges;
   }
+  async computeAutoStep(mode, callFrames) {
+    const ranges = await this.computeAutoStepRanges(mode, callFrames[0]);
+    if (mode === SDK11.DebuggerModel.StepMode.STEP_OUT && ranges.length > 0) {
+      return { command: SDK11.DebuggerModel.StepMode.STEP_OVER, ranges };
+    }
+    return { command: mode, ranges };
+  }
   modelAdded(debuggerModel) {
     debuggerModel.setBeforePausedCallback(this.shouldPause.bind(this));
     this.#debuggerModelToData.set(debuggerModel, new ModelData2(debuggerModel, this));
-    debuggerModel.setComputeAutoStepRangesCallback(this.computeAutoStepRanges.bind(this));
+    debuggerModel.setComputeAutoStepCallback(this.computeAutoStep.bind(this));
   }
   modelRemoved(debuggerModel) {
-    debuggerModel.setComputeAutoStepRangesCallback(null);
+    debuggerModel.setComputeAutoStepCallback(null);
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
       modelData.dispose();
@@ -6548,13 +6587,23 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       modelData.disposeLocation(location);
     }
   }
-  async shouldPause(debuggerPausedDetails, autoSteppingContext) {
-    const { callFrames: [frame] } = debuggerPausedDetails;
+  /** @returns null to present the pause, or the step to issue instead. */
+  async shouldPause(debuggerPausedDetails, context) {
+    const { callFrames } = debuggerPausedDetails;
+    const [frame] = callFrames;
     if (!frame) {
-      return false;
+      return { command: SDK11.DebuggerModel.StepMode.STEP_INTO, ranges: [] };
     }
+    if (frame.script.isWasm()) {
+      return await this.#shouldPauseInWasm(debuggerPausedDetails, context) ? null : await this.computeAutoStep(SDK11.DebuggerModel.StepMode.STEP_OVER, callFrames);
+    }
+    return null;
+  }
+  async #shouldPauseInWasm(debuggerPausedDetails, context) {
+    const autoSteppingContext = context?.mode === SDK11.DebuggerModel.StepMode.STEP_OVER ? context.callFrames[0]?.functionLocation() : null;
+    const { callFrames: [frame] } = debuggerPausedDetails;
     const functionLocation = frame.functionLocation();
-    if (!autoSteppingContext || debuggerPausedDetails.reason !== Debugger.PausedEventReason.Step || !functionLocation || !frame.script.isWasm() || !this.#settings.moduleSetting("wasm-auto-stepping").get() || !this.pluginManager.hasPluginForScript(frame.script)) {
+    if (!autoSteppingContext || debuggerPausedDetails.reason !== Debugger.PausedEventReason.Step || !functionLocation || !this.#settings.moduleSetting("wasm-auto-stepping").get() || !this.pluginManager.hasPluginForScript(frame.script)) {
       return true;
     }
     const uiLocation = await this.pluginManager.rawLocationToUILocation(frame.location());
@@ -7874,6 +7923,7 @@ export {
   ResourceScriptMapping_exports as ResourceScriptMapping,
   ResourceUtils_exports as ResourceUtils,
   SASSSourceMapping_exports as SASSSourceMapping,
+  SourceMapStepping_exports as SourceMapStepping,
   StylesSourceMapping_exports as StylesSourceMapping,
   SymbolizedError_exports as SymbolizedError,
   TempFile_exports as TempFile

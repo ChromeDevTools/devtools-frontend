@@ -362,6 +362,13 @@ var NetworkNode = class _NetworkNode extends BaseNode {
     return this.fromDiskCache || this.isNonNetworkProtocol;
   }
   hasRenderBlockingPriority() {
+    const renderBlocking = this._request.renderBlocking;
+    if (renderBlocking === "non_blocking" || renderBlocking === "dynamically_injected_non_blocking" || renderBlocking === "potentially_blocking") {
+      return false;
+    }
+    if (renderBlocking === "blocking") {
+      return true;
+    }
     const priority = this._request.priority;
     const isScript = this._request.resourceType === "Script";
     const isDocument = this._request.resourceType === "Document";
@@ -464,7 +471,7 @@ var PageDependencyGraph = class _PageDependencyGraph {
       for (const endTime = evt.ts + evt.dur; i < mainThreadEvents.length && mainThreadEvents[i].ts < endTime; i++) {
         const event = mainThreadEvents[i];
         if (_PageDependencyGraph.isScheduleableTask(event) && event.dur) {
-          correctedEndTs = event.ts - 1;
+          correctedEndTs = Math.max(event.ts - 1, evt.ts);
           break;
         }
         children.push(event);
@@ -550,7 +557,7 @@ var PageDependencyGraph = class _PageDependencyGraph {
       let minDistance = Infinity;
       for (const candidate of candidates) {
         if (cpuNode.startTime <= candidate.startTime) {
-          return;
+          continue;
         }
         const distance = cpuNode.startTime - candidate.endTime;
         if (distance >= minimumAllowableTimeSinceNetworkNodeEnd && distance < minDistance) {

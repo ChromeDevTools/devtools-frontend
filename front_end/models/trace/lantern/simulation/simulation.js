@@ -7,16 +7,16 @@ var TCP_SEGMENT_SIZE = 1460;
 var TCPConnection = class _TCPConnection {
   warmed;
   ssl;
-  h2;
+  multiplexed;
   rtt;
   throughput;
   serverLatency;
   _congestionWindow;
   h2OverflowBytesDownloaded;
-  constructor(rtt, throughput, serverLatency = 0, ssl = true, h2 = false) {
+  constructor(rtt, throughput, serverLatency = 0, ssl = true, multiplexed = false) {
     this.warmed = false;
     this.ssl = ssl;
-    this.h2 = h2;
+    this.multiplexed = multiplexed;
     this.rtt = rtt;
     this.throughput = throughput;
     this.serverLatency = serverLatency;
@@ -45,18 +45,18 @@ var TCPConnection = class _TCPConnection {
   setWarmed(warmed) {
     this.warmed = warmed;
   }
-  isH2() {
-    return this.h2;
+  isMultiplexed() {
+    return this.multiplexed;
   }
   get congestionWindow() {
     return this._congestionWindow;
   }
   /**
    * Sets the number of excess bytes that are available to this connection on future downloads, only
-   * applies to H2 connections.
+   * applies to multiplexed (H2/H3) connections.
    */
   setH2OverflowBytesDownloaded(bytes) {
-    if (!this.h2) {
+    if (!this.multiplexed) {
       return;
     }
     this.h2OverflowBytesDownloaded = bytes;
@@ -73,7 +73,7 @@ var TCPConnection = class _TCPConnection {
    */
   simulateDownloadUntil(bytesToDownload, options) {
     const { timeAlreadyElapsed = 0, maximumTimeToElapse = Infinity, dnsResolutionTime = 0 } = options || {};
-    if (this.warmed && this.h2) {
+    if (this.warmed && this.multiplexed) {
       bytesToDownload -= this.h2OverflowBytesDownloaded;
     }
     const twoWayLatency = this.rtt;
@@ -90,7 +90,7 @@ var TCPConnection = class _TCPConnection {
     }
     let roundTrips = Math.ceil(handshakeAndRequest / twoWayLatency);
     let timeToFirstByte = handshakeAndRequest + this.serverLatency + oneWayLatency;
-    if (this.warmed && this.h2) {
+    if (this.warmed && this.multiplexed) {
       timeToFirstByte = 0;
     }
     const timeElapsedForTTFB = Math.max(timeToFirstByte - timeAlreadyElapsed, 0);
@@ -113,7 +113,7 @@ var TCPConnection = class _TCPConnection {
       bytesRemaining -= bytesDownloadedInWindow;
     }
     const timeElapsed = timeElapsedForTTFB + downloadTimeElapsed;
-    const extraBytesDownloaded = this.h2 ? Math.max(totalBytesDownloaded - bytesToDownload, 0) : 0;
+    const extraBytesDownloaded = this.multiplexed ? Math.max(totalBytesDownloaded - bytesToDownload, 0) : 0;
     const bytesDownloaded = Math.max(Math.min(totalBytesDownloaded, bytesToDownload), 0);
     let connectionTiming;
     if (!this.warmed) {
@@ -123,7 +123,7 @@ var TCPConnection = class _TCPConnection {
         sslTime: this.ssl ? twoWayLatency : void 0,
         timeToFirstByte
       };
-    } else if (this.h2) {
+    } else if (this.multiplexed) {
       connectionTiming = {
         timeToFirstByte
       };
@@ -183,20 +183,20 @@ var ConnectionPool = class {
           continue;
         }
         const isTLS = TLS_SCHEMES.includes(request.parsedURL.scheme);
-        const isH2 = request.protocol === "h2";
+        const isMultiplexed = Core.NetworkAnalyzer.isMultiplexedProtocol(request.protocol);
         const connection = new TCPConnection(
           this.options.rtt + additionalRtt,
           this.options.throughput,
           responseTime,
           isTLS,
-          isH2
+          isMultiplexed
         );
         connections.push(connection);
       }
       if (!connections.length) {
         throw new Core.LanternError(`Could not find a connection for origin: ${origin}`);
       }
-      const minConnections = connections[0].isH2() ? 1 : CONNECTIONS_PER_ORIGIN;
+      const minConnections = connections[0].isMultiplexed() ? 1 : CONNECTIONS_PER_ORIGIN;
       while (connections.length < minConnections) {
         connections.push(connections[0].clone());
       }
@@ -618,13 +618,17 @@ var Simulator = class _Simulator {
     this.cachedNodeListByStartPosition.splice(indexOfNodeToStart, 1);
     this.nodes[NodeState.InProgress].add(node);
     this.nodes[NodeState.ReadyToStart].delete(node);
-    this.numberInProgressByType.set(node.type, this.numberInProgress(node.type) + 1);
+    if (!(node.type === Graph2.BaseNode.types.NETWORK && node.isConnectionless)) {
+      this.numberInProgressByType.set(node.type, this.numberInProgress(node.type) + 1);
+    }
     this.nodeTimings.setInProgress(node, { startTime });
   }
   markNodeAsComplete(node, endTime, connectionTiming) {
     this.nodes[NodeState.Complete].add(node);
     this.nodes[NodeState.InProgress].delete(node);
-    this.numberInProgressByType.set(node.type, this.numberInProgress(node.type) - 1);
+    if (!(node.type === Graph2.BaseNode.types.NETWORK && node.isConnectionless)) {
+      this.numberInProgressByType.set(node.type, this.numberInProgress(node.type) - 1);
+    }
     this.nodeTimings.setCompleted(node, { endTime, connectionTiming });
     for (const dependent of node.getDependents()) {
       const dependencies = dependent.getDependencies();

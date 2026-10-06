@@ -3182,6 +3182,8 @@ function createLanternRequest(parsedTrace, workerThreads, request) {
       resourceSize = url.pathname.length - commaIndex - 1;
     }
   }
+  const hasExplicitRenderBlocking = request.rawSourceEvent.args.data.renderBlocking !== void 0 || request.args.data.renderBlocking !== "non_blocking";
+  const renderBlocking = hasExplicitRenderBlocking ? request.args.data.renderBlocking : void 0;
   return {
     rawRequest: request,
     requestId: request.args.data.requestId,
@@ -3208,6 +3210,7 @@ function createLanternRequest(parsedTrace, workerThreads, request) {
     resourceType,
     mimeType: request.args.data.mimeType,
     priority: request.args.data.priority,
+    renderBlocking,
     frameId: request.args.data.frame,
     fromWorker,
     serverResponseTime: request.args.data.lrServerResponseTime
@@ -3833,7 +3836,8 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
     } catch (e) {
       const expectedErrors = [
         "mainDocumentRequest not found",
-        "missing metric scores for main frame",
+        "missing metric scores for frame",
+        "missing metric scores for specified navigation",
         "missing metric: FCP",
         "missing metric: LCP",
         "NO_LCP",

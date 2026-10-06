@@ -18,7 +18,7 @@ export interface StylesContainer {
     node(): SDK.DOMModel.DOMNode | null;
     cssModel(): SDK.CSSModel.CSSModel | null;
     computedStyleModel(): ComputedStyle.ComputedStyleModel.ComputedStyleModel;
-    refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement): void;
+    refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement, force?: boolean): void;
     filterRegex(): RegExp | null;
     setEditingStyle(editing: boolean): void;
     setUserOperation(userOperation: boolean): void;

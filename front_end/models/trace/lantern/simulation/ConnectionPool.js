@@ -43,16 +43,16 @@ export class ConnectionPool {
                     continue;
                 }
                 const isTLS = TLS_SCHEMES.includes(request.parsedURL.scheme);
-                const isH2 = request.protocol === 'h2';
-                const connection = new TCPConnection(this.options.rtt + additionalRtt, this.options.throughput, responseTime, isTLS, isH2);
+                const isMultiplexed = Core.NetworkAnalyzer.isMultiplexedProtocol(request.protocol);
+                const connection = new TCPConnection(this.options.rtt + additionalRtt, this.options.throughput, responseTime, isTLS, isMultiplexed);
                 connections.push(connection);
             }
             if (!connections.length) {
                 throw new Core.LanternError(`Could not find a connection for origin: ${origin}`);
             }
             // Make sure each origin has minimum number of connections available for max throughput.
-            // But only if it's not over H2 which maximizes throughput already.
-            const minConnections = connections[0].isH2() ? 1 : CONNECTIONS_PER_ORIGIN;
+            // But only if it's not over a multiplexed protocol which maximizes throughput already.
+            const minConnections = connections[0].isMultiplexed() ? 1 : CONNECTIONS_PER_ORIGIN;
             while (connections.length < minConnections) {
                 connections.push(connections[0].clone());
             }

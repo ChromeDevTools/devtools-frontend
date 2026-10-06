@@ -26,7 +26,12 @@ export const cssPath = function (node, optimized) {
         contextNode = contextNode.parentNode;
     }
     steps.reverse();
-    return steps.join(' > ');
+    return steps.reduce((acc, step) => {
+        if (!acc) {
+            return step.value;
+        }
+        return step.value.startsWith('::') ? acc + step.value : acc + ' > ' + step.value;
+    }, '');
 };
 export const canGetJSPath = function (node) {
     let wp = node;
@@ -65,6 +70,10 @@ export const jsPath = function (node, optimized) {
 const cssPathStep = function (node, optimized, isTargetNode) {
     if (node.nodeType() !== Node.ELEMENT_NODE) {
         return null;
+    }
+    if (node.pseudoType()) {
+        const pseudoIdentifier = node.pseudoIdentifier();
+        return new Step(node.nodeNameInCorrectCase() + (pseudoIdentifier ? `(${pseudoIdentifier})` : ''), false);
     }
     const id = node.getAttribute('id');
     if (optimized) {

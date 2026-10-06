@@ -887,6 +887,7 @@ import * as uiI18n from "../../ui/i18n/i18n.js";
 import { Link } from "../../ui/kit/kit.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
 import * as Lit2 from "../../ui/lit/lit.js";
+import * as SettingsUI from "../../ui/settings/settings.js";
 import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/layer_viewer/layers3DView.css.js
@@ -1332,10 +1333,16 @@ var Layers3DView = class extends Layers3DViewBase {
     );
     this.transformController.addEventListener("TransformChanged" /* TRANSFORM_CHANGED */, this.updateData, this);
     this.panelToolbar = this.transformController.toolbar();
-    this.showPaintsSetting = this.createVisibilitySetting("frame-viewer-show-paints", this.panelToolbar);
-    this.showSlowScrollRectsSetting = this.createVisibilitySetting("frame-viewer-show-slow-scroll-rects", this.panelToolbar);
+    this.showPaintsSetting = this.createVisibilitySetting(
+      SettingsUI.LayerViewerSettings.showPaintsSettingDescriptor,
+      this.panelToolbar
+    );
+    this.showSlowScrollRectsSetting = this.createVisibilitySetting(
+      SettingsUI.LayerViewerSettings.showSlowScrollRectsSettingDescriptor,
+      this.panelToolbar
+    );
     this.showPaintsSetting.addChangeListener(this.updatePaints, this);
-    Common5.Settings.Settings.instance().moduleSetting("frame-viewer-chrome-window").addChangeListener(this.updateData, this);
+    Common5.Settings.Settings.instance().resolve(SettingsUI.LayerViewerSettings.chromeWindowSettingDescriptor).addChangeListener(this.updateData, this);
     this.performUpdate();
     this.lastSelection = {};
     this.layerTree = null;
@@ -1785,7 +1792,7 @@ var Layers3DView = class extends Layers3DViewBase {
     if (!viewport) {
       return;
     }
-    const drawChrome = Common5.Settings.Settings.instance().moduleSetting("frame-viewer-chrome-window").get() && this.chromeTextures.length >= 3 && this.chromeTextures.indexOf(void 0) < 0;
+    const drawChrome = Common5.Settings.Settings.instance().resolve(SettingsUI.LayerViewerSettings.chromeWindowSettingDescriptor).get() && this.chromeTextures.length >= 3 && this.chromeTextures.indexOf(void 0) < 0;
     const z = (this.maxDepth + 1) * LayerSpacing;
     const borderWidth = Math.ceil(ViewportBorderWidth * this.scale);
     let vertices = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];
@@ -1904,8 +1911,8 @@ var Layers3DView = class extends Layers3DViewBase {
     this.rects.forEach(checkIntersection);
     return closestObject;
   }
-  createVisibilitySetting(name, toolbar2) {
-    const setting = Common5.Settings.Settings.instance().moduleSetting(name);
+  createVisibilitySetting(descriptor, toolbar2) {
+    const setting = Common5.Settings.Settings.instance().resolve(descriptor);
     setting.addChangeListener(this.updateData, this);
     toolbar2.appendToolbarItem(new UI4.Toolbar.ToolbarSettingCheckbox(setting));
     return setting;

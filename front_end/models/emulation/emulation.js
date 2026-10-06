@@ -4904,6 +4904,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   #scale;
   #autoAdjustScaleSetting;
   #deviceScaleMapSetting;
+  #isApplyingDeviceScale = false;
   #widthSetting;
   #heightSetting;
   #uaSetting;
@@ -4943,6 +4944,8 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     this.#scale = 1;
     this.#autoAdjustScaleSetting = this.#settings.createSetting("emulation.auto-adjust-scale", true);
     this.#deviceScaleMapSetting = this.#settings.createSetting("emulation.device-scale-map", {});
+    this.#scaleSetting.addChangeListener(this.#saveScaleForCurrentDevice, this);
+    this.#autoAdjustScaleSetting.addChangeListener(this.#saveScaleForCurrentDevice, this);
     this.#widthSetting = this.#settings.createSetting("emulation.device-width", 400);
     if (this.#widthSetting.get() < MinDeviceSize) {
       this.#widthSetting.set(MinDeviceSize);
@@ -5077,6 +5080,27 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       this.#scaleSetting.set(this.calculateFitScale(orientation.width, orientation.height));
     }
   }
+  #saveScaleForCurrentDevice() {
+    if (this.#isApplyingDeviceScale || this.#autoFitScaleOnInitialize) {
+      return;
+    }
+    let key;
+    if (this.#type === "Device" /* Device */ && this.#device) {
+      key = this.#device.title;
+    } else if (this.#type === "Responsive" /* Responsive */) {
+      key = "Responsive";
+    } else {
+      return;
+    }
+    const scale = this.#scaleSetting.get();
+    const autoAdjust = this.#autoAdjustScaleSetting.get();
+    const map = this.#deviceScaleMapSetting.get();
+    if (map[key]?.scale === scale && map[key]?.autoAdjust === autoAdjust) {
+      return;
+    }
+    map[key] = { scale, autoAdjust };
+    this.#deviceScaleMapSetting.set(map);
+  }
   setAvailableSize(availableSize, preferredSize) {
     this.#availableSize = availableSize;
     this.#preferredSize = preferredSize;
@@ -5090,67 +5114,58 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   emulate(type, device, mode, scale) {
     const resetPageScaleFactor = this.#type !== type || this.#device !== device || this.#mode !== mode;
     const deviceChanged = this.#type !== type || this.#device !== device;
-    if (deviceChanged) {
-      if (this.#type === "Device" /* Device */ && this.#device) {
-        const map = this.#deviceScaleMapSetting.get();
-        map[this.#device.title] = {
-          scale: this.#scaleSetting.get(),
-          autoAdjust: this.#autoAdjustScaleSetting.get()
-        };
-        this.#deviceScaleMapSetting.set(map);
-      } else if (this.#type === "Responsive" /* Responsive */) {
-        const map = this.#deviceScaleMapSetting.get();
-        map["Responsive"] = {
-          scale: this.#scaleSetting.get(),
-          autoAdjust: this.#autoAdjustScaleSetting.get()
-        };
-        this.#deviceScaleMapSetting.set(map);
-      }
-    }
     this.#type = type;
-    if (type === "Device" /* Device */ && device && mode) {
-      console.assert(Boolean(device) && Boolean(mode), "Must pass device and mode for device emulation");
-      this.#mode = mode;
-      this.#device = device;
-      if (deviceChanged) {
-        const map = this.#deviceScaleMapSetting.get();
-        const savedDevice = map[device.title];
-        if (savedDevice) {
-          this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
-          scale = savedDevice.autoAdjust ? void 0 : savedDevice.scale;
-        } else {
-          this.#autoAdjustScaleSetting.set(scale === void 0);
-        }
-      }
-      if (scale !== void 0) {
-        this.#autoFitScaleOnInitialize = false;
-        this.#scaleSetting.set(scale);
-      } else if (this.#initialized) {
-        this.#autoFitScaleOnInitialize = false;
-        this.#updateFitScale();
-      } else {
-        this.#autoFitScaleOnInitialize = true;
-      }
-    } else {
-      this.#device = null;
-      this.#mode = null;
-      this.#autoFitScaleOnInitialize = false;
-      if (deviceChanged && type === "Responsive" /* Responsive */) {
-        const map = this.#deviceScaleMapSetting.get();
-        const savedDevice = map["Responsive"];
-        if (savedDevice) {
-          this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
-          if (!savedDevice.autoAdjust) {
-            this.#scaleSetting.set(savedDevice.scale);
+    this.#isApplyingDeviceScale = true;
+    try {
+      if (type === "Device" /* Device */ && device && mode) {
+        console.assert(Boolean(device) && Boolean(mode), "Must pass device and mode for device emulation");
+        this.#mode = mode;
+        this.#device = device;
+        if (deviceChanged) {
+          const map = this.#deviceScaleMapSetting.get();
+          const savedDevice = map[device.title];
+          if (savedDevice) {
+            this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
+            if (scale === void 0 && !savedDevice.autoAdjust) {
+              scale = savedDevice.scale;
+            }
           } else {
-            this.#scaleSetting.set(this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get()));
+            this.#autoAdjustScaleSetting.set(scale === void 0);
           }
+        }
+        if (scale !== void 0) {
+          this.#autoFitScaleOnInitialize = false;
+          this.#scaleSetting.set(scale);
+        } else if (this.#initialized) {
+          this.#autoFitScaleOnInitialize = false;
+          this.#updateFitScale();
         } else {
-          this.#autoAdjustScaleSetting.set(true);
-          this.#scaleSetting.set(1);
+          this.#autoFitScaleOnInitialize = true;
+        }
+      } else {
+        this.#device = null;
+        this.#mode = null;
+        this.#autoFitScaleOnInitialize = false;
+        if (deviceChanged && type === "Responsive" /* Responsive */) {
+          const map = this.#deviceScaleMapSetting.get();
+          const savedDevice = map["Responsive"];
+          if (savedDevice) {
+            this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
+            if (!savedDevice.autoAdjust) {
+              this.#scaleSetting.set(savedDevice.scale);
+            } else {
+              this.#scaleSetting.set(this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get()));
+            }
+          } else {
+            this.#autoAdjustScaleSetting.set(true);
+            this.#scaleSetting.set(1);
+          }
         }
       }
+    } finally {
+      this.#isApplyingDeviceScale = false;
     }
+    this.#saveScaleForCurrentDevice();
     if (type !== "None" /* None */) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.DeviceModeEnabled);
     } else {
@@ -5770,11 +5785,8 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
    * - iOS adoption typically reaches majority within ~3-6 months.
    */
   static getDynamicMobileUA() {
-    const now = /* @__PURE__ */ new Date();
-    const year = now.getFullYear();
-    const isLateInYear = now.getMonth() >= 9;
-    const androidVersion = isLateInYear ? year - 2010 : year - 2011;
-    const pixelModel = isLateInYear ? year - 2016 : year - 2017;
+    const androidVersion = _DeviceModeModel.getDynamicAndroidVersion();
+    const pixelModel = androidVersion - 6;
     const ua = `Mozilla/5.0 (Linux; Android ${androidVersion}; Pixel ${pixelModel}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36`;
     const metadata = {
       platform: "Android",
@@ -5784,6 +5796,12 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       mobile: true
     };
     return { userAgent: ua, metadata };
+  }
+  static getDynamicAndroidVersion() {
+    const now = /* @__PURE__ */ new Date();
+    const year = now.getFullYear();
+    const isLateInYear = now.getMonth() >= 9;
+    return isLateInYear ? year - 2010 : year - 2011;
   }
   static defaultMobileUserAgent() {
     return SDK2.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(

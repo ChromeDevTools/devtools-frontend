@@ -10,6 +10,7 @@ export declare const consoleInsightsEnabledSettingDescriptor: Common.Settings.Co
 export declare const aiAssistanceEnabledSettingDescriptor: Common.Settings.ConditionalSettingDescriptor<boolean, DisabledReason[]>;
 export declare const aiAssistanceV2OptInChangeDialogSeenSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare function isGeminiBranding(): boolean;
+export declare function isNaturalLanguageInterfaceEnabled(): boolean;
 /**
  * Returns true if context selection / dynamic context switching is enabled.
  *

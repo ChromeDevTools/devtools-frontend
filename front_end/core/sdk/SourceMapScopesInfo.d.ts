@@ -68,6 +68,37 @@ export declare class SourceMapScopesInfo {
      * merge outlined frames with their caller(s) (see {@link GeneratedFrameKind}).
      */
     translateRawFrame(generatedLine: number, generatedColumn: number): RawFrameTranslation;
+    /**
+     * @returns the body of the innermost inlined function at the position (the innermost range with a `callSite`
+     *          within the generated function), or null if the position is not inside an inlined function.
+     *
+     * The innermost inlined function is the logical frame the position belongs to, i.e. the analogue of the top frame
+     * of a real call stack. Stepping over its body therefore goes up exactly one logical frame: into the caller, which
+     * may itself be inlined. An outer range would leave several logical frames at once.
+     */
+    inlinedFunctionRange(generatedLine: number, generatedColumn: number): PositionRange | null;
+    /**
+     * @returns the bodies of all functions that were inlined directly into the logical function at the position
+     *          (the innermost inlined function, or else the generated function). Doesn't descend into inlined
+     *          functions or nested generated functions.
+     */
+    inlinedCalleeRanges(generatedLine: number, generatedColumn: number): PositionRange[];
+    /**
+     * @returns true, iff any generated function is outlined, i.e. marked as "hidden" but with a definition (see
+     *          {@link GeneratedFrameKind.OUTLINED}). Hidden functions without a definition are compiler helpers.
+     */
+    hasOutlinedFunctions(): boolean;
+    /**
+     * @returns the "artificial" generated functions (in the DWARF sense): functions that contain no authored code at all
+     *          (no original scope anywhere in their subtree), e.g. compiler helpers. Sorted by start position,
+     *          non-overlapping.
+     */
+    artificialFunctionRanges(): PositionRange[];
+}
+/** A range of generated positions, relative to the start of the script. `end` is exclusive. */
+export interface PositionRange {
+    readonly start: ScopesCodec.Position;
+    readonly end: ScopesCodec.Position;
 }
 /**
  * Describes how the generated function surrounding a generated position shows up in stack traces.

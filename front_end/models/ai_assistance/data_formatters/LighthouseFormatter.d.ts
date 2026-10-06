@@ -15,9 +15,16 @@ export declare class LighthouseFormatter {
      */
     summary(report: LHModel.ReporterTypes.ReportJSON): string;
     /**
-     * Formats a Lighthouse report for an AI Agent. If categoryId is 'all', includes
-     * the overall summary followed by each category's audits. Otherwise, returns audits
-     * for the specified category.
+     * Returns the title and score of every failing audit (score < 90), grouped by category.
+     * Descriptions and details tables are left out to keep the prompt small. Each category
+     * heading includes its category ID so the agent can request the full audit details.
+     */
+    failingAuditsSummary(report: LHModel.ReporterTypes.ReportJSON): string;
+    /**
+     * Formats a Lighthouse report for an AI Agent. If categoryId is 'all', returns
+     * each category's audits. Otherwise, returns audits for the specified category.
+     * The output does not include the report summary, because the conversation
+     * context already sends it.
      */
     formatReport(report: LHModel.ReporterTypes.ReportJSON, categoryId: LighthouseCategoryArg): string;
     /**

@@ -9,7 +9,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import { scopeTreeForScript } from './ScopeTreeCache.js';
 import { buildOriginalScopes, decodePastaRanges } from './SourceMapFunctionRanges.js';
 import { decodeRangeMappings } from './SourceMapRangeMappings.js';
-import { scriptRelativePosition, SourceMapScopesInfo } from './SourceMapScopesInfo.js';
+import { scriptRelativePosition, SourceMapScopesInfo, } from './SourceMapScopesInfo.js';
 /**
  * Parses the {@link content} as JSON, ignoring BOM markers in the beginning, and
  * also handling the CORB bypass prefix correctly.
@@ -698,6 +698,24 @@ export class SourceMap {
     translateRawFrame(generatedLine, generatedColumn) {
         this.#ensureSourceMapProcessed();
         return this.#scopesInfo?.translateRawFrame(generatedLine, generatedColumn) ?? null;
+    }
+    /** See {@link SourceMapScopesInfo.inlinedFunctionRange}. `null` without encoded scopes. */
+    inlinedFunctionRange(generatedLine, generatedColumn) {
+        return this.hasEncodedScopeInfo() ? this.#scopesInfo?.inlinedFunctionRange(generatedLine, generatedColumn) ?? null :
+            null;
+    }
+    /** See {@link SourceMapScopesInfo.inlinedCalleeRanges}. Empty without encoded scopes. */
+    inlinedCalleeRanges(generatedLine, generatedColumn) {
+        return this.hasEncodedScopeInfo() ? this.#scopesInfo?.inlinedCalleeRanges(generatedLine, generatedColumn) ?? [] :
+            [];
+    }
+    /** See {@link SourceMapScopesInfo.hasOutlinedFunctions}. False without encoded scopes. */
+    hasOutlinedFunctions() {
+        return this.hasEncodedScopeInfo() && (this.#scopesInfo?.hasOutlinedFunctions() ?? false);
+    }
+    /** See {@link SourceMapScopesInfo.artificialFunctionRanges}. Empty without encoded scopes. */
+    artificialFunctionRanges() {
+        return this.hasEncodedScopeInfo() ? this.#scopesInfo?.artificialFunctionRanges() ?? [] : [];
     }
 }
 _a = SourceMap;

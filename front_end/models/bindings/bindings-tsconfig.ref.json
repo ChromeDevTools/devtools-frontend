@@ -27,6 +27,7 @@
     "../../../../../../front_end/models/bindings/ResourceScriptMapping.ts",
     "../../../../../../front_end/models/bindings/ResourceUtils.ts",
     "../../../../../../front_end/models/bindings/SASSSourceMapping.ts",
+    "../../../../../../front_end/models/bindings/SourceMapStepping.ts",
     "../../../../../../front_end/models/bindings/StylesSourceMapping.ts",
     "../../../../../../front_end/models/bindings/SymbolizedError.ts",
     "../../../../../../front_end/models/bindings/TempFile.ts",

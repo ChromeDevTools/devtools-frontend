@@ -8,6 +8,7 @@ import { LighthouseContext } from '../contexts/LighthouseContext.js';
  */
 export class RunLighthouseTool {
     name = "runLighthouse" /* ToolName.RUN_LIGHTHOUSE */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Runs Lighthouse audits on the active page. Supports "navigation" (for full initial page load audits), "snapshot" (for inspecting live in-page modifications without reload), and "timespan" (for interactions).';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,

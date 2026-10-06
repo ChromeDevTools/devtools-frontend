@@ -25,6 +25,7 @@
     "../../../../../../front_end/models/bindings/ResourceMapping.test.ts",
     "../../../../../../front_end/models/bindings/ResourceScriptMapping.test.ts",
     "../../../../../../front_end/models/bindings/ResourceUtils.test.ts",
+    "../../../../../../front_end/models/bindings/SourceMapStepping.test.ts",
     "../../../../../../front_end/models/bindings/StylesSourceMapping.test.ts",
     "../../../../../../front_end/models/bindings/SymbolizedError.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
@@ -47,6 +48,9 @@
     },
     {
       "path": "../../core/protocol_client/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../core/sdk/bundle-tsconfig.ref.json"

@@ -39,7 +39,7 @@ export declare class StandaloneStylesContainer extends StandaloneStylesContainer
     cssModel(): SDK.CSSModel.CSSModel | null;
     computedStyleModel(): ComputedStyle.ComputedStyleModel.ComputedStyleModel;
     setActiveProperty(_treeElement: StylePropertyTreeElement | null): void;
-    refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement): void;
+    refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement, force?: boolean): void;
     filterRegex(): RegExp | null;
     setEditingStyle(editing: boolean): void;
     suppressResets(): void;

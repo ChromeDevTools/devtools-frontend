@@ -13,6 +13,7 @@ import { DefaultScriptMapping } from './DefaultScriptMapping.js';
 import { LiveLocationWithPool } from './LiveLocation.js';
 import { NetworkProject } from './NetworkProject.js';
 import { ResourceScriptMapping } from './ResourceScriptMapping.js';
+import * as SourceMapStepping from './SourceMapStepping.js';
 import { isErrorLike, SymbolizedErrorObject, UnparsableError, } from './SymbolizedError.js';
 export class DebuggerWorkspaceBinding {
     resourceMapping;
@@ -78,7 +79,8 @@ export class DebuggerWorkspaceBinding {
         let ranges = [];
         if (mode === "StepOut" /* SDK.DebuggerModel.StepMode.STEP_OUT */) {
             // Step out of inline function.
-            return await pluginManager.getInlinedFunctionRanges(rawLocation);
+            ranges = await pluginManager.getInlinedFunctionRanges(rawLocation);
+            return ranges.length > 0 ? ranges : SourceMapStepping.inlinedFunctionRanges(callFrame);
         }
         const uiLocation = await pluginManager.rawLocationToUILocation(rawLocation);
         if (uiLocation) {
@@ -100,13 +102,21 @@ export class DebuggerWorkspaceBinding {
         ranges = ranges.filter(range => contained(rawLocation, range));
         return ranges;
     }
+    async computeAutoStep(mode, callFrames) {
+        const ranges = await this.computeAutoStepRanges(mode, callFrames[0]);
+        if (mode === "StepOut" /* SDK.DebuggerModel.StepMode.STEP_OUT */ && ranges.length > 0) {
+            // Step out of an inlined function by stepping over its body.
+            return { command: "StepOver" /* SDK.DebuggerModel.StepMode.STEP_OVER */, ranges };
+        }
+        return { command: mode, ranges };
+    }
     modelAdded(debuggerModel) {
         debuggerModel.setBeforePausedCallback(this.shouldPause.bind(this));
         this.#debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this));
-        debuggerModel.setComputeAutoStepRangesCallback(this.computeAutoStepRanges.bind(this));
+        debuggerModel.setComputeAutoStepCallback(this.computeAutoStep.bind(this));
     }
     modelRemoved(debuggerModel) {
-        debuggerModel.setComputeAutoStepRangesCallback(null);
+        debuggerModel.setComputeAutoStepCallback(null);
         const modelData = this.#debuggerModelToData.get(debuggerModel);
         if (modelData) {
             modelData.dispose();
@@ -377,15 +387,28 @@ export class DebuggerWorkspaceBinding {
             modelData.disposeLocation(location);
         }
     }
-    async shouldPause(debuggerPausedDetails, autoSteppingContext) {
-        // This function returns false if the debugger should continue stepping
-        const { callFrames: [frame] } = debuggerPausedDetails;
+    /** @returns null to present the pause, or the step to issue instead. */
+    async shouldPause(debuggerPausedDetails, context) {
+        const { callFrames } = debuggerPausedDetails;
+        const [frame] = callFrames;
         if (!frame) {
-            return false;
+            return { command: "StepInto" /* SDK.DebuggerModel.StepMode.STEP_INTO */, ranges: [] };
         }
+        if (frame.script.isWasm()) {
+            return await this.#shouldPauseInWasm(debuggerPausedDetails, context) ?
+                null :
+                await this.computeAutoStep("StepOver" /* SDK.DebuggerModel.StepMode.STEP_OVER */, callFrames);
+        }
+        return null;
+    }
+    async #shouldPauseInWasm(debuggerPausedDetails, context) {
+        // When stepping over with autostepping enabled, the context denotes the function to which autostepping is restricted
+        // to by way of its functionLocation (as per Debugger.CallFrame).
+        const autoSteppingContext = context?.mode === "StepOver" /* SDK.DebuggerModel.StepMode.STEP_OVER */ ? context.callFrames[0]?.functionLocation() : null;
+        const { callFrames: [frame] } = debuggerPausedDetails;
         const functionLocation = frame.functionLocation();
         if (!autoSteppingContext || debuggerPausedDetails.reason !== "step" /* Protocol.Debugger.PausedEventReason.Step */ ||
-            !functionLocation || !frame.script.isWasm() || !this.#settings.moduleSetting('wasm-auto-stepping').get() ||
+            !functionLocation || !this.#settings.moduleSetting('wasm-auto-stepping').get() ||
             !this.pluginManager.hasPluginForScript(frame.script)) {
             return true;
         }

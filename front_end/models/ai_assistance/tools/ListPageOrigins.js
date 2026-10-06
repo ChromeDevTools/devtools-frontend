@@ -8,6 +8,7 @@ import { isOriginAllowedByLock, resolveOriginFromLock, } from './Tool.js';
 const lockedString = i18n.i18n.lockedString;
 export class ListPageOriginsTool {
     name = "listPageOrigins" /* ToolName.LIST_PAGE_ORIGINS */;
+    permissionPrompt = "never" /* PermissionPrompt.NEVER */;
     description = 'Lists all active, non-empty frame origins loaded by the page. Call this first to discover all page origins before calling listCookies or listStorageKeys, unless the user\'s explicit request focuses only on the primary page.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,

@@ -6,6 +6,7 @@ import {assert} from 'chai';
 
 import {
   assertElements,
+  assertScreenshot,
   getElementsWithinComponent,
   getElementWithinComponent,
   getEventPromise,
@@ -377,7 +378,8 @@ describe('LinearMemoryViewer', () => {
       focusedMemoryHighlight: dataWithHighlightInfo.highlightInfo,
     };
     component.data = dataWithFocusedMemoryHighlight;
-    const byteCells = getElementsWithinComponent(component, '.byte-cell.focused', HTMLSpanElement);
+    const byteCells = getElementsWithinComponent(component, '.byte-cell.focused-area', HTMLSpanElement);
+    assert.lengthOf(byteCells, dataWithHighlightInfo.highlightInfo.size);
 
     for (let i = 0; i < byteCells.length; ++i) {
       const selectedValue = parseInt(byteCells[i].innerText, 16);
@@ -387,13 +389,42 @@ describe('LinearMemoryViewer', () => {
   });
 
   it('does not focus highlighted byte cells when no focusedMemoryHighlight provided', async () => {
-    const {component, dataWithHighlightInfo} = await setUpComponentWithHighlightInfo();
-    const dataWithFocusedMemoryHighlight = {
-      ...dataWithHighlightInfo,
-      focusedMemoryHighlight: dataWithHighlightInfo.highlightInfo,
-    };
-    component.data = dataWithFocusedMemoryHighlight;
-    const byteCells = getElementsWithinComponent(component, '.byte-cell.focused', HTMLSpanElement);
+    const {component} = await setUpComponentWithHighlightInfo();
+    const byteCells = getElementsWithinComponent(component, '.byte-cell.focused-area', HTMLSpanElement);
     assert.isEmpty(byteCells);
+  });
+});
+
+describe('LinearMemoryViewer Screenshots', () => {
+  it('renders selected, highlighted and focused bytes', async () => {
+    const component = new LinearMemoryInspectorComponents.LinearMemoryViewer.LinearMemoryViewer();
+    // Mimic the environment in the LinearMemoryInspector, which sizes
+    // the viewer via flex and provides the monospace font. Wide enough
+    // to fit several byte groups per row.
+    const wrapper = document.createElement('div');
+    wrapper.style.width = '600px';
+    wrapper.style.height = '120px';
+    wrapper.style.display = 'flex';
+    wrapper.style.fontFamily = 'var(--monospace-font-family)';
+    wrapper.style.fontSize = 'var(--monospace-font-size)';
+    wrapper.appendChild(component);
+    renderElementIntoDOM(wrapper, {includeCommonStyles: true});
+
+    // The viewer measures its cells to compute the layout, so make sure the
+    // fonts are available before it does so.
+    await document.fonts.ready;
+    const resizePromise =
+        getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ResizeEvent>(component, 'resize');
+    component.data = {
+      memory: Uint8Array.from({length: 1000}, (_, i) => i),
+      address: 10,
+      memoryOffset: 0,
+      focus: true,
+      highlightInfo: {startAddress: 2, size: 21, type: 'bool[]'},
+      focusedMemoryHighlight: {startAddress: 8, size: 6, type: 'int32'},
+    };
+    await resizePromise;
+
+    await assertScreenshot('linear_memory_inspector/viewer.png');
   });
 });

@@ -550,13 +550,9 @@ SettingsUI.SettingUIRegistration.register(
       title: i18nLazyString(UIStrings.jsHeap),
     });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineCountersGraphDocumentsSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.GLOBAL,
   title: i18nLazyString(UIStrings.documents),
-  settingName: 'timeline-counters-graph-documents',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

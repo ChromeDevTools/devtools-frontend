@@ -94,3 +94,10 @@ export const timelineCountersGraphJsHeapSizeUsedSettingDescriptor: Common.Settin
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.GLOBAL,
 };
+
+export const timelineCountersGraphDocumentsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-counters-graph-documents',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.GLOBAL,
+};

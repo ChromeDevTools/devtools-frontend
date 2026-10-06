@@ -66,3 +66,10 @@ export const timelineShowScreenshotsSettingDescriptor: Common.Settings.SettingDe
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.GLOBAL,
 };
+
+export const timelineShowMemorySettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-show-memory',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

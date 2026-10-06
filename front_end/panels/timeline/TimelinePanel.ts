@@ -521,7 +521,8 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
         SettingUIRegistration.TimelineSettings.timelineShowScreenshotsSettingDescriptor);
     this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);
 
-    this.showMemorySetting = Common.Settings.Settings.instance().moduleSetting('timeline-show-memory');
+    this.showMemorySetting = Common.Settings.Settings.instance().resolve(
+        SettingUIRegistration.TimelineSettings.timelineShowMemorySettingDescriptor);
     this.showMemorySetting.addChangeListener(this.onMemoryModeChanged, this);
 
     this.#dimThirdPartiesSetting = Common.Settings.Settings.instance().moduleSetting('timeline-dim-third-parties');

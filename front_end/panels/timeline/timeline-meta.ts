@@ -529,13 +529,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineSh
   title: i18nLazyString(UIStrings.screenshots),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineShowMemorySettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SESSION,
   title: i18nLazyString(UIStrings.memory),
-  settingName: 'timeline-show-memory',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 Common.Settings.registerSettingExtension({

@@ -508,14 +508,11 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineDi
   title: i18nLazyString(UIStrings.disableJavascriptSamples),
 });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  title: i18nLazyString(UIStrings.enableAdvancedPaint),
-  settingName: 'timeline-capture-layers-and-pictures',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-});
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineCaptureLayersAndPicturesSettingDescriptor,
+                                          {
+                                            category: Common.Settings.SettingCategory.NONE,
+                                            title: i18nLazyString(UIStrings.enableAdvancedPaint),
+                                          });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NONE,

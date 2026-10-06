@@ -38,3 +38,10 @@ export const timelineDisableJsSamplingSettingDescriptor: Common.Settings.Setting
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const timelineCaptureLayersAndPicturesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-capture-layers-and-pictures',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

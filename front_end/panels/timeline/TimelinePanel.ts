@@ -508,8 +508,8 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
 
     this.traceLoadStart = null;
 
-    this.disableCaptureJSProfileSetting =
-        Common.Settings.Settings.instance().moduleSetting('timeline-disable-js-sampling');
+    this.disableCaptureJSProfileSetting = Common.Settings.Settings.instance().resolve(
+        SettingUIRegistration.TimelineSettings.timelineDisableJsSamplingSettingDescriptor);
     this.captureLayersAndPicturesSetting =
         Common.Settings.Settings.instance().moduleSetting('timeline-capture-layers-and-pictures');
     this.captureSelectorStatsSetting =

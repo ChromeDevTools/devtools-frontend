@@ -31,3 +31,10 @@ export const timelineInvalidationTrackingSettingDescriptor: Common.Settings.Sett
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const timelineDisableJsSamplingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-disable-js-sampling',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

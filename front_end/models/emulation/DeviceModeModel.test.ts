@@ -1067,6 +1067,39 @@ describe('DeviceModeModel', () => {
     });
   });
 
+  it('updates scale to fit in responsive mode when setAvailableSize is called after emulate', () => {
+    const em = target.model(SDK.EmulationModel.EmulationModel);
+    assert.exists(em);
+    deviceModeModel.modelAdded(em);
+
+    universe.settings.createSetting('emulation.device-width', 400).set(1000);
+    universe.settings.createSetting('emulation.device-scale-map', {}).set({
+      Responsive: {scale: 1, autoAdjust: true},
+    });
+
+    // Emulate Responsive before setAvailableSize is called (simulating DevTools startup).
+    deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+
+    // Scale must not become 0 while waiting for setAvailableSize.
+    assert.isAbove(deviceModeModel.scaleSetting().get(), 0);
+    assert.isAbove(deviceModeModel.scale(), 0);
+
+    // setAvailableSize is called on layout with preferred size 500x500.
+    deviceModeModel.setAvailableSize(new Platform.Size(500, 500), new Platform.Size(500, 500));
+
+    // Fit scale for width 1000 in 500x500 is 0.5.
+    assert.strictEqual(deviceModeModel.scaleSetting().get(), 0.5);
+    assert.strictEqual(deviceModeModel.scale(), 0.5);
+  });
+
+  it('never calculates a fit scale of 0 even when preferredSize is 1x1', () => {
+    deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+    deviceModeModel.setWidthAndScaleToFit(400);
+
+    assert.strictEqual(deviceModeModel.scaleSetting().get(), 0.01);
+    assert.strictEqual(deviceModeModel.scale(), 0.01);
+  });
+
   describe('saveScreenshot', () => {
     const {urlString} = Platform.DevToolsPath;
 

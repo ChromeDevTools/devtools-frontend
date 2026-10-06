@@ -266,4 +266,16 @@ describeWithEnvironment('DeviceModeView', () => {
       });
     });
   });
+
+  describe('Ruler', () => {
+    it('does not render markers or hang when scale is 0', async () => {
+      const ruler = new Emulation.DeviceModeView.Ruler();
+      ruler.scale = 0;
+      renderElementIntoDOM(ruler, {includeCommonStyles: true, width: 800, height: 600});
+      await ruler.updateComplete;
+
+      const markers = ruler.contentElement.querySelectorAll('.device-mode-ruler-marker');
+      assert.lengthOf(markers, 0);
+    });
+  });
 });

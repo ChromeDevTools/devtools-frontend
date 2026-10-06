@@ -544,14 +544,11 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineSh
   title: i18nLazyString(UIStrings.showCustomtracks),
 });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.GLOBAL,
-  title: i18nLazyString(UIStrings.jsHeap),
-  settingName: 'timeline-counters-graph-js-heap-size-used',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-});
+SettingsUI.SettingUIRegistration.register(
+    SettingsUI.TimelineSettings.timelineCountersGraphJsHeapSizeUsedSettingDescriptor, {
+      category: Common.Settings.SettingCategory.NONE,
+      title: i18nLazyString(UIStrings.jsHeap),
+    });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NONE,

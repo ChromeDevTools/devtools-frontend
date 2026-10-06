@@ -87,3 +87,10 @@ export const timelineShowExtensionDataSettingDescriptor: Common.Settings.Setting
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.GLOBAL,
 };
+
+export const timelineCountersGraphJsHeapSizeUsedSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-counters-graph-js-heap-size-used',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.GLOBAL,
+};

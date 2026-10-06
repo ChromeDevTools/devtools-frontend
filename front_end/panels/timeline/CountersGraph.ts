@@ -13,6 +13,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingUIRegistration from '../../ui/settings/settings.js';
 
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
 
@@ -123,7 +124,10 @@ export class CountersGraph extends UI.Widget.VBox {
     this.countersByName.set(
         'jsHeapSizeUsed',
         this.createCounter(
-            i18nString(UIStrings.jsHeap), 'js-heap-size-used', 'hsl(220, 90%, 43%)', i18n.ByteUtilities.bytesToString));
+            i18nString(UIStrings.jsHeap),
+            Common.Settings.Settings.instance().resolve(
+                SettingUIRegistration.TimelineSettings.timelineCountersGraphJsHeapSizeUsedSettingDescriptor),
+            'hsl(220, 90%, 43%)', i18n.ByteUtilities.bytesToString));
     this.countersByName.set(
         'documents', this.createCounter(i18nString(UIStrings.documents), 'documents', 'hsl(0, 90%, 43%)'));
     this.countersByName.set('nodes', this.createCounter(i18nString(UIStrings.nodes), 'nodes', 'hsl(120, 90%, 43%)'));
@@ -193,13 +197,12 @@ export class CountersGraph extends UI.Widget.VBox {
     this.currentValuesBar.id = 'counter-values-bar';
   }
 
-  private createCounter(
-      uiName: Common.UIString.LocalizedString, settingsKey: string, color: string,
-      formatter?: ((arg0: number) => string)): Counter {
+  private createCounter(uiName: Common.UIString.LocalizedString, setting: Common.Settings.Setting<boolean>|string,
+                        color: string, formatter?: ((arg0: number) => string)): Counter {
     const counter = new Counter();
     this.counters.push(counter);
     this.counterUI.push(
-        new CounterUI(this, uiName, settingsKey, color, counter, formatter ?? this.#defaultNumberFormatter.format));
+        new CounterUI(this, uiName, setting, color, counter, formatter ?? this.#defaultNumberFormatter.format));
     return counter;
   }
 
@@ -406,14 +409,16 @@ export class CounterUI {
   private readonly counterName: Common.UIString.LocalizedString;
   private readonly marker: HTMLElement;
 
-  constructor(
-      countersPane: CountersGraph, title: Common.UIString.LocalizedString, settingsKey: string, graphColor: string,
-      counter: Counter, formatter: (arg0: number) => string) {
+  constructor(countersPane: CountersGraph, title: Common.UIString.LocalizedString,
+              setting: Common.Settings.Setting<boolean>|string, graphColor: string, counter: Counter,
+              formatter: (arg0: number) => string) {
     this.countersPane = countersPane;
     this.counter = counter;
     this.formatter = formatter;
 
-    this.setting = Common.Settings.Settings.instance().moduleSetting('timeline-counters-graph-' + settingsKey);
+    this.setting = typeof setting === 'string' ?
+        Common.Settings.Settings.instance().moduleSetting('timeline-counters-graph-' + setting) :
+        setting;
     this.filter = new UI.Toolbar.ToolbarSettingCheckbox(this.setting, title);
     const parsedColor = Common.Color.parse(graphColor);
     if (parsedColor) {

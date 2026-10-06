@@ -534,13 +534,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineSh
   title: i18nLazyString(UIStrings.memory),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineDimThirdPartiesSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SESSION,
   title: i18nLazyString(UIStrings.dimThirdParties),
-  settingName: 'timeline-dim-third-parties',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 Common.Settings.registerSettingExtension({

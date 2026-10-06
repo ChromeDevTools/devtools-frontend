@@ -73,3 +73,10 @@ export const timelineShowMemorySettingDescriptor: Common.Settings.SettingDescrip
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
+
+export const timelineDimThirdPartiesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-dim-third-parties',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};

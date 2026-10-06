@@ -85,7 +85,10 @@ export class BaseVariableMatcher extends BaseVariableMatcherBase {
       return null;
     }
     const nameNode = args[0][0];
-    const fallback = args.length === 2 ? args[1] : undefined;
+    // Skip the first comma and closing parenthesis, preserving commas in the fallback.
+    const fallback = args.length > 1 ?
+        Array.from(ASTUtils.stripComments(ASTUtils.siblings(nameNode.nextSibling))).slice(1, -1) :
+        undefined;
 
     if (!isVariableNameNode(nameNode, matching.ast)) {
       return null;

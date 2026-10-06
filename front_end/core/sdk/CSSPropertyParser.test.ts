@@ -508,6 +508,43 @@ describe('CSSPropertyParser', () => {
       }
     });
 
+    it('keeps commas inside a var() fallback', () => {
+      const {ast, match, text} = matchSingleValue('font-family', 'var(--a, Arial, sans-serif)',
+                                                  new SDK.CSSPropertyParserMatchers.BaseVariableMatcher(() => ''));
+
+      assert.exists(ast, text);
+      assert.exists(match, text);
+      assert.deepEqual(match.fallback?.map(n => ast.text(n)), ['Arial', ',', 'sans-serif']);
+      assert.strictEqual(match.fallbackValue(), 'Arial, sans-serif');
+    });
+
+    it('preserves empty fallbacks and commas when stripping comments', () => {
+      const cases = [
+        {value: 'var(--a)', fallback: undefined, fallbackValue: null},
+        {value: 'var(/*before*/--a/*after*/)', fallback: undefined, fallbackValue: null},
+        {value: 'var(--a,)', fallback: [], fallbackValue: ''},
+        {value: 'var(--a,/*comment*/)', fallback: [], fallbackValue: ''},
+        {value: 'var(--a,,red)', fallback: [',', 'red'], fallbackValue: ',red'},
+        {value: 'var(--a,/*comment*/,red)', fallback: [',', 'red'], fallbackValue: ',red'},
+        {value: 'var(--a,red,)', fallback: ['red', ','], fallbackValue: 'red,'},
+        {
+          value: 'var(/*before*/--a/*after*/,/*fallback*/Arial,sans-serif/*end*/)',
+          fallback: ['Arial', ',', 'sans-serif'],
+          fallbackValue: 'Arial,sans-serif',
+        },
+      ];
+      for (const {value, fallback, fallbackValue} of cases) {
+        const {ast, match} =
+            matchSingleValue('font-family', value, new SDK.CSSPropertyParserMatchers.BaseVariableMatcher(() => ''));
+
+        assert.exists(ast, value);
+        assert.exists(match, value);
+        assert.strictEqual(match.name, '--a', value);
+        assert.deepEqual(match.fallback?.map(n => ast.text(n)), fallback, value);
+        assert.strictEqual(match.fallbackValue(), fallbackValue, value);
+      }
+    });
+
     it('parses attrs correctly', () => {
       const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
       const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);

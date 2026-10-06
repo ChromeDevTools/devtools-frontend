@@ -756,6 +756,23 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       assert.strictEqual(stylePropertyTreeElement.valueElement.innerText, 'var(--not-existing, red)');
     });
 
+    it('should render a CSSVarSwatch for variable usage with a comma-containing fallback', () => {
+      const stylePropertyTreeElement = getTreeElement('font-family', 'var(--font, Arial, sans-serif)');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+
+      const linkSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch');
+      assert.exists(linkSwatch);
+
+      const cssVarSwatch = linkSwatch.parentElement;
+      assert.exists(cssVarSwatch);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+
+      assert.strictEqual(linkSwatch.innerText, '--font');
+      assert.strictEqual(cssVarSwatch.innerText, 'var(--font, Arial, sans-serif)');
+      assert.strictEqual(stylePropertyTreeElement.valueElement.innerText, 'var(--font, Arial, sans-serif)');
+    });
+
     it('should render a CSSVarSwatch inside CSSVarSwatch for variable usage with another variable fallback', () => {
       const stylePropertyTreeElement = getTreeElement('color', 'var(--not-existing, var(--a))');
       stylePropertyTreeElement.updateTitle();

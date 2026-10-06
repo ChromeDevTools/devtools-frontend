@@ -82,7 +82,7 @@ allowed_hosts = [
 ]
 
 deps = {
-  'test/ai_evals/test_sites': {
+  'test/ai_evals/eval_data': {
     'packages': [
       {
         'package': 'experimental/finnur/chrome-devtools-evals',

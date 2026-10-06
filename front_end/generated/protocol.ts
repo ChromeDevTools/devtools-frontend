@@ -4066,6 +4066,18 @@ export namespace CSS {
     forced: boolean;
   }
 
+  export interface ForcePositionTryOptionRequest {
+    /**
+     * The element id for which to force the position-try option.
+     */
+    nodeId: DOM.NodeId;
+    /**
+     * The 1-based index of the position-try fallback option, 0 for base position (no fallback),
+     * or omitted to clear the forced state.
+     */
+    index?: integer;
+  }
+
   export interface GetBackgroundColorsRequest {
     /**
      * Id of the node to get background colors for.

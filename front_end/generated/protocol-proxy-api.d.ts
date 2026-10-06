@@ -796,6 +796,11 @@ declare namespace ProtocolProxyApi {
      */
     invoke_forceStartingStyle(params: Protocol.CSS.ForceStartingStyleRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Forces a position-try option for the given node.
+     */
+    invoke_forcePositionTryOption(params: Protocol.CSS.ForcePositionTryOptionRequest): Promise<Protocol.ProtocolResponseWithError>;
+
     invoke_getBackgroundColors(params: Protocol.CSS.GetBackgroundColorsRequest): Promise<Protocol.CSS.GetBackgroundColorsResponse>;
 
     /**

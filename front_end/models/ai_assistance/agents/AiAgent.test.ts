@@ -840,6 +840,26 @@ describe('AiAgent', () => {
       assert.isDefined(abortListener);
       sinon.assert.calledWith(removeEventListenerSpy, 'abort', abortListener);
     });
+
+    it('should yield MAX_STEPS error if the model still does not return a final answer after MAX_STEPS', async () => {
+      const agent = new AgentWithFunction({
+        aidaClient: mockAidaClient(Array(AiAssistance.AiAgent.MAX_STEPS).fill([
+          {
+            explanation: 'Calling function',
+            functionCalls: [{
+              name: 'testFn',
+              args: {},
+            }],
+          },
+        ])),
+      });
+
+      const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+      const errorResponse = findFirstErrorResponse(responses);
+      assert.strictEqual(errorResponse.error, AiAssistance.AiAgent.ErrorType.MAX_STEPS);
+      assert.strictEqual(agent.called, AiAssistance.AiAgent.MAX_STEPS);
+    });
   });
 
   describe('parseTextResponseForSuggestions', () => {

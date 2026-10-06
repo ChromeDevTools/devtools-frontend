@@ -189,7 +189,7 @@ export interface ParsedAnswer {
 
 export type ParsedResponse = ParsedAnswer;
 
-export const MAX_STEPS = 10;
+export const MAX_STEPS = 20;
 
 export interface ConversationSuggestion {
   title: string;
@@ -519,8 +519,6 @@ class CrossOriginError extends Error {
  *
  * TODO: missing a test that action code is yielded before the
  * confirmation dialog.
- * TODO: missing a test for an error if it took
- * more than MAX_STEPS iterations.
  */
 export abstract class AiAgent<T> {
   /**
@@ -994,7 +992,12 @@ export abstract class AiAgent<T> {
           break;
         }
       } else {
-        yield this.#createErrorResponse(i - 1 === MAX_STEPS ? ErrorType.MAX_STEPS : ErrorType.UNKNOWN);
+        yield this.#createErrorResponse(ErrorType.UNKNOWN);
+        break;
+      }
+
+      if (i === MAX_STEPS - 1) {
+        yield this.#createErrorResponse(ErrorType.MAX_STEPS);
         break;
       }
     }

@@ -4472,14 +4472,23 @@ describeWithEnvironment('DOMTreeWidget', () => {
       assert.isUndefined(lastChange());
     });
 
-    it('records a change when toggleHideElement is called', () => {
-      sinon.stub(childNode1, 'toggleHideElement');
-      sinon.stub(childNode1, 'isToggledToHidden').returns(false);
+    it('records a change when toggleHideElement is called', async () => {
+      sinon.stub(childNode1, 'toggleHideElement').resolves();
+      sinon.stub(childNode1, 'isToggledToHidden').onFirstCall().returns(false).onSecondCall().returns(true);
 
-      void domTree.toggleHideElement(childNode1);
+      await domTree.toggleHideElement(childNode1);
 
       assert.strictEqual(lastChange(), 'Hid element <p>');
       assert.strictEqual(lastChangeBackendNodeId(), 2);
+    });
+
+    it('does not record a change when toggleHideElement fails to change hidden state', async () => {
+      sinon.stub(childNode1, 'toggleHideElement').resolves();
+      sinon.stub(childNode1, 'isToggledToHidden').returns(false);
+
+      await domTree.toggleHideElement(childNode1);
+
+      assert.isUndefined(lastChange());
     });
 
     it('ignores late requestDocument resolution for a DOMModel that was removed via modelRemoved', async () => {

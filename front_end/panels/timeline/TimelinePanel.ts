@@ -746,7 +746,9 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     config.showAllEvents = Common.Settings.Settings.instance()
                                .resolve(SettingUIRegistration.TimelineSettings.timelineShowAllEventsSettingDescriptor)
                                .get();
-    config.debugMode = Common.Settings.Settings.instance().moduleSetting('timeline-debug-mode').get() as boolean;
+    config.debugMode = Common.Settings.Settings.instance()
+                           .resolve(SettingUIRegistration.TimelineSettings.timelineDebugModeSettingDescriptor)
+                           .get();
     config.enableSoftNavigation =
         Common.Settings.Settings.instance().moduleSetting('timeline-enable-soft-navigations').get() as boolean;
     return config;

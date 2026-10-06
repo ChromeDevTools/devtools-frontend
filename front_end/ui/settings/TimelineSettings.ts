@@ -10,3 +10,10 @@ export const timelineShowAllEventsSettingDescriptor: Common.Settings.SettingDesc
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const timelineDebugModeSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-debug-mode',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

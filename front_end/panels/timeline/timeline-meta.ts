@@ -400,13 +400,9 @@ SettingsUI.SettingUIRegistration.register(LiveMetrics.timelineEnableSoftNavigati
   title: i18nLazyString(UIStrings.enableSoftNavigations),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineDebugModeSettingDescriptor, {
   category: Common.Settings.SettingCategory.PERFORMANCE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.timelineDebugMode),
-  settingName: 'timeline-debug-mode',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 Common.Settings.registerSettingExtension({

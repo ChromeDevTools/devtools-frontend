@@ -526,7 +526,9 @@ const {SamplesIntegrator} = Trace.Helpers.SamplesIntegrator;
 
 export class TimelineUIUtils {
   static getGetDebugModeEnabled(): boolean {
-    return Common.Settings.Settings.instance().moduleSetting('timeline-debug-mode').get() as boolean;
+    return Common.Settings.Settings.instance()
+        .resolve(SettingUIRegistration.TimelineSettings.timelineDebugModeSettingDescriptor)
+        .get();
   }
   static frameDisplayName(frame: Protocol.Runtime.CallFrame): string {
     const maybeResolvedData = SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);

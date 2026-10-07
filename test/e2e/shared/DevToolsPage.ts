@@ -475,8 +475,6 @@ export class DevToolsPage extends PageWrapper {
 }
 
 export interface DevtoolsSettings {
-  enabledDevToolsExperiments: string[];
-  disabledDevToolsExperiments: string[];
   devToolsSettings: Record<string, unknown>;
   /**
    * Defined in front_end/ui/legacy/DockController.ts DockState
@@ -493,8 +491,6 @@ export interface DevtoolsSettings {
 }
 
 export const DEFAULT_DEVTOOLS_SETTINGS: DevtoolsSettings = {
-  enabledDevToolsExperiments: [],
-  disabledDevToolsExperiments: [],
   devToolsSettings: {
     veLogsTestMode: true,
   },
@@ -535,38 +531,6 @@ async function setDevToolsSettings(devToolsPata: DevToolsPage, settings: Record<
 /**
  * @internal
  */
-async function setDevToolsExperiments(devToolsPage: DevToolsPage, experiments: string[]) {
-  if (!experiments.length) {
-    return;
-  }
-  return await devToolsPage.evaluate(async experiments => {
-    // @ts-expect-error evaluate in DevTools page
-    const Root = await import('./core/root/root.js');
-    for (const experiment of experiments) {
-      Root.Runtime.experiments.setEnabled(experiment, true);
-    }
-  }, experiments);
-}
-
-/**
- * @internal
- */
-async function setDisabledDevToolsExperiments(devToolsPage: DevToolsPage, experiments: string[]) {
-  if (!experiments.length) {
-    return;
-  }
-  return await devToolsPage.evaluate(async experiments => {
-    // @ts-expect-error evaluate in DevTools page
-    const Root = await import('./core/root/root.js');
-    for (const experiment of experiments) {
-      Root.Runtime.experiments.setEnabled(experiment, false);
-    }
-  }, experiments);
-}
-
-/**
- * @internal
- */
 async function setDockingSide(devToolsPage: DevToolsPage, side: string) {
   await devToolsPage.evaluate(`
     (async function() {
@@ -587,8 +551,6 @@ export async function setupDevToolsPage(
   await Promise.all([
     devToolsPage.disableAnimations(),
     setDevToolsSettings(devToolsPage, settings.devToolsSettings),
-    setDevToolsExperiments(devToolsPage, settings.enabledDevToolsExperiments),
-    setDisabledDevToolsExperiments(devToolsPage, settings.disabledDevToolsExperiments),
   ]);
 
   await devToolsPage.reloadWithParams({panel: settings.panel}, true);

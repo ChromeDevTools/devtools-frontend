@@ -51,7 +51,7 @@ const DEVTOOLS_LINK = 'devtools-toolbar .devtools-link';
 const INFOBAR_TEXT = '.infobar-info-text';
 
 describe('The Sources Tab', function() {
-  setup({enabledDevToolsExperiments: ['instrumentation-breakpoints']});
+  setup({enabledFeatures: ['DevToolsInstrumentationBreakpoints']});
   it('reliably hits breakpoints on worker with source map', async ({devToolsPage, inspectedPage}) => {
     await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'sourcemap-stepping-source.js',
                                       'sourcemap-breakpoint.html');

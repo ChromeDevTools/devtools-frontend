@@ -13,8 +13,6 @@ import {
 } from '../helpers/elements-helpers.js';
 
 describe('Accessibility Tree in the Elements Tab', function() {
-  setup({enabledDevToolsExperiments: ['protocol-monitor']});
-
   it('displays the fuller accessibility tree', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/accessibility-simple-page.html');
     await toggleAccessibilityTree(devToolsPage);

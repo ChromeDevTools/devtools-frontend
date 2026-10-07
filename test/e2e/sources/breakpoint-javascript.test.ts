@@ -146,7 +146,7 @@ describe('The Sources Tab', function() {
   });
 
   describe('with instrumenation breackpoints', () => {
-    setup({enabledDevToolsExperiments: ['instrumentation-breakpoints']});
+    setup({enabledFeatures: ['DevToolsInstrumentationBreakpoints']});
     it('can hit a breakpoint on the main thread on a fresh DevTools', async ({devToolsPage, inspectedPage}) => {
       await openSourceCodeEditorForFile(devToolsPage, inspectedPage, 'breakpoint-hit-on-first-load.js',
                                         'breakpoint-hit-on-first-load.html');

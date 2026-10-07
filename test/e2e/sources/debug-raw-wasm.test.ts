@@ -176,7 +176,7 @@ describe('Sources Tab', function() {
     await checkBreakpointDidNotActivate(devToolsPage);
   });
   describe('with instrumentation breackpoints', () => {
-    setup({enabledDevToolsExperiments: ['instrumentation-breakpoints']});
+    setup({enabledFeatures: ['DevToolsInstrumentationBreakpoints']});
     it('is able to step with state in multi-threaded code in main thread', async ({devToolsPage, inspectedPage}) => {
       await devToolsPage.installEventListener(DEBUGGER_PAUSED_EVENT);
       const fileName = 'stepping-with-state.wasm';

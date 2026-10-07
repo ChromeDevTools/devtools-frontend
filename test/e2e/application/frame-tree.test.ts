@@ -66,7 +66,7 @@ const getFieldValuesTextContent = async (devToolsPage: DevToolsPage) => {
 };
 
 describe('The Application Tab', () => {
-  setup({dockingMode: 'undocked', disabledDevToolsExperiments: ['protocol-monitor']});
+  setup({dockingMode: 'undocked'});
 
   it('shows details for a frame when clicked on in the frame tree', async ({devToolsPage, inspectedPage}) => {
     expectError('Request Network.enableDeviceBoundSessions failed. {"code":-32603,"message":"Internal error"}');

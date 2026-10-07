@@ -205,7 +205,7 @@ describe('Multi-Workers', function() {
     });
 
     describe(`hits breakpoints added to workers ${withOrWithout}`, () => {
-      setup({enabledDevToolsExperiments: ['instrumentation-breakpoints']});
+      setup({enabledFeatures: ['DevToolsInstrumentationBreakpoints']});
 
       async function setupInstrumentationBreakpoints(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
         await waitForSourceFiles(devToolsPage, SourceFileEvents.SOURCE_FILE_LOADED,

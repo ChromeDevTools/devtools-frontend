@@ -244,8 +244,6 @@ export function mergeSettings(s1: E2E.SuiteSettings, s2: E2E.HarnessSettings): E
     enabledFeatures: mergeAsSet(s1.enabledFeatures, s2.enabledFeatures),
     disabledFeatures: mergeAsSet(s1.disabledFeatures, s2.disabledFeatures),
     extensions: mergeAsSet(s1.extensions, s2.extensions),
-    enabledDevToolsExperiments: mergeAsSet(s1.enabledDevToolsExperiments, s2.enabledDevToolsExperiments),
-    disabledDevToolsExperiments: mergeAsSet(s1.disabledDevToolsExperiments, s2.disabledDevToolsExperiments),
     devToolsSettings: {...(s2.devToolsSettings ?? {}), ...(s1.devToolsSettings ?? {})},
     dockingMode: s1.dockingMode ?? s2.dockingMode,
     panel: s1.panel ?? s2.panel,

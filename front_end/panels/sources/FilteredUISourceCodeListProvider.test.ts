@@ -16,6 +16,7 @@ import {
   createFileSystemUISourceCode,
 } from '../../testing/UISourceCodeHelpers.js';
 import {render, type TemplateResult} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Sources from './sources.js';
 
@@ -104,7 +105,8 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     const {workspace, project, uiSourceCode} = setUpEnvironmentWithUISourceCode(url, resourceType);
 
     // ignore the uiSourceCode
-    const setting = Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code');
+    const setting =
+        Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
     setting.set(true);
     Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiSourceCode);
 

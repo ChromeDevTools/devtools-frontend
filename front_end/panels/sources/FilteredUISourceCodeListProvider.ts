@@ -10,6 +10,7 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import {Directives, html, nothing, type TemplateResult} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import {FilePathScoreFunction} from './FilePathScoreFunction.js';
 import filteredUISourceCodeListProviderStyles from './filteredUISourceCodeListProvider.css.js';
@@ -91,7 +92,9 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     if (this.uiSourceCodeIds.has(uiSourceCode.canonicalScriptId())) {
       return false;
     }
-    if (Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code').get() &&
+    if (Common.Settings.Settings.instance()
+            .resolve(SettingsUI.SourcesSettings.navigatorJustMyCodeSettingDescriptor)
+            .get() &&
         Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
             uiSourceCode)) {
       return false;

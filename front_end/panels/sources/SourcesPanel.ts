@@ -593,12 +593,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
     }
   }
 
-  private addSettingMenuItem(contextMenu: UI.ContextMenu.Section,
-                             settingOrSettingName: Common.Settings.Setting<boolean>|string,
+  private addSettingMenuItem(contextMenu: UI.ContextMenu.Section, setting: Common.Settings.Setting<boolean>,
                              menuText: Common.UIString.LocalizedString): void {
-    const setting = typeof settingOrSettingName === 'string' ?
-        Common.Settings.Settings.instance().moduleSetting(settingOrSettingName) :
-        settingOrSettingName;
     contextMenu.appendCheckboxItem(
         menuText, () => setting.set(!setting.get()), {checked: setting.get(), jslogContext: setting.name});
   }
@@ -614,7 +610,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
         Common.Settings.Settings.instance().resolve(Settings.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor),
         i18nString(UIStrings.groupByAuthored));
     this.addSettingMenuItem(
-        contextMenu.viewSection(), 'navigator-just-my-code', i18nString(UIStrings.hideIgnoreListed));
+        contextMenu.viewSection(),
+        Common.Settings.Settings.instance().resolve(Settings.SourcesSettings.navigatorJustMyCodeSettingDescriptor),
+        i18nString(UIStrings.hideIgnoreListed));
   }
 
   updateLastModificationTime(): void {
@@ -903,7 +901,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const eventTarget = (event.target as Node);
     if (!uiSourceCode.project().isServiceProject() &&
         !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) &&
-        !(Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code').get() &&
+        !(Common.Settings.Settings.instance()
+              .resolve(Settings.SourcesSettings.navigatorJustMyCodeSettingDescriptor)
+              .get() &&
           Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
               uiSourceCode))) {
       contextMenu.revealSection().appendItem(

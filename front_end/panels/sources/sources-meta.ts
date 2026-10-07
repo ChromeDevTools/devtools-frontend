@@ -1571,12 +1571,6 @@ UI.ActionRegistration.registerActionExtension({
   ],
 });
 
-Common.Settings.registerSettingExtension({
-  settingName: 'navigator-just-my-code',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-});
-
 SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
   title: i18nLazyString(UIStrings.javaScriptSourceMaps),

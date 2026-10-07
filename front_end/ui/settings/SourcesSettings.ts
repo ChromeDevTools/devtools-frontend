@@ -15,3 +15,9 @@ export const navigatorGroupByAuthoredSettingDescriptor: Common.Settings.SettingD
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 };
+
+export const navigatorJustMyCodeSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'navigator-just-my-code',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};

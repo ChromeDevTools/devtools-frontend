@@ -115,3 +115,10 @@ export const timelineCountersGraphJsEventListenersSettingDescriptor: Common.Sett
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.GLOBAL,
 };
+
+export const timelineCountersGraphGpuMemoryUsedKbSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-counters-graph-gpu-memory-used-kb',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.GLOBAL,
+};

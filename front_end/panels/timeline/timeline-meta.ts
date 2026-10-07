@@ -566,11 +566,8 @@ SettingsUI.SettingUIRegistration.register(
       title: i18nLazyString(UIStrings.listeners),
     });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.GLOBAL,
-  title: i18nLazyString(UIStrings.gpuMemory),
-  settingName: 'timeline-counters-graph-gpu-memory-used-kb',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-});
+SettingsUI.SettingUIRegistration.register(
+    SettingsUI.TimelineSettings.timelineCountersGraphGpuMemoryUsedKbSettingDescriptor, {
+      category: Common.Settings.SettingCategory.NONE,
+      title: i18nLazyString(UIStrings.gpuMemory),
+    });

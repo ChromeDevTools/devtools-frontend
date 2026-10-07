@@ -149,7 +149,10 @@ export class CountersGraph extends UI.Widget.VBox {
             'hsl(38, 90%, 43%)'));
 
     this.gpuMemoryCounter = this.createCounter(
-        i18nString(UIStrings.gpuMemory), 'gpu-memory-used-kb', 'hsl(300, 90%, 43%)', i18n.ByteUtilities.bytesToString);
+        i18nString(UIStrings.gpuMemory),
+        Common.Settings.Settings.instance().resolve(
+            SettingUIRegistration.TimelineSettings.timelineCountersGraphGpuMemoryUsedKbSettingDescriptor),
+        'hsl(300, 90%, 43%)', i18n.ByteUtilities.bytesToString);
     this.countersByName.set('gpuMemoryUsedKB', this.gpuMemoryCounter);
 
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
@@ -210,7 +213,7 @@ export class CountersGraph extends UI.Widget.VBox {
     this.currentValuesBar.id = 'counter-values-bar';
   }
 
-  private createCounter(uiName: Common.UIString.LocalizedString, setting: Common.Settings.Setting<boolean>|string,
+  private createCounter(uiName: Common.UIString.LocalizedString, setting: Common.Settings.Setting<boolean>,
                         color: string, formatter?: ((arg0: number) => string)): Counter {
     const counter = new Counter();
     this.counters.push(counter);
@@ -423,15 +426,13 @@ export class CounterUI {
   private readonly marker: HTMLElement;
 
   constructor(countersPane: CountersGraph, title: Common.UIString.LocalizedString,
-              setting: Common.Settings.Setting<boolean>|string, graphColor: string, counter: Counter,
+              setting: Common.Settings.Setting<boolean>, graphColor: string, counter: Counter,
               formatter: (arg0: number) => string) {
     this.countersPane = countersPane;
     this.counter = counter;
     this.formatter = formatter;
 
-    this.setting = typeof setting === 'string' ?
-        Common.Settings.Settings.instance().moduleSetting('timeline-counters-graph-' + setting) :
-        setting;
+    this.setting = setting;
     this.filter = new UI.Toolbar.ToolbarSettingCheckbox(this.setting, title);
     const parsedColor = Common.Color.parse(graphColor);
     if (parsedColor) {

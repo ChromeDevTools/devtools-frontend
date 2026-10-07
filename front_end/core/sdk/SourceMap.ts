@@ -905,6 +905,12 @@ export class SourceMap {
     return this.hasEncodedScopeInfo() && (this.#scopesInfo?.hasOutlinedFunctions() ?? false);
   }
 
+  /** See {@link SourceMapScopesInfo.outlinedFunctionRanges}. Empty without encoded scopes. */
+  outlinedFunctionRanges(generatedLine: number, generatedColumn: number): PositionRange[] {
+    return this.hasEncodedScopeInfo() ? this.#scopesInfo?.outlinedFunctionRanges(generatedLine, generatedColumn) ?? [] :
+                                        [];
+  }
+
   /** See {@link SourceMapScopesInfo.artificialFunctionRanges}. Empty without encoded scopes. */
   artificialFunctionRanges(): PositionRange[] {
     return this.hasEncodedScopeInfo() ? this.#scopesInfo?.artificialFunctionRanges() ?? [] : [];

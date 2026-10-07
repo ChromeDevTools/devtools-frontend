@@ -502,6 +502,8 @@ describe('SourceMapScopesInfo', () => {
     //  6: }
     //  7: function o(){}        outlined part of F (hidden)
     //  8: function h(){}        helper without original scope (hidden)
+    //  9: function G(){}        G
+    // 10: function p(){}        outlined part of G (hidden, unless `outlined` is false)
     function createInfo({outlined = true}: {outlined?: boolean} = {}): SDK.SourceMapScopesInfo.SourceMapScopesInfo {
       const builder = new ScopeInfoBuilder();
       builder.startSource()
@@ -510,6 +512,10 @@ describe('SourceMapScopesInfo', () => {
           .startScope(2, 2, {kind: 'block', key: 'block'})
           .endScope(3, 3)
           .endScope(10, 1)
+          .startScope(12, 10, {kind: 'function', name: 'G', key: 'G', isStackFrame: true})
+          .startScope(13, 2, {kind: 'block', key: 'blockG'})
+          .endScope(14, 3)
+          .endScope(15, 1)
           .endScope(20, 0)
           .endSource();
       builder.startRange(0, 0, {scopeKey: 'global'})
@@ -529,7 +535,11 @@ describe('SourceMapScopesInfo', () => {
           .endRange(7, 14)
           .startRange(8, 0, {isStackFrame: true, isHidden: true})
           .endRange(8, 14)
-          .endRange(9, 0);
+          .startRange(9, 0, {scopeKey: 'G', isStackFrame: true})
+          .endRange(9, 14)
+          .startRange(10, 0, {scopeKey: 'blockG', isStackFrame: true, isHidden: outlined})
+          .endRange(10, 14)
+          .endRange(11, 0);
       return new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
     }
 
@@ -563,6 +573,21 @@ describe('SourceMapScopesInfo', () => {
     it('hasOutlinedFunctions detects hidden generated functions with a definition', () => {
       assert.isTrue(createInfo().hasOutlinedFunctions());
       assert.isFalse(createInfo({outlined: false}).hasOutlinedFunctions());
+    });
+
+    it('outlinedFunctionRanges returns the outlined parts of the current function', () => {
+      const info = createInfo();
+      assert.deepEqual(info.outlinedFunctionRanges(0, 5), [range(7, 0, 7, 14)]);
+      // From within the outlined part itself.
+      assert.deepEqual(info.outlinedFunctionRanges(7, 3), [range(7, 0, 7, 14)]);
+      assert.deepEqual(info.outlinedFunctionRanges(9, 3), [range(10, 0, 10, 14)]);
+    });
+
+    it('outlinedFunctionRanges is empty without outlined parts or outside of authored functions', () => {
+      assert.deepEqual(createInfo({outlined: false}).outlinedFunctionRanges(0, 5), []);
+      // The nested function `n` and the helper `h` have no original scope.
+      assert.deepEqual(createInfo().outlinedFunctionRanges(5, 3), []);
+      assert.deepEqual(createInfo().outlinedFunctionRanges(8, 3), []);
     });
 
     it('artificialFunctionRanges returns generated functions without any original scope', () => {

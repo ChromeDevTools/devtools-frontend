@@ -71,8 +71,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                       resize: true,
                       keydown: 'ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Space',
                     })}>
-          <td class="service-worker-update-timing-bar-clickable" tabindex="0" role="switch"
-              aria-checked=${expanded ? 'true' : 'false'}
+          <td class="service-worker-update-timing-bar-clickable" tabindex="0" role="button"
+              aria-expanded=${expanded ? 'true' : 'false'}
+              aria-label=${`#${range.id} ${phaseName}`}
               @focus=${input.onFocus}
               @keydown=${(e: Event) => input.onKeydown(e, key)}
               @click=${(e: Event) => input.onClick(e, key)}

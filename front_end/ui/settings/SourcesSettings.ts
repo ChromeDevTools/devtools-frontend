@@ -42,3 +42,10 @@ export const textEditorTabMovesFocusSettingDescriptor: Common.Settings.SettingDe
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const textEditorAutoDetectIndentSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'text-editor-auto-detect-indent',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

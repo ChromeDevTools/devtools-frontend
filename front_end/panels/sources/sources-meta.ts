@@ -1701,13 +1701,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.textEditorT
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.textEditorAutoDetectIndentSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.detectIndentation),
-  settingName: 'text-editor-auto-detect-indent',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

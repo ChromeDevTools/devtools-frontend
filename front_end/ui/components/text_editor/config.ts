@@ -250,7 +250,7 @@ function detectIndentation(doc: CM.Text): string {
 }
 
 export const autoDetectIndent: DynamicSetting<boolean> =
-    DynamicSetting.bool('text-editor-auto-detect-indent', AutoDetectIndent);
+    DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorAutoDetectIndentSettingDescriptor, AutoDetectIndent);
 
 function matcher(decorator: CM.MatchDecorator): CM.Extension {
   return CM.ViewPlugin.define(

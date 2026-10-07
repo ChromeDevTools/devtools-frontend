@@ -101,3 +101,10 @@ export const timelineCountersGraphDocumentsSettingDescriptor: Common.Settings.Se
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.GLOBAL,
 };
+
+export const timelineCountersGraphNodesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-counters-graph-nodes',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.GLOBAL,
+};

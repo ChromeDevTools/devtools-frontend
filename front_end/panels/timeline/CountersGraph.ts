@@ -134,7 +134,12 @@ export class CountersGraph extends UI.Widget.VBox {
                            Common.Settings.Settings.instance().resolve(
                                SettingUIRegistration.TimelineSettings.timelineCountersGraphDocumentsSettingDescriptor),
                            'hsl(0, 90%, 43%)'));
-    this.countersByName.set('nodes', this.createCounter(i18nString(UIStrings.nodes), 'nodes', 'hsl(120, 90%, 43%)'));
+    this.countersByName.set(
+        'nodes',
+        this.createCounter(i18nString(UIStrings.nodes),
+                           Common.Settings.Settings.instance().resolve(
+                               SettingUIRegistration.TimelineSettings.timelineCountersGraphNodesSettingDescriptor),
+                           'hsl(120, 90%, 43%)'));
     this.countersByName.set(
         'jsEventListeners',
         this.createCounter(i18nString(UIStrings.listeners), 'js-event-listeners', 'hsl(38, 90%, 43%)'));

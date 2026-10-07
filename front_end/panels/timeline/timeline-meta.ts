@@ -555,13 +555,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineCo
   title: i18nLazyString(UIStrings.documents),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineCountersGraphNodesSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.GLOBAL,
   title: i18nLazyString(UIStrings.nodes),
-  settingName: 'timeline-counters-graph-nodes',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

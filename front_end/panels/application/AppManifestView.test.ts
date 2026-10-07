@@ -357,4 +357,60 @@ describeWithEnvironment('AppManifestView', () => {
     assert.exists(report);
     assert.isTrue(report.shadowRoot?.innerHTML.includes('Icons') || report.innerHTML.includes('Icons'));
   });
+
+  it('renders Bundle ID and Parent app name in identity section when present', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    const viewInput = {
+      identityData: {
+        name: 'Isolated Sub App',
+        shortName: 'SubApp',
+        description: 'Test Sub App',
+        appId: 'https://example.com/app',
+        recommendedId: 'https://example.com/app',
+        bundleId: 'aerugq32fjawef78932',
+        parentAppName: 'Parent Enterprise App',
+        hasId: true,
+        warnings: [],
+      },
+      onCopyId: () => {},
+    };
+    const viewOutput = {scrollToSection: new Map(), focusOnSection: new Map()};
+    Application.AppManifestView.DEFAULT_VIEW(viewInput, viewOutput, container);
+
+    const report = container.querySelector('devtools-report');
+    assert.exists(report);
+    const textContent = report.textContent || '';
+    assert.include(textContent, 'Bundle ID');
+    assert.include(textContent, 'aerugq32fjawef78932');
+    assert.include(textContent, 'Parent app name');
+    assert.include(textContent, 'Parent Enterprise App');
+
+    await assertScreenshot('application/app_manifest_view_identity_bundle_parent.png');
+  });
+
+  it('omits Bundle ID and Parent app name when not present for standard apps', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    const viewInput = {
+      identityData: {
+        name: 'Standard PWA',
+        shortName: 'PWA',
+        description: 'Standard App',
+        appId: 'https://example.com/',
+        recommendedId: 'https://example.com/',
+        hasId: true,
+        warnings: [],
+      },
+      onCopyId: () => {},
+    };
+    const viewOutput = {scrollToSection: new Map(), focusOnSection: new Map()};
+    Application.AppManifestView.DEFAULT_VIEW(viewInput, viewOutput, container);
+
+    const report = container.querySelector('devtools-report');
+    assert.exists(report);
+    const textContent = report.textContent || '';
+    assert.notInclude(textContent, 'Bundle ID');
+    assert.notInclude(textContent, 'Parent app name');
+  });
 });

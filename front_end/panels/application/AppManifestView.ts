@@ -79,6 +79,14 @@ const UIStrings = {
    */
   computedAppId: 'Computed app ID',
   /**
+   * @description Label for the Bundle ID of an Isolated Web App in the manifest view of the Application panel.
+   */
+  bundleId: 'Bundle ID',
+  /**
+   * @description Label for the parent app name of a Sub-App in the manifest view of the Application panel.
+   */
+  parentAppName: 'Parent app name',
+  /**
    * @description Tooltip text explaining what the app ID is used for in the manifest view of the Application panel.
    */
   appIdExplainer:
@@ -512,6 +520,8 @@ interface IdentitySectionData {
   description: string;
   appId: string|null;
   recommendedId: string|null;
+  bundleId?: string|null;
+  parentAppName?: string|null;
   hasId: boolean;
   warnings: Platform.UIString.LocalizedString[];
 }
@@ -618,7 +628,7 @@ function renderErrors(
 }
 
 function renderIdentity(identityData: IdentitySectionData, onCopy: () => void, output: ViewOutput): LitTemplate {
-  const {name, shortName, description, appId, recommendedId, hasId} = identityData;
+  const {name, shortName, description, appId, recommendedId, bundleId, parentAppName, hasId} = identityData;
   // clang-format off
   return html`${renderSectionHeader(i18nString(UIStrings.identity), output)}
   <div class="report-section" jslog=${VisualLogging.section('identity')}>
@@ -654,6 +664,14 @@ function renderIdentity(identityData: IdentitySectionData, onCopy: () => void, o
             })}
         </div>` : nothing}
       </devtools-report-value>` : nothing}
+    ${bundleId ? html`
+      <devtools-report-key>${i18nString(UIStrings.bundleId)}</devtools-report-key>
+      <devtools-report-value>${bundleId}</devtools-report-value>
+    ` : nothing}
+    ${parentAppName ? html`
+      <devtools-report-key>${i18nString(UIStrings.parentAppName)}</devtools-report-key>
+      <devtools-report-value>${parentAppName}</devtools-report-value>
+    ` : nothing}
     </div>`;
   // clang-format on
 }
@@ -1251,6 +1269,8 @@ export class AppManifestView extends AppManifestViewBase implements SDK.TargetMa
 
     const appId = appIdResponse?.appId || null;
     const recommendedId = appIdResponse?.recommendedId || null;
+    const bundleId = appIdResponse?.bundleId || null;
+    const parentAppName = appIdResponse?.parentAppName || null;
     if ((!data || data === '{}') && !errors.length) {
       this.view({isEmpty: true}, this.output, this.contentElement);
       this.dispatchEventToListeners(Events.MANIFEST_DETECTED, false);
@@ -1269,7 +1289,7 @@ export class AppManifestView extends AppManifestViewBase implements SDK.TargetMa
 
     const parsedManifest = JSON.parse(data);
 
-    const identityData = this.processIdentity(parsedManifest, appId, recommendedId);
+    const identityData = this.processIdentity(parsedManifest, appId, recommendedId, bundleId, parentAppName);
 
     const presentationData = this.processPresentation(parsedManifest, url);
     const protocolHandlersData = this.processProtocolHandlers(parsedManifest, url);
@@ -1534,8 +1554,8 @@ export class AppManifestView extends AppManifestViewBase implements SDK.TargetMa
     }
   }
 
-  private processIdentity(parsedManifest: Manifest, appId: string|null, recommendedId: string|null):
-      IdentitySectionData {
+  private processIdentity(parsedManifest: Manifest, appId: string|null, recommendedId: string|null,
+                          bundleId: string|null, parentAppName: string|null): IdentitySectionData {
     const description = this.stringProperty(parsedManifest, 'description');
     const warnings: Platform.UIString.LocalizedString[] = [];
     // See https://crbug.com/1354304 for details.
@@ -1548,6 +1568,8 @@ export class AppManifestView extends AppManifestViewBase implements SDK.TargetMa
       description: this.stringProperty(parsedManifest, 'description'),
       appId,
       recommendedId,
+      bundleId,
+      parentAppName,
       hasId: Boolean(this.stringProperty(parsedManifest, 'id')),
       warnings,
     };

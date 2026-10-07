@@ -337,7 +337,7 @@
       base_feature: "none",
     },
     {
-      name: "AIClassifierAPI",
+      name: "AIDecisionModelAPI",
       status: {
         "Win": "experimental",
         "Mac": "experimental",
@@ -345,6 +345,10 @@
         "ChromeOS": "experimental",
         "default": "",
       },
+    },
+    {
+      name: "AIDecisionModelAPIForWorkers",
+      status: "test",
     },
     {
       name: "AIEmbeddingsAPI",
@@ -1242,9 +1246,9 @@
     {
       // This is a kill switch for a refactor of the way activation
       // behaviors are triggered. It should not affect behavior.
-      // This flag shipped in M155 and can be removed in M158.
+      // This flag shipped in M157 and can be removed in M160.
       name: "CleanUpActivationBehavior",
-      status: "experimental",
+      status: "stable",
     },
     {
       // Set currentTarget to null after dispatch for EventTarget.
@@ -1531,6 +1535,13 @@
     {
       name: "CreateInlineContentsAnonymousBlock",
       status: "stable",
+    },
+    {
+      // TODO(crbug.com/547302825): Do not enable this feature before adding
+      // Permissions Policy support.
+      name: "CrossOriginStorage",
+      base_feature: "CrossOriginStorage",
+      public: true,
     },
     {
       // When enabled, allowlisting script urls and scripts used in eval via
@@ -2347,6 +2358,37 @@
     {
       name: "DeclarativeSkeletons",
       status: "test",
+    },
+    {
+      // Declarative WebMCP: tools declared via HTML <form> attributes
+      // (`toolname`, `tooldescription`, ...), and the associated CSS
+      // pseudo-classes and SubmitEvent extensions. It builds on top of the
+      // imperative `WebMCP` feature (`document.modelContext`).
+      //
+      // This shares the "WebMCP" origin trial with imperative WebMCP, so that
+      // declarative WebMCP keeps working for origin trial participants, while
+      // still being independently controllable (e.g. kill-switchable) through
+      // its own base feature. Declarative WebMCP builds on the imperative
+      // infrastructure, so C++ callers should use
+      // ModelContext::IsDeclarativeWebMCPEnabled(), which also requires
+      // `WebMCP` to be enabled (and thus honors the kWebMCP kill switch).
+      // `depends_on` can't be used here since depending on an origin trial
+      // feature is not supported.
+      //
+      // Overriding the kWebMCP base feature (e.g. --enable-features=WebMCP)
+      // also sets this feature; see content/child/runtime_features.cc. An
+      // explicit kDeclarativeWebMCP override takes precedence.
+      name: "DeclarativeWebMCP",
+      origin_trial_feature_name: "WebMCP",
+      origin_trial_allows_third_party: true,
+      public: true,
+      base_feature_status: "enabled",
+      copied_from_base_feature_if: "overridden",
+      implied_by: [
+        "WebMCPDeclarativeFileInput",
+        "WebMCPFormAssociatedCustomElements"
+      ],
+      status: "experimental",
     },
     {
       // Killswitch for https://crbug.com/400317114 fix.
@@ -4178,6 +4220,7 @@
       // family style matching, falling back to AppKit/CoreText weights if the
       // OS/2 table is unavailable. See https://crbug.com/543243014.
       name: "MacFontWeightFromOS2",
+      status: "stable",
     },
     {
       name: "MachineLearningNeuralNetwork",
@@ -4428,6 +4471,10 @@
       status: "stable",
     },
     {
+      // Support Nastaliq script. crbug.com/569667449
+      name: "NastaliqScript",
+    },
+    {
       name: "NavigateEventDeferCrossDocumentCommit",
       status: "experimental",
     },
@@ -4491,8 +4538,8 @@
       // https://chromestatus.com/feature/5054329641893888
       // streamHTML, appendHTML, etc.
       name: "NewHTMLSettingMethods",
-      status: "experimental",
-      depends_on: ["SetHTMLCanRunScripts", "StreamingSanitizer", "TrustedTypesCreateParserOptions"]
+      status: "stable",
+      depends_on: ["SetHTMLCanRunScripts", "TrustedTypesCreateParserOptions"]
     },
     {
       // Fix for https://crbug.com/482862753
@@ -5372,11 +5419,6 @@
       status: "stable",
     },
     {
-      // See https://crbug.com/539212797
-      name: "RemoveTargetCurrent",
-      status: "stable",
-    },
-    {
       // See https://issues.chromium.org/issues/41311101
       name: "RemoveVisibleSelectionInDOMSelection",
       status: "test",
@@ -5564,7 +5606,7 @@
       // Places ruby annotations clear of the base's underline or overline.
       // https://drafts.csswg.org/css-ruby-1/#ruby-text-decoration
       name: "RubyTextDecorationSpacing",
-      status: "test",
+      status: "stable",
     },
     {
       // Runs a microtask checkpoint before prepare script in
@@ -6257,12 +6299,6 @@
       status: "experimental",
     },
     {
-      // Performs sanitization while parsing instead of post-processing a parsed
-      // fragment. https://crbug.com/498272014
-      name: "StreamingSanitizer",
-      status: "stable",
-    },
-    {
       name: "StrictMimeTypesForWorkers",
       status: "experimental",
     },
@@ -6288,6 +6324,12 @@
     {
       name: "SubframeMouseCaptureOwner",
       status: "stable",
+    },
+    {
+      // Require the requesting view to have focus before allowing it go
+      // fullscreen, unless it has a fullscreen token through capability
+      // delegation. https://crbug.com/40052279
+      name: "SuppressFullscreenFromUnfocusedView",
     },
     // 'pointercancel' and boundary leave ('pointerout' and 'pointerleave')
     // events would now fire after a mouse drag start, matching the spec's
@@ -6354,16 +6396,16 @@
       status: "stable",
     },
     {
-      name: "SvgIgnoreOuterTransforms",
-      status: "stable",
-    },
-    {
       name: "SvgImageAnimationReset",
       status: "stable",
     },
     {
       name: "SvgImageNonUniformScalingFix",
       status: "stable",
+    },
+    {
+      name: "SvgIncrementalStyle",
+      status: "test",
     },
     {
       name: "SvgInlineRootPixelSnappingScaleAdjustment",
@@ -6760,7 +6802,7 @@
       // For example, it can enforce that any HTML setter would go through a
       // sanitizer. See https://github.com/w3c/trusted-types/issues/594
       name: "TrustedTypesCreateParserOptions",
-      status: "experimental",
+      status: "stable",
       depends_on: ["SanitizerAPI", "SetHTMLCanRunScripts"],
     },
     {
@@ -7326,6 +7368,8 @@
       status: "stable",
     },
     {
+      // Imperative WebMCP: `document.modelContext` and its tool
+      // registration/execution APIs. See also `DeclarativeWebMCP`.
       name: "WebMCP",
       origin_trial_feature_name: "WebMCP",
       origin_trial_allows_third_party: true,
@@ -7335,8 +7379,7 @@
       // Note that `depends_on` isn't supported by origin trials.
       implied_by: [
         "WebMCPDeclarativeFileInput",
-        "WebMCPFormAssociatedCustomElements",
-        "WebMCPTesting"
+        "WebMCPFormAssociatedCustomElements"
       ],
       status: "experimental",
     },
@@ -7348,10 +7391,6 @@
       // Support for form-associated custom elements in declarative
       // WebMCP tools.
       name: "WebMCPFormAssociatedCustomElements",
-      status: "experimental",
-    },
-    {
-      name: "WebMCPTesting",
       status: "experimental",
     },
     {

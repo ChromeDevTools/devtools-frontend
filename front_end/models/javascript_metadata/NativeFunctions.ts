@@ -227,7 +227,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer","SemanticEmbedder"]
+    receivers: ["CredentialsContainer","DecisionModel","SemanticEmbedder"]
   },
   {
     name: "defineProperty",
@@ -8090,6 +8090,10 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
     signatures: [["decapsulationAlgorithm","decapsulationKey","ciphertext"]]
   },
   {
+    name: "requestFileHandle",
+    signatures: [["hash","?options"]]
+  },
+  {
     name: "userAgentAllowsProtocol",
     signatures: [["protocol"]]
   },
@@ -8306,6 +8310,14 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
     signatures: [["animatorName","effects","?timeline","?options"]]
   },
   {
+    name: "availability",
+    signatures: [["?options"]]
+  },
+  {
+    name: "decide",
+    signatures: [["input","?options"]]
+  },
+  {
     name: "LanguageModelToolCall",
     signatures: [["init"]]
   },
@@ -8316,10 +8328,6 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   {
     name: "LanguageModelToolError",
     signatures: [["init"]]
-  },
-  {
-    name: "availability",
-    signatures: [["?options"]]
   },
   {
     name: "embed",
@@ -8399,7 +8407,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "createParserOptions",
-    signatures: [["input"]]
+    signatures: [["?input","...args"]]
   },
   {
     name: "createPolicy",

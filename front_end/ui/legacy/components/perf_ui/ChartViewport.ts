@@ -6,6 +6,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as RenderCoordinator from '../../../components/render_coordinator/render_coordinator.js';
+import * as SettingsUI from '../../../settings/settings.js';
 import * as UI from '../../legacy.js';
 
 import chartViewPortStyles from './chartViewport.css.js';
@@ -231,7 +232,9 @@ export class ChartViewport extends UI.Widget.VBox {
    * 4. Trackpad: Mouse Wheel AND horizontal scroll (deltaX > deltaY): --> Zoom
    */
   private onMouseWheel(wheelEvent: WheelEvent): void {
-    const navigation = Common.Settings.Settings.instance().moduleSetting('flamechart-selected-navigation').get();
+    const navigation = Common.Settings.Settings.instance()
+                           .resolve(SettingsUI.TimelineSettings.flamechartSelectedNavigationSettingDescriptor)
+                           .get();
     // Delta for navigation left, right, up and down.
     // Calculated from horizontal or vertical scroll delta, depending on which one exists.
     const panDelta = (wheelEvent.deltaY || wheelEvent.deltaX) / 53 * this.offsetHeight / 8;

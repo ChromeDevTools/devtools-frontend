@@ -122,3 +122,10 @@ export const timelineCountersGraphGpuMemoryUsedKbSettingDescriptor: Common.Setti
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.GLOBAL,
 };
+
+export const flamechartSelectedNavigationSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'flamechart-selected-navigation',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'classic',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

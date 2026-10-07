@@ -8,8 +8,7 @@ import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
 const UIStrings = {
     /**
-     * @description Hover text for an info icon in the Private State Token panel.
-     * Previously known as 'Trust Tokens'.
+     * @description Label for the private state tokens tree element in the Application panel sidebar.
      */
     trustTokens: 'Private state tokens',
 };

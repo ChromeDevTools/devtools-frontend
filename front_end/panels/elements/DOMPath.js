@@ -24,6 +24,9 @@ export const cssPath = function (node, optimized) {
             break;
         }
         contextNode = contextNode.parentNode;
+        while (contextNode?.isViewTransitionPseudoNode()) {
+            contextNode = contextNode.parentNode;
+        }
     }
     steps.reverse();
     return steps.reduce((acc, step) => {
@@ -73,7 +76,10 @@ const cssPathStep = function (node, optimized, isTargetNode) {
     }
     if (node.pseudoType()) {
         const pseudoIdentifier = node.pseudoIdentifier();
-        return new Step(node.nodeNameInCorrectCase() + (pseudoIdentifier ? `(${pseudoIdentifier})` : ''), false);
+        if (pseudoIdentifier) {
+            return new Step(`${node.nodeNameInCorrectCase()}(${CSS.escape(pseudoIdentifier)})`, false);
+        }
+        return new Step(node.nodeNameInCorrectCase(), false);
     }
     const id = node.getAttribute('id');
     if (optimized) {

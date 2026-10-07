@@ -1567,6 +1567,13 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.CSS.ForceStartingStyleRequest];
       returnType: void;
     };
+    /**
+     * Forces a position-try option for the given node.
+     */
+    'CSS.forcePositionTryOption': {
+      paramsType: [Protocol.CSS.ForcePositionTryOptionRequest];
+      returnType: void;
+    };
     'CSS.getBackgroundColors': {
       paramsType: [Protocol.CSS.GetBackgroundColorsRequest];
       returnType: Protocol.CSS.GetBackgroundColorsResponse;

@@ -62,7 +62,6 @@ const DEFAULT_VIEW = (input, _output, target) => {
             title: input.title,
             comments: [...item.thread.comments],
             onAddComment: input.onAddComment,
-            onClose: input.onCloseCommentThread,
         })}
             </div>
           `;
@@ -238,7 +237,6 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
             activePin: null,
             title: { text: '' },
             onAddComment: () => { },
-            onCloseCommentThread: this.#handleCloseCommentThread,
         }, undefined, this.contentElement);
     }
     #renderWithTitle(activeThread, title) {
@@ -269,7 +267,6 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
                     }
                 }, AUTO_CLOSE_DELAY_MS);
             },
-            onCloseCommentThread: this.#handleCloseCommentThread,
         };
         this.#view(viewInput, undefined, this.contentElement);
     }

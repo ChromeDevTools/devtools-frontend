@@ -1354,6 +1354,47 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/timeline/overlays/components/TimeRangeOverlay.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
+function visibleOverlayWidth(overlayRect, canvasRect) {
+  const { x: overlayStartX, width } = overlayRect;
+  const overlayEndX = overlayStartX + width;
+  const canvasStartX = canvasRect.x;
+  const canvasEndX = canvasRect.x + canvasRect.width;
+  const leftVisible = Math.max(canvasStartX, overlayStartX);
+  const rightVisible = Math.min(canvasEndX, overlayEndX);
+  return rightVisible - leftVisible;
+}
+function applyLabelPosition(overlay, rangeContainer, durationBox, options) {
+  const { canvasRect, hideLabelIfTooNarrow } = options;
+  const paddingForScrollbar = 9;
+  const overlayRect = overlay.getBoundingClientRect();
+  const labelRect = rangeContainer.getBoundingClientRect();
+  const visibleWidth = visibleOverlayWidth(overlayRect, canvasRect) - paddingForScrollbar;
+  const durationBoxLength = durationBox.getBoundingClientRect().width;
+  if (!durationBoxLength) {
+    return false;
+  }
+  const hideLabel = hideLabelIfTooNarrow && visibleWidth <= durationBoxLength;
+  rangeContainer.classList.toggle("labelHidden", hideLabel);
+  if (hideLabel) {
+    return true;
+  }
+  const labelLeftMarginToCenter = (overlayRect.width - labelRect.width) / 2;
+  const newLabelX = overlayRect.x + labelLeftMarginToCenter;
+  const labelOffLeftOfScreen = newLabelX < canvasRect.x;
+  rangeContainer.classList.toggle("offScreenLeft", labelOffLeftOfScreen);
+  const rightBound = canvasRect.x + canvasRect.width;
+  const labelRightEdge = overlayRect.x + labelLeftMarginToCenter + labelRect.width;
+  const labelOffRightOfScreen = labelRightEdge > rightBound;
+  rangeContainer.classList.toggle("offScreenRight", labelOffRightOfScreen);
+  if (labelOffLeftOfScreen) {
+    rangeContainer.style.marginLeft = `${Math.abs(canvasRect.x - overlayRect.x) + paddingForScrollbar}px`;
+  } else if (labelOffRightOfScreen) {
+    rangeContainer.style.marginRight = `${overlayRect.right - canvasRect.right + paddingForScrollbar}px`;
+  } else {
+    rangeContainer.style.margin = "0px";
+  }
+  return true;
+}
 var DEFAULT_VIEW = (input, output, target) => {
   const handleKeyDown = (event) => {
     if (event.key === Platform2.KeyboardUtilities.ENTER_KEY || event.key === Platform2.KeyboardUtilities.ESCAPE_KEY) {
@@ -1364,6 +1405,8 @@ var DEFAULT_VIEW = (input, output, target) => {
       }
     }
   };
+  let rangeContainer;
+  let durationBox;
   render3(
     html3`
         <style>${timeRangeOverlay_css_default}</style>
@@ -1372,7 +1415,7 @@ var DEFAULT_VIEW = (input, output, target) => {
           role="region"
           aria-label=${i18nString3(UIStrings3.timeRange)}
           ${Directives3.ref((el) => {
-      output.rangeContainer = el instanceof HTMLElement ? el : void 0;
+      rangeContainer = el instanceof HTMLElement ? el : void 0;
     })}
         >
           <span
@@ -1395,13 +1438,20 @@ var DEFAULT_VIEW = (input, output, target) => {
           <span
             class="duration"
             ${Directives3.ref((el) => {
-      output.durationBox = el instanceof HTMLElement ? el : void 0;
+      durationBox = el instanceof HTMLElement ? el : void 0;
     })}
           >${input.durationText}</span>
         </span>
       `,
     target
   );
+  const renderedRangeContainer = rangeContainer;
+  const renderedDurationBox = durationBox;
+  if (renderedRangeContainer && renderedDurationBox) {
+    output.positionLabel = (options) => applyLabelPosition(target, renderedRangeContainer, renderedDurationBox, options);
+  } else {
+    output.positionLabel = () => false;
+  }
 };
 var TimeRangeOverlay = class extends UI2.Widget.Widget {
   #duration = null;
@@ -1427,7 +1477,8 @@ var TimeRangeOverlay = class extends UI2.Widget.Widget {
   #view;
   #viewOutput = {
     focusLabel: () => {
-    }
+    },
+    positionLabel: () => false
   };
   constructor(element, view = DEFAULT_VIEW) {
     super(element);
@@ -1464,64 +1515,31 @@ var TimeRangeOverlay = class extends UI2.Widget.Widget {
     this.requestUpdate();
   }
   /**
-   * This calculates how much of the time range is in the user's view. This is
-   * used to determine how much of the label can fit into the view, and if we
-   * should even show the label.
-   */
-  #visibleOverlayWidth(overlayRect) {
-    if (!this.#canvasRect) {
-      return 0;
-    }
-    const { x: overlayStartX, width } = overlayRect;
-    const overlayEndX = overlayStartX + width;
-    const canvasStartX = this.#canvasRect.x;
-    const canvasEndX = this.#canvasRect.x + this.#canvasRect.width;
-    const leftVisible = Math.max(canvasStartX, overlayStartX);
-    const rightVisible = Math.min(canvasEndX, overlayEndX);
-    return rightVisible - leftVisible;
-  }
-  /**
    * We use this method after the overlay has been positioned in order to move
    * the label as required to keep it on screen.
-   * If the label is off to the left or right, we fix it to that corner and
-   * align the text so the label is visible as long as possible.
    *
    * This runs synchronously, rather than through `requestUpdate()`, so that
-   * `Overlays` can reposition the label in the same frame as the range.
+   * `Overlays` can reposition the label in the same frame as the range. The
+   * current state is passed to the view as arguments, rather than through the
+   * view input, because the last render may not include it yet.
    */
   updateLabelPositioning() {
-    const { rangeContainer, durationBox } = this.#viewOutput;
-    if (!rangeContainer || !this.#canvasRect) {
+    if (!this.#canvasRect) {
       return;
     }
-    const paddingForScrollbar = 9;
-    const overlayRect = this.element.getBoundingClientRect();
-    const labelRect = rangeContainer.getBoundingClientRect();
-    const visibleOverlayWidth = this.#visibleOverlayWidth(overlayRect) - paddingForScrollbar;
-    const durationBoxLength = durationBox?.getBoundingClientRect().width;
-    if (!durationBoxLength) {
+    const measured = this.#viewOutput.positionLabel({
+      canvasRect: this.#canvasRect,
+      // Do not hide the label when:
+      // 1. It is empty (a new range that the user needs to type into).
+      // 2. It is currently being edited (`#isLabelEditable` is true). For a
+      //    non-empty label, `#isLabelEditable` is true only while the user has
+      //    double-clicked to edit the label (or is still typing into an
+      //    initially empty label) and has not yet blurred it (`@focusout`
+      //    resets `#isLabelEditable` to false).
+      hideLabelIfTooNarrow: !this.#isLabelEditable && this.#label.length > 0
+    });
+    if (!measured) {
       return;
-    }
-    const overlayTooNarrow = visibleOverlayWidth <= durationBoxLength;
-    const hideLabel = overlayTooNarrow && !this.#isLabelEditable && this.#label.length > 0;
-    rangeContainer.classList.toggle("labelHidden", hideLabel);
-    if (hideLabel) {
-      return;
-    }
-    const labelLeftMarginToCenter = (overlayRect.width - labelRect.width) / 2;
-    const newLabelX = overlayRect.x + labelLeftMarginToCenter;
-    const labelOffLeftOfScreen = newLabelX < this.#canvasRect.x;
-    rangeContainer.classList.toggle("offScreenLeft", labelOffLeftOfScreen);
-    const rightBound = this.#canvasRect.x + this.#canvasRect.width;
-    const labelRightEdge = overlayRect.x + labelLeftMarginToCenter + labelRect.width;
-    const labelOffRightOfScreen = labelRightEdge > rightBound;
-    rangeContainer.classList.toggle("offScreenRight", labelOffRightOfScreen);
-    if (labelOffLeftOfScreen) {
-      rangeContainer.style.marginLeft = `${Math.abs(this.#canvasRect.x - overlayRect.x) + paddingForScrollbar}px`;
-    } else if (labelOffRightOfScreen) {
-      rangeContainer.style.marginRight = `${overlayRect.right - this.#canvasRect.right + paddingForScrollbar}px`;
-    } else {
-      rangeContainer.style.margin = "0px";
     }
     if (this.#label === "") {
       this.#setLabelEditability(true);

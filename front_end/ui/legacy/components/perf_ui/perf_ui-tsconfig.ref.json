@@ -78,6 +78,9 @@
       "path": "../../../lit/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../settings/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../components/buttons/bundle-tsconfig.ref.json"
     },
     {

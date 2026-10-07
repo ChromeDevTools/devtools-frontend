@@ -5441,9 +5441,13 @@ var TabbedPane = class extends TabbedPaneBase {
     this.tabsById.delete(id2);
     this.tabsHistory.splice(this.tabsHistory.indexOf(tab), 1);
     this.#tabs.splice(this.#tabs.indexOf(tab), 1);
+    if (this.lastSelectedOverflowTab === tab) {
+      delete this.lastSelectedOverflowTab;
+    }
     if (tab.shown) {
       this.hideTabElement(tab);
     }
+    tab.clearSlots();
     const eventData = { tabId: id2, view: tab.view, isUserGesture: userGesture };
     this.dispatchEventToListeners("TabClosed" /* TabClosed */, eventData);
     return true;
@@ -6350,12 +6354,16 @@ var TabbedPaneTab = class {
     slot.name = `${kind}-${this.#id}`;
     this.#slotContainers[kind] = container;
     container.style.display = "none";
-    slot.addEventListener("slotchange", () => {
+    container.addEventListener("slotchange", () => {
       this.#hasSlottedContent[kind] = slot.assignedElements().length > 0;
       container.style.display = this.#hasSlottedContent[kind] ? "" : "none";
       delete this.measuredWidth;
       this.tabbedPane.requestUpdate();
     });
+  }
+  clearSlots() {
+    this.#slotContainers.icon?.removeChildren();
+    this.#slotContainers.suffix?.removeChildren();
   }
   #measureSlotContainer(kind) {
     const width = this.#slotContainers[kind]?.getBoundingClientRect().width ?? 0;
@@ -12460,7 +12468,7 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
       !this.#cancelOnBlur
     ));
     proxy.addEventListener("keydown", this.#editingValueKeyDown.bind(this));
-    placeholder.getComponentSelection()?.selectAllChildren(placeholder);
+    this.#textPrompt.selectAll();
     this.#textPrompt.focus();
   }
   #stopEditing() {
@@ -12575,6 +12583,8 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   #ariaPlaceholder = null;
   #ariaLabelFromPlaceholder = false;
   boundOnKeyDown;
+  #boundSaveSelection;
+  #boundOnFocusIn;
   boundOnInput;
   boundOnMouseWheel;
   boundClearAutocomplete;
@@ -12587,6 +12597,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   oldTabIndex;
   completeTimeout;
   #disableDefaultSuggestionForEmptyInput;
+  #savedSelection = null;
   jslogContext = void 0;
   constructor() {
     super();
@@ -12670,6 +12681,8 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     }
     this.#element = element;
     this.boundOnKeyDown = this.onKeyDown.bind(this);
+    this.#boundSaveSelection = this.#saveSelection.bind(this);
+    this.#boundOnFocusIn = this.#onFocusIn.bind(this);
     this.boundOnInput = this.onInput.bind(this);
     this.boundOnMouseWheel = this.onMouseWheel.bind(this);
     this.boundClearAutocomplete = this.clearAutocomplete.bind(this);
@@ -12696,6 +12709,10 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     this.#updateAriaRole();
     this.#element.setAttribute("contenteditable", "plaintext-only");
     this.element().addEventListener("keydown", this.boundOnKeyDown, false);
+    this.#element.addEventListener("focusin", this.#boundOnFocusIn, false);
+    if (this.element().hasFocus()) {
+      this.#onFocusIn();
+    }
     this.#element.addEventListener("input", this.boundOnInput, false);
     this.#element.addEventListener("wheel", this.boundOnMouseWheel, false);
     this.#element.addEventListener("selectstart", this.boundClearAutocomplete, false);
@@ -12749,6 +12766,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     this.clearAutocomplete();
     this.element().textContent = text;
     this.previousText = this.text();
+    this.#savedSelection = { anchorColumn: text.length, focusColumn: text.length };
     if (this.element().hasFocus()) {
       this.moveCaretToEndOfPrompt();
       this.element().scrollIntoView();
@@ -12766,17 +12784,22 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     if (endIndex < startIndex) {
       endIndex = startIndex;
     }
-    const textNode = this.element().childNodes[0];
-    const range = new Range();
-    range.setStart(textNode, startIndex);
-    range.setEnd(textNode, endIndex);
-    const selection = window.getSelection();
-    if (selection) {
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
+    this.setDOMSelection(startIndex, endIndex);
+  }
+  selectAll() {
+    this.setSelectedRange(0, this.text().length);
   }
   focus() {
+    if (!this.element().hasFocus()) {
+      if (this.#savedSelection) {
+        const textLength = this.text().length;
+        const anchorColumn = Platform12.NumberUtilities.clamp(this.#savedSelection.anchorColumn, 0, textLength);
+        const focusColumn = Platform12.NumberUtilities.clamp(this.#savedSelection.focusColumn, 0, textLength);
+        this.setDOMSelection(anchorColumn, focusColumn);
+      } else {
+        this.moveCaretToEndOfPrompt();
+      }
+    }
     this.element().focus();
   }
   title() {
@@ -12812,11 +12835,20 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   }
   removeFromElement() {
     this.clearAutocomplete();
+    this.#savedSelection = null;
     this.element().removeEventListener(
       "keydown",
       this.boundOnKeyDown,
       false
     );
+    this.element().removeEventListener(
+      "focusin",
+      this.#boundOnFocusIn,
+      false
+    );
+    if (this.#boundSaveSelection) {
+      this.element().ownerDocument.removeEventListener("selectionchange", this.#boundSaveSelection, false);
+    }
     this.element().removeEventListener("input", this.boundOnInput, false);
     this.element().removeEventListener(
       "selectstart",
@@ -12947,6 +12979,31 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners("TextChanged" /* TEXT_CHANGED */);
     this.autoCompleteSoon();
   }
+  #getOffsetInElement(container, offset) {
+    const textLength = this.text().length;
+    const beforeRange = document.createRange();
+    beforeRange.setStart(this.element(), 0);
+    beforeRange.setEnd(container, offset);
+    return Platform12.NumberUtilities.clamp(beforeRange.toString().length, 0, textLength);
+  }
+  #saveSelection() {
+    if (!this.#element || !this.element().isConnected || !this.element().hasFocus()) {
+      return;
+    }
+    const selection = this.element().getComponentSelection();
+    if (!selection || selection.rangeCount === 0 || !selection.anchorNode || !selection.focusNode) {
+      return;
+    }
+    if (!selection.anchorNode.isSelfOrDescendant(this.element()) || !selection.focusNode.isSelfOrDescendant(this.element())) {
+      return;
+    }
+    const anchorColumn = this.#getOffsetInElement(selection.anchorNode, selection.anchorOffset);
+    const focusColumn = this.#getOffsetInElement(selection.focusNode, selection.focusOffset);
+    this.#savedSelection = {
+      anchorColumn,
+      focusColumn
+    };
+  }
   acceptAutoComplete() {
     let result = false;
     if (this.isSuggestBoxVisible() && this.suggestBox) {
@@ -12973,7 +13030,15 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     }
     this.#currentSuggestion = null;
   }
+  #onFocusIn() {
+    if (this.#boundSaveSelection) {
+      this.element().ownerDocument.addEventListener("selectionchange", this.#boundSaveSelection, false);
+    }
+  }
   onBlur() {
+    if (this.#boundSaveSelection) {
+      this.element().ownerDocument.removeEventListener("selectionchange", this.#boundSaveSelection, false);
+    }
     this.clearAutocomplete();
   }
   refreshGhostText() {
@@ -13128,17 +13193,16 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   setDOMSelection(startColumn, endColumn) {
     this.element().normalize();
     const node = this.element().childNodes[0];
-    if (!node || node === this.ghostTextElement) {
+    if (!node || node === this.ghostTextElement || node.nodeType !== Node.TEXT_NODE) {
+      this.#savedSelection = { anchorColumn: 0, focusColumn: 0 };
+      this.element().getComponentSelection()?.setBaseAndExtent(this.element(), 0, this.element(), 0);
       return;
     }
-    const range = document.createRange();
-    range.setStart(node, startColumn);
-    range.setEnd(node, endColumn);
-    const selection = this.element().getComponentSelection();
-    if (selection) {
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
+    const length = node.length;
+    const anchorOffset = Platform12.NumberUtilities.clamp(startColumn, 0, length);
+    const focusOffset = Platform12.NumberUtilities.clamp(endColumn, 0, length);
+    this.#savedSelection = { anchorColumn: anchorOffset, focusColumn: focusOffset };
+    this.element().getComponentSelection()?.setBaseAndExtent(node, anchorOffset, node, focusOffset);
   }
   isSuggestBoxVisible() {
     return this.suggestBox?.visible() ?? false;
@@ -13183,6 +13247,8 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
       const textNode = container;
       offset = (textNode.textContent || "").length;
     }
+    const textLength = this.text().length;
+    this.#savedSelection = { anchorColumn: textLength, focusColumn: textLength };
     selectionRange.setStart(container, offset);
     selectionRange.setEnd(container, offset);
     if (selection) {

@@ -500,7 +500,9 @@ let colorGenerator;
 const { SamplesIntegrator } = Trace.Helpers.SamplesIntegrator;
 export class TimelineUIUtils {
     static getGetDebugModeEnabled() {
-        return Common.Settings.Settings.instance().moduleSetting('timeline-debug-mode').get();
+        return Common.Settings.Settings.instance()
+            .resolve(SettingUIRegistration.TimelineSettings.timelineDebugModeSettingDescriptor)
+            .get();
     }
     static frameDisplayName(frame) {
         const maybeResolvedData = SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);
@@ -1171,7 +1173,7 @@ export class TimelineUIUtils {
             }
             case "UpdateLayoutTree" /* Trace.Types.Events.Name.RECALC_STYLE */: {
                 contentHelper.appendTextRow(i18nString(UIStrings.elementsAffected), unsafeEventArgs['elementCount']);
-                const selectorStatsSetting = Common.Settings.Settings.instance().moduleSetting('timeline-capture-selector-stats');
+                const selectorStatsSetting = Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor);
                 if (!selectorStatsSetting.get()) {
                     const note = document.createElement('span');
                     note.textContent = i18nString(UIStrings.sSelectorStatsInfo, {

@@ -18,14 +18,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import { ExtensionButton, ExtensionPanel, ExtensionSidebarPane } from './ExtensionPanel.js';
 const extensionOrigins = new WeakMap();
-const kForbiddenSchemes = [
-    'chrome:',
-    'chrome-untrusted:',
-    'chrome-error:',
-    'chrome-search:',
-    'devtools:',
-    'isolated-app:',
-];
 let extensionServerInstance;
 function parseCanonicalURL(url) {
     try {
@@ -727,14 +719,15 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         let validScheme = message.urlScheme;
         if (validScheme) {
+            let urlToParse;
             try {
-                const urlToParse = validScheme.replace(/:?(\/\/)?$/, '') + '://test';
+                urlToParse = validScheme.replace(/:?(\/\/)?$/, '') + '://test';
                 validScheme = new URL(urlToParse).protocol;
             }
             catch {
                 return this.status.E_BADARG('urlScheme', 'Invalid scheme');
             }
-            if (kForbiddenSchemes.includes(validScheme) || validScheme === 'file:') {
+            if (Common.ParsedURL.isPrivilegedScheme(urlToParse)) {
                 return this.status.E_BADARG('urlScheme', 'Scheme is forbidden');
             }
         }
@@ -793,52 +786,59 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
             });
         }
     }
-    extensionAllowedOnURL(url, port) {
-        const origin = extensionOrigins.get(port);
-        const extension = origin && this.registeredExtensions.get(origin);
+    getRegisteredExtension(portOrExtension) {
+        if (portOrExtension instanceof RegisteredExtension) {
+            return portOrExtension;
+        }
+        const origin = extensionOrigins.get(portOrExtension);
+        return origin ? this.registeredExtensions.get(origin) : undefined;
+    }
+    extensionAllowedOnURL(url, portOrExtension) {
+        const extension = this.getRegisteredExtension(portOrExtension);
         return Boolean(extension?.isAllowedOnTarget(url));
+    }
+    extensionAllowedOnScript(script, portOrExtension) {
+        if (script.hasSourceURL) {
+            // TODO(542925220): embedderName is a terrible proxy, but currently V8 stores the original URL only in there.
+            // We'll add a proper field in the future and will replace it then.
+            const embedderName = script.embedderName();
+            if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
+                return false;
+            }
+            return this.extensionAllowedOnTarget(script.target(), portOrExtension);
+        }
+        return this.extensionAllowedOnURL(script.contentURL(), portOrExtension) &&
+            this.extensionAllowedOnTarget(script.target(), portOrExtension);
     }
     /**
      * Slightly more permissive as {@link extensionAllowedOnURL}: This method also permits
      * UISourceCodes that originate from a {@link SDK.Script.Script} with a sourceURL magic comment as
      * long as the corresponding target and the embedder name (if it is a URL) are permitted.
      */
-    extensionAllowedOnContentProvider(contentProvider, port) {
+    extensionAllowedOnContentProvider(contentProvider, portOrExtension) {
         if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
             const debuggerSourceMapURLs = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapURLsForUISourceCode(contentProvider);
             const cssSourceMapURLs = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().sourceMapURLsForUISourceCode(contentProvider);
-            const sourceMapURLs = [...debuggerSourceMapURLs, ...cssSourceMapURLs];
-            if (sourceMapURLs.some(url => !this.extensionAllowedOnURL(url, port))) {
+            const cssCompiledURLs = Bindings.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(contentProvider);
+            const sourceMapURLs = [...debuggerSourceMapURLs, ...cssSourceMapURLs, ...cssCompiledURLs];
+            if (sourceMapURLs.some(url => !this.extensionAllowedOnURL(url, portOrExtension))) {
                 return false;
             }
-        }
-        // 1. Exception for Scripts with sourceURL
-        if (contentProvider instanceof Workspace.UISourceCode.UISourceCode &&
-            contentProvider.contentType() === Common.ResourceType.resourceTypes.Script) {
             const scripts = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider);
             if (scripts.length > 0) {
-                const uiSourceCodeTarget = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? undefined;
-                if (uiSourceCodeTarget && !this.extensionAllowedOnTarget(uiSourceCodeTarget, port)) {
+                if (!scripts.every(script => this.extensionAllowedOnScript(script, portOrExtension))) {
                     return false;
                 }
-                return scripts.every(script => {
-                    if (script.hasSourceURL) {
-                        // TODO(542925220): embedderName is a terrible proxy, but currently V8 stores the original URL only in there.
-                        // We'll add a proper field in the future and will replace it then.
-                        const embedderName = script.embedderName();
-                        if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, port)) {
-                            return false;
-                        }
-                        return this.extensionAllowedOnTarget(script.target(), port);
-                    }
-                    return this.extensionAllowedOnURL(script.contentURL(), port) &&
-                        this.extensionAllowedOnTarget(script.target(), port);
-                });
+                // 1. Exception for Scripts with sourceURL
+                if (contentProvider.contentType() === Common.ResourceType.resourceTypes.Script) {
+                    const uiSourceCodeTarget = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? undefined;
+                    return !uiSourceCodeTarget || this.extensionAllowedOnTarget(uiSourceCodeTarget, portOrExtension);
+                }
             }
         }
         // 2. Standard Policy: Both URL and Target must be allowed
         // 2a. Check URL
-        if (!this.extensionAllowedOnURL(contentProvider.contentURL(), port)) {
+        if (!this.extensionAllowedOnURL(contentProvider.contentURL(), portOrExtension)) {
             return false;
         }
         // 2b. Check Target (if one can be identified)
@@ -852,7 +852,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         else if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
             target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? undefined;
         }
-        return !target || this.extensionAllowedOnTarget(target, port);
+        return !target || this.extensionAllowedOnTarget(target, portOrExtension);
     }
     /**
      * This method prefers returning 'Permission denied' errors if restricted resources are not found,
@@ -871,11 +871,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         return { uiSourceCode };
     }
-    extensionAllowedOnTarget(target, port) {
+    extensionAllowedOnTarget(target, portOrExtension) {
         if (!target) {
             return false;
         }
-        return this.extensionAllowedOnURL(target.inspectedURL(), port);
+        return this.extensionAllowedOnURL(target.inspectedURL(), portOrExtension);
     }
     onReload(message, port) {
         if (message.command !== "Reload" /* Extensions.ExtensionAPI.PrivateAPI.Commands.Reload */) {
@@ -1228,17 +1228,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     }
     notifyResourceAdded(event) {
         const uiSourceCode = event.data;
-        const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
-        const targetUrl = target?.inspectedURL();
-        this.postNotification("resource-added" /* Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded */, [this.makeResource(uiSourceCode)], extension => extension.isAllowedOnTarget(uiSourceCode.url()) &&
-            (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
+        this.postNotification("resource-added" /* Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded */, [this.makeResource(uiSourceCode)], extension => this.extensionAllowedOnContentProvider(uiSourceCode, extension));
     }
     notifyUISourceCodeContentCommitted(event) {
         const { uiSourceCode, content } = event.data;
-        const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
-        const targetUrl = target?.inspectedURL();
-        this.postNotification("resource-content-committed" /* Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted */, [this.makeResource(uiSourceCode), content], extension => extension.isAllowedOnTarget(uiSourceCode.url()) &&
-            (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
+        this.postNotification("resource-content-committed" /* Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted */, [this.makeResource(uiSourceCode), content], extension => this.extensionAllowedOnContentProvider(uiSourceCode, extension));
     }
     async notifyRequestFinished(event) {
         if (!this.extensionsEnabled) {
@@ -1507,7 +1501,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (!parsedURL) {
             return false;
         }
-        if (kForbiddenSchemes.includes(parsedURL.protocol)) {
+        // Extensions are allowed to inspect `chrome-extension:` (when permitted by policy/flag)
+        // and `file:` pages, but must be blocked from inspecting other privileged schemes.
+        if (!Common.ParsedURL.schemeIs(parsedURL, 'chrome-extension:') && !Common.ParsedURL.schemeIs(parsedURL, 'file:') &&
+            Common.ParsedURL.isPrivilegedScheme(parsedURL)) {
             return false;
         }
         if ((window.DevToolsAPI?.getOriginsForbiddenForExtensions?.() || []).includes(parsedURL.origin)) {

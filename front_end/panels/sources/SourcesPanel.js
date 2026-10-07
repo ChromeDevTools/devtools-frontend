@@ -237,6 +237,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         }
         this.#sourcesView = new SourcesView();
         this.#sourcesView.addEventListener("EditorSelected" /* Events.EDITOR_SELECTED */, this.editorSelected.bind(this));
+        this.#sourcesView.addEventListener("EditorClosed" /* Events.EDITOR_CLOSED */, this.editorClosed.bind(this));
         this.#sourcesView.onToggleNavigatorSidebar = this.toggleNavigatorSidebar.bind(this);
         this.#sourcesView.onToggleDebuggerSidebar = this.toggleDebuggerSidebar.bind(this);
         this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
@@ -598,6 +599,12 @@ export class SourcesPanel extends UI.Panel.Panel {
         if (this.editorView.mainWidget() &&
             Common.Settings.Settings.instance().moduleSetting('auto-reveal-in-navigator').get()) {
             void this.revealInNavigator(uiSourceCode, true);
+        }
+    }
+    editorClosed({ data: { uiSourceCode } }) {
+        const context = UI.Context.Context.instance();
+        if (context.flavor(Workspace.UISourceCode.UISourceCode) === uiSourceCode) {
+            context.setFlavor(Workspace.UISourceCode.UISourceCode, null);
         }
     }
     togglePause() {

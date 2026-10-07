@@ -64,6 +64,9 @@
     },
     {
       "path": "../../bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../settings/bundle-tsconfig.ref.json"
     }
   ]
 }

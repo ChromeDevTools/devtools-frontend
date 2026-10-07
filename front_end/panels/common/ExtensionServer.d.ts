@@ -89,7 +89,9 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     private onSetOpenResourceHandler;
     private onSetThemeChangeHandler;
     private handleOpenURL;
+    private getRegisteredExtension;
     private extensionAllowedOnURL;
+    private extensionAllowedOnScript;
     /**
      * Slightly more permissive as {@link extensionAllowedOnURL}: This method also permits
      * UISourceCodes that originate from a {@link SDK.Script.Script} with a sourceURL magic comment as

@@ -115,6 +115,7 @@ export declare class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<Event
     text(): string;
     setText(text: string): void;
     setSelectedRange(startIndex: number, endIndex: number): void;
+    selectAll(): void;
     focus(): void;
     title(): string;
     setTitle(title: string): void;

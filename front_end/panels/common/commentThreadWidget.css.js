@@ -42,10 +42,6 @@ export default `/*
     flex-shrink: 0;
   }
 
-  .close-button {
-    flex-shrink: 0;
-  }
-
   .sent-status {
     display: flex;
     align-items: center;

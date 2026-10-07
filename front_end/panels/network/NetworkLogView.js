@@ -578,7 +578,6 @@ export class NetworkLogView extends NetworkLogViewBase {
     filterBar;
     textFilterSetting;
     networkRequestToNode;
-    static #allowedSchemes = new Set(['http:', 'https:', 'ws:', 'wss:', 'data:']);
     constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting) {
         super();
         this.registerRequiredCSS(networkLogViewStyles);
@@ -2069,16 +2068,13 @@ export class NetworkLogView extends NetworkLogViewBase {
         return requests.filter(request => !request.isBlobRequest());
     }
     static #getValidClipboardUrl(url) {
-        try {
-            const parsedUrl = new URL(url);
-            if (!NetworkLogView.#allowedSchemes.has(parsedUrl.protocol)) {
-                return null;
-            }
-            return url;
-        }
-        catch {
+        // `hasWebSafeScheme` unwraps `blob:` and `filesystem:` URLs to check their inner origin,
+        // but standalone CLI tools (cURL, PowerShell, fetch) cannot request browser-internal URLs.
+        if (Common.ParsedURL.schemeIs(url, 'blob:') || Common.ParsedURL.schemeIs(url, 'filesystem:') ||
+            !Common.ParsedURL.hasWebSafeScheme(url)) {
             return null;
         }
+        return url;
     }
     async generateFetchCall(request, style, generateOptions) {
         // Editable fetch commands retain unsafe headers so the generated output can

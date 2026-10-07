@@ -16462,7 +16462,7 @@ function toggleClassAndInjectStyleRule(pseudoElementName, hidden) {
   const classNamePrefix = "__web-inspector-hide";
   const classNameSuffix = "-shortcut__";
   const styleTagId = "__web-inspector-hide-shortcut-style__";
-  const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[\(\)\:]/g, "_") : "";
+  const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[^a-zA-Z0-9_-]/g, "_") : "";
   const className = classNamePrefix + pseudoElementNameEscaped + classNameSuffix;
   this.classList.toggle(className, hidden);
   let localRoot = this;
@@ -29788,8 +29788,9 @@ var DOMNode = class _DOMNode extends Common20.ObjectWrapper.ObjectWrapper {
    */
   async toggleHideElement() {
     let pseudoElementName = this.pseudoType() ? this.nodeName() : null;
-    if (pseudoElementName && this.pseudoIdentifier()) {
-      pseudoElementName += `(${this.pseudoIdentifier()})`;
+    const pseudoIdentifier = this.pseudoIdentifier();
+    if (pseudoElementName && pseudoIdentifier) {
+      pseudoElementName += `(${cssEscape(pseudoIdentifier)})`;
     }
     let effectiveNode = this;
     while (effectiveNode?.pseudoType()) {
@@ -30011,8 +30012,9 @@ var DOMNode = class _DOMNode extends Common20.ObjectWrapper.ObjectWrapper {
       const classList = classes.trim().split(/\s+/g);
       return (lowerCaseName === "div" ? "" : lowerCaseName) + "." + classList.map((cls) => cssEscape(cls)).join(".");
     }
-    if (this.pseudoIdentifier()) {
-      return `${lowerCaseName}(${this.pseudoIdentifier()})`;
+    const pseudoIdentifier = this.pseudoIdentifier();
+    if (pseudoIdentifier) {
+      return `${lowerCaseName}(${cssEscape(pseudoIdentifier)})`;
     }
     return lowerCaseName;
   }

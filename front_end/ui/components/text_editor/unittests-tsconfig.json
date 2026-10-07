@@ -112,6 +112,9 @@
       "path": "../../legacy/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../legacy/theme_support/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../dialogs/bundle-tsconfig.ref.json"
     },
     {

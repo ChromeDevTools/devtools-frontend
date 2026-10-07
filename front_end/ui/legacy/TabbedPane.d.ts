@@ -199,6 +199,7 @@ export declare class TabbedPaneTab {
     setDelegate(delegate: TabbedPaneTabDelegate): void;
     private createIconElement;
     private createSuffixElement;
+    clearSlots(): void;
     private createMeasureClone;
     createTabElement(measuring: boolean): HTMLElement;
     private createCloseIconButton;

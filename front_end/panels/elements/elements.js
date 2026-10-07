@@ -5593,9 +5593,12 @@ __export(StylePropertyUtils_exports, {
 });
 function getCssDeclarationAsJavascriptProperty(declaration) {
   const { name, value: value5 } = declaration;
-  const declarationNameAsJs = name.startsWith("--") ? `'${name}'` : name.replace(/-([a-z])/gi, (_str, group) => group.toUpperCase());
-  const declarationAsJs = `'${value5.replaceAll("'", "\\'")}'`;
+  const declarationNameAsJs = name.startsWith("--") ? escapeAsSingleQuotedJsString(name) : name.replace(/-([a-z])/gi, (_str, group) => group.toUpperCase());
+  const declarationAsJs = escapeAsSingleQuotedJsString(value5);
   return `${declarationNameAsJs}: ${declarationAsJs}`;
+}
+function escapeAsSingleQuotedJsString(text) {
+  return `'${text.replaceAll("\\", "\\\\").replaceAll("'", "\\'")}'`;
 }
 
 // ../../front_end/panels/elements/StylePropertyTreeElement.ts
@@ -8509,7 +8512,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       proxyElement.addEventListener("paste", pasteHandler.bind(this, context), false);
       proxyElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this, context), false);
     }
-    selectedElement.getComponentSelection()?.selectAllChildren(selectedElement);
+    this.prompt.selectAll();
   }
   editingNameValueKeyDown(context, event) {
     if (event.handled) {
@@ -15881,6 +15884,9 @@ var cssPath = function(node, optimized) {
       break;
     }
     contextNode = contextNode.parentNode;
+    while (contextNode?.isViewTransitionPseudoNode()) {
+      contextNode = contextNode.parentNode;
+    }
   }
   steps.reverse();
   return steps.reduce((acc, step) => {
@@ -15929,7 +15935,10 @@ var cssPathStep = function(node, optimized, isTargetNode) {
   }
   if (node.pseudoType()) {
     const pseudoIdentifier = node.pseudoIdentifier();
-    return new Step(node.nodeNameInCorrectCase() + (pseudoIdentifier ? `(${pseudoIdentifier})` : ""), false);
+    if (pseudoIdentifier) {
+      return new Step(`${node.nodeNameInCorrectCase()}(${CSS.escape(pseudoIdentifier)})`, false);
+    }
+    return new Step(node.nodeNameInCorrectCase(), false);
   }
   const id = node.getAttribute("id");
   if (optimized) {
@@ -22931,14 +22940,18 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     }
   }
   async toggleHideElement(node) {
-    const changeTracker = this.changeTracker;
-    Elements2.DOMChanges.trackVisibilityToggle(
-      changeTracker,
-      node,
-      buildChangeSelector(changeTracker, node),
-      !this.isToggledToHidden(node)
-    );
+    const wasHidden = this.isToggledToHidden(node);
     await node.toggleHideElement();
+    const isHidden = this.isToggledToHidden(node);
+    if (isHidden !== wasHidden) {
+      const changeTracker = this.changeTracker;
+      Elements2.DOMChanges.trackVisibilityToggle(
+        changeTracker,
+        node,
+        buildChangeSelector(changeTracker, node),
+        isHidden
+      );
+    }
   }
   async removeNode(node) {
     if (this.isToggledToHidden(node)) {

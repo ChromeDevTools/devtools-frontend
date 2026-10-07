@@ -8,7 +8,7 @@ import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
 const UIStrings = {
     /**
-     * @description Hover text for the Bounce Tracking Mitigations element in the Application Panel sidebar.
+     * @description Label for the bounce tracking mitigations tree element in the Application panel sidebar.
      */
     bounceTrackingMitigations: 'Bounce tracking mitigations',
 };

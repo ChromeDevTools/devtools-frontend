@@ -1185,6 +1185,9 @@ export class NetworkRequestNode extends NetworkNode {
         this.parentView().dispatchEventToListeners("RequestSelected" /* Events.RequestSelected */, this.requestInternal);
     }
     openInNewTab() {
+        if (Common.ParsedURL.isPrivilegedScheme(this.requestInternal.url())) {
+            return;
+        }
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
     }
     isFailed() {

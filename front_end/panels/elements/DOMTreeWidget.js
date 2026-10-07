@@ -1745,9 +1745,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         }
     }
     async toggleHideElement(node) {
-        const changeTracker = this.changeTracker;
-        Elements.DOMChanges.trackVisibilityToggle(changeTracker, node, buildChangeSelector(changeTracker, node), !this.isToggledToHidden(node));
+        const wasHidden = this.isToggledToHidden(node);
         await node.toggleHideElement();
+        const isHidden = this.isToggledToHidden(node);
+        if (isHidden !== wasHidden) {
+            const changeTracker = this.changeTracker;
+            Elements.DOMChanges.trackVisibilityToggle(changeTracker, node, buildChangeSelector(changeTracker, node), isHidden);
+        }
     }
     async removeNode(node) {
         if (this.isToggledToHidden(node)) {

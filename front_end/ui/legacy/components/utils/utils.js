@@ -639,7 +639,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     }
     const createLinkOptions = {
       tabStop: options?.tabStop,
-      jslogContext: "script-location"
+      jslogContext: "script-location",
+      allowPrivileged: options?.allowPrivileged
     };
     const { link: link3, linkInfo } = _Linkifier.createLink(
       fallbackAnchor?.textContent ? fallbackAnchor.textContent : "",
@@ -730,7 +731,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     fallbackAnchor.classList.toggle("ignore-list-link", isIgnoreListed);
     const createLinkOptions = {
       tabStop: options?.tabStop,
-      jslogContext: "script-location"
+      jslogContext: "script-location",
+      allowPrivileged: options?.allowPrivileged
     };
     const { link: link3, linkInfo } = _Linkifier.createLink(
       fallbackAnchor?.textContent ? fallbackAnchor.textContent : "",
@@ -969,7 +971,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       lineNumber,
       columnNumber,
       userMetric: options?.userMetric,
-      onRef: options.onRef
+      onRef: options.onRef,
+      allowPrivileged: options?.allowPrivileged
     };
     return _Linkifier.renderLink(linkText, className, linkOptions);
   }
@@ -1032,7 +1035,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
           url: options.href,
           lineNumber: options.lineNumber,
           columnNumber: options.columnNumber,
-          userMetric: options.userMetric
+          userMetric: options.userMetric,
+          allowPrivileged: options.allowPrivileged
         };
         infoByAnchor.set(link3, linkInfo);
       });
@@ -1131,8 +1135,9 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
   }
   static invokeFirstAction(linkInfo) {
     const actions = _Linkifier.linkActions(linkInfo);
-    if (actions.length) {
-      void actions[0].handler.call(null);
+    const action = actions.find((a) => a.section === "reveal");
+    if (action) {
+      void action.handler.call(null);
       if (linkInfo.userMetric) {
         Host2.userMetrics.actionTaken(linkInfo.userMetric);
       }
@@ -1239,12 +1244,14 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       }
     }
     if (resource || info.url) {
-      result.push({
-        section: "reveal",
-        title: UI.UIUtils.openLinkExternallyLabel(),
-        jslogContext: "open-in-new-tab",
-        handler: () => UIHelpers.openInNewTab(url)
-      });
+      if (!Common2.ParsedURL.isPrivilegedScheme(url) || info.allowPrivileged) {
+        result.push({
+          section: "reveal",
+          title: UI.UIUtils.openLinkExternallyLabel(),
+          jslogContext: "open-in-new-tab",
+          handler: () => UIHelpers.openInNewTab(url, info.allowPrivileged)
+        });
+      }
       result.push({
         section: "clipboard",
         title: UI.UIUtils.copyLinkAddressLabel(),
@@ -1352,12 +1359,10 @@ var ContentProviderContextMenuProvider = class {
     if (!contentUrl) {
       return;
     }
-    if (!Common2.ParsedURL.schemeIs(contentUrl, "file:")) {
+    if (!Common2.ParsedURL.isPrivilegedScheme(contentUrl)) {
       contextMenu.revealSection().appendItem(
         UI.UIUtils.openLinkExternallyLabel(),
-        () => UIHelpers.openInNewTab(
-          contentUrl.endsWith(":formatted") ? Common2.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(":")) : contentUrl
-        ),
+        () => UIHelpers.openInNewTab(contentUrl.endsWith(":formatted") ? Common2.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(":")) : contentUrl),
         { jslogContext: "open-in-new-tab" }
       );
     }

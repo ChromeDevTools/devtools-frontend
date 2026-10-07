@@ -100,6 +100,10 @@ export class DebuggerWorkspaceBinding {
         }
         ranges = compilerMapping.getLocationRangesForSameSourceLocation(rawLocation);
         ranges = ranges.filter(range => contained(rawLocation, range));
+        if (mode === "StepOver" /* SDK.DebuggerModel.StepMode.STEP_OVER */) {
+            // Step over functions inlined by the compiler (from encoded source map scopes).
+            ranges = ranges.concat(SourceMapStepping.inlinedCalleeRanges(callFrame));
+        }
         return ranges;
     }
     async computeAutoStep(mode, callFrames) {
@@ -399,7 +403,7 @@ export class DebuggerWorkspaceBinding {
                 null :
                 await this.computeAutoStep("StepOver" /* SDK.DebuggerModel.StepMode.STEP_OVER */, callFrames);
         }
-        return null;
+        return await SourceMapStepping.nextAutoStep(debuggerPausedDetails, context, this.computeAutoStep.bind(this));
     }
     async #shouldPauseInWasm(debuggerPausedDetails, context) {
         // When stepping over with autostepping enabled, the context denotes the function to which autostepping is restricted

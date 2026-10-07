@@ -840,6 +840,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "clear-storage",
   "clear-storage-cache-storage",
   "clear-storage-cookies",
+  "clear-storage-file-systems",
   "clear-storage-include-third-party-cookies",
   "clear-storage-indexeddb",
   "clear-storage-local-storage",

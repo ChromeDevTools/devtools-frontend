@@ -30,9 +30,6 @@ export declare const DEFAULT_VIEW: View;
 declare const SourcesViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class SourcesView extends SourcesViewBase implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
     #private;
-    private toolbarChangedListener;
-    private searchView?;
-    private searchConfig?;
     constructor(element?: HTMLElement, view?: View);
     performUpdate(): void;
     set onToggleNavigatorSidebar(callback: () => void);
@@ -47,17 +44,8 @@ export declare class SourcesView extends SourcesViewBase implements UI.Searchabl
     visibleView(): UI.Widget.Widget | null;
     currentSourceFrame(): UISourceCodeFrame | null;
     currentUISourceCode(): Workspace.UISourceCode.UISourceCode | null;
-    private uiSourceCodeAdded;
     private addUISourceCode;
-    private uiSourceCodeRemoved;
-    private removeUISourceCodes;
-    private projectRemoved;
-    private updateScriptViewToolbarItems;
     showSourceLocation(uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: SourceFrame.SourceFrame.RevealPosition, omitFocus?: boolean, omitHighlight?: boolean): Promise<void>;
-    private editorClosed;
-    private editorSelected;
-    private removeToolbarChangedListener;
-    private updateToolbarChangedListener;
     onSearchCanceled(): void;
     performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void;
     jumpToNextSearchResult(): void;
@@ -71,7 +59,6 @@ export declare class SourcesView extends SourcesViewBase implements UI.Searchabl
     showGoToLineQuickOpen(): void;
     save(): void;
     saveAll(): void;
-    private saveSourceFrame;
     toggleBreakpointsActiveState(active: boolean): void;
 }
 export declare const enum Events {
@@ -87,7 +74,7 @@ export interface EventTypes {
     [Events.EDITOR_SELECTED]: Workspace.UISourceCode.UISourceCode;
 }
 export declare class SwitchFileActionDelegate implements UI.ActionRegistration.ActionDelegate {
-    private static nextFile;
+    static nextFile(currentUISourceCode: Workspace.UISourceCode.UISourceCode): Workspace.UISourceCode.UISourceCode | null;
     handleAction(context: UI.Context.Context, _actionId: string): boolean;
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

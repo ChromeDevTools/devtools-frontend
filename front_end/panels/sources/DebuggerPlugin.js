@@ -208,7 +208,7 @@ export class DebuggerPlugin extends Plugin {
         this.uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
         this.scriptFileForDebuggerModel = new Map();
         this.loader = SDK.PageResourceLoader.PageResourceLoader.instance();
-        this.loader.addEventListener("Update" /* SDK.PageResourceLoader.Events.UPDATE */, this.showSourceMapInfobarIfNeeded.bind(this), this);
+        this.loader.addEventListener("Update" /* SDK.PageResourceLoader.Events.UPDATE */, this.showSourceMapInfobarIfNeeded, this);
         this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
         Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
         UI.Context.Context.instance().addFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
@@ -1485,6 +1485,7 @@ export class DebuggerPlugin extends Plugin {
         this.breakpointManager.removeEventListener(Breakpoints.BreakpointManager.Events.BreakpointRemoved, this.breakpointChange, this);
         this.uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
         this.uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
+        this.loader.removeEventListener("Update" /* SDK.PageResourceLoader.Events.UPDATE */, this.showSourceMapInfobarIfNeeded, this);
         Workspace.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.ignoreListCallback);
         debuggerPluginForUISourceCode.delete(this.uiSourceCode);
         super.dispose();

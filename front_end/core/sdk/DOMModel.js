@@ -908,8 +908,9 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
      */
     async toggleHideElement() {
         let pseudoElementName = this.pseudoType() ? this.nodeName() : null;
-        if (pseudoElementName && this.pseudoIdentifier()) {
-            pseudoElementName += `(${this.pseudoIdentifier()})`;
+        const pseudoIdentifier = this.pseudoIdentifier();
+        if (pseudoElementName && pseudoIdentifier) {
+            pseudoElementName += `(${cssEscape(pseudoIdentifier)})`;
         }
         let effectiveNode = this;
         while (effectiveNode?.pseudoType()) {
@@ -1129,8 +1130,9 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
             const classList = classes.trim().split(/\s+/g);
             return (lowerCaseName === 'div' ? '' : lowerCaseName) + '.' + classList.map(cls => cssEscape(cls)).join('.');
         }
-        if (this.pseudoIdentifier()) {
-            return `${lowerCaseName}(${this.pseudoIdentifier()})`;
+        const pseudoIdentifier = this.pseudoIdentifier();
+        if (pseudoIdentifier) {
+            return `${lowerCaseName}(${cssEscape(pseudoIdentifier)})`;
         }
         return lowerCaseName;
     }

@@ -36,7 +36,7 @@ export var MultimodalInputType;
     MultimodalInputType["SCREENSHOT"] = "screenshot";
     MultimodalInputType["UPLOADED_IMAGE"] = "uploaded-image";
 })(MultimodalInputType || (MultimodalInputType = {}));
-export const MAX_STEPS = 10;
+export const MAX_STEPS = 20;
 export class ConversationContext {
     /**
      * Returns true if the server-side logging is enabled when this context is active.
@@ -113,8 +113,6 @@ class CrossOriginError extends Error {
  *
  * TODO: missing a test that action code is yielded before the
  * confirmation dialog.
- * TODO: missing a test for an error if it took
- * more than MAX_STEPS iterations.
  */
 export class AiAgent {
     #sessionId;
@@ -507,7 +505,11 @@ export class AiAgent {
                 }
             }
             else {
-                yield this.#createErrorResponse(i - 1 === MAX_STEPS ? "max-steps" /* ErrorType.MAX_STEPS */ : "unknown" /* ErrorType.UNKNOWN */);
+                yield this.#createErrorResponse("unknown" /* ErrorType.UNKNOWN */);
+                break;
+            }
+            if (i === MAX_STEPS - 1) {
+                yield this.#createErrorResponse("max-steps" /* ErrorType.MAX_STEPS */);
                 break;
             }
         }

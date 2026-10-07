@@ -117,6 +117,7 @@ interface LinkInfo {
     revealable?: Object;
     fallback?: Element;
     userMetric?: Host.UserMetrics.Action;
+    allowPrivileged?: boolean;
 }
 export interface LinkifyURLOptions {
     allowPrivileged?: boolean;

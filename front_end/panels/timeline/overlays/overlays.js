@@ -30,6 +30,7 @@ import * as AIAssistance from "../../../models/ai_assistance/ai_assistance.js";
 import * as Trace from "../../../models/trace/trace.js";
 import * as UI from "../../../ui/legacy/legacy.js";
 import { html, render } from "../../../ui/lit/lit.js";
+import * as SettingsUI from "../../../ui/settings/settings.js";
 import * as VisualLogging from "../../../ui/visual_logging/visual_logging.js";
 import * as Components from "./components/components.js";
 var UIStrings = {
@@ -245,7 +246,7 @@ var Overlays = class extends EventTarget {
     this.#charts = init.charts;
     this.#queries = init.entryQueries;
     this.#entriesLinkInProgress = null;
-    this.#annotationsHiddenSetting = Common.Settings.Settings.instance().moduleSetting("annotations-hidden");
+    this.#annotationsHiddenSetting = Common.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.annotationsHiddenSettingDescriptor);
     this.#annotationsHiddenSetting.addChangeListener(this.update.bind(this));
     init.flameChartsContainers.main.addEventListener(
       "mousemove",

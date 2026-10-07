@@ -10,6 +10,7 @@ import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as SettingsUI from '../../../ui/settings/settings.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import { AnnotationHoverOut, HoverAnnotation, RemoveAnnotation, RevealAnnotation } from './Sidebar.js';
 import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
@@ -91,7 +92,8 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
     constructor(view = DEFAULT_VIEW) {
         super();
         this.#view = view;
-        this.#annotationsHiddenSetting = Common.Settings.Settings.instance().moduleSetting('annotations-hidden');
+        this.#annotationsHiddenSetting =
+            Common.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.annotationsHiddenSettingDescriptor);
     }
     deduplicatedAnnotations() {
         return this.#annotations;

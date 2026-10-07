@@ -3858,6 +3858,10 @@ var NativeFunctions = [
     signatures: [["target", "attachment", "texture", "level", "baseViewIndex", "numViews"]]
   },
   {
+    name: "startRendering",
+    signatures: [["?chunkSize"]]
+  },
+  {
     name: "convertToBlob",
     signatures: [["?options"]]
   },
@@ -9030,54 +9034,6 @@ var NativeFunctions = [
     signatures: [["milliseconds"]]
   },
   {
-    name: "beforeHTML",
-    signatures: [["html", "?options"]]
-  },
-  {
-    name: "beforeHTMLUnsafe",
-    signatures: [["html", "?options"]]
-  },
-  {
-    name: "afterHTML",
-    signatures: [["html", "?options"]]
-  },
-  {
-    name: "afterHTMLUnsafe",
-    signatures: [["html", "?options"]]
-  },
-  {
-    name: "replaceWithHTML",
-    signatures: [["html", "?options"]]
-  },
-  {
-    name: "replaceWithHTMLUnsafe",
-    signatures: [["html", "?options"]]
-  },
-  {
-    name: "streamBeforeHTML",
-    signatures: [["?options"]]
-  },
-  {
-    name: "streamBeforeHTMLUnsafe",
-    signatures: [["?options"]]
-  },
-  {
-    name: "streamAfterHTML",
-    signatures: [["?options"]]
-  },
-  {
-    name: "streamAfterHTMLUnsafe",
-    signatures: [["?options"]]
-  },
-  {
-    name: "streamReplaceWithHTML",
-    signatures: [["?options"]]
-  },
-  {
-    name: "streamReplaceWithHTMLUnsafe",
-    signatures: [["?options"]]
-  },
-  {
     name: "Comment",
     signatures: [["?data"]]
   },
@@ -9188,6 +9144,54 @@ var NativeFunctions = [
   {
     name: "MutationObserver",
     signatures: [["callback"]]
+  },
+  {
+    name: "beforeHTML",
+    signatures: [["html", "?options"]]
+  },
+  {
+    name: "beforeHTMLUnsafe",
+    signatures: [["html", "?options"]]
+  },
+  {
+    name: "afterHTML",
+    signatures: [["html", "?options"]]
+  },
+  {
+    name: "afterHTMLUnsafe",
+    signatures: [["html", "?options"]]
+  },
+  {
+    name: "replaceWithHTML",
+    signatures: [["html", "?options"]]
+  },
+  {
+    name: "replaceWithHTMLUnsafe",
+    signatures: [["html", "?options"]]
+  },
+  {
+    name: "streamBeforeHTML",
+    signatures: [["?options"]]
+  },
+  {
+    name: "streamBeforeHTMLUnsafe",
+    signatures: [["?options"]]
+  },
+  {
+    name: "streamAfterHTML",
+    signatures: [["?options"]]
+  },
+  {
+    name: "streamAfterHTMLUnsafe",
+    signatures: [["?options"]]
+  },
+  {
+    name: "streamReplaceWithHTML",
+    signatures: [["?options"]]
+  },
+  {
+    name: "streamReplaceWithHTMLUnsafe",
+    signatures: [["?options"]]
   },
   {
     name: "Observable",

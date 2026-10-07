@@ -5322,7 +5322,7 @@ import * as UI5 from "../../ui/legacy/legacy.js";
 import * as ApplicationComponents3 from "./components/components.js";
 var UIStrings4 = {
   /**
-   * @description Hover text for the Bounce Tracking Mitigations element in the Application Panel sidebar.
+   * @description Label for the bounce tracking mitigations tree element in the Application panel sidebar.
    */
   bounceTrackingMitigations: "Bounce tracking mitigations"
 };
@@ -7883,112 +7883,110 @@ var indexedDBViews_css_default = `/*
 // ../../front_end/panels/application/IndexedDBViews.ts
 var UIStrings8 = {
   /**
-   * @description Text in Indexed DBViews of the Application panel
+   * @description Label for database version in the IndexedDB view of the Application panel.
    */
   version: "Version",
   /**
-   * @description Text in Indexed DBViews of the Application panel
+   * @description Label for the number of object stores in the IndexedDB view of the Application panel.
    */
   objectStores: "Object stores",
   /**
-   * @description Text of button in Indexed DBViews of the Application panel
+   * @description Button text to delete a database in the IndexedDB view of the Application panel.
    */
   deleteDatabase: "Delete database",
   /**
-   * @description Text of button in Indexed DBViews of the Application panel
+   * @description Button text to refresh a database in the IndexedDB view of the Application panel.
    */
   refreshDatabase: "Refresh database",
   /**
-   * @description Text in Application panel IndexedDB delete confirmation dialog
-   * @example {msb} PH1
+   * @description Title of the confirmation dialog when deleting an IndexedDB database in the Application panel.
+   * @example {my-database} PH1
    */
   confirmDeleteDatabase: 'Delete "{PH1}" database?',
   /**
-   * @description Explanation text in Application panel IndexedDB delete confirmation dialog
+   * @description Message in the confirmation dialog when deleting an IndexedDB database in the Application panel.
    */
   databaseWillBeRemoved: "The selected database and contained data will be removed",
   /**
-   * @description Title of the confirmation dialog in the IndexedDB tab of the Application panel
-   *              that the user is about to clear an object store and this cannot be undone.
+   * @description Title of the confirmation dialog when clearing an object store in the IndexedDB view of the Application panel.
    * @example {table1} PH1
    */
   confirmClearObjectStore: 'Clear "{PH1}" object store?',
   /**
-   * @description Description in the confirmation dialog in the IndexedDB tab of the Application
-   *              panel that the user is about to clear an object store and this cannot be undone.
+   * @description Message in the confirmation dialog when clearing an object store in the IndexedDB view of the Application panel.
    */
   objectStoreWillBeCleared: "The data contained in the selected object store will be removed",
   /**
-   * @description Text in Indexed DBViews of the Application panel
+   * @description Title of the IndexedDB tab in the Application panel.
    */
   idb: "IDB",
   /**
-   * @description Text to refresh the page
+   * @description Tooltip text for the refresh button in the IndexedDB view of the Application panel.
    */
   refresh: "Refresh",
   /**
-   * @description Tooltip text that appears when hovering over the delete button in the Indexed DBViews of the Application panel
+   * @description Tooltip text for the delete selected button in the IndexedDB view of the Application panel.
    */
   deleteSelected: "Delete selected",
   /**
-   * @description Tooltip text that appears when hovering over the clear button in the Indexed DBViews of the Application panel
+   * @description Tooltip text for the clear object store button in the IndexedDB view of the Application panel.
    */
   clearObjectStore: "Clear object store",
   /**
-   * @description Text in Indexed DBViews of the Application panel
+   * @description Status text in the IndexedDB view of the Application panel indicating data may be stale.
    */
   dataMayBeStale: "Data may be stale",
   /**
-   * @description Title of needs refresh in indexed dbviews of the application panel
+   * @description Tooltip text in the IndexedDB view of the Application panel explaining that entries may have been modified.
    */
   someEntriesMayHaveBeenModified: "Some entries may have been modified",
   /**
-   * @description Text in DOMStorage Items View of the Application panel
+   * @description Column header in the IndexedDB datagrid for the entry key.
    */
   keyString: "Key",
   /**
-   * @description Text in Indexed DBViews of the Application panel
+   * @description Column header in the IndexedDB datagrid for the entry primary key.
    */
   primaryKey: "Primary key",
   /**
-   * @description Text for the value of something
+   * @description Column header in the IndexedDB datagrid for the entry value.
    */
   valueString: "Value",
   /**
-   * @description Data grid name for Indexed DB data grids
+   * @description Accessible name for the IndexedDB datagrid in the Application panel.
    */
-  indexedDb: "Indexed DB",
+  indexedDb: "IndexedDB",
   /**
-   * @description Text in Indexed DBViews of the Application panel
+   * @description Label prefix for key path in the IndexedDB view of the Application panel.
    */
   keyPath: "Key path: ",
   /**
-   * @description Tooltip text that appears when hovering over the triangle left button in the Indexed DBViews of the Application panel
+   * @description Tooltip text for the previous page button in the IndexedDB view of the Application panel.
    */
   showPreviousPage: "Show previous page",
   /**
-   * @description Tooltip text that appears when hovering over the triangle right button in the Indexed DBViews of the Application panel
+   * @description Tooltip text for the next page button in the IndexedDB view of the Application panel.
    */
   showNextPage: "Show next page",
   /**
-   * @description Text in Indexed DBViews of the Application panel
+   * @description Placeholder text in the key filter input of the IndexedDB view in the Application panel.
    */
   filterByKey: "Filter by key (show keys greater or equal to)",
   /**
-   * @description Text in Context menu for expanding objects in IndexedDB tables
+   * @description Context menu item to expand an object recursively in IndexedDB tables.
    */
-  expandRecursively: "Expand Recursively",
+  expandRecursively: "Expand recursively",
   /**
-   * @description Text in Context menu for collapsing objects in IndexedDB tables
+   * @description Context menu item to collapse an object in IndexedDB tables.
    */
   collapse: "Collapse",
   /**
-   * @description Span text content in Indexed DBViews of the Application panel
+   * @description Status text in the IndexedDB view of the Application panel showing the total number of entries.
    * @example {2} PH1
    */
   totalEntriesS: "Total entries: {PH1}",
   /**
-   * @description Text in Indexed DBViews of the Application panel
+   * @description Status text in the IndexedDB view of the Application panel showing the key generator value.
    * @example {2} PH1
    */
   keyGeneratorValueS: "Key generator value: {PH1}"
@@ -10457,61 +10455,61 @@ var serviceWorkerCacheViews_css_default = `/*
 // ../../front_end/panels/application/ServiceWorkerCacheViews.ts
 var UIStrings15 = {
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Title of the cache storage view in the Application panel.
    */
   cache: "Cache",
   /**
-   * @description Text to refresh the page
+   * @description Tooltip text for the refresh button in the cache storage view of the Application panel.
    */
   refresh: "Refresh",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
+   * @description Tooltip text for the delete selected button in the cache storage view of the Application panel.
    */
-  deleteSelected: "Delete Selected",
+  deleteSelected: "Delete selected",
   /**
-   * @description Text in Service Worker Cache Views of the Application panel
+   * @description Placeholder text for the filter input in the cache storage view of the Application panel.
    */
   filterByPath: "Filter by path",
   /**
-   * @description Text in Service Worker Cache Views of the Application panel that shows if no cache entry is selected for preview
+   * @description Empty state header in the cache storage view of the Application panel when no cache entry is selected.
    */
   noCacheEntrySelected: "No cache entry selected",
   /**
-   * @description Text in Service Worker Cache Views of the Application panel
+   * @description Empty state text in the cache storage view of the Application panel when no cache entry is selected.
    */
   selectACacheEntryAboveToPreview: "Select a cache entry above to preview",
   /**
-   * @description Text for the name of something
+   * @description Column header in the cache storage datagrid for the entry name.
    */
   name: "Name",
   /**
-   * @description Text in Service Worker Cache Views of the Application panel
+   * @description Column header in the cache storage datagrid for the time the entry was cached.
    */
-  timeCached: "Time Cached",
+  timeCached: "Time cached",
   /**
-   * @description Tooltip text that appears when hovering over the vary header column in the Service Worker Cache Views of the Application panel
+   * @description Tooltip text for the Vary header column in the cache storage datagrid of the Application panel.
    */
   varyHeaderWarning: "\u26A0\uFE0F Set ignoreVary to true when matching this entry",
   /**
-   * @description Text used to show that data was retrieved from ServiceWorker Cache
+   * @description Accessible name for the cache storage datagrid in the Application panel.
    */
-  serviceWorkerCache: "`Service Worker` Cache",
+  serviceWorkerCache: "`Service Worker` cache",
   /**
-   * @description Span text content in Service Worker Cache Views of the Application panel
+   * @description Status text in the cache storage view of the Application panel showing the number of matching entries.
    * @example {2} PH1
    */
   matchingEntriesS: "Matching entries: {PH1}",
   /**
-   * @description Span text content in Indexed DBViews of the Application panel
+   * @description Status text in the cache storage view of the Application panel showing the total number of entries.
    * @example {2} PH1
    */
   totalEntriesS: "Total entries: {PH1}",
   /**
-   * @description Text for network request headers
+   * @description Tab title for request headers in the cache storage entry preview of the Application panel.
    */
   headers: "Headers",
   /**
-   * @description Text for previewing items
+   * @description Tab title for response preview in the cache storage entry preview of the Application panel.
    */
   preview: "Preview"
 };
@@ -10973,23 +10971,23 @@ var RequestView = class extends UI15.Widget.VBox {
 // ../../front_end/panels/application/ServiceWorkerCacheTreeElement.ts
 var UIStrings16 = {
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Label for the cache storage tree element in the Application panel sidebar.
    */
   cacheStorage: "Cache storage",
   /**
-   * @description Text in Application Panel if no cache storage was detected.
+   * @description Empty state title in the Application panel when no cache storage is detected.
    */
   noCacheStorage: "No cache storage detected",
   /**
-   * @description Description text in Application Panel describing the cache storage tab
+   * @description Empty state description in the Application panel describing the cache storage view.
    */
   cacheStorageDescription: "On this page you can view and delete cache data",
   /**
-   * @description A context menu item in the Application Panel Sidebar of the Application panel
+   * @description Context menu item in the Application panel sidebar to refresh caches.
    */
-  refreshCaches: "Refresh Caches",
+  refreshCaches: "Refresh caches",
   /**
-   * @description Text to delete something
+   * @description Context menu item in the Application panel sidebar to delete a cache.
    */
   delete: "Delete"
 };
@@ -12645,22 +12643,15 @@ import * as UI19 from "../../ui/legacy/legacy.js";
 import { StorageMetadataView as StorageMetadataView3 } from "./components/components.js";
 var UIStrings19 = {
   /**
-   * @description Label for an item in the Application Panel Sidebar of the Application panel
-   * Storage Buckets allow developers to separate site data into buckets so that they can be
-   * deleted independently.
+   * @description Label for the storage buckets tree element in the Application panel sidebar.
    */
   storageBuckets: "Storage buckets",
   /**
-   * @description Text for an item in the Application Panel
-   * if no storage buckets are available to show. Storage Buckets allow developers to separate
-   * site data into buckets so that they can be
-   * deleted independently. https://developer.chrome.com/docs/web-platform/storage-buckets.
+   * @description Empty state title in the Application panel when no storage buckets are detected.
    */
   noStorageBuckets: "No storage buckets detected",
   /**
-   * @description Description text in the Application Panel describing the storage buckets tab.
-   * Storage Buckets allow developers to separate site data into buckets so that they can be
-   * deleted independently. https://developer.chrome.com/docs/web-platform/storage-buckets.
+   * @description Empty state description in the Application panel describing the storage buckets view.
    */
   storageBucketsDescription: "On this page you can view and delete storage buckets, and their associated `Storage APIs`"
 };
@@ -12929,19 +12920,19 @@ import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents10 from "./components/components.js";
 var UIStrings20 = {
   /**
-   * @description Text to refresh the page
+   * @description Tooltip text for the refresh button in the storage items toolbar of the Application panel.
    */
   refresh: "Refresh",
   /**
-   * @description Text to clear everything
+   * @description Tooltip text for the clear all button in the storage items toolbar of the Application panel.
    */
-  clearAll: "Clear All",
+  clearAll: "Clear all",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
+   * @description Tooltip text for the delete selected button in the storage items toolbar of the Application panel.
    */
-  deleteSelected: "Delete Selected",
+  deleteSelected: "Delete selected",
   /**
-   * @description Text that informs screen reader users that the storage table has been refreshed
+   * @description Screen reader announcement when the storage table is refreshed.
    */
   refreshedStatus: "Table refreshed"
 };
@@ -13088,43 +13079,43 @@ var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbar
 // ../../front_end/panels/application/CookieItemsView.ts
 var UIStrings21 = {
   /**
-   * @description Label for checkbox to show URL-decoded cookie values
+   * @description Checkbox label to show URL-decoded cookie values in the cookie preview of the Application panel.
    */
   showUrlDecoded: "Show URL-decoded",
   /**
-   * @description Text of a context menu item to start a chat with AI
+   * @description Context menu item in the Application panel to start a chat with AI assistance.
    */
   startAChat: "Start a chat",
   /**
-   * @description Text of a context menu item to explain a web cookie with AI
+   * @description Context menu item in the Application panel to explain a cookie with AI assistance.
    */
   explainCookie: "Explain this cookie",
   /**
-   * @description Text in Cookie Items View of the Application panel to indicate that no cookie has been selected for preview
+   * @description Empty state header in the cookie preview of the Application panel when no cookie is selected.
    */
   noCookieSelected: "No cookie selected",
   /**
-   * @description Text in Cookie Items View of the Application panel
+   * @description Empty state text in the cookie preview of the Application panel when no cookie is selected.
    */
   selectACookieToPreviewItsValue: "Select a cookie to preview its value",
   /**
-   * @description Text for filter in Cookies View of the Application panel
+   * @description Checkbox label in the cookies view of the Application panel to filter cookies with issues.
    */
   onlyShowCookiesWithAnIssue: "Only show cookies with an issue",
   /**
-   * @description Title for filter in the Cookies View of the Application panel
+   * @description Tooltip text for the filter checkbox in the cookies view of the Application panel to filter cookies with issues.
    */
   onlyShowCookiesWhichHaveAn: "Only show cookies that have an associated issue",
   /**
-   * @description Label to only delete the cookies that are visible after filtering
+   * @description Tooltip text for the clear button in the cookies view of the Application panel to delete visible filtered cookies.
    */
   clearFilteredCookies: "Clear filtered cookies",
   /**
-   * @description Label to delete all cookies
+   * @description Tooltip text for the clear button in the cookies view of the Application panel to delete all cookies.
    */
   clearAllCookies: "Clear all cookies",
   /**
-   * @description Alert message for screen reader to announce # of cookies in the table
+   * @description Screen reader announcement for the number of cookies shown in the table of the Application panel.
    * @example {5} PH1
    */
   numberOfCookiesShownInTableS: "Number of cookies shown in table: {PH1}"
@@ -14617,24 +14608,24 @@ var { Size: Size2 } = Geometry2;
 var { repeat: repeat2, ifDefined } = LitDirectives;
 var UIStrings23 = {
   /**
-   * @description Text that shows in the Application Panel if no value is selected for preview
+   * @description Empty state header in the storage items view of the Application panel when no value is selected.
    */
   noPreviewSelected: "No value selected",
   /**
-   * @description Preview text when viewing storage in Application panel
+   * @description Empty state text in the storage items view of the Application panel when no value is selected.
    */
   selectAValueToPreview: "Select a value to preview",
   /**
-   * @description Text for announcing number of entries after filtering
+   * @description Screen reader announcement for the number of entries shown in the storage table of the Application panel.
    * @example {5} PH1
    */
   numberEntries: "Number of entries shown in table: {PH1}",
   /**
-   * @description Text in DOMStorage Items View of the Application panel
+   * @description Column header for key in the storage items datagrid of the Application panel.
    */
   key: "Key",
   /**
-   * @description Text for the value of something
+   * @description Column header for value in the storage items datagrid of the Application panel.
    */
   value: "Value"
 };
@@ -14952,24 +14943,23 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
 // ../../front_end/panels/application/DOMStorageItemsView.ts
 var UIStrings24 = {
   /**
-   * @description Name for the "DOM Storage Items" table that shows the content of the DOM Storage.
+   * @description Accessible name for the DOM storage items datagrid in the Application panel.
    */
-  domStorageItems: "DOM Storage Items",
+  domStorageItems: "DOM storage items",
   /**
-   * @description Text for announcing that the "DOM Storage Items" table was cleared, that is, all
-   * entries were deleted.
+   * @description Screen reader announcement when the DOM storage items table is cleared.
    */
-  domStorageItemsCleared: "DOM Storage Items cleared",
+  domStorageItemsCleared: "DOM storage items cleared",
   /**
-   * @description Text for announcing a DOM Storage key/value item has been deleted
+   * @description Screen reader announcement when a DOM storage key-value item is deleted.
    */
   domStorageItemDeleted: "The storage item was deleted",
   /**
-   * @description Text of a context menu item to start a chat with AI
+   * @description Context menu item in the Application panel to start a chat with AI assistance.
    */
   startAChat: "Start a chat",
   /**
-   * @description Text of a context menu item to explain a storage item of a storage bucket with AI
+   * @description Context menu item in the Application panel to explain a DOM storage item with AI assistance.
    */
   explainItem: "Explain this item"
 };
@@ -15167,14 +15157,13 @@ import * as UI25 from "../../ui/legacy/legacy.js";
 import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 var UIStrings25 = {
   /**
-   * @description Name for the "Extension Storage Items" table that shows the content of the extension Storage.
+   * @description Accessible name for the extension storage items datagrid in the Application panel.
    */
-  extensionStorageItems: "Extension Storage Items",
+  extensionStorageItems: "Extension storage items",
   /**
-   * @description Text for announcing that the "Extension Storage Items" table was cleared, that is, all
-   * entries were deleted.
+   * @description Screen reader announcement when the extension storage items table is cleared.
    */
-  extensionStorageItemsCleared: "Extension Storage Items cleared"
+  extensionStorageItemsCleared: "Extension storage items cleared"
 };
 var str_25 = i18n49.i18n.registerUIStrings("panels/application/ExtensionStorageItemsView.ts", UIStrings25);
 var i18nString25 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
@@ -15752,131 +15741,130 @@ var storageView_css_default = `/*
 // ../../front_end/panels/application/StorageView.ts
 var UIStrings26 = {
   /**
-   * @description Text in the Storage View that expresses the amount of used and available storage quota
+   * @description Text in the storage view that expresses the amount of used and available storage quota.
    * @example {1.5 MB} PH1
    * @example {123.1 MB} PH2
    */
   storageQuotaUsed: "{PH1} used out of {PH2} storage quota",
   /**
-   * @description Tooltip in the Storage View that expresses the precise amount of used and available storage quota
+   * @description Tooltip in the storage view that expresses the precise amount of used and available storage quota.
    * @example {200} PH1
    * @example {400} PH2
    */
   storageQuotaUsedWithBytes: "{PH1} bytes used out of {PH2} bytes storage quota",
   /**
-   * @description Fragment indicating that a certain data size has been custom configured
+   * @description Fragment indicating that a certain data size has been custom configured.
    * @example {1.5 MB} PH1
    */
   storageWithCustomMarker: "{PH1} (custom)",
   /**
-   * @description Text in Application Panel Sidebar and title text of the Storage View of the Application panel
+   * @description Title text of the storage view in the Application panel.
    */
   storageTitle: "Storage",
   /**
-   * @description Title text in Storage View of the Application panel
+   * @description Section title in the storage view of the Application panel.
    */
   usage: "Usage",
   /**
-   * @description Unit for data size in DevTools
+   * @description Unit for data size in DevTools.
    */
   mb: "MB",
   /**
-   * @description Link to learn more about Progressive Web Apps
+   * @description Link text to learn more about Progressive Web Apps in the storage view of the Application panel.
    */
   learnMore: "Learn more",
   /**
-   * @description Button text for the button in the Storage View of the Application panel for clearing site-specific storage
+   * @description Section title in the storage view of the Application panel for clearing site-specific storage.
    */
   clearSiteData: "Clear site data",
   /**
-   * @description Button text in the Storage View of the Application panel for clearing selected site-specific storage
+   * @description Button text in the storage view of the Application panel for clearing selected site-specific storage.
    */
   clearSelected: "Clear selected",
   /**
-   * @description Announce message when the "clear site data" task is complete
+   * @description Screen reader announcement when the clear site data task is complete.
    */
   SiteDataCleared: "Site data cleared",
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for unregistering service workers.
    */
   unregisterServiceWorker: "Unregister service workers",
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for clearing local and session storage.
    */
   localAndSessionStorage: "Local and session storage",
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for clearing IndexedDB storage.
    */
   indexDB: "IndexedDB",
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for clearing cookies.
    */
   cookies: "Cookies",
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for clearing cache storage.
    */
   cacheStorage: "Cache storage",
   /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
+   * @description Checkbox label in the storage view of the Application panel for including third-party cookies.
    */
   thirdPartyCookies: "Third-party cookies",
   /**
-   * @description Text for error message in Application Quota Override
-   * @example {Image} PH1
+   * @description Text for error message in the storage view of the Application panel when an origin fails to load.
+   * @example {https://example.com} PH1
    */
   sFailedToLoad: "{PH1} (failed to load)",
   /**
-   * @description Text for error message in Application Quota Override
+   * @description Error message in the storage view of the Application panel when a quota override fails.
    */
   internalError: "Internal error",
   /**
-   * @description Text for error message in Application Quota Override
+   * @description Error message in the storage view of the Application panel when custom quota is not a number.
    */
-  pleaseEnterANumber: "Please enter a number",
+  pleaseEnterANumber: "Enter a number",
   /**
-   * @description Text for error message in Application Quota Override
+   * @description Error message in the storage view of the Application panel when custom quota is negative.
    */
   numberMustBeNonNegative: "Number must be non-negative",
   /**
-   * @description Text for error message in Application Quota Override
+   * @description Error message in the storage view of the Application panel when custom quota is too large.
    * @example {9000000000000} PH1
    */
   numberMustBeSmaller: "Number must be smaller than {PH1}",
   /**
-   * @description Button text for the "Clear site data" button in the Storage View of the Application panel while the clearing action is pending
+   * @description Button text for the clear button in the storage view of the Application panel while clearing is in progress.
    */
   clearing: "Clearing\u2026",
   /**
-   * @description Quota row title in Clear Storage View of the Application panel
+   * @description Tooltip text in the storage view of the Application panel indicating storage quota is limited in Incognito mode.
    */
   storageQuotaIsLimitedIn: "Storage quota is limited in Incognito mode",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category name for file system storage in the storage view of the Application panel.
    */
-  fileSystem: "File System",
+  fileSystem: "File system",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category name for other storage types in the storage view of the Application panel.
    */
   other: "Other",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Chart title for the storage usage pie chart in the storage view of the Application panel.
    */
   storageUsage: "Storage usage",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category name for service worker storage in the storage view of the Application panel.
    */
   serviceWorkers: "Service workers",
   /**
-   * @description Checkbox label in Application Panel Sidebar of the Application panel.
-   * Storage quota refers to the amount of disk available for the website or app.
+   * @description Checkbox label in the storage view of the Application panel to simulate custom storage quota.
    */
   simulateCustomStorage: "Simulate custom storage quota",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category name for local storage in the storage view of the Application panel.
    */
   localStorage: "Local storage",
   /**
-   * @description Text in Application Panel Sidebar of the Application panel
+   * @description Category name for session storage in the storage view of the Application panel.
    */
   sessionStorage: "Session storage"
 };
@@ -15949,6 +15937,12 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
       i18nString26(UIStrings26.cacheStorage),
       Storage.StorageType.Cache_storage,
       "cache-storage-checkbox"
+    );
+    this.appendSettingCheckbox(
+      leftColumn,
+      i18nString26(UIStrings26.fileSystem),
+      Storage.StorageType.File_systems,
+      "file-systems-checkbox"
     );
     this.appendSettingCheckbox(
       leftColumn,
@@ -16425,6 +16419,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
 var AllStorageTypes = [
   Storage.StorageType.Cache_storage,
   Storage.StorageType.Cookies,
+  Storage.StorageType.File_systems,
   Storage.StorageType.Indexeddb,
   Storage.StorageType.Local_storage,
   Storage.StorageType.Service_workers
@@ -16481,8 +16476,7 @@ import * as UI28 from "../../ui/legacy/legacy.js";
 import * as ApplicationComponents12 from "./components/components.js";
 var UIStrings27 = {
   /**
-   * @description Hover text for an info icon in the Private State Token panel.
-   * Previously known as 'Trust Tokens'.
+   * @description Label for the private state tokens tree element in the Application panel sidebar.
    */
   trustTokens: "Private state tokens"
 };

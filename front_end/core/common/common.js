@@ -3452,19 +3452,24 @@ var WEB_SAFE_SCHEMES = /* @__PURE__ */ new Set([
   "wss:",
   "data:"
 ]);
-function hasWebSafeScheme(url) {
+function parseUnwrappedURL(url) {
   try {
-    const parsed = new URL(url);
-    if (parsed.protocol === "blob:") {
-      return hasWebSafeScheme(parsed.pathname);
+    let parsed = new URL(url);
+    while (parsed.protocol === "blob:" || parsed.protocol === "filesystem:") {
+      parsed = new URL(parsed.href.slice(parsed.protocol.length));
     }
-    return WEB_SAFE_SCHEMES.has(parsed.protocol);
+    return parsed;
   } catch {
-    return false;
+    return null;
   }
+}
+function hasWebSafeScheme(url) {
+  const parsed = parseUnwrappedURL(url);
+  return parsed !== null && WEB_SAFE_SCHEMES.has(parsed.protocol);
 }
 var PRIVILEGED_SCHEMES = /* @__PURE__ */ new Set([
   "chrome:",
+  "chrome-error:",
   "chrome-extension:",
   "chrome-search:",
   "chrome-untrusted:",
@@ -3473,15 +3478,8 @@ var PRIVILEGED_SCHEMES = /* @__PURE__ */ new Set([
   "isolated-app:"
 ]);
 function isPrivilegedScheme(url) {
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol === "blob:") {
-      return isPrivilegedScheme(parsed.pathname);
-    }
-    return PRIVILEGED_SCHEMES.has(parsed.protocol);
-  } catch {
-    return false;
-  }
+  const parsed = parseUnwrappedURL(url);
+  return parsed !== null && PRIVILEGED_SCHEMES.has(parsed.protocol);
 }
 var ParsedURL = class _ParsedURL {
   isValid = false;

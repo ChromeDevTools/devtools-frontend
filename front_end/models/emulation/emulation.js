@@ -5078,6 +5078,8 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     if (this.#type === "Device" /* Device */ && this.#device && this.#mode) {
       const orientation = this.#device.orientationByName(this.#mode.orientation);
       this.#scaleSetting.set(this.calculateFitScale(orientation.width, orientation.height));
+    } else if (this.#type === "Responsive" /* Responsive */) {
+      this.#scaleSetting.set(this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get()));
     }
   }
   #saveScaleForCurrentDevice() {
@@ -5126,7 +5128,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
           const savedDevice = map[device.title];
           if (savedDevice) {
             this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
-            if (scale === void 0 && !savedDevice.autoAdjust) {
+            if (scale === void 0 && !savedDevice.autoAdjust && savedDevice.scale > 0) {
               scale = savedDevice.scale;
             }
           } else {
@@ -5151,10 +5153,12 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
           const savedDevice = map["Responsive"];
           if (savedDevice) {
             this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
-            if (!savedDevice.autoAdjust) {
+            if (!savedDevice.autoAdjust && savedDevice.scale > 0) {
               this.#scaleSetting.set(savedDevice.scale);
+            } else if (this.#initialized) {
+              this.#updateFitScale();
             } else {
-              this.#scaleSetting.set(this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get()));
+              this.#autoFitScaleOnInitialize = true;
             }
           } else {
             this.#autoAdjustScaleSetting.set(true);
@@ -5484,7 +5488,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       screenWidth ? this.#preferredSize.width / screenWidth : 1,
       screenHeight ? this.#preferredSize.height / screenHeight : 1
     );
-    scale = Math.min(Math.floor(scale * 100), 100);
+    scale = Math.max(Math.min(Math.floor(scale * 100), 100), 1);
     let sharpScale = scale;
     while (sharpScale > scale * 0.7) {
       let sharp = true;

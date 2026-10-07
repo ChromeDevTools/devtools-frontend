@@ -87,7 +87,7 @@ export function toggleClassAndInjectStyleRule(pseudoElementName, hidden) {
     const classNamePrefix = '__web-inspector-hide';
     const classNameSuffix = '-shortcut__';
     const styleTagId = '__web-inspector-hide-shortcut-style__';
-    const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[\(\)\:]/g, '_') : '';
+    const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[^a-zA-Z0-9_-]/g, '_') : '';
     const className = classNamePrefix + pseudoElementNameEscaped + classNameSuffix;
     this.classList.toggle(className, hidden);
     let localRoot = this;

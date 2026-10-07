@@ -19,9 +19,11 @@ export class ListSourcesTool {
     description = 'Lists deployed and authored source files in the workspace (including source-mapped files) with their display name and unique numeric ID.';
     static lastSourceId = 0;
     static uiSourceCodeId = new WeakMap();
+    static idToUiSourceCode = new Map();
     static reset() {
         ListSourcesTool.lastSourceId = 0;
         ListSourcesTool.uiSourceCodeId = new WeakMap();
+        ListSourcesTool.idToUiSourceCode = new Map();
     }
     static getUISourceCodes(originLock, 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
@@ -46,21 +48,24 @@ export class ListSourcesTool {
                 if (!uiSourceCodes.get(url) || uiSourceCode.contentType().isFromSourceMap()) {
                     uiSourceCodes.set(url, uiSourceCode);
                     if (!ListSourcesTool.uiSourceCodeId.has(uiSourceCode)) {
-                        ListSourcesTool.uiSourceCodeId.set(uiSourceCode, ++ListSourcesTool.lastSourceId);
+                        const id = ++ListSourcesTool.lastSourceId;
+                        ListSourcesTool.uiSourceCodeId.set(uiSourceCode, id);
+                        ListSourcesTool.idToUiSourceCode.set(id, uiSourceCode);
                     }
                 }
             }
         }
         return Array.from(uiSourceCodes.values());
     }
-    static getSourceById(id, originLock, 
-    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    workspace = Workspace.Workspace.WorkspaceImpl.instance()) {
+    static getSourceById(id, originLock) {
         if (!Number.isInteger(id) || id <= 0) {
             return undefined;
         }
-        return ListSourcesTool.getUISourceCodes(originLock, workspace)
-            .find(file => ListSourcesTool.uiSourceCodeId.get(file) === id);
+        const file = ListSourcesTool.idToUiSourceCode.get(id);
+        if (!file || !isOriginAllowedByLock(originLock, file.securityOrigin())) {
+            return undefined;
+        }
+        return file;
     }
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,

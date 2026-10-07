@@ -53,26 +53,33 @@ const WEB_SAFE_SCHEMES = new Set([
     'wss:',
     'data:',
 ]);
-/**
- * Returns true if the URL uses an unprivileged web-safe scheme (or is a `blob:` URL wrapping one).
- */
-export function hasWebSafeScheme(url) {
+function parseUnwrappedURL(url) {
     try {
-        const parsed = new URL(url);
-        if (parsed.protocol === 'blob:') {
-            return hasWebSafeScheme(parsed.pathname);
+        let parsed = new URL(url);
+        // Iteratively unwrap nested `blob:` and `filesystem:` URLs (e.g. `blob:filesystem:https://...`)
+        // to inspect the underlying origin's protocol.
+        while (parsed.protocol === 'blob:' || parsed.protocol === 'filesystem:') {
+            parsed = new URL(parsed.href.slice(parsed.protocol.length));
         }
-        return WEB_SAFE_SCHEMES.has(parsed.protocol);
+        return parsed;
     }
     catch {
-        return false;
+        return null;
     }
+}
+/**
+ * Returns true if the URL uses an unprivileged web-safe scheme (or is a `blob:`/`filesystem:` URL wrapping one).
+ */
+export function hasWebSafeScheme(url) {
+    const parsed = parseUnwrappedURL(url);
+    return parsed !== null && WEB_SAFE_SCHEMES.has(parsed.protocol);
 }
 /**
  * Privileged browser and local schemes that must not be opened via external/new-tab links by default.
  */
 const PRIVILEGED_SCHEMES = new Set([
     'chrome:',
+    'chrome-error:',
     'chrome-extension:',
     'chrome-search:',
     'chrome-untrusted:',
@@ -81,19 +88,11 @@ const PRIVILEGED_SCHEMES = new Set([
     'isolated-app:',
 ]);
 /**
- * Returns true if the URL uses a privileged scheme (or is a `blob:` URL wrapping one).
+ * Returns true if the URL uses a privileged scheme (or is a `blob:`/`filesystem:` URL wrapping one).
  */
 export function isPrivilegedScheme(url) {
-    try {
-        const parsed = new URL(url);
-        if (parsed.protocol === 'blob:') {
-            return isPrivilegedScheme(parsed.pathname);
-        }
-        return PRIVILEGED_SCHEMES.has(parsed.protocol);
-    }
-    catch {
-        return false;
-    }
+    const parsed = parseUnwrappedURL(url);
+    return parsed !== null && PRIVILEGED_SCHEMES.has(parsed.protocol);
 }
 export class ParsedURL {
     isValid = false;

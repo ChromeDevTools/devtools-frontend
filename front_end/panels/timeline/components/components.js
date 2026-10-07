@@ -9782,6 +9782,7 @@ import * as TraceBounds3 from "../../../services/trace_bounds/trace_bounds.js";
 import * as UI14 from "../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "../../../ui/legacy/theme_support/theme_support.js";
 import * as Lit14 from "../../../ui/lit/lit.js";
+import * as SettingsUI from "../../../ui/settings/settings.js";
 import * as VisualLogging9 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/sidebarAnnotationsTab.css.js
@@ -9974,7 +9975,7 @@ var SidebarAnnotationsTab = class extends UI14.Widget.Widget {
   constructor(view = DEFAULT_VIEW10) {
     super();
     this.#view = view;
-    this.#annotationsHiddenSetting = Common5.Settings.Settings.instance().moduleSetting("annotations-hidden");
+    this.#annotationsHiddenSetting = Common5.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.annotationsHiddenSettingDescriptor);
   }
   deduplicatedAnnotations() {
     return this.#annotations;

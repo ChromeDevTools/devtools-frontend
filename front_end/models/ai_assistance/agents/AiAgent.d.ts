@@ -147,7 +147,7 @@ export interface ParsedAnswer {
     suggestions?: [string, ...string[]];
 }
 export type ParsedResponse = ParsedAnswer;
-export declare const MAX_STEPS = 10;
+export declare const MAX_STEPS = 20;
 export interface ConversationSuggestion {
     title: string;
     jslogContext?: string;
@@ -402,8 +402,6 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
  *
  * TODO: missing a test that action code is yielded before the
  * confirmation dialog.
- * TODO: missing a test for an error if it took
- * more than MAX_STEPS iterations.
  */
 export declare abstract class AiAgent<T> {
     #private;

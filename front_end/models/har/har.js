@@ -18,7 +18,6 @@ __export(HARFormat_exports, {
   HARStack: () => HARStack,
   HARTimings: () => HARTimings
 });
-import * as Common from "../../core/common/common.js";
 import * as SDK from "../../core/sdk/sdk.js";
 var HARBase = class _HARBase {
   custom;
@@ -399,8 +398,7 @@ var HARInitiator = class extends HARBase {
   constructor(data) {
     super(data);
     this.type = HARBase.optionalString(data["type"]) ?? SDK.NetworkRequest.InitiatorType.OTHER;
-    const url = HARBase.optionalString(data["url"]);
-    this.url = url && Common.ParsedURL.hasWebSafeScheme(url) ? url : void 0;
+    this.url = HARBase.optionalString(data["url"]);
     this.lineNumber = HARBase.optionalNumber(data["lineNumber"]);
     this.requestId = HARBase.optionalString(data["requestId"]);
     if (data["stack"]) {
@@ -445,8 +443,7 @@ var HARCallFrame = class extends HARBase {
     super(data);
     this.functionName = HARBase.optionalString(data["functionName"]) ?? "";
     this.scriptId = HARBase.optionalString(data["scriptId"]) ?? "";
-    const url = HARBase.optionalString(data["url"]) ?? "";
-    this.url = Common.ParsedURL.hasWebSafeScheme(url) ? url : "";
+    this.url = HARBase.optionalString(data["url"]) ?? "";
     this.lineNumber = HARBase.optionalNumber(data["lineNumber"]) ?? -1;
     this.columnNumber = HARBase.optionalNumber(data["columnNumber"]) ?? -1;
   }
@@ -483,7 +480,7 @@ var Importer_exports = {};
 __export(Importer_exports, {
   Importer: () => Importer
 });
-import * as Common2 from "../../core/common/common.js";
+import * as Common from "../../core/common/common.js";
 import * as Platform from "../../core/platform/platform.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as TextUtils from "../../core/text_utils/text_utils.js";
@@ -3451,7 +3448,7 @@ var Importer = class _Importer {
       const parser = new SDK2.ServerSentEventProtocol.ServerSentEventsParser(onEvent, charset ?? void 0);
       let text = contentText;
       if (isBase64) {
-        const bytes = Common2.Base64.decode(contentText);
+        const bytes = Common.Base64.decode(contentText);
         text = new TextDecoder(charset ?? void 0).decode(bytes);
       }
       parser.addTextChunk(text);
@@ -3523,23 +3520,23 @@ var Importer = class _Importer {
   static getResourceType(request, entry, pageLoad) {
     const customResourceTypeName = entry.customAsString("resourceType");
     if (customResourceTypeName) {
-      const customResourceType = Common2.ResourceType.ResourceType.fromName(customResourceTypeName);
+      const customResourceType = Common.ResourceType.ResourceType.fromName(customResourceTypeName);
       if (customResourceType) {
         return customResourceType;
       }
     }
     if (pageLoad?.mainRequest === request) {
-      return Common2.ResourceType.resourceTypes.Document;
+      return Common.ResourceType.resourceTypes.Document;
     }
-    const resourceTypeFromMime = Common2.ResourceType.ResourceType.fromMimeType(entry.response.content.mimeType);
-    if (resourceTypeFromMime !== Common2.ResourceType.resourceTypes.Other) {
+    const resourceTypeFromMime = Common.ResourceType.ResourceType.fromMimeType(entry.response.content.mimeType);
+    if (resourceTypeFromMime !== Common.ResourceType.resourceTypes.Other) {
       return resourceTypeFromMime;
     }
-    const resourceTypeFromUrl = Common2.ResourceType.ResourceType.fromURL(entry.request.url);
+    const resourceTypeFromUrl = Common.ResourceType.ResourceType.fromURL(entry.request.url);
     if (resourceTypeFromUrl) {
       return resourceTypeFromUrl;
     }
-    return Common2.ResourceType.resourceTypes.Other;
+    return Common.ResourceType.resourceTypes.Other;
   }
   static setupTiming(request, issueTime, entryTotalDuration, timings) {
     function accumulateTime(timing2) {
@@ -3596,7 +3593,7 @@ __export(Log_exports, {
   Entry: () => Entry,
   Log: () => Log2
 });
-import * as Common3 from "../../core/common/common.js";
+import * as Common2 from "../../core/common/common.js";
 import * as Platform2 from "../../core/platform/platform.js";
 import * as SDK3 from "../../core/sdk/sdk.js";
 var Log2 = class _Log {
@@ -3726,7 +3723,7 @@ var Entry = class _Entry {
     } else {
       delete entry.pageref;
     }
-    if (harEntry.request.resourceType() === Common3.ResourceType.resourceTypes.WebSocket) {
+    if (harEntry.request.resourceType() === Common2.ResourceType.resourceTypes.WebSocket) {
       const messages = [];
       for (const message of harEntry.request.frames()) {
         messages.push({ type: message.type, time: message.time, opcode: message.opCode, data: message.text });
@@ -3897,7 +3894,7 @@ var Entry = class _Entry {
     return parameters.slice();
   }
   buildRequestURL(url) {
-    return Common3.ParsedURL.ParsedURL.split(url, "#", 2)[0];
+    return Common2.ParsedURL.ParsedURL.split(url, "#", 2)[0];
   }
   buildCookies(cookies) {
     return cookies.map(this.buildCookie.bind(this));
@@ -3958,7 +3955,7 @@ __export(Writer_exports, {
   chunkSize: () => chunkSize,
   jsonIndent: () => jsonIndent
 });
-import * as Common4 from "../../core/common/common.js";
+import * as Common3 from "../../core/common/common.js";
 import * as i18n from "../../core/i18n/i18n.js";
 import * as Platform3 from "../../core/platform/platform.js";
 import * as TextUtils2 from "../../core/text_utils/text_utils.js";
@@ -3976,7 +3973,7 @@ var str_ = i18n.i18n.registerUIStrings("models/har/Writer.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var Writer = class _Writer {
   static async write(stream, requests, options, progress) {
-    const compositeProgress = new Common4.Progress.CompositeProgress(progress);
+    const compositeProgress = new Common3.Progress.CompositeProgress(progress);
     const content = await _Writer.harStringForRequests(requests, options, compositeProgress);
     if (progress.canceled) {
       return;

@@ -432,13 +432,132 @@ function resetSettings() {
 // ../../front_end/ui/settings/TimelineSettings.ts
 var TimelineSettings_exports = {};
 __export(TimelineSettings_exports, {
-  timelineShowAllEventsSettingDescriptor: () => timelineShowAllEventsSettingDescriptor
+  annotationsHiddenSettingDescriptor: () => annotationsHiddenSettingDescriptor,
+  flamechartSelectedNavigationSettingDescriptor: () => flamechartSelectedNavigationSettingDescriptor,
+  timelineCaptureLayersAndPicturesSettingDescriptor: () => timelineCaptureLayersAndPicturesSettingDescriptor,
+  timelineCaptureSelectorStatsSettingDescriptor: () => timelineCaptureSelectorStatsSettingDescriptor,
+  timelineCountersGraphDocumentsSettingDescriptor: () => timelineCountersGraphDocumentsSettingDescriptor,
+  timelineCountersGraphGpuMemoryUsedKbSettingDescriptor: () => timelineCountersGraphGpuMemoryUsedKbSettingDescriptor,
+  timelineCountersGraphJsEventListenersSettingDescriptor: () => timelineCountersGraphJsEventListenersSettingDescriptor,
+  timelineCountersGraphJsHeapSizeUsedSettingDescriptor: () => timelineCountersGraphJsHeapSizeUsedSettingDescriptor,
+  timelineCountersGraphNodesSettingDescriptor: () => timelineCountersGraphNodesSettingDescriptor,
+  timelineDebugModeSettingDescriptor: () => timelineDebugModeSettingDescriptor,
+  timelineDimThirdPartiesSettingDescriptor: () => timelineDimThirdPartiesSettingDescriptor,
+  timelineDisableJsSamplingSettingDescriptor: () => timelineDisableJsSamplingSettingDescriptor,
+  timelineInvalidationTrackingSettingDescriptor: () => timelineInvalidationTrackingSettingDescriptor,
+  timelineScreenshotCaptureModeSettingDescriptor: () => timelineScreenshotCaptureModeSettingDescriptor,
+  timelineShowAllEventsSettingDescriptor: () => timelineShowAllEventsSettingDescriptor,
+  timelineShowExtensionDataSettingDescriptor: () => timelineShowExtensionDataSettingDescriptor,
+  timelineShowMemorySettingDescriptor: () => timelineShowMemorySettingDescriptor,
+  timelineShowScreenshotsSettingDescriptor: () => timelineShowScreenshotsSettingDescriptor
 });
 import * as Common9 from "../../core/common/common.js";
 var timelineShowAllEventsSettingDescriptor = {
   name: "timeline-show-all-events",
   type: Common9.Settings.SettingType.BOOLEAN,
   defaultValue: false,
+  storageType: Common9.Settings.SettingStorageType.SYNCED
+};
+var timelineDebugModeSettingDescriptor = {
+  name: "timeline-debug-mode",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common9.Settings.SettingStorageType.SYNCED
+};
+var annotationsHiddenSettingDescriptor = {
+  name: "annotations-hidden",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common9.Settings.SettingStorageType.SYNCED
+};
+var timelineInvalidationTrackingSettingDescriptor = {
+  name: "timeline-invalidation-tracking",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common9.Settings.SettingStorageType.SYNCED
+};
+var timelineDisableJsSamplingSettingDescriptor = {
+  name: "timeline-disable-js-sampling",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common9.Settings.SettingStorageType.SESSION
+};
+var timelineCaptureLayersAndPicturesSettingDescriptor = {
+  name: "timeline-capture-layers-and-pictures",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common9.Settings.SettingStorageType.SESSION
+};
+var timelineCaptureSelectorStatsSettingDescriptor = {
+  name: "timeline-capture-selector-stats",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common9.Settings.SettingStorageType.SESSION
+};
+var timelineScreenshotCaptureModeSettingDescriptor = {
+  name: "timeline-screenshot-capture-mode",
+  type: Common9.Settings.SettingType.ENUM,
+  defaultValue: "auto",
+  storageType: Common9.Settings.SettingStorageType.SESSION
+};
+var timelineShowScreenshotsSettingDescriptor = {
+  name: "timeline-show-screenshots",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.GLOBAL
+};
+var timelineShowMemorySettingDescriptor = {
+  name: "timeline-show-memory",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common9.Settings.SettingStorageType.SESSION
+};
+var timelineDimThirdPartiesSettingDescriptor = {
+  name: "timeline-dim-third-parties",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common9.Settings.SettingStorageType.SESSION
+};
+var timelineShowExtensionDataSettingDescriptor = {
+  name: "timeline-show-extension-data",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.GLOBAL
+};
+var timelineCountersGraphJsHeapSizeUsedSettingDescriptor = {
+  name: "timeline-counters-graph-js-heap-size-used",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.GLOBAL
+};
+var timelineCountersGraphDocumentsSettingDescriptor = {
+  name: "timeline-counters-graph-documents",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.GLOBAL
+};
+var timelineCountersGraphNodesSettingDescriptor = {
+  name: "timeline-counters-graph-nodes",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.GLOBAL
+};
+var timelineCountersGraphJsEventListenersSettingDescriptor = {
+  name: "timeline-counters-graph-js-event-listeners",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.GLOBAL
+};
+var timelineCountersGraphGpuMemoryUsedKbSettingDescriptor = {
+  name: "timeline-counters-graph-gpu-memory-used-kb",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.GLOBAL
+};
+var flamechartSelectedNavigationSettingDescriptor = {
+  name: "flamechart-selected-navigation",
+  type: Common9.Settings.SettingType.ENUM,
+  defaultValue: "classic",
   storageType: Common9.Settings.SettingStorageType.SYNCED
 };
 

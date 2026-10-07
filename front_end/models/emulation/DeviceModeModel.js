@@ -274,6 +274,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             const orientation = this.#device.orientationByName(this.#mode.orientation);
             this.#scaleSetting.set(this.calculateFitScale(orientation.width, orientation.height));
         }
+        else if (this.#type === Type.Responsive) {
+            this.#scaleSetting.set(this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get()));
+        }
     }
     #saveScaleForCurrentDevice() {
         // The scale settings don't reflect the current device yet while emulate() is applying them or while the fit
@@ -327,7 +330,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
                     if (savedDevice) {
                         this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
                         // An explicitly requested scale takes precedence over the saved one.
-                        if (scale === undefined && !savedDevice.autoAdjust) {
+                        if (scale === undefined && !savedDevice.autoAdjust && savedDevice.scale > 0) {
                             scale = savedDevice.scale;
                         }
                     }
@@ -356,11 +359,15 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
                     const savedDevice = map['Responsive'];
                     if (savedDevice) {
                         this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
-                        if (!savedDevice.autoAdjust) {
+                        if (!savedDevice.autoAdjust && savedDevice.scale > 0) {
                             this.#scaleSetting.set(savedDevice.scale);
                         }
+                        else if (this.#initialized) {
+                            this.#updateFitScale();
+                        }
                         else {
-                            this.#scaleSetting.set(this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get()));
+                            // Defer fit-scale calculation until setAvailableSize() initializes #preferredSize.
+                            this.#autoFitScaleOnInitialize = true;
                         }
                     }
                     else {
@@ -670,7 +677,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     }
     calculateFitScale(screenWidth, screenHeight) {
         let scale = Math.min(screenWidth ? this.#preferredSize.width / screenWidth : 1, screenHeight ? this.#preferredSize.height / screenHeight : 1);
-        scale = Math.min(Math.floor(scale * 100), 100);
+        scale = Math.max(Math.min(Math.floor(scale * 100), 100), 1);
         let sharpScale = scale;
         while (sharpScale > scale * 0.7) {
             let sharp = true;

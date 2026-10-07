@@ -10,6 +10,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingUIRegistration from '../../ui/settings/settings.js';
 const UIStrings = {
     /**
      * @description Label for the JS heap counter in the counters graph of the Performance panel.
@@ -101,11 +102,11 @@ export class CountersGraph extends UI.Widget.VBox {
         this.counters = [];
         this.counterUI = [];
         this.countersByName = new Map();
-        this.countersByName.set('jsHeapSizeUsed', this.createCounter(i18nString(UIStrings.jsHeap), 'js-heap-size-used', 'hsl(220, 90%, 43%)', i18n.ByteUtilities.bytesToString));
-        this.countersByName.set('documents', this.createCounter(i18nString(UIStrings.documents), 'documents', 'hsl(0, 90%, 43%)'));
-        this.countersByName.set('nodes', this.createCounter(i18nString(UIStrings.nodes), 'nodes', 'hsl(120, 90%, 43%)'));
-        this.countersByName.set('jsEventListeners', this.createCounter(i18nString(UIStrings.listeners), 'js-event-listeners', 'hsl(38, 90%, 43%)'));
-        this.gpuMemoryCounter = this.createCounter(i18nString(UIStrings.gpuMemory), 'gpu-memory-used-kb', 'hsl(300, 90%, 43%)', i18n.ByteUtilities.bytesToString);
+        this.countersByName.set('jsHeapSizeUsed', this.createCounter(i18nString(UIStrings.jsHeap), Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineCountersGraphJsHeapSizeUsedSettingDescriptor), 'hsl(220, 90%, 43%)', i18n.ByteUtilities.bytesToString));
+        this.countersByName.set('documents', this.createCounter(i18nString(UIStrings.documents), Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineCountersGraphDocumentsSettingDescriptor), 'hsl(0, 90%, 43%)'));
+        this.countersByName.set('nodes', this.createCounter(i18nString(UIStrings.nodes), Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineCountersGraphNodesSettingDescriptor), 'hsl(120, 90%, 43%)'));
+        this.countersByName.set('jsEventListeners', this.createCounter(i18nString(UIStrings.listeners), Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineCountersGraphJsEventListenersSettingDescriptor), 'hsl(38, 90%, 43%)'));
+        this.gpuMemoryCounter = this.createCounter(i18nString(UIStrings.gpuMemory), Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineCountersGraphGpuMemoryUsedKbSettingDescriptor), 'hsl(300, 90%, 43%)', i18n.ByteUtilities.bytesToString);
         this.countersByName.set('gpuMemoryUsedKB', this.gpuMemoryCounter);
         TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
     }
@@ -157,10 +158,10 @@ export class CountersGraph extends UI.Widget.VBox {
         this.currentValuesBar = this.graphsContainer.element.createChild('div');
         this.currentValuesBar.id = 'counter-values-bar';
     }
-    createCounter(uiName, settingsKey, color, formatter) {
+    createCounter(uiName, setting, color, formatter) {
         const counter = new Counter();
         this.counters.push(counter);
-        this.counterUI.push(new CounterUI(this, uiName, settingsKey, color, counter, formatter ?? this.#defaultNumberFormatter.format));
+        this.counterUI.push(new CounterUI(this, uiName, setting, color, counter, formatter ?? this.#defaultNumberFormatter.format));
         return counter;
     }
     resizerElement() {
@@ -335,11 +336,11 @@ export class CounterUI {
     verticalPadding;
     counterName;
     marker;
-    constructor(countersPane, title, settingsKey, graphColor, counter, formatter) {
+    constructor(countersPane, title, setting, graphColor, counter, formatter) {
         this.countersPane = countersPane;
         this.counter = counter;
         this.formatter = formatter;
-        this.setting = Common.Settings.Settings.instance().moduleSetting('timeline-counters-graph-' + settingsKey);
+        this.setting = setting;
         this.filter = new UI.Toolbar.ToolbarSettingCheckbox(this.setting, title);
         const parsedColor = Common.Color.parse(graphColor);
         if (parsedColor) {

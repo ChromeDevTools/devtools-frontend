@@ -2874,7 +2874,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             proxyElement.addEventListener('paste', pasteHandler.bind(this, context), false);
             proxyElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this, context), false);
         }
-        selectedElement.getComponentSelection()?.selectAllChildren(selectedElement);
+        this.prompt.selectAll();
     }
     editingNameValueKeyDown(context, event) {
         if (event.handled) {

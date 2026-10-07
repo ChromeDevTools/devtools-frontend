@@ -69,7 +69,7 @@ export declare class CounterUI {
     private readonly verticalPadding;
     private readonly counterName;
     private readonly marker;
-    constructor(countersPane: CountersGraph, title: Common.UIString.LocalizedString, settingsKey: string, graphColor: string, counter: Counter, formatter: (arg0: number) => string);
+    constructor(countersPane: CountersGraph, title: Common.UIString.LocalizedString, setting: Common.Settings.Setting<boolean>, graphColor: string, counter: Counter, formatter: (arg0: number) => string);
     reset(): void;
     setRange(minValue: number, maxValue: number): void;
     private toggleCounterGraph;

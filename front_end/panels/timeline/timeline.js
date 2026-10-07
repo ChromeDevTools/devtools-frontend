@@ -118,7 +118,7 @@ import * as Trace35 from "../../models/trace/trace.js";
 import * as SourceMapsResolver7 from "../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as Workspace8 from "../../models/workspace/workspace.js";
 import * as ThemeSupport25 from "../../ui/legacy/theme_support/theme_support.js";
-import * as SettingsUI5 from "../../ui/settings/settings.js";
+import * as SettingsUI7 from "../../ui/settings/settings.js";
 import * as TimelineComponents7 from "./components/components.js";
 
 // ../../front_end/panels/timeline/ExtensionTrackAppender.ts
@@ -699,7 +699,7 @@ import * as Bindings from "../../models/bindings/bindings.js";
 import * as Trace9 from "../../models/trace/trace.js";
 import * as PerfUI7 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as ThemeSupport9 from "../../ui/legacy/theme_support/theme_support.js";
-import * as SettingsUI from "../../ui/settings/settings.js";
+import * as SettingsUI2 from "../../ui/settings/settings.js";
 
 // ../../front_end/panels/timeline/ModificationsManager.ts
 var ModificationsManager_exports = {};
@@ -711,6 +711,7 @@ import * as Common2 from "../../core/common/common.js";
 import * as Platform3 from "../../core/platform/platform.js";
 import * as Trace8 from "../../models/trace/trace.js";
 import * as TimelineComponents from "./components/components.js";
+import * as SettingsUI from "../../ui/settings/settings.js";
 
 // ../../front_end/panels/timeline/AnnotationHelpers.ts
 var AnnotationHelpers_exports = {};
@@ -1267,7 +1268,7 @@ var ModificationsManager = class _ModificationsManager extends EventTarget {
     this.#modifications = modifications || null;
     this.#parsedTrace = parsedTrace;
     this.#eventsSerializer = new Trace8.EventsSerializer.EventsSerializer();
-    this.#annotationsHiddenSetting = Common2.Settings.Settings.instance().moduleSetting("annotations-hidden");
+    this.#annotationsHiddenSetting = Common2.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.annotationsHiddenSettingDescriptor);
     this.#overlayForAnnotation = /* @__PURE__ */ new Map();
   }
   getEntriesFilter() {
@@ -1629,7 +1630,7 @@ var ThreadAppender = class {
   #headerAppended = false;
   threadType = Trace9.Handlers.Threads.ThreadType.MAIN_THREAD;
   isOnMainFrame;
-  #showAllEventsEnabled = Common3.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
+  #showAllEventsEnabled = Common3.Settings.Settings.instance().resolve(SettingsUI2.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
   #url = "";
   #headerNestingLevel = null;
   constructor(compatibilityBuilder, parsedTrace, processId, threadId, threadName, type, entries, tree) {
@@ -2161,6 +2162,7 @@ import * as Trace11 from "../../models/trace/trace.js";
 import * as TraceBounds3 from "../../services/trace_bounds/trace_bounds.js";
 import * as PerfUI8 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI from "../../ui/legacy/legacy.js";
+import * as SettingUIRegistration from "../../ui/settings/settings.js";
 var UIStrings8 = {
   /**
    * @description Label for the JS heap counter in the counters graph of the Performance panel.
@@ -2256,23 +2258,48 @@ var CountersGraph = class extends UI.Widget.VBox {
       "jsHeapSizeUsed",
       this.createCounter(
         i18nString8(UIStrings8.jsHeap),
-        "js-heap-size-used",
+        Common4.Settings.Settings.instance().resolve(
+          SettingUIRegistration.TimelineSettings.timelineCountersGraphJsHeapSizeUsedSettingDescriptor
+        ),
         "hsl(220, 90%, 43%)",
         i18n15.ByteUtilities.bytesToString
       )
     );
     this.countersByName.set(
       "documents",
-      this.createCounter(i18nString8(UIStrings8.documents), "documents", "hsl(0, 90%, 43%)")
+      this.createCounter(
+        i18nString8(UIStrings8.documents),
+        Common4.Settings.Settings.instance().resolve(
+          SettingUIRegistration.TimelineSettings.timelineCountersGraphDocumentsSettingDescriptor
+        ),
+        "hsl(0, 90%, 43%)"
+      )
     );
-    this.countersByName.set("nodes", this.createCounter(i18nString8(UIStrings8.nodes), "nodes", "hsl(120, 90%, 43%)"));
+    this.countersByName.set(
+      "nodes",
+      this.createCounter(
+        i18nString8(UIStrings8.nodes),
+        Common4.Settings.Settings.instance().resolve(
+          SettingUIRegistration.TimelineSettings.timelineCountersGraphNodesSettingDescriptor
+        ),
+        "hsl(120, 90%, 43%)"
+      )
+    );
     this.countersByName.set(
       "jsEventListeners",
-      this.createCounter(i18nString8(UIStrings8.listeners), "js-event-listeners", "hsl(38, 90%, 43%)")
+      this.createCounter(
+        i18nString8(UIStrings8.listeners),
+        Common4.Settings.Settings.instance().resolve(
+          SettingUIRegistration.TimelineSettings.timelineCountersGraphJsEventListenersSettingDescriptor
+        ),
+        "hsl(38, 90%, 43%)"
+      )
     );
     this.gpuMemoryCounter = this.createCounter(
       i18nString8(UIStrings8.gpuMemory),
-      "gpu-memory-used-kb",
+      Common4.Settings.Settings.instance().resolve(
+        SettingUIRegistration.TimelineSettings.timelineCountersGraphGpuMemoryUsedKbSettingDescriptor
+      ),
       "hsl(300, 90%, 43%)",
       i18n15.ByteUtilities.bytesToString
     );
@@ -2330,11 +2357,11 @@ var CountersGraph = class extends UI.Widget.VBox {
     this.currentValuesBar = this.graphsContainer.element.createChild("div");
     this.currentValuesBar.id = "counter-values-bar";
   }
-  createCounter(uiName, settingsKey, color, formatter) {
+  createCounter(uiName, setting, color, formatter) {
     const counter = new Counter();
     this.counters.push(counter);
     this.counterUI.push(
-      new CounterUI(this, uiName, settingsKey, color, counter, formatter ?? this.#defaultNumberFormatter.format)
+      new CounterUI(this, uiName, setting, color, counter, formatter ?? this.#defaultNumberFormatter.format)
     );
     return counter;
   }
@@ -2514,11 +2541,11 @@ var CounterUI = class {
   verticalPadding;
   counterName;
   marker;
-  constructor(countersPane, title, settingsKey, graphColor, counter, formatter) {
+  constructor(countersPane, title, setting, graphColor, counter, formatter) {
     this.countersPane = countersPane;
     this.counter = counter;
     this.formatter = formatter;
-    this.setting = Common4.Settings.Settings.instance().moduleSetting("timeline-counters-graph-" + settingsKey);
+    this.setting = setting;
     this.filter = new UI.Toolbar.ToolbarSettingCheckbox(this.setting, title);
     const parsedColor = Common4.Color.parse(graphColor);
     if (parsedColor) {
@@ -2735,6 +2762,7 @@ import * as Tracing6 from "../../services/tracing/tracing.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html6, nothing as nothing2, render as render6 } from "../../ui/lit/lit.js";
+import * as SettingsUI6 from "../../ui/settings/settings.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 import * as TimelineComponents5 from "./components/components.js";
 
@@ -2873,7 +2901,7 @@ import * as LegacyComponents from "../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport15 from "../../ui/legacy/theme_support/theme_support.js";
 import { html as html3, render as render3 } from "../../ui/lit/lit.js";
-import * as SettingUIRegistration3 from "../../ui/settings/settings.js";
+import * as SettingUIRegistration4 from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "../common/common.js";
 import * as TimelineComponents4 from "./components/components.js";
@@ -5754,10 +5782,10 @@ import * as Tracing3 from "../../services/tracing/tracing.js";
 import * as Dialogs from "../../ui/components/dialogs/dialogs.js";
 import { Link } from "../../ui/kit/kit.js";
 import * as PerfUI11 from "../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI3 from "../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as SettingsUI4 from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport13 from "../../ui/legacy/theme_support/theme_support.js";
-import * as SettingUIRegistration from "../../ui/settings/settings.js";
+import * as SettingUIRegistration2 from "../../ui/settings/settings.js";
 import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "../mobile_throttling/mobile_throttling.js";
 
@@ -6298,7 +6326,7 @@ import * as Trace13 from "../../models/trace/trace.js";
 import * as PanelCommon from "../common/common.js";
 import * as MobileThrottling from "../mobile_throttling/mobile_throttling.js";
 import * as Tracing2 from "../../services/tracing/tracing.js";
-import * as SettingsUI2 from "../../ui/settings/settings.js";
+import * as SettingsUI3 from "../../ui/settings/settings.js";
 
 // ../../front_end/panels/timeline/RecordingMetadata.ts
 var RecordingMetadata_exports = {};
@@ -6681,13 +6709,13 @@ var TimelineController = class {
   }
   #categoriesForRecording(options) {
     const categoriesArray = [
-      Common6.Settings.Settings.instance().resolve(SettingsUI2.TimelineSettings.timelineShowAllEventsSettingDescriptor).get() ? "*" : "-*",
+      Common6.Settings.Settings.instance().resolve(SettingsUI3.TimelineSettings.timelineShowAllEventsSettingDescriptor).get() ? "*" : "-*",
       ...Trace13.Types.Events.DefaultCategories
     ];
     if (options.enableJSSampling) {
       categoriesArray.push(...Trace13.Types.Events.OptionalCategories.JsSampling);
     }
-    if (Common6.Settings.Settings.instance().moduleSetting("timeline-invalidation-tracking").get()) {
+    if (Common6.Settings.Settings.instance().resolve(SettingsUI3.TimelineSettings.timelineInvalidationTrackingSettingDescriptor).get()) {
       categoriesArray.push(...Trace13.Types.Events.OptionalCategories.InvalidationTracking);
     }
     if (options.capturePictures) {
@@ -9468,15 +9496,29 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     this.recordReloadAction = UI8.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
     this.#historyManager = new TimelineHistoryManager(this.#minimapComponent, this.#isNode);
     this.traceLoadStart = null;
-    this.disableCaptureJSProfileSetting = Common10.Settings.Settings.instance().moduleSetting("timeline-disable-js-sampling");
-    this.captureLayersAndPicturesSetting = Common10.Settings.Settings.instance().moduleSetting("timeline-capture-layers-and-pictures");
-    this.captureSelectorStatsSetting = Common10.Settings.Settings.instance().moduleSetting("timeline-capture-selector-stats");
-    this.screenshotCaptureModeSetting = Common10.Settings.Settings.instance().moduleSetting("timeline-screenshot-capture-mode");
-    this.showScreenshotsSetting = Common10.Settings.Settings.instance().moduleSetting("timeline-show-screenshots");
+    this.disableCaptureJSProfileSetting = Common10.Settings.Settings.instance().resolve(
+      SettingUIRegistration2.TimelineSettings.timelineDisableJsSamplingSettingDescriptor
+    );
+    this.captureLayersAndPicturesSetting = Common10.Settings.Settings.instance().resolve(
+      SettingUIRegistration2.TimelineSettings.timelineCaptureLayersAndPicturesSettingDescriptor
+    );
+    this.captureSelectorStatsSetting = Common10.Settings.Settings.instance().resolve(
+      SettingUIRegistration2.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor
+    );
+    this.screenshotCaptureModeSetting = Common10.Settings.Settings.instance().resolve(
+      SettingUIRegistration2.TimelineSettings.timelineScreenshotCaptureModeSettingDescriptor
+    );
+    this.showScreenshotsSetting = Common10.Settings.Settings.instance().resolve(
+      SettingUIRegistration2.TimelineSettings.timelineShowScreenshotsSettingDescriptor
+    );
     this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);
-    this.showMemorySetting = Common10.Settings.Settings.instance().moduleSetting("timeline-show-memory");
+    this.showMemorySetting = Common10.Settings.Settings.instance().resolve(
+      SettingUIRegistration2.TimelineSettings.timelineShowMemorySettingDescriptor
+    );
     this.showMemorySetting.addChangeListener(this.onMemoryModeChanged, this);
-    this.#dimThirdPartiesSetting = Common10.Settings.Settings.instance().moduleSetting("timeline-dim-third-parties");
+    this.#dimThirdPartiesSetting = Common10.Settings.Settings.instance().resolve(
+      SettingUIRegistration2.TimelineSettings.timelineDimThirdPartiesSettingDescriptor
+    );
     this.#dimThirdPartiesSetting.addChangeListener(this.onDimThirdPartiesChanged, this);
     this.#thirdPartyTracksSetting = _TimelinePanel.extensionDataVisibilitySetting();
     this.#thirdPartyTracksSetting.addChangeListener(this.#extensionDataVisibilityChanged, this);
@@ -9666,8 +9708,8 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
   }
   #getModelConfig() {
     const config = Trace21.Types.Configuration.defaults();
-    config.showAllEvents = Common10.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
-    config.debugMode = Common10.Settings.Settings.instance().moduleSetting("timeline-debug-mode").get();
+    config.showAllEvents = Common10.Settings.Settings.instance().resolve(SettingUIRegistration2.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
+    config.debugMode = Common10.Settings.Settings.instance().resolve(SettingUIRegistration2.TimelineSettings.timelineDebugModeSettingDescriptor).get();
     config.enableSoftNavigation = Common10.Settings.Settings.instance().moduleSetting("timeline-enable-soft-navigations").get();
     return config;
   }
@@ -9691,7 +9733,9 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     return this.#traceEngineModel;
   }
   static extensionDataVisibilitySetting() {
-    return Common10.Settings.Settings.instance().moduleSetting("timeline-show-extension-data");
+    return Common10.Settings.Settings.instance().resolve(
+      SettingUIRegistration2.TimelineSettings.timelineShowExtensionDataSettingDescriptor
+    );
   }
   searchableView() {
     return this.#searchableView;
@@ -9974,7 +10018,10 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     }
   }
   #setupNavigationSetting() {
-    const currentNavSetting = Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").get();
+    const navSetting = Common10.Settings.Settings.instance().resolve(
+      SettingUIRegistration2.TimelineSettings.flamechartSelectedNavigationSettingDescriptor
+    );
+    const currentNavSetting = navSetting.get();
     const hideTheDialogForTests = localStorage.getItem("hide-shortcuts-dialog-for-test");
     const userHadShortcutsDialogOpenedOnce = this.#userHadShortcutsDialogOpenedOnce.get();
     this.#shortcutsDialog.prependElement(this.#navigationRadioButtons);
@@ -9998,14 +10045,14 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
         /* isNavClassic */
         false
       ) };
-      Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").set("modern");
+      navSetting.set("modern");
     });
     this.#classicNavRadioButton.radio.addEventListener("change", () => {
       this.#shortcutsDialog.data = { shortcuts: this.#getShortcutsInfo(
         /* isNavClassic */
         true
       ) };
-      Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").set("classic");
+      navSetting.set("classic");
     });
     this.#navigationRadioButtons.appendChild(this.#modernNavRadioButton.label);
     this.#navigationRadioButtons.appendChild(this.#classicNavRadioButton.label);
@@ -10013,7 +10060,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     return this.#navigationRadioButtons;
   }
   #updateNavigationSettingSelection() {
-    const currentNavSetting = Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").get();
+    const currentNavSetting = Common10.Settings.Settings.instance().resolve(SettingUIRegistration2.TimelineSettings.flamechartSelectedNavigationSettingDescriptor).get();
     if (currentNavSetting === "classic") {
       this.#classicNavRadioButton.radio.checked = true;
       Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
@@ -10121,8 +10168,8 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     const cpuThrottlingPane = this.settingsPane.createChild("div");
     cpuThrottlingPane.append(i18nString17(UIStrings17.cpu));
     this.cpuThrottlingSelect = MobileThrottling2.CPUThrottlingSelector.CPUThrottlingSelector.createForGlobalConditions(cpuThrottlingPane);
-    this.settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(
-      SettingUIRegistration.SettingUIRegistration.resolve(this.captureSelectorStatsSetting.descriptor()).title,
+    this.settingsPane.append(SettingsUI4.SettingsUI.createSettingCheckbox(
+      SettingUIRegistration2.SettingUIRegistration.resolve(this.captureSelectorStatsSetting.descriptor()).title,
       this.captureSelectorStatsSetting,
       i18nString17(UIStrings17.capturesSelectorStats)
     ));
@@ -10132,19 +10179,19 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       networkThrottlingPane,
       i18nString17(UIStrings17.network)
     );
-    this.settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(
-      SettingUIRegistration.SettingUIRegistration.resolve(this.captureLayersAndPicturesSetting.descriptor()).title,
+    this.settingsPane.append(SettingsUI4.SettingsUI.createSettingCheckbox(
+      SettingUIRegistration2.SettingUIRegistration.resolve(this.captureLayersAndPicturesSetting.descriptor()).title,
       this.captureLayersAndPicturesSetting,
       i18nString17(UIStrings17.capturesAdvancedPaint)
     ));
-    this.settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(
-      SettingUIRegistration.SettingUIRegistration.resolve(this.disableCaptureJSProfileSetting.descriptor()).title,
+    this.settingsPane.append(SettingsUI4.SettingsUI.createSettingCheckbox(
+      SettingUIRegistration2.SettingUIRegistration.resolve(this.disableCaptureJSProfileSetting.descriptor()).title,
       this.disableCaptureJSProfileSetting,
       i18nString17(UIStrings17.disablesJavascriptSampling)
     ));
     const screenshotPresetSelect = new UI8.Toolbar.ToolbarComboBox(
       () => this.screenshotCaptureModeSetting.set(screenshotPresetSelect.selectedOption().value),
-      SettingUIRegistration.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title,
+      SettingUIRegistration2.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title,
       "",
       "screenshot-capture-mode"
     );
@@ -10161,7 +10208,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     screenshotPresetSelect.setSelectedIndex(selectedScreenshotPresetIndex);
     const screenshotPresetPane = this.settingsPane.createChild("div");
     screenshotPresetPane.append(
-      SettingUIRegistration.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title
+      SettingUIRegistration2.SettingUIRegistration.resolve(this.screenshotCaptureModeSetting.descriptor()).title
     );
     screenshotPresetPane.append(screenshotPresetSelect.element);
     const updateScreenshotPresetVisibility = () => {
@@ -10790,7 +10837,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     return this.#viewMode.mode === "VIEWING_TRACE";
   }
   #applyActiveFilters(traceIsGeneric, exclusiveFilter = null) {
-    if (traceIsGeneric || Common10.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineShowAllEventsSettingDescriptor).get()) {
+    if (traceIsGeneric || Common10.Settings.Settings.instance().resolve(SettingUIRegistration2.TimelineSettings.timelineShowAllEventsSettingDescriptor).get()) {
       return;
     }
     const newActiveFilters = exclusiveFilter ? [exclusiveFilter] : [
@@ -10907,7 +10954,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     }
     if (this.#traceEngineModel.size() === 1) {
       this.#setupNavigationSetting();
-      if (Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").get() === "classic") {
+      if (Common10.Settings.Settings.instance().resolve(SettingUIRegistration2.TimelineSettings.flamechartSelectedNavigationSettingDescriptor).get() === "classic") {
         Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
           Host2.UserMetrics.TimelineNavigationSetting.CLASSIC_AT_SESSION_FIRST_TRACE
         );
@@ -12181,7 +12228,7 @@ var colorGenerator;
 var { SamplesIntegrator } = Trace22.Helpers.SamplesIntegrator;
 var TimelineUIUtils = class _TimelineUIUtils {
   static getGetDebugModeEnabled() {
-    return Common11.Settings.Settings.instance().moduleSetting("timeline-debug-mode").get();
+    return Common11.Settings.Settings.instance().resolve(SettingUIRegistration4.TimelineSettings.timelineDebugModeSettingDescriptor).get();
   }
   static frameDisplayName(frame) {
     const maybeResolvedData = SourceMapsResolver3.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);
@@ -12888,11 +12935,13 @@ var TimelineUIUtils = class _TimelineUIUtils {
       }
       case Trace22.Types.Events.Name.RECALC_STYLE: {
         contentHelper.appendTextRow(i18nString18(UIStrings18.elementsAffected), unsafeEventArgs["elementCount"]);
-        const selectorStatsSetting = Common11.Settings.Settings.instance().moduleSetting("timeline-capture-selector-stats");
+        const selectorStatsSetting = Common11.Settings.Settings.instance().resolve(
+          SettingUIRegistration4.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor
+        );
         if (!selectorStatsSetting.get()) {
           const note = document.createElement("span");
           note.textContent = i18nString18(UIStrings18.sSelectorStatsInfo, {
-            PH1: SettingUIRegistration3.SettingUIRegistration.resolve(selectorStatsSetting.descriptor()).title
+            PH1: SettingUIRegistration4.SettingUIRegistration.resolve(selectorStatsSetting.descriptor()).title
           });
           contentHelper.appendElementRow(i18nString18(UIStrings18.selectorStatsTitle), note);
         }
@@ -17682,7 +17731,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
       selection: this.selection ?? null
     };
     void this.updateSummaryPane();
-    const isSelectorStatsEnabled = Common15.Settings.Settings.instance().createSetting("timeline-capture-selector-stats", false).get();
+    const isSelectorStatsEnabled = Common15.Settings.Settings.instance().resolve(SettingsUI6.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor).get();
     if (this.#selectedEvents && isSelectorStatsEnabled) {
       const eventsInRange = Trace29.Helpers.Trace.findRecalcStyleEvents(
         this.#selectedEvents,
@@ -21970,7 +22019,7 @@ var CompatibilityTracksAppender = class {
       }
     };
     const threads = Trace35.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
-    const showAllEvents = Common18.Settings.Settings.instance().resolve(SettingsUI5.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
+    const showAllEvents = Common18.Settings.Settings.instance().resolve(SettingsUI7.TimelineSettings.timelineShowAllEventsSettingDescriptor).get();
     for (const { pid, tid, name, type, entries, tree } of threads) {
       if (this.#parsedTrace.data.Meta.traceIsGeneric) {
         this.#threadAppenders.push(new ThreadAppender(

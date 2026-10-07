@@ -455,7 +455,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 export const DEFAULT_RULER_VIEW = (input, output, target) => {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const size = input.horizontal ? target.offsetWidth : target.offsetHeight;
-    const dipSize = size * zoomFactor / input.scale;
+    const dipSize = input.scale > 0 ? size * zoomFactor / input.scale : 0;
     const count = Math.ceil(dipSize / 5);
     let step = 1;
     if (input.scale < 0.8) {

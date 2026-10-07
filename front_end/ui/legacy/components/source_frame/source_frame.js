@@ -1697,7 +1697,8 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
           hidden
         >`}
       <devtools-link
-        class="resource-image-unavailable ${input.isUnavailable ? "" : "hidden"}"
+        class="resource-image-unavailable ${// Do not offer an external link for privileged URLs (e.g. from an imported HAR).
+  input.isUnavailable && !Common3.ParsedURL.isPrivilegedScheme(input.url) ? "" : "hidden"}"
         href=${input.url}
       >
         <devtools-icon name="open-externally"></devtools-icon>
@@ -1846,9 +1847,11 @@ var ImageView = class extends UI5.View.SimpleView {
         }
       );
     }
-    contextMenu.clipboardSection().appendItem(i18nString4(UIStrings4.openImageInNewTab), this.openInNewTab.bind(this), {
-      jslogContext: "image-view.open-in-new-tab"
-    });
+    if (!Common3.ParsedURL.isPrivilegedScheme(this.url)) {
+      contextMenu.clipboardSection().appendItem(i18nString4(UIStrings4.openImageInNewTab), this.openInNewTab.bind(this), {
+        jslogContext: "image-view.open-in-new-tab"
+      });
+    }
     contextMenu.clipboardSection().appendItem(i18nString4(UIStrings4.saveImageAs), this.saveImage.bind(this), {
       jslogContext: "image-view.save-image"
     });
@@ -1891,6 +1894,9 @@ var ImageView = class extends UI5.View.SimpleView {
     }
   }
   openInNewTab() {
+    if (Common3.ParsedURL.isPrivilegedScheme(this.url)) {
+      return;
+    }
     Host2.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.url);
   }
   async handleDrop(dataTransfer) {

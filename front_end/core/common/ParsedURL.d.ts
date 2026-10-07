@@ -5,11 +5,11 @@ import * as Platform from '../platform/platform.js';
 export declare function normalizePath(path: string): string;
 export declare function schemeIs(url: Platform.DevToolsPath.UrlString | URL, scheme: string): boolean;
 /**
- * Returns true if the URL uses an unprivileged web-safe scheme (or is a `blob:` URL wrapping one).
+ * Returns true if the URL uses an unprivileged web-safe scheme (or is a `blob:`/`filesystem:` URL wrapping one).
  */
 export declare function hasWebSafeScheme(url: Platform.DevToolsPath.UrlString | URL | string): boolean;
 /**
- * Returns true if the URL uses a privileged scheme (or is a `blob:` URL wrapping one).
+ * Returns true if the URL uses a privileged scheme (or is a `blob:`/`filesystem:` URL wrapping one).
  */
 export declare function isPrivilegedScheme(url: Platform.DevToolsPath.UrlString | URL | string): boolean;
 /**

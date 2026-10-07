@@ -8316,9 +8316,11 @@ var ListSourcesTool = class _ListSourcesTool {
   description = "Lists deployed and authored source files in the workspace (including source-mapped files) with their display name and unique numeric ID.";
   static lastSourceId = 0;
   static uiSourceCodeId = /* @__PURE__ */ new WeakMap();
+  static idToUiSourceCode = /* @__PURE__ */ new Map();
   static reset() {
     _ListSourcesTool.lastSourceId = 0;
     _ListSourcesTool.uiSourceCodeId = /* @__PURE__ */ new WeakMap();
+    _ListSourcesTool.idToUiSourceCode = /* @__PURE__ */ new Map();
   }
   static getUISourceCodes(originLock, workspace = Workspace3.Workspace.WorkspaceImpl.instance()) {
     if (originLock.status !== "ESTABLISHED_ORIGIN" || originLock.origin.isOpaque()) {
@@ -8341,18 +8343,24 @@ var ListSourcesTool = class _ListSourcesTool {
         if (!uiSourceCodes.get(url) || uiSourceCode.contentType().isFromSourceMap()) {
           uiSourceCodes.set(url, uiSourceCode);
           if (!_ListSourcesTool.uiSourceCodeId.has(uiSourceCode)) {
-            _ListSourcesTool.uiSourceCodeId.set(uiSourceCode, ++_ListSourcesTool.lastSourceId);
+            const id = ++_ListSourcesTool.lastSourceId;
+            _ListSourcesTool.uiSourceCodeId.set(uiSourceCode, id);
+            _ListSourcesTool.idToUiSourceCode.set(id, uiSourceCode);
           }
         }
       }
     }
     return Array.from(uiSourceCodes.values());
   }
-  static getSourceById(id, originLock, workspace = Workspace3.Workspace.WorkspaceImpl.instance()) {
+  static getSourceById(id, originLock) {
     if (!Number.isInteger(id) || id <= 0) {
       return void 0;
     }
-    return _ListSourcesTool.getUISourceCodes(originLock, workspace).find((file) => _ListSourcesTool.uiSourceCodeId.get(file) === id);
+    const file = _ListSourcesTool.idToUiSourceCode.get(id);
+    if (!file || !isOriginAllowedByLock(originLock, file.securityOrigin())) {
+      return void 0;
+    }
+    return file;
   }
   parameters = {
     type: Host10.AidaClient.ParametersTypes.OBJECT,
@@ -9515,7 +9523,7 @@ var MultimodalInputType = /* @__PURE__ */ ((MultimodalInputType2) => {
   MultimodalInputType2["UPLOADED_IMAGE"] = "uploaded-image";
   return MultimodalInputType2;
 })(MultimodalInputType || {});
-var MAX_STEPS = 10;
+var MAX_STEPS = 20;
 var ConversationContext = class {
   /**
    * Returns true if the server-side logging is enabled when this context is active.
@@ -9960,7 +9968,11 @@ var AiAgent = class {
           break;
         }
       } else {
-        yield this.#createErrorResponse(i - 1 === MAX_STEPS ? "max-steps" /* MAX_STEPS */ : "unknown" /* UNKNOWN */);
+        yield this.#createErrorResponse("unknown" /* UNKNOWN */);
+        break;
+      }
+      if (i === MAX_STEPS - 1) {
+        yield this.#createErrorResponse("max-steps" /* MAX_STEPS */);
         break;
       }
     }
@@ -14324,6 +14336,7 @@ First, examine the provided context, then use the functions to gather additional
 * After applying a fix, please ask the user to confirm if the fix worked or not.
 * ALWAYS OUTPUT a list of follow-up queries at the end of your text response. The format is SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]. Make sure that the array and the \`SUGGESTIONS: \` text is in the same line. You're also capable of executing the fix for the issue user mentioned. Reflect this in your suggestions.
 * Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
+* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context.
 * **CRITICAL** NEVER write full Python programs - you should only write individual statements that invoke a single function from the provided library.
 * **CRITICAL** NEVER output text before a function call. Always do a function call first.
 * **CRITICAL** When answering questions about positioning or layout, ALWAYS inspect \`position\`, \`display\` and all other related properties. You MUST provide a specific list of CSS property names when calling functions to get styles. Do not use generic values like "all" or "*".
@@ -14572,7 +14585,7 @@ var skill7 = {
     "executeJavaScript",
     "getStyles"
   ],
-  "instructions": "You are an expert CSS, styling, and layout debugging assistant.\nThe user selected a DOM element in DevTools and asks a query about the element or page styles.\n\n# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Inspect Geometry, DOM Traversal, or Modify Styles (`executeJavaScript`)**:\n   - Use `executeJavaScript` when you need to inspect computed geometry, bounding boxes, traverse related DOM nodes (`$0.parentElement`, `$0.children`), or modify styles on `$0`.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: window.getComputedStyle($0).display,\n       parentDisplay: $0.parentElement ? window.getComputedStyle($0.parentElement).display : null,\n     };\n     ```\n   - Style modification example (ALWAYS use `setElementStyles`):\n     ```javascript\n     await setElementStyles($0, {\n       display: 'flex',\n       justifyContent: 'center',\n     });\n     ```\n   - `setElementStyles` is an internal mechanism for you; do not mention `setElementStyles` directly to the user.\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue."
+  "instructions": "You are an expert CSS, styling, and layout debugging assistant.\nThe user selected a DOM element in DevTools and asks a query about the element or page styles.\n\n# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Inspect Geometry, DOM Traversal, or Modify Styles (`executeJavaScript`)**:\n   - Use `executeJavaScript` when you need to inspect computed geometry, bounding boxes, traverse related DOM nodes (`$0.parentElement`, `$0.children`), or modify styles on `$0`.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: window.getComputedStyle($0).display,\n       parentDisplay: $0.parentElement ? window.getComputedStyle($0.parentElement).display : null,\n     };\n     ```\n   - Style modification example (ALWAYS use `setElementStyles`):\n     ```javascript\n     await setElementStyles($0, {\n       display: 'flex',\n       justifyContent: 'center',\n     });\n     ```\n   - `setElementStyles` is an internal mechanism for you; do not mention `setElementStyles` directly to the user.\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
 };
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts

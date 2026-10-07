@@ -1,3 +1,4 @@
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -54,4 +55,25 @@ export declare const enum Events {
 export interface EventTypes {
     [Events.TOOLBAR_ITEMS_CHANGED]: void;
 }
+export declare class RowMessage {
+    #private;
+    readonly origin: Workspace.UISourceCode.Message;
+    constructor(origin: Workspace.UISourceCode.Message, lineNumber: number, columnNumber: number);
+    level(): Workspace.UISourceCode.Message.Level;
+    text(): string;
+    clickHandler(): (() => void) | undefined;
+    lineNumber(): number;
+    columnNumber(): number;
+    isEqual(that: RowMessage): boolean;
+}
+/** The widget shown at the end of a message annotation. **/
+export declare class MessageWidget extends CodeMirror.WidgetType {
+    readonly messages: RowMessage[];
+    constructor(messages: RowMessage[]);
+    eq(other: MessageWidget): boolean;
+    toDOM(): HTMLElement;
+}
+export declare const DEFAULT_POPOVER_VIEW: (input: {
+    messages: RowMessage[];
+}, _output: undefined, target: HTMLElement) => void;
 export {};

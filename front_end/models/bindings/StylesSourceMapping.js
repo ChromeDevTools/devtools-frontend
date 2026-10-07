@@ -163,6 +163,9 @@ export class StyleFile {
     }
     addHeader(header) {
         this.headers.add(header);
+        if (header.hasSourceURL) {
+            NetworkProject.setSourceURLSynthesized(this.uiSourceCode);
+        }
         NetworkProject.addFrameAttribution(this.uiSourceCode, header.frameId);
     }
     removeHeader(header) {

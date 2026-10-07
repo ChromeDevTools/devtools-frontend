@@ -4959,10 +4959,10 @@
     "message": "The storage item was deleted"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
-    "message": "DOM Storage Items"
+    "message": "DOM storage items"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "DOM Storage Items cleared"
+    "message": "DOM storage items cleared"
   },
   "panels/application/DOMStorageItemsView.ts | explainItem": {
     "message": "Explain this item"
@@ -4971,10 +4971,10 @@
     "message": "Start a chat"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
-    "message": "Extension Storage Items"
+    "message": "Extension storage items"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
-    "message": "Extension Storage Items cleared"
+    "message": "Extension storage items cleared"
   },
   "panels/application/FrameDetailsView.ts | additionalInformation": {
     "message": "More information"
@@ -5151,7 +5151,7 @@
     "message": "Delete selected"
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
-    "message": "Expand Recursively"
+    "message": "Expand recursively"
   },
   "panels/application/IndexedDBViews.ts | filterByKey": {
     "message": "Filter by key (show keys greater or equal to)"
@@ -5160,7 +5160,7 @@
     "message": "IDB"
   },
   "panels/application/IndexedDBViews.ts | indexedDb": {
-    "message": "Indexed DB"
+    "message": "IndexedDB"
   },
   "panels/application/IndexedDBViews.ts | keyGeneratorValueS": {
     "message": "Key generator value: {PH1}"
@@ -5913,13 +5913,13 @@
     "message": "No cache storage detected"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
-    "message": "Refresh Caches"
+    "message": "Refresh caches"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Cache"
   },
   "panels/application/ServiceWorkerCacheViews.ts | deleteSelected": {
-    "message": "Delete Selected"
+    "message": "Delete selected"
   },
   "panels/application/ServiceWorkerCacheViews.ts | filterByPath": {
     "message": "Filter by path"
@@ -5946,10 +5946,10 @@
     "message": "Select a cache entry above to preview"
   },
   "panels/application/ServiceWorkerCacheViews.ts | serviceWorkerCache": {
-    "message": "Service Worker Cache"
+    "message": "Service Worker cache"
   },
   "panels/application/ServiceWorkerCacheViews.ts | timeCached": {
-    "message": "Time Cached"
+    "message": "Time cached"
   },
   "panels/application/ServiceWorkerCacheViews.ts | totalEntriesS": {
     "message": "Total entries: {PH1}"
@@ -6084,10 +6084,10 @@
     "message": "On this page you can view and delete storage buckets, and their associated Storage APIs"
   },
   "panels/application/StorageItemsToolbar.ts | clearAll": {
-    "message": "Clear All"
+    "message": "Clear all"
   },
   "panels/application/StorageItemsToolbar.ts | deleteSelected": {
-    "message": "Delete Selected"
+    "message": "Delete selected"
   },
   "panels/application/StorageItemsToolbar.ts | refresh": {
     "message": "Refresh"
@@ -6111,7 +6111,7 @@
     "message": "Cookies"
   },
   "panels/application/StorageView.ts | fileSystem": {
-    "message": "File System"
+    "message": "File system"
   },
   "panels/application/StorageView.ts | indexDB": {
     "message": "IndexedDB"
@@ -6141,7 +6141,7 @@
     "message": "Other"
   },
   "panels/application/StorageView.ts | pleaseEnterANumber": {
-    "message": "Please enter a number"
+    "message": "Enter a number"
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Service workers"
@@ -6649,9 +6649,6 @@
   },
   "panels/common/CommentsStatusBarPill.ts | sendToAgentCount": {
     "message": "Send to agent ({PH1})"
-  },
-  "panels/common/CommentThreadWidget.ts | close": {
-    "message": "Close"
   },
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Comment input"

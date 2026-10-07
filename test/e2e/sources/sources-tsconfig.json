@@ -74,6 +74,7 @@
     "../../../../../../test/e2e/sources/inline-scripts.test.ts",
     "../../../../../../test/e2e/sources/inline-variable.test.ts",
     "../../../../../../test/e2e/sources/link-to-correct-source-line.test.ts",
+    "../../../../../../test/e2e/sources/memory-leak.test.ts",
     "../../../../../../test/e2e/sources/navigator-view.test.ts",
     "../../../../../../test/e2e/sources/overrides.test.ts",
     "../../../../../../test/e2e/sources/pause-button.test.ts",

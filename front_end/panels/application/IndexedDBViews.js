@@ -15,112 +15,110 @@ import * as ApplicationComponents from './components/components.js';
 import indexedDBViewsStyles from './indexedDBViews.css.js';
 const UIStrings = {
     /**
-     * @description Text in Indexed DBViews of the Application panel
+     * @description Label for database version in the IndexedDB view of the Application panel.
      */
     version: 'Version',
     /**
-     * @description Text in Indexed DBViews of the Application panel
+     * @description Label for the number of object stores in the IndexedDB view of the Application panel.
      */
     objectStores: 'Object stores',
     /**
-     * @description Text of button in Indexed DBViews of the Application panel
+     * @description Button text to delete a database in the IndexedDB view of the Application panel.
      */
     deleteDatabase: 'Delete database',
     /**
-     * @description Text of button in Indexed DBViews of the Application panel
+     * @description Button text to refresh a database in the IndexedDB view of the Application panel.
      */
     refreshDatabase: 'Refresh database',
     /**
-     * @description Text in Application panel IndexedDB delete confirmation dialog
-     * @example {msb} PH1
+     * @description Title of the confirmation dialog when deleting an IndexedDB database in the Application panel.
+     * @example {my-database} PH1
      */
     confirmDeleteDatabase: 'Delete "{PH1}" database?',
     /**
-     * @description Explanation text in Application panel IndexedDB delete confirmation dialog
+     * @description Message in the confirmation dialog when deleting an IndexedDB database in the Application panel.
      */
     databaseWillBeRemoved: 'The selected database and contained data will be removed',
     /**
-     * @description Title of the confirmation dialog in the IndexedDB tab of the Application panel
-     *              that the user is about to clear an object store and this cannot be undone.
+     * @description Title of the confirmation dialog when clearing an object store in the IndexedDB view of the Application panel.
      * @example {table1} PH1
      */
     confirmClearObjectStore: 'Clear "{PH1}" object store?',
     /**
-     * @description Description in the confirmation dialog in the IndexedDB tab of the Application
-     *              panel that the user is about to clear an object store and this cannot be undone.
+     * @description Message in the confirmation dialog when clearing an object store in the IndexedDB view of the Application panel.
      */
     objectStoreWillBeCleared: 'The data contained in the selected object store will be removed',
     /**
-     * @description Text in Indexed DBViews of the Application panel
+     * @description Title of the IndexedDB tab in the Application panel.
      */
     idb: 'IDB',
     /**
-     * @description Text to refresh the page
+     * @description Tooltip text for the refresh button in the IndexedDB view of the Application panel.
      */
     refresh: 'Refresh',
     /**
-     * @description Tooltip text that appears when hovering over the delete button in the Indexed DBViews of the Application panel
+     * @description Tooltip text for the delete selected button in the IndexedDB view of the Application panel.
      */
     deleteSelected: 'Delete selected',
     /**
-     * @description Tooltip text that appears when hovering over the clear button in the Indexed DBViews of the Application panel
+     * @description Tooltip text for the clear object store button in the IndexedDB view of the Application panel.
      */
     clearObjectStore: 'Clear object store',
     /**
-     * @description Text in Indexed DBViews of the Application panel
+     * @description Status text in the IndexedDB view of the Application panel indicating data may be stale.
      */
     dataMayBeStale: 'Data may be stale',
     /**
-     * @description Title of needs refresh in indexed dbviews of the application panel
+     * @description Tooltip text in the IndexedDB view of the Application panel explaining that entries may have been modified.
      */
     someEntriesMayHaveBeenModified: 'Some entries may have been modified',
     /**
-     * @description Text in DOMStorage Items View of the Application panel
+     * @description Column header in the IndexedDB datagrid for the entry key.
      */
     keyString: 'Key',
     /**
-     * @description Text in Indexed DBViews of the Application panel
+     * @description Column header in the IndexedDB datagrid for the entry primary key.
      */
     primaryKey: 'Primary key',
     /**
-     * @description Text for the value of something
+     * @description Column header in the IndexedDB datagrid for the entry value.
      */
     valueString: 'Value',
     /**
-     * @description Data grid name for Indexed DB data grids
+     * @description Accessible name for the IndexedDB datagrid in the Application panel.
      */
-    indexedDb: 'Indexed DB',
+    indexedDb: 'IndexedDB',
     /**
-     * @description Text in Indexed DBViews of the Application panel
+     * @description Label prefix for key path in the IndexedDB view of the Application panel.
      */
     keyPath: 'Key path: ',
     /**
-     * @description Tooltip text that appears when hovering over the triangle left button in the Indexed DBViews of the Application panel
+     * @description Tooltip text for the previous page button in the IndexedDB view of the Application panel.
      */
     showPreviousPage: 'Show previous page',
     /**
-     * @description Tooltip text that appears when hovering over the triangle right button in the Indexed DBViews of the Application panel
+     * @description Tooltip text for the next page button in the IndexedDB view of the Application panel.
      */
     showNextPage: 'Show next page',
     /**
-     * @description Text in Indexed DBViews of the Application panel
+     * @description Placeholder text in the key filter input of the IndexedDB view in the Application panel.
      */
     filterByKey: 'Filter by key (show keys greater or equal to)',
     /**
-     * @description Text in Context menu for expanding objects in IndexedDB tables
+     * @description Context menu item to expand an object recursively in IndexedDB tables.
      */
-    expandRecursively: 'Expand Recursively',
+    expandRecursively: 'Expand recursively',
     /**
-     * @description Text in Context menu for collapsing objects in IndexedDB tables
+     * @description Context menu item to collapse an object in IndexedDB tables.
      */
     collapse: 'Collapse',
     /**
-     * @description Span text content in Indexed DBViews of the Application panel
+     * @description Status text in the IndexedDB view of the Application panel showing the total number of entries.
      * @example {2} PH1
      */
     totalEntriesS: 'Total entries: {PH1}',
     /**
-     * @description Text in Indexed DBViews of the Application panel
+     * @description Status text in the IndexedDB view of the Application panel showing the key generator value.
      * @example {2} PH1
      */
     keyGeneratorValueS: 'Key generator value: {PH1}',

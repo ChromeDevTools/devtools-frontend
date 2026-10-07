@@ -15,6 +15,87 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/TimeRangeOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+/**
+ * Calculates how much of the time range is within the canvas. This is used to
+ * determine whether the label fits in the visible part of the range.
+ */
+function visibleOverlayWidth(overlayRect, canvasRect) {
+    const { x: overlayStartX, width } = overlayRect;
+    const overlayEndX = overlayStartX + width;
+    const canvasStartX = canvasRect.x;
+    const canvasEndX = canvasRect.x + canvasRect.width;
+    const leftVisible = Math.max(canvasStartX, overlayStartX);
+    const rightVisible = Math.min(canvasEndX, overlayEndX);
+    return rightVisible - leftVisible;
+}
+/**
+ * Moves the label as required to keep it on screen. If the label is off to
+ * the left or right, it is fixed to that edge and its text is aligned so the
+ * label stays visible as long as possible.
+ *
+ * This sets classes and margins on `rangeContainer` directly, rather than
+ * through template bindings, because it runs synchronously outside of a
+ * render. The `class` attribute of `.range-container` must stay static in the
+ * template: a binding on it would overwrite the classes set here.
+ *
+ * `overlay` must be the element sized to the time range, because its bounds
+ * are compared against the canvas bounds.
+ */
+function applyLabelPosition(overlay, rangeContainer, durationBox, options) {
+    const { canvasRect, hideLabelIfTooNarrow } = options;
+    // On the RHS of the panel a scrollbar can be shown which means the canvas
+    // has a 9px gap on the right hand edge. We use this value when calculating
+    // values and label positioning from the left hand side in order to be
+    // consistent on both edges of the UI.
+    const paddingForScrollbar = 9;
+    const overlayRect = overlay.getBoundingClientRect();
+    const labelRect = rangeContainer.getBoundingClientRect();
+    const visibleWidth = visibleOverlayWidth(overlayRect, canvasRect) - paddingForScrollbar;
+    const durationBoxLength = durationBox.getBoundingClientRect().width;
+    if (!durationBoxLength) {
+        return false;
+    }
+    const hideLabel = hideLabelIfTooNarrow && visibleWidth <= durationBoxLength;
+    rangeContainer.classList.toggle('labelHidden', hideLabel);
+    if (hideLabel) {
+        // Label is invisible, no need to do all the layout.
+        return true;
+    }
+    // Check if label is off the LHS of the screen.
+    const labelLeftMarginToCenter = (overlayRect.width - labelRect.width) / 2;
+    const newLabelX = overlayRect.x + labelLeftMarginToCenter;
+    const labelOffLeftOfScreen = newLabelX < canvasRect.x;
+    rangeContainer.classList.toggle('offScreenLeft', labelOffLeftOfScreen);
+    // Check if label is off the RHS of the screen.
+    const rightBound = canvasRect.x + canvasRect.width;
+    // The label's right hand edge is the gap from the left of the range to the
+    // label, and then the width of the label.
+    const labelRightEdge = overlayRect.x + labelLeftMarginToCenter + labelRect.width;
+    const labelOffRightOfScreen = labelRightEdge > rightBound;
+    rangeContainer.classList.toggle('offScreenRight', labelOffRightOfScreen);
+    if (labelOffLeftOfScreen) {
+        // If the label is off the left of the screen, we adjust by the
+        // difference between the X that represents the start of the canvas, and
+        // the X that represents the start of the overlay.
+        // We then take the absolute value of this - because if the canvas starts
+        // at 0, and the overlay is -200px, we have to adjust the label by +200.
+        // Add on 9 pixels to pad from the left; this is the width of the sidebar
+        // on the RHS so we match it so the label is equally padded on either
+        // side.
+        rangeContainer.style.marginLeft = `${Math.abs(canvasRect.x - overlayRect.x) + paddingForScrollbar}px`;
+    }
+    else if (labelOffRightOfScreen) {
+        // If the label is off the right of the screen, we adjust by adding the
+        // right margin equal to the difference between the right edge of the
+        // overlay and the right edge of the canvas.
+        rangeContainer.style.marginRight = `${overlayRect.right - canvasRect.right + paddingForScrollbar}px`;
+    }
+    else {
+        // Keep the label central.
+        rangeContainer.style.margin = '0px';
+    }
+    return true;
+}
 export const DEFAULT_VIEW = (input, output, target) => {
     const handleKeyDown = (event) => {
         // If the new key is `Enter` or `Escape` key, treat it
@@ -30,6 +111,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
             }
         }
     };
+    let rangeContainer;
+    let durationBox;
     // The label text is bound with `live` because the user edits it directly
     // in the DOM. `live` compares against the current DOM text rather than the
     // last rendered value. The input handler keeps the widget's label in sync,
@@ -41,7 +124,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           class="range-container"
           role="region"
           aria-label=${i18nString(UIStrings.timeRange)}
-          ${Directives.ref(el => { output.rangeContainer = el instanceof HTMLElement ? el : undefined; })}
+          ${Directives.ref(el => { rangeContainer = el instanceof HTMLElement ? el : undefined; })}
         >
           <span
            class="label-text"
@@ -62,11 +145,22 @@ export const DEFAULT_VIEW = (input, output, target) => {
           ></span>
           <span
             class="duration"
-            ${Directives.ref(el => { output.durationBox = el instanceof HTMLElement ? el : undefined; })}
+            ${Directives.ref(el => { durationBox = el instanceof HTMLElement ? el : undefined; })}
           >${input.durationText}</span>
         </span>
       `, target);
     // clang-format on
+    // The refs are copied to consts so that TypeScript keeps their narrowing
+    // inside the callback below. The template is static, so both refs are set
+    // once `render()` has returned. If they are not, the callback does nothing.
+    const renderedRangeContainer = rangeContainer;
+    const renderedDurationBox = durationBox;
+    if (renderedRangeContainer && renderedDurationBox) {
+        output.positionLabel = options => applyLabelPosition(target, renderedRangeContainer, renderedDurationBox, options);
+    }
+    else {
+        output.positionLabel = () => false;
+    }
 };
 export class TimeRangeOverlay extends UI.Widget.Widget {
     #duration = null;
@@ -90,6 +184,7 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
     #view;
     #viewOutput = {
         focusLabel: () => { },
+        positionLabel: () => false,
     };
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
@@ -128,95 +223,33 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
         this.requestUpdate();
     }
     /**
-     * This calculates how much of the time range is in the user's view. This is
-     * used to determine how much of the label can fit into the view, and if we
-     * should even show the label.
-     */
-    #visibleOverlayWidth(overlayRect) {
-        if (!this.#canvasRect) {
-            return 0;
-        }
-        const { x: overlayStartX, width } = overlayRect;
-        const overlayEndX = overlayStartX + width;
-        const canvasStartX = this.#canvasRect.x;
-        const canvasEndX = this.#canvasRect.x + this.#canvasRect.width;
-        const leftVisible = Math.max(canvasStartX, overlayStartX);
-        const rightVisible = Math.min(canvasEndX, overlayEndX);
-        return rightVisible - leftVisible;
-    }
-    /**
      * We use this method after the overlay has been positioned in order to move
      * the label as required to keep it on screen.
-     * If the label is off to the left or right, we fix it to that corner and
-     * align the text so the label is visible as long as possible.
      *
      * This runs synchronously, rather than through `requestUpdate()`, so that
-     * `Overlays` can reposition the label in the same frame as the range.
+     * `Overlays` can reposition the label in the same frame as the range. The
+     * current state is passed to the view as arguments, rather than through the
+     * view input, because the last render may not include it yet.
      */
     updateLabelPositioning() {
-        const { rangeContainer, durationBox } = this.#viewOutput;
-        if (!rangeContainer || !this.#canvasRect) {
+        if (!this.#canvasRect) {
             return;
         }
-        // On the RHS of the panel a scrollbar can be shown which means the canvas
-        // has a 9px gap on the right hand edge. We use this value when calculating
-        // values and label positioning from the left hand side in order to be
-        // consistent on both edges of the UI.
-        const paddingForScrollbar = 9;
-        const overlayRect = this.element.getBoundingClientRect();
-        const labelRect = rangeContainer.getBoundingClientRect();
-        const visibleOverlayWidth = this.#visibleOverlayWidth(overlayRect) - paddingForScrollbar;
-        const durationBoxLength = durationBox?.getBoundingClientRect().width;
-        if (!durationBoxLength) {
+        const measured = this.#viewOutput.positionLabel({
+            canvasRect: this.#canvasRect,
+            // Do not hide the label when:
+            // 1. It is empty (a new range that the user needs to type into).
+            // 2. It is currently being edited (`#isLabelEditable` is true). For a
+            //    non-empty label, `#isLabelEditable` is true only while the user has
+            //    double-clicked to edit the label (or is still typing into an
+            //    initially empty label) and has not yet blurred it (`@focusout`
+            //    resets `#isLabelEditable` to false).
+            hideLabelIfTooNarrow: !this.#isLabelEditable && this.#label.length > 0,
+        });
+        // Nothing is measured while the duration text has no width. In that case
+        // the empty label is not focused either.
+        if (!measured) {
             return;
-        }
-        const overlayTooNarrow = visibleOverlayWidth <= durationBoxLength;
-        // Do not hide the label when:
-        // 1. It is empty (a new range that the user needs to type into).
-        // 2. It is currently being edited (`#isLabelEditable` is true). For a
-        //    non-empty label, `#isLabelEditable` is true only while the user has
-        //    double-clicked to edit the label (or is still typing into an initially
-        //    empty label) and has not yet blurred it (`@focusout` resets
-        //    `#isLabelEditable` to false).
-        // 3. The visible range is wider than the duration text.
-        const hideLabel = overlayTooNarrow && !this.#isLabelEditable && this.#label.length > 0;
-        rangeContainer.classList.toggle('labelHidden', hideLabel);
-        if (hideLabel) {
-            // Label is invisible, no need to do all the layout.
-            return;
-        }
-        // Check if label is off the LHS of the screen.
-        const labelLeftMarginToCenter = (overlayRect.width - labelRect.width) / 2;
-        const newLabelX = overlayRect.x + labelLeftMarginToCenter;
-        const labelOffLeftOfScreen = newLabelX < this.#canvasRect.x;
-        rangeContainer.classList.toggle('offScreenLeft', labelOffLeftOfScreen);
-        // Check if label is off the RHS of the screen
-        const rightBound = this.#canvasRect.x + this.#canvasRect.width;
-        // The label's right hand edge is the gap from the left of the range to the
-        // label, and then the width of the label.
-        const labelRightEdge = overlayRect.x + labelLeftMarginToCenter + labelRect.width;
-        const labelOffRightOfScreen = labelRightEdge > rightBound;
-        rangeContainer.classList.toggle('offScreenRight', labelOffRightOfScreen);
-        if (labelOffLeftOfScreen) {
-            // If the label is off the left of the screen, we adjust by the
-            // difference between the X that represents the start of the cavnas, and
-            // the X that represents the start of the overlay.
-            // We then take the absolute value of this - because if the canvas starts
-            // at 0, and the overlay is -200px, we have to adjust the label by +200.
-            // Add on 9 pixels to pad from the left; this is the width of the sidebar
-            // on the RHS so we match it so the label is equally padded on either
-            // side.
-            rangeContainer.style.marginLeft = `${Math.abs(this.#canvasRect.x - overlayRect.x) + paddingForScrollbar}px`;
-        }
-        else if (labelOffRightOfScreen) {
-            // If the label is off the right of the screen, we adjust by adding the
-            // right margin equal to the difference between the right edge of the
-            // overlay and the right edge of the canvas.
-            rangeContainer.style.marginRight = `${overlayRect.right - this.#canvasRect.right + paddingForScrollbar}px`;
-        }
-        else {
-            // Keep the label central.
-            rangeContainer.style.margin = '0px';
         }
         // If the text is empty, set the label editibility to true.
         // Only allow to remove the focus and save the range as annotation if the label is not empty.

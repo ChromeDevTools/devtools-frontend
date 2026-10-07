@@ -6294,6 +6294,9 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     this.parentView().dispatchEventToListeners("RequestSelected" /* RequestSelected */, this.requestInternal);
   }
   openInNewTab() {
+    if (Common5.ParsedURL.isPrivilegedScheme(this.requestInternal.url())) {
+      return;
+    }
     Host3.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
   }
   isFailed() {
@@ -11927,7 +11930,6 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
   filterBar;
   textFilterSetting;
   networkRequestToNode;
-  static #allowedSchemes = /* @__PURE__ */ new Set(["http:", "https:", "ws:", "wss:", "data:"]);
   constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting) {
     super();
     this.registerRequiredCSS(networkLogView_css_default);
@@ -13596,15 +13598,10 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     return requests.filter((request) => !request.isBlobRequest());
   }
   static #getValidClipboardUrl(url) {
-    try {
-      const parsedUrl = new URL(url);
-      if (!_NetworkLogView.#allowedSchemes.has(parsedUrl.protocol)) {
-        return null;
-      }
-      return url;
-    } catch {
+    if (Common12.ParsedURL.schemeIs(url, "blob:") || Common12.ParsedURL.schemeIs(url, "filesystem:") || !Common12.ParsedURL.hasWebSafeScheme(url)) {
       return null;
     }
+    return url;
   }
   async generateFetchCall(request, style, generateOptions) {
     const internalOnly = /* @__PURE__ */ new Set(["method", "path", "scheme", "version"]);

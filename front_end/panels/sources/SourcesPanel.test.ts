@@ -18,6 +18,7 @@ import {
   registerNoopActions,
 } from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Sources from './sources.js';
 
@@ -133,5 +134,35 @@ describeWithEnvironment('SourcesPanel', () => {
                                                    {uiSourceCode: createStubUISourceCode(), wasSelected: false});
 
     assert.strictEqual(context.flavor(Workspace.UISourceCode.UISourceCode), uiSourceCode);
+  });
+
+  it('reveals UISourceCode in navigator when editor is selected and auto-reveal is enabled', () => {
+    setUpEnvironment();
+    const sources = new Sources.SourcesPanel.SourcesPanel();
+    const revealStub = sinon.stub(sources, 'revealInNavigator');
+    const uiSourceCode = createStubUISourceCode();
+
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.SourcesSettings.autoRevealInNavigatorSettingDescriptor)
+        .set(true);
+
+    sources.sourcesView().dispatchEventToListeners(Sources.SourcesView.Events.EDITOR_SELECTED, uiSourceCode);
+
+    sinon.assert.calledOnceWithExactly(revealStub, uiSourceCode, true);
+  });
+
+  it('does not reveal UISourceCode in navigator when editor is selected and auto-reveal is disabled', () => {
+    setUpEnvironment();
+    const sources = new Sources.SourcesPanel.SourcesPanel();
+    const revealStub = sinon.stub(sources, 'revealInNavigator');
+    const uiSourceCode = createStubUISourceCode();
+
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.SourcesSettings.autoRevealInNavigatorSettingDescriptor)
+        .set(false);
+
+    sources.sourcesView().dispatchEventToListeners(Sources.SourcesView.Events.EDITOR_SELECTED, uiSourceCode);
+
+    sinon.assert.notCalled(revealStub);
   });
 });

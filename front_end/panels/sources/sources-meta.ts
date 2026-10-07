@@ -1671,13 +1671,9 @@ SettingsUI.SettingUIRegistration.register(
       ],
     });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.autoRevealInNavigatorSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.automaticallyRevealFilesIn),
-  settingName: 'auto-reveal-in-navigator',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

@@ -707,7 +707,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const uiSourceCode = event.data;
     UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
     if (this.editorView.mainWidget() &&
-        Common.Settings.Settings.instance().moduleSetting('auto-reveal-in-navigator').get()) {
+        Common.Settings.Settings.instance()
+            .resolve(Settings.SourcesSettings.autoRevealInNavigatorSettingDescriptor)
+            .get()) {
       void this.revealInNavigator(uiSourceCode, true);
     }
   }

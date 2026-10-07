@@ -28,3 +28,10 @@ export const searchInAnonymousAndContentScriptsSettingDescriptor: Common.Setting
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const autoRevealInNavigatorSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'auto-reveal-in-navigator',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

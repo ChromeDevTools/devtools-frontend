@@ -187,9 +187,13 @@ const UIStrings = {
    */
   editAndRun: 'Edit and run',
   /**
-   * @description Tooltip text and button label for the paste button in the WebMCP view of the Application panel.
+   * @description Button label for the paste button in the WebMCP view of the Application panel.
    */
   paste: 'Paste',
+  /**
+   * @description Tooltip text for the paste button in the WebMCP view of the Application panel.
+   */
+  pasteTooltip: 'Paste tool parameters from clipboard as JSON',
   /**
    * @description Notice displayed when a tool has been unregistered in the WebMCP view of the Application panel.
    */
@@ -699,7 +703,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 .size=${Buttons.Button.Size.SMALL}
                 .variant=${Buttons.Button.Variant.TEXT}
                 .jslogContext=${'paste'}
-                title=${i18nString(UIStrings.paste)}
+                title=${i18nString(UIStrings.pasteTooltip)}
                 @click=${input.onPaste}
               >${i18nString(UIStrings.paste)}</devtools-button>
             </div>

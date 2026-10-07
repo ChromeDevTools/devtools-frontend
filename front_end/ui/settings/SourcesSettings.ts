@@ -35,3 +35,10 @@ export const autoRevealInNavigatorSettingDescriptor: Common.Settings.SettingDesc
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const textEditorTabMovesFocusSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'text-editor-tab-moves-focus',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

@@ -1686,13 +1686,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.autoRevealI
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.textEditorTabMovesFocusSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.tabMovesFocus),
-  settingName: 'text-editor-tab-moves-focus',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
   options: [
     {
       value: true,

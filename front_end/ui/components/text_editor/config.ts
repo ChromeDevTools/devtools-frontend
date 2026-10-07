@@ -92,7 +92,7 @@ export class DynamicSetting<T> {
 }
 
 export const tabMovesFocus: DynamicSetting<boolean> =
-    DynamicSetting.bool('text-editor-tab-moves-focus', [], CM.keymap.of([{
+    DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorTabMovesFocusSettingDescriptor, [], CM.keymap.of([{
       key: 'Tab',
       run: (view: CM.EditorView) => view.state.doc.length ? CM.indentMore(view) : false,
       shift: (view: CM.EditorView) => view.state.doc.length ? CM.indentLess(view) : false,

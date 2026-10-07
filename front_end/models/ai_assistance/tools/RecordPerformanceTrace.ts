@@ -27,7 +27,7 @@ export class RecordPerformanceTraceTool implements
   readonly name: ToolName = ToolName.RECORD_PERFORMANCE_TRACE;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
-      'Reloads the page and records a new performance trace to measure, analyze, and debug page performance.';
+      'Reloads the page and records a new performance trace to measure, analyze, and debug page performance. Preferred tool for measuring page load performance and Core Web Vitals.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<never> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

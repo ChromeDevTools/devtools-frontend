@@ -31,7 +31,7 @@ export class RunLighthouseTool implements
   readonly name: ToolName = ToolName.RUN_LIGHTHOUSE;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
-      'Runs Lighthouse audits on the active page. Supports "navigation" (for full initial page load audits), "snapshot" (for inspecting live in-page modifications without reload), and "timespan" (for interactions).';
+      'Runs Lighthouse audits on the active page. Supports "navigation" (for full initial page load audits), "snapshot" (for inspecting live in-page modifications without reload), and "timespan" (for interactions). Use only when the user asks for Lighthouse, a Lighthouse score, or a multi-category audit. For measuring page performance, record a performance trace instead.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof RunLighthouseArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

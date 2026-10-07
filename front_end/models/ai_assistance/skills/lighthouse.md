@@ -1,6 +1,6 @@
 ---
 name: lighthouse
-description: Running Lighthouse reports and audits, full-page audits (performance, accessibility, best practices, Search Engine Optimization (SEO)), and inspecting Lighthouse scores.
+description: Running Lighthouse reports and audits when the user explicitly asks for Lighthouse, a Lighthouse score, or a multi-category audit (accessibility, best practices, Search Engine Optimization (SEO)). Not for general page performance measurement; use the performance skill for that.
 allowed-tools:
   - runLighthouse
   - getLighthouseAudits
@@ -31,4 +31,5 @@ Your role is to evaluate websites using Lighthouse audits across performance, ac
 # Considerations
 
 - Base all analysis on empirical Lighthouse audit data. Never fabricate audit scores or results.
+- For performance-only questions (e.g. loading speed, Core Web Vitals), do not run Lighthouse unless the user mentions Lighthouse or a Lighthouse score. Record a performance trace with the performance skill instead.
 - When summarizing a full Lighthouse run, highlight overall category scores first, then detail failing audits (score < 90).

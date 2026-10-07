@@ -22,6 +22,7 @@ import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Platform from '../platform/platform.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import * as SDK from './sdk.js';
 
@@ -109,6 +110,39 @@ describe('ResourceTreeModel', () => {
     resourceTreeModel?.frameDetached('main' as Protocol.Page.FrameId, false);
     assert.isEmpty(resourceTreeModel?.frames());
     await Promise.all([mainStorageKeyChangedPromise, storageKeyRemovedPromise]);
+  });
+
+  it('re-fetches the storage key when the frame stops loading', async () => {
+    const testKey = 'test-storage-key';
+    // Simulates the backend answering for the previous (opaque origin) document
+    // because the request raced with the navigation commit.
+    let committed = false;
+    connection.setHandler('Storage.getStorageKey', () => {
+      if (!committed) {
+        return {
+          error: {
+            code: ProtocolClient.CDPConnection.CDPErrorStatus.SERVER_ERROR,
+            message: 'Frame corresponds to an opaque origin and its storage key cannot be serialized',
+          },
+        };
+      }
+      return {result: {storageKey: testKey}};
+    });
+    const target = universe.createTarget({connection});
+    const manager = target.model(SDK.StorageKeyManager.StorageKeyManager);
+    assert.exists(manager);
+
+    const mainFrame = getMainFrame(target);
+    assert.isUndefined(await mainFrame.getStorageKey(false));
+    assert.isEmpty(manager.storageKeys());
+
+    committed = true;
+    const storageKeyAdded = manager.once(SDK.StorageKeyManager.Events.STORAGE_KEY_ADDED);
+    connection.dispatchEvent('Page.frameStoppedLoading', {frameId: mainFrame.id}, undefined);
+
+    assert.strictEqual(await storageKeyAdded, testKey);
+    assert.strictEqual(await mainFrame.getStorageKey(false), testKey);
+    assert.strictEqual(manager.mainStorageKey(), testKey);
   });
 
   function getResourceTreeModel(target: SDK.Target.Target): SDK.ResourceTreeModel.ResourceTreeModel {

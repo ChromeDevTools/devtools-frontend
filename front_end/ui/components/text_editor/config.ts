@@ -183,7 +183,7 @@ function announceSelectedCompletionInfo(view: CM.EditorView): void {
 }
 
 export const autocompletion: DynamicSetting<boolean> = new DynamicSetting<boolean>(
-    'text-editor-autocompletion',
+    SettingsUI.SourcesSettings.textEditorAutocompletionSettingDescriptor,
     (activateOnTyping: boolean) => [CM.autocompletion({
       activateOnTyping,
       icons: false,

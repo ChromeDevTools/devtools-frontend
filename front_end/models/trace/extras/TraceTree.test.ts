@@ -363,6 +363,63 @@ describe('TraceTree', () => {
       assert.strictEqual(nodeB.selfTime, Trace.Helpers.Timing.microToMilli(nodeBSelfTime));
     });
 
+    it('creates a node for an event with an empty name and attributes self time correctly', () => {
+      // This builds the following tree:
+      // |------------ROOT-----------|
+      // |------P------|
+      //    |-''-|
+      const eventP = makeCompleteEvent('P', 0, 100_000);
+      const eventEmpty = makeCompleteEvent('', 20_000, 30_000);
+      const root = new Trace.Extras.TraceTree.BottomUpRootNode([eventP, eventEmpty], {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200),
+      });
+
+      const rootChildren = root.children();
+      const nodeP = rootChildren.get('P');
+      const nodeEmpty = rootChildren.get('');
+      assert.exists(nodeP);
+      assert.exists(nodeEmpty);
+      assert.strictEqual(nodeP.selfTime, 70);
+      assert.strictEqual(nodeP.totalTime, 100);
+      assert.strictEqual(nodeEmpty.selfTime, 30);
+      assert.strictEqual(nodeEmpty.totalTime, 30);
+      assert.isTrue(nodeEmpty.hasChildren());
+      assert.strictEqual(root.selfTime, 100);
+    });
+
+    it('does not double count total time of nested same-name events around an event with an empty name', () => {
+      // This builds the following tree:
+      // |------------ROOT-----------|
+      // |----------X----------|
+      //   |---X---|  |-X-|
+      //     |-''-|
+      const outerX = makeCompleteEvent('X', 0, 100_000);
+      const innerX = makeCompleteEvent('X', 10_000, 30_000);
+      const eventEmpty = makeCompleteEvent('', 20_000, 10_000);
+      const laterX = makeCompleteEvent('X', 50_000, 10_000);
+      const root = new Trace.Extras.TraceTree.BottomUpRootNode([outerX, innerX, eventEmpty, laterX], {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200),
+      });
+
+      const rootChildren = root.children();
+      const nodeX = rootChildren.get('X');
+      const nodeEmpty = rootChildren.get('');
+      assert.exists(nodeX);
+      assert.exists(nodeEmpty);
+      // The outermost X spans 0-100 ms, which contains every other X.
+      assert.strictEqual(nodeX.totalTime, 100);
+      assert.strictEqual(nodeX.selfTime, 90);
+      assert.strictEqual(nodeEmpty.totalTime, 10);
+      assert.strictEqual(nodeEmpty.selfTime, 10);
+      assert.strictEqual(root.selfTime, 100);
+    });
+
     it('correctly keeps ProfileCall nodes and uses them to build up the tree', async function() {
       const {data} = await TraceLoader.traceEngine(this, 'mainWasm_profile.json.gz');
       const mainThread = getMainThread(data.Renderer);

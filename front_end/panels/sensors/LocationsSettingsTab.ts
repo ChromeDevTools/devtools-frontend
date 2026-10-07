@@ -12,9 +12,11 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as Lists from '../../ui/components/lists/lists.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import locationsSettingsTabStyles from './locationsSettingsTab.css.js';
+
 const {createRef, ref} = Directives;
 export {locationsSettingsTabStyles};
 
@@ -447,7 +449,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     this.#view = view;
 
     this.customSetting =
-        Common.Settings.Settings.instance().moduleSetting<LocationDescription[]>('emulation.locations');
+        Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor);
     const list =
         this.customSetting.get().map(location => replaceLocationTitles(location, this.customSetting.defaultValue));
 
@@ -571,14 +573,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     }
   }
 }
-export interface LocationDescription {
-  title: string;
-  lat: number;
-  long: number;
-  timezoneId: string;
-  locale: string;
-  accuracy?: number;
-}
+export type LocationDescription = SettingsUI.EmulationSettings.LocationDescription;
 
 export function validateTitle(value: string): string|null {
   const maxLength = 50;

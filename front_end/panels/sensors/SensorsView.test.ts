@@ -11,6 +11,7 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Sensors from './sensors.js';
 
@@ -26,8 +27,7 @@ describeWithEnvironment('SensorsView', () => {
 
   it('updates the custom location select when the setting changes', () => {
     const customLocationsSetting =
-        Common.Settings.Settings.instance().moduleSetting<Sensors.LocationsSettingsTab.LocationDescription[]>(
-            'emulation.locations');
+        Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor);
 
     customLocationsSetting.set([{
       title: 'Test Location',

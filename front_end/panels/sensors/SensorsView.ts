@@ -234,8 +234,8 @@ export class SensorsView extends UI.Widget.VBox {
     this.#locationOverrideEnabled = false;
 
     this.#locationSectionElement = this.contentElement.createChild('section', 'sensors-group');
-    const customLocationsSetting =
-        Common.Settings.Settings.instance().moduleSetting<LocationDescription[]>('emulation.locations');
+    const customLocationsSetting = Common.Settings.Settings.instance().resolve(
+        SettingUIRegistration.EmulationSettings.emulationLocationsSettingDescriptor);
     this.renderLocationSection(this.#location, customLocationsSetting);
     customLocationsSetting.addChangeListener(() => this.renderLocationSection(this.#location, customLocationsSetting));
 

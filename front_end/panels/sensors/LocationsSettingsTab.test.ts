@@ -12,6 +12,7 @@ import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Sensors from './sensors.js';
 
@@ -20,7 +21,8 @@ describeWithEnvironment('LocationsSettingsTab', () => {
   let customSetting: Common.Settings.Setting<Sensors.LocationsSettingsTab.LocationDescription[]>;
 
   beforeEach(async () => {
-    customSetting = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
+    customSetting =
+        Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor);
     customSetting.set([]);
 
     tab = renderElementIntoDOM(new Sensors.LocationsSettingsTab.LocationsSettingsTab(), {includeCommonStyles: true});

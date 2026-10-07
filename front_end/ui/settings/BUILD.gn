@@ -17,6 +17,7 @@ devtools_ui_module("settings") {
     "MainSettings.ts",
     "NetworkSettings.ts",
     "SettingUIRegistration.ts",
+    "SourcesSettings.ts",
     "TimelineSettings.ts",
     "WhatsNewSettings.ts",
   ]

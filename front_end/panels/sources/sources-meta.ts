@@ -1572,12 +1572,6 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  settingName: 'navigator-group-by-folder',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-});
-
-Common.Settings.registerSettingExtension({
   settingName: 'navigator-group-by-authored',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,

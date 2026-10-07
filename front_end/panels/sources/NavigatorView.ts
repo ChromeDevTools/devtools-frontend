@@ -18,6 +18,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 import {PanelUtils} from '../utils/utils.js';
@@ -245,7 +246,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(
         this.contentElement, {'sources.rename': this.renameShortcut.bind(this)});
 
-    this.navigatorGroupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigator-group-by-folder');
+    this.navigatorGroupByFolderSetting =
+        Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorGroupByFolderSettingDescriptor);
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
     this.navigatorJustMyCodeSetting = Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code');
     this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));

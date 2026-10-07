@@ -593,9 +593,12 @@ export class SourcesPanel extends UI.Panel.Panel implements
     }
   }
 
-  private addSettingMenuItem(
-      contextMenu: UI.ContextMenu.Section, settingName: string, menuText: Common.UIString.LocalizedString): void {
-    const setting = Common.Settings.Settings.instance().moduleSetting(settingName);
+  private addSettingMenuItem(contextMenu: UI.ContextMenu.Section,
+                             settingOrSettingName: Common.Settings.Setting<boolean>|string,
+                             menuText: Common.UIString.LocalizedString): void {
+    const setting = typeof settingOrSettingName === 'string' ?
+        Common.Settings.Settings.instance().moduleSetting(settingOrSettingName) :
+        settingOrSettingName;
     contextMenu.appendCheckboxItem(
         menuText, () => setting.set(!setting.get()), {checked: setting.get(), jslogContext: setting.name});
   }
@@ -603,7 +606,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
   private populateNavigatorMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     contextMenu.appendItemsAtLocation('navigatorMenu');
     this.addSettingMenuItem(
-        contextMenu.viewSection(), 'navigator-group-by-folder', i18nString(UIStrings.groupByFolder));
+        contextMenu.viewSection(),
+        Common.Settings.Settings.instance().resolve(Settings.SourcesSettings.navigatorGroupByFolderSettingDescriptor),
+        i18nString(UIStrings.groupByFolder));
     this.addSettingMenuItem(
         contextMenu.viewSection(), 'navigator-group-by-authored', i18nString(UIStrings.groupByAuthored));
     this.addSettingMenuItem(

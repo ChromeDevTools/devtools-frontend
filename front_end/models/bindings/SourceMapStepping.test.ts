@@ -15,6 +15,8 @@ import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Formatter from '../formatter/formatter.js';
 
+import * as Bindings from './bindings.js';
+
 //    original index.ts          generated index.js
 //
 //  0: function F() {            function F(){
@@ -263,6 +265,23 @@ describe('SourceMapStepping', () => {
 
     await pauseAndWait([frame(script, 8, 0), frame(script, 4, 3, '1')], Protocol.Debugger.PausedEventReason.Step);
     assert.lengthOf(requests, 1);
+  });
+
+  it('keeps stepping over the same original location in an outlined part of the current function', async () => {
+    const script = await addScript({outlined: true});
+    await pauseAndWait([frame(script, 4, 0)]);
+    await step(() => debuggerModel.stepOver());
+
+    // Same as above, but `o` is an outlined part of `F`, so the logical depth didn't change.
+    assert.strictEqual((await pauseAndExpectAutoStep([frame(script, 8, 12), frame(script, 4, 3, '1')])).method,
+                       'Debugger.stepOver');
+  });
+
+  it('computes the logical depth without outlined frames on top of the stack', async () => {
+    const script = await addScript({outlined: true});
+    await pauseAndWait([frame(script, 9, 0), frame(script, 4, 3, '1'), frame(script, 1, 0, '2')]);
+
+    assert.strictEqual(Bindings.SourceMapStepping.logicalDepth(debuggerModel.callFrames ?? []), 2);
   });
 
   it('keeps the legacy behavior when the feature is disabled', async () => {

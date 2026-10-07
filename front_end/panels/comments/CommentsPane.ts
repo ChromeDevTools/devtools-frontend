@@ -7,6 +7,7 @@ import '../../ui/components/tooltips/tooltips.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -113,17 +114,23 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
                     html`<span class="anchor-chip-text">${item.title.text}</span>`}
                 </span>
                 <div class="comment-text">${item.commentText}</div>
-                <button
-                  class="delete-button"
-                  title=${i18nString(UIStrings.deleteComment)}
-                  aria-label=${i18nString(UIStrings.deleteComment)}
+                <devtools-button
+                  .data=${{
+                    variant: Buttons.Button.Variant.ICON,
+                    iconName: 'bin',
+                    title: i18nString(UIStrings.deleteComment),
+                    jslogContext: 'delete',
+                  } as Buttons.Button.ButtonData}
                   @click=${(e: Event) => {
                     e.stopPropagation();
                     input.onDeleteThread(item.thread.id);
                   }}
-                  jslog=${VisualLogging.action('delete').track({ click: true })}>
-                  <devtools-icon name="bin"></devtools-icon>
-                </button>
+                  @keydown=${(e: KeyboardEvent) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.stopPropagation();
+                    }
+                  }}
+                ></devtools-button>
               </li>
             `,
           )}

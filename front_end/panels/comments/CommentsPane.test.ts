@@ -214,4 +214,30 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
     renderElementIntoDOM(target, {includeCommonStyles: true});
     await assertScreenshot('comments/comments_pane_list.png');
   });
+
+  it('does not trigger thread selection when pressing Enter or Space on the delete button', () => {
+    const onThreadClick = sinon.spy();
+
+    const mockThreadData = createMockThread(1, 'a.button', 'Test comment');
+    const target = renderView({
+      threads: [mockThreadData],
+      onThreadClick,
+    });
+
+    renderElementIntoDOM(target);
+    const deleteButton = target.querySelector('.comment-thread-item devtools-button') as HTMLElement;
+    assert.isNotNull(deleteButton);
+
+    for (const key of ['Enter', ' ']) {
+      const keydownEvent = new KeyboardEvent('keydown', {key, bubbles: true, cancelable: true});
+      deleteButton.dispatchEvent(keydownEvent);
+      assert.isFalse(keydownEvent.defaultPrevented);
+    }
+
+    sinon.assert.notCalled(onThreadClick);
+
+    const threadItem = target.querySelector('.comment-thread-item') as HTMLElement;
+    threadItem.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true, cancelable: true}));
+    sinon.assert.calledOnceWithExactly(onThreadClick, mockThreadData.thread);
+  });
 });

@@ -15,6 +15,7 @@ import {
   assertIsResult,
   makeFakeParsedTrace,
 } from '../../../testing/AiAssistanceHelpers.js';
+import {stubInsightModel} from '../../../testing/InsightHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
@@ -210,11 +211,11 @@ describe('GetInsightDetailsTool', () => {
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
 
-    insightSet.model.RenderBlocking = {
+    stubInsightModel(insightSet, 'RenderBlocking', {
       insightKey: 'RenderBlocking',
       state: 'fail',
       renderBlockingRequests: [],
-    } as unknown as Trace.Insights.Types.InsightModels['RenderBlocking'];
+    } as unknown as Trace.Insights.Types.InsightModels['RenderBlocking']);
 
     const capabilities = createPerformanceTraceCapabilities(parsedTrace);
 
@@ -236,7 +237,7 @@ describe('GetInsightDetailsTool', () => {
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
 
-    insightSet.model.LCPBreakdown = {
+    stubInsightModel(insightSet, 'LCPBreakdown', {
       insightKey: 'LCPBreakdown',
       state: 'fail',
       lcpMs: 1000 as Trace.Types.Timing.Milli,
@@ -244,7 +245,7 @@ describe('GetInsightDetailsTool', () => {
         name: 'largestContentfulPaint::Candidate',
         args: {data: {nodeId: 4 as Protocol.DOM.BackendNodeId}},
       } as unknown as Trace.Types.Events.LargestContentfulPaintCandidate,
-    } as Trace.Insights.Types.InsightModels['LCPBreakdown'];
+    } as Trace.Insights.Types.InsightModels['LCPBreakdown']);
 
     const target = universe.targetManager.primaryPageTarget();
     const domModel = target?.model(SDK.DOMModel.DOMModel);
@@ -292,7 +293,7 @@ describe('GetInsightDetailsTool', () => {
       },
     } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
 
-    insightSet.model.LCPBreakdown = {
+    stubInsightModel(insightSet, 'LCPBreakdown', {
       insightKey: 'LCPBreakdown',
       state: 'fail',
       lcpMs: 1000 as Trace.Types.Timing.Milli,
@@ -301,7 +302,7 @@ describe('GetInsightDetailsTool', () => {
         name: 'largestContentfulPaint::Candidate',
         args: {data: {nodeId: 4 as Protocol.DOM.BackendNodeId}},
       } as unknown as Trace.Types.Events.LargestContentfulPaintCandidate,
-    } as Trace.Insights.Types.InsightModels['LCPBreakdown'];
+    } as Trace.Insights.Types.InsightModels['LCPBreakdown']);
 
     const target = universe.targetManager.primaryPageTarget();
     const domModel = target?.model(SDK.DOMModel.DOMModel);
@@ -348,14 +349,25 @@ describe('GetInsightDetailsTool', () => {
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
 
-    insightSet.model.LCPDiscovery = {
+    stubInsightModel(insightSet, 'LCPDiscovery', {
       insightKey: 'LCPDiscovery',
       state: 'fail',
       lcpEvent: {
         name: 'largestContentfulPaint::Candidate',
         args: {data: {nodeId: 4 as Protocol.DOM.BackendNodeId}},
       } as unknown as Trace.Types.Events.LargestContentfulPaintCandidate,
-    } as Trace.Insights.Types.InsightModels['LCPDiscovery'];
+    } as Trace.Insights.Types.InsightModels['LCPDiscovery']);
+    // The DOM_TREE widget resolves the LCP node via `getLCP()`, which reads the
+    // LCP event from the LCPBreakdown insight.
+    stubInsightModel(insightSet, 'LCPBreakdown', {
+      insightKey: 'LCPBreakdown',
+      state: 'fail',
+      lcpMs: 1000 as Trace.Types.Timing.Milli,
+      lcpEvent: {
+        name: 'largestContentfulPaint::Candidate',
+        args: {data: {nodeId: 4 as Protocol.DOM.BackendNodeId}},
+      } as unknown as Trace.Types.Events.LargestContentfulPaintCandidate,
+    } as Trace.Insights.Types.InsightModels['LCPBreakdown']);
 
     const target = universe.targetManager.primaryPageTarget();
     const domModel = target?.model(SDK.DOMModel.DOMModel);
@@ -386,7 +398,7 @@ describe('GetInsightDetailsTool', () => {
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
 
-    insightSet.model.LCPBreakdown = {
+    stubInsightModel(insightSet, 'LCPBreakdown', {
       insightKey: 'LCPBreakdown',
       state: 'fail',
       lcpMs: 1000 as Trace.Types.Timing.Milli,
@@ -394,7 +406,7 @@ describe('GetInsightDetailsTool', () => {
         name: 'largestContentfulPaint::Candidate',
         args: {data: {nodeId: 4 as Protocol.DOM.BackendNodeId}},
       } as unknown as Trace.Types.Events.LargestContentfulPaintCandidate,
-    } as Trace.Insights.Types.InsightModels['LCPBreakdown'];
+    } as Trace.Insights.Types.InsightModels['LCPBreakdown']);
 
     const target = universe.targetManager.primaryPageTarget();
     const capabilities = createPerformanceTraceCapabilities(parsedTrace, {isFresh: false, target});
@@ -417,7 +429,7 @@ describe('GetInsightDetailsTool', () => {
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
 
-    insightSet.model.LCPBreakdown = {
+    stubInsightModel(insightSet, 'LCPBreakdown', {
       insightKey: 'LCPBreakdown',
       state: 'fail',
       lcpMs: 1000 as Trace.Types.Timing.Milli,
@@ -425,7 +437,7 @@ describe('GetInsightDetailsTool', () => {
         name: 'largestContentfulPaint::Candidate',
         args: {data: {nodeId: 4 as Protocol.DOM.BackendNodeId}},
       } as unknown as Trace.Types.Events.LargestContentfulPaintCandidate,
-    } as Trace.Insights.Types.InsightModels['LCPBreakdown'];
+    } as Trace.Insights.Types.InsightModels['LCPBreakdown']);
 
     const target = universe.targetManager.primaryPageTarget();
     const domModel = target?.model(SDK.DOMModel.DOMModel);
@@ -450,11 +462,11 @@ describe('GetInsightDetailsTool', () => {
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
 
-    insightSet.model.RenderBlocking = {
+    stubInsightModel(insightSet, 'RenderBlocking', {
       insightKey: 'RenderBlocking',
       state: 'fail',
       renderBlockingRequests: [],
-    } as unknown as Trace.Insights.Types.InsightModels['RenderBlocking'];
+    } as unknown as Trace.Insights.Types.InsightModels['RenderBlocking']);
 
     sinon.stub(AiAssistance.PerformanceInsightFormatter.PerformanceInsightFormatter.prototype, 'formatInsight')
         .returns('x'.repeat(AiAssistance.Tool.MAX_FUNCTION_RESULT_BYTE_LENGTH + 1));

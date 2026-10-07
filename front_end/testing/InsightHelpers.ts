@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import sinon from 'sinon';
+
 import * as Trace from '../models/trace/trace.js';
 
 import {TraceLoader} from './TraceLoader.js';
@@ -14,6 +16,30 @@ export async function processTrace(context: Mocha.Suite|Mocha.Context, traceFile
   }
 
   return parsedTrace as Trace.TraceModel.ParsedTrace & {insights: Trace.Insights.Types.TraceInsightSets};
+}
+
+/**
+ * Replaces the model of a single insight on `insightSet` for the duration of
+ * the current test.
+ *
+ * Parsed traces returned by `TraceLoader.traceEngine` are cached and shared
+ * between tests (and, in the Node unit test runner, between test files), so
+ * tests must never assign to `insightSet.model.<InsightName>` directly: the
+ * fake model would leak into every later test that loads the same trace. This
+ * helper installs the fake via sinon, so the global `sinon.restore()` that runs
+ * after each test puts the original model back.
+ */
+export function stubInsightModel<InsightName extends keyof Trace.Insights.Types.InsightModels>(
+    insightSet: Trace.Insights.Types.InsightSet, insightName: InsightName,
+    model: Trace.Insights.Types.InsightModels[InsightName]): void {
+  if (insightName in insightSet.model) {
+    sinon.stub(insightSet.model, insightName).value(model);
+  } else {
+    // The insight failed to generate for this trace (see `modelErrors`), so
+    // there is nothing to stub; define the property instead. `sinon.restore()`
+    // removes it again.
+    sinon.define(insightSet.model, insightName, model);
+  }
 }
 
 export function createContextForNavigation(

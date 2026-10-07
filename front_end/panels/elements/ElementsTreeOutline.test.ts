@@ -1382,4 +1382,46 @@ describeWithEnvironment('ElementsTreeOutline', () => {
       assert.strictEqual(moveToStub.firstCall.args[1], childNode2);
     });
   });
+  it('unhides the tree outline and clears updateRecords when updateModifiedNodes throws with >10 modified nodes',
+     () => {
+       const children = Array.from({length: 12}, (_, i) => ({
+                                                   nodeId: (i + 2) as Protocol.DOM.NodeId,
+                                                   parentId: 1 as Protocol.DOM.NodeId,
+                                                   backendNodeId: (i + 2) as Protocol.DOM.BackendNodeId,
+                                                   nodeType: Node.ELEMENT_NODE,
+                                                   nodeName: 'DIV',
+                                                   localName: 'div',
+                                                   nodeValue: '',
+                                                   childNodeCount: 0,
+                                                   children: [],
+                                                   attributes: ['id', `item-${i}`],
+                                                 }));
+       const rootNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+         nodeId: 1 as Protocol.DOM.NodeId,
+         backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+         nodeType: Node.ELEMENT_NODE,
+         nodeName: 'BODY',
+         localName: 'body',
+         nodeValue: '',
+         childNodeCount: children.length,
+         children,
+         attributes: [],
+       });
+       treeOutline.rootDOMNode = rootNode;
+
+       const firstChild = model.nodeForId(2 as Protocol.DOM.NodeId)!;
+       const firstChildEl = treeOutline.findTreeElement(firstChild)!;
+       sinon.stub(firstChildEl, 'updateTitle').throws(new Error('Simulated updateTitle failure'));
+
+       for (let i = 0; i < 12; i++) {
+         model.attributeModified((i + 2) as Protocol.DOM.NodeId, 'class', 'updated');
+       }
+
+       assert.throws(() => treeOutline.runPendingUpdates(), 'Simulated updateTitle failure');
+       assert.isFalse(treeOutline.element.classList.contains('hidden'));
+
+       // Subsequent updates should not re-process the failed batch.
+       (firstChildEl.updateTitle as sinon.SinonStub).restore();
+       assert.doesNotThrow(() => treeOutline.runPendingUpdates());
+     });
 });

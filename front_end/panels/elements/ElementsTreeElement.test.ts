@@ -865,9 +865,8 @@ describeWithEnvironment('ElementsTreeElement', () => {
 
     function getLinkOutputs(treeElement: Elements.ElementsTreeElement.ElementsTreeElement):
         Array<{text: string, href: string}> {
-      const attributeValueElement = treeElement.widget.contentElement.querySelector('.webkit-html-attribute-value');
-      assert.exists(attributeValueElement);
-      const linkElements = Array.from(attributeValueElement.querySelectorAll('.devtools-link'));
+      const linkElements =
+          Array.from(treeElement.widget.contentElement.querySelectorAll('.webkit-html-attribute-value .devtools-link'));
       assert.isNotEmpty(linkElements, 'Expected to find .devtools-link elements');
 
       return linkElements.map(link => {
@@ -969,6 +968,55 @@ describeWithEnvironment('ElementsTreeElement', () => {
 
       assert.lengthOf(links, 1);
       assert.deepEqual(links[0], {text: 'image.png', href: 'http://example.com/image.png'});
+    });
+
+    it('updates attributes when shifting between plain and linkified values without throwing', () => {
+      const nodePayload = {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'SCRIPT',
+        localName: 'script',
+        nodeValue: '',
+        attributes: ['type', 'rocketlazyloadscript', 'src', 'app.js'],
+        childNodeCount: 0,
+      };
+      const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
+      sinon.stub(node, 'resolveURL').callsFake(url => Platform.DevToolsPath.urlString`http://example.com/${url}`);
+
+      const treeElement = renderTreeNode(node);
+      assert.deepEqual(getLinkOutputs(treeElement), [{text: 'app.js', href: 'http://example.com/app.js'}]);
+
+      // Removing 'type' shifts 'src' into the first attribute slot (previously ValueType.UNKNOWN).
+      domModel.attributeRemoved(node.id, 'type');
+      treeElement.updateTitle();
+      assert.deepEqual(getLinkOutputs(treeElement), [{text: 'app.js', href: 'http://example.com/app.js'}]);
+
+      // Replacing 'src' with a plain attribute transitions the slot from ValueType.SRC back to ValueType.UNKNOWN.
+      domModel.attributeRemoved(node.id, 'src');
+      domModel.attributeModified(node.id, 'type', 'module');
+      treeElement.updateTitle();
+      const attrValue = treeElement.widget.contentElement.querySelector('.webkit-html-attribute-value');
+      assert.strictEqual(attrValue?.textContent?.replace(/\u200B/g, ''), 'module');
+
+      // Also verify IMG transitions between plain attributes and srcset (ValueType.SRCSET).
+      const imgNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+        nodeId: 2 as Protocol.DOM.NodeId,
+        backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'IMG',
+        localName: 'img',
+        nodeValue: '',
+        attributes: ['data-srcset', '1x.png 1x', 'srcset', '1x.png 1x, 2x.png 2x'],
+        childNodeCount: 0,
+      });
+      sinon.stub(imgNode, 'resolveURL').callsFake(url => Platform.DevToolsPath.urlString`http://example.com/${url}`);
+      const imgTreeElement = renderTreeNode(imgNode);
+      assert.lengthOf(getLinkOutputs(imgTreeElement), 2);
+
+      domModel.attributeRemoved(imgNode.id, 'data-srcset');
+      imgTreeElement.updateTitle();
+      assert.lengthOf(getLinkOutputs(imgTreeElement), 2);
     });
   });
 });

@@ -981,6 +981,17 @@ export abstract class AiAgent<T> {
               response: {...result, widgets: undefined},
             },
           };
+          if (i === MAX_STEPS - 1) {
+            // Normally, the functionResponse is pushed at the start of the next
+            // iteration. Since no further iteration will run, push it here so the
+            // last functionCall is not left unpaired in history.
+            this.#history.push({
+              parts: [query],
+              role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+            });
+            yield this.#createErrorResponse(ErrorType.MAX_STEPS);
+            break;
+          }
           request = this.buildRequest(query, Host.AidaClient.Role.ROLE_UNSPECIFIED);
         } catch (err) {
           if (err instanceof CrossOriginError) {
@@ -993,11 +1004,6 @@ export abstract class AiAgent<T> {
         }
       } else {
         yield this.#createErrorResponse(ErrorType.UNKNOWN);
-        break;
-      }
-
-      if (i === MAX_STEPS - 1) {
-        yield this.#createErrorResponse(ErrorType.MAX_STEPS);
         break;
       }
     }
@@ -1228,8 +1234,11 @@ export abstract class AiAgent<T> {
   }
 
   #createErrorResponse(error: ErrorType): ResponseData {
-    this.#removeLastRunParts();
-    this.clearCache();
+    // If we hit MAX_STEPS, we still want to keep the call history as this may be relevant for follow-up requests.
+    if (error !== ErrorType.MAX_STEPS) {
+      this.#removeLastRunParts();
+      this.clearCache();
+    }
     if (error !== ErrorType.ABORT) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
     }

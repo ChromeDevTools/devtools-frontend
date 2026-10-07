@@ -560,14 +560,11 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.TimelineSettings.timelineCo
   title: i18nLazyString(UIStrings.nodes),
 });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.GLOBAL,
-  title: i18nLazyString(UIStrings.listeners),
-  settingName: 'timeline-counters-graph-js-event-listeners',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-});
+SettingsUI.SettingUIRegistration.register(
+    SettingsUI.TimelineSettings.timelineCountersGraphJsEventListenersSettingDescriptor, {
+      category: Common.Settings.SettingCategory.NONE,
+      title: i18nLazyString(UIStrings.listeners),
+    });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NONE,

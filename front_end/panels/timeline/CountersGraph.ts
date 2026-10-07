@@ -142,7 +142,11 @@ export class CountersGraph extends UI.Widget.VBox {
                            'hsl(120, 90%, 43%)'));
     this.countersByName.set(
         'jsEventListeners',
-        this.createCounter(i18nString(UIStrings.listeners), 'js-event-listeners', 'hsl(38, 90%, 43%)'));
+        this.createCounter(
+            i18nString(UIStrings.listeners),
+            Common.Settings.Settings.instance().resolve(
+                SettingUIRegistration.TimelineSettings.timelineCountersGraphJsEventListenersSettingDescriptor),
+            'hsl(38, 90%, 43%)'));
 
     this.gpuMemoryCounter = this.createCounter(
         i18nString(UIStrings.gpuMemory), 'gpu-memory-used-kb', 'hsl(300, 90%, 43%)', i18n.ByteUtilities.bytesToString);

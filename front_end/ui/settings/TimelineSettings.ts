@@ -108,3 +108,10 @@ export const timelineCountersGraphNodesSettingDescriptor: Common.Settings.Settin
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.GLOBAL,
 };
+
+export const timelineCountersGraphJsEventListenersSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'timeline-counters-graph-js-event-listeners',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.GLOBAL,
+};

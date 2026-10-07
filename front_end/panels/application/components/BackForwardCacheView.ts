@@ -25,122 +25,110 @@ import backForwardCacheViewStyles from './backForwardCacheView.css.js';
 
 const UIStrings = {
   /**
-   * @description Title text in back/forward cache view of the Application panel
+   * @description Section header for the main frame in the back/forward cache view of the Application panel.
    */
-  mainFrame: 'Main Frame',
+  mainFrame: 'Main frame',
   /**
-   * @description Title text in back/forward cache view of the Application panel
+   * @description Title text in the back/forward cache view of the Application panel.
    */
   backForwardCacheTitle: 'Back/forward cache',
   /**
-   * @description Status text for the status of the main frame
+   * @description Status text for the main frame in the back/forward cache view of the Application panel when unavailable.
    */
   unavailable: 'unavailable',
   /**
-   * @description Entry name text in the back/forward cache view of the Application panel
+   * @description Entry name text in the back/forward cache view of the Application panel.
    */
   url: 'URL',
   /**
-   * @description Status text for the status of the back/forward cache status
+   * @description Status text indicating unknown back/forward cache status in the back/forward cache view of the Application panel.
    */
-  unknown: 'Unknown Status',
+  unknown: 'Unknown status',
   /**
-   * @description Status text for the status of the back/forward cache status indicating that
-   * the back/forward cache was not used and a normal navigation occurred instead.
+   * @description Status text indicating that the back/forward cache was not used and a normal navigation occurred instead in the back/forward cache view of the Application panel.
    */
   normalNavigation:
       'Not served from back/forward cache: to trigger back/forward cache, use Chrome’s back/forward buttons, or use the test button below to automatically navigate away and back',
   /**
-   * @description Status text for the status of the back/forward cache status indicating that
-   * the back/forward cache was used to restore the page instead of reloading it.
+   * @description Status text indicating that the back/forward cache was used to restore the page instead of reloading it in the back/forward cache view of the Application panel.
    */
   restoredFromBFCache: 'Successfully served from back/forward cache',
   /**
-   * @description Label for a list of reasons which prevent the page from being eligible for
-   * back/forward cache. These reasons are actionable i.e. they can be cleaned up to make the
-   * page eligible for back/forward cache.
+   * @description Label for actionable reasons that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
   pageSupportNeeded: 'Actionable',
   /**
-   * @description Label for the completion of the back/forward cache test
+   * @description Label indicating completion of the back/forward cache test in the back/forward cache view of the Application panel.
    */
   testCompleted: 'Back/forward cache test completed',
   /**
-   * @description Explanation for actionable items which prevent the page from being eligible
-   * for back/forward cache.
+   * @description Explanation for actionable items that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
   pageSupportNeededExplanation:
       'These reasons are actionable i.e. they can be cleaned up to make the page eligible for back/forward cache',
   /**
-   * @description Label for a list of reasons which prevent the page from being eligible for
-   * back/forward cache. These reasons are circumstantial / not actionable i.e. they cannot be
-   * cleaned up by developers to make the page eligible for back/forward cache.
+   * @description Label for circumstantial reasons that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
-  circumstantial: 'Not Actionable',
+  circumstantial: 'Not actionable',
   /**
-   * @description Explanation for circumstantial/non-actionable items which prevent the page from being eligible
-   * for back/forward cache.
+   * @description Explanation for circumstantial items that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
   circumstantialExplanation:
       'These reasons aren’t actionable i.e. caching was prevented by something outside of the direct control of the page',
   /**
-   * @description Label for a list of reasons which prevent the page from being eligible for
-   * back/forward cache. These reasons are pending support by chrome i.e. in a future version
-   * of chrome they will not prevent back/forward cache usage anymore.
+   * @description Label for reasons pending Chrome support that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
-  supportPending: 'Pending Support',
+  supportPending: 'Pending support',
   /**
-   * @description Label for the button to test whether BFCache is available for the page
+   * @description Button text to test whether back/forward cache is available for the page in the back/forward cache view of the Application panel.
    */
   runTest: 'Test back/forward cache',
   /**
-   * @description Label for the disabled button while the test is running
+   * @description Button text for the disabled button while the test is running in the back/forward cache view of the Application panel.
    */
   runningTest: 'Running test',
   /**
-   * @description Link Text about explanation of back/forward cache
+   * @description Link text explaining back/forward cache eligibility in the back/forward cache view of the Application panel.
    */
   learnMore: 'Learn more: back/forward cache eligibility',
   /**
-   * @description Link Text about unload handler
+   * @description Link text about unload handlers in the back/forward cache view of the Application panel.
    */
-  neverUseUnload: 'Learn more: Never use unload handler',
+  neverUseUnload: 'Learn more: never use unload handler',
   /**
-   * @description Explanation for 'pending support' items which prevent the page from being eligible
-   * for back/forward cache.
+   * @description Explanation for reasons pending support that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
   supportPendingExplanation:
       'Chrome support for these reasons is pending i.e. they won’t prevent the page from being eligible for back/forward cache in a future version of Chrome',
   /**
-   * @description Text that precedes displaying a link to the extension which blocked the page from being eligible for back/forward cache.
+   * @description Prefix text preceding the ID of the extension that blocked the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
-  blockingExtensionId: 'Extension id: ',
+  blockingExtensionId: 'Extension ID: ',
   /**
-   * @description Label for the 'Frames' section of the back/forward cache view, which shows a frame tree of the
-   * page with reasons why the frames can't be cached.
+   * @description Label for the frames section in the back/forward cache view of the Application panel.
    */
   framesTitle: 'Frames',
   /**
-   * @description Top level summary of the total number of issues found in a single frame.
+   * @description Summary of the total number of issues found in a single frame in the back/forward cache view of the Application panel.
    */
   issuesInSingleFrame: '{n, plural, =1 {# issue found in 1 frame} other {# issues found in 1 frame}}',
   /**
-   * @description Top level summary of the total number of issues found and the number of frames they were found in.
+   * @description Summary of the total number of issues found and the number of frames they were found in the back/forward cache view of the Application panel.
    * 'm' is never less than 2.
    * @example {3} m
    */
   issuesInMultipleFrames: '{n, plural, =1 {# issue found in {m} frames} other {# issues found in {m} frames}}',
   /**
-   * @description Shows the number of frames with a particular issue.
+   * @description Shows the number of frames with a particular issue in the back/forward cache view of the Application panel.
    */
   framesPerIssue: '{n, plural, =1 {# frame} other {# frames}}',
   /**
-   * @description Title for a frame in the frame tree that doesn't have a URL. Placeholder indicates which number frame with a blank URL it is.
+   * @description Title for a frame in the frame tree that doesn't have a URL in the back/forward cache view of the Application panel.
    * @example {3} PH1
    */
   blankURLTitle: 'Blank URL [{PH1}]',
   /**
-   * @description Shows the number of files with a particular issue.
+   * @description Shows the number of files with a particular issue in the back/forward cache view of the Application panel.
    */
   filesPerIssue: '{n, plural, =1 {# file} other {# files}}',
 } as const;

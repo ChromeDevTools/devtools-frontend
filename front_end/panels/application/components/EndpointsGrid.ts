@@ -14,15 +14,13 @@ import endpointsGridStyles from './endpointsGrid.css.js';
 
 const UIStrings = {
   /**
-   * @description Placeholder text when there are no Reporting API endpoints.
-   *(https://developers.google.com/web/updates/2018/09/reportingapi#tldr)
+   * @description Header text when there are no Reporting API endpoints to display in the Application panel.
    */
   noEndpointsToDisplay: 'No endpoints to display',
   /**
-   * @description Placeholder text when there are no Reporting API endpoints.
-   *(https://developers.google.com/web/updates/2018/09/reportingapi#tldr)
+   * @description Description text when there are no Reporting API endpoints to display in the Application panel.
    */
-  endpointsDescription: 'Here you will find the list of endpoints that receive the reports',
+  endpointsDescription: 'Here you will find the list of endpoints that get the reports',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/EndpointsGrid.ts', UIStrings);
 export const i18nString: i18n.LocalizeString = i18n.i18n.getLocalizedString.bind(undefined, str_);

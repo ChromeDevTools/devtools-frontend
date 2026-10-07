@@ -12,19 +12,19 @@ import {html, render} from '../../../ui/lit/lit.js';
 
 const UIStrings = {
   /**
-   * @description Text in Crash Report Context Items View of the Application panel
+   * @description Column header for the key in the crash report context datagrid in the Application panel.
    */
   key: 'Key',
   /**
-   * @description Text in Crash Report Context Items View of the Application panel
+   * @description Column header for the value in the crash report context datagrid in the Application panel.
    */
   value: 'Value',
   /**
-   * @description Context menu item to copy the key of a context entry
+   * @description Context menu item to copy the key of a crash report context entry in the Application panel.
    */
   copyKey: 'Copy key',
   /**
-   * @description Context menu item to copy the value of a context entry
+   * @description Context menu item to copy the value of a crash report context entry in the Application panel.
    */
   copyValue: 'Copy value',
 } as const;

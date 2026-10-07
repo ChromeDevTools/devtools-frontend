@@ -87,7 +87,7 @@ describeWithEnvironment('BackForwardCacheView', () => {
     const component = await renderBackForwardCacheView();
     const sectionHeaders = component.contentElement.querySelectorAll('devtools-report-section-header');
     const sectionHeadersText = Array.from(sectionHeaders).map(sectionHeader => sectionHeader.textContent?.trim());
-    assert.deepEqual(sectionHeadersText, ['Actionable', 'Pending Support', 'Not Actionable']);
+    assert.deepEqual(sectionHeadersText, ['Actionable', 'Pending support', 'Not actionable']);
 
     const sections = component.contentElement.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
@@ -188,7 +188,7 @@ describeWithEnvironment('BackForwardCacheView', () => {
     const component = await renderBackForwardCacheView();
     const sectionHeaders = component.contentElement.querySelectorAll('devtools-report-section-header');
     const sectionHeadersText = Array.from(sectionHeaders).map(sectionHeader => sectionHeader.textContent?.trim());
-    assert.deepEqual(sectionHeadersText, ['Pending Support']);
+    assert.deepEqual(sectionHeadersText, ['Pending support']);
 
     const sections = component.contentElement.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());

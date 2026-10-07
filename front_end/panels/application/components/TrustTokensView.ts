@@ -22,39 +22,37 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   * @description Text for the issuer of an item
+   * @description Column header for the token issuer in the private state tokens table in the Application panel.
    */
   issuer: 'Issuer',
   /**
-   * @description Column header for Trust Token table
+   * @description Column header for the stored token count in the private state tokens table in the Application panel.
    */
   storedTokenCount: 'Stored token count',
   /**
-   * @description Hover text for an info icon in the Private State Token panel
+   * @description Tooltip text for the info icon in the private state tokens view of the Application panel.
    */
   allStoredTrustTokensAvailableIn: 'All stored private state tokens available in this browser instance',
   /**
-   * @description Text shown instead of a table when the table would be empty. https://developers.google.com/privacy-sandbox/protections/private-state-tokens
+   * @description Header text when there are no private state tokens to display in the private state tokens view of the Application panel.
    */
   noTrustTokens: 'No private state tokens detected',
   /**
-   * @description Text shown if there are no private state tokens. https://developers.google.com/privacy-sandbox/protections/private-state-tokens
+   * @description Description text when there are no private state tokens to display in the private state tokens view of the Application panel.
    */
   trustTokensDescription:
       'On this page you can view all available private state tokens in the current browsing context',
   /**
-   * @description Each row in the Private State Token table has a delete button. This is the text shown
-   * when hovering over this button. The placeholder is a normal URL, indicating the site which
-   * provided the Private State Tokens that will be deleted when the button is clicked.
+   * @description Tooltip text for the button to delete private state tokens issued by a site in the private state tokens view of the Application panel.
    * @example {https://google.com} PH1
    */
   deleteTrustTokens: 'Delete all stored private state tokens issued by {PH1}',
   /**
-   * @description Heading label for a view. Previously known as 'Trust Tokens'.
+   * @description Title for the private state tokens view in the Application panel.
    */
   trustTokens: 'Private state tokens',
   /**
-   * @description Text used in a link to learn more about the topic.
+   * @description Link text to learn more about private state tokens in the private state tokens view of the Application panel.
    */
   learnMore: 'Learn more',
 } as const;

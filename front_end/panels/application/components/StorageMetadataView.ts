@@ -21,94 +21,92 @@ import storageMetadataViewStyle from './storageMetadataView.css.js';
 
 const UIStrings = {
   /**
-   * @description The origin of a URL (https://web.dev/same-site-same-origin/#origin).
-   *(for a lot of languages this does not need to be translated, please translate only where necessary)
+   * @description Label for the frame origin row in the storage metadata view of the Application panel.
    */
   origin: 'Frame origin',
   /**
-   * @description Site (https://web.dev/same-site-same-origin/#site) for the URL the user sees in the omnibox.
+   * @description Label for the top-level site row in the storage metadata view of the Application panel.
    */
   topLevelSite: 'Top-level site',
   /**
-   * @description Text to show in the top-level site row, in case the value is opaque (https://html.spec.whatwg.org/#concept-origin-opaque).
+   * @description Text shown in the top-level site row when the value is opaque in the storage metadata view of the Application panel.
    */
   opaque: '(opaque)',
   /**
-   * @description Whether the storage corresponds to an opaque key (similar to https://html.spec.whatwg.org/#concept-origin-opaque).
+   * @description Label for the row indicating whether the storage key is opaque in the storage metadata view of the Application panel.
    */
   isOpaque: 'Is opaque',
   /**
-   * @description Whether the storage corresponds to a third-party origin (https://web.dev/learn/privacy/third-parties/).
+   * @description Label for the row indicating whether the storage corresponds to a third-party origin in the storage metadata view of the Application panel.
    */
   isThirdParty: 'Is third-party',
   /**
-   * @description Text indicating that the condition holds.
+   * @description Text indicating that the condition holds in the storage metadata view of the Application panel.
    */
   yes: 'Yes',
   /**
-   * @description Text indicating that the condition does not hold.
+   * @description Text indicating that the condition does not hold in the storage metadata view of the Application panel.
    */
   no: 'No',
   /**
-   * @description Text indicating that the storage corresponds to a third-party origin because top-level site is opaque.
+   * @description Explanation that the storage corresponds to a third-party origin because the top-level site is opaque in the storage metadata view of the Application panel.
    */
   yesBecauseTopLevelIsOpaque: 'Yes, because the top-level site is opaque',
   /**
-   * @description Text indicating that the storage corresponds to a third-party origin because the storage key is opaque.
+   * @description Explanation that the storage corresponds to a third-party origin because the storage key is opaque in the storage metadata view of the Application panel.
    */
   yesBecauseKeyIsOpaque: 'Yes, because the storage key is opaque',
   /**
-   * @description Text indicating that the storage corresponds to a third-party origin because the origin doesn't match the top-level site.
+   * @description Explanation that the storage corresponds to a third-party origin because the origin is outside of the top-level site in the storage metadata view of the Application panel.
    */
   yesBecauseOriginNotInTopLevelSite: 'Yes, because the origin is outside of the top-level site',
   /**
-   * @description Text indicating that the storage corresponds to a third-party origin because the was a third-party origin in the ancestry chain.
+   * @description Explanation that the storage corresponds to a third-party origin because the ancestry chain contains a third-party origin in the storage metadata view of the Application panel.
    */
   yesBecauseAncestorChainHasCrossSite: 'Yes, because the ancestry chain contains a third-party origin',
   /**
-   * @description Text when something is loading.
+   * @description Status text while metadata is loading in the storage metadata view of the Application panel.
    */
   loading: 'Loading…',
   /**
-   * @description The storage bucket name (https://wicg.github.io/storage-buckets/explainer#bucket-names)
+   * @description Label for the bucket name row in the storage metadata view of the Application panel.
    */
   bucketName: 'Bucket name',
   /**
-   * @description The name of the default bucket (https://wicg.github.io/storage-buckets/explainer#the-default-bucket)
-   *(This should not be a valid bucket name (https://wicg.github.io/storage-buckets/explainer#bucket-names))
+   * @description Label for the default bucket in the storage metadata view of the Application panel.
    */
   defaultBucket: 'Default bucket',
   /**
-   * @description Text indicating that the storage is persistent (https://wicg.github.io/storage-buckets/explainer#storage-policy-persistence)
+   * @description Label for the row indicating whether the bucket is persistent in the storage metadata view of the Application panel.
    */
   persistent: 'Is persistent',
   /**
-   * @description The storage durability policy (https://wicg.github.io/storage-buckets/explainer#storage-policy-durability)
+   * @description Label for the durability row in the storage metadata view of the Application panel.
    */
   durability: 'Durability',
   /**
-   * @description The storage quota (https://wicg.github.io/storage-buckets/explainer#storage-policy-quota)
+   * @description Label for the quota row in the storage metadata view of the Application panel.
    */
   quota: 'Quota',
   /**
-   * @description The storage expiration (https://wicg.github.io/storage-buckets/explainer#storage-policy-expiration)
+   * @description Label for the expiration row in the storage metadata view of the Application panel.
    */
   expiration: 'Expiration',
   /**
-   * @description Text indicating that no value is set
+   * @description Text indicating that no value is set in the storage metadata view of the Application panel.
    */
   none: 'None',
   /**
-   * @description Label of the button that triggers the Storage Bucket to be deleted.
+   * @description Button text to delete the storage bucket in the storage metadata view of the Application panel.
    */
   deleteBucket: 'Delete bucket',
   /**
-   * @description Text shown in the confirmation dialogue that displays before deleting the bucket.
+   * @description Title of the confirmation dialog before deleting a storage bucket in the storage metadata view of the Application panel.
    * @example {bucket} PH1
    */
   confirmBucketDeletion: 'Delete the "{PH1}" bucket?',
   /**
-   * @description Explanation text shown in the confirmation dialogue that displays before deleting the bucket.
+   * @description Explanation shown in the confirmation dialog before deleting a storage bucket in the storage metadata view of the Application panel.
    */
   bucketWillBeRemoved: 'The selected storage bucket and contained data will be removed',
 } as const;

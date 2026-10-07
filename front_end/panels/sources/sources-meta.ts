@@ -1655,24 +1655,21 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.pauseOnExceptionEnable
   ],
 });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.searchInAnonymousAndContent),
-  settingName: 'search-in-anonymous-and-content-scripts',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-  options: [
-    {
-      value: true,
+SettingsUI.SettingUIRegistration.register(
+    SettingsUI.SourcesSettings.searchInAnonymousAndContentScriptsSettingDescriptor, {
+      category: Common.Settings.SettingCategory.SOURCES,
       title: i18nLazyString(UIStrings.searchInAnonymousAndContent),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.doNotSearchInAnonymousAndContent),
-    },
-  ],
-});
+      options: [
+        {
+          value: true,
+          title: i18nLazyString(UIStrings.searchInAnonymousAndContent),
+        },
+        {
+          value: false,
+          title: i18nLazyString(UIStrings.doNotSearchInAnonymousAndContent),
+        },
+      ],
+    });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,

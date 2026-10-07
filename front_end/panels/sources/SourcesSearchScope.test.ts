@@ -12,6 +12,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import type * as Search from '../search/search.js';
 
 import * as Sources from './sources.js';
@@ -154,5 +155,43 @@ describeWithEnvironment('SourcesSearchScope', () => {
     assert.lengthOf(results, 1);
     assert.isFalse(results[0].description().startsWith('http'));
     assert.isTrue(results[0].description().includes('script.js'));
+  });
+
+  it('includes content scripts only when search-in-anonymous-and-content-scripts setting is enabled', async () => {
+    const url = urlString`http://example.com/content-script.js`;
+    const content = 'window.foo = () => "foo";\n';
+    createContentProviderUISourceCode({
+      url,
+      content,
+      mimeType: 'text/javascript',
+      projectType: Workspace.Workspace.projectTypes.ContentScripts,
+      universe: backend.universe,
+    });
+    Common.Settings.Settings.instance().moduleSetting('skip-content-scripts').set(false);
+
+    const scope = new Sources.SourcesSearchScope.SourcesSearchScope();
+    const searchConfig = new Workspace.SearchConfig.SearchConfig('window.foo', true, false);
+
+    const performSearch = async () => {
+      const results: Search.SearchScope.SearchResult[] = [];
+      const progress = new Common.Progress.Progress();
+      await new Promise<void>(resolve => {
+        scope.performSearch(
+            searchConfig,
+            progress,
+            result => results.push(result),
+            () => resolve(),
+        );
+      });
+      return results;
+    };
+
+    assert.lengthOf(await performSearch(), 0);
+
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.SourcesSettings.searchInAnonymousAndContentScriptsSettingDescriptor)
+        .set(true);
+
+    assert.lengthOf(await performSearch(), 1);
   });
 });

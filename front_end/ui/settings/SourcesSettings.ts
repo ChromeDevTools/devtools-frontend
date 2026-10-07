@@ -21,3 +21,10 @@ export const navigatorJustMyCodeSettingDescriptor: Common.Settings.SettingDescri
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 };
+
+export const searchInAnonymousAndContentScriptsSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'search-in-anonymous-and-content-scripts',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

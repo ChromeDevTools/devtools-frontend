@@ -610,7 +610,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
         Common.Settings.Settings.instance().resolve(Settings.SourcesSettings.navigatorGroupByFolderSettingDescriptor),
         i18nString(UIStrings.groupByFolder));
     this.addSettingMenuItem(
-        contextMenu.viewSection(), 'navigator-group-by-authored', i18nString(UIStrings.groupByAuthored));
+        contextMenu.viewSection(),
+        Common.Settings.Settings.instance().resolve(Settings.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor),
+        i18nString(UIStrings.groupByAuthored));
     this.addSettingMenuItem(
         contextMenu.viewSection(), 'navigator-just-my-code', i18nString(UIStrings.hideIgnoreListed));
   }

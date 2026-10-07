@@ -252,8 +252,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.navigatorJustMyCodeSetting = Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code');
     this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));
     if (enableAuthoredGrouping) {
-      this.navigatorGroupByAuthoredSetting =
-          Common.Settings.Settings.instance().moduleSetting('navigator-group-by-authored');
+      this.navigatorGroupByAuthoredSetting = Common.Settings.Settings.instance().resolve(
+          SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor);
       this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
     }
 

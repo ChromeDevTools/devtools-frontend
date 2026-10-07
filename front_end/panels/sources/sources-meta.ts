@@ -1572,12 +1572,6 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  settingName: 'navigator-group-by-authored',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-});
-
-Common.Settings.registerSettingExtension({
   settingName: 'navigator-just-my-code',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,

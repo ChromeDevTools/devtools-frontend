@@ -9,3 +9,9 @@ export const navigatorGroupByFolderSettingDescriptor: Common.Settings.SettingDes
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 };
+
+export const navigatorGroupByAuthoredSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'navigator-group-by-authored',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};

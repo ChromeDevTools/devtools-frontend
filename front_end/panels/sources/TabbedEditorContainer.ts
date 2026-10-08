@@ -23,6 +23,7 @@ import * as Snippets from '../snippets/snippets.js';
 
 import * as Components from './components/components.js';
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
+import tabbedEditorContainerStyles from './tabbedEditorContainer.css.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {
@@ -166,6 +167,7 @@ function removeSourceViewCache(uiSourceCode: Workspace.UISourceCode.UISourceCode
 function renderPlaceholder(input: TabbedEditorViewInput): LitTemplate {
   // clang-format off
   return html`
+    <style>${tabbedEditorContainerStyles}</style>
     <div class="sources-placeholder">
       <div class="tabbed-pane-placeholder-row workspace">
         <span class="icon-container">

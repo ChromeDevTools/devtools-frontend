@@ -1,0 +1,98 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope (.sources-placeholder) {
+  :scope {
+    display: inline-block;
+  }
+
+  .tabbed-pane-placeholder-row {
+    max-width: var(--sys-size-32);
+    min-width: var(--sys-size-28);
+    margin: 0 var(--sys-size-8);
+
+    &.workspace {
+      line-height: 18px;
+      display: inline-flex;
+      align-items: center;
+      border: var(--sys-size-2) dashed var(--sys-color-divider);
+      padding: var(--sys-size-8);
+      border-radius: var(--sys-shape-corner-medium);
+      margin: var(--sys-size-8) var(--sys-size-8) var(--sys-size-11);
+
+      > .icon-container {
+        flex-shrink: 0;
+        width: var(--sys-size-13);
+        height: var(--sys-size-13);
+        background: var(--sys-color-tonal-container);
+        align-content: center;
+        border-radius: var(--sys-shape-corner-full);
+        margin-right: var(--sys-size-8);
+
+        > devtools-icon {
+          color: var(--sys-color-on-tonal-container);
+        }
+      }
+    }
+
+    &.shortcuts-list {
+      padding: 0 var(--sys-size-6);
+
+      .shortcut-line {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: var(--sys-size-10);
+        padding: var(--sys-size-4) 0;
+
+        &:not(:last-child) {
+          border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+        }
+
+        .shortcuts {
+          display: flex;
+          flex-direction: row;
+          gap: var(--sys-size-4);
+          align-items: center;
+        }
+
+        .keybinds-key {
+          display: flex;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+          height: var(--sys-size-11);
+          min-width: var(--sys-size-11);
+          font: var(--sys-typescale-body5-medium);
+          white-space: nowrap;
+          border-radius: var(--sys-shape-corner-small);
+          background: var(--sys-color-tonal-container);
+          padding: 0 var(--sys-size-4);
+        }
+
+        & button {
+          margin-inline: 0;
+        }
+      }
+    }
+
+    & button {
+      cursor: pointer;
+      color: var(--text-link);
+      background: transparent;
+      border: none;
+      padding: 0;
+      text-decoration: underline;
+      margin-inline: var(--sys-size-3);
+      text-align: left;
+
+      &:focus-visible {
+        outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+        outline-offset: var(--sys-size-2);
+        border-radius: var(--sys-size-2);
+      }
+    }
+  }
+}

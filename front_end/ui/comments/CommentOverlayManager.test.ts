@@ -728,6 +728,10 @@ describeWithEnvironment('CommentOverlayManager', () => {
     container.appendChild(customTarget);
 
     const customResolver: Comments.CommentAnchorResolver.CustomAnchorResolver = {
+      getAnchorElement(): Element |
+          null {
+            return null;
+          },
       matches(el: Element): boolean {
         return el === customTarget;
       },
@@ -782,6 +786,10 @@ describeWithEnvironment('CommentOverlayManager', () => {
        container.appendChild(customTarget);
 
        const customResolver: Comments.CommentAnchorResolver.CustomAnchorResolver = {
+         getAnchorElement(): Element |
+             null {
+               return null;
+             },
          matches(el: Element): boolean {
            return el === customTarget;
          },
@@ -841,6 +849,10 @@ describeWithEnvironment('CommentOverlayManager', () => {
     container.appendChild(customTarget);
 
     const customResolver: Comments.CommentAnchorResolver.CustomAnchorResolver = {
+      getAnchorElement(): Element |
+          null {
+            return null;
+          },
       matches(el: Element): boolean {
         return el === customTarget;
       },
@@ -869,6 +881,137 @@ describeWithEnvironment('CommentOverlayManager', () => {
     } finally {
       Comments.CommentAnchorResolver.unregisterCustomAnchorResolver(customResolver);
     }
+  });
+
+  describe('custom anchor elements', () => {
+    let customTarget: HTMLElement;
+    let anchorBox: HTMLElement;
+    let anchorBoxRect: DOMRect;
+    let customResolver: Comments.CommentAnchorResolver.CustomAnchorResolver;
+
+    beforeEach(() => {
+      customTarget = document.createElement('div');
+      container.appendChild(customTarget);
+
+      // Stands in for a positioned element that tracks a canvas-rendered entry.
+      anchorBox = document.createElement('div');
+      container.appendChild(anchorBox);
+      anchorBoxRect = new DOMRect(40, 60, 100, 20);
+      anchorBox.getBoundingClientRect = () => anchorBoxRect;
+
+      customResolver = {
+        matches(el: Element): boolean {
+          return el === customTarget;
+        },
+        resolve(): Comments.CommentAnchorResolver.CustomAnchorResult {
+          return {
+            anchor: {
+              vePath: 'Panel: custom > View: main',
+              textSignature: 'Custom Entry',
+              timeline: {
+                traceId: 'trace-test-1',
+                traceEventKey: 'key-123',
+                entryName: 'Custom Entry',
+                startTimeMicro: 1000,
+                chartLocation: 'main',
+              },
+            },
+            anchorElement: customTarget,
+          };
+        },
+        getAnchorElement(anchor: CommentManager.CommentManager.CommentAnchorSignature): Element |
+            null {
+              return anchor.timeline?.traceEventKey === 'key-123' ? anchorBox : null;
+            },
+      };
+      Comments.CommentAnchorResolver.registerCustomAnchorResolver(customResolver);
+    });
+
+    afterEach(() => {
+      Comments.CommentAnchorResolver.unregisterCustomAnchorResolver(customResolver);
+    });
+
+    it('positions the pin and highlight on the element returned by getAnchorElement', () => {
+      manager.start(container);
+      const thread = manager.createComment(customTarget, 'Custom comment');
+      assert.isNotNull(thread);
+
+      assert.deepEqual(manager.getHighlightRects(), [{
+                         id: thread.id,
+                         top: 60,
+                         left: 40,
+                         width: 100,
+                         height: 20,
+                         visible: true,
+                       }]);
+      // The pin is centred on the top-right corner of the anchor element.
+      assert.deepEqual(manager.getPinPositions(), [{
+                         id: thread.id,
+                         top: 48,
+                         left: 128,
+                         visible: true,
+                         index: thread.index,
+                       }]);
+    });
+
+    it('repositions pins when notifyCustomAnchorsMoved() is called', () => {
+      manager.start(container);
+      const thread = manager.createComment(customTarget, 'Custom comment');
+      assert.isNotNull(thread);
+      assert.strictEqual(manager.getHighlightRects()[0]?.left, 40);
+
+      // Moving the box does not trigger any DOM observer, so positions only
+      // update after the notification.
+      anchorBoxRect = new DOMRect(200, 90, 100, 20);
+      assert.strictEqual(manager.getHighlightRects()[0]?.left, 40);
+
+      Comments.CommentAnchorResolver.notifyCustomAnchorsMoved();
+      assert.strictEqual(manager.getHighlightRects()[0]?.left, 200);
+      assert.strictEqual(manager.getHighlightRects()[0]?.top, 90);
+      assert.strictEqual(manager.getPinPositions()[0]?.left, 288);
+      assert.strictEqual(manager.getPinPositions()[0]?.top, 78);
+    });
+
+    it('does not render a pin when the anchor element is disconnected', () => {
+      anchorBox.remove();
+      manager.start(container);
+      const thread = manager.createComment(customTarget, 'Custom comment');
+      assert.isNotNull(thread);
+
+      assert.isEmpty(manager.getPinPositions());
+      assert.isEmpty(manager.getHighlightRects());
+    });
+
+    it('does not render a pin for generated comments with a custom anchor', () => {
+      manager.start(container);
+      const thread =
+          manager.createComment(customTarget, 'Generated comment', {author: 'AGENT', isGeneratedComment: true});
+      assert.isNotNull(thread);
+
+      assert.isEmpty(manager.getPinPositions());
+      assert.isEmpty(manager.getHighlightRects());
+    });
+
+    it('does not observe the anchor element for intersection changes', () => {
+      const observeSpy = sinon.spy(IntersectionObserver.prototype, 'observe');
+      manager.start(container);
+      const thread = manager.createComment(customTarget, 'Custom comment');
+      assert.isNotNull(thread);
+      assert.lengthOf(manager.getPinPositions(), 1);
+
+      sinon.assert.neverCalledWith(observeSpy, anchorBox);
+    });
+
+    it('ignores notifyCustomAnchorsMoved() after stop()', () => {
+      manager.start(container);
+      manager.stop();
+      const positionsUpdated = sinon.spy();
+      manager.addEventListener(Comments.CommentOverlayManager.Events.POSITIONS_UPDATED, positionsUpdated);
+
+      Comments.CommentAnchorResolver.notifyCustomAnchorsMoved();
+
+      sinon.assert.notCalled(positionsUpdated);
+    });
   });
 
   it('updates positions synchronously when a scroll container inside a ShadowRoot fires a non-composed scroll event',

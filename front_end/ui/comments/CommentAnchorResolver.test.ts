@@ -1722,6 +1722,10 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       container.appendChild(customElement);
 
       customResolver = {
+        getAnchorElement(): Element |
+            null {
+              return null;
+            },
         matches(element: Element): boolean {
           return element.classList.contains('custom-canvas-target') ||
               Boolean(element.closest('.custom-canvas-target'));
@@ -1790,6 +1794,37 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       Comments.CommentAnchorResolver.unregisterCustomAnchorResolver(customResolver);
       const resolver = Comments.CommentAnchorResolver.getCustomAnchorResolverForElement(customElement);
       assert.isNull(resolver);
+    });
+
+    it('returns the anchor element from the resolver that handles the anchor', () => {
+      const anchorBox = document.createElement('div');
+      const handledAnchor: CommentManager.CommentManager.CommentAnchorSignature = {
+        vePath: 'Panel: custom > Canvas: main',
+        textSignature: 'Handled Event',
+      };
+      const unhandledAnchor: CommentManager.CommentManager.CommentAnchorSignature = {
+        vePath: 'Panel: custom > Canvas: main',
+        textSignature: 'Unhandled Event',
+      };
+      Comments.CommentAnchorResolver.registerCustomAnchorResolver({
+        matches: () => false,
+        resolve: () => null,
+        getAnchorElement: anchor => anchor === handledAnchor ? anchorBox : null,
+      });
+
+      assert.strictEqual(Comments.CommentAnchorResolver.getCustomAnchorElement(handledAnchor), anchorBox);
+      assert.isNull(Comments.CommentAnchorResolver.getCustomAnchorElement(unhandledAnchor));
+    });
+
+    it('calls custom anchors moved listeners until they are removed', () => {
+      const listener = sinon.spy();
+      Comments.CommentAnchorResolver.addCustomAnchorsMovedListener(listener);
+      Comments.CommentAnchorResolver.notifyCustomAnchorsMoved();
+      sinon.assert.calledOnce(listener);
+
+      Comments.CommentAnchorResolver.removeCustomAnchorsMovedListener(listener);
+      Comments.CommentAnchorResolver.notifyCustomAnchorsMoved();
+      sinon.assert.calledOnce(listener);
     });
   });
 

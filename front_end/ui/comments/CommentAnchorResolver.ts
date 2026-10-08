@@ -105,6 +105,20 @@ export interface CustomAnchorResult {
 /**
  * Extension point allowing views that render custom content (such as canvas-based
  * flame charts) to provide custom anchor resolution for comments without direct DOM nodes.
+ *
+ * The shared comments overlay draws the pin, popup and highlight for these
+ * anchors in its own layer, as it does for DOM anchors. The view supplies the
+ * parts that depend on how it renders:
+ * - `resolve()` maps a pointer position to an anchor when a comment is created.
+ * - `getAnchorElement()` returns a DOM element that the view keeps over the
+ *   anchor on screen. The element can be invisible. CommentOverlayManager
+ *   positions the pin from the element's visible rect.
+ * - The view calls `notifyCustomAnchorsMoved()` whenever it moves or hides
+ *   these elements, because CommentOverlayManager does not observe them.
+ *
+ * For example, the Performance panel returns an invisible timeline overlay box
+ * that it keeps over each commented entry, and notifies after every overlays
+ * update, such as when the flame chart is panned.
  */
 export interface CustomAnchorResolver {
   /**
@@ -123,9 +137,17 @@ export interface CustomAnchorResolver {
    * @returns The resolved anchor result, or null if no anchor is present at the specified location.
    */
   resolve(element: Element, options?: {clientX: number, clientY: number, forHover?: boolean}): CustomAnchorResult|null;
+
+  /**
+   * Returns a positioned DOM element that tracks the on-screen bounds of a
+   * non-DOM anchor, or null if the anchor is not handled by this resolver or
+   * is not currently visible.
+   */
+  getAnchorElement(anchor: CommentAnchorSignature): Element|null;
 }
 
 const customAnchorResolvers = new Set<CustomAnchorResolver>();
+const customAnchorsMovedListeners = new Set<() => void>();
 
 /**
  * Registers a custom anchor resolver. Usually called when a view becomes visible
@@ -167,6 +189,50 @@ export function getCustomAnchorResolverForElement(element: Element): CustomAncho
     }
   }
   return null;
+}
+
+/**
+ * Returns the positioned element for a non-DOM anchor from the first
+ * registered resolver that provides one, or null if no resolver handles the
+ * anchor or the anchor is not visible.
+ */
+export function getCustomAnchorElement(anchor: CommentAnchorSignature): Element|null {
+  for (const resolver of customAnchorResolvers) {
+    const element = resolver.getAnchorElement(anchor);
+    if (element) {
+      return element;
+    }
+  }
+  return null;
+}
+
+/**
+ * Requests that comment pins on non-DOM anchors are repositioned. The
+ * elements returned by `getAnchorElement()` are not observed for DOM scroll,
+ * resize or intersection changes, so this must be called whenever they move
+ * or change visibility (for example, when a canvas is panned). Resolvers do
+ * not hold a reference to a CommentOverlayManager, so every registered
+ * listener is notified.
+ */
+export function notifyCustomAnchorsMoved(): void {
+  for (const listener of customAnchorsMovedListeners) {
+    listener();
+  }
+}
+
+/**
+ * Registers a listener for `notifyCustomAnchorsMoved()`. CommentOverlayManager
+ * uses it to reposition pins on non-DOM anchors.
+ */
+export function addCustomAnchorsMovedListener(listener: () => void): void {
+  customAnchorsMovedListeners.add(listener);
+}
+
+/**
+ * Unregisters a listener added with `addCustomAnchorsMovedListener()`.
+ */
+export function removeCustomAnchorsMovedListener(listener: () => void): void {
+  customAnchorsMovedListeners.delete(listener);
 }
 
 /**

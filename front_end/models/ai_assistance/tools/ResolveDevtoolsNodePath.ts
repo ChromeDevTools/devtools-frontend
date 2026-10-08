@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 
 import {
@@ -116,8 +117,19 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
       return {error: 'Error: Node does not belong to the current origin.'};
     }
 
+    // Take a snapshot of the resolved node's DOM structure. This is required
+    // by the DOM_TREE UI widget to render the element's local tree in the AI response panel.
+    const snapshot = await node.takeSnapshot();
     return {
       result: {backendNodeId: node.backendNodeId()},
+      widgets: [{
+        name: 'DOM_TREE',
+        data: {
+          root: snapshot,
+          title: i18n.i18n.lockedString('Element details'),
+          accessibleRevealLabel: i18n.i18n.lockedString('Reveal element'),
+        },
+      }],
     };
   }
 }

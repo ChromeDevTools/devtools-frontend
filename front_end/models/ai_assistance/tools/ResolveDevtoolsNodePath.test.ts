@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import {assertIsError, assertIsResult} from '../../../testing/AiAssistanceHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -19,6 +20,7 @@ describe('ResolveDevtoolsNodePathTool', () => {
     hasTarget?: boolean,
     nodeExists?: boolean,
     hasDomModel?: boolean,
+    snapshot?: SDK.DOMModel.DOMNode,
   }) {
     const nodeUrl = overrides?.nodeUrl ?? 'https://example.com/page.html';
     const originLock: AiAssistance.Tool.OriginLockState = overrides?.originLock ??
@@ -29,6 +31,7 @@ describe('ResolveDevtoolsNodePathTool', () => {
     const hasTarget = overrides?.hasTarget ?? true;
     const nodeExists = overrides?.nodeExists ?? true;
     const hasDomModel = overrides?.hasDomModel ?? true;
+    const snapshot = overrides?.snapshot ?? {} as unknown as SDK.DOMModel.DOMNode;
 
     const nodeSecurityOrigin = (overrides && 'nodeSecurityOrigin' in overrides) ?
         (overrides.nodeSecurityOrigin ?? null) :
@@ -37,6 +40,7 @@ describe('ResolveDevtoolsNodePathTool', () => {
     const mockNode = nodeExists ? {
       backendNodeId: () => backendNodeId,
       securityOrigin: () => nodeSecurityOrigin,
+      takeSnapshot: async () => snapshot,
     } :
                                   null;
     const mockDomModel = hasDomModel ? {
@@ -60,6 +64,22 @@ describe('ResolveDevtoolsNodePathTool', () => {
     const result = await tool.handler({path: '1,HTML,1,BODY', explanation: 'resolve'}, context);
     assertIsResult(result);
     assert.strictEqual(result.result.backendNodeId, 42);
+  });
+
+  it('returns a DOM_TREE widget for the resolved node', async () => {
+    const snapshot = {id: 'snapshot-sentinel'} as unknown as SDK.DOMModel.DOMNode;
+    const context = createMockContext({snapshot});
+    const tool = new AiAssistance.ResolveDevtoolsNodePath.ResolveDevtoolsNodePathTool();
+    const result = await tool.handler({path: '1,HTML,1,BODY', explanation: 'resolve'}, context);
+    assertIsResult(result);
+    assert.deepEqual(result.widgets, [{
+                       name: 'DOM_TREE',
+                       data: {
+                         root: snapshot,
+                         title: i18n.i18n.lockedString('Element details'),
+                         accessibleRevealLabel: i18n.i18n.lockedString('Reveal element'),
+                       },
+                     }]);
   });
 
   it('returns error when target is not found', async () => {

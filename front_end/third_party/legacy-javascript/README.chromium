@@ -1,8 +1,8 @@
 Name: legacy-javascript
 Short Name: legacy-javascript
 URL: https://github.com/GoogleChrome/lighthouse/tree/main/core/lib/legacy-javascript
-Version: 0.0.1
-Revision: 410adb1220ca0d36c317f64cdbc652b798561413
+Version: 0.0.3
+Revision: eb1e7c42c50347de25a6e92be7e29eb0ddf9f53e
 Update Mechanism: Manual
 License: Apache-2.0
 License File: LICENSE

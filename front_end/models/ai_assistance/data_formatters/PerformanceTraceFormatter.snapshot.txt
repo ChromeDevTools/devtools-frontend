@@ -265,7 +265,7 @@ Here are all the insights that contain some related request from the given range
 - ThirdParties: cmp.js (consent.cmp.oath.com) (eventKey: s-3382, ts: 157423742399), gpt.js (securepubads.g.doubleclick.net) (eventKey: s-6244, ts: 157423760529), loader.js (cdn.taboola.com) (eventKey: s-6352, ts: 157423761978)
 - Cache: prebid-2.0.js (s.yimg.com) (eventKey: s-6279, ts: 157423760925), cmp.js (consent.cmp.oath.com) (eventKey: s-3382, ts: 157423742399), d1irmdsmbztlvx.js (s.yimg.com) (eventKey: s-6185, ts: 157423759200), consent.js (s.yimg.com) (eventKey: s-3384, ts: 157423742450), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794)
 - CharacterSet: news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126)
-- LegacyJavaScript: benji-2.2.99.js (s.yimg.com) (eventKey: s-3387, ts: 157423742567), 25fa214.caas-news_web.min.js (s.yimg.com) (eventKey: s-3412, ts: 157423743431), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794), consent.js (s.yimg.com) (eventKey: s-3384, ts: 157423742450), news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126)
+- LegacyJavaScript: 25fa214.caas-news_web.min.js (s.yimg.com) (eventKey: s-3412, ts: 157423743431), benji-2.2.99.js (s.yimg.com) (eventKey: s-3387, ts: 157423742567), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794), news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126), loader.js (cdn.taboola.com) (eventKey: s-6352, ts: 157423761978)
 === end content
 
 Title: PerformanceTraceFormatter formatTraceSummary web-dev.json.gz
@@ -380,7 +380,7 @@ Available insights:
     description: Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren’t necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript).
     relevant trace bounds: {min: 157423489126µs, max: 157426132225µs}
     estimated metric savings: FCP 0 ms, LCP 0 ms
-    estimated wasted bytes: 126.9 kB
+    estimated wasted bytes: 120 kB
     example question: Is my site polyfilling modern JavaScript features?
     example question: How can I reduce the amount of legacy JavaScript on my page?
 === end content

@@ -796,43 +796,38 @@ This insight identified legacy JavaScript in your application's modules that may
 Polyfills and transforms enable older browsers to use new JavaScript features. However, many are not necessary for modern browsers. Consider modifying your JavaScript build process to not transpile Baseline features, unless you know you must support older browsers.
 
 ## Detailed analysis:
-Total legacy JavaScript: 8 files.
+Total legacy JavaScript: 7 files.
 
 Legacy JavaScript by file:
 
-- Script: https://s.yimg.com/aaq/benji/benji-2.2.99.js (eventKey: s-3387, ts: 157423742567) - Wasted bytes: 37204 bytes
-Matches:
-Line: 0, Column: 133, Name: Promise.allSettled
-
-- Script: https://s.yimg.com/aaq/c/25fa214.caas-news_web.min.js (eventKey: s-3412, ts: 157423743431) - Wasted bytes: 36084 bytes
+- Script: https://s.yimg.com/aaq/c/25fa214.caas-news_web.min.js (eventKey: s-3412, ts: 157423743431) - Wasted bytes: 37667 bytes
 Matches:
 Line: 0, Column: 13310, Name: Array.from
 Line: 0, Column: 14623, Name: Object.assign
 
-- Script: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js (eventKey: s-6273, ts: 157423760794) - Wasted bytes: 12850 bytes
+- Script: https://s.yimg.com/aaq/benji/benji-2.2.99.js (eventKey: s-3387, ts: 157423742567) - Wasted bytes: 36554 bytes
+Matches:
+Line: 0, Column: 133, Name: Promise.allSettled
+
+- Script: https://s.yimg.com/du/ay/wnsrvbjmeprtfrnfx.js (eventKey: s-6273, ts: 157423760794) - Wasted bytes: 12851 bytes
 Matches:
 Line: 111, Column: 7829, Name: @babel/plugin-transform-spread
 Line: 111, Column: 1794, Name: Array.prototype.find
-Line: 111, Column: 2127, Name: Array.prototype.includes
 Line: 111, Column: 2748, Name: Object.values
 Line: 111, Column: 2473, Name: String.prototype.includes
 Line: 111, Column: 2627, Name: String.prototype.startsWith
 
-- Script: https://static.criteo.net/js/ld/publishertag.prebid.144.js (eventKey: s-257378, ts: 157426026656) - Wasted bytes: 10751 bytes
+- Script: https://static.criteo.net/js/ld/publishertag.prebid.144.js (eventKey: s-257378, ts: 157426026656) - Wasted bytes: 10904 bytes
 Matches:
 Line: 1, Column: 74871, Name: Array.isArray
 Line: 1, Column: 75344, Name: Array.prototype.filter
 Line: 1, Column: 75013, Name: Array.prototype.indexOf
 
-- Script: https://s.yimg.com/oa/consent.js (eventKey: s-3384, ts: 157423742450) - Wasted bytes: 8157 bytes
-Matches:
-Line: 1, Column: 132267, Name: Array.prototype.includes
-
-- Script: https://pm-widget.taboola.com/yahooweb-network/pmk-20220605.1.js (eventKey: s-52229, ts: 157424128231) - Wasted bytes: 7625 bytes
+- Script: https://pm-widget.taboola.com/yahooweb-network/pmk-20220605.1.js (eventKey: s-52229, ts: 157424128231) - Wasted bytes: 7655 bytes
 Matches:
 Line: 181, Column: 26, Name: Object.keys
 
-- Script: https://news.yahoo.com/ (eventKey: s-2116, ts: 157423489126) - Wasted bytes: 7141 bytes
+- Script: https://news.yahoo.com/ (eventKey: s-2116, ts: 157423489126) - Wasted bytes: 7235 bytes
 Matches:
 Line: 0, Column: 8382, Name: @babel/plugin-transform-classes
 Line: 0, Column: 107712, Name: Array.prototype.filter
@@ -840,7 +835,7 @@ Line: 0, Column: 107393, Name: Array.prototype.forEach
 Line: 0, Column: 108005, Name: Array.prototype.map
 Line: 0, Column: 108358, Name: String.prototype.includes
 
-- Script: https://cdn.taboola.com/libtrc/yahooweb-network/loader.js (eventKey: s-6352, ts: 157423761978) - Wasted bytes: 7061 bytes
+- Script: https://cdn.taboola.com/libtrc/yahooweb-network/loader.js (eventKey: s-6352, ts: 157423761978) - Wasted bytes: 7087 bytes
 Matches:
 Line: 0, Column: 390544, Name: Object.entries
 Line: 0, Column: 390688, Name: Object.values

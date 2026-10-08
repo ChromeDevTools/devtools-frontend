@@ -3,6 +3,6 @@
   "description": "Package list used when building/upgrading legacy-javascript",
   "private": true,
   "dependencies": {
-    "legacy-javascript": "0.0.1"
+    "legacy-javascript": "0.0.3"
   }
 }

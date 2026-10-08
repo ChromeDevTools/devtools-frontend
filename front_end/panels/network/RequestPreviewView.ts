@@ -48,12 +48,8 @@ export class RequestPreviewView extends UI.Widget.VBox {
     }
     const toolbar = this.element.createChild('devtools-toolbar', 'network-item-preview-toolbar');
     void view.toolbarItems().then(items => {
-      if (Array.isArray(items)) {
-        items.map(item => toolbar.appendToolbarItem(item));
-      } else {
-        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        render(items, toolbar);
-      }
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(items, toolbar);
     });
     return view;
   }

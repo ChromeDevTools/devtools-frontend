@@ -1235,7 +1235,7 @@ export interface Provider {
 }
 
 export interface ItemsProvider {
-  toolbarItems(): ToolbarItem[]|LitTemplate;
+  toolbarItems(): LitTemplate;
 }
 
 export class ToolbarComboBox extends ToolbarItem<void, HTMLSelectElement> {

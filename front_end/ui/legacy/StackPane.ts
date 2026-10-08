@@ -4,7 +4,6 @@
 
 import * as Lit from '../lit/lit.js';
 
-import type * as Toolbar from './Toolbar.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 import * as View from './View.js';
 import {type StackLocation, ViewManager} from './ViewManager.js';
@@ -44,7 +43,7 @@ class SlotView extends View.SimpleView {
     this.#view({name: this.#pane.viewId()}, undefined, this.contentElement);
   }
 
-  override toolbarItems(): Promise<Toolbar.ToolbarItem[]|Lit.LitTemplate> {
+  override toolbarItems(): Promise<Lit.LitTemplate> {
     return this.#pane.toolbarItems();
   }
 

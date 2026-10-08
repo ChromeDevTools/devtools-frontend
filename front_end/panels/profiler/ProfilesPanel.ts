@@ -482,12 +482,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.profileViewToolbar.removeToolbarItems();
 
     void (view as unknown as UI.View.View).toolbarItems().then(items => {
-      if (Array.isArray(items)) {
-        items.map(item => this.profileViewToolbar.appendToolbarItem(item));
-      } else {
-        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        render(items, this.profileViewToolbar);
-      }
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(items, this.profileViewToolbar);
     });
 
     return view;

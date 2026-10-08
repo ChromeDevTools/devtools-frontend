@@ -10,6 +10,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupUserMetricHooks} from '../../testing/UserMetricsHelpers.js';
+import * as Lit from '../lit/lit.js';
 
 import * as UI from './legacy.js';
 
@@ -62,7 +63,7 @@ function makeView(spec: ViewSpec): UI.View.View {
     isPreviewFeature: () => spec.preview ?? false,
     isTransient: () => spec.transient ?? false,
     iconName: () => undefined,
-    toolbarItems: () => Promise.resolve([]),
+    toolbarItems: () => Promise.resolve(Lit.nothing),
     // No test calls widget(); avoid constructing a real Widget per view.
     widget: sinon.stub<[], Promise<UI.Widget.Widget>>(),
     disposeView: () => {},

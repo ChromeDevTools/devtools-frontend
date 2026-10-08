@@ -9,13 +9,12 @@ import {createIcon, type Icon} from '../kit/kit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import type * as Toolbar from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
 import type {View} from './View.js';
 import viewContainersStyles from './viewContainers.css.js';
 import {type AnyWidget, VBox} from './Widget.js';
 
-type CreateToolbarFn = (toolbarItems: Toolbar.ToolbarItem[]|Lit.LitTemplate) => Element|null;
+type CreateToolbarFn = (toolbarItems: Lit.LitTemplate) => Element|null;
 type SetWidgetForViewFn = (view: View, widget: AnyWidget) => void;
 
 export class ExpandableContainerWidget extends VBox {

@@ -409,7 +409,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     const view = this.visibleView();
     if (view instanceof UI.View.SimpleView) {
       void view.toolbarItems().then(items => {
-        this.#scriptViewToolbarItems = Array.isArray(items) ? html`${items.map(item => item.element)}` : items;
+        this.#scriptViewToolbarItems = items;
         this.requestUpdate();
       });
     } else {

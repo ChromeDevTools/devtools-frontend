@@ -415,19 +415,8 @@ describeWithEnvironment('ViewManager', () => {
   });
 
   describe('createToolbar', () => {
-    it('returns null for an empty array of toolbar items', () => {
-      assert.isNull(UI.ViewManager.ViewManager.createToolbar([]));
-    });
-
     it('returns null for Lit.nothing', () => {
       assert.isNull(UI.ViewManager.ViewManager.createToolbar(Lit.nothing));
-    });
-
-    it('returns a toolbar with items for an array of ToolbarItem', () => {
-      const item = new UI.Toolbar.ToolbarButton('Test', 'test-icon');
-      const toolbar = UI.ViewManager.ViewManager.createToolbar([item]);
-      assert.isNotNull(toolbar);
-      assert.instanceOf(toolbar, HTMLElement);
     });
 
     it('returns a toolbar with rendered content for a LitTemplate', () => {

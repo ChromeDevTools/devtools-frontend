@@ -136,10 +136,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.storageViewToolbar.classList.toggle('hidden', true);
     if (view instanceof UI.View.SimpleView) {
       void view.toolbarItems().then(items => {
-        if (Array.isArray(items)) {
-          items.map(item => this.storageViewToolbar.appendToolbarItem(item));
-          this.storageViewToolbar.classList.toggle('hidden', !items.length);
-        } else if (items === nothing) {
+        if (items === nothing) {
           this.storageViewToolbar.classList.toggle('hidden', true);
         } else {
           // eslint-disable-next-line @devtools/no-lit-render-outside-of-view

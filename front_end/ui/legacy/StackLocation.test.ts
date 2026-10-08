@@ -9,6 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import * as Lit from '../lit/lit.js';
 
 import * as UI from './legacy.js';
 
@@ -24,7 +25,7 @@ describe('StackLocation', () => {
     view.viewId.returns(id);
     view.title.returns(i18n.i18n.lockedString(title));
     view.widget.resolves(sinon.createStubInstance(UI.Widget.Widget));
-    view.toolbarItems.resolves([]);
+    view.toolbarItems.resolves(Lit.nothing);
     return view;
   };
 

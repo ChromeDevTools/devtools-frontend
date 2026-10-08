@@ -20,6 +20,7 @@ import {createFakeSetting, describeWithEnvironment} from '../../testing/Environm
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import type {TestUniverse} from '../../testing/TestUniverse.js';
 import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html} from '../../ui/lit/lit.js';
@@ -151,6 +152,7 @@ describe('TabbedEditorContainer', () => {
     let testUniverse: TestUniverse;
     let persistence: Persistence.Persistence.PersistenceImpl;
     let tabbedEditorContainer: Sources.TabbedEditorContainer.TabbedEditorContainer;
+    let viewStub: ViewFunctionStub<typeof Sources.TabbedEditorContainer.TabbedEditorContainer>;
     const views = new Map<Workspace.UISourceCode.UISourceCode, UI.Widget.Widget>();
 
     beforeEach(() => {
@@ -163,8 +165,9 @@ describe('TabbedEditorContainer', () => {
       UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
       void testUniverse.networkPersistenceManager;
 
+      viewStub = createViewFunctionStub(Sources.TabbedEditorContainer.TabbedEditorContainer);
       const setting = createFakeSetting<LocalSerializedHistoryItem[]>('previously-viewed-files', []);
-      tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
+      tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer(undefined, viewStub);
       tabbedEditorContainer.previouslyViewedFilesSetting = setting;
       // Hook getOrCreateSourceView for tests replacing the view caching
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -183,30 +186,38 @@ describe('TabbedEditorContainer', () => {
     });
 
     it('renders shortcuts in placeholder', async () => {
-      sinon.stub(UI.ShortcutRegistry.ShortcutRegistry.instance(), 'shortcutsForAction').callsFake(actionId => {
-        if (actionId === 'quick-open.show') {
-          return [{descriptors: [{name: 'Ctrl+P'}]}] as unknown as UI.KeyboardShortcut.KeyboardShortcut[];
-        }
-        return [];
-      });
-      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction').callsFake(_ => {
-        return {execute: () => Promise.resolve()} as unknown as UI.ActionRegistration.Action;
-      });
+      const container = document.createElement('div');
+      renderElementIntoDOM(container, {includeCommonStyles: true});
 
-      const setting = createFakeSetting<LocalSerializedHistoryItem[]>('previously-viewed-files', []);
-      const container = new Sources.TabbedEditorContainer.TabbedEditorContainer();
-      container.previouslyViewedFilesSetting = setting;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      sinon.stub(container as any, 'getOrCreateSourceView').returns(new UI.Widget.Widget());
+      const input: Sources.TabbedEditorContainer.TabbedEditorViewInput = {
+        openTabs: [],
+        leftToolbarItems: [],
+        rightToolbarItems: [],
+        tabDelegate: {closeTabs: () => {}, onContextMenu: () => {}},
+        shortcuts: [
+          {
+            description: 'Open file' as Platform.UIString.LocalizedString,
+            onClick: () => {},
+            keys: ['Ctrl+P'],
+          },
+          {
+            description: '' as Platform.UIString.LocalizedString,
+            onClick: () => {},
+            keys: [],
+          },
+        ],
+        onAddFileSystemClicked: () => {},
+        onConnectAutomaticFileSystem: () => {},
+        onClose: () => {},
+        onTabOrderChanged: () => {},
+        onSelect: () => {},
+      };
 
-      renderElementIntoDOM(container);
-      const tabbedPane = container.tabbedPaneForTesting;
+      Sources.TabbedEditorContainer.DEFAULT_VIEW(input, undefined, container);
       await raf();
 
-      (tabbedPane.getWidget() as UI.TabbedPane.TabbedPane).performUpdate();
-      const placeholder =
-          (tabbedPane.getWidget() as UI.TabbedPane.TabbedPane).contentElement?.querySelector('.sources-placeholder') as
-          HTMLElement;
+      const tabbedPane = container.querySelector('devtools-tabbed-pane');
+      const placeholder = tabbedPane?.shadowRoot?.querySelector('.sources-placeholder') as HTMLElement;
       assert.exists(placeholder);
 
       const shortcutLines = placeholder.querySelectorAll('.shortcut-line');
@@ -223,18 +234,28 @@ describe('TabbedEditorContainer', () => {
     });
 
     it('triggers addFileSystem when select folder button is clicked', async () => {
-      const addFileSystemStub =
-          sinon.stub(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(), 'addFileSystem')
-              .resolves(null);
+      const addFileSystemStub = sinon.stub();
+      const container = document.createElement('div');
+      renderElementIntoDOM(container, {includeCommonStyles: true});
 
-      renderElementIntoDOM(tabbedEditorContainer);
-      const tabbedPane = tabbedEditorContainer.tabbedPaneForTesting;
+      const input: Sources.TabbedEditorContainer.TabbedEditorViewInput = {
+        openTabs: [],
+        leftToolbarItems: [],
+        rightToolbarItems: [],
+        tabDelegate: {closeTabs: () => {}, onContextMenu: () => {}},
+        shortcuts: [],
+        onAddFileSystemClicked: addFileSystemStub,
+        onConnectAutomaticFileSystem: () => {},
+        onClose: () => {},
+        onTabOrderChanged: () => {},
+        onSelect: () => {},
+      };
+
+      Sources.TabbedEditorContainer.DEFAULT_VIEW(input, undefined, container);
       await raf();
 
-      (tabbedPane.getWidget() as UI.TabbedPane.TabbedPane).performUpdate();
-      const placeholder =
-          (tabbedPane.getWidget() as UI.TabbedPane.TabbedPane).contentElement?.querySelector('.sources-placeholder') as
-          HTMLElement;
+      const tabbedPane = container.querySelector('devtools-tabbed-pane');
+      const placeholder = tabbedPane?.shadowRoot?.querySelector('.sources-placeholder') as HTMLElement;
       assert.exists(placeholder);
 
       const button = placeholder.querySelector('button');
@@ -320,7 +341,6 @@ describe('TabbedEditorContainer', () => {
       const fsUrlfoo = urlString`file:///var/www/foo.js`;
       const fsUrlbar = urlString`file:///var/www/bar.js`;
 
-      renderElementIntoDOM(tabbedEditorContainer);
       const {uiSourceCode: networkSourceCode} = createContentProviderUISourceCode({
         url: networkUrl,
         mimeType: 'text/javascript',
@@ -348,40 +368,28 @@ describe('TabbedEditorContainer', () => {
       tabbedEditorContainer.showFile(networkSourceCode);
       tabbedEditorContainer.showFile(fsSourceCode);
 
-      const tabbedPane = tabbedEditorContainer.tabbedPaneForTesting;
-
       // Verify initial tabs.
-      await raf();
-      let tabs = tabbedPane.tabs;
-      assert.lengthOf(tabs, 3);
-      assert.strictEqual(tabs[0].title, 'bar.js');
-
-      assert.strictEqual(tabs[1].title, 'foo.js');
-
-      assert.strictEqual(tabs[2].title, 'foo.js');
-
-      assert.isTrue(tabs[2].selected);
+      assert.lengthOf(viewStub.input.openTabs, 3);
+      assert.strictEqual(viewStub.input.openTabs[0].title, 'bar.js');
+      assert.strictEqual(viewStub.input.openTabs[1].title, 'foo.js');
+      assert.strictEqual(viewStub.input.openTabs[2].title, 'foo.js');
+      assert.strictEqual(viewStub.input.activeTabId, viewStub.input.openTabs[2].tabId);
 
       // Create binding.
       const binding = new Persistence.Persistence.PersistenceBinding(networkSourceCode, fsSourceCode);
       await persistence.addBinding(binding);
 
       // Verify tabs after binding.
-      await raf();
-      tabs = tabbedPane.tabs;
-      assert.lengthOf(tabs, 2);
-      assert.strictEqual(tabs[0].title, 'bar.js');
-
-      assert.strictEqual(tabs[1].title, 'foo.js');
-
-      assert.isTrue(tabs[1].selected);
+      assert.lengthOf(viewStub.input.openTabs, 2);
+      assert.strictEqual(viewStub.input.openTabs[0].title, 'bar.js');
+      assert.strictEqual(viewStub.input.openTabs[1].title, 'foo.js');
+      assert.strictEqual(viewStub.input.activeTabId, viewStub.input.openTabs[1].tabId);
     });
 
     it('replaces network tab with file system tab when persistence binding is established', async () => {
       const networkUrl = urlString`http://127.0.0.1:8000/devtools/persistence/resources/foo.js`;
       const fsUrl = urlString`file:///var/www/devtools/persistence/resources/foo.js`;
 
-      renderElementIntoDOM(tabbedEditorContainer);
       const {uiSourceCode: networkSourceCode} = createContentProviderUISourceCode({
         url: networkUrl,
         mimeType: 'text/javascript',
@@ -400,29 +408,23 @@ describe('TabbedEditorContainer', () => {
       // Open the network tab.
       tabbedEditorContainer.showFile(networkSourceCode);
 
-      const tabbedPane = tabbedEditorContainer.tabbedPaneForTesting;
-
       // Verify that the network tab is opened.
-      await raf();
-      let tabs = tabbedPane.tabs;
-      assert.lengthOf(tabs, 1);
+      assert.lengthOf(viewStub.input.openTabs, 1);
+      assert.strictEqual(viewStub.input.openTabs[0].uiSourceCode, networkSourceCode);
 
       // Create binding.
       const binding = new Persistence.Persistence.PersistenceBinding(networkSourceCode, fsSourceCode);
       await persistence.addBinding(binding);
 
       // Verify tabs after binding: network tab is replaced by the file system tab.
-      await raf();
-      tabs = tabbedPane.tabs;
-      assert.lengthOf(tabs, 1);
-
+      assert.lengthOf(viewStub.input.openTabs, 1);
+      assert.strictEqual(viewStub.input.openTabs[0].uiSourceCode, fsSourceCode);
     });
 
     it('opens filesystem UISourceCode when network UISourceCode with persistence binding is shown', async () => {
       const networkUrl = urlString`http://127.0.0.1:8000/devtools/persistence/resources/foo.js`;
       const fsUrl = urlString`file:///var/www/devtools/persistence/resources/foo.js`;
 
-      renderElementIntoDOM(tabbedEditorContainer);
       const {uiSourceCode: networkSourceCode} = createContentProviderUISourceCode({
         url: networkUrl,
         mimeType: 'text/javascript',
@@ -445,13 +447,9 @@ describe('TabbedEditorContainer', () => {
       // Show the network file.
       tabbedEditorContainer.showFile(networkSourceCode);
 
-      const tabbedPane = tabbedEditorContainer.tabbedPaneForTesting;
-
       // Verify that the filesystem tab is opened, not the network one.
-      await raf();
-      const tabs = tabbedPane.tabs;
-      assert.lengthOf(tabs, 1);
-
+      assert.lengthOf(viewStub.input.openTabs, 1);
+      assert.strictEqual(viewStub.input.openTabs[0].uiSourceCode, fsSourceCode);
       assert.strictEqual(tabbedEditorContainer.currentFile(), fsSourceCode);
     });
 
@@ -555,7 +553,8 @@ describeWithEnvironment('TabbedEditorContainer', () => {
 
       const setting =
           createFakeSetting<Sources.TabbedEditorContainer.SerializedHistoryItem[]>('previouslyViewedFilesSetting', []);
-      const tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
+      const viewStub = createViewFunctionStub(Sources.TabbedEditorContainer.TabbedEditorContainer);
+      const tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer(undefined, viewStub);
       tabbedEditorContainer.previouslyViewedFilesSetting = setting;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sinon.stub(tabbedEditorContainer as any, 'getOrCreateSourceView').returns(new UI.Widget.Widget());
@@ -589,8 +588,7 @@ describeWithEnvironment('TabbedEditorContainer', () => {
       Persistence.Persistence.PersistenceImpl.instance().dispatchEventToListeners(
           Persistence.Persistence.Events.BindingCreated, binding3);
 
-      const tabbedPane = tabbedEditorContainer.tabbedPaneForTesting;
-      const tabTitles = tabbedPane.tabs.map(t => t.title);
+      const tabTitles = viewStub.input.openTabs.map(t => t.title);
       assert.deepEqual(tabTitles, ['foo.js', 'bar.js', 'baz.js']);
       assert.strictEqual(tabbedEditorContainer.currentFile(), fsUiSourceCode3);
     });

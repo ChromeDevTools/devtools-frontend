@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -27,6 +28,17 @@ describeWithEnvironment('SplitWidget', () => {
 
       // Now it toggles to make it visible again
       assert.isTrue(widget.toggleSidebar());
+    });
+
+    it('does not alert LiveAnnouncer when sidebar strings are empty', () => {
+      const alertSpy = sinon.spy(UI.ARIAUtils.LiveAnnouncer, 'alert');
+      const widget = new SplitWidget(true, false);
+      widget.showBoth();
+
+      widget.toggleSidebar();
+      widget.toggleSidebar();
+
+      sinon.assert.notCalled(alertSpy);
     });
   });
 

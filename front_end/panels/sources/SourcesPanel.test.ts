@@ -109,7 +109,6 @@ describeWithEnvironment('SourcesPanel', () => {
     sinon.assert.calledWith(
         visibilitySpy, sinon.match({data: sinon.match({location: sinon.match.string, hiddenViewId: sinon.match.any})}));
   });
-
   it('clears the UISourceCode flavor when the editor for it is closed', () => {
     setUpEnvironment();
     const sources = new Sources.SourcesPanel.SourcesPanel();
@@ -164,5 +163,24 @@ describeWithEnvironment('SourcesPanel', () => {
     sources.sourcesView().dispatchEventToListeners(Sources.SourcesView.Events.EDITOR_SELECTED, uiSourceCode);
 
     sinon.assert.notCalled(revealStub);
+  });
+
+  it('announces navigator and debugger sidebar toggles', () => {
+    setUpEnvironment();
+    const sources = new Sources.SourcesPanel.SourcesPanel();
+    const alertSpy = sinon.spy(UI.ARIAUtils.LiveAnnouncer, 'alert');
+
+    sources.toggleNavigatorSidebar();
+    sources.toggleNavigatorSidebar();
+    sources.toggleDebuggerSidebar();
+    sources.toggleDebuggerSidebar();
+
+    assert.deepEqual(alertSpy.args.map(args => args[0]), [
+      'Navigator sidebar hidden',
+      'Navigator sidebar shown',
+      'Debugger sidebar hidden',
+      'Debugger sidebar shown',
+    ]);
+    alertSpy.restore();
   });
 });

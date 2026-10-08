@@ -39,22 +39,6 @@ const UIStrings = {
    */
   hideNavigator: 'Hide navigator',
   /**
-   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
-   */
-  navigatorShown: 'Navigator sidebar shown',
-  /**
-   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
-   */
-  navigatorHidden: 'Navigator sidebar hidden',
-  /**
-   * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
-   */
-  debuggerShown: 'Debugger sidebar shown',
-  /**
-   * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
-   */
-  debuggerHidden: 'Debugger sidebar hidden',
-  /**
    * @description Tooltip for the debugger toggle in the Sources panel. Command to open or show the
    * sidebar containing the debugger tool.
    */
@@ -295,10 +279,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     }
     this.#isNavigatorSidebarOpen = isOpen;
     this.requestUpdate();
-    if (this.isShowing()) {
-      UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.navigatorShown) :
-                                                i18nString(UIStrings.navigatorHidden));
-    }
   }
 
   set isDebuggerSidebarOpen(isOpen: boolean) {
@@ -307,10 +287,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     }
     this.#isDebuggerSidebarOpen = isOpen;
     this.requestUpdate();
-    if (this.isShowing()) {
-      UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.debuggerShown) :
-                                                i18nString(UIStrings.debuggerHidden));
-    }
   }
 
   toggleDebuggerSidebarButtonEnabled(enabled: boolean): void {

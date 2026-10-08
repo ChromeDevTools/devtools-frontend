@@ -875,11 +875,15 @@ export class SplitWidget extends SplitWidgetBase {
   toggleSidebar(): boolean {
     if (this.#showMode !== ShowMode.BOTH) {
       this.showBoth(true);
-      ARIAUtils.LiveAnnouncer.alert(this.#shownSidebarString);
+      if (this.#shownSidebarString) {
+        ARIAUtils.LiveAnnouncer.alert(this.#shownSidebarString);
+      }
       return true;
     }
     this.hideSidebar(true);
-    ARIAUtils.LiveAnnouncer.alert(this.#hiddenSidebarString);
+    if (this.#hiddenSidebarString) {
+      ARIAUtils.LiveAnnouncer.alert(this.#hiddenSidebarString);
+    }
     return false;
   }
 

@@ -152,6 +152,22 @@ const UIStrings = {
    * @description Context menu item in Sources panel to explain input handling in a script via AI.
    */
   explainInputHandling: 'Explain input handling',
+  /**
+   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
+   */
+  navigatorShown: 'Navigator sidebar shown',
+  /**
+   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
+   */
+  navigatorHidden: 'Navigator sidebar hidden',
+  /**
+   * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
+   */
+  debuggerShown: 'Debugger sidebar shown',
+  /**
+   * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
+   */
+  debuggerHidden: 'Debugger sidebar hidden',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -427,12 +443,16 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   toggleNavigatorSidebar(): void {
-    this.editorView.toggleSidebar();
+    const isOpen = this.editorView.toggleSidebar();
+    UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.navigatorShown) :
+                                              i18nString(UIStrings.navigatorHidden));
   }
 
   toggleDebuggerSidebar(): void {
-    this.splitWidget.toggleSidebar();
-    this.sidebarPaneStack?.notifyVisibilityChanged(this.splitWidget.sidebarIsShowing());
+    const isOpen = this.splitWidget.toggleSidebar();
+    UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.debuggerShown) :
+                                              i18nString(UIStrings.debuggerHidden));
+    this.sidebarPaneStack?.notifyVisibilityChanged(isOpen);
   }
 
   private debuggerPaused(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {

@@ -139,8 +139,9 @@ function createClearButton(jslogContext: string): Buttons.Button.Button {
   button.tabIndex = -1;
   return button;
 }
-export class SearchableView extends VBox {
+export class SearchableView extends VBox implements SearchResultsListener {
   #searchProvider!: Searchable;
+  #searchTarget: SearchTarget|null = null;
   replaceProvider: Replaceable|null = null;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -309,6 +310,20 @@ export class SearchableView extends VBox {
     }
     this.#searchProvider = searchable;
     this.#updateSearchConfigButtons();
+  }
+
+  get searchTarget(): SearchTarget|null {
+    return this.#searchTarget;
+  }
+
+  set searchTarget(target: SearchTarget|null) {
+    if (this.#searchTarget === target) {
+      return;
+    }
+    this.#searchTarget?.setSearchableView?.(null);
+    this.#searchTarget = target;
+    this.#searchTarget?.setSearchableView?.(this);
+    this.refreshSearch();
   }
 
   set settingName(settingName: string|undefined) {
@@ -734,6 +749,15 @@ export class SearchableView extends VBox {
 }
 
 const searchableViewsByElement = new WeakMap<Element, SearchableView>();
+
+export interface SearchResultsListener {
+  updateSearchMatchesCount(matches: number): void;
+  updateCurrentMatchIndex(currentMatchIndex: number): void;
+}
+
+export interface SearchTarget {
+  setSearchableView?(view: SearchResultsListener|null): void;
+}
 
 export interface Searchable {
   supportsMatchCounts?(): boolean;

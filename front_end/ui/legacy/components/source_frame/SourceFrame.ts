@@ -124,7 +124,8 @@ const SourceFrameImplBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI
     );
 
 export class SourceFrameImpl extends SourceFrameImplBase implements UI.SearchableView.Searchable,
-                                                                    UI.SearchableView.Replaceable, Transformer {
+                                                                    UI.SearchableView.Replaceable,
+                                                                    UI.SearchableView.SearchTarget, Transformer {
   private readonly lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>;
   private prettyInternal: boolean;
   private rawContent: string|CodeMirror.Text|null;
@@ -144,7 +145,7 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   private searchRegex: UI.SearchableView.SearchRegexResult|null;
   private loadError: boolean;
   private readonly sourcePosition: UI.Toolbar.ToolbarText;
-  private searchableView: UI.SearchableView.SearchableView|null;
+  private searchableView: UI.SearchableView.SearchResultsListener|null;
   private editable: boolean;
   private positionToReveal: {
     to: {lineNumber: number, columnNumber: number},
@@ -792,7 +793,7 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     }
   }
 
-  setSearchableView(view: UI.SearchableView.SearchableView|null): void {
+  setSearchableView(view: UI.SearchableView.SearchResultsListener|null): void {
     this.searchableView = view;
   }
 

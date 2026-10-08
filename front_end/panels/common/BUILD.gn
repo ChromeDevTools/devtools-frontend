@@ -14,7 +14,6 @@ generate_css("css_files") {
     "badgeNotification.css",
     "commentThreadWidget.css",
     "commentsOverlay.css",
-    "commentsStatusBarPill.css",
     "domLinkifier.css",
     "gdpSignUpDialog.css",
     "geminiRebrandPromoDialog.css",

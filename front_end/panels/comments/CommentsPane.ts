@@ -157,7 +157,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
           class="send-agent-button"
           ?disabled=${input.threads.length === 0}
           @click=${input.onSendToAgent}
-          jslog=${VisualLogging.action('send-to-agent').track({ click: true })}>
+          jslog=${VisualLogging.action('comments-send-to-agent').track({ click: true })}>
           ${i18nString(UIStrings.sendToAgent)}
         </button>
       </div>

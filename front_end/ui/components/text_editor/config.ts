@@ -297,7 +297,7 @@ const showTrailingWhitespace = matcher(new CM.MatchDecorator({
 }));
 
 export const showWhitespace: DynamicSetting<string> =
-    new DynamicSetting<string>('show-whitespaces-in-editor', value => {
+    new DynamicSetting<string>(SettingsUI.SourcesSettings.showWhitespacesInEditorSettingDescriptor, value => {
       if (value === 'all') {
         return showAllWhitespace;
       }

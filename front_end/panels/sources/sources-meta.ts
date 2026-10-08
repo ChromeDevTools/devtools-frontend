@@ -1776,13 +1776,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.textEditorC
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.showWhitespacesInEditorSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.showWhitespaceCharacters),
-  settingName: 'show-whitespaces-in-editor',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'original',
   options: [
     {
       title: i18nLazyString(UIStrings.doNotShowWhitespaceCharacters),

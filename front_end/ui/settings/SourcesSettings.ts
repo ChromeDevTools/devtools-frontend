@@ -76,3 +76,10 @@ export const textEditorCodeFoldingSettingDescriptor: Common.Settings.SettingDesc
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const showWhitespacesInEditorSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'show-whitespaces-in-editor',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'original',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

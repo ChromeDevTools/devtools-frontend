@@ -129,28 +129,20 @@ export type View = (input: TabbedEditorViewInput, output: undefined, target: HTM
 
 const UI_SOURCE_CODE_WIDGET_MAP = new WeakMap<Workspace.UISourceCode.UISourceCode, UI.Widget.Widget>();
 
-function getOrCreateSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode,
-                               onCreate: (view: UI.Widget.Widget) => void): UI.Widget.Widget {
-  const existing = UI_SOURCE_CODE_WIDGET_MAP.get(uiSourceCode);
-  if (existing) {
-    return existing;
-  }
+export type SourceViewFactory = (uiSourceCode: Workspace.UISourceCode.UISourceCode) => UI.Widget.Widget;
 
-  let sourceView: UI.Widget.Widget;
+function defaultSourceViewFactory(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
   const contentType = uiSourceCode.contentType();
   if (contentType === Common.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith('image/')) {
-    sourceView = new SourceFrame.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
-  } else if (contentType === Common.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes('font')) {
-    sourceView = new SourceFrame.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
-  } else if (uiSourceCode.name() === Persistence.NetworkPersistenceManager.HEADERS_FILENAME) {
-    sourceView = new Components.HeadersView.HeadersView(uiSourceCode);
-  } else {
-    sourceView = new UISourceCodeFrame(uiSourceCode);
+    return new SourceFrame.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
   }
-
-  UI_SOURCE_CODE_WIDGET_MAP.set(uiSourceCode, sourceView);
-  onCreate(sourceView);
-  return sourceView;
+  if (contentType === Common.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes('font')) {
+    return new SourceFrame.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
+  }
+  if (uiSourceCode.name() === Persistence.NetworkPersistenceManager.HEADERS_FILENAME) {
+    return new Components.HeadersView.HeadersView(uiSourceCode);
+  }
+  return new UISourceCodeFrame(uiSourceCode);
 }
 
 function recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame,
@@ -354,7 +346,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
           disconnectedAutomaticFileSystemRoot,
           icon,
           widget: (this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId()) ?
-              this.getOrCreateSourceView(this.#currentFile) :
+              this.#getOrCreateSourceView(this.#currentFile) :
               this.getCreatedSourceView(uiSourceCode),
         };
       }),
@@ -475,9 +467,15 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   private currentView!: UI.Widget.Widget|null;
   private scrollTimer?: number;
   private reentrantShow: boolean;
-  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+  readonly #sourceViewFactory: SourceViewFactory;
+  constructor(
+      element?: HTMLElement,
+      view: View = DEFAULT_VIEW,
+      sourceViewFactory: SourceViewFactory = defaultSourceViewFactory,
+  ) {
     super(element);
     this.#view = view;
+    this.#sourceViewFactory = sourceViewFactory;
     this.#tabDelegate = new EditorContainerTabDelegate(this);
     this.#historyManager = new EditingLocationHistoryManager(this);
     this.#previouslyViewedFilesSetting =
@@ -807,7 +805,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
 
     const previousView = this.currentView;
     if (uiSourceCode) {
-      this.getOrCreateSourceView(uiSourceCode);
+      this.#getOrCreateSourceView(uiSourceCode);
     }
     this.currentView = this.visibleView;
     this.addViewListeners();
@@ -1194,21 +1192,22 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     return getViewByUISourceCode(uiSourceCode);
   }
 
-  private getOrCreateSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
-    const view = getViewByUISourceCode(uiSourceCode);
-    if (view) {
-      return view;
+  #getOrCreateSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
+    const existing = getViewByUISourceCode(uiSourceCode);
+    if (existing) {
+      return existing;
     }
-    return getOrCreateSourceView(uiSourceCode, sourceView => {
-      if (sourceView instanceof UISourceCodeFrame) {
-        this.#historyManager.trackSourceFrameCursorJumps(sourceView);
-      }
-      uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
-    });
+    const sourceView = this.#sourceViewFactory(uiSourceCode);
+    UI_SOURCE_CODE_WIDGET_MAP.set(uiSourceCode, sourceView);
+    if (sourceView instanceof UISourceCodeFrame) {
+      this.#historyManager.trackSourceFrameCursorJumps(sourceView);
+    }
+    uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+    return sourceView;
   }
 
   viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
-    return this.getOrCreateSourceView(uiSourceCode);
+    return this.#getOrCreateSourceView(uiSourceCode);
   }
 
   recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame, uiSourceCode: Workspace.UISourceCode.UISourceCode): void {

@@ -58,18 +58,16 @@ describe('TabbedEditorContainer', () => {
 
       viewStub = createViewFunctionStub(Sources.TabbedEditorContainer.TabbedEditorContainer);
       const setting = createFakeSetting<LocalSerializedHistoryItem[]>('previously-viewed-files', []);
-      tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer(undefined, viewStub);
+      tabbedEditorContainer =
+          new Sources.TabbedEditorContainer.TabbedEditorContainer(undefined, viewStub, uiSourceCode => {
+            let view = views.get(uiSourceCode);
+            if (!view) {
+              view = new UI.Widget.Widget();
+              views.set(uiSourceCode, view);
+            }
+            return view;
+          });
       tabbedEditorContainer.previouslyViewedFilesSetting = setting;
-      // Hook getOrCreateSourceView for tests replacing the view caching
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      sinon.stub(tabbedEditorContainer as any, 'getOrCreateSourceView').callsFake(uiSourceCode => {
-        let view = views.get(uiSourceCode as Workspace.UISourceCode.UISourceCode);
-        if (!view) {
-          view = new UI.Widget.Widget();
-          views.set(uiSourceCode as Workspace.UISourceCode.UISourceCode, view);
-        }
-        return view;
-      });
     });
 
     afterEach(() => {
@@ -445,10 +443,9 @@ describeWithEnvironment('TabbedEditorContainer', () => {
       const setting =
           createFakeSetting<Sources.TabbedEditorContainer.SerializedHistoryItem[]>('previouslyViewedFilesSetting', []);
       const viewStub = createViewFunctionStub(Sources.TabbedEditorContainer.TabbedEditorContainer);
-      const tabbedEditorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer(undefined, viewStub);
+      const tabbedEditorContainer =
+          new Sources.TabbedEditorContainer.TabbedEditorContainer(undefined, viewStub, () => new UI.Widget.Widget());
       tabbedEditorContainer.previouslyViewedFilesSetting = setting;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      sinon.stub(tabbedEditorContainer as any, 'getOrCreateSourceView').returns(new UI.Widget.Widget());
 
       const {uiSourceCode: uiSourceCode1} =
           createContentProviderUISourceCode({url: urlString`http://localhost/foo.js`, mimeType: 'text/javascript'});

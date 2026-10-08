@@ -546,7 +546,7 @@ export class SamplesIntegrator {
 }
 
 export namespace SamplesIntegrator {
-  export const enum NativeGroups {
+  export enum NativeGroups {
     COMPILE = 'Compile',
     PARSE = 'Parse',
   }

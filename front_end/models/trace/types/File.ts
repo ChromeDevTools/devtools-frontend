@@ -26,7 +26,7 @@ export interface Breadcrumb {
   child: Breadcrumb|null;
 }
 
-export const enum DataOrigin {
+export enum DataOrigin {
   CPU_PROFILE = 'CPUProfile',
   TRACE_EVENTS = 'TraceEvents',
 }
@@ -37,13 +37,13 @@ export const enum DataOrigin {
  *  2. Pending to event - the creation is started, but the entry that the link points to has not been chosen yet
  *  3. Link connected - final state, both entries present
  */
-export const enum EntriesLinkState {
+export enum EntriesLinkState {
   CREATION_NOT_STARTED = 'creation_not_started',
   PENDING_TO_EVENT = 'pending_to_event',
   CONNECTED = 'connected',
 }
 
-export const enum EventKeyType {
+export enum EventKeyType {
   RAW_EVENT = 'r',
   SYNTHETIC_EVENT = 's',
   PROFILE_CALL = 'p',

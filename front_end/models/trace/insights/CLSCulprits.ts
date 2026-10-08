@@ -83,7 +83,7 @@ export type CLSCulpritsInsightModel = InsightModel<typeof UIStrings, {
   topCulpritsByCluster: Map<Types.Events.SyntheticLayoutShiftCluster, LayoutShiftItem[]>,
 }>;
 
-export const enum AnimationFailureReasons {
+export enum AnimationFailureReasons {
   ACCELERATED_ANIMATIONS_DISABLED = 'ACCELERATED_ANIMATIONS_DISABLED',
   EFFECT_SUPPRESSED_BY_DEVTOOLS = 'EFFECT_SUPPRESSED_BY_DEVTOOLS',
   INVALID_ANIMATION_OR_EFFECT = 'INVALID_ANIMATION_OR_EFFECT',
@@ -105,7 +105,7 @@ export const enum AnimationFailureReasons {
   SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY = 'SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY',
 }
 
-export const enum LayoutShiftType {
+export enum LayoutShiftType {
   WEB_FONT = 0,
   IFRAMES = 1,
   ANIMATIONS = 2,

@@ -565,7 +565,7 @@ export function scoreClassificationForLayoutShift(score: number): ScoreClassific
 }
 
 /** Based on https://web.dev/cls/ **/
-export const enum LayoutShiftsThreshold {
+export enum LayoutShiftsThreshold {
   GOOD = 0,
   NEEDS_IMPROVEMENT = 0.1,
   BAD = 0.25,

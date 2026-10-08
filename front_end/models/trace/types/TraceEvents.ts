@@ -9,7 +9,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import type {Micro, Milli, Seconds, TraceWindowMicro} from './Timing.js';
 
 /** Trace Events. **/
-export const enum Phase {
+export enum Phase {
   // Standard
   BEGIN = 'B',
   END = 'E',
@@ -67,7 +67,7 @@ export function isFlowPhase(phase: Phase): boolean {
   return phase === Phase.FLOW_START || phase === Phase.FLOW_STEP || phase === Phase.FLOW_END;
 }
 
-export const enum Scope {
+export enum Scope {
   THREAD = 't',
   PROCESS = 'p',
   GLOBAL = 'g',
@@ -477,7 +477,7 @@ export interface SyntheticWebSocketConnection extends Complete, SyntheticBased<P
   s: Scope;
 }
 
-export const enum AuctionWorkletType {
+export enum AuctionWorkletType {
   BIDDER = 'bidder',
   SELLER = 'seller',
   // Not expected to be used, but here as a fallback in case new types get
@@ -769,27 +769,6 @@ const markerTypeGuards = [
   isNavigationStart,
   isSoftNavigationStart,
 ];
-
-export type MarkerEventName = Name.MARK_DOM_CONTENT|Name.MARK_LOAD|Name.MARK_FIRST_PAINT|Name.MARK_FCP|
-                              Name.MARK_SOFT_FCP|Name.MARK_LCP_CANDIDATE|
-                              Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION|Name.NAVIGATION_START|
-                              Name.SOFT_NAVIGATION_START;
-
-export const MarkerName: readonly MarkerEventName[] = [
-  Name.MARK_DOM_CONTENT,
-  Name.MARK_LOAD,
-  Name.MARK_FIRST_PAINT,
-  Name.MARK_FCP,
-  Name.MARK_SOFT_FCP,
-  Name.MARK_LCP_CANDIDATE,
-  Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION,
-  Name.NAVIGATION_START,
-  Name.SOFT_NAVIGATION_START,
-];
-
-export interface MarkerEvent extends Event {
-  name: MarkerEventName;
-}
 
 export function isMarkerEvent(event: Event): event is MarkerEvent {
   if (event.ph === Phase.INSTANT || Phase.ASYNC_NESTABLE_INSTANT || event.ph === Phase.MARK) {
@@ -1263,7 +1242,7 @@ export interface ResourceMarkAsCached extends Instant {
   };
 }
 
-export const enum LayoutInvalidationReason {
+export enum LayoutInvalidationReason {
   SIZE_CHANGED = 'Size changed',
   ATTRIBUTE = 'Attribute',
   ADDED_TO_LAYOUT = 'Added to layout',
@@ -1307,7 +1286,7 @@ export function isScheduleStyleInvalidationTracking(event: Event): event is Sche
   return event.name === Name.SCHEDULE_STYLE_INVALIDATION_TRACKING;
 }
 
-export const enum StyleRecalcInvalidationReason {
+export enum StyleRecalcInvalidationReason {
   ANIMATION = 'Animation',
   RELATED_STYLE_RULE = 'Related style rule',
 }
@@ -2041,7 +2020,7 @@ export function isDecodeImage(event: Event): event is DecodeImage {
   return event.name === Name.DECODE_IMAGE;
 }
 
-export const enum InvalidationEventType {
+export enum InvalidationEventType {
   StyleInvalidatorInvalidationTracking = 'StyleInvalidatorInvalidationTracking',
   StyleRecalcInvalidationTracking = 'StyleRecalcInvalidationTracking',
 }
@@ -3064,7 +3043,7 @@ export function isParseAuthorStyleSheetEvent(event: Event): event is ParseAuthor
  * chart, some of them we only use for parsing.
  * TODO(crbug.com/1428024): Complete this enum.
  */
-export const enum Name {
+export enum Name {
   /* Metadata */
   THREAD_NAME = 'thread_name',
 
@@ -3286,6 +3265,27 @@ export const enum Name {
   LINK_PRECONNECT = 'LinkPreconnect',
 
   PRELOAD_RENDER_BLOCKING_STATUS_CHANGE = 'PreloadRenderBlockingStatusChange',
+}
+
+export type MarkerEventName = Name.MARK_DOM_CONTENT|Name.MARK_LOAD|Name.MARK_FIRST_PAINT|Name.MARK_FCP|
+                              Name.MARK_SOFT_FCP|Name.MARK_LCP_CANDIDATE|
+                              Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION|Name.NAVIGATION_START|
+                              Name.SOFT_NAVIGATION_START;
+
+export const MarkerName: readonly MarkerEventName[] = [
+  Name.MARK_DOM_CONTENT,
+  Name.MARK_LOAD,
+  Name.MARK_FIRST_PAINT,
+  Name.MARK_FCP,
+  Name.MARK_SOFT_FCP,
+  Name.MARK_LCP_CANDIDATE,
+  Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION,
+  Name.NAVIGATION_START,
+  Name.SOFT_NAVIGATION_START,
+];
+
+export interface MarkerEvent extends Event {
+  name: MarkerEventName;
 }
 
 /**

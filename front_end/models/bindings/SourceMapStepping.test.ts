@@ -77,6 +77,7 @@ type StepMethod = 'Debugger.stepInto'|'Debugger.stepOver'|'Debugger.stepOut';
 interface StepRequest {
   method: StepMethod;
   skipList?: Protocol.Debugger.LocationRange[];
+  enterRanges?: Protocol.Debugger.LocationRange[];
 }
 
 describe('SourceMapStepping', () => {
@@ -102,7 +103,8 @@ describe('SourceMapStepping', () => {
     onRequest = null;
     for (const method of ['Debugger.stepInto', 'Debugger.stepOver', 'Debugger.stepOut'] as const) {
       backend.cdpConnection.setHandler(method, params => {
-        const request = {method, skipList: (params as Protocol.Debugger.StepOverRequest | undefined)?.skipList};
+        const {skipList, enterRanges} = (params ?? {}) as Protocol.Debugger.StepOverRequest;
+        const request = {method, skipList, enterRanges};
         requests.push(request);
         onRequest?.(request);
         return {result: {}};
@@ -186,11 +188,13 @@ describe('SourceMapStepping', () => {
     const script = await addScript({outlined: false});
     await pauseAndWait([frame(script, 3, 0)]);
 
-    const {method, skipList} = await step(() => debuggerModel.stepOver());
+    const {method, skipList, enterRanges} = await step(() => debuggerModel.stepOver());
 
     assert.strictEqual(method, 'Debugger.stepOver');
     // The inlined `I`, and the rest of the current line.
     assert.deepEqual(skipList, [range(script, 2, 0, 2, 4), range(script, 3, 0, 4, 0)]);
+    // No outlined parts: the request is the same as without encoded scopes.
+    assert.isUndefined(enterRanges);
   });
 
   it('steps out of an inlined function by stepping over its body', async () => {
@@ -282,6 +286,36 @@ describe('SourceMapStepping', () => {
     await pauseAndWait([frame(script, 9, 0), frame(script, 4, 3, '1'), frame(script, 1, 0, '2')]);
 
     assert.strictEqual(Bindings.SourceMapStepping.logicalDepth(debuggerModel.callFrames ?? []), 2);
+  });
+
+  it('computes the outlined parts of the current function to enter when stepping over', async () => {
+    const script = await addScript({outlined: true});
+    const outlinedParts = (): number[][] => {
+      const [top] = debuggerModel.callFrames ?? [];
+      assert.exists(top);
+      return Bindings.SourceMapStepping.outlinedFunctionRanges(top).map(
+          ({start, end}) => [start.lineNumber, start.columnNumber ?? -1, end.lineNumber, end.columnNumber ?? -1]);
+    };
+
+    await pauseAndWait([frame(script, 4, 0)]);
+    assert.deepEqual(outlinedParts(), [[8, 12, 10, 1]]);
+    // From within the outlined part itself, so that calls to other (or the same) outlined parts are entered too.
+    await pauseAndWait([frame(script, 9, 0), frame(script, 4, 3, '1')]);
+    assert.deepEqual(outlinedParts(), [[8, 12, 10, 1]]);
+  });
+
+  it('enters outlined parts of the current function when stepping over', async () => {
+    const script = await addScript({outlined: true});
+    await pauseAndWait([frame(script, 4, 0)]);
+
+    const {method, skipList, enterRanges} = await step(() => debuggerModel.stepOver());
+    assert.strictEqual(method, 'Debugger.stepOver');
+    assert.deepEqual(skipList, [range(script, 2, 0, 2, 4), range(script, 4, 0, 5, 0)]);
+    assert.deepEqual(enterRanges, [range(script, 8, 12, 10, 1)]);
+
+    // V8 entered the outlined part: present the pause.
+    await pauseAndWait([frame(script, 9, 0), frame(script, 4, 3, '1')], Protocol.Debugger.PausedEventReason.Step);
+    assert.lengthOf(requests, 1);
   });
 
   it('keeps the legacy behavior when the feature is disabled', async () => {

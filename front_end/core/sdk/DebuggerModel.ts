@@ -134,10 +134,14 @@ export const enum StepMode {
   STEP_OVER = 'StepOver',
 }
 
-/** A CDP step command. `ranges` is passed as `skipList` to stepInto/stepOver, and ignored for stepOut. */
+/**
+ * A CDP step command. `ranges` is passed as `skipList` to stepInto/stepOver, and ignored for stepOut. `enterRanges` is
+ * passed as `enterRanges` to stepOver: functions within them are entered as if by stepInto.
+ */
 export interface AutoStep {
   readonly command: StepMode;
   readonly ranges: readonly LocationRange[];
+  readonly enterRanges?: readonly LocationRange[];
 }
 
 /**
@@ -478,20 +482,25 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#issueStep(step, breakOnAsyncCall);
   }
 
-  #issueStep({command, ranges}: AutoStep, breakOnAsyncCall = false): void {
-    const skipList =
-        sortAndMergeRanges(ranges.map(({start, end}) => ({
-                                        scriptId: start.scriptId,
-                                        start: {lineNumber: start.lineNumber, columnNumber: start.columnNumber},
-                                        end: {lineNumber: end.lineNumber, columnNumber: end.columnNumber},
-                                      })));
+  #issueStep({command, ranges, enterRanges}: AutoStep, breakOnAsyncCall = false): void {
+    const toProtocolRange = ({start, end}: LocationRange): Protocol.Debugger.LocationRange => ({
+      scriptId: start.scriptId,
+      start: {lineNumber: start.lineNumber, columnNumber: start.columnNumber},
+      end: {lineNumber: end.lineNumber, columnNumber: end.columnNumber},
+    });
+    const skipList = sortAndMergeRanges(ranges.map(toProtocolRange));
     switch (command) {
       case StepMode.STEP_INTO:
         void this.agent.invoke_stepInto({breakOnAsyncCall, skipList});
         break;
-      case StepMode.STEP_OVER:
-        void this.agent.invoke_stepOver({skipList});
+      case StepMode.STEP_OVER: {
+        const request: Protocol.Debugger.StepOverRequest = {skipList};
+        if (enterRanges?.length) {
+          request.enterRanges = sortAndMergeRanges(enterRanges.map(toProtocolRange));
+        }
+        void this.agent.invoke_stepOver(request);
         break;
+      }
       case StepMode.STEP_OUT:
         void this.agent.invoke_stepOut();
         break;

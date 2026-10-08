@@ -10,7 +10,8 @@
  *
  * Outlined code is code of an authored function that the compiler moved into a separate generated function marked as
  * "hidden". A run of outlined frames on top of the stack is one logical frame together with the frame below them (the
- * "owner"), see {@link logicalDepth}.
+ * "owner"), see {@link logicalDepth}. Step overs enter the outlined parts of the current function, see
+ * {@link outlinedFunctionRanges}.
  */
 
 import * as Root from '../../core/root/root.js';
@@ -108,6 +109,17 @@ export function inlinedCalleeRanges(frame: SDK.DebuggerModel.CallFrame): SDK.Deb
   const position = scopedPosition(frame);
   return position ? toLocationRanges(position, position.sourceMap.inlinedCalleeRanges(position.line, position.column)) :
                     [];
+}
+
+/**
+ * @returns the bodies of the outlined parts of the logical function that {@link frame} is paused in. A step over
+ *          enters them (`enterRanges`), as stepping over a call into them would skip authored code of that function.
+ */
+export function outlinedFunctionRanges(frame: SDK.DebuggerModel.CallFrame): SDK.DebuggerModel.LocationRange[] {
+  const position = scopedPosition(frame);
+  return position ?
+      toLocationRanges(position, position.sourceMap.outlinedFunctionRanges(position.line, position.column)) :
+      [];
 }
 
 /**

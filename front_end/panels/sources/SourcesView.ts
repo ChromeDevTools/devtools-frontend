@@ -52,12 +52,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {widget} = UI.Widget;
+const {widget, widgetRef} = UI.Widget;
 
 export interface ViewInput {
   searchProvider: UI.SearchableView.Searchable;
   replaceProvider: UI.SearchableView.Replaceable;
   isSearchReplaceable: boolean;
+  searchTarget: UI.SearchableView.SearchTarget|null;
   scriptViewToolbarItems: LitTemplate;
   isNavigatorSidebarOpen: boolean;
   isDebuggerSidebarOpen: boolean;
@@ -74,9 +75,13 @@ export interface ViewInput {
   onEditorClosed: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
 }
 
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export interface ViewOutput {
+  searchableView?: UI.SearchableView.SearchableView;
+}
 
-export const DEFAULT_VIEW: View = (input, _output, target): void => {
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target): void => {
   const renderNavigatorToggleButton = (): LitTemplate => {
     const navHidden = !input.isNavigatorSidebarOpen;
     const title = navHidden ? i18nString(UIStrings.showNavigator) : i18nString(UIStrings.hideNavigator);
@@ -130,6 +135,10 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
         settingName: 'sources-view-search-config',
         minimalSearchQuerySize: 0,
         replaceable: input.isSearchReplaceable,
+        searchTarget: input.searchTarget,
+      })}
+      ${widgetRef(UI.SearchableView.SearchableView, e => {
+        output.searchableView = e;
       })}
     >
       <devtools-widget class="vbox flex-auto ${input.breakpointsActive ? '' : 'breakpoints-deactivated'}"
@@ -188,6 +197,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   #isVertical = false;
   #isInWrapper = true;
   #breakpointsActive = true;
+  readonly #output: ViewOutput = {};
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {jslog: `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`});
@@ -244,6 +254,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       searchProvider: this,
       replaceProvider: this,
       isSearchReplaceable: this.#isSearchReplaceable,
+      searchTarget: this.#visibleView instanceof UISourceCodeFrame ? this.#visibleView : null,
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
       isNavigatorSidebarOpen: this.#isNavigatorSidebarOpen,
       isDebuggerSidebarOpen: this.#isDebuggerSidebarOpen,
@@ -260,7 +271,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
       onEditorClosed: this.#editorClosed.bind(this),
     };
 
-    this.#view(input, undefined, this.contentElement);
+    this.#view(input, this.#output, this.contentElement);
   }
 
   set onToggleNavigatorSidebar(callback: () => void) {
@@ -311,7 +322,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   }
 
   searchableView(): UI.SearchableView.SearchableView|null {
-    return UI.SearchableView.SearchableView.fromElement(this.contentElement.querySelector('devtools-widget'));
+    return this.#output.searchableView ?? null;
   }
 
   visibleView(): UI.Widget.Widget|null {
@@ -429,7 +440,6 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     // SourcesNavigator does not need to update on EditorClosed.
     this.#removeToolbarChangedListener();
     this.#updateScriptViewToolbarItems();
-    this.searchableView()?.resetSearch();
 
     const data = {
       uiSourceCode,
@@ -439,21 +449,12 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   }
 
   #editorSelected(event: EditorSelectedEvent): void {
-    const previousSourceFrame = event.previousView instanceof UISourceCodeFrame ? event.previousView : null;
-    if (previousSourceFrame) {
-      previousSourceFrame.setSearchableView(null);
-    }
     const currentSourceFrame = event.currentView instanceof UISourceCodeFrame ? event.currentView : null;
-    if (currentSourceFrame) {
-      currentSourceFrame.setSearchableView(this.searchableView());
-    }
-
     this.#currentUISourceCode = event.currentFile;
     this.#visibleView = event.currentView;
 
     this.#isSearchReplaceable = Boolean(currentSourceFrame?.canEditSource());
     this.requestUpdate();
-    this.searchableView()?.refreshSearch();
     this.#updateToolbarChangedListener();
     this.#updateScriptViewToolbarItems();
 

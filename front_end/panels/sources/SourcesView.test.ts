@@ -177,11 +177,13 @@ describeWithEnvironment('SourcesView', () => {
     assert.strictEqual(sourcesView.currentUISourceCode(), uiSourceCode);
     assert.strictEqual(sourcesView.currentSourceFrame(), sourceFrame);
     assert.isTrue(view.input.isSearchReplaceable);
+    assert.strictEqual(view.input.searchTarget, sourceFrame);
 
     view.input.onEditorClosed(uiSourceCode);
     await sourcesView.updateComplete;
     assert.isNull(sourcesView.currentUISourceCode());
     assert.isNull(sourcesView.visibleView());
+    assert.isNull(view.input.searchTarget);
     sourcesView.detach();
   });
 
@@ -202,6 +204,19 @@ describeWithEnvironment('SourcesView', () => {
     assert.isFalse(view.input.breakpointsActive);
     assert.isTrue(view.input.isVertical);
     assert.isFalse(view.input.isInWrapper);
+    sourcesView.detach();
+  });
+
+  it('returns the searchableView populated by the view output', async () => {
+    const dummySearchableView = {} as UI.SearchableView.SearchableView;
+    const view: Sources.SourcesView.View = (_input, output) => {
+      output.searchableView = dummySearchableView;
+    };
+    const sourcesView = new Sources.SourcesView.SourcesView(undefined, view);
+    renderElementIntoDOM(sourcesView);
+    await sourcesView.updateComplete;
+
+    assert.strictEqual(sourcesView.searchableView(), dummySearchableView);
     sourcesView.detach();
   });
 

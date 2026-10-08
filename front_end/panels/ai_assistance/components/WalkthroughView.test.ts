@@ -134,6 +134,35 @@ describeWithEnvironment('WalkthroughView', () => {
     assert.notInclude(view.contentElement.textContent, 'Approval step');
   });
 
+  it('renders canceled steps in the walkthrough', async () => {
+    const message: AiAssistance.ChatMessage.ModelChatMessage = {
+      entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+      id: '1',
+      parts: [
+        {
+          type: 'step',
+          step: {
+            state: {type: 'canceled'},
+            title: 'Canceled step',
+            code: 'doSomethingDangerous()',
+          },
+        },
+      ],
+    };
+    const view = await makeWalkthrough({
+      isLoading: false,
+      message,
+      isInlined: false,
+      isExpanded: true,
+    });
+
+    const steps = view.contentElement.querySelectorAll('.walkthrough-step');
+    assert.lengthOf(steps, 1);
+    assert.strictEqual(querySelectorErrorOnMissing(steps[0] as HTMLElement, '.title').innerText, 'Canceled step');
+    const indicator = querySelectorErrorOnMissing(steps[0] as HTMLElement, 'devtools-icon.indicator');
+    assert.strictEqual(indicator.getAttribute('aria-label'), 'Aborted');
+  });
+
   it('uses the title of the last step (even if it requires approval) for the walkthrough header', async () => {
     const message: AiAssistance.ChatMessage.ModelChatMessage = {
       entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,

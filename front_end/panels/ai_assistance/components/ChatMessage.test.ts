@@ -1173,7 +1173,7 @@ describeWithEnvironment('ChatMessage', () => {
       }
     });
 
-    it('renders side effect step with aborted indicator when canceled', () => {
+    it('does not render side effect step in the main chat area when canceled', () => {
       const sideEffectMessage: AiAssistance.ChatMessage.ModelChatMessage = {
         entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
         parts: [
@@ -1199,9 +1199,7 @@ describeWithEnvironment('ChatMessage', () => {
         },
       });
 
-      const indicator = target.querySelector('.side-effect-container devtools-icon.indicator');
-      assert.isNotNull(indicator);
-      assert.strictEqual(indicator?.getAttribute('aria-label'), 'Aborted');
+      assert.isNull(target.querySelector('.side-effect-container'));
       assert.isNull(target.querySelector('.side-effect-confirmation'));
     });
 

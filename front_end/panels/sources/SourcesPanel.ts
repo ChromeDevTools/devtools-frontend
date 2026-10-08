@@ -280,6 +280,10 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.#sourcesView.addEventListener(Events.EDITOR_SELECTED, this.editorSelected.bind(this));
     this.#sourcesView.addEventListener(Events.EDITOR_CLOSED, this.editorClosed.bind(this));
 
+    if (!window.opener) {
+      window.addEventListener('beforeunload', this.handleBeforeUnload, true);
+    }
+
     this.#sourcesView.onToggleNavigatorSidebar = this.toggleNavigatorSidebar.bind(this);
     this.#sourcesView.onToggleDebuggerSidebar = this.toggleDebuggerSidebar.bind(this);
     this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
@@ -741,6 +745,25 @@ export class SourcesPanel extends UI.Panel.Panel implements
     }
   }
 
+  handleBeforeUnload = (event: Event): void => {
+    if (event.returnValue) {
+      return;
+    }
+
+    const unsavedSourceCodes = Workspace.Workspace.WorkspaceImpl.instance()
+                                   .uiSourceCodesForProjectType(Workspace.Workspace.projectTypes.FileSystem)
+                                   .filter(uiSourceCode => uiSourceCode.isDirty());
+
+    if (!unsavedSourceCodes.length) {
+      return;
+    }
+
+    event.returnValue = true;
+    void UI.ViewManager.ViewManager.instance().showView('sources');
+    for (const sourceCode of unsavedSourceCodes) {
+      void Common.Revealer.reveal(sourceCode);
+    }
+  };
   togglePause(): boolean {
     const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
     if (!target) {

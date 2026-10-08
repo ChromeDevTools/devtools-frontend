@@ -208,46 +208,13 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
 
     this.requestUpdate();
 
-    UI.UIUtils.startBatchUpdate();
     workspace.uiSourceCodes().forEach(ui => this.addUISourceCode(ui));
-    UI.UIUtils.endBatchUpdate();
 
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAdded, this);
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeRemoved, this);
     workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#projectRemoved.bind(this), this);
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.#onScopeChange.bind(this));
-
-    if (!window.opener) {
-      window.addEventListener('beforeunload', this.#handleBeforeUnload, true);
-    }
   }
-
-  #handleBeforeUnload = (event: Event): void => {
-    if (event.returnValue) {
-      return;
-    }
-
-    const unsavedSourceCodes: Workspace.UISourceCode.UISourceCode[] = [];
-    const projects =
-        Workspace.Workspace.WorkspaceImpl.instance().projectsForType(Workspace.Workspace.projectTypes.FileSystem);
-    for (const project of projects) {
-      for (const uiSourceCode of project.uiSourceCodes()) {
-        if (uiSourceCode.isDirty()) {
-          unsavedSourceCodes.push(uiSourceCode);
-        }
-      }
-    }
-
-    if (!unsavedSourceCodes.length) {
-      return;
-    }
-
-    event.returnValue = true;
-    void UI.ViewManager.ViewManager.instance().showView('sources');
-    for (const sourceCode of unsavedSourceCodes) {
-      void Common.Revealer.reveal(sourceCode);
-    }
-  };
 
   override performUpdate(): void {
     const input: ViewInput = {

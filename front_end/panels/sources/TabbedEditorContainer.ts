@@ -423,14 +423,12 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     if (removed.length > 0) {
       this.removeUISourceCodes(removed);
     }
-    UI.UIUtils.startBatchUpdate();
     for (const uiSourceCode of uiSourceCodes) {
       if (!this.#syncedUISourceCodes.has(uiSourceCode)) {
         this.#syncedUISourceCodes.add(uiSourceCode);
         this.addUISourceCode(uiSourceCode);
       }
     }
-    UI.UIUtils.endBatchUpdate();
   }
 
   set sourceLocation(sourceLocation: SourceLocation|undefined) {

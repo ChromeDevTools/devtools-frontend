@@ -74,10 +74,10 @@ export class HistoryItem implements HistoryItemKey {
 }
 
 export class History {
-  private items: HistoryItem[];
+  #items: HistoryItem[];
 
   constructor(items: HistoryItem[]) {
-    this.items = items;
+    this.#items = items;
   }
 
   static fromObject(serializedHistoryItems: SerializedHistoryItem[]): History {
@@ -92,7 +92,7 @@ export class History {
   }
 
   index({url, resourceType}: HistoryItemKey): number {
-    return this.items.findIndex(item => item.url === url && item.resourceType === resourceType);
+    return this.#items.findIndex(item => item.url === url && item.resourceType === resourceType);
   }
 
   selectionRange(key: HistoryItemKey): TextUtils.TextRange.TextRange|undefined {
@@ -100,7 +100,7 @@ export class History {
     if (index === -1) {
       return undefined;
     }
-    return this.items[index].selectionRange;
+    return this.#items[index].selectionRange;
   }
 
   updateSelectionRange(key: HistoryItemKey, selectionRange?: TextUtils.TextRange.TextRange): void {
@@ -111,7 +111,7 @@ export class History {
     if (index === -1) {
       return;
     }
-    this.items[index].selectionRange = selectionRange;
+    this.#items[index].selectionRange = selectionRange;
   }
 
   scrollLineNumber(key: HistoryItemKey): number|undefined {
@@ -119,7 +119,7 @@ export class History {
     if (index === -1) {
       return undefined;
     }
-    return this.items[index].scrollLineNumber;
+    return this.#items[index].scrollLineNumber;
   }
 
   updateScrollLineNumber(key: HistoryItemKey, scrollLineNumber: number): void {
@@ -127,7 +127,7 @@ export class History {
     if (index === -1) {
       return;
     }
-    this.items[index].scrollLineNumber = scrollLineNumber;
+    this.#items[index].scrollLineNumber = scrollLineNumber;
   }
 
   update(keys: HistoryItemKey[]): void {
@@ -135,12 +135,12 @@ export class History {
       const index = this.index(keys[i]);
       let item;
       if (index !== -1) {
-        item = this.items[index];
-        this.items.splice(index, 1);
+        item = this.#items[index];
+        this.#items.splice(index, 1);
       } else {
         item = new HistoryItem(keys[i].url, keys[i].resourceType);
       }
-      this.items.unshift(item);
+      this.#items.unshift(item);
     }
   }
 
@@ -149,12 +149,12 @@ export class History {
     if (index === -1) {
       return;
     }
-    this.items.splice(index, 1);
+    this.#items.splice(index, 1);
   }
 
   toObject(): SerializedHistoryItem[] {
     const serializedHistoryItems = [];
-    for (const item of this.items) {
+    for (const item of this.#items) {
       const serializedItem = item.toObject();
       if (serializedItem) {
         serializedHistoryItems.push(serializedItem);
@@ -167,6 +167,6 @@ export class History {
   }
 
   keys(): HistoryItemKey[] {
-    return this.items;
+    return this.#items;
   }
 }

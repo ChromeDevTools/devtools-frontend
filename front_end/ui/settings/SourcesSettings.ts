@@ -56,3 +56,10 @@ export const textEditorAutocompletionSettingDescriptor: Common.Settings.SettingD
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const textEditorBracketClosingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'text-editor-bracket-closing',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

@@ -392,11 +392,12 @@ export function baseConfiguration(text: string|CM.Text): CM.Extension {
   ];
 }
 
-export const closeBrackets: DynamicSetting<boolean> = DynamicSetting.bool('text-editor-bracket-closing', [
-  CM.html.autoCloseTags,
-  CM.closeBrackets(),
-  CM.keymap.of(CM.closeBracketsKeymap),
-]);
+export const closeBrackets: DynamicSetting<boolean> =
+    DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorBracketClosingSettingDescriptor, [
+      CM.html.autoCloseTags,
+      CM.closeBrackets(),
+      CM.keymap.of(CM.closeBracketsKeymap),
+    ]);
 
 // Root editor tooltips at the top of the document, creating a special
 // element with the editor styles mounted in it for them. This is

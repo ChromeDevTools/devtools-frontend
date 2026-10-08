@@ -1731,13 +1731,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.textEditorA
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.textEditorBracketClosingSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.bracketClosing),
-  settingName: 'text-editor-bracket-closing',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

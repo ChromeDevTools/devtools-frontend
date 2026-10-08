@@ -211,20 +211,22 @@ export const autocompletion: DynamicSetting<boolean> = new DynamicSetting<boolea
 export const bracketMatching: DynamicSetting<boolean> =
     DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorBracketMatchingSettingDescriptor, CM.bracketMatching());
 
-export const codeFolding: DynamicSetting<boolean> = DynamicSetting.bool('text-editor-code-folding', [
-  CM.foldGutter({
-    markerDOM(open: boolean): HTMLElement {
-      const iconName = open ? 'triangle-down' : 'triangle-right';
-      const icon = new Icon();
-      icon.setAttribute('class', open ? 'cm-foldGutterElement' : 'cm-foldGutterElement cm-foldGutterElement-folded');
-      icon.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
-      icon.name = iconName;
-      icon.classList.add('small');
-      return icon;
-    },
-  }),
-  CM.keymap.of(CM.foldKeymap),
-]);
+export const codeFolding: DynamicSetting<boolean> =
+    DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorCodeFoldingSettingDescriptor, [
+      CM.foldGutter({
+        markerDOM(open: boolean): HTMLElement {
+          const iconName = open ? 'triangle-down' : 'triangle-right';
+          const icon = new Icon();
+          icon.setAttribute('class',
+                            open ? 'cm-foldGutterElement' : 'cm-foldGutterElement cm-foldGutterElement-folded');
+          icon.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
+          icon.name = iconName;
+          icon.classList.add('small');
+          return icon;
+        },
+      }),
+      CM.keymap.of(CM.foldKeymap),
+    ]);
 
 const AutoDetectIndent = CM.StateField.define<string>({
   create: state => detectIndentation(state.doc),

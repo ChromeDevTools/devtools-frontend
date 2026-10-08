@@ -1761,13 +1761,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.textEditorB
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.textEditorCodeFoldingSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.codeFolding),
-  settingName: 'text-editor-code-folding',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

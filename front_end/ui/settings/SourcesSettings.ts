@@ -69,3 +69,10 @@ export const textEditorBracketMatchingSettingDescriptor: Common.Settings.Setting
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 };
+
+export const textEditorCodeFoldingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'text-editor-code-folding',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

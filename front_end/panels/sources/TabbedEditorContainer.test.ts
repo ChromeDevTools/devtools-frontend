@@ -61,8 +61,7 @@ describe('TabbedEditorContainer', () => {
   });
 
   describe('History', () => {
-    const {History} = Sources.TabbedEditorContainer;
-    const {HistoryItem} = Sources.EditorHistory;
+    const {History, HistoryItem} = Sources.EditorHistory;
 
     describe('fromObject', () => {
       it('deserializes correctly', () => {

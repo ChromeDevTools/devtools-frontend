@@ -72,3 +72,101 @@ export class HistoryItem implements HistoryItemKey {
     };
   }
 }
+
+export class History {
+  private items: HistoryItem[];
+
+  constructor(items: HistoryItem[]) {
+    this.items = items;
+  }
+
+  static fromObject(serializedHistoryItems: SerializedHistoryItem[]): History {
+    const items: HistoryItem[] = [];
+    for (const serializedHistoryItem of serializedHistoryItems) {
+      try {
+        items.push(HistoryItem.fromObject(serializedHistoryItem));
+      } catch {
+      }
+    }
+    return new History(items);
+  }
+
+  index({url, resourceType}: HistoryItemKey): number {
+    return this.items.findIndex(item => item.url === url && item.resourceType === resourceType);
+  }
+
+  selectionRange(key: HistoryItemKey): TextUtils.TextRange.TextRange|undefined {
+    const index = this.index(key);
+    if (index === -1) {
+      return undefined;
+    }
+    return this.items[index].selectionRange;
+  }
+
+  updateSelectionRange(key: HistoryItemKey, selectionRange?: TextUtils.TextRange.TextRange): void {
+    if (!selectionRange) {
+      return;
+    }
+    const index = this.index(key);
+    if (index === -1) {
+      return;
+    }
+    this.items[index].selectionRange = selectionRange;
+  }
+
+  scrollLineNumber(key: HistoryItemKey): number|undefined {
+    const index = this.index(key);
+    if (index === -1) {
+      return undefined;
+    }
+    return this.items[index].scrollLineNumber;
+  }
+
+  updateScrollLineNumber(key: HistoryItemKey, scrollLineNumber: number): void {
+    const index = this.index(key);
+    if (index === -1) {
+      return;
+    }
+    this.items[index].scrollLineNumber = scrollLineNumber;
+  }
+
+  update(keys: HistoryItemKey[]): void {
+    for (let i = keys.length - 1; i >= 0; --i) {
+      const index = this.index(keys[i]);
+      let item;
+      if (index !== -1) {
+        item = this.items[index];
+        this.items.splice(index, 1);
+      } else {
+        item = new HistoryItem(keys[i].url, keys[i].resourceType);
+      }
+      this.items.unshift(item);
+    }
+  }
+
+  remove(key: HistoryItemKey): void {
+    const index = this.index(key);
+    if (index === -1) {
+      return;
+    }
+    this.items.splice(index, 1);
+  }
+
+  toObject(): SerializedHistoryItem[] {
+    const serializedHistoryItems = [];
+    for (const item of this.items) {
+      const serializedItem = item.toObject();
+      if (serializedItem) {
+        serializedHistoryItems.push(serializedItem);
+      }
+      if (serializedHistoryItems.length === MAX_PREVIOUSLY_VIEWED_FILES_COUNT) {
+        break;
+      }
+    }
+    return serializedHistoryItems;
+  }
+
+  keys(): HistoryItemKey[] {
+    return this.items;
+  }
+}

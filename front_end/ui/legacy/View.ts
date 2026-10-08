@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
-import type {TemplateResult} from '../lit/lit.js';
+import type {LitTemplate} from '../lit/lit.js';
 
 import type {TabbedPane} from './TabbedPane.js';
 import type {ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
@@ -23,7 +23,7 @@ export interface View {
 
   isTransient(): boolean;
 
-  toolbarItems(): Promise<ToolbarItem[]|TemplateResult>;
+  toolbarItems(): Promise<ToolbarItem[]|LitTemplate>;
 
   widget(): Promise<AnyWidget>;
 
@@ -92,7 +92,7 @@ export class SimpleView<ContentTypeT extends HTMLElement|DocumentFragment = HTML
     return false;
   }
 
-  toolbarItems(): Promise<ToolbarItem[]|TemplateResult> {
+  toolbarItems(): Promise<ToolbarItem[]|LitTemplate> {
     return Promise.resolve([]);
   }
 

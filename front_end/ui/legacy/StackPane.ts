@@ -44,7 +44,7 @@ class SlotView extends View.SimpleView {
     this.#view({name: this.#pane.viewId()}, undefined, this.contentElement);
   }
 
-  override toolbarItems(): Promise<Toolbar.ToolbarItem[]|Lit.TemplateResult> {
+  override toolbarItems(): Promise<Toolbar.ToolbarItem[]|Lit.LitTemplate> {
     return this.#pane.toolbarItems();
   }
 

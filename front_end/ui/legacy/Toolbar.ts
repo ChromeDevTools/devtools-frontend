@@ -11,7 +11,7 @@ import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {createIcon} from '../kit/kit.js';
-import {nothing, render, type TemplateResult} from '../lit/lit.js';
+import {type LitTemplate, nothing, render} from '../lit/lit.js';
 import * as SettingUIRegistration from '../settings/settings.js';
 
 import {type Action, Events as ActionEvents} from './ActionRegistration.js';
@@ -1235,7 +1235,7 @@ export interface Provider {
 }
 
 export interface ItemsProvider {
-  toolbarItems(): ToolbarItem[]|TemplateResult;
+  toolbarItems(): ToolbarItem[]|LitTemplate;
 }
 
 export class ToolbarComboBox extends ToolbarItem<void, HTMLSelectElement> {

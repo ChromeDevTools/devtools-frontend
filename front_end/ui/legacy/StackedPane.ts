@@ -15,7 +15,7 @@ import type {View} from './View.js';
 import viewContainersStyles from './viewContainers.css.js';
 import {type AnyWidget, VBox} from './Widget.js';
 
-type CreateToolbarFn = (toolbarItems: Toolbar.ToolbarItem[]|Lit.TemplateResult) => Element|null;
+type CreateToolbarFn = (toolbarItems: Toolbar.ToolbarItem[]|Lit.LitTemplate) => Element|null;
 type SetWidgetForViewFn = (view: View, widget: AnyWidget) => void;
 
 export class ExpandableContainerWidget extends VBox {

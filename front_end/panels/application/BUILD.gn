@@ -222,6 +222,7 @@ devtools_ui_module("unittests") {
     "../../ui/components/render_coordinator:bundle",
     "../../ui/components/report_view:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
     "../protocol_monitor:bundle",
     "preloading/components:bundle",
   ]

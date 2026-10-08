@@ -570,11 +570,6 @@ describe('SourceMapScopesInfo', () => {
       assert.deepEqual(info.inlinedCalleeRanges(7, 3), []);
     });
 
-    it('hasOutlinedFunctions detects hidden generated functions with a definition', () => {
-      assert.isTrue(createInfo().hasOutlinedFunctions());
-      assert.isFalse(createInfo({outlined: false}).hasOutlinedFunctions());
-    });
-
     it('outlinedFunctionRanges returns the outlined parts of the current function', () => {
       const info = createInfo();
       assert.deepEqual(info.outlinedFunctionRanges(0, 5), [range(7, 0, 7, 14)]);

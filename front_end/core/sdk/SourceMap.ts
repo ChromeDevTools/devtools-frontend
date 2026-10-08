@@ -900,11 +900,6 @@ export class SourceMap {
                                         [];
   }
 
-  /** See {@link SourceMapScopesInfo.hasOutlinedFunctions}. False without encoded scopes. */
-  hasOutlinedFunctions(): boolean {
-    return this.hasEncodedScopeInfo() && (this.#scopesInfo?.hasOutlinedFunctions() ?? false);
-  }
-
   /** See {@link SourceMapScopesInfo.outlinedFunctionRanges}. Empty without encoded scopes. */
   outlinedFunctionRanges(generatedLine: number, generatedColumn: number): PositionRange[] {
     return this.hasEncodedScopeInfo() ? this.#scopesInfo?.outlinedFunctionRanges(generatedLine, generatedColumn) ?? [] :

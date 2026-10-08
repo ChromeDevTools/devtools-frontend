@@ -268,6 +268,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         ${renderTabSuffix(tab, input)}`)}
     </devtools-tabbed-pane>`, target);
   // clang-format on
+  target.querySelector<UI.TabbedPane.TabbedPaneElement>('devtools-tabbed-pane')?.tabs;
 };
 let tabId = 0;
 
@@ -537,16 +538,9 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     this.#tabsHistory.unshift(tabId);
   }
 
-  get #tabbedPane(): UI.TabbedPane.TabbedPaneElement|null {
-    return this.contentElement.querySelector('devtools-tabbed-pane');
-  }
-
+  /** @deprecated Used by chromium web tests until https://crrev.com/c/8514061 rolls. */
   get tabbedPane(): UI.TabbedPane.TabbedPaneElement {
-    return this.#tabbedPane as UI.TabbedPane.TabbedPaneElement;
-  }
-
-  get tabbedPaneForTesting(): UI.TabbedPane.TabbedPaneElement {
-    return this.#tabbedPane as UI.TabbedPane.TabbedPaneElement;
+    return this.contentElement.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
   }
 
   #onBindingCreated(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>): void {
@@ -798,8 +792,6 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
       this.#appendHistory(tabId);
 
       this.#scheduleUpdate();
-      // Force TabbedPaneElement to sync its tabs synchronously to avoid layout races in E2E tests.
-      this.#tabbedPane?.tabs;
     } finally {
       this.#reentrantShow = false;
     }

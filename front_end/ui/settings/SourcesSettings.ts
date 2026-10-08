@@ -63,3 +63,9 @@ export const textEditorBracketClosingSettingDescriptor: Common.Settings.SettingD
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const textEditorBracketMatchingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'text-editor-bracket-matching',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+};

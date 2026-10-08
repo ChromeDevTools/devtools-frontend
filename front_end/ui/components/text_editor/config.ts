@@ -209,7 +209,7 @@ export const autocompletion: DynamicSetting<boolean> = new DynamicSetting<boolea
                                     ]))]);
 
 export const bracketMatching: DynamicSetting<boolean> =
-    DynamicSetting.bool('text-editor-bracket-matching', CM.bracketMatching());
+    DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorBracketMatchingSettingDescriptor, CM.bracketMatching());
 
 export const codeFolding: DynamicSetting<boolean> = DynamicSetting.bool('text-editor-code-folding', [
   CM.foldGutter({

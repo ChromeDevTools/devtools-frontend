@@ -1746,12 +1746,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.textEditorB
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.textEditorBracketMatchingSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
   title: i18nLazyString(UIStrings.bracketMatching),
-  settingName: 'text-editor-bracket-matching',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

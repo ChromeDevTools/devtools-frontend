@@ -15,13 +15,14 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createFakeSetting, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import type {TestUniverse} from '../../testing/TestUniverse.js';
 import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html} from '../../ui/lit/lit.js';
 
 import * as SourcesComponents from './components/components.js';
 import * as Sources from './sources.js';
@@ -242,6 +243,76 @@ describe('TabbedEditorContainer', () => {
 
       button?.click();
       sinon.assert.calledOnce(addFileSystemStub);
+    });
+
+    it('renders open tabs correctly', async () => {
+      const container = document.createElement('div');
+      container.style.width = '800px';
+      container.style.height = '300px';
+      container.style.display = 'flex';
+      container.style.flexDirection = 'column';
+      renderElementIntoDOM(container, {includeCommonStyles: true});
+
+      const stubUiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
+
+      const input: Sources.TabbedEditorContainer.TabbedEditorViewInput = {
+        openTabs: [
+          {
+            tabId: 'tab-active',
+            title: 'active.js',
+            tooltip: 'active.js',
+            uiSourceCode: stubUiSourceCode,
+            isCloseable: true,
+            hasLoadError: false,
+            hasUnsavedCommittedChanges: false,
+          },
+          {
+            tabId: 'tab-error',
+            title: 'error.js',
+            tooltip: 'error.js',
+            uiSourceCode: stubUiSourceCode,
+            isCloseable: true,
+            hasLoadError: true,
+            hasUnsavedCommittedChanges: false,
+          },
+          {
+            tabId: 'tab-persisted',
+            title: 'persisted.js',
+            tooltip: 'persisted.js',
+            uiSourceCode: stubUiSourceCode,
+            isCloseable: true,
+            hasLoadError: false,
+            hasUnsavedCommittedChanges: false,
+            icon: html`<devtools-icon class="small dot green" name="document"></devtools-icon>`,
+          },
+          {
+            tabId: 'tab-unsaved',
+            title: 'unsaved.js',
+            tooltip: 'unsaved.js',
+            uiSourceCode: stubUiSourceCode,
+            isCloseable: true,
+            hasLoadError: false,
+            hasUnsavedCommittedChanges: true,
+          },
+        ],
+        activeTabId: 'tab-active',
+        leftToolbarItems: [],
+        rightToolbarItems: [],
+        tabDelegate: {
+          closeTabs: () => {},
+          onContextMenu: () => {},
+        },
+        shortcuts: [],
+        onAddFileSystemClicked: () => {},
+        onConnectAutomaticFileSystem: () => {},
+        onClose: () => {},
+        onTabOrderChanged: () => {},
+        onSelect: () => {},
+      };
+
+      Sources.TabbedEditorContainer.DEFAULT_VIEW(input, undefined, container);
+      await raf();
+      await assertScreenshot('sources/tabbed-editor-container-tabs.png');
     });
 
     it('keeps selected tab when persistence binding is created', async () => {

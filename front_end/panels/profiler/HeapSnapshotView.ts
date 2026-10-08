@@ -19,6 +19,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
@@ -45,6 +46,8 @@ import {
   ProfileType,
 } from './ProfileHeader.js';
 import type {ProfileTypeRegistry} from './ProfileTypeRegistry.js';
+
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -726,14 +729,14 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.updateFilterSummaryText(event.data);
   }
 
-  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  override async toolbarItems(): Promise<Lit.TemplateResult> {
     const result: UI.Toolbar.ToolbarItem[] = [this.perspectiveSelect, this.classNameFilter];
     if (this.profile.profileType() !== this.#registry.trackingHeapSnapshotProfileType) {
       result.push(this.baseSelect, this.filterSelect);
     }
     result.push(this.selectedSizeText);
     result.push(this.resetRetainersButton);
-    return result;
+    return html`${result.map(item => item.element)}`;
   }
 
   override willHide(): void {

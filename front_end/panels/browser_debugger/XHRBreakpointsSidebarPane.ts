@@ -9,7 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, render} from '../../ui/lit/lit.js';
+import {Directives, html, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import xhrBreakpointsSidebarPaneStyles from './xhrBreakpointsSidebarPane.css.js';
@@ -122,8 +122,12 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     xhrBreakpointsSidebarPaneInstance = null;
   }
 
-  toolbarItems(): UI.Toolbar.ToolbarItem[] {
-    return [this.#addButton];
+  toolbarItems(): TemplateResult {
+    return html`${this.#addButton.element}`;
+  }
+
+  get addButtonForTest(): UI.Toolbar.ToolbarButton {
+    return this.#addButton;
   }
 
   private emptyElementContextMenu(event: Event): void {

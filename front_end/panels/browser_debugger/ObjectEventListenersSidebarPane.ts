@@ -6,8 +6,11 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as EventListeners from '../event_listeners/event_listeners.js';
+
+const {html} = Lit;
 
 export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements UI.Toolbar.ItemsProvider {
   #lastRequestedContext?: SDK.RuntimeModel.ExecutionContext;
@@ -25,10 +28,10 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
     this.requestUpdate();
   }
 
-  toolbarItems(): UI.Toolbar.ToolbarItem[] {
+  toolbarItems(): Lit.TemplateResult {
     const refreshButton = UI.Toolbar.Toolbar.createActionButton('browser-debugger.refresh-global-event-listeners');
     refreshButton.setSize(Buttons.Button.Size.SMALL);
-    return [refreshButton];
+    return html`${refreshButton.element}`;
   }
 
   override async performUpdate(): Promise<void> {

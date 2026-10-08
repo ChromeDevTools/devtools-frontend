@@ -79,7 +79,7 @@ describe('XHRBreakpointsSidebarPane', () => {
     SDK.DOMDebuggerModel.DOMDebuggerManager.instance().addXHRBreakpoint('api/v1', true);
     const pane = BrowserDebugger.XHRBreakpointsSidebarPane.XHRBreakpointsSidebarPane.instance();
     renderElementIntoDOM(pane, {includeCommonStyles: true, width: 300});
-    const addButton = pane.toolbarItems()[0].element;
+    const addButton = pane.addButtonForTest.element;
     assert.exists(addButton);
     addButton.click();
     await new Promise(resolve => setTimeout(resolve, 0));
@@ -158,7 +158,7 @@ describe('XHRBreakpointsSidebarPane', () => {
 
   it('adds a breakpoint when commit occurs in editor after clicking add button', async () => {
     const pane = BrowserDebugger.XHRBreakpointsSidebarPane.XHRBreakpointsSidebarPane.instance();
-    const addButton = pane.toolbarItems()[0].element;
+    const addButton = pane.addButtonForTest.element;
     assert.exists(addButton);
     addButton.click();
     await new Promise(resolve => setTimeout(resolve, 0));
@@ -202,7 +202,7 @@ describe('XHRBreakpointsSidebarPane', () => {
 
   it('cancels adding a breakpoint when escape is pressed in editor', async () => {
     const pane = BrowserDebugger.XHRBreakpointsSidebarPane.XHRBreakpointsSidebarPane.instance();
-    const addButton = pane.toolbarItems()[0].element;
+    const addButton = pane.addButtonForTest.element;
     assert.exists(addButton);
     addButton.click();
     await new Promise(resolve => setTimeout(resolve, 0));

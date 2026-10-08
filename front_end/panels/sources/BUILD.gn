@@ -42,6 +42,7 @@ devtools_ui_module("sources") {
     "DebuggerPausedMessage.ts",
     "DebuggerPlugin.ts",
     "EditingLocationHistoryManager.ts",
+    "EditorHistory.ts",
     "FilePathScoreFunction.ts",
     "FilteredUISourceCodeListProvider.ts",
     "GoToLineQuickOpen.ts",

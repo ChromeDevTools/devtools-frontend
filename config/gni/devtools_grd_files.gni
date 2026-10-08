@@ -2038,6 +2038,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/sources/DebuggerPausedMessage.js",
   "front_end/panels/sources/DebuggerPlugin.js",
   "front_end/panels/sources/EditingLocationHistoryManager.js",
+  "front_end/panels/sources/EditorHistory.js",
   "front_end/panels/sources/FilePathScoreFunction.js",
   "front_end/panels/sources/FilteredUISourceCodeListProvider.js",
   "front_end/panels/sources/GoToLineQuickOpen.js",

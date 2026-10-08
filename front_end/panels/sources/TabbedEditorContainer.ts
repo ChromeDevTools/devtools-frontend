@@ -23,6 +23,13 @@ import * as Snippets from '../snippets/snippets.js';
 
 import * as Components from './components/components.js';
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
+import {
+  HistoryItem,
+  type HistoryItemKey,
+  historyItemKey,
+  MAX_PREVIOUSLY_VIEWED_FILES_COUNT,
+  type SerializedHistoryItem,
+} from './EditorHistory.js';
 import tabbedEditorContainerStyles from './tabbedEditorContainer.css.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
@@ -1271,67 +1278,10 @@ export interface EventTypes {
   [Events.EDITOR_CLOSED]: Workspace.UISourceCode.UISourceCode;
 }
 
-const MAX_PREVIOUSLY_VIEWED_FILES_COUNT = 30;
-const MAX_SERIALIZABLE_URL_LENGTH = 4096;
-
-export interface SerializedHistoryItem {
-  url: string;
-  resourceTypeName: string;
-  selectionRange?: TextUtils.TextRange.SerializedTextRange;
-  scrollLineNumber?: number;
-}
-
-interface HistoryItemKey {
-  url: Platform.DevToolsPath.UrlString;
-  resourceType: Common.ResourceType.ResourceType;
-}
-
-function historyItemKey(uiSourceCode: Workspace.UISourceCode.UISourceCode): HistoryItemKey {
-  return {url: uiSourceCode.url(), resourceType: uiSourceCode.contentType()};
-}
-
-export class HistoryItem implements HistoryItemKey {
-  url: Platform.DevToolsPath.UrlString;
-  resourceType: Common.ResourceType.ResourceType;
-  selectionRange: TextUtils.TextRange.TextRange|undefined;
-  scrollLineNumber: number|undefined;
-
-  constructor(url: Platform.DevToolsPath.UrlString, resourceType: Common.ResourceType.ResourceType,
-              selectionRange?: TextUtils.TextRange.TextRange, scrollLineNumber?: number) {
-    this.url = url;
-    this.resourceType = resourceType;
-    this.selectionRange = selectionRange;
-    this.scrollLineNumber = scrollLineNumber;
-  }
-
-  static fromObject(serializedHistoryItem: SerializedHistoryItem): HistoryItem {
-    const resourceType = Common.ResourceType.ResourceType.fromName(serializedHistoryItem.resourceTypeName);
-    if (resourceType === null) {
-      throw new TypeError(`Invalid resource type name "${serializedHistoryItem.resourceTypeName}"`);
-    }
-    const selectionRange = serializedHistoryItem.selectionRange ?
-        TextUtils.TextRange.TextRange.fromObject(serializedHistoryItem.selectionRange) :
-        undefined;
-    return new HistoryItem(
-        serializedHistoryItem.url as Platform.DevToolsPath.UrlString,
-        resourceType,
-        selectionRange,
-        serializedHistoryItem.scrollLineNumber,
-    );
-  }
-
-  toObject(): SerializedHistoryItem|null {
-    if (this.url.length >= MAX_SERIALIZABLE_URL_LENGTH) {
-      return null;
-    }
-    return {
-      url: this.url,
-      resourceTypeName: this.resourceType.name(),
-      selectionRange: this.selectionRange,
-      scrollLineNumber: this.scrollLineNumber,
-    };
-  }
-}
+export {
+  HistoryItem,
+  type SerializedHistoryItem,
+};
 
 export class History {
   private items: HistoryItem[];

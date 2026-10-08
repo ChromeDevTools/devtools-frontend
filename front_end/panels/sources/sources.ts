@@ -14,6 +14,7 @@ import * as CSSPlugin from './CSSPlugin.js';
 import * as DebuggerPausedMessage from './DebuggerPausedMessage.js';
 import * as DebuggerPlugin from './DebuggerPlugin.js';
 import * as EditingLocationHistoryManager from './EditingLocationHistoryManager.js';
+import * as EditorHistory from './EditorHistory.js';
 import * as FilePathScoreFunction from './FilePathScoreFunction.js';
 import * as FilteredUISourceCodeListProvider from './FilteredUISourceCodeListProvider.js';
 import * as GoToLineQuickOpen from './GoToLineQuickOpen.js';
@@ -48,6 +49,7 @@ export {
   DebuggerPausedMessage,
   DebuggerPlugin,
   EditingLocationHistoryManager,
+  EditorHistory,
   FilePathScoreFunction,
   FilteredUISourceCodeListProvider,
   GoToLineQuickOpen,

@@ -32,7 +32,7 @@ const {urlString} = Platform.DevToolsPath;
 
 describe('TabbedEditorContainer', () => {
   describe('HistoryItem', () => {
-    const {HistoryItem} = Sources.TabbedEditorContainer;
+    const {HistoryItem} = Sources.EditorHistory;
     const url = urlString`http://localhost`;
 
     describe('fromObject', () => {
@@ -61,7 +61,8 @@ describe('TabbedEditorContainer', () => {
   });
 
   describe('History', () => {
-    const {History, HistoryItem} = Sources.TabbedEditorContainer;
+    const {History} = Sources.TabbedEditorContainer;
+    const {HistoryItem} = Sources.EditorHistory;
 
     describe('fromObject', () => {
       it('deserializes correctly', () => {

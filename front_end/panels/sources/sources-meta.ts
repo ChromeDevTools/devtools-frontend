@@ -1798,13 +1798,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.showWhitesp
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.sourcesWordWrapSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.wordWrap),
-  settingName: 'sources.word-wrap',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 UI.ActionRegistration.registerActionExtension({

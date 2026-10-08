@@ -326,7 +326,7 @@ export const domWordWrap: DynamicSetting<boolean> =
     DynamicSetting.bool(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor, CM.EditorView.lineWrapping);
 
 export const sourcesWordWrap: DynamicSetting<boolean> =
-    DynamicSetting.bool('sources.word-wrap', CM.EditorView.lineWrapping);
+    DynamicSetting.bool(SettingsUI.SourcesSettings.sourcesWordWrapSettingDescriptor, CM.EditorView.lineWrapping);
 
 function detectLineSeparator(text: string): CM.Extension {
   if (/\r\n/.test(text) && !/(^|[^\r])\n/.test(text)) {

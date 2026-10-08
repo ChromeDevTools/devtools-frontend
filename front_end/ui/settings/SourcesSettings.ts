@@ -83,3 +83,10 @@ export const showWhitespacesInEditorSettingDescriptor: Common.Settings.SettingDe
   defaultValue: 'original',
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const sourcesWordWrapSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'sources.word-wrap',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

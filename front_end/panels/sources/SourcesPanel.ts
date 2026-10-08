@@ -1413,7 +1413,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         return true;
       }
       case 'sources.toggle-word-wrap': {
-        const setting = Common.Settings.Settings.instance().moduleSetting<boolean>('sources.word-wrap');
+        const setting =
+            Common.Settings.Settings.instance().resolve(Settings.SourcesSettings.sourcesWordWrapSettingDescriptor);
         setting.set(!setting.get());
         return true;
       }

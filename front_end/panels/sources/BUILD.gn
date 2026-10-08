@@ -176,6 +176,7 @@ devtools_ui_module("unittests") {
     "CoveragePlugin.test.ts",
     "DebuggerPausedMessage.test.ts",
     "DebuggerPlugin.test.ts",
+    "EditorHistory.test.ts",
     "FilePathScoreFunction.test.ts",
     "FilteredUISourceCodeListProvider.test.ts",
     "NavigatorView.test.ts",

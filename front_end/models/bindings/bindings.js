@@ -6077,6 +6077,7 @@ __export(SourceMapStepping_exports, {
   isSameOriginalLocation: () => isSameOriginalLocation,
   isScopedFrame: () => isScopedFrame,
   isUnmapped: () => isUnmapped,
+  logicalDepth: () => logicalDepth,
   nextAutoStep: () => nextAutoStep
 });
 import * as Root3 from "../../core/root/root.js";
@@ -6102,6 +6103,20 @@ function toLocationRanges({ script }, ranges) {
 }
 function isScopedFrame(frame) {
   return scopedPosition(frame) !== null;
+}
+function outlinedPrefixLength(callFrames) {
+  let length = 0;
+  for (const frame of callFrames) {
+    const position = scopedPosition(frame);
+    if (!position || position.sourceMap.translateRawFrame(position.line, position.column)?.kind !== SDK10.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED) {
+      break;
+    }
+    ++length;
+  }
+  return length;
+}
+function logicalDepth(callFrames) {
+  return callFrames.length - outlinedPrefixLength(callFrames);
 }
 function isUnmapped(frame) {
   const position = scopedPosition(frame);
@@ -6138,8 +6153,8 @@ async function nextAutoStep(details, context, computeAutoStep) {
     case SDK10.DebuggerModel.StepMode.STEP_INTO:
       return isUnmapped(frames[0]) ? await computeAutoStep(SDK10.DebuggerModel.StepMode.STEP_INTO, frames) : null;
     case SDK10.DebuggerModel.StepMode.STEP_OVER: {
-      const startDepth = start.length;
-      const depth = frames.length;
+      const startDepth = logicalDepth(start);
+      const depth = logicalDepth(frames);
       if (isUnmapped(frames[0]) || depth === startDepth && isSameOriginalLocation(frames[0], start[0])) {
         return await computeAutoStep(SDK10.DebuggerModel.StepMode.STEP_OVER, frames);
       }

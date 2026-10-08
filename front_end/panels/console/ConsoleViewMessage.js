@@ -214,6 +214,7 @@ const UIStrings = {
     /**
      * @description Element text content in Object properties section.
      */
+    // eslint-disable-next-line @devtools/l10n-uistrings-text-style
     dots: '(...)',
     /**
      * @description Element title in Object properties section.

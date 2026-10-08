@@ -7,6 +7,7 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 export class SourcesSearchScope {
     searchId;
     searchResultCandidates;
@@ -59,7 +60,9 @@ export class SourcesSearchScope {
         }
     }
     projects() {
-        const searchInAnonymousAndContentScripts = Common.Settings.Settings.instance().moduleSetting('search-in-anonymous-and-content-scripts').get();
+        const searchInAnonymousAndContentScripts = Common.Settings.Settings.instance()
+            .resolve(SettingsUI.SourcesSettings.searchInAnonymousAndContentScriptsSettingDescriptor)
+            .get();
         const localOverridesEnabled = Common.Settings.Settings.instance()
             .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
             .get();

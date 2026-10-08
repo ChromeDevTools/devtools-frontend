@@ -62,6 +62,9 @@
       "path": "../../models/comment_manager/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/components/tooltips/bundle-tsconfig.ref.json"
     },
     {

@@ -14,42 +14,39 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import permissionsPolicySectionStyles from './permissionsPolicySection.css.js';
 const UIStrings = {
     /**
-     * @description Label for a button. When clicked more details (for the content this button refers to) will be shown.
+     * @description Button text to show more details in the permissions policy section of the Application panel.
      */
     showDetails: 'Show details',
     /**
-     * @description Label for a button. When clicked some details (for the content this button refers to) will be hidden.
+     * @description Button text to hide details in the permissions policy section of the Application panel.
      */
     hideDetails: 'Hide details',
     /**
-     * @description Label for a list of features which are allowed according to the current Permissions policy
-     *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
+     * @description Label for features that are allowed according to Permissions Policy in the permissions policy section of the Application panel.
      */
-    allowedFeatures: 'Allowed Features',
+    allowedFeatures: 'Allowed features',
     /**
-     * @description Label for a list of features which are disabled according to the current Permissions policy
-     *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
+     * @description Label for features that are disabled according to Permissions Policy in the permissions policy section of the Application panel.
      */
-    disabledFeatures: 'Disabled Features',
+    disabledFeatures: 'Disabled features',
     /**
-     * @description Tooltip text for a link to a specific request's headers in the Network panel.
+     * @description Tooltip text for a link to a request's headers in the Network panel.
      */
     clickToShowHeader: 'Click to reveal the request whose "`Permissions-Policy`" HTTP header disables this feature',
     /**
-     * @description Tooltip text for a link to a specific iframe in the Elements panel (Iframes can be nested, the link goes
-     *  to the outer-most iframe which blocks a certain feature).
+     * @description Tooltip text for a link to an iframe in the Elements panel.
      */
-    clickToShowIframe: 'Click to reveal the top-most iframe which does not allow this feature in the elements panel',
+    clickToShowIframe: 'Click to reveal the top-most iframe which doesn’t allow this feature in the Elements panel',
     /**
-     * @description Text describing that a specific feature is blocked by not being included in the iframe's "allow" attribute.
+     * @description Text describing that a specific feature is blocked by not being included in the iframe's "allow" attribute in the permissions policy section of the Application panel.
      */
     disabledByIframe: 'missing in iframe "`allow`" attribute',
     /**
-     * @description Text describing that a specific feature is blocked by a Permissions Policy specified in a request header.
+     * @description Text describing that a specific feature is blocked by a Permissions Policy header in the permissions policy section of the Application panel.
      */
     disabledByHeader: 'disabled by "`Permissions-Policy`" header',
     /**
-     * @description Text describing that a specific feature is blocked by virtue of being inside a fenced frame tree.
+     * @description Text describing that a specific feature is blocked by virtue of being inside a fenced frame tree in the permissions policy section of the Application panel.
      */
     disabledByFencedFrame: 'disabled inside a `fencedframe`',
 };

@@ -3541,6 +3541,7 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
       handler.reset();
     }
     options.logger?.start("parse:handleEvent");
+    const handleEventFns = sortedHandlers.map(([, handler]) => handler.handleEvent);
     for (let i = 0; i < traceEvents.length; ++i) {
       if (options.yieldToMain !== false && i % eventsPerChunk === 0 && i) {
         const percent = calculateProgress(i / traceEvents.length, 0.2 /* HANDLE_EVENT */);
@@ -3548,9 +3549,8 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
         await new Promise((resolve) => setTimeout(resolve, 0));
       }
       const event = traceEvents[i];
-      for (let j = 0; j < sortedHandlers.length; ++j) {
-        const [, handler] = sortedHandlers[j];
-        handler.handleEvent(event);
+      for (let j = 0; j < handleEventFns.length; ++j) {
+        handleEventFns[j](event);
       }
     }
     options.logger?.end("parse:handleEvent");

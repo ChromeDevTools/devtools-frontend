@@ -522,7 +522,7 @@ var UIStrings2 = {
   /**
    * @description Type selector element title in Breakpoint edit dialog of the Sources panel.
    */
-  logAMessageToConsoleDoNotBreak: "Log a message to Console, do not break"
+  logAMessageToConsoleDoNotBreak: "Log a message to Console, don\u2019t break"
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/sources/BreakpointEditDialog.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -5153,7 +5153,7 @@ import * as StackTrace3 from "../../models/stack_trace/stack_trace.js";
 import * as Workspace21 from "../../models/workspace/workspace.js";
 import * as PanelCommon3 from "../common/common.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
-import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as SettingsUI3 from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI16 from "../../ui/legacy/legacy.js";
 import * as Settings9 from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
@@ -5674,6 +5674,7 @@ import * as Buttons2 from "../../ui/components/buttons/buttons.js";
 import { createIcon } from "../../ui/kit/kit.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
 import * as Lit3 from "../../ui/lit/lit.js";
+import * as SettingsUI2 from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as Snippets from "../snippets/snippets.js";
 import { PanelUtils } from "../utils/utils.js";
@@ -5881,6 +5882,7 @@ import * as TextUtils2 from "../../core/text_utils/text_utils.js";
 import * as Bindings2 from "../../models/bindings/bindings.js";
 import * as Persistence from "../../models/persistence/persistence.js";
 import * as Workspace3 from "../../models/workspace/workspace.js";
+import * as SettingsUI from "../../ui/settings/settings.js";
 var SourcesSearchScope = class _SourcesSearchScope {
   searchId;
   searchResultCandidates;
@@ -5933,7 +5935,7 @@ var SourcesSearchScope = class _SourcesSearchScope {
     }
   }
   projects() {
-    const searchInAnonymousAndContentScripts = Common5.Settings.Settings.instance().moduleSetting("search-in-anonymous-and-content-scripts").get();
+    const searchInAnonymousAndContentScripts = Common5.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.searchInAnonymousAndContentScriptsSettingDescriptor).get();
     const localOverridesEnabled = Common5.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).get();
     return Workspace3.Workspace.WorkspaceImpl.instance().projects().filter((project) => {
       if (project.type() === Workspace3.Workspace.projectTypes.Service) {
@@ -6224,7 +6226,7 @@ var UIStrings6 = {
   /**
    * @description Text in a dialog which appears when users click on 'Exclude from workspace' menu item.
    */
-  folderWillNotBeShown: "This folder and its contents will not be shown in workspace",
+  folderWillNotBeShown: "This folder and its contents won\u2019t be shown in workspace",
   /**
    * @description Text in Navigator view of the Sources panel.
    */
@@ -6252,7 +6254,7 @@ var UIStrings6 = {
   /**
    * @description Text in Navigator view of the Sources panel. A confirmation message on action to delete a folder or file.
    */
-  actionCannotBeUndone: "This action cannot be undone",
+  actionCannotBeUndone: "This action can\u2019t be undone",
   /**
    * @description A context menu item in the Navigator view of the Sources panel.
    */
@@ -6385,12 +6387,14 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
       this.contentElement,
       { "sources.rename": this.renameShortcut.bind(this) }
     );
-    this.navigatorGroupByFolderSetting = Common7.Settings.Settings.instance().moduleSetting("navigator-group-by-folder");
+    this.navigatorGroupByFolderSetting = Common7.Settings.Settings.instance().resolve(SettingsUI2.SourcesSettings.navigatorGroupByFolderSettingDescriptor);
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
-    this.navigatorJustMyCodeSetting = Common7.Settings.Settings.instance().moduleSetting("navigator-just-my-code");
+    this.navigatorJustMyCodeSetting = Common7.Settings.Settings.instance().resolve(SettingsUI2.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
     this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));
     if (enableAuthoredGrouping) {
-      this.navigatorGroupByAuthoredSetting = Common7.Settings.Settings.instance().moduleSetting("navigator-group-by-authored");
+      this.navigatorGroupByAuthoredSetting = Common7.Settings.Settings.instance().resolve(
+        SettingsUI2.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor
+      );
       this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
     }
     Workspace5.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
@@ -9162,7 +9166,7 @@ var UIStrings9 = {
   /**
    * @description Text in Debugger plugin of the Sources panel.
    */
-  theDebuggerWillSkipStepping: "The debugger will skip stepping through this script, and will not stop on exceptions",
+  theDebuggerWillSkipStepping: "The debugger will skip stepping through this script, and won\u2019t stop on exceptions",
   /**
    * @description Text in Debugger plugin of the Sources panel.
    */
@@ -14844,8 +14848,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
       }
     }
   }
-  addSettingMenuItem(contextMenu, settingName, menuText) {
-    const setting = Common13.Settings.Settings.instance().moduleSetting(settingName);
+  addSettingMenuItem(contextMenu, setting, menuText) {
     contextMenu.appendCheckboxItem(
       menuText,
       () => setting.set(!setting.get()),
@@ -14856,17 +14859,17 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     contextMenu.appendItemsAtLocation("navigatorMenu");
     this.addSettingMenuItem(
       contextMenu.viewSection(),
-      "navigator-group-by-folder",
+      Common13.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorGroupByFolderSettingDescriptor),
       i18nString16(UIStrings17.groupByFolder)
     );
     this.addSettingMenuItem(
       contextMenu.viewSection(),
-      "navigator-group-by-authored",
+      Common13.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor),
       i18nString16(UIStrings17.groupByAuthored)
     );
     this.addSettingMenuItem(
       contextMenu.viewSection(),
-      "navigator-just-my-code",
+      Common13.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorJustMyCodeSettingDescriptor),
       i18nString16(UIStrings17.hideIgnoreListed)
     );
   }
@@ -14954,7 +14957,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
   editorSelected(event) {
     const uiSourceCode = event.data;
     UI16.Context.Context.instance().setFlavor(Workspace21.UISourceCode.UISourceCode, uiSourceCode);
-    if (this.editorView.mainWidget() && Common13.Settings.Settings.instance().moduleSetting("auto-reveal-in-navigator").get()) {
+    if (this.editorView.mainWidget() && Common13.Settings.Settings.instance().resolve(Settings9.SourcesSettings.autoRevealInNavigatorSettingDescriptor).get()) {
       void this.revealInNavigator(uiSourceCode, true);
     }
   }
@@ -15088,7 +15091,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     debugToolbarDrawer.classList.add("scripts-debug-toolbar-drawer");
     const label = i18nString16(UIStrings17.pauseOnCaughtExceptions);
     const setting = Common13.Settings.Settings.instance().resolve(SDK11.SDKSettings.pauseOnCaughtExceptionSettingDescriptor);
-    debugToolbarDrawer.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(label, setting));
+    debugToolbarDrawer.appendChild(SettingsUI3.SettingsUI.createSettingCheckbox(label, setting));
     return debugToolbarDrawer;
   }
   appendApplicableItems(event, contextMenu, target) {
@@ -15115,7 +15118,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
       return;
     }
     const eventTarget = event.target;
-    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Common13.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace21.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Common13.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorJustMyCodeSettingDescriptor).get() && Workspace21.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
       uiSourceCode
     ))) {
       contextMenu.revealSection().appendItem(
@@ -16219,6 +16222,7 @@ import * as Persistence12 from "../../models/persistence/persistence.js";
 import * as Workspace24 from "../../models/workspace/workspace.js";
 import * as QuickOpen3 from "../../ui/legacy/components/quick_open/quick_open.js";
 import { Directives as Directives5, html as html13, nothing as nothing10 } from "../../ui/lit/lit.js";
+import * as SettingsUI5 from "../../ui/settings/settings.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
 var filteredUISourceCodeListProvider_css_default = `/*
@@ -16344,7 +16348,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (this.uiSourceCodeIds.has(uiSourceCode.canonicalScriptId())) {
       return false;
     }
-    if (Common15.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+    if (Common15.Settings.Settings.instance().resolve(SettingsUI5.SourcesSettings.navigatorJustMyCodeSettingDescriptor).get() && Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
       uiSourceCode
     )) {
       return false;
@@ -17118,7 +17122,7 @@ var UIStrings22 = {
    * @description A message in a confirmation dialog to explain why the action failed in the Persistence actions.
    * @example {index.ts} PH1
    */
-  overrideSourceMappedFileExplanation: "\u2018{PH1}\u2019 is a source mapped file and cannot be overridden",
+  overrideSourceMappedFileExplanation: "\u2018{PH1}\u2019 is a source mapped file and can\u2019t be overridden",
   /**
    * @description An error message shown in the DevTools Console after the user clicked "Save as" in
    * the context menu of a page resource.

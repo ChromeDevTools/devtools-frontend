@@ -54,7 +54,7 @@ export declare const UIStrings: {
     /**
      * @description Text status when no layout shift culprits or root causes were found.
      */
-    readonly noCulprits: 'Could not detect any layout shift culprits';
+    readonly noCulprits: 'Couldn’t detect any layout shift culprits';
 };
 export declare const i18nString: i18n.LocalizeString;
 export type CLSCulpritsInsightModel = InsightModel<typeof UIStrings, {

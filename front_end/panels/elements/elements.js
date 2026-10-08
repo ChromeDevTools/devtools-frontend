@@ -4417,7 +4417,7 @@ var UIStrings4 = {
    * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a non-anchor-positioned element.
    * @example {relative} POSITION
    */
-  invalidAnchorPositioning: 'An anchor was defined but the element was not anchor-positioned but positioned "{POSITION}"',
+  invalidAnchorPositioning: 'An anchor was defined but the element wasn\u2019t anchor-positioned but positioned "{POSITION}"',
   /**
    * @description The message shown in the Styles tab when the user hovers over a position-anchor declaration that has no effect on a non-anchor-positioned element.
    */
@@ -5691,7 +5691,7 @@ var UIStrings5 = {
    *             defined and cannot be linked to.
    * @example {--my-linkable-name} PH1
    */
-  sIsNotDefined: "{PH1} is not defined",
+  sIsNotDefined: "{PH1} isn\u2019t defined",
   /**
    * @description Text in the Styles tab of the Elements panel.
    */
@@ -23058,14 +23058,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   }
   duplicateNode(node) {
     void node.duplicate().then(({ error, node: newNode }) => {
-      if (!error) {
-        const duplicatedNode = newNode ?? node;
+      if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements2.DOMChanges.trackNodeDuplication(
-          changeTracker,
-          duplicatedNode,
-          buildChangeSelector(changeTracker, duplicatedNode)
-        );
+        Elements2.DOMChanges.trackNodeDuplication(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
       }
     });
   }
@@ -23188,10 +23183,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     }
     const wasExpanded = this.#draggedNodeWasExpanded;
     draggedNode.moveTo(parentNode, anchorNode, (error, newNode) => {
-      if (!error) {
-        const movedNode = newNode ?? draggedNode;
+      if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements2.DOMChanges.trackNodeDrop(changeTracker, movedNode, buildChangeSelector(changeTracker, movedNode));
+        Elements2.DOMChanges.trackNodeDrop(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
       }
       this.selectNodeAfterEdit(wasExpanded, error, newNode);
     });
@@ -23354,13 +23348,12 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       const wasExpanded = this.isNodeExpanded(node);
       if (event.key === "ArrowUp" && node.previousSibling) {
         node.moveTo(node.parentNode, node.previousSibling, (error, newNode) => {
-          if (!error) {
-            const movedNode = newNode ?? node;
+          if (!error && newNode) {
             const changeTracker = this.changeTracker;
             Elements2.DOMChanges.trackNodeMove(
               changeTracker,
-              movedNode,
-              buildChangeSelector(changeTracker, movedNode),
+              newNode,
+              buildChangeSelector(changeTracker, newNode),
               /* directionUp= */
               true
             );
@@ -23372,13 +23365,12 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       }
       if (event.key === "ArrowDown" && node.nextSibling) {
         node.moveTo(node.parentNode, node.nextSibling.nextSibling, (error, newNode) => {
-          if (!error) {
-            const movedNode = newNode ?? node;
+          if (!error && newNode) {
             const changeTracker = this.changeTracker;
             Elements2.DOMChanges.trackNodeMove(
               changeTracker,
-              movedNode,
-              buildChangeSelector(changeTracker, movedNode),
+              newNode,
+              buildChangeSelector(changeTracker, newNode),
               /* directionUp= */
               false
             );
@@ -23506,13 +23498,12 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     const clipboardNode = this.#clipboardData.node;
     if (this.#clipboardData.isCut) {
       clipboardNode.moveTo(targetNode, null, (error, newNode) => {
-        if (!error) {
-          const movedNode = newNode ?? clipboardNode;
+        if (!error && newNode) {
           const changeTracker = this.changeTracker;
           Elements2.DOMChanges.trackNodePaste(
             changeTracker,
-            movedNode,
-            buildChangeSelector(changeTracker, movedNode),
+            newNode,
+            buildChangeSelector(changeTracker, newNode),
             /* isCut= */
             true
           );
@@ -23522,13 +23513,12 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       this.setClipboardData(null);
     } else {
       clipboardNode.copyTo(targetNode, null, (error, newNode) => {
-        if (!error) {
-          const addedNode = newNode ?? clipboardNode;
+        if (!error && newNode) {
           const changeTracker = this.changeTracker;
           Elements2.DOMChanges.trackNodePaste(
             changeTracker,
-            addedNode,
-            buildChangeSelector(changeTracker, addedNode),
+            newNode,
+            buildChangeSelector(changeTracker, newNode),
             /* isCut= */
             false
           );
@@ -26217,19 +26207,19 @@ var UIStrings20 = {
   /**
    * @description Warning/error text displayed when a node cannot be found in the current page.
    */
-  nodeCannotBeFoundInTheCurrent: "Node cannot be found in the current page",
+  nodeCannotBeFoundInTheCurrent: "Node can\u2019t be found in the current page",
   /**
    * @description Console warning when a user tries to reveal a non-node type Remote Object. A remote
    * object is a JavaScript object that is not stored in DevTools, that DevTools has a connection to.
    * It should correspond to a local node.
    */
-  theRemoteObjectCouldNotBe: "The remote object could not be resolved to a valid node",
+  theRemoteObjectCouldNotBe: "The remote object couldn\u2019t be resolved to a valid node",
   /**
    * @description Console warning when the user tries to reveal a deferred DOM Node that resolves as
    * null. A deferred DOM node is a node we know about but have not yet fetched from the backend (we
    * defer the work until later).
    */
-  theDeferredDomNodeCouldNotBe: "The deferred `DOM` Node could not be resolved to a valid node",
+  theDeferredDomNodeCouldNotBe: "The deferred `DOM` Node couldn\u2019t be resolved to a valid node",
   /**
    * @description Text in Elements Panel of the Elements panel. Shows the current CSS Pseudo-classes
    * applicable to the selected HTML element.

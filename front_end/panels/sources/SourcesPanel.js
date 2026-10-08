@@ -508,15 +508,14 @@ export class SourcesPanel extends UI.Panel.Panel {
             }
         }
     }
-    addSettingMenuItem(contextMenu, settingName, menuText) {
-        const setting = Common.Settings.Settings.instance().moduleSetting(settingName);
+    addSettingMenuItem(contextMenu, setting, menuText) {
         contextMenu.appendCheckboxItem(menuText, () => setting.set(!setting.get()), { checked: setting.get(), jslogContext: setting.name });
     }
     populateNavigatorMenu(contextMenu) {
         contextMenu.appendItemsAtLocation('navigatorMenu');
-        this.addSettingMenuItem(contextMenu.viewSection(), 'navigator-group-by-folder', i18nString(UIStrings.groupByFolder));
-        this.addSettingMenuItem(contextMenu.viewSection(), 'navigator-group-by-authored', i18nString(UIStrings.groupByAuthored));
-        this.addSettingMenuItem(contextMenu.viewSection(), 'navigator-just-my-code', i18nString(UIStrings.hideIgnoreListed));
+        this.addSettingMenuItem(contextMenu.viewSection(), Common.Settings.Settings.instance().resolve(Settings.SourcesSettings.navigatorGroupByFolderSettingDescriptor), i18nString(UIStrings.groupByFolder));
+        this.addSettingMenuItem(contextMenu.viewSection(), Common.Settings.Settings.instance().resolve(Settings.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor), i18nString(UIStrings.groupByAuthored));
+        this.addSettingMenuItem(contextMenu.viewSection(), Common.Settings.Settings.instance().resolve(Settings.SourcesSettings.navigatorJustMyCodeSettingDescriptor), i18nString(UIStrings.hideIgnoreListed));
     }
     updateLastModificationTime() {
         this.lastModificationTime = window.performance.now();
@@ -597,7 +596,9 @@ export class SourcesPanel extends UI.Panel.Panel {
         const uiSourceCode = event.data;
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
         if (this.editorView.mainWidget() &&
-            Common.Settings.Settings.instance().moduleSetting('auto-reveal-in-navigator').get()) {
+            Common.Settings.Settings.instance()
+                .resolve(Settings.SourcesSettings.autoRevealInNavigatorSettingDescriptor)
+                .get()) {
             void this.revealInNavigator(uiSourceCode, true);
         }
     }
@@ -752,7 +753,9 @@ export class SourcesPanel extends UI.Panel.Panel {
         const eventTarget = event.target;
         if (!uiSourceCode.project().isServiceProject() &&
             !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) &&
-            !(Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code').get() &&
+            !(Common.Settings.Settings.instance()
+                .resolve(Settings.SourcesSettings.navigatorJustMyCodeSettingDescriptor)
+                .get() &&
                 Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
             contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
                 jslogContext: 'sources.reveal-in-navigator-sidebar',

@@ -36,14 +36,14 @@ const UIStrings = {
      * not being deferred is that while the HTTP request is in scope of a session, it was
      * not possible to trigger a refresh proactively.
      */
-    proactiveRefreshNotPossible: 'Not deferred (Request is in scope of session but proactive refresh is not possible)',
+    proactiveRefreshNotPossible: 'Not deferred (Request is in scope of session but proactive refresh isn’t possible)',
     /**
      * @description One of the HTTP request deferral decisions. This one notes that the
      * request was not deferred (i.e. not paused and later unpaused). The reasoning for it
      * not being deferred is that while the HTTP request is in scope of a session, the HTTP
      * request's initiator is not allowed to trigger a refresh.
      */
-    inScopeRefreshNotAllowed: 'Not deferred (Request is in scope of session but initiator is not allowed to trigger refresh)',
+    inScopeRefreshNotAllowed: 'Not deferred (Request is in scope of session but initiator isn’t allowed to trigger refresh)',
     /**
      * @description One of the HTTP request deferral decisions. This one notes that the
      * request was not deferred (i.e. not paused and later unpaused). The reasoning for it
@@ -56,7 +56,7 @@ const UIStrings = {
      * request was not deferred (i.e. not paused and later unpaused). The reasoning for it
      * not being deferred is that the HTTP request is not in scope of a session.
      */
-    notInScope: 'Not deferred (Request is not in scope of session)',
+    notInScope: 'Not deferred (Request isn’t in scope of session)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestDeviceBoundSessionsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -583,7 +583,7 @@ var UIStrings = {
   /**
    * @description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
    */
-  notAvailableInIncognitoMode: "AI assistance is not available in Incognito mode or Guest mode"
+  notAvailableInIncognitoMode: "AI assistance isn\u2019t available in Incognito mode or Guest mode"
 };
 var str_ = i18n.i18n.registerUIStrings("panels/explain/components/ConsoleInsight.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);

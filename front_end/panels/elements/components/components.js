@@ -1526,7 +1526,7 @@ var UIStrings4 = {
    * @description Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles tab when the custom property in this function does not exist. The parameter is the name of the property.
    * @example {--my-custom-property-name} PH1
    */
-  sIsNotDefined: "{PH1} is not defined"
+  sIsNotDefined: "{PH1} isn\u2019t defined"
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/elements/components/CSSVariableValueView.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);

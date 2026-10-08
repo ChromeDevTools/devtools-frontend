@@ -65,7 +65,7 @@ export default `/*
     outline-offset: calc(-1 * var(--sys-size-2));
   }
 
-  .service-worker-update-timing-bar-clickable[aria-checked="true"]::before {
+  .service-worker-update-timing-bar-clickable[aria-expanded="true"]::before {
     transform: rotate(90deg);
   }
 

@@ -1,5 +1,10 @@
 import * as SDK from '../../core/sdk/sdk.js';
 export declare function isScopedFrame(frame: SDK.DebuggerModel.CallFrame): boolean;
+/**
+ * @returns the stack depth that doesn't count outlined frames on top of the stack. Entering or leaving an outlined
+ *          part of a function doesn't change it, while calling a function increases it.
+ */
+export declare function logicalDepth(callFrames: readonly SDK.DebuggerModel.CallFrame[]): number;
 /** @returns true iff {@link frame} has encoded scopes, and its position is not mapped to any source. */
 export declare function isUnmapped(frame: SDK.DebuggerModel.CallFrame): boolean;
 /** @returns true iff both frames have encoded scopes and are mapped to the same original location. */

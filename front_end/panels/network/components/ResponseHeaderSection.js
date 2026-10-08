@@ -29,7 +29,7 @@ const UIStrings = {
     /**
      * @description Explanation text for which cross-origin policy to set.
      */
-    onlyChooseThisOptionIfAn: 'Only choose this option if an arbitrary website including this resource does not impose a security risk',
+    onlyChooseThisOptionIfAn: 'Only choose this option if an arbitrary website including this resource doesn’t impose a security risk',
     /**
      * @description Message in the Headers View of the Network panel when a cross-origin opener policy blocked loading a sandbox iframe.
      */

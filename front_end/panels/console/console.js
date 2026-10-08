@@ -4863,6 +4863,7 @@ var UIStrings2 = {
   /**
    * @description Element text content in Object properties section.
    */
+  // eslint-disable-next-line @devtools/l10n-uistrings-text-style
   dots: "(...)",
   /**
    * @description Element title in Object properties section.
@@ -7055,7 +7056,7 @@ var UIStringsNotTranslate = {
   /**
    * @description Explainer for which data is being sent by the console insights feature
    */
-  consoleInsightsSendsDataNoLogging: "To generate explanations, the console message, associated stack trace, related source code, and the associated network headers are sent to Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  consoleInsightsSendsDataNoLogging: "To generate explanations, the console message, associated stack trace, related source code, and the associated network headers are sent to Google. This data won\u2019t be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
    * @description Third item in the first-run experience dialog
    */
@@ -8930,7 +8931,7 @@ var ConsoleViewport = class {
     const end = this.selectionIsBackward ? this.anchorSelection.item : this.headSelection.item;
     for (let i = start; i <= end; i++) {
       const element = this.providerElement(i);
-      if (element?.consoleMessage().type === "table") {
+      if (element?.consoleMessage?.().type === "table") {
         return true;
       }
     }
@@ -9063,7 +9064,7 @@ var ConsoleViewport = class {
         continue;
       }
       const element = providerElement.element();
-      const lineContent = Components4.Linkifier.Linkifier.untruncatedTextContent(element);
+      const lineContent = this.visibleChildTextNodes(element).map(Components4.Linkifier.Linkifier.untruncatedNodeText).join("");
       textLines.push(lineContent);
     }
     const endProviderElement = this.providerElement(endSelection.item);
@@ -9082,6 +9083,29 @@ var ConsoleViewport = class {
     }
     return textLines.join("\n");
   }
+  isNodeVisible(node) {
+    const element = node instanceof Element ? node : node.parentElement;
+    if (!element) {
+      return false;
+    }
+    if (element.closest(".hidden-stack-trace, .hidden")) {
+      return false;
+    }
+    if (element.isConnected) {
+      return element.checkVisibility();
+    }
+    let current = element;
+    while (current) {
+      if (current instanceof HTMLElement && (current.style.display === "none" || current.style.visibility === "hidden")) {
+        return false;
+      }
+      current = current.parentElement;
+    }
+    return true;
+  }
+  visibleChildTextNodes(element) {
+    return element.childTextNodes().filter((node) => this.isNodeVisible(node));
+  }
   textOffsetInNode(itemElement, selectionNode, offset) {
     const textContentLength = selectionNode.textContent ? selectionNode.textContent.length : 0;
     if (selectionNode.nodeType !== Node.TEXT_NODE) {
@@ -9095,7 +9119,7 @@ var ConsoleViewport = class {
     let chars = 0;
     let node = itemElement;
     while ((node = node.traverseNextNode(itemElement)) && node !== selectionNode) {
-      if (node.nodeType !== Node.TEXT_NODE || node.parentNode && (node.parentNode.nodeName === "STYLE" || node.parentNode.nodeName === "SCRIPT" || node.parentNode.nodeName === "#document-fragment")) {
+      if (node.nodeType !== Node.TEXT_NODE || node.parentNode && (node.parentNode.nodeName === "STYLE" || node.parentNode.nodeName === "SCRIPT" || node.parentNode.nodeName === "#document-fragment") || !this.isNodeVisible(node)) {
         continue;
       }
       chars += Components4.Linkifier.Linkifier.untruncatedNodeText(node).length;

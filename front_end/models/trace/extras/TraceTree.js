@@ -417,7 +417,7 @@ export class BottomUpRootNode extends Node {
         }
         function onEndEvent(event) {
             const id = idStack.pop();
-            if (!id) {
+            if (id === undefined) {
                 return;
             }
             let node = nodeById.get(id);

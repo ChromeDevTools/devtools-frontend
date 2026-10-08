@@ -110,6 +110,9 @@
       "path": "../../ui/lit/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/settings/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../common/bundle-tsconfig.ref.json"
     },
     {

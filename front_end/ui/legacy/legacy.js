@@ -20141,16 +20141,11 @@ var listWidget_css_default = `/*
   overflow-y: auto;
   flex-direction: column;
 
-  --override-background-list-item-color: hsl(0deg 0% 96%);
+  --override-background-list-item-color: var(--sys-color-neutral-container);
 
   &:has(div) {
     border: var(--sys-size-1) solid var(--sys-color-divider);
   }
-}
-
-.theme-with-dark-background .list,
-:host-context(.theme-with-dark-background) .list {
-  --override-background-list-item-color: hsl(0deg 0% 16%);
 }
 
 .list-separator {

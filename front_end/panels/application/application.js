@@ -11470,7 +11470,7 @@ var serviceWorkerUpdateCycleView_css_default = `/*
     outline-offset: calc(-1 * var(--sys-size-2));
   }
 
-  .service-worker-update-timing-bar-clickable[aria-checked="true"]::before {
+  .service-worker-update-timing-bar-clickable[aria-expanded="true"]::before {
     transform: rotate(90deg);
   }
 
@@ -11572,8 +11572,9 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
         resize: true,
         keydown: "ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Space"
       })}>
-          <td class="service-worker-update-timing-bar-clickable" tabindex="0" role="switch"
-              aria-checked=${expanded ? "true" : "false"}
+          <td class="service-worker-update-timing-bar-clickable" tabindex="0" role="button"
+              aria-expanded=${expanded ? "true" : "false"}
+              aria-label=${`#${range.id} ${phaseName}`}
               @focus=${input.onFocus}
               @keydown=${(e) => input.onKeydown(e, key)}
               @click=${(e) => input.onClick(e, key)}
@@ -17069,9 +17070,13 @@ var UIStrings28 = {
    */
   editAndRun: "Edit and run",
   /**
-   * @description Tooltip text and button label for the paste button in the WebMCP view of the Application panel.
+   * @description Button label for the paste button in the WebMCP view of the Application panel.
    */
   paste: "Paste",
+  /**
+   * @description Tooltip text for the paste button in the WebMCP view of the Application panel.
+   */
+  pasteTooltip: "Paste tool parameters from clipboard as JSON",
   /**
    * @description Notice displayed when a tool has been unregistered in the WebMCP view of the Application panel.
    */
@@ -17513,7 +17518,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
                 .size=${Buttons9.Button.Size.SMALL}
                 .variant=${Buttons9.Button.Variant.TEXT}
                 .jslogContext=${"paste"}
-                title=${i18nString28(UIStrings28.paste)}
+                title=${i18nString28(UIStrings28.pasteTooltip)}
                 @click=${input.onPaste}
               >${i18nString28(UIStrings28.paste)}</devtools-button>
             </div>

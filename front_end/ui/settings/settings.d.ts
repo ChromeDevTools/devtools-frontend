@@ -6,6 +6,7 @@ import * as LayerViewerSettings from './LayerViewerSettings.js';
 import * as MainSettings from './MainSettings.js';
 import * as NetworkSettings from './NetworkSettings.js';
 import * as SettingUIRegistration from './SettingUIRegistration.js';
+import * as SourcesSettings from './SourcesSettings.js';
 import * as TimelineSettings from './TimelineSettings.js';
 import * as WhatsNewSettings from './WhatsNewSettings.js';
-export { ConsoleSettings, ElementsSettings, EmulationSettings, InspectorMainSettings, LayerViewerSettings, MainSettings, NetworkSettings, SettingUIRegistration, TimelineSettings, WhatsNewSettings, };
+export { ConsoleSettings, ElementsSettings, EmulationSettings, InspectorMainSettings, LayerViewerSettings, MainSettings, NetworkSettings, SettingUIRegistration, SourcesSettings, TimelineSettings, WhatsNewSettings, };

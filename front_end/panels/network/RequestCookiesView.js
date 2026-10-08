@@ -57,7 +57,7 @@ const UIStrings = {
      * @example {Learn more} PH1
      *
      */
-    siteHasCookieInOtherPartition: 'This site has cookies in another partition, that were not sent with this request. {PH1}',
+    siteHasCookieInOtherPartition: 'This site has cookies in another partition, that weren’t sent with this request. {PH1}',
     /**
      * @description Title of a link to the developer documentation.
      */

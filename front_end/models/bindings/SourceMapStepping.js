@@ -6,6 +6,10 @@
  *
  * Mirrors the Wasm auto-stepping: user steps get a skip list (see `DebuggerWorkspaceBinding.computeAutoStep`), and
  * pauses that don't correspond to a "logical" step are continued automatically ({@link nextAutoStep}).
+ *
+ * Outlined code is code of an authored function that the compiler moved into a separate generated function marked as
+ * "hidden". A run of outlined frames on top of the stack is one logical frame together with the frame below them (the
+ * "owner"), see {@link logicalDepth}.
  */
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -34,6 +38,26 @@ function toLocationRanges({ script }, ranges) {
 }
 export function isScopedFrame(frame) {
     return scopedPosition(frame) !== null;
+}
+/** @returns the number of leading frames that are outlined parts of the (logical) frame below them. */
+function outlinedPrefixLength(callFrames) {
+    let length = 0;
+    for (const frame of callFrames) {
+        const position = scopedPosition(frame);
+        if (!position ||
+            position.sourceMap.translateRawFrame(position.line, position.column)?.kind !== "OUTLINED" /* SDK.SourceMapScopesInfo.GeneratedFrameKind.OUTLINED */) {
+            break;
+        }
+        ++length;
+    }
+    return length;
+}
+/**
+ * @returns the stack depth that doesn't count outlined frames on top of the stack. Entering or leaving an outlined
+ *          part of a function doesn't change it, while calling a function increases it.
+ */
+export function logicalDepth(callFrames) {
+    return callFrames.length - outlinedPrefixLength(callFrames);
 }
 /** @returns true iff {@link frame} has encoded scopes, and its position is not mapped to any source. */
 export function isUnmapped(frame) {
@@ -81,8 +105,8 @@ export async function nextAutoStep(details, context, computeAutoStep) {
         case "StepInto" /* SDK.DebuggerModel.StepMode.STEP_INTO */:
             return isUnmapped(frames[0]) ? await computeAutoStep("StepInto" /* SDK.DebuggerModel.StepMode.STEP_INTO */, frames) : null;
         case "StepOver" /* SDK.DebuggerModel.StepMode.STEP_OVER */: {
-            const startDepth = start.length;
-            const depth = frames.length;
+            const startDepth = logicalDepth(start);
+            const depth = logicalDepth(frames);
             if (isUnmapped(frames[0]) || (depth === startDepth && isSameOriginalLocation(frames[0], start[0]))) {
                 // Unmapped code, or still on the same original location (the skip list only covers the generated ranges that
                 // contain the start position): keep stepping over.

@@ -1220,7 +1220,7 @@ var UIStrings4 = {
   /**
    * @description Text label indicating why an option is not available, because the user's device is not fast enough to emulate a device.
    */
-  calibrationErrorDeviceTooWeak: "Device is not powerful enough"
+  calibrationErrorDeviceTooWeak: "Device isn\u2019t powerful enough"
 };
 var str_4 = i18n9.i18n.registerUIStrings("panels/common/CPUThrottlingOption.ts", UIStrings4);
 var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);

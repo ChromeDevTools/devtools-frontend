@@ -225,7 +225,7 @@ var NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer", "SemanticEmbedder"]
+    receivers: ["CredentialsContainer", "DecisionModel", "SemanticEmbedder"]
   },
   {
     name: "defineProperty",
@@ -8088,6 +8088,10 @@ var NativeFunctions = [
     signatures: [["decapsulationAlgorithm", "decapsulationKey", "ciphertext"]]
   },
   {
+    name: "requestFileHandle",
+    signatures: [["hash", "?options"]]
+  },
+  {
     name: "userAgentAllowsProtocol",
     signatures: [["protocol"]]
   },
@@ -8304,6 +8308,14 @@ var NativeFunctions = [
     signatures: [["animatorName", "effects", "?timeline", "?options"]]
   },
   {
+    name: "availability",
+    signatures: [["?options"]]
+  },
+  {
+    name: "decide",
+    signatures: [["input", "?options"]]
+  },
+  {
     name: "LanguageModelToolCall",
     signatures: [["init"]]
   },
@@ -8314,10 +8326,6 @@ var NativeFunctions = [
   {
     name: "LanguageModelToolError",
     signatures: [["init"]]
-  },
-  {
-    name: "availability",
-    signatures: [["?options"]]
   },
   {
     name: "embed",
@@ -8397,7 +8405,7 @@ var NativeFunctions = [
   },
   {
     name: "createParserOptions",
-    signatures: [["input"]]
+    signatures: [["?input", "...args"]]
   },
   {
     name: "createPolicy",

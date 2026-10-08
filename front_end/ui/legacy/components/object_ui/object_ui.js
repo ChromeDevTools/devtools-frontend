@@ -3547,6 +3547,7 @@ var UIStrings2 = {
   /**
    * @description Placeholder text indicating more content or an invocable getter in an object properties tree.
    */
+  // eslint-disable-next-line @devtools/l10n-uistrings-text-style
   dots: "(...)",
   /**
    * @description Tooltip text for the button that invokes an object property getter.

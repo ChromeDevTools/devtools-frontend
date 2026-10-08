@@ -46,6 +46,8 @@ export declare class ConsoleViewport {
     refresh(): void;
     private partialViewportUpdate;
     private selectedText;
+    private isNodeVisible;
+    private visibleChildTextNodes;
     private textOffsetInNode;
     private onScroll;
     firstVisibleIndex(): number;

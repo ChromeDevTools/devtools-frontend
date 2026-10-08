@@ -23,11 +23,11 @@ const NETWORK_USAGE_DOC_URL = 'https://developer.chrome.com/docs/ads/metrics/wei
 const AD_DETECTION_DOC_URL = 'https://developer.chrome.com/docs/ads/detection';
 const UIStrings = {
     /**
-     * @description Title for the metrics table.
+     * @description Title for the metrics section in the ads view of the Application panel.
      */
     metrics: 'Metrics',
     /**
-     * @description Title for a metric showing the percentage of the viewport covered by ads.
+     * @description Title for a metric showing the percentage of the viewport covered by ads in the ads view of the Application panel.
      */
     viewportAdDensity: 'Viewport ad density',
     /**
@@ -35,7 +35,7 @@ const UIStrings = {
      */
     viewportAdDensityExplanation: 'Percentage of the viewport covered by ads',
     /**
-     * @description Title for a metric showing the number of ads in the viewport.
+     * @description Title for a metric showing the number of ads in the viewport in the ads view of the Application panel.
      */
     viewportAdCount: 'Viewport ad count',
     /**
@@ -43,7 +43,7 @@ const UIStrings = {
      */
     viewportAdCountExplanation: 'Number of ads in the viewport',
     /**
-     * @description Title for a metric showing the total CPU usage by ads.
+     * @description Title for a metric showing the total CPU usage by ads in the ads view of the Application panel.
      */
     totalCpuUsage: 'Total CPU usage by ads',
     /**
@@ -51,7 +51,7 @@ const UIStrings = {
      */
     totalCpuUsageExplanation: 'Total CPU time consumed by ads',
     /**
-     * @description Title for a metric showing the total network usage by ads.
+     * @description Title for a metric showing the total network usage by ads in the ads view of the Application panel.
      */
     totalNetworkUsage: 'Total network usage by ads',
     /**
@@ -59,99 +59,98 @@ const UIStrings = {
      */
     totalNetworkUsageExplanation: 'Total network data consumed by ads',
     /**
-     * @description Subtext showing the average value of a metric.
+     * @description Subtext showing the average value of a metric in the ads view of the Application panel.
      * @example {5.00%} PH1
      */
     average: '(Average: {PH1})',
     /**
-     * @description Title for the ad iframes table.
+     * @description Title for the ad iframes table in the ads view of the Application panel.
      * @example {3} PH1
      */
     adIframesTitle: 'Ad iframes (total {PH1})',
     /**
-     * @description Text to display when a value is not available.
+     * @description Text to display when a metric value is not available in the ads view of the Application panel.
      */
     notAvailable: 'N/A',
     /**
-     * @description Text to display when a frame has no name/id.
+     * @description Text to display when a frame has no name or ID in the ads view of the Application panel.
      */
     unnamed: '<unnamed>',
     /**
-     * @description Title for the Element Id column in the ad iframes table.
+     * @description Column header for the element ID in the ad iframes table in the ads view of the Application panel.
      */
     elementId: 'Element ID',
     /**
-     * @description Title for the Initial origin column in the ad iframes table.
+     * @description Column header for the initial origin in the ad iframes table in the ads view of the Application panel.
      */
     initialOrigin: 'Initial origin',
     /**
-     * @description Title for the CPU column in the ad iframes table.
+     * @description Column header for CPU usage in the ad iframes table in the ads view of the Application panel.
      */
     cpu: 'CPU',
     /**
-     * @description Title for the Network column in the ad iframes table.
+     * @description Column header for network usage in the ad iframes table in the ads view of the Application panel.
      */
     network: 'Network',
     /**
-     * @description Accessible name for the ad iframes table.
+     * @description Accessible name for the ad iframes table in the ads view of the Application panel.
      */
     adIframes: 'Ad iframes',
     /**
-     * @description Title for the ad scripts table.
+     * @description Title for the ad scripts table in the ads view of the Application panel.
      * @example {3} PH1
      */
     adScriptsTitle: 'Ad scripts (total {PH1})',
     /**
-     * @description Title for the URL column in the ad scripts table.
+     * @description Column header for the script URL in the ad scripts table in the ads view of the Application panel.
      */
     url: 'URL',
     /**
-     * @description Accessible name for the ad scripts table.
+     * @description Accessible name for the ad scripts table in the ads view of the Application panel.
      */
     adScripts: 'Ad scripts',
     /**
-     * @description Title for the ad provenance column in the ad scripts table.
+     * @description Column header for the ad provenance in the ad scripts table in the ads view of the Application panel.
      */
     adProvenance: 'Ad provenance',
     /**
-     * @description Text to display when a script has no provenance.
+     * @description Text to display when a script has no provenance in the ads view of the Application panel.
      */
     noProvenance: '<no provenance>',
     /**
-     * @description Text to display in the tooltip when a script has no provenance.
+     * @description Tooltip text when a script has no provenance in the ads view of the Application panel.
      */
     noProvenanceTooltip: 'No provenance data is available',
     /**
-     * @description Title for the filter list rule in the ad provenance tooltip.
+     * @description Title for the filter list rule in the ad provenance tooltip in the ads view of the Application panel.
      */
     filterListRule: 'Filter list rule',
     /**
-     * @description Title for the root script filter list rule in the ad provenance tooltip.
+     * @description Title for the root script filter list rule in the ad provenance tooltip in the ads view of the Application panel.
      */
     rootScriptFilterListRule: 'Root script filter list rule',
     /**
-     * @description Title for the creator ad script ancestry in the ad provenance tooltip.
+     * @description Title for the creator ad script ancestry in the ad provenance tooltip in the ads view of the Application panel.
      */
     creatorAdScriptAncestry: 'Creator ad script ancestry',
     /**
-     * @description Title for the settings section.
+     * @description Title for the settings section in the ads view of the Application panel.
      */
     settings: 'Settings',
     /**
-     * @description The name of a checkbox setting. This setting highlights the
-     * rendering elements for ad-related resources that are found on the page.
+     * @description Label for the checkbox setting to highlight ad-related resources on the page in the ads view of the Application panel.
      */
     highlightAdRelatedResources: 'Highlight ad-related resources',
     /**
-     * @description Explanation text for the 'Highlight ad-related resources' setting.
+     * @description Explanation text for the highlight ad-related resources setting in the ads view of the Application panel.
      */
     highlightsElementsRedDetectedToBeAdRelated: 'Highlights elements (red) detected to be ad-related',
     /**
-     * @description Text explaining that ad detection is not perfect.
+     * @description Informational notice explaining that ad detection in Chrome can make mistakes in the ads view of the Application panel.
      */
     adDetectionMistakes: 'Chrome’s ad detection can make mistakes',
     /**
-     * @description Link text for learning more about ad detection in Chrome.
+     * @description Link text to learn more about ad detection in Chrome in the ads view of the Application panel.
      */
     learnMore: 'Learn more',
 };

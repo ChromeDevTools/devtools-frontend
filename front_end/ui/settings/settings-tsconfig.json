@@ -53,6 +53,7 @@
     "../../../../../../front_end/ui/settings/MainSettings.ts",
     "../../../../../../front_end/ui/settings/NetworkSettings.ts",
     "../../../../../../front_end/ui/settings/SettingUIRegistration.ts",
+    "../../../../../../front_end/ui/settings/SourcesSettings.ts",
     "../../../../../../front_end/ui/settings/TimelineSettings.ts",
     "../../../../../../front_end/ui/settings/WhatsNewSettings.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",

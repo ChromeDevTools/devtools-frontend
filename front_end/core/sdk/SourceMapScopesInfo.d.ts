@@ -89,6 +89,12 @@ export declare class SourceMapScopesInfo {
      */
     hasOutlinedFunctions(): boolean;
     /**
+     * @returns the outlined parts of the authored function at the position: the hidden generated functions whose
+     *          original scope lies within that function's original scope (see {@link GeneratedFrameKind.OUTLINED}).
+     *          Includes the outlined part the position itself is in, if any. Sorted by start position.
+     */
+    outlinedFunctionRanges(generatedLine: number, generatedColumn: number): PositionRange[];
+    /**
      * @returns the "artificial" generated functions (in the DWARF sense): functions that contain no authored code at all
      *          (no original scope anywhere in their subtree), e.g. compiler helpers. Sorted by start position,
      *          non-overlapping.

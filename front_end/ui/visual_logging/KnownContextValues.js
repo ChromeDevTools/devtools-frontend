@@ -3541,6 +3541,7 @@ export const knownContextValues = new Set([
     'retainers',
     'reveal',
     'reveal-header-overrides',
+    'reveal-in-a11y-tree',
     'reveal-in-elements',
     'reveal-in-memory-inspector',
     'reveal-in-network',

@@ -53,7 +53,7 @@ const UIStrings = {
     /**
      * @description Error text for empty list widget input in Request Conditions tool
      */
-    patternInputCannotBeEmpty: 'Pattern input cannot be empty',
+    patternInputCannotBeEmpty: 'Pattern input can’t be empty',
     /**
      * @description Error text for duplicate list widget input in Request Conditions tool
      */
@@ -65,7 +65,7 @@ const UIStrings = {
     /**
      * @description Tooltip message when a pattern failed to parse as a URLPattern because it contains RegExp groups
      */
-    patternFailedWithRegExpGroups: 'RegExp groups are not allowed',
+    patternFailedWithRegExpGroups: 'RegExp groups aren’t allowed',
     /**
      * @description Tooltip message when a pattern was converted to a URLPattern
      * @example {example.com} PH1

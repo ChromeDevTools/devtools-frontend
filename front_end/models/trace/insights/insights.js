@@ -3668,7 +3668,7 @@ var UIStrings3 = {
   /**
    * @description Text status when no layout shift culprits or root causes were found.
    */
-  noCulprits: "Could not detect any layout shift culprits"
+  noCulprits: "Couldn\u2019t detect any layout shift culprits"
 };
 var str_3 = i18n5.i18n.registerUIStrings("models/trace/insights/CLSCulprits.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);

@@ -444,7 +444,7 @@ var UIStrings2 = {
   /**
    * @description Error text for empty list widget input in Request Conditions tool
    */
-  patternInputCannotBeEmpty: "Pattern input cannot be empty",
+  patternInputCannotBeEmpty: "Pattern input can\u2019t be empty",
   /**
    * @description Error text for duplicate list widget input in Request Conditions tool
    */
@@ -456,7 +456,7 @@ var UIStrings2 = {
   /**
    * @description Tooltip message when a pattern failed to parse as a URLPattern because it contains RegExp groups
    */
-  patternFailedWithRegExpGroups: "RegExp groups are not allowed",
+  patternFailedWithRegExpGroups: "RegExp groups aren\u2019t allowed",
   /**
    * @description Tooltip message when a pattern was converted to a URLPattern
    * @example {example.com} PH1
@@ -3905,14 +3905,14 @@ var UIStrings3 = {
    * not being deferred is that while the HTTP request is in scope of a session, it was
    * not possible to trigger a refresh proactively.
    */
-  proactiveRefreshNotPossible: "Not deferred (Request is in scope of session but proactive refresh is not possible)",
+  proactiveRefreshNotPossible: "Not deferred (Request is in scope of session but proactive refresh isn\u2019t possible)",
   /**
    * @description One of the HTTP request deferral decisions. This one notes that the
    * request was not deferred (i.e. not paused and later unpaused). The reasoning for it
    * not being deferred is that while the HTTP request is in scope of a session, the HTTP
    * request's initiator is not allowed to trigger a refresh.
    */
-  inScopeRefreshNotAllowed: "Not deferred (Request is in scope of session but initiator is not allowed to trigger refresh)",
+  inScopeRefreshNotAllowed: "Not deferred (Request is in scope of session but initiator isn\u2019t allowed to trigger refresh)",
   /**
    * @description One of the HTTP request deferral decisions. This one notes that the
    * request was not deferred (i.e. not paused and later unpaused). The reasoning for it
@@ -3925,7 +3925,7 @@ var UIStrings3 = {
    * request was not deferred (i.e. not paused and later unpaused). The reasoning for it
    * not being deferred is that the HTTP request is not in scope of a session.
    */
-  notInScope: "Not deferred (Request is not in scope of session)"
+  notInScope: "Not deferred (Request isn\u2019t in scope of session)"
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/network/RequestDeviceBoundSessionsView.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
@@ -5211,7 +5211,7 @@ var UIStrings6 = {
   /**
    * @description Reason why a request was blocked shown in the Network panel
    */
-  coopSandboxedIframeCannotNavigateToCoopPage: "Sandboxed iframe\u2019s popup cannot navigate to COOP page",
+  coopSandboxedIframeCannotNavigateToCoopPage: "Sandboxed iframe\u2019s popup can\u2019t navigate to COOP page",
   /**
    * @description Reason why a request was blocked shown in the Network panel
    */
@@ -5266,7 +5266,7 @@ var UIStrings6 = {
   /**
    * @description Tooltip providing details on why the request has unknown status.
    */
-  unknownExplanation: "The request status cannot be shown here because the page that issued it unloaded while the request was in flight. You can use chrome://net-export to capture a network log and see all request details.",
+  unknownExplanation: "The request status can\u2019t be shown here because the page that issued it unloaded while the request was in flight. You can use chrome://net-export to capture a network log and see all request details.",
   /**
    * @description Text in Network Data Grid Node of the Network panel. Noun, short for a 'HTTP server
    * push'.
@@ -6877,7 +6877,7 @@ var UIStrings7 = {
    * @example {Learn more} PH1
    *
    */
-  siteHasCookieInOtherPartition: "This site has cookies in another partition, that were not sent with this request. {PH1}",
+  siteHasCookieInOtherPartition: "This site has cookies in another partition, that weren\u2019t sent with this request. {PH1}",
   /**
    * @description Title of a link to the developer documentation.
    */
@@ -7224,7 +7224,7 @@ var UIStrings8 = {
   /**
    * @description Comment in a generated fetch command explaining why the Accept-Charset header is commented out.
    */
-  deprecatedBrowserDoesNotSend: "Deprecated; browser does not send this",
+  deprecatedBrowserDoesNotSend: "Deprecated; browser doesn\u2019t send this",
   /**
    * @description Comment in a generated fetch command explaining why the Accept-Encoding header is commented out.
    */

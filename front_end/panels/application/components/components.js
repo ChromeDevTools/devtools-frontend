@@ -185,11 +185,11 @@ var NETWORK_USAGE_DOC_URL = "https://developer.chrome.com/docs/ads/metrics/weigh
 var AD_DETECTION_DOC_URL = "https://developer.chrome.com/docs/ads/detection";
 var UIStrings = {
   /**
-   * @description Title for the metrics table.
+   * @description Title for the metrics section in the ads view of the Application panel.
    */
   metrics: "Metrics",
   /**
-   * @description Title for a metric showing the percentage of the viewport covered by ads.
+   * @description Title for a metric showing the percentage of the viewport covered by ads in the ads view of the Application panel.
    */
   viewportAdDensity: "Viewport ad density",
   /**
@@ -197,7 +197,7 @@ var UIStrings = {
    */
   viewportAdDensityExplanation: "Percentage of the viewport covered by ads",
   /**
-   * @description Title for a metric showing the number of ads in the viewport.
+   * @description Title for a metric showing the number of ads in the viewport in the ads view of the Application panel.
    */
   viewportAdCount: "Viewport ad count",
   /**
@@ -205,7 +205,7 @@ var UIStrings = {
    */
   viewportAdCountExplanation: "Number of ads in the viewport",
   /**
-   * @description Title for a metric showing the total CPU usage by ads.
+   * @description Title for a metric showing the total CPU usage by ads in the ads view of the Application panel.
    */
   totalCpuUsage: "Total CPU usage by ads",
   /**
@@ -213,7 +213,7 @@ var UIStrings = {
    */
   totalCpuUsageExplanation: "Total CPU time consumed by ads",
   /**
-   * @description Title for a metric showing the total network usage by ads.
+   * @description Title for a metric showing the total network usage by ads in the ads view of the Application panel.
    */
   totalNetworkUsage: "Total network usage by ads",
   /**
@@ -221,99 +221,98 @@ var UIStrings = {
    */
   totalNetworkUsageExplanation: "Total network data consumed by ads",
   /**
-   * @description Subtext showing the average value of a metric.
+   * @description Subtext showing the average value of a metric in the ads view of the Application panel.
    * @example {5.00%} PH1
    */
   average: "(Average: {PH1})",
   /**
-   * @description Title for the ad iframes table.
+   * @description Title for the ad iframes table in the ads view of the Application panel.
    * @example {3} PH1
    */
   adIframesTitle: "Ad iframes (total {PH1})",
   /**
-   * @description Text to display when a value is not available.
+   * @description Text to display when a metric value is not available in the ads view of the Application panel.
    */
   notAvailable: "N/A",
   /**
-   * @description Text to display when a frame has no name/id.
+   * @description Text to display when a frame has no name or ID in the ads view of the Application panel.
    */
   unnamed: "<unnamed>",
   /**
-   * @description Title for the Element Id column in the ad iframes table.
+   * @description Column header for the element ID in the ad iframes table in the ads view of the Application panel.
    */
   elementId: "Element ID",
   /**
-   * @description Title for the Initial origin column in the ad iframes table.
+   * @description Column header for the initial origin in the ad iframes table in the ads view of the Application panel.
    */
   initialOrigin: "Initial origin",
   /**
-   * @description Title for the CPU column in the ad iframes table.
+   * @description Column header for CPU usage in the ad iframes table in the ads view of the Application panel.
    */
   cpu: "CPU",
   /**
-   * @description Title for the Network column in the ad iframes table.
+   * @description Column header for network usage in the ad iframes table in the ads view of the Application panel.
    */
   network: "Network",
   /**
-   * @description Accessible name for the ad iframes table.
+   * @description Accessible name for the ad iframes table in the ads view of the Application panel.
    */
   adIframes: "Ad iframes",
   /**
-   * @description Title for the ad scripts table.
+   * @description Title for the ad scripts table in the ads view of the Application panel.
    * @example {3} PH1
    */
   adScriptsTitle: "Ad scripts (total {PH1})",
   /**
-   * @description Title for the URL column in the ad scripts table.
+   * @description Column header for the script URL in the ad scripts table in the ads view of the Application panel.
    */
   url: "URL",
   /**
-   * @description Accessible name for the ad scripts table.
+   * @description Accessible name for the ad scripts table in the ads view of the Application panel.
    */
   adScripts: "Ad scripts",
   /**
-   * @description Title for the ad provenance column in the ad scripts table.
+   * @description Column header for the ad provenance in the ad scripts table in the ads view of the Application panel.
    */
   adProvenance: "Ad provenance",
   /**
-   * @description Text to display when a script has no provenance.
+   * @description Text to display when a script has no provenance in the ads view of the Application panel.
    */
   noProvenance: "<no provenance>",
   /**
-   * @description Text to display in the tooltip when a script has no provenance.
+   * @description Tooltip text when a script has no provenance in the ads view of the Application panel.
    */
   noProvenanceTooltip: "No provenance data is available",
   /**
-   * @description Title for the filter list rule in the ad provenance tooltip.
+   * @description Title for the filter list rule in the ad provenance tooltip in the ads view of the Application panel.
    */
   filterListRule: "Filter list rule",
   /**
-   * @description Title for the root script filter list rule in the ad provenance tooltip.
+   * @description Title for the root script filter list rule in the ad provenance tooltip in the ads view of the Application panel.
    */
   rootScriptFilterListRule: "Root script filter list rule",
   /**
-   * @description Title for the creator ad script ancestry in the ad provenance tooltip.
+   * @description Title for the creator ad script ancestry in the ad provenance tooltip in the ads view of the Application panel.
    */
   creatorAdScriptAncestry: "Creator ad script ancestry",
   /**
-   * @description Title for the settings section.
+   * @description Title for the settings section in the ads view of the Application panel.
    */
   settings: "Settings",
   /**
-   * @description The name of a checkbox setting. This setting highlights the
-   * rendering elements for ad-related resources that are found on the page.
+   * @description Label for the checkbox setting to highlight ad-related resources on the page in the ads view of the Application panel.
    */
   highlightAdRelatedResources: "Highlight ad-related resources",
   /**
-   * @description Explanation text for the 'Highlight ad-related resources' setting.
+   * @description Explanation text for the highlight ad-related resources setting in the ads view of the Application panel.
    */
   highlightsElementsRedDetectedToBeAdRelated: "Highlights elements (red) detected to be ad-related",
   /**
-   * @description Text explaining that ad detection is not perfect.
+   * @description Informational notice explaining that ad detection in Chrome can make mistakes in the ads view of the Application panel.
    */
   adDetectionMistakes: "Chrome\u2019s ad detection can make mistakes",
   /**
-   * @description Link text for learning more about ad detection in Chrome.
+   * @description Link text to learn more about ad detection in Chrome in the ads view of the Application panel.
    */
   learnMore: "Learn more"
 };
@@ -3662,490 +3661,490 @@ import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
 import * as i18n3 from "../../../core/i18n/i18n.js";
 var UIStrings2 = {
   /**
-   * @description Description text for not restored reason NotMainFrame.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   notMainFrame: "Navigation happened in a frame other than the main frame",
   /**
-   * @description Description text for not restored reason BackForwardCacheDisabled.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   backForwardCacheDisabled: "Back/forward cache is disabled by flags. Visit chrome://flags/#back-forward-cache to enable it locally on this device.",
   /**
-   * @description Description text for not restored reason RelatedActiveContentsExist.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    * Note: "window.open()" is the name of a JavaScript method and should not be translated.
    */
   relatedActiveContentsExist: "The page was opened using '`window.open()`' and another tab has a reference to it, or the page opened a window",
   /**
-   * @description Description text for not restored reason HTTPStatusNotOK.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   HTTPStatusNotOK: "Only pages with a status code of 2XX can be cached",
   /**
-   * @description Description text for not restored reason SchemeNotHTTPOrHTTPS.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   schemeNotHTTPOrHTTPS: "Only pages whose URL scheme is HTTP / HTTPS can be cached",
   /**
-   * @description Description text for not restored reason Loading.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  loading: "The page did not finish loading before navigating away",
+  loading: "The page didn\u2019t finish loading before navigating away",
   /**
-   * @description Description text for not restored reason WasGrantedMediaAccess.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  wasGrantedMediaAccess: "Pages that have granted access to record video or audio are not currently eligible for back/forward cache",
+  wasGrantedMediaAccess: "Pages that have granted access to record video or audio aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason HTTPMethodNotGET.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   HTTPMethodNotGET: "Only pages loaded via a GET request are eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason SubframeIsNavigating.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  subframeIsNavigating: "An iframe on the page started a navigation that did not complete",
+  subframeIsNavigating: "An iframe on the page started a navigation that didn\u2019t complete",
   /**
-   * @description Description text for not restored reason Timeout.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   timeout: "The page exceeded the maximum time in back/forward cache and was expired",
   /**
-   * @description Description text for not restored reason CacheLimit.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   cacheLimit: "The page was evicted from the cache to allow another page to be cached",
   /**
-   * @description Description text for not restored reason JavaScriptExecution.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   JavaScriptExecution: "Chrome detected an attempt to execute JavaScript while in the cache",
   /**
-   * @description Description text for not restored reason RendererProcessKilled.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   rendererProcessKilled: "The renderer process for the page in back/forward cache was killed",
   /**
-   * @description Description text for not restored reason RendererProcessCrashed.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   rendererProcessCrashed: "The renderer process for the page in back/forward cache crashed",
   /**
-   * @description Description text for not restored reason GrantedMediaStreamAccess.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  grantedMediaStreamAccess: "Pages that have granted media stream access are not currently eligible for back/forward cache",
+  grantedMediaStreamAccess: "Pages that have granted media stream access aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason CacheFlushed.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   cacheFlushed: "The cache was intentionally cleared",
   /**
-   * @description Description text for not restored reason ServiceWorkerVersionActivation.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   serviceWorkerVersionActivation: "The page was evicted from back/forward cache due to a service worker activation",
   /**
-   * @description Description text for not restored reason SessionRestored.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   sessionRestored: "Chrome restarted and cleared the back/forward cache entries",
   /**
-   * @description Description text for not restored reason ServiceWorkerPostMessage.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    * Note: "MessageEvent" should not be translated.
    */
   serviceWorkerPostMessage: "A service worker attempted to send the page in back/forward cache a `MessageEvent`",
   /**
-   * @description Description text for not restored reason EnteredBackForwardCacheBeforeServiceWorkerHostAdded.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   enteredBackForwardCacheBeforeServiceWorkerHostAdded: "A service worker was activated while the page was in back/forward cache",
   /**
-   * @description Description text for not restored reason ServiceWorkerClaim.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   serviceWorkerClaim: "The page was claimed by a service worker while it is in back/forward cache",
   /**
-   * @description Description text for not restored reason HaveInnerContents.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  haveInnerContents: "Pages that have certain kinds of embedded content (e.g. PDFs) are not currently eligible for back/forward cache",
+  haveInnerContents: "Pages that have certain kinds of embedded content (e.g. PDFs) aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason TimeoutPuttingInCache.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   timeoutPuttingInCache: "The page timed out entering back/forward cache (likely due to long-running pagehide handlers)",
   /**
-   * @description Description text for not restored reason BackForwardCacheDisabledByLowMemory.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   backForwardCacheDisabledByLowMemory: "Back/forward cache is disabled due to insufficient memory",
   /**
-   * @description Description text for not restored reason BackForwardcCacheDisabledByCommandLine.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   backForwardCacheDisabledByCommandLine: "Back/forward cache is disabled by the command line",
   /**
-   * @description Description text for not restored reason NetworkRequestDatapipeDrainedAsBytesConsumer.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  networkRequestDatapipeDrainedAsBytesConsumer: "Pages that have inflight fetch() or XHR are not currently eligible for back/forward cache",
+  networkRequestDatapipeDrainedAsBytesConsumer: "Pages that have inflight fetch() or XHR aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason NetworkRequestRedirected.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   networkRequestRedirected: "The page was evicted from back/forward cache because an active network request involved a redirect",
   /**
-   * @description Description text for not restored reason NetworkRequestTimeout.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   networkRequestTimeout: "The page was evicted from the cache because a network connection was open too long. Chrome limits the amount of time that a page may receive data while cached.",
   /**
-   * @description Description text for not restored reason NetworkExceedsBufferLimit.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   networkExceedsBufferLimit: "The page was evicted from the cache because an active network connection received too much data. Chrome limits the amount of data that a page may receive while cached.",
   /**
-   * @description Description text for not restored reason NavigationCancelledWhileRestoring.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   navigationCancelledWhileRestoring: "Navigation was cancelled before the page could be restored from back/forward cache",
   /**
-   * @description Description text for not restored reason BackForwardCacheDisabledForPrerender.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   backForwardCacheDisabledForPrerender: "Back/forward cache is disabled for prerenderer",
   /**
-   * @description Description text for not restored reason userAgentOverrideDiffers.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   userAgentOverrideDiffers: "Browser has changed the user agent override header",
   /**
-   * @description Description text for not restored reason ForegroundCacheLimit.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   foregroundCacheLimit: "The page was evicted from the cache to allow another page to be cached",
   /**
-   * @description Description text for not restored reason BackForwardCacheDisabledForDelegate.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  backForwardCacheDisabledForDelegate: "Back/forward cache is not supported by delegate",
+  backForwardCacheDisabledForDelegate: "Back/forward cache isn\u2019t supported by delegate",
   /**
-   * @description Description text for not restored reason UnloadHandlerExistsInMainFrame.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   unloadHandlerExistsInMainFrame: "The page has an unload handler in the main frame",
   /**
-   * @description Description text for not restored reason UnloadHandlerExistsInSubFrame.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   unloadHandlerExistsInSubFrame: "The page has an unload handler in a sub frame",
   /**
-   * @description Description text for not restored reason ServiceWorkerUnregistration.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   serviceWorkerUnregistration: "ServiceWorker was unregistered while a page was in back/forward cache",
   /**
-   * @description Description text for not restored reason NoResponseHead.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  noResponseHead: "Pages that do not have a valid response head cannot enter back/forward cache",
+  noResponseHead: "Pages that don\u2019t have a valid response head can\u2019t enter back/forward cache",
   /**
-   * @description Description text for not restored reason CacheControlNoStore.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  cacheControlNoStore: "Pages with cache-control:no-store header cannot enter back/forward cache",
+  cacheControlNoStore: "Pages with cache-control:no-store header can\u2019t enter back/forward cache",
   /**
-   * @description Description text for not restored reason IneligibleAPI.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   ineligibleAPI: "Ineligible APIs were used",
   /**
-   * @description Description text for not restored reason InternalError.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   internalError: "Internal error",
   /**
-   * @description Description text for not restored reason WebSocket.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  webSocket: "Pages with WebSocket cannot enter back/forward cache",
+  webSocket: "Pages with WebSocket can\u2019t enter back/forward cache",
   /**
-   * @description Description text for not restored reason WebTransport.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  webTransport: "Pages with WebTransport cannot enter back/forward cache",
+  webTransport: "Pages with WebTransport can\u2019t enter back/forward cache",
   /**
-   * @description Description text for not restored reason WebRTC.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  webRTC: "Pages with WebRTC cannot enter back/forward cache",
+  webRTC: "Pages with WebRTC can\u2019t enter back/forward cache",
   /**
-   * @description Description text for not restored reason MainResourceHasCacheControlNoStore.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  mainResourceHasCacheControlNoStore: "Pages whose main resource has cache-control:no-store cannot enter back/forward cache",
+  mainResourceHasCacheControlNoStore: "Pages whose main resource has cache-control:no-store can\u2019t enter back/forward cache",
   /**
-   * @description Description text for not restored reason MainResourceHasCacheControlNoCache.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  mainResourceHasCacheControlNoCache: "Pages whose main resource has cache-control:no-cache cannot enter back/forward cache",
+  mainResourceHasCacheControlNoCache: "Pages whose main resource has cache-control:no-cache can\u2019t enter back/forward cache",
   /**
-   * @description Description text for not restored reason SubresourceHasCacheControlNoStore.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  subresourceHasCacheControlNoStore: "Pages whose subresource has cache-control:no-store cannot enter back/forward cache",
+  subresourceHasCacheControlNoStore: "Pages whose subresource has cache-control:no-store can\u2019t enter back/forward cache",
   /**
-   * @description Description text for not restored reason SubresourceHasCacheControlNoCache.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  subresourceHasCacheControlNoCache: "Pages whose subresource has cache-control:no-cache cannot enter back/forward cache",
+  subresourceHasCacheControlNoCache: "Pages whose subresource has cache-control:no-cache can\u2019t enter back/forward cache",
   /**
-   * @description Description text for not restored reason ContainsPlugins.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  containsPlugins: "Pages containing plugins are not currently eligible for back/forward cache",
+  containsPlugins: "Pages containing plugins aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason DocumentLoaded.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  documentLoaded: "The document did not finish loading before navigating away",
+  documentLoaded: "The document didn\u2019t finish loading before navigating away",
   /**
-   * @description Description text for not restored reason DedicatedWorkerOrWorklet.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  dedicatedWorkerOrWorklet: "Pages that use a dedicated worker or worklet are not currently eligible for back/forward cache",
+  dedicatedWorkerOrWorklet: "Pages that use a dedicated worker or worklet aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason OutstandingNetworkRequestOthers.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  outstandingNetworkRequestOthers: "Pages with an in-flight network request are not currently eligible for back/forward cache",
+  outstandingNetworkRequestOthers: "Pages with an in-flight network request aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason OutstandingIndexedDBTransaction.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  outstandingIndexedDBTransaction: "Page with ongoing indexed DB transactions are not currently eligible for back/forward cache",
+  outstandingIndexedDBTransaction: "Pages with ongoing indexed DB transactions aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason RequestedNotificationsPermission.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  requestedNotificationsPermission: "Pages that have requested notifications permissions are not currently eligible for back/forward cache",
+  requestedNotificationsPermission: "Pages that have requested notifications permissions aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason RequestedMIDIPermission.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  requestedMIDIPermission: "Pages that have requested MIDI permissions are not currently eligible for back/forward cache",
+  requestedMIDIPermission: "Pages that have requested MIDI permissions aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason RequestedAudioCapturePermission.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  requestedAudioCapturePermission: "Pages that have requested audio capture permissions are not currently eligible for back/forward cache",
+  requestedAudioCapturePermission: "Pages that have requested audio capture permissions aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason RequestedVideoCapturePermission.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  requestedVideoCapturePermission: "Pages that have requested video capture permissions are not currently eligible for back/forward cache",
+  requestedVideoCapturePermission: "Pages that have requested video capture permissions aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason RequestedBackForwardCacheBlockedSensors.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  requestedBackForwardCacheBlockedSensors: "Pages that have requested sensor permissions are not currently eligible for back/forward cache",
+  requestedBackForwardCacheBlockedSensors: "Pages that have requested sensor permissions aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason RequestedBackgroundWorkPermission.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  requestedBackgroundWorkPermission: "Pages that have requested background sync or fetch permissions are not currently eligible for back/forward cache",
+  requestedBackgroundWorkPermission: "Pages that have requested background sync or fetch permissions aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason BroadcastChannel.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  broadcastChannel: "The page cannot be cached because it has a BroadcastChannel instance with registered listeners",
+  broadcastChannel: "The page can\u2019t be cached because it has a BroadcastChannel instance with registered listeners",
   /**
-   * @description Description text for not restored reason IndexedDBConnection.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  indexedDBConnection: "Pages that have an open IndexedDB connection are not currently eligible for back/forward cache",
+  indexedDBConnection: "Pages that have an open IndexedDB connection aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason WebXR.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  webXR: "Pages that use WebXR are not currently eligible for back/forward cache",
+  webXR: "Pages that use WebXR aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason SharedWorker.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  sharedWorker: "Pages that use SharedWorker are not currently eligible for back/forward cache",
+  sharedWorker: "Pages that use SharedWorker aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason SharedWorkerMessage.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   sharedWorkerMessage: "The page was evicted from the cache because it received a message from a SharedWorker",
   /**
-   * @description Description text for not restored reason WebLocks.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  webLocks: "Pages that use WebLocks are not currently eligible for back/forward cache",
+  webLocks: "Pages that use WebLocks aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason WebHID.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  webHID: "Pages that use WebHID are not currently eligible for back/forward cache",
+  webHID: "Pages that use WebHID aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason WebShare.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  webShare: "Pages that use WebShare are not currently eligible for back/forwad cache",
+  webShare: "Pages that use WebShare aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason RequestedStorageAccessGrant.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  requestedStorageAccessGrant: "Pages that have requested storage access are not currently eligible for back/forward cache",
+  requestedStorageAccessGrant: "Pages that have requested storage access aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason WebNfc.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  webNfc: "Pages that use WebNfc are not currently eligible for back/forwad cache",
+  webNfc: "Pages that use WebNfc aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason OutstandingNetworkRequestFetch.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  outstandingNetworkRequestFetch: "Pages with an in-flight fetch network request are not currently eligible for back/forward cache",
+  outstandingNetworkRequestFetch: "Pages with an in-flight fetch network request aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason OutstandingNetworkRequestXHR.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  outstandingNetworkRequestXHR: "Pages with an in-flight XHR network request are not currently eligible for back/forward cache",
+  outstandingNetworkRequestXHR: "Pages with an in-flight XHR network request aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason AppBanner.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  appBanner: "Pages that requested an AppBanner are not currently eligible for back/forward cache",
+  appBanner: "Pages that requested an AppBanner aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason Printing.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  printing: "Pages that show Printing UI are not currently eligible for back/forward cache",
+  printing: "Pages that show printing UI aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason WebDatabase.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  webDatabase: "Pages that use WebDatabase are not currently eligible for back/forward cache",
+  webDatabase: "Pages that use WebDatabase aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason PictureInPicture.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  pictureInPicture: "Pages that use Picture-in-Picture are not currently eligible for back/forward cache",
+  pictureInPicture: "Pages that use Picture-in-Picture aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason SpeechRecognizer.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  speechRecognizer: "Pages that use SpeechRecognizer are not currently eligible for back/forward cache",
+  speechRecognizer: "Pages that use SpeechRecognizer aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason IdleManager.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  idleManager: "Pages that use IdleManager are not currently eligible for back/forward cache",
+  idleManager: "Pages that use IdleManager aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason PaymentManager.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  paymentManager: "Pages that use PaymentManager are not currently eligible for back/forward cache",
+  paymentManager: "Pages that use PaymentManager aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason SpeechSynthesis.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  speechSynthesis: "Pages that use SpeechSynthesis are not currently eligible for back/forward cache",
+  speechSynthesis: "Pages that use SpeechSynthesis aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason KeyboardLock.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  keyboardLock: "Pages that use Keyboard lock are not currently eligible for back/forward cache",
+  keyboardLock: "Pages that use keyboard lock aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason WebOTPService.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  webOTPService: "Pages that use WebOTPService are not currently eligible for bfcache",
+  webOTPService: "Pages that use WebOTPService aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason OutstandingNetworkRequestDirectSocket.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  outstandingNetworkRequestDirectSocket: "Pages with an in-flight network request are not currently eligible for back/forward cache",
+  outstandingNetworkRequestDirectSocket: "Pages with an in-flight network request aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason InjectedJavascript.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  injectedJavascript: "Pages that `JavaScript` is injected into by extensions are not currently eligible for back/forward cache",
+  injectedJavascript: "Pages that `JavaScript` is injected into by extensions aren\u2019t currently eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason InjectedStyleSheet.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  injectedStyleSheet: "Pages that a `StyleSheet` is injected into by extensions are not currently eligible for back/forward cache",
+  injectedStyleSheet: "Pages that a `StyleSheet` is injected into by extensions aren\u2019t currently eligible for back/forward cache",
   // TODO(tluk): Please provide meaningful description.
   /**
-   * @description Description text for not restored reason ContentDiscarded.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   contentDiscarded: "Undefined",
   /**
-   * @description Description text for not restored reason ContentSecurityHandler.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  contentSecurityHandler: "Pages that use SecurityHandler are not eligible for back/forward cache",
+  contentSecurityHandler: "Pages that use SecurityHandler aren\u2019t eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason NotMainFrame.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  contentWebAuthenticationAPI: "Pages that use WebAuthetication API are not eligible for back/forward cache",
+  contentWebAuthenticationAPI: "Pages that use WebAuthentication API aren\u2019t eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason NotMainFrame.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  contentFileChooser: "Pages that use FileChooser API are not eligible for back/forward cache",
+  contentFileChooser: "Pages that use FileChooser API aren\u2019t eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason NotMainFrame.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  contentSerial: "Pages that use Serial API are not eligible for back/forward cache",
+  contentSerial: "Pages that use Serial API aren\u2019t eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason NotMainFrame.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  contentFileSystemAccess: "Pages that use File System Access API are not eligible for back/forward cache",
+  contentFileSystemAccess: "Pages that use File System Access API aren\u2019t eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason NotMainFrame.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  contentMediaDevicesDispatcherHost: "Pages that use Media Device Dispatcher are not eligible for back/forward cache",
+  contentMediaDevicesDispatcherHost: "Pages that use Media Device Dispatcher aren\u2019t eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason NotMainFrame.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  contentWebBluetooth: "Pages that use WebBluetooth API are not eligible for back/forward cache",
+  contentWebBluetooth: "Pages that use WebBluetooth API aren\u2019t eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason ContentWebUSB.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  contentWebUSB: "Pages that use WebUSB API are not eligible for back/forward cache",
+  contentWebUSB: "Pages that use WebUSB API aren\u2019t eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason ContentMediaSession.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  contentMediaSession: "Pages that use MediaSession API and set a playback state are not eligible for back/forward cache",
+  contentMediaSession: "Pages that use MediaSession API and set a playback state aren\u2019t eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason ContentMediaSessionService.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  contentMediaSessionService: "Pages that use MediaSession API and set action handlers are not eligible for back/forward cache",
+  contentMediaSessionService: "Pages that use MediaSession API and set action handlers aren\u2019t eligible for back/forward cache",
   /**
-   * @description Description text for not restored reason ContentMediaPlay.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   contentMediaPlay: "A media player was playing upon navigating away",
   /**
-   * @description Description text for not restored reason ContentScreenReader.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   contentScreenReader: "Back/forward cache is disabled due to screen reader",
   /**
-   *  @description Description text for not restored reason EmbedderPopupBlockerTabHelper.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   embedderPopupBlockerTabHelper: "Popup blocker was present upon navigating away",
   /**
-   *  @description Description text for not restored reason EmbedderSafeBrowsingTriggeredPopupBlocker.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   embedderSafeBrowsingTriggeredPopupBlocker: "Safe Browsing considered this page to be abusive and blocked popup",
   /**
-   *  @description Description text for not restored reason EmbedderSafeBrowsingThreatDetails.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   embedderSafeBrowsingThreatDetails: "Safe Browsing details were shown upon navigating away",
   /**
-   *  @description Description text for not restored reason EmbedderAppBannerManager.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  embedderAppBannerManager: "App Banner was present upon navigating away",
+  embedderAppBannerManager: "App banner was present upon navigating away",
   /**
-   *  @description Description text for not restored reason EmbedderDomDistillerViewerSource.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  embedderDomDistillerViewerSource: "DOM Distiller Viewer was present upon navigating away",
+  embedderDomDistillerViewerSource: "DOM distiller viewer was present upon navigating away",
   /**
-   *  @description Description text for not restored reason EmbedderDomDistillerSelfDeletingRequestDelegate.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   embedderDomDistillerSelfDeletingRequestDelegate: "DOM distillation was in progress upon navigating away",
   /**
-   *  @description Description text for not restored reason EmbedderOomInterventionTabHelper.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  embedderOomInterventionTabHelper: "Out-Of-Memory Intervention bar was present upon navigating away",
+  embedderOomInterventionTabHelper: "Out-of-memory intervention bar was present upon navigating away",
   /**
-   *  @description Description text for not restored reason EmbedderOfflinePage.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   embedderOfflinePage: "The offline page was shown upon navigating away",
   /**
-   *  @description Description text for not restored reason EmbedderChromePasswordManagerClientBindCredentialManager.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   embedderChromePasswordManagerClientBindCredentialManager: "Chrome Password Manager was present upon navigating away",
   /**
-   *  @description Description text for not restored reason EmbedderPermissionRequestManager.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  embedderPermissionRequestManager: "There were permission requests upon navigating away",
+  embedderPermissionRequestManager: "Permission requests were present upon navigating away",
   /**
-   *  @description Description text for not restored reason EmbedderModalDialog.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  embedderModalDialog: "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away",
+  embedderModalDialog: "Modal dialog such as form resubmission or HTTP password dialog was shown for the page upon navigating away",
   /**
-   *  @description Description text for not restored reason EmbedderExtensions.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   embedderExtensions: "Back/forward cache is disabled due to extensions",
   /**
-   *  @description Description text for not restored reason EmbedderExtensionMessaging.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   embedderExtensionMessaging: "Back/forward cache is disabled due to extensions using messaging API",
   /**
-   *  @description Description text for not restored reason EmbedderExtensionMessagingForOpenPort.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   embedderExtensionMessagingForOpenPort: "Extensions with long-lived connection should close the connection before entering back/forward cache",
   /**
-   *  @description Description text for not restored reason EmbedderExtensionSentMessageToCachedFrame.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   embedderExtensionSentMessageToCachedFrame: "Extensions with long-lived connection attempted to send messages to frames in back/forward cache",
   /**
-   *  @description Description text for not restored reason ErrorDocument.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   errorDocument: "Back/forward cache is disabled due to a document error",
   /**
-   *  @description Description text for not restored reason FencedFramesEmbedder.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
-  fencedFramesEmbedder: "Pages using FencedFrames cannot be stored in bfcache",
+  fencedFramesEmbedder: "Pages using FencedFrames can\u2019t be stored in back/forward cache",
   /**
-   *  @description Description text for not restored reason KeepaliveRequest.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   keepaliveRequest: "Back/forward cache is disabled due to a keepalive request",
   /**
-   *  @description Description text for not restored reason JsNetworkRequestReceivedCacheControlNoStoreResource.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   jsNetworkRequestReceivedCacheControlNoStoreResource: "Back/forward cache is disabled because some JavaScript network request received resource with `Cache-Control: no-store` header",
   /**
-   *  @description Description text for not restored reason IndexedDBEvent.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   indexedDBEvent: "Back/forward cache is disabled due to an IndexedDB event",
   /**
-   * @description Description text for not restored reason CookieDisabled.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   cookieDisabled: "Back/forward cache is disabled because cookies are disabled on a page that uses `Cache-Control: no-store`",
   /**
-   * @description Description text for not restored reason WebRTCUsedWithCCNS.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   webRTCUsedWithCCNS: "Back/forward cache is disabled because WebRTC has been used",
   /**
-   * @description Description text for not restored reason WebTransportUsedWithCCNS.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   webTransportUsedWithCCNS: "Back/forward cache is disabled because WebTransport has been used",
   /**
-   * @description Description text for not restored reason WebSocketUsedWithCCNS.
+   * @description Description text in the back/forward cache view of the Application panel explaining why a page could not be restored from the back/forward cache.
    */
   webSocketUsedWithCCNS: "Back/forward cache is disabled because WebSocket has been used"
 };
@@ -4411,118 +4410,106 @@ devtools-report-value:has(devtools-tree-outline) {
 // ../../front_end/panels/application/components/BackForwardCacheView.ts
 var UIStrings3 = {
   /**
-   * @description Title text in back/forward cache view of the Application panel
+   * @description Section header for the main frame in the back/forward cache view of the Application panel.
    */
-  mainFrame: "Main Frame",
+  mainFrame: "Main frame",
   /**
-   * @description Title text in back/forward cache view of the Application panel
+   * @description Title text in the back/forward cache view of the Application panel.
    */
   backForwardCacheTitle: "Back/forward cache",
   /**
-   * @description Status text for the status of the main frame
+   * @description Status text for the main frame in the back/forward cache view of the Application panel when unavailable.
    */
   unavailable: "unavailable",
   /**
-   * @description Entry name text in the back/forward cache view of the Application panel
+   * @description Entry name text in the back/forward cache view of the Application panel.
    */
   url: "URL",
   /**
-   * @description Status text for the status of the back/forward cache status
+   * @description Status text indicating unknown back/forward cache status in the back/forward cache view of the Application panel.
    */
-  unknown: "Unknown Status",
+  unknown: "Unknown status",
   /**
-   * @description Status text for the status of the back/forward cache status indicating that
-   * the back/forward cache was not used and a normal navigation occurred instead.
+   * @description Status text indicating that the back/forward cache was not used and a normal navigation occurred instead in the back/forward cache view of the Application panel.
    */
   normalNavigation: "Not served from back/forward cache: to trigger back/forward cache, use Chrome\u2019s back/forward buttons, or use the test button below to automatically navigate away and back",
   /**
-   * @description Status text for the status of the back/forward cache status indicating that
-   * the back/forward cache was used to restore the page instead of reloading it.
+   * @description Status text indicating that the back/forward cache was used to restore the page instead of reloading it in the back/forward cache view of the Application panel.
    */
   restoredFromBFCache: "Successfully served from back/forward cache",
   /**
-   * @description Label for a list of reasons which prevent the page from being eligible for
-   * back/forward cache. These reasons are actionable i.e. they can be cleaned up to make the
-   * page eligible for back/forward cache.
+   * @description Label for actionable reasons that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
   pageSupportNeeded: "Actionable",
   /**
-   * @description Label for the completion of the back/forward cache test
+   * @description Label indicating completion of the back/forward cache test in the back/forward cache view of the Application panel.
    */
   testCompleted: "Back/forward cache test completed",
   /**
-   * @description Explanation for actionable items which prevent the page from being eligible
-   * for back/forward cache.
+   * @description Explanation for actionable items that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
   pageSupportNeededExplanation: "These reasons are actionable i.e. they can be cleaned up to make the page eligible for back/forward cache",
   /**
-   * @description Label for a list of reasons which prevent the page from being eligible for
-   * back/forward cache. These reasons are circumstantial / not actionable i.e. they cannot be
-   * cleaned up by developers to make the page eligible for back/forward cache.
+   * @description Label for circumstantial reasons that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
-  circumstantial: "Not Actionable",
+  circumstantial: "Not actionable",
   /**
-   * @description Explanation for circumstantial/non-actionable items which prevent the page from being eligible
-   * for back/forward cache.
+   * @description Explanation for circumstantial items that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
-  circumstantialExplanation: "These reasons are not actionable i.e. caching was prevented by something outside of the direct control of the page",
+  circumstantialExplanation: "These reasons aren\u2019t actionable i.e. caching was prevented by something outside of the direct control of the page",
   /**
-   * @description Label for a list of reasons which prevent the page from being eligible for
-   * back/forward cache. These reasons are pending support by chrome i.e. in a future version
-   * of chrome they will not prevent back/forward cache usage anymore.
+   * @description Label for reasons pending Chrome support that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
-  supportPending: "Pending Support",
+  supportPending: "Pending support",
   /**
-   * @description Label for the button to test whether BFCache is available for the page
+   * @description Button text to test whether back/forward cache is available for the page in the back/forward cache view of the Application panel.
    */
   runTest: "Test back/forward cache",
   /**
-   * @description Label for the disabled button while the test is running
+   * @description Button text for the disabled button while the test is running in the back/forward cache view of the Application panel.
    */
   runningTest: "Running test",
   /**
-   * @description Link Text about explanation of back/forward cache
+   * @description Link text explaining back/forward cache eligibility in the back/forward cache view of the Application panel.
    */
   learnMore: "Learn more: back/forward cache eligibility",
   /**
-   * @description Link Text about unload handler
+   * @description Link text about unload handlers in the back/forward cache view of the Application panel.
    */
-  neverUseUnload: "Learn more: Never use unload handler",
+  neverUseUnload: "Learn more: never use unload handler",
   /**
-   * @description Explanation for 'pending support' items which prevent the page from being eligible
-   * for back/forward cache.
+   * @description Explanation for reasons pending support that prevent the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
-  supportPendingExplanation: "Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for back/forward cache in a future version of Chrome",
+  supportPendingExplanation: "Chrome support for these reasons is pending i.e. they won\u2019t prevent the page from being eligible for back/forward cache in a future version of Chrome",
   /**
-   * @description Text that precedes displaying a link to the extension which blocked the page from being eligible for back/forward cache.
+   * @description Prefix text preceding the ID of the extension that blocked the page from being eligible for back/forward cache in the back/forward cache view of the Application panel.
    */
-  blockingExtensionId: "Extension id: ",
+  blockingExtensionId: "Extension ID: ",
   /**
-   * @description Label for the 'Frames' section of the back/forward cache view, which shows a frame tree of the
-   * page with reasons why the frames can't be cached.
+   * @description Label for the frames section in the back/forward cache view of the Application panel.
    */
   framesTitle: "Frames",
   /**
-   * @description Top level summary of the total number of issues found in a single frame.
+   * @description Summary of the total number of issues found in a single frame in the back/forward cache view of the Application panel.
    */
   issuesInSingleFrame: "{n, plural, =1 {# issue found in 1 frame} other {# issues found in 1 frame}}",
   /**
-   * @description Top level summary of the total number of issues found and the number of frames they were found in.
+   * @description Summary of the total number of issues found and the number of frames they were found in the back/forward cache view of the Application panel.
    * 'm' is never less than 2.
    * @example {3} m
    */
   issuesInMultipleFrames: "{n, plural, =1 {# issue found in {m} frames} other {# issues found in {m} frames}}",
   /**
-   * @description Shows the number of frames with a particular issue.
+   * @description Shows the number of frames with a particular issue in the back/forward cache view of the Application panel.
    */
   framesPerIssue: "{n, plural, =1 {# frame} other {# frames}}",
   /**
-   * @description Title for a frame in the frame tree that doesn't have a URL. Placeholder indicates which number frame with a blank URL it is.
+   * @description Title for a frame in the frame tree that doesn't have a URL in the back/forward cache view of the Application panel.
    * @example {3} PH1
    */
   blankURLTitle: "Blank URL [{PH1}]",
   /**
-   * @description Shows the number of files with a particular issue.
+   * @description Shows the number of files with a particular issue in the back/forward cache view of the Application panel.
    */
   filesPerIssue: "{n, plural, =1 {# file} other {# files}}"
 };
@@ -4996,37 +4983,35 @@ devtools-data-grid {
 var { html: html3 } = Lit2;
 var UIStrings4 = {
   /**
-   * @description Title text in bounce tracking mitigations view of the Application panel.
+   * @description Title text in the bounce tracking mitigations view of the Application panel.
    */
   bounceTrackingMitigationsTitle: "Bounce tracking mitigations",
   /**
-   * @description Label for the button to force bounce tracking mitigations to run.
+   * @description Button text to force bounce tracking mitigations to run in the bounce tracking mitigations view of the Application panel.
    */
   forceRun: "Force run",
   /**
-   * @description Label for the disabled button while bounce tracking mitigations are running
+   * @description Button text for the disabled button while bounce tracking mitigations are running in the bounce tracking mitigations view of the Application panel.
    */
   runningMitigations: "Running",
   /**
-   * @description Heading of table which displays sites whose state was deleted by bounce tracking mitigations.
+   * @description Heading of the table that displays sites whose state was deleted by bounce tracking mitigations in the bounce tracking mitigations view of the Application panel.
    */
   stateDeletedFor: "State was deleted for the following sites:",
   /**
-   * @description Text shown once the deletion command has been sent to the browser process.
+   * @description Status text shown while checking for potential bounce tracking sites in the bounce tracking mitigations view of the Application panel.
    */
   checkingPotentialTrackers: "Checking for potential bounce tracking sites",
   /**
-   * @description Link text about explanation of Bounce Tracking Mitigations.
+   * @description Link text explaining bounce tracking mitigations in the bounce tracking mitigations view of the Application panel.
    */
-  learnMore: "Learn more: Bounce Tracking Mitigations",
+  learnMore: "Learn more: bounce tracking mitigations",
   /**
-   * @description Text shown when bounce tracking mitigations have been forced to run and
-   * identified no potential bounce tracking sites to delete state for. This may also
-   * indicate that bounce tracking mitigations are disabled or third-party cookies aren't being blocked.
+   * @description Text shown when bounce tracking mitigations have run and no potential bounce tracking sites were identified to delete state for in the bounce tracking mitigations view of the Application panel.
    */
-  noPotentialBounceTrackersIdentified: "State was not cleared for any potential bounce tracking sites. Either none were identified or third-party cookies are not blocked.",
+  noPotentialBounceTrackersIdentified: "State wasn\u2019t cleared for any potential bounce tracking sites. Either none were identified or third-party cookies aren\u2019t blocked.",
   /**
-   * @description Text shown when bounce tracking mitigations are disabled.
+   * @description Text shown when bounce tracking mitigations are disabled in the bounce tracking mitigations view of the Application panel.
    */
   featureDisabled: "Bounce tracking mitigations are disabled"
 };
@@ -5191,19 +5176,19 @@ import * as UI4 from "../../../ui/legacy/legacy.js";
 import { html as html4, render as render4 } from "../../../ui/lit/lit.js";
 var UIStrings5 = {
   /**
-   * @description Text in Crash Report Context Items View of the Application panel
+   * @description Column header for the key in the crash report context datagrid in the Application panel.
    */
   key: "Key",
   /**
-   * @description Text in Crash Report Context Items View of the Application panel
+   * @description Column header for the value in the crash report context datagrid in the Application panel.
    */
   value: "Value",
   /**
-   * @description Context menu item to copy the key of a context entry
+   * @description Context menu item to copy the key of a crash report context entry in the Application panel.
    */
   copyKey: "Copy key",
   /**
-   * @description Context menu item to copy the value of a context entry
+   * @description Context menu item to copy the value of a crash report context entry in the Application panel.
    */
   copyValue: "Copy value"
 };
@@ -5361,15 +5346,13 @@ var endpointsGrid_css_default = `/*
 // ../../front_end/panels/application/components/EndpointsGrid.ts
 var UIStrings6 = {
   /**
-   * @description Placeholder text when there are no Reporting API endpoints.
-   *(https://developers.google.com/web/updates/2018/09/reportingapi#tldr)
+   * @description Header text when there are no Reporting API endpoints to display in the Application panel.
    */
   noEndpointsToDisplay: "No endpoints to display",
   /**
-   * @description Placeholder text when there are no Reporting API endpoints.
-   *(https://developers.google.com/web/updates/2018/09/reportingapi#tldr)
+   * @description Description text when there are no Reporting API endpoints to display in the Application panel.
    */
-  endpointsDescription: "Here you will find the list of endpoints that receive the reports"
+  endpointsDescription: "Here you will find the list of endpoints that get the reports"
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/application/components/EndpointsGrid.ts", UIStrings6);
 var i18nString5 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
@@ -5508,42 +5491,39 @@ var permissionsPolicySection_css_default = `/*
 // ../../front_end/panels/application/components/PermissionsPolicySection.ts
 var UIStrings7 = {
   /**
-   * @description Label for a button. When clicked more details (for the content this button refers to) will be shown.
+   * @description Button text to show more details in the permissions policy section of the Application panel.
    */
   showDetails: "Show details",
   /**
-   * @description Label for a button. When clicked some details (for the content this button refers to) will be hidden.
+   * @description Button text to hide details in the permissions policy section of the Application panel.
    */
   hideDetails: "Hide details",
   /**
-   * @description Label for a list of features which are allowed according to the current Permissions policy
-   *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
+   * @description Label for features that are allowed according to Permissions Policy in the permissions policy section of the Application panel.
    */
-  allowedFeatures: "Allowed Features",
+  allowedFeatures: "Allowed features",
   /**
-   * @description Label for a list of features which are disabled according to the current Permissions policy
-   *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
+   * @description Label for features that are disabled according to Permissions Policy in the permissions policy section of the Application panel.
    */
-  disabledFeatures: "Disabled Features",
+  disabledFeatures: "Disabled features",
   /**
-   * @description Tooltip text for a link to a specific request's headers in the Network panel.
+   * @description Tooltip text for a link to a request's headers in the Network panel.
    */
   clickToShowHeader: 'Click to reveal the request whose "`Permissions-Policy`" HTTP header disables this feature',
   /**
-   * @description Tooltip text for a link to a specific iframe in the Elements panel (Iframes can be nested, the link goes
-   *  to the outer-most iframe which blocks a certain feature).
+   * @description Tooltip text for a link to an iframe in the Elements panel.
    */
-  clickToShowIframe: "Click to reveal the top-most iframe which does not allow this feature in the elements panel",
+  clickToShowIframe: "Click to reveal the top-most iframe which doesn\u2019t allow this feature in the Elements panel",
   /**
-   * @description Text describing that a specific feature is blocked by not being included in the iframe's "allow" attribute.
+   * @description Text describing that a specific feature is blocked by not being included in the iframe's "allow" attribute in the permissions policy section of the Application panel.
    */
   disabledByIframe: 'missing in iframe "`allow`" attribute',
   /**
-   * @description Text describing that a specific feature is blocked by a Permissions Policy specified in a request header.
+   * @description Text describing that a specific feature is blocked by a Permissions Policy header in the permissions policy section of the Application panel.
    */
   disabledByHeader: 'disabled by "`Permissions-Policy`" header',
   /**
-   * @description Text describing that a specific feature is blocked by virtue of being inside a fenced frame tree.
+   * @description Text describing that a specific feature is blocked by virtue of being inside a fenced frame tree in the permissions policy section of the Application panel.
    */
   disabledByFencedFrame: "disabled inside a `fencedframe`"
 };
@@ -5808,42 +5788,42 @@ input.devtools-text-input[type="text"]::placeholder {
 var PROTOCOL_DOCUMENT_URL = "https://web.dev/url-protocol-handler/";
 var UIStrings8 = {
   /**
-   * @description Status message for when protocol handlers are detected in the manifest
+   * @description Status message when protocol handlers are detected in the manifest in the protocol handlers view of the Application panel.
    * @example {protocolhandler/manifest.json} PH1
    */
   protocolDetected: "Found valid protocol handler registration in the {PH1}. With the app installed, test the registered protocols.",
   /**
-   * @description Status message for when protocol handlers are not detected in the manifest
+   * @description Status message when protocol handlers are not detected in the manifest in the protocol handlers view of the Application panel.
    * @example {protocolhandler/manifest.json} PH1
    */
   protocolNotDetected: "Define protocol handlers in the {PH1} to register your app as a handler for custom protocols when your app is installed",
   /**
-   * @description Text wrapping a link pointing to more information on handling protocol handlers
+   * @description Text wrapping a link pointing to more information on protocol handlers in the protocol handlers view of the Application panel.
    * @example {https://example.com/} PH1
    */
   needHelpReadOur: "Need help? Read {PH1}.",
   /**
-   * @description Link text for more information on URL protocol handler registrations for PWAs
+   * @description Link text for more information on URL protocol handler registrations for PWAs in the protocol handlers view of the Application panel.
    */
   protocolHandlerRegistrations: "URL protocol handler registration for PWAs",
   /**
-   * @description In text hyperlink to the PWA manifest
+   * @description Link text for the PWA manifest in the protocol handlers view of the Application panel.
    */
   manifest: "manifest",
   /**
-   * @description Text for test protocol button
+   * @description Button text to test a protocol handler in the protocol handlers view of the Application panel.
    */
   testProtocol: "Test protocol",
   /**
-   * @description Aria text for screen reader to announce they can select a protocol handler in the dropdown
+   * @description Accessible label for the dropdown to select a protocol handler in the protocol handlers view of the Application panel.
    */
   dropdownLabel: "Select protocol handler",
   /**
-   * @description Aria text for screen reader to announce they can enter query parameters or endpoints into the textbox
+   * @description Accessible label for the input to enter query parameters or endpoints for a protocol handler in the protocol handlers view of the Application panel.
    */
   textboxLabel: "Query parameter or endpoint for protocol handler",
   /**
-   * @description Placeholder for textbox input field, rest of the URL of protocol to test.
+   * @description Placeholder text for the input field to enter the URL of the protocol to test in the protocol handlers view of the Application panel.
    */
   textboxPlaceholder: "Enter URL"
 };
@@ -6017,32 +5997,27 @@ var reportsGrid_css_default = `/*
 // ../../front_end/panels/application/components/ReportsGrid.ts
 var UIStrings9 = {
   /**
-   * @description Placeholder text when there are no Reporting API reports.
-   *(https://developers.google.com/web/updates/2018/09/reportingapi#sending)
+   * @description Header text when there are no Reporting API reports to display in the Application panel.
    */
   noReportsToDisplay: "No reports to display",
   /**
-   * @description Placeholder text that explains Reporting API reports.
-   *(https://developers.google.com/web/updates/2018/09/reportingapi#sending)
+   * @description Description text when there are no Reporting API reports to display in the Application panel.
    */
-  reportingApiDescription: "Here you will find reporting api reports that are generated by the page",
+  reportingApiDescription: "Here you will find Reporting API reports that are generated by the page",
   /**
-   * @description Link text to forward to a documentation page on reporting API.
+   * @description Link text to documentation on the Reporting API in the Application panel.
    */
   learnMore: "Learn more",
   /**
-   * @description Column header for a table displaying Reporting API reports.
-   *Status is one of 'Queued', 'Pending', 'MarkedForRemoval' or 'Success'.
+   * @description Column header for the status of a report in the reports datagrid in the Application panel.
    */
   status: "Status",
   /**
-   * @description Column header for a table displaying Reporting API reports.
-   *Destination is the name of the endpoint the report is being sent to.
+   * @description Column header for the destination endpoint in the reports datagrid in the Application panel.
    */
   destination: "Destination",
   /**
-   * @description Column header for a table displaying Reporting API reports.
-   *The column contains the timestamp of when a report was generated.
+   * @description Column header for the generation timestamp in the reports datagrid in the Application panel.
    */
   generatedAt: "Generated at"
 };
@@ -6275,94 +6250,92 @@ var storageMetadataView_css_default = `/*
 // ../../front_end/panels/application/components/StorageMetadataView.ts
 var UIStrings10 = {
   /**
-   * @description The origin of a URL (https://web.dev/same-site-same-origin/#origin).
-   *(for a lot of languages this does not need to be translated, please translate only where necessary)
+   * @description Label for the frame origin row in the storage metadata view of the Application panel.
    */
   origin: "Frame origin",
   /**
-   * @description Site (https://web.dev/same-site-same-origin/#site) for the URL the user sees in the omnibox.
+   * @description Label for the top-level site row in the storage metadata view of the Application panel.
    */
   topLevelSite: "Top-level site",
   /**
-   * @description Text to show in the top-level site row, in case the value is opaque (https://html.spec.whatwg.org/#concept-origin-opaque).
+   * @description Text shown in the top-level site row when the value is opaque in the storage metadata view of the Application panel.
    */
   opaque: "(opaque)",
   /**
-   * @description Whether the storage corresponds to an opaque key (similar to https://html.spec.whatwg.org/#concept-origin-opaque).
+   * @description Label for the row indicating whether the storage key is opaque in the storage metadata view of the Application panel.
    */
   isOpaque: "Is opaque",
   /**
-   * @description Whether the storage corresponds to a third-party origin (https://web.dev/learn/privacy/third-parties/).
+   * @description Label for the row indicating whether the storage corresponds to a third-party origin in the storage metadata view of the Application panel.
    */
   isThirdParty: "Is third-party",
   /**
-   * @description Text indicating that the condition holds.
+   * @description Text indicating that the condition holds in the storage metadata view of the Application panel.
    */
   yes: "Yes",
   /**
-   * @description Text indicating that the condition does not hold.
+   * @description Text indicating that the condition does not hold in the storage metadata view of the Application panel.
    */
   no: "No",
   /**
-   * @description Text indicating that the storage corresponds to a third-party origin because top-level site is opaque.
+   * @description Explanation that the storage corresponds to a third-party origin because the top-level site is opaque in the storage metadata view of the Application panel.
    */
   yesBecauseTopLevelIsOpaque: "Yes, because the top-level site is opaque",
   /**
-   * @description Text indicating that the storage corresponds to a third-party origin because the storage key is opaque.
+   * @description Explanation that the storage corresponds to a third-party origin because the storage key is opaque in the storage metadata view of the Application panel.
    */
   yesBecauseKeyIsOpaque: "Yes, because the storage key is opaque",
   /**
-   * @description Text indicating that the storage corresponds to a third-party origin because the origin doesn't match the top-level site.
+   * @description Explanation that the storage corresponds to a third-party origin because the origin is outside of the top-level site in the storage metadata view of the Application panel.
    */
   yesBecauseOriginNotInTopLevelSite: "Yes, because the origin is outside of the top-level site",
   /**
-   * @description Text indicating that the storage corresponds to a third-party origin because the was a third-party origin in the ancestry chain.
+   * @description Explanation that the storage corresponds to a third-party origin because the ancestry chain contains a third-party origin in the storage metadata view of the Application panel.
    */
   yesBecauseAncestorChainHasCrossSite: "Yes, because the ancestry chain contains a third-party origin",
   /**
-   * @description Text when something is loading.
+   * @description Status text while metadata is loading in the storage metadata view of the Application panel.
    */
   loading: "Loading\u2026",
   /**
-   * @description The storage bucket name (https://wicg.github.io/storage-buckets/explainer#bucket-names)
+   * @description Label for the bucket name row in the storage metadata view of the Application panel.
    */
   bucketName: "Bucket name",
   /**
-   * @description The name of the default bucket (https://wicg.github.io/storage-buckets/explainer#the-default-bucket)
-   *(This should not be a valid bucket name (https://wicg.github.io/storage-buckets/explainer#bucket-names))
+   * @description Label for the default bucket in the storage metadata view of the Application panel.
    */
   defaultBucket: "Default bucket",
   /**
-   * @description Text indicating that the storage is persistent (https://wicg.github.io/storage-buckets/explainer#storage-policy-persistence)
+   * @description Label for the row indicating whether the bucket is persistent in the storage metadata view of the Application panel.
    */
   persistent: "Is persistent",
   /**
-   * @description The storage durability policy (https://wicg.github.io/storage-buckets/explainer#storage-policy-durability)
+   * @description Label for the durability row in the storage metadata view of the Application panel.
    */
   durability: "Durability",
   /**
-   * @description The storage quota (https://wicg.github.io/storage-buckets/explainer#storage-policy-quota)
+   * @description Label for the quota row in the storage metadata view of the Application panel.
    */
   quota: "Quota",
   /**
-   * @description The storage expiration (https://wicg.github.io/storage-buckets/explainer#storage-policy-expiration)
+   * @description Label for the expiration row in the storage metadata view of the Application panel.
    */
   expiration: "Expiration",
   /**
-   * @description Text indicating that no value is set
+   * @description Text indicating that no value is set in the storage metadata view of the Application panel.
    */
   none: "None",
   /**
-   * @description Label of the button that triggers the Storage Bucket to be deleted.
+   * @description Button text to delete the storage bucket in the storage metadata view of the Application panel.
    */
   deleteBucket: "Delete bucket",
   /**
-   * @description Text shown in the confirmation dialogue that displays before deleting the bucket.
+   * @description Title of the confirmation dialog before deleting a storage bucket in the storage metadata view of the Application panel.
    * @example {bucket} PH1
    */
   confirmBucketDeletion: 'Delete the "{PH1}" bucket?',
   /**
-   * @description Explanation text shown in the confirmation dialogue that displays before deleting the bucket.
+   * @description Explanation shown in the confirmation dialog before deleting a storage bucket in the storage metadata view of the Application panel.
    */
   bucketWillBeRemoved: "The selected storage bucket and contained data will be removed"
 };
@@ -6588,38 +6561,36 @@ var PRIVATE_STATE_TOKENS_EXPLANATION_URL = "https://developers.google.com/privac
 var { html: html11 } = Lit5;
 var UIStrings11 = {
   /**
-   * @description Text for the issuer of an item
+   * @description Column header for the token issuer in the private state tokens table in the Application panel.
    */
   issuer: "Issuer",
   /**
-   * @description Column header for Trust Token table
+   * @description Column header for the stored token count in the private state tokens table in the Application panel.
    */
   storedTokenCount: "Stored token count",
   /**
-   * @description Hover text for an info icon in the Private State Token panel
+   * @description Tooltip text for the info icon in the private state tokens view of the Application panel.
    */
   allStoredTrustTokensAvailableIn: "All stored private state tokens available in this browser instance",
   /**
-   * @description Text shown instead of a table when the table would be empty. https://developers.google.com/privacy-sandbox/protections/private-state-tokens
+   * @description Header text when there are no private state tokens to display in the private state tokens view of the Application panel.
    */
   noTrustTokens: "No private state tokens detected",
   /**
-   * @description Text shown if there are no private state tokens. https://developers.google.com/privacy-sandbox/protections/private-state-tokens
+   * @description Description text when there are no private state tokens to display in the private state tokens view of the Application panel.
    */
   trustTokensDescription: "On this page you can view all available private state tokens in the current browsing context",
   /**
-   * @description Each row in the Private State Token table has a delete button. This is the text shown
-   * when hovering over this button. The placeholder is a normal URL, indicating the site which
-   * provided the Private State Tokens that will be deleted when the button is clicked.
+   * @description Tooltip text for the button to delete private state tokens issued by a site in the private state tokens view of the Application panel.
    * @example {https://google.com} PH1
    */
   deleteTrustTokens: "Delete all stored private state tokens issued by {PH1}",
   /**
-   * @description Heading label for a view. Previously known as 'Trust Tokens'.
+   * @description Title for the private state tokens view in the Application panel.
    */
   trustTokens: "Private state tokens",
   /**
-   * @description Text used in a link to learn more about the topic.
+   * @description Link text to learn more about private state tokens in the private state tokens view of the Application panel.
    */
   learnMore: "Learn more"
 };

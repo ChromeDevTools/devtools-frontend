@@ -713,6 +713,11 @@ export class SourceMap {
     hasOutlinedFunctions() {
         return this.hasEncodedScopeInfo() && (this.#scopesInfo?.hasOutlinedFunctions() ?? false);
     }
+    /** See {@link SourceMapScopesInfo.outlinedFunctionRanges}. Empty without encoded scopes. */
+    outlinedFunctionRanges(generatedLine, generatedColumn) {
+        return this.hasEncodedScopeInfo() ? this.#scopesInfo?.outlinedFunctionRanges(generatedLine, generatedColumn) ?? [] :
+            [];
+    }
     /** See {@link SourceMapScopesInfo.artificialFunctionRanges}. Empty without encoded scopes. */
     artificialFunctionRanges() {
         return this.hasEncodedScopeInfo() ? this.#scopesInfo?.artificialFunctionRanges() ?? [] : [];

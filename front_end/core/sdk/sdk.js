@@ -21728,11 +21728,11 @@ var UIStrings2 = {
   /**
    * @description Error message for when a CSS file can't be loaded.
    */
-  couldNotFindTheOriginalStyle: "Could not find the original style sheet",
+  couldNotFindTheOriginalStyle: "Couldn\u2019t find the original style sheet",
   /**
    * @description Error message to display when a source CSS file could not be retrieved.
    */
-  couldNotRetrieveSourceStyles: "Could not retrieve source styles"
+  couldNotRetrieveSourceStyles: "Couldn\u2019t retrieve source styles"
 };
 var str_2 = i18n3.i18n.registerUIStrings("core/sdk/CSSStyleSheetHeader.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -22824,6 +22824,29 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     return hasOutlined(this.#generatedRanges);
   }
   /**
+   * @returns the outlined parts of the authored function at the position: the hidden generated functions whose
+   *          original scope lies within that function's original scope (see {@link GeneratedFrameKind.OUTLINED}).
+   *          Includes the outlined part the position itself is in, if any. Sorted by start position.
+   */
+  outlinedFunctionRanges(generatedLine, generatedColumn) {
+    const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+    const functionScope = this.#findFunctionScopeInOriginalScopeChain(rangeChain.at(-1)?.originalScope);
+    if (!functionScope) {
+      return [];
+    }
+    const isWithinFunction = (scope) => scope !== void 0 && (scope === functionScope || isWithinFunction(scope.parent));
+    const result = [];
+    (function walk(ranges) {
+      for (const range of ranges) {
+        if (range.isStackFrame && range.isHidden && isWithinFunction(range.originalScope)) {
+          result.push({ start: range.start, end: range.end });
+        }
+        walk(range.children);
+      }
+    })(this.#generatedRanges);
+    return result;
+  }
+  /**
    * @returns the "artificial" generated functions (in the DWARF sense): functions that contain no authored code at all
    *          (no original scope anywhere in their subtree), e.g. compiler helpers. Sorted by start position,
    *          non-overlapping.
@@ -23595,6 +23618,10 @@ var SourceMap = class _SourceMap {
   /** See {@link SourceMapScopesInfo.hasOutlinedFunctions}. False without encoded scopes. */
   hasOutlinedFunctions() {
     return this.hasEncodedScopeInfo() && (this.#scopesInfo?.hasOutlinedFunctions() ?? false);
+  }
+  /** See {@link SourceMapScopesInfo.outlinedFunctionRanges}. Empty without encoded scopes. */
+  outlinedFunctionRanges(generatedLine, generatedColumn) {
+    return this.hasEncodedScopeInfo() ? this.#scopesInfo?.outlinedFunctionRanges(generatedLine, generatedColumn) ?? [] : [];
   }
   /** See {@link SourceMapScopesInfo.artificialFunctionRanges}. Empty without encoded scopes. */
   artificialFunctionRanges() {
@@ -31567,6 +31594,17 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
     this.dispatchEventToListeners("FrameNavigatedWithinDocument" /* FrameNavigatedWithinDocument */, frame);
   }
+  frameStoppedLoading(frameId) {
+    const frame = this.framesInternal.get(frameId);
+    if (!frame) {
+      return;
+    }
+    void frame.getStorageKey(
+      /* forceFetch */
+      true
+    );
+    void this.updateStorageKeys();
+  }
   frameDetached(frameId, isSwap) {
     if (!this.#cachedResourcesProcessed) {
       return;
@@ -32297,7 +32335,8 @@ var PageDispatcher = class {
   }
   frameStartedLoading({}) {
   }
-  frameStoppedLoading({}) {
+  frameStoppedLoading({ frameId }) {
+    this.#resourceTreeModel.frameStoppedLoading(frameId);
   }
   frameRequestedNavigation({}) {
   }
@@ -37639,7 +37678,10 @@ var ServerSentEventsParser = class {
       this.#data += "\n";
     }
     if (fieldName === "id") {
-      this.#id = this.#line.substring(fieldValueStart);
+      const id = this.#line.substring(fieldValueStart);
+      if (!id.includes("\0")) {
+        this.#id = id;
+      }
     }
   }
 };
@@ -37930,11 +37972,11 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  secureOnly: 'This cookie was blocked because it had the "`Secure`" attribute and the connection was not secure',
+  secureOnly: 'This cookie was blocked because it had the "`Secure`" attribute and the connection wasn\u2019t secure',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  notOnPath: "This cookie was blocked because its path was not an exact match for or a superdirectory of the request URL\u2019s path",
+  notOnPath: "This cookie was blocked because its path wasn\u2019t an exact match for or a superdirectory of the request URL\u2019s path",
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
@@ -37946,15 +37988,15 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  sameSiteLax: 'This cookie was blocked because it had the "`SameSite=Lax`" attribute and the request was made from a different site and was not initiated by a top-level navigation',
+  sameSiteLax: 'This cookie was blocked because it had the "`SameSite=Lax`" attribute and the request was made from a different site and wasn\u2019t initiated by a top-level navigation',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  sameSiteUnspecifiedTreatedAsLax: 'This cookie didn\u2019t specify a "`SameSite`" attribute when it was stored and was defaulted to "`SameSite=Lax`", and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with "`SameSite=None`" to enable cross-site usage.',
+  sameSiteUnspecifiedTreatedAsLax: 'This cookie didn\u2019t specify a "`SameSite`" attribute when it was stored and was defaulted to "`SameSite=Lax`", and was blocked because the request was made from a different site and wasn\u2019t initiated by a top-level navigation. The cookie had to have been set with "`SameSite=None`" to enable cross-site usage.',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  sameSiteNoneInsecure: 'This cookie was blocked because it had the "`SameSite=None`" attribute but was not marked "`Secure`". Cookies without SameSite restrictions must be marked "`Secure`" and sent over a secure connection.',
+  sameSiteNoneInsecure: 'This cookie was blocked because it had the "`SameSite=None`" attribute but wasn\u2019t marked "`Secure`". Cookies without SameSite restrictions must be marked "`Secure`" and sent over a secure connection.',
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
@@ -37990,7 +38032,7 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
-  theSchemeOfThisConnectionIsNot: "The scheme of this connection is not allowed to store cookies",
+  theSchemeOfThisConnectionIsNot: "The scheme of this connection isn\u2019t allowed to store cookies",
   /**
    * @description Tooltip to explain why a cookie was blocked.
    */
@@ -37998,24 +38040,24 @@ var UIStrings11 = {
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonSecureOnly: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`Secure`" attribute but was not received over a secure connection',
+  blockedReasonSecureOnly: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`Secure`" attribute but wasn\u2019t received over a secure connection',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    * @example {SameSite=Strict} PH1
    */
-  blockedReasonSameSiteStrictLax: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "{PH1}" attribute but came from a cross-site response which was not the response to a top-level navigation',
+  blockedReasonSameSiteStrictLax: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "{PH1}" attribute but came from a cross-site response which wasn\u2019t the response to a top-level navigation',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonSameSiteUnspecifiedTreatedAsLax: 'This "`Set-Cookie`" header didn\u2019t specify a "`SameSite`" attribute and was defaulted to "`SameSite=Lax`", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The "`Set-Cookie`" header had to have been set with "`SameSite=None`" to enable cross-site usage.',
+  blockedReasonSameSiteUnspecifiedTreatedAsLax: 'This "`Set-Cookie`" header didn\u2019t specify a "`SameSite`" attribute and was defaulted to "`SameSite=Lax`", and was blocked because it came from a cross-site response which wasn\u2019t the response to a top-level navigation. The "`Set-Cookie`" header had to have been set with "`SameSite=None`" to enable cross-site usage.',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonSameSiteNoneInsecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`SameSite=None`" attribute but did not have the "`Secure`" attribute, which is required in order to use "`SameSite=None`"',
+  blockedReasonSameSiteNoneInsecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "`SameSite=None`" attribute but didn\u2019t have the "`Secure`" attribute, which is required in order to use "`SameSite=None`"',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonOverwriteSecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it was not sent over a secure connection and would have overwritten a cookie with the "`Secure`" attribute',
+  blockedReasonOverwriteSecure: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it wasn\u2019t sent over a secure connection and would have overwritten a cookie with the "`Secure`" attribute',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
@@ -41321,7 +41363,7 @@ var UIStrings13 = {
    * @example {https://example.com/sourcemap.map} PH1
    * @example {An error occurred} PH2
    */
-  couldNotLoadContentForSS: "Could not load content for {PH1} ({PH2})"
+  couldNotLoadContentForSS: "Couldn\u2019t load content for {PH1} ({PH2})"
 };
 var str_13 = i18n29.i18n.registerUIStrings("core/sdk/CompilerSourceMappingContentProvider.ts", UIStrings13);
 var i18nString13 = i18n29.i18n.getLocalizedString.bind(void 0, str_13);

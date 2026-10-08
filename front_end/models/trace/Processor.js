@@ -180,6 +180,12 @@ export class TraceProcessor extends EventTarget {
             handler.reset();
         }
         options.logger?.start('parse:handleEvent');
+        // In bundled builds each handler is a module namespace object whose exports are getters, and every handler has a
+        // different shape. V8 can't optimise a `handler.handleEvent` read that sees all these shapes, so reading it inside the
+        // loop costs a slow getter call for every event and handler.
+        // On a 1M-event trace that is about 30M getter calls per parse. Reading each `handleEvent` once here cut the
+        // handleEvent loop from ~2.9s to ~2.1s (-25%) and total parse time by ~10%, so keep this read outside the loop.
+        const handleEventFns = sortedHandlers.map(([, handler]) => handler.handleEvent);
         // Handle each event.
         for (let i = 0; i < traceEvents.length; ++i) {
             // Every so often we take a break just to render.
@@ -191,9 +197,8 @@ export class TraceProcessor extends EventTarget {
                 await new Promise(resolve => setTimeout(resolve, 0));
             }
             const event = traceEvents[i];
-            for (let j = 0; j < sortedHandlers.length; ++j) {
-                const [, handler] = sortedHandlers[j];
-                handler.handleEvent(event);
+            for (let j = 0; j < handleEventFns.length; ++j) {
+                handleEventFns[j](event);
             }
         }
         options.logger?.end('parse:handleEvent');

@@ -244,6 +244,20 @@ export class ResourceTreeModel extends SDKModel {
         }
         this.dispatchEventToListeners(Events.FrameNavigatedWithinDocument, frame);
     }
+    frameStoppedLoading(frameId) {
+        const frame = this.framesInternal.get(frameId);
+        if (!frame) {
+            return;
+        }
+        // The renderer sends `Page.frameNavigated` before it tells the browser
+        // process about the commit, so the `Storage.getStorageKey` request issued
+        // from `ResourceTreeFrame.navigate()` may be answered for the previous
+        // document (and fails outright if that document had an opaque origin, e.g.
+        // the initial about:blank). `Page.frameStoppedLoading` comes from the
+        // browser process after the commit, so re-fetch the storage key here.
+        void frame.getStorageKey(/* forceFetch */ true);
+        void this.updateStorageKeys();
+    }
     frameDetached(frameId, isSwap) {
         // Do nothing unless cached resource tree is processed - it will overwrite everything.
         if (!this.#cachedResourcesProcessed) {
@@ -930,7 +944,8 @@ export class PageDispatcher {
     }
     frameStartedLoading({}) {
     }
-    frameStoppedLoading({}) {
+    frameStoppedLoading({ frameId }) {
+        this.#resourceTreeModel.frameStoppedLoading(frameId);
     }
     frameRequestedNavigation({}) {
     }

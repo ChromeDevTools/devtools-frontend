@@ -1098,13 +1098,13 @@ var UIStrings = {
    * @example {1000} PH1
    * @example {12.34%} PH2
    */
-  sBytesSBelongToFunctionsThatHave: "{PH1} bytes ({PH2}) belong to functions that have not (yet) been executed",
+  sBytesSBelongToFunctionsThatHave: "{PH1} bytes ({PH2}) belong to functions that haven\u2019t (yet) been executed",
   /**
    * @description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
    * @example {1000} PH1
    * @example {12.34%} PH2
    */
-  sBytesSBelongToBlocksOf: "{PH1} bytes ({PH2}) belong to blocks of JavaScript that have not (yet) been executed",
+  sBytesSBelongToBlocksOf: "{PH1} bytes ({PH2}) belong to blocks of JavaScript that haven\u2019t (yet) been executed",
   /**
    * @description Message in Coverage View of the Coverage tab.
    * @example {1000} PH1
@@ -1641,11 +1641,11 @@ var UIStrings2 = {
   /**
    * @description Message in the Coverage View explaining that DevTools could not capture coverage.
    */
-  bfcacheNoCapture: "Could not capture coverage info because the page was served from the back/forward cache",
+  bfcacheNoCapture: "Couldn\u2019t capture coverage info because the page was served from the back/forward cache",
   /**
    * @description Message in the Coverage View explaining that DevTools could not capture coverage.
    */
-  activationNoCapture: "Could not capture coverage info because the page was prerendered in the background",
+  activationNoCapture: "Couldn\u2019t capture coverage info because the page was prerendered in the background",
   /**
    * @description Message in the Coverage View prompting the user to reload the page.
    * @example {reload button icon} PH1

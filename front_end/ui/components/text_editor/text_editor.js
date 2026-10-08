@@ -151,7 +151,7 @@ var UIStringsNotTranslate = {
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion.
    */
-  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data won\u2019t be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
    */
@@ -159,7 +159,7 @@ var UIStringsNotTranslate = {
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
    */
-  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data won\u2019t be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion in Styles pane.
    */
@@ -167,7 +167,7 @@ var UIStringsNotTranslate = {
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion in Styles pane.
    */
-  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles: "To generate code suggestions, the CSS properties of the selected element and the relevant CSS files are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles: "To generate code suggestions, the CSS properties of the selected element and the relevant CSS files are shared with Google. This data won\u2019t be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
    * Text for tooltip shown on hovering over spinner.
    */
@@ -535,7 +535,7 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Privacy disclaimer item text for the fre dialog when enterprise logging is off.
    */
-  freDisclaimerTextPrivacyNoLogging: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  freDisclaimerTextPrivacyNoLogging: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data won\u2019t be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
    * @description Last disclaimer item text for the fre dialog.
    */
@@ -1000,7 +1000,7 @@ var UIStringsNotTranslate3 = {
   /**
    * @description Text for teaser when generating suggestion.
    */
-  generating: "Generating... (",
+  generating: "Generating\u2026 (",
   /**
    * @description Text for teaser when generating suggestion.
    */
@@ -1060,7 +1060,7 @@ var UIStringsNotTranslate3 = {
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Console panel.
    */
-  tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole: "To generate code suggestions, your console input and the history of your current console session are shared with Google. This data won\u2019t be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
    */
@@ -1068,7 +1068,7 @@ var UIStringsNotTranslate3 = {
   /**
    * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code generation in Sources panel.
    */
-  tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data won\u2019t be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
    * @description Text for tooltip button which redirects to AI settings
    */
@@ -1442,7 +1442,7 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Third item in the description.
    */
-  disclaimerTextPrivacyNoLogging: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  disclaimerTextPrivacyNoLogging: "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data won\u2019t be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
    * @description Text for the manage in settings button in the upgrade notice dialog.
    */
@@ -1813,7 +1813,7 @@ var DynamicSetting = class _DynamicSetting {
   }
   static none = [];
 };
-var tabMovesFocus = DynamicSetting.bool("text-editor-tab-moves-focus", [], CM3.keymap.of([{
+var tabMovesFocus = DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorTabMovesFocusSettingDescriptor, [], CM3.keymap.of([{
   key: "Tab",
   run: (view) => view.state.doc.length ? CM3.indentMore(view) : false,
   shift: (view) => view.state.doc.length ? CM3.indentLess(view) : false
@@ -1880,7 +1880,7 @@ function announceSelectedCompletionInfo(view) {
   UI5.ARIAUtils.LiveAnnouncer.alert(ariaMessage);
 }
 var autocompletion2 = new DynamicSetting(
-  "text-editor-autocompletion",
+  SettingsUI.SourcesSettings.textEditorAutocompletionSettingDescriptor,
   (activateOnTyping) => [
     CM3.autocompletion({
       activateOnTyping,
@@ -1907,13 +1907,16 @@ var autocompletion2 = new DynamicSetting(
     ]))
   ]
 );
-var bracketMatching2 = DynamicSetting.bool("text-editor-bracket-matching", CM3.bracketMatching());
-var codeFolding = DynamicSetting.bool("text-editor-code-folding", [
+var bracketMatching2 = DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorBracketMatchingSettingDescriptor, CM3.bracketMatching());
+var codeFolding = DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorCodeFoldingSettingDescriptor, [
   CM3.foldGutter({
     markerDOM(open) {
       const iconName = open ? "triangle-down" : "triangle-right";
       const icon = new Icon();
-      icon.setAttribute("class", open ? "cm-foldGutterElement" : "cm-foldGutterElement cm-foldGutterElement-folded");
+      icon.setAttribute(
+        "class",
+        open ? "cm-foldGutterElement" : "cm-foldGutterElement cm-foldGutterElement-folded"
+      );
       icon.setAttribute("jslog", `${VisualLogging4.expand().track({ click: true })}`);
       icon.name = iconName;
       icon.classList.add("small");
@@ -1941,7 +1944,7 @@ function detectIndentation(doc) {
   const indentUnit3 = TextUtils.TextUtils.detectIndentation(lines);
   return indentUnit3 ?? Common3.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
 }
-var autoDetectIndent = DynamicSetting.bool("text-editor-auto-detect-indent", AutoDetectIndent);
+var autoDetectIndent = DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorAutoDetectIndentSettingDescriptor, AutoDetectIndent);
 function matcher(decorator) {
   return CM3.ViewPlugin.define(
     (view) => ({
@@ -2058,7 +2061,7 @@ function baseConfiguration(text) {
     CM3.bidiIsolates()
   ];
 }
-var closeBrackets2 = DynamicSetting.bool("text-editor-bracket-closing", [
+var closeBrackets2 = DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorBracketClosingSettingDescriptor, [
   CM3.html.autoCloseTags,
   CM3.closeBrackets(),
   CM3.keymap.of(CM3.closeBracketsKeymap)

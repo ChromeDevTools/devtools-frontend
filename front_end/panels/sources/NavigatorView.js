@@ -16,6 +16,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 import { PanelUtils } from '../utils/utils.js';
@@ -59,7 +60,7 @@ const UIStrings = {
     /**
      * @description Text in a dialog which appears when users click on 'Exclude from workspace' menu item.
      */
-    folderWillNotBeShown: 'This folder and its contents will not be shown in workspace',
+    folderWillNotBeShown: 'This folder and its contents won’t be shown in workspace',
     /**
      * @description Text in Navigator view of the Sources panel.
      */
@@ -87,7 +88,7 @@ const UIStrings = {
     /**
      * @description Text in Navigator view of the Sources panel. A confirmation message on action to delete a folder or file.
      */
-    actionCannotBeUndone: 'This action cannot be undone',
+    actionCannotBeUndone: 'This action can’t be undone',
     /**
      * @description A context menu item in the Navigator view of the Sources panel.
      */
@@ -216,13 +217,14 @@ export class NavigatorView extends UI.Widget.VBox {
         this.rootNode.populate();
         this.frameNodes = new Map();
         UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.contentElement, { 'sources.rename': this.renameShortcut.bind(this) });
-        this.navigatorGroupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigator-group-by-folder');
+        this.navigatorGroupByFolderSetting =
+            Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorGroupByFolderSettingDescriptor);
         this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
-        this.navigatorJustMyCodeSetting = Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code');
+        this.navigatorJustMyCodeSetting =
+            Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
         this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));
         if (enableAuthoredGrouping) {
-            this.navigatorGroupByAuthoredSetting =
-                Common.Settings.Settings.instance().moduleSetting('navigator-group-by-authored');
+            this.navigatorGroupByAuthoredSetting = Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor);
             this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
         }
         Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));

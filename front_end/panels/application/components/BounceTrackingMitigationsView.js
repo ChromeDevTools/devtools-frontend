@@ -14,37 +14,35 @@ import bounceTrackingMitigationsViewStyles from './bounceTrackingMitigationsView
 const { html } = Lit;
 const UIStrings = {
     /**
-     * @description Title text in bounce tracking mitigations view of the Application panel.
+     * @description Title text in the bounce tracking mitigations view of the Application panel.
      */
     bounceTrackingMitigationsTitle: 'Bounce tracking mitigations',
     /**
-     * @description Label for the button to force bounce tracking mitigations to run.
+     * @description Button text to force bounce tracking mitigations to run in the bounce tracking mitigations view of the Application panel.
      */
     forceRun: 'Force run',
     /**
-     * @description Label for the disabled button while bounce tracking mitigations are running
+     * @description Button text for the disabled button while bounce tracking mitigations are running in the bounce tracking mitigations view of the Application panel.
      */
     runningMitigations: 'Running',
     /**
-     * @description Heading of table which displays sites whose state was deleted by bounce tracking mitigations.
+     * @description Heading of the table that displays sites whose state was deleted by bounce tracking mitigations in the bounce tracking mitigations view of the Application panel.
      */
     stateDeletedFor: 'State was deleted for the following sites:',
     /**
-     * @description Text shown once the deletion command has been sent to the browser process.
+     * @description Status text shown while checking for potential bounce tracking sites in the bounce tracking mitigations view of the Application panel.
      */
     checkingPotentialTrackers: 'Checking for potential bounce tracking sites',
     /**
-     * @description Link text about explanation of Bounce Tracking Mitigations.
+     * @description Link text explaining bounce tracking mitigations in the bounce tracking mitigations view of the Application panel.
      */
-    learnMore: 'Learn more: Bounce Tracking Mitigations',
+    learnMore: 'Learn more: bounce tracking mitigations',
     /**
-     * @description Text shown when bounce tracking mitigations have been forced to run and
-     * identified no potential bounce tracking sites to delete state for. This may also
-     * indicate that bounce tracking mitigations are disabled or third-party cookies aren't being blocked.
+     * @description Text shown when bounce tracking mitigations have run and no potential bounce tracking sites were identified to delete state for in the bounce tracking mitigations view of the Application panel.
      */
-    noPotentialBounceTrackersIdentified: 'State was not cleared for any potential bounce tracking sites. Either none were identified or third-party cookies are not blocked.',
+    noPotentialBounceTrackersIdentified: 'State wasn’t cleared for any potential bounce tracking sites. Either none were identified or third-party cookies aren’t blocked.',
     /**
-     * @description Text shown when bounce tracking mitigations are disabled.
+     * @description Text shown when bounce tracking mitigations are disabled in the bounce tracking mitigations view of the Application panel.
      */
     featureDisabled: 'Bounce tracking mitigations are disabled',
 };

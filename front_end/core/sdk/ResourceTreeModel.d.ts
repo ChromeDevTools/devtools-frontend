@@ -42,6 +42,7 @@ export declare class ResourceTreeModel extends SDKModel<EventTypes> {
     primaryPageChanged(frame: ResourceTreeFrame, type: PrimaryPageChangeType): void;
     documentOpened(framePayload: Protocol.Page.Frame): void;
     navigatedWithinDocument(frameId: Protocol.Page.FrameId, url: string): void;
+    frameStoppedLoading(frameId: Protocol.Page.FrameId): void;
     frameDetached(frameId: Protocol.Page.FrameId, isSwap: boolean): void;
     private onRequestFinished;
     private onRequestUpdateDropped;
@@ -241,7 +242,7 @@ export declare class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
     frameDetached({ frameId, reason }: Protocol.Page.FrameDetachedEvent): void;
     frameSubtreeWillBeDetached(_params: Protocol.Page.FrameSubtreeWillBeDetachedEvent): void;
     frameStartedLoading({}: Protocol.Page.FrameStartedLoadingEvent): void;
-    frameStoppedLoading({}: Protocol.Page.FrameStoppedLoadingEvent): void;
+    frameStoppedLoading({ frameId }: Protocol.Page.FrameStoppedLoadingEvent): void;
     frameRequestedNavigation({}: Protocol.Page.FrameRequestedNavigationEvent): void;
     frameScheduledNavigation({}: Protocol.Page.FrameScheduledNavigationEvent): void;
     frameClearedScheduledNavigation({}: Protocol.Page.FrameClearedScheduledNavigationEvent): void;

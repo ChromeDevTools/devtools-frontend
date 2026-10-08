@@ -129,6 +129,14 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     return threads;
   }
 
+  sendQueuedThreads(): void {
+    for (const thread of this.getCommentThreads()) {
+      if (thread.status === 'ACTIVE') {
+        thread.sendToAgent();
+      }
+    }
+  }
+
   resolveCommentThread(threadId: string, replyText?: string): boolean {
     const thread = this.#commentThreads.get(threadId);
     if (!thread) {

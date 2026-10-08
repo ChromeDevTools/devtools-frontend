@@ -231,11 +231,7 @@ export class CommentsPane extends UI.Widget.Widget {
   };
 
   #handleSendToAgent = (): void => {
-    for (const thread of this.#commentManager.getCommentThreads()) {
-      if (thread.status === 'ACTIVE') {
-        thread.sendToAgent();
-      }
-    }
+    this.#commentManager.sendQueuedThreads();
   };
 
   override async performUpdate(signal?: AbortSignal): Promise<void> {

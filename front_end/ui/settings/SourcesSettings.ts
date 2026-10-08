@@ -97,3 +97,10 @@ export const inlineVariableValuesSettingDescriptor: Common.Settings.SettingDescr
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const autoFocusOnDebuggerPausedEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'auto-focus-on-debugger-paused-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

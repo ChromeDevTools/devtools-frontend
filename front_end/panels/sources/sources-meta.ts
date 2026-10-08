@@ -1837,24 +1837,21 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.inlineVaria
   ],
 });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.enableAutoFocusOnDebuggerPaused),
-  settingName: 'auto-focus-on-debugger-paused-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.enableAutoFocusOnDebuggerPaused),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.disableAutoFocusOnDebuggerPaused),
-    },
-  ],
-});
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.autoFocusOnDebuggerPausedEnabledSettingDescriptor,
+                                          {
+                                            category: Common.Settings.SettingCategory.SOURCES,
+                                            title: i18nLazyString(UIStrings.enableAutoFocusOnDebuggerPaused),
+                                            options: [
+                                              {
+                                                value: true,
+                                                title: i18nLazyString(UIStrings.enableAutoFocusOnDebuggerPaused),
+                                              },
+                                              {
+                                                value: false,
+                                                title: i18nLazyString(UIStrings.disableAutoFocusOnDebuggerPaused),
+                                              },
+                                            ],
+                                          });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,

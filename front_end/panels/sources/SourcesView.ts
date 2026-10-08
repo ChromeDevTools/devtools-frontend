@@ -14,7 +14,7 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
-import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -439,12 +439,14 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
 
   #updateToolbarChangedListener(): void {
     this.#removeToolbarChangedListener();
-    const sourceFrame = this.currentSourceFrame();
-    if (!sourceFrame) {
-      return;
+    const view = this.visibleView();
+    if (view instanceof UISourceCodeFrame) {
+      this.#toolbarChangedListener = view.addEventListener(UISourceCodeFrameEvents.TOOLBAR_ITEMS_CHANGED,
+                                                           this.#updateScriptViewToolbarItems, this);
+    } else if (view instanceof SourceFrame.ImageView.ImageView) {
+      this.#toolbarChangedListener = view.addEventListener(SourceFrame.ImageView.Events.TOOLBAR_ITEMS_CHANGED,
+                                                           this.#updateScriptViewToolbarItems, this);
     }
-    this.#toolbarChangedListener = sourceFrame.addEventListener(UISourceCodeFrameEvents.TOOLBAR_ITEMS_CHANGED,
-                                                                this.#updateScriptViewToolbarItems, this);
   }
 
   onSearchCanceled(): void {

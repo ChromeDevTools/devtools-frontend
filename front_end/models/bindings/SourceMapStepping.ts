@@ -122,6 +122,17 @@ export function outlinedFunctionRanges(frame: SDK.DebuggerModel.CallFrame): SDK.
       [];
 }
 
+function compareLocations(a: SDK.DebuggerModel.Location, b: SDK.DebuggerModel.Location): number {
+  return a.lineNumber - b.lineNumber || (a.columnNumber ?? 0) - (b.columnNumber ?? 0);
+}
+
+/** @returns true iff {@link frame} is paused inside one of {@link ranges} (start inclusive, end exclusive). */
+function isInRanges(frame: SDK.DebuggerModel.CallFrame, ranges: readonly SDK.DebuggerModel.LocationRange[]): boolean {
+  const location = frame.location();
+  return ranges.some(({start, end}) => start.scriptId === location.scriptId && compareLocations(start, location) <= 0 &&
+                         compareLocations(location, end) < 0);
+}
+
 /**
  * Decides whether the pause {@link details} completes the user's step {@link context}.
  *
@@ -154,8 +165,26 @@ export async function nextAutoStep(
       return null;
     }
 
-    case SDK.DebuggerModel.StepMode.STEP_OUT:
+    case SDK.DebuggerModel.StepMode.STEP_OUT: {
+      const outlinedPrefix = outlinedPrefixLength(start);
+      // Without an owner (an outlined part invoked from a task), or when the step out started in a function inlined
+      // into the outlined part (which is issued as a step over its body), a plain step out is right.
+      if (outlinedPrefix > 0 && outlinedPrefix < start.length && inlinedFunctionRanges(start[0]).length === 0) {
+        // The owner is paused at the call into its outlined parts. If that call is inside an inlined function, the
+        // logical frame to step out of is that inlined function, otherwise it's the owner itself.
+        const ownerInlined = inlinedFunctionRanges(start[outlinedPrefix]);
+        const targetLength = start.length - outlinedPrefix - (ownerInlined.length > 0 ? 0 : 1);
+        if (frames.length > targetLength) {
+          // We are still in the outlined parts or in their owner: keep stepping out.
+          return {command: SDK.DebuggerModel.StepMode.STEP_OUT, ranges: []};
+        }
+        if (frames.length === targetLength && isInRanges(frames[0], ownerInlined)) {
+          // We are back in the owner, but still in the inlined function: step over the rest of it.
+          return {command: SDK.DebuggerModel.StepMode.STEP_OVER, ranges: ownerInlined};
+        }
+      }
       // Stepping into calls of the unmapped code would present a pause inside the callee, so continue as step over.
       return isUnmapped(frames[0]) ? await computeAutoStep(SDK.DebuggerModel.StepMode.STEP_OVER, frames) : null;
+    }
   }
 }

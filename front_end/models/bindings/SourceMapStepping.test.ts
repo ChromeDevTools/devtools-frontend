@@ -318,6 +318,43 @@ describe('SourceMapStepping', () => {
     assert.lengthOf(requests, 1);
   });
 
+  it('steps out of the function that owns an outlined part', async () => {
+    const script = await addScript({outlined: true});
+    const caller = frame(script, 1, 0, '2');
+    await pauseAndWait([frame(script, 9, 0), frame(script, 4, 3, '1'), caller]);
+
+    assert.strictEqual((await step(() => debuggerModel.stepOut())).method, 'Debugger.stepOut');
+    const again = await pauseAndExpectAutoStep([frame(script, 4, 4, '1'), caller]);
+    assert.strictEqual(again.method, 'Debugger.stepOut');
+    await pauseAndWait([frame(script, 1, 4, '2')], Protocol.Debugger.PausedEventReason.Step);
+    assert.lengthOf(requests, 2);
+  });
+
+  it('steps out of an outlined part without an owner on the stack', async () => {
+    const script = await addScript({outlined: true});
+    // `o` was invoked from a task, e.g. as a callback.
+    await pauseAndWait([frame(script, 9, 0)]);
+
+    assert.strictEqual((await step(() => debuggerModel.stepOut())).method, 'Debugger.stepOut');
+    await pauseAndWait([frame(script, 1, 0, '1')], Protocol.Debugger.PausedEventReason.Step);
+    assert.lengthOf(requests, 1);
+  });
+
+  it('steps out of the inlined function that calls an outlined part', async () => {
+    const script = await addScript({outlined: true});
+    const caller = frame(script, 1, 0, '2');
+    // The outlined part `o` is called from within the inlined `I` (2:0-2:4).
+    await pauseAndWait([frame(script, 9, 0), frame(script, 2, 2, '1'), caller]);
+
+    assert.strictEqual((await step(() => debuggerModel.stepOut())).method, 'Debugger.stepOut');
+    // Back in `F`, but still in `I`: step over the rest of `I`, but don't leave `F`.
+    const rest = await pauseAndExpectAutoStep([frame(script, 2, 3, '1'), caller]);
+    assert.strictEqual(rest.method, 'Debugger.stepOver');
+    assert.deepEqual(rest.skipList, [range(script, 2, 0, 2, 4)]);
+    await pauseAndWait([frame(script, 3, 0, '1'), caller], Protocol.Debugger.PausedEventReason.Step);
+    assert.lengthOf(requests, 2);
+  });
+
   it('keeps the legacy behavior when the feature is disabled', async () => {
     Root.Runtime.hostConfig.devToolsSourceMapScopesInSourcesPanel = {enabled: false};
     const script = await addScript({outlined: true});

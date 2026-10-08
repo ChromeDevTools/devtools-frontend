@@ -128,6 +128,12 @@ class PageDependencyGraph {
 
     PageDependencyGraph.assertHasToplevelEvents(mainThreadEvents);
 
+    // TODO(crbug.com/568836981): Remove `scriptUrlById` once `v8.evaluateModule`
+    // includes `args.data.url` in all supported Chrome versions. Prior to that
+    // Chromium change, `v8.evaluateModule` has empty `args`, so we correlate
+    // `ModuleEvaluated.args.data.scriptId` with the URL from `v8.compileModule`.
+    const scriptUrlById = new Map<number, string>();
+
     while (i < mainThreadEvents.length) {
       const evt = mainThreadEvents[i];
       i++;
@@ -153,10 +159,14 @@ class PageDependencyGraph {
           break;
         }
 
+        if (event.name === 'v8.compileModule' && event.args.data?.scriptId !== undefined && event.args.data.url) {
+          scriptUrlById.set(event.args.data.scriptId, event.args.data.url);
+        }
+
         children.push(event);
       }
 
-      nodes.push(new CPUNode(evt, children, correctedEndTs));
+      nodes.push(new CPUNode(evt, children, correctedEndTs, scriptUrlById));
     }
 
     return nodes;
@@ -313,11 +323,25 @@ class PageDependencyGraph {
             break;
 
           case 'EvaluateScript':
+          case 'v8.evaluateModule':
             addDependencyOnFrame(node, evt.args.data.frame);
-            // @ts-expect-error - 'EvaluateScript' event means argsUrl is defined.
+            // @ts-expect-error - 'EvaluateScript'/'v8.evaluateModule' event means argsUrl is defined.
             addDependencyOnUrl(node, argsUrl);
             stackTraceUrls.forEach(url => addDependencyOnUrl(node, url));
             break;
+
+          // TODO(crbug.com/568836981): Remove this workaround once v8.evaluateModule
+          // includes `args.data.url` in all supported Chrome versions.
+          case 'ModuleEvaluated': {
+            addDependencyOnFrame(node, evt.args.data.frame);
+            if (evt.args.data.scriptId !== undefined) {
+              const moduleUrl = node.getScriptUrlById(evt.args.data.scriptId);
+              if (moduleUrl) {
+                addDependencyOnUrl(node, moduleUrl);
+              }
+            }
+            break;
+          }
 
           case 'XHRReadyStateChange':
             // Only create the dependency if the request was completed
@@ -333,6 +357,7 @@ class PageDependencyGraph {
 
           case 'FunctionCall':
           case 'v8.compile':
+          case 'v8.compileModule':
             addDependencyOnFrame(node, evt.args.data.frame);
             // @ts-expect-error - events mean argsUrl is defined.
             addDependencyOnUrl(node, argsUrl);

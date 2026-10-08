@@ -701,5 +701,40 @@ describe('PageDependencyGraph', () => {
       assert.lengthOf(cpuNodes, 1);
       assert.deepEqual(cpuNodes[0].getDependencies().map(n => n.id), ['2']);
     });
+
+    it('should link module compilation and evaluation events across tasks', () => {
+      const request1 = createRequest(1, 'https://example.com/', 0);
+      const request2 = createRequest(2, 'https://example.com/module-a.js', 10, null, NetworkRequestTypes.Script);
+      const request3 = createRequest(3, 'https://example.com/module-b.js', 20, null, NetworkRequestTypes.Script);
+      const networkRequests = [request1, request2, request3];
+
+      // Task 1: compiles module-a (with scriptId 11)
+      addTaskEvents(100, 50, [
+        {name: 'v8.compileModule', data: {scriptId: 11, url: 'https://example.com/module-a.js'}},
+      ]);
+      // Task 2: evaluates module-a via legacy ModuleEvaluated workaround, and module-b via v8.evaluateModule with url
+      addTaskEvents(200, 50, [
+        {name: 'v8.evaluateModule', data: {}},
+        {name: 'ModuleEvaluated', data: {scriptId: 11, url: 'https://example.com/'}},
+        {name: 'v8.evaluateModule', data: {scriptId: 12, url: 'https://example.com/module-b.js'}},
+      ]);
+
+      const graph = PageDependencyGraph.createGraph(traceEvents, networkRequests, url);
+      const cpuNodes: Lantern.Graph.CPUNode[] = [];
+      graph.traverse(node => {
+        if (node.type === 'cpu') {
+          cpuNodes.push(node);
+        }
+      });
+
+      assert.lengthOf(cpuNodes, 2);
+      assert.deepEqual(getDependencyIds(cpuNodes[0]), ['2']);
+      assert.deepEqual(Array.from(cpuNodes[0].getEvaluateScriptURLs()), []);
+      assert.deepEqual(getDependencyIds(cpuNodes[1]), ['2', '3']);
+      assert.deepEqual(Array.from(cpuNodes[1].getEvaluateScriptURLs()), [
+        'https://example.com/module-a.js',
+        'https://example.com/module-b.js',
+      ]);
+    });
   });
 });

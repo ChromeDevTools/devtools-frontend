@@ -33,6 +33,7 @@ export interface TraceEvent {
     data?: {
       frame?: string,
       readyState?: number,
+      scriptId?: number,
       stackTrace?: Array<{
                   url: string,
                 }>,

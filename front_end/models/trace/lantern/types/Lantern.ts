@@ -219,6 +219,13 @@ export namespace Simulation {
       firstContentfulPaint: number,
       largestContentfulPaint?: number,
     };
+    largestContentfulPaintEvt?: {
+      args: {
+        data?: {
+          type?: string,
+        },
+      },
+    };
   }
 
   export interface NodeTiming {

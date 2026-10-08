@@ -40,9 +40,12 @@ class LargestContentfulPaint extends Metric {
 
   static override getOptimisticGraph(
       dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node {
-    const lcp = processedNavigation.timestamps.largestContentfulPaint;
+    const {firstContentfulPaint: fcp, largestContentfulPaint: lcp} = processedNavigation.timestamps;
     if (!lcp) {
       throw new Core.LanternError('NO_LCP');
+    }
+    if (fcp === lcp && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === 'text') {
+      return FirstContentfulPaint.getOptimisticGraph(dependencyGraph, processedNavigation);
     }
 
     return FirstContentfulPaint.getFirstPaintBasedGraph(dependencyGraph, {
@@ -53,9 +56,12 @@ class LargestContentfulPaint extends Metric {
 
   static override getPessimisticGraph(
       dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node {
-    const lcp = processedNavigation.timestamps.largestContentfulPaint;
+    const {firstContentfulPaint: fcp, largestContentfulPaint: lcp} = processedNavigation.timestamps;
     if (!lcp) {
       throw new Core.LanternError('NO_LCP');
+    }
+    if (fcp === lcp && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === 'text') {
+      return FirstContentfulPaint.getPessimisticGraph(dependencyGraph, processedNavigation);
     }
 
     return FirstContentfulPaint.getFirstPaintBasedGraph(dependencyGraph, {

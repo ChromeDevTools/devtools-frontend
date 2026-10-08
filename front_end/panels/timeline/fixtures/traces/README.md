@@ -167,6 +167,10 @@ Contains a page load that has two frames (main frame + iframe). There are two im
 
 This trace is used to verify the fix for a bug [crbug.com/384000716] where we incorrectly associated image requests to the wrong navigation when calculating the LCP image.
 
+### lcp-text-fcp-same-frame.json.gz
+
+A trace of https://sparknight.io/dev-latch/test-post-again where FCP and LCP are both painted at the same timestamp (`type: "text"`), while several non-render-blocking resources (async Google Fonts stylesheet and font, images, and deferred scripts) finish downloading before that first paint.
+
 ### lcp-web-font.json.gz
 
 Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/lcp-web-font

@@ -71,6 +71,7 @@ copy_to_gen("traces") {
     "lcp-images.json.gz",
     "lcp-late-paint-event.json.gz",
     "lcp-multiple-frames.json.gz",
+    "lcp-text-fcp-same-frame.json.gz",
     "lcp-web-font.json.gz",
     "load-simple.json.gz",
     "long-task-from-worker-thread.json.gz",

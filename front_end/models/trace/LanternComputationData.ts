@@ -38,11 +38,14 @@ function createProcessedNavigation(
     }
     return metricScore.event.ts;
   };
+  const lcpScore = scores.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
   return {
     timestamps: {
       firstContentfulPaint: getTimestamp(Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP),
       largestContentfulPaint: getTimestampOrUndefined(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP),
     },
+    largestContentfulPaintEvt:
+        lcpScore && Handlers.ModelHandlers.PageLoadMetrics.metricIsLCP(lcpScore) ? lcpScore.event : undefined,
   };
 }
 

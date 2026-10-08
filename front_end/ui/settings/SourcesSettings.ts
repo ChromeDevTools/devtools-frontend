@@ -90,3 +90,10 @@ export const sourcesWordWrapSettingDescriptor: Common.Settings.SettingDescriptor
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const inlineVariableValuesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'inline-variable-values',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

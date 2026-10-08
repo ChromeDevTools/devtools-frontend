@@ -99,6 +99,7 @@ devtools_ui_module("unittests") {
   sources = [
     "BinaryResourceViewFactory.test.ts",
     "FontView.test.ts",
+    "ImageView.test.ts",
     "JSONView.test.ts",
     "ResourceSourceFrame.test.ts",
     "SourceFrame.test.ts",
@@ -116,6 +117,7 @@ devtools_ui_module("unittests") {
     "../../../../third_party/codemirror.next:bundle",
     "../../../../ui/legacy:bundle",
     "../../../components/buttons:bundle",
+    "../../../lit:bundle",
     "../object_ui:bundle",
   ]
 }

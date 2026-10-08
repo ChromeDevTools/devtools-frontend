@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -16,6 +17,8 @@ import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-m
 import * as Formatter from '../formatter/formatter.js';
 
 import * as Bindings from './bindings.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 //    original index.ts          generated index.js
 //
@@ -353,6 +356,40 @@ describe('SourceMapStepping', () => {
     assert.deepEqual(rest.skipList, [range(script, 2, 0, 2, 4)]);
     await pauseAndWait([frame(script, 3, 0, '1'), caller], Protocol.Debugger.PausedEventReason.Step);
     assert.lengthOf(requests, 2);
+  });
+
+  function nextBlackboxedRanges(): Promise<Protocol.Debugger.SetBlackboxedRangesRequest> {
+    return new Promise(resolve => {
+      backend.cdpConnection.setHandler('Debugger.setBlackboxedRanges', params => {
+        resolve(params);
+        return {result: {}};
+      });
+    });
+  }
+
+  it('blackboxes compiler helpers without original scope', async () => {
+    const blackboxed = nextBlackboxedRanges();
+    const script = await addScript({outlined: false});
+
+    const {scriptId, positions} = await blackboxed;
+    assert.strictEqual(scriptId, script.scriptId);
+    assert.deepEqual(positions, [{lineNumber: 11, columnNumber: 0}, {lineNumber: 11, columnNumber: 18}]);
+  });
+
+  it('merges the blackboxed compiler helpers with the user ignore-listed ranges', async () => {
+    backend.universe.ignoreListManager.ignoreListURL(urlString`http://example.com/index.ts`);
+    const blackboxed = nextBlackboxedRanges();
+    const script = await addScript({outlined: false});
+
+    const {scriptId, positions} = await blackboxed;
+    assert.strictEqual(scriptId, script.scriptId);
+    // The mapped code (interrupted by the unmapped `x()` on line 5), and the helper `h` adjoining the second range.
+    assert.deepEqual(positions, [
+      {lineNumber: 0, columnNumber: 0},
+      {lineNumber: 5, columnNumber: 0},
+      {lineNumber: 6, columnNumber: 0},
+      {lineNumber: 11, columnNumber: 18},
+    ]);
   });
 
   it('keeps the legacy behavior when the feature is disabled', async () => {

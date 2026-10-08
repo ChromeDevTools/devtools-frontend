@@ -313,12 +313,10 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       return;
     }
 
-    const newRanges =
-        sourceMap
-            .findRanges(
-                srcURL => this.isUserIgnoreListedURL(srcURL, {isKnownThirdParty: sourceMap.hasIgnoreListHint(srcURL)}),
-                {isStartMatching: true})
-            .flatMap(range => [range.start, range.end]);
+    const userRanges = sourceMap.findRanges(
+        srcURL => this.isUserIgnoreListedURL(srcURL, {isKnownThirdParty: sourceMap.hasIgnoreListHint(srcURL)}),
+        {isStartMatching: true});
+    const newRanges = mergeSourceRanges(userRanges).flatMap(range => [range.start, range.end]);
 
     const oldRanges = scriptToRange.get(script) || [];
     if (!isEqual(oldRanges, newRanges) && await script.setBlackboxedRanges(newRanges)) {
@@ -650,6 +648,26 @@ export interface SourceRange {
 }
 
 const scriptToRange = new WeakMap<SDK.Script.Script, SourceRange[]>();
+
+/** Sorts `ranges` by start and merges overlapping or touching ranges. Doesn't modify the input. */
+function mergeSourceRanges(ranges: ReadonlyArray<{readonly start: SourceRange, readonly end: SourceRange}>):
+    Array<{start: SourceRange, end: SourceRange}> {
+  const compare = (a: SourceRange, b: SourceRange): number =>
+      (a.lineNumber - b.lineNumber) || (a.columnNumber - b.columnNumber);
+  const sorted = ranges.map(({start, end}) => ({start, end})).sort((a, b) => compare(a.start, b.start));
+  const result: Array<{start: SourceRange, end: SourceRange}> = [];
+  for (const range of sorted) {
+    const last = result.at(-1);
+    if (last && compare(range.start, last.end) <= 0) {
+      if (compare(range.end, last.end) > 0) {
+        last.end = range.end;
+      }
+    } else {
+      result.push(range);
+    }
+  }
+  return result;
+}
 
 export const enum Events {
   IGNORED_SCRIPT_RANGES_UPDATED = 'IGNORED_SCRIPT_RANGES_UPDATED',

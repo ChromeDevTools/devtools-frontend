@@ -4110,8 +4110,8 @@
       status: "stable",
     },
     {
+      // crbug.com/542686223 crbug.com/568304685
       name: "LineBreakerHanKerningEnd",
-      status: "stable",
     },
     {
       // Reverse origin trial allowing sites to opt out of Local Network Access
@@ -6405,7 +6405,7 @@
     },
     {
       name: "SvgIncrementalStyle",
-      status: "test",
+      status: "stable",
     },
     {
       name: "SvgInlineRootPixelSnappingScaleAdjustment",

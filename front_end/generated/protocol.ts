@@ -21405,6 +21405,12 @@ export namespace Debugger {
      * The skipList specifies location ranges that should be skipped on step over.
      */
     skipList?: LocationRange[];
+    /**
+     * Functions whose source range lies within one of the enterRanges are
+     * entered as if by stepInto, even when they are called (directly or
+     * indirectly) from a call that is stepped over.
+     */
+    enterRanges?: LocationRange[];
   }
 
   /**

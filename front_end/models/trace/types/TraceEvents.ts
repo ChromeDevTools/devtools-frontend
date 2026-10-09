@@ -1520,6 +1520,8 @@ export interface DomLoading extends UserTiming {
 export interface BeginRemoteFontLoad extends UserTiming {
   name: Name.BEGIN_REMOTE_FONT_LOAD;
   args: Args&{
+    // Blink C++ serializes the CSS font-display keyword string ("auto", "swap", "block")
+    // from face_->GetFontFace()->display(), while internal Blink types use the FontDisplay enum (0..4).
     display: string,
     id: number,
     url?: string,
@@ -2046,15 +2048,14 @@ export enum SelectorTimingsKey {
   InvalidationCount = 'invalidation_count',
 }
 
-export interface SelectorStats {
+export interface SelectorStatsData {
   selector_timings: SelectorTiming[];
 }
 
 export interface SelectorStats extends Complete {
   name: Name.SELECTOR_STATS;
   args: Args&{
-
-    selector_stats?: SelectorStats,
+    selector_stats?: SelectorStatsData,
   };
 }
 
@@ -2548,7 +2549,7 @@ export function isPaint(event: Event): event is Paint {
 export interface PaintImage extends Complete {
   name: Name.PAINT_IMAGE;
   args: Args&{
-    data: Event & {
+    data: {
       height: number,
       width: number,
       x: number,
@@ -2574,7 +2575,7 @@ export function isPaintImage(event: Event): event is PaintImage {
 export interface ScrollLayer extends Complete {
   name: Name.SCROLL_LAYER;
   args: Args&{
-    data: Event & {
+    data: {
       frame: string,
       nodeId?: Protocol.DOM.BackendNodeId,
     },
@@ -2778,7 +2779,7 @@ export interface WebSocketCreate extends Instant {
       url: string,
       frame?: string,
       workerId?: string,
-      websocketProtocol?: string,
+      webSocketProtocol?: string,
       stackTrace?: CallFrame,
     },
   };
@@ -2921,6 +2922,9 @@ export interface FunctionCall extends Complete {
     data?: Partial<CallFrame>& {
       frame?: string,
       isolate?: string,
+      // Blink C++ emits integer script IDs in internal locations, but the trace buffer serializer
+      // stringifies them with String::Number(location->ScriptId()), so trace events in the wild have string scriptId.
+      scriptId?: string,
     },
   };
 }
@@ -3028,7 +3032,7 @@ export interface ParseAuthorStyleSheet extends Complete {
   name: Name.PARSE_AUTHOR_STYLE_SHEET;
   args?: Args&{
     data: {
-      stylesheetUrl: string,
+      styleSheetUrl: string,
     },
   };
 }

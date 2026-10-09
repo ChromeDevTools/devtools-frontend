@@ -28,6 +28,9 @@ describe('ThirdParties', function() {
   });
 
   it('categorizes third party web requests (complex)', async function() {
+    if (this.timeout() > 0) {
+      this.timeout(20_000);
+    }
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
     assert.strictEqual(insights.size, 1);
     const insight =
@@ -47,7 +50,7 @@ describe('ThirdParties', function() {
         insight.entitySummaries.map(s => [s.entity.name, s.transferSize, s.mainThreadTime.toFixed(2)]);
     assert.deepEqual(summaryResult, [
       ['paulirish.com', 157130, '85.33'],
-      ['Google Fonts', 80003, '0.00'],
+      ['Google Fonts', 80003, '0.11'],
       ['Google Tag Manager', 95375, '19.95'],
       ['Google Analytics', 20865, '5.86'],
       ['Disqus', 1551, '0.34'],

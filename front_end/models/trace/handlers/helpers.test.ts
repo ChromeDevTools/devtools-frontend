@@ -32,7 +32,8 @@ describe('getNonResolvedURL', () => {
     const parseStyle = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isParseAuthorStyleSheetEvent);
     assert.isOk(parseStyle);
     const url = Trace.Handlers.Helpers.getNonResolvedURL(parseStyle, parsedTrace.data);
-    assert.strictEqual(url, parseStyle.args?.data.url);
+    assert.isNotNull(url);
+    assert.strictEqual(url, parseStyle.args?.data.styleSheetUrl);
   });
 
   it('uses the request URL for a network request', async function() {

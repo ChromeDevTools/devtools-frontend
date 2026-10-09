@@ -26,6 +26,8 @@ export const NetworkRequestTypes = {
   FedCM: 'FedCM',
 } as const;
 
+// TODO: Consolidate Lantern's legacy TraceEvent interface with
+// the canonical DevTools trace event types in front_end/models/trace/types/TraceEvents.ts.
 export interface TraceEvent {
   name: string;
   args: {

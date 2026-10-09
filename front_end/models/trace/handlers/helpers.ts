@@ -51,7 +51,7 @@ export function getNonResolvedURL(
   }
 
   if (Types.Events.isParseAuthorStyleSheetEvent(entry) && entry.args) {
-    return entry.args.data.stylesheetUrl as Platform.DevToolsPath.UrlString;
+    return entry.args.data.styleSheetUrl as Platform.DevToolsPath.UrlString;
   }
 
   if (entry.args?.data?.stackTrace && entry.args.data.stackTrace.length > 0) {

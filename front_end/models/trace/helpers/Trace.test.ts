@@ -609,7 +609,7 @@ describe('Trace helpers', function() {
           data: {
             functionName: 'test',
             url: 'https://google.com/test.js',
-            scriptId: Number(123),
+            scriptId: '123',
             lineNumber: 1,
             columnNumber: 1,
           },

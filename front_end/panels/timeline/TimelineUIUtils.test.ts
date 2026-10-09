@@ -169,7 +169,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
              data: {
                functionName: 'test',
                url: 'https://google.com/test.js',
-               scriptId: Number(SCRIPT_ID_STRING),
+               scriptId: SCRIPT_ID_STRING,
                lineNumber: 1,
                columnNumber: 1,
              },
@@ -203,7 +203,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
              data: {
                functionName: 'test',
                url: 'https://google.com/test.js',
-               scriptId: Number(SCRIPT_ID_STRING),
+               scriptId: SCRIPT_ID_STRING,
                lineNumber: 1,
                columnNumber: 1,
              },

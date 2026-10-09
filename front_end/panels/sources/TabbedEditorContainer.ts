@@ -405,20 +405,20 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
 
   #leftToolbarItems: LitTemplate[] = [];
   set leftToolbarItems(items: LitTemplate[]) {
-    if (this.#leftToolbarItems === items) {
+    if (this.#leftToolbarItems === items || (this.#leftToolbarItems.length === 0 && items.length === 0)) {
       return;
     }
     this.#leftToolbarItems = items;
-    this.#scheduleUpdate();
+    this.requestUpdate();
   }
 
   #rightToolbarItems: LitTemplate[] = [];
   set rightToolbarItems(items: LitTemplate[]) {
-    if (this.#rightToolbarItems === items) {
+    if (this.#rightToolbarItems === items || (this.#rightToolbarItems.length === 0 && items.length === 0)) {
       return;
     }
     this.#rightToolbarItems = items;
-    this.#scheduleUpdate();
+    this.requestUpdate();
   }
 
   readonly #syncedUISourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();

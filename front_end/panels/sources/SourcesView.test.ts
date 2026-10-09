@@ -146,6 +146,43 @@ describeWithEnvironment('SourcesView', () => {
     sourcesView.detach();
   });
 
+  it('does not re-create uiSourceCodes Set on unrelated view updates', async () => {
+    createFileSystemUISourceCode({
+      url: urlString`snippet:///foo.js`,
+      mimeType: 'application/javascript',
+      type: Persistence.PlatformFileSystem.PlatformFileSystemType.SNIPPETS,
+    });
+
+    const view = createViewFunctionStub(Sources.SourcesView.SourcesView);
+    const sourcesView = new Sources.SourcesView.SourcesView(undefined, view);
+    renderElementIntoDOM(sourcesView);
+    await sourcesView.updateComplete;
+
+    const initialSet = view.input.uiSourceCodes;
+
+    sourcesView.isNavigatorSidebarOpen = !sourcesView.isNavigatorSidebarOpen;
+    await sourcesView.updateComplete;
+
+    assert.strictEqual(view.input.uiSourceCodes, initialSet);
+    sourcesView.detach();
+  });
+
+  it('does not schedule TabbedEditorContainer update on unrelated SourcesView updates', async () => {
+    const sourcesView = new Sources.SourcesView.SourcesView();
+    sourcesView.setLayoutMode(true, false);
+    renderElementIntoDOM(sourcesView);
+    await sourcesView.updateComplete;
+
+    const requestUpdateSpy = sinon.spy(Sources.TabbedEditorContainer.TabbedEditorContainer.prototype, 'requestUpdate');
+
+    sourcesView.toggleBreakpointsActiveState(false);
+    await sourcesView.updateComplete;
+
+    sinon.assert.notCalled(requestUpdateSpy);
+    requestUpdateSpy.restore();
+    sourcesView.detach();
+  });
+
   it('passes sourceLocation and updates active editor state via view input callbacks', async () => {
     const {uiSourceCode} = createFileSystemUISourceCode({
       url: urlString`file:///path/to/file.js`,

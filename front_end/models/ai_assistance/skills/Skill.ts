@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export type SkillName = 'styling'|'network'|'accessibility'|'performance'|'storage'|'sources'|'lighthouse';
+export type SkillName = 'styling'|'network'|'performance'|'storage'|'sources'|'lighthouse';
 
 export interface Skill {
   name: SkillName;

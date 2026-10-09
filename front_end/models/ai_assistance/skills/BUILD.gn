@@ -11,7 +11,6 @@ import("../../../../scripts/build/ninja/vars.gni")
 # so they can be imported relatively by files in this directory.
 
 _skill_sources = [
-  "accessibility.md",
   "lighthouse.md",
   "network.md",
   "performance.md",

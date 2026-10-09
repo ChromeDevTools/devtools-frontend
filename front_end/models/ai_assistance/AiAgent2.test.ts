@@ -83,7 +83,7 @@ describe('AiAgent2', () => {
   });
   it('registers all expected skills', () => {
     assert.deepEqual(Object.keys(SKILLS).sort(),
-                     ['styling', 'network', 'accessibility', 'performance', 'storage', 'sources', 'lighthouse'].sort());
+                     ['styling', 'network', 'performance', 'storage', 'sources', 'lighthouse'].sort());
   });
 
   it('accepts changeManager in options and passes it to tools', async () => {
@@ -587,7 +587,7 @@ describe('AiAgent2', () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
-        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+        functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
       }],
       [{
         explanation: '',
@@ -649,7 +649,7 @@ describe('AiAgent2', () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
-        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+        functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
       }],
       [{
         explanation: '',
@@ -691,7 +691,7 @@ describe('AiAgent2', () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
-        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+        functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
       }],
       [{
         explanation: '',
@@ -879,7 +879,7 @@ describe('AiAgent2', () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
-        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+        functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
       }],
       [{
         explanation: '',
@@ -913,7 +913,7 @@ describe('AiAgent2', () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
-        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+        functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
       }],
       [{
         explanation: '',
@@ -945,7 +945,7 @@ describe('AiAgent2', () => {
       audits: {},
     } as unknown as LHModel.ReporterTypes.ReportJSON;
     const aidaClient = mockAidaClient([
-      [{explanation: '', functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}]}],
+      [{explanation: '', functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}]}],
       [{
         explanation: '',
         functionCalls: [{name: 'runLighthouse', args: {explanation: 'run', categoryId: 'accessibility'}}],
@@ -972,7 +972,7 @@ describe('AiAgent2', () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
-        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+        functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
       }],
       [{
         explanation: '',
@@ -995,7 +995,7 @@ describe('AiAgent2', () => {
     assert.isNull(context.getLighthouseReport());
   });
 
-  it('learns accessibility skill and invokes runLighthouse when a performance trace is selected', async () => {
+  it('learns lighthouse skill and invokes runLighthouse when a performance trace is selected', async () => {
     const mockReport = {
       finalDisplayedUrl: 'https://example.com',
       categories: {},
@@ -1005,7 +1005,7 @@ describe('AiAgent2', () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
-        functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+        functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
       }],
       [{
         explanation: 'Running lighthouse audits',
@@ -1030,7 +1030,7 @@ describe('AiAgent2', () => {
     sinon.assert.calledOnce(runLighthouseStub);
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.lengthOf(actionResponses, 1);
-    assert.strictEqual(actionResponses[0].code, 'learnSkills(\'accessibility\')');
+    assert.strictEqual(actionResponses[0].code, 'learnSkills(\'lighthouse\')');
     const contextChange = getContextChangeResponse(responses);
     assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
     assert.instanceOf(contextChange.context, AiAssistance.LighthouseContext.LighthouseContext);
@@ -1267,7 +1267,7 @@ describe('AiAgent2', () => {
       const aidaClient = mockAidaClient([
         [{
           explanation: '',
-          functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+          functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
         }],
         [{
           explanation: '',
@@ -1307,7 +1307,7 @@ describe('AiAgent2', () => {
       const aidaClient = mockAidaClient([
         [{
           explanation: '',
-          functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+          functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
         }],
         [{
           explanation: '',

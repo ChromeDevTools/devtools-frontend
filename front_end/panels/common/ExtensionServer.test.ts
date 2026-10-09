@@ -1889,6 +1889,36 @@ describe('Runtime hosts policy', () => {
     sinon.assert.notCalled(setHeadersSpy);
   });
 
+  it('blocks inspectedWindow.reload userAgent override when runtime_blocked_hosts is set', async () => {
+    const target = getBackend(context).createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(allowedUrl);
+    assert.exists(context.chrome.devtools);
+
+    const setUserAgentSpy = sinon.spy(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'setUserAgentOverride');
+
+    context.chrome.devtools!.inspectedWindow.reload({userAgent: 'Evil/1.0'});
+    // Round-trip a command on the same MessagePort to ensure the reload message has been processed.
+    await context.chrome.devtools!.network.getHAR();
+
+    sinon.assert.notCalled(setUserAgentSpy);
+  });
+
+  it('allows inspectedWindow.reload without userAgent when runtime_blocked_hosts is set', async () => {
+    const target = getBackend(context).createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(allowedUrl);
+    assert.exists(context.chrome.devtools);
+
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    const reloadPageSpy = sinon.spy(resourceTreeModel, 'reloadPage');
+
+    context.chrome.devtools!.inspectedWindow.reload({ignoreCache: true});
+    // Round-trip a command on the same MessagePort to ensure the reload message has been processed.
+    await context.chrome.devtools!.network.getHAR();
+
+    sinon.assert.calledOnce(reloadPageSpy);
+  });
+
   it('rejects recorder extension plugin and view registration when runtime_blocked_hosts is set', async () => {
     const target = getBackend(context).createTarget({type: SDK.Target.Type.FRAME});
     target.setInspectedURL(allowedUrl);
@@ -1991,6 +2021,121 @@ describe('addRequestHeaders security', () => {
         urlString`file:///etc/passwd`,
         {'X-Injected': 'value'},
     );
+  });
+});
+
+describe('inspectedWindow.reload userAgent security', () => {
+  const context = setupDevtoolsExtensionHooks();
+
+  afterEach(() => {
+    SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride('', null);
+  });
+
+  async function assertUserAgentNotAppliedAfterNavigation(
+      navigateToUrl: Platform.DevToolsPath.UrlString,
+      injectedUserAgent: string,
+      ): Promise<void> {
+    const target = createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(urlString`http://example.com`);
+    assert.exists(context.chrome.devtools);
+
+    const multitargetManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+
+    // Set user agent while on a permitted page.
+    const uaCall = spyCall(multitargetManager, 'setUserAgentOverride');
+    context.chrome.devtools!.inspectedWindow.reload({userAgent: injectedUserAgent});
+    await uaCall;
+
+    // Navigate to a URL where extensions should NOT have access.
+    target.setInspectedURL(navigateToUrl);
+
+    // Simulate a new target attaching (e.g. OOPIF, worker, or navigation target).
+    const newTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: target});
+    const networkAgent = newTarget.networkAgent();
+    const cdpSpy = sinon.spy(networkAgent, 'invoke_setUserAgentOverride');
+    const networkManager = newTarget.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(cdpSpy);
+    assert.exists(networkManager);
+    assert.exists(multitargetManager);
+    multitargetManager.modelAdded(networkManager);
+
+    // Confirm that the injected UA is no longer active and not applied to the new target.
+    assert.notStrictEqual(multitargetManager.currentUserAgent(), injectedUserAgent);
+    if (cdpSpy.called) {
+      const appliedUA = cdpSpy.lastCall.args[0].userAgent;
+      assert.notStrictEqual(
+          appliedUA, injectedUserAgent,
+          `User agent override "${injectedUserAgent}" persisted across navigation to ${navigateToUrl}`);
+    }
+  }
+
+  it('extension-set user agent override must not leak to chrome:// targets after navigation', async () => {
+    await assertUserAgentNotAppliedAfterNavigation(
+        urlString`chrome://settings`,
+        'Evil/1.0',
+    );
+  });
+
+  it('extension-set user agent override must not leak to forbidden-origin targets after navigation', async () => {
+    const oldDevToolsAPI = window.DevToolsAPI;
+    try {
+      window.DevToolsAPI = {
+        getOriginsForbiddenForExtensions: () => ['https://addons.example.com'],
+      };
+
+      await assertUserAgentNotAppliedAfterNavigation(
+          urlString`https://addons.example.com/extensions`,
+          'Evil/1.0',
+      );
+    } finally {
+      window.DevToolsAPI = oldDevToolsAPI;
+    }
+  });
+
+  it('extension-set user agent override must not leak to Chrome Web Store after navigation', async () => {
+    await assertUserAgentNotAppliedAfterNavigation(
+        urlString`https://chromewebstore.google.com/`,
+        'Evil/1.0',
+    );
+  });
+
+  it('does not allow an extension to reset a DevTools-set user agent override on reload', async () => {
+    const target = createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(urlString`http://example.com`);
+    assert.exists(context.chrome.devtools);
+
+    const multitargetManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+    multitargetManager.setUserAgentOverride('DevTools/1.0', null);
+
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    const reloadCall = spyCall(resourceTreeModel, 'reloadPage');
+    context.chrome.devtools!.inspectedWindow.reload({userAgent: ''});
+    await reloadCall;
+
+    assert.strictEqual(multitargetManager.currentUserAgent(), 'DevTools/1.0');
+  });
+
+  it('does not clear a DevTools-set user agent override when extensions get disabled', async () => {
+    const target = createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(urlString`http://example.com`);
+    assert.exists(context.chrome.devtools);
+
+    const multitargetManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+
+    // First, the extension sets a UA override.
+    const uaCall = spyCall(multitargetManager, 'setUserAgentOverride');
+    context.chrome.devtools!.inspectedWindow.reload({userAgent: 'Extension/1.0'});
+    await uaCall;
+    assert.strictEqual(multitargetManager.currentUserAgent(), 'Extension/1.0');
+
+    // Then DevTools sets its own UA override (e.g., via Device Mode).
+    multitargetManager.setUserAgentOverride('DevTools/1.0', null);
+    assert.strictEqual(multitargetManager.currentUserAgent(), 'DevTools/1.0');
+
+    // Navigating to a protected URL disables extensions, which must not clear DevTools' override.
+    target.setInspectedURL(urlString`chrome://settings`);
+    assert.strictEqual(multitargetManager.currentUserAgent(), 'DevTools/1.0');
   });
 });
 

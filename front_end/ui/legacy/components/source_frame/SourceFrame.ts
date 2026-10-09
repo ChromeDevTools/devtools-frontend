@@ -12,12 +12,15 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
+import * as Buttons from '../../../components/buttons/buttons.js';
 import * as CodeHighlighter from '../../../components/code_highlighter/code_highlighter.js';
 import * as Dialogs from '../../../components/dialogs/dialogs.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
-import {html, type TemplateResult} from '../../../lit/lit.js';
+import {html, nothing, render, type TemplateResult} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
+
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -118,6 +121,44 @@ export const LINE_NUMBER_FORMATTER: CodeMirror.Facet<FormatFn, FormatFn> = CodeM
   },
 });
 
+const SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW = (input: SourceFrameToolbar, _output: object, target: HTMLElement): void => {
+  // clang-format off
+  render(html`
+    <devtools-button
+      class="toolbar-button ${input.canPrettyPrint ? '' : 'hidden'}"
+      title=${i18nString(UIStrings.prettyPrint)} aria-label=${i18nString(UIStrings.prettyPrint)}
+      .iconName=${'brackets'} .toggledIconName=${'brackets'}
+      .toggleType=${Buttons.Button.ToggleType.PRIMARY} .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+      .toggled=${input.pretty} .disabled=${!input.prettyToggleEnabled}
+      jslog=${VisualLogging.toggle().track({click: true}).context('pretty-print')}
+      @click=${input.onPrettyToggleClick}></devtools-button>
+    <div class="toolbar-text">${input.sourcePositionText}</div>
+    ${input.loading ? html`<div><devtools-progress
+      .title=${i18nString(UIStrings.loading)} .totalWork=${100} .worked=${1}></devtools-progress></div>` : nothing}`, target);
+  // clang-format on
+};
+
+class SourceFrameToolbar extends UI.Widget.Widget {
+  readonly #view: typeof SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW;
+  canPrettyPrint = false;
+  pretty = false;
+  prettyToggleEnabled = true;
+  sourcePositionText = '';
+  loading = false;
+  onPrettyToggleClick: () => void = (): void => {};
+
+  constructor(element?: HTMLElement, view = SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+    this.element.style.display = 'contents';
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(this, {}, this.contentElement);
+  }
+}
+
 const SourceFrameImplBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.View.SimpleView> =
     Common.ObjectWrapper.eventMixin(
         UI.View.SimpleView,
@@ -130,9 +171,10 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   private prettyInternal: boolean;
   private rawContent: string|CodeMirror.Text|null;
   protected formattedMap: Formatter.ScriptFormatter.FormatterSourceMapping|null;
-  private readonly prettyToggle: UI.Toolbar.ToolbarToggle;
+  #canPrettyPrint = false;
+  #prettyToggleEnabled = true;
   private shouldAutoPrettyPrint: boolean;
-  private readonly progressToolbarItem: UI.Toolbar.ToolbarItem;
+  #loading = false;
   private textEditorInternal: TextEditor.TextEditor.TextEditor;
   // The 'clean' document, before editing
   private baseDoc: CodeMirror.Text;
@@ -144,7 +186,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   private searchResults: SearchMatch[];
   private searchRegex: UI.SearchableView.SearchRegexResult|null;
   private loadError: boolean;
-  private readonly sourcePosition: UI.Toolbar.ToolbarText;
+  #sourcePositionText = '';
+  #toolbarWidget = new SourceFrameToolbar();
   private searchableView: UI.SearchableView.SearchResultsListener|null;
   private editable: boolean;
   private positionToReveal: {
@@ -174,15 +217,7 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     this.prettyInternal = false;
     this.rawContent = null;
     this.formattedMap = null;
-    this.prettyToggle =
-        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.prettyPrint), 'brackets', undefined, 'pretty-print');
-    this.prettyToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      void this.setPretty(this.prettyToggle.isToggled());
-    });
     this.shouldAutoPrettyPrint = false;
-    this.prettyToggle.setVisible(false);
-
-    this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
 
     this.textEditorInternal = new TextEditor.TextEditor.TextEditor(this.placeholderEditorState(''));
     this.textEditorInternal.style.flexGrow = '1';
@@ -203,8 +238,6 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     this.searchRegex = null;
     this.loadError = false;
 
-    this.sourcePosition = new UI.Toolbar.ToolbarText();
-
     this.searchableView = null;
     this.editable = false;
 
@@ -222,6 +255,18 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     Common.Settings.Settings.instance()
         .moduleSetting('text-editor-indent')
         .addChangeListener(this.#textEditorIndentChanged, this);
+  }
+
+  #updateToolbar(): void {
+    Object.assign(this.#toolbarWidget, {
+      canPrettyPrint: this.#canPrettyPrint,
+      pretty: this.prettyInternal,
+      prettyToggleEnabled: this.#prettyToggleEnabled,
+      sourcePositionText: this.#sourcePositionText,
+      loading: this.#loading,
+      onPrettyToggleClick: () => void this.setPretty(!this.prettyInternal),
+    });
+    this.#toolbarWidget.performUpdate();
   }
 
   override disposeView(): void {
@@ -374,7 +419,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   setCanPrettyPrint(canPrettyPrint: boolean, autoPrettyPrint?: boolean): void {
     this.shouldAutoPrettyPrint = autoPrettyPrint === true &&
         Common.Settings.Settings.instance().moduleSetting('auto-pretty-print-minified').get();
-    this.prettyToggle.setVisible(canPrettyPrint);
+    this.#canPrettyPrint = canPrettyPrint;
+    this.#updateToolbar();
   }
 
   setEditable(editable: boolean): void {
@@ -386,7 +432,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
 
   private async setPretty(value: boolean): Promise<void> {
     this.prettyInternal = value;
-    this.prettyToggle.setEnabled(false);
+    this.#prettyToggleEnabled = false;
+    this.#updateToolbar();
 
     const wasLoaded = this.loaded;
     const {textEditor} = this;
@@ -418,7 +465,7 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     if (wasLoaded) {
       textEditor.revealPosition(newSelection, false);
     }
-    this.prettyToggle.setEnabled(true);
+    this.#prettyToggleEnabled = true;
     this.updatePrettyPrintState();
   }
 
@@ -464,7 +511,7 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   }
 
   private updatePrettyPrintState(): void {
-    this.prettyToggle.setToggled(this.prettyInternal);
+    this.#updateToolbar();
     this.textEditorInternal.classList.toggle('pretty-printed', this.prettyInternal);
     this.updateLineNumberFormatter();
   }
@@ -500,7 +547,11 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   }
 
   override async toolbarItems(): Promise<TemplateResult> {
-    return html`${this.prettyToggle.element}${this.sourcePosition.element}${this.progressToolbarItem.element}`;
+    return html`${widget(element => {
+      this.#toolbarWidget = new SourceFrameToolbar(element);
+      this.#updateToolbar();
+      return this.#toolbarWidget;
+    })}`;
   }
 
   get loaded(): boolean {
@@ -534,12 +585,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
 
   protected async setContentDataOrError(contentDataPromise: Promise<TextUtils.ContentData.ContentDataOrError>):
       Promise<void> {
-    const progressIndicator = document.createElement('devtools-progress');
-    progressIndicator.title = i18nString(UIStrings.loading);
-    progressIndicator.totalWork = 100;
-    this.progressToolbarItem.element.appendChild(progressIndicator);
-
-    progressIndicator.worked = 1;
+    this.#loading = true;
+    this.#updateToolbar();
     const contentData = await contentDataPromise;
 
     let error: string|undefined;
@@ -566,8 +613,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
       this.wasmDisassemblyInternal = null;
     }
 
-    progressIndicator.worked = 100;
-    progressIndicator.done = true;
+    this.#loading = false;
+    this.#updateToolbar();
 
     if (this.rawContent === content && error === undefined) {
       return;
@@ -575,15 +622,17 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     this.rawContent = content;
 
     this.formattedMap = null;
-    this.prettyToggle.setEnabled(true);
+    this.#prettyToggleEnabled = true;
 
     if (error) {
       this.loadError = true;
       this.textEditor.state = this.placeholderEditorState(error);
-      this.prettyToggle.setEnabled(false);
+      this.#prettyToggleEnabled = false;
+      this.#updateToolbar();
     } else if (this.shouldAutoPrettyPrint && isMinified) {
       await this.setPretty(true);
     } else {
+      this.#updateToolbar();
       await this.setContent(this.rawContent || '');
     }
   }
@@ -715,7 +764,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     if (this.prettyInternal !== wasPretty) {
       this.updatePrettyPrintState();
     }
-    this.prettyToggle.setEnabled(this.isClean());
+    this.#prettyToggleEnabled = this.isClean();
+    this.#updateToolbar();
 
     if (this.searchConfig && this.searchableView) {
       this.performSearch(this.searchConfig, false, false);
@@ -736,7 +786,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
       this.prettyInternal = false;
       this.updatePrettyPrintState();
     }
-    this.prettyToggle.setEnabled(true);
+    this.#prettyToggleEnabled = true;
+    this.#updateToolbar();
   }
 
   protected async getLanguageSupport(content: string|CodeMirror.Text): Promise<CodeMirror.Extension> {
@@ -991,7 +1042,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     this.displayedSelection = selection;
 
     if (selection.ranges.length > 1) {
-      this.sourcePosition.setText(i18nString(UIStrings.dSelectionRegions, {PH1: selection.ranges.length}));
+      this.#sourcePositionText = i18nString(UIStrings.dSelectionRegions, {PH1: selection.ranges.length});
+      this.#updateToolbar();
       return;
     }
     const {main} = state.selection;
@@ -1003,21 +1055,21 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
         const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
         const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
         const bytecodeOffset = disassembly.lineNumberToBytecodeOffset(location[0]);
-        this.sourcePosition.setText(i18nString(
-            UIStrings.bytecodePositionXs, {PH1: bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}));
+        this.#sourcePositionText = i18nString(UIStrings.bytecodePositionXs,
+                                              {PH1: bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')});
       } else {
-        this.sourcePosition.setText(i18nString(UIStrings.lineSColumnS, {PH1: location[0] + 1, PH2: location[1] + 1}));
+        this.#sourcePositionText = i18nString(UIStrings.lineSColumnS, {PH1: location[0] + 1, PH2: location[1] + 1});
       }
     } else {
       const startLine = state.doc.lineAt(main.from), endLine = state.doc.lineAt(main.to);
       if (startLine.number === endLine.number) {
-        this.sourcePosition.setText(i18nString(UIStrings.dCharactersSelected, {PH1: main.to - main.from}));
+        this.#sourcePositionText = i18nString(UIStrings.dCharactersSelected, {PH1: main.to - main.from});
       } else {
-        this.sourcePosition.setText(i18nString(
-            UIStrings.dLinesDCharactersSelected,
-            {PH1: endLine.number - startLine.number + 1, PH2: main.to - main.from}));
+        this.#sourcePositionText = i18nString(UIStrings.dLinesDCharactersSelected,
+                                              {PH1: endLine.number - startLine.number + 1, PH2: main.to - main.from});
       }
     }
+    this.#updateToolbar();
   }
 
   onContextMenu(event: MouseEvent): boolean {

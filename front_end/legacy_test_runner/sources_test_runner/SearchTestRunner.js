@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Sources from '../../panels/sources/sources.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
@@ -76,85 +75,6 @@ export const runSearchAndDumpResults = function(scope, searchConfig, callback) {
     }
 
     callback();
-  }
-};
-
-export const replaceAndDumpChange = async function(sourceFrame, searchConfig, replacement, replaceAll) {
-  const modifiers = [];
-
-  if (searchConfig.isRegex) {
-    modifiers.push('regex');
-  }
-
-  if (searchConfig.caseSensitive) {
-    modifiers.push('caseSensitive');
-  }
-
-  if (replaceAll) {
-    modifiers.push('replaceAll');
-  }
-
-  const modifiersString = (modifiers.length ? ' (' + modifiers.join(', ') + ')' : '');
-  TestRunner.addResult(
-      'Running replace test for /' + searchConfig.query + '/' + replacement + '/ ' + modifiersString + ':');
-  const editor = sourceFrame.textEditor;
-  const oldLines = [];
-
-  for (let i = 0; i < editor.linesCount; ++i) {
-    oldLines.push(editor.line(i));
-  }
-
-  const sourcesView = Sources.SourcesPanel.SourcesPanel.instance().sourcesView();
-  const searchableView = sourcesView.searchableView();
-  searchableView.showSearchField();
-  searchableView.caseSensitiveButton.setToggled(searchConfig.caseSensitive);
-  searchableView.regexButton.setToggled(searchConfig.isRegex);
-  searchableView.searchInputElement.value = searchConfig.query;
-  searchableView.replaceToggleButton.setToggled(true);
-  searchableView.updateSecondRowVisibility();
-  searchableView.replaceInputElement.value = replacement;
-  searchableView.performSearch(true, true);
-
-  await sourcesView.updateComplete;
-
-  if (replaceAll) {
-    searchableView.replaceAll();
-  } else {
-    searchableView.replace();
-  }
-
-  const newLines = [];
-
-  for (let i = 0; i < editor.linesCount; ++i) {
-    newLines.push(editor.line(i));
-  }
-
-  for (let i = 0; i < newLines.length; ++i) {
-    if (oldLines[i] === newLines[i]) {
-      continue;
-    }
-
-    const oldLine = oldLines[i];
-    const newLine = newLines[i];
-    let prefixLength = 0;
-
-    for (let j = 0; j < oldLine.length && j < newLine.length && newLine[j] === oldLine[j]; ++j) {
-      ++prefixLength;
-    }
-
-    let postfixLength = 0;
-
-    for (let j = 0; j < oldLine.length && j < newLine.length &&
-         newLine[newLine.length - j - 1] === oldLine[oldLine.length - j - 1];
-         ++j) {
-      ++postfixLength;
-    }
-
-    const prefix = oldLine.substring(0, prefixLength);
-    const removed = oldLine.substring(prefixLength, oldLine.length - postfixLength);
-    const added = newLine.substring(prefixLength, newLine.length - postfixLength);
-    const postfix = oldLine.substring(oldLine.length - postfixLength);
-    TestRunner.addResult('  - ' + prefix + '#' + removed + '#' + added + '#' + postfix);
   }
 };
 

@@ -143,9 +143,8 @@ export class SearchableView extends VBox implements SearchResultsListener {
   #searchProvider!: Searchable;
   #searchTarget: SearchTarget|null = null;
   replaceProvider: Replaceable|null = null;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private setting: Common.Settings.Setting<any>|null = null;
+  private setting: Common.Settings.Setting<{caseSensitive?: boolean, wholeWord?: boolean, isRegex?: boolean}>|null =
+      null;
   #replaceable = false;
   private readonly footerElementContainer: HTMLElement;
   private readonly footerElement: HTMLElement;

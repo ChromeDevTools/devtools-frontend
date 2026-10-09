@@ -76,6 +76,38 @@ describeWithEnvironment('SecurityOriginView', () => {
         row => [...row.cells].map(cell => cell.textContent ?? ''));
   }
 
+  it('updates security details when the security state changes', () => {
+    const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, {
+      securityState: Protocol.Security.SecurityState.Unknown,
+      securityDetails: null,
+      loadedFromCache: false,
+    });
+    const securityStateSection = querySelectorErrorOnMissing(view.element, '.security-state-section');
+    assert.include(securityStateSection.textContent, 'No security information');
+
+    const securityDetails: Protocol.Network.SecurityDetails = {
+      protocol: 'TLS 1.3',
+      keyExchange: '',
+      cipher: 'AES_128_GCM',
+      certificateId: 0 as Protocol.Security.CertificateId,
+      subjectName: 'foo.bar',
+      sanList: [],
+      issuer: 'Test CA',
+      validFrom: 0,
+      validTo: 1,
+      signedCertificateTimestampList: [],
+      certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
+      encryptedClientHello: false,
+    };
+    view.setSecurityState(Protocol.Security.SecurityState.Secure, securityDetails);
+
+    assert.notExists(view.element.querySelector('.security-state-section'));
+    const connectionSection = querySelectorErrorOnMissing(view.element, '.connection-section');
+    assert.deepInclude(getDetailsTableRows(connectionSection), ['Protocol', 'TLS 1.3']);
+    const certificateSection = querySelectorErrorOnMissing(view.element, '.certificate-section');
+    assert.deepInclude(getDetailsTableRows(certificateSection), ['Subject', 'foo.bar']);
+  });
+
   describe('security state section', () => {
     const cases = [
       {
@@ -256,7 +288,8 @@ describeWithEnvironment('SecurityOriginView', () => {
     });
 
     it('updates the origin display when the security state changes', () => {
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+      const originState = createOriginState();
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
 
       const initialOriginDisplay = view.element.querySelector('.origin-display');
       assert.instanceOf(initialOriginDisplay, HTMLElement);
@@ -268,7 +301,7 @@ describeWithEnvironment('SecurityOriginView', () => {
 
       assert.exists(initialOriginDisplay.querySelector('.url-scheme-secure'));
 
-      view.setSecurityState(Protocol.Security.SecurityState.Insecure);
+      view.setSecurityState(Protocol.Security.SecurityState.Insecure, originState.securityDetails);
 
       const updatedOriginDisplay = view.element.querySelector('.origin-display');
       assert.instanceOf(updatedOriginDisplay, HTMLElement);
@@ -610,6 +643,10 @@ describeWithEnvironment('SecurityOriginView', () => {
     assert.notExists(truncationToggle);
   });
 
+  const visibleSanEntries = (sanElement: Element) => [...sanElement.querySelectorAll<HTMLElement>('.san-entry')]
+                                                         .filter(entry => entry.checkVisibility())
+                                                         .map(entry => entry.textContent);
+
   it('renders a SAN with truncation button and updates on truncation toggle', () => {
     const view = new Security.SecurityPanel.SecurityOriginView(
         urlString`https://foo.bar`, createOriginState({sanList: ['a.test', 'b.test', 'c.test', 'd.test']}));
@@ -618,11 +655,7 @@ describeWithEnvironment('SecurityOriginView', () => {
     const sanElement = view.element.querySelector('.san');
     assert.instanceOf(sanElement, HTMLElement);
 
-    const visibleSanEntries = () => [...sanElement.querySelectorAll<HTMLElement>('.san-entry')]
-                                        .filter(entry => entry.checkVisibility())
-                                        .map(entry => entry.textContent);
-
-    assert.deepEqual(visibleSanEntries(), ['a.test', 'b.test']);
+    assert.deepEqual(visibleSanEntries(sanElement), ['a.test', 'b.test']);
 
     const toggleButton = sanElement.querySelector('devtools-button');
     assert.instanceOf(toggleButton, HTMLElement);
@@ -631,15 +664,38 @@ describeWithEnvironment('SecurityOriginView', () => {
 
     toggleButton.click();
 
-    assert.deepEqual(visibleSanEntries(), ['a.test', 'b.test', 'c.test', 'd.test']);
+    assert.deepEqual(visibleSanEntries(sanElement), ['a.test', 'b.test', 'c.test', 'd.test']);
     assert.strictEqual(toggleButton.textContent, 'Show less');
     assert.isTrue(toggleButton.accessibleExpanded);
 
     toggleButton.click();
 
-    assert.deepEqual(visibleSanEntries(), ['a.test', 'b.test']);
+    assert.deepEqual(visibleSanEntries(sanElement), ['a.test', 'b.test']);
     assert.strictEqual(toggleButton.textContent, 'Show more (4 total)');
     assert.isFalse(toggleButton.accessibleExpanded);
+  });
+
+  it('updates SAN truncation when security details change', () => {
+    const view = new Security.SecurityPanel.SecurityOriginView(
+        urlString`https://foo.bar`, createOriginState({sanList: ['a.test', 'b.test', 'c.test', 'd.test']}));
+    renderElementIntoDOM(view);
+
+    const sanElement = view.element.querySelector('.san');
+    assert.instanceOf(sanElement, HTMLElement);
+
+    assert.deepEqual(visibleSanEntries(sanElement), ['a.test', 'b.test']);
+
+    const toggleButton = sanElement.querySelector('devtools-button');
+    assert.instanceOf(toggleButton, HTMLElement);
+    toggleButton.click();
+
+    assert.deepEqual(visibleSanEntries(sanElement), ['a.test', 'b.test', 'c.test', 'd.test']);
+
+    const updatedSecurityDetails =
+        createOriginState({sanList: ['e.test', 'f.test', 'g.test', 'h.test']}).securityDetails;
+    view.setSecurityState(Protocol.Security.SecurityState.Neutral, updatedSecurityDetails);
+
+    assert.deepEqual(visibleSanEntries(sanElement), ['e.test', 'f.test']);
   });
 });
 

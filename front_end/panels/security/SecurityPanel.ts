@@ -715,7 +715,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
         }
         this.sidebar.updateOrigin(origin, securityState);
         if (originState.originView) {
-          originState.originView.setSecurityState(securityState);
+          originState.originView.setSecurityState(securityState, originState.securityDetails);
         }
       }
     } else {
@@ -1594,77 +1594,126 @@ function renderSecurityStateSection(securityState: Protocol.Security.SecuritySta
   // clang-format on
 }
 
-export class SecurityOriginView extends UI.Widget.VBox {
-  readonly #origin: Platform.DevToolsPath.UrlString;
-  readonly #titleSection: HTMLElement;
+export interface SecurityOriginViewInput {
+  origin: Platform.DevToolsPath.UrlString;
+  securityState: Protocol.Security.SecurityState;
+  securityDetails: Protocol.Network.SecurityDetails|null;
+  loadedFromCache: boolean;
+  isSanListTruncated: boolean;
+  isCertificateTransparencyDetailsShown: boolean;
+  onRevealInNetwork: (event: Event) => void;
+  onToggleSanTruncation: () => void;
+  onToggleCertificateTransparencyDetails: () => void;
+  onViewCertificate: (event: Event) => void;
+}
 
-  constructor(origin: Platform.DevToolsPath.UrlString, originState: OriginState) {
-    super({jslog: `${VisualLogging.pane('security.origin-view')}`});
-    this.registerRequiredCSS(originViewStyles, lockIconStyles);
+export type SecurityOriginViewFunction = (input: SecurityOriginViewInput, output: undefined, target: HTMLElement) =>
+    void;
+
+interface SecurityDetailsInput {
+  securityState: Protocol.Security.SecurityState;
+  securityDetails: Protocol.Network.SecurityDetails|null;
+  loadedFromCache: boolean;
+  isSanListTruncated: boolean;
+  isCertificateTransparencyDetailsShown: boolean;
+  onToggleSanTruncation: () => void;
+  onToggleCertificateTransparencyDetails: () => void;
+  onViewCertificate: (event: Event) => void;
+}
+
+function renderSecurityDetails(input: SecurityDetailsInput): TemplateResult {
+  if (!input.securityDetails) {
+    // clang-format off
+    return html`
+      <div class="origin-view-section security-state-section">
+        ${renderSecurityStateSection(input.securityState)}
+      </div>`;
+    // clang-format on
+  }
+
+  function shouldShowCertificateTransparencySection(securityDetails: Protocol.Network.SecurityDetails): boolean {
+    const hasScts = securityDetails.signedCertificateTimestampList.length > 0;
+    const hasComplianceInfo = securityDetails.certificateTransparencyCompliance !==
+        Protocol.Network.CertificateTransparencyCompliance.Unknown;
+    return hasScts || hasComplianceInfo;
+  }
+
+  // clang-format off
+  return html`
+    <div class="origin-view-section connection-section">
+      ${renderConnectionSection(input.securityDetails)}
+    </div>
+    <div class="origin-view-section certificate-section">
+      ${renderCertificateSection({
+        securityDetails: input.securityDetails,
+        isSanListTruncated: input.isSanListTruncated,
+        onToggleSanTruncation: input.onToggleSanTruncation,
+        onViewCertificate: input.onViewCertificate,
+      })}
+    </div>
+    ${shouldShowCertificateTransparencySection(input.securityDetails) ? html`
+      <div class="origin-view-section certificate-transparency-section">
+        ${renderCertificateTransparencySection({
+          securityDetails: input.securityDetails,
+          isDetailsShown: input.isCertificateTransparencyDetailsShown,
+          onToggleDetails: input.onToggleCertificateTransparencyDetails,
+        })}
+      </div>` : nothing}
+    <div class="origin-view-section origin-view-notes">
+      ${renderNoteSection(input.loadedFromCache)}
+    </div>`;
+  // clang-format on
+}
+
+export const DEFAULT_SECURITY_ORIGIN_VIEW: SecurityOriginViewFunction = (input, _output, target): void => {
+  // clang-format off
+  render(html`
+    <style>${originViewStyles}</style>
+    <style>${lockIconStyles}</style>
+    <div class="title-section">
+      ${renderTitleSection(input.origin, input.securityState, input.onRevealInNetwork)}
+    </div>
+    ${renderSecurityDetails(input)}`,  // clang-format on
+         target, {
+           container: {
+             classes: ['security-origin-view'],
+             attributes: {jslog: `${VisualLogging.pane('security.origin-view')}`},
+           },
+         });
+};
+
+export class SecurityOriginView extends UI.Widget.VBox {
+  readonly #view: SecurityOriginViewFunction;
+  readonly #origin: Platform.DevToolsPath.UrlString;
+  readonly #loadedFromCache: boolean;
+  #securityState: Protocol.Security.SecurityState;
+  #securityDetails: Protocol.Network.SecurityDetails|null;
+  #isSanListTruncated: boolean;
+  #isCertificateTransparencyDetailsShown = false;
+
+  constructor(origin: Platform.DevToolsPath.UrlString, originState: OriginState,
+              view: SecurityOriginViewFunction = DEFAULT_SECURITY_ORIGIN_VIEW) {
+    super();
+    this.#view = view;
     this.setMinimumSize(200, 100);
     this.#origin = origin;
+    this.#securityState = originState.securityState;
+    this.#securityDetails = originState.securityDetails;
+    this.#loadedFromCache = originState.loadedFromCache;
+    this.#isSanListTruncated = isSanListTruncatable(this.#securityDetails?.sanList ?? []);
 
-    this.element.classList.add('security-origin-view');
-
-    this.#titleSection = this.element.createChild('div', 'title-section');
-    this.#renderTitleSection(originState.securityState);
-
-    if (originState.securityDetails) {
-      const connectionSection = this.element.createChild('div', 'origin-view-section connection-section');
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(renderConnectionSection(originState.securityDetails), connectionSection);
-
-      this.#createCertificateSection(originState.securityDetails);
-
-      const sctListLength = originState.securityDetails.signedCertificateTimestampList.length;
-      const ctCompliance = originState.securityDetails.certificateTransparencyCompliance;
-      if (sctListLength || ctCompliance !== Protocol.Network.CertificateTransparencyCompliance.Unknown) {
-        this.#createCertificateTransparencySection(originState.securityDetails);
-      }
-
-      const noteSection = this.element.createChild('div', 'origin-view-section origin-view-notes');
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(renderNoteSection(originState.loadedFromCache), noteSection);
-    } else {
-      const securityStateSection = this.element.createChild('div', 'origin-view-section security-state-section');
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(renderSecurityStateSection(originState.securityState), securityStateSection);
-    }
+    this.#renderView();
   }
 
-  #createCertificateSection(securityDetails: Protocol.Network.SecurityDetails): void {
-    const certificateSection = this.element.createChild('div', 'origin-view-section certificate-section');
-    let isSanListTruncated = isSanListTruncatable(securityDetails.sanList);
-    const onToggleSanTruncation = (): void => {
-      isSanListTruncated = !isSanListTruncated;
-      updateCertificateSection();
-    };
-    const updateCertificateSection = (): void => {
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(renderCertificateSection({
-               securityDetails,
-               isSanListTruncated,
-               onToggleSanTruncation,
-               onViewCertificate: this.#showCertificateViewer,
-             }),
-             certificateSection);
-    };
-    updateCertificateSection();
-  }
+  #toggleSanTruncation = (): void => {
+    this.#isSanListTruncated = !this.#isSanListTruncated;
+    this.#renderView();
+  };
 
-  #createCertificateTransparencySection(securityDetails: Protocol.Network.SecurityDetails): void {
-    const section = this.element.createChild('div', 'origin-view-section certificate-transparency-section');
-    let isDetailsShown = false;
-    const onToggleDetails = (): void => {
-      isDetailsShown = !isDetailsShown;
-      updateSection();
-    };
-    const updateSection = (): void => {
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(renderCertificateTransparencySection({securityDetails, isDetailsShown, onToggleDetails}), section);
-    };
-    updateSection();
-  }
+  #toggleCertificateTransparencyDetails = (): void => {
+    this.#isCertificateTransparencyDetailsShown = !this.#isCertificateTransparencyDetailsShown;
+    this.#renderView();
+  };
 
   #showCertificateViewer = async(event: Event): Promise<void> => {
     event.consume();
@@ -1674,13 +1723,30 @@ export class SecurityOriginView extends UI.Widget.VBox {
     }
   };
 
-  setSecurityState(newSecurityState: Protocol.Security.SecurityState): void {
-    this.#renderTitleSection(newSecurityState);
+  setSecurityState(newSecurityState: Protocol.Security.SecurityState,
+                   securityDetails: Protocol.Network.SecurityDetails|null): void {
+    if (this.#securityDetails !== securityDetails) {
+      this.#isSanListTruncated = isSanListTruncatable(securityDetails?.sanList ?? []);
+    }
+    this.#securityState = newSecurityState;
+    this.#securityDetails = securityDetails;
+    this.#renderView();
   }
 
-  #renderTitleSection(securityState: Protocol.Security.SecurityState): void {
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(renderTitleSection(this.#origin, securityState, this.#revealInNetwork), this.#titleSection);
+  #renderView(): void {
+    this.#view({
+      origin: this.#origin,
+      securityState: this.#securityState,
+      securityDetails: this.#securityDetails,
+      loadedFromCache: this.#loadedFromCache,
+      isSanListTruncated: this.#isSanListTruncated,
+      isCertificateTransparencyDetailsShown: this.#isCertificateTransparencyDetailsShown,
+      onRevealInNetwork: this.#revealInNetwork,
+      onToggleSanTruncation: this.#toggleSanTruncation,
+      onToggleCertificateTransparencyDetails: this.#toggleCertificateTransparencyDetails,
+      onViewCertificate: this.#showCertificateViewer,
+    },
+               undefined, this.contentElement);
   }
 
   #revealInNetwork = (event: Event): void => {

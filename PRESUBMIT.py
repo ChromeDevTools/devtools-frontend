@@ -636,3 +636,8 @@ def CheckPanProjectChecksOnCommit(input_api, output_api):
 
 def CheckAyeAye(input_api, output_api):
     return input_api.canned_checks.CheckAyeAye(input_api, output_api)
+
+
+def CheckDirMetadataFormat(input_api, output_api):
+    return input_api.RunTests(
+        input_api.canned_checks.CheckDirMetadataFormat(input_api, output_api))

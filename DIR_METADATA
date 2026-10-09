@@ -4,11 +4,9 @@ buganizer_public: {
 }
 agentic_review: {
   capability_groups: {
-    name: "core-review"
     review_capability_skills: [".agents/skills/code-review/SKILL.md"]
   }
   capability_groups: {
-    name: "typescript-and-models"
     path_expression: ["front_end/.*\\.ts", ".*BUILD\\.gn", ".*\\.gni"]
     path_expression_exclusion: [".*\\.test\\.ts"]
     review_capability_skills: [
@@ -20,7 +18,6 @@ agentic_review: {
     ]
   }
   capability_groups: {
-    name: "ui-and-widgets"
     path_expression: ["front_end/(panels|ui)/.*\\.(ts|css)"]
     path_expression_exclusion: [".*\\.test\\.ts"]
     review_capability_skills: [
@@ -29,7 +26,6 @@ agentic_review: {
     ]
   }
   capability_groups: {
-    name: "tests"
     path_expression: [".*\\.test\\.ts", "test/.*\\.ts"]
     review_capability_skills: [
       ".agents/skills/devtools-testing-guidance/SKILL.md",

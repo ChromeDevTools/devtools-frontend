@@ -480,6 +480,14 @@ export class SearchableView extends VBox implements SearchResultsListener {
     }
   }
 
+  get placeholder(): string {
+    return this.searchInputElement.placeholder;
+  }
+
+  set placeholder(placeholder: string) {
+    this.searchInputElement.placeholder = placeholder;
+  }
+
   setReplaceable(replaceable: boolean): void {
     this.replaceable = replaceable;
   }
@@ -580,8 +588,8 @@ export class SearchableView extends VBox implements SearchResultsListener {
       this.matchesElementValue.textContent = '';
     } else if (matches === 0 || currentMatchIndex >= 0) {
       this.matchesElementValue.textContent = i18nString(UIStrings.dOfD, {PH1: currentMatchIndex + 1, PH2: matches});
-      ARIAUtils.setLabel(
-          this.matchesElement, i18nString(UIStrings.accessibledOfD, {PH1: currentMatchIndex + 1, PH2: matches}));
+      ARIAUtils.setLabel(this.matchesElement,
+                         i18nString(UIStrings.accessibledOfD, {PH1: currentMatchIndex + 1, PH2: matches}));
     } else if (matches === 1) {
       this.matchesElementValue.textContent = i18nString(UIStrings.matchString);
       ARIAUtils.setLabel(this.matchesElement, i18nString(UIStrings.matchString));

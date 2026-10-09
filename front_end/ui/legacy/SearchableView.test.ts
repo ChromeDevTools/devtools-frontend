@@ -84,6 +84,16 @@ describeWithEnvironment('SearchableView', () => {
     });
   });
 
+  describe('placeholder', () => {
+    it('updates the search input placeholder', () => {
+      const searchableView = new UI.SearchableView.SearchableView(createSearchable(), null);
+      searchableView.placeholder = 'Find by string, selector, or XPath';
+      assert.strictEqual(searchableView.placeholder, 'Find by string, selector, or XPath');
+      const searchInput = searchableView.contentElement.querySelector<HTMLInputElement>('#search-input-field');
+      assert.strictEqual(searchInput?.placeholder, 'Find by string, selector, or XPath');
+    });
+  });
+
   describe('SearchConfig', () => {
     const {SearchConfig} = UI.SearchableView;
 

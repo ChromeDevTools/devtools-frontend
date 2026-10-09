@@ -1073,7 +1073,9 @@ describe('ContextSelectionAgent', function() {
 
       const actionResponse = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
       assert.exists(actionResponse);
-      assert.deepEqual(actionResponse, {
+      const {callId, ...actionWithoutCallId} = actionResponse;
+      assert.isString(callId);
+      assert.deepEqual(actionWithoutCallId, {
         type: AiAgent.ResponseType.ACTION,
         code: 'listSourceFiles()',
         output: '[{"file":"script.js","id":1}]',
@@ -1181,7 +1183,9 @@ describe('ContextSelectionAgent', function() {
 
       const actionResponse = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
       assert.exists(actionResponse);
-      assert.deepEqual(actionResponse, {
+      const {callId, ...actionWithoutCallId} = actionResponse;
+      assert.isString(callId);
+      assert.deepEqual(actionWithoutCallId, {
         type: AiAgent.ResponseType.ACTION,
         code: 'listSourceFiles()',
         output: '[{"file":"script.js","id":1}]',

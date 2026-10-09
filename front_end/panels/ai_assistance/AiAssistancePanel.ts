@@ -1797,6 +1797,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         id: crypto.randomUUID(),
       };
       let step: Step = {state: {type: 'in_progress'}};
+      /**
+       * The step for each tool call in this stream, keyed by `callId`.
+       */
+      const stepsByCallId = new Map<string, Step>();
 
       /**
        * Commits the step to props only if necessary.
@@ -1810,6 +1814,27 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           type: 'step',
           step,
         });
+      }
+
+      /**
+       * Returns the step for `callId`.
+       *
+       * The first call after `QUERYING` takes over the step that `QUERYING`
+       * created. A further call before the next `QUERYING` gets a new step.
+       * Events in conversations saved before `callId` existed have no
+       * `callId`, and keep updating the current step.
+       */
+      function stepForCall(callId: string|undefined): Step {
+        if (callId === undefined) {
+          return step;
+        }
+        const callStep = stepsByCallId.get(callId);
+        if (callStep) {
+          return callStep;
+        }
+        const newStep: Step = [...stepsByCallId.values()].includes(step) ? {state: {type: 'in_progress'}} : step;
+        stepsByCallId.set(callId, newStep);
+        return newStep;
       }
 
       this.#isLoading = true;
@@ -1857,11 +1882,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             break;
           }
           case AiAssistanceModel.AiAgent.ResponseType.TITLE: {
+            step = stepForCall(data.callId);
             step.title = data.title;
             commitStep();
             break;
           }
           case AiAssistanceModel.AiAgent.ResponseType.THOUGHT: {
+            step = stepForCall(data.callId);
             step.state = {type: 'completed'};
             step.thought = data.thought;
             commitStep();
@@ -1881,8 +1908,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             break;
           }
           case AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT: {
-            step.code ??= data.code;
-            step.state = {
+            step = stepForCall(data.callId);
+            const approvalStep = step;
+            approvalStep.code ??= data.code;
+            approvalStep.state = {
               type: 'needs_approval',
               sideEffectDialog: {
                 description: data.description,
@@ -1890,7 +1919,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 permissionTitle: data.permissionTitle,
                 onAnswer: (decision: AiAssistanceModel.Tool.PermissionDecision) => {
                   data.confirm(decision);
-                  step.state = {type: 'completed'};
+                  approvalStep.state = {type: 'completed'};
                   this.requestUpdate();
                 },
               },
@@ -1899,6 +1928,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             break;
           }
           case AiAssistanceModel.AiAgent.ResponseType.ACTION: {
+            step = stepForCall(data.callId);
             step.state = data.canceled ? {type: 'canceled'} : {type: 'completed'};
             step.code ??= data.code;
             step.output ??= data.output;

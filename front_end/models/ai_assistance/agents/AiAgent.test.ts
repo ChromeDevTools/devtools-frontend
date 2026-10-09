@@ -887,6 +887,100 @@ describe('AiAgent', () => {
            },
          ]);
        });
+
+    describe('callId', () => {
+      function declareTestFn(agent: AiAgentMock, needsApproval: boolean): void {
+        agent.declareFunctionForTest('testFn', {
+          description: 'test fn description',
+          parameters: {
+            type: Host.AidaClient.ParametersTypes.OBJECT,
+            description: 'test parameters',
+            properties: {},
+            required: [],
+          },
+          displayInfoFromArgs: () => ({title: 'Running testFn', thought: 'Because', action: 'testFn()'}),
+          handler: async (_args, options) => {
+            if (needsApproval && !options?.approved) {
+              return {requiresApproval: true, description: 'test approval'};
+            }
+            return {result: 'success'};
+          },
+        });
+      }
+
+      it('sets the same callId on the TITLE, THOUGHT and ACTION of one call', async () => {
+        const agent = new AiAgentMock({
+          aidaClient: mockAidaClient([
+            [{explanation: '', functionCalls: [{name: 'testFn', args: {}}]}],
+            [{explanation: 'Final answer'}],
+          ]),
+        });
+        declareTestFn(agent, false);
+
+        const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+        const title = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.TITLE);
+        const thought = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.THOUGHT);
+        const action = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
+        assert.exists(title);
+        assert.exists(thought);
+        assert.exists(action);
+        assert.isString(title.callId);
+        assert.strictEqual(thought.callId, title.callId);
+        assert.strictEqual(action.callId, title.callId);
+      });
+
+      it('sets the same callId on every event of a call that needs approval', async () => {
+        const agent = new AiAgentMock({
+          aidaClient: mockAidaClient([
+            [{explanation: '', functionCalls: [{name: 'testFn', args: {}}]}],
+            [{explanation: 'Final answer'}],
+          ]),
+          confirmSideEffectForTest: <T>() => {
+            const resolvers = Promise.withResolvers<T>();
+            resolvers.resolve(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE as unknown as T);
+            return resolvers;
+          },
+        });
+        declareTestFn(agent, true);
+
+        const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+        const title = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.TITLE);
+        const sideEffect = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT);
+        const actions = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
+        assert.exists(title);
+        assert.exists(sideEffect);
+        assert.lengthOf(actions, 2);
+        const [codeOnlyAction, resultAction] = actions;
+        assert.isUndefined(codeOnlyAction.output);
+        assert.strictEqual(resultAction.output, 'success');
+        assert.isString(title.callId);
+        assert.strictEqual(codeOnlyAction.callId, title.callId);
+        assert.strictEqual(sideEffect.callId, title.callId);
+        assert.strictEqual(resultAction.callId, title.callId);
+      });
+
+      it('sets a different callId for each call', async () => {
+        const agent = new AiAgentMock({
+          aidaClient: mockAidaClient([
+            [{explanation: '', functionCalls: [{name: 'testFn', args: {}}]}],
+            [{explanation: '', functionCalls: [{name: 'testFn', args: {}}]}],
+            [{explanation: 'Final answer'}],
+          ]),
+        });
+        declareTestFn(agent, false);
+
+        const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+        const actions = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
+        assert.lengthOf(actions, 2);
+        const [firstAction, secondAction] = actions;
+        assert.isString(firstAction.callId);
+        assert.isString(secondAction.callId);
+        assert.notStrictEqual(firstAction.callId, secondAction.callId);
+      });
+    });
   });
 
   describe('parseTextResponseForSuggestions', () => {

@@ -482,6 +482,7 @@ describe('StylingAgent', function() {
     });
 
     it('generates an action response if action and answer both present', async function() {
+      sinon.stub(crypto, 'randomUUID').returns('00000000-0000-0000-0000-000000000001');
       const execJs = sinon.mock().once();
       execJs.onCall(0).returns('hello');
       const agent = new StylingAgent.StylingAgent({

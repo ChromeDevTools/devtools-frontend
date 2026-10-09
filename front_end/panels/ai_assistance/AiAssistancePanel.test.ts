@@ -3622,6 +3622,150 @@ describeWithEnvironment('AI Assistance Panel', () => {
     });
   });
 
+  describe('tool call steps', () => {
+    beforeEach(async () => {
+      await enableAllFeatureAndSetting();
+    });
+
+    async function submitAndGetModelParts(responses: AsyncGenerator<AiAssistanceModel.AiAgent.ResponseData>):
+        Promise<AiAssistancePanel.ChatMessage.ModelMessagePart[]> {
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns(responses);
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      const input = await view.nextInput;
+      assert(input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      input.props.onTextSubmit('test');
+
+      const finalInput = await waitForLoadingToFinish(view);
+      assert(finalInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      const lastMessage = finalInput.props.messages.at(-1);
+      assert.exists(lastMessage);
+      assert(lastMessage.entity === AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL);
+      return lastMessage.parts;
+    }
+
+    function summarizeParts(parts: AiAssistancePanel.ChatMessage.ModelMessagePart[]): unknown[] {
+      return parts.map(part => {
+        switch (part.type) {
+          case 'step':
+            return {type: 'step', title: part.step.title, code: part.step.code, output: part.step.output};
+          case 'answer':
+            return {type: 'answer', text: part.text};
+          case 'widget':
+            return {type: 'widget'};
+        }
+      });
+    }
+
+    it('creates a step per callId when calls share one model response', async () => {
+      const parts = await submitAndGetModelParts((async function*() {
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY, query: 'test'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Call A', callId: 'a'};
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          code: 'a()',
+          output: 'a-output',
+          canceled: false,
+          callId: 'a',
+        };
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Call B', callId: 'b'};
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          code: 'b()',
+          output: 'b-output',
+          canceled: false,
+          callId: 'b',
+        };
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.ANSWER, text: 'Done', complete: true};
+      })());
+
+      assert.deepEqual(summarizeParts(parts), [
+        {type: 'step', title: 'Call A', code: 'a()', output: 'a-output'},
+        {type: 'step', title: 'Call B', code: 'b()', output: 'b-output'},
+        {type: 'answer', text: 'Done'},
+      ]);
+    });
+
+    it('creates a step per model response for saved events without a callId', async () => {
+      const parts = await submitAndGetModelParts((async function*() {
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY, query: 'test'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Call A'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.ACTION, code: 'a()', output: 'a-output', canceled: false};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Call B'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.ACTION, code: 'b()', output: 'b-output', canceled: false};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.ANSWER, text: 'Done', complete: true};
+      })());
+
+      assert.deepEqual(summarizeParts(parts), [
+        {type: 'step', title: 'Call A', code: 'a()', output: 'a-output'},
+        {type: 'step', title: 'Call B', code: 'b()', output: 'b-output'},
+        {type: 'answer', text: 'Done'},
+      ]);
+    });
+
+    it('keeps an earlier step unchanged while a later call in the same response waits for approval', async () => {
+      const {promise: decision, resolve: confirm} = Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns((async function*() {
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY, query: 'test'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Call A', callId: 'a'};
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          code: 'a()',
+          output: 'a-output',
+          canceled: false,
+          callId: 'a',
+        };
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Call B', callId: 'b'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.ACTION, code: 'b()', canceled: false, callId: 'b'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT, description: null, confirm, callId: 'b'};
+        await decision;
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          code: 'b()',
+          output: 'b-output',
+          canceled: false,
+          callId: 'b',
+        };
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.ANSWER, text: 'Done', complete: true};
+      })());
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      const input = await view.nextInput;
+      assert(input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      input.props.onTextSubmit('test');
+
+      function summarizeSteps(viewInput: AiAssistancePanel.ViewInput): unknown[] {
+        assert(viewInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        const lastMessage = viewInput.props.messages.at(-1);
+        assert.exists(lastMessage);
+        assert(lastMessage.entity === AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL);
+        return lastMessage.parts.filter(part => part.type === 'step')
+            .map(part => ({title: part.step.title, output: part.step.output, state: part.step.state.type}));
+      }
+
+      const sideEffectDialog = await waitForSideEffectDialog(view);
+      assert.deepEqual(summarizeSteps(view.input), [
+        {title: 'Call A', output: 'a-output', state: 'completed'},
+        {title: 'Call B', output: undefined, state: 'needs_approval'},
+      ]);
+
+      sideEffectDialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+      const finalInput = await waitForLoadingToFinish(view);
+
+      assert.deepEqual(summarizeSteps(finalInput), [
+        {title: 'Call A', output: 'a-output', state: 'completed'},
+        {title: 'Call B', output: 'b-output', state: 'completed'},
+      ]);
+    });
+  });
+
   describe('Walkthrough', () => {
     function assertChatViewState(
         input: AiAssistancePanel.ViewInput,

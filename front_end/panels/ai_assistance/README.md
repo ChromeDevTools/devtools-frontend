@@ -57,32 +57,73 @@ In a typical conversation flow, there is a one-to-one relationship between a `Us
 
 ### `ModelChatMessage` Structure: Steps and Answer
 
-The key to the walkthrough feature lies in the `parts` array of a `ModelChatMessage`. A `ModelMessagePart` can be one of two types:
+The key to the walkthrough feature lies in the `parts` array of a `ModelChatMessage`. A `ModelMessagePart` is one of three types:
 
-1.  **`StepPart`**: Represents a single step in the model's reasoning process. It contains a `step` object with details like:
+1.  **`StepPart`**: Represents a single step in the model's reasoning process, usually one tool call. It contains a `step` object with details like:
+    -   `state`: The step's state. See [Step states](#step-states).
     -   `title`: The title of the step (e.g., "Analyzing CSS").
     -   `thought`: A textual description of what the model is thinking.
-    -   `code`: Any code that the model is executing.
-    -   `output`: The result of the executed code.
+    -   `code`: The text shown in the step's code box. For tools that run code, this is the code. For other tools, it is a readable form of the call.
+    -   `output`: The tool's result.
 
-2.  **`AnswerPart`**: Represents the final, conclusive answer from the model.
+2.  **`AnswerPart`**: Represents text from the model.
     -   `text`: The markdown-formatted text of the answer.
 
-A single `ModelChatMessage` will typically have **zero or more `StepPart`s** followed by **one `AnswerPart`**. This structure allows the UI to first show the final answer and provide the option to progressively disclose the "thinking" steps that led to it via the `WalkthroughView`.
+3.  **`WidgetPart`**: Represents widgets attached to an answer. See [AI-Defined UI Widgets](#ai-defined-ui-widgets).
 
-## Understanding Step Loading States
+Parts appear in the order the panel receives them, so steps and answers can interleave. For example, the model can reply with some text and a tool call, and then with more text after the tool returns. This gives `[answer, step, answer]`. A text-only reply gives a single `AnswerPart`.
 
-There are two distinct `isLoading` properties related to the AI's response generation, serving different purposes:
+## From response events to steps
 
-1.  **`step.isLoading`**: This property resides within a single `Step` object and indicates the immediate parsing status of that specific step from the AI's response stream. It becomes `true` when a new step begins (e.g., "Querying...") and is set to `false` almost immediately once the first piece of meaningful information for that step (like a "thought" or a "code" block) is received. Essentially, it's a short-lived internal parsing state.
+`AiAssistancePanel#consumeResponseStream()` turns the stream of response events from the agent into chat messages. The `ResponseType` JSDoc in `front_end/models/ai_assistance/agents/AiAgent.ts` documents which events the agent yields and in what order. This section covers what the panel does with them.
 
-2.  **Conversation `isLoading`** (passed down to the `ChatMessage` component): This top-level property reflects the overall state of the entire conversation's response generation process. It is set to `true` as soon as the user submits a query and remains `true` until the AI has completed its entire thought process, including all steps, and has provided the final answer.
+### The current step
 
-The spinner displayed next to a step in the UI is intentionally tied to the **conversation `isLoading`** property, not the individual `step.isLoading`. This design choice provides a better user experience by:
+The event handlers share one mutable variable, `step`. Each handler writes into `step`, then calls `commitStep()`. `commitStep()` appends `step` to the message's `parts`, unless `step` is already the last part.
 
-*   **Providing Continuous Feedback**: Using the conversation's `isLoading` ensures a persistent visual indicator that the AI is actively working on the query, even if individual steps are quickly parsed. This prevents the UI from appearing unresponsive.
-*   **Avoiding a "Stuck" Feeling**: If the spinner were tied to `step.isLoading`, it would flicker on and off rapidly, potentially making the user feel that the AI has stopped processing or is stuck.
-*   **Clear Progress Visualization**: The spinner is dynamically moved to the *last* active step in the list as long as the overall conversation is loading. Once a step is completed, it receives a checkmark, and the spinner moves to the next active step.
+-   `QUERYING` (one per model request) sets `step` to a fresh step. The panel only commits this step if it is the first part of the message, so that a spinner shows while the first request runs. Otherwise, the step stays hidden until a tool call fills it in.
+-   `TITLE`, `THOUGHT`, `SIDE_EFFECT` and `ACTION` first set `step = stepForCall(data.callId)`, then write into `step`.
+-   `ANSWER` adds or updates an `AnswerPart`.
+
+### `stepForCall()`
+
+Every event for one tool call carries the same `callId`. `stepForCall(callId)` returns the step for that call:
+
+| Case | What happens | Why |
+| :--- | :--- | :--- |
+| `callId` is `undefined` | Returns `step` unchanged. | Conversations saved before `callId` existed have no `callId`. Their events keep updating the current step, so they render as before. |
+| `callId` is known | Returns that call's step. | All events for one call go to one step. |
+| `callId` is new | If `step` already belongs to another call, creates a fresh step; otherwise uses `step`. Records `callId` → that step and returns it. | The first call after `QUERYING` takes over the step that `QUERYING` created, so the spinner turns into that call's step. A further call in the same model response gets its own step. |
+
+### Example: two tool calls in one model response
+
+| Event | `step` before | Result | `parts` after |
+| :--- | :--- | :--- | :--- |
+| `QUERYING` | — | `step = S0`. S0 is committed because it is the first part. | `[S0]` |
+| `TITLE {callId: a}` | S0, not owned | New `a`. S0 is not owned, so `a` → S0. | `[S0]` |
+| `THOUGHT {callId: a}` | S0 | Known `a`, so `step = S0`. | `[S0]` |
+| `ACTION {callId: a}` | S0 | Known `a`, so `step = S0`. | `[S0]` |
+| `TITLE {callId: b}` | S0, owned by `a` | New `b`. S0 is owned, so `step = S1` and `b` → S1. | `[S0, S1]` |
+| `ACTION {callId: b}` | S1 | Known `b`, so `step = S1`. | `[S0, S1]` |
+| `QUERYING` | S1 | `step = S2`. S2 is not committed because `parts` is not empty. | `[S0, S1]` |
+| `ANSWER` | S2 | Appends an `AnswerPart`. | `[S0, S1, answer]` |
+
+`commitStep()` only checks the last part. This relies on all events for one call arriving before the events for the next call, which holds because the agent runs tool calls one at a time.
+
+## Step states
+
+Each `Step` has a `state` (`StepState` in `components/ChatMessage.ts`):
+
+| State | Set when | Badge |
+| :--- | :--- | :--- |
+| `in_progress` | `QUERYING` creates the step. | A spinner if the step is the last step. Otherwise, a checkmark. |
+| `needs_approval` | A `SIDE_EFFECT` event asks the user to approve a tool call. The state holds the approval dialog. | A pause icon, with the approval prompt in the step. Only the last step can be in this state. |
+| `canceled` | An `ACTION` with `canceled: true` arrives because the user denied the tool call, or the user aborts the run while this is the last step. | A cross. |
+| `completed` | A `CONTEXT`, `THOUGHT`, `ACTION`, `CONTEXT_CHANGE` or `ANSWER` event arrives, or the user answers the approval prompt. | A checkmark. |
+
+A `THOUGHT` marks the step as completed before the tool runs, so the badge shows a checkmark while the tool is still running. If the run fails with an error other than an abort while the last step is still `in_progress`, the panel removes that step.
+
+Separately, the conversation-level `isLoading` flag is `true` from when the user submits a query until the agent finishes. While it is `true`, the walkthrough toggle button in the last `ChatMessage` shows a spinner. This spinner gives continuous feedback that the agent is working, even when every step already shows a checkmark.
 
 ## AI-Defined UI Widgets
 

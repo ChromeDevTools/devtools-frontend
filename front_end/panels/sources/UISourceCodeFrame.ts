@@ -359,7 +359,7 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
   static sourceFramePlugins(): Array<typeof Plugin> {
     // The order of these plugins matters for toolbar items and editor
     // extension precedence
-    const sourceFramePluginsList = [
+    const sourceFramePluginsList: Array<typeof Plugin> = [
       CSSPlugin,
       DebuggerPlugin,
       SnippetsPlugin,

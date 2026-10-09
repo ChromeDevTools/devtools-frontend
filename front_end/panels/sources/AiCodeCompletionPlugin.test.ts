@@ -9,14 +9,18 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as PanelCommon from '../common/common.js';
 
-import {AiCodeCompletionPlugin} from './sources.js';
+import * as Sources from './sources.js';
 
 const {urlString} = Platform.DevToolsPath;
+const {html} = Lit;
+const {AiCodeCompletionPlugin} = Sources;
 
 function createUiSourceCodeStub({
   url = urlString`file://`,
@@ -64,6 +68,7 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
 
   describe('provider callbacks', () => {
     let clock: sinon.SinonFakeTimers;
+    let container: HTMLElement;
     beforeEach(() => {
       clock = sinon.useFakeTimers();
       updateHostConfig({
@@ -83,6 +88,7 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
         removeEventListener: () => {},
         dispose: () => {},
       } as unknown as Host.AidaClient.HostConfigTracker);
+      container = renderElementIntoDOM(document.createElement('div'));
     });
 
     afterEach(async () => {
@@ -99,14 +105,19 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
     it('initializes toolbar when the feature is enabled', async () => {
       const plugin = setupPlugin();
       await clock.tickAsync(0);
+      const listener = sinon.spy();
+      plugin.addEventListener(Sources.Plugin.Events.TOOLBAR_ITEMS_CHANGED, listener);
       const providerConfig = plugin.aiCodeCompletionConfig;
 
       providerConfig.onFeatureEnabled();
 
+      sinon.assert.calledOnce(listener);
       const toolbarItems = plugin.rightToolbarItems();
       assert.lengthOf(toolbarItems, 1);
-      assert.isTrue(toolbarItems[0].element.classList.contains('ai-code-completion-disclaimer-container'));
-      assert.deepEqual(toolbarItems[0].element.childElementCount, 1);
+      Lit.render(html`${toolbarItems}`, container);
+      const disclaimerContainer = container.querySelector('.ai-code-completion-disclaimer-container');
+      assert.isNotNull(disclaimerContainer);
+      assert.strictEqual(disclaimerContainer.childElementCount, 1);
     });
 
     it('cleans up toolbar when the feature is disabled', async () => {
@@ -114,13 +125,14 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
       await clock.tickAsync(0);
       const providerConfig = plugin.aiCodeCompletionConfig;
       providerConfig.onFeatureEnabled();
-      let toolbarItems = plugin.rightToolbarItems();
-      assert.deepEqual(toolbarItems[0].element.childElementCount, 1);
+      assert.lengthOf(plugin.rightToolbarItems(), 1);
+      const listener = sinon.spy();
+      plugin.addEventListener(Sources.Plugin.Events.TOOLBAR_ITEMS_CHANGED, listener);
 
       providerConfig.onFeatureDisabled();
 
-      toolbarItems = plugin.rightToolbarItems();
-      assert.deepEqual(toolbarItems[0].element.childElementCount, 0);
+      sinon.assert.calledOnce(listener);
+      assert.isEmpty(plugin.rightToolbarItems());
     });
 
     it('shows a loading state when a request is triggered', async () => {
@@ -131,6 +143,8 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
       await clock.tickAsync(0);
       const providerConfig = plugin.aiCodeCompletionConfig;
       providerConfig.onFeatureEnabled();
+      Lit.render(html`${plugin.rightToolbarItems()}`, container);
+      fakeLoadingSetter.resetHistory();
 
       providerConfig.onRequestTriggered();
 
@@ -146,6 +160,8 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
       await clock.tickAsync(0);
       const providerConfig = plugin.aiCodeCompletionConfig;
       providerConfig.onFeatureEnabled();
+      Lit.render(html`${plugin.rightToolbarItems()}`, container);
+      fakeLoadingSetter.resetHistory();
       providerConfig.onRequestTriggered();
       sinon.assert.calledOnce(fakeLoadingSetter);
       assert.isTrue(fakeLoadingSetter.firstCall.args[0]);

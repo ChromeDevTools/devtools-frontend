@@ -10,9 +10,12 @@ import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.n
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, type LitTemplate} from '../../ui/lit/lit.js';
 import * as PanelCommon from '../common/common.js';
 
-import {Plugin} from './Plugin.js';
+import {Events, Plugin} from './Plugin.js';
+
+const {widget, widgetRef} = UI.Widget;
 
 const DISCLAIMER_TOOLTIP_ID = 'sources-ai-code-completion-disclaimer-tooltip';
 const SPINNER_TOOLTIP_ID = 'sources-ai-code-completion-spinner-tooltip';
@@ -21,8 +24,8 @@ const CITATIONS_TOOLTIP_ID = 'sources-ai-code-completion-citations-tooltip';
 export class AiCodeCompletionPlugin extends Plugin {
   #editor?: TextEditor.TextEditor.TextEditor;
   #aiCodeCompletionDisclaimer?: TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer;
-  #aiCodeCompletionDisclaimerContainer = document.createElement('div');
-  #aiCodeCompletionDisclaimerToolbarItem = new UI.Toolbar.ToolbarItem(this.#aiCodeCompletionDisclaimerContainer);
+  #featureEnabled = false;
+  #loading = false;
   #aiCodeCompletionCitationsToolbar?: PanelCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar;
   #aiCodeCompletionCitationsToolbarContainer = document.createElement('div');
   #aiCodeCompletionCitationsToolbarAttached = false;
@@ -64,8 +67,6 @@ export class AiCodeCompletionPlugin extends Plugin {
     };
     this.#aiCodeCompletionProvider =
         TextEditor.AiCodeCompletionProvider.AiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
-    this.#aiCodeCompletionDisclaimerContainer.classList.add('ai-code-completion-disclaimer-container');
-    this.#aiCodeCompletionDisclaimerContainer.style.paddingInline = 'var(--sys-size-3)';
   }
 
   static override accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
@@ -90,24 +91,34 @@ export class AiCodeCompletionPlugin extends Plugin {
     return this.#aiCodeCompletionProvider.extension();
   }
 
-  override rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
-    return [this.#aiCodeCompletionDisclaimerToolbarItem];
+  override rightToolbarItems(): LitTemplate[] {
+    if (!this.#featureEnabled) {
+      return [];
+    }
+    // clang-format off
+    return [html`<div
+      class="ai-code-completion-disclaimer-container"
+      style="padding-inline: var(--sys-size-3)"
+    ><devtools-widget
+      ${widget(TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer, {
+        disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
+        spinnerTooltipId: SPINNER_TOOLTIP_ID,
+        disclaimerTextVariant: 'sources',
+      })}
+      ${widgetRef(TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer, disclaimer => {
+        this.#aiCodeCompletionDisclaimer = disclaimer;
+        disclaimer.loading = this.#loading;
+      })}
+    ></devtools-widget></div>`];
+    // clang-format on
   }
 
   #setupAiCodeCompletion(): void {
-    this.#createAiCodeCompletionDisclaimer();
     this.#createAiCodeCompletionCitationsToolbar();
-  }
-
-  #createAiCodeCompletionDisclaimer(): void {
-    if (this.#aiCodeCompletionDisclaimer) {
-      return;
+    if (!this.#featureEnabled) {
+      this.#featureEnabled = true;
+      this.dispatchEventToListeners(Events.TOOLBAR_ITEMS_CHANGED);
     }
-    this.#aiCodeCompletionDisclaimer = new TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer();
-    this.#aiCodeCompletionDisclaimer.disclaimerTooltipId = DISCLAIMER_TOOLTIP_ID;
-    this.#aiCodeCompletionDisclaimer.spinnerTooltipId = SPINNER_TOOLTIP_ID;
-    this.#aiCodeCompletionDisclaimer.disclaimerTextVariant = 'sources';
-    this.#aiCodeCompletionDisclaimer.show(this.#aiCodeCompletionDisclaimerContainer, undefined, true);
   }
 
   #createAiCodeCompletionCitationsToolbar(): void {
@@ -145,18 +156,24 @@ export class AiCodeCompletionPlugin extends Plugin {
   }
 
   #cleanupAiCodeCompletion(): void {
-    this.#aiCodeCompletionDisclaimerContainer.removeChildren();
     this.#aiCodeCompletionDisclaimer = undefined;
+    this.#loading = false;
     this.#removeAiCodeCompletionCitationsToolbar();
+    if (this.#featureEnabled) {
+      this.#featureEnabled = false;
+      this.dispatchEventToListeners(Events.TOOLBAR_ITEMS_CHANGED);
+    }
   }
 
   #onAiRequestTriggered = (): void => {
+    this.#loading = true;
     if (this.#aiCodeCompletionDisclaimer) {
       this.#aiCodeCompletionDisclaimer.loading = true;
     }
   };
 
   #onAiResponseReceived = (): void => {
+    this.#loading = false;
     if (this.#aiCodeCompletionDisclaimer) {
       this.#aiCodeCompletionDisclaimer.loading = false;
     }

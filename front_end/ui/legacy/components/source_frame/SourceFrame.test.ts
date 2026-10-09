@@ -16,6 +16,7 @@ import {
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../../../testing/ExpectStubCall.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
+import {render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import * as SourceFrame from './source_frame.js';
@@ -24,8 +25,8 @@ describeWithEnvironment('SourceFrame', () => {
   let setting: Common.Settings.Setting<boolean>;
 
   beforeEach(() => {
-    setting = Common.Settings.Settings.instance().createSetting(
-        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
+    setting = Common.Settings.Settings.instance().createSetting('disable-self-xss-warning', false,
+                                                                Common.Settings.SettingStorageType.SYNCED);
     setting.set(false);
   });
 
@@ -144,9 +145,86 @@ describeWithEnvironment('SourceFrame', () => {
     renderElementIntoDOM(sourceFrame);
     const content = await expectCall(setContentStub);
 
-    assert.strictEqual(
-        content.toString(), '(module\n  (func $bar (;0;) (export \"bar\") (result i32)\n    i32.const 2\n  )\n)');
+    assert.strictEqual(content.toString(),
+                       '(module\n  (func $bar (;0;) (export \"bar\") (result i32)\n    i32.const 2\n  )\n)');
 
     sourceFrame.detach();
+  });
+
+  describe('toolbarItems', () => {
+    async function renderToolbar(sourceFrame: SourceFrame.SourceFrame.SourceFrameImpl): Promise<HTMLElement> {
+      const container = document.createElement('devtools-toolbar');
+      renderElementIntoDOM(container);
+      const items = await sourceFrame.toolbarItems();
+      render(items, container);
+      return container;
+    }
+
+    it('renders and toggles the pretty print button when canPrettyPrint is enabled', async () => {
+      const sourceFrame = await createSourceFrame('{"a":1,"b":2}');
+      const toolbar = await renderToolbar(sourceFrame);
+
+      const prettyButton = toolbar.querySelector<Buttons.Button.Button>('[aria-label="Pretty print"]');
+      assert.exists(prettyButton);
+      assert.isTrue(prettyButton.classList.contains('hidden'));
+
+      sourceFrame.setCanPrettyPrint(true);
+      assert.isFalse(prettyButton.classList.contains('hidden'));
+      assert.isFalse(prettyButton.toggled);
+
+      prettyButton.click();
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.isTrue(sourceFrame.pretty);
+      assert.isTrue(prettyButton.toggled);
+
+      toolbar.remove();
+    });
+
+    it('updates the source position text when selection changes', async () => {
+      const sourceFrame = await createSourceFrame('first line\nsecond line');
+      const toolbar = await renderToolbar(sourceFrame);
+
+      sourceFrame.textEditor.dispatch({
+        selection: sourceFrame.textEditor.createSelection({lineNumber: 1, columnNumber: 3}),
+      });
+      const positionText = toolbar.querySelector('.toolbar-text');
+      assert.strictEqual(positionText?.textContent, 'Line 2, column 4');
+
+      sourceFrame.textEditor.dispatch({
+        selection:
+            sourceFrame.textEditor.createSelection({lineNumber: 0, columnNumber: 0}, {lineNumber: 0, columnNumber: 5}),
+      });
+      assert.strictEqual(positionText?.textContent, '5 characters selected');
+
+      sourceFrame.textEditor.dispatch({
+        selection:
+            sourceFrame.textEditor.createSelection({lineNumber: 0, columnNumber: 0}, {lineNumber: 1, columnNumber: 6}),
+      });
+      assert.strictEqual(positionText?.textContent, '2 lines, 17 characters selected');
+
+      toolbar.remove();
+    });
+
+    it('shows a progress indicator while content is loading and removes it when done', async () => {
+      let resolveContent!: (data: TextUtils.ContentData.ContentDataOrError) => void;
+      const contentPromise = new Promise<TextUtils.ContentData.ContentDataOrError>(resolve => {
+        resolveContent = resolve;
+      });
+      const sourceFrame = new SourceFrame.SourceFrame.SourceFrameImpl(() => contentPromise);
+      const toolbar = await renderToolbar(sourceFrame);
+      renderElementIntoDOM(sourceFrame, {allowMultipleChildren: true});
+
+      const progress = toolbar.querySelector('devtools-progress');
+      assert.exists(progress);
+      assert.strictEqual(progress.title, 'Loading\u2026');
+
+      resolveContent(new TextUtils.ContentData.ContentData('loaded', false, 'text/plain'));
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.isNull(toolbar.querySelector('devtools-progress'));
+
+      sourceFrame.detach();
+      toolbar.remove();
+    });
   });
 });

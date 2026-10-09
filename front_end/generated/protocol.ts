@@ -1291,6 +1291,7 @@ export namespace Audits {
     FormModelContextMissingToolDescription = 'FormModelContextMissingToolDescription',
     FormModelContextRequiredParameterMissingName = 'FormModelContextRequiredParameterMissingName',
     FormModelContextParameterMissingName = 'FormModelContextParameterMissingName',
+    GeolocationPromptWithoutUserGesture = 'GeolocationPromptWithoutUserGesture',
   }
 
   /**
@@ -16025,6 +16026,14 @@ export namespace Page {
      * script). Only sent if frame is labelled as an ad and ids are available.
      */
     adScriptAncestry?: Network.AdAncestry;
+  }
+
+  export interface GetSpellCheckCustomDictionaryRequest {
+    frameId: FrameId;
+  }
+
+  export interface GetSpellCheckCustomDictionaryResponse extends ProtocolResponseWithError {
+    words: string[];
   }
 
   export interface GetFrameTreeResponse extends ProtocolResponseWithError {

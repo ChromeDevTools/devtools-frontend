@@ -1876,7 +1876,8 @@
                         "FormModelContextMissingToolName",
                         "FormModelContextMissingToolDescription",
                         "FormModelContextRequiredParameterMissingName",
-                        "FormModelContextParameterMissingName"
+                        "FormModelContextParameterMissingName",
+                        "GeolocationPromptWithoutUserGesture"
                     ]
                 },
                 {
@@ -24017,6 +24018,26 @@
                             "description": "The ancestry chain of ad script identifiers leading to this frame's\ncreation, along with the root script's filterlist rule. The ancestry\nchain is ordered from the most immediate script (in the frame creation\nstack) to more distant ancestors (that created the immediately preceding\nscript). Only sent if frame is labelled as an ad and ids are available.",
                             "optional": true,
                             "$ref": "Network.AdAncestry"
+                        }
+                    ]
+                },
+                {
+                    "name": "getSpellCheckCustomDictionary",
+                    "description": "Returns the words that the frame's document added to its spell check custom\ndictionary with `document.spellCheckCustomDictionary.addWords()`, sorted.\nPage script cannot read the dictionary back; this lets developers inspect\nit.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "$ref": "FrameId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "words",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     ]
                 },

@@ -1,7 +1,6 @@
 // Copyright 2011 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
@@ -150,6 +149,7 @@ class SourceFrameToolbar extends UI.Widget.Widget {
   constructor(element?: HTMLElement, view = SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW) {
     super(element);
     this.#view = view;
+    // eslint-disable-next-line @devtools/no-imperative-dom-api
     this.element.style.display = 'contents';
     this.performUpdate();
   }
@@ -158,6 +158,18 @@ class SourceFrameToolbar extends UI.Widget.Widget {
     this.#view(this, {}, this.contentElement);
   }
 }
+
+const SOURCE_FRAME_DEFAULT_VIEW =
+    (input: {textEditor: TextEditor.TextEditor.TextEditor, onKeyDown: (event: KeyboardEvent) => void}, _output: object,
+     target: HTMLElement): void => {
+      // clang-format off
+      render(html`
+        <div style="display: contents" @keydown=${input.onKeyDown}>
+          ${input.textEditor}
+        </div>
+      `, target);
+      // clang-format on
+    };
 
 const SourceFrameImplBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.View.SimpleView> =
     Common.ObjectWrapper.eventMixin(
@@ -222,13 +234,6 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     this.textEditorInternal = new TextEditor.TextEditor.TextEditor(this.placeholderEditorState(''));
     this.textEditorInternal.style.flexGrow = '1';
 
-    this.element.appendChild(this.textEditorInternal);
-    this.element.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.defaultPrevented) {
-        event.stopPropagation();
-      }
-    });
-
     this.baseDoc = this.textEditorInternal.state.doc;
 
     this.searchConfig = null;
@@ -255,6 +260,21 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     Common.Settings.Settings.instance()
         .moduleSetting('text-editor-indent')
         .addChangeListener(this.#textEditorIndentChanged, this);
+
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    SOURCE_FRAME_DEFAULT_VIEW({
+      textEditor: this.textEditorInternal,
+      onKeyDown: (event: KeyboardEvent) => {
+        if (event.defaultPrevented) {
+          event.stopPropagation();
+        }
+      },
+    },
+                              {}, this.element);
+    this.#updateToolbar();
   }
 
   #updateToolbar(): void {

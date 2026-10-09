@@ -134,6 +134,17 @@
     text-overflow: ellipsis;
   }
 
+  .thread-status-working {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-4);
+    color: var(--sys-color-on-surface-subtle);
+    font-size: var(--sys-typescale-body4-size);
+    line-height: var(--sys-typescale-body4-line-height);
+    font-weight: var(--ref-typeface-weight-medium);
+    white-space: nowrap;
+  }
+
   .comments-empty-state {
     display: flex;
     flex-direction: column;

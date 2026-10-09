@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
 
 import * as Common from '../../core/common/common.js';
@@ -37,6 +38,14 @@ const UIStrings = {
    * @description Button text for sending comments to the agent.
    */
   sendToAgent: 'Send to Agent',
+  /**
+   * @description Status text shown next to a spinner when a comment thread is being processed by the agent.
+   */
+  working: 'Working',
+  /**
+   * @description Button text shown on resolved comment threads to view the agent response.
+   */
+  seeResponse: 'See response',
 } as const;
 
 const UIStringsNotTranslate = {
@@ -66,6 +75,59 @@ export interface ViewInput {
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+function renderThreadStatus(
+    thread: CommentManager.CommentManager.CommentThread,
+    onDeleteThread: (threadId: string) => void,
+    ): Lit.LitTemplate {
+  // clang-format off
+  switch (thread.status) {
+    case 'SENT_TO_AGENT':
+      return html`
+        <div class="thread-status-working">
+          <devtools-spinner></devtools-spinner>
+          <span>${i18nString(UIStrings.working)}</span>
+        </div>
+      `;
+    case 'RESOLVED':
+      return html`
+        <devtools-button
+          .data=${{
+            variant: Buttons.Button.Variant.TEXT,
+            jslogContext: 'comments-see-response',
+          } as Buttons.Button.ButtonData}
+          @keydown=${(e: KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.stopPropagation();
+            }
+          }}
+        >${i18nString(UIStrings.seeResponse)}</devtools-button>
+      `;
+    case 'ACTIVE':
+      return html`
+        <devtools-button
+          .data=${{
+            variant: Buttons.Button.Variant.ICON,
+            iconName: 'bin',
+            title: i18nString(UIStrings.deleteComment),
+            jslogContext: 'delete',
+          } as Buttons.Button.ButtonData}
+          @click=${(e: Event) => {
+            e.stopPropagation();
+            onDeleteThread(thread.id);
+          }}
+          @keydown=${(e: KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.stopPropagation();
+            }
+          }}
+        ></devtools-button>
+      `;
+    default:
+      return Lit.nothing;
+  }
+  // clang-format on
+}
 
 export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   // clang-format off
@@ -114,23 +176,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
                     html`<span class="anchor-chip-text">${item.title.text}</span>`}
                 </span>
                 <div class="comment-text">${item.commentText}</div>
-                <devtools-button
-                  .data=${{
-                    variant: Buttons.Button.Variant.ICON,
-                    iconName: 'bin',
-                    title: i18nString(UIStrings.deleteComment),
-                    jslogContext: 'delete',
-                  } as Buttons.Button.ButtonData}
-                  @click=${(e: Event) => {
-                    e.stopPropagation();
-                    input.onDeleteThread(item.thread.id);
-                  }}
-                  @keydown=${(e: KeyboardEvent) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.stopPropagation();
-                    }
-                  }}
-                ></devtools-button>
+                ${renderThreadStatus(item.thread, input.onDeleteThread)}
               </li>
             `,
           )}

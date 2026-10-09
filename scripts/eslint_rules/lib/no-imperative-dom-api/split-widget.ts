@@ -76,11 +76,15 @@ export const splitWidget: RuleCreator = {
           return true;
         }
         if (isIdentifier(property, 'hideSidebar')) {
-          domFragment.attributes.push({key: 'sidebar-visibility', value: 'hidden'});
+          domFragment.attributes.push({key: 'show', value: 'main'});
+          return true;
+        }
+        if (isIdentifier(property, 'hideMain')) {
+          domFragment.attributes.push({key: 'show', value: 'sidebar'});
           return true;
         }
         if (isIdentifier(property, 'showBoth')) {
-          domFragment.attributes.push({key: 'sidebar-visibility', value: 'visible'});
+          domFragment.attributes.push({key: 'show', value: 'both'});
           return true;
         }
         return false;

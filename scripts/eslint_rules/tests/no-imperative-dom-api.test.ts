@@ -1237,11 +1237,13 @@ class SomeWidget extends UI.Widget.Widget {
     this.#mainContainer.setSidebarWidget(this.#elementContainer);
     this.#mainContainer.setVertical(false);
     this.#mainContainer.setSecondIsSidebar(this.dockedLeft);
+    this.#mainContainer.hideMain();
 
     this.#sideBar = new SidebarPanel();
     this.#sideBar.setMinimumSize(100, 25);
     this.#splitWidget.setSidebarWidget(this.#sideBar);
     this.#splitWidget.setMainWidget(this.#mainContainer);
+    this.#splitWidget.hideSidebar();
   }
 }`,
       output: `
@@ -1250,11 +1252,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
       <devtools-split-view direction=\${this.vertical ? 'column' : 'row'} sidebar-position="first"
-          sidebar-initial-size="200">
+          sidebar-initial-size="200" show="main">
         <devtools-widget slot="sidebar" .widgetConfig=\${widgetConfig(SidebarPanel,
             {minimumSize: {width: 100, height: 25}})}></devtools-widget>
         <devtools-split-view direction="column" sidebar-position="second" slot="main"
-            direction="row" sidebar-position="$this.dockedLeft ? 'second' : 'first'}">
+            direction="row" sidebar-position="$this.dockedLeft ? 'second' : 'first'}" show="sidebar">
           <devtools-widget slot="main" .widgetConfig=\${widgetConfig(UI.Widget.EmptyWidget)}></devtools-widget>
           <devtools-widget slot="sidebar" .widgetConfig=\${widgetConfig(DetailsView)}></devtools-widget>
         </devtools-split-view>

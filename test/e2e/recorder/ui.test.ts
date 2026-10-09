@@ -406,17 +406,17 @@ describe('Recorder', function() {
         async function getSplitWidgetVisibility() {
           const splitView = await devToolsPage.waitFor('devtools-split-view');
           return await splitView.evaluate(el => {
-            return el.getAttribute('sidebar-visibility');
+            return el.getAttribute('show');
           });
         }
-        assert.strictEqual(await getSplitWidgetVisibility(), 'hidden');
+        assert.strictEqual(await getSplitWidgetVisibility(), 'main');
 
         await toggleCodeView(devToolsPage);
 
-        assert.notStrictEqual(await getSplitWidgetVisibility(), 'hidden');
+        assert.strictEqual(await getSplitWidgetVisibility(), 'both');
 
         await toggleCodeView(devToolsPage);
-        assert.strictEqual(await getSplitWidgetVisibility(), 'hidden');
+        assert.strictEqual(await getSplitWidgetVisibility(), 'main');
       });
     });
   });

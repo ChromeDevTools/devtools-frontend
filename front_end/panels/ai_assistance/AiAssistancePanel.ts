@@ -482,7 +482,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
         name="ai-assistance-split-view-state"
         direction="column"
         sidebar-position="second"
-        sidebar-visibility=${shouldShowWalkthrough && !input.props.walkthrough.isInlined ? 'visible' : 'hidden'}
+        show=${shouldShowWalkthrough && !input.props.walkthrough.isInlined ? 'both' : 'main'}
         sidebar-initial-size=${WALKTHROUGH_SIDEBAR_INITIAL_WIDTH}
       >
         <div slot="main" class="main-view">

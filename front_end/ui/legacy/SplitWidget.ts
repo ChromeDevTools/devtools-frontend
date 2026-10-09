@@ -198,6 +198,8 @@ export class SplitWidget extends SplitWidgetBase {
       widget.element.slot = 'main';
       if (this.#showMode === ShowMode.ONLY_MAIN || this.#showMode === ShowMode.BOTH) {
         widget.show(this.element);
+      } else {
+        this.#hideSide(widget);
       }
     }
     this.resumeInvalidations();
@@ -216,9 +218,21 @@ export class SplitWidget extends SplitWidgetBase {
       widget.element.slot = 'sidebar';
       if (this.#showMode === ShowMode.ONLY_SIDEBAR || this.#showMode === ShowMode.BOTH) {
         widget.show(this.element);
+      } else {
+        this.#hideSide(widget);
       }
     }
     this.resumeInvalidations();
+  }
+
+  #hideSide(widget: AnyWidget): void {
+    if (this.element instanceof SplitWidgetElement) {
+      widget.hideWidget();
+    } else {
+      this.#detaching = true;
+      widget.detach();
+      this.#detaching = false;
+    }
   }
 
   mainWidget(): AnyWidget|null {
@@ -328,9 +342,7 @@ export class SplitWidget extends SplitWidgetBase {
         }
       }
       if (sideToHide) {
-        this.#detaching = true;
-        sideToHide.detach();
-        this.#detaching = false;
+        this.#hideSide(sideToHide);
       }
 
       this.#resizerElement.classList.add('hidden');
@@ -906,8 +918,7 @@ export class SplitWidget extends SplitWidgetBase {
 }
 
 export class SplitWidgetElement extends WidgetElement<SplitWidget> {
-  static readonly observedAttributes: string[] =
-      ['direction', 'sidebar-position', 'sidebar-initial-size', 'sidebar-visibility'];
+  static readonly observedAttributes: string[] = ['direction', 'sidebar-position', 'sidebar-initial-size', 'show'];
 
   constructor() {
     super();
@@ -931,9 +942,11 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
                            if (autoAdjustOrientation) {
                              widget.setAutoAdjustOrientation(true);
                            }
-                           const sidebarHidden = element.getAttribute('sidebar-visibility') === 'hidden';
-                           if (sidebarHidden) {
+                           const show = element.getAttribute('show');
+                           if (show === 'main') {
                              widget.hideSidebar();
+                           } else if (show === 'sidebar') {
+                             widget.hideMain();
                            }
                            widget.addEventListener(Events.SHOW_MODE_CHANGED, () => {
                              element.dispatchEvent(new CustomEvent('change', {detail: widget.showMode()}));
@@ -953,9 +966,11 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
       widget.setAutoAdjustOrientation(newValue === 'auto');
     } else if (name === 'sidebar-position') {
       widget.setSecondIsSidebar(newValue === 'second');
-    } else if (name === 'sidebar-visibility') {
-      if (newValue === 'hidden') {
+    } else if (name === 'show') {
+      if (newValue === 'main') {
         widget.hideSidebar();
+      } else if (newValue === 'sidebar') {
+        widget.hideMain();
       } else {
         widget.showBoth();
       }

@@ -7,7 +7,7 @@ import sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 
 import * as UI from './legacy.js';
 
@@ -72,6 +72,7 @@ describeWithEnvironment('SplitWidget', () => {
     assert.exists(widget.mainWidget());
     assert.strictEqual(widget.mainWidget()!.contentElement.textContent!.trim(), 'Main content');
     assert.strictEqual(widget.sidebarWidget()!.contentElement.textContent!.trim(), 'Sidebar content');
+    assert.isFalse(widget.shouldHideOnDetach());
 
     widget.detach();
   });
@@ -95,6 +96,141 @@ describeWithEnvironment('SplitWidget', () => {
 
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.strictEqual(splitWidget.mainWidget(), widget2);
+
+    splitWidget.detach();
+  });
+
+  it('toggles main widget visibility via show attribute on template', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    let splitWidget!: UI.SplitWidget.SplitWidget;
+
+    const renderSplitView = (show: 'main'|'sidebar'|'both') => {
+      // clang-format off
+      render(
+          html`
+        <devtools-split-view direction="column" sidebar-position="second"
+                             show=${show}
+                             ${widgetRef(SplitWidget, e => {splitWidget = e;})}>
+          <div slot="main">Main content</div>
+          <div slot="sidebar">Sidebar content</div>
+        </devtools-split-view>`,
+          container);
+      // clang-format on
+    };
+
+    renderSplitView('sidebar');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.exists(splitWidget);
+    assert.strictEqual(splitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_SIDEBAR);
+    assert.isFalse(splitWidget.mainWidget()?.isShowing());
+    assert.isTrue(splitWidget.sidebarWidget()?.isShowing());
+
+    renderSplitView('both');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.strictEqual(splitWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
+    assert.isTrue(splitWidget.mainWidget()?.isShowing());
+    assert.isTrue(splitWidget.sidebarWidget()?.isShowing());
+
+    renderSplitView('sidebar');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.strictEqual(splitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_SIDEBAR);
+    assert.isFalse(splitWidget.mainWidget()?.isShowing());
+    assert.isTrue(splitWidget.sidebarWidget()?.isShowing());
+
+    splitWidget.detach();
+  });
+
+  it('toggles sidebar widget visibility via show attribute on template', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    let splitWidget!: UI.SplitWidget.SplitWidget;
+
+    const renderSplitView = (show: 'main'|'sidebar'|'both') => {
+      // clang-format off
+      render(
+          html`
+        <devtools-split-view direction="column" sidebar-position="second"
+                             show=${show}
+                             ${widgetRef(SplitWidget, e => {splitWidget = e;})}>
+          <div slot="main">Main content</div>
+          <div slot="sidebar">Sidebar content</div>
+        </devtools-split-view>`,
+          container);
+      // clang-format on
+    };
+
+    renderSplitView('main');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.exists(splitWidget);
+    assert.strictEqual(splitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_MAIN);
+    assert.isTrue(splitWidget.mainWidget()?.isShowing());
+    assert.isFalse(splitWidget.sidebarWidget()?.isShowing());
+
+    renderSplitView('both');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.strictEqual(splitWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
+    assert.isTrue(splitWidget.mainWidget()?.isShowing());
+    assert.isTrue(splitWidget.sidebarWidget()?.isShowing());
+
+    renderSplitView('main');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.strictEqual(splitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_MAIN);
+    assert.isTrue(splitWidget.mainWidget()?.isShowing());
+    assert.isFalse(splitWidget.sidebarWidget()?.isShowing());
+
+    splitWidget.detach();
+  });
+
+  it('keeps dynamically slotted main and sidebar widgets hidden when show attribute hides them', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    let splitWidget!: UI.SplitWidget.SplitWidget;
+
+    const renderSplitView = (slotMain: boolean, slotSidebar: boolean, show: 'main'|'sidebar'|'both') => {
+      // clang-format off
+      render(
+          html`
+        <devtools-split-view direction="column" sidebar-position="second"
+                             show=${show}
+                             ${widgetRef(SplitWidget, e => {splitWidget = e;})}>
+          ${slotMain ? html`<devtools-widget slot="main"></devtools-widget>` : nothing}
+          ${slotSidebar ? html`<devtools-widget slot="sidebar"></devtools-widget>` : nothing}
+        </devtools-split-view>`,
+          container);
+      // clang-format on
+    };
+
+    renderSplitView(false, true, 'sidebar');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.isNull(splitWidget.mainWidget());
+    assert.isTrue(splitWidget.sidebarWidget()?.isShowing());
+
+    renderSplitView(true, true, 'sidebar');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.exists(splitWidget.mainWidget());
+    assert.isFalse(splitWidget.mainWidget()?.isShowing());
+    assert.isTrue(splitWidget.sidebarWidget()?.isShowing());
+
+    renderSplitView(true, false, 'main');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.isTrue(splitWidget.mainWidget()?.isShowing());
+
+    renderSplitView(true, true, 'main');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.exists(splitWidget.sidebarWidget());
+    assert.isTrue(splitWidget.mainWidget()?.isShowing());
+    assert.isFalse(splitWidget.sidebarWidget()?.isShowing());
 
     splitWidget.detach();
   });

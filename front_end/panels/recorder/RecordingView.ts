@@ -395,7 +395,7 @@ function renderTimelineArea(input: ViewInput, output: ViewOutput): Lit.LitTempla
           direction="auto"
           sidebar-position="second"
           sidebar-initial-size="300"
-          sidebar-visibility=${input.showCodeView ? '' : 'hidden'}
+          show=${input.showCodeView ? 'both' : 'main'}
         >
           <div slot="main" role="region" aria-labelledby="recording-steps-heading">
             ${renderSections(input)}

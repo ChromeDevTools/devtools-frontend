@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -38,11 +37,13 @@ import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as FormatterActions from '../../../../entrypoints/formatter_actions/formatter_actions.js';
-import {render} from '../../../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../../../ui/lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import resourceSourceFrameStyles from './resourceSourceFrame.css.js';
 import {type RevealPosition, SourceFrameImpl, type SourceFrameOptions} from './SourceFrame.js';
+
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -79,8 +80,8 @@ export class ResourceSourceFrame extends SourceFrameImpl {
     }
   }
 
-  static createSearchableView(resource: TextUtils.ContentProvider.ContentProvider, contentType: string):
-      UI.Widget.Widget {
+  static createSearchableView(resource: TextUtils.ContentProvider.ContentProvider,
+                              contentType: string): UI.Widget.Widget {
     return new SearchableContainer(resource, contentType);
   }
 
@@ -92,39 +93,71 @@ export class ResourceSourceFrame extends SourceFrameImpl {
     return this.#resource;
   }
 
-  protected override populateTextAreaContextMenu(
-      contextMenu: UI.ContextMenu.ContextMenu, lineNumber: number, columnNumber: number): void {
+  protected override populateTextAreaContextMenu(contextMenu: UI.ContextMenu.ContextMenu, lineNumber: number,
+                                                 columnNumber: number): void {
     super.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
     contextMenu.appendApplicableItems(this.#resource);
   }
 }
 
+export interface ViewInput {
+  sourceFrame: ResourceSourceFrame;
+  toolbarItems: LitTemplate;
+  placeholder: string;
+}
+
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target): void => {
+  // clang-format off
+  render(html`
+    <style>${resourceSourceFrameStyles}</style>
+    <devtools-widget class="searchable-view"
+      ${widget(UI.SearchableView.SearchableView, {
+        searchProvider: input.sourceFrame,
+        replaceProvider: input.sourceFrame,
+        searchTarget: input.sourceFrame,
+        placeholder: input.placeholder,
+      })}
+    >
+      <devtools-widget ${widget(UI.Widget.WrapperWidget, {widget: input.sourceFrame})}></devtools-widget>
+    </devtools-widget>
+    <devtools-toolbar class="toolbar">${input.toolbarItems}</devtools-toolbar>`,
+    target);
+  // clang-format on
+};
+
 export class SearchableContainer extends UI.Widget.VBox {
-  private readonly sourceFrame: ResourceSourceFrame;
+  readonly #sourceFrame: ResourceSourceFrame;
+  readonly #view: View;
+  #toolbarItems: LitTemplate = nothing;
 
-  constructor(resource: TextUtils.ContentProvider.ContentProvider, contentType: string, element?: HTMLElement) {
+  constructor(resource: TextUtils.ContentProvider.ContentProvider, contentType: string, element?: HTMLElement,
+              view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
-    this.registerRequiredCSS(resourceSourceFrameStyles);
+    this.#view = view;
     const simpleContentType = Common.ResourceType.ResourceType.simplifyContentType(contentType);
-    const sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
-    this.sourceFrame = sourceFrame;
+    this.#sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
     const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(simpleContentType);
-    sourceFrame.setCanPrettyPrint(canPrettyPrint, true /* autoPrettyPrint */);
-    const searchableView = new UI.SearchableView.SearchableView(sourceFrame, sourceFrame);
-    searchableView.element.classList.add('searchable-view');
-    searchableView.setPlaceholder(i18nString(UIStrings.find));
-    sourceFrame.show(searchableView.element);
-    sourceFrame.setSearchableView(searchableView);
-    searchableView.show(this.contentElement);
+    this.#sourceFrame.setCanPrettyPrint(canPrettyPrint, true /* autoPrettyPrint */);
+    this.performUpdate();
 
-    const toolbar = this.contentElement.createChild('devtools-toolbar', 'toolbar');
-    void sourceFrame.toolbarItems().then(items => {
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(items, toolbar);
+    void this.#sourceFrame.toolbarItems().then(items => {
+      this.#toolbarItems = items;
+      this.requestUpdate();
     });
   }
 
+  override performUpdate(): void {
+    this.#view({
+      sourceFrame: this.#sourceFrame,
+      toolbarItems: this.#toolbarItems,
+      placeholder: i18nString(UIStrings.find),
+    },
+               {}, this.contentElement);
+  }
+
   async revealPosition(position: RevealPosition): Promise<void> {
-    this.sourceFrame.revealPosition(position, true);
+    this.#sourceFrame.revealPosition(position, true);
   }
 }

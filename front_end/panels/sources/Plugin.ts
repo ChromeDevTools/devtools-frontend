@@ -36,7 +36,7 @@ export class Plugin extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   willHide(): void {
   }
 
-  rightToolbarItems(): Array<UI.Toolbar.ToolbarItem|LitTemplate> {
+  rightToolbarItems(): LitTemplate[] {
     return [];
   }
 
@@ -45,7 +45,7 @@ export class Plugin extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
    * TODO(szuend): It is OK to asyncify this function (similar to {rightToolbarItems}),
    *               but it is currently not strictly necessary.
    */
-  leftToolbarItems(): Array<UI.Toolbar.ToolbarItem|LitTemplate> {
+  leftToolbarItems(): LitTemplate[] {
     return [];
   }
 

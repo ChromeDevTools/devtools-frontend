@@ -484,7 +484,7 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
   }
 
   override async toolbarItems(): Promise<TemplateResult> {
-    const leftToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate> = [await super.toolbarItems()];
+    const leftToolbarItems: LitTemplate[] = [await super.toolbarItems()];
 
     const isEditable = Persistence.Persistence.PersistenceImpl.instance().hasEditableContent(this.#uiSourceCode);
     const isJavaScript = Common.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
@@ -501,18 +501,18 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
       ></devtools-button>`);
     }
 
-    const rightToolbarItems: Array<UI.Toolbar.ToolbarItem|LitTemplate> = [];
+    const rightToolbarItems: LitTemplate[] = [];
     for (const plugin of this.plugins) {
       leftToolbarItems.push(...plugin.leftToolbarItems());
       rightToolbarItems.push(...plugin.rightToolbarItems());
     }
 
     return html`
-      ${leftToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+      ${leftToolbarItems}
       ${
         rightToolbarItems.length ? html`
         <div class="toolbar-spacer"></div>
-        ${rightToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+        ${rightToolbarItems}
       ` :
                                    nothing}
     `;

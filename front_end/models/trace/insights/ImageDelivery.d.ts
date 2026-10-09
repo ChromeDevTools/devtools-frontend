@@ -1,4 +1,5 @@
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import type * as Handlers from '../handlers/handlers.js';
 import type * as Types from '../types/types.js';
 import { type InsightModel, type InsightSetContext } from './types.js';
@@ -89,8 +90,8 @@ export type ImageDeliveryInsightModel = InsightModel<typeof UIStrings, {
     wastedBytes: number;
 }>;
 export declare function isImageDeliveryInsight(model: InsightModel): model is ImageDeliveryInsightModel;
-export declare function getOptimizationMessage(optimization: ImageOptimization): string;
-export declare function getOptimizationMessageWithBytes(optimization: ImageOptimization): string;
+export declare function getOptimizationMessage(optimization: ImageOptimization): Platform.UIString.LocalizedString;
+export declare function getOptimizationMessageWithBytes(optimization: ImageOptimization): Platform.UIString.LocalizedString;
 export declare function generateInsight(data: Handlers.Types.HandlerData, context: InsightSetContext): ImageDeliveryInsightModel;
 export declare function createOverlayForRequest(request: Types.Events.SyntheticNetworkRequest): Types.Overlays.EntryOutline;
 export declare function createOverlays(model: ImageDeliveryInsightModel): Types.Overlays.Overlay[];

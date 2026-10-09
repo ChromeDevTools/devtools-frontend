@@ -1,6 +1,6 @@
 import './Toolbar.js';
 import { VBox } from './Widget.js';
-export declare class SearchableView extends VBox {
+export declare class SearchableView extends VBox implements SearchResultsListener {
     #private;
     replaceProvider: Replaceable | null;
     private setting;
@@ -26,6 +26,8 @@ export declare class SearchableView extends VBox {
     constructor(searchable: Searchable, replaceable: Replaceable | null, settingName?: string, element?: HTMLElement);
     get searchProvider(): Searchable;
     set searchProvider(searchable: Searchable);
+    get searchTarget(): SearchTarget | null;
+    set searchTarget(target: SearchTarget | null);
     set settingName(settingName: string | undefined);
     get replaceable(): boolean;
     set replaceable(replaceable: boolean);
@@ -64,6 +66,13 @@ export declare class SearchableView extends VBox {
     private replaceAll;
     private onInput;
     private onValueChanged;
+}
+export interface SearchResultsListener {
+    updateSearchMatchesCount(matches: number): void;
+    updateCurrentMatchIndex(currentMatchIndex: number): void;
+}
+export interface SearchTarget {
+    setSearchableView?(view: SearchResultsListener | null): void;
 }
 export interface Searchable {
     supportsMatchCounts?(): boolean;

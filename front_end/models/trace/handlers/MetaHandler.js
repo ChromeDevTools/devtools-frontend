@@ -59,10 +59,10 @@ let sameDocumentNavigations = [];
 let threadsInProcess = new Map();
 let traceStartedTimeFromTracingStartedEvent = Types.Timing.Micro(-1);
 const eventPhasesOfInterestForTraceBounds = new Set([
-    "B" /* Types.Events.Phase.BEGIN */,
-    "E" /* Types.Events.Phase.END */,
-    "X" /* Types.Events.Phase.COMPLETE */,
-    "I" /* Types.Events.Phase.INSTANT */,
+    Types.Events.Phase.BEGIN,
+    Types.Events.Phase.END,
+    Types.Events.Phase.COMPLETE,
+    Types.Events.Phase.INSTANT,
 ]);
 // Tracks if the trace is a generic trace, which here means that it did not come from athe DevTools Performance Panel recording.
 // We assume a trace is generic, and mark it as not generic if we see any of:
@@ -73,10 +73,10 @@ const eventPhasesOfInterestForTraceBounds = new Set([
 // These are all events which indicate this is a Chrome browser trace.
 let traceIsGeneric = true;
 const CHROME_WEB_TRACE_EVENTS = new Set([
-    "TracingStartedInPage" /* Types.Events.Name.TRACING_STARTED_IN_PAGE */,
-    "TracingSessionIdForWorker" /* Types.Events.Name.TRACING_SESSION_ID_FOR_WORKER */,
-    "TracingStartedInBrowser" /* Types.Events.Name.TRACING_STARTED_IN_BROWSER */,
-    "CpuProfile" /* Types.Events.Name.CPU_PROFILE */,
+    Types.Events.Name.TRACING_STARTED_IN_PAGE,
+    Types.Events.Name.TRACING_SESSION_ID_FOR_WORKER,
+    Types.Events.Name.TRACING_STARTED_IN_BROWSER,
+    Types.Events.Name.CPU_PROFILE,
 ]);
 export function reset() {
     navigationsByFrameId = new Map();

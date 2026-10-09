@@ -365,7 +365,7 @@ export class ModificationsManager extends EventTarget {
             linksBetweenEntries.forEach(linkBetweenEntries => {
                 this.createAnnotation({
                     type: 'ENTRIES_LINK',
-                    state: "connected" /* Trace.Types.File.EntriesLinkState.CONNECTED */,
+                    state: Trace.Types.File.EntriesLinkState.CONNECTED,
                     entryFrom: this.#eventsSerializer.eventForKey(linkBetweenEntries.entryFrom, this.#parsedTrace),
                     entryTo: this.#eventsSerializer.eventForKey(linkBetweenEntries.entryTo, this.#parsedTrace),
                 }, {

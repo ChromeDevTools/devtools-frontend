@@ -1982,7 +1982,7 @@ var showTrailingWhitespace = matcher(new CM3.MatchDecorator({
   decoration: CM3.Decoration.mark({ class: "cm-trailingWhitespace" }),
   boundary: /\S/
 }));
-var showWhitespace = new DynamicSetting("show-whitespaces-in-editor", (value) => {
+var showWhitespace = new DynamicSetting(SettingsUI.SourcesSettings.showWhitespacesInEditorSettingDescriptor, (value) => {
   if (value === "all") {
     return showAllWhitespace;
   }
@@ -2002,7 +2002,7 @@ function getIndentUnit(indent) {
 }
 var indentUnit2 = new DynamicSetting("text-editor-indent", getIndentUnit);
 var domWordWrap = DynamicSetting.bool(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor, CM3.EditorView.lineWrapping);
-var sourcesWordWrap = DynamicSetting.bool("sources.word-wrap", CM3.EditorView.lineWrapping);
+var sourcesWordWrap = DynamicSetting.bool(SettingsUI.SourcesSettings.sourcesWordWrapSettingDescriptor, CM3.EditorView.lineWrapping);
 function detectLineSeparator(text) {
   if (/\r\n/.test(text) && !/(^|[^\r])\n/.test(text)) {
     return CM3.EditorState.lineSeparator.of("\r\n");

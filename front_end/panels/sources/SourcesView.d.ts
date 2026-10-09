@@ -1,7 +1,7 @@
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
 import { type EditorSelectedEvent, type SourceLocation } from './TabbedEditorContainer.js';
@@ -10,6 +10,7 @@ export interface ViewInput {
     searchProvider: UI.SearchableView.Searchable;
     replaceProvider: UI.SearchableView.Replaceable;
     isSearchReplaceable: boolean;
+    searchTarget: UI.SearchableView.SearchTarget | null;
     scriptViewToolbarItems: LitTemplate;
     isNavigatorSidebarOpen: boolean;
     isDebuggerSidebarOpen: boolean;
@@ -25,7 +26,10 @@ export interface ViewInput {
     onEditorSelected: (event: EditorSelectedEvent) => void;
     onEditorClosed: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
 }
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export interface ViewOutput {
+    searchableView?: UI.SearchableView.SearchableView;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 declare const SourcesViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class SourcesView extends SourcesViewBase implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable {

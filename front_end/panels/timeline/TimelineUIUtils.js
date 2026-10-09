@@ -512,9 +512,9 @@ export class TimelineUIUtils {
         }
         const nativeGroup = SamplesIntegrator.nativeGroup(functionName);
         switch (nativeGroup) {
-            case "Compile" /* SamplesIntegrator.NativeGroups.COMPILE */:
+            case SamplesIntegrator.NativeGroups.COMPILE:
                 return i18nString(UIStrings.compile);
-            case "Parse" /* SamplesIntegrator.NativeGroups.PARSE */:
+            case SamplesIntegrator.NativeGroups.PARSE:
                 return i18nString(UIStrings.parse);
         }
         return functionName;
@@ -610,7 +610,7 @@ export class TimelineUIUtils {
         let parsedColor = themeSupport.getComputedValue(TimelineUIUtils.eventStyle(event).category.cssVariable);
         // This event is considered idle time but still rendered as a scripting event here
         // to connect the StreamingCompileScriptParsing events it belongs to.
-        if (event.name === "v8.parseOnBackgroundWaiting" /* Trace.Types.Events.Name.STREAMING_COMPILE_SCRIPT_WAITING */) {
+        if (event.name === Trace.Types.Events.Name.STREAMING_COMPILE_SCRIPT_WAITING) {
             parsedColor = themeSupport.getComputedValue(Trace.Styles.getCategoryStyles().scripting.cssVariable);
             if (!parsedColor) {
                 throw new Error('Unable to parse color from getCategoryStyles().scripting.color');
@@ -659,16 +659,16 @@ export class TimelineUIUtils {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const unsafeEventData = event.args?.data;
         switch (event.name) {
-            case "PaintImage" /* Trace.Types.Events.Name.PAINT_IMAGE */:
-            case "Decode Image" /* Trace.Types.Events.Name.DECODE_IMAGE */:
-            case "Decode LazyPixelRef" /* Trace.Types.Events.Name.DECODE_LAZY_PIXEL_REF */:
-            case "XHRReadyStateChange" /* Trace.Types.Events.Name.XHR_READY_STATE_CHANGED */:
-            case "XHRLoad" /* Trace.Types.Events.Name.XHR_LOAD */:
-            case "ResourceWillSendRequest" /* Trace.Types.Events.Name.RESOURCE_WILL_SEND_REQUEST */:
-            case "ResourceSendRequest" /* Trace.Types.Events.Name.RESOURCE_SEND_REQUEST */:
-            case "ResourceReceivedData" /* Trace.Types.Events.Name.RESOURCE_RECEIVE_DATA */:
-            case "ResourceReceiveResponse" /* Trace.Types.Events.Name.RESOURCE_RECEIVE_RESPONSE */:
-            case "ResourceFinish" /* Trace.Types.Events.Name.RESOURCE_FINISH */: {
+            case Trace.Types.Events.Name.PAINT_IMAGE:
+            case Trace.Types.Events.Name.DECODE_IMAGE:
+            case Trace.Types.Events.Name.DECODE_LAZY_PIXEL_REF:
+            case Trace.Types.Events.Name.XHR_READY_STATE_CHANGED:
+            case Trace.Types.Events.Name.XHR_LOAD:
+            case Trace.Types.Events.Name.RESOURCE_WILL_SEND_REQUEST:
+            case Trace.Types.Events.Name.RESOURCE_SEND_REQUEST:
+            case Trace.Types.Events.Name.RESOURCE_RECEIVE_DATA:
+            case Trace.Types.Events.Name.RESOURCE_RECEIVE_RESPONSE:
+            case Trace.Types.Events.Name.RESOURCE_FINISH: {
                 const url = Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
                 if (url) {
                     const options = {
@@ -679,7 +679,7 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "FunctionCall" /* Trace.Types.Events.Name.FUNCTION_CALL */: {
+            case Trace.Types.Events.Name.FUNCTION_CALL: {
                 details = document.createElement('span');
                 // FunctionCall events have an args.data that could be a CallFrame, if all the details are present, so we check for that.
                 const callFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.at(0);
@@ -702,8 +702,8 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "V8.CompileModule" /* Trace.Types.Events.Name.COMPILE_MODULE */:
-            case "v8.produceModuleCache" /* Trace.Types.Events.Name.CACHE_MODULE */: {
+            case Trace.Types.Events.Name.COMPILE_MODULE:
+            case Trace.Types.Events.Name.CACHE_MODULE: {
                 details = this.linkifyLocation({
                     scriptId: null,
                     url: unsafeEventArgs['fileName'],
@@ -715,8 +715,8 @@ export class TimelineUIUtils {
                 });
                 break;
             }
-            case "v8.deserializeOnBackground" /* Trace.Types.Events.Name.BACKGROUND_DESERIALIZE */:
-            case "v8.parseOnBackground" /* Trace.Types.Events.Name.STREAMING_COMPILE_SCRIPT */: {
+            case Trace.Types.Events.Name.BACKGROUND_DESERIALIZE:
+            case Trace.Types.Events.Name.STREAMING_COMPILE_SCRIPT: {
                 const url = unsafeEventData['url'];
                 if (url) {
                     details = this.linkifyLocation({
@@ -793,23 +793,23 @@ export class TimelineUIUtils {
         let link = 'https://web.dev/user-centric-performance-metrics/';
         let name = 'page performance metrics';
         switch (event.name) {
-            case "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */:
+            case Trace.Types.Events.Name.MARK_LCP_CANDIDATE:
                 link = 'https://web.dev/lcp/';
                 name = 'Largest Contentful Paint';
                 break;
-            case "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */:
+            case Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION:
                 link = 'https://developer.chrome.com/docs/web-platform/soft-navigations';
                 name = 'Soft Largest Contentful Paint';
                 break;
-            case "SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */:
+            case Trace.Types.Events.Name.SOFT_NAVIGATION_START:
                 link = 'https://developer.chrome.com/docs/web-platform/soft-navigations';
                 name = 'Soft Navigations';
                 break;
-            case "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */:
+            case Trace.Types.Events.Name.MARK_FCP:
                 link = 'https://web.dev/first-contentful-paint/';
                 name = 'First Contentful Paint';
                 break;
-            case "SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */:
+            case Trace.Types.Events.Name.MARK_SOFT_FCP:
                 link = 'https://developer.chrome.com/docs/web-platform/soft-navigations';
                 name = 'Soft First Contentful Paint';
                 break;
@@ -1022,14 +1022,14 @@ export class TimelineUIUtils {
         }
         const isFreshOrEnhanced = Tracing.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace);
         switch (event.name) {
-            case "GCEvent" /* Trace.Types.Events.Name.GC */:
-            case "MajorGC" /* Trace.Types.Events.Name.MAJOR_GC */:
-            case "MinorGC" /* Trace.Types.Events.Name.MINOR_GC */: {
+            case Trace.Types.Events.Name.GC:
+            case Trace.Types.Events.Name.MAJOR_GC:
+            case Trace.Types.Events.Name.MINOR_GC: {
                 const delta = unsafeEventArgs['usedHeapSizeBefore'] - unsafeEventArgs['usedHeapSizeAfter'];
                 contentHelper.appendTextRow(i18nString(UIStrings.collected), i18n.ByteUtilities.bytesToString(delta));
                 break;
             }
-            case "ProfileCall" /* Trace.Types.Events.Name.PROFILE_CALL */: {
+            case Trace.Types.Events.Name.PROFILE_CALL: {
                 const profileCall = event;
                 const resolvedURL = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, profileCall, Workspace.Workspace.WorkspaceImpl.instance());
                 if (!resolvedURL) {
@@ -1045,7 +1045,7 @@ export class TimelineUIUtils {
                 entityAppended = true;
                 break;
             }
-            case "FunctionCall" /* Trace.Types.Events.Name.FUNCTION_CALL */: {
+            case Trace.Types.Events.Name.FUNCTION_CALL: {
                 const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, targetForEvent(parsedTrace, event), linkifier, isFreshOrEnhanced, parsedTrace);
                 if (detailsNode) {
                     contentHelper.appendElementRow(i18nString(UIStrings.function), detailsNode);
@@ -1057,40 +1057,40 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "TimerFire" /* Trace.Types.Events.Name.TIMER_FIRE */:
-            case "TimerInstall" /* Trace.Types.Events.Name.TIMER_INSTALL */:
-            case "TimerRemove" /* Trace.Types.Events.Name.TIMER_REMOVE */: {
+            case Trace.Types.Events.Name.TIMER_FIRE:
+            case Trace.Types.Events.Name.TIMER_INSTALL:
+            case Trace.Types.Events.Name.TIMER_REMOVE: {
                 contentHelper.appendTextRow(i18nString(UIStrings.timerId), unsafeEventData.timerId);
-                if (event.name === "TimerInstall" /* Trace.Types.Events.Name.TIMER_INSTALL */) {
+                if (event.name === Trace.Types.Events.Name.TIMER_INSTALL) {
                     contentHelper.appendTextRow(i18nString(UIStrings.timeout), i18n.TimeUtilities.millisToString(unsafeEventData['timeout']));
                     contentHelper.appendTextRow(i18nString(UIStrings.repeats), !unsafeEventData['singleShot']);
                 }
                 break;
             }
-            case "SchedulePostTaskCallback" /* Trace.Types.Events.Name.SCHEDULE_POST_TASK_CALLBACK */:
-            case "RunPostTaskCallback" /* Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK */: {
+            case Trace.Types.Events.Name.SCHEDULE_POST_TASK_CALLBACK:
+            case Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK: {
                 contentHelper.appendTextRow(i18nString(UIStrings.delay), i18n.TimeUtilities.millisToString(unsafeEventData['delay']));
                 contentHelper.appendTextRow(i18nString(UIStrings.priority), unsafeEventData['priority']);
                 break;
             }
-            case "FireAnimationFrame" /* Trace.Types.Events.Name.FIRE_ANIMATION_FRAME */: {
+            case Trace.Types.Events.Name.FIRE_ANIMATION_FRAME: {
                 contentHelper.appendTextRow(i18nString(UIStrings.callbackId), unsafeEventData['id']);
                 break;
             }
-            case "V8.CompileModule" /* Trace.Types.Events.Name.COMPILE_MODULE */: {
+            case Trace.Types.Events.Name.COMPILE_MODULE: {
                 contentHelper.appendLocationRow(i18nString(UIStrings.module), unsafeEventArgs['fileName'], 0);
                 break;
             }
-            case "V8.CompileScript" /* Trace.Types.Events.Name.COMPILE_SCRIPT */: {
+            case Trace.Types.Events.Name.COMPILE_SCRIPT: {
                 // This case is handled above
                 break;
             }
-            case "v8.produceModuleCache" /* Trace.Types.Events.Name.CACHE_MODULE */: {
+            case Trace.Types.Events.Name.CACHE_MODULE: {
                 url = unsafeEventData && unsafeEventData['url'];
                 contentHelper.appendTextRow(i18nString(UIStrings.compilationCacheSize), i18n.ByteUtilities.bytesToString(unsafeEventData['producedCacheSize']));
                 break;
             }
-            case "v8.produceCache" /* Trace.Types.Events.Name.CACHE_SCRIPT */: {
+            case Trace.Types.Events.Name.CACHE_SCRIPT: {
                 url = unsafeEventData && unsafeEventData['url'];
                 if (url) {
                     const { lineNumber, columnNumber } = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
@@ -1104,7 +1104,7 @@ export class TimelineUIUtils {
                 contentHelper.appendTextRow(i18nString(UIStrings.compilationCacheSize), i18n.ByteUtilities.bytesToString(unsafeEventData['producedCacheSize']));
                 break;
             }
-            case "EvaluateScript" /* Trace.Types.Events.Name.EVALUATE_SCRIPT */: {
+            case Trace.Types.Events.Name.EVALUATE_SCRIPT: {
                 url = unsafeEventData && unsafeEventData['url'];
                 if (url) {
                     const { lineNumber, columnNumber } = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
@@ -1117,11 +1117,11 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "v8.wasm.streamFromResponseCallback" /* Trace.Types.Events.Name.WASM_STREAM_FROM_RESPONSE_CALLBACK */:
-            case "v8.wasm.compiledModule" /* Trace.Types.Events.Name.WASM_COMPILED_MODULE */:
-            case "v8.wasm.cachedModule" /* Trace.Types.Events.Name.WASM_CACHED_MODULE */:
-            case "v8.wasm.moduleCacheHit" /* Trace.Types.Events.Name.WASM_MODULE_CACHE_HIT */:
-            case "v8.wasm.moduleCacheInvalid" /* Trace.Types.Events.Name.WASM_MODULE_CACHE_INVALID */: {
+            case Trace.Types.Events.Name.WASM_STREAM_FROM_RESPONSE_CALLBACK:
+            case Trace.Types.Events.Name.WASM_COMPILED_MODULE:
+            case Trace.Types.Events.Name.WASM_CACHED_MODULE:
+            case Trace.Types.Events.Name.WASM_MODULE_CACHE_HIT:
+            case Trace.Types.Events.Name.WASM_MODULE_CACHE_INVALID: {
                 if (unsafeEventData) {
                     url = unsafeEventArgs['url'];
                     if (url) {
@@ -1138,17 +1138,17 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "Paint" /* Trace.Types.Events.Name.PAINT */:
-            case "PaintSetup" /* Trace.Types.Events.Name.PAINT_SETUP */:
-            case "Rasterize" /* Trace.Types.Events.Name.RASTERIZE */:
-            case "ScrollLayer" /* Trace.Types.Events.Name.SCROLL_LAYER */: {
+            case Trace.Types.Events.Name.PAINT:
+            case Trace.Types.Events.Name.PAINT_SETUP:
+            case Trace.Types.Events.Name.RASTERIZE:
+            case Trace.Types.Events.Name.SCROLL_LAYER: {
                 relatedNodeLabel = i18nString(UIStrings.layerRoot);
                 break;
             }
-            case "PaintImage" /* Trace.Types.Events.Name.PAINT_IMAGE */:
-            case "Decode LazyPixelRef" /* Trace.Types.Events.Name.DECODE_LAZY_PIXEL_REF */:
-            case "Decode Image" /* Trace.Types.Events.Name.DECODE_IMAGE */:
-            case "Draw LazyPixelRef" /* Trace.Types.Events.Name.DRAW_LAZY_PIXEL_REF */: {
+            case Trace.Types.Events.Name.PAINT_IMAGE:
+            case Trace.Types.Events.Name.DECODE_LAZY_PIXEL_REF:
+            case Trace.Types.Events.Name.DECODE_IMAGE:
+            case Trace.Types.Events.Name.DRAW_LAZY_PIXEL_REF: {
                 relatedNodeLabel = i18nString(UIStrings.ownerElement);
                 url = Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
                 if (url) {
@@ -1160,7 +1160,7 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "ParseAuthorStyleSheet" /* Trace.Types.Events.Name.PARSE_AUTHOR_STYLE_SHEET */: {
+            case Trace.Types.Events.Name.PARSE_AUTHOR_STYLE_SHEET: {
                 url = unsafeEventData['styleSheetUrl'];
                 if (url) {
                     const options = {
@@ -1171,7 +1171,7 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "UpdateLayoutTree" /* Trace.Types.Events.Name.RECALC_STYLE */: {
+            case Trace.Types.Events.Name.RECALC_STYLE: {
                 contentHelper.appendTextRow(i18nString(UIStrings.elementsAffected), unsafeEventArgs['elementCount']);
                 const selectorStatsSetting = Common.Settings.Settings.instance().resolve(SettingUIRegistration.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor);
                 if (!selectorStatsSetting.get()) {
@@ -1183,22 +1183,22 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "Layout" /* Trace.Types.Events.Name.LAYOUT */: {
+            case Trace.Types.Events.Name.LAYOUT: {
                 const beginData = unsafeEventArgs['beginData'];
                 contentHelper.appendTextRow(i18nString(UIStrings.nodesThatNeedLayout), i18nString(UIStrings.sOfS, { PH1: beginData['dirtyObjects'], PH2: beginData['totalObjects'] }));
                 relatedNodeLabel = i18nString(UIStrings.layoutRoot);
                 break;
             }
-            case "ConsoleTime" /* Trace.Types.Events.Name.CONSOLE_TIME */: {
+            case Trace.Types.Events.Name.CONSOLE_TIME: {
                 contentHelper.appendTextRow(i18nString(UIStrings.message), event.name);
                 break;
             }
-            case "WebSocketCreate" /* Trace.Types.Events.Name.WEB_SOCKET_CREATE */:
-            case "WebSocketSendHandshakeRequest" /* Trace.Types.Events.Name.WEB_SOCKET_SEND_HANDSHAKE_REQUEST */:
-            case "WebSocketReceiveHandshakeResponse" /* Trace.Types.Events.Name.WEB_SOCKET_RECEIVE_HANDSHAKE_REQUEST */:
-            case "WebSocketSend" /* Trace.Types.Events.Name.WEB_SOCKET_SEND */:
-            case "WebSocketReceive" /* Trace.Types.Events.Name.WEB_SOCKET_RECEIVE */:
-            case "WebSocketDestroy" /* Trace.Types.Events.Name.WEB_SOCKET_DESTROY */: {
+            case Trace.Types.Events.Name.WEB_SOCKET_CREATE:
+            case Trace.Types.Events.Name.WEB_SOCKET_SEND_HANDSHAKE_REQUEST:
+            case Trace.Types.Events.Name.WEB_SOCKET_RECEIVE_HANDSHAKE_REQUEST:
+            case Trace.Types.Events.Name.WEB_SOCKET_SEND:
+            case Trace.Types.Events.Name.WEB_SOCKET_RECEIVE:
+            case Trace.Types.Events.Name.WEB_SOCKET_DESTROY: {
                 if (Trace.Types.Events.isWebSocketTraceEvent(event)) {
                     const rows = TimelineComponents.DetailsView.buildRowsForWebSocketEvent(event, parsedTrace);
                     for (const { key, value } of rows) {
@@ -1207,11 +1207,11 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "EmbedderCallback" /* Trace.Types.Events.Name.EMBEDDER_CALLBACK */: {
+            case Trace.Types.Events.Name.EMBEDDER_CALLBACK: {
                 contentHelper.appendTextRow(i18nString(UIStrings.callbackFunction), unsafeEventData['callbackName']);
                 break;
             }
-            case "Animation" /* Trace.Types.Events.Name.ANIMATION */: {
+            case Trace.Types.Events.Name.ANIMATION: {
                 if (!Trace.Types.Events.isSyntheticAnimation(event)) {
                     break;
                 }
@@ -1237,62 +1237,62 @@ export class TimelineUIUtils {
                     for (const reason of failureReasons) {
                         let str;
                         switch (reason) {
-                            case "ACCELERATED_ANIMATIONS_DISABLED" /* CLSInsight.AnimationFailureReasons.ACCELERATED_ANIMATIONS_DISABLED */:
+                            case CLSInsight.AnimationFailureReasons.ACCELERATED_ANIMATIONS_DISABLED:
                                 str = i18nString(UIStrings.compositingFailedAcceleratedAnimationsDisabled);
                                 break;
-                            case "EFFECT_SUPPRESSED_BY_DEVTOOLS" /* CLSInsight.AnimationFailureReasons.EFFECT_SUPPRESSED_BY_DEVTOOLS */:
+                            case CLSInsight.AnimationFailureReasons.EFFECT_SUPPRESSED_BY_DEVTOOLS:
                                 str = i18nString(UIStrings.compositingFailedEffectSuppressedByDevtools);
                                 break;
-                            case "INVALID_ANIMATION_OR_EFFECT" /* CLSInsight.AnimationFailureReasons.INVALID_ANIMATION_OR_EFFECT */:
+                            case CLSInsight.AnimationFailureReasons.INVALID_ANIMATION_OR_EFFECT:
                                 str = i18nString(UIStrings.compositingFailedInvalidAnimationOrEffect);
                                 break;
-                            case "EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS" /* CLSInsight.AnimationFailureReasons.EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS */:
+                            case CLSInsight.AnimationFailureReasons.EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS:
                                 str = i18nString(UIStrings.compositingFailedEffectHasUnsupportedTimingParams);
                                 break;
-                            case "EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE" /* CLSInsight.AnimationFailureReasons.EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE */:
+                            case CLSInsight.AnimationFailureReasons.EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE:
                                 str = i18nString(UIStrings.compositingFailedEffectHasNonReplaceCompositeMode);
                                 break;
-                            case "TARGET_HAS_INVALID_COMPOSITING_STATE" /* CLSInsight.AnimationFailureReasons.TARGET_HAS_INVALID_COMPOSITING_STATE */:
+                            case CLSInsight.AnimationFailureReasons.TARGET_HAS_INVALID_COMPOSITING_STATE:
                                 str = i18nString(UIStrings.compositingFailedTargetHasInvalidCompositingState);
                                 break;
-                            case "TARGET_HAS_INCOMPATIBLE_ANIMATIONS" /* CLSInsight.AnimationFailureReasons.TARGET_HAS_INCOMPATIBLE_ANIMATIONS */:
+                            case CLSInsight.AnimationFailureReasons.TARGET_HAS_INCOMPATIBLE_ANIMATIONS:
                                 str = i18nString(UIStrings.compositingFailedTargetHasIncompatibleAnimations);
                                 break;
-                            case "TARGET_HAS_CSS_OFFSET" /* CLSInsight.AnimationFailureReasons.TARGET_HAS_CSS_OFFSET */:
+                            case CLSInsight.AnimationFailureReasons.TARGET_HAS_CSS_OFFSET:
                                 str = i18nString(UIStrings.compositingFailedTargetHasCSSOffset);
                                 break;
-                            case "ANIMATION_AFFECTS_NON_CSS_PROPERTIES" /* CLSInsight.AnimationFailureReasons.ANIMATION_AFFECTS_NON_CSS_PROPERTIES */:
+                            case CLSInsight.AnimationFailureReasons.ANIMATION_AFFECTS_NON_CSS_PROPERTIES:
                                 str = i18nString(UIStrings.compositingFailedAnimationAffectsNonCSSProperties);
                                 break;
-                            case "TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET" /* CLSInsight.AnimationFailureReasons.TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET */:
+                            case CLSInsight.AnimationFailureReasons.TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET:
                                 str = i18nString(UIStrings.compositingFailedTransformRelatedPropertyCannotBeAcceleratedOnTarget);
                                 break;
-                            case "TRANSFROM_BOX_SIZE_DEPENDENT" /* CLSInsight.AnimationFailureReasons.TRANSFROM_BOX_SIZE_DEPENDENT */:
+                            case CLSInsight.AnimationFailureReasons.TRANSFROM_BOX_SIZE_DEPENDENT:
                                 str = i18nString(UIStrings.compositingFailedTransformDependsBoxSize);
                                 break;
-                            case "FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS" /* CLSInsight.AnimationFailureReasons.FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS */:
+                            case CLSInsight.AnimationFailureReasons.FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS:
                                 str = i18nString(UIStrings.compositingFailedFilterRelatedPropertyMayMovePixels);
                                 break;
-                            case "UNSUPPORTED_CSS_PROPERTY" /* CLSInsight.AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY */:
+                            case CLSInsight.AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY:
                                 str = i18nString(UIStrings.compositingFailedUnsupportedCSSProperty, {
                                     propertyCount: unsupportedProperties.size,
                                     properties: new Intl.ListFormat(undefined, { style: 'short', type: 'conjunction' })
                                         .format(unsupportedProperties),
                                 });
                                 break;
-                            case "MIXED_KEYFRAME_VALUE_TYPES" /* CLSInsight.AnimationFailureReasons.MIXED_KEYFRAME_VALUE_TYPES */:
+                            case CLSInsight.AnimationFailureReasons.MIXED_KEYFRAME_VALUE_TYPES:
                                 str = i18nString(UIStrings.compositingFailedMixedKeyframeValueTypes);
                                 break;
-                            case "TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE" /* CLSInsight.AnimationFailureReasons.TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE */:
+                            case CLSInsight.AnimationFailureReasons.TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE:
                                 str = i18nString(UIStrings.compositingFailedTimelineSourceHasInvalidCompositingState);
                                 break;
-                            case "ANIMATION_HAS_NO_VISIBLE_CHANGE" /* CLSInsight.AnimationFailureReasons.ANIMATION_HAS_NO_VISIBLE_CHANGE */:
+                            case CLSInsight.AnimationFailureReasons.ANIMATION_HAS_NO_VISIBLE_CHANGE:
                                 str = i18nString(UIStrings.compositingFailedAnimationHasNoVisibleChange);
                                 break;
-                            case "AFFECTS_IMPORTANT_PROPERTY" /* CLSInsight.AnimationFailureReasons.AFFECTS_IMPORTANT_PROPERTY */:
+                            case CLSInsight.AnimationFailureReasons.AFFECTS_IMPORTANT_PROPERTY:
                                 str = i18nString(UIStrings.compositingFailedAffectsImportantProperty);
                                 break;
-                            case "SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY" /* CLSInsight.AnimationFailureReasons.SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY */:
+                            case CLSInsight.AnimationFailureReasons.SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY:
                                 str = i18nString(UIStrings.compositingFailedSVGTargetHasIndependentTransformProperty);
                                 break;
                             default:
@@ -1306,7 +1306,7 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "ParseHTML" /* Trace.Types.Events.Name.PARSE_HTML */: {
+            case Trace.Types.Events.Name.PARSE_HTML: {
                 const beginData = unsafeEventArgs['beginData'];
                 const startLine = beginData['startLine'] - 1;
                 const endLine = unsafeEventArgs['endData'] ? unsafeEventArgs['endData']['endLine'] - 1 : undefined;
@@ -1317,33 +1317,33 @@ export class TimelineUIUtils {
                 break;
             }
             // @ts-expect-error Fall-through intended.
-            case "FireIdleCallback" /* Trace.Types.Events.Name.FIRE_IDLE_CALLBACK */: {
+            case Trace.Types.Events.Name.FIRE_IDLE_CALLBACK: {
                 contentHelper.appendTextRow(i18nString(UIStrings.allottedTime), i18n.TimeUtilities.millisToString(unsafeEventData['allottedMilliseconds']));
                 contentHelper.appendTextRow(i18nString(UIStrings.invokedByTimeout), unsafeEventData['timedOut']);
             }
-            case "RequestIdleCallback" /* Trace.Types.Events.Name.REQUEST_IDLE_CALLBACK */:
-            case "CancelIdleCallback" /* Trace.Types.Events.Name.CANCEL_IDLE_CALLBACK */: {
+            case Trace.Types.Events.Name.REQUEST_IDLE_CALLBACK:
+            case Trace.Types.Events.Name.CANCEL_IDLE_CALLBACK: {
                 contentHelper.appendTextRow(i18nString(UIStrings.callbackId), unsafeEventData['id']);
                 if (Trace.Types.Events.isRequestIdleCallback(event)) {
                     contentHelper.appendTextRow(i18nString(UIStrings.requestIdleCallbackTimeout), i18n.TimeUtilities.preciseMillisToString(event.args.data.timeout));
                 }
                 break;
             }
-            case "EventDispatch" /* Trace.Types.Events.Name.EVENT_DISPATCH */: {
+            case Trace.Types.Events.Name.EVENT_DISPATCH: {
                 contentHelper.appendTextRow(i18nString(UIStrings.type), unsafeEventData['type']);
                 break;
             }
-            case "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */:
+            case Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION:
             // @ts-expect-error Fall-through intended.
-            case "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */: {
+            case Trace.Types.Events.Name.MARK_LCP_CANDIDATE: {
                 contentHelper.appendTextRow(i18nString(UIStrings.type), String(unsafeEventData['type']));
                 contentHelper.appendTextRow(i18nString(UIStrings.size), String(unsafeEventData['size']));
             }
-            case "firstPaint" /* Trace.Types.Events.Name.MARK_FIRST_PAINT */:
-            case "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */:
-            case "SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */:
-            case "MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */:
-            case "MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */: {
+            case Trace.Types.Events.Name.MARK_FIRST_PAINT:
+            case Trace.Types.Events.Name.MARK_FCP:
+            case Trace.Types.Events.Name.MARK_SOFT_FCP:
+            case Trace.Types.Events.Name.MARK_LOAD:
+            case Trace.Types.Events.Name.MARK_DOM_CONTENT: {
                 const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(event, parsedTrace);
                 contentHelper.appendTextRow(i18nString(UIStrings.timestamp), i18n.TimeUtilities.preciseMillisToString(adjustedEventTimeStamp, 1));
                 if (Trace.Types.Events.isMarkerEvent(event)) {
@@ -1351,7 +1351,7 @@ export class TimelineUIUtils {
                 }
                 break;
             }
-            case "EventTiming" /* Trace.Types.Events.Name.EVENT_TIMING */: {
+            case Trace.Types.Events.Name.EVENT_TIMING: {
                 const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, targetForEvent(parsedTrace, event), linkifier, isFreshOrEnhanced, parsedTrace);
                 if (detailsNode) {
                     contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
@@ -1462,19 +1462,19 @@ export class TimelineUIUtils {
         let initiatorStackLabel = i18nString(UIStrings.initiatorStackTrace);
         await contentHelper.appendFunctionStackTraceSection(event, parsedTrace);
         switch (event.name) {
-            case "TimerFire" /* Trace.Types.Events.Name.TIMER_FIRE */:
+            case Trace.Types.Events.Name.TIMER_FIRE:
                 initiatorStackLabel = i18nString(UIStrings.timerInstalled);
                 break;
-            case "FireAnimationFrame" /* Trace.Types.Events.Name.FIRE_ANIMATION_FRAME */:
+            case Trace.Types.Events.Name.FIRE_ANIMATION_FRAME:
                 initiatorStackLabel = i18nString(UIStrings.animationFrameRequested);
                 break;
-            case "FireIdleCallback" /* Trace.Types.Events.Name.FIRE_IDLE_CALLBACK */:
+            case Trace.Types.Events.Name.FIRE_IDLE_CALLBACK:
                 initiatorStackLabel = i18nString(UIStrings.idleCallbackRequested);
                 break;
-            case "UpdateLayoutTree" /* Trace.Types.Events.Name.RECALC_STYLE */:
+            case Trace.Types.Events.Name.RECALC_STYLE:
                 initiatorStackLabel = i18nString(UIStrings.firstInvalidated);
                 break;
-            case "Layout" /* Trace.Types.Events.Name.LAYOUT */:
+            case Trace.Types.Events.Name.LAYOUT:
                 initiatorStackLabel = i18nString(UIStrings.firstLayoutInvalidation);
                 break;
         }
@@ -1826,7 +1826,7 @@ export class TimelineUIUtils {
         // Note: keep the colors matching that of `markerDetailsForEvent`.
         const tallMarkerDashStyle = [6, 4];
         const title = TimelineUIUtils.eventTitle(event);
-        if (event.name !== "navigationStart" /* Trace.Types.Events.Name.NAVIGATION_START */ &&
+        if (event.name !== Trace.Types.Events.Name.NAVIGATION_START &&
             (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.Console) ||
                 Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.UserTiming))) {
             return {
@@ -1841,41 +1841,41 @@ export class TimelineUIUtils {
         let tall = false;
         let color = 'grey';
         switch (event.name) {
-            case "navigationStart" /* Trace.Types.Events.Name.NAVIGATION_START */:
+            case Trace.Types.Events.Name.NAVIGATION_START:
                 color = 'var(--color-text-primary)';
                 tall = true;
                 break;
-            case "SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */:
+            case Trace.Types.Events.Name.SOFT_NAVIGATION_START:
                 color = 'var(--color-text-primary)';
                 tall = true;
                 break;
-            case "FrameStartedLoading" /* Trace.Types.Events.Name.FRAME_STARTED_LOADING */:
+            case Trace.Types.Events.Name.FRAME_STARTED_LOADING:
                 color = 'green';
                 tall = true;
                 break;
-            case "MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */:
+            case Trace.Types.Events.Name.MARK_DOM_CONTENT:
                 color = 'var(--color-text-disabled)';
                 tall = true;
                 break;
-            case "MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */:
+            case Trace.Types.Events.Name.MARK_LOAD:
                 color = 'var(--color-text-disabled)';
                 tall = true;
                 break;
-            case "firstPaint" /* Trace.Types.Events.Name.MARK_FIRST_PAINT */:
+            case Trace.Types.Events.Name.MARK_FIRST_PAINT:
                 color = '#228847';
                 tall = true;
                 break;
-            case "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */:
-            case "SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */:
+            case Trace.Types.Events.Name.MARK_FCP:
+            case Trace.Types.Events.Name.MARK_SOFT_FCP:
                 color = 'var(--sys-color-green-bright)';
                 tall = true;
                 break;
-            case "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */:
-            case "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */:
+            case Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION:
+            case Trace.Types.Events.Name.MARK_LCP_CANDIDATE:
                 color = 'var(--sys-color-green)';
                 tall = true;
                 break;
-            case "TimeStamp" /* Trace.Types.Events.Name.TIME_STAMP */:
+            case Trace.Types.Events.Name.TIME_STAMP:
                 color = 'orange';
                 break;
         }
@@ -2137,8 +2137,8 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(event, p
  **/
 export function isMarkerEvent(parsedTrace, event) {
     const { Name } = Trace.Types.Events;
-    if (event.name === "TimeStamp" /* Name.TIME_STAMP */ || event.name === "navigationStart" /* Name.NAVIGATION_START */ ||
-        event.name === "SoftNavigationStart" /* Name.SOFT_NAVIGATION_START */) {
+    if (event.name === Name.TIME_STAMP || event.name === Name.NAVIGATION_START ||
+        event.name === Name.SOFT_NAVIGATION_START) {
         return true;
     }
     if (Trace.Types.Events.isAnyFirstContentfulPaint(event) || Trace.Types.Events.isFirstPaint(event)) {

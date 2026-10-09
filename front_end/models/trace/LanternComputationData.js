@@ -26,11 +26,13 @@ function createProcessedNavigation(data, frameId, navigation) {
         }
         return metricScore.event.ts;
     };
+    const lcpScore = scores.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
     return {
         timestamps: {
-            firstContentfulPaint: getTimestamp("FCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP */),
-            largestContentfulPaint: getTimestampOrUndefined("LCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */),
+            firstContentfulPaint: getTimestamp(Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP),
+            largestContentfulPaint: getTimestampOrUndefined(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP),
         },
+        largestContentfulPaintEvt: lcpScore && Handlers.ModelHandlers.PageLoadMetrics.metricIsLCP(lcpScore) ? lcpScore.event : undefined,
     };
 }
 function createParsedUrl(url) {

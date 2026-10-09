@@ -746,7 +746,6 @@ devtools-toolbar {
     height: var(--toolbar-height);
     border: none;
     white-space: pre;
-    overflow: hidden;
     max-width: 100%;
     color: var(--icon-default);
 
@@ -1018,6 +1017,7 @@ devtools-toolbar {
       width: 100%;
       position: absolute;
       left: 0;
+      border-radius: inherit;
       background: var(--sys-color-cdt-base);
       z-index: -1;
     }

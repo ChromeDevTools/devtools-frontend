@@ -49,7 +49,7 @@ function finalize(partialModel) {
     let state = 'pass';
     if (partialModel.longestInteractionEvent) {
         const classification = Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(partialModel.longestInteractionEvent.dur);
-        if (classification === "good" /* Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD */) {
+        if (classification === Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD) {
             state = 'informative';
         }
         else {

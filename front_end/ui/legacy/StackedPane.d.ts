@@ -1,8 +1,7 @@
 import type * as Lit from '../../ui/lit/lit.js';
-import type * as Toolbar from './Toolbar.js';
 import type { View } from './View.js';
 import { type AnyWidget, VBox } from './Widget.js';
-type CreateToolbarFn = (toolbarItems: Toolbar.ToolbarItem[] | Lit.TemplateResult) => Element | null;
+type CreateToolbarFn = (toolbarItems: Lit.LitTemplate) => Element | null;
 type SetWidgetForViewFn = (view: View, widget: AnyWidget) => void;
 export declare class ExpandableContainerWidget extends VBox {
     private readonly createToolbar;

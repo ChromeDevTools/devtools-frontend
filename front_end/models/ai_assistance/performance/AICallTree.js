@@ -113,8 +113,8 @@ export class AICallTree {
         //   case all the threads are CPU_PROFILE so we allow those. If we only allow
         //   MAIN_THREAD then we wouldn't ever allow NodeJS users to use the AI
         //   integration.
-        if (thread.type !== "MAIN_THREAD" /* Trace.Handlers.Threads.ThreadType.MAIN_THREAD */ &&
-            thread.type !== "CPU_PROFILE" /* Trace.Handlers.Threads.ThreadType.CPU_PROFILE */) {
+        if (thread.type !== Trace.Handlers.Threads.ThreadType.MAIN_THREAD &&
+            thread.type !== Trace.Handlers.Threads.ThreadType.CPU_PROFILE) {
             return null;
         }
         // Ensure that the event is known to either the Renderer or Samples
@@ -386,7 +386,7 @@ export class ExcludeCompileCodeFilter extends Trace.Extras.TraceFilter.TraceFilt
             // behaviour is confusing when the selected event is not used.
             return true;
         }
-        return event.name !== "V8.CompileCode" /* Trace.Types.Events.Name.COMPILE_CODE */;
+        return event.name !== Trace.Types.Events.Name.COMPILE_CODE;
     }
 }
 export class SelectedEventDurationFilter extends Trace.Extras.TraceFilter.TraceFilter {

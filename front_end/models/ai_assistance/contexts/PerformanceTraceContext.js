@@ -172,7 +172,7 @@ export class PerformanceTraceContext extends ConversationContext {
             const cls = Trace.Insights.Common.getCLS(insightSet);
             const inp = Trace.Insights.Common.getINP(insightSet);
             const ModelHandlers = Trace.Handlers.ModelHandlers;
-            const GOOD = "good" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD */;
+            const GOOD = Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD;
             const poorMetrics = new Set();
             if (lcp && ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(lcp.value) !== GOOD) {
                 suggestions.push({ title: 'How can I improve LCP?', jslogContext: 'performance-default' });

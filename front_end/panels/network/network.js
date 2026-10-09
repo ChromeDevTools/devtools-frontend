@@ -17306,11 +17306,7 @@ var RequestPreviewView = class extends UI21.Widget.VBox {
     }
     const toolbar5 = this.element.createChild("devtools-toolbar", "network-item-preview-toolbar");
     void view.toolbarItems().then((items) => {
-      if (Array.isArray(items)) {
-        items.map((item4) => toolbar5.appendToolbarItem(item4));
-      } else {
-        render14(items, toolbar5);
-      }
+      render14(items, toolbar5);
     });
     return view;
   }

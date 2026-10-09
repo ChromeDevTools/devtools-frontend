@@ -8,19 +8,19 @@ export var ThreadType;
     ThreadType["THREAD_POOL"] = "THREAD_POOL";
 })(ThreadType || (ThreadType = {}));
 function getThreadTypeForRendererThread(pid, thread) {
-    let threadType = "OTHER" /* ThreadType.OTHER */;
+    let threadType = ThreadType.OTHER;
     if (thread.name === 'CrRendererMain') {
-        threadType = "MAIN_THREAD" /* ThreadType.MAIN_THREAD */;
+        threadType = ThreadType.MAIN_THREAD;
     }
     else if (thread.name === 'DedicatedWorker thread') {
-        threadType = "WORKER" /* ThreadType.WORKER */;
+        threadType = ThreadType.WORKER;
     }
     else if (thread.name?.startsWith('CompositorTileWorker')) {
-        threadType = "RASTERIZER" /* ThreadType.RASTERIZER */;
+        threadType = ThreadType.RASTERIZER;
     }
     else if (thread.name?.startsWith('ThreadPool')) {
         // TODO(paulirish): perhaps exclude ThreadPoolServiceThread entirely
-        threadType = "THREAD_POOL" /* ThreadType.THREAD_POOL */;
+        threadType = ThreadType.THREAD_POOL;
     }
     return threadType;
 }
@@ -96,7 +96,7 @@ export function threadsInTrace(handlerData) {
                     // There is no concept of a "Main Frame" in a CPU profile.
                     processIsOnMainFrame: false,
                     tree: thread.profileTree,
-                    type: "CPU_PROFILE" /* ThreadType.CPU_PROFILE */,
+                    type: ThreadType.CPU_PROFILE,
                     entryToNode: handlerData.Samples.entryToNode,
                 });
             }

@@ -9,7 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import { createIcon } from '../kit/kit.js';
-import { render } from '../lit/lit.js';
+import { nothing, render } from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import * as PlusButton from './PlusButton.js';
@@ -85,7 +85,7 @@ export class PreRegisteredView {
     }
     async toolbarItems() {
         if (!this.viewRegistration.hasToolbar) {
-            return [];
+            return nothing;
         }
         const provider = await this.widget();
         return provider.toolbarItems();
@@ -178,19 +178,12 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper {
         viewManagerInstance = undefined;
     }
     static createToolbar(toolbarItems) {
-        if (Array.isArray(toolbarItems) && !toolbarItems.length) {
+        if (toolbarItems === nothing) {
             return null;
         }
         const toolbar = document.createElement('devtools-toolbar');
-        if (Array.isArray(toolbarItems)) {
-            for (const item of toolbarItems) {
-                toolbar.appendToolbarItem(item);
-            }
-        }
-        else {
-            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-            render(toolbarItems, toolbar);
-        }
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(toolbarItems, toolbar);
         return toolbar;
     }
     static setWidgetForView(view, widget) {

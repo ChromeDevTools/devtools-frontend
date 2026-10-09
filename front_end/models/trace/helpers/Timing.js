@@ -11,7 +11,7 @@ export const microToMilli = (value) => Types.Timing.Milli(value / 1000);
 export const microToSeconds = (value) => Types.Timing.Seconds(value / 1000 / 1000);
 export function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, navigationsByNavigationId, softNavigationsById, navigationsByFrameId) {
     let eventTimeStamp = event.ts - traceBounds.min;
-    if (event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */ &&
+    if (event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION &&
         event.args?.data?.performanceTimelineNavigationId) {
         const navigationForEvent = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
         if (navigationForEvent) {

@@ -3,7 +3,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 export interface ViewInput {
     threads: CommentManager.CommentManager.CommentThread[];
     onPillClick: () => void;
-    onSendToAgentClick?: () => void;
     disabled?: boolean;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;

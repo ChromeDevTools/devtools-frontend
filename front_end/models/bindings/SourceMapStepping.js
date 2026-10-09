@@ -9,7 +9,8 @@
  *
  * Outlined code is code of an authored function that the compiler moved into a separate generated function marked as
  * "hidden". A run of outlined frames on top of the stack is one logical frame together with the frame below them (the
- * "owner"), see {@link logicalDepth}.
+ * "owner"), see {@link logicalDepth}. Step overs enter the outlined parts of the current function, see
+ * {@link outlinedFunctionRanges}.
  */
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -88,6 +89,25 @@ export function inlinedCalleeRanges(frame) {
         [];
 }
 /**
+ * @returns the bodies of the outlined parts of the logical function that {@link frame} is paused in. A step over
+ *          enters them (`enterRanges`), as stepping over a call into them would skip authored code of that function.
+ */
+export function outlinedFunctionRanges(frame) {
+    const position = scopedPosition(frame);
+    return position ?
+        toLocationRanges(position, position.sourceMap.outlinedFunctionRanges(position.line, position.column)) :
+        [];
+}
+function compareLocations(a, b) {
+    return a.lineNumber - b.lineNumber || (a.columnNumber ?? 0) - (b.columnNumber ?? 0);
+}
+/** @returns true iff {@link frame} is paused inside one of {@link ranges} (start inclusive, end exclusive). */
+function isInRanges(frame, ranges) {
+    const location = frame.location();
+    return ranges.some(({ start, end }) => start.scriptId === location.scriptId && compareLocations(start, location) <= 0 &&
+        compareLocations(location, end) < 0);
+}
+/**
  * Decides whether the pause {@link details} completes the user's step {@link context}.
  *
  * @returns null to present the pause, or the step to issue instead.
@@ -114,9 +134,27 @@ export async function nextAutoStep(details, context, computeAutoStep) {
             }
             return null;
         }
-        case "StepOut" /* SDK.DebuggerModel.StepMode.STEP_OUT */:
+        case "StepOut" /* SDK.DebuggerModel.StepMode.STEP_OUT */: {
+            const outlinedPrefix = outlinedPrefixLength(start);
+            // Without an owner (an outlined part invoked from a task), or when the step out started in a function inlined
+            // into the outlined part (which is issued as a step over its body), a plain step out is right.
+            if (outlinedPrefix > 0 && outlinedPrefix < start.length && inlinedFunctionRanges(start[0]).length === 0) {
+                // The owner is paused at the call into its outlined parts. If that call is inside an inlined function, the
+                // logical frame to step out of is that inlined function, otherwise it's the owner itself.
+                const ownerInlined = inlinedFunctionRanges(start[outlinedPrefix]);
+                const targetLength = start.length - outlinedPrefix - (ownerInlined.length > 0 ? 0 : 1);
+                if (frames.length > targetLength) {
+                    // We are still in the outlined parts or in their owner: keep stepping out.
+                    return { command: "StepOut" /* SDK.DebuggerModel.StepMode.STEP_OUT */, ranges: [] };
+                }
+                if (frames.length === targetLength && isInRanges(frames[0], ownerInlined)) {
+                    // We are back in the owner, but still in the inlined function: step over the rest of it.
+                    return { command: "StepOver" /* SDK.DebuggerModel.StepMode.STEP_OVER */, ranges: ownerInlined };
+                }
+            }
             // Stepping into calls of the unmapped code would present a pause inside the callee, so continue as step over.
             return isUnmapped(frames[0]) ? await computeAutoStep("StepOver" /* SDK.DebuggerModel.StepMode.STEP_OVER */, frames) : null;
+        }
     }
 }
 //# sourceMappingURL=SourceMapStepping.js.map

@@ -180,8 +180,6 @@ export declare class SourceMap {
     inlinedFunctionRange(generatedLine: number, generatedColumn: number): PositionRange | null;
     /** See {@link SourceMapScopesInfo.inlinedCalleeRanges}. Empty without encoded scopes. */
     inlinedCalleeRanges(generatedLine: number, generatedColumn: number): PositionRange[];
-    /** See {@link SourceMapScopesInfo.hasOutlinedFunctions}. False without encoded scopes. */
-    hasOutlinedFunctions(): boolean;
     /** See {@link SourceMapScopesInfo.outlinedFunctionRanges}. Empty without encoded scopes. */
     outlinedFunctionRanges(generatedLine: number, generatedColumn: number): PositionRange[];
     /** See {@link SourceMapScopesInfo.artificialFunctionRanges}. Empty without encoded scopes. */

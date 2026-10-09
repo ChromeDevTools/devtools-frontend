@@ -382,19 +382,25 @@ export class DebuggerModel extends SDKModel {
             { command: mode, ranges: [] };
         this.#issueStep(step, breakOnAsyncCall);
     }
-    #issueStep({ command, ranges }, breakOnAsyncCall = false) {
-        const skipList = sortAndMergeRanges(ranges.map(({ start, end }) => ({
+    #issueStep({ command, ranges, enterRanges }, breakOnAsyncCall = false) {
+        const toProtocolRange = ({ start, end }) => ({
             scriptId: start.scriptId,
             start: { lineNumber: start.lineNumber, columnNumber: start.columnNumber },
             end: { lineNumber: end.lineNumber, columnNumber: end.columnNumber },
-        })));
+        });
+        const skipList = sortAndMergeRanges(ranges.map(toProtocolRange));
         switch (command) {
             case "StepInto" /* StepMode.STEP_INTO */:
                 void this.agent.invoke_stepInto({ breakOnAsyncCall, skipList });
                 break;
-            case "StepOver" /* StepMode.STEP_OVER */:
-                void this.agent.invoke_stepOver({ skipList });
+            case "StepOver" /* StepMode.STEP_OVER */: {
+                const request = { skipList };
+                if (enterRanges?.length) {
+                    request.enterRanges = sortAndMergeRanges(enterRanges.map(toProtocolRange));
+                }
+                void this.agent.invoke_stepOver(request);
                 break;
+            }
             case "StepOut" /* StepMode.STEP_OUT */:
                 void this.agent.invoke_stepOut();
                 break;

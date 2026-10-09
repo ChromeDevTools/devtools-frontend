@@ -89,7 +89,7 @@ export function generateInsight(data, context) {
     if (!navMetrics) {
         throw new Error('no navigation metrics');
     }
-    const metricScore = navMetrics.get("LCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */);
+    const metricScore = navMetrics.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
     const lcpEvent = metricScore?.event;
     if (!lcpEvent || !Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
         return finalize({ warnings: [InsightWarning.NO_LCP] });

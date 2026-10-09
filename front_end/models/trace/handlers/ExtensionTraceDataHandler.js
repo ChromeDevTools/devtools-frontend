@@ -96,7 +96,7 @@ export function extractConsoleAPIExtensionEntries() {
                 rawSourceEvent: currentTimeStamp,
                 dur: Types.Timing.Micro(entryEndTime - entryStartTime),
                 ts: entryStartTime,
-                ph: "X" /* Types.Events.Phase.COMPLETE */,
+                ph: Types.Events.Phase.COMPLETE,
             };
             const extensionEntry = Helpers.SyntheticEvents.SyntheticEventsManager
                 .registerSyntheticEvent(unregisteredExtensionEntry);
@@ -111,7 +111,7 @@ export function extractConsoleAPIExtensionEntries() {
             ...currentTimeStamp,
             name: timeStampName,
             cat: 'disabled-by-default-v8.inspector',
-            ph: "X" /* Types.Events.Phase.COMPLETE */,
+            ph: Types.Events.Phase.COMPLETE,
             ts: entryStartTime,
             dur: Types.Timing.Micro(entryEndTime - entryStartTime),
             rawSourceEvent: currentTimeStamp,
@@ -158,7 +158,8 @@ export function extractPerformanceAPIExtensionEntries(timings) {
         }
         const extensionSyntheticEntry = {
             name: timing.name,
-            ph: Types.Extensions.isExtensionPayloadMarker(devtoolsObj) ? "I" /* Types.Events.Phase.INSTANT */ : "X" /* Types.Events.Phase.COMPLETE */,
+            ph: Types.Extensions.isExtensionPayloadMarker(devtoolsObj) ? Types.Events.Phase.INSTANT :
+                Types.Events.Phase.COMPLETE,
             pid: timing.pid,
             tid: timing.tid,
             ts: timing.ts,

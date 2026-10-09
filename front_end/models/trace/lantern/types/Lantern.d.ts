@@ -27,6 +27,7 @@ export interface TraceEvent {
         data?: {
             frame?: string;
             readyState?: number;
+            scriptId?: number;
             stackTrace?: Array<{
                 url: string;
             }>;
@@ -192,6 +193,13 @@ export declare namespace Simulation {
         timestamps: {
             firstContentfulPaint: number;
             largestContentfulPaint?: number;
+        };
+        largestContentfulPaintEvt?: {
+            args: {
+                data?: {
+                    type?: string;
+                };
+            };
         };
     }
     interface NodeTiming {

@@ -38,7 +38,7 @@ export function traceEventKeyToValues(key) {
     const parts = key.split('-');
     const type = parts[0];
     switch (type) {
-        case "p" /* EventKeyType.PROFILE_CALL */:
+        case EventKeyType.PROFILE_CALL:
             if (parts.length !== 5 ||
                 !(parts.every((part, i) => i === 0 || typeof part === 'number' || !isNaN(parseInt(part, 10))))) {
                 throw new Error(`Invalid ProfileCallKey: ${key}`);
@@ -50,7 +50,7 @@ export function traceEventKeyToValues(key) {
                 sampleIndex: parseInt(parts[3], 10),
                 protocol: parseInt(parts[4], 10),
             };
-        case "r" /* EventKeyType.RAW_EVENT */:
+        case EventKeyType.RAW_EVENT:
             if (parts.length !== 2 || !(typeof parts[1] === 'number' || !isNaN(parseInt(parts[1], 10)))) {
                 throw new Error(`Invalid RawEvent Key: ${key}`);
             }
@@ -58,7 +58,7 @@ export function traceEventKeyToValues(key) {
                 type: parts[0],
                 rawIndex: parseInt(parts[1], 10),
             };
-        case "s" /* EventKeyType.SYNTHETIC_EVENT */:
+        case EventKeyType.SYNTHETIC_EVENT:
             if (parts.length !== 2 || !(typeof parts[1] === 'number' || !isNaN(parseInt(parts[1], 10)))) {
                 throw new Error(`Invalid SyntheticEvent Key: ${key}`);
             }
@@ -66,7 +66,7 @@ export function traceEventKeyToValues(key) {
                 type: parts[0],
                 rawIndex: parseInt(parts[1], 10),
             };
-        case "l" /* EventKeyType.LEGACY_TIMELINE_FRAME */: {
+        case EventKeyType.LEGACY_TIMELINE_FRAME: {
             if (parts.length !== 2 || Number.isNaN(parseInt(parts[1], 10))) {
                 throw new Error(`Invalid LegacyTimelineFrame Key: ${key}`);
             }

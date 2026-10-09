@@ -5,6 +5,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 import { data as metaHandlerData } from './MetaHandler.js';
+import { ScoreClassification } from './PageLoadMetricsHandler.js';
 // This handler gathers EventTimings into Interactions, which we use to show
 // interactions and highlight long interactions to the user, along with INP.
 let beginCommitCompositorFrameEvents = [];
@@ -308,11 +309,11 @@ export function deps() {
  */
 export function scoreClassificationForInteractionToNextPaint(timing) {
     if (timing <= INP_GOOD_TIMING) {
-        return "good" /* ScoreClassification.GOOD */;
+        return ScoreClassification.GOOD;
     }
     if (timing <= INP_MEDIUM_TIMING) {
-        return "ok" /* ScoreClassification.OK */;
+        return ScoreClassification.OK;
     }
-    return "bad" /* ScoreClassification.BAD */;
+    return ScoreClassification.BAD;
 }
 //# sourceMappingURL=UserInteractionsHandler.js.map

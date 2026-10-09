@@ -73,6 +73,7 @@ export declare class SourcesPanel extends UI.Panel.Panel implements UI.ContextMe
     runSnippet(): void;
     private editorSelected;
     private editorClosed;
+    handleBeforeUnload: (event: Event) => void;
     togglePause(): boolean;
     private prepareToResume;
     private longResume;

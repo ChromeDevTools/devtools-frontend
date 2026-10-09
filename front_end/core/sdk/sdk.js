@@ -22816,14 +22816,6 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     return result;
   }
   /**
-   * @returns true, iff any generated function is outlined, i.e. marked as "hidden" but with a definition (see
-   *          {@link GeneratedFrameKind.OUTLINED}). Hidden functions without a definition are compiler helpers.
-   */
-  hasOutlinedFunctions() {
-    const hasOutlined = (ranges) => ranges.some((range) => range.isStackFrame && range.isHidden && range.originalScope !== void 0 || hasOutlined(range.children));
-    return hasOutlined(this.#generatedRanges);
-  }
-  /**
    * @returns the outlined parts of the authored function at the position: the hidden generated functions whose
    *          original scope lies within that function's original scope (see {@link GeneratedFrameKind.OUTLINED}).
    *          Includes the outlined part the position itself is in, if any. Sorted by start position.
@@ -23614,10 +23606,6 @@ var SourceMap = class _SourceMap {
   /** See {@link SourceMapScopesInfo.inlinedCalleeRanges}. Empty without encoded scopes. */
   inlinedCalleeRanges(generatedLine, generatedColumn) {
     return this.hasEncodedScopeInfo() ? this.#scopesInfo?.inlinedCalleeRanges(generatedLine, generatedColumn) ?? [] : [];
-  }
-  /** See {@link SourceMapScopesInfo.hasOutlinedFunctions}. False without encoded scopes. */
-  hasOutlinedFunctions() {
-    return this.hasEncodedScopeInfo() && (this.#scopesInfo?.hasOutlinedFunctions() ?? false);
   }
   /** See {@link SourceMapScopesInfo.outlinedFunctionRanges}. Empty without encoded scopes. */
   outlinedFunctionRanges(generatedLine, generatedColumn) {
@@ -33157,19 +33145,25 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     const step = this.#computeAutoStepCallback && callFrames.length > 0 ? await this.#computeAutoStepCallback(mode, callFrames) : { command: mode, ranges: [] };
     this.#issueStep(step, breakOnAsyncCall);
   }
-  #issueStep({ command, ranges }, breakOnAsyncCall = false) {
-    const skipList = sortAndMergeRanges(ranges.map(({ start, end }) => ({
+  #issueStep({ command, ranges, enterRanges }, breakOnAsyncCall = false) {
+    const toProtocolRange = ({ start, end }) => ({
       scriptId: start.scriptId,
       start: { lineNumber: start.lineNumber, columnNumber: start.columnNumber },
       end: { lineNumber: end.lineNumber, columnNumber: end.columnNumber }
-    })));
+    });
+    const skipList = sortAndMergeRanges(ranges.map(toProtocolRange));
     switch (command) {
       case "StepInto" /* STEP_INTO */:
         void this.agent.invoke_stepInto({ breakOnAsyncCall, skipList });
         break;
-      case "StepOver" /* STEP_OVER */:
-        void this.agent.invoke_stepOver({ skipList });
+      case "StepOver" /* STEP_OVER */: {
+        const request = { skipList };
+        if (enterRanges?.length) {
+          request.enterRanges = sortAndMergeRanges(enterRanges.map(toProtocolRange));
+        }
+        void this.agent.invoke_stepOver(request);
         break;
+      }
       case "StepOut" /* STEP_OUT */:
         void this.agent.invoke_stepOut();
         break;

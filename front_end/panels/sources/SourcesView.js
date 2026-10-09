@@ -12,6 +12,7 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -30,22 +31,6 @@ const UIStrings = {
      */
     hideNavigator: 'Hide navigator',
     /**
-     * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
-     */
-    navigatorShown: 'Navigator sidebar shown',
-    /**
-     * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
-     */
-    navigatorHidden: 'Navigator sidebar hidden',
-    /**
-     * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
-     */
-    debuggerShown: 'Debugger sidebar shown',
-    /**
-     * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
-     */
-    debuggerHidden: 'Debugger sidebar hidden',
-    /**
      * @description Tooltip for the debugger toggle in the Sources panel. Command to open or show the
      * sidebar containing the debugger tool.
      */
@@ -58,46 +43,68 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const { widget } = UI.Widget;
-export const DEFAULT_VIEW = (input, _output, target) => {
-    const renderNavigatorToggleButton = () => {
-        const navHidden = !input.isNavigatorSidebarOpen;
-        const title = navHidden ? i18nString(UIStrings.showNavigator) : i18nString(UIStrings.hideNavigator);
-        // clang-format off
-        return html `
-      <devtools-button
-        class="toolbar-button"
-        title=${title}
-        aria-label=${title}
-        .iconName=${navHidden ? 'left-panel-open' : 'left-panel-close'}
-        .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
-        jslog=${VisualLogging.toggleSubpane().track({ click: true }).context('navigator')}
-        @click=${() => input.onToggleNavigatorSidebar?.()}
-      ></devtools-button>`;
-        // clang-format on
-    };
-    const renderDebuggerToggleButton = () => {
-        const debuggerHidden = !input.isDebuggerSidebarOpen;
-        const title = debuggerHidden ? i18nString(UIStrings.showDebugger) : i18nString(UIStrings.hideDebugger);
-        const glyph = debuggerHidden ? (input.isVertical ? 'right-panel-open' : 'bottom-panel-open') :
-            (input.isVertical ? 'right-panel-close' : 'bottom-panel-close');
-        // clang-format off
-        return html `
-      <devtools-button
-        class="toolbar-button"
-        title=${title}
-        aria-label=${title}
-        .iconName=${glyph}
-        .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
-        ?disabled=${!input.isDebuggerSidebarButtonEnabled}
-        jslog=${VisualLogging.toggleSubpane().track({ click: true }).context('debugger')}
-        @click=${() => input.onToggleDebuggerSidebar?.()}
-      ></devtools-button>`;
-        // clang-format on
-    };
-    const leftToolbarItems = !input.isInWrapper ? [renderNavigatorToggleButton()] : [];
-    const rightToolbarItems = (!input.isInWrapper && !input.isTraceApp && input.isVertical) ? [renderDebuggerToggleButton()] : [];
-    const bottomToolbarContent = (!input.isInWrapper && !input.isTraceApp && !input.isVertical) ? renderDebuggerToggleButton() : nothing;
+const { widget, widgetRef } = UI.Widget;
+const toolbarItemsCache = new WeakMap();
+function renderNavigatorToggleButton(isNavigatorSidebarOpen, onToggleNavigatorSidebar) {
+    const navHidden = !isNavigatorSidebarOpen;
+    const title = navHidden ? i18nString(UIStrings.showNavigator) : i18nString(UIStrings.hideNavigator);
+    // clang-format off
+    return html `
+    <devtools-button
+      class="toolbar-button"
+      title=${title}
+      aria-label=${title}
+      .iconName=${navHidden ? 'left-panel-open' : 'left-panel-close'}
+      .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
+      jslog=${VisualLogging.toggleSubpane().track({ click: true }).context('navigator')}
+      @click=${() => onToggleNavigatorSidebar?.()}
+    ></devtools-button>`;
+    // clang-format on
+}
+function renderDebuggerToggleButton(isDebuggerSidebarOpen, isVertical, isDebuggerSidebarButtonEnabled, onToggleDebuggerSidebar) {
+    const debuggerHidden = !isDebuggerSidebarOpen;
+    const title = debuggerHidden ? i18nString(UIStrings.showDebugger) : i18nString(UIStrings.hideDebugger);
+    const glyph = debuggerHidden ? (isVertical ? 'right-panel-open' : 'bottom-panel-open') :
+        (isVertical ? 'right-panel-close' : 'bottom-panel-close');
+    // clang-format off
+    return html `
+    <devtools-button
+      class="toolbar-button"
+      title=${title}
+      aria-label=${title}
+      .iconName=${glyph}
+      .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
+      ?disabled=${!isDebuggerSidebarButtonEnabled}
+      jslog=${VisualLogging.toggleSubpane().track({ click: true }).context('debugger')}
+      @click=${() => onToggleDebuggerSidebar?.()}
+    ></devtools-button>`;
+    // clang-format on
+}
+export const DEFAULT_VIEW = (input, output, target) => {
+    const leftKey = `${input.isInWrapper}:${input.isNavigatorSidebarOpen}`;
+    const rightKey = `${input.isInWrapper}:${input.isTraceApp}:${input.isVertical}:${input.isDebuggerSidebarOpen}:${input.isDebuggerSidebarButtonEnabled}`;
+    const cached = toolbarItemsCache.get(target);
+    const leftToolbarItems = (cached && cached.leftKey === leftKey && cached.onToggleNavigatorSidebar === input.onToggleNavigatorSidebar) ?
+        cached.leftToolbarItems :
+        (!input.isInWrapper ?
+            [renderNavigatorToggleButton(input.isNavigatorSidebarOpen, input.onToggleNavigatorSidebar)] :
+            []);
+    const rightToolbarItems = (cached && cached.rightKey === rightKey && cached.onToggleDebuggerSidebar === input.onToggleDebuggerSidebar) ?
+        cached.rightToolbarItems :
+        ((!input.isInWrapper && !input.isTraceApp && input.isVertical) ?
+            [renderDebuggerToggleButton(input.isDebuggerSidebarOpen, input.isVertical, input.isDebuggerSidebarButtonEnabled, input.onToggleDebuggerSidebar)] :
+            []);
+    toolbarItemsCache.set(target, {
+        leftKey,
+        onToggleNavigatorSidebar: input.onToggleNavigatorSidebar,
+        leftToolbarItems,
+        rightKey,
+        onToggleDebuggerSidebar: input.onToggleDebuggerSidebar,
+        rightToolbarItems,
+    });
+    const bottomToolbarContent = (!input.isInWrapper && !input.isTraceApp && !input.isVertical) ?
+        renderDebuggerToggleButton(input.isDebuggerSidebarOpen, input.isVertical, input.isDebuggerSidebarButtonEnabled, input.onToggleDebuggerSidebar) :
+        nothing;
     // clang-format off
     render(html `
     <style>${sourcesViewStyles}</style>
@@ -108,6 +115,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         settingName: 'sources-view-search-config',
         minimalSearchQuerySize: 0,
         replaceable: input.isSearchReplaceable,
+        searchTarget: input.searchTarget,
+    })}
+      ${widgetRef(UI.SearchableView.SearchableView, e => {
+        output.searchableView = e;
     })}
     >
       <devtools-widget class="vbox flex-auto ${input.breakpointsActive ? '' : 'breakpoints-deactivated'}"
@@ -142,6 +153,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 const SourcesViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class SourcesView extends SourcesViewBase {
     #uiSourceCodes = new Set();
+    #immutableUiSourceCodes = new Set();
+    #uiSourceCodesChanged = true;
     #sourceLocation;
     #visibleView = null;
     #currentUISourceCode = null;
@@ -159,50 +172,31 @@ export class SourcesView extends SourcesViewBase {
     #isVertical = false;
     #isInWrapper = true;
     #breakpointsActive = true;
+    #output = {};
+    #onEditorSelected = this.#editorSelected.bind(this);
+    #onEditorClosed = this.#editorClosed.bind(this);
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { jslog: `${VisualLogging.pane('editor').track({ keydown: 'Escape' })}` });
         this.#view = view;
         this.setMinimumAndPreferredSizes(88, 52, 150, 100);
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();
         this.requestUpdate();
-        UI.UIUtils.startBatchUpdate();
         workspace.uiSourceCodes().forEach(ui => this.addUISourceCode(ui));
-        UI.UIUtils.endBatchUpdate();
         workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAdded, this);
         workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeRemoved, this);
         workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#projectRemoved.bind(this), this);
         SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.#onScopeChange.bind(this));
-        if (!window.opener) {
-            window.addEventListener('beforeunload', this.#handleBeforeUnload, true);
-        }
     }
-    #handleBeforeUnload = (event) => {
-        if (event.returnValue) {
-            return;
-        }
-        const unsavedSourceCodes = [];
-        const projects = Workspace.Workspace.WorkspaceImpl.instance().projectsForType(Workspace.Workspace.projectTypes.FileSystem);
-        for (const project of projects) {
-            for (const uiSourceCode of project.uiSourceCodes()) {
-                if (uiSourceCode.isDirty()) {
-                    unsavedSourceCodes.push(uiSourceCode);
-                }
-            }
-        }
-        if (!unsavedSourceCodes.length) {
-            return;
-        }
-        event.returnValue = true;
-        void UI.ViewManager.ViewManager.instance().showView('sources');
-        for (const sourceCode of unsavedSourceCodes) {
-            void Common.Revealer.reveal(sourceCode);
-        }
-    };
     performUpdate() {
+        if (this.#uiSourceCodesChanged) {
+            this.#immutableUiSourceCodes = new Set(this.#uiSourceCodes);
+            this.#uiSourceCodesChanged = false;
+        }
         const input = {
             searchProvider: this,
             replaceProvider: this,
             isSearchReplaceable: this.#isSearchReplaceable,
+            searchTarget: this.#visibleView instanceof UISourceCodeFrame ? this.#visibleView : null,
             scriptViewToolbarItems: this.#scriptViewToolbarItems,
             isNavigatorSidebarOpen: this.#isNavigatorSidebarOpen,
             isDebuggerSidebarOpen: this.#isDebuggerSidebarOpen,
@@ -213,12 +207,12 @@ export class SourcesView extends SourcesViewBase {
             onToggleNavigatorSidebar: this.#onToggleNavigatorSidebar,
             onToggleDebuggerSidebar: this.#onToggleDebuggerSidebar,
             breakpointsActive: this.#breakpointsActive,
-            uiSourceCodes: new Set(this.#uiSourceCodes),
+            uiSourceCodes: this.#immutableUiSourceCodes,
             sourceLocation: this.#sourceLocation,
-            onEditorSelected: this.#editorSelected.bind(this),
-            onEditorClosed: this.#editorClosed.bind(this),
+            onEditorSelected: this.#onEditorSelected,
+            onEditorClosed: this.#onEditorClosed,
         };
-        this.#view(input, undefined, this.contentElement);
+        this.#view(input, this.#output, this.contentElement);
     }
     set onToggleNavigatorSidebar(callback) {
         this.#onToggleNavigatorSidebar = callback;
@@ -234,10 +228,6 @@ export class SourcesView extends SourcesViewBase {
         }
         this.#isNavigatorSidebarOpen = isOpen;
         this.requestUpdate();
-        if (this.isShowing()) {
-            UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.navigatorShown) :
-                i18nString(UIStrings.navigatorHidden));
-        }
     }
     set isDebuggerSidebarOpen(isOpen) {
         if (this.#isDebuggerSidebarOpen === isOpen) {
@@ -245,10 +235,6 @@ export class SourcesView extends SourcesViewBase {
         }
         this.#isDebuggerSidebarOpen = isOpen;
         this.requestUpdate();
-        if (this.isShowing()) {
-            UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.debuggerShown) :
-                i18nString(UIStrings.debuggerHidden));
-        }
     }
     toggleDebuggerSidebarButtonEnabled(enabled) {
         this.#isDebuggerSidebarButtonEnabled = enabled;
@@ -268,7 +254,7 @@ export class SourcesView extends SourcesViewBase {
         super.willHide();
     }
     searchableView() {
-        return UI.SearchableView.SearchableView.fromElement(this.contentElement.querySelector('devtools-widget'));
+        return this.#output.searchableView ?? null;
     }
     visibleView() {
         return this.#visibleView;
@@ -322,7 +308,11 @@ export class SourcesView extends SourcesViewBase {
                 }
             }
         }
+        if (this.#uiSourceCodes.has(uiSourceCode)) {
+            return;
+        }
         this.#uiSourceCodes.add(uiSourceCode);
+        this.#uiSourceCodesChanged = true;
         this.requestUpdate();
     }
     #uiSourceCodeRemoved(event) {
@@ -330,12 +320,23 @@ export class SourcesView extends SourcesViewBase {
         this.#removeUISourceCodes([uiSourceCode]);
     }
     #removeUISourceCodes(uiSourceCodes) {
-        uiSourceCodes.forEach(ui => this.#uiSourceCodes.delete(ui));
+        let changed = false;
+        for (const ui of uiSourceCodes) {
+            if (this.#uiSourceCodes.delete(ui)) {
+                changed = true;
+            }
+        }
+        if (changed) {
+            this.#uiSourceCodesChanged = true;
+        }
         // Don't keep a removed file alive through the last revealed location.
         if (this.#sourceLocation && uiSourceCodes.includes(this.#sourceLocation.uiSourceCode)) {
             this.#sourceLocation = undefined;
+            changed = true;
         }
-        this.requestUpdate();
+        if (changed) {
+            this.requestUpdate();
+        }
     }
     #projectRemoved(event) {
         const project = event.data;
@@ -346,7 +347,7 @@ export class SourcesView extends SourcesViewBase {
         const view = this.visibleView();
         if (view instanceof UI.View.SimpleView) {
             void view.toolbarItems().then(items => {
-                this.#scriptViewToolbarItems = Array.isArray(items) ? html `${items.map(item => item.element)}` : items;
+                this.#scriptViewToolbarItems = items;
                 this.requestUpdate();
             });
         }
@@ -373,7 +374,6 @@ export class SourcesView extends SourcesViewBase {
         // SourcesNavigator does not need to update on EditorClosed.
         this.#removeToolbarChangedListener();
         this.#updateScriptViewToolbarItems();
-        this.searchableView()?.resetSearch();
         const data = {
             uiSourceCode,
             wasSelected,
@@ -381,19 +381,11 @@ export class SourcesView extends SourcesViewBase {
         this.dispatchEventToListeners("EditorClosed" /* Events.EDITOR_CLOSED */, data);
     }
     #editorSelected(event) {
-        const previousSourceFrame = event.previousView instanceof UISourceCodeFrame ? event.previousView : null;
-        if (previousSourceFrame) {
-            previousSourceFrame.setSearchableView(null);
-        }
         const currentSourceFrame = event.currentView instanceof UISourceCodeFrame ? event.currentView : null;
-        if (currentSourceFrame) {
-            currentSourceFrame.setSearchableView(this.searchableView());
-        }
         this.#currentUISourceCode = event.currentFile;
         this.#visibleView = event.currentView;
         this.#isSearchReplaceable = Boolean(currentSourceFrame?.canEditSource());
         this.requestUpdate();
-        this.searchableView()?.refreshSearch();
         this.#updateToolbarChangedListener();
         this.#updateScriptViewToolbarItems();
         if (this.#currentUISourceCode) {
@@ -408,11 +400,13 @@ export class SourcesView extends SourcesViewBase {
     }
     #updateToolbarChangedListener() {
         this.#removeToolbarChangedListener();
-        const sourceFrame = this.currentSourceFrame();
-        if (!sourceFrame) {
-            return;
+        const view = this.visibleView();
+        if (view instanceof UISourceCodeFrame) {
+            this.#toolbarChangedListener = view.addEventListener("ToolbarItemsChanged" /* UISourceCodeFrameEvents.TOOLBAR_ITEMS_CHANGED */, this.#updateScriptViewToolbarItems, this);
         }
-        this.#toolbarChangedListener = sourceFrame.addEventListener("ToolbarItemsChanged" /* UISourceCodeFrameEvents.TOOLBAR_ITEMS_CHANGED */, this.#updateScriptViewToolbarItems, this);
+        else if (view instanceof SourceFrame.ImageView.ImageView) {
+            this.#toolbarChangedListener = view.addEventListener("ToolbarItemsChanged" /* SourceFrame.ImageView.Events.TOOLBAR_ITEMS_CHANGED */, this.#updateScriptViewToolbarItems, this);
+        }
     }
     onSearchCanceled() {
         if (this.#searchView) {

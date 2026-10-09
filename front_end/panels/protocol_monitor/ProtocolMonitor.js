@@ -174,6 +174,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                                  name="protocol-monitor-panel-split" sidebar-initial-size="250">
               <devtools-data-grid
                   striped
+                  autoscroll
                   slot="main"
                   .columnsVisibilitySetting=${input.columnsVisibilitySetting}
                   .filters=${input.parseFilter(input.filter)}>

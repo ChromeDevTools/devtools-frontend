@@ -529,15 +529,6 @@ export class SourceMapScopesInfo {
         return result;
     }
     /**
-     * @returns true, iff any generated function is outlined, i.e. marked as "hidden" but with a definition (see
-     *          {@link GeneratedFrameKind.OUTLINED}). Hidden functions without a definition are compiler helpers.
-     */
-    hasOutlinedFunctions() {
-        const hasOutlined = (ranges) => ranges.some(range => (range.isStackFrame && range.isHidden && range.originalScope !== undefined) ||
-            hasOutlined(range.children));
-        return hasOutlined(this.#generatedRanges);
-    }
-    /**
      * @returns the outlined parts of the authored function at the position: the hidden generated functions whose
      *          original scope lies within that function's original scope (see {@link GeneratedFrameKind.OUTLINED}).
      *          Includes the outlined part the position itself is in, if any. Sorted by start position.

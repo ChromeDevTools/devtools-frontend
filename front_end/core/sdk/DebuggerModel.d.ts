@@ -16,10 +16,14 @@ export declare const enum StepMode {
     STEP_OUT = "StepOut",
     STEP_OVER = "StepOver"
 }
-/** A CDP step command. `ranges` is passed as `skipList` to stepInto/stepOver, and ignored for stepOut. */
+/**
+ * A CDP step command. `ranges` is passed as `skipList` to stepInto/stepOver, and ignored for stepOut. `enterRanges` is
+ * passed as `enterRanges` to stepOver: functions within them are entered as if by stepInto.
+ */
 export interface AutoStep {
     readonly command: StepMode;
     readonly ranges: readonly LocationRange[];
+    readonly enterRanges?: readonly LocationRange[];
 }
 /**
  * The step the user requested. It lives until a pause is presented to the user, or the user resumes or pauses, and

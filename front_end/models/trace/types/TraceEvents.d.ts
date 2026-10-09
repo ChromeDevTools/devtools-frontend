@@ -3,7 +3,7 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type { Micro, Milli, Seconds, TraceWindowMicro } from './Timing.js';
 /** Trace Events. **/
-export declare const enum Phase {
+export declare enum Phase {
     BEGIN = "B",
     END = "E",
     COMPLETE = "X",
@@ -32,7 +32,7 @@ export declare const enum Phase {
 export declare function isNestableAsyncPhase(phase: Phase): boolean;
 export declare function isPhaseAsync(phase: Phase): boolean;
 export declare function isFlowPhase(phase: Phase): boolean;
-export declare const enum Scope {
+export declare enum Scope {
     THREAD = "t",
     PROCESS = "p",
     GLOBAL = "g"
@@ -385,7 +385,7 @@ export interface SyntheticWebSocketConnection extends Complete, SyntheticBased<P
     tid: ThreadID;
     s: Scope;
 }
-export declare const enum AuctionWorkletType {
+export declare enum AuctionWorkletType {
     BIDDER = "bidder",
     SELLER = "seller",
     UNKNOWN = "unknown"
@@ -596,11 +596,6 @@ export interface FirstPaint extends Mark {
     };
 }
 export type PageLoadEvent = AnyFirstContentfulPaint | MarkDOMContent | InteractiveTime | AnyLargestContentfulPaintCandidate | LayoutShift | FirstPaint | MarkLoad | NavigationStart | SoftNavigationStart;
-export type MarkerEventName = Name.MARK_DOM_CONTENT | Name.MARK_LOAD | Name.MARK_FIRST_PAINT | Name.MARK_FCP | Name.MARK_SOFT_FCP | Name.MARK_LCP_CANDIDATE | Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION | Name.NAVIGATION_START | Name.SOFT_NAVIGATION_START;
-export declare const MarkerName: readonly MarkerEventName[];
-export interface MarkerEvent extends Event {
-    name: MarkerEventName;
-}
 export declare function isMarkerEvent(event: Event): event is MarkerEvent;
 export declare function eventIsPageLoadEvent(event: Event): event is PageLoadEvent;
 export interface LargestContentfulPaintCandidate extends Mark {
@@ -992,7 +987,7 @@ export interface ResourceMarkAsCached extends Instant {
         };
     };
 }
-export declare const enum LayoutInvalidationReason {
+export declare enum LayoutInvalidationReason {
     SIZE_CHANGED = "Size changed",
     ATTRIBUTE = "Attribute",
     ADDED_TO_LAYOUT = "Added to layout",
@@ -1031,7 +1026,7 @@ export interface ScheduleStyleInvalidationTracking extends Instant {
     };
 }
 export declare function isScheduleStyleInvalidationTracking(event: Event): event is ScheduleStyleInvalidationTracking;
-export declare const enum StyleRecalcInvalidationReason {
+export declare enum StyleRecalcInvalidationReason {
     ANIMATION = "Animation",
     RELATED_STYLE_RULE = "Related style rule"
 }
@@ -1599,7 +1594,7 @@ export interface DecodeImage extends Complete {
     };
 }
 export declare function isDecodeImage(event: Event): event is DecodeImage;
-export declare const enum InvalidationEventType {
+export declare enum InvalidationEventType {
     StyleInvalidatorInvalidationTracking = "StyleInvalidatorInvalidationTracking",
     StyleRecalcInvalidationTracking = "StyleRecalcInvalidationTracking"
 }
@@ -2177,7 +2172,7 @@ export declare function isParseAuthorStyleSheetEvent(event: Event): event is Par
  * chart, some of them we only use for parsing.
  * TODO(crbug.com/1428024): Complete this enum.
  */
-export declare const enum Name {
+export declare enum Name {
     THREAD_NAME = "thread_name",
     PROGRAM = "Program",
     RUN_TASK = "RunTask",
@@ -2355,6 +2350,11 @@ export declare const enum Name {
     USER_TIMING_MEASURE = "UserTiming::Measure",
     LINK_PRECONNECT = "LinkPreconnect",
     PRELOAD_RENDER_BLOCKING_STATUS_CHANGE = "PreloadRenderBlockingStatusChange"
+}
+export type MarkerEventName = Name.MARK_DOM_CONTENT | Name.MARK_LOAD | Name.MARK_FIRST_PAINT | Name.MARK_FCP | Name.MARK_SOFT_FCP | Name.MARK_LCP_CANDIDATE | Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION | Name.NAVIGATION_START | Name.SOFT_NAVIGATION_START;
+export declare const MarkerName: readonly MarkerEventName[];
+export interface MarkerEvent extends Event {
+    name: MarkerEventName;
 }
 /**
  * NOT AN EXHAUSTIVE LIST: just some categories we use and refer

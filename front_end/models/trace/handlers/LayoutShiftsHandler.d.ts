@@ -50,7 +50,7 @@ export declare function data(): LayoutShiftsData;
 export declare function deps(): HandlerName[];
 export declare function scoreClassificationForLayoutShift(score: number): ScoreClassification;
 /** Based on https://web.dev/cls/ **/
-export declare const enum LayoutShiftsThreshold {
+export declare enum LayoutShiftsThreshold {
     GOOD = 0,
     NEEDS_IMPROVEMENT = 0.1,
     BAD = 0.25

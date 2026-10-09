@@ -35,7 +35,7 @@ export class AIQueries {
             if (mainThreadPID && mainThreadTID) {
                 return thread.pid === mainThreadPID && thread.tid === mainThreadTID;
             }
-            return thread.type === "MAIN_THREAD" /* Trace.Handlers.Threads.ThreadType.MAIN_THREAD */;
+            return thread.type === Trace.Handlers.Threads.ThreadType.MAIN_THREAD;
         });
         return thread ?? null;
     }
@@ -53,7 +53,7 @@ export class AIQueries {
         }
         // Use the same filtering as front_end/panels/timeline/TimelineTreeView.ts.
         const visibleEvents = Trace.Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values().toArray();
-        const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleEvents.concat(["SyntheticNetworkRequest" /* Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST */]));
+        const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleEvents.concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
         // The bottom up root node handles all the "in Tracebounds" checks we need for the insight.
         const startTime = Trace.Helpers.Timing.microToMilli(bounds.min);
         const endTime = Trace.Helpers.Timing.microToMilli(bounds.max);
@@ -94,7 +94,7 @@ export class AIQueries {
         }
         // Use the same filtering as front_end/panels/timeline/TimelineTreeView.ts.
         const visibleEvents = Trace.Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values().toArray();
-        const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleEvents.concat(["SyntheticNetworkRequest" /* Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST */]));
+        const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleEvents.concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
         // The bottom up root node handles all the "in Tracebounds" checks we need for the insight.
         const startTime = Trace.Helpers.Timing.microToMilli(bounds.min);
         const endTime = Trace.Helpers.Timing.microToMilli(bounds.max);

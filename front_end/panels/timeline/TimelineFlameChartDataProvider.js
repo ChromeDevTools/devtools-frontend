@@ -591,8 +591,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             // If it is, we mark the group as selected.
             if (this.#timelineData && !this.#timelineData.selectedGroup) {
                 if (appender instanceof ThreadAppender &&
-                    (appender.threadType === "MAIN_THREAD" /* Trace.Handlers.Threads.ThreadType.MAIN_THREAD */ ||
-                        appender.threadType === "CPU_PROFILE" /* Trace.Handlers.Threads.ThreadType.CPU_PROFILE */)) {
+                    (appender.threadType === Trace.Handlers.Threads.ThreadType.MAIN_THREAD ||
+                        appender.threadType === Trace.Handlers.Threads.ThreadType.CPU_PROFILE)) {
                     const group = this.compatibilityTracksAppender?.groupForAppender(appender);
                     if (group) {
                         this.#timelineData.selectedGroup = group;

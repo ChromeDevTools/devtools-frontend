@@ -97,6 +97,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           src=${input.imageSrc}
           alt=${i18nString(UIStrings.imageFromS, { PH1: input.url })}
           @load=${input.onImageLoad}
+          @error=${input.onImageError}
           @contextmenu=${{ handleEvent: input.onContextMenu, capture: true }}
         >` : html `
         <img
@@ -124,19 +125,25 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     });
 };
 // clang-format on
-export class ImageView extends UI.View.SimpleView {
+export var Events;
+(function (Events) {
+    Events["TOOLBAR_ITEMS_CHANGED"] = "ToolbarItemsChanged";
+})(Events || (Events = {}));
+const ImageViewBase = Common.ObjectWrapper.eventMixin(UI.View.SimpleView);
+export class ImageView extends ImageViewBase {
     url;
     parsedURL;
     contentProvider;
     uiSourceCode;
-    sizeLabel;
-    dimensionsLabel;
-    aspectRatioLabel;
+    #size = '';
+    #dimensions = '';
+    #aspectRatio = '';
     #mimeType;
     cachedContent;
     #view;
     #imageSrc = null;
     #isUnavailable = false;
+    #loadPromise;
     #loadResolve;
     constructor(mimeType, contentProvider, view = DEFAULT_VIEW) {
         super({
@@ -153,9 +160,6 @@ export class ImageView extends UI.View.SimpleView {
             this.uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
             new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI], i18nString(UIStrings.dropImageFileHere), this.handleDrop.bind(this));
         }
-        this.sizeLabel = new UI.Toolbar.ToolbarText();
-        this.dimensionsLabel = new UI.Toolbar.ToolbarText();
-        this.aspectRatioLabel = new UI.Toolbar.ToolbarText();
         this.#mimeType = mimeType;
         this.performUpdate();
     }
@@ -165,24 +169,33 @@ export class ImageView extends UI.View.SimpleView {
             imageSrc: this.#imageSrc,
             isUnavailable: this.#isUnavailable,
             onImageLoad: this.#onImageLoad,
+            onImageError: this.#onImageError,
             onContextMenu: this.contextMenu.bind(this),
         }, undefined, this.contentElement);
     }
     #onImageLoad = (event) => {
         const img = event.target;
-        this.dimensionsLabel.setText(i18nString(UIStrings.dD, { PH1: img.naturalWidth, PH2: img.naturalHeight }));
-        this.aspectRatioLabel.setText(Platform.NumberUtilities.aspectRatio(img.naturalWidth, img.naturalHeight));
+        this.#dimensions = i18nString(UIStrings.dD, { PH1: img.naturalWidth, PH2: img.naturalHeight });
+        this.#aspectRatio = Platform.NumberUtilities.aspectRatio(img.naturalWidth, img.naturalHeight);
         this.#loadResolve?.();
         this.#loadResolve = undefined;
+        this.#loadPromise = undefined;
+    };
+    #onImageError = () => {
+        this.#dimensions = '';
+        this.#aspectRatio = '';
+        this.#loadResolve?.();
+        this.#loadResolve = undefined;
+        this.#loadPromise = undefined;
     };
     async toolbarItems() {
         await this.updateContentIfNeeded();
         return html `
-      ${this.sizeLabel.element}
+      <div class="toolbar-text">${this.#size}</div>
       <div class="toolbar-divider"></div>
-      ${this.dimensionsLabel.element}
+      <div class="toolbar-text">${this.#dimensions}</div>
       <div class="toolbar-divider"></div>
-      ${this.aspectRatioLabel.element}
+      <div class="toolbar-text">${this.#aspectRatio}</div>
       <div class="toolbar-divider"></div>
       <div class="toolbar-text">${this.#mimeType}</div>
     `;
@@ -198,30 +211,39 @@ export class ImageView extends UI.View.SimpleView {
         }
     }
     workingCopyCommitted() {
-        void this.updateContentIfNeeded();
+        void this.updateContentIfNeeded().then(() => {
+            this.dispatchEventToListeners("ToolbarItemsChanged" /* Events.TOOLBAR_ITEMS_CHANGED */);
+        });
     }
     async updateContentIfNeeded() {
         const content = await this.contentProvider.requestContentData();
         if (TextUtils.ContentData.ContentData.isError(content) || this.cachedContent?.contentEqualTo(content)) {
+            await this.#loadPromise;
             return;
         }
         this.cachedContent = content;
+        this.#loadResolve?.();
+        this.#loadResolve = undefined;
+        this.#loadPromise = undefined;
         const imageSrc = content.asImagePreviewUrl();
         if (imageSrc === null) {
             this.#isUnavailable = true;
             this.#imageSrc = null;
+            this.#size = '';
+            this.#dimensions = '';
+            this.#aspectRatio = '';
             this.performUpdate();
             return;
         }
         this.#isUnavailable = false;
-        const loadPromise = new Promise(resolve => {
+        this.#loadPromise = new Promise(resolve => {
             this.#loadResolve = resolve;
         });
         this.#imageSrc = imageSrc;
         const size = content.isTextContent ? content.text.length : Platform.StringUtilities.base64ToSize(content.base64);
-        this.sizeLabel.setText(i18n.ByteUtilities.bytesToString(size));
+        this.#size = i18n.ByteUtilities.bytesToString(size);
         this.performUpdate();
-        await loadPromise;
+        await this.#loadPromise;
     }
     contextMenu(event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);

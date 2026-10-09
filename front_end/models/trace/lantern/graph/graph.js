@@ -250,12 +250,16 @@ var CPUNode = class _CPUNode extends BaseNode {
   _event;
   _childEvents;
   correctedEndTs;
-  constructor(parentEvent, childEvents = [], correctedEndTs) {
+  // TODO(crbug.com/568836981): Remove once v8.evaluateModule includes `url` in
+  // all supported Chrome versions.
+  #scriptUrlById;
+  constructor(parentEvent, childEvents = [], correctedEndTs, scriptUrlById) {
     const nodeId = `${parentEvent.tid}.${parentEvent.ts}`;
     super(nodeId);
     this._event = parentEvent;
     this._childEvents = childEvents;
     this.correctedEndTs = correctedEndTs;
+    this.#scriptUrlById = scriptUrlById;
   }
   get type() {
     return BaseNode.types.CPU;
@@ -278,6 +282,11 @@ var CPUNode = class _CPUNode extends BaseNode {
   get childEvents() {
     return this._childEvents;
   }
+  // TODO(crbug.com/568836981): Remove once v8.evaluateModule includes `url` in
+  // all supported Chrome versions.
+  getScriptUrlById(scriptId) {
+    return this.#scriptUrlById?.get(scriptId);
+  }
   /**
    * Returns true if this node contains a Layout task.
    */
@@ -285,23 +294,28 @@ var CPUNode = class _CPUNode extends BaseNode {
     return this._childEvents.some((evt) => evt.name === "Layout");
   }
   /**
-   * Returns the script URLs that had their EvaluateScript events occur in this task.
+   * Returns the script URLs that had their EvaluateScript or v8.evaluateModule events occur in this task.
    */
   getEvaluateScriptURLs() {
     const urls = /* @__PURE__ */ new Set();
     for (const event of this._childEvents) {
-      if (event.name !== "EvaluateScript") {
+      if (event.name === "EvaluateScript" || event.name === "v8.evaluateModule") {
+        if (event.args.data?.url) {
+          urls.add(event.args.data.url);
+        }
         continue;
       }
-      if (!event.args.data?.url) {
-        continue;
+      if (event.name === "ModuleEvaluated" && event.args.data?.scriptId !== void 0) {
+        const url = this.#scriptUrlById?.get(event.args.data.scriptId);
+        if (url) {
+          urls.add(url);
+        }
       }
-      urls.add(event.args.data.url);
     }
     return urls;
   }
   cloneWithoutRelationships() {
-    return new _CPUNode(this._event, this._childEvents, this.correctedEndTs);
+    return new _CPUNode(this._event, this._childEvents, this.correctedEndTs, this.#scriptUrlById);
   }
 };
 
@@ -460,6 +474,7 @@ var PageDependencyGraph = class _PageDependencyGraph {
     const nodes = [];
     let i = 0;
     _PageDependencyGraph.assertHasToplevelEvents(mainThreadEvents);
+    const scriptUrlById = /* @__PURE__ */ new Map();
     while (i < mainThreadEvents.length) {
       const evt = mainThreadEvents[i];
       i++;
@@ -474,9 +489,12 @@ var PageDependencyGraph = class _PageDependencyGraph {
           correctedEndTs = Math.max(event.ts - 1, evt.ts);
           break;
         }
+        if (event.name === "v8.compileModule" && event.args.data?.scriptId !== void 0 && event.args.data.url) {
+          scriptUrlById.set(event.args.data.scriptId, event.args.data.url);
+        }
         children.push(event);
       }
-      nodes.push(new CPUNode(evt, children, correctedEndTs));
+      nodes.push(new CPUNode(evt, children, correctedEndTs, scriptUrlById));
     }
     return nodes;
   }
@@ -597,10 +615,23 @@ var PageDependencyGraph = class _PageDependencyGraph {
             stackTraceUrls.forEach((url) => addDependencyOnUrl(node, url));
             break;
           case "EvaluateScript":
+          case "v8.evaluateModule":
             addDependencyOnFrame(node, evt.args.data.frame);
             addDependencyOnUrl(node, argsUrl);
             stackTraceUrls.forEach((url) => addDependencyOnUrl(node, url));
             break;
+          // TODO(crbug.com/568836981): Remove this workaround once v8.evaluateModule
+          // includes `args.data.url` in all supported Chrome versions.
+          case "ModuleEvaluated": {
+            addDependencyOnFrame(node, evt.args.data.frame);
+            if (evt.args.data.scriptId !== void 0) {
+              const moduleUrl = node.getScriptUrlById(evt.args.data.scriptId);
+              if (moduleUrl) {
+                addDependencyOnUrl(node, moduleUrl);
+              }
+            }
+            break;
+          }
           case "XHRReadyStateChange":
             if (evt.args.data.readyState !== 4) {
               break;
@@ -610,6 +641,7 @@ var PageDependencyGraph = class _PageDependencyGraph {
             break;
           case "FunctionCall":
           case "v8.compile":
+          case "v8.compileModule":
             addDependencyOnFrame(node, evt.args.data.frame);
             addDependencyOnUrl(node, argsUrl);
             break;

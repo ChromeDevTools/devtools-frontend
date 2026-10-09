@@ -228,8 +228,8 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         const mainThreadContext = this.context();
         for (const thread of threads) {
             // We treat CPU_PROFILE as main thread because in a CPU Profile trace there is only ever one thread.
-            const isMainThread = thread.type === "MAIN_THREAD" /* Trace.Handlers.Threads.ThreadType.MAIN_THREAD */ ||
-                thread.type === "CPU_PROFILE" /* Trace.Handlers.Threads.ThreadType.CPU_PROFILE */;
+            const isMainThread = thread.type === Trace.Handlers.Threads.ThreadType.MAIN_THREAD ||
+                thread.type === Trace.Handlers.Threads.ThreadType.CPU_PROFILE;
             if (isMainThread) {
                 drawThreadEntries(mainThreadContext, thread);
             }

@@ -143,7 +143,7 @@ export class EntriesLinkOverlay extends HTMLElement {
             console.error('one of the required Entries Link elements is missing.');
             return;
         }
-        if (this.#linkState === "creation_not_started" /* Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED */) {
+        if (this.#linkState === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
             this.#entryFromCirleConnector.setAttribute('visibility', 'hidden');
             this.#entryToCircleConnector.setAttribute('visibility', 'hidden');
             this.#connector.style.display = 'none';
@@ -254,7 +254,7 @@ export class EntriesLinkOverlay extends HTMLElement {
             console.error('creating element is missing.');
             return;
         }
-        if (this.#linkState !== "creation_not_started" /* Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED */) {
+        if (this.#linkState !== Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
             createLinkIcon.style.display = 'none';
             return;
         }
@@ -262,7 +262,7 @@ export class EntriesLinkOverlay extends HTMLElement {
         createLinkIcon.style.top = `${this.#coordinateFrom.y}px`;
     }
     #startCreatingConnection() {
-        this.#linkState = "pending_to_event" /* Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT */;
+        this.#linkState = Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT;
         this.dispatchEvent(new EntryLinkStartCreating());
     }
     /*

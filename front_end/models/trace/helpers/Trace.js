@@ -233,7 +233,7 @@ export function makeProfileCall(node, profileId, sampleIndex, ts, pid, tid) {
         name: 'ProfileCall',
         nodeId: node.id,
         args: {},
-        ph: "X" /* Types.Events.Phase.COMPLETE */,
+        ph: Types.Events.Phase.COMPLETE,
         pid,
         tid,
         ts,
@@ -425,16 +425,16 @@ export function getZeroIndexedLineAndColumnForEvent(event) {
     switch (event.name) {
         // All these events have line/column numbers which are 1 indexed; so we
         // subtract to make them 0 indexed.
-        case "FunctionCall" /* Types.Events.Name.FUNCTION_CALL */:
-        case "EvaluateScript" /* Types.Events.Name.EVALUATE_SCRIPT */:
-        case "v8.compile" /* Types.Events.Name.COMPILE */:
-        case "v8.produceCache" /* Types.Events.Name.CACHE_SCRIPT */: {
+        case Types.Events.Name.FUNCTION_CALL:
+        case Types.Events.Name.EVALUATE_SCRIPT:
+        case Types.Events.Name.COMPILE:
+        case Types.Events.Name.CACHE_SCRIPT: {
             return {
                 lineNumber: typeof lineNumber === 'number' ? lineNumber - 1 : undefined,
                 columnNumber: typeof columnNumber === 'number' ? columnNumber - 1 : undefined,
             };
         }
-        case "ProfileCall" /* Types.Events.Name.PROFILE_CALL */: {
+        case Types.Events.Name.PROFILE_CALL: {
             const callFrame = event.callFrame;
             return {
                 lineNumber: typeof lineNumber === 'number' ? callFrame.lineNumber - 1 : undefined,
@@ -463,11 +463,11 @@ export function getZeroIndexedStackTraceInEventPayload(event) {
         return null;
     }
     switch (event.name) {
-        case "ScheduleStyleRecalculation" /* Types.Events.Name.SCHEDULE_STYLE_RECALCULATION */:
-        case "InvalidateLayout" /* Types.Events.Name.INVALIDATE_LAYOUT */:
-        case "FunctionCall" /* Types.Events.Name.FUNCTION_CALL */:
-        case "Layout" /* Types.Events.Name.LAYOUT */:
-        case "UpdateLayoutTree" /* Types.Events.Name.RECALC_STYLE */: {
+        case Types.Events.Name.SCHEDULE_STYLE_RECALCULATION:
+        case Types.Events.Name.INVALIDATE_LAYOUT:
+        case Types.Events.Name.FUNCTION_CALL:
+        case Types.Events.Name.LAYOUT:
+        case Types.Events.Name.RECALC_STYLE: {
             return stack.map(makeZeroBasedCallFrame);
         }
         default: {
@@ -487,11 +487,11 @@ export function getStackTraceTopCallFrameInEventPayload(event) {
         return null;
     }
     switch (event.name) {
-        case "ScheduleStyleRecalculation" /* Types.Events.Name.SCHEDULE_STYLE_RECALCULATION */:
-        case "InvalidateLayout" /* Types.Events.Name.INVALIDATE_LAYOUT */:
-        case "FunctionCall" /* Types.Events.Name.FUNCTION_CALL */:
-        case "Layout" /* Types.Events.Name.LAYOUT */:
-        case "UpdateLayoutTree" /* Types.Events.Name.RECALC_STYLE */: {
+        case Types.Events.Name.SCHEDULE_STYLE_RECALCULATION:
+        case Types.Events.Name.INVALIDATE_LAYOUT:
+        case Types.Events.Name.FUNCTION_CALL:
+        case Types.Events.Name.LAYOUT:
+        case Types.Events.Name.RECALC_STYLE: {
             return makeZeroBasedCallFrame(stack[0]);
         }
         default: {
@@ -565,7 +565,7 @@ export function frameIDForEvent(event) {
 }
 const DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
 export function isTopLevelEvent(event) {
-    return event.cat.includes(DevToolsTimelineEventCategory) && event.name === "RunTask" /* Types.Events.Name.RUN_TASK */;
+    return event.cat.includes(DevToolsTimelineEventCategory) && event.name === Types.Events.Name.RUN_TASK;
 }
 export function isExtensionUrl(url) {
     return url.startsWith('extensions:') || url.startsWith('chrome-extension:');
@@ -718,101 +718,101 @@ export function extractSampleTraceId(event) {
  * TODO(crbug.com/410884528)
  **/
 export const VISIBLE_TRACE_EVENT_TYPES = new Set([
-    "AbortPostTaskCallback" /* Types.Events.Name.ABORT_POST_TASK_CALLBACK */,
-    "Animation" /* Types.Events.Name.ANIMATION */,
-    "AsyncTask" /* Types.Events.Name.ASYNC_TASK */,
-    "v8.deserializeOnBackground" /* Types.Events.Name.BACKGROUND_DESERIALIZE */,
-    "v8.produceModuleCache" /* Types.Events.Name.CACHE_MODULE */,
-    "v8.produceCache" /* Types.Events.Name.CACHE_SCRIPT */,
-    "CancelAnimationFrame" /* Types.Events.Name.CANCEL_ANIMATION_FRAME */,
-    "CancelIdleCallback" /* Types.Events.Name.CANCEL_IDLE_CALLBACK */,
-    "Commit" /* Types.Events.Name.COMMIT */,
-    "V8.CompileCode" /* Types.Events.Name.COMPILE_CODE */,
-    "V8.CompileModule" /* Types.Events.Name.COMPILE_MODULE */,
-    "v8.compile" /* Types.Events.Name.COMPILE */,
-    "CompositeLayers" /* Types.Events.Name.COMPOSITE_LAYERS */,
-    "ComputeIntersections" /* Types.Events.Name.COMPUTE_INTERSECTION */,
-    "ConsoleTime" /* Types.Events.Name.CONSOLE_TIME */,
-    "CppGC.IncrementalSweep" /* Types.Events.Name.CPPGC_SWEEP */,
-    "DoDecryptReply" /* Types.Events.Name.CRYPTO_DO_DECRYPT_REPLY */,
-    "DoDecrypt" /* Types.Events.Name.CRYPTO_DO_DECRYPT */,
-    "DoDigestReply" /* Types.Events.Name.CRYPTO_DO_DIGEST_REPLY */,
-    "DoDigest" /* Types.Events.Name.CRYPTO_DO_DIGEST */,
-    "DoEncryptReply" /* Types.Events.Name.CRYPTO_DO_ENCRYPT_REPLY */,
-    "DoEncrypt" /* Types.Events.Name.CRYPTO_DO_ENCRYPT */,
-    "DoSignReply" /* Types.Events.Name.CRYPTO_DO_SIGN_REPLY */,
-    "DoSign" /* Types.Events.Name.CRYPTO_DO_SIGN */,
-    "DoVerifyReply" /* Types.Events.Name.CRYPTO_DO_VERIFY_REPLY */,
-    "DoVerify" /* Types.Events.Name.CRYPTO_DO_VERIFY */,
-    "Decode Image" /* Types.Events.Name.DECODE_IMAGE */,
-    "EmbedderCallback" /* Types.Events.Name.EMBEDDER_CALLBACK */,
-    "v8.evaluateModule" /* Types.Events.Name.EVALUATE_MODULE */,
-    "EvaluateScript" /* Types.Events.Name.EVALUATE_SCRIPT */,
-    "EventDispatch" /* Types.Events.Name.EVENT_DISPATCH */,
-    "EventTiming" /* Types.Events.Name.EVENT_TIMING */,
-    "V8.FinalizeDeserialization" /* Types.Events.Name.FINALIZE_DESERIALIZATION */,
-    "FireAnimationFrame" /* Types.Events.Name.FIRE_ANIMATION_FRAME */,
-    "FireIdleCallback" /* Types.Events.Name.FIRE_IDLE_CALLBACK */,
-    "FunctionCall" /* Types.Events.Name.FUNCTION_CALL */,
-    "BlinkGC.AtomicPhase" /* Types.Events.Name.GC_COLLECT_GARBARGE */,
-    "GCEvent" /* Types.Events.Name.GC */,
-    "GPUTask" /* Types.Events.Name.GPU_TASK */,
-    "HandlePostMessage" /* Types.Events.Name.HANDLE_POST_MESSAGE */,
-    "HitTest" /* Types.Events.Name.HIT_TEST */,
-    "JSSample" /* Types.Events.Name.JS_SAMPLE */,
-    "Layerize" /* Types.Events.Name.LAYERIZE */,
-    "Layout" /* Types.Events.Name.LAYOUT */,
-    "MajorGC" /* Types.Events.Name.MAJOR_GC */,
-    "MinorGC" /* Types.Events.Name.MINOR_GC */,
-    "V8.OptimizeCode" /* Types.Events.Name.OPTIMIZE_CODE */,
-    "PaintSetup" /* Types.Events.Name.PAINT_SETUP */,
-    "Paint" /* Types.Events.Name.PAINT */,
-    "ParseAuthorStyleSheet" /* Types.Events.Name.PARSE_AUTHOR_STYLE_SHEET */,
-    "ParseHTML" /* Types.Events.Name.PARSE_HTML */,
-    "PrePaint" /* Types.Events.Name.PRE_PAINT */,
-    "ProfileCall" /* Types.Events.Name.PROFILE_CALL */,
-    "Program" /* Types.Events.Name.PROGRAM */,
-    "RasterTask" /* Types.Events.Name.RASTER_TASK */,
-    "RequestAnimationFrame" /* Types.Events.Name.REQUEST_ANIMATION_FRAME */,
-    "RequestIdleCallback" /* Types.Events.Name.REQUEST_IDLE_CALLBACK */,
-    "ResourceFinish" /* Types.Events.Name.RESOURCE_FINISH */,
-    "ResourceReceivedData" /* Types.Events.Name.RESOURCE_RECEIVE_DATA */,
-    "ResourceReceiveResponse" /* Types.Events.Name.RESOURCE_RECEIVE_RESPONSE */,
-    "ResourceSendRequest" /* Types.Events.Name.RESOURCE_SEND_REQUEST */,
-    "ResourceWillSendRequest" /* Types.Events.Name.RESOURCE_WILL_SEND_REQUEST */,
-    "RunMicrotasks" /* Types.Events.Name.RUN_MICROTASKS */,
-    "RunPostTaskCallback" /* Types.Events.Name.RUN_POST_TASK_CALLBACK */,
-    "RunTask" /* Types.Events.Name.RUN_TASK */,
-    "SchedulePostMessage" /* Types.Events.Name.SCHEDULE_POST_MESSAGE */,
-    "SchedulePostTaskCallback" /* Types.Events.Name.SCHEDULE_POST_TASK_CALLBACK */,
-    "ScheduleStyleRecalculation" /* Types.Events.Name.SCHEDULE_STYLE_RECALCULATION */,
-    "ScrollLayer" /* Types.Events.Name.SCROLL_LAYER */,
-    "CpuProfiler::StartProfiling" /* Types.Events.Name.START_PROFILING */,
-    "v8.parseOnBackgroundParsing" /* Types.Events.Name.STREAMING_COMPILE_SCRIPT_PARSING */,
-    "v8.parseOnBackgroundWaiting" /* Types.Events.Name.STREAMING_COMPILE_SCRIPT_WAITING */,
-    "v8.parseOnBackground" /* Types.Events.Name.STREAMING_COMPILE_SCRIPT */,
-    "SyntheticLayoutShiftCluster" /* Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT_CLUSTER */,
-    "SyntheticLayoutShift" /* Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT */,
-    "TimeStamp" /* Types.Events.Name.TIME_STAMP */,
-    "TimerFire" /* Types.Events.Name.TIMER_FIRE */,
-    "TimerInstall" /* Types.Events.Name.TIMER_INSTALL */,
-    "TimerRemove" /* Types.Events.Name.TIMER_REMOVE */,
-    "UpdateLayerTree" /* Types.Events.Name.UPDATE_LAYER_TREE */,
-    "UpdateLayoutTree" /* Types.Events.Name.RECALC_STYLE */,
-    "UserTiming" /* Types.Events.Name.USER_TIMING */,
-    "V8Console::runTask" /* Types.Events.Name.V8_CONSOLE_RUN_TASK */,
-    "v8.wasm.cachedModule" /* Types.Events.Name.WASM_CACHED_MODULE */,
-    "v8.wasm.compiledModule" /* Types.Events.Name.WASM_COMPILED_MODULE */,
-    "v8.wasm.moduleCacheHit" /* Types.Events.Name.WASM_MODULE_CACHE_HIT */,
-    "v8.wasm.moduleCacheInvalid" /* Types.Events.Name.WASM_MODULE_CACHE_INVALID */,
-    "v8.wasm.streamFromResponseCallback" /* Types.Events.Name.WASM_STREAM_FROM_RESPONSE_CALLBACK */,
-    "WebSocketCreate" /* Types.Events.Name.WEB_SOCKET_CREATE */,
-    "WebSocketDestroy" /* Types.Events.Name.WEB_SOCKET_DESTROY */,
-    "WebSocketReceiveHandshakeResponse" /* Types.Events.Name.WEB_SOCKET_RECEIVE_HANDSHAKE_REQUEST */,
-    "WebSocketReceive" /* Types.Events.Name.WEB_SOCKET_RECEIVE */,
-    "WebSocketSendHandshakeRequest" /* Types.Events.Name.WEB_SOCKET_SEND_HANDSHAKE_REQUEST */,
-    "WebSocketSend" /* Types.Events.Name.WEB_SOCKET_SEND */,
-    "XHRLoad" /* Types.Events.Name.XHR_LOAD */,
-    "XHRReadyStateChange" /* Types.Events.Name.XHR_READY_STATE_CHANGED */,
+    Types.Events.Name.ABORT_POST_TASK_CALLBACK,
+    Types.Events.Name.ANIMATION,
+    Types.Events.Name.ASYNC_TASK,
+    Types.Events.Name.BACKGROUND_DESERIALIZE,
+    Types.Events.Name.CACHE_MODULE,
+    Types.Events.Name.CACHE_SCRIPT,
+    Types.Events.Name.CANCEL_ANIMATION_FRAME,
+    Types.Events.Name.CANCEL_IDLE_CALLBACK,
+    Types.Events.Name.COMMIT,
+    Types.Events.Name.COMPILE_CODE,
+    Types.Events.Name.COMPILE_MODULE,
+    Types.Events.Name.COMPILE,
+    Types.Events.Name.COMPOSITE_LAYERS,
+    Types.Events.Name.COMPUTE_INTERSECTION,
+    Types.Events.Name.CONSOLE_TIME,
+    Types.Events.Name.CPPGC_SWEEP,
+    Types.Events.Name.CRYPTO_DO_DECRYPT_REPLY,
+    Types.Events.Name.CRYPTO_DO_DECRYPT,
+    Types.Events.Name.CRYPTO_DO_DIGEST_REPLY,
+    Types.Events.Name.CRYPTO_DO_DIGEST,
+    Types.Events.Name.CRYPTO_DO_ENCRYPT_REPLY,
+    Types.Events.Name.CRYPTO_DO_ENCRYPT,
+    Types.Events.Name.CRYPTO_DO_SIGN_REPLY,
+    Types.Events.Name.CRYPTO_DO_SIGN,
+    Types.Events.Name.CRYPTO_DO_VERIFY_REPLY,
+    Types.Events.Name.CRYPTO_DO_VERIFY,
+    Types.Events.Name.DECODE_IMAGE,
+    Types.Events.Name.EMBEDDER_CALLBACK,
+    Types.Events.Name.EVALUATE_MODULE,
+    Types.Events.Name.EVALUATE_SCRIPT,
+    Types.Events.Name.EVENT_DISPATCH,
+    Types.Events.Name.EVENT_TIMING,
+    Types.Events.Name.FINALIZE_DESERIALIZATION,
+    Types.Events.Name.FIRE_ANIMATION_FRAME,
+    Types.Events.Name.FIRE_IDLE_CALLBACK,
+    Types.Events.Name.FUNCTION_CALL,
+    Types.Events.Name.GC_COLLECT_GARBARGE,
+    Types.Events.Name.GC,
+    Types.Events.Name.GPU_TASK,
+    Types.Events.Name.HANDLE_POST_MESSAGE,
+    Types.Events.Name.HIT_TEST,
+    Types.Events.Name.JS_SAMPLE,
+    Types.Events.Name.LAYERIZE,
+    Types.Events.Name.LAYOUT,
+    Types.Events.Name.MAJOR_GC,
+    Types.Events.Name.MINOR_GC,
+    Types.Events.Name.OPTIMIZE_CODE,
+    Types.Events.Name.PAINT_SETUP,
+    Types.Events.Name.PAINT,
+    Types.Events.Name.PARSE_AUTHOR_STYLE_SHEET,
+    Types.Events.Name.PARSE_HTML,
+    Types.Events.Name.PRE_PAINT,
+    Types.Events.Name.PROFILE_CALL,
+    Types.Events.Name.PROGRAM,
+    Types.Events.Name.RASTER_TASK,
+    Types.Events.Name.REQUEST_ANIMATION_FRAME,
+    Types.Events.Name.REQUEST_IDLE_CALLBACK,
+    Types.Events.Name.RESOURCE_FINISH,
+    Types.Events.Name.RESOURCE_RECEIVE_DATA,
+    Types.Events.Name.RESOURCE_RECEIVE_RESPONSE,
+    Types.Events.Name.RESOURCE_SEND_REQUEST,
+    Types.Events.Name.RESOURCE_WILL_SEND_REQUEST,
+    Types.Events.Name.RUN_MICROTASKS,
+    Types.Events.Name.RUN_POST_TASK_CALLBACK,
+    Types.Events.Name.RUN_TASK,
+    Types.Events.Name.SCHEDULE_POST_MESSAGE,
+    Types.Events.Name.SCHEDULE_POST_TASK_CALLBACK,
+    Types.Events.Name.SCHEDULE_STYLE_RECALCULATION,
+    Types.Events.Name.SCROLL_LAYER,
+    Types.Events.Name.START_PROFILING,
+    Types.Events.Name.STREAMING_COMPILE_SCRIPT_PARSING,
+    Types.Events.Name.STREAMING_COMPILE_SCRIPT_WAITING,
+    Types.Events.Name.STREAMING_COMPILE_SCRIPT,
+    Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT_CLUSTER,
+    Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT,
+    Types.Events.Name.TIME_STAMP,
+    Types.Events.Name.TIMER_FIRE,
+    Types.Events.Name.TIMER_INSTALL,
+    Types.Events.Name.TIMER_REMOVE,
+    Types.Events.Name.UPDATE_LAYER_TREE,
+    Types.Events.Name.RECALC_STYLE,
+    Types.Events.Name.USER_TIMING,
+    Types.Events.Name.V8_CONSOLE_RUN_TASK,
+    Types.Events.Name.WASM_CACHED_MODULE,
+    Types.Events.Name.WASM_COMPILED_MODULE,
+    Types.Events.Name.WASM_MODULE_CACHE_HIT,
+    Types.Events.Name.WASM_MODULE_CACHE_INVALID,
+    Types.Events.Name.WASM_STREAM_FROM_RESPONSE_CALLBACK,
+    Types.Events.Name.WEB_SOCKET_CREATE,
+    Types.Events.Name.WEB_SOCKET_DESTROY,
+    Types.Events.Name.WEB_SOCKET_RECEIVE_HANDSHAKE_REQUEST,
+    Types.Events.Name.WEB_SOCKET_RECEIVE,
+    Types.Events.Name.WEB_SOCKET_SEND_HANDSHAKE_REQUEST,
+    Types.Events.Name.WEB_SOCKET_SEND,
+    Types.Events.Name.XHR_LOAD,
+    Types.Events.Name.XHR_READY_STATE_CHANGED,
 ]);
 //# sourceMappingURL=Trace.js.map

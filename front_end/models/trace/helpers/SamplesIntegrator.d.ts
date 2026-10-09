@@ -55,7 +55,7 @@ export declare class SamplesIntegrator {
     static extractCpuProfileFromFakeTrace(traceEvents: readonly Types.Events.Event[]): Protocol.Profiler.Profile;
 }
 export declare namespace SamplesIntegrator {
-    const enum NativeGroups {
+    enum NativeGroups {
         COMPILE = "Compile",
         PARSE = "Parse"
     }

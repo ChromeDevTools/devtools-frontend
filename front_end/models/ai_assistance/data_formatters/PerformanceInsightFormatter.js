@@ -13,7 +13,7 @@ function getLCPData(parsedTrace, frameId, navigation) {
     if (!navMetrics) {
         return null;
     }
-    const metric = navMetrics.get("LCP" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */);
+    const metric = navMetrics.get(Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
     if (!metric || !Trace.Handlers.ModelHandlers.PageLoadMetrics.metricIsLCP(metric)) {
         return null;
     }

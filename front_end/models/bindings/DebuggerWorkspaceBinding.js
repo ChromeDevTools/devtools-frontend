@@ -112,6 +112,10 @@ export class DebuggerWorkspaceBinding {
             // Step out of an inlined function by stepping over its body.
             return { command: "StepOver" /* SDK.DebuggerModel.StepMode.STEP_OVER */, ranges };
         }
+        if (mode === "StepOver" /* SDK.DebuggerModel.StepMode.STEP_OVER */) {
+            // Enter outlined parts of the current function instead of stepping over the calls into them.
+            return { command: mode, ranges, enterRanges: SourceMapStepping.outlinedFunctionRanges(callFrames[0]) };
+        }
         return { command: mode, ranges };
     }
     modelAdded(debuggerModel) {

@@ -127,7 +127,7 @@ function finalize(partialModel) {
     let state = 'pass';
     if (partialModel.lcpMs !== undefined) {
         const classification = Handlers.ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(Helpers.Timing.milliToMicro(partialModel.lcpMs));
-        if (classification === "good" /* Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD */) {
+        if (classification === Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD) {
             state = 'informative';
         }
         else {
@@ -159,7 +159,7 @@ export function generateInsight(data, context) {
     if (!navMetrics) {
         throw new Error('no navigation metrics');
     }
-    const metricScore = navMetrics.get("LCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */);
+    const metricScore = navMetrics.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
     const lcpEvent = metricScore?.event;
     if (!lcpEvent || !Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
         return finalize({ warnings: [InsightWarning.NO_LCP] });

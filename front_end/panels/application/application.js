@@ -12840,7 +12840,7 @@ import * as Platform8 from "../../core/platform/platform.js";
 import * as SDK21 from "../../core/sdk/sdk.js";
 import * as SourceFrame5 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI26 from "../../ui/legacy/legacy.js";
-import { render as render16 } from "../../ui/lit/lit.js";
+import { nothing as nothing9, render as render16 } from "../../ui/lit/lit.js";
 import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/application/CookieItemsView.ts
@@ -15512,9 +15512,8 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     this.storageViewToolbar.classList.toggle("hidden", true);
     if (view instanceof UI26.View.SimpleView) {
       void view.toolbarItems().then((items) => {
-        if (Array.isArray(items)) {
-          items.map((item4) => this.storageViewToolbar.appendToolbarItem(item4));
-          this.storageViewToolbar.classList.toggle("hidden", !items.length);
+        if (items === nothing9) {
+          this.storageViewToolbar.classList.toggle("hidden", true);
         } else {
           render16(items, this.storageViewToolbar);
           this.storageViewToolbar.classList.toggle("hidden", false);
@@ -16546,7 +16545,7 @@ import * as UI29 from "../../ui/legacy/legacy.js";
 import {
   Directives as Directives7,
   html as html16,
-  nothing as nothing9,
+  nothing as nothing10,
   render as render17
 } from "../../ui/lit/lit.js";
 import * as VisualLogging19 from "../../ui/visual_logging/visual_logging.js";
@@ -17317,7 +17316,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
                             ${!input.selectedCall ? html16`
                     <th id="input" weight="30">${i18nString28(UIStrings28.input)}</th>
                     <th id="output" weight="30">${i18nString28(UIStrings28.output)}</th>
-                            ` : nothing9}
+                            ` : nothing10}
                   </tr>
                       ${Directives7.repeat(
     input.toolCalls,
@@ -17384,7 +17383,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
       e.stopPropagation();
       input.onCallSelect(call, "webmcp.call-outputs" /* OUTPUT */);
     }}>${call.result?.output !== void 0 ? JSON.stringify(call.result.output) : call.result?.errorText ?? ""}</td>
-                        ` : nothing9}
+                        ` : nothing10}
                     </tr>
                   `
   )}
@@ -17555,7 +17554,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
       });
     }
   }}>${i18nString28(UIStrings28.runTool)}</devtools-button>
-          ` : nothing9}
+          ` : nothing10}
         </div>
       </devtools-split-view>
     </devtools-split-view>
@@ -17789,7 +17788,7 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
 };
 var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
   if (input.valueObject === void 0 && input.valueString === void 0 && !input.errorText && !input.symbolizedError) {
-    render17(nothing9, target);
+    render17(nothing10, target);
     return;
   }
   const isParsable = input.valueObject !== void 0;
@@ -17806,7 +17805,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
           <ul role="tree">
             <li role=treeitem class="object-properties-section-root-element object-properties-section source-code" open>
               ${object.description}
-              ${object.hasChildren ? ObjectUI2.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing9}
+              ${object.hasChildren ? ObjectUI2.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing10}
             </li>
           </ul>
         `}></devtools-tree>`;
@@ -17815,7 +17814,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
   const createErrorText = (text) => html16`<div class="payload-value source-code error-text">${text}</div>`;
   const createException = (error) => {
     if (!error) {
-      return nothing9;
+      return nothing10;
     }
     return html16`
       <div class="payload-value source-code error-text">
@@ -17831,7 +17830,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
     <style>${symbolizedErrorWidget_css_default}</style>
     <div class="call-payload-view">
       <div class="call-payload-content">
-            ${isParsable ? createPayload(input.valueObject) : input.valueString !== void 0 ? createSourceText(input.valueString) : input.symbolizedError ? createException(input.symbolizedError) : input.errorText ? createErrorText(input.errorText) : nothing9}
+            ${isParsable ? createPayload(input.valueObject) : input.valueString !== void 0 ? createSourceText(input.valueString) : input.symbolizedError ? createException(input.symbolizedError) : input.errorText ? createErrorText(input.errorText) : nothing10}
       </div>
     </div>
   `,
@@ -17905,7 +17904,7 @@ var PayloadWidget = class extends UI29.Widget.Widget {
 };
 var TOOL_DETAILS_VIEW = (input, output, target) => {
   if (!input.tool) {
-    render17(nothing9, target);
+    render17(nothing10, target);
     return;
   }
   const tool = input.tool;
@@ -17926,11 +17925,11 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
       ${flags.length > 0 ? html16`
       <div class="label">${i18nString28(UIStrings28.flags)}</div>
       <div class="value">${formattedFlags}</div>
-      ` : nothing9}
+      ` : nothing10}
       ${tool.frame ? html16`
       <div class="label">${i18nString28(UIStrings28.frame)}</div>
       <div class="value">${Components4.Linkifier.Linkifier.linkifyRevealable(tool.frame, tool.frame.displayName())}</div>
-      ` : nothing9}
+      ` : nothing10}
       ${origin instanceof SDK23.DOMModel.DOMNode ? html16`
       <div class="label">${i18nString28(UIStrings28.origin)}</div>
       <div class="value tool-origin-container">
@@ -17962,7 +17961,7 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
     Components4.JSPresentationUtils.StackTracePreviewContent,
     { stackTrace: origin, options: { expandable: true } }
   )}
-      </div>` : nothing9}
+      </div>` : nothing10}
     </div>
     ${input.isUnregistered ? html16`
       <div class="call-to-action">
@@ -17973,7 +17972,7 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
           </div>
         </div>
       </div>
-    ` : nothing9}
+    ` : nothing10}
   `, target);
 };
 var ToolDetailsWidget = class extends UI29.Widget.Widget {

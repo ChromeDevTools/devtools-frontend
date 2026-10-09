@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../../core/platform/platform.js';
+import { nothing } from '../lit/lit.js';
 import { ViewManager } from './ViewManager.js';
 import { VBox } from './Widget.js';
 export class SimpleView extends VBox {
@@ -30,7 +31,7 @@ export class SimpleView extends VBox {
         return false;
     }
     toolbarItems() {
-        return Promise.resolve([]);
+        return Promise.resolve(nothing);
     }
     widget() {
         return Promise.resolve(this);

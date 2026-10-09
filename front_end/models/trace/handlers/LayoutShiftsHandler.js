@@ -5,6 +5,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 import { data as metaHandlerData } from './MetaHandler.js';
+import { ScoreClassification } from './PageLoadMetricsHandler.js';
 import { data as screenshotsHandlerData } from './ScreenshotsHandler.js';
 /**
  * This represents the maximum #time we will allow a cluster to go before we
@@ -279,7 +280,7 @@ async function buildLayoutShiftsClusters() {
                 ts: event.ts,
                 pid: event.pid,
                 tid: event.tid,
-                ph: "X" /* Types.Events.Phase.COMPLETE */,
+                ph: Types.Events.Phase.COMPLETE,
                 cat: '',
                 dur: Types.Timing.Micro(-1), // This `cluster.dur` is updated below.
             }));
@@ -298,7 +299,7 @@ async function buildLayoutShiftsClusters() {
         const shift = Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
             rawSourceEvent: event,
             ...event,
-            name: "SyntheticLayoutShift" /* Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT */,
+            name: Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT,
             args: {
                 frame: event.args.frame,
                 data: {
@@ -350,11 +351,11 @@ async function buildLayoutShiftsClusters() {
             // Update the the CLS score of this shift's session window now that
             // we have it.
             shift.parsedData.sessionWindowData.cumulativeWindowScore = cluster.clusterCumulativeScore;
-            if (weightedScore < 0.1 /* LayoutShiftsThreshold.NEEDS_IMPROVEMENT */) {
+            if (weightedScore < LayoutShiftsThreshold.NEEDS_IMPROVEMENT) {
                 // Expand the Good window.
                 updateTraceWindowMax(cluster.scoreWindows.good, ts);
             }
-            else if (weightedScore >= 0.1 /* LayoutShiftsThreshold.NEEDS_IMPROVEMENT */ && weightedScore < 0.25 /* LayoutShiftsThreshold.BAD */) {
+            else if (weightedScore >= LayoutShiftsThreshold.NEEDS_IMPROVEMENT && weightedScore < LayoutShiftsThreshold.BAD) {
                 if (!cluster.scoreWindows.needsImprovement) {
                     // Close the Good window, and open the needs improvement window.
                     updateTraceWindowMax(cluster.scoreWindows.good, Types.Timing.Micro(ts - 1));
@@ -363,7 +364,7 @@ async function buildLayoutShiftsClusters() {
                 // Expand the needs improvement window.
                 updateTraceWindowMax(cluster.scoreWindows.needsImprovement, ts);
             }
-            else if (weightedScore >= 0.25 /* LayoutShiftsThreshold.BAD */) {
+            else if (weightedScore >= LayoutShiftsThreshold.BAD) {
                 if (!cluster.scoreWindows.bad) {
                     // We may jump from Good to Bad here, so update whichever window is open.
                     if (cluster.scoreWindows.needsImprovement) {
@@ -437,12 +438,12 @@ export function deps() {
     return ['Screenshots', 'Meta'];
 }
 export function scoreClassificationForLayoutShift(score) {
-    let state = "good" /* ScoreClassification.GOOD */;
-    if (score >= 0.1 /* LayoutShiftsThreshold.NEEDS_IMPROVEMENT */) {
-        state = "ok" /* ScoreClassification.OK */;
+    let state = ScoreClassification.GOOD;
+    if (score >= LayoutShiftsThreshold.NEEDS_IMPROVEMENT) {
+        state = ScoreClassification.OK;
     }
-    if (score >= 0.25 /* LayoutShiftsThreshold.BAD */) {
-        state = "bad" /* ScoreClassification.BAD */;
+    if (score >= LayoutShiftsThreshold.BAD) {
+        state = ScoreClassification.BAD;
     }
     return state;
 }

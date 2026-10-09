@@ -55,6 +55,7 @@
     "../../../../../../front_end/panels/sources/CoveragePlugin.test.ts",
     "../../../../../../front_end/panels/sources/DebuggerPausedMessage.test.ts",
     "../../../../../../front_end/panels/sources/DebuggerPlugin.test.ts",
+    "../../../../../../front_end/panels/sources/EditorHistory.test.ts",
     "../../../../../../front_end/panels/sources/FilePathScoreFunction.test.ts",
     "../../../../../../front_end/panels/sources/FilteredUISourceCodeListProvider.test.ts",
     "../../../../../../front_end/panels/sources/NavigatorView.test.ts",

@@ -33,13 +33,13 @@ function isFrameEvent(event) {
 }
 function entryIsTopLevel(entry) {
     const devtoolsTimelineCategory = 'disabled-by-default-devtools.timeline';
-    return entry.name === "RunTask" /* Types.Events.Name.RUN_TASK */ && entry.cat.includes(devtoolsTimelineCategory);
+    return entry.name === Types.Events.Name.RUN_TASK && entry.cat.includes(devtoolsTimelineCategory);
 }
 const MAIN_FRAME_MARKERS = new Set([
-    "ScheduleStyleRecalculation" /* Types.Events.Name.SCHEDULE_STYLE_RECALCULATION */,
-    "InvalidateLayout" /* Types.Events.Name.INVALIDATE_LAYOUT */,
-    "BeginMainThreadFrame" /* Types.Events.Name.BEGIN_MAIN_THREAD_FRAME */,
-    "ScrollLayer" /* Types.Events.Name.SCROLL_LAYER */,
+    Types.Events.Name.SCHEDULE_STYLE_RECALCULATION,
+    Types.Events.Name.INVALIDATE_LAYOUT,
+    Types.Events.Name.BEGIN_MAIN_THREAD_FRAME,
+    Types.Events.Name.SCROLL_LAYER,
 ]);
 export function reset() {
     model = null;
@@ -95,7 +95,7 @@ export class TimelineFrameModel {
         // because Frames don't exist in a CPU Profile (which won't have Renderer
         // threads.)
         const mainThreads = Threads.threadsInRenderer(rendererData).filter(thread => {
-            return thread.type === "MAIN_THREAD" /* Threads.ThreadType.MAIN_THREAD */ && thread.processIsOnMainFrame;
+            return thread.type === Threads.ThreadType.MAIN_THREAD && thread.processIsOnMainFrame;
         });
         const threadData = mainThreads.map(thread => {
             return {
@@ -332,7 +332,7 @@ class TimelineFrame {
     // Types.Events.Event.
     cat = 'devtools.legacy_frame';
     name = 'frame';
-    ph = "X" /* Types.Events.Phase.COMPLETE */;
+    ph = Types.Events.Phase.COMPLETE;
     ts;
     pid = Types.Events.ProcessID(-1);
     tid = Types.Events.ThreadID(-1);

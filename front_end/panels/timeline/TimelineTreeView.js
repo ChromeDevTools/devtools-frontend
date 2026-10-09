@@ -304,7 +304,7 @@ export class TimelineTreeView extends TimelineTreeViewBase {
     init() {
         this.linkifier = new Components.Linkifier.Linkifier();
         this.taskFilter = new Trace.Extras.TraceFilter.ExclusiveNameFilter([
-            "RunTask" /* Trace.Types.Events.Name.RUN_TASK */,
+            Trace.Types.Events.Name.RUN_TASK,
         ]);
         this.textFilterInternal = new TimelineRegExp();
         const columns = [];

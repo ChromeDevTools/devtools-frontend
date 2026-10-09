@@ -5,7 +5,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Types from '../types/types.js';
 import { data as metaData } from './MetaHandler.js';
 import { data as networkRequestsData } from './NetworkRequestsHandler.js';
-import { data as pageLoadMetricsData } from './PageLoadMetricsHandler.js';
+import { data as pageLoadMetricsData, MetricName } from './PageLoadMetricsHandler.js';
 /**
  * If the LCP resource was an image, and that image was fetched over the
  * network, we want to be able to find the network request in order to construct
@@ -43,7 +43,7 @@ export async function finalize() {
     const { traceBounds, navigationsByNavigationId } = metaData();
     const metricScoresByFrameId = pageLoadMetricsData().metricScoresByFrameId;
     for (const [navigationId, navigation] of navigationsByNavigationId) {
-        const lcpMetric = metricScoresByFrameId.get(navigation.args.frame)?.get(navigation)?.get("LCP" /* MetricName.LCP */);
+        const lcpMetric = metricScoresByFrameId.get(navigation.args.frame)?.get(navigation)?.get(MetricName.LCP);
         const lcpEvent = lcpMetric?.event;
         if (!lcpEvent || !Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
             continue;

@@ -265,9 +265,12 @@ var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
     return !isImage || !isLowPriority;
   }
   static getOptimisticGraph(dependencyGraph, processedNavigation) {
-    const lcp = processedNavigation.timestamps.largestContentfulPaint;
+    const { firstContentfulPaint: fcp, largestContentfulPaint: lcp } = processedNavigation.timestamps;
     if (!lcp) {
       throw new Core3.LanternError("NO_LCP");
+    }
+    if (fcp === lcp && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === "text") {
+      return FirstContentfulPaint.getOptimisticGraph(dependencyGraph, processedNavigation);
     }
     return FirstContentfulPaint.getFirstPaintBasedGraph(dependencyGraph, {
       cutoffTimestamp: lcp,
@@ -275,9 +278,12 @@ var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
     });
   }
   static getPessimisticGraph(dependencyGraph, processedNavigation) {
-    const lcp = processedNavigation.timestamps.largestContentfulPaint;
+    const { firstContentfulPaint: fcp, largestContentfulPaint: lcp } = processedNavigation.timestamps;
     if (!lcp) {
       throw new Core3.LanternError("NO_LCP");
+    }
+    if (fcp === lcp && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === "text") {
+      return FirstContentfulPaint.getPessimisticGraph(dependencyGraph, processedNavigation);
     }
     return FirstContentfulPaint.getFirstPaintBasedGraph(dependencyGraph, {
       cutoffTimestamp: lcp,

@@ -97,77 +97,77 @@ export var LayoutShiftType;
 const ACTIONABLE_FAILURE_REASONS = [
     {
         flag: 1 << 0,
-        failure: "ACCELERATED_ANIMATIONS_DISABLED" /* AnimationFailureReasons.ACCELERATED_ANIMATIONS_DISABLED */,
+        failure: AnimationFailureReasons.ACCELERATED_ANIMATIONS_DISABLED,
     },
     {
         flag: 1 << 1,
-        failure: "EFFECT_SUPPRESSED_BY_DEVTOOLS" /* AnimationFailureReasons.EFFECT_SUPPRESSED_BY_DEVTOOLS */,
+        failure: AnimationFailureReasons.EFFECT_SUPPRESSED_BY_DEVTOOLS,
     },
     {
         flag: 1 << 2,
-        failure: "INVALID_ANIMATION_OR_EFFECT" /* AnimationFailureReasons.INVALID_ANIMATION_OR_EFFECT */,
+        failure: AnimationFailureReasons.INVALID_ANIMATION_OR_EFFECT,
     },
     {
         flag: 1 << 3,
-        failure: "EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS" /* AnimationFailureReasons.EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS */,
+        failure: AnimationFailureReasons.EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS,
     },
     {
         flag: 1 << 4,
-        failure: "EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE" /* AnimationFailureReasons.EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE */,
+        failure: AnimationFailureReasons.EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE,
     },
     {
         flag: 1 << 5,
-        failure: "TARGET_HAS_INVALID_COMPOSITING_STATE" /* AnimationFailureReasons.TARGET_HAS_INVALID_COMPOSITING_STATE */,
+        failure: AnimationFailureReasons.TARGET_HAS_INVALID_COMPOSITING_STATE,
     },
     {
         flag: 1 << 6,
-        failure: "TARGET_HAS_INCOMPATIBLE_ANIMATIONS" /* AnimationFailureReasons.TARGET_HAS_INCOMPATIBLE_ANIMATIONS */,
+        failure: AnimationFailureReasons.TARGET_HAS_INCOMPATIBLE_ANIMATIONS,
     },
     {
         flag: 1 << 7,
-        failure: "TARGET_HAS_CSS_OFFSET" /* AnimationFailureReasons.TARGET_HAS_CSS_OFFSET */,
+        failure: AnimationFailureReasons.TARGET_HAS_CSS_OFFSET,
     },
     // The failure 1 << 8 is marked as obsolete in Blink
     {
         flag: 1 << 9,
-        failure: "ANIMATION_AFFECTS_NON_CSS_PROPERTIES" /* AnimationFailureReasons.ANIMATION_AFFECTS_NON_CSS_PROPERTIES */,
+        failure: AnimationFailureReasons.ANIMATION_AFFECTS_NON_CSS_PROPERTIES,
     },
     {
         flag: 1 << 10,
-        failure: "TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET" /* AnimationFailureReasons.TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET */,
+        failure: AnimationFailureReasons.TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET,
     },
     {
         flag: 1 << 11,
-        failure: "TRANSFROM_BOX_SIZE_DEPENDENT" /* AnimationFailureReasons.TRANSFROM_BOX_SIZE_DEPENDENT */,
+        failure: AnimationFailureReasons.TRANSFROM_BOX_SIZE_DEPENDENT,
     },
     {
         flag: 1 << 12,
-        failure: "FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS" /* AnimationFailureReasons.FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS */,
+        failure: AnimationFailureReasons.FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS,
     },
     {
         flag: 1 << 13,
-        failure: "UNSUPPORTED_CSS_PROPERTY" /* AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY */,
+        failure: AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY,
     },
     // The failure 1 << 14 is marked as obsolete in Blink
     {
         flag: 1 << 15,
-        failure: "MIXED_KEYFRAME_VALUE_TYPES" /* AnimationFailureReasons.MIXED_KEYFRAME_VALUE_TYPES */,
+        failure: AnimationFailureReasons.MIXED_KEYFRAME_VALUE_TYPES,
     },
     {
         flag: 1 << 16,
-        failure: "TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE" /* AnimationFailureReasons.TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE */,
+        failure: AnimationFailureReasons.TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE,
     },
     {
         flag: 1 << 17,
-        failure: "ANIMATION_HAS_NO_VISIBLE_CHANGE" /* AnimationFailureReasons.ANIMATION_HAS_NO_VISIBLE_CHANGE */,
+        failure: AnimationFailureReasons.ANIMATION_HAS_NO_VISIBLE_CHANGE,
     },
     {
         flag: 1 << 18,
-        failure: "AFFECTS_IMPORTANT_PROPERTY" /* AnimationFailureReasons.AFFECTS_IMPORTANT_PROPERTY */,
+        failure: AnimationFailureReasons.AFFECTS_IMPORTANT_PROPERTY,
     },
     {
         flag: 1 << 19,
-        failure: "SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY" /* AnimationFailureReasons.SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY */,
+        failure: AnimationFailureReasons.SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY,
     },
 ];
 // 500ms window.
@@ -408,17 +408,17 @@ function getTopCulprits(cluster, culpritsByShift) {
         const animations = culprits.nonCompositedAnimations;
         const unsizedImages = culprits.unsizedImages;
         for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
-            causes.push({ type: 0 /* LayoutShiftType.WEB_FONT */, description: i18nString(UIStrings.webFont) });
+            causes.push({ type: LayoutShiftType.WEB_FONT, description: i18nString(UIStrings.webFont) });
         }
         for (let i = 0; i < iframes.length && causes.length < MAX_TOP_CULPRITS; i++) {
-            causes.push({ type: 1 /* LayoutShiftType.IFRAMES */, description: i18nString(UIStrings.injectedIframe) });
+            causes.push({ type: LayoutShiftType.IFRAMES, description: i18nString(UIStrings.injectedIframe) });
         }
         for (let i = 0; i < animations.length && causes.length < MAX_TOP_CULPRITS; i++) {
-            causes.push({ type: 2 /* LayoutShiftType.ANIMATIONS */, description: i18nString(UIStrings.animation) });
+            causes.push({ type: LayoutShiftType.ANIMATIONS, description: i18nString(UIStrings.animation) });
         }
         for (let i = 0; i < unsizedImages.length && causes.length < MAX_TOP_CULPRITS; i++) {
             causes.push({
-                type: 3 /* LayoutShiftType.UNSIZED_IMAGE */,
+                type: LayoutShiftType.UNSIZED_IMAGE,
                 description: i18nString(UIStrings.unsizedImage),
                 url: unsizedImages[i].paintImageEvent.args.data.url || '',
                 backendNodeId: unsizedImages[i].backendNodeId,
@@ -435,7 +435,7 @@ function finalize(partialModel) {
     let state = 'pass';
     if (partialModel.worstCluster) {
         const classification = Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(partialModel.worstCluster.clusterCumulativeScore);
-        if (classification === "good" /* Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD */) {
+        if (classification === Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD) {
             state = 'informative';
         }
         else {

@@ -138,10 +138,10 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/source_frame/SourceFrame.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var Events = /* @__PURE__ */ ((Events2) => {
-  Events2["EDITOR_UPDATE"] = "EditorUpdate";
-  Events2["EDITOR_SCROLL"] = "EditorScroll";
-  return Events2;
+var Events = /* @__PURE__ */ ((Events3) => {
+  Events3["EDITOR_UPDATE"] = "EditorUpdate";
+  Events3["EDITOR_SCROLL"] = "EditorScroll";
+  return Events3;
 })(Events || {});
 var LINE_NUMBER_FORMATTER = CodeMirror.Facet.define({
   combine(value) {
@@ -1578,6 +1578,7 @@ var fontId = 0;
 var ImageView_exports = {};
 __export(ImageView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  Events: () => Events2,
   ImageView: () => ImageView
 });
 import "../../../kit/kit.js";
@@ -1689,6 +1690,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
           src=${input.imageSrc}
           alt=${i18nString4(UIStrings4.imageFromS, { PH1: input.url })}
           @load=${input.onImageLoad}
+          @error=${input.onImageError}
           @contextmenu=${{ handleEvent: input.onContextMenu, capture: true }}
         >` : html3`
         <img
@@ -1714,19 +1716,27 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     }
   });
 };
-var ImageView = class extends UI5.View.SimpleView {
+var Events2 = /* @__PURE__ */ ((Events3) => {
+  Events3["TOOLBAR_ITEMS_CHANGED"] = "ToolbarItemsChanged";
+  return Events3;
+})(Events2 || {});
+var ImageViewBase = Common3.ObjectWrapper.eventMixin(
+  UI5.View.SimpleView
+);
+var ImageView = class extends ImageViewBase {
   url;
   parsedURL;
   contentProvider;
   uiSourceCode;
-  sizeLabel;
-  dimensionsLabel;
-  aspectRatioLabel;
+  #size = "";
+  #dimensions = "";
+  #aspectRatio = "";
   #mimeType;
   cachedContent;
   #view;
   #imageSrc = null;
   #isUnavailable = false;
+  #loadPromise;
   #loadResolve;
   constructor(mimeType, contentProvider, view = DEFAULT_VIEW2) {
     super({
@@ -1752,9 +1762,6 @@ var ImageView = class extends UI5.View.SimpleView {
         this.handleDrop.bind(this)
       );
     }
-    this.sizeLabel = new UI5.Toolbar.ToolbarText();
-    this.dimensionsLabel = new UI5.Toolbar.ToolbarText();
-    this.aspectRatioLabel = new UI5.Toolbar.ToolbarText();
     this.#mimeType = mimeType;
     this.performUpdate();
   }
@@ -1765,6 +1772,7 @@ var ImageView = class extends UI5.View.SimpleView {
         imageSrc: this.#imageSrc,
         isUnavailable: this.#isUnavailable,
         onImageLoad: this.#onImageLoad,
+        onImageError: this.#onImageError,
         onContextMenu: this.contextMenu.bind(this)
       },
       void 0,
@@ -1773,19 +1781,27 @@ var ImageView = class extends UI5.View.SimpleView {
   }
   #onImageLoad = (event) => {
     const img = event.target;
-    this.dimensionsLabel.setText(i18nString4(UIStrings4.dD, { PH1: img.naturalWidth, PH2: img.naturalHeight }));
-    this.aspectRatioLabel.setText(Platform2.NumberUtilities.aspectRatio(img.naturalWidth, img.naturalHeight));
+    this.#dimensions = i18nString4(UIStrings4.dD, { PH1: img.naturalWidth, PH2: img.naturalHeight });
+    this.#aspectRatio = Platform2.NumberUtilities.aspectRatio(img.naturalWidth, img.naturalHeight);
     this.#loadResolve?.();
     this.#loadResolve = void 0;
+    this.#loadPromise = void 0;
+  };
+  #onImageError = () => {
+    this.#dimensions = "";
+    this.#aspectRatio = "";
+    this.#loadResolve?.();
+    this.#loadResolve = void 0;
+    this.#loadPromise = void 0;
   };
   async toolbarItems() {
     await this.updateContentIfNeeded();
     return html3`
-      ${this.sizeLabel.element}
+      <div class="toolbar-text">${this.#size}</div>
       <div class="toolbar-divider"></div>
-      ${this.dimensionsLabel.element}
+      <div class="toolbar-text">${this.#dimensions}</div>
       <div class="toolbar-divider"></div>
-      ${this.aspectRatioLabel.element}
+      <div class="toolbar-text">${this.#aspectRatio}</div>
       <div class="toolbar-divider"></div>
       <div class="toolbar-text">${this.#mimeType}</div>
     `;
@@ -1805,30 +1821,39 @@ var ImageView = class extends UI5.View.SimpleView {
     }
   }
   workingCopyCommitted() {
-    void this.updateContentIfNeeded();
+    void this.updateContentIfNeeded().then(() => {
+      this.dispatchEventToListeners("ToolbarItemsChanged" /* TOOLBAR_ITEMS_CHANGED */);
+    });
   }
   async updateContentIfNeeded() {
     const content = await this.contentProvider.requestContentData();
     if (TextUtils7.ContentData.ContentData.isError(content) || this.cachedContent?.contentEqualTo(content)) {
+      await this.#loadPromise;
       return;
     }
     this.cachedContent = content;
+    this.#loadResolve?.();
+    this.#loadResolve = void 0;
+    this.#loadPromise = void 0;
     const imageSrc = content.asImagePreviewUrl();
     if (imageSrc === null) {
       this.#isUnavailable = true;
       this.#imageSrc = null;
+      this.#size = "";
+      this.#dimensions = "";
+      this.#aspectRatio = "";
       this.performUpdate();
       return;
     }
     this.#isUnavailable = false;
-    const loadPromise = new Promise((resolve) => {
+    this.#loadPromise = new Promise((resolve) => {
       this.#loadResolve = resolve;
     });
     this.#imageSrc = imageSrc;
     const size = content.isTextContent ? content.text.length : Platform2.StringUtilities.base64ToSize(content.base64);
-    this.sizeLabel.setText(i18n7.ByteUtilities.bytesToString(size));
+    this.#size = i18n7.ByteUtilities.bytesToString(size);
     this.performUpdate();
-    await loadPromise;
+    await this.#loadPromise;
   }
   contextMenu(event) {
     const contextMenu = new UI5.ContextMenu.ContextMenu(event);

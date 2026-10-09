@@ -22,7 +22,7 @@ export function handleEvent(event) {
          * event.
          */
         if (event.args.data.subtree &&
-            event.args.data.reason === "Related style rule" /* Types.Events.StyleRecalcInvalidationReason.RELATED_STYLE_RULE */ &&
+            event.args.data.reason === Types.Events.StyleRecalcInvalidationReason.RELATED_STYLE_RULE &&
             lastInvalidatedNode && event.args.data.nodeId === lastInvalidatedNode.backendNodeId) {
             lastInvalidatedNode.subtree = true;
             return;
@@ -46,7 +46,7 @@ export function handleEvent(event) {
             lastInvalidatedNode = {
                 frame: event.args.data.frame,
                 backendNodeId: event.args.data.nodeId,
-                type: "StyleInvalidatorInvalidationTracking" /* Types.Events.InvalidationEventType.StyleInvalidatorInvalidationTracking */,
+                type: Types.Events.InvalidationEventType.StyleInvalidatorInvalidationTracking,
                 selectorList,
                 ts: event.ts,
                 tts: event.tts,

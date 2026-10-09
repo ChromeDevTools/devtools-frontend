@@ -272,7 +272,7 @@ export class Overlays extends EventTarget {
     // because `overlaysContainer` doesn't have events to enable the interaction with the
     // Flamecharts beneath it.
     #updateMouseCoordinatesProgressEntriesLink(event, chart) {
-        if (this.#entriesLinkInProgress?.state !== "pending_to_event" /* Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT */) {
+        if (this.#entriesLinkInProgress?.state !== Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT) {
             return;
         }
         const mouseEvent = event;
@@ -862,7 +862,7 @@ export class Overlays extends EventTarget {
             }
             // If `fromEntry` is not visible and the link creation is not started yet, meaning that
             // only the button to create the link is displayed, delete the whole overlay.
-            if (!entryFromVisibility && overlay.state === "creation_not_started" /* Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED */) {
+            if (!entryFromVisibility && overlay.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
                 this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
             }
             // If entryTo exists, pass the coordinates and dimensions of the entry that the arrow snaps to.
@@ -1287,7 +1287,7 @@ export class Overlays extends EventTarget {
                 const entryHeight = this.pixelHeightForEventOnChart(entries.entryFrom) ?? 0;
                 const component = new Components.EntriesLinkOverlay.EntriesLinkOverlay({ x: entryEndX, y: entryStartY, width: entryWidth, height: entryHeight }, overlay.state);
                 component.addEventListener(Components.EntriesLinkOverlay.EntryLinkStartCreating.eventName, () => {
-                    overlay.state = "pending_to_event" /* Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT */;
+                    overlay.state = Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT;
                     this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Update'));
                 });
                 overlayElement.appendChild(component);
@@ -1824,7 +1824,7 @@ export function jsLogContext(overlay) {
         }
         case 'ENTRIES_LINK': {
             // do not log impressions for incomplete entry links
-            if (overlay.state !== "connected" /* Trace.Types.File.EntriesLinkState.CONNECTED */) {
+            if (overlay.state !== Trace.Types.File.EntriesLinkState.CONNECTED) {
                 return null;
             }
             return 'timeline.overlays.entries-link';

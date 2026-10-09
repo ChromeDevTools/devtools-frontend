@@ -14,6 +14,11 @@ export declare function inlinedFunctionRanges(frame: SDK.DebuggerModel.CallFrame
 /** @returns the bodies of the functions inlined into the logical function that {@link frame} is paused in. */
 export declare function inlinedCalleeRanges(frame: SDK.DebuggerModel.CallFrame): SDK.DebuggerModel.LocationRange[];
 /**
+ * @returns the bodies of the outlined parts of the logical function that {@link frame} is paused in. A step over
+ *          enters them (`enterRanges`), as stepping over a call into them would skip authored code of that function.
+ */
+export declare function outlinedFunctionRanges(frame: SDK.DebuggerModel.CallFrame): SDK.DebuggerModel.LocationRange[];
+/**
  * Decides whether the pause {@link details} completes the user's step {@link context}.
  *
  * @returns null to present the pause, or the step to issue instead.

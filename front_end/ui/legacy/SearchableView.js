@@ -135,6 +135,7 @@ function createClearButton(jslogContext) {
 }
 export class SearchableView extends VBox {
     #searchProvider;
+    #searchTarget = null;
     replaceProvider = null;
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -275,6 +276,18 @@ export class SearchableView extends VBox {
         }
         this.#searchProvider = searchable;
         this.#updateSearchConfigButtons();
+    }
+    get searchTarget() {
+        return this.#searchTarget;
+    }
+    set searchTarget(target) {
+        if (this.#searchTarget === target) {
+            return;
+        }
+        this.#searchTarget?.setSearchableView?.(null);
+        this.#searchTarget = target;
+        this.#searchTarget?.setSearchableView?.(this);
+        this.refreshSearch();
     }
     set settingName(settingName) {
         if (this.setting?.name === settingName) {

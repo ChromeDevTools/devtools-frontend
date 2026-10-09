@@ -57,6 +57,7 @@
     "../../../../../../front_end/panels/sources/DebuggerPausedMessage.ts",
     "../../../../../../front_end/panels/sources/DebuggerPlugin.ts",
     "../../../../../../front_end/panels/sources/EditingLocationHistoryManager.ts",
+    "../../../../../../front_end/panels/sources/EditorHistory.ts",
     "../../../../../../front_end/panels/sources/FilePathScoreFunction.ts",
     "../../../../../../front_end/panels/sources/FilteredUISourceCodeListProvider.ts",
     "../../../../../../front_end/panels/sources/GoToLineQuickOpen.ts",

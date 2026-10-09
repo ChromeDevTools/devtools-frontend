@@ -87,7 +87,7 @@ export class ThreadAppender {
     #threadDefaultName;
     #expanded = false;
     #headerAppended = false;
-    threadType = "MAIN_THREAD" /* Trace.Handlers.Threads.ThreadType.MAIN_THREAD */;
+    threadType = Trace.Handlers.Threads.ThreadType.MAIN_THREAD;
     isOnMainFrame;
     #showAllEventsEnabled = Common.Settings.Settings.instance()
         .resolve(SettingsUI.TimelineSettings.timelineShowAllEventsSettingDescriptor)
@@ -154,8 +154,8 @@ export class ThreadAppender {
         if (this.#headerAppended) {
             return;
         }
-        if (this.threadType === "RASTERIZER" /* Trace.Handlers.Threads.ThreadType.RASTERIZER */ ||
-            this.threadType === "THREAD_POOL" /* Trace.Handlers.Threads.ThreadType.THREAD_POOL */) {
+        if (this.threadType === Trace.Handlers.Threads.ThreadType.RASTERIZER ||
+            this.threadType === Trace.Handlers.Threads.ThreadType.THREAD_POOL) {
             this.#appendGroupedTrackHeaderAndTitle(trackStartLevel, this.threadType);
         }
         else {
@@ -194,17 +194,17 @@ export class ThreadAppender {
     }
     #visualLoggingNameForThread() {
         switch (this.threadType) {
-            case "MAIN_THREAD" /* Trace.Handlers.Threads.ThreadType.MAIN_THREAD */:
+            case Trace.Handlers.Threads.ThreadType.MAIN_THREAD:
                 return this.isOnMainFrame ? "thread.main" /* VisualLoggingTrackName.THREAD_MAIN */ : "thread.frame" /* VisualLoggingTrackName.THREAD_FRAME */;
-            case "WORKER" /* Trace.Handlers.Threads.ThreadType.WORKER */:
+            case Trace.Handlers.Threads.ThreadType.WORKER:
                 return "thread.worker" /* VisualLoggingTrackName.THREAD_WORKER */;
-            case "RASTERIZER" /* Trace.Handlers.Threads.ThreadType.RASTERIZER */:
+            case Trace.Handlers.Threads.ThreadType.RASTERIZER:
                 return "thread.rasterizer" /* VisualLoggingTrackName.THREAD_RASTERIZER */;
-            case "OTHER" /* Trace.Handlers.Threads.ThreadType.OTHER */:
+            case Trace.Handlers.Threads.ThreadType.OTHER:
                 return "thread.other" /* VisualLoggingTrackName.THREAD_OTHER */;
-            case "CPU_PROFILE" /* Trace.Handlers.Threads.ThreadType.CPU_PROFILE */:
+            case Trace.Handlers.Threads.ThreadType.CPU_PROFILE:
                 return "thread.cpu-profile" /* VisualLoggingTrackName.THREAD_CPU_PROFILE */;
-            case "THREAD_POOL" /* Trace.Handlers.Threads.ThreadType.THREAD_POOL */:
+            case Trace.Handlers.Threads.ThreadType.THREAD_POOL:
                 return "thread.pool" /* VisualLoggingTrackName.THREAD_POOL */;
             default:
                 return null;
@@ -231,7 +231,7 @@ export class ThreadAppender {
         // Nesting is set to 1 because the track is appended inside the
         // header for all raster threads.
         const titleStyle = buildGroupStyle({ padding: 2, nestingLevel: 1, collapsible: 1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */ });
-        const rasterizerTitle = this.threadType === "RASTERIZER" /* Trace.Handlers.Threads.ThreadType.RASTERIZER */ ?
+        const rasterizerTitle = this.threadType === Trace.Handlers.Threads.ThreadType.RASTERIZER ?
             i18nString(UIStrings.rasterizerThreadS, { PH1: currentTrackCount + 1 }) :
             i18nString(UIStrings.threadPoolThreadS, { PH1: currentTrackCount + 1 });
         const visualLoggingName = this.#visualLoggingNameForThread();
@@ -241,23 +241,23 @@ export class ThreadAppender {
     trackName() {
         let threadTypeLabel = null;
         switch (this.threadType) {
-            case "MAIN_THREAD" /* Trace.Handlers.Threads.ThreadType.MAIN_THREAD */:
+            case Trace.Handlers.Threads.ThreadType.MAIN_THREAD:
                 threadTypeLabel = this.isOnMainFrame ? i18nString(UIStrings.mainS, { PH1: this.#url }) :
                     i18nString(UIStrings.frameS, { PH1: this.#url });
                 break;
-            case "CPU_PROFILE" /* Trace.Handlers.Threads.ThreadType.CPU_PROFILE */:
+            case Trace.Handlers.Threads.ThreadType.CPU_PROFILE:
                 threadTypeLabel = i18nString(UIStrings.main);
                 break;
-            case "WORKER" /* Trace.Handlers.Threads.ThreadType.WORKER */:
+            case Trace.Handlers.Threads.ThreadType.WORKER:
                 threadTypeLabel = this.#buildNameForWorker();
                 break;
-            case "RASTERIZER" /* Trace.Handlers.Threads.ThreadType.RASTERIZER */:
+            case Trace.Handlers.Threads.ThreadType.RASTERIZER:
                 threadTypeLabel = i18nString(UIStrings.raster);
                 break;
-            case "THREAD_POOL" /* Trace.Handlers.Threads.ThreadType.THREAD_POOL */:
+            case Trace.Handlers.Threads.ThreadType.THREAD_POOL:
                 threadTypeLabel = i18nString(UIStrings.threadPool);
                 break;
-            case "OTHER" /* Trace.Handlers.Threads.ThreadType.OTHER */:
+            case Trace.Handlers.Threads.ThreadType.OTHER:
                 break;
             default:
                 return Platform.assertNever(this.threadType, `Unknown thread type: ${this.threadType}`);

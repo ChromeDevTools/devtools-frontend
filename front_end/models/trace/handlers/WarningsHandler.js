@@ -46,7 +46,7 @@ function storeWarning(event, warning) {
 }
 export function handleEvent(event) {
     processForcedReflowWarning(event);
-    if (event.name === "RunTask" /* Types.Events.Name.RUN_TASK */) {
+    if (event.name === Types.Events.Name.RUN_TASK) {
         const { duration } = Helpers.Timing.eventTimingsMicroSeconds(event);
         if (duration > LONG_MAIN_THREAD_TASK_THRESHOLD) {
             longTaskEvents.push(event);
@@ -74,7 +74,7 @@ function processForcedReflowWarning(event) {
     accomodateEventInStack(event, jsInvokeStack, /* pushEventToStack */ Types.Events.isJSInvocationEvent(event));
     if (jsInvokeStack.length) {
         // Current event falls inside a JS call.
-        if (event.name === "Layout" /* Types.Events.Name.LAYOUT */ || event.name === "UpdateLayoutTree" /* Types.Events.Name.RECALC_STYLE */) {
+        if (event.name === Types.Events.Name.LAYOUT || event.name === Types.Events.Name.RECALC_STYLE) {
             // A forced reflow happened. However we need to check if
             // the threshold is surpassed to add a warning. Accumulate the
             // event to check for this after the current Task is over.

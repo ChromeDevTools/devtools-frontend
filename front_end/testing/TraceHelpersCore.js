@@ -14,7 +14,7 @@ export const defaultTraceEvent = {
     pid: Trace.Types.Events.ProcessID(0),
     ts: Trace.Types.Timing.Micro(0),
     cat: 'test',
-    ph: "M" /* Trace.Types.Events.Phase.METADATA */,
+    ph: Trace.Types.Events.Phase.METADATA,
 };
 /**
  * Gets the tree in a thread.
@@ -90,7 +90,7 @@ export function makeCompleteEvent(name, ts, dur, cat = '*', pid = 0, tid = 0) {
         args: {},
         cat,
         name,
-        ph: "X" /* Trace.Types.Events.Phase.COMPLETE */,
+        ph: Trace.Types.Events.Phase.COMPLETE,
         pid: Trace.Types.Events.ProcessID(pid),
         tid: Trace.Types.Events.ThreadID(tid),
         ts: Trace.Types.Timing.Micro(ts),
@@ -102,7 +102,7 @@ export function makeAsyncStartEvent(name, ts, pid = 0, tid = 0) {
         args: {},
         cat: '*',
         name,
-        ph: "b" /* Trace.Types.Events.Phase.ASYNC_NESTABLE_START */,
+        ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
         pid: Trace.Types.Events.ProcessID(pid),
         tid: Trace.Types.Events.ThreadID(tid),
         ts: Trace.Types.Timing.Micro(ts),
@@ -113,7 +113,7 @@ export function makeAsyncEndEvent(name, ts, pid = 0, tid = 0) {
         args: {},
         cat: '*',
         name,
-        ph: "e" /* Trace.Types.Events.Phase.ASYNC_NESTABLE_END */,
+        ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_END,
         pid: Trace.Types.Events.ProcessID(pid),
         tid: Trace.Types.Events.ThreadID(tid),
         ts: Trace.Types.Timing.Micro(ts),
@@ -146,23 +146,23 @@ export function makeFlowEvents(events, flowId = 0) {
         return [];
     }
     const flowName = firstEvent.name;
-    const flowStart = makeFlowPhaseEvent(flowName, firstEvent.ts, firstEvent.cat, "s" /* Trace.Types.Events.Phase.FLOW_START */, flowId, firstEvent.pid, firstEvent.tid);
-    const flowEnd = makeFlowPhaseEvent(flowName, lastEvent.ts, lastEvent.cat, "f" /* Trace.Types.Events.Phase.FLOW_END */, flowId, lastEvent.pid, lastEvent.tid);
+    const flowStart = makeFlowPhaseEvent(flowName, firstEvent.ts, firstEvent.cat, Trace.Types.Events.Phase.FLOW_START, flowId, firstEvent.pid, firstEvent.tid);
+    const flowEnd = makeFlowPhaseEvent(flowName, lastEvent.ts, lastEvent.cat, Trace.Types.Events.Phase.FLOW_END, flowId, lastEvent.pid, lastEvent.tid);
     const flowSteps = [];
     for (let i = 1; i < events.length - 1; i++) {
-        flowSteps.push(makeFlowPhaseEvent(flowName, events[i].ts, events[i].cat, "t" /* Trace.Types.Events.Phase.FLOW_STEP */, flowId, events[i].pid, events[i].tid));
+        flowSteps.push(makeFlowPhaseEvent(flowName, events[i].ts, events[i].cat, Trace.Types.Events.Phase.FLOW_STEP, flowId, events[i].pid, events[i].tid));
     }
     return [flowStart, ...flowSteps, flowEnd];
 }
 /**
  * Builds a mock Instant.
  */
-export function makeInstantEvent(name, tsMicroseconds, cat = '', pid = 0, tid = 0, s = "t" /* Trace.Types.Events.Scope.THREAD */) {
+export function makeInstantEvent(name, tsMicroseconds, cat = '', pid = 0, tid = 0, s = Trace.Types.Events.Scope.THREAD) {
     return {
         args: {},
         cat,
         name,
-        ph: "I" /* Trace.Types.Events.Phase.INSTANT */,
+        ph: Trace.Types.Events.Phase.INSTANT,
         pid: Trace.Types.Events.ProcessID(pid),
         tid: Trace.Types.Events.ThreadID(tid),
         ts: Trace.Types.Timing.Micro(tsMicroseconds),
@@ -177,7 +177,7 @@ export function makeBeginEvent(name, ts, cat = '*', pid = 0, tid = 0) {
         args: {},
         cat,
         name,
-        ph: "B" /* Trace.Types.Events.Phase.BEGIN */,
+        ph: Trace.Types.Events.Phase.BEGIN,
         pid: Trace.Types.Events.ProcessID(pid),
         tid: Trace.Types.Events.ThreadID(tid),
         ts: Trace.Types.Timing.Micro(ts),
@@ -191,7 +191,7 @@ export function makeEndEvent(name, ts, cat = '*', pid = 0, tid = 0) {
         args: {},
         cat,
         name,
-        ph: "E" /* Trace.Types.Events.Phase.END */,
+        ph: Trace.Types.Events.Phase.END,
         pid: Trace.Types.Events.ProcessID(pid),
         tid: Trace.Types.Events.ThreadID(tid),
         ts: Trace.Types.Timing.Micro(ts),
@@ -204,7 +204,7 @@ export function makeProfileCall(functionName, tsUs, durUs, pid = 0, tid = 0, nod
         nodeId,
         sampleIndex: 0,
         profileId: Trace.Types.Events.ProfileID('fake-profile-id'),
-        ph: "X" /* Trace.Types.Events.Phase.COMPLETE */,
+        ph: Trace.Types.Events.Phase.COMPLETE,
         pid: Trace.Types.Events.ProcessID(pid),
         tid: Trace.Types.Events.ThreadID(tid),
         ts: Trace.Types.Timing.Micro(tsUs),
@@ -557,7 +557,7 @@ export function makeTimingEventWithPerformanceExtensionData({ name, ts: tsMicro,
     const firstEvent = {
         args,
         name,
-        ph: isMark ? "I" /* Trace.Types.Events.Phase.INSTANT */ : "b" /* Trace.Types.Events.Phase.ASYNC_NESTABLE_START */,
+        ph: isMark ? Trace.Types.Events.Phase.INSTANT : Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
         ts: Trace.Types.Timing.Micro(tsMicro),
         ...traceEventBase,
     };
@@ -570,7 +570,7 @@ export function makeTimingEventWithPerformanceExtensionData({ name, ts: tsMicro,
             name,
             ...traceEventBase,
             ts: Trace.Types.Timing.Micro(tsMicro + (durMicro || 0)),
-            ph: "e" /* Trace.Types.Events.Phase.ASYNC_NESTABLE_END */,
+            ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_END,
         },
     ];
 }
@@ -579,7 +579,7 @@ export function makeTimingEventWithConsoleExtensionData({ name, ts, start, end, 
         cat: 'devtools.timeline',
         pid: Trace.Types.Events.ProcessID(2017),
         tid: Trace.Types.Events.ThreadID(259),
-        name: "TimeStamp" /* Trace.Types.Events.Name.TIME_STAMP */,
+        name: Trace.Types.Events.Name.TIME_STAMP,
         args: {
             data: {
                 message: name,
@@ -591,7 +591,7 @@ export function makeTimingEventWithConsoleExtensionData({ name, ts, start, end, 
             },
         },
         ts: Trace.Types.Timing.Micro(ts),
-        ph: "I" /* Trace.Types.Events.Phase.INSTANT */,
+        ph: Trace.Types.Events.Phase.INSTANT,
     };
 }
 export async function createTraceExtensionDataFromPerformanceAPITestInput(extensionData) {

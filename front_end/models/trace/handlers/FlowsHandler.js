@@ -76,13 +76,13 @@ function processNonFlowEvent(event) {
 function processFlowEvent(flowPhaseEvent) {
     const flowGroup = flowGroupTokenForFlowPhaseEvent(flowPhaseEvent);
     switch (flowPhaseEvent.ph) {
-        case ("s" /* Types.Events.Phase.FLOW_START */): {
+        case (Types.Events.Phase.FLOW_START): {
             const flowMetadata = { flowId: flowPhaseEvent.id, times: new Map([[flowPhaseEvent.ts, undefined]]) };
             flowDataByGroupToken.set(flowGroup, flowPhaseEvent.id);
             addFlowIdToEventBinding(flowPhaseEvent, flowMetadata.flowId);
             return;
         }
-        case ("t" /* Types.Events.Phase.FLOW_STEP */): {
+        case (Types.Events.Phase.FLOW_STEP): {
             const flowId = flowDataByGroupToken.get(flowGroup);
             if (flowId === undefined) {
                 // Found non-start flow event with no corresponding start flow,
@@ -92,7 +92,7 @@ function processFlowEvent(flowPhaseEvent) {
             addFlowIdToEventBinding(flowPhaseEvent, flowId);
             return;
         }
-        case ("f" /* Types.Events.Phase.FLOW_END */): {
+        case (Types.Events.Phase.FLOW_END): {
             const flowId = flowDataByGroupToken.get(flowGroup);
             if (flowId === undefined) {
                 // Found non-start flow event with no corresponding start flow,

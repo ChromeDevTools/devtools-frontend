@@ -19028,9 +19028,9 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     }
     if (attributeName !== null && (attributeName.trim() || newText.trim()) && oldText !== newText) {
       const edit = { attributeName, oldText, newText };
+      const changeTracker = this.changeTracker;
       this.node.setAttribute(attributeName, newText, (error) => {
         if (!error) {
-          const changeTracker = this.changeTracker;
           Elements.DOMChanges.trackAttributeEdit(
             changeTracker,
             this.node,
@@ -19079,13 +19079,13 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       return;
     }
     const wasExpanded = this.#expanded;
+    const changeTracker = this.changeTracker;
     this.node.setNodeName(newText, (error, newNode) => {
       if (error || !newNode) {
         cancel();
         return;
       }
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-      const changeTracker = this.changeTracker;
       Elements.DOMChanges.trackTagNameEdit(
         changeTracker,
         newNode,
@@ -19101,9 +19101,9 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   textNodeEditingCommitted(textNode, _element, newText) {
     this.editing = null;
     const oldValue = textNode.nodeValue() ?? "";
+    const changeTracker = this.changeTracker;
     function callback(error) {
       if (!error && oldValue !== newText) {
-        const changeTracker = this.changeTracker;
         Elements.DOMChanges.trackTextNodeEdit(
           changeTracker,
           textNode,

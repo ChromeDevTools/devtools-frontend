@@ -636,6 +636,7 @@ panels/sources/CallStackSidebarPane.test.js
 panels/sources/CoveragePlugin.test.js
 panels/sources/DebuggerPausedMessage.test.js
 panels/sources/DebuggerPlugin.test.js
+panels/sources/EditorHistory.test.js
 panels/sources/FilePathScoreFunction.test.js
 panels/sources/FilteredUISourceCodeListProvider.test.js
 panels/sources/NavigatorView.test.js
@@ -867,6 +868,7 @@ ui/legacy/components/quick_open/QuickOpen.test.js
 ui/legacy/components/settings_ui/SettingsUI.test.js
 ui/legacy/components/source_frame/BinaryResourceViewFactory.test.js
 ui/legacy/components/source_frame/FontView.test.js
+ui/legacy/components/source_frame/ImageView.test.js
 ui/legacy/components/source_frame/JSONView.test.js
 ui/legacy/components/source_frame/ResourceSourceFrame.test.js
 ui/legacy/components/source_frame/SourceFrame.test.js

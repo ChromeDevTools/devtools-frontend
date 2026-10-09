@@ -145,6 +145,22 @@ const UIStrings = {
      * @description Context menu item in Sources panel to explain input handling in a script via AI.
      */
     explainInputHandling: 'Explain input handling',
+    /**
+     * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
+     */
+    navigatorShown: 'Navigator sidebar shown',
+    /**
+     * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
+     */
+    navigatorHidden: 'Navigator sidebar hidden',
+    /**
+     * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
+     */
+    debuggerShown: 'Debugger sidebar shown',
+    /**
+     * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
+     */
+    debuggerHidden: 'Debugger sidebar hidden',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -238,6 +254,9 @@ export class SourcesPanel extends UI.Panel.Panel {
         this.#sourcesView = new SourcesView();
         this.#sourcesView.addEventListener("EditorSelected" /* Events.EDITOR_SELECTED */, this.editorSelected.bind(this));
         this.#sourcesView.addEventListener("EditorClosed" /* Events.EDITOR_CLOSED */, this.editorClosed.bind(this));
+        if (!window.opener) {
+            window.addEventListener('beforeunload', this.handleBeforeUnload, true);
+        }
         this.#sourcesView.onToggleNavigatorSidebar = this.toggleNavigatorSidebar.bind(this);
         this.#sourcesView.onToggleDebuggerSidebar = this.toggleDebuggerSidebar.bind(this);
         this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
@@ -367,11 +386,15 @@ export class SourcesPanel extends UI.Panel.Panel {
         return this.#sourcesView.searchableView();
     }
     toggleNavigatorSidebar() {
-        this.editorView.toggleSidebar();
+        const isOpen = this.editorView.toggleSidebar();
+        UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.navigatorShown) :
+            i18nString(UIStrings.navigatorHidden));
     }
     toggleDebuggerSidebar() {
-        this.splitWidget.toggleSidebar();
-        this.sidebarPaneStack?.notifyVisibilityChanged(this.splitWidget.sidebarIsShowing());
+        const isOpen = this.splitWidget.toggleSidebar();
+        UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.debuggerShown) :
+            i18nString(UIStrings.debuggerHidden));
+        this.sidebarPaneStack?.notifyVisibilityChanged(isOpen);
     }
     debuggerPaused(event) {
         const debuggerModel = event.data;
@@ -608,6 +631,22 @@ export class SourcesPanel extends UI.Panel.Panel {
             context.setFlavor(Workspace.UISourceCode.UISourceCode, null);
         }
     }
+    handleBeforeUnload = (event) => {
+        if (event.returnValue) {
+            return;
+        }
+        const unsavedSourceCodes = Workspace.Workspace.WorkspaceImpl.instance()
+            .uiSourceCodesForProjectType(Workspace.Workspace.projectTypes.FileSystem)
+            .filter(uiSourceCode => uiSourceCode.isDirty());
+        if (!unsavedSourceCodes.length) {
+            return;
+        }
+        event.returnValue = true;
+        void UI.ViewManager.ViewManager.instance().showView('sources');
+        for (const sourceCode of unsavedSourceCodes) {
+            void Common.Revealer.reveal(sourceCode);
+        }
+    };
     togglePause() {
         const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
         if (!target) {
@@ -1178,7 +1217,7 @@ export class ActionDelegate {
                 return true;
             }
             case 'sources.toggle-word-wrap': {
-                const setting = Common.Settings.Settings.instance().moduleSetting('sources.word-wrap');
+                const setting = Common.Settings.Settings.instance().resolve(Settings.SourcesSettings.sourcesWordWrapSettingDescriptor);
                 setting.set(!setting.get());
                 return true;
             }

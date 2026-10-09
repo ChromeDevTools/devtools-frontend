@@ -2136,7 +2136,7 @@ __export(CallStackSidebarPane_exports, {
   defaultMaxAsyncStackChainDepth: () => defaultMaxAsyncStackChainDepth,
   elementSymbol: () => elementSymbol
 });
-import * as Common14 from "../../core/common/common.js";
+import * as Common15 from "../../core/common/common.js";
 import * as Host9 from "../../core/host/host.js";
 import * as i18n35 from "../../core/i18n/i18n.js";
 import * as Platform13 from "../../core/platform/platform.js";
@@ -2304,7 +2304,7 @@ __export(SourcesPanel_exports, {
   minToolbarWidth: () => minToolbarWidth
 });
 import "../../ui/legacy/legacy.js";
-import * as Common13 from "../../core/common/common.js";
+import * as Common14 from "../../core/common/common.js";
 import * as Host8 from "../../core/host/host.js";
 import * as i18n33 from "../../core/i18n/i18n.js";
 import * as Platform12 from "../../core/platform/platform.js";
@@ -3484,28 +3484,28 @@ var Memory;
 })(Memory || (Memory = {}));
 var Network;
 ((Network2) => {
-  let ResourceType4;
-  ((ResourceType5) => {
-    ResourceType5["Document"] = "Document";
-    ResourceType5["Stylesheet"] = "Stylesheet";
-    ResourceType5["Image"] = "Image";
-    ResourceType5["Media"] = "Media";
-    ResourceType5["Font"] = "Font";
-    ResourceType5["Script"] = "Script";
-    ResourceType5["TextTrack"] = "TextTrack";
-    ResourceType5["XHR"] = "XHR";
-    ResourceType5["Fetch"] = "Fetch";
-    ResourceType5["Prefetch"] = "Prefetch";
-    ResourceType5["EventSource"] = "EventSource";
-    ResourceType5["WebSocket"] = "WebSocket";
-    ResourceType5["Manifest"] = "Manifest";
-    ResourceType5["SignedExchange"] = "SignedExchange";
-    ResourceType5["Ping"] = "Ping";
-    ResourceType5["CSPViolationReport"] = "CSPViolationReport";
-    ResourceType5["Preflight"] = "Preflight";
-    ResourceType5["FedCM"] = "FedCM";
-    ResourceType5["Other"] = "Other";
-  })(ResourceType4 = Network2.ResourceType || (Network2.ResourceType = {}));
+  let ResourceType5;
+  ((ResourceType6) => {
+    ResourceType6["Document"] = "Document";
+    ResourceType6["Stylesheet"] = "Stylesheet";
+    ResourceType6["Image"] = "Image";
+    ResourceType6["Media"] = "Media";
+    ResourceType6["Font"] = "Font";
+    ResourceType6["Script"] = "Script";
+    ResourceType6["TextTrack"] = "TextTrack";
+    ResourceType6["XHR"] = "XHR";
+    ResourceType6["Fetch"] = "Fetch";
+    ResourceType6["Prefetch"] = "Prefetch";
+    ResourceType6["EventSource"] = "EventSource";
+    ResourceType6["WebSocket"] = "WebSocket";
+    ResourceType6["Manifest"] = "Manifest";
+    ResourceType6["SignedExchange"] = "SignedExchange";
+    ResourceType6["Ping"] = "Ping";
+    ResourceType6["CSPViolationReport"] = "CSPViolationReport";
+    ResourceType6["Preflight"] = "Preflight";
+    ResourceType6["FedCM"] = "FedCM";
+    ResourceType6["Other"] = "Other";
+  })(ResourceType5 = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
   ((ErrorReason2) => {
     ErrorReason2["Failed"] = "Failed";
@@ -5153,7 +5153,7 @@ import * as StackTrace3 from "../../models/stack_trace/stack_trace.js";
 import * as Workspace21 from "../../models/workspace/workspace.js";
 import * as PanelCommon3 from "../common/common.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
-import * as SettingsUI3 from "../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as SettingsUI4 from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI16 from "../../ui/legacy/legacy.js";
 import * as Settings9 from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
@@ -8177,7 +8177,7 @@ __export(SourcesView_exports, {
   SwitchFileActionDelegate: () => SwitchFileActionDelegate
 });
 import "../../ui/legacy/legacy.js";
-import * as Common12 from "../../core/common/common.js";
+import * as Common13 from "../../core/common/common.js";
 import * as i18n29 from "../../core/i18n/i18n.js";
 import * as Platform11 from "../../core/platform/platform.js";
 import * as Root from "../../core/root/root.js";
@@ -8187,6 +8187,7 @@ import * as Persistence9 from "../../models/persistence/persistence.js";
 import * as Workspace19 from "../../models/workspace/workspace.js";
 import * as Buttons6 from "../../ui/components/buttons/buttons.js";
 import * as QuickOpen from "../../ui/legacy/components/quick_open/quick_open.js";
+import * as SourceFrame11 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
 import { html as html10, nothing as nothing8, render as render9 } from "../../ui/lit/lit.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
@@ -8235,11 +8236,11 @@ __export(TabbedEditorContainer_exports, {
 });
 import "../../ui/components/tooltips/tooltips.js";
 import "../../ui/kit/kit.js";
-import * as Common11 from "../../core/common/common.js";
+import * as Common12 from "../../core/common/common.js";
 import * as Host7 from "../../core/host/host.js";
 import * as i18n27 from "../../core/i18n/i18n.js";
 import * as Platform10 from "../../core/platform/platform.js";
-import * as TextUtils10 from "../../core/text_utils/text_utils.js";
+import * as TextUtils11 from "../../core/text_utils/text_utils.js";
 import * as Persistence7 from "../../models/persistence/persistence.js";
 import * as Workspace17 from "../../models/workspace/workspace.js";
 import * as uiI18n2 from "../../ui/i18n/i18n.js";
@@ -8361,6 +8362,247 @@ var EditingLocationHistoryEntry = class {
   }
 };
 
+// ../../front_end/panels/sources/EditorHistory.ts
+var EditorHistory_exports = {};
+__export(EditorHistory_exports, {
+  History: () => History,
+  HistoryItem: () => HistoryItem,
+  MAX_PREVIOUSLY_VIEWED_FILES_COUNT: () => MAX_PREVIOUSLY_VIEWED_FILES_COUNT,
+  MAX_SERIALIZABLE_URL_LENGTH: () => MAX_SERIALIZABLE_URL_LENGTH,
+  historyItemKey: () => historyItemKey
+});
+import * as Common8 from "../../core/common/common.js";
+import * as TextUtils5 from "../../core/text_utils/text_utils.js";
+var MAX_PREVIOUSLY_VIEWED_FILES_COUNT = 30;
+var MAX_SERIALIZABLE_URL_LENGTH = 4096;
+function historyItemKey(uiSourceCode) {
+  return { url: uiSourceCode.url(), resourceType: uiSourceCode.contentType() };
+}
+var HistoryItem = class _HistoryItem {
+  url;
+  resourceType;
+  selectionRange;
+  scrollLineNumber;
+  constructor(url, resourceType, selectionRange, scrollLineNumber) {
+    this.url = url;
+    this.resourceType = resourceType;
+    this.selectionRange = selectionRange;
+    this.scrollLineNumber = scrollLineNumber;
+  }
+  static fromObject(serializedHistoryItem) {
+    const resourceType = Common8.ResourceType.ResourceType.fromName(serializedHistoryItem.resourceTypeName);
+    if (resourceType === null) {
+      throw new TypeError(`Invalid resource type name "${serializedHistoryItem.resourceTypeName}"`);
+    }
+    const selectionRange = serializedHistoryItem.selectionRange ? TextUtils5.TextRange.TextRange.fromObject(serializedHistoryItem.selectionRange) : void 0;
+    return new _HistoryItem(
+      serializedHistoryItem.url,
+      resourceType,
+      selectionRange,
+      serializedHistoryItem.scrollLineNumber
+    );
+  }
+  toObject() {
+    if (this.url.length >= MAX_SERIALIZABLE_URL_LENGTH) {
+      return null;
+    }
+    return {
+      url: this.url,
+      resourceTypeName: this.resourceType.name(),
+      selectionRange: this.selectionRange,
+      scrollLineNumber: this.scrollLineNumber
+    };
+  }
+};
+var History = class _History {
+  #items;
+  constructor(items) {
+    this.#items = items;
+  }
+  static fromObject(serializedHistoryItems) {
+    const items = [];
+    for (const serializedHistoryItem of serializedHistoryItems) {
+      try {
+        items.push(HistoryItem.fromObject(serializedHistoryItem));
+      } catch {
+      }
+    }
+    return new _History(items);
+  }
+  index({ url, resourceType }) {
+    return this.#items.findIndex((item) => item.url === url && item.resourceType === resourceType);
+  }
+  selectionRange(key) {
+    const index = this.index(key);
+    if (index === -1) {
+      return void 0;
+    }
+    return this.#items[index].selectionRange;
+  }
+  updateSelectionRange(key, selectionRange) {
+    if (!selectionRange) {
+      return;
+    }
+    const index = this.index(key);
+    if (index === -1) {
+      return;
+    }
+    this.#items[index].selectionRange = selectionRange;
+  }
+  scrollLineNumber(key) {
+    const index = this.index(key);
+    if (index === -1) {
+      return void 0;
+    }
+    return this.#items[index].scrollLineNumber;
+  }
+  updateScrollLineNumber(key, scrollLineNumber) {
+    const index = this.index(key);
+    if (index === -1) {
+      return;
+    }
+    this.#items[index].scrollLineNumber = scrollLineNumber;
+  }
+  update(keys) {
+    for (let i = keys.length - 1; i >= 0; --i) {
+      const index = this.index(keys[i]);
+      let item;
+      if (index !== -1) {
+        item = this.#items[index];
+        this.#items.splice(index, 1);
+      } else {
+        item = new HistoryItem(keys[i].url, keys[i].resourceType);
+      }
+      this.#items.unshift(item);
+    }
+  }
+  remove(key) {
+    const index = this.index(key);
+    if (index === -1) {
+      return;
+    }
+    this.#items.splice(index, 1);
+  }
+  toObject() {
+    const serializedHistoryItems = [];
+    for (const item of this.#items) {
+      const serializedItem = item.toObject();
+      if (serializedItem) {
+        serializedHistoryItems.push(serializedItem);
+      }
+      if (serializedHistoryItems.length === MAX_PREVIOUSLY_VIEWED_FILES_COUNT) {
+        break;
+      }
+    }
+    return serializedHistoryItems;
+  }
+  keys() {
+    return this.#items;
+  }
+};
+
+// gen/front_end/panels/sources/tabbedEditorContainer.css.js
+var tabbedEditorContainer_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope (.sources-placeholder) {
+  :scope {
+    display: inline-block;
+  }
+
+  .tabbed-pane-placeholder-row {
+    max-width: var(--sys-size-32);
+    min-width: var(--sys-size-28);
+    margin: 0 var(--sys-size-8);
+
+    &.workspace {
+      line-height: 18px;
+      display: inline-flex;
+      align-items: center;
+      border: var(--sys-size-2) dashed var(--sys-color-divider);
+      padding: var(--sys-size-8);
+      border-radius: var(--sys-shape-corner-medium);
+      margin: var(--sys-size-8) var(--sys-size-8) var(--sys-size-11);
+
+      > .icon-container {
+        flex-shrink: 0;
+        width: var(--sys-size-13);
+        height: var(--sys-size-13);
+        background: var(--sys-color-tonal-container);
+        align-content: center;
+        border-radius: var(--sys-shape-corner-full);
+        margin-right: var(--sys-size-8);
+
+        > devtools-icon {
+          color: var(--sys-color-on-tonal-container);
+        }
+      }
+    }
+
+    &.shortcuts-list {
+      padding: 0 var(--sys-size-6);
+
+      .shortcut-line {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: var(--sys-size-10);
+        padding: var(--sys-size-4) 0;
+
+        &:not(:last-child) {
+          border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+        }
+
+        .shortcuts {
+          display: flex;
+          flex-direction: row;
+          gap: var(--sys-size-4);
+          align-items: center;
+        }
+
+        .keybinds-key {
+          display: flex;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+          height: var(--sys-size-11);
+          min-width: var(--sys-size-11);
+          font: var(--sys-typescale-body5-medium);
+          white-space: nowrap;
+          border-radius: var(--sys-shape-corner-small);
+          background: var(--sys-color-tonal-container);
+          padding: 0 var(--sys-size-4);
+        }
+
+        & button {
+          margin-inline: 0;
+        }
+      }
+    }
+
+    & button {
+      cursor: pointer;
+      color: var(--text-link);
+      background: transparent;
+      border: none;
+      padding: 0;
+      text-decoration: underline;
+      margin-inline: var(--sys-size-3);
+      text-align: left;
+
+      &:focus-visible {
+        outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+        outline-offset: var(--sys-size-2);
+        border-radius: var(--sys-size-2);
+      }
+    }
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./tabbedEditorContainer.css")} */`;
+
 // ../../front_end/panels/sources/UISourceCodeFrame.ts
 var UISourceCodeFrame_exports = {};
 __export(UISourceCodeFrame_exports, {
@@ -8371,10 +8613,10 @@ __export(UISourceCodeFrame_exports, {
   UISourceCodeFrame: () => UISourceCodeFrame
 });
 import "../../ui/kit/kit.js";
-import * as Common10 from "../../core/common/common.js";
+import * as Common11 from "../../core/common/common.js";
 import * as Host6 from "../../core/host/host.js";
 import * as i18n25 from "../../core/i18n/i18n.js";
-import * as TextUtils8 from "../../core/text_utils/text_utils.js";
+import * as TextUtils9 from "../../core/text_utils/text_utils.js";
 import * as FormatterActions from "../../entrypoints/formatter_actions/formatter_actions.js";
 import * as AiCodeCompletion3 from "../../models/ai_code_completion/ai_code_completion.js";
 import * as Formatter2 from "../../models/formatter/formatter.js";
@@ -8396,7 +8638,7 @@ __export(CoveragePlugin_exports, {
 });
 import * as i18n13 from "../../core/i18n/i18n.js";
 import * as SDK6 from "../../core/sdk/sdk.js";
-import * as TextUtils5 from "../../core/text_utils/text_utils.js";
+import * as TextUtils6 from "../../core/text_utils/text_utils.js";
 import * as Workspace9 from "../../models/workspace/workspace.js";
 import * as CodeMirror2 from "../../third_party/codemirror.next/codemirror.next.js";
 import * as Buttons3 from "../../ui/components/buttons/buttons.js";
@@ -8549,7 +8791,7 @@ var CoveragePlugin = class extends Plugin {
       const line = editor.state.doc.line(n);
       const { lineNumber: startLine, columnNumber: startColumn } = this.#transformer.editorLocationToUILocation(n - 1, 0);
       const { lineNumber: endLine, columnNumber: endColumn } = this.#transformer.editorLocationToUILocation(n - 1, line.length);
-      result.push(new TextUtils5.TextRange.TextRange(startLine, startColumn, endLine, endColumn));
+      result.push(new TextUtils6.TextRange.TextRange(startLine, startColumn, endLine, endColumn));
     }
     return result;
   }
@@ -8625,7 +8867,7 @@ __export(CSSPlugin_exports, {
   CSSPlugin: () => CSSPlugin,
   cssBindings: () => cssBindings
 });
-import * as Common8 from "../../core/common/common.js";
+import * as Common9 from "../../core/common/common.js";
 import * as i18n15 from "../../core/i18n/i18n.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "../../core/platform/platform.js";
 import * as SDK7 from "../../core/sdk/sdk.js";
@@ -8721,7 +8963,7 @@ function findColorsAndCurves(state, from, to, onColor, onCurve) {
         content = state.sliceDoc(node.from, node.node.parent.to);
       }
       if (content) {
-        const parsedColor = Common8.Color.parse(content);
+        const parsedColor = Common9.Color.parse(content);
         if (parsedColor) {
           onColor(node.from, parsedColor, content);
         } else {
@@ -9070,12 +9312,12 @@ __export(DebuggerPlugin_exports, {
   getVariableNamesByLine: () => getVariableNamesByLine,
   getVariableValuesByLine: () => getVariableValuesByLine
 });
-import * as Common9 from "../../core/common/common.js";
+import * as Common10 from "../../core/common/common.js";
 import * as Host4 from "../../core/host/host.js";
 import * as i18n17 from "../../core/i18n/i18n.js";
 import * as Platform6 from "../../core/platform/platform.js";
 import * as SDK8 from "../../core/sdk/sdk.js";
-import * as TextUtils6 from "../../core/text_utils/text_utils.js";
+import * as TextUtils7 from "../../core/text_utils/text_utils.js";
 import * as Badges from "../../models/badges/badges.js";
 import * as Bindings5 from "../../models/bindings/bindings.js";
 import * as Breakpoints2 from "../../models/breakpoints/breakpoints.js";
@@ -9091,6 +9333,7 @@ import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as SourceFrame5 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
 import { render as render6 } from "../../ui/lit/lit.js";
+import * as SettingsUI3 from "../../ui/settings/settings.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 var { EMPTY_BREAKPOINT_CONDITION, NEVER_PAUSE_HERE_CONDITION } = Breakpoints2.BreakpointManager;
 var UIStrings9 = {
@@ -9577,7 +9820,7 @@ var DebuggerPlugin = class extends Plugin {
         this.updateScriptFile(scriptFile.script?.debuggerModel);
       }
     }
-    if (this.uiSourceCode.project().type() === Workspace12.Workspace.projectTypes.Network && Common9.Settings.Settings.instance().resolve(SDK8.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get() && !Workspace12.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(this.uiSourceCode.url())) {
+    if (this.uiSourceCode.project().type() === Workspace12.Workspace.projectTypes.Network && Common10.Settings.Settings.instance().resolve(SDK8.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get() && !Workspace12.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(this.uiSourceCode.url())) {
       if (this.scriptFileForDebuggerModel.size) {
         const scriptFile = this.scriptFileForDebuggerModel.values().next().value;
         const addSourceMapURLLabel = i18nString8(UIStrings9.addSourceMap);
@@ -9963,7 +10206,7 @@ var DebuggerPlugin = class extends Plugin {
     if (!this.editor) {
       return null;
     }
-    if (!Common9.Settings.Settings.instance().moduleSetting("inline-variable-values").get()) {
+    if (!Common10.Settings.Settings.instance().resolve(SettingsUI3.SourcesSettings.inlineVariableValuesSettingDescriptor).get()) {
       return null;
     }
     const executionContext = UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
@@ -10160,7 +10403,7 @@ var DebuggerPlugin = class extends Plugin {
       line.number - 1,
       Math.min(line.length, MAX_POSSIBLE_BREAKPOINT_LINE)
     );
-    const range = new TextUtils6.TextRange.TextRange(
+    const range = new TextUtils7.TextRange.TextRange(
       start.lineNumber,
       start.columnNumber || 0,
       end.lineNumber,
@@ -10388,13 +10631,13 @@ var DebuggerPlugin = class extends Plugin {
     }
     for (const resource of warning.resources) {
       const detailsRow = this.missingDebugInfoBar?.createDetailsRowMessage(
-        i18nString8(UIStrings9.debugFileNotFound, { PH1: Common9.ParsedURL.ParsedURL.extractName(resource.resourceUrl) })
+        i18nString8(UIStrings9.debugFileNotFound, { PH1: Common10.ParsedURL.ParsedURL.extractName(resource.resourceUrl) })
       );
       if (detailsRow) {
         const pageResourceKey = SDK8.PageResourceLoader.PageResourceLoader.makeExtensionKey(resource.resourceUrl, resource.initiator);
         if (SDK8.PageResourceLoader.PageResourceLoader.instance().getResourcesLoaded().get(pageResourceKey)) {
           const showRequest = UI10.UIUtils.createTextButton(i18nString8(UIStrings9.showRequest), () => {
-            void Common9.Revealer.reveal(new SDK8.PageResourceLoader.ResourceKey(pageResourceKey));
+            void Common10.Revealer.reveal(new SDK8.PageResourceLoader.ResourceKey(pageResourceKey));
           }, { jslogContext: "show-request", variant: Buttons4.Button.Variant.TEXT });
           showRequest.style.setProperty("margin-left", "10px");
           showRequest.title = i18nString8(UIStrings9.openDeveloperResources);
@@ -10430,7 +10673,7 @@ var DebuggerPlugin = class extends Plugin {
           debuggerModel.target(),
           script.script.sourceURL
         );
-        const resolvedUrl = Common9.ParsedURL.ParsedURL.completeURL(initiatorUrl, url);
+        const resolvedUrl = Common10.ParsedURL.ParsedURL.completeURL(initiatorUrl, url);
         if (resolvedUrl) {
           const resource = resourceMap.get(SDK8.PageResourceLoader.PageResourceLoader.makeKey(
             resolvedUrl,
@@ -10448,7 +10691,7 @@ var DebuggerPlugin = class extends Plugin {
     if (this.sourceMapInfobar) {
       return;
     }
-    if (!Common9.Settings.Settings.instance().resolve(SDK8.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get()) {
+    if (!Common10.Settings.Settings.instance().resolve(SDK8.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get()) {
       return;
     }
     if (!this.scriptHasSourceMap()) {
@@ -10463,7 +10706,7 @@ var DebuggerPlugin = class extends Plugin {
         UI10.Infobar.Type.INFO,
         i18nString8(UIStrings9.sourceMapSkipped),
         [],
-        Common9.Settings.Settings.instance().createSetting("source-map-skipped-infobar-disabled", false),
+        Common10.Settings.Settings.instance().createSetting("source-map-skipped-infobar-disabled", false),
         "source-map-skipped"
       );
       if (!this.sourceMapInfobar) {
@@ -10476,7 +10719,7 @@ var DebuggerPlugin = class extends Plugin {
         UI10.Infobar.Type.INFO,
         i18nString8(UIStrings9.sourceMapLoaded),
         [],
-        Common9.Settings.Settings.instance().createSetting("source-map-infobar-disabled", false),
+        Common10.Settings.Settings.instance().createSetting("source-map-infobar-disabled", false),
         "source-map-loaded"
       );
       if (!this.sourceMapInfobar) {
@@ -10578,7 +10821,7 @@ var DebuggerPlugin = class extends Plugin {
     await this.setBreakpoint(origin.lineNumber, origin.columnNumber, condition, enabled, isLogpoint);
   }
   async setBreakpoint(lineNumber, columnNumber, condition, enabled, isLogpoint) {
-    Common9.Settings.Settings.instance().resolve(SDK8.SDKSettings.breakpointsActiveSettingDescriptor).set(true);
+    Common10.Settings.Settings.instance().resolve(SDK8.SDKSettings.breakpointsActiveSettingDescriptor).set(true);
     const bp = await this.breakpointManager.setBreakpoint(
       this.uiSourceCode,
       lineNumber,
@@ -10694,11 +10937,11 @@ var DebuggerPlugin = class extends Plugin {
       return;
     }
     this.#sourcesPanelDebuggedMetricsRecorded = true;
-    const mimeType = Common9.ResourceType.ResourceType.mimeFromURL(this.uiSourceCode.url());
-    const mediaType = Common9.ResourceType.ResourceType.mediaTypeForMetrics(
+    const mimeType = Common10.ResourceType.ResourceType.mimeFromURL(this.uiSourceCode.url());
+    const mediaType = Common10.ResourceType.ResourceType.mediaTypeForMetrics(
       mimeType ?? "",
       this.uiSourceCode.contentType().isFromSourceMap(),
-      TextUtils6.TextUtils.isMinified(this.uiSourceCode.content()),
+      TextUtils7.TextUtils.isMinified(this.uiSourceCode.content()),
       this.uiSourceCode.url().startsWith("snippet://"),
       this.uiSourceCode.url().startsWith("debugger://")
     );
@@ -11647,7 +11890,7 @@ var UIStrings13 = {
 };
 var str_13 = i18n25.i18n.registerUIStrings("panels/sources/UISourceCodeFrame.ts", UIStrings13);
 var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
-var UISourceCodeFrameBase = Common10.ObjectWrapper.eventMixin(
+var UISourceCodeFrameBase = Common11.ObjectWrapper.eventMixin(
   SourceFrame7.SourceFrame.SourceFrameImpl
 );
 var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
@@ -11669,7 +11912,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     this.#uiSourceCode = uiSourceCode;
     this.#persistenceBinding = Persistence5.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     this.#boundOnBindingChanged = this.onBindingChanged.bind(this);
-    Common10.Settings.Settings.instance().resolve(Persistence5.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).addChangeListener(this.onNetworkPersistenceChanged, this);
+    Common11.Settings.Settings.instance().resolve(Persistence5.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).addChangeListener(this.onNetworkPersistenceChanged, this);
     this.#errorPopoverHelper = new UI12.PopoverHelper.PopoverHelper(
       this.textEditor.editor.contentDOM,
       this.getErrorPopoverContent.bind(this),
@@ -11754,8 +11997,8 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   }
   unloadUISourceCode() {
     this.textEditor.removeAttribute("data-file-path");
-    Common10.EventTarget.removeEventListeners(this.#messageAndDecorationListeners);
-    Common10.EventTarget.removeEventListeners(this.#uiSourceCodeEventListeners);
+    Common11.EventTarget.removeEventListeners(this.#messageAndDecorationListeners);
+    Common11.EventTarget.removeEventListeners(this.#uiSourceCodeEventListeners);
     this.#uiSourceCode.removeWorkingCopyGetter();
     Persistence5.Persistence.PersistenceImpl.instance().unsubscribeFromBindingEvent(
       this.#uiSourceCode,
@@ -11785,7 +12028,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     this.updateStyle();
     const isFormattable = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(this.contentType);
     const isEditable = Persistence5.Persistence.PersistenceImpl.instance().hasEditableContent(this.#uiSourceCode);
-    const isJavaScript = Common10.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
+    const isJavaScript = Common11.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
     const canPrettyPrint = isFormattable && (!isEditable || !isJavaScript);
     const autoPrettyPrint = !this.#uiSourceCode.contentType().isFromSourceMap();
     this.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
@@ -11805,7 +12048,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   getContentType() {
     const binding = Persistence5.Persistence.PersistenceImpl.instance().binding(this.#uiSourceCode);
     const mimeType = binding ? binding.network.mimeType() : this.#uiSourceCode.mimeType();
-    return Common10.ResourceType.ResourceType.simplifyContentType(mimeType);
+    return Common11.ResourceType.ResourceType.simplifyContentType(mimeType);
   }
   #canEditSource() {
     if (this.hasLoadError()) {
@@ -11887,12 +12130,12 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   }
   async #formatSourceInPlace() {
     const contentDataOrError = await this.workingCopy();
-    if (TextUtils8.ContentData.ContentData.isError(contentDataOrError)) {
+    if (TextUtils9.ContentData.ContentData.isError(contentDataOrError)) {
       return;
     }
-    const content = TextUtils8.ContentData.ContentData.textOr(contentDataOrError, "");
+    const content = TextUtils9.ContentData.ContentData.textOr(contentDataOrError, "");
     const { formattedContent, formattedMapping } = await Formatter2.ScriptFormatter.format(
-      Common10.Settings.Settings.instance(),
+      Common11.Settings.Settings.instance(),
       this.#uiSourceCode.contentType(),
       this.contentType,
       content
@@ -11957,7 +12200,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     this.dispatchEventToListeners("ToolbarItemsChanged" /* TOOLBAR_ITEMS_CHANGED */);
   }
   disposePlugins() {
-    Common10.EventTarget.removeEventListeners(this.#pluginEventListeners);
+    Common11.EventTarget.removeEventListeners(this.#pluginEventListeners);
     for (const plugin of this.plugins) {
       plugin.dispose();
     }
@@ -12013,7 +12256,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     this.unloadUISourceCode();
     this.textEditor.editor.destroy();
     this.detach();
-    Common10.Settings.Settings.instance().resolve(Persistence5.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).removeChangeListener(this.onNetworkPersistenceChanged, this);
+    Common11.Settings.Settings.instance().resolve(Persistence5.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).removeChangeListener(this.onNetworkPersistenceChanged, this);
     this.disposeView();
   }
   onMessageAdded(event) {
@@ -12038,7 +12281,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   async toolbarItems() {
     const leftToolbarItems = [await super.toolbarItems()];
     const isEditable = Persistence5.Persistence.PersistenceImpl.instance().hasEditableContent(this.#uiSourceCode);
-    const isJavaScript = Common10.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
+    const isJavaScript = Common11.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
     const isInplaceFormattable = isEditable && isJavaScript;
     if (isInplaceFormattable) {
       leftToolbarItems.unshift(html8`<devtools-button
@@ -12112,11 +12355,11 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
       return;
     }
     this.#sourcesPanelOpenedMetricsRecorded = true;
-    const mimeType = Common10.ResourceType.ResourceType.mimeFromURL(this.#uiSourceCode.url());
-    const mediaType = Common10.ResourceType.ResourceType.mediaTypeForMetrics(
+    const mimeType = Common11.ResourceType.ResourceType.mimeFromURL(this.#uiSourceCode.url());
+    const mediaType = Common11.ResourceType.ResourceType.mediaTypeForMetrics(
       mimeType ?? "",
       this.#uiSourceCode.contentType().isFromSourceMap(),
-      TextUtils8.TextUtils.isMinified(this.#uiSourceCode.content()),
+      TextUtils9.TextUtils.isMinified(this.#uiSourceCode.content()),
       this.#uiSourceCode.url().startsWith("snippet://"),
       this.#uiSourceCode.url().startsWith("debugger://")
     );
@@ -12452,25 +12695,18 @@ var { repeat: repeat2 } = Directives3;
 var { widget } = UI13.Widget;
 var HEADER_OVERRIDES_FILENAME = ".headers";
 var UI_SOURCE_CODE_WIDGET_MAP = /* @__PURE__ */ new WeakMap();
-function getOrCreateSourceView(uiSourceCode, onCreate) {
-  const existing = UI_SOURCE_CODE_WIDGET_MAP.get(uiSourceCode);
-  if (existing) {
-    return existing;
-  }
-  let sourceView;
+function defaultSourceViewFactory(uiSourceCode) {
   const contentType = uiSourceCode.contentType();
-  if (contentType === Common11.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith("image/")) {
-    sourceView = new SourceFrame9.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
-  } else if (contentType === Common11.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes("font")) {
-    sourceView = new SourceFrame9.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
-  } else if (uiSourceCode.name() === Persistence7.NetworkPersistenceManager.HEADERS_FILENAME) {
-    sourceView = new Components2.HeadersView.HeadersView(uiSourceCode);
-  } else {
-    sourceView = new UISourceCodeFrame(uiSourceCode);
+  if (contentType === Common12.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith("image/")) {
+    return new SourceFrame9.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
   }
-  UI_SOURCE_CODE_WIDGET_MAP.set(uiSourceCode, sourceView);
-  onCreate(sourceView);
-  return sourceView;
+  if (contentType === Common12.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes("font")) {
+    return new SourceFrame9.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
+  }
+  if (uiSourceCode.name() === Persistence7.NetworkPersistenceManager.HEADERS_FILENAME) {
+    return new Components2.HeadersView.HeadersView(uiSourceCode);
+  }
+  return new UISourceCodeFrame(uiSourceCode);
 }
 function recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
   UI_SOURCE_CODE_WIDGET_MAP.delete(sourceFrame.uiSourceCode());
@@ -12489,6 +12725,7 @@ function removeSourceViewCache(uiSourceCode) {
 }
 function renderPlaceholder(input) {
   return html9`
+    <style>${tabbedEditorContainer_css_default}</style>
     <div class="sources-placeholder">
       <div class="tabbed-pane-placeholder-row workspace">
         <span class="icon-container">
@@ -12580,9 +12817,18 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         ${renderTabIcon(tab)}
         ${renderTabSuffix(tab, input)}`)}
     </devtools-tabbed-pane>`, target);
+  target.querySelector("devtools-tabbed-pane")?.tabs;
 };
 var tabId = 0;
-var TabbedEditorContainerBase = Common11.ObjectWrapper.eventMixin(
+function titleForFile(uiSourceCode) {
+  const maxDisplayNameLength = 30;
+  let title = Platform10.StringUtilities.trimMiddle(uiSourceCode.displayName(true), maxDisplayNameLength);
+  if (uiSourceCode.isDirty()) {
+    title += "*";
+  }
+  return title;
+}
+var TabbedEditorContainerBase = Common12.ObjectWrapper.eventMixin(
   UI13.Widget.VBox
 );
 var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorContainerBase {
@@ -12621,28 +12867,28 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
       };
     });
     const input = {
-      openTabs: [...this.files.entries()].map(([tabId2, uiSourceCode]) => {
+      openTabs: [...this.#files.entries()].map(([tabId2, uiSourceCode]) => {
         const hasLoadError = Boolean(uiSourceCode.loadError()) || this.#loadErrorFiles.has(uiSourceCode);
         const hasUnsavedCommittedChanges = !hasLoadError && Persistence7.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode);
         let disconnectedAutomaticFileSystemRoot;
         if (hasUnsavedCommittedChanges) {
           const { automaticFileSystem } = Persistence7.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
           if (automaticFileSystem?.state === "disconnected") {
-            disconnectedAutomaticFileSystemRoot = Common11.ParsedURL.ParsedURL.extractName(automaticFileSystem.root);
+            disconnectedAutomaticFileSystemRoot = Common12.ParsedURL.ParsedURL.extractName(automaticFileSystem.root);
           }
         }
         const icon = !hasLoadError ? PanelCommon2.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode) ?? void 0 : void 0;
         return {
           tabId: tabId2,
-          title: this.titleForFile(uiSourceCode),
-          tooltip: this.tooltipForFile(uiSourceCode),
+          title: titleForFile(uiSourceCode),
+          tooltip: this.#tooltipForFile(uiSourceCode),
           uiSourceCode,
           isCloseable: true,
           hasLoadError,
           hasUnsavedCommittedChanges,
           disconnectedAutomaticFileSystemRoot,
           icon,
-          widget: this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId() ? this.getOrCreateSourceView(this.#currentFile) : this.getCreatedSourceView(uiSourceCode)
+          widget: this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId() ? this.#getOrCreateSourceView(this.#currentFile) : this.getCreatedSourceView(uiSourceCode)
         };
       }),
       activeTabId: this.#currentFile ? this.#tabIdForUISourceCode(this.#currentFile) : void 0,
@@ -12662,7 +12908,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
         );
       },
       onClose: (e) => {
-        this.tabClosed(
+        this.#tabClosed(
           e.detail.tabId,
           e.detail.isUserGesture
         );
@@ -12672,18 +12918,18 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
         const tabIds = e.detail.tabIds;
         const newFiles = /* @__PURE__ */ new Map();
         for (const id of tabIds) {
-          if (this.files.has(id)) {
-            const file = this.files.get(id);
+          if (this.#files.has(id)) {
+            const file = this.#files.get(id);
             if (file) {
               newFiles.set(id, file);
             }
           }
         }
-        this.files = newFiles;
+        this.#files = newFiles;
         this.#scheduleUpdate();
       },
       onSelect: (e) => {
-        this.tabSelected(
+        this.#tabSelected(
           e.detail.tabId,
           e.detail.isUserGesture
         );
@@ -12695,19 +12941,19 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
   #historyManager;
   #leftToolbarItems = [];
   set leftToolbarItems(items) {
-    if (this.#leftToolbarItems === items) {
+    if (this.#leftToolbarItems === items || this.#leftToolbarItems.length === 0 && items.length === 0) {
       return;
     }
     this.#leftToolbarItems = items;
-    this.#scheduleUpdate();
+    this.requestUpdate();
   }
   #rightToolbarItems = [];
   set rightToolbarItems(items) {
-    if (this.#rightToolbarItems === items) {
+    if (this.#rightToolbarItems === items || this.#rightToolbarItems.length === 0 && items.length === 0) {
       return;
     }
     this.#rightToolbarItems = items;
-    this.#scheduleUpdate();
+    this.requestUpdate();
   }
   #syncedUISourceCodes = /* @__PURE__ */ new Set();
   set uiSourceCodes(uiSourceCodes) {
@@ -12719,16 +12965,14 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
       }
     }
     if (removed.length > 0) {
-      this.removeUISourceCodes(removed);
+      this.#removeUISourceCodes(removed);
     }
-    UI13.UIUtils.startBatchUpdate();
     for (const uiSourceCode of uiSourceCodes) {
       if (!this.#syncedUISourceCodes.has(uiSourceCode)) {
         this.#syncedUISourceCodes.add(uiSourceCode);
-        this.addUISourceCode(uiSourceCode);
+        this.#addUISourceCode(uiSourceCode);
       }
     }
-    UI13.UIUtils.endBatchUpdate();
   }
   set sourceLocation(sourceLocation) {
     if (!sourceLocation) {
@@ -12745,48 +12989,50 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
   onEditorClosed;
   #view;
   #tabDelegate;
-  tabIds;
-  files;
+  #tabIds;
+  #files;
   #loadErrorFiles = /* @__PURE__ */ new Set();
   #previouslyViewedFilesSetting;
-  history;
+  #history;
   set previouslyViewedFilesSetting(setting) {
     if (this.#previouslyViewedFilesSetting === setting) {
       return;
     }
     this.#previouslyViewedFilesSetting = setting;
-    this.history = History.fromObject(this.#previouslyViewedFilesSetting.get());
+    this.#history = History.fromObject(this.#previouslyViewedFilesSetting.get());
   }
   get previouslyViewedFilesSetting() {
     return this.#previouslyViewedFilesSetting;
   }
-  uriToUISourceCode;
-  idToUISourceCode;
+  #uriToUISourceCode;
+  #idToUISourceCode;
   #currentFile;
-  currentView;
-  scrollTimer;
-  reentrantShow;
-  constructor(element, view = DEFAULT_VIEW6) {
+  #currentView;
+  #scrollTimer;
+  #reentrantShow;
+  #sourceViewFactory;
+  constructor(element, view = DEFAULT_VIEW6, sourceViewFactory = defaultSourceViewFactory) {
     super(element);
     this.#view = view;
+    this.#sourceViewFactory = sourceViewFactory;
     this.#tabDelegate = new EditorContainerTabDelegate(this);
     this.#historyManager = new EditingLocationHistoryManager(this);
-    this.#previouslyViewedFilesSetting = Common11.Settings.Settings.instance().createLocalSetting("previously-viewed-files", []);
-    this.history = History.fromObject(this.#previouslyViewedFilesSetting.get());
-    this.tabIds = /* @__PURE__ */ new Map();
-    this.files = /* @__PURE__ */ new Map();
-    this.uriToUISourceCode = /* @__PURE__ */ new Map();
-    this.idToUISourceCode = /* @__PURE__ */ new Map();
-    this.reentrantShow = false;
+    this.#previouslyViewedFilesSetting = Common12.Settings.Settings.instance().createLocalSetting("previously-viewed-files", []);
+    this.#history = History.fromObject(this.#previouslyViewedFilesSetting.get());
+    this.#tabIds = /* @__PURE__ */ new Map();
+    this.#files = /* @__PURE__ */ new Map();
+    this.#uriToUISourceCode = /* @__PURE__ */ new Map();
+    this.#idToUISourceCode = /* @__PURE__ */ new Map();
+    this.#reentrantShow = false;
     this.performUpdate();
     Persistence7.Persistence.PersistenceImpl.instance().addEventListener(
       Persistence7.Persistence.Events.BindingCreated,
-      this.onBindingCreated,
+      this.#onBindingCreated,
       this
     );
     Persistence7.Persistence.PersistenceImpl.instance().addEventListener(
       Persistence7.Persistence.Events.BindingRemoved,
-      this.onBindingRemoved,
+      this.#onBindingRemoved,
       this
     );
     Persistence7.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
@@ -12805,7 +13051,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
   }
   onDetach() {
     super.onDetach();
-    this.detachEditors();
+    this.#detachEditors();
   }
   static defaultUISourceCodeScores() {
     const defaultScores = /* @__PURE__ */ new Map();
@@ -12822,66 +13068,61 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
   #appendHistory(tabId2) {
     this.#tabsHistory.unshift(tabId2);
   }
-  get #tabbedPane() {
+  /** @deprecated Used by chromium web tests until https://crrev.com/c/8514061 rolls. */
+  get tabbedPane() {
     return this.contentElement.querySelector("devtools-tabbed-pane");
   }
-  get tabbedPane() {
-    return this.#tabbedPane;
-  }
-  get tabbedPaneForTesting() {
-    return this.#tabbedPane;
-  }
-  onBindingCreated(event) {
+  #onBindingCreated(event) {
     const binding = event.data;
-    this.updateFileTitle(binding.fileSystem);
-    const networkTabId = this.tabIds.get(binding.network);
-    let fileSystemTabId = this.tabIds.get(binding.fileSystem);
+    this.#updateFileTitle(binding.fileSystem);
+    const networkTabId = this.#tabIds.get(binding.network);
+    let fileSystemTabId = this.#tabIds.get(binding.fileSystem);
     const wasSelectedInNetwork = this.#currentFile === binding.network;
     const networkKey = historyItemKey(binding.network);
-    const currentSelectionRange = this.history.selectionRange(networkKey);
-    const currentScrollLineNumber = this.history.scrollLineNumber(networkKey);
-    this.history.remove(networkKey);
+    const currentSelectionRange = this.#history.selectionRange(networkKey);
+    const currentScrollLineNumber = this.#history.scrollLineNumber(networkKey);
+    this.#history.remove(networkKey);
     if (!networkTabId) {
       return;
     }
     if (!fileSystemTabId) {
       const networkView = this.viewForFile(binding.network);
-      const tabIndex = Array.from(this.files.keys()).indexOf(networkTabId);
+      const tabIndex = Array.from(this.#files.keys()).indexOf(networkTabId);
       if (networkView instanceof UISourceCodeFrame) {
-        this.recycleUISourceCodeFrame(networkView, binding.fileSystem);
-        fileSystemTabId = this.appendFileTab(binding.fileSystem, tabIndex, true);
+        this.#recycleUISourceCodeFrame(networkView, binding.fileSystem);
+        fileSystemTabId = this.#appendFileTab(binding.fileSystem, tabIndex, true);
       } else {
-        fileSystemTabId = this.appendFileTab(binding.fileSystem, tabIndex);
+        fileSystemTabId = this.#appendFileTab(binding.fileSystem, tabIndex);
         const fileSystemTabView = this.viewForFile(binding.fileSystem);
         if (fileSystemTabView) {
-          this.restoreEditorProperties(fileSystemTabView, currentSelectionRange, currentScrollLineNumber);
+          this.#restoreEditorProperties(fileSystemTabView, currentSelectionRange, currentScrollLineNumber);
         }
       }
     }
     this.closeTabs([networkTabId], true);
     if (wasSelectedInNetwork) {
-      const fileSystemFile = this.files.get(fileSystemTabId);
+      const fileSystemFile = this.#files.get(fileSystemTabId);
       if (fileSystemFile) {
         this.#showFile(fileSystemFile, false);
       }
     }
-    this.updateHistory();
+    this.#updateHistory();
   }
   #onRequestsForHeaderOverridesFileChanged(event) {
-    this.updateFileTitle(event.data);
+    this.#updateFileTitle(event.data);
   }
-  onBindingRemoved(event) {
+  #onBindingRemoved(event) {
     const binding = event.data;
-    this.updateFileTitle(binding.fileSystem);
+    this.#updateFileTitle(binding.fileSystem);
   }
   get visibleView() {
     return this.#currentFile ? getViewByUISourceCode(this.#currentFile) || null : null;
   }
   fileViews() {
-    return Array.from(this.files.values()).map(getViewByUISourceCode).filter(Boolean);
+    return Array.from(this.#files.values()).map(getViewByUISourceCode).filter(Boolean);
   }
   showSourceLocation(uiSourceCode, location, omitFocus, omitHighlight) {
-    const currentFrame = this.currentView instanceof UISourceCodeFrame ? this.currentView : null;
+    const currentFrame = this.#currentView instanceof UISourceCodeFrame ? this.#currentView : null;
     if (currentFrame) {
       this.#historyManager.updateCurrentState(
         currentFrame.uiSourceCode(),
@@ -12889,7 +13130,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
       );
     }
     this.showFile(uiSourceCode);
-    const currentSourceFrame = this.currentView instanceof UISourceCodeFrame ? this.currentView : null;
+    const currentSourceFrame = this.#currentView instanceof UISourceCodeFrame ? this.#currentView : null;
     if (currentSourceFrame && location) {
       currentSourceFrame.revealPosition(location, !omitHighlight);
     }
@@ -12906,7 +13147,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
   showFile(uiSourceCode) {
     const binding = Persistence7.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
-    if (this.currentView instanceof UISourceCodeFrame && this.currentView.contentSet && this.#currentFile === uiSourceCode) {
+    if (this.#currentView instanceof UISourceCodeFrame && this.#currentView.contentSet && this.#currentFile === uiSourceCode) {
       window.dispatchEvent(new CustomEvent(
         "source-file-loaded",
         { bubbles: true, cancelable: true, detail: uiSourceCode.displayName(true) }
@@ -12923,8 +13164,8 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     return true;
   }
   #tabIdForUISourceCode(uiSourceCode) {
-    const canonical = this.idToUISourceCode.get(uiSourceCode.canonicalScriptId());
-    return this.tabIds.get(uiSourceCode) ?? (canonical ? this.tabIds.get(canonical) : void 0);
+    const canonical = this.#idToUISourceCode.get(uiSourceCode.canonicalScriptId());
+    return this.#tabIds.get(uiSourceCode) ?? (canonical ? this.#tabIds.get(canonical) : void 0);
   }
   closeFile(uiSourceCode) {
     const tabId2 = this.#tabIdForUISourceCode(uiSourceCode);
@@ -12934,17 +13175,17 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     this.closeTabs([tabId2]);
   }
   closeAllFiles() {
-    this.closeTabs(Array.from(this.files.keys()));
+    this.closeTabs(Array.from(this.#files.keys()));
   }
-  detachEditors() {
+  #detachEditors() {
     for (const view of this.fileViews()) {
       view.detach();
     }
   }
   historyUISourceCodes() {
     const result = [];
-    for (const { url, resourceType } of this.history.keys()) {
-      const uiSourceCode = this.uriToUISourceCode.get(url);
+    for (const { url, resourceType } of this.#history.keys()) {
+      const uiSourceCode = this.#uriToUISourceCode.get(url);
       if (uiSourceCode !== void 0 && uiSourceCode.contentType() === resourceType) {
         result.push(uiSourceCode);
       }
@@ -12952,7 +13193,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     return result;
   }
   selectNextTab() {
-    const tabIds = Array.from(this.files.keys());
+    const tabIds = Array.from(this.#files.keys());
     if (tabIds.length === 0 || !this.#currentFile) {
       return;
     }
@@ -12962,13 +13203,13 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     }
     const index = tabIds.indexOf(currentTabId);
     const nextIndex = (index + 1) % tabIds.length;
-    const nextFile = this.files.get(tabIds[nextIndex]);
+    const nextFile = this.#files.get(tabIds[nextIndex]);
     if (nextFile) {
       this.#showFile(nextFile, false);
     }
   }
   selectPrevTab() {
-    const tabIds = Array.from(this.files.keys());
+    const tabIds = Array.from(this.#files.keys());
     if (tabIds.length === 0 || !this.#currentFile) {
       return;
     }
@@ -12978,113 +13219,108 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     }
     const index = tabIds.indexOf(currentTabId);
     const prevIndex = (index - 1 + tabIds.length) % tabIds.length;
-    const prevFile = this.files.get(tabIds[prevIndex]);
+    const prevFile = this.#files.get(tabIds[prevIndex]);
     if (prevFile) {
       this.#showFile(prevFile, false);
     }
   }
-  addViewListeners() {
-    if (!this.currentView || !(this.currentView instanceof SourceFrame9.SourceFrame.SourceFrameImpl)) {
+  #addViewListeners() {
+    if (!this.#currentView || !(this.#currentView instanceof SourceFrame9.SourceFrame.SourceFrameImpl)) {
       return;
     }
-    this.currentView.addEventListener(SourceFrame9.SourceFrame.Events.EDITOR_UPDATE, this.onEditorUpdate, this);
-    this.currentView.addEventListener(SourceFrame9.SourceFrame.Events.EDITOR_SCROLL, this.onScrollChanged, this);
+    this.#currentView.addEventListener(SourceFrame9.SourceFrame.Events.EDITOR_UPDATE, this.#onEditorUpdate, this);
+    this.#currentView.addEventListener(SourceFrame9.SourceFrame.Events.EDITOR_SCROLL, this.#onScrollChanged, this);
   }
-  removeViewListeners() {
-    if (!this.currentView || !(this.currentView instanceof SourceFrame9.SourceFrame.SourceFrameImpl)) {
+  #removeViewListeners() {
+    if (!this.#currentView || !(this.#currentView instanceof SourceFrame9.SourceFrame.SourceFrameImpl)) {
       return;
     }
-    this.currentView.removeEventListener(SourceFrame9.SourceFrame.Events.EDITOR_UPDATE, this.onEditorUpdate, this);
-    this.currentView.removeEventListener(SourceFrame9.SourceFrame.Events.EDITOR_SCROLL, this.onScrollChanged, this);
+    this.#currentView.removeEventListener(SourceFrame9.SourceFrame.Events.EDITOR_UPDATE, this.#onEditorUpdate, this);
+    this.#currentView.removeEventListener(SourceFrame9.SourceFrame.Events.EDITOR_SCROLL, this.#onScrollChanged, this);
   }
-  onScrollChanged() {
-    if (this.currentView instanceof SourceFrame9.SourceFrame.SourceFrameImpl) {
-      if (this.scrollTimer) {
-        clearTimeout(this.scrollTimer);
+  #onScrollChanged() {
+    if (this.#currentView instanceof SourceFrame9.SourceFrame.SourceFrameImpl) {
+      if (this.#scrollTimer) {
+        clearTimeout(this.#scrollTimer);
       }
-      this.scrollTimer = window.setTimeout(() => this.previouslyViewedFilesSetting.set(this.history.toObject()), 100);
+      this.#scrollTimer = window.setTimeout(() => this.previouslyViewedFilesSetting.set(this.#history.toObject()), 100);
       if (this.#currentFile) {
-        const { editor } = this.currentView.textEditor;
+        const { editor } = this.#currentView.textEditor;
         const topBlock = editor.lineBlockAtHeight(editor.scrollDOM.getBoundingClientRect().top - editor.documentTop);
         const topLine = editor.state.doc.lineAt(topBlock.from).number - 1;
-        this.history.updateScrollLineNumber(historyItemKey(this.#currentFile), topLine);
+        this.#history.updateScrollLineNumber(historyItemKey(this.#currentFile), topLine);
       }
     }
   }
-  onEditorUpdate({ data: update }) {
+  #onEditorUpdate({ data: update }) {
     if (update.docChanged || update.selectionSet) {
       const { main } = update.state.selection;
       const lineFrom = update.state.doc.lineAt(main.from), lineTo = update.state.doc.lineAt(main.to);
-      const range = new TextUtils10.TextRange.TextRange(
+      const range = new TextUtils11.TextRange.TextRange(
         lineFrom.number - 1,
         main.from - lineFrom.from,
         lineTo.number - 1,
         main.to - lineTo.from
       );
       if (this.#currentFile) {
-        this.history.updateSelectionRange(historyItemKey(this.#currentFile), range);
+        this.#history.updateSelectionRange(historyItemKey(this.#currentFile), range);
       }
-      this.previouslyViewedFilesSetting.set(this.history.toObject());
+      this.previouslyViewedFilesSetting.set(this.#history.toObject());
       if (this.#currentFile) {
         PanelCommon2.ExtensionServer.ExtensionServer.instance().sourceSelectionChanged(this.#currentFile.url(), range);
       }
     }
   }
   #showFile(uiSourceCode, userGesture) {
-    if (this.reentrantShow) {
+    if (this.#reentrantShow) {
       return;
     }
-    const canonicalSourceCode = this.canonicalUISourceCode(uiSourceCode);
+    const canonicalSourceCode = this.#canonicalUISourceCode(uiSourceCode);
     const binding = Persistence7.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
     if (this.#currentFile === uiSourceCode) {
       return;
     }
-    this.removeViewListeners();
+    this.#removeViewListeners();
     this.#currentFile = uiSourceCode;
     try {
-      this.reentrantShow = true;
-      const tabId2 = this.tabIds.get(canonicalSourceCode) || this.appendFileTab(canonicalSourceCode);
+      this.#reentrantShow = true;
+      const tabId2 = this.#tabIds.get(canonicalSourceCode) || this.#appendFileTab(canonicalSourceCode);
       this.#appendHistory(tabId2);
       this.#scheduleUpdate();
-      this.#tabbedPane?.tabs;
     } finally {
-      this.reentrantShow = false;
+      this.#reentrantShow = false;
     }
     if (userGesture) {
-      this.editorSelectedByUserAction();
+      this.#editorSelectedByUserAction();
     }
-    const previousView = this.currentView;
+    const previousView = this.#currentView;
     if (uiSourceCode) {
-      this.getOrCreateSourceView(uiSourceCode);
+      this.#getOrCreateSourceView(uiSourceCode);
     }
-    this.currentView = this.visibleView;
-    this.addViewListeners();
-    if (this.currentView instanceof UISourceCodeFrame && this.currentView.uiSourceCode() !== uiSourceCode) {
-      this.recycleUISourceCodeFrame(this.currentView, uiSourceCode);
+    this.#currentView = this.visibleView;
+    this.#addViewListeners();
+    if (this.#currentView instanceof UISourceCodeFrame && this.#currentView.uiSourceCode() !== uiSourceCode) {
+      this.#recycleUISourceCodeFrame(this.#currentView, uiSourceCode);
       if (uiSourceCode.project().type() !== Workspace17.Workspace.projectTypes.FileSystem) {
         uiSourceCode.disableEdit();
       }
     }
     const eventData = {
       currentFile: this.#currentFile,
-      currentView: this.currentView,
+      currentView: this.#currentView,
       previousView,
       userGesture
     };
     this.dispatchEventToListeners("EditorSelected" /* EDITOR_SELECTED */, eventData);
     this.onEditorSelected?.(eventData);
   }
+  /** @deprecated Used by chromium web test ui-source-code-display-name.js */
   titleForFile(uiSourceCode) {
-    const maxDisplayNameLength = 30;
-    let title = Platform10.StringUtilities.trimMiddle(uiSourceCode.displayName(true), maxDisplayNameLength);
-    if (uiSourceCode.isDirty()) {
-      title += "*";
-    }
-    return title;
+    return titleForFile(uiSourceCode);
   }
-  maybeCloseTab(id, nextTabId) {
-    const uiSourceCode = this.files.get(id);
+  #maybeCloseTab(id, nextTabId) {
+    const uiSourceCode = this.#files.get(id);
     if (!uiSourceCode) {
       return false;
     }
@@ -13092,12 +13328,12 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     if (!shouldPrompt || confirm(i18nString13(UIStrings14.areYouSureYouWantToCloseUnsaved, { PH1: uiSourceCode.name() }))) {
       uiSourceCode.resetWorkingCopy();
       if (nextTabId) {
-        const nextFile = this.files.get(nextTabId);
+        const nextFile = this.#files.get(nextTabId);
         if (nextFile) {
           this.#showFile(nextFile, false);
         }
       }
-      this.tabClosed(id, true);
+      this.#tabClosed(id, true);
       this.#scheduleUpdate();
       return true;
     }
@@ -13108,7 +13344,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     const cleanTabs = [];
     for (let i = 0; i < ids.length; ++i) {
       const id = ids[i];
-      const uiSourceCode = this.files.get(id);
+      const uiSourceCode = this.#files.get(id);
       if (uiSourceCode) {
         if (!forceCloseDirtyTabs && uiSourceCode.isDirty()) {
           dirtyTabs.push(id);
@@ -13118,37 +13354,37 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
       }
     }
     if (dirtyTabs.length) {
-      const dirtyFile = this.files.get(dirtyTabs[0]);
+      const dirtyFile = this.#files.get(dirtyTabs[0]);
       if (dirtyFile) {
         this.#showFile(dirtyFile, false);
       }
     }
-    cleanTabs.forEach((id) => this.tabClosed(id, true));
+    cleanTabs.forEach((id) => this.#tabClosed(id, true));
     this.#scheduleUpdate();
     for (let i = 0; i < dirtyTabs.length; ++i) {
       const nextTabId = i + 1 < dirtyTabs.length ? dirtyTabs[i + 1] : null;
-      if (!this.maybeCloseTab(dirtyTabs[i], nextTabId)) {
+      if (!this.#maybeCloseTab(dirtyTabs[i], nextTabId)) {
         break;
       }
     }
   }
   onContextMenu(tabId2, contextMenu) {
-    const uiSourceCode = this.files.get(tabId2);
+    const uiSourceCode = this.#files.get(tabId2);
     if (uiSourceCode) {
       contextMenu.appendApplicableItems(uiSourceCode);
     }
   }
-  canonicalUISourceCode(uiSourceCode) {
-    const existingSourceCode = this.idToUISourceCode.get(uiSourceCode.canonicalScriptId());
+  #canonicalUISourceCode(uiSourceCode) {
+    const existingSourceCode = this.#idToUISourceCode.get(uiSourceCode.canonicalScriptId());
     if (existingSourceCode) {
       return existingSourceCode;
     }
-    this.idToUISourceCode.set(uiSourceCode.canonicalScriptId(), uiSourceCode);
-    this.uriToUISourceCode.set(uiSourceCode.url(), uiSourceCode);
+    this.#idToUISourceCode.set(uiSourceCode.canonicalScriptId(), uiSourceCode);
+    this.#uriToUISourceCode.set(uiSourceCode.url(), uiSourceCode);
     return uiSourceCode;
   }
-  addUISourceCode(uiSourceCode) {
-    const canonicalSourceCode = this.canonicalUISourceCode(uiSourceCode);
+  #addUISourceCode(uiSourceCode) {
+    const canonicalSourceCode = this.#canonicalUISourceCode(uiSourceCode);
     const duplicated = canonicalSourceCode !== uiSourceCode;
     const binding = Persistence7.Persistence.PersistenceImpl.instance().binding(canonicalSourceCode);
     uiSourceCode = binding ? binding.fileSystem : canonicalSourceCode;
@@ -13158,12 +13394,12 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     if (this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId()) {
       return;
     }
-    const index = this.history.index(historyItemKey(uiSourceCode));
+    const index = this.#history.index(historyItemKey(uiSourceCode));
     if (index === -1) {
       return;
     }
-    if (!this.tabIds.has(uiSourceCode)) {
-      this.appendFileTab(uiSourceCode);
+    if (!this.#tabIds.has(uiSourceCode)) {
+      this.#appendFileTab(uiSourceCode);
     }
     if (!index) {
       this.#showFile(uiSourceCode, false);
@@ -13174,84 +13410,81 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     }
     const currentProjectIsSnippets = Snippets3.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.#currentFile);
     const addedProjectIsSnippets = Snippets3.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode);
-    if (this.history.index(historyItemKey(this.#currentFile)) && currentProjectIsSnippets && !addedProjectIsSnippets) {
+    if (this.#history.index(historyItemKey(this.#currentFile)) && currentProjectIsSnippets && !addedProjectIsSnippets) {
       this.#showFile(uiSourceCode, false);
     }
   }
-  removeUISourceCode(uiSourceCode) {
-    this.removeUISourceCodes([uiSourceCode]);
-  }
-  removeUISourceCodes(uiSourceCodes) {
+  #removeUISourceCodes(uiSourceCodes) {
     const tabIds = [];
     for (const uiSourceCode of uiSourceCodes) {
       this.#historyManager.removeHistoryForSourceCode(uiSourceCode);
-      const tabId2 = this.tabIds.get(uiSourceCode);
+      const tabId2 = this.#tabIds.get(uiSourceCode);
       if (tabId2) {
         tabIds.push(tabId2);
       } else {
-        this.removeSourceFrame(uiSourceCode);
+        this.#removeSourceFrame(uiSourceCode);
       }
-      for (const [k, v] of this.uriToUISourceCode) {
+      for (const [k, v] of this.#uriToUISourceCode) {
         if (v === uiSourceCode) {
-          this.uriToUISourceCode.delete(k);
+          this.#uriToUISourceCode.delete(k);
         }
       }
-      for (const [k, v] of this.idToUISourceCode) {
+      for (const [k, v] of this.#idToUISourceCode) {
         if (v === uiSourceCode) {
-          this.idToUISourceCode.delete(k);
+          this.#idToUISourceCode.delete(k);
         }
       }
     }
-    tabIds.forEach((id) => this.tabClosed(id, false));
+    tabIds.forEach((id) => this.#tabClosed(id, false));
     this.#scheduleUpdate();
   }
-  editorClosedByUserAction(uiSourceCode) {
-    this.history.remove(historyItemKey(uiSourceCode));
-    this.updateHistory();
+  #editorClosedByUserAction(uiSourceCode) {
+    this.#history.remove(historyItemKey(uiSourceCode));
+    this.#updateHistory();
   }
-  editorSelectedByUserAction() {
-    this.updateHistory();
+  #editorSelectedByUserAction() {
+    this.#updateHistory();
   }
-  updateHistory() {
+  #updateHistory() {
     const historyItemKeys = [];
     for (const tabId2 of this.#tabsHistory.slice(0, MAX_PREVIOUSLY_VIEWED_FILES_COUNT)) {
-      const uiSourceCode = this.files.get(tabId2);
+      const uiSourceCode = this.#files.get(tabId2);
       if (uiSourceCode !== void 0) {
         historyItemKeys.push(historyItemKey(uiSourceCode));
       }
     }
-    this.history.update(historyItemKeys);
-    this.previouslyViewedFilesSetting.set(this.history.toObject());
+    this.#history.update(historyItemKeys);
+    this.previouslyViewedFilesSetting.set(this.#history.toObject());
   }
-  tooltipForFile(uiSourceCode) {
+  #tooltipForFile(uiSourceCode) {
     uiSourceCode = Persistence7.Persistence.PersistenceImpl.instance().network(uiSourceCode) || uiSourceCode;
     return uiSourceCode.url();
   }
-  appendFileTab(uiSourceCode, index, ignoreHistory) {
-    const tabId2 = this.generateTabId();
-    this.tabIds.set(uiSourceCode, tabId2);
+  #appendFileTab(uiSourceCode, index, ignoreHistory) {
+    const tabId2 = this.#generateTabId();
+    this.#tabIds.set(uiSourceCode, tabId2);
     if (index !== void 0) {
-      const entries = Array.from(this.files.entries());
+      const entries = Array.from(this.#files.entries());
       entries.splice(index, 0, [tabId2, uiSourceCode]);
-      this.files = new Map(entries);
+      this.#files = new Map(entries);
     } else {
-      this.files.set(tabId2, uiSourceCode);
+      this.#files.set(tabId2, uiSourceCode);
     }
-    const savedSelectionRange = this.history.selectionRange(historyItemKey(uiSourceCode));
-    const savedScrollLineNumber = this.history.scrollLineNumber(historyItemKey(uiSourceCode));
+    const savedSelectionRange = this.#history.selectionRange(historyItemKey(uiSourceCode));
+    const savedScrollLineNumber = this.#history.scrollLineNumber(historyItemKey(uiSourceCode));
     const view = this.viewForFile(uiSourceCode);
     if (view && !ignoreHistory) {
-      this.restoreEditorProperties(view, savedSelectionRange, savedScrollLineNumber);
+      this.#restoreEditorProperties(view, savedSelectionRange, savedScrollLineNumber);
     }
     this.#scheduleUpdate();
-    this.updateFileTitle(uiSourceCode);
-    this.addUISourceCodeListeners(uiSourceCode);
+    this.#updateFileTitle(uiSourceCode);
+    this.#addUISourceCodeListeners(uiSourceCode);
     if (uiSourceCode.loadError()) {
-      this.addLoadErrorIcon(tabId2);
+      this.#addLoadErrorIcon(tabId2);
     } else if (!uiSourceCode.contentLoaded()) {
       void uiSourceCode.requestContentData().then((contentDataOrError) => {
-        if (TextUtils10.ContentData.ContentData.isError(contentDataOrError)) {
-          this.addLoadErrorIcon(tabId2);
+        if (TextUtils11.ContentData.ContentData.isError(contentDataOrError)) {
+          this.#addLoadErrorIcon(tabId2);
         }
       });
     }
@@ -13260,14 +13493,14 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     }
     return tabId2;
   }
-  addLoadErrorIcon(tabId2) {
-    const uiSourceCode = this.files.get(tabId2);
+  #addLoadErrorIcon(tabId2) {
+    const uiSourceCode = this.#files.get(tabId2);
     if (uiSourceCode) {
       this.#loadErrorFiles.add(uiSourceCode);
       this.#scheduleUpdate();
     }
   }
-  restoreEditorProperties(editorView, selection, firstLineNumber) {
+  #restoreEditorProperties(editorView, selection, firstLineNumber) {
     const sourceFrame = editorView instanceof SourceFrame9.SourceFrame.SourceFrameImpl ? editorView : null;
     if (!sourceFrame) {
       return;
@@ -13279,104 +13512,104 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
       sourceFrame.scrollToLine(firstLineNumber);
     }
   }
-  tabClosed(tabId2, isUserGesture) {
-    const uiSourceCode = this.files.get(tabId2);
+  #tabClosed(tabId2, isUserGesture) {
+    const uiSourceCode = this.#files.get(tabId2);
     if (this.#currentFile && this.#currentFile.canonicalScriptId() === uiSourceCode?.canonicalScriptId()) {
-      this.removeSourceFrame(this.#currentFile);
-      this.removeViewListeners();
-      this.currentView = null;
+      this.#removeSourceFrame(this.#currentFile);
+      this.#removeViewListeners();
+      this.#currentView = null;
       this.#currentFile = null;
     }
     if (uiSourceCode) {
-      this.tabIds.delete(uiSourceCode);
+      this.#tabIds.delete(uiSourceCode);
       this.#loadErrorFiles.delete(uiSourceCode);
     }
-    this.files.delete(tabId2);
+    this.#files.delete(tabId2);
     if (uiSourceCode) {
       this.#historyManager.removeHistoryForSourceCode(uiSourceCode);
-      this.removeUISourceCodeListeners(uiSourceCode);
-      this.removeSourceFrame(uiSourceCode);
+      this.#removeUISourceCodeListeners(uiSourceCode);
+      this.#removeSourceFrame(uiSourceCode);
       this.dispatchEventToListeners("EditorClosed" /* EDITOR_CLOSED */, uiSourceCode);
       this.onEditorClosed?.(uiSourceCode);
       if (isUserGesture) {
-        this.editorClosedByUserAction(uiSourceCode);
+        this.#editorClosedByUserAction(uiSourceCode);
       }
     }
   }
-  tabSelected(tabId2, isUserGesture) {
-    const uiSourceCode = this.files.get(tabId2);
+  #tabSelected(tabId2, isUserGesture) {
+    const uiSourceCode = this.#files.get(tabId2);
     if (uiSourceCode) {
       this.#showFile(uiSourceCode, isUserGesture);
     }
   }
-  addUISourceCodeListeners(uiSourceCode) {
-    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+  #addUISourceCodeListeners(uiSourceCode) {
+    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
     uiSourceCode.addEventListener(
       Workspace17.UISourceCode.Events.WorkingCopyChanged,
-      this.uiSourceCodeWorkingCopyChanged,
+      this.#uiSourceCodeWorkingCopyChanged,
       this
     );
     uiSourceCode.addEventListener(
       Workspace17.UISourceCode.Events.WorkingCopyCommitted,
-      this.uiSourceCodeWorkingCopyCommitted,
+      this.#uiSourceCodeWorkingCopyCommitted,
       this
     );
   }
-  removeUISourceCodeListeners(uiSourceCode) {
-    uiSourceCode.removeEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+  #removeUISourceCodeListeners(uiSourceCode) {
+    uiSourceCode.removeEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
     uiSourceCode.removeEventListener(
       Workspace17.UISourceCode.Events.WorkingCopyChanged,
-      this.uiSourceCodeWorkingCopyChanged,
+      this.#uiSourceCodeWorkingCopyChanged,
       this
     );
     uiSourceCode.removeEventListener(
       Workspace17.UISourceCode.Events.WorkingCopyCommitted,
-      this.uiSourceCodeWorkingCopyCommitted,
+      this.#uiSourceCodeWorkingCopyCommitted,
       this
     );
   }
-  updateFileTitle(uiSourceCode) {
-    if (this.tabIds.has(uiSourceCode)) {
+  #updateFileTitle(uiSourceCode) {
+    if (this.#tabIds.has(uiSourceCode)) {
       if (!uiSourceCode.loadError()) {
         this.#loadErrorFiles.delete(uiSourceCode);
       }
       this.#scheduleUpdate();
     }
   }
-  uiSourceCodeTitleChanged(event) {
+  #uiSourceCodeTitleChanged(event) {
     const uiSourceCode = event.data;
     const widget4 = getViewByUISourceCode(uiSourceCode);
     if (widget4) {
       if (this.#sourceViewTypeForWidget(widget4) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
-        this.removeUISourceCodes([uiSourceCode]);
-        this.addUISourceCode(uiSourceCode);
+        this.#removeUISourceCodes([uiSourceCode]);
+        this.#addUISourceCode(uiSourceCode);
         this.showFile(uiSourceCode);
         return;
       }
     }
-    this.updateFileTitle(uiSourceCode);
-    this.updateHistory();
-    for (const [k, v] of this.uriToUISourceCode) {
+    this.#updateFileTitle(uiSourceCode);
+    this.#updateHistory();
+    for (const [k, v] of this.#uriToUISourceCode) {
       if (v === uiSourceCode && k !== v.url()) {
-        this.uriToUISourceCode.delete(k);
+        this.#uriToUISourceCode.delete(k);
       }
     }
-    for (const [k, v] of this.idToUISourceCode) {
+    for (const [k, v] of this.#idToUISourceCode) {
       if (v === uiSourceCode && k !== v.canonicalScriptId()) {
-        this.idToUISourceCode.delete(k);
+        this.#idToUISourceCode.delete(k);
       }
     }
-    this.canonicalUISourceCode(uiSourceCode);
+    this.#canonicalUISourceCode(uiSourceCode);
   }
-  uiSourceCodeWorkingCopyChanged(event) {
+  #uiSourceCodeWorkingCopyChanged(event) {
     const uiSourceCode = event.data;
-    this.updateFileTitle(uiSourceCode);
+    this.#updateFileTitle(uiSourceCode);
   }
-  uiSourceCodeWorkingCopyCommitted(event) {
+  #uiSourceCodeWorkingCopyCommitted(event) {
     const uiSourceCode = event.data.uiSourceCode;
-    this.updateFileTitle(uiSourceCode);
+    this.#updateFileTitle(uiSourceCode);
   }
-  generateTabId() {
+  #generateTabId() {
     return "tab-" + tabId++;
   }
   async #addFileSystemClicked() {
@@ -13390,34 +13623,39 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
   getCreatedSourceView(uiSourceCode) {
     return getViewByUISourceCode(uiSourceCode);
   }
-  getOrCreateSourceView(uiSourceCode) {
-    const view = getViewByUISourceCode(uiSourceCode);
-    if (view) {
-      return view;
+  #getOrCreateSourceView(uiSourceCode) {
+    const existing = getViewByUISourceCode(uiSourceCode);
+    if (existing) {
+      return existing;
     }
-    return getOrCreateSourceView(uiSourceCode, (sourceView) => {
-      if (sourceView instanceof UISourceCodeFrame) {
-        this.#historyManager.trackSourceFrameCursorJumps(sourceView);
-      }
-      uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
-    });
+    const sourceView = this.#sourceViewFactory(uiSourceCode);
+    UI_SOURCE_CODE_WIDGET_MAP.set(uiSourceCode, sourceView);
+    if (sourceView instanceof UISourceCodeFrame) {
+      this.#historyManager.trackSourceFrameCursorJumps(sourceView);
+    }
+    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
+    return sourceView;
   }
   viewForFile(uiSourceCode) {
-    return this.getOrCreateSourceView(uiSourceCode);
+    return this.#getOrCreateSourceView(uiSourceCode);
   }
-  recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
+  #recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
     sourceFrame.uiSourceCode().removeEventListener(
       Workspace17.UISourceCode.Events.TitleChanged,
-      this.uiSourceCodeTitleChanged,
+      this.#uiSourceCodeTitleChanged,
       this
     );
     recycleUISourceCodeFrame(sourceFrame, uiSourceCode);
-    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
   }
-  removeSourceFrame(uiSourceCode) {
+  #removeSourceFrame(uiSourceCode) {
     const sourceView = removeSourceViewCache(uiSourceCode);
     if (sourceView) {
-      uiSourceCode.removeEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+      uiSourceCode.removeEventListener(
+        Workspace17.UISourceCode.Events.TitleChanged,
+        this.#uiSourceCodeTitleChanged,
+        this
+      );
     }
     if (sourceView && sourceView instanceof UISourceCodeFrame) {
       sourceView.dispose();
@@ -13441,9 +13679,9 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     }
     const contentType = uiSourceCode.contentType();
     switch (contentType) {
-      case Common11.ResourceType.resourceTypes.Image:
+      case Common12.ResourceType.resourceTypes.Image:
         return "ImageView" /* IMAGE_VIEW */;
-      case Common11.ResourceType.resourceTypes.Font:
+      case Common12.ResourceType.resourceTypes.Font:
         return "FontView" /* FONT_VIEW */;
       default:
         return "SourceView" /* SOURCE_VIEW */;
@@ -13458,143 +13696,16 @@ var Events3 = /* @__PURE__ */ ((Events5) => {
   Events5["EDITOR_CLOSED"] = "EditorClosed";
   return Events5;
 })(Events3 || {});
-var MAX_PREVIOUSLY_VIEWED_FILES_COUNT = 30;
-var MAX_SERIALIZABLE_URL_LENGTH = 4096;
-function historyItemKey(uiSourceCode) {
-  return { url: uiSourceCode.url(), resourceType: uiSourceCode.contentType() };
-}
-var HistoryItem = class _HistoryItem {
-  url;
-  resourceType;
-  selectionRange;
-  scrollLineNumber;
-  constructor(url, resourceType, selectionRange, scrollLineNumber) {
-    this.url = url;
-    this.resourceType = resourceType;
-    this.selectionRange = selectionRange;
-    this.scrollLineNumber = scrollLineNumber;
-  }
-  static fromObject(serializedHistoryItem) {
-    const resourceType = Common11.ResourceType.ResourceType.fromName(serializedHistoryItem.resourceTypeName);
-    if (resourceType === null) {
-      throw new TypeError(`Invalid resource type name "${serializedHistoryItem.resourceTypeName}"`);
-    }
-    const selectionRange = serializedHistoryItem.selectionRange ? TextUtils10.TextRange.TextRange.fromObject(serializedHistoryItem.selectionRange) : void 0;
-    return new _HistoryItem(
-      serializedHistoryItem.url,
-      resourceType,
-      selectionRange,
-      serializedHistoryItem.scrollLineNumber
-    );
-  }
-  toObject() {
-    if (this.url.length >= MAX_SERIALIZABLE_URL_LENGTH) {
-      return null;
-    }
-    return {
-      url: this.url,
-      resourceTypeName: this.resourceType.name(),
-      selectionRange: this.selectionRange,
-      scrollLineNumber: this.scrollLineNumber
-    };
-  }
-};
-var History = class _History {
-  items;
-  constructor(items) {
-    this.items = items;
-  }
-  static fromObject(serializedHistoryItems) {
-    const items = [];
-    for (const serializedHistoryItem of serializedHistoryItems) {
-      try {
-        items.push(HistoryItem.fromObject(serializedHistoryItem));
-      } catch {
-      }
-    }
-    return new _History(items);
-  }
-  index({ url, resourceType }) {
-    return this.items.findIndex((item) => item.url === url && item.resourceType === resourceType);
-  }
-  selectionRange(key) {
-    const index = this.index(key);
-    if (index === -1) {
-      return void 0;
-    }
-    return this.items[index].selectionRange;
-  }
-  updateSelectionRange(key, selectionRange) {
-    if (!selectionRange) {
-      return;
-    }
-    const index = this.index(key);
-    if (index === -1) {
-      return;
-    }
-    this.items[index].selectionRange = selectionRange;
-  }
-  scrollLineNumber(key) {
-    const index = this.index(key);
-    if (index === -1) {
-      return;
-    }
-    return this.items[index].scrollLineNumber;
-  }
-  updateScrollLineNumber(key, scrollLineNumber) {
-    const index = this.index(key);
-    if (index === -1) {
-      return;
-    }
-    this.items[index].scrollLineNumber = scrollLineNumber;
-  }
-  update(keys) {
-    for (let i = keys.length - 1; i >= 0; --i) {
-      const index = this.index(keys[i]);
-      let item;
-      if (index !== -1) {
-        item = this.items[index];
-        this.items.splice(index, 1);
-      } else {
-        item = new HistoryItem(keys[i].url, keys[i].resourceType);
-      }
-      this.items.unshift(item);
-    }
-  }
-  remove(key) {
-    const index = this.index(key);
-    if (index === -1) {
-      return;
-    }
-    this.items.splice(index, 1);
-  }
-  toObject() {
-    const serializedHistoryItems = [];
-    for (const item of this.items) {
-      const serializedItem = item.toObject();
-      if (serializedItem) {
-        serializedHistoryItems.push(serializedItem);
-      }
-      if (serializedHistoryItems.length === MAX_PREVIOUSLY_VIEWED_FILES_COUNT) {
-        break;
-      }
-    }
-    return serializedHistoryItems;
-  }
-  keys() {
-    return this.items;
-  }
-};
 var EditorContainerTabDelegate = class {
-  editorContainer;
+  #editorContainer;
   constructor(editorContainer) {
-    this.editorContainer = editorContainer;
+    this.#editorContainer = editorContainer;
   }
   closeTabs(_tabbedPane, ids) {
-    this.editorContainer.closeTabs(ids);
+    this.#editorContainer.closeTabs(ids);
   }
   onContextMenu(tabId2, contextMenu) {
-    this.editorContainer.onContextMenu(tabId2, contextMenu);
+    this.#editorContainer.onContextMenu(tabId2, contextMenu);
   }
 };
 
@@ -13611,22 +13722,6 @@ var UIStrings15 = {
    */
   hideNavigator: "Hide navigator",
   /**
-   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
-   */
-  navigatorShown: "Navigator sidebar shown",
-  /**
-   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
-   */
-  navigatorHidden: "Navigator sidebar hidden",
-  /**
-   * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
-   */
-  debuggerShown: "Debugger sidebar shown",
-  /**
-   * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
-   */
-  debuggerHidden: "Debugger sidebar hidden",
-  /**
    * @description Tooltip for the debugger toggle in the Sources panel. Command to open or show the
    * sidebar containing the debugger tool.
    */
@@ -13639,41 +13734,63 @@ var UIStrings15 = {
 };
 var str_15 = i18n29.i18n.registerUIStrings("panels/sources/SourcesView.ts", UIStrings15);
 var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var { widget: widget2 } = UI14.Widget;
-var DEFAULT_VIEW7 = (input, _output, target) => {
-  const renderNavigatorToggleButton = () => {
-    const navHidden = !input.isNavigatorSidebarOpen;
-    const title = navHidden ? i18nString14(UIStrings15.showNavigator) : i18nString14(UIStrings15.hideNavigator);
-    return html10`
-      <devtools-button
-        class="toolbar-button"
-        title=${title}
-        aria-label=${title}
-        .iconName=${navHidden ? "left-panel-open" : "left-panel-close"}
-        .variant=${Buttons6.Button.Variant.TOOLBAR}
-        jslog=${VisualLogging9.toggleSubpane().track({ click: true }).context("navigator")}
-        @click=${() => input.onToggleNavigatorSidebar?.()}
-      ></devtools-button>`;
-  };
-  const renderDebuggerToggleButton = () => {
-    const debuggerHidden = !input.isDebuggerSidebarOpen;
-    const title = debuggerHidden ? i18nString14(UIStrings15.showDebugger) : i18nString14(UIStrings15.hideDebugger);
-    const glyph = debuggerHidden ? input.isVertical ? "right-panel-open" : "bottom-panel-open" : input.isVertical ? "right-panel-close" : "bottom-panel-close";
-    return html10`
-      <devtools-button
-        class="toolbar-button"
-        title=${title}
-        aria-label=${title}
-        .iconName=${glyph}
-        .variant=${Buttons6.Button.Variant.TOOLBAR}
-        ?disabled=${!input.isDebuggerSidebarButtonEnabled}
-        jslog=${VisualLogging9.toggleSubpane().track({ click: true }).context("debugger")}
-        @click=${() => input.onToggleDebuggerSidebar?.()}
-      ></devtools-button>`;
-  };
-  const leftToolbarItems = !input.isInWrapper ? [renderNavigatorToggleButton()] : [];
-  const rightToolbarItems = !input.isInWrapper && !input.isTraceApp && input.isVertical ? [renderDebuggerToggleButton()] : [];
-  const bottomToolbarContent = !input.isInWrapper && !input.isTraceApp && !input.isVertical ? renderDebuggerToggleButton() : nothing8;
+var { widget: widget2, widgetRef } = UI14.Widget;
+var toolbarItemsCache = /* @__PURE__ */ new WeakMap();
+function renderNavigatorToggleButton(isNavigatorSidebarOpen, onToggleNavigatorSidebar) {
+  const navHidden = !isNavigatorSidebarOpen;
+  const title = navHidden ? i18nString14(UIStrings15.showNavigator) : i18nString14(UIStrings15.hideNavigator);
+  return html10`
+    <devtools-button
+      class="toolbar-button"
+      title=${title}
+      aria-label=${title}
+      .iconName=${navHidden ? "left-panel-open" : "left-panel-close"}
+      .variant=${Buttons6.Button.Variant.TOOLBAR}
+      jslog=${VisualLogging9.toggleSubpane().track({ click: true }).context("navigator")}
+      @click=${() => onToggleNavigatorSidebar?.()}
+    ></devtools-button>`;
+}
+function renderDebuggerToggleButton(isDebuggerSidebarOpen, isVertical, isDebuggerSidebarButtonEnabled, onToggleDebuggerSidebar) {
+  const debuggerHidden = !isDebuggerSidebarOpen;
+  const title = debuggerHidden ? i18nString14(UIStrings15.showDebugger) : i18nString14(UIStrings15.hideDebugger);
+  const glyph = debuggerHidden ? isVertical ? "right-panel-open" : "bottom-panel-open" : isVertical ? "right-panel-close" : "bottom-panel-close";
+  return html10`
+    <devtools-button
+      class="toolbar-button"
+      title=${title}
+      aria-label=${title}
+      .iconName=${glyph}
+      .variant=${Buttons6.Button.Variant.TOOLBAR}
+      ?disabled=${!isDebuggerSidebarButtonEnabled}
+      jslog=${VisualLogging9.toggleSubpane().track({ click: true }).context("debugger")}
+      @click=${() => onToggleDebuggerSidebar?.()}
+    ></devtools-button>`;
+}
+var DEFAULT_VIEW7 = (input, output, target) => {
+  const leftKey = `${input.isInWrapper}:${input.isNavigatorSidebarOpen}`;
+  const rightKey = `${input.isInWrapper}:${input.isTraceApp}:${input.isVertical}:${input.isDebuggerSidebarOpen}:${input.isDebuggerSidebarButtonEnabled}`;
+  const cached = toolbarItemsCache.get(target);
+  const leftToolbarItems = cached && cached.leftKey === leftKey && cached.onToggleNavigatorSidebar === input.onToggleNavigatorSidebar ? cached.leftToolbarItems : !input.isInWrapper ? [renderNavigatorToggleButton(input.isNavigatorSidebarOpen, input.onToggleNavigatorSidebar)] : [];
+  const rightToolbarItems = cached && cached.rightKey === rightKey && cached.onToggleDebuggerSidebar === input.onToggleDebuggerSidebar ? cached.rightToolbarItems : !input.isInWrapper && !input.isTraceApp && input.isVertical ? [renderDebuggerToggleButton(
+    input.isDebuggerSidebarOpen,
+    input.isVertical,
+    input.isDebuggerSidebarButtonEnabled,
+    input.onToggleDebuggerSidebar
+  )] : [];
+  toolbarItemsCache.set(target, {
+    leftKey,
+    onToggleNavigatorSidebar: input.onToggleNavigatorSidebar,
+    leftToolbarItems,
+    rightKey,
+    onToggleDebuggerSidebar: input.onToggleDebuggerSidebar,
+    rightToolbarItems
+  });
+  const bottomToolbarContent = !input.isInWrapper && !input.isTraceApp && !input.isVertical ? renderDebuggerToggleButton(
+    input.isDebuggerSidebarOpen,
+    input.isVertical,
+    input.isDebuggerSidebarButtonEnabled,
+    input.onToggleDebuggerSidebar
+  ) : nothing8;
   render9(html10`
     <style>${sourcesView_css_default}</style>
     <devtools-widget class="vbox flex-auto"
@@ -13682,7 +13799,11 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     replaceProvider: input.replaceProvider,
     settingName: "sources-view-search-config",
     minimalSearchQuerySize: 0,
-    replaceable: input.isSearchReplaceable
+    replaceable: input.isSearchReplaceable,
+    searchTarget: input.searchTarget
+  })}
+      ${widgetRef(UI14.SearchableView.SearchableView, (e) => {
+    output.searchableView = e;
   })}
     >
       <devtools-widget class="vbox flex-auto ${input.breakpointsActive ? "" : "breakpoints-deactivated"}"
@@ -13713,11 +13834,13 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     }
   });
 };
-var SourcesViewBase = Common12.ObjectWrapper.eventMixin(
+var SourcesViewBase = Common13.ObjectWrapper.eventMixin(
   UI14.Widget.VBox
 );
 var SourcesView = class _SourcesView extends SourcesViewBase {
   #uiSourceCodes = /* @__PURE__ */ new Set();
+  #immutableUiSourceCodes = /* @__PURE__ */ new Set();
+  #uiSourceCodesChanged = true;
   #sourceLocation;
   #visibleView = null;
   #currentUISourceCode = null;
@@ -13735,50 +13858,31 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
   #isVertical = false;
   #isInWrapper = true;
   #breakpointsActive = true;
+  #output = {};
+  #onEditorSelected = this.#editorSelected.bind(this);
+  #onEditorClosed = this.#editorClosed.bind(this);
   constructor(element, view = DEFAULT_VIEW7) {
     super(element, { jslog: `${VisualLogging9.pane("editor").track({ keydown: "Escape" })}` });
     this.#view = view;
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
     const workspace = Workspace19.Workspace.WorkspaceImpl.instance();
     this.requestUpdate();
-    UI14.UIUtils.startBatchUpdate();
     workspace.uiSourceCodes().forEach((ui) => this.addUISourceCode(ui));
-    UI14.UIUtils.endBatchUpdate();
     workspace.addEventListener(Workspace19.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAdded, this);
     workspace.addEventListener(Workspace19.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeRemoved, this);
     workspace.addEventListener(Workspace19.Workspace.Events.ProjectRemoved, this.#projectRemoved.bind(this), this);
     SDK9.TargetManager.TargetManager.instance().addScopeChangeListener(this.#onScopeChange.bind(this));
-    if (!window.opener) {
-      window.addEventListener("beforeunload", this.#handleBeforeUnload, true);
-    }
   }
-  #handleBeforeUnload = (event) => {
-    if (event.returnValue) {
-      return;
-    }
-    const unsavedSourceCodes = [];
-    const projects = Workspace19.Workspace.WorkspaceImpl.instance().projectsForType(Workspace19.Workspace.projectTypes.FileSystem);
-    for (const project of projects) {
-      for (const uiSourceCode of project.uiSourceCodes()) {
-        if (uiSourceCode.isDirty()) {
-          unsavedSourceCodes.push(uiSourceCode);
-        }
-      }
-    }
-    if (!unsavedSourceCodes.length) {
-      return;
-    }
-    event.returnValue = true;
-    void UI14.ViewManager.ViewManager.instance().showView("sources");
-    for (const sourceCode of unsavedSourceCodes) {
-      void Common12.Revealer.reveal(sourceCode);
-    }
-  };
   performUpdate() {
+    if (this.#uiSourceCodesChanged) {
+      this.#immutableUiSourceCodes = new Set(this.#uiSourceCodes);
+      this.#uiSourceCodesChanged = false;
+    }
     const input = {
       searchProvider: this,
       replaceProvider: this,
       isSearchReplaceable: this.#isSearchReplaceable,
+      searchTarget: this.#visibleView instanceof UISourceCodeFrame ? this.#visibleView : null,
       scriptViewToolbarItems: this.#scriptViewToolbarItems,
       isNavigatorSidebarOpen: this.#isNavigatorSidebarOpen,
       isDebuggerSidebarOpen: this.#isDebuggerSidebarOpen,
@@ -13789,12 +13893,12 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
       onToggleNavigatorSidebar: this.#onToggleNavigatorSidebar,
       onToggleDebuggerSidebar: this.#onToggleDebuggerSidebar,
       breakpointsActive: this.#breakpointsActive,
-      uiSourceCodes: new Set(this.#uiSourceCodes),
+      uiSourceCodes: this.#immutableUiSourceCodes,
       sourceLocation: this.#sourceLocation,
-      onEditorSelected: this.#editorSelected.bind(this),
-      onEditorClosed: this.#editorClosed.bind(this)
+      onEditorSelected: this.#onEditorSelected,
+      onEditorClosed: this.#onEditorClosed
     };
-    this.#view(input, void 0, this.contentElement);
+    this.#view(input, this.#output, this.contentElement);
   }
   set onToggleNavigatorSidebar(callback) {
     this.#onToggleNavigatorSidebar = callback;
@@ -13810,9 +13914,6 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     }
     this.#isNavigatorSidebarOpen = isOpen;
     this.requestUpdate();
-    if (this.isShowing()) {
-      UI14.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString14(UIStrings15.navigatorShown) : i18nString14(UIStrings15.navigatorHidden));
-    }
   }
   set isDebuggerSidebarOpen(isOpen) {
     if (this.#isDebuggerSidebarOpen === isOpen) {
@@ -13820,9 +13921,6 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     }
     this.#isDebuggerSidebarOpen = isOpen;
     this.requestUpdate();
-    if (this.isShowing()) {
-      UI14.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString14(UIStrings15.debuggerShown) : i18nString14(UIStrings15.debuggerHidden));
-    }
   }
   toggleDebuggerSidebarButtonEnabled(enabled) {
     this.#isDebuggerSidebarButtonEnabled = enabled;
@@ -13842,7 +13940,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     super.willHide();
   }
   searchableView() {
-    return UI14.SearchableView.SearchableView.fromElement(this.contentElement.querySelector("devtools-widget"));
+    return this.#output.searchableView ?? null;
   }
   visibleView() {
     return this.#visibleView;
@@ -13895,7 +13993,11 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
         }
       }
     }
+    if (this.#uiSourceCodes.has(uiSourceCode)) {
+      return;
+    }
     this.#uiSourceCodes.add(uiSourceCode);
+    this.#uiSourceCodesChanged = true;
     this.requestUpdate();
   }
   #uiSourceCodeRemoved(event) {
@@ -13903,11 +14005,22 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     this.#removeUISourceCodes([uiSourceCode]);
   }
   #removeUISourceCodes(uiSourceCodes) {
-    uiSourceCodes.forEach((ui) => this.#uiSourceCodes.delete(ui));
+    let changed = false;
+    for (const ui of uiSourceCodes) {
+      if (this.#uiSourceCodes.delete(ui)) {
+        changed = true;
+      }
+    }
+    if (changed) {
+      this.#uiSourceCodesChanged = true;
+    }
     if (this.#sourceLocation && uiSourceCodes.includes(this.#sourceLocation.uiSourceCode)) {
       this.#sourceLocation = void 0;
+      changed = true;
     }
-    this.requestUpdate();
+    if (changed) {
+      this.requestUpdate();
+    }
   }
   #projectRemoved(event) {
     const project = event.data;
@@ -13918,7 +14031,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     const view = this.visibleView();
     if (view instanceof UI14.View.SimpleView) {
       void view.toolbarItems().then((items) => {
-        this.#scriptViewToolbarItems = Array.isArray(items) ? html10`${items.map((item) => item.element)}` : items;
+        this.#scriptViewToolbarItems = items;
         this.requestUpdate();
       });
     } else {
@@ -13939,7 +14052,6 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     }
     this.#removeToolbarChangedListener();
     this.#updateScriptViewToolbarItems();
-    this.searchableView()?.resetSearch();
     const data = {
       uiSourceCode,
       wasSelected
@@ -13947,19 +14059,11 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     this.dispatchEventToListeners("EditorClosed" /* EDITOR_CLOSED */, data);
   }
   #editorSelected(event) {
-    const previousSourceFrame = event.previousView instanceof UISourceCodeFrame ? event.previousView : null;
-    if (previousSourceFrame) {
-      previousSourceFrame.setSearchableView(null);
-    }
     const currentSourceFrame = event.currentView instanceof UISourceCodeFrame ? event.currentView : null;
-    if (currentSourceFrame) {
-      currentSourceFrame.setSearchableView(this.searchableView());
-    }
     this.#currentUISourceCode = event.currentFile;
     this.#visibleView = event.currentView;
     this.#isSearchReplaceable = Boolean(currentSourceFrame?.canEditSource());
     this.requestUpdate();
-    this.searchableView()?.refreshSearch();
     this.#updateToolbarChangedListener();
     this.#updateScriptViewToolbarItems();
     if (this.#currentUISourceCode) {
@@ -13968,21 +14072,26 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
   }
   #removeToolbarChangedListener() {
     if (this.#toolbarChangedListener) {
-      Common12.EventTarget.removeEventListeners([this.#toolbarChangedListener]);
+      Common13.EventTarget.removeEventListeners([this.#toolbarChangedListener]);
     }
     this.#toolbarChangedListener = null;
   }
   #updateToolbarChangedListener() {
     this.#removeToolbarChangedListener();
-    const sourceFrame = this.currentSourceFrame();
-    if (!sourceFrame) {
-      return;
+    const view = this.visibleView();
+    if (view instanceof UISourceCodeFrame) {
+      this.#toolbarChangedListener = view.addEventListener(
+        "ToolbarItemsChanged" /* TOOLBAR_ITEMS_CHANGED */,
+        this.#updateScriptViewToolbarItems,
+        this
+      );
+    } else if (view instanceof SourceFrame11.ImageView.ImageView) {
+      this.#toolbarChangedListener = view.addEventListener(
+        SourceFrame11.ImageView.Events.TOOLBAR_ITEMS_CHANGED,
+        this.#updateScriptViewToolbarItems,
+        this
+      );
     }
-    this.#toolbarChangedListener = sourceFrame.addEventListener(
-      "ToolbarItemsChanged" /* TOOLBAR_ITEMS_CHANGED */,
-      this.#updateScriptViewToolbarItems,
-      this
-    );
   }
   onSearchCanceled() {
     if (this.#searchView) {
@@ -14102,8 +14211,8 @@ var SwitchFileActionDelegate = class _SwitchFileActionDelegate {
     }
     candidates.sort(Platform11.StringUtilities.naturalOrderComparator);
     const index = Platform11.NumberUtilities.mod(candidates.indexOf(name) + 1, candidates.length);
-    const fullURL = Common12.ParsedURL.ParsedURL.concatenate(
-      url ? Common12.ParsedURL.ParsedURL.concatenate(url, "/") : "",
+    const fullURL = Common13.ParsedURL.ParsedURL.concatenate(
+      url ? Common13.ParsedURL.ParsedURL.concatenate(url, "/") : "",
       candidates[index]
     );
     const nextUISourceCode = currentUISourceCode.project().uiSourceCodeForURL(fullURL);
@@ -14450,7 +14559,23 @@ var UIStrings17 = {
   /**
    * @description Context menu item in Sources panel to explain input handling in a script via AI.
    */
-  explainInputHandling: "Explain input handling"
+  explainInputHandling: "Explain input handling",
+  /**
+   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
+   */
+  navigatorShown: "Navigator sidebar shown",
+  /**
+   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
+   */
+  navigatorHidden: "Navigator sidebar hidden",
+  /**
+   * @description Screen reader announcement when the debugger sidebar is shown in the Sources panel.
+   */
+  debuggerShown: "Debugger sidebar shown",
+  /**
+   * @description Screen reader announcement when the debugger sidebar is hidden in the Sources panel.
+   */
+  debuggerHidden: "Debugger sidebar hidden"
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/sources/SourcesPanel.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
@@ -14547,6 +14672,9 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     this.#sourcesView = new SourcesView();
     this.#sourcesView.addEventListener("EditorSelected" /* EDITOR_SELECTED */, this.editorSelected.bind(this));
     this.#sourcesView.addEventListener("EditorClosed" /* EDITOR_CLOSED */, this.editorClosed.bind(this));
+    if (!window.opener) {
+      window.addEventListener("beforeunload", this.handleBeforeUnload, true);
+    }
     this.#sourcesView.onToggleNavigatorSidebar = this.toggleNavigatorSidebar.bind(this);
     this.#sourcesView.onToggleDebuggerSidebar = this.toggleDebuggerSidebar.bind(this);
     this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
@@ -14561,11 +14689,11 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     this.threadsSidebarPane = null;
     this.watchSidebarPane = UI16.ViewManager.ViewManager.instance().view("sources.watch");
     this.callstackPane = CallStackSidebarPane.instance();
-    Common13.Settings.Settings.instance().resolve(Settings9.MainSettings.sidebarPositionSettingDescriptor).addChangeListener(this.updateSidebarPosition.bind(this));
+    Common14.Settings.Settings.instance().resolve(Settings9.MainSettings.sidebarPositionSettingDescriptor).addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
     void this.updateDebuggerButtonsAndStatus();
     this.setTarget(UI16.Context.Context.instance().flavor(SDK11.Target.Target));
-    Common13.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor).addChangeListener(this.breakpointsActiveStateChanged, this);
+    Common14.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor).addChangeListener(this.breakpointsActiveStateChanged, this);
     UI16.Context.Context.instance().addFlavorChangeListener(SDK11.Target.Target, this.onCurrentTargetChanged, this);
     UI16.Context.Context.instance().addFlavorChangeListener(
       StackTrace3.StackTrace.DebuggableFrameFlavor,
@@ -14696,7 +14824,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     return true;
   }
   onResize() {
-    if (Common13.Settings.Settings.instance().resolve(Settings9.MainSettings.sidebarPositionSettingDescriptor).get() === "auto") {
+    if (Common14.Settings.Settings.instance().resolve(Settings9.MainSettings.sidebarPositionSettingDescriptor).get() === "auto") {
       this.element.window().requestAnimationFrame(this.updateSidebarPosition.bind(this));
     }
   }
@@ -14704,16 +14832,18 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     return this.#sourcesView.searchableView();
   }
   toggleNavigatorSidebar() {
-    this.editorView.toggleSidebar();
+    const isOpen = this.editorView.toggleSidebar();
+    UI16.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString16(UIStrings17.navigatorShown) : i18nString16(UIStrings17.navigatorHidden));
   }
   toggleDebuggerSidebar() {
-    this.splitWidget.toggleSidebar();
-    this.sidebarPaneStack?.notifyVisibilityChanged(this.splitWidget.sidebarIsShowing());
+    const isOpen = this.splitWidget.toggleSidebar();
+    UI16.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString16(UIStrings17.debuggerShown) : i18nString16(UIStrings17.debuggerHidden));
+    this.sidebarPaneStack?.notifyVisibilityChanged(isOpen);
   }
   debuggerPaused(event) {
     const debuggerModel = event.data;
     const details = debuggerModel.debuggerPausedDetails();
-    if (!this.#paused && Common13.Settings.Settings.instance().moduleSetting("auto-focus-on-debugger-paused-enabled").get()) {
+    if (!this.#paused && Common14.Settings.Settings.instance().moduleSetting("auto-focus-on-debugger-paused-enabled").get()) {
       void this.setAsCurrentPanel();
     }
     if (UI16.Context.Context.instance().flavor(SDK11.Target.Target) === debuggerModel.target()) {
@@ -14746,7 +14876,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     }
     window.focus();
     Host8.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-    const withOverlay = UI16.Context.Context.instance().flavor(SDK11.Target.Target)?.model(SDK11.OverlayModel.OverlayModel) && !Common13.Settings.Settings.instance().resolve(SDK11.SDKSettings.disablePausedStateOverlaySettingDescriptor).get();
+    const withOverlay = UI16.Context.Context.instance().flavor(SDK11.Target.Target)?.model(SDK11.OverlayModel.OverlayModel) && !Common14.Settings.Settings.instance().resolve(SDK11.SDKSettings.disablePausedStateOverlaySettingDescriptor).get();
     if (withOverlay && !this.overlayLoggables) {
       this.overlayLoggables = { debuggerPausedMessage: {}, resumeButton: {}, stepOverButton: {} };
       VisualLogging11.registerLoggable(
@@ -14859,17 +14989,17 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     contextMenu.appendItemsAtLocation("navigatorMenu");
     this.addSettingMenuItem(
       contextMenu.viewSection(),
-      Common13.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorGroupByFolderSettingDescriptor),
+      Common14.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorGroupByFolderSettingDescriptor),
       i18nString16(UIStrings17.groupByFolder)
     );
     this.addSettingMenuItem(
       contextMenu.viewSection(),
-      Common13.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor),
+      Common14.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor),
       i18nString16(UIStrings17.groupByAuthored)
     );
     this.addSettingMenuItem(
       contextMenu.viewSection(),
-      Common13.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorJustMyCodeSettingDescriptor),
+      Common14.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorJustMyCodeSettingDescriptor),
       i18nString16(UIStrings17.hideIgnoreListed)
     );
   }
@@ -14957,7 +15087,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
   editorSelected(event) {
     const uiSourceCode = event.data;
     UI16.Context.Context.instance().setFlavor(Workspace21.UISourceCode.UISourceCode, uiSourceCode);
-    if (this.editorView.mainWidget() && Common13.Settings.Settings.instance().resolve(Settings9.SourcesSettings.autoRevealInNavigatorSettingDescriptor).get()) {
+    if (this.editorView.mainWidget() && Common14.Settings.Settings.instance().resolve(Settings9.SourcesSettings.autoRevealInNavigatorSettingDescriptor).get()) {
       void this.revealInNavigator(uiSourceCode, true);
     }
   }
@@ -14967,6 +15097,20 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
       context.setFlavor(Workspace21.UISourceCode.UISourceCode, null);
     }
   }
+  handleBeforeUnload = (event) => {
+    if (event.returnValue) {
+      return;
+    }
+    const unsavedSourceCodes = Workspace21.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(Workspace21.Workspace.projectTypes.FileSystem).filter((uiSourceCode) => uiSourceCode.isDirty());
+    if (!unsavedSourceCodes.length) {
+      return;
+    }
+    event.returnValue = true;
+    void UI16.ViewManager.ViewManager.instance().showView("sources");
+    for (const sourceCode of unsavedSourceCodes) {
+      void Common14.Revealer.reveal(sourceCode);
+    }
+  };
   togglePause() {
     const target = UI16.Context.Context.instance().flavor(SDK11.Target.Target);
     if (!target) {
@@ -15052,11 +15196,11 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     }
   }
   toggleBreakpointsActive() {
-    const setting = Common13.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor);
+    const setting = Common14.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor);
     setting.set(!setting.get());
   }
   breakpointsActiveStateChanged() {
-    const active = Common13.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor).get();
+    const active = Common14.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor).get();
     this.toggleBreakpointsActiveAction.setToggled(!active);
     this.#sourcesView.toggleBreakpointsActiveState(active);
   }
@@ -15090,8 +15234,8 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     const debugToolbarDrawer = document.createElement("div");
     debugToolbarDrawer.classList.add("scripts-debug-toolbar-drawer");
     const label = i18nString16(UIStrings17.pauseOnCaughtExceptions);
-    const setting = Common13.Settings.Settings.instance().resolve(SDK11.SDKSettings.pauseOnCaughtExceptionSettingDescriptor);
-    debugToolbarDrawer.appendChild(SettingsUI3.SettingsUI.createSettingCheckbox(label, setting));
+    const setting = Common14.Settings.Settings.instance().resolve(SDK11.SDKSettings.pauseOnCaughtExceptionSettingDescriptor);
+    debugToolbarDrawer.appendChild(SettingsUI4.SettingsUI.createSettingCheckbox(label, setting));
     return debugToolbarDrawer;
   }
   appendApplicableItems(event, contextMenu, target) {
@@ -15118,7 +15262,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
       return;
     }
     const eventTarget = event.target;
-    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Common13.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorJustMyCodeSettingDescriptor).get() && Workspace21.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Common14.Settings.Settings.instance().resolve(Settings9.SourcesSettings.navigatorJustMyCodeSettingDescriptor).get() && Workspace21.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
       uiSourceCode
     ))) {
       contextMenu.revealSection().appendItem(
@@ -15197,7 +15341,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     }
   }
   appendRemoteObjectItems(contextMenu, remoteObject) {
-    const indent = Common13.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const indent = Common14.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
     const executionContext = UI16.Context.Context.instance().flavor(SDK11.RuntimeModel.ExecutionContext);
     function getObjectTitle() {
       if (remoteObject.type === "wasm") {
@@ -15314,7 +15458,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
     this.editorView.showBoth(true);
   }
   revealDebuggerSidebar() {
-    if (!Common13.Settings.Settings.instance().moduleSetting("auto-focus-on-debugger-paused-enabled").get()) {
+    if (!Common14.Settings.Settings.instance().moduleSetting("auto-focus-on-debugger-paused-enabled").get()) {
       return;
     }
     void this.setAsCurrentPanel();
@@ -15322,7 +15466,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
   }
   updateSidebarPosition() {
     let vertically;
-    const position = Common13.Settings.Settings.instance().resolve(Settings9.MainSettings.sidebarPositionSettingDescriptor).get();
+    const position = Common14.Settings.Settings.instance().resolve(Settings9.MainSettings.sidebarPositionSettingDescriptor).get();
     if (position === "right") {
       vertically = false;
     } else if (position === "bottom") {
@@ -15465,7 +15609,7 @@ var UISourceCodeRevealer = class {
 };
 var DebuggerPausedDetailsRevealer = class {
   async reveal(_object) {
-    if (Common13.Settings.Settings.instance().moduleSetting("auto-focus-on-debugger-paused-enabled").get()) {
+    if (Common14.Settings.Settings.instance().moduleSetting("auto-focus-on-debugger-paused-enabled").get()) {
       return await SourcesPanel.instance().setAsCurrentPanel();
     }
   }
@@ -15478,7 +15622,7 @@ var RevealingActionDelegate = class {
     }
     switch (actionId) {
       case "debugger.toggle-pause": {
-        const actionHandledInPausedOverlay = context.flavor(UI16.ShortcutRegistry.ForwardedShortcut) && !Common13.Settings.Settings.instance().resolve(SDK11.SDKSettings.disablePausedStateOverlaySettingDescriptor).get();
+        const actionHandledInPausedOverlay = context.flavor(UI16.ShortcutRegistry.ForwardedShortcut) && !Common14.Settings.Settings.instance().resolve(SDK11.SDKSettings.disablePausedStateOverlaySettingDescriptor).get();
         if (actionHandledInPausedOverlay) {
           return true;
         }
@@ -15555,7 +15699,7 @@ var ActionDelegate3 = class {
         return true;
       }
       case "sources.toggle-word-wrap": {
-        const setting = Common13.Settings.Settings.instance().moduleSetting("sources.word-wrap");
+        const setting = Common14.Settings.Settings.instance().resolve(Settings9.SourcesSettings.sourcesWordWrapSettingDescriptor);
         setting.set(!setting.get());
         return true;
       }
@@ -15659,7 +15803,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI17.View.SimpleV
   showMoreMessageElement;
   showIgnoreListed = false;
   maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
-  updateItemThrottler = new Common14.Throttler.Throttler(100);
+  updateItemThrottler = new Common15.Throttler.Throttler(100);
   scheduledForUpdateItems = /* @__PURE__ */ new Set();
   muteActivateItem;
   #stackTrace = null;
@@ -15866,7 +16010,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI17.View.SimpleV
       icon2.classList.add("call-frame-warning-icon", "small");
       const { resources, details } = convertMissingDebugInfo(item.frame.missingDebugInfo, item.frame.sdkFrame.functionName);
       const messages = resources.map(
-        (r) => i18nString17(UIStrings18.debugFileNotFound, { PH1: Common14.ParsedURL.ParsedURL.extractName(r.resourceUrl) })
+        (r) => i18nString17(UIStrings18.debugFileNotFound, { PH1: Common15.ParsedURL.ParsedURL.extractName(r.resourceUrl) })
       );
       UI17.Tooltip.Tooltip.install(icon2, [details, ...messages].join("\n"));
       element.appendChild(icon2);
@@ -15933,7 +16077,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI17.View.SimpleV
         StackTrace5.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame)
       );
     } else {
-      void Common14.Revealer.reveal(uiLocation);
+      void Common15.Revealer.reveal(uiLocation);
     }
     if (oldItem !== item) {
       if (oldItem) {
@@ -16216,13 +16360,13 @@ __export(FilteredUISourceCodeListProvider_exports, {
   FilteredUISourceCodeListProvider: () => FilteredUISourceCodeListProvider
 });
 import "../../ui/components/highlighting/highlighting.js";
-import * as Common15 from "../../core/common/common.js";
+import * as Common16 from "../../core/common/common.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
 import * as Persistence12 from "../../models/persistence/persistence.js";
 import * as Workspace24 from "../../models/workspace/workspace.js";
 import * as QuickOpen3 from "../../ui/legacy/components/quick_open/quick_open.js";
 import { Directives as Directives5, html as html13, nothing as nothing10 } from "../../ui/lit/lit.js";
-import * as SettingsUI5 from "../../ui/settings/settings.js";
+import * as SettingsUI6 from "../../ui/settings/settings.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
 var filteredUISourceCodeListProvider_css_default = `/*
@@ -16348,7 +16492,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (this.uiSourceCodeIds.has(uiSourceCode.canonicalScriptId())) {
       return false;
     }
-    if (Common15.Settings.Settings.instance().resolve(SettingsUI5.SourcesSettings.navigatorJustMyCodeSettingDescriptor).get() && Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+    if (Common16.Settings.Settings.instance().resolve(SettingsUI6.SourcesSettings.navigatorJustMyCodeSettingDescriptor).get() && Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
       uiSourceCode
     )) {
       return false;
@@ -16388,7 +16532,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
       this.scorer = new FilePathScoreFunction(query);
     }
     let multiplier = 10;
-    const isSnippet = Common15.ParsedURL.schemeIs(uiSourceCode.url(), "snippet:");
+    const isSnippet = Common16.ParsedURL.schemeIs(uiSourceCode.url(), "snippet:");
     const isUnboundLocalFile = uiSourceCode.project().type() === Workspace24.Workspace.projectTypes.FileSystem && !Persistence12.Persistence.PersistenceImpl.instance().binding(uiSourceCode) && !isSnippet;
     if (isUnboundLocalFile) {
       multiplier = 5;
@@ -16686,7 +16830,7 @@ __export(OpenFileQuickOpen_exports, {
   OpenFileQuickOpen: () => OpenFileQuickOpen
 });
 import "../../ui/kit/kit.js";
-import * as Common16 from "../../core/common/common.js";
+import * as Common17 from "../../core/common/common.js";
 import * as Host10 from "../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "../utils/utils.js";
 import { Directives as Directives6, html as html15 } from "../../ui/lit/lit.js";
@@ -16702,9 +16846,9 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
       return;
     }
     if (typeof lineNumber === "number") {
-      void Common16.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
+      void Common17.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
     } else {
-      void Common16.Revealer.reveal(uiSourceCode);
+      void Common17.Revealer.reveal(uiSourceCode);
     }
   }
   filterProject(project) {
@@ -17083,11 +17227,11 @@ var PersistenceActions_exports = {};
 __export(PersistenceActions_exports, {
   ContextMenuProvider: () => ContextMenuProvider
 });
-import * as Common17 from "../../core/common/common.js";
+import * as Common18 from "../../core/common/common.js";
 import * as Host11 from "../../core/host/host.js";
 import * as i18n43 from "../../core/i18n/i18n.js";
 import * as SDK12 from "../../core/sdk/sdk.js";
-import * as TextUtils11 from "../../core/text_utils/text_utils.js";
+import * as TextUtils12 from "../../core/text_utils/text_utils.js";
 import * as Bindings10 from "../../models/bindings/bindings.js";
 import * as Persistence14 from "../../models/persistence/persistence.js";
 import * as Workspace26 from "../../models/workspace/workspace.js";
@@ -17147,8 +17291,8 @@ var ContextMenuProvider = class {
       const maybeScript = getScript(contentProvider);
       if (maybeScript?.isWasm()) {
         try {
-          const base64 = await maybeScript.getWasmBytecode().then(Common17.Base64.encode);
-          contentData = new TextUtils11.ContentData.ContentData(
+          const base64 = await maybeScript.getWasmBytecode().then(Common18.Base64.encode);
+          contentData = new TextUtils12.ContentData.ContentData(
             base64,
             /* isBase64=*/
             true,
@@ -17156,7 +17300,7 @@ var ContextMenuProvider = class {
           );
         } catch (e) {
           console.error(`Unable to convert WASM byte code for ${url} to base64. Not saving to disk`, e.stack);
-          Common17.Console.Console.instance().error(
+          Common18.Console.Console.instance().error(
             i18nString21(UIStrings22.saveWasmFailed),
             /* show=*/
             false
@@ -17165,9 +17309,9 @@ var ContextMenuProvider = class {
         }
       } else {
         const contentDataOrError = await contentProvider.requestContentData();
-        if (TextUtils11.ContentData.ContentData.isError(contentDataOrError)) {
+        if (TextUtils12.ContentData.ContentData.isError(contentDataOrError)) {
           console.error(`Failed to retrieve content for ${url}: ${contentDataOrError}`);
-          Common17.Console.Console.instance().error(
+          Common18.Console.Console.instance().error(
             i18nString21(UIStrings22.saveFailed),
             /* show=*/
             false
@@ -17187,7 +17331,7 @@ var ContextMenuProvider = class {
     async function saveImage() {
       const targetObject = contentProvider;
       const contentDataOrError = await targetObject.requestContentData();
-      const content = TextUtils11.ContentData.ContentData.textOr(contentDataOrError, "");
+      const content = TextUtils12.ContentData.ContentData.textOr(contentDataOrError, "");
       const link = document.createElement("a");
       link.download = targetObject.displayName;
       link.href = "data:" + targetObject.mimeType + ";base64," + content;
@@ -17204,8 +17348,8 @@ var ContextMenuProvider = class {
     const fileSystemUISourceCode = binding ? binding.fileSystem : contentProvider instanceof Workspace26.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace26.Workspace.projectTypes.FileSystem ? contentProvider : uiSourceCode;
     if (fileSystemUISourceCode && fileSystemUISourceCode.project().type() === Workspace26.Workspace.projectTypes.FileSystem) {
       const fileURL = fileSystemUISourceCode.contentURL();
-      if (Common17.ParsedURL.schemeIs(fileURL, "file:")) {
-        const path = Common17.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host11.Platform.isWin());
+      if (Common18.ParsedURL.schemeIs(fileURL, "file:")) {
+        const path = Common18.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host11.Platform.isWin());
         contextMenu.revealSection().appendItem(
           i18nString21(UIStrings22.openInContainingFolder),
           () => Host11.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path),
@@ -17247,7 +17391,7 @@ var ContextMenuProvider = class {
     const networkPersistenceManager = Persistence14.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     const isSuccess = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
     if (isSuccess) {
-      await Common17.Revealer.reveal(uiSourceCode);
+      await Common18.Revealer.reveal(uiSourceCode);
     }
     if (contentProvider instanceof SDK12.NetworkRequest.NetworkRequest) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentFromNetworkContextMenu);
@@ -17298,7 +17442,7 @@ var ContextMenuProvider = class {
       return null;
     }
     const deployedUiSourceCode = Workspace26.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(deployedStylesUrl) || Workspace26.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(
-      Common17.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl)
+      Common18.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl)
     );
     return deployedUiSourceCode;
   }
@@ -17625,12 +17769,12 @@ __export(SourcesNavigator_exports, {
   SnippetsNavigatorView: () => SnippetsNavigatorView
 });
 import "../../ui/legacy/legacy.js";
-import * as Common18 from "../../core/common/common.js";
+import * as Common19 from "../../core/common/common.js";
 import * as Host12 from "../../core/host/host.js";
 import * as i18n47 from "../../core/i18n/i18n.js";
 import * as Platform15 from "../../core/platform/platform.js";
 import * as SDK13 from "../../core/sdk/sdk.js";
-import * as TextUtils12 from "../../core/text_utils/text_utils.js";
+import * as TextUtils13 from "../../core/text_utils/text_utils.js";
 import * as Bindings11 from "../../models/bindings/bindings.js";
 import * as Persistence16 from "../../models/persistence/persistence.js";
 import * as Workspace28 from "../../models/workspace/workspace.js";
@@ -17850,7 +17994,7 @@ var FilesNavigatorView = class extends NavigatorView {
     this.#automaticFileSystemChanged({ data: this.#automaticFileSystemManager.automaticFileSystem });
   }
   willHide() {
-    Common18.EventTarget.removeEventListeners(this.#eventListeners);
+    Common19.EventTarget.removeEventListeners(this.#eventListeners);
     this.#automaticFileSystemChanged({ data: null });
     super.willHide();
   }
@@ -17932,14 +18076,14 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     this.toolbar.removeToolbarItems();
     const project = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
     if (project) {
-      const enableCheckbox = new UI22.Toolbar.ToolbarSettingCheckbox(Common18.Settings.Settings.instance().resolve(
+      const enableCheckbox = new UI22.Toolbar.ToolbarSettingCheckbox(Common19.Settings.Settings.instance().resolve(
         Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor
       ));
       this.toolbar.appendToolbarItem(enableCheckbox);
       this.toolbar.appendToolbarItem(new UI22.Toolbar.ToolbarSeparator(true));
       const clearButton = new UI22.Toolbar.ToolbarButton(i18nString23(UIStrings24.clearConfiguration), "clear");
       clearButton.addEventListener(UI22.Toolbar.ToolbarButton.Events.CLICK, () => {
-        Common18.Settings.Settings.instance().resolve(Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).set(false);
+        Common19.Settings.Settings.instance().resolve(Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).set(false);
         project.remove();
       });
       this.toolbar.appendToolbarItem(clearButton);
@@ -17957,7 +18101,7 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     if (!fileSystem) {
       return;
     }
-    Common18.Settings.Settings.instance().resolve(Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).set(true);
+    Common19.Settings.Settings.instance().resolve(Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).set(true);
   }
   sourceSelected(uiSourceCode, focusSource) {
     Host12.userMetrics.actionTaken(Host12.UserMetrics.Action.OverridesSourceSelected);
@@ -18047,9 +18191,9 @@ var SnippetsNavigatorView = class extends NavigatorView {
   async handleSaveAs(uiSourceCode) {
     uiSourceCode.commitWorkingCopy();
     const contentData = await uiSourceCode.requestContentData();
-    if (TextUtils12.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils13.ContentData.ContentData.isError(contentData)) {
       console.error(`Failed to retrieve content for ${uiSourceCode.url()}: ${contentData}`);
-      Common18.Console.Console.instance().error(
+      Common19.Console.Console.instance().error(
         i18nString23(UIStrings24.saveAsFailed),
         /* show=*/
         false
@@ -18065,14 +18209,14 @@ var SnippetsNavigatorView = class extends NavigatorView {
     Workspace28.FileManager.FileManager.instance().close(uiSourceCode.url());
   }
   addJSExtension(url) {
-    return Common18.ParsedURL.ParsedURL.concatenate(url, ".js");
+    return Common19.ParsedURL.ParsedURL.concatenate(url, ".js");
   }
 };
 var ActionDelegate5 = class {
   handleAction(_context, actionId) {
     switch (actionId) {
       case "sources.create-snippet":
-        void Snippets5.ScriptSnippetFileSystem.findSnippetsProject().createFile(Platform15.DevToolsPath.EmptyEncodedPathString, null, "").then((uiSourceCode) => Common18.Revealer.reveal(uiSourceCode));
+        void Snippets5.ScriptSnippetFileSystem.findSnippetsProject().createFile(Platform15.DevToolsPath.EmptyEncodedPathString, null, "").then((uiSourceCode) => Common19.Revealer.reveal(uiSourceCode));
         return true;
       case "sources.add-folder-to-workspace":
         void Persistence16.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
@@ -18091,7 +18235,7 @@ __export(WatchExpressionsSidebarPane_exports, {
   WatchExpressionPromptWidget: () => WatchExpressionPromptWidget,
   WatchExpressionsSidebarPane: () => WatchExpressionsSidebarPane
 });
-import * as Common19 from "../../core/common/common.js";
+import * as Common20 from "../../core/common/common.js";
 import * as Host13 from "../../core/host/host.js";
 import * as i18n49 from "../../core/i18n/i18n.js";
 import * as Platform16 from "../../core/platform/platform.js";
@@ -18706,7 +18850,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     super({ useShadowDom: true });
     this.registerRequiredCSS(watchExpressionsSidebarPane_css_default, objectValue_css_default);
     this.#watchExpressions = [];
-    this.#watchExpressionsSetting = Common19.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
+    this.#watchExpressionsSetting = Common20.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
     UI23.Context.Context.instance().addFlavorChangeListener(
       SDK14.RuntimeModel.ExecutionContext,
       this.#refreshExpressions,
@@ -18970,6 +19114,7 @@ export {
   DebuggerPausedMessage_exports as DebuggerPausedMessage,
   DebuggerPlugin_exports as DebuggerPlugin,
   EditingLocationHistoryManager_exports as EditingLocationHistoryManager,
+  EditorHistory_exports as EditorHistory,
   FilePathScoreFunction_exports as FilePathScoreFunction,
   FilteredUISourceCodeListProvider_exports as FilteredUISourceCodeListProvider,
   GoToLineQuickOpen_exports as GoToLineQuickOpen,

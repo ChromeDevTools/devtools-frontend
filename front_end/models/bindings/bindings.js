@@ -6078,7 +6078,8 @@ __export(SourceMapStepping_exports, {
   isScopedFrame: () => isScopedFrame,
   isUnmapped: () => isUnmapped,
   logicalDepth: () => logicalDepth,
-  nextAutoStep: () => nextAutoStep
+  nextAutoStep: () => nextAutoStep,
+  outlinedFunctionRanges: () => outlinedFunctionRanges
 });
 import * as Root3 from "../../core/root/root.js";
 import * as SDK10 from "../../core/sdk/sdk.js";
@@ -6140,6 +6141,17 @@ function inlinedCalleeRanges(frame) {
   const position = scopedPosition(frame);
   return position ? toLocationRanges(position, position.sourceMap.inlinedCalleeRanges(position.line, position.column)) : [];
 }
+function outlinedFunctionRanges(frame) {
+  const position = scopedPosition(frame);
+  return position ? toLocationRanges(position, position.sourceMap.outlinedFunctionRanges(position.line, position.column)) : [];
+}
+function compareLocations(a, b) {
+  return a.lineNumber - b.lineNumber || (a.columnNumber ?? 0) - (b.columnNumber ?? 0);
+}
+function isInRanges(frame, ranges) {
+  const location = frame.location();
+  return ranges.some(({ start, end }) => start.scriptId === location.scriptId && compareLocations(start, location) <= 0 && compareLocations(location, end) < 0);
+}
 async function nextAutoStep(details, context, computeAutoStep) {
   if (!context || details.reason !== Debugger.PausedEventReason.Step) {
     return null;
@@ -6160,8 +6172,20 @@ async function nextAutoStep(details, context, computeAutoStep) {
       }
       return null;
     }
-    case SDK10.DebuggerModel.StepMode.STEP_OUT:
+    case SDK10.DebuggerModel.StepMode.STEP_OUT: {
+      const outlinedPrefix = outlinedPrefixLength(start);
+      if (outlinedPrefix > 0 && outlinedPrefix < start.length && inlinedFunctionRanges(start[0]).length === 0) {
+        const ownerInlined = inlinedFunctionRanges(start[outlinedPrefix]);
+        const targetLength = start.length - outlinedPrefix - (ownerInlined.length > 0 ? 0 : 1);
+        if (frames.length > targetLength) {
+          return { command: SDK10.DebuggerModel.StepMode.STEP_OUT, ranges: [] };
+        }
+        if (frames.length === targetLength && isInRanges(frames[0], ownerInlined)) {
+          return { command: SDK10.DebuggerModel.StepMode.STEP_OVER, ranges: ownerInlined };
+        }
+      }
       return isUnmapped(frames[0]) ? await computeAutoStep(SDK10.DebuggerModel.StepMode.STEP_OVER, frames) : null;
+    }
   }
 }
 
@@ -6373,6 +6397,9 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     const ranges = await this.computeAutoStepRanges(mode, callFrames[0]);
     if (mode === SDK12.DebuggerModel.StepMode.STEP_OUT && ranges.length > 0) {
       return { command: SDK12.DebuggerModel.StepMode.STEP_OVER, ranges };
+    }
+    if (mode === SDK12.DebuggerModel.StepMode.STEP_OVER) {
+      return { command: mode, ranges, enterRanges: outlinedFunctionRanges(callFrames[0]) };
     }
     return { command: mode, ranges };
   }

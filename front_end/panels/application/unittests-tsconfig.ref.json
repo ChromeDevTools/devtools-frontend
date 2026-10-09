@@ -105,6 +105,9 @@
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/lit/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../protocol_monitor/bundle-tsconfig.ref.json"
     },
     {

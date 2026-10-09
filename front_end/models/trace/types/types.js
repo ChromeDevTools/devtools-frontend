@@ -433,17 +433,6 @@ var markerTypeGuards = [
   isNavigationStart,
   isSoftNavigationStart
 ];
-var MarkerName = [
-  "MarkDOMContent" /* MARK_DOM_CONTENT */,
-  "MarkLoad" /* MARK_LOAD */,
-  "firstPaint" /* MARK_FIRST_PAINT */,
-  "firstContentfulPaint" /* MARK_FCP */,
-  "SyntheticSoftFirstContentfulPaint" /* MARK_SOFT_FCP */,
-  "largestContentfulPaint::Candidate" /* MARK_LCP_CANDIDATE */,
-  "largestContentfulPaint::CandidateForSoftNavigation" /* MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */,
-  "navigationStart" /* NAVIGATION_START */,
-  "SoftNavigationStart" /* SOFT_NAVIGATION_START */
-];
 function isMarkerEvent(event) {
   if (event.ph === "I" /* INSTANT */ || "n" /* ASYNC_NESTABLE_INSTANT */) {
     return markerTypeGuards.some((fn) => fn(event));
@@ -1144,6 +1133,17 @@ var Name = /* @__PURE__ */ ((Name2) => {
   Name2["PRELOAD_RENDER_BLOCKING_STATUS_CHANGE"] = "PreloadRenderBlockingStatusChange";
   return Name2;
 })(Name || {});
+var MarkerName = [
+  "MarkDOMContent" /* MARK_DOM_CONTENT */,
+  "MarkLoad" /* MARK_LOAD */,
+  "firstPaint" /* MARK_FIRST_PAINT */,
+  "firstContentfulPaint" /* MARK_FCP */,
+  "SyntheticSoftFirstContentfulPaint" /* MARK_SOFT_FCP */,
+  "largestContentfulPaint::Candidate" /* MARK_LCP_CANDIDATE */,
+  "largestContentfulPaint::CandidateForSoftNavigation" /* MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */,
+  "navigationStart" /* NAVIGATION_START */,
+  "SoftNavigationStart" /* SOFT_NAVIGATION_START */
+];
 var Categories = {
   Console: "blink.console",
   UserTiming: "blink.user_timing",

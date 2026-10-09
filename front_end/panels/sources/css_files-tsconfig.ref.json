@@ -20,6 +20,7 @@
     "sourcesNavigator.css.js",
     "sourcesPanel.css.js",
     "sourcesView.css.js",
+    "tabbedEditorContainer.css.js",
     "threadsSidebarPane.css.js",
     "watchExpressionsSidebarPane.css.js"
   ]

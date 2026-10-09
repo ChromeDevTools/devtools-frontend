@@ -75,7 +75,7 @@ export type ParsedTrace = Types.File.TraceFile & {
     insights: Insights.Types.TraceInsightSets | null;
     syntheticEventsManager: Helpers.SyntheticEvents.SyntheticEventsManager;
 };
-export declare const enum ModelUpdateType {
+export declare enum ModelUpdateType {
     COMPLETE = "COMPLETE",
     PROGRESS_UPDATE = "PROGRESS_UPDATE"
 }

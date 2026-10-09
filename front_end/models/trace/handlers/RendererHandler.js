@@ -334,7 +334,7 @@ export function makeCompleteEvent(event) {
     // matching end event later we will update its duration.
     const syntheticComplete = {
         ...event,
-        ph: "X" /* Types.Events.Phase.COMPLETE */,
+        ph: Types.Events.Phase.COMPLETE,
         dur: Types.Timing.Micro(0),
     };
     completeEventStack.push(syntheticComplete);

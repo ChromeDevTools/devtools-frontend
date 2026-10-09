@@ -9,7 +9,7 @@ import * as Trace from '../../models/trace/trace.js';
  */
 export function forCPUProfile() {
     return {
-        dataOrigin: "CPUProfile" /* Trace.Types.File.DataOrigin.CPU_PROFILE */,
+        dataOrigin: Trace.Types.File.DataOrigin.CPU_PROFILE,
     };
 }
 /**
@@ -60,7 +60,7 @@ async function innerForTraceCalculate({ recordingStartTime, cruxFieldData } = {}
         cpuThrottling: cpuThrottling !== 1 ? cpuThrottling : undefined,
         networkThrottling: networkTitle,
         networkThrottlingConditions,
-        dataOrigin: "TraceEvents" /* Trace.Types.File.DataOrigin.TRACE_EVENTS */,
+        dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
         cruxFieldData: cruxFieldData ?? undefined,
         hostDPR: window.devicePixelRatio,
     };

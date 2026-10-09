@@ -1,7 +1,7 @@
 import * as Platform from '../../core/platform/platform.js';
-import type { TemplateResult } from '../lit/lit.js';
+import { type LitTemplate } from '../lit/lit.js';
 import type { TabbedPane } from './TabbedPane.js';
-import type { ToolbarItem, ToolbarMenuButton } from './Toolbar.js';
+import type { ToolbarMenuButton } from './Toolbar.js';
 import { type AnyWidget, VBox, type WidgetOptions } from './Widget.js';
 export interface View {
     viewId(): string;
@@ -10,7 +10,7 @@ export interface View {
     isPreviewFeature(): boolean;
     iconName(): string | undefined;
     isTransient(): boolean;
-    toolbarItems(): Promise<ToolbarItem[] | TemplateResult>;
+    toolbarItems(): Promise<LitTemplate>;
     widget(): Promise<AnyWidget>;
     disposeView(): void | Promise<void>;
 }
@@ -45,7 +45,7 @@ export declare class SimpleView<ContentTypeT extends HTMLElement | DocumentFragm
     title(): Platform.UIString.LocalizedString;
     isCloseable(): boolean;
     isTransient(): boolean;
-    toolbarItems(): Promise<ToolbarItem[] | TemplateResult>;
+    toolbarItems(): Promise<LitTemplate>;
     widget(): Promise<AnyWidget>;
     revealView(): Promise<void>;
     disposeView(): void;

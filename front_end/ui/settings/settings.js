@@ -515,10 +515,13 @@ function resetSettings() {
 var SourcesSettings_exports = {};
 __export(SourcesSettings_exports, {
   autoRevealInNavigatorSettingDescriptor: () => autoRevealInNavigatorSettingDescriptor,
+  inlineVariableValuesSettingDescriptor: () => inlineVariableValuesSettingDescriptor,
   navigatorGroupByAuthoredSettingDescriptor: () => navigatorGroupByAuthoredSettingDescriptor,
   navigatorGroupByFolderSettingDescriptor: () => navigatorGroupByFolderSettingDescriptor,
   navigatorJustMyCodeSettingDescriptor: () => navigatorJustMyCodeSettingDescriptor,
   searchInAnonymousAndContentScriptsSettingDescriptor: () => searchInAnonymousAndContentScriptsSettingDescriptor,
+  showWhitespacesInEditorSettingDescriptor: () => showWhitespacesInEditorSettingDescriptor,
+  sourcesWordWrapSettingDescriptor: () => sourcesWordWrapSettingDescriptor,
   textEditorAutoDetectIndentSettingDescriptor: () => textEditorAutoDetectIndentSettingDescriptor,
   textEditorAutocompletionSettingDescriptor: () => textEditorAutocompletionSettingDescriptor,
   textEditorBracketClosingSettingDescriptor: () => textEditorBracketClosingSettingDescriptor,
@@ -585,6 +588,24 @@ var textEditorBracketMatchingSettingDescriptor = {
 };
 var textEditorCodeFoldingSettingDescriptor = {
   name: "text-editor-code-folding",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.SYNCED
+};
+var showWhitespacesInEditorSettingDescriptor = {
+  name: "show-whitespaces-in-editor",
+  type: Common9.Settings.SettingType.ENUM,
+  defaultValue: "original",
+  storageType: Common9.Settings.SettingStorageType.SYNCED
+};
+var sourcesWordWrapSettingDescriptor = {
+  name: "sources.word-wrap",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common9.Settings.SettingStorageType.SYNCED
+};
+var inlineVariableValuesSettingDescriptor = {
+  name: "inline-variable-values",
   type: Common9.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   storageType: Common9.Settings.SettingStorageType.SYNCED

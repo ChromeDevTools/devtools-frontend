@@ -10,3 +10,6 @@ export declare const textEditorAutocompletionSettingDescriptor: Common.Settings.
 export declare const textEditorBracketClosingSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const textEditorBracketMatchingSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const textEditorCodeFoldingSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const showWhitespacesInEditorSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const sourcesWordWrapSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const inlineVariableValuesSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;

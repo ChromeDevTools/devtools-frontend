@@ -709,10 +709,6 @@ export class SourceMap {
         return this.hasEncodedScopeInfo() ? this.#scopesInfo?.inlinedCalleeRanges(generatedLine, generatedColumn) ?? [] :
             [];
     }
-    /** See {@link SourceMapScopesInfo.hasOutlinedFunctions}. False without encoded scopes. */
-    hasOutlinedFunctions() {
-        return this.hasEncodedScopeInfo() && (this.#scopesInfo?.hasOutlinedFunctions() ?? false);
-    }
     /** See {@link SourceMapScopesInfo.outlinedFunctionRanges}. Empty without encoded scopes. */
     outlinedFunctionRanges(generatedLine, generatedColumn) {
         return this.hasEncodedScopeInfo() ? this.#scopesInfo?.outlinedFunctionRanges(generatedLine, generatedColumn) ?? [] :

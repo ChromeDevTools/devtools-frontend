@@ -100,7 +100,7 @@ function summarizeBottomUpByURL(root, data) {
 }
 // Use the same filtering as front_end/panels/timeline/TimelineTreeView.ts.
 const exclusiveNameFilter = new TraceFilter.ExclusiveNameFilter([]);
-const visibleEventsFilter = new TraceFilter.VisibleEventsFilter([...Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values(), "SyntheticNetworkRequest" /* Types.Events.Name.SYNTHETIC_NETWORK_REQUEST */]);
+const visibleEventsFilter = new TraceFilter.VisibleEventsFilter([...Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values(), Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]);
 function getBottomUpTree(mainThreadEvents, tracebounds, groupingFunction) {
     // The bottom up root node handles all the "in Tracebounds" checks we need for the insight.
     const startTime = Helpers.Timing.microToMilli(tracebounds.min);

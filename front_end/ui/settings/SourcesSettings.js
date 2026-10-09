@@ -64,4 +64,22 @@ export const textEditorCodeFoldingSettingDescriptor = {
     defaultValue: true,
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
 };
+export const showWhitespacesInEditorSettingDescriptor = {
+    name: 'show-whitespaces-in-editor',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: 'original',
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const sourcesWordWrapSettingDescriptor = {
+    name: 'sources.word-wrap',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const inlineVariableValuesSettingDescriptor = {
+    name: 'inline-variable-values',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: true,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
 //# sourceMappingURL=SourcesSettings.js.map

@@ -641,10 +641,10 @@ export class TimelinePanel extends TimelinePanelBase {
             const str = i18nString(UIStrings.processed);
             // Trace Engine will report progress from [0...1] but we still have more work to do. So, scale them down a bit.
             const traceParseMaxProgress = 0.7;
-            if (updateEvent.data.type === "COMPLETE" /* Trace.TraceModel.ModelUpdateType.COMPLETE */) {
+            if (updateEvent.data.type === Trace.TraceModel.ModelUpdateType.COMPLETE) {
                 this.statusDialog?.updateProgressBar(str, 100 * traceParseMaxProgress);
             }
-            else if (updateEvent.data.type === "PROGRESS_UPDATE" /* Trace.TraceModel.ModelUpdateType.PROGRESS_UPDATE */) {
+            else if (updateEvent.data.type === Trace.TraceModel.ModelUpdateType.PROGRESS_UPDATE) {
                 const data = updateEvent.data.data;
                 this.statusDialog?.updateProgressBar(str, data.percent * 100 * traceParseMaxProgress);
             }
@@ -1262,7 +1262,7 @@ export class TimelinePanel extends TimelinePanelBase {
         await new Promise(resolve => requestAnimationFrame(resolve));
         // Base the filename on the trace's time of recording
         const isoDate = Platform.DateUtilities.toISO8601Compact(metadata.startTime ? new Date(metadata.startTime) : new Date());
-        const isCpuProfile = metadata.dataOrigin === "CPUProfile" /* Trace.Types.File.DataOrigin.CPU_PROFILE */;
+        const isCpuProfile = metadata.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE;
         const { includeResourceContent, includeSourceMaps } = config;
         metadata.enhancedTraceVersion =
             includeResourceContent ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
@@ -1489,7 +1489,7 @@ export class TimelinePanel extends TimelinePanelBase {
             return;
         }
         const parsedTrace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
-        const isCpuProfile = parsedTrace?.metadata.dataOrigin === "CPUProfile" /* Trace.Types.File.DataOrigin.CPU_PROFILE */;
+        const isCpuProfile = parsedTrace?.metadata.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE;
         if (!parsedTrace) {
             return;
         }
@@ -1932,7 +1932,7 @@ export class TimelinePanel extends TimelinePanelBase {
                 Host.userMetrics.navigationSettingAtFirstTimelineLoad(Host.UserMetrics.TimelineNavigationSetting.MODERN_AT_SESSION_FIRST_TRACE);
             }
         }
-        if (parsedTrace.metadata.dataOrigin !== "CPUProfile" /* Trace.Types.File.DataOrigin.CPU_PROFILE */) {
+        if (parsedTrace.metadata.dataOrigin !== Trace.Types.File.DataOrigin.CPU_PROFILE) {
             UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, AiAssistanceModel.AIContext.AgentFocus.fromParsedTrace(parsedTrace));
         }
     }
@@ -2414,7 +2414,7 @@ export class TimelinePanel extends TimelinePanelBase {
             metadata: metadata ?? undefined,
             isFreshRecording,
             resolveSourceMap: this.#createSourceMapResolver(isFreshRecording, metadata),
-            isCPUProfile: metadata?.dataOrigin === "CPUProfile" /* Trace.Types.File.DataOrigin.CPU_PROFILE */,
+            isCPUProfile: metadata?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE,
         };
         if (window.location.href.includes('devtools/bundled') || window.location.search.includes('debugFrontend')) {
             // Someone is debugging DevTools, enable the logger to give timings

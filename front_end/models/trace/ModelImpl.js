@@ -80,7 +80,7 @@ export class Model extends EventTarget {
         // progress (if they have any updates).
         const onTraceUpdate = (event) => {
             const { data } = event;
-            this.dispatchEvent(new ModelUpdateEvent({ type: "PROGRESS_UPDATE" /* ModelUpdateType.PROGRESS_UPDATE */, data }));
+            this.dispatchEvent(new ModelUpdateEvent({ type: ModelUpdateType.PROGRESS_UPDATE, data }));
         };
         this.#processor.addEventListener(TraceParseProgressEvent.eventName, onTraceUpdate);
         // TODO(cjamcl): this.#processor.parse needs this to work. So it should either take it as input, or create it itself.
@@ -106,7 +106,7 @@ export class Model extends EventTarget {
             // All processors have finished parsing, no more updates are expected.
             this.#processor.removeEventListener(TraceParseProgressEvent.eventName, onTraceUpdate);
             // Finally, update any listeners that all processors are 'done'.
-            this.dispatchEvent(new ModelUpdateEvent({ type: "COMPLETE" /* ModelUpdateType.COMPLETE */, data: 'done' }));
+            this.dispatchEvent(new ModelUpdateEvent({ type: ModelUpdateType.COMPLETE, data: 'done' }));
         }
     }
     #storeAndCreateParsedTraceFile(syntheticEventsManager, traceEvents, metadata, data, traceInsights) {
@@ -176,6 +176,6 @@ export class ModelUpdateEvent extends Event {
     }
 }
 export function isModelUpdateDataComplete(eventData) {
-    return eventData.type === "COMPLETE" /* ModelUpdateType.COMPLETE */;
+    return eventData.type === ModelUpdateType.COMPLETE;
 }
 //# sourceMappingURL=ModelImpl.js.map

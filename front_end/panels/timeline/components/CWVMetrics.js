@@ -109,7 +109,7 @@ const CWV_METRICS_VIEW = (input, _output, target) => {
         let classification;
         if (value === null) {
             valueText = valueDisplay = '-';
-            classification = "unclassified" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.UNCLASSIFIED */;
+            classification = Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.UNCLASSIFIED;
         }
         else if (metric === 'LCP') {
             const micros = value;

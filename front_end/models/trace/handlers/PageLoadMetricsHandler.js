@@ -64,7 +64,7 @@ export function handleEvent(event) {
     }
     if (!enableSoftNavigation &&
         (Types.Events.isSoftNavigationStart(event) ||
-            event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */ ||
+            event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION ||
             Types.Events.isSoftFirstContentfulPaint(event))) {
         return;
     }
@@ -74,8 +74,8 @@ export function handleEvent(event) {
     if (Types.Events.isSoftNavigationStart(event) && event.args?.context?.firstContentfulPaint) {
         const syntheticSoftFcpEvent = Helpers.SyntheticEvents.SyntheticEventsManager
             .registerSyntheticEvent({
-            name: "SyntheticSoftFirstContentfulPaint" /* Types.Events.Name.MARK_SOFT_FCP */,
-            ph: "R" /* Types.Events.Phase.MARK */,
+            name: Types.Events.Name.MARK_SOFT_FCP,
+            ph: Types.Events.Phase.MARK,
             rawSourceEvent: event,
             pid: event.pid,
             tid: event.tid,
@@ -114,14 +114,14 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
     if (Types.Events.isAnyFirstContentfulPaint(event)) {
         const fcpTime = Types.Timing.Micro(event.ts - navigation.ts);
         const classification = scoreClassificationForFirstContentfulPaint(fcpTime);
-        const metricScore = { event, metricName: "FCP" /* MetricName.FCP */, classification, navigation, timing: fcpTime };
+        const metricScore = { event, metricName: MetricName.FCP, classification, navigation, timing: fcpTime };
         storeMetricScore(frameId, navigation, metricScore);
         return;
     }
     if (Types.Events.isFirstPaint(event)) {
         const paintTime = Types.Timing.Micro(event.ts - navigation.ts);
-        const classification = "unclassified" /* ScoreClassification.UNCLASSIFIED */;
-        const metricScore = { event, metricName: "FP" /* MetricName.FP */, classification, navigation, timing: paintTime };
+        const classification = ScoreClassification.UNCLASSIFIED;
+        const metricScore = { event, metricName: MetricName.FP, classification, navigation, timing: paintTime };
         storeMetricScore(frameId, navigation, metricScore);
         return;
     }
@@ -129,7 +129,7 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
         const dclTime = Types.Timing.Micro(event.ts - navigation.ts);
         const metricScore = {
             event,
-            metricName: "DCL" /* MetricName.DCL */,
+            metricName: MetricName.DCL,
             classification: scoreClassificationForDOMContentLoaded(dclTime),
             navigation,
             timing: dclTime,
@@ -141,7 +141,7 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
         const ttiValue = Types.Timing.Micro(event.ts - navigation.ts);
         const tti = {
             event,
-            metricName: "TTI" /* MetricName.TTI */,
+            metricName: MetricName.TTI,
             classification: scoreClassificationForTimeToInteractive(ttiValue),
             navigation,
             timing: ttiValue,
@@ -150,7 +150,7 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
         const tbtValue = Helpers.Timing.milliToMicro(Types.Timing.Milli(event.args.args.total_blocking_time_ms));
         const tbt = {
             event,
-            metricName: "TBT" /* MetricName.TBT */,
+            metricName: MetricName.TBT,
             classification: scoreClassificationForTotalBlockingTime(tbtValue),
             navigation,
             timing: tbtValue,
@@ -162,8 +162,8 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
         const loadTime = Types.Timing.Micro(event.ts - navigation.ts);
         const metricScore = {
             event,
-            metricName: "L" /* MetricName.L */,
-            classification: "unclassified" /* ScoreClassification.UNCLASSIFIED */,
+            metricName: MetricName.L,
+            classification: ScoreClassification.UNCLASSIFIED,
             navigation,
             timing: loadTime,
         };
@@ -178,14 +178,14 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
         const lcpTime = Types.Timing.Micro(event.ts - navigation.ts);
         const lcp = {
             event,
-            metricName: "LCP" /* MetricName.LCP */,
+            metricName: MetricName.LCP,
             classification: scoreClassificationForLargestContentfulPaint(lcpTime),
             navigation,
             timing: lcpTime,
         };
         const metricsByNavigation = Platform.MapUtilities.getWithDefault(metricScoresByFrameId, frameId, () => new Map());
         const metrics = Platform.MapUtilities.getWithDefault(metricsByNavigation, navigation, () => new Map());
-        const lastLCPCandidate = metrics.get("LCP" /* MetricName.LCP */);
+        const lastLCPCandidate = metrics.get(MetricName.LCP);
         if (lastLCPCandidate === undefined) {
             selectedLCPCandidateEvents.add(lcp.event);
             storeMetricScore(frameId, navigation, lcp);
@@ -247,7 +247,7 @@ function getNavigationForPageLoadEvent(event) {
         Types.Events.isFirstPaint(event)) {
         const { navigationsByNavigationId, softNavigationsById } = metaHandlerData();
         let navigation;
-        if (event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */ &&
+        if (event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION &&
             event.args.data?.performanceTimelineNavigationId) {
             navigation = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
             if (!navigation) {
@@ -298,12 +298,12 @@ function getNavigationForPageLoadEvent(event) {
 export function scoreClassificationForFirstContentfulPaint(fcpScoreInMicroseconds) {
     const FCP_GOOD_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(1.8));
     const FCP_MEDIUM_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(3.0));
-    let scoreClassification = "bad" /* ScoreClassification.BAD */;
+    let scoreClassification = ScoreClassification.BAD;
     if (fcpScoreInMicroseconds <= FCP_MEDIUM_TIMING) {
-        scoreClassification = "ok" /* ScoreClassification.OK */;
+        scoreClassification = ScoreClassification.OK;
     }
     if (fcpScoreInMicroseconds <= FCP_GOOD_TIMING) {
-        scoreClassification = "good" /* ScoreClassification.GOOD */;
+        scoreClassification = ScoreClassification.GOOD;
     }
     return scoreClassification;
 }
@@ -314,12 +314,12 @@ export function scoreClassificationForFirstContentfulPaint(fcpScoreInMicrosecond
 export function scoreClassificationForTimeToInteractive(ttiTimeInMicroseconds) {
     const TTI_GOOD_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(3.8));
     const TTI_MEDIUM_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(7.3));
-    let scoreClassification = "bad" /* ScoreClassification.BAD */;
+    let scoreClassification = ScoreClassification.BAD;
     if (ttiTimeInMicroseconds <= TTI_MEDIUM_TIMING) {
-        scoreClassification = "ok" /* ScoreClassification.OK */;
+        scoreClassification = ScoreClassification.OK;
     }
     if (ttiTimeInMicroseconds <= TTI_GOOD_TIMING) {
-        scoreClassification = "good" /* ScoreClassification.GOOD */;
+        scoreClassification = ScoreClassification.GOOD;
     }
     return scoreClassification;
 }
@@ -330,12 +330,12 @@ export function scoreClassificationForTimeToInteractive(ttiTimeInMicroseconds) {
 export function scoreClassificationForLargestContentfulPaint(lcpTimeInMicroseconds) {
     const LCP_GOOD_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(2.5));
     const LCP_MEDIUM_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(4));
-    let scoreClassification = "bad" /* ScoreClassification.BAD */;
+    let scoreClassification = ScoreClassification.BAD;
     if (lcpTimeInMicroseconds <= LCP_MEDIUM_TIMING) {
-        scoreClassification = "ok" /* ScoreClassification.OK */;
+        scoreClassification = ScoreClassification.OK;
     }
     if (lcpTimeInMicroseconds <= LCP_GOOD_TIMING) {
-        scoreClassification = "good" /* ScoreClassification.GOOD */;
+        scoreClassification = ScoreClassification.GOOD;
     }
     return scoreClassification;
 }
@@ -343,7 +343,7 @@ export function scoreClassificationForLargestContentfulPaint(lcpTimeInMicrosecon
  * DCL does not have a classification.
  */
 export function scoreClassificationForDOMContentLoaded(_dclTimeInMicroseconds) {
-    return "unclassified" /* ScoreClassification.UNCLASSIFIED */;
+    return ScoreClassification.UNCLASSIFIED;
 }
 /**
  * Classifications sourced from
@@ -352,12 +352,12 @@ export function scoreClassificationForDOMContentLoaded(_dclTimeInMicroseconds) {
 export function scoreClassificationForTotalBlockingTime(tbtTimeInMicroseconds) {
     const TBT_GOOD_TIMING = Helpers.Timing.milliToMicro(Types.Timing.Milli(200));
     const TBT_MEDIUM_TIMING = Helpers.Timing.milliToMicro(Types.Timing.Milli(600));
-    let scoreClassification = "bad" /* ScoreClassification.BAD */;
+    let scoreClassification = ScoreClassification.BAD;
     if (tbtTimeInMicroseconds <= TBT_MEDIUM_TIMING) {
-        scoreClassification = "ok" /* ScoreClassification.OK */;
+        scoreClassification = ScoreClassification.OK;
     }
     if (tbtTimeInMicroseconds <= TBT_GOOD_TIMING) {
-        scoreClassification = "good" /* ScoreClassification.GOOD */;
+        scoreClassification = ScoreClassification.GOOD;
     }
     return scoreClassification;
 }
@@ -371,7 +371,7 @@ function gatherFinalLCPEvents() {
     const dataForAllNavigations = dataForAllFrames.flatMap(frameData => [...frameData.values()]);
     for (let i = 0; i < dataForAllNavigations.length; i++) {
         const navigationData = dataForAllNavigations[i];
-        const lcpInNavigation = navigationData.get("LCP" /* MetricName.LCP */);
+        const lcpInNavigation = navigationData.get(MetricName.LCP);
         if (!lcpInNavigation?.event) {
             continue;
         }
@@ -457,6 +457,6 @@ export var MetricName;
     // Note: INP is handled in UserInteractionsHandler
 })(MetricName || (MetricName = {}));
 export function metricIsLCP(metric) {
-    return metric.metricName === "LCP" /* MetricName.LCP */;
+    return metric.metricName === MetricName.LCP;
 }
 //# sourceMappingURL=PageLoadMetricsHandler.js.map

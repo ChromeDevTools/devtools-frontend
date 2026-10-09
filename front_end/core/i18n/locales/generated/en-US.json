@@ -6656,9 +6656,6 @@
   "panels/common/CommentsStatusBarPill.ts | commentsCount": {
     "message": "Comments ({PH1})"
   },
-  "panels/common/CommentsStatusBarPill.ts | sendToAgentCount": {
-    "message": "Send to agent ({PH1})"
-  },
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Comment input"
   },
@@ -15521,6 +15518,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Copy string contents"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Debugger sidebar hidden"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Debugger sidebar shown"
+  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Drop workspace folder here"
   },
@@ -15541,6 +15544,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "More options"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Navigator sidebar hidden"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Navigator sidebar shown"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Open in Sources panel"
@@ -15566,23 +15575,11 @@
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Terminate current JavaScript call"
   },
-  "panels/sources/SourcesView.ts | debuggerHidden": {
-    "message": "Debugger sidebar hidden"
-  },
-  "panels/sources/SourcesView.ts | debuggerShown": {
-    "message": "Debugger sidebar shown"
-  },
   "panels/sources/SourcesView.ts | hideDebugger": {
     "message": "Hide debugger"
   },
   "panels/sources/SourcesView.ts | hideNavigator": {
     "message": "Hide navigator"
-  },
-  "panels/sources/SourcesView.ts | navigatorHidden": {
-    "message": "Navigator sidebar hidden"
-  },
-  "panels/sources/SourcesView.ts | navigatorShown": {
-    "message": "Navigator sidebar shown"
   },
   "panels/sources/SourcesView.ts | showDebugger": {
     "message": "Show debugger"

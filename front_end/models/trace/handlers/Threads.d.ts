@@ -12,7 +12,7 @@ export interface ThreadData {
     name: string | null;
     entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>;
 }
-export declare const enum ThreadType {
+export declare enum ThreadType {
     MAIN_THREAD = "MAIN_THREAD",
     WORKER = "WORKER",
     RASTERIZER = "RASTERIZER",

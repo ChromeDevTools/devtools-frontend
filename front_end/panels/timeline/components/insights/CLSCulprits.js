@@ -33,7 +33,7 @@ export class CLSCulprits extends BaseInsightComponent {
         <p class="list-title">${i18nString(UIStrings.topCulprits)}:</p>
         <ul class="worst-culprits">
           ${culprits.map(culprit => {
-            if (culprit.type === 3 /* Trace.Insights.Models.CLSCulprits.LayoutShiftType.UNSIZED_IMAGE */) {
+            if (culprit.type === Trace.Insights.Models.CLSCulprits.LayoutShiftType.UNSIZED_IMAGE) {
                 return html `
                 <li>
                   ${culprit.description}

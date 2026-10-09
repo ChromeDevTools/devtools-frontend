@@ -2260,9 +2260,10 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         }
         if (attributeName !== null && (attributeName.trim() || newText.trim()) && oldText !== newText) {
             const edit = { attributeName, oldText, newText };
+            // The changeTracker has to be resolved before the widget is detached from the DOM.
+            const changeTracker = this.changeTracker;
             this.node.setAttribute(attributeName, newText, (error) => {
                 if (!error) {
-                    const changeTracker = this.changeTracker;
                     Elements.DOMChanges.trackAttributeEdit(changeTracker, this.node, buildChangeSelector(changeTracker, this.node), edit);
                     Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
                 }
@@ -2307,13 +2308,14 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             return;
         }
         const wasExpanded = this.#expanded;
+        // The changeTracker has to be resolved before the widget is detached from the DOM.
+        const changeTracker = this.changeTracker;
         this.node.setNodeName(newText, (error, newNode) => {
             if (error || !newNode) {
                 cancel();
                 return;
             }
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-            const changeTracker = this.changeTracker;
             Elements.DOMChanges.trackTagNameEdit(changeTracker, newNode, buildChangeSelector(changeTracker, newNode), oldText ?? tagName ?? '', newText);
             if (this.selectNodeAfterEdit) {
                 this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
@@ -2323,9 +2325,10 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     textNodeEditingCommitted(textNode, _element, newText) {
         this.editing = null;
         const oldValue = textNode.nodeValue() ?? '';
+        // The changeTracker has to be resolved before the widget is detached from the DOM.
+        const changeTracker = this.changeTracker;
         function callback(error) {
             if (!error && oldValue !== newText) {
-                const changeTracker = this.changeTracker;
                 Elements.DOMChanges.trackTextNodeEdit(changeTracker, textNode, buildChangeSelector(changeTracker, textNode), oldValue, newText);
             }
             this.#clearDOMNextUpdate = true;

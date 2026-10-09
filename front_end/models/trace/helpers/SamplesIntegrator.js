@@ -114,7 +114,7 @@ export class SamplesIntegrator {
             // Because instant trace events have no duration, they don't provide
             // useful information for possible changes in the duration of calls
             // in the JS stack.
-            if (event.ph === "I" /* Types.Events.Phase.INSTANT */ && !extractSampleTraceId(event)) {
+            if (event.ph === Types.Events.Phase.INSTANT && !extractSampleTraceId(event)) {
                 continue;
             }
             if (stack.length === 0) {
@@ -160,7 +160,7 @@ export class SamplesIntegrator {
     #onTraceEventStart(event, parent) {
         // Top level events cannot be nested into JS frames so we reset
         // the stack when we find one.
-        if (event.name === "RunMicrotasks" /* Types.Events.Name.RUN_MICROTASKS */ || event.name === "RunTask" /* Types.Events.Name.RUN_TASK */) {
+        if (event.name === Types.Events.Name.RUN_MICROTASKS || event.name === Types.Events.Name.RUN_TASK) {
             this.#lockedJsStackDepth = [];
             this.#truncateJSStack(0, event.ts);
             this.#fakeJSInvocation = false;
@@ -417,12 +417,12 @@ export class SamplesIntegrator {
     }
     #makeJSSampleEvent(call, timestamp, traceId) {
         const JSSampleEvent = {
-            name: "JSSample" /* Types.Events.Name.JS_SAMPLE */,
+            name: Types.Events.Name.JS_SAMPLE,
             cat: 'devtools.timeline',
             args: {
                 data: { traceId, stackTrace: this.#makeProfileCallsForStack(call).map(e => e.callFrame) },
             },
-            ph: "I" /* Types.Events.Phase.INSTANT */,
+            ph: Types.Events.Phase.INSTANT,
             ts: timestamp,
             dur: Types.Timing.Micro(0),
             pid: this.#processId,
@@ -439,10 +439,10 @@ export class SamplesIntegrator {
     }
     static nativeGroup(nativeName) {
         if (nativeName.startsWith('Parse')) {
-            return "Parse" /* SamplesIntegrator.NativeGroups.PARSE */;
+            return _a.NativeGroups.PARSE;
         }
         if (nativeName.startsWith('Compile') || nativeName.startsWith('Recompile')) {
-            return "Compile" /* SamplesIntegrator.NativeGroups.COMPILE */;
+            return _a.NativeGroups.COMPILE;
         }
         return null;
     }
@@ -475,8 +475,8 @@ export class SamplesIntegrator {
         // panel won't truncate this time period.
         const cpuProfileEvent = {
             cat: 'disabled-by-default-devtools.timeline',
-            name: "CpuProfile" /* Types.Events.Name.CPU_PROFILE */,
-            ph: "X" /* Types.Events.Phase.COMPLETE */,
+            name: Types.Events.Name.CPU_PROFILE,
+            ph: Types.Events.Phase.COMPLETE,
             pid: Types.Events.ProcessID(1),
             tid,
             ts: Types.Timing.Micro(profile.startTime),
@@ -488,7 +488,7 @@ export class SamplesIntegrator {
         return {
             traceEvents: [cpuProfileEvent],
             metadata: {
-                dataOrigin: "CPUProfile" /* Types.File.DataOrigin.CPU_PROFILE */,
+                dataOrigin: Types.File.DataOrigin.CPU_PROFILE,
             },
         };
     }

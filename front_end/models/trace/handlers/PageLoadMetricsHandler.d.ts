@@ -52,13 +52,13 @@ export interface PageLoadMetricsData {
 }
 export declare function data(): PageLoadMetricsData;
 export declare function deps(): HandlerName[];
-export declare const enum ScoreClassification {
+export declare enum ScoreClassification {
     GOOD = "good",
     OK = "ok",
     BAD = "bad",
     UNCLASSIFIED = "unclassified"
 }
-export declare const enum MetricName {
+export declare enum MetricName {
     FCP = "FCP",
     FP = "FP",
     L = "L",

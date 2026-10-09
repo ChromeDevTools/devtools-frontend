@@ -23,6 +23,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { render } from '../../ui/lit/lit.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AddDebugInfoURLDialog } from './AddSourceMapURLDialog.js';
 import { BreakpointEditDialog } from './BreakpointEditDialog.js';
@@ -848,7 +849,9 @@ export class DebuggerPlugin extends Plugin {
         if (!this.editor) {
             return null;
         }
-        if (!Common.Settings.Settings.instance().moduleSetting('inline-variable-values').get()) {
+        if (!Common.Settings.Settings.instance()
+            .resolve(SettingsUI.SourcesSettings.inlineVariableValuesSettingDescriptor)
+            .get()) {
             return null;
         }
         const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);

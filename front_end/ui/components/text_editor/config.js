@@ -241,7 +241,7 @@ const showTrailingWhitespace = matcher(new CM.MatchDecorator({
     decoration: CM.Decoration.mark({ class: 'cm-trailingWhitespace' }),
     boundary: /\S/,
 }));
-export const showWhitespace = new DynamicSetting('show-whitespaces-in-editor', value => {
+export const showWhitespace = new DynamicSetting(SettingsUI.SourcesSettings.showWhitespacesInEditorSettingDescriptor, value => {
     if (value === 'all') {
         return showAllWhitespace;
     }
@@ -261,7 +261,7 @@ function getIndentUnit(indent) {
 }
 export const indentUnit = new DynamicSetting('text-editor-indent', getIndentUnit);
 export const domWordWrap = DynamicSetting.bool(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor, CM.EditorView.lineWrapping);
-export const sourcesWordWrap = DynamicSetting.bool('sources.word-wrap', CM.EditorView.lineWrapping);
+export const sourcesWordWrap = DynamicSetting.bool(SettingsUI.SourcesSettings.sourcesWordWrapSettingDescriptor, CM.EditorView.lineWrapping);
 function detectLineSeparator(text) {
     if (/\r\n/.test(text) && !/(^|[^\r])\n/.test(text)) {
         return CM.EditorState.lineSeparator.of('\r\n');

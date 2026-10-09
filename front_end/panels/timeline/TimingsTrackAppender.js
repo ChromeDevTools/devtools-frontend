@@ -20,15 +20,15 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * will render [FCP][DCL][LCP] everytime.
  */
 export const SORT_ORDER_PAGE_LOAD_MARKERS = {
-    ["navigationStart" /* Trace.Types.Events.Name.NAVIGATION_START */]: 0,
-    ["SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */]: 1,
-    ["firstPaint" /* Trace.Types.Events.Name.MARK_FIRST_PAINT */]: 2,
-    ["firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */]: 3,
-    ["SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */]: 4,
-    ["MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */]: 5,
-    ["MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */]: 6,
-    ["largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */]: 7,
-    ["largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: 8,
+    [Trace.Types.Events.Name.NAVIGATION_START]: 0,
+    [Trace.Types.Events.Name.SOFT_NAVIGATION_START]: 1,
+    [Trace.Types.Events.Name.MARK_FIRST_PAINT]: 2,
+    [Trace.Types.Events.Name.MARK_FCP]: 3,
+    [Trace.Types.Events.Name.MARK_SOFT_FCP]: 4,
+    [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 5,
+    [Trace.Types.Events.Name.MARK_LOAD]: 6,
+    [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 7,
+    [Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: 8,
 };
 export class TimingsTrackAppender {
     appenderName = 'Timings';
@@ -136,23 +136,23 @@ export class TimingsTrackAppender {
         let color = 'grey';
         if (Trace.Types.Events.isMarkDOMContent(markerEvent)) {
             color = '#0867CB';
-            title = "DCL" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.DCL */;
+            title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.DCL;
         }
         if (Trace.Types.Events.isMarkLoad(markerEvent)) {
             color = '#B31412';
-            title = "L" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.L */;
+            title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.L;
         }
         if (Trace.Types.Events.isFirstPaint(markerEvent)) {
             color = '#228847';
-            title = "FP" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FP */;
+            title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FP;
         }
         if (Trace.Types.Events.isFirstContentfulPaint(markerEvent)) {
             color = '#1A6937';
-            title = "FCP" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP */;
+            title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP;
         }
         if (Trace.Types.Events.isAnyLargestContentfulPaintCandidate(markerEvent)) {
             color = '#1A3422';
-            title = "LCP" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP */;
+            title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP;
         }
         if (Trace.Types.Events.isNavigationStart(markerEvent)) {
             color = '#FF9800';
@@ -201,15 +201,15 @@ export class TimingsTrackAppender {
         if (Trace.Types.Events.eventIsPageLoadEvent(event)) {
             switch (event.name) {
                 case 'MarkDOMContent':
-                    return "DCL" /* metricsHandler.MetricName.DCL */;
+                    return metricsHandler.MetricName.DCL;
                 case 'MarkLoad':
-                    return "L" /* metricsHandler.MetricName.L */;
+                    return metricsHandler.MetricName.L;
                 case 'firstContentfulPaint':
-                    return "FCP" /* metricsHandler.MetricName.FCP */;
+                    return metricsHandler.MetricName.FCP;
                 case 'firstPaint':
-                    return "FP" /* metricsHandler.MetricName.FP */;
+                    return metricsHandler.MetricName.FP;
                 case 'largestContentfulPaint::Candidate':
-                    return "LCP" /* metricsHandler.MetricName.LCP */;
+                    return metricsHandler.MetricName.LCP;
                 case 'navigationStart':
                     return '';
                 default:

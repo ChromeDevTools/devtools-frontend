@@ -19,11 +19,11 @@ export class VisibleEventsFilter extends TraceFilter {
     static eventType(event) {
         // Any blink.console category events are treated as ConsoleTime events
         if (event.cat.includes('blink.console')) {
-            return "ConsoleTime" /* Types.Events.Name.CONSOLE_TIME */;
+            return Types.Events.Name.CONSOLE_TIME;
         }
         // Any blink.user_timing egory events are treated as UserTiming events
         if (event.cat.includes('blink.user_timing')) {
-            return "UserTiming" /* Types.Events.Name.USER_TIMING */;
+            return Types.Events.Name.USER_TIMING;
         }
         return event.name;
     }

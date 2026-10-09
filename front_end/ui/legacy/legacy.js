@@ -653,7 +653,7 @@ __export(Dialog_exports, {
 });
 import * as Common16 from "../../core/common/common.js";
 import * as i18n27 from "../../core/i18n/i18n.js";
-import { nothing as nothing6, render as render10 } from "../lit/lit.js";
+import { nothing as nothing7, render as render10 } from "../lit/lit.js";
 import * as Buttons7 from "../components/buttons/buttons.js";
 import * as VisualLogging17 from "../visual_logging/visual_logging.js";
 
@@ -841,7 +841,7 @@ import * as Root8 from "../../core/root/root.js";
 import * as Buttons5 from "../components/buttons/buttons.js";
 import * as VisualLogging15 from "../visual_logging/visual_logging.js";
 import { createIcon as createIcon7 } from "../kit/kit.js";
-import { nothing as nothing4, render as render7 } from "../lit/lit.js";
+import { nothing as nothing5, render as render7 } from "../lit/lit.js";
 import * as SettingUIRegistration from "../settings/settings.js";
 
 // ../../front_end/ui/legacy/ContextMenu.ts
@@ -4524,11 +4524,15 @@ var SplitWidget = class extends SplitWidgetBase {
   toggleSidebar() {
     if (this.#showMode !== "Both" /* BOTH */) {
       this.showBoth(true);
-      LiveAnnouncer.alert(this.#shownSidebarString);
+      if (this.#shownSidebarString) {
+        LiveAnnouncer.alert(this.#shownSidebarString);
+      }
       return true;
     }
     this.hideSidebar(true);
-    LiveAnnouncer.alert(this.#hiddenSidebarString);
+    if (this.#hiddenSidebarString) {
+      LiveAnnouncer.alert(this.#hiddenSidebarString);
+    }
     return false;
   }
   #updateShowHideSidebarButton() {
@@ -4687,97 +4691,6 @@ var tabbedPane_css_default = `/*
 .tabbed-pane-placeholder {
   text-align: center;
   align-content: center;
-
-  .sources-placeholder {
-    display: inline-block;
-  }
-}
-
-.tabbed-pane-placeholder-row {
-  max-width: var(--sys-size-32);
-  min-width: var(--sys-size-28);
-  margin: 0 var(--sys-size-8);
-
-  &.workspace {
-    line-height: 18px;
-    display: inline-flex;
-    align-items: center;
-    border: var(--sys-size-2) dashed var(--sys-color-divider);
-    padding: var(--sys-size-8);
-    border-radius: var(--sys-shape-corner-medium);
-    margin: var(--sys-size-8) var(--sys-size-8) var(--sys-size-11);
-
-    > .icon-container {
-      flex-shrink: 0;
-      width: var(--sys-size-13);
-      height: var(--sys-size-13);
-      background: var(--sys-color-tonal-container);
-      align-content: center;
-      border-radius: var(--sys-shape-corner-full);
-      margin-right: var(--sys-size-8);
-
-      > devtools-icon {
-        color: var(--sys-color-on-tonal-container);
-      }
-    }
-  }
-
-  &.shortcuts-list {
-    padding: 0 var(--sys-size-6);
-
-    .shortcut-line {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: var(--sys-size-10);
-      padding: var(--sys-size-4) 0;
-
-      &:not(:last-child) {
-        border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-      }
-
-      .shortcuts {
-        display: flex;
-        flex-direction: row;
-        gap: var(--sys-size-4);
-        align-items: center;
-      }
-
-      .keybinds-key {
-        display: flex;
-        flex-shrink: 0;
-        align-items: center;
-        justify-content: center;
-        height: var(--sys-size-11);
-        min-width: var(--sys-size-11);
-        font: var(--sys-typescale-body5-medium);
-        white-space: nowrap;
-        border-radius: var(--sys-shape-corner-small);
-        background: var(--sys-color-tonal-container);
-        padding: 0 var(--sys-size-4);
-      }
-
-      & button {
-        margin-inline: 0;
-      }
-    }
-  }
-
-  & button {
-    cursor: pointer;
-    color: var(--text-link);
-    background: transparent;
-    border: none;
-    padding: 0;
-    text-decoration: underline;
-    margin-inline: var(--sys-size-3);
-    text-align: left;
-
-    &:focus-visible {
-      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-      outline-offset: var(--sys-size-2);
-      border-radius: var(--sys-size-2);
-    }
-  }
 }
 
 .tabbed-pane-header {
@@ -6830,7 +6743,7 @@ import * as i18n13 from "../../core/i18n/i18n.js";
 import * as Platform8 from "../../core/platform/platform.js";
 import * as Root4 from "../../core/root/root.js";
 import { createIcon as createIcon4 } from "../kit/kit.js";
-import { render as render3 } from "../lit/lit.js";
+import { nothing as nothing3, render as render3 } from "../lit/lit.js";
 import * as VisualLogging7 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/PlusButton.ts
@@ -7466,7 +7379,7 @@ var PreRegisteredView = class {
   }
   async toolbarItems() {
     if (!this.viewRegistration.hasToolbar) {
-      return [];
+      return nothing3;
     }
     const provider = await this.widget();
     return provider.toolbarItems();
@@ -7555,17 +7468,11 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
     viewManagerInstance = void 0;
   }
   static createToolbar(toolbarItems) {
-    if (Array.isArray(toolbarItems) && !toolbarItems.length) {
+    if (toolbarItems === nothing3) {
       return null;
     }
     const toolbar5 = document.createElement("devtools-toolbar");
-    if (Array.isArray(toolbarItems)) {
-      for (const item8 of toolbarItems) {
-        toolbar5.appendToolbarItem(item8);
-      }
-    } else {
-      render3(toolbarItems, toolbar5);
-    }
+    render3(toolbarItems, toolbar5);
     return toolbar5;
   }
   static setWidgetForView(view, widget2) {
@@ -13696,7 +13603,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
       }
     }
     this.items = [];
-    render7(nothing4, this);
+    render7(nothing5, this);
   }
   hideSeparatorDupes() {
     if (!this.items.length) {
@@ -15494,7 +15401,6 @@ devtools-toolbar {
     height: var(--toolbar-height);
     border: none;
     white-space: pre;
-    overflow: hidden;
     max-width: 100%;
     color: var(--icon-default);
 
@@ -15766,6 +15672,7 @@ devtools-toolbar {
       width: 100%;
       position: absolute;
       left: 0;
+      border-radius: inherit;
       background: var(--sys-color-cdt-base);
       z-index: -1;
     }
@@ -18586,7 +18493,7 @@ var DialogWidget = class extends DialogWidgetBase {
   #open = false;
   #jslogContext = "";
   #dialogStack = false;
-  #content = nothing6;
+  #content = nothing7;
   #dialog = new Dialog();
   constructor(element) {
     super(element);
@@ -18646,7 +18553,7 @@ var DialogWidget = class extends DialogWidgetBase {
   }
   performUpdate() {
     if (this.open) {
-      render10(this.#content ?? nothing6, this.#dialog.contentElement);
+      render10(this.#content ?? nothing7, this.#dialog.contentElement);
       if (!this.#dialog.isShowing()) {
         this.#dialog.show(this.contentElement.ownerDocument, this.#dialogStack);
         this.#dialog.contentElement.focus();
@@ -20126,7 +20033,7 @@ __export(ListWidget_exports, {
 import * as i18n33 from "../../core/i18n/i18n.js";
 import * as Platform21 from "../../core/platform/platform.js";
 import * as Buttons8 from "../components/buttons/buttons.js";
-import { html as html7, nothing as nothing7, render as render12 } from "../lit/lit.js";
+import { html as html7, nothing as nothing8, render as render12 } from "../lit/lit.js";
 import * as VisualLogging20 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -20472,7 +20379,7 @@ var ListWidget = class extends VBox {
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
-          ${controlLabels?.hideEdit ? nothing7 : html7`<devtools-button class=toolbar-button
+          ${controlLabels?.hideEdit ? nothing8 : html7`<devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
                            .title=${controlLabels?.edit ?? i18nString17(UIStrings17.editString)}
@@ -21943,6 +21850,7 @@ function createClearButton(jslogContext) {
 }
 var SearchableView = class extends VBox {
   #searchProvider;
+  #searchTarget = null;
   replaceProvider = null;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22080,6 +21988,18 @@ var SearchableView = class extends VBox {
     }
     this.#searchProvider = searchable;
     this.#updateSearchConfigButtons();
+  }
+  get searchTarget() {
+    return this.#searchTarget;
+  }
+  set searchTarget(target) {
+    if (this.#searchTarget === target) {
+      return;
+    }
+    this.#searchTarget?.setSearchableView?.(null);
+    this.#searchTarget = target;
+    this.#searchTarget?.setSearchableView?.(this);
+    this.refreshSearch();
   }
   set settingName(settingName) {
     if (this.setting?.name === settingName) {
@@ -22909,6 +22829,7 @@ __export(View_exports, {
   SimpleView: () => SimpleView
 });
 import * as Platform23 from "../../core/platform/platform.js";
+import { nothing as nothing9 } from "../lit/lit.js";
 var SimpleView = class extends VBox {
   #title;
   #viewId;
@@ -22934,7 +22855,7 @@ var SimpleView = class extends VBox {
     return false;
   }
   toolbarItems() {
-    return Promise.resolve([]);
+    return Promise.resolve(nothing9);
   }
   widget() {
     return Promise.resolve(this);

@@ -46,14 +46,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * will render [Nav][FCP][DCL][LCP] everytime.
  */
 export const SORT_ORDER_PAGE_LOAD_MARKERS = {
-    ["navigationStart" /* Trace.Types.Events.Name.NAVIGATION_START */]: 0,
-    ["SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */]: 1,
-    ["MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */]: 2,
-    ["firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */]: 3,
-    ["SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */]: 4,
-    ["MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */]: 5,
-    ["largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */]: 6,
-    ["largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: 7,
+    [Trace.Types.Events.Name.NAVIGATION_START]: 0,
+    [Trace.Types.Events.Name.SOFT_NAVIGATION_START]: 1,
+    [Trace.Types.Events.Name.MARK_LOAD]: 2,
+    [Trace.Types.Events.Name.MARK_FCP]: 3,
+    [Trace.Types.Events.Name.MARK_SOFT_FCP]: 4,
+    [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 5,
+    [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 6,
+    [Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: 7,
 };
 // Threshold to match up overlay markers that are off by a tiny amount so they aren't rendered
 // on top of each other.
@@ -519,10 +519,10 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
                     continue;
                 }
                 let fieldMetricResult;
-                if (event.name === "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */) {
+                if (event.name === Trace.Types.Events.Name.MARK_FCP) {
                     fieldMetricResult = fieldMetricResults.fcp;
                 }
-                else if (event.name === "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */) {
+                else if (event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE) {
                     fieldMetricResult = fieldMetricResults.lcp;
                     // Ignoring soft-nav LCP on purpose.
                 }
@@ -541,13 +541,13 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.bulkRemoveOverlays(this.#markers);
         const markerEvents = parsedTrace.data.PageLoadMetrics.allMarkerEvents;
         // Set markers for Navigations, LCP, FCP, DCL, L.
-        const markers = markerEvents.filter(event => event.name === "navigationStart" /* Trace.Types.Events.Name.NAVIGATION_START */ ||
-            event.name === "SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */ ||
-            event.name === "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */ ||
-            event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */ ||
-            event.name === "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */ || event.name === "SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */ ||
-            event.name === "MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */ ||
-            event.name === "MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */);
+        const markers = markerEvents.filter(event => event.name === Trace.Types.Events.Name.NAVIGATION_START ||
+            event.name === Trace.Types.Events.Name.SOFT_NAVIGATION_START ||
+            event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE ||
+            event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION ||
+            event.name === Trace.Types.Events.Name.MARK_FCP || event.name === Trace.Types.Events.Name.MARK_SOFT_FCP ||
+            event.name === Trace.Types.Events.Name.MARK_DOM_CONTENT ||
+            event.name === Trace.Types.Events.Name.MARK_LOAD);
         this.#sortMarkersForPreferredVisualOrder(markers);
         const overlayByTs = new Map();
         markers.forEach(marker => {
@@ -763,7 +763,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             return;
         }
         // If the link in progress in cleared, make sure it's creation is complete. If not, delete it.
-        if (deleteCurrentLink || this.#linkSelectionAnnotation.state !== "connected" /* Trace.Types.File.EntriesLinkState.CONNECTED */) {
+        if (deleteCurrentLink || this.#linkSelectionAnnotation.state !== Trace.Types.File.EntriesLinkState.CONNECTED) {
             ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
         }
         this.mainFlameChart.setLinkSelectionAnnotationIsInProgress(false);
@@ -868,7 +868,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         // is typed into the label. This tells us that the user chose to create the
         // label, not the connection. In that case, delete the connection.
         if (this.#linkSelectionAnnotation &&
-            this.#linkSelectionAnnotation.state === "creation_not_started" /* Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED */) {
+            this.#linkSelectionAnnotation.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
             this.#clearLinkSelectionAnnotation(true);
             // We have dealt with the keypress as the user is typing into the label, so do not let it propagate up.
             // This also ensures that if the user uses "Escape" they don't toggle the DevTools drawer.
@@ -1106,7 +1106,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     // If an entry is hovered over and a creation of link annotation is in progress, update that annotation with a hovered entry.
     updateLinkSelectionAnnotationWithToEntry(dataProvider, entryIndex) {
         if (!this.#linkSelectionAnnotation ||
-            this.#linkSelectionAnnotation.state === "creation_not_started" /* Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED */) {
+            this.#linkSelectionAnnotation.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
             return;
         }
         const toSelectionObject = this.#selectionIfTraceEvent(entryIndex, dataProvider);
@@ -1120,11 +1120,11 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             if (linkBetweenEntriesExists) {
                 return;
             }
-            this.#linkSelectionAnnotation.state = "connected" /* Trace.Types.File.EntriesLinkState.CONNECTED */;
+            this.#linkSelectionAnnotation.state = Trace.Types.File.EntriesLinkState.CONNECTED;
             this.#linkSelectionAnnotation.entryTo = toSelectionObject;
         }
         else {
-            this.#linkSelectionAnnotation.state = "pending_to_event" /* Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT */;
+            this.#linkSelectionAnnotation.state = Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT;
             delete this.#linkSelectionAnnotation['entryTo'];
         }
         ModificationsManager.activeManager()?.updateAnnotation(this.#linkSelectionAnnotation);
@@ -1254,7 +1254,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             });
         }
         if (this.#linkSelectionAnnotation &&
-            this.#linkSelectionAnnotation.state === "creation_not_started" /* Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED */) {
+            this.#linkSelectionAnnotation.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
             this.#clearLinkSelectionAnnotation(true);
         }
         // If the user has selected an event which the Performance AI Assistance
@@ -1370,7 +1370,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             this.#setLinkSelectionAnnotation({
                 type: 'ENTRIES_LINK',
                 entryFrom: fromSelectionObject,
-                state: (linkCreateButton) ? "creation_not_started" /* Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED */ : "pending_to_event" /* Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT */,
+                state: (linkCreateButton) ? Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED :
+                    Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT,
             });
             if (this.#linkSelectionAnnotation) {
                 ModificationsManager.activeManager()?.createAnnotation(this.#linkSelectionAnnotation, { loadedFromFile: false, muteAriaNotifications: false });

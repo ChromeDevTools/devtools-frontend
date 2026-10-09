@@ -8,8 +8,6 @@ import * as CommentManager from '../../models/comment_manager/comment_manager.js
 import {
   addCustomAnchorsMovedListener,
   clearClippingAncestorsCache,
-  closestAcrossShadow,
-  COMMENT_THREAD_UI_SELECTOR,
   type CommentAnchorSignature,
   type CommentThread,
   computeVisibleRect,
@@ -18,6 +16,7 @@ import {
   getCustomAnchorElement,
   getCustomAnchorResolverForElement,
   getEditorFilePath,
+  hasDisallowedCommentAncestor,
   isDomTrackedAnchor,
   rematchCommentAnchor,
   removeCustomAnchorsMovedListener,
@@ -152,8 +151,8 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
           if (!active) {
             this.#clearHover();
             this.clearDraftThreads();
+            document.body.style.cursor = '';
           }
-          document.body.style.cursor = active ? COMMENT_MODE_CURSOR : '';
         },
         this,
     );
@@ -204,6 +203,9 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     if (newElement) {
       newElement.style.cursor = COMMENT_MODE_CURSOR;
       newElement.style.setProperty('--override-cursor', COMMENT_MODE_CURSOR);
+      document.body.style.cursor = COMMENT_MODE_CURSOR;
+    } else {
+      document.body.style.cursor = '';
     }
 
     this.#cursorElement = newElement;
@@ -225,6 +227,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
   #clearHover(): void {
     this.#setHoverHighlight(null);
     this.#setHoverCursor(null);
+    document.body.style.cursor = '';
   }
 
   getHoverHighlight(): HoverHighlightData|null {
@@ -251,7 +254,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   handleElementClick(element: Element, options?: {clientX: number, clientY: number}): boolean {
-    if (!this.isCommentMode() || closestAcrossShadow(element, COMMENT_THREAD_UI_SELECTOR)) {
+    if (!this.isCommentMode() || hasDisallowedCommentAncestor(element)) {
       return false;
     }
     this.clearDraftThreads();

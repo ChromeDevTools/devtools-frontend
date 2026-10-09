@@ -943,6 +943,7 @@ export const knownContextValues: Set<string> = new Set([
   'comment-thread',
   'comments',
   'comments-drawer',
+  'comments-input',
   'comments-send-to-agent',
   'comments-status-bar-pill',
   'comments.toggle-comment-mode',

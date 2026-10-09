@@ -13,6 +13,7 @@ import * as Input from '../../ui/components/input/input.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import commentThreadWidgetStyles from './commentThreadWidget.css.js';
 import {DOMNodeLink} from './DOMLinkifier.js';
@@ -148,7 +149,9 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
   // clang-format off
   render(html`
     <style>${Input.textInputStyles}${commentThreadWidgetStyles}</style>
-    <div class="comment-thread-widget ${hasComment ? 'submitted' : ''}">
+    <div
+      class="comment-thread-widget ${hasComment ? 'submitted' : ''}"
+      jslog=${VisualLogging.popover('comment-thread')}>
       <div class="header">
         <span class="selected-item">
           ${'node' in input.title ?
@@ -198,6 +201,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
           @keyup=${(event: KeyboardEvent) =>
             input.onQueueModifierChange(UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event))}
           @blur=${() => input.onQueueModifierChange(false)}
+          jslog=${VisualLogging.textField('comments-input').track({keydown: 'Enter'})}
         ></textarea>
         <div class="footer">
           <devtools-icon
@@ -223,7 +227,8 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             }}
             @click=${(event: MouseEvent) => submit(
               input.isQueueModifierPressed || UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event),
-            )}>
+            )}
+            jslog=${VisualLogging.action('comments-send-to-agent').track({click: true})}>
             ${buttonText}
           </devtools-button>
         </div>

@@ -154,15 +154,32 @@ describeWithEnvironment('CommentOverlayManager', () => {
     commentableEl.textContent = 'hover me';
     container.appendChild(commentableEl);
 
+    const nonCommentableEl = document.createElement('div');
+    nonCommentableEl.setAttribute('jslog', 'Toolbar; context: non-commentable');
+    nonCommentableEl.textContent = 'cannot comment';
+    container.appendChild(nonCommentableEl);
+
+    assert.strictEqual(document.body.style.cursor, '');
+
     commentableEl.dispatchEvent(new MouseEvent('mouseover', {bubbles: true, cancelable: true}));
     assert.strictEqual(commentableEl.style.cursor, Comments.CommentOverlayManager.COMMENT_MODE_CURSOR);
+    assert.strictEqual(document.body.style.cursor, Comments.CommentOverlayManager.COMMENT_MODE_CURSOR);
 
+    nonCommentableEl.dispatchEvent(new MouseEvent('mouseover', {bubbles: true, cancelable: true}));
+    assert.strictEqual(commentableEl.style.cursor, '');
+    assert.strictEqual(nonCommentableEl.style.cursor, '');
+    assert.strictEqual(document.body.style.cursor, '');
+
+    commentableEl.dispatchEvent(new MouseEvent('mouseover', {bubbles: true, cancelable: true}));
+    assert.strictEqual(document.body.style.cursor, Comments.CommentOverlayManager.COMMENT_MODE_CURSOR);
     commentableEl.dispatchEvent(new MouseEvent('mouseleave', {bubbles: true, cancelable: true}));
     assert.strictEqual(commentableEl.style.cursor, '');
+    assert.strictEqual(document.body.style.cursor, '');
 
     commentableEl.dispatchEvent(new MouseEvent('mouseover', {bubbles: true, cancelable: true}));
     manager.setCommentMode(false);
     assert.strictEqual(commentableEl.style.cursor, '');
+    assert.strictEqual(document.body.style.cursor, '');
   });
 
   it('handles element clicks in comment mode', () => {

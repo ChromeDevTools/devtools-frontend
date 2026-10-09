@@ -936,6 +936,128 @@ describe('DOMModel', () => {
         assert.deepEqual(callFunction.firstCall.args[1],
                          [{value: '::view-transition-group(\\31 23\\.foo)'}, {value: true}]);
       });
+
+      it('generates distinct classes and style rules when hiding multiple pseudo elements', async function() {
+        const target = universe.createTarget();
+        const model = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+        const parentNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+          nodeId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+          nodeType: NodeType.ELEMENT_NODE,
+          nodeName: 'DIV',
+          localName: 'div',
+          nodeValue: '',
+          pseudoElements: [
+            {
+              nodeId: 2 as Protocol.DOM.NodeId,
+              backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+              nodeType: NodeType.ELEMENT_NODE,
+              nodeName: '::view-transition-group',
+              localName: '::view-transition-group',
+              nodeValue: '',
+              pseudoType: ProtocolModule.DOM.PseudoType.ViewTransitionGroup,
+              pseudoIdentifier: 'ヘッダー',
+            },
+            {
+              nodeId: 3 as Protocol.DOM.NodeId,
+              backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+              nodeType: NodeType.ELEMENT_NODE,
+              nodeName: '::view-transition-group',
+              localName: '::view-transition-group',
+              nodeValue: '',
+              pseudoType: ProtocolModule.DOM.PseudoType.ViewTransitionGroup,
+              pseudoIdentifier: 'フッター',
+            },
+            {
+              nodeId: 4 as Protocol.DOM.NodeId,
+              backendNodeId: 4 as Protocol.DOM.BackendNodeId,
+              nodeType: NodeType.ELEMENT_NODE,
+              nodeName: '::view-transition-group',
+              localName: '::view-transition-group',
+              nodeValue: '',
+              pseudoType: ProtocolModule.DOM.PseudoType.ViewTransitionGroup,
+              pseudoIdentifier: 'a.b',
+            },
+            {
+              nodeId: 5 as Protocol.DOM.NodeId,
+              backendNodeId: 5 as Protocol.DOM.BackendNodeId,
+              nodeType: NodeType.ELEMENT_NODE,
+              nodeName: '::view-transition-group',
+              localName: '::view-transition-group',
+              nodeValue: '',
+              pseudoType: ProtocolModule.DOM.PseudoType.ViewTransitionGroup,
+              pseudoIdentifier: 'a b',
+            },
+            {
+              nodeId: 6 as Protocol.DOM.NodeId,
+              backendNodeId: 6 as Protocol.DOM.BackendNodeId,
+              nodeType: NodeType.ELEMENT_NODE,
+              nodeName: '::view-transition-group',
+              localName: '::view-transition-group',
+              nodeValue: '',
+              pseudoType: ProtocolModule.DOM.PseudoType.ViewTransitionGroup,
+              pseudoIdentifier: 'a__b',
+            },
+          ],
+        });
+        const vtNodes = parentNode.pseudoElements().get(ProtocolModule.DOM.PseudoType.ViewTransitionGroup);
+        assert.exists(vtNodes);
+        assert.lengthOf(vtNodes, 5);
+
+        const classes = new Set<string>();
+        const styleClasses = new Set<string>();
+        const style = {
+          textContent: '',
+          classList: {
+            contains: function(cls: string) {
+              return styleClasses.has(cls);
+            },
+            add: function(cls: string) {
+              styleClasses.add(cls);
+            },
+          },
+        };
+        const element = {
+          nodeType: 1,
+          parentNode: null,
+          classList: {
+            toggle: function(cls: string, force: boolean) {
+              if (force) {
+                classes.add(cls);
+              } else {
+                classes.delete(cls);
+              }
+            },
+          },
+          querySelector: function() {
+            return style;
+          },
+        };
+        const callFunction = sinon.stub().callsFake(function(fn: (this: unknown, ...args: unknown[]) => void,
+                                                             args: Array<{value: unknown}>) {
+          fn.apply(element, args.map(function(a) {
+            return a.value;
+          }));
+          return Promise.resolve({});
+        });
+        const release = sinon.stub();
+        sinon.stub(parentNode, 'resolveToObject').resolves({callFunction,
+                                                            release} as unknown as SDK.RemoteObject.RemoteObject);
+
+        for (const node of vtNodes) {
+          await node.toggleHideElement();
+        }
+
+        assert.strictEqual(classes.size, 5);
+        assert.include(style.textContent, '::view-transition-group(ヘッダー)');
+        assert.include(style.textContent, '::view-transition-group(フッター)');
+        assert.include(style.textContent, '::view-transition-group(a\\.b)');
+        assert.include(style.textContent, '::view-transition-group(a\\ b)');
+        assert.include(style.textContent, '::view-transition-group(a__b)');
+
+        await vtNodes[0].toggleHideElement();
+        assert.strictEqual(classes.size, 4);
+      });
     });
   });
 

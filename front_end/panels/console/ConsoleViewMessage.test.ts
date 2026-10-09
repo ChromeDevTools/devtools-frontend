@@ -397,6 +397,34 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       message.willHide();
     });
 
+    it('opens the DOM node context menu and stops propagation when right-clicking a logged node', async () => {
+      const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+      UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry});
+
+      const {node, message} = createDOMNodeMessage();
+      const messageElement = message.toMessageElement();
+      renderElementIntoDOM(messageElement);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+
+      const showSpy = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+      const appendApplicableItemsSpy = sinon.spy(UI.ContextMenu.ContextMenu.prototype, 'appendApplicableItems');
+
+      const tree = messageElement.querySelector('devtools-tree');
+      assert.exists(tree?.shadowRoot);
+      const treeItem = tree.shadowRoot.querySelector('li[role="treeitem"]');
+      assert.exists(treeItem);
+
+      const event = new MouseEvent('contextmenu', {bubbles: true, cancelable: true});
+      const stopPropagationSpy = sinon.spy(event, 'stopPropagation');
+      treeItem.dispatchEvent(event);
+
+      await raf();
+      sinon.assert.called(stopPropagationSpy);
+      sinon.assert.calledWith(appendApplicableItemsSpy, node);
+      sinon.assert.calledOnce(showSpy);
+    });
+
     it('formats console.dir(document.__proto__) without exception', async () => {
       const target = createTarget();
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);

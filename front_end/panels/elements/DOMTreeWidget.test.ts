@@ -147,6 +147,19 @@ describeWithEnvironment('DOMTreeWidget', () => {
       assert.isFalse(domTree.showComments);
       assert.isFalse(view.input.showComments);
     });
+
+    it('retains an explicit showComments=false override when shown if the setting has not changed', () => {
+      const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+      setting.set(true);
+
+      const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
+      domTree.showComments = false;
+      assert.isFalse(domTree.showComments);
+
+      renderElementIntoDOM(domTree);
+      assert.isFalse(domTree.showComments);
+      domTree.detach();
+    });
   });
 
   describe('image preview popover', () => {

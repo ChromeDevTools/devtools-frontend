@@ -172,8 +172,8 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   #drawerMinimizedBeforeDockSideChange: boolean|null = null;
   #statusBarContainer?: HTMLDivElement;
 
-  constructor() {
-    super();
+  constructor(element?: HTMLElement) {
+    super(element);
     GlassPane.setContainer(this.element);
     this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
 
@@ -293,11 +293,12 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   }
 
   static instance(opts: {
-    forceNew: boolean|null,
+    forceNew?: boolean|null,
+    element?: HTMLElement,
   }|undefined = {forceNew: null}): InspectorView {
-    const {forceNew} = opts;
+    const {forceNew, element} = opts;
     if (!inspectorViewInstance || forceNew) {
-      inspectorViewInstance = new InspectorView();
+      inspectorViewInstance = new InspectorView(element);
     }
 
     return inspectorViewInstance;
@@ -723,19 +724,19 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   }
 
   ownerSplit(): SplitWidget|null {
-    return this.ownerSplitWidget || null;
+    if (this.ownerSplitWidget) {
+      return this.ownerSplitWidget;
+    }
+    const parent = this.parentWidget();
+    return parent instanceof SplitWidget ? parent : null;
   }
 
   minimize(): void {
-    if (this.ownerSplitWidget) {
-      this.ownerSplitWidget.setSidebarMinimized(true);
-    }
+    this.ownerSplit()?.setSidebarMinimized(true);
   }
 
   restore(): void {
-    if (this.ownerSplitWidget) {
-      this.ownerSplitWidget.setSidebarMinimized(false);
-    }
+    this.ownerSplit()?.setSidebarMinimized(false);
   }
 
   displayDebuggedTabReloadRequiredWarning(message: string): void {

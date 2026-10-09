@@ -261,6 +261,33 @@ describe('StepEditor', () => {
     assert.strictEqual(suggestions[0].textContent?.trim(), Models.Schema.StepType.Navigate);
   });
 
+  it('commits lowercased camelCase match with canonical casing on Enter', async () => {
+    const editor = await renderEditor({type: Models.Schema.StepType.Scroll});
+    const input = getInputByAttribute(editor, 'type');
+    const step = getStepEditedPromise(editor);
+
+    input.focus();
+    input.value = 'doubleclick';
+    await input.updateComplete;
+
+    input.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'Enter',
+          bubbles: true,
+          composed: true,
+        }),
+    );
+    await editor.updateComplete;
+
+    assert.isNull(editor.contentElement.querySelector('.error'));
+    assert.deepEqual(await step, {
+      type: Models.Schema.StepType.DoubleClick,
+      selectors: ['.cls'],
+      offsetX: 1,
+      offsetY: 1,
+    });
+  });
+
   it('should edit other attributes', async () => {
     const editor = await renderEditor({
       type: Models.Schema.StepType.CustomStep,

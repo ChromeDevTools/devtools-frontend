@@ -164,8 +164,7 @@ class SuggestionBox extends Lit.LitElement {
 
   #hasVisibleSuggestions(): boolean {
     return this.#suggestions.length > 0 &&
-        !(this.hideExactMatch && this.#suggestions.length === 1 &&
-          this.#suggestions[0].toLowerCase() === this.expression.toLowerCase());
+        !(this.hideExactMatch && this.#suggestions.length === 1 && this.#suggestions[0] === this.expression);
   }
 
   #handleKeyDownEvent = (event: Event): void => {

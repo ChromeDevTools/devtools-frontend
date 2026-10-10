@@ -60,7 +60,11 @@ export function resolveSourcePathToURL(pathSubstitutions: PathSubstitutions, sou
 
   if (resolvedSourcePath.startsWith('/')) {
     if (resolvedSourcePath.startsWith('//')) {
-      return new URL(`file:${resolvedSourcePath}`);
+      try {
+        return new URL(`file:${resolvedSourcePath}`);
+      } catch {
+        return new URL(`file://${resolvedSourcePath.replace(/^\/+/, '/')}`);
+      }
     }
     return new URL(`file://${resolvedSourcePath}`);
   }

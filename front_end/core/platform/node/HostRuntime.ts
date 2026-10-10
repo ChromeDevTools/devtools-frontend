@@ -137,6 +137,7 @@ export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
     return 1;
   },
   async saveScreenshot(_options: Api.HostRuntime.ScreenshotOptions): Promise<void>{},
+  async copyScreenshot(_options: Api.HostRuntime.ScreenshotOptions): Promise<void>{},
   revokeLastScreenshotUrl(): void{},
   async loadTextFile(url: URL): Promise<string> {
     return await Fs.promises.readFile(Url.fileURLToPath(url), 'utf-8');

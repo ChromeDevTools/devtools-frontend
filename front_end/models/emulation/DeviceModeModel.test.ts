@@ -1140,6 +1140,27 @@ describe('DeviceModeModel', () => {
   describe('saveScreenshot', () => {
     const {urlString} = Platform.DevToolsPath;
 
+    it('copies a captured screenshot to the clipboard', async () => {
+      const emulationModel = target.model(SDK.EmulationModel.EmulationModel);
+      assert.exists(emulationModel);
+      deviceModeModel.modelAdded(emulationModel);
+
+      const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
+      assert.exists(screenCaptureModel);
+      sinon.stub(screenCaptureModel, 'captureScreenshot').resolves('fake-base64');
+      sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'saveScreenshot').resolves();
+      const copyScreenshotStub = sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'copyScreenshot').resolves();
+      const copiedSpy = sinon.spy();
+      deviceModeModel.addEventListener(EmulationModel.DeviceModeModel.Events.SCREENSHOT_COPIED, copiedSpy);
+
+      await deviceModeModel.captureScreenshot();
+      await Promise.resolve();
+
+      sinon.assert.calledOnce(copyScreenshotStub);
+      assert.strictEqual(copyScreenshotStub.firstCall.args[0].base64Png, 'fake-base64');
+      sinon.assert.calledOnce(copiedSpy);
+    });
+
     it('triggers a download with the correct filename and revokes the previous blob URL on subsequent save or dispose',
        async () => {
          const url = urlString`https://example.test/path/to/page.html#section`;

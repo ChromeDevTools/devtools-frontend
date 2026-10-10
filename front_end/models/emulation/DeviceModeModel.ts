@@ -918,6 +918,21 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     try {
       const screenshot = await screenCaptureModel.captureScreenshot(
           Protocol.Page.CaptureScreenshotRequestFormat.Png, 100, screenshotMode, clip);
+
+      if (screenshot !== null) {
+        void Platform.HostRuntime.HOST_RUNTIME
+            .copyScreenshot({
+              base64Png: screenshot,
+              fileName: this.getScreenshotFileName(),
+            })
+            .then(() => {
+              this.dispatchEventToListeners(Events.SCREENSHOT_COPIED);
+            })
+            .catch(() => {
+              this.dispatchEventToListeners(Events.SCREENSHOT_COPY_FAILED);
+            });
+      }
+
       return screenshot;
     } finally {
       await this.#emulationModel?.emulateDevice(null);
@@ -1173,10 +1188,14 @@ export class Rect {
 
 export const enum Events {
   UPDATED = 'Updated',
+  SCREENSHOT_COPIED = 'ScreenshotCopied',
+  SCREENSHOT_COPY_FAILED = 'ScreenshotCopyFailed',
 }
 
 export interface EventTypes {
   [Events.UPDATED]: void;
+  [Events.SCREENSHOT_COPIED]: void;
+  [Events.SCREENSHOT_COPY_FAILED]: void;
 }
 
 export enum Type {

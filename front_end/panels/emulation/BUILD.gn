@@ -39,6 +39,7 @@ devtools_ui_module("emulation") {
     "../../models/workspace:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../ui/components/buttons:bundle",
+    "../../ui/components/snackbars:bundle",
     "../../ui/geometry:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/theme_support:bundle",

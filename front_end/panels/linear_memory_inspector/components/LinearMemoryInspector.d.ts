@@ -1,8 +1,6 @@
-import './LinearMemoryViewer.js';
 import * as Common from '../../../core/common/common.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { Mode, Navigation } from './LinearMemoryNavigator.js';
-import type { ByteSelectedEvent, ResizeEvent } from './LinearMemoryViewer.js';
 import type { HighlightInfo } from './LinearMemoryViewerUtils.js';
 import { Endianness, type ValueType, type ValueTypeMode } from './ValueInterpreterDisplayUtils.js';
 /**
@@ -63,8 +61,8 @@ export interface ViewInput {
     onNavigateHistory: (navigation: Navigation) => boolean;
     onJumpToAddress: (address: number) => void;
     onDeleteMemoryHighlight: (info: HighlightInfo) => void;
-    onByteSelected: (e: ByteSelectedEvent) => void;
-    onResize: (e: ResizeEvent) => void;
+    onByteSelected: (address: number) => void;
+    onResize: (numBytesPerPage: number) => void;
     onValueTypeToggled: (type: ValueType, checked: boolean) => void;
     onValueTypeModeChanged: (type: ValueType, mode: ValueTypeMode) => void;
     onEndiannessChanged: (endianness: Endianness) => void;

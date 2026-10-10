@@ -9,13 +9,15 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.searchable-view {
-  flex: 1;
-}
+@scope to (devtools-widget > *) {
+  .searchable-view {
+    flex: 1;
+  }
 
-devtools-toolbar {
-  background-color: var(--sys-color-cdt-base-container);
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  devtools-toolbar {
+    background-color: var(--sys-color-cdt-base-container);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./resourceSourceFrame.css')} */`;

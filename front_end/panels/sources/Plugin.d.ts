@@ -20,13 +20,13 @@ export declare class Plugin extends Common.ObjectWrapper.ObjectWrapper<EventType
     constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode, _transformer?: SourceFrame.SourceFrame.Transformer);
     static accepts(_uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean;
     willHide(): void;
-    rightToolbarItems(): Array<UI.Toolbar.ToolbarItem | LitTemplate>;
+    rightToolbarItems(): LitTemplate[];
     /**
      *
      * TODO(szuend): It is OK to asyncify this function (similar to {rightToolbarItems}),
      *               but it is currently not strictly necessary.
      */
-    leftToolbarItems(): Array<UI.Toolbar.ToolbarItem | LitTemplate>;
+    leftToolbarItems(): LitTemplate[];
     populateLineGutterContextMenu(_contextMenu: UI.ContextMenu.ContextMenu, _lineNumber: number): void;
     populateTextAreaContextMenu(_contextMenu: UI.ContextMenu.ContextMenu, _lineNumber: number, _columnNumber: number): void;
     decorationChanged(_type: Workspace.UISourceCode.DecoratorType, _editor: TextEditor.TextEditor.TextEditor): void;

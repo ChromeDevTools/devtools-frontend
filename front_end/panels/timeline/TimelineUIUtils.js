@@ -892,8 +892,7 @@ export class TimelineUIUtils {
         const relatedNodesMap = await Utils.EntryNodes.relatedDOMNodesForEvent(parsedTrace, event);
         let entityAppended = false;
         if (maybeTarget) {
-            // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-            if (typeof event[previewElementSymbol] === 'undefined') {
+            if (!previewElementCache.has(event)) {
                 let previewElement = null;
                 const url = Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
                 if (url) {
@@ -905,8 +904,7 @@ export class TimelineUIUtils {
                 else if (Trace.Types.Events.isPaint(event)) {
                     previewElement = await TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
                 }
-                // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-                event[previewElementSymbol] = previewElement;
+                previewElementCache.set(event, previewElement);
             }
         }
         // This message may vary per event.name;
@@ -1383,11 +1381,10 @@ export class TimelineUIUtils {
                 contentHelper.appendElementRow(relatedNodeLabel || i18nString(UIStrings.relatedNode), nodeSpan);
             }
         }
-        // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-        if (event[previewElementSymbol]) {
+        const previewElement = previewElementCache.get(event);
+        if (previewElement) {
             contentHelper.addSection(i18nString(UIStrings.preview));
-            // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-            contentHelper.appendElementRow('', event[previewElementSymbol]);
+            contentHelper.appendElementRow('', previewElement);
         }
         if (!entityAppended) {
             const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
@@ -1924,8 +1921,7 @@ export class TimelineUIUtils {
         return originWithEntity;
     }
 }
-export const aggregatedStatsKey = Symbol('aggregatedStats');
-export const previewElementSymbol = Symbol('previewElement');
+const previewElementCache = new WeakMap();
 export class EventDispatchTypeDescriptor {
     priority;
     color;
@@ -2114,7 +2110,6 @@ export class TimelineDetailsContentHelper {
         return stackTraceElement;
     }
 }
-export const categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');
 /**
  * Given a particular event, this method can adjust its timestamp by
  * substracting the timestamp of the previous navigation. This helps in cases

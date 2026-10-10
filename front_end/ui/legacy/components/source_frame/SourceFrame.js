@@ -1,7 +1,6 @@
 // Copyright 2011 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -11,12 +10,14 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
+import * as Buttons from '../../../components/buttons/buttons.js';
 import * as CodeHighlighter from '../../../components/code_highlighter/code_highlighter.js';
 import * as Dialogs from '../../../components/dialogs/dialogs.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
-import { html } from '../../../lit/lit.js';
+import { html, nothing, render } from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Title of the source frame view tab.
@@ -99,6 +100,50 @@ export const LINE_NUMBER_FORMATTER = CodeMirror.Facet.define({
         return value[0];
     },
 });
+const SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `
+    <devtools-button
+      class="toolbar-button ${input.canPrettyPrint ? '' : 'hidden'}"
+      title=${i18nString(UIStrings.prettyPrint)} aria-label=${i18nString(UIStrings.prettyPrint)}
+      .iconName=${'brackets'} .toggledIconName=${'brackets'}
+      .toggleType=${"primary-toggle" /* Buttons.Button.ToggleType.PRIMARY */} .variant=${"icon_toggle" /* Buttons.Button.Variant.ICON_TOGGLE */}
+      .toggled=${input.pretty} .disabled=${!input.prettyToggleEnabled}
+      jslog=${VisualLogging.toggle().track({ click: true }).context('pretty-print')}
+      @click=${input.onPrettyToggleClick}></devtools-button>
+    <div class="toolbar-text">${input.sourcePositionText}</div>
+    ${input.loading ? html `<div><devtools-progress
+      .title=${i18nString(UIStrings.loading)} .totalWork=${100} .worked=${1}></devtools-progress></div>` : nothing}`, target);
+    // clang-format on
+};
+class SourceFrameToolbar extends UI.Widget.Widget {
+    #view;
+    canPrettyPrint = false;
+    pretty = false;
+    prettyToggleEnabled = true;
+    sourcePositionText = '';
+    loading = false;
+    onPrettyToggleClick = () => { };
+    constructor(element, view = SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW) {
+        super(element);
+        this.#view = view;
+        // eslint-disable-next-line @devtools/no-imperative-dom-api
+        this.element.style.display = 'contents';
+        this.performUpdate();
+    }
+    performUpdate() {
+        this.#view(this, {}, this.contentElement);
+    }
+}
+const SOURCE_FRAME_DEFAULT_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `
+        <div style="display: contents" @keydown=${input.onKeyDown}>
+          ${input.textEditor}
+        </div>
+      `, target);
+    // clang-format on
+};
 const SourceFrameImplBase = Common.ObjectWrapper.eventMixin(UI.View.SimpleView);
 export class SourceFrameImpl extends SourceFrameImplBase {
     options;
@@ -106,9 +151,10 @@ export class SourceFrameImpl extends SourceFrameImplBase {
     prettyInternal;
     rawContent;
     formattedMap;
-    prettyToggle;
+    #canPrettyPrint = false;
+    #prettyToggleEnabled = true;
     shouldAutoPrettyPrint;
-    progressToolbarItem;
+    #loading = false;
     textEditorInternal;
     // The 'clean' document, before editing
     baseDoc;
@@ -120,7 +166,8 @@ export class SourceFrameImpl extends SourceFrameImplBase {
     searchResults;
     searchRegex;
     loadError;
-    sourcePosition;
+    #sourcePositionText = '';
+    #toolbarWidget = new SourceFrameToolbar();
     searchableView;
     editable;
     positionToReveal;
@@ -143,22 +190,9 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         this.prettyInternal = false;
         this.rawContent = null;
         this.formattedMap = null;
-        this.prettyToggle =
-            new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.prettyPrint), 'brackets', undefined, 'pretty-print');
-        this.prettyToggle.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, () => {
-            void this.setPretty(this.prettyToggle.isToggled());
-        });
         this.shouldAutoPrettyPrint = false;
-        this.prettyToggle.setVisible(false);
-        this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
         this.textEditorInternal = new TextEditor.TextEditor.TextEditor(this.placeholderEditorState(''));
         this.textEditorInternal.style.flexGrow = '1';
-        this.element.appendChild(this.textEditorInternal);
-        this.element.addEventListener('keydown', (event) => {
-            if (event.defaultPrevented) {
-                event.stopPropagation();
-            }
-        });
         this.baseDoc = this.textEditorInternal.state.doc;
         this.searchConfig = null;
         this.delayedFindSearchMatches = null;
@@ -166,7 +200,6 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         this.searchResults = [];
         this.searchRegex = null;
         this.loadError = false;
-        this.sourcePosition = new UI.Toolbar.ToolbarText();
         this.searchableView = null;
         this.editable = false;
         this.positionToReveal = null;
@@ -180,6 +213,29 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         Common.Settings.Settings.instance()
             .moduleSetting('text-editor-indent')
             .addChangeListener(this.#textEditorIndentChanged, this);
+        this.performUpdate();
+    }
+    performUpdate() {
+        SOURCE_FRAME_DEFAULT_VIEW({
+            textEditor: this.textEditorInternal,
+            onKeyDown: (event) => {
+                if (event.defaultPrevented) {
+                    event.stopPropagation();
+                }
+            },
+        }, {}, this.element);
+        this.#updateToolbar();
+    }
+    #updateToolbar() {
+        Object.assign(this.#toolbarWidget, {
+            canPrettyPrint: this.#canPrettyPrint,
+            pretty: this.prettyInternal,
+            prettyToggleEnabled: this.#prettyToggleEnabled,
+            sourcePositionText: this.#sourcePositionText,
+            loading: this.#loading,
+            onPrettyToggleClick: () => void this.setPretty(!this.prettyInternal),
+        });
+        this.#toolbarWidget.performUpdate();
     }
     disposeView() {
         Common.Settings.Settings.instance()
@@ -306,7 +362,8 @@ export class SourceFrameImpl extends SourceFrameImplBase {
     setCanPrettyPrint(canPrettyPrint, autoPrettyPrint) {
         this.shouldAutoPrettyPrint = autoPrettyPrint === true &&
             Common.Settings.Settings.instance().moduleSetting('auto-pretty-print-minified').get();
-        this.prettyToggle.setVisible(canPrettyPrint);
+        this.#canPrettyPrint = canPrettyPrint;
+        this.#updateToolbar();
     }
     setEditable(editable) {
         this.editable = editable;
@@ -316,7 +373,8 @@ export class SourceFrameImpl extends SourceFrameImplBase {
     }
     async setPretty(value) {
         this.prettyInternal = value;
-        this.prettyToggle.setEnabled(false);
+        this.#prettyToggleEnabled = false;
+        this.#updateToolbar();
         const wasLoaded = this.loaded;
         const { textEditor } = this;
         const selection = textEditor.state.selection.main;
@@ -344,7 +402,7 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         if (wasLoaded) {
             textEditor.revealPosition(newSelection, false);
         }
-        this.prettyToggle.setEnabled(true);
+        this.#prettyToggleEnabled = true;
         this.updatePrettyPrintState();
     }
     // If this is a disassembled WASM file or a pretty-printed file,
@@ -387,7 +445,7 @@ export class SourceFrameImpl extends SourceFrameImplBase {
             ?.setAttribute('jslog', `${VisualLogging.gutter('line-numbers').track({ click: true })}`);
     }
     updatePrettyPrintState() {
-        this.prettyToggle.setToggled(this.prettyInternal);
+        this.#updateToolbar();
         this.textEditorInternal.classList.toggle('pretty-printed', this.prettyInternal);
         this.updateLineNumberFormatter();
     }
@@ -416,7 +474,11 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         this.clearPositionToReveal();
     }
     async toolbarItems() {
-        return html `${this.prettyToggle.element}${this.sourcePosition.element}${this.progressToolbarItem.element}`;
+        return html `${widget(element => {
+            this.#toolbarWidget = new SourceFrameToolbar(element);
+            this.#updateToolbar();
+            return this.#toolbarWidget;
+        })}`;
     }
     get loaded() {
         return this.loadedInternal;
@@ -441,11 +503,8 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         }
     }
     async setContentDataOrError(contentDataPromise) {
-        const progressIndicator = document.createElement('devtools-progress');
-        progressIndicator.title = i18nString(UIStrings.loading);
-        progressIndicator.totalWork = 100;
-        this.progressToolbarItem.element.appendChild(progressIndicator);
-        progressIndicator.worked = 1;
+        this.#loading = true;
+        this.#updateToolbar();
         const contentData = await contentDataPromise;
         let error;
         let content;
@@ -474,23 +533,25 @@ export class SourceFrameImpl extends SourceFrameImplBase {
             content = null;
             this.wasmDisassemblyInternal = null;
         }
-        progressIndicator.worked = 100;
-        progressIndicator.done = true;
+        this.#loading = false;
+        this.#updateToolbar();
         if (this.rawContent === content && error === undefined) {
             return;
         }
         this.rawContent = content;
         this.formattedMap = null;
-        this.prettyToggle.setEnabled(true);
+        this.#prettyToggleEnabled = true;
         if (error) {
             this.loadError = true;
             this.textEditor.state = this.placeholderEditorState(error);
-            this.prettyToggle.setEnabled(false);
+            this.#prettyToggleEnabled = false;
+            this.#updateToolbar();
         }
         else if (this.shouldAutoPrettyPrint && isMinified) {
             await this.setPretty(true);
         }
         else {
+            this.#updateToolbar();
             await this.setContent(this.rawContent || '');
         }
     }
@@ -608,7 +669,8 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         if (this.prettyInternal !== wasPretty) {
             this.updatePrettyPrintState();
         }
-        this.prettyToggle.setEnabled(this.isClean());
+        this.#prettyToggleEnabled = this.isClean();
+        this.#updateToolbar();
         if (this.searchConfig && this.searchableView) {
             this.performSearch(this.searchConfig, false, false);
         }
@@ -626,7 +688,8 @@ export class SourceFrameImpl extends SourceFrameImplBase {
             this.prettyInternal = false;
             this.updatePrettyPrintState();
         }
-        this.prettyToggle.setEnabled(true);
+        this.#prettyToggleEnabled = true;
+        this.#updateToolbar();
     }
     async getLanguageSupport(content) {
         // This is a pretty horrible work-around for webpack-based Vue2 setups. See
@@ -847,7 +910,8 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         }
         this.displayedSelection = selection;
         if (selection.ranges.length > 1) {
-            this.sourcePosition.setText(i18nString(UIStrings.dSelectionRegions, { PH1: selection.ranges.length }));
+            this.#sourcePositionText = i18nString(UIStrings.dSelectionRegions, { PH1: selection.ranges.length });
+            this.#updateToolbar();
             return;
         }
         const { main } = state.selection;
@@ -859,21 +923,22 @@ export class SourceFrameImpl extends SourceFrameImplBase {
                 const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
                 const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
                 const bytecodeOffset = disassembly.lineNumberToBytecodeOffset(location[0]);
-                this.sourcePosition.setText(i18nString(UIStrings.bytecodePositionXs, { PH1: bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0') }));
+                this.#sourcePositionText = i18nString(UIStrings.bytecodePositionXs, { PH1: bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0') });
             }
             else {
-                this.sourcePosition.setText(i18nString(UIStrings.lineSColumnS, { PH1: location[0] + 1, PH2: location[1] + 1 }));
+                this.#sourcePositionText = i18nString(UIStrings.lineSColumnS, { PH1: location[0] + 1, PH2: location[1] + 1 });
             }
         }
         else {
             const startLine = state.doc.lineAt(main.from), endLine = state.doc.lineAt(main.to);
             if (startLine.number === endLine.number) {
-                this.sourcePosition.setText(i18nString(UIStrings.dCharactersSelected, { PH1: main.to - main.from }));
+                this.#sourcePositionText = i18nString(UIStrings.dCharactersSelected, { PH1: main.to - main.from });
             }
             else {
-                this.sourcePosition.setText(i18nString(UIStrings.dLinesDCharactersSelected, { PH1: endLine.number - startLine.number + 1, PH2: main.to - main.from }));
+                this.#sourcePositionText = i18nString(UIStrings.dLinesDCharactersSelected, { PH1: endLine.number - startLine.number + 1, PH2: main.to - main.from });
             }
         }
+        this.#updateToolbar();
     }
     onContextMenu(event) {
         event.consume(true); // Consume event now to prevent document from handling the async menu

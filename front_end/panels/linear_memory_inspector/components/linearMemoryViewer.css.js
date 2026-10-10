@@ -9,75 +9,82 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
-  flex: auto;
-  display: flex;
-  min-height: var(--sys-size-9);
-}
-
-.view {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  box-sizing: border-box;
-  background: var(--sys-color-cdt-base-container);
-  outline: none;
-}
-
-.row {
-  display: flex;
-  height: var(--sys-size-9);
-  align-items: center;
-}
-
-.cell {
-  text-align: center;
-  border: var(--sys-size-1) solid transparent;
-  border-radius: 2px;
-
-  &.focused-area {
-    background-color: var(--sys-color-tonal-container);
-    color: var(--sys-color-on-tonal-container);
+@scope to (devtools-widget > *) {
+  :scope {
+    flex: auto;
+    display: flex;
+    min-height: var(--sys-size-9);
   }
 
-  &.selected {
-    border-color: var(--sys-color-state-focus-ring);
-    color: var(--sys-color-on-tonal-container);
-    background-color: var(--sys-color-state-focus-select);
+  * {
+    min-width: unset;
+    box-sizing: content-box;
   }
-}
 
-.byte-cell {
-  min-width: 21px;
-  color: var(--sys-color-on-surface);
-}
+  .view {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+    background: var(--sys-color-cdt-base-container);
+    outline: none;
+  }
 
-.byte-group-margin {
-  margin-left: var(--byte-group-margin);
-}
+  .row {
+    display: flex;
+    height: var(--sys-size-9);
+    align-items: center;
+  }
 
-.text-cell {
-  min-width: var(--sys-size-7);
-  color: var(--sys-color-on-surface-subtle);
-}
+  .cell {
+    text-align: center;
+    border: var(--sys-size-1) solid transparent;
+    border-radius: 2px;
 
-.address {
-  color: var(--sys-color-state-disabled);
-}
+    &.focused-area {
+      background-color: var(--sys-color-tonal-container);
+      color: var(--sys-color-on-tonal-container);
+    }
 
-.address.selected {
-  font-weight: bold;
-  color: var(--sys-color-on-surface);
-}
+    &.selected {
+      border-color: var(--sys-color-state-focus-ring);
+      color: var(--sys-color-on-tonal-container);
+      background-color: var(--sys-color-state-focus-select);
+    }
+  }
 
-.divider {
-  width: var(--sys-size-1);
-  height: inherit;
-  background-color: var(--sys-color-divider);
-  margin: 0 var(--sys-size-3);
-}
+  .byte-cell {
+    min-width: 21px;
+    color: var(--sys-color-on-surface);
+  }
 
-.highlight-area {
-  background-color: var(--sys-color-surface-variant);
+  .byte-group-margin {
+    margin-left: var(--byte-group-margin);
+  }
+
+  .text-cell {
+    min-width: var(--sys-size-7);
+    color: var(--sys-color-on-surface-subtle);
+  }
+
+  .address {
+    color: var(--sys-color-state-disabled);
+  }
+
+  .address.selected {
+    font-weight: bold;
+    color: var(--sys-color-on-surface);
+  }
+
+  .divider {
+    width: var(--sys-size-1);
+    height: inherit;
+    background-color: var(--sys-color-divider);
+    margin: 0 var(--sys-size-3);
+  }
+
+  .highlight-area {
+    background-color: var(--sys-color-surface-variant);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./linearMemoryViewer.css')} */`;

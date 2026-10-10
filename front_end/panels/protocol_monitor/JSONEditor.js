@@ -196,7 +196,8 @@ export class JSONEditor extends JSONEditorBase {
                     return Number(parameter.value);
                 }
                 case "boolean" /* ParameterType.BOOLEAN */: {
-                    return Boolean(parameter.value);
+                    return typeof parameter.value === 'boolean' ? parameter.value :
+                        String(parameter.value).trim().toLowerCase() === 'true';
                 }
                 case "object" /* ParameterType.OBJECT */: {
                     const nestedParameters = {};
@@ -533,10 +534,17 @@ export class JSONEditor extends JSONEditorBase {
         const object = this.#getChildByPath(pathArray).parameter;
         if (value === '') {
             object.value = defaultValueByType.get(object.type);
+            object.isCorrectType = true;
         }
         else {
-            object.value = value;
-            object.isCorrectType = this.#isValueOfCorrectType(object, value);
+            const normalizedValue = object.type === "boolean" /* ParameterType.BOOLEAN */ ? value.trim().toLowerCase() : value;
+            object.isCorrectType = this.#isValueOfCorrectType(object, normalizedValue);
+            if (object.type === "boolean" /* ParameterType.BOOLEAN */ && object.isCorrectType) {
+                object.value = normalizedValue === 'true';
+            }
+            else {
+                object.value = value;
+            }
         }
         // Needed to render the delete button for object parameters
         this.requestUpdate();

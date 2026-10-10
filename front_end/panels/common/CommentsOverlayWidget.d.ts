@@ -13,6 +13,8 @@ export interface ViewInput {
     activePin: Comments.CommentOverlayManager.PinPositionData | null;
     title: Title;
     onAddComment: (text: string) => void;
+    onDeleteQueuedComment: () => void;
+    onQueueComment: (text: string) => void;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare class CommentsOverlayWidget extends UI.Widget.Widget {

@@ -2332,15 +2332,15 @@ function renderWalkthroughUI(input, steps) {
   `;
 }
 function renderSideEffectStepsUI(input, steps) {
-  const sideEffectSteps = steps.filter((s) => s.state.type === "needs_approval" || s.state.type === "canceled");
+  const sideEffectSteps = steps.filter((s) => s.state.type === "needs_approval");
   if (sideEffectSteps.length === 0) {
     return Lit5.nothing;
   }
-  const showPermissionPrompt = (step) => AiAssistanceModel4.AiUtils.isNaturalLanguageInterfaceEnabled() && step.state.type === "needs_approval";
+  const showPermissionPrompt = AiAssistanceModel4.AiUtils.isNaturalLanguageInterfaceEnabled();
   return html5`
     ${sideEffectSteps.map((step) => html5`
       <div class="side-effect-container">
-        ${showPermissionPrompt(step) ? renderPermissionPrompt(step) : renderStep({
+        ${showPermissionPrompt ? renderPermissionPrompt(step) : renderStep({
     step,
     markdownRenderer: input.markdownRenderer,
     isLast: true
@@ -4065,6 +4065,7 @@ var Audits;
     GenericIssueErrorType2["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
     GenericIssueErrorType2["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
     GenericIssueErrorType2["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+    GenericIssueErrorType2["GeolocationPromptWithoutUserGesture"] = "GeolocationPromptWithoutUserGesture";
   })(GenericIssueErrorType = Audits2.GenericIssueErrorType || (Audits2.GenericIssueErrorType = {}));
   let ClientHintIssueReason;
   ((ClientHintIssueReason2) => {
@@ -9912,7 +9913,7 @@ function defaultView(input, output, target) {
         name="ai-assistance-split-view-state"
         direction="column"
         sidebar-position="second"
-        sidebar-visibility=${shouldShowWalkthrough && !input.props.walkthrough.isInlined ? "visible" : "hidden"}
+        show=${shouldShowWalkthrough && !input.props.walkthrough.isInlined ? "both" : "main"}
         sidebar-initial-size=${WALKTHROUGH_SIDEBAR_INITIAL_WIDTH}
       >
         <div slot="main" class="main-view">
@@ -11009,6 +11010,17 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           type: "step",
           step
         });
+      }, stepForCall = function(callId) {
+        if (callId === void 0) {
+          return step;
+        }
+        const callStep = stepsByCallId.get(callId);
+        if (callStep) {
+          return callStep;
+        }
+        const newStep = [...stepsByCallId.values()].includes(step) ? { state: { type: "in_progress" } } : step;
+        stepsByCallId.set(callId, newStep);
+        return newStep;
       };
       let systemMessage = {
         entity: "model" /* MODEL */,
@@ -11016,6 +11028,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
         id: crypto.randomUUID()
       };
       let step = { state: { type: "in_progress" } };
+      const stepsByCallId = /* @__PURE__ */ new Map();
       this.#isLoading = true;
       let announcedAnswerLoading = false;
       let announcedAnswerReady = false;
@@ -11056,11 +11069,13 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             break;
           }
           case AiAssistanceModel7.AiAgent.ResponseType.TITLE: {
+            step = stepForCall(data.callId);
             step.title = data.title;
             commitStep();
             break;
           }
           case AiAssistanceModel7.AiAgent.ResponseType.THOUGHT: {
+            step = stepForCall(data.callId);
             step.state = { type: "completed" };
             step.thought = data.thought;
             commitStep();
@@ -11080,8 +11095,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             break;
           }
           case AiAssistanceModel7.AiAgent.ResponseType.SIDE_EFFECT: {
-            step.code ??= data.code;
-            step.state = {
+            step = stepForCall(data.callId);
+            const approvalStep = step;
+            approvalStep.code ??= data.code;
+            approvalStep.state = {
               type: "needs_approval",
               sideEffectDialog: {
                 description: data.description,
@@ -11089,7 +11106,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
                 permissionTitle: data.permissionTitle,
                 onAnswer: (decision) => {
                   data.confirm(decision);
-                  step.state = { type: "completed" };
+                  approvalStep.state = { type: "completed" };
                   this.requestUpdate();
                 }
               }
@@ -11098,6 +11115,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             break;
           }
           case AiAssistanceModel7.AiAgent.ResponseType.ACTION: {
+            step = stepForCall(data.callId);
             step.state = data.canceled ? { type: "canceled" } : { type: "completed" };
             step.code ??= data.code;
             step.output ??= data.output;

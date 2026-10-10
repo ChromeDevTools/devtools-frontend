@@ -2764,7 +2764,13 @@ var NativeFunctions = [
   },
   {
     name: "getFileHandle",
-    signatures: [["name", "?options"]]
+    signatures: [["name", "?options"]],
+    receivers: ["FileSystemDirectoryHandle"]
+  },
+  {
+    name: "getFileHandle",
+    signatures: [["hash", "?options"]],
+    receivers: ["CrossOriginStorageManager"]
   },
   {
     name: "removeEntry",
@@ -8088,10 +8094,6 @@ var NativeFunctions = [
     signatures: [["decapsulationAlgorithm", "decapsulationKey", "ciphertext"]]
   },
   {
-    name: "requestFileHandle",
-    signatures: [["hash", "?options"]]
-  },
-  {
     name: "userAgentAllowsProtocol",
     signatures: [["protocol"]]
   },
@@ -8464,6 +8466,10 @@ var NativeFunctions = [
     signatures: [["pathData"]]
   },
   {
+    name: "getPathSegmentAtLength",
+    signatures: [["distance"]]
+  },
+  {
     name: "ByteLengthQueuingStrategy",
     signatures: [["init"]]
   },
@@ -8588,14 +8594,8 @@ var NativeFunctions = [
     signatures: [["width", "height"]]
   },
   {
-    name: "getElementTransform",
-    signatures: [["element", "draw_transform"]],
-    receivers: ["OffscreenCanvas"]
-  },
-  {
-    name: "getElementTransform",
-    signatures: [["element", "?draw_transform"]],
-    receivers: ["HTMLCanvasElement"]
+    name: "getElementImageDefaultSize",
+    signatures: [["element"]]
   },
   {
     name: "updateElementGeometry",
@@ -8752,6 +8752,10 @@ var NativeFunctions = [
   {
     name: "ElementGeometryUpdateEvent",
     signatures: [["type", "?eventInitDict"]]
+  },
+  {
+    name: "getElementTransform",
+    signatures: [["element"]]
   },
   {
     name: "captureElementImage",
@@ -9131,7 +9135,7 @@ var NativeFunctions = [
   },
   {
     name: "Focusable",
-    signatures: [["target"]]
+    signatures: [["target", "?options"], ["focusable", "?options"]]
   },
   {
     name: "getBoxQuads",

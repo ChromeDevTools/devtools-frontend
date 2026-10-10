@@ -134,7 +134,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         <devtools-split-view name="protocol-monitor-split-container"
                              direction="column"
                              sidebar-initial-size="400"
-                             sidebar-visibility=${input.sidebarVisible ? 'visible' : 'hidden'}
+                             show=${input.sidebarVisible ? 'both' : 'main'}
                              @change=${(e) => input.onSplitChange(e.detail === 'OnlyMain')}>
           <div slot="main" class="vbox protocol-monitor-main">
             <devtools-toolbar class="protocol-monitor-toolbar"

@@ -3981,6 +3981,8 @@ var SplitWidget = class extends SplitWidgetBase {
       widget2.element.slot = "main";
       if (this.#showMode === "OnlyMain" /* ONLY_MAIN */ || this.#showMode === "Both" /* BOTH */) {
         widget2.show(this.element);
+      } else {
+        this.#hideSide(widget2);
       }
     }
     this.resumeInvalidations();
@@ -3998,9 +4000,20 @@ var SplitWidget = class extends SplitWidgetBase {
       widget2.element.slot = "sidebar";
       if (this.#showMode === "OnlySidebar" /* ONLY_SIDEBAR */ || this.#showMode === "Both" /* BOTH */) {
         widget2.show(this.element);
+      } else {
+        this.#hideSide(widget2);
       }
     }
     this.resumeInvalidations();
+  }
+  #hideSide(widget2) {
+    if (this.element instanceof SplitWidgetElement) {
+      widget2.hideWidget();
+    } else {
+      this.#detaching = true;
+      widget2.detach();
+      this.#detaching = false;
+    }
   }
   mainWidget() {
     return this.#mainWidget;
@@ -4087,9 +4100,7 @@ var SplitWidget = class extends SplitWidgetBase {
         }
       }
       if (sideToHide) {
-        this.#detaching = true;
-        sideToHide.detach();
-        this.#detaching = false;
+        this.#hideSide(sideToHide);
       }
       this.#resizerElement.classList.add("hidden");
       shadowToShow.classList.remove("hidden");
@@ -4551,7 +4562,7 @@ var SplitWidget = class extends SplitWidgetBase {
   }
 };
 var SplitWidgetElement = class extends WidgetElement {
-  static observedAttributes = ["direction", "sidebar-position", "sidebar-initial-size", "sidebar-visibility"];
+  static observedAttributes = ["direction", "sidebar-position", "sidebar-initial-size", "show"];
   constructor() {
     super();
     registerWidgetConfig(this, widgetConfig((element) => {
@@ -4578,9 +4589,11 @@ var SplitWidgetElement = class extends WidgetElement {
       if (autoAdjustOrientation) {
         widget2.setAutoAdjustOrientation(true);
       }
-      const sidebarHidden = element.getAttribute("sidebar-visibility") === "hidden";
-      if (sidebarHidden) {
+      const show = element.getAttribute("show");
+      if (show === "main") {
         widget2.hideSidebar();
+      } else if (show === "sidebar") {
+        widget2.hideMain();
       }
       widget2.addEventListener("ShowModeChanged" /* SHOW_MODE_CHANGED */, () => {
         element.dispatchEvent(new CustomEvent("change", { detail: widget2.showMode() }));
@@ -4598,9 +4611,11 @@ var SplitWidgetElement = class extends WidgetElement {
       widget2.setAutoAdjustOrientation(newValue === "auto");
     } else if (name === "sidebar-position") {
       widget2.setSecondIsSidebar(newValue === "second");
-    } else if (name === "sidebar-visibility") {
-      if (newValue === "hidden") {
+    } else if (name === "show") {
+      if (newValue === "main") {
         widget2.hideSidebar();
+      } else if (newValue === "sidebar") {
+        widget2.hideMain();
       } else {
         widget2.showBoth();
       }
@@ -21852,9 +21867,7 @@ var SearchableView = class extends VBox {
   #searchProvider;
   #searchTarget = null;
   replaceProvider = null;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setting = null;
+  #setting = null;
   #replaceable = false;
   footerElementContainer;
   footerElement;
@@ -21866,13 +21879,17 @@ var SearchableView = class extends VBox {
   searchNavigationNextElement;
   replaceInputElement;
   #searchConfigButtons;
-  caseSensitiveButton;
-  wholeWordButton;
-  regexButton;
+  #caseSensitiveButton;
+  #wholeWordButton;
+  #regexButton;
   replaceButtonElement;
   replaceAllButtonElement;
   minimalSearchQuerySize = 3;
   searchIsVisible;
+  #secondRowVisible = false;
+  #caseSensitiveToggled = false;
+  #wholeWordToggled = false;
+  #regexToggled = false;
   currentQuery;
   valueChangedTimeoutId;
   constructor(searchableOrElement, replaceable = null, settingName, element) {
@@ -22002,11 +22019,11 @@ var SearchableView = class extends VBox {
     this.refreshSearch();
   }
   set settingName(settingName) {
-    if (this.setting?.name === settingName) {
+    if (this.#setting?.name === settingName) {
       return;
     }
-    this.setting = settingName ? Common18.Settings.Settings.instance().createSetting(settingName, {}) : null;
-    this.loadSetting();
+    this.#setting = settingName ? Common18.Settings.Settings.instance().createSetting(settingName, {}) : null;
+    this.#loadSetting();
   }
   get replaceable() {
     return this.#replaceable;
@@ -22020,72 +22037,53 @@ var SearchableView = class extends VBox {
       this.updateReplaceVisibility();
     }
   }
+  #createConfigToggleButton(iconName, label, onToggle) {
+    const button = new Buttons10.Button.Button();
+    button.data = {
+      variant: Buttons10.Button.Variant.ICON_TOGGLE,
+      size: Buttons10.Button.Size.SMALL,
+      iconName,
+      toggledIconName: iconName,
+      toggled: false,
+      toggleType: Buttons10.Button.ToggleType.PRIMARY,
+      title: label,
+      jslogContext: iconName
+    };
+    setLabel(button, label);
+    button.addEventListener("click", () => {
+      onToggle();
+      this.#saveSetting();
+      this.performSearch(false, true);
+    });
+    this.#searchConfigButtons.appendChild(button);
+    return button;
+  }
   #updateSearchConfigButtons() {
-    this.caseSensitiveButton?.remove();
-    this.caseSensitiveButton = void 0;
-    this.wholeWordButton?.remove();
-    this.wholeWordButton = void 0;
-    this.regexButton?.remove();
-    this.regexButton = void 0;
+    this.#caseSensitiveButton?.remove();
+    this.#caseSensitiveButton = void 0;
+    this.#wholeWordButton?.remove();
+    this.#wholeWordButton = void 0;
+    this.#regexButton?.remove();
+    this.#regexButton = void 0;
     if (!this.#searchProvider) {
       return;
     }
-    const saveSettingAndPerformSearch = () => {
-      this.saveSetting();
-      this.performSearch(false, true);
-    };
     if (this.#searchProvider.supportsCaseSensitiveSearch()) {
-      const iconName = "match-case";
-      this.caseSensitiveButton = new Buttons10.Button.Button();
-      this.caseSensitiveButton.data = {
-        variant: Buttons10.Button.Variant.ICON_TOGGLE,
-        size: Buttons10.Button.Size.SMALL,
-        iconName,
-        toggledIconName: iconName,
-        toggled: false,
-        toggleType: Buttons10.Button.ToggleType.PRIMARY,
-        title: i18nString19(UIStrings19.matchCase),
-        jslogContext: iconName
-      };
-      setLabel(this.caseSensitiveButton, i18nString19(UIStrings19.matchCase));
-      this.caseSensitiveButton.addEventListener("click", saveSettingAndPerformSearch);
-      this.#searchConfigButtons.appendChild(this.caseSensitiveButton);
+      this.#caseSensitiveButton = this.#createConfigToggleButton("match-case", i18nString19(UIStrings19.matchCase), () => {
+        this.#caseSensitiveToggled = Boolean(this.#caseSensitiveButton?.toggled);
+      });
     }
     if (this.#searchProvider.supportsWholeWordSearch()) {
-      const iconName = "match-whole-word";
-      this.wholeWordButton = new Buttons10.Button.Button();
-      this.wholeWordButton.data = {
-        variant: Buttons10.Button.Variant.ICON_TOGGLE,
-        size: Buttons10.Button.Size.SMALL,
-        iconName,
-        toggledIconName: iconName,
-        toggled: false,
-        toggleType: Buttons10.Button.ToggleType.PRIMARY,
-        title: i18nString19(UIStrings19.matchWholeWord),
-        jslogContext: iconName
-      };
-      setLabel(this.wholeWordButton, i18nString19(UIStrings19.matchWholeWord));
-      this.wholeWordButton.addEventListener("click", saveSettingAndPerformSearch);
-      this.#searchConfigButtons.appendChild(this.wholeWordButton);
+      this.#wholeWordButton = this.#createConfigToggleButton("match-whole-word", i18nString19(UIStrings19.matchWholeWord), () => {
+        this.#wholeWordToggled = Boolean(this.#wholeWordButton?.toggled);
+      });
     }
     if (this.#searchProvider.supportsRegexSearch()) {
-      const iconName = "regular-expression";
-      this.regexButton = new Buttons10.Button.Button();
-      this.regexButton.data = {
-        variant: Buttons10.Button.Variant.ICON_TOGGLE,
-        size: Buttons10.Button.Size.SMALL,
-        iconName,
-        toggledIconName: iconName,
-        toggleType: Buttons10.Button.ToggleType.PRIMARY,
-        toggled: false,
-        jslogContext: iconName,
-        title: i18nString19(UIStrings19.useRegularExpression)
-      };
-      setLabel(this.regexButton, i18nString19(UIStrings19.useRegularExpression));
-      this.regexButton.addEventListener("click", saveSettingAndPerformSearch);
-      this.#searchConfigButtons.appendChild(this.regexButton);
+      this.#regexButton = this.#createConfigToggleButton("regular-expression", i18nString19(UIStrings19.useRegularExpression), () => {
+        this.#regexToggled = Boolean(this.#regexButton?.toggled);
+      });
     }
-    this.loadSetting();
+    this.#loadSetting();
   }
   static fromElement(element) {
     let view = null;
@@ -22096,38 +22094,41 @@ var SearchableView = class extends VBox {
     return view;
   }
   toggleReplace() {
-    const replaceEnabled = this.replaceToggleButton.isToggled();
-    const label = replaceEnabled ? i18nString19(UIStrings19.disableFindAndReplace) : i18nString19(UIStrings19.enableFindAndReplace);
+    this.#secondRowVisible = this.replaceToggleButton.isToggled();
+    const label = this.#secondRowVisible ? i18nString19(UIStrings19.disableFindAndReplace) : i18nString19(UIStrings19.enableFindAndReplace);
     setLabel(this.replaceToggleButton.element, label);
     this.replaceToggleButton.element.title = label;
     this.updateSecondRowVisibility();
   }
-  saveSetting() {
-    if (!this.setting) {
+  #saveSetting() {
+    if (!this.#setting) {
       return;
     }
-    const settingValue = this.setting.get() || {};
-    if (this.caseSensitiveButton) {
-      settingValue.caseSensitive = this.caseSensitiveButton.toggled;
+    const settingValue = this.#setting.get() || {};
+    if (this.#searchProvider?.supportsCaseSensitiveSearch()) {
+      settingValue.caseSensitive = this.#caseSensitiveToggled;
     }
-    if (this.wholeWordButton) {
-      settingValue.wholeWord = this.wholeWordButton.toggled;
+    if (this.#searchProvider?.supportsWholeWordSearch()) {
+      settingValue.wholeWord = this.#wholeWordToggled;
     }
-    if (this.regexButton) {
-      settingValue.isRegex = this.regexButton.toggled;
+    if (this.#searchProvider?.supportsRegexSearch()) {
+      settingValue.isRegex = this.#regexToggled;
     }
-    this.setting.set(settingValue);
+    this.#setting.set(settingValue);
   }
-  loadSetting() {
-    const settingValue = this.setting ? this.setting.get() || {} : {};
-    if (this.caseSensitiveButton) {
-      this.caseSensitiveButton.toggled = Boolean(settingValue.caseSensitive);
+  #loadSetting() {
+    const settingValue = this.#setting ? this.#setting.get() || {} : {};
+    this.#caseSensitiveToggled = Boolean(this.#searchProvider?.supportsCaseSensitiveSearch() && settingValue.caseSensitive);
+    this.#wholeWordToggled = Boolean(this.#searchProvider?.supportsWholeWordSearch() && settingValue.wholeWord);
+    this.#regexToggled = Boolean(this.#searchProvider?.supportsRegexSearch() && settingValue.isRegex);
+    if (this.#caseSensitiveButton) {
+      this.#caseSensitiveButton.toggled = this.#caseSensitiveToggled;
     }
-    if (this.wholeWordButton) {
-      this.wholeWordButton.toggled = Boolean(settingValue.wholeWord);
+    if (this.#wholeWordButton) {
+      this.#wholeWordButton.toggled = this.#wholeWordToggled;
     }
-    if (this.regexButton) {
-      this.regexButton.toggled = Boolean(settingValue.isRegex);
+    if (this.#regexButton) {
+      this.#regexButton.toggled = this.#regexToggled;
     }
   }
   setMinimalSearchQuerySize(minimalSearchQuerySize) {
@@ -22138,6 +22139,12 @@ var SearchableView = class extends VBox {
     if (ariaLabel) {
       setLabel(this.searchInputElement, ariaLabel);
     }
+  }
+  get placeholder() {
+    return this.searchInputElement.placeholder;
+  }
+  set placeholder(placeholder) {
+    this.searchInputElement.placeholder = placeholder;
   }
   setReplaceable(replaceable) {
     this.replaceable = replaceable;
@@ -22261,6 +22268,7 @@ var SearchableView = class extends VBox {
   updateReplaceVisibility() {
     this.replaceToggleButton.setVisible(this.replaceable);
     if (!this.replaceable) {
+      this.#secondRowVisible = false;
       this.replaceToggleButton.setToggled(false);
       this.updateSecondRowVisibility();
     }
@@ -22322,15 +22330,11 @@ var SearchableView = class extends VBox {
   }
   currentSearchConfig() {
     const query = this.searchInputElement.value;
-    const caseSensitive = this.caseSensitiveButton ? this.caseSensitiveButton.toggled : false;
-    const wholeWord = this.wholeWordButton ? this.wholeWordButton.toggled : false;
-    const isRegex = this.regexButton ? this.regexButton.toggled : false;
-    return new SearchConfig(query, caseSensitive, wholeWord, isRegex);
+    return new SearchConfig(query, this.#caseSensitiveToggled, this.#wholeWordToggled, this.#regexToggled);
   }
   updateSecondRowVisibility() {
-    const secondRowVisible = this.replaceToggleButton.isToggled();
-    this.footerElementContainer.classList.toggle("replaceable", secondRowVisible);
-    if (secondRowVisible) {
+    this.footerElementContainer.classList.toggle("replaceable", this.#secondRowVisible);
+    if (this.#secondRowVisible) {
       this.replaceInputElement.focus();
     } else {
       this.searchInputElement.focus();

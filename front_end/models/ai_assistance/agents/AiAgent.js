@@ -7,6 +7,65 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import { debugLog, isStructuredLogEnabled } from '../debug.js';
 import { dispatchAiAssistanceDoneEvent } from '../DOMHelpers.js';
 const MAX_SUGGESTION_LENGTH = 200;
+/**
+ * The types of event in the response stream that `AiConversation#run()`
+ * yields to the AI assistance panel. The same events, minus a few, are saved
+ * as the conversation history and replayed when a saved conversation opens.
+ *
+ * ## Order of events in one run
+ *
+ * ```
+ * USER_QUERY                    (AiConversation, first run of a query only)
+ * CONTEXT*                      (agent's handleContextDetails())
+ * repeated for each model request, up to MAX_STEPS:
+ *   QUERYING
+ *   one of:
+ *     ANSWER (complete: false)*, ANSWER (complete: true)   text-only reply; the run ends
+ *     [ANSWER (complete: true)], <tool call events>        function call, optionally with text
+ *     ERROR                                                the run ends
+ * ```
+ *
+ * An `ERROR` can also follow the tool call events, for example when the user
+ * aborts, the page navigates cross-origin, or the run reaches `MAX_STEPS`.
+ *
+ * ## Events for one tool call
+ *
+ * `AiAgent#callFunction()` yields these. All events for one call carry the
+ * same `callId`.
+ *
+ * ```
+ * TITLE?, THOUGHT?              from the tool's displayInfoFromArgs()
+ * if the tool needs approval:
+ *   ACTION {code}               code only, shown above the approval prompt;
+ *                               skipped if displayInfoFromArgs() has no action
+ *   SIDE_EFFECT                 the panel shows the prompt and calls confirm()
+ *   if denied: ACTION {code, output, canceled: true}, and the call ends
+ * ACTION {code, output, widgets, toolName}   result or error
+ * ```
+ *
+ * If the tool switches context instead of returning a result, there is no
+ * result `ACTION`. `AiAgent#run()` yields `CONTEXT_CHANGE` and returns, and
+ * `AiConversation` starts a new run with the agent for the new context.
+ *
+ * ## Saved history
+ *
+ * `AiConversation` saves every event except `CONTEXT_CHANGE` and partial
+ * `ANSWER`s. `AiConversation#serialize()` removes `confirm`, images and
+ * widgets, and redacts the `ACTION` output of tools annotated with
+ * `REDACT_FROM_HISTORY`. Saved data has no version field, so new fields must
+ * be optional.
+ *
+ * ## How the panel renders events
+ *
+ * `AiAssistancePanel#consumeResponseStream()` builds one chat message per
+ * `USER_QUERY` and one step per tool call:
+ * - `QUERYING` starts a new step with a spinner. The panel shows the step only
+ *   if it is the first part of the message. Otherwise, the step stays hidden
+ *   until a tool call fills it in.
+ * - `TITLE`, `THOUGHT`, `ACTION` and `SIDE_EFFECT` update the step for their
+ *   `callId`. Events saved before `callId` existed update the current step.
+ * - `ANSWER` adds the answer text. `ERROR` sets the message error.
+ */
 export var ResponseType;
 (function (ResponseType) {
     ResponseType["CONTEXT"] = "context";
@@ -549,6 +608,7 @@ export class AiAgent {
             parts,
             role: Host.AidaClient.Role.MODEL,
         });
+        const callId = crypto.randomUUID();
         let code;
         if (call.displayInfoFromArgs) {
             const { title, thought, action: callCode } = call.displayInfoFromArgs(args);
@@ -556,12 +616,14 @@ export class AiAgent {
             if (title) {
                 yield {
                     type: "title" /* ResponseType.TITLE */,
+                    callId,
                     title,
                 };
             }
             if (thought) {
                 yield {
                     type: "thought" /* ResponseType.THOUGHT */,
+                    callId,
                     thought,
                 };
             }
@@ -580,6 +642,7 @@ export class AiAgent {
             if (code) {
                 yield {
                     type: "action" /* ResponseType.ACTION */,
+                    callId,
                     code,
                     canceled: false,
                 };
@@ -598,6 +661,7 @@ export class AiAgent {
             options?.signal?.addEventListener('abort', onAbort, { once: true });
             yield {
                 type: "side-effect" /* ResponseType.SIDE_EFFECT */,
+                callId,
                 confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
                 description: result.description,
                 permissionPrompt: call.permissionPrompt,
@@ -613,6 +677,7 @@ export class AiAgent {
             if (decision === "reject" /* PermissionDecision.REJECT */) {
                 yield {
                     type: "action" /* ResponseType.ACTION */,
+                    callId,
                     code,
                     output: 'Error: User denied code execution with side effects.',
                     canceled: true,
@@ -642,6 +707,7 @@ export class AiAgent {
         if ('result' in result) {
             yield {
                 type: "action" /* ResponseType.ACTION */,
+                callId,
                 code,
                 output: typeof result.result === 'string' ? result.result : JSON.stringify(result.result),
                 widgets: result.widgets,
@@ -652,6 +718,7 @@ export class AiAgent {
         if ('error' in result) {
             yield {
                 type: "action" /* ResponseType.ACTION */,
+                callId,
                 code,
                 output: result.error,
                 canceled: false,

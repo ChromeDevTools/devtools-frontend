@@ -72,8 +72,6 @@ export declare class TimelineUIUtils {
     static displayNameForFrame(frame: Trace.Types.Events.TraceFrame, trimAt?: number): string;
     static getOriginWithEntity(entityMapper: Trace.EntityMapper.EntityMapper | null, parsedTrace: Trace.TraceModel.ParsedTrace, event: Trace.Types.Events.Event): string | null;
 }
-export declare const aggregatedStatsKey: unique symbol;
-export declare const previewElementSymbol: unique symbol;
 export declare class EventDispatchTypeDescriptor {
     priority: number;
     color: string;
@@ -122,7 +120,6 @@ export declare class TimelineDetailsContentHelper {
      */
     createChildStackTraceElement(runtimeStackTrace: Protocol.Runtime.StackTrace, isFreshOrEnhanced?: boolean): Promise<HTMLElement | null>;
 }
-export declare const categoryBreakdownCacheSymbol: unique symbol;
 export interface TimelineMarkerStyle {
     title: string;
     color: string;

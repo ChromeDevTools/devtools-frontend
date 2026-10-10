@@ -1199,7 +1199,8 @@ export declare namespace Audits {
         FormModelContextMissingToolName = "FormModelContextMissingToolName",
         FormModelContextMissingToolDescription = "FormModelContextMissingToolDescription",
         FormModelContextRequiredParameterMissingName = "FormModelContextRequiredParameterMissingName",
-        FormModelContextParameterMissingName = "FormModelContextParameterMissingName"
+        FormModelContextParameterMissingName = "FormModelContextParameterMissingName",
+        GeolocationPromptWithoutUserGesture = "GeolocationPromptWithoutUserGesture"
     }
     /**
      * Depending on the concrete errorType, different properties are set.
@@ -14878,6 +14879,12 @@ export declare namespace Page {
          * script). Only sent if frame is labelled as an ad and ids are available.
          */
         adScriptAncestry?: Network.AdAncestry;
+    }
+    interface GetSpellCheckCustomDictionaryRequest {
+        frameId: FrameId;
+    }
+    interface GetSpellCheckCustomDictionaryResponse extends ProtocolResponseWithError {
+        words: string[];
     }
     interface GetFrameTreeResponse extends ProtocolResponseWithError {
         /**

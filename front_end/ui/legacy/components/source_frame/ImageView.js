@@ -131,15 +131,15 @@ export var Events;
 })(Events || (Events = {}));
 const ImageViewBase = Common.ObjectWrapper.eventMixin(UI.View.SimpleView);
 export class ImageView extends ImageViewBase {
-    url;
-    parsedURL;
-    contentProvider;
-    uiSourceCode;
+    #url;
+    #parsedURL;
+    #contentProvider;
+    #uiSourceCode;
     #size = '';
     #dimensions = '';
     #aspectRatio = '';
     #mimeType;
-    cachedContent;
+    #cachedContent;
     #view;
     #imageSrc = null;
     #isUnavailable = false;
@@ -152,25 +152,25 @@ export class ImageView extends ImageViewBase {
             jslog: `${VisualLogging.pane('image-view')}`,
         });
         this.#view = view;
-        this.url = contentProvider.contentURL();
-        this.parsedURL = new Common.ParsedURL.ParsedURL(this.url);
-        this.contentProvider = contentProvider;
-        this.uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ? contentProvider : null;
-        if (this.uiSourceCode) {
-            this.uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
-            new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI], i18nString(UIStrings.dropImageFileHere), this.handleDrop.bind(this));
+        this.#url = contentProvider.contentURL();
+        this.#parsedURL = new Common.ParsedURL.ParsedURL(this.#url);
+        this.#contentProvider = contentProvider;
+        this.#uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ? contentProvider : null;
+        if (this.#uiSourceCode) {
+            this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#workingCopyCommitted, this);
+            new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI], i18nString(UIStrings.dropImageFileHere), this.#handleDrop.bind(this));
         }
         this.#mimeType = mimeType;
         this.performUpdate();
     }
     performUpdate() {
         this.#view({
-            url: this.url,
+            url: this.#url,
             imageSrc: this.#imageSrc,
             isUnavailable: this.#isUnavailable,
             onImageLoad: this.#onImageLoad,
             onImageError: this.#onImageError,
-            onContextMenu: this.contextMenu.bind(this),
+            onContextMenu: this.#contextMenu.bind(this),
         }, undefined, this.contentElement);
     }
     #onImageLoad = (event) => {
@@ -189,7 +189,7 @@ export class ImageView extends ImageViewBase {
         this.#loadPromise = undefined;
     };
     async toolbarItems() {
-        await this.updateContentIfNeeded();
+        await this.#updateContentIfNeeded();
         return html `
       <div class="toolbar-text">${this.#size}</div>
       <div class="toolbar-divider"></div>
@@ -203,25 +203,25 @@ export class ImageView extends ImageViewBase {
     wasShown() {
         super.wasShown();
         this.requestUpdate();
-        void this.updateContentIfNeeded();
+        void this.#updateContentIfNeeded();
     }
     disposeView() {
-        if (this.uiSourceCode) {
-            this.uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
+        if (this.#uiSourceCode) {
+            this.#uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#workingCopyCommitted, this);
         }
     }
-    workingCopyCommitted() {
-        void this.updateContentIfNeeded().then(() => {
+    #workingCopyCommitted() {
+        void this.#updateContentIfNeeded().then(() => {
             this.dispatchEventToListeners("ToolbarItemsChanged" /* Events.TOOLBAR_ITEMS_CHANGED */);
         });
     }
-    async updateContentIfNeeded() {
-        const content = await this.contentProvider.requestContentData();
-        if (TextUtils.ContentData.ContentData.isError(content) || this.cachedContent?.contentEqualTo(content)) {
+    async #updateContentIfNeeded() {
+        const content = await this.#contentProvider.requestContentData();
+        if (TextUtils.ContentData.ContentData.isError(content) || this.#cachedContent?.contentEqualTo(content)) {
             await this.#loadPromise;
             return;
         }
-        this.cachedContent = content;
+        this.#cachedContent = content;
         this.#loadResolve?.();
         this.#loadResolve = undefined;
         this.#loadPromise = undefined;
@@ -245,51 +245,51 @@ export class ImageView extends ImageViewBase {
         this.performUpdate();
         await this.#loadPromise;
     }
-    contextMenu(event) {
+    #contextMenu(event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
         const parsedSrc = new Common.ParsedURL.ParsedURL(this.#imageSrc ?? '');
-        if (!this.parsedURL.isDataURL()) {
-            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageUrl), this.copyImageURL.bind(this), {
+        if (!this.#parsedURL.isDataURL()) {
+            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageUrl), this.#copyImageURL.bind(this), {
                 jslogContext: 'image-view.copy-image-url',
             });
         }
         if (parsedSrc.isDataURL()) {
-            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageAsDataUri), this.copyImageAsDataURL.bind(this), {
+            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageAsDataUri), this.#copyImageAsDataURL.bind(this), {
                 jslogContext: 'image-view.copy-image-as-data-url',
             });
         }
-        if (!Common.ParsedURL.isPrivilegedScheme(this.url)) {
-            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.openImageInNewTab), this.openInNewTab.bind(this), {
+        if (!Common.ParsedURL.isPrivilegedScheme(this.#url)) {
+            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.openImageInNewTab), this.#openInNewTab.bind(this), {
                 jslogContext: 'image-view.open-in-new-tab',
             });
         }
-        contextMenu.clipboardSection().appendItem(i18nString(UIStrings.saveImageAs), this.saveImage.bind(this), {
+        contextMenu.clipboardSection().appendItem(i18nString(UIStrings.saveImageAs), this.#saveImage.bind(this), {
             jslogContext: 'image-view.save-image',
         });
         void contextMenu.show();
     }
-    copyImageAsDataURL() {
+    #copyImageAsDataURL() {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#imageSrc ?? '');
     }
-    copyImageURL() {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.url);
+    #copyImageURL() {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#url);
     }
-    async saveImage() {
-        if (!this.cachedContent) {
+    async #saveImage() {
+        if (!this.#cachedContent) {
             return;
         }
         let suggestedName = '';
-        if (this.parsedURL.isDataURL()) {
+        if (this.#parsedURL.isDataURL()) {
             suggestedName = i18nString(UIStrings.download);
-            const { type, subtype } = this.parsedURL.extractDataUrlMimeType();
+            const { type, subtype } = this.#parsedURL.extractDataUrlMimeType();
             if (type === 'image' && subtype) {
                 suggestedName += '.' + subtype;
             }
         }
         else {
-            suggestedName = decodeURIComponent(this.parsedURL.displayName);
+            suggestedName = decodeURIComponent(this.#parsedURL.displayName);
         }
-        const blob = this.cachedContent.asBlob();
+        const blob = this.#cachedContent.asBlob();
         if (!blob) {
             return;
         }
@@ -307,13 +307,13 @@ export class ImageView extends ImageViewBase {
             throw error;
         }
     }
-    openInNewTab() {
-        if (Common.ParsedURL.isPrivilegedScheme(this.url)) {
+    #openInNewTab() {
+        if (Common.ParsedURL.isPrivilegedScheme(this.#url)) {
             return;
         }
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.url);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.#url);
     }
-    async handleDrop(dataTransfer) {
+    async #handleDrop(dataTransfer) {
         const items = dataTransfer.items;
         if (!items.length || items[0].kind !== 'file') {
             return;
@@ -334,10 +334,10 @@ export class ImageView extends ImageViewBase {
                     result = null;
                     console.error('Can\'t read file: ' + e);
                 }
-                if (typeof result !== 'string' || !this.uiSourceCode) {
+                if (typeof result !== 'string' || !this.#uiSourceCode) {
                     return;
                 }
-                this.uiSourceCode.setContent(encoded ? btoa(result) : result, encoded);
+                this.#uiSourceCode.setContent(encoded ? btoa(result) : result, encoded);
             };
             if (encoded) {
                 reader.readAsBinaryString(file);

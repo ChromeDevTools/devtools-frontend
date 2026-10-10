@@ -87,14 +87,19 @@ export function toggleClassAndInjectStyleRule(pseudoElementName, hidden) {
     const classNamePrefix = '__web-inspector-hide';
     const classNameSuffix = '-shortcut__';
     const styleTagId = '__web-inspector-hide-shortcut-style__';
-    const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[^a-zA-Z0-9_-]/g, '_') : '';
+    let pseudoElementNameEscaped = '';
+    if (pseudoElementName) {
+        pseudoElementNameEscaped = pseudoElementName.replace(/[^a-zA-Z0-9-]/g, function (c) {
+            return '_' + c.charCodeAt(0).toString(16) + '_';
+        });
+    }
     const className = classNamePrefix + pseudoElementNameEscaped + classNameSuffix;
     this.classList.toggle(className, hidden);
     let localRoot = this;
     while (localRoot.parentNode) {
         localRoot = localRoot.parentNode;
     }
-    if (localRoot.nodeType === Node.DOCUMENT_NODE) {
+    if (localRoot.nodeType === 9 /* Node.DOCUMENT_NODE */) {
         localRoot = document.head;
     }
     let style = localRoot.querySelector('style#' + styleTagId);

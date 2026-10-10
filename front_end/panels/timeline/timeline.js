@@ -2795,10 +2795,7 @@ __export(TimelineUIUtils_exports, {
   TimelineDetailsContentHelper: () => TimelineDetailsContentHelper,
   TimelineUIUtils: () => TimelineUIUtils,
   URL_REGEX: () => URL_REGEX,
-  aggregatedStatsKey: () => aggregatedStatsKey,
-  categoryBreakdownCacheSymbol: () => categoryBreakdownCacheSymbol,
   isMarkerEvent: () => isMarkerEvent,
-  previewElementSymbol: () => previewElementSymbol,
   stripScriptIds: () => stripScriptIds,
   timeStampForEventAdjustedForClosestNavigationIfPossible: () => timeStampForEventAdjustedForClosestNavigationIfPossible
 });
@@ -3271,6 +3268,7 @@ var Audits;
     GenericIssueErrorType2["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
     GenericIssueErrorType2["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
     GenericIssueErrorType2["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+    GenericIssueErrorType2["GeolocationPromptWithoutUserGesture"] = "GeolocationPromptWithoutUserGesture";
   })(GenericIssueErrorType = Audits2.GenericIssueErrorType || (Audits2.GenericIssueErrorType = {}));
   let ClientHintIssueReason;
   ((ClientHintIssueReason2) => {
@@ -12607,18 +12605,18 @@ var TimelineUIUtils = class _TimelineUIUtils {
     );
     let entityAppended = false;
     if (maybeTarget) {
-      if (typeof event[previewElementSymbol] === "undefined") {
-        let previewElement = null;
+      if (!previewElementCache.has(event)) {
+        let previewElement2 = null;
         const url2 = Trace22.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
         if (url2) {
-          previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(url2, false, {
+          previewElement2 = await LegacyComponents.ImagePreview.ImagePreview.build(url2, false, {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url2),
             align: LegacyComponents.ImagePreview.Align.START
           });
         } else if (Trace22.Types.Events.isPaint(event)) {
-          previewElement = await _TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
+          previewElement2 = await _TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
         }
-        event[previewElementSymbol] = previewElement;
+        previewElementCache.set(event, previewElement2);
       }
     }
     let relatedNodeLabel;
@@ -13174,9 +13172,10 @@ var TimelineUIUtils = class _TimelineUIUtils {
         contentHelper.appendElementRow(relatedNodeLabel || i18nString18(UIStrings18.relatedNode), nodeSpan);
       }
     }
-    if (event[previewElementSymbol]) {
+    const previewElement = previewElementCache.get(event);
+    if (previewElement) {
       contentHelper.addSection(i18nString18(UIStrings18.preview));
-      contentHelper.appendElementRow("", event[previewElementSymbol]);
+      contentHelper.appendElementRow("", previewElement);
     }
     if (!entityAppended) {
       const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
@@ -13712,8 +13711,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     return originWithEntity;
   }
 };
-var aggregatedStatsKey = /* @__PURE__ */ Symbol("aggregatedStats");
-var previewElementSymbol = /* @__PURE__ */ Symbol("previewElement");
+var previewElementCache = /* @__PURE__ */ new WeakMap();
 var EventDispatchTypeDescriptor = class {
   priority;
   color;
@@ -13900,7 +13898,6 @@ var TimelineDetailsContentHelper = class {
     return stackTraceElement;
   }
 };
-var categoryBreakdownCacheSymbol = /* @__PURE__ */ Symbol("categoryBreakdownCache");
 function timeStampForEventAdjustedForClosestNavigationIfPossible(event, parsedTrace) {
   if (!parsedTrace) {
     const { startTime } = Trace22.Helpers.Timing.eventTimingsMilliSeconds(event);

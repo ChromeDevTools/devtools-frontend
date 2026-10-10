@@ -331,7 +331,7 @@ var JSONEditor = class extends JSONEditorBase {
           return Number(parameter.value);
         }
         case "boolean" /* BOOLEAN */: {
-          return Boolean(parameter.value);
+          return typeof parameter.value === "boolean" ? parameter.value : String(parameter.value).trim().toLowerCase() === "true";
         }
         case "object" /* OBJECT */: {
           const nestedParameters = {};
@@ -663,9 +663,15 @@ var JSONEditor = class extends JSONEditorBase {
     const object = this.#getChildByPath(pathArray).parameter;
     if (value === "") {
       object.value = defaultValueByType.get(object.type);
+      object.isCorrectType = true;
     } else {
-      object.value = value;
-      object.isCorrectType = this.#isValueOfCorrectType(object, value);
+      const normalizedValue = object.type === "boolean" /* BOOLEAN */ ? value.trim().toLowerCase() : value;
+      object.isCorrectType = this.#isValueOfCorrectType(object, normalizedValue);
+      if (object.type === "boolean" /* BOOLEAN */ && object.isCorrectType) {
+        object.value = normalizedValue === "true";
+      } else {
+        object.value = value;
+      }
     }
     this.requestUpdate();
   };
@@ -1381,7 +1387,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         <devtools-split-view name="protocol-monitor-split-container"
                              direction="column"
                              sidebar-initial-size="400"
-                             sidebar-visibility=${input.sidebarVisible ? "visible" : "hidden"}
+                             show=${input.sidebarVisible ? "both" : "main"}
                              @change=${(e) => input.onSplitChange(e.detail === "OnlyMain")}>
           <div slot="main" class="vbox protocol-monitor-main">
             <devtools-toolbar class="protocol-monitor-toolbar"

@@ -428,10 +428,10 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
             rightToolbarItems.push(...plugin.rightToolbarItems());
         }
         return html `
-      ${leftToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+      ${leftToolbarItems}
       ${rightToolbarItems.length ? html `
         <div class="toolbar-spacer"></div>
-        ${rightToolbarItems.map(item => item instanceof UI.Toolbar.ToolbarItem ? item.element : item)}
+        ${rightToolbarItems}
       ` :
             nothing}
     `;

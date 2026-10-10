@@ -188,6 +188,13 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
     }
     return threads;
   }
+  sendQueuedThreads() {
+    for (const thread of this.getCommentThreads()) {
+      if (thread.status === "ACTIVE") {
+        thread.sendToAgent();
+      }
+    }
+  }
   resolveCommentThread(threadId, replyText) {
     const thread = this.#commentThreads.get(threadId);
     if (!thread) {

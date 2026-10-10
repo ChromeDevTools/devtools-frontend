@@ -25,6 +25,7 @@ export declare class CommentManager extends Common.ObjectWrapper.ObjectWrapper<E
     getCommentThread(id: string): CommentThread | undefined;
     getCommentThreads(): CommentThread[];
     takeComments(): CommentThread[];
+    sendQueuedThreads(): void;
     resolveCommentThread(threadId: string, replyText?: string): boolean;
     removeCommentThread(id: string): void;
     clear(): void;

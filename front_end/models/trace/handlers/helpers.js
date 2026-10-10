@@ -29,7 +29,7 @@ export function getNonResolvedURL(entry, handlerData) {
         return entry.args.data.url;
     }
     if (Types.Events.isParseAuthorStyleSheetEvent(entry) && entry.args) {
-        return entry.args.data.stylesheetUrl;
+        return entry.args.data.styleSheetUrl;
     }
     if (entry.args?.data?.stackTrace && entry.args.data.stackTrace.length > 0) {
         return entry.args.data.stackTrace[0].url;

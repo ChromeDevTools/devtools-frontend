@@ -9,35 +9,37 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.image-view {
-  overflow: auto;
-}
+@scope to (devtools-widget > *) {
+  .image-view {
+    overflow: auto;
+  }
 
-.image-view > .image {
-  padding: var(--sys-size-9) var(--sys-size-9) 10px;
-  text-align: center;
-}
+  .image-view > .image {
+    padding: var(--sys-size-9) var(--sys-size-9) 10px;
+    text-align: center;
+  }
 
-.image-view img.resource-image-view {
-  max-width: 100%;
-  max-height: 1000px;
-  background-image: var(--image-file-checker);
-  box-shadow: 0 5px 10px var(--sys-color-outline);
-  user-select: text;
-  -webkit-user-drag: auto;
-}
+  .image-view img.resource-image-view {
+    max-width: 100%;
+    max-height: 1000px;
+    background-image: var(--image-file-checker);
+    box-shadow: 0 5px 10px var(--sys-color-outline);
+    user-select: text;
+    -webkit-user-drag: auto;
+  }
 
-.resource-image-unavailable {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sys-size-4);
-}
+  .resource-image-unavailable {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sys-size-4);
+  }
 
-.resource-image-unavailable devtools-icon {
-  color: var(--sys-color-primary);
-  width: var(--sys-size-7);
-  height: var(--sys-size-7);
+  .resource-image-unavailable devtools-icon {
+    color: var(--sys-color-primary);
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./imageView.css')} */`;

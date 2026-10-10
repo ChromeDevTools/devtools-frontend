@@ -274,10 +274,10 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
             widget.ruleSet = ruleSet;
         }
         if (ruleSet === null) {
-            this.hsplit.setAttribute('sidebar-visibility', 'hidden');
+            this.hsplit.setAttribute('show', 'main');
         }
         else {
-            this.hsplit.removeAttribute('sidebar-visibility');
+            this.hsplit.setAttribute('show', 'both');
         }
     }
     getRuleSet() {

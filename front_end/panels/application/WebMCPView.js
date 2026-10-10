@@ -412,7 +412,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           <devtools-split-view name="webmcp-call-split-view"
                                direction="column"
                                sidebar-position="second"
-                               sidebar-visibility=${input.selectedCall ? 'show' : 'hidden'}>
+                               show=${input.selectedCall ? 'both' : 'main'}>
             <div slot="main" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
               <devtools-data-grid striped .template=${html `
                 <table>
@@ -552,7 +552,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                            direction="column"
                            sidebar-position="second"
                            name="webmcp-details-split-view"
-                           sidebar-visibility=${input.selectedTool ? 'show' : 'hidden'}>
+                           show=${input.selectedTool ? 'both' : 'main'}>
         <div slot="main" class="tool-list" jslog=${VisualLogging.section('tool-list')}>
           <div class="section-title">${i18nString(UIStrings.toolRegistry)}</div>
           ${tools.length === 0 ? html `

@@ -77,6 +77,9 @@
       "path": "../object_ui/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../components/buttons/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../components/code_highlighter/bundle-tsconfig.ref.json"
     },
     {

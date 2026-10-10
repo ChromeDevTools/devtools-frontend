@@ -913,6 +913,7 @@ var Audits;
     GenericIssueErrorType2["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
     GenericIssueErrorType2["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
     GenericIssueErrorType2["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+    GenericIssueErrorType2["GeolocationPromptWithoutUserGesture"] = "GeolocationPromptWithoutUserGesture";
   })(GenericIssueErrorType = Audits2.GenericIssueErrorType || (Audits2.GenericIssueErrorType = {}));
   let ClientHintIssueReason;
   ((ClientHintIssueReason2) => {
@@ -10009,6 +10010,7 @@ var AiAgent = class {
       parts,
       role: Host24.AidaClient.Role.MODEL
     });
+    const callId = crypto.randomUUID();
     let code;
     if (call.displayInfoFromArgs) {
       const { title, thought, action: callCode } = call.displayInfoFromArgs(args);
@@ -10016,12 +10018,14 @@ var AiAgent = class {
       if (title) {
         yield {
           type: "title" /* TITLE */,
+          callId,
           title
         };
       }
       if (thought) {
         yield {
           type: "thought" /* THOUGHT */,
+          callId,
           thought
         };
       }
@@ -10038,6 +10042,7 @@ var AiAgent = class {
       if (code) {
         yield {
           type: "action" /* ACTION */,
+          callId,
           code,
           canceled: false
         };
@@ -10057,6 +10062,7 @@ var AiAgent = class {
       options?.signal?.addEventListener("abort", onAbort, { once: true });
       yield {
         type: "side-effect" /* SIDE_EFFECT */,
+        callId,
         confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
         description: result.description,
         permissionPrompt: call.permissionPrompt,
@@ -10071,6 +10077,7 @@ var AiAgent = class {
       if (decision === "reject" /* REJECT */) {
         yield {
           type: "action" /* ACTION */,
+          callId,
           code,
           output: "Error: User denied code execution with side effects.",
           canceled: true
@@ -10094,6 +10101,7 @@ var AiAgent = class {
     if ("result" in result) {
       yield {
         type: "action" /* ACTION */,
+        callId,
         code,
         output: typeof result.result === "string" ? result.result : JSON.stringify(result.result),
         widgets: result.widgets,
@@ -10104,6 +10112,7 @@ var AiAgent = class {
     if ("error" in result) {
       yield {
         type: "action" /* ACTION */,
+        callId,
         code,
         output: result.error,
         canceled: false,

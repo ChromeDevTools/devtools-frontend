@@ -61,7 +61,10 @@ const DEFAULT_VIEW = (input, _output, target) => {
               ${UI.Widget.widget(CommentThreadWidget, {
             title: input.title,
             comments: [...item.thread.comments],
+            status: item.thread.status,
             onAddComment: input.onAddComment,
+            onDeleteQueuedComment: input.onDeleteQueuedComment,
+            onQueueComment: input.onQueueComment,
         })}
             </div>
           `;
@@ -237,6 +240,8 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
             activePin: null,
             title: { text: '' },
             onAddComment: () => { },
+            onDeleteQueuedComment: () => { },
+            onQueueComment: () => { },
         }, undefined, this.contentElement);
     }
     #renderWithTitle(activeThread, title) {
@@ -257,18 +262,33 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
                     return;
                 }
                 activeThread.sendToAgent(text);
-                const threadId = activeThread.id;
-                this.#clearCloseTimeout();
-                this.#closeTimeoutId = window.setTimeout(() => {
-                    this.#closeTimeoutId = null;
-                    if (this.#activeThreadId === threadId) {
-                        this.#setActiveThreadId(null);
-                        this.requestUpdate();
-                    }
-                }, AUTO_CLOSE_DELAY_MS);
+                this.#scheduleAutoClose(activeThread.id);
+            },
+            onDeleteQueuedComment: () => {
+                if (!activeThread) {
+                    return;
+                }
+                this.#commentOverlayManager.removeCommentThread(activeThread.id);
+            },
+            onQueueComment: (text) => {
+                if (!activeThread) {
+                    return;
+                }
+                activeThread.save(text);
+                this.#scheduleAutoClose(activeThread.id);
             },
         };
         this.#view(viewInput, undefined, this.contentElement);
+    }
+    #scheduleAutoClose(threadId) {
+        this.#clearCloseTimeout();
+        this.#closeTimeoutId = window.setTimeout(() => {
+            this.#closeTimeoutId = null;
+            if (this.#activeThreadId === threadId) {
+                this.#setActiveThreadId(null);
+                this.requestUpdate();
+            }
+        }, AUTO_CLOSE_DELAY_MS);
     }
     async performUpdate(signal) {
         if (!this.#commentManager.isAgentAttached()) {

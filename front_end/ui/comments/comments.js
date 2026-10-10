@@ -7,7 +7,7 @@ var __export = (target, all) => {
 // ../../front_end/ui/comments/CommentAnchorResolver.ts
 var CommentAnchorResolver_exports = {};
 __export(CommentAnchorResolver_exports, {
-  COMMENT_THREAD_UI_SELECTOR: () => COMMENT_THREAD_UI_SELECTOR,
+  addCustomAnchorsMovedListener: () => addCustomAnchorsMovedListener,
   clearClippingAncestorsCache: () => clearClippingAncestorsCache,
   clearCustomAnchorResolversForTest: () => clearCustomAnchorResolversForTest,
   closestAcrossShadow: () => closestAcrossShadow,
@@ -16,16 +16,19 @@ __export(CommentAnchorResolver_exports, {
   deepQuerySelectorAll: () => deepQuerySelectorAll,
   extractPanelId: () => extractPanelId,
   extractVeName: () => extractVeName,
+  getCustomAnchorElement: () => getCustomAnchorElement,
   getCustomAnchorResolverForElement: () => getCustomAnchorResolverForElement,
   getEditorFilePath: () => getEditorFilePath,
   getSiblingIndex: () => getSiblingIndex,
+  hasDisallowedCommentAncestor: () => hasDisallowedCommentAncestor,
   isDomTrackedAnchor: () => isDomTrackedAnchor,
   isElementVisible: () => isElementVisible,
   isNonEmptyItem: () => isNonEmptyItem,
-  isTabTitle: () => isTabTitle,
   matchesVePath: () => matchesVePath,
+  notifyCustomAnchorsMoved: () => notifyCustomAnchorsMoved,
   registerCustomAnchorResolver: () => registerCustomAnchorResolver,
   rematchCommentAnchor: () => rematchCommentAnchor,
+  removeCustomAnchorsMovedListener: () => removeCustomAnchorsMovedListener,
   resolveCommentAnchor: () => resolveCommentAnchor,
   resolveCommentAnchorElement: () => resolveCommentAnchorElement,
   unregisterCustomAnchorResolver: () => unregisterCustomAnchorResolver
@@ -41,15 +44,27 @@ var DISALLOWED_COMMENT_TARGETS = /* @__PURE__ */ new Set([
   VisualLogging.VisualElements.PanelTabHeader,
   VisualLogging.VisualElements.Resizer,
   VisualLogging.VisualElements.Menu,
+  VisualLogging.VisualElements.Popover,
   // Minor controls and toolbars
+  VisualLogging.VisualElements.Link,
+  VisualLogging.VisualElements.Section,
+  VisualLogging.VisualElements.Counter,
   VisualLogging.VisualElements.Action,
   VisualLogging.VisualElements.Toggle,
   VisualLogging.VisualElements.Close,
   VisualLogging.VisualElements.Expand,
   VisualLogging.VisualElements.ToggleSubpane,
-  VisualLogging.VisualElements.Toolbar
+  VisualLogging.VisualElements.Toolbar,
+  VisualLogging.VisualElements.DropDown,
+  VisualLogging.VisualElements.FilterDropdown,
+  VisualLogging.VisualElements.TextField
 ]);
-var COMMENT_THREAD_UI_SELECTOR = ".comment-thread-widget";
+var DISALLOWED_COMMENT_ANCESTORS = /* @__PURE__ */ new Set([
+  VisualLogging.VisualElements.Toolbar,
+  VisualLogging.VisualElements.Menu,
+  VisualLogging.VisualElements.Popover,
+  VisualLogging.VisualElements.PanelTabHeader
+]);
 function closestAcrossShadow(element, selector) {
   let current = element;
   while (current) {
@@ -70,6 +85,7 @@ function isDomTrackedAnchor(anchor) {
   return !anchor.timeline;
 }
 var customAnchorResolvers = /* @__PURE__ */ new Set();
+var customAnchorsMovedListeners = /* @__PURE__ */ new Set();
 function registerCustomAnchorResolver(resolver) {
   customAnchorResolvers.add(resolver);
 }
@@ -87,26 +103,44 @@ function getCustomAnchorResolverForElement(element) {
   }
   return null;
 }
+function getCustomAnchorElement(anchor) {
+  for (const resolver of customAnchorResolvers) {
+    const element = resolver.getAnchorElement(anchor);
+    if (element) {
+      return element;
+    }
+  }
+  return null;
+}
+function notifyCustomAnchorsMoved() {
+  for (const listener of customAnchorsMovedListeners) {
+    listener();
+  }
+}
+function addCustomAnchorsMovedListener(listener) {
+  customAnchorsMovedListeners.add(listener);
+}
+function removeCustomAnchorsMovedListener(listener) {
+  customAnchorsMovedListeners.delete(listener);
+}
 function isNonEmptyItem(element) {
   return element.deepTextContent().trim().length > 0;
 }
-function isTabTitle(element) {
+function getElementLoggingConfig(element) {
+  if (!VisualLogging.needsLogging(element)) {
+    return null;
+  }
+  try {
+    return VisualLogging.getLoggingConfig(element);
+  } catch {
+    return null;
+  }
+}
+function hasDisallowedCommentAncestor(element) {
   let current = element;
   while (current) {
-    if (VisualLogging.needsLogging(current)) {
-      try {
-        const config = VisualLogging.getLoggingConfig(current);
-        if (config.ve === VisualLogging.VisualElements.PanelTabHeader) {
-          return true;
-        }
-      } catch {
-      }
-    }
-    const role = current.getAttribute("role");
-    if (role === "tab") {
-      return true;
-    }
-    if (current.classList.contains("tab-element") || current.classList.contains("tab-header")) {
+    const config = getElementLoggingConfig(current);
+    if (config && (DISALLOWED_COMMENT_ANCESTORS.has(config.ve) || config.context === "comments")) {
       return true;
     }
     current = current.parentElementOrShadowHost();
@@ -150,7 +184,7 @@ function resolveCodeMirrorLineInfo(element) {
   return null;
 }
 function resolveCommentAnchorElement(element, options) {
-  if (isTabTitle(element) || closestAcrossShadow(element, COMMENT_THREAD_UI_SELECTOR)) {
+  if (hasDisallowedCommentAncestor(element)) {
     return null;
   }
   const customResolver = getCustomAnchorResolverForElement(element);
@@ -176,16 +210,13 @@ function resolveCommentAnchorElement(element, options) {
   let target = element;
   let fallbackCandidate = null;
   while (target) {
-    if (VisualLogging.needsLogging(target)) {
-      try {
-        const config = VisualLogging.getLoggingConfig(target);
-        if (config.ve === VisualLogging.VisualElements.TableRow || config.ve === VisualLogging.VisualElements.TreeItem) {
-          return isNonEmptyItem(target) ? target : null;
-        }
-        if (!fallbackCandidate && !DISALLOWED_COMMENT_TARGETS.has(config.ve)) {
-          fallbackCandidate = target;
-        }
-      } catch {
+    const config = getElementLoggingConfig(target);
+    if (config) {
+      if (config.ve === VisualLogging.VisualElements.TableRow || config.ve === VisualLogging.VisualElements.TreeItem) {
+        return isNonEmptyItem(target) ? target : null;
+      }
+      if (!fallbackCandidate && !DISALLOWED_COMMENT_TARGETS.has(config.ve)) {
+        fallbackCandidate = target;
       }
     }
     target = target.parentElementOrShadowHost();
@@ -535,6 +566,11 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #devToolsResizeObserver;
   #resizeObservedElements = /* @__PURE__ */ new WeakSet();
   #mutationObserver;
+  // Elements supplied by custom anchor resolvers move without DOM scroll or
+  // resize events, for example when a canvas is panned.
+  #onCustomAnchorsMoved = () => {
+    this.#updatePositions(true);
+  };
   #mutationRafId;
   #rematchTimeoutId;
   #cursorElement = null;
@@ -557,8 +593,8 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
         if (!active) {
           this.#clearHover();
           this.clearDraftThreads();
+          document.body.style.cursor = "";
         }
-        document.body.style.cursor = active ? COMMENT_MODE_CURSOR : "";
       },
       this
     );
@@ -601,6 +637,9 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     if (newElement) {
       newElement.style.cursor = COMMENT_MODE_CURSOR;
       newElement.style.setProperty("--override-cursor", COMMENT_MODE_CURSOR);
+      document.body.style.cursor = COMMENT_MODE_CURSOR;
+    } else {
+      document.body.style.cursor = "";
     }
     this.#cursorElement = newElement;
   }
@@ -617,6 +656,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #clearHover() {
     this.#setHoverHighlight(null);
     this.#setHoverCursor(null);
+    document.body.style.cursor = "";
   }
   getHoverHighlight() {
     return this.#hoverData;
@@ -637,7 +677,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
   handleElementClick(element, options) {
-    if (!this.isCommentMode() || closestAcrossShadow(element, COMMENT_THREAD_UI_SELECTOR)) {
+    if (!this.isCommentMode() || hasDisallowedCommentAncestor(element)) {
       return false;
     }
     this.clearDraftThreads();
@@ -791,10 +831,11 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     const rectCache = /* @__PURE__ */ new Map();
     const activeScrollRoots = /* @__PURE__ */ new Set();
     for (const thread of this.#commentManager.getCommentThreads()) {
-      if (thread.isGeneratedComment || !isDomTrackedAnchor(thread.anchor)) {
+      if (thread.isGeneratedComment) {
         continue;
       }
-      const el = this.#liveNodeCache.get(thread) || null;
+      const isDomTracked = isDomTrackedAnchor(thread.anchor);
+      const el = isDomTracked ? this.#liveNodeCache.get(thread) || null : getCustomAnchorElement(thread.anchor);
       if (!el || !el.isConnected) {
         continue;
       }
@@ -804,12 +845,14 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
           continue;
         }
       }
-      const observer = this.#getIntersectionObserver();
-      if (!this.#observedThreads.has(el)) {
-        observer.observe(el);
-        this.#observedThreads.add(el);
+      if (isDomTracked) {
+        const observer = this.#getIntersectionObserver();
+        if (!this.#observedThreads.has(el)) {
+          observer.observe(el);
+          this.#observedThreads.add(el);
+        }
+        this.#trackElementAncestors(el, activeScrollRoots);
       }
-      this.#trackElementAncestors(el, activeScrollRoots);
       const visibleRect = computeVisibleRect(el, void 0, rectCache);
       if (!visibleRect) {
         continue;
@@ -877,6 +920,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     this.#installScrollListener(scrollTarget);
     this.#installResizeObserver(resizeTarget);
     this.#installMutationObserver(root);
+    addCustomAnchorsMovedListener(this.#onCustomAnchorsMoved);
     this.#updatePositions();
   }
   /**
@@ -890,6 +934,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     this.#removeScrollListener();
     this.#removeResizeObserver();
     this.#removeMutationObserver();
+    removeCustomAnchorsMovedListener(this.#onCustomAnchorsMoved);
     this.#clearHover();
     this.#intersectionObserver?.disconnect();
     this.#intersectionObserver = void 0;

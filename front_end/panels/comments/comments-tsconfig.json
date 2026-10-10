@@ -65,6 +65,9 @@
       "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/components/spinners/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/components/tooltips/bundle-tsconfig.ref.json"
     },
     {

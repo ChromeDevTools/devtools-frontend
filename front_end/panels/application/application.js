@@ -366,6 +366,7 @@ var Audits;
     GenericIssueErrorType2["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
     GenericIssueErrorType2["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
     GenericIssueErrorType2["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+    GenericIssueErrorType2["GeolocationPromptWithoutUserGesture"] = "GeolocationPromptWithoutUserGesture";
   })(GenericIssueErrorType = Audits2.GenericIssueErrorType || (Audits2.GenericIssueErrorType = {}));
   let ClientHintIssueReason;
   ((ClientHintIssueReason2) => {
@@ -9226,9 +9227,9 @@ var PreloadingRuleSetView = class extends UI11.Widget.VBox {
       widget12.ruleSet = ruleSet;
     }
     if (ruleSet === null) {
-      this.hsplit.setAttribute("sidebar-visibility", "hidden");
+      this.hsplit.setAttribute("show", "main");
     } else {
-      this.hsplit.removeAttribute("sidebar-visibility");
+      this.hsplit.setAttribute("show", "both");
     }
   }
   getRuleSet() {
@@ -17303,7 +17304,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
           <devtools-split-view name="webmcp-call-split-view"
                                direction="column"
                                sidebar-position="second"
-                               sidebar-visibility=${input.selectedCall ? "show" : "hidden"}>
+                               show=${input.selectedCall ? "both" : "main"}>
             <div slot="main" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
               <devtools-data-grid striped .template=${html16`
                 <table>
@@ -17459,7 +17460,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
                            direction="column"
                            sidebar-position="second"
                            name="webmcp-details-split-view"
-                           sidebar-visibility=${input.selectedTool ? "show" : "hidden"}>
+                           show=${input.selectedTool ? "both" : "main"}>
         <div slot="main" class="tool-list" jslog=${VisualLogging19.section("tool-list")}>
           <div class="section-title">${i18nString28(UIStrings28.toolRegistry)}</div>
           ${tools.length === 0 ? html16`

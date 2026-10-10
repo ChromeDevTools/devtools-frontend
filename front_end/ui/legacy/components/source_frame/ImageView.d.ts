@@ -23,23 +23,10 @@ export interface EventTypes {
 declare const ImageViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.View.SimpleView>;
 export declare class ImageView extends ImageViewBase {
     #private;
-    private url;
-    private parsedURL;
-    private readonly contentProvider;
-    private uiSourceCode;
-    private cachedContent?;
     constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, view?: View);
     performUpdate(): void;
     toolbarItems(): Promise<TemplateResult>;
     wasShown(): void;
     disposeView(): void;
-    private workingCopyCommitted;
-    private updateContentIfNeeded;
-    private contextMenu;
-    private copyImageAsDataURL;
-    private copyImageURL;
-    private saveImage;
-    private openInNewTab;
-    private handleDrop;
 }
 export {};

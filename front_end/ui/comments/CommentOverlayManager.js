@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
-import { clearClippingAncestorsCache, closestAcrossShadow, COMMENT_THREAD_UI_SELECTOR, computeVisibleRect, deepQuerySelectorAll, getCustomAnchorResolverForElement, getEditorFilePath, isDomTrackedAnchor, rematchCommentAnchor, resolveCommentAnchor, resolveCommentAnchorElement, } from './CommentAnchorResolver.js';
+import { addCustomAnchorsMovedListener, clearClippingAncestorsCache, computeVisibleRect, deepQuerySelectorAll, getCustomAnchorElement, getCustomAnchorResolverForElement, getEditorFilePath, hasDisallowedCommentAncestor, isDomTrackedAnchor, rematchCommentAnchor, removeCustomAnchorsMovedListener, resolveCommentAnchor, resolveCommentAnchorElement, } from './CommentAnchorResolver.js';
 export const COMMENT_MODE_CURSOR = 'var(--comment-cursor)';
 export var Events;
 (function (Events) {
@@ -49,6 +49,11 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
     #devToolsResizeObserver;
     #resizeObservedElements = new WeakSet();
     #mutationObserver;
+    // Elements supplied by custom anchor resolvers move without DOM scroll or
+    // resize events, for example when a canvas is panned.
+    #onCustomAnchorsMoved = () => {
+        this.#updatePositions(true);
+    };
     #mutationRafId;
     #rematchTimeoutId;
     #cursorElement = null;
@@ -65,8 +70,8 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
             if (!active) {
                 this.#clearHover();
                 this.clearDraftThreads();
+                document.body.style.cursor = '';
             }
-            document.body.style.cursor = active ? COMMENT_MODE_CURSOR : '';
         }, this);
     }
     get commentManager() {
@@ -107,6 +112,10 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
         if (newElement) {
             newElement.style.cursor = COMMENT_MODE_CURSOR;
             newElement.style.setProperty('--override-cursor', COMMENT_MODE_CURSOR);
+            document.body.style.cursor = COMMENT_MODE_CURSOR;
+        }
+        else {
+            document.body.style.cursor = '';
         }
         this.#cursorElement = newElement;
     }
@@ -125,6 +134,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
     #clearHover() {
         this.#setHoverHighlight(null);
         this.#setHoverCursor(null);
+        document.body.style.cursor = '';
     }
     getHoverHighlight() {
         return this.#hoverData;
@@ -145,7 +155,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     handleElementClick(element, options) {
-        if (!this.isCommentMode() || closestAcrossShadow(element, COMMENT_THREAD_UI_SELECTOR)) {
+        if (!this.isCommentMode() || hasDisallowedCommentAncestor(element)) {
             return false;
         }
         this.clearDraftThreads();
@@ -177,8 +187,10 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
         finally {
             this.#isCreatingComment = false;
         }
-        // Non-DOM anchors (e.g. canvas-rendered timeline entries) and generated comments
-        // do not render overlay pins or observe backing DOM nodes.
+        // Non-DOM anchors (such as canvas-rendered timeline entries) have no
+        // backing DOM node to observe. Their pins are positioned using the element
+        // returned by their custom anchor resolver. Generated comments render no
+        // pins.
         if (!thread.isGeneratedComment && isDomTrackedAnchor(anchor)) {
             this.#liveNodeCache.set(thread, anchorElement);
             const observer = this.#getIntersectionObserver();
@@ -307,12 +319,14 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
         const rectCache = new Map();
         const activeScrollRoots = new Set();
         for (const thread of this.#commentManager.getCommentThreads()) {
-            // Non-DOM anchors have their positions managed by their respective panels,
-            // and generated comments do not render overlay pins.
-            if (thread.isGeneratedComment || !isDomTrackedAnchor(thread.anchor)) {
+            // Generated comments do not render overlay pins.
+            if (thread.isGeneratedComment) {
                 continue;
             }
-            const el = this.#liveNodeCache.get(thread) || null;
+            // Non-DOM anchors (such as canvas-rendered timeline entries) are
+            // positioned using an element supplied by their custom anchor resolver.
+            const isDomTracked = isDomTrackedAnchor(thread.anchor);
+            const el = isDomTracked ? this.#liveNodeCache.get(thread) || null : getCustomAnchorElement(thread.anchor);
             if (!el || !el.isConnected) {
                 continue;
             }
@@ -322,12 +336,17 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
                     continue;
                 }
             }
-            const observer = this.#getIntersectionObserver();
-            if (!this.#observedThreads.has(el)) {
-                observer.observe(el);
-                this.#observedThreads.add(el);
+            // Elements supplied by a custom anchor resolver are not observed. The
+            // resolver reports their movement with notifyCustomAnchorsMoved(), and
+            // removeCommentThread() only unobserves elements in #liveNodeCache.
+            if (isDomTracked) {
+                const observer = this.#getIntersectionObserver();
+                if (!this.#observedThreads.has(el)) {
+                    observer.observe(el);
+                    this.#observedThreads.add(el);
+                }
+                this.#trackElementAncestors(el, activeScrollRoots);
             }
-            this.#trackElementAncestors(el, activeScrollRoots);
             const visibleRect = computeVisibleRect(el, undefined, rectCache);
             if (!visibleRect) {
                 continue;
@@ -398,6 +417,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
         this.#installScrollListener(scrollTarget);
         this.#installResizeObserver(resizeTarget);
         this.#installMutationObserver(root);
+        addCustomAnchorsMovedListener(this.#onCustomAnchorsMoved);
         this.#updatePositions();
     }
     /**
@@ -411,6 +431,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
         this.#removeScrollListener();
         this.#removeResizeObserver();
         this.#removeMutationObserver();
+        removeCustomAnchorsMovedListener(this.#onCustomAnchorsMoved);
         this.#clearHover();
         this.#intersectionObserver?.disconnect();
         this.#intersectionObserver = undefined;

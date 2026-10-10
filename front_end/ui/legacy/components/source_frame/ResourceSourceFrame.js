@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) IBM Corp. 2009  All rights reserved.
@@ -35,10 +34,11 @@ import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as FormatterActions from '../../../../entrypoints/formatter_actions/formatter_actions.js';
-import { render } from '../../../../ui/lit/lit.js';
+import { html, nothing, render } from '../../../../ui/lit/lit.js';
 import * as UI from '../../legacy.js';
 import resourceSourceFrameStyles from './resourceSourceFrame.css.js';
 import { SourceFrameImpl } from './SourceFrame.js';
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Placeholder text for the search input in the resource source frame.
@@ -82,30 +82,49 @@ export class ResourceSourceFrame extends SourceFrameImpl {
         contextMenu.appendApplicableItems(this.#resource);
     }
 }
+export const DEFAULT_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `
+    <style>${resourceSourceFrameStyles}</style>
+    <devtools-widget class="searchable-view"
+      ${widget(UI.SearchableView.SearchableView, {
+        searchProvider: input.sourceFrame,
+        replaceProvider: input.sourceFrame,
+        searchTarget: input.sourceFrame,
+        placeholder: input.placeholder,
+    })}
+    >
+      <devtools-widget ${widget(UI.Widget.WrapperWidget, { widget: input.sourceFrame })}></devtools-widget>
+    </devtools-widget>
+    <devtools-toolbar class="toolbar">${input.toolbarItems}</devtools-toolbar>`, target);
+    // clang-format on
+};
 export class SearchableContainer extends UI.Widget.VBox {
-    sourceFrame;
-    constructor(resource, contentType, element) {
+    #sourceFrame;
+    #view;
+    #toolbarItems = nothing;
+    constructor(resource, contentType, element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
-        this.registerRequiredCSS(resourceSourceFrameStyles);
+        this.#view = view;
         const simpleContentType = Common.ResourceType.ResourceType.simplifyContentType(contentType);
-        const sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
-        this.sourceFrame = sourceFrame;
+        this.#sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
         const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(simpleContentType);
-        sourceFrame.setCanPrettyPrint(canPrettyPrint, true /* autoPrettyPrint */);
-        const searchableView = new UI.SearchableView.SearchableView(sourceFrame, sourceFrame);
-        searchableView.element.classList.add('searchable-view');
-        searchableView.setPlaceholder(i18nString(UIStrings.find));
-        sourceFrame.show(searchableView.element);
-        sourceFrame.setSearchableView(searchableView);
-        searchableView.show(this.contentElement);
-        const toolbar = this.contentElement.createChild('devtools-toolbar', 'toolbar');
-        void sourceFrame.toolbarItems().then(items => {
-            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-            render(items, toolbar);
+        this.#sourceFrame.setCanPrettyPrint(canPrettyPrint, true /* autoPrettyPrint */);
+        this.performUpdate();
+        void this.#sourceFrame.toolbarItems().then(items => {
+            this.#toolbarItems = items;
+            this.requestUpdate();
         });
     }
+    performUpdate() {
+        this.#view({
+            sourceFrame: this.#sourceFrame,
+            toolbarItems: this.#toolbarItems,
+            placeholder: i18nString(UIStrings.find),
+        }, {}, this.contentElement);
+    }
     async revealPosition(position) {
-        this.sourceFrame.revealPosition(position, true);
+        this.#sourceFrame.revealPosition(position, true);
     }
 }
 //# sourceMappingURL=ResourceSourceFrame.js.map

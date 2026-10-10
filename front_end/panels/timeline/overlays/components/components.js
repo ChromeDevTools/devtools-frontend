@@ -1848,6 +1848,14 @@ var TimespanBreakdownOverlay = class extends UI3.Widget.Widget {
       return;
     }
     const paddingForScrollbar = 9;
+    for (const section of sections) {
+      const label = section.querySelector(".timespan-breakdown-overlay-label");
+      if (!label) {
+        continue;
+      }
+      label.classList.remove("labelHidden", "labelTruncated", "offScreenLeft", "offScreenRight");
+      label.style.marginLeft = "";
+    }
     const sectionLayoutData = /* @__PURE__ */ new Map();
     for (const section of sections) {
       const label = section.querySelector(".timespan-breakdown-overlay-label");

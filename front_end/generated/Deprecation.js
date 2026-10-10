@@ -241,6 +241,10 @@ export const UIStrings = {
      */
     RTCConstraintEnableDtlsSrtpTrue: "The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `true` value for this constraint, which had no effect, but you can remove this constraint for tidiness.",
     /**
+     * @description Warning displayed to developers when the non-standard RTCPeerConnection.createDTMFSender() method is used. Developers should use the standard RTCRtpSender.dtmf attribute instead.
+     */
+    RTCPeerConnectionCreateDTMFSender: "RTCPeerConnection.createDTMFSender() is deprecated and will be removed. Please use RTCRtpSender.dtmf instead.",
+    /**
      * @description WebRTC is set of JavaScript APIs for sending and receiving data, audio and video. getStats() is a method used to obtain network and quality metrics. There are two versions of this method, one is being deprecated because it is non-standard.
      */
     RTCPeerConnectionGetStatsLegacyNonCompliant: "The callback-based getStats() is deprecated and will be removed. Use the spec-compliant getStats() instead.",
@@ -418,6 +422,10 @@ export const DEPRECATIONS_METADATA = {
     },
     "RTCConstraintEnableDtlsSrtpTrue": {
         "milestone": 97
+    },
+    "RTCPeerConnectionCreateDTMFSender": {
+        "chromeStatusFeature": 5160724576993280,
+        "milestone": 160
     },
     "RTCPeerConnectionGetStatsLegacyNonCompliant": {
         "chromeStatusFeature": 4631626228695040,

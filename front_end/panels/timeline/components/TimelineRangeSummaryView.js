@@ -9,7 +9,7 @@ import timelineRangeSummaryViewStyles from './timelineRangeSummaryView.css.js';
 import * as TimelineSummary from './TimelineSummary.js';
 const { render, html } = Lit;
 const { widget } = UI.Widget;
-const categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');
+const categoryBreakdownCache = new WeakMap();
 export const TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     const { parsedTrace, events, startTime, endTime } = input;
     if (!events || !parsedTrace) {
@@ -87,8 +87,7 @@ export function statsForTimeRange(events, startTime, endTime) {
     return aggregatedStats;
     function aggregatedStatsAtTime(time) {
         const stats = {};
-        // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-        const cache = events[categoryBreakdownCacheSymbol];
+        const cache = categoryBreakdownCache.get(events) ?? {};
         for (const category in cache) {
             const categoryCache = cache[category];
             const index = Platform.ArrayUtilities.upperBound(categoryCache.time, time, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
@@ -118,8 +117,7 @@ export function statsForTimeRange(events, startTime, endTime) {
         return result;
     }
     function buildRangeStatsCacheIfNeeded(events) {
-        // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-        if (events[categoryBreakdownCacheSymbol]) {
+        if (categoryBreakdownCache.has(events)) {
             return;
         }
         // aggregatedStats is a map by categories. For each category there's an array
@@ -171,9 +169,7 @@ export function statsForTimeRange(events, startTime, endTime) {
                 categoryChange(category || null, parentCategory || null, endTime || 0);
             }
         }
-        const obj = events;
-        // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
-        obj[categoryBreakdownCacheSymbol] = aggregatedStats;
+        categoryBreakdownCache.set(events, aggregatedStats);
     }
 }
 //# sourceMappingURL=TimelineRangeSummaryView.js.map

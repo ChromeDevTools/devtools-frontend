@@ -400,6 +400,7 @@ var Audits;
     GenericIssueErrorType2["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
     GenericIssueErrorType2["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
     GenericIssueErrorType2["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+    GenericIssueErrorType2["GeolocationPromptWithoutUserGesture"] = "GeolocationPromptWithoutUserGesture";
   })(GenericIssueErrorType = Audits2.GenericIssueErrorType || (Audits2.GenericIssueErrorType = {}));
   let ClientHintIssueReason;
   ((ClientHintIssueReason2) => {
@@ -16462,14 +16463,19 @@ function toggleClassAndInjectStyleRule(pseudoElementName, hidden) {
   const classNamePrefix = "__web-inspector-hide";
   const classNameSuffix = "-shortcut__";
   const styleTagId = "__web-inspector-hide-shortcut-style__";
-  const pseudoElementNameEscaped = pseudoElementName ? pseudoElementName.replace(/[^a-zA-Z0-9_-]/g, "_") : "";
+  let pseudoElementNameEscaped = "";
+  if (pseudoElementName) {
+    pseudoElementNameEscaped = pseudoElementName.replace(/[^a-zA-Z0-9-]/g, function(c) {
+      return "_" + c.charCodeAt(0).toString(16) + "_";
+    });
+  }
   const className = classNamePrefix + pseudoElementNameEscaped + classNameSuffix;
   this.classList.toggle(className, hidden);
   let localRoot = this;
   while (localRoot.parentNode) {
     localRoot = localRoot.parentNode;
   }
-  if (localRoot.nodeType === Node.DOCUMENT_NODE) {
+  if (localRoot.nodeType === 9) {
     localRoot = document.head;
   }
   let style = localRoot.querySelector("style#" + styleTagId);
@@ -16837,7 +16843,7 @@ var BaseVariableMatcher = class extends BaseVariableMatcherBase {
       return null;
     }
     const nameNode = args[0][0];
-    const fallback = args.length === 2 ? args[1] : void 0;
+    const fallback = args.length > 1 ? Array.from(ASTUtils.stripComments(ASTUtils.siblings(nameNode.nextSibling))).slice(1, -1) : void 0;
     if (!isVariableNameNode(nameNode, matching.ast)) {
       return null;
     }

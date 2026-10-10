@@ -201,7 +201,7 @@ var SuggestionBox = class extends Lit.LitElement {
     this.cursor = 0;
   }
   #hasVisibleSuggestions() {
-    return this.#suggestions.length > 0 && !(this.hideExactMatch && this.#suggestions.length === 1 && this.#suggestions[0].toLowerCase() === this.expression.toLowerCase());
+    return this.#suggestions.length > 0 && !(this.hideExactMatch && this.#suggestions.length === 1 && this.#suggestions[0] === this.expression);
   }
   #handleKeyDownEvent = (event) => {
     assert(event instanceof KeyboardEvent, "Bound to the wrong event.");

@@ -670,18 +670,18 @@ function renderWalkthroughUI(input, steps) {
     // clang-format on
 }
 function renderSideEffectStepsUI(input, steps) {
-    const sideEffectSteps = steps.filter(s => s.state.type === 'needs_approval' || s.state.type === 'canceled');
+    const sideEffectSteps = steps.filter(s => s.state.type === 'needs_approval');
     if (sideEffectSteps.length === 0) {
         return Lit.nothing;
     }
     // With the natural language interface the approval is rendered as a
     // dedicated permission prompt instead of the side-effect confirmation UI.
-    const showPermissionPrompt = (step) => AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() && step.state.type === 'needs_approval';
+    const showPermissionPrompt = AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled();
     // clang-format off
     return html `
     ${sideEffectSteps.map(step => html `
       <div class="side-effect-container">
-        ${showPermissionPrompt(step) ?
+        ${showPermissionPrompt ?
         renderPermissionPrompt(step) :
         renderStep({
             step,

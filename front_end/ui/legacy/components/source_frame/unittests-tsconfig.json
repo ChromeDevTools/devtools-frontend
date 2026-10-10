@@ -75,9 +75,6 @@
       "path": "../../../../core/text_utils/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../panels/linear_memory_inspector/components/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../../../testing/testing-tsconfig.ref.json"
     },
     {

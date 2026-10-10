@@ -1617,13 +1617,13 @@ export declare enum SelectorTimingsKey {
     StyleSheetId = "style_sheet_id",
     InvalidationCount = "invalidation_count"
 }
-export interface SelectorStats {
+export interface SelectorStatsData {
     selector_timings: SelectorTiming[];
 }
 export interface SelectorStats extends Complete {
     name: Name.SELECTOR_STATS;
     args: Args & {
-        selector_stats?: SelectorStats;
+        selector_stats?: SelectorStatsData;
     };
 }
 export declare function isSelectorStats(event: Event): event is SelectorStats;
@@ -1794,7 +1794,7 @@ export declare function isPaint(event: Event): event is Paint;
 export interface PaintImage extends Complete {
     name: Name.PAINT_IMAGE;
     args: Args & {
-        data: Event & {
+        data: {
             height: number;
             width: number;
             x: number;
@@ -1816,7 +1816,7 @@ export declare function isPaintImage(event: Event): event is PaintImage;
 export interface ScrollLayer extends Complete {
     name: Name.SCROLL_LAYER;
     args: Args & {
-        data: Event & {
+        data: {
             frame: string;
             nodeId?: Protocol.DOM.BackendNodeId;
         };
@@ -1983,7 +1983,7 @@ export interface WebSocketCreate extends Instant {
             url: string;
             frame?: string;
             workerId?: string;
-            websocketProtocol?: string;
+            webSocketProtocol?: string;
             stackTrace?: CallFrame;
         };
     };
@@ -2096,6 +2096,7 @@ export interface FunctionCall extends Complete {
         data?: Partial<CallFrame> & {
             frame?: string;
             isolate?: string;
+            scriptId?: string;
         };
     };
 }
@@ -2161,7 +2162,7 @@ export interface ParseAuthorStyleSheet extends Complete {
     name: Name.PARSE_AUTHOR_STYLE_SHEET;
     args?: Args & {
         data: {
-            stylesheetUrl: string;
+            styleSheetUrl: string;
         };
     };
 }

@@ -362,6 +362,7 @@ export var Audits;
         GenericIssueErrorType["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
         GenericIssueErrorType["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
         GenericIssueErrorType["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+        GenericIssueErrorType["GeolocationPromptWithoutUserGesture"] = "GeolocationPromptWithoutUserGesture";
     })(GenericIssueErrorType = Audits.GenericIssueErrorType || (Audits.GenericIssueErrorType = {}));
     let ClientHintIssueReason;
     (function (ClientHintIssueReason) {

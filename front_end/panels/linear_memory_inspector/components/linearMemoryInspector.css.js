@@ -30,7 +30,7 @@ export default `/*
     padding: 9px var(--sys-size-6) 9px 7px;
   }
 
-  devtools-linear-memory-inspector-viewer {
+  .viewer-widget {
     justify-content: center;
   }
 
@@ -38,7 +38,7 @@ export default `/*
     flex: none;
   }
 
-  .navigator-widget + devtools-linear-memory-inspector-viewer {
+  .navigator-widget + .viewer-widget {
     margin-top: var(--sys-size-6);
   }
 

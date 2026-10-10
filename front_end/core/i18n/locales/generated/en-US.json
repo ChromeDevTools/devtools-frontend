@@ -1343,6 +1343,9 @@
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
     "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
   },
+  "generated/Deprecation.ts | RTCPeerConnectionCreateDTMFSender": {
+    "message": "RTCPeerConnection.createDTMFSender() is deprecated and will be removed. Please use RTCRtpSender.dtmf instead."
+  },
   "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
     "message": "The callback-based getStats() is deprecated and will be removed. Use the spec-compliant getStats() instead."
   },
@@ -6623,8 +6626,14 @@
   "panels/comments/CommentsPane.ts | noComments": {
     "message": "No active comments. Add comments on elements in DevTools to send to your AI coding agent."
   },
+  "panels/comments/CommentsPane.ts | seeResponse": {
+    "message": "See response"
+  },
   "panels/comments/CommentsPane.ts | sendToAgent": {
     "message": "Send to Agent"
+  },
+  "panels/comments/CommentsPane.ts | working": {
+    "message": "Working"
   },
   "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
     "message": "You earned the {PH1} badge! It’s been added to your Developer Profile."
@@ -6658,6 +6667,12 @@
   },
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Comment input"
+  },
+  "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
+    "message": "Delete queued comment"
+  },
+  "panels/common/CommentThreadWidget.ts | queueComment": {
+    "message": "Queue comment"
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Response:"

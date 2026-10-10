@@ -4,11 +4,6 @@ export type TimelineAnchorSignature = CommentManager.CommentManager.TimelineAnch
 export type CommentAnchorSignature = CommentManager.CommentManager.CommentAnchorSignature;
 export type CommentThread = CommentManager.CommentManager.CommentThread;
 /**
- * The comment thread UI itself is never a valid comment target: anything inside it (including the
- * DOM node link in its header) must stay inert while comment mode is on.
- */
-export declare const COMMENT_THREAD_UI_SELECTOR = ".comment-thread-widget";
-/**
  * Finds the closest ancestor (or the element itself) matching a CSS selector,
  * traversing across Shadow DOM boundaries (shadow root boundaries to shadow hosts).
  *
@@ -57,6 +52,20 @@ export interface CustomAnchorResult {
 /**
  * Extension point allowing views that render custom content (such as canvas-based
  * flame charts) to provide custom anchor resolution for comments without direct DOM nodes.
+ *
+ * The shared comments overlay draws the pin, popup and highlight for these
+ * anchors in its own layer, as it does for DOM anchors. The view supplies the
+ * parts that depend on how it renders:
+ * - `resolve()` maps a pointer position to an anchor when a comment is created.
+ * - `getAnchorElement()` returns a DOM element that the view keeps over the
+ *   anchor on screen. The element can be invisible. CommentOverlayManager
+ *   positions the pin from the element's visible rect.
+ * - The view calls `notifyCustomAnchorsMoved()` whenever it moves or hides
+ *   these elements, because CommentOverlayManager does not observe them.
+ *
+ * For example, the Performance panel returns an invisible timeline overlay box
+ * that it keeps over each commented entry, and notifies after every overlays
+ * update, such as when the flame chart is panned.
  */
 export interface CustomAnchorResolver {
     /**
@@ -78,6 +87,12 @@ export interface CustomAnchorResolver {
         clientY: number;
         forHover?: boolean;
     }): CustomAnchorResult | null;
+    /**
+     * Returns a positioned DOM element that tracks the on-screen bounds of a
+     * non-DOM anchor, or null if the anchor is not handled by this resolver or
+     * is not currently visible.
+     */
+    getAnchorElement(anchor: CommentAnchorSignature): Element | null;
 }
 /**
  * Registers a custom anchor resolver. Usually called when a view becomes visible
@@ -105,6 +120,30 @@ export declare function clearCustomAnchorResolversForTest(): void;
  */
 export declare function getCustomAnchorResolverForElement(element: Element): CustomAnchorResolver | null;
 /**
+ * Returns the positioned element for a non-DOM anchor from the first
+ * registered resolver that provides one, or null if no resolver handles the
+ * anchor or the anchor is not visible.
+ */
+export declare function getCustomAnchorElement(anchor: CommentAnchorSignature): Element | null;
+/**
+ * Requests that comment pins on non-DOM anchors are repositioned. The
+ * elements returned by `getAnchorElement()` are not observed for DOM scroll,
+ * resize or intersection changes, so this must be called whenever they move
+ * or change visibility (for example, when a canvas is panned). Resolvers do
+ * not hold a reference to a CommentOverlayManager, so every registered
+ * listener is notified.
+ */
+export declare function notifyCustomAnchorsMoved(): void;
+/**
+ * Registers a listener for `notifyCustomAnchorsMoved()`. CommentOverlayManager
+ * uses it to reposition pins on non-DOM anchors.
+ */
+export declare function addCustomAnchorsMovedListener(listener: () => void): void;
+/**
+ * Unregisters a listener added with `addCustomAnchorsMovedListener()`.
+ */
+export declare function removeCustomAnchorsMovedListener(listener: () => void): void;
+/**
  * Checks whether an element contains non-empty text content (after trimming whitespace),
  * including text from any nested shadow roots.
  *
@@ -113,19 +152,18 @@ export declare function getCustomAnchorResolverForElement(element: Element): Cus
  */
 export declare function isNonEmptyItem(element: Element): boolean;
 /**
- * Determines whether an element represents a tab header or tab title
- * (e.g. PanelTabHeader, role="tab", or .tab-header class) across shadow DOM boundaries,
- * which should be excluded from commenting.
+ * Determines whether an element or any of its ancestors across shadow boundaries
+ * is a container where commenting is disallowed
  *
  * @param element The element to check.
- * @returns True if the element or any of its ancestors is a tab title; otherwise false.
+ * @returns True if the element or an ancestor is a disallowed comment ancestor; otherwise false.
  */
-export declare function isTabTitle(element: Element): boolean;
+export declare function hasDisallowedCommentAncestor(element: Element): boolean;
 /**
  * Resolves an arbitrary clicked or targeted DOM element to its appropriate semantic comment anchor element.
  *
  * Traversal hierarchy:
- * 1. Checks if the element is part of a tab title or of the comment thread UI (returns null if so).
+ * 1. Checks if any ancestor is in DISALLOWED_COMMENT_ANCESTORS (returns null if so).
  * 2. Escalates CodeMirror line/gutter elements to .cm-editor (only if the clicked line is non-empty).
  * 3. Checks for domain IDs (`data-network-request-id` or `data-backend-node-id`) across shadow boundaries,
  *    returning the owning domain element.

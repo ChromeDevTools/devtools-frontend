@@ -1,7 +1,6 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import './LinearMemoryViewer.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -11,6 +10,7 @@ import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
 import { formatAddress, parseAddress } from './LinearMemoryInspectorUtils.js';
 import { LinearMemoryNavigator, } from './LinearMemoryNavigator.js';
 import { LinearMemoryValueInterpreter } from './LinearMemoryValueInterpreter.js';
+import { LinearMemoryViewer } from './LinearMemoryViewer.js';
 import { getDefaultValueTypeMapping, VALUE_INTEPRETER_MAX_NUM_BYTES, } from './ValueInterpreterDisplayUtils.js';
 const UIStrings = {
     /**
@@ -78,18 +78,17 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         jumpToAddress: (address) => input.onJumpToAddress(address),
         deleteHighlight: input.onDeleteMemoryHighlight,
     })}
-      <devtools-linear-memory-inspector-viewer
-        .data=${{
+      <devtools-widget class="viewer-widget"
+        ${widget(LinearMemoryViewer, {
         memory: input.memorySlice,
         address: input.address,
         memoryOffset: input.viewerStart,
-        focus: input.currentNavigatorMode === "Submitted" /* Mode.SUBMITTED */,
+        focusOnByte: input.currentNavigatorMode === "Submitted" /* Mode.SUBMITTED */,
         highlightInfo: input.highlightInfo,
         focusedMemoryHighlight,
-    }}
-        @byteselected=${input.onByteSelected}
-        @resize=${input.onResize}>
-      </devtools-linear-memory-inspector-viewer>
+        onByteSelected: input.onByteSelected,
+        onNumBytesPerPageChanged: input.onResize,
+    })}></devtools-widget>
     </div>
     ${input.hideValueInspector ? nothing : html `
     <div class="value-interpreter">
@@ -259,9 +258,9 @@ export class LinearMemoryInspector extends LinearMemoryInspectorBase {
         const { start, end } = getPageRangeForAddress(this.#address, this.#numBytesPerPage, this.#outerMemoryLength);
         this.dispatchEventToListeners("MemoryRequest" /* Events.MEMORY_REQUEST */, { start, end, address: this.#address });
     }
-    #onByteSelected(e) {
+    #onByteSelected(address) {
         this.#currentNavigatorMode = "Submitted" /* Mode.SUBMITTED */;
-        const addressInRange = Math.max(0, Math.min(e.data, this.#outerMemoryLength - 1));
+        const addressInRange = Math.max(0, Math.min(address, this.#outerMemoryLength - 1));
         this.#jumpToAddress(addressInRange);
     }
     #createSettings() {
@@ -325,8 +324,8 @@ export class LinearMemoryInspector extends LinearMemoryInspectorBase {
         this.address = address;
         void this.requestUpdate();
     }
-    #resize(event) {
-        this.#numBytesPerPage = event.data;
+    #resize(numBytesPerPage) {
+        this.#numBytesPerPage = numBytesPerPage;
         void this.requestUpdate();
     }
     set address(address) {

@@ -4,10 +4,12 @@
 import '../../ui/components/tooltips/tooltips.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import commentThreadWidgetStyles from './commentThreadWidget.css.js';
 import { DOMNodeLink } from './DOMLinkifier.js';
 const { html, render, Directives: { createRef, ref } } = Lit;
@@ -18,6 +20,11 @@ const UIStrings = {
      * the agent.
      */
     sent: 'Sent',
+    /**
+     * @description Tooltip and accessible label for the icon button in the comment thread header that deletes a queued
+     * comment (a comment saved locally but not yet sent to the agent).
+     */
+    deleteQueuedComment: 'Delete queued comment',
     /**
      * @description Alt text for the checkmark icon in the comment thread header indicating that comments have been sent
      * to the agent.
@@ -31,6 +38,11 @@ const UIStrings = {
      * @description Label for the aria-label of the add comment button.
      */
     sendToAgent: 'Send to agent',
+    /**
+     * @description Label of the submit button while the Cmd (Mac) or Ctrl (Windows/Linux) key is held. Clicking it
+     * saves the comment locally so that it is sent to the agent together with the next comment, instead of immediately.
+     */
+    queueComment: 'Queue comment',
     /**
      * @description aria-label for the comment text area.
      */
@@ -47,10 +59,58 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 export const DEFAULT_VIEW = (input, _output, target) => {
     const hasComment = input.comments.length > 0;
+    const buttonText = input.isQueueModifierPressed ? i18nString(UIStrings.queueComment) : i18nString(UIStrings.sendToAgent);
+    const submit = (queue) => {
+        if (queue) {
+            input.onQueueComment(input.commentText);
+        }
+        else {
+            input.onAddComment(input.commentText);
+        }
+    };
+    // clang-format off
+    const renderHeaderStatus = () => {
+        if (!hasComment) {
+            return Lit.nothing;
+        }
+        switch (input.status) {
+            case 'SENT_TO_AGENT':
+                // clang-format off
+                return html `
+          <div class="sent-status">
+            <devtools-icon
+              class="check-icon"
+              name="checkmark"
+              aria-label=${i18nString(UIStrings.sentCheckmark)}>
+            </devtools-icon>
+            <span>${i18nString(UIStrings.sent)}</span>
+          </div>
+        `;
+            // clang-format on
+            case 'ACTIVE':
+                // clang-format off
+                return html `
+          <devtools-button
+            class="delete-button"
+            aria-label=${i18nString(UIStrings.deleteQueuedComment)}
+            .iconName=${'bin'}
+            .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+            .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+            .title=${i18nString(UIStrings.deleteQueuedComment)}
+            @click=${input.onDeleteQueuedComment}
+          ></devtools-button>
+        `;
+            // clang-format on
+            default:
+                return Lit.nothing;
+        }
+    };
     // clang-format off
     render(html `
     <style>${Input.textInputStyles}${commentThreadWidgetStyles}</style>
-    <div class="comment-thread-widget ${hasComment ? 'submitted' : ''}">
+    <div
+      class="comment-thread-widget ${hasComment ? 'submitted' : ''}"
+      jslog=${VisualLogging.popover('comment-thread')}>
       <div class="header">
         <span class="selected-item">
           ${'node' in input.title ?
@@ -58,16 +118,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         html `<span class="selected-item-text">${input.title.text}</span>`}
         </span>
         <div class="header-actions">
-          ${hasComment ? html `
-            <div class="sent-status">
-              <devtools-icon
-                class="check-icon"
-                name="checkmark"
-                aria-label=${i18nString(UIStrings.sentCheckmark)}>
-              </devtools-icon>
-              <span>${i18nString(UIStrings.sent)}</span>
-            </div>
-          ` : Lit.nothing}
+          ${renderHeaderStatus()}
         </div>
       </div>
 
@@ -96,11 +147,16 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           .value=${input.commentText}
           @input=${input.onCommentTextChange}
           @keydown=${(event) => {
+        const queueModifier = UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event);
+        input.onQueueModifierChange(queueModifier);
         if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
             event.preventDefault();
-            input.onAddComment(input.commentText);
+            submit(queueModifier);
         }
     }}
+          @keyup=${(event) => input.onQueueModifierChange(UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event))}
+          @blur=${() => input.onQueueModifierChange(false)}
+          jslog=${VisualLogging.textField('comments-input').track({ keydown: 'Enter' })}
         ></textarea>
         <div class="footer">
           <devtools-icon
@@ -119,10 +175,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             </div>
           </devtools-tooltip>
           <devtools-button
-            aria-label=${i18nString(UIStrings.sendToAgent)}
+            aria-label=${buttonText}
             .disabled=${!input.commentText.trim()}
-            @click=${() => input.onAddComment(input.commentText)}>
-            ${i18nString(UIStrings.sendToAgent)}
+            @mousedown=${(event) => {
+        event.preventDefault();
+    }}
+            @click=${(event) => submit(input.isQueueModifierPressed || UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event))}
+            jslog=${VisualLogging.action('comments-send-to-agent').track({ click: true })}>
+            ${buttonText}
           </devtools-button>
         </div>
       ` : Lit.nothing}
@@ -134,9 +194,13 @@ export class CommentThreadWidget extends UI.Widget.Widget {
     title = { text: '' };
     #comments = [];
     #commentText = '';
+    #status = 'DRAFT';
+    #isQueueModifierPressed = false;
     #textAreaRef = createRef();
     #view;
     onAddComment;
+    onQueueComment;
+    onDeleteQueuedComment;
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
@@ -148,17 +212,40 @@ export class CommentThreadWidget extends UI.Widget.Widget {
             this.#textAreaRef.value?.focus({ preventScroll: true });
         });
     }
+    willHide() {
+        this.#isQueueModifierPressed = false;
+        super.willHide();
+    }
     set comments(comments) {
         this.#comments = comments;
         this.requestUpdate();
     }
-    #handleAddComment = (text) => {
+    set status(commentStatus) {
+        this.#status = commentStatus;
+        this.requestUpdate();
+    }
+    #handleQueueModifierChange = (pressed) => {
+        if (this.#isQueueModifierPressed !== pressed) {
+            this.#isQueueModifierPressed = pressed;
+            this.requestUpdate();
+        }
+    };
+    #submit(text, callback) {
         const commentText = text.trim();
-        if (commentText && this.onAddComment) {
-            this.onAddComment(commentText);
+        if (commentText && callback) {
+            callback(commentText);
             this.#commentText = '';
             this.requestUpdate();
         }
+    }
+    #handleAddComment = (text) => {
+        this.#submit(text, this.onAddComment);
+    };
+    #handleQueueComment = (text) => {
+        this.#submit(text, this.onQueueComment);
+    };
+    #handleDeleteQueuedComment = () => {
+        this.onDeleteQueuedComment?.();
     };
     #handleCommentTextChange = (event) => {
         const input = event.target;
@@ -170,9 +257,14 @@ export class CommentThreadWidget extends UI.Widget.Widget {
             title: this.title,
             comments: this.#comments,
             commentText: this.#commentText,
+            isQueueModifierPressed: this.#isQueueModifierPressed,
             textAreaRef: this.#textAreaRef,
+            status: this.#status,
             onAddComment: this.#handleAddComment,
+            onQueueComment: this.#handleQueueComment,
             onCommentTextChange: this.#handleCommentTextChange,
+            onDeleteQueuedComment: this.#handleDeleteQueuedComment,
+            onQueueModifierChange: this.#handleQueueModifierChange,
         };
         this.#view(viewInput, undefined, this.contentElement);
     }

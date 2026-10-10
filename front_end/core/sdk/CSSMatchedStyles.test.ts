@@ -1441,6 +1441,79 @@ describe('CSSMatchedStyles', () => {
         assert.exists(marginShorthand);
         assert.strictEqual(matchedStyles.propertyState(marginShorthand), SDK.CSSMatchedStyles.PropertyState.ACTIVE);
       });
+
+      it('gives !important rules in earlier cascade layers higher priority than later cascade layers and unlayered rules',
+         async () => {
+           const layerARule = ruleMatch('h1', [{name: 'color', value: 'red !important', important: true}]);
+           layerARule.rule.layers = [{text: 'A'}];
+
+           const layerBRule = ruleMatch('h1', [{name: 'color', value: 'orange !important', important: true}]);
+           layerBRule.rule.layers = [{text: 'B'}];
+
+           const unlayeredRule = ruleMatch('h1', [{name: 'color', value: 'green !important', important: true}]);
+
+           const matchedStyles = await getMatchedStyles({
+             connection,
+             matchedPayload: [layerARule, layerBRule, unlayeredRule],
+           });
+
+           const styles = matchedStyles.nodeStyles();
+           // nodeStyles() are in reverse matchedPayload order: [unlayeredRule, layerBRule, layerARule]
+           const unlayeredProp = styles[0].allProperties()[0];
+           const layerBProp = styles[1].allProperties()[0];
+           const layerAProp = styles[2].allProperties()[0];
+
+           assert.strictEqual(matchedStyles.propertyState(layerAProp), SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+           assert.strictEqual(matchedStyles.propertyState(layerBProp), SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+           assert.strictEqual(matchedStyles.propertyState(unlayeredProp),
+                              SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+         });
+
+      it('gives higher-specificity !important rules within the same cascade layer higher priority', async () => {
+        const lowSpecRule = ruleMatch('h1', [{name: 'color', value: 'red !important', important: true}]);
+        lowSpecRule.rule.layers = [{text: 'A'}];
+
+        const highSpecRule = ruleMatch('#title', [{name: 'color', value: 'blue !important', important: true}]);
+        highSpecRule.rule.layers = [{text: 'A'}];
+
+        const matchedStyles = await getMatchedStyles({
+          connection,
+          matchedPayload: [lowSpecRule, highSpecRule],
+        });
+
+        const styles = matchedStyles.nodeStyles();
+        const highSpecProp = styles[0].allProperties()[0];
+        const lowSpecProp = styles[1].allProperties()[0];
+
+        assert.strictEqual(matchedStyles.propertyState(highSpecProp), SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+        assert.strictEqual(matchedStyles.propertyState(lowSpecProp), SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+      });
+
+      it('allows inline !important styles to override layered !important rules', async () => {
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        node.nodeType.returns(SDK.DOMModel.NodeType.ELEMENT_NODE);
+
+        const layerARule = ruleMatch('h1', [{name: 'color', value: 'red !important', important: true}]);
+        layerARule.rule.layers = [{text: 'A'}];
+
+        const matchedStyles = await getMatchedStyles({
+          connection,
+          node,
+          inlinePayload: {
+            cssProperties: [{name: 'color', value: 'purple !important', important: true}],
+            shorthandEntries: [],
+          },
+          matchedPayload: [layerARule],
+        });
+
+        const styles = matchedStyles.nodeStyles();
+        const inlineProp = styles[0].allProperties()[0];
+        const layerAProp = styles[1].allProperties()[0];
+
+        assert.strictEqual(matchedStyles.propertyState(inlineProp), SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+        assert.strictEqual(matchedStyles.propertyState(layerAProp), SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+      });
     });
   });
 

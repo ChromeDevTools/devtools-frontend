@@ -102,7 +102,26 @@ export class HTMLFormatter {
     this.#builder.addNewLine();
   }
 
-  #afterCloseTag(_element: FormatterElement): void {
+  #afterCloseTag(element: FormatterElement): void {
+    if (!this.#model) {
+      return;
+    }
+
+    if (!element.children.length && element !== this.#model.document()) {
+      const nextToken = this.#model.peekToken();
+      if (nextToken) {
+        if (isTextToken(nextToken)) {
+          return;
+        }
+        const followingToken = this.#model.peekToken(1);
+        if (Platform.StringUtilities.isWhitespace(nextToken.value) && !/[\r\n]/.test(nextToken.value) &&
+            followingToken && isTextToken(followingToken)) {
+          this.#model.nextToken();
+          this.#builder.addToken(nextToken.value, nextToken.startOffset);
+          return;
+        }
+      }
+    }
     this.#builder.addNewLine();
   }
 
@@ -239,6 +258,12 @@ function hasTokenInSet(tokenTypes: Set<string>, type: string): boolean {
   return tokenTypes.has(type) || tokenTypes.has(`xml-${type}`);
 }
 
+function isTextToken(token: Token): boolean {
+  return !Platform.StringUtilities.isWhitespace(token.value) && !hasTokenInSet(token.type, 'tag') &&
+      !hasTokenInSet(token.type, 'attribute') && !hasTokenInSet(token.type, 'bracket') &&
+      !hasTokenInSet(token.type, 'comment') && !hasTokenInSet(token.type, 'meta');
+}
+
 export class HTMLModel {
   #state: ParseState = ParseState.INITIAL;
   readonly #document: FormatterElement;
@@ -275,9 +300,7 @@ export class HTMLModel {
       if (element && (hasTokenInSet(token.type, 'comment') || hasTokenInSet(token.type, 'meta'))) {
         element.hasComments = true;
       }
-      if (element && !Platform.StringUtilities.isWhitespace(token.value) && !hasTokenInSet(token.type, 'tag') &&
-          !hasTokenInSet(token.type, 'attribute') && !hasTokenInSet(token.type, 'bracket') &&
-          !hasTokenInSet(token.type, 'comment') && !hasTokenInSet(token.type, 'meta')) {
+      if (element && isTextToken(token)) {
         element.hasContent = true;
       }
       if (element && (element.name === 'script' || element.name === 'style') &&
@@ -497,8 +520,8 @@ export class HTMLModel {
     this.#stack.push(newElement);
   }
 
-  peekToken(): Token|null {
-    return this.#tokenIndex < this.#tokens.length ? this.#tokens[this.#tokenIndex] : null;
+  peekToken(offset = 0): Token|null {
+    return this.#tokenIndex + offset < this.#tokens.length ? this.#tokens[this.#tokenIndex + offset] : null;
   }
 
   nextToken(): Token|null {

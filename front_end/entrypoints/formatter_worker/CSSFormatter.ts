@@ -13,6 +13,7 @@ const cssTrimEnd = (tokenValue: string): string => {
 
 export class CSSFormatter {
   readonly #builder: FormattedContentBuilder;
+  #text!: string;
   #toOffset!: number;
   #fromOffset!: number;
   #lineEndings!: number[];
@@ -29,6 +30,7 @@ export class CSSFormatter {
   }
 
   format(text: string, lineEndings: number[], fromOffset: number, toOffset: number): void {
+    this.#text = text;
     this.#lineEndings = lineEndings;
     this.#fromOffset = fromOffset;
     this.#toOffset = toOffset;
@@ -39,6 +41,48 @@ export class CSSFormatter {
     const oldEnforce = this.#builder.setEnforceSpaceBetweenWords(false);
     tokenize(text.substring(this.#fromOffset, this.#toOffset), this.#tokenCallback.bind(this));
     this.#builder.setEnforceSpaceBetweenWords(oldEnforce);
+  }
+
+  #isSelectorPseudoColon(colonOffset: number): boolean {
+    let parenDepth = 0;
+    for (let i = colonOffset + 1; i < this.#toOffset; ++i) {
+      const ch = this.#text[i];
+      if (ch === '/' && this.#text[i + 1] === '*') {
+        const commentEnd = this.#text.indexOf('*/', i + 2);
+        if (commentEnd === -1) {
+          break;
+        }
+        i = commentEnd + 1;
+        continue;
+      }
+      if (ch === '\'' || ch === '"') {
+        const quote = ch;
+        for (++i; i < this.#toOffset; ++i) {
+          if (this.#text[i] === '\\') {
+            ++i;
+          } else if (this.#text[i] === quote) {
+            break;
+          }
+        }
+        continue;
+      }
+      if (ch === '(') {
+        ++parenDepth;
+      } else if (ch === ')') {
+        if (parenDepth === 0) {
+          return false;
+        }
+        --parenDepth;
+      } else if (parenDepth === 0) {
+        if (ch === '{') {
+          return true;
+        }
+        if (ch === ';' || ch === '}') {
+          return false;
+        }
+      }
+    }
+    return false;
   }
 
   #tokenCallback(token: string, type: string|null, startPosition: number): void {
@@ -87,14 +131,20 @@ export class CSSFormatter {
       this.#builder.decreaseNestingLevel();
       this.#state.afterClosingBrace = true;
       this.#state.inPropertyValue = false;
-    } else if (token === ':' && !this.#state.inPropertyValue && this.#state.seenProperty) {
-      this.#builder.addToken(token, startPosition);
-      this.#builder.addSoftSpace();
-      this.#state.eatWhitespace = true;
-      this.#state.inPropertyValue = true;
       this.#state.seenProperty = false;
-      return;
+    } else if (token === ':' && !this.#state.inPropertyValue && this.#state.seenProperty) {
+      if (this.#isSelectorPseudoColon(startPosition)) {
+        this.#state.seenProperty = false;
+      } else {
+        this.#builder.addToken(token, startPosition);
+        this.#builder.addSoftSpace();
+        this.#state.eatWhitespace = true;
+        this.#state.inPropertyValue = true;
+        this.#state.seenProperty = false;
+        return;
+      }
     } else if (token === '{') {
+      this.#state.seenProperty = false;
       this.#builder.addSoftSpace();
       this.#builder.addToken(token, startPosition);
       this.#builder.addNewLine();

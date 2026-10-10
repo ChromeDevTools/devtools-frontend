@@ -226,6 +226,21 @@ span {
 `);
      });
 
+  it('formats pseudo-classes like :where() inside @layer without inserting space after colon', () => {
+    const formattedCode = formatCSS(
+        '@layer { h1:where(.h1class) { background-color: revert-layer; } } h1:where(.h1class) { background-color: blue; }');
+    assert.strictEqual(formattedCode, `@layer {
+  h1:where(.h1class) {
+    background-color: revert-layer;
+  }
+}
+
+h1:where(.h1class) {
+  background-color: blue;
+}
+`);
+  });
+
   it('parses CSS outline rules including @import, @media, @keyframes, @font-face, and style rules', () => {
     const cssText = [
       '@import url("theme.css") screen;',

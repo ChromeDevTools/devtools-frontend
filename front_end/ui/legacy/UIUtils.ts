@@ -2314,20 +2314,26 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
   protected removeNodes(_nodes: NodeList|Node[]): void {
   }
 
-  static findCorrespondingElement(
-      sourceElement: HTMLElement, sourceRootElement: HTMLElement, targetRootElement: Element): Element|null {
+  static findCorrespondingElement(sourceElement: Element, sourceRootElement: Element,
+                                  targetRootElement: Element): Element|null {
     let currentElement = sourceElement;
     const childIndexesOnPathToRoot: number[] = [];
-    while (currentElement?.parentElement && currentElement !== sourceRootElement) {
-      childIndexesOnPathToRoot.push([...currentElement.parentElement.children].indexOf(currentElement));
+    while (currentElement.parentElement && currentElement !== sourceRootElement) {
+      let childIndex = 0;
+      let sibling = currentElement.previousElementSibling;
+      while (sibling) {
+        childIndex++;
+        sibling = sibling.previousElementSibling;
+      }
+      childIndexesOnPathToRoot.push(childIndex);
       currentElement = currentElement.parentElement;
     }
-    if (!currentElement) {
+    if (currentElement !== sourceRootElement) {
       return null;
     }
-    let targetElement = targetRootElement;
+    let targetElement: Element|null = targetRootElement;
     for (const index of childIndexesOnPathToRoot.reverse()) {
-      targetElement = targetElement.children[index];
+      targetElement = targetElement?.children[index] ?? null;
     }
     return targetElement;
   }

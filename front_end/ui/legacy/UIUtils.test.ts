@@ -277,6 +277,20 @@ describe('UIUtils', () => {
     }
     customElements.define('test-element', TestElement);
 
+    it('returns null when corresponding tree structures do not match', () => {
+      const sourceRoot = document.createElement('div');
+      const sourceRow = document.createElement('div');
+      const sourceCell = document.createElement('div');
+      sourceCell.textContent = 'cell';
+      sourceRow.appendChild(sourceCell);
+      sourceRoot.appendChild(sourceRow);
+
+      const targetRoot = document.createElement('div');
+
+      assert.isNull(
+          UI.UIUtils.HTMLElementWithLightDOMTemplate.findCorrespondingElement(sourceCell, sourceRoot, targetRoot));
+    });
+
     it('renders its input into a template', async () => {
       const container = document.createElement('div');
       Lit.render(html`

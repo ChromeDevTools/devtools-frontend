@@ -677,10 +677,13 @@ function nodeMixin<TBase extends Constructor<DataGridNode<any>>>(base: TBase) {
     }
 
     #onRowMouseEvent(event: MouseEvent): void {
+      if (!(event.target instanceof Element) || !(event.currentTarget instanceof HTMLElement)) {
+        return;
+      }
       const targetInConfigRow = UI.UIUtils.HTMLElementWithLightDOMTemplate.findCorrespondingElement(
-          event.target as HTMLElement, event.currentTarget as HTMLElement, this.#configElement);
+          event.target, event.currentTarget, this.#configElement);
       if (!targetInConfigRow) {
-        throw new Error('Cell click event target not found in the data grid');
+        return;
       }
 
       if (targetInConfigRow instanceof HTMLElement) {

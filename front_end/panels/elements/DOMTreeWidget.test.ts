@@ -4993,4 +4993,45 @@ describeWithEnvironment('DOMTreeWidget', () => {
       domTree.detach();
     }
   });
+
+  it('does not start editing text or processing instruction nodes exceeding MaxEditableTextSize', async () => {
+    const {domTree, domModel} = setupDOMTreeWidget(target);
+    try {
+      const truncatedValue = 'a'.repeat(Elements.ElementsTreeElement.MaxEditableTextSize) + '\u2026';
+      const rootNode = createTestDOMTree(domModel, {
+        nodeId: 1,
+        nodeName: 'DIV',
+        children: [
+          {nodeId: 2, nodeName: '#text', nodeType: Node.TEXT_NODE, nodeValue: truncatedValue},
+          {
+            nodeId: 3,
+            nodeName: 'xml-stylesheet',
+            nodeType: Node.PROCESSING_INSTRUCTION_NODE,
+            nodeValue: truncatedValue,
+          },
+        ],
+      });
+      const [truncatedTextNode, truncatedPiNode] = rootNode.children()!;
+      domTree.rootDOMNode = rootNode;
+      domTree.setNodeExpanded(rootNode, true);
+      domTree.performUpdate();
+      await waitForTreeUpdates();
+
+      domTree.selectDOMNode(truncatedTextNode);
+      await waitForTreeUpdates();
+      domTree.startEditing(truncatedTextNode);
+      domTree.startEditingTextNode(truncatedTextNode);
+      await waitForTreeUpdates();
+      assert.isNull(findElementsTreeWidget(domTree, truncatedTextNode)?.editing);
+
+      domTree.selectDOMNode(truncatedPiNode);
+      await waitForTreeUpdates();
+      domTree.startEditing(truncatedPiNode);
+      domTree.startEditingTextNode(truncatedPiNode);
+      await waitForTreeUpdates();
+      assert.isNull(findElementsTreeWidget(domTree, truncatedPiNode)?.editing);
+    } finally {
+      domTree.detach();
+    }
+  });
 });

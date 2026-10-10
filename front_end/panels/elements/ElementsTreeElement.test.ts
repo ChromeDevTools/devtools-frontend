@@ -2966,4 +2966,58 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     styleEl.widget.performUpdate();
     assert.include(styleEl.widget.contentElement.textContent, 'body { color: blue; }');
   });
+
+  it('disallows editing text and processing instruction nodes exceeding MaxEditableTextSize', () => {
+    const editableValue = 'a'.repeat(Elements.ElementsTreeElement.MaxEditableTextSize);
+    const truncatedValue = editableValue + '\u2026';
+
+    const editableTextNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 80 as Protocol.DOM.NodeId,
+      backendNodeId: 80 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.TEXT_NODE,
+      nodeName: '#text',
+      localName: '',
+      nodeValue: editableValue,
+      childNodeCount: 0,
+    });
+    const truncatedTextNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 81 as Protocol.DOM.NodeId,
+      backendNodeId: 81 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.TEXT_NODE,
+      nodeName: '#text',
+      localName: '',
+      nodeValue: truncatedValue,
+      childNodeCount: 0,
+    });
+    const truncatedProcessingInstructionNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
+      nodeId: 82 as Protocol.DOM.NodeId,
+      backendNodeId: 82 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.PROCESSING_INSTRUCTION_NODE,
+      nodeName: 'xml-stylesheet',
+      localName: '',
+      nodeValue: truncatedValue,
+      childNodeCount: 0,
+    });
+
+    assert.isTrue(Elements.ElementsTreeElement.ElementsTreeElement.canEditTextNode(editableTextNode));
+    assert.isFalse(Elements.ElementsTreeElement.ElementsTreeElement.canEditTextNode(truncatedTextNode));
+    assert.isFalse(
+        Elements.ElementsTreeElement.ElementsTreeElement.canEditTextNode(truncatedProcessingInstructionNode));
+
+    const truncatedTextEl = new Elements.ElementsTreeElement.ElementsTreeElement(truncatedTextNode, false);
+    const truncatedPiEl =
+        new Elements.ElementsTreeElement.ElementsTreeElement(truncatedProcessingInstructionNode, false);
+    outline.appendChild(truncatedTextEl);
+    outline.appendChild(truncatedPiEl);
+    truncatedTextEl.widget.performUpdate();
+    truncatedPiEl.widget.performUpdate();
+
+    const textSpan = truncatedTextEl.widget.contentElement.querySelector('.webkit-html-text-node');
+    assert.exists(textSpan);
+    assert.isFalse(truncatedTextEl.widget.startEditingTextNode(textSpan));
+    assert.isNull(truncatedTextEl.widget.editing);
+
+    assert.isFalse(truncatedPiEl.startEditingProcessingInstructionValue());
+    assert.isNull(truncatedPiEl.widget.editing);
+  });
 });

@@ -1487,6 +1487,16 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     return false;
   }
 
+  static canEditTextNode(node: SDK.DOMModel.DOMNode): boolean {
+    if (node.nodeType() === Node.ELEMENT_NODE && node.firstChild) {
+      node = node.firstChild;
+    }
+    if (node.nodeType() !== Node.TEXT_NODE && node.nodeType() !== Node.PROCESSING_INSTRUCTION_NODE) {
+      return false;
+    }
+    return (node.nodeValue() ?? '').length <= MaxEditableTextSize;
+  }
+
   static populateForcedPseudoStateItems(contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void {
     const pseudoClasses = ['active', 'hover', 'focus', 'visited', 'focus-within', 'focus-visible'];
     const forcedPseudoState = node.domModel().cssModel().pseudoState(node);
@@ -2362,6 +2372,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     // has a single child, and that child is a text node.
     if (textNode.nodeType() === Node.ELEMENT_NODE && textNode.firstChild) {
       textNode = textNode.firstChild;
+    }
+    if (!ElementsTreeWidget.canEditTextNode(textNode)) {
+      return false;
     }
 
     const container = textNodeElement.enclosingNodeOrSelfWithClass('webkit-html-text-node');
@@ -3480,6 +3493,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return ElementsTreeWidget.canShowInlineText(node);
   }
 
+  static canEditTextNode(node: SDK.DOMModel.DOMNode): boolean {
+    return ElementsTreeWidget.canEditTextNode(node);
+  }
+
   static populateForcedPseudoStateItems(contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void {
     ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, node);
   }
@@ -3550,6 +3567,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 }
 
 export const InitialChildrenLimit = 500;
+export const MaxEditableTextSize = 10000;
 
 /**
  * A union of HTML4 and HTML5-Draft elements that explicitly

@@ -480,8 +480,11 @@ export async function showContextMenu(
                                        () => void domNode.saveNodeToTempVariable(),
                                        {jslogContext: 'store-as-global-variable'});
   if (textNode) {
-    contextMenu.editSection().appendItem(
-        i18nString(UIStrings.editText), () => domTreeWidget.startEditingTextNode(domNode), {jslogContext: 'edit-text'});
+    contextMenu.editSection().appendItem(i18nString(UIStrings.editText),
+                                         () => domTreeWidget.startEditingTextNode(domNode), {
+                                           disabled: !ElementsTreeElement.canEditTextNode(domNode),
+                                           jslogContext: 'edit-text',
+                                         });
     await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
   } else if (isTag) {
     contextMenu.editSection().appendItem(i18nString(UIStrings.addAttribute),
@@ -531,8 +534,10 @@ export async function showContextMenu(
     contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(),
                                          {jslogContext: 'scroll-into-view'});
   } else if (domNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-    contextMenu.editSection().appendItem(i18nString(UIStrings.editData), () => domTreeWidget.startEditing(domNode),
-                                         {jslogContext: 'elements.edit-data'});
+    contextMenu.editSection().appendItem(i18nString(UIStrings.editData), () => domTreeWidget.startEditing(domNode), {
+      disabled: !ElementsTreeElement.canEditTextNode(domNode),
+      jslogContext: 'elements.edit-data',
+    });
     contextMenu.editSection().appendItem(i18nString(UIStrings.duplicateElement),
                                          () => domTreeWidget.duplicateNode(domNode), {
                                            disabled: domNode.isInShadowTree(),

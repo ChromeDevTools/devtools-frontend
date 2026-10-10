@@ -251,10 +251,64 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
       const descriptor = contextMenu.buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor;
       const editItem = findItem(descriptor.subItems as UI.SoftContextMenu.SoftContextMenuDescriptor[], 'Edit text');
       assert.exists(editItem);
+      assert.isTrue(editItem.enabled);
       assert.exists(editItem.id);
       contextMenu.invokeHandler(editItem.id);
 
       sinon.assert.calledOnceWithExactly(startEditingTextNodeSpy, node);
+    } finally {
+      domTree.detach();
+    }
+  });
+
+  it('disables Edit text when text node value exceeds MaxEditableTextSize', async () => {
+    const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
+    try {
+      const node = createTestNode(Node.TEXT_NODE);
+      sinon.stub(node, 'nodeValue').returns('a'.repeat(Elements.ElementsTreeElement.MaxEditableTextSize) + '\u2026');
+
+      const textSpan = document.createElement('span');
+      textSpan.className = 'webkit-html-text-node';
+      const event = new MouseEvent('contextmenu');
+      Object.defineProperty(event, 'target', {value: textSpan});
+
+      const contextMenu = await domTree.showContextMenu(node, event);
+      assert.exists(contextMenu);
+
+      const descriptor = contextMenu.buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor;
+      const editItem = findItem(descriptor.subItems as UI.SoftContextMenu.SoftContextMenuDescriptor[], 'Edit text');
+      assert.exists(editItem);
+      assert.isFalse(editItem.enabled);
+    } finally {
+      domTree.detach();
+    }
+  });
+
+  it('enables Edit data for processing instruction nodes up to MaxEditableTextSize and disables it above', async () => {
+    const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
+    try {
+      const editableNode = createTestNode(Node.PROCESSING_INSTRUCTION_NODE);
+      sinon.stub(editableNode, 'nodeValue').returns('a'.repeat(Elements.ElementsTreeElement.MaxEditableTextSize));
+
+      const editableMenu = await domTree.showContextMenu(editableNode, createContextMenuEvent());
+      assert.exists(editableMenu);
+      const editableDescriptor = editableMenu.buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor;
+      const editableItem =
+          findItem(editableDescriptor.subItems as UI.SoftContextMenu.SoftContextMenuDescriptor[], 'Edit data');
+      assert.exists(editableItem);
+      assert.isTrue(editableItem.enabled);
+
+      const truncatedNode = createTestNode(Node.PROCESSING_INSTRUCTION_NODE);
+      sinon.stub(truncatedNode, 'nodeValue')
+          .returns('a'.repeat(Elements.ElementsTreeElement.MaxEditableTextSize) + '\u2026');
+
+      const truncatedMenu = await domTree.showContextMenu(truncatedNode, createContextMenuEvent());
+      assert.exists(truncatedMenu);
+      const truncatedDescriptor = truncatedMenu.buildDescriptor() as UI.SoftContextMenu.SoftContextMenuDescriptor;
+      const truncatedItem =
+          findItem(truncatedDescriptor.subItems as UI.SoftContextMenu.SoftContextMenuDescriptor[], 'Edit data');
+      assert.exists(truncatedItem);
+      assert.isFalse(truncatedItem.enabled);
     } finally {
       domTree.detach();
     }

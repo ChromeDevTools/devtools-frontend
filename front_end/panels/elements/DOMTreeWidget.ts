@@ -2328,6 +2328,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     if (moveDirection) {
       if (newNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
+        if (!ElementsTreeWidget.canEditTextNode(newNode)) {
+          return;
+        }
         this.#nodeToEdit = {node: newNode, isProcessingInstruction: true};
       } else if (moveDirection !== 'forward') {
         this.#nodeToEdit = {node: newNode, isNewAttribute: true};
@@ -2441,7 +2444,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   startEditingTextNode(node: SDK.DOMModel.DOMNode): void {
-    if (UI.UIUtils.isEditing()) {
+    if (UI.UIUtils.isEditing() || !ElementsTreeWidget.canEditTextNode(node)) {
       return;
     }
     this.#nodeToEdit = {node, isTextNode: true};
@@ -2469,9 +2472,15 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       }
       this.performUpdate();
     } else if (nodeType === Node.TEXT_NODE) {
+      if (!ElementsTreeWidget.canEditTextNode(node)) {
+        return;
+      }
       this.#nodeToEdit = {node, isTextNode: true};
       this.performUpdate();
     } else if (nodeType === Node.PROCESSING_INSTRUCTION_NODE) {
+      if (!ElementsTreeWidget.canEditTextNode(node)) {
+        return;
+      }
       this.#nodeToEdit = {node, isProcessingInstruction: true};
       this.performUpdate();
     }

@@ -42,9 +42,10 @@ import { createIcon } from '../kit/kit.js';
 import * as Settings from '../settings/settings.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { InspectorView } from './InspectorView.js';
+import { Keys } from './KeyboardShortcut.js';
 import searchableViewStyles from './searchableView.css.js';
 import { ToolbarButton, ToolbarText, ToolbarToggle } from './Toolbar.js'; // eslint-disable-line import/no-duplicates
-import { createHistoryInput, createTextButton } from './UIUtils.js';
+import { createTextButton } from './UIUtils.js';
 import { VBox } from './Widget.js';
 const UIStrings = {
     /**
@@ -157,9 +158,16 @@ export class SearchableView extends VBox {
     minimalSearchQuerySize = 3;
     searchIsVisible;
     #secondRowVisible = false;
+    #placeholder = i18nString(UIStrings.findString);
+    #searchAriaLabel;
     #caseSensitiveToggled = false;
     #wholeWordToggled = false;
     #regexToggled = false;
+    #matchesText = '';
+    #matchesAriaLabel = '';
+    #hasMatches = false;
+    #history = [''];
+    #historyPosition = 0;
     currentQuery;
     valueChangedTimeoutId;
     constructor(searchableOrElement, replaceable = null, settingName, element) {
@@ -183,14 +191,14 @@ export class SearchableView extends VBox {
         const iconAndInput = searchInputElements.createChild('div', 'icon-and-input');
         const searchIcon = createIcon('search');
         iconAndInput.appendChild(searchIcon);
-        this.searchInputElement = createHistoryInput('search', 'search-replace search');
+        this.searchInputElement = iconAndInput.createChild('input', 'search-replace search');
+        this.searchInputElement.type = 'search';
         this.searchInputElement.id = 'search-input-field';
         this.searchInputElement.autocomplete = 'off';
         this.searchInputElement.placeholder = i18nString(UIStrings.findString);
         this.searchInputElement.setAttribute('jslog', `${VisualLogging.textField('search').track({ change: true, keydown: 'ArrowUp|ArrowDown|Enter|Escape' })}`);
         this.searchInputElement.addEventListener('keydown', this.onSearchKeyDown.bind(this), true);
         this.searchInputElement.addEventListener('input', this.onInput.bind(this), false);
-        iconAndInput.appendChild(this.searchInputElement);
         const replaceInputElements = searchInputElements.createChild('div', 'replace-element input-line');
         this.replaceInputElement = replaceInputElements.createChild('input', 'search-replace');
         this.replaceInputElement.addEventListener('keydown', this.onReplaceKeyDown.bind(this), true);
@@ -412,15 +420,18 @@ export class SearchableView extends VBox {
         this.minimalSearchQuerySize = minimalSearchQuerySize;
     }
     setPlaceholder(placeholder, ariaLabel) {
+        this.#placeholder = placeholder;
+        this.#searchAriaLabel = ariaLabel;
         this.searchInputElement.placeholder = placeholder;
-        if (ariaLabel) {
-            ARIAUtils.setLabel(this.searchInputElement, ariaLabel);
+        if (this.#searchAriaLabel) {
+            ARIAUtils.setLabel(this.searchInputElement, this.#searchAriaLabel);
         }
     }
     get placeholder() {
-        return this.searchInputElement.placeholder;
+        return this.#placeholder;
     }
     set placeholder(placeholder) {
+        this.#placeholder = placeholder;
         this.searchInputElement.placeholder = placeholder;
     }
     setReplaceable(replaceable) {
@@ -441,7 +452,7 @@ export class SearchableView extends VBox {
     }
     closeSearch() {
         this.cancelSearch();
-        if (this.footerElementContainer.hasFocus()) {
+        if (this.footerElementContainer?.hasFocus()) {
             this.focus();
         }
         this.searchProvider.onSearchClosed?.();
@@ -461,6 +472,8 @@ export class SearchableView extends VBox {
     resetSearch() {
         this.clearSearch();
         this.updateReplaceVisibility();
+        this.#matchesText = '';
+        this.#matchesAriaLabel = '';
         this.matchesElementValue.textContent = '';
     }
     refreshSearch() {
@@ -496,28 +509,34 @@ export class SearchableView extends VBox {
         return true;
     }
     updateSearchNavigationButtonState(enabled) {
-        this.replaceButtonElement.disabled = !enabled;
-        this.replaceAllButtonElement.disabled = !enabled;
+        this.#hasMatches = enabled;
+        this.replaceButtonElement.disabled = !this.#hasMatches;
+        this.replaceAllButtonElement.disabled = !this.#hasMatches;
         if (this.searchProvider.supportsMatchCounts?.() === true) {
-            this.searchNavigationPrevElement.setEnabled(enabled);
-            this.searchNavigationNextElement.setEnabled(enabled);
+            this.searchNavigationPrevElement.setEnabled(this.#hasMatches);
+            this.searchNavigationNextElement.setEnabled(this.#hasMatches);
         }
     }
     updateSearchMatchesCountAndCurrentMatchIndex(matches, currentMatchIndex) {
         if (!this.currentQuery) {
-            this.matchesElementValue.textContent = '';
+            this.#matchesText = '';
+            this.#matchesAriaLabel = '';
         }
         else if (matches === 0 || currentMatchIndex >= 0) {
-            this.matchesElementValue.textContent = i18nString(UIStrings.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
-            ARIAUtils.setLabel(this.matchesElement, i18nString(UIStrings.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches }));
+            this.#matchesText = i18nString(UIStrings.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
+            this.#matchesAriaLabel = i18nString(UIStrings.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches });
         }
         else if (matches === 1) {
-            this.matchesElementValue.textContent = i18nString(UIStrings.matchString);
-            ARIAUtils.setLabel(this.matchesElement, i18nString(UIStrings.matchString));
+            this.#matchesText = i18nString(UIStrings.matchString);
+            this.#matchesAriaLabel = i18nString(UIStrings.matchString);
         }
         else {
-            this.matchesElementValue.textContent = i18nString(UIStrings.dMatches, { PH1: matches });
-            ARIAUtils.setLabel(this.matchesElement, i18nString(UIStrings.dMatches, { PH1: matches }));
+            this.#matchesText = i18nString(UIStrings.dMatches, { PH1: matches });
+            this.#matchesAriaLabel = i18nString(UIStrings.dMatches, { PH1: matches });
+        }
+        this.matchesElementValue.textContent = this.#matchesText;
+        if (this.#matchesAriaLabel) {
+            ARIAUtils.setLabel(this.matchesElement, this.#matchesAriaLabel);
         }
         this.updateSearchNavigationButtonState(matches > 0);
     }
@@ -526,7 +545,7 @@ export class SearchableView extends VBox {
             this.cancelSearch();
         }
         let queryCandidate;
-        if (!this.searchInputElement.hasFocus()) {
+        if (!this.searchInputElement?.hasFocus()) {
             const selection = InspectorView.instance().element.window().getSelection();
             if (selection?.rangeCount) {
                 queryCandidate = selection.toString().replace(/\r?\n.*/, '');
@@ -534,12 +553,12 @@ export class SearchableView extends VBox {
         }
         this.toggleSearchBar(true);
         this.updateReplaceVisibility();
-        if (queryCandidate) {
+        if (queryCandidate && this.searchInputElement) {
             this.searchInputElement.value = queryCandidate;
         }
         this.performSearch(false, false);
-        this.searchInputElement.focus();
-        this.searchInputElement.select();
+        this.searchInputElement?.focus();
+        this.searchInputElement?.select();
         this.searchIsVisible = true;
     }
     updateReplaceVisibility() {
@@ -551,6 +570,24 @@ export class SearchableView extends VBox {
         }
     }
     onSearchKeyDown(event) {
+        if (event.keyCode === Keys.Up.code) {
+            if (this.#historyPosition > 0) {
+                this.#historyPosition--;
+                this.searchInputElement.value = this.#history[this.#historyPosition];
+                this.onInput();
+            }
+            event.consume(true);
+            return;
+        }
+        if (event.keyCode === Keys.Down.code) {
+            if (this.#historyPosition < this.#history.length - 1) {
+                this.#historyPosition++;
+                this.searchInputElement.value = this.#history[this.#historyPosition];
+                this.onInput();
+            }
+            event.consume(true);
+            return;
+        }
         if (Platform.KeyboardUtilities.isEscKey(event)) {
             this.closeSearch();
             event.consume(true);
@@ -558,6 +595,11 @@ export class SearchableView extends VBox {
         }
         if (!(event.key === 'Enter')) {
             return;
+        }
+        if (!(this.#history.length > 1 && this.#history[this.#history.length - 2] === this.searchInputElement.value)) {
+            this.#history[this.#history.length - 1] = this.searchInputElement.value;
+            this.#historyPosition = this.#history.length - 1;
+            this.#history.push('');
         }
         if (!this.currentQuery) {
             this.performSearch(true, true, event.shiftKey);
@@ -597,7 +639,7 @@ export class SearchableView extends VBox {
         this.updateSearchMatchesCountAndCurrentMatchIndex(0, -1);
     }
     performSearch(forceSearch, shouldJump, jumpBackwards) {
-        const query = this.searchInputElement.value;
+        const query = this.searchInputElement?.value ?? '';
         if (!query || (!forceSearch && query.length < this.minimalSearchQuerySize && !this.currentQuery)) {
             this.clearSearch();
             return;
@@ -608,16 +650,16 @@ export class SearchableView extends VBox {
         this.searchProvider.performSearch(searchConfig, shouldJump, jumpBackwards);
     }
     currentSearchConfig() {
-        const query = this.searchInputElement.value;
+        const query = this.searchInputElement?.value ?? '';
         return new SearchConfig(query, this.#caseSensitiveToggled, this.#wholeWordToggled, this.#regexToggled);
     }
     updateSecondRowVisibility() {
         this.footerElementContainer.classList.toggle('replaceable', this.#secondRowVisible);
         if (this.#secondRowVisible) {
-            this.replaceInputElement.focus();
+            this.replaceInputElement?.focus();
         }
         else {
-            this.searchInputElement.focus();
+            this.searchInputElement?.focus();
         }
         this.doResize();
     }
@@ -626,7 +668,7 @@ export class SearchableView extends VBox {
             throw new Error('No \'replaceable\' provided to SearchableView!');
         }
         const searchConfig = this.currentSearchConfig();
-        this.replaceProvider.replaceSelectionWith(searchConfig, this.replaceInputElement.value);
+        this.replaceProvider.replaceSelectionWith(searchConfig, this.replaceInputElement?.value ?? '');
         this.currentQuery = undefined;
         this.performSearch(true, true);
     }
@@ -635,15 +677,18 @@ export class SearchableView extends VBox {
             throw new Error('No \'replaceable\' provided to SearchableView!');
         }
         const searchConfig = this.currentSearchConfig();
-        this.replaceProvider.replaceAllWith(searchConfig, this.replaceInputElement.value);
+        this.replaceProvider.replaceAllWith(searchConfig, this.replaceInputElement?.value ?? '');
     }
     onInput() {
+        if (this.#history.length === this.#historyPosition + 1) {
+            this.#history[this.#historyPosition] = this.searchInputElement.value;
+        }
         if (!Common.Settings.Settings.instance().resolve(Settings.MainSettings.searchAsYouTypeSettingDescriptor).get()) {
             this.clearSearch();
             return;
         }
         clearTimeout(this.valueChangedTimeoutId);
-        const timeout = this.searchInputElement.value.length < 3 ? 200 : 0;
+        const timeout = (this.searchInputElement?.value.length ?? 0) < 3 ? 200 : 0;
         this.valueChangedTimeoutId = window.setTimeout(this.onValueChanged.bind(this), timeout);
     }
     onValueChanged() {

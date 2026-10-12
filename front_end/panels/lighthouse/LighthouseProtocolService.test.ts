@@ -9,6 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 
@@ -70,6 +71,20 @@ describeWithEnvironment('LighthouseProtocolService', () => {
     await service.attach(urlString`https://example.com/page`);
     await service.detach();
     sinon.assert.calledOnce(resumeAllTargets);
+  });
+
+  it('disables live metrics on attach and re-enables on detach', async () => {
+    const liveMetrics = LiveMetrics.LiveMetrics.instance();
+    const disableStub = sinon.stub(liveMetrics, 'disable').resolves();
+    const enableStub = sinon.stub(liveMetrics, 'enable').resolves();
+
+    const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
+    await service.attach(urlString`https://example.com/page`);
+    sinon.assert.calledOnce(disableStub);
+    sinon.assert.notCalled(enableStub);
+
+    await service.detach();
+    sinon.assert.calledOnce(enableStub);
   });
 
   it('rejects pending requests when detached', async () => {

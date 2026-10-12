@@ -9,6 +9,7 @@ import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
+import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 
 /**
  * @file
@@ -97,6 +98,7 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
   async attach(inspectedURL: Platform.DevToolsPath.UrlString): Promise<void> {
     const parsedInitialOrigin = Common.ParsedURL.ParsedURL.extractOrigin(inspectedURL);
 
+    await LiveMetrics.LiveMetrics.instance().disable();
     await SDK.TargetManager.TargetManager.instance().suspendAllTargets();
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
@@ -236,6 +238,7 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
       await oldRootTarget.targetAgent().invoke_detachFromTarget({sessionId: this.mainSessionId});
     }
     await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
+    await LiveMetrics.LiveMetrics.instance().enable();
     this.removeDialogHandler?.();
   }
 

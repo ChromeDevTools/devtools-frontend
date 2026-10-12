@@ -113,17 +113,17 @@ describeWithEnvironment('SecurityOriginView', () => {
       {
         securityState: Protocol.Security.SecurityState.Secure,
         title: 'Secure',
-        description: 'This origin is a non-HTTPS secure origin.',
+        description: 'This origin is a non-HTTPS secure origin',
       },
       {
         securityState: Protocol.Security.SecurityState.Insecure,
         title: 'Not secure',
-        description: 'Your connection to this origin isn’t secure.',
+        description: 'Your connection to this origin isn’t secure',
       },
       {
         securityState: Protocol.Security.SecurityState.Unknown,
         title: 'No security information',
-        description: 'No security details are available for this origin.',
+        description: 'No security details are available for this origin',
       },
     ];
     for (const {securityState, title, description} of cases) {
@@ -481,11 +481,11 @@ describeWithEnvironment('SecurityOriginView', () => {
     const cases = [
       {
         compliance: Protocol.Network.CertificateTransparencyCompliance.Compliant,
-        expectedNote: 'This request complies with Chrome’s Certificate Transparency policy.',
+        expectedNote: 'This request complies with Chrome’s Certificate Transparency policy',
       },
       {
         compliance: Protocol.Network.CertificateTransparencyCompliance.NotCompliant,
-        expectedNote: 'This request doesn’t comply with Chrome’s Certificate Transparency policy.',
+        expectedNote: 'This request doesn’t comply with Chrome’s Certificate Transparency policy',
       },
     ];
     for (const {compliance, expectedNote} of cases) {
@@ -564,7 +564,7 @@ describeWithEnvironment('SecurityOriginView', () => {
       };
       const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
 
-      assert.deepEqual(getNoteTexts(view), ['The security details above are from the first inspected response.']);
+      assert.deepEqual(getNoteTexts(view), ['The security details above are from the first inspected response']);
     });
 
     it('does not render when security details are null', () => {
@@ -582,7 +582,7 @@ describeWithEnvironment('SecurityOriginView', () => {
 
       assert.deepEqual(getNoteTexts(view), [
         'This response was loaded from cache. Some security details might be missing.',
-        'The security details above are from the first inspected response.',
+        'The security details above are from the first inspected response',
       ]);
     });
 
@@ -985,7 +985,7 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.strictEqual(title.textContent, 'Blocked mixed content');
 
     const explanationText = querySelectorErrorOnMissing(explanation, '.security-explanation-text');
-    assert.include(explanationText.textContent, 'Your page requested non-secure resources that were blocked.');
+    assert.include(explanationText.textContent, 'Your page requested non-secure resources that were blocked');
 
     const requestsLink = querySelectorErrorOnMissing(explanation, 'button.security-mixed-content');
     assert.strictEqual(requestsLink.textContent, 'View 1 request in Network panel');
@@ -1017,13 +1017,13 @@ describeWithEnvironment('SecurityPanel', () => {
       assert.strictEqual(title.textContent, 'Resources - mixed content');
 
       const explanationText = querySelectorErrorOnMissing(explanation, '.security-explanation-text');
-      assert.include(explanationText.textContent, 'This page includes HTTP resources.');
+      assert.include(explanationText.textContent, 'This page includes HTTP resources');
       return explanation;
     }
 
     const explanationBeforeReload = assertMixedContentExplanation();
     const reloadPrompt = querySelectorErrorOnMissing(explanationBeforeReload, '.security-mixed-content');
-    assert.strictEqual(reloadPrompt.textContent, 'Reload the page to record requests for HTTP resources.');
+    assert.strictEqual(reloadPrompt.textContent, 'Reload the page to record requests for HTTP resources');
 
     // Now simulate a refresh.
     securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
@@ -1067,7 +1067,7 @@ describeWithEnvironment('SecurityPanel', () => {
 
       const activeExplanationText = querySelectorErrorOnMissing(activeExplanation, '.security-explanation-text');
       assert.include(activeExplanationText.textContent,
-                     'You have recently allowed non-secure content (such as scripts or iframes) to run on this site.');
+                     'You have recently allowed non-secure content (such as scripts or iframes) to run on this site');
 
       assert.isTrue(passiveExplanation.classList.contains('security-explanation-neutral'));
 
@@ -1075,7 +1075,7 @@ describeWithEnvironment('SecurityPanel', () => {
       assert.strictEqual(passiveExplanationTitle.textContent, 'Resources - mixed content');
 
       const passiveExplanationText = querySelectorErrorOnMissing(passiveExplanation, '.security-explanation-text');
-      assert.include(passiveExplanationText.textContent, 'This page includes HTTP resources.');
+      assert.include(passiveExplanationText.textContent, 'This page includes HTTP resources');
       return [activeExplanation, passiveExplanation];
     }
 
@@ -1084,7 +1084,7 @@ describeWithEnvironment('SecurityPanel', () => {
     const explanationsBeforeReload = assertMixedContentExplanations();
     for (const explanation of explanationsBeforeReload) {
       const reloadPrompt = querySelectorErrorOnMissing(explanation, '.security-mixed-content');
-      assert.strictEqual(reloadPrompt.textContent, 'Reload the page to record requests for HTTP resources.');
+      assert.strictEqual(reloadPrompt.textContent, 'Reload the page to record requests for HTTP resources');
     }
 
     // Now simulate a refresh.

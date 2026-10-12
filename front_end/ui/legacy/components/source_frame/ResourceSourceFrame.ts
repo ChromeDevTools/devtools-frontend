@@ -106,7 +106,7 @@ export interface ViewInput {
   placeholder: string;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target): void => {
   // clang-format off
@@ -134,7 +134,7 @@ export class SearchableContainer extends UI.Widget.VBox {
 
   constructor(resource: TextUtils.ContentProvider.ContentProvider, contentType: string, element?: HTMLElement,
               view: View = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true});
+    super(element);
     this.#view = view;
     const simpleContentType = Common.ResourceType.ResourceType.simplifyContentType(contentType);
     this.#sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
@@ -154,7 +154,7 @@ export class SearchableContainer extends UI.Widget.VBox {
       toolbarItems: this.#toolbarItems,
       placeholder: i18nString(UIStrings.find),
     },
-               {}, this.contentElement);
+               undefined, this.contentElement);
   }
 
   async revealPosition(position: RevealPosition): Promise<void> {

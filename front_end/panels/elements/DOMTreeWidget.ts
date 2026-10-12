@@ -1175,7 +1175,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   #maxTreeDepth?: number;
   #enableContextMenu = true;
   #showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
-  #showComments = this.#showHTMLCommentsSetting.get();
+  #lastObservedShowHTMLCommentsSetting = this.#showHTMLCommentsSetting.get();
+  #showComments = this.#lastObservedShowHTMLCommentsSetting;
   #showAIButton = true;
   #disableEdits = false;
   #expandRoot = false;
@@ -1360,6 +1361,19 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     });
     this.#view = view;
     this.#changeTracker = changeTracker;
+    this.#setupPopovers();
+  }
+
+  // Global listeners are registered while the widget is showing (see
+  // wasShown/willHide) so that hidden or abandoned trees (e.g. the ones the
+  // Console creates per logged DOM node) do not stay alive through them.
+  #globalListenersRegistered = false;
+
+  #registerGlobalListeners(): void {
+    if (this.#globalListenersRegistered) {
+      return;
+    }
+    this.#globalListenersRegistered = true;
     this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
     if (Common.Settings.Settings.instance().moduleSetting('highlight-node-on-hover-in-overlay').get()) {
       SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel,
@@ -1369,7 +1383,19 @@ export class DOMTreeWidget extends UI.Widget.Widget {
                                                                   SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
                                                                   this.#clearHighlightedNode, this, {scoped: true});
     }
-    this.#setupPopovers();
+  }
+
+  #unregisterGlobalListeners(): void {
+    if (!this.#globalListenersRegistered) {
+      return;
+    }
+    this.#globalListenersRegistered = false;
+    this.#showHTMLCommentsSetting.removeChangeListener(this.#onShowHTMLCommentsChange, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, this.#highlightNode, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.OverlayModel.OverlayModel,
+                                                                   SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
+                                                                   this.#clearHighlightedNode, this);
   }
 
   // TODO: Move imagePreviewPopover and issuePopoverHelper to the view once declarative versions exist.
@@ -1638,7 +1664,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   #onShowHTMLCommentsChange(): void {
-    this.#showComments = this.#showHTMLCommentsSetting.get();
+    this.#lastObservedShowHTMLCommentsSetting = this.#showHTMLCommentsSetting.get();
+    this.#showComments = this.#lastObservedShowHTMLCommentsSetting;
     this.#validateSelectedNode();
     const selectedNode = this.selectedDOMNode();
     if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !this.#showComments) {
@@ -2277,6 +2304,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       this.performUpdate();
       return;
     }
+    this.#wiredDOMModels.add(domModel);
     this.performUpdate();
     if (!this.#viewOutput.elementsTreeOutline) {
       throw new Error('Unexpected: missing elementsTreeOutline');
@@ -2301,6 +2329,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       this.performUpdate();
       return;
     }
+    this.#wiredDOMModels.delete(domModel);
     this.#viewOutput.elementsTreeOutline?.unwireFromDOMModel(domModel);
     this.performUpdate();
   }
@@ -2425,6 +2454,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   override willHide(): void {
     super.willHide();
+    this.#unregisterGlobalListeners();
     this.#imagePreviewPopover?.hide();
     this.#issuePopoverHelper?.hidePopover();
     if (this.#updateModifiedNodesTimeout) {
@@ -3113,6 +3143,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   override wasShown(): void {
     super.wasShown();
     this.#visible = true;
+    this.#registerGlobalListeners();
+    if (this.#lastObservedShowHTMLCommentsSetting !== this.#showHTMLCommentsSetting.get()) {
+      // The setting changed while the tree was hidden.
+      this.#onShowHTMLCommentsChange();
+      return;
+    }
     this.performUpdate();
   }
 
@@ -3133,7 +3169,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   override detach(overrideHideOnDetach?: boolean): void {
     super.detach(overrideHideOnDetach);
     this.#visible = false;
-    this.#showHTMLCommentsSetting.removeChangeListener(this.#onShowHTMLCommentsChange, this);
+    this.#unregisterGlobalListeners();
     if (this.#updateModifiedNodesTimeout) {
       clearTimeout(this.#updateModifiedNodesTimeout);
       this.#updateModifiedNodesTimeout = undefined;
@@ -3159,9 +3195,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   override show(parentElement: Element, insertBefore?: Node|null, suppressOrphanWidgetError = false): void {
     this.performUpdate();
+    // Only follow the inspected page's document when wired to DOM models via
+    // modelAdded() (the Elements panel). Embedders that set an explicit
+    // rootDOMNode (e.g. the Console) keep it, even if that node lives in a
+    // different (e.g. OOPIF) DOM model than the scoped main one.
     const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel, {scoped: true});
     for (const domModel of domModels) {
-      if (domModel.parentModel()) {
+      if (domModel.parentModel() || !this.#wiredDOMModels.has(domModel)) {
         continue;
       }
       if (!this.rootDOMNode || this.rootDOMNode.domModel() !== domModel) {

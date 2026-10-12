@@ -159,6 +159,7 @@ devtools_ui_module("unittests") {
     "../../ui/legacy/components/utils:bundle",
     "../../ui/settings:bundle",
     "../common:bundle",
+    "../elements:bundle",
   ]
   deps = [ ":css_files" ]
 }

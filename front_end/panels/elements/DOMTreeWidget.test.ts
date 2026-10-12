@@ -46,9 +46,9 @@ describeWithEnvironment('DOMTreeWidget', () => {
         isUpdatingHighlights: false,
       });
       const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], view);
-      domTree.performUpdate();
+      renderElementIntoDOM(domTree);
       domTree.modelAdded(target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel);
-      return {view};
+      return {view, domTree};
     }
 
     const highlightsNodeOnRequestEvent = (inScope: boolean) => async () => {
@@ -74,6 +74,40 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
     it('highlights node on in scope request event', highlightsNodeOnRequestEvent(true));
     it('does not highlight node on out of scope request event', highlightsNodeOnRequestEvent(false));
+
+    it('listens to overlay model events only while showing', () => {
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const addModelListener = sinon.spy(targetManager, 'addModelListener');
+      const removeModelListener = sinon.spy(targetManager, 'removeModelListener');
+      const elementsTreeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
+      const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(
+          undefined, [], createViewFunctionStub(Elements.DOMTreeWidget.DOMTreeWidget, {
+            elementsTreeOutline,
+            alreadyExpandedParentTreeElement: null,
+            highlightedTreeElement: null,
+            isUpdatingHighlights: false,
+          }));
+      const registered = (spy: sinon.SinonSpy, eventType: SDK.OverlayModel.Events): number =>
+          spy.getCalls()
+              .filter(call => call.args[0] === SDK.OverlayModel.OverlayModel && call.args[1] === eventType &&
+                          call.args[3] === domTree)
+              .length;
+      const HIGHLIGHT_NODE_REQUESTED = SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED;
+      const INSPECT_MODE_WILL_BE_TOGGLED = SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED;
+
+      // Creating a tree (e.g. for a node logged to the Console that is never
+      // shown) must not register anything that keeps it alive.
+      sinon.assert.notCalled(addModelListener);
+
+      renderElementIntoDOM(domTree);
+      assert.strictEqual(registered(addModelListener, HIGHLIGHT_NODE_REQUESTED), 1);
+      assert.strictEqual(registered(addModelListener, INSPECT_MODE_WILL_BE_TOGGLED), 1);
+      sinon.assert.notCalled(removeModelListener);
+
+      domTree.detach();
+      assert.strictEqual(registered(removeModelListener, HIGHLIGHT_NODE_REQUESTED), 1);
+      assert.strictEqual(registered(removeModelListener, INSPECT_MODE_WILL_BE_TOGGLED), 1);
+    });
   });
 
   describe('show-html-comments setting', () => {
@@ -86,7 +120,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         isUpdatingHighlights: false,
       });
       const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], view);
-      domTree.performUpdate();
+      renderElementIntoDOM(domTree);
 
       assert.isTrue(domTree.showComments);
       assert.isTrue(view.input.showComments);
@@ -107,7 +141,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         isUpdatingHighlights: false,
       });
       const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], view);
-      domTree.performUpdate();
+      renderElementIntoDOM(domTree);
 
       domTree.detach();
       const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
@@ -115,6 +149,41 @@ describeWithEnvironment('DOMTreeWidget', () => {
       setting.set(false);
 
       sinon.assert.callCount(view, viewCallCount);
+      assert.isTrue(domTree.showComments);
+    });
+
+    it('applies a setting change made while hidden once shown again', async () => {
+      const elementsTreeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
+      const view = createViewFunctionStub(Elements.DOMTreeWidget.DOMTreeWidget, {
+        elementsTreeOutline,
+        alreadyExpandedParentTreeElement: null,
+        highlightedTreeElement: null,
+        isUpdatingHighlights: false,
+      });
+      const domTree = new Elements.DOMTreeWidget.DOMTreeWidget(undefined, [], view);
+      renderElementIntoDOM(domTree);
+      domTree.detach();
+
+      const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+      setting.set(false);
+      assert.isTrue(domTree.showComments);
+
+      renderElementIntoDOM(domTree);
+      assert.isFalse(domTree.showComments);
+      assert.isFalse(view.input.showComments);
+    });
+
+    it('retains an explicit showComments=false override when shown if the setting has not changed', () => {
+      const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+      setting.set(true);
+
+      const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
+      domTree.showComments = false;
+      assert.isFalse(domTree.showComments);
+
+      renderElementIntoDOM(domTree);
+      assert.isFalse(domTree.showComments);
+      domTree.detach();
     });
   });
 
